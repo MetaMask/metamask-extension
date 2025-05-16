@@ -322,4 +322,178 @@ export enum TokenBucketPriority {
 export enum Slippage {
   default = 2,
   high = 3,
+  stable = 0.5,
 }
+
+const ETH_USDC_TOKEN_OBJECT = {
+  symbol: CURRENCY_SYMBOLS.USDC,
+  name: 'USD Coin',
+  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  decimals: 6,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v1/tokenIcons/1/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
+};
+
+const BSC_USDT_TOKEN_OBJECT = {
+  symbol: CURRENCY_SYMBOLS.USDT,
+  name: 'Tether USD',
+  address: '0x55d398326f99059ff775485246999027b3197955',
+  decimals: 18,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v1/tokenIcons/56/0x55d398326f99059ff775485246999027b3197955.png',
+};
+
+const POLYGON_USDT_TOKEN_OBJECT = {
+  symbol: CURRENCY_SYMBOLS.USDT,
+  name: 'Tether USD',
+  address: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
+  decimals: 6,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v1/tokenIcons/137/0xc2132d05d31c914a87c6611c10748aeb04b58e8f.png',
+};
+
+const ARBITRUM_USDC_TOKEN_OBJECT = {
+  symbol: CURRENCY_SYMBOLS.USDC,
+  name: 'USD Coin',
+  address: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+  decimals: 6,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v1/tokenIcons/42161/0xaf88d065e77c8cc2239327c5edb3a432268e5831.png',
+};
+
+const AVALANCHE_USDC_TOKEN_OBJECT = {
+  symbol: CURRENCY_SYMBOLS.USDC,
+  name: 'USD Coin',
+  address: '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e',
+  decimals: 6,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v1/tokenIcons/43114/0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e.png',
+};
+
+const OPTIMISM_WETH_TOKEN_OBJECT = {
+  symbol: CURRENCY_SYMBOLS.WETH,
+  name: 'Wrapped Ether',
+  address: '0x4200000000000000000000000000000000000006',
+  decimals: 18,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v1/tokenIcons/10/0x4200000000000000000000000000000000000006.png',
+};
+
+const BASE_USDC_TOKEN_OBJECT = {
+  symbol: CURRENCY_SYMBOLS.USDC,
+  name: 'USD Coin',
+  address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+  decimals: 6,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v1/tokenIcons/8453/0x833589fcd6edb6e08f4c7c32d4f71b54bda02913.png',
+};
+
+const LINEA_USDC_TOKEN_OBJECT = {
+  symbol: CURRENCY_SYMBOLS.USDC,
+  name: 'USD Coin',
+  address: '0x176211869ca2b568f2a7d4ee941e073a821ee1ff',
+  decimals: 6,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v1/tokenIcons/59144/0x176211869ca2b568f2a7d4ee941e073a821ee1ff.png',
+};
+
+const ZKSYNC_USDT_TOKEN_OBJECT = {
+  symbol: CURRENCY_SYMBOLS.USDT,
+  name: 'USD Coin',
+  address: '0x493257fd37edb34451f62edf8d2a0c418852ba4c',
+  decimals: 6,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v1/tokenIcons/324/0x493257fd37edb34451f62edf8d2a0c418852ba4c.png',
+};
+
+///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+const SOLANA_USDC_TOKEN_OBJECT = {
+  address:
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  symbol: 'USDC',
+  name: 'USD Coin',
+  decimals: 6,
+  iconUrl:
+    'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png',
+};
+///: END:ONLY_INCLUDE_IF
+
+/**
+ * The most common token pair for each chain
+ * ex: for mainnet, the main token is ETH and the most common swap is USDC
+ */
+export const SWAPS_CHAINID_COMMON_TOKEN_PAIR = {
+  [CHAIN_IDS.MAINNET]: ETH_USDC_TOKEN_OBJECT,
+  [CHAIN_IDS.BSC]: BSC_USDT_TOKEN_OBJECT,
+  [CHAIN_IDS.POLYGON]: POLYGON_USDT_TOKEN_OBJECT,
+  [CHAIN_IDS.ARBITRUM]: ARBITRUM_USDC_TOKEN_OBJECT,
+  [CHAIN_IDS.AVALANCHE]: AVALANCHE_USDC_TOKEN_OBJECT,
+  [CHAIN_IDS.OPTIMISM]: OPTIMISM_WETH_TOKEN_OBJECT,
+  [CHAIN_IDS.BASE]: BASE_USDC_TOKEN_OBJECT,
+  [CHAIN_IDS.LINEA_MAINNET]: LINEA_USDC_TOKEN_OBJECT,
+  [CHAIN_IDS.ZKSYNC_ERA]: ZKSYNC_USDT_TOKEN_OBJECT,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
+  [MultichainNetworks.SOLANA]: SOLANA_USDC_TOKEN_OBJECT,
+  ///: END:ONLY_INCLUDE_IF
+};
+
+export const STABLE_PAIRS: Record<string, boolean> = {
+  [CURRENCY_SYMBOLS.USDC]: true,
+  [CURRENCY_SYMBOLS.USDT]: true,
+};
+
+export function isStablePair(
+  sourceSymbol: string,
+  destinationSymbol: string,
+): boolean {
+  return STABLE_PAIRS[sourceSymbol] && STABLE_PAIRS[destinationSymbol];
+}
+
+/**
+ * A map of chain IDs to sets of known stablecoin contract addresses with deep liquidity.
+ * Used to determine if a pair qualifies for lower default slippage to avoid frontrunning.
+ * Just using USDC and USDT for now, but can add more as needed.
+ */
+export const StablecoinsByChainId: Partial<Record<string, Set<string>>> = {
+  [CHAIN_IDS.MAINNET]: new Set([
+    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC
+    '0xdac17f958d2ee523a2206206994597c13d831ec7', // USDT
+  ]),
+  [CHAIN_IDS.LINEA_MAINNET]: new Set([
+    '0x176211869cA2b568f2A7D4EE941E073a821EE1ff', // USDC
+    '0xA219439258ca9da29E9Cc4cE5596924745e12B93', // USDT
+  ]),
+  [CHAIN_IDS.POLYGON]: new Set([
+    '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359', // USDC
+    '0x2791bca1f2de4661ed88a30c99a7a9449aa84174', // USDC.e
+    '0xc2132d05d31c914a87c6611c10748aeb04b58e8f', // USDT
+  ]),
+  [CHAIN_IDS.ARBITRUM]: new Set([
+    '0xaf88d065e77c8cC2239327C5EDb3A432268e5831', // USDC
+    '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8', // USDC.e
+    '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9', // USDT
+  ]),
+  [CHAIN_IDS.BASE]: new Set([
+    '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // USDC
+  ]),
+  [CHAIN_IDS.OPTIMISM]: new Set([
+    '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85', // USDC
+    '0x7F5c764cBc14f9669B88837ca1490cCa17c31607', // USDC.e
+    '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58', // USDT
+  ]),
+  [CHAIN_IDS.BSC]: new Set([
+    '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d', // USDC
+    '0x55d398326f99059ff775485246999027b3197955', // USDT
+  ]),
+  [CHAIN_IDS.AVALANCHE]: new Set([
+    '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e', // USDC
+    '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664', // USDC.e
+    '0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7', // USDT
+    '0xc7198437980c041c805a1edcba50c1ce5db95118', // USDT.e
+  ]),
+  [CHAIN_IDS.ZKSYNC_ERA]: new Set([
+    '0x1d17CBcF0D6D143135aE902365D2E5e2A16538D4', // USDC
+    '0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4', // USDC.e
+    '0x493257fD37EDB34451f62EDf8D2a0C418852bA4C', // USDT
+  ]),
+};

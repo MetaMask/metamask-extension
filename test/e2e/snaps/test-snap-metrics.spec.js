@@ -6,6 +6,7 @@ const {
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const { MOCK_META_METRICS_ID } = require('../constants');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 /**
@@ -136,6 +137,19 @@ async function mockedSnapUpdateFailed(mockServer) {
     });
 }
 
+async function mockedSnapExportUsed(mockServer) {
+  return await mockServer
+    .forPost('https://api.segment.io/v1/batch')
+    .withJsonBodyIncluding({
+      batch: [{ type: 'track', event: 'Snap Export Used' }],
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+      };
+    });
+}
+
 async function mockedNpmInstall(mockServer) {
   return await mockServer
     .forGet(/https:\/\/registry\.npmjs\.org/u)
@@ -149,7 +163,7 @@ async function mockedNpmInstall(mockServer) {
 async function mockedNpmUpdate(mockServer) {
   return await mockServer
     .forGet(
-      'https://registry.npmjs.org/@metamask/bip32-example-snap/-/bip32-example-snap-0.35.2-flask.1.tgz',
+      'https://registry.npmjs.org/@metamask/webpack-plugin-example-snap/-/webpack-plugin-example-snap-2.1.3.tgz',
     )
     .thenCallback(() => {
       return {
@@ -164,6 +178,7 @@ describe('Test Snap Metrics', function () {
       return [
         await mockedSnapInstallStarted(mockServer),
         await mockedSnapInstall(mockServer),
+        await mockedSnapExportUsed(mockServer),
       ];
     }
 
@@ -172,7 +187,7 @@ describe('Test Snap Metrics', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -230,6 +245,11 @@ describe('Test Snap Metrics', function () {
           tag: 'button',
         });
 
+        // switch to test Snaps
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+
+        await driver.clickElement('#sendInAppNotification');
+
         // check that snap installed event metrics have been sent
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].event, 'Snap Install Started');
@@ -246,6 +266,17 @@ describe('Test Snap Metrics', function () {
           snap_id: 'npm:@metamask/notification-example-snap',
           origin: 'https://metamask.github.io',
           version: '2.3.0',
+          category: 'Snaps',
+          locale: 'en',
+          chain_id: '0x539',
+          environment_type: 'background',
+        });
+        assert.deepStrictEqual(events[2].event, 'Snap Export Used');
+        assert.deepStrictEqual(events[2].properties, {
+          snap_id: 'npm:@metamask/notification-example-snap',
+          origin: 'https://metamask.github.io',
+          export: 'onRpcRequest',
+          success: true,
           category: 'Snaps',
           locale: 'en',
           chain_id: '0x539',
@@ -268,7 +299,7 @@ describe('Test Snap Metrics', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -356,7 +387,7 @@ describe('Test Snap Metrics', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -437,7 +468,7 @@ describe('Test Snap Metrics', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -567,7 +598,7 @@ describe('Test Snap Metrics', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -615,8 +646,8 @@ describe('Test Snap Metrics', function () {
 
         // Wait for the permissions content to be rendered
         await driver.waitForSelector({
-          text: 'Bitcoin Legacy',
-          tag: 'span',
+          text: 'Add to MetaMask',
+          tag: 'h3',
         });
 
         // click and dismiss possible scroll element
@@ -627,16 +658,6 @@ describe('Test Snap Metrics', function () {
           text: 'Confirm',
           tag: 'button',
         });
-
-        // wait for permissions popover, click checkboxes and confirm
-        await driver.delay(500);
-        await driver.clickElement('.mm-checkbox__input');
-        await driver.waitForSelector(
-          '[data-testid="snap-install-warning-modal-confirm"]',
-        );
-        await driver.clickElement(
-          '[data-testid="snap-install-warning-modal-confirm"]',
-        );
 
         // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
@@ -693,14 +714,14 @@ describe('Test Snap Metrics', function () {
         // look for the correct version text
         await driver.waitForSelector({
           css: '#updateSnapVersion',
-          text: '"0.35.2-flask.1"',
+          text: '"2.1.3"',
         });
 
         // check that snap updated event metrics have been sent
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].event, 'Snap Update Started');
         assert.deepStrictEqual(events[0].properties, {
-          snap_id: 'npm:@metamask/bip32-example-snap',
+          snap_id: 'npm:@metamask/webpack-plugin-example-snap',
           origin: 'https://metamask.github.io',
           category: 'Snaps',
           locale: 'en',
@@ -709,9 +730,9 @@ describe('Test Snap Metrics', function () {
         });
         assert.deepStrictEqual(events[1].event, 'Snap Updated');
         assert.deepStrictEqual(events[1].properties, {
-          snap_id: 'npm:@metamask/bip32-example-snap',
-          new_version: '0.35.2-flask.1',
-          old_version: '0.35.0-flask.1',
+          snap_id: 'npm:@metamask/webpack-plugin-example-snap',
+          new_version: '2.1.3',
+          old_version: '2.0.0',
           origin: 'https://metamask.github.io',
           category: 'Snaps',
           locale: 'en',
@@ -734,7 +755,7 @@ describe('Test Snap Metrics', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -785,8 +806,8 @@ describe('Test Snap Metrics', function () {
 
         // Wait for the permissions content to be rendered
         await driver.waitForSelector({
-          text: 'Bitcoin Legacy',
-          tag: 'span',
+          text: 'Add to MetaMask',
+          tag: 'h3',
         });
 
         // click and dismiss possible scroll element
@@ -797,16 +818,6 @@ describe('Test Snap Metrics', function () {
           text: 'Confirm',
           tag: 'button',
         });
-
-        // wait for permissions popover, click checkboxes and confirm
-        await driver.delay(500);
-        await driver.clickElement('.mm-checkbox__input');
-        await driver.waitForSelector(
-          '[data-testid="snap-install-warning-modal-confirm"]',
-        );
-        await driver.clickElement(
-          '[data-testid="snap-install-warning-modal-confirm"]',
-        );
 
         // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
@@ -859,7 +870,7 @@ describe('Test Snap Metrics', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].event, 'Snap Update Started');
         assert.deepStrictEqual(events[0].properties, {
-          snap_id: 'npm:@metamask/bip32-example-snap',
+          snap_id: 'npm:@metamask/webpack-plugin-example-snap',
           origin: 'https://metamask.github.io',
           category: 'Snaps',
           locale: 'en',
@@ -868,7 +879,7 @@ describe('Test Snap Metrics', function () {
         });
         assert.deepStrictEqual(events[1].event, 'Snap Update Rejected');
         assert.deepStrictEqual(events[1].properties, {
-          snap_id: 'npm:@metamask/bip32-example-snap',
+          snap_id: 'npm:@metamask/webpack-plugin-example-snap',
           origin: 'https://metamask.github.io',
           category: 'Snaps',
           locale: 'en',
@@ -892,15 +903,15 @@ describe('Test Snap Metrics', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
         ignoredConsoleErrors: [
-          'MetaMask - RPC Error: Failed to fetch snap "npm:@metamask/bip32-example-snap": Failed to fetch tarball for package "@metamask/bip32-example-snap"..',
-          'Failed to fetch snap "npm:@metamask/bip32-example-…ball for package "@metamask/bip32-example-snap"..',
+          'MetaMask - RPC Error: Failed to fetch snap "npm:@metamask/webpack-plugin-example-snap": Failed to fetch tarball for package "@metamask/webpack-plugin-example-snap"..',
+          'Failed to fetch snap "npm:@metamask/webpack-plugin…package "@metamask/webpack-plugin-example-snap"..',
         ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
@@ -944,8 +955,8 @@ describe('Test Snap Metrics', function () {
 
         // Wait for the permissions content to be rendered
         await driver.waitForSelector({
-          text: 'Bitcoin Legacy',
-          tag: 'span',
+          text: 'Add to MetaMask',
+          tag: 'h3',
         });
 
         // click and dismiss possible scroll element
@@ -956,16 +967,6 @@ describe('Test Snap Metrics', function () {
           text: 'Confirm',
           tag: 'button',
         });
-
-        // wait for permissions popover, click checkboxes and confirm
-        await driver.delay(500);
-        await driver.clickElement('.mm-checkbox__input');
-        await driver.waitForSelector(
-          '[data-testid="snap-install-warning-modal-confirm"]',
-        );
-        await driver.clickElement(
-          '[data-testid="snap-install-warning-modal-confirm"]',
-        );
 
         // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
@@ -1008,7 +1009,7 @@ describe('Test Snap Metrics', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].event, 'Snap Update Started');
         assert.deepStrictEqual(events[0].properties, {
-          snap_id: 'npm:@metamask/bip32-example-snap',
+          snap_id: 'npm:@metamask/webpack-plugin-example-snap',
           origin: 'https://metamask.github.io',
           category: 'Snaps',
           locale: 'en',
@@ -1017,7 +1018,7 @@ describe('Test Snap Metrics', function () {
         });
         assert.deepStrictEqual(events[1].event, 'Snap Update Failed');
         assert.deepStrictEqual(events[1].properties, {
-          snap_id: 'npm:@metamask/bip32-example-snap',
+          snap_id: 'npm:@metamask/webpack-plugin-example-snap',
           origin: 'https://metamask.github.io',
           category: 'Snaps',
           locale: 'en',

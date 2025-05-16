@@ -1,0 +1,48 @@
+# This file is used to ignore commits when running git blame.
+#
+# It should work in Cursor and VSCode with GitLens automatically because of .vscode/settings.json
+#
+# To make this work for you everywhere locally, run:
+# git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+#6304 Folder restructure @danjm
+31175625b446cb5d18b17db23018bca8b14d280c
+
+#7730 Migrate codebase to use ESM @whymarrh
+92971d3c87fb778b5900e84bf4129f7c483ba98a
+
+#8023 Update ESLint rules for test suite @whymarrh
+4f3fc95d5062abce22d3c9cac5587269f4c98c91
+
+#8056 Enable arrow-parens ESLint rule @whymarrh
+a78cf0ef3a463c5d9d56453e2f777e08cc2dcce7
+
+#8595 [RFC] add prettier to eslint @brad-decker
+2ebf8756a4c1023e45e4bd98367f384836cb464a
+
+#9239 Fix import/order issues @whymarrh
+c1e3c229bc008ddc7ca3507e75845ed73b837e1c
+
+#9274 Update ESLint shared config to v3 @whymarrh
+b6ccd22d6c0ff6b9797c7aa24429f3df6d031af7
+
+#10358 @metamask/eslint config@5.0.0 @rekmarks
+#"It's semicolons o'clock"
+76a2a9bb8b6ea04025328d36404ac3b59121dfc8
+
+#10655 colocate tests in flat structure @brad-decker
+5a233e463457ca2ac9b3342f4cc848303a44e929
+
+#10911 remove the ui/app and ui/lib folders @brad-decker
+#(two hashes because it 's in history twice)
+09d81ac5f2c94d7730d2e981b4f05734858030bf
+29742b951954f1b463de331df84ff75b22a9498d
+
+#22639 Confirmations code re-structuring @jpuri
+c4c12ecd53ee8d1c76d4329af21649ce93d5f9bd
+
+#22531 chore: update `sass` to v1.71.0 @davidmurdoch
+5fd2b7fc25e709ce658eab0bdee162fa566dd2d9
+
+#30440 style: apply Prettier to md, mdx, and yml files @HowardBraham
+dc7325148c1ac03f050422e07156087b53af92d2

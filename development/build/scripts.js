@@ -936,6 +936,7 @@ function setupBundlerDefaults(
             './**/node_modules/@firebase',
             './**/node_modules/marked',
             './**/node_modules/@solana',
+            './**/node_modules/axios',
           ],
           global: true,
         },

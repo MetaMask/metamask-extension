@@ -40,7 +40,6 @@
 @import 'modals/index';
 @import 'multiple-notifications/index';
 @import 'network-display/index';
-@import 'incoming-trasaction-toggle/network-toggle';
 @import 'permission-page-container/index';
 @import 'permissions-connect-header/index';
 @import 'permissions-connect-permission-list/index';
@@ -48,6 +47,8 @@
 @import 'recovery-phrase-reminder/index';
 @import 'step-progress-bar/index.scss';
 @import 'selected-account/index';
+@import 'multichain-bridge-transaction-details-modal/index';
+@import 'multichain-bridge-transaction-list-item/index';
 @import 'srp-input/srp-input';
 @import 'snaps/snap-privacy-warning/index';
 @import 'tab-bar/index';
@@ -63,7 +64,6 @@
 @import 'transaction-list/index';
 @import 'transaction-status-label/index';
 @import 'wallet-overview/index';
-@import 'whats-new-popup/index';
 @import 'terms-of-use-popup/index';
 @import 'loading-network-screen/index';
 @import 'currency-input/index';

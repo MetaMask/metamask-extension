@@ -17,13 +17,12 @@ jobs:
             echo "Not a release branch, skip next steps"
           fi
 
-      - name: Checkout repository
+      - name: Checkout and setup environment
         if: steps.extract_version.outputs.version
-        uses: actions/checkout@v4
-
-      - name: Setup environment
-        if: steps.extract_version.outputs.version
-        uses: metamask/github-tools/.github/actions/setup-environment@main
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - name: Create bug report issue on planning repo
         if: steps.extract_version.outputs.version

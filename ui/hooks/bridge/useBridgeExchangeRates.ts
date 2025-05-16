@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { isStrictHexString } from '@metamask/utils';
 import {
   getBridgeQuotes,
   getFromToken,
@@ -51,7 +50,7 @@ export const useBridgeExchangeRates = () => {
 
   // Fetch exchange rates for selected src token if not found in marketData
   useEffect(() => {
-    if (fromChainId && fromTokenAddress && isStrictHexString(fromChainId)) {
+    if (fromChainId && fromTokenAddress) {
       const exchangeRate = exchangeRateFromMarketData(
         fromChainId,
         fromTokenAddress,
@@ -68,7 +67,7 @@ export const useBridgeExchangeRates = () => {
         );
       }
     }
-  }, [fromChainId, fromTokenAddress]);
+  }, [currency, dispatch, fromChainId, fromTokenAddress, marketData]);
 
   // Fetch exchange rates for selected dest token if not found in marketData
   useEffect(() => {
@@ -99,5 +98,12 @@ export const useBridgeExchangeRates = () => {
         }
       }
     }
-  }, [toChainId, toTokenAddress]);
+  }, [
+    currency,
+    dispatch,
+    isMetaMetricsEnabled,
+    marketData,
+    toChainId,
+    toTokenAddress,
+  ]);
 };

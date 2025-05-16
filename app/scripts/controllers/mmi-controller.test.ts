@@ -177,7 +177,6 @@ describe('MMIController', function () {
       state: {
         keyrings: [],
         isUnlocked: true,
-        keyringsMetadata: [],
       },
       encryptor: {
         encrypt(_, object) {
@@ -313,10 +312,11 @@ describe('MMIController', function () {
       const type = 'mock-keyring-type';
       mmiController.keyringController.getKeyringsByType = jest
         .fn()
-        .mockReturnValue([]);
+        .mockReturnValueOnce([])
+        .mockReturnValueOnce(['new-keyring']);
       mmiController.keyringController.addNewKeyring = jest
         .fn()
-        .mockResolvedValue('new-keyring');
+        .mockResolvedValue('new-keyring-metadata');
 
       const result = await mmiController.addKeyringIfNotExists(type);
 

@@ -310,9 +310,6 @@
     "message": "আমদানি",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "অ্যাকাউন্ট আমদানি করুন"
-  },
   "importAccountMsg": {
     "message": "আমদানি করা অ্যাকাউন্টগুলি আপনার গোড়ায় তৈরি করা MetaMask অ্যাকাউন্ট সীডফ্রেজের সাথে সংযুক্ত হবে না। আমদানি করা অ্যাকাউন্টগুলি সম্পর্কে আরও জানুন "
   },

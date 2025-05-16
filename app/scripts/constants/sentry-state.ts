@@ -43,9 +43,8 @@ export const SENTRY_BACKGROUND_STATE = {
   AuthenticationController: {
     isSignedIn: false,
     sessionData: {
+      token: false,
       profile: true,
-      accessToken: false,
-      expiresIn: true,
     },
   },
   NetworkOrderController: {
@@ -109,34 +108,25 @@ export const SENTRY_BACKGROUND_STATE = {
     assetsRates: false,
   },
   BridgeController: {
-    bridgeState: {
-      bridgeFeatureFlags: {
-        extensionConfig: {
-          support: false,
-          chains: {},
-        },
-      },
-      quoteRequest: {
-        walletAddress: false,
-        srcTokenAddress: true,
-        slippage: true,
-        srcChainId: true,
-        destChainId: true,
-        destTokenAddress: true,
-        srcTokenAmount: true,
-      },
-      quotes: [],
-      quotesInitialLoadTime: true,
-      quotesLastFetched: true,
-      quotesLoadingStatus: true,
-      quoteFetchError: true,
-      quotesRefreshCount: true,
+    assetExchangeRates: false,
+    quoteRequest: {
+      walletAddress: false,
+      srcTokenAddress: true,
+      slippage: true,
+      srcChainId: true,
+      destChainId: true,
+      destTokenAddress: true,
+      srcTokenAmount: true,
     },
+    quotes: [],
+    quotesInitialLoadTime: true,
+    quotesLastFetched: true,
+    quotesLoadingStatus: true,
+    quoteFetchError: true,
+    quotesRefreshCount: true,
   },
   BridgeStatusController: {
-    bridgeStatusState: {
-      txHistory: false,
-    },
+    txHistory: false,
   },
   CronjobController: {
     jobs: false,
@@ -188,7 +178,6 @@ export const SENTRY_BACKGROUND_STATE = {
     fragments: false,
     metaMetricsId: true,
     participateInMetaMetrics: true,
-    previousUserTraits: false,
     segmentApiCalls: false,
     traits: false,
     dataCollectionForMarketing: false,
@@ -241,7 +230,6 @@ export const SENTRY_BACKGROUND_STATE = {
     featureFlags: true,
     forgottenPassword: true,
     identities: false,
-    incomingTransactionsPreferences: true,
     isIpfsGatewayEnabled: false,
     ipfsGateway: false,
     knownMethodData: false,
@@ -257,7 +245,6 @@ export const SENTRY_BACKGROUND_STATE = {
       smartTransactionsOptInStatus: true,
       tokenNetworkFilter: {},
       showNativeTokenAsMainBalance: true,
-      petnamesEnabled: true,
       showConfirmationAdvancedDetails: true,
       privacyMode: false,
     },
@@ -288,9 +275,6 @@ export const SENTRY_BACKGROUND_STATE = {
     fiatCurrency: true,
     rates: true,
     cryptocurrencies: true,
-  },
-  QueuedRequestController: {
-    queuedRequestCount: true,
   },
   SelectedNetworkController: { domains: false },
   SignatureController: {
@@ -363,7 +347,6 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   TokenListController: {
     preventPollingOnNetworkRestart: true,
-    tokenList: false,
     tokensChainsCache: {
       [AllProperties]: false,
     },
@@ -384,9 +367,6 @@ export const SENTRY_BACKGROUND_STATE = {
     allTokens: {
       [AllProperties]: false,
     },
-    detectedTokens: false,
-    ignoredTokens: false,
-    tokens: false,
   },
   TransactionController: {
     transactions: false,
@@ -400,8 +380,9 @@ export const SENTRY_BACKGROUND_STATE = {
     userOperations: false,
   },
   UserStorageController: {
-    isProfileSyncingEnabled: true,
-    isProfileSyncingUpdateLoading: false,
+    isBackupAndSyncEnabled: true,
+    isBackupAndSyncUpdateLoading: false,
+    isAccountSyncingEnabled: true,
     hasAccountSyncingSyncedAtLeastOnce: false,
     isAccountSyncingReadyToBeDispatched: false,
   },

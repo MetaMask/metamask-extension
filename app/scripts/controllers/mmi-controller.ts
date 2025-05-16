@@ -52,7 +52,8 @@ type UpdateCustodianTransactionsParameters = {
   txList: string[];
   custodyController: CustodyController;
   transactionUpdateController: TransactionUpdateController;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   txStateManager: any;
   getPendingNonce: (address: string) => Promise<number>;
@@ -64,7 +65,7 @@ export class MMIController {
 
   public mmiConfigurationController: MmiConfigurationController;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public keyringController: any;
 
@@ -74,11 +75,11 @@ export class MMIController {
 
   private custodyController: CustodyController;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getState: () => any;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getPendingNonce: (address: string) => Promise<any>;
 
@@ -86,7 +87,7 @@ export class MMIController {
 
   #networkControllerState: NetworkState;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private permissionController: any;
 
@@ -94,11 +95,11 @@ export class MMIController {
 
   private messagingSystem: MMIControllerMessenger;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private platform: any;
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private extension: any;
 
@@ -110,19 +111,21 @@ export class MMIController {
 
   public trackTransactionEvents: (
     args: { transactionMeta: TransactionMeta },
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     event: any,
   ) => void;
 
   private txStateManager: {
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getTransactions: (query?: any, opts?: any, fullTx?: boolean) => any[];
     setTxStatusSigned: (txId: string) => void;
     setTxStatusSubmitted: (txId: string) => void;
     setTxStatusFailed: (txId: string) => void;
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     updateTransaction: (txMeta: any) => void;
   };
@@ -173,6 +176,8 @@ export class MMIController {
 
     this.signatureController.hub.on(
       'personal_sign:signed',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async ({ signature, messageId }: ISignedEvent) => {
         await this.handleSigningEvents(signature, messageId, 'personal');
       },
@@ -180,6 +185,8 @@ export class MMIController {
 
     this.signatureController.hub.on(
       'eth_signTypedData:signed',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async ({ signature, messageId }: ISignedEvent) => {
         await this.handleSigningEvents(signature, messageId, 'v4');
       },
@@ -187,6 +194,8 @@ export class MMIController {
 
     this.transactionUpdateController.on(
       'handshake',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async ({ channelId }: { channelId: string }) => {
         this.setChannelId(channelId);
       },
@@ -194,6 +203,8 @@ export class MMIController {
 
     this.transactionUpdateController.on(
       'connection.request',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async (payload: ConnectionRequest) => {
         this.setConnectionRequest(payload);
       },
@@ -210,7 +221,8 @@ export class MMIController {
 
   async trackTransactionEventFromCustodianEvent(
     txMeta: TransactionMeta,
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     event: any,
   ) {
@@ -226,7 +238,8 @@ export class MMIController {
   async addKeyringIfNotExists(type: KeyringTypes) {
     let keyring = await this.keyringController.getKeyringsByType(type)[0];
     if (!keyring) {
-      keyring = await this.keyringController.addNewKeyring(type);
+      await this.keyringController.addNewKeyring(type);
+      [keyring] = await this.keyringController.getKeyringsByType(type);
     }
     return keyring;
   }
@@ -242,6 +255,8 @@ export class MMIController {
       custodyController: this.custodyController,
       // @ts-expect-error not relevant
       trackTransactionEvent:
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         this.trackTransactionEventFromCustodianEvent.bind(this),
       captureException,
     });
@@ -367,7 +382,8 @@ export class MMIController {
       string,
       {
         name: string;
-        // TODO: Replace `any` with type
+
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         custodianDetails: any;
         labels: Label[];

@@ -8,7 +8,7 @@ import {
   getSnapDerivationPathName,
 } from '@metamask/snaps-utils';
 import { isNonEmptyArray } from '@metamask/controller-utils';
-import { Caip25EndowmentPermissionName } from '@metamask/multichain';
+import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 import {
   RestrictedMethods,
   EndowmentPermissions,
@@ -52,8 +52,11 @@ function getSnapNameComponent(snapName) {
 
 const PERMISSION_DESCRIPTIONS = deepFreeze({
   // "endowment:caip25" entry is needed for the Snaps Permissions Review UI
-  [Caip25EndowmentPermissionName]: ({ t, isLegacySwitchEthereumChain }) => {
-    if (isLegacySwitchEthereumChain) {
+  [Caip25EndowmentPermissionName]: ({
+    t,
+    isRequestApprovalPermittedChains,
+  }) => {
+    if (isRequestApprovalPermittedChains) {
       return {
         label: t('permission_walletSwitchEthereumChain'),
         leftIcon: IconName.Wifi,
@@ -654,7 +657,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
 /**
  * @typedef {object} PermissionDescriptionParamsObject
  * @property {Function} t - The translation function.
- * @property {boolean} [isLegacySwitchEthereumChain] - Flag for checking if request incoming from 'wallet_switchEthereumChain'.
+ * @property {boolean} [isRequestApprovalPermittedChains] - Flag for checking if request incoming from 'wallet_switchEthereumChain'.
  * @property {string} permissionName - The name of the permission.
  * @property {object} permissionValue - The permission object.
  * @property {string} subjectName - The name of the subject.
@@ -667,7 +670,7 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
  */
 export const getPermissionDescription = ({
   t,
-  isLegacySwitchEthereumChain,
+  isRequestApprovalPermittedChains,
   permissionName,
   permissionValue,
   subjectName,
@@ -681,7 +684,7 @@ export const getPermissionDescription = ({
 
   const result = value({
     t,
-    isLegacySwitchEthereumChain,
+    isRequestApprovalPermittedChains,
     permissionName,
     permissionValue,
     subjectName,
@@ -701,7 +704,7 @@ export const getPermissionDescription = ({
 /**
  * @typedef {object} WeightedPermissionDescriptionParamsObject
  * @property {Function} t - The translation function.
- * @property {boolean} [isLegacySwitchEthereumChain] - Flag for checking if request incoming from 'wallet_switchEthereumChain'.
+ * @property {boolean} [isRequestApprovalPermittedChains] - Flag for checking if request incoming from 'wallet_switchEthereumChain'.
  * @property {string} permissions - The permissions object.
  * @property {Function} [getSubjectName] - The function to get a subject name.
  * @property {string} [subjectName] - The name of the subject.
@@ -716,7 +719,7 @@ export const getPermissionDescription = ({
  */
 export function getWeightedPermissions({
   t,
-  isLegacySwitchEthereumChain,
+  isRequestApprovalPermittedChains,
   permissions,
   getSubjectName,
   subjectName,
@@ -727,7 +730,7 @@ export function getWeightedPermissions({
         target.concat(
           getPermissionDescription({
             t,
-            isLegacySwitchEthereumChain,
+            isRequestApprovalPermittedChains,
             permissionName,
             permissionValue,
             subjectName,

@@ -43,8 +43,8 @@ describe('Settings', function () {
         fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await logInWithBalanceValidation(driver);
 
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',

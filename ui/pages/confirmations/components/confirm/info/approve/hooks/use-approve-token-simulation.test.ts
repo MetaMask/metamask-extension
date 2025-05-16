@@ -1,14 +1,45 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
-import { genUnapprovedApproveConfirmation } from '../../../../../../../../test/data/confirmations/token-approve';
+import {
+  buildPermit2ApproveTransactionData,
+  genUnapprovedApproveConfirmation,
+} from '../../../../../../../../test/data/confirmations/token-approve';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
-import { useApproveTokenSimulation } from './use-approve-token-simulation';
+import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../../shared/constants';
+import {
+  isSpendingCapUnlimited,
+  useApproveTokenSimulation,
+} from './use-approve-token-simulation';
 import { useIsNFT } from './use-is-nft';
 
 jest.mock('./use-is-nft', () => ({
   ...jest.requireActual('./use-is-nft'),
   useIsNFT: jest.fn(),
 }));
+
+describe('isSpendingCapUnlimited', () => {
+  it('returns true if spending cap is equal to threshold', () => {
+    expect(isSpendingCapUnlimited(TOKEN_VALUE_UNLIMITED_THRESHOLD)).toBe(true);
+  });
+
+  it('returns true if spending cap is greater than threshold', () => {
+    expect(isSpendingCapUnlimited(TOKEN_VALUE_UNLIMITED_THRESHOLD + 1)).toBe(
+      true,
+    );
+  });
+
+  it('returns false if spending cap is less than threshold', () => {
+    expect(isSpendingCapUnlimited(TOKEN_VALUE_UNLIMITED_THRESHOLD - 1)).toBe(
+      false,
+    );
+  });
+
+  it('returns false if spending cap is less than threshold after applying decimals', () => {
+    expect(isSpendingCapUnlimited(TOKEN_VALUE_UNLIMITED_THRESHOLD, 1)).toBe(
+      false,
+    );
+  });
+});
 
 describe('useApproveTokenSimulation', () => {
   beforeEach(() => {
@@ -36,10 +67,7 @@ describe('useApproveTokenSimulation', () => {
         "isUnlimitedSpendingCap": false,
         "pending": undefined,
         "spendingCap": "#7",
-        "value": {
-          "hex": "0x011170",
-          "type": "BigNumber",
-        },
+        "value": "70000",
       }
     `);
   });
@@ -65,10 +93,7 @@ describe('useApproveTokenSimulation', () => {
         "isUnlimitedSpendingCap": true,
         "pending": undefined,
         "spendingCap": "1000000000000000",
-        "value": {
-          "hex": "0x038d7ea4c68000",
-          "type": "BigNumber",
-        },
+        "value": "1000000000000000",
       }
     `);
   });
@@ -92,10 +117,39 @@ describe('useApproveTokenSimulation', () => {
         "isUnlimitedSpendingCap": false,
         "pending": undefined,
         "spendingCap": "0.000000000000000001",
-        "value": {
-          "hex": "0x01",
-          "type": "BigNumber",
-        },
+        "value": "1",
+      }
+    `);
+  });
+
+  it('returns token amount for permit2 approval', async () => {
+    const useIsNFTMock = jest.fn().mockImplementation(() => ({ isNFT: true }));
+
+    (useIsNFT as jest.Mock).mockImplementation(useIsNFTMock);
+
+    const transactionMeta = {
+      txParams: {
+        data: buildPermit2ApproveTransactionData(
+          '0x1234567890123456789012345678901234567890',
+          '0x1234567890123456789012345678901234567891',
+          123456,
+          789,
+        ),
+      },
+    } as TransactionMeta;
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useApproveTokenSimulation(transactionMeta, '5'),
+      getMockConfirmStateForTransaction(transactionMeta),
+    );
+
+    expect(result.current).toMatchInlineSnapshot(`
+      {
+        "formattedSpendingCap": "1.235",
+        "isUnlimitedSpendingCap": false,
+        "pending": undefined,
+        "spendingCap": "1.23456",
+        "value": "123456",
       }
     `);
   });

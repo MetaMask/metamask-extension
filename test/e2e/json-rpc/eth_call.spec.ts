@@ -3,10 +3,11 @@ import { keccak } from 'ethereumjs-util';
 import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import FixtureBuilder from '../fixture-builder';
-import { Ganache } from '../seeder/ganache';
 import ContractAddressRegistry from '../seeder/contract-address-registry';
 import { SMART_CONTRACTS } from '../seeder/smart-contracts';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { Anvil } from '../seeder/anvil';
+import { Ganache } from '../seeder/ganache';
 
 describe('eth_call', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -17,20 +18,23 @@ describe('eth_call', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
+        localNodeOptions: {
+          hardfork: 'muirGlacier',
+        },
         smartContract,
         title: this.test?.fullTitle(),
       },
       async ({
         driver,
-        ganacheServer,
+        localNodes,
         contractRegistry,
       }: {
         driver: Driver;
-        ganacheServer?: Ganache;
+        localNodes: Anvil[] | Ganache[] | undefined[];
         contractRegistry: ContractAddressRegistry;
       }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         // eth_call
         await driver.openNewPage(`http://127.0.0.1:8080`);

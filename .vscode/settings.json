@@ -5,6 +5,9 @@
     "app/*.html": "ejs"
   },
   "files.trimTrailingWhitespace": true,
+  "gitlens.advanced.blame.customArguments": [
+    "--ignore-revs-file .git-blame-ignore-revs"
+  ],
   "javascript.preferences.importModuleSpecifier": "relative",
   "json.schemas": [
     {

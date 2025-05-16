@@ -16,6 +16,8 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { AppStateController } from '../../controllers/app-state-controller';
+import { sanitizeMessageRecursively } from '../../../../shared/modules/typed-signature';
+import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { SecurityAlertResponse, UpdateSecurityAlertResponse } from './types';
 import {
   isSecurityAlertsAPIEnabled,
@@ -165,10 +167,26 @@ function sanitizeRequest(request: JsonRpcRequest): JsonRpcRequest {
     request.method === METHOD_SIGN_TYPED_DATA_V4 ||
     request.method === METHOD_SIGN_TYPED_DATA_V3
   ) {
-    if (Array.isArray(request.params)) {
+    if (Array.isArray(request.params) && request.params[1]) {
+      const typedDataMessage = parseTypedDataMessage(
+        request.params[1].toString(),
+      );
+
+      const sanitizedMessageRecursively = sanitizeMessageRecursively(
+        typedDataMessage.message,
+        typedDataMessage.types,
+        typedDataMessage.primaryType,
+      );
+
       return {
         ...request,
-        params: request.params.slice(0, 2),
+        params: [
+          request.params[0],
+          JSON.stringify({
+            ...typedDataMessage,
+            message: sanitizedMessageRecursively,
+          }),
+        ],
       };
     }
   }
@@ -211,6 +229,7 @@ async function findConfirmationBySecurityAlertId(
     } else {
       confirmation = transactionController.state.transactions.find(
         (meta) =>
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (meta.securityAlertResponse as any)?.securityAlertId ===
           securityAlertId,

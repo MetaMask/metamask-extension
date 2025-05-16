@@ -31,11 +31,18 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
+import { BalanceChange } from './types';
+
+export type StaticRow = {
+  label: string;
+  balanceChanges: BalanceChange[];
+};
 
 export type SimulationDetailsProps = {
   enableMetrics?: boolean;
   isTransactionsRedesign?: boolean;
   metricsOnly?: boolean;
+  staticRows?: StaticRow[];
   transaction: TransactionMeta;
 };
 
@@ -252,17 +259,23 @@ const SimulationDetailsLayout: React.FC<{
  * @param props.isTransactionsRedesign - Whether or not the component is being
  * used inside the transaction redesign flow.
  * @param props.metricsOnly - Whether to only track metrics and not render the UI.
+ * @param props.staticRows - Optional static rows to display.
  */
 export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   transaction,
   enableMetrics = false,
   isTransactionsRedesign = false,
   metricsOnly = false,
+  staticRows = [],
 }: SimulationDetailsProps) => {
   const t = useI18nContext();
   const { chainId, id: transactionId, simulationData } = transaction;
   const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
   const loading = !simulationData || balanceChangesResult.pending;
+
+  const hasStaticData =
+    staticRows?.length > 0 &&
+    staticRows.some((row) => row.balanceChanges?.length > 0);
 
   useSimulationMetrics({
     enableMetrics,
@@ -292,12 +305,13 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     [
       SimulationErrorCode.ChainNotSupported,
       SimulationErrorCode.Disabled,
-    ].includes(error?.code as SimulationErrorCode)
+    ].includes(error?.code as SimulationErrorCode) &&
+    !hasStaticData
   ) {
     return null;
   }
 
-  if (error) {
+  if (error && !hasStaticData) {
     const inHeaderProp = error.code !== SimulationErrorCode.Reverted && {
       inHeader: <ErrorContent error={error} />,
     };
@@ -316,7 +330,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   }
 
   const balanceChanges = balanceChangesResult.value;
-  const empty = balanceChanges.length === 0;
+  const empty = balanceChanges.length === 0 && !hasStaticData;
   if (empty) {
     return (
       <SimulationDetailsLayout
@@ -329,12 +343,20 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
 
   const outgoing = balanceChanges.filter((bc) => bc.amount.isNegative());
   const incoming = balanceChanges.filter((bc) => !bc.amount.isNegative());
+
   return (
     <SimulationDetailsLayout
       isTransactionsRedesign={isTransactionsRedesign}
       transactionId={transactionId}
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
+        {staticRows.map((staticRow, index) => (
+          <BalanceChangeList
+            key={index}
+            heading={staticRow.label}
+            balanceChanges={staticRow.balanceChanges}
+          />
+        ))}
         <BalanceChangeList
           heading={t('simulationDetailsOutgoingHeading')}
           balanceChanges={outgoing}

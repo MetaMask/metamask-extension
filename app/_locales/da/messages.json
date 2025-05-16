@@ -310,9 +310,6 @@
     "message": "Importer",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Importer konto"
-  },
   "importAccountMsg": {
     "message": "Importerede konti vil ikke blive forbundet med din oprindeligt oprettede seed-sætning for din MetaMask-konto. Få mere at vide om importerede konti"
   },

@@ -13,6 +13,9 @@ class PrivacySettings {
     tag: 'button',
   };
 
+  private readonly confirmDeleteMetaMetricsDataButton =
+    '[data-testid="clear-metametrics-data"]';
+
   private readonly copiedSrpExclamation = {
     text: tEn('copiedExclamation'),
     tag: 'button',
@@ -21,6 +24,27 @@ class PrivacySettings {
   private readonly copySrpButton = {
     text: tEn('copyToClipboard'),
     tag: 'button',
+  };
+
+  private readonly dataCollectionForMarketingToggle =
+    '[data-testid="data-collection-for-marketing-toggle"] .toggle-button';
+
+  private readonly dataCollectionWarningAckButton = {
+    text: 'Okay',
+    tag: 'button',
+  };
+
+  private readonly dataCollectionWarningMessage = {
+    text: 'You turned off data collection for our marketing purposes. This only applies to this device. ',
+    tag: 'p',
+  };
+
+  private readonly deleteMetaMetricsDataButton =
+    '[data-testid="delete-metametrics-data-button"]';
+
+  private readonly deleteMetaMetricsModalTitle = {
+    text: 'Delete MetaMetrics data?',
+    tag: 'h4',
   };
 
   private readonly privacySettingsPageTitle = {
@@ -88,9 +112,6 @@ class PrivacySettings {
   private readonly participateInMetaMetricsToggle =
     '[data-testid="participate-in-meta-metrics-toggle"] .toggle-button';
 
-  private readonly dataCollectionForMarketingToggle =
-    '[data-testid="data-collection-for-marketing-toggle"] .toggle-button';
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -106,6 +127,18 @@ class PrivacySettings {
       throw e;
     }
     console.log('Privacy & Security Settings page is loaded');
+  }
+
+  async deleteMetaMetrics(): Promise<void> {
+    console.log('Click to delete MetaMetrics data on privacy settings page');
+    await this.driver.clickElement(this.deleteMetaMetricsDataButton);
+    await this.driver.waitForSelector(this.deleteMetaMetricsModalTitle);
+    // there is a race condition, where we need to wait before clicking clear button otherwise an error is thrown in the background
+    // we cannot wait for a UI conditon, so we a delay to mitigate this until another solution is found
+    await this.driver.delay(3000);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmDeleteMetaMetricsDataButton,
+    );
   }
 
   async closeRevealSrpDialog(): Promise<void> {
@@ -183,15 +216,62 @@ class PrivacySettings {
     return (await this.driver.findElement(this.displayedSrpText)).getText();
   }
 
-  async openRevealSrpQuiz(): Promise<void> {
-    console.log('Open reveal SRP quiz on privacy settings page');
+  async openSrpList(): Promise<void> {
+    // THe e2e clicks the reveal SRP too quickly before the component checks if there are multiple SRPs
+    await this.driver.delay(1000);
     await this.driver.clickElement(this.revealSrpButton);
+  }
+
+  async openRevealSrpQuiz(srpIndex?: number): Promise<void> {
+    console.log('Open reveal SRP quiz on privacy settings page');
+
+    if (srpIndex) {
+      await this.openSrpList();
+      // We only pass in the srpIndex when there are multiple SRPs
+      const srpSelector = {
+        text: `Secret Recovery Phrase ${srpIndex.toString()}`,
+        tag: 'p',
+      };
+      await this.driver.clickElement(srpSelector);
+    } else {
+      await this.driver.clickElement(this.revealSrpButton);
+    }
+
     await this.driver.waitForSelector(this.revealSrpQuizModalTitle);
+  }
+
+  async optOutDataCollectionForMarketing(): Promise<void> {
+    console.log(
+      'Opt out data collection for marketing on privacy settings page',
+    );
+    await this.toggleDataCollectionForMarketing();
+    await this.driver.waitForSelector(this.dataCollectionWarningMessage);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.dataCollectionWarningAckButton,
+    );
   }
 
   async toggleAutodetectNft(): Promise<void> {
     console.log('Toggle autodetect NFT on privacy settings page');
     await this.driver.clickElement(this.autodetectNftToggleButton);
+  }
+
+  /**
+   * Checks if the delete MetaMetrics data button is enabled on privacy settings page.
+   *
+   */
+  async check_deleteMetaMetricsDataButtonEnabled(): Promise<boolean> {
+    try {
+      await this.driver.findClickableElement(this.deleteMetaMetricsDataButton, {
+        waitAtLeastGuard: 2000,
+        timeout: 5000,
+      });
+    } catch (e) {
+      console.log('Delete MetaMetrics data button not enabled', e);
+      return false;
+    }
+    console.log('Delete MetaMetrics data button is enabled');
+    return true;
   }
 
   async check_displayedSrpCanBeCopied(): Promise<void> {

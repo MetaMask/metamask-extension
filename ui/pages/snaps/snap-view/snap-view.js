@@ -92,12 +92,7 @@ function SnapView() {
   };
 
   return (
-    <div
-      className="snap-view"
-      style={{
-        boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
-      }}
-    >
+    <div className="snap-view">
       <Page backgroundColor={BackgroundColor.backgroundDefault}>
         {!snap.hideSnapBranding && (
           <SnapAuthorshipHeader

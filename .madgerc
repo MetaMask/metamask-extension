@@ -1,16 +1,14 @@
 {
   "excludeRegExp": [
-    "/.[^/]*\/test\/.[^/]*/u",
-    "/.[^/]*\/tests\/.[^/]*/u",
-    "/.[^/]*\/[^/]*.test.[^/]*/u",
-    "/.[^/]*\/[^/]*.spec.[^/]*/u",
-    "/.[^/]*\/stories\/.[^/]*/u",
-    "/.[^/]*\/storybook\/.[^/]*/u",
-    "/.[^/]*\/[^/]*.stories.[^/]*/u"
+    "/.[^/]*\/test\/.[^/]*/u"
   ],
-  "fileExtensions": ["js", "jsx", "ts", "tsx"],
+  "fileExtensions": [
+    "js",
+    "jsx",
+    "ts",
+    "tsx"
+  ],
   "tsConfig": "tsconfig.json",
-  "webpackConfig": "webpack.config.js",
   "detectiveOptions": {
     "es6": {
       "skipTypeImports": true
@@ -23,5 +21,17 @@
       "skipTypeImports": true,
       "skipAsyncImports": true
     }
-  }
+  },
+  "allowedCircularGlob": [
+    "ui/pages/confirmations/**",
+    "ui/ducks/**",
+    "ui/selectors/**",
+    "ui/hooks/**",
+    "ui/store/**",
+    "ui/helpers/utils/token-util.js",
+    "ui/components/multichain/**",
+    "ui/components/app/**",
+    "ui/components/component-library/**",
+    "shared/modules/selectors/**"
+  ]
 }

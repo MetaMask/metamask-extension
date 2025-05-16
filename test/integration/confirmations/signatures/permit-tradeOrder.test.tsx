@@ -70,6 +70,7 @@ describe('Permit Trade Order Tests', () => {
       }),
     );
     mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decimals: '4' as any,
     }));
@@ -127,7 +128,7 @@ describe('Permit Trade Order Tests', () => {
       'Nonce',
       '100131415900000000000000000000000000000083840314483690155566137712510085002484',
       'Erc20Token',
-      'Wrapped Ether',
+      'Wrapped E...',
       'Erc20TokenAmount',
       '42000000000000',
       'Fees',

@@ -39,7 +39,7 @@ function getDescriptionNode({
 }
 
 export default function PermissionsConnectPermissionList({
-  isLegacySwitchEthereumChain,
+  isRequestApprovalPermittedChains,
   permissions,
   subjectName,
   accounts,
@@ -52,7 +52,7 @@ export default function PermissionsConnectPermissionList({
     <Box as="span">
       {getWeightedPermissions({
         t,
-        isLegacySwitchEthereumChain,
+        isRequestApprovalPermittedChains,
         permissions,
         getSubjectName: getSnapName(snapsMetadata),
         subjectName,
@@ -73,5 +73,5 @@ PermissionsConnectPermissionList.propTypes = {
   subjectName: PropTypes.string.isRequired,
   requestedChainIds: PropTypes.array,
   accounts: PropTypes.arrayOf(PropTypes.object),
-  isLegacySwitchEthereumChain: PropTypes.boolean,
+  isRequestApprovalPermittedChains: PropTypes.boolean,
 };

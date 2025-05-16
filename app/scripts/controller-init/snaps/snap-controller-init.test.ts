@@ -21,6 +21,7 @@ function getInitRequestMock(): jest.Mocked<
     ...buildControllerInitRequestMock(),
     controllerMessenger: getSnapControllerMessenger(baseMessenger),
     initMessenger: getSnapControllerInitMessenger(baseMessenger),
+    preinstalledSnaps: [],
   };
 
   return requestMock;
@@ -50,8 +51,9 @@ describe('SnapControllerInit', () => {
         requireAllowlist: false,
       },
       getFeatureFlags: expect.any(Function),
-      getMnemonic: expect.any(Function),
+      getMnemonicSeed: expect.any(Function),
       preinstalledSnaps: expect.any(Array),
+      trackEvent: expect.any(Function),
     });
   });
 });

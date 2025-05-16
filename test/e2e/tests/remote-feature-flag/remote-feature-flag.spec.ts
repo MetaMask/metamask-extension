@@ -25,8 +25,8 @@ describe('Remote feature flag', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: TestSuiteArguments) => {
+        await loginWithBalanceValidation(driver);
         const uiState = await getCleanAppState(driver);
         assert.deepStrictEqual(
           uiState.metamask.remoteFeatureFlags,
@@ -44,8 +44,8 @@ describe('Remote feature flag', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: TestSuiteArguments) => {
+        await loginWithBalanceValidation(driver);
         const uiState = await getCleanAppState(driver);
         assert.deepStrictEqual(uiState.metamask.remoteFeatureFlags, {});
       },
@@ -72,7 +72,7 @@ describe('Remote feature flag', function (this: Suite) {
         await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.check_pageIsLoaded();
-        await settingsPage.goToDevelopOptionSettings();
+        await settingsPage.goToDeveloperOptions();
 
         const developOptionsPage = new DevelopOptions(driver);
         await developOptionsPage.check_pageIsLoaded();

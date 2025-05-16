@@ -20,6 +20,7 @@
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
+        "default": "Alt+Shift+M",
         "windows": "Alt+Shift+M",
         "mac": "Alt+Shift+M",
         "chromeos": "Alt+Shift+M",

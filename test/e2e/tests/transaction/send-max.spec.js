@@ -1,4 +1,4 @@
-const { withFixtures, generateGanacheOptions } = require('../../helpers');
+const { withFixtures } = require('../../helpers');
 const {
   createInternalTransactionWithMaxAmount,
   reviewTransaction,
@@ -12,6 +12,14 @@ const {
   validateTransaction,
 } = require('../../page-objects/flows/send-transaction.flow');
 
+const PREFERENCES_STATE_MOCK = {
+  preferences: {
+    showFiatInTestnets: true,
+  },
+  // Enables advanced details due to migration 123
+  useNonceField: true,
+};
+
 describe('Sending with max amount', function () {
   // This test is flaky in FF - so we are skipping it for now
   // eslint-disable-next-line mocha/no-skipped-tests
@@ -19,13 +27,9 @@ describe('Sending with max amount', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            preferences: {
-              showFiatInTestnets: true,
-            },
-          })
+          .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
-        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: { hardfork: 'london' },
         driverOptions: { timeOut: 15000 },
         title: this.test.fullTitle(),
       },
@@ -49,13 +53,9 @@ describe('Sending with max amount', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
-            .withPreferencesController({
-              preferences: {
-                showFiatInTestnets: true,
-              },
-            })
+            .withPreferencesController(PREFERENCES_STATE_MOCK)
             .build(),
-          localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+          localNodeOptions: { hardfork: 'london' },
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -87,7 +87,7 @@ describe('Sending with max amount', function () {
           // has correct updated value on the confirm screen the transaction
           await driver.waitForSelector({
             css: '[data-testid="first-gas-field"]',
-            text: '0.0006 ETH',
+            text: '0.0006',
           });
 
           await driver.waitForSelector({
@@ -116,13 +116,9 @@ describe('Sending with max amount', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
-            .withPreferencesController({
-              preferences: {
-                showFiatInTestnets: true,
-              },
-            })
+            .withPreferencesController(PREFERENCES_STATE_MOCK)
             .build(),
-          localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+          localNodeOptions: { hardfork: 'london' },
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -141,7 +137,7 @@ describe('Sending with max amount', function () {
           // has correct updated value on the confirm screen the transaction
           await driver.waitForSelector({
             css: '[data-testid="first-gas-field"]',
-            text: '0.0004 ETH',
+            text: '0.0004',
           });
 
           await driver.waitForSelector({
@@ -171,13 +167,9 @@ describe('Sending with max amount', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            preferences: {
-              showFiatInTestnets: true,
-            },
-          })
+          .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
-        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: { hardfork: 'london' },
         driverOptions: { timeOut: 15000 },
         title: this.test.fullTitle(),
       },
@@ -223,7 +215,7 @@ describe('Sending with max amount', function () {
 
         // verify gas fee changed
         await driver.waitForSelector({
-          text: '0.0005 ETH',
+          text: '0.0009',
         });
 
         // verify initial max amount
@@ -246,13 +238,9 @@ describe('Sending with max amount', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            preferences: {
-              showFiatInTestnets: true,
-            },
-          })
+          .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
-        localNodeOptions: generateGanacheOptions({ hardfork: 'london' }),
+        localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

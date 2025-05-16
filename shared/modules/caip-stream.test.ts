@@ -42,7 +42,7 @@ class MockStream extends Duplex {
 
 describe('CAIP Stream', () => {
   describe('createCaipStream', () => {
-    it('pipes and unwraps a caip-x message from source stream to the substream', async () => {
+    it('pipes and unwraps a caip-348 message from source stream to the substream', async () => {
       const sourceStream = new PassThrough({ objectMode: true });
       const sourceStreamChunks = readFromStream(sourceStream);
 
@@ -50,12 +50,12 @@ describe('CAIP Stream', () => {
       const providerStreamChunks = readFromStream(providerStream);
 
       await writeToStream(sourceStream, {
-        type: 'caip-x',
+        type: 'caip-348',
         data: { foo: 'bar' },
       });
 
       expect(sourceStreamChunks).toStrictEqual([
-        { type: 'caip-x', data: { foo: 'bar' } },
+        { type: 'caip-348', data: { foo: 'bar' } },
       ]);
       expect(providerStreamChunks).toStrictEqual([{ foo: 'bar' }]);
     });
@@ -74,8 +74,23 @@ describe('CAIP Stream', () => {
       // Note that it's not possible to verify the output side of the internal SplitStream
       // instantiated inside createCaipStream as only the substream is actually exported
       expect(sourceStream.chunks).toStrictEqual([
-        { type: 'caip-x', data: { foo: 'bar' } },
+        { type: 'caip-348', data: { foo: 'bar' } },
       ]);
+    });
+
+    it('ends the substream when the source stream ends', async () => {
+      // using a fake stream here instead of PassThrough to prevent a loop
+      // when sourceStream gets written back to at the end of the CAIP pipeline
+      const sourceStream = new MockStream();
+
+      const providerStream = createCaipStream(sourceStream);
+
+      const { promise, resolve } = createDeferredPromise();
+      providerStream.on('close', () => resolve?.());
+
+      sourceStream.destroy();
+
+      await expect(promise).resolves.toBe(undefined);
     });
   });
 });
