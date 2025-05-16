@@ -147,9 +147,7 @@ export const getAllNetworkConfigurationsByCaipChainId = createSelector(
     // multichain/networks.ts in the UI side
     const {
       nonEvmNetworks,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       nonEvmTestNetworks,
-      ///: END:ONLY_INCLUDE_IF
     } = Object.keys(multichainNetworkConfigurationsByChainId).reduce(
       (
         result: {
@@ -189,9 +187,7 @@ export const getAllNetworkConfigurationsByCaipChainId = createSelector(
     return getNetworkConfigurationsByCaipChainId({
       multichainNetworkConfigurationsByChainId: {
         ...nonEvmNetworks,
-        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
         ...nonEvmTestNetworks,
-        ///: END:ONLY_INCLUDE_IF
       },
       networkConfigurationsByChainId,
       internalAccounts,
