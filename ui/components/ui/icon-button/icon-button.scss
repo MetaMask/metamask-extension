@@ -3,12 +3,12 @@
 .icon-button {
   height: auto;
 
-  &:hover {
+  &:hover:not([disabled]) {
     background-color: var(--color-background-muted-hover);
     transition: background 200ms ease;
   }
 
-  &:active {
+  &:hover:not([disabled]) {
     background-color: var(--color-background-muted-pressed);
   }
 
