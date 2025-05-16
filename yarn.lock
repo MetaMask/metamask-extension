@@ -5992,9 +5992,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-transactions-controller@npm:@metamask-previews/multichain-transactions-controller@0.10.0-preview-7bf3a3b5":
-  version: 0.10.0-preview-7bf3a3b5
-  resolution: "@metamask-previews/multichain-transactions-controller@npm:0.10.0-preview-7bf3a3b5"
+"@metamask/multichain-transactions-controller@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/multichain-transactions-controller@npm:1.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/keyring-api": "npm:^17.4.0"
@@ -6008,9 +6008,9 @@ __metadata:
     immer: "npm:^9.0.6"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@metamask/accounts-controller": ^28.0.0
+    "@metamask/accounts-controller": ^29.0.0
     "@metamask/snaps-controllers": ^11.0.0
-  checksum: 10/ffd3aa6cc747b149690219e8e027119db81ae440a039c8600ecd5b07b8722fb0cc8b74a96b4244258c3a27675fb0e9056fc708f786c2ce682d1e7b07cb70b43a
+  checksum: 10/296a3126824ad8adae4b1da2f040953c938de179cb44e8ef6719152b45e282bdccecd00cf1333a172a8441790c385967b2d9ab54931111eefd452aa4a01c3b08
   languageName: node
   linkType: hard
 
@@ -30074,7 +30074,7 @@ __metadata:
     "@metamask/multichain-api-client": "npm:^0.6.0"
     "@metamask/multichain-api-middleware": "npm:^0.1.1"
     "@metamask/multichain-network-controller": "npm:^0.5.1"
-    "@metamask/multichain-transactions-controller": "npm:^0.9.0"
+    "@metamask/multichain-transactions-controller": "npm:^1.0.0"
     "@metamask/name-controller": "npm:^8.0.3"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A23.3.0#~/.yarn/patches/@metamask-network-controller-npm-23.2.0-0223efb98a.patch"
     "@metamask/notification-services-controller": "npm:^7.0.0"
