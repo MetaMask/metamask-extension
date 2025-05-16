@@ -1,5 +1,5 @@
 import { Box, Form, Field, FileInput, Button } from '@metamask/snaps-sdk/jsx';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import * as backgroundConnection from '../../../../../store/background-connection';
 import {
@@ -47,23 +47,25 @@ describe('SnapUIFileInput', () => {
     expect(input).toBeDefined();
     await userEvent.upload(input, file);
 
-    expect(submitRequestToBackground).toHaveBeenNthCalledWith(
-      1,
-      'updateInterfaceState',
-      [
-        MOCK_INTERFACE_ID,
-        {
-          form: {
-            input: {
-              contentType: 'image/svg',
-              contents: 'Zm9v',
-              name: 'foo.svg',
-              size: 3,
+    await waitFor(() => {
+      expect(submitRequestToBackground).toHaveBeenNthCalledWith(
+        1,
+        'updateInterfaceState',
+        [
+          MOCK_INTERFACE_ID,
+          {
+            form: {
+              input: {
+                contentType: 'image/svg',
+                contents: 'Zm9v',
+                name: 'foo.svg',
+                size: 3,
+              },
             },
           },
-        },
-      ],
-    );
+        ],
+      );
+    });
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
       2,
