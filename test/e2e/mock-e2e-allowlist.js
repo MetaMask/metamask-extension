@@ -114,6 +114,7 @@ const ALLOWLISTED_URLS = [
   'https://verify.walletconnect.com/e6360eaee594162688065f1c70c863b7',
   'https://w.usabilla.com/ade130c1096e.js?lv=1',
   'https://websites.cdn.getfeedback.com/embed/aaeNy60jTL/gf.js',
+  'https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH%2CMON&tsyms=usd',
 ];
 
 const ALLOWLISTED_HOSTS = [
