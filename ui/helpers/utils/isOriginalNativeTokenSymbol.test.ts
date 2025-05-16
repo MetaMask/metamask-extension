@@ -10,7 +10,11 @@ describe('isOriginalNativeTokenSymbol', () => {
     const chainId = '0x1';
     const ticker = 'ETH';
 
-    const result = await isOriginalNativeTokenSymbol({ ticker, chainId });
+    const result = await isOriginalNativeTokenSymbol({
+      ticker,
+      chainId,
+      useAPICall: true,
+    });
     expect(result).toBe(true);
   });
 
@@ -18,7 +22,11 @@ describe('isOriginalNativeTokenSymbol', () => {
     const chainId = '0x1';
     const ticker = 'BTC';
 
-    const result = await isOriginalNativeTokenSymbol({ ticker, chainId });
+    const result = await isOriginalNativeTokenSymbol({
+      ticker,
+      chainId,
+      useAPICall: true,
+    });
     expect(result).toBe(false);
   });
 
@@ -26,7 +34,11 @@ describe('isOriginalNativeTokenSymbol', () => {
     const chainId = '0x15b38';
     const ticker = 'CHZ';
 
-    const result = await isOriginalNativeTokenSymbol({ ticker, chainId });
+    const result = await isOriginalNativeTokenSymbol({
+      ticker,
+      chainId,
+      useAPICall: true,
+    });
     expect(result).toBe(true);
   });
 
@@ -34,7 +46,11 @@ describe('isOriginalNativeTokenSymbol', () => {
     const chainId = '0x2';
     const ticker = 'NOT_FOUND';
 
-    const result = await isOriginalNativeTokenSymbol({ ticker, chainId });
+    const result = await isOriginalNativeTokenSymbol({
+      ticker,
+      chainId,
+      useAPICall: true,
+    });
     expect(result).toBe(false);
   });
 
@@ -47,7 +63,11 @@ describe('isOriginalNativeTokenSymbol', () => {
       { chainId: 3, nativeCurrency: { symbol: 'SOL' } },
     ]);
 
-    const result = await isOriginalNativeTokenSymbol({ ticker, chainId });
+    const result = await isOriginalNativeTokenSymbol({
+      ticker,
+      chainId,
+      useAPICall: true,
+    });
     // Verify that fetchWithCache was called with the expected parameters:
     expect(fetchWithCache).toHaveBeenCalledWith({
       url: CHAIN_SPEC_URL,
@@ -66,7 +86,11 @@ describe('isOriginalNativeTokenSymbol', () => {
       { chainId: 3, nativeCurrency: { symbol: 'SOL' } },
     ]);
 
-    const result = await isOriginalNativeTokenSymbol({ ticker, chainId });
+    const result = await isOriginalNativeTokenSymbol({
+      ticker,
+      chainId,
+      useAPICall: true,
+    });
     expect(result).toBe(false);
   });
 
@@ -77,7 +101,11 @@ describe('isOriginalNativeTokenSymbol', () => {
     // Simulate an error thrown by fetchWithCache
     (fetchWithCache as jest.Mock).mockRejectedValue(new Error('Network Error'));
 
-    const result = await isOriginalNativeTokenSymbol({ ticker, chainId });
+    const result = await isOriginalNativeTokenSymbol({
+      ticker,
+      chainId,
+      useAPICall: true,
+    });
     expect(result).toBe(false);
   });
 });

@@ -121,17 +121,6 @@ describe('useIsOriginalNativeTokenSymbol', () => {
     });
   });
 
-  it('should return true if not using safe chains list validation', async () => {
-    const { hook, mocks } = arrangeActHook((m) => {
-      m.mockUseSafeChainsListValidationSelector.mockReturnValue(false);
-    });
-
-    await waitFor(() => {
-      expect(mocks.mockIsOriginalNativeTokenSymbol).not.toHaveBeenCalled();
-      expect(hook.result.current).toBe(true);
-    });
-  });
-
   it('should default to true for local dev networks', async () => {
     const { hook, mocks } = arrangeActHook((_mocks, params) => {
       params.rpcUrl = 'https://localhost:1337';

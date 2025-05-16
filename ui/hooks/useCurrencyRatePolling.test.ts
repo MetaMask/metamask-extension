@@ -39,6 +39,7 @@ describe('useCurrencyRatePolling', () => {
         isUnlocked: true,
         completedOnboarding: true,
         useCurrencyRateCheck: true,
+        useSafeChainsListValidation: true,
         selectedNetworkClientId: 'selectedNetworkClientId',
         networkConfigurationsByChainId: {
           '0x1': {
@@ -83,6 +84,7 @@ describe('useCurrencyRatePolling', () => {
         isUnlocked: true,
         completedOnboarding: false,
         useCurrencyRateCheck: true,
+        useSafeChainsListValidation: true,
         networkConfigurationsByChainId: {
           '0x1': { nativeCurrency: 'ETH' },
         },
@@ -102,6 +104,7 @@ describe('useCurrencyRatePolling', () => {
         isUnlocked: false,
         completedOnboarding: true,
         useCurrencyRateCheck: true,
+        useSafeChainsListValidation: true,
         networkConfigurationsByChainId: {
           '0x1': { nativeCurrency: 'ETH' },
         },
@@ -121,6 +124,7 @@ describe('useCurrencyRatePolling', () => {
         isUnlocked: true,
         completedOnboarding: true,
         useCurrencyRateCheck: false,
+        useSafeChainsListValidation: true,
         networkConfigurationsByChainId: {
           '0x1': { nativeCurrency: 'ETH' },
         },
@@ -140,6 +144,7 @@ describe('useCurrencyRatePolling', () => {
         isUnlocked: true,
         completedOnboarding: true,
         useCurrencyRateCheck: true,
+        useSafeChainsListValidation: true,
         selectedNetworkClientId: 'selectedNetworkClientId',
         networkConfigurationsByChainId: {
           '0x1': {

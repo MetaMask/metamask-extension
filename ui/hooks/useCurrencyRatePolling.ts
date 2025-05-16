@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { getChainIdsToPoll, getUseCurrencyRateCheck } from '../selectors';
+import {
+  getChainIdsToPoll,
+  getUseCurrencyRateCheck,
+  useSafeChainsListValidationSelector,
+} from '../selectors';
 import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import { isOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
 import {
@@ -13,23 +17,24 @@ import {
 } from '../ducks/metamask/metamask';
 import usePolling from './usePolling';
 
-const useCurrencyRatePolling = () => {
-  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  const completedOnboarding = useSelector(getCompletedOnboarding);
-  const isUnlocked = useSelector(getIsUnlocked);
+const useNativeCurrencies = () => {
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  const completedOnboarding = useSelector(getCompletedOnboarding);
+  const useSafeChainsListValidation = useSelector(
+    useSafeChainsListValidationSelector,
+  );
+  const [nativeCurrencies, setNativeCurrencies] = useState<string[]>([]);
   const chainIds = useSelector(getChainIdsToPoll);
 
-  // State to store the native currencies computed asynchronously.
-  const [nativeCurrencies, setNativeCurrencies] = useState<string[]>([]);
-
   useEffect(() => {
+    // Use validated currency tickers
     const fetchNativeCurrencies = async () => {
       const nativeCurrenciesArray = await Promise.all(
         Object.values(networkConfigurations).map(async (n) => {
           const isOriginal = await isOriginalNativeTokenSymbol({
             ticker: n.nativeCurrency,
             chainId: n.chainId,
+            useAPICall: useSafeChainsListValidation && completedOnboarding,
           }).catch(() => false);
           return isOriginal && chainIds.includes(n.chainId)
             ? n.nativeCurrency
@@ -39,14 +44,29 @@ const useCurrencyRatePolling = () => {
 
       // Use a type predicate to filter out null values.
       const filteredCurrencies = nativeCurrenciesArray.filter(
-        (currency): currency is string => currency !== null,
+        (currency): currency is NonNullable<typeof currency> =>
+          currency !== null,
       );
       const uniqueCurrencies = [...new Set(filteredCurrencies)];
       setNativeCurrencies(uniqueCurrencies);
     };
-
     fetchNativeCurrencies();
-  }, [networkConfigurations, chainIds]);
+  }, [
+    chainIds,
+    completedOnboarding,
+    networkConfigurations,
+    useSafeChainsListValidation,
+  ]);
+
+  return nativeCurrencies;
+};
+
+const useCurrencyRatePolling = () => {
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
+  const completedOnboarding = useSelector(getCompletedOnboarding);
+  const isUnlocked = useSelector(getIsUnlocked);
+
+  const nativeCurrencies = useNativeCurrencies();
 
   const enabled =
     completedOnboarding &&

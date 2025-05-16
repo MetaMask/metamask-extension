@@ -42,11 +42,6 @@ export function useIsOriginalNativeTokenSymbol(
         return;
       }
 
-      if (!useSafeChainsListValidation) {
-        setIsOriginalNativeSymbol(true);
-        return;
-      }
-
       try {
         // exclude local dev network
         if (isLocalhost(rpcUrl)) {
@@ -57,6 +52,7 @@ export function useIsOriginalNativeTokenSymbol(
         const isOriginalNativeToken = await isOriginalNativeTokenSymbol({
           ticker,
           chainId: networkId,
+          useAPICall: useSafeChainsListValidation,
         });
 
         setIsOriginalNativeSymbol(isOriginalNativeToken);

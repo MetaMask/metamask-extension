@@ -10,9 +10,11 @@ import { DAY } from '../../../shared/constants/time';
 export const isOriginalNativeTokenSymbol = async ({
   ticker,
   chainId,
+  useAPICall = false,
 }: {
   ticker: string;
   chainId: Hex | CaipChainId;
+  useAPICall?: boolean;
 }) => {
   try {
     const mappedCurrencySymbol =
@@ -33,6 +35,11 @@ export const isOriginalNativeTokenSymbol = async ({
     );
 
     if (isMappedCollision) {
+      return true;
+    }
+
+    if (!useAPICall) {
+      // Default to true if API is off
       return true;
     }
 
