@@ -6718,6 +6718,7 @@ export default class MetamaskController extends EventEmitter {
    */
   setupCommonMiddlewareHooks(origin) {
     return {
+      // Miscellaneous
       addSubjectMetadata:
         this.subjectMetadataController.addSubjectMetadata.bind(
           this.subjectMetadataController,
@@ -6746,6 +6747,13 @@ export default class MetamaskController extends EventEmitter {
 
         return undefined;
       },
+      requestPermittedChainsPermissionIncrementalForOrigin: (options) =>
+        this.requestPermittedChainsPermissionIncremental({
+          ...options,
+          origin,
+        }),
+
+      // Network configuration-related
       addNetwork: this.networkController.addNetwork.bind(
         this.networkController,
       ),
@@ -6790,15 +6798,9 @@ export default class MetamaskController extends EventEmitter {
         this.alertController.setWeb3ShimUsageRecorded.bind(
           this.alertController,
         ),
-
-      requestPermittedChainsPermissionIncrementalForOrigin: (options) =>
-        this.requestPermittedChainsPermissionIncremental({
-          ...options,
-          origin,
-        }),
-
       rejectApprovalRequestsForOrigin: () =>
         this.rejectOriginPendingApprovals(origin),
+
     };
   }
 
