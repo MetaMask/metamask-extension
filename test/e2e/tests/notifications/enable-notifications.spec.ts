@@ -1,7 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { mockIdentityServices } from '../identity/mocks';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { completeOnboardFlowIdentity } from '../identity/flows';
@@ -138,7 +137,6 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
                 server,
                 userStorageMockttpController,
               ),
-              await mockIdentityServices(server, userStorageMockttpController),
             ];
           },
         },
