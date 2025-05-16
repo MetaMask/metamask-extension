@@ -427,7 +427,10 @@ const AssetPage = ({
               {t('yourActivity')}
             </Text>
             {type === AssetType.native ? (
-              <TransactionList hideNetworkFilter />
+              <TransactionList
+                hideNetworkFilter
+                overrideFilterForCurrentChain={true}
+              />
             ) : (
               <TransactionList tokenAddress={address} hideNetworkFilter />
             )}
