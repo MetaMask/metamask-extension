@@ -18,7 +18,7 @@ const PENDING_APPROVAL_MOCK = {
   requestData: { testProperty: 'testValue' },
   type: ApprovalType.AddEthereumChain,
   origin: 'https://metamask.github.io',
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as ApprovalRequest<any>;
 
@@ -30,7 +30,7 @@ const PERMISSION_MOCK = {
   },
   type: ApprovalType.WalletRequestPermissions,
   origin: 'https://metamask.github.io',
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as unknown as ApprovalRequest<any>;
 

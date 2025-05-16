@@ -15,7 +15,7 @@ import {
 import { useConfirmContext } from '../../../../../context/confirm';
 import { GasFeeTokenListItem } from '../gas-fee-token-list-item';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { updateSelectedGasFeeToken } from '../../../../../../../store/actions/transaction-controller';
+import { updateSelectedGasFeeToken } from '../../../../../../../store/controller-actions/transaction-controller';
 import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 
 export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
@@ -82,6 +82,8 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
                   tokenAddress.toLowerCase() ||
                 (!selectedGasFeeToken && tokenAddress === NATIVE_TOKEN_ADDRESS)
               }
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={handleTokenClick}
             />
           ))}

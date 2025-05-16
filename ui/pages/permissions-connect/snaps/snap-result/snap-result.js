@@ -148,7 +148,8 @@ export default function SnapResult({
       />
       <Box
         className="snap-result__content"
-        padding={4}
+        paddingLeft={4}
+        paddingRight={4}
         alignItems={AlignItems.center}
         flexDirection={FlexDirection.Column}
         backgroundColor={BackgroundColor.backgroundAlternative}

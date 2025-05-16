@@ -26,7 +26,10 @@ export type ModalHeaderProps = {
   image?: NotificationImage;
 };
 export type ModalBodyProps = { title: string };
-export type ModalFooterProps = { onAction: () => void; onCancel: () => void };
+export type ModalFooterProps = {
+  onAction: () => void | Promise<void>;
+  onCancel: () => void | Promise<void>;
+};
 
 export type TranslatedUINotification = {
   id: number;

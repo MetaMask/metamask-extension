@@ -32,6 +32,7 @@ jest.mock('../../store/actions', () => ({
   unlockAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   createNewVaultAndRestore: jest.fn(),
   setOnboardingDate: jest.fn(() => ({ type: 'TEST_DISPATCH' })),
+  hideLoadingIndication: jest.fn(() => ({ type: 'HIDE_LOADING_INDICATION' })),
 }));
 
 describe('Onboarding Flow', () => {
@@ -59,10 +60,6 @@ describe('Onboarding Flow', () => {
         { chainId: CHAIN_IDS.MAINNET },
         { chainId: CHAIN_IDS.LINEA_MAINNET },
       ),
-
-      incomingTransactionsPreferences: {
-        [CHAIN_IDS.MAINNET]: true,
-      },
       preferences: {
         petnamesEnabled: true,
       },

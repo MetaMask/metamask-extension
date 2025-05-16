@@ -17,7 +17,7 @@ export const importAllDetectedTokens = async (
   trackTokenAddedEvent: (importedToken: Token, chainId: string) => void,
 ) => {
   // TODO add event for MetaMetricsEventName.TokenAdded
-  if (process.env.PORTFOLIO_VIEW && !isOnCurrentNetwork) {
+  if (!isOnCurrentNetwork) {
     const importPromises = Object.entries(detectedTokensMultichain).map(
       async ([networkId, tokens]) => {
         const chainConfig = allNetworks[networkId];

@@ -1,12 +1,21 @@
+import { isEqual } from 'lodash';
 import { Driver } from '../../webdriver/driver';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
 
 const inputLocator = {
+  dataManageStateInput: '#dataManageState',
+  dataStateInput: '#dataState',
+  dataUnencryptedManageStateInput: '#dataUnencryptedManageState',
   entropyMessageInput: '#entropyMessage',
+  getStateInput: '#getState',
   messageBip44Input: '#bip44Message',
   messageEd25519Bip32Input: '#bip32Message-ed25519Bip32',
   messageEd25519Input: '#bip32Message-ed25519',
   messageSecp256k1Input: '#bip32Message-secp256k1',
+  setStateKeyInput: '#setStateKey',
+  setStateKeyUnencryptedInput: '#setStateKeyUnencrypted',
+  dataUnencryptedStateInput: '#dataUnencryptedState',
+  getUnencryptedStateInput: '#getUnencryptedState',
   wasmInput: '#wasmInput',
 } satisfies Record<string, string>;
 
@@ -19,19 +28,35 @@ export const buttonLocator = {
   connectGetEntropyButton: '#connectGetEntropySnap',
   connectGetFileButton: '#connectgetfile',
   connectHomePageButton: '#connecthomepage',
+  connectjsxButton: '#connectjsx',
+  displayJsxButton: '#displayJsx',
+  connectInteractiveButton: '#connectinteractive-ui',
   connectImagesButton: '#connectimages',
   connectLifeCycleButton: '#connectlifecycle-hooks',
   connectNameLookUpButton: '#connectname-lookup',
+  connectManageStateButton: '#connectmanage-state',
+  connectstateButton: '#connectstate',
+  connectPreinstalledButton: '#connectpreinstalled-snap',
+  connectProtocolButton: '#connectprotocol',
   connectTransactionInsightButton: '#connecttransaction-insights',
   connectUpdateButton: '#connectUpdate',
   connectUpdateNewButton: '#connectUpdateNew',
   connectWasmButton: '#connectwasm',
   connectNotificationButton: '#connectnotifications',
   confirmationButton: '#sendConfirmationButton',
+  createDialogButton: '#createDialogButton',
+  createDialogDisabledButton: '#createDisabledDialogButton',
+  clearManageStateButton: '#clearManageState',
+  clearUnencryptedManageStateButton: '#clearUnencryptedManageState',
   getAccountButton: '#getAccounts',
   getBip32CompressedPublicKeyButton: '#bip32GetCompressedPublic',
   getBip32PublicKeyButton: '#bip32GetPublic',
+  getPreferencesConnectButton: '#connectpreferences',
+  getPreferencesSubmitButton: '#getPreferences',
+  incrementButton: '#increment',
+  getSettingsStateButton: '#settings-state',
   publicKeyBip44Button: '#sendBip44Test',
+  connectNetworkAccessButton: '#connectnetwork-access',
   sendErrorButton: '#sendError',
   sendExpandedViewNotificationButton: '#sendExpandedViewNotification',
   sendInAppNotificationButton: '#sendInAppNotification',
@@ -39,6 +64,11 @@ export const buttonLocator = {
   sendGetFileHexButton: '#sendGetFileHexButton',
   sendGetFileTextButton: '#sendGetFileTextButton',
   sendInsightButton: '#sendInsights',
+  sendGetStateButton: '#sendGetState',
+  sendNetworkAccessTestButton: '#sendNetworkAccessTest',
+  sendManageStateButton: '#sendManageState',
+  sendStateButton: '#sendState',
+  sendUnencryptedManageStateButton: '#sendUnencryptedManageState',
   sendWasmMessageButton: '#sendWasmMessage',
   signBip32messageSecp256k1Button: '#sendBip32-secp256k1',
   signBip44MessageButton: '#signBip44Message',
@@ -46,6 +76,10 @@ export const buttonLocator = {
   signEd25519MessageButton: '#sendBip32-ed25519',
   signEntropyMessageButton: '#signEntropyMessage',
   submitClientStatusButton: '#sendClientStatusTest',
+  clearStateButton: '#clearState',
+  sendUnencryptedStateButton: '#sendUnencryptedState',
+  sendGetUnencryptedStateButton: '#sendGetUnencryptedState',
+  clearStateUnencryptedButton: '#clearStateUnencrypted',
 } satisfies Record<string, string>;
 
 const spanLocator = {
@@ -56,13 +90,28 @@ const spanLocator = {
   bip44ResultSpan: '#bip44Result',
   bip44SignResultSpan: '#bip44SignResult',
   clientStatusResultSpan: '#clientStatusResult',
+  clearManageStateResultSpan: '#clearManageStateResult',
+  clearUnencryptedManageStateResultSpan: '#clearUnencryptedManageStateResult',
+  encryptedStateResultSpan: '#encryptedStateResult',
   entropySignResultSpan: '#entropySignResult',
   errorResultSpan: '#errorResult',
+  getStateResultSpan: '#getStateResult',
   fileResultSpan: '#getFileResult',
   installedSnapResultSpan: '#installedSnapsResult',
+  interactiveUIResultSpan: '#interactiveUIResult',
+  networkAccessResultSpan: '#networkAccessResult',
   messageResultEd25519SBip32Span: '#bip32MessageResult-ed25519Bip32',
+  preferencesResultSpan: '#preferencesResult',
+  sendManageStateResultSpan: '#sendManageStateResult',
+  sendUnencryptedManageStateResultSpan: '#sendUnencryptedManageStateResult',
+  retrieveManageStateResultSpan: '#retrieveManageStateResult',
+  retrieveManageStateUnencryptedResultSpan:
+    '#retrieveManageStateUnencryptedResult',
+  rpcResultSpan: '#rpcResult',
   updateVersionSpan: '#updateSnapVersion',
   wasmResultSpan: '#wasmResult',
+  unencryptedStateResultSpan: '#unencryptedStateResult',
+  getStateUnencryptedResultSpan: '#getStateUnencryptedResult',
 } satisfies Record<string, string>;
 
 const dropDownLocator = {
@@ -164,6 +213,14 @@ export class TestSnaps {
     });
   }
 
+  async check_Count(expectedCount: string) {
+    console.log(`Checking the count is ${expectedCount}`);
+    await this.driver.waitForSelector({
+      tag: 'p',
+      text: expectedCount,
+    });
+  }
+
   /**
    * Select an entropy source from the dropdown with the given name.
    *
@@ -183,5 +240,51 @@ export class TestSnaps {
       text: name,
       css: `${locator} option`,
     });
+  }
+
+  /**
+   * Validate the preferences result span JSON response.
+   *
+   * @param expectedPreferences - The expected preferences object to validate against.
+   * @param expectedPreferences.locale
+   * @param expectedPreferences.currency
+   * @param expectedPreferences.hideBalances
+   * @param expectedPreferences.useSecurityAlerts
+   * @param expectedPreferences.useExternalPricingData
+   * @param expectedPreferences.simulateOnChainActions
+   * @param expectedPreferences.useTokenDetection
+   * @param expectedPreferences.batchCheckBalances
+   * @param expectedPreferences.displayNftMedia
+   * @param expectedPreferences.useNftDetection
+   */
+  async check_preferencesResult(expectedPreferences: {
+    locale: string;
+    currency: string;
+    hideBalances: boolean;
+    useSecurityAlerts: boolean;
+    useExternalPricingData: boolean;
+    simulateOnChainActions: boolean;
+    useTokenDetection: boolean;
+    batchCheckBalances: boolean;
+    displayNftMedia: boolean;
+    useNftDetection: boolean;
+  }) {
+    console.log('Validating preferences result span JSON response');
+
+    const element = await this.driver.findElement(
+      spanLocator.preferencesResultSpan,
+    );
+    const spanText = await element.getAttribute('textContent');
+    const actualPreferences = JSON.parse(spanText);
+
+    console.log(`Actual preferences: ${JSON.stringify(actualPreferences)}`);
+    console.log(`Expected preferences: ${JSON.stringify(expectedPreferences)}`);
+
+    if (!isEqual(actualPreferences, expectedPreferences)) {
+      throw new Error(
+        'Preferences result span JSON does not match expected values',
+      );
+    }
+    console.log('Preferences result span JSON is valid');
   }
 }

@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { TokenListMap } from '@metamask/assets-controllers';
+import {
+  AddNetworkFields,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
+import { CaipChainId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, Text } from '../../component-library';
 import {
@@ -14,6 +19,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
+  getCurrentNetwork,
   getIpfsGateway,
   getNativeCurrencyImage,
   getSelectedInternalAccount,
@@ -34,7 +40,12 @@ import {
 import { NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR } from '../../../pages/confirmations/send/send.constants';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useGetAssetImageUrl from '../../../hooks/useGetAssetImageUrl';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../shared/modules/selectors/networks';
+import { setActiveNetworkWithError } from '../../../store/actions';
+import { setToChainId } from '../../../ducks/bridge/actions';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -52,6 +63,7 @@ type AssetPickerAmountProps = OverridingUnion<
     isAmountLoading?: boolean;
     action?: 'send' | 'receive';
     error?: string;
+    showNetworkPicker?: boolean;
     /**
      * Callback for when the amount changes; disables the input when undefined
      */
@@ -62,6 +74,11 @@ type AssetPickerAmountProps = OverridingUnion<
   }
 >;
 
+type NetworkOption =
+  | NetworkConfiguration
+  | AddNetworkFields
+  | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
+
 // A component that combines an asset picker with an input for the amount to send.
 export const AssetPickerAmount = ({
   asset,
@@ -69,12 +86,13 @@ export const AssetPickerAmount = ({
   onAmountChange,
   action,
   isAmountLoading,
+  showNetworkPicker,
   error: passedError,
   ...assetPickerProps
 }: AssetPickerAmountProps) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const t = useI18nContext();
-
+  const dispatch = useDispatch();
   const { swapQuotesError, sendAsset, receiveAsset } = useSelector(
     getCurrentDraftTransaction,
   );
@@ -90,7 +108,9 @@ export const AssetPickerAmount = ({
   const tokenList = useSelector(getTokenList) as TokenListMap;
 
   const ipfsGateway = useSelector(getIpfsGateway);
-
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const showNetworkPickerinModal = process.env.REMOVE_GNS && showNetworkPicker;
+  const currentNetwork = useSelector(getCurrentNetwork);
   useEffect(() => {
     // if this input is immutable – avoids double fire
     if (isDisabled) {
@@ -194,6 +214,8 @@ export const AssetPickerAmount = ({
       type: asset.type as AssetType.NFT,
       tokenId: asset.details.tokenId,
       image: asset.details.image,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       symbol: (asset.details.symbol || asset.details.name) ?? undefined,
       address: asset.details.address,
     };
@@ -220,6 +242,29 @@ export const AssetPickerAmount = ({
         <AssetPicker
           action={action}
           asset={standardizedAsset}
+          networkProps={
+            showNetworkPickerinModal
+              ? {
+                  network: currentNetwork as unknown as NetworkOption,
+                  networks: Object.values(allNetworks) as NetworkOption[],
+                  onNetworkChange: (networkConfig) => {
+                    const rpcEndpoint =
+                      networkConfig.rpcEndpoints[
+                        networkConfig.defaultRpcEndpointIndex
+                      ];
+                    dispatch(setToChainId(networkConfig.chainId));
+                    dispatch(
+                      setActiveNetworkWithError(
+                        'networkClientId' in rpcEndpoint
+                          ? rpcEndpoint.networkClientId
+                          : networkConfig.chainId,
+                      ),
+                    );
+                  },
+                  header: t('yourNetworks'),
+                }
+              : undefined
+          }
           {...assetPickerProps}
         />
         <SwappableCurrencyInput
@@ -233,6 +278,8 @@ export const AssetPickerAmount = ({
       <Box display={Display.Flex}>
         {/* Only show balance if mutable */}
         {onAmountChange && (
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           <AssetBalance asset={asset} error={passedError || error} />
         )}
         {isSwapsErrorShown && (

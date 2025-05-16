@@ -18,10 +18,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../../../shared/constants/metametrics';
-import {
-  getIsEvmMultichainNetworkSelected,
-  getTokenSortConfig,
-} from '../../../../../selectors';
+import { getTokenSortConfig } from '../../../../../selectors';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
@@ -79,7 +76,6 @@ const SortControl = ({ handleClose }: SortControlProps) => {
   const trackEvent = useContext(MetaMetricsContext);
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const currentCurrency = useSelector(getCurrentCurrency);
-  const isEvmSelected = useSelector(getIsEvmMultichainNetworkSelected);
 
   const dispatch = useDispatch();
 
@@ -113,7 +109,7 @@ const SortControl = ({ handleClose }: SortControlProps) => {
         }
         onClick={() =>
           // TODO: consolidate name and title fields in token to avoid this switch
-          handleSort(isEvmSelected ? 'name' : 'title', 'alphaNumeric', 'asc')
+          handleSort('title', 'alphaNumeric', 'asc')
         }
         testId="sortByAlphabetically"
       >

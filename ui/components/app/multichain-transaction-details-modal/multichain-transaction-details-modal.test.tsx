@@ -11,7 +11,9 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MOCK_ACCOUNT_SOLANA_MAINNET } from '../../../../test/data/mock-accounts';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  MULTICHAIN_PROVIDER_CONFIGS,
   MultichainNetworks,
+  MultichainProviderConfig,
   SOLANA_BLOCK_EXPLORER_URL,
 } from '../../../../shared/constants/multichain/networks';
 import mockState from '../../../../test/data/mock-state.json';
@@ -52,7 +54,16 @@ const mockTransaction = {
       asset: {
         fungible: true as const,
         type: 'native' as CaipAssetType,
-        amount: '1.2',
+        amount: '1.1',
+        unit: 'BTC',
+      },
+    },
+    {
+      address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+      asset: {
+        fungible: true as const,
+        type: 'native' as CaipAssetType,
+        amount: '0.1',
         unit: 'BTC',
       },
     },
@@ -117,6 +128,7 @@ const mockProps = {
   transaction: mockTransaction,
   onClose: jest.fn(),
   userAddress: MOCK_ACCOUNT_SOLANA_MAINNET.address,
+  networkConfig: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
 };
 
 describe('MultichainTransactionDetailsModal', () => {
@@ -136,6 +148,7 @@ describe('MultichainTransactionDetailsModal', () => {
       transaction: Transaction;
       onClose: jest.Mock;
       userAddress: string;
+      networkConfig: MultichainProviderConfig;
     } = mockProps,
   ) => {
     const store = configureStore(mockState.metamask);
@@ -174,6 +187,8 @@ describe('MultichainTransactionDetailsModal', () => {
     renderComponent();
 
     const feeElement =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       screen.queryByTestId('transaction-network-fee') ||
       screen.queryByTestId('transaction-base-fee');
 
@@ -300,23 +315,28 @@ describe('MultichainTransactionDetailsModal', () => {
       transaction: mockSwapTransaction,
       onClose: jest.fn(),
       userAddress,
+      networkConfig: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
     };
 
     renderComponent(swapProps);
 
     expect(screen.getByText('Swap')).toBeInTheDocument();
     expect(screen.getByTestId('transaction-amount')).toHaveTextContent(
-      '2.5 SOL',
+      '-2.5 SOL',
     );
 
     const addressStart = userAddress.substring(0, 6);
     const addressElements = screen.getAllByText((_content, element) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       return element?.textContent?.includes(addressStart) || false;
     });
 
     expect(addressElements.length).toBeGreaterThan(0);
 
     const feeElement =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       screen.queryByTestId('transaction-network-fee') ||
       screen.queryByTestId('transaction-base-fee');
 

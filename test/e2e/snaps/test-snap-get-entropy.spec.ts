@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import { Driver } from '../webdriver/driver';
 import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
@@ -22,7 +22,8 @@ describe('Test Snap getEntropy', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        // We explicitly choose to await balances to prevent flakiness due to long login times.
+        await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
 
@@ -30,7 +31,6 @@ describe('Test Snap getEntropy', function (this: Suite) {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectGetEntropyButton',
-          false,
         );
         await testSnaps.fillMessage('entropyMessageInput', '1234');
         await testSnaps.clickButton('signEntropyMessageButton');

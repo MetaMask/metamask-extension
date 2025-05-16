@@ -31,15 +31,19 @@ export const TokenCellBadge = React.memo(
           <AvatarNetwork
             size={AvatarNetworkSize.Xs}
             name={allNetworks?.[token.chainId as Hex]?.name}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             src={getImageForChainId(token.chainId) || undefined}
-            backgroundColor={BackgroundColor.backgroundDefault}
+            backgroundColor={BackgroundColor.backgroundMuted}
             borderWidth={2}
           />
         }
         marginRight={4}
+        style={{ alignSelf: 'center' }}
       >
         <AvatarToken
           name={token.symbol}
+          backgroundColor={BackgroundColor.backgroundMuted}
           src={
             isEvm && token.isNative
               ? getNativeCurrencyForChain(token.chainId)

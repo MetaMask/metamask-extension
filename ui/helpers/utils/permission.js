@@ -8,7 +8,7 @@ import {
   getSnapDerivationPathName,
 } from '@metamask/snaps-utils';
 import { isNonEmptyArray } from '@metamask/controller-utils';
-import { Caip25EndowmentPermissionName } from '@metamask/multichain';
+import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 import {
   RestrictedMethods,
   EndowmentPermissions,

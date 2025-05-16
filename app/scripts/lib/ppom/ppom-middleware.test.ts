@@ -42,7 +42,7 @@ const createMiddleware = (
     chainId?: Hex | null;
     error?: Error;
     securityAlertsEnabled?: boolean;
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     updateSecurityAlertResponse?: any;
   } = {
@@ -70,6 +70,8 @@ const createMiddleware = (
 
   const networkController = {
     state: {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       ...mockNetworkState({ chainId: chainId || CHAIN_IDS.MAINNET }),
       ...(chainId === null ? { providerConfig: {} } : undefined),
     },
@@ -84,18 +86,19 @@ const createMiddleware = (
   };
 
   return createPPOMMiddleware(
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ppomController as any,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     preferenceController as any,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     networkController as any,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     appStateController as any,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     accountsController as any,
     updateSecurityAlertResponse,

@@ -42,7 +42,11 @@ describe('Token Details', function () {
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
         await homePage.check_pageIsLoaded();
-        await assetListPage.importCustomToken(tokenAddress, symbol);
+        await assetListPage.importCustomTokenByChain(
+          tokenAddress,
+          symbol,
+          chainId,
+        );
         await assetListPage.dismissTokenImportedMessage();
         await assetListPage.openTokenDetails(symbol);
         await assetListPage.check_tokenSymbolAndAddressDetails(
@@ -88,7 +92,11 @@ describe('Token Details', function () {
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
         await homePage.check_pageIsLoaded();
-        await assetListPage.importCustomToken(tokenAddress, symbol);
+        await assetListPage.importCustomTokenByChain(
+          tokenAddress,
+          symbol,
+          chainId,
+        );
         await assetListPage.dismissTokenImportedMessage();
         await assetListPage.openTokenDetails(symbol);
         await assetListPage.check_tokenSymbolAndAddressDetails(

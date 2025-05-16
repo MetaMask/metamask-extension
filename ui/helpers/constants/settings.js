@@ -13,6 +13,7 @@ import {
   CONTACT_LIST_ROUTE,
   EXPERIMENTAL_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
+  BACKUPANDSYNC_ROUTE,
 } from './routes';
 
 /**
@@ -162,6 +163,20 @@ const SETTINGS_CONSTANTS = [
     hidden: getPlatform() !== PLATFORM_FIREFOX,
   },
   {
+    tabMessage: (t) => t('backupAndSync'),
+    sectionMessage: (t) => t('backupAndSyncEnable'),
+    descriptionMessage: (t) => t('backupAndSyncEnable'),
+    route: `${BACKUPANDSYNC_ROUTE}#backup-and-sync-toggle`,
+    iconName: IconName.SecurityTime,
+  },
+  {
+    tabMessage: (t) => t('backupAndSync'),
+    sectionMessage: (t) => t('backupAndSyncFeatureAccounts'),
+    descriptionMessage: (t) => t('backupAndSyncFeatureAccounts'),
+    route: `${BACKUPANDSYNC_ROUTE}#backup-and-sync-features-toggles-account-syncing`,
+    iconName: IconName.SecurityTime,
+  },
+  {
     tabMessage: (t) => t('contacts'),
     sectionMessage: (t) => t('contacts'),
     descriptionMessage: (t) => t('contacts'),
@@ -182,14 +197,6 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('revealSeedWords'),
     descriptionMessage: (t) => t('revealSeedWords'),
     route: `${SECURITY_ROUTE}#reveal-secretrecovery`,
-    icon: 'fa fa-lock',
-  },
-  // securityAndPrivacy settingsRefs[2]
-  {
-    tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('showIncomingTransactions'),
-    descriptionMessage: (t) => t('showIncomingTransactionsDescription'),
-    route: `${SECURITY_ROUTE}#incoming-transaction`,
     icon: 'fa fa-lock',
   },
   // securityAndPrivacy settingsRefs[3]
@@ -336,14 +343,6 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('deleteMetaMetricsData'),
     descriptionMessage: (t) => t('deleteMetaMetricsDataDescription'),
     route: `${SECURITY_ROUTE}#delete-metametrics-data`,
-    icon: 'fa fa-lock',
-  },
-  // securityAndPrivacy settingsRefs[21]
-  {
-    tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('profileSync'),
-    descriptionMessage: (t) => t('profileSyncDescription'),
-    route: `${SECURITY_ROUTE}#profile-sync`,
     icon: 'fa fa-lock',
   },
   {

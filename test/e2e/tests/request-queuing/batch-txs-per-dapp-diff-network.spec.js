@@ -12,14 +12,14 @@ const {
 } = require('../../helpers');
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks', function () {
-  it('should batch confirmation txs for different dapps on different networks.', async function () {
+  it('should put confirmation txs for different dapps on different networks in single queue', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
         dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
@@ -100,8 +100,25 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector(
-          By.xpath("//p[normalize-space(.)='1 of 2']"),
+          By.xpath("//p[normalize-space(.)='1 of 4']"),
         );
+
+        await driver.findElement({
+          css: 'p',
+          text: 'Localhost 8545',
+        });
+
+        await driver.clickElement(
+          '[data-testid="confirm-nav__next-confirmation"]',
+        );
+        await driver.clickElement(
+          '[data-testid="confirm-nav__next-confirmation"]',
+        );
+
+        await driver.findElement({
+          css: 'p',
+          text: 'Localhost 8546',
+        });
 
         if (isManifestV3) {
           await driver.clickElement({
@@ -114,21 +131,8 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
             tag: 'button',
           });
         }
-        // Wait for confirmation to close
-        await driver.delay(2000);
 
-        // Wait for new confirmations queued from second dapp to open
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await driver.waitForSelector(
-          By.xpath("//p[normalize-space(.)='1 of 2']"),
-        );
-
-        // Check correct network on confirm tx.
-        await driver.findElement({
-          css: 'p',
-          text: 'Localhost 8546',
-        });
+        await driver.waitUntilXWindowHandles(3);
       },
     );
   });

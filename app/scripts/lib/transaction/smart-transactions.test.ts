@@ -79,11 +79,13 @@ function withRequest<ReturnValue>(
   const startFlowSpy = jest.fn().mockResolvedValue({ id: 'approvalId' });
   messenger.registerActionHandler('ApprovalController:startFlow', startFlowSpy);
 
-  const addRequestSpy = jest.fn().mockImplementation(() => ({
-    then: (callback: () => void) => {
-      addRequestCallback = callback;
-    },
-  }));
+  const addRequestSpy = jest.fn().mockImplementation(() => {
+    return Promise.resolve().then(() => {
+      if (typeof addRequestCallback === 'function') {
+        addRequestCallback();
+      }
+    });
+  });
   messenger.registerActionHandler(
     'ApprovalController:addRequest',
     addRequestSpy,
@@ -142,7 +144,8 @@ function withRequest<ReturnValue>(
       txParams: {
         from: addressFrom,
         to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
-        gasPrice: '0x77359400',
+        maxFeePerGas: '0x2fd8a58d7',
+        maxPriorityFeePerGas: '0xaa0f8a94',
         gas: '0x7b0d',
         nonce: '0x4b',
       },
@@ -551,6 +554,7 @@ describe('submitSmartTransactionHook', () => {
 
     const endFlowSpy = jest.fn();
     const acceptRequestSpy = jest.fn();
+    const addRequestSpy = jest.fn(() => Promise.resolve());
 
     // Create a mock messenger
     const mockMessenger = {
@@ -563,6 +567,9 @@ describe('submitSmartTransactionHook', () => {
         }
         if (method === 'ApprovalController:acceptRequest') {
           return acceptRequestSpy(...args);
+        }
+        if (method === 'ApprovalController:addRequest') {
+          return addRequestSpy();
         }
         return undefined;
       }),
@@ -631,8 +638,9 @@ describe('submitBatchSmartTransactionHook', () => {
         },
       },
       async ({ request }) => {
-        const result = await submitBatchSmartTransactionHook(request);
-        expect(result).toEqual({ results: [] });
+        await expect(submitBatchSmartTransactionHook(request)).rejects.toThrow(
+          'submitBatch: Smart Transaction is required for batch submissions',
+        );
       },
     );
   });

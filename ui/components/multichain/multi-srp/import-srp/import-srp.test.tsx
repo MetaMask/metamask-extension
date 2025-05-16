@@ -33,7 +33,9 @@ jest.mock('../../../../store/actions', () => ({
 const pasteSrpIntoFirstInput = (render: RenderResult, srp: string) => {
   const [firstWord] = srp.split(' ');
 
-  const firstSrpWordDiv = render.getByTestId('import-multi-srp__srp-word-0');
+  const firstSrpWordDiv = render.getByTestId(
+    'import-srp__multi-srp__srp-word-0',
+  );
   // This is safe because the input is always present in the word div.
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const firstSrpWordInput = firstSrpWordDiv.querySelector('input')!;
@@ -132,6 +134,24 @@ describe('ImportSrp', () => {
     expect(importButton).not.toBeEnabled();
   });
 
+  it('shows 12 word seed phrase option', async () => {
+    const render = renderWithProvider(
+      <ImportSrp onActionComplete={jest.fn()} />,
+      store,
+    );
+    const { getByText, getByTestId } = render;
+
+    const twentyFourSeedWordOption = getByTestId(
+      'import-srp__multi-srp__switch-word-count-button',
+    );
+
+    fireEvent.click(twentyFourSeedWordOption);
+
+    await waitFor(async () => {
+      expect(getByText('I have a 12 word recovery phrase'));
+    });
+  });
+
   it('calls addNewMnemonicToVault and showAlert on successful import', async () => {
     const onActionComplete = jest.fn();
     const render = renderWithProvider(
@@ -204,6 +224,41 @@ describe('ImportSrp', () => {
     expect(mockClearClipboard).toHaveBeenCalled();
   });
 
+  it('clears the SRP input fields and error message when Clear button is clicked', async () => {
+    const onActionComplete = jest.fn();
+    const render = renderWithProvider(
+      <ImportSrp onActionComplete={onActionComplete} />,
+      store,
+    );
+    const { getByText, queryByTestId, getByTestId } = render;
+
+    // Input an invalid SRP to trigger error
+    const invalidSRP = VALID_SECRET_RECOVERY_PHRASE.replace('input', 'inptu');
+    pasteSrpIntoFirstInput(render, invalidSRP);
+
+    // Verify error message is shown
+    const bannerAlert = await waitFor(() => getByTestId('bannerAlert'));
+    expect(bannerAlert).toBeInTheDocument();
+
+    // Click Clear button
+    const clearButton = getByText('Clear');
+    fireEvent.click(clearButton);
+
+    // Verify error message is cleared
+    expect(queryByTestId('bannerAlert')).not.toBeInTheDocument();
+
+    // Verify all input fields are cleared
+    for (let i = 0; i < 12; i++) {
+      const input = getByTestId(
+        `import-srp__multi-srp__srp-word-${i}`,
+      ).querySelector('input');
+      expect(input).toHaveValue('');
+    }
+
+    // Verify Import wallet button is disabled
+    expect(getByText('Import wallet')).not.toBeEnabled();
+  });
+
   it('logs an error and not call onActionComplete on import failure', async () => {
     (actions.importMnemonicToVault as jest.Mock).mockImplementation(() =>
       jest.fn().mockRejectedValue(new Error('error')),
@@ -243,7 +298,7 @@ describe('ImportSrp', () => {
 
     // Verify that validation errors are present
     const firstInput = getByTestId(
-      'import-multi-srp__srp-word-0',
+      'import-srp__multi-srp__srp-word-0',
     ).querySelector('input');
     expect(firstInput).toBeInvalid();
 
@@ -253,5 +308,40 @@ describe('ImportSrp', () => {
 
     // Verify that validation errors are cleared
     expect(firstInput).not.toBeInvalid();
+  });
+
+  it('does not enable submit if 24 word seed was selected and 12 word seed was entered', async () => {
+    const render = renderWithProvider(
+      <ImportSrp onActionComplete={jest.fn()} />,
+      store,
+    );
+    const { getByText, getByTestId } = render;
+
+    const twentyFourSeedWordOption = getByTestId(
+      'import-srp__multi-srp__switch-word-count-button',
+    );
+
+    fireEvent.click(twentyFourSeedWordOption);
+
+    await waitFor(() => {
+      expect(
+        getByTestId('import-srp__multi-srp__srp-word-23').querySelector(
+          'input',
+        ),
+      ).toBeInTheDocument();
+    });
+
+    for (const [index, word] of VALID_SECRET_RECOVERY_PHRASE.split(
+      ' ',
+    ).entries()) {
+      // This is safe because the input is always present in the word div.
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const input = getByTestId(
+        `import-srp__multi-srp__srp-word-${index}`,
+      ).querySelector('input')!;
+      fireEvent.change(input, { target: { value: word } });
+    }
+
+    expect(getByText('Import wallet')).not.toBeEnabled();
   });
 });

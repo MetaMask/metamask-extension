@@ -9,7 +9,6 @@ import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../../shared/constants/metametrics';
-import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   getAllDetectedTokensForSelectedAddress,
   getCurrentNetwork,
@@ -34,8 +33,6 @@ const DetectedTokenSelectionPopover = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const chainId = useSelector(getCurrentChainId);
-
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
@@ -48,13 +45,12 @@ const DetectedTokenSelectionPopover = ({
   );
 
   const totalTokens = useMemo(() => {
-    return process.env.PORTFOLIO_VIEW &&
-      !isTokenNetworkFilterEqualCurrentNetwork
-      ? Object.values(detectedTokensMultichain).reduce(
+    return isTokenNetworkFilterEqualCurrentNetwork
+      ? detectedTokens.length
+      : Object.values(detectedTokensMultichain).reduce(
           (count, tokenArray) => count + tokenArray.length,
           0,
-        )
-      : detectedTokens.length;
+        );
   }, [
     detectedTokensMultichain,
     detectedTokens,
@@ -77,9 +73,7 @@ const DetectedTokenSelectionPopover = ({
       properties: {
         source_connection_method: MetaMetricsTokenEventSource.Detected,
         tokens: eventTokensDetails,
-        ...(process.env.PORTFOLIO_VIEW
-          ? { chain_ids: chainIds }
-          : { chain_id: chainId }),
+        chain_ids: chainIds,
       },
     });
   };
@@ -119,8 +113,21 @@ const DetectedTokenSelectionPopover = ({
       onClose={onClose}
       footer={footer}
     >
-      {process.env.PORTFOLIO_VIEW &&
-      !isTokenNetworkFilterEqualCurrentNetwork ? (
+      {isTokenNetworkFilterEqualCurrentNetwork ? (
+        <Box margin={3}>
+          {detectedTokens.map((token, index) => {
+            return (
+              <DetectedTokenDetails
+                key={index}
+                token={token}
+                handleTokenSelection={handleTokenSelection}
+                tokensListDetected={tokensListDetected}
+                chainId={currentNetwork.chainId}
+              />
+            );
+          })}
+        </Box>
+      ) : (
         <Box margin={3}>
           {Object.entries(detectedTokensMultichain).map(
             ([networkId, tokens]) => {
@@ -135,20 +142,6 @@ const DetectedTokenSelectionPopover = ({
               ));
             },
           )}
-        </Box>
-      ) : (
-        <Box margin={3}>
-          {detectedTokens.map((token, index) => {
-            return (
-              <DetectedTokenDetails
-                key={index}
-                token={token}
-                handleTokenSelection={handleTokenSelection}
-                tokensListDetected={tokensListDetected}
-                chainId={currentNetwork.chainId}
-              />
-            );
-          })}
         </Box>
       )}
     </Popover>
