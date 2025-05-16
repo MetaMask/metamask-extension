@@ -4,7 +4,7 @@ import { veryLargeDelayMs, withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../../constants';
 import { mockIdentityServices } from '../mocks';
-import { IDENTITY_TEAM_PASSWORD, IDENTITY_TEAM_SEED_PHRASE_2 } from '../constants';
+import { IDENTITY_TEAM_SEED_PHRASE_2 } from '../constants';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
@@ -12,9 +12,7 @@ import {
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import {
-  completeOnboardFlowIdentity,
-} from '../flows';
+import { completeOnboardFlowIdentity } from '../flows';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Multi SRP', function () {
@@ -88,7 +86,9 @@ describe('Account syncing - Multi SRP', function () {
           // Add a new SRP and add a new account on top of the one created by default when
           // importing a new SRP
           await header.openAccountMenu();
-          await accountListPage.startImportSecretPhrase(IDENTITY_TEAM_SEED_PHRASE_2);
+          await accountListPage.startImportSecretPhrase(
+            IDENTITY_TEAM_SEED_PHRASE_2,
+          );
 
           await header.openAccountMenu();
           await accountListPage.addAccount({
@@ -127,7 +127,9 @@ describe('Account syncing - Multi SRP', function () {
           await header.openAccountMenu();
 
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.startImportSecretPhrase(IDENTITY_TEAM_SEED_PHRASE_2);
+          await accountListPage.startImportSecretPhrase(
+            IDENTITY_TEAM_SEED_PHRASE_2,
+          );
 
           await header.openAccountMenu();
           await accountListPage.check_pageIsLoaded();
