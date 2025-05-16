@@ -171,7 +171,7 @@ export const SENTRY_BACKGROUND_STATE = {
     isCheckingAccountsPresence: false,
     isFetchingMetamaskNotifications: false,
     isUpdatingMetamaskNotifications: false,
-    isUpdatingMetamaskNotificationsAccount: false,
+    isUpdatingMetamaskNotificationsAccount: [],
   },
   MetaMetricsController: {
     eventsBeforeMetricsOptIn: false,
