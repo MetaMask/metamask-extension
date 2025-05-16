@@ -126,6 +126,7 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
           multichainNetworkConfigurationsByChainId[SolScope.Mainnet];
       }
 
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       if (solanaEnabled && isSolanaTestnetSupportEnabled) {
         // TODO: Uncomment this when we want to support testnet
         // filteredNonEvmNetworkConfigurationsByChainId[SolScope.Testnet] =
@@ -133,6 +134,7 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
         filteredNonEvmNetworkConfigurationsByChainId[SolScope.Devnet] =
           multichainNetworkConfigurationsByChainId[SolScope.Devnet];
       }
+      ///: END:ONLY_INCLUDE_IF
 
       return filteredNonEvmNetworkConfigurationsByChainId;
     },
