@@ -111,7 +111,7 @@ async function runGitCommands() {
       console.log('Executing extension-specific commands...');
 
       const { stdout: packageJsonContent } = await exec(
-        'git show origin/master:package.json',
+        'git show origin/main:package.json',
       );
       const packageJson = JSON.parse(packageJsonContent);
       const packageVersion = packageJson.version;
