@@ -49,7 +49,6 @@ jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
 
 const BUY_BUTTON = 'coin-overview-buy';
 const BTC_OVERVIEW_BRIDGE = 'coin-overview-bridge';
-const BTC_OVERVIEW_RECEIVE = 'coin-overview-receive';
 const BTC_OVERVIEW_SWAP = 'token-overview-button-swap';
 const BTC_OVERVIEW_SEND = 'coin-overview-send';
 const BTC_OVERVIEW_PRIMARY_CURRENCY = 'coin-overview__primary-currency';
@@ -365,15 +364,6 @@ describe('NonEvmOverview', () => {
         token_symbol: expect.any(Object),
       },
     });
-  });
-
-  it('always show the Receive button', () => {
-    const { queryByTestId } = renderWithProvider(
-      <NonEvmOverview />,
-      getStore(),
-    );
-    const receiveButton = queryByTestId(BTC_OVERVIEW_RECEIVE);
-    expect(receiveButton).toBeInTheDocument();
   });
 
   it('always show the Send button', () => {

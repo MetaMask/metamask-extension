@@ -4,8 +4,6 @@ import HomePage from './homepage';
 class NonEvmHomepage extends HomePage {
   protected readonly buySellButton = '[data-testid="coin-overview-buy"]';
 
-  protected readonly receiveButton = '[data-testid="coin-overview-receive"]';
-
   protected readonly sendButton = '[data-testid="coin-overview-send"]';
 
   protected readonly swapButton = '[data-testid="token-overview-button-swap"]';
@@ -71,20 +69,6 @@ class NonEvmHomepage extends HomePage {
       { timeout: 60000 },
     );
     await this.driver.refresh();
-  }
-
-  /**
-   * Checks if the receive button is enabled on a non-evm account homepage.
-   */
-  async check_isReceiveButtonEnabled(): Promise<boolean> {
-    try {
-      await this.driver.waitForSelector(this.receiveButton, { timeout: 5000 });
-    } catch (e) {
-      console.log('Receive button not enabled', e);
-      return false;
-    }
-    console.log('Receive button is enabled');
-    return true;
   }
 
   /**
