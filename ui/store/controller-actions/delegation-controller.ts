@@ -50,11 +50,13 @@ export const deleteDelegationEntry = async (hash: Hex) => {
 export const awaitDeleteDelegationEntry = async ({
   hash,
   txMeta,
+  entryToStore,
 }: {
   hash: Hex;
   txMeta: TransactionMeta;
+  entryToStore?: DelegationEntry;
 }) => {
   return await submitRequestToBackground('awaitDeleteDelegationEntry', [
-    { hash, txMeta },
+    { hash, txMeta, entryToStore },
   ]);
 };
