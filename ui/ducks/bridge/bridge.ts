@@ -50,18 +50,24 @@ export const setDestTokenUsdExchangeRates = createAsyncThunk(
 
 export const getMinimumBalanceForRentExemptionInLamports = async () => {
   try {
-    const { value: fees } = (await handleSnapRequest({
+    const fees = (await handleSnapRequest({
       snapId: 'local:http://localhost:8080', //SOLANA_WALLET_SNAP_ID,
       origin: 'metamask',
-      handler: HandlerType.OnRpcRequest,
+      handler: HandlerType.OnProtocolRequest,
       request: {
-        method: 'getMinimumBalanceForRentExemption',
+        method: ' ',
+        jsonrpc: '2.0',
         params: {
           scope: MultichainNetwork.Solana,
-          accountSize: '0',
+          request: {
+            id: crypto.randomUUID(),
+            jsonrpc: '2.0',
+            method: 'getMinimumBalanceForRentExemption',
+            params: [0],
+          },
         },
       },
-    })) as { value: string };
+    })) as string;
     return fees;
   } catch (error) {
     return '0';
@@ -175,7 +181,7 @@ const bridgeSlice = createSlice({
     builder.addCase(
       setMinimumBalanceForRentExemptionInLamports.fulfilled,
       (state, action) => {
-        state.minimumBalanceForRentExemptionInLamports = action.payload ?? null;
+        state.minimumBalanceForRentExemptionInLamports = action.payload ?? '0';
       },
     );
   },
