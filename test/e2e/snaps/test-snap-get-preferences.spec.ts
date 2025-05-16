@@ -13,6 +13,7 @@ describe('Test Snap get preferences', function () {
           .withPreferencesController({
             preferences: {
               privacyMode: true,
+              showTestNetworks: true,
             },
           })
           .build(),
@@ -46,6 +47,7 @@ describe('Test Snap get preferences', function () {
           batchCheckBalances: true,
           displayNftMedia: false,
           useNftDetection: false,
+          showTestnets: true,
         });
       },
     );

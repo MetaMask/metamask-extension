@@ -1,4 +1,5 @@
 import { isEqual } from 'lodash';
+import { GetPreferencesResult } from '@metamask/snaps-sdk';
 import { Driver } from '../../webdriver/driver';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
 
@@ -258,18 +259,7 @@ export class TestSnaps {
    * @param expectedPreferences.displayNftMedia
    * @param expectedPreferences.useNftDetection
    */
-  async check_preferencesResult(expectedPreferences: {
-    locale: string;
-    currency: string;
-    hideBalances: boolean;
-    useSecurityAlerts: boolean;
-    useExternalPricingData: boolean;
-    simulateOnChainActions: boolean;
-    useTokenDetection: boolean;
-    batchCheckBalances: boolean;
-    displayNftMedia: boolean;
-    useNftDetection: boolean;
-  }) {
+  async check_preferencesResult(expectedPreferences: GetPreferencesResult) {
     console.log('Validating preferences result span JSON response');
 
     const element = await this.driver.findElement(
