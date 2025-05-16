@@ -13,7 +13,6 @@ import {
   waitForElementById,
   waitForElementByText,
 } from '../helpers';
-import { BridgeBackgroundAction } from '../../../shared/types/bridge';
 
 jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
@@ -37,7 +36,6 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      [BridgeBackgroundAction.SET_FEATURE_FLAGS]: undefined,
       ...mockRequests,
     }),
   );
@@ -101,6 +99,7 @@ describe('Wallet Created Events', () => {
           event: MetaMetricsEventName.OnboardingWalletCreationComplete,
           properties: {
             method: mockMetaMaskState.firstTimeFlowType,
+            hd_entropy_index: 0,
           },
         }),
       ]),

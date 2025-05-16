@@ -13,7 +13,6 @@ import {
   waitForElementById,
   waitForElementByText,
 } from '../helpers';
-import { BridgeBackgroundAction } from '../../../shared/types/bridge';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 
 jest.mock('../../../ui/store/background-connection', () => ({
@@ -38,7 +37,6 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      [BridgeBackgroundAction.SET_FEATURE_FLAGS]: undefined,
       ...mockRequests,
     }),
   );
@@ -60,7 +58,7 @@ describe('Import Wallet Events', () => {
         ...mockMetaMaskState,
         firstTimeFlowType: 'import',
         completedOnboarding: false,
-        isProfileSyncingEnabled: true,
+        isBackupAndSyncEnabled: true,
       },
       backgroundConnection: backgroundConnectionMocked,
     });
@@ -94,6 +92,7 @@ describe('Import Wallet Events', () => {
           properties: {
             method: FirstTimeFlowType.import,
             is_profile_syncing_enabled: true,
+            hd_entropy_index: 0,
           },
         }),
       ]),

@@ -85,6 +85,10 @@ describe('AssetPickerSendFlow', function () {
         );
         await searchInputField.sendKeys('CHZ');
 
+        await driver.elementCountBecomesN(
+          '[data-testid="multichain-token-list-button"]',
+          1,
+        );
         // check that CHZ is disabled
         const [tkn] = await driver.findElements(
           '[data-testid="multichain-token-list-button"]',

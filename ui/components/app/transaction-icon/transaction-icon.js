@@ -22,6 +22,7 @@ const ICON_MAP = {
   [TransactionGroupCategory.swap]: IconName.SwapHorizontal,
   [TransactionGroupCategory.swapAndSend]: IconName.Arrow2UpRight,
   [TransactionGroupCategory.bridge]: IconName.Bridge,
+  [TransactionGroupCategory.redeposit]: IconName.Refresh,
 };
 
 const COLOR_MAP = {

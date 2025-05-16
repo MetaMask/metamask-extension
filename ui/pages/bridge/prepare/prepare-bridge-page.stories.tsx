@@ -1,8 +1,9 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
-import { createBridgeMockStore } from '../../../../test/jest/mock-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
+
 import CrossChainSwap from '../index';
 import { MemoryRouter } from 'react-router-dom';
 import {
@@ -10,7 +11,7 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
-import { RequestStatus } from '../../../../shared/types/bridge';
+import { RequestStatus } from '@metamask/bridge-controller';
 
 const storybook = {
   title: 'Pages/Bridge/CrossChainSwapPage',

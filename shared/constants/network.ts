@@ -1,10 +1,8 @@
-import type {
-  AddNetworkFields,
-  NetworkConfiguration,
-} from '@metamask/network-controller';
+import type { AddNetworkFields } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { capitalize, pick } from 'lodash';
-import { Hex } from '@metamask/utils';
+import { Hex, hexToNumber } from '@metamask/utils';
+import { MultichainNetworks } from './multichain/networks';
 
 /**
  * A type representing built-in network types, used as an identifier.
@@ -178,9 +176,16 @@ export const CHAIN_IDS = {
   LISK_SEPOLIA: '0x106a',
   INK_SEPOLIA: '0xba5eD',
   INK: '0xdef1',
+  GSYS_MAINNET: '0x407b',
+  GSYS_TESTNET: '0xa5c8',
   MODE_SEPOLIA: '0x397',
   MODE: '0x868b',
   MEGAETH_TESTNET: '0x18c6',
+  XRPLEVM_TESTNET: '0x161c28',
+  LENS: '0xe8',
+  PLUME: '0x18232',
+  MATCHAIN: '0x2ba',
+  FLOW: '0x2eb',
   PEAQ: '0xd0a',
 } as const;
 
@@ -245,6 +250,8 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   GRAVITY_ALPHA_TESTNET_SEPOLIA: '0x34c1',
   INK_SEPOLIA: '0xba5ed',
   INK: '0xdef1',
+  GSYS_MAINNET: '0x407b',
+  GSYS_TESTNET: '0xa5c8',
   SONIC_MAINNET: '0x92',
   SONEIUM_MAINNET: '0x74c',
   SONEIUM_TESTNET: '0x79a',
@@ -252,6 +259,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   MODE: '0x868b',
   SHAPE_SEPOLIA: '0x2b03',
   SHAPE: '0x168',
+  XRPLEVM_TESTNET: '0x161c28',
   PEAQ: '0xd0a',
 } as const;
 
@@ -308,10 +316,16 @@ export const LISK_SEPOLIA_DISPLAY_NAME = 'Lisk Sepolia';
 export const INK_SEPOLIA_DISPLAY_NAME = 'Ink Sepolia';
 export const INK_DISPLAY_NAME = 'Ink Mainnet';
 export const SONEIUM_DISPLAY_NAME = 'Soneium Mainnet';
+export const SONEIUM_TESTNET_DISPLAY_NAME = 'Soneium Minato Testnet';
 export const MODE_SEPOLIA_DISPLAY_NAME = 'Mode Sepolia';
 export const MODE_DISPLAY_NAME = 'Mode Mainnet';
 export const SHAPE_SEPOLIA_DISPLAY_NAME = 'Shape Sepolia';
 export const SHAPE_DISPLAY_NAME = 'Shape';
+export const XRPLEVM_TESTNET_DISPLAY_NAME = 'XRPL EVM Testnet';
+export const LENS_DISPLAY_NAME = 'Lens';
+export const PLUME_DISPLAY_NAME = 'Plume';
+export const MATCHAIN_DISPLAY_NAME = 'Matchain';
+export const FLOW_DISPLAY_NAME = 'Flow EVM Mainnet';
 export const PEAQ_DISPLAY_NAME = 'peaq';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
@@ -369,6 +383,9 @@ export const CURRENCY_SYMBOLS = {
   GLIMMER: 'GLMR',
   MOONRIVER: 'MOVR',
   ONE: 'ONE',
+  LENS: 'GHO',
+  PLUME: 'PLUME',
+  FLOW: 'FLOW',
 } as const;
 
 // Non-EVM currency symbols
@@ -437,6 +454,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   ACALA_NETWORK: 'ACA',
   IOTEX_MAINNET: 'IOTX',
   APE: 'APE',
+  GSYS: 'GSYS',
   SONIC_MAINNET: 'S',
   LISK: 'ETH',
   SONEIUM_MAINNET: 'ETH',
@@ -444,6 +462,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   MODE: 'ETH',
   SHAPE: 'ETH',
   SHAPE_SEPOLIA: 'ETH',
+  XRPLEVM_TESTNET: 'XRP',
   PEAQ: 'PEAQ',
 } as const;
 
@@ -496,6 +515,7 @@ export const KAIA_MAINNET_IMAGE_URL = './images/kaia.svg';
 export const FUNKICHAIN_IMAGE_URL = './images/funkichain.svg';
 export const KROMA_MAINNET_IMAGE_URL = './images/kroma.svg';
 export const LIGHT_LINK_IMAGE_URL = './images/lightlink.svg';
+export const GSYS_IMAGE_URL = './images/genesys.svg';
 export const MANTA_PACIFIC_MAINNET_IMAGE_URL = './images/manta.svg';
 export const MANTLE_MAINNET_IMAGE_URL = './images/mantle.svg';
 export const MOONBEAM_IMAGE_URL = './images/moonbeam.svg';
@@ -541,6 +561,15 @@ export const SHAPE_SEPOLIA_IMAGE_URL = './images/shape-sepolia.svg';
 export const SHAPE_IMAGE_URL = './images/shape.svg';
 export const UNICHAIN_IMAGE_URL = './images/unichain.svg';
 export const MEGAETH_TESTNET_IMAGE_URL = './images/MegaETH-logo-testnet.png';
+export const SOLANA_IMAGE_URL = './images/solana-logo.svg';
+export const XRPLEVM_TESTNET_IMAGE_URL = './images/xrplevm-testnet.svg';
+export const XRP_TOKEN_IMAGE_URL = './images/xrp-logo.svg';
+export const LENS_IMAGE_URL = './images/lens.png';
+export const LENS_NATIVE_TOKEN_IMAGE_URL = './images/lens-native.svg';
+export const PLUME_IMAGE_URL = './images/plume.svg';
+export const PLUME_NATIVE_TOKEN_IMAGE_URL = './images/plume-native.svg';
+export const MATCHAIN_IMAGE_URL = './images/matchain.svg';
+export const FLOW_IMAGE_URL = './images/flow.svg';
 export const PEAQ_IMAGE_URL = './images/peaq.svg';
 
 export const INFURA_PROVIDER_TYPES = [
@@ -556,6 +585,10 @@ export const TEST_CHAINS: Hex[] = [
   CHAIN_IDS.LOCALHOST,
   CHAIN_IDS.MEGAETH_TESTNET,
 ];
+
+export const CAIP_FORMATTED_EVM_TEST_CHAINS = TEST_CHAINS.map(
+  (chainId) => `eip155:${hexToNumber(chainId)}`,
+);
 
 export const MAINNET_CHAINS = [
   { chainId: CHAIN_IDS.MAINNET, rpcUrl: MAINNET_RPC_URL },
@@ -663,6 +696,10 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.LISK]: LISK_DISPLAY_NAME,
   [CHAIN_IDS.LISK_SEPOLIA]: LISK_SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.MEGAETH_TESTNET]: MEGAETH_TESTNET_DISPLAY_NAME,
+  [CHAIN_IDS.LENS]: LENS_DISPLAY_NAME,
+  [CHAIN_IDS.PLUME]: PLUME_DISPLAY_NAME,
+  [CHAIN_IDS.MATCHAIN]: MATCHAIN_DISPLAY_NAME,
+  [CHAIN_IDS.FLOW]: FLOW_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -782,6 +819,8 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.ACALA_NETWORK,
   [CHAINLIST_CHAIN_IDS_MAP.IOTEX_MAINNET]:
     CHAINLIST_CURRENCY_SYMBOLS_MAP.IOTEX_MAINNET,
+  [CHAINLIST_CHAIN_IDS_MAP.GSYS_MAINNET]: CHAINLIST_CURRENCY_SYMBOLS_MAP.GSYS,
+  [CHAINLIST_CHAIN_IDS_MAP.GSYS_TESTNET]: CHAINLIST_CURRENCY_SYMBOLS_MAP.GSYS,
   [CHAINLIST_CHAIN_IDS_MAP.SONIC_MAINNET]:
     CHAINLIST_CURRENCY_SYMBOLS_MAP.SONIC_MAINNET,
   [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_MAINNET]:
@@ -793,8 +832,13 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.SHAPE_SEPOLIA,
   [CHAINLIST_CHAIN_IDS_MAP.MEGAETH_TESTNET]:
     TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
+  [CHAIN_IDS.LENS]: CURRENCY_SYMBOLS.LENS,
+  [CHAIN_IDS.PLUME]: CURRENCY_SYMBOLS.PLUME,
+  [CHAIN_IDS.MATCHAIN]: CURRENCY_SYMBOLS.BNB,
+  [CHAIN_IDS.FLOW]: CURRENCY_SYMBOLS.FLOW,
   [CHAINLIST_CHAIN_IDS_MAP.PEAQ]:
     CHAINLIST_CURRENCY_SYMBOLS_MAP.PEAQ,
+
 } as const;
 
 /**
@@ -836,7 +880,7 @@ export const CHAIN_ID_TO_RPC_URL_MAP = {
   [CHAIN_IDS.MEGAETH_TESTNET]: MEGAETH_TESTNET_RPC_URL,
 } as const;
 
-export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<Hex, string> = {
+export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.MAINNET]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.LINEA_GOERLI]: LINEA_GOERLI_TOKEN_IMAGE_URL,
   [CHAIN_IDS.LINEA_SEPOLIA]: LINEA_SEPOLIA_TOKEN_IMAGE_URL,
@@ -920,6 +964,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<Hex, string> = {
   [CHAINLIST_CHAIN_IDS_MAP.LISK_SEPOLIA]: LISK_SEPOLIA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.INK_SEPOLIA]: INK_SEPOLIA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.INK]: INK_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.GSYS_MAINNET]: GSYS_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.GSYS_TESTNET]: GSYS_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SONIC_MAINNET]: SONIC_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_MAINNET]: SONEIUM_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SONEIUM_TESTNET]: SONEIUM_IMAGE_URL,
@@ -929,6 +975,12 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<Hex, string> = {
   [CHAINLIST_CHAIN_IDS_MAP.SHAPE_SEPOLIA]: SHAPE_SEPOLIA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: UNICHAIN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: UNICHAIN_IMAGE_URL,
+  [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]: XRPLEVM_TESTNET_IMAGE_URL,
+  [CHAIN_IDS.LENS]: LENS_IMAGE_URL,
+  [CHAIN_IDS.PLUME]: PLUME_IMAGE_URL,
+  [CHAIN_IDS.MATCHAIN]: MATCHAIN_IMAGE_URL,
+  [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.PEAQ]: PEAQ_IMAGE_URL,
 } as const;
 
@@ -974,6 +1026,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
     GRAVITY_ALPHA_TESTNET_SEPOLIA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ZORA_MAINNET]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.INK]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.GSYS_MAINNET]: GSYS_IMAGE_URL,
+  [CHAIN_IDS.GSYS_TESTNET]: GSYS_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.SONIC_MAINNET]: SONIC_MAINNET_IMAGE_URL,
   [CHAIN_IDS.MODE]: ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.FUNKICHAIN]: ETH_TOKEN_IMAGE_URL,
@@ -981,7 +1035,21 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.SHAPE_SEPOLIA]: TEST_ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: ETH_TOKEN_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]: XRP_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.LENS]: LENS_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.PLUME]: PLUME_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.MATCHAIN]: BNB_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
   [CHAIN_IDS.PEAQ]: PEAQ_IMAGE_URL,
+} as const;
+
+/**
+ * A mapping for networks with enabled profolio landing page to their URLs.
+ */
+export const CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP: Record<Hex, string> = {
+  [CHAIN_IDS.LINEA_MAINNET]:
+    'https://portfolio.metamask.io/explore/networks/linea',
+  [CHAIN_IDS.SEI]: 'https://portfolio.metamask.io/explore/networks/sei',
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -1096,6 +1164,26 @@ export const UNSUPPORTED_RPC_METHODS = new Set([
 
 export const IPFS_DEFAULT_GATEWAY_URL = 'dweb.link';
 
+export const QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME = {
+  'ethereum-mainnet': () => process.env.QUICKNODE_MAINNET_URL,
+  'linea-mainnet': () => process.env.QUICKNODE_LINEA_MAINNET_URL,
+  'arbitrum-mainnet': () => process.env.QUICKNODE_ARBITRUM_URL,
+  'avalanche-mainnet': () => process.env.QUICKNODE_AVALANCHE_URL,
+  'optimism-mainnet': () => process.env.QUICKNODE_OPTIMISM_URL,
+  'polygon-mainnet': () => process.env.QUICKNODE_POLYGON_URL,
+  'base-mainnet': () => process.env.QUICKNODE_BASE_URL,
+};
+
+export function getFailoverUrlsForInfuraNetwork(
+  infuraNetwork: keyof typeof QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME,
+) {
+  const url = QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME[infuraNetwork]();
+  if (url) {
+    return [url];
+  }
+  return [];
+}
+
 export const FEATURED_RPCS: AddNetworkFields[] = [
   {
     chainId: CHAIN_IDS.LINEA_MAINNET,
@@ -1104,6 +1192,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://linea-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: getFailoverUrlsForInfuraNetwork('linea-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1118,6 +1207,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://arbitrum-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: getFailoverUrlsForInfuraNetwork('arbitrum-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1132,6 +1222,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://avalanche-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: getFailoverUrlsForInfuraNetwork('avalanche-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1146,6 +1237,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: 'https://bsc-dataseed.binance.org/',
+        failoverUrls: [],
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1160,6 +1252,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://optimism-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: getFailoverUrlsForInfuraNetwork('optimism-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1174,6 +1267,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: getFailoverUrlsForInfuraNetwork('polygon-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1188,6 +1282,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://mainnet.era.zksync.io`,
+        failoverUrls: [],
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1202,6 +1297,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://base-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: getFailoverUrlsForInfuraNetwork('base-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1215,27 +1311,6 @@ export const FEATURED_NETWORK_CHAIN_IDS = [
   CHAIN_IDS.MAINNET,
   ...FEATURED_RPCS.map((rpc) => rpc.chainId),
 ];
-
-/**
- * A mapping for the default custom testnets.
- */
-export const DEFAULT_CUSTOM_TESTNET_MAP: Record<Hex, NetworkConfiguration> = {
-  [CHAIN_IDS.MEGAETH_TESTNET]: {
-    chainId: CHAIN_IDS.MEGAETH_TESTNET,
-    name: MEGAETH_TESTNET_DISPLAY_NAME,
-    nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
-    blockExplorerUrls: ['https://megaexplorer.xyz'],
-    defaultRpcEndpointIndex: 0,
-    defaultBlockExplorerUrlIndex: 0,
-    rpcEndpoints: [
-      {
-        networkClientId: 'megaeth-testnet',
-        url: 'https://carrot.megaeth.com/rpc',
-        type: RpcEndpointType.Custom,
-      },
-    ],
-  },
-};
 
 export const infuraChainIdsTestNets: string[] = [
   CHAIN_IDS.SEPOLIA,

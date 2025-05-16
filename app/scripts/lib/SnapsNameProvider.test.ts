@@ -53,10 +53,14 @@ function createMockMessenger({
   >;
 } = {}): SnapsNameProviderMessenger {
   const getAllSnapsMock =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     getAllSnaps ||
     jest.fn().mockReturnValue([SNAP_MOCK, SNAP_MOCK_2, SNAP_MOCK_3]);
 
   const getSnapMock =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     getSnap ||
     jest
       .fn()
@@ -65,9 +69,13 @@ function createMockMessenger({
       );
 
   const handleSnapRequestMock =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     handleSnapRequest || jest.fn().mockResolvedValue(Promise.resolve());
 
   const getPermissionControllerStateMock =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     getPermissionControllerState ||
     jest.fn().mockReturnValue({
       subjects: {
@@ -94,7 +102,7 @@ function createMockMessenger({
 
   return {
     call: callMock,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;
 }
@@ -167,7 +175,7 @@ describe('SnapsNameProvider', () => {
       for (const snapId of [SNAP_MOCK.id, SNAP_MOCK_2.id]) {
         expect(handleSnapRequest).toHaveBeenCalledWith({
           snapId,
-          origin: '',
+          origin: 'metamask',
           handler: HandlerType.OnNameLookup,
           request: {
             jsonrpc: '2.0',

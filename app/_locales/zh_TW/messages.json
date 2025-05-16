@@ -1042,13 +1042,6 @@
   "showHexDataDescription": {
     "message": "在交易時顯示十六進位資料"
   },
-  "showIncomingTransactions": {
-    "message": "顯示傳入的交易"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "選擇此項來利用 Etherscan 在交易列表裡顯示傳入的交易",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
-  },
   "showPermissions": {
     "message": "顯示權限"
   },

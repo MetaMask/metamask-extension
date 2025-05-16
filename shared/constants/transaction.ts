@@ -118,6 +118,10 @@ export enum TransactionGroupCategory {
    * where the final token is sent to another chain.
    */
   bridge = 'bridge',
+  /**
+   * Transaction group representing a redeposit (a send to ourselves), mainly used for consolidation.
+   */
+  redeposit = 'redeposit',
 }
 
 /**
@@ -206,3 +210,11 @@ export enum TokenStandard {
  */
 export const TX_SENTINEL_URL =
   'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io';
+
+// To be moved to @metamask/rpc-errors in future.
+export enum EIP5792ErrorCode {
+  UnsupportedNonOptionalCapability = 5700,
+  UnsupportedChainId = 5710,
+  UnknownBundleId = 5730,
+  RejectedUpgrade = 5750,
+}

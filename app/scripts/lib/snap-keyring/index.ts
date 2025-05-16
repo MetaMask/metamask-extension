@@ -1,1 +1,2 @@
-export { snapKeyringBuilder, getAccountsBySnapId } from './snap-keyring';
+export { snapKeyringBuilder } from './snap-keyring';
+export { getAccountsBySnapId } from './utils';

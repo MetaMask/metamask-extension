@@ -5,7 +5,7 @@ import { Driver } from '../../../webdriver/driver';
 class TransactionDetailsPage {
   private readonly driver: Driver;
 
-  private readonly solanaExplorerUrl = 'https://explorer.solana.com';
+  private readonly solanaExplorerUrl = 'https://solscan.io';
 
   private readonly transactionFromToLink = (accountAddress: string) => {
     return {
@@ -55,7 +55,7 @@ class TransactionDetailsPage {
 
   async check_transactionFromToLink(fromToAddress: string): Promise<void> {
     await this.driver.waitForSelector(
-      By.css(`a[href='${this.solanaExplorerUrl}/address/${fromToAddress}']`),
+      By.css(`a[href='${this.solanaExplorerUrl}/account/${fromToAddress}']`),
     );
   }
 

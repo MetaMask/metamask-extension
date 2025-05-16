@@ -20,9 +20,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       AuthenticationController: {
         isSignedIn: true,
       },
-      UserStorageController: {
-        isProfileSyncingEnabled: true,
-      },
       NotificationServicesController: {
         subscriptionAccountsSeen: [],
         isFeatureAnnouncementsEnabled: false,
@@ -119,29 +116,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         newPrivacyPolicyToastShownDate: Date.now(),
         snapsInstallPrivacyWarningShown: true,
       },
-      BridgeController: {
-        bridgeState: {
-          bridgeFeatureFlags: {
-            extensionConfig: {
-              support: false,
-              chains: {
-                'eip155:1': {
-                  isActiveSrc: true,
-                  isActiveDest: true,
-                },
-                'eip155:10': {
-                  isActiveSrc: true,
-                  isActiveDest: true,
-                },
-                'eip155:59144': {
-                  isActiveSrc: true,
-                  isActiveDest: true,
-                },
-              },
-            },
-          },
-        },
-      },
+      BridgeController: {},
       CurrencyController: {
         currentCurrency: 'usd',
         currencyRates: {
@@ -264,9 +239,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
         },
       },
-      QueuedRequestController: {
-        queuedRequestCount: 0,
-      },
       SelectedNetworkController: {
         domains: {},
       },
@@ -296,9 +268,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         allDetectedTokens: {},
         allIgnoredTokens: {},
         allTokens: {},
-        detectedTokens: [],
-        ignoredTokens: [],
-        tokens: [],
       },
       TransactionController: {
         transactions: {},

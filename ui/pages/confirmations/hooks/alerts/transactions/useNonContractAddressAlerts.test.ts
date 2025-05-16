@@ -1,3 +1,4 @@
+import { Hex } from '@metamask/utils';
 import {
   TransactionMeta,
   TransactionStatus,
@@ -9,6 +10,7 @@ import { useSelector } from 'react-redux';
 import { readAddressAsContract } from '../../../../../../shared/modules/contract-utils';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { I18nContext } from '../../../../../contexts/i18n';
@@ -20,6 +22,7 @@ import { useNonContractAddressAlerts } from './useNonContractAddressAlerts';
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useSelector: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 const messageIdMock = '12345';
@@ -216,6 +219,46 @@ describe('useNonContractAddressAlerts', () => {
     ).toEqual([]);
   });
 
+  it('returns no alert for authorization request', async () => {
+    const authorizationList = [{ address: '0x123' as Hex }];
+    const transaction = genUnapprovedContractInteractionConfirmation({
+      authorizationList,
+    });
+
+    useContextMock.mockImplementation((context) => {
+      if (context === ConfirmContext) {
+        return { currentConfirmation: transaction };
+      } else if (context === I18nContext) {
+        return (translationKey: string) => translationKey;
+      }
+      return undefined;
+    });
+
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getNetworkConfigurationsByChainId) {
+        return {
+          '0x5': {
+            chainId: '0x5',
+            name: 'Mainnet',
+          },
+        };
+      } else if (selector === selectPendingApprovalsForNavigation) {
+        return [transaction];
+      }
+
+      return undefined;
+    });
+
+    const { result } = renderHookWithConfirmContextProvider(
+      useNonContractAddressAlerts,
+      {
+        currentConfirmation: transaction,
+      },
+    );
+
+    expect(result.current).toEqual([]);
+  });
+
   it('returns alert if the transaction has data and the recipient is not a contract', async () => {
     const transactionWithData = {
       ...TRANSACTION_META_MOCK,
@@ -311,6 +354,58 @@ describe('useNonContractAddressAlerts', () => {
       return {
         isContractAddress: false,
         contractCode: '',
+      };
+    });
+
+    const { result } = renderHookWithConfirmContextProvider(
+      useNonContractAddressAlerts,
+      {
+        currentConfirmation: transactionWithData,
+      },
+    );
+
+    await waitFor(() => {
+      expect(result.current).toEqual([]);
+    });
+  });
+
+  it('returns no alerts if readAddressAsContract fails (contractCode is null)', async () => {
+    const transactionWithData = {
+      ...TRANSACTION_META_MOCK,
+      txParams: {
+        ...TRANSACTION_META_MOCK.txParams,
+        data: '0xabcdef',
+      },
+    };
+
+    useContextMock.mockImplementation((context) => {
+      if (context === ConfirmContext) {
+        return { currentConfirmation: transactionWithData };
+      } else if (context === I18nContext) {
+        return (translationKey: string) => translationKey;
+      }
+      return undefined;
+    });
+
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getNetworkConfigurationsByChainId) {
+        return {
+          '0x5': {
+            chainId: '0x5',
+            name: 'Mainnet',
+          },
+        };
+      } else if (selector === selectPendingApprovalsForNavigation) {
+        return [transactionWithData];
+      }
+
+      return undefined;
+    });
+
+    mockReadAddressAsContract.mockImplementation(async () => {
+      return {
+        isContractAddress: false,
+        contractCode: null, // simulate failure
       };
     });
 

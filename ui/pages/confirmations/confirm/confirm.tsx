@@ -18,6 +18,8 @@ import { Title } from '../components/confirm/title';
 import EditGasFeePopover from '../components/edit-gas-fee-popover';
 import { ConfirmContextProvider, useConfirmContext } from '../context/confirm';
 import { ConfirmNav } from '../components/confirm/nav/nav';
+import { GasFeeTokenToast } from '../components/confirm/info/shared/gas-fee-token-toast/gas-fee-token-toast';
+import { Splash } from '../components/confirm/splash';
 
 const EIP1559TransactionGasModal = () => {
   return (
@@ -57,7 +59,9 @@ const Confirm = () => (
               <Info />
               <PluggableSection />
             </ScrollToBottom>
+            <GasFeeTokenToast />
             <Footer />
+            <Splash />
           </Page>
         </ConfirmAlerts>
       </GasFeeContextProviderWrapper>

@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getErrorMessage } from '../../../../shared/modules/error';
 import {
   MetaMetricsEventAccountImportType,
@@ -21,6 +21,7 @@ import {
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import * as actions from '../../../store/actions';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 // Subviews
 import JsonImportView from './json';
@@ -30,6 +31,7 @@ export const ImportAccount = ({ onActionComplete }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   const menuItems = [t('privateKey'), t('jsonFile')];
 
@@ -76,6 +78,8 @@ export const ImportAccount = ({ onActionComplete }) => {
       properties: {
         account_type: MetaMetricsEventAccountType.Imported,
         account_import_type: accountImportType,
+        hd_entropy_index: hdEntropyIndex,
+        is_suggested_name: true,
       },
     });
   }

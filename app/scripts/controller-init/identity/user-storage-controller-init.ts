@@ -10,7 +10,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 
 /**
  * Initialize the UserStorage controller.
@@ -33,7 +32,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
         maxNumberOfAccountsToAdd: isProduction() ? undefined : 100,
         onAccountAdded: (profileId) => {
           trackEvent({
-            category: MetaMetricsEventCategory.ProfileSyncing,
+            category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.AccountsSyncAdded,
             properties: {
               profile_id: profileId,
@@ -42,7 +41,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
         },
         onAccountNameUpdated: (profileId) => {
           trackEvent({
-            category: MetaMetricsEventCategory.ProfileSyncing,
+            category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.AccountsSyncNameUpdated,
             properties: {
               profile_id: profileId,
@@ -59,7 +58,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
             sentryContext,
           );
           trackEvent({
-            category: MetaMetricsEventCategory.ProfileSyncing,
+            category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.AccountsSyncErroneousSituation,
             properties: {
               profile_id: profileId,
@@ -68,9 +67,6 @@ export const UserStorageControllerInit: ControllerInitFunction<
           });
         },
       },
-    },
-    env: {
-      isAccountSyncingEnabled: isManifestV3,
     },
   });
 

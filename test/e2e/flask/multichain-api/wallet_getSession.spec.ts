@@ -1,17 +1,15 @@
 import { strict as assert } from 'assert';
-import { Browser } from 'selenium-webdriver';
 import { unlockWallet, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
-  describeBrowserOnly,
   getExpectedSessionScope,
   type FixtureCallbackArgs,
 } from './testHelpers';
 
-describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
+describe('Multichain API', function () {
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_getSession` when there is no existing session', function () {
     it('should successfully receive empty session scopes', async function () {
       await withFixtures(

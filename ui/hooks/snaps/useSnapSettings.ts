@@ -20,7 +20,7 @@ export function useSnapSettings({ snapId }: { snapId?: string }) {
 
         const newData = (await handleSnapRequest({
           snapId: id,
-          origin: '',
+          origin: 'metamask',
           handler: 'onSettingsPage',
           request: {
             jsonrpc: '2.0',

@@ -1,5 +1,5 @@
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   EthAccountType,
   BtcMethod,
