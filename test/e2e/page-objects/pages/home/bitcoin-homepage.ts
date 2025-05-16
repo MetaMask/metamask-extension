@@ -8,6 +8,8 @@ class BitcoinHomepage extends HomePage {
 
   private readonly buySellButton = '[data-testid="coin-overview-buy"]';
 
+  private readonly receiveButton = '[data-testid="coin-overview-receive"]';
+
   protected readonly sendButton = '[data-testid="coin-overview-send"]';
 
   protected readonly swapButton = '[data-testid="coin-overview-swap"]';
@@ -17,6 +19,7 @@ class BitcoinHomepage extends HomePage {
       await this.driver.waitForMultipleSelectors([
         this.sendButton,
         this.buySellButton,
+        this.receiveButton,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for bitcoin homepage to be loaded', e);
@@ -77,6 +80,22 @@ class BitcoinHomepage extends HomePage {
       css: this.balance,
       text: `${expectedBalance}BTC`,
     });
+  }
+
+  /**
+   * Checks if the receive button is enabled on bitcoin account homepage.
+   */
+  async check_isReceiveButtonEnabled(): Promise<boolean> {
+    try {
+      await this.driver.findClickableElement(this.receiveButton, {
+        timeout: 1000,
+      });
+    } catch (e) {
+      console.log('Receive button not enabled', e);
+      return false;
+    }
+    console.log('Receive button is enabled');
+    return true;
   }
 
   /**

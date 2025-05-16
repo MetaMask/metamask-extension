@@ -63,6 +63,7 @@ describe('BTC Account - Overview', function (this: Suite) {
         assert.equal(await homePage.check_isBridgeButtonEnabled(), false);
         assert.equal(await homePage.check_isSwapButtonEnabled(), false);
         assert.equal(await homePage.check_isBuySellButtonEnabled(), true);
+        assert.equal(await homePage.check_isReceiveButtonEnabled(), true);
       },
     );
   });

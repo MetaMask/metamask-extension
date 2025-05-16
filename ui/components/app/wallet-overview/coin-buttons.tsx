@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   useHistory,
@@ -67,6 +67,7 @@ import IconButton from '../../ui/icon-button';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 ///: END:ONLY_INCLUDE_IF
+import { ReceiveModal } from '../../multichain/receive-modal';
 import {
   setSwitchedNetworkDetails,
   setActiveNetworkWithError,
@@ -80,6 +81,7 @@ import { getCurrentChainId } from '../../../../shared/modules/selectors/networks
 ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
+import { trace, TraceName } from '../../../../shared/lib/trace';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
@@ -87,6 +89,7 @@ import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 type CoinButtonsProps = {
   account: InternalAccount;
   chainId: `0x${string}` | CaipChainId | number;
+  trackingLocation: string;
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -95,11 +98,13 @@ type CoinButtonsProps = {
   defaultSwapsToken?: SwapsEthToken;
   ///: END:ONLY_INCLUDE_IF
   classPrefix?: string;
+  iconButtonClassName?: string;
 };
 
 const CoinButtons = ({
   account,
   chainId,
+  trackingLocation,
   isSwapsChain,
   isSigningEnabled,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -113,7 +118,9 @@ const CoinButtons = ({
   const dispatch = useDispatch();
 
   const trackEvent = useContext(MetaMetricsContext);
+  const [showReceiveModal, setShowReceiveModal] = useState(false);
 
+  const { address: selectedAddress } = account;
   const history = useHistory();
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
     string,
@@ -449,6 +456,42 @@ const CoinButtons = ({
           generateTooltip('sendButton', contents)
         }
       />
+      {
+        <>
+          {showReceiveModal && (
+            <ReceiveModal
+              address={selectedAddress}
+              onClose={() => setShowReceiveModal(false)}
+            />
+          )}
+          <IconButton
+            className={`${classPrefix}-overview__button`}
+            data-testid={`${classPrefix}-overview-receive`}
+            Icon={
+              <Icon
+                name={IconName.ScanBarcode}
+                color={IconColor.iconDefault}
+                size={IconSize.Md}
+              />
+            }
+            label={t('receive')}
+            width={BlockSize.Full}
+            onClick={() => {
+              trace({ name: TraceName.ReceiveModal });
+              trackEvent({
+                event: MetaMetricsEventName.NavReceiveButtonClicked,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  text: 'Receive',
+                  location: trackingLocation,
+                  chain_id: chainId,
+                },
+              });
+              setShowReceiveModal(true);
+            }}
+          />
+        </>
+      }
     </Box>
   );
 };
