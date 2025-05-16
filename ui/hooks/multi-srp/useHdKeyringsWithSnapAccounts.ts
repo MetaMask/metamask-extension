@@ -18,11 +18,13 @@ export const useHdKeyringsWithSnapAccounts = () => {
     getMetaMaskHdKeyrings,
   );
   const internalAccounts = useSelector(getInternalAccounts);
+
   return useMemo(() => {
     return hdKeyrings.map((keyring) => {
       const firstPartySnapAccounts = internalAccounts
         .filter(
           (account: InternalAccount) =>
+            account.metadata.snap?.id &&
             account.options?.entropySource === keyring.metadata.id,
         )
         .map((account: InternalAccount) => account.address);

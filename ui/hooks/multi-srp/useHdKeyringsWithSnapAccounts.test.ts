@@ -22,12 +22,14 @@ const mockFirstPartySnapAccount = createMockInternalAccount({
   options: {
     entropySource: 'keyring1',
   },
+  keyringType: KeyringTypes.snap,
 });
 
 const mockSnapAccount2 = createMockInternalAccount({
   address: '',
   name: 'Second Party Snap Account',
   options: {},
+  keyringType: KeyringTypes.snap,
 });
 
 const mockHdKeyring = {

@@ -109,6 +109,7 @@ export const getSnapAccountsByKeyringId = createDeepEqualSelector(
   (accounts, keyringId) => {
     return accounts.filter(
       (account: InternalAccount) =>
+        account.metadata.snap?.id &&
         account.options?.entropySource === keyringId,
     );
   },
