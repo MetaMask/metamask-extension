@@ -101,6 +101,7 @@ const snapConfigurations: Record<string, string> = {
   mockNetworkSnap: 'network-example-snap',
   mockNotificationSnap: 'notification-example-snap',
   mockPreferencesSnap: 'preferences-example-snap',
+  mockProtocolSnap: 'protocol-example-snap',
   mockSignatureInsightsSnap: 'signature-insights-example-snap',
   mockSimpleKeyringSnap: 'snap-simple-keyring-snap',
   mockWasmSnap: 'wasm-example-snap',
@@ -258,6 +259,13 @@ export async function mockNotificationSnap(mockServer: Mockttp) {
   return createSnapMock({
     mockServer,
     snapNamePrefix: snapConfigurations.mockNotificationSnap,
+  });
+}
+
+export async function mockProtocolSnap(mockServer: Mockttp) {
+  return createSnapMock({
+    mockServer,
+    snapNamePrefix: snapConfigurations.mockProtocolSnap,
   });
 }
 
