@@ -198,7 +198,7 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
       const delegation = getRemoteModeDelegation(mode);
 
       if (!delegation) {
-        return;
+        throw new Error('No delegation entry found');
       }
 
       const transactionMeta = await addDisableDelegationTransaction({
