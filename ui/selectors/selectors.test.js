@@ -1427,7 +1427,9 @@ describe('Selectors', () => {
             type: 'HD Key Tree',
           },
         },
-        options: {},
+        options: {
+          entropySource: '01JKAF3DSGM3AB87EM9N0K41AJ',
+        },
         methods: [
           'personal_sign',
           'eth_signTransaction',
@@ -1453,7 +1455,9 @@ describe('Selectors', () => {
             type: 'HD Key Tree',
           },
         },
-        options: {},
+        options: {
+          entropySource: '01JKAF3PJ247KAM6C03G5Q0NP8',
+        },
         methods: [
           'personal_sign',
           'eth_signTransaction',
@@ -1478,7 +1482,9 @@ describe('Selectors', () => {
             type: 'HD Key Tree',
           },
         },
-        options: {},
+        options: {
+          entropySource: '01JKAF3DSGM3AB87EM9N0K41AJ',
+        },
         methods: [
           'personal_sign',
           'eth_signTransaction',
