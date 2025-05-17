@@ -28,7 +28,7 @@ export const ButtonPrimary: ButtonPrimaryComponent = React.forwardRef(
     return (
       <ButtonBase
         backgroundColor={
-          danger ? BackgroundColor.errorDefault : BackgroundColor.primaryDefault
+          danger ? BackgroundColor.errorDefault : BackgroundColor.iconDefault
         }
         color={danger ? TextColor.errorInverse : TextColor.primaryInverse}
         className={classnames(className, 'mm-button-primary', {
@@ -40,7 +40,6 @@ export const ButtonPrimary: ButtonPrimaryComponent = React.forwardRef(
         }}
         size={size}
         ref={ref}
-        data-theme="light"
         {...{ disabled, ...(props as ButtonBaseProps<C>) }}
       />
     );
