@@ -501,6 +501,9 @@ export const AccountListMenu = ({
     trackEvent({
       category: MetaMetricsEventCategory.Accounts,
       event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
+      properties: {
+        button_type: 'picker_clicked',
+      },
     });
     setPreviousActionMode(actionMode);
     setActionMode(ACTION_MODES.SELECT_SRP);

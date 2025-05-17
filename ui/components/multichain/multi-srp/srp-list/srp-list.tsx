@@ -72,7 +72,10 @@ export const SrpList = ({
           onClick={() => {
             trackEvent({
               category: MetaMetricsEventCategory.Accounts,
-              event: MetaMetricsEventName.SecretRecoveryPhrasePickerSelected,
+              event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
+              properties: {
+                button_type: 'srp_selected',
+              },
             });
             onActionComplete(keyring.metadata.id);
           }}
@@ -98,7 +101,10 @@ export const SrpList = ({
                     trackEvent({
                       category: MetaMetricsEventCategory.Accounts,
                       event:
-                        MetaMetricsEventName.SecretRecoveryPhrasePickerDetailsClicked,
+                        MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
+                      properties: {
+                        button_type: 'details_clicked',
+                      },
                     });
                     setShowAccounts((prevState) =>
                       prevState.map((value, i) =>
