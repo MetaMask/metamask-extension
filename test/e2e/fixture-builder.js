@@ -45,7 +45,7 @@ function onboardingFixture() {
           id: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
-          rpcUrl: 'http://localhost:8545',
+          rpcUrl: 'http://localhost:8545/1',
           ticker: 'ETH',
           blockExplorerUrl: undefined,
         }),
@@ -307,7 +307,7 @@ class FixtureBuilder {
           chainId: CHAIN_IDS.LINEA_MAINNET,
           nickname: 'Localhost 8545',
           rpcPrefs: {},
-          rpcUrl: 'http://localhost:8545',
+          rpcUrl: 'http://localhost:8545/1',
           ticker: 'ETH',
           networkConfigurationId: 'networkConfigurationId',
           id: 'networkConfigurationId',
@@ -351,7 +351,7 @@ class FixtureBuilder {
   withNetworkControllerDoubleNode() {
     const secondNode = mockNetworkStateOld({
       id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
-      rpcUrl: 'http://localhost:8546',
+      rpcUrl: 'http://localhost:8546/1',
       chainId: '0x53a',
       ticker: 'ETH',
       nickname: 'Localhost 8546',
@@ -363,7 +363,7 @@ class FixtureBuilder {
   withNetworkControllerTripleNode() {
     this.withNetworkControllerDoubleNode();
     const thirdNode = mockNetworkStateOld({
-      rpcUrl: 'http://localhost:7777',
+      rpcUrl: 'http://localhost:7777/1',
       chainId: '0x3e8',
       ticker: 'ETH',
       nickname: 'Localhost 7777',
