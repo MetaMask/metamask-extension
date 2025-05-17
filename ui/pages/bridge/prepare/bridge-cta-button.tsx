@@ -131,7 +131,7 @@ export const BridgeCTAButton = ({
       return 'submit';
     }
 
-    return 'swapSelectToken';
+    return '';
   }, [
     isLoading,
     fromAmount,
