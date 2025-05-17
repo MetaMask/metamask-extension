@@ -158,6 +158,7 @@ describe('EthOverview', () => {
   const store = configureMockStore([thunk])(mockStore);
   const ETH_OVERVIEW_BUY = 'eth-overview-buy';
   const ETH_OVERVIEW_BRIDGE = 'eth-overview-bridge';
+  const ETH_OVERVIEW_RECEIVE = 'eth-overview-receive';
   const ETH_OVERVIEW_SWAP = 'token-overview-button-swap';
   const ETH_OVERVIEW_SEND = 'eth-overview-send';
   const ETH_OVERVIEW_PRIMARY_CURRENCY = 'eth-overview__primary-currency';
@@ -334,6 +335,12 @@ describe('EthOverview', () => {
       );
     });
 
+    it('should always show the Receive button', () => {
+      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+      const receiveButton = queryByTestId(ETH_OVERVIEW_RECEIVE);
+      expect(receiveButton).toBeInTheDocument();
+    });
+
     it('should always show the Portfolio button', () => {
       const { queryByTestId } = renderWithProvider(<EthOverview />, store);
       const portfolioButton = queryByTestId('portfolio-link');
@@ -473,6 +480,7 @@ describe('EthOverview', () => {
       { testId: ETH_OVERVIEW_SEND, buttonText: 'Send' },
       { testId: ETH_OVERVIEW_SWAP, buttonText: 'Swap' },
       { testId: ETH_OVERVIEW_BRIDGE, buttonText: 'Bridge' },
+      { testId: ETH_OVERVIEW_BUY, buttonText: 'Buy' },
     ];
 
     it.each(buttonTestCases)(
