@@ -56,8 +56,8 @@ There are many areas in above flow where the code can be improved upon to cleanu
 
    Current navigation to Signature Request pages is un-necessarily complicated. It can be simplified to great extent.
 
-   - To the navigation code in [Home](https://github.com/MetaMask/metamask-extension/blob/main/ui/pages/home/home.component.js#L181) component add condition to check if there are unapproved messages and route to path `/singature-request`.
-   - In [Routes](https://github.com/MetaMask/metamask-extension/blob/main/ui/pages/routes/routes.component.js) component render pages/confirm-signature-request for path `/singature-request`.
+   - To the navigation code in [Home](https://github.com/MetaMask/metamask-extension/blob/main/ui/pages/home/home.component.js#L181) component add condition to check if there are unapproved messages and route to path `/signature-request`.
+   - In [Routes](https://github.com/MetaMask/metamask-extension/blob/main/ui/pages/routes/routes.component.js) component render pages/confirm-signature-request for path `/signature-request`.
    - Refactor out [conf-tx.js](https://github.com/MetaMask/metamask-extension/blob/main/ui/pages/confirm-transaction/conf-tx.js) into pages/confirm-signature-request component. [#17240](https://github.com/MetaMask/metamask-extension/issues/17240)
 
 3. ### Refactoring in [conf-tx.js](https://github.com/MetaMask/metamask-extension/blob/main/ui/pages/confirm-transaction/conf-tx.js)
