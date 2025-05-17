@@ -1,9 +1,4 @@
-const {
-  withFixtures,
-  unlockWallet,
-  WINDOW_TITLES,
-  largeDelayMs,
-} = require('../helpers');
+const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -33,34 +28,30 @@ describe('Test Snap Cronjob', function () {
         // added delay for firefox (deflake)
         await driver.delayFirefox(1000);
 
-        // wait for and click connect
-        await driver.waitForSelector('#connectcronjobs');
+        // click connect
         await driver.clickElement('#connectcronjobs');
 
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // wait for and click connect
-        await driver.waitForSelector({
-          text: 'Connect',
-          tag: 'button',
-        });
+        // click connect
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
+        await driver.waitForSelector({
+          tag: 'h3',
+          text: 'Add to MetaMask',
+        });
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
-        // wait for and click confirm
-        await driver.waitForSelector({ text: 'Confirm' });
+        // click confirm
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
-        // wait for and click ok and wait for window to close
-        await driver.waitForSelector({ text: 'OK' });
         await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
@@ -75,10 +66,8 @@ describe('Test Snap Cronjob', function () {
           text: 'Reconnect to Cronjobs Snap',
         });
 
-        // Switching to dialog popup takes time, hence this wait is needed
-        await driver.delay(largeDelayMs);
-
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const dialogHandle = await driver.driver.getWindowHandle();
 
         // look for the dialog popup to verify cronjob fired
         await driver.waitForSelector({
@@ -87,10 +76,12 @@ describe('Test Snap Cronjob', function () {
         });
 
         // try to click on the Ok button and pass test if window closes
-        await driver.clickElementAndWaitForWindowToClose({
+        await driver.clickElementSafe({
           text: 'OK',
           tag: 'button',
         });
+
+        await driver.waitForWindowToClose(dialogHandle);
       },
     );
   });
