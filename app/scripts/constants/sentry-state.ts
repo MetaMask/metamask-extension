@@ -383,6 +383,7 @@ export const SENTRY_BACKGROUND_STATE = {
     isBackupAndSyncEnabled: true,
     isBackupAndSyncUpdateLoading: false,
     isAccountSyncingEnabled: true,
+    isAddressBookSyncingEnabled: true,
     hasAccountSyncingSyncedAtLeastOnce: false,
     isAccountSyncingReadyToBeDispatched: false,
   },

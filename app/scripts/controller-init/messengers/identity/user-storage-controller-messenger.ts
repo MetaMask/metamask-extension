@@ -20,6 +20,12 @@ import {
   AccountsControllerUpdateAccountMetadataAction,
 } from '@metamask/accounts-controller';
 import {
+  AddressBookControllerContactUpdatedEvent,
+  AddressBookControllerContactDeletedEvent,
+  AddressBookControllerListAction,
+  AddressBookControllerImportContactsFromSyncAction,
+} from '@metamask/address-book-controller';
+import {
   NetworkControllerAddNetworkAction,
   NetworkControllerGetStateAction,
   NetworkControllerNetworkRemovedEvent,
@@ -45,7 +51,10 @@ type MessengerActions =
   | NetworkControllerGetStateAction
   | NetworkControllerAddNetworkAction
   | NetworkControllerRemoveNetworkAction
-  | NetworkControllerUpdateNetworkAction;
+  | NetworkControllerUpdateNetworkAction
+  // Address Book Syncing
+  | AddressBookControllerListAction
+  | AddressBookControllerImportContactsFromSyncAction;
 
 type MessengerEvents =
   | UserStorageControllerStateChangeEvent
@@ -54,6 +63,9 @@ type MessengerEvents =
   // Account Syncing Events
   | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRenamedEvent
+  // Address Book Syncing Events
+  | AddressBookControllerContactUpdatedEvent
+  | AddressBookControllerContactDeletedEvent
   // Network Syncing Events
   | NetworkControllerNetworkRemovedEvent;
 
@@ -92,6 +104,9 @@ export function getUserStorageControllerMessenger(
       'NetworkController:addNetwork',
       'NetworkController:removeNetwork',
       'NetworkController:updateNetwork',
+      // Address Book Controller Requests
+      'AddressBookController:list',
+      'AddressBookController:importContactsFromSync',
     ],
     allowedEvents: [
       // Keyring Controller Events
@@ -100,6 +115,9 @@ export function getUserStorageControllerMessenger(
       // Accounts Controller Events
       'AccountsController:accountAdded',
       'AccountsController:accountRenamed',
+      // Address Book Controller Events
+      'AddressBookController:contactUpdated',
+      'AddressBookController:contactDeleted',
       // Network Controller Events
       'NetworkController:networkRemoved',
     ],

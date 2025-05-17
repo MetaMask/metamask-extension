@@ -71,3 +71,16 @@ export const selectIsAccountSyncingEnabled = createSelector(
     return metamask.isAccountSyncingEnabled;
   },
 );
+
+/**
+ * Selector to determine if address book syncing is enabled.
+ *
+ * This selector uses the `createSelector` function from 'reselect' to compute whether address book syncing is enabled,
+ * based on the `isAddressBookSyncingEnabled` property of the `metamask` object in the Redux store.
+ */
+export const selectIsAddressBookSyncingEnabled = createSelector(
+  [getMetamask],
+  (metamask) => {
+    return metamask.isAddressBookSyncingEnabled;
+  },
+);
