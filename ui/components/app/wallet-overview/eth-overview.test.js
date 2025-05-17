@@ -2,7 +2,8 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType, EthMethod, BtcScope } from '@metamask/keyring-api';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
@@ -11,7 +12,6 @@ import useMultiPolling from '../../../hooks/useMultiPolling';
 import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { setBackgroundConnection } from '../../../store/background-connection';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -87,6 +87,11 @@ describe('EthOverview', () => {
   const mockStore = {
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      remoteFeatureFlags: {
+        bridgeConfig: {
+          support: true,
+        },
+      },
       accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
           '0x1': { address: mockEvmAccount1.address, balance: '0x1F4' },
@@ -140,6 +145,11 @@ describe('EthOverview', () => {
         },
       ],
       balances: {},
+      isEvmSelected: true,
+      multichainNetworkConfigurationsByChainId:
+        AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+      selectedMultichainNetworkChainId: BtcScope.Mainnet,
+      bitcoinSupportEnabled: true,
     },
     ramps: {
       buyableChains: defaultBuyableChains,
@@ -167,7 +177,6 @@ describe('EthOverview', () => {
         },
       });
       openTabSpy = jest.spyOn(global.platform, 'openTab');
-      setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() });
     });
 
     beforeEach(() => {
@@ -275,8 +284,8 @@ describe('EthOverview', () => {
             },
           },
           useExternalServices: true,
-          bridgeFeatureFlags: {
-            extensionConfig: {
+          remoteFeatureFlags: {
+            bridgeConfig: {
               support: false,
             },
           },

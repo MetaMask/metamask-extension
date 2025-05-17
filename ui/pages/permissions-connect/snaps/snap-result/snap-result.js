@@ -81,6 +81,7 @@ export default function SnapResult({
         />
         <Text
           fontWeight={FontWeight.Bold}
+          textAlign={TextAlign.Center}
           variant={TextVariant.headingLg}
           paddingBottom={2}
           marginTop={4}
@@ -153,11 +154,9 @@ export default function SnapResult({
         paddingRight={4}
         alignItems={AlignItems.center}
         flexDirection={FlexDirection.Column}
-        style={{
-          overflowY: 'auto',
-        }}
         backgroundColor={BackgroundColor.backgroundAlternative}
         height={BlockSize.Full}
+        justifyContent={JustifyContent.center}
       >
         {isLoading && (
           <Box

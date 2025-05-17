@@ -195,22 +195,22 @@ export const getActionTitle = (
 ) => {
   switch (actionMode) {
     case ACTION_MODES.ADD:
-      return t('addAccountFromNetwork', ['Ethereum']);
+      return t('addAccountFromNetwork', [t('networkNameEthereum')]);
     case ACTION_MODES.MENU:
       return t('addAccount');
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     case ACTION_MODES.ADD_WATCH_ONLY:
-      return t('addAccountFromNetwork', ['Ethereum']);
+      return t('addAccountFromNetwork', [t('networkNameEthereum')]);
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
     case ACTION_MODES.ADD_BITCOIN:
-      return t('addAccountFromNetwork', ['Bitcoin']);
+      return t('addAccountFromNetwork', [t('networkNameBitcoin')]);
     case ACTION_MODES.ADD_BITCOIN_TESTNET:
-      return t('addAccountFromNetwork', ['Bitcoin Testnet']);
+      return t('addAccountFromNetwork', [t('networkNameBitcoinTestnet')]);
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(solana)
     case ACTION_MODES.ADD_SOLANA:
-      return t('addAccountFromNetwork', ['Solana']);
+      return t('addAccountFromNetwork', [t('networkNameSolana')]);
     ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.IMPORT:
       return t('importPrivateKey');
@@ -351,6 +351,7 @@ export const AccountListMenu = ({
         snap_name: client.getSnapName(),
         location: 'Main Menu',
         hd_entropy_index: hdEntropyIndex,
+        chain_id_caip: _options.scope,
       },
     });
 
@@ -569,6 +570,8 @@ export const AccountListMenu = ({
             paddingTop={0}
             style={{ overflowY: 'scroll' }}
           >
+            {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879 */}
+            {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
             <ImportSrp onActionComplete={onActionComplete} />
           </Box>
         )}
@@ -621,6 +624,8 @@ export const AccountListMenu = ({
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
                     startIconProps={{ size: IconSize.Md }}
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={async () => {
                       await handleMultichainSnapAccountCreation(
                         solanaWalletSnapClient,
@@ -630,17 +635,6 @@ export const AccountListMenu = ({
                         },
                         ACTION_MODES.ADD_SOLANA,
                       );
-
-                      trackEvent({
-                        category: MetaMetricsEventCategory.Navigation,
-                        event: MetaMetricsEventName.AccountAddSelected,
-                        properties: {
-                          account_type: MetaMetricsEventAccountType.Default,
-                          location: 'Main Menu',
-                          hd_entropy_index: hdEntropyIndex,
-                          chain_id_caip: MultichainNetworks.SOLANA,
-                        },
-                      });
                     }}
                     data-testid="multichain-account-menu-popover-add-solana-account"
                   >
@@ -659,6 +653,8 @@ export const AccountListMenu = ({
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
                     startIconProps={{ size: IconSize.Md }}
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={async () => {
                       return await handleMultichainSnapAccountCreation(
                         bitcoinWalletSnapClient,
@@ -685,6 +681,8 @@ export const AccountListMenu = ({
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
                     startIconProps={{ size: IconSize.Md }}
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={async () => {
                       return await handleMultichainSnapAccountCreation(
                         bitcoinWalletSnapClient,
@@ -828,6 +826,8 @@ export const AccountListMenu = ({
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Eye}
                     startIconProps={{ size: IconSize.Md }}
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={handleAddWatchAccount}
                     data-testid="multichain-account-menu-popover-add-watch-only-account"
                   >

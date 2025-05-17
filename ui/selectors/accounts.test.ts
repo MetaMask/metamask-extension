@@ -56,7 +56,9 @@ describe('Accounts Selectors', () => {
             type: 'HD Key Tree',
           },
         },
-        options: {},
+        options: {
+          entropySource: '01JKAF3DSGM3AB87EM9N0K41AJ',
+        },
         methods: [
           'personal_sign',
           'eth_signTransaction',
@@ -114,6 +116,7 @@ describe('Accounts Selectors', () => {
   });
 
   describe('isSelectedInternalAccountEth', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       { type: MOCK_ACCOUNT_EOA.type, id: MOCK_ACCOUNT_EOA.id, isEth: true },
       {
@@ -145,6 +148,7 @@ describe('Accounts Selectors', () => {
   });
 
   describe('isSelectedInternalAccountBtc', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       { type: MOCK_ACCOUNT_EOA.type, id: MOCK_ACCOUNT_EOA.id, isBtc: false },
       {

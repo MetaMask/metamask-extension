@@ -59,7 +59,12 @@ import {
   getSelectedAccountCachedBalance,
   getShouldShowFiat,
   getShowFiatInTestnets,
+  getUseCurrencyRateCheck,
 } from './selectors';
+import {
+  getSelectedMultichainNetworkConfiguration,
+  type MultichainNetworkConfigState,
+} from './multichain/networks';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -87,7 +92,8 @@ export type MultichainState = AccountsState &
   TransactionsState &
   NetworkState &
   AssetsRatesState &
-  AssetsState;
+  AssetsState &
+  MultichainNetworkConfigState;
 
 // TODO: Remove after updating to @metamask/network-controller 20.0.0
 export type ProviderConfigWithImageUrlAndExplorerUrl = {
@@ -331,10 +337,12 @@ export function getMultichainShouldShowFiat(
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const isTestnet = getMultichainIsTestnet(state, selectedAccount);
   const isMainnet = !isTestnet;
+  const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
 
   return getMultichainIsEvm(state, selectedAccount)
     ? getShouldShowFiat(state)
-    : isMainnet || (isTestnet && getShowFiatInTestnets(state));
+    : (useCurrencyRateCheck && isMainnet) ||
+        (useCurrencyRateCheck && isTestnet && getShowFiatInTestnets(state));
 }
 
 export function getMultichainDefaultToken(
@@ -436,7 +444,7 @@ function getNonEvmCachedBalance(
 ) {
   const balances = getMultichainBalances(state);
   const selectedAccount = account ?? getSelectedInternalAccount(state);
-  const network = getMultichainCurrentNetwork(state);
+  const network = getSelectedMultichainNetworkConfiguration(state);
 
   // We assume that there's at least one asset type in and that is the native
   // token for that network.

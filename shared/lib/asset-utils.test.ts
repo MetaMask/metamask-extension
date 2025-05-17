@@ -7,6 +7,7 @@ import {
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
 import { toHex } from '@metamask/controller-utils';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { MINUTE } from '../constants/time';
 import { MultichainNetworks } from '../constants/multichain/networks';
 import fetchWithCache from './fetch-with-cache';
@@ -21,6 +22,10 @@ describe('asset-utils', () => {
   const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
 
   describe('toAssetId', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
     it('should return the same asset ID if input is already a CAIP asset type', () => {
       const caipAssetId = CaipAssetTypeStruct.create('eip155:1/erc20:0x123');
       const chainId = 'eip155:1' as CaipChainId;
@@ -29,12 +34,49 @@ describe('asset-utils', () => {
       expect(result).toBe(caipAssetId);
     });
 
+    it('should return native asset ID for native EVM address', () => {
+      const nativeAddress = '0x0000000000000000000000000000000000000000';
+      const chainId = 'eip155:1' as CaipChainId;
+
+      const result = toAssetId(nativeAddress, chainId);
+      expect(result).toBe(getNativeAssetForChainId(chainId).assetId);
+      expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
+        undefined,
+        result,
+      ]);
+    });
+
+    it('should return native asset ID for null EVM address', () => {
+      const nativeAddress = null;
+      const chainId = 'eip155:1' as CaipChainId;
+
+      const result = toAssetId(nativeAddress as never, chainId);
+      expect(result).toBe(getNativeAssetForChainId(chainId).assetId);
+      expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
+        undefined,
+        result,
+      ]);
+    });
+
+    it('should return undefined if getNativeAssetForChainId throws an error', () => {
+      const nativeAddress = '0x0000000000000000000000000000000000000000';
+      const chainId = 'eip155:1231' as CaipChainId;
+
+      expect(() => toAssetId(nativeAddress, chainId)).toThrow(
+        'No XChain Swaps native asset found for chainId: eip155:1231',
+      );
+    });
+
     it('should create Solana token asset ID correctly', () => {
       const address = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
       const chainId = MultichainNetwork.Solana as CaipChainId;
 
       const result = toAssetId(address, chainId);
       expect(result).toBe(`${MultichainNetwork.Solana}/token:${address}`);
+      expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
+        undefined,
+        result,
+      ]);
     });
 
     it('should create EVM token asset ID correctly', () => {
@@ -43,6 +85,10 @@ describe('asset-utils', () => {
 
       const result = toAssetId(address, chainId);
       expect(result).toBe(`eip155:1/erc20:${address}`);
+      expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
+        undefined,
+        result,
+      ]);
     });
 
     it('should return undefined for non-hex address on EVM chains', () => {
@@ -59,6 +105,10 @@ describe('asset-utils', () => {
 
       const result = toAssetId(address, chainId);
       expect(result).toBe(`eip155:137/erc20:${address}`);
+      expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
+        undefined,
+        result,
+      ]);
     });
 
     it('should handle checksummed addresses', () => {
@@ -67,6 +117,10 @@ describe('asset-utils', () => {
 
       const result = toAssetId(address, chainId);
       expect(result).toBe(`eip155:1/erc20:${address}`);
+      expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
+        undefined,
+        result,
+      ]);
     });
   });
 

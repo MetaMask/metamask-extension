@@ -1,6 +1,6 @@
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
 import { withFixtures } from '../helpers';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
@@ -29,16 +29,15 @@ describe('Test Snap bip-32', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        // We explicitly choose to await balances to prevent flakiness due to long login times.
+        await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to `test-snaps` page, click bip32, connect and approve
-        await openTestSnapClickButtonAndInstall(
-          driver,
-          'connectBip32Button',
-          true,
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectBip32Button', {
+          withWarning: true,
+        });
 
         // check the installation status
         await testSnaps.check_installationComplete(

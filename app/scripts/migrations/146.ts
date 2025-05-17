@@ -1,9 +1,16 @@
 import { hasProperty, isObject } from '@metamask/utils';
-import { cloneDeep } from 'lodash';
 import {
-  CHAIN_IDS,
-  DEFAULT_CUSTOM_TESTNET_MAP,
-} from '../../../shared/constants/network';
+  NetworkConfiguration,
+  RpcEndpointType,
+} from '@metamask/network-controller';
+import {
+  BlockExplorerUrl,
+  BUILT_IN_CUSTOM_NETWORKS_RPC,
+  ChainId,
+  NetworkNickname,
+  NetworksTicker,
+} from '@metamask/controller-utils';
+import { cloneDeep } from 'lodash';
 
 type VersionedData = {
   meta: { version: number };
@@ -33,9 +40,27 @@ function transformState(state: Record<string, unknown>) {
     isObject(state.NetworkController) &&
     isObject(state.NetworkController.networkConfigurationsByChainId)
   ) {
+    const megaethTestnet = 'megaeth-testnet';
+    const megaethTestnetChainId = ChainId[megaethTestnet];
+    const megaethTestnetConfiguration: NetworkConfiguration = {
+      chainId: megaethTestnetChainId,
+      name: NetworkNickname[megaethTestnet],
+      nativeCurrency: NetworksTicker[megaethTestnet],
+      blockExplorerUrls: [BlockExplorerUrl[megaethTestnet]],
+      defaultRpcEndpointIndex: 0,
+      defaultBlockExplorerUrlIndex: 0,
+      rpcEndpoints: [
+        {
+          networkClientId: megaethTestnet,
+          type: RpcEndpointType.Custom,
+          url: BUILT_IN_CUSTOM_NETWORKS_RPC.MEGAETH_TESTNET,
+        },
+      ],
+    };
+
     state.NetworkController.networkConfigurationsByChainId[
-      CHAIN_IDS.MEGAETH_TESTNET
-    ] = cloneDeep(DEFAULT_CUSTOM_TESTNET_MAP[CHAIN_IDS.MEGAETH_TESTNET]);
+      megaethTestnetChainId
+    ] = megaethTestnetConfiguration;
   }
   return state;
 }

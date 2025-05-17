@@ -8,7 +8,6 @@ import {
 } from '@metamask/transaction-controller';
 import { Json, add0x } from '@metamask/utils';
 import { Hex } from 'viem';
-import { errorCodes } from '@metamask/rpc-errors';
 import {
   MESSAGE_TYPE,
   ORIGIN_METAMASK,
@@ -24,6 +23,7 @@ import {
   MetaMetricsEventTransactionEstimateType,
 } from '../../../../shared/constants/metametrics';
 import {
+  EIP5792ErrorCode,
   TokenStandard,
   TransactionApprovalAmountType,
   TransactionMetaMetricsEvent,
@@ -60,6 +60,7 @@ import { getSnapAndHardwareInfoForMetrics } from '../snap-keyring/metrics';
 import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
 import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
+import { extractRpcDomain } from '../util';
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
 
@@ -1098,6 +1099,19 @@ async function buildEventFragmentProperties({
     transactionMetricsRequest.getAccountBalance,
   );
 
+  // Only calculate and add domain to properties for "Transaction Submitted" and "Transaction Finalized" events
+  if (
+    status === TransactionStatus.submitted ||
+    status === TransactionStatus.confirmed
+  ) {
+    // Get RPC URL from provider
+    const rpcUrl = transactionMetricsRequest.getNetworkRpcUrl(
+      transactionMeta.chainId,
+    );
+    const domain = extractRpcDomain(rpcUrl);
+    properties.rpc_domain = domain;
+  }
+
   return { properties, sensitiveProperties };
 }
 
@@ -1238,7 +1252,7 @@ async function addBatchProperties(
 
     properties.eip7702_upgrade_rejection =
       // @ts-expect-error Code has string type in controller
-      isUpgrade && error.code === errorCodes.rpc.methodNotSupported;
+      isUpgrade && error.code === EIP5792ErrorCode.RejectedUpgrade;
   }
 
   properties.eip7702_upgrade_transaction = isUpgrade;
