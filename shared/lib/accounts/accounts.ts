@@ -211,6 +211,8 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
   }
 
   async discoverAccounts(entropySource: string) {
+    const accounts: KeyringAccount[] = [];
+
     // TODO: Maybe use `Promise.all` or `Promise.allSettled` instead (for now we go sequentially
     // because of our naming logic).
     for (let index = 0; ; index++) {
@@ -230,11 +232,12 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
             entropySource,
           };
 
-          await this.createAccount(options, {
+          const account = await this.createAccount(options, {
             displayConfirmation: false,
             displayAccountNameSuggestion: false,
             setSelectedAccount: false,
           });
+          accounts.push(account);
         } catch (error) {
           console.warn(
             `Unable to create discovered account: ${derivationPath}:`,
@@ -245,6 +248,8 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
         }
       }
     }
+
+    return accounts;
   }
 }
 ///: END:ONLY_INCLUDE_IF
