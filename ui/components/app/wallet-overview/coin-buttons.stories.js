@@ -10,6 +10,7 @@ export default {
     account: accounts[selectedAccount],
     chainId: '1',
     isSwapsChain: true,
+    trackingLocation: 'home',
     isSigningEnabled: true,
     isBridgeChain: true,
     isBuyableChain: true,

@@ -285,6 +285,7 @@ const AssetPage = ({
           <CoinButtons
             {...{
               account,
+              trackingLocation: 'asset-page',
               isBuyableChain,
               isSigningEnabled,
               isSwapsChain,
