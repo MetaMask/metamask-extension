@@ -1,4 +1,7 @@
-const { readChangedAndNewFilesWithStatus, getChangedAndNewFiles } = require('../../test/e2e/changedFilesUtil.js');
+const {
+  readChangedAndNewFilesWithStatus,
+  getChangedAndNewFiles,
+} = require('../../test/e2e/changedFilesUtil.js');
 
 /**
  * Verifies that all changed files are in the /_locales/ directory.
