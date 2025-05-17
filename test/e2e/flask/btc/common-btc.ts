@@ -1,11 +1,11 @@
 import { Mockttp } from 'mockttp';
-import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
 import { ACCOUNT_TYPE } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import FixtureBuilder from '../../fixture-builder';
 import {
   mockExchangeRates,
   mockInitialFullScan,
@@ -13,19 +13,12 @@ import {
 } from './mocks';
 
 export async function withBtcAccountSnap(
-  {
-    title,
-    bitcoinSupportEnabled,
-  }: { title?: string; bitcoinSupportEnabled?: boolean; isFunded?: boolean },
   test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
+  title?: string,
 ) {
   await withFixtures(
     {
-      fixtures: new FixtureBuilder()
-        .withPreferencesController({
-          bitcoinSupportEnabled: bitcoinSupportEnabled ?? true,
-        })
-        .build(),
+      fixtures: new FixtureBuilder().build(),
       title,
       dapp: true,
       testSpecificMock: async (mockServer: Mockttp) => [

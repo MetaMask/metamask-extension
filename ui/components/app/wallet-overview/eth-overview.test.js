@@ -149,7 +149,6 @@ describe('EthOverview', () => {
       multichainNetworkConfigurationsByChainId:
         AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
       selectedMultichainNetworkChainId: BtcScope.Mainnet,
-      bitcoinSupportEnabled: true,
     },
     ramps: {
       buyableChains: defaultBuyableChains,

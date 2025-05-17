@@ -14,7 +14,7 @@ const mockKeyringId = '01JKAF3DSGM3AB87EM9N0K41AJ';
 
 const goToAddNewAccount = (
   getByTestId: (testId: string) => HTMLElement,
-  accountType: 'solana' | 'evm',
+  accountType: 'bitcoin' | 'solana' | 'evm',
 ) => {
   const addNewAccountButton = getByTestId('add-new-account-button');
   fireEvent.click(addNewAccountButton);
@@ -24,11 +24,16 @@ const goToAddNewAccount = (
       'multichain-account-menu-popover-add-account',
     );
     fireEvent.click(addEvmAccountButton);
-  } else {
+  } else if (accountType === 'solana') {
     const addSolanaAccountButton = getByTestId(
       'multichain-account-menu-popover-add-solana-account',
     );
     fireEvent.click(addSolanaAccountButton);
+  } else {
+    const addBitcoinAccountButton = getByTestId(
+      'multichain-account-menu-popover-add-bitcoin-account',
+    );
+    fireEvent.click(addBitcoinAccountButton);
   }
 };
 

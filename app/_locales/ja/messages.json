@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "ビットコインアカウント (ベータ)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "ビットコインアカウント (テストネット)"
-  },
   "addBlockExplorer": {
     "message": "ブロックエクスプローラーを追加"
   },
@@ -661,22 +658,6 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "ビットコイン"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "この機能をオンにすると、既存のシークレットリカバリーフレーズで取得したビットコインアカウントをMetaMask拡張機能に追加できるようになります。これは試験運用中のベータ機能であるため、自己責任でご使用ください。新しいビットコインエクスペリエンスのフィードバックをご提供いただくには、こちらの$1に入力してください。",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "「新しいビットコインアカウントの追加 (ベータ)」を有効にする"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "この機能をオンにすると、テストネットワーク用にビットコインアカウントを追加できるようになります。"
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "「新しいビットコインアカウントの追加 (テストネット)」を有効にする"
   },
   "blockExplorerAccountAction": {
     "message": "アカウント",

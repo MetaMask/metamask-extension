@@ -60,7 +60,6 @@ type TestState = MultichainState &
       currencyRates: Record<string, { conversionRate: string }>;
       completedOnboarding: boolean;
       selectedNetworkClientId?: string;
-      bitcoinSupportEnabled: boolean;
     };
   };
 
@@ -126,7 +125,6 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
       multichainNetworkConfigurationsByChainId:
         AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
       selectedMultichainNetworkChainId: BtcScope.Mainnet,
-      bitcoinSupportEnabled: true,
       networksWithTransactionActivity: {},
     },
   };

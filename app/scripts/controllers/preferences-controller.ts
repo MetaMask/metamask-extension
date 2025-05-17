@@ -129,10 +129,6 @@ export type PreferencesControllerState = Omit<
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  bitcoinSupportEnabled: boolean;
-  bitcoinTestnetSupportEnabled: boolean;
-  ///: END:ONLY_INCLUDE_IF
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
   knownMethodData: Record<string, string>;
@@ -173,8 +169,6 @@ export const getDefaultPreferencesControllerState =
     openSeaEnabled: true,
     securityAlertsEnabled: true,
     watchEthereumAccountEnabled: false,
-    bitcoinSupportEnabled: false,
-    bitcoinTestnetSupportEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     ///: END:ONLY_INCLUDE_IF
@@ -318,14 +312,6 @@ const controllerMetadata = {
     anonymous: false,
   },
   watchEthereumAccountEnabled: {
-    persist: true,
-    anonymous: false,
-  },
-  bitcoinSupportEnabled: {
-    persist: true,
-    anonymous: false,
-  },
-  bitcoinTestnetSupportEnabled: {
     persist: true,
     anonymous: false,
   },
@@ -619,32 +605,6 @@ export class PreferencesController extends BaseController<
   setWatchEthereumAccountEnabled(watchEthereumAccountEnabled: boolean): void {
     this.update((state) => {
       state.watchEthereumAccountEnabled = watchEthereumAccountEnabled;
-    });
-  }
-  ///: END:ONLY_INCLUDE_IF
-
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  /**
-   * Setter for the `bitcoinSupportEnabled` property.
-   *
-   * @param bitcoinSupportEnabled - Whether or not the user wants to
-   * enable the "Add a new Bitcoin account (Beta)" button.
-   */
-  setBitcoinSupportEnabled(bitcoinSupportEnabled: boolean): void {
-    this.update((state) => {
-      state.bitcoinSupportEnabled = bitcoinSupportEnabled;
-    });
-  }
-
-  /**
-   * Setter for the `bitcoinTestnetSupportEnabled` property.
-   *
-   * @param bitcoinTestnetSupportEnabled - Whether or not the user wants to
-   * enable the "Add a new Bitcoin account (Testnet)" button.
-   */
-  setBitcoinTestnetSupportEnabled(bitcoinTestnetSupportEnabled: boolean): void {
-    this.update((state) => {
-      state.bitcoinTestnetSupportEnabled = bitcoinTestnetSupportEnabled;
     });
   }
   ///: END:ONLY_INCLUDE_IF

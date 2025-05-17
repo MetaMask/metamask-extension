@@ -519,15 +519,6 @@ const SETTINGS_CONSTANTS = [
     route: `${DEVELOPER_OPTIONS_ROUTE}#service-worker-keep-alive`,
     icon: IconName.CodeCircle,
   },
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('bitcoinSupportToggleTitle'),
-    descriptionMessage: (t) => t('bitcoinSupportToggleDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#bitcoin-support`,
-    icon: 'fas fa-flask',
-  },
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   {
     tabMessage: (t) => t('experimental'),
