@@ -297,7 +297,7 @@ const TokenButtons = ({
           className="token-overview__button"
           Icon={
             <Icon
-              name={IconName.PlusAndMinus}
+              name={IconName.Money}
               color={IconColor.iconDefault}
               size={IconSize.Sm}
             />
@@ -318,7 +318,7 @@ const TokenButtons = ({
         onClick={handleSendOnClick}
         Icon={
           <Icon
-            name={IconName.Arrow2UpRight}
+            name={IconName.Send}
             color={IconColor.iconDefault}
             size={IconSize.Sm}
           />
