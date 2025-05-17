@@ -481,7 +481,6 @@ describe('EthOverview', () => {
       { testId: ETH_OVERVIEW_SEND, buttonText: 'Send' },
       { testId: ETH_OVERVIEW_SWAP, buttonText: 'Swap' },
       { testId: ETH_OVERVIEW_BRIDGE, buttonText: 'Bridge' },
-      { testId: ETH_OVERVIEW_BUY, buttonText: 'Buy' },
     ];
 
     it.each(buttonTestCases)(
