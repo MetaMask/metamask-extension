@@ -4966,20 +4966,23 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
-  "securityChangePasswordHint": {
-    "message": "Password hint"
-  },
   "securityChangePasswordChange": {
     "message": "Change password"
   },
   "securityChangePasswordDescription": {
     "message": "Choose a strong password to unlock MetaMask app on your device. If you lose this password, you will need your Secret Recovery Phrase to re-import your wallet."
   },
+  "securityChangePasswordHint": {
+    "message": "Password hint"
+  },
   "securityChangePasswordTitle": {
     "message": "Password"
   },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
+  },
+  "securityFooterText": {
+    "message": "Your wallet is most protected when both recovery methods are set up. If one fail, the other helps you recover your wallet."
   },
   "securityMessageLinkForNetworks": {
     "message": "network scams and security risks"
@@ -5004,17 +5007,14 @@
     "message": "$1 RECOVERY",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpLabel": {
-    "message": "SECRET RECOVERY PHRASES"
-  },
-  "securityFooterText": {
-    "message": "Your wallet is most protected when both recovery methods are set up. If one fail, the other helps you recover your wallet."
-  },
   "securitySrpBackupSrp": {
     "message": "Back up Secret Recovery Phrase"
   },
   "securitySrpDescription": {
     "message": "Back up your Secret Recovery Phrase. Be sure to store your Secret Recovery Phrase in a safe place that only you can access and won’t forget."
+  },
+  "securitySrpLabel": {
+    "message": "SECRET RECOVERY PHRASES"
   },
   "securitySrpSocialLoginDescription": {
     "message": "Back up your Secret Recovery Phrase and link your wallet to an Apple or Google account. Be sure to store your Secret Recovery Phrase in a safe place that only you can access and won’t forget."
@@ -6856,15 +6856,15 @@
   "unlockPageIncorrectPassword": {
     "message": "Password is incorrect. Please try again."
   },
+  "unlockPageIncorrectPassword": {
+    "message": "Password is incorrect. Please try again."
+  },
   "unlockPageTooManyFailedAttempts": {
     "message": "Too many failed attempts. Please try again in $1.",
     "description": "$1 time to try again"
   },
   "unlockPageTooManyFailedAttemptsPermanent": {
     "message": "Too many failed attempts. Your account is permanently locked."
-  },
-  "unlockPageIncorrectPassword": {
-    "message": "Password is incorrect. Please try again."
   },
   "unpin": {
     "message": "Unpin"

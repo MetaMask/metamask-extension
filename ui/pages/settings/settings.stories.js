@@ -41,8 +41,8 @@ const ROUTES_TO_I18N_KEYS = {
   [GENERAL_ROUTE]: 'general',
   [NETWORKS_FORM_ROUTE]: 'networks',
   [NETWORKS_ROUTE]: 'networks',
-  [SECURITY_PASSWORD_HINT_ROUTE]: 'securityPasswordHint',
   [SECURITY_PASSWORD_CHANGE_ROUTE]: 'securityPassword',
+  [SECURITY_PASSWORD_HINT_ROUTE]: 'securityPasswordHint',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
 };
 

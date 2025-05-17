@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -15,7 +14,6 @@ import {
   BackgroundColor,
   Display,
   FlexDirection,
-  TextAlign,
   TextColor,
   TextVariant,
 } from '../../helpers/constants/design-system';
