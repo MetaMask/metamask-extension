@@ -271,7 +271,7 @@
     "@metamask/bridge-controller": "patch:@metamask/bridge-controller@npm%3A20.0.0#~/.yarn/patches/@metamask-bridge-controller-npm-20.0.0-ddd6003340.patch",
     "@metamask/bridge-status-controller": "^20.0.0",
     "@metamask/browser-passworder": "^4.3.0",
-    "@metamask/chain-agnostic-permission": "^0.3.0",
+    "@metamask/chain-agnostic-permission": "^0.6.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^11.9.0",
     "@metamask/delegation-controller": "^0.1.0",
