@@ -2965,10 +2965,7 @@ export function signTransaction(history) {
       );
       history.push(CONFIRM_TRANSACTION_ROUTE);
     } else {
-      let transactionType =
-        draftTransaction.recipient.type === RECIPIENT_TYPES.SMART_CONTRACT
-          ? TransactionType.contractInteraction
-          : TransactionType.simpleSend;
+      let transactionType;
 
       if (draftTransaction.sendAsset.type !== AssetType.native) {
         if (draftTransaction.sendAsset.type === AssetType.NFT) {
