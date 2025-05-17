@@ -1,6 +1,10 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { veryLargeDelayMs, withFixtures } from '../../../helpers';
+import {
+  regularDelayMs,
+  veryLargeDelayMs,
+  withFixtures,
+} from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../../constants';
 import { mockIdentityServices } from '../mocks';
@@ -82,6 +86,7 @@ describe('Account syncing - Multi SRP', function () {
           // Wait for the account AND account name to be synced
           await waitUntilSyncedAccountsNumberEquals(2);
           await waitUntilEventsEmittedNumberEquals(2);
+          await driver.delay(regularDelayMs);
 
           // Add a new SRP and add a new account on top of the one created by default when
           // importing a new SRP
@@ -99,6 +104,7 @@ describe('Account syncing - Multi SRP', function () {
             accountName: thirdAccountNameSrp2,
             srpIndex: 2,
           });
+          await driver.delay(regularDelayMs);
 
           // Wait for the account AND account name to be synced
           await waitUntilSyncedAccountsNumberEquals(4);
