@@ -455,7 +455,6 @@ export const CoinOverview = ({
             defaultSwapsToken,
             ///: END:ONLY_INCLUDE_IF
             classPrefix,
-            iconButtonClassName: `${classPrefix}-overview__icon-button`,
           }}
         />
       }

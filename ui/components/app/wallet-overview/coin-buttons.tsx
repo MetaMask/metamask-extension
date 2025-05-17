@@ -113,7 +113,6 @@ const CoinButtons = ({
   defaultSwapsToken,
   ///: END:ONLY_INCLUDE_IF
   classPrefix = 'coin',
-  iconButtonClassName = '',
 }: CoinButtonsProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -186,7 +185,11 @@ const CoinButtons = ({
     const tooltipInfo = conditions.find(({ condition }) => condition);
     if (tooltipInfo?.message) {
       return (
-        <Tooltip title={t(tooltipInfo.message)} position="bottom">
+        <Tooltip
+          title={t(tooltipInfo.message)}
+          position="bottom"
+          wrapperClassName="tooltip-button-wrapper"
+        >
           {contents}
         </Tooltip>
       );
@@ -363,35 +366,34 @@ const CoinButtons = ({
   return (
     <Box
       display={Display.Flex}
-      justifyContent={JustifyContent.spaceEvenly}
+      justifyContent={JustifyContent.spaceBetween}
       width={BlockSize.Full}
+      gap={4}
     >
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <IconButton
           className={`${classPrefix}-overview__button`}
-          iconButtonClassName={iconButtonClassName}
           Icon={
             <Icon
               name={IconName.PlusAndMinus}
               color={IconColor.iconDefault}
-              size={IconSize.Sm}
+              size={IconSize.Md}
             />
           }
           disabled={!isBuyableChain}
           data-testid={`${classPrefix}-overview-buy`}
           label={t('buyAndSell')}
           onClick={handleBuyAndSellOnClick}
+          width={BlockSize.Full}
           tooltipRender={(contents: React.ReactElement) =>
             generateTooltip('buyButton', contents)
           }
         />
         ///: END:ONLY_INCLUDE_IF
       }
-
       <IconButton
         className={`${classPrefix}-overview__button`}
-        iconButtonClassName={iconButtonClassName}
         disabled={
           !isSwapsChain || !isSigningEnabled || !isExternalServicesEnabled
         }
@@ -399,12 +401,13 @@ const CoinButtons = ({
           <Icon
             name={IconName.SwapHorizontal}
             color={IconColor.iconDefault}
-            size={IconSize.Sm}
+            size={IconSize.Md}
           />
         }
         onClick={handleSwapOnClick}
         label={t('swap')}
         data-testid="token-overview-button-swap"
+        width={BlockSize.Full}
         tooltipRender={(contents: React.ReactElement) =>
           generateTooltip('swapButton', contents)
         }
@@ -413,7 +416,6 @@ const CoinButtons = ({
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <IconButton
           className={`${classPrefix}-overview__button`}
-          iconButtonClassName={iconButtonClassName}
           disabled={
             !isBridgeChain ||
             !isSigningEnabled ||
@@ -424,11 +426,12 @@ const CoinButtons = ({
             <Icon
               name={IconName.Bridge}
               color={IconColor.iconDefault}
-              size={IconSize.Sm}
+              size={IconSize.Md}
             />
           }
           label={t('bridge')}
           onClick={() => handleBridgeOnClick(false)}
+          width={BlockSize.Full}
           tooltipRender={(contents: React.ReactElement) =>
             generateTooltip('bridgeButton', contents)
           }
@@ -437,18 +440,18 @@ const CoinButtons = ({
       }
       <IconButton
         className={`${classPrefix}-overview__button`}
-        iconButtonClassName={iconButtonClassName}
         data-testid={`${classPrefix}-overview-send`}
         Icon={
           <Icon
             name={IconName.Arrow2UpRight}
             color={IconColor.iconDefault}
-            size={IconSize.Sm}
+            size={IconSize.Md}
           />
         }
         disabled={!isSigningEnabled || isNonEvmAccountWithoutExternalServices}
         label={t('send')}
         onClick={handleSendOnClick}
+        width={BlockSize.Full}
         tooltipRender={(contents: React.ReactElement) =>
           generateTooltip('sendButton', contents)
         }
@@ -463,16 +466,16 @@ const CoinButtons = ({
           )}
           <IconButton
             className={`${classPrefix}-overview__button`}
-            iconButtonClassName={iconButtonClassName}
             data-testid={`${classPrefix}-overview-receive`}
             Icon={
               <Icon
                 name={IconName.ScanBarcode}
                 color={IconColor.iconDefault}
-                size={IconSize.Sm}
+                size={IconSize.Md}
               />
             }
             label={t('receive')}
+            width={BlockSize.Full}
             onClick={() => {
               trace({ name: TraceName.ReceiveModal });
               trackEvent({

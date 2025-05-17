@@ -308,7 +308,6 @@ const TokenButtons = ({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
           // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           disabled={token.isERC721 || !isBuyableChain}
-          tooltipRender={null}
         />
         ///: END:ONLY_INCLUDE_IF
       }
@@ -326,7 +325,6 @@ const TokenButtons = ({
         label={t('send')}
         data-testid="eth-overview-send"
         disabled={token.isERC721}
-        tooltipRender={null}
       />
 
       <IconButton
@@ -340,7 +338,6 @@ const TokenButtons = ({
         }
         onClick={handleSwapOnClick}
         label={t('swap')}
-        tooltipRender={null}
         disabled={!isSwapsChain}
       />
 
@@ -358,7 +355,6 @@ const TokenButtons = ({
           }
           label={t('bridge')}
           onClick={() => handleBridgeOnClick(false)}
-          tooltipRender={null}
           disabled={!isBridgeChain}
         />
         ///: END:ONLY_INCLUDE_IF
