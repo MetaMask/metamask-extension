@@ -14,6 +14,8 @@ export const NftDetectionControllerInit: ControllerInitFunction<
   NftDetectionController,
   NftDetectionControllerMessenger
 > = (request) => {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   const { controllerMessenger, getController } = request;
 
   const preferencesController = () => getController('PreferencesController');
