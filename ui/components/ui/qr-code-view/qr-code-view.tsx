@@ -39,7 +39,7 @@ function QrCodeView({
   warning,
   accountName,
 }: {
-  Qr: { message: string; data: string };
+  Qr: { message?: string; data: string };
   warning: string | null | undefined;
   accountName?: string;
 }) {
