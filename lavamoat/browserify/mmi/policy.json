@@ -1289,7 +1289,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/multichain-network-controller": true,
+        "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1896,7 +1896,7 @@
         "@metamask/message-manager>jsonschema": true
       }
     },
-    "@metamask/multichain-network-controller": {
+    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
       "globals": {
         "URL": true
       },
@@ -1906,7 +1906,7 @@
         "@metamask/network-controller": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/multichain-network-controller>@solana/addresses": true
+        "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses": true
       }
     },
     "@metamask/multichain-transactions-controller": {

@@ -22,6 +22,8 @@ export type AvatarGroupProps = StyleUtilityProps & {
   borderColor?: BorderColor;
   /** * Whether the tag should be displayed as separate text or within an overlay avatar */
   isTagOverlay?: boolean;
+  /** * Whether the tag should be displayed */
+  renderTag?: boolean;
 };
 
 export enum AvatarType {
