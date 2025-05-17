@@ -1,10 +1,10 @@
-const {
-  openMenuSafe,
-  tinyDelayMs,
-  unlockWallet,
-  withFixtures,
-} = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
+import { MockttpServer } from 'mockttp';
+import { tinyDelayMs, withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Settings', function () {
   const ENS_NAME = 'metamask.eth';
@@ -12,15 +12,15 @@ describe('Settings', function () {
   const ENS_DESTINATION_URL = `https://app.ens.domains/name/${ENS_NAME}`;
 
   it('Redirects to ENS domains when user inputs ENS into address bar', async function () {
-    async function mockMetaMaskDotEth(mockServer) {
+    async function mockMetaMaskDotEth(mockServer: MockttpServer) {
       return await mockServer.forGet(ENS_NAME_URL).thenResetConnection();
     }
-    async function mockEnsDotDomains(mockServer) {
+    async function mockEnsDotDomains(mockServer: MockttpServer) {
       return await mockServer
         .forGet(ENS_DESTINATION_URL)
         .thenReply(200, 'mocked ENS domain');
     }
-    async function mockEns(mockServer) {
+    async function mockEns(mockServer: MockttpServer) {
       return [
         await mockMetaMaskDotEth(mockServer),
         await mockEnsDotDomains(mockServer),
@@ -30,7 +30,7 @@ describe('Settings', function () {
     // on the ".eth" hostname. The proxy does too much interference with 8000.
     await withFixtures(
       {
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockEns,
         driverOptions: {
           proxyPort: '8001',
@@ -55,32 +55,30 @@ describe('Settings', function () {
   });
 
   it('Does not fetch ENS data for ENS Domain when ENS and IPFS switched off', async function () {
-    let server;
+    let server: MockttpServer;
 
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        title: this.test.fullTitle(),
-        testSpecificMock: (mockServer) => {
+        title: this.test?.fullTitle(),
+        testSpecificMock: (mockServer: MockttpServer) => {
           server = mockServer;
         },
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
-        // goes to the settings screen
-        await openMenuSafe(driver);
+        // navigate to security & privacy settings screen
+        await new HeaderNavbar(driver).openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.check_pageIsLoaded();
+        await settingsPage.goToPrivacySettings();
 
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
-
-        // turns off IPFS setting
-        await driver.clickElement('[data-testid="ipfsToggle"] .toggle-button');
-
-        // turns off ENS domain resolution
-        await driver.clickElement(
-          '[data-testid="ipfs-gateway-resolution-container"] .toggle-button',
-        );
+        // turns off IPFS setting and ENS domain resolution
+        const privacySettings = new PrivacySettings(driver);
+        await privacySettings.check_pageIsLoaded();
+        await privacySettings.toggleIpfsGateway();
+        await privacySettings.toggleEnsDomainResolution();
 
         // Now that we no longer need the MetaMask UI, and want the browser
         // to handle the request error, we need to stop the server
