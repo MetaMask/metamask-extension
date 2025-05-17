@@ -971,61 +971,61 @@
     },
     "@metamask/abi-utils": {
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/abi-utils>@metamask/utils": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-hd-keyring>@metamask/eth-sig-util>@metamask/abi-utils": {
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true
       }
     },
     "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@metamask/abi-utils": {
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true
       }
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util>@metamask/abi-utils": {
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@metamask/abi-utils": {
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-simple-keyring>@metamask/eth-sig-util>@metamask/abi-utils": {
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/eth-sig-util>@metamask/abi-utils": {
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true
       }
     },
     "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>@metamask/abi-utils": {
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-sig-util>@metamask/abi-utils": {
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true
       }
     },
     "@metamask/signature-controller>@metamask/eth-sig-util>@metamask/abi-utils": {
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true
       }
     },
@@ -1160,7 +1160,7 @@
         "@metamask/metamask-eth-abis": true,
         "@metamask/multichain-network-controller": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/bridge-controller>bignumber.js": true,
         "lodash": true,
@@ -1178,7 +1178,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/bridge-status-controller>bignumber.js": true,
@@ -1321,7 +1321,7 @@
         "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/eth-json-rpc-middleware>klona": true,
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true
@@ -1337,7 +1337,7 @@
         "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/eth-json-rpc-middleware>klona": true,
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true
@@ -1520,7 +1520,7 @@
         "@metamask/keyring-api": true,
         "@metamask/keyring-internal-snap-client": true,
         "@metamask/keyring-api>@metamask/keyring-utils": true,
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true,
         "webpack>events": true,
         "@metamask/eth-snap-keyring>uuid": true
@@ -1671,7 +1671,7 @@
     "@metamask/keyring-api": {
       "packages": {
         "@metamask/keyring-api>@metamask/keyring-utils": true,
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/keyring-api>bech32": true
       }
@@ -1703,7 +1703,7 @@
       "packages": {
         "@metamask/keyring-api": true,
         "@metamask/keyring-api>@metamask/keyring-utils": true,
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/keyring-snap-client>uuid": true
       }
     },
@@ -1712,7 +1712,7 @@
         "URL": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true,
         "bitcoin-address-validation": true
       }
@@ -1773,7 +1773,7 @@
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/network-controller": true,
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/multichain-network-controller>@solana/addresses": true
       }
@@ -2166,7 +2166,7 @@
     },
     "@metamask/snaps-utils>@metamask/snaps-registry": {
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true,
         "viem>ox>@noble/curves": true,
         "@noble/hashes": true
@@ -2179,7 +2179,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@noble/hashes": true,
         "luxon": true
@@ -2192,7 +2192,7 @@
       },
       "packages": {
         "@metamask/rpc-errors": true,
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true
       }
     },
@@ -2216,7 +2216,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/snaps-sdk": true,
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
@@ -2252,7 +2252,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/snaps-sdk": true,
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
@@ -2310,7 +2310,7 @@
         "@metamask/gas-fee-controller": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "bn.js": true,
@@ -2325,7 +2325,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
@@ -2340,7 +2340,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
@@ -2355,7 +2355,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
@@ -2370,7 +2370,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@noble/hashes": true,
         "@metamask/eth-sig-util>@metamask/utils>@scure/base": true,
         "browserify>buffer": true,
