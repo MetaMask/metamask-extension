@@ -2952,6 +2952,17 @@ export function getIsAddSnapAccountEnabled(state) {
 }
 ///: END:ONLY_INCLUDE_IF
 
+/**
+ * Get the state of the `solanaTestnetsEnabled` remote feature flag.
+ *
+ * @param {*} state
+ * @returns The state of the `solanaTestnetsEnabled` remote feature flag.
+ */
+export function getIsSolanaTestnetSupportEnabled(state) {
+  const { solanaTestnetsEnabled } = getRemoteFeatureFlags(state);
+  return Boolean(solanaTestnetsEnabled);
+}
+
 export function getIsWatchEthereumAccountEnabled(state) {
   return state.metamask.watchEthereumAccountEnabled;
 }
