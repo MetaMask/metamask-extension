@@ -78,6 +78,7 @@ import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import FlaskHomeFooter from './flask/flask-home-footer.component';
+import { ApprovalType } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IF
 
 function shouldCloseNotificationPopup({
@@ -244,37 +245,24 @@ export default class Home extends PureComponent {
     } else if (canRedirect && haveBridgeQuotes) {
       history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
     } else if (pendingApprovals.length || hasApprovalFlows) {
-      console.log(
-        'Current pending approvals in home component:',
-        pendingApprovals,
-      );
       if (this.state.isNavigating) {
-        console.log(
-          'Navigation already in progress, skipping duplicate navigation',
-        );
         return;
       }
 
       if (currentSnapInApprovalFlow && pendingApprovals.length > 1) {
-        const installSnapResultApproval = pendingApprovals.find(
+        const installSnapApproval = pendingApprovals.find(
           (approval) =>
-            (approval.type === 'wallet_installSnapResult' ||
-              approval.type === 'wallet_installSnap' ||
-              approval.type === 'wallet_updateSnap') &&
+            (approval.type === ApprovalType.WalletInstallSnapResult ||
+              approval.type === ApprovalType.WalletInstallSnap ||
+              approval.type === ApprovalType.WalletUpdateSnap) &&
             approval.requestData.metadata?.origin === currentSnapInApprovalFlow,
         );
-        if (installSnapResultApproval && !this.state.isNavigating) {
+        if (installSnapApproval && !this.state.isNavigating) {
+          // we need to set the state here to prevent the navigation from being triggered again
           this.setState({ isNavigating: true });
-          const filteredApprovals = pendingApprovals.filter(
-            (approval) => approval.id !== installSnapResultApproval.id,
-          );
-          const reorderedApprovals = [
-            installSnapResultApproval,
-            ...filteredApprovals,
-          ];
           navigateToConfirmation(
-            installSnapResultApproval.id,
-            reorderedApprovals,
+            installSnapApproval.id,
+            pendingApprovals,
             hasApprovalFlows,
             history,
           );
@@ -293,8 +281,6 @@ export default class Home extends PureComponent {
   }
 
   componentDidMount() {
-    console.log('Home componentDidMount');
-    console.log('pendingApprovals:', this.props.pendingApprovals);
     this.checkStatusAndNavigate();
 
     this.props.fetchBuyableChains();
@@ -308,9 +294,6 @@ export default class Home extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log('Home componentDidUpdate');
-    console.log('prevProps.pendingApprovals:', prevProps.pendingApprovals);
-    console.log('currentProps.pendingApprovals:', this.props.pendingApprovals);
     const {
       attemptCloseNotificationPopup,
       isNotification,
@@ -336,7 +319,6 @@ export default class Home extends PureComponent {
     if (notificationClosing && !prevState.notificationClosing) {
       attemptCloseNotificationPopup();
     } else if (isNotification || hasAllowedPopupRedirectApprovals) {
-      console.log('Check status and navigate called from componentDidUpdate');
       this.checkStatusAndNavigate();
     }
   }

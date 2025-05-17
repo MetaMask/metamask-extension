@@ -82,10 +82,6 @@ export default function SnapUpdate({
 
   useEffect(() => {
     if (!currentSnapInApprovalFlow.current && request.metadata?.origin) {
-      console.log(
-        'Setting currentSnapInApprovalFlow to:',
-        request.metadata.origin,
-      );
       currentSnapInApprovalFlow.current = request.metadata.origin;
       dispatch(setCurrentSnapInApprovalFlow(request.metadata.origin));
       dispatch(setSnapConnectTime(request.metadata.origin, approval.time));

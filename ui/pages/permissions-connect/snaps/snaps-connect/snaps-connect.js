@@ -66,7 +66,6 @@ export default function SnapsConnect({
 
   useEffect(() => {
     if (!currentSnapInApprovalFlow.current && snapId) {
-      console.log('Setting currentSnapInApprovalFlow to:', snapId);
       currentSnapInApprovalFlow.current = snapId;
       dispatch(setCurrentSnapInApprovalFlow(snapId));
       dispatch(setSnapConnectTime(snapId, approval.time));

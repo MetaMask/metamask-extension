@@ -344,6 +344,11 @@ export default class PermissionConnect extends Component {
   approveConnection = (...args) => {
     const { approvePermissionsRequest, forceUpdateMetamaskState } = this.props;
     approvePermissionsRequest(...args);
+    /*
+     * We need to wait for the state to update before redirecting otherwise
+     * in some cases where there's multiple approvals, we will have old state
+     * when we get to the home component
+     */
     forceUpdateMetamaskState().then(() => {
       this.redirect(true);
     });

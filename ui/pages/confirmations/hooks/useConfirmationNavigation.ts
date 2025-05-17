@@ -17,44 +17,15 @@ import {
   SIGNATURE_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
 import { isSignatureTransactionType } from '../utils';
-import {
-  getApprovalFlows,
-  selectPendingApprovalsForNavigation,
-  getSnapsConnectTimes,
-} from '../../../selectors';
+import { getApprovalFlows } from '../../../selectors';
+import { selectReorderedPendingApprovalsForNavigation } from '../../../selectors/approvals';
 
 export function useConfirmationNavigation() {
-  const rawConfirmations = useSelector(selectPendingApprovalsForNavigation);
+  const confirmations = useSelector(
+    selectReorderedPendingApprovalsForNavigation,
+  );
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
-  const snapsConnectTimes = useSelector(getSnapsConnectTimes);
-  const confirmations = rawConfirmations.sort((a, b) => {
-    let aTime;
-    let bTime;
-    if (
-      typeof a.requestData?.metadata === 'object' &&
-      a.requestData.metadata !== null &&
-      'origin' in a.requestData.metadata &&
-      snapsConnectTimes[a.requestData.metadata.origin as string]
-    ) {
-      aTime = snapsConnectTimes[a.requestData.metadata.origin as string];
-    } else {
-      aTime = a.time;
-    }
-    if (
-      typeof b.requestData?.metadata === 'object' &&
-      b.requestData.metadata !== null &&
-      'origin' in b.requestData.metadata &&
-      snapsConnectTimes[b.requestData.metadata.origin as string]
-    ) {
-      bTime = snapsConnectTimes[b.requestData.metadata.origin as string];
-    } else {
-      bTime = b.time;
-    }
-    return aTime - bTime;
-  });
   const history = useHistory();
-
-  console.log('🔍 snapsConnectTimes:', snapsConnectTimes);
 
   const getIndex = useCallback(
     (confirmationId?: string) => {
@@ -98,23 +69,14 @@ export function navigateToConfirmation(
   hasApprovalFlows: boolean,
   history: ReturnType<typeof useHistory>,
 ) {
-  console.log('🧭 navigateToConfirmation called with:', {
-    confirmationId,
-    confirmationsCount: confirmations?.length,
-    hasApprovalFlows,
-    confirmations: confirmations?.map(c => ({ id: c.id, type: c.type }))
-  });
-
   const hasNoConfirmations = confirmations?.length <= 0 || !confirmationId;
 
   if (hasApprovalFlows && hasNoConfirmations) {
-    console.log('🔄 Navigating to confirmation v_next with no specific confirmation');
     history.replace(`${CONFIRMATION_V_NEXT_ROUTE}`);
     return;
   }
 
   if (hasNoConfirmations) {
-    console.log('⚠️ No confirmations available, not navigating');
     return;
   }
 
@@ -123,21 +85,17 @@ export function navigateToConfirmation(
   );
 
   if (!nextConfirmation) {
-    console.log('⚠️ Confirmation not found:', confirmationId);
     return;
   }
 
   const type = nextConfirmation.type as ApprovalType;
-  console.log(`📝 Processing confirmation type: ${type}`);
 
   if (TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(type)) {
-    console.log(`🔄 Navigating to templated confirmation: ${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`);
     history.replace(`${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`);
     return;
   }
 
   if (isSignatureTransactionType(nextConfirmation)) {
-    console.log(`🔄 Navigating to signature request: ${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${SIGNATURE_REQUEST_PATH}`);
     history.replace(
       `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${SIGNATURE_REQUEST_PATH}`,
     );
@@ -145,13 +103,11 @@ export function navigateToConfirmation(
   }
 
   if (type === ApprovalType.Transaction) {
-    console.log(`🔄 Navigating to transaction: ${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`);
     history.replace(`${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`);
     return;
   }
 
   if (type === ApprovalType.EthDecrypt) {
-    console.log(`🔄 Navigating to decrypt message: ${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${DECRYPT_MESSAGE_REQUEST_PATH}`);
     history.replace(
       `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${DECRYPT_MESSAGE_REQUEST_PATH}`,
     );
@@ -159,69 +115,28 @@ export function navigateToConfirmation(
   }
 
   if (type === ApprovalType.EthGetEncryptionPublicKey) {
-    console.log(`🔄 Navigating to encryption public key: ${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`);
     history.replace(
       `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
     );
     return;
   }
 
-  if (type === 'wallet_installSnap') {
-    console.log(`🔄 Navigating to connect route: ${CONNECT_ROUTE}/${confirmationId}/snap-install`);
-    console.log('🔍 Connect approval details:', {
-      id: nextConfirmation.id,
-      type: nextConfirmation.type,
-      requestData: {
-        ...nextConfirmation.requestData,
-        permissions: Object.keys(nextConfirmation.requestData?.permissions || {})
-      },
-      origin: nextConfirmation.origin,
-    });
+  if (type === ApprovalType.WalletInstallSnap) {
     history.replace(`${CONNECT_ROUTE}/${confirmationId}/snap-install`);
     return;
   }
 
-  if (type === 'wallet_updateSnap') {
-    console.log(`🔄 Navigating to connect route: ${CONNECT_ROUTE}/${confirmationId}/snap-update`);
-    console.log('🔍 Connect approval details:', {
-      id: nextConfirmation.id,
-      type: nextConfirmation.type,
-      requestData: {
-        ...nextConfirmation.requestData,
-        permissions: Object.keys(nextConfirmation.requestData?.permissions || {})
-      },
-      origin: nextConfirmation.origin,
-    });
+  if (type === ApprovalType.WalletUpdateSnap) {
     history.replace(`${CONNECT_ROUTE}/${confirmationId}/snap-update`);
     return;
   }
 
-  if (type === 'wallet_installSnapResult') {
-    console.log(`🔄 Navigating to connect route: ${CONNECT_ROUTE}/${confirmationId}/snap-install-result`);
-    console.log('🔍 Connect approval details:', {
-      id: nextConfirmation.id,
-      type: nextConfirmation.type,
-      requestData: {
-        ...nextConfirmation.requestData,
-        permissions: Object.keys(nextConfirmation.requestData?.permissions || {})
-      },
-      origin: nextConfirmation.origin,
-    });
+  if (type === ApprovalType.WalletInstallSnapResult) {
     history.replace(`${CONNECT_ROUTE}/${confirmationId}/snap-install-result`);
     return;
   }
 
   if (type === ApprovalType.WalletRequestPermissions) {
-    console.log(`🔄 Navigating to connect route: ${CONNECT_ROUTE}/${confirmationId}`);
-    console.log('🔍 Connect approval details:', {
-      id: nextConfirmation.id,
-      type: nextConfirmation.type,
-      requestData: {
-        ...nextConfirmation.requestData,
-        permissions: Object.keys(nextConfirmation.requestData?.permissions || {})
-      },
-      origin: nextConfirmation.origin,
-    });
     history.replace(
       `${CONNECT_ROUTE}/${confirmationId}${
         (nextConfirmation.requestData?.permissions as Record<string, unknown>)
@@ -238,13 +153,11 @@ export function navigateToConfirmation(
   )?.tokenId as string;
 
   if (type === ApprovalType.WatchAsset && !tokenId) {
-    console.log(`🔄 Navigating to add token: ${CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}`);
     history.replace(`${CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}`);
     return;
   }
 
   if (type === ApprovalType.WatchAsset && tokenId) {
-    console.log(`🔄 Navigating to add NFT: ${CONFIRM_ADD_SUGGESTED_NFT_ROUTE}`);
     history.replace(`${CONFIRM_ADD_SUGGESTED_NFT_ROUTE}`);
   }
 }
