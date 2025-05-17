@@ -23,7 +23,7 @@ const NetworkListSearch = ({
   const t = useI18nContext();
 
   return (
-    <Box paddingLeft={4} paddingRight={4} paddingBottom={2} paddingTop={0}>
+    <Box paddingLeft={4} paddingRight={4} paddingBottom={2} paddingTop={1}>
       <TextFieldSearch
         size={TextFieldSearchSize.Lg}
         width={BlockSize.Full}
