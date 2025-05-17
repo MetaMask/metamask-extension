@@ -2,7 +2,7 @@ import React from 'react';
 import classnames from 'classnames';
 
 import { ButtonBase, ButtonBaseProps } from '../button-base';
-import { Color } from '../../../helpers/constants/design-system';
+import { BackgroundColor, Color } from '../../../helpers/constants/design-system';
 import { PolymorphicRef } from '../box';
 import type { ButtonSecondaryProps } from './button-secondary.types';
 import {
@@ -21,11 +21,10 @@ export const ButtonSecondary: ButtonSecondaryComponent = React.forwardRef(
     }: ButtonSecondaryProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
-    const buttonColor = danger ? Color.errorDefault : Color.primaryDefault;
+    const buttonColor = danger ? Color.errorDefault : Color.textDefault;
     return (
       <ButtonBase
-        backgroundColor={Color.transparent}
-        borderColor={buttonColor}
+        backgroundColor={BackgroundColor.backgroundMuted}
         color={buttonColor}
         className={classnames(className, 'mm-button-secondary', {
           'mm-button-secondary--type-danger': danger,
