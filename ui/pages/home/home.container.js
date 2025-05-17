@@ -97,8 +97,6 @@ const mapStateToProps = (state) => {
   const pendingApprovals = selectPendingApprovalsForNavigation(state);
   const currentSnapInApprovalFlow =
     pendingApprovals.length > 1 ? getCurrentSnapInApprovalFlow(state) : null;
-  console.log('pendingApprovals', pendingApprovals);
-  console.log('currentSnapInApprovalFlow', currentSnapInApprovalFlow);
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;

@@ -141,84 +141,35 @@ export default class PermissionConnect extends Component {
       snapResultPath,
       requestType,
       getRequestAccountTabIds,
-      permissionsRequest,
       history,
       isRequestingAccounts,
     } = this.props;
     getRequestAccountTabIds();
 
-    console.log('🏁 PermissionConnect componentDidMount', {
-      requestType,
-      isRequestingAccounts,
-      currentPath: history.location.pathname,
-      connectPath,
-      permissions: permissionsRequest?.permissions,
-      permissionsKeys: Object.keys(permissionsRequest?.permissions || {}),
-      requestData: permissionsRequest?.requestData,
-      metadata: permissionsRequest?.metadata,
-    });
-
-
     if (history.location.pathname === connectPath && !isRequestingAccounts) {
-      console.log('🚦 Permission Connect routing decision', {
-        requestType,
-        shouldShowAccountSelection: isRequestingAccounts,
-        connectPath,
-        snapInstallPath,
-        currentPath: history.location.pathname,
-      });
-
       switch (requestType) {
         case 'wallet_installSnap':
-          console.log('📲 Navigating to snapInstallPath', snapInstallPath);
           history.replace(snapInstallPath);
           break;
         case 'wallet_updateSnap':
-          console.log('🔄 Navigating to snapUpdatePath', snapUpdatePath);
           history.replace(snapUpdatePath);
           break;
         case 'wallet_installSnapResult':
-          console.log('✅ Navigating to snapResultPath', snapResultPath);
           history.replace(snapResultPath);
           break;
         case 'wallet_connectSnaps':
-          console.log('🔌 Navigating to snapsConnectPath', snapsConnectPath);
           history.replace(snapsConnectPath);
           break;
         default:
-          console.log('📝 Navigating to confirmPermissionPath', confirmPermissionPath);
           history.replace(confirmPermissionPath);
       }
-    } else {
-      console.log('⚠️ Not redirecting from connect path', {
-        currentPath: history.location.pathname,
-        connectPath,
-        isRequestingAccounts,
-      });
     }
   }
 
   componentDidUpdate(prevProps) {
-    const {
-      permissionsRequest,
-      lastConnectedInfo,
-      targetSubjectMetadata,
-      isRequestingAccounts,
-      requestType,
-    } = this.props;
+    const { permissionsRequest, lastConnectedInfo, targetSubjectMetadata } =
+      this.props;
     const { redirecting, origin } = this.state;
-
-    if (
-      prevProps.isRequestingAccounts !== isRequestingAccounts ||
-      prevProps.requestType !== requestType
-    ) {
-      console.log('🔄 PermissionConnect props changed', {
-        requestType,
-        prevRequestType: prevProps.requestType,
-        isRequestingAccounts,
-        prevIsRequestingAccounts: prevProps.isRequestingAccounts,
-      });
-    }
 
     // We cache the last known good targetSubjectMetadata since it may be null when the approval is cleared
     if (
@@ -249,11 +200,6 @@ export default class PermissionConnect extends Component {
       snapUpdatePath,
       snapResultPath,
     } = this.props;
-
-    console.log('👤 selectAccounts called', {
-      addresses: Array.from(addresses),
-      requestType,
-    });
 
     this.setState(
       {
