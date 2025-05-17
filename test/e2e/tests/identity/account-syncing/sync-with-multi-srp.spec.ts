@@ -89,6 +89,7 @@ describe('Account syncing - Multi SRP', function () {
           await accountListPage.startImportSecretPhrase(
             IDENTITY_TEAM_SEED_PHRASE_2,
           );
+          await homePage.check_newSrpAddedToastIsDisplayed();
 
           await driver.delay(veryLargeDelayMs);
 
@@ -132,6 +133,7 @@ describe('Account syncing - Multi SRP', function () {
           await accountListPage.startImportSecretPhrase(
             IDENTITY_TEAM_SEED_PHRASE_2,
           );
+          await homePage.check_newSrpAddedToastIsDisplayed();
 
           await driver.delay(veryLargeDelayMs);
 
