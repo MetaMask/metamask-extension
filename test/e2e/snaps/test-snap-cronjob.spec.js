@@ -76,7 +76,7 @@ describe('Test Snap Cronjob', function () {
         });
 
         // try to click on the Ok button and pass test if window closes
-        await driver.clickElement({
+        await driver.clickElementSafe({
           text: 'OK',
           tag: 'button',
         });
