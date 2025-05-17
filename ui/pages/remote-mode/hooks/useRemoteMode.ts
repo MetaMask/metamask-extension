@@ -126,6 +126,7 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
     [chainId, upgradeAccount],
   );
 
+  // TODO: check if delegation is already disabled by calling contract directly
   const disableRemoteMode = useCallback(
     async ({ mode }: { mode: REMOTE_MODES }): Promise<void> => {
       const delegationEntries = await listDelegationEntries({

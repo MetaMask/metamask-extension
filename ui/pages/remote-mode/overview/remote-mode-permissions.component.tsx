@@ -315,7 +315,7 @@ export default function RemoteModePermissions({
                 <Box>
                   {dailyAllowance.allowances.map((allowance) => (
                     <RemoteModeDailyAllowanceCard
-                      key={allowance.tokenType}
+                      key={allowance.symbol}
                       dailyAllowance={allowance}
                     />
                   ))}
