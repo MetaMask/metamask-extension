@@ -25,11 +25,11 @@ describe('Clear account activity', function () {
         );
         await driver.waitForSelector({
           css: '[data-testid="activity-list-item-action"]',
-          text: 'Send',
+          text: 'Sent',
         });
         await driver.waitForSelector({
           css: '[data-testid="activity-list-item-action"]',
-          text: 'Receive',
+          text: 'Received',
         });
 
         // Clear activity and nonce data
@@ -44,14 +44,14 @@ describe('Clear account activity', function () {
         await driver.clickElement({ text: 'Clear', tag: 'button' });
         await driver.navigate();
 
-        // Check send transaction history is cleared and receive transaction history is kept
+        // Check sent transaction history is cleared and receive transaction history is kept
         const sendTransaction = await driver.isElementPresent({
           css: '[data-testid="activity-list-item-action"]',
-          text: 'Send',
+          text: 'Sent',
         });
         const receiveTransaction = await driver.isElementPresent({
           css: '[data-testid="activity-list-item-action"]',
-          text: 'Receive',
+          text: 'Received',
         });
         assert.equal(sendTransaction, false);
         assert.equal(receiveTransaction, true);
