@@ -1,5 +1,6 @@
 import {
   DelegationController,
+  DelegationEntry,
   type DelegationControllerMessenger,
 } from '@metamask/delegation-controller';
 import {
@@ -67,11 +68,16 @@ export const DelegationControllerInit: ControllerInitFunction<
  * @param options
  * @param options.hash - The hash of the delegation entry to delete.
  * @param options.txMeta - The transaction meta of the transaction that confirmed the delegation entry.
+ * @param options.entryToStore - The delegation entry to store.
  */
 export async function awaitDeleteDelegationEntry(
   controller: DelegationController,
   initMessenger: DelegationControllerInitMessenger,
-  { hash, txMeta }: { hash: Hex; txMeta: TransactionMeta },
+  {
+    hash,
+    txMeta,
+    entryToStore,
+  }: { hash: Hex; txMeta: TransactionMeta; entryToStore?: DelegationEntry },
 ) {
   let { id } = txMeta;
   let action: 'continue' | 'unsubscribe' | 'delete' = 'continue';
@@ -125,6 +131,9 @@ export async function awaitDeleteDelegationEntry(
 
     if (action === 'delete') {
       controller.delete(hash);
+      if (entryToStore) {
+        controller.store({ entry: entryToStore });
+      }
     }
 
     if (action === 'unsubscribe' || action === 'delete') {
