@@ -26,6 +26,8 @@ import {
   resolvePendingApproval,
   rejectPendingApproval,
   setSnapsInstallPrivacyWarningShownStatus,
+  setCurrentSnapInApprovalFlow,
+  forceUpdateMetamaskState,
 } from '../../store/actions';
 import {
   CONNECT_ROUTE,
@@ -161,6 +163,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
     approvePermissionsRequest: (request) =>
       dispatch(approvePermissionsRequest(request)),
     rejectPermissionsRequest: (requestId) =>
@@ -169,6 +172,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(resolvePendingApproval(id, value)),
     rejectPendingApproval: (id, error) =>
       dispatch(rejectPendingApproval(id, error)),
+    setCurrentSnapInApprovalFlow: (snapId) =>
+      dispatch(setCurrentSnapInApprovalFlow(snapId)),
     setSnapsInstallPrivacyWarningShownStatus: (shown) => {
       dispatch(setSnapsInstallPrivacyWarningShownStatus(shown));
     },

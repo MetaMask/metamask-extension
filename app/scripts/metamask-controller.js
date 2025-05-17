@@ -3846,6 +3846,14 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setSnapsInstallPrivacyWarningShownStatus.bind(
           appStateController,
         ),
+      setCurrentSnapInApprovalFlow:
+        appStateController.setCurrentSnapInApprovalFlow.bind(
+          appStateController,
+        ),
+      setSnapConnectTime:
+        appStateController.setSnapConnectTime.bind(appStateController),
+      clearSnapConnectTime:
+        appStateController.clearSnapConnectTime.bind(appStateController),
       setOutdatedBrowserWarningLastShown:
         appStateController.setOutdatedBrowserWarningLastShown.bind(
           appStateController,

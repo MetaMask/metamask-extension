@@ -78,6 +78,7 @@ import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import FlaskHomeFooter from './flask/flask-home-footer.component';
+import { ApprovalType } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IF
 
 function shouldCloseNotificationPopup({
@@ -177,12 +178,15 @@ export default class Home extends PureComponent {
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
     fetchBuyableChains: PropTypes.func.isRequired,
+    setCurrentSnapInApprovalFlow: PropTypes.func,
+    currentSnapInApprovalFlow: PropTypes.string,
   };
 
   state = {
     canShowBlockageNotification: true,
     notificationClosing: false,
     redirecting: false,
+    isNavigating: false,
   };
 
   constructor(props) {
@@ -227,7 +231,10 @@ export default class Home extends PureComponent {
       location,
       pendingApprovals,
       hasApprovalFlows,
+      setCurrentSnapInApprovalFlow,
+      currentSnapInApprovalFlow,
     } = this.props;
+
     const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
 
     const canRedirect = !isNotification && !stayOnHomePage;
@@ -238,6 +245,32 @@ export default class Home extends PureComponent {
     } else if (canRedirect && haveBridgeQuotes) {
       history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
     } else if (pendingApprovals.length || hasApprovalFlows) {
+      if (this.state.isNavigating) {
+        return;
+      }
+
+      if (currentSnapInApprovalFlow && pendingApprovals.length > 1) {
+        const installSnapApproval = pendingApprovals.find(
+          (approval) =>
+            (approval.type === ApprovalType.WalletInstallSnapResult ||
+              approval.type === ApprovalType.WalletInstallSnap ||
+              approval.type === ApprovalType.WalletUpdateSnap) &&
+            approval.requestData.metadata?.origin === currentSnapInApprovalFlow,
+        );
+        if (installSnapApproval && !this.state.isNavigating) {
+          // we need to set the state here to prevent the navigation from being triggered again
+          this.setState({ isNavigating: true });
+          navigateToConfirmation(
+            installSnapApproval.id,
+            pendingApprovals,
+            hasApprovalFlows,
+            history,
+          );
+          setCurrentSnapInApprovalFlow(null);
+          return;
+        }
+      }
+
       navigateToConfirmation(
         pendingApprovals?.[0]?.id,
         pendingApprovals,

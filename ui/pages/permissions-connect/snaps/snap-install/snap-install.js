@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback, useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { isSnapId } from '@metamask/snaps-utils';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -35,6 +35,8 @@ import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
 import PermissionConnectHeader from '../../../../components/app/permission-connect-header';
+import { Nav } from '../../../confirmations/components/confirm/nav';
+import { setCurrentSnapInApprovalFlow } from '../../../../store/actions';
 
 export default function SnapInstall({
   request,
@@ -49,7 +51,7 @@ export default function SnapInstall({
   const [isShowingWarning, setIsShowingWarning] = useState(false);
   const snapsMetadata = useSelector(getSnapsMetadata);
   const [showAllPermissions, setShowAllPermissions] = useState(false);
-
+  const dispatch = useDispatch();
   const { isScrollable, hasScrolledToBottom, scrollToBottom, ref, onScroll } =
     useScrollRequired([requestState]);
 
@@ -81,6 +83,10 @@ export default function SnapInstall({
   );
 
   const shouldShowWarning = warnings.length > 0;
+
+  useEffect(() => {
+    dispatch(setCurrentSnapInApprovalFlow(request?.metadata?.origin));
+  }, [request, dispatch]);
 
   const handleSubmit = () => {
     if (!hasError && shouldShowWarning) {
@@ -115,18 +121,28 @@ export default function SnapInstall({
       flexDirection={FlexDirection.Column}
       backgroundColor={BackgroundColor.backgroundAlternative}
     >
-      {(isLoading || hasError) && !isOriginSnap ? (
-        <PermissionConnectHeader origin={origin} iconUrl={iconUrl} />
-      ) : (
-        <SnapAuthorshipHeader
-          snapId={
-            isLoading && isOriginSnap
-              ? request?.metadata?.dappOrigin
-              : targetSubjectMetadata.origin
-          }
-          onCancel={onCancel}
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+        <Nav
+          key={`snap-install-screen-${request.metadata?.id}`}
+          confirmationId={request.metadata?.id}
         />
-      )}
+        {(isLoading || hasError) && !isOriginSnap ? (
+          <PermissionConnectHeader
+            origin={origin}
+            iconUrl={iconUrl}
+            renderNav={false}
+          />
+        ) : (
+          <SnapAuthorshipHeader
+            snapId={
+              isLoading && isOriginSnap
+                ? request?.metadata?.dappOrigin
+                : targetSubjectMetadata.origin
+            }
+            onCancel={onCancel}
+          />
+        )}
+      </Box>
       <Box
         ref={!isLoading && !hasError ? ref : undefined}
         onScroll={onScroll}

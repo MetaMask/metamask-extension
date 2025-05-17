@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback, useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isSnapId } from '@metamask/snaps-utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -28,6 +28,12 @@ import {
 } from '../../../../selectors';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { SnapIcon } from '../../../../components/app/snaps/snap-icon';
+import { Nav } from '../../../confirmations/components/confirm/nav';
+import {
+  setCurrentSnapInApprovalFlow,
+  setSnapConnectTime,
+} from '../../../../store/actions';
+import { selectPendingApproval } from '../../../../selectors/approvals';
 
 export default function SnapsConnect({
   request,
@@ -40,6 +46,9 @@ export default function SnapsConnect({
   const t = useI18nContext();
   const { origin } = targetSubjectMetadata;
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+  const id = request?.metadata?.id;
+  const approval = useSelector((state) => selectPendingApproval(state, id));
 
   const currentPermissions = useSelector((state) =>
     getPermissions(state, request?.metadata?.origin),
@@ -52,6 +61,16 @@ export default function SnapsConnect({
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),
   );
+
+  const currentSnapInApprovalFlow = React.useRef(null);
+
+  useEffect(() => {
+    if (!currentSnapInApprovalFlow.current && snapId) {
+      currentSnapInApprovalFlow.current = snapId;
+      dispatch(setCurrentSnapInApprovalFlow(snapId));
+      dispatch(setSnapConnectTime(snapId, approval.time));
+    }
+  }, [snapId, dispatch, approval, request?.metadata?.origin, origin, id]);
 
   const isPreinstalled = Object.keys(preinstalledSnaps).includes(snapId);
   const [isShowingSnapsPrivacyWarning, setIsShowingSnapsPrivacyWarning] =
@@ -225,6 +244,7 @@ export default function SnapsConnect({
           onCanceled={onCancel}
         />
       )}
+      <Nav confirmationId={request.metadata?.id} />
       <Box
         display={Display.Flex}
         height={BlockSize.Full}

@@ -105,6 +105,7 @@ export default class PermissionConnect extends Component {
       subjectType: PropTypes.string,
     }),
     isRequestingAccounts: PropTypes.bool.isRequired,
+    forceUpdateMetamaskState: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -140,16 +141,11 @@ export default class PermissionConnect extends Component {
       snapResultPath,
       requestType,
       getRequestAccountTabIds,
-      permissionsRequest,
       history,
       isRequestingAccounts,
     } = this.props;
     getRequestAccountTabIds();
 
-    if (!permissionsRequest) {
-      history.replace(DEFAULT_ROUTE);
-      return;
-    }
     if (history.location.pathname === connectPath && !isRequestingAccounts) {
       switch (requestType) {
         case 'wallet_installSnap':
@@ -204,6 +200,7 @@ export default class PermissionConnect extends Component {
       snapUpdatePath,
       snapResultPath,
     } = this.props;
+
     this.setState(
       {
         selectedAccountAddresses: addresses,
@@ -291,9 +288,16 @@ export default class PermissionConnect extends Component {
   }
 
   approveConnection = (...args) => {
-    const { approvePermissionsRequest } = this.props;
+    const { approvePermissionsRequest, forceUpdateMetamaskState } = this.props;
     approvePermissionsRequest(...args);
-    this.redirect(true);
+    /*
+     * We need to wait for the state to update before redirecting otherwise
+     * in some cases where there's multiple approvals, we will have old state
+     * when we get to the home component
+     */
+    forceUpdateMetamaskState().then(() => {
+      this.redirect(true);
+    });
   };
 
   render() {

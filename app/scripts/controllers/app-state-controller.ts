@@ -86,6 +86,8 @@ export type AppStateControllerState = {
   custodianDeepLink?: { fromAddress: string; custodyId: string };
   slides: CarouselSlide[];
   throttledOrigins: ThrottledOrigins;
+  currentSnapInApprovalFlow: string | null;
+  snapsConnectTimes: Record<string, number>;
 };
 
 const controllerName = 'AppStateController';
@@ -199,6 +201,8 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   switchedNetworkNeverShowMessage: false,
   slides: [],
   throttledOrigins: {},
+  currentSnapInApprovalFlow: null,
+  snapsConnectTimes: {},
   ...getInitialStateOverrides(),
 });
 
@@ -367,6 +371,14 @@ const controllerMetadata = {
   },
   throttledOrigins: {
     persist: false,
+    anonymous: true,
+  },
+  currentSnapInApprovalFlow: {
+    persist: true,
+    anonymous: true,
+  },
+  snapsConnectTimes: {
+    persist: true,
     anonymous: true,
   },
 };
@@ -1103,6 +1115,24 @@ export class AppStateController extends BaseController<
   ): void {
     this.update((state) => {
       state.throttledOrigins[origin] = throttledOriginState;
+    });
+  }
+
+  setCurrentSnapInApprovalFlow(snapId: string): void {
+    this.update((state) => {
+      state.currentSnapInApprovalFlow = snapId;
+    });
+  }
+
+  setSnapConnectTime(snapId: string, time: number): void {
+    this.update((state) => {
+      state.snapsConnectTimes[snapId] = time;
+    });
+  }
+
+  clearSnapConnectTime(snapId: string): void {
+    this.update((state) => {
+      delete state.snapsConnectTimes[snapId];
     });
   }
 }

@@ -17,20 +17,13 @@ import {
   SIGNATURE_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
 import { isSignatureTransactionType } from '../utils';
-import {
-  getApprovalFlows,
-  selectPendingApprovalsForNavigation,
-} from '../../../selectors';
-
-const CONNECT_APPROVAL_TYPES = [
-  ApprovalType.WalletRequestPermissions,
-  'wallet_installSnap',
-  'wallet_updateSnap',
-  'wallet_installSnapResult',
-];
+import { getApprovalFlows } from '../../../selectors';
+import { selectReorderedPendingApprovalsForNavigation } from '../../../selectors/approvals';
 
 export function useConfirmationNavigation() {
-  const confirmations = useSelector(selectPendingApprovalsForNavigation);
+  const confirmations = useSelector(
+    selectReorderedPendingApprovalsForNavigation,
+  );
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const history = useHistory();
 
@@ -128,8 +121,30 @@ export function navigateToConfirmation(
     return;
   }
 
-  if (CONNECT_APPROVAL_TYPES.includes(type)) {
-    history.replace(`${CONNECT_ROUTE}/${confirmationId}`);
+  if (type === ApprovalType.WalletInstallSnap) {
+    history.replace(`${CONNECT_ROUTE}/${confirmationId}/snap-install`);
+    return;
+  }
+
+  if (type === ApprovalType.WalletUpdateSnap) {
+    history.replace(`${CONNECT_ROUTE}/${confirmationId}/snap-update`);
+    return;
+  }
+
+  if (type === ApprovalType.WalletInstallSnapResult) {
+    history.replace(`${CONNECT_ROUTE}/${confirmationId}/snap-install-result`);
+    return;
+  }
+
+  if (type === ApprovalType.WalletRequestPermissions) {
+    history.replace(
+      `${CONNECT_ROUTE}/${confirmationId}${
+        (nextConfirmation.requestData?.permissions as Record<string, unknown>)
+          ?.wallet_snap
+          ? '/snaps-connect'
+          : ''
+      }`,
+    );
     return;
   }
 

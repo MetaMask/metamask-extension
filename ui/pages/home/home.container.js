@@ -1,9 +1,9 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-
 import {
   activeTabHasPermissions,
+  getCurrentSnapInApprovalFlow,
   getUseExternalServices,
   getIsMainnet,
   getOriginOfCurrentTab,
@@ -33,6 +33,7 @@ import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
   attemptCloseNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,
+  setCurrentSnapInApprovalFlow,
   setDefaultHomeActiveTabName,
   setWeb3ShimUsageAlertDismissed,
   setAlertEnabledness,
@@ -48,6 +49,7 @@ import {
   setNewTokensImportedError,
   setDataCollectionForMarketing,
   setEditedNetwork,
+  forceUpdateMetamaskState,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -93,6 +95,8 @@ const mapStateToProps = (state) => {
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingApprovals = selectPendingApprovalsForNavigation(state);
+  const currentSnapInApprovalFlow =
+    pendingApprovals.length > 1 ? getCurrentSnapInApprovalFlow(state) : null;
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
@@ -135,6 +139,7 @@ const mapStateToProps = (state) => {
     selectedAccount && getShouldShowSeedPhraseReminder(state, selectedAccount);
 
   return {
+    currentSnapInApprovalFlow,
     useExternalServices: getUseExternalServices(state),
     isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
     forgottenPassword,
@@ -183,6 +188,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
+    setCurrentSnapInApprovalFlow: (flow) =>
+      dispatch(setCurrentSnapInApprovalFlow(flow)),
     setDataCollectionForMarketing: (val) =>
       dispatch(setDataCollectionForMarketing(val)),
     attemptCloseNotificationPopup: () => attemptCloseNotificationPopup(),
