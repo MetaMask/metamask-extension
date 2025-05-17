@@ -178,8 +178,8 @@ const PrepareBridgePage = () => {
   } = useSelector(getBridgeQuotes);
   const refreshRate = useSelector(getQuoteRefreshRate);
 
-  const isQuoteExpired = useSelector((state) =>
-    getIsQuoteExpired(state as BridgeAppState, Date.now()),
+  const isQuoteExpired = useSelector((state: BridgeAppState) =>
+    getIsQuoteExpired(state, Date.now()),
   );
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
@@ -545,7 +545,10 @@ const PrepareBridgePage = () => {
             };
             dispatch(setFromToken(bridgeToken));
             dispatch(setFromTokenInputValue(null));
-            if (token.address === toToken?.address) {
+            if (
+              token.address === toToken?.address ||
+              token.assetId === toToken?.assetId
+            ) {
               dispatch(setToToken(null));
             }
             bridgeToken.address &&

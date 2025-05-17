@@ -7,6 +7,7 @@ import {
   isSolanaChainId,
   formatChainIdToHex,
   isNativeAddress,
+  AssetType,
 } from '@metamask/bridge-controller';
 import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
@@ -83,6 +84,9 @@ const bridgeSlice = createSlice({
           string: payload.string ?? '0',
           chainId: payload.chainId,
           image: getTokenImage(payload),
+          type: isNativeAddress(payload.address)
+            ? AssetType.native
+            : AssetType.token,
         };
       } else {
         state.fromToken = payload;
@@ -99,6 +103,9 @@ const bridgeSlice = createSlice({
           address:
             payload.address ||
             getNativeAssetForChainId(payload.chainId).address,
+          type: isNativeAddress(payload.address)
+            ? AssetType.native
+            : AssetType.token,
         };
       } else {
         state.toToken = payload;

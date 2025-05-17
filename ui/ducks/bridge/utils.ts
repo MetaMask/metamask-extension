@@ -47,7 +47,7 @@ export const getHexMaxGasLimit = (gasLimit: number) => {
   return new Numeric(
     new BigNumber(gasLimit).toString(),
     10,
-  ).toPrefixedHexString() as Hex;
+  ).toPrefixedHexString();
 };
 export const getTxGasEstimates = async ({
   networkAndAccountSupports1559,

@@ -14,6 +14,7 @@ import {
   selectBridgeQuotes,
   selectIsQuoteExpired,
   selectBridgeFeatureFlags,
+  AssetType,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SolAccountType } from '@metamask/keyring-api';
@@ -23,7 +24,7 @@ import { createSelector } from 'reselect';
 import type { GasFeeState } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
-import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
+import type { CaipChainId, Hex } from '@metamask/utils';
 import type {
   CurrencyRateState,
   MultichainAssetsControllerState,
@@ -224,6 +225,7 @@ export const getFromToken = createSelector(
     );
     return {
       ...nativeAsset,
+      type: AssetType.native,
       chainId: formatChainIdToCaip(fromChain.chainId),
       image:
         CHAIN_ID_TOKEN_IMAGE_MAP[
@@ -289,9 +291,7 @@ export const getFromTokenConversionRate = createSelector(
         formatChainIdToCaip(fromChain.chainId),
       );
       const nativeToCurrencyRate = isSolanaChainId(fromChain.chainId)
-        ? Number(
-            conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
-          )
+        ? Number(conversionRates?.[nativeAssetId]?.rate ?? null)
         : currencyRates[fromChain.nativeCurrency]?.conversionRate ?? null;
       const nativeToUsdRate = isSolanaChainId(fromChain.chainId)
         ? Number(
@@ -315,7 +315,7 @@ export const getFromTokenConversionRate = createSelector(
               null,
           ),
           Number(
-            conversionRates?.[nativeAssetId as CaipAssetType]?.rate ??
+            conversionRates?.[nativeAssetId]?.rate ??
               rates?.sol?.conversionRate ??
               null,
           ),
@@ -393,9 +393,7 @@ export const getToTokenConversionRate = createDeepEqualSelector(
         // For SOLANA tokens, we use the conversion rates provided by the multichain rates controller
         const tokenToNativeAssetRate = tokenPriceInNativeAsset(
           Number(conversionRates?.[tokenAssetId]?.rate ?? null),
-          Number(
-            conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
-          ),
+          Number(conversionRates?.[nativeAssetId]?.rate ?? null),
         );
         return exchangeRatesFromNativeAndCurrencyRates(
           tokenToNativeAssetRate,

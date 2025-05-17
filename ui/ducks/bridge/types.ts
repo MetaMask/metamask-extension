@@ -1,13 +1,15 @@
-import { type Hex, type CaipChainId } from '@metamask/utils';
+import { type Hex, type CaipChainId, CaipAssetType } from '@metamask/utils';
 import {
   type QuoteMetadata,
   type QuoteResponse,
   SortOrder,
   type ChainId,
   type GenericQuoteRequest,
+  type AssetType,
 } from '@metamask/bridge-controller';
 
 export type BridgeToken = {
+  type: AssetType;
   address: string;
   symbol: string;
   image: string;
@@ -19,6 +21,7 @@ export type BridgeToken = {
   tokenFiatAmount?: number | null;
   occurrences?: number;
   aggregators?: string[];
+  assetId?: CaipAssetType;
 };
 
 export type BridgeState = {
@@ -47,6 +50,6 @@ export type TokenPayload = {
     image?: string;
     iconUrl?: string;
     icon?: string;
-    assetId?: string;
+    assetId?: CaipAssetType;
   } | null;
 };

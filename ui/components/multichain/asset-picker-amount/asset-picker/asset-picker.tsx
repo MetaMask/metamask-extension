@@ -30,7 +30,7 @@ import { LARGE_SYMBOL_LENGTH } from '../constants';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: END:ONLY_INCLUDE_IF
 import { ellipsify } from '../../../../pages/confirmations/send/send.utils';
-import {
+import type {
   AssetWithDisplayData,
   ERC20Asset,
   NativeAsset,
@@ -60,18 +60,15 @@ export type AssetPickerProps = {
     networkImageSrc?: string,
   ) => React.ReactElement; // Overrides default button
   asset?:
-    | ERC20Asset
-    | NativeAsset
-    | Pick<NFT, 'type' | 'tokenId' | 'image' | 'symbol' | 'address'>
+    | (
+        | (ERC20Asset & NativeAsset)
+        | Pick<NFT, 'type' | 'tokenId' | 'image' | 'symbol' | 'address'>
+      )
     | undefined;
   /**
    * Needs to be wrapped in a callback
    */
-  onAssetChange: (
-    newAsset:
-      | AssetWithDisplayData<NativeAsset>
-      | AssetWithDisplayData<ERC20Asset>,
-  ) => void;
+  onAssetChange: (newAsset: AssetWithDisplayData) => void;
   onClick?: () => void;
   isDisabled?: boolean;
   action?: 'send' | 'receive';
@@ -219,11 +216,7 @@ export function AssetPicker({
         isOpen={showAssetPickerModal}
         onClose={() => setShowAssetPickerModal(false)}
         asset={asset}
-        onAssetChange={(
-          token:
-            | AssetWithDisplayData<ERC20Asset>
-            | AssetWithDisplayData<NativeAsset>,
-        ) => {
+        onAssetChange={(token: AssetWithDisplayData) => {
           // If isMultiselectEnabled=true, update the network when a token is selected
           if (isMultiselectEnabled && networkProps?.onNetworkChange) {
             const networkFromToken = token.chainId
@@ -334,7 +327,7 @@ export function AssetPicker({
               >
                 {formattedSymbol}
               </Text>
-              {isNFT && asset?.tokenId && (
+              {isNFT && asset && 'tokenId' in asset && (
                 <Text
                   variant={TextVariant.bodySm}
                   color={TextColor.textAlternative}

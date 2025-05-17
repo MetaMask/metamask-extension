@@ -28,11 +28,6 @@ import {
 } from '../../ducks/bridge/selectors';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
-import type {
-  AssetWithDisplayData,
-  ERC20Asset,
-  NativeAsset,
-} from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import type { BridgeToken } from '../../ducks/bridge/types';
@@ -131,18 +126,14 @@ export const useTokensWithFiltering = (
   }, [chainId, topAssetsFromFeatureFlags]);
 
   // This transforms the token object from the bridge-api into the format expected by the AssetPicker
-  const buildTokenDataFn = (
-    token?: BridgeAsset | TokenListToken,
-  ):
-    | AssetWithDisplayData<NativeAsset>
-    | AssetWithDisplayData<ERC20Asset>
-    | undefined => {
+  const buildTokenDataFn = (token?: BridgeAsset | TokenListToken) => {
     if (!chainId || !token) {
       return undefined;
     }
     // Only tokens on the active chain are processed here here
     const sharedFields = {
       ...token,
+      ...tokenList?.[token.address],
       chainId: isSolanaChainId(chainId)
         ? formatChainIdToCaip(chainId)
         : formatChainIdToHex(chainId),
@@ -185,9 +176,7 @@ export const useTokensWithFiltering = (
   // shouldAddToken is a filter condition passed in from the AssetPicker that determines whether a token should be included
   const filteredTokenListGenerator = useCallback(
     (filterCondition: FilterPredicate) =>
-      (function* (): Generator<
-        AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
-      > {
+      (function* (): Generator<BridgeToken & { chainId: CaipChainId | Hex }> {
         const shouldAddToken = (
           symbol: string,
           address?: string,
@@ -196,8 +185,10 @@ export const useTokensWithFiltering = (
           filterCondition(symbol, address, tokenChainId) &&
           (tokenToExclude && tokenChainId
             ? !(
-                tokenToExclude.symbol === symbol &&
-                tokenToExclude.address === address &&
+                ((tokenToExclude.symbol === symbol &&
+                  tokenToExclude.address === address) ||
+                  (isNativeAddress(tokenToExclude.address) &&
+                    isNativeAddress(address))) &&
                 tokenToExclude.chainId === formatChainIdToCaip(tokenChainId)
               )
             : true);
@@ -230,6 +221,7 @@ export const useTokensWithFiltering = (
                 type: AssetType.native,
                 balance: token.balance ?? '0',
                 string: token.string ?? undefined,
+                assetId: getNativeAssetForChainId(token.chainId)?.assetId,
                 image:
                   CHAIN_ID_TOKEN_IMAGE_MAP[
                     token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
