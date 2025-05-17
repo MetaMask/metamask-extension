@@ -183,6 +183,24 @@ exports[`AssetPage should render a native asset 1`] = `
             </span>
           </span>
         </button>
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button coin-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-1 mm-box--padding-bottom-3 mm-box--padding-left-1 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
+          data-testid="coin-overview-receive"
+        >
+          <span
+            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
+              style="mask-image: url('./images/icons/scan-barcode.svg');"
+            />
+            <span
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
+            >
+              Receive
+            </span>
+          </span>
+        </button>
       </div>
     </div>
     <div
