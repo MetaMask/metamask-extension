@@ -380,7 +380,8 @@ export const CoinOverview = ({
             </div>
             {shouldShowPopover &&
             (!isTestnet || (isTestnet && showFiatInTestnets)) &&
-            !showNativeTokenAsMainBalance ? (
+            !showNativeTokenAsMainBalance &&
+            !process.env.REMOVE_GNS ? (
               <Popover
                 referenceElement={referenceElement}
                 isOpen={isOpen}
