@@ -4066,14 +4066,14 @@ describe('MetaMaskController', () => {
         expect(mockDiscoverAccounts.mock.calls[2][2]).toBe(2);
 
         // Assert that createAccount was called correctly for each discovered account
-        expect(mockCreateAccount).toHaveBeenCalledTimes(3);
+        expect(mockCreateAccount).toHaveBeenCalledTimes(2);
 
         // All calls should use the solana snap ID
         expect(mockCreateAccount.mock.calls[0][0]).toStrictEqual(
           expect.stringContaining('solana-wallet'),
         );
-        // Second call should use derivation path on index 0
-        expect(mockCreateAccount.mock.calls[1][1]).toStrictEqual({
+        // First call should use derivation path on index 0
+        expect(mockCreateAccount.mock.calls[0][1]).toStrictEqual({
           accountNameSuggestion: expect.stringContaining('Solana Account'),
           derivationPath: "m/44'/501'/0'/0'",
           entropySource: expect.any(String),
@@ -4085,8 +4085,8 @@ describe('MetaMaskController', () => {
           setSelectedAccount: false,
         });
 
-        // Third call should use derivation path on index 1
-        expect(mockCreateAccount.mock.calls[2][1]).toStrictEqual({
+        // Second call should use derivation path on index 1
+        expect(mockCreateAccount.mock.calls[1][1]).toStrictEqual({
           accountNameSuggestion: expect.stringContaining('Solana Account'),
           derivationPath: "m/44'/501'/1'/0'",
           entropySource: expect.any(String),
