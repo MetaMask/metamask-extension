@@ -293,7 +293,7 @@ export default class Home extends PureComponent {
     return null;
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(_prevProps, prevState) {
     const {
       attemptCloseNotificationPopup,
       isNotification,
@@ -305,7 +305,7 @@ export default class Home extends PureComponent {
 
     const {
       newNetworkAddedConfigurationId: prevNewNetworkAddedConfigurationId,
-    } = prevProps;
+    } = _prevProps;
     const { notificationClosing } = this.state;
 
     if (
