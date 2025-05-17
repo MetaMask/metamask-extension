@@ -1,8 +1,13 @@
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useEffect, useMemo } from 'react';
+import {
+  getIsUnifiedUIEnabled,
+  getIsSwap,
+  type BridgeAppState,
+} from '../../../ducks/bridge/selectors';
 import { getMultichainIsSolana } from '../../../selectors/multichain';
-import { getIsSwap } from '../../../ducks/bridge/selectors';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 
 /*
  * This returns true if the url contains swaps=true and the current chain is solana
@@ -18,26 +23,43 @@ export const useIsMultichainSwap = () => {
 
   const isSolana = useSelector(getMultichainIsSolana);
 
+  // Unified-UI feature-flag check
+  const chainId = useSelector(getCurrentChainId);
+  const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
+    getIsUnifiedUIEnabled(state, chainId),
+  );
+
   const isQuoteRequestSwap = useSelector(getIsSwap);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(search);
     const isSwapQueryParamSet = searchParams.get('swaps') === 'true';
-    if (isQuoteRequestSwap && isSolana && !isSwapQueryParamSet) {
+    if (
+      isQuoteRequestSwap &&
+      (isSolana || isUnifiedUIEnabled) &&
+      !isSwapQueryParamSet
+    ) {
       searchParams.set('swaps', 'true');
       history.replace({
         pathname,
         search: searchParams.toString(),
       });
     }
-  }, [isQuoteRequestSwap, isSolana, history, search, pathname]);
+  }, [
+    isQuoteRequestSwap,
+    isSolana,
+    isUnifiedUIEnabled,
+    history,
+    search,
+    pathname,
+  ]);
 
   const isSolanaSwap = useMemo(() => {
     const searchParams = new URLSearchParams(search);
     const isSwapQueryParamSet = searchParams.get('swaps') === 'true';
 
-    return isSwapQueryParamSet && isSolana;
-  }, [isSolana, search]);
+    return isSwapQueryParamSet && (isSolana || isUnifiedUIEnabled);
+  }, [isSolana, isUnifiedUIEnabled, search]);
 
   return isSolanaSwap;
 };
