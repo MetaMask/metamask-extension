@@ -9,8 +9,8 @@ export default {
   args: {
     account: accounts[selectedAccount],
     chainId: '1',
-    isSwapsChain: true,
     trackingLocation: 'home',
+    isSwapsChain: true,
     isSigningEnabled: true,
     isBridgeChain: true,
     isBuyableChain: true,
