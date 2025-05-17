@@ -68,6 +68,11 @@ type Props = {
    */
   onSelectSrp?: () => void;
   selectedKeyringId?: string;
+
+  /**
+   * Whether to redirect to the overview page after creating the account
+   */
+  redirectToOverviewPage?: boolean;
 };
 
 type CreateAccountProps<C extends React.ElementType> =
@@ -87,6 +92,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         selectedKeyringId,
         onActionComplete,
         scope,
+        redirectToOverviewPage = true,
       }: CreateAccountProps<C>,
       ref?: PolymorphicRef<C>,
     ) => {
@@ -158,7 +164,9 @@ export const CreateAccount: CreateAccountComponent = React.memo(
                   trimmedAccountName === defaultAccountName,
               },
             });
-            history.push(mostRecentOverviewPage);
+            if (redirectToOverviewPage) {
+              history.push(mostRecentOverviewPage);
+            }
           } catch (error) {
             setLoading(false);
             let message = 'An unexpected error occurred.';
