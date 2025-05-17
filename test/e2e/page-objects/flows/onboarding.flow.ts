@@ -19,6 +19,7 @@ import { E2E_SRP } from '../../default-fixture';
  * @param [options.participateInMetaMetrics] - Whether to participate in MetaMetrics. Defaults to false.
  * @param [options.needNavigateToNewPage] - Indicates whether to navigate to a new page before starting the onboarding flow. Defaults to true.
  * @param [options.dataCollectionForMarketing] - Whether to opt in to data collection for marketing. Defaults to false.
+ * @param [options.skipSRPBackup] - Whether to skip the SRP backup step. Defaults to false.
  */
 export const createNewWalletOnboardingFlow = async ({
   driver,
@@ -26,12 +27,14 @@ export const createNewWalletOnboardingFlow = async ({
   participateInMetaMetrics = false,
   needNavigateToNewPage = true,
   dataCollectionForMarketing = false,
+  skipSRPBackup = false,
 }: {
   driver: Driver;
   password?: string;
   participateInMetaMetrics?: boolean;
   needNavigateToNewPage?: boolean;
   dataCollectionForMarketing?: boolean;
+  skipSRPBackup?: boolean;
 }): Promise<void> => {
   console.log('Starting the creation of a new wallet onboarding flow');
   if (needNavigateToNewPage) {
@@ -63,7 +66,11 @@ export const createNewWalletOnboardingFlow = async ({
 
   const secureWalletPage = new SecureWalletPage(driver);
   await secureWalletPage.check_pageIsLoaded();
-  await secureWalletPage.revealAndConfirmSRP();
+  if (skipSRPBackup) {
+    await secureWalletPage.skipSRPBackup();
+  } else {
+    await secureWalletPage.revealAndConfirmSRP();
+  }
 };
 
 /**
@@ -218,6 +225,7 @@ export const importSRPOnboardingFlow = async ({
  * @param [options.participateInMetaMetrics] - Whether to participate in MetaMetrics. Defaults to false.
  * @param [options.needNavigateToNewPage] - Indicates whether to navigate to a new page before starting the onboarding flow. Defaults to true.
  * @param [options.dataCollectionForMarketing] - Whether to opt in to data collection for marketing. Defaults to false.
+ * @param [options.skipSRPBackup] - Whether to skip the SRP backup step. Defaults to false.
  */
 export const completeCreateNewWalletOnboardingFlow = async ({
   driver,
@@ -225,12 +233,14 @@ export const completeCreateNewWalletOnboardingFlow = async ({
   participateInMetaMetrics = false,
   needNavigateToNewPage = true,
   dataCollectionForMarketing = false,
+  skipSRPBackup = false,
 }: {
   driver: Driver;
   password?: string;
   participateInMetaMetrics?: boolean;
   needNavigateToNewPage?: boolean;
   dataCollectionForMarketing?: boolean;
+  skipSRPBackup?: boolean;
 }): Promise<void> => {
   console.log('start to complete create new wallet onboarding flow ');
   await createNewWalletOnboardingFlow({
@@ -239,10 +249,13 @@ export const completeCreateNewWalletOnboardingFlow = async ({
     participateInMetaMetrics,
     needNavigateToNewPage,
     dataCollectionForMarketing,
+    skipSRPBackup,
   });
   const onboardingCompletePage = new OnboardingCompletePage(driver);
   await onboardingCompletePage.check_pageIsLoaded();
-  await onboardingCompletePage.check_congratulationsMessageIsDisplayed();
+  if (!skipSRPBackup) {
+    await onboardingCompletePage.check_congratulationsMessageIsDisplayed();
+  }
   await onboardingCompletePage.completeOnboarding();
 };
 
