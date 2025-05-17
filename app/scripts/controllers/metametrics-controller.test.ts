@@ -1463,7 +1463,7 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
-          sessionData: undefined,
+          srpSessionData: undefined,
           keyrings: [],
         });
 
@@ -1571,7 +1571,7 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
-          sessionData: undefined,
+          srpSessionData: undefined,
           keyrings: [],
           multichainNetworkConfigurationsByChainId: {},
         });
@@ -1633,16 +1633,18 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
-          sessionData: {
-            token: {
-              accessToken: '',
-              expiresIn: 0,
-              obtainedAt: 0,
-            },
-            profile: {
-              identifierId: 'identifierId',
-              profileId: 'profileId',
-              metaMetricsId: 'testid',
+          srpSessionData: {
+            entropySourceId1: {
+              token: {
+                accessToken: '',
+                expiresIn: 0,
+                obtainedAt: 0,
+              },
+              profile: {
+                identifierId: 'identifierId',
+                profileId: 'profileId',
+                metaMetricsId: 'testid',
+              },
             },
           },
           keyrings: [],
@@ -1715,16 +1717,18 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
-          sessionData: {
-            token: {
-              accessToken: '',
-              expiresIn: 0,
-              obtainedAt: 0,
-            },
-            profile: {
-              identifierId: 'identifierId',
-              profileId: 'profileId',
-              metaMetricsId: 'testid',
+          srpSessionData: {
+            entropySourceId1: {
+              token: {
+                accessToken: '',
+                expiresIn: 0,
+                obtainedAt: 0,
+              },
+              profile: {
+                identifierId: 'identifierId',
+                profileId: 'profileId',
+                metaMetricsId: 'testid',
+              },
             },
           },
           keyrings: [],
@@ -1778,16 +1782,18 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
-          sessionData: {
-            token: {
-              accessToken: '',
-              expiresIn: 0,
-              obtainedAt: 0,
-            },
-            profile: {
-              identifierId: 'identifierId',
-              profileId: 'profileId',
-              metaMetricsId: 'testid',
+          srpSessionData: {
+            entropySourceId1: {
+              token: {
+                accessToken: '',
+                expiresIn: 0,
+                obtainedAt: 0,
+              },
+              profile: {
+                identifierId: 'identifierId',
+                profileId: 'profileId',
+                metaMetricsId: 'testid',
+              },
             },
           },
           keyrings: [],
