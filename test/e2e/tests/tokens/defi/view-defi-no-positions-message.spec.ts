@@ -33,7 +33,7 @@ describe('Check DeFi empty state when no defi positions', function () {
         const defiTab = new DeFiTab(driver);
 
         // Empty state
-        await defiTab.check_tokenName('Start earning');
+        await defiTab.check_noPositionsMessageIsDisplayed();
         await defiTab.waitForStakeLink();
 
         // switch network
@@ -41,7 +41,7 @@ describe('Check DeFi empty state when no defi positions', function () {
 
         // check emtry state still present
         await defiTab.openNetworksFilterAndClickPopularNetworks();
-        await defiTab.check_tokenName('Start earning');
+        await defiTab.check_noPositionsMessageIsDisplayed();
       },
     );
   });

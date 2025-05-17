@@ -1660,10 +1660,10 @@
     "message": "DeFi"
   },
   "defiTabErrorContent": {
-    "message": "Your funds are safe, try to visit this page again later."
+    "message": "Try visiting again later."
   },
   "defiTabErrorTitle": {
-    "message": "Oops! Something went wrong."
+    "message": "We could not load this page."
   },
   "delete": {
     "message": "Delete"
@@ -3519,6 +3519,9 @@
   },
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
+  },
+  "noDeFiPositions": {
+    "message": "No positions yet"
   },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
@@ -5490,7 +5493,7 @@
     "message": "Something's gone wrong. Try reloading the page."
   },
   "somethingWentWrong": {
-    "message": "Oops! Something went wrong."
+    "message": "We could not load this page."
   },
   "sortBy": {
     "message": "Sort by"
@@ -5679,6 +5682,9 @@
   },
   "standardAccountLabel": {
     "message": "Standard Account"
+  },
+  "startEarning": {
+    "message": "Start earning"
   },
   "stateCorruptionDetectedErrorMessage": {
     "message": "MetaMask's state file is damaged or missing. The files are possibly recoverable, so don't uninstall the MetaMask extension!"

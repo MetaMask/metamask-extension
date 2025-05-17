@@ -6,7 +6,7 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import { Driver } from '../../../webdriver/driver';
 import { mockDefiPositionsFailure } from '../../confirmations/helpers';
 
-describe('Check DeFi error state', function () {
+describe('View DeFi error state', function () {
   it('user should be able to view error message', async function () {
     await withFixtures(
       {

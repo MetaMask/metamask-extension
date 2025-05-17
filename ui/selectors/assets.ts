@@ -1,4 +1,5 @@
 import {
+  DeFiPositionsControllerState,
   MultichainAssetsControllerState,
   MultichainAssetsRatesControllerState,
 } from '@metamask/assets-controllers';
@@ -41,6 +42,10 @@ export type AssetsRatesState = {
   metamask: MultichainAssetsRatesControllerState;
 };
 
+export type DefiState = {
+  metamask: DeFiPositionsControllerState;
+};
+
 /**
  * Gets non-EVM accounts assets.
  *
@@ -69,6 +74,18 @@ export function getAssetsMetadata(state: AssetsState) {
  */
 export function getAssetsRates(state: AssetsRatesState) {
   return state.metamask.conversionRates;
+}
+
+/**
+ * Gets DeFi positions
+ *
+ * @param state - Redux state object.
+ * @returns An object containing defi positions for all accounts
+ */
+export function getDefiPositions(
+  state: DefiState,
+): DeFiPositionsControllerState['allDeFiPositions'] {
+  return state?.metamask?.allDeFiPositions;
 }
 
 /**

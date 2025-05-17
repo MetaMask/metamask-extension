@@ -69,7 +69,7 @@ describe('DeFiDetailsPage', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText('Oops! Something went wrong.'),
+        screen.getByText('We could not load this page.'),
       ).toBeInTheDocument();
     });
   });
