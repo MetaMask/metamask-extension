@@ -1,6 +1,13 @@
 import { ChainId } from '@metamask/controller-utils';
+import { type NetworkConfiguration } from '@metamask/network-controller';
 
 import { migrate, version } from './159';
+
+type NetworkControllerState = {
+  networkConfigurationsByChainId: Record<string, NetworkConfiguration>;
+  selectedNetworkClientId?: string;
+  networksMetadata?: Record<string, unknown>;
+};
 
 const oldVersion = 158;
 const monadChainId = ChainId['monad-testnet'];
@@ -143,18 +150,42 @@ describe(`migration #${version}`, () => {
         },
       };
 
-      const expectedData = {
-        NetworkController: {
-          ...oldState.data.NetworkController,
-          networkConfigurationsByChainId: {
-            ...oldState.data.NetworkController.networkConfigurationsByChainId,
-            [monadChainId]: getMonadTestnetConfiguration(),
+      const newStorage = await migrate(oldState);
+      expect(newStorage.data).toStrictEqual(oldState.data);
+    });
+
+    it('updates Monad if its existing config is malformed or outdated', async () => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          NetworkController: {
+            networkConfigurationsByChainId: {
+              [monadChainId]: {
+                chainId: monadChainId,
+                name: 'Legacy Monad',
+                rpcEndpoints: [],
+                defaultRpcEndpointIndex: 0,
+                blockExplorerUrls: [],
+                defaultBlockExplorerUrlIndex: 0,
+                nativeCurrency: 'MON',
+              },
+            },
           },
         },
       };
 
-      const newStorage = await migrate(oldState);
-      expect(newStorage.data).toStrictEqual(expectedData);
+      const newStorage = await migrate(oldStorage);
+
+      const networkController = newStorage.data
+        .NetworkController as NetworkControllerState;
+
+      expect(
+        networkController.networkConfigurationsByChainId[monadChainId],
+      ).toStrictEqual(getMonadTestnetConfiguration());
+      expect(
+        (newStorage.data.NetworkController as NetworkControllerState)
+          .networkConfigurationsByChainId[monadChainId],
+      ).toStrictEqual(getMonadTestnetConfiguration());
     });
 
     it('updates the `Monad` network if it has already in `NetworkController.networkConfigurationsByChainId`', async () => {
