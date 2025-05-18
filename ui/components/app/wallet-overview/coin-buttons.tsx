@@ -386,7 +386,7 @@ const CoinButtons = ({
           iconButtonClassName={iconButtonClassName}
           Icon={
             <Icon
-              name={IconName.PlusMinus}
+              name={IconName.PlusAndMinus}
               color={IconColor.iconDefault}
               size={IconSize.Sm}
             />

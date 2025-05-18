@@ -118,10 +118,7 @@ async function bridgeUserActions(): Promise<{
       title: 'benchmark-userActions-bridgeUserActions',
       manifestFlags: {
         remoteFeatureFlags: {
-          bridgeConfig: {
-            ...DEFAULT_BRIDGE_FEATURE_FLAGS.bridgeConfig,
-            support: true,
-          },
+          bridgeConfig: DEFAULT_BRIDGE_FEATURE_FLAGS,
         },
       },
     },
