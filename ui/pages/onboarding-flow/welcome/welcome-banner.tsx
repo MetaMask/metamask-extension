@@ -31,6 +31,7 @@ export default function WelcomeBanner({ onAccept }: { onAccept: () => void }) {
     <Box className="welcome-banner" paddingInline={6}>
       <Box className="welcome-banner__wrapper" width={BlockSize.Full}>
         <Text
+          data-testid="onboarding-welcome-banner-title"
           className="welcome-banner__title"
           as="h2"
           textTransform={TextTransform.Uppercase}
