@@ -168,14 +168,13 @@ const Footer = () => {
   const { id: currentConfirmationId } = currentConfirmation || {};
 
   const hardwareWalletRequiresConnection = useSelector((state) => {
-    if (from) {
+    if (!process.env.IN_TEST && from) {
       return doesAddressRequireLedgerHidConnection(state, from);
     }
     return false;
   });
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
-
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
     hardwareWalletRequiresConnection;
@@ -242,14 +241,6 @@ const Footer = () => {
     }
     onCancel({ location: MetaMetricsEventLocation.Confirmation });
   }, [onCancel, shouldThrottleOrigin]);
-
-  const inTest = process.env.IN_TEST;
-  const disabled =
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    mmiSubmitDisabled ||
-    ///: END:ONLY_INCLUDE_IF
-    (inTest ? false : isScrollToBottomNeeded) ||
-    (inTest ? false : hardwareWalletRequiresConnection);
 
   return (
     <PageFooter
