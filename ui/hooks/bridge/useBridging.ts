@@ -70,7 +70,7 @@ const useBridging = () => {
           startTime: Date.now(),
         });
         trackCrossChainSwapsEvent({
-          event: MetaMetricsEventName.ActionOpened,
+          event: MetaMetricsEventName.ActionButtonClicked,
           category: MetaMetricsEventCategory.Navigation,
           properties: {
             location:
