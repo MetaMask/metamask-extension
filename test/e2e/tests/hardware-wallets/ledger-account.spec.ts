@@ -62,60 +62,60 @@ describe('Ledger Hardware', function () {
   });
 
   it('unlocks multiple accounts at once and removes one', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder().build(),
-          title: this.test?.fullTitle(),
-        },
-        async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.openAccountMenu();
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
 
-          // Choose connect hardware wallet from the account menu
-          const accountListPage = new AccountListPage(driver);
-          await accountListPage.check_pageIsLoaded();
-          await accountListPage.openConnectHardwareWalletModal();
+        // Choose connect hardware wallet from the account menu
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.check_pageIsLoaded();
+        await accountListPage.openConnectHardwareWalletModal();
 
-          const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
-          await connectHardwareWalletPage.check_pageIsLoaded();
-          await connectHardwareWalletPage.openConnectLedgerPage();
+        const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
+        await connectHardwareWalletPage.check_pageIsLoaded();
+        await connectHardwareWalletPage.openConnectLedgerPage();
 
-          // Unlock 5 Ledger accounts
-          const selectLedgerAccountPage = new SelectHardwareWalletAccountPage(
-            driver,
+        // Unlock 5 Ledger accounts
+        const selectLedgerAccountPage = new SelectHardwareWalletAccountPage(
+          driver,
+        );
+        await selectLedgerAccountPage.check_pageIsLoaded();
+        await selectLedgerAccountPage.check_accountNumber();
+        for (let i = 1; i <= 5; i++) {
+          await selectLedgerAccountPage.selectAccount(i);
+        }
+        await selectLedgerAccountPage.clickUnlockButton();
+
+        // Check that all 5 Ledger accounts are displayed in account list
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+        await homePage.check_expectedBalanceIsDisplayed('0');
+        await headerNavbar.openAccountMenu();
+        await accountListPage.check_pageIsLoaded();
+        for (let i = 0; i < 5; i++) {
+          await accountListPage.check_accountDisplayedInAccountList(
+            `Ledger ${i + 1}`,
           );
-          await selectLedgerAccountPage.check_pageIsLoaded();
-          await selectLedgerAccountPage.check_accountNumber();
-          for (let i = 1; i <= 5; i++) {
-            await selectLedgerAccountPage.selectAccount(i);
-          }
-          await selectLedgerAccountPage.clickUnlockButton();
-
-          // Check that all 5 Ledger accounts are displayed in account list
-          const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed('0');
-          await headerNavbar.openAccountMenu();
-          await accountListPage.check_pageIsLoaded();
-          for (let i = 0; i < 5; i++) {
-            await accountListPage.check_accountDisplayedInAccountList(
-              `Ledger ${i + 1}`,
-            );
-            await accountListPage.check_accountAddressDisplayedInAccountList(
-              shortenAddress(KNOWN_PUBLIC_KEY_ADDRESSES[i].address),
-            );
-          }
-
-          // Remove Ledger 1 account and check Ledger 1 account is removed
-          await accountListPage.removeAccount('Ledger 1');
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed('0');
-          await headerNavbar.openAccountMenu();
-          await accountListPage.check_accountIsNotDisplayedInAccountList(
-            'Ledger 1',
+          await accountListPage.check_accountAddressDisplayedInAccountList(
+            shortenAddress(KNOWN_PUBLIC_KEY_ADDRESSES[i].address),
           );
-        },
-      );
-    });
+        }
+
+        // Remove Ledger 1 account and check Ledger 1 account is removed
+        await accountListPage.removeAccount('Ledger 1');
+        await homePage.check_pageIsLoaded();
+        await homePage.check_expectedBalanceIsDisplayed('0');
+        await headerNavbar.openAccountMenu();
+        await accountListPage.check_accountIsNotDisplayedInAccountList(
+          'Ledger 1',
+        );
+      },
+    );
+  });
 });

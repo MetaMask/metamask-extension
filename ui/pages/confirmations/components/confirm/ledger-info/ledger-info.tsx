@@ -97,7 +97,7 @@ const LedgerInfo: React.FC = () => {
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={async () => {
               if (environmentTypeIsFullScreen) {
-                let connectedDevices = [];
+                let connectedDevices: HIDDevice[] = [];
                 if (!inTest) {
                   connectedDevices = await window.navigator.hid.requestDevice({
                     filters: [{ vendorId: Number(LEDGER_USB_VENDOR_ID) }],
