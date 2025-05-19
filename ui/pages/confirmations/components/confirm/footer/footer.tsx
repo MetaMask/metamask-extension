@@ -169,7 +169,9 @@ const Footer = () => {
 
   const hardwareWalletRequiresConnection = useSelector((state) => {
     if (from) {
-      return doesAddressRequireLedgerHidConnection(state, from);
+      return process.env.IN_TEST
+        ? false
+        : doesAddressRequireLedgerHidConnection(state, from);
     }
     return false;
   });

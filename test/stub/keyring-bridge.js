@@ -136,9 +136,11 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
 export class FakeLedgerBridge extends FakeKeyringBridge {
   constructor() {
     super({
+      success: true,
       publicKeyPayload: {
         publicKey: KNOWN_PUBLIC_KEY,
-        chainCode: '0x1',
+        chainCode: CHAIN_CODE,
+        address: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
       },
     });
   }
