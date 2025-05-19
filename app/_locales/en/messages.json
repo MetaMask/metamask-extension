@@ -2940,6 +2940,12 @@
   "ledgerMultipleDevicesUnsupportedInfoTitle": {
     "message": "You can only connect one Ledger at a time"
   },
+  "ledgerAppOpenMessageDescription": {
+    "message": "To make sure Please keep ledger app tab open during transaction"
+  },
+  "ledgerAppOpenMessageTitle": {
+    "message": "Ensure the Ledger tab remains open while connecting accounts and confirming requests"
+  },
   "ledgerTimeout": {
     "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
   },

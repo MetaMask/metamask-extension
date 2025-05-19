@@ -937,6 +937,11 @@ const PrepareBridgePage = () => {
                       ])}
                     </Text>
                   </li>
+                  <li>
+                    <Text variant={TextVariant.bodyMd}>
+                      {t('ledgerAppOpenMessageDescription')}
+                    </Text>
+                  </li>
                 </ul>
               </BannerAlert>
             )}
