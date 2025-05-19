@@ -1,5 +1,10 @@
 import { ObservableStore } from '@metamask/obs-store';
 import { getPersistentState } from '@metamask/base-controller';
+import { getBinaryStateFrames } from './state-frame-utils';
+
+/**
+ * @typedef {import('./state-frame-utils').ChunkFrame} ChunkFrame
+ */
 
 /**
  * @typedef {import('@metamask/base-controller').Messenger} Messenger
@@ -103,6 +108,19 @@ export default class ComposableObservableStore extends ObservableStore {
       flatState = { ...flatState, ...state };
     }
     return flatState;
+  }
+
+  /**
+   * Streams each child‑store’s state (JSON) as 0‑N frames of ≤ `CHUNK_SIZE`.
+   * @param {Record<string, { getState?: () => any; state?: any }>} config - Map of internal state keys to child stores
+   * @param {number} [CHUNK_SIZE=512*1024] - The maximum size of each frame in bytes
+   * @returns {AsyncGeneratorGenerator<ChunkFrame>>} - An async generator that yields each frame
+   */
+  * getBinaryStateFrames(
+    config,
+    CHUNK_SIZE = 512 * 1024,
+  ) {
+    return getBinaryStateFrames.call(this, config, CHUNK_SIZE);
   }
 
   #onStateChange(controllerKey, newState) {

@@ -5,7 +5,7 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 // @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
 import { pipeline } from 'readable-stream';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
-import PortStream from 'extension-port-stream';
+import PortStream from '../lib/extension-port-stream';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from '../constants/marketing-site-whitelist';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';

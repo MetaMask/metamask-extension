@@ -15,7 +15,7 @@ import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
 import { isObject } from '@metamask/utils';
-import PortStream from 'extension-port-stream';
+import PortStream from './lib/extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 
 import {
