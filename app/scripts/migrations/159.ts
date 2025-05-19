@@ -58,23 +58,9 @@ function transformState(state: Record<string, unknown>) {
       ],
     };
 
-    const existingConfigs =
-      state.NetworkController.networkConfigurationsByChainId;
-    const alreadyHasMonad = hasProperty(existingConfigs, monadTestnetChainId);
-
-    return {
-      ...state,
-      NetworkController: {
-        ...state.NetworkController,
-        networkConfigurationsByChainId: {
-          ...existingConfigs,
-          ...(alreadyHasMonad
-            ? { [monadTestnetChainId]: monadTestnetConfiguration }
-            : {}),
-        },
-      },
-    };
+    state.NetworkController.networkConfigurationsByChainId[
+      monadTestnetChainId
+    ] = monadTestnetConfiguration;
   }
-
   return state;
 }
