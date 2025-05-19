@@ -1438,7 +1438,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('returns CAIP-25 approval with approved accounts for the `wallet:eip155` scope (and no approved chainIds) with isMultichainOrigin: false if origin is snapId', async () => {
+      it('returns CAIP-25 approval with approved accounts and chain IDs with isMultichainOrigin: false if origin is snapId', async () => {
         const origin = 'npm:snap';
 
         const permissions =
@@ -1470,6 +1470,12 @@ describe('MetaMaskController', () => {
                   value: {
                     requiredScopes: {},
                     optionalScopes: {
+                      'eip155:1': {
+                        accounts: ['eip155:1:0xdeadbeef'],
+                      },
+                      'eip155:5': {
+                        accounts: ['eip155:5:0xdeadbeef'],
+                      },
                       'wallet:eip155': {
                         accounts: ['wallet:eip155:0xdeadbeef'],
                       },
