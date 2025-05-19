@@ -47,19 +47,39 @@ const mockStoreWithHidingFiatOnTestnets = configureStore()(
 
 jest.mock('../../../../hooks/useFiatFormatter');
 
+type FiatFormatterOptions = {
+  shorten?: boolean;
+  truncatedCharLimit?: number;
+  truncatedStartChars?: number;
+};
+
 describe('FiatDisplay', () => {
   const mockUseFiatFormatter = jest.mocked(useFiatFormatter);
 
   beforeEach(() => {
     jest.resetAllMocks();
-    mockUseFiatFormatter.mockReturnValue((value: number) => `$${value}`);
+    mockUseFiatFormatter.mockReturnValue(
+      (value: number, options?: FiatFormatterOptions) => {
+        const formattedValue = `${value.toLocaleString('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`;
+        if (
+          options?.shorten &&
+          formattedValue.length > (options?.truncatedCharLimit ?? 0)
+        ) {
+          return `$${formattedValue.slice(0, options.truncatedStartChars)}...`;
+        }
+        return `$${formattedValue}`;
+      },
+    );
   });
 
   describe('IndividualFiatDisplay', () => {
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
-      [100, '$100'],
-      [-100, '$100'],
+      [100, '$100.00'],
+      [-100, '$100.00'],
     ])(
       'when fiatAmount is %s it renders %s',
       (fiatAmount: number | null, expected: string) => {
@@ -76,15 +96,15 @@ describe('FiatDisplay', () => {
         <IndividualFiatDisplay fiatAmount={100} />,
         mockStoreWithHidingFiatOnTestnets,
       );
-      expect(queryByText('100')).toBe(null);
+      expect(queryByText('100.00')).toBe(null);
     });
   });
 
   describe('TotalFiatDisplay', () => {
     // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
-      [[100, 200, FIAT_UNAVAILABLE, 300], 'Total = $600'],
-      [[-100, -200, FIAT_UNAVAILABLE, -300], 'Total = $600'],
+      [[100, 200, FIAT_UNAVAILABLE, 300], 'Total = $600.00'],
+      [[-100, -200, FIAT_UNAVAILABLE, -300], 'Total = $600.00'],
     ])(
       'when fiatAmounts is %s it renders %s',
       (fiatAmounts: (number | null)[], expected: string) => {
@@ -98,10 +118,44 @@ describe('FiatDisplay', () => {
 
     it('does not render anything if user opted out to show fiat values on testnet', () => {
       const { queryByText } = renderWithProvider(
-        <IndividualFiatDisplay fiatAmount={100} />,
+        <TotalFiatDisplay fiatAmounts={[100, 200, 300]} />,
         mockStoreWithHidingFiatOnTestnets,
       );
-      expect(queryByText('600')).toBe(null);
+      expect(queryByText('600.00')).toBe(null);
+    });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      [
+        [1_000_000_000_000_000, 2_000_000_000_000_000],
+        'Total = $3,000,000,000,000...',
+      ],
+      [
+        [-1_000_000_000_000_000, -2_000_000_000_000_000],
+        'Total = $3,000,000,000,000...',
+      ],
+      [
+        [1_234_567_890_123_456, 7_654_321_098_765_432],
+        'Total = $8,888,888,988,888...',
+      ],
+      [[9_999_999_999_998, 1], 'Total = $9,999,999,999,999.00'], // Should not shorten
+    ])(
+      'when total fiat exceeds the limit %s, it shortens to %s',
+      (fiatAmounts: (number | null)[], expected: string) => {
+        renderWithProvider(
+          <TotalFiatDisplay fiatAmounts={fiatAmounts} />,
+          mockStoreWithShowingFiatOnTestnets,
+        );
+        expect(screen.getByText(expected)).toBeInTheDocument();
+      },
+    );
+
+    it('renders "Not Available" when totalFiat is 0', () => {
+      renderWithProvider(
+        <TotalFiatDisplay fiatAmounts={[FIAT_UNAVAILABLE, FIAT_UNAVAILABLE]} />,
+        mockStoreWithShowingFiatOnTestnets,
+      );
+      expect(screen.getByText('Not Available')).toBeInTheDocument();
     });
   });
 });
