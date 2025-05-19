@@ -83,6 +83,9 @@ const ALLOWLISTED_URLS = [
   'https://min-api.cryptocompare.com/data/pricemulti?fsyms=btc%2Csol&tsyms=usd',
   'https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH%2CMegaETH%2CTEST&tsyms=usd',
   'https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH%2CMegaETH%2CMATIC&tsyms=usd',
+  'https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH%2CMON&tsyms=usd',
+  'https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH%2CMON%2CTEST&tsyms=usd',
+  'https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH%2CMON%2CMATIC&tsyms=usd',
   'https://nft.api.cx.metamask.io/collections?contract=0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85&chainId=1',
   'https://nft.api.cx.metamask.io/collections?chainId=0x1&contract=0x0000000000000000000000000000000000000002',
   'https://nft.api.cx.metamask.io/collections?chainId=0x539&contract=0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947',
@@ -114,7 +117,6 @@ const ALLOWLISTED_URLS = [
   'https://verify.walletconnect.com/e6360eaee594162688065f1c70c863b7',
   'https://w.usabilla.com/ade130c1096e.js?lv=1',
   'https://websites.cdn.getfeedback.com/embed/aaeNy60jTL/gf.js',
-  'https://min-api.cryptocompare.com/data/pricemulti?fsyms=ETH%2CMON&tsyms=usd',
 ];
 
 const ALLOWLISTED_HOSTS = [
