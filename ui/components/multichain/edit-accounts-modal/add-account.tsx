@@ -47,7 +47,7 @@ export const EditAccountAddAccountForm: React.FC<
       category: MetaMetricsEventCategory.Accounts,
       event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
       properties: {
-        button_type: 'picker_clicked',
+        button_type: 'picker',
       },
     });
     setShowSrpSelection((previous) => !previous);

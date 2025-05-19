@@ -502,7 +502,7 @@ export const AccountListMenu = ({
       category: MetaMetricsEventCategory.Accounts,
       event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
       properties: {
-        button_type: 'picker_clicked',
+        button_type: 'picker',
       },
     });
     setPreviousActionMode(actionMode);

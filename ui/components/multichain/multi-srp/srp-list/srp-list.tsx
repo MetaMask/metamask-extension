@@ -74,7 +74,7 @@ export const SrpList = ({
               category: MetaMetricsEventCategory.Accounts,
               event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
               properties: {
-                button_type: 'srp_selected',
+                button_type: 'srp_select',
               },
             });
             onActionComplete(keyring.metadata.id);
@@ -103,7 +103,7 @@ export const SrpList = ({
                       event:
                         MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
                       properties: {
-                        button_type: 'details_clicked',
+                        button_type: 'details',
                       },
                     });
                     setShowAccounts((prevState) =>
