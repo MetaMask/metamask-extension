@@ -13,6 +13,7 @@ import {
   awaitDeleteDelegationEntry,
 } from '../../../store/controller-actions/delegation-controller';
 import { addTransaction } from '../../../store/actions';
+import { getRemoteModeConfig } from '../../../selectors/remote-mode';
 import { useRemoteMode } from './useRemoteMode';
 
 // Minimal mock state for tests
@@ -81,9 +82,6 @@ jest.mock('../../../store/controller-actions/delegation-controller', () => ({
 jest.mock('../../../selectors/remote-mode', () => ({
   getRemoteModeConfig: jest.fn(),
 }));
-
-// Import the mocked version after jest.mock has been called
-import { getRemoteModeConfig } from '../../../selectors/remote-mode';
 
 const mockAccount = '0x1';
 const mockSelectedAccount: InternalAccount = {
