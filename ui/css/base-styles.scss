@@ -58,15 +58,7 @@ html {
   flex-direction: column;
 
   html[data-theme] & {
-    background: var(--color-background-default);
-
-    &.app-content--welcome-banner {
-      background: var(--brand-colors-lime-lime050) url('/images/welcome-banner.png') no-repeat calc(50% + 500px) 160px;
-    }
-
-    &.app-content--welcome-login {
-      background: var(--brand-colors-purple-purple800) url('/images/welcome-page.png') no-repeat center center;
-    }
+    background: var(--color-background-alternative);
   }
 
   @include design-system.screen-sm-max {
