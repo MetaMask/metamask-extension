@@ -125,6 +125,7 @@ const mockState: TestState = {
   metamask: {
     remoteFeatureFlags: {
       addSolanaAccount: true,
+      solanaTestnetsEnabled: true,
     },
     bitcoinSupportEnabled: true,
     multichainNetworkConfigurationsByChainId: {
