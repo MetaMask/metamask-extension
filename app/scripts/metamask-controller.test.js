@@ -1293,7 +1293,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('returns approval from the PermissionsController for only eth_accounts when only permittedChains is specified in params and origin is snapId', async () => {
+      it('returns approval from the PermissionsController for both eth_accounts and permittedChains when only permittedChains is specified in params and origin is snapId', async () => {
         const permissions =
           await metamaskController.getCaip25PermissionFromLegacyPermissions(
             'npm:snap',
@@ -1318,6 +1318,9 @@ describe('MetaMaskController', () => {
                   value: {
                     requiredScopes: {},
                     optionalScopes: {
+                      'eip155:100': {
+                        accounts: [],
+                      },
                       'wallet:eip155': {
                         accounts: [],
                       },
@@ -1332,7 +1335,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('returns approval from the PermissionsController for only eth_accounts when both eth_accounts and permittedChains are specified in params and origin is snapId', async () => {
+      it('returns approval from the PermissionsController for both eth_accounts and permittedChains when both eth_accounts and permittedChains are specified in params and origin is snapId', async () => {
         const permissions =
           await metamaskController.getCaip25PermissionFromLegacyPermissions(
             'npm:snap',
@@ -1365,6 +1368,9 @@ describe('MetaMaskController', () => {
                   value: {
                     requiredScopes: {},
                     optionalScopes: {
+                      'eip155:100': {
+                        accounts: ['eip155:100:foo'],
+                      },
                       'wallet:eip155': {
                         accounts: ['wallet:eip155:foo'],
                       },
@@ -1432,31 +1438,28 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('returns CAIP-25 approval with approved accounts for the `wallet:eip155` scope (and no approved chainIds) with isMultichainOrigin: false if origin is snapId', async () => {
+      it('returns CAIP-25 approval with approved accounts and chain IDs with isMultichainOrigin: false if origin is snapId', async () => {
         const origin = 'npm:snap';
 
         const permissions =
-          await metamaskController.getCaip25PermissionFromLegacyPermissions(
-            origin,
-            {
-              [RestrictedEthMethods.eth_accounts]: {
-                caveats: [
-                  {
-                    type: 'restrictReturnedAccounts',
-                    value: ['0xdeadbeef'],
-                  },
-                ],
-              },
-              [EndowmentTypes.permittedChains]: {
-                caveats: [
-                  {
-                    type: 'restrictNetworkSwitching',
-                    value: ['0x1', '0x5'],
-                  },
-                ],
-              },
+          metamaskController.getCaip25PermissionFromLegacyPermissions(origin, {
+            [RestrictedEthMethods.eth_accounts]: {
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: ['0xdeadbeef'],
+                },
+              ],
             },
-          );
+            [EndowmentTypes.permittedChains]: {
+              caveats: [
+                {
+                  type: 'restrictNetworkSwitching',
+                  value: ['0x1', '0x5'],
+                },
+              ],
+            },
+          });
 
         expect(permissions).toStrictEqual(
           expect.objectContaining({
@@ -1467,6 +1470,12 @@ describe('MetaMaskController', () => {
                   value: {
                     requiredScopes: {},
                     optionalScopes: {
+                      'eip155:1': {
+                        accounts: ['eip155:1:0xdeadbeef'],
+                      },
+                      'eip155:5': {
+                        accounts: ['eip155:5:0xdeadbeef'],
+                      },
                       'wallet:eip155': {
                         accounts: ['wallet:eip155:0xdeadbeef'],
                       },
@@ -1540,19 +1549,6 @@ describe('MetaMaskController', () => {
     });
 
     describe('requestPermittedChainsPermissionIncremental', () => {
-      it('throws if the origin is snapId', async () => {
-        await expect(() =>
-          metamaskController.requestPermittedChainsPermissionIncremental({
-            origin: 'npm:snap',
-            chainId: '0x1',
-          }),
-        ).rejects.toThrow(
-          new Error(
-            'Cannot request permittedChains permission for Snaps with origin "npm:snap"',
-          ),
-        );
-      });
-
       it('requests permittedChains approval if autoApprove: false', async () => {
         const expectedCaip25Permission = {
           [Caip25EndowmentPermissionName]: {
