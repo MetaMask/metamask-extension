@@ -216,21 +216,20 @@ export function getMultichainNetwork(
 
   let nonEvmNetwork: MultichainProviderConfig | undefined;
 
-  // First try to find a network that matches the account's scope
-  if (selectedAccount.scopes.length > 0) {
+  // We are finding a network that matches the account's scope
+  if (selectedAccount.scopes?.length > 0) {
     nonEvmNetwork = nonEvmNetworks.find((provider) =>
       selectedAccount.scopes.includes(provider.chainId),
     );
   }
 
-  // If no network found by scope, try the selected chain ID
+  // If no network is found by scope, try the selected chainId
   if (!nonEvmNetwork && selectedChainId) {
     nonEvmNetwork = nonEvmNetworks.find(
       (provider) => provider.chainId === selectedChainId,
     );
   }
 
-  // If still no network found, fallback to compatibility check
   if (!nonEvmNetwork) {
     nonEvmNetwork = nonEvmNetworks.find((provider) => {
       return provider.isAddressCompatible(selectedAccount.address);
