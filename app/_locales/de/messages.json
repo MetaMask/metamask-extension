@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Bitcoin-Konto (Beta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Bitcoin-Konto (Testnet)"
-  },
   "addBlockExplorer": {
     "message": "Einen Block-Explorer hinzufügen"
   },
@@ -661,22 +658,6 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Bei Aktivierung dieser Funktion haben Sie die Möglichkeit, ein Bitcoin-Konto zu Ihrer MetaMask-Erweiterung hinzuzufügen, das von Ihrer bestehenden geheimen Wiederherstellungsphrase abgeleitet ist. Hierbei handelt es sich um eine experimentelle Beta-Funktion, deren Nutzung also auf eigene Gefahr erfolgt. Falls Sie uns Feedback zu dieser neuen Bitcoin-Funktion geben möchten, füllen Sie bitte dieses $1 aus.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Aktivierung der Funktion „Ein neues Bitcoin-Konto hinzufügen (Beta)“"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Bei Aktivierung dieser Funktion haben Sie die Möglichkeit, ein Bitcoin-Konto für das Test-Netzwerk hinzuzufügen."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Aktivierung der Funktion „Ein neues Bitcoin-Konto hinzufügen (Testnet)“"
   },
   "blockExplorerAccountAction": {
     "message": "Konto",

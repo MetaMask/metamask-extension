@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Akun Bitcoin (Beta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Akun Bitcoin (Testnet)"
-  },
   "addBlockExplorer": {
     "message": "Tambahkan block explorer"
   },
@@ -661,22 +658,6 @@
   "billionAbbreviation": {
     "message": "M",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Mengaktifkan fitur ini akan memberi Anda opsi untuk menambahkan Akun Bitcoin ke Ekstensi MetaMask yang berasal dari Frasa Pemulihan Rahasia yang ada. Ini merupakan fitur Beta eksperimental, jadi Anda harus menggunakannya dengan risiko yang ditanggung sendiri. Untuk memberikan masukan seputar pengalaman Bitcoin baru ini, isi $1 ini.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Aktifkan \"Tambahkan akun Bitcoin baru (Beta)\""
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Mengaktifkan fitur ini akan memberi Anda opsi untuk menambahkan Akun Bitcoin bagi jaringan uji."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Aktifkan \"Tambahkan akun Bitcoin baru (Testnet)\""
   },
   "blockExplorerAccountAction": {
     "message": "Akun",
