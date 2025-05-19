@@ -138,6 +138,7 @@ const privateHostMatchers = [
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
  * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH.
+ * @param {string} options.monConversionInUsd - The USD conversion rate for MON.
  * @returns {Promise<SetupMockReturn>}
  */
 async function setupMocking(
