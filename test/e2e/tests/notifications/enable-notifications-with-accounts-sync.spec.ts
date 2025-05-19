@@ -72,10 +72,6 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
         async ({ driver }) => {
           await completeOnboardFlowIdentity(driver);
           await enableNotificationsThroughCTA(driver);
-          const notificationsSettings = new NotificationsSettingsPage(driver);
-          await notificationsSettings.assertMainNotificationSettingsToggles(
-            driver,
-          );
           const notificationsSettingsPage =
             await assertMainNotificationSettingsToggles(driver);
 
@@ -113,12 +109,8 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
         async ({ driver }) => {
           await completeOnboardFlowIdentity(driver);
           await enableNotificationsThroughSettingsPage(driver);
-          const notificationsSettingsPage = new NotificationsSettingsPage(
-            driver,
-          );
-          await notificationsSettingsPage.assertMainNotificationSettingsToggles(
-            driver,
-          );
+          const notificationsSettingsPage =
+          await assertMainNotificationSettingsToggles(driver);
 
           // Assert Notification Account Settings have persisted
           // The second account was switched off from the initial run
