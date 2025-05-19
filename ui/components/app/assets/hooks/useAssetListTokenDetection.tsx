@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { Token } from '../types';
@@ -49,8 +49,6 @@ const useAssetListTokenDetection = () => {
     detectedTokensMultichain || {},
   ).reduce((acc, tokens) => acc + tokens.length, 0);
 
-  const [showDetectedTokens, setShowDetectedTokens] = useState(false);
-
   const handleAddImportedTokens = async (
     tokens: Token[],
     networkClientIdProp: string,
@@ -100,8 +98,6 @@ const useAssetListTokenDetection = () => {
     detectedTokens.length,
     multichainDetectedTokensLength,
   ]);
-
-  return { showDetectedTokens, setShowDetectedTokens };
 };
 
 export default useAssetListTokenDetection;

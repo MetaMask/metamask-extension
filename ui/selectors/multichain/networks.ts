@@ -78,7 +78,11 @@ export const getIsNonEvmNetworksEnabled = createDeepEqualSelector(
     // they're used we can't guarantee that the scopes will be set
     // during the keyring migration execution.
     for (const { scopes } of internalAccounts) {
-      if (scopes?.includes(BtcScope.Mainnet)) {
+      if (
+        scopes?.includes(
+          BtcScope.Mainnet || BtcScope.Testnet || BtcScope.Signet,
+        )
+      ) {
         bitcoinEnabled = true;
       }
       if (scopes?.includes(SolScope.Mainnet)) {
