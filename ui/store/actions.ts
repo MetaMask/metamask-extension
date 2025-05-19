@@ -650,9 +650,10 @@ export function connectHardware(
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid
       ) {
-        const inTest = process.env.IN_TEST;
+        const inE2eTest =
+          process.env.IN_TEST && process.env.METAMASK_ENVIRONMENT === 'main';
         let connectedDevices: HIDDevice[] = [];
-        if (!inTest) {
+        if (!inE2eTest) {
           connectedDevices = await window.navigator.hid.requestDevice({
             // The types for web hid were provided by @types/w3c-web-hid and may
             // not be fully formed or correct, because LEDGER_USB_VENDOR_ID is a
@@ -664,7 +665,7 @@ export function connectHardware(
           });
         }
         const userApprovedWebHidConnection =
-          inTest ||
+          inE2eTest ||
           connectedDevices.some(
             (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
           );

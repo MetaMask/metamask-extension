@@ -36,8 +36,9 @@ const LedgerInfo: React.FC = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const inTest = process.env.IN_TEST;
-  const webHidConnectedStatus = inTest
+  const inE2eTest =
+    process.env.IN_TEST && process.env.METAMASK_ENVIRONMENT === 'main';
+  const webHidConnectedStatus = inE2eTest
     ? WebHIDConnectedStatuses.connected
     : useSelector(getLedgerWebHidConnectedStatus);
   const ledgerTransportType = useSelector(getLedgerTransportType);
@@ -98,13 +99,13 @@ const LedgerInfo: React.FC = () => {
             onClick={async () => {
               if (environmentTypeIsFullScreen) {
                 let connectedDevices: HIDDevice[] = [];
-                if (!inTest) {
+                if (!inE2eTest) {
                   connectedDevices = await window.navigator.hid.requestDevice({
                     filters: [{ vendorId: Number(LEDGER_USB_VENDOR_ID) }],
                   });
                 }
                 const webHidIsConnected =
-                  inTest ||
+                  inE2eTest ||
                   connectedDevices.some(
                     (device) =>
                       device.vendorId === Number(LEDGER_USB_VENDOR_ID),
