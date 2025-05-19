@@ -560,6 +560,7 @@ export function addNewAccount(
         'addNewAccount',
         [oldAccounts.length, keyringId],
       );
+      await forceUpdateMetamaskState(dispatch);
       const newState = getState();
       newAccount = getInternalAccountByAddress(newState, addedAccountAddress);
     } catch (error) {
@@ -569,7 +570,6 @@ export function addNewAccount(
       dispatch(hideLoadingIndication());
     }
 
-    await forceUpdateMetamaskState(dispatch);
     return newAccount;
   };
 }
