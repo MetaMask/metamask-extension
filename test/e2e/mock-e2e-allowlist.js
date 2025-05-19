@@ -131,7 +131,6 @@ const ALLOWLISTED_HOSTS = [
   'gvt1.com',
   'portfolio.metamask.io',
   'price.api.cx.metamask.io',
-  'registry.npmjs.org',
   'sentry.io',
   'solana-devnet.infura.io',
   'solana-mainnet.infura.io',
