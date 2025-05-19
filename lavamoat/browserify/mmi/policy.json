@@ -1265,14 +1265,6 @@
         "immer": true
       }
     },
-    "@metamask/selected-network-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
     "@metamask/bridge-controller": {
       "globals": {
         "AbortController": true,
@@ -1919,7 +1911,8 @@
         "@metamask/network-controller": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses": true
+        "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses": true,
+        "lodash": true
       }
     },
     "@metamask/multichain-transactions-controller": {
@@ -2216,7 +2209,7 @@
     },
     "@metamask/selected-network-controller": {
       "packages": {
-        "@metamask/selected-network-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true
       }
     },

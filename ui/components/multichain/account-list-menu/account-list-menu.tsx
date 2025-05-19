@@ -58,7 +58,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   getIsBitcoinSupportEnabled,
-  getIsBitcoinTestnetSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
@@ -99,12 +98,6 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-import {
-  hasCreatedBtcMainnetAccount,
-  hasCreatedBtcTestnetAccount,
-} from '../../../selectors/accounts';
 ///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -210,8 +203,6 @@ export const getActionTitle = (
     ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
     case ACTION_MODES.ADD_BITCOIN:
       return t('addAccountFromNetwork', [t('networkNameBitcoin')]);
-    case ACTION_MODES.ADD_BITCOIN_TESTNET:
-      return t('addAccountFromNetwork', [t('networkNameBitcoinTestnet')]);
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(solana)
     case ACTION_MODES.ADD_SOLANA:
@@ -324,15 +315,6 @@ export const AccountListMenu = ({
   const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
   const bitcoinWalletSnapClient = useMultichainWalletSnapClient(
     WalletClientType.Bitcoin,
-  );
-  const bitcoinTestnetSupportEnabled = useSelector(
-    getIsBitcoinTestnetSupportEnabled,
-  );
-  const isBtcMainnetAccountAlreadyCreated = useSelector(
-    hasCreatedBtcMainnetAccount,
-  );
-  const isBtcTestnetAccountAlreadyCreated = useSelector(
-    hasCreatedBtcTestnetAccount,
   );
   ///: END:ONLY_INCLUDE_IF
 
@@ -666,7 +648,6 @@ export const AccountListMenu = ({
               bitcoinSupportEnabled && (
                 <Box marginTop={4}>
                   <ButtonLink
-                    disabled={isBtcMainnetAccountAlreadyCreated}
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
                     startIconProps={{ size: IconSize.Md }}
@@ -689,34 +670,7 @@ export const AccountListMenu = ({
               )
               ///: END:ONLY_INCLUDE_IF
             }
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-              bitcoinTestnetSupportEnabled ? (
-                <Box marginTop={4}>
-                  <ButtonLink
-                    disabled={isBtcTestnetAccountAlreadyCreated}
-                    size={ButtonLinkSize.Sm}
-                    startIconName={IconName.Add}
-                    startIconProps={{ size: IconSize.Md }}
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                    onClick={async () => {
-                      return await handleMultichainSnapAccountCreation(
-                        bitcoinWalletSnapClient,
-                        {
-                          scope: MultichainNetworks.BITCOIN_TESTNET,
-                        },
-                        ACTION_MODES.ADD_BITCOIN_TESTNET,
-                      );
-                    }}
-                    data-testid="multichain-account-menu-popover-add-btc-account-testnet"
-                  >
-                    {t('addBitcoinTestnetAccountLabel')}
-                  </ButtonLink>
-                </Box>
-              ) : null
-              ///: END:ONLY_INCLUDE_IF
-            }
+
             <Text
               variant={TextVariant.bodySmMedium}
               marginTop={4}

@@ -16,6 +16,7 @@ import {
   signTypedDataV4WithSnapAccount,
   signTypedDataWithSnapAccount,
 } from '../../page-objects/flows/sign.flow';
+import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 describe('Snap Account Signatures', function (this: Suite) {
   this.timeout(200000); // This test is very long, so we need an unusually high timeout
@@ -31,6 +32,7 @@ describe('Snap Account Signatures', function (this: Suite) {
         {
           dapp: true,
           fixtures: new FixtureBuilder().build(),
+          testSpecificMock: mockSimpleKeyringSnap,
           title,
         },
         async ({ driver }: { driver: Driver }) => {
