@@ -12,7 +12,11 @@ import TestDapp from '../pages/test-dapp';
  * @param encryptionKey - The expected encryption key to display.
  * @param balanceValue - The balance value to check, default is DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC.
  */
-export async function getEncryptionKeyInDapp(driver: Driver, encryptionKey: string, balanceValue: string = DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC + ' ETH') {
+export async function getEncryptionKeyInDapp(
+  driver: Driver,
+  encryptionKey: string,
+  balanceValue: string = `${DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC} ETH`,
+) {
   const testDapp = new TestDapp(driver);
   await testDapp.clickGetEncryptionKeyButton();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -34,7 +38,11 @@ export async function getEncryptionKeyInDapp(driver: Driver, encryptionKey: stri
  * @param message - The message to decrypt.
  * @param balanceValue - The balance value to check, default is DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC.
  */
-export async function decryptMessageAndVerifyResult(driver: Driver, message: string, balanceValue: string = DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC + ' ETH') {
+export async function decryptMessageAndVerifyResult(
+  driver: Driver,
+  message: string,
+  balanceValue: string = `${DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC} ETH`,
+) {
   console.log('Decrypt message in test dapp and verify the result');
   const testDapp = new TestDapp(driver);
   await testDapp.clickDecryptButton();

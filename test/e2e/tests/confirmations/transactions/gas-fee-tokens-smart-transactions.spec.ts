@@ -1,13 +1,13 @@
 import { Suite } from 'mocha';
+import { MockttpServer } from 'mockttp';
 import { Anvil } from '@viem/anvil';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Driver } from '../../../webdriver/driver';
 import FixtureBuilder from '../../../fixture-builder';
 import { WINDOW_TITLES, unlockWallet, withFixtures } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import GasFeeTokenModal from '../../../page-objects/pages/confirmations/redesign/gas-fee-token-modal';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { MockttpServer } from 'mockttp';
 import { mockSmartTransactionBatchRequests } from '../../smart-transactions/mocks';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';

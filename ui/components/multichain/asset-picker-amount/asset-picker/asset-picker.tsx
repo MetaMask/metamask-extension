@@ -290,6 +290,7 @@ export function AssetPicker({
                     size={AvatarNetworkSize.Xs}
                     name={selectedNetwork?.name ?? ''}
                     src={networkImageSrc}
+                    borderWidth={2}
                     backgroundColor={
                       Object.entries({
                         [GOERLI_DISPLAY_NAME]: BackgroundColor.goerli,

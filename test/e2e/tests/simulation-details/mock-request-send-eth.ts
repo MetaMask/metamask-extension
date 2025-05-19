@@ -81,6 +81,6 @@ export const SEND_ETH_REQUEST_MOCK: MockRequestResponse = {
       blockNumber: '0x53afbb',
       id: '09156630-b754-4bb8-bfc4-3390d934cec6',
     },
-    id: 42,
+    id: '42',
   },
 };

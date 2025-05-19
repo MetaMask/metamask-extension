@@ -5,6 +5,9 @@ import { useHistory } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { Carousel } from 'react-responsive-carousel';
 ///: END:ONLY_INCLUDE_IF
+// eslint-disable-next-line import/no-restricted-paths
+import { getPlatform } from '../../../../app/scripts/lib/util';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import Mascot from '../../../components/ui/mascot';
 import Button from '../../../components/ui/button';
 import { Text } from '../../../components/component-library';
@@ -32,6 +35,8 @@ import {
   ///: END:ONLY_INCLUDE_IF
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -82,7 +87,11 @@ export default function OnboardingWelcome() {
     dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    history.push(ONBOARDING_METAMETRICS);
+    history.push(
+      getPlatform() === PLATFORM_FIREFOX
+        ? ONBOARDING_CREATE_PASSWORD_ROUTE
+        : ONBOARDING_METAMETRICS,
+    );
     ///: END:ONLY_INCLUDE_IF
   };
   const toggleTermsCheck = () => {
@@ -112,7 +121,11 @@ export default function OnboardingWelcome() {
     dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    history.push(ONBOARDING_METAMETRICS);
+    history.push(
+      getPlatform() === PLATFORM_FIREFOX
+        ? ONBOARDING_IMPORT_WITH_SRP_ROUTE
+        : ONBOARDING_METAMETRICS,
+    );
     ///: END:ONLY_INCLUDE_IF
   };
 

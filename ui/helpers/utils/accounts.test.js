@@ -9,8 +9,9 @@ import { BackgroundColor } from '../constants/design-system';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
 import mockState from '../../../test/data/mock-state.json';
+import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts/solana-wallet-snap';
 import {
-  getAccountLabel,
+  getAccountLabels,
   getAccountNameErrorMessage,
   getAvatarNetworkColor,
 } from './accounts';
@@ -20,6 +21,17 @@ const mockAccounts = Object.values(
 );
 
 const mockLocalization = { t: jest.fn().mockReturnValue('Account') };
+
+const keyringsWithMetadata = [
+  {
+    type: KeyringType.hdKeyTree,
+    metadata: { id: 'hdKeyring1' },
+  },
+  {
+    type: KeyringType.hdKeyTree,
+    metadata: { id: 'hdKeyring2' },
+  },
+];
 
 describe('Accounts', () => {
   describe('#getAccountNameErrorMessage', () => {
@@ -92,7 +104,7 @@ describe('Accounts', () => {
     });
   });
 
-  describe('#getAccountLabel', () => {
+  describe('#getAccountLabels', () => {
     const mockAccount = {
       address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
       id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
@@ -100,6 +112,9 @@ describe('Accounts', () => {
         name: 'Test Account',
         keyring: {
           type: KeyringType.hdKeyTree,
+        },
+        snap: {
+          id: SOLANA_WALLET_SNAP_ID,
         },
       },
       options: {},
@@ -113,59 +128,73 @@ describe('Accounts', () => {
       type: 'eip155:eoa',
     };
 
-    it('should return null for null account', () => {
-      expect(getAccountLabel(KeyringType.qr, null)).toBeNull();
+    it('should return empty array for null account', () => {
+      expect(
+        getAccountLabels(KeyringType.qr, null, keyringsWithMetadata),
+      ).toStrictEqual([]);
     });
 
-    it('should return null for HD Key Tree accounts', () => {
-      expect(getAccountLabel(KeyringType.hdKeyTree, mockAccount)).toBeNull();
+    it('should return empty array for HD Key Tree accounts', () => {
+      expect(
+        getAccountLabels(KeyringType.hdKeyTree, mockAccount, []),
+      ).toStrictEqual([]);
     });
 
     it('should return the correct label for imported accounts', () => {
       mockAccount.metadata.keyring.type = KeyringType.imported;
-      expect(getAccountLabel(KeyringType.imported, mockAccount)).toBe(
-        'Imported',
-      );
+      expect(
+        getAccountLabels(
+          KeyringType.imported,
+          mockAccount,
+          keyringsWithMetadata,
+        ),
+      ).toStrictEqual([{ label: 'Imported', icon: null }]);
     });
 
     it('should return the correct label for QR hardware wallet', () => {
       mockAccount.metadata.keyring.type = KeyringType.qr;
-      expect(getAccountLabel(KeyringType.qr, mockAccount)).toBe(
-        HardwareKeyringNames.qr,
-      );
+      expect(
+        getAccountLabels(KeyringType.qr, mockAccount, keyringsWithMetadata),
+      ).toStrictEqual([{ label: HardwareKeyringNames.qr, icon: null }]);
     });
 
     it('should return the correct label for Trezor hardware wallet', () => {
       mockAccount.metadata.keyring.type = KeyringType.trezor;
-      expect(getAccountLabel(KeyringType.trezor, mockAccount)).toBe(
-        HardwareKeyringNames.trezor,
-      );
+      expect(
+        getAccountLabels(KeyringType.trezor, mockAccount, keyringsWithMetadata),
+      ).toStrictEqual([{ label: HardwareKeyringNames.trezor, icon: null }]);
     });
 
     it('should return the correct label for OneKey hardware wallet', () => {
       mockAccount.metadata.keyring.type = KeyringType.oneKey;
-      expect(getAccountLabel(KeyringType.oneKey, mockAccount)).toBe(
-        HardwareKeyringNames.oneKey,
-      );
+      expect(
+        getAccountLabels(KeyringType.oneKey, mockAccount, keyringsWithMetadata),
+      ).toStrictEqual([{ label: HardwareKeyringNames.oneKey, icon: null }]);
     });
 
     it('should return the correct label for Ledger hardware wallet', () => {
       mockAccount.metadata.keyring.type = KeyringType.ledger;
-      expect(getAccountLabel(KeyringType.ledger, mockAccount)).toBe(
-        HardwareKeyringNames.ledger,
-      );
+      expect(
+        getAccountLabels(KeyringType.ledger, mockAccount, keyringsWithMetadata),
+      ).toStrictEqual([{ label: HardwareKeyringNames.ledger, icon: null }]);
     });
 
     it('should return the correct label for Lattice hardware wallet', () => {
       mockAccount.metadata.keyring.type = KeyringType.lattice;
-      expect(getAccountLabel(KeyringType.lattice, mockAccount)).toBe(
-        HardwareKeyringNames.lattice,
-      );
+      expect(
+        getAccountLabels(
+          KeyringType.lattice,
+          mockAccount,
+          keyringsWithMetadata,
+        ),
+      ).toStrictEqual([{ label: HardwareKeyringNames.lattice, icon: null }]);
     });
 
     it('should handle unhandled account types', () => {
       mockAccount.metadata.keyring.type = 'unknown';
-      expect(getAccountLabel('unknown', mockAccount)).toBeNull();
+      expect(
+        getAccountLabels('unknown', mockAccount, keyringsWithMetadata),
+      ).toStrictEqual([]);
     });
 
     describe('Snap Account Label', () => {
@@ -175,7 +204,10 @@ describe('Accounts', () => {
         metadata: {
           ...mockAccount.metadata,
           type: KeyringType.snap,
-          snap: { name: mockSnapName },
+          snap: {
+            name: mockSnapName,
+            id: SOLANA_WALLET_SNAP_ID,
+          },
         },
       };
       const mockSnapAccountWithoutName = {
@@ -186,38 +218,124 @@ describe('Accounts', () => {
         },
       };
 
-      it('should return snap name with beta tag if snap name is provided', () => {
+      it('should not return snap name with beta tag if snap name is provided but the snap is preinstalled', () => {
         expect(
-          getAccountLabel(
+          getAccountLabels(
             KeyringType.snap,
             mockSnapAccountWithName,
+            keyringsWithMetadata,
             mockSnapName,
             false,
           ),
-        ).toBe('Test Snap Name (Beta)');
+        ).toStrictEqual([]);
       });
 
-      it('should return generic snap label with beta tag if snap name is not provided', () => {
+      it('should not return generic snap label with beta tag if snap name is not provided and the snap is preinstalled', () => {
         expect(
-          getAccountLabel(
+          getAccountLabels(
             KeyringType.snap,
             mockSnapAccountWithoutName,
-            null,
+            keyringsWithMetadata,
             false,
           ),
-        ).toBe('Snaps (Beta)');
+        ).toStrictEqual([]);
       });
 
-      it('should return null if snap is preinstalled', () => {
+      it('should return empty array if snap is preinstalled and the account does not define a entropySource', () => {
         expect(
-          getAccountLabel(
+          getAccountLabels(
             KeyringType.snap,
             mockSnapAccountWithName,
+            keyringsWithMetadata,
             mockSnapName,
             true,
           ),
-        ).toBeNull();
+        ).toStrictEqual([]);
       });
+    });
+  });
+
+  describe('SRP label', () => {
+    it('should show SRP label with index when there are multiple HD keyrings', () => {
+      const mockAccountWithHdKeyring = {
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        metadata: {
+          keyring: { type: KeyringType.hdKeyTree },
+          snap: {
+            id: SOLANA_WALLET_SNAP_ID,
+          },
+        },
+      };
+
+      const multipleHdKeyrings = [
+        {
+          type: KeyringType.hdKeyTree,
+          accounts: ['0x123'],
+        },
+        {
+          type: KeyringType.hdKeyTree,
+          accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+        },
+      ];
+
+      expect(
+        getAccountLabels(
+          KeyringType.hdKeyTree,
+          mockAccountWithHdKeyring,
+          multipleHdKeyrings,
+        ),
+      ).toStrictEqual([{ label: 'SRP #2', icon: null }]);
+    });
+
+    it('should not show SRP label when there is only one HD keyring', () => {
+      const mockAccountWithHdKeyring = {
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        metadata: {
+          keyring: { type: KeyringType.hdKeyTree },
+          snap: {
+            id: SOLANA_WALLET_SNAP_ID,
+          },
+        },
+      };
+
+      const singleHdKeyring = [
+        {
+          type: KeyringType.hdKeyTree,
+          accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+        },
+      ];
+
+      expect(
+        getAccountLabels(
+          KeyringType.hdKeyTree,
+          mockAccountWithHdKeyring,
+          singleHdKeyring,
+        ),
+      ).toStrictEqual([]);
+    });
+
+    it('should show SRP label for snap accounts with entropySource matching HD keyring', () => {
+      const mockSnapAccount = {
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        options: {
+          entropySource: 'hdKeyring2',
+        },
+        metadata: {
+          keyring: { type: KeyringType.snap },
+          snap: {
+            id: SOLANA_WALLET_SNAP_ID,
+          },
+        },
+      };
+
+      expect(
+        getAccountLabels(
+          KeyringType.snap,
+          mockSnapAccount,
+          keyringsWithMetadata,
+          'Test Snap',
+        ),
+      ).toStrictEqual([{ label: 'SRP #2', icon: null }]);
     });
   });
 });

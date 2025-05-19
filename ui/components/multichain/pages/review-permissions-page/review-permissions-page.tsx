@@ -60,6 +60,7 @@ import {
   MergedInternalAccountWithCaipAccountId,
 } from '../../../../selectors/selectors.types';
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
+import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { SiteCell } from './site-cell/site-cell';
 
 export const ReviewPermissions = () => {
@@ -269,6 +270,8 @@ export const ReviewPermissions = () => {
               testNetworks={testNetworks}
               accounts={allAccounts}
               onSelectAccountAddresses={handleSelectAccountAddresses}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onSelectChainIds={handleSelectChainIds}
               selectedAccountAddresses={connectedAccountAddresses}
               selectedChainIds={connectedChainIds}
@@ -283,8 +286,10 @@ export const ReviewPermissions = () => {
               hostname={activeTabOrigin}
               onClose={() => setShowDisconnectAllModal(false)}
               onClick={() => {
+                trace({ name: TraceName.DisconnectAllModal });
                 disconnectAllPermissions();
                 setShowDisconnectAllModal(false);
+                endTrace({ name: TraceName.DisconnectAllModal });
               }}
             />
           ) : null}
@@ -348,6 +353,8 @@ export const ReviewPermissions = () => {
                     size={ButtonPrimarySize.Lg}
                     block
                     data-test-id="no-connections-button"
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={requestAccountsAndChainPermissions}
                   >
                     {t('connectAccounts')}

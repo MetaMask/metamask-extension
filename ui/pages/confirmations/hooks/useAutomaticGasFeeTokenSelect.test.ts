@@ -1,5 +1,4 @@
-import { toHex } from '@metamask/controller-utils';
-import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { act } from '@testing-library/react';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
@@ -9,6 +8,7 @@ import { updateSelectedGasFeeToken } from '../../../store/controller-actions/tra
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { forceUpdateMetamaskState } from '../../../store/actions';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+import { GAS_FEE_TOKEN_MOCK } from '../../../../test/data/confirmations/gas';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useAutomaticGasFeeTokenSelect } from './useAutomaticGasFeeTokenSelect';
 
@@ -20,19 +20,6 @@ jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   forceUpdateMetamaskState: jest.fn(),
 }));
-
-const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
-  amount: toHex(1000),
-  balance: toHex(2345),
-  decimals: 3,
-  gas: '0x3',
-  maxFeePerGas: '0x4',
-  maxPriorityFeePerGas: '0x5',
-  rateWei: toHex('1798170000000000000'),
-  recipient: '0x1234567890123456789012345678901234567890',
-  symbol: 'TEST',
-  tokenAddress: '0x1234567890123456789012345678901234567890',
-};
 
 function runHook({
   noGasFeeTokens,

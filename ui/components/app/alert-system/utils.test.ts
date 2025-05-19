@@ -37,6 +37,7 @@ describe('Utils', () => {
         { key: 'key 2', message: 'mocked message', severity: Severity.Danger },
       ];
 
+      // @ts-expect-error This is missing from the Mocha type definitions
       it.each([
         [
           `when the highest severity is ${Severity.Danger}`,
@@ -61,6 +62,7 @@ describe('Utils', () => {
   });
 
   describe('getBannerAlertSeverity', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [Severity.Danger, 'danger'],
       [Severity.Warning, 'warning'],

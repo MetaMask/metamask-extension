@@ -15,19 +15,19 @@ import {
   Tag,
 } from '../../../../../components/component-library';
 import Tooltip from '../../../../../components/ui/tooltip';
+import { isBatchTransaction } from '../../../../../../shared/lib/transactions.utils';
 
 export function NestedTransactionTag() {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { nestedTransactions } = currentConfirmation ?? {};
-  const functionNames = useNestedTransactionLabels({ nestedTransactions });
 
-  const isBatch = Boolean(nestedTransactions?.length);
+  const isBatch = isBatchTransaction(nestedTransactions);
+  const functionNames = useNestedTransactionLabels({ nestedTransactions });
 
   if (!isBatch) {
     return null;
   }
-
   const tooltip = t('transactionIncludesTypes', [functionNames.join(', ')]);
 
   return (

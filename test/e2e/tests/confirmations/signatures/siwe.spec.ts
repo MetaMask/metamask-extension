@@ -15,6 +15,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../../shared/constants/security-provider';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
@@ -78,6 +79,7 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
           ],
           securityAlertReason: BlockaidReason.notApplicable,
           securityAlertResponse: BlockaidResultType.NotApplicable,
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
       mockSignatureApproved,
@@ -110,6 +112,7 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
             'sign_in_with_ethereum',
           ],
           location: 'confirmation',
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
           securityAlertReason: BlockaidReason.notApplicable,
           securityAlertResponse: BlockaidResultType.NotApplicable,
         });

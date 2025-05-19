@@ -1,3 +1,4 @@
+import { Browser } from 'selenium-webdriver';
 import { Driver } from '../../webdriver/driver';
 import OnboardingMetricsPage from '../pages/onboarding/onboarding-metrics-page';
 import OnboardingPasswordPage from '../pages/onboarding/onboarding-password-page';
@@ -36,20 +37,24 @@ export const createNewWalletOnboardingFlow = async ({
   if (needNavigateToNewPage) {
     await driver.navigate();
   }
+
+  if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+    await onboardingMetricsFlow(driver, {
+      participateInMetaMetrics,
+      dataCollectionForMarketing,
+    });
+  }
+
   const startOnboardingPage = new StartOnboardingPage(driver);
   await startOnboardingPage.check_pageIsLoaded();
   await startOnboardingPage.checkTermsCheckbox();
   await startOnboardingPage.clickCreateWalletButton();
 
-  const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-  await onboardingMetricsPage.check_pageIsLoaded();
-  if (dataCollectionForMarketing) {
-    await onboardingMetricsPage.clickDataCollectionForMarketingCheckbox();
-  }
-  if (participateInMetaMetrics) {
-    await onboardingMetricsPage.clickIAgreeButton();
-  } else {
-    await onboardingMetricsPage.clickNoThanksButton();
+  if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+    await onboardingMetricsFlow(driver, {
+      participateInMetaMetrics,
+      dataCollectionForMarketing,
+    });
   }
 
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
@@ -88,20 +93,24 @@ export const incompleteCreateNewWalletOnboardingFlow = async ({
   if (needNavigateToNewPage) {
     await driver.navigate();
   }
+
+  if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+    await onboardingMetricsFlow(driver, {
+      participateInMetaMetrics,
+      dataCollectionForMarketing,
+    });
+  }
+
   const startOnboardingPage = new StartOnboardingPage(driver);
   await startOnboardingPage.check_pageIsLoaded();
   await startOnboardingPage.checkTermsCheckbox();
   await startOnboardingPage.clickCreateWalletButton();
 
-  const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-  await onboardingMetricsPage.check_pageIsLoaded();
-  if (dataCollectionForMarketing) {
-    await onboardingMetricsPage.clickDataCollectionForMarketingCheckbox();
-  }
-  if (participateInMetaMetrics) {
-    await onboardingMetricsPage.clickIAgreeButton();
-  } else {
-    await onboardingMetricsPage.clickNoThanksButton();
+  if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+    await onboardingMetricsFlow(driver, {
+      participateInMetaMetrics,
+      dataCollectionForMarketing,
+    });
   }
 
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
@@ -112,6 +121,30 @@ export const incompleteCreateNewWalletOnboardingFlow = async ({
   await secureWalletPage.check_pageIsLoaded();
   await secureWalletPage.revealAndDoNotConfirmSRP();
 };
+
+/**
+ * Handle the onboarding metrics page flow
+ *
+ * @param driver - The WebDriver instance to control the browser
+ * @param options - The options object
+ * @param [options.participateInMetaMetrics] - Whether to participate in MetaMetrics. Defaults to false
+ * @param [options.dataCollectionForMarketing] - Whether to opt in to data collection for marketing. Defaults to false
+ */
+export async function onboardingMetricsFlow(
+  driver: Driver,
+  { participateInMetaMetrics = false, dataCollectionForMarketing = false } = {},
+) {
+  const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+  await onboardingMetricsPage.check_pageIsLoaded();
+  if (dataCollectionForMarketing) {
+    await onboardingMetricsPage.clickDataCollectionForMarketingCheckbox();
+  }
+  if (participateInMetaMetrics) {
+    await onboardingMetricsPage.clickIAgreeButton();
+  } else {
+    await onboardingMetricsPage.clickNoThanksButton();
+  }
+}
 
 /**
  * Import SRP onboarding flow
@@ -143,20 +176,23 @@ export const importSRPOnboardingFlow = async ({
   console.log('Starting the import of SRP onboarding flow');
   await driver.navigate();
 
+  if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+    await onboardingMetricsFlow(driver, {
+      participateInMetaMetrics,
+      dataCollectionForMarketing,
+    });
+  }
+
   const startOnboardingPage = new StartOnboardingPage(driver);
   await startOnboardingPage.check_pageIsLoaded();
   await startOnboardingPage.checkTermsCheckbox();
   await startOnboardingPage.clickImportWalletButton();
 
-  const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-  await onboardingMetricsPage.check_pageIsLoaded();
-  if (dataCollectionForMarketing) {
-    await onboardingMetricsPage.clickDataCollectionForMarketingCheckbox();
-  }
-  if (participateInMetaMetrics) {
-    await onboardingMetricsPage.clickIAgreeButton();
-  } else {
-    await onboardingMetricsPage.clickNoThanksButton();
+  if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+    await onboardingMetricsFlow(driver, {
+      participateInMetaMetrics,
+      dataCollectionForMarketing,
+    });
   }
 
   const onboardingSrpPage = new OnboardingSrpPage(driver);

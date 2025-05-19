@@ -35,6 +35,7 @@ import {
   ADD_POPULAR_CUSTOM_NETWORK,
   SNAP_SETTINGS_ROUTE,
   REVEAL_SRP_LIST_ROUTE,
+  BACKUPANDSYNC_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
@@ -47,6 +48,7 @@ const ROUTES_TO_I18N_KEYS = {
   [ADD_NETWORK_ROUTE]: 'networks',
   [ADD_POPULAR_CUSTOM_NETWORK]: 'addNetwork',
   [ADVANCED_ROUTE]: 'advanced',
+  [BACKUPANDSYNC_ROUTE]: 'backupAndSync',
   [CONTACT_ADD_ROUTE]: 'newContact',
   [CONTACT_EDIT_ROUTE]: 'editContact',
   [CONTACT_LIST_ROUTE]: 'contacts',

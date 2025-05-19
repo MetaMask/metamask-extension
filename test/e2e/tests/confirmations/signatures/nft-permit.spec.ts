@@ -12,6 +12,7 @@ import {
 import { TestSuiteArguments } from '../transactions/shared';
 import PermitConfirmation from '../../../page-objects/pages/confirmations/redesign/permit-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
   assertPastedAddress,
@@ -74,6 +75,7 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
           decodingChangeTypes: ['LISTING', 'RECEIVE'],
           decodingResponse: 'CHANGE',
           decodingDescription: null,
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
 
         await assertVerifiedResults(driver, publicAddress);
@@ -118,6 +120,7 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
           decodingChangeTypes: ['LISTING', 'RECEIVE'],
           decodingResponse: 'CHANGE',
           decodingDescription: null,
+          requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
         });
       },
       mockSignatureRejectedWithDecoding,

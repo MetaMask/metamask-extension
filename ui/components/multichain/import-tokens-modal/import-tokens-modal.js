@@ -113,6 +113,7 @@ import { NetworkSelectorCustomImport } from '../../app/import-token/network-sele
 import { getImageForChainId } from '../../../selectors/multichain';
 import { NetworkListItem } from '../network-list-item';
 import TokenListPlaceholder from '../../app/import-token/token-list/token-list-placeholder';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 const ACTION_MODES = {
@@ -902,7 +903,7 @@ export const ImportTokensModal = ({ onClose }) => {
                         <FormTextField
                           paddingLeft={4}
                           paddingRight={4}
-                          paddingTop={6}
+                          size={Size.LG}
                           label={t('tokenContractAddress')}
                           value={customAddress}
                           onChange={(e) => {
@@ -940,6 +941,7 @@ export const ImportTokensModal = ({ onClose }) => {
                               paddingLeft={4}
                               paddingRight={4}
                               paddingTop={4}
+                              size={Size.LG}
                               label={<>{t('tokenSymbol')}</>}
                               value={customSymbol}
                               onChange={(e) =>
@@ -961,6 +963,7 @@ export const ImportTokensModal = ({ onClose }) => {
                               paddingLeft={4}
                               paddingRight={4}
                               paddingTop={4}
+                              size={Size.LG}
                               label={t('decimal')}
                               type="number"
                               value={customDecimals}
@@ -1013,7 +1016,9 @@ export const ImportTokensModal = ({ onClose }) => {
             <ButtonPrimary
               size={Size.LG}
               onClick={async () => {
+                trace({ name: TraceName.ImportTokens });
                 await handleAddTokens();
+                endTrace({ name: TraceName.ImportTokens });
                 history.push(DEFAULT_ROUTE);
               }}
               block

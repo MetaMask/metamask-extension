@@ -72,6 +72,8 @@ function rejectApproval({
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
     // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     case ApprovalType.SnapDialogAlert:
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     case ApprovalType.SnapDialogPrompt:
     case DIALOG_APPROVAL_TYPES.default:
       log('Rejecting snap dialog', { id, interfaceId, origin, type });
@@ -98,7 +100,14 @@ function rejectApproval({
 
     default:
       log('Rejecting pending approval', { id, origin, type });
-      approvalController.reject(id, providerErrors.userRejectedRequest());
+      approvalController.reject(
+        id,
+        providerErrors.userRejectedRequest({
+          data: {
+            cause: 'rejectAllApprovals',
+          },
+        }),
+      );
       break;
   }
 }

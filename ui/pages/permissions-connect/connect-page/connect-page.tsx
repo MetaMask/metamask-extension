@@ -84,6 +84,7 @@ export type ConnectPageRequest = {
   origin: string;
   permissions?: PermissionsRequest;
   metadata?: {
+    isEip1193Request?: boolean;
     promptToCreateSolanaAccount?: boolean;
   };
 };
@@ -124,8 +125,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     requestedCaip25CaveatValue,
   );
 
-  const promptToCreateSolanaAccount =
-    request.metadata?.promptToCreateSolanaAccount;
+  const { promptToCreateSolanaAccount, isEip1193Request } =
+    request.metadata ?? {};
 
   const networkConfigurationsByCaipChainId = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
@@ -177,11 +178,23 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       network.caipChainId === currentlySelectedNetworkChainId,
   );
 
-  const defaultSelectedNetworkList = selectedTestNetwork
+  let defaultSelectedNetworkList = selectedTestNetwork
     ? [...nonTestNetworkConfigurations, selectedTestNetwork].map(
         ({ caipChainId }) => caipChainId,
       )
     : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
+
+  // Only EVM networks should be selected if this request comes from the EIP-1193 API
+  if (isEip1193Request) {
+    defaultSelectedNetworkList = defaultSelectedNetworkList.filter(
+      (caipChainId) => {
+        const { namespace } = parseCaipChainId(caipChainId);
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+        return namespace === KnownCaipNamespace.Eip155;
+      },
+    );
+  }
 
   const defaultSelectedChainIds =
     supportedRequestedCaipChainIds.length > 0
@@ -306,6 +319,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const solanaAccountExistsInWallet = useMemo(() => {
     return allAccounts.some(({ caipAccountId }) => {
       const { chain } = parseCaipAccountId(caipAccountId);
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       return chain.namespace === KnownCaipNamespace.Solana;
     });
   }, [allAccounts]);
@@ -462,6 +477,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               >
                 {selectedAccounts.map((account) => (
                   <AccountListItem
+                    showConnectedStatus={false}
                     account={account}
                     key={account.caipAccountId}
                     selected={false}
