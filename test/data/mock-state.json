@@ -2022,8 +2022,6 @@
     ],
     "addSnapAccountEnabled": false,
     "watchEthereumAccountEnabled": false,
-    "bitcoinSupportEnabled": false,
-    "bitcoinTestnetSupportEnabled": false,
     "pendingApprovals": {
       "testApprovalId": {
         "id": "testApprovalId",
@@ -2154,7 +2152,8 @@
       }
     },
     "txHistory": {},
-    "throttledOrigins": {}
+    "throttledOrigins": {},
+    "delegations": {}
   },
   "ramps": {
     "buyableChains": [

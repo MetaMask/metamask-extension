@@ -3275,8 +3275,8 @@ describe('MetaMaskController', () => {
         };
         const { provider } = createTestProviderTools({
           scaffold: providerResultStub,
-          networkId: '5',
-          chainId: '5',
+          networkId: '0x1',
+          chainId: '0x1',
         });
 
         const tokenData = {
@@ -3284,12 +3284,15 @@ describe('MetaMaskController', () => {
           symbol: 'DAI',
         };
 
-        await metamaskController.tokensController.addTokens([
-          {
-            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-            ...tokenData,
-          },
-        ]);
+        await metamaskController.tokensController.addTokens(
+          [
+            {
+              address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+              ...tokenData,
+            },
+          ],
+          'networkConfigurationId1',
+        );
 
         metamaskController.provider = provider;
         const tokenDetails =
@@ -4090,6 +4093,38 @@ describe('MetaMaskController', () => {
         });
       });
       ///: END:ONLY_INCLUDE_IF
+    });
+
+    describe('NetworkController state', () => {
+      it('fixes selectedNetworkClientId from network controller state if it is invalid', () => {
+        metamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+            NetworkController: {
+              ...cloneDeep(firstTimeState.NetworkController),
+              selectedNetworkClientId: 'invalid-client-id',
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+
+        expect(
+          metamaskController.networkController.state.selectedNetworkClientId,
+        ).toBe(
+          metamaskController.networkController.state
+            .networkConfigurationsByChainId[CHAIN_IDS.MAINNET].rpcEndpoints[0]
+            .networkClientId,
+        );
+      });
     });
   });
 

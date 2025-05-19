@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Cuenta de Bitcoin (Beta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Cuenta de Bitcoin (Testnet)"
-  },
   "addBlockExplorer": {
     "message": "Agregar un explorador de bloque"
   },
@@ -661,22 +658,6 @@
   "billionAbbreviation": {
     "message": "mm",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Activar esta función le dará la opción de añadir una cuenta de Bitcoin a su extensión MetaMask derivada de su frase secreta de recuperación existente. Esta es una característica Beta experimental, por lo que debe utilizarla bajo su propio riesgo. Para darnos su opinión sobre esta nueva experiencia Bitcoin, llene este $1.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Activar \"Añadir una nueva cuenta Bitcoin (Beta)\""
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "La activación de esta función le dará la opción de añadir una cuenta de Bitcoin para la red de prueba."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Activar \"Añadir una nueva cuenta Bitcoin (Testnet)\""
   },
   "blockExplorerAccountAction": {
     "message": "Cuenta",
@@ -2711,9 +2692,6 @@
   "ledgerLocked": {
     "message": "No se pudo establecer la conexión con el dispositivo Ledger. Asegúrese de que el dispositivo está desbloqueado y que la aplicación de Ethereum está abierta."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "No se pueden conectar varios dispositivos Ledger simultáneamente. Para conectar un nuevo dispositivo Ledger, primero deberá desconectar el anterior."
-  },
   "ledgerTimeout": {
     "message": "Ledger Live tardó mucho en responder o se excedió el tiempo de espera de la conexión. Asegúrese de que la aplicación de Ledger Live está abierta y que su dispositivo está desbloqueado."
   },
@@ -4068,7 +4046,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "Algunas de estas redes dependen de terceros. Las conexiones pueden ser menos confiables o permitir que terceros realicen un seguimiento de la actividad. $1",
-    "description": "$1 is Learn more link"
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "Redes populares"
@@ -4134,18 +4112,6 @@
   },
   "productAnnouncements": {
     "message": "Anuncios de productos"
-  },
-  "profileSync": {
-    "message": "Sincronización del perfil"
-  },
-  "profileSyncConfirmation": {
-    "message": "Si desactiva la sincronización del perfil, no podrá recibir notificaciones."
-  },
-  "profileSyncDescription": {
-    "message": "Crea un perfil que MetaMask utiliza para sincronizar algunas configuraciones entre sus dispositivos. Esto es necesario para recibir notificaciones. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Obtenga información sobre cómo protegemos su privacidad"
   },
   "proposedApprovalLimit": {
     "message": "Límite de aprobación propuesto"

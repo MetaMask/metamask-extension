@@ -18,7 +18,6 @@ describe.skip('Send flow - SPL Token', function (this: Suite) {
         showNativeTokenAsMainBalance: true,
         mockCalls: true,
         mockSendTransaction: true,
-        isNative: false,
         simulateTransaction: true,
       },
       async (driver) => {

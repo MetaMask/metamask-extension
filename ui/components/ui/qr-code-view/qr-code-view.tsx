@@ -156,7 +156,6 @@ QrCodeView.propTypes = {
     ]),
     data: PropTypes.string.isRequired,
   }).isRequired,
-  accountName: PropTypes.string,
 };
 
 export default connect(mapStateToProps)(QrCodeView);

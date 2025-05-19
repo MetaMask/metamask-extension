@@ -297,8 +297,8 @@ const TokenButtons = ({
           className="token-overview__button"
           Icon={
             <Icon
-              name={IconName.PlusMinus}
-              color={IconColor.primaryInverse}
+              name={IconName.PlusAndMinus}
+              color={IconColor.iconDefault}
               size={IconSize.Sm}
             />
           }
@@ -319,7 +319,7 @@ const TokenButtons = ({
         Icon={
           <Icon
             name={IconName.Arrow2UpRight}
-            color={IconColor.primaryInverse}
+            color={IconColor.iconDefault}
             size={IconSize.Sm}
           />
         }
@@ -334,7 +334,7 @@ const TokenButtons = ({
         Icon={
           <Icon
             name={IconName.SwapHorizontal}
-            color={IconColor.primaryInverse}
+            color={IconColor.iconDefault}
             size={IconSize.Sm}
           />
         }
@@ -352,7 +352,7 @@ const TokenButtons = ({
           Icon={
             <Icon
               name={IconName.Bridge}
-              color={IconColor.primaryInverse}
+              color={IconColor.iconDefault}
               size={IconSize.Sm}
             />
           }

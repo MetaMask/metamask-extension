@@ -33,7 +33,6 @@ export default function IconButton(props) {
       {renderWrapper(
         <>
           <div
-            data-theme="light"
             className={classNames('icon-button__circle', iconButtonClassName)}
           >
             {Icon}
@@ -43,7 +42,7 @@ export default function IconButton(props) {
               <Text
                 className="icon-button__label-large"
                 ellipsis
-                variant={TextVariant.bodySm}
+                variant={TextVariant.bodySmMedium}
               >
                 {label}
               </Text>
@@ -52,7 +51,7 @@ export default function IconButton(props) {
             <Text
               className="icon-button__label"
               ellipsis
-              variant={TextVariant.bodySm}
+              variant={TextVariant.bodySmMedium}
             >
               {label}
             </Text>

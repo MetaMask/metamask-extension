@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Akun Bitcoin (Beta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Akun Bitcoin (Testnet)"
-  },
   "addBlockExplorer": {
     "message": "Tambahkan block explorer"
   },
@@ -661,22 +658,6 @@
   "billionAbbreviation": {
     "message": "M",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Mengaktifkan fitur ini akan memberi Anda opsi untuk menambahkan Akun Bitcoin ke Ekstensi MetaMask yang berasal dari Frasa Pemulihan Rahasia yang ada. Ini merupakan fitur Beta eksperimental, jadi Anda harus menggunakannya dengan risiko yang ditanggung sendiri. Untuk memberikan masukan seputar pengalaman Bitcoin baru ini, isi $1 ini.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Aktifkan \"Tambahkan akun Bitcoin baru (Beta)\""
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Mengaktifkan fitur ini akan memberi Anda opsi untuk menambahkan Akun Bitcoin bagi jaringan uji."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Aktifkan \"Tambahkan akun Bitcoin baru (Testnet)\""
   },
   "blockExplorerAccountAction": {
     "message": "Akun",
@@ -2711,9 +2692,6 @@
   "ledgerLocked": {
     "message": "Tidak dapat terhubung ke perangkat Ledger. Pastikan perangkat Anda tidak terkunci dan aplikasi Ethereum terbuka."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "Beberapa perangkat Ledger tidak dapat dihubungkan pada saat bersamaan. Untuk menghubungkan perangkat Ledger yang baru, Anda harus memutus koneksi perangkat sebelumnya terlebih dahulu."
-  },
   "ledgerTimeout": {
     "message": "Respons Ledger Live terlalu lama atau waktu koneksi habis. Pastikan aplikasi Ledger Live terbuka dan perangkat Anda tidak terkunci."
   },
@@ -4068,7 +4046,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "Beberapa jaringan ini mengandalkan pihak ketiga. Koneksi ini kurang dapat diandalkan atau memungkinkan pihak ketiga melacak aktivitas. $1",
-    "description": "$1 is Learn more link"
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "Jaringan populer"
@@ -4134,18 +4112,6 @@
   },
   "productAnnouncements": {
     "message": "Pengumuman produk"
-  },
-  "profileSync": {
-    "message": "Sinkronisasi Profil"
-  },
-  "profileSyncConfirmation": {
-    "message": "Jika sinkronisasi profil dinonaktifkan, Anda tidak dapat menerima notifikasi."
-  },
-  "profileSyncDescription": {
-    "message": "Membuat profil yang digunakan MetaMask untuk menyinkronkan beberapa pengaturan di antara perangkat Anda. Ini diperlukan untuk mendapatkan notifikasi. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Pelajari cara kami melindungi privasi Anda"
   },
   "proposedApprovalLimit": {
     "message": "Batas persetujuan yang diajukan"

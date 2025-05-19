@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Bitcoin अकाउंट (बीटा)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Bitcoin अकाउंट (टैस्टनेट (testnet))"
-  },
   "addBlockExplorer": {
     "message": "ब्लॉक एक्सप्लोरर जोड़ें"
   },
@@ -661,22 +658,6 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "इस सुविधा को चालू करने से आपको अपने मौजूदा सीक्रेट रिकवरी फ्रेज़ से प्राप्त MetaMask एक्सटेंशन में एक Bitcoin अकाउंट जोड़ने का विकल्प मिलेगा। यह एक एक्सपेरिमेंटल बीटा सुविधा है, इसलिए आपको इसका उपयोग अपने जोखिम पर करना होगा। इस नए Bitcoin अनुभव पर हमें प्रतिक्रिया देने के लिए, कृपया यह $1 भरें।",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "\"एक नया Bitcoin अकाउंट जोड़ें (बीटा)\" को चालू करें"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "इस सुविधा को चालू करने से आपको परीक्षण नेटवर्क के लिए एक Bitcoin अकाउंट जोड़ने का विकल्प मिलेगा।"
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "\"एक नया Bitcoin अकाउंट जोड़ें (टैस्टनेट (testnet))\" को चालू करें"
   },
   "blockExplorerAccountAction": {
     "message": "अकाउंट",
@@ -2711,9 +2692,6 @@
   "ledgerLocked": {
     "message": "Ledger डिवाइस से कनेक्ट नहीं हो सकता। कृपया पक्का करें कि आपका डिवाइस अनलॉक है और Ethereum ऐप खुला है।"
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "एक ही समय में कई Ledger डिवाइस कनेक्ट नहीं किए जा सकते। एक नया Ledger डिवाइस कनेक्ट करने के लिए, आपको पहले पिछले डिवाइस को डिस्कनेक्ट करना होगा।"
-  },
   "ledgerTimeout": {
     "message": "Ledger Live जवाब देने में बहुत अधिक समय ले रहा है या कनेक्शन टाइमआउट हो गया है। पक्का करें कि Ledger Live ऐप खुला है और आपका डिवाइस अनलॉक है।"
   },
@@ -4068,7 +4046,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "इनमें से कुछ नेटवर्क थर्ड पार्टीज़ पर निर्भर हैं। कनेक्शन कम विश्वसनीय हो सकते हैं या गतिविधि को ट्रैक करने के लिए थर्ड पार्टीज़ को चालू कर सकते हैं। $1",
-    "description": "$1 is Learn more link"
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "पॉपुलर नेटवर्क्स"
@@ -4134,18 +4112,6 @@
   },
   "productAnnouncements": {
     "message": "प्रॉडक्ट घोषणाएं"
-  },
-  "profileSync": {
-    "message": "प्रोफ़ाइल सिंक"
-  },
-  "profileSyncConfirmation": {
-    "message": "यदि आप प्रोफ़ाइल सिंक बंद कर देते हैं, तो आप नोटिफिकेशंस प्राप्त नहीं कर पाएंगे।"
-  },
-  "profileSyncDescription": {
-    "message": "एक प्रोफ़ाइल बनाता है जिसका उपयोग MetaMask आपके डिवाइसों के बीच कुछ सेटिंग्स को सिंक करने के लिए करता है। नोटिफिकेशंस प्राप्त करने के लिए यह आवश्यक है। $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "जानें कि हम आपकी गोपनीयता की सुरक्षा कैसे करते हैं"
   },
   "proposedApprovalLimit": {
     "message": "प्रस्तावित एप्रूवल सीमा"

@@ -264,40 +264,6 @@ describe('EIP-5792', () => {
       ).toBeDefined();
     });
 
-    it('throws if user enabled preference to dismiss option to upgrade account', async () => {
-      getDismissSmartAccountSuggestionEnabledMock.mockReturnValue(true);
-
-      await expect(
-        processSendCalls(
-          sendCallsHooks,
-          messenger,
-          SEND_CALLS_MOCK,
-          REQUEST_MOCK,
-        ),
-      ).rejects.toThrow('EIP-7702 upgrade disabled by the user');
-    });
-
-    it('does not throw if user enabled preference to dismiss option to upgrade account if already upgraded', async () => {
-      getDismissSmartAccountSuggestionEnabledMock.mockReturnValue(true);
-
-      isAtomicBatchSupportedMock.mockResolvedValueOnce([
-        {
-          chainId: CHAIN_ID_MOCK,
-          delegationAddress: DELEGATION_ADDRESS_MOCK,
-          isSupported: true,
-        },
-      ]);
-
-      expect(
-        await processSendCalls(
-          sendCallsHooks,
-          messenger,
-          SEND_CALLS_MOCK,
-          REQUEST_MOCK,
-        ),
-      ).toBeDefined();
-    });
-
     it('throws if top-level capability is required', async () => {
       await expect(
         processSendCalls(
@@ -469,6 +435,7 @@ describe('EIP-5792', () => {
       );
     });
 
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       TransactionStatus.approved,
       TransactionStatus.signed,

@@ -24,6 +24,9 @@ class ActivityListPage {
   private readonly bridgeTransactionCompleted =
     '.transaction-status-label--confirmed';
 
+  private readonly bridgeTransactionPending =
+    '.bridge-transaction-details__segment--pending';
+
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
 
@@ -148,13 +151,6 @@ class ActivityListPage {
   }
 
   async check_txAction(expectedAction: string, expectedNumber: number = 1) {
-    await this.driver.wait(async () => {
-      const transactionActions = await this.driver.findElements(
-        this.activityListAction,
-      );
-      return transactionActions.length >= expectedNumber;
-    }, 100000);
-
     const transactionActions = await this.driver.findElements(
       this.activityListAction,
     );
@@ -168,6 +164,30 @@ class ActivityListPage {
 
     console.log(
       `Action for transaction ${expectedNumber} is displayed as ${expectedAction}`,
+    );
+  }
+
+  /**
+   * This function checks the specified number of pending Birdge transactions are displayed in the activity list on the homepage.
+   * It waits up to 10 seconds for the expected number of pending transactions to be visible.
+   *
+   * @param expectedNumber - The number of pending Bridge transactions expected to be displayed in the activity list. Defaults to 1.
+   * @returns A promise that resolves if the expected number of Bridge pending transactions is displayed within the timeout period.
+   */
+  async check_pendingBridgeTransactionActivity(
+    expectedNumber: number = 1,
+  ): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} Bridge pending transactions to be displayed in activity list`,
+    );
+    await this.driver.wait(async () => {
+      const completedTxs = await this.driver.findElements(
+        this.bridgeTransactionPending,
+      );
+      return completedTxs.length === expectedNumber;
+    }, 60000);
+    console.log(
+      `${expectedNumber} Bridge pending transactions found in activity list on homepage`,
     );
   }
 
@@ -211,8 +231,7 @@ class ActivityListPage {
     expectedAmount: string = '-1 ETH',
     expectedNumber: number = 1,
   ): Promise<void> {
-    // old implementation
-    /* const transactionAmounts = await this.driver.findElements(
+    const transactionAmounts = await this.driver.findElements(
       this.transactionAmountsInActivity,
     );
     const transactionAmountsText = await transactionAmounts[
@@ -222,22 +241,6 @@ class ActivityListPage {
       transactionAmountsText,
       expectedAmount,
       `${transactionAmountsText} is displayed as transaction amount instead of ${expectedAmount} for transaction ${expectedNumber}`,
-    );
-    console.log(
-      `Amount for transaction ${expectedNumber} is displayed as ${expectedAmount}`,
-    );*/
-
-    const txAmount = await this.driver.waitForSelector({
-      text: expectedAmount,
-      tag: 'p',
-    }, {
-      timeout: 60000,
-    });
-    const txAmountText = await txAmount.getText();
-    assert.equal(
-      txAmountText,
-      expectedAmount,
-      `${txAmountText} is displayed as transaction amount instead of ${expectedAmount} for transaction ${expectedNumber}`,
     );
     console.log(
       `Amount for transaction ${expectedNumber} is displayed as ${expectedAmount}`,
@@ -303,7 +306,9 @@ class ActivityListPage {
   }
 
   async click_confirmTransactionReplacement() {
-    await this.driver.clickElementAndWaitToDisappear(this.confirmTransactionReplacementButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmTransactionReplacementButton,
+    );
   }
 
   async check_waitForTransactionStatus(status: 'confirmed' | 'cancelled') {

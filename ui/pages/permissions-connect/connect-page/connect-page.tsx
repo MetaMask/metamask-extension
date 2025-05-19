@@ -471,6 +471,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               >
                 {selectedAccounts.map((account) => (
                   <AccountListItem
+                    showConnectedStatus={false}
                     account={account}
                     key={account.caipAccountId}
                     selected={false}

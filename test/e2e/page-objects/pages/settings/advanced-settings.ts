@@ -7,7 +7,25 @@ class AdvancedSettings {
   private readonly downloadDataButton = '[data-testid="export-data-button"]';
 
   private readonly downloadStateLogsButton =
-    '[data-testid="advanced-setting-state-logs"]';
+    '[data-testid="advanced-setting-state-logs-button"]';
+
+  private readonly clearActivityMessage = {
+    text: 'Clear activity and nonce data?',
+    css: '.modal-content__title',
+  };
+
+  private readonly clearActivityTabDataButton = {
+    text: 'Clear activity tab data',
+    tag: 'button',
+  };
+
+  private readonly confirmClearActivityButton = {
+    text: 'Clear',
+    tag: 'button',
+  };
+
+  private readonly showConversionOnTestnetsToggle =
+    '.show-fiat-on-testnets-toggle';
 
   private readonly smartTransactionsToggle =
     '[data-testid="settings-page-stx-opt-in-toggle"]';
@@ -30,6 +48,30 @@ class AdvancedSettings {
       throw e;
     }
     console.log('Advanced Settings page is loaded');
+  }
+
+  async clearActivityTabData(): Promise<void> {
+    console.log('Clearing activity tab data from advanced settings page');
+    await this.driver.clickElement(this.clearActivityTabDataButton);
+    await this.driver.waitForSelector(this.clearActivityMessage);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmClearActivityButton,
+    );
+  }
+
+  async downloadData(): Promise<void> {
+    console.log('Downloading data on advanced settings page');
+    await this.driver.clickElement(this.downloadDataButton);
+  }
+
+  async downloadStateLogs(): Promise<void> {
+    console.log('Downloading state logs on advanced settings page');
+    await this.driver.clickElement(this.downloadStateLogsButton);
+  }
+
+  async toggleShowConversionOnTestnets(): Promise<void> {
+    console.log('Toggling show conversion on testnets in advanced settings');
+    await this.driver.clickElement(this.showConversionOnTestnetsToggle);
   }
 
   async toggleSmartTransactions(): Promise<void> {

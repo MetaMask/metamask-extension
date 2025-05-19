@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Bitcoin hesabı (Beta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Bitcoin hesabı (Test Ağı)"
-  },
   "addBlockExplorer": {
     "message": "Bir blok gezgini ekle"
   },
@@ -661,22 +658,6 @@
   "billionAbbreviation": {
     "message": "MR",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Bu özelliği açtığınızda mevcut Gizli Kurtarma İfadenizden türetilen MetaMask Uzantınıza bir Bitcoin Hesabı ekleme seçeneğiniz olacaktır. Bu, deneysel bir Beta özelliğidir, bu yüzden riski kendinize ait olarak kullanmalısınız. Bu yeni Bitcoin deneyimi hakkında bize geri bildirim göndermek için lütfen bu $1 bölümünü doldurun.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "\"Yeni bir Bitcoin hesabı ekle (Beta)\" seçeneğini etkinleştir"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Bu özelliği açtığınızda test ağı için bir Bitcoin Hesabı ekleme seçeneğiniz olacak."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "\"Yeni bir Bitcoin hesabı ekle (Test Ağı)\" seçeneğini etkinleştir"
   },
   "blockExplorerAccountAction": {
     "message": "Hesap",
@@ -2711,9 +2692,6 @@
   "ledgerLocked": {
     "message": "Ledger cihazına bağlanılamıyor. Lütfen cihazınızın kilidinin açık ve Ethereum uygulamasının açık olduğundan emin olun."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "Aynı anda birden fazla Ledger cihazı bağlanabilir. Yeni bir Ledger cihazı bağlamak için önceki cihazın bağlantısını kesmeniz gerekecek."
-  },
   "ledgerTimeout": {
     "message": "Ledger Live'ın yanıt vermesi çok uzun sürdü ya da bağlantı zaman aşımına uğradı. Ledger Live uygulamasının açık olduğundan ve cihazınızın kilidinin açık olduğundan emin olun."
   },
@@ -4068,7 +4046,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "Bu ağların bazıları üçüncü taraflara dayalıdır. Bağlantılar daha az güvenilir olabilir veya üçüncü tarafların aktiviteleri takip etmesine olanak sağlayabilir. $1",
-    "description": "$1 is Learn more link"
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "Popüler ağlar"
@@ -4134,18 +4112,6 @@
   },
   "productAnnouncements": {
     "message": "Ürün duyuruları"
-  },
-  "profileSync": {
-    "message": "Profil Senkronizasyonu"
-  },
-  "profileSyncConfirmation": {
-    "message": "Profil senkronizasyonunu açarsanız bildirimleri alamayacaksınız."
-  },
-  "profileSyncDescription": {
-    "message": "MetaMask'in cihazlarınız arasıonda bazı ayarları senkronize etmek için kullandığı bir profil oluşturur. Bildirim almak için bu gereklidir. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Gizliliğinizi nasıl koruduğumuzu öğrenin"
   },
   "proposedApprovalLimit": {
     "message": "Önerilen onay limiti"

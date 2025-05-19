@@ -5,6 +5,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Rebrand "Profile syncing" to "Backup and sync", adding a dedicated settings menu and more ([#32129](https://github.com/MetaMask/metamask-extension/pull/32129))
+- Show UI error to user if vault should exist, but is missing ([#31404](https://github.com/MetaMask/metamask-extension/pull/31404))
+- Add RPC (sub)domain tracking to transaction event metrics for RPC endpoints usage ([#32076](https://github.com/MetaMask/metamask-extension/pull/32076))
+- Integrate dynamic content banners ([#32101](https://github.com/MetaMask/metamask-extension/pull/32101))
+
+### Changed
+- Unify confirmation page styles and responsive behavior ([#31454](https://github.com/MetaMask/metamask-extension/pull/31454))
+- Hide failed transaction retry button ([#32024](https://github.com/MetaMask/metamask-extension/pull/32024))
+
+### Fixed
+- When `selectedNetworkClientId` is invalid at startup, set it back to mainnet default RPC ([#31517](https://github.com/MetaMask/metamask-extension/pull/31517))
 
 ## [12.18.0]
 ### Added
@@ -200,6 +212,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix `wallet_getCapabilities` with missing networks ([#32237](https://github.com/MetaMask/metamask-extension/pull/32237))
 - Fix NFT removal on different networks ([#32102](https://github.com/MetaMask/metamask-extension/pull/32102))
+- Prevents duplicate account to be added when importing HD Keyring or adding HD Keyring account ([#32121](https://github.com/MetaMask/metamask-extension/pull/32121))
 - [Beta] Fix exchange rate lookups on Solana Swap page to prevent crashing when values are undefined ([#32114](https://github.com/MetaMask/metamask-extension/pull/32114))
 - Fix Display "🦊 Smart contract" in "interacting with" row for batch[ transaction](https://github.com/MetaMask/metamask-extension/pull/31507) confirmations (#31507)
 - Fix improvements in page to revert smart account to EOA account ([#31605](https://github.com/MetaMask/metamask-extension/pull/31605))
@@ -341,7 +354,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix balance display potentially showing incorrect values when only non-EVM accounts are present. ([#30671](https://github.com/MetaMask/metamask-extension/pull/30671))
 - Changes in account modal to switch to smart account type ([#31899](https://github.com/MetaMask/metamask-extension/pull/31899))
 - Support for Solana Devnet ([#31702](https://github.com/MetaMask/metamask-extension/pull/31702))
-- Support for Solana on Firefox ([#32104](https://github.com/MetaMask/metamask-extension/pull/32104))
 
 ## [12.15.2]
 ### Added

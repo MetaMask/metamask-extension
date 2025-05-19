@@ -4,6 +4,7 @@ import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow'
 import FixtureBuilder from '../fixture-builder';
 import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import { mockGetFileSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 
 const jsonTextValidation = '"foo": "bar"';
 const base64TextFile = '"ewogICJmb28iOiAiYmFyIgp9Cg=="';
@@ -14,6 +15,7 @@ describe('Test Snap Get File', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockGetFileSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
