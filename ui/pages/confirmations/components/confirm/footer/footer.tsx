@@ -168,14 +168,13 @@ const Footer = () => {
   const { id: currentConfirmationId } = currentConfirmation || {};
 
   const hardwareWalletRequiresConnection = useSelector((state) => {
-    if (from) {
+    if (!process.env.IN_TEST && from) {
       return doesAddressRequireLedgerHidConnection(state, from);
     }
     return false;
   });
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
-
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
     hardwareWalletRequiresConnection;
