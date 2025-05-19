@@ -8,7 +8,9 @@ import FixtureBuilder from '../../fixture-builder';
 import {
   enableNotificationsThroughCTA,
   clickNotificationItemAndDetailsPage,
+  disableNotificationsThroughCTA,
 } from '../../page-objects/flows/notifications.flow';
+import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
 import {
   getMockFeatureAnnouncementItemId,
   getMockWalletNotificationItemId,
@@ -33,6 +35,10 @@ describe('Notification List - View Items and Details', function () {
         await visitEachFeatureAnnouncementNotificationItemAndDetailsPage(
           driver,
         );
+        await disableNotificationsThroughCTA(driver);
+        await new NotificationsSettingsPage(
+          driver,
+        ).check_notificationSectionIsHidden();
       },
     );
   });

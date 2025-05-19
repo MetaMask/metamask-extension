@@ -28,6 +28,12 @@ export const enableNotificationsThroughCTA = async (
   }
 };
 
+export const disableNotificationsThroughCTA = async (driver: Driver) => {
+  const notificationsListPage = new NotificationsListPage(driver);
+  await notificationsListPage.check_pageIsLoaded();
+  await notificationsListPage.goToNotificationsSettings();
+  await new NotificationsSettingsPage(driver).disableNotifications();
+};
 /**
  * Navigate to notifications settings through global menu > settings > notifications settings
  *

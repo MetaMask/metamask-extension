@@ -32,6 +32,15 @@ class NotificationsSettingsPage {
   private readonly allowProductAnnouncementInput =
     '[data-testid="product-announcements-toggle-input"]';
 
+  private readonly notificationsPerAccountSection =
+    '[data-testid="notifications-settings-per-account"]';
+
+  private readonly notificationsPerTypesSection =
+    '[data-testid="notifications-settings-per-types"]';
+
+  private readonly notificationToggleOff =
+    '.toggle-button--off.notifications-settings-box__toggle';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -50,6 +59,33 @@ class NotificationsSettingsPage {
       throw e;
     }
     console.log('Notifications Settings page is loaded');
+  }
+
+  async disableNotifications(): Promise<void> {
+    console.log('Clicking on the disable notifications toggle');
+    await this.driver.clickElement(this.allowNotificationsToggle);
+    await this.driver.waitForSelector(this.notificationToggleOff);
+  }
+
+  async check_notificationSectionIsHidden(): Promise<void> {
+    console.log('Checking if notifications section is hidden');
+    const selectors = [
+      this.allowProductAnnouncementToggle,
+      this.notificationsPerAccountSection,
+      this.notificationsPerTypesSection,
+    ];
+    try {
+      for (const selector of selectors) {
+        await this.driver.assertElementNotPresent(selector);
+      }
+      console.log('All notification sections are hidden');
+    } catch (error) {
+      console.error(
+        'An error occurred while checking notification sections:',
+        error,
+      );
+      throw error;
+    }
   }
 
   /**
