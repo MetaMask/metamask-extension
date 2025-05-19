@@ -33,12 +33,16 @@ export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
   localNodeOptions: [
     {
       type: 'anvil',
+      options: {
+        hardfork: 'muirGlacier',
+      },
     },
     {
       type: 'anvil',
       options: {
         port: 8546,
         chainId: 1338,
+        hardfork: 'muirGlacier',
       },
     },
     {
@@ -46,6 +50,7 @@ export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
       options: {
         port: 7777,
         chainId: 1000,
+        hardfork: 'muirGlacier',
       },
     },
   ],
@@ -85,7 +90,10 @@ export const addAccountInWalletAndAuthorize = async (
   await checkboxes[0].click(); // select all checkbox
   await driver.delay(regularDelayMs);
 
-  await driver.clickElement({ text: 'Update', tag: 'button' });
+  await driver.clickElementAndWaitToDisappear({
+    text: 'Update',
+    tag: 'button',
+  });
 };
 
 /**

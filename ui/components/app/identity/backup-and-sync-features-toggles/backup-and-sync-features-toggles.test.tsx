@@ -17,10 +17,10 @@ const initialStore = () => ({
   metamask: {
     isSignedIn: false,
     useExternalServices: true,
-    isProfileSyncingEnabled: true,
+    isBackupAndSyncEnabled: true,
     isAccountSyncingEnabled: false,
     participateInMetaMetrics: false,
-    isProfileSyncingUpdateLoading: false,
+    isBackupAndSyncUpdateLoading: false,
   },
 });
 
@@ -42,7 +42,6 @@ describe('BackupAndSyncFeaturesToggles', () => {
     const mockTrackEvent = jest.fn();
     const store = initialStore();
 
-    store.metamask.isProfileSyncingEnabled = true;
     store.metamask.isAccountSyncingEnabled = true;
     arrangeMocks();
 

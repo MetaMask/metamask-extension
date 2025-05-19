@@ -172,10 +172,7 @@
     "message": "Add alias"
   },
   "addBitcoinAccountLabel": {
-    "message": "Bitcoin account (Beta)"
-  },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Bitcoin account (Testnet)"
+    "message": "Bitcoin account"
   },
   "addBlockExplorer": {
     "message": "Add a block explorer"
@@ -499,7 +496,7 @@
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
   "appDescription": {
-    "message": "An Ethereum Wallet in your Browser",
+    "message": "The world's most trusted crypto wallet",
     "description": "The description of the application"
   },
   "appName": {
@@ -726,22 +723,6 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Turning on this feature will give you the option to add a Bitcoin Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk. To give us feedback on this new Bitcoin experience, please fill out this $1.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Enable \"Add a new Bitcoin account (Beta)\""
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Turning on this feature will give you the option to add a Bitcoin Account for the test network."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Enable \"Add a new Bitcoin account (Testnet)\""
   },
   "blockExplorerAccountAction": {
     "message": "Account",
@@ -1071,7 +1052,7 @@
     "message": "Choose your network"
   },
   "chooseYourNetworkDescription": {
-    "message": "We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our $1 to learn more about how Infura handles data for EVM accounts, for Solana accounts $2.",
+    "message": "When you use our default settings and configurations, we use Infura as our default remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. In limited cases, we may use other RPC providers in order to provide the best experience for our users. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. To learn more about how Infura handles data for EVM accounts, read our $1, and for Solana accounts, $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chooseYourNetworkDescriptionCallToAction": {
@@ -1440,6 +1421,9 @@
   },
   "copyAddress": {
     "message": "Copy address to clipboard"
+  },
+  "copyAddressShort": {
+    "message": "Copy address"
   },
   "copyPrivateKey": {
     "message": "Copy private key"
@@ -2214,6 +2198,12 @@
   },
   "failedToFetchChainId": {
     "message": "Could not fetch chain ID. Is your RPC URL correct?"
+  },
+  "failover": {
+    "message": "Failover"
+  },
+  "failoverRpcUrl": {
+    "message": "Failover RPC URL"
   },
   "failureMessage": {
     "message": "Something went wrong, and we were unable to complete the action"
@@ -3282,7 +3272,7 @@
     "message": "Cannot send negative or zero amounts of asset."
   },
   "network": {
-    "message": "Network:"
+    "message": "Network"
   },
   "networkChanged": {
     "message": "Network changed"
@@ -3323,9 +3313,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameBitcoinTestnet": {
-    "message": "Bitcoin Testnet"
   },
   "networkNameDefinition": {
     "message": "The name associated with this network."
@@ -3804,7 +3791,7 @@
     "message": "IPFS gateway URL is valid"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
-    "message": "We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our Privacy policy to learn more about how Infura handles data for EVM accounts, for Solana accounts $2."
+    "message": "When you use our default settings and configurations, we use Infura as our default remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. In limited cases, we may use other RPC providers in order to provide the best experience for our users. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. To learn more about how Infura handles data for EVM accounts, read our $1; for Solana accounts, $2."
   },
   "onboardingAdvancedPrivacyNetworkDescriptionCallToAction": {
     "message": "click here"
@@ -5456,7 +5443,7 @@
     "message": "Import Solana accounts"
   },
   "solanaImportAccountsDescription": {
-    "message": "Import a Secret Recovery Phrase to migrate your Solana account from an other wallet."
+    "message": "Import a Secret Recovery Phrase to migrate your Solana account from another wallet."
   },
   "solanaMoreFeaturesComingSoon": {
     "message": "More features coming soon"
@@ -6042,7 +6029,7 @@
     "message": "Quotes timeout"
   },
   "swapQuotesNotAvailableDescription": {
-    "message": "Reduce the size of your trade or use a different token."
+    "message": "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option."
   },
   "swapQuotesNotAvailableErrorDescription": {
     "message": "Try adjusting the amount or slippage settings and try again."
@@ -6261,6 +6248,9 @@
   },
   "termsOfUseTitle": {
     "message": "Our Terms of Use have updated"
+  },
+  "testNetworks": {
+    "message": "Test networks"
   },
   "testnets": {
     "message": "Testnets"

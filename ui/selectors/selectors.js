@@ -540,15 +540,52 @@ export const getInternalAccountsSortedByKeyring = createDeepEqualSelector(
   getMetaMaskKeyrings,
   getMetaMaskAccounts,
   (keyrings, accounts) => {
-    // keep existing keyring order
-    const internalAccounts = keyrings
-      .map(({ accounts: addresses }) => addresses)
-      .flat()
-      .map((address) => {
-        return accounts[address];
-      });
+    const thirdPartySnaps = 'thirdPartySnaps';
+    // Create a map of entropySource map to accounts for quick lookup
+    const entropySourceToAccountsMap = Object.values(accounts).reduce(
+      (map, account) => {
+        if (account.metadata?.keyring?.type === KeyringTypes.snap) {
+          const { entropySource = thirdPartySnaps } = account.options || {};
+          if (!map[entropySource]) {
+            map[entropySource] = [];
+          }
+          map[entropySource].push(account);
+        }
+        return map;
+      },
+      {},
+    );
 
-    return internalAccounts;
+    // keep existing keyring order
+    return keyrings.reduce((internalAccounts, keyring) => {
+      // Get regular accounts for this keyring
+      const keyringAccounts = keyring.accounts.map(
+        (address) => accounts[address],
+      );
+
+      // If it's an HD keyring, add any snap accounts that belong to it
+      if (keyring.type === KeyringTypes.hd) {
+        const snapAccounts =
+          entropySourceToAccountsMap[keyring.metadata.id] || [];
+        internalAccounts.push(...keyringAccounts, ...snapAccounts);
+        return internalAccounts;
+      } else if (keyring.type === KeyringTypes.snap) {
+        const thirdpartySnapAccounts =
+          entropySourceToAccountsMap[thirdPartySnaps] || [];
+        // In a scenario where there are multiple snap keyrings, which isn't the case for today
+        // There would be duplicate third party snap accounts that are being pushed into internalAccounts again
+        // This will only be run once, when there is only one snap keyring
+        const accountsToAdd = thirdpartySnapAccounts.filter(
+          (account) =>
+            !internalAccounts.some((existing) => existing.id === account.id),
+        );
+
+        internalAccounts.push(...accountsToAdd);
+        return internalAccounts;
+      }
+      internalAccounts.push(...keyringAccounts);
+      return internalAccounts;
+    }, []);
   },
 );
 
@@ -558,21 +595,13 @@ export function getNumberOfTokens(state) {
 }
 
 export function getMetaMaskKeyrings(state) {
-  return state.metamask.keyrings.map((keyring, index) => ({
-    ...keyring,
-    metadata: state.metamask.keyringsMetadata?.[index] ?? {},
-  }));
+  return state.metamask.keyrings;
 }
 
-export const getMetaMaskHdKeyrings = createSelector(
-  getMetaMaskKeyrings,
-  (keyrings) => {
-    return keyrings.filter((keyring) => keyring.type === KeyringTypes.hd);
-  },
-);
-
-export function getMetaMaskKeyringsMetadata(state) {
-  return state.metamask.keyringsMetadata;
+export function getMetaMaskHdKeyrings(state) {
+  return state.metamask.keyrings.filter(
+    (keyring) => keyring.type === KeyringTypes.hd,
+  );
 }
 
 export function getHDEntropyIndex(state) {
@@ -581,9 +610,19 @@ export function getHDEntropyIndex(state) {
   const hdKeyrings = keyrings.filter(
     (keyring) => keyring.type === KeyringType.hdKeyTree,
   );
-  const hdEntropyIndex = hdKeyrings.findIndex((keyring) =>
+  let hdEntropyIndex = hdKeyrings.findIndex((keyring) =>
     keyring.accounts.includes(selectedAddress),
   );
+  // if the account is not found in the hd keyring, we should try to get entropySource from the accounts options
+  if (hdEntropyIndex === -1) {
+    const account = getSelectedInternalAccount(state);
+    if (account) {
+      const { entropySource } = account.options;
+      hdEntropyIndex = keyrings.findIndex(
+        ({ metadata }) => metadata.id === entropySource,
+      );
+    }
+  }
   return hdEntropyIndex === -1 ? undefined : hdEntropyIndex;
 }
 
@@ -1165,6 +1204,15 @@ export const selectDefaultRpcEndpointByChainId = createSelector(
     const { defaultRpcEndpointIndex, rpcEndpoints } = networkConfiguration;
     return rpcEndpoints[defaultRpcEndpointIndex];
   },
+);
+
+/**
+ * @type (state: RemoteFeatureFlagsState) => boolean
+ */
+export const getIsRpcFailoverEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    remoteFeatureFlags.walletFrameworkRpcFailoverEnabled ?? false,
 );
 
 /**
@@ -2915,24 +2963,8 @@ export function getIsWatchEthereumAccountEnabled(state) {
  * @returns The state of the `bitcoinSupportEnabled` flag.
  */
 export function getIsBitcoinSupportEnabled(state) {
-  // NOTE: We use this trick to avoid using code fence.
-  // If this flag is not in `state.metamask` it will be set
-  // as `undefined`, and the `Boolean(...)` will be evaluated
-  // to `false`.
-  const { bitcoinSupportEnabled } = state.metamask;
-  return Boolean(bitcoinSupportEnabled);
-}
-
-/**
- * Get the state of the `bitcoinTestnetSupportEnabled` flag.
- *
- * @param {*} state
- * @returns The state of the `bitcoinTestnetSupportEnabled` flag.
- */
-export function getIsBitcoinTestnetSupportEnabled(state) {
-  // See `getIsBitcoinSupportEnabled` for details.
-  const { bitcoinTestnetSupportEnabled } = state.metamask;
-  return Boolean(bitcoinTestnetSupportEnabled);
+  const { addBitcoinAccount } = getRemoteFeatureFlags(state);
+  return Boolean(addBitcoinAccount);
 }
 
 /**
@@ -2944,6 +2976,17 @@ export function getIsBitcoinTestnetSupportEnabled(state) {
 export function getIsSolanaSupportEnabled(state) {
   const { addSolanaAccount } = getRemoteFeatureFlags(state);
   return Boolean(addSolanaAccount);
+}
+
+/**
+ * Checks if the new settings redesign is enabled
+ *
+ * @param state - The state of the application
+ * @returns true if the new settings redesign is enabled, false otherwise
+ */
+export function getIsNewSettingsEnabled(state) {
+  const { settingsRedesign } = getRemoteFeatureFlags(state);
+  return Boolean(settingsRedesign);
 }
 
 export function getManageInstitutionalWallets(state) {

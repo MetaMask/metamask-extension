@@ -1,5 +1,8 @@
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const {
+  mockEthereumProviderSnap,
+} = require('../mock-response-data/snaps/snap-binary-mocks');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap ethereum_provider', function () {
@@ -7,6 +10,7 @@ describe('Test Snap ethereum_provider', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockEthereumProviderSnap,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -48,6 +52,10 @@ describe('Test Snap ethereum_provider', function () {
         });
 
         // wait and scroll if necessary
+        await driver.waitForSelector({
+          tag: 'h3',
+          text: 'Add to MetaMask',
+        });
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         // wait for and click confirm
