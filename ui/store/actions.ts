@@ -651,7 +651,7 @@ export function connectHardware(
         ledgerTransportType === LedgerTransportTypes.webhid
       ) {
         const inE2eTest =
-          process.env.IN_TEST && process.env.METAMASK_ENVIRONMENT === 'main';
+          process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';
         let connectedDevices: HIDDevice[] = [];
         if (!inE2eTest) {
           connectedDevices = await window.navigator.hid.requestDevice({

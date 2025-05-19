@@ -37,7 +37,7 @@ const LedgerInfo: React.FC = () => {
   const dispatch = useDispatch();
 
   const inE2eTest =
-    process.env.IN_TEST && process.env.METAMASK_ENVIRONMENT === 'main';
+    process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';
   const webHidConnectedStatus = inE2eTest
     ? WebHIDConnectedStatuses.connected
     : useSelector(getLedgerWebHidConnectedStatus);
