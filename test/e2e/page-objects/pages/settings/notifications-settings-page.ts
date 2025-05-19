@@ -163,6 +163,21 @@ class NotificationsSettingsPage {
       throw error;
     }
   }
+
+  async assertMainNotificationSettingsToggles(driver: Driver) {
+    const notificationsSettingsPage = new NotificationsSettingsPage(driver);
+    await notificationsSettingsPage.check_pageIsLoaded();
+    await notificationsSettingsPage.check_notificationState({
+      toggleType: 'general',
+      expectedState: 'enabled',
+    });
+    await notificationsSettingsPage.check_notificationState({
+      toggleType: 'product',
+      expectedState: 'enabled',
+    });
+
+    return notificationsSettingsPage;
+  }
 }
 
 export default NotificationsSettingsPage;
