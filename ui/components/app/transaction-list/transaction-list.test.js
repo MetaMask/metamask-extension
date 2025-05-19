@@ -46,7 +46,7 @@ const btcState = {
     ...mockState.metamask,
     nonEvmTransactions: {
       [MOCK_ACCOUNT_BIP122_P2WPKH.id]: {
-        'bip122:000000000019d6689c085ae165831e93': {
+        [MultichainNetworks.BITCOIN]: {
           transactions: [
             {
               timestamp: 1733736433,
@@ -103,7 +103,7 @@ const solanaSwapState = {
     ...mockState.metamask,
     nonEvmTransactions: {
       [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+        [MultichainNetworks.SOLANA]: {
           transactions: [
             {
               id: '2pfnv4drhnitfzCFKxiRoJMzFQpG7wZ9mpRQVk7xm5TQ27g6FZH95HVF6KgwQBS872yGtyhuq57jXXS1y29ub11',
@@ -386,7 +386,7 @@ describe('TransactionList', () => {
 
     const nonEvmTransactions = {
       [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+        [MultichainNetworks.SOLANA]: {
           transactions: [
             transactionWithSolAndToken,
             transactionWithOnlySol,
@@ -404,7 +404,7 @@ describe('TransactionList', () => {
 
       const result = filterTransactionsByToken(
         nonEvmTransactions[MOCK_ACCOUNT_SOLANA_MAINNET.id][
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+          MultichainNetworks.SOLANA
         ],
         tokenAddress,
       );
@@ -421,7 +421,7 @@ describe('TransactionList', () => {
 
       const result = filterTransactionsByToken(
         nonEvmTransactions[MOCK_ACCOUNT_SOLANA_MAINNET.id][
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+          MultichainNetworks.SOLANA
         ],
         tokenAddress,
       );
