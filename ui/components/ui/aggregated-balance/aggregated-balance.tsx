@@ -27,10 +27,14 @@ import {
   getMultichainNativeTokenBalance,
 } from '../../../selectors/assets';
 import { getPreferences, getSelectedInternalAccount } from '../../../selectors';
-import { getMultichainNetwork } from '../../../selectors/multichain';
+import {
+  getMultichainNetwork,
+  getMultichainShouldShowFiat,
+} from '../../../selectors/multichain';
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import Spinner from '../spinner';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 
 export const AggregatedBalance = ({
   classPrefix,
@@ -55,6 +59,11 @@ export const AggregatedBalance = ({
   const multichainNativeTokenBalance = useSelector((state) =>
     getMultichainNativeTokenBalance(state, selectedAccount),
   );
+  const shouldShowFiat = useMultichainSelector(
+    getMultichainShouldShowFiat,
+    selectedAccount,
+  );
+
   const multichainAssetsRates = useSelector(getAssetsRates);
   const isNonEvmRatesAvailable = Object.keys(multichainAssetsRates).length > 0;
 
@@ -99,7 +108,9 @@ export const AggregatedBalance = ({
           isHidden={privacyMode}
           data-testid="account-value-and-suffix"
         >
-          {showNativeTokenAsMainBalance || !isNonEvmRatesAvailable
+          {showNativeTokenAsMainBalance ||
+          !isNonEvmRatesAvailable ||
+          !shouldShowFiat
             ? formattedTokenDisplay
             : formattedFiatDisplay}
         </SensitiveText>
@@ -108,7 +119,9 @@ export const AggregatedBalance = ({
           variant={TextVariant.inherit}
           isHidden={privacyMode}
         >
-          {showNativeTokenAsMainBalance || !isNonEvmRatesAvailable
+          {showNativeTokenAsMainBalance ||
+          !isNonEvmRatesAvailable ||
+          !shouldShowFiat
             ? currentNetwork.network.ticker
             : currentCurrency.toUpperCase()}
         </SensitiveText>

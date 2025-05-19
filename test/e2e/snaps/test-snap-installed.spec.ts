@@ -6,6 +6,10 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { completeSnapInstallSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import {
+  mockDialogSnap,
+  mockErrorSnap,
+} from '../mock-response-data/snaps/snap-binary-mocks';
 
 const { strict: assert } = require('assert');
 const { withFixtures, getEventPayloads } = require('../helpers');
@@ -40,8 +44,12 @@ async function mockedSnapInstall(mockServer: Mockttp) {
 
 describe('Test Snap installed', function () {
   it('metrics are sent correctly and error snap validation', async function () {
-    async function mockSegment(mockServer: Mockttp) {
-      return [await mockedSnapInstall(mockServer)];
+    async function mockSegmentAndSnaps(mockServer: Mockttp) {
+      return [
+        await mockedSnapInstall(mockServer),
+        await mockErrorSnap(mockServer),
+        await mockDialogSnap(mockServer),
+      ];
     }
 
     await withFixtures(
@@ -54,7 +62,7 @@ describe('Test Snap installed', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSegment,
+        testSpecificMock: mockSegmentAndSnaps,
       },
       async ({
         driver,

@@ -6,7 +6,7 @@ import {
   AccountsControllerSetSelectedAccountAction,
   AccountsControllerState,
 } from '@metamask/accounts-controller';
-import { Hex, Json } from '@metamask/utils';
+import { Json } from '@metamask/utils';
 import {
   BaseController,
   ControllerGetStateAction,
@@ -129,10 +129,6 @@ export type PreferencesControllerState = Omit<
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  bitcoinSupportEnabled: boolean;
-  bitcoinTestnetSupportEnabled: boolean;
-  ///: END:ONLY_INCLUDE_IF
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
   knownMethodData: Record<string, string>;
@@ -150,7 +146,6 @@ export type PreferencesControllerState = Omit<
   useExternalServices: boolean;
   textDirection?: string;
   manageInstitutionalWallets: boolean;
-  disabledUpgradeAccountsByChain?: Record<Hex, Hex[]>;
 };
 
 /**
@@ -174,8 +169,6 @@ export const getDefaultPreferencesControllerState =
     openSeaEnabled: true,
     securityAlertsEnabled: true,
     watchEthereumAccountEnabled: false,
-    bitcoinSupportEnabled: false,
-    bitcoinTestnetSupportEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     ///: END:ONLY_INCLUDE_IF
@@ -256,7 +249,6 @@ export const getDefaultPreferencesControllerState =
       [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
     },
     manageInstitutionalWallets: false,
-    disabledUpgradeAccountsByChain: {},
   });
 
 /**
@@ -320,14 +312,6 @@ const controllerMetadata = {
     anonymous: false,
   },
   watchEthereumAccountEnabled: {
-    persist: true,
-    anonymous: false,
-  },
-  bitcoinSupportEnabled: {
-    persist: true,
-    anonymous: false,
-  },
-  bitcoinTestnetSupportEnabled: {
     persist: true,
     anonymous: false,
   },
@@ -428,7 +412,6 @@ const controllerMetadata = {
   isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
   showIncomingTransactions: { persist: true, anonymous: true },
   manageInstitutionalWallets: { persist: true, anonymous: false },
-  disabledUpgradeAccountsByChain: { persist: true, anonymous: false },
 };
 
 export class PreferencesController extends BaseController<
@@ -622,32 +605,6 @@ export class PreferencesController extends BaseController<
   setWatchEthereumAccountEnabled(watchEthereumAccountEnabled: boolean): void {
     this.update((state) => {
       state.watchEthereumAccountEnabled = watchEthereumAccountEnabled;
-    });
-  }
-  ///: END:ONLY_INCLUDE_IF
-
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  /**
-   * Setter for the `bitcoinSupportEnabled` property.
-   *
-   * @param bitcoinSupportEnabled - Whether or not the user wants to
-   * enable the "Add a new Bitcoin account (Beta)" button.
-   */
-  setBitcoinSupportEnabled(bitcoinSupportEnabled: boolean): void {
-    this.update((state) => {
-      state.bitcoinSupportEnabled = bitcoinSupportEnabled;
-    });
-  }
-
-  /**
-   * Setter for the `bitcoinTestnetSupportEnabled` property.
-   *
-   * @param bitcoinTestnetSupportEnabled - Whether or not the user wants to
-   * enable the "Add a new Bitcoin account (Testnet)" button.
-   */
-  setBitcoinTestnetSupportEnabled(bitcoinTestnetSupportEnabled: boolean): void {
-    this.update((state) => {
-      state.bitcoinTestnetSupportEnabled = bitcoinTestnetSupportEnabled;
     });
   }
   ///: END:ONLY_INCLUDE_IF
@@ -961,26 +918,6 @@ export class PreferencesController extends BaseController<
   setServiceWorkerKeepAlivePreference(value: boolean): void {
     this.update((state) => {
       state.enableMV3TimestampSave = value;
-    });
-  }
-
-  getDisabledUpgradeAccountsByChain(): Record<Hex, Hex[]> {
-    return this.state.disabledUpgradeAccountsByChain ?? {};
-  }
-
-  disableAccountUpgrade(chainId: Hex, address: Hex): void {
-    this.update((state) => {
-      const { disabledUpgradeAccountsByChain = {} } = state;
-      const addressLowerCase = address.toLowerCase() as Hex;
-
-      if (
-        !disabledUpgradeAccountsByChain[chainId]?.includes(addressLowerCase)
-      ) {
-        if (!disabledUpgradeAccountsByChain[chainId]) {
-          disabledUpgradeAccountsByChain[chainId] = [];
-        }
-        disabledUpgradeAccountsByChain[chainId].push(addressLowerCase);
-      }
     });
   }
 

@@ -59,12 +59,14 @@ export function useMultichainTransactionDisplay(
     decimalPlaces,
   );
   const baseFee = aggregateAmount(
-    transaction.fees.filter((fee) => fee.type === 'base') as Movement[],
+    (transaction.fees || []).filter((fee) => fee.type === 'base') as Movement[],
     true,
     locale,
   );
   const priorityFee = aggregateAmount(
-    transaction.fees.filter((fee) => fee.type === 'priority') as Movement[],
+    (transaction.fees || []).filter(
+      (fee) => fee.type === 'priority',
+    ) as Movement[],
     true,
     locale,
   );

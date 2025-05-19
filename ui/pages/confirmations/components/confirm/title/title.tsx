@@ -81,7 +81,7 @@ const getTitle = (
   pending?: boolean,
   primaryType?: keyof typeof TypedSignSignaturePrimaryTypes,
   tokenStandard?: string,
-  isUpgrade?: boolean,
+  isUpgradeOnly?: boolean,
 ) => {
   if (pending) {
     return '';
@@ -91,7 +91,7 @@ const getTitle = (
     case TransactionType.contractInteraction:
       return t('confirmTitleTransaction');
     case TransactionType.batch:
-      if (isUpgrade) {
+      if (isUpgradeOnly) {
         return t('confirmTitleAccountTypeSwitch');
       }
       return t('confirmTitleTransaction');
@@ -149,7 +149,7 @@ const getDescription = (
   pending?: boolean,
   primaryType?: keyof typeof TypedSignSignaturePrimaryTypes,
   tokenStandard?: string,
-  isUpgrade?: boolean,
+  isUpgradeOnly?: boolean,
 ) => {
   if (pending) {
     return '';
@@ -159,7 +159,7 @@ const getDescription = (
     case TransactionType.contractInteraction:
       return '';
     case TransactionType.batch:
-      if (isUpgrade) {
+      if (isUpgradeOnly) {
         return t('confirmTitleDescDelegationUpgrade');
       }
       return '';
@@ -212,7 +212,7 @@ const getDescription = (
 const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
-  const { isUpgrade } = useIsUpgradeTransaction();
+  const { isUpgradeOnly } = useIsUpgradeTransaction();
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
@@ -241,7 +241,7 @@ const ConfirmTitle: React.FC = memo(() => {
         spendingCapPending,
         primaryType,
         tokenStandard,
-        isUpgrade,
+        isUpgradeOnly,
       ),
     [
       currentConfirmation,
@@ -252,7 +252,7 @@ const ConfirmTitle: React.FC = memo(() => {
       primaryType,
       t,
       tokenStandard,
-      isUpgrade,
+      isUpgradeOnly,
     ],
   );
 
@@ -267,7 +267,7 @@ const ConfirmTitle: React.FC = memo(() => {
         spendingCapPending,
         primaryType,
         tokenStandard,
-        isUpgrade,
+        isUpgradeOnly,
       ),
     [
       currentConfirmation,
@@ -278,7 +278,7 @@ const ConfirmTitle: React.FC = memo(() => {
       primaryType,
       t,
       tokenStandard,
-      isUpgrade,
+      isUpgradeOnly,
     ],
   );
 
