@@ -3364,14 +3364,6 @@ export function setShowFiatConversionOnTestnetsPreference(value: boolean) {
   return setPreference('showFiatInTestnets', value);
 }
 
-/**
- * Sets shouldShowAggregatedBalancePopover to false once the user toggles
- * the setting to show native token as main balance.
- */
-export function setAggregatedBalancePopoverShown() {
-  return setPreference('shouldShowAggregatedBalancePopover', false);
-}
-
 export function setShowTestNetworks(value: boolean) {
   return setPreference('showTestNetworks', value);
 }
