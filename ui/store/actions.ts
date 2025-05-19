@@ -5541,24 +5541,6 @@ export async function setWatchEthereumAccountEnabled(value: boolean) {
   }
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-export async function setBitcoinSupportEnabled(value: boolean) {
-  try {
-    await submitRequestToBackground('setBitcoinSupportEnabled', [value]);
-  } catch (error) {
-    logErrorWithMessage(error);
-  }
-}
-
-export async function setBitcoinTestnetSupportEnabled(value: boolean) {
-  try {
-    await submitRequestToBackground('setBitcoinTestnetSupportEnabled', [value]);
-  } catch (error) {
-    logErrorWithMessage(error);
-  }
-}
-///: END:ONLY_INCLUDE_IF
-
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
   try {
