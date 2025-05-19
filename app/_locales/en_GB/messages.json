@@ -172,10 +172,7 @@
     "message": "Add alias"
   },
   "addBitcoinAccountLabel": {
-    "message": "Bitcoin account (Beta)"
-  },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Bitcoin account (Testnet)"
+    "message": "Bitcoin account"
   },
   "addBlockExplorer": {
     "message": "Add a block explorer"
@@ -499,7 +496,7 @@
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
   "appDescription": {
-    "message": "An Ethereum Wallet in your Browser",
+    "message": "The world's most trusted crypto wallet",
     "description": "The description of the application"
   },
   "appName": {
@@ -726,22 +723,6 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Turning on this feature will give you the option to add a Bitcoin Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk. To give us feedback on this new Bitcoin experience, please fill out this $1.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Enable \"Add a new Bitcoin account (Beta)\""
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Turning on this feature will give you the option to add a Bitcoin Account for the test network."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Enable \"Add a new Bitcoin account (Testnet)\""
   },
   "blockExplorerAccountAction": {
     "message": "Account",
@@ -3329,9 +3310,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameBitcoinTestnet": {
-    "message": "Bitcoin Testnet"
   },
   "networkNameDefinition": {
     "message": "The name associated with this network."
@@ -6267,6 +6245,9 @@
   },
   "termsOfUseTitle": {
     "message": "Our Terms of Use have updated"
+  },
+  "testNetworks": {
+    "message": "Test networks"
   },
   "testnets": {
     "message": "Testnets"

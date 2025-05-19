@@ -6,6 +6,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3\/.*/u;
@@ -2322,6 +2323,7 @@ export async function withSolanaAccountSnap(
     mockZeroBalance,
     sendFailedTransaction,
     dappPaths,
+    withProtocolSnap,
   }: {
     title?: string;
     showNativeTokenAsMainBalance?: boolean;
@@ -2335,6 +2337,7 @@ export async function withSolanaAccountSnap(
     mockZeroBalance?: boolean;
     sendFailedTransaction?: boolean;
     dappPaths?: string[];
+    withProtocolSnap?: boolean;
   },
   test: (
     driver: Driver,
@@ -2440,6 +2443,9 @@ export async function withSolanaAccountSnap(
         } else if (sendFailedTransaction) {
           mockList.push(await simulateSolanaTransaction(mockServer));
           mockList.push(await mockSendSolanaFailedTransaction(mockServer));
+        }
+        if (withProtocolSnap) {
+          mockList.push(await mockProtocolSnap(mockServer));
         }
         return mockList;
       },

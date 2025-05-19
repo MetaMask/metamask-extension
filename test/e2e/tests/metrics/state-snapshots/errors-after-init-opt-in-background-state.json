@@ -125,7 +125,6 @@
   "KeyringController": {
     "isUnlocked": true,
     "keyrings": "object",
-    "keyringsMetadata": "object",
     "vault": "string",
     "encryptionKey": "string",
     "encryptionSalt": "string"
@@ -228,8 +227,6 @@
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
     "watchEthereumAccountEnabled": "boolean",
-    "bitcoinSupportEnabled": "boolean",
-    "bitcoinTestnetSupportEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},

@@ -152,12 +152,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -203,12 +201,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -260,12 +256,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -301,12 +295,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -511,12 +503,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -568,21 +558,6 @@ describe('preferences controller', () => {
     it('should set the setServiceWorkerKeepAlivePreference property in state', () => {
       controller.setServiceWorkerKeepAlivePreference(false);
       expect(controller.state.enableMV3TimestampSave).toStrictEqual(false);
-    });
-  });
-
-  describe('setBitcoinSupportEnabled', () => {
-    const { controller } = setupController({});
-    it('has the default value as false', () => {
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(false);
-    });
-
-    it('sets the bitcoinSupportEnabled property in state to true and then false', () => {
-      controller.setBitcoinSupportEnabled(true);
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(true);
-
-      controller.setBitcoinSupportEnabled(false);
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(false);
     });
   });
 
@@ -647,21 +622,6 @@ describe('preferences controller', () => {
       const { controller } = setupController({});
       controller.setWatchEthereumAccountEnabled(true);
       expect(controller.state.watchEthereumAccountEnabled).toStrictEqual(true);
-    });
-  });
-
-  describe('bitcoinTestnetSupportEnabled', () => {
-    it('defaults bitcoinTestnetSupportEnabled to false', () => {
-      const { controller } = setupController({});
-      expect(controller.state.bitcoinTestnetSupportEnabled).toStrictEqual(
-        false,
-      );
-    });
-
-    it('setBitcoinTestnetSupportEnabled to true', () => {
-      const { controller } = setupController({});
-      controller.setBitcoinTestnetSupportEnabled(true);
-      expect(controller.state.bitcoinTestnetSupportEnabled).toStrictEqual(true);
     });
   });
 

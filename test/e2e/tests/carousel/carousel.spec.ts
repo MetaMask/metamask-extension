@@ -2,9 +2,10 @@ import { strict as assert } from 'assert';
 import { tinyDelayMs, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { MAX_SLIDES } from '../../../../ui/components/multichain/carousel/constants';
 
 describe('Carousel component e2e tests', function () {
-  const MAX_VISIBLE_SLIDES = 5;
+  const MAX_VISIBLE_SLIDES = MAX_SLIDES;
   const SLIDE_IDS = [
     'solana',
     'smartAccountUpgrade',
