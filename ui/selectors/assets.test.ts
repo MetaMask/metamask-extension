@@ -1,17 +1,18 @@
-import { cloneDeep } from 'lodash';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import { SolScope } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import { cloneDeep } from 'lodash';
 import {
   AssetsRatesState,
   AssetsState,
   getAccountAssets,
-  getTokenByAccountAndAddressAndChainId,
   getAssetsMetadata,
   getAssetsRates,
+  getHistoricalPrices,
   getMultiChainAssets,
   getMultichainNativeAssetType,
-  getHistoricalPrices,
+  getTokenByAccountAndAddressAndChainId,
+  getHistoricalMultichainAggregatedBalance,
 } from './assets';
 
 const mockRatesState = {
@@ -160,7 +161,7 @@ describe('getMultiChainAssets', () => {
           chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           isNative: true,
           primary: '0.051724127',
-          secondary: 0,
+          secondary: null,
         }),
         expect.objectContaining({
           title: 'USDC',
@@ -172,7 +173,7 @@ describe('getMultiChainAssets', () => {
           chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           isNative: false,
           primary: '0',
-          secondary: 0,
+          secondary: null,
         }),
       ]),
     );
@@ -204,7 +205,7 @@ describe('getMultiChainAssets', () => {
           chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           isNative: true,
           primary: '0.051724127',
-          secondary: 0,
+          secondary: null,
         }),
       ]),
     );
@@ -347,11 +348,11 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
         isNative: true,
         isStakeable: false,
         primary: '0',
-        secondary: 0,
+        secondary: null,
         string: '',
         symbol: 'TKN1',
         title: 'Token 1',
-        tokenFiatAmount: 0,
+        tokenFiatAmount: null,
       });
     });
   });
@@ -378,11 +379,11 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
         isNative: true,
         isStakeable: false,
         primary: '0',
-        secondary: 0,
+        secondary: null,
         string: '',
         symbol: 'TKN1',
         title: 'Token 1',
-        tokenFiatAmount: 0,
+        tokenFiatAmount: null,
       });
     });
   });
@@ -447,5 +448,170 @@ describe('getMultichainNativeAssetType', () => {
 
       expect(result).toBeUndefined();
     });
+  });
+});
+
+describe('getHistoricalMultichainAggregatedBalance', () => {
+  const mockAccountId = '5132883f-598e-482c-a02b-84eeaa352f5b';
+
+  // Mock balances state
+  const mockBalances = {
+    [mockAccountId]: {
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+        amount: '100',
+        unit: 'SOL',
+      },
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+        {
+          amount: '50',
+          unit: 'USDC',
+        },
+    },
+  };
+
+  // Mock account assets state
+  const mockAccountAssets = {
+    [mockAccountId]: [
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    ],
+  };
+
+  // Mock conversion rates state
+  const mockConversionRates = {
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+      rate: '10',
+      marketData: {
+        pricePercentChange: {
+          P1D: 5, // 5% increase
+          P7D: -2, // 2% decrease
+        },
+      },
+    },
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+      {
+        rate: '1',
+        marketData: {
+          pricePercentChange: {
+            P1D: 10, // 10% increase
+            P7D: 5, // 5% increase
+          },
+        },
+      },
+  };
+
+  // Complete mock state
+  const mockState = {
+    metamask: {
+      accountsAssets: mockAccountAssets,
+      conversionRates: mockConversionRates,
+      balances: mockBalances,
+    },
+  };
+
+  it('should calculate historical balances, percent changes, and amount changes correctly', () => {
+    const result = getHistoricalMultichainAggregatedBalance(mockState, {
+      id: mockAccountId,
+    });
+
+    expect(result.P1D).toEqual({
+      balance: 997.8354978354979,
+      percentChange: 5.22776573,
+      amountChange: 52.16450216,
+    });
+  });
+
+  it('should handle missing market data', () => {
+    const noMarketDataState = {
+      metamask: {
+        accountsAssets: mockAccountAssets,
+        conversionRates: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+            rate: '10',
+            // No marketData
+          },
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+            {
+              rate: '1',
+              marketData: {
+                pricePercentChange: {
+                  P1D: 10,
+                  P7D: 5,
+                },
+              },
+            },
+        },
+        balances: mockBalances,
+      },
+    };
+
+    const result = getHistoricalMultichainAggregatedBalance(noMarketDataState, {
+      id: mockAccountId,
+    });
+
+    expect(result.P1D).toEqual({
+      balance: 45.45454545454545,
+      percentChange: 10,
+      amountChange: 4.54545455,
+    });
+  });
+
+  it('should return zero values for all periods when no assets have market data', () => {
+    const noMarketDataState = {
+      metamask: {
+        accountsAssets: mockAccountAssets,
+        conversionRates: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+            rate: '10',
+            // No marketData
+          },
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+            {
+              rate: '1',
+              // No marketData
+            },
+        },
+        balances: mockBalances,
+      },
+    };
+
+    const result = getHistoricalMultichainAggregatedBalance(noMarketDataState, {
+      id: mockAccountId,
+    });
+
+    // All periods should have zero values since no assets have market data
+    Object.values(result).forEach((periodData) => {
+      expect(periodData).toEqual({
+        balance: 0,
+        percentChange: 0,
+        amountChange: 0,
+      });
+    });
+  });
+
+  it('should handle precision correctly', () => {
+    const precisionState = {
+      metamask: {
+        accountsAssets: mockAccountAssets,
+        conversionRates: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+            rate: '10.123456789',
+            marketData: {
+              pricePercentChange: {
+                P1D: 5.123456789,
+              },
+            },
+          },
+        },
+        balances: mockBalances,
+      },
+    };
+
+    const result = getHistoricalMultichainAggregatedBalance(precisionState, {
+      id: mockAccountId,
+    });
+
+    expect(result.P1D.percentChange).toBe(5.123457); // max 8 decimal places
+    expect(result.P1D.amountChange).toBe(49.33922174); // max 8 decimal places
   });
 });

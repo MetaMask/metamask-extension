@@ -26,6 +26,19 @@ class PrivacySettings {
     tag: 'button',
   };
 
+  private readonly dataCollectionForMarketingToggle =
+    '[data-testid="data-collection-for-marketing-toggle"] .toggle-button';
+
+  private readonly dataCollectionWarningAckButton = {
+    text: 'Okay',
+    tag: 'button',
+  };
+
+  private readonly dataCollectionWarningMessage = {
+    text: 'You turned off data collection for our marketing purposes. This only applies to this device. ',
+    tag: 'p',
+  };
+
   private readonly deleteMetaMetricsDataButton =
     '[data-testid="delete-metametrics-data-button"]';
 
@@ -33,6 +46,12 @@ class PrivacySettings {
     text: 'Delete MetaMetrics data?',
     tag: 'h4',
   };
+
+  private readonly ensDomainResolutionToggle =
+    '[data-testid="ipfs-gateway-resolution-container"] .toggle-button';
+
+  private readonly ipfsGatewayToggle =
+    '[data-testid="ipfsToggle"] .toggle-button';
 
   private readonly privacySettingsPageTitle = {
     text: 'Security & privacy',
@@ -98,9 +117,6 @@ class PrivacySettings {
 
   private readonly participateInMetaMetricsToggle =
     '[data-testid="participate-in-meta-metrics-toggle"] .toggle-button';
-
-  private readonly dataCollectionForMarketingToggle =
-    '[data-testid="data-collection-for-marketing-toggle"] .toggle-button';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -230,9 +246,30 @@ class PrivacySettings {
     await this.driver.waitForSelector(this.revealSrpQuizModalTitle);
   }
 
+  async optOutDataCollectionForMarketing(): Promise<void> {
+    console.log(
+      'Opt out data collection for marketing on privacy settings page',
+    );
+    await this.toggleDataCollectionForMarketing();
+    await this.driver.waitForSelector(this.dataCollectionWarningMessage);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.dataCollectionWarningAckButton,
+    );
+  }
+
   async toggleAutodetectNft(): Promise<void> {
     console.log('Toggle autodetect NFT on privacy settings page');
     await this.driver.clickElement(this.autodetectNftToggleButton);
+  }
+
+  async toggleEnsDomainResolution(): Promise<void> {
+    console.log('Toggle ENS domain resolution on privacy settings page');
+    await this.driver.clickElement(this.ensDomainResolutionToggle);
+  }
+
+  async toggleIpfsGateway(): Promise<void> {
+    console.log('Toggle IPFS gateway on privacy settings page');
+    await this.driver.clickElement(this.ipfsGatewayToggle);
   }
 
   /**

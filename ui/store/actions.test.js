@@ -50,12 +50,10 @@ const defaultState = {
             address: '0xFirstAddress',
           },
         ],
-      },
-    ],
-    keyringsMetadata: [
-      {
-        id: mockUlid,
-        name: '',
+        metadata: {
+          id: mockUlid,
+          name: '',
+        },
       },
     ],
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -2751,25 +2749,6 @@ describe('Actions', () => {
         store.dispatch(actions.checkAccountsPresence(accounts)),
       ).rejects.toThrow('Failed to check accounts presence');
       expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
-  describe('showConfirmTurnOffProfileSyncing', () => {
-    it('should dispatch showModal with the correct payload', async () => {
-      const store = mockStore();
-
-      await store.dispatch(actions.showConfirmTurnOffProfileSyncing());
-
-      const expectedActions = [
-        {
-          payload: {
-            name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
-          },
-          type: 'UI_MODAL_OPEN',
-        },
-      ];
-
-      await expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 

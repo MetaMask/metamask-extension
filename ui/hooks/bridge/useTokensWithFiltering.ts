@@ -6,14 +6,16 @@ import {
   isSolanaChainId,
   formatChainIdToCaip,
   formatChainIdToHex,
-  type BridgeToken,
   isNativeAddress,
   fetchBridgeTokens,
   BridgeClientId,
   type BridgeAsset,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { TokenListMap, TokenListToken } from '@metamask/assets-controllers';
+import type {
+  TokenListMap,
+  TokenListToken,
+} from '@metamask/assets-controllers';
 import { AssetType } from '../../../shared/constants/transaction';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { useMultichainBalances } from '../useMultichainBalances';
@@ -33,6 +35,7 @@ import type {
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
+import type { BridgeToken } from '../../ducks/bridge/types';
 
 type FilterPredicate = (
   symbol: string,
@@ -98,6 +101,9 @@ export const useTokensWithFiltering = (
             url: url as string,
             ...requestOptions,
             fetchOptions: { method: 'GET', headers },
+            cacheOptions: {
+              cacheRefreshTime: 10 * MINUTE,
+            },
             functionName: 'fetchBridgeTokens',
           });
         },
@@ -244,6 +250,7 @@ export const useTokensWithFiltering = (
               };
             } else {
               yield {
+                ...token,
                 symbol: token.symbol,
                 chainId: token.chainId,
                 tokenFiatAmount: token.tokenFiatAmount,
@@ -273,9 +280,7 @@ export const useTokensWithFiltering = (
             token &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
-            if (token) {
-              yield token;
-            }
+            yield token;
           }
         }
 
@@ -284,12 +289,10 @@ export const useTokensWithFiltering = (
           const token = buildTokenData(token_);
           if (
             token &&
-            !token.symbol.includes('$') &&
+            token.symbol.indexOf('$') === -1 &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
-            if (token) {
-              yield token;
-            }
+            yield token;
           }
         }
       })(),

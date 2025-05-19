@@ -29,8 +29,8 @@ describe('View ERC1155 NFT details', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: mockIPFSRequest,
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         // Click to open the NFT details page and check displayed account
         await new Homepage(driver).goToNftTab();

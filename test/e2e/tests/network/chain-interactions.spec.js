@@ -10,7 +10,7 @@ describe('Chain Interactions', function () {
   const port = 8546;
   const chainId = 1338;
 
-  it('should add the Ganache chain and switch the network', async function () {
+  it('should add the Local chain and switch the network', async function () {
     await withFixtures(
       {
         dapp: true,

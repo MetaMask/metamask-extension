@@ -6,23 +6,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Rebrand "Profile syncing" to "Backup and sync", adding a dedicated settings menu and more ([#32129](https://github.com/MetaMask/metamask-extension/pull/32129))
 - Adding slide for smart account upgrade to home page carousel ([#32048](https://github.com/MetaMask/metamask-extension/pull/32048))
 - Improvements in confirmation page to upgrade to smart account ([#32034](https://github.com/MetaMask/metamask-extension/pull/32034))
 - When `selectedNetworkClientId` is invalid at startup, set it back to mainnet default RPC ([#31517](https://github.com/MetaMask/metamask-extension/pull/31517))
 - Adds the Solana banner/slide to the existing home carousel ([#32000](https://github.com/MetaMask/metamask-extension/pull/32000))
 - Support for Solana on Firefox ([#32104](https://github.com/MetaMask/metamask-extension/pull/32104))
+- Show error to user if vault should exist, but is missing ([#31404](https://github.com/MetaMask/metamask-extension/pull/31404))
 - Update CAIP-294 wallet announcement event to include `targets` property and new `caip-348` target object ([#32070](https://github.com/MetaMask/metamask-extension/pull/32070))
 - Replace `caip-x` with `caip-348` in Multichain API over externally_connectable ([#32070](https://github.com/MetaMask/metamask-extension/pull/32070))
+- Unify confirmation page styles and responsive behavior ([#31454](https://github.com/MetaMask/metamask-extension/pull/31454))
 - Integrate @metamask/bridge-status-controller@^14.0.0 and replace existing BridgeStatusController instance ([#31907](https://github.com/MetaMask/metamask-extension/pull/31907))
+- Add RPC (sub)domain tracking to transaction event metrics for RPC endpoints usage ([#32076](https://github.com/MetaMask/metamask-extension/pull/32076))
+- Integrate dynamic content banners ([#32101](https://github.com/MetaMask/metamask-extension/pull/32101))
 
 ### Changed
 - Update multichain network controller to implement `getNetworksWithActivityByAccounts` method and add state management for networks with activity ([#31414](https://github.com/MetaMask/metamask-extension/pull/31414))
 - Update security and privacy policy description to reflect Solana account handling ([#32231](https://github.com/MetaMask/metamask-extension/pull/32231))
 - Updates the Solana modal by adding a learn more link, UI tweaks and auto selects a solana account when it exists. ([#32087](https://github.com/MetaMask/metamask-extension/pull/32087))
+- Hide failed transaction retry button ([#32024](https://github.com/MetaMask/metamask-extension/pull/32024))
 
 ### Fixed
 - updates display decimals in Bridge experience 'More Quotes' section ([#32080](https://github.com/MetaMask/metamask-extension/pull/32080))
 - Add Multichain API analytics support ([#32013](https://github.com/MetaMask/metamask-extension/pull/32013))
+
+## [12.17.3]
+### Changed
+- Update supported browser versions ([#32520](https://github.com/MetaMask/metamask-extension/pull/32520))
+
+### Fixed
+- Stop emitting Dapp Viewed events on Firefox ([#32583](https://github.com/MetaMask/metamask-extension/pull/32583))
+- Make phishing warning events anonymous ([#32635](https://github.com/MetaMask/metamask-extension/pull/32635))
+- Fix momentary disappearance of approve row in batch transaction confirmation ([#32658](https://github.com/MetaMask/metamask-extension/pull/32658))
+- Support permit2 approvals in batch simulation ([#32733](https://github.com/MetaMask/metamask-extension/pull/32733))
+- Allow users to upgrade to a smart contract account after rejecting it once in the past ([#32697](https://github.com/MetaMask/metamask-extension/pull/32697))
+
+## [12.17.2]
+### Changed
+- Increasing polling interval for incoming transactions ([#32547](https://github.com/MetaMask/metamask-extension/pull/32547))
+
+## [12.17.1]
+### Fixed
+- Prevent infinite Load on switching networks or reveal SRP ([#32391](https://github.com/MetaMask/metamask-extension/pull/32391))
+- Ensure vault encryption upgrade fails gracefully during login ([#32438](https://github.com/MetaMask/metamask-extension/pull/32438))
+- Prevent frequent state updates while UI is open, which was preventing state persistence ([#32482](https://github.com/MetaMask/metamask-extension/pull/32482))
 
 ## [12.17.0]
 ### Added
@@ -69,6 +96,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix `wallet_getCapabilities` with missing networks ([#32237](https://github.com/MetaMask/metamask-extension/pull/32237))
 - Fix NFT removal on different networks ([#32102](https://github.com/MetaMask/metamask-extension/pull/32102))
+- Prevents duplicate account to be added when importing HD Keyring or adding HD Keyring account ([#32121](https://github.com/MetaMask/metamask-extension/pull/32121))
 - [Beta] Fix exchange rate lookups on Solana Swap page to prevent crashing when values are undefined ([#32114](https://github.com/MetaMask/metamask-extension/pull/32114))
 - Fix Display "🦊 Smart contract" in "interacting with" row for batch[ transaction](https://github.com/MetaMask/metamask-extension/pull/31507) confirmations (#31507)
 - Fix improvements in page to revert smart account to EOA account ([#31605](https://github.com/MetaMask/metamask-extension/pull/31605))
@@ -6096,7 +6124,10 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.17.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.17.3...HEAD
+[12.17.3]: https://github.com/MetaMask/metamask-extension/compare/v12.17.2...v12.17.3
+[12.17.2]: https://github.com/MetaMask/metamask-extension/compare/v12.17.1...v12.17.2
+[12.17.1]: https://github.com/MetaMask/metamask-extension/compare/v12.17.0...v12.17.1
 [12.17.0]: https://github.com/MetaMask/metamask-extension/compare/v12.16.2...v12.17.0
 [12.16.2]: https://github.com/MetaMask/metamask-extension/compare/v12.16.1...v12.16.2
 [12.16.1]: https://github.com/MetaMask/metamask-extension/compare/v12.16.0...v12.16.1
