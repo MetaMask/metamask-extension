@@ -1,141 +1,71 @@
-import { migrate, version } from './159';
+import { migrate } from './159';
 
-describe(`migration #${version}`, () => {
-  it('updates the version metadata', async () => {
-    const oldStorage = {
-      meta: { version: version - 1 },
+const expectedVersion = 159;
+const previousVersion = 158;
+
+describe(`migration #${expectedVersion}`, () => {
+  it('does nothing if state has not PreferencesController property', async () => {
+    const oldVersionedData = {
+      meta: { version: previousVersion },
       data: {},
     };
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.meta).toStrictEqual({ version });
-  });
-
-  it('does nothing if MultichainTransactionsController is missing', async () => {
-    const oldStorage = {
-      meta: { version: version - 1 },
-      data: {},
+    const expectedVersionedData = {
+      meta: { version: expectedVersion },
+      data: oldVersionedData.data,
     };
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual({});
+    const newVersionedData = await migrate(oldVersionedData);
+    expect(newVersionedData).toStrictEqual(expectedVersionedData);
   });
 
-  it('does nothing if MultichainTransactionsController is not an object', async () => {
-    const oldStorage = {
-      meta: { version: version - 1 },
+  it('does nothing if state has not state.PreferencesController is not an object', async () => {
+    const oldVersionedData = {
+      meta: { version: previousVersion },
       data: {
-        MultichainTransactionsController: 'not an object',
+        PreferencesController: 'not-an-object',
       },
     };
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
+    const expectedVersionedData = {
+      meta: { version: expectedVersion },
+      data: oldVersionedData.data,
+    };
+
+    const newVersionedData = await migrate(oldVersionedData);
+    expect(newVersionedData).toStrictEqual(expectedVersionedData);
   });
 
-  it('does nothing if nonEvmTransactions is not an object', async () => {
-    const oldStorage = {
-      meta: { version: version - 1 },
+  it('does nothing if state.PreferencesController has no shouldShowAggregatedBalancePopover property', async () => {
+    const oldVersionedData = {
+      meta: { version: previousVersion },
       data: {
-        MultichainTransactionsController: {
-          nonEvmTransactions: 'not an object',
-        },
+        PreferencesController: {},
       },
     };
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
+    const expectedVersionedData = {
+      meta: { version: expectedVersion },
+      data: oldVersionedData.data,
+    };
+
+    const newVersionedData = await migrate(oldVersionedData);
+    expect(newVersionedData).toStrictEqual(expectedVersionedData);
   });
 
-  it('migrates transactions to the new structure with chainId nesting', async () => {
-    const mockTransaction = { id: '123', type: 'send' };
-    const oldStorage = {
-      meta: { version: version - 1 },
+  it('deletes state.PreferencesController.shouldShowAggregatedBalancePopover property if it is found', async () => {
+    const oldVersionedData = {
+      meta: { version: previousVersion },
       data: {
-        MultichainTransactionsController: {
-          nonEvmTransactions: {
-            'account 1': {
-              transactions: [mockTransaction],
-              next: null,
-              lastUpdated: 1234567890,
-            },
-            'account 2': {
-              transactions: [],
-              next: null,
-              lastUpdated: 9876543210,
-            },
-          },
+        PreferencesController: {
+          shouldShowAggregatedBalancePopover: true,
         },
       },
     };
-
-    const expectedData = {
-      MultichainTransactionsController: {
-        nonEvmTransactions: {
-          'account 1': {
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-              transactions: [mockTransaction],
-              next: null,
-              lastUpdated: 1234567890,
-            },
-          },
-          'account 2': {
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-              transactions: [],
-              next: null,
-              lastUpdated: 9876543210,
-            },
-          },
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual(expectedData);
-  });
-
-  it('skips accounts that already have the new structure', async () => {
-    const mockTransaction = { id: '123', type: 'send' };
-    const oldStorage = {
-      meta: { version: version - 1 },
+    const expectedVersionedData = {
+      meta: { version: expectedVersion },
       data: {
-        MultichainTransactionsController: {
-          nonEvmTransactions: {
-            'account 1': {
-              transactions: [mockTransaction],
-              next: null,
-              lastUpdated: 1234567890,
-            },
-            'account 2': {
-              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-                transactions: [],
-                next: null,
-                lastUpdated: 9876543210,
-              },
-            },
-          },
-        },
+        PreferencesController: {},
       },
     };
 
-    const expectedData = {
-      MultichainTransactionsController: {
-        nonEvmTransactions: {
-          'account 1': {
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-              transactions: [mockTransaction],
-              next: null,
-              lastUpdated: 1234567890,
-            },
-          },
-          'account 2': {
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-              transactions: [],
-              next: null,
-              lastUpdated: 9876543210,
-            },
-          },
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual(expectedData);
+    const newVersionedData = await migrate(oldVersionedData);
+    expect(newVersionedData).toStrictEqual(expectedVersionedData);
   });
 });

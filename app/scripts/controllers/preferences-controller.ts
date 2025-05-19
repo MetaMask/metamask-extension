@@ -105,7 +105,6 @@ export type Preferences = {
     sortCallback: string;
   };
   tokenNetworkFilter: Record<string, boolean>;
-  shouldShowAggregatedBalancePopover: boolean;
   dismissSmartAccountSuggestionEnabled: boolean;
 };
 
@@ -194,7 +193,6 @@ export const getDefaultPreferencesControllerState =
       showConfirmationAdvancedDetails: false,
       showMultiRpcModal: false,
       privacyMode: false,
-      shouldShowAggregatedBalancePopover: true, // by default user should see popover;
       dismissSmartAccountSuggestionEnabled: false,
       tokenSortConfig: {
         key: 'tokenFiatAmount',

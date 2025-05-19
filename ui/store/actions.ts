@@ -650,18 +650,25 @@ export function connectHardware(
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid
       ) {
-        const connectedDevices = await window.navigator.hid.requestDevice({
-          // The types for web hid were provided by @types/w3c-web-hid and may
-          // not be fully formed or correct, because LEDGER_USB_VENDOR_ID is a
-          // string and this integration with Navigator.hid works before
-          // TypeScript. As a note, on the next declaration we convert the
-          // LEDGER_USB_VENDOR_ID to a number for a different API so....
-          // TODO: Get David Walsh's opinion here
-          filters: [{ vendorId: LEDGER_USB_VENDOR_ID as unknown as number }],
-        });
-        const userApprovedWebHidConnection = connectedDevices.some(
-          (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
-        );
+        const inE2eTest =
+          process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';
+        let connectedDevices: HIDDevice[] = [];
+        if (!inE2eTest) {
+          connectedDevices = await window.navigator.hid.requestDevice({
+            // The types for web hid were provided by @types/w3c-web-hid and may
+            // not be fully formed or correct, because LEDGER_USB_VENDOR_ID is a
+            // string and this integration with Navigator.hid works before
+            // TypeScript. As a note, on the next declaration we convert the
+            // LEDGER_USB_VENDOR_ID to a number for a different API so....
+            // TODO: Get David Walsh's opinion here
+            filters: [{ vendorId: LEDGER_USB_VENDOR_ID as unknown as number }],
+          });
+        }
+        const userApprovedWebHidConnection =
+          inE2eTest ||
+          connectedDevices.some(
+            (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
+          );
         if (!userApprovedWebHidConnection) {
           throw new Error(t('ledgerWebHIDNotConnectedErrorMessage'));
         }
@@ -3355,14 +3362,6 @@ export function setHideZeroBalanceTokens(value: boolean) {
 
 export function setShowFiatConversionOnTestnetsPreference(value: boolean) {
   return setPreference('showFiatInTestnets', value);
-}
-
-/**
- * Sets shouldShowAggregatedBalancePopover to false once the user toggles
- * the setting to show native token as main balance.
- */
-export function setAggregatedBalancePopoverShown() {
-  return setPreference('shouldShowAggregatedBalancePopover', false);
 }
 
 export function setShowTestNetworks(value: boolean) {
