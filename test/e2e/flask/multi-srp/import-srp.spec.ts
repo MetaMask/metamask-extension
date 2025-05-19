@@ -1,7 +1,6 @@
 import * as assert from 'assert';
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
-import { until } from 'selenium-webdriver';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures, WALLET_PASSWORD as testPassword } from '../../helpers';
@@ -86,13 +85,7 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.check_pageIsLoaded();
 
-        await accountListPage.openAddAccountModal();
-
-        const importSrpButtonSelector = {
-          text: 'Secret Recovery Phrase',
-          tag: 'button',
-        };
-        await driver.clickElement(importSrpButtonSelector);
+        await accountListPage.openImportSrpModal();
 
         const firstSrpInputSelector = '#import-srp__multi-srp__srp-word-0';
         await driver.waitForSelector(firstSrpInputSelector);
@@ -104,13 +97,11 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
           'label[for="import-srp__multi-srp__srp-word-1-checkbox"]';
 
         const firstSrpInput = await driver.findElement(firstSrpInputSelector);
-        const firstSrpToggle = await driver.findElement(firstSrpToggleSelector);
         const secondSrpInput = await driver.findElement(secondSrpInputSelector);
-        const secondSrpToggle = await driver.findElement(
-          secondSrpToggleSelector,
-        );
 
-        await driver.driver.wait(until.elementIsEnabled(firstSrpToggle), 5000);
+        await driver.waitForSelector(firstSrpToggleSelector, {
+          state: 'enabled',
+        });
 
         assert.strictEqual(
           await firstSrpInput.getAttribute('type'),
@@ -143,7 +134,9 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
           'First SRP input value should match typed word',
         );
 
-        await driver.driver.wait(until.elementIsEnabled(secondSrpToggle), 5000);
+        await driver.waitForSelector(secondSrpToggleSelector, {
+          state: 'enabled',
+        });
         await driver.clickElement(secondSrpToggleSelector);
 
         assert.strictEqual(
@@ -157,7 +150,9 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
           'Second SRP input type should be text after its toggle',
         );
 
-        await driver.driver.wait(until.elementIsEnabled(firstSrpToggle), 5000);
+        await driver.waitForSelector(firstSrpToggleSelector, {
+          state: 'enabled',
+        });
         await driver.clickElement(firstSrpToggleSelector);
         assert.strictEqual(
           await firstSrpInput.getAttribute('type'),
