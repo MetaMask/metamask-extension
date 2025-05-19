@@ -44,9 +44,9 @@ async function mockSegment(mockServer: Mockttp) {
         batch: [{ type: 'track', event: 'Wallet Password Created' }],
       })
       .thenCallback(() => {
-      return {
-        statusCode: 200,
-      };
+        return {
+          statusCode: 200,
+        };
     }),
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
@@ -155,6 +155,7 @@ describe('Wallet Created Events', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'fullscreen',
+          hd_entropy_index: 0,
         });
         assert.deepStrictEqual(events[3].properties, {
           category: 'Onboarding',
