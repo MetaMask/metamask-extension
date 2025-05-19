@@ -216,13 +216,21 @@ export function getMultichainNetwork(
 
   let nonEvmNetwork: MultichainProviderConfig | undefined;
 
-  if (selectedChainId) {
+  // First try to find a network that matches the account's scope
+  if (selectedAccount.scopes.length > 0) {
+    nonEvmNetwork = nonEvmNetworks.find((provider) =>
+      selectedAccount.scopes.includes(provider.chainId),
+    );
+  }
+
+  // If no network found by scope, try the selected chain ID
+  if (!nonEvmNetwork && selectedChainId) {
     nonEvmNetwork = nonEvmNetworks.find(
       (provider) => provider.chainId === selectedChainId,
     );
   }
 
-  // If no network found by chain ID we fallback to the compatibility check
+  // If still no network found, fallback to compatibility check
   if (!nonEvmNetwork) {
     nonEvmNetwork = nonEvmNetworks.find((provider) => {
       return provider.isAddressCompatible(selectedAccount.address);
@@ -236,7 +244,6 @@ export function getMultichainNetwork(
   }
 
   return {
-    // TODO: Adapt this for other non-EVM networks
     nickname: nonEvmNetwork.nickname,
     isEvmNetwork: false,
     chainId: nonEvmNetwork?.chainId,
@@ -393,7 +400,12 @@ export function getMultichainIsMainnet(
   const mainnet = (
     MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET as Record<string, string>
   )[selectedAccount.type];
-  return providerConfig.chainId === mainnet ?? false;
+
+  if (!mainnet) {
+    return false;
+  }
+
+  return providerConfig.chainId === mainnet;
 }
 
 export function getMultichainIsTestnet(
