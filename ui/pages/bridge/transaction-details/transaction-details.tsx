@@ -5,7 +5,7 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import type { EvmNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { formatChainIdToHex, StatusTypes } from '@metamask/bridge-controller';
-import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import { getIsDelayed, type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -127,26 +127,6 @@ const getBridgeAmountReceivedFormatted = ({
   return formatAmount(
     locale,
     new BigNumber(destAmount).dividedBy(10 ** destAssetDecimals),
-  );
-};
-
-/**
- * @param status - The status of the bridge history item
- * @param bridgeHistoryItem - The bridge history item
- * @returns Whether the bridge history item is delayed
- */
-export const getIsDelayed = (
-  status: StatusTypes,
-  bridgeHistoryItem?: BridgeHistoryItem,
-) => {
-  const tenMinutesInMs = 10 * MINUTE;
-  return Boolean(
-    status === StatusTypes.PENDING &&
-      bridgeHistoryItem?.startTime &&
-      Date.now() >
-        bridgeHistoryItem.startTime +
-          tenMinutesInMs +
-          bridgeHistoryItem.estimatedProcessingTimeInSeconds * 1000,
   );
 };
 

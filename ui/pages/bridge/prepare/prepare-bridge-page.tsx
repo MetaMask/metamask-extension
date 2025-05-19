@@ -88,10 +88,6 @@ import {
   formatTokenAmount,
   isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
 } from '../utils/quote';
-import {
-  CrossChainSwapsEventProperties,
-  useCrossChainSwapsEventTracker,
-} from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
@@ -246,9 +242,6 @@ const PrepareBridgePage = () => {
       ? selectedDestinationAccount.id
       : undefined,
   );
-
-  const { flippedRequestProperties } = useRequestProperties();
-  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
   const millisecondsUntilNextRefresh = useCountdownTimer();
 
@@ -409,18 +402,6 @@ const PrepareBridgePage = () => {
     });
   }, [quoteParams, debouncedUpdateQuoteRequestInController]);
 
-  const trackInputEvent = useCallback(
-    (
-      properties: CrossChainSwapsEventProperties[MetaMetricsEventName.InputChanged],
-    ) => {
-      trackCrossChainSwapsEvent({
-        event: MetaMetricsEventName.InputChanged,
-        properties,
-      });
-    },
-    [],
-  );
-
   const { search } = useLocation();
   const history = useHistory();
 
@@ -548,22 +529,11 @@ const PrepareBridgePage = () => {
             if (token.address === toToken?.address) {
               dispatch(setToToken(null));
             }
-            bridgeToken.address &&
-              trackInputEvent({
-                input: 'token_source',
-                value: bridgeToken.address,
-              });
           }}
           networkProps={{
             network: fromChain,
             networks: isSwap ? undefined : fromChains,
             onNetworkChange: (networkConfig) => {
-              networkConfig?.chainId &&
-                networkConfig.chainId !== fromChain?.chainId &&
-                trackInputEvent({
-                  input: 'chain_source',
-                  value: networkConfig.chainId,
-                });
               if (
                 networkConfig?.chainId &&
                 networkConfig.chainId === toChain?.chainId
@@ -690,11 +660,6 @@ const PrepareBridgePage = () => {
                     ),
                   );
                 setRotateSwitchTokens(!rotateSwitchTokens);
-                flippedRequestProperties &&
-                  trackCrossChainSwapsEvent({
-                    event: MetaMetricsEventName.InputSourceDestinationFlipped,
-                    properties: flippedRequestProperties,
-                  });
                 if (!isSwap) {
                   // Only flip networks if bridging
                   const toChainClientId =
@@ -734,11 +699,6 @@ const PrepareBridgePage = () => {
                 ...token,
                 address: token.address ?? zeroAddress(),
               };
-              bridgeToken.address &&
-                trackInputEvent({
-                  input: 'token_destination',
-                  value: bridgeToken.address,
-                });
               dispatch(setToToken(bridgeToken));
             }}
             networkProps={
@@ -748,11 +708,6 @@ const PrepareBridgePage = () => {
                     network: toChain,
                     networks: toChains,
                     onNetworkChange: (networkConfig) => {
-                      networkConfig.chainId !== toChain?.chainId &&
-                        trackInputEvent({
-                          input: 'chain_destination',
-                          value: networkConfig.chainId,
-                        });
                       dispatch(setToChainId(networkConfig.chainId));
                       const destNativeAsset = getNativeAssetForChainId(
                         networkConfig.chainId,

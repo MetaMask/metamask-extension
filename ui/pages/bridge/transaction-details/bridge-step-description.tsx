@@ -61,47 +61,6 @@ const getBridgeActionText = (
     : t('bridgeStepActionBridgePending', [destSymbol, destChainName]);
 };
 
-const getBridgeActionStatus = (bridgeHistoryItem: BridgeHistoryItem) => {
-  return bridgeHistoryItem.status ? bridgeHistoryItem.status.status : null;
-};
-
-/**
- * swap actions can have step.srcChainId === step.destChainId, and can occur on
- * EITHER the quote.srcChainId or the quote.destChainId
- * Despite not having any actual timestamp,we can infer the status of the swap action
- * based on the status of the source chain tx if srcChainId and destChainId are the same*
- *
- * @param bridgeHistoryItem
- * @param step
- * @param srcChainTxMeta
- */
-const getSwapActionStatus = (
-  bridgeHistoryItem: BridgeHistoryItem,
-  step: Step,
-  srcChainTxMeta?: TransactionMeta,
-) => {
-  const isSrcAndDestChainSame = step.srcChainId === step.destChainId;
-  const isSwapOnSrcChain =
-    step.srcChainId === bridgeHistoryItem.quote.srcChainId;
-
-  if (isSrcAndDestChainSame && isSwapOnSrcChain) {
-    // if the swap action is on the src chain (i.e. step.srcChainId === step.destChainId === bridgeHistoryItem.quote.srcChainId),
-    // we check the source chain tx status, since we know when it's confirmed
-    const isSrcChainTxConfirmed =
-      srcChainTxMeta?.status === TransactionStatus.confirmed;
-    return isSrcChainTxConfirmed ? StatusTypes.COMPLETE : StatusTypes.PENDING;
-  }
-  // if the swap action is on the dest chain, we check the bridgeHistoryItem.status,
-  // since we don't know when the dest tx is confirmed
-  if (srcChainTxMeta?.status === TransactionStatus.confirmed) {
-    return bridgeHistoryItem.status ? bridgeHistoryItem.status.status : null;
-  }
-
-  // If the source chain tx is not confirmed, we know the swap hasn't started
-  // use null to represent this as we don't have an equivalent in StatusTypes
-  return null;
-};
-
 const getSwapActionText = (
   t: I18nFunction,
   status: StatusTypes | null,
@@ -117,28 +76,6 @@ const getSwapActionText = (
   return status === StatusTypes.COMPLETE
     ? t('bridgeStepActionSwapComplete', [srcSymbol, destSymbol])
     : t('bridgeStepActionSwapPending', [srcSymbol, destSymbol]);
-};
-
-export const getStepStatus = ({
-  bridgeHistoryItem,
-  step,
-  srcChainTxMeta,
-}: {
-  bridgeHistoryItem?: BridgeHistoryItem;
-  step: Step;
-  srcChainTxMeta?: TransactionMeta;
-}) => {
-  if (!bridgeHistoryItem) {
-    return StatusTypes.UNKNOWN;
-  }
-
-  if (step.action === ActionTypes.SWAP) {
-    return getSwapActionStatus(bridgeHistoryItem, step, srcChainTxMeta);
-  } else if (step.action === ActionTypes.BRIDGE) {
-    return getBridgeActionStatus(bridgeHistoryItem);
-  }
-
-  return StatusTypes.UNKNOWN;
 };
 
 type BridgeStepProps = {

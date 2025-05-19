@@ -1,7 +1,9 @@
-import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
+import {
+  type BridgeHistoryItem,
+  getIsDelayed,
+} from '@metamask/bridge-status-controller';
 import { MINUTE } from '../../../../shared/constants/time';
-import { getIsDelayed } from './transaction-details';
 
 describe('transaction-details', () => {
   describe('getIsDelayed', () => {
