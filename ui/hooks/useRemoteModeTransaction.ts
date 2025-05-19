@@ -1,9 +1,8 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { getSelectedInternalAccount } from '../selectors';
 import { useSelector } from 'react-redux';
-import { isRemoteModeSupported } from '../helpers/utils/remote-mode';
-import { getIsRemoteModeEnabled } from '../selectors/remote-mode';
 import { useMemo } from 'react';
+import { getSelectedInternalAccount } from '../selectors';
+import { REDEEM_DELEGATIONS_SELECTOR } from '../../shared/lib/delegation/delegation';
 
 export const useRemoteModeTransaction = ({
   transaction,
@@ -11,35 +10,22 @@ export const useRemoteModeTransaction = ({
   transaction: TransactionMeta;
 }) => {
   const selectedInternalAccount = useSelector(getSelectedInternalAccount);
-  const isAccountRemoteModeSupported = isRemoteModeSupported(
-    selectedInternalAccount,
-  );
-  const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
 
   const isRemoteModeTransaction = useMemo(() => {
-    if (!isRemoteModeEnabled || !isAccountRemoteModeSupported) {
-      return false;
-    }
     return (
+      transaction.txParams.data?.startsWith(REDEEM_DELEGATIONS_SELECTOR) &&
+      transaction.txParamsOriginal?.from !== transaction.txParams.from &&
       transaction.txParamsOriginal?.from === selectedInternalAccount.address
     );
-  }, [
-    isAccountRemoteModeSupported,
-    isRemoteModeEnabled,
-    transaction,
-    selectedInternalAccount.address,
-  ]);
+  }, [transaction, selectedInternalAccount.address]);
 
   const isRemoteModeGasTransaction = useMemo(() => {
-    if (!isRemoteModeEnabled) {
-      return false;
-    }
     const hasTxParamsOriginal = transaction.txParamsOriginal !== undefined;
     const isHotWallet =
       transaction.txParamsOriginal?.from !== selectedInternalAccount.address &&
       transaction.txParams?.from === selectedInternalAccount.address;
     return hasTxParamsOriginal && isHotWallet;
-  }, [isRemoteModeEnabled, transaction, selectedInternalAccount.address]);
+  }, [transaction, selectedInternalAccount.address]);
 
   return {
     isRemoteModeTransaction,
