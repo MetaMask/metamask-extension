@@ -12,7 +12,7 @@ import {
 import {
   enableNotificationsThroughCTA,
   enableNotificationsThroughSettingsPage,
-  assertMainNotificationSettingsToggles
+  assertMainNotificationSettingsToggles,
 } from '../../page-objects/flows/notifications.flow';
 import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
 import { Driver } from '../../webdriver/driver';
@@ -74,8 +74,9 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
           await completeOnboardFlowIdentity(driver);
           await enableNotificationsThroughCTA(driver);
           await assertMainNotificationSettingsToggles(driver);
-          const notificationsSettingsPage =
-            await assertAllAccountsEnabled(driver);
+          const notificationsSettingsPage = await assertAllAccountsEnabled(
+            driver,
+          );
 
           // Switch off address 2 and product notifications toggle
           await notificationsSettingsPage.clickNotificationToggle({
