@@ -4022,7 +4022,6 @@ describe('MetaMaskController', () => {
         );
       });
 
-      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
       it('discovers and creates Solana accounts through KeyringInternalSnapClient when importing a mnemonic', async () => {
         const password = 'what-what-what';
         jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
@@ -4092,7 +4091,6 @@ describe('MetaMaskController', () => {
           entropySource: expect.any(String),
         });
       });
-      ///: END:ONLY_INCLUDE_IF
     });
 
     describe('NetworkController state', () => {
