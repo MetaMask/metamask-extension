@@ -47,4 +47,23 @@ export class CallbackProcessor {
       this.currentMessageId = 0;
     }
   }
+
+  throwCloseAppError() {
+    if (this.messageCallbacks.has(this.currentMessageId)) {
+      const callback = this.messageCallbacks.get(this.currentMessageId);
+      // This if block should always be true given that we used the has method
+      // to check for the existence. However, typescript does not know that and
+      // rather than use a non-null assertion this is a safer way to handle it.
+      if (callback) {
+        // Delete the message callback as once its processed it should not
+        // receive additional data and can be gargabe collected.
+        this.messageCallbacks.delete(this.currentMessageId);
+
+        return callback({
+          error: 'ledger-bridge-close received',
+        });
+      }
+    }
+    return null;
+  }
 }

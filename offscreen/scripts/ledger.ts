@@ -1,3 +1,4 @@
+import { Length } from './../../ui/components/component-library/sensitive-text/sensitive-text.stories';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
@@ -5,6 +6,7 @@ import {
   KnownOrigins,
 } from '../../shared/constants/offscreen-communication';
 import { CallbackProcessor } from './callback-processor';
+import { throws } from 'assert';
 
 const LEDGER_FRAME_TARGET = 'LEDGER-IFRAME';
 
@@ -66,7 +68,10 @@ function setupMessageListeners() {
         console.log('ledger-bridge-close', data);
         browserTab = null;
         isBrowserTabOnline = false;
-        callbackProcessor.resetCurrentMessageId();
+        if (callbackProcessor.messageCallbacks.size > 0) {
+          callbackProcessor.throwCloseAppError();
+          callbackProcessor.resetCurrentMessageId();
+        }
 
         return;
       }

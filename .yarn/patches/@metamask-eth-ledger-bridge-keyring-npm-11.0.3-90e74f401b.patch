@@ -1,49 +1,1252 @@
 diff --git a/dist/ledger-keyring.cjs b/dist/ledger-keyring.cjs
-index b8bdf04a3de250bcdbe1064382682bc18f460cbc..9f8e5d625c04bed8132e5e824bffcf98a505b78d 100644
+index b8bdf04a3de250bcdbe1064382682bc18f460cbc..c9c8bf4e149d9aa6e38a5263a6b110ffd287a9de 100644
 --- a/dist/ledger-keyring.cjs
 +++ b/dist/ledger-keyring.cjs
-@@ -277,6 +277,12 @@ class LedgerKeyring {
-             });
-         }
-         catch (error) {
-+             /**********
-+            * Patch for error handling for Device Management kit
-+            **********/
-+            if (error?.errorCode === "6985" && error?.message === 'Condition not satisfied') {
-+                throw new Error('Ledger: User rejected the transaction');
+@@ -1,13 +1,44 @@
+ "use strict";
+-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+-};
+-var __importDefault = (this && this.__importDefault) || function (mod) {
+-    return (mod && mod.__esModule) ? mod : { "default": mod };
+-};
+-var _LedgerKeyring_instances, _LedgerKeyring_migrateAccountDetails, _LedgerKeyring_signTransaction, _LedgerKeyring_getPage, _LedgerKeyring_getAccountsBIP44, _LedgerKeyring_getAccountsLegacy, _LedgerKeyring_addressFromIndex, _LedgerKeyring_pathFromAddress, _LedgerKeyring_getPathForIndex, _LedgerKeyring_isLedgerLiveHdPath, _LedgerKeyring_toLedgerPath, _LedgerKeyring_hasPreviousTransactions, _LedgerKeyring_getApiUrl, _LedgerKeyring_getChecksumHexAddress;
++var __classPrivateFieldGet =
++  (this && this.__classPrivateFieldGet) ||
++  function (receiver, state, kind, f) {
++    if (kind === "a" && !f)
++      throw new TypeError("Private accessor was defined without a getter");
++    if (
++      typeof state === "function"
++        ? receiver !== state || !f
++        : !state.has(receiver)
++    )
++      throw new TypeError(
++        "Cannot read private member from an object whose class did not declare it"
++      );
++    return kind === "m"
++      ? f
++      : kind === "a"
++      ? f.call(receiver)
++      : f
++      ? f.value
++      : state.get(receiver);
++  };
++var __importDefault =
++  (this && this.__importDefault) ||
++  function (mod) {
++    return mod && mod.__esModule ? mod : { default: mod };
++  };
++var _LedgerKeyring_instances,
++  _LedgerKeyring_migrateAccountDetails,
++  _LedgerKeyring_signTransaction,
++  _LedgerKeyring_getPage,
++  _LedgerKeyring_getAccountsBIP44,
++  _LedgerKeyring_getAccountsLegacy,
++  _LedgerKeyring_addressFromIndex,
++  _LedgerKeyring_pathFromAddress,
++  _LedgerKeyring_getPathForIndex,
++  _LedgerKeyring_isLedgerLiveHdPath,
++  _LedgerKeyring_toLedgerPath,
++  _LedgerKeyring_hasPreviousTransactions,
++  _LedgerKeyring_getApiUrl,
++  _LedgerKeyring_getChecksumHexAddress;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.LedgerKeyring = void 0;
+ const rlp_1 = require("@ethereumjs/rlp");
+@@ -17,17 +48,17 @@ const eth_sig_util_1 = require("@metamask/eth-sig-util");
+ const utils_1 = require("@metamask/utils");
+ const buffer_1 = require("buffer");
+ const hdkey_1 = __importDefault(require("hdkey"));
+-const pathBase = 'm';
++const pathBase = "m";
+ const hdPathString = `${pathBase}/44'/60'/0'`;
+-const keyringType = 'Ledger Hardware';
++const keyringType = "Ledger Hardware";
+ // This number causes one of our failing tests to run very slowly, as the for loop needs to iterate 1000 times.
+ const MAX_INDEX = 1000;
+ var NetworkApiUrls;
+ (function (NetworkApiUrls) {
+-    NetworkApiUrls["Ropsten"] = "https://api-ropsten.etherscan.io";
+-    NetworkApiUrls["Kovan"] = "https://api-kovan.etherscan.io";
+-    NetworkApiUrls["Rinkeby"] = "https://api-rinkeby.etherscan.io";
+-    NetworkApiUrls["Mainnet"] = "https://api.etherscan.io";
++  NetworkApiUrls["Ropsten"] = "https://api-ropsten.etherscan.io";
++  NetworkApiUrls["Kovan"] = "https://api-kovan.etherscan.io";
++  NetworkApiUrls["Rinkeby"] = "https://api-rinkeby.etherscan.io";
++  NetworkApiUrls["Mainnet"] = "https://api.etherscan.io";
+ })(NetworkApiUrls || (NetworkApiUrls = {}));
+ /**
+  * Check if the given transaction is made with ethereumjs-tx or @ethereumjs/tx
+@@ -43,471 +74,737 @@ var NetworkApiUrls;
+  * @returns Returns `true` if tx is an old-style ethereumjs-tx transaction.
+  */
+ function isOldStyleEthereumjsTx(tx) {
+-    return 'getChainId' in tx && typeof tx.getChainId === 'function';
++  return "getChainId" in tx && typeof tx.getChainId === "function";
+ }
+ class LedgerKeyring {
+-    constructor({ bridge }) {
+-        _LedgerKeyring_instances.add(this);
+-        this.deviceId = '';
+-        this.type = keyringType;
+-        this.page = 0;
+-        this.perPage = 5;
+-        this.unlockedAccount = 0;
+-        this.accounts = [];
+-        this.accountDetails = {};
+-        this.hdk = new hdkey_1.default();
+-        this.hdPath = hdPathString;
+-        this.paths = {};
+-        this.network = NetworkApiUrls.Mainnet;
+-        this.implementFullBIP44 = false;
+-        if (!bridge) {
+-            throw new Error('Bridge is a required dependency for the keyring');
+-        }
+-        this.bridge = bridge;
+-    }
+-    async init() {
+-        return this.bridge.init();
+-    }
+-    async destroy() {
+-        return this.bridge.destroy();
+-    }
+-    async serialize() {
+-        return {
+-            hdPath: this.hdPath,
+-            accounts: this.accounts.slice(),
+-            deviceId: this.deviceId,
+-            accountDetails: this.accountDetails,
+-            implementFullBIP44: false,
+-        };
+-    }
+-    async deserialize(opts) {
+-        this.hdPath = opts.hdPath ?? hdPathString;
+-        this.accounts = opts.accounts ?? [];
+-        this.deviceId = opts.deviceId ?? '';
+-        this.accountDetails = opts.accountDetails ?? {};
+-        if (!opts.accountDetails) {
+-            __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_migrateAccountDetails).call(this, opts);
+-        }
+-        this.implementFullBIP44 = opts.implementFullBIP44 ?? false;
+-        const keys = new Set(Object.keys(this.accountDetails));
+-        // Remove accounts that don't have corresponding account details
+-        this.accounts = this.accounts.filter((account) => keys.has(__classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getChecksumHexAddress).call(this, account)));
+-        return Promise.resolve();
+-    }
+-    setDeviceId(deviceId) {
+-        this.deviceId = deviceId;
+-    }
+-    getDeviceId() {
+-        return this.deviceId;
+-    }
+-    isUnlocked() {
+-        return Boolean(this.hdk.publicKey);
+-    }
+-    isConnected() {
+-        return this.bridge.isDeviceConnected;
+-    }
+-    setAccountToUnlock(index) {
+-        this.unlockedAccount = index;
+-    }
+-    setHdPath(hdPath) {
+-        // Reset HDKey if the path changes
+-        if (this.hdPath !== hdPath) {
+-            this.hdk = new hdkey_1.default();
+-        }
+-        this.hdPath = hdPath;
+-    }
+-    async unlock(hdPath, updateHdk = true) {
+-        if (this.isUnlocked() && !hdPath) {
+-            // if the device is already unlocked and no path is provided,
+-            // we return the checksummed address of the public key stored in
+-            // `this.hdk`, which is the root address of the last unlocked path.
+-            return __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getChecksumHexAddress).call(this, (0, utils_1.bytesToHex)((0, util_1.publicToAddress)(this.hdk.publicKey, true)));
+-        }
+-        const path = hdPath ? __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_toLedgerPath).call(this, hdPath) : this.hdPath;
+-        let payload;
+-        try {
+-            payload = await this.bridge.getPublicKey({
+-                hdPath: path,
+-            });
+-        }
+-        catch (error) {
+-            throw error instanceof Error
+-                ? error
+-                : new Error('Ledger Ethereum app closed. Open it to unlock.');
+-        }
+-        if (updateHdk && payload.chainCode) {
+-            this.hdk.publicKey = buffer_1.Buffer.from(payload.publicKey, 'hex');
+-            this.hdk.chainCode = buffer_1.Buffer.from(payload.chainCode, 'hex');
+-        }
+-        return (0, utils_1.add0x)(payload.address);
+-    }
+-    async addAccounts(amount) {
+-        return new Promise((resolve, reject) => {
+-            this.unlock()
+-                .then(async (_) => {
+-                const from = this.unlockedAccount;
+-                const to = from + amount;
+-                const newAccounts = [];
+-                for (let i = from; i < to; i++) {
+-                    const path = __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getPathForIndex).call(this, i);
+-                    let address;
+-                    if (__classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_isLedgerLiveHdPath).call(this)) {
+-                        address = await this.unlock(path);
+-                    }
+-                    else {
+-                        address = __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_addressFromIndex).call(this, pathBase, i);
+-                    }
+-                    this.accountDetails[__classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getChecksumHexAddress).call(this, address)] = {
+-                        // TODO: consider renaming this property, as the current name is misleading
+-                        // It's currently used to represent whether an account uses the Ledger Live path.
+-                        bip44: __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_isLedgerLiveHdPath).call(this),
+-                        hdPath: path,
+-                    };
+-                    if (!this.accounts.includes(address)) {
+-                        this.accounts = [...this.accounts, address];
+-                        newAccounts.push(address);
+-                    }
+-                    this.page = 0;
+-                }
+-                resolve(newAccounts);
+-            })
+-                .catch(reject);
+-        });
+-    }
+-    getName() {
+-        return keyringType;
+-    }
+-    async getFirstPage() {
+-        this.page = 0;
+-        return __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getPage).call(this, 1);
+-    }
+-    async getNextPage() {
+-        return __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getPage).call(this, 1);
+-    }
+-    async getPreviousPage() {
+-        return __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getPage).call(this, -1);
+-    }
+-    async getAccounts() {
+-        return Promise.resolve(this.accounts.slice());
+-    }
+-    removeAccount(address) {
+-        const filteredAccounts = this.accounts.filter((a) => a.toLowerCase() !== address.toLowerCase());
+-        if (filteredAccounts.length === this.accounts.length) {
+-            throw new Error(`Address ${address} not found in this keyring`);
+-        }
+-        this.accounts = filteredAccounts;
+-        delete this.accountDetails[__classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getChecksumHexAddress).call(this, address)];
+-    }
+-    async attemptMakeApp() {
+-        return this.bridge.attemptMakeApp();
+-    }
+-    async updateTransportMethod(transportType) {
+-        return this.bridge.updateTransportMethod(transportType);
+-    }
+-    // tx is an instance of the ethereumjs-transaction class.
+-    async signTransaction(address, tx) {
+-        let rawTxHex;
+-        // transactions built with older versions of ethereumjs-tx have a
+-        // getChainId method that newer versions do not. Older versions are mutable
+-        // while newer versions default to being immutable. Expected shape and type
+-        // of data for v, r and s differ (Buffer (old) vs BN (new))
+-        if (isOldStyleEthereumjsTx(tx)) {
+-            // In this version of ethereumjs-tx we must add the chainId in hex format
+-            // to the initial v value. The chainId must be included in the serialized
+-            // transaction which is only communicated to ethereumjs-tx in this
+-            // value. In newer versions the chainId is communicated via the 'Common'
+-            // object.
+-            tx.v = tx.getChainId();
+-            // @ts-expect-error tx.r should be a Buffer, but we are assigning a string
+-            tx.r = '0x00';
+-            // @ts-expect-error tx.s should be a Buffer, but we are assigning a string
+-            tx.s = '0x00';
+-            rawTxHex = tx.serialize().toString('hex');
+-            return __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_signTransaction).call(this, address, rawTxHex, (payload) => {
+-                tx.v = buffer_1.Buffer.from(payload.v, 'hex');
+-                tx.r = buffer_1.Buffer.from(payload.r, 'hex');
+-                tx.s = buffer_1.Buffer.from(payload.s, 'hex');
+-                return tx;
+-            });
+-        }
+-        // The below `encode` call is only necessary for legacy transactions, as `getMessageToSign`
+-        // calls `rlp.encode` internally for non-legacy transactions. As per the "Transaction Execution"
+-        // section of the ethereum yellow paper, transactions need to be "well-formed RLP, with no additional
+-        // trailing bytes".
+-        // Note also that `getMessageToSign` will return valid RLP for all transaction types, whereas the
+-        // `serialize` method will not for any transaction type except legacy. This is because `serialize` includes
+-        // empty r, s and v values in the encoded rlp. This is why we use `getMessageToSign` here instead of `serialize`.
+-        const messageToSign = tx.getMessageToSign();
+-        rawTxHex = Array.isArray(messageToSign)
+-            ? buffer_1.Buffer.from(rlp_1.RLP.encode(messageToSign)).toString('hex')
+-            : (0, utils_1.bytesToHex)(messageToSign);
+-        return __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_signTransaction).call(this, address, rawTxHex, (payload) => {
+-            // Because tx will be immutable, first get a plain javascript object that
+-            // represents the transaction. Using txData here as it aligns with the
+-            // nomenclature of ethereumjs/tx.
+-            const txData = tx.toJSON();
+-            // The fromTxData utility expects a type to support transactions with a type other than 0
+-            txData.type = tx.type;
+-            // The fromTxData utility expects v,r and s to be hex prefixed
+-            txData.v = (0, utils_1.add0x)(payload.v);
+-            txData.r = (0, utils_1.add0x)(payload.r);
+-            txData.s = (0, utils_1.add0x)(payload.s);
+-            // Adopt the 'common' option from the original transaction and set the
+-            // returned object to be frozen if the original is frozen.
+-            return tx_1.TransactionFactory.fromTxData(txData, {
+-                common: tx.common,
+-                freeze: Object.isFrozen(tx),
+-            });
+-        });
+-    }
+-    async signMessage(withAccount, data) {
+-        return this.signPersonalMessage(withAccount, data);
+-    }
+-    // For personal_sign, we need to prefix the message:
+-    async signPersonalMessage(withAccount, message) {
+-        const hdPath = await this.unlockAccountByAddress(withAccount);
+-        if (!hdPath) {
+-            throw new Error('Ledger: Unknown error while signing message');
+-        }
+-        let payload;
+-        try {
+-            payload = await this.bridge.deviceSignMessage({
+-                hdPath,
+-                message: (0, utils_1.remove0x)(message),
+-            });
+-        }
+-        catch (error) {
+-            throw error instanceof Error
+-                ? error
+-                : new Error('Ledger: Unknown error while signing message');
+-        }
+-        let modifiedV = parseInt(String(payload.v), 10).toString(16);
+-        if (modifiedV.length < 2) {
+-            modifiedV = `0${modifiedV}`;
+-        }
+-        const signature = `0x${payload.r}${payload.s}${modifiedV}`;
+-        const addressSignedWith = (0, eth_sig_util_1.recoverPersonalSignature)({
+-            data: message,
+-            signature,
+-        });
+-        if (__classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getChecksumHexAddress).call(this, addressSignedWith) !==
+-            __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getChecksumHexAddress).call(this, withAccount)) {
+-            throw new Error('Ledger: The signature doesnt match the right address');
+-        }
+-        return signature;
+-    }
+-    async unlockAccountByAddress(address) {
+-        const checksummedAddress = __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getChecksumHexAddress).call(this, address);
+-        const accountDetails = this.accountDetails[checksummedAddress];
+-        if (!accountDetails) {
+-            throw new Error(`Ledger: Account for address '${checksummedAddress}' not found`);
+-        }
+-        const { hdPath } = accountDetails;
+-        const unlockedAddress = await this.unlock(hdPath, false);
+-        // unlock resolves to the address for the given hdPath as reported by the ledger device
+-        // if that address is not the requested address, then this account belongs to a different device or seed
+-        if (unlockedAddress.toLowerCase() !== address.toLowerCase()) {
+-            throw new Error(`Ledger: Account ${address} does not belong to the connected device`);
+-        }
+-        return hdPath;
+-    }
+-    async signTypedData(withAccount, data, options) {
+-        const { version } = options ?? {};
+-        const isV4 = version === 'V4';
+-        if (!isV4) {
+-            throw new Error('Ledger: Only version 4 of typed data signing is supported');
+-        }
+-        const { domain, types, primaryType, message } = eth_sig_util_1.TypedDataUtils.sanitizeData(data);
+-        const hdPath = await this.unlockAccountByAddress(withAccount);
+-        if (!hdPath) {
+-            throw new Error('Ledger: Unknown error while signing message');
+-        }
+-        let payload;
+-        try {
+-            payload = await this.bridge.deviceSignTypedData({
+-                hdPath,
+-                message: {
+-                    domain: {
+-                        name: domain.name,
+-                        chainId: domain.chainId,
+-                        version: domain.version,
+-                        verifyingContract: domain.verifyingContract,
+-                        salt: domain.salt instanceof ArrayBuffer
+-                            ? buffer_1.Buffer.from(domain.salt).toString('hex')
+-                            : domain.salt,
+-                    },
+-                    types,
+-                    primaryType: primaryType.toString(),
+-                    message,
+-                },
+-            });
+-        }
+-        catch (error) {
+-            throw error instanceof Error
+-                ? error
+-                : new Error('Ledger: Unknown error while signing message');
+-        }
+-        let recoveryId = parseInt(String(payload.v), 10).toString(16);
+-        if (recoveryId.length < 2) {
+-            recoveryId = `0${recoveryId}`;
+-        }
+-        const signature = `0x${payload.r}${payload.s}${recoveryId}`;
+-        const addressSignedWith = (0, eth_sig_util_1.recoverTypedSignature)({
+-            data,
+-            signature,
+-            version: eth_sig_util_1.SignTypedDataVersion.V4,
+-        });
+-        if (__classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getChecksumHexAddress).call(this, addressSignedWith) !==
+-            __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getChecksumHexAddress).call(this, withAccount)) {
+-            throw new Error('Ledger: The signature doesnt match the right address');
+-        }
+-        return signature;
++  constructor({ bridge }) {
++    _LedgerKeyring_instances.add(this);
++    this.deviceId = "";
++    this.type = keyringType;
++    this.page = 0;
++    this.perPage = 5;
++    this.unlockedAccount = 0;
++    this.accounts = [];
++    this.accountDetails = {};
++    this.hdk = new hdkey_1.default();
++    this.hdPath = hdPathString;
++    this.paths = {};
++    this.network = NetworkApiUrls.Mainnet;
++    this.implementFullBIP44 = false;
++    if (!bridge) {
++      throw new Error("Bridge is a required dependency for the keyring");
++    }
++    this.bridge = bridge;
++  }
++  async init() {
++    return this.bridge.init();
++  }
++  async destroy() {
++    return this.bridge.destroy();
++  }
++  async serialize() {
++    return {
++      hdPath: this.hdPath,
++      accounts: this.accounts.slice(),
++      deviceId: this.deviceId,
++      accountDetails: this.accountDetails,
++      implementFullBIP44: false,
++    };
++  }
++  async deserialize(opts) {
++    this.hdPath = opts.hdPath ?? hdPathString;
++    this.accounts = opts.accounts ?? [];
++    this.deviceId = opts.deviceId ?? "";
++    this.accountDetails = opts.accountDetails ?? {};
++    if (!opts.accountDetails) {
++      __classPrivateFieldGet(
++        this,
++        _LedgerKeyring_instances,
++        "m",
++        _LedgerKeyring_migrateAccountDetails
++      ).call(this, opts);
++    }
++    this.implementFullBIP44 = opts.implementFullBIP44 ?? false;
++    const keys = new Set(Object.keys(this.accountDetails));
++    // Remove accounts that don't have corresponding account details
++    this.accounts = this.accounts.filter((account) =>
++      keys.has(
++        __classPrivateFieldGet(
++          this,
++          _LedgerKeyring_instances,
++          "m",
++          _LedgerKeyring_getChecksumHexAddress
++        ).call(this, account)
++      )
++    );
++    return Promise.resolve();
++  }
++  setDeviceId(deviceId) {
++    this.deviceId = deviceId;
++  }
++  getDeviceId() {
++    return this.deviceId;
++  }
++  isUnlocked() {
++    return Boolean(this.hdk.publicKey);
++  }
++  isConnected() {
++    return this.bridge.isDeviceConnected;
++  }
++  setAccountToUnlock(index) {
++    this.unlockedAccount = index;
++  }
++  setHdPath(hdPath) {
++    // Reset HDKey if the path changes
++    if (this.hdPath !== hdPath) {
++      this.hdk = new hdkey_1.default();
++    }
++    this.hdPath = hdPath;
++  }
++  async unlock(hdPath, updateHdk = true) {
++    if (this.isUnlocked() && !hdPath) {
++      // if the device is already unlocked and no path is provided,
++      // we return the checksummed address of the public key stored in
++      // `this.hdk`, which is the root address of the last unlocked path.
++      return __classPrivateFieldGet(
++        this,
++        _LedgerKeyring_instances,
++        "m",
++        _LedgerKeyring_getChecksumHexAddress
++      ).call(
++        this,
++        (0, utils_1.bytesToHex)(
++          (0, util_1.publicToAddress)(this.hdk.publicKey, true)
++        )
++      );
++    }
++    const path = hdPath
++      ? __classPrivateFieldGet(
++          this,
++          _LedgerKeyring_instances,
++          "m",
++          _LedgerKeyring_toLedgerPath
++        ).call(this, hdPath)
++      : this.hdPath;
++    let payload;
++    try {
++      payload = await this.bridge.getPublicKey({
++        hdPath: path,
++      });
++    } catch (error) {
++      throw error instanceof Error
++        ? error
++        : new Error(
++            "Ledger bridge app has been close, Please redo your action."
++          );
++    }
++    if (updateHdk && payload.chainCode) {
++      this.hdk.publicKey = buffer_1.Buffer.from(payload.publicKey, "hex");
++      this.hdk.chainCode = buffer_1.Buffer.from(payload.chainCode, "hex");
++    }
++    return (0, utils_1.add0x)(payload.address);
++  }
++  async addAccounts(amount) {
++    return new Promise((resolve, reject) => {
++      this.unlock()
++        .then(async (_) => {
++          const from = this.unlockedAccount;
++          const to = from + amount;
++          const newAccounts = [];
++          for (let i = from; i < to; i++) {
++            const path = __classPrivateFieldGet(
++              this,
++              _LedgerKeyring_instances,
++              "m",
++              _LedgerKeyring_getPathForIndex
++            ).call(this, i);
++            let address;
++            if (
++              __classPrivateFieldGet(
++                this,
++                _LedgerKeyring_instances,
++                "m",
++                _LedgerKeyring_isLedgerLiveHdPath
++              ).call(this)
++            ) {
++              address = await this.unlock(path);
++            } else {
++              address = __classPrivateFieldGet(
++                this,
++                _LedgerKeyring_instances,
++                "m",
++                _LedgerKeyring_addressFromIndex
++              ).call(this, pathBase, i);
 +            }
-             throw error instanceof Error
-                 ? error
-                 : new Error('Ledger: Unknown error while signing message');
-@@ -343,6 +349,15 @@ class LedgerKeyring {
-             });
-         }
-         catch (error) {
-+               /**********
-+                 * Patch for error handling for Device Management kit
-+                **********/
-+            if(error?.errorCode === "6985" && error?.message === 'Condition not satisfied'){
-+                 throw new Error('Ledger: User rejected the transaction');
++            this.accountDetails[
++              __classPrivateFieldGet(
++                this,
++                _LedgerKeyring_instances,
++                "m",
++                _LedgerKeyring_getChecksumHexAddress
++              ).call(this, address)
++            ] = {
++              // TODO: consider renaming this property, as the current name is misleading
++              // It's currently used to represent whether an account uses the Ledger Live path.
++              bip44: __classPrivateFieldGet(
++                this,
++                _LedgerKeyring_instances,
++                "m",
++                _LedgerKeyring_isLedgerLiveHdPath
++              ).call(this),
++              hdPath: path,
++            };
++            if (!this.accounts.includes(address)) {
++              this.accounts = [...this.accounts, address];
++              newAccounts.push(address);
 +            }
-+            if(error?.errorCode === "6a80" && error?.message === 'Invalid data'){
-+                 throw new Error('Ledger: Blind signing not enabled');
-+            }
-             throw error instanceof Error
-                 ? error
-                 : new Error('Ledger: Unknown error while signing message');
-@@ -409,6 +424,15 @@ _LedgerKeyring_instances = new WeakSet(), _LedgerKeyring_migrateAccountDetails =
-         });
++            this.page = 0;
++          }
++          resolve(newAccounts);
++        })
++        .catch(reject);
++    });
++  }
++  getName() {
++    return keyringType;
++  }
++  async getFirstPage() {
++    this.page = 0;
++    return __classPrivateFieldGet(
++      this,
++      _LedgerKeyring_instances,
++      "m",
++      _LedgerKeyring_getPage
++    ).call(this, 1);
++  }
++  async getNextPage() {
++    return __classPrivateFieldGet(
++      this,
++      _LedgerKeyring_instances,
++      "m",
++      _LedgerKeyring_getPage
++    ).call(this, 1);
++  }
++  async getPreviousPage() {
++    return __classPrivateFieldGet(
++      this,
++      _LedgerKeyring_instances,
++      "m",
++      _LedgerKeyring_getPage
++    ).call(this, -1);
++  }
++  async getAccounts() {
++    return Promise.resolve(this.accounts.slice());
++  }
++  removeAccount(address) {
++    const filteredAccounts = this.accounts.filter(
++      (a) => a.toLowerCase() !== address.toLowerCase()
++    );
++    if (filteredAccounts.length === this.accounts.length) {
++      throw new Error(`Address ${address} not found in this keyring`);
++    }
++    this.accounts = filteredAccounts;
++    delete this.accountDetails[
++      __classPrivateFieldGet(
++        this,
++        _LedgerKeyring_instances,
++        "m",
++        _LedgerKeyring_getChecksumHexAddress
++      ).call(this, address)
++    ];
++  }
++  async attemptMakeApp() {
++    return this.bridge.attemptMakeApp();
++  }
++  async updateTransportMethod(transportType) {
++    return this.bridge.updateTransportMethod(transportType);
++  }
++  // tx is an instance of the ethereumjs-transaction class.
++  async signTransaction(address, tx) {
++    let rawTxHex;
++    // transactions built with older versions of ethereumjs-tx have a
++    // getChainId method that newer versions do not. Older versions are mutable
++    // while newer versions default to being immutable. Expected shape and type
++    // of data for v, r and s differ (Buffer (old) vs BN (new))
++    if (isOldStyleEthereumjsTx(tx)) {
++      // In this version of ethereumjs-tx we must add the chainId in hex format
++      // to the initial v value. The chainId must be included in the serialized
++      // transaction which is only communicated to ethereumjs-tx in this
++      // value. In newer versions the chainId is communicated via the 'Common'
++      // object.
++      tx.v = tx.getChainId();
++      // @ts-expect-error tx.r should be a Buffer, but we are assigning a string
++      tx.r = "0x00";
++      // @ts-expect-error tx.s should be a Buffer, but we are assigning a string
++      tx.s = "0x00";
++      rawTxHex = tx.serialize().toString("hex");
++      return __classPrivateFieldGet(
++        this,
++        _LedgerKeyring_instances,
++        "m",
++        _LedgerKeyring_signTransaction
++      ).call(this, address, rawTxHex, (payload) => {
++        tx.v = buffer_1.Buffer.from(payload.v, "hex");
++        tx.r = buffer_1.Buffer.from(payload.r, "hex");
++        tx.s = buffer_1.Buffer.from(payload.s, "hex");
++        return tx;
++      });
++    }
++    // The below `encode` call is only necessary for legacy transactions, as `getMessageToSign`
++    // calls `rlp.encode` internally for non-legacy transactions. As per the "Transaction Execution"
++    // section of the ethereum yellow paper, transactions need to be "well-formed RLP, with no additional
++    // trailing bytes".
++    // Note also that `getMessageToSign` will return valid RLP for all transaction types, whereas the
++    // `serialize` method will not for any transaction type except legacy. This is because `serialize` includes
++    // empty r, s and v values in the encoded rlp. This is why we use `getMessageToSign` here instead of `serialize`.
++    const messageToSign = tx.getMessageToSign();
++    rawTxHex = Array.isArray(messageToSign)
++      ? buffer_1.Buffer.from(rlp_1.RLP.encode(messageToSign)).toString("hex")
++      : (0, utils_1.bytesToHex)(messageToSign);
++    return __classPrivateFieldGet(
++      this,
++      _LedgerKeyring_instances,
++      "m",
++      _LedgerKeyring_signTransaction
++    ).call(this, address, rawTxHex, (payload) => {
++      // Because tx will be immutable, first get a plain javascript object that
++      // represents the transaction. Using txData here as it aligns with the
++      // nomenclature of ethereumjs/tx.
++      const txData = tx.toJSON();
++      // The fromTxData utility expects a type to support transactions with a type other than 0
++      txData.type = tx.type;
++      // The fromTxData utility expects v,r and s to be hex prefixed
++      txData.v = (0, utils_1.add0x)(payload.v);
++      txData.r = (0, utils_1.add0x)(payload.r);
++      txData.s = (0, utils_1.add0x)(payload.s);
++      // Adopt the 'common' option from the original transaction and set the
++      // returned object to be frozen if the original is frozen.
++      return tx_1.TransactionFactory.fromTxData(txData, {
++        common: tx.common,
++        freeze: Object.isFrozen(tx),
++      });
++    });
++  }
++  async signMessage(withAccount, data) {
++    return this.signPersonalMessage(withAccount, data);
++  }
++  // For personal_sign, we need to prefix the message:
++  async signPersonalMessage(withAccount, message) {
++    const hdPath = await this.unlockAccountByAddress(withAccount);
++    if (!hdPath) {
++      throw new Error("Ledger: Unknown error while signing message");
      }
-     catch (error) {
-+         /**********
-+         * Patch for error handling for Device Management kit
-+         **********/
-+        if(error?.errorCode === "6985" && error?.message === 'Condition not satisfied'){
-+            throw new Error('Ledger: User rejected the transaction');
-+        }
-+        if(error?.errorCode === "6a80" && error?.message === 'Invalid data'){
-+            throw new Error('Ledger: Blind signing not enabled');
-+        }
+-    forgetDevice() {
+-        this.deviceId = '';
+-        this.accounts = [];
+-        this.page = 0;
+-        this.unlockedAccount = 0;
+-        this.paths = {};
+-        this.accountDetails = {};
+-        this.hdk = new hdkey_1.default();
++    let payload;
++    try {
++      payload = await this.bridge.deviceSignMessage({
++        hdPath,
++        message: (0, utils_1.remove0x)(message),
++      });
++    } catch (error) {
++      throw error instanceof Error
++        ? error
++        : new Error("Ledger: Unknown error while signing message");
++    }
++    let modifiedV = parseInt(String(payload.v), 10).toString(16);
++    if (modifiedV.length < 2) {
++      modifiedV = `0${modifiedV}`;
++    }
++    const signature = `0x${payload.r}${payload.s}${modifiedV}`;
++    const addressSignedWith = (0, eth_sig_util_1.recoverPersonalSignature)({
++      data: message,
++      signature,
++    });
++    if (
++      __classPrivateFieldGet(
++        this,
++        _LedgerKeyring_instances,
++        "m",
++        _LedgerKeyring_getChecksumHexAddress
++      ).call(this, addressSignedWith) !==
++      __classPrivateFieldGet(
++        this,
++        _LedgerKeyring_instances,
++        "m",
++        _LedgerKeyring_getChecksumHexAddress
++      ).call(this, withAccount)
++    ) {
++      throw new Error("Ledger: The signature doesnt match the right address");
++    }
++    return signature;
++  }
++  async unlockAccountByAddress(address) {
++    const checksummedAddress = __classPrivateFieldGet(
++      this,
++      _LedgerKeyring_instances,
++      "m",
++      _LedgerKeyring_getChecksumHexAddress
++    ).call(this, address);
++    const accountDetails = this.accountDetails[checksummedAddress];
++    if (!accountDetails) {
++      throw new Error(
++        `Ledger: Account for address '${checksummedAddress}' not found`
++      );
++    }
++    const { hdPath } = accountDetails;
++    const unlockedAddress = await this.unlock(hdPath, false);
++    // unlock resolves to the address for the given hdPath as reported by the ledger device
++    // if that address is not the requested address, then this account belongs to a different device or seed
++    if (unlockedAddress.toLowerCase() !== address.toLowerCase()) {
++      throw new Error(
++        `Ledger: Account ${address} does not belong to the connected device`
++      );
++    }
++    return hdPath;
++  }
++  async signTypedData(withAccount, data, options) {
++    const { version } = options ?? {};
++    const isV4 = version === "V4";
++    if (!isV4) {
++      throw new Error(
++        "Ledger: Only version 4 of typed data signing is supported"
++      );
++    }
++    const { domain, types, primaryType, message } =
++      eth_sig_util_1.TypedDataUtils.sanitizeData(data);
++    const hdPath = await this.unlockAccountByAddress(withAccount);
++    if (!hdPath) {
++      throw new Error("Ledger: Unknown error while signing message");
+     }
++    let payload;
++    try {
++      payload = await this.bridge.deviceSignTypedData({
++        hdPath,
++        message: {
++          domain: {
++            name: domain.name,
++            chainId: domain.chainId,
++            version: domain.version,
++            verifyingContract: domain.verifyingContract,
++            salt:
++              domain.salt instanceof ArrayBuffer
++                ? buffer_1.Buffer.from(domain.salt).toString("hex")
++                : domain.salt,
++          },
++          types,
++          primaryType: primaryType.toString(),
++          message,
++        },
++      });
++    } catch (error) {
++      throw error instanceof Error
++        ? error
++        : new Error("Ledger: Unknown error while signing message");
++    }
++    let recoveryId = parseInt(String(payload.v), 10).toString(16);
++    if (recoveryId.length < 2) {
++      recoveryId = `0${recoveryId}`;
++    }
++    const signature = `0x${payload.r}${payload.s}${recoveryId}`;
++    const addressSignedWith = (0, eth_sig_util_1.recoverTypedSignature)({
++      data,
++      signature,
++      version: eth_sig_util_1.SignTypedDataVersion.V4,
++    });
++    if (
++      __classPrivateFieldGet(
++        this,
++        _LedgerKeyring_instances,
++        "m",
++        _LedgerKeyring_getChecksumHexAddress
++      ).call(this, addressSignedWith) !==
++      __classPrivateFieldGet(
++        this,
++        _LedgerKeyring_instances,
++        "m",
++        _LedgerKeyring_getChecksumHexAddress
++      ).call(this, withAccount)
++    ) {
++      throw new Error("Ledger: The signature doesnt match the right address");
++    }
++    return signature;
++  }
++  forgetDevice() {
++    this.deviceId = "";
++    this.accounts = [];
++    this.page = 0;
++    this.unlockedAccount = 0;
++    this.paths = {};
++    this.accountDetails = {};
++    this.hdk = new hdkey_1.default();
++  }
+ }
+ exports.LedgerKeyring = LedgerKeyring;
+-_LedgerKeyring_instances = new WeakSet(), _LedgerKeyring_migrateAccountDetails = function _LedgerKeyring_migrateAccountDetails(opts) {
+-    if (__classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_isLedgerLiveHdPath).call(this) && opts.accountIndexes) {
++(_LedgerKeyring_instances = new WeakSet()),
++  (_LedgerKeyring_migrateAccountDetails =
++    function _LedgerKeyring_migrateAccountDetails(opts) {
++      if (
++        __classPrivateFieldGet(
++          this,
++          _LedgerKeyring_instances,
++          "m",
++          _LedgerKeyring_isLedgerLiveHdPath
++        ).call(this) &&
++        opts.accountIndexes
++      ) {
+         for (const [account, index] of Object.entries(opts.accountIndexes)) {
+-            this.accountDetails[account] = {
+-                bip44: true,
+-                hdPath: __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getPathForIndex).call(this, index),
+-            };
++          this.accountDetails[account] = {
++            bip44: true,
++            hdPath: __classPrivateFieldGet(
++              this,
++              _LedgerKeyring_instances,
++              "m",
++              _LedgerKeyring_getPathForIndex
++            ).call(this, index),
++          };
+         }
+-    }
+-    const keys = new Set(Object.keys(this.accountDetails));
+-    // try to migrate non-LedgerLive accounts too
+-    if (!__classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_isLedgerLiveHdPath).call(this)) {
++      }
++      const keys = new Set(Object.keys(this.accountDetails));
++      // try to migrate non-LedgerLive accounts too
++      if (
++        !__classPrivateFieldGet(
++          this,
++          _LedgerKeyring_instances,
++          "m",
++          _LedgerKeyring_isLedgerLiveHdPath
++        ).call(this)
++      ) {
+         this.accounts.forEach((account) => {
+-            const key = __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getChecksumHexAddress).call(this, account);
+-            if (!keys.has(key)) {
+-                this.accountDetails[key] = {
+-                    bip44: false,
+-                    hdPath: __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_pathFromAddress).call(this, account),
+-                };
+-            }
++          const key = __classPrivateFieldGet(
++            this,
++            _LedgerKeyring_instances,
++            "m",
++            _LedgerKeyring_getChecksumHexAddress
++          ).call(this, account);
++          if (!keys.has(key)) {
++            this.accountDetails[key] = {
++              bip44: false,
++              hdPath: __classPrivateFieldGet(
++                this,
++                _LedgerKeyring_instances,
++                "m",
++                _LedgerKeyring_pathFromAddress
++              ).call(this, account),
++            };
++          }
+         });
+-    }
+-}, _LedgerKeyring_signTransaction = async function _LedgerKeyring_signTransaction(address, rawTxHex, handleSigning) {
+-    const hdPath = await this.unlockAccountByAddress(address);
+-    if (!hdPath) {
+-        throw new Error('Ledger: hdPath is empty while signing transaction');
+-    }
+-    let payload;
+-    try {
++      }
++    }),
++  (_LedgerKeyring_signTransaction =
++    async function _LedgerKeyring_signTransaction(
++      address,
++      rawTxHex,
++      handleSigning
++    ) {
++      const hdPath = await this.unlockAccountByAddress(address);
++      if (!hdPath) {
++        throw new Error("Ledger: hdPath is empty while signing transaction");
++      }
++      let payload;
++      try {
+         payload = await this.bridge.deviceSignTransaction({
+-            tx: (0, utils_1.remove0x)(rawTxHex),
+-            hdPath,
++          tx: (0, utils_1.remove0x)(rawTxHex),
++          hdPath,
+         });
+-    }
+-    catch (error) {
++      } catch (error) {
          throw error instanceof Error
-             ? error
-             : new Error('Ledger: Unknown error while signing transaction');
+-            ? error
+-            : new Error('Ledger: Unknown error while signing transaction');
+-    }
+-    const newOrMutatedTx = handleSigning(payload);
+-    const valid = newOrMutatedTx.verifySignature();
+-    if (valid) {
++          ? error
++          : new Error("Ledger: Unknown error while signing transaction");
++      }
++      const newOrMutatedTx = handleSigning(payload);
++      const valid = newOrMutatedTx.verifySignature();
++      if (valid) {
+         return newOrMutatedTx;
+-    }
+-    throw new Error('Ledger: The transaction signature is not valid');
+-}, _LedgerKeyring_getPage = 
+-/* PRIVATE METHODS */
+-async function _LedgerKeyring_getPage(increment) {
+-    this.page += increment;
+-    if (this.page <= 0) {
++      }
++      throw new Error("Ledger: The transaction signature is not valid");
++    }),
++  (_LedgerKeyring_getPage =
++    /* PRIVATE METHODS */
++    async function _LedgerKeyring_getPage(increment) {
++      this.page += increment;
++      if (this.page <= 0) {
+         this.page = 1;
+-    }
+-    const from = (this.page - 1) * this.perPage;
+-    const to = from + this.perPage;
+-    await this.unlock();
+-    let accounts;
+-    if (__classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_isLedgerLiveHdPath).call(this)) {
+-        accounts = await __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getAccountsBIP44).call(this, from, to);
+-    }
+-    else {
+-        accounts = __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getAccountsLegacy).call(this, from, to);
+-    }
+-    return accounts;
+-}, _LedgerKeyring_getAccountsBIP44 = async function _LedgerKeyring_getAccountsBIP44(from, to) {
+-    const accounts = [];
+-    for (let i = from; i < to; i++) {
+-        const path = __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getPathForIndex).call(this, i);
++      }
++      const from = (this.page - 1) * this.perPage;
++      const to = from + this.perPage;
++      await this.unlock();
++      let accounts;
++      if (
++        __classPrivateFieldGet(
++          this,
++          _LedgerKeyring_instances,
++          "m",
++          _LedgerKeyring_isLedgerLiveHdPath
++        ).call(this)
++      ) {
++        accounts = await __classPrivateFieldGet(
++          this,
++          _LedgerKeyring_instances,
++          "m",
++          _LedgerKeyring_getAccountsBIP44
++        ).call(this, from, to);
++      } else {
++        accounts = __classPrivateFieldGet(
++          this,
++          _LedgerKeyring_instances,
++          "m",
++          _LedgerKeyring_getAccountsLegacy
++        ).call(this, from, to);
++      }
++      return accounts;
++    }),
++  (_LedgerKeyring_getAccountsBIP44 =
++    async function _LedgerKeyring_getAccountsBIP44(from, to) {
++      const accounts = [];
++      for (let i = from; i < to; i++) {
++        const path = __classPrivateFieldGet(
++          this,
++          _LedgerKeyring_instances,
++          "m",
++          _LedgerKeyring_getPathForIndex
++        ).call(this, i);
+         const address = await this.unlock(path);
+         const valid = this.implementFullBIP44
+-            ? await __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_hasPreviousTransactions).call(this, address)
+-            : true;
++          ? await __classPrivateFieldGet(
++              this,
++              _LedgerKeyring_instances,
++              "m",
++              _LedgerKeyring_hasPreviousTransactions
++            ).call(this, address)
++          : true;
+         accounts.push({
+-            address,
+-            balance: null,
+-            index: i,
++          address,
++          balance: null,
++          index: i,
+         });
+         // PER BIP44
+         // "Software should prevent a creation of an account if
+         // a previous account does not have a transaction history
+         // (meaning none of its addresses have been used before)."
+         if (!valid) {
+-            break;
++          break;
+         }
+-    }
+-    return accounts;
+-}, _LedgerKeyring_getAccountsLegacy = function _LedgerKeyring_getAccountsLegacy(from, to) {
++      }
++      return accounts;
++    }),
++  (_LedgerKeyring_getAccountsLegacy = function _LedgerKeyring_getAccountsLegacy(
++    from,
++    to
++  ) {
+     const accounts = [];
+     for (let i = from; i < to; i++) {
+-        const address = __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_addressFromIndex).call(this, pathBase, i);
+-        accounts.push({
+-            address,
+-            balance: null,
+-            index: i,
+-        });
+-        this.paths[__classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getChecksumHexAddress).call(this, address)] = i;
++      const address = __classPrivateFieldGet(
++        this,
++        _LedgerKeyring_instances,
++        "m",
++        _LedgerKeyring_addressFromIndex
++      ).call(this, pathBase, i);
++      accounts.push({
++        address,
++        balance: null,
++        index: i,
++      });
++      this.paths[
++        __classPrivateFieldGet(
++          this,
++          _LedgerKeyring_instances,
++          "m",
++          _LedgerKeyring_getChecksumHexAddress
++        ).call(this, address)
++      ] = i;
+     }
+     return accounts;
+-}, _LedgerKeyring_addressFromIndex = function _LedgerKeyring_addressFromIndex(basePath, i) {
++  }),
++  (_LedgerKeyring_addressFromIndex = function _LedgerKeyring_addressFromIndex(
++    basePath,
++    i
++  ) {
+     const dkey = this.hdk.derive(`${basePath}/${i}`);
+-    const address = (0, utils_1.bytesToHex)((0, util_1.publicToAddress)(dkey.publicKey, true));
+-    return __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getChecksumHexAddress).call(this, address);
+-}, _LedgerKeyring_pathFromAddress = function _LedgerKeyring_pathFromAddress(address) {
+-    const checksummedAddress = __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getChecksumHexAddress).call(this, address);
++    const address = (0, utils_1.bytesToHex)(
++      (0, util_1.publicToAddress)(dkey.publicKey, true)
++    );
++    return __classPrivateFieldGet(
++      this,
++      _LedgerKeyring_instances,
++      "m",
++      _LedgerKeyring_getChecksumHexAddress
++    ).call(this, address);
++  }),
++  (_LedgerKeyring_pathFromAddress = function _LedgerKeyring_pathFromAddress(
++    address
++  ) {
++    const checksummedAddress = __classPrivateFieldGet(
++      this,
++      _LedgerKeyring_instances,
++      "m",
++      _LedgerKeyring_getChecksumHexAddress
++    ).call(this, address);
+     let index = this.paths[checksummedAddress];
+-    if (typeof index === 'undefined') {
+-        for (let i = 0; i < MAX_INDEX; i++) {
+-            if (checksummedAddress === __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_addressFromIndex).call(this, pathBase, i)) {
+-                index = i;
+-                break;
+-            }
++    if (typeof index === "undefined") {
++      for (let i = 0; i < MAX_INDEX; i++) {
++        if (
++          checksummedAddress ===
++          __classPrivateFieldGet(
++            this,
++            _LedgerKeyring_instances,
++            "m",
++            _LedgerKeyring_addressFromIndex
++          ).call(this, pathBase, i)
++        ) {
++          index = i;
++          break;
+         }
+-    }
+-    if (typeof index === 'undefined') {
+-        throw new Error('Unknown address');
+-    }
+-    return __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getPathForIndex).call(this, index);
+-}, _LedgerKeyring_getPathForIndex = function _LedgerKeyring_getPathForIndex(index) {
++      }
++    }
++    if (typeof index === "undefined") {
++      throw new Error("Unknown address");
++    }
++    return __classPrivateFieldGet(
++      this,
++      _LedgerKeyring_instances,
++      "m",
++      _LedgerKeyring_getPathForIndex
++    ).call(this, index);
++  }),
++  (_LedgerKeyring_getPathForIndex = function _LedgerKeyring_getPathForIndex(
++    index
++  ) {
+     // Check if the path is BIP 44 (Ledger Live)
+-    return __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_isLedgerLiveHdPath).call(this)
+-        ? `m/44'/60'/${index}'/0/0`
+-        : `${this.hdPath}/${index}`;
+-}, _LedgerKeyring_isLedgerLiveHdPath = function _LedgerKeyring_isLedgerLiveHdPath() {
+-    return this.hdPath === `m/44'/60'/0'/0/0`;
+-}, _LedgerKeyring_toLedgerPath = function _LedgerKeyring_toLedgerPath(path) {
+-    return path.toString().replace('m/', '');
+-}, _LedgerKeyring_hasPreviousTransactions = async function _LedgerKeyring_hasPreviousTransactions(address) {
+-    const apiUrl = __classPrivateFieldGet(this, _LedgerKeyring_instances, "m", _LedgerKeyring_getApiUrl).call(this);
+-    const response = await window.fetch(`${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1&offset=1`);
+-    const parsedResponse = await response.json();
+-    return parsedResponse.status !== '0' && parsedResponse.result.length > 0;
+-}, _LedgerKeyring_getApiUrl = function _LedgerKeyring_getApiUrl() {
++    return __classPrivateFieldGet(
++      this,
++      _LedgerKeyring_instances,
++      "m",
++      _LedgerKeyring_isLedgerLiveHdPath
++    ).call(this)
++      ? `m/44'/60'/${index}'/0/0`
++      : `${this.hdPath}/${index}`;
++  }),
++  (_LedgerKeyring_isLedgerLiveHdPath =
++    function _LedgerKeyring_isLedgerLiveHdPath() {
++      return this.hdPath === `m/44'/60'/0'/0/0`;
++    }),
++  (_LedgerKeyring_toLedgerPath = function _LedgerKeyring_toLedgerPath(path) {
++    return path.toString().replace("m/", "");
++  }),
++  (_LedgerKeyring_hasPreviousTransactions =
++    async function _LedgerKeyring_hasPreviousTransactions(address) {
++      const apiUrl = __classPrivateFieldGet(
++        this,
++        _LedgerKeyring_instances,
++        "m",
++        _LedgerKeyring_getApiUrl
++      ).call(this);
++      const response = await window.fetch(
++        `${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1&offset=1`
++      );
++      const parsedResponse = await response.json();
++      return parsedResponse.status !== "0" && parsedResponse.result.length > 0;
++    }),
++  (_LedgerKeyring_getApiUrl = function _LedgerKeyring_getApiUrl() {
+     return this.network;
+-}, _LedgerKeyring_getChecksumHexAddress = function _LedgerKeyring_getChecksumHexAddress(address) {
+-    return (0, utils_1.getChecksumAddress)((0, utils_1.add0x)(address));
+-};
++  }),
++  (_LedgerKeyring_getChecksumHexAddress =
++    function _LedgerKeyring_getChecksumHexAddress(address) {
++      return (0, utils_1.getChecksumAddress)((0, utils_1.add0x)(address));
++    });
+ LedgerKeyring.type = keyringType;
+ //# sourceMappingURL=ledger-keyring.cjs.map

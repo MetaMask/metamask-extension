@@ -5503,7 +5503,7 @@ __metadata:
 
 "@metamask/eth-ledger-bridge-keyring@patch:@metamask/eth-ledger-bridge-keyring@npm%3A11.0.3#~/.yarn/patches/@metamask-eth-ledger-bridge-keyring-npm-11.0.3-90e74f401b.patch":
   version: 11.0.3
-  resolution: "@metamask/eth-ledger-bridge-keyring@patch:@metamask/eth-ledger-bridge-keyring@npm%3A11.0.3#~/.yarn/patches/@metamask-eth-ledger-bridge-keyring-npm-11.0.3-90e74f401b.patch::version=11.0.3&hash=369fc4"
+  resolution: "@metamask/eth-ledger-bridge-keyring@patch:@metamask/eth-ledger-bridge-keyring@npm%3A11.0.3#~/.yarn/patches/@metamask-eth-ledger-bridge-keyring-npm-11.0.3-90e74f401b.patch::version=11.0.3&hash=625823"
   dependencies:
     "@ethereumjs/rlp": "npm:^5.0.2"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -5511,7 +5511,7 @@ __metadata:
     "@ledgerhq/hw-app-eth": "npm:^6.42.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     hdkey: "npm:^2.1.0"
-  checksum: 10/24bf990e1a6bd5b44f110b1fb9737f4763057038ea7ddb61b4e8969d3ae5ee9c632595c7326588ba7db65575cf72318981c38b2f754dd5f2f8527d9e1d53ac76
+  checksum: 10/8bbf5355a28917ac9956d23f42cfd540badfc1c17d79a197886f386053a396fc49a223db01c0ebe2feaa3986852fa6f3c28ad2afc9ed2756592ab61ecf819545
   languageName: node
   linkType: hard
 
