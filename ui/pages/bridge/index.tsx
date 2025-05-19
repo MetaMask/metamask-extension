@@ -59,6 +59,8 @@ const CrossChainSwap = () => {
     await dispatch(resetBridgeState());
   };
 
+  const isSwap = useIsMultichainSwap();
+
   useEffect(() => {
     dispatch(
       trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.PageViewed, {}),
@@ -67,7 +69,6 @@ const CrossChainSwap = () => {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     window.addEventListener('beforeunload', resetControllerAndInputStates);
-
     return () => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -82,8 +83,6 @@ const CrossChainSwap = () => {
   useBridgeExchangeRates();
   // Emits events related to quote-fetching
   useQuoteFetchEvents();
-
-  const isSwap = useIsMultichainSwap();
 
   const redirectToDefaultRoute = async () => {
     history.push({

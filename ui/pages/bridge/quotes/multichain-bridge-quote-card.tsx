@@ -7,6 +7,7 @@ import {
   formatEtaInMinutes,
   UnifiedSwapBridgeEventName,
   getNativeAssetForChainId,
+  selectMinimumBalanceForRentExemptionInSOL,
 } from '@metamask/bridge-controller';
 import type { ChainId } from '@metamask/bridge-controller';
 import {
@@ -52,8 +53,13 @@ import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
+import BigNumber from 'bignumber.js';
 
-export const MultichainBridgeQuoteCard = () => {
+export const MultichainBridgeQuoteCard = ({
+  balanceAmount,
+}: {
+  balanceAmount: BigNumber;
+}) => {
   const t = useI18nContext();
   const { activeQuote } = useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
@@ -71,6 +77,9 @@ export const MultichainBridgeQuoteCard = () => {
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const dispatch = useDispatch();
+  const minimumBalanceForRentExemption = useSelector(
+    selectMinimumBalanceForRentExemptionInSOL,
+  );
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
@@ -168,12 +177,25 @@ export const MultichainBridgeQuoteCard = () => {
               >
                 {t('networkFee')}
               </Text>
+              <Text>{activeQuote.totalMaxNetworkFee?.amount}</Text>
+            </Row>
+
+            <Row justifyContent={JustifyContent.spaceBetween}>
+              <Text
+                variant={TextVariant.bodyMd}
+                color={TextColor.textAlternative}
+              >
+                TOTAL
+              </Text>
               <Text>
-                {formatCurrencyAmount(
-                  activeQuote.totalMaxNetworkFee?.valueInCurrency,
-                  currency,
-                  2,
-                )}
+                {activeQuote.sentAmount.amount} +{' '}
+                {minimumBalanceForRentExemption} +
+                {activeQuote.totalMaxNetworkFee?.amount} ={' '}
+                {new BigNumber(activeQuote.sentAmount.amount)
+                  .add(minimumBalanceForRentExemption)
+                  .add(activeQuote.totalMaxNetworkFee?.amount)
+                  .toString()}{' '}
+                = {balanceAmount.toString()}
               </Text>
             </Row>
 
@@ -228,12 +250,7 @@ export const MultichainBridgeQuoteCard = () => {
                             getNativeAssetForChainId(fromChain.chainId).symbol,
                           token_symbol_destination: toToken?.symbol ?? null,
                           price_impact: Number(
-                            // TODO remove this once we bump to the latest version of the bridge controller
-                            (
-                              activeQuote.quote as unknown as {
-                                priceData: { priceImpact: string };
-                              }
-                            )?.priceData?.priceImpact ?? '0',
+                            activeQuote.quote?.priceData?.priceImpact ?? '0',
                           ),
                           gas_included: false,
                         },
