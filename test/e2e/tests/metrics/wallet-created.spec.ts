@@ -47,7 +47,7 @@ async function mockSegment(mockServer: Mockttp) {
         return {
           statusCode: 200,
         };
-    }),
+      }),
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
@@ -148,7 +148,7 @@ describe('Wallet Created Events', function () {
           has_marketing_consent: false,
           is_metrics_opted_in: true,
           locale: 'en',
-          location: 'onboarding_metametrics'
+          location: 'onboarding_metametrics',
         });
         assert.deepStrictEqual(events[2].properties, {
           category: 'Onboarding',
