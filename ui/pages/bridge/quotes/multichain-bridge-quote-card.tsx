@@ -7,6 +7,7 @@ import {
   formatEtaInMinutes,
   UnifiedSwapBridgeEventName,
   getNativeAssetForChainId,
+  selectMinimumBalanceForRentExemptionInSOL,
 } from '@metamask/bridge-controller';
 import type { ChainId } from '@metamask/bridge-controller';
 import {
@@ -26,7 +27,6 @@ import {
   getIsBridgeTx,
   getToToken,
   getFromToken,
-  getMinimumBalanceForRentExemptionInSOL,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
@@ -78,7 +78,7 @@ export const MultichainBridgeQuoteCard = ({
   const toToken = useSelector(getToToken);
   const dispatch = useDispatch();
   const minimumBalanceForRentExemption = useSelector(
-    getMinimumBalanceForRentExemptionInSOL,
+    selectMinimumBalanceForRentExemptionInSOL,
   );
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);

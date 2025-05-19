@@ -41,7 +41,6 @@ import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signa
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
 import { useIsMultichainSwap } from './hooks/useIsMultichainSwap';
-import useSolanaMinBalanceForRentExemption from '../../hooks/bridge/useSolanaMinBalanceForRentExemption';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
@@ -84,8 +83,6 @@ const CrossChainSwap = () => {
   useBridgeExchangeRates();
   // Emits events related to quote-fetching
   useQuoteFetchEvents();
-  // Needed for fetching minimum balance for rent exemption in SOL
-  useSolanaMinBalanceForRentExemption();
 
   const redirectToDefaultRoute = async () => {
     history.push({

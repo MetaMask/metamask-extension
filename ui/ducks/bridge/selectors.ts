@@ -14,6 +14,7 @@ import {
   selectBridgeQuotes,
   selectIsQuoteExpired,
   selectBridgeFeatureFlags,
+  selectMinimumBalanceForRentExemptionInSOL,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SolAccountType } from '@metamask/keyring-api';
@@ -479,11 +480,6 @@ const _getValidatedSrcAmount = createSelector(
       : null,
 );
 
-export const getMinimumBalanceForRentExemptionInSOL = (state: BridgeAppState) =>
-  new BigNumber(state.bridge.minimumBalanceForRentExemptionInLamports)
-    .div(10 ** 9)
-    .toString();
-
 export const getFromAmountInCurrency = createSelector(
   getFromToken,
   getFromChain,
@@ -522,7 +518,7 @@ export const getValidationErrors = createDeepEqualSelector(
   _getValidatedSrcAmount,
   getFromToken,
   getFromAmount,
-  getMinimumBalanceForRentExemptionInSOL,
+  selectMinimumBalanceForRentExemptionInSOL,
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
     validatedSrcAmount,

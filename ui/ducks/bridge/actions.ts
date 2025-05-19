@@ -13,7 +13,6 @@ import {
   setDestTokenExchangeRates,
   setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
-  setMinimumBalanceForRentExemptionInLamports,
 } from './bridge';
 
 const {
@@ -41,7 +40,6 @@ export {
   setSelectedQuote,
   setWasTxDeclined,
   setSlippage,
-  setMinimumBalanceForRentExemptionInLamports,
 };
 
 const callBridgeControllerMethod = (
