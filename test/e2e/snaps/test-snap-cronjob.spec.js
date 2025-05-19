@@ -76,10 +76,14 @@ describe('Test Snap Cronjob', function () {
         });
 
         // try to click on the Ok button and pass test if window closes
-        await driver.clickElementSafe({
-          text: 'OK',
-          tag: 'button',
-        });
+        try {
+          await driver.clickElement({
+            text: 'OK',
+            tag: 'button',
+          });
+        } catch (error) {
+          console.log('Dialog already closed automatically');
+        }
 
         await driver.waitForWindowToClose(dialogHandle);
       },
