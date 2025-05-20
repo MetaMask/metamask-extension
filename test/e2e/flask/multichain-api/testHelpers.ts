@@ -90,7 +90,10 @@ export const addAccountInWalletAndAuthorize = async (
   await checkboxes[0].click(); // select all checkbox
   await driver.delay(regularDelayMs);
 
-  await driver.clickElement({ text: 'Update', tag: 'button' });
+  await driver.clickElementAndWaitToDisappear({
+    text: 'Update',
+    tag: 'button',
+  });
 };
 
 /**
