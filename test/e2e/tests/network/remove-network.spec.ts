@@ -56,7 +56,7 @@ describe('Remove Network:', function (this: Suite) {
               networkConfigurationId: {
                 chainId: '0x539',
                 nickname: 'Localhost 8545',
-                rpcUrl: 'http://localhost:8545',
+                rpcUrl: 'http://localhost:8545/1',
                 ticker: 'ETH',
                 rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
               },
@@ -65,7 +65,7 @@ describe('Remove Network:', function (this: Suite) {
                 id: '2ce66016-8aab-47df-b27f-318c80865eb0',
                 nickname: 'Localhost 8546',
                 rpcPrefs: {},
-                rpcUrl: 'http://localhost:8546',
+                rpcUrl: 'http://localhost:8546/1',
                 ticker: 'ETH',
               },
             },
@@ -141,7 +141,7 @@ describe('Remove Network:', function (this: Suite) {
               networkConfigurationId: {
                 chainId: '0x539',
                 nickname: 'Localhost 8545',
-                rpcUrl: 'http://localhost:8545',
+                rpcUrl: 'http://localhost:8545/1',
                 ticker: 'ETH',
                 rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
               },
@@ -150,7 +150,7 @@ describe('Remove Network:', function (this: Suite) {
                 id: '2ce66016-8aab-47df-b27f-318c80865eb0',
                 nickname: 'Localhost 8546',
                 rpcPrefs: {},
-                rpcUrl: 'http://localhost:8546',
+                rpcUrl: 'http://localhost:8546/1',
                 ticker: 'ETH',
               },
               '2ce66016-8aab-47df-b27f-318c80865eb1': {
