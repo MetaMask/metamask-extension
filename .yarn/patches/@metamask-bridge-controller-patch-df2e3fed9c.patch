@@ -1,0 +1,111 @@
+diff --git a/dist/index.cjs b/dist/index.cjs
+index e0067e2c52e51b8d4309b93b6b115c16cc858687..a8f9b93b6caa301ccdc4f84e7909c99308cf242f 100644
+--- a/dist/index.cjs
++++ b/dist/index.cjs
+@@ -1,7 +1,7 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.selectBridgeQuotes = exports.formatAddressToCaipReference = exports.formatChainIdToHex = exports.formatChainIdToCaip = exports.fetchBridgeTokens = exports.calcLatestSrcBalance = exports.formatEtaInMinutes = exports.isValidQuoteRequest = exports.getDefaultBridgeControllerState = exports.getNativeAssetForChainId = exports.isSolanaChainId = exports.isNativeAddress = exports.isEthUsdt = exports.getEthUsdtResetData = exports.SWAPS_API_V2_BASE_URL = exports.SWAPS_CHAINID_DEFAULT_TOKEN_MAP = exports.BRIDGE_PROD_API_BASE_URL = exports.BRIDGE_DEV_API_BASE_URL = exports.METABRIDGE_CHAIN_TO_ADDRESS_MAP = exports.DEFAULT_BRIDGE_CONTROLLER_STATE = exports.DEFAULT_MAX_REFRESH_COUNT = exports.REFRESH_INTERVAL_MS = exports.BRIDGE_MM_FEE_RATE = exports.BRIDGE_DEFAULT_SLIPPAGE = exports.BRIDGE_PREFERRED_GAS_ESTIMATE = exports.BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE = exports.BRIDGE_QUOTE_MAX_ETA_SECONDS = exports.BRIDGE_CONTROLLER_NAME = exports.BridgeClientId = exports.ALLOWED_BRIDGE_CHAIN_IDS = exports.FeeType = exports.BridgeBackgroundAction = exports.BridgeUserAction = exports.RequestStatus = exports.BridgeFeatureFlagsKey = exports.ChainId = exports.ActionTypes = exports.BridgeFlag = exports.SortOrder = exports.AssetType = exports.StatusTypes = exports.isCustomSlippage = exports.isHardwareWallet = exports.getSwapType = exports.getActionType = exports.getRequestParams = exports.formatProviderLabel = exports.UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY = exports.UnifiedSwapBridgeEventName = exports.BridgeController = void 0;
+-exports.selectIsQuoteExpired = exports.selectExchangeRateByChainIdAndAddress = void 0;
++exports.formatAddressToCaipReference = exports.formatChainIdToHex = exports.formatChainIdToCaip = exports.fetchBridgeTokens = exports.calcLatestSrcBalance = exports.formatEtaInMinutes = exports.isValidQuoteRequest = exports.isCrossChain = exports.getDefaultBridgeControllerState = exports.getNativeAssetForChainId = exports.isSolanaChainId = exports.isNativeAddress = exports.isEthUsdt = exports.getEthUsdtResetData = exports.SWAPS_API_V2_BASE_URL = exports.SWAPS_CHAINID_DEFAULT_TOKEN_MAP = exports.BRIDGE_PROD_API_BASE_URL = exports.BRIDGE_DEV_API_BASE_URL = exports.METABRIDGE_CHAIN_TO_ADDRESS_MAP = exports.DEFAULT_BRIDGE_CONTROLLER_STATE = exports.DEFAULT_MAX_REFRESH_COUNT = exports.REFRESH_INTERVAL_MS = exports.BRIDGE_MM_FEE_RATE = exports.BRIDGE_DEFAULT_SLIPPAGE = exports.BRIDGE_PREFERRED_GAS_ESTIMATE = exports.BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE = exports.BRIDGE_QUOTE_MAX_ETA_SECONDS = exports.BRIDGE_CONTROLLER_NAME = exports.BridgeClientId = exports.ALLOWED_BRIDGE_CHAIN_IDS = exports.FeeType = exports.BridgeBackgroundAction = exports.BridgeUserAction = exports.RequestStatus = exports.BridgeFeatureFlagsKey = exports.ChainId = exports.ActionTypes = exports.BridgeFlag = exports.SortOrder = exports.AssetType = exports.StatusTypes = exports.isCustomSlippage = exports.isHardwareWallet = exports.getSwapType = exports.getActionType = exports.getRequestParams = exports.formatProviderLabel = exports.UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY = exports.UnifiedSwapBridgeEventName = exports.BridgeController = void 0;
++exports.selectIsQuoteExpired = exports.selectExchangeRateByChainIdAndAddress = exports.selectBridgeQuotes = void 0;
+ var bridge_controller_1 = require("./bridge-controller.cjs");
+ Object.defineProperty(exports, "BridgeController", { enumerable: true, get: function () { return bridge_controller_1.BridgeController; } });
+ var constants_1 = require("./utils/metrics/constants.cjs");
+@@ -56,6 +56,7 @@ Object.defineProperty(exports, "isNativeAddress", { enumerable: true, get: funct
+ Object.defineProperty(exports, "isSolanaChainId", { enumerable: true, get: function () { return bridge_2.isSolanaChainId; } });
+ Object.defineProperty(exports, "getNativeAssetForChainId", { enumerable: true, get: function () { return bridge_2.getNativeAssetForChainId; } });
+ Object.defineProperty(exports, "getDefaultBridgeControllerState", { enumerable: true, get: function () { return bridge_2.getDefaultBridgeControllerState; } });
++Object.defineProperty(exports, "isCrossChain", { enumerable: true, get: function () { return bridge_2.isCrossChain; } });
+ var quote_1 = require("./utils/quote.cjs");
+ Object.defineProperty(exports, "isValidQuoteRequest", { enumerable: true, get: function () { return quote_1.isValidQuoteRequest; } });
+ Object.defineProperty(exports, "formatEtaInMinutes", { enumerable: true, get: function () { return quote_1.formatEtaInMinutes; } });
+diff --git a/dist/index.mjs b/dist/index.mjs
+index c39fd998a761974575945b79de74fc20cf326738..9e82362302b30a736d7af96ee9b894ff62fd2edd 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -4,18 +4,18 @@ export { formatProviderLabel, getRequestParams, getActionType, getSwapType, isHa
+ export { StatusTypes } from "./types.mjs";
+ export { AssetType, SortOrder, BridgeFlag, ActionTypes, ChainId, BridgeFeatureFlagsKey, RequestStatus, BridgeUserAction, BridgeBackgroundAction, FeeType } from "./types.mjs";
+ export { ALLOWED_BRIDGE_CHAIN_IDS, BridgeClientId, BRIDGE_CONTROLLER_NAME, BRIDGE_QUOTE_MAX_ETA_SECONDS, BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE, BRIDGE_PREFERRED_GAS_ESTIMATE, BRIDGE_DEFAULT_SLIPPAGE, BRIDGE_MM_FEE_RATE, REFRESH_INTERVAL_MS, DEFAULT_MAX_REFRESH_COUNT, DEFAULT_BRIDGE_CONTROLLER_STATE, METABRIDGE_CHAIN_TO_ADDRESS_MAP, BRIDGE_DEV_API_BASE_URL, BRIDGE_PROD_API_BASE_URL } from "./constants/bridge.mjs";
+-export { 
++export {
+ /**
+  * @deprecated This map should not be used. Use getNativeAssetForChainId" } instead.
+  */
+ SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from "./constants/tokens.mjs";
+ export { SWAPS_API_V2_BASE_URL } from "./constants/swaps.mjs";
+-export { getEthUsdtResetData, isEthUsdt, isNativeAddress, isSolanaChainId, getNativeAssetForChainId, getDefaultBridgeControllerState } from "./utils/bridge.mjs";
++export { getEthUsdtResetData, isEthUsdt, isNativeAddress, isSolanaChainId, getNativeAssetForChainId, getDefaultBridgeControllerState, isCrossChain } from "./utils/bridge.mjs";
+ export { isValidQuoteRequest, formatEtaInMinutes } from "./utils/quote.mjs";
+ export { calcLatestSrcBalance } from "./utils/balance.mjs";
+ export { fetchBridgeTokens } from "./utils/fetch.mjs";
+ export { formatChainIdToCaip, formatChainIdToHex, formatAddressToCaipReference } from "./utils/caip-formatters.mjs";
+-export { selectBridgeQuotes, selectExchangeRateByChainIdAndAddress, 
++export { selectBridgeQuotes, selectExchangeRateByChainIdAndAddress,
+ /**
+  * Returns whether a quote is expired
+  *
+diff --git a/dist/utils/bridge.cjs b/dist/utils/bridge.cjs
+index 0e090d70281e3d864c3582c68255d99b7584305b..0de591b77a38bef89b1bdaad77022f9f757ca3f5 100644
+--- a/dist/utils/bridge.cjs
++++ b/dist/utils/bridge.cjs
+@@ -1,6 +1,6 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.isSolanaChainId = exports.isNativeAddress = exports.isSwapsDefaultTokenSymbol = exports.isSwapsDefaultTokenAddress = exports.sumHexes = exports.isEthUsdt = exports.getEthUsdtResetData = exports.getNativeAssetForChainId = exports.getDefaultBridgeControllerState = void 0;
++exports.isCrossChain = exports.isSolanaChainId = exports.isNativeAddress = exports.isSwapsDefaultTokenSymbol = exports.isSwapsDefaultTokenAddress = exports.sumHexes = exports.isEthUsdt = exports.getEthUsdtResetData = exports.getNativeAssetForChainId = exports.getDefaultBridgeControllerState = void 0;
+ const constants_1 = require("@ethersproject/constants");
+ const contracts_1 = require("@ethersproject/contracts");
+ const keyring_api_1 = require("@metamask/keyring-api");
+@@ -128,4 +128,23 @@ const isSolanaChainId = (chainId) => {
+     return chainId.toString() === types_1.ChainId.SOLANA.toString();
+ };
+ exports.isSolanaChainId = isSolanaChainId;
++/**
++ * Checks whether the transaction is a cross-chain transaction by comparing the source and destination chainIds
++ *
++ * @param srcChainId - The source chainId
++ * @param destChainId - The destination chainId
++ * @returns Whether the transaction is a cross-chain transaction
++ */
++const isCrossChain = (srcChainId, destChainId) => {
++    try {
++        if (!destChainId) {
++            return false;
++        }
++        return (0, caip_formatters_1.formatChainIdToCaip)(srcChainId) !== (0, caip_formatters_1.formatChainIdToCaip)(destChainId);
++    }
++    catch {
++        return false;
++    }
++};
++exports.isCrossChain = isCrossChain;
+ //# sourceMappingURL=bridge.cjs.map
+diff --git a/dist/utils/bridge.mjs b/dist/utils/bridge.mjs
+index 6daf67405b6b4cec51cb3d5a9c08e72d9c29da9f..e5ad552a206641202165139ba0e8c910769f4a38 100644
+--- a/dist/utils/bridge.mjs
++++ b/dist/utils/bridge.mjs
+@@ -116,4 +116,22 @@ export const isSolanaChainId = (chainId) => {
+     }
+     return chainId.toString() === ChainId.SOLANA.toString();
+ };
++/**
++ * Checks whether the transaction is a cross-chain transaction by comparing the source and destination chainIds
++ *
++ * @param srcChainId - The source chainId
++ * @param destChainId - The destination chainId
++ * @returns Whether the transaction is a cross-chain transaction
++ */
++export const isCrossChain = (srcChainId, destChainId) => {
++    try {
++        if (!destChainId) {
++            return false;
++        }
++        return formatChainIdToCaip(srcChainId) !== formatChainIdToCaip(destChainId);
++    }
++    catch {
++        return false;
++    }
++};
+ //# sourceMappingURL=bridge.mjs.map
