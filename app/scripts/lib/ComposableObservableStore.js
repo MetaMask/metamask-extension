@@ -120,7 +120,7 @@ export default class ComposableObservableStore extends ObservableStore {
     config,
     CHUNK_SIZE = 512 * 1024,
   ) {
-    return getBinaryStateFrames.call(this, config, CHUNK_SIZE);
+    return getBinaryStateFrames.call(this, config, CHUNK_SIZE, "controller");
   }
 
   #onStateChange(controllerKey, newState) {

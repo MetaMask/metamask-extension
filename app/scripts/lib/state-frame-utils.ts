@@ -2,28 +2,22 @@
  *  Shared helpers: frame type, (de)chunking, per‑store generator
  * ─────────────────────────────────────────────────────────────────────── */
 
+import { Json } from '@metamask/utils';
+
 export const CHUNK_SIZE = 512 * 1024; // 512 KB (< any browser cap)
 
-/** Any payload fragment travelling through runtime.Port */
+/** Any payload fragment traveling through runtime.Port */
 export interface ChunkFrame {
-  id: string | number; // JSON‑RPC request id this frame belongs to
-  seq: number; // 0‑based slice index
-  total: number; // slice count
-  bin: boolean; // true → binary (Uint8Array), false → JSON
-  data: ArrayBuffer; // ≤ CHUNK_SIZE transferable
-  /** present only for per‑store streaming */
+  id: string | number;
+  seq: number;
+  total: number;
+  bin: boolean; // always false in the JSON‑only path
+  data: number[]; // plain numbers so Port.postMessage can serialize
   store?: string;
 }
 
 export const isChunkFrame = (x: unknown): x is ChunkFrame =>
   !!x && typeof x === 'object' && 'seq' in x && 'total' in x && 'data' in x;
-
-export const isPerStoreChunkFrame = (
-  x: unknown,
-): x is ChunkFrame & { store: string } =>
-  isChunkFrame(x) &&
-  'store' in x &&
-  typeof (x as { store: unknown }).store === 'string';
 
 /* -- concat helper ------------------------------------------------------ */
 export function concat(parts: Uint8Array[]): Uint8Array {
@@ -37,35 +31,25 @@ export function concat(parts: Uint8Array[]): Uint8Array {
   return out;
 }
 
-/* -- general‑purpose chunker (JSON or binary) --------------------------- */
 export function* toFrames(
   id: string | number,
-  payload: unknown,
+  payload: Json, // ← no “name” requirement
 ): Generator<ChunkFrame> {
-  let bytes: Uint8Array;
-  let bin = false;
+  const bytes = new TextEncoder().encode(JSON.stringify(payload));
+  const len = bytes.byteLength;
+  if (len === 0) return; // nothing to send
 
-  if (payload instanceof ArrayBuffer || ArrayBuffer.isView(payload)) {
-    bin = true;
-    bytes =
-      payload instanceof ArrayBuffer
-        ? new Uint8Array(payload)
-        : new Uint8Array(
-            payload.buffer,
-            (payload as ArrayBufferView).byteOffset,
-            (payload as ArrayBufferView).byteLength,
-          );
-  } else {
-    bytes = new TextEncoder().encode(JSON.stringify(payload));
-  }
-
-  const total = Math.ceil(bytes.byteLength / CHUNK_SIZE) || 1;
+  const total = Math.ceil(len / CHUNK_SIZE);
   for (let seq = 0; seq < total; seq++) {
-    const slice = bytes.subarray(
-      seq * CHUNK_SIZE,
-      Math.min((seq + 1) * CHUNK_SIZE, bytes.byteLength),
-    );
-    yield { id, seq, total, bin, data: slice.buffer };
+    const start = seq * CHUNK_SIZE;
+    const end = Math.min(start + CHUNK_SIZE, len);
+    yield {
+      id,
+      seq,
+      total,
+      bin: false,
+      data: Array.from(bytes.subarray(start, end)),
+    };
   }
 }
 
@@ -75,13 +59,16 @@ export function* getBinaryStateFrames(
   config: Record<string, { getState?: () => any; state?: any }>,
   id: string | number,
 ): Generator<ChunkFrame> {
+  throw new Error("this isn't used yet");
   for (const controller of Object.keys(this.config)) {
     const store = config[controller];
     const obj =
       typeof store.getState === 'function' ? store.getState() : store.state;
 
     const bytes = new TextEncoder().encode(JSON.stringify(obj));
-    const total = Math.ceil(bytes.byteLength / CHUNK_SIZE) || 1;
+    const len = bytes.byteLength;
+    if (len === 0) continue;
+    const total = Math.ceil(len / CHUNK_SIZE);
 
     for (let seq = 0; seq < total; seq++) {
       const slice = bytes.subarray(
@@ -93,9 +80,12 @@ export function* getBinaryStateFrames(
         seq,
         total,
         bin: false,
-        data: slice.buffer,
+        data: Array.from(slice),
         store: controller,
       };
     }
   }
 }
+
+export const toUint8 = (data: any): Uint8Array =>
+  data instanceof ArrayBuffer ? new Uint8Array(data) : Uint8Array.from(data);

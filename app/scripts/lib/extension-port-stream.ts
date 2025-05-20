@@ -1,138 +1,155 @@
+import type { Json } from '@metamask/utils';
 import { Duplex, DuplexOptions } from 'readable-stream';
 import type { Runtime } from 'webextension-polyfill';
-
 import {
-  type ChunkFrame,
+  ChunkFrame,
   isChunkFrame,
   toFrames,
   concat,
+  toUint8,
 } from './state-frame-utils';
+import { v4 as uuidv4 } from 'uuid';
 
-export type Log = (data: unknown, outgoing: boolean) => void;
-
-interface Options extends DuplexOptions {
-  /** optional console/logger hook */
-  log?: Log;
-  /** max size for each transferable slice (default: state-frame-utils.CHUNK_SIZE) */
-  chunkSize?: number;
+export interface Options extends DuplexOptions {
+  log?: (data: unknown, outgoing: boolean) => void;
+  debug?: boolean; // 🆕
 }
 
+const TAG = '%cPortStream';
+const STYLE_IN = 'color:#0b8;'; // inbound
+const STYLE_OUT = 'color:#08f;'; // outbound
+const STYLE_SYS = 'color:#888;'; // system
+
 export default class PortDuplexStream extends Duplex {
-  private readonly _port: Runtime.Port;
-  private _log: Log;
-  private readonly _buffer = new Map<
+  private readonly port: Runtime.Port;
+  private readonly buffer = new Map<
     string | number,
     { parts: Uint8Array[]; total: number; bin: boolean }
   >();
+  private log: (d: unknown, out: boolean) => void;
+  private debug = false;
 
-  /**
-   * @param port - An instance of WebExtensions Runtime.Port. See:
-   * {@link https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/Port}
-   * @param streamOptions - stream options passed on to Duplex stream constructor
-   */
-  constructor(port: Runtime.Port, streamOptions: Options = {}) {
-    super({
-      objectMode: true,
-      ...streamOptions,
-    });
+  constructor(port: Runtime.Port, opts: Options = {}) {
+    super({ objectMode: true, ...opts });
 
-    this._port = port;
-    this._port.onMessage.addListener((msg: unknown) => this._onMessage(msg));
-    this._port.onDisconnect.addListener(() => this.destroy());
-    this._log = streamOptions.log ?? (() => null);
+    this.port = port;
+    // default to false
+    this.debug = !!opts.debug;
+    this.log = opts.log ?? (() => undefined);
+
+    port.onMessage.addListener((msg) => this.onMessage(msg));
+    port.onDisconnect.addListener(() => this.onDisconnect());
+
+    if (this.debug) {
+      console.debug(TAG, STYLE_SYS, '🛠  debug mode ON');
+    }
   }
 
-  /**
-   * Callback triggered when a message is received from
-   * the remote Port associated with this Stream.
-   *
-   * @param msg - Payload from the onMessage listener of the port
-   */
-  private _onMessage(msg: ChunkFrame | unknown) {
+  /* ------------------------------------------------------------------ */
+  /*                     Duplex Read side (inbound)                     */
+  /* ------------------------------------------------------------------ */
+
+  private onMessage(msg: unknown) {
+    if (this.debug) {
+      console.debug(TAG, STYLE_IN, '← raw', msg);
+    }
+
     if (isChunkFrame(msg)) {
-      const { id, seq, total, bin, data } = msg;
-      const entry = this._buffer.get(id) ?? {
-        parts: new Array(total),
-        total,
-        bin,
-      };
-      entry.parts[seq] = new Uint8Array(data);
-      this._buffer.set(id, entry);
-
-      if (entry.parts.filter(Boolean).length === total) {
-        const merged = concat(entry.parts);
-        this._buffer.delete(id);
-
-        const value = bin
-          ? merged
-          : JSON.parse(new TextDecoder().decode(merged) || '{}');
-
-        this._log(value, false);
-        this.push(value);
-        this.emit('data', value); // for legacy listeners
-      }
+      this.handleChunk(msg);
       return;
     }
 
-    // normal small message
-    if (Buffer.isBuffer(msg)) {
-      const data: Buffer = Buffer.from(msg);
-      this._log(data, false);
-      this.push(data);
-    } else {
-      this._log(msg, false);
-      this.push(msg);
+    // small un‑framed message
+    this.log(msg, false);
+    this.push(msg);
+    this.emit('message', msg);
+  }
+
+  private handleChunk(frame: ChunkFrame) {
+    const { id, seq, total, bin, data } = frame;
+
+    if (this.debug) {
+      console.debug(
+        TAG,
+        STYLE_IN,
+        `← frame #${seq + 1}/${total} id=${id} (${data.length} bytes)`,
+      );
+    }
+
+    const entry = this.buffer.get(id) ?? {
+      parts: new Array(total),
+      total,
+      bin,
+    };
+    entry.parts[seq] = toUint8(data);
+    this.buffer.set(id, entry);
+
+    if (entry.parts.filter(Boolean).length === total) {
+      const merged = concat(entry.parts);
+      this.buffer.delete(id);
+
+      const txt = new TextDecoder().decode(merged);
+      const value = bin ? merged : txt ? JSON.parse(txt) : '';
+
+      if (this.debug) {
+        console.debug(
+          TAG,
+          STYLE_IN,
+          `✔ re‑assembled id=${id} (${merged.byteLength} bytes)`,
+        );
+      }
+
+      this.log(value, false);
+      this.push(value);
+      this.emit('message', value);
     }
   }
 
-  /**
-   * Callback triggered when the remote Port associated with this Stream
-   * disconnects.
-   */
-  private _onDisconnect(): void {
+  private onDisconnect() {
+    if (this.debug) console.debug(TAG, STYLE_SYS, '✖ port disconnected');
     this.destroy();
   }
 
-  /**
-   * Explicitly sets read operations to a no-op.
-   */
-  _read(): void {
-    return undefined;
+  _read() {
+    /* no‑op – push happens in onMessage */
   }
 
-  /* ───────── Writable side (stream → browser) ──────────────────────── */
+  /* ------------------------------------------------------------------ */
+  /*                    Duplex Write side (outbound)                    */
+  /* ------------------------------------------------------------------ */
+
   override _write(
-    chunk: unknown,
-    _encoding: BufferEncoding,
-    callback: (error?: Error | null) => void,
+    chunk: ChunkFrame | Json,
+    _enc: BufferEncoding,
+    cb: (err?: Error | null) => void,
   ) {
+    const send = (obj: unknown) => {
+      if (this.debug) console.debug(TAG, STYLE_OUT, '→', obj);
+      this.port.postMessage(obj as any);
+    };
+
     try {
-      // If caller passed a pre‑framed ChunkFrame, emit as‑is
       if (isChunkFrame(chunk)) {
-        this._port.postMessage(chunk as any);
+        send(chunk);
       } else {
-        // otherwise frame it automatically
-        const id = (chunk as any)?.id ?? Date.now() + Math.random();
-        for (const frame of toFrames(id, chunk)) {
-          this._port.postMessage(frame);
-        }
+        const id = uuidv4();
+        for (const frame of toFrames(id, chunk as Json)) send(frame);
       }
-      this._log(chunk, true);
-      callback();
+      this.log(chunk, true);
+      cb();
     } catch (err) {
-      callback(
-        new Error('PortDuplexStream – write failed (port may be disconnected)'),
-      );
+      if (this.debug) console.debug(TAG, STYLE_SYS, '⚠ write error', err);
+      cb(new Error('PortStream write failed'));
     }
   }
 
-  /**
-   * Call to set a custom logger for incoming/outgoing messages
-   *
-   * @param log - the logger function
-   */
-  _setLogger(log: Log) {
-    this._log = log;
+  /* ------------------------------------------------------------------ */
+  /*                         Utility helpers                            */
+  /* ------------------------------------------------------------------ */
+
+  /** swap logger at runtime */
+  setLogger(fn: (d: unknown, out: boolean) => void) {
+    this.log = fn;
   }
 }
 
