@@ -2514,6 +2514,10 @@ export function getShowTermsOfUse(state) {
   );
 }
 
+export function getUpgradeSplashPageAcknowledgedForAccounts(state) {
+  return state.metamask.upgradeSplashPageAcknowledgedForAccounts;
+}
+
 export function getLastViewedUserSurvey(state) {
   return state.metamask.lastViewedUserSurvey;
 }

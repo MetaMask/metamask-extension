@@ -12,7 +12,7 @@ import {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
-import { Json } from '@metamask/utils';
+import { Hex, Json } from '@metamask/utils';
 import { Browser } from 'webextension-polyfill';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
@@ -86,6 +86,7 @@ export type AppStateControllerState = {
   custodianDeepLink?: { fromAddress: string; custodyId: string };
   slides: CarouselSlide[];
   throttledOrigins: ThrottledOrigins;
+  upgradeSplashPageAcknowledgedForAccounts: string[];
 };
 
 const controllerName = 'AppStateController';
@@ -199,6 +200,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   switchedNetworkNeverShowMessage: false,
   slides: [],
   throttledOrigins: {},
+  upgradeSplashPageAcknowledgedForAccounts: [],
   ...getInitialStateOverrides(),
 });
 
@@ -366,6 +368,10 @@ const controllerMetadata = {
     anonymous: true,
   },
   throttledOrigins: {
+    persist: false,
+    anonymous: true,
+  },
+  upgradeSplashPageAcknowledgedForAccounts: {
     persist: false,
     anonymous: true,
   },
@@ -656,6 +662,20 @@ export class AppStateController extends BaseController<
    */
   setLastActiveTime(): void {
     this.#resetTimer();
+  }
+
+  /**
+   * Add account to list of accounts for which user has acknowledged
+   * smart account upgrade splash page.
+   * @param account
+   */
+  setSplashPageAcknowledgedForAccount(account: string): void {
+    this.update((state) => {
+      state.upgradeSplashPageAcknowledgedForAccounts = [
+        ...state.upgradeSplashPageAcknowledgedForAccounts,
+        account,
+      ];
+    });
   }
 
   /**

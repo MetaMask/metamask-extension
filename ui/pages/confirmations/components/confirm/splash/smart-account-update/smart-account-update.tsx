@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useCallback, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
@@ -29,6 +29,9 @@ import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import Name from '../../../../../../components/app/name';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useSmartAccountActions } from '../../../../hooks/useSmartAccountActions';
+import { setSplashPageAcknowledgedForAccount } from '../../../../../../store/actions';
+import { useSelector } from 'react-redux';
+import { getUpgradeSplashPageAcknowledgedForAccounts } from '../../../../../../selectors';
 
 const ListItem = ({
   imgSrc,
@@ -69,11 +72,24 @@ export function SmartAccountUpdate() {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { handleRejectUpgrade } = useSmartAccountActions();
+  const splashPageAcknewledgedForAccountList: string[] = useSelector(
+    getUpgradeSplashPageAcknowledgedForAccounts,
+  );
 
   const { chainId, txParams, origin } = currentConfirmation ?? {};
   const { from } = txParams;
 
-  if (!currentConfirmation || acknowledged || origin === ORIGIN_METAMASK) {
+  const acknowledgeSmartAccountUpgrade = useCallback(() => {
+    setSplashPageAcknowledgedForAccount(from.toLowerCase());
+    setAcknowledged(true);
+  }, []);
+
+  if (
+    !currentConfirmation ||
+    acknowledged ||
+    origin === ORIGIN_METAMASK ||
+    splashPageAcknewledgedForAccountList.includes(from.toLowerCase())
+  ) {
     return null;
   }
 
@@ -162,7 +178,7 @@ export function SmartAccountUpdate() {
         <Button
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
-          onClick={() => setAcknowledged(true)}
+          onClick={acknowledgeSmartAccountUpgrade}
           width={BlockSize.Full}
         >
           {t('smartAccountAccept')}
