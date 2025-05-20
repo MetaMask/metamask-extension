@@ -13,7 +13,9 @@ describe('DeFiSymbolGroup', () => {
   });
 
   it('renders correctly with one symbol', () => {
-    (useI18nContext as jest.Mock).mockReturnValue(() => '');
+    (useI18nContext as jest.Mock).mockReturnValue((key: string) =>
+      key === 'only' ? 'only' : '',
+    );
     const { getByTestId } = render(
       <DeFiSymbolGroup symbols={['ETH']} privacyMode={false} />,
     );

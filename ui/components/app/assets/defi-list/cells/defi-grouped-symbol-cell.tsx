@@ -20,7 +20,7 @@ export function DeFiSymbolGroup({
 
   const buildSymbolGroup = (defiSymbols: string[]): string => {
     if (defiSymbols.length === 1) {
-      return `${defiSymbols[0]} only`;
+      return `${defiSymbols[0]} ${t('only')}`;
     }
 
     if (defiSymbols.length === 2) {
