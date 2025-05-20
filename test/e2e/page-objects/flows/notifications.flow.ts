@@ -62,9 +62,23 @@ export const enableNotificationsThroughSettingsPage = async (
 
   const notificationsSettingsPage = new NotificationsSettingsPage(driver);
   await notificationsSettingsPage.check_pageIsLoaded();
-  await notificationsSettingsPage.clickNotificationToggle({
-    toggleType: 'general',
-  });
+
+  const isEnabled = await notificationsSettingsPage
+    .check_notificationState({
+      toggleType: 'general',
+      expectedState: 'enabled',
+    })
+    .then(() => true)
+    .catch(() => false);
+
+  if (isEnabled) {
+    console.log('Notifications are already enabled.');
+  } else {
+    console.log('Notifications are not enabled. Enabling now.');
+    await notificationsSettingsPage.clickNotificationToggle({
+      toggleType: 'general',
+    });
+  }
 };
 
 /**

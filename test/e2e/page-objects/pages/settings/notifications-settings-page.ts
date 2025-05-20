@@ -134,19 +134,33 @@ class NotificationsSettingsPage {
     );
     const expectedValue = expectedState === 'enabled' ? 'true' : 'false';
 
+    const maxRetries = 5;
+    const retryInterval = 1000; // 1 second
+    let attempts = 0;
+
     try {
       await this.driver.waitForElementToStopMoving(selector);
-      await this.driver.wait(async () => {
+      while (attempts < maxRetries) {
         const toggle = await this.driver.findElement(selector);
-        return (await toggle.getAttribute('value')) === expectedValue;
-      });
-      console.log(
-        `Successfully verified ${toggleType} notifications ${description} to be ${expectedState}`,
-      );
-    } catch (error) {
+        if ((await toggle.getAttribute('value')) === expectedValue) {
+          console.log(
+            `Successfully verified ${toggleType} notifications ${description} to be ${expectedState}`,
+          );
+          return;
+        }
+        attempts += 1;
+        await new Promise((resolve) => setTimeout(resolve, retryInterval));
+      }
       throw new Error(
         `Expected ${toggleType} notifications ${description} state to be: ${expectedState}`,
       );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(
+          `Failed to verify ${toggleType} notifications ${description} state: ${error.message}`,
+        );
+      }
+      throw error;
     }
   }
 
