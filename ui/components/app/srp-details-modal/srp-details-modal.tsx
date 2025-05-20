@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import {
+  AlignItems,
   Display,
   TextAlign,
   TextVariant,
@@ -28,7 +29,7 @@ export default function SRPDetailsModal({ onClose }: { onClose: () => void }) {
       data-testid="srp-details-modal"
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent alignItems={AlignItems.center}>
         <ModalHeader onClose={onClose}>
           <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
             {t('srpDetailsTitle')}
@@ -39,29 +40,24 @@ export default function SRPDetailsModal({ onClose }: { onClose: () => void }) {
           <Text variant={TextVariant.bodyMd} marginTop={4}>
             {t('srpDetailsOwnsAccessListTitle')}
           </Text>
-          <Box as="ul" className="srp-details-modal__owning-access-list">
-            <Box as="li">
-              <Text variant={TextVariant.bodyMd}>
-                {t('srpDetailsOwnsAccessListItemOne')}
-              </Text>
-            </Box>
-            <Box as="li">
-              <Text variant={TextVariant.bodyMd}>
-                {t('srpDetailsOwnsAccessListItemTwo')}
-              </Text>
-            </Box>
-            <Box as="li">
-              <Text variant={TextVariant.bodyMd}>
-                {t('srpDetailsOwnsAccessListItemThree')}
-              </Text>
-            </Box>
+          <Box
+            as="ul"
+            className="srp-details-modal__owning-access-list"
+            paddingLeft={6}
+            style={{ listStyleType: 'disc' }}
+          >
+            <Text as="li" variant={TextVariant.bodyMd}>
+              {t('srpDetailsOwnsAccessListItemOne')}
+            </Text>
+            <Text as="li" variant={TextVariant.bodyMd}>
+              {t('srpDetailsOwnsAccessListItemTwo')}
+            </Text>
+            <Text as="li" variant={TextVariant.bodyMd}>
+              {t('srpDetailsOwnsAccessListItemThree')}
+            </Text>
           </Box>
           <Box display={Display.Flex} marginTop={6} gap={2}>
-            <ButtonPrimary
-              size={ButtonPrimarySize.Lg}
-              onClick={() => onClose()}
-              block
-            >
+            <ButtonPrimary size={ButtonPrimarySize.Lg} onClick={onClose} block>
               {t('gotIt')}
             </ButtonPrimary>
           </Box>

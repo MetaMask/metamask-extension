@@ -55,10 +55,9 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
 
   const handleDebouncedScroll = debounce((target) => {
     const termsReachedBottom =
-      target.scrollHeight - target.scrollTop !== target.clientHeight;
-    setShouldShowScrollButton(termsReachedBottom);
-
-    if (shouldShowScrollButton && !isScrolledToBottom) {
+      target.scrollHeight - target.scrollTop === target.clientHeight;
+    setShouldShowScrollButton(!termsReachedBottom);
+    if (termsReachedBottom && !isScrolledToBottom) {
       setIsScrolledToBottom(true);
     }
   }, 100);
@@ -83,10 +82,11 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
       isOpen
       onClose={onClose}
       isClosedOnOutsideClick={false}
+      autoFocus={false}
       className="terms-of-use-popup"
     >
       <ModalOverlay />
-      <ModalContent size={ModalContentSize.Md}>
+      <ModalContent size={ModalContentSize.Md} alignItems={AlignItems.center}>
         <ModalHeader onClose={onClose}>
           <Text textAlign={TextAlign.Center} variant={TextVariant.headingMd}>
             {t('termsOfUseTitle')}
@@ -1181,7 +1181,7 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
               “Third-Party Content” means Content made available to you by any
               third party on the Site or in conjunction with the Offerings.
             </Text>
-            <Text variant={TextVariant.bodySm} marginBottom={4} ref={bottomRef}>
+            <Text variant={TextVariant.bodySm} marginBottom={4}>
               “Your Content” means content that you or any End User transfers to
               us, storage or hosting by the Offerings in connection with account
               and any computational results that you or any End User derive from
@@ -1193,7 +1193,7 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
             <div ref={bottomRef} />
           </Box>
           {shouldShowScrollButton && (
-            <div className="terms-of-use-popup__scroll-button-container">
+            <Box className="terms-of-use-popup__scroll-button-container">
               <ButtonIcon
                 backgroundColor={BackgroundColor.primaryMuted}
                 iconName={IconName.ArrowDown}
@@ -1204,17 +1204,18 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
                 className="terms-of-use-popup__scroll-button"
                 data-testid="terms-of-use-scroll-button"
               />
-            </div>
+            </Box>
           )}
         </Box>
         {/* Not using ModalFooter since the confirm button text can't be changed to `agree`*/}
         <Box
+          className="terms-of-use-popup__footer"
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.center}
           marginTop={6}
-          marginLeft={4}
-          marginRight={4}
+          marginInline={4}
+          paddingTop={6}
           gap={6}
         >
           <Checkbox

@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -7,11 +8,7 @@ import {
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
-  getCurrentKeyring,
-  getFirstTimeFlowType,
-  getShowTermsOfUse,
-} from '../../../selectors';
+import { getCurrentKeyring, getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { setFirstTimeFlowType } from '../../../store/actions';
@@ -29,20 +26,17 @@ const WelcomePageState = {
   Login: 'Login',
 };
 
-export default function OnboardingWelcome() {
+export default function OnboardingWelcome({
+  pageState = WelcomePageState.Banner,
+  setPageState,
+}) {
   const dispatch = useDispatch();
   const history = useHistory();
   const currentKeyring = useSelector(getCurrentKeyring);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const showTermsOfUse = useSelector(getShowTermsOfUse);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
 
-  // If the user has not agreed to the terms of use, we show the banner
-  // Otherwise, we show the login page
-  const [pageState, setPageState] = useState(
-    showTermsOfUse ? WelcomePageState.Banner : WelcomePageState.Login,
-  );
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   // Don't allow users to come back to this screen after they
@@ -112,26 +106,6 @@ export default function OnboardingWelcome() {
     }
   };
 
-  useEffect(() => {
-    const container = document.getElementById('app-content');
-    if (container) {
-      if (pageState === WelcomePageState.Banner) {
-        container.classList.remove('app-content--welcome-login');
-        container.classList.add('app-content--welcome-banner');
-      } else {
-        container.classList.remove('app-content--welcome-banner');
-        container.classList.add('app-content--welcome-login');
-      }
-    }
-
-    return () => {
-      if (container) {
-        container.classList.remove('app-content--welcome-banner');
-        container.classList.remove('app-content--welcome-login');
-      }
-    };
-  }, [pageState]);
-
   return (
     <>
       {pageState === WelcomePageState.Banner && (
@@ -144,3 +118,8 @@ export default function OnboardingWelcome() {
     </>
   );
 }
+
+OnboardingWelcome.propTypes = {
+  pageState: PropTypes.oneOf(Object.values(WelcomePageState)).isRequired,
+  setPageState: PropTypes.func.isRequired,
+};

@@ -27,10 +27,6 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
-  const [passwordStrength, setPasswordStrength] = useState(
-    t('passwordNotLongEnough'),
-  );
-
   const getPasswordStrengthLabel = (isTooShort: boolean, score: number) => {
     if (isTooShort) {
       return {
@@ -64,23 +60,44 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
     };
   };
 
+  const [passwordStrength, setPasswordStrength] = useState(() => {
+    const passwordStrengthLabel = getPasswordStrengthLabel(true, 0);
+    return (
+      <Text
+        variant={TextVariant.inherit}
+        as="span"
+        key={0}
+        data-testid={passwordStrengthLabel.dataTestId}
+      >
+        {passwordStrengthLabel.text}
+      </Text>
+    );
+  });
+
   const handlePasswordChange = (passwordInput: string) => {
     const isTooShort = passwordInput.length < PASSWORD_MIN_LENGTH;
     const { score } = zxcvbn(passwordInput);
     const passwordStrengthLabel = getPasswordStrengthLabel(isTooShort, score);
     const passwordStrengthComponent = isTooShort ? (
-      <span key={score} data-testid={passwordStrengthLabel.dataTestId}>
+      <Text
+        variant={TextVariant.inherit}
+        as="span"
+        key={score}
+        data-testid={passwordStrengthLabel.dataTestId}
+      >
         {passwordStrengthLabel.text}
-      </span>
+      </Text>
     ) : (
       t('passwordStrength', [
-        <span
+        <Text
+          variant={TextVariant.inherit}
+          as="span"
           key={score}
           data-testid={passwordStrengthLabel.dataTestId}
           className={passwordStrengthLabel.className}
         >
           {passwordStrengthLabel.text}
-        </span>,
+        </Text>,
       ])
     );
 

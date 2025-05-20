@@ -80,7 +80,7 @@ export default function SkipSRPBackup({
       data-testid="skip-srp-backup-modal"
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent alignItems={AlignItems.center}>
         <ModalHeader onClose={onClose}>
           <Box textAlign={TextAlign.Center}>
             <Icon
