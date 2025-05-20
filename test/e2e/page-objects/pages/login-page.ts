@@ -22,7 +22,7 @@ class LoginPage {
     };
     this.forgotPasswordButton = {
       text: 'Forgot password?',
-      tag: 'a',
+      tag: 'button',
     };
   }
 
