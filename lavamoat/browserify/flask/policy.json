@@ -1134,14 +1134,6 @@
         "immer": true
       }
     },
-    "@metamask/selected-network-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
     "@metamask/bridge-controller": {
       "globals": {
         "AbortController": true,
@@ -1158,7 +1150,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/multichain-network-controller": true,
+        "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1778,6 +1770,20 @@
         "@metamask/multichain-network-controller>@solana/addresses": true
       }
     },
+    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/keyring-api": true,
+        "@metamask/network-controller": true,
+        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses": true,
+        "lodash": true
+      }
+    },
     "@metamask/multichain-transactions-controller": {
       "globals": {
         "console.error": true
@@ -2072,7 +2078,7 @@
     },
     "@metamask/selected-network-controller": {
       "packages": {
-        "@metamask/selected-network-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true
       }
     },
@@ -2788,6 +2794,20 @@
       }
     },
     "@metamask/multichain-network-controller>@solana/addresses": {
+      "globals": {
+        "Intl.Collator": true,
+        "TextEncoder": true,
+        "crypto.subtle.digest": true,
+        "crypto.subtle.exportKey": true
+      },
+      "packages": {
+        "@metamask/multichain-network-controller>@solana/addresses>@solana/assertions": true,
+        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-core": true,
+        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-strings": true,
+        "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses": {
       "globals": {
         "Intl.Collator": true,
         "TextEncoder": true,
