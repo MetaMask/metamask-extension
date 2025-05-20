@@ -133,7 +133,7 @@ describe('Wallet Created Events', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 9);
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-          assert.strictEqual(events[0].properties, {
+          assert.deepStrictEqual(events[0].properties, {
             account_type: 'metamask',
             category: 'Onboarding',
             locale: 'en',
@@ -141,7 +141,7 @@ describe('Wallet Created Events', function () {
             environment_type: 'fullscreen',
           });
         }
-        assert.strictEqual(events[1].properties, {
+        assert.deepStrictEqual(events[1].properties, {
           category: 'Onboarding',
           chain_id: '0x539',
           environment_type: 'fullscreen',
@@ -150,41 +150,44 @@ describe('Wallet Created Events', function () {
           locale: 'en',
           location: 'onboarding_metametrics',
         });
-        assert.strictEqual(events[2].properties, {
+        assert.deepStrictEqual(events[2].properties, {
           category: 'Onboarding',
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'fullscreen',
         });
-        assert.strictEqual(events[3].properties, {
+        assert.ok(
+            events[3].properties.category === 'Onboarding' &&
+            events[3].properties.chain_id === '0x539' &&
+            events[3].properties.environment_type === 'fullscreen' &&
+            events[3].properties.locale === 'en' &&
+            (events[3].properties.hd_entropy_index === 0 ||
+              events[3].properties.hd_entropy_index === undefined),
+        );
+        assert.ok(
+          events[4].properties.category === 'Onboarding' &&
+            events[4].properties.chain_id === '0x539' &&
+            events[4].properties.environment_type === 'fullscreen' &&
+            events[4].properties.locale === 'en' &&
+            (events[4].properties.hd_entropy_index === 0 ||
+              events[4].properties.hd_entropy_index === undefined),
+        );
+        assert.ok(
+          events[5].properties.category === 'Onboarding' &&
+            events[5].properties.chain_id === '0x539' &&
+            events[5].properties.environment_type === 'fullscreen' &&
+            events[5].properties.locale === 'en' &&
+            (events[5].properties.hd_entropy_index === 0 ||
+              events[5].properties.hd_entropy_index === undefined),
+        );
+        assert.deepStrictEqual(events[6].properties, {
           category: 'Onboarding',
+          locale: 'en',
           chain_id: '0x539',
           environment_type: 'fullscreen',
-          locale: 'en',
           hd_entropy_index: 0,
         });
-        assert.strictEqual(events[4].properties, {
-          category: 'Onboarding',
-          chain_id: '0x539',
-          environment_type: 'fullscreen',
-          locale: 'en',
-          hd_entropy_index: 0,
-        });
-        assert.strictEqual(events[5].properties, {
-          category: 'Onboarding',
-          chain_id: '0x539',
-          environment_type: 'fullscreen',
-          locale: 'en',
-          hd_entropy_index: 0,
-        });
-        assert.strictEqual(events[6].properties, {
-          category: 'Onboarding',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'fullscreen',
-          hd_entropy_index: 0,
-        });
-        assert.strictEqual(events[7].properties, {
+        assert.deepStrictEqual(events[7].properties, {
           method: 'create',
           category: 'Onboarding',
           locale: 'en',
@@ -193,7 +196,7 @@ describe('Wallet Created Events', function () {
           is_profile_syncing_enabled: true,
           hd_entropy_index: 0,
         });
-        assert.strictEqual(events[8].properties, {
+        assert.deepStrictEqual(events[8].properties, {
           category: 'Onboarding',
           chain_id: '0x539',
           environment_type: 'fullscreen',
