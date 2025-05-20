@@ -22,10 +22,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 import { getPreferences, getSelectedAccount } from '../../../selectors';
-import { getDefiPositions } from '../../../components/app/assets/defi-list/defi-list';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { formatWithThreshold } from '../../../components/app/assets/util/formatWithThreshold';
 import { AssetCellBadge } from '../../../components/app/assets/asset-list/cells/asset-cell-badge';
+import { getDefiPositions } from '../../../selectors/assets';
 import DefiDetailsList, {
   PositionTypeKeys,
   PositionTypeLabels,

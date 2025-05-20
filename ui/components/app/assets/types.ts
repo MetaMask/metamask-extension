@@ -72,7 +72,7 @@ export type SymbolCurrencyRateMapping = Record<string, Record<string, number>>;
 export type DeFiProtocolPosition = {
   chainId: Hex;
   tokenImage: string;
-  symbolGroup: string;
+  underlyingSymbols: string[];
   marketValue: string;
   title: string;
   protocolId: string;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useTokenDisplayInfo } from '../hooks';
@@ -66,6 +66,14 @@ export default function TokenCell({
     fixCurrencyToUSD,
   });
 
+  const displayToken = useMemo(
+    () => ({
+      ...token,
+      ...tokenDisplayInfo,
+    }),
+    [token, tokenDisplayInfo],
+  );
+
   const handleScamWarningModal = (arg: boolean) => {
     setShowScamWarningModal(arg);
   };
@@ -79,23 +87,19 @@ export default function TokenCell({
       <GenericAssetCellLayout
         onClick={showScamWarningModal ? undefined : onClick}
         disableHover={disableHover}
-        badge={<AssetCellBadge {...{ ...token, ...tokenDisplayInfo }} />}
-        headerLeftDisplay={
-          <TokenCellTitle token={{ ...token, ...tokenDisplayInfo }} />
-        }
+        badge={<AssetCellBadge {...displayToken} />}
+        headerLeftDisplay={<TokenCellTitle token={displayToken} />}
         headerRightDisplay={
           <TokenCellSecondaryDisplay
-            token={{ ...token, ...tokenDisplayInfo }}
+            token={displayToken}
             handleScamWarningModal={handleScamWarningModal}
             privacyMode={privacyMode}
           />
         }
-        footerLeftDisplay={
-          <TokenCellPercentChange token={{ ...token, ...tokenDisplayInfo }} />
-        }
+        footerLeftDisplay={<TokenCellPercentChange token={displayToken} />}
         footerRightDisplay={
           <TokenCellPrimaryDisplay
-            token={{ ...token, ...tokenDisplayInfo }}
+            token={displayToken}
             privacyMode={privacyMode}
           />
         }

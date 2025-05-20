@@ -3912,6 +3912,9 @@
   "onekey": {
     "message": "OneKey"
   },
+  "only": {
+    "message": "only"
+  },
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3942,9 +3945,15 @@
   "osTheme": {
     "message": "System"
   },
+  "other": {
+    "message": "other"
+  },
   "otherSnaps": {
     "message": "other snaps",
     "description": "Used in the 'permission_rpc' message."
+  },
+  "others": {
+    "message": "others"
   },
   "outdatedBrowserNotification": {
     "message": "Your browser is out of date. If you don't update your browser, you won't be able to get security patches and new features from MetaMask."

@@ -19,7 +19,6 @@ import { formatWithThreshold } from '../util/formatWithThreshold';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 
 import { extractUniqueIconAndSymbols } from '../util/extractIconAndSymbol';
-import { buildSymbolGroup } from '../util/buildSymbolGroup';
 import { getDefiPositions } from '../../../../selectors/assets';
 import { DeFiProtocolPosition } from '../types';
 import { DeFiErrorMessage } from './cells/defi-error-message';
@@ -76,7 +75,7 @@ export default function DefiList({ onClick }: DefiListProps) {
           protocolId,
           title: protocolName,
           tokenImage: iconUrl,
-          symbolGroup: buildSymbolGroup(iconGroup.map(({ symbol }) => symbol)),
+          underlyingSymbols: iconGroup.map(({ symbol }) => symbol),
           marketValue: formatWithThreshold(marketValue, 0.01, locale, {
             style: 'currency',
             currency: 'USD',

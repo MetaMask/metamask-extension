@@ -29,9 +29,7 @@ export const AssetCellBadge = React.memo(
 
     const avatarTokenSrc =
       isEvm && isNative ? getNativeCurrencyForChain(chainId) : tokenImage;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    const badgeWrapperSrc = getImageForChainId(chainId) || undefined;
+    const badgeWrapperSrc = getImageForChainId(chainId) ?? undefined;
 
     return (
       <BadgeWrapper

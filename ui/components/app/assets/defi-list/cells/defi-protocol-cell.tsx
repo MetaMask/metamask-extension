@@ -5,13 +5,9 @@ import { getPreferences } from '../../../../../selectors';
 
 import {
   TextVariant,
-  TextAlign,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-import {
-  SensitiveText,
-  SensitiveTextLength,
-} from '../../../../component-library';
+import { SensitiveText } from '../../../../component-library';
 import { AvatarGroup } from '../../../../multichain';
 import { AvatarType } from '../../../../multichain/avatar-group/avatar-group.types';
 import { AssetCellBadge } from '../../asset-list/cells/asset-cell-badge';
@@ -22,6 +18,7 @@ import {
 } from '../../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { DeFiProtocolPosition } from '../../types';
+import { DeFiSymbolGroup } from './defi-grouped-symbol-cell';
 
 type DeFiProtocolCellProps = {
   onClick: (chainId: string, protocolId: string) => void;
@@ -74,15 +71,10 @@ export default function DefiProtocolCell({
         </SensitiveText>
       }
       footerLeftDisplay={
-        <SensitiveText
-          variant={TextVariant.bodyMd}
-          textAlign={TextAlign.End}
-          data-testid="defi-list-symbol-group"
-          isHidden={privacyMode}
-          length={SensitiveTextLength.Medium}
-        >
-          {position.symbolGroup}
-        </SensitiveText>
+        <DeFiSymbolGroup
+          privacyMode={privacyMode}
+          symbols={position.underlyingSymbols}
+        />
       }
       footerRightDisplay={
         <AvatarGroup
