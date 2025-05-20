@@ -26,12 +26,8 @@ import {
   getUpdatedAndSortedAccountsWithCaipAccountId,
 } from '../../../../selectors';
 import {
-  addPermittedAccounts,
-  addPermittedChains,
   hidePermittedNetworkToast,
   removePermissionsFor,
-  removePermittedAccount,
-  removePermittedChain,
   requestAccountsAndChainPermissionsWithId,
   setPermittedAccounts,
   setPermittedChains,
