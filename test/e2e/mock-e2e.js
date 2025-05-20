@@ -138,12 +138,13 @@ const privateHostMatchers = [
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
  * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH.
+ * @param {string} options.monConversionInUsd - The USD conversion rate for MON.
  * @returns {Promise<SetupMockReturn>}
  */
 async function setupMocking(
   server,
   testSpecificMock,
-  { chainId, ethConversionInUsd = 1700 },
+  { chainId, ethConversionInUsd = 1700, monConversionInUsd = 0.2 },
 ) {
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
@@ -670,13 +671,16 @@ async function setupMocking(
 
   await server
     .forGet('https://min-api.cryptocompare.com/data/pricemulti')
-    .withQuery({ fsyms: 'ETH', tsyms: 'usd' })
+    .withQuery({ fsyms: 'ETH,MON', tsyms: 'usd' })
     .thenCallback(() => {
       return {
         statusCode: 200,
         json: {
           ETH: {
             USD: ethConversionInUsd,
+          },
+          MON: {
+            USD: monConversionInUsd,
           },
         },
       };
