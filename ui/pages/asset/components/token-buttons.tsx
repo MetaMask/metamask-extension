@@ -290,7 +290,11 @@ const TokenButtons = ({
   ]);
 
   return (
-    <Box display={Display.Flex} gap={3} justifyContent={JustifyContent.spaceEvenly}>
+    <Box
+      display={Display.Flex}
+      gap={3}
+      justifyContent={JustifyContent.spaceEvenly}
+    >
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <IconButton
