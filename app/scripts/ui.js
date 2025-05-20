@@ -95,9 +95,6 @@ async function start() {
   const backgroundConnection = metaRPCClientFactory(subStreams.controller);
   updateBackgroundConnection(backgroundConnection);
   setupProviderConnection(subStreams.provider);
-
-  const activeTabPromise = queryCurrentActiveTab(windowType);
-
   setupBootstrapListener(subStreams.controller);
 
   async function setupBootstrapListener(controller) {
@@ -120,8 +117,10 @@ async function start() {
   async function handleStartUISync() {
     endTrace({ name: TraceName.BackgroundConnect });
 
+    const activeTab = await queryCurrentActiveTab(windowType)
+
     await initializeUiWithTab(
-      activeTabPromise,
+      activeTab,
       backgroundConnection,
       windowType,
       traceContext,
