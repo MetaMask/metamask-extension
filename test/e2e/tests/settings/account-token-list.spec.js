@@ -79,7 +79,6 @@ describe('Settings', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.clickElement('[data-testid="popover-close"]');
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',
         );
@@ -128,7 +127,6 @@ describe('Settings', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.clickElement('[data-testid="popover-close"]');
         await driver.clickElement(
           '[data-testid="account-overview__asset-tab"]',
         );

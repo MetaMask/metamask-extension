@@ -1,5 +1,4 @@
 import {
-  CHAIN_IDS,
   type PublishBatchHookRequest,
   type PublishBatchHookTransaction,
   TransactionController,
@@ -90,12 +89,7 @@ export const TransactionControllerInit: ControllerInitFunction<
       return preferencesController().state.advancedGasFee[globalChainId];
     },
     incomingTransactions: {
-      etherscanApiKeysByChainId: {
-        // @ts-expect-error Controller does not support undefined values
-        [CHAIN_IDS.MAINNET]: process.env.ETHERSCAN_API_KEY,
-        // @ts-expect-error Controller does not support undefined values
-        [CHAIN_IDS.SEPOLIA]: process.env.ETHERSCAN_API_KEY,
-      },
+      client: `extension-${process.env.METAMASK_VERSION?.replace(/\./gu, '-')}`,
       includeTokenTransfers: false,
       isEnabled: () =>
         preferencesController().state.useExternalServices &&
@@ -104,6 +98,13 @@ export const TransactionControllerInit: ControllerInitFunction<
       updateTransactions: false,
     },
     isAutomaticGasFeeUpdateEnabled: () => true,
+    isEIP7702GasFeeTokensEnabled: async (transactionMeta) => {
+      const { chainId } = transactionMeta;
+      const uiState = getUIState(getFlatState());
+
+      // @ts-expect-error Smart transaction selector types does not match controller state
+      return !getIsSmartTransaction(uiState, chainId);
+    },
     isFirstTimeInteractionEnabled: () =>
       preferencesController().state.securityAlertsEnabled,
     isSimulationEnabled: () =>
