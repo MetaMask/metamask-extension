@@ -146,6 +146,8 @@ class AddEditNetworkModal {
    *
    * @param errorMessage - The error message to check.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_chainIdInputErrorMessageIsDisplayed(
     errorMessage: string,
   ): Promise<void> {

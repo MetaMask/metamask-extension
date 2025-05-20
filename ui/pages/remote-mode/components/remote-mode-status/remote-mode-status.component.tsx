@@ -19,6 +19,8 @@ type RemoteModeStatusProps = {
   enabled?: boolean;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RemoteModeStatus({ enabled }: RemoteModeStatusProps) {
   return (
     <Box display={Display.Flex} justifyContent={JustifyContent.flexEnd}>

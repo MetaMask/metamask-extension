@@ -207,6 +207,8 @@ module.exports = {
             ignoreRestSiblings: true,
           },
         ],
+        // This rule temporarily applies the latest `@typescript-eslint/naming-convention` config found in `@metamask/eslint-config`.
+        // TODO: Remove once `@metamask/eslint-config` is updated to `^14.0.0`.
         '@typescript-eslint/naming-convention': [
           'error',
           {

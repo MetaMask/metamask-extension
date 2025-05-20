@@ -256,11 +256,23 @@ const PrepareBridgePage = () => {
     trackCrossChainSwapsEvent({
       event: MetaMetricsEventName.ActionPageViewed,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id_source: formatChainIdToCaip(fromChain?.chainId ?? ''),
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol_source: fromToken?.symbol ?? '',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_address_source: fromToken?.address ?? '',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id_destination: formatChainIdToCaip(toChain?.chainId ?? ''),
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol_destination: toToken?.symbol ?? '',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_address_destination: toToken?.address ?? '',
       },
     });

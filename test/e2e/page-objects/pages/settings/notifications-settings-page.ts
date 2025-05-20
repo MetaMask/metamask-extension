@@ -69,6 +69,8 @@ class NotificationsSettingsPage {
     await this.driver.waitForSelector(this.notificationToggleOff);
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_notificationSectionIsHidden(): Promise<void> {
     console.log('Checking if notifications section is hidden');
     const selectors = [

@@ -4,6 +4,8 @@ import { AssetType } from '@metamask/bridge-controller';
 import { Delegation } from '../../../shared/lib/delegation';
 
 export enum TokenSymbol {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SEPOLIA_ETH = 'SepoliaETH',
   ETH = 'ETH',
   USDC = 'USDC',
