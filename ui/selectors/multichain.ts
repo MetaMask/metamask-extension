@@ -411,16 +411,6 @@ export function getMultichainIsMainnet(
     return false;
   }
 
-  // For Bitcoin accounts, we also need to check address compatibility with testnet
-  if (selectedAccount.type.startsWith(KnownCaipNamespace.Bip122)) {
-    const mainnetProvider = getMultichainNetworkProviders(state).find(
-      (provider) => provider.chainId === mainnet,
-    );
-    return (
-      mainnetProvider?.isAddressCompatible(selectedAccount.address) ?? false
-    );
-  }
-
   return providerConfig.chainId === mainnet;
 }
 
@@ -437,18 +427,9 @@ export function getMultichainIsTestnet(
     return (TEST_NETWORK_IDS as string[]).includes(providerConfig.chainId);
   }
 
-  // For Bitcoin accounts, we also need to check address compatibility with testnet
-  if (selectedAccount.type.startsWith(KnownCaipNamespace.Bip122)) {
-    const testnetProvider = getMultichainNetworkProviders(state).find(
-      (provider) => provider.chainId === MultichainNetworks.BITCOIN_TESTNET,
-    );
-    return (
-      testnetProvider?.isAddressCompatible(selectedAccount.address) ?? false
-    );
-  }
-
   return [
     MultichainNetworks.BITCOIN_TESTNET,
+    MultichainNetworks.BITCOIN_SIGNET,
     MultichainNetworks.SOLANA_DEVNET,
     MultichainNetworks.SOLANA_TESTNET,
   ].includes(providerConfig.chainId as MultichainNetworks);
