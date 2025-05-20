@@ -1,4 +1,6 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Display,
@@ -19,11 +21,9 @@ import {
   Icon,
   IconSize,
   IconName,
-} from '../../../components/component-library';
+} from '../../component-library';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
-import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 
 export default function PasswordChangedModal() {
   const t = useI18nContext();
