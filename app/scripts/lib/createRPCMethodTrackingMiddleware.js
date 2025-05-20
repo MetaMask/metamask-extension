@@ -29,6 +29,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { shouldUseRedesignForSignatures } from '../../../shared/lib/confirmation.utils';
+import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
@@ -332,10 +333,14 @@ export default function createRPCMethodTrackingMiddleware({
 
     let sensitiveEventProperties;
 
+    const isPreinstalledSnap = isSnapPreinstalled(origin);
+
     // Boolean variable that reduces code duplication and increases legibility
     const shouldTrackEvent =
       // Don't track if the request came from our own UI or background
       origin !== ORIGIN_METAMASK &&
+      // Don't track requests coming from preinstalled Snaps
+      !isPreinstalledSnap &&
       // Don't track if the rate limit has been hit
       !isRateLimited &&
       // Don't track if the global rate limit has been hit

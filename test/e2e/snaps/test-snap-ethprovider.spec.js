@@ -1,5 +1,8 @@
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const {
+  mockEthereumProviderSnap,
+} = require('../mock-response-data/snaps/snap-binary-mocks');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap ethereum_provider', function () {
@@ -7,6 +10,7 @@ describe('Test Snap ethereum_provider', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockEthereumProviderSnap,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -48,6 +52,10 @@ describe('Test Snap ethereum_provider', function () {
         });
 
         // wait and scroll if necessary
+        await driver.waitForSelector({
+          tag: 'h3',
+          text: 'Add to MetaMask',
+        });
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         // wait for and click confirm
@@ -148,7 +156,7 @@ describe('Test Snap ethereum_provider', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await driver.waitForSelector({
           css: '#signTypedDataResult',
-          text: '"0x18d05f8139ad66d581fb658aca4d41950c6f38a8daeb3adfdb18614e645bf73508a4c24d4fc4026b5d447d223fcf026a32947846205f663c536df8a7b4d841fe1c"',
+          text: '"0x7024dc071a7370eee444b2a3edc08d404dd03393694403cdca864653a7e8dd7c583419293d53602666cbe77faa8819fba04f8c57e95df2d4c0190968eece28021c"',
         });
       },
     );

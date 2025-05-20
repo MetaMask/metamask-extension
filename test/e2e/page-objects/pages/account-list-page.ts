@@ -497,6 +497,11 @@ class AccountListPage {
     await this.driver.waitForSelector(this.addEthereumAccountButton);
   }
 
+  async openImportSrpModal(): Promise<void> {
+    await this.openAddAccountModal();
+    await this.driver.clickElement(this.importSrpButton);
+  }
+
   async openConnectHardwareWalletModal(): Promise<void> {
     console.log(`Open connect hardware wallet modal`);
     await this.driver.clickElement(this.createAccountButton);
