@@ -12,7 +12,7 @@ import {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
-import { Hex, Json } from '@metamask/utils';
+import { Json } from '@metamask/utils';
 import { Browser } from 'webextension-polyfill';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
@@ -667,6 +667,7 @@ export class AppStateController extends BaseController<
   /**
    * Add account to list of accounts for which user has acknowledged
    * smart account upgrade splash page.
+   *
    * @param account
    */
   setSplashPageAcknowledgedForAccount(account: string): void {
