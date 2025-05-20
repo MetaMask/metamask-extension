@@ -368,7 +368,7 @@ const CoinButtons = ({
       display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
       width={BlockSize.Full}
-      gap={4}
+      gap={3}
     >
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -376,8 +376,8 @@ const CoinButtons = ({
           className={`${classPrefix}-overview__button`}
           Icon={
             <Icon
-              name={IconName.PlusAndMinus}
-              color={IconColor.iconDefault}
+              name={IconName.Money}
+              color={IconColor.iconAlternative}
               size={IconSize.Md}
             />
           }
@@ -400,7 +400,7 @@ const CoinButtons = ({
         Icon={
           <Icon
             name={IconName.SwapHorizontal}
-            color={IconColor.iconDefault}
+            color={IconColor.iconAlternative}
             size={IconSize.Md}
           />
         }
@@ -425,7 +425,7 @@ const CoinButtons = ({
           Icon={
             <Icon
               name={IconName.Bridge}
-              color={IconColor.iconDefault}
+              color={IconColor.iconAlternative}
               size={IconSize.Md}
             />
           }
@@ -443,8 +443,8 @@ const CoinButtons = ({
         data-testid={`${classPrefix}-overview-send`}
         Icon={
           <Icon
-            name={IconName.Arrow2UpRight}
-            color={IconColor.iconDefault}
+            name={IconName.Send}
+            color={IconColor.iconAlternative}
             size={IconSize.Md}
           />
         }
@@ -469,8 +469,8 @@ const CoinButtons = ({
             data-testid={`${classPrefix}-overview-receive`}
             Icon={
               <Icon
-                name={IconName.ScanBarcode}
-                color={IconColor.iconDefault}
+                name={IconName.QrCode}
+                color={IconColor.iconAlternative}
                 size={IconSize.Md}
               />
             }
