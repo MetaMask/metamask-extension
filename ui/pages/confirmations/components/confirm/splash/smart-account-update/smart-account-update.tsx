@@ -1,6 +1,7 @@
 import React, { ReactElement, useCallback, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { useSelector } from 'react-redux';
 
 import { ORIGIN_METAMASK } from '../../../../../../../shared/constants/app';
 import ZENDESK_URLS from '../../../../../../helpers/constants/zendesk-url';
@@ -30,7 +31,6 @@ import Name from '../../../../../../components/app/name';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useSmartAccountActions } from '../../../../hooks/useSmartAccountActions';
 import { setSplashPageAcknowledgedForAccount } from '../../../../../../store/actions';
-import { useSelector } from 'react-redux';
 import { getUpgradeSplashPageAcknowledgedForAccounts } from '../../../../../../selectors';
 
 const ListItem = ({
