@@ -20,6 +20,7 @@ import autoprefixer from 'autoprefixer';
 import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import { loadBuildTypesConfig } from '../lib/build-type';
+import tailwindcss from 'tailwindcss';
 import { SelfInjectPlugin } from './utils/plugins/SelfInjectPlugin';
 import {
   type Manifest,
@@ -299,6 +300,7 @@ const config = {
             options: {
               postcssOptions: {
                 plugins: [
+                  tailwindcss(),
                   autoprefixer({ overrideBrowserslist: browsersListQuery }),
                   rtlCss({ processEnv: false }),
                   discardFonts(['woff2']), // keep woff2 fonts

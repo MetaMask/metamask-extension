@@ -2,6 +2,7 @@
   "recommendations": [
     "rvest.vs-code-prettier-eslint",
     "streetsidesoftware.code-spell-checker",
-    "DigitalBrainstem.javascript-ejs-support"
+    "DigitalBrainstem.javascript-ejs-support",
+    "bradlc.vscode-tailwindcss"
   ]
 }
