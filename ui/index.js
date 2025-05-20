@@ -33,6 +33,7 @@ import {
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
+  getIsUnlocked,
   getUnconnectedAccountAlertEnabledness,
   getUnconnectedAccountAlertShown,
 } from './ducks/metamask/metamask';
@@ -40,6 +41,7 @@ import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
+import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
@@ -254,6 +256,25 @@ async function runInitialActions(store) {
     const thisPopupId = Date.now();
     global.metamask.id = thisPopupId;
     await store.dispatch(actions.setCurrentExtensionPopupId(thisPopupId));
+  }
+
+  const isUnlocked = getIsUnlocked(state);
+  try {
+    // check seedless password outdated at app init
+    // if app is locked, check skip cache to ensure user need to input latest global password
+    const skipCache = !isUnlocked;
+    const isPwOutdated = await store.dispatch(
+      actions.checkIsSeedlessPasswordOutdated(skipCache),
+    );
+    if (isPwOutdated) {
+      await store.dispatch(actions.forceUpdateMetamaskState());
+    }
+    // periodically check seedless password outdated when app UI is open
+    setInterval(async () => {
+      await store.dispatch(actions.checkIsSeedlessPasswordOutdated());
+    }, SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS);
+  } catch (e) {
+    log.error('[Metamask] checkIsSeedlessPasswordOutdated error', e);
   }
 }
 

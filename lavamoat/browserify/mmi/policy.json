@@ -2220,6 +2220,7 @@
         "@metamask/base-controller": true,
         "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": true,
         "@metamask/utils": true,
+        "viem>ox>@noble/curves": true,
         "@metamask/name-controller>async-mutex": true
       }
     },

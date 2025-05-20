@@ -1,1 +1,2 @@
 export const ETH_DEFAULT_DECIMALS = 8;
+export const SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS = 1000 * 60 * 30; // 30 minutes

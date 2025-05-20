@@ -52,6 +52,7 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { SnapIcon } from '../../components/app/snaps/snap-icon';
 import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
+import PasswordChangedModal from '../../components/app/password-changed-modal';
 import SettingsTab from './settings-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
@@ -87,6 +88,7 @@ class SettingsPage extends PureComponent {
     snapSettingsTitle: PropTypes.string,
     toggleNetworkMenu: PropTypes.func.isRequired,
     useExternalServices: PropTypes.bool,
+    isSeedlessPasswordOutdated: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -131,6 +133,7 @@ class SettingsPage extends PureComponent {
       currentPath,
       mostRecentOverviewPage,
       addNewNetwork,
+      isSeedlessPasswordOutdated,
     } = this.props;
 
     const { searchResults, isSearchList, searchText } = this.state;
@@ -146,6 +149,7 @@ class SettingsPage extends PureComponent {
           },
         )}
       >
+        {isSeedlessPasswordOutdated && <PasswordChangedModal />}
         <Box
           className="settings-page__header"
           padding={4}
@@ -464,12 +468,12 @@ class SettingsPage extends PureComponent {
 
         {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||
           process.env.IN_TEST) && (
-          <Route
-            exact
-            path={DEVELOPER_OPTIONS_ROUTE}
-            component={DeveloperOptionsTab}
-          />
-        )}
+            <Route
+              exact
+              path={DEVELOPER_OPTIONS_ROUTE}
+              component={DeveloperOptionsTab}
+            />
+          )}
         <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />
         <Route exact path={CONTACT_ADD_ROUTE} component={ContactListTab} />
         <Route
