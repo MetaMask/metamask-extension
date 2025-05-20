@@ -74,7 +74,7 @@ describe('Address Book', function (this: Suite) {
           '0x56A355d3427bC2B1E22c78197AF091230919Cc2A',
         );
         await contactsPage.check_contactDisplayed({
-          userName: 'Test User',
+          contactName: 'Test User',
           address: shortenAddress('0x56A355d3427bC2B1E22c78197AF091230919Cc2A'),
         });
       },
@@ -111,13 +111,13 @@ describe('Address Book', function (this: Suite) {
 
         const contactsPage = new ContactsPage(driver);
         await contactsPage.check_pageIsLoaded();
-        await contactsPage.editContact(
-          'Test Name 1',
-          'Test Name Edit',
-          '0x74cE91B75935D6Bedc27eE002DeFa566c5946f74',
-        );
+        await contactsPage.editContact({
+          existingContactName: 'Test Name 1',
+          newContactName: 'Test Name Edit',
+          newContactAddress: '0x74cE91B75935D6Bedc27eE002DeFa566c5946f74',
+        });
         await contactsPage.check_contactDisplayed({
-          userName: 'Test Name Edit',
+          contactName: 'Test Name Edit',
           address: shortenAddress('0x74cE91B75935D6Bedc27eE002DeFa566c5946f74'),
         });
       },
@@ -158,7 +158,7 @@ describe('Address Book', function (this: Suite) {
 
         // it checks if account is deleted
         await contactsPage.check_contactDisplayed({
-          userName: 'Test Name 1',
+          contactName: 'Test Name 1',
           address: shortenAddress('0x2f318C334780961FB129D2a6c30D0763d9a5C970'),
           shouldDisplay: false,
         });

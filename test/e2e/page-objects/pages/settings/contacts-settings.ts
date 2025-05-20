@@ -83,23 +83,28 @@ class ContactsSettings {
   /**
    * Edits a contact in the address book.
    *
-   * @param contactName - The name of the contact to edit.
-   * @param userName - The new name of the contact.
-   * @param address - The new address of the contact.
+   * @param params - The parameters object
+   * @param params.existingContactName - The name of the contact to edit.
+   * @param params.newContactName - The new name of the contact.
+   * @param params.newContactAddress - The new address of the contact.
    */
-  async editContact(
-    contactName: string,
-    userName: string,
-    address: string,
-  ): Promise<void> {
+  async editContact({
+    existingContactName,
+    newContactName,
+    newContactAddress,
+  }: {
+    existingContactName: string;
+    newContactName: string;
+    newContactAddress: string;
+  }): Promise<void> {
     console.log('Editing contact on contacts settings page');
     await this.driver.clickElement({
-      text: contactName,
+      text: existingContactName,
       css: this.contactListItem,
     });
     await this.driver.clickElement(this.editContactButton);
-    await this.driver.fill(this.userNameInput, userName);
-    await this.driver.fill(this.editContactAddressInput, address);
+    await this.driver.fill(this.userNameInput, newContactName);
+    await this.driver.fill(this.editContactAddressInput, newContactAddress);
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmAddContactButton,
     );
@@ -109,25 +114,25 @@ class ContactsSettings {
    * Check if a contact is displayed on the contacts settings page.
    *
    * @param params - The parameters object
-   * @param params.userName - The name of the contact.
+   * @param params.contactName - The name of the contact.
    * @param params.address - The address of the contact.
    * @param params.shouldDisplay - Whether the contact should be displayed. Defaults to true.
    */
   async check_contactDisplayed({
-    userName,
+    contactName,
     address,
     shouldDisplay = true,
   }: {
-    userName: string;
+    contactName: string;
     address: string;
     shouldDisplay?: boolean;
   }): Promise<void> {
     console.log(
-      `Checking if contact ${userName} is displayed on contacts settings page`,
+      `Checking if contact ${contactName} is displayed on contacts settings page`,
     );
     if (shouldDisplay) {
       await this.driver.waitForSelector({
-        text: userName,
+        text: contactName,
         css: this.contactListItem,
       });
       await this.driver.waitForSelector({
@@ -136,7 +141,7 @@ class ContactsSettings {
       });
     } else {
       await this.driver.assertElementNotPresent({
-        text: userName,
+        text: contactName,
         css: this.contactListItem,
       });
     }
