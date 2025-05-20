@@ -8,7 +8,6 @@ import {
   TextColor,
 } from '../../../../../helpers/constants/design-system';
 import { SensitiveText } from '../../../../component-library';
-import { AvatarGroup } from '../../../../multichain';
 import { AvatarType } from '../../../../multichain/avatar-group/avatar-group.types';
 import { AssetCellBadge } from '../../asset-list/cells/asset-cell-badge';
 import { AssetCellTitle } from '../../asset-list/cells/asset-title';
@@ -19,6 +18,7 @@ import {
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { DeFiProtocolPosition } from '../../types';
 import { DeFiSymbolGroup } from './defi-grouped-symbol-cell';
+import { AvatarGroup } from '../../../../multichain/avatar-group/avatar-group';
 
 type DeFiProtocolCellProps = {
   onClick: (chainId: string, protocolId: string) => void;
