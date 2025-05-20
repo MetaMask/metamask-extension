@@ -18,17 +18,17 @@ export function DeFiSymbolGroup({
 }) {
   const t = useI18nContext();
 
-  const buildSymbolGroup = (symbols: string[]): string => {
-    if (symbols.length === 1) {
-      return `${symbols[0]} only`;
+  const buildSymbolGroup = (defiSymbols: string[]): string => {
+    if (defiSymbols.length === 1) {
+      return `${defiSymbols[0]} only`;
     }
 
-    if (symbols.length === 2) {
-      return `${symbols[0]} +${symbols.length - 1} ${t('other')}`;
+    if (defiSymbols.length === 2) {
+      return `${defiSymbols[0]} +${defiSymbols.length - 1} ${t('other')}`;
     }
 
-    if (symbols.length > 2) {
-      return `${symbols[0]} +${symbols.length - 1} ${t('others')}`;
+    if (defiSymbols.length > 2) {
+      return `${defiSymbols[0]} +${defiSymbols.length - 1} ${t('others')}`;
     }
     return '';
   };

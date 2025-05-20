@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { DeFiSymbolGroup } from './defi-grouped-symbol-cell';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { DeFiSymbolGroup } from './defi-grouped-symbol-cell';
 
 jest.mock('../../../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),
