@@ -20,7 +20,7 @@ describe('Test Snap ethereum_provider', function () {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        // Navigate to test snaps page, connect get preferences, complete installation and validate
+        // Navigate to test snaps page, connect Ethereum provider example Snap, complete installation and validate
         const testSnaps = new TestSnaps(driver);
         await openTestSnapClickButtonAndInstall(
           driver,
