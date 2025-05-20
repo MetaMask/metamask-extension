@@ -17,8 +17,8 @@ import {
 } from '../../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { DeFiProtocolPosition } from '../../types';
-import { DeFiSymbolGroup } from './defi-grouped-symbol-cell';
 import { AvatarGroup } from '../../../../multichain/avatar-group/avatar-group';
+import { DeFiSymbolGroup } from './defi-grouped-symbol-cell';
 
 type DeFiProtocolCellProps = {
   onClick: (chainId: string, protocolId: string) => void;
