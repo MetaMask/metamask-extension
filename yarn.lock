@@ -5154,7 +5154,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@patch:@metamask/bridge-controller@npm%3A18.0.0#~/.yarn/patches/@metamask-bridge-controller-npm-18.0.0-d2f6e87282.patch":
+"@metamask/bridge-controller@patch:@metamask/bridge-controller@npm%3A18.0.0#~/.yarn/patches/@metamask-bridge-controller-npm-18.0.0-d2f6e87282.patch::version=18.0.0&hash=9d9a85":
   version: 18.0.0
   resolution: "@metamask/bridge-controller@patch:@metamask/bridge-controller@npm%3A18.0.0#~/.yarn/patches/@metamask-bridge-controller-npm-18.0.0-d2f6e87282.patch::version=18.0.0&hash=9d9a85"
   dependencies:
@@ -5180,6 +5180,35 @@ __metadata:
     "@metamask/snaps-controllers": ^11.0.0
     "@metamask/transaction-controller": ^54.0.0
   checksum: 10/fa3c3f0c63a7f07a9af94824d7f5e556a9ce6dd213a446955e871e9bf1409194d47c50ff8c8a2e38468449782627dcd98bf461589984217a4214f855c4ddf877
+  languageName: node
+  linkType: hard
+
+"@metamask/bridge-controller@patch:@metamask/bridge-controller@patch%3A@metamask/bridge-controller@npm%253A18.0.0%23~/.yarn/patches/@metamask-bridge-controller-npm-18.0.0-d2f6e87282.patch%3A%3Aversion=18.0.0&hash=9d9a85#~/.yarn/patches/@metamask-bridge-controller-patch-df2e3fed9c.patch":
+  version: 18.0.0
+  resolution: "@metamask/bridge-controller@patch:@metamask/bridge-controller@patch%3A@metamask/bridge-controller@npm%253A18.0.0%23~/.yarn/patches/@metamask-bridge-controller-npm-18.0.0-d2f6e87282.patch%3A%3Aversion=18.0.0&hash=9d9a85#~/.yarn/patches/@metamask-bridge-controller-patch-df2e3fed9c.patch::version=18.0.0&hash=d2077f"
+  dependencies:
+    "@ethersproject/address": "npm:^5.7.0"
+    "@ethersproject/bignumber": "npm:^5.7.0"
+    "@ethersproject/constants": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/controller-utils": "npm:^11.7.0"
+    "@metamask/gas-fee-controller": "npm:^23.0.0"
+    "@metamask/keyring-api": "npm:^17.4.0"
+    "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/multichain-network-controller": "npm:^0.5.1"
+    "@metamask/polling-controller": "npm:^13.0.0"
+    "@metamask/utils": "npm:^11.2.0"
+    bignumber.js: "npm:^9.1.2"
+    reselect: "npm:^5.1.1"
+  peerDependencies:
+    "@metamask/accounts-controller": ^27.0.0
+    "@metamask/assets-controllers": ^59.0.0
+    "@metamask/network-controller": ^23.0.0
+    "@metamask/snaps-controllers": ^11.0.0
+    "@metamask/transaction-controller": ^54.0.0
+  checksum: 10/8596726c0db7d876ceba013b1182c18c37304bd8c862d52715b5ba95d9652f3e9c37e7c8d365d3cbc54cdd4f3ae67e08cb9d908261ef7f0eb6227efe570b059a
   languageName: node
   linkType: hard
 
@@ -30178,7 +30207,7 @@ __metadata:
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.9.0"
-    "@metamask/bridge-controller": "patch:@metamask/bridge-controller@npm%3A18.0.0#~/.yarn/patches/@metamask-bridge-controller-npm-18.0.0-d2f6e87282.patch"
+    "@metamask/bridge-controller": "patch:@metamask/bridge-controller@patch%3A@metamask/bridge-controller@npm%253A18.0.0%23~/.yarn/patches/@metamask-bridge-controller-npm-18.0.0-d2f6e87282.patch%3A%3Aversion=18.0.0&hash=9d9a85#~/.yarn/patches/@metamask-bridge-controller-patch-df2e3fed9c.patch"
     "@metamask/bridge-status-controller": "patch:@metamask/bridge-status-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-21.0.0-7178a3f32f.patch"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
