@@ -105,7 +105,7 @@ function fromBuildsYML(buildType, config) {
     .filter((key) => config.features[key] !== null)
     .map((key) => config.features[key].env)
     .map(extractDefinitions)
-    .flat(1)
+    .flat()
     .forEach(([key, value]) => definitions.set(key, value));
   // 3. build type env
   extractDefinitions(activeBuild.env).forEach(([key, value]) =>
