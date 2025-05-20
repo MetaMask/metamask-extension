@@ -130,8 +130,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 
-import { isSnapId } from '@metamask/snaps-utils';
-
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import {
@@ -1364,9 +1362,6 @@ export default class MetamaskController extends EventEmitter {
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
           const { address } = this.accountsController.getSelectedAccount();
 
-          ///: BEGIN:ONLY_INCLUDE_IF(solana)
-          await this._addSolanaAccount();
-          ///: END:ONLY_INCLUDE_IF
           await this._addAccountsWithBalance();
 
           this.postOnboardingInitialization();
@@ -1714,6 +1709,7 @@ export default class MetamaskController extends EventEmitter {
           },
         });
       },
+      traceFn: (...args) => trace(...args),
       config: {
         customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       },
@@ -1753,6 +1749,7 @@ export default class MetamaskController extends EventEmitter {
       config: {
         customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       },
+      traceFn: (...args) => trace(...args),
     });
 
     const smartTransactionsControllerMessenger =
@@ -2196,14 +2193,18 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
       ),
       getCallsStatus: getCallsStatus.bind(null, this.controllerMessenger),
-      getCapabilities: getCapabilities.bind(null, {
-        getDismissSmartAccountSuggestionEnabled: () =>
-          this.preferencesController.state.preferences
-            .dismissSmartAccountSuggestionEnabled,
-        isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
-          this.txController,
-        ),
-      }),
+      getCapabilities: getCapabilities.bind(
+        null,
+        {
+          getDismissSmartAccountSuggestionEnabled: () =>
+            this.preferencesController.state.preferences
+              .dismissSmartAccountSuggestionEnabled,
+          isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
+            this.txController,
+          ),
+        },
+        this.controllerMessenger,
+      ),
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
@@ -2557,6 +2558,7 @@ export default class MetamaskController extends EventEmitter {
 
     return {
       privacyMode: preferences.privacyMode,
+      showTestnets: preferences.showTestNetworks,
       securityAlertsEnabled,
       useCurrencyRateCheck,
       useTransactionSimulations,
@@ -2588,6 +2590,7 @@ export default class MetamaskController extends EventEmitter {
               useMultiAccountBalanceChecker,
               openSeaEnabled,
               useNftDetection,
+              showTestnets,
             } = this.getPreferences();
             return {
               locale,
@@ -2600,6 +2603,7 @@ export default class MetamaskController extends EventEmitter {
               batchCheckBalances: useMultiAccountBalanceChecker,
               displayNftMedia: openSeaEnabled,
               useNftDetection,
+              showTestnets,
             };
           },
           clearSnapState: this.controllerMessenger.call.bind(
@@ -4828,9 +4832,6 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.getAccountByAddress(newAccountAddress);
       this.accountsController.setSelectedAccount(account.id);
 
-      ///: BEGIN:ONLY_INCLUDE_IF(solana)
-      await this._addSolanaAccount(id);
-      ///: END:ONLY_INCLUDE_IF
       await this._addAccountsWithBalance(id);
 
       return newAccountAddress;
@@ -4913,9 +4914,6 @@ export default class MetamaskController extends EventEmitter {
       );
 
       if (completedOnboarding) {
-        ///: BEGIN:ONLY_INCLUDE_IF(solana)
-        await this._addSolanaAccount();
-        ///: END:ONLY_INCLUDE_IF
         await this._addAccountsWithBalance();
 
         // This must be set as soon as possible to communicate to the
@@ -5017,7 +5015,12 @@ export default class MetamaskController extends EventEmitter {
       }
       ///: BEGIN:ONLY_INCLUDE_IF(solana)
       const client = await this._getSolanaWalletSnapClient();
-      await client.discoverAccounts(entropySource);
+      const solanaAccounts = await client.discoverAccounts(entropySource);
+
+      // If none accounts got discovered, we still create the first (default) one.
+      if (solanaAccounts.length === 0) {
+        await this._addSolanaAccount(entropySource);
+      }
       ///: END:ONLY_INCLUDE_IF
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
@@ -5895,12 +5898,6 @@ export default class MetamaskController extends EventEmitter {
     autoApprove,
     metadata,
   }) {
-    if (isSnapId(origin)) {
-      throw new Error(
-        `Cannot request permittedChains permission for Snaps with origin "${origin}"`,
-      );
-    }
-
     const caveatValueWithChains = setPermittedEthChainIds(
       {
         requiredScopes: {},
@@ -5952,11 +5949,11 @@ export default class MetamaskController extends EventEmitter {
    * Requests user approval for the CAIP-25 permission for the specified origin
    * and returns a granted permissions object.
    *
-   * @param {string} origin - The origin to request approval for.
+   * @param {string} _origin - The origin to request approval for.
    * @param requestedPermissions - The legacy permissions to request approval for.
    * @returns the approved permissions object.
    */
-  getCaip25PermissionFromLegacyPermissions(origin, requestedPermissions = {}) {
+  getCaip25PermissionFromLegacyPermissions(_origin, requestedPermissions = {}) {
     const permissions = pick(requestedPermissions, [
       RestrictedMethods.eth_accounts,
       PermissionNames.permittedChains,
@@ -5968,10 +5965,6 @@ export default class MetamaskController extends EventEmitter {
 
     if (!permissions[PermissionNames.permittedChains]) {
       permissions[PermissionNames.permittedChains] = {};
-    }
-
-    if (isSnapId(origin)) {
-      delete permissions[PermissionNames.permittedChains];
     }
 
     const requestedAccounts =
@@ -5997,7 +5990,7 @@ export default class MetamaskController extends EventEmitter {
 
     const caveatValueWithChains = setPermittedEthChainIds(
       newCaveatValue,
-      isSnapId(origin) ? [] : requestedChains,
+      requestedChains,
     );
 
     const caveatValueWithAccountsAndChains = setEthAccounts(

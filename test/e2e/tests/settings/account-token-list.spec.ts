@@ -70,7 +70,6 @@ describe('Settings', function () {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.check_expectedBalanceIsDisplayed('42,500.00', 'USD');
-        await homePage.closePopover();
         await new AssetListPage(driver).check_tokenFiatAmountIsDisplayed(
           '$42,500.00',
         );
@@ -110,7 +109,6 @@ describe('Settings', function () {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        await new HomePage(driver).closePopover();
         await new HeaderNavbar(driver).openAccountMenu();
         await new AccountListPage(driver).check_accountBalanceDisplayed(
           '25 ETH',
