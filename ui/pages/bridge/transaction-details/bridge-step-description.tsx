@@ -136,8 +136,8 @@ export const getStepStatus = ({
   // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
   if (step.action === ActionTypes.SWAP) {
     return getSwapActionStatus(bridgeHistoryItem, step, srcChainTxMeta);
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31894
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
   } else if (step.action === ActionTypes.BRIDGE) {
     return getBridgeActionStatus(bridgeHistoryItem);
   }

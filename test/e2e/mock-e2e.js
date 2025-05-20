@@ -684,7 +684,7 @@ async function setupMocking(
   const PPOM_VERSION = fs.readFileSync(PPOM_VERSION_PATH);
   const PPOM_VERSION_HEADERS = fs.readFileSync(PPOM_VERSION_HEADERS_PATH);
   const CDN_CONFIG = fs.readFileSync(CDN_CONFIG_PATH);
-  const CDN_STALE = fs.readFileSync(CDN_STALE_PATH);nc
+  const CDN_STALE = fs.readFileSync(CDN_STALE_PATH);
   const CDN_STALE_DIFF = fs.readFileSync(CDN_STALE_DIFF_PATH);
   const CDN_CONFIG_RES_HEADERS = fs.readFileSync(CDN_CONFIG_RES_HEADERS_PATH);
   const CDN_STALE_RES_HEADERS = fs.readFileSync(CDN_STALE_RES_HEADERS_PATH);
