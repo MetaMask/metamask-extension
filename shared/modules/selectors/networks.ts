@@ -145,12 +145,9 @@ export const getAllNetworkConfigurationsByCaipChainId = createSelector(
     // We have this logic here to filter out non EVM test networks
     // to properly handle this we should use the selector from
     // multichain/networks.ts in the UI side
-    const {
-      nonEvmNetworks,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-      nonEvmTestNetworks,
-      ///: END:ONLY_INCLUDE_IF
-    } = Object.keys(multichainNetworkConfigurationsByChainId).reduce(
+    const { nonEvmNetworks, nonEvmTestNetworks } = Object.keys(
+      multichainNetworkConfigurationsByChainId,
+    ).reduce(
       (
         result: {
           nonEvmNetworks: Record<
@@ -189,9 +186,7 @@ export const getAllNetworkConfigurationsByCaipChainId = createSelector(
     return getNetworkConfigurationsByCaipChainId({
       multichainNetworkConfigurationsByChainId: {
         ...nonEvmNetworks,
-        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
         ...nonEvmTestNetworks,
-        ///: END:ONLY_INCLUDE_IF
       },
       networkConfigurationsByChainId,
       internalAccounts,

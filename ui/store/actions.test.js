@@ -50,12 +50,10 @@ const defaultState = {
             address: '0xFirstAddress',
           },
         ],
-      },
-    ],
-    keyringsMetadata: [
-      {
-        id: mockUlid,
-        name: '',
+        metadata: {
+          id: mockUlid,
+          name: '',
+        },
       },
     ],
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -3030,6 +3028,7 @@ describe('Actions', () => {
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'SET_SHOW_NEW_SRP_ADDED_TOAST', payload: true },
       ];
 
       await store.dispatch(actions.importMnemonicToVault(mnemonic));
