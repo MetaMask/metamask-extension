@@ -82,21 +82,25 @@ export const enableNotificationsThroughSettingsPage = async (
 };
 
 /**
- * Click each notification item by the testId and validate the details page appears
+ * Click each notification item by the dynamicGeneratedTestId and validate the details page appears
  *
  * @param driver
- * @param testId
+ * @param dynamicGeneratedTestId
  */
 export async function clickNotificationItemAndDetailsPage(
   driver: Driver,
-  testId: string,
+  dynamicGeneratedTestId: string,
 ) {
   const notificationsListPage = new NotificationsListPage(driver);
   const notificationDetailsPage = new NotificationDetailsPage(driver);
 
   await notificationsListPage.check_pageIsLoaded();
-  await notificationsListPage.check_notificationItemByTestId(testId);
-  await notificationsListPage.clickNotificationItemByTestId(testId);
+  await notificationsListPage.check_notificationItemByTestId(
+    dynamicGeneratedTestId,
+  );
+  await notificationsListPage.clickNotificationItemByTestId(
+    dynamicGeneratedTestId,
+  );
 
   // inspect and click notification details
   await notificationDetailsPage.check_pageIsLoaded();
