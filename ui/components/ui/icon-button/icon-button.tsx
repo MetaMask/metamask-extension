@@ -4,6 +4,7 @@ import { Text, ButtonBase } from '../../component-library';
 import type { ButtonBaseProps } from '../../component-library/button-base/button-base.types';
 import {
   AlignItems,
+  BackgroundColor,
   Display,
   FlexDirection,
   JustifyContent,
@@ -36,6 +37,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
       <ButtonBase
         className={classNames('icon-button', className)}
         onClick={onClick}
+        backgroundColor={BackgroundColor.backgroundMuted}
         disabled={disabled}
         ref={ref}
         display={Display.InlineFlex}
@@ -44,8 +46,8 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
         justifyContent={JustifyContent.center}
         paddingTop={3}
         paddingBottom={3}
-        paddingLeft={1}
-        paddingRight={1}
+        paddingLeft={2}
+        paddingRight={2}
         textProps={{
           ellipsis: true,
           className: 'icon-button__label',
@@ -70,6 +72,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
             display={Display.Block}
             variant={TextVariant.bodySmMedium}
             ellipsis
+            style={{ marginTop: '-4px' }}
           >
             {label}
           </Text>
