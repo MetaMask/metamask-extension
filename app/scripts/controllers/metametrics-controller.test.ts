@@ -73,7 +73,6 @@ const DEFAULT_TEST_CONTEXT = {
   app: {
     name: 'MetaMask Extension',
     version: VERSION,
-    extensionId: MOCK_EXTENSION_ID,
   },
   page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
   referrer: undefined,
@@ -89,7 +88,6 @@ const DEFAULT_SHARED_PROPERTIES = {
 
 const DEFAULT_EVENT_PROPERTIES = {
   category: 'Unit Test',
-  extensionId: MOCK_EXTENSION_ID,
   ...DEFAULT_SHARED_PROPERTIES,
 };
 
