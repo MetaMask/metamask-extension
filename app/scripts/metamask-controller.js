@@ -3082,7 +3082,9 @@ export default class MetamaskController extends EventEmitter {
         if (this.preferencesController.state.useExternalServices === true) {
           this.txController.stopIncomingTransactionPolling();
 
-          await this.txController.updateIncomingTransactions();
+          await this.txController.updateIncomingTransactions({
+            tags: ['network-change'],
+          });
 
           this.txController.startIncomingTransactionPolling();
         }
@@ -8218,7 +8220,9 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
-    await this.txController.updateIncomingTransactions();
+    await this.txController.updateIncomingTransactions({
+      tags: ['account-change'],
+    });
   }
 
   _notifyAccountsChange(origin, newAccounts) {
