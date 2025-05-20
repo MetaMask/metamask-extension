@@ -1,191 +1,306 @@
-import { ChainId } from '@metamask/controller-utils';
-
+import { SnapEndowments } from '@metamask/snaps-rpc-methods';
+import { METAMASK_DOMAIN } from '@metamask/selected-network-controller';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '@metamask/chain-agnostic-permission';
 import { migrate, version } from './160';
 
 const oldVersion = 159;
-const monadChainId = ChainId['monad-testnet'];
 
-/**
- * Get the Monad testnet network configuration object as snapshot.
- *
- * @returns The Monad testnet network configuration object.
- */
-const getMonadTestnetConfiguration = () => ({
-  chainId: monadChainId,
-  name: 'Monad Testnet',
-  nativeCurrency: 'MON',
-  blockExplorerUrls: ['https://testnet.monadexplorer.com'],
-  defaultRpcEndpointIndex: 0,
-  defaultBlockExplorerUrlIndex: 0,
-  rpcEndpoints: [
-    {
-      networkClientId: 'monad-testnet',
-      url: 'https://testnet-rpc.monad.xyz',
-      type: 'custom',
-    },
-  ],
-});
+const MOCK_ORIGIN = 'http://example.com';
+const MOCK_SNAP_ID = 'npm:foo-snap';
+
+jest.useFakeTimers();
+jest.setSystemTime(1723635247705);
 
 describe(`migration #${version}`, () => {
+  afterEach(() => jest.resetAllMocks());
+
   it('updates the version metadata', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {},
     };
+
     const newStorage = await migrate(oldStorage);
+
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  describe(`migration #${version}`, () => {
-    it('does nothing if `NetworkController` is missing', async () => {
-      const oldStorage = {
-        meta: { version: oldVersion },
-        data: {},
-      };
-      const newStorage = await migrate(oldStorage);
-      expect(newStorage.data).toStrictEqual({});
-    });
-
-    it('does nothing if `NetworkController` is not an object', async () => {
-      const oldStorage = {
-        meta: { version: oldVersion },
-        data: {
-          NetworkController: 'invalidData',
-        },
-      };
-      const newStorage = await migrate(oldStorage);
-      expect(newStorage.data).toStrictEqual(oldStorage.data);
-    });
-
-    it('does nothing if `NetworkController.networkConfigurationsByChainId` is not an object', async () => {
-      const oldStorage = {
-        meta: { version: oldVersion },
-        data: {
-          NetworkController: {
-            networkConfigurationsByChainId: 'invalidData',
+  it('adds the network endowment to Snaps with the `endowment:ethereum-provider` permission', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          selectedNetworkClientId: 'linea-sepolia',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              rpcEndpoints: [
+                {
+                  networkClient: 'mainnet',
+                },
+              ],
+            },
+            '0xe705': {
+              rpcEndpoints: [
+                {
+                  networkClient: 'linea-sepolia',
+                },
+              ],
+            },
           },
         },
-      };
-      const newStorage = await migrate(oldStorage);
-      expect(newStorage.data).toStrictEqual(oldStorage.data);
-    });
 
-    it('adds a new network `Monad` to `NetworkController.networkConfigurationsByChainId`', async () => {
-      const oldState = {
-        meta: { version: oldVersion },
-        data: {
-          NetworkController: {
-            selectedNetworkClientId: 'mainnet',
-            networksMetadata: {},
-            networkConfigurationsByChainId: {
-              '0x1': {
-                chainId: '0x1',
-                rpcEndpoints: [
-                  {
-                    networkClientId: 'mainnet',
-                    url: 'https://mainnet.infura.io/v3/{infuraProjectId}',
-                    type: 'infura',
-                  },
-                ],
-                defaultRpcEndpointIndex: 0,
-                blockExplorerUrls: ['https://etherscan.io'],
-                defaultBlockExplorerUrlIndex: 0,
-                name: 'Ethereum Mainnet',
-                nativeCurrency: 'ETH',
-              },
-              '0xaa36a7': {
-                chainId: '0xaa36a7',
-                rpcEndpoints: [
-                  {
-                    networkClientId: 'sepolia',
-                    url: 'https://sepolia.infura.io/v3/{infuraProjectId}',
-                    type: 'infura',
-                  },
-                ],
-                defaultRpcEndpointIndex: 0,
-                blockExplorerUrls: ['https://sepolia.etherscan.io'],
-                defaultBlockExplorerUrlIndex: 0,
-                name: 'Sepolia',
-                nativeCurrency: 'SepoliaETH',
-              },
-              '0xe705': {
-                chainId: '0xe705',
-                rpcEndpoints: [
-                  {
-                    networkClientId: 'linea-sepolia',
-                    url: 'https://linea-sepolia.infura.io/v3/{infuraProjectId}',
-                    type: 'infura',
-                  },
-                ],
-                defaultRpcEndpointIndex: 0,
-                blockExplorerUrls: ['https://sepolia.lineascan.build'],
-                defaultBlockExplorerUrlIndex: 0,
-                name: 'Linea Sepolia',
-                nativeCurrency: 'LineaETH',
-              },
-              '0xe708': {
-                chainId: '0xe708',
-                rpcEndpoints: [
-                  {
-                    networkClientId: 'linea-mainnet',
-                    url: 'https://linea-mainnet.infura.io/v3/{infuraProjectId}',
-                    type: 'infura',
-                  },
-                ],
-                defaultRpcEndpointIndex: 0,
-                blockExplorerUrls: ['https://lineascan.build'],
-                defaultBlockExplorerUrlIndex: 0,
-                name: 'Linea Mainnet',
-                nativeCurrency: 'ETH',
+        PermissionController: {
+          subjects: {
+            [MOCK_SNAP_ID]: {
+              permissions: {
+                [SnapEndowments.EthereumProvider]: {
+                  caveats: [],
+                  date: 1664187844588,
+                  id: 'izn0WGUO8cvq_jqvLQuQP',
+                  invoker: MOCK_ORIGIN,
+                  parentCapability: SnapEndowments.EthereumProvider,
+                },
               },
             },
           },
         },
-      };
 
-      const expectedData = {
-        NetworkController: {
-          ...oldState.data.NetworkController,
-          networkConfigurationsByChainId: {
-            ...oldState.data.NetworkController.networkConfigurationsByChainId,
-            [monadChainId]: getMonadTestnetConfiguration(),
+        SelectedNetworkController: {
+          domains: {
+            [METAMASK_DOMAIN]: 'mainnet',
           },
         },
-      };
+      },
+    };
 
-      const newStorage = await migrate(oldState);
-      expect(newStorage.data).toStrictEqual(expectedData);
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.data.PermissionController).toStrictEqual({
+      subjects: {
+        [MOCK_SNAP_ID]: {
+          permissions: {
+            [SnapEndowments.EthereumProvider]: {
+              caveats: [],
+              date: 1664187844588,
+              id: 'izn0WGUO8cvq_jqvLQuQP',
+              invoker: MOCK_ORIGIN,
+              parentCapability: SnapEndowments.EthereumProvider,
+            },
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: {
+                    isMultichainOrigin: false,
+                    optionalScopes: {
+                      'eip155:59141': {
+                        accounts: [],
+                      },
+                    },
+                    requiredScopes: {},
+                    sessionProperties: {},
+                  },
+                },
+              ],
+              date: 1723635247705,
+              id: expect.any(String),
+              invoker: MOCK_SNAP_ID,
+              parentCapability: Caip25EndowmentPermissionName,
+            },
+          },
+        },
+      },
     });
 
-    it('updates the `Monad` network if it has already in `NetworkController.networkConfigurationsByChainId`', async () => {
-      const oldStorage = {
-        meta: { version: oldVersion },
-        data: {
-          NetworkController: {
-            selectedNetworkClientId: 'mainnet',
-            networksMetadata: {},
-            networkConfigurationsByChainId: {
-              [monadChainId]: {
-                ...getMonadTestnetConfiguration(),
-                name: 'Some other name',
+    expect(newStorage.data.SelectedNetworkController).toStrictEqual({
+      domains: {
+        [METAMASK_DOMAIN]: 'mainnet',
+        [MOCK_SNAP_ID]: 'linea-sepolia',
+      },
+    });
+  });
+
+  it('merges with an existing permission if the Snap already has `endowment:caip25`', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              rpcEndpoints: [
+                {
+                  networkClient: 'mainnet',
+                },
+              ],
+            },
+            '0xe705': {
+              rpcEndpoints: [
+                {
+                  networkClient: 'linea-sepolia',
+                },
+              ],
+            },
+          },
+        },
+
+        PermissionController: {
+          subjects: {
+            [MOCK_SNAP_ID]: {
+              permissions: {
+                [SnapEndowments.EthereumProvider]: {
+                  caveats: [],
+                  date: 1664187844588,
+                  id: 'izn0WGUO8cvq_jqvLQuQP',
+                  invoker: MOCK_ORIGIN,
+                  parentCapability: SnapEndowments.EthereumProvider,
+                },
+                [Caip25EndowmentPermissionName]: {
+                  caveats: [
+                    {
+                      type: Caip25CaveatType,
+                      value: {
+                        isMultichainOrigin: false,
+                        optionalScopes: {
+                          'wallet:eip155': {
+                            accounts: [
+                              '0x1234567890123456789012345678901234567890',
+                            ],
+                          },
+                        },
+                        requiredScopes: {},
+                        sessionProperties: {},
+                      },
+                    },
+                  ],
+                  date: 1723635247705,
+                  id: 'izn0WGUO8cvq_jqvLQuQP',
+                  invoker: MOCK_SNAP_ID,
+                  parentCapability: Caip25EndowmentPermissionName,
+                },
               },
             },
           },
         },
-      };
 
-      const expectedData = {
-        NetworkController: {
-          ...oldStorage.data.NetworkController,
-          networkConfigurationsByChainId: {
-            ...oldStorage.data.NetworkController.networkConfigurationsByChainId,
-            [monadChainId]: getMonadTestnetConfiguration(),
+        SelectedNetworkController: {
+          domains: {
+            [METAMASK_DOMAIN]: 'mainnet',
           },
         },
-      };
+      },
+    };
 
-      const newStorage = await migrate(oldStorage);
-      expect(newStorage.data).toStrictEqual(expectedData);
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.data.PermissionController).toStrictEqual({
+      subjects: {
+        [MOCK_SNAP_ID]: {
+          permissions: {
+            [SnapEndowments.EthereumProvider]: {
+              caveats: [],
+              date: 1664187844588,
+              id: 'izn0WGUO8cvq_jqvLQuQP',
+              invoker: MOCK_ORIGIN,
+              parentCapability: SnapEndowments.EthereumProvider,
+            },
+            [Caip25EndowmentPermissionName]: {
+              caveats: [
+                {
+                  type: Caip25CaveatType,
+                  value: {
+                    isMultichainOrigin: false,
+                    optionalScopes: {
+                      'wallet:eip155': {
+                        accounts: [
+                          '0x1234567890123456789012345678901234567890',
+                        ],
+                      },
+                      'eip155:1': {
+                        accounts: [],
+                      },
+                    },
+                    requiredScopes: {},
+                    sessionProperties: {},
+                  },
+                },
+              ],
+              date: 1723635247705,
+              id: 'izn0WGUO8cvq_jqvLQuQP',
+              invoker: MOCK_SNAP_ID,
+              parentCapability: Caip25EndowmentPermissionName,
+            },
+          },
+        },
+      },
     });
+
+    expect(newStorage.data.SelectedNetworkController).toStrictEqual({
+      domains: {
+        [METAMASK_DOMAIN]: 'mainnet',
+        [MOCK_SNAP_ID]: 'mainnet',
+      },
+    });
+  });
+
+  it(`does not modify Snaps that don't have the \`endowment:ethereum-provider\` permission`, async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              rpcEndpoints: [
+                {
+                  networkClient: 'mainnet',
+                },
+              ],
+            },
+            '0xe705': {
+              rpcEndpoints: [
+                {
+                  networkClient: 'linea-sepolia',
+                },
+              ],
+            },
+          },
+        },
+
+        PermissionController: {
+          subjects: {
+            [MOCK_SNAP_ID]: {
+              permissions: {
+                [SnapEndowments.HomePage]: {
+                  caveats: [],
+                  date: 1664187844588,
+                  id: 'izn0WGUO8cvq_jqvLQuQP',
+                  invoker: MOCK_ORIGIN,
+                  parentCapability: SnapEndowments.HomePage,
+                },
+              },
+            },
+          },
+        },
+
+        SelectedNetworkController: {
+          domains: {
+            [METAMASK_DOMAIN]: 'mainnet',
+          },
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.data.NetworkController).toStrictEqual(
+      oldStorage.data.NetworkController,
+    );
+    expect(newStorage.data.PermissionController).toStrictEqual(
+      oldStorage.data.PermissionController,
+    );
+    expect(newStorage.data.SelectedNetworkController).toStrictEqual(
+      oldStorage.data.SelectedNetworkController,
+    );
   });
 });

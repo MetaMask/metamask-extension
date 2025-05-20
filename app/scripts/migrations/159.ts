@@ -1,16 +1,5 @@
-import { hasProperty, isObject } from '@metamask/utils';
-import {
-  NetworkConfiguration,
-  RpcEndpointType,
-} from '@metamask/network-controller';
-import {
-  BlockExplorerUrl,
-  BUILT_IN_CUSTOM_NETWORKS_RPC,
-  ChainId,
-  NetworkNickname,
-  NetworksTicker,
-} from '@metamask/controller-utils';
 import { cloneDeep } from 'lodash';
+import { hasProperty, isObject } from '@metamask/utils';
 
 type VersionedData = {
   meta: { version: number };
@@ -20,47 +9,54 @@ type VersionedData = {
 export const version = 159;
 
 /**
- * This migration add Monad to the network controller
- * as a default Testnet.
+ * This migration removes the `shouldShowAggregatedBalancePopover` property from the PreferencesController state.
  *
- * @param originalVersionedData - Versioned MetaMask extension state, exactly
- * what we persist to disk.
- * @returns Updated versioned MetaMask extension state.
+ * If the PreferenceController is not valid (not found or is not an object), the migration logs an error,
+ * however we will leave the state unchanged.
+ *
+ * @param originalVersionedData - The versioned extension state.
+ * @returns The updated versioned extension state without the `PreferencesController.shouldShowAggregatedBalancePopover` property.
  */
-export async function migrate(originalVersionedData: VersionedData) {
+export async function migrate(
+  originalVersionedData: VersionedData,
+): Promise<VersionedData> {
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
+
   versionedData.data = transformState(versionedData.data);
+
   return versionedData;
 }
 
-function transformState(state: Record<string, unknown>) {
-  if (
-    hasProperty(state, 'NetworkController') &&
-    isObject(state.NetworkController) &&
-    isObject(state.NetworkController.networkConfigurationsByChainId)
-  ) {
-    const monadTestnet = 'monad-testnet';
-    const monadTestnetChainId = ChainId[monadTestnet];
-    const monadTestnetConfiguration: NetworkConfiguration = {
-      chainId: monadTestnetChainId,
-      name: NetworkNickname[monadTestnet],
-      nativeCurrency: NetworksTicker[monadTestnet],
-      blockExplorerUrls: [BlockExplorerUrl[monadTestnet]],
-      defaultRpcEndpointIndex: 0,
-      defaultBlockExplorerUrlIndex: 0,
-      rpcEndpoints: [
-        {
-          networkClientId: monadTestnet,
-          type: RpcEndpointType.Custom,
-          url: BUILT_IN_CUSTOM_NETWORKS_RPC[monadTestnet],
-        },
-      ],
-    };
-
-    state.NetworkController.networkConfigurationsByChainId[
-      monadTestnetChainId
-    ] = monadTestnetConfiguration;
+function transformState(
+  state: Record<string, unknown>,
+): Record<string, unknown> {
+  if (!hasProperty(state, 'PreferencesController')) {
+    global.sentry?.captureException?.(
+      new Error(`Migration ${version}: PreferencesController not found.`),
+    );
+    return state;
   }
+
+  const preferencesControllerState = state.PreferencesController;
+
+  if (!isObject(preferencesControllerState)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: PreferencesController is type '${typeof preferencesControllerState}', expected object.`,
+      ),
+    );
+    return state;
+  }
+
+  if (
+    hasProperty(
+      preferencesControllerState,
+      'shouldShowAggregatedBalancePopover',
+    )
+  ) {
+    delete preferencesControllerState.shouldShowAggregatedBalancePopover;
+  }
+
   return state;
 }
