@@ -1,3 +1,4 @@
+import { mockBackgroundEventsSnap } from "../mock-response-data/snaps/snap-binary-mocks";
 import { openTestSnapClickButtonAndInstall } from "../page-objects/flows/install-test-snap.flow";
 import { loginWithoutBalanceValidation } from "../page-objects/flows/login.flow";
 import { TestSnaps } from "../page-objects/pages/test-snaps";
@@ -9,18 +10,19 @@ const {
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Test Snap Background Events', function () {
-  it('can trigger a background event with a dateto open a dialog', async function () {
+  it('can trigger a background event with a date to open a dialog', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
+        testSpecificMock: mockBackgroundEventsSnap,
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
 
-        // Navigate to test snaps page, connect to get-file snap, complete installation and validate
+        // Navigate to test snaps page, connect to background events Snap, complete installation and validate
         await openTestSnapClickButtonAndInstall(driver, 'connectBackgroundEventsButton');
         await testSnaps.check_installationComplete(
           'connectBackgroundEventsButton',
@@ -62,14 +64,15 @@ describe('Test Snap Background Events', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockBackgroundEventsSnap,
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
 
-        // Navigate to test snaps page, connect to get-file snap, complete installation and validate
+        // Navigate to test snaps page, connect to background events Snap, complete installation and validate
         await openTestSnapClickButtonAndInstall(driver, 'connectBackgroundEventsButton');
         await testSnaps.check_installationComplete(
           'connectBackgroundEventsButton',
@@ -111,7 +114,8 @@ describe('Test Snap Background Events', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockBackgroundEventsSnap,
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
