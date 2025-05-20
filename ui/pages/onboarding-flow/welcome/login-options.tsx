@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useCallback } from 'react';
 import {
   Box,
+  BoxProps,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -13,18 +13,65 @@ import {
   ModalContentSize,
   ModalHeader,
   ModalOverlay,
+  PolymorphicRef,
   Text,
 } from '../../../components/component-library';
 import {
+  AlignItems,
+  BackgroundColor,
   BlockSize,
+  BorderColor,
+  BorderRadius,
+  Display,
   FontWeight,
   IconColor,
+  JustifyContent,
   TextAlign,
   TextColor,
+  TextTransform,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { LOGIN_TYPE, LoginType, LoginOptionType, LOGIN_OPTION } from './types';
+
+export const SocialButton = React.forwardRef(
+  (
+    {
+      icon,
+      label,
+      ...props
+    }: { icon: React.ReactNode; label: string } & BoxProps<'button'>,
+    ref?: PolymorphicRef<'button'>,
+  ) => {
+    return (
+      <Box
+        ref={ref}
+        as="button"
+        className="options-modal__plain-button"
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
+        width={BlockSize.Full}
+        borderRadius={BorderRadius.pill}
+        borderColor={BorderColor.borderMuted}
+        backgroundColor={BackgroundColor.transparent}
+        gap={2}
+        {...props}
+      >
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+          <>
+            {icon}
+            <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+              {label}
+            </Text>
+          </>
+          ///: END:ONLY_INCLUDE_IF
+        }
+      </Box>
+    );
+  },
+);
 
 export default function LoginOptions({
   onClose,
@@ -37,9 +84,12 @@ export default function LoginOptions({
 }) {
   const t = useI18nContext();
 
-  const onLogin = (loginType: LoginType) => {
-    handleLogin(loginType);
-  };
+  const onLogin = useCallback(
+    (loginType: LoginType) => {
+      handleLogin(loginType);
+    },
+    [handleLogin],
+  );
 
   return (
     <Modal
@@ -49,104 +99,85 @@ export default function LoginOptions({
       isClosedOnOutsideClick={false}
     >
       <ModalOverlay />
-      <ModalContent size={ModalContentSize.Sm}>
+      <ModalContent size={ModalContentSize.Sm} alignItems={AlignItems.center}>
         <ModalHeader onClose={onClose}>
           <Text textAlign={TextAlign.Center} variant={TextVariant.headingMd}>
             {t('onboardingOptionTitle')}
           </Text>
         </ModalHeader>
-        <Box>
-          <ul className="welcome-login__buttons welcome-login__buttons--modal">
-            <li>
-              <button
-                className="welcome-login__plain-button"
-                onClick={() => onLogin(LOGIN_TYPE.GOOGLE)}
-              >
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-                  <div className="welcome-login__plain-button-content">
-                    <img
-                      src="images/icons/google.svg"
-                      className="welcome-login__social-icon"
-                      alt="Google icon"
-                    />
-                    <Text
-                      variant={TextVariant.bodyMd}
-                      fontWeight={FontWeight.Medium}
-                    >
-                      {loginOption === LOGIN_OPTION.EXISTING
-                        ? t('onboardingSignInWith', ['Google'])
-                        : t('onboardingContinueWith', ['Google'])}
-                    </Text>
-                  </div>
-                  ///: END:ONLY_INCLUDE_IF
-                }
-              </button>
-            </li>
-            <li>
-              <button
-                className="welcome-login__plain-button"
-                onClick={() => onLogin(LOGIN_TYPE.APPLE)}
-              >
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-                  <div className="welcome-login__plain-button-content">
-                    <Icon
-                      name={IconName.Apple}
-                      color={IconColor.iconDefault}
-                      size={IconSize.Lg}
-                    />
-                    <Text
-                      variant={TextVariant.bodyMd}
-                      fontWeight={FontWeight.Medium}
-                    >
-                      {loginOption === LOGIN_OPTION.EXISTING
-                        ? t('onboardingSignInWith', ['Apple'])
-                        : t('onboardingContinueWith', ['Apple'])}
-                    </Text>
-                  </div>
-                  ///: END:ONLY_INCLUDE_IF
-                }
-              </button>
-            </li>
-            <li>
-              <div className="welcome-login__or">
-                <Text
-                  className="welcome-login__or-text"
-                  variant={TextVariant.bodyMd}
-                  color={TextColor.textMuted}
-                  as="div"
-                >
-                  {t('or')}
-                </Text>
-              </div>
-            </li>
-            <li>
-              <Button
-                data-testid={
-                  loginOption === LOGIN_OPTION.EXISTING
-                    ? 'onboarding-import-with-srp-button'
-                    : 'onboarding-create-with-srp-button'
-                }
-                variant={ButtonVariant.Secondary}
-                width={BlockSize.Full}
-                size={ButtonSize.Lg}
-                onClick={() => onLogin(LOGIN_TYPE.SRP)}
-              >
-                {loginOption === LOGIN_OPTION.EXISTING
-                  ? t('onboardingSrpImport')
-                  : t('onboardingSrpCreate')}
-              </Button>
-            </li>
-          </ul>
+        <Box paddingInline={4}>
+          <SocialButton
+            icon={
+              <img
+                src="images/icons/google.svg"
+                className="options-modal__social-icon"
+                alt={t('onboardingOptionIcon', ['Google'])}
+              />
+            }
+            label={
+              loginOption === LOGIN_OPTION.EXISTING
+                ? t('onboardingSignInWith', ['Google'])
+                : t('onboardingContinueWith', ['Google'])
+            }
+            marginBottom={4}
+            onClick={() => onLogin(LOGIN_TYPE.GOOGLE)}
+          />
+          <SocialButton
+            icon={
+              <Icon
+                name={IconName.Apple}
+                color={IconColor.iconDefault}
+                size={IconSize.Lg}
+              />
+            }
+            label={
+              loginOption === LOGIN_OPTION.EXISTING
+                ? t('onboardingSignInWith', ['Apple'])
+                : t('onboardingContinueWith', ['Apple'])
+            }
+            marginBottom={2}
+            onClick={() => onLogin(LOGIN_TYPE.APPLE)}
+          />
+          <Box
+            alignItems={AlignItems.center}
+            marginBottom={4}
+            className="options-modal__or"
+          >
+            <Text
+              width={BlockSize.Min}
+              variant={TextVariant.bodyMd}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.textMuted}
+              backgroundColor={BackgroundColor.backgroundDefault}
+              paddingInline={2}
+              marginInline={'auto'}
+              textTransform={TextTransform.Uppercase}
+              as="div"
+              style={{
+                position: 'relative',
+                zIndex: 1,
+              }}
+            >
+              {t('or')}
+            </Text>
+          </Box>
+          <Button
+            data-testid={
+              loginOption === LOGIN_OPTION.EXISTING
+                ? 'onboarding-import-with-srp-button'
+                : 'onboarding-create-with-srp-button'
+            }
+            variant={ButtonVariant.Secondary}
+            width={BlockSize.Full}
+            size={ButtonSize.Lg}
+            onClick={() => onLogin(LOGIN_TYPE.SRP)}
+          >
+            {loginOption === LOGIN_OPTION.EXISTING
+              ? t('onboardingSrpImport')
+              : t('onboardingSrpCreate')}
+          </Button>
         </Box>
       </ModalContent>
     </Modal>
   );
 }
-
-LoginOptions.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  loginOption: PropTypes.string.isRequired,
-  handleLogin: PropTypes.func.isRequired,
-};
