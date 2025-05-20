@@ -1,5 +1,6 @@
 .mm-button-secondary {
   transition: transform 100ms ease-out;
+
   &:hover:not(&--disabled) {
     color: var(--color-text-default);
     background-color: var(--color-background-muted-hover);
