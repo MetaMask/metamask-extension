@@ -78,6 +78,7 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
           ? classnames('snap-ui-renderer__selector-item', `${className}-item`)
           : 'snap-ui-renderer__selector-item'
       }
+      data-testid="snap-ui-renderer__selector-item"
       backgroundColor={
         selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
       }
