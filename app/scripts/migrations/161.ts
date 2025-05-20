@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 160;
+export const version = 161;
 
 type TransactionStateEntry = {
   transactions: unknown[];
