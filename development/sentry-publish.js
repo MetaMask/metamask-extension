@@ -82,11 +82,13 @@ async function start() {
     ]);
   }
 
-  let distDirectory = 'dist';
+  let distDirectory = 'build-dist-browserify/dist';
   if (buildType !== loadBuildTypesConfig().default) {
-    distDirectory = dist ? `dist-${buildType}-${dist}` : `dist-${buildType}`;
+    distDirectory = dist
+      ? `build-${buildType}-${dist}-browserify/dist`
+      : `build-${buildType}-browserify/dist`;
   } else if (dist) {
-    distDirectory = `dist-${dist}`;
+    distDirectory = `build-dist-${dist}-browserify/dist`;
   }
 
   const absoluteDistDirectory = path.resolve(__dirname, '../', distDirectory);

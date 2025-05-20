@@ -127,8 +127,7 @@
     "master-sync": "node development/master-sync.js",
     "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js",
     "attributions:check": "./development/attributions-check.sh",
-    "attributions:generate": "./development/generate-attributions.sh",
-    "ci-rerun-from-failed": "tsx .circleci/scripts/rerun-ci-workflow-from-failed.ts"
+    "attributions:generate": "./development/generate-attributions.sh"
   },
   "resolutions": {
     "base-x@^3.0.x": "^3.0.11",

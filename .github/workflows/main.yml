@@ -363,6 +363,20 @@ jobs:
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
 
+  publish-release:
+    name: Publish release
+    if: ${{ (github.head_ref || github.ref_name) == 'master' }}
+    needs:
+      - build-dist-browserify
+      - build-dist-mv2-browserify
+      - build-flask-browserify
+      - build-flask-mv2-browserify
+      - run-tests
+      - e2e-chrome
+      - e2e-firefox
+    uses: ./.github/workflows/publish-release.yml
+    secrets: inherit
+
   # Explanation for all-jobs-completed and all-jobs-pass being separate:
   # https://github.com/MetaMask/metamask-module-template/pull/151
   all-jobs-completed:

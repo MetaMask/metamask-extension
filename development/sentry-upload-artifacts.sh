@@ -29,9 +29,12 @@ EOF
 }
 
 function upload_sourcemaps {
-  local release="${1}"; shift
-  local dist_directory="${1}"; shift
-  local dist="${1}"; shift
+  local release="${1}"
+  shift
+  local dist_directory="${1}"
+  shift
+  local dist="${1}"
+  shift
 
   sentry-cli releases files "${release}" upload-sourcemaps --dist "${dist}" "${dist_directory}"/chrome/ "${dist_directory}"/sourcemaps/ --rewrite --url-prefix '/metamask'
 }
@@ -43,55 +46,50 @@ function main {
 
   while :; do
     case "${1-default}" in
-      -h|--help)
-        show_help
-        exit
-        ;;
-      -r|--release)
-        if [[ -z $2 ]]
-        then
-          printf "'release' option requires an argument.\\n" >&2
-          printf '%s\n' "${__SEE_HELP_MESSAGE__}" >&2
-          exit 1
-        fi
-        release="${2}"
-        shift
-        ;;
-      -d|--dist)
-        if [[ -z $2 ]]
-        then
-          printf "'dist' option requires an argument.\\n" >&2
-          printf '%s\n' "${__SEE_HELP_MESSAGE__}" >&2
-          exit 1
-        fi
-        dist="${2}"
-        shift
-        ;;
-      --dist-directory)
-        if [[ -z $2 ]]
-        then
-          printf "'dist-directory' option requires an argument.\\n" >&2
-          printf '%s\n' "${__SEE_HELP_MESSAGE__}" >&2
-          exit 1
-        fi
-        dist_directory="${2}"
-        shift
-        ;;
-      *)
-        break
+    -h | --help)
+      show_help
+      exit
+      ;;
+    -r | --release)
+      if [[ -z $2 ]]; then
+        printf "'release' option requires an argument.\\n" >&2
+        printf '%s\n' "${__SEE_HELP_MESSAGE__}" >&2
+        exit 1
+      fi
+      release="${2}"
+      shift
+      ;;
+    -d | --dist)
+      if [[ -z $2 ]]; then
+        printf "'dist' option requires an argument.\\n" >&2
+        printf '%s\n' "${__SEE_HELP_MESSAGE__}" >&2
+        exit 1
+      fi
+      dist="${2}"
+      shift
+      ;;
+    --dist-directory)
+      if [[ -z $2 ]]; then
+        printf "'dist-directory' option requires an argument.\\n" >&2
+        printf '%s\n' "${__SEE_HELP_MESSAGE__}" >&2
+        exit 1
+      fi
+      dist_directory="${2}"
+      shift
+      ;;
+    *)
+      break
+      ;;
     esac
 
     shift
   done
 
-  if [[ -z $release ]]
-  then
+  if [[ -z "${release}" ]]; then
     die 'Required parameter "release" missing; either include parameter or set VERSION environment variable'
-  elif [[ -z $SENTRY_ORG ]]
-  then
+  elif [[ -z "${SENTRY_ORG}" ]]; then
     die 'Required environment variable "SENTRY_ORG" missing'
-  elif  [[ -z $SENTRY_PROJECT ]]
-  then
+  elif [[ -z "${SENTRY_PROJECT}" ]]; then
     die 'Required environment variable "SENTRY_PROJECT" missing'
   fi
 
