@@ -290,16 +290,16 @@ const TokenButtons = ({
   ]);
 
   return (
-    <Box display={Display.Flex} justifyContent={JustifyContent.spaceEvenly}>
+    <Box display={Display.Flex} gap={3} justifyContent={JustifyContent.spaceEvenly}>
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <IconButton
           className="token-overview__button"
           Icon={
             <Icon
-              name={IconName.PlusAndMinus}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
+              name={IconName.Money}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
             />
           }
           label={t('buyAndSell')}
@@ -317,9 +317,9 @@ const TokenButtons = ({
         onClick={handleSendOnClick}
         Icon={
           <Icon
-            name={IconName.Arrow2UpRight}
-            color={IconColor.iconDefault}
-            size={IconSize.Sm}
+            name={IconName.Send}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
           />
         }
         label={t('send')}
@@ -332,8 +332,8 @@ const TokenButtons = ({
         Icon={
           <Icon
             name={IconName.SwapHorizontal}
-            color={IconColor.iconDefault}
-            size={IconSize.Sm}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
           />
         }
         onClick={handleSwapOnClick}
@@ -349,8 +349,8 @@ const TokenButtons = ({
           Icon={
             <Icon
               name={IconName.Bridge}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
             />
           }
           label={t('bridge')}
