@@ -150,20 +150,22 @@ export function useTransactionDisplayData(transactionGroup) {
   const primaryValue = primaryTransaction.txParams?.value;
   const date = formatDateWithYearContext(initialTransaction.time);
 
+  const { isRemoteModeActivity } = useRemoteModeTransaction({
+    transaction: initialTransaction,
+  });
+
   let prefix = '-';
   let subtitle;
   let subtitleContainsOrigin = false;
   let recipientAddress = to;
   let senderAddress = from;
   let transactionData = initialTransaction?.txParams?.data;
-
-  const { isRemoteModeActivity } = useRemoteModeTransaction({
-    transaction: initialTransaction,
-  });
+  let remoteSignerAddress = null;
 
   if (isRemoteModeActivity) {
     recipientAddress = txParamsOriginal?.to;
     senderAddress = txParamsOriginal?.from;
+    remoteSignerAddress = initialTransaction?.txParams?.from;
     transactionData = txParamsOriginal?.data;
   }
 
@@ -485,5 +487,6 @@ export function useTransactionDisplayData(transactionGroup) {
     isPending,
     isSubmitted,
     detailsTitle,
+    remoteSignerAddress,
   };
 }

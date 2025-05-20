@@ -193,6 +193,7 @@ function TransactionListItemInner({
     isPending,
     senderAddress,
     detailsTitle,
+    remoteSignerAddress,
   } = useTransactionDisplayData(transactionGroup);
   const date = formatDateWithYearContext(
     transactionGroup.primaryTransaction.time,
@@ -410,7 +411,7 @@ function TransactionListItemInner({
             />
           )}
           chainId={chainId}
-          isRemoteModeActivity={isRemoteModeActivity}
+          remoteSignerAddress={remoteSignerAddress}
         />
       )}
       {!supportsEIP1559 && showRetryEditGasPopover && (
