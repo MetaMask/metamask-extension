@@ -6,7 +6,7 @@ import {
   useSafeChainsListValidationSelector,
 } from '../selectors';
 import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
-import { isOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
+import { getOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
 import {
   currencyRateStartPolling,
   currencyRateStopPollingByPollingToken,
@@ -31,14 +31,16 @@ const useNativeCurrencies = () => {
     const fetchNativeCurrencies = async () => {
       const nativeCurrenciesArray = await Promise.all(
         Object.values(networkConfigurations).map(async (n) => {
-          const isOriginal = await isOriginalNativeTokenSymbol({
-            ticker: n.nativeCurrency,
+          const originalToken = await getOriginalNativeTokenSymbol({
             chainId: n.chainId,
             useAPICall: useSafeChainsListValidation && completedOnboarding,
-          }).catch(() => false);
-          return isOriginal && chainIds.includes(n.chainId)
-            ? n.nativeCurrency
-            : null;
+          });
+
+          if (!chainIds.includes(n.chainId)) {
+            return null;
+          }
+
+          return originalToken ?? n.nativeCurrency;
         }),
       );
 

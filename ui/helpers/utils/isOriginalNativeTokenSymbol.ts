@@ -7,22 +7,20 @@ import {
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { DAY } from '../../../shared/constants/time';
 
-export const isOriginalNativeTokenSymbol = async ({
-  ticker,
+export const getOriginalNativeTokenSymbol = async ({
   chainId,
   useAPICall = false,
 }: {
-  ticker: string;
   chainId: Hex | CaipChainId;
   useAPICall?: boolean;
-}) => {
+}): Promise<string | null> => {
   try {
     const mappedCurrencySymbol =
       CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
         chainId as Hex as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
       ];
     if (mappedCurrencySymbol) {
-      return mappedCurrencySymbol === ticker;
+      return mappedCurrencySymbol;
     }
 
     const mappedAsNetworkCollision =
@@ -30,17 +28,12 @@ export const isOriginalNativeTokenSymbol = async ({
         chainId as Hex as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION
       ];
 
-    const isMappedCollision = mappedAsNetworkCollision?.some(
-      (network) => network.currencySymbol === ticker,
-    );
-
-    if (isMappedCollision) {
-      return true;
+    if (mappedAsNetworkCollision?.[0].currencySymbol) {
+      return mappedAsNetworkCollision[0].currencySymbol;
     }
 
     if (!useAPICall) {
-      // Default to true if API is off
-      return true;
+      return null;
     }
 
     const safeChainsList = await fetchWithCache({
@@ -55,10 +48,31 @@ export const isOriginalNativeTokenSymbol = async ({
         network.chainId === parseInt(chainId, 16),
     );
 
-    const symbol = matchedChain?.nativeCurrency?.symbol ?? null;
-
-    return symbol === ticker;
+    return matchedChain?.nativeCurrency?.symbol ?? null;
   } catch (err) {
-    return false;
+    return null;
   }
+};
+
+export const isOriginalNativeTokenSymbol = async ({
+  ticker,
+  chainId,
+  useAPICall = false,
+}: {
+  ticker: string;
+  chainId: Hex | CaipChainId;
+  useAPICall?: boolean;
+}) => {
+  const originalNativeTokenSymbol = await getOriginalNativeTokenSymbol({
+    chainId,
+    useAPICall,
+  });
+
+  // No original symbol found, so we can assume the ticker provided is correct.
+  if (originalNativeTokenSymbol === null) {
+    return true;
+  }
+
+  // Validate that the ticker uses the correct/expected ticker symbol
+  return originalNativeTokenSymbol === ticker;
 };
