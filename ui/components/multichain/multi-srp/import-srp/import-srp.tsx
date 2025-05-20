@@ -23,7 +23,6 @@ import {
   BorderRadius,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import { setShowNewSrpAddedToast } from '../../../app/toast-master/utils';
 import { parseSecretRecoveryPhrase } from '../../../app/srp-input/parse-secret-recovery-phrase';
 import { clearClipboard } from '../../../../helpers/utils/util';
 import { useTheme } from '../../../../hooks/useTheme';
@@ -382,7 +381,6 @@ export const ImportSrp = ({
               setLoading(true);
               await importWallet();
               onActionComplete(true);
-              dispatch(setShowNewSrpAddedToast(true));
             } catch (e) {
               setSrpError(
                 e instanceof Error ? e.message : 'An unknown error occurred',
