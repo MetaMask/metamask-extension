@@ -86,7 +86,7 @@ function TransactionListItemInner({
   const t = useI18nContext();
   const history = useHistory();
   const { hasCancelled, initialTransaction } = transactionGroup;
-  const { isRemoteModeTransaction, isRemoteModeGasTransaction } =
+  const { isRemoteModeActivity, isRemoteModeGasTransaction } =
     useRemoteModeTransaction({
       transaction: initialTransaction,
     });
@@ -192,6 +192,7 @@ function TransactionListItemInner({
     displayedStatusKey,
     isPending,
     senderAddress,
+    detailsTitle,
   } = useTransactionDisplayData(transactionGroup);
   const date = formatDateWithYearContext(
     transactionGroup.primaryTransaction.time,
@@ -367,7 +368,7 @@ function TransactionListItemInner({
             </>
           )
         }
-        isRemoteModeItem={isRemoteModeTransaction || isRemoteModeGasTransaction}
+        isRemoteModeItem={isRemoteModeActivity}
       >
         {Boolean(showCancelButton || speedUpButton) && (
           <Box
@@ -387,7 +388,7 @@ function TransactionListItemInner({
       </ActivityListItem>
       {showDetails && (
         <TransactionListItemDetails
-          title={title}
+          title={detailsTitle}
           onClose={toggleShowDetails}
           transactionGroup={transactionGroup}
           primaryCurrency={primaryCurrency}
@@ -409,6 +410,7 @@ function TransactionListItemInner({
             />
           )}
           chainId={chainId}
+          isRemoteModeActivity={isRemoteModeActivity}
         />
       )}
       {!supportsEIP1559 && showRetryEditGasPopover && (
