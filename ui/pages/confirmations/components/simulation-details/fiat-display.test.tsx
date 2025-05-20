@@ -2,7 +2,6 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { merge } from 'lodash';
-import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../../test/stub/networks';
@@ -45,34 +44,9 @@ const mockStoreWithHidingFiatOnTestnets = configureStore()(
   mockStateWithHidingFiatOnTestnets,
 );
 
-jest.mock('../../../../hooks/useFiatFormatter');
-
-type FiatFormatterOptions = {
-  shorten?: boolean;
-  truncatedCharLimit?: number;
-  truncatedStartChars?: number;
-};
-
 describe('FiatDisplay', () => {
-  const mockUseFiatFormatter = jest.mocked(useFiatFormatter);
-
   beforeEach(() => {
     jest.resetAllMocks();
-    mockUseFiatFormatter.mockReturnValue(
-      (value: number, options?: FiatFormatterOptions) => {
-        const formattedValue = `${value.toLocaleString('en-US', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}`;
-        if (
-          options?.shorten &&
-          formattedValue.length > (options?.truncatedCharLimit ?? 0)
-        ) {
-          return `$${formattedValue.slice(0, options.truncatedStartChars)}...`;
-        }
-        return `$${formattedValue}`;
-      },
-    );
   });
 
   describe('IndividualFiatDisplay', () => {
@@ -138,7 +112,7 @@ describe('FiatDisplay', () => {
         [1_234_567_890_123_456, 7_654_321_098_765_432],
         'Total = $8,888,888,988,888...',
       ],
-      [[9_999_999_999_998, 1], 'Total = $9,999,999,999,999.00'], // Should not shorten
+      [[999_999_999_998, 1], 'Total = $999,999,999,999.00'], // Should not shorten
     ])(
       'when total fiat exceeds the limit %s, it shortens to %s',
       (fiatAmounts: (number | null)[], expected: string) => {
