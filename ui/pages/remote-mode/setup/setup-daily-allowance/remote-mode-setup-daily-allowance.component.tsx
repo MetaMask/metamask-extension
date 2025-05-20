@@ -61,6 +61,7 @@ import {
 import {
   getMetaMaskAccountsOrdered,
   getSelectedInternalAccount,
+  getSelectedNetwork,
 } from '../../../../selectors';
 import {
   RemoteModeDailyAllowanceCard,
@@ -100,6 +101,7 @@ export default function RemoteModeSetupDailyAllowance() {
   const [allowanceError, setAllowanceError] = useState<boolean>(false);
 
   const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
+  const selectedNetwork = useSelector(getSelectedNetwork);
   const authorizedAccounts: InternalAccountWithBalance[] = useSelector(
     getMetaMaskAccountsOrdered,
   );
@@ -109,6 +111,17 @@ export default function RemoteModeSetupDailyAllowance() {
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
 
   const { assetsWithBalance } = useMultichainBalances();
+
+  const assets = useMemo(() => {
+    return assetsWithBalance
+      .filter(
+        (asset) => asset.chainId === selectedNetwork.configuration.chainId,
+      )
+      .map((asset) => ({
+        name: asset.symbol,
+        value: asset.address,
+      }));
+  }, [assetsWithBalance, selectedNetwork.configuration.chainId]);
 
   const selectedAllowanceBalance = useMemo(() => {
     return (
@@ -311,10 +324,7 @@ export default function RemoteModeSetupDailyAllowance() {
                       onChange={(value) => {
                         setSelectedAllowanceAddress(value);
                       }}
-                      options={assetsWithBalance.map((asset) => ({
-                        name: asset.symbol,
-                        value: asset.address,
-                      }))}
+                      options={assets}
                       selectedOption={selectedAllowanceAddress}
                       title="Select token"
                       style={{ width: '100%' }}

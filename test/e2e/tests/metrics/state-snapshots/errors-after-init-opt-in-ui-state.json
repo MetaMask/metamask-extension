@@ -124,6 +124,11 @@
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
+      },
+      "MON": {
+        "conversionDate": "number",
+        "conversionRate": 0.2,
+        "usdConversionRate": 0.2
       }
     },
     "throttledOrigins": "object",
@@ -195,8 +200,6 @@
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
     "watchEthereumAccountEnabled": "boolean",
-    "bitcoinSupportEnabled": "boolean",
-    "bitcoinTestnetSupportEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "identities": "object",

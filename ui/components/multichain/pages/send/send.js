@@ -71,6 +71,7 @@ import {
 } from '../../../../selectors';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
+import { trace, TraceName } from '../../../../../shared/lib/trace';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -292,8 +293,14 @@ export const SendPage = () => {
     setError(undefined);
 
     try {
-      await dispatch(signTransaction(history));
-
+      await trace(
+        {
+          name: TraceName.SendCompleted,
+        },
+        async () => {
+          await dispatch(signTransaction(history));
+        },
+      );
       trackEvent({
         category: MetaMetricsEventCategory.Transactions,
         event: 'Complete',
