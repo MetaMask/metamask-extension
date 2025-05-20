@@ -1,5 +1,6 @@
 import { SnapControllerState } from '@metamask/snaps-controllers';
 import { Snap } from '@metamask/snaps-utils';
+import { TransactionControllerState, TransactionHistory } from '@metamask/transaction-controller';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -15,8 +16,32 @@ export function sanitizeUIState(state: FlattenedUIState): FlattenedUIState {
   }
 
   sanitizeSnapData(newState);
+  sanitizeTransactionData(newState);
 
   return newState;
+}
+
+function sanitizeTransactionData(state: FlattenedUIState) {
+  const transactionsData = state.transactions as
+    | TransactionControllerState['transactions']
+    | undefined;
+
+  if (!transactionsData) {
+    return;
+  }
+
+  state.transactions = transactionsData.map(
+    (transaction: TransactionControllerState['transactions'][number]) => {
+      if (transaction.status === 'confirmed') {
+        delete transaction.rawTx;
+        delete transaction.txParams.data;
+        if (transaction.history) {
+          // TODO: scrub history here
+        }
+      }
+      return transaction;
+    },
+  );
 }
 
 function sanitizeSnapData(state: FlattenedUIState) {
