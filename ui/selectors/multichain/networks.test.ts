@@ -27,9 +27,7 @@ import {
 type TestState = AccountsState &
   MultichainNetworkControllerState &
   NetworkState &
-  RemoteFeatureFlagsState & {
-    metamask: { bitcoinSupportEnabled: boolean };
-  };
+  RemoteFeatureFlagsState;
 
 const mockNonEvmNetworks: Record<CaipChainId, MultichainNetworkConfiguration> =
   {
@@ -125,8 +123,9 @@ const mockState: TestState = {
   metamask: {
     remoteFeatureFlags: {
       addSolanaAccount: true,
+      solanaTestnetsEnabled: true,
+      addBitcoinAccount: true,
     },
-    bitcoinSupportEnabled: true,
     multichainNetworkConfigurationsByChainId: {
       ...mockNonEvmNetworks,
     },
@@ -204,29 +203,6 @@ describe('Multichain network selectors', () => {
       ]);
     });
 
-    it('returns all multichain network configurations by chain ID excluding Bitcoin when support is disabled and there no Bitcoin account', () => {
-      const mockMultichainNetworkStateWithBitcoinSupportDisabled = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          bitcoinSupportEnabled: false,
-        },
-      };
-
-      expect(
-        getMultichainNetworkConfigurationsByChainId(
-          mockMultichainNetworkStateWithBitcoinSupportDisabled,
-        ),
-      ).toStrictEqual([
-        {
-          [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
-          [SolScope.Devnet]: mockNonEvmNetworks[SolScope.Devnet],
-          ...mockEvmNetworksWithNewConfig,
-        },
-        mockEvmNetworksWithOldConfig,
-      ]);
-    });
-
     it('returns all multichain network configurations by chain ID excluding Bitcoin and Solana when support is disabled and no accounts related to those networks', () => {
       const mockMultichainNetworkStateWithBitcoinSupportDisabled = {
         ...mockState,
@@ -235,8 +211,8 @@ describe('Multichain network selectors', () => {
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
             addSolanaAccount: false,
+            addBitcoinAccount: false,
           },
-          bitcoinSupportEnabled: false,
         },
       };
 
@@ -258,8 +234,8 @@ describe('Multichain network selectors', () => {
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
             addSolanaAccount: false,
+            addBitcoinAccount: false,
           },
-          bitcoinSupportEnabled: false,
           internalAccounts: {
             ...mockState.metamask.internalAccounts,
             accounts: {
@@ -292,8 +268,8 @@ describe('Multichain network selectors', () => {
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
             addSolanaAccount: false,
+            addBitcoinAccount: true,
           },
-          bitcoinSupportEnabled: false,
           internalAccounts: {
             ...mockState.metamask.internalAccounts,
             accounts: {
@@ -327,8 +303,8 @@ describe('Multichain network selectors', () => {
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
             addSolanaAccount: false,
+            addBitcoinAccount: true,
           },
-          bitcoinSupportEnabled: false,
           internalAccounts: {
             ...mockState.metamask.internalAccounts,
             accounts: {
