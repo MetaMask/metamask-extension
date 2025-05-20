@@ -6,7 +6,7 @@ import { UserStorageMockttpController } from '../../helpers/identity/user-storag
 import { accountsToMockForAccountsSync as unencryptedMockAccounts } from '../identity/account-syncing/mock-data';
 import { Driver } from '../../webdriver/driver';
 import {
-  enableNotificationsThroughCTA,
+  enableNotificationsThroughGlobalMenu,
   enableNotificationsThroughSettingsPage,
 } from '../../page-objects/flows/notifications.flow';
 import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
@@ -58,11 +58,11 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
         },
         async ({ driver }) => {
           await onboardAndAddAccount(driver);
-          await enableNotificationsThroughCTA(driver);
+          await enableNotificationsThroughGlobalMenu(driver);
           const notificationsSettingsPage = new NotificationsSettingsPage(
             driver,
           );
-          await notificationsSettingsPage.assertMainNotificationSettingsToggles(
+          await notificationsSettingsPage.assertMainNotificationSettingsTogglesEnabled(
             driver,
           );
 
@@ -98,7 +98,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
           const notificationsSettingsPage = new NotificationsSettingsPage(
             driver,
           );
-          await notificationsSettingsPage.assertMainNotificationSettingsToggles(
+          await notificationsSettingsPage.assertMainNotificationSettingsTogglesEnabled(
             driver,
           );
 

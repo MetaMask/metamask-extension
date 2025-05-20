@@ -200,7 +200,7 @@ class NotificationsSettingsPage {
     }
   }
 
-  async assertMainNotificationSettingsToggles(driver: Driver) {
+  async assertMainNotificationSettingsTogglesEnabled(driver: Driver) {
     const notificationsSettingsPage = new NotificationsSettingsPage(driver);
     await notificationsSettingsPage.check_pageIsLoaded();
     await notificationsSettingsPage.check_notificationState({
@@ -211,7 +211,6 @@ class NotificationsSettingsPage {
       toggleType: 'product',
       expectedState: 'enabled',
     });
-
     return notificationsSettingsPage;
   }
 }

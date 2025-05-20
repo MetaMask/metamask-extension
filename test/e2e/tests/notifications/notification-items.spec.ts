@@ -6,9 +6,9 @@ import { UserStorageMockttpController } from '../../helpers/identity/user-storag
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import {
-  enableNotificationsThroughCTA,
+  enableNotificationsThroughGlobalMenu,
   clickNotificationItemAndDetailsPage,
-  disableNotificationsThroughCTA,
+  navigateToNotificationSettingsAndClickDisable,
 } from '../../page-objects/flows/notifications.flow';
 import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
 import {
@@ -30,12 +30,12 @@ describe('Notification List - View Items and Details', function () {
       },
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
-        await enableNotificationsThroughCTA(driver, false);
+        await enableNotificationsThroughGlobalMenu(driver, false);
         await visitEachWalletNotificationItemAndDetailsPage(driver);
         await visitEachFeatureAnnouncementNotificationItemAndDetailsPage(
           driver,
         );
-        await disableNotificationsThroughCTA(driver);
+        await navigateToNotificationSettingsAndClickDisable(driver);
         await new NotificationsSettingsPage(
           driver,
         ).check_notificationSectionIsHidden();
