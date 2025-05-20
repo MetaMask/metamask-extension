@@ -2,6 +2,11 @@
 
 set -e
 
+if [[ -z "${FIREFOX_BUNDLE_SCRIPT_TOKEN}" ]]; then
+    echo "::error::FIREFOX_BUNDLE_SCRIPT_TOKEN not provided. Set the 'FIREFOX_BUNDLE_SCRIPT_TOKEN' environment variable."
+    exit 1
+fi
+
 git config --global user.name "MetaMask Bot"
 git config --global user.email metamaskbot@users.noreply.github.com
 version=$(git show -s --format='%s' HEAD | grep -Eo 'v[0-9]+\.[0-9]+\.[0-9]+')

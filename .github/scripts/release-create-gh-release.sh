@@ -2,6 +2,21 @@
 
 set -e
 
+if [[ -z "${GITHUB_TOKEN}" ]]; then
+    echo "::error::GITHUB_TOKEN not provided. Set the 'GITHUB_TOKEN' environment variable."
+    exit 1
+fi
+
+if [[ -z "${GITHUB_REPOSITORY}" ]]; then
+    echo "::error::GITHUB_REPOSITORY not provided. Set the 'GITHUB_REPOSITORY' environment variable."
+    exit 1
+fi
+
+if [[ -z "${GITHUB_SHA}" ]]; then
+    echo "::error::GITHUB_SHA not provided. Set the 'GITHUB_SHA' environment variable."
+    exit 1
+fi
+
 function install_github_cli() {
     printf '%s\n' 'Installing hub CLI'
     pushd "$(mktemp -d)"

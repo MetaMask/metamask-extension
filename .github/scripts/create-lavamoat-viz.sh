@@ -18,8 +18,9 @@ yarn lavamoat:debug:webapp --parallel=false
 # static entry for build-system
 POLICY_DIR_NAMES=$(find lavamoat/browserify -maxdepth 1 -mindepth 1 -type d -printf '%f ')
 
-POLICY_FILE_PATHS_JSON=$(echo -n "${POLICY_DIR_NAMES}" \
-  | jq --raw-input --slurp --indent 0 '
+POLICY_FILE_PATHS_JSON=$(
+  echo -n "${POLICY_DIR_NAMES}" |
+    jq --raw-input --slurp --indent 0 '
     rtrimstr(" ")
     | split(" ")
     | map({
