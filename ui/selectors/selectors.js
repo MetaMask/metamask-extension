@@ -595,21 +595,13 @@ export function getNumberOfTokens(state) {
 }
 
 export function getMetaMaskKeyrings(state) {
-  return state.metamask.keyrings.map((keyring, index) => ({
-    ...keyring,
-    metadata: state.metamask.keyringsMetadata?.[index] ?? {},
-  }));
+  return state.metamask.keyrings;
 }
 
-export const getMetaMaskHdKeyrings = createSelector(
-  getMetaMaskKeyrings,
-  (keyrings) => {
-    return keyrings.filter((keyring) => keyring.type === KeyringTypes.hd);
-  },
-);
-
-export function getMetaMaskKeyringsMetadata(state) {
-  return state.metamask.keyringsMetadata;
+export function getMetaMaskHdKeyrings(state) {
+  return state.metamask.keyrings.filter(
+    (keyring) => keyring.type === KeyringTypes.hd,
+  );
 }
 
 export function getHDEntropyIndex(state) {
@@ -626,9 +618,8 @@ export function getHDEntropyIndex(state) {
     const account = getSelectedInternalAccount(state);
     if (account) {
       const { entropySource } = account.options;
-      const keyringsMetadata = getMetaMaskKeyringsMetadata(state);
-      hdEntropyIndex = keyringsMetadata.findIndex(
-        (metadata) => metadata.id === entropySource,
+      hdEntropyIndex = keyrings.findIndex(
+        ({ metadata }) => metadata.id === entropySource,
       );
     }
   }
@@ -2103,11 +2094,6 @@ export const getConnectedSitesList = createDeepEqualSelector(
   },
 );
 
-export function getShouldShowAggregatedBalancePopover(state) {
-  const { shouldShowAggregatedBalancePopover } = getPreferences(state);
-  return shouldShowAggregatedBalancePopover;
-}
-
 export const getMemoizedCurrentChainId = createDeepEqualSelector(
   getCurrentChainId,
   (chainId) => chainId,
@@ -2972,24 +2958,8 @@ export function getIsWatchEthereumAccountEnabled(state) {
  * @returns The state of the `bitcoinSupportEnabled` flag.
  */
 export function getIsBitcoinSupportEnabled(state) {
-  // NOTE: We use this trick to avoid using code fence.
-  // If this flag is not in `state.metamask` it will be set
-  // as `undefined`, and the `Boolean(...)` will be evaluated
-  // to `false`.
-  const { bitcoinSupportEnabled } = state.metamask;
-  return Boolean(bitcoinSupportEnabled);
-}
-
-/**
- * Get the state of the `bitcoinTestnetSupportEnabled` flag.
- *
- * @param {*} state
- * @returns The state of the `bitcoinTestnetSupportEnabled` flag.
- */
-export function getIsBitcoinTestnetSupportEnabled(state) {
-  // See `getIsBitcoinSupportEnabled` for details.
-  const { bitcoinTestnetSupportEnabled } = state.metamask;
-  return Boolean(bitcoinTestnetSupportEnabled);
+  const { addBitcoinAccount } = getRemoteFeatureFlags(state);
+  return Boolean(addBitcoinAccount);
 }
 
 /**

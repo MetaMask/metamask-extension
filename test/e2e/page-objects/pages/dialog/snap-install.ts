@@ -4,6 +4,11 @@ import { veryLargeDelayMs } from '../../../helpers';
 class SnapInstall {
   private driver: Driver;
 
+  private readonly addToMetaMaskHeader = {
+    tag: 'h3',
+    text: 'Add to MetaMask',
+  };
+
   private readonly confirmButton = {
     tag: 'button',
     text: 'Confirm',
@@ -80,16 +85,8 @@ class SnapInstall {
     console.log(
       'Clicking on the scroll button and then clicking the confirm button',
     );
-    await this.driver.waitUntil(
-      async () => {
-        await this.driver.clickElementSafe(this.snapInstallScrollArea);
-        const isEnabled = await this.driver.findClickableElement(
-          this.nextPageButton,
-        );
-        return isEnabled;
-      },
-      { timeout: veryLargeDelayMs, interval: 100 },
-    );
+    await this.driver.waitForSelector(this.addToMetaMaskHeader);
+    await this.driver.clickElementSafe(this.snapInstallScrollArea);
     await this.driver.clickElement(this.confirmButton);
   }
 
