@@ -5139,7 +5139,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@npm:^21.0.0":
+"@metamask/bridge-status-controller@npm:21.0.0":
   version: 21.0.0
   resolution: "@metamask/bridge-status-controller@npm:21.0.0"
   dependencies:
@@ -5160,6 +5160,30 @@ __metadata:
     "@metamask/snaps-controllers": ^11.0.0
     "@metamask/transaction-controller": ^56.0.0
   checksum: 10/7d336b5064147c85e30e218b073c14e3ec876307bdd922a74446aaf5bf256e1a565c621e57bb6d343b69ff21b8294c7f9ccac533f1a04214db25e252b8546c8b
+  languageName: node
+  linkType: hard
+
+"@metamask/bridge-status-controller@patch:@metamask/bridge-status-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-21.0.0-7178a3f32f.patch":
+  version: 21.0.0
+  resolution: "@metamask/bridge-status-controller@patch:@metamask/bridge-status-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-21.0.0-7178a3f32f.patch::version=21.0.0&hash=f37690"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/controller-utils": "npm:^11.8.0"
+    "@metamask/keyring-api": "npm:^17.4.0"
+    "@metamask/polling-controller": "npm:^13.0.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/user-operation-controller": "npm:^35.0.0"
+    "@metamask/utils": "npm:^11.2.0"
+    bignumber.js: "npm:^9.1.2"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/accounts-controller": ^29.0.0
+    "@metamask/bridge-controller": ^25.0.0
+    "@metamask/gas-fee-controller": ^23.0.0
+    "@metamask/network-controller": ^23.0.0
+    "@metamask/snaps-controllers": ^11.0.0
+    "@metamask/transaction-controller": ^56.0.0
+  checksum: 10/b0013ecdff9fd471ba55a80599d2f5d28c73949313501486e506b06b7e001fba0b186d7fa5357b0a010ec41a9c0c9a8bb93a29a3c8e808982304a7c8785c22d0
   languageName: node
   linkType: hard
 
@@ -29998,7 +30022,7 @@ __metadata:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.12.1"
     "@metamask/bridge-controller": "npm:^25.0.1"
-    "@metamask/bridge-status-controller": "npm:^21.0.0"
+    "@metamask/bridge-status-controller": "patch:@metamask/bridge-status-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-21.0.0-7178a3f32f.patch"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^0.3.0"
@@ -30074,6 +30098,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^9.3.0"
     "@metamask/solana-wallet-snap": "npm:^1.29.0"
     "@metamask/solana-wallet-standard": "npm:^0.4.1"
+    "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
     "@metamask/test-dapp-multichain": "npm:^0.10.0"
@@ -30362,7 +30387,6 @@ __metadata:
     string.prototype.matchall: "npm:^4.0.2"
     style-loader: "npm:^0.21.0"
     stylelint: "npm:^13.6.1"
-    superstruct: "npm:^1.0.3"
     tar: "npm:^7.4.3"
     terser: "npm:^5.7.0"
     terser-webpack-plugin: "npm:^5.3.10"
@@ -38758,13 +38782,6 @@ __metadata:
   dependencies:
     debug: "npm:^4.1.0"
   checksum: 10/5c69776ce2b53040c952cfbca0f7b487b1ee993c55b6d5523f674ec075f30e031fd84b6706dc8ccc4deb9761b58f9925be8806a316e5eedff2286bb48cb75044
-  languageName: node
-  linkType: hard
-
-"superstruct@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "superstruct@npm:1.0.3"
-  checksum: 10/632b6171ac136b6750e62a55f806cc949b3dbf2b4a7dc70cc85f54adcdf19d21eab9711f04e8a643b7dd622bbd8658366ead924f467adaccb2c8005c133b7976
   languageName: node
   linkType: hard
 

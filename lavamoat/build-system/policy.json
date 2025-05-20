@@ -1019,7 +1019,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "nock>debug": true,
@@ -8250,12 +8250,6 @@
     "stylelint>sugarss": {
       "packages": {
         "stylelint>sugarss>postcss": true
-      }
-    },
-    "superstruct": {
-      "globals": {
-        "console.warn": true,
-        "define": true
       }
     },
     "chalk>supports-color": {
