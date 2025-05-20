@@ -53,7 +53,6 @@ const SnapUIRendererComponent = ({
     // We do this to avoid useless re-renders.
     (oldState, newState) => isEqual(oldState.content, newState.content),
   );
-
   const rawContent = interfaceState?.content;
   const content =
     rawContent?.type === 'Container' || !rawContent

@@ -41,10 +41,9 @@ export const useMultichainAccountTotalFiatBalance = (
   loading: boolean;
   orderedTokenList: { iconUrl: string; symbol: string; fiatBalance: string }[];
 } => {
-  const evmResult = useAccountTotalFiatBalance(
-    account,
-    shouldHideZeroBalanceTokens,
-  );
+  if (isEvmAccountType(account.type)) {
+    return useAccountTotalFiatBalance(account, shouldHideZeroBalanceTokens);
+  }
 
   const currentCurrency = useMultichainSelector(
     getMultichainCurrentCurrency,
@@ -96,14 +95,12 @@ export const useMultichainAccountTotalFiatBalance = (
   // Fiat balance formatted in user's desired currency (ex: "$8.90")
   const formattedFiat = formatCurrency(totalFiatBalance, currentCurrency);
 
-  return isEvmAccountType(account.type)
-    ? evmResult
-    : {
-        formattedFiat,
-        totalFiatBalance,
-        totalBalance: balance,
-        tokensWithBalances: [], // TODO: support tokens
-        loading: false, // TODO: support tokens
-        orderedTokenList: [nativeTokenValues], // TODO: support tokens
-      };
+  return {
+    formattedFiat,
+    totalFiatBalance,
+    totalBalance: balance,
+    tokensWithBalances: [], // TODO: support tokens
+    loading: false, // TODO: support tokens
+    orderedTokenList: [nativeTokenValues], // TODO: support tokens
+  };
 };
