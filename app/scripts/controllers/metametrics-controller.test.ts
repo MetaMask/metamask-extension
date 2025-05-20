@@ -1460,9 +1460,6 @@ describe('MetaMetricsController', function () {
           currentCurrency: 'usd',
           dataCollectionForMarketing: false,
           preferences: { privacyMode: true, tokenNetworkFilter: [] },
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          custodyAccountDetails: {},
-          ///: END:ONLY_INCLUDE_IF
           sessionData: undefined,
           keyrings: [],
         });
@@ -1501,11 +1498,6 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
           [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
           [MetaMetricsUserTrait.ProfileId]: undefined,
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
-          [MetaMetricsUserTrait.MmiAccountAddress]: null,
-          [MetaMetricsUserTrait.MmiIsCustodian]: false,
-          ///: END:ONLY_INCLUDE_IF
           ///: BEGIN:ONLY_INCLUDE_IF(petnames)
           [MetaMetricsUserTrait.PetnameAddressCount]: 3,
           ///: END:ONLY_INCLUDE_IF
@@ -1568,9 +1560,6 @@ describe('MetaMetricsController', function () {
           },
           security_providers: ['blockaid'],
           currentCurrency: 'usd',
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          custodyAccountDetails: {},
-          ///: END:ONLY_INCLUDE_IF
           sessionData: undefined,
           keyrings: [],
           multichainNetworkConfigurationsByChainId: {},
@@ -1630,9 +1619,6 @@ describe('MetaMetricsController', function () {
           dataCollectionForMarketing: false,
           preferences: { privacyMode: true, tokenNetworkFilter: [] },
           securityAlertsEnabled: true,
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          custodyAccountDetails: {},
-          ///: END:ONLY_INCLUDE_IF
           sessionData: {
             token: {
               accessToken: '',
@@ -1712,9 +1698,6 @@ describe('MetaMetricsController', function () {
           securityAlertsEnabled: true,
           security_providers: ['blockaid'],
           currentCurrency: 'usd',
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          custodyAccountDetails: {},
-          ///: END:ONLY_INCLUDE_IF
           sessionData: {
             token: {
               accessToken: '',
@@ -1775,9 +1758,6 @@ describe('MetaMetricsController', function () {
           securityAlertsEnabled: true,
           security_providers: ['blockaid'],
           currentCurrency: 'usd',
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          custodyAccountDetails: {},
-          ///: END:ONLY_INCLUDE_IF
           sessionData: {
             token: {
               accessToken: '',

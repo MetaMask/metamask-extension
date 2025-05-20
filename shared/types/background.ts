@@ -125,9 +125,6 @@ export type ControllerStatePropertiesEnumerated = {
   lastInteractedConfirmationInfo?: AppStateControllerState['lastInteractedConfirmationInfo'];
   termsOfUseLastAgreed?: AppStateControllerState['termsOfUseLastAgreed'];
   snapsInstallPrivacyWarningShown?: AppStateControllerState['snapsInstallPrivacyWarningShown'];
-  interactiveReplacementToken?: AppStateControllerState['interactiveReplacementToken'];
-  noteToTraderMessage?: AppStateControllerState['noteToTraderMessage'];
-  custodianDeepLink?: AppStateControllerState['custodianDeepLink'];
   slides: AppStateControllerState['slides'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];
   quoteRequest: BridgeControllerState['quoteRequest'];
