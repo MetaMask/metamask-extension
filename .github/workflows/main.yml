@@ -87,8 +87,6 @@ jobs:
     uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
 
   build-dist-browserify:
-    needs:
-      - prep-deps
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-browserify
@@ -96,8 +94,6 @@ jobs:
     secrets: inherit
 
   build-dist-mv2-browserify:
-    needs:
-      - prep-deps
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-browserify
@@ -107,8 +103,6 @@ jobs:
     secrets: inherit
 
   build-beta-browserify:
-    needs:
-      - prep-deps
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-beta-browserify
@@ -116,8 +110,6 @@ jobs:
     secrets: inherit
 
   build-beta-mv2-browserify:
-    needs:
-      - prep-deps
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-beta-mv2-browserify
@@ -127,8 +119,6 @@ jobs:
     secrets: inherit
 
   build-flask-browserify:
-    needs:
-      - prep-deps
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-browserify
@@ -136,8 +126,6 @@ jobs:
     secrets: inherit
 
   build-flask-mv2-browserify:
-    needs:
-      - prep-deps
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-browserify
@@ -147,8 +135,6 @@ jobs:
     secrets: inherit
 
   build-test-browserify:
-    needs:
-      - prep-deps
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-browserify
@@ -156,8 +142,6 @@ jobs:
     secrets: inherit
 
   build-test-mv2-browserify:
-    needs:
-      - prep-deps
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-mv2-browserify
@@ -167,8 +151,6 @@ jobs:
     secrets: inherit
 
   build-test-flask-browserify:
-    needs:
-      - prep-deps
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-flask-browserify
@@ -176,8 +158,6 @@ jobs:
     secrets: inherit
 
   build-test-flask-mv2-browserify:
-    needs:
-      - prep-deps
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-flask-mv2-browserify
@@ -187,8 +167,6 @@ jobs:
     secrets: inherit
 
   build-test-webpack:
-    needs:
-      - prep-deps
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-webpack
