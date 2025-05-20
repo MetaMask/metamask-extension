@@ -1008,12 +1008,61 @@ export function setupController(
     }
 
     if (isMetaMaskInternalProcess) {
+      /**
+       * @typedef {PortStream} PortStream
+       */
       const portStream =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
       trackAppOpened(processName);
+
+      // console.log("try blob");
+      // const now = Date.now();
+      // // lets benchmark sending random data via blob, and via just a string
+      // const mbSize = 0.5;
+      // const sizeInBytes = mbSize * 1024 * 1024; // Convert MB to bytes
+      // const chunkSize = 65536; // Max bytes per crypto.getRandomValues call
+      // const numChunks = Math.ceil(sizeInBytes / chunkSize);
+      // const randomData = new Uint8Array(sizeInBytes);
+      // for (let i = 0; i < numChunks; i++) {
+      //   const start = i * chunkSize;
+      //   const end = Math.min(start + chunkSize, sizeInBytes);
+      //   const chunk = new Uint8Array(end - start);
+      //   crypto.getRandomValues(chunk);
+      //   randomData.set(chunk, start);
+      // }
+      // const str = new TextDecoder().decode(randomData)
+      // console.time("blob" + now)
+      // const blob = new Blob([str], { type: 'application/octet-stream' });
+      // const blobUrl = URL.createObjectURL(blob);
+      // remotePort.postMessage({
+      //   data: {
+      //     method: "BLOB",
+      //     params: {
+      //       blobUrl,
+      //     }
+      //   }
+      // });
+      // remotePort.onMessage.addListener((msg) => {
+      //   if (msg === "ACK_BLOB") {
+      //     URL.revokeObjectURL(blobUrl);
+      //     console.timeEnd("blob" + now);
+
+      //     console.time("string" + now)
+      //     remotePort.postMessage({
+      //       data: {
+      //         method: "STRING",
+      //         params: {
+      //           str: str,
+      //         }
+      //       }
+      //     });
+      //   } else if (msg === "ACK_STRING") {
+      //       console.timeEnd("string" + now);
+      //   }
+      // });
 
       initializeRemoteFeatureFlags();
 

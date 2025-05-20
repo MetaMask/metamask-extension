@@ -1,18 +1,12 @@
 import type { Json } from '@metamask/utils';
 import { Duplex, DuplexOptions } from 'readable-stream';
 import type { Runtime } from 'webextension-polyfill';
-import {
-  ChunkFrame,
-  isChunkFrame,
-  toFrames,
-  concat,
-  toUint8,
-} from './state-frame-utils';
+import { ChunkFrame, isChunkFrame, toFrames } from './state-frame-utils';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface Options extends DuplexOptions {
   log?: (data: unknown, outgoing: boolean) => void;
-  debug?: boolean; // 🆕
+  debug?: boolean;
 }
 
 const TAG = '%cPortStream';
@@ -24,7 +18,7 @@ export default class PortDuplexStream extends Duplex {
   private readonly port: Runtime.Port;
   private readonly buffer = new Map<
     string | number,
-    { parts: Uint8Array[]; total: number; bin: boolean }
+    { parts: Uint8Array[]; total: number }
   >();
   private log: (d: unknown, out: boolean) => void;
   private debug = false;
@@ -62,11 +56,10 @@ export default class PortDuplexStream extends Duplex {
     // small un‑framed message
     this.log(msg, false);
     this.push(msg);
-    this.emit('message', msg);
   }
 
   private handleChunk(frame: ChunkFrame) {
-    const { id, seq, total, bin, data } = frame;
+    const { id, seq, total, data } = frame;
 
     if (this.debug) {
       console.debug(
@@ -79,29 +72,25 @@ export default class PortDuplexStream extends Duplex {
     const entry = this.buffer.get(id) ?? {
       parts: new Array(total),
       total,
-      bin,
     };
-    entry.parts[seq] = toUint8(data);
+    entry.parts[seq] = data;
     this.buffer.set(id, entry);
 
     if (entry.parts.filter(Boolean).length === total) {
-      const merged = concat(entry.parts);
+      const merged = entry.parts.join('');
       this.buffer.delete(id);
-
-      const txt = new TextDecoder().decode(merged);
-      const value = bin ? merged : txt ? JSON.parse(txt) : '';
+      const value = merged ? JSON.parse(merged) : '';
 
       if (this.debug) {
         console.debug(
           TAG,
           STYLE_IN,
-          `✔ re‑assembled id=${id} (${merged.byteLength} bytes)`,
+          `✔ re-assembled id=${id} (${value.length} bytes)`,
         );
       }
 
       this.log(value, false);
       this.push(value);
-      this.emit('message', value);
     }
   }
 
@@ -125,7 +114,7 @@ export default class PortDuplexStream extends Duplex {
   ) {
     const send = (obj: unknown) => {
       if (this.debug) console.debug(TAG, STYLE_OUT, '→', obj);
-      this.port.postMessage(obj as any);
+      this.port.postMessage(obj);
     };
 
     try {
@@ -133,7 +122,14 @@ export default class PortDuplexStream extends Duplex {
         send(chunk);
       } else {
         const id = uuidv4();
-        for (const frame of toFrames(id, chunk as Json)) send(frame);
+        const gen = toFrames(id, chunk);
+        let next = gen.next();
+        while (!next.done) {
+          const { value } = next;
+          send(value);
+          next = gen.next();
+        }
+        // send(chunk);
       }
       this.log(chunk, true);
       cb();

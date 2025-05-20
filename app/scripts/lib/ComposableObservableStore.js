@@ -113,12 +113,12 @@ export default class ComposableObservableStore extends ObservableStore {
   /**
    * Streams each child‑store’s state (JSON) as 0‑N frames of ≤ `CHUNK_SIZE`.
    * @param {Record<string, { getState?: () => any; state?: any }>} config - Map of internal state keys to child stores
-   * @param {number} [CHUNK_SIZE=512*1024] - The maximum size of each frame in bytes
+   * @param {number} [CHUNK_SIZE=8 * 1024 * 1024] - The maximum size of each frame in bytes
    * @returns {AsyncGeneratorGenerator<ChunkFrame>>} - An async generator that yields each frame
    */
   * getBinaryStateFrames(
     config,
-    CHUNK_SIZE = 512 * 1024,
+    CHUNK_SIZE = 8 * 1024 * 1024, // 8 Megabytes (firefox limit is 16, but we don't get to send raw bytes so we have tons of overhead)
   ) {
     return getBinaryStateFrames.call(this, config, CHUNK_SIZE, "controller");
   }

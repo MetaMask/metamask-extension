@@ -90,6 +90,25 @@ async function start() {
   // identify window type (popup, notification)
   const windowType = getEnvironmentType();
   const extensionPort = browser.runtime.connect({ name: windowType });
+
+  // extensionPort.onMessage.addListener(async (msg) => {
+  //   if (msg?.data?.method === "BLOB") {
+  //     const blobUrl = msg.data.params.blobUrl;
+  //     // get the data from the blob
+  //     const blob = await fetch(blobUrl).then((res) => res.blob());
+  //     const text = new TextDecoder().decode(await blob.arrayBuffer());
+  //     console.log('Received blob size:', text.length / (1024 * 1024), 'MB');
+  //     // const arrayBuffer = await blob.arrayBuffer();
+
+  //     extensionPort.postMessage("ACK_BLOB");
+  //   } else if (msg?.data?.method === "STRING") {
+  //     console.log(msg.data.params.str.length / (1024 * 1024), 'MB');
+  //     extensionPort.postMessage("ACK_STRING");
+  //   } else if(msg?.id) {
+  //     console.log(msg.id);
+  //   }
+  // });
+
   const connectionStream = new PortStream(extensionPort);
   const subStreams = connectSubstreams(connectionStream);
   const backgroundConnection = metaRPCClientFactory(subStreams.controller);

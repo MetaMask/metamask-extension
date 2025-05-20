@@ -4,15 +4,14 @@
 
 import { Json } from '@metamask/utils';
 
-export const CHUNK_SIZE = 512 * 1024; // 512 KB (< any browser cap)
+export const CHUNK_SIZE = 8 * 1024 * 1024; // 8 MB (< any browser cap)
 
 /** Any payload fragment traveling through runtime.Port */
 export interface ChunkFrame {
   id: string | number;
   seq: number;
   total: number;
-  bin: boolean; // always false in the JSON‑only path
-  data: number[]; // plain numbers so Port.postMessage can serialize
+  data: string;
   store?: string;
 }
 
@@ -33,22 +32,23 @@ export function concat(parts: Uint8Array[]): Uint8Array {
 
 export function* toFrames(
   id: string | number,
-  payload: Json, // ← no “name” requirement
+  payload: Json,
 ): Generator<ChunkFrame> {
-  const bytes = new TextEncoder().encode(JSON.stringify(payload));
-  const len = bytes.byteLength;
-  if (len === 0) return; // nothing to send
+  const json = JSON.stringify(payload);
+  const len = json.length;
+  if (len === 0) return; // nothing to send /... TODO: check if this is possible
 
-  const total = Math.ceil(len / CHUNK_SIZE);
-  for (let seq = 0; seq < total; seq++) {
-    const start = seq * CHUNK_SIZE;
-    const end = Math.min(start + CHUNK_SIZE, len);
+  const chunkChars = CHUNK_SIZE;
+  const numChunks = Math.ceil(len / chunkChars);
+
+  for (let seq = 0; seq < numChunks; seq++) {
+    const start = seq * chunkChars;
+    const end = Math.min(start + chunkChars, len);
     yield {
       id,
       seq,
-      total,
-      bin: false,
-      data: Array.from(bytes.subarray(start, end)),
+      total: numChunks,
+      data: json.slice(start, end),
     };
   }
 }
@@ -59,7 +59,6 @@ export function* getBinaryStateFrames(
   config: Record<string, { getState?: () => any; state?: any }>,
   id: string | number,
 ): Generator<ChunkFrame> {
-  throw new Error("this isn't used yet");
   for (const controller of Object.keys(this.config)) {
     const store = config[controller];
     const obj =
@@ -79,7 +78,6 @@ export function* getBinaryStateFrames(
         id,
         seq,
         total,
-        bin: false,
         data: Array.from(slice),
         store: controller,
       };
