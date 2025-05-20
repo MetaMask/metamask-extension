@@ -412,7 +412,7 @@ const CoinButtons = ({
           generateTooltip('swapButton', contents)
         }
       />
-      {
+      {process.env.REMOVE_GNS ? null : (
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <IconButton
           className={`${classPrefix}-overview__button`}
@@ -437,7 +437,7 @@ const CoinButtons = ({
           }
         />
         ///: END:ONLY_INCLUDE_IF
-      }
+      )}
       <IconButton
         className={`${classPrefix}-overview__button`}
         data-testid={`${classPrefix}-overview-send`}
