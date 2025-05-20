@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 function install_github_cli() {
     printf '%s\n' 'Installing hub CLI'
     pushd "$(mktemp -d)"
@@ -33,7 +35,7 @@ function publish_tag() {
     git config user.email "metamaskbot@users.noreply.github.com"
     git config user.name "MetaMask Bot"
     git tag -a "v${build_version}" -m "${build_name} version ${build_version}"
-    git push "https://${RELEASE_TOKEN}@github.com/${GITHUB_REPOSITORY}" "v${build_version}"
+    git push "https://${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}" "v${build_version}"
 }
 
 current_commit_msg=$(git show -s --format='%s' HEAD)

@@ -33,7 +33,7 @@ jobs:
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_DSN_DEV: ${{ secrets.SENTRY_DSN_DEV }}
       VAPID_KEY: ${{ secrets.VAPID_KEY }}
-      RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       FIREFOX_BUNDLE_SCRIPT_TOKEN: ${{ secrets.FIREFOX_BUNDLE_SCRIPT_TOKEN }}
     steps:
       - name: Checkout and setup environment

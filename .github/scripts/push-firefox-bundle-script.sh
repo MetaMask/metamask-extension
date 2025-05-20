@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 git config --global user.name "MetaMask Bot"
 git config --global user.email metamaskbot@users.noreply.github.com
 version=$(git show -s --format='%s' HEAD | grep -Eo 'v[0-9]+\.[0-9]+\.[0-9]+')

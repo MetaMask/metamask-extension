@@ -27,9 +27,8 @@ env:
   IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
 
 permissions:
-  contents: read
-  # id-token permission is required for uploading to s3
-  id-token: write
+  contents: write # required for releases
+  id-token: write # required for s3 uploads
 
 jobs:
   prep-deps:
