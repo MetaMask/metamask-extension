@@ -55,7 +55,6 @@ import {
   REMOTE_MODES,
   TOKEN_DETAILS,
   TokenInfo,
-  TokenSymbol,
 } from '../../remote.types';
 
 import {
@@ -196,7 +195,7 @@ export default function RemoteModeSetupDailyAllowance() {
       return [...filteredAllowances, newAllowance];
     });
 
-    setSelectedAllowanceAddress(TokenSymbol.ETH);
+    setSelectedAllowanceAddress('');
     setDailyLimit('');
     setAllowanceError(false);
   };
