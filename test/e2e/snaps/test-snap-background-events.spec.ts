@@ -21,14 +21,12 @@ describe('Test Snap Background Events', function () {
         await loginWithoutBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        const notificationsListPage = new NotificationsListPage(driver);
 
         // Navigate to test snaps page, connect to get-file snap, complete installation and validate
-        await openTestSnapClickButtonAndInstall(driver, 'connectCronjobsButton');
+        await openTestSnapClickButtonAndInstall(driver, 'connectBackgroundEventsButton');
         await testSnaps.check_installationComplete(
-          'connectCronjobsButton',
-          'Reconnect to Cronjobs Snap',
+          'connectBackgroundEventsButton',
+          'Reconnect to Background Events Snap',
         );
 
         // ISO 8601 date string
@@ -45,21 +43,19 @@ describe('Test Snap Background Events', function () {
           'fireNotification',
         );
 
-        // switch back to the extension page and validation one notification appears
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-        await headerNavbar.check_notificationCountInMenuOption(1);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // this click will close the menu
-        await headerNavbar.openThreeDotMenu();
+        // look for the dialog popup to verify background event fired
+        await driver.waitForSelector({
+          css: '.snap-ui-renderer__content',
+          text: 'This dialog was triggered by a background event',
+        });
 
-        // click the notification options and validate the message in the notification list
-        await headerNavbar.clickNotificationsOptions();
-        await notificationsListPage.check_pageIsLoaded();
-        await notificationsListPage.check_snapsNotificationMessage(
-          'Hello world!',
-        );
+        // try to click on the Ok button and pass test if window closes
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'OK',
+          tag: 'button',
+        });
       },
     );
   });
@@ -74,14 +70,12 @@ describe('Test Snap Background Events', function () {
         await loginWithoutBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        const notificationsListPage = new NotificationsListPage(driver);
 
         // Navigate to test snaps page, connect to get-file snap, complete installation and validate
-        await openTestSnapClickButtonAndInstall(driver, 'connectCronjobsButton');
+        await openTestSnapClickButtonAndInstall(driver, 'connectBackgroundEventsButton');
         await testSnaps.check_installationComplete(
-          'connectCronjobsButton',
-          'Reconnect to Cronjobs Snap',
+          'connectBackgroundEventsButton',
+          'Reconnect to Background Events Snap',
         );
 
         // ISO 8601 duration string
@@ -98,21 +92,19 @@ describe('Test Snap Background Events', function () {
           'fireNotification',
         );
 
-        // switch back to the extension page and validation one notification appears
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-        await headerNavbar.check_notificationCountInMenuOption(1);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // this click will close the menu
-        await headerNavbar.openThreeDotMenu();
+        // look for the dialog popup to verify background event fired
+        await driver.waitForSelector({
+          css: '.snap-ui-renderer__content',
+          text: 'This dialog was triggered by a background event',
+        });
 
-        // click the notification options and validate the message in the notification list
-        await headerNavbar.clickNotificationsOptions();
-        await notificationsListPage.check_pageIsLoaded();
-        await notificationsListPage.check_snapsNotificationMessage(
-          'Hello world!',
-        );
+        // try to click on the Ok button and pass test if window closes
+        await driver.clickElementAndWaitForWindowToClose({
+          text: 'OK',
+          tag: 'button',
+        });
       },
     );
   });
@@ -128,10 +120,10 @@ describe('Test Snap Background Events', function () {
 
         const testSnaps = new TestSnaps(driver);
 
-        await openTestSnapClickButtonAndInstall(driver, 'connectCronjobsButton');
+        await openTestSnapClickButtonAndInstall(driver, 'connectBackgroundEventsButton');
         await testSnaps.check_installationComplete(
-          'connectCronjobsButton',
-          'Reconnect to Cronjobs Snap',
+          'connectBackgroundEventsButton',
+          'Reconnect to Background Events Snap',
         );
 
         const futureDate = new Date(Date.now() + 5000).toISOString();

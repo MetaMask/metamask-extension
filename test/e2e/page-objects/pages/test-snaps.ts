@@ -93,7 +93,8 @@ export const buttonLocator = {
   clearStateUnencryptedButton: '#clearStateUnencrypted',
   connectBackgroundEventsButton: '#connectbackground-events',
   scheduleBackgroundEventWithDateButton: '#scheduleBackgroundEventWithDate',
-  scheduleBackgroundEventWithDurationButton: '#scheduleBackgroundEventWithDuration',
+  scheduleBackgroundEventWithDurationButton:
+    '#scheduleBackgroundEventWithDuration',
   cancelBackgroundEventButton: '#cancelBackgroundEvent',
   getBackgroundEventResultButton: '#getBackgroundEvents',
   showPreinstalledDialogButton: '#showPreinstalledDialog',
