@@ -1,4 +1,6 @@
+/* eslint-disable prettier/prettier */
 import { strict as assert } from 'assert';
+import { isHex } from 'viem';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
@@ -11,6 +13,8 @@ import {
 import FixtureBuilder from '../../fixture-builder';
 import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
 import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
+import { mockEip7702FeatureFlag } from '../../tests/confirmations/helpers';
+import Eip7702AndSendCalls from '../../page-objects/pages/confirmations/redesign/batch-confirmation';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   addAccountInWalletAndAuthorize,
@@ -246,6 +250,162 @@ describe('Multichain API', function () {
                 `${scope} scope balance should be different after eth_sendTransaction due to gas`,
               );
             }
+          },
+        );
+      });
+    });
+  });
+
+  describe.only('EIP-5792 Methods', function () {
+    describe('Calling `wallet_getCapabalities`', function () {
+      it('should return the available capabilities', async function () {
+        await withFixtures(
+          {
+            ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+            title: this.test?.fullTitle(),
+            fixtures: new FixtureBuilder()
+              .withPermissionControllerConnectedToMultichainTestDapp()
+              .build(),
+            localNodeOptions: [
+              {
+                type: 'anvil',
+                options: {
+                  hardfork: 'prague',
+                  loadState:
+                    './test/e2e/seeder/network-states/eip7702-state/withDelegatorContracts.json',
+                },
+              },
+            ],
+            testSpecificMock: mockEip7702FeatureFlag,
+          },
+          async ({ driver, extensionId }: FixtureCallbackArgs) => {
+            const scope = GANACHE_SCOPES[0];
+            const method = 'wallet_getCapabilities';
+
+            await unlockWallet(driver);
+
+            const testDapp = new TestDappMultichain(driver);
+            await testDapp.openTestDappPage();
+            await testDapp.connectExternallyConnectable(extensionId);
+            await testDapp.initCreateSessionScopes([scope]);
+
+            await addAccountInWalletAndAuthorize(driver);
+            await driver.clickElementAndWaitForWindowToClose({
+              text: 'Connect',
+              tag: 'button',
+            });
+
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.MultichainTestDApp,
+            );
+
+            await driver.clickElementSafe(
+              `[data-testid="${scope}-${method}-option"]`,
+            );
+
+            await driver.delay(largeDelayMs);
+            await driver.clickElementSafe(
+              `[data-testid="invoke-method-${scope}-btn"]`,
+            );
+
+            const resultWebElement = await driver.findElement(
+              `#invoke-method-${escapeColon(
+                scope,
+              )}-${method}-result-0`,
+            );
+
+            const text = await resultWebElement.getText();
+
+            assert.deepEqual(
+              JSON.parse(text),
+              {
+                '0x539': { atomic: { status: 'ready' } },
+              },
+              `Scope ${scope} should have atomic capabilities with status: ready`,
+            );
+          },
+        );
+      });
+    });
+
+    describe('Calling `wallet_sendCalls`', function () {
+      it('should return the transaction hash for the atomic call', async function () {
+        await withFixtures(
+          {
+            ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+            title: this.test?.fullTitle(),
+            fixtures: new FixtureBuilder()
+              .withPermissionControllerConnectedToMultichainTestDapp()
+              .build(),
+            localNodeOptions: [
+              {
+                type: 'anvil',
+                options: {
+                  hardfork: 'prague',
+                  loadState:
+                    './test/e2e/seeder/network-states/eip7702-state/withDelegatorContracts.json',
+                },
+              },
+            ],
+            testSpecificMock: mockEip7702FeatureFlag,
+          },
+          async ({ driver, extensionId }: FixtureCallbackArgs) => {
+            const scope = GANACHE_SCOPES[0];
+            const method = 'wallet_sendCalls';
+
+            await unlockWallet(driver);
+
+            const testDapp = new TestDappMultichain(driver);
+            await testDapp.openTestDappPage();
+            await testDapp.connectExternallyConnectable(extensionId);
+            await testDapp.initCreateSessionScopes([scope]);
+
+            await addAccountInWalletAndAuthorize(driver);
+            await driver.clickElementAndWaitForWindowToClose({
+              text: 'Connect',
+              tag: 'button',
+            });
+
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.MultichainTestDApp,
+            );
+
+            await driver.clickElementSafe(
+              `[data-testid="${scope}-${method}-option"]`,
+            );
+
+            await driver.delay(largeDelayMs);
+            await driver.clickElementSafe(
+              `[data-testid="invoke-method-${scope}-btn"]`,
+            );
+
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+            const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(
+              driver,
+            );
+            await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
+            await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
+
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.MultichainTestDApp,
+            );
+
+            const resultWebElement = await driver.findElement(
+              `#invoke-method-${escapeColon(scope)}-${method}-result-0`,
+            );
+
+            const result = await resultWebElement
+              .getText()
+              .then((t) => JSON.parse(t));
+
+            assert.ok(
+              Object.prototype.hasOwnProperty.call(result, 'id'),
+              'Result should have an `id` property',
+            );
+            assert.ok(
+              isHex(result.id),
+              '`id` property should be a transaction hash',
+            );
           },
         );
       });
