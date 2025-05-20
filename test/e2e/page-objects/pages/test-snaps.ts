@@ -304,7 +304,7 @@ export class TestSnaps {
     name: 'Ethereum' | 'Linea' | 'Sepolia',
   ) {
     const locator = dropDownLocator[dropDownName];
-    console.log(`Select ${dropDownName} network`);
+    console.log(`Select ${name} network`);
     const selector = await this.driver.findElement(locator);
     await this.driver.scrollToElement(selector);
     await this.driver.clickElement(locator);
