@@ -1,3 +1,4 @@
+import { largeDelayMs } from "../helpers";
 import { mockBackgroundEventsSnap } from "../mock-response-data/snaps/snap-binary-mocks";
 import { openTestSnapClickButtonAndInstall } from "../page-objects/flows/install-test-snap.flow";
 import { loginWithoutBalanceValidation } from "../page-objects/flows/login.flow";
@@ -38,9 +39,10 @@ describe('Test Snap Background Events', function () {
 
         await testSnaps.clickButton('getBackgroundEventResultButton');
 
+
         await testSnaps.check_messageResultSpanIncludes(
           'getBackgroundEventResultSpan',
-          'fireNotification',
+          'fireDialog',
         );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -53,8 +55,8 @@ describe('Test Snap Background Events', function () {
 
         // try to click on the Ok button and pass test if window closes
         await driver.clickElementAndWaitForWindowToClose({
-          text: 'OK',
-          tag: 'button',
+          text: 'Close',
+          tag: 'span',
         });
       },
     );
@@ -74,6 +76,8 @@ describe('Test Snap Background Events', function () {
 
         // Navigate to test snaps page, connect to background events Snap, complete installation and validate
         await openTestSnapClickButtonAndInstall(driver, 'connectBackgroundEventsButton');
+
+
         await testSnaps.check_installationComplete(
           'connectBackgroundEventsButton',
           'Reconnect to Background Events Snap',
@@ -86,11 +90,12 @@ describe('Test Snap Background Events', function () {
 
         await testSnaps.clickButton('scheduleBackgroundEventWithDurationButton');
 
+
         await testSnaps.clickButton('getBackgroundEventResultButton');
 
         await testSnaps.check_messageResultSpanIncludes(
           'getBackgroundEventResultSpan',
-          'fireNotification',
+          'fireDialog',
         );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -103,8 +108,8 @@ describe('Test Snap Background Events', function () {
 
         // try to click on the Ok button and pass test if window closes
         await driver.clickElementAndWaitForWindowToClose({
-          text: 'OK',
-          tag: 'button',
+          text: 'Close',
+          tag: 'span',
         });
       },
     );
@@ -138,10 +143,10 @@ describe('Test Snap Background Events', function () {
 
         await testSnaps.check_messageResultSpanIncludes(
           'getBackgroundEventResultSpan',
-          'fireNotification',
+          'fireDialog',
         );
 
-        const eventId = await this.driver.findElement('#scheduleBackgroundEventResult');
+        const eventId = await driver.findElement('#scheduleBackgroundEventResult');
         const eventIdContent = await eventId.getAttribute('textContent');
         const eventIdText = JSON.parse(eventIdContent);
         await testSnaps.fillMessage('cancelBackgroundEventInput', eventIdText);
@@ -151,7 +156,7 @@ describe('Test Snap Background Events', function () {
 
         await testSnaps.check_messageResultSpan(
           'getBackgroundEventResultSpan',
-          '',
+          '[]',
         );
       },
     );
