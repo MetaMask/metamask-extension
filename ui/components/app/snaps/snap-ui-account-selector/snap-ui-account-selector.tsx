@@ -1,14 +1,9 @@
 import React, { FunctionComponent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  CaipChainId,
-  KnownCaipNamespace,
-  parseCaipChainId,
-} from '@metamask/utils';
+import { CaipChainId } from '@metamask/utils';
 
 import { AccountSelectorState, State } from '@metamask/snaps-sdk';
-import { EthScope } from '@metamask/keyring-api';
-import { createAccountList } from '@metamask/snaps-utils';
+import { createAccountList, createChainIdList } from '@metamask/snaps-utils';
 import { SnapUISelector } from '../snap-ui-selector';
 import {
   getMetaMaskAccountsOrdered,
@@ -18,7 +13,6 @@ import {
 import { setSelectedInternalAccount } from '../../../../store/actions';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import AccountListItem from '../../../multichain/account-list-item/account-list-item';
-import { createChainIdList } from '@metamask/snaps-utils';
 
 export type SnapUIAccountSelectorProps = {
   name: string;
@@ -33,6 +27,7 @@ export type SnapUIAccountSelectorProps = {
 
 /**
  * The SnapUIAccountSelector component.
+ *
  * @param props - The component props.
  * @param props.name - The name of the selector.
  * @param props.label - The label of the selector.
@@ -78,7 +73,12 @@ export const SnapUIAccountSelector: FunctionComponent<
   }));
 
   const optionComponents = filteredAccounts.map((account, index) => (
-    <AccountListItem account={account} selected={false} key={index} />
+    <AccountListItem
+      account={account}
+      selected={false}
+      key={index}
+      showConnectedStatus={false}
+    />
   ));
 
   const handleSelect = (value: State) => {

@@ -1,11 +1,19 @@
 .snap-ui-renderer__account-selector {
   .multichain-account-list-item {
     padding: 0;
+
+    &:first-child {
+      align-items: center;
+    }
   }
 }
 
 .snap-ui-renderer__account-selector-item {
   .multichain-account-list-item {
     padding: 0;
+
+    &:first-child {
+      align-items: center;
+    }
   }
 }
