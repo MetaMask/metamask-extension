@@ -2094,11 +2094,6 @@ export const getConnectedSitesList = createDeepEqualSelector(
   },
 );
 
-export function getShouldShowAggregatedBalancePopover(state) {
-  const { shouldShowAggregatedBalancePopover } = getPreferences(state);
-  return shouldShowAggregatedBalancePopover;
-}
-
 export const getMemoizedCurrentChainId = createDeepEqualSelector(
   getCurrentChainId,
   (chainId) => chainId,
@@ -2952,6 +2947,17 @@ export function getIsAddSnapAccountEnabled(state) {
 }
 ///: END:ONLY_INCLUDE_IF
 
+/**
+ * Get the state of the `solanaTestnetsEnabled` remote feature flag.
+ *
+ * @param {*} state
+ * @returns The state of the `solanaTestnetsEnabled` remote feature flag.
+ */
+export function getIsSolanaTestnetSupportEnabled(state) {
+  const { solanaTestnetsEnabled } = getRemoteFeatureFlags(state);
+  return Boolean(solanaTestnetsEnabled);
+}
+
 export function getIsWatchEthereumAccountEnabled(state) {
   return state.metamask.watchEthereumAccountEnabled;
 }
@@ -2963,24 +2969,8 @@ export function getIsWatchEthereumAccountEnabled(state) {
  * @returns The state of the `bitcoinSupportEnabled` flag.
  */
 export function getIsBitcoinSupportEnabled(state) {
-  // NOTE: We use this trick to avoid using code fence.
-  // If this flag is not in `state.metamask` it will be set
-  // as `undefined`, and the `Boolean(...)` will be evaluated
-  // to `false`.
-  const { bitcoinSupportEnabled } = state.metamask;
-  return Boolean(bitcoinSupportEnabled);
-}
-
-/**
- * Get the state of the `bitcoinTestnetSupportEnabled` flag.
- *
- * @param {*} state
- * @returns The state of the `bitcoinTestnetSupportEnabled` flag.
- */
-export function getIsBitcoinTestnetSupportEnabled(state) {
-  // See `getIsBitcoinSupportEnabled` for details.
-  const { bitcoinTestnetSupportEnabled } = state.metamask;
-  return Boolean(bitcoinTestnetSupportEnabled);
+  const { addBitcoinAccount } = getRemoteFeatureFlags(state);
+  return Boolean(addBitcoinAccount);
 }
 
 /**
