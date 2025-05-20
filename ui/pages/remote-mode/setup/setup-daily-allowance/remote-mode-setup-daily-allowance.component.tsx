@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import { Hex } from '@metamask/utils';
+import { AssetType } from '@metamask/bridge-controller';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -72,6 +73,7 @@ import {
 import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { useRemoteMode } from '../../hooks/useRemoteMode';
+import { NATIVE_ADDRESS } from '../../../../../shared/lib/remote-mode';
 
 const TOTAL_STEPS = 3;
 const DAILY_ETH_LIMIT = 10;
@@ -182,11 +184,15 @@ export default function RemoteModeSetupDailyAllowance() {
 
     const newAllowance: DailyAllowance = {
       amount: parseFloat(dailyLimit),
-      address: selectedAsset.address,
+      address:
+        selectedAsset.type === AssetType.native
+          ? NATIVE_ADDRESS
+          : selectedAsset.address,
       image: TOKEN_DETAILS[selectedAsset.symbol].image,
       name: selectedAsset.name,
       symbol: selectedAsset.symbol,
       type: selectedAsset.type,
+      decimals: selectedAsset.decimals,
     };
 
     setDailyAllowance((prevAllowances) => {

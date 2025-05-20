@@ -30,3 +30,5 @@ export type DailyAllowance = TokenInfo & {
 export type DailyAllowanceMetadata = {
   allowances: DailyAllowance[];
 };
+
+export const NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000';

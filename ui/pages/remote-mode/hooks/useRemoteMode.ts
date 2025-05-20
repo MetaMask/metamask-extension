@@ -3,7 +3,9 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { type Hex, hexToNumber } from '@metamask/utils';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { parseUnits } from 'ethers/lib/utils';
 import {
+  Caveat,
   createDelegation,
   getDeleGatorEnvironment,
 } from '../../../../shared/lib/delegation';
@@ -23,8 +25,10 @@ import {
 } from '../../../store/controller-actions/delegation-controller';
 import { useEIP7702Account } from '../../confirmations/hooks/useEIP7702Account';
 import { useEIP7702Networks } from '../../confirmations/hooks/useEIP7702Networks';
-import { REMOTE_MODES } from '../remote.types';
+import { DailyAllowance, REMOTE_MODES } from '../remote.types';
 import { useConfirmationNavigation } from '../../confirmations/hooks/useConfirmationNavigation';
+import { multiTokenPeriodBuilder } from '../../../../shared/lib/delegation/caveatBuilder/multiTokenPeriod';
+import { DAY_IN_SECONDS } from '../remote.constants';
 
 export const useRemoteMode = ({ account }: { account: Hex }) => {
   const { network7702List } = useEIP7702Networks(account);
@@ -106,8 +110,37 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
     }) => {
       await upgradeAccount();
 
+      const caveats: Caveat[] = [];
+
+      if (mode === REMOTE_MODES.DAILY_ALLOWANCE) {
+        const parsedMeta = JSON.parse(meta ?? '{}') as {
+          allowances: DailyAllowance[];
+        };
+
+        const tokenPeriodConfigs = parsedMeta.allowances.map((allowance) => {
+          const amountInBaseUnit = parseUnits(
+            allowance.amount.toString(),
+            allowance.decimals,
+          );
+          return {
+            token: allowance.address as Hex,
+            periodAmount: amountInBaseUnit.toBigInt(),
+            periodDuration: DAY_IN_SECONDS,
+            // TODO: check if is the right way to get the start date or check how get latest block timestamp
+            startDate: Math.floor(new Date().getTime() / 1000),
+          };
+        });
+
+        caveats.push(
+          multiTokenPeriodBuilder(
+            getDeleGatorEnvironment(hexToNumber(chainId)),
+            tokenPeriodConfigs,
+          ),
+        );
+      }
+
       const delegation = createDelegation({
-        caveats: [],
+        caveats,
         from: selectedAccount.address as `0x${string}`,
         to: authorizedAccount.address as `0x${string}`,
       });

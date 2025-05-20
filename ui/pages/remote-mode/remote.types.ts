@@ -19,6 +19,7 @@ export type TokenInfo = {
   image: string;
   address: string;
   type: AssetType;
+  decimals: number;
 };
 
 export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
@@ -28,6 +29,7 @@ export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
     image: './images/eth_logo.png',
     address: '',
     type: AssetType.native,
+    decimals: 18,
   },
   [TokenSymbol.ETH]: {
     symbol: TokenSymbol.ETH,
@@ -35,6 +37,7 @@ export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
     image: './images/eth_logo.png',
     address: '',
     type: AssetType.native,
+    decimals: 18,
   },
   [TokenSymbol.USDC]: {
     symbol: TokenSymbol.USDC,
@@ -42,6 +45,7 @@ export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
     image: './images/icon-usdc.png',
     address: '',
     type: AssetType.token,
+    decimals: 6,
   },
   [TokenSymbol.WETH]: {
     symbol: TokenSymbol.WETH,
@@ -49,6 +53,7 @@ export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
     image: './images/eth_logo.png',
     address: '',
     type: AssetType.token,
+    decimals: 18,
   },
   [TokenSymbol.WBTC]: {
     symbol: TokenSymbol.WBTC,
@@ -56,6 +61,7 @@ export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
     image: './images/icon-btc.png',
     address: '',
     type: AssetType.token,
+    decimals: 8,
   },
   [TokenSymbol.BNB]: {
     symbol: TokenSymbol.BNB,
@@ -63,6 +69,7 @@ export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
     image: './images/icon-bnb.png',
     address: '',
     type: AssetType.token,
+    decimals: 18,
   },
   // note: added for testing (finalized list tbd)
   [TokenSymbol.EURC]: {
@@ -71,6 +78,7 @@ export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
     image: './images/eth_logo.png',
     address: '',
     type: AssetType.token,
+    decimals: 18,
   },
 };
 

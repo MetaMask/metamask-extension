@@ -11,10 +11,13 @@ import {
   SINGLE_DEFAULT_MODE,
 } from '../../../shared/lib/delegation';
 import { getDeleGatorEnvironment } from '../../../shared/lib/delegation/environment';
-import { isHexEqual } from '../../../shared/lib/delegation/utils';
+import { isHexEqual, toHex } from '../../../shared/lib/delegation/utils';
 
 import { encodeRedeemDelegations } from '../../../shared/lib/delegation/delegation';
-import { DailyAllowanceMetadata } from '../../../shared/lib/remote-mode';
+import {
+  DailyAllowanceMetadata,
+  NATIVE_ADDRESS,
+} from '../../../shared/lib/remote-mode';
 import { ControllerFlatState } from '../controller-init/controller-list';
 import {
   getDailyAllowance,
@@ -107,9 +110,29 @@ const prepareDailyAllowanceTransaction = ({
     callData: (transactionMeta.txParams.data ?? '0x') as Hex,
   };
 
+  const tokenIndex = dailyAllowanceMetadata.allowances.findIndex((a) =>
+    transactionMeta.type === TransactionType.simpleSend
+      ? isHexEqual(a.address as Hex, NATIVE_ADDRESS)
+      : isHexEqual(a.address as Hex, transactionMeta.txParams.to as Hex),
+  );
+
+  if (tokenIndex === -1) {
+    return undefined;
+  }
+
+  const updatedCaveat = {
+    ...delegation.caveats[0],
+    args: toHex(tokenIndex, { size: 32 }),
+  };
+
+  const updatedDelegation = {
+    ...delegation,
+    caveats: [updatedCaveat],
+  };
+
   // TODO: When using the multiTokenPeriod, you should add the index of the token that you want use in caveats[index].args
   const updatedData = encodeRedeemDelegations({
-    delegations: [[delegation]],
+    delegations: [[updatedDelegation]],
     modes: [SINGLE_DEFAULT_MODE],
     executions: [[execution]],
   });
