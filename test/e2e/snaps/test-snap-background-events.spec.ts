@@ -1,13 +1,9 @@
-import { largeDelayMs } from "../helpers";
-import { mockBackgroundEventsSnap } from "../mock-response-data/snaps/snap-binary-mocks";
-import { openTestSnapClickButtonAndInstall } from "../page-objects/flows/install-test-snap.flow";
-import { loginWithoutBalanceValidation } from "../page-objects/flows/login.flow";
-import { TestSnaps } from "../page-objects/pages/test-snaps";
-import { Driver } from "../webdriver/driver";
-const {
-  withFixtures,
-  WINDOW_TITLES,
-} = require('../helpers');
+import { mockBackgroundEventsSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { TestSnaps } from '../page-objects/pages/test-snaps';
+import { Driver } from '../webdriver/driver';
+const { withFixtures, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Test Snap Background Events', function () {
@@ -24,7 +20,10 @@ describe('Test Snap Background Events', function () {
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to test snaps page, connect to background events Snap, complete installation and validate
-        await openTestSnapClickButtonAndInstall(driver, 'connectBackgroundEventsButton');
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'connectBackgroundEventsButton',
+        );
         await testSnaps.check_installationComplete(
           'connectBackgroundEventsButton',
           'Reconnect to Background Events Snap',
@@ -38,7 +37,6 @@ describe('Test Snap Background Events', function () {
         await testSnaps.clickButton('scheduleBackgroundEventWithDateButton');
 
         await testSnaps.clickButton('getBackgroundEventResultButton');
-
 
         await testSnaps.check_messageResultSpanIncludes(
           'getBackgroundEventResultSpan',
@@ -75,8 +73,10 @@ describe('Test Snap Background Events', function () {
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to test snaps page, connect to background events Snap, complete installation and validate
-        await openTestSnapClickButtonAndInstall(driver, 'connectBackgroundEventsButton');
-
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'connectBackgroundEventsButton',
+        );
 
         await testSnaps.check_installationComplete(
           'connectBackgroundEventsButton',
@@ -86,10 +86,14 @@ describe('Test Snap Background Events', function () {
         // ISO 8601 duration string
         const futureDuration = 'PT5S';
 
-        await testSnaps.fillMessage('backgroundEventDurationInput', futureDuration);
+        await testSnaps.fillMessage(
+          'backgroundEventDurationInput',
+          futureDuration,
+        );
 
-        await testSnaps.clickButton('scheduleBackgroundEventWithDurationButton');
-
+        await testSnaps.clickButton(
+          'scheduleBackgroundEventWithDurationButton',
+        );
 
         await testSnaps.clickButton('getBackgroundEventResultButton');
 
@@ -127,7 +131,10 @@ describe('Test Snap Background Events', function () {
 
         const testSnaps = new TestSnaps(driver);
 
-        await openTestSnapClickButtonAndInstall(driver, 'connectBackgroundEventsButton');
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'connectBackgroundEventsButton',
+        );
         await testSnaps.check_installationComplete(
           'connectBackgroundEventsButton',
           'Reconnect to Background Events Snap',
@@ -146,7 +153,9 @@ describe('Test Snap Background Events', function () {
           'fireDialog',
         );
 
-        const eventId = await driver.findElement('#scheduleBackgroundEventResult');
+        const eventId = await driver.findElement(
+          '#scheduleBackgroundEventResult',
+        );
         const eventIdContent = await eventId.getAttribute('textContent');
         const eventIdText = JSON.parse(eventIdContent);
         await testSnaps.fillMessage('cancelBackgroundEventInput', eventIdText);
