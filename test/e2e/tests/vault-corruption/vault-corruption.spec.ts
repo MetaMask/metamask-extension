@@ -136,8 +136,6 @@ describe('Vault Corruption', function () {
    * @returns The initial first account's address.
    */
   async function onboardThenCorruptVault(driver: Driver, script: string) {
-    const initialWindow = await driver.driver.getWindowHandle();
-
     // open a spare tab so the browser doesn't exit once we `reload()` the
     // extension process, as doing so will close all UI tabs we have open when
     // we do -- and that will close the whole browser 😱
@@ -155,9 +153,8 @@ describe('Vault Corruption', function () {
     // use the home page to destroy the vault
     await driver.executeAsyncScript(script);
 
-    // the previous tab we were using is now closed, so we need to tell Selenium
-    // to switch back to the other page
-    await driver.switchToWindow(initialWindow);
+    // get a new tab ready to use
+    await driver.openNewPage('about:blank');
 
     // wait for the background page to reload
     await waitForVaultRestorePage(driver);
