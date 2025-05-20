@@ -48,10 +48,12 @@ export const SnapUIAccountSelector: FunctionComponent<
     getMetaMaskAccountsOrdered,
   );
 
+  // Filter out the accounts that are not owned by the snap
   const ownedAccounts = accounts.filter(
     (account) => account.metadata.snap?.id === snapId,
   );
 
+  // Select which accounts to show and filter them by chainId
   const filteredAccounts = (
     hideExternalAccounts ? ownedAccounts : accounts
   ).filter((account) => {
