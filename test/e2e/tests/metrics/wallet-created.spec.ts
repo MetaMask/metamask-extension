@@ -131,6 +131,9 @@ describe('Wallet Created Events', function () {
           participateInMetaMetrics: true,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);
+        events.forEach((event, index) => {
+          console.log(`${event.event} - ${index}`);
+        });
         assert.equal(events.length, 9);
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           assert.deepStrictEqual(events[0].properties, {
@@ -155,25 +158,27 @@ describe('Wallet Created Events', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'fullscreen',
-          hd_entropy_index: 0,
         });
         assert.deepStrictEqual(events[3].properties, {
           category: 'Onboarding',
           chain_id: '0x539',
           environment_type: 'fullscreen',
           locale: 'en',
+          hd_entropy_index: 0,
         });
         assert.deepStrictEqual(events[4].properties, {
           category: 'Onboarding',
           chain_id: '0x539',
           environment_type: 'fullscreen',
           locale: 'en',
+          hd_entropy_index: 0,
         });
         assert.deepStrictEqual(events[5].properties, {
           category: 'Onboarding',
           chain_id: '0x539',
           environment_type: 'fullscreen',
           locale: 'en',
+          hd_entropy_index: 0,
         });
         assert.deepStrictEqual(events[6].properties, {
           category: 'Onboarding',
