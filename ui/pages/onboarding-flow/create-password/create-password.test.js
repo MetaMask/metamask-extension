@@ -288,7 +288,13 @@ describe('Onboarding Create Password', () => {
 
   describe('Create New Account', () => {
     it('should create new account with correct passwords and terms checked', async () => {
-      const mockStore = configureMockStore()(mockState);
+      const mockStore = configureMockStore()({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.create,
+        },
+      });
       const { queryByTestId } = renderWithProvider(
         <CreatePassword createNewAccount={mockCreateNewAccount} />,
         mockStore,

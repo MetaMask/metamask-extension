@@ -12,7 +12,6 @@ import {
   GENERAL_ROUTE,
   NETWORKS_FORM_ROUTE,
   NETWORKS_ROUTE,
-  SECURITY_PASSWORD_HINT_ROUTE,
   SECURITY_ROUTE,
   SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
@@ -40,7 +39,6 @@ const ROUTES_TO_I18N_KEYS = {
   [GENERAL_ROUTE]: 'general',
   [NETWORKS_FORM_ROUTE]: 'networks',
   [NETWORKS_ROUTE]: 'networks',
-  [SECURITY_PASSWORD_HINT_ROUTE]: 'securityPasswordHint',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
 };
 
