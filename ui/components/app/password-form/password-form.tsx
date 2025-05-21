@@ -63,19 +63,7 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
     [t],
   );
 
-  const [passwordStrengthElement, setPasswordStrengthElement] = useState(() => {
-    const passwordStrengthLabel = getPasswordStrengthLabel(true, 0);
-    return (
-      <Text
-        variant={TextVariant.inherit}
-        as="span"
-        key={0}
-        data-testid={passwordStrengthLabel.dataTestId}
-      >
-        {passwordStrengthLabel.text}
-      </Text>
-    );
-  });
+  const [passwordStrengthElement, setPasswordStrengthElement] = useState(null);
 
   const handlePasswordChange = useCallback(
     (passwordInput: string) => {
