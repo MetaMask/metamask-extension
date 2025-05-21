@@ -1,23 +1,17 @@
-import { v4 } from 'uuid';
 import { Json } from '@metamask/utils';
+import createRandomId from '../../../shared/modules/random-id';
 
 export const CHUNK_SIZE = 8 * 1024 * 1024; // 8 MB (< any browser cap)
 
 /** Any payload fragment traveling through runtime.Port */
-export type ChunkFrame = {
-  id: string;
-  seq: number;
-  total: number;
-  data: string;
-  store?: string;
-};
+type id = number;
+type seq = number;
+type total = number;
+type data = string;
+export type ChunkFrame = `${id}|${total}|${seq}|${data}`;
 
 export const isChunkFrame = (x: unknown): x is ChunkFrame =>
-  Boolean(x) &&
-  typeof x === 'object' &&
-  'seq' in x &&
-  'total' in x &&
-  'data' in x;
+  typeof x === 'string';
 
 /**
  * Converts a JSON object into a generator of chunk frames.
@@ -28,27 +22,22 @@ export const isChunkFrame = (x: unknown): x is ChunkFrame =>
 export function* toFrames<T extends Json>(
   payload: T,
 ): Generator<ChunkFrame | T, void> {
-  const stringifiedPayload = JSON.stringify(payload);
-  const payloadLength = stringifiedPayload.length;
+  const json = JSON.stringify(payload);
+  const len = json.length;
+  const size = CHUNK_SIZE;
+  const total = Math.ceil(len / size);
 
-  const total = Math.ceil(payloadLength / CHUNK_SIZE);
   if (total === 1) {
     // no need to chunk if it fits within a single frame
     yield payload;
     return;
   }
 
-  const id = v4();
-
-  for (let seq = 0; seq < total; seq++) {
-    const start = seq * CHUNK_SIZE;
-    const end = Math.min(start + CHUNK_SIZE, payloadLength);
-    const data = stringifiedPayload.slice(start, end);
-    yield {
-      id,
-      seq,
-      total,
-      data,
-    };
+  // a cheap unique ID for the chunk
+  const id = createRandomId();
+  const header = `${id}|${total}` as const;
+  for (let pos = 0, seq = 0; pos < len; pos += size, seq++) {
+    const data = json.substring(pos, pos + size);
+    yield `${header}|${seq}|${data}`;
   }
 }

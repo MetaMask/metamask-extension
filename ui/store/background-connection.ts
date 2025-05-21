@@ -15,7 +15,7 @@ export const generateActionId = () => Date.now() + Math.random();
  */
 export function submitRequestToBackground<R>(
   method: string,
-  args: unknown[],
+  args: unknown[] = [],
 ): Promise<R> {
   return background?.[method](...args) as Promise<R>;
 }
@@ -32,7 +32,7 @@ type CallbackMethod<R = unknown> = (error?: unknown, result?: R) => void;
  */
 export const callBackgroundMethod = <Result>(
   method: string,
-  args: unknown[],
+  args: unknown[] = [],
   callback: CallbackMethod<Result>,
 ) => {
   background?.[method](...args).then(

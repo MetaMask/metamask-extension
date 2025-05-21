@@ -9,7 +9,7 @@ import {
 import { JsonRpcError } from '@metamask/rpc-errors';
 import { Writable } from 'readable-stream-3';
 import { TEN_SECONDS_IN_MILLISECONDS } from '../../../shared/lib/transactions-controller-utils';
-import createRandomId from '../../../shared/modules/random-id';
+import getNextId from '../../../shared/modules/random-id';
 
 export type MetaRpcClientFactory = MetaRPCClient &
   Record<string, (...args: unknown[]) => Promise<unknown>>;
@@ -55,7 +55,6 @@ export class MetaRPCClient {
         }, TEN_SECONDS_IN_MILLISECONDS);
       }
       this.requests.set(id, { resolve, reject, timeout });
-      console.log({ payload, id, stack: new Error().stack });
       this.connectionStream.write(payload);
     });
   }
@@ -168,7 +167,7 @@ export default function metaRPCClientFactory(
         return object[property];
       }
       return async (...params: Json[]) => {
-        const id = createRandomId();
+        const id = getNextId();
         const payload: JsonRpcRequest = {
           jsonrpc: '2.0',
           method: property as string,
