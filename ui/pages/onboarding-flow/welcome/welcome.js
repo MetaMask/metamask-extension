@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -60,7 +60,7 @@ export default function OnboardingWelcome({
   ]);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const onCreateClick = async () => {
+  const onCreateClick = useCallback(async () => {
     setIsLoggingIn(true);
     setNewAccountCreationInProgress(true);
     dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
@@ -75,9 +75,9 @@ export default function OnboardingWelcome({
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
     ///: END:ONLY_INCLUDE_IF
-  };
+  }, [dispatch, history, trackEvent]);
 
-  const onImportClick = async () => {
+  const onImportClick = useCallback(async () => {
     setIsLoggingIn(true);
     await dispatch(setFirstTimeFlowType(FirstTimeFlowType.import));
     trackEvent({
@@ -91,20 +91,23 @@ export default function OnboardingWelcome({
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
     ///: END:ONLY_INCLUDE_IF
-  };
+  }, [dispatch, history, trackEvent]);
 
-  const handleLogin = (loginType, loginOption) => {
-    if (loginType === LOGIN_TYPE.SRP) {
-      if (loginOption === LOGIN_OPTION.NEW) {
-        onCreateClick();
+  const handleLogin = useCallback(
+    (loginType, loginOption) => {
+      if (loginType === LOGIN_TYPE.SRP) {
+        if (loginOption === LOGIN_OPTION.NEW) {
+          onCreateClick();
+        } else {
+          onImportClick();
+        }
       } else {
-        onImportClick();
+        console.log('login with social login', loginType, loginOption);
+        setIsLoggingIn(true);
       }
-    } else {
-      console.log('login with social login', loginType, loginOption);
-      setIsLoggingIn(true);
-    }
-  };
+    },
+    [onCreateClick, onImportClick],
+  );
 
   return (
     <>

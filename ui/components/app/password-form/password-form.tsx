@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import zxcvbn from 'zxcvbn';
 import {
   Box,
@@ -27,40 +27,43 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
-  const getPasswordStrengthLabel = (isTooShort: boolean, score: number) => {
-    if (isTooShort) {
+  const getPasswordStrengthLabel = useCallback(
+    (isTooShort: boolean, score: number) => {
+      if (isTooShort) {
+        return {
+          className: 'create-password__weak',
+          dataTestId: 'short-password-error',
+          text: t('passwordNotLongEnough'),
+          description: '',
+        };
+      }
+      if (score >= 4) {
+        return {
+          className: 'create-password__strong',
+          dataTestId: 'strong-password',
+          text: t('strong'),
+          description: '',
+        };
+      }
+      if (score === 3) {
+        return {
+          className: 'create-password__average',
+          dataTestId: 'average-password',
+          text: t('average'),
+          description: t('passwordStrengthDescription'),
+        };
+      }
       return {
         className: 'create-password__weak',
-        dataTestId: 'short-password-error',
-        text: t('passwordNotLongEnough'),
-        description: '',
-      };
-    }
-    if (score >= 4) {
-      return {
-        className: 'create-password__strong',
-        dataTestId: 'strong-password',
-        text: t('strong'),
-        description: '',
-      };
-    }
-    if (score === 3) {
-      return {
-        className: 'create-password__average',
-        dataTestId: 'average-password',
-        text: t('average'),
+        dataTestId: 'weak-password',
+        text: t('weak'),
         description: t('passwordStrengthDescription'),
       };
-    }
-    return {
-      className: 'create-password__weak',
-      dataTestId: 'weak-password',
-      text: t('weak'),
-      description: t('passwordStrengthDescription'),
-    };
-  };
+    },
+    [t],
+  );
 
-  const [passwordStrength, setPasswordStrength] = useState(() => {
+  const [passwordStrengthElement, setPasswordStrengthElement] = useState(() => {
     const passwordStrengthLabel = getPasswordStrengthLabel(true, 0);
     return (
       <Text
@@ -74,53 +77,59 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
     );
   });
 
-  const handlePasswordChange = (passwordInput: string) => {
-    const isTooShort = passwordInput.length < PASSWORD_MIN_LENGTH;
-    const { score } = zxcvbn(passwordInput);
-    const passwordStrengthLabel = getPasswordStrengthLabel(isTooShort, score);
-    const passwordStrengthComponent = isTooShort ? (
-      <Text
-        variant={TextVariant.inherit}
-        as="span"
-        key={score}
-        data-testid={passwordStrengthLabel.dataTestId}
-      >
-        {passwordStrengthLabel.text}
-      </Text>
-    ) : (
-      t('passwordStrength', [
+  const handlePasswordChange = useCallback(
+    (passwordInput: string) => {
+      const isTooShort = passwordInput.length < PASSWORD_MIN_LENGTH;
+      const { score } = zxcvbn(passwordInput);
+      const passwordStrengthLabel = getPasswordStrengthLabel(isTooShort, score);
+      const passwordStrengthComponent = isTooShort ? (
         <Text
           variant={TextVariant.inherit}
           as="span"
           key={score}
           data-testid={passwordStrengthLabel.dataTestId}
-          className={passwordStrengthLabel.className}
         >
           {passwordStrengthLabel.text}
-        </Text>,
-      ])
-    );
+        </Text>
+      ) : (
+        t('passwordStrength', [
+          <Text
+            variant={TextVariant.inherit}
+            as="span"
+            key={score}
+            data-testid={passwordStrengthLabel.dataTestId}
+            className={passwordStrengthLabel.className}
+          >
+            {passwordStrengthLabel.text}
+          </Text>,
+        ])
+      );
 
-    const confirmError =
-      !confirmPassword || passwordInput === confirmPassword
-        ? ''
-        : t('passwordsDontMatch');
+      const confirmError =
+        !confirmPassword || passwordInput === confirmPassword
+          ? ''
+          : t('passwordsDontMatch');
 
-    setPassword(passwordInput);
-    setPasswordStrength(passwordStrengthComponent);
-    setConfirmPasswordError(confirmError);
-  };
+      setPassword(passwordInput);
+      setPasswordStrengthElement(passwordStrengthComponent);
+      setConfirmPasswordError(confirmError);
+    },
+    [confirmPassword, t, getPasswordStrengthLabel],
+  );
 
-  const handleConfirmPasswordChange = (confirmPasswordInput: string) => {
-    const error =
-      password === confirmPasswordInput ||
-      confirmPasswordInput.length < PASSWORD_MIN_LENGTH
-        ? ''
-        : t('passwordsDontMatch');
+  const handleConfirmPasswordChange = useCallback(
+    (confirmPasswordInput: string) => {
+      const error =
+        password === confirmPasswordInput ||
+        confirmPasswordInput.length < PASSWORD_MIN_LENGTH
+          ? ''
+          : t('passwordsDontMatch');
 
-    setConfirmPassword(confirmPasswordInput);
-    setConfirmPasswordError(error);
-  };
+      setConfirmPassword(confirmPasswordInput);
+      setConfirmPasswordError(error);
+    },
+    [password, t],
+  );
 
   useEffect(() => {
     if (
@@ -140,6 +149,7 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
         label={t('newPassword')}
         id="create-password-new"
         autoFocus
+        autoComplete
         placeholder={t('newPasswordPlaceholder')}
         labelProps={{ marginBottom: 1, children: t('newPassword') }}
         size={FormTextFieldSize.Lg}
@@ -147,16 +157,14 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
         inputProps={{
           'data-testid': 'create-password-new-input',
           type: showPassword ? InputType.Text : InputType.Password,
-          // https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/autocomplete#values
-          // autoComplete: 'new-password',
         }}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           handlePasswordChange(e.target.value);
         }}
         helpText={
-          passwordStrength && (
+          passwordStrengthElement && (
             <Text as="div" variant={TextVariant.inherit}>
-              {passwordStrength}
+              {passwordStrengthElement}
             </Text>
           )
         }
@@ -168,7 +176,9 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
               e.preventDefault();
               setShowPassword(!showPassword);
             }}
-            ariaLabel={showPassword ? 'hide password' : 'show password'}
+            ariaLabel={
+              showPassword ? t('passwordToggleHide') : t('passwordToggleShow')
+            }
           />
         }
       />
@@ -176,6 +186,7 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
       <FormTextField
         label={t('confirmPassword')}
         id="create-password-confirm"
+        autoComplete
         marginTop={4}
         placeholder={t('confirmPasswordPlaceholder')}
         labelProps={{ marginBottom: 1, children: t('confirmPassword') }}
@@ -187,8 +198,6 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
         inputProps={{
           'data-testid': 'create-password-confirm-input',
           type: showConfirmPassword ? InputType.Text : InputType.Password,
-          // https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/autocomplete#values
-          // autoComplete: 'confirm-password',
         }}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           handleConfirmPasswordChange(e.target.value);
@@ -201,7 +210,11 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
               e.preventDefault();
               setShowConfirmPassword(!showConfirmPassword);
             }}
-            ariaLabel={showConfirmPassword ? 'hide password' : 'show password'}
+            ariaLabel={
+              showConfirmPassword
+                ? t('passwordToggleHide')
+                : t('passwordToggleShow')
+            }
           />
         }
       />
