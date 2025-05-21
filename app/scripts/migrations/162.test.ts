@@ -1,5 +1,7 @@
 import { migrate, version } from './162';
 
+const SOLANA_MAINNET_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+
 describe(`migration #${version}`, () => {
   it('updates the version metadata', async () => {
     const oldStorage = {
@@ -69,14 +71,14 @@ describe(`migration #${version}`, () => {
       MultichainTransactionsController: {
         nonEvmTransactions: {
           'account 1': {
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+            [SOLANA_MAINNET_ADDRESS]: {
               transactions: [mockTransaction],
               next: null,
               lastUpdated: 1234567890,
             },
           },
           'account 2': {
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+            [SOLANA_MAINNET_ADDRESS]: {
               transactions: [],
               next: null,
               lastUpdated: 9876543210,
@@ -103,7 +105,7 @@ describe(`migration #${version}`, () => {
               lastUpdated: 1234567890,
             },
             'account 2': {
-              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+              [SOLANA_MAINNET_ADDRESS]: {
                 transactions: [],
                 next: null,
                 lastUpdated: 9876543210,
@@ -118,14 +120,14 @@ describe(`migration #${version}`, () => {
       MultichainTransactionsController: {
         nonEvmTransactions: {
           'account 1': {
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+            [SOLANA_MAINNET_ADDRESS]: {
               transactions: [mockTransaction],
               next: null,
               lastUpdated: 1234567890,
             },
           },
           'account 2': {
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+            [SOLANA_MAINNET_ADDRESS]: {
               transactions: [],
               next: null,
               lastUpdated: 9876543210,

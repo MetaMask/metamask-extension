@@ -8,6 +8,8 @@ type VersionedData = {
 
 export const version = 162;
 
+const SOLANA_MAINNET_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+
 type TransactionStateEntry = {
   transactions: unknown[];
   next: string | null;
@@ -49,6 +51,11 @@ function transformState(
     !hasProperty(state, 'MultichainTransactionsController') ||
     !isObject(state.MultichainTransactionsController)
   ) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Invalid MultichainTransactionsController state: ${typeof state.MultichainTransactionsController}`,
+      ),
+    );
     return state;
   }
 
@@ -58,6 +65,11 @@ function transformState(
     !hasProperty(transactionsController, 'nonEvmTransactions') ||
     !isObject(transactionsController.nonEvmTransactions)
   ) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Invalid nonEvmTransactions state: ${typeof transactionsController.nonEvmTransactions}`,
+      ),
+    );
     return state;
   }
 
@@ -84,7 +96,7 @@ function transformState(
     // Since we know the transactions are from Solana, we use the Solana chainId
     // 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' is Solana mainnet (the only supported so far)
     newNonEvmTransactions[accountId] = {
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+      [SOLANA_MAINNET_ADDRESS]: {
         transactions: Array.isArray(accountTransactions.transactions)
           ? accountTransactions.transactions
           : [],

@@ -7,6 +7,7 @@ import type {
 import { NetworkType } from '@metamask/controller-utils';
 import { isEvmAccountType, Transaction } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { isScopeEqualToAny } from '@metamask/keyring-utils';
 import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import {
   NetworkConfiguration,
@@ -224,24 +225,24 @@ export function getMultichainNetwork(
   }
 
   // If no network found by selectedChainId, we try to find by scopes
-  if (!nonEvmNetwork && selectedAccount.scopes?.length > 0) {
+  if (!nonEvmNetwork && selectedAccount.scopes.length > 0) {
     // If we have a selectedChainId but didn't find a match, we try to find a network
     // that matches both the selectedChainId and is in the scopes
     if (selectedChainId) {
       nonEvmNetwork = nonEvmNetworks.find(
         (provider) =>
           provider.chainId === selectedChainId &&
-          selectedAccount.scopes.includes(provider.chainId),
+          isScopeEqualToAny(provider.chainId, selectedAccount.scopes),
       );
     }
   }
 
   // If still no network found, we try to find a network that is address compatible
-  if (!nonEvmNetwork) {
-    nonEvmNetwork = nonEvmNetworks.find((provider) => {
-      return provider.isAddressCompatible(selectedAccount.address);
-    });
-  }
+  // TODO: This runtime logic is not supported by the `MultichainNetworkController`, we should remove this and rely
+  // only on the network configs provided by this controller.
+  nonEvmNetwork = nonEvmNetworks.find((provider) => {
+    return provider.isAddressCompatible(selectedAccount.address);
+  });
 
   if (!nonEvmNetwork) {
     throw new Error(
@@ -424,9 +425,15 @@ export function getMultichainIsTestnet(
   const providerConfig = getMultichainProviderConfig(state, selectedAccount);
 
   if (getMultichainIsEvm(state, account)) {
+    // FIXME: There are multiple ways of checking for an EVM test network, but
+    // current implementation differ between each other. So we do not use
+    // `getIsTestnet` here and uses the actual `TEST_NETWORK_IDS` which seems
+    // more up-to-date
     return (TEST_NETWORK_IDS as string[]).includes(providerConfig.chainId);
   }
 
+  // TODO: For now we only check for bitcoin and Solana, but we will need to
+  // update this for other non-EVM networks later!
   return [
     MultichainNetworks.BITCOIN_TESTNET,
     MultichainNetworks.BITCOIN_SIGNET,

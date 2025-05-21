@@ -391,6 +391,25 @@ describe('Multichain Selectors', () => {
       const state = getEvmState(CHAIN_IDS.SEPOLIA);
       expect(getMultichainIsMainnet(state)).toBe(false);
     });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      { isMainnet: true, account: MOCK_ACCOUNT_BIP122_P2WPKH },
+      { isMainnet: false, account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET },
+    ])(
+      'returns $isMainnet if non-EVM account address "$account.address" is compatible with mainnet',
+      ({
+        isMainnet,
+        account,
+      }: {
+        isMainnet: boolean;
+        account: InternalAccount;
+      }) => {
+        const state = getNonEvmState(account);
+
+        expect(getMultichainIsMainnet(state)).toBe(isMainnet);
+      },
+    );
   });
 
   describe('getMultichainIsTestnet', () => {
@@ -406,6 +425,25 @@ describe('Multichain Selectors', () => {
       (chainId: Hex) => {
         const state = getEvmState(chainId);
         expect(getMultichainIsTestnet(state)).toBe(true);
+      },
+    );
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      { isTestnet: false, account: MOCK_ACCOUNT_BIP122_P2WPKH },
+      { isTestnet: true, account: MOCK_ACCOUNT_BIP122_P2WPKH_TESTNET },
+    ])(
+      'returns $isTestnet if non-EVM account address "$account.address" is compatible with mainnet',
+      ({
+        isTestnet,
+        account,
+      }: {
+        isTestnet: boolean;
+        account: InternalAccount;
+      }) => {
+        const state = getNonEvmState(account);
+
+        expect(getMultichainIsTestnet(state)).toBe(isTestnet);
       },
     );
   });
