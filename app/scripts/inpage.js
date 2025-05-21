@@ -66,6 +66,7 @@ if (shouldInjectProvider()) {
     target: CONTENT_SCRIPT,
   });
 
+  // TODO: do we need a multiplex stream for the inpage provider? it looks like we only create one substream ever?
   const mux = new ObjectMultiplex();
   pipeline(metamaskStream, mux, metamaskStream, (error) => {
     let warningMsg = `Lost connection to "${METAMASK_EIP_1193_PROVIDER}".`;
