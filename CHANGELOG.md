@@ -7,14 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.18.1]
-### Changed
-- Update Solana and Evm metrics emitted when bridging ([#33056](https://github.com/MetaMask/metamask-extension/pull/33056))
-
 ### Fixed
 - Allow users to load ERC20 tokens automatically while Activity or NFT tab are open ([#33014](https://github.com/MetaMask/metamask-extension/pull/33014))
 - Validate keyring type in EIP-5792 requests ([#33034](https://github.com/MetaMask/metamask-extension/pull/33034))
 - Prevent requesting getTxStatus endpoint for a swap transaction ([#33081](https://github.com/MetaMask/metamask-extension/pull/33081))
-- Optimize usage of getTokenAccountsForAddress calls in Solana ([#33079](https://github.com/MetaMask/metamask-extension/pull/33079))
 - Poll for account changes every 5 minutes instead of 1 min in Solana ([#33079](https://github.com/MetaMask/metamask-extension/pull/33079))
 
 ## [12.18.0]
