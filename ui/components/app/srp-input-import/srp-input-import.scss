@@ -2,17 +2,10 @@
 
 .srp-input-import {
   &__container {
-    display: flex;
-    flex-direction: column;
-    background-color: var(--color-background-muted);
-    border-radius: 0.5rem;
     min-height: 264px;
   }
 
   &__srp-note {
-    flex: 1;
-    padding: 1rem;
-
     // SRP_OVERRIDE: remove padding from textarea add weight to style
     .mm-textarea {
       padding: 0;
@@ -31,15 +24,8 @@
     }
   }
 
-  &__srp-container {
-    padding: 1rem;
-    flex: 1;
-  }
-
   &__words-list {
-    display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
     // SRP_OVERRIDE: custom text field style
     .mm-text-field {
       padding-left: 8px;
@@ -66,16 +52,8 @@
 
   &__actions {
     height: 3rem;
-    display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0;
     border-top: 1px solid var(--color-primary-inverse);
-
-    div {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
   }
 }
 

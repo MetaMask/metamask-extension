@@ -39,8 +39,12 @@ export default function AccountExist() {
       data-testid="account-exist"
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      alignItems={AlignItems.center}
+      height={BlockSize.Full}
+      gap={6}
     >
-      <div className="account-exist__content">
+      <Box>
         <Box
           justifyContent={JustifyContent.flexStart}
           marginBottom={4}
@@ -84,16 +88,18 @@ export default function AccountExist() {
               width={276}
               height={276}
               alt="Account already exists"
+              style={{
+                alignSelf: 'center',
+              }}
             />
           </Box>
           <Text variant={TextVariant.bodyMd} marginBottom={6}>
             {t('accountAlreadyExistsLoginDescription', [accountEmail])}
           </Text>
         </Box>
-      </div>
+      </Box>
 
       <Box
-        className="account-exist__actions"
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         justifyContent={JustifyContent.center}

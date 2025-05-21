@@ -19,19 +19,9 @@
 
   &__terms {
     border-top: 1px solid var(--color-border-muted);
-    padding-top: 16px;
 
     a {
       color: var(--color-primary-default);
-    }
-  }
-
-  &__buttons {
-    margin-top: 24px;
-
-    button {
-      margin-bottom: 16px;
-      width: 50%;
     }
   }
 }
