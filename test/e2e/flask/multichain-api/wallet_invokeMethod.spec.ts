@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { strict as assert } from 'assert';
 import { isHexString } from '@metamask/utils';
 import {
