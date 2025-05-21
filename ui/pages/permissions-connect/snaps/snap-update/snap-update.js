@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback, useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
@@ -31,8 +31,17 @@ import {
   Text,
 } from '../../../../components/component-library';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
-import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
+import {
+  getSnapMetadata,
+  getSnapsMetadata,
+  selectPendingApproval,
+} from '../../../../selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
+import { Nav } from '../../../confirmations/components/confirm/nav';
+import {
+  setCurrentSnapInApprovalFlow,
+  setSnapConnectTime,
+} from '../../../../store/actions';
 
 export default function SnapUpdate({
   request,
@@ -50,7 +59,7 @@ export default function SnapUpdate({
   const { isScrollable, hasScrolledToBottom, scrollToBottom, ref, onScroll } =
     useScrollRequired([requestState]);
   const snapsMetadata = useSelector(getSnapsMetadata);
-
+  const dispatch = useDispatch();
   const onCancel = useCallback(
     () => rejectSnapUpdate(request.metadata.id),
     [request, rejectSnapUpdate],
@@ -64,6 +73,20 @@ export default function SnapUpdate({
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, targetSubjectMetadata.origin),
   );
+
+  const approval = useSelector((state) =>
+    selectPendingApproval(state, request?.metadata?.id),
+  );
+
+  const currentSnapInApprovalFlow = React.useRef(null);
+
+  useEffect(() => {
+    if (!currentSnapInApprovalFlow.current && request.metadata?.origin) {
+      currentSnapInApprovalFlow.current = request.metadata.origin;
+      dispatch(setCurrentSnapInApprovalFlow(request.metadata.origin));
+      dispatch(setSnapConnectTime(request.metadata.origin, approval.time));
+    }
+  }, [request.metadata?.origin, dispatch, approval]);
 
   const approvedPermissions = requestState.approvedPermissions ?? {};
   const revokedPermissions = requestState.unusedPermissions ?? {};
@@ -109,6 +132,7 @@ export default function SnapUpdate({
       flexDirection={FlexDirection.Column}
       backgroundColor={BackgroundColor.backgroundAlternative}
     >
+      <Nav confirmationId={request.metadata?.id} />
       <SnapAuthorshipHeader
         snapId={targetSubjectMetadata.origin}
         onCancel={onCancel}

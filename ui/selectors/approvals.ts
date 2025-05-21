@@ -6,6 +6,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { createSelector } from 'reselect';
 import { Json } from '@metamask/utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { getSnapsConnectTimes } from './selectors';
 
 export type ApprovalsMetaMaskState = {
   metamask: {
@@ -87,6 +88,39 @@ export const selectPendingApprovalsForNavigation = createDeepEqualSelector(
       return true;
     }),
 );
+
+export const selectReorderedPendingApprovalsForNavigation =
+  createDeepEqualSelector(
+    selectPendingApprovalsForNavigation,
+    getSnapsConnectTimes,
+    (pendingApprovals, snapsConnectTimes) => {
+      return pendingApprovals.sort((a, b) => {
+        let aTime;
+        let bTime;
+        if (
+          typeof a.requestData?.metadata === 'object' &&
+          a.requestData.metadata !== null &&
+          'origin' in a.requestData.metadata &&
+          snapsConnectTimes[a.requestData.metadata.origin as string]
+        ) {
+          aTime = snapsConnectTimes[a.requestData.metadata.origin as string];
+        } else {
+          aTime = a.time;
+        }
+        if (
+          typeof b.requestData?.metadata === 'object' &&
+          b.requestData.metadata !== null &&
+          'origin' in b.requestData.metadata &&
+          snapsConnectTimes[b.requestData.metadata.origin as string]
+        ) {
+          bTime = snapsConnectTimes[b.requestData.metadata.origin as string];
+        } else {
+          bTime = b.time;
+        }
+        return aTime - bTime;
+      });
+    },
+  );
 
 const internalSelectPendingApproval = createSelector(
   getPendingApprovals,

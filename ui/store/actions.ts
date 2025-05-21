@@ -147,6 +147,7 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { ApprovalRequest } from '@metamask/approval-controller';
 
 type CustomGasSettings = {
   gas?: string;
@@ -6431,6 +6432,23 @@ export function setTransactionActive(
       transactionId,
       isFocused,
     ]);
+  };
+}
+
+export function setCurrentSnapInApprovalFlow(
+  snapId: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('setCurrentSnapInApprovalFlow', [snapId]);
+  };
+}
+
+export function setSnapConnectTime(
+  snapId: string,
+  time: number,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('setSnapConnectTime', [snapId, time]);
   };
 }
 
