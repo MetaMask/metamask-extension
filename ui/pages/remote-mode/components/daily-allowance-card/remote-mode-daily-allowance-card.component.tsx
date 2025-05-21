@@ -19,7 +19,7 @@ import {
   BorderRadius,
   AlignItems,
 } from '../../../../helpers/constants/design-system';
-import { DailyAllowance } from '../../remote.types';
+import { DailyAllowance, TOKEN_DETAILS } from '../../remote.types';
 
 /**
  * A card component that displays and manages a single daily allowance entry in remote mode.
@@ -55,6 +55,10 @@ export default function RemoteModeDailyAllowanceCard({
           borderRadius={BorderRadius.MD}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+            <img
+              src={TOKEN_DETAILS[dailyAllowance.tokenType].iconUrl}
+              style={{ width: '24px', height: '24px', borderRadius: '50%' }}
+            />
             <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
               {dailyAllowance.tokenType}
             </Text>
@@ -72,7 +76,17 @@ export default function RemoteModeDailyAllowanceCard({
         >
           <Text variant={TextVariant.bodyMd}>Daily limit</Text>
           <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {dailyAllowance.amount}
+            {dailyAllowance.amount} {dailyAllowance.tokenType}
+          </Text>
+        </Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          gap={2}
+        >
+          <Text variant={TextVariant.bodyMd}>Available on</Text>
+          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+            MetaMask Extension
           </Text>
         </Box>
       </Box>

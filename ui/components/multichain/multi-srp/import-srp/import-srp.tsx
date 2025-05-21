@@ -1,5 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -23,11 +29,14 @@ import {
   BorderRadius,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import { setShowNewSrpAddedToast } from '../../../app/toast-master/utils';
 import { parseSecretRecoveryPhrase } from '../../../app/srp-input/parse-secret-recovery-phrase';
 import { clearClipboard } from '../../../../helpers/utils/util';
 import { useTheme } from '../../../../hooks/useTheme';
 import { ThemeType } from '../../../../../shared/constants/preferences';
+import ShowHideToggle from '../../../ui/show-hide-toggle';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import { getMetaMaskHdKeyrings } from '../../../../selectors';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 
 const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
@@ -42,6 +51,7 @@ export const ImportSrp = ({
 }) => {
   const t = useI18nContext();
   const theme = useTheme();
+  const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const [srpError, setSrpError] = useState('');
   const [pasteFailed, setPasteFailed] = useState(false);
@@ -52,6 +62,11 @@ export const ImportSrp = ({
   const [invalidSrpWords, setInvalidSrpWords] = useState(
     Array(defaultNumberOfWords).fill(false),
   );
+  const [showSrp, setShowSrp] = useState(
+    new Array(defaultNumberOfWords).fill(false),
+  );
+  const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
+  const newHdEntropyIndex = hdKeyrings.length;
 
   const [loading, setLoading] = useState(false);
 
@@ -181,6 +196,19 @@ export const ImportSrp = ({
     [t, setSrpError, setSecretRecoveryPhrase, numberOfWords],
   );
 
+  const toggleShowSrp = useCallback((index) => {
+    setShowSrp((currentShowSrp) => {
+      const newShowSrp = currentShowSrp.slice();
+      if (newShowSrp[index]) {
+        newShowSrp[index] = false;
+      } else {
+        newShowSrp.fill(false);
+        newShowSrp[index] = true;
+      }
+      return newShowSrp;
+    });
+  }, []);
+
   const onSrpPaste = useCallback(
     (rawSrp) => {
       const parsedSrp = parseSecretRecoveryPhrase(rawSrp);
@@ -211,6 +239,7 @@ export const ImportSrp = ({
           new Array(newNumberOfWords - newDraftSrp.length).fill(''),
         );
       }
+      setShowSrp(new Array(newNumberOfWords).fill(false));
       onSrpChange(newDraftSrp);
       clearClipboard();
     },
@@ -270,7 +299,11 @@ export const ImportSrp = ({
                     data-testid={id}
                     borderRadius={BorderRadius.LG}
                     error={invalidSrpWords[index]}
-                    type={TextFieldType.Text}
+                    type={
+                      showSrp[index]
+                        ? TextFieldType.Text
+                        : TextFieldType.Password
+                    }
                     onChange={(e) => {
                       e.preventDefault();
                       onSrpWordChange(index, e.target.value);
@@ -285,6 +318,15 @@ export const ImportSrp = ({
                         onSrpPaste(newSrp);
                       }
                     }}
+                  />
+                  <ShowHideToggle
+                    id={`${id}-checkbox`}
+                    ariaLabelHidden={t('srpWordHidden')}
+                    ariaLabelShown={t('srpWordShown')}
+                    shown={showSrp[index]}
+                    data-testid={`${id}-checkbox`}
+                    onChange={() => toggleShowSrp(index)}
+                    title={t('srpToggleShow')}
                   />
                 </Box>
               </Box>
@@ -309,11 +351,16 @@ export const ImportSrp = ({
             <ButtonLink
               width={BlockSize.Full}
               loading={loading}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={async () => {
                 setNumberOfWords(numberOfWords === 12 ? 24 : 12);
                 setSrpError('');
                 setInvalidSrpWords(
                   Array(numberOfWords === 12 ? 24 : 12).fill(false),
+                );
+                setShowSrp(
+                  new Array(numberOfWords === 12 ? 24 : 12).fill(false),
                 );
               }}
               data-testid="import-srp__multi-srp__switch-word-count-button"
@@ -339,12 +386,19 @@ export const ImportSrp = ({
           width={BlockSize.Full}
           disabled={!isValidSrp || hasEmptyWordsOrIncorrectLength}
           loading={loading}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={async () => {
             try {
               setLoading(true);
               await importWallet();
+              trackEvent({
+                event: MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
+                properties: {
+                  hd_entropy_index: newHdEntropyIndex,
+                },
+              });
               onActionComplete(true);
-              dispatch(setShowNewSrpAddedToast(true));
             } catch (e) {
               setSrpError(
                 e instanceof Error ? e.message : 'An unknown error occurred',
