@@ -267,7 +267,7 @@ async function runInitialActions(store) {
       actions.checkIsSeedlessPasswordOutdated(skipCache),
     );
     if (isPwOutdated) {
-      await store.dispatch(actions.forceUpdateMetamaskState());
+      await actions.forceUpdateMetamaskState(store.dispatch);
     }
     // periodically check seedless password outdated when app UI is open
     setInterval(async () => {

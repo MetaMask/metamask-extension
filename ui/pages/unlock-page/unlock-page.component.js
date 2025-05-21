@@ -152,6 +152,16 @@ export default class UnlockPage extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (
+      !prevProps.isSeedlessPasswordOutdated &&
+      prevProps.isSeedlessPasswordOutdated !==
+        this.props.isSeedlessPasswordOutdated
+    ) {
+      this.setState({ error: this.context.t('passwordChangedRecently') });
+    }
+  }
+
   handleSubmit = async (event) => {
     event.preventDefault();
     event.stopPropagation();
