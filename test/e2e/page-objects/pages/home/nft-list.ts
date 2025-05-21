@@ -14,7 +14,7 @@ class NftListPage {
 
   private readonly importNftAddressInput = '#address';
 
-  private readonly importNftButton = '[data-testid="import-nfts"]';
+  private readonly importNftButton = '[data-testid="import-nfts__button"]';
 
   private readonly actionBarButton =
     '[data-testid="asset-list-control-bar-action-button"]';
@@ -54,6 +54,7 @@ class NftListPage {
 
   async check_pageIsLoaded(): Promise<void> {
     try {
+      await this.driver.clickElement(this.actionBarButton);
       await this.driver.waitForSelector(this.importNftButton);
     } catch (e) {
       console.log('Timeout while waiting for NFT list page to be loaded', e);
