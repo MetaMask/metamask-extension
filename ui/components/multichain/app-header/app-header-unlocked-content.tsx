@@ -133,7 +133,7 @@ export const AppHeaderUnlockedContent = ({
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
-        gap={4}
+        gap={2}
       >
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -175,10 +175,7 @@ export const AppHeaderUnlockedContent = ({
               paddingLeft={0}
               paddingRight={0}
             />
-            <Tooltip
-              position="left"
-              title={copied ? t('addressCopied') : t('copyToClipboard')}
-            >
+            {process.env.REMOVE_GNS ? (
               <ButtonBase
                 className="multichain-app-header__address-copy-button"
                 onClick={() => handleCopy(normalizedCurrentAddress)}
@@ -210,7 +207,44 @@ export const AppHeaderUnlockedContent = ({
                   {shortenedAddress}
                 </Text>
               </ButtonBase>
-            </Tooltip>
+            ) : (
+              <Tooltip
+                position="left"
+                title={copied ? t('addressCopied') : t('copyToClipboard')}
+              >
+                <ButtonBase
+                  className="multichain-app-header__address-copy-button"
+                  onClick={() => handleCopy(normalizedCurrentAddress)}
+                  size={ButtonBaseSize.Sm}
+                  backgroundColor={BackgroundColor.transparent}
+                  borderRadius={BorderRadius.LG}
+                  endIconName={copied ? IconName.CopySuccess : IconName.Copy}
+                  endIconProps={{
+                    color: IconColor.iconAlternative,
+                    size: IconSize.Sm,
+                  }}
+                  paddingLeft={0}
+                  paddingRight={0}
+                  ellipsis
+                  textProps={{
+                    display: Display.Flex,
+                    gap: 2,
+                    variant: TextVariant.bodyMdMedium,
+                  }}
+                  style={{ height: 'auto' }} // ButtonBase doesn't have auto size
+                  data-testid="app-header-copy-button"
+                >
+                  <Text
+                    color={TextColor.textAlternative}
+                    variant={TextVariant.bodySmMedium}
+                    ellipsis
+                    as="span"
+                  >
+                    {shortenedAddress}
+                  </Text>
+                </ButtonBase>
+              </Tooltip>
+            )}
           </Text>
         )}
       </Box>

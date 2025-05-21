@@ -43,6 +43,7 @@
     &__container {
       width: fit-content;
     }
+    border-bottom: 1px solid #858B9A33;
   }
 
   &__address-copy-button {
@@ -73,10 +74,6 @@
       width: $width-screen-lg-min;
     }
   }
-}
-
-.multichain-app-header-shadow {
-  box-shadow: var(--shadow-size-md) var(--color-shadow-default);
 }
 
 .multichain-app-header-logo {
