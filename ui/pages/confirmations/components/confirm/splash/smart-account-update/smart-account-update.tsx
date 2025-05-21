@@ -26,12 +26,12 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
+import { setSplashPageAcknowledgedForAccount } from '../../../../../../store/actions';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import Name from '../../../../../../components/app/name';
+import { getUpgradeSplashPageAcknowledgedForAccounts } from '../../../../selectors';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useSmartAccountActions } from '../../../../hooks/useSmartAccountActions';
-import { setSplashPageAcknowledgedForAccount } from '../../../../../../store/actions';
-import { getUpgradeSplashPageAcknowledgedForAccounts } from '../../../../../../selectors';
 
 const ListItem = ({
   imgSrc,
@@ -72,7 +72,7 @@ export function SmartAccountUpdate() {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { handleRejectUpgrade } = useSmartAccountActions();
-  const splashPageAcknewledgedForAccountList: string[] = useSelector(
+  const splashPageAcknowledgedForAccountList: string[] = useSelector(
     getUpgradeSplashPageAcknowledgedForAccounts,
   );
 
@@ -80,15 +80,15 @@ export function SmartAccountUpdate() {
   const { from } = txParams;
 
   const acknowledgeSmartAccountUpgrade = useCallback(() => {
-    setSplashPageAcknowledgedForAccount(from.toLowerCase());
+    setSplashPageAcknowledgedForAccount(from);
     setAcknowledged(true);
-  }, []);
+  }, [from, setAcknowledged]);
 
   if (
     !currentConfirmation ||
     acknowledged ||
     origin === ORIGIN_METAMASK ||
-    splashPageAcknewledgedForAccountList.includes(from.toLowerCase())
+    splashPageAcknowledgedForAccountList.includes(from.toLowerCase())
   ) {
     return null;
   }

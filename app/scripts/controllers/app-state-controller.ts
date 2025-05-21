@@ -674,7 +674,7 @@ export class AppStateController extends BaseController<
     this.update((state) => {
       state.upgradeSplashPageAcknowledgedForAccounts = [
         ...state.upgradeSplashPageAcknowledgedForAccounts,
-        account,
+        account.toLowerCase(),
       ];
     });
   }
