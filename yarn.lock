@@ -5156,7 +5156,6 @@ __metadata:
     "@metamask/accounts-controller": ^29.0.0
     "@metamask/bridge-controller": ^26.0.0
     "@metamask/gas-fee-controller": ^23.0.0
-    "@metamask/multichain-transactions-controller": ^1.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/snaps-controllers": ^11.0.0
     "@metamask/transaction-controller": ^56.0.0
