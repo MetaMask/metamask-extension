@@ -44,10 +44,15 @@ async function start() {
           description:
             'The MetaMask extension build distribution (typically for MV2 builds, omit for MV3)',
           type: 'string',
+        })
+        .option('dist-directory', {
+          default: 'dist',
+          description: 'The MetaMask extension build dist directory path',
+          type: 'string',
         }),
   );
 
-  const { buildType, buildVersion, dist, org, project } = argv;
+  const { buildType, buildVersion, dist, distDirectory, org, project } = argv;
 
   process.env.SENTRY_ORG = org;
   process.env.SENTRY_PROJECT = project;
@@ -80,15 +85,6 @@ async function start() {
       'delete',
       '--all',
     ]);
-  }
-
-  let distDirectory = 'build-dist-browserify/dist';
-  if (buildType !== loadBuildTypesConfig().default) {
-    distDirectory = dist
-      ? `build-${buildType}-${dist}-browserify/dist`
-      : `build-${buildType}-browserify/dist`;
-  } else if (dist) {
-    distDirectory = `build-dist-${dist}-browserify/dist`;
   }
 
   const absoluteDistDirectory = path.resolve(__dirname, '../', distDirectory);

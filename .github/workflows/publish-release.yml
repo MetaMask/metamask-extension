@@ -50,7 +50,7 @@ jobs:
           name: build-dist-browserify
 
       - name: Publish main release to Sentry
-        run: yarn sentry:publish
+        run: yarn sentry:publish --dist-directory build-dist-browserify/dist
 
       - name: Download artifact 'build-dist-mv2-browserify'
         uses: actions/download-artifact@v4
@@ -59,7 +59,7 @@ jobs:
           name: build-dist-mv2-browserify
 
       - name: Publish main MV2 release to Sentry
-        run: yarn sentry:publish --dist mv2
+        run: yarn sentry:publish --dist mv2 --dist-directory build-dist-mv2-browserify/dist
 
       - name: Download artifact 'build-flask-browserify'
         uses: actions/download-artifact@v4
@@ -68,7 +68,7 @@ jobs:
           name: build-flask-browserify
 
       - name: Publish Flask release to Sentry
-        run: yarn sentry:publish --build-type flask
+        run: yarn sentry:publish --build-type flask --dist-directory build-flask-browserify/dist
 
       - name: Download artifact 'build-flask-mv2-browserify'
         uses: actions/download-artifact@v4
@@ -77,7 +77,7 @@ jobs:
           name: build-flask-mv2-browserify
 
       - name: Publish Flask MV2 release to Sentry
-        run: yarn sentry:publish --build-type flask --dist mv2
+        run: yarn sentry:publish --build-type flask --dist mv2 --dist-directory build-flask-mv2-browserify/dist
 
       - name: Create GitHub release
         run: .github/scripts/release-create-gh-release.sh
