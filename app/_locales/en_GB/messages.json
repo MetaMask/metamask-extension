@@ -5683,9 +5683,6 @@
     "message": "You can try to copy and restore your state file manually before you decide to reset MetaMask by following $1.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
-  "stateCorruptionDetectedErrorMessage": {
-    "message": "MetaMask's state file is damaged or missing. The files are possibly recoverable, so don't uninstall the MetaMask extension!"
-  },
   "stateCorruptionDetectedNoBackup": {
     "message": "Your vault cannot be automatically recovered."
   },
