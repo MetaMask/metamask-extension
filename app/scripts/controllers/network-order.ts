@@ -22,6 +22,7 @@ export type NetworksInfo = {
 // State shape for NetworkOrderController
 export type NetworkOrderControllerState = {
   orderedNetworkList: NetworksInfo[];
+  enabledNetworkMap: Record<CaipChainId, boolean>;
 };
 
 // Describes the structure of a state change event
@@ -52,11 +53,16 @@ export type NetworkOrderControllerMessenger = RestrictedMessenger<
 // Default state for the controller
 const defaultState: NetworkOrderControllerState = {
   orderedNetworkList: [],
+  enabledNetworkMap: {},
 };
 
 // Metadata for the controller state
 const metadata = {
   orderedNetworkList: {
+    persist: true,
+    anonymous: true,
+  },
+  enabledNetworkMap: {
     persist: true,
     anonymous: true,
   },
@@ -159,6 +165,44 @@ export class NetworkOrderController extends BaseController<
       state.orderedNetworkList = chainIds.map((chainId) => ({
         networkId: chainId,
       }));
+    });
+  }
+
+  /**
+   * Enables a single network and disables all others.
+   * This is primarily used for custom/test networks.
+   *
+   * @param chainId - The CAIP chain ID of the network to enable
+   */
+  setSingleEnabledNetwork(chainId: CaipChainId) {
+    this.update((state) => {
+      // Create a new map with all networks disabled
+      const newEnabledMap: Record<CaipChainId, boolean> = {};
+
+      // Enable only the specified network
+      newEnabledMap[chainId] = true;
+
+      state.enabledNetworkMap = newEnabledMap;
+    });
+  }
+
+  /**
+   * Enables multiple networks and disables all others.
+   * This is primarily used for popular networks.
+   *
+   * @param chainIds - Array of CAIP chain IDs to enable
+   */
+  setMultiEnabledNetworks(chainIds: CaipChainId[]) {
+    this.update((state) => {
+      // Create a new map with all networks disabled
+      const newEnabledMap: Record<CaipChainId, boolean> = {};
+
+      // Enable only the specified networks
+      chainIds.forEach((chainId) => {
+        newEnabledMap[chainId] = true;
+      });
+
+      state.enabledNetworkMap = newEnabledMap;
     });
   }
 }
