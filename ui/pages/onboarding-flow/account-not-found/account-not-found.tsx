@@ -39,7 +39,7 @@ export default function AccountNotFound() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
 
-  const onCreateOne = async () => {
+  const onCreateOne = () => {
     history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
   };
 
@@ -62,8 +62,12 @@ export default function AccountNotFound() {
       data-testid="account-not-found"
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      alignItems={AlignItems.center}
+      gap={6}
+      height={BlockSize.Full}
     >
-      <div className="account-not-found__content">
+      <Box>
         <Box
           justifyContent={JustifyContent.flexStart}
           marginBottom={4}
@@ -106,17 +110,19 @@ export default function AccountNotFound() {
               src="images/account-status.png"
               width={276}
               height={276}
-              alt="Account already exists"
+              alt={t('accountNotFoundTitle')}
+              style={{
+                alignSelf: 'center',
+              }}
             />
           </Box>
           <Text variant={TextVariant.bodyMd} marginBottom={6}>
             {t('accountNotFoundDescription', [userSocialLoginEmail])}
           </Text>
         </Box>
-      </div>
+      </Box>
 
       <Box
-        className="account-not-found__actions"
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         justifyContent={JustifyContent.center}

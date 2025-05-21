@@ -31,7 +31,6 @@ import {
   IconName,
   Box,
   Text,
-  ButtonVariant,
   ButtonSize,
 } from '../../../components/component-library';
 import TextField from '../../../components/ui/text-field';
@@ -49,7 +48,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   ADD_POPULAR_CUSTOM_NETWORK,
-  SECURITY_PASSWORD_HINT_ROUTE,
   REVEAL_SRP_LIST_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -235,7 +233,7 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  renderPassword() {
+  renderChangePassword() {
     const { t } = this.context;
     const { history } = this.props;
 
@@ -260,17 +258,6 @@ export default class SecurityTab extends PureComponent {
             }}
           >
             {t('securityChangePasswordChange')}
-          </Button>
-          <Button
-            variant={ButtonVariant.Secondary}
-            width={BlockSize.Full}
-            marginTop={4}
-            block
-            onClick={() => {
-              history.push(SECURITY_PASSWORD_HINT_ROUTE);
-            }}
-          >
-            {t('securityChangePasswordHint')}
           </Button>
         </div>
       </>
@@ -1213,7 +1200,7 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('security')}
         </span>
         {this.renderSeedWords()}
-        {this.renderPassword()}
+        {this.renderChangePassword()}
         {this.renderSecurityAlertsToggle()}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
