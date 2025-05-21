@@ -18,6 +18,8 @@ import {
   BlockSize,
   TextColor,
   IconColor,
+  Display,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
@@ -119,11 +121,15 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   };
 
   return (
-    <div
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      gap={6}
       className="recovery-phrase recovery-phrase__confirm"
       data-testid="confirm-recovery-phrase"
     >
-      <div className="recovery-phrase__content">
+      <Box>
         {showConfirmModal && (
           <ConfirmSrpModal
             isError={!matching}
@@ -173,7 +179,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
             setInputValue={handleQuizInput}
           />
         )}
-      </div>
+      </Box>
       <Box width={BlockSize.Full}>
         <Button
           variant={ButtonVariant.Primary}
@@ -187,7 +193,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
           {t('continue')}
         </Button>
       </Box>
-    </div>
+    </Box>
   );
 }
 
