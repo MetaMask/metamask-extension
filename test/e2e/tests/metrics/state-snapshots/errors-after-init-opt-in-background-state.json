@@ -47,6 +47,7 @@
     "switchedNetworkNeverShowMessage": "boolean",
     "slides": "object",
     "throttledOrigins": "object",
+    "upgradeSplashPageAcknowledgedForAccounts": "object",
     "qrHardware": {},
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
