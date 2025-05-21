@@ -229,21 +229,6 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  renderPassword() {
-    const { t } = this.context;
-
-    return (
-      <>
-        <div
-          ref={this.settingsRefs[2]}
-          className="settings-page__security-tab-sub-header"
-        >
-          {t('securityChangePasswordTitle')}
-        </div>
-      </>
-    );
-  }
-
   renderSecurityAlertsToggle() {
     const { t } = this.context;
     const { securityAlertsEnabled } = this.props;
@@ -1180,7 +1165,6 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('security')}
         </span>
         {this.renderSeedWords()}
-        {this.renderPassword()}
         {this.renderSecurityAlertsToggle()}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}

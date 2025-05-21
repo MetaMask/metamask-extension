@@ -4069,12 +4069,6 @@
   "password": {
     "message": "Password"
   },
-  "passwordToggleHide": {
-    "message": "Hide Password"
-  },
-  "passwordToggleShow": {
-    "message": "Show Password"
-  },
   "passwordNotLongEnough": {
     "message": "Password not long enough"
   },
@@ -4090,6 +4084,12 @@
   },
   "passwordTermsWarning": {
     "message": "MetaMask can’t recover this password."
+  },
+  "passwordToggleHide": {
+    "message": "Hide Password"
+  },
+  "passwordToggleShow": {
+    "message": "Show Password"
   },
   "passwordsDontMatch": {
     "message": "Passwords don't match"
@@ -4951,9 +4951,6 @@
   },
   "securityAndPrivacy": {
     "message": "Security & privacy"
-  },
-  "securityChangePasswordTitle": {
-    "message": "Password"
   },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
