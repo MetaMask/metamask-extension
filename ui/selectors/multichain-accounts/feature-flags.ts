@@ -1,4 +1,7 @@
-import { getRemoteFeatureFlags, type RemoteFeatureFlagsState } from '../remote-feature-flags';
+import {
+  getRemoteFeatureFlags,
+  type RemoteFeatureFlagsState,
+} from '../remote-feature-flags';
 
 /**
  *
@@ -9,7 +12,8 @@ export type MultichainAccountsFeatureFlag = {
   minimumVersion: string | null;
 };
 
-const MINIMUM_SUPPORTED_VERSION = '0.0.0';
+// TODO: Update the value to the decided version multichain accounts will be released
+const MINIMUM_SUPPORTED_VERSION = null;
 const FEATURE_VERSION_1 = '1';
 const FEATURE_VERSION_2 = '2';
 
@@ -33,12 +37,16 @@ const compareVersions = (version1: string, version2: string) => {
     const num1 = v1[i] || 0;
     const num2 = v2[i] || 0;
 
-    if (num1 > num2) return true;
-    if (num1 < num2) return false;
+    if (num1 > num2) {
+      return true;
+    }
+    if (num1 < num2) {
+      return false;
+    }
   }
 
   return true; // Versions are equal
-}
+};
 
 /**
  * Checks if the multichain accounts feature is enabled for state 1.
@@ -46,11 +54,21 @@ const compareVersions = (version1: string, version2: string) => {
  * @param state - The MetaMask state object
  * @returns boolean - True if the feature is enabled for state 1, false otherwise.
  */
-export const getIsMultichainAccountsState1Enabled = (state: RemoteFeatureFlagsState) => {
+export const getIsMultichainAccountsState1Enabled = (
+  state: RemoteFeatureFlagsState,
+) => {
   const { enableMultichainAccounts } = getRemoteFeatureFlags(state);
-  const { enabled, featureVersion, minimumVersion } = enableMultichainAccounts as MultichainAccountsFeatureFlag;
-  return enabled && featureVersion && minimumVersion && featureVersion === FEATURE_VERSION_1 && compareVersions(minimumVersion, MINIMUM_SUPPORTED_VERSION);
-}
+  const { enabled, featureVersion, minimumVersion } =
+    enableMultichainAccounts as MultichainAccountsFeatureFlag;
+  return (
+    enabled &&
+    featureVersion &&
+    minimumVersion &&
+    featureVersion === FEATURE_VERSION_1 &&
+    // @ts-expect-error - we can ignore the error for passing MINIMUM_SUPPORTED_VERSION as null
+    compareVersions(minimumVersion, MINIMUM_SUPPORTED_VERSION)
+  );
+};
 
 /**
  * Checks if the multichain accounts feature is enabled for state 1.
@@ -58,8 +76,18 @@ export const getIsMultichainAccountsState1Enabled = (state: RemoteFeatureFlagsSt
  * @param state - The MetaMask state object
  * @returns boolean - True if the feature is enabled for state 1, false otherwise.
  */
-export const getIsMultichainAccountsState2Enabled = (state: RemoteFeatureFlagsState) => {
+export const getIsMultichainAccountsState2Enabled = (
+  state: RemoteFeatureFlagsState,
+) => {
   const { enableMultichainAccounts } = getRemoteFeatureFlags(state);
-  const { enabled, featureVersion, minimumVersion } = enableMultichainAccounts as MultichainAccountsFeatureFlag;
-  return enabled && featureVersion && minimumVersion && featureVersion === FEATURE_VERSION_2 && compareVersions(minimumVersion, MINIMUM_SUPPORTED_VERSION);
-}
+  const { enabled, featureVersion, minimumVersion } =
+    enableMultichainAccounts as MultichainAccountsFeatureFlag;
+  return (
+    enabled &&
+    featureVersion &&
+    minimumVersion &&
+    featureVersion === FEATURE_VERSION_2 &&
+    // @ts-expect-error - we can ignore the error for passing MINIMUM_SUPPORTED_VERSION as null
+    compareVersions(minimumVersion, MINIMUM_SUPPORTED_VERSION)
+  );
+};
