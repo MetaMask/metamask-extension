@@ -1,6 +1,7 @@
 import React, {
   ChangeEvent,
   KeyboardEvent,
+  KeyboardEventHandler,
   useCallback,
   useContext,
   useEffect,
@@ -210,7 +211,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
         <Box as="form" onSubmit={onSubmit}>
           <FormTextField
             data-testid="account-name-input"
-            ref={ref}
+            inputRef={ref}
             size={FormTextFieldSize.Lg}
             gap={2}
             autoFocus
@@ -222,11 +223,13 @@ export const CreateAccount: CreateAccountComponent = React.memo(
             }
             helpText={creationError || errorMessage}
             error={!isValidAccountName || Boolean(creationError)}
-            onKeyPress={(e: KeyboardEvent<HTMLFormElement>) => {
-              if (e.key === 'Enter') {
-                onSubmit(e);
-              }
-            }}
+            onKeyPress={
+              ((e: KeyboardEvent<HTMLFormElement>) => {
+                if (e.key === 'Enter') {
+                  onSubmit(e);
+                }
+              }) as unknown as KeyboardEventHandler<HTMLDivElement>
+            }
           />
           {hdKeyrings.length > 1 && onSelectSrp && selectedKeyring ? (
             <Box marginBottom={3}>
