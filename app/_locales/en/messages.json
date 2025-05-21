@@ -5675,9 +5675,6 @@
   "stateCorruptionAreYouSure": {
     "message": "Are you sure you want to proceed?"
   },
-  "stateCorruptionDetectedErrorMessage": {
-    "message": "MetaMask's state file is damaged or missing. The files are possibly recoverable, so don't uninstall the MetaMask extension!"
-  },
   "stateCorruptionCopyAndRestoreBeforeRecovery": {
     "message": "You can try to copy and restore your state file manually before you decide to restore your vault by following $1.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
@@ -5686,11 +5683,14 @@
     "message": "You can try to copy and restore your state file manually before you decide to reset MetaMask by following $1.",
     "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
   },
+  "stateCorruptionDetectedErrorMessage": {
+    "message": "MetaMask's state file is damaged or missing. The files are possibly recoverable, so don't uninstall the MetaMask extension!"
+  },
   "stateCorruptionDetectedNoBackup": {
     "message": "Your vault cannot be automatically recovered."
   },
   "stateCorruptionDetectedWithBackup": {
-    "message": "You vault can be recovered from an automated backup. Automatic recovery will delete your current settings and preferences, and restore only your vault."
+    "message": "Your vault can be recovered from an automated backup. Automatic recovery will delete your current settings and preferences, and restore only your vault."
   },
   "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
     "message": "Internal Error: Database cannot be accessed"
