@@ -4069,6 +4069,12 @@
   "password": {
     "message": "Password"
   },
+  "passwordToggleHide": {
+    "message": "Hide Password"
+  },
+  "passwordToggleShow": {
+    "message": "Show Password"
+  },
   "passwordHintCreate": {
     "message": "Create a password hint"
   },
