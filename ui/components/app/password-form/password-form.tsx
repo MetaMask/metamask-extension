@@ -140,6 +140,7 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
         label={t('newPassword')}
         id="create-password-new"
         autoFocus
+        autoComplete
         placeholder={t('newPasswordPlaceholder')}
         labelProps={{ marginBottom: 1, children: t('newPassword') }}
         size={FormTextFieldSize.Lg}
@@ -176,6 +177,7 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
       <FormTextField
         label={t('confirmPassword')}
         id="create-password-confirm"
+        autoComplete
         marginTop={4}
         placeholder={t('confirmPasswordPlaceholder')}
         labelProps={{ marginBottom: 1, children: t('confirmPassword') }}
