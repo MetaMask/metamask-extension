@@ -423,7 +423,9 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           {title}
         </Text>
         <Box display={Display.Flex} justifyContent={JustifyContent.center}>
-          <Text color={TextColor.textAlternative} >{t('connectionDescription')}</Text>
+          <Text color={TextColor.textAlternative}>
+            {t('connectionDescription')}
+          </Text>
         </Box>
       </Header>
       <Content
