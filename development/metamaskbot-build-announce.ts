@@ -44,7 +44,7 @@ function getPercentageChange(from: number, to: number): number {
  * @returns True if the artifact exists, false if it doesn't
  */
 async function artifactExists(url: string): Promise<boolean> {
-  const response = await fetch(url);
+  const response = await fetch(url, { method: 'HEAD' });
   return response.ok;
 }
 
