@@ -242,6 +242,7 @@ const AccountListItem = ({
       onClick={() => {
         // Without this check, the account will be selected after
         // the account options menu closes
+        console.log('plop');
         if (!accountOptionsMenuOpen) {
           onClick?.(account);
         }
@@ -322,8 +323,10 @@ const AccountListItem = ({
               <Text
                 as="button"
                 onClick={(e) => {
-                  e.stopPropagation();
-                  onClick?.(account);
+                  if (onClick) {
+                    e.stopPropagation();
+                    onClick(account);
+                  }
                 }}
                 variant={TextVariant.bodyMdMedium}
                 className="multichain-account-list-item__account-name__button"
