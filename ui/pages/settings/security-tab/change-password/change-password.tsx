@@ -102,7 +102,10 @@ const ChangePassword = () => {
               label={t('enterPasswordContinue')}
               placeholder={t('makeSureNoOneWatching')}
               textFieldProps={{ type: TextFieldType.Password }}
-              labelProps={{ marginBottom: 1, children: t('enterPasswordContinue') }}
+              labelProps={{
+                marginBottom: 1,
+                children: t('enterPasswordContinue'),
+              }}
               value={currentPassword}
               error={isIncorrectPasswordError}
               helpText={

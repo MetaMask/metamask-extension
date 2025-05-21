@@ -4958,14 +4958,14 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
-  "securityChangePasswordTitle": {
-    "message": "Password"
-  },
   "securityChangePasswordChange": {
     "message": "Change password"
   },
   "securityChangePasswordDescription": {
     "message": "Choose a strong password to unlock MetaMask app on your device. If you lose this password, you will need your Secret Recovery Phrase to re-import your wallet."
+  },
+  "securityChangePasswordTitle": {
+    "message": "Password"
   },
   "securityChangePasswordTitle": {
     "message": "Password"
@@ -6809,10 +6809,6 @@
   },
   "unlockMessage": {
     "message": "The decentralized web awaits"
-  },
-  "unlockPageHint": {
-    "message": "Hint: $1",
-    "description": "$1 is the password hint"
   },
   "unlockPageIncorrectPassword": {
     "message": "Password is incorrect. Please try again."

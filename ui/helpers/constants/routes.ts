@@ -71,7 +71,6 @@ export const REVEAL_SRP_LIST_ROUTE =
 PATH_NAME_MAP[REVEAL_SRP_LIST_ROUTE] =
   'Reveal Secret Recovery Phrase List Page';
 
-
 export const SECURITY_PASSWORD_CHANGE_ROUTE =
   '/settings/security-and-privacy/password-change';
 PATH_NAME_MAP[SECURITY_PASSWORD_CHANGE_ROUTE] = 'Change Password';
