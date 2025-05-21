@@ -33,10 +33,12 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { updateSelectedGasFeeToken } from '../../../../../../../store/controller-actions/transaction-controller';
 import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 import Tooltip from '../../../../../../../components/ui/tooltip';
+import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 
 export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { isSmartTransaction } = useIsGaslessSupported();
 
   const {
     id: transactionId,
@@ -44,9 +46,13 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
     selectedGasFeeToken,
   } = currentConfirmation;
 
-  const hasFutureNativeToken = Boolean(
-    gasFeeTokens?.some((token) => token.tokenAddress === NATIVE_TOKEN_ADDRESS),
-  );
+  const hasFutureNativeToken =
+    isSmartTransaction &&
+    Boolean(
+      gasFeeTokens?.some(
+        (token) => token.tokenAddress === NATIVE_TOKEN_ADDRESS,
+      ),
+    );
 
   const [futureNativeSelected, setFutureNativeSelected] = useState(
     hasFutureNativeToken && Boolean(selectedGasFeeToken),

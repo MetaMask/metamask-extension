@@ -28,7 +28,7 @@ export function SelectedGasFeeToken() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { chainId, gasFeeTokens } = currentConfirmation;
-  const isGaslessSupported = useIsGaslessSupported();
+  const { isSupported: isGaslessSupported } = useIsGaslessSupported();
   const hasGasFeeTokens = isGaslessSupported && Boolean(gasFeeTokens?.length);
 
   const networkConfiguration = useSelector(getNetworkConfigurationsByChainId)?.[
