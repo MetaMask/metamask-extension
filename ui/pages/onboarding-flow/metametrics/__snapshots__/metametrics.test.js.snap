@@ -16,6 +16,23 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
     >
       We'd like to gather basic usage and diagnostics data to improve MetaMask. It will always be:
     </p>
+    <div
+      class="mm-box mm-box--padding-top-2 mm-box--padding-bottom-2"
+    >
+      <a
+        class="mm-box mm-text mm-text--body-md mm-box--color-primary-default"
+        href="https://support.metamask.io/privacy-and-security/profile-privacy#how-is-the-profile-created"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        Learn how we protect your privacy while collecting usage data for your profile.
+      </a>
+    </div>
+    <p
+      class="mm-box mm-text onboarding-metametrics__desc mm-text--body-md mm-text--text-align-left mm-box--color-text-default"
+    >
+      When we gather metrics, it will always be...
+    </p>
     <ul>
       <li>
         <div
@@ -117,11 +134,11 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
       </span>
     </label>
     <p
-      class="mm-box mm-text onboarding-metametrics__terms mm-text--body-sm mm-text--text-align-left mm-box--color-text-alternative"
+      class="mm-box mm-text onboarding-metametrics__terms mm-text--body-sm mm-text--text-align-left mm-box--padding-top-4 mm-box--color-text-alternative"
     >
       <span>
          
-        We’ll let you know if we plan to use this data for other purposes. You can review our 
+        We’ll let you know if we decide to use this data for other purposes. You can review our 
         <a
           href="https://metamask.io/privacy.html"
           rel="noopener noreferrer"
@@ -129,21 +146,21 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
         >
           Privacy Policy
         </a>
-         any time (we never sell the data you provide here).
+         for more information. Remember, you can go to settings and opt out at any time.
          
       </span>
     </p>
     <div
-      class="mm-box onboarding-metametrics__buttons mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
+      class="mm-box onboarding-metametrics__buttons mm-box--margin-top-6 mm-box--margin-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
         data-testid="metametrics-no-thanks"
       >
         No thanks
       </button>
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
         data-testid="metametrics-i-agree"
         data-theme="light"
       >
@@ -170,6 +187,23 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
     >
       We'd like to gather basic usage and diagnostics data to improve MetaMask. It will always be:
     </p>
+    <div
+      class="mm-box mm-box--padding-top-2 mm-box--padding-bottom-2"
+    >
+      <a
+        class="mm-box mm-text mm-text--body-md mm-box--color-primary-default"
+        href="https://support.metamask.io/privacy-and-security/profile-privacy#how-is-the-profile-created"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        Learn how we protect your privacy while collecting usage data for your profile.
+      </a>
+    </div>
+    <p
+      class="mm-box mm-text onboarding-metametrics__desc mm-text--body-md mm-text--text-align-left mm-box--color-text-default"
+    >
+      When we gather metrics, it will always be...
+    </p>
     <ul>
       <li>
         <div
@@ -271,11 +305,11 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
       </span>
     </label>
     <p
-      class="mm-box mm-text onboarding-metametrics__terms mm-text--body-sm mm-text--text-align-left mm-box--color-text-alternative"
+      class="mm-box mm-text onboarding-metametrics__terms mm-text--body-sm mm-text--text-align-left mm-box--padding-top-4 mm-box--color-text-alternative"
     >
       <span>
          
-        We’ll let you know if we plan to use this data for other purposes. You can review our 
+        We’ll let you know if we decide to use this data for other purposes. You can review our 
         <a
           href="https://metamask.io/privacy.html"
           rel="noopener noreferrer"
@@ -283,21 +317,21 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
         >
           Privacy Policy
         </a>
-         any time (we never sell the data you provide here).
+         for more information. Remember, you can go to settings and opt out at any time.
          
       </span>
     </p>
     <div
-      class="mm-box onboarding-metametrics__buttons mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
+      class="mm-box onboarding-metametrics__buttons mm-box--margin-top-6 mm-box--margin-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
         data-testid="metametrics-no-thanks"
       >
         No thanks
       </button>
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
         data-testid="metametrics-i-agree"
         data-theme="light"
       >

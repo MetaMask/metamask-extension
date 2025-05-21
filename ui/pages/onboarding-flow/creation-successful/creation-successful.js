@@ -57,10 +57,7 @@ export default function CreationSuccessful() {
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
   const renderTitle = useMemo(() => {
-    if (
-      firstTimeFlowType === FirstTimeFlowType.social ||
-      seedPhraseBackedUp
-    ) {
+    if (firstTimeFlowType === FirstTimeFlowType.social || seedPhraseBackedUp) {
       return t('yourWalletIsReady');
     }
 
@@ -68,10 +65,7 @@ export default function CreationSuccessful() {
   }, [firstTimeFlowType, seedPhraseBackedUp, t]);
 
   const renderFoxPath = useMemo(() => {
-    if (
-      firstTimeFlowType === FirstTimeFlowType.social ||
-      seedPhraseBackedUp
-    ) {
+    if (firstTimeFlowType === FirstTimeFlowType.social || seedPhraseBackedUp) {
       return 'images/animations/fox/celebrating.lottie.json';
     }
 

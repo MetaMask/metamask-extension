@@ -49,7 +49,6 @@ export default function AccountNotFound() {
     }
   }, [firstTimeFlowType, history]);
 
-
   return (
     <Box
       className="account-not-found"

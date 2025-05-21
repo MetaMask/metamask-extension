@@ -46,7 +46,6 @@ export default function AccountExist() {
     }
   }, [firstTimeFlowType, history]);
 
-
   return (
     <Box
       className="account-exist"

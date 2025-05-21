@@ -96,46 +96,49 @@ export default function OnboardingWelcome({
     ///: END:ONLY_INCLUDE_IF
   }, [dispatch, history, trackEvent]);
 
-  const onSocialLoginClick = async (socialConnectionType, loginOption) => {
-    setIsLoggingIn(true);
-    try {
-      setNewAccountCreationInProgress(true);
-      dispatch(setFirstTimeFlowType(FirstTimeFlowType.social));
+  const onSocialLoginClick = useCallback(
+    async (socialConnectionType, loginOption) => {
+      setIsLoggingIn(true);
+      try {
+        setNewAccountCreationInProgress(true);
+        dispatch(setFirstTimeFlowType(FirstTimeFlowType.social));
 
-      const isNewUser = await dispatch(startOAuthLogin(socialConnectionType));
+        const isNewUser = await dispatch(startOAuthLogin(socialConnectionType));
 
-      // if user is not new user and login option is new, redirect to account exist page
-      if (loginOption === 'new' && !isNewUser) {
-        history.push(ONBOARDING_ACCOUNT_EXIST);
-        return;
-      } else if (loginOption === 'existing' && isNewUser) {
-        // if user is new user and login option is existing, redirect to account not found page
-        history.push(ONBOARDING_ACCOUNT_NOT_FOUND);
-        return;
+        // if user is not new user and login option is new, redirect to account exist page
+        if (loginOption === 'new' && !isNewUser) {
+          history.push(ONBOARDING_ACCOUNT_EXIST);
+          return;
+        } else if (loginOption === 'existing' && isNewUser) {
+          // if user is new user and login option is existing, redirect to account not found page
+          history.push(ONBOARDING_ACCOUNT_NOT_FOUND);
+          return;
+        }
+
+        if (!isNewUser) {
+          // redirect to login page
+          history.push(ONBOARDING_UNLOCK_ROUTE);
+          return;
+        }
+
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          // TODO: add seedless onboarding event to MetaMetrics?
+          event: MetaMetricsEventName.OnboardingWalletCreationStarted,
+          properties: {
+            account_type: 'metamask',
+          },
+        });
+
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+        history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
+        ///: END:ONLY_INCLUDE_IF
+      } finally {
+        setIsLoggingIn(false);
       }
-
-      if (!isNewUser) {
-        // redirect to login page
-        history.push(ONBOARDING_UNLOCK_ROUTE);
-        return;
-      }
-
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        // TODO: add seedless onboarding event to MetaMetrics?
-        event: MetaMetricsEventName.OnboardingWalletCreationStarted,
-        properties: {
-          account_type: 'metamask',
-        },
-      });
-
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
-      ///: END:ONLY_INCLUDE_IF
-    } finally {
-      setIsLoggingIn(false);
-    }
-  };
+    },
+    [dispatch, history, trackEvent],
+  );
 
   const handleLogin = useCallback(
     (loginType, loginOption) => {
@@ -147,9 +150,9 @@ export default function OnboardingWelcome({
         }
       } else {
         onSocialLoginClick(loginType, loginOption);
-        }
+      }
     },
-    [onCreateClick, onImportClick],
+    [onCreateClick, onImportClick, onSocialLoginClick],
   );
 
   return (
