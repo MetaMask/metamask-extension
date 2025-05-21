@@ -17,9 +17,16 @@ import {
 } from '../ducks/metamask/metamask';
 import usePolling from './usePolling';
 
-const useNativeCurrencies = () => {
-  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+const usePollingEnabled = () => {
   const completedOnboarding = useSelector(getCompletedOnboarding);
+  const isUnlocked = useSelector(getIsUnlocked);
+  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
+
+  return completedOnboarding && isUnlocked && useCurrencyRateCheck;
+};
+
+const useNativeCurrencies = (isPollingEnabled: boolean) => {
+  const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const useSafeChainsListValidation = useSelector(
     useSafeChainsListValidationSelector,
   );
@@ -33,7 +40,7 @@ const useNativeCurrencies = () => {
         Object.values(networkConfigurations).map(async (n) => {
           const originalToken = await getOriginalNativeTokenSymbol({
             chainId: n.chainId,
-            useAPICall: useSafeChainsListValidation && completedOnboarding,
+            useAPICall: useSafeChainsListValidation && isPollingEnabled,
           });
 
           if (!chainIds.includes(n.chainId)) {
@@ -55,7 +62,7 @@ const useNativeCurrencies = () => {
     fetchNativeCurrencies();
   }, [
     chainIds,
-    completedOnboarding,
+    isPollingEnabled,
     networkConfigurations,
     useSafeChainsListValidation,
   ]);
@@ -64,17 +71,10 @@ const useNativeCurrencies = () => {
 };
 
 const useCurrencyRatePolling = () => {
-  const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  const completedOnboarding = useSelector(getCompletedOnboarding);
-  const isUnlocked = useSelector(getIsUnlocked);
+  const pollingEnabled = usePollingEnabled();
+  const nativeCurrencies = useNativeCurrencies(pollingEnabled);
 
-  const nativeCurrencies = useNativeCurrencies();
-
-  const enabled =
-    completedOnboarding &&
-    isUnlocked &&
-    useCurrencyRateCheck &&
-    nativeCurrencies.length > 0;
+  const enabled = pollingEnabled && nativeCurrencies.length > 0;
 
   // usePolling is a custom hook that is invoked synchronously.
   usePolling({
