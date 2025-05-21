@@ -103,6 +103,7 @@ const mockBuyableChainsEvmOnly = defaultBuyableChains.filter(
 const mockMetamaskStore = {
   ...mockState.metamask,
   remoteFeatureFlags: {
+    addBitcoinAccount: true,
     bridgeConfig: {
       support: true,
     },
@@ -146,7 +147,6 @@ const mockMetamaskStore = {
     AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
   selectedMultichainNetworkChainId: BtcScope.Mainnet,
   isEvmSelected: false,
-  bitcoinSupportEnabled: true,
 };
 const mockRampsStore = {
   buyableChains: mockBuyableChainsEvmOnly,

@@ -21,6 +21,7 @@ const render = (
       ...mockState.metamask,
     },
   });
+  // @ts-expect-error TODO: Remove once `react-redux` is upgraded to v8 and `connect` type is fixed.
   return renderWithProvider(<QRCodeView Qr={Qr} warning={warning} />, store);
 };
 
