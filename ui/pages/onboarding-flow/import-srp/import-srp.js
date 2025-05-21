@@ -1,11 +1,16 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import {
+  AlignItems,
   BlockSize,
+  Display,
+  FlexDirection,
   IconColor,
+  JustifyContent,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -52,7 +57,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
   }, [currentKeyring, history]);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const onContinue = () => {
+  const onContinue = useCallback(() => {
     let newSrpError = '';
     if (
       hasUpperCase(secretRecoveryPhrase) ||
@@ -76,18 +81,33 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
       },
     });
     history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
-  };
+  }, [
+    secretRecoveryPhrase,
+    t,
+    hdEntropyIndex,
+    trackEvent,
+    history,
+    submitSecretRecoveryPhrase,
+  ]);
 
   useEffect(() => {
     setSrpError('');
   }, [secretRecoveryPhrase]);
 
   return (
-    <div className="import-srp" data-testid="import-srp">
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      height={BlockSize.Full}
+      gap={4}
+      className="import-srp"
+      data-testid="import-srp"
+    >
       {showSrpDetailsModal && (
         <SRPDetailsModal onClose={() => setShowSrpDetailsModal(false)} />
       )}
-      <div className="import-srp__content">
+      <Box>
         <Box marginBottom={4}>
           <ButtonIcon
             iconName={IconName.ArrowLeft}
@@ -98,15 +118,20 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
             ariaLabel={t('back')}
           />
         </Box>
-        <div className="import-srp__step">
+        <Box textAlign={TextAlign.Left}>
           <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
             {t('stepOf', [1, 2])}
           </Text>
-        </div>
-        <div className="import-srp__header">
+        </Box>
+        <Box textAlign={TextAlign.Left} marginBottom={2}>
           <Text variant={TextVariant.headingLg}>{t('importAWallet')}</Text>
-        </div>
-        <div className="import-srp__description">
+        </Box>
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          marginBottom={4}
+          gap={2}
+        >
           <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
             {t('typeYourSRP')}
           </Text>
@@ -117,7 +142,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
             onClick={() => setShowSrpDetailsModal(true)}
             ariaLabel="info"
           />
-        </div>
+        </Box>
         <Box width={BlockSize.Full}>
           <form onSubmit={(e) => e.preventDefault()}>
             <SrpInputImport onChange={setSecretRecoveryPhrase} />
@@ -134,12 +159,18 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
             )}
           </form>
         </Box>
-      </div>
-      <div className="import-srp__footer">
+      </Box>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        width={BlockSize.Full}
+        textAlign={TextAlign.Left}
+      >
         <Button
           width={BlockSize.Full}
           size={ButtonSize.Lg}
-          className="import-srp__confirm-button"
           type="primary"
           data-testid="import-srp-confirm"
           onClick={onContinue}
@@ -147,8 +178,8 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
         >
           {t('continue')}
         </Button>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
 
