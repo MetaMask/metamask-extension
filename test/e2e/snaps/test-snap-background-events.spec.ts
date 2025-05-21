@@ -36,7 +36,13 @@ describe('Test Snap Background Events', function () {
 
         await testSnaps.clickButton('scheduleBackgroundEventWithDateButton');
 
+        // Add a Firefox-specific delay after scheduling to ensure event is registered
+        await driver.delayFirefox(largeDelayMs);
+
         await testSnaps.clickButton('getBackgroundEventResultButton');
+
+        // Add another delay after getting results to ensure they're loaded
+        await driver.delayFirefox(largeDelayMs);
 
         await testSnaps.check_messageResultSpanIncludes(
           'getBackgroundEventResultSpan',
@@ -95,7 +101,13 @@ describe('Test Snap Background Events', function () {
           'scheduleBackgroundEventWithDurationButton',
         );
 
+        // Add a Firefox-specific delay after scheduling to ensure event is registered
+        await driver.delayFirefox(largeDelayMs);
+
         await testSnaps.clickButton('getBackgroundEventResultButton');
+
+        // Add another delay after getting results to ensure they're loaded
+        await driver.delayFirefox(largeDelayMs);
 
         await testSnaps.check_messageResultSpanIncludes(
           'getBackgroundEventResultSpan',
