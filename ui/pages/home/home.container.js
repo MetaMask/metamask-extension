@@ -107,7 +107,7 @@ const mapStateToProps = (state) => {
     getWeb3ShimUsageAlertEnabledness(state) &&
     activeTabHasPermissions(state) &&
     getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab) ===
-    Web3ShimUsageAlertStates.recorded;
+      Web3ShimUsageAlertStates.recorded;
 
   const hasAllowedPopupRedirectApprovals = hasPendingApprovals(state, [
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

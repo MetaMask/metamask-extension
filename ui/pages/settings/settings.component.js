@@ -82,13 +82,13 @@ class SettingsPage extends PureComponent {
     initialBreadCrumbRoute: PropTypes.string,
     isAddressEntryPage: PropTypes.bool,
     isPopup: PropTypes.bool,
+    isSeedlessPasswordOutdated: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     pathnameI18nKey: PropTypes.string,
     settingsPageSnaps: PropTypes.array,
     snapSettingsTitle: PropTypes.string,
     toggleNetworkMenu: PropTypes.func.isRequired,
     useExternalServices: PropTypes.bool,
-    isSeedlessPasswordOutdated: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -468,12 +468,12 @@ class SettingsPage extends PureComponent {
 
         {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||
           process.env.IN_TEST) && (
-            <Route
-              exact
-              path={DEVELOPER_OPTIONS_ROUTE}
-              component={DeveloperOptionsTab}
-            />
-          )}
+          <Route
+            exact
+            path={DEVELOPER_OPTIONS_ROUTE}
+            component={DeveloperOptionsTab}
+          />
+        )}
         <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />
         <Route exact path={CONTACT_ADD_ROUTE} component={ContactListTab} />
         <Route
