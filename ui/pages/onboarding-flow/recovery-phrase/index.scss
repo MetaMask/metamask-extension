@@ -1,35 +1,7 @@
 @use "design-system";
 
 .recovery-phrase {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-  justify-content: space-between;
-  gap: 1.5rem;
-
-  &__header {
-    max-width: 420px;
-  }
-
-  &__tips {
-    flex-direction: column;
-    max-width: 420px;
-    margin: 0 auto;
-
-    ul {
-      list-style: disc;
-      margin-left: 20px;
-      margin-bottom: 24px;
-    }
-  }
-
   &__chips {
-    display: grid;
-    justify-items: center;
-    align-items: center;
-    row-gap: 8px;
-    column-gap: 8px;
     grid-template-columns: 1fr 1fr 1fr;
 
     &--hidden {
@@ -69,16 +41,6 @@
     // SRP_OVERRIDE: END
   }
 
-  // SRP_OVERRIDE: custom text field style
-  &__word-input {
-    padding-left: 8px;
-    border-radius: 8px;
-  }
-
-  // SRP_OVERRIDE: custom text field style
-  &__word-input--revealed {
-    border-color: var(--color-border-muted);
-  }
 
   &__word-index {
     width: 20px;
@@ -86,14 +48,10 @@
 
   &__secret {
     position: relative;
-    width: 100%;
-    background-color: var(--color-background-muted);
   }
 
   &__secret-blocker-container {
     position: absolute;
-    width: 100%;
-    height: 100%;
     top: 0;
     bottom: 0;
   }
@@ -102,15 +60,7 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    height: 100%;
-    width: 100%;
-    background-color: var(--color-background-muted);
-    display: flex;
     flex-flow: column nowrap;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 0 18px;
-    border-radius: 4px;
     opacity: 0.3;
   }
 
@@ -118,40 +68,6 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
     cursor: pointer;
-  }
-
-  &__chip-item {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    text-align: center;
-    width: 100%;
-
-    &--revealed-phase {
-      .mm-text-field--disabled {
-        opacity: 1;
-        border-color: var(--color-border-muted);
-      }
-
-      .mm-input--disabled {
-        color: var(--color-text-default);
-        opacity: 1;
-      }
-    }
-  }
-}
-
-.confirm-srp-modal {
-  // SRP_OVERRIDE: center modal content
-  .mm-modal-content {
-    align-items: center;
   }
 }

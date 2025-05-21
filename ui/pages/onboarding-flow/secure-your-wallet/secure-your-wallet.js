@@ -72,13 +72,15 @@ export default function SecureYourWallet() {
   return (
     <Box
       display={Display.Flex}
-      justifyContent={JustifyContent.center}
+      justifyContent={JustifyContent.spaceBetween}
       alignItems={AlignItems.flexStart}
       flexDirection={FlexDirection.Column}
+      gap={4}
+      height={BlockSize.Full}
       className="secure-your-wallet"
       data-testid="secure-your-wallet"
     >
-      <div className="secure-your-wallet__content">
+      <Box>
         {showSkipSRPBackupPopover && (
           <SkipSRPBackup
             onClose={() => setShowSkipSRPBackupPopover(false)}
@@ -109,7 +111,7 @@ export default function SecureYourWallet() {
           <img
             className="secure-your-wallet__srp-design-image"
             src="./images/srp-lock-design.png"
-            alt="SRP Design"
+            alt={t('srpDesignImageAlt')}
           />
         </Box>
         <Box>
@@ -132,10 +134,9 @@ export default function SecureYourWallet() {
             {t('secureWalletWalletRecover')}
           </Text>
         </Box>
-      </div>
+      </Box>
 
       <Box
-        className="secure-your-wallet__footer"
         width={BlockSize.Full}
         display={Display.Flex}
         flexDirection={FlexDirection.Column}

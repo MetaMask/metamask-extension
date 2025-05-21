@@ -3946,6 +3946,10 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
   },
+  "onboardingOptionIcon": {
+    "message": "$1 icon",
+    "description": "$1 is the icon name"
+  },
   "onboardingOptionTitle": {
     "message": "Choose an option to continue"
   },
@@ -4071,24 +4075,6 @@
   "password": {
     "message": "Password"
   },
-  "passwordHintCreate": {
-    "message": "Create a password hint"
-  },
-  "passwordHintDescription": {
-    "message": "Leave yourself a hint to help remember your password. This hint won’t be shared."
-  },
-  "passwordHintError": {
-    "message": "You can’t use the password as a hint"
-  },
-  "passwordHintLeaveHint": {
-    "message": "Remember: If you lose your password, you won’t be able to use your wallet."
-  },
-  "passwordHintSaved": {
-    "message": "Password hint saved"
-  },
-  "passwordHintTitle": {
-    "message": "Password hint"
-  },
   "passwordNotLongEnough": {
     "message": "Password not long enough"
   },
@@ -4104,6 +4090,12 @@
   },
   "passwordTermsWarning": {
     "message": "MetaMask can’t recover this password."
+  },
+  "passwordToggleHide": {
+    "message": "Hide Password"
+  },
+  "passwordToggleShow": {
+    "message": "Show Password"
   },
   "passwordsDontMatch": {
     "message": "Passwords don't match"
@@ -4966,9 +4958,6 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
-  "securityChangePasswordHint": {
-    "message": "Password hint"
-  },
   "securityChangePasswordChange": {
     "message": "Change password"
   },
@@ -4981,11 +4970,11 @@
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
   },
+  "securityFooterText": {
+    "message": "Your wallet is most protected when both recovery methods are set up. If one fail, the other helps you recover your wallet."
+  },
   "securityMessageLinkForNetworks": {
     "message": "network scams and security risks"
-  },
-  "securityPasswordHint": {
-    "message": "Password Hint"
   },
   "securityPrivacyPath": {
     "message": "Settings > Security & Privacy."
@@ -5004,17 +4993,14 @@
     "message": "$1 RECOVERY",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpLabel": {
-    "message": "SECRET RECOVERY PHRASES"
-  },
-  "securityFooterText": {
-    "message": "Your wallet is most protected when both recovery methods are set up. If one fail, the other helps you recover your wallet."
-  },
   "securitySrpBackupSrp": {
     "message": "Back up Secret Recovery Phrase"
   },
   "securitySrpDescription": {
     "message": "Back up your Secret Recovery Phrase. Be sure to store your Secret Recovery Phrase in a safe place that only you can access and won’t forget."
+  },
+  "securitySrpLabel": {
+    "message": "SECRET RECOVERY PHRASES"
   },
   "securitySrpSocialLoginDescription": {
     "message": "Back up your Secret Recovery Phrase and link your wallet to an Apple or Google account. Be sure to store your Secret Recovery Phrase in a safe place that only you can access and won’t forget."
@@ -5796,6 +5782,9 @@
   },
   "spendingCaps": {
     "message": "Spending caps"
+  },
+  "srpDesignImageAlt": {
+    "message": "SRP vault image"
   },
   "srpDetailsDescription": {
     "message": "A Secret Recovery Phrase, also called a seed phrase or mnemonic, is a set of words that lets you access and control your crypto wallet. To move your wallet to MetaMask, you need this phrase."
@@ -6843,16 +6832,6 @@
   "unlockMessage": {
     "message": "The decentralized web awaits"
   },
-  "unlockPageHint": {
-    "message": "Hint: $1",
-    "description": "$1 is the password hint"
-  },
-  "unlockPageHintHide": {
-    "message": "Hide hint"
-  },
-  "unlockPageHintShow": {
-    "message": "Show hint"
-  },
   "unlockPageIncorrectPassword": {
     "message": "Password is incorrect. Please try again."
   },
@@ -6862,9 +6841,6 @@
   },
   "unlockPageTooManyFailedAttemptsPermanent": {
     "message": "Too many failed attempts. Your account is permanently locked."
-  },
-  "unlockPageIncorrectPassword": {
-    "message": "Password is incorrect. Please try again."
   },
   "unpin": {
     "message": "Unpin"
