@@ -5221,18 +5221,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/chain-agnostic-permission@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/chain-agnostic-permission@npm:0.3.0"
+"@metamask/chain-agnostic-permission@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@metamask/chain-agnostic-permission@npm:0.6.0"
   dependencies:
     "@metamask/api-specs": "npm:^0.10.12"
-    "@metamask/controller-utils": "npm:^11.6.0"
-    "@metamask/network-controller": "npm:^23.1.0"
+    "@metamask/controller-utils": "npm:^11.7.0"
+    "@metamask/network-controller": "npm:^23.3.0"
     "@metamask/permission-controller": "npm:^11.0.6"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/utils": "npm:^11.2.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/872cd804ba64ee78b7f28fd78d864680672911b567b36be3b5046b8164aaf9088aed937ffc983ca1986ba16a3892c471de0870bc00f94f9d87c634a568fb5a78
+  checksum: 10/ddc439fe4f01006fc3cc521188787910d275e686f11fa8b580c8b170e94b56692032f5331060f4b8cc94ed36c34d0d048af8af09a52cfe68518e0d3435329c22
   languageName: node
   linkType: hard
 
@@ -6024,7 +6024,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:23.5.0, @metamask/network-controller@npm:^23.1.0":
+"@metamask/network-controller@npm:23.5.0, @metamask/network-controller@npm:^23.1.0, @metamask/network-controller@npm:^23.3.0":
   version: 23.5.0
   resolution: "@metamask/network-controller@npm:23.5.0"
   dependencies:
@@ -30025,7 +30025,7 @@ __metadata:
     "@metamask/bridge-status-controller": "patch:@metamask/bridge-status-controller@npm%3A21.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-21.0.0-7178a3f32f.patch"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
-    "@metamask/chain-agnostic-permission": "npm:^0.3.0"
+    "@metamask/chain-agnostic-permission": "npm:^0.6.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.9.0"
     "@metamask/delegation-controller": "npm:^0.1.0"

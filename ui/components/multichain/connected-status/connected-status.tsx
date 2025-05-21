@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import {
   BackgroundColor,
   BorderColor,
@@ -11,7 +12,6 @@ import {
 } from '../../../helpers/constants/connected-sites';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BadgeStatus } from '../badge-status';
-import { isInternalAccountInPermittedAccountIds } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import {
   getAllPermittedAccountsForCurrentTab,
   getInternalAccountByAddress,
@@ -43,6 +43,7 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
   );
 
   const currentTabIsConnectedToSelectedAddress =
+    internalAccount &&
     isInternalAccountInPermittedAccountIds(internalAccount, permittedAccounts);
 
   let status = STATUS_NOT_CONNECTED;
