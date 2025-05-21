@@ -4075,24 +4075,6 @@
   "passwordToggleShow": {
     "message": "Show Password"
   },
-  "passwordHintCreate": {
-    "message": "Create a password hint"
-  },
-  "passwordHintDescription": {
-    "message": "Leave yourself a hint to help remember your password. This hint won’t be shared."
-  },
-  "passwordHintError": {
-    "message": "You can’t use the password as a hint"
-  },
-  "passwordHintLeaveHint": {
-    "message": "Remember: If you lose your password, you won’t be able to use your wallet."
-  },
-  "passwordHintSaved": {
-    "message": "Password hint saved"
-  },
-  "passwordHintTitle": {
-    "message": "Password hint"
-  },
   "passwordNotLongEnough": {
     "message": "Password not long enough"
   },
@@ -4970,9 +4952,6 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
-  "securityChangePasswordHint": {
-    "message": "Password hint"
-  },
   "securityChangePasswordTitle": {
     "message": "Password"
   },
@@ -4981,9 +4960,6 @@
   },
   "securityMessageLinkForNetworks": {
     "message": "network scams and security risks"
-  },
-  "securityPasswordHint": {
-    "message": "Password Hint"
   },
   "securityPrivacyPath": {
     "message": "Settings > Security & Privacy."

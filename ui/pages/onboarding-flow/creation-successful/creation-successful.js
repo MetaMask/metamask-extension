@@ -15,7 +15,6 @@ import {
   BorderRadius,
   BlockSize,
   FontWeight,
-  TextColor,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
@@ -31,14 +30,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
-  ONBOARDING_PASSWORD_HINT,
 } from '../../../helpers/constants/routes';
-import {
-  getCurrentKeyring,
-  getFirstTimeFlowType,
-  getHDEntropyIndex,
-  getPasswordHint,
-} from '../../../selectors';
+import { getFirstTimeFlowType, getHDEntropyIndex } from '../../../selectors';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -55,7 +48,6 @@ export default function CreationSuccessful() {
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const currentKeyring = useSelector(getCurrentKeyring);
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
   const learnMoreLink =
     'https://support.metamask.io/hc/en-us/articles/360015489591-Basic-Safety-and-Security-Tips-for-MetaMask';
@@ -63,7 +55,6 @@ export default function CreationSuccessful() {
   //   'https://community.metamask.io/t/what-is-a-secret-recovery-phrase-and-how-to-keep-your-crypto-wallet-secure/3440';
 
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
-
 
   const renderTitle = useMemo(() => {
     if (
@@ -164,36 +155,6 @@ export default function CreationSuccessful() {
           className="creation-successful__settings-actions"
           gap={4}
         >
-          {currentKeyring && (
-            <ButtonBase
-              data-testid="password-hint-create"
-              borderRadius={BorderRadius.LG}
-              width={BlockSize.Full}
-              onClick={() => history.push(ONBOARDING_PASSWORD_HINT)}
-            >
-              <Box display={Display.Flex} alignItems={AlignItems.center}>
-                <Icon
-                  name={IconName.AddSquare}
-                  size={IconSize.Md}
-                  marginInlineEnd={3}
-                />
-                <Box>
-                  <Text variant={TextVariant.bodyMdMedium}>
-                    {t('passwordHintCreate')}
-                  </Text>
-                  {passwordHint && (
-                    <Text
-                      variant={TextVariant.bodySm}
-                      color={TextColor.textAlternative}
-                    >
-                      {passwordHint}
-                    </Text>
-                  )}
-                </Box>
-              </Box>
-              <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
-            </ButtonBase>
-          )}
           <ButtonBase
             data-testid="manage-default-settings"
             borderRadius={BorderRadius.LG}
