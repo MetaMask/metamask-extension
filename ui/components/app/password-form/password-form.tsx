@@ -169,7 +169,9 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
               e.preventDefault();
               setShowPassword(!showPassword);
             }}
-            ariaLabel={showPassword ? 'hide password' : 'show password'}
+            ariaLabel={
+              showPassword ? t('passwordToggleHide') : t('passwordToggleShow')
+            }
           />
         }
       />
@@ -203,7 +205,11 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
               e.preventDefault();
               setShowConfirmPassword(!showConfirmPassword);
             }}
-            ariaLabel={showConfirmPassword ? 'hide password' : 'show password'}
+            ariaLabel={
+              showConfirmPassword
+                ? t('passwordToggleHide')
+                : t('passwordToggleShow')
+            }
           />
         }
       />
