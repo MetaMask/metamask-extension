@@ -1,18 +1,26 @@
 import EventEmitter from 'events';
-import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import classnames from 'classnames';
 import Mascot from '../../../components/ui/mascot';
 import {
+  Box,
   ButtonBase,
   ButtonBaseSize,
   Text,
 } from '../../../components/component-library';
-import { BlockSize } from '../../../helpers/constants/design-system';
+import {
+  AlignItems,
+  BackgroundColor,
+  BlockSize,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  TextAlign,
+} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 import LoginOptions from './login-options';
-import { LoginOptionType, LoginType } from './types';
+import { LOGIN_OPTION, LoginOptionType, LoginType } from './types';
 
 export default function WelcomeLogin({
   onLogin,
@@ -26,78 +34,91 @@ export default function WelcomeLogin({
   const renderMascot = () => {
     if (isFlask()) {
       return (
-        <img src="./images/logo/metamask-fox.svg" width="173" height="173" />
+        <img src="./images/logo/metamask-fox.svg" width="178" height="178" />
       );
     }
     if (isBeta()) {
       return (
-        <img src="./images/logo/metamask-fox.svg" width="173" height="173" />
+        <img src="./images/logo/metamask-fox.svg" width="178" height="178" />
       );
     }
     return (
-      <Mascot
-        animationEventEmitter={eventEmitter}
-        followMouse={false}
-        width="268"
-        height="268"
-      />
+      <Mascot animationEventEmitter={eventEmitter} width="268" height="268" />
     );
   };
 
-  const handleLogin = (loginType: LoginType) => {
-    if (loginOption) {
+  const handleLogin = useCallback(
+    (loginType: LoginType) => {
+      if (!loginOption) {
+        return;
+      }
+      setLoginOption(null);
       onLogin(loginType, loginOption);
-    }
-  };
+    },
+    [loginOption, onLogin],
+  );
 
   return (
-    <div className="welcome-login" data-testid="get-started">
-      <div className="welcome-login__content">
-        <div
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      gap={4}
+      marginInline={'auto'}
+      marginTop={2}
+      padding={6}
+      className="welcome-login"
+      data-testid="get-started"
+    >
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.spaceBetween}
+        className="welcome-login__content"
+      >
+        <Box
           className={classnames('welcome-login__mascot', {
             'welcome-login__mascot--image': isFlask() || isBeta(),
           })}
         >
           {renderMascot()}
-        </div>
+        </Box>
 
         <Text
+          marginInline={5}
+          textAlign={TextAlign.Center}
           as="h2"
           className="welcome-login__title"
           data-testid="onboarding-welcome"
         >
           {t('welcomeToMetaMask')}!
         </Text>
-      </div>
+      </Box>
 
-      <div className="welcome-login__footer">
-        <ul className="welcome-login__buttons">
-          <li>
-            <ButtonBase
-              width={BlockSize.Full}
-              size={ButtonBaseSize.Lg}
-              className="welcome-login__create-button"
-              onClick={() => {
-                setLoginOption('new');
-              }}
-            >
-              {t('onboardingCreateWallet')}
-            </ButtonBase>
-          </li>
-          <li>
-            <ButtonBase
-              width={BlockSize.Full}
-              size={ButtonBaseSize.Lg}
-              className="welcome-login__import-button"
-              onClick={() => {
-                setLoginOption('existing');
-              }}
-            >
-              {t('onboardingImportWallet')}
-            </ButtonBase>
-          </li>
-        </ul>
-      </div>
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
+        <ButtonBase
+          width={BlockSize.Full}
+          size={ButtonBaseSize.Lg}
+          className="welcome-login__create-button"
+          onClick={() => {
+            setLoginOption(LOGIN_OPTION.NEW);
+          }}
+        >
+          {t('onboardingCreateWallet')}
+        </ButtonBase>
+        <ButtonBase
+          width={BlockSize.Full}
+          size={ButtonBaseSize.Lg}
+          backgroundColor={BackgroundColor.transparent}
+          className="welcome-login__import-button"
+          onClick={() => {
+            setLoginOption(LOGIN_OPTION.EXISTING);
+          }}
+        >
+          {t('onboardingImportWallet')}
+        </ButtonBase>
+      </Box>
       {loginOption && (
         <LoginOptions
           loginOption={loginOption}
@@ -107,10 +128,6 @@ export default function WelcomeLogin({
           handleLogin={handleLogin}
         />
       )}
-    </div>
+    </Box>
   );
 }
-
-WelcomeLogin.propTypes = {
-  onLogin: PropTypes.func.isRequired,
-};
