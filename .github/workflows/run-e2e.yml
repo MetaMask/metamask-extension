@@ -37,6 +37,11 @@ on:
           ./test-artifacts
           ./test/test-results/e2e
         description: The path to the test artifacts
+    secrets:
+      DOCKER_HUB_USERNAME:
+        required: true
+      DOCKER_HUB_TOKEN:
+        required: true
 
 jobs:
   run-e2e:
@@ -44,6 +49,9 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: cimg/node:22.15-browsers
+      credentials:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # For a `pull_request` event, the branch is `github.head_ref``.
