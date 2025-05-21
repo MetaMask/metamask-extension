@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import {
@@ -34,7 +34,10 @@ export default function RecoveryPhraseChips({
 }) {
   const t = useI18nContext();
   const phrasesToDisplay = secretRecoveryPhrase;
-  const indicesToCheck = quizWords.map((word) => word.index);
+  const indicesToCheck = useMemo(
+    () => quizWords.map((word) => word.index),
+    [quizWords],
+  );
   const [quizAnswers, setQuizAnswers] = useState(
     indicesToCheck.map((index) => ({
       index,
@@ -43,9 +46,12 @@ export default function RecoveryPhraseChips({
   );
 
   const setNextTargetIndex = (newQuizAnswers) => {
-    const emptyAnswers = newQuizAnswers
-      .filter((answer) => answer.word === '')
-      .map((answer) => answer.index);
+    const emptyAnswers = newQuizAnswers.reduce((acc, answer) => {
+      if (answer.word === '') {
+        acc.push(answer.index);
+      }
+      return acc;
+    }, []);
     const firstEmpty = emptyAnswers.length ? Math.min(...emptyAnswers) : -1;
 
     return firstEmpty;
@@ -54,29 +60,35 @@ export default function RecoveryPhraseChips({
     setNextTargetIndex(quizAnswers),
   );
 
-  const addQuizWord = (word) => {
-    const newQuizAnswers = [...quizAnswers];
-    const targetIndex = newQuizAnswers.findIndex(
-      (answer) => answer.index === indexToFocus,
-    );
-    newQuizAnswers[targetIndex] = { index: indexToFocus, word };
-    setQuizAnswers(newQuizAnswers);
-    setIndexToFocus(setNextTargetIndex(newQuizAnswers));
-  };
+  const addQuizWord = useCallback(
+    (word) => {
+      const newQuizAnswers = [...quizAnswers];
+      const targetIndex = newQuizAnswers.findIndex(
+        (answer) => answer.index === indexToFocus,
+      );
+      newQuizAnswers[targetIndex] = { index: indexToFocus, word };
+      setQuizAnswers(newQuizAnswers);
+      setIndexToFocus(setNextTargetIndex(newQuizAnswers));
+    },
+    [quizAnswers, indexToFocus],
+  );
 
-  const removeQuizWord = (answerWord) => {
-    const newQuizAnswers = [...quizAnswers];
-    const targetIndex = newQuizAnswers.findIndex(
-      (answer) => answer.word === answerWord,
-    );
-    newQuizAnswers[targetIndex] = {
-      ...newQuizAnswers[targetIndex],
-      word: '',
-    };
+  const removeQuizWord = useCallback(
+    (answerWord) => {
+      const newQuizAnswers = [...quizAnswers];
+      const targetIndex = newQuizAnswers.findIndex(
+        (answer) => answer.word === answerWord,
+      );
+      newQuizAnswers[targetIndex] = {
+        ...newQuizAnswers[targetIndex],
+        word: '',
+      };
 
-    setQuizAnswers(newQuizAnswers);
-    setIndexToFocus(setNextTargetIndex(newQuizAnswers));
-  };
+      setQuizAnswers(newQuizAnswers);
+      setIndexToFocus(setNextTargetIndex(newQuizAnswers));
+    },
+    [quizAnswers],
+  );
 
   useEffect(() => {
     setInputValue && setInputValue(quizAnswers);
@@ -84,9 +96,8 @@ export default function RecoveryPhraseChips({
 
   useEffect(() => {
     if (quizWords.length) {
-      const newIndicesToCheck = quizWords.map((word) => word.index);
-      const newQuizAnswers = newIndicesToCheck.map((index) => ({
-        index,
+      const newQuizAnswers = quizWords.map((word) => ({
+        index: word.index,
         word: '',
       }));
       setQuizAnswers(newQuizAnswers);
@@ -185,8 +196,7 @@ export default function RecoveryPhraseChips({
       {quizWords.length > 0 && (
         <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
           {quizWords.map((value) => {
-            const answeredWords = quizAnswers.map((answer) => answer.word);
-            const isAnswered = answeredWords.includes(value.word);
+            const isAnswered = quizAnswers.some((x) => x.word === value.word);
             return isAnswered ? (
               <ButtonBase
                 data-testid={`recovery-phrase-quiz-answered-${value.index}`}
