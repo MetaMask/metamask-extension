@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  AlignItems,
   IconColor,
   TextAlign,
   TextVariant,
@@ -49,7 +50,7 @@ export default function ConfirmSrpModal({
       data-testid="confirm-srp-modal"
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent alignItems={AlignItems.center}>
         <ModalHeader onClose={onClose}>
           <Box textAlign={TextAlign.Center}>
             <Icon

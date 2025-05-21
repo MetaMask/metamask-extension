@@ -1,10 +1,4 @@
 .secure-your-wallet {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  justify-content: space-between;
-  gap: 1rem;
-
   &__list {
     list-style: disc inside;
   }
@@ -13,12 +7,5 @@
     width: 100%;
     height: 180px;
     object-fit: contain;
-  }
-}
-
-.skip-srp-backup-modal {
-  // SRP_OVERRIDE: center modal content
-  .mm-modal-content {
-    align-items: center;
   }
 }

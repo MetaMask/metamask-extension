@@ -1,6 +1,6 @@
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -55,7 +55,7 @@ export default function SkipSRPBackup({
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
 
-  async function onSkipSrpBackup() {
+  const onSkipSrpBackup = useCallback(async () => {
     await dispatch(setSeedPhraseBackedUp(false));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
@@ -70,7 +70,7 @@ export default function SkipSRPBackup({
     } else {
       history.push(ONBOARDING_METAMETRICS);
     }
-  }
+  }, [dispatch, hdEntropyIndex, history, trackEvent]);
 
   return (
     <Modal
@@ -80,7 +80,7 @@ export default function SkipSRPBackup({
       data-testid="skip-srp-backup-modal"
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent alignItems={AlignItems.center}>
         <ModalHeader onClose={onClose}>
           <Box textAlign={TextAlign.Center}>
             <Icon
