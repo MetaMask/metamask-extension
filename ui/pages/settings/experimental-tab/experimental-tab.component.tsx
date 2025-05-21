@@ -29,19 +29,9 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
 
-///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-import { SurveyUrl } from '../../../../shared/constants/urls';
-///: END:ONLY_INCLUDE_IF
-
 type ExperimentalTabProps = {
   watchAccountEnabled: boolean;
   setWatchAccountEnabled: (value: boolean) => void;
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  bitcoinSupportEnabled: boolean;
-  setBitcoinSupportEnabled: (value: boolean) => void;
-  bitcoinTestnetSupportEnabled: boolean;
-  setBitcoinTestnetSupportEnabled: (value: boolean) => void;
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   addSnapAccountEnabled: boolean;
   setAddSnapAccountEnabled: (value: boolean) => void;
@@ -229,80 +219,6 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
   }
   ///: END:ONLY_INCLUDE_IF
 
-  // We're only setting the code fences here since
-  // we should remove it for the feature release
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  renderBitcoinSupport() {
-    const { t, trackEvent } = this.context;
-    const {
-      bitcoinSupportEnabled,
-      setBitcoinSupportEnabled,
-      bitcoinTestnetSupportEnabled,
-      setBitcoinTestnetSupportEnabled,
-    } = this.props;
-
-    return (
-      <>
-        <Text
-          variant={TextVariant.headingSm}
-          as="h4"
-          color={TextColor.textAlternative}
-          marginBottom={2}
-          fontWeight={FontWeight.Bold}
-        >
-          {t('bitcoinSupportSectionTitle')}
-        </Text>
-        {this.renderToggleSection({
-          title: t('bitcoinSupportToggleTitle'),
-          description: t('bitcoinSupportToggleDescription', [
-            <a
-              key="btc-account-feedback-form__link-text"
-              href={SurveyUrl.BtcSupport}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t('form')}
-            </a>,
-          ]),
-          toggleValue: bitcoinSupportEnabled,
-          toggleCallback: (value) => {
-            trackEvent({
-              event: MetaMetricsEventName.BitcoinSupportToggled,
-              category: MetaMetricsEventCategory.Settings,
-              properties: {
-                enabled: !value,
-              },
-            });
-            setBitcoinSupportEnabled(!value);
-          },
-          toggleContainerDataTestId: 'bitcoin-support-toggle-div',
-          toggleDataTestId: 'bitcoin-support-toggle',
-          toggleOffLabel: t('off'),
-          toggleOnLabel: t('on'),
-        })}
-        {this.renderToggleSection({
-          title: t('bitcoinTestnetSupportToggleTitle'),
-          description: t('bitcoinTestnetSupportToggleDescription'),
-          toggleValue: bitcoinTestnetSupportEnabled,
-          toggleCallback: (value) => {
-            trackEvent({
-              event: MetaMetricsEventName.BitcoinTestnetSupportToggled,
-              category: MetaMetricsEventCategory.Settings,
-              properties: {
-                enabled: !value,
-              },
-            });
-            setBitcoinTestnetSupportEnabled(!value);
-          },
-          toggleDataTestId: 'bitcoin-testnet-accounts-toggle',
-          toggleOffLabel: t('off'),
-          toggleOnLabel: t('on'),
-        })}
-      </>
-    );
-  }
-  ///: END:ONLY_INCLUDE_IF
-
   render() {
     return (
       <div className="settings-page__body">
@@ -316,14 +232,6 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
           this.renderWatchAccountToggle()
-          ///: END:ONLY_INCLUDE_IF
-        }
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-          // We're only setting the code fences here since
-          // we should remove it for the feature release
-          /* Section: Bitcoin Accounts */
-          this.renderBitcoinSupport()
           ///: END:ONLY_INCLUDE_IF
         }
       </div>

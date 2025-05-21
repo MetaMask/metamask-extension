@@ -72,32 +72,32 @@ exports[`AssetPage should render a native asset 1`] = `
           class="mm-box mm-box--margin-top-2 mm-box--margin-right-3 mm-box--margin-left-3 mm-box--display-flex mm-box--justify-content-space-between"
         >
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button time-range-button__selected mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button time-range-button__selected mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
           >
             1D
           </button>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
           >
             1W
           </button>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
           >
             1M
           </button>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
           >
             3M
           </button>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
           >
             1Y
           </button>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
           >
             All
           </button>
@@ -253,11 +253,15 @@ exports[`AssetPage should render a native asset 1`] = `
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-                data-testid="multichain-token-list-item-token-name"
+              <div
+                class="mm-box mm-box--display-flex"
               >
-                TEST
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="multichain-token-list-item-token-name"
+                >
+                  TEST
+                </p>
                 <button
                   class="mm-box mm-box--padding-inline-0 mm-box--padding-inline-start-1 mm-box--padding-inline-end-1 mm-box--gap-1 mm-box--background-color-transparent"
                   data-testid="staking-entrypoint-0x1"
@@ -278,10 +282,11 @@ exports[`AssetPage should render a native asset 1`] = `
                     style="mask-image: url('./images/icons/stake.svg');"
                   />
                 </button>
-              </p>
+              </div>
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-end mm-box--color-text-default"
                 data-testid="multichain-token-list-item-secondary-value"
+                style="white-space: nowrap; padding-inline-start: 8px;"
               >
                 $0.00
               </p>
@@ -418,7 +423,7 @@ exports[`AssetPage should render a native asset 1`] = `
               Adding tokens unlocks more ways to use web3.
             </p>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-pill"
+              class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
             >
               Token marketplace
             </button>
@@ -516,32 +521,32 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
           class="mm-box mm-box--margin-top-2 mm-box--margin-right-3 mm-box--margin-left-3 mm-box--display-flex mm-box--justify-content-space-between"
         >
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button time-range-button__selected mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button time-range-button__selected mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
           >
             1D
           </button>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
           >
             1W
           </button>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
           >
             1M
           </button>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
           >
             3M
           </button>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
           >
             1Y
           </button>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
           >
             All
           </button>
@@ -673,15 +678,20 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-                data-testid="multichain-token-list-item-token-name"
+              <div
+                class="mm-box mm-box--display-flex"
               >
-                TEST
-              </p>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="multichain-token-list-item-token-name"
+                >
+                  TEST
+                </p>
+              </div>
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
                 data-testid="multichain-token-list-item-secondary-value"
+                style="white-space: nowrap; padding-inline-start: 8px;"
               >
                 $0.00
               </p>
@@ -886,7 +896,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               Adding tokens unlocks more ways to use web3.
             </p>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-pill"
+              class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
             >
               Token marketplace
             </button>
@@ -981,32 +991,32 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           class="mm-box mm-box--margin-top-2 mm-box--margin-right-3 mm-box--margin-left-3 mm-box--display-flex mm-box--justify-content-space-between"
         >
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button time-range-button__selected mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button time-range-button__selected mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
           >
             1D
           </button>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
           >
             1W
           </button>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
           >
             1M
           </button>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
           >
             3M
           </button>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
           >
             1Y
           </button>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
           >
             All
           </button>
@@ -1138,15 +1148,20 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-                data-testid="multichain-token-list-item-token-name"
+              <div
+                class="mm-box mm-box--display-flex"
               >
-                TEST
-              </p>
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="multichain-token-list-item-token-name"
+                >
+                  TEST
+                </p>
+              </div>
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
                 data-testid="multichain-token-list-item-secondary-value"
+                style="white-space: nowrap; padding-inline-start: 8px;"
               >
                 $0.00
               </p>
@@ -1383,7 +1398,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               Adding tokens unlocks more ways to use web3.
             </p>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-pill"
+              class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
             >
               Token marketplace
             </button>

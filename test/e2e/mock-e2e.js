@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 
 const {
   ACCOUNTS_DEV_API_BASE_URL,
@@ -10,7 +11,10 @@ const {
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
 const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
-const { MOCK_META_METRICS_ID } = require('./constants');
+const {
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  MOCK_META_METRICS_ID,
+} = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 
 const { ALLOWLISTED_HOSTS, ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
@@ -38,6 +42,30 @@ const CLIENT_SIDE_DETECTION_BLOCKLIST_PATH =
   'test/e2e/mock-response-data/client-side-detection-blocklist.json';
 const ON_RAMP_CONTENT_PATH = 'test/e2e/mock-response-data/on-ramp-content.json';
 const TOKEN_BLOCKLIST_PATH = 'test/e2e/mock-response-data/token-blocklist.json';
+
+const snapsExecutionEnvBasePath = path.dirname(
+  require.resolve('@metamask/snaps-execution-environments/package.json'),
+);
+const snapsExecutionEnvHtmlPath = path.join(
+  snapsExecutionEnvBasePath,
+  'dist',
+  'webpack',
+  'iframe',
+  'index.html',
+);
+const snapsExecutionEnvHtml = fs.readFileSync(
+  snapsExecutionEnvHtmlPath,
+  'utf-8',
+);
+
+const snapsExecutionEnvJsPath = path.join(
+  snapsExecutionEnvBasePath,
+  'dist',
+  'webpack',
+  'iframe',
+  'bundle.js',
+);
+const snapsExecutionEnvJs = fs.readFileSync(snapsExecutionEnvJsPath, 'utf-8');
 
 const blocklistedHosts = [
   'arbitrum-mainnet.infura.io',
@@ -110,12 +138,13 @@ const privateHostMatchers = [
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
  * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH.
+ * @param {string} options.monConversionInUsd - The USD conversion rate for MON.
  * @returns {Promise<SetupMockReturn>}
  */
 async function setupMocking(
   server,
   testSpecificMock,
-  { chainId, ethConversionInUsd = 1700 },
+  { chainId, ethConversionInUsd = 1700, monConversionInUsd = 0.2 },
 ) {
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
@@ -642,13 +671,16 @@ async function setupMocking(
 
   await server
     .forGet('https://min-api.cryptocompare.com/data/pricemulti')
-    .withQuery({ fsyms: 'ETH', tsyms: 'usd' })
+    .withQuery({ fsyms: 'ETH,MON', tsyms: 'usd' })
     .thenCallback(() => {
       return {
         statusCode: 200,
         json: {
           ETH: {
             USD: ethConversionInUsd,
+          },
+          MON: {
+            USD: monConversionInUsd,
           },
         },
       };
@@ -850,7 +882,7 @@ async function setupMocking(
       };
     });
 
-  // Client Side Detecition: Request Blocklist
+  // Client Side Detection: Request Blocklist
   const CLIENT_SIDE_DETECTION_BLOCKLIST = fs.readFileSync(
     CLIENT_SIDE_DETECTION_BLOCKLIST_PATH,
   );
@@ -862,6 +894,21 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: JSON.parse(CLIENT_SIDE_DETECTION_BLOCKLIST),
+      };
+    });
+
+  // Nft API: tokens
+  await server
+    .forGet(
+      `https://nft.api.cx.metamask.io/users/${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}/tokens`,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          tokens: [],
+          continuation: null,
+        },
       };
     });
 
@@ -878,12 +925,50 @@ async function setupMocking(
       };
     });
 
+  // Snaps: Execution environment html
+  await server
+    .forGet(/^https:\/\/execution\.metamask\.io\/iframe\/[^/]+\/index\.html$/u)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: snapsExecutionEnvHtml,
+        headers: { 'Content-Type': 'text/html; charset=utf-8' },
+      };
+    });
+
+  // Snaps: Execution environment js
+  await server
+    .forGet(/^https:\/\/execution\.metamask\.io\/iframe\/[^/]+\/bundle\.js$/u)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: snapsExecutionEnvJs,
+        headers: { 'Content-Type': 'application/javascript; charset=utf-8' },
+      };
+    });
+
   // Token Icons
   await server
     .forGet('https://static.cx.metamask.io/api/v1/tokenIcons')
     .thenCallback(() => {
       return {
         statusCode: 200,
+      };
+    });
+
+  // Dynamic Banner Content
+  await server
+    .forGet(/^https:\/\/(cdn|preview)\.contentful\.com\/.*$/u)
+    .withQuery({
+      content_type: 'promotionalBanner',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          items: [],
+          includes: { Asset: [] },
+        },
       };
     });
 
