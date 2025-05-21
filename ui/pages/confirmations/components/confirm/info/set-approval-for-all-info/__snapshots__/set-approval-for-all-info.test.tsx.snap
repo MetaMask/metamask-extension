@@ -307,12 +307,17 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
       <div
         class="mm-box mm-box--padding-inline-2 mm-box--display-flex mm-box--justify-content-space-between"
       >
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-          data-testid="gas-fee-token-fee"
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+          data-testid="metamask-fee"
         >
-           
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+            data-testid="gas-fee-token-fee"
+          >
+             
+          </p>
+        </div>
       </div>
     </div>
     <div
