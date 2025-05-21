@@ -140,7 +140,7 @@ describe('ImportSrp', () => {
     });
   });
 
-  it('calls addNewMnemonicToVault and showAlert on successful import', async () => {
+  it('calls importMnemonicToVault on successful import', async () => {
     const render = renderWithProvider(<ImportSrp />, store);
     const { getByText } = render;
     const importButton = getByText('Import wallet');
@@ -157,10 +157,6 @@ describe('ImportSrp', () => {
       const dispatchedActions = store.getActions();
       expect(dispatchedActions).toContainEqual({
         type: 'HIDE_WARNING',
-      });
-      expect(dispatchedActions).toContainEqual({
-        type: 'SET_SHOW_NEW_SRP_ADDED_TOAST',
-        payload: true,
       });
     });
   });

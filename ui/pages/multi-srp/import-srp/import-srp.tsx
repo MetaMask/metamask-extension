@@ -1,5 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { useHistory } from 'react-router-dom';
@@ -33,6 +39,8 @@ import { clearClipboard } from '../../../helpers/utils/util';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { Header, Page } from '../../../components/multichain/pages/page';
 import ShowHideToggle from '../../../components/ui/show-hide-toggle';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 
 const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
@@ -43,6 +51,7 @@ const defaultNumberOfWords = 12;
 export const ImportSrp = () => {
   const t = useI18nContext();
   const history = useHistory();
+  const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const [srpError, setSrpError] = useState('');
   const [pasteFailed, setPasteFailed] = useState(false);
@@ -56,6 +65,8 @@ export const ImportSrp = () => {
   const [showSrp, setShowSrp] = useState(
     new Array(defaultNumberOfWords).fill(false),
   );
+  const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
+  const newHdEntropyIndex = hdKeyrings.length;
 
   const [loading, setLoading] = useState(false);
 
@@ -404,6 +415,13 @@ export const ImportSrp = () => {
                 await importWallet();
                 history.push(DEFAULT_ROUTE);
                 dispatch(setShowNewSrpAddedToast(true));
+                trackEvent({
+                  event:
+                    MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
+                  properties: {
+                    hd_entropy_index: newHdEntropyIndex,
+                  },
+                });
               } catch (e) {
                 setSrpError(
                   e instanceof Error
