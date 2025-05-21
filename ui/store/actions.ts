@@ -2103,6 +2103,15 @@ export function lockMetamask(): ThunkAction<
     dispatch(showLoadingIndication());
 
     return backgroundSetLocked()
+      .then(() => {
+        // check seedless password outdated when lock app
+        dispatch(checkIsSeedlessPasswordOutdated(true));
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        log.error('Metamask - seedless password outdated check error', error);
+        return Promise.resolve();
+      })
       .then(() => forceUpdateMetamaskState(dispatch))
       .catch((error) => {
         dispatch(displayWarning(getErrorMessage(error)));
