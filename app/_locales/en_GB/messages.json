@@ -4964,12 +4964,6 @@
   "securityChangePasswordDescription": {
     "message": "Choose a strong password to unlock MetaMask app on your device. If you lose this password, you will need your Secret Recovery Phrase to re-import your wallet."
   },
-  "securityChangePasswordHint": {
-    "message": "Password hint"
-  },
-  "securityChangePasswordTitle": {
-    "message": "Password"
-  },
   "securityChangePasswordTitle": {
     "message": "Password"
   },
