@@ -225,7 +225,12 @@ describe('Custom RPC history', function (this: Suite) {
 
         // Delete network from network list
         await selectNetworkDialog.deleteNetwork('eip155:1344');
-        await new Homepage(driver).check_pageIsLoaded();
+        const homepage = new Homepage(driver);
+        await homepage.check_pageIsLoaded();
+        await homepage.check_expectedBalanceIsDisplayed();
+        await homepage.headerNavbar.check_currentSelectedNetwork(
+          'Localhost 8545',
+        );
 
         // Check custom network http://127.0.0.1:8545/2 is removed from network list
         await headerNavbar.clickSwitchNetworkDropDown();
