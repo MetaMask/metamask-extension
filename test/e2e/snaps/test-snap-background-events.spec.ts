@@ -3,7 +3,7 @@ import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { withFixtures, WINDOW_TITLES, largeDelayMs } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 
 describe('Test Snap Background Events', function () {
@@ -146,7 +146,13 @@ describe('Test Snap Background Events', function () {
 
         await testSnaps.clickButton('scheduleBackgroundEventWithDateButton');
 
+        // Add a Firefox-specific delay after scheduling to ensure event is registered
+        await driver.delayFirefox(largeDelayMs);
+
         await testSnaps.clickButton('getBackgroundEventResultButton');
+
+        // Add another delay after getting results to ensure they're loaded
+        await driver.delayFirefox(largeDelayMs);
 
         await testSnaps.check_messageResultSpanIncludes(
           'getBackgroundEventResultSpan',
@@ -161,7 +167,14 @@ describe('Test Snap Background Events', function () {
         await testSnaps.fillMessage('cancelBackgroundEventInput', eventIdText);
 
         await testSnaps.clickButton('cancelBackgroundEventButton');
+
+        // Add a delay after cancellation to ensure it takes effect
+        await driver.delayFirefox(largeDelayMs);
+
         await testSnaps.clickButton('getBackgroundEventResultButton');
+
+        // In Firefox, we might need extra time for the empty result to appear
+        await driver.delayFirefox(largeDelayMs);
 
         await testSnaps.check_messageResultSpan(
           'getBackgroundEventResultSpan',
