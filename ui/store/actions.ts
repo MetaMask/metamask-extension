@@ -134,6 +134,7 @@ import { isInternalAccountInPermittedAccountIds } from '../../shared/lib/multich
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import { getDismissSmartAccountSuggestionEnabled } from '../pages/confirmations/selectors/preferences';
+import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -266,6 +267,7 @@ export function importMnemonicToVault(
     })
       .then(async () => {
         dispatch(hideLoadingIndication());
+        dispatch(setShowNewSrpAddedToast(true));
       })
       .catch((err) => {
         dispatch(displayWarning(err));
