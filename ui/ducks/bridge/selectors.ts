@@ -651,7 +651,7 @@ export const getIsUnifiedUIEnabled = createSelector(
       return false;
     }
 
-    const caipChainId = formatChainIdToCaip(String(chainId));
+    const caipChainId = formatChainIdToCaip(chainId);
 
     return Boolean(
       bridgeFeatureFlags?.chains?.[caipChainId]?.isUnifiedUIEnabled,
