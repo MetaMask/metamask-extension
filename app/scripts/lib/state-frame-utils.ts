@@ -4,21 +4,26 @@ import { Json } from '@metamask/utils';
 export const CHUNK_SIZE = 8 * 1024 * 1024; // 8 MB (< any browser cap)
 
 /** Any payload fragment traveling through runtime.Port */
-export interface ChunkFrame {
+export type ChunkFrame = {
   id: string;
   seq: number;
   total: number;
   data: string;
   store?: string;
-}
+};
 
 export const isChunkFrame = (x: unknown): x is ChunkFrame =>
-  !!x && typeof x === 'object' && 'seq' in x && 'total' in x && 'data' in x;
+  Boolean(x) &&
+  typeof x === 'object' &&
+  'seq' in x &&
+  'total' in x &&
+  'data' in x;
 
 /**
  * Converts a JSON object into a generator of chunk frames.
  *
  * @param payload - the payload to be chunked
+ * @yields - a chunk frame or the original payload if it fits within a single frame
  */
 export function* toFrames<T extends Json>(
   payload: T,

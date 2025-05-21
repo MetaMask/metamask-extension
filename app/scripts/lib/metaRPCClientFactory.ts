@@ -1,5 +1,6 @@
 import { JsonRpcError } from '@metamask/rpc-errors';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
+import { hasProperty } from '@metamask/utils';
 import createRandomId from '../../../shared/modules/random-id';
 import { TEN_SECONDS_IN_MILLISECONDS } from '../../../shared/lib/transactions-controller-utils';
 
@@ -12,7 +13,7 @@ class DisconnectError extends Error {
 }
 
 // Interface for JSON-RPC payload
-interface JsonRpcPayload {
+type JsonRpcPayload = {
   jsonrpc: '2.0';
   id?: number;
   method?: string;
@@ -24,23 +25,28 @@ interface JsonRpcPayload {
     data?: unknown;
     stack?: string;
   };
-}
+};
 
 // Type for callback function
 type Callback = (error: Error | null, result?: unknown) => void;
 
 // Interface for connection stream
-interface ConnectionStream {
+type ConnectionStream = {
   on: (event: string, handler: (data: JsonRpcPayload) => void) => void;
   write: (payload: JsonRpcPayload) => void;
-}
+};
 
 class MetaRPCClient {
   private connectionStream: ConnectionStream;
+
   private notificationChannel: SafeEventEmitter;
+
   private uncaughtErrorChannel: SafeEventEmitter;
+
   private requests: Map<number, Callback>;
+
   private responseHandled: Record<number, boolean>;
+
   public DisconnectError: typeof DisconnectError;
 
   constructor(connectionStream: ConnectionStream) {
@@ -97,7 +103,7 @@ class MetaRPCClient {
   private handleResponse(data: JsonRpcPayload): void {
     const { id, result, error, method, params } = data;
     const isNotification = id === undefined && error === undefined;
-    const cb = id !== undefined ? this.requests.get(id) : undefined;
+    const callback = id === undefined ? undefined : this.requests.get(id);
 
     if (id !== undefined) {
       this.responseHandled[id] = true;
@@ -115,21 +121,21 @@ class MetaRPCClient {
     if (error) {
       const e = new JsonRpcError(error.code, error.message, error.data);
       e.stack = error.stack;
-      if (cb && id !== undefined) {
+      if (callback && id !== undefined) {
         this.requests.delete(id);
-        cb(e);
+        callback(e);
         return;
       }
       this.uncaughtErrorChannel.emit('error', e);
       return;
     }
 
-    if (!cb || id === undefined) {
+    if (!callback || id === undefined) {
       return;
     }
 
     this.requests.delete(id);
-    cb(null, result);
+    callback(null, result);
   }
 }
 
@@ -139,11 +145,11 @@ const metaRPCClientFactory = (
   const metaRPCClient = new MetaRPCClient(connectionStream);
   return new Proxy(metaRPCClient, {
     get: (target: MetaRPCClient, property: string | symbol) => {
-      if (property in target) {
-        return (target as any)[property];
+      if (hasProperty(target, property)) {
+        return target[property];
       }
       return (...args: unknown[]) => {
-        const cb = args[args.length - 1] as Callback;
+        const callback = args[args.length - 1] as Callback;
         const params = args.slice(0, -1);
         const id = createRandomId();
         const payload: JsonRpcPayload = {
@@ -152,7 +158,7 @@ const metaRPCClientFactory = (
           params,
           id,
         };
-        target.send(id, payload, cb);
+        target.send(id, payload, callback);
       };
     },
   });

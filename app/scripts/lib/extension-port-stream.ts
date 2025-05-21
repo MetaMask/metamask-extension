@@ -3,10 +3,10 @@ import { Duplex, DuplexOptions } from 'readable-stream';
 import type { Runtime } from 'webextension-polyfill';
 import { ChunkFrame, isChunkFrame, toFrames } from './state-frame-utils';
 
-export interface Options extends DuplexOptions {
+export type Options = {
   log?: (data: unknown, outgoing: boolean) => void;
   debug?: boolean;
-}
+} & DuplexOptions;
 
 const TAG = '%cPortStream';
 const STYLE_IN = 'color:#0b8;'; // inbound
@@ -15,11 +15,14 @@ const STYLE_SYS = 'color:#888;'; // system
 
 export default class PortDuplexStream extends Duplex {
   private readonly port: Runtime.Port;
+
   private readonly buffer = new Map<
     string,
     { parts: string[]; total: number }
   >();
+
   private log: (d: unknown, out: boolean) => void;
+
   private debug = false;
 
   constructor(port: Runtime.Port, { log, debug, ...opts }: Options = {}) {
@@ -43,7 +46,6 @@ export default class PortDuplexStream extends Duplex {
    *
    * @param msg - the message received from the port
    * @param _port - the port that sent the message
-   * @returns
    */
   private onMessage(msg: unknown, _port: Runtime.Port) {
     if (this.debug) {
@@ -63,6 +65,10 @@ export default class PortDuplexStream extends Duplex {
    * Handles chunked messages.
    *
    * @param frame - the chunk frame received from the port
+   * @param frame.id
+   * @param frame.seq
+   * @param frame.total
+   * @param frame.data
    */
   private handleChunk({ id, seq, total, data }: ChunkFrame) {
     if (this.debug) {
@@ -105,7 +111,9 @@ export default class PortDuplexStream extends Duplex {
    * @param _port - the port that was disconnected
    */
   private onDisconnect(_port: Runtime.Port) {
-    if (this.debug) console.debug(TAG, STYLE_SYS, '✖ port disconnected');
+    if (this.debug) {
+      console.debug(TAG, STYLE_SYS, '✖ port disconnected');
+    }
     this.destroy();
     // clean up buffer, as we aren't going to receive any more messages
     this.buffer.clear();
@@ -114,7 +122,9 @@ export default class PortDuplexStream extends Duplex {
   /**
    * No-op, push happens in onMessage.
    */
-  _read() {}
+  _read() {
+    // No-op, push happens in onMessage.
+  }
 
   /**
    * Handles writing to the port.
@@ -134,7 +144,9 @@ export default class PortDuplexStream extends Duplex {
     }
 
     const send = (obj: unknown) => {
-      if (this.debug) console.debug(TAG, STYLE_OUT, '→', obj);
+      if (this.debug) {
+        console.debug(TAG, STYLE_OUT, '→', obj);
+      }
       this.port.postMessage(obj);
     };
 
@@ -155,7 +167,9 @@ export default class PortDuplexStream extends Duplex {
       this.log(chunk, true);
       callback();
     } catch (err) {
-      if (this.debug) console.debug(TAG, STYLE_SYS, '⚠ write error', err);
+      if (this.debug) {
+        console.debug(TAG, STYLE_SYS, '⚠ write error', err);
+      }
       callback(new Error('PortStream write failed'));
     }
   }

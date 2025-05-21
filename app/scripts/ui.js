@@ -12,12 +12,13 @@ import '../../development/wdyr';
 // dev only, "react-devtools" import is skipped in prod builds
 import 'react-devtools';
 
-import PortStream from './lib/extension-port-stream';
 import browser from 'webextension-polyfill';
 
 import { StreamProvider } from '@metamask/providers';
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import log from 'loglevel';
+import { isObject } from 'lodash';
+import { hasProperty } from '@metamask/utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import launchMetaMaskUi, { updateBackgroundConnection } from '../../ui';
@@ -31,6 +32,7 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import { getErrorHtml } from '../../shared/lib/error-utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
+import PortStream from './lib/extension-port-stream';
 import {
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
   displayStateCorruptionError,
@@ -41,6 +43,10 @@ import { getEnvironmentType, getPlatform } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
 
 /**
+ * @typedef {import('./metamask-controller').default} MetamaskController
+ */
+
+/**
  * @typedef {import("@metamask/object-multiplex/dist/Substream").Substream} Substream
  */
 
@@ -49,8 +55,6 @@ const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
 const METHOD_START_UI_SYNC = 'startUISync';
 
 const container = document.getElementById('app-content');
-
-let isUIInitialised = false;
 
 /**
  * An error thrown if the phishing warning page takes too long to load.
@@ -64,7 +68,7 @@ class PhishingWarningPageTimeoutError extends Error {
 start().catch(log.error);
 
 async function start() {
-  //#region Trace
+  // #region Trace
   const startTime = performance.now();
 
   const traceContext = trace({
@@ -82,7 +86,7 @@ async function start() {
     name: TraceName.LoadScripts,
     timestamp: performance.timeOrigin + startTime,
   });
-  //#endregion Trace
+  // #endregion Trace
 
   // create platform global
   global.platform = new ExtensionPlatform();
@@ -116,31 +120,45 @@ async function start() {
   setupProviderConnection(subStreams.provider);
   setupBootstrapListener(subStreams.controller);
 
+  /**
+   * Sets up a listener for the bootstrap messages.
+   *
+   * @param {MetamaskController} controller
+   */
   async function setupBootstrapListener(controller) {
-    controller.on('data', async function bootstrapListener(data) {
-      const method = data?.method;
-      switch (method) {
+    /**
+     * Handles the bootstrap messages.
+     *
+     * @param {unknown} data
+     * @returns
+     */
+    async function bootstrapListener(data) {
+      if (!isObject(data) || !hasProperty(data, 'method')) {
+        return;
+      }
+      switch (data.method) {
         case METHOD_START_UI_SYNC:
           await handleStartUISync();
           break;
         case METHOD_DISPLAY_STATE_CORRUPTION_ERROR:
-          handleDisplayStateCorruptionError(message.data.params);
+          handleDisplayStateCorruptionError(data.params);
           break;
         default:
           return;
       }
       controller.off('data', bootstrapListener);
-    });
+    }
+    controller.on('data', bootstrapListener);
   }
 
   async function handleStartUISync() {
     endTrace({ name: TraceName.BackgroundConnect });
 
-    const activeTab = await queryCurrentActiveTab(windowType)
+    const activeTab = await queryCurrentActiveTab(windowType);
 
     await initializeUiWithTab(
       activeTab,
-      backgroundConnection,
+      connectionStream,
       windowType,
       traceContext,
     );
@@ -271,8 +289,6 @@ async function initializeUiWithTab(
 
     endTrace({ name: TraceName.UIStartup });
 
-    isUIInitialised = true;
-
     if (process.env.IN_TEST) {
       window.document?.documentElement?.classList.add('controller-loaded');
     }
@@ -286,12 +302,6 @@ async function initializeUiWithTab(
   } catch (err) {
     displayCriticalError('troubleStarting', err);
   }
-}
-
-// Function to update new backgroundConnection in the UI
-function updateUiStreams(connectionStream) {
-  const backgroundConnection = connectSubstreams(connectionStream);
-  updateBackgroundConnection(backgroundConnection);
 }
 
 async function queryCurrentActiveTab(windowType) {
@@ -372,18 +382,18 @@ async function displayCriticalError(errorKey, err, metamaskState) {
  * streams.
  *
  * @param {PortStream} connectionStream - PortStream instance establishing a background connection
- * @returns { controller: Substream, provider: Substream } - The multiplexed streams
+ * @returns { controller: Substream, provider: Substream } The multiplexed streams
  */
 function connectSubstreams(connectionStream) {
   const mx = setupMultiplex(connectionStream);
 
   const controllerSubstream = mx.createStream('controller');
-  const providerSubstream = mx.createStream('provider')
+  const providerSubstream = mx.createStream('provider');
 
   return {
     controller: controllerSubstream,
     provider: providerSubstream,
-  }
+  };
 }
 
 /**

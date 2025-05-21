@@ -15,7 +15,6 @@ import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
 import { isObject } from '@metamask/utils';
-import PortStream from './lib/extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 
 import {
@@ -49,6 +48,7 @@ import {
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
+import PortStream from './lib/extension-port-stream';
 import {
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
   KNOWN_STATE_CORRUPTION_ERRORS,

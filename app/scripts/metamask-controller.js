@@ -6373,7 +6373,7 @@ export default class MetamaskController extends EventEmitter {
   setupTrustedCommunication(connectionStream, sender) {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
-    debugger;
+
     // connect features
     this.setupControllerConnection(mux.createStream('controller'));
     this.setupProviderConnectionEip1193(
