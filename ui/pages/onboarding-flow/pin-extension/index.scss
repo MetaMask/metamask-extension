@@ -1,10 +1,4 @@
 .onboarding-pin-extension {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  gap: 1rem;
-
   .carousel {
     .control-dots {
       bottom: -12px;
@@ -20,10 +14,6 @@
     }
 
     .slide .onboarding-pin-extension__image-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
       img {
         width: 346px;
         height: auto;

@@ -23,6 +23,7 @@ import {
   FlexDirection,
   BorderRadius,
   IconColor,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -85,14 +86,19 @@ export default function OnboardingPinExtension() {
   ///: END:ONLY_INCLUDE_IF
 
   return (
-    <div
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      height={BlockSize.Full}
+      gap={6}
       className="onboarding-pin-extension"
       data-testid="onboarding-pin-extension"
     >
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <>
-          <div className="onboarding-pin-extension__content">
+          <Box>
             <Carousel
               selectedItem={selectedIndex}
               showThumbs={false}
@@ -134,12 +140,22 @@ export default function OnboardingPinExtension() {
               )}
               onChange={(index) => setSelectedIndex(index)}
             >
-              <div className="onboarding-pin-extension__image-container">
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.center}
+                className="onboarding-pin-extension__image-container"
+              >
                 <img src="/images/onboarding-extension-pin.svg" alt="" />
-              </div>
-              <div className="onboarding-pin-extension__image-container">
+              </Box>
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.center}
+                className="onboarding-pin-extension__image-container"
+              >
                 <img src="/images/onboarding-extension-launch.svg" alt="" />
-              </div>
+              </Box>
             </Carousel>
             <Box
               display={Display.Flex}
@@ -177,8 +193,8 @@ export default function OnboardingPinExtension() {
                 </Box>
               )}
             </Box>
-          </div>
-          <div className="onboarding-pin-extension__buttons">
+          </Box>
+          <Box>
             <Button
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
@@ -188,10 +204,10 @@ export default function OnboardingPinExtension() {
             >
               {t('done')}
             </Button>
-          </div>
+          </Box>
         </>
         ///: END:ONLY_INCLUDE_IF
       }
-    </div>
+    </Box>
   );
 }
