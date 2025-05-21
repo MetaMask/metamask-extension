@@ -1,4 +1,6 @@
 name: 'Close stale issues and PRs'
+
+# run once daily at midnight (UTC)
 on:
   schedule:
     - cron: '0 0 * * *'
