@@ -40,11 +40,11 @@ export const TokenCellSecondaryDisplay = React.memo(
   }: TokenCellSecondaryDisplayProps) => {
     const t = useI18nContext();
     const isEvm = useSelector(getMultichainIsEvm);
-    const { ticker, type, rpcUrl } = useSelector(getProviderConfig);
+    const { type, rpcUrl } = useSelector(getProviderConfig);
 
     const isOriginalNativeToken = useIsOriginalNativeTokenSymbol(
       token.chainId,
-      ticker,
+      token.symbol,
       type,
       rpcUrl,
     );
