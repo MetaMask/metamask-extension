@@ -114,4 +114,34 @@ describe('useAutomaticGasFeeTokenSelect', () => {
 
     expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
   });
+
+  it('does not select first gas fee token after firstCheck is set to false', () => {
+    const { rerender, state } = runHook();
+    // Simulate a rerender with new state that would otherwise trigger selection
+    act(() => {
+      (
+        state.metamask.transactions[0] as unknown as TransactionMeta
+      ).selectedGasFeeToken = undefined;
+    });
+    rerender();
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(1); // Only first run
+  });
+
+  it('does not select if transactionId is falsy', () => {
+    const state = getMockConfirmStateForTransaction(
+      genUnapprovedContractInteractionConfirmation({
+        gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+        selectedGasFeeToken: undefined,
+      }),
+    );
+    // Remove transactionId
+    state.metamask.transactions = [];
+    renderHookWithConfirmContextProvider(useAutomaticGasFeeTokenSelect, state);
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+  });
+
+  it('does not select if gasFeeTokens is falsy', () => {
+    runHook({ noGasFeeTokens: true });
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+  });
 });
