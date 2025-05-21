@@ -256,7 +256,7 @@ describe('Multichain API', function () {
     });
   });
 
-  describe.only('EIP-5792 Methods', function () {
+  describe('EIP-5792 Methods', function () {
     describe('Calling `wallet_getCapabalities`', function () {
       it('should return the available capabilities', async function () {
         await withFixtures(
@@ -410,7 +410,7 @@ describe('Multichain API', function () {
     });
 
     describe('Calling `wallet_getCallsStatus`', function () {
-      it.only('should return the status', async function () {
+      it('should return the status', async function () {
         await withFixtures(
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
