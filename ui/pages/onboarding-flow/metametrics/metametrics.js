@@ -249,6 +249,7 @@ export default function OnboardingMetametrics() {
         color={TextColor.textAlternative}
         textAlign={TextAlign.Left}
         variant={TextVariant.bodySm}
+        paddingTop={4}
         className="onboarding-metametrics__terms"
       >
         {t('onboardingMetametricsInfuraTerms', [
@@ -272,12 +273,15 @@ export default function OnboardingMetametrics() {
         flexDirection={FlexDirection.Row}
         width={BlockSize.Full}
         className="onboarding-metametrics__buttons"
+        marginTop={6}
+        marginBottom={4}
         gap={4}
       >
         <Button
           data-testid="metametrics-no-thanks"
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
+          width={BlockSize.Full}
           onClick={onCancel}
         >
           {t('noThanks')}
@@ -285,6 +289,7 @@ export default function OnboardingMetametrics() {
         <Button
           data-testid="metametrics-i-agree"
           size={ButtonSize.Lg}
+          width={BlockSize.Full}
           onClick={onConfirm}
         >
           {t('onboardingMetametricsAgree')}
