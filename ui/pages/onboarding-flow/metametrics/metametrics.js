@@ -135,6 +135,20 @@ export default function OnboardingMetametrics() {
       <Text className="onboarding-metametrics__desc" textAlign={TextAlign.Left}>
         {t('onboardingMetametricsDescription')}
       </Text>
+      <Box paddingTop={2} paddingBottom={2}>
+        <Text
+          color={TextColor.primaryDefault}
+          as="a"
+          href="https://support.metamask.io/privacy-and-security/profile-privacy#how-is-the-profile-created"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t('onboardingMetametricsPrivacyDescription')}
+        </Text>
+      </Box>
+      <Text className="onboarding-metametrics__desc" textAlign={TextAlign.Left}>
+        {t('onboardingMetametricsDescription2')}
+      </Text>
       <ul>
         <li>
           <Box
@@ -237,7 +251,7 @@ export default function OnboardingMetametrics() {
         variant={TextVariant.bodySm}
         className="onboarding-metametrics__terms"
       >
-        {t('onboardingMetametricsTerms', [
+        {t('onboardingMetametricsInfuraTerms', [
           <a
             href={
               isFirefox
