@@ -89,6 +89,7 @@ import {
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
+import { CONTENT_SCRIPT } from './constants/stream';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -206,47 +207,19 @@ const {
  * For non-dapp pages, the message will be sent and ignored.
  */
 const sendReadyMessageToTabs = async () => {
-  const tabs = await browser.tabs
-    .query({
-      /**
-       * Only query tabs that our extension can run in. To do this, we query for all URLs that our
-       * extension can inject scripts in, which is by using the "<all_urls>" value and __without__
-       * the "tabs" manifest permission. If we included the "tabs" permission, this would also fetch
-       * URLs that we'd not be able to inject in, e.g. chrome://pages, chrome://extension, which
-       * is not what we'd want.
-       *
-       * You might be wondering, how does the "url" param work without the "tabs" permission?
-       *
-       * @see {@link https://bugs.chromium.org/p/chromium/issues/detail?id=661311#c1}
-       *  "If the extension has access to inject scripts into Tab, then we can return the url
-       *   of Tab (because the extension could just inject a script to message the location.href)."
-       */
-      url: '<all_urls>',
-      windowType: 'normal',
-    })
-    .then((result) => {
-      checkForLastErrorAndLog();
-      return result;
-    })
-    .catch(() => {
-      checkForLastErrorAndLog();
-    });
-
-  /** @todo we should only sendMessage to dapp tabs, not all tabs. */
-  for (const tab of tabs) {
-    browser.tabs
-      .sendMessage(tab.id, {
+  return await Promise.all([...connectedContentScriptTabs].map(async (port) => {
+    try {
+      debugger;
+      port.postMessage({
         name: EXTENSION_MESSAGES.READY,
-      })
-      .then(() => {
-        checkForLastErrorAndLog();
-      })
-      .catch(() => {
-        // An error may happen if the contentscript is blocked from loading,
-        // and thus there is no runtime.onMessage handler to listen to the message.
-        checkForLastErrorAndLog();
       });
-  }
+      checkForLastErrorAndLog();
+    } catch {
+      // An error may happen if the contentscript is blocked from loading,
+      // and thus there is no runtime.onMessage handler to listen to the message.
+      checkForLastErrorAndLog();
+    }
+  }));
 };
 
 /**
@@ -434,13 +407,27 @@ let connectEip1193;
 /** @type {ConnectCaipMultichain} */
 let connectCaipMultichain;
 
-browser.runtime.onConnect.addListener(async (...args) => {
+/**
+ * @type {Set<chrome.runtime.Port>}
+ */
+const connectedContentScriptTabs = new Set();
+
+browser.runtime.onConnect.addListener(async (port) => {
+  if (port.name === CONTENT_SCRIPT && port.sender?.tab?.id && port.sender.tab?.frameId) {
+    port.onDisconnect.addListener((port) => {
+      // If the tab is closed, remove it from the connected tabs
+      connectedContentScriptTabs.delete(port);
+
+    });
+    connectedContentScriptTabs.add(port);
+  }
+
   // Queue up connection attempts here, waiting until after initialization
   try {
     await isInitialized;
 
     // This is set in `setupController`, which is called as part of initialization
-    connectWindowPostMessage(...args);
+    connectWindowPostMessage(port);
   } catch (error) {
     sentry?.captureException(error);
 
@@ -449,7 +436,6 @@ browser.runtime.onConnect.addListener(async (...args) => {
     if (KNOWN_STATE_CORRUPTION_ERRORS.has(error.message)) {
       const _state = await localStore.get().catch((_) => null);
 
-      const port = args[0];
       try {
         // send the `error` TO THE ui
         port.postMessage({
