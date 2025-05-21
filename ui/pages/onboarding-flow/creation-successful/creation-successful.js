@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -64,9 +64,8 @@ export default function CreationSuccessful() {
 
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
-  const passwordHint = useSelector(getPasswordHint);
 
-  const renderTitle = () => {
+  const renderTitle = useMemo(() => {
     if (
       firstTimeFlowType === FirstTimeFlowType.seedless ||
       seedPhraseBackedUp
@@ -75,9 +74,9 @@ export default function CreationSuccessful() {
     }
 
     return t('yourWalletIsReadyRemind');
-  };
+  }, [firstTimeFlowType, seedPhraseBackedUp, t]);
 
-  const renderFoxPath = () => {
+  const renderFoxPath = useMemo(() => {
     if (
       firstTimeFlowType === FirstTimeFlowType.seedless ||
       seedPhraseBackedUp
@@ -87,11 +86,19 @@ export default function CreationSuccessful() {
 
     // TODO: Check figma teaching fox animation
     return 'images/animations/fox/celebrating.lottie.json';
-  };
+  }, [firstTimeFlowType, seedPhraseBackedUp]);
 
   return (
-    <Box className="creation-successful" data-testid="wallet-ready">
-      <div className="creation-successful__content">
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      height={BlockSize.Full}
+      gap={6}
+      className="creation-successful"
+      data-testid="wallet-ready"
+    >
+      <Box>
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -107,7 +114,7 @@ export default function CreationSuccessful() {
             }}
             marginBottom={4}
           >
-            {renderTitle()}
+            {renderTitle}
           </Text>
           <Box
             width={BlockSize.Full}
@@ -120,7 +127,7 @@ export default function CreationSuccessful() {
               display={Display.Flex}
               style={{ width: '144px', height: '144px' }}
             >
-              <LottieAnimation path={renderFoxPath()} loop={false} autoplay />
+              <LottieAnimation path={renderFoxPath} loop autoplay />
             </Box>
           </Box>
           <Text variant={TextVariant.bodyMd} marginBottom={6}>
@@ -206,10 +213,9 @@ export default function CreationSuccessful() {
             <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
           </ButtonBase>
         </Box>
-      </div>
+      </Box>
 
       <Box
-        className="creation-successful__actions"
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         justifyContent={JustifyContent.center}
