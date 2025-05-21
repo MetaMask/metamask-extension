@@ -25,6 +25,7 @@ export SENTRY_AUTH_TOKEN=""
 export SENTRY_DSN=""
 export SENTRY_DSN_DEV=""
 export VAPID_KEY=""
+export TZ="UTC"
 export ENABLE_MV3="false"
 
 # 1. Download and install nvm:
