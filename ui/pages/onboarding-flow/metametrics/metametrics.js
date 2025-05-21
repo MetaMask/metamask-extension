@@ -133,6 +133,20 @@ export default function OnboardingMetametrics() {
       <Text className="onboarding-metametrics__desc" textAlign={TextAlign.Left}>
         {t('onboardingMetametricsDescription')}
       </Text>
+      <Box paddingTop={2} paddingBottom={2}>
+        <Text
+          color={TextColor.primaryDefault}
+          as="a"
+          href="https://support.metamask.io/privacy-and-security/profile-privacy#how-is-the-profile-created"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t('onboardingMetametricsPrivacyDescription')}
+        </Text>
+      </Box>
+      <Text className="onboarding-metametrics__desc" textAlign={TextAlign.Left}>
+        {t('onboardingMetametricsDescription2')}
+      </Text>
       <ul>
         <li>
           <Box
@@ -233,9 +247,10 @@ export default function OnboardingMetametrics() {
         color={TextColor.textAlternative}
         textAlign={TextAlign.Left}
         variant={TextVariant.bodySm}
+        paddingTop={4}
         className="onboarding-metametrics__terms"
       >
-        {t('onboardingMetametricsTerms', [
+        {t('onboardingMetametricsInfuraTerms', [
           <a
             href={
               isFirefox
@@ -256,12 +271,15 @@ export default function OnboardingMetametrics() {
         flexDirection={FlexDirection.Row}
         width={BlockSize.Full}
         className="onboarding-metametrics__buttons"
+        marginTop={6}
+        marginBottom={4}
         gap={4}
       >
         <Button
           data-testid="metametrics-no-thanks"
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
+          width={BlockSize.Full}
           onClick={onCancel}
         >
           {t('noThanks')}
@@ -269,6 +287,7 @@ export default function OnboardingMetametrics() {
         <Button
           data-testid="metametrics-i-agree"
           size={ButtonSize.Lg}
+          width={BlockSize.Full}
           onClick={onConfirm}
         >
           {t('onboardingMetametricsAgree')}
