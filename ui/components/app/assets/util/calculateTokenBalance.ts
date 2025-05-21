@@ -5,7 +5,7 @@ import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { AddressBalanceMapping } from '../types';
 
 type CalculateTokenBalanceParams = {
-  isNative: boolean;
+  isNative?: boolean;
   chainId: Hex;
   address: Hex;
   decimals: number;

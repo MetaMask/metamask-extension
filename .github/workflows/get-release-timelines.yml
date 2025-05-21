@@ -1,0 +1,18 @@
+name: Get release timelines
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        type: string
+        description: The version of the release
+
+jobs:
+  get-release-timelines:
+    uses: metamask/github-tools/.github/workflows/get-release-timelines.yml@13b73c8c7dd15f38bacc1bb95401fe11914c6629
+    with:
+      version: ${{ inputs.version }}
+    secrets:
+      RUNWAY_APP_ID: ${{ secrets.RUNWAY_APP_ID }}
+      RUNWAY_API_KEY: ${{ secrets.RUNWAY_API_KEY }}

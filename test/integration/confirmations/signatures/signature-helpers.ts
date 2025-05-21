@@ -13,6 +13,8 @@ const SEAPORT_DATA = `{"types":{"OrderComponents":[{"name":"offerer","type":"add
 
 const TRADE_ORDER_DATA = `{"types":{"ERC721Order":[{"type":"uint8","name":"direction"},{"type":"address","name":"maker"},{"type":"address","name":"taker"},{"type":"uint256","name":"expiry"},{"type":"uint256","name":"nonce"},{"type":"address","name":"erc20Token"},{"type":"uint256","name":"erc20TokenAmount"},{"type":"Fee[]","name":"fees"},{"type":"address","name":"erc721Token"},{"type":"uint256","name":"erc721TokenId"},{"type":"Property[]","name":"erc721TokenProperties"}],"Fee":[{"type":"address","name":"recipient"},{"type":"uint256","name":"amount"},{"type":"bytes","name":"feeData"}],"Property":[{"type":"address","name":"propertyValidator"},{"type":"bytes","name":"propertyData"}],"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}]},"domain":{"name":"ZeroEx","version":"1.0.0","chainId":"0x1","verifyingContract":"0xdef1c0ded9bec7f1a1670819833240f027b25eff"},"primaryType":"ERC721Order","message":{"direction":"0","maker":"0x8eeee1781fd885ff5ddef7789486676961873d12","taker":"0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826","expiry":"2524604400","nonce":"100131415900000000000000000000000000000083840314483690155566137712510085002484","erc20Token":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2","erc20TokenAmount":"42000000000000","fees":[],"erc721Token":"0x8a90CAb2b38dba80c64b7734e58Ee1dB38B8992e","erc721TokenId":"2516","erc721TokenProperties":[]}}`;
 
+const pendingPermitId = '48a75190-45ca-11ef-9001-f3886ec2397c';
+
 const getPermitData = (permitType: string, accountAddress: string) => {
   switch (permitType) {
     case 'Permit':
@@ -48,7 +50,6 @@ export const getMetaMaskStateWithUnapprovedPermitSign = (
     | 'TradeOrder',
 ) => {
   const data = getPermitData(permitType, accountAddress);
-  const pendingPermitId = '48a75190-45ca-11ef-9001-f3886ec2397c';
   const pendingPermitTime = new Date().getTime();
   const messageParams = getMessageParams(accountAddress, data);
 
@@ -88,6 +89,84 @@ export const getMetaMaskStateWithUnapprovedPermitSign = (
       [pendingPermitId]: pendingApproval,
     },
     pendingApprovalCount: 1,
+    names: {
+      ethereumAddress: {
+        '0x60e4d786628fea6478f785a6d7e704777c86a7c6': {
+          '*': {
+            name: 'MutantApeYachtClub',
+            origin: 'account-identity',
+            proposedNames: {},
+            sourceId: null,
+          },
+        },
+        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
+          '*': {
+            name: 'USDC',
+            origin: 'account-identity',
+            proposedNames: {},
+            sourceId: null,
+          },
+        },
+        '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2': {
+          '*': {
+            name: 'Wrapped Ether',
+            origin: 'account-identity',
+            proposedNames: {},
+            sourceId: null,
+          },
+        },
+        '0x8a90cab2b38dba80c64b7734e58ee1db38b8992e': {
+          '*': {
+            name: 'Doodles',
+            origin: 'account-identity',
+            proposedNames: {},
+            sourceId: null,
+          },
+        },
+      },
+    },
+  };
+};
+
+export const getMetamaskStateWithMaliciousPermit = (accountAddress: string) => {
+  const state = getMetaMaskStateWithUnapprovedPermitSign(
+    accountAddress,
+    'Permit',
+  );
+  const unapprovedTypedMessage = {
+    [pendingPermitId]: {
+      ...state.unapprovedTypedMessages[pendingPermitId],
+      securityAlertResponse: {
+        block: 7596565,
+        result_type: 'Malicious',
+        reason: 'permit_farming',
+        description:
+          'permit_farming to spender 0x1661f1b207629e4f385da89cff535c8e5eb23ee3, classification: A known malicious address is involved in the transaction',
+        features: ['A known malicious address is involved in the transaction'],
+        source: 'api',
+        securityAlertId: 'ba944b14-aa65-45b5-ae92-f305cdba64c1',
+      },
+    },
+  };
+
+  state.unapprovedTypedMessages = {
+    ...unapprovedTypedMessage,
+  };
+
+  return {
+    ...state,
+    signatureSecurityAlertResponses: {
+      'ba944b14-aa65-45b5-ae92-f305cdba64c1': {
+        block: 7596565,
+        result_type: 'Malicious',
+        reason: 'permit_farming',
+        description:
+          'permit_farming to spender 0x1661f1b207629e4f385da89cff535c8e5eb23ee3, classification: A known malicious address is involved in the transaction',
+        features: ['A known malicious address is involved in the transaction'],
+        source: 'api',
+        securityAlertId: 'ba944b14-aa65-45b5-ae92-f305cdba64c1',
+      },
+    },
   };
 };
 

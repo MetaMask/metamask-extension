@@ -36,7 +36,6 @@ export enum Color {
   infoDefault = 'info-default',
   infoMuted = 'info-muted',
   infoInverse = 'info-inverse',
-  mainnet = 'mainnet',
   goerli = 'goerli',
   sepolia = 'sepolia',
   lineaGoerli = 'linea-goerli',
@@ -475,6 +474,12 @@ export enum FontWeight {
   Bold = 'bold',
   Medium = 'medium',
   Normal = 'normal',
+}
+
+export enum FontFamily {
+  Default = 'default', // CentraNo1
+  Accent = 'accent', // MMSans
+  Hero = 'hero', // MMPoly
 }
 
 /**

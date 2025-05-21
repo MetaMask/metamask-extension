@@ -19,6 +19,7 @@ export type NotificationsSettingsBoxProps = {
   loading?: boolean;
   disabled?: boolean;
   error?: string | null;
+  dataTestId: string;
   onToggle: () => void;
 };
 
@@ -28,6 +29,7 @@ export function NotificationsSettingsBox({
   loading = false,
   disabled = false,
   error = null,
+  dataTestId,
   onToggle,
 }: NotificationsSettingsBoxProps) {
   const t = useI18nContext();
@@ -44,7 +46,10 @@ export function NotificationsSettingsBox({
         className="notifications-settings-box"
       >
         {children}
-        <Box className="notifications-settings-box__toggle">
+        <Box
+          data-testid={`${dataTestId}-toggle-box`}
+          className="notifications-settings-box__toggle"
+        >
           {loading ? (
             <Box textAlign={TextAlign.Right}>
               <Preloader size={24} />
@@ -54,7 +59,7 @@ export function NotificationsSettingsBox({
               value={value}
               onToggle={onToggle}
               disabled={disabled}
-              dataTestId="test-toggle"
+              dataTestId={`${dataTestId}-toggle-input`}
               className="notifications-settings-box__toggle"
             />
           )}

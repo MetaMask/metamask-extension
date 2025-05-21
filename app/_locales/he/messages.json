@@ -313,9 +313,6 @@
     "message": "ייבוא",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "יבא חשבון"
-  },
   "importAccountMsg": {
     "message": "חשבונות מיובאים לא ישויכו לצירוף הגרעין (seed) שנוצר במקור עבור חשבון ה-MetaMask שלך. למד/י עוד על חשבונות מיובאים"
   },

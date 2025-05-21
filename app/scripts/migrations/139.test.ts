@@ -395,6 +395,58 @@ describe('migration #139', () => {
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
+  it('deletes the permittedChains permission if eth_accounts has not been granted and the permittedChains permissions has been granted', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {},
+        },
+        SelectedNetworkController: {
+          domains: {},
+        },
+        PermissionController: {
+          subjects: {
+            'test.com': {
+              permissions: {
+                [PermissionNames.permittedChains]: {
+                  invoker: 'test.com',
+                  parentCapability: PermissionNames.permittedChains,
+                  date: 2,
+                  caveats: [
+                    {
+                      type: 'restrictNetworkSwitching',
+                      value: ['0xa', '0x64'],
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.data).toStrictEqual({
+      NetworkController: {
+        selectedNetworkClientId: 'mainnet',
+        networkConfigurationsByChainId: {},
+      },
+      SelectedNetworkController: {
+        domains: {},
+      },
+      PermissionController: {
+        subjects: {
+          'test.com': {
+            permissions: {},
+          },
+        },
+      },
+    });
+  });
+
   it('does nothing if neither eth_accounts nor permittedChains permissions have been granted', async () => {
     const oldStorage = {
       meta: { version: oldVersion },

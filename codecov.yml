@@ -5,7 +5,8 @@ coverage:
   round: nearest
   status:
     project: off
-    patch: off
+    patch:
+      off
       # global:
       #   target: auto
       #   threshold: 0%

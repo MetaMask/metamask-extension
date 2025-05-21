@@ -5,6 +5,9 @@ import { useHistory } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { Carousel } from 'react-responsive-carousel';
 ///: END:ONLY_INCLUDE_IF
+// eslint-disable-next-line import/no-restricted-paths
+import { getPlatform } from '../../../../app/scripts/lib/util';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import Mascot from '../../../components/ui/mascot';
 import Button from '../../../components/ui/button';
 import { Text } from '../../../components/component-library';
@@ -32,9 +35,12 @@ import {
   ///: END:ONLY_INCLUDE_IF
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 
 export default function OnboardingWelcome() {
   const t = useI18nContext();
@@ -81,7 +87,11 @@ export default function OnboardingWelcome() {
     dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    history.push(ONBOARDING_METAMETRICS);
+    history.push(
+      getPlatform() === PLATFORM_FIREFOX
+        ? ONBOARDING_CREATE_PASSWORD_ROUTE
+        : ONBOARDING_METAMETRICS,
+    );
     ///: END:ONLY_INCLUDE_IF
   };
   const toggleTermsCheck = () => {
@@ -111,8 +121,28 @@ export default function OnboardingWelcome() {
     dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    history.push(ONBOARDING_METAMETRICS);
+    history.push(
+      getPlatform() === PLATFORM_FIREFOX
+        ? ONBOARDING_IMPORT_WITH_SRP_ROUTE
+        : ONBOARDING_METAMETRICS,
+    );
     ///: END:ONLY_INCLUDE_IF
+  };
+
+  const renderMascot = () => {
+    if (isFlask()) {
+      return (
+        <img src="./images/logo/metamask-fox.svg" width="240" height="240" />
+      );
+    }
+    if (isBeta()) {
+      return (
+        <img src="./images/logo/metamask-fox.svg" width="240" height="240" />
+      );
+    }
+    return (
+      <Mascot animationEventEmitter={eventEmitter} width="250" height="300" />
+    );
   };
 
   return (
@@ -132,13 +162,7 @@ export default function OnboardingWelcome() {
             <Text textAlign={TextAlign.Center} marginLeft={6} marginRight={6}>
               {t('welcomeToMetaMaskIntro')}
             </Text>
-            <div className="onboarding-welcome__mascot">
-              <Mascot
-                animationEventEmitter={eventEmitter}
-                width="250"
-                height="250"
-              />
-            </div>
+            <div className="onboarding-welcome__mascot">{renderMascot()}</div>
           </div>
           <div>
             <Text
@@ -154,10 +178,13 @@ export default function OnboardingWelcome() {
             </Text>
             <div className="onboarding-welcome__image">
               <img
-                src="/images/onboarding-welcome-say-hello.svg"
-                width="169"
-                height="237"
-                alt=""
+                src="/images/onboarding-welcome-say-hello.png"
+                width="200"
+                height="275"
+                style={{
+                  objectFit: 'contain',
+                }}
+                alt="onboarding-welcome-say-hello"
               />
             </div>
           </div>
@@ -175,10 +202,13 @@ export default function OnboardingWelcome() {
             </Text>
             <div className="onboarding-welcome__image">
               <img
-                src="/images/onboarding-welcome-decentralised-apps.svg"
-                width="327"
-                height="256"
-                alt=""
+                src="/images/onboarding-welcome-decentralised-apps.png"
+                width="200"
+                height="275"
+                alt="onboarding-welcome-decentralised-apps"
+                style={{
+                  objectFit: 'contain',
+                }}
               />
             </div>
           </div>

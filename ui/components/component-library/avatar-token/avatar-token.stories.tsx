@@ -7,17 +7,14 @@ import {
   BackgroundColor,
   BorderColor,
 } from '../../../helpers/constants/design-system';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  BadgeWrapper,
-  Box,
-  ButtonLink,
-  ButtonLinkSize,
-  Text,
-} from '..';
 import README from './README.mdx';
-import { AvatarToken, AvatarTokenSize } from '.';
+import { AvatarToken } from './avatar-token';
+import { Box } from '../box';
+import { AvatarTokenSize } from './avatar-token.types';
+import { ButtonLink, ButtonLinkSize } from '../button-link';
+import { BadgeWrapper } from '../badge-wrapper';
+import { AvatarNetwork, AvatarNetworkSize } from '../avatar-network';
+import { Text } from '../text';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarToken',

@@ -1,0 +1,57 @@
+import { useSelector } from 'react-redux';
+import { TransactionMeta } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
+import {
+  getIsSmartTransaction,
+  type SmartTransactionsState,
+} from '../../../../../shared/modules/selectors';
+import { useAsyncResult } from '../../../../hooks/useAsync';
+import { isAtomicBatchSupported } from '../../../../store/controller-actions/transaction-controller';
+import { useConfirmContext } from '../../context/confirm';
+import { isRelaySupported } from '../../../../store/actions';
+
+export function useIsGaslessSupported() {
+  const { currentConfirmation: transactionMeta } =
+    useConfirmContext<TransactionMeta>();
+
+  const { chainId, txParams } = transactionMeta;
+  const { from } = txParams;
+
+  const isSmartTransaction = useSelector((state: SmartTransactionsState) =>
+    getIsSmartTransaction(state, chainId),
+  );
+
+  const { value: atomicBatchSupportResult } = useAsyncResult(async () => {
+    if (isSmartTransaction) {
+      return undefined;
+    }
+
+    return isAtomicBatchSupported({
+      address: from as Hex,
+      chainIds: [chainId],
+    });
+  }, [chainId, from, isSmartTransaction]);
+
+  const { value: relaySupportsChain } = useAsyncResult(async () => {
+    if (isSmartTransaction) {
+      return undefined;
+    }
+
+    return isRelaySupported(chainId);
+  }, [chainId, isSmartTransaction]);
+
+  if (isSmartTransaction) {
+    return true;
+  }
+
+  const atomicBatchChainSupport = atomicBatchSupportResult?.find(
+    (result) => result.chainId.toLowerCase() === chainId.toLowerCase(),
+  );
+
+  if (!atomicBatchChainSupport || !relaySupportsChain) {
+    return false;
+  }
+
+  // Currently requires upgraded account, can also support no `delegationAddress` in future.
+  return atomicBatchChainSupport.isSupported;
+}

@@ -522,7 +522,7 @@ describe('Custom network', function () {
 
           // Go to Edit Menu
           const networkMenu = await driver.findElement(
-            '[data-testid="network-list-item-options-button-0xa4b1"]',
+            '[data-testid="network-list-item-options-button-eip155:42161"]',
           );
 
           await networkMenu.click();

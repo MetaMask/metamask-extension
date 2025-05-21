@@ -3,7 +3,7 @@
 exports[`Connected Site Menu should render the site menu in connected state 1`] = `
 <div>
   <button
-    class="mm-box multichain-connected-site-menu mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default"
+    class="mm-box multichain-connected-site-menu mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg"
     data-testid="connection-menu"
   >
     <div>
@@ -18,15 +18,10 @@ exports[`Connected Site Menu should render the site menu in connected state 1`] 
         <div
           class="mm-box mm-badge-wrapper mm-box--display-inline-block"
         >
-          <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-          >
-            <img
-              alt="Uniswap logo"
-              class="mm-avatar-favicon__image"
-              src="https://uniswap.org/favicon.ico"
-            />
-          </div>
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+            style="mask-image: url('./images/icons/global.svg');"
+          />
           <div
             class="mm-box mm-badge-wrapper__badge-container"
             style="bottom: -1px; right: -4px; z-index: 1;"
@@ -45,7 +40,7 @@ exports[`Connected Site Menu should render the site menu in connected state 1`] 
 exports[`Connected Site Menu should render the site menu in not connected state 1`] = `
 <div>
   <button
-    class="mm-box multichain-connected-site-menu mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default"
+    class="mm-box multichain-connected-site-menu mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg"
     data-testid="connection-menu"
   >
     <div>
@@ -60,15 +55,10 @@ exports[`Connected Site Menu should render the site menu in not connected state 
         <div
           class="mm-box mm-badge-wrapper mm-box--display-inline-block"
         >
-          <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-          >
-            <img
-              alt="Uniswap logo"
-              class="mm-avatar-favicon__image"
-              src="https://uniswap.org/favicon.ico"
-            />
-          </div>
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+            style="mask-image: url('./images/icons/global.svg');"
+          />
           <div
             class="mm-box mm-badge-wrapper__badge-container"
             style="bottom: -1px; right: -4px; z-index: 1;"
@@ -87,7 +77,7 @@ exports[`Connected Site Menu should render the site menu in not connected state 
 exports[`Connected Site Menu should render the site menu in not connected to current account state 1`] = `
 <div>
   <button
-    class="mm-box multichain-connected-site-menu mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default"
+    class="mm-box multichain-connected-site-menu mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg"
     data-testid="connection-menu"
   >
     <div>
@@ -102,15 +92,10 @@ exports[`Connected Site Menu should render the site menu in not connected to cur
         <div
           class="mm-box mm-badge-wrapper mm-box--display-inline-block"
         >
-          <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
-          >
-            <img
-              alt="Uniswap logo"
-              class="mm-avatar-favicon__image"
-              src="https://uniswap.org/favicon.ico"
-            />
-          </div>
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+            style="mask-image: url('./images/icons/global.svg');"
+          />
           <div
             class="mm-box mm-badge-wrapper__badge-container"
             style="bottom: -1px; right: -2px; z-index: 1;"

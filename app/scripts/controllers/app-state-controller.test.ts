@@ -17,6 +17,7 @@ import type {
   AppStateControllerActions,
   AppStateControllerEvents,
   AppStateControllerOptions,
+  AppStateControllerState,
 } from './app-state-controller';
 import type {
   PreferencesControllerState,
@@ -370,6 +371,7 @@ describe('AppStateController', () => {
           id: '123',
           chainId: '0x1',
           timestamp: new Date().getTime(),
+          origin: 'https://example.com',
         };
 
         controller.setLastInteractedConfirmationInfo(
@@ -563,11 +565,42 @@ describe('AppStateController', () => {
       });
     });
   });
+
+  describe('throttledOrigins', () => {
+    describe('updateThrottledOriginState', () => {
+      it('should update the throttledOriginState for a given origin', async () => {
+        await withController(({ controller }) => {
+          controller.updateThrottledOriginState('example.com', {
+            rejections: 1,
+            lastRejection: Date.now(),
+          });
+          expect(
+            controller.state.throttledOrigins['example.com'],
+          ).toStrictEqual({ rejections: 1, lastRejection: expect.any(Number) });
+        });
+      });
+    });
+
+    describe('getThrottledOriginState', () => {
+      it('should return the throttledOriginState for a given origin', async () => {
+        await withController(({ controller }) => {
+          controller.updateThrottledOriginState('example.com', {
+            rejections: 1,
+            lastRejection: Date.now(),
+          });
+          expect(
+            controller.getThrottledOriginState('example.com'),
+          ).toStrictEqual({ rejections: 1, lastRejection: expect.any(Number) });
+        });
+      });
+    });
+  });
 });
 
 type WithControllerOptions = {
   options?: Partial<AppStateControllerOptions>;
   addRequestMock?: jest.Mock;
+  state?: Partial<AppStateControllerState>;
 };
 
 type WithControllerCallback<ReturnValue> = ({
@@ -594,7 +627,7 @@ async function withController<ReturnValue>(
   ...args: WithControllerArgs<ReturnValue>
 ): Promise<ReturnValue> {
   const [{ ...rest }, fn] = args.length === 2 ? args : [{}, args[0]];
-  const { addRequestMock, options = {} } = rest;
+  const { addRequestMock, state, options = {} } = rest;
 
   const controllerMessenger = new Messenger<
     | AppStateControllerActions
@@ -627,6 +660,8 @@ async function withController<ReturnValue>(
   );
   controllerMessenger.registerActionHandler(
     'ApprovalController:addRequest',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     addRequestMock || jest.fn().mockResolvedValue(undefined),
   );
 
@@ -637,6 +672,7 @@ async function withController<ReturnValue>(
       onInactiveTimeout: jest.fn(),
       messenger: appStateMessenger,
       extension: extensionMock,
+      state,
       ...options,
     }),
     controllerMessenger,

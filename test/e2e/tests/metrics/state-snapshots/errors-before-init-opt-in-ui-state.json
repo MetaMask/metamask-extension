@@ -1,7 +1,6 @@
 {
   "data": {
     "AuthenticationController": { "isSignedIn": "boolean" },
-    "UserStorageController": { "isProfileSyncingEnabled": true },
     "NotificationServicesController": {
       "subscriptionAccountsSeen": "object",
       "isFeatureAnnouncementsEnabled": "boolean",
@@ -45,6 +44,7 @@
       "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true
     },
+    "BridgeController": {},
     "CurrencyController": {
       "currentCurrency": "usd",
       "currencyRates": {
@@ -52,6 +52,11 @@
           "conversionDate": "number",
           "conversionRate": 1700,
           "usdConversionRate": 1700
+        },
+        "MON": {
+          "conversionDate": "number",
+          "conversionRate": 0.2,
+          "usdConversionRate": 0.2
         }
       }
     },
@@ -64,7 +69,7 @@
     "MetaMetricsController": {
       "eventsBeforeMetricsOptIn": "object",
       "fragments": "object",
-      "metaMetricsId": "fake-metrics-id",
+      "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
       "participateInMetaMetrics": true,
       "dataCollectionForMarketing": "boolean",
       "traits": "object"
@@ -109,12 +114,12 @@
         "showTestNetworks": false,
         "smartTransactionsOptInStatus": true,
         "showNativeTokenAsMainBalance": true,
-        "petnamesEnabled": true,
+        "petnamesEnabled": "boolean",
+        "showMultiRpcModal": "boolean",
         "showConfirmationAdvancedDetails": false,
         "tokenSortConfig": "object",
-        "tokenNetworkFilter": {},
-        "showMultiRpcModal": "boolean",
-        "shouldShowAggregatedBalancePopover": "boolean"
+        "shouldShowAggregatedBalancePopover": "boolean",
+        "tokenNetworkFilter": {}
       },
       "selectedAddress": "string",
       "theme": "light",
@@ -127,7 +132,6 @@
       "isMultiAccountBalancesEnabled": "boolean",
       "showIncomingTransactions": "object"
     },
-    "QueuedRequestController": { "queuedRequestCount": 0 },
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {
       "smartTransactionsState": {
@@ -142,24 +146,7 @@
     "TokensController": {
       "allDetectedTokens": {},
       "allIgnoredTokens": {},
-      "allTokens": {},
-      "detectedTokens": "object",
-      "ignoredTokens": "object",
-      "tokens": "object"
-    },
-    "BridgeController": {
-      "bridgeState": {
-        "bridgeFeatureFlags": {
-          "extensionConfig": {
-            "support": "boolean",
-            "chains": {
-              "0x1": "object",
-              "0xa": "object",
-              "0xe708": "object"
-            }
-          }
-        }
-      }
+      "allTokens": {}
     },
     "TransactionController": { "transactions": "object" },
     "config": "object",

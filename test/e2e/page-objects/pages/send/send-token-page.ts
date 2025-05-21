@@ -7,6 +7,10 @@ class SendTokenPage {
 
   private readonly assetPickerButton = '[data-testid="asset-picker-button"]';
 
+  private readonly contactsButton = { css: 'button', text: 'Contacts' };
+
+  private readonly contactListItem = '[data-testid="address-list-item-label"]';
+
   private readonly continueButton = {
     text: 'Continue',
     tag: 'button',
@@ -42,6 +46,12 @@ class SendTokenPage {
 
   private readonly warning =
     '[data-testid="send-warning"] .mm-box--min-width-0 span';
+
+  private readonly maxAmountButton = '[data-testid="max-clear-button"]';
+
+  private readonly gasFeeField = '[data-testid="first-gas-field"]';
+
+  private readonly fiatFeeField = '[data-testid="native-currency"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -102,9 +112,8 @@ class SendTokenPage {
     const inputAmount = await this.driver.waitForSelector(this.inputAmount);
     await this.driver.pasteIntoField(this.inputAmount, amount);
     // The return value is not ts-compatible, requiring a temporary any cast to access the element's value. This will be corrected with the driver function's ts migration.
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const inputValue = await (inputAmount as any).getProperty('value');
+
+    const inputValue = await inputAmount.getAttribute('value');
     assert.equal(
       inputValue,
       amount,
@@ -138,8 +147,39 @@ class SendTokenPage {
     await this.driver.pasteIntoField(this.inputRecipient, recipientAddress);
   }
 
+  async clickMaxAmountButton(): Promise<void> {
+    await this.driver.clickElement(this.maxAmountButton);
+  }
+
   async goToNextScreen(): Promise<void> {
     await this.driver.clickElement(this.continueButton);
+  }
+
+  async validateSendFees(): Promise<void> {
+    // Wait for both fields to be present and have the expected values
+    await this.driver.waitForSelector({
+      css: this.gasFeeField,
+      text: '0.0004',
+    });
+    await this.driver.waitForSelector({
+      css: this.fiatFeeField,
+      text: '$0.75',
+    });
+    console.log('Send fees validation successful');
+  }
+
+  /**
+   * Select a contact item on the send token screen.
+   *
+   * @param contactName - The name of the contact to select.
+   */
+  async selectContactItem(contactName: string): Promise<void> {
+    console.log(`Selecting contact item: ${contactName} on send token screen`);
+    await this.driver.clickElement(this.contactsButton);
+    await this.driver.clickElement({
+      text: contactName,
+      css: this.contactListItem,
+    });
   }
 
   /**

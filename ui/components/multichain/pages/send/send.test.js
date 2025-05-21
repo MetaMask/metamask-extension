@@ -149,6 +149,10 @@ const baseStore = {
       {
         type: KeyringType.hdKeyTree,
         accounts: ['0x0'],
+        metadata: {
+          id: 'test-keyring-id',
+          name: '',
+        },
       },
     ],
     ...mockNetworkState({
@@ -197,6 +201,9 @@ const baseStore = {
     useCurrencyRateCheck: true,
     ticker: 'ETH',
     snaps: {},
+  },
+  localeMessages: {
+    currentLocale: 'en',
   },
   activeTab: {
     origin: 'https://uniswap.org/',

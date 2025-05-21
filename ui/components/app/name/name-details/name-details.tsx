@@ -42,7 +42,6 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
-import Name from '../name';
 import FormComboField, {
   FormComboFieldOption,
 } from '../../../ui/form-combo-field/form-combo-field';
@@ -55,6 +54,7 @@ import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { useName } from '../../../../hooks/useName';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import NameDisplay from './name-display';
 import { usePetnamesMetrics } from './metrics';
 
 const UPDATE_DELAY = 1000 * 2; // 2 Seconds
@@ -162,7 +162,7 @@ function useProposedNames(value: string, type: NameType, variation: string) {
   const dispatch = useDispatch();
   const { proposedNames } = useName(value, type, variation);
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const updateInterval = useRef<any>();
 
@@ -183,7 +183,8 @@ function useProposedNames(value: string, type: NameType, variation: string) {
           onlyUpdateAfterDelay: true,
           variation,
         }),
-        // TODO: Replace `any` with type
+
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       )) as any as UpdateProposedNamesResult;
 
@@ -197,6 +198,8 @@ function useProposedNames(value: string, type: NameType, variation: string) {
     reset();
     update();
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     updateInterval.current = setInterval(update, UPDATE_DELAY);
     return reset;
   }, [value, type, variation, dispatch, initialSources, setInitialSources]);
@@ -340,12 +343,10 @@ export default function NameDetails({
             <div
               style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}
             >
-              <Name
+              <NameDisplay
                 value={value}
                 type={NameType.ETHEREUM_ADDRESS}
                 variation={variation}
-                disableEdit
-                internal
               />
             </div>
             <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
@@ -394,6 +395,8 @@ export default function NameDetails({
               variant={ButtonVariant.Primary}
               startIconName={IconName.Save}
               width={BlockSize.Full}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={handleSaveClick}
               size={ButtonSize.Lg}
             >

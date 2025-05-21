@@ -8,7 +8,18 @@ const { Variables } = require('../lib/variables');
 const { ENVIRONMENT } = require('./constants');
 
 const VARIABLES_REQUIRED_IN_PRODUCTION = {
-  main: ['INFURA_PROD_PROJECT_ID', 'SEGMENT_PROD_WRITE_KEY', 'SENTRY_DSN'],
+  main: [
+    'INFURA_PROD_PROJECT_ID',
+    'SEGMENT_PROD_WRITE_KEY',
+    'SENTRY_DSN',
+    'QUICKNODE_MAINNET_URL',
+    'QUICKNODE_LINEA_MAINNET_URL',
+    'QUICKNODE_ARBITRUM_URL',
+    'QUICKNODE_AVALANCHE_URL',
+    'QUICKNODE_OPTIMISM_URL',
+    'QUICKNODE_POLYGON_URL',
+    'QUICKNODE_BASE_URL',
+  ],
   beta: ['INFURA_BETA_PROJECT_ID', 'SEGMENT_BETA_WRITE_KEY', 'SENTRY_DSN'],
   flask: ['INFURA_FLASK_PROJECT_ID', 'SEGMENT_FLASK_WRITE_KEY', 'SENTRY_DSN'],
   mmi: [
@@ -61,14 +72,12 @@ function fromEnv(declarations) {
 }
 
 function fromBuildsYML(buildType, config) {
-  const extractDeclarations = (envArray) =>
-    envArray === undefined
+  const extractDeclarations = (envObject) =>
+    envObject === undefined ? [] : Object.keys(envObject);
+  const extractDefinitions = (envObject) =>
+    envObject === undefined
       ? []
-      : envArray.map((env) => (typeof env === 'string' ? env : env.key));
-  const extractDefinitions = (envArray) =>
-    envArray === undefined
-      ? []
-      : envArray.filter((env) => typeof env !== 'string');
+      : Object.entries(envObject).filter(([, value]) => value !== undefined);
 
   // eslint-disable-next-line no-param-reassign
   buildType = buildType ?? config.default;
@@ -88,7 +97,7 @@ function fromBuildsYML(buildType, config) {
   const definitions = new Map();
 
   // 1. root env
-  extractDefinitions(config.env).forEach(({ key, value }) =>
+  extractDefinitions(config.env).forEach(([key, value]) =>
     definitions.set(key, value),
   );
   // 2. features env
@@ -97,9 +106,9 @@ function fromBuildsYML(buildType, config) {
     .map((key) => config.features[key].env)
     .map(extractDefinitions)
     .flat()
-    .forEach(({ key, value }) => definitions.set(key, value));
+    .forEach(([key, value]) => definitions.set(key, value));
   // 3. build type env
-  extractDefinitions(activeBuild.env).forEach(({ key, value }) =>
+  extractDefinitions(activeBuild.env).forEach(([key, value]) =>
     definitions.set(key, value),
   );
 
@@ -160,4 +169,5 @@ async function getConfig(buildType, environment) {
 
 module.exports = {
   getConfig,
+  fromIniFile,
 };

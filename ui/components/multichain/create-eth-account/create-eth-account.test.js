@@ -69,4 +69,26 @@ describe('CreateEthAccount', () => {
     const submitButton = getByText('Add account');
     expect(submitButton).toHaveAttribute('disabled');
   });
+
+  it('passes keyringId when creating account with multi-srp', async () => {
+    const onActionComplete = jest.fn();
+    const selectedKeyringId = 'test-keyring-id';
+    const { getByText, getByPlaceholderText } = render({
+      onActionComplete,
+      selectedKeyringId,
+    });
+
+    const input = await waitFor(() => getByPlaceholderText('Account 7'));
+    const newAccountName = 'New Account Name';
+
+    fireEvent.change(input, {
+      target: { value: newAccountName },
+    });
+    fireEvent.click(getByText('Add account'));
+
+    await waitFor(() =>
+      expect(mockAddNewAccount).toHaveBeenCalledWith(selectedKeyringId),
+    );
+    await waitFor(() => expect(onActionComplete).toHaveBeenCalledWith(true));
+  });
 });

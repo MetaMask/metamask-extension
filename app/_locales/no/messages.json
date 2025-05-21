@@ -304,9 +304,6 @@
     "message": "Importer",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Importér konto"
-  },
   "importAccountMsg": {
     "message": "Importerte kontoer blir ikke tilknyttet den opprinnelig opprettede mnemoniske gjenopprettingsfrasen for MetaMask-kontoen din. Finn ut mer om importerte kontoer"
   },

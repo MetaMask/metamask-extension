@@ -15,6 +15,7 @@ export class Common {
   constructor({ chain, hardfork }) {
     this.chain = chain;
     this.hardfork = hardfork;
+    this.customCrypto = {};
   }
 
   /**

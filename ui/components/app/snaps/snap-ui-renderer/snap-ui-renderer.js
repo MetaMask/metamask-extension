@@ -19,6 +19,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { mapToExtensionCompatibleColor, mapToTemplate } from './utils';
+import { COMPONENT_MAPPING } from './components';
 
 // Component for tracking the number of re-renders
 // DO NOT USE IN PRODUCTION
@@ -84,6 +85,7 @@ const SnapUIRendererComponent = ({
         promptLegacyProps,
         t,
         contentBackgroundColor: backgroundColor,
+        componentMap: COMPONENT_MAPPING,
       }),
     [content, onCancel, useFooter, promptLegacyProps, t, backgroundColor],
   );
@@ -102,7 +104,7 @@ const SnapUIRendererComponent = ({
     );
   }
 
-  const { state: initialState, context } = interfaceState;
+  const { state: initialState } = interfaceState;
 
   // The renderer should only have a footer if there is a default cancel action
   // or if the footer component has been used.
@@ -113,7 +115,6 @@ const SnapUIRendererComponent = ({
       snapId={snapId}
       interfaceId={interfaceId}
       initialState={initialState}
-      context={context}
     >
       <Box
         className="snap-ui-renderer__content"

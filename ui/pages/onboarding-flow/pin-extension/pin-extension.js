@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import {
   setCompletedOnboarding,
-  performSignIn,
   toggleExternalServices,
 } from '../../../store/actions';
 ///: END:ONLY_INCLUDE_IF
@@ -32,9 +31,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getFirstTimeFlowType,
   getExternalServicesOnboardingToggleState,
-  getParticipateInMetaMetrics,
 } from '../../../selectors';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -55,8 +52,6 @@ export default function OnboardingPinExtension() {
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
   );
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
 
   const handleClick = async () => {
     if (selectedIndex === 0) {
@@ -66,10 +61,6 @@ export default function OnboardingPinExtension() {
         toggleExternalServices(externalServicesOnboardingToggleState),
       );
       await dispatch(setCompletedOnboarding());
-
-      if (isProfileSyncingEnabled || participateInMetaMetrics) {
-        await dispatch(performSignIn());
-      }
 
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,

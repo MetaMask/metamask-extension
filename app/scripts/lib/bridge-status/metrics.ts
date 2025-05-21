@@ -1,12 +1,15 @@
 /* eslint-disable camelcase */
 import { TransactionControllerTransactionFailedEvent } from '@metamask/transaction-controller';
-// eslint-disable-next-line import/no-restricted-paths
-import { ActionType } from '../../../../ui/hooks/bridge/events/types';
+import {
+  formatChainIdToHex,
+  isEthUsdt,
+  StatusTypes,
+} from '@metamask/bridge-controller';
 // eslint-disable-next-line import/no-restricted-paths
 import {
   BridgeStatusControllerBridgeTransactionCompleteEvent,
   BridgeStatusControllerBridgeTransactionFailedEvent,
-} from '../../controllers/bridge-status/types';
+} from '@metamask/bridge-status-controller';
 import { decimalToPrefixedHex } from '../../../../shared/modules/conversion.utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 // eslint-disable-next-line import/no-restricted-paths
@@ -18,12 +21,10 @@ import {
 } from '../../../../shared/constants/metametrics';
 // eslint-disable-next-line import/no-restricted-paths
 import { CrossChainSwapsEventProperties } from '../../../../ui/hooks/bridge/useCrossChainSwapsEventTracker';
-import {
-  StatusTypes,
-  MetricsBackgroundState,
-} from '../../../../shared/types/bridge-status';
-import { isEthUsdt } from '../../../../shared/modules/bridge-utils/bridge.util';
 import { getCommonProperties } from '../../../../shared/lib/bridge-status/metrics';
+// eslint-disable-next-line import/no-restricted-paths
+import { type ActionType } from '../../../../ui/hooks/bridge/events/types';
+import { type MetricsBackgroundState } from '../../../../shared/types/bridge-status';
 import { getTokenUsdValue } from './metrics-utils';
 
 type TrackEvent = (
@@ -62,7 +63,7 @@ export const handleBridgeTransactionComplete = async (
   ).toNumber();
   const destTokenUsdValue =
     (await getTokenUsdValue({
-      chainId: chain_id_destination,
+      chainId: formatChainIdToHex(chain_id_destination),
       tokenAmount: destTokenAmount,
       tokenAddress: quote.destAsset.address,
       state,
@@ -203,8 +204,7 @@ export const handleTransactionFailedTypeBridge = async (
 ) => {
   const state = { metamask: backgroundState };
   const { transactionMeta: txMeta } = payload;
-  const bridgeHistoryItem =
-    state.metamask.bridgeStatusState.txHistory[txMeta.id];
+  const bridgeHistoryItem = state.metamask.txHistory[txMeta.id];
   const { quote, hasApprovalTx } = bridgeHistoryItem;
 
   const common = getCommonProperties(bridgeHistoryItem, state);

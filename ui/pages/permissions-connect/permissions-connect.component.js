@@ -4,7 +4,10 @@ import { Switch, Route } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
 import { isSnapId } from '@metamask/snaps-utils';
-import { getEthAccounts, getPermittedEthChainIds } from '@metamask/multichain';
+import {
+  getEthAccounts,
+  getPermittedEthChainIds,
+} from '@metamask/chain-agnostic-permission';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../../app/scripts/lib/multichain/address';
@@ -13,7 +16,6 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import PermissionPageContainer from '../../components/app/permission-page-container';
 import { Box } from '../../components/component-library';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
-import PermissionConnectHeader from '../../components/app/permission-connect-header';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 import SnapsConnect from './snaps/snaps-connect';
@@ -21,13 +23,13 @@ import SnapInstall from './snaps/snap-install';
 import SnapUpdate from './snaps/snap-update';
 import SnapResult from './snaps/snap-result';
 import { ConnectPage } from './connect-page/connect-page';
-import { getRequestedSessionScopes } from './connect-page/utils';
+import { getRequestedCaip25CaveatValue } from './connect-page/utils';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 
 function getDefaultSelectedAccounts(currentAddress, permissions) {
-  const requestedSessionsScopes = getRequestedSessionScopes(permissions);
-  const requestedAccounts = getEthAccounts(requestedSessionsScopes);
+  const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(permissions);
+  const requestedAccounts = getEthAccounts(requestedCaip25CaveatValue);
 
   if (requestedAccounts.length > 0) {
     return new Set(
@@ -43,8 +45,8 @@ function getDefaultSelectedAccounts(currentAddress, permissions) {
 }
 
 function getRequestedChainIds(permissions) {
-  const requestedSessionsScopes = getRequestedSessionScopes(permissions);
-  return getPermittedEthChainIds(requestedSessionsScopes);
+  const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(permissions);
+  return getPermittedEthChainIds(requestedCaip25CaveatValue);
 }
 
 export default class PermissionConnect extends Component {
@@ -277,17 +279,11 @@ export default class PermissionConnect extends Component {
             'var(--shadow-size-lg) var(--color-shadow-default)',
         }}
       >
-        {targetSubjectMetadata.subjectType === SubjectType.Snap ? (
+        {targetSubjectMetadata.subjectType === SubjectType.Snap && (
           <SnapAuthorshipHeader
             snapId={targetSubjectMetadata.origin}
             boxShadow="none"
             onCancel={handleCancelFromHeader}
-          />
-        ) : (
-          <PermissionConnectHeader
-            requestId={permissionsRequestId}
-            origin={targetSubjectMetadata.origin}
-            iconUrl={targetSubjectMetadata.iconUrl}
           />
         )}
       </Box>
@@ -375,6 +371,7 @@ export default class PermissionConnect extends Component {
                     request={permissionsRequest || {}}
                     permissionsRequestId={permissionsRequestId}
                     approveConnection={this.approveConnection}
+                    targetSubjectMetadata={targetSubjectMetadata}
                   />
                 )
               }

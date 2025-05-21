@@ -313,9 +313,6 @@
     "message": "Uvezi",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Uvezi račun"
-  },
   "importAccountMsg": {
     "message": "Uvezeni se računi ne pridružuju vašoj izvorno stvorenoj početnoj rečenici za MetaMask. Saznajte više o uvezenim računima"
   },

@@ -2,19 +2,7 @@ import * as React from 'react';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
 import { getUseBlockie } from '../../../selectors';
-import {
-  Text,
-  Box,
-  AvatarToken,
-  AvatarTokenSize,
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarBase,
-  AvatarBaseSize,
-} from '../../component-library';
+import { Text } from '../../component-library/text';
 import {
   AlignItems,
   BackgroundColor,
@@ -24,6 +12,24 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import {
+  AvatarTokenSize,
+  AvatarToken,
+} from '../../component-library/avatar-token';
+import { Box } from '../../component-library/box';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarAccountVariant,
+} from '../../component-library/avatar-account';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+} from '../../component-library/avatar-network';
+import {
+  AvatarBase,
+  AvatarBaseSize,
+} from '../../component-library/avatar-base';
 import { AvatarGroupProps, AvatarType } from './avatar-group.types';
 
 export const AvatarGroup: React.FC<AvatarGroupProps> = ({

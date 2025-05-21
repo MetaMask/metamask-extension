@@ -36,8 +36,8 @@ describe('Add hide token', function () {
           .build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
         await assetListPage.check_tokenItemNumber(2);
         await assetListPage.check_tokenAmountIsDisplayed('0 TST');

@@ -313,9 +313,6 @@
     "message": "Impordi",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Impordi konto"
-  },
   "importAccountMsg": {
     "message": "Imporditud kontosid ei seostata teie ainulaadse MetaMaski konto seemnefraasiga. Lugege imporditud kontode kohta lähemalt"
   },

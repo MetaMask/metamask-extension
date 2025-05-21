@@ -1,3 +1,4 @@
+import { noop } from 'lodash';
 import {
   getPPOMControllerMessenger,
   getPPOMControllerInitMessenger,
@@ -17,13 +18,87 @@ import {
   getTransactionControllerMessenger,
   getTransactionControllerInitMessenger,
 } from './transaction-controller-messenger';
+import {
+  getMultichainBalancesControllerMessenger,
+  getMultichainTransactionsControllerMessenger,
+  getMultichainAssetsControllerMessenger,
+  getMultichainNetworkControllerMessenger,
+  getMultichainAssetsRatesControllerMessenger,
+} from './multichain';
+import { getInstitutionalSnapControllerMessenger } from './accounts/institutional-snap-controller-messenger';
+import {
+  getAuthenticationControllerMessenger,
+  getUserStorageControllerMessenger,
+} from './identity';
+import {
+  getAssetsContractControllerMessenger,
+  getNftControllerMessenger,
+  getNftDetectionControllerMessenger,
+  getTokenRatesControllerMessenger,
+} from './assets';
+import {
+  getNotificationServicesControllerMessenger,
+  getNotificationServicesPushControllerMessenger,
+} from './notifications';
+import { getDeFiPositionsControllerMessenger } from './defi-positions';
+import { getDeFiPositionsControllerInitMessenger } from './defi-positions/defi-positions-controller-messenger';
+import {
+  getDelegationControllerInitMessenger,
+  getDelegationControllerMessenger,
+} from './delegation/delegation-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
+  AuthenticationController: {
+    getMessenger: getAuthenticationControllerMessenger,
+    getInitMessenger: noop,
+  },
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,
+    getInitMessenger: noop,
+  },
+  DeFiPositionsController: {
+    getMessenger: getDeFiPositionsControllerMessenger,
+    getInitMessenger: getDeFiPositionsControllerInitMessenger,
+  },
+  DelegationController: {
+    getMessenger: getDelegationControllerMessenger,
+    getInitMessenger: getDelegationControllerInitMessenger,
   },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
+    getInitMessenger: noop,
+  },
+  InstitutionalSnapController: {
+    getMessenger: getInstitutionalSnapControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MultichainAssetsController: {
+    getMessenger: getMultichainAssetsControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MultichainAssetsRatesController: {
+    getMessenger: getMultichainAssetsRatesControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MultichainBalancesController: {
+    getMessenger: getMultichainBalancesControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MultichainTransactionsController: {
+    getMessenger: getMultichainTransactionsControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MultichainNetworkController: {
+    getMessenger: getMultichainNetworkControllerMessenger,
+    getInitMessenger: noop,
+  },
+  NotificationServicesController: {
+    getMessenger: getNotificationServicesControllerMessenger,
+    getInitMessenger: noop,
+  },
+  NotificationServicesPushController: {
+    getMessenger: getNotificationServicesPushControllerMessenger,
+    getInitMessenger: noop,
   },
   RateLimitController: {
     getMessenger: getRateLimitControllerMessenger,
@@ -31,6 +106,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   SnapsRegistry: {
     getMessenger: getSnapsRegistryMessenger,
+    getInitMessenger: noop,
   },
   SnapController: {
     getMessenger: getSnapControllerMessenger,
@@ -38,9 +114,11 @@ export const CONTROLLER_MESSENGERS = {
   },
   SnapInsightsController: {
     getMessenger: getSnapInsightsControllerMessenger,
+    getInitMessenger: noop,
   },
   SnapInterfaceController: {
     getMessenger: getSnapInterfaceControllerMessenger,
+    getInitMessenger: noop,
   },
   PPOMController: {
     getMessenger: getPPOMControllerMessenger,
@@ -49,5 +127,25 @@ export const CONTROLLER_MESSENGERS = {
   TransactionController: {
     getMessenger: getTransactionControllerMessenger,
     getInitMessenger: getTransactionControllerInitMessenger,
+  },
+  UserStorageController: {
+    getMessenger: getUserStorageControllerMessenger,
+    getInitMessenger: noop,
+  },
+  TokenRatesController: {
+    getMessenger: getTokenRatesControllerMessenger,
+    getInitMessenger: noop,
+  },
+  NftController: {
+    getMessenger: getNftControllerMessenger,
+    getInitMessenger: noop,
+  },
+  NftDetectionController: {
+    getMessenger: getNftDetectionControllerMessenger,
+    getInitMessenger: noop,
+  },
+  AssetsContractController: {
+    getMessenger: getAssetsContractControllerMessenger,
+    getInitMessenger: noop,
   },
 } as const;

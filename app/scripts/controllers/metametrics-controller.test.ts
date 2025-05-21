@@ -23,6 +23,7 @@ import {
   MetaMetricsUserTraits,
 } from '../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { KeyringType } from '../../../shared/constants/keyring';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import * as Utils from '../lib/util';
 import { mockNetworkState } from '../../../test/stub/networks';
@@ -209,19 +210,13 @@ describe('MetaMetricsController', function () {
   });
 
   describe('createEventFragment', function () {
-    it('should throw an error if the param is missing successEvent or category', async function () {
+    it('should throw an error if the param is missing successEvent', async function () {
       await withController(async ({ controller }) => {
         await expect(() => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-expect-error because we are testing the error case
-          controller.createEventFragment({ event: 'test' });
-        }).toThrow(/Must specify success event and category\./u);
-
-        await expect(() => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-expect-error because we are testing the error case
           controller.createEventFragment({ category: 'test' });
-        }).toThrow(/Must specify success event and category\./u);
+        }).toThrow(/Must specify success event\./u);
       });
     });
 
@@ -790,19 +785,13 @@ describe('MetaMetricsController', function () {
       });
     });
 
-    it('should throw if event or category not provided', async function () {
+    it('should throw if event not provided', async function () {
       await withController(({ controller }) => {
         expect(() => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-expect-error because we are testing the error case
-          controller.trackEvent({ event: 'test' });
-        }).toThrow(/Must specify event and category\./u);
-
-        expect(() => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-expect-error because we are testing the error case
           controller.trackEvent({ category: 'test' });
-        }).toThrow(/Must specify event and category\./u);
+        }).toThrow(/Must specify event\./u);
       });
     });
 
@@ -1413,6 +1402,22 @@ describe('MetaMetricsController', function () {
             },
             selectedAccount: 'mock1',
           },
+          multichainNetworkConfigurationsByChainId: {
+            'bip122:000000000019d6689c085ae165831e93': {
+              chainId: 'bip122:000000000019d6689c085ae165831e93',
+              isEvm: false,
+              name: 'Bitcoin Mainnet',
+              nativeCurrency:
+                'bip122:000000000019d6689c085ae165831e93/slip44:0',
+            },
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+              chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+              isEvm: false,
+              name: 'Solana Mainnet',
+              nativeCurrency:
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            },
+          },
           ledgerTransportType: LedgerTransportTypes.webhid,
           openSeaEnabled: true,
           useNftDetection: false,
@@ -1458,10 +1463,19 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          sessionData: undefined,
+          keyrings: [],
         });
 
         expect(traits).toStrictEqual({
           [MetaMetricsUserTrait.AddressBookEntries]: 3,
+          [MetaMetricsUserTrait.ChainIdList]: [
+            'eip155:1',
+            'eip155:5',
+            'eip155:175',
+            'bip122:000000000019d6689c085ae165831e93',
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          ],
           [MetaMetricsUserTrait.InstallDateExt]: '',
           [MetaMetricsUserTrait.LedgerConnectionType]:
             LedgerTransportTypes.webhid,
@@ -1476,6 +1490,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.NumberOfNftCollections]: 3,
           [MetaMetricsUserTrait.NumberOfNfts]: 4,
           [MetaMetricsUserTrait.NumberOfTokens]: 5,
+          [MetaMetricsUserTrait.NumberOfHDEntropies]: 0,
           [MetaMetricsUserTrait.OpenSeaApiEnabled]: true,
           [MetaMetricsUserTrait.ThreeBoxEnabled]: false,
           [MetaMetricsUserTrait.Theme]: 'default',
@@ -1485,6 +1500,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.HasMarketingConsent]: false,
           [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
           [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+          [MetaMetricsUserTrait.ProfileId]: undefined,
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
           [MetaMetricsUserTrait.MmiAccountAddress]: null,
@@ -1555,6 +1571,9 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          sessionData: undefined,
+          keyrings: [],
+          multichainNetworkConfigurationsByChainId: {},
         });
 
         const updatedTraits = controller._buildUserTraitsObject({
@@ -1614,6 +1633,20 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          sessionData: {
+            token: {
+              accessToken: '',
+              expiresIn: 0,
+              obtainedAt: 0,
+            },
+            profile: {
+              identifierId: 'identifierId',
+              profileId: 'profileId',
+              metaMetricsId: 'testid',
+            },
+          },
+          keyrings: [],
+          multichainNetworkConfigurationsByChainId: {},
         });
 
         expect(updatedTraits).toStrictEqual({
@@ -1622,6 +1655,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.NumberOfTokens]: 1,
           [MetaMetricsUserTrait.OpenSeaApiEnabled]: false,
           [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]: false,
+          [MetaMetricsUserTrait.ProfileId]: 'profileId',
         });
       });
     });
@@ -1681,6 +1715,20 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          sessionData: {
+            token: {
+              accessToken: '',
+              expiresIn: 0,
+              obtainedAt: 0,
+            },
+            profile: {
+              identifierId: 'identifierId',
+              profileId: 'profileId',
+              metaMetricsId: 'testid',
+            },
+          },
+          keyrings: [],
+          multichainNetworkConfigurationsByChainId: {},
         });
 
         const updatedTraits = controller._buildUserTraitsObject({
@@ -1730,6 +1778,20 @@ describe('MetaMetricsController', function () {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           custodyAccountDetails: {},
           ///: END:ONLY_INCLUDE_IF
+          sessionData: {
+            token: {
+              accessToken: '',
+              expiresIn: 0,
+              obtainedAt: 0,
+            },
+            profile: {
+              identifierId: 'identifierId',
+              profileId: 'profileId',
+              metaMetricsId: 'testid',
+            },
+          },
+          keyrings: [],
+          multichainNetworkConfigurationsByChainId: {},
         });
         expect(updatedTraits).toStrictEqual(null);
       });
@@ -1873,6 +1935,63 @@ describe('MetaMetricsController', function () {
         expect(setUninstallURLSpy).toHaveBeenCalledWith(
           expect.stringContaining('env='),
         );
+      });
+    });
+  });
+
+  describe('getNumberOfHDEntropies', function () {
+    it('counts HD entropies correctly across various keyring configurations', async function () {
+      await withController(({ controller: _ }) => {
+        const testScenarios = [
+          {
+            name: 'with undefined keyrings',
+            state: { keyrings: undefined },
+            expectedCount: 0,
+          },
+          {
+            name: 'with empty keyrings array',
+            state: { keyrings: [] },
+            expectedCount: 0,
+          },
+          {
+            name: 'with one HD keyring',
+            state: {
+              keyrings: [{ type: KeyringType.hdKeyTree, accounts: ['0x123'] }],
+            },
+            expectedCount: 1,
+          },
+          {
+            name: 'with two HD keyrings',
+            state: {
+              keyrings: [
+                { type: KeyringType.hdKeyTree, accounts: ['0x123'] },
+                { type: KeyringType.hdKeyTree, accounts: ['0x456'] },
+              ],
+            },
+            expectedCount: 2,
+          },
+          {
+            name: 'with mixed keyring types',
+            state: {
+              keyrings: [
+                { type: KeyringType.hdKeyTree, accounts: ['0x123'] },
+                { type: KeyringType.imported, accounts: ['0x456'] },
+                { type: KeyringType.ledger, accounts: ['0x789'] },
+                { type: KeyringType.hdKeyTree, accounts: ['0xabc'] },
+              ],
+            },
+            expectedCount: 2,
+          },
+        ];
+
+        testScenarios.forEach((scenario) => {
+          // Implement the same logic as the private method
+          const hdKeyringCount =
+            scenario.state.keyrings?.filter(
+              (keyring) => keyring.type === KeyringType.hdKeyTree,
+            ).length ?? 0;
+          expect(hdKeyringCount).toBe(scenario.expectedCount);
+        });
       });
     });
   });

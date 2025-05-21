@@ -1,38 +1,27 @@
-import { useSelector } from 'react-redux';
 import {
-  TransactionMeta,
+  type TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
-import { NetworkConfiguration } from '@metamask/network-controller';
-import { Numeric } from '../../../shared/modules/Numeric';
-import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
-import { BridgeHistoryItem } from '../../../shared/types/bridge-status';
 import {
-  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
-  NETWORK_TO_NAME_MAP,
-} from '../../../shared/constants/network';
+  formatChainIdToCaip,
+  formatChainIdToHex,
+  getNativeAssetForChainId,
+  isSolanaChainId,
+} from '@metamask/bridge-controller';
+import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../shared/constants/common';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 
 const getSourceAndDestChainIds = ({
   bridgeHistoryItem,
 }: UseBridgeChainInfoProps) => {
-  const hexSrcChainId = bridgeHistoryItem
-    ? (new Numeric(
-        bridgeHistoryItem.quote.srcChainId,
-        10,
-      ).toPrefixedHexString() as Hex)
-    : undefined;
-  const hexDestChainId = bridgeHistoryItem
-    ? (new Numeric(
-        bridgeHistoryItem.quote.destChainId,
-        10,
-      ).toPrefixedHexString() as Hex)
-    : undefined;
-
   return {
-    hexSrcChainId,
-    hexDestChainId,
+    srcChainId: bridgeHistoryItem
+      ? bridgeHistoryItem.quote.srcChainId
+      : undefined,
+    destChainId: bridgeHistoryItem
+      ? bridgeHistoryItem.quote.destChainId
+      : undefined,
   };
 };
 
@@ -45,10 +34,6 @@ export default function useBridgeChainInfo({
   bridgeHistoryItem,
   srcTxMeta,
 }: UseBridgeChainInfoProps) {
-  const networkConfigurationsByChainId = useSelector(
-    getNetworkConfigurationsByChainId,
-  );
-
   if (srcTxMeta?.type !== TransactionType.bridge) {
     return {
       srcNetwork: undefined,
@@ -56,11 +41,11 @@ export default function useBridgeChainInfo({
     };
   }
 
-  const { hexSrcChainId, hexDestChainId } = getSourceAndDestChainIds({
+  const { srcChainId, destChainId } = getSourceAndDestChainIds({
     bridgeHistoryItem,
   });
 
-  if (!hexSrcChainId || !hexDestChainId) {
+  if (!srcChainId || !destChainId) {
     return {
       srcNetwork: undefined,
       destNetwork: undefined,
@@ -68,45 +53,71 @@ export default function useBridgeChainInfo({
   }
 
   // Source chain info
-  const srcNetwork = networkConfigurationsByChainId[hexSrcChainId]
-    ? networkConfigurationsByChainId[hexSrcChainId]
-    : undefined;
-  const fallbackSrcNetwork: NetworkConfiguration = {
-    chainId: hexSrcChainId,
-    name: NETWORK_TO_NAME_MAP[
-      hexSrcChainId as keyof typeof NETWORK_TO_NAME_MAP
+  const srcChainIdInCaip = formatChainIdToCaip(srcChainId);
+  const normalizedSrcChainId = isSolanaChainId(srcChainId)
+    ? srcChainIdInCaip
+    : formatChainIdToHex(srcChainId);
+
+  const commonSrcNetworkFields = {
+    chainId: srcChainIdInCaip,
+    name: NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+      normalizedSrcChainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
     ],
-    nativeCurrency:
-      CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
-        hexSrcChainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
-      ],
-    defaultBlockExplorerUrlIndex: 0,
-    blockExplorerUrls: [CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[hexSrcChainId]],
-    defaultRpcEndpointIndex: 0,
-    rpcEndpoints: [],
+  };
+
+  const srcNetwork = {
+    ...commonSrcNetworkFields,
+    ...(isSolanaChainId(srcChainIdInCaip)
+      ? ({
+          isEvm: false,
+          nativeCurrency: getNativeAssetForChainId(srcChainId)?.assetId,
+        } as const)
+      : {
+          defaultBlockExplorerUrlIndex: 0,
+          blockExplorerUrls: [
+            CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[normalizedSrcChainId],
+          ],
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [],
+          nativeCurrency: getNativeAssetForChainId(srcChainId)?.symbol,
+          isEvm: true as const,
+        }),
   };
 
   // Dest chain info
-  const destNetwork = networkConfigurationsByChainId[hexDestChainId]
-    ? networkConfigurationsByChainId[hexDestChainId]
-    : undefined;
-  const fallbackDestNetwork: NetworkConfiguration = {
-    chainId: hexDestChainId,
-    name: NETWORK_TO_NAME_MAP[
-      hexDestChainId as keyof typeof NETWORK_TO_NAME_MAP
+  const destChainIdInCaip = formatChainIdToCaip(destChainId);
+  const normalizedDestChainId = isSolanaChainId(destChainId)
+    ? destChainIdInCaip
+    : formatChainIdToHex(destChainId);
+
+  const commonDestNetworkFields = {
+    chainId: destChainIdInCaip,
+    name: NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+      normalizedDestChainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
     ],
-    nativeCurrency:
-      CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
-        hexDestChainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
-      ],
-    defaultBlockExplorerUrlIndex: 0,
-    blockExplorerUrls: [CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[hexDestChainId]],
-    defaultRpcEndpointIndex: 0,
-    rpcEndpoints: [],
+  };
+
+  const destNetwork = {
+    ...commonDestNetworkFields,
+    ...(isSolanaChainId(destChainIdInCaip)
+      ? ({
+          isEvm: false,
+          nativeCurrency: getNativeAssetForChainId(destChainId)?.assetId,
+        } as const)
+      : {
+          defaultBlockExplorerUrlIndex: 0,
+          blockExplorerUrls: [
+            CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[normalizedDestChainId],
+          ],
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [],
+          nativeCurrency: getNativeAssetForChainId(destChainId)?.symbol,
+          isEvm: true as const,
+        }),
   };
 
   return {
-    srcNetwork: srcNetwork || fallbackSrcNetwork,
-    destNetwork: destNetwork || fallbackDestNetwork,
+    srcNetwork,
+    destNetwork,
   };
 }

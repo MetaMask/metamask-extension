@@ -19,10 +19,20 @@ class ConfirmSolanaTxPage {
     this.driver = driver;
   }
 
-  async checkAmountDisplayed(amount: string): Promise<boolean> {
+  async checkAmountDisplayed(
+    amount: string,
+    tokenName: string = '',
+  ): Promise<boolean> {
     try {
+      if (tokenName === '') {
+        await this.driver.waitForSelector({
+          text: `${amount}`,
+          tag: 'h2',
+        });
+        return true;
+      }
       await this.driver.waitForSelector({
-        text: `${amount}`,
+        text: `${amount} ${tokenName}`,
         tag: 'h2',
       });
       return true;
@@ -63,7 +73,9 @@ class ConfirmSolanaTxPage {
 
   async isSendButtonEnabled(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(this.sendButton, 1000);
+      await this.driver.findClickableElement(this.sendButton, {
+        timeout: 1000,
+      });
     } catch (e) {
       console.log('Send button not enabled', e);
       return false;

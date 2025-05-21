@@ -9,6 +9,7 @@ const {
   switchToNotificationWindow,
 } = require('../../helpers');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
+const { MOCK_META_METRICS_ID } = require('./constants');
 
 const selectedAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const selectedAddressWithoutPrefix = '5cfe73b6021e818b776b421b1c4db2474086a7e1';
@@ -264,7 +265,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
             securityAlertsEnabled: true,
           })
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -318,7 +319,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
             ppom_debug_traceCall_count: 3,
             ppom_eth_call_count: 1,
           },
-          userId: 'fake-metrics-id',
+          userId: MOCK_META_METRICS_ID,
           type: 'track',
         };
 
@@ -352,7 +353,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
             ppom_eth_call_count: 1,
             ppom_debug_traceCall_count: 1,
           },
-          userId: 'fake-metrics-id',
+          userId: MOCK_META_METRICS_ID,
           type: 'track',
         };
 

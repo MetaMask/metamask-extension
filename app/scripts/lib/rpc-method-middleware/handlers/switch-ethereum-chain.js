@@ -1,4 +1,6 @@
 import { providerErrors } from '@metamask/rpc-errors';
+import { isSnapId } from '@metamask/snaps-utils';
+
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   validateSwitchEthereumChainParams,
@@ -11,10 +13,13 @@ const switchEthereumChain = {
   hookNames: {
     getNetworkConfigurationByChainId: true,
     setActiveNetwork: true,
+    requestUserApproval: true,
     getCaveat: true,
     getCurrentChainIdForDomain: true,
-    requestPermittedChainsPermissionForOrigin: true,
     requestPermittedChainsPermissionIncrementalForOrigin: true,
+    rejectApprovalRequestsForOrigin: true,
+    setTokenNetworkFilter: true,
+    hasApprovalRequestsForOrigin: true,
   },
 };
 
@@ -28,10 +33,13 @@ async function switchEthereumChainHandler(
   {
     getNetworkConfigurationByChainId,
     setActiveNetwork,
+    requestUserApproval,
     getCaveat,
     getCurrentChainIdForDomain,
-    requestPermittedChainsPermissionForOrigin,
     requestPermittedChainsPermissionIncrementalForOrigin,
+    rejectApprovalRequestsForOrigin,
+    setTokenNetworkFilter,
+    hasApprovalRequestsForOrigin,
   },
 ) {
   let chainId;
@@ -64,10 +72,24 @@ async function switchEthereumChainHandler(
     );
   }
 
+  const fromNetworkConfiguration = getNetworkConfigurationByChainId(
+    currentChainIdForOrigin,
+  );
+
+  const toNetworkConfiguration = getNetworkConfigurationByChainId(chainId);
+
   return switchChain(res, end, chainId, networkClientIdToSwitchTo, {
+    origin,
+    isSwitchFlow: true,
+    autoApprove: isSnapId(origin),
     setActiveNetwork,
     getCaveat,
-    requestPermittedChainsPermissionForOrigin,
     requestPermittedChainsPermissionIncrementalForOrigin,
+    rejectApprovalRequestsForOrigin,
+    setTokenNetworkFilter,
+    requestUserApproval,
+    hasApprovalRequestsForOrigin,
+    toNetworkConfiguration,
+    fromNetworkConfiguration,
   });
 }

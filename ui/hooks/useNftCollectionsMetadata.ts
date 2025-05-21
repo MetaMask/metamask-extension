@@ -4,7 +4,7 @@ import {
   getNFTContractInfo,
   getTokenStandardAndDetails,
 } from '../store/actions';
-import { useAsyncResult } from './useAsyncResult';
+import { useAsyncResult } from './useAsync';
 
 export type UseNftCollectionsMetadataRequest = {
   chainId: string;

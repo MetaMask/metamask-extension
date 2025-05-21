@@ -887,9 +887,6 @@
     "message": "Importar",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "Importar cuenta"
-  },
   "importAccountError": {
     "message": "Error al importar la cuenta."
   },
@@ -1561,9 +1558,6 @@
   "seedPhraseIntroTitle": {
     "message": "Proteger su cartera"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Antes de comenzar, mire este breve video para aprender sobre su frase de recuperación y sobre cómo proteger su cartera."
-  },
   "seedPhraseReq": {
     "message": "Las frases secretas de recuperación contienen 12, 15, 18, 21 o 24 palabras"
   },
@@ -1631,13 +1625,6 @@
   },
   "showHexDataDescription": {
     "message": "Seleccione esta opción para mostrar el campo de datos hexadecimales en la pantalla de envío"
-  },
-  "showIncomingTransactions": {
-    "message": "Mostrar transacciones entrantes"
-  },
-  "showIncomingTransactionsDescription": {
-    "message": "Seleccione esta opción para usar Etherscan para mostrar las transacciones entrantes en la lista de transacciones",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
   "showPermissions": {
     "message": "Mostrar permisos"
@@ -2260,10 +2247,6 @@
   },
   "welcomeToMetaMaskIntro": {
     "message": "Con la confianza de millones de personas, MetaMask es una cartera segura que pone el mundo de la web3 al alcance de todos."
-  },
-  "whatsNew": {
-    "message": "Novedades",
-    "description": "This is the title of a popup that gives users notifications about new features and updates to MetaMask."
   },
   "whatsThis": {
     "message": "¿Qué es esto?"

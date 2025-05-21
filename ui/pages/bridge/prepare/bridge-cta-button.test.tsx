@@ -1,10 +1,13 @@
 import React from 'react';
+import {
+  RequestStatus,
+  formatChainIdToCaip,
+} from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
-import { createBridgeMockStore } from '../../../../test/jest/mock-store';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
-import { RequestStatus } from '../../../../shared/types/bridge';
 import { BridgeCTAButton } from './bridge-cta-button';
 
 describe('BridgeCTAButton', () => {
@@ -48,7 +51,7 @@ describe('BridgeCTAButton', () => {
         fromTokenInputValue: null,
         fromToken: 'ETH',
         toToken: 'ETH',
-        toChainId: CHAIN_IDS.LINEA_MAINNET,
+        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
     });
     const { getByText } = renderWithProvider(
@@ -77,7 +80,7 @@ describe('BridgeCTAButton', () => {
         fromTokenInputValue: null,
         fromToken: 'ETH',
         toToken: null,
-        toChainId: CHAIN_IDS.LINEA_MAINNET,
+        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
     });
     const { getByText, container } = renderWithProvider(
@@ -107,7 +110,7 @@ describe('BridgeCTAButton', () => {
         fromTokenInputValue: 1,
         fromToken: 'ETH',
         toToken: 'ETH',
-        toChainId: CHAIN_IDS.LINEA_MAINNET,
+        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
       bridgeStateOverrides: {
         quotes: mockBridgeQuotesNativeErc20,
@@ -148,7 +151,7 @@ describe('BridgeCTAButton', () => {
         fromTokenInputValue: 1,
         fromToken: 'ETH',
         toToken: 'ETH',
-        toChainId: CHAIN_IDS.LINEA_MAINNET,
+        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
       bridgeStateOverrides: {
         quotes: [],
@@ -188,7 +191,7 @@ describe('BridgeCTAButton', () => {
         fromTokenInputValue: 1,
         fromToken: 'ETH',
         toToken: 'ETH',
-        toChainId: CHAIN_IDS.LINEA_MAINNET,
+        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
       bridgeStateOverrides: {
         quotes: mockBridgeQuotesNativeErc20,

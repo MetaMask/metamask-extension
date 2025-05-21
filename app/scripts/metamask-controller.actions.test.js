@@ -62,6 +62,27 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
 };
 jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
 
+const mockULIDs = [
+  '01JKAF3DSGM3AB87EM9N0K41AJ',
+  '01JKAF3KP7VPAG0YXEDTDRB6ZV',
+  '01JKAF3KP7VPAG0YXEDTDRB6ZW',
+  '01JKAF3KP7VPAG0YXEDTDRB6ZX',
+];
+
+function* ulidGenerator(ulids = mockULIDs) {
+  for (const id of ulids) {
+    yield id;
+  }
+
+  throw new Error('should not be called after exhausting provided IDs');
+}
+
+let mockUlidGenerator = ulidGenerator();
+
+jest.mock('ulid', () => ({
+  ulid: jest.fn().mockImplementation(() => mockUlidGenerator.next().value),
+}));
+
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 
@@ -110,6 +131,9 @@ describe('MetaMaskController', function () {
       infuraProjectId: 'foo',
     });
     initializeMockMiddlewareLog();
+
+    // Re-create the ULID generator to start over again the `mockULIDs` list.
+    mockUlidGenerator = ulidGenerator();
   });
 
   afterEach(function () {
@@ -185,7 +209,21 @@ describe('MetaMaskController', function () {
       const result1 = metamaskController.keyringController.state;
       await metamaskController.createNewVaultAndRestore('test@123', TEST_SEED);
       const result2 = metamaskController.keyringController.state;
-      expect(result1).toStrictEqual(result2);
+
+      // On restore, a new keyring metadata is generated.
+      expect(result1.keyrings[0].metadata.id).toBe(mockULIDs[0]);
+      expect(result2).toStrictEqual({
+        ...result1,
+        keyrings: [
+          {
+            ...result1.keyrings[0],
+            metadata: {
+              ...result1.keyrings[0].metadata,
+              id: mockULIDs[1],
+            },
+          },
+        ],
+      });
     });
   });
 
@@ -202,7 +240,10 @@ describe('MetaMaskController', function () {
 
   describe('#setLocked', function () {
     it('should lock the wallet', async function () {
+      await metamaskController.createNewVaultAndKeychain('test@123');
+
       await metamaskController.setLocked();
+
       expect(
         metamaskController.keyringController.state.isUnlocked,
       ).toStrictEqual(false);
@@ -219,8 +260,12 @@ describe('MetaMaskController', function () {
 
     it('two parallel calls with same token details give same result', async function () {
       const [token1, token2] = await Promise.all([
-        metamaskController.getApi().addToken({ address, symbol, decimals }),
-        metamaskController.getApi().addToken({ address, symbol, decimals }),
+        metamaskController
+          .getApi()
+          .addToken({ address, symbol, decimals, networkClientId: 'sepolia' }),
+        metamaskController
+          .getApi()
+          .addToken({ address, symbol, decimals, networkClientId: 'sepolia' }),
       ]);
       expect(token1).toStrictEqual(token2);
     });
@@ -228,7 +273,17 @@ describe('MetaMaskController', function () {
     it('networkClientId is used when provided', async function () {
       const callSpy = jest
         .spyOn(metamaskController.controllerMessenger, 'call')
-        .mockReturnValue({ configuration: { chainId: '0xa' } });
+        .mockReturnValueOnce({
+          configuration: { chainId: '0xa' },
+        })
+        .mockReturnValueOnce({
+          networkConfigurationsByChainId: {
+            '0xa': {
+              nativeCurrency: 'ETH',
+              chainId: '0xa',
+            },
+          },
+        });
 
       await metamaskController.getApi().addToken({
         address,

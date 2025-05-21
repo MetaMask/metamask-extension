@@ -7,11 +7,16 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { providerErrors } from '@metamask/rpc-errors';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
-import { rejectAllApprovals } from './utils';
+import { rejectAllApprovals, rejectOriginApprovals } from './utils';
 
 const ID_MOCK = '123';
 const ID_MOCK_2 = '456';
 const INTERFACE_ID_MOCK = '789';
+const REJECT_ALL_APPROVALS_DATA = {
+  data: {
+    cause: 'rejectAllApprovals',
+  },
+};
 
 function createApprovalControllerMock(
   pendingApprovals: Partial<ApprovalRequest<Record<string, Json>>>[],
@@ -40,11 +45,11 @@ describe('Approval Utils', () => {
       expect(approvalController.reject).toHaveBeenCalledTimes(2);
       expect(approvalController.reject).toHaveBeenCalledWith(
         ID_MOCK,
-        providerErrors.userRejectedRequest(),
+        providerErrors.userRejectedRequest(REJECT_ALL_APPROVALS_DATA),
       );
       expect(approvalController.reject).toHaveBeenCalledWith(
         ID_MOCK_2,
-        providerErrors.userRejectedRequest(),
+        providerErrors.userRejectedRequest(REJECT_ALL_APPROVALS_DATA),
       );
     });
 
@@ -98,6 +103,32 @@ describe('Approval Utils', () => {
 
       expect(deleteInterface).toHaveBeenCalledTimes(1);
       expect(deleteInterface).toHaveBeenCalledWith(INTERFACE_ID_MOCK);
+    });
+  });
+
+  describe('rejectOriginApprovals', () => {
+    it('rejects approval requests from given origin', () => {
+      const origin = 'https://example.com';
+      const approvalController = createApprovalControllerMock([
+        { id: ID_MOCK, origin, type: ApprovalType.Transaction },
+        {
+          id: ID_MOCK_2,
+          origin: 'www.test.com',
+          type: ApprovalType.EthSignTypedData,
+        },
+      ]);
+
+      rejectOriginApprovals({
+        approvalController,
+        deleteInterface: () => undefined,
+        origin,
+      });
+
+      expect(approvalController.reject).toHaveBeenCalledTimes(1);
+      expect(approvalController.reject).toHaveBeenCalledWith(
+        ID_MOCK,
+        providerErrors.userRejectedRequest(REJECT_ALL_APPROVALS_DATA),
+      );
     });
   });
 });

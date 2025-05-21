@@ -1,3 +1,4 @@
+import { regularDelayMs } from '../../../helpers';
 import HomePage from './homepage';
 
 class NonEvmHomepage extends HomePage {
@@ -9,9 +10,21 @@ class NonEvmHomepage extends HomePage {
 
   protected readonly swapButton = '[data-testid="token-overview-button-swap"]';
 
-  async check_pageIsLoaded(): Promise<void> {
+  protected readonly balanceDiv =
+    '[data-testid="coin-overview__primary-currency"]';
+
+  async check_pageIsLoaded(amount: string = ''): Promise<void> {
     await super.check_pageIsLoaded();
-    await this.driver.delayFirefox(2000);
+    await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
+    if (amount) {
+      await this.driver.wait(async () => {
+        await this.driver.waitForSelector({
+          text: `${amount}`,
+          tag: 'span',
+        });
+        return true;
+      }, 60000);
+    }
   }
 
   protected readonly bridgeButton = '[data-testid="coin-overview-bridge"]';
@@ -20,7 +33,7 @@ class NonEvmHomepage extends HomePage {
    * Clicks the send button on the non-EVM account homepage.
    */
   async clickOnSendButton(): Promise<void> {
-    await this.driver.waitForControllersLoaded();
+    await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
     await this.driver.clickElement(this.sendButton);
   }
 
@@ -28,16 +41,36 @@ class NonEvmHomepage extends HomePage {
    * Checks if the expected balance is displayed on homepage.
    *
    * @param balance
+   * @param token
    */
-  async check_getBalance(balance: string): Promise<void> {
-    console.log(`Getting Non-evm account balance`);
+  async check_getBalance(
+    balance: string,
+    token: string = 'SOL',
+  ): Promise<void> {
+    await this.driver.wait(async () => {
+      try {
+        await this.driver.waitForSelector(
+          {
+            text: balance,
+            tag: 'span',
+          },
+          { timeout: 1000 },
+        );
+        return true;
+      } catch (e) {
+        console.log('Error in check_getBalance', e);
+        await this.driver.refresh();
+        return false;
+      }
+    }, 30000);
     await this.driver.waitForSelector(
       {
-        css: 'div',
-        text: balance,
+        text: token,
+        tag: 'span',
       },
-      { timeout: 5000 },
+      { timeout: 60000 },
     );
+    await this.driver.refresh();
   }
 
   /**

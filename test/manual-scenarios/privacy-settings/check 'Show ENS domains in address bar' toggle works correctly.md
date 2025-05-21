@@ -2,12 +2,11 @@
 
 Below is a summary of the validations included:
 
-* Validate that the 'Show ENS domains in address bar' toggle is present in the Security & Privacy settings and is ON by default.
-* Validate that the toggle can be turned on and off.
-* Validate that when the toggle is turned on, ENS domain name is displayed alongside the public address
+- Validate that the 'Show ENS domains in address bar' toggle is present in the Security & Privacy settings and is ON by default.
+- Validate that the toggle can be turned on and off.
+- Validate that when the toggle is turned on, ENS domain name is displayed alongside the public address
 
 ```markdown
-
 # Security & Privacy Settings: Verify "Show ENS domains in address bar" Toggle Functionality
 
 # Feature: Toggle "Show ENS domains in address bar" in Security & Privacy Settings
@@ -37,7 +36,4 @@ Given I am on the Security & Privacy settings page
 And the "Show ENS domains in address bar" toggle is set to ON
 When I enter an ENS address in my browser's address bar
 Then I should see the content associated with it
-
-
 ```
-

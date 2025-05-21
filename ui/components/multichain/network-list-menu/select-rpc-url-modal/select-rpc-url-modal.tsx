@@ -1,5 +1,7 @@
 import React from 'react';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { NetworkConfiguration } from '@metamask/network-controller';
+import { type CaipChainId } from '@metamask/utils';
 import classnames from 'classnames';
 import { useDispatch } from 'react-redux';
 import {
@@ -25,7 +27,7 @@ export const SelectRpcUrlModal = ({
   onNetworkChange,
 }: {
   networkConfiguration: NetworkConfiguration;
-  onNetworkChange: (network: NetworkConfiguration) => void;
+  onNetworkChange: (chainId: CaipChainId, networkClientId: string) => void;
 }) => {
   const dispatch = useDispatch();
 
@@ -72,7 +74,10 @@ export const SelectRpcUrlModal = ({
             };
             dispatch(updateNetwork(network));
             dispatch(setEditedNetwork());
-            onNetworkChange(network);
+            onNetworkChange(
+              toEvmCaipChainId(network.chainId),
+              rpcEndpoint.networkClientId,
+            );
           }}
           className={classnames('select-rpc-url__item', {
             'select-rpc-url__item--selected':

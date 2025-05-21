@@ -5,8 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { MetamaskNotificationsProvider } from '../../contexts/metamask-notifications/metamask-notifications';
-import { NotificationsList } from './notifications-list';
-import { TAB_KEYS } from './notifications';
+import { NotificationsList, TAB_KEYS } from './notifications-list';
 
 jest.mock('../../store/actions', () => ({
   deleteExpiredSnapNotifications: jest.fn(() => () => Promise.resolve()),
@@ -19,7 +18,7 @@ const store = mockStore({
   metamask: {
     isMetamaskNotificationsEnabled: true,
     isFeatureAnnouncementsEnabled: true,
-    isProfileSyncingEnabled: true,
+    isBackupAndSyncEnabled: true,
     metamaskNotifications: [],
     internalAccounts: {
       accounts: [

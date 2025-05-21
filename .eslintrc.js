@@ -280,6 +280,48 @@ module.exports = {
         },
       },
     },
+
+    /**
+     * TypeScript React-specific code
+     *
+     * Similar to above, but marks a majority of errors to warnings.
+     * TODO - combine rulesets and resolve errors
+     */
+    {
+      files: ['ui/**/*.ts', 'ui/**/*.tsx'],
+      extends: ['plugin:react/recommended', 'plugin:react-hooks/recommended'],
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      plugins: ['react'],
+      rules: {
+        'react/no-unused-prop-types': 'warn',
+        'react/no-unused-state': 'warn',
+        'react/jsx-boolean-value': 'off',
+        'react/jsx-curly-brace-presence': 'off',
+        'react/no-deprecated': 'warn',
+        'react/default-props-match-prop-types': 'warn',
+        'react/jsx-no-duplicate-props': 'warn',
+        'react/display-name': 'off',
+        'react/no-unescaped-entities': 'warn',
+        'react/prop-types': 'off',
+        'react/no-children-prop': 'off',
+        'react/jsx-key': 'warn', // TODO - increase this into 'error' level
+        'react-hooks/rules-of-hooks': 'warn', // TODO - increase this into 'error' level
+      },
+      settings: {
+        react: {
+          // If this is set to 'detect', ESLint will import React in order to
+          // find its version. Because we run ESLint in the build system under
+          // LavaMoat, this means that detecting the React version requires a
+          // LavaMoat policy for all of React, in the build system. That's a
+          // no-go, so we grab it from React's package.json.
+          version: reactVersion,
+        },
+      },
+    },
     /**
      * Mocha tests
      *
@@ -287,7 +329,7 @@ module.exports = {
      * Mocha library.
      */
     {
-      files: ['test/e2e/**/*.spec.js'],
+      files: ['test/e2e/**/*.spec.{js,ts}'],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
         // In Mocha tests, it is common to use `this` to store values or do
@@ -311,7 +353,6 @@ module.exports = {
         'app/scripts/controllers/alert-controller.test.ts',
         'app/scripts/metamask-controller.actions.test.js',
         'app/scripts/detect-multiple-instances.test.js',
-        'app/scripts/controllers/bridge.test.ts',
         'app/scripts/controllers/swaps/**/*.test.js',
         'app/scripts/controllers/swaps/**/*.test.ts',
         'app/scripts/controllers/metametrics.test.js',

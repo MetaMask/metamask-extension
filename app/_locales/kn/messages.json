@@ -313,9 +313,6 @@
     "message": "ಆಮದು",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "ಖಾತೆಯನ್ನು ಆಮದು ಮಾಡಿ"
-  },
   "importAccountMsg": {
     "message": "ನಿಮ್ಮ ಮೂಲ ರಚಿಸಿರುವ MetaMask ಖಾತೆಯ ಸೀಡ್‌ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ಆಮದು ಮಾಡಲಾದ ಖಾತೆಗಳನ್ನು ಸಂಯೋಜನೆ ಮಾಡಲಾಗಿಲ್ಲ. ಆಮದು ಮಾಡಲಾಗಿರುವ ಖಾತೆಗಳ ಕುರಿತು ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
   },

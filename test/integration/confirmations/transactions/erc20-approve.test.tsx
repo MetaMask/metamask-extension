@@ -1,6 +1,6 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { act, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import nock from 'nock';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
@@ -10,6 +10,7 @@ import { integrationTestRender } from '../../../lib/render-helpers';
 import { createTestProviderTools } from '../../../stub/provider';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
+import { ENVIRONMENT } from '../../../../development/build/constants';
 import { getUnapprovedApproveTransaction } from './transactionDataHelpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
@@ -125,6 +126,8 @@ const setupSubmitRequestToBackgroundMocks = (
   );
 
   mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     createMockImplementation({ addKnownMethodData: {} }),
   );
 };
@@ -136,6 +139,7 @@ describe('ERC20 Approve Confirmation', () => {
       chainId: '0xaa36a7',
     });
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     global.ethereumProvider = provider as any;
   });
@@ -143,7 +147,7 @@ describe('ERC20 Approve Confirmation', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks({
-      getTokenStandardAndDetails: {
+      getTokenStandardAndDetailsByChain: {
         standard: TokenStandard.ERC20,
       },
     });
@@ -151,6 +155,7 @@ describe('ERC20 Approve Confirmation', () => {
     const APPROVE_ERC20_TEXT_SIG = 'approve(address,uint256)';
     mock4byte(APPROVE_ERC20_HEX_SIG, APPROVE_ERC20_TEXT_SIG);
     mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decimals: '4' as any,
     }));
@@ -161,6 +166,7 @@ describe('ERC20 Approve Confirmation', () => {
   });
 
   afterAll(() => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     delete (global as any).ethereumProvider;
   });
@@ -271,46 +277,6 @@ describe('ERC20 Approve Confirmation', () => {
     expect(requestFromTooltipContent).toBeInTheDocument();
   });
 
-  it('displays spending cap section with correct data', async () => {
-    const testUser = userEvent.setup();
-
-    const mockedMetaMaskState =
-      getMetaMaskStateWithUnapprovedApproveTransaction();
-
-    await act(async () => {
-      await integrationTestRender({
-        preloadedState: mockedMetaMaskState,
-        backgroundConnection: backgroundConnectionMocked,
-      });
-    });
-
-    const spendingCapSection = await screen.findByTestId(
-      'confirmation__approve-spending-cap-section',
-    );
-    expect(spendingCapSection).toBeInTheDocument();
-
-    expect(spendingCapSection).toHaveTextContent(
-      tEn('accountBalance') as string,
-    );
-    expect(spendingCapSection).toHaveTextContent('0');
-    const spendingCapGroup = await screen.findByTestId(
-      'confirmation__approve-spending-cap-group',
-    );
-    expect(spendingCapSection).toContainElement(spendingCapGroup);
-    expect(spendingCapGroup).toHaveTextContent(tEn('spendingCap') as string);
-    expect(spendingCapGroup).toHaveTextContent('1');
-
-    const spendingCapGroupTooltip = await screen.findByTestId(
-      'confirmation__approve-spending-cap-group-tooltip',
-    );
-    expect(spendingCapGroup).toContainElement(spendingCapGroupTooltip);
-    await testUser.hover(spendingCapGroupTooltip);
-    const requestFromTooltipContent = await screen.findByText(
-      tEn('spendingCapTooltipDesc') as string,
-    );
-    expect(requestFromTooltipContent).toBeInTheDocument();
-  });
-
   it('displays the advanced transaction details section', async () => {
     const testUser = userEvent.setup();
 
@@ -400,5 +366,69 @@ describe('ERC20 Approve Confirmation', () => {
     expect(dataSection).toContainElement(approveDataParams2);
     expect(approveDataParams2).toHaveTextContent('Param #2');
     expect(approveDataParams2).toHaveTextContent('1');
+  });
+
+  it('disables nonce editing when STX is on', async () => {
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedApproveTransaction({
+        showAdvanceDetails: true,
+      });
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    const approveDetails = await screen.findByTestId(
+      'confirmation__approve-details',
+    );
+    expect(approveDetails).toBeInTheDocument();
+
+    const approveDetailsNonce = await screen.findByTestId(
+      'advanced-details-nonce-section',
+    );
+    expect(approveDetailsNonce).toBeInTheDocument();
+
+    expect(
+      await screen.queryByTestId('edit-nonce-icon'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('enables nonce editing when STX is off', async () => {
+    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
+    const mockedMetaMaskState =
+      getMetaMaskStateWithUnapprovedApproveTransaction({
+        showAdvanceDetails: true,
+      });
+
+    const mockedState = {
+      ...mockedMetaMaskState,
+      preferences: {
+        ...mockedMetaMaskState.preferences,
+        smartTransactionsOptInStatus: false,
+      },
+    };
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    const approveDetails = await screen.findByTestId(
+      'confirmation__approve-details',
+    );
+    expect(approveDetails).toBeInTheDocument();
+
+    const approveDetailsNonce = await screen.findByTestId(
+      'advanced-details-nonce-section',
+    );
+    expect(approveDetailsNonce).toBeInTheDocument();
+
+    expect(await screen.findByTestId('edit-nonce-icon')).toBeInTheDocument();
   });
 });

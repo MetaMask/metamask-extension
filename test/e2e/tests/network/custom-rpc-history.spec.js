@@ -2,7 +2,6 @@ const { strict: assert } = require('assert');
 const { mockNetworkStateOld } = require('../../../stub/networks');
 
 const {
-  generateGanacheOptions,
   withFixtures,
   regularDelayMs,
   unlockWallet,
@@ -19,16 +18,25 @@ describe('Custom RPC history', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        localNodeOptions: generateGanacheOptions({
-          concurrent: [{ port, chainId }],
-        }),
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
+              port,
+              chainId,
+            },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
 
         const rpcUrl = `http://127.0.0.1:${port}`;
-        const networkName = 'Secondary Ganache Testnet';
+        const networkName = 'Secondary Local Testnet';
 
         await driver.clickElement('[data-testid="network-display"]');
         await driver.clickElement({
@@ -79,12 +87,12 @@ describe('Custom RPC history', function () {
 
         // Validate the network was added
         const networkAdded = await driver.isElementPresent({
-          text: '“Secondary Ganache Testnet” was successfully added!',
+          text: '“Secondary Local Testnet” was successfully added!',
         });
         assert.equal(
           networkAdded,
           true,
-          '“Secondary Ganache Testnet” was successfully added!',
+          '“Secondary Local Testnet” was successfully added!',
         );
       },
     );
@@ -304,14 +312,16 @@ describe('Custom RPC history', function () {
 
         const customNetworkName = 'http://127.0.0.1:8545/2';
         const networkItemClassName = '.multichain-network-list-item';
+        const networkMenuClassName = '.multichain-network-list-menu';
 
+        await driver.waitForSelector(networkMenuClassName);
         const networkListItems = await driver.findClickableElements(
           networkItemClassName,
         );
 
         // click on menu button
         await driver.clickElement(
-          '[data-testid="network-list-item-options-button-0x540"]',
+          '[data-testid="network-list-item-options-button-eip155:1344"]',
         );
 
         // click on delere button
@@ -340,6 +350,7 @@ describe('Custom RPC history', function () {
         await driver.clickElement('[data-testid="network-display"]');
 
         // custom network http://127.0.0.1:8545/2 is removed from network list
+        await driver.waitForSelector(networkMenuClassName);
         const newNetworkListItems = await driver.findElements(
           networkItemClassName,
         );

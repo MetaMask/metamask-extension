@@ -6,6 +6,11 @@ let scriptsLoadInitiated = false;
 const { chrome } = globalThis;
 const testMode = process.env.IN_TEST;
 
+/**
+ * @type {globalThis.stateHooks}
+ */
+globalThis.stateHooks = globalThis.stateHooks || {};
+
 const loadTimeLogs = [];
 // eslint-disable-next-line import/unambiguous
 function tryImport(...fileNames) {
@@ -183,5 +188,33 @@ const registerInPageContentScript = async () => {
     console.warn(`Dropped attempt to register inpage content script. ${err}`);
   }
 };
+
+/**
+ * `onInstalled` event handler.
+ *
+ * On MV3 builds we must listen for this event in `app-init`, otherwise we found that the listener
+ * is never called.
+ * For MV2 builds, the listener is added in `background.js` instead.
+ *
+ * @param {chrome.runtime.InstalledDetails} details - Event details.
+ */
+function onInstalledListener(details) {
+  if (details.reason === 'install') {
+    // This condition is for when `background.js` was loaded before the `onInstalled` listener was
+    // called.
+    if (globalThis.stateHooks.metamaskTriggerOnInstall) {
+      globalThis.stateHooks.metamaskTriggerOnInstall();
+      // Delete just to clean up global namespace
+      delete globalThis.stateHooks.metamaskTriggerOnInstall;
+      // This condition is for when the `onInstalled` listener in `app-init` was called before
+      // `background.js` was loaded.
+    } else {
+      globalThis.stateHooks.metamaskWasJustInstalled = true;
+    }
+    chrome.runtime.onInstalled.removeListener(onInstalledListener);
+  }
+}
+
+chrome.runtime.onInstalled.addListener(onInstalledListener);
 
 registerInPageContentScript();
