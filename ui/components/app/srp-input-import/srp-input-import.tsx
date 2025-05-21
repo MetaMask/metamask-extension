@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { Textarea, TextareaResize } from '../../component-library/textarea';
@@ -79,52 +79,61 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
     return newDraftSrp;
   };
 
-  const handleChange = (id: string, value: string) => {
-    const newDraftSrp = [...draftSrp];
-    const targetIndex = newDraftSrp.findIndex((word) => word.id === id);
-    newDraftSrp[targetIndex] = { ...newDraftSrp[targetIndex], word: value };
-    setDraftSrp(setWordActive(newDraftSrp, id));
-  };
-
-  const nextWord = (currentWordId: string) => {
-    const currentWordIndex = draftSrp.findIndex(
-      (word) => word.id === currentWordId,
-    );
-    const isLastWord = currentWordIndex === draftSrp.length - 1;
-
-    // if last word, add new word
-    if (isLastWord && draftSrp.length < MAX_SRP_LENGTH) {
+  const handleChange = useCallback(
+    (id: string, value: string) => {
       const newDraftSrp = [...draftSrp];
+      const targetIndex = newDraftSrp.findIndex((word) => word.id === id);
+      newDraftSrp[targetIndex] = { ...newDraftSrp[targetIndex], word: value };
+      setDraftSrp(setWordActive(newDraftSrp, id));
+    },
+    [draftSrp],
+  );
 
-      newDraftSrp.forEach((word) => {
-        word.active = false;
-      });
+  const nextWord = useCallback(
+    (currentWordId: string) => {
+      const currentWordIndex = draftSrp.findIndex(
+        (word) => word.id === currentWordId,
+      );
+      const isLastWord = currentWordIndex === draftSrp.length - 1;
 
-      newDraftSrp.push({
-        word: '',
-        id: uuidv4(),
-        active: true,
-      });
-      setDraftSrp(newDraftSrp);
-      return;
-    }
+      // if last word, add new word
+      if (isLastWord && draftSrp.length < MAX_SRP_LENGTH) {
+        const newDraftSrp = [...draftSrp];
 
-    // set next word to active
-    setDraftSrp(setWordActive(draftSrp, draftSrp[currentWordIndex + 1].id));
-  };
+        newDraftSrp.forEach((word) => {
+          word.active = false;
+        });
 
-  const deleteWord = (wordId: string) => {
-    const currentWordIndex = draftSrp.findIndex((word) => word.id === wordId);
-    const previousWordId = draftSrp[currentWordIndex - 1]?.id;
-    const newDraftSrp = [...draftSrp];
-    newDraftSrp.splice(currentWordIndex, 1);
+        newDraftSrp.push({
+          word: '',
+          id: uuidv4(),
+          active: true,
+        });
+        setDraftSrp(newDraftSrp);
+        return;
+      }
 
-    if (newDraftSrp.length > 0) {
-      setDraftSrp(setWordActive(newDraftSrp, previousWordId));
-    } else {
-      setDraftSrp([]);
-    }
-  };
+      // set next word to active
+      setDraftSrp(setWordActive(draftSrp, draftSrp[currentWordIndex + 1].id));
+    },
+    [draftSrp],
+  );
+
+  const deleteWord = useCallback(
+    (wordId: string) => {
+      const currentWordIndex = draftSrp.findIndex((word) => word.id === wordId);
+      const previousWordId = draftSrp[currentWordIndex - 1]?.id;
+      const newDraftSrp = [...draftSrp];
+      newDraftSrp.splice(currentWordIndex, 1);
+
+      if (newDraftSrp.length > 0) {
+        setDraftSrp(setWordActive(newDraftSrp, previousWordId));
+      } else {
+        setDraftSrp([]);
+      }
+    },
+    [draftSrp],
+  );
 
   const handleOnKeyDown = (ev: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (ev.key === 'Enter' || ev.key === ' ') {
@@ -144,21 +153,27 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
     }
   };
 
-  const setWordInactive = (wordId: string) => {
-    const newDraftSrp = [...draftSrp];
-    const targetIndex = newDraftSrp.findIndex((word) => word.id === wordId);
-    newDraftSrp[targetIndex] = { ...newDraftSrp[targetIndex], active: false };
-    setDraftSrp(newDraftSrp);
-  };
+  const setWordInactive = useCallback(
+    (wordId: string) => {
+      const newDraftSrp = [...draftSrp];
+      const targetIndex = newDraftSrp.findIndex((word) => word.id === wordId);
+      newDraftSrp[targetIndex] = { ...newDraftSrp[targetIndex], active: false };
+      setDraftSrp(newDraftSrp);
+    },
+    [draftSrp],
+  );
 
-  const onWordFocus = (wordId: string) => {
-    srpRefs.current[wordId].type = 'text';
-    const newDraftSrp = [...draftSrp];
-    newDraftSrp.forEach((word) => {
-      word.active = word.id === wordId;
-    });
-    setDraftSrp(newDraftSrp);
-  };
+  const onWordFocus = useCallback(
+    (wordId: string) => {
+      srpRefs.current[wordId].type = 'text';
+      const newDraftSrp = [...draftSrp];
+      newDraftSrp.forEach((word) => {
+        word.active = word.id === wordId;
+      });
+      setDraftSrp(newDraftSrp);
+    },
+    [draftSrp],
+  );
 
   useEffect(() => {
     const activeWord = draftSrp.find((word) => word.active);

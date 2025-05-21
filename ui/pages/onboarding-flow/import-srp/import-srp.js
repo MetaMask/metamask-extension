@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -57,7 +57,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
   }, [currentKeyring, history]);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const onContinue = () => {
+  const onContinue = useCallback(() => {
     let newSrpError = '';
     if (
       hasUpperCase(secretRecoveryPhrase) ||
@@ -81,7 +81,14 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
       },
     });
     history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
-  };
+  }, [
+    secretRecoveryPhrase,
+    t,
+    hdEntropyIndex,
+    trackEvent,
+    history,
+    submitSecretRecoveryPhrase,
+  ]);
 
   useEffect(() => {
     setSrpError('');
