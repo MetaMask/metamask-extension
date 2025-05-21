@@ -4367,6 +4367,36 @@ export function updateAccountsList(
 }
 
 /**
+ * Enables a single network and disables all others.
+ * This is primarily used for custom/test networks.
+ *
+ * @param chainId - The CAIP chain ID of the network to enable
+ */
+export function setSingleEnabledNetwork(
+  chainId: CaipChainId,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  console.log('setSingleEnabledNetwork', chainId);
+  return async () => {
+    await submitRequestToBackground('setSingleEnabledNetwork', [chainId]);
+  };
+}
+
+/**
+ * Enables multiple networks and disables all others.
+ * This is primarily used for popular networks.
+ *
+ * @param chainIds - Array of CAIP chain IDs to enable
+ */
+export function setMultiEnabledNetworks(
+  chainIds: CaipChainId[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  console.log('setMultiEnabledNetworks', chainIds);
+  return async () => {
+    await submitRequestToBackground('setMultiEnabledNetworks', [chainIds]);
+  };
+}
+
+/**
  * Hides account in the accounts list
  *
  * @param hiddenAccountList

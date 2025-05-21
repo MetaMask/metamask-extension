@@ -1,6 +1,9 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setTokenNetworkFilter } from '../../../../../store/actions';
+import {
+  setMultiEnabledNetworks,
+  setTokenNetworkFilter,
+} from '../../../../../store/actions';
 import {
   getCurrentNetwork,
   getShouldHideZeroBalanceTokens,
@@ -38,6 +41,7 @@ import {
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import InfoTooltip from '../../../../ui/info-tooltip';
+import { CaipChainId } from '@metamask/utils';
 
 type SortControlProps = {
   handleClose: () => void;
@@ -93,6 +97,10 @@ const NetworkFilter = ({
     );
 
   const handleFilter = (chainFilters: Record<string, boolean>) => {
+    console.log('handleFilter', chainFilters);
+    dispatch(
+      setMultiEnabledNetworks(Object.keys(chainFilters) as CaipChainId[]),
+    );
     if (handleFilterNetwork) {
       handleFilterNetwork(chainFilters);
     } else {
