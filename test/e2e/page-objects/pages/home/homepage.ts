@@ -320,6 +320,19 @@ class HomePage {
       text: `Secret Recovery Phrase ${srpNumber} imported`,
     });
   }
+
+  /**
+   * Check if the expected warning message is displayed on homepage.
+   *
+   * @param message - The message to be displayed.
+   */
+  async check_warningMessageIsDisplayed(message: string): Promise<void> {
+    console.log(`Check if warning message ${message} is displayed on homepage`);
+    await this.driver.waitForSelector({
+      text: message,
+      tag: 'p',
+    });
+  }
 }
 
 export default HomePage;
