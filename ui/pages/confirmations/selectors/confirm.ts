@@ -37,6 +37,8 @@ export const oldestPendingConfirmationSelector = createDeepEqualSelector(
   (firstPendingConfirmation) => firstPendingConfirmation,
 );
 
-export function getUpgradeSplashPageAcknowledgedForAccounts(state: ConfirmMetamaskState): string[] {
+export function getUpgradeSplashPageAcknowledgedForAccounts(
+  state: ConfirmMetamaskState,
+): string[] {
   return state.metamask.upgradeSplashPageAcknowledgedForAccounts ?? [];
 }
