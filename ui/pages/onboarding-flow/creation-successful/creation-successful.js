@@ -80,8 +80,16 @@ export default function CreationSuccessful() {
   };
 
   return (
-    <Box className="creation-successful" data-testid="wallet-ready">
-      <div className="creation-successful__content">
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      height={BlockSize.Full}
+      gap={6}
+      className="creation-successful"
+      data-testid="wallet-ready"
+    >
+      <Box>
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -166,10 +174,9 @@ export default function CreationSuccessful() {
             <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
           </ButtonBase>
         </Box>
-      </div>
+      </Box>
 
       <Box
-        className="creation-successful__actions"
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         justifyContent={JustifyContent.center}
