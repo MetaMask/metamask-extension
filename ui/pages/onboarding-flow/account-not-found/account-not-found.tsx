@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Button,
@@ -30,10 +30,11 @@ export default function AccountNotFound() {
   // TODO: get account email from controllers
   const accountEmail = 'username@gmail.com';
 
-  const onCreateOne = async () => {
+  const onCreateOne = useCallback(() => {
     // TODO: process the creation of a new wallet using the social login
     history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
-  };
+  }, [history]);
+
   return (
     <Box
       className="account-not-found"
