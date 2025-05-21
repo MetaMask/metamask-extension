@@ -28,7 +28,7 @@ describe(`migration #${version}`, () => {
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('adds the network endowment to Snaps with the `endowment:ethereum-provider` permission', async () => {
+  it('adds the `endowment:caip25` permission with the current globally selected chainId (and no accounts) permissioned to Snaps with the `endowment:ethereum-provider` permission which do not have the `endowment:caip25` permission', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
@@ -122,7 +122,7 @@ describe(`migration #${version}`, () => {
     });
   });
 
-  it('merges with an existing permission if the Snap already has `endowment:caip25`', async () => {
+  it('merges with an existing permission and adds existing account permissions along with the current globally selected chainId if the Snap already has `endowment:caip25`', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
@@ -166,7 +166,7 @@ describe(`migration #${version}`, () => {
                         optionalScopes: {
                           'wallet:eip155': {
                             accounts: [
-                              '0x1234567890123456789012345678901234567890',
+                              'wallet:eip155:0x1234567890123456789012345678901234567890',
                             ],
                           },
                         },
@@ -214,11 +214,13 @@ describe(`migration #${version}`, () => {
                     optionalScopes: {
                       'wallet:eip155': {
                         accounts: [
-                          '0x1234567890123456789012345678901234567890',
+                          'wallet:eip155:0x1234567890123456789012345678901234567890',
                         ],
                       },
                       'eip155:1': {
-                        accounts: [],
+                        accounts: [
+                          'eip155:1:0x1234567890123456789012345678901234567890',
+                        ],
                       },
                     },
                     requiredScopes: {},

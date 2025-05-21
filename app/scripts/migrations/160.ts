@@ -11,6 +11,8 @@ import {
   Caip25EndowmentPermissionName,
   addPermittedEthChainId,
   Caip25CaveatValue,
+  setEthAccounts,
+  getEthAccounts,
 } from '@metamask/chain-agnostic-permission';
 
 type GenericPermissionControllerSubject =
@@ -206,6 +208,24 @@ function transformState(state: Record<string, unknown>) {
       currentChainId,
     );
 
+    let caip25PermissionCaveatWithCurrentChainIdAndAccountsSet =
+      caip25PermissionCaveatWithCurrentChainIdSet;
+
+    if (subject.permissions[Caip25EndowmentPermissionName]) {
+      const existingCaveat = subject.permissions[
+        Caip25EndowmentPermissionName
+      ]?.caveats?.find((caveat) => caveat.type === Caip25CaveatType);
+      if (existingCaveat && existingCaveat.value) {
+        const alreadyPermissionedAccounts = getEthAccounts(
+          existingCaveat.value as Caip25CaveatValue,
+        );
+        caip25PermissionCaveatWithCurrentChainIdAndAccountsSet = setEthAccounts(
+          caip25PermissionCaveatWithCurrentChainIdSet,
+          alreadyPermissionedAccounts,
+        );
+      }
+    }
+
     const {
       date = Date.now(),
       id = nanoid(),
@@ -221,7 +241,7 @@ function transformState(state: Record<string, unknown>) {
           caveats: [
             {
               type: Caip25CaveatType,
-              value: caip25PermissionCaveatWithCurrentChainIdSet,
+              value: caip25PermissionCaveatWithCurrentChainIdAndAccountsSet,
             },
           ],
           date,
