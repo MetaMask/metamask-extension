@@ -41,8 +41,6 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
   const t = useI18nContext();
   const { search } = useLocation();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  // TODO: Check on copy to clipboard
-  // const [copied, handleCopy] = useCopyToClipboard();
   const [phraseRevealed, setPhraseRevealed] = useState(false);
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
   const searchParams = new URLSearchParams(search);
