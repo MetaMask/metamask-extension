@@ -28,7 +28,7 @@ describe(`migration #${version}`, () => {
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('adds the `endowment:caip25` permission with the current globally selected chainId (and no accounts) permissioned to Snaps with the `endowment:ethereum-provider` permission which do not have the `endowment:caip25` permission', async () => {
+  it('adds the `endowment:caip25` permission with the current globally selected chainId (and no accounts) permissioned to Snaps with the `endowment:ethereum-provider` permission and which do not already a `endowment:caip25` permission', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
