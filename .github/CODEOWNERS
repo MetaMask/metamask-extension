@@ -125,7 +125,7 @@ ui/pages/onboarding-flow              @MetaMask/wallet-ux
 # Assets
 ui/components/app/detected-token                   @MetaMask/metamask-assets
 ui/components/app/import-token                        @MetaMask/metamask-assets
-ui/components/app/nfts
+ui/components/app/nfts                                @MetaMask/metamask-assets
 ui/components/ui/deprecated-networks                  @MetaMask/metamask-assets
 ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets
 
