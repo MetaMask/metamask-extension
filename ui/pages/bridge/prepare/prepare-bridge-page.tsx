@@ -524,7 +524,6 @@ const PrepareBridgePage = () => {
       dispatch(setSlippage(undefined));
       if (fromChain && !toToken) {
         dispatch(setToChainId(fromChain.chainId));
-        // TODO: this should be chain specific.
         dispatch(setToToken(SOLANA_USDC_ASSET));
       }
     }
