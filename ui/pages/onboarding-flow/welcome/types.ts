@@ -12,3 +12,8 @@ export const LOGIN_OPTION = {
 } as const;
 
 export type LoginOptionType = (typeof LOGIN_OPTION)[keyof typeof LOGIN_OPTION];
+
+export const WelcomePageState = {
+  Banner: 'Banner',
+  Login: 'Login',
+} as const;

@@ -1,13 +1,6 @@
 @use "design-system";
 
 .create-password {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  gap: 1rem;
-
-
   &__weak {
     color: var(--color-error-default);
   }
@@ -22,14 +15,6 @@
 
   &__link-text {
     color: var(--color-primary-default);
-  }
-
-  &__form {
-    display: contents;
-    // override Checkbox
-    .mm-checkbox__input-wrapper {
-      margin-top: 2px;
-    }
   }
 
   &__analytics-iframe {
