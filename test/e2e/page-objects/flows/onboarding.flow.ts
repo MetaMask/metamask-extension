@@ -387,11 +387,10 @@ export const completeVaultRecoveryOnboardingFlow = async ({
   await onboardingCompletePage.check_pageIsLoaded();
   await onboardingCompletePage.completeOnboarding();
 
-  // it should take us to the home page automatically
   const homePage = new HomePage(driver);
   homePage.check_pageIsLoaded();
 
-  // since our state has been reset, but we skip the welcome screen we now
+  // Because our state was reset, and the flow skips the welcome screen, we now
   // need to accept the terms of use again
   const updateTermsOfUseModal = new TermsOfUseUpdateModal(driver);
   await updateTermsOfUseModal.check_pageIsLoaded();
