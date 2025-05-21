@@ -5,9 +5,9 @@ import {
   TransactionStatus,
 } from '@metamask/transaction-controller';
 import { useHistory } from 'react-router-dom';
+import { StatusTypes } from '@metamask/bridge-controller';
 import { selectBridgeHistoryForAccount } from '../../ducks/bridge-status/selectors';
 import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
-import { StatusTypes } from '@metamask/bridge-controller';
 
 export const FINAL_NON_CONFIRMED_STATUSES = [
   TransactionStatus.failed,
