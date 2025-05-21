@@ -27,7 +27,7 @@ export const isChunkFrame = (x: unknown): x is ChunkFrame =>
  */
 export function* toFrames<T extends Json>(
   payload: T,
-): Generator<ChunkFrame | T> {
+): Generator<ChunkFrame | T, void> {
   const stringifiedPayload = JSON.stringify(payload);
   const payloadLength = stringifiedPayload.length;
 
@@ -35,6 +35,7 @@ export function* toFrames<T extends Json>(
   if (total === 1) {
     // no need to chunk if it fits within a single frame
     yield payload;
+    return;
   }
 
   const id = v4();

@@ -3,6 +3,12 @@ import { Duplex, DuplexOptions } from 'readable-stream';
 import type { Runtime } from 'webextension-polyfill';
 import { ChunkFrame, isChunkFrame, toFrames } from './state-frame-utils';
 
+type BufferEntry = {
+  parts: string[];
+  total: number;
+  received: number;
+};
+
 export type Options = {
   log?: (data: unknown, outgoing: boolean) => void;
   debug?: boolean;
@@ -16,17 +22,14 @@ const STYLE_SYS = 'color:#888;'; // system
 export default class PortDuplexStream extends Duplex {
   private readonly port: Runtime.Port;
 
-  private readonly buffer = new Map<
-    string,
-    { parts: string[]; total: number }
-  >();
+  private readonly queue = new Map<string, BufferEntry>();
 
   private log: (d: unknown, out: boolean) => void;
 
   private debug = false;
 
   constructor(port: Runtime.Port, { log, debug, ...opts }: Options = {}) {
-    super({ objectMode: true, ...opts });
+    super({ objectMode: true, highWaterMark: 256, ...opts });
 
     this.port = port;
 
@@ -47,7 +50,7 @@ export default class PortDuplexStream extends Duplex {
    * @param msg - the message received from the port
    * @param _port - the port that sent the message
    */
-  private onMessage(msg: unknown, _port: Runtime.Port) {
+  private onMessage(msg: Json | ChunkFrame, _port: Runtime.Port) {
     if (this.debug) {
       console.debug(TAG, STYLE_IN, '← raw', msg);
     }
@@ -79,15 +82,21 @@ export default class PortDuplexStream extends Duplex {
       );
     }
 
-    const entry = this.buffer.get(id) ?? {
-      parts: new Array(total),
-      total,
-    };
+    let entry = this.queue.get(id);
+    if (entry) {
+      entry.received += 1;
+    } else {
+      entry = {
+        parts: new Array(total),
+        total,
+        received: 1,
+      };
+      this.queue.set(id, entry);
+    }
     entry.parts[seq] = data;
-    this.buffer.set(id, entry);
 
-    if (entry.parts.filter(Boolean).length === total) {
-      this.buffer.delete(id);
+    if (entry.received === total) {
+      this.queue.delete(id);
 
       const merged = entry.parts.join('');
       const value = JSON.parse(merged);
@@ -114,9 +123,9 @@ export default class PortDuplexStream extends Duplex {
     if (this.debug) {
       console.debug(TAG, STYLE_SYS, '✖ port disconnected');
     }
-    this.destroy();
-    // clean up buffer, as we aren't going to receive any more messages
-    this.buffer.clear();
+    // clean up, as we aren't going to receive any more messages
+    this.queue.clear();
+    this.destroy(new Error('Port disconnected'));
   }
 
   /**
@@ -124,6 +133,13 @@ export default class PortDuplexStream extends Duplex {
    */
   _read() {
     // No-op, push happens in onMessage.
+  }
+
+  private postMessage(obj: unknown) {
+    if (this.debug) {
+      console.debug(TAG, STYLE_OUT, '→', obj);
+    }
+    this.port.postMessage(obj);
   }
 
   /**
@@ -143,25 +159,14 @@ export default class PortDuplexStream extends Duplex {
       return;
     }
 
-    const send = (obj: unknown) => {
-      if (this.debug) {
-        console.debug(TAG, STYLE_OUT, '→', obj);
-      }
-      this.port.postMessage(obj);
-    };
-
     try {
       // if the frame is already chunked, send it as is
       if (isChunkFrame(chunk)) {
-        send(chunk);
-        this.log(chunk, true);
+        this.postMessage(chunk);
       } else {
         // chunk it ourselves
-        const frames = toFrames(chunk);
-        let next = frames.next();
-        while (!next.done) {
-          send(next.value);
-          next = frames.next();
+        for (const frame of toFrames(chunk)) {
+          this.postMessage(frame);
         }
       }
       this.log(chunk, true);

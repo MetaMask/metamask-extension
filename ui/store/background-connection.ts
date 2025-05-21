@@ -1,75 +1,57 @@
-import pify from 'pify';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import type { MetaRpcClientFactory } from '../../app/scripts/lib/metaRPCClientFactory';
 
-let background:
-  | ({
-      connectionStream: { readable: boolean };
-      DisconnectError: typeof Error;
-
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } & Record<string, (...args: any[]) => any>)
-  | null = null;
-let promisifiedBackground: Record<
-  string,
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (...args: any[]) => Promise<any>
-> | null = null;
+let background: MetaRpcClientFactory | null = null;
 
 export const generateActionId = () => Date.now() + Math.random();
 
 /**
- * Promise-style call to background method invokes promisifiedBackground method directly.
+ * Calls a method on the background connection.
  *
  * @param method - name of the background method
- * @param [args] - arguments to that method, if any
+ * @param args - arguments to that method, if any
  * @returns
  */
 export function submitRequestToBackground<R>(
   method: string,
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  args?: any[],
+  args: unknown[],
 ): Promise<R> {
-  return promisifiedBackground?.[method](
-    ...(args ?? []),
-  ) as unknown as Promise<R>;
+  return background?.[method](...args) as Promise<R>;
 }
 
 type CallbackMethod<R = unknown> = (error?: unknown, result?: R) => void;
 
 /**
- * [Deprecated] Callback-style call to background method
- * invokes promisifiedBackground method directly.
+ * [Deprecated] Callback-style call to background method.
  *
  * @deprecated Use async `submitRequestToBackground` function instead.
  * @param method - name of the background method
- * @param [args] - arguments to that method, if any
+ * @param args - arguments to that method, if any
  * @param callback - Node style (error, result) callback for finishing the operation
  */
-export const callBackgroundMethod = <R>(
+export const callBackgroundMethod = <Result>(
   method: string,
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  args: any[],
-  callback: CallbackMethod<R>,
+  args: unknown[],
+  callback: CallbackMethod<Result>,
 ) => {
-  background?.[method](...args, callback);
+  background?.[method](...args).then(
+    (result) => {
+      callback(undefined, result as Result);
+    },
+    (error) => {
+      callback(error);
+    },
+  );
 };
 
 /**
- * Sets/replaces the background connection reference
- * Under MV3 it also triggers queue processing if the new background is connected
+ * Sets or replaces the background connection reference.
  *
- * @param backgroundConnection
+ * @param backgroundConnection - the new background connection
  */
 export async function setBackgroundConnection(
-  backgroundConnection: typeof background,
+  backgroundConnection: MetaRpcClientFactory,
 ) {
   background = backgroundConnection;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  promisifiedBackground = pify(background as Record<string, any>);
 }

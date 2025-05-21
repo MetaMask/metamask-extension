@@ -1,167 +1,186 @@
-import { JsonRpcError } from '@metamask/rpc-errors';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
-import { hasProperty } from '@metamask/utils';
-import createRandomId from '../../../shared/modules/random-id';
+import {
+  Json,
+  JsonRpcFailure,
+  JsonRpcRequest,
+  JsonRpcResponse,
+  hasProperty,
+} from '@metamask/utils';
+import { JsonRpcError } from '@metamask/rpc-errors';
+import { Writable } from 'readable-stream-3';
 import { TEN_SECONDS_IN_MILLISECONDS } from '../../../shared/lib/transactions-controller-utils';
+import createRandomId from '../../../shared/modules/random-id';
 
-// Custom error type
-class DisconnectError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'DisconnectError';
-  }
-}
+export type MetaRpcClientFactory = MetaRPCClient &
+  Record<string, (...args: unknown[]) => Promise<unknown>>;
 
-// Interface for JSON-RPC payload
-type JsonRpcPayload = {
-  jsonrpc: '2.0';
-  id?: number;
-  method?: string;
-  params?: unknown[];
-  result?: unknown;
-  error?: {
-    code: number;
-    message: string;
-    data?: unknown;
-    stack?: string;
-  };
-};
+class DisconnectError extends Error {}
 
-// Type for callback function
-type Callback = (error: Error | null, result?: unknown) => void;
+export class MetaRPCClient {
+  private connectionStream: Writable;
 
-// Interface for connection stream
-type ConnectionStream = {
-  on: (event: string, handler: (data: JsonRpcPayload) => void) => void;
-  write: (payload: JsonRpcPayload) => void;
-};
+  private notificationChannel = new SafeEventEmitter();
 
-class MetaRPCClient {
-  private connectionStream: ConnectionStream;
+  private uncaughtErrorChannel = new SafeEventEmitter();
 
-  private notificationChannel: SafeEventEmitter;
+  private requests = new Map<
+    string | number | null,
+    {
+      resolve: (result?: unknown) => void;
+      reject: (error: Error) => void;
+      timeout: number | null;
+    }
+  >();
 
-  private uncaughtErrorChannel: SafeEventEmitter;
+  public DisconnectError = DisconnectError;
 
-  private requests: Map<number, Callback>;
-
-  private responseHandled: Record<number, boolean>;
-
-  public DisconnectError: typeof DisconnectError;
-
-  constructor(connectionStream: ConnectionStream) {
+  constructor(connectionStream: Writable) {
     this.connectionStream = connectionStream;
-    this.notificationChannel = new SafeEventEmitter();
-    this.uncaughtErrorChannel = new SafeEventEmitter();
-    this.requests = new Map();
-    this.responseHandled = {};
-    this.DisconnectError = DisconnectError;
-
-    this.connectionStream.on('data', this.handleResponse.bind(this));
-    this.connectionStream.on('end', this.close.bind(this));
+    this.connectionStream.on('data', this.handleResponse);
+    this.connectionStream.on('end', this.close);
   }
 
-  send(id: number, payload: JsonRpcPayload, cb?: Callback): void {
-    if (cb) {
-      this.requests.set(id, cb);
-    }
-    this.connectionStream.write(payload);
-    this.responseHandled[id] = false;
+  async send(id: number, payload: JsonRpcRequest) {
+    return new Promise((resolve, reject) => {
+      let timeout: number | null = null;
+      if (payload.method === 'getState') {
+        // `window.setTimeout` because typescript thinks the return type is
+        // `NodeJS.Timeout` if we use the global `setTimeout` reference.
+        timeout = window.setTimeout(() => {
+          this.requests.delete(id);
+          reject(new Error('No response from RPC'));
 
-    if (payload.method === 'getState') {
-      setTimeout(() => {
-        if (!this.responseHandled[id] && cb) {
-          delete this.responseHandled[id];
-          cb(new Error('No response from RPC'));
-          return;
-        }
-        delete this.responseHandled[id];
-      }, TEN_SECONDS_IN_MILLISECONDS);
-    }
+          // needed for linter to pass
+          return true;
+        }, TEN_SECONDS_IN_MILLISECONDS);
+      }
+      this.requests.set(id, { resolve, reject, timeout });
+      console.log({ payload, id, stack: new Error().stack });
+      this.connectionStream.write(payload);
+    });
   }
 
-  onNotification(handler: (data: JsonRpcPayload) => void): void {
-    this.notificationChannel.addListener('notification', handler);
+  onNotification(handler: (data: unknown) => void) {
+    this.notificationChannel.addListener('notification', (data) => {
+      handler(data);
+    });
   }
 
-  onUncaughtError(handler: (error: JsonRpcError) => void): void {
-    this.uncaughtErrorChannel.addListener('error', handler);
+  onUncaughtError(handler: (error: JsonRpcFailure) => void) {
+    this.uncaughtErrorChannel.addListener('error', (error) => {
+      handler(error);
+    });
   }
 
-  close(): void {
+  close = () => {
     this.notificationChannel.removeAllListeners();
     this.uncaughtErrorChannel.removeAllListeners();
+    this.connectionStream.off('data', this.handleResponse);
+    this.connectionStream.off('end', this.close);
+    // fail all unfinished requests
+    this.requests.forEach((request, id) => {
+      const { reject, timeout } = request;
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      this.requests.delete(id);
+      reject(new DisconnectError('disconnected'));
+    });
+    this.requests.clear();
+  };
 
-    for (const [id, handler] of this.requests) {
-      if (!this.responseHandled[id]) {
-        this.responseHandled[id] = true;
-        handler(new DisconnectError('disconnected'));
+  handleResponse = (data: JsonRpcResponse | JsonRpcRequest) => {
+    const { id } = data;
+    if (isRequest(data)) {
+      const isNotification = id === undefined;
+      if (isNotification) {
+        // react to server-side to client-side notifications
+        this.notificationChannel.emit('notification', data);
+      }
+      // we ignore server-side to client side _requests_
+      return;
+    }
+
+    const request = this.requests.get(id);
+    if (request) {
+      this.requests.delete(id);
+      if (request.timeout) {
+        clearTimeout(request.timeout);
       }
     }
-  }
 
-  private handleResponse(data: JsonRpcPayload): void {
-    const { id, result, error, method, params } = data;
-    const isNotification = id === undefined && error === undefined;
-    const callback = id === undefined ? undefined : this.requests.get(id);
-
-    if (id !== undefined) {
-      this.responseHandled[id] = true;
-    }
-
-    if (method && params && !isNotification) {
-      return;
-    }
-
-    if (method && params && isNotification) {
-      this.notificationChannel.emit('notification', data);
-      return;
-    }
-
-    if (error) {
+    if (isError(data)) {
+      const { error } = data;
       const e = new JsonRpcError(error.code, error.message, error.data);
+      // preserve the stack from serializeError
       e.stack = error.stack;
-      if (callback && id !== undefined) {
-        this.requests.delete(id);
-        callback(e);
-        return;
+      if (request) {
+        request.reject(e);
+      } else {
+        this.uncaughtErrorChannel.emit('error', e);
       }
-      this.uncaughtErrorChannel.emit('error', e);
       return;
     }
 
-    if (!callback || id === undefined) {
-      return;
+    if (request) {
+      request.resolve(data.result);
     }
-
-    this.requests.delete(id);
-    callback(null, result);
-  }
+  };
 }
 
-const metaRPCClientFactory = (
-  connectionStream: ConnectionStream,
-): MetaRPCClient => {
+/**
+ * Checks if the given data is a JsonRpcRequest.
+ *
+ * @param data - The data to check.
+ * @returns True if the data is a JsonRpcRequest, false otherwise.
+ */
+function isRequest(
+  data: JsonRpcResponse | JsonRpcRequest,
+): data is JsonRpcRequest {
+  return hasProperty(data, 'method') && hasProperty(data, 'params');
+}
+
+/**
+ * Checks if the given data is a JsonRpcFailure.
+ *
+ * @param data - The data to check.
+ * @returns True if the data is a JsonRpcFailure, false otherwise.
+ */
+function isError(
+  data: JsonRpcResponse | JsonRpcRequest,
+): data is JsonRpcFailure {
+  return hasProperty(data, 'error');
+}
+
+/**
+ * Creates a proxy of the MetaRPCClient that intercepts method calls and
+ *
+ * @param connectionStream - The connection stream to use for the RPC client.
+ * @returns A proxy of the MetaRPCClient that intercepts method calls and
+ */
+export default function metaRPCClientFactory(
+  connectionStream: Writable,
+): MetaRpcClientFactory {
   const metaRPCClient = new MetaRPCClient(connectionStream);
   return new Proxy(metaRPCClient, {
-    get: (target: MetaRPCClient, property: string | symbol) => {
-      if (hasProperty(target, property)) {
-        return target[property];
+    get: (object, property) => {
+      if (hasKey(object, property)) {
+        return object[property];
       }
-      return (...args: unknown[]) => {
-        const callback = args[args.length - 1] as Callback;
-        const params = args.slice(0, -1);
+      return async (...params: Json[]) => {
         const id = createRandomId();
-        const payload: JsonRpcPayload = {
+        const payload: JsonRpcRequest = {
           jsonrpc: '2.0',
           method: property as string,
           params,
           id,
         };
-        target.send(id, payload, callback);
+        return await object.send(id, payload);
       };
     },
-  });
-};
+  }) as MetaRpcClientFactory;
+}
 
-export default metaRPCClientFactory;
+function hasKey<O extends object>(obj: O, key: PropertyKey): key is keyof O {
+  return key in obj;
+}
