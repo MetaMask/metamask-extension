@@ -48,8 +48,9 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
     gasFeeTokens?.some((token) => token.tokenAddress === NATIVE_TOKEN_ADDRESS),
   );
 
-  const [futureNativeSelected, setFutureNativeSelected] =
-    useState(hasFutureNativeToken);
+  const [futureNativeSelected, setFutureNativeSelected] = useState(
+    hasFutureNativeToken && Boolean(selectedGasFeeToken),
+  );
 
   const gasFeeTokenAddresses =
     gasFeeTokens

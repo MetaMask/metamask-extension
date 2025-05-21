@@ -21,7 +21,10 @@ import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
 import { SelectedGasFeeToken } from '../selected-gas-fee-token';
-import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
+import {
+  NATIVE_TOKEN_ADDRESS,
+  useSelectedGasFeeToken,
+} from '../../hooks/useGasFeeToken';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 
 export const EditGasFeesRow = ({
@@ -97,15 +100,7 @@ export const EditGasFeesRow = ({
         justifyContent={JustifyContent.spaceBetween}
         paddingInline={2}
       >
-        <Text
-          data-testid="gas-fee-token-fee"
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
-        >
-          {gasFeeToken
-            ? t('confirmGasFeeTokenMetaMaskFee', [metamaskFeeFiat])
-            : ' '}
-        </Text>
+        <MetaMaskFee gasFeeToken={gasFeeToken} />
         {showAdvancedDetails && (
           <FiatValue
             fullValue={fiatFeeWith18SignificantDigits}
@@ -149,6 +144,44 @@ function FiatValue({
     <Tooltip title={fullValue}>{value}</Tooltip>
   ) : (
     <>{value}</>
+  );
+}
+
+function MetaMaskFee({
+  gasFeeToken,
+}: {
+  gasFeeToken?: { metamaskFeeFiat: string; tokenAddress: Hex };
+}) {
+  const t = useI18nContext();
+  const { metamaskFeeFiat, tokenAddress } = gasFeeToken || {};
+  const isFutureNative = tokenAddress === NATIVE_TOKEN_ADDRESS;
+
+  return (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      alignItems={AlignItems.center}
+    >
+      <Text
+        data-testid="gas-fee-token-fee"
+        variant={TextVariant.bodySm}
+        color={TextColor.textAlternative}
+      >
+        {isFutureNative && 'Funded by'}
+        {!isFutureNative && gasFeeToken
+          ? t('confirmGasFeeTokenMetaMaskFee', [metamaskFeeFiat])
+          : ' '}
+      </Text>
+      {isFutureNative && (
+        <img
+          src="./images/logo/metamask-fox.svg"
+          height={15}
+          style={{
+            margin: 8,
+          }}
+        />
+      )}
+    </Box>
   );
 }
 
