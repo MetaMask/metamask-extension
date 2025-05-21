@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
+  Box,
   ButtonBase,
   ButtonBaseSize,
   IconName,
   Text,
 } from '../../../components/component-library';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import {
+  BlockSize,
+  TextTransform,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import TermsOfUsePopup from '../../../components/app/terms-of-use-popup';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setTermsOfUseLastAgreed } from '../../../store/actions';
@@ -17,18 +21,20 @@ export default function WelcomeBanner({ onAccept }: { onAccept: () => void }) {
   const dispatch = useDispatch();
   const [showTermsOfUse, setShowTermsOfUse] = useState(false);
 
-  const onAcceptTermsOfUse = () => {
+  const onAcceptTermsOfUse = useCallback(() => {
+    setShowTermsOfUse(false);
     dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
     onAccept();
-  };
+  }, [dispatch, onAccept]);
 
   return (
-    <div className="welcome-banner">
-      <div className="welcome-banner__wrapper">
+    <Box className="welcome-banner" paddingInline={6}>
+      <Box className="welcome-banner__wrapper" width={BlockSize.Full}>
         <Text
           data-testid="onboarding-welcome-banner-title"
           className="welcome-banner__title"
           as="h2"
+          textTransform={TextTransform.Uppercase}
           marginBottom={8}
         >
           {t('welcomeTitle')}
@@ -50,19 +56,8 @@ export default function WelcomeBanner({ onAccept }: { onAccept: () => void }) {
             {t('welcomeGetStarted')}
           </Text>
         </ButtonBase>
-      </div>
-      {showTermsOfUse && (
-        <TermsOfUsePopup
-          onAccept={() => {
-            setShowTermsOfUse(false);
-            onAcceptTermsOfUse();
-          }}
-        />
-      )}
-    </div>
+      </Box>
+      {showTermsOfUse && <TermsOfUsePopup onAccept={onAcceptTermsOfUse} />}
+    </Box>
   );
 }
-
-WelcomeBanner.propTypes = {
-  onAccept: PropTypes.func.isRequired,
-};
