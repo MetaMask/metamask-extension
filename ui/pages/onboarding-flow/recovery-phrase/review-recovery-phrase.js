@@ -23,6 +23,9 @@ import {
   TextColor,
   IconColor,
   FontWeight,
+  Display,
+  FlexDirection,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import {
   MetaMetricsEventCategory,
@@ -49,8 +52,17 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
   const trackEvent = useContext(MetaMetricsContext);
 
   return (
-    <div className="recovery-phrase" data-testid="recovery-phrase">
-      <div className="recovery-phrase__content">
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      alignItems={AlignItems.Center}
+      height={BlockSize.Full}
+      gap={6}
+      className="recovery-phrase"
+      data-testid="recovery-phrase"
+    >
+      <Box>
         {showSrpDetailsModal && (
           <SRPDetailsModal onClose={() => setShowSrpDetailsModal(false)} />
         )}
@@ -120,7 +132,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
             setPhraseRevealed(true);
           }}
         />
-      </div>
+      </Box>
       <Box width={BlockSize.Full}>
         <Button
           width={BlockSize.Full}
@@ -146,7 +158,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
           {t('continue')}
         </Button>
       </Box>
-    </div>
+    </Box>
   );
 }
 
