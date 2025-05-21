@@ -21,7 +21,6 @@ import {
   SWAPS_ROUTE,
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
-  ONBOARDING_COMPLETION_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -55,7 +54,6 @@ import {
   selectShowSurveyToast,
   selectSwitchedNetworkNeverShowMessage,
   selectNewSrpAdded,
-  selectPasswordHintSavedToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -64,7 +62,6 @@ import {
   setSurveyLinkLastClickedOrClosed,
   setSwitchedNetworkNeverShowMessage,
   setShowNewSrpAddedToast,
-  setShowPasswordHintSavedToast,
 } from './utils';
 
 export function ToastMaster() {
@@ -77,7 +74,6 @@ export function ToastMaster() {
     location.pathname === PREPARE_SWAP_ROUTE;
   const onBridgeScreen =
     location.pathname === `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
-  const onWalletReadyScreen = location.pathname === ONBOARDING_COMPLETION_ROUTE;
 
   if (onHomeScreen) {
     return (
@@ -102,13 +98,6 @@ export function ToastMaster() {
     );
   }
 
-  if (onWalletReadyScreen) {
-    return (
-      <ToastContainer>
-        <PasswordHintSavedToast />
-      </ToastContainer>
-    );
-  }
   return null;
 }
 
@@ -381,33 +370,6 @@ function NewSrpAddedToast() {
         onClose={() => dispatch(setShowNewSrpAddedToast(false))}
         autoHideTime={autoHideDelay}
         onAutoHideToast={() => dispatch(setShowNewSrpAddedToast(false))}
-      />
-    )
-  );
-}
-
-function PasswordHintSavedToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const showPasswordHintSavedToast = useSelector(selectPasswordHintSavedToast);
-  const autoHideToastDelay = 5 * SECOND;
-
-  return (
-    showPasswordHintSavedToast && (
-      <Toast
-        key="password-hint-saved-toast"
-        text={t('passwordHintSaved')}
-        className="toasts-container--password-hint-saved"
-        borderRadius={BorderRadius.LG}
-        textVariant={TextVariant.bodyMd}
-        autoHideTime={autoHideToastDelay}
-        onAutoHideToast={() => {
-          dispatch(setShowPasswordHintSavedToast(false));
-        }}
-        onClose={() => {
-          dispatch(setShowPasswordHintSavedToast(false));
-        }}
       />
     )
   );
