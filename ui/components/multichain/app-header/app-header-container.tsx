@@ -27,7 +27,6 @@ export const AppHeaderContainer = ({
     <Box
       display={Display.Flex}
       className="multichain-app-header"
-      marginBottom={headerBottomMargin}
       alignItems={AlignItems.center}
       width={BlockSize.Full}
       backgroundColor={backgroundColor}
