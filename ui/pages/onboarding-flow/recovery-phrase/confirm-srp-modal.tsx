@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import {
+  AlignItems,
   IconColor,
   TextAlign,
   TextVariant,
@@ -21,15 +21,17 @@ import {
   IconName,
 } from '../../../components/component-library';
 
+type ConfirmSrpModalProps = {
+  onContinue: () => void;
+  onClose: () => void;
+  isError: boolean;
+};
+
 export default function ConfirmSrpModal({
   onContinue,
   onClose,
   isError,
-}: {
-  onContinue: () => void;
-  onClose: () => void;
-  isError: boolean;
-}) {
+}: ConfirmSrpModalProps) {
   const t = useI18nContext();
 
   const handleContinue = () => {
@@ -48,7 +50,7 @@ export default function ConfirmSrpModal({
       data-testid="confirm-srp-modal"
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent alignItems={AlignItems.center}>
         <ModalHeader onClose={onClose}>
           <Box textAlign={TextAlign.Center}>
             <Icon
@@ -93,9 +95,3 @@ export default function ConfirmSrpModal({
     </Modal>
   );
 }
-
-ConfirmSrpModal.propTypes = {
-  onContinue: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
-  isError: PropTypes.bool.isRequired,
-};

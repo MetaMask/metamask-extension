@@ -10,6 +10,8 @@ import {
   TextColor,
   BlockSize,
   IconColor,
+  Display,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -162,86 +164,91 @@ export default function CreatePassword({
   );
 
   return (
-    <div className="create-password" data-testid="create-password">
-      <form className="create-password__form" onSubmit={handleCreate}>
-        <div className="create-password__content">
-          <Box
-            justifyContent={JustifyContent.flexStart}
-            marginBottom={4}
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      height={BlockSize.Full}
+      gap={4}
+      as="form"
+      className="create-password"
+      data-testid="create-password"
+      onSubmit={handleCreate}
+    >
+      <Box>
+        <Box
+          justifyContent={JustifyContent.flexStart}
+          marginBottom={4}
+          width={BlockSize.Full}
+        >
+          <ButtonIcon
+            iconName={IconName.ArrowLeft}
+            color={IconColor.iconDefault}
+            size={ButtonIconSize.Md}
+            data-testid="create-password-back-button"
+            onClick={() => history.goBack()}
+            ariaLabel="back"
+          />
+        </Box>
+        <Box
+          justifyContent={JustifyContent.flexStart}
+          marginBottom={4}
+          width={BlockSize.Full}
+        >
+          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+            {t('stepOf', [
+              firstTimeFlowType === FirstTimeFlowType.import ? 2 : 1,
+              firstTimeFlowType === FirstTimeFlowType.import ? 2 : 3,
+            ])}
+          </Text>
+          <Text variant={TextVariant.headingLg} as="h2">
+            {t('createPassword')}
+          </Text>
+        </Box>
+        <PasswordForm onChange={(newPassword) => setPassword(newPassword)} />
+      </Box>
+      <Box>
+        <Box
+          className="create-password__terms-container"
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.spaceBetween}
+          marginBottom={4}
+        >
+          <Checkbox
+            inputProps={{ 'data-testid': 'create-password-terms' }}
+            alignItems={AlignItems.flexStart}
+            isChecked={termsChecked}
+            onChange={() => {
+              setTermsChecked(!termsChecked);
+            }}
+            label={
+              <Text variant={TextVariant.bodyMd} marginLeft={2}>
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+                  t('passwordTermsWarning')
+                  ///: END:ONLY_INCLUDE_IF
+                }
+                &nbsp;
+                {createPasswordLink}
+              </Text>
+            }
+          />
+        </Box>
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+          <Button
+            data-testid="create-password-submit"
+            variant={ButtonVariant.Primary}
             width={BlockSize.Full}
+            size={ButtonSize.Lg}
+            className="create-password__form--submit-button"
+            disabled={!password || !termsChecked}
           >
-            <ButtonIcon
-              iconName={IconName.ArrowLeft}
-              color={IconColor.iconDefault}
-              size={ButtonIconSize.Md}
-              data-testid="create-password-back-button"
-              onClick={() => history.goBack()}
-              ariaLabel="back"
-            />
-          </Box>
-          <Box
-            justifyContent={JustifyContent.flexStart}
-            marginBottom={4}
-            width={BlockSize.Full}
-          >
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-            >
-              {t('stepOf', [
-                firstTimeFlowType === FirstTimeFlowType.import ? 2 : 1,
-                firstTimeFlowType === FirstTimeFlowType.import ? 2 : 3,
-              ])}
-            </Text>
-            <Text variant={TextVariant.headingLg} as="h2">
-              {t('createPassword')}
-            </Text>
-          </Box>
-          <PasswordForm onChange={(newPassword) => setPassword(newPassword)} />
-        </div>
-        <div className="create-password__footer">
-          <Box
-            className="create-password__terms-container"
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.spaceBetween}
-            marginBottom={4}
-          >
-            <Checkbox
-              inputProps={{ 'data-testid': 'create-password-terms' }}
-              alignItems={AlignItems.flexStart}
-              isChecked={termsChecked}
-              onChange={() => {
-                setTermsChecked(!termsChecked);
-              }}
-              label={
-                <Text variant={TextVariant.bodyMd} marginLeft={2}>
-                  {
-                    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-                    t('passwordTermsWarning')
-                    ///: END:ONLY_INCLUDE_IF
-                  }
-                  &nbsp;
-                  {createPasswordLink}
-                </Text>
-              }
-            />
-          </Box>
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-            <Button
-              data-testid="create-password-submit"
-              variant={ButtonVariant.Primary}
-              width={BlockSize.Full}
-              size={ButtonSize.Lg}
-              className="create-password__form--submit-button"
-              disabled={!password || !termsChecked}
-            >
-              {t('confirm')}
-            </Button>
-            ///: END:ONLY_INCLUDE_IF
-          }
-        </div>
-      </form>
+            {t('confirm')}
+          </Button>
+          ///: END:ONLY_INCLUDE_IF
+        }
+      </Box>
       {shouldInjectMetametricsIframe ? (
         <iframe
           src={analyticsIframeUrl}
@@ -249,7 +256,7 @@ export default function CreatePassword({
           data-testid="create-password-iframe"
         />
       ) : null}
-    </div>
+    </Box>
   );
 }
 

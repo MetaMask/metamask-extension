@@ -71,10 +71,6 @@ export const REVEAL_SRP_LIST_ROUTE =
 PATH_NAME_MAP[REVEAL_SRP_LIST_ROUTE] =
   'Reveal Secret Recovery Phrase List Page';
 
-export const SECURITY_PASSWORD_HINT_ROUTE =
-  '/settings/security-and-privacy/password-hint';
-PATH_NAME_MAP[SECURITY_PASSWORD_HINT_ROUTE] = 'Password Hint';
-
 export const SECURITY_PASSWORD_CHANGE_ROUTE =
   '/settings/security-and-privacy/password-change';
 PATH_NAME_MAP[SECURITY_PASSWORD_CHANGE_ROUTE] = 'Change Password';
@@ -285,7 +281,6 @@ export const ONBOARDING_PRIVACY_SETTINGS_ROUTE = '/onboarding/privacy-settings';
 export const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
 export const ONBOARDING_WELCOME_ROUTE = '/onboarding/welcome';
 export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
-export const ONBOARDING_PASSWORD_HINT = '/onboarding/password-hint';
 export const ONBOARDING_ACCOUNT_EXIST = '/onboarding/account-exist';
 export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
 

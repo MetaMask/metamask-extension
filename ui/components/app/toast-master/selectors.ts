@@ -19,9 +19,7 @@ type State = {
   appState: Partial<
     Pick<
       MetaMaskReduxState['appState'],
-      | 'showNftDetectionEnablementToast'
-      | 'showNewSrpAddedToast'
-      | 'showPasswordHintSavedToast'
+      'showNftDetectionEnablementToast' | 'showNewSrpAddedToast'
     >
   >;
   metamask: Partial<
@@ -136,8 +134,4 @@ export function selectSwitchedNetworkNeverShowMessage(
  */
 export function selectNewSrpAdded(state: Pick<State, 'appState'>): boolean {
   return Boolean(state.appState.showNewSrpAddedToast);
-}
-
-export function selectPasswordHintSavedToast(state: State): boolean {
-  return Boolean(state.appState?.showPasswordHintSavedToast);
 }
