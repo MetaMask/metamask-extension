@@ -242,7 +242,6 @@ const AccountListItem = ({
       onClick={() => {
         // Without this check, the account will be selected after
         // the account options menu closes
-        console.log('plop');
         if (!accountOptionsMenuOpen) {
           onClick?.(account);
         }
