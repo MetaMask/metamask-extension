@@ -14,26 +14,30 @@ import {
   getMultichainIsEvm,
 } from '../../../../../selectors/multichain';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
-import { TokenFiatDisplayInfo } from '../../types';
 
-type TokenCellBadgeProps = {
-  token: TokenFiatDisplayInfo;
+type AssetCellBadgeProps = {
+  chainId: `0x${string}` | `${string}:${string}`;
+  isNative?: boolean;
+  tokenImage: string;
+  symbol: string;
 };
 
-export const TokenCellBadge = React.memo(
-  ({ token }: TokenCellBadgeProps) => {
+export const AssetCellBadge = React.memo(
+  ({ chainId, isNative, tokenImage, symbol }: AssetCellBadgeProps) => {
     const isEvm = useSelector(getMultichainIsEvm);
     const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+
+    const avatarTokenSrc =
+      isEvm && isNative ? getNativeCurrencyForChain(chainId) : tokenImage;
+    const badgeWrapperSrc = getImageForChainId(chainId) ?? undefined;
 
     return (
       <BadgeWrapper
         badge={
           <AvatarNetwork
             size={AvatarNetworkSize.Xs}
-            name={allNetworks?.[token.chainId as Hex]?.name}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            src={getImageForChainId(token.chainId) || undefined}
+            name={allNetworks?.[chainId as Hex]?.name}
+            src={badgeWrapperSrc}
             backgroundColor={BackgroundColor.backgroundMuted}
             borderWidth={2}
           />
@@ -42,16 +46,12 @@ export const TokenCellBadge = React.memo(
         style={{ alignSelf: 'center' }}
       >
         <AvatarToken
-          name={token.symbol}
+          name={symbol}
           backgroundColor={BackgroundColor.backgroundMuted}
-          src={
-            isEvm && token.isNative
-              ? getNativeCurrencyForChain(token.chainId)
-              : token.tokenImage
-          }
+          src={avatarTokenSrc}
         />
       </BadgeWrapper>
     );
   },
-  (prevProps, nextProps) => prevProps.token.chainId === nextProps.token.chainId,
+  (prevProps, nextProps) => prevProps.chainId === nextProps.chainId,
 );
