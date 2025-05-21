@@ -188,6 +188,7 @@ export const CHAIN_IDS = {
   MATCHAIN: '0x2ba',
   FLOW: '0x2eb',
   MONAD_TESTNET: '0x279f',
+  MONAD: '0x8f',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -1061,6 +1062,7 @@ export const CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP: Record<Hex, string> = {
   [CHAIN_IDS.LINEA_MAINNET]:
     'https://portfolio.metamask.io/explore/networks/linea',
   [CHAIN_IDS.SEI]: 'https://portfolio.metamask.io/explore/networks/sei',
+  [CHAIN_IDS.MONAD]: 'https://portfolio.metamask.io/explore/networks/monad',
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
