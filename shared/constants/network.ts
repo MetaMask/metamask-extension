@@ -196,6 +196,7 @@ export const CHAIN_IDS = {
   OMNI: '0xa6',
   XRPLEVM: '0x15f900',
   FRAX: '0xfc',
+  MONAD: '0x8f',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {

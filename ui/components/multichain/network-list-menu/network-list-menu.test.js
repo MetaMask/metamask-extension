@@ -84,7 +84,7 @@ const render = ({
   isAddingNewNetwork = false,
   isAccessedFromDappConnectedSitePopover = false,
   editedNetwork = undefined,
-  neNetworkDiscoverButton = { '0x531': true, '0xe708': true },
+  neNetworkDiscoverButton = { '0x531': true, '0xe708': true, '0x8f': true },
 } = {}) => {
   const state = {
     appState: {
