@@ -40,6 +40,10 @@ export default function AccountNotFound() {
       data-testid="account-not-found"
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.spaceBetween}
+      alignItems={AlignItems.center}
+      gap={6}
+      height={BlockSize.Full}
     >
       <div className="account-not-found__content">
         <Box
@@ -85,6 +89,9 @@ export default function AccountNotFound() {
               width={276}
               height={276}
               alt="Account already exists"
+              style={{
+                alignSelf: 'center',
+              }}
             />
           </Box>
           <Text variant={TextVariant.bodyMd} marginBottom={6}>
