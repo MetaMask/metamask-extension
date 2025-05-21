@@ -85,10 +85,9 @@ ui/components/component-library      @MetaMask/design-system-engineers
 **/pages/notification*/**                           @MetaMask/notifications
 **/utils/notification.util.ts                       @MetaMask/notifications
 
-# Identity team is responsible for authentication and profile syncing inside the Extension.
+# Identity team is responsible for authentication and backup and sync inside the Extension.
 # Slack handle: @identity_team | Slack channel: #metamask-identity
 **/identity/**                                          @MetaMask/identity
-ui/pages/settings/security-tab/profile-sync-toggle      @MetaMask/identity
 
 
 # Accounts team is responsible for code related with snap management accounts

@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Bitcoin account (Beta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Bitcoin account (Testnet)"
-  },
   "addBlockExplorer": {
     "message": "Magdagdag ng block explorer"
   },
@@ -661,22 +658,6 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Ang pag-on sa tampok na ito ay nagbibigay sa iyo ng opsyon na magdagdag ng Account sa Bitcoin sa iyong MetaMask Extension na nagmula sa iyong umiiral na Lihim na Parirala sa Pagbawi. Ito ay isang eksperimental na tampok sa Beta, kaya gamitin ito nang may-pag-iingat. Upang bigyan kami ng feedback sa bagong karanasan na ito sa Bitcoin, mangyaring sagutan ito $1.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Paganahin ang \"Magdagdag ng bagong account sa Bitcoin (Beta)\""
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Ang pag-on sa tampok na ito ay magbibigay sa iyo ng opsyon na magdagdag ng Account sa Bitcoin para sa test network."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Paganahin ang \"Magdagdag ng bagong account sa Bitcoin (Testnet)\""
   },
   "blockExplorerAccountAction": {
     "message": "Account",
@@ -1338,10 +1319,6 @@
   },
   "creatorAddress": {
     "message": "Address ng creator"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Ipinapakita nito ang halaga ng lahat ng token na pagmamay-ari mo sa lahat ng network. Kung mas gusto mong makita ang halagang ito sa ETH o sa ibang currency, pumunta sa $1.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "Mag-swap sa mga network gamit ang MetaMask Portfolio"
@@ -3050,7 +3027,7 @@
     "message": "Hindi maaaring magpadala ng negatibo o zero na halaga ng asset."
   },
   "network": {
-    "message": "Network:"
+    "message": "Network"
   },
   "networkChanged": {
     "message": "Nagbago ang network"
@@ -3662,22 +3639,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Ang pag-install ng iyong MetaMask ay kumpleto na!"
   },
-  "oneDayAbbreviation": {
-    "message": "1D",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1M",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1W",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1Y",
-    "description": "Shortened form of '1 year'"
-  },
   "onlyConnectTrust": {
     "message": "Kumonekta lang sa mga site na pinagkakatiwalaan mo. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -4147,18 +4108,6 @@
   },
   "productAnnouncements": {
     "message": "Mga anunsiyo ng produkto"
-  },
-  "profileSync": {
-    "message": "Pag-sync ng Profile"
-  },
-  "profileSyncConfirmation": {
-    "message": "Kapag in-off mo ang pag-sync ng profile, hindi ka makakatanggap ng mga notipikasyon."
-  },
-  "profileSyncDescription": {
-    "message": "Lumikha ng profile na gagamitin ng MetaMask upang i-sync ang ilang mga setting sa iyong mga device. Kailangan ito para makakuha ng mga notipikasyon. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Matutunan kung paano namin protektahan ang iyong pagkapribado"
   },
   "proposedApprovalLimit": {
     "message": "Iminumungkahing Limitasyon sa Pag-apruba"
@@ -5972,10 +5921,6 @@
     "message": "Paunawa ng third-party na software",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
-  "threeMonthsAbbreviation": {
-    "message": "3M",
-    "description": "Shortened form of '3 months'"
-  },
   "time": {
     "message": "Oras"
   },
@@ -6524,9 +6469,6 @@
   },
   "yourBalance": {
     "message": "Iyong balanse"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Ang iyong balanse ay pinagsama-sama"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Maaaring nasa panganib ang iyong NFT"

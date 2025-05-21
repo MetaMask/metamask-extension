@@ -3,7 +3,7 @@
 exports[`SendPage render and initialization should render correctly even when a draftTransaction does not exist 1`] = `
 <div>
   <div
-    class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+    class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
     data-testid="multichain-page"
   >
     <div
@@ -416,7 +416,7 @@ exports[`SendPage render and initialization should render correctly even when a 
         class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
       >
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block multichain-send-page__nav-button mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block multichain-send-page__nav-button mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
         >
           Cancel
         </button>
@@ -426,7 +426,7 @@ exports[`SendPage render and initialization should render correctly even when a 
           title=""
         >
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
             data-theme="light"
           >
             Continue

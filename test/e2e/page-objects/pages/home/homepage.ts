@@ -53,10 +53,6 @@ class HomePage {
 
   private readonly popoverBackground = '.popover-bg';
 
-  private readonly popoverCloseButton = {
-    testId: 'popover-close',
-  };
-
   private readonly portfolioLink = '[data-testid="portfolio-link"]';
 
   private readonly privacyBalanceToggle = {
@@ -93,11 +89,6 @@ class HomePage {
       throw e;
     }
     console.log('Home page is loaded');
-  }
-
-  async closePopover(): Promise<void> {
-    console.log('Closing popover');
-    await this.driver.clickElement(this.popoverCloseButton);
   }
 
   async closeUseNetworkNotificationModal(): Promise<void> {

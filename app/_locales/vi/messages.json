@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Tài khoản Bitcoin (Beta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Tài khoản Bitcoin (Mạng thử nghiệm)"
-  },
   "addBlockExplorer": {
     "message": "Thêm một trình khám phá khối"
   },
@@ -661,22 +658,6 @@
   "billionAbbreviation": {
     "message": "Tỷ",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Bật tính năng này sẽ cung cấp cho bạn tùy chọn thêm Tài khoản Bitcoin vào Tiện ích mở rộng MetaMask bắt nguồn từ Cụm từ khôi phục bí mật hiện có của bạn. Đây là một tính năng Beta thử nghiệm, nên bạn phải tự chịu rủi ro khi sử dụng nó. Để cung cấp phản hồi cho chúng tôi về trải nghiệm Bitcoin mới này, vui lòng điền vào $1 này.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Bật \"Thêm tài khoản Bitcoin mới (Beta)\""
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Bật tính năng này sẽ cung cấp cho bạn tùy chọn thêm Tài khoản Bitcoin cho mạng thử nghiệm."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Bật \"Thêm tài khoản Bitcoin mới (Mạng thử nghiệm)\""
   },
   "blockExplorerAccountAction": {
     "message": "Tài khoản",
@@ -1339,10 +1320,6 @@
   "creatorAddress": {
     "message": "Địa chỉ của người tạo"
   },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Giá trị này phản ánh giá trị của tất cả các token mà bạn sở hữu trên tất cả các mạng. Nếu bạn muốn xem giá trị này bằng ETH hoặc các loại tiền tệ khác, hãy truy cập $1.",
-    "description": "$1 represents the settings page"
-  },
   "crossChainSwapsLink": {
     "message": "Hoán đổi trên các mạng với MetaMask Portfolio"
   },
@@ -1693,6 +1670,9 @@
   },
   "duplicateContactWarning": {
     "message": "Bạn có liên hệ bị trùng"
+  },
+  "earn": {
+    "message": "Earn"
   },
   "edit": {
     "message": "Chỉnh sửa"
@@ -3662,22 +3642,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Quá trình cài đặt MetaMask đã hoàn tất!"
   },
-  "oneDayAbbreviation": {
-    "message": "1 Ngày",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1 Tháng",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1 Tuần",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1 Năm",
-    "description": "Shortened form of '1 year'"
-  },
   "onlyConnectTrust": {
     "message": "Chỉ kết nối với các trang web mà bạn tin tưởng. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -4147,18 +4111,6 @@
   },
   "productAnnouncements": {
     "message": "Thông báo về sản phẩm"
-  },
-  "profileSync": {
-    "message": "Đồng bộ hồ sơ"
-  },
-  "profileSyncConfirmation": {
-    "message": "Nếu tắt đồng bộ hồ sơ, bạn sẽ không nhận được thông báo."
-  },
-  "profileSyncDescription": {
-    "message": "Tạo một hồ sơ mà MetaMask sử dụng để đồng bộ một số chế độ cài đặt giữa các thiết bị của bạn. Đây là thao tác cần thiết để nhận được thông báo. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn"
   },
   "proposedApprovalLimit": {
     "message": "Giới hạn chấp thuận đề xuất"
@@ -5972,10 +5924,6 @@
     "message": "Thông báo phần mềm của bên thứ ba",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
-  "threeMonthsAbbreviation": {
-    "message": "3 Tháng",
-    "description": "Shortened form of '3 months'"
-  },
   "time": {
     "message": "Thời gian"
   },
@@ -6524,9 +6472,6 @@
   },
   "yourBalance": {
     "message": "Số dư của bạn"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Số dư của bạn đã được tổng hợp"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT của bạn có thể gặp rủi ro"

@@ -58,7 +58,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   getIsBitcoinSupportEnabled,
-  getIsBitcoinTestnetSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
@@ -76,11 +75,7 @@ import {
   getHDEntropyIndex,
   getAllChainsToPoll,
 } from '../../../selectors';
-import {
-  detectNfts,
-  setSelectedAccount,
-  getNetworksWithTransactionActivityByAccounts,
-} from '../../../store/actions';
+import { detectNfts, setSelectedAccount } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -98,12 +93,6 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-import {
-  hasCreatedBtcMainnetAccount,
-  hasCreatedBtcTestnetAccount,
-} from '../../../selectors/accounts';
 ///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -199,22 +188,20 @@ export const getActionTitle = (
 ) => {
   switch (actionMode) {
     case ACTION_MODES.ADD:
-      return t('addAccountFromNetwork', ['Ethereum']);
+      return t('addAccountFromNetwork', [t('networkNameEthereum')]);
     case ACTION_MODES.MENU:
       return t('addAccount');
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     case ACTION_MODES.ADD_WATCH_ONLY:
-      return t('addAccountFromNetwork', ['Ethereum']);
+      return t('addAccountFromNetwork', [t('networkNameEthereum')]);
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
     case ACTION_MODES.ADD_BITCOIN:
-      return t('addAccountFromNetwork', ['Bitcoin']);
-    case ACTION_MODES.ADD_BITCOIN_TESTNET:
-      return t('addAccountFromNetwork', ['Bitcoin Testnet']);
+      return t('addAccountFromNetwork', [t('networkNameBitcoin')]);
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(solana)
     case ACTION_MODES.ADD_SOLANA:
-      return t('addAccountFromNetwork', ['Solana']);
+      return t('addAccountFromNetwork', [t('networkNameSolana')]);
     ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.IMPORT:
       return t('importPrivateKey');
@@ -321,15 +308,6 @@ export const AccountListMenu = ({
   const bitcoinWalletSnapClient = useMultichainWalletSnapClient(
     WalletClientType.Bitcoin,
   );
-  const bitcoinTestnetSupportEnabled = useSelector(
-    getIsBitcoinTestnetSupportEnabled,
-  );
-  const isBtcMainnetAccountAlreadyCreated = useSelector(
-    hasCreatedBtcMainnetAccount,
-  );
-  const isBtcTestnetAccountAlreadyCreated = useSelector(
-    hasCreatedBtcTestnetAccount,
-  );
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
@@ -355,6 +333,7 @@ export const AccountListMenu = ({
         snap_name: client.getSnapName(),
         location: 'Main Menu',
         hd_entropy_index: hdEntropyIndex,
+        chain_id_caip: _options.scope,
       },
     });
 
@@ -504,6 +483,9 @@ export const AccountListMenu = ({
     trackEvent({
       category: MetaMetricsEventCategory.Accounts,
       event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
+      properties: {
+        button_type: 'picker',
+      },
     });
     setPreviousActionMode(actionMode);
     setActionMode(ACTION_MODES.SELECT_SRP);
@@ -515,20 +497,6 @@ export const AccountListMenu = ({
     chainId: null,
   };
   ///: END:ONLY_INCLUDE_IF(multichain)
-
-  const fetchAccountsWithActivity = useCallback(async () => {
-    try {
-      await dispatch(getNetworksWithTransactionActivityByAccounts());
-    } catch (error) {
-      console.error('Failed to fetch accounts with activity:', error);
-    }
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (filteredAccounts.length > 0) {
-      fetchAccountsWithActivity();
-    }
-  }, [fetchAccountsWithActivity, filteredAccounts]);
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -587,6 +555,8 @@ export const AccountListMenu = ({
             paddingTop={0}
             style={{ overflowY: 'scroll' }}
           >
+            {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879 */}
+            {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
             <ImportSrp onActionComplete={onActionComplete} />
           </Box>
         )}
@@ -639,6 +609,8 @@ export const AccountListMenu = ({
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
                     startIconProps={{ size: IconSize.Md }}
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={async () => {
                       await handleMultichainSnapAccountCreation(
                         solanaWalletSnapClient,
@@ -648,17 +620,6 @@ export const AccountListMenu = ({
                         },
                         ACTION_MODES.ADD_SOLANA,
                       );
-
-                      trackEvent({
-                        category: MetaMetricsEventCategory.Navigation,
-                        event: MetaMetricsEventName.AccountAddSelected,
-                        properties: {
-                          account_type: MetaMetricsEventAccountType.Default,
-                          location: 'Main Menu',
-                          hd_entropy_index: hdEntropyIndex,
-                          chain_id_caip: MultichainNetworks.SOLANA,
-                        },
-                      });
                     }}
                     data-testid="multichain-account-menu-popover-add-solana-account"
                   >
@@ -673,10 +634,11 @@ export const AccountListMenu = ({
               bitcoinSupportEnabled && (
                 <Box marginTop={4}>
                   <ButtonLink
-                    disabled={isBtcMainnetAccountAlreadyCreated}
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
                     startIconProps={{ size: IconSize.Md }}
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={async () => {
                       return await handleMultichainSnapAccountCreation(
                         bitcoinWalletSnapClient,
@@ -694,32 +656,7 @@ export const AccountListMenu = ({
               )
               ///: END:ONLY_INCLUDE_IF
             }
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-              bitcoinTestnetSupportEnabled ? (
-                <Box marginTop={4}>
-                  <ButtonLink
-                    disabled={isBtcTestnetAccountAlreadyCreated}
-                    size={ButtonLinkSize.Sm}
-                    startIconName={IconName.Add}
-                    startIconProps={{ size: IconSize.Md }}
-                    onClick={async () => {
-                      return await handleMultichainSnapAccountCreation(
-                        bitcoinWalletSnapClient,
-                        {
-                          scope: MultichainNetworks.BITCOIN_TESTNET,
-                        },
-                        ACTION_MODES.ADD_BITCOIN_TESTNET,
-                      );
-                    }}
-                    data-testid="multichain-account-menu-popover-add-btc-account-testnet"
-                  >
-                    {t('addBitcoinTestnetAccountLabel')}
-                  </ButtonLink>
-                </Box>
-              ) : null
-              ///: END:ONLY_INCLUDE_IF
-            }
+
             <Text
               variant={TextVariant.bodySmMedium}
               marginTop={4}
@@ -846,6 +783,8 @@ export const AccountListMenu = ({
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Eye}
                     startIconProps={{ size: IconSize.Md }}
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={handleAddWatchAccount}
                     data-testid="multichain-account-menu-popover-add-watch-only-account"
                   >

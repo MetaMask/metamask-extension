@@ -50,12 +50,10 @@ const defaultState = {
             address: '0xFirstAddress',
           },
         ],
-      },
-    ],
-    keyringsMetadata: [
-      {
-        id: mockUlid,
-        name: '',
+        metadata: {
+          id: mockUlid,
+          name: '',
+        },
       },
     ],
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -2754,25 +2752,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('showConfirmTurnOffProfileSyncing', () => {
-    it('should dispatch showModal with the correct payload', async () => {
-      const store = mockStore();
-
-      await store.dispatch(actions.showConfirmTurnOffProfileSyncing());
-
-      const expectedActions = [
-        {
-          payload: {
-            name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
-          },
-          type: 'UI_MODAL_OPEN',
-        },
-      ];
-
-      await expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
   describe('#toggleExternalServices', () => {
     it('calls toggleExternalServices', async () => {
       const store = mockStore();
@@ -3049,6 +3028,7 @@ describe('Actions', () => {
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'SET_SHOW_NEW_SRP_ADDED_TOAST', payload: true },
       ];
 
       await store.dispatch(actions.importMnemonicToVault(mnemonic));

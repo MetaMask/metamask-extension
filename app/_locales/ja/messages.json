@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "ビットコインアカウント (ベータ)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "ビットコインアカウント (テストネット)"
-  },
   "addBlockExplorer": {
     "message": "ブロックエクスプローラーを追加"
   },
@@ -661,22 +658,6 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "ビットコイン"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "この機能をオンにすると、既存のシークレットリカバリーフレーズで取得したビットコインアカウントをMetaMask拡張機能に追加できるようになります。これは試験運用中のベータ機能であるため、自己責任でご使用ください。新しいビットコインエクスペリエンスのフィードバックをご提供いただくには、こちらの$1に入力してください。",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "「新しいビットコインアカウントの追加 (ベータ)」を有効にする"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "この機能をオンにすると、テストネットワーク用にビットコインアカウントを追加できるようになります。"
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "「新しいビットコインアカウントの追加 (テストネット)」を有効にする"
   },
   "blockExplorerAccountAction": {
     "message": "アカウント",
@@ -1338,10 +1319,6 @@
   },
   "creatorAddress": {
     "message": "クリエイターのアドレス"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "これにはすべてのネットワークで所有している全トークンの価値が反映されています。この値をETHまたはその他の通貨で表示する場合は、$1に移動します。",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "MetaMask Portfolioでネットワーク間でスワップ"
@@ -3662,22 +3639,6 @@
   "onboardingPinExtensionTitle": {
     "message": "MetaMaskのインストールが完了しました！"
   },
-  "oneDayAbbreviation": {
-    "message": "1日",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1か月",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1週間",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1年",
-    "description": "Shortened form of '1 year'"
-  },
   "onlyConnectTrust": {
     "message": "信頼するサイトにのみ接続してください。$1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -4147,18 +4108,6 @@
   },
   "productAnnouncements": {
     "message": "製品に関するお知らせ"
-  },
-  "profileSync": {
-    "message": "プロファイルの同期"
-  },
-  "profileSyncConfirmation": {
-    "message": "プロファイルの同期をオフにすると、通知を受け取ることができなくなります。"
-  },
-  "profileSyncDescription": {
-    "message": "MetaMaskが一部の設定をデバイス間で同期するために使用するプロファイルを作成します。これは通知の受取に必要です。$1。"
-  },
-  "profileSyncPrivacyLink": {
-    "message": "当社がどのようにユーザーのプライバシーを保護するのか、ご覧ください"
   },
   "proposedApprovalLimit": {
     "message": "提案された承認限度額"
@@ -5972,10 +5921,6 @@
     "message": "サードパーティソフトウェアに関する通知",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
-  "threeMonthsAbbreviation": {
-    "message": "3か月",
-    "description": "Shortened form of '3 months'"
-  },
   "time": {
     "message": "時間"
   },
@@ -6524,9 +6469,6 @@
   },
   "yourBalance": {
     "message": "残高"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "残高は集計されます"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFTが危険にさらされている可能性があります"

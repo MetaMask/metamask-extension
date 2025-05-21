@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
-import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
-import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
@@ -31,12 +31,12 @@ export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
 
   // Display currency can be fiat or a token
   const displayCurrencyAmount = useTokenFiatAmount(
-    primaryTransaction.sourceTokenAddress ??
-      bridgeHistoryItem?.quote.srcAsset.address,
-    primaryTransaction.sourceTokenAmount ??
-      bridgeHistoryItem?.pricingData?.amountSent,
-    primaryTransaction.sourceTokenSymbol ??
-      bridgeHistoryItem?.quote.srcAsset.symbol,
+    bridgeHistoryItem?.quote.srcAsset.address ??
+      primaryTransaction.sourceTokenAddress,
+    bridgeHistoryItem?.pricingData?.amountSent ??
+      primaryTransaction.sourceTokenAmount,
+    bridgeHistoryItem?.quote.srcAsset.symbol ??
+      primaryTransaction.sourceTokenSymbol,
     {},
     true,
     chainId,
@@ -44,12 +44,15 @@ export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
 
   return {
     category: TransactionGroupCategory.bridge,
-    displayCurrencyAmount,
+    displayCurrencyAmount:
+      primaryTransaction.chainId === chainId
+        ? displayCurrencyAmount
+        : undefined,
     sourceTokenSymbol:
-      primaryTransaction.sourceTokenSymbol ??
-      bridgeHistoryItem?.quote.srcAsset.symbol,
+      bridgeHistoryItem?.quote.srcAsset.symbol ??
+      primaryTransaction.sourceTokenSymbol,
     sourceTokenAmountSent:
-      primaryTransaction.sourceTokenAmount ??
-      bridgeHistoryItem?.pricingData?.amountSent,
+      bridgeHistoryItem?.pricingData?.amountSent ??
+      primaryTransaction.sourceTokenAmount,
   };
 }
