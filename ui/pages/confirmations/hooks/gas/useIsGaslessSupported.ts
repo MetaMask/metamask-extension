@@ -44,10 +44,13 @@ export function useIsGaslessSupported() {
     (result) => result.chainId.toLowerCase() === chainId.toLowerCase(),
   );
 
-  const isSupported =
-    isSmartTransaction || (atomicBatchChainSupport && relaySupportsChain);
-
   // Currently requires upgraded account, can also support no `delegationAddress` in future.
+  const is7702Supported = Boolean(
+    atomicBatchChainSupport?.isSupported && relaySupportsChain,
+  );
+
+  const isSupported = isSmartTransaction || is7702Supported;
+
   return {
     isSupported,
     isSmartTransaction,

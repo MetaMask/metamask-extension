@@ -161,6 +161,7 @@ function MetaMaskFee({
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       alignItems={AlignItems.center}
+      data-testid="metamask-fee"
     >
       <Text
         data-testid="gas-fee-token-fee"
@@ -174,6 +175,7 @@ function MetaMaskFee({
       </Text>
       {isFutureNative && (
         <img
+          data-testid="metamask-fee-icon"
           src="./images/logo/metamask-fox.svg"
           height={15}
           style={{

@@ -192,6 +192,7 @@ function NativeToggle({
 }) {
   return (
     <Box
+      data-testid="native-toggle"
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       borderStyle={BorderStyle.solid}

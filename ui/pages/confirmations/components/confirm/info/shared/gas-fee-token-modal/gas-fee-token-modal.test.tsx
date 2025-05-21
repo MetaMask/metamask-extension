@@ -13,8 +13,11 @@ import {
   updateSelectedGasFeeToken,
 } from '../../../../../../../store/controller-actions/transaction-controller';
 import { GAS_FEE_TOKEN_MOCK as GAS_FEE_TOKEN_MOCK_BASE } from '../../../../../../../../test/data/confirmations/gas';
+import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
+import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { GasFeeTokenModal } from './gas-fee-token-modal';
 
+jest.mock('../../../../../hooks/gas/useIsGaslessSupported');
 jest.mock(
   '../../../../../../../store/controller-actions/transaction-controller',
 );
@@ -39,11 +42,12 @@ const GAS_FEE_TOKEN_2_MOCK: GasFeeToken = {
 };
 
 function getState({
+  gasFeeTokens,
   noSelectedGasFeeToken,
-}: { noSelectedGasFeeToken?: boolean } = {}) {
+}: { gasFeeTokens?: GasFeeToken[]; noSelectedGasFeeToken?: boolean } = {}) {
   return getMockConfirmStateForTransaction(
     genUnapprovedContractInteractionConfirmation({
-      gasFeeTokens: [GAS_FEE_TOKEN_MOCK, GAS_FEE_TOKEN_2_MOCK],
+      gasFeeTokens: gasFeeTokens ?? [GAS_FEE_TOKEN_MOCK, GAS_FEE_TOKEN_2_MOCK],
       selectedGasFeeToken: noSelectedGasFeeToken
         ? undefined
         : GAS_FEE_TOKEN_MOCK.tokenAddress,
@@ -63,11 +67,17 @@ const store = configureStore(getState());
 describe('GasFeeTokenModal', () => {
   const updateSelectedGasFeeTokenMock = jest.mocked(updateSelectedGasFeeToken);
   const updateBatchTransactionsMock = jest.mocked(updateBatchTransactions);
+  const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
 
   beforeEach(() => {
     jest.resetAllMocks();
     updateSelectedGasFeeTokenMock.mockResolvedValue(undefined);
     updateBatchTransactionsMock.mockResolvedValue(undefined);
+
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: true,
+      isSupported: true,
+    });
   });
 
   it('renders multiple list items', () => {
@@ -126,5 +136,55 @@ describe('GasFeeTokenModal', () => {
       expect.any(String),
       GAS_FEE_TOKEN_2_MOCK.tokenAddress,
     );
+  });
+
+  it('displays native toggle if future native token', async () => {
+    const result = renderWithConfirmContextProvider(
+      <GasFeeTokenModal />,
+      configureStore(
+        getState({
+          gasFeeTokens: [
+            {
+              ...GAS_FEE_TOKEN_MOCK,
+              tokenAddress: NATIVE_TOKEN_ADDRESS,
+            },
+          ],
+        }),
+      ),
+    );
+
+    expect(result.getByTestId('native-toggle')).toBeInTheDocument();
+  });
+
+  it('hides native toggle if no future native token', async () => {
+    const result = renderWithConfirmContextProvider(
+      <GasFeeTokenModal />,
+      configureStore(getState()),
+    );
+
+    expect(result.queryByTestId('native-toggle')).toBeNull();
+  });
+
+  it('hides native toggle if not smart transaction', async () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: true,
+    });
+
+    const result = renderWithConfirmContextProvider(
+      <GasFeeTokenModal />,
+      configureStore(
+        getState({
+          gasFeeTokens: [
+            {
+              ...GAS_FEE_TOKEN_MOCK,
+              tokenAddress: NATIVE_TOKEN_ADDRESS,
+            },
+          ],
+        }),
+      ),
+    );
+
+    expect(result.queryByTestId('native-toggle')).toBeNull();
   });
 });
