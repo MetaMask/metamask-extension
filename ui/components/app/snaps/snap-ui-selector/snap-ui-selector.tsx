@@ -146,6 +146,7 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
   useEffect(() => {
     if (initialValue !== undefined && initialValue !== null) {
       setSelectedOption(initialValue);
+      onSelect?.(initialValue);
     }
   }, [initialValue]);
 

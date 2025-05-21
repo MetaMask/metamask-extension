@@ -10,7 +10,7 @@ import {
   InternalAccountWithBalance,
 } from '../../../../selectors';
 
-import { setSelectedInternalAccount } from '../../../../store/actions';
+import { setSelectedInternalAccountWithoutLoading } from '../../../../store/actions';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import AccountListItem from '../../../multichain/account-list-item/account-list-item';
 
@@ -86,7 +86,9 @@ export const SnapUIAccountSelector: FunctionComponent<
   const handleSelect = (value: State) => {
     if (switchGlobalAccount) {
       dispatch(
-        setSelectedInternalAccount((value as AccountSelectorState).accountId),
+        setSelectedInternalAccountWithoutLoading(
+          (value as AccountSelectorState).accountId,
+        ),
       );
     }
   };
