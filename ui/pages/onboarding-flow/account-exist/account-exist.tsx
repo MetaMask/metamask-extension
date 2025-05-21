@@ -88,7 +88,7 @@ export default function AccountExist() {
               src="images/account-status.png"
               width={276}
               height={276}
-              alt="Account already exists"
+              alt={t('accountAlreadyExistsTitle')}
               style={{
                 alignSelf: 'center',
               }}
