@@ -9,6 +9,9 @@ import OnboardingCompletePage from '../pages/onboarding/onboarding-complete-page
 import OnboardingPrivacySettingsPage from '../pages/onboarding/onboarding-privacy-settings-page';
 import { WALLET_PASSWORD } from '../../helpers';
 import { E2E_SRP } from '../../default-fixture';
+import HomePage from '../pages/home/homepage';
+import LoginPage from '../pages/login-page';
+import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
 
 /**
  * Create new wallet onboarding flow
@@ -347,4 +350,50 @@ export const completeCreateNewWalletOnboardingFlowWithCustomSettings = async ({
   await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
   await onboardingCompletePage.check_pageIsLoaded();
   await onboardingCompletePage.completeOnboarding();
+};
+
+/**
+ * Complete recovery onboarding flow
+ *
+ * @param options - The options object.
+ * @param options.driver - The WebDriver instance.
+ * @param options.password - The password to use. Defaults to WALLET_PASSWORD.
+ */
+export const completeVaultRecoveryOnboardingFlow = async ({
+  driver,
+  password = WALLET_PASSWORD,
+}: {
+  driver: Driver;
+  password?: string;
+}): Promise<void> => {
+  // after a vault recovery the Login page is displayed before the normal
+  // onboarding flow.
+  const loginPage = new LoginPage(driver);
+  await loginPage.check_pageIsLoaded();
+  await loginPage.loginToHomepage(password);
+
+  // complete metrics onboarding flow
+  await onboardingMetricsFlow(driver, {
+    participateInMetaMetrics: false,
+    dataCollectionForMarketing: false,
+  });
+
+  const secureWalletPage = new SecureWalletPage(driver);
+  await secureWalletPage.check_pageIsLoaded();
+  await secureWalletPage.skipSRPBackup();
+
+  // finish up onboarding screens
+  const onboardingCompletePage = new OnboardingCompletePage(driver);
+  await onboardingCompletePage.check_pageIsLoaded();
+  await onboardingCompletePage.completeOnboarding();
+
+  // it should take us to the home page automatically
+  const homePage = new HomePage(driver);
+  homePage.check_pageIsLoaded();
+
+  // since our state has been reset, but we skip the welcome screen we now
+  // need to accept the terms of use again
+  const updateTermsOfUseModal = new TermsOfUseUpdateModal(driver);
+  await updateTermsOfUseModal.check_pageIsLoaded();
+  await updateTermsOfUseModal.confirmAcceptTermsOfUseUpdate();
 };

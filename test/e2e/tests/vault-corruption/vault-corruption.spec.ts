@@ -3,16 +3,12 @@ import { WALLET_PASSWORD, WINDOW_TITLES, withFixtures } from '../../helpers';
 import { PAGES, type Driver } from '../../webdriver/driver';
 import {
   completeCreateNewWalletOnboardingFlow,
-  onboardingMetricsFlow,
+  completeVaultRecoveryOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
-import LoginPage from '../../page-objects/pages/login-page';
-import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
-import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
-import TermsOfUseUpdateModal from '../../page-objects/pages/dialog/terms-of-use-update-modal';
 
 describe('Vault Corruption', function () {
   /**
@@ -218,37 +214,13 @@ describe('Vault Corruption', function () {
    * @param driver - The WebDriver instance.
    */
   async function onboardAfterRecovery(driver: Driver) {
-    // Log back in to the wallet
-    const loginPage = new LoginPage(driver);
-    await loginPage.check_pageIsLoaded();
-    await loginPage.loginToHomepage(WALLET_PASSWORD);
-
-    // complete metrics onboarding flow
-    await onboardingMetricsFlow(driver, {
-      participateInMetaMetrics: false,
-      dataCollectionForMarketing: false,
+    // Log back in to the wallet and complete onboarding
+    await completeVaultRecoveryOnboardingFlow({
+      driver,
+      password: WALLET_PASSWORD,
     });
 
-    const secureWalletPage = new SecureWalletPage(driver);
-    await secureWalletPage.check_pageIsLoaded();
-    await secureWalletPage.skipSRPBackup();
-
-    // finish up onboarding screens
-    const onboardingCompletePage = new OnboardingCompletePage(driver);
-    await onboardingCompletePage.check_pageIsLoaded();
-    await onboardingCompletePage.completeOnboarding();
-
-    // it should take us to the home page automatically
-    const homePage = new HomePage(driver);
-    homePage.check_pageIsLoaded();
-
-    // since our state has been reset, but we skip the welcome screen we now
-    // need to accept the terms of use again
-    const updateTermsOfUseModal = new TermsOfUseUpdateModal(driver);
-    await updateTermsOfUseModal.check_pageIsLoaded();
-    await updateTermsOfUseModal.confirmAcceptTermsOfUseUpdate();
-
-    // finally, get the first account's address
+    // now that we are re-onboarded, get the first account's address
     return await getFirstAddress(driver);
   }
 
