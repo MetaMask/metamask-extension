@@ -1,8 +1,45 @@
 import { Driver } from '../../webdriver/driver';
-import TokenList from './token-list';
 
-class DeFiTab extends TokenList {
+class DeFiToken {
   protected readonly driver: Driver;
+
+  protected readonly tokenListItemTokenName =
+    '[data-testid="multichain-token-list-item-token-name"]';
+
+  protected readonly tokenListItemSecondaryValue =
+    '[data-testid="defi-list-market-value"]';
+
+  constructor(driver: Driver) {
+    this.driver = driver;
+  }
+
+  async check_tokenMarketValue(tokenListItemSecondaryValue: string) {
+    console.log(
+      'Check if token market value is displayed on token list item',
+      tokenListItemSecondaryValue,
+    );
+    await this.driver.waitForSelector({
+      css: this.tokenListItemSecondaryValue,
+      text: tokenListItemSecondaryValue,
+    });
+  }
+
+  async check_tokenName(tokenName: string) {
+    console.log(
+      'Check if token name is displayed on token list item',
+      tokenName,
+    );
+    await this.driver.waitForSelector({
+      css: this.tokenListItemTokenName,
+      text: tokenName,
+    });
+  }
+}
+
+class DeFiTab {
+  protected readonly driver: Driver;
+
+  readonly defiTabCells: DeFiToken;
 
   private readonly allNetworksOption =
     '[data-testid="network-filter-all__button"]';
@@ -12,15 +49,17 @@ class DeFiTab extends TokenList {
   private readonly popularNetworks =
     '[data-testid="network-filter-all__button"]';
 
-  private readonly stakeLink = '[data-testid="staking-entrypoint-0x1"]';
+  private readonly stakeLink = '[data-testid="defi-tab-start-earning-link"]';
 
   private readonly groupIcon = '[data-testid="avatar-group"]';
 
   private readonly errorMessage = '[data-testid="defi-tab-error-message"]';
 
+  private readonly noPositionsMessage = '[data-testid="defi-tab-no-positions"]';
+
   constructor(driver: Driver) {
-    super(driver);
     this.driver = driver;
+    this.defiTabCells = new DeFiToken(driver);
   }
 
   async openNetworksFilterAndClickPopularNetworks(): Promise<void> {
@@ -48,6 +87,11 @@ class DeFiTab extends TokenList {
   async check_errorMessageIsDisplayed(): Promise<void> {
     console.log('Check that error message is displayed');
     await this.driver.waitForSelector(this.errorMessage);
+  }
+
+  async check_noPositionsMessageIsDisplayed(): Promise<void> {
+    console.log('Check that no positions message is displayed');
+    await this.driver.waitForSelector(this.noPositionsMessage);
   }
 
   async check_groupIconIsDisplayed(): Promise<void> {

@@ -1,5 +1,4 @@
 import {
-  CHAIN_IDS,
   type PublishBatchHookRequest,
   type PublishBatchHookTransaction,
   TransactionController,
@@ -90,12 +89,7 @@ export const TransactionControllerInit: ControllerInitFunction<
       return preferencesController().state.advancedGasFee[globalChainId];
     },
     incomingTransactions: {
-      etherscanApiKeysByChainId: {
-        // @ts-expect-error Controller does not support undefined values
-        [CHAIN_IDS.MAINNET]: process.env.ETHERSCAN_API_KEY,
-        // @ts-expect-error Controller does not support undefined values
-        [CHAIN_IDS.SEPOLIA]: process.env.ETHERSCAN_API_KEY,
-      },
+      client: `extension-${process.env.METAMASK_VERSION?.replace(/\./gu, '-')}`,
       includeTokenTransfers: false,
       isEnabled: () =>
         preferencesController().state.useExternalServices &&
