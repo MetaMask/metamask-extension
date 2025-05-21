@@ -1,3 +1,9 @@
+export const BASIC_FUNCTIONALITY_SLIDE = {
+  id: 'basic_functionality',
+  title: 'basicConfigurationBannerTitle',
+  description: 'enableIt',
+  image: './images/basic-functionality.svg',
+};
 export const REMOTE_MODE_SLIDE = {
   id: 'remoteMode',
   title: 'slideRemoteModeTitle',

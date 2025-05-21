@@ -38,12 +38,14 @@ import {
   SMART_ACCOUNT_UPGRADE_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
+  BASIC_FUNCTIONALITY_SLIDE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../hooks/useCarouselManagement';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { CreateSolanaAccountModal } from '../create-solana-account-modal';
 import { getLastSelectedSolanaAccount } from '../../../selectors/multichain';
 ///: END:ONLY_INCLUDE_IF
+import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -90,6 +92,10 @@ export const AccountOverviewLayout = ({
       );
     }
     ///: END:ONLY_INCLUDE_IF
+
+    if (id === BASIC_FUNCTIONALITY_SLIDE.id) {
+      dispatch(openBasicFunctionalityModal());
+    }
 
     if (id === BACKUPANDSYNC_SLIDE.id) {
       dispatch(showModal({ name: TURN_ON_BACKUP_AND_SYNC_MODAL_NAME }));

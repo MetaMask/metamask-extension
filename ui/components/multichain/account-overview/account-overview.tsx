@@ -38,7 +38,7 @@ export function AccountOverview(props: AccountOverviewProps) {
 
   return (
     <>
-      {!useExternalServices && (
+      {!process.env.REMOVE_GNS && !useExternalServices && (
         <BannerAlert
           margin={4}
           marginBottom={0}
