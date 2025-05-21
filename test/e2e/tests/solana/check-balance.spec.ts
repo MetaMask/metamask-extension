@@ -2,8 +2,7 @@ import { Suite } from 'mocha';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import { withSolanaAccountSnap } from './common-solana';
 
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Check balance', function (this: Suite) {
+describe('Check balance', function (this: Suite) {
   this.timeout(300000);
   it('Just created Solana account shows 0 SOL when native token is enabled', async function () {
     await withSolanaAccountSnap(
