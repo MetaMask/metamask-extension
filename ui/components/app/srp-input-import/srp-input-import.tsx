@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { Textarea, TextareaResize } from '../../component-library/textarea';
@@ -16,6 +15,9 @@ import {
   BackgroundColor,
   BlockSize,
   BorderColor,
+  BorderRadius,
+  Display,
+  FlexDirection,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -184,10 +186,20 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
 
   return (
     <>
-      <div className="srp-input-import__container">
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        backgroundColor={BackgroundColor.backgroundMuted}
+        borderRadius={BorderRadius.SM}
+        className="srp-input-import__container"
+      >
         {draftSrp.length > 0 ? (
-          <div className="srp-input-import__srp-container">
-            <div className="srp-input-import__words-list">
+          <Box padding={4} style={{ flex: 1 }}>
+            <Box
+              display={Display.Grid}
+              className="srp-input-import__words-list"
+              gap={2}
+            >
               {draftSrp.map((word, index) => (
                 <TextField
                   inputProps={{
@@ -237,10 +249,14 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
                   }}
                 />
               ))}
-            </div>
-          </div>
+            </Box>
+          </Box>
         ) : (
-          <div className="srp-input-import__srp-note">
+          <Box
+            padding={4}
+            className="srp-input-import__srp-note"
+            style={{ flex: 1 }}
+          >
             <Textarea
               data-testid="srp-input-import__srp-note"
               borderColor={BorderColor.transparent}
@@ -254,10 +270,14 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
               onKeyDown={handleOnKeyDown}
               onPaste={handleOnPaste}
             />
-          </div>
+          </Box>
         )}
 
-        <div className="srp-input-import__actions">
+        <Box
+          display={Display.Grid}
+          gap={0}
+          className="srp-input-import__actions"
+        >
           <Button
             variant={ButtonVariant.Link}
             onClick={() => setShowAll(!showAll)}
@@ -290,8 +310,8 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
               {t('paste')}
             </Button>
           )}
-        </div>
-      </div>
+        </Box>
+      </Box>
       {missSpelledWords.length > 0 && (
         <Box marginTop={2}>
           <Text color={TextColor.errorDefault} variant={TextVariant.bodySm}>
@@ -302,17 +322,3 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
     </>
   );
 }
-
-SrpInputImport.propTypes = {
-  /**
-   * Event handler for SRP changes.
-   *
-   * This is only called with a valid, well-formated (i.e. exactly one space
-   * between each word) SRP or with an empty string.
-   *
-   * This is called each time the draft SRP is updated. If the draft SRP is
-   * valid, this is called with a well-formatted version of that draft SRP.
-   * Otherwise, this is called with an empty string.
-   */
-  onChange: PropTypes.func.isRequired,
-};
