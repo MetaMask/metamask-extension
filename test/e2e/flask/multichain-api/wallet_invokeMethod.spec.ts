@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { strict as assert } from 'assert';
-import { isHex } from 'viem';
+import { isHexString } from '@metamask/utils';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
@@ -309,9 +309,7 @@ describe('Multichain API', function () {
             );
 
             const resultWebElement = await driver.findElement(
-              `#invoke-method-${escapeColon(
-                scope,
-              )}-${method}-result-0`,
+              `#invoke-method-${escapeColon(scope)}-${method}-result-0`,
             );
 
             const text = await resultWebElement.getText();
@@ -403,8 +401,107 @@ describe('Multichain API', function () {
               'Result should have an `id` property',
             );
             assert.ok(
-              isHex(result.id),
+              isHexString(result.id),
               '`id` property should be a transaction hash',
+            );
+          },
+        );
+      });
+    });
+
+    describe('Calling `wallet_getCallsStatus`', function () {
+      it.only('should return the status', async function () {
+        await withFixtures(
+          {
+            ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+            title: this.test?.fullTitle(),
+            fixtures: new FixtureBuilder()
+              .withPermissionControllerConnectedToMultichainTestDapp()
+              .build(),
+            localNodeOptions: [
+              {
+                type: 'anvil',
+                options: {
+                  hardfork: 'prague',
+                  loadState:
+                    './test/e2e/seeder/network-states/eip7702-state/withDelegatorContracts.json',
+                },
+              },
+            ],
+            testSpecificMock: mockEip7702FeatureFlag,
+          },
+          async ({ driver, extensionId }: FixtureCallbackArgs) => {
+            const scope = GANACHE_SCOPES[0];
+            const method = 'wallet_sendCalls';
+
+            await unlockWallet(driver);
+
+            const testDapp = new TestDappMultichain(driver);
+            await testDapp.openTestDappPage();
+            await testDapp.connectExternallyConnectable(extensionId);
+            await testDapp.initCreateSessionScopes([scope]);
+
+            await addAccountInWalletAndAuthorize(driver);
+            await driver.clickElementAndWaitForWindowToClose({
+              text: 'Connect',
+              tag: 'button',
+            });
+
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.MultichainTestDApp,
+            );
+
+            await driver.clickElementSafe(
+              `[data-testid="${scope}-${method}-option"]`,
+            );
+
+            await driver.delay(largeDelayMs);
+            await driver.clickElementSafe(
+              `[data-testid="invoke-method-${scope}-btn"]`,
+            );
+
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+            const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(
+              driver,
+            );
+            await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
+            await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
+
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.MultichainTestDApp,
+            );
+
+            const resultWebElement = await driver.findElement(
+              `#invoke-method-${escapeColon(scope)}-${method}-result-0`,
+            );
+
+            const sendCallsResult = await resultWebElement
+              .getText()
+              .then((t) => JSON.parse(t));
+
+            const { id } = sendCallsResult;
+
+            const result = (await testDapp.invokeMethod(
+              scope,
+              'wallet_getCallsStatus',
+              [id],
+            )) as object & { id: string };
+
+            assert.deepStrictEqual(
+              { ...result, id: undefined },
+              {
+                version: '2.0.0',
+                id: undefined,
+                chainId: '0x539',
+                atomic: true,
+                status: 100,
+              },
+              'Result structure does not match',
+            );
+
+            assert.ok(
+              isHexString(result.id),
+              'id property is not a valid hex string',
             );
           },
         );
