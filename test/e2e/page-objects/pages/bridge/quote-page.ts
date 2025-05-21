@@ -61,6 +61,8 @@ class BridgeQuotePage {
 
   enterBridgeQuote = async (quote: BridgeQuote) => {
     // Source
+    console.log('Entering bridge quote');
+    console.log(quote);
     await this.driver.clickElement(this.sourceAssetPickerButton);
     await this.driver.clickElement(this.networkSelector);
     await this.driver.clickElement(this.selectAllButton);

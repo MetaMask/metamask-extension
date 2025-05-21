@@ -7,11 +7,14 @@ import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { DEFAULT_BRIDGE_FEATURE_FLAGS, MOCK_CURRENCY_RATES } from '../bridge/constants';
+import { getBridgeFixtures, getBridgeL2Fixtures } from '../bridge/bridge-test-utils';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3\/.*/u;
 const SOLANA_URL_REGEX_DEVNET = /^https:\/\/solana-devnet\.infura\.io\/v3\/.*/u;
-const SOLANA_SPOT_PRICE_API =
+const ETH_SPOT_PRICE_API = /^https:\/\/price\.api\.cx\.metamask\.io\/v[1-9]\/chains\/1\/spot-prices/u;
+const SPOT_PRICE_API =
   /^https:\/\/price\.api\.cx\.metamask\.io\/v[1-9]\/spot-prices/u;
 const SOLANA_EXCHANGE_RATES_PRICE_API =
   /^https:\/\/price\.api\.cx\.metamask\.io\/v[1-9]\/exchange-rates\/fiat/u;
@@ -29,6 +32,9 @@ export const METAMASK_CLIENT_SIDE_DETECTION_REGEX =
   /^https:\/\/client-side-detection\.api\.cx\.metamask\.io\/$/u;
 export const ACCOUNTS_API =
   /^https:\/\/accounts\.api\.cx\.metamask\.io\/v1\/accounts\/0x5cfe73b6021e818b776b421b1c4db2474086a7e1\/$/u;
+
+export const BRIDGED_TOKEN_LIST_API =
+  /^https:\/\/bridge\.api\.cx\.metamask\.io\/getTokens/u;
 export const SOLANA_TOKEN_PROGRAM =
   'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
 export enum SendFlowPlaceHolders {
@@ -128,9 +134,35 @@ export async function mockPhishingDetectionApi(mockServer: Mockttp) {
     });
 }
 
-export async function mockPriceApiSpotPrice(mockServer: Mockttp) {
+export async function mockPriceApiSpotPrice(mockServer: Mockttp, ) {
   console.log('mockPriceApiSpotPrice');
-  const response = {
+  const ehtMarketResponse = {
+    statusCode: 200,
+    json: {
+      "0x0000000000000000000000000000000000000000": {
+        "id": "ethereum",
+        "price": 2547.92,
+        "marketCap": 307530853041,
+        "allTimeHigh": 4878.26,
+        "allTimeLow": 0.432979,
+        "totalVolume": 23288959944,
+        "high1d": 2600,
+        "low1d": 2460.59,
+        "circulatingSupply": 120727123.8805214,
+        "dilutedMarketCap": 307531339803,
+        "marketCapPercentChange1d": 1.36787,
+        "priceChange1d": 33.5,
+        "pricePercentChange1h": 0.8627663682513834,
+        "pricePercentChange1d": 1.3324861525535276,
+        "pricePercentChange7d": -1.995156058030328,
+        "pricePercentChange14d": 38.956197665952054,
+        "pricePercentChange30d": 55.86452523348427,
+        "pricePercentChange200d": 1.8744275469950988,
+        "pricePercentChange1y": -31.41115838150723
+      }
+    }
+  }
+  const solanaMarketDataResponse = {
     statusCode: 200,
     json: {
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
@@ -178,10 +210,64 @@ export async function mockPriceApiSpotPrice(mockServer: Mockttp) {
         },
     },
   };
-  return await mockServer.forGet(SOLANA_SPOT_PRICE_API).thenCallback(() => {
-    return response;
+  const solanaSpotPriceResponse = {
+    statusCode: 200,
+    json: {
+      "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
+          "usd": 167.93676777178396
+      }
+    }
+  }
+
+  const ethSpotPriceResponse = {
+    statusCode: 200,
+    json: {
+      "eip155:1/slip44:60": {
+          "usd": 25373.64
+      }
+    }
+  }
+  let resp;
+  resp = await mockServer.forGet(SPOT_PRICE_API).withQuery({
+    assetIds: "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+    vsCurrency: "usd"
+  }).thenCallback(() => {
+    return solanaSpotPriceResponse;
   });
+
+  if (!resp) {
+    resp = await mockServer.forGet(SPOT_PRICE_API).withQuery({
+      assetIds: "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+      includeMarketData: "true",
+      vsCurrency: "usd"
+    }).thenCallback(() => {
+      return solanaMarketDataResponse;
+    });
+  }
+
+  if(!resp) {
+    resp = await mockServer.forGet(ETH_SPOT_PRICE_API).withQuery({
+      tokenAddresses: "0x0000000000000000000000000000000000000000,0x0000000000000000000000000000000000000000",
+      includeMarketData: "true",
+      vsCurrency: "usd"
+    }).thenCallback(() => {
+      return ehtMarketResponse;
+    });
+  }
+
+  if(!resp) {
+    resp = await mockServer.forGet(SPOT_PRICE_API).withQuery({
+      assetIds: "eip155:1/slip44:60",
+      vsCurrency: "usd"
+    }).thenCallback(() => {
+      return ethSpotPriceResponse;
+    });
+  }
+
+  console.log('resp ', resp);
+  return resp;
 }
+
 
 export async function mockPriceApiExchangeRates(mockServer: Mockttp) {
   console.log('mockPriceApiExchangeRates');
@@ -2249,6 +2335,318 @@ export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
     });
 }
 
+export async function mockGetEthereumTokenList(mockServer: Mockttp) {
+  console.log('mockGetEthereumTokenList');
+  const ethereumTokenListResponse = {
+    statusCode: 200,
+    json: [
+        {
+          "address": "0x0000000000000000000000000000000000000000",
+          "chainId": 1,
+          "assetId": "eip155:1/slip44:60",
+          "symbol": "ETH",
+          "decimals": 18,
+          "name": "Ethereum",
+          "coingeckoId": "ethereum",
+          "aggregators": [],
+          "occurrences": 100,
+          "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+          "metadata": {
+              "honeypotStatus": {},
+              "isContractVerified": false,
+              "erc20Permit": false,
+              "description": {
+                  "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
+                  "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
+                  "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
+                  "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
+              },
+              "createdAt": "2023-10-31T22:41:58.553Z"
+          }
+      },
+      {
+          "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+          "chainId": 1,
+          "assetId": "eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f",
+          "symbol": "DAI",
+          "decimals": 18,
+          "name": "Dai Stablecoin",
+          "coingeckoId": "dai",
+          "aggregators": [
+              "metamask",
+              "aave",
+              "cmc",
+              "coinGecko",
+              "coinMarketCap",
+              "openSwap",
+              "uniswapLabs",
+              "zerion",
+              "oneInch",
+              "liFi",
+              "xSwap",
+              "socket",
+              "rubic",
+              "squid",
+              "rango",
+              "sonarwatch",
+              "sushiSwap",
+              "pmm",
+              "bancor"
+          ],
+          "occurrences": 19,
+          "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x6b175474e89094c44da98b954eedeac495271d0f.png",
+          "metadata": {
+              "honeypotStatus": {
+                  "honeypotIs": false,
+                  "goPlus": false
+              },
+              "isContractVerified": true,
+              "fees": {
+                  "avgFee": 0,
+                  "maxFee": 0,
+                  "minFee": 0
+              },
+              "storage": {
+                  "balance": 2,
+                  "approval": 3
+              },
+              "erc20Permit": true,
+              "description": {
+                  "en": "MakerDAO has launched Multi-collateral DAI (MCD). This token refers to the new DAI that is collaterized by multiple assets."
+              },
+              "createdAt": "2023-10-31T22:41:58.553Z"
+          }
+      },
+      {
+          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "chainId": 1,
+          "assetId": "eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "symbol": "USDC",
+          "decimals": 6,
+          "name": "USDC",
+          "coingeckoId": "usd-coin",
+          "aggregators": [
+              "metamask",
+              "aave",
+              "coinGecko",
+              "coinMarketCap",
+              "openSwap",
+              "uniswapLabs",
+              "zerion",
+              "oneInch",
+              "liFi",
+              "xSwap",
+              "socket",
+              "rubic",
+              "squid",
+              "rango",
+              "sonarwatch",
+              "sushiSwap",
+              "pmm",
+              "bancor"
+          ],
+          "occurrences": 18,
+          "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
+          "metadata": {
+              "honeypotStatus": {
+                  "honeypotIs": false
+              },
+              "isContractVerified": true,
+              "fees": {
+                  "avgFee": 0,
+                  "maxFee": 0,
+                  "minFee": 0
+              },
+              "storage": {
+                  "balance": 9,
+                  "approval": 10
+              },
+              "erc20Permit": true,
+              "description": {
+                  "en": "USDC is a fully collateralized US dollar stablecoin. USDC is the bridge between dollars and trading on cryptocurrency exchanges. The technology behind CENTRE makes it possible to exchange value between people, businesses and financial institutions just like email between mail services and texts between SMS providers. We believe by removing artificial economic borders, we can create a more inclusive global economy."
+              },
+              "createdAt": "2023-10-31T22:41:58.553Z"
+          }
+      },
+    ]
+
+  }
+  return await mockServer.forGet(BRIDGED_TOKEN_LIST_API).withQuery({ chainId: 1}).thenCallback(() => {
+    return ethereumTokenListResponse;
+  });
+}
+
+
+export async function mockSOLQuote(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://price.api.cx.metamask.io/v3/spot-prices?assetIds=solana%3A5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Fslip44%3A501&vsCurrency=eur')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
+              "eur": 147.93676777178396
+          }
+        }
+      }
+    })
+}
+
+export async function mockETHQuote(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+    .withQuery({assetsIds:"eip155:slip44", vsCurrency:"usd"}).thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          "eip155:1/eip155": {
+              "eur": 2543.12
+          }
+        }
+      }
+    })
+}
+
+export async function mockSOLtoETHQuote(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://bridge.api.cx.metamask.io/getQuote')
+    .withQuery({ srcChainId: 1151111081099710, destChainId: 1})
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [
+          {
+            "quote": {
+                "bridgeId": "lifi",
+                "requestId": "0x78b1a3b0530e1774c7974e1e33b8e0a802fb840db6ce87b57d92ff2a80259422",
+                "aggregator": "lifi",
+                "srcChainId": 1151111081099710,
+                "srcTokenAmount": "991250000",
+                "srcAsset": {
+                    "address": "0x0000000000000000000000000000000000000000",
+                    "chainId": 1151111081099710,
+                    "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+                    "symbol": "SOL",
+                    "decimals": 9,
+                    "name": "SOL",
+                    "aggregators": [],
+                    "occurrences": 100,
+                    "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+                    "metadata": {},
+                    "price": "167.98"
+                },
+                "destChainId": 1,
+                "destTokenAmount": "65312314677968091",
+                "destAsset": {
+                    "address": "0x0000000000000000000000000000000000000000",
+                    "chainId": 1,
+                    "assetId": "eip155:1/slip44:60",
+                    "symbol": "ETH",
+                    "decimals": 18,
+                    "name": "Ethereum",
+                    "coingeckoId": "ethereum",
+                    "aggregators": [],
+                    "occurrences": 100,
+                    "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+                    "metadata": {
+                        "honeypotStatus": {},
+                        "isContractVerified": false,
+                        "erc20Permit": false,
+                        "description": {
+                            "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
+                            "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
+                            "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
+                            "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
+                        },
+                        "createdAt": "2023-10-31T22:41:58.553Z"
+                    },
+                    "price": "2529.90697331"
+                },
+                "feeData": {
+                    "metabridge": {
+                        "amount": "8750000",
+                        "asset": {
+                            "address": "0x0000000000000000000000000000000000000000",
+                            "chainId": 1151111081099710,
+                            "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+                            "symbol": "SOL",
+                            "decimals": 9,
+                            "name": "SOL",
+                            "aggregators": [],
+                            "occurrences": 100,
+                            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+                            "metadata": {},
+                            "price": "167.98"
+                        }
+                    }
+                },
+                "bridges": [
+                    "relay"
+                ],
+                "steps": [
+                    {
+                        "action": "bridge",
+                        "srcChainId": 1151111081099710,
+                        "destChainId": 1,
+                        "protocol": {
+                            "name": "relay",
+                            "displayName": "Relay",
+                            "icon": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/bridges/relay.svg"
+                        },
+                        "srcAsset": {
+                            "address": "0x0000000000000000000000000000000000000000",
+                            "chainId": 1151111081099710,
+                            "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+                            "symbol": "SOL",
+                            "decimals": 9,
+                            "name": "SOL",
+                            "aggregators": [],
+                            "occurrences": 100,
+                            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+                            "metadata": {}
+                        },
+                        "destAsset": {
+                            "address": "0x0000000000000000000000000000000000000000",
+                            "chainId": 1,
+                            "assetId": "eip155:1/slip44:60",
+                            "symbol": "ETH",
+                            "decimals": 18,
+                            "name": "Ethereum",
+                            "coingeckoId": "ethereum",
+                            "aggregators": [],
+                            "occurrences": 100,
+                            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png",
+                            "metadata": {
+                                "honeypotStatus": {},
+                                "isContractVerified": false,
+                                "erc20Permit": false,
+                                "description": {
+                                    "en": "Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.",
+                                    "ko": "이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.",
+                                    "zh": "Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。",
+                                    "ja": "イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。"
+                                },
+                                "createdAt": "2023-10-31T22:41:58.553Z"
+                            }
+                        },
+                        "srcAmount": "982576563",
+                        "destAmount": "65312314677968091"
+                    }
+                ],
+                "priceData": {
+                    "totalFromAmountUsd": "168.28",
+                    "totalToAmountUsd": "165.223174933443",
+                    "priceImpact": "0.018165112114077706"
+                }
+            },
+            "trade": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQALEVH9iAGdPDRjcH0W9QBgy+nhAejTsfKmkKeSxUeKrnAJgxNfP4JDyXxZvzX/gy5nNbPU6Q8JWs3l2OOBPiEMAi7lSpUjZ0oJ+6tXFY2lex9sn5sRuFLyUgPLi2ojim4owQXoSsB3SBkF6AlB9oyrASH5Fx8F2qs54vrrlOsVPQSRHoxPq4mUSUyPHlwSh0RbKRfWDEPHmqlZFi9dYABZjTI1oGb+rLnywLjLSrIQx6MkqNBhCFbxqY1YmoGZVORW/QMGRm/lIRcy/+ytunLDm+e8jOW7xfcSayxDmzpAAAAAjJclj04kifG7PRApFI4NgwtaE5na/xCEBI572Nvp+FkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbd9uHXZaGT2cvhRs7reawctIXtX1s3kTqM9YV+/wCpxvp6877brTo9ZfNqq8l0MbG75MLS9uDkfKYCA0UvXWEEedVb8jHAbu50xW7OaBUH/bGy3qP0jlECsc2iVrwTj7Q/+if11/ZKdMCbHylYed5LCas238ndUUsyGqezjOXoBUpTWpkpIQZNJOhxYNo4fHw1td28kruB5B+oQEEFRI0oPQ3SgjVP7wrjsOIn03zYnKJm+xfd+PfLfM775OvcVQan1RcYx3TJKFZjmGkdXraLXrijm0ttXHNVWyEAAAAAtvhNVsUp0Qguci0cBfPPlwkpnpbUstD8N4DJzYSE5g9BjBrmJXP4MU5DTy4OueToQ7lKVq84GWVhJkSiDMdOZAsGAAUCwCcJAAYACQMAwQIAAAAAAAcGAAEAFAgJAQEIAgABDAIAAACz7ZA6AAAAAAkBAQERBwYAAgAKCAkBAQsSCQABAgMKCwwLFQAREhMBAgkWJOUXy5d6460qAQAAAD0AZAABs+2QOgAAAACoKeQJAAAAADIAAA0AQjB4NDhmNjFhOWI4MDI2MWE4ODc2NTNhY2ViYmY2MjVhZDViNWI2MzVlODg5ZTExNWJlM2NlYTg3OWRmY2RkNzFiNg4CDxAJABiEs2d2f3YACAIABAwCAAAAAAAAAAAAAAAIAgAFDAIAAACcWIQAAAAAAAHLN5k+1/fJrhWNLzzTFhq67TInOUKHqWe1QVYpxTq0egMLDg0DBw8Q",
+            "estimatedProcessingTimeInSeconds": 7
+          }
+        ]
+      }
+    })
+}
+
 export async function mockGetTokenAccountInfoDevnet(mockServer: Mockttp) {
   console.log('mockGetTokenAccountInfo');
   const response = {
@@ -2309,6 +2707,17 @@ export async function mockGetTokenAccountInfoDevnet(mockServer: Mockttp) {
     });
 }
 
+const featureFlags = {
+    refreshRate: 30000,
+    maxRefreshCount: 5,
+    support: true,
+    chains: {
+      '1': { isActiveSrc: true, isActiveDest: true },
+      '42161': { isActiveSrc: true, isActiveDest: true },
+      '59144': { isActiveSrc: true, isActiveDest: true },
+      '1151111081099710': { isActiveSrc: true, isActiveDest: true },
+    },
+}
 export async function withSolanaAccountSnap(
   {
     title,
@@ -2351,6 +2760,7 @@ export async function withSolanaAccountSnap(
     fixtures =
       fixtures.withPreferencesControllerShowNativeTokenAsMainBalanceDisabled();
   }
+
   await withFixtures(
     {
       fixtures: fixtures.build(),
@@ -2361,7 +2771,7 @@ export async function withSolanaAccountSnap(
         // component, which will impact to the slides count.
         // - If this flag is not set, the slides count will be 4.
         // - If this flag is set, the slides count will be 5.
-        remoteFeatureFlags: { addSolanaAccount: true },
+        remoteFeatureFlags: { addSolanaAccount: true, bridgeConfig: featureFlags, },
       },
       dappPaths,
       testSpecificMock: async (mockServer: Mockttp) => {
@@ -2424,6 +2834,9 @@ export async function withSolanaAccountSnap(
               await mockTokenApiMainnetTest(mockServer),
               await mockAccountsApi(mockServer),
               await mockGetTokenAccountInfoDevnet(mockServer),
+              await mockGetEthereumTokenList(mockServer),
+              await mockETHQuote(mockServer),
+              await mockSOLtoETHQuote(mockServer),
             ],
           );
         }

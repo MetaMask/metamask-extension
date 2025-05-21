@@ -99,7 +99,7 @@ export async function bridgeTransaction(
 ) {
   // Navigate to Bridge page
   const homePage = new HomePage(driver);
-  await homePage.startBridgeFlow();
+  await homePage.startBridgeFlow(quote.fromChain === 'Solana');
 
   const bridgePage = new BridgeQuotePage(driver);
   await bridgePage.enterBridgeQuote(quote);
