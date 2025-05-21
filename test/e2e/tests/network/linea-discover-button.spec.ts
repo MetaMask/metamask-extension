@@ -11,16 +11,15 @@ describe('Linea Network Discover Button', function (this: Suite) {
   it('should locate the Discover button and navigate to the correct URL when clicking the Discover button', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            featureFlags: {
-              neNetworkDiscoverButton: {
-                [CHAIN_IDS.LINEA_MAINNET]: true,
-              },
-            },
-          })
-          .build(),
+        fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
+        manifestFlags: {
+          remoteFeatureFlags: {
+            neNetworkDiscoverButton: {
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+            },
+          },
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
