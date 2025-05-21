@@ -25,7 +25,7 @@ const FEATURE_VERSION_2 = '2';
  * @returns boolean - True if version1 is greater than or equal to version2, false otherwise.
  */
 const compareVersions = (version1: string, version2: string) => {
-  const regex = /^\d+\.\d+\.\d+$/;
+  const regex = /^\d+\.\d+\.\d+$/u;
   if (!regex.test(version1) || !regex.test(version2)) {
     return false; // Invalid version format
   }
