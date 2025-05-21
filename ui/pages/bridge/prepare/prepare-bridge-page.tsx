@@ -524,10 +524,35 @@ const PrepareBridgePage = () => {
       dispatch(setSlippage(undefined));
       if (fromChain && !toToken) {
         dispatch(setToChainId(fromChain.chainId));
+        // TODO: this should be chain specific.
         dispatch(setToToken(SOLANA_USDC_ASSET));
       }
     }
   }, []);
+
+  // Edge-case fix: if user lands with USDC selected for both sides on Solana,
+  // switch destination to SOL (native asset).
+  useEffect(() => {
+    if (
+      !isSwap ||
+      !fromChain ||
+      !isSolanaChainId(fromChain.chainId) ||
+      !fromToken?.address ||
+      !toToken?.address
+    ) {
+      return;
+    }
+
+    const isBothUsdc =
+      fromToken.address.toLowerCase() ===
+        SOLANA_USDC_ASSET.address.toLowerCase() &&
+      toToken.address.toLowerCase() === SOLANA_USDC_ASSET.address.toLowerCase();
+
+    if (isBothUsdc) {
+      const solNativeAsset = getNativeAssetForChainId(fromChain.chainId);
+      dispatch(setToToken(solNativeAsset));
+    }
+  }, [isSwap, fromChain?.chainId, fromToken?.address, toToken?.address]);
 
   const occurrences = Number(
     toToken?.occurrences ?? toToken?.aggregators?.length ?? 0,
