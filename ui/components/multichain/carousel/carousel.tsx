@@ -23,6 +23,7 @@ import { getSelectedAccount } from '../../../selectors';
 ///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  BASIC_FUNCTIONALITY_SLIDE,
   getSweepstakesCampaignActive,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
@@ -66,19 +67,27 @@ export const Carousel = React.forwardRef(
           return false;
         }
         ///: END:ONLY_INCLUDE_IF
-
         return !slide.dismissed || slide.undismissable;
       })
       .sort((a, b) => {
-        ///: BEGIN:ONLY_INCLUDE_IF(solana)
-        // prioritize Solana slide
-        if (a.id === SOLANA_SLIDE.id) {
-          return -1;
+        if (process.env.REMOVE_GNS) {
+          if (a.id === BASIC_FUNCTIONALITY_SLIDE.id) {
+            return -1;
+          }
+          if (b.id === BASIC_FUNCTIONALITY_SLIDE.id) {
+            return 1;
+          }
+        } else {
+          ///: BEGIN:ONLY_INCLUDE_IF(solana)
+          // prioritize Solana slide
+          if (a.id === SOLANA_SLIDE.id) {
+            return -1;
+          }
+          if (b.id === SOLANA_SLIDE.id) {
+            return 1;
+          }
+          ///: END:ONLY_INCLUDE_IF
         }
-        if (b.id === SOLANA_SLIDE.id) {
-          return 1;
-        }
-        ///: END:ONLY_INCLUDE_IF
 
         const isSweepstakesActive = getSweepstakesCampaignActive(
           new Date(new Date().toISOString()),
