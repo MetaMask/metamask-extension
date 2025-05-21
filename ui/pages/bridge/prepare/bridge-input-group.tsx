@@ -29,7 +29,9 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import {
+  BridgeAppState,
   getBridgeQuotes,
+  getShouldShowMaxButton,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { shortenString } from '../../../helpers/utils/util';
@@ -45,6 +47,7 @@ import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { getMultichainCurrentChainId } from '../../../selectors/multichain';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
+import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
 
 const sanitizeAmountInput = (textToSanitize: string) => {
   // Remove characters that are not numbers or decimal points if rendering a controlled or pasted value
@@ -103,6 +106,15 @@ export const BridgeInputGroup = ({
 
   const currentChainId = useSelector(getMultichainCurrentChainId);
   const selectedChainId = networkProps?.network?.chainId ?? currentChainId;
+
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const shouldShowMaxButton = useSelector((state: BridgeAppState) =>
+    getShouldShowMaxButton(
+      state,
+      smartTransactionsEnabled,
+      balanceAmount?.toString() ?? '0',
+    ),
+  );
 
   const [, handleCopy] = useCopyToClipboard(MINUTE) as [
     boolean,
@@ -318,17 +330,14 @@ export const BridgeInputGroup = ({
           {!isAmountReadOnly && balanceAmount
             ? formatTokenAmount(locale, balanceAmount.toString(), token?.symbol)
             : undefined}
-          {onMaxButtonClick &&
-            token &&
-            !isNativeAddress(token.address) &&
-            balanceAmount && (
-              <ButtonLink
-                variant={TextVariant.bodyMd}
-                onClick={() => onMaxButtonClick(balanceAmount?.toFixed())}
-              >
-                {t('max')}
-              </ButtonLink>
-            )}
+          {onMaxButtonClick && balanceAmount && shouldShowMaxButton && (
+            <ButtonLink
+              variant={TextVariant.bodyMd}
+              onClick={() => onMaxButtonClick(balanceAmount.toString())}
+            >
+              {t('max')}
+            </ButtonLink>
+          )}
         </Text>
       </Row>
     </Column>
