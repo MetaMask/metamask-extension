@@ -51,7 +51,22 @@ describe('Account Not Found Seedless Onboarding View', () => {
   });
 
   it('should navigate to the create-password route when the button is clicked', () => {
-    const { getByText } = renderWithProvider(<CreationSuccessful />);
+    const importFirstTimeFlowState = {
+      ...initializedMockState,
+      metamask: {
+        ...initializedMockState.metamask,
+        firstTimeFlowType: FirstTimeFlowType.social,
+      },
+    };
+    const customMockStore = configureMockStore([thunk])(
+      importFirstTimeFlowState,
+    );
+
+    const { getByText } = renderWithProvider(
+      <CreationSuccessful />,
+      customMockStore,
+    );
+
     const loginButton = getByText('Yes, create a new wallet');
     fireEvent.click(loginButton);
     expect(mockHistoryPush).toHaveBeenCalledWith(

@@ -1,4 +1,3 @@
-/* eslint-disable sort-keys */
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -35,7 +34,6 @@ import {
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
   SNAP_SETTINGS_ROUTE,
-  SECURITY_PASSWORD_HINT_ROUTE,
   REVEAL_SRP_LIST_ROUTE,
   BACKUPANDSYNC_ROUTE,
 } from '../../helpers/constants/routes';
@@ -62,7 +60,6 @@ const ROUTES_TO_I18N_KEYS = {
   [NETWORKS_ROUTE]: 'networks',
   [REVEAL_SRP_LIST_ROUTE]: 'revealSecretRecoveryPhrase',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
-  [SECURITY_PASSWORD_HINT_ROUTE]: 'securityPasswordHint',
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -81,9 +78,6 @@ const mapStateToProps = (state, ownProps) => {
   const isAddContactPage = Boolean(pathname.match(CONTACT_ADD_ROUTE));
   const isEditContactPage = Boolean(pathname.match(CONTACT_EDIT_ROUTE));
   const isRevealSrpListPage = Boolean(pathname.match(REVEAL_SRP_LIST_ROUTE));
-  const isPasswordHintPage = Boolean(
-    pathname.match(SECURITY_PASSWORD_HINT_ROUTE),
-  );
   const isNetworksFormPage =
     Boolean(pathname.match(NETWORKS_FORM_ROUTE)) ||
     Boolean(pathname.match(ADD_NETWORK_ROUTE));
@@ -105,7 +99,7 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = NETWORKS_ROUTE;
   } else if (isAddPopularCustomNetwork) {
     backRoute = NETWORKS_ROUTE;
-  } else if (isRevealSrpListPage || isPasswordHintPage) {
+  } else if (isRevealSrpListPage) {
     backRoute = SECURITY_ROUTE;
   }
 

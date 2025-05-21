@@ -81,7 +81,7 @@ describe('Secure Your Wallet Onboarding View', () => {
     expect(pushMock).toHaveBeenCalledTimes(0);
     const checkbox = getByTestId('skip-srp-backup-checkbox');
     fireEvent.click(checkbox);
-    const confirmSkip = getByTestId('skip-srp-backup');
+    const confirmSkip = getByTestId('skip-srp-backup-button');
     fireEvent.click(confirmSkip);
 
     await waitFor(() => {

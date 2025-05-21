@@ -22,7 +22,6 @@ import {
   DEFAULT_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   SNAP_SETTINGS_ROUTE,
-  SECURITY_PASSWORD_HINT_ROUTE,
   REVEAL_SRP_LIST_ROUTE,
   BACKUPANDSYNC_ROUTE,
 } from '../../helpers/constants/routes';
@@ -62,7 +61,6 @@ import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
 import { RevealSrpList } from './security-tab/reveal-srp-list';
 import BackupAndSyncTab from './backup-and-sync-tab';
-import PasswordHint from './security-tab/password-hint';
 
 class SettingsPage extends PureComponent {
   static propTypes = {
@@ -475,11 +473,6 @@ class SettingsPage extends PureComponent {
           exact
           path={`${CONTACT_VIEW_ROUTE}/:id`}
           component={ContactListTab}
-        />
-        <Route
-          exact
-          path={SECURITY_PASSWORD_HINT_ROUTE}
-          component={PasswordHint}
         />
         <Route exact path={REVEAL_SRP_LIST_ROUTE} component={RevealSrpList} />
         <Route
