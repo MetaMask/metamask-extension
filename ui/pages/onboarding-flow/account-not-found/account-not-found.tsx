@@ -89,7 +89,7 @@ export default function AccountNotFound() {
               src="images/account-status.png"
               width={276}
               height={276}
-              alt="Account already exists"
+              alt={t('accountNotFoundTitle')}
               style={{
                 alignSelf: 'center',
               }}
