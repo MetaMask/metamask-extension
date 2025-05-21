@@ -20,7 +20,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 import LoginOptions from './login-options';
-import { LoginOptionType, LoginType } from './types';
+import { LOGIN_OPTION, LoginOptionType, LoginType } from './types';
 
 export default function WelcomeLogin({
   onLogin,
@@ -102,7 +102,7 @@ export default function WelcomeLogin({
           size={ButtonBaseSize.Lg}
           className="welcome-login__create-button"
           onClick={() => {
-            setLoginOption('new');
+            setLoginOption(LOGIN_OPTION.NEW);
           }}
         >
           {t('onboardingCreateWallet')}
@@ -113,7 +113,7 @@ export default function WelcomeLogin({
           backgroundColor={BackgroundColor.transparent}
           className="welcome-login__import-button"
           onClick={() => {
-            setLoginOption('existing');
+            setLoginOption(LOGIN_OPTION.EXISTING);
           }}
         >
           {t('onboardingImportWallet')}
