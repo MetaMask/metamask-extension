@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
-class EditNetworkModal {
+class AddEditNetworkModal {
   private driver: Driver;
 
   private readonly addRpcUrlButton = {
@@ -13,8 +13,10 @@ class EditNetworkModal {
     testId: 'network-form-chain-id',
   };
 
-  private readonly editModalNetworkNameInput =
-    '[data-testid="network-form-network-name"]';
+  private readonly chainIdInputError =
+    '[data-testid="network-form-chain-id-error"]';
+
+  private readonly currencySymbolInputField = '#nativeCurrency';
 
   private readonly editModalRpcDropDownButton =
     '[data-testid="test-add-rpc-drop-down"]';
@@ -35,18 +37,38 @@ class EditNetworkModal {
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.editModalNetworkNameInput,
+        this.networkNameInputField,
         this.editModalRpcDropDownButton,
         this.editModalSaveButton,
       ]);
     } catch (e) {
       console.log(
-        'Timeout while waiting for select network dialog to be loaded',
+        'Timeout while waiting for add/edit network dialog to be loaded',
         e,
       );
       throw e;
     }
     console.log('Edit network dialog is loaded');
+  }
+
+  /**
+   * Fill the currency symbol input field in the add/edit network modal.
+   *
+   * @param symbol - The symbol to fill in the input field.
+   */
+  async fillCurrencySymbolInputField(symbol: string): Promise<void> {
+    console.log(`Fill currency symbol input field with ${symbol}`);
+    await this.driver.fill(this.currencySymbolInputField, symbol);
+  }
+
+  /**
+   * Fill the network chain id input field in the add/edit network modal.
+   *
+   * @param chainId - The chain id to fill in the input field.
+   */
+  async fillNetworkChainIdInputField(chainId: string): Promise<void> {
+    console.log(`Fill network chain id input field with ${chainId}`);
+    await this.driver.fill(this.chainIdInputField, chainId);
   }
 
   /**
@@ -73,7 +95,7 @@ class EditNetworkModal {
   async removeRPCInEditNetworkModal(rpcOrder: number): Promise<void> {
     console.log(`Remove RPC at position ${rpcOrder} in edit network modal`);
     await this.driver.clickElement(this.editModalRpcDropDownButton);
-    await this.driver.clickElement(
+    await this.driver.clickElementAndWaitToDisappear(
       `[data-testid="delete-item-${rpcOrder - 1}"]`,
     );
   }
@@ -116,6 +138,23 @@ class EditNetworkModal {
   }
 
   /**
+   * Check if the chain id input error message is displayed in the add/edit network modal.
+   *
+   * @param errorMessage - The error message to check.
+   */
+  async check_chainIdInputErrorMessageIsDisplayed(
+    errorMessage: string,
+  ): Promise<void> {
+    console.log(
+      `Check that chain id input error message ${errorMessage} is displayed`,
+    );
+    await this.driver.waitForSelector({
+      text: errorMessage,
+      css: this.chainIdInputError,
+    });
+  }
+
+  /**
    * Check if an RPC is displayed or not in the RPC list in the edit network modal.
    *
    * @param rpcName - The name of the RPC to check.
@@ -145,4 +184,4 @@ class EditNetworkModal {
   }
 }
 
-export default EditNetworkModal;
+export default AddEditNetworkModal;
