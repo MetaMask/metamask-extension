@@ -51,9 +51,7 @@ class AccountList extends Component {
           <BannerAlert
             marginTop={6}
             title={this.context.t('ledgerAppOpenMessageTitle')}
-          >
-            {this.context.t('ledgerAppOpenMessageDescription')}
-          </BannerAlert>
+          />
         </Box>
         <p className="hw-connect__msg">{this.context.t('selectPathHelp')}</p>
         <div className="hw-connect__hdPath">
