@@ -325,9 +325,7 @@ import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IF
 import { encryptorFactory } from './lib/encryptor-factory';
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
-///: END:ONLY_INCLUDE_IF
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 import {
@@ -1983,7 +1981,6 @@ export default class MetamaskController extends EventEmitter {
           this.getAddTransactionRequest({ transactionParams, dappRequest }),
         ),
       // msg signing
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 
       processTypedMessage: (...args) =>
         addTypedMessage({
@@ -2005,7 +2002,6 @@ export default class MetamaskController extends EventEmitter {
           signatureController: this.signatureController,
           signatureParams: args,
         }),
-      ///: END:ONLY_INCLUDE_IF
 
       processEncryptionPublicKey:
         this.encryptionPublicKeyController.newRequestEncryptionPublicKey.bind(
