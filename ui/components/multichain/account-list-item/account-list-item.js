@@ -262,6 +262,7 @@ const AccountListItem = ({
 
       <>
         <Box
+          marginRight={3}
           display={[Display.Flex, Display.None]}
           data-testid="account-list-item-badge"
         >
