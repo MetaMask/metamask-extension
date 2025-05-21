@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Button,
@@ -30,9 +30,10 @@ export default function AccountExist() {
   // TODO: get account email from controllers
   const accountEmail = 'username@gmail.com';
 
-  const onDone = async () => {
+  const onDone = useCallback(() => {
     history.push(UNLOCK_ROUTE);
-  };
+  }, [history]);
+
   return (
     <Box
       className="account-exist"
