@@ -140,6 +140,7 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
         label={t('newPassword')}
         id="create-password-new"
         autoFocus
+        autoComplete
         placeholder={t('newPasswordPlaceholder')}
         labelProps={{ marginBottom: 1, children: t('newPassword') }}
         size={FormTextFieldSize.Lg}
@@ -168,7 +169,9 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
               e.preventDefault();
               setShowPassword(!showPassword);
             }}
-            ariaLabel={showPassword ? 'hide password' : 'show password'}
+            ariaLabel={
+              showPassword ? t('passwordToggleHide') : t('passwordToggleShow')
+            }
           />
         }
       />
@@ -176,6 +179,7 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
       <FormTextField
         label={t('confirmPassword')}
         id="create-password-confirm"
+        autoComplete
         marginTop={4}
         placeholder={t('confirmPasswordPlaceholder')}
         labelProps={{ marginBottom: 1, children: t('confirmPassword') }}
@@ -201,7 +205,11 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
               e.preventDefault();
               setShowConfirmPassword(!showConfirmPassword);
             }}
-            ariaLabel={showConfirmPassword ? 'hide password' : 'show password'}
+            ariaLabel={
+              showConfirmPassword
+                ? t('passwordToggleHide')
+                : t('passwordToggleShow')
+            }
           />
         }
       />
