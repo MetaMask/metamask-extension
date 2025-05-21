@@ -2,6 +2,11 @@ name: E2E Firefox
 
 on:
   workflow_call:
+    secrets:
+      DOCKER_HUB_USERNAME:
+        required: true
+      DOCKER_HUB_TOKEN:
+        required: true
 
 jobs:
   test-e2e-firefox-browserify:
@@ -18,6 +23,9 @@ jobs:
       test-command: yarn test:e2e:firefox
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-firefox-flask:
     uses: ./.github/workflows/run-e2e.yml
@@ -32,6 +40,9 @@ jobs:
       test-command: yarn test:e2e:firefox:flask
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-firefox-report:
     needs:
