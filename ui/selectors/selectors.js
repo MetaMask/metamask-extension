@@ -598,10 +598,11 @@ export function getMetaMaskKeyrings(state) {
   return state.metamask.keyrings;
 }
 
-export const getMetaMaskHdKeyrings = createDeepEqualSelector(
-  getMetaMaskKeyrings,
-  (keyrings) => keyrings.filter((keyring) => keyring.type === KeyringTypes.hd),
-);
+export function getMetaMaskHdKeyrings(state) {
+  return state.metamask.keyrings.filter(
+    (keyring) => keyring.type === KeyringTypes.hd,
+  );
+}
 
 export function getHDEntropyIndex(state) {
   const selectedAddress = getSelectedAddress(state);
