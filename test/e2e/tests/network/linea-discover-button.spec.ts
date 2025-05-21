@@ -36,9 +36,6 @@ describe('Linea Network Discover Button', function (this: Suite) {
         await driver.clickElement(
           '[data-testid="network-list-item-options-button-eip155:59144"]',
         );
-        await driver.clickElement(
-          '[data-testid="network-list-item-options-edit"]',
-        );
 
         // Verify Discover button is visible
         await selectNetworkDialog.check_discoverButtonIsVisible();
