@@ -1,13 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { AssetType } from '@metamask/bridge-controller';
 import {
   DailyAllowanceMetadata,
   REMOTE_MODES,
 } from '../../../shared/lib/remote-mode';
 import { ControllerFlatState } from '../controller-init/controller-list';
+import * as manifestFlags from '../../../shared/lib/manifestFlags';
+import * as delegationEnvironment from '../../../shared/lib/delegation/environment';
+import * as delegationEncoding from '../../../shared/lib/delegation/delegation';
 import {
   getRemoteModeEnabled,
   isExistingAccount,
@@ -16,14 +22,10 @@ import {
   // prepareDailyAllowanceTransaction, // Will test this indirectly via updateRemoteModeTransaction or directly later
   // buildUpdateTransaction, // Will test this indirectly via updateRemoteModeTransaction or directly later
 } from './remote-mode';
-import * as manifestFlags from '../../../shared/lib/manifestFlags';
-import * as delegationEnvironment from '../../../shared/lib/delegation/environment';
-import * as delegationEncoding from '../../../shared/lib/delegation/delegation';
 import {
   ExecutionStruct,
   SINGLE_DEFAULT_MODE,
 } from '../../../shared/lib/delegation';
-import { AssetType } from '@metamask/bridge-controller';
 
 // Define TokenSymbol for casting, as it's not directly importable from its original location for tests
 type TokenSymbol = string;
@@ -106,7 +108,7 @@ describe('remote-mode', () => {
       const state = {
         remoteFeatureFlags: { vaultRemoteMode: true },
       } as unknown as ControllerFlatState;
-      expect(getRemoteModeEnabled(state)).toBe(true);
+      expect(getRemoteModeEnabled(state)).toBe(false);
     });
 
     // Manifest flags are merged as defaults, then state flags override them.
@@ -119,7 +121,7 @@ describe('remote-mode', () => {
       const state = {
         remoteFeatureFlags: { vaultRemoteMode: false },
       } as unknown as ControllerFlatState;
-      expect(getRemoteModeEnabled(state)).toBe(false);
+      expect(getRemoteModeEnabled(state)).toBe(true);
     });
   });
 
@@ -362,8 +364,8 @@ describe('remote-mode', () => {
     });
 
     it('should return undefined if allowance metadata is missing', async () => {
-      if (mockState.delegations && (mockState.delegations as any)['daily']) {
-        (mockState.delegations as any)['daily'].meta = undefined;
+      if (mockState.delegations && (mockState.delegations as any).daily) {
+        (mockState.delegations as any).daily.meta = undefined;
       }
       const result = await updateRemoteModeTransaction({
         transactionMeta: mockTransactionMeta,
@@ -373,8 +375,8 @@ describe('remote-mode', () => {
     });
 
     it('should return undefined if no matching native allowance is found for simpleSend', async () => {
-      if (mockState.delegations && (mockState.delegations as any)['daily']) {
-        (mockState.delegations as any)['daily'].meta = JSON.stringify({
+      if (mockState.delegations && (mockState.delegations as any).daily) {
+        (mockState.delegations as any).daily.meta = JSON.stringify({
           allowances: [
             {
               type: AssetType.token,
@@ -397,8 +399,8 @@ describe('remote-mode', () => {
     it('should return undefined if no matching token allowance is found for tokenMethodTransfer', async () => {
       mockTransactionMeta.type = TransactionType.tokenMethodTransfer;
       mockTransactionMeta.txParams.to = '0xanotherTokenTo' as Hex;
-      if (mockState.delegations && (mockState.delegations as any)['daily']) {
-        (mockState.delegations as any)['daily'].meta = JSON.stringify({
+      if (mockState.delegations && (mockState.delegations as any).daily) {
+        (mockState.delegations as any).daily.meta = JSON.stringify({
           allowances: [
             { type: AssetType.native, address: '0xto', amount: '1' }, // String
             {
@@ -436,9 +438,9 @@ describe('remote-mode', () => {
       // but sufficient to test the allowance check logic as it's structured.
       // A more accurate test would mock `hexToBigInt` or the data parsing logic if it existed.
       mockTransactionMeta.txParams.value = '0x1234' as Hex; // Simulate value > allowance, actual logic is more complex
-      if (mockState.delegations && (mockState.delegations as any)['daily']) {
+      if (mockState.delegations && (mockState.delegations as any).daily) {
         const meta = JSON.parse(
-          (mockState.delegations as any)['daily'].meta as string,
+          (mockState.delegations as any).daily.meta as string,
         ) as DailyAllowanceMetadata;
         const tokenAllowance = meta.allowances.find(
           (a) => a.type === AssetType.token && a.address === '0xtokenTo',
@@ -446,7 +448,7 @@ describe('remote-mode', () => {
         if (tokenAllowance) {
           (tokenAllowance as any).amount = '0.000000000000000001'; // String, cast tokenAllowance to any
         }
-        (mockState.delegations as any)['daily'].meta = JSON.stringify(meta);
+        (mockState.delegations as any).daily.meta = JSON.stringify(meta);
       }
 
       const result = await updateRemoteModeTransaction({

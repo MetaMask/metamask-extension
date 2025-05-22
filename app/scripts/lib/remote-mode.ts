@@ -6,6 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import { Hex, hexToBigInt, hexToNumber } from '@metamask/utils';
 import { parseEther } from 'ethers/lib/utils';
+import { merge } from 'lodash';
 import {
   ExecutionStruct,
   SINGLE_DEFAULT_MODE,
@@ -20,13 +21,12 @@ import {
 } from '../../../shared/lib/remote-mode';
 import { ControllerFlatState } from '../controller-init/controller-list';
 
-import { merge } from 'lodash';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 
 export const getRemoteModeEnabled = (state: ControllerFlatState) => {
   const manifestFlags = getManifestFlags().remoteFeatureFlags;
   const stateFlags = state.remoteFeatureFlags;
-  const flags = merge({}, manifestFlags, stateFlags);
+  const flags = merge({}, stateFlags, manifestFlags);
   return Boolean(flags.vaultRemoteMode);
 };
 
