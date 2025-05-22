@@ -180,10 +180,17 @@ describe('Vault Corruption', function () {
   /**
    * Click the recovery/reset button then confirm or dismiss the action.
    *
-   * @param driver - The WebDriver instance.
-   * @param confirm - Whether to confirm the action or not.
+   * @param options - The options
+   * @param options.driver - The WebDriver instance.
+   * @param options.confirm - Whether to confirm the action or not.
    */
-  async function clickRecover(driver: Driver, confirm: boolean) {
+  async function clickRecover({
+    driver,
+    confirm,
+  }: {
+    driver: Driver;
+    confirm: boolean;
+  }) {
     // click the Recovery/Reset button
     const recoveryButton = await getVaultRecoveryButton(driver);
     await recoveryButton.click();
@@ -257,7 +264,7 @@ describe('Vault Corruption', function () {
         );
 
         // start recovery
-        await clickRecover(driver, true);
+        await clickRecover({ driver, confirm: true });
 
         // onboard again
         const restoredFirstAddress = await onboardAfterRecovery(driver);
@@ -282,7 +289,7 @@ describe('Vault Corruption', function () {
         );
 
         // start reset
-        await clickRecover(driver, true);
+        await clickRecover({ driver, confirm: true });
 
         // Now onboard again, like a first-time user :-(
         await onboard(driver);
@@ -312,9 +319,9 @@ describe('Vault Corruption', function () {
         );
 
         // click recover but dismiss the prompt
-        await clickRecover(driver, false);
+        await clickRecover({ driver, confirm: false });
         // make sure the button can be clicked yet again; dismiss again
-        await clickRecover(driver, false);
+        await clickRecover({ driver, confirm: false });
 
         // reload to make sure the UI is still in the same Vault Corrupted state
         await driver.navigate(PAGES.HOME, {
@@ -322,10 +329,10 @@ describe('Vault Corruption', function () {
         });
 
         // make sure the button can be clicked yet again; dismiss the prompt
-        await clickRecover(driver, false);
+        await clickRecover({ driver, confirm: false });
         // actually recover the vault this time just to make sure
         // it all still works after dismiss the prompt previously
-        await clickRecover(driver, true);
+        await clickRecover({ driver, confirm: true });
 
         // verify that the UI has completed recovery this time
         const restoredFirstAddress = await onboardAfterRecovery(driver);
