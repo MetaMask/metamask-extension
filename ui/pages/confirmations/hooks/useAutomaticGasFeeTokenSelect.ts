@@ -5,12 +5,14 @@ import { useAsyncResult } from '../../../hooks/useAsync';
 import { forceUpdateMetamaskState } from '../../../store/actions';
 import { updateSelectedGasFeeToken } from '../../../store/controller-actions/transaction-controller';
 import { useConfirmContext } from '../context/confirm';
+import { NATIVE_TOKEN_ADDRESS } from '../components/confirm/info/hooks/useGasFeeToken';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useIsGaslessSupported } from './gas/useIsGaslessSupported';
 
 export function useAutomaticGasFeeTokenSelect() {
   const dispatch = useDispatch();
-  const isGaslessSupported = useIsGaslessSupported();
+  const { isSupported: isGaslessSupported, isSmartTransaction } =
+    useIsGaslessSupported();
   const [firstCheck, setFirstCheck] = useState(true);
 
   const { currentConfirmation: transactionMeta } =
@@ -26,7 +28,11 @@ export function useAutomaticGasFeeTokenSelect() {
     selectedGasFeeToken,
   } = transactionMeta;
 
-  const firstGasFeeTokenAddress = gasFeeTokens?.[0]?.tokenAddress;
+  let firstGasFeeTokenAddress = gasFeeTokens?.[0]?.tokenAddress;
+
+  if (!isSmartTransaction && firstGasFeeTokenAddress === NATIVE_TOKEN_ADDRESS) {
+    firstGasFeeTokenAddress = gasFeeTokens?.[1]?.tokenAddress;
+  }
 
   const selectFirstToken = useCallback(async () => {
     await updateSelectedGasFeeToken(transactionId, firstGasFeeTokenAddress);
