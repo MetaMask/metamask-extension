@@ -67,11 +67,7 @@ export default class PortDuplexStream extends Duplex {
   /**
    * Handles chunked messages.
    *
-   * @param frame - the chunk frame received from the port
-   * @param frame.id
-   * @param frame.seq
-   * @param frame.total
-   * @param frame.data
+   * @param chunk - the chunk frame received from the port
    */
   private handleChunk(chunk: string) {
     const [id, totalStr, seq, data] = chunk.split('|', 4);
@@ -83,7 +79,7 @@ export default class PortDuplexStream extends Duplex {
       );
     }
 
-    let total = parseInt(totalStr, 10);
+    const total = parseInt(totalStr, 10);
     let entry = this.queue.get(id);
     if (entry) {
       entry.received += 1;

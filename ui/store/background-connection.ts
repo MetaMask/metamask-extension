@@ -27,15 +27,15 @@ type CallbackMethod<R = unknown> = (error?: unknown, result?: R) => void;
  *
  * @deprecated Use async `submitRequestToBackground` function instead.
  * @param method - name of the background method
- * @param args - arguments to that method, if any
+ * @param [args] - arguments to that method, if any
  * @param callback - Node style (error, result) callback for finishing the operation
  */
 export const callBackgroundMethod = <Result>(
   method: string,
-  args: unknown[] = [],
+  args: unknown[],
   callback: CallbackMethod<Result>,
 ) => {
-  background?.[method](...args).then(
+  background?.[method](...(args || [])).then(
     (result) => {
       callback(undefined, result as Result);
     },

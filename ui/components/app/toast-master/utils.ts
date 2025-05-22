@@ -38,10 +38,7 @@ export function setNewPrivacyPolicyToastShownDate(time: number) {
 }
 
 export function setNewPrivacyPolicyToastClickedOrClosed() {
-  submitRequestToBackgroundAndCatch(
-    'setNewPrivacyPolicyToastClickedOrClosed',
-    [],
-  );
+  submitRequestToBackgroundAndCatch('setNewPrivacyPolicyToastClickedOrClosed');
 }
 
 export function setShowNftDetectionEnablementToast(
@@ -66,7 +63,7 @@ export function setSurveyLinkLastClickedOrClosed(time: number) {
 // May move this to a different file after discussion with team
 export function submitRequestToBackgroundAndCatch(
   method: string,
-  args: unknown[],
+  args?: unknown[],
 ) {
   submitRequestToBackground(method, args)?.catch((error) => {
     console.error('Error caught in submitRequestToBackground', error);

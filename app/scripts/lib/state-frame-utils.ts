@@ -36,6 +36,7 @@ export function* toFrames<T extends Json>(
   // a cheap unique ID for the chunk
   const id = createRandomId();
   const header = `${id}|${total}` as const;
+  // eslint-disable-next-line no-restricted-syntax
   for (let pos = 0, seq = 0; pos < len; pos += size, seq++) {
     const data = json.substring(pos, pos + size);
     yield `${header}|${seq}|${data}`;
