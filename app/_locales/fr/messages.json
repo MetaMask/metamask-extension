@@ -337,10 +337,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Les frais de priorité (aussi appelés « pourboire du mineur ») vont directement aux mineurs et les incitent à accorder la priorité à votre transaction."
   },
-  "agreeTermsOfUse": {
-    "message": "J’accepte les $1 de MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "L’historique du jeton sur la chaîne révèle des cas antérieurs d’activités d’airdrop suspectes."
   },
@@ -1321,9 +1317,6 @@
   "createNewAccountHeader": {
     "message": "Créer un nouveau compte"
   },
-  "createNewWallet": {
-    "message": "Créer un nouveau portefeuille"
-  },
   "createPassword": {
     "message": "Créer un mot de passe"
   },
@@ -2183,9 +2176,6 @@
   "genericExplorerView": {
     "message": "Voir le compte sur $1"
   },
-  "goBack": {
-    "message": "Retour"
-  },
   "goToSite": {
     "message": "Accéder au site"
   },
@@ -2378,9 +2368,6 @@
   },
   "importAccountMsg": {
     "message": "Les comptes importés ne seront pas associés à la phrase secrète de récupération que vous avez créée au départ dans MetaMask. En savoir plus sur les comptes importés"
-  },
-  "importMyWallet": {
-    "message": "Importer mon portefeuille"
   },
   "importNFT": {
     "message": "Importer le NFT"
@@ -3720,9 +3707,6 @@
   "passwordNotLongEnough": {
     "message": "Mot de passe trop court"
   },
-  "passwordSetupDetails": {
-    "message": "Ce mot de passe permet de déverrouiller votre portefeuille MetaMask uniquement sur cet appareil. MetaMask ne peut pas récupérer ce mot de passe."
-  },
   "passwordStrength": {
     "message": "Robustesse du mot de passe : $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -4576,35 +4560,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Confirmer la phrase secrète de récupération"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Me le rappeler plus tard (non recommandé)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Sécuriser mon portefeuille (recommandé)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Notez-la et conservez-la dans plusieurs endroits secrets."
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Stocker dans un coffre-fort."
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Votre phrase secrète de récupération est une formule de 12 mots qui constitue la « clé maîtresse » de votre portefeuille et de vos fonds"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Si quelqu’un vous demande votre phrase de récupération, il est probable qu’il essaie de vous arnaquer pour dérober les fonds de votre portefeuille"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Ne partagez jamais, au grand jamais, votre phrase secrète de récupération, pas même avec MetaMask !"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Qu’est-ce qu’une phrase secrète de récupération ?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Dois-je partager ma phrase secrète de récupération ?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Comment puis-je sauvegarder ma phrase secrète de récupération ?"
   },
   "seedPhraseIntroTitle": {
     "message": "Sécuriser votre portefeuille"
@@ -4888,9 +4848,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "Ignorer"
   },
   "skipAccountSecurity": {
     "message": "Sauter le réglage des paramètres de sécurité du compte ?"
@@ -6439,23 +6396,8 @@
   "welcomeBack": {
     "message": "Nous sommes heureux de vous revoir !"
   },
-  "welcomeExploreDescription": {
-    "message": "Stockez, envoyez et dépensez des cryptomonnaies et des actifs."
-  },
-  "welcomeExploreTitle": {
-    "message": "Explorer des applications décentralisées"
-  },
-  "welcomeLoginDescription": {
-    "message": "Utilisez votre MetaMask pour vous connecter à des applications décentralisées. Nul besoin de vous inscrire !"
-  },
-  "welcomeLoginTitle": {
-    "message": "Dites bonjour à votre portefeuille"
-  },
   "welcomeToMetaMask": {
     "message": "C’est parti !"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "MetaMask est un portefeuille sécurisé utilisé par des millions de personnes qui rend l’univers du web3 accessible à toutes et à tous."
   },
   "whatsThis": {
     "message": "Qu’est-ce que c’est ?"

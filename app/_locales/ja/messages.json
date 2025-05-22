@@ -337,10 +337,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "優先手数料 (別名「マイナーチップ」) はマイナーに直接支払われ、トランザクションを優先するインセンティブとなります。"
   },
-  "agreeTermsOfUse": {
-    "message": "MetaMaskの$1に同意します",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "トークンのオンチェーン履歴で、不審なエアドロップアクティビティの以前のインスタンスを確認できます。"
   },
@@ -1321,9 +1317,6 @@
   "createNewAccountHeader": {
     "message": "新しいアカウントの作成"
   },
-  "createNewWallet": {
-    "message": "新規ウォレットを作成"
-  },
   "createPassword": {
     "message": "パスワードを作成"
   },
@@ -2183,9 +2176,6 @@
   "genericExplorerView": {
     "message": "$1でアカウントを表示"
   },
-  "goBack": {
-    "message": "戻る"
-  },
   "goToSite": {
     "message": "サイトに移動"
   },
@@ -2378,9 +2368,6 @@
   },
   "importAccountMsg": {
     "message": "インポートされたアカウントは、MetaMaskアカウントのシークレットリカバリーフレーズと関連付けられません。インポートされたアカウントの詳細を表示"
-  },
-  "importMyWallet": {
-    "message": "ウォレットをインポート"
   },
   "importNFT": {
     "message": "NFTをインポート"
@@ -3720,9 +3707,6 @@
   "passwordNotLongEnough": {
     "message": "パスワードの長さが足りません"
   },
-  "passwordSetupDetails": {
-    "message": "このパスワードは、このデバイスでのみMetaMaskウォレットのロックを解除します。MetaMaskはこのパスワードを復元できません。"
-  },
   "passwordStrength": {
     "message": "パスワードの強度: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -4576,35 +4560,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "シークレットリカバリーフレーズの確認"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "後で通知 (非推奨)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "ウォレットの安全を確保 (推奨)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "書き留めて、複数の秘密の場所に保管してください。"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "セーフティボックスに保管する。"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "シークレットリカバリーフレーズは12単語のフレーズで、ウォレットと資金への「マスターキー」となります。"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "誰かにリカバリーフレーズを尋ねられたら、ウォレットの資金を盗もうとする詐欺の可能性が高いです。"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "シークレットリカバリ フレーズはMetaMaskを含め、決して誰とも共有しないでください！"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "シークレットリカバリーフレーズとは何ですか？"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "シークレットリカバリーフレーズは共有すべきですか？"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "シークレットリカバリーフレーズはどのように保管すべきですか？"
   },
   "seedPhraseIntroTitle": {
     "message": "ウォレットの保護"
@@ -4888,9 +4848,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "スキップ"
   },
   "skipAccountSecurity": {
     "message": "アカウントのセキュリティをスキップしますか？"
@@ -6439,23 +6396,8 @@
   "welcomeBack": {
     "message": "お帰りなさい！"
   },
-  "welcomeExploreDescription": {
-    "message": "仮想通貨やアセットを保管、送金、使用。"
-  },
-  "welcomeExploreTitle": {
-    "message": "分散型アプリを閲覧"
-  },
-  "welcomeLoginDescription": {
-    "message": "MetaMaskを使用して分散型アプリにログイン。サインアップは不要です。"
-  },
-  "welcomeLoginTitle": {
-    "message": "ウォレットにようこそ"
-  },
   "welcomeToMetaMask": {
     "message": "始めましょう"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "MetaMaskは何百万人もに信頼されている安全なウォレットで、すべての人々によるWeb3の世界へのアクセスを可能にしています。"
   },
   "whatsThis": {
     "message": "これは何ですか？"

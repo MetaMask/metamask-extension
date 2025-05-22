@@ -102,7 +102,6 @@ export default function OnboardingWelcome({
           onImportClick();
         }
       } else {
-        console.log('login with social login', loginType, loginOption);
         setIsLoggingIn(true);
       }
     },

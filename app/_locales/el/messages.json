@@ -337,10 +337,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Το τέλος προτεραιότητας (γνωστό και ως “miner tip”) πηγαίνει άμεσα στους miner και τους ενθαρρύνει να δώσουν προτεραιότητα στη συναλλαγή σας."
   },
-  "agreeTermsOfUse": {
-    "message": "Συμφωνώ με το $1 του MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "Το ιστορικό του token στην αλυσίδα αποκαλύπτει προηγούμενες ύποπτες τακτικές airdrop."
   },
@@ -1321,9 +1317,6 @@
   "createNewAccountHeader": {
     "message": "Δημιουργία νέου λογαριασμού"
   },
-  "createNewWallet": {
-    "message": "Δημιουργία νέου πορτοφολιού"
-  },
   "createPassword": {
     "message": "Δημιουργία κωδικού πρόσβασης"
   },
@@ -2183,9 +2176,6 @@
   "genericExplorerView": {
     "message": "Προβολή λογαριασμού σε $1"
   },
-  "goBack": {
-    "message": "Πηγαίνετε πίσω"
-  },
   "goToSite": {
     "message": "Μετάβαση στον ιστότοπο"
   },
@@ -2378,9 +2368,6 @@
   },
   "importAccountMsg": {
     "message": "Οι λογαριασμοί που έχουν εισαχθεί δεν θα συσχετίζονται με τη Μυστική Φράση Ανάκτησης στο MetaTask. Μάθετε περισσότερα για τους λογαριασμούς που έχουν εισαχθεί"
-  },
-  "importMyWallet": {
-    "message": "Εισαγωγή του πορτοφολιού μου"
   },
   "importNFT": {
     "message": "Εισαγωγή NFT"
@@ -3720,9 +3707,6 @@
   "passwordNotLongEnough": {
     "message": "Ο κωδικός πρόσβασης δεν είναι αρκετά μεγάλος"
   },
-  "passwordSetupDetails": {
-    "message": "Αυτός ο κωδικός πρόσβασης θα ξεκλειδώσει το πορτοφόλι σας στο MetaMask μόνο σε αυτή τη συσκευή. Το MetaMask δεν μπορεί να ανακτήσει αυτόν τον κωδικό πρόσβασης."
-  },
   "passwordStrength": {
     "message": "Ισχύς κωδικού πρόσβασης: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -4576,35 +4560,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Επιβεβαίωση της Μυστικής Φράσης Ανάκτησης"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Υπενθυμίστε μου αργότερα (δεν συνιστάται)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Προστατέψτε το πορτοφόλι μου (συνιστάται)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Γράψτε και αποθηκεύστε σε πολλά μυστικά μέρη"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Αποθήκευση σε θυρίδα ασφαλείας"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Η Μυστική σας Φράση Ανάκτησης είναι μια φράση 12 λέξεων που είναι το «κύριο κλειδί» για το πορτοφόλι και τα χρήματά σας"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Αν κάποιος σας ζητήσει τη φράση ανάκτησής σας, είναι πιθανό να προσπαθεί να σας εξαπατήσει και να κλέψει τα χρήματα του πορτοφολιού σας."
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Ποτέ, μα ποτέ μην μοιραστείτε τη Μυστική σας Φράση Ανάκτησης, ούτε καν με το MetaMask!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Τι είναι η Μυστική Φράση Ανάκτησης;"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Θα πρέπει να μοιραστώ τη Μυστική μου Φράση Ανάκτησης;"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Πώς μπορώ να αποθηκεύσω τη Μυστική μου Φράση Ανάκτησης;"
   },
   "seedPhraseIntroTitle": {
     "message": "Προστατεύστε το πορτοφόλι σας"
@@ -4888,9 +4848,6 @@
   },
   "siweURI": {
     "message": "Διεύθυνση URL"
-  },
-  "skip": {
-    "message": "Παράλειψη"
   },
   "skipAccountSecurity": {
     "message": "Παράλειψη ασφάλειας λογαριασμού;"
@@ -6439,23 +6396,8 @@
   "welcomeBack": {
     "message": "Καλώς ήρθατε και πάλι!"
   },
-  "welcomeExploreDescription": {
-    "message": "Αποθηκεύστε, στείλτε και ξοδέψτε κρυπτονομίσματα και περιουσιακά στοιχεία."
-  },
-  "welcomeExploreTitle": {
-    "message": "Εξερεύνηση αποκεντρωμένων εφαρμογών"
-  },
-  "welcomeLoginDescription": {
-    "message": "Χρησιμοποιήστε το MetaMask για να συνδεθείτε σε αποκεντρωμένες εφαρμογές - δεν απαιτείται εγγραφή."
-  },
-  "welcomeLoginTitle": {
-    "message": "Χαιρετίστε το πορτοφόλι σας"
-  },
   "welcomeToMetaMask": {
     "message": "Ας ξεκινήσουμε"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Το MetaMask, το οποίο εμπιστεύονται εκατομμύρια χρήστες, είναι ένα ασφαλές πορτοφόλι που κάνει τον κόσμο του web3 προσβάσιμο σε όλους."
   },
   "whatsThis": {
     "message": "Τι είναι αυτό;"
