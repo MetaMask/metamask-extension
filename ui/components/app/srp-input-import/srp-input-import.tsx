@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+import { isValidMnemonic } from '@ethersproject/hdnode';
+
 import { Textarea, TextareaResize } from '../../component-library/textarea';
 import {
   Box,
@@ -22,8 +24,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
-import { isValidMnemonic } from '@ethersproject/hdnode';
-import { Wordlist } from 'ethers';
 
 const SRP_LENGTHS = [12, 15, 18, 21, 24];
 const MAX_SRP_LENGTH = 24;
