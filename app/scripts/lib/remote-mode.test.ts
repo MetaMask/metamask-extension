@@ -15,6 +15,10 @@ import * as manifestFlags from '../../../shared/lib/manifestFlags';
 import * as delegationEnvironment from '../../../shared/lib/delegation/environment';
 import * as delegationEncoding from '../../../shared/lib/delegation/delegation';
 import {
+  ExecutionStruct,
+  SINGLE_DEFAULT_MODE,
+} from '../../../shared/lib/delegation';
+import {
   getRemoteModeEnabled,
   isExistingAccount,
   getDailyAllowance,
@@ -22,10 +26,6 @@ import {
   // prepareDailyAllowanceTransaction, // Will test this indirectly via updateRemoteModeTransaction or directly later
   // buildUpdateTransaction, // Will test this indirectly via updateRemoteModeTransaction or directly later
 } from './remote-mode';
-import {
-  ExecutionStruct,
-  SINGLE_DEFAULT_MODE,
-} from '../../../shared/lib/delegation';
 
 // Define TokenSymbol for casting, as it's not directly importable from its original location for tests
 type TokenSymbol = string;
@@ -484,7 +484,7 @@ describe('remote-mode', () => {
           callData: '0x' as Hex,
         };
         expect(mockEncodeRedeemDelegations).toHaveBeenCalledWith({
-          delegations: [[(mockState.delegations as any)!['daily'].delegation]],
+          delegations: [[(mockState.delegations as any)?.daily.delegation]],
           modes: [SINGLE_DEFAULT_MODE],
           executions: [[expectedExecution]],
         });
@@ -519,7 +519,7 @@ describe('remote-mode', () => {
           callData: '0xTransferData' as Hex,
         };
         expect(mockEncodeRedeemDelegations).toHaveBeenCalledWith({
-          delegations: [[(mockState.delegations as any)!['daily'].delegation]],
+          delegations: [[(mockState.delegations as any)?.daily.delegation]],
           modes: [SINGLE_DEFAULT_MODE],
           executions: [[expectedExecution]],
         });
@@ -556,7 +556,7 @@ describe('remote-mode', () => {
       mockEncodeRedeemDelegations.mockImplementation(() => {
         throw new Error('Encoding failed');
       });
-      jest.spyOn(console, 'error').mockImplementation(() => {}); // Suppress console.error
+      jest.spyOn(console, 'error').mockImplementation(jest.fn()); // Suppress console.error
       const result = await updateRemoteModeTransaction({
         transactionMeta: mockTransactionMeta,
         state: mockState,
