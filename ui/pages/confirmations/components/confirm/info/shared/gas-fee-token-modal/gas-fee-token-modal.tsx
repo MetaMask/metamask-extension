@@ -34,11 +34,16 @@ import { updateSelectedGasFeeToken } from '../../../../../../../store/controller
 import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
+import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 
 export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { isSmartTransaction } = useIsGaslessSupported();
+
+  const hasInsufficientNative = Boolean(
+    useInsufficientBalanceAlerts({ ignoreGasFeeToken: true }).length,
+  );
 
   const {
     id: transactionId,
@@ -48,6 +53,7 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
 
   const hasFutureNativeToken =
     isSmartTransaction &&
+    hasInsufficientNative &&
     Boolean(
       gasFeeTokens?.some(
         (token) => token.tokenAddress === NATIVE_TOKEN_ADDRESS,
@@ -126,6 +132,10 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
               selectedGasFeeToken?.toLowerCase() === NATIVE_TOKEN_ADDRESS
             }
             onClick={handleTokenClick}
+            warning={
+              hasInsufficientNative &&
+              t('confirmGasFeeTokenInsufficientBalance')
+            }
           />
           {hasGasFeeTokens && (
             <Title text={t('confirmGasFeeTokenModalPayToken')} />

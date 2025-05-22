@@ -15,11 +15,16 @@ import {
 import { GAS_FEE_TOKEN_MOCK as GAS_FEE_TOKEN_MOCK_BASE } from '../../../../../../../../test/data/confirmations/gas';
 import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
+import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
+import { Severity } from '../../../../../../../helpers/constants/design-system';
 import { GasFeeTokenModal } from './gas-fee-token-modal';
 
 jest.mock('../../../../../hooks/gas/useIsGaslessSupported');
 jest.mock(
   '../../../../../../../store/controller-actions/transaction-controller',
+);
+jest.mock(
+  '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts',
 );
 
 const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
@@ -68,11 +73,22 @@ describe('GasFeeTokenModal', () => {
   const updateSelectedGasFeeTokenMock = jest.mocked(updateSelectedGasFeeToken);
   const updateBatchTransactionsMock = jest.mocked(updateBatchTransactions);
   const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
+  const useInsufficientBalanceAlertsMock = jest.mocked(
+    useInsufficientBalanceAlerts,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
     updateSelectedGasFeeTokenMock.mockResolvedValue(undefined);
     updateBatchTransactionsMock.mockResolvedValue(undefined);
+
+    useInsufficientBalanceAlertsMock.mockReturnValue([
+      {
+        content: 'Insufficient balance',
+        key: 'insufficientBalance',
+        severity: Severity.Danger,
+      },
+    ]);
 
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: true,
@@ -138,7 +154,7 @@ describe('GasFeeTokenModal', () => {
     );
   });
 
-  it('displays native toggle if future native token', async () => {
+  it('displays native toggle if future native token and insufficient balance', async () => {
     const result = renderWithConfirmContextProvider(
       <GasFeeTokenModal />,
       configureStore(
@@ -170,6 +186,26 @@ describe('GasFeeTokenModal', () => {
       isSmartTransaction: false,
       isSupported: true,
     });
+
+    const result = renderWithConfirmContextProvider(
+      <GasFeeTokenModal />,
+      configureStore(
+        getState({
+          gasFeeTokens: [
+            {
+              ...GAS_FEE_TOKEN_MOCK,
+              tokenAddress: NATIVE_TOKEN_ADDRESS,
+            },
+          ],
+        }),
+      ),
+    );
+
+    expect(result.queryByTestId('native-toggle')).toBeNull();
+  });
+
+  it('hides native toggle if sufficient balance', async () => {
+    useInsufficientBalanceAlertsMock.mockReturnValue([]);
 
     const result = renderWithConfirmContextProvider(
       <GasFeeTokenModal />,
