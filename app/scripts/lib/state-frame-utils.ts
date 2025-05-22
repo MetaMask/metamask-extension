@@ -3,7 +3,6 @@ import createRandomId from '../../../shared/modules/random-id';
 
 export const CHUNK_SIZE = 8 * 1024 * 1024; // 8 MB (< any browser cap)
 
-/** Any payload fragment traveling through runtime.Port */
 type id = number;
 type seq = number;
 type total = number;
@@ -33,7 +32,6 @@ export function* toFrames<T extends Json>(
     return;
   }
 
-  // a cheap unique ID for the chunk
   const id = createRandomId();
   const header = `${id}|${total}` as const;
   // eslint-disable-next-line no-restricted-syntax
