@@ -3602,21 +3602,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Utilizaremos estos datos para saber cómo interactúa con nuestras comunicaciones de marketing. Es posible que compartamos noticias relevantes (como características del producto)."
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Acceso completo"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Estas extensiones pueden ver y cambiar la información"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "en este sitio."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Extensiones"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Haga clic en el icono de la extensión del navegador"
-  },
   "onboardingPinExtensionDescription": {
     "message": "Ancle MetaMask en su navegador para que sea accesible y las confirmaciones de las transacciones se vean fácilmente."
   },
@@ -3625,15 +3610,6 @@
   },
   "onboardingPinExtensionDescription3": {
     "message": "Haga clic en el icono de la extensión del navegador para tener acceso instantáneo"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "Ancle MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
   },
   "onboardingPinExtensionTitle": {
     "message": "¡Su instalación de MetaMask ha finalizado!"

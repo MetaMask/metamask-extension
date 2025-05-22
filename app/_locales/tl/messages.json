@@ -3602,21 +3602,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Gagamitin namin ang data na ito upang matutunan kung paano ka nakikipag-ugnayan sa aming mga komunikasyon sa marketing. Maaari kaming magbahagi ng kaugnay na balita (tulad ng mga tampok ng produkto)."
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Buong Access"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Makikita ang mga extension na ito at mababago ang impormasyon"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "sa site na ito."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Mga extension"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Mag-click sa con ng browser extension"
-  },
   "onboardingPinExtensionDescription": {
     "message": "I-pin ang MetaMask sa iyong browser para madali itong ma-access at madaling makita ang mga kumpirmasyon ng transaksyon."
   },
@@ -3625,15 +3610,6 @@
   },
   "onboardingPinExtensionDescription3": {
     "message": "Mag-click sa icon ng browser extension para agad itong ma-access"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "I-pin ang MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
   },
   "onboardingPinExtensionTitle": {
     "message": "Ang pag-install ng iyong MetaMask ay kumpleto na!"

@@ -3602,21 +3602,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Θα χρησιμοποιήσουμε αυτά τα δεδομένα για να μάθουμε πώς αλληλεπιδράτε με τις επικοινωνίες μάρκετινγκ. Ενδέχεται να κοινοποιήσουμε σχετικές πληροφορίες (όπως χαρακτηριστικά προϊόντων)."
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Πλήρης πρόσβαση"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Αυτές οι επεκτάσεις μπορούν να βλέπουν και να αλλάζουν τις πληροφορίες"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "σε αυτόν τον ιστότοπο."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Επεκτάσεις"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Κάντε κλικ στο εικονίδιο της επέκτασης του προγράμματος περιήγησης"
-  },
   "onboardingPinExtensionDescription": {
     "message": "Προσκολλήστε το MetaMask στο πρόγραμμα περιήγησής σας, ώστε να είναι προσβάσιμο και εύκολο να δείτε τις επιβεβαιώσεις συναλλαγών."
   },
@@ -3625,15 +3610,6 @@
   },
   "onboardingPinExtensionDescription3": {
     "message": "Κάντε κλικ στο εικονίδιο της επέκτασης του προγράμματος περιήγησης για άμεση πρόσβαση"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "Καρφίτσωμα του MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
   },
   "onboardingPinExtensionTitle": {
     "message": "Η εγκατάσταση του MetaMask ολοκληρώθηκε!"

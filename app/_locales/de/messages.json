@@ -3602,21 +3602,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Wir verwenden diese Daten, um zu erfahren, wie Sie mit unserer Marketingkommunikation umgehen. Wir können relevante Neuigkeiten (wie Produktmerkmale) teilen."
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Voller Zugriff"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Diese Erweiterungen können Informationen sehen und ändern."
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "auf dieser Seite."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Erweiterungen"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Klicken Sie auf das Symbol der Browser-Erweiterung."
-  },
   "onboardingPinExtensionDescription": {
     "message": "Heften Sie MetaMask in Ihrem Browser ab, damit Sie auf die Transaktionsbestätigungen zugreifen und sie leicht einsehen können."
   },
@@ -3625,15 +3610,6 @@
   },
   "onboardingPinExtensionDescription3": {
     "message": "Klicken Sie auf das Symbol der Browser-Erweiterung, um sofort darauf zuzugreifen."
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "MetaMask anheften"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
   },
   "onboardingPinExtensionTitle": {
     "message": "Ihre MetaMask Installation ist abgeschlossen!"

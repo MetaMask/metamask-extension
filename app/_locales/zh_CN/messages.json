@@ -3602,21 +3602,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "我们将使用此数据来了解您如何与我们的营销通信交互。我们可能会分享相关资讯（例如产品特点）。"
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "完全访问权限"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "这些扩展程序可以查看和更改信息"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "在此网站上。"
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "扩展程序"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "点击浏览器扩展程序图标"
-  },
   "onboardingPinExtensionDescription": {
     "message": "在您的浏览器上固定 MetaMask，以便访问并轻松查看交易确认。"
   },
@@ -3625,15 +3610,6 @@
   },
   "onboardingPinExtensionDescription3": {
     "message": "点击浏览器扩展程序图标即可即时访问它"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "固定 MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
   },
   "onboardingPinExtensionTitle": {
     "message": "您的 MetaMask 安装完成！"

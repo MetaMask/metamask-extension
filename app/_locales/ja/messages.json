@@ -3602,21 +3602,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "このデータは、ユーザーによる当社のマーケティングコミュニケーションとのインタラクションを把握するために使用されます。また、関連ニュースをお伝えする場合もあります (製品の機能など)。"
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "フルアクセス"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "これらの拡張機能は、情報を表示および変更できます"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "このサイトで。"
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "拡張機能"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "ブラウザの拡張機能アイコンをクリックします"
-  },
   "onboardingPinExtensionDescription": {
     "message": "MetaMaskをブラウザにピン留めすることで、アクセスしやすくなり、トランザクションの承認を簡単に表示できるようになります。"
   },
@@ -3625,15 +3610,6 @@
   },
   "onboardingPinExtensionDescription3": {
     "message": "ブラウザの拡張機能アイコンをクリックすると、すぐにアクセスできます"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "MetaMaskをピン留めする"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
   },
   "onboardingPinExtensionTitle": {
     "message": "MetaMaskのインストールが完了しました！"

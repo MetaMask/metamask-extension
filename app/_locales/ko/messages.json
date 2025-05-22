@@ -3602,21 +3602,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "해당 데이터를 사용하여 사용자가 마케팅 커뮤니케이션과 어떻게 상호 작용하는지 파악할 것입니다. 관련 뉴스(예: 제품 기능 및 기타 자료)를 공유할 수 있습니다."
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "전체 액세스"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "이 확장은 정보를 확인하고 변경할 수 있습니다."
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "해당 사이트에서 가능합니다."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "확장 프로그램"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "브라우저 확장 아이콘 클릭"
-  },
   "onboardingPinExtensionDescription": {
     "message": "쉽게 액세스하여 트랜잭션을 컨펌할 있도록 브라우저에 MetaMask를 고정해 놓으세요."
   },
@@ -3625,15 +3610,6 @@
   },
   "onboardingPinExtensionDescription3": {
     "message": "브라우저 확장 아이콘을 클릭하여 즉시 액세스하세요."
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "MetaMask 고정"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
   },
   "onboardingPinExtensionTitle": {
     "message": "MetaMask 설치가 완료되었습니다!"

@@ -3860,21 +3860,6 @@
   "onboardingOptionTitle": {
     "message": "Choose an option to continue"
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Full access"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "These extensions can see and change information"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "on this site."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Extensions"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Click the browser extension icon"
-  },
   "onboardingPinExtensionDescription": {
     "message": "Pin MetaMask on your browser so it’s accessible and easy to view transaction confirmations."
   },
@@ -3883,15 +3868,6 @@
   },
   "onboardingPinExtensionDescription3": {
     "message": "Click Chrome extension icon to access it instantly"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "Pin MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
   },
   "onboardingPinExtensionTitle": {
     "message": "Installation is complete!"
