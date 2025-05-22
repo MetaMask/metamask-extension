@@ -3609,7 +3609,8 @@
     "message": "Uzantıya tıklayarak MetaMask'i açabilir ve 1 tık ile cüzdanınıza erişim sağlayabilirsiniz."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Hemen erişim sağlamak için tarayıcı uzantısı simgesine tıklayın"
+    "message": "Hemen erişim sağlamak için tarayıcı uzantısı simgesine tıklayın",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "MetaMask kurulumunuz tamamlandı!"

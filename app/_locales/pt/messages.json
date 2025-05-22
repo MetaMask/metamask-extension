@@ -3609,7 +3609,8 @@
     "message": "Você pode abrir a MetaMask clicando na extensão e acessando a sua carteira com apenas um clique."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Clique no ícone da extensão do navegador para acessá-la instantaneamente"
+    "message": "Clique no ícone da extensão do navegador para acessá-la instantaneamente",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Sua instalação da MetaMask está concluída!"

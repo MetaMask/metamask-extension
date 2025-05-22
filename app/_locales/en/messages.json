@@ -3867,7 +3867,8 @@
     "message": "Access your MetaMask wallet with 1 click by clicking on the extension."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Click Chrome extension icon to access it instantly"
+    "message": "Click $1 extension icon to access it instantly",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Installation is complete!"

@@ -3609,7 +3609,8 @@
     "message": "Anda dapat membuka MetaMask dengan mengeklik ekstensi dan mengakses dompet Anda dalam 1 klik."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Klik ikon ekstensi browser untuk mengaksesnya secara langsung"
+    "message": "Klik ikon ekstensi browser untuk mengaksesnya secara langsung",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Pemasangan MetaMask Anda selesai!"

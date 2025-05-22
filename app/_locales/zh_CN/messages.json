@@ -3609,7 +3609,8 @@
     "message": "您可以通过点击扩展程序打开 MetaMask，并一键访问您的钱包。"
   },
   "onboardingPinExtensionDescription3": {
-    "message": "点击浏览器扩展程序图标即可即时访问它"
+    "message": "点击浏览器扩展程序图标即可即时访问它",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "您的 MetaMask 安装完成！"

@@ -3612,7 +3612,8 @@
     "message": "Bạn có thể mở MetaMask bằng cách nhấp vào tiện ích và truy cập ví của mình chỉ với 1 cú nhấp chuột."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Nhấp vào biểu tượng tiện ích trên trình duyệt để truy cập tức thì"
+    "message": "Nhấp vào biểu tượng tiện ích trên trình duyệt để truy cập tức thì",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Quá trình cài đặt MetaMask đã hoàn tất!"

@@ -3609,7 +3609,8 @@
     "message": "Вы можете открыть MetaMask, нажав на расширение, и получить доступ к своему кошельку одним щелчком мыши."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Нажмите на значок расширения браузера для мгновенного перехода к нему"
+    "message": "Нажмите на значок расширения браузера для мгновенного перехода к нему",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Установка MetaMask завершена!"

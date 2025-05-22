@@ -3609,7 +3609,8 @@
     "message": "Maaari mong buksan ang MetaMask sa pamamagitan ng pag-click sa extension at pag-accesss sa wallet mo sa 1 click lang."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Mag-click sa icon ng browser extension para agad itong ma-access"
+    "message": "Mag-click sa icon ng browser extension para agad itong ma-access",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Ang pag-install ng iyong MetaMask ay kumpleto na!"

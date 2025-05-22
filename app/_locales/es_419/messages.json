@@ -1270,7 +1270,8 @@
     "message": "Para abrir MetaMask haga clic en la extensión y acceda a su cartera con 1 clic."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Haga clic en el icono de la extensión del navegador para tener acceso instantáneo"
+    "message": "Haga clic en el icono de la extensión del navegador para tener acceso instantáneo",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "¡Su instalación de MetaMask ha finalizado!"

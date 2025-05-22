@@ -3609,7 +3609,8 @@
     "message": "拡張機能をクリックしてMetaMaskを開き、ワンクリックでウォレットにアクセスできます。"
   },
   "onboardingPinExtensionDescription3": {
-    "message": "ブラウザの拡張機能アイコンをクリックすると、すぐにアクセスできます"
+    "message": "ブラウザの拡張機能アイコンをクリックすると、すぐにアクセスできます",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "MetaMaskのインストールが完了しました！"

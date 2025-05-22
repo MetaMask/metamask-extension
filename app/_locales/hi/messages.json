@@ -3609,7 +3609,8 @@
     "message": "आप एक्सटेंशन पर क्लिक करके MetaMask खोल सकते हैं और 1 क्लिक से अपने वॉलेट तक पहुंच सकते हैं।"
   },
   "onboardingPinExtensionDescription3": {
-    "message": "ब्राउज़र एक्सटेंशन आइकन पर क्लिक करें ताकि इस तक तुरंत पहुंच सकें"
+    "message": "ब्राउज़र एक्सटेंशन आइकन पर क्लिक करें ताकि इस तक तुरंत पहुंच सकें",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "आपका MetaMask इंस्टॉल पूरा हो गया है!"
