@@ -26,7 +26,7 @@ import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 export const getRemoteModeEnabled = (state: ControllerFlatState) => {
   const manifestFlags = getManifestFlags().remoteFeatureFlags;
   const stateFlags = state.remoteFeatureFlags;
-  const flags = merge({}, stateFlags, manifestFlags);
+  const flags = merge({}, manifestFlags, stateFlags);
   return Boolean(flags.vaultRemoteMode);
 };
 
@@ -173,15 +173,15 @@ export const updateRemoteModeTransaction = ({
     // Send
     case TransactionType.simpleSend:
     case TransactionType.tokenMethodTransfer: {
-      const result = prepareDailyAllowanceTransaction({
-        transactionMeta,
-        state,
-      });
-      if (!result) {
-        return Promise.resolve({ updateTransaction: undefined });
-      }
-      const { updatedFrom, updatedTo, updatedData } = result;
       try {
+        const result = prepareDailyAllowanceTransaction({
+          transactionMeta,
+          state,
+        });
+        if (!result) {
+          return Promise.resolve({ updateTransaction: undefined });
+        }
+        const { updatedFrom, updatedTo, updatedData } = result;
         return Promise.resolve({
           updateTransaction: buildUpdateTransaction({
             updatedFrom,
@@ -190,7 +190,7 @@ export const updateRemoteModeTransaction = ({
           }),
         });
       } catch (error) {
-        console.error('Error encoding redeemDelegations', error);
+        console.error('Error preparing daily allowance transaction', error);
         return Promise.resolve({ updateTransaction: undefined });
       }
     }
