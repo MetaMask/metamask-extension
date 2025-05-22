@@ -5,16 +5,13 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { ONBOARDING_CONFIRM_SRP_ROUTE } from '../../../helpers/constants/routes';
 import RecoveryPhrase from './review-recovery-phrase';
 
-const mockHistoryPush = jest.fn();
-const mockHistoryReplace = jest.fn();
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-    replace: mockHistoryReplace,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const mockStore = configureMockStore()({
   metamask: {
@@ -122,7 +119,7 @@ describe('Review Recovery Phrase Component', () => {
 
     fireEvent.click(nextButton);
 
-    expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_CONFIRM_SRP_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_CONFIRM_SRP_ROUTE);
   });
 
   it('should route to url with reminder parameter', () => {
@@ -141,7 +138,7 @@ describe('Review Recovery Phrase Component', () => {
 
     fireEvent.click(nextButton);
 
-    expect(mockHistoryPush).toHaveBeenCalledWith(
+    expect(mockUseNavigate).toHaveBeenCalledWith(
       `${ONBOARDING_CONFIRM_SRP_ROUTE}${isReminderParam}`,
     );
   });

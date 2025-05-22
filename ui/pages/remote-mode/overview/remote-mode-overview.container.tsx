@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 import { isRemoteModeSupported } from '../../../helpers/utils/remote-mode';
 import { getSelectedInternalAccount } from '../../../selectors';
@@ -52,7 +52,7 @@ export default function RemoteModeIntroducing() {
   );
   const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(true);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
@@ -63,9 +63,9 @@ export default function RemoteModeIntroducing() {
 
   useEffect(() => {
     if (!isRemoteModeEnabled) {
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     }
-  }, [isRemoteModeEnabled, history]);
+  }, [isRemoteModeEnabled, navigate]);
 
   useEffect(() => {
     if (remoteModeConfig) {
@@ -103,10 +103,10 @@ export default function RemoteModeIntroducing() {
           <Content padding={6}>
             <RemoteModePermissions
               setStartEnableRemoteSwap={() => {
-                history.push(REMOTE_ROUTE_SETUP_SWAPS);
+                navigate(REMOTE_ROUTE_SETUP_SWAPS);
               }}
               setStartEnableDailyAllowance={() => {
-                history.push(REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE);
+                navigate(REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE);
               }}
             />
           </Content>

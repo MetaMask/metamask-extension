@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { uniqBy, isEqual, isEmpty } from 'lodash';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { getAccountLink, getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
 
@@ -164,7 +164,7 @@ export default function PrepareSwapPage({
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const trackEvent = useContext(MetaMetricsContext);
   const { openBridgeExperience } = useBridging();
 
@@ -404,7 +404,7 @@ export default function PrepareSwapPage({
     loadingComplete,
     numberOfQuotes,
     dispatch,
-    history,
+    navigate,
     swapsErrorKey,
     numberOfAggregators,
     prefetchingQuotes,
@@ -659,7 +659,7 @@ export default function PrepareSwapPage({
       const pageRedirectionDisabled = true;
       await dispatch(
         fetchQuotesAndSetQuoteState(
-          history,
+          navigate,
           fromTokenInputValue,
           maxSlippage,
           trackEvent,
@@ -686,7 +686,7 @@ export default function PrepareSwapPage({
     return () => clearTimeout(timeoutIdForQuotesPrefetching);
   }, [
     dispatch,
-    history,
+    navigate,
     maxSlippage,
     trackEvent,
     isReviewSwapButtonDisabled,
@@ -752,9 +752,9 @@ export default function PrepareSwapPage({
 
   useEffect(() => {
     if (swapsErrorKey === QUOTES_EXPIRED_ERROR) {
-      history.push(SWAPS_NOTIFICATION_ROUTE);
+      navigate(SWAPS_NOTIFICATION_ROUTE);
     }
-  }, [swapsErrorKey, history]);
+  }, [swapsErrorKey, navigate]);
 
   useEffect(() => {
     if (showQuotesLoadingAnimation) {

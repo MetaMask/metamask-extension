@@ -3,6 +3,6 @@ export {
   createSwapsMockStore,
   createGetSmartTransactionFeesApiResponse,
 } from './mock-store';
-export { renderWithProvider } from './rendering';
+export { renderWithProvider } from '../lib/render-helpers';
 export * as MOCKS from './mocks';
 export * as CONSTANTS from './constants';

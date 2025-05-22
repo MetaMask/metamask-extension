@@ -1,7 +1,7 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 import { Hex } from '@metamask/utils';
 import {
@@ -108,7 +108,7 @@ export default function RemoteModeSetupDailyAllowance() {
     getMetaMaskAccountsOrdered,
   );
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
 
@@ -137,9 +137,9 @@ export default function RemoteModeSetupDailyAllowance() {
 
   useEffect(() => {
     if (!isRemoteModeEnabled) {
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     }
-  }, [isRemoteModeEnabled, history]);
+  }, [isRemoteModeEnabled, navigate]);
 
   useEffect(() => {
     setStoredAssets(assetsWithBalance);
@@ -159,7 +159,7 @@ export default function RemoteModeSetupDailyAllowance() {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     } else {
-      history.goBack();
+      navigate(-1);
     }
   };
 
@@ -220,7 +220,7 @@ export default function RemoteModeSetupDailyAllowance() {
         meta: JSON.stringify({ allowances: dailyAllowance }),
       });
       // TODO: check better way to route to remote mode if upgrade is needed
-      history.replace(REMOTE_ROUTE);
+      navigate(REMOTE_ROUTE, { replace: true });
     } catch (error) {
       // TODO: show error on UI
       console.error(error);
@@ -228,7 +228,7 @@ export default function RemoteModeSetupDailyAllowance() {
   };
 
   const onCancel = () => {
-    history.goBack();
+    navigate(-1);
   };
 
   const renderStepContent = () => {

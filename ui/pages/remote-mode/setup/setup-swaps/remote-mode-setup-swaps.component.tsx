@@ -1,7 +1,7 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 import { Hex } from '@metamask/utils';
 import {
@@ -115,7 +115,7 @@ export default function RemoteModeSetupSwaps() {
     getMetaMaskAccountsOrdered,
   );
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
   const { enableRemoteMode } = useRemoteMode({
@@ -134,9 +134,9 @@ export default function RemoteModeSetupSwaps() {
 
   useEffect(() => {
     if (!isRemoteModeEnabled) {
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     }
-  }, [isRemoteModeEnabled, history]);
+  }, [isRemoteModeEnabled, navigate]);
 
   const handleNext = () => {
     if (currentStep < TOTAL_STEPS) {
@@ -148,7 +148,7 @@ export default function RemoteModeSetupSwaps() {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     } else {
-      history.goBack();
+      navigate(-1);
     }
   };
 
@@ -238,11 +238,11 @@ export default function RemoteModeSetupSwaps() {
     };
     localStorage.setItem('remoteMode', JSON.stringify(updatedRemoteMode));
 
-    history.replace(REMOTE_ROUTE);
+    navigate(REMOTE_ROUTE, { replace: true });
   };
 
   const onCancel = () => {
-    history.goBack();
+    navigate(-1);
   };
 
   const renderStepContent = () => {
