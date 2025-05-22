@@ -2556,6 +2556,9 @@
     "message": "Import",
     "description": "Button to import an account from a selected file"
   },
+  "importAWallet": {
+    "message": "Import a wallet"
+  },
   "importAccountError": {
     "message": "Error importing account."
   },
@@ -2764,6 +2767,9 @@
   },
   "invalidSeedPhraseCaseSensitive": {
     "message": "Invalid input! Secret Recovery Phrase is case sensitive."
+  },
+  "invalidSeedPhraseNotFound": {
+    "message": "Secret Recovery Phrase not found."
   },
   "ipfsGateway": {
     "message": "IPFS gateway"
@@ -3891,6 +3897,21 @@
   "onboardingSrpImport": {
     "message": "Import using Secret Recovery Phrase"
   },
+  "onboardingSrpImportError": {
+    "message": "Not quite right. Double-check your Secret Recovery Phrase and try again."
+  },
+  "onboardingSrpInputClearAll": {
+    "message": "Clear all"
+  },
+  "onboardingSrpInputHideAll": {
+    "message": "Hide all"
+  },
+  "onboardingSrpInputPlaceholder": {
+    "message": "Add a space between each word and make sure no one is watching"
+  },
+  "onboardingSrpInputShowAll": {
+    "message": "Show all"
+  },
   "onekey": {
     "message": "OneKey"
   },
@@ -3973,6 +3994,9 @@
   },
   "passwordsDontMatch": {
     "message": "Passwords don't match"
+  },
+  "paste": {
+    "message": "Paste"
   },
   "pastePrivateKey": {
     "message": "Enter your private key string here:",
@@ -6536,6 +6560,9 @@
   },
   "twelveHrTitle": {
     "message": "12hr:"
+  },
+  "typeYourSRP": {
+    "message": "Enter your Secret Recovery Phrase"
   },
   "u2f": {
     "message": "U2F",
