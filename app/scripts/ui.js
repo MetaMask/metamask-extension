@@ -17,8 +17,7 @@ import browser from 'webextension-polyfill';
 import { StreamProvider } from '@metamask/providers';
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import log from 'loglevel';
-import { isObject } from 'lodash';
-import { hasProperty } from '@metamask/utils';
+import { isObject, hasProperty } from '@metamask/utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import launchMetaMaskUi, { updateBackgroundConnection } from '../../ui';
@@ -68,7 +67,6 @@ class PhishingWarningPageTimeoutError extends Error {
 start().catch(log.error);
 
 async function start() {
-  // #region Trace
   const startTime = performance.now();
 
   const traceContext = trace({
@@ -86,7 +84,6 @@ async function start() {
     name: TraceName.LoadScripts,
     timestamp: performance.timeOrigin + startTime,
   });
-  // #endregion Trace
 
   // create platform global
   global.platform = new ExtensionPlatform();
@@ -253,13 +250,6 @@ async function loadPhishingWarningPage() {
   }
 }
 
-/**
- *
- * @param {Promise<chrome.tabs.Tab>} tab
- * @param {*} backgroundConnection
- * @param {*} windowType
- * @param {*} traceContext
- */
 async function initializeUiWithTab(
   tab,
   backgroundConnection,
@@ -328,13 +318,6 @@ async function queryCurrentActiveTab(windowType) {
   return { id, title, origin, protocol, url };
 }
 
-/**
- *
- * @param {chrome.tabs.Tab} activeTab
- * @param {*} backgroundConnection
- * @param {*} traceContext
- * @returns
- */
 async function initializeUi(activeTab, backgroundConnection, traceContext) {
   return await launchMetaMaskUi({
     activeTab,

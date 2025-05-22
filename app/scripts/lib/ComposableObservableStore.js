@@ -2,10 +2,6 @@ import { ObservableStore } from '@metamask/obs-store';
 import { getPersistentState } from '@metamask/base-controller';
 
 /**
- * @typedef {import('./state-frame-utils').ChunkFrame} ChunkFrame
- */
-
-/**
  * @typedef {import('@metamask/base-controller').Messenger} Messenger
  */
 
