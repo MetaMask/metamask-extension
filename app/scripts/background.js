@@ -1009,7 +1009,7 @@ export function setupController(
 
     if (isMetaMaskInternalProcess) {
       /**
-       * @typedef {PortStream} PortStream
+       * @type {PortStream}
        */
       const portStream =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
