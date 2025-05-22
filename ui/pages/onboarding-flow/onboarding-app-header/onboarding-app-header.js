@@ -20,6 +20,7 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { WelcomePageState } from '../welcome/types';
+import { ThemeType } from '../../../../shared/constants/preferences';
 
 export default function OnboardingAppHeader({ pageState }) {
   const dispatch = useDispatch();
@@ -50,7 +51,9 @@ export default function OnboardingAppHeader({ pageState }) {
         className="onboarding-app-header__contents"
       >
         <MetaFoxLogo
-          theme={pathname === ONBOARDING_WELCOME_ROUTE ? 'light' : undefined}
+          theme={
+            pathname === ONBOARDING_WELCOME_ROUTE ? ThemeType.light : undefined
+          }
           unsetIconHeight
           isOnboarding
         />
