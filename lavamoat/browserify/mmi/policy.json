@@ -4085,12 +4085,6 @@
         "koa>content-disposition>safe-buffer": true
       }
     },
-    "extension-port-stream": {
-      "packages": {
-        "browserify>buffer": true,
-        "extension-port-stream>readable-stream": true
-      }
-    },
     "@metamask/providers>extension-port-stream": {
       "packages": {
         "browserify>buffer": true,
@@ -5387,22 +5381,6 @@
         "crypto-browserify>browserify-sign>readable-stream>string_decoder": true,
         "browserify>timers-browserify": true,
         "readable-stream>util-deprecate": true
-      }
-    },
-    "extension-port-stream>readable-stream": {
-      "globals": {
-        "AbortController": true,
-        "AbortSignal": true,
-        "AggregateError": true,
-        "Blob": true,
-        "queueMicrotask": true
-      },
-      "packages": {
-        "@lavamoat/lavapack>readable-stream>abort-controller": true,
-        "browserify>buffer": true,
-        "webpack>events": true,
-        "process": true,
-        "browserify>string_decoder": true
       }
     },
     "@metamask/providers>extension-port-stream>readable-stream": {
