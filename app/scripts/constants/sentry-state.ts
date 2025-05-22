@@ -49,6 +49,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   NetworkOrderController: {
     orderedNetworkList: [],
+    enabledNetworkMap: {},
   },
   AccountOrderController: {
     pinnedAccountList: [],
