@@ -111,15 +111,17 @@ describe('Vault Corruption', function () {
    * @param driver - The WebDriver instance.
    */
   async function waitForVaultRestorePage(driver: Driver) {
-    let title: string;
-    do {
-      await driver.navigate(PAGES.HOME, {
-        waitForControllers: false,
-      });
-      title = await driver.driver.getTitle();
-      // the browser will return an error message for our UI's HOME page until
-      // the extension has restarted
-    } while (title !== WINDOW_TITLES.ExtensionInFullScreenView);
+    await driver.waitUntil(
+      async () => {
+        await driver.navigate(PAGES.HOME, { waitForControllers: false });
+        const title = await driver.driver.getTitle();
+        // the browser will return an error message for our UI's HOME page until
+        // the extension has restarted
+        return title === WINDOW_TITLES.ExtensionInFullScreenView;
+      },
+      // reload and check title as quickly a possible, forever
+      { interval: 0, timeout: Infinity },
+    );
   }
 
   /**
