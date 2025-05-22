@@ -4976,9 +4976,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:62.0.0":
-  version: 62.0.0
-  resolution: "@metamask/assets-controllers@npm:62.0.0"
+"@metamask/assets-controllers@npm:63.0.0":
+  version: 63.0.0
+  resolution: "@metamask/assets-controllers@npm:63.0.0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5008,23 +5008,23 @@ __metadata:
     single-call-balance-checker-abi: "npm:^1.0.0"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@metamask/accounts-controller": ^28.0.0
+    "@metamask/accounts-controller": ^29.0.0
     "@metamask/approval-controller": ^7.0.0
-    "@metamask/keyring-controller": ^21.0.0
+    "@metamask/keyring-controller": ^22.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/permission-controller": ^11.0.0
-    "@metamask/preferences-controller": ^17.0.0
+    "@metamask/preferences-controller": ^18.0.0
     "@metamask/providers": ^21.0.0
     "@metamask/snaps-controllers": ^11.0.0
-    "@metamask/transaction-controller": ^55.0.0
+    "@metamask/transaction-controller": ^56.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/6de450df8dab117f3d5ab1bd67605ea5ad97da912cfe2eae6853bc8aca8d70c62eecbd95cb01d9fdf2253691f059d3f826832abb012cda2d544dbd2aee09a85c
+  checksum: 10/8aa22bbce9bd9852b6f31397d0c893953f8a5b1c7dd243c4ad71826e7b87afbac8ad76477add25b4704066ca41c29e93e9aa7e562c0bd4c7427705823f853966
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A62.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-62.0.0-e019b7a559.patch":
-  version: 62.0.0
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A62.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-62.0.0-e019b7a559.patch::version=62.0.0&hash=f9ee52"
+"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A63.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-63.0.0-7f30a89d62.patch":
+  version: 63.0.0
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A63.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-63.0.0-7f30a89d62.patch::version=63.0.0&hash=f9ee52"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5054,17 +5054,17 @@ __metadata:
     single-call-balance-checker-abi: "npm:^1.0.0"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@metamask/accounts-controller": ^28.0.0
+    "@metamask/accounts-controller": ^29.0.0
     "@metamask/approval-controller": ^7.0.0
-    "@metamask/keyring-controller": ^21.0.0
+    "@metamask/keyring-controller": ^22.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/permission-controller": ^11.0.0
-    "@metamask/preferences-controller": ^17.0.0
+    "@metamask/preferences-controller": ^18.0.0
     "@metamask/providers": ^21.0.0
     "@metamask/snaps-controllers": ^11.0.0
-    "@metamask/transaction-controller": ^55.0.0
+    "@metamask/transaction-controller": ^56.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/7272110344c03cfb9f3f4f0c4881328f138f9d56d5638de83875df2a817052612506be6bb855e469627a6b06353b89f098bfabd667e82b16e4e5268c4bfc2e0f
+  checksum: 10/bb9631a2e5338c46a26ce9d7561989874a7a40b7d04970e5cbc3145bf30b31097e41396305ee9f5968642d8f977408deb0060307ec6a84acd532ffadf20f0675
   languageName: node
   linkType: hard
 
@@ -30017,7 +30017,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^7.0.0"
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A62.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-62.0.0-e019b7a559.patch"
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A63.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-63.0.0-7f30a89d62.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.12.1"
