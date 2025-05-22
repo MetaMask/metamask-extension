@@ -1317,9 +1317,6 @@
   "createNewAccountHeader": {
     "message": "Yeni bir hesap oluştur"
   },
-  "createNewWallet": {
-    "message": "Yeni bir cüzdan oluştur"
-  },
   "createPassword": {
     "message": "Şifre Oluştur"
   },
@@ -2374,9 +2371,6 @@
   },
   "importAccountMsg": {
     "message": "İçe aktarılan hesaplar ilk olarak oluşturduğunuz MetaMask hesabı Gizli Kurtarma ifadenizle ilişkilendirilmez. İçe aktarılan hesaplar hakkında daha fazla bilgi edinin"
-  },
-  "importMyWallet": {
-    "message": "Cüzdanımı içe aktar"
   },
   "importNFT": {
     "message": "NFT'yi İçe Aktar"
@@ -3715,9 +3709,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Şifre yeterince uzun değil"
-  },
-  "passwordSetupDetails": {
-    "message": "Bu şifre MetaMask cüzdanınızın kilidini sadece bu cihazda açacaktır. MetaMask bu şifreyi kurtaramaz."
   },
   "passwordStrength": {
     "message": "Şifre güvenlik düzeyi: $1",
