@@ -86,9 +86,11 @@ export const useCarouselManagement = ({
       ...FUND_SLIDE,
       undismissable: hasZeroBalance,
     };
-    if (process.env.REMOVE_GNS && !useExternalServices) {
-      defaultSlides.push(BASIC_FUNCTIONALITY_SLIDE);
-    }
+    const basicFunctionalitySlide = {
+      ...BASIC_FUNCTIONALITY_SLIDE,
+      undismissable: !useExternalServices,
+    };
+    defaultSlides.push(basicFunctionalitySlide);
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     if (!isSolanaAddress(selectedAccount.address)) {
       defaultSlides.push(SMART_ACCOUNT_UPGRADE_SLIDE);
@@ -180,6 +182,7 @@ export const useCarouselManagement = ({
     inTest,
     slides,
     selectedAccount.address,
+    useExternalServices,
   ]);
 
   return { slides };
