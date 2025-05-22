@@ -213,11 +213,13 @@ function transformState(state: Record<string, unknown>) {
       caip25PermissionCaveatWithCurrentChainIdSet;
 
     if (existingCaip25Caveat) {
-      const alreadyPermissionedAccounts = getEthAccounts(existingCaip25Caveat);
-      if (alreadyPermissionedAccounts) {
+      const existingPermittedAccounts = getEthAccounts(existingCaip25Caveat);
+      // if there are existing permitted accounts in the `wallet:eip155` scope
+      // we add them to the newly added (currentChainId) scope
+      if (existingPermittedAccounts.length > 0) {
         caip25PermissionCaveatWithCurrentChainIdAndAccountsSet = setEthAccounts(
           caip25PermissionCaveatWithCurrentChainIdSet,
-          alreadyPermissionedAccounts,
+          existingPermittedAccounts,
         );
       }
     }

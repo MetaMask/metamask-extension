@@ -28,7 +28,7 @@ describe(`migration #${version}`, () => {
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('adds the `endowment:caip25` permission with the current globally selected chainId (and no accounts) permissioned to Snaps with the `endowment:ethereum-provider` permission and which do not already have a `endowment:caip25` permission', async () => {
+  it('adds the `endowment:caip25` permission with the current globally selected chainId (and no accounts) permissioned to Snaps which have a `endowment:ethereum-provider` permission but which do not already have a `endowment:caip25` permission', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
@@ -122,7 +122,7 @@ describe(`migration #${version}`, () => {
     });
   });
 
-  it('merges with an existing permission and adds existing account permissions along with the current globally selected chainId if the Snap already has `endowment:caip25`', async () => {
+  it('adds the current globally selected chainId as a new scope with the existing permitted eth accounts to an existing snap `endowment:caip25` permission', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
