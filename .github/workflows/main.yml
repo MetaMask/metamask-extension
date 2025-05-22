@@ -286,8 +286,6 @@ jobs:
       contents: read
       # id-token permission is required for uploading to s3
       id-token: write
-    with:
-      fail-fast: ${{ github.event_name == 'merge_group' }}
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
 
@@ -298,8 +296,6 @@ jobs:
       - prep-build-test-flask-mv2-browserify
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-firefox.yml
-    with:
-      fail-fast: ${{ github.event_name == 'merge_group' }}
 
   wait-for-circleci-workflow-status:
     name: Wait for CircleCI workflow status

@@ -1,11 +1,10 @@
+# This workflow is meant to better structure the main.yaml one for redability reasons.
+# It is not meant to be a reusable workflow.
+
 name: E2E Chrome
 
 on:
   workflow_call:
-    inputs:
-      fail-fast:
-        type: boolean
-        default: false
     secrets:
       PR_COMMENT_TOKEN:
         required: true
@@ -14,7 +13,7 @@ jobs:
   test-e2e-chrome-browserify:
     uses: ./.github/workflows/run-e2e.yml
     strategy:
-      fail-fast: ${{ inputs.fail-fast }}
+      fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix:
         index:
           [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
@@ -30,7 +29,7 @@ jobs:
     uses: ./.github/workflows/run-e2e.yml
     if: ${{ github.event_name != 'merge_group' }}
     strategy:
-      fail-fast: ${{ inputs.fail-fast }}
+      fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix:
         index:
           [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
@@ -61,7 +60,7 @@ jobs:
   test-e2e-chrome-flask:
     uses: ./.github/workflows/run-e2e.yml
     strategy:
-      fail-fast: ${{ inputs.fail-fast }}
+      fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix:
         index: [0, 1, 2, 3, 4]
     with:
