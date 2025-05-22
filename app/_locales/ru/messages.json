@@ -337,10 +337,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Плата за приоритет (также известная как «чаевые» майнеру) направляется непосредственно майнерам, чтобы они уделили приоритетное внимание вашей транзакции."
   },
-  "agreeTermsOfUse": {
-    "message": "Я соглашаюсь с $1 MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "В истории токена в блокчейне уже были случаи подозрительных аирдропов."
   },
@@ -1320,9 +1316,6 @@
   },
   "createNewAccountHeader": {
     "message": "Создать новый счет"
-  },
-  "createNewWallet": {
-    "message": "Создать новый кошелек"
   },
   "createPassword": {
     "message": "Создать пароль"
@@ -2378,9 +2371,6 @@
   },
   "importAccountMsg": {
     "message": "Импортированные счета не будут связаны с вашей секретной фразой для восстановления MetaMask. Узнайте больше об импортированных счетах"
-  },
-  "importMyWallet": {
-    "message": "Импорт моего кошелька"
   },
   "importNFT": {
     "message": "Импорт NFT"
@@ -3719,9 +3709,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Пароль недостаточно длинный"
-  },
-  "passwordSetupDetails": {
-    "message": "Этот пароль разблокирует ваш кошелек MetaMask только на этом устройстве. MetaMask не может восстановить этот пароль."
   },
   "passwordStrength": {
     "message": "Надежность пароля: $1",
@@ -6439,23 +6426,8 @@
   "welcomeBack": {
     "message": "С возвращением!"
   },
-  "welcomeExploreDescription": {
-    "message": "Храните, отправляйте и тратьте криптовалюту и активы."
-  },
-  "welcomeExploreTitle": {
-    "message": "Ознакомьтесь с децентрализованными приложениями"
-  },
-  "welcomeLoginDescription": {
-    "message": "Используйте кошелек MetaMask для входа в децентрализованные приложения — регистрация не потребуется."
-  },
-  "welcomeLoginTitle": {
-    "message": "Поприветствуйте свой кошелек"
-  },
   "welcomeToMetaMask": {
     "message": "Давайте приступим к делу"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "MetaMask, которому доверяют миллионы, — это безопасный кошелек, предоставляющий всем доступ к миру web3."
   },
   "whatsThis": {
     "message": "Что это?"

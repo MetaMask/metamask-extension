@@ -337,10 +337,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Ang bayad sa priyoridad (kilala rin bilang “tip ng minero”) ay direktang napupunta sa mga minero at ginagawang insentibo ang mga ito upang unahin ang iyong mga transaksyon."
   },
-  "agreeTermsOfUse": {
-    "message": "Sumasang-ayon ako sa $1 ng MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "Isinasaad ng on-chain history ng token na may mga dati nang kahina-hinalang aktibidad ng airdrop."
   },
@@ -1320,9 +1316,6 @@
   },
   "createNewAccountHeader": {
     "message": "Gumawa ng bagong account"
-  },
-  "createNewWallet": {
-    "message": "Gumawa ng bagong wallet"
   },
   "createPassword": {
     "message": "Gumawa ng password"
@@ -2378,9 +2371,6 @@
   },
   "importAccountMsg": {
     "message": "Ang mga na-import na account ay hindi mauugnay sa iyong Lihim na Parirala sa Pagbawi ng MetaMask. Matuto pa tungkol sa mga na-import na account"
-  },
-  "importMyWallet": {
-    "message": "I-import ang Wallet Ko"
   },
   "importNFT": {
     "message": "Mag-import ng NFT"
@@ -3719,9 +3709,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Hindi sapat ang haba ng password"
-  },
-  "passwordSetupDetails": {
-    "message": "Ang password na ito ay magbubukas lamang ng iyong MetaMask wallet sa device na ito. Hindi matatakpan ng MetaMask ang password na ito."
   },
   "passwordStrength": {
     "message": "Tibay ng password: $1",
@@ -6439,23 +6426,8 @@
   "welcomeBack": {
     "message": "Maligayang Pagbabalik!"
   },
-  "welcomeExploreDescription": {
-    "message": "Mag-imbak, magpadala at gumastos ng mga cryto currency at asset."
-  },
-  "welcomeExploreTitle": {
-    "message": "Magsaliksik sa mga decentralized app"
-  },
-  "welcomeLoginDescription": {
-    "message": "Gamitin ang iyong MetaMask para mag-log in sa mga decentralized app, hindi na kailangang mag-sign up."
-  },
-  "welcomeLoginTitle": {
-    "message": "Mag-hello sa iyong wallet"
-  },
   "welcomeToMetaMask": {
     "message": "Magsimula na tayo"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Ang MetaMask na pinagkakatiwalaan ng milyun-milyon ay isang ligtas na wallet na ginagawang accessible ang mundo ng web3 para sa lahat."
   },
   "whatsThis": {
     "message": "Ano ito?"

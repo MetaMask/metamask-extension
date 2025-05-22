@@ -407,9 +407,6 @@
   "create": {
     "message": "Crear"
   },
-  "createNewWallet": {
-    "message": "Crear una nueva cartera"
-  },
   "createPassword": {
     "message": "Crear contraseña"
   },
@@ -893,9 +890,6 @@
   "importAccountMsg": {
     "message": "Las cuentas importadas no se asociarán con la frase secreta de recuperación de la cuenta original de MetaMask. Aprenda más sobre las cuentas importadas"
   },
-  "importMyWallet": {
-    "message": "Importar Mi cartera"
-  },
   "importTokenQuestion": {
     "message": "¿Desea importar el token?"
   },
@@ -1333,9 +1327,6 @@
   },
   "passwordNotLongEnough": {
     "message": "La contraseña no es suficientemente larga"
-  },
-  "passwordSetupDetails": {
-    "message": "Esta contraseña desbloqueará su cartera MetaMask solo en este dispositivo. MetaMask no puede recuperar esta contraseña."
   },
   "passwordTermsWarning": {
     "message": "Entiendo que MetaMask no me puede recuperar esta contraseña. $1"
@@ -2230,23 +2221,8 @@
   "welcomeBack": {
     "message": "¡Bienvenido de nuevo!"
   },
-  "welcomeExploreDescription": {
-    "message": "Almacenar, enviar y gastar criptomonedas y activos."
-  },
-  "welcomeExploreTitle": {
-    "message": "Explorar aplicaciones descentralizadas"
-  },
-  "welcomeLoginDescription": {
-    "message": "Use su MetaMask para acceder a aplicaciones descentralizadas, sin necesidad de registrarse."
-  },
-  "welcomeLoginTitle": {
-    "message": "Diga hola a su cartera"
-  },
   "welcomeToMetaMask": {
     "message": "Comencemos"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Con la confianza de millones de personas, MetaMask es una cartera segura que pone el mundo de la web3 al alcance de todos."
   },
   "whatsThis": {
     "message": "¿Qué es esto?"
