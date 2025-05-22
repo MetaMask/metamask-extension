@@ -40,7 +40,7 @@ class HomePage {
   };
 
   private readonly erc20TokenDropdown = {
-    testId: 'import-token-button',
+    testId: 'asset-list-control-bar-action-button',
   };
 
   private readonly nftTab = {
@@ -52,10 +52,6 @@ class HomePage {
   };
 
   private readonly popoverBackground = '.popover-bg';
-
-  private readonly popoverCloseButton = {
-    testId: 'popover-close',
-  };
 
   private readonly portfolioLink = '[data-testid="portfolio-link"]';
 
@@ -93,11 +89,6 @@ class HomePage {
       throw e;
     }
     console.log('Home page is loaded');
-  }
-
-  async closePopover(): Promise<void> {
-    console.log('Closing popover');
-    await this.driver.clickElement(this.popoverCloseButton);
   }
 
   async closeUseNetworkNotificationModal(): Promise<void> {
@@ -197,26 +188,6 @@ class HomePage {
     await this.driver.waitForSelector(
       `.icon-button--disabled [data-tooltipped][data-original-title="${tooltipText}"]`,
     );
-  }
-
-  /**
-   * Checks if popover is displayed on homepage.
-   *
-   * @param shouldBeDisplayed - Whether the popover should be displayed. Defaults to true.
-   */
-  async check_popoverIsDisplayed(
-    shouldBeDisplayed: boolean = true,
-  ): Promise<void> {
-    console.log(
-      `Checking if popover ${
-        shouldBeDisplayed ? 'is' : 'is not'
-      } displayed on homepage`,
-    );
-    if (shouldBeDisplayed) {
-      await this.driver.waitForSelector(this.popoverCloseButton);
-    } else {
-      await this.driver.assertElementNotPresent(this.popoverCloseButton);
-    }
   }
 
   /**
@@ -347,6 +318,19 @@ class HomePage {
   ): Promise<void> {
     await this.driver.waitForSelector({
       text: `Secret Recovery Phrase ${srpNumber} imported`,
+    });
+  }
+
+  /**
+   * Check if the expected warning message is displayed on homepage.
+   *
+   * @param message - The message to be displayed.
+   */
+  async check_warningMessageIsDisplayed(message: string): Promise<void> {
+    console.log(`Check if warning message ${message} is displayed on homepage`);
+    await this.driver.waitForSelector({
+      text: message,
+      tag: 'p',
     });
   }
 }

@@ -4,6 +4,7 @@ import reactRouterDom from 'react-router-dom';
 import {
   BtcAccountType,
   EthAccountType,
+  EthScope,
   KeyringAccountType,
 } from '@metamask/keyring-api';
 import { merge } from 'lodash';
@@ -79,6 +80,9 @@ const render = (
     ...mockState,
     metamask: {
       ...mockState.metamask,
+      remoteFeatureFlags: {
+        addBitcoinAccount: true,
+      },
       permissionHistory: {
         'https://test.dapp': {
           eth_accounts: {
@@ -114,7 +118,6 @@ const render = (
           },
         },
       },
-      bitcoinSupportEnabled: true,
     },
     activeTab: {
       id: 113,
@@ -218,6 +221,7 @@ describe('AccountListMenu', () => {
               },
               options: {},
               methods: ETH_EOA_METHODS,
+              scopes: [EthScope.Eoa],
               type: EthAccountType.Eoa,
             },
           },

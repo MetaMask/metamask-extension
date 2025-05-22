@@ -1,12 +1,21 @@
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const {
+  mockBip32Snap,
+  mockJsonRpcSnap,
+} = require('../mock-response-data/snaps/snap-binary-mocks');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
+
+async function mockSnapBinaries(mockServer) {
+  return [await mockBip32Snap(mockServer), await mockJsonRpcSnap(mockServer)];
+}
 
 describe('Test Snap RPC', function () {
   it('can use the cross-snap RPC endowment and produce a public key', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockSnapBinaries,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

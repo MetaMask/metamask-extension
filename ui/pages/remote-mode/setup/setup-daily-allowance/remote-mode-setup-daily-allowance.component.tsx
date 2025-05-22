@@ -1,5 +1,5 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
@@ -53,13 +53,14 @@ import { InternalAccountWithBalance } from '../../../../selectors/selectors.type
 import {
   DailyAllowance,
   REMOTE_MODES,
-  TokenSymbol,
   TOKEN_DETAILS,
+  TokenInfo,
 } from '../../remote.types';
 
 import {
   getMetaMaskAccountsOrdered,
   getSelectedInternalAccount,
+  getSelectedNetwork,
 } from '../../../../selectors';
 import {
   RemoteModeDailyAllowanceCard,
@@ -88,8 +89,8 @@ export default function RemoteModeSetupDailyAllowance() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
   const [dailyAllowance, setDailyAllowance] = useState<DailyAllowance[]>([]);
-  const [selectedAllowanceToken, setSelectedAllowanceToken] =
-    useState<TokenSymbol>(TokenSymbol.ETH);
+  const [selectedAllowanceAddress, setSelectedAllowanceAddress] =
+    useState<string>('');
   const [dailyLimit, setDailyLimit] = useState<string>('0');
   const [isAllowancesExpanded, setIsAllowancesExpanded] =
     useState<boolean>(false);
@@ -97,13 +98,9 @@ export default function RemoteModeSetupDailyAllowance() {
     useState<InternalAccount | null>(null);
   const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(true);
   const [allowanceError, setAllowanceError] = useState<boolean>(false);
-  const [storedAssets, setStoredAssets] = useState<typeof assetsWithBalance>(
-    [],
-  );
-  const [selectedAllowanceBalance, setSelectedAllowanceBalance] =
-    useState<string>('');
 
   const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
+  const selectedNetwork = useSelector(getSelectedNetwork);
   const authorizedAccounts: InternalAccountWithBalance[] = useSelector(
     getMetaMaskAccountsOrdered,
   );
@@ -114,12 +111,24 @@ export default function RemoteModeSetupDailyAllowance() {
 
   const { assetsWithBalance } = useMultichainBalances();
 
-  const updateSelectedTokenBalance = (value: string) => {
-    setSelectedAllowanceBalance(
-      storedAssets.find((asset) => asset.symbol.includes(value))?.balance ??
-        '0',
+  const assets = useMemo(() => {
+    return assetsWithBalance
+      .filter(
+        (asset) => asset.chainId === selectedNetwork.configuration.chainId,
+      )
+      .map((asset) => ({
+        name: asset.symbol,
+        value: asset.address,
+      }));
+  }, [assetsWithBalance, selectedNetwork.configuration.chainId]);
+
+  const selectedAllowanceBalance = useMemo(() => {
+    return (
+      assetsWithBalance.find(
+        (asset) => asset.address === selectedAllowanceAddress,
+      )?.balance ?? '0'
     );
-  };
+  }, [assetsWithBalance, selectedAllowanceAddress]);
 
   const { enableRemoteMode } = useRemoteMode({
     account: selectedHardwareAccount.address as Hex,
@@ -141,14 +150,6 @@ export default function RemoteModeSetupDailyAllowance() {
     }
   }, [isRemoteModeEnabled, history]);
 
-  useEffect(() => {
-    setStoredAssets(assetsWithBalance);
-  }, [assetsWithBalance]);
-
-  useEffect(() => {
-    updateSelectedTokenBalance(selectedAllowanceToken);
-  }, [storedAssets, selectedAllowanceToken]);
-
   const handleNext = () => {
     if (currentStep < TOTAL_STEPS) {
       setCurrentStep(currentStep + 1);
@@ -169,27 +170,39 @@ export default function RemoteModeSetupDailyAllowance() {
       return;
     }
 
-    const newAllowance = {
-      tokenType: selectedAllowanceToken,
+    const selectedAsset = assetsWithBalance.find(
+      (asset) => asset.address === selectedAllowanceAddress,
+    ) as TokenInfo;
+
+    // TODO: handle error
+    if (!selectedAsset) {
+      return;
+    }
+
+    const newAllowance: DailyAllowance = {
       amount: parseFloat(dailyLimit),
-      iconUrl: TOKEN_DETAILS[selectedAllowanceToken].iconUrl,
+      address: selectedAsset.address,
+      image: TOKEN_DETAILS[selectedAsset.symbol].image,
+      name: selectedAsset.name,
+      symbol: selectedAsset.symbol,
+      type: selectedAsset.type,
     };
 
     setDailyAllowance((prevAllowances) => {
       const filteredAllowances = prevAllowances.filter(
-        (allowance) => allowance.tokenType !== selectedAllowanceToken,
+        (allowance) => allowance.address !== selectedAllowanceAddress,
       );
       return [...filteredAllowances, newAllowance];
     });
 
-    setSelectedAllowanceToken(TokenSymbol.ETH);
+    setSelectedAllowanceAddress('');
     setDailyLimit('');
     setAllowanceError(false);
   };
 
-  const handleRemoveAllowance = (tokenSymbol: TokenSymbol) => {
+  const handleRemoveAllowance = (address: string) => {
     setDailyAllowance(
-      dailyAllowance.filter((allowance) => allowance.tokenType !== tokenSymbol),
+      dailyAllowance.filter((allowance) => allowance.address !== address),
     );
   };
 
@@ -308,14 +321,10 @@ export default function RemoteModeSetupDailyAllowance() {
                     <Text>Token</Text>
                     <Dropdown
                       onChange={(value) => {
-                        setSelectedAllowanceToken(value as TokenSymbol);
-                        updateSelectedTokenBalance(value);
+                        setSelectedAllowanceAddress(value);
                       }}
-                      options={Object.values(TokenSymbol).map((value) => ({
-                        name: value,
-                        value,
-                      }))}
-                      selectedOption={selectedAllowanceToken}
+                      options={assets}
+                      selectedOption={selectedAllowanceAddress}
                       title="Select token"
                       style={{ width: '100%' }}
                     />
@@ -371,11 +380,9 @@ export default function RemoteModeSetupDailyAllowance() {
                 <Box marginTop={2}>
                   {dailyAllowance.map((allowance) => (
                     <RemoteModeDailyAllowanceCard
-                      key={allowance.tokenType}
+                      key={allowance.symbol}
                       dailyAllowance={allowance}
-                      onRemove={() =>
-                        handleRemoveAllowance(allowance.tokenType)
-                      }
+                      onRemove={() => handleRemoveAllowance(allowance.address)}
                     />
                   ))}
                 </Box>
@@ -497,10 +504,10 @@ export default function RemoteModeSetupDailyAllowance() {
                   <Box marginTop={2}>
                     {dailyAllowance.map((allowance) => (
                       <RemoteModeDailyAllowanceCard
-                        key={allowance.tokenType}
+                        key={allowance.symbol}
                         dailyAllowance={allowance}
                         onRemove={() =>
-                          handleRemoveAllowance(allowance.tokenType)
+                          handleRemoveAllowance(allowance.address)
                         }
                       />
                     ))}
