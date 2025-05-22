@@ -64,7 +64,7 @@ export default function WelcomeLogin({
       flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.spaceBetween}
       gap={4}
-      marginInline={'auto'}
+      marginInline="auto"
       marginTop={2}
       padding={6}
       className="welcome-login"
