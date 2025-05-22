@@ -167,19 +167,6 @@ describe('Vault Corruption', function () {
   }
 
   /**
-   * Returns the vault recovery button.
-   *
-   * @param driver - The WebDriver instance.
-   */
-  async function getVaultRecoveryButton(driver: Driver) {
-    return await driver.waitForSelector('#critical-error-button', {
-      // The button is disabled for a timeout period as a precaution, so we
-      // need to wait for it to be enabled before continuing.
-      state: 'enabled',
-    });
-  }
-
-  /**
    * Click the recovery/reset button then confirm or dismiss the action.
    *
    * @param options - The options
@@ -194,7 +181,9 @@ describe('Vault Corruption', function () {
     confirm: boolean;
   }) {
     // click the Recovery/Reset button
-    const recoveryButton = await getVaultRecoveryButton(driver);
+    const recoveryButton = await driver.findClickableElement(
+      '#critical-error-button',
+    );
     await recoveryButton.click();
 
     // Confirm we want to recover/reset.
