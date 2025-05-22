@@ -68,13 +68,6 @@
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Access your wallet with your Secret Recovery Phrase"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask cannot recover your password. We will use your Secret Recovery Phrase to validate your ownership, restore your wallet and set up a new password. First, enter the Secret Recovery Phrase that you were given when you created your wallet. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Accessing your camera..."
   },

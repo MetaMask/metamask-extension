@@ -68,13 +68,6 @@
     "message": "Eu li e concordo com os $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Acesse sua carteira com sua Frase de Recuperação Secreta"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "A MetaMask não consegue recuperar sua senha. Usaremos sua Frase de Recuperação Secreta para validar sua posse, restaurar sua carteira e definir uma nova senha. Primeiro, insira a Frase de Recuperação Secreta que você recebeu ao criar sua carteira. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Acessando sua câmera..."
   },

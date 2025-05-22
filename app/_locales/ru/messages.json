@@ -68,13 +68,6 @@
     "message": "Я прочитал(-а) $1 и согласен(-на) с ними",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Получайте доступ к кошельку с помощью секретной фразы для восстановления"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask не может восстановить ваш пароль. Мы используем вашу cекретную фразу для восстановления, чтобы подтвердить ваше право собственности, восстановить ваш кошелек и установить новый пароль. Сначала введите секретную фразу для восстановления, которую вы получили при создании кошелька. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Доступ к камере..."
   },

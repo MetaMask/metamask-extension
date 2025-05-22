@@ -68,13 +68,6 @@
     "message": "我已阅读并同意 $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "使用账户私钥助记词访问钱包"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask无法恢复您的密码。我们将使用您的私钥助记词来验证您的所有权、恢复您的钱包并设置新密码。首先，请输入创建钱包时获得的私钥助记词。$1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "正在访问您的相机……"
   },
