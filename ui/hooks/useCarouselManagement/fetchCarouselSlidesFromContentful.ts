@@ -36,7 +36,9 @@ type ContentfulBannerResponse = {
   };
 };
 
-export async function fetchCarouselSlidesFromContentful(): Promise<CarouselSlide[]> {
+export async function fetchCarouselSlidesFromContentful(): Promise<
+  CarouselSlide[]
+> {
   if (!SPACE_ID || !ACCESS_TOKEN) {
     return noSlides;
   }
