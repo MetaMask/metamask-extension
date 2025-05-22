@@ -2229,9 +2229,6 @@
   "hideAdvancedDetails": {
     "message": "Ocultar detalles avanzados"
   },
-  "hideSeedPhrase": {
-    "message": "Ocultar frase inicial"
-  },
   "hideSentitiveInfo": {
     "message": "Ocultar información confidencial"
   },
@@ -4404,9 +4401,6 @@
   "revealSensitiveContent": {
     "message": "Revelar contenido sensible"
   },
-  "revealTheSeedPhrase": {
-    "message": "Revelar frase semilla"
-  },
   "review": {
     "message": "Revisar"
   },
@@ -4517,23 +4511,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Confirmar frase secreta de recuperación"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Escríbala y guárdela en varios lugares secretos."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Guárdela en una caja fuerte."
-  },
   "seedPhraseIntroTitle": {
     "message": "Proteger su cartera"
   },
   "seedPhraseReq": {
     "message": "Las frases secretas de recuperación contienen 12, 15, 18, 21 o 24 palabras"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Escriba esta frase secreta de recuperación de 12 palabras y guárdela en un lugar de confianza al que solo usted pueda acceder."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Anote la frase secreta de recuperación"
   },
   "select": {
     "message": "Seleccionar"
@@ -5857,9 +5839,6 @@
   },
   "time": {
     "message": "Tiempo"
-  },
-  "tips": {
-    "message": "Sugerencias"
   },
   "tipsForUsingAWallet": {
     "message": "Consejos para utilizar un monedero"

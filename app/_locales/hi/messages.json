@@ -2229,9 +2229,6 @@
   "hideAdvancedDetails": {
     "message": "एडवांस्ड विवरण छिपाएं"
   },
-  "hideSeedPhrase": {
-    "message": "सीड फ्रेज़ छुपा दें"
-  },
   "hideSentitiveInfo": {
     "message": "संवेदनशील जानकारी छिपाएं"
   },
@@ -4404,9 +4401,6 @@
   "revealSensitiveContent": {
     "message": "संवेदनशील कंटेंट दिखाएं"
   },
-  "revealTheSeedPhrase": {
-    "message": "सीड फ़्रेज़ दिखाएं"
-  },
   "review": {
     "message": "समीक्षा करें"
   },
@@ -4517,23 +4511,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "सीक्रेट रिकवरी फ्रेज की कन्फर्म करें"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "लिखें और कई गुप्त स्थानों में स्टोर करें।"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "सेफ डिपॉजिट बॉक्स में स्टोर करें।"
-  },
   "seedPhraseIntroTitle": {
     "message": "अपने वॉलेट को सुरक्षित करें"
   },
   "seedPhraseReq": {
     "message": "सीक्रेट रिकवरी फ्रेज में 12, 15, 18, 21 या 24 शब्द होते हैं"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "12-शब्दों के इस सीक्रेट रिकवरी फ्रेज को लिखें और ऐसे स्थान पर सेव करें, जहां आप भरोसा करते हैं और केवल आप ही पहुंच सकते हैं।"
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "अपना सीक्रेट रिकवरी फ्रेज लिखें"
   },
   "select": {
     "message": "चयन करें"
@@ -5857,9 +5839,6 @@
   },
   "time": {
     "message": "समय"
-  },
-  "tips": {
-    "message": "युक्तियां"
   },
   "tipsForUsingAWallet": {
     "message": "वॉलेट का उपयोग करने के लिए टिप्स"

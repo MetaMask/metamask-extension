@@ -2229,9 +2229,6 @@
   "hideAdvancedDetails": {
     "message": "고급 세부 정보 숨기기"
   },
-  "hideSeedPhrase": {
-    "message": "시드 구문 숨기기"
-  },
   "hideSentitiveInfo": {
     "message": "민감한 정보 숨기기"
   },
@@ -4404,9 +4401,6 @@
   "revealSensitiveContent": {
     "message": "민감한 콘텐츠 공개"
   },
-  "revealTheSeedPhrase": {
-    "message": "시드 구문 보기"
-  },
   "review": {
     "message": "검토"
   },
@@ -4517,23 +4511,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "비밀복구구문 확인"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "적어서 여러 비밀 장소에 보관하세요."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "대여 금고에 보관."
-  },
   "seedPhraseIntroTitle": {
     "message": "지갑 보호하기"
   },
   "seedPhraseReq": {
     "message": "비밀복구구문은 12, 15, 18, 21 또는 24개의 단어로 구성됩니다"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "이 12단어 비밀복구구문을 기록하고 본인만 접근 가능한 믿을 만한 장소에 저장하세요."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "비밀복구구문 기록"
   },
   "select": {
     "message": "선택"
@@ -5857,9 +5839,6 @@
   },
   "time": {
     "message": "시간"
-  },
-  "tips": {
-    "message": "팁"
   },
   "tipsForUsingAWallet": {
     "message": "지갑 사용 팁"

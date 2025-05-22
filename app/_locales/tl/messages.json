@@ -2229,9 +2229,6 @@
   "hideAdvancedDetails": {
     "message": "Itago ang mga advanced na detalye"
   },
-  "hideSeedPhrase": {
-    "message": "Itago ang pariralang binhi"
-  },
   "hideSentitiveInfo": {
     "message": "Itago ang sensitibong impormasyon"
   },
@@ -4404,9 +4401,6 @@
   "revealSensitiveContent": {
     "message": "Ipakita ang sensitibong content"
   },
-  "revealTheSeedPhrase": {
-    "message": "Ibunyag ang pariralang binhi"
-  },
   "review": {
     "message": "Suriin"
   },
@@ -4517,23 +4511,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Kumpirmahin ang Lihim na Parirala sa Pagbawi"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Isulat at itago sa maraming sikretong lugar."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Itago sa safe-deposit box."
-  },
   "seedPhraseIntroTitle": {
     "message": "I-secure ang wallet mo"
   },
   "seedPhraseReq": {
     "message": "Ang mga Lihim na Parirala sa Pagbawi ay naglalaman ng 12, 15, 18, 21, o 24 na salita"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Isulat ang 12 salita ng Lihim na Parirala sa Pagbawi at i-save sa lugar na pinagkakatiwalaan mo at ikaw lang ang makaka-access."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Isulat ang iyong Lihim na Parirala sa Pagbawi"
   },
   "select": {
     "message": "Piliin ang"
@@ -5857,9 +5839,6 @@
   },
   "time": {
     "message": "Oras"
-  },
-  "tips": {
-    "message": "Mga Tip"
   },
   "tipsForUsingAWallet": {
     "message": "Mga tip sa paggamit ng wallet"
