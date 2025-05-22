@@ -51,13 +51,6 @@
     "message": "Ho letto e accetto i $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Accedi al tuo portafoglio con la tua frase di recupero segreta"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask non può recuperare la tua password. Useremo la tua frase di recupero segreta per assicurarci tu sia il proprietario, ripristinare il tuo portafoglio e impostare una nuova password. Innanzitutto, inserisci la frase di recupero segreta che ti è stata data in fase di creazione del tuo portafoglio. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Accesso alla fotocamera..."
   },
@@ -412,9 +405,6 @@
   },
   "create": {
     "message": "Crea"
-  },
-  "createNewWallet": {
-    "message": "Crea un nuovo portafoglio"
   },
   "createPassword": {
     "message": "Crea Password"
@@ -1376,9 +1366,6 @@
   },
   "termsOfService": {
     "message": "Termini di Servizio"
-  },
-  "tips": {
-    "message": "Suggerimenti"
   },
   "to": {
     "message": "A"
