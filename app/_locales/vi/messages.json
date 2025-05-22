@@ -4508,12 +4508,6 @@
   "seeDetails": {
     "message": "Xem chi tiết"
   },
-  "seedPhraseConfirm": {
-    "message": "Xác nhận Cụm từ khôi phục bí mật"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Xác nhận Cụm từ khôi phục bí mật"
-  },
   "seedPhraseIntroTitle": {
     "message": "Bảo mật cho ví của bạn"
   },

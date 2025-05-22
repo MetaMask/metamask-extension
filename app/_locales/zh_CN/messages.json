@@ -4505,12 +4505,6 @@
   "seeDetails": {
     "message": "查看详情"
   },
-  "seedPhraseConfirm": {
-    "message": "确认私钥助记词"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "确认私钥助记词"
-  },
   "seedPhraseIntroTitle": {
     "message": "保护您的钱包安全"
   },

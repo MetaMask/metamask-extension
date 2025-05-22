@@ -4505,12 +4505,6 @@
   "seeDetails": {
     "message": "세부 정보 보기"
   },
-  "seedPhraseConfirm": {
-    "message": "비밀복구구문 컨펌"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "비밀복구구문 확인"
-  },
   "seedPhraseIntroTitle": {
     "message": "지갑 보호하기"
   },

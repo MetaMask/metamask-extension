@@ -4505,12 +4505,6 @@
   "seeDetails": {
     "message": "詳細を表示"
   },
-  "seedPhraseConfirm": {
-    "message": "シークレットリカバリーフレーズの確認"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "シークレットリカバリーフレーズの確認"
-  },
   "seedPhraseIntroTitle": {
     "message": "ウォレットの保護"
   },

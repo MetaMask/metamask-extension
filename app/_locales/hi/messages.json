@@ -4505,12 +4505,6 @@
   "seeDetails": {
     "message": "ब्यौरा देखें"
   },
-  "seedPhraseConfirm": {
-    "message": "सीक्रेट रिकवरी फ्रेज की कन्फर्म करें"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "सीक्रेट रिकवरी फ्रेज की कन्फर्म करें"
-  },
   "seedPhraseIntroTitle": {
     "message": "अपने वॉलेट को सुरक्षित करें"
   },

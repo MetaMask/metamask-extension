@@ -4505,12 +4505,6 @@
   "seeDetails": {
     "message": "Ver detalles"
   },
-  "seedPhraseConfirm": {
-    "message": "Confirmar frase secreta de recuperación"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Confirmar frase secreta de recuperación"
-  },
   "seedPhraseIntroTitle": {
     "message": "Proteger su cartera"
   },

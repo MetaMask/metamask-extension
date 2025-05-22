@@ -4804,12 +4804,6 @@
   "seeDetails": {
     "message": "See details"
   },
-  "seedPhraseConfirm": {
-    "message": "Confirm Secret Recovery Phrase"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Confirm Secret Recovery Phrase"
-  },
   "seedPhraseIntroTitle": {
     "message": "Secure your wallet"
   },
