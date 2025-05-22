@@ -1195,8 +1195,26 @@
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
+  "confirmRecoveryPhraseDetails": {
+    "message": "Select the missing words in the correct order."
+  },
+  "confirmRecoveryPhraseTitle": {
+    "message": "Confirm your Secret Recovery Phrase"
+  },
   "confirmSimulationApprove": {
     "message": "You approve"
+  },
+  "confirmSrpErrorDescription": {
+    "message": "Double-check your Secret Recovery Phrase and try again."
+  },
+  "confirmSrpErrorTitle": {
+    "message": "Not quite right"
+  },
+  "confirmSrpSuccessDescription": {
+    "message": "That’s right! And remember: never share this phrase with anyone, ever."
+  },
+  "confirmSrpSuccessTitle": {
+    "message": "Perfect"
   },
   "confirmTitleAccountTypeSwitch": {
     "message": "Account update"
