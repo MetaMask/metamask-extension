@@ -125,6 +125,9 @@ async function withFixtures(options, testSuite) {
     usePaymaster,
     ethConversionInUsd,
     manifestFlags,
+    segmentVerification = {
+      events: [],
+    },
   } = options;
 
   // Normalize localNodeOptions
@@ -147,6 +150,7 @@ async function withFixtures(options, testSuite) {
   let driver;
   let extensionId;
   let failed = false;
+  const hasSegmentVerification = segmentVerification.events.length > 0;
 
   let localNode;
   const localNodes = [];
@@ -254,14 +258,46 @@ async function withFixtures(options, testSuite) {
         });
       }
     }
+
+    // Initialize mockedEndpoints array
+    let mockedEndpoints = [];
+
+    // Add testSpecificMock endpoints if they exist
+    if (testSpecificMock) {
+      // Allow testSpecificMock to be either a function or an array of functions
+      const testSpecificEndpoints =
+        typeof testSpecificMock === 'function'
+          ? [testSpecificMock]
+          : testSpecificMock;
+      mockedEndpoints = [...testSpecificEndpoints];
+    }
+
+    // Add segment verification if needed
+    if (hasSegmentVerification) {
+      mockedEndpoints.push(mockSegment);
+    }
+
+    console.log('mockedEndpoints', mockedEndpoints);
+
+    // We'll use the first mock function as the main one, since that's what setupMocking expects
+    const primaryMockFn =
+      mockedEndpoints.length > 0 ? mockedEndpoints[0] : null;
+
     const { mockedEndpoint, getPrivacyReport } = await setupMocking(
       mockServer,
-      testSpecificMock,
+      primaryMockFn,
       {
         chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
         ethConversionInUsd,
       },
     );
+
+    // If we have more than one mock function, call the rest of them too
+    if (mockedEndpoints.length > 1) {
+      for (let i = 1; i < mockedEndpoints.length; i++) {
+        await mockedEndpoints[i](mockServer);
+      }
+    }
     if ((await detectPort(8000)) !== 8000) {
       throw new Error(
         'Failed to set up mock server, something else may be running on port 8000.',
@@ -312,6 +348,61 @@ async function withFixtures(options, testSuite) {
       mockServer,
       extensionId,
     });
+
+    if (hasSegmentVerification) {
+      const events = await getEventPayloads(driver, primaryMockFn);
+      const currentBrowser = process.env.SELENIUM_BROWSER || 'chrome';
+
+      // In the latest version of the code, events is a flat array of payloads
+      // where each payload is already the batch object from the JSON
+      console.log('Events received:', JSON.stringify(events, null, 2));
+      console.log('Current browser:', currentBrowser);
+
+      // Iterate through the verification events
+      for (const expectedEvent of segmentVerification.events) {
+        // Skip events that should only run in a specific browser
+        if (
+          (expectedEvent.firefoxOnly && currentBrowser !== 'firefox') ||
+          (expectedEvent.chromeOnly && currentBrowser !== 'chrome')
+        ) {
+          console.log(
+            `Skipping event "${expectedEvent.event}" in ${currentBrowser} browser`,
+          );
+          continue;
+        }
+
+        if (!events.length || events.length !== expectedEvent.events.length) {
+          throw new Error(
+            `Expected ${expectedEvent.events.length} events, but got ${events.length}`,
+          );
+        }
+
+        // Find matching events
+        const matchingEvents = events.filter(
+          (eventPayload) =>
+            eventPayload && eventPayload.event === expectedEvent.event,
+        );
+
+        if (matchingEvents.length === 0) {
+          throw new Error(`No event found with name "${expectedEvent.event}"`);
+        }
+
+        // Verify properties in the first matching event
+        const eventProperties = matchingEvents[0].properties;
+
+        if (!eventProperties) {
+          throw new Error(`Event "${expectedEvent.event}" has no properties`);
+        }
+
+        Object.entries(expectedEvent.properties).forEach(([key, value]) => {
+          if (eventProperties[key] !== value) {
+            throw new Error(
+              `Event "${expectedEvent.event}" is missing or has incorrect value for property "${key}". Expected "${value}" but got "${eventProperties[key]}"`,
+            );
+          }
+        });
+      }
+    }
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
     if (errorsAndExceptions) {
@@ -788,7 +879,7 @@ async function switchToNotificationWindow(driver) {
  * for each mock in the array.
  *
  * @param {WebDriver} driver - The WebDriver instance.
- * @param {import('mockttp').MockedEndpoint[]} mockedEndpoints - mockttp mocked endpoints
+ * @param {import('mockttp').MockedEndpoint | import('mockttp').MockedEndpoint[]} mockedEndpoints - mockttp mocked endpoints
  * @param {boolean} [waitWhilePending] - Wait until no requests are pending
  * @returns {Promise<import('mockttp/dist/pluggable-admin').MockttpClientResponse[]>}
  */
@@ -797,25 +888,46 @@ async function getEventPayloads(
   mockedEndpoints,
   waitWhilePending = true,
 ) {
+  // Ensure mockedEndpoints is always an array
+  const endpointsArray = Array.isArray(mockedEndpoints)
+    ? mockedEndpoints
+    : [mockedEndpoints];
+
   if (waitWhilePending) {
     await driver.wait(
       async () => {
-        const pendingStatuses = await Promise.all(
-          mockedEndpoints.map((mockedEndpoint) => mockedEndpoint.isPending()),
-        );
-        const isSomethingPending = pendingStatuses.some(
-          (pendingStatus) => pendingStatus,
-        );
+        // Skip isPending check if the endpoints don't have this method
+        try {
+          const pendingStatuses = await Promise.all(
+            endpointsArray.map((mockedEndpoint) =>
+              typeof mockedEndpoint.isPending === 'function'
+                ? mockedEndpoint.isPending()
+                : false,
+            ),
+          );
+          const isSomethingPending = pendingStatuses.some(
+            (pendingStatus) => pendingStatus,
+          );
 
-        return !isSomethingPending;
+          return !isSomethingPending;
+        } catch (error) {
+          console.log(
+            'Warning: Error checking isPending, skipping wait',
+            error,
+          );
+          return true;
+        }
       },
       driver.timeout,
       true,
     );
   }
+
   const mockedRequests = [];
-  for (const mockedEndpoint of mockedEndpoints) {
-    mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
+  for (const mockedEndpoint of endpointsArray) {
+    if (typeof mockedEndpoint.getSeenRequests === 'function') {
+      mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
+    }
   }
 
   return (
@@ -864,6 +976,16 @@ async function getCleanAppState(driver) {
       window.stateHooks?.getCleanAppState &&
       window.stateHooks.getCleanAppState(),
   );
+}
+
+async function mockSegment(mockServer) {
+  return [
+    await mockServer
+      .forPost('https://api.segment.io/v1/batch')
+      .withJsonBodyIncluding({
+        batch: [{ type: 'track' }],
+      }),
+  ];
 }
 
 async function initBundler(
