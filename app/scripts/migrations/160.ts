@@ -203,22 +203,18 @@ function transformState(state: Record<string, unknown>) {
 
     updatedSubjects.push(key);
 
+    const existingCaip25Caveat = getExistingCaip25PermissionCaveat(subject);
     const caip25PermissionCaveatWithCurrentChainIdSet = addPermittedEthChainId(
-      getExistingCaip25PermissionCaveat(subject),
+      existingCaip25Caveat,
       currentChainId,
     );
 
     let caip25PermissionCaveatWithCurrentChainIdAndAccountsSet =
       caip25PermissionCaveatWithCurrentChainIdSet;
 
-    if (subject.permissions[Caip25EndowmentPermissionName]) {
-      const existingCaveat = subject.permissions[
-        Caip25EndowmentPermissionName
-      ]?.caveats?.find((caveat) => caveat.type === Caip25CaveatType);
-      if (existingCaveat && existingCaveat.value) {
-        const alreadyPermissionedAccounts = getEthAccounts(
-          existingCaveat.value as Caip25CaveatValue,
-        );
+    if (existingCaip25Caveat) {
+      const alreadyPermissionedAccounts = getEthAccounts(existingCaip25Caveat);
+      if (alreadyPermissionedAccounts) {
         caip25PermissionCaveatWithCurrentChainIdAndAccountsSet = setEthAccounts(
           caip25PermissionCaveatWithCurrentChainIdSet,
           alreadyPermissionedAccounts,
