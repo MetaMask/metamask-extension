@@ -7,7 +7,6 @@ import { getMockConfirmStateForTransaction } from '../../../../../../../../test/
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmations/gas';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 import { EditGasFeesRow } from './edit-gas-fees-row';
 
 jest.mock(
@@ -52,24 +51,11 @@ describe('<EditGasFeesRow />', () => {
   });
 
   it('renders metamask fee if gas fee token selected', () => {
-    const { getByTestId, queryByTestId } = render({
+    const { getByTestId } = render({
       gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
       selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
     });
 
-    expect(getByTestId('metamask-fee')).toBeInTheDocument();
-    expect(queryByTestId('metamask-fee-icon')).toBeNull();
-  });
-
-  it('renders metamask fee and fox icon if future native gas fee token selected', () => {
-    const { getByTestId } = render({
-      gasFeeTokens: [
-        { ...GAS_FEE_TOKEN_MOCK, tokenAddress: NATIVE_TOKEN_ADDRESS },
-      ],
-      selectedGasFeeToken: NATIVE_TOKEN_ADDRESS,
-    });
-
-    expect(getByTestId('metamask-fee')).toBeInTheDocument();
-    expect(getByTestId('metamask-fee-icon')).toBeInTheDocument();
+    expect(getByTestId('gas-fee-token-fee')).toBeInTheDocument();
   });
 });

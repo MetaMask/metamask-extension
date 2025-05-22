@@ -109,11 +109,7 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
             alignItems={AlignItems.center}
             marginInline={4}
           >
-            <TextWithTooltip
-              text={t('confirmGasFeeTokenModalPayETH')}
-              tooltip={t('confirmGasFeeTokenModalPayETHTooltip')}
-              noMargin
-            />
+            <Title text={t('confirmGasFeeTokenModalPayETH')} noMargin />
             {hasFutureNativeToken && (
               <NativeToggle
                 isFuture={futureNativeSelected}
@@ -132,10 +128,7 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
             onClick={handleTokenClick}
           />
           {hasGasFeeTokens && (
-            <TextWithTooltip
-              text={t('confirmGasFeeTokenModalPayToken')}
-              tooltip={t('confirmGasFeeTokenModalPayTokenTooltip')}
-            />
+            <Title text={t('confirmGasFeeTokenModalPayToken')} />
           )}
           {gasFeeTokenAddresses.map((tokenAddress) => (
             <GasFeeTokenListItem
@@ -156,41 +149,17 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
   );
 }
 
-function TextWithTooltip({
-  noMargin,
-  text,
-  tooltip,
-}: {
-  noMargin?: boolean;
-  text: string;
-  tooltip: string;
-}) {
+function Title({ noMargin, text }: { noMargin?: boolean; text: string }) {
   return (
-    <Box display={Display.Flex} alignItems={AlignItems.center}>
-      <Text
-        variant={TextVariant.bodySm}
-        color={TextColor.textAlternative}
-        marginLeft={noMargin ? 0 : 4}
-        marginTop={3}
-        marginBottom={3}
-      >
-        {text}
-      </Text>
-      <TooltipIcon tooltip={tooltip} />
-    </Box>
-  );
-}
-
-function TooltipIcon({ tooltip }: { tooltip: string }) {
-  return (
-    <Tooltip title={tooltip}>
-      <Icon
-        name={IconName.Question}
-        marginLeft={1}
-        color={IconColor.iconMuted}
-        size={IconSize.Xs}
-      />
-    </Tooltip>
+    <Text
+      variant={TextVariant.bodySm}
+      color={TextColor.textAlternative}
+      marginLeft={noMargin ? 0 : 4}
+      marginTop={3}
+      marginBottom={3}
+    >
+      {text}
+    </Text>
   );
 }
 
