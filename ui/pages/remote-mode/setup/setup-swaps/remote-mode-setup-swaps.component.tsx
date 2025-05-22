@@ -1,5 +1,5 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 
@@ -93,7 +93,6 @@ export default function RemoteModeSetupSwaps() {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
-  const [swapAllowance, setSwapAllowance] = useState<SwapAllowance[]>([]);
   const [selectedFromToken, setSelectedFromToken] = useState<TokenSymbol>(
     TokenSymbol.USDC,
   );
@@ -105,7 +104,6 @@ export default function RemoteModeSetupSwaps() {
     useState<boolean>(false);
   const [selectedAccount, setSelectedAccount] =
     useState<InternalAccount | null>(null);
-  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(true);
   const [dailyLimitError, setDailyLimitError] = useState<boolean>(false);
   const [swapToError, setSwapToError] = useState<boolean>(false);
 
@@ -125,16 +123,12 @@ export default function RemoteModeSetupSwaps() {
       account: selectedHardwareAccount.address as Hex,
     });
 
-  useEffect(() => {
-    if (remoteModeConfig?.swapAllowance) {
-      setSwapAllowance(remoteModeConfig.swapAllowance.allowances);
-    }
-  }, []);
+  const [swapAllowance, setSwapAllowance] = useState<SwapAllowance[]>(
+    remoteModeConfig?.swapAllowance?.allowances ?? [],
+  );
 
-  useEffect(() => {
-    setIsHardwareAccount(
-      isRemoteModeSupported(selectedHardwareAccount) || true,
-    );
+  const isHardwareAccount = useMemo(() => {
+    return isRemoteModeSupported(selectedHardwareAccount);
   }, [selectedHardwareAccount]);
 
   useEffect(() => {
