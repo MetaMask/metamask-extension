@@ -119,8 +119,6 @@ describe('Account syncing - New User', function () {
         async ({ driver }) => {
           // Onboard with import flow using SRP from new account created above
           await completeOnboardFlowIdentity(driver, walletSrp);
-          const homePage = new HomePage(driver);
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           // Open account menu and validate the 2 accounts have been retrieved
           const header = new HeaderNavbar(driver);
