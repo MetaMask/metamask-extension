@@ -83,6 +83,7 @@ export type AppStateControllerState = {
   snapsInstallPrivacyWarningShown?: boolean;
   slides: CarouselSlide[];
   throttledOrigins: ThrottledOrigins;
+  upgradeSplashPageAcknowledgedForAccounts: string[];
 };
 
 const controllerName = 'AppStateController';
@@ -196,6 +197,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   switchedNetworkNeverShowMessage: false,
   slides: [],
   throttledOrigins: {},
+  upgradeSplashPageAcknowledgedForAccounts: [],
   ...getInitialStateOverrides(),
 });
 
@@ -351,6 +353,10 @@ const controllerMetadata = {
     anonymous: true,
   },
   throttledOrigins: {
+    persist: false,
+    anonymous: true,
+  },
+  upgradeSplashPageAcknowledgedForAccounts: {
     persist: false,
     anonymous: true,
   },
@@ -641,6 +647,21 @@ export class AppStateController extends BaseController<
    */
   setLastActiveTime(): void {
     this.#resetTimer();
+  }
+
+  /**
+   * Add account to list of accounts for which user has acknowledged
+   * smart account upgrade splash page.
+   *
+   * @param account
+   */
+  setSplashPageAcknowledgedForAccount(account: string): void {
+    this.update((state) => {
+      state.upgradeSplashPageAcknowledgedForAccounts = [
+        ...state.upgradeSplashPageAcknowledgedForAccounts,
+        account.toLowerCase(),
+      ];
+    });
   }
 
   /**

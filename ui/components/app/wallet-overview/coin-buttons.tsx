@@ -43,6 +43,10 @@ import { Box, Icon, IconName, IconSize } from '../../component-library';
 import IconButton from '../../ui/icon-button';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
+import {
+  getIsUnifiedUIEnabled,
+  type BridgeAppState,
+} from '../../../ducks/bridge/selectors';
 import { ReceiveModal } from '../../multichain/receive-modal';
 import {
   setSwitchedNetworkDetails,
@@ -187,6 +191,10 @@ const CoinButtons = ({
 
   const { openBridgeExperience } = useBridging();
 
+  const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
+    getIsUnifiedUIEnabled(state, chainId),
+  );
+
   const setCorrectChain = useCallback(async () => {
     if (currentChainId !== chainId && multichainChainId !== chainId) {
       try {
@@ -277,6 +285,10 @@ const CoinButtons = ({
   );
 
   const handleSwapOnClick = useCallback(async () => {
+    if (isUnifiedUIEnabled) {
+      handleBridgeOnClick(true);
+      return;
+    }
     ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
     if (multichainChainId === MultichainNetworks.SOLANA) {
       handleBridgeOnClick(true);
@@ -310,6 +322,7 @@ const CoinButtons = ({
     setCorrectChain,
     isSwapsChain,
     chainId,
+    isUnifiedUIEnabled,
     usingHardwareWallet,
     defaultSwapsToken,
   ]);
@@ -345,7 +358,9 @@ const CoinButtons = ({
         className={`${classPrefix}-overview__button`}
         iconButtonClassName={iconButtonClassName}
         disabled={
-          !isSwapsChain || !isSigningEnabled || !isExternalServicesEnabled
+          (!isSwapsChain && !isUnifiedUIEnabled) ||
+          !isSigningEnabled ||
+          !isExternalServicesEnabled
         }
         Icon={
           <Icon

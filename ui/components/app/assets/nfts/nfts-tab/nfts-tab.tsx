@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { toHex } from '@metamask/controller-utils';
 import {
@@ -19,13 +19,11 @@ import {
   getUseNftDetection,
   getNftIsStillFetchingIndication,
   getPreferences,
-  getAllChainsToPoll,
 } from '../../../../../selectors';
 import {
   Box,
   ButtonLink,
   ButtonLinkSize,
-  IconName,
   Text,
 } from '../../../../component-library';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
@@ -39,15 +37,7 @@ import { getCurrentLocale } from '../../../../../ducks/locale/locale';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import { useNfts } from '../../../../../hooks/useNfts';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
-import {
-  checkAndUpdateAllNftsOwnershipStatus,
-  detectNfts,
-  showImportNftsModal,
-} from '../../../../../store/actions';
-import {
-  ASSET_ROUTE,
-  SECURITY_ROUTE,
-} from '../../../../../helpers/constants/routes';
+import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
 import NftGrid from '../nft-grid/nft-grid';
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import { sortAssets } from '../../util/sort';
@@ -56,7 +46,6 @@ import PulseLoader from '../../../../ui/pulse-loader';
 
 export default function NftsTab() {
   const history = useHistory();
-  const dispatch = useDispatch();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const { privacyMode } = useSelector(getPreferences);
@@ -74,7 +63,6 @@ export default function NftsTab() {
   const showNftBanner = hasAnyNfts === false;
   const { chainId, nickname } = useSelector(getCurrentNetwork);
   const currentLocale = useSelector(getCurrentLocale);
-  const allChainIds = useSelector(getAllChainsToPoll);
 
   useEffect(() => {
     if (nftsLoading || !showNftBanner) {
@@ -111,17 +99,6 @@ export default function NftsTab() {
     );
   };
 
-  const onEnableAutoDetect = () => {
-    history.push(SECURITY_ROUTE);
-  };
-
-  const onRefresh = () => {
-    if (isMainnet) {
-      dispatch(detectNfts(allChainIds));
-    }
-    checkAndUpdateAllNftsOwnershipStatus();
-  };
-
   const sortedNfts = sortAssets(currentlyOwnedNfts, {
     key: 'collection.name',
     order: 'asc',
@@ -147,10 +124,7 @@ export default function NftsTab() {
   return (
     <>
       <Box marginTop={2}>
-        <AssetListControlBar
-          showTokensLinks={false}
-          showTokenFiatBalance={false}
-        />
+        <AssetListControlBar />
       </Box>
 
       <Box className="nfts-tab">
@@ -166,55 +140,6 @@ export default function NftsTab() {
               handleNftClick={handleNftClick}
               privacyMode={privacyMode}
             />
-            <Box
-              className="nfts-tab__buttons"
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              alignItems={AlignItems.flexStart}
-              margin={4}
-              gap={2}
-              marginBottom={2}
-            >
-              <ButtonLink
-                size={ButtonLinkSize.Md}
-                data-testid="import-nft-button"
-                startIconName={IconName.Add}
-                onClick={() => {
-                  dispatch(showImportNftsModal({}));
-                }}
-              >
-                {t('importNFT')}
-              </ButtonLink>
-
-              {!isMainnet && Object.keys(collections).length < 1 ? null : (
-                <>
-                  <Box
-                    className="nfts-tab__link"
-                    justifyContent={JustifyContent.flexEnd}
-                  >
-                    {isMainnet && !useNftDetection ? (
-                      <ButtonLink
-                        size={ButtonLinkSize.Md}
-                        startIconName={IconName.Setting}
-                        data-testid="refresh-list-button"
-                        onClick={onEnableAutoDetect}
-                      >
-                        {t('enableAutoDetect')}
-                      </ButtonLink>
-                    ) : (
-                      <ButtonLink
-                        size={ButtonLinkSize.Md}
-                        startIconName={IconName.Refresh}
-                        data-testid="refresh-list-button"
-                        onClick={onRefresh}
-                      >
-                        {t('refreshList')}
-                      </ButtonLink>
-                    )}
-                  </Box>
-                </>
-              )}
-            </Box>
           </Box>
         ) : (
           <>
@@ -252,55 +177,6 @@ export default function NftsTab() {
                   </ButtonLink>
                 }
               </Box>
-            </Box>
-            <Box
-              className="nfts-tab__buttons"
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              alignItems={AlignItems.flexStart}
-              margin={4}
-              gap={2}
-              marginBottom={2}
-            >
-              <ButtonLink
-                size={ButtonLinkSize.Md}
-                data-testid="import-nft-button"
-                startIconName={IconName.Add}
-                onClick={() => {
-                  dispatch(showImportNftsModal({}));
-                }}
-              >
-                {t('importNFT')}
-              </ButtonLink>
-
-              {!isMainnet && Object.keys(collections).length < 1 ? null : (
-                <>
-                  <Box
-                    className="nfts-tab__link"
-                    justifyContent={JustifyContent.flexEnd}
-                  >
-                    {isMainnet && !useNftDetection ? (
-                      <ButtonLink
-                        size={ButtonLinkSize.Md}
-                        startIconName={IconName.Setting}
-                        data-testid="refresh-list-button"
-                        onClick={onEnableAutoDetect}
-                      >
-                        {t('enableAutoDetect')}
-                      </ButtonLink>
-                    ) : (
-                      <ButtonLink
-                        size={ButtonLinkSize.Md}
-                        startIconName={IconName.Refresh}
-                        data-testid="refresh-list-button"
-                        onClick={onRefresh}
-                      >
-                        {t('refreshList')}
-                      </ButtonLink>
-                    )}
-                  </Box>
-                </>
-              )}
             </Box>
           </>
         )}
