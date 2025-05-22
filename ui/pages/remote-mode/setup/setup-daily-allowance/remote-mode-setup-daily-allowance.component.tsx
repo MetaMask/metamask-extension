@@ -196,7 +196,7 @@ export default function RemoteModeSetupDailyAllowance() {
       return [...filteredAllowances, newAllowance];
     });
 
-    setSelectedAllowanceAddress(TokenSymbol.ETH);
+    setSelectedAllowanceAddress('');
     setDailyLimit('');
     setAllowanceError(false);
   };
