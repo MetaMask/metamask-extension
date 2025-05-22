@@ -2176,9 +2176,6 @@
   "genericExplorerView": {
     "message": "Voir le compte sur $1"
   },
-  "goBack": {
-    "message": "Retour"
-  },
   "goToSite": {
     "message": "Accéder au site"
   },
@@ -4563,35 +4560,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Confirmer la phrase secrète de récupération"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Me le rappeler plus tard (non recommandé)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Sécuriser mon portefeuille (recommandé)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Notez-la et conservez-la dans plusieurs endroits secrets."
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Stocker dans un coffre-fort."
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Votre phrase secrète de récupération est une formule de 12 mots qui constitue la « clé maîtresse » de votre portefeuille et de vos fonds"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Si quelqu’un vous demande votre phrase de récupération, il est probable qu’il essaie de vous arnaquer pour dérober les fonds de votre portefeuille"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Ne partagez jamais, au grand jamais, votre phrase secrète de récupération, pas même avec MetaMask !"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Qu’est-ce qu’une phrase secrète de récupération ?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Dois-je partager ma phrase secrète de récupération ?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Comment puis-je sauvegarder ma phrase secrète de récupération ?"
   },
   "seedPhraseIntroTitle": {
     "message": "Sécuriser votre portefeuille"
@@ -4875,9 +4848,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "Ignorer"
   },
   "skipAccountSecurity": {
     "message": "Sauter le réglage des paramètres de sécurité du compte ?"

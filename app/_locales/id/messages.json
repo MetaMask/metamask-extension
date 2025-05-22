@@ -2176,9 +2176,6 @@
   "genericExplorerView": {
     "message": "Lihat akun di $1"
   },
-  "goBack": {
-    "message": "Kembali"
-  },
   "goToSite": {
     "message": "Buka situs"
   },
@@ -4563,35 +4560,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Konfirmasikan Frasa Pemulihan Rahasia"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Ingatkan saya nanti (tidak direkomendasikan)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Amankan dompet saya (direkomendasikan)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Tuliskan dan simpan di beberapa tempat rahasia."
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Simpan di deposit box yang aman."
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Frasa Pemulihan Rahasia Anda adalah “kunci master” ke dompet dan dana Anda"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Jika seseorang menanyakan frasa pemulihan Anda, kemungkinan mereka akan mencoba menipu dan mencuri dana di dompet Anda"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Jangan pernah membagikan Frasa Pemulihan Rahasia Anda bahkan kepada MetaMask sekali pun!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Apa itu Frasa Pemulihan Rahasia?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Haruskah saya membagikan Frasa Pemulihan Rahasia saya?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Bagaimana cara menyimpan Frasa Pemulihan Rahasia saya?"
   },
   "seedPhraseIntroTitle": {
     "message": "Amankan dompet Anda"
@@ -4875,9 +4848,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "Lewati"
   },
   "skipAccountSecurity": {
     "message": "Lewati keamanan akun?"

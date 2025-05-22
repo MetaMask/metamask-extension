@@ -2176,9 +2176,6 @@
   "genericExplorerView": {
     "message": "$1 पर अकाउंट देखें"
   },
-  "goBack": {
-    "message": "वापस जाएं"
-  },
   "goToSite": {
     "message": "साइट पर जाएं"
   },
@@ -4563,35 +4560,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "सीक्रेट रिकवरी फ्रेज की कन्फर्म करें"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "मुझे बाद में याद दिलाएं (अनुशंसित नहीं)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "मेरा वॉलेट सुरक्षित करें (अनुशंसित)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "लिखें और कई गुप्त स्थानों में स्टोर करें।"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "सेफ डिपॉजिट बॉक्स में स्टोर करें।"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "आपका सीक्रेट रिकवरी फ्रेज 12- शब्दों का फ्रेज है जो आपके वॉलेट और धन के लिए “मास्टर कुंजी” है।"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "यदि कोई व्यक्ति आपका रिकवरी फ्रेज मांगता है, तो संभावना है कि वे आपको धोखा देने की कोशिश कर रहे हैं।"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "कभी भी अपना सीक्रेट रिकवरी फ्रेज शेयर न करें, MetaMask के साथ भी नहीं!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "सीक्रेट रिकवरी फ्रेज क्या है?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "क्या मुझे अपना सीक्रेट रिकवरी फ्रेज शेयर करना चाहिए?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "मैं अपना सीक्रेट रिकवरी फ्रेज कैसे सहेजूं?"
   },
   "seedPhraseIntroTitle": {
     "message": "अपने वॉलेट को सुरक्षित करें"
@@ -4875,9 +4848,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "छोड़ें"
   },
   "skipAccountSecurity": {
     "message": "अकाउंट सुरक्षा छोड़ें?"
