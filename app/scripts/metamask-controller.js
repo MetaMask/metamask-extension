@@ -1,58 +1,48 @@
-import EventEmitter from 'events';
-import { finished, pipeline } from 'readable-stream';
+import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
+import { AddressBookController } from '@metamask/address-book-controller';
+import { AnnouncementController } from '@metamask/announcement-controller';
+import {
+  ApprovalController,
+  ApprovalRequestNotFoundError,
+} from '@metamask/approval-controller';
 import {
   CurrencyRateController,
+  fetchMultiExchangeRate,
+  RatesController,
+  TokenBalancesController,
   TokenDetectionController,
   TokenListController,
   TokensController,
-  RatesController,
-  fetchMultiExchangeRate,
-  TokenBalancesController,
 } from '@metamask/assets-controllers';
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
-import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
-import { ObservableStore } from '@metamask/obs-store';
-import { storeAsStream } from '@metamask/obs-store/dist/asStream';
-import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, pick, uniq } from 'lodash';
-import {
-  KeyringController,
-  KeyringTypes,
-  keyringBuilderFactory,
-} from '@metamask/keyring-controller';
+import { Messenger } from '@metamask/base-controller';
+import { EnsController } from '@metamask/ens-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
-import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
-import { Mutex } from 'await-semaphore';
-import log from 'loglevel';
+import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
+import {
+  LedgerIframeBridge,
+  LedgerKeyring,
+} from '@metamask/eth-ledger-bridge-keyring';
 import {
   OneKeyKeyring,
   TrezorConnectBridge,
   TrezorKeyring,
 } from '@metamask/eth-trezor-keyring';
-import {
-  LedgerKeyring,
-  LedgerIframeBridge,
-} from '@metamask/eth-ledger-bridge-keyring';
-import LatticeKeyring from 'eth-lattice-keyring';
-import { rawChainData } from 'eth-chainlist';
-import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
-import { nanoid } from 'nanoid';
-import { captureException } from '@sentry/browser';
-import { AddressBookController } from '@metamask/address-book-controller';
-import {
-  ApprovalController,
-  ApprovalRequestNotFoundError,
-} from '@metamask/approval-controller';
-import { Messenger } from '@metamask/base-controller';
-import { EnsController } from '@metamask/ens-controller';
-import { PhishingController } from '@metamask/phishing-controller';
-import { AnnouncementController } from '@metamask/announcement-controller';
-import {
-  NetworkController,
-  getDefaultNetworkControllerState,
-} from '@metamask/network-controller';
 import { GasFeeController } from '@metamask/gas-fee-controller';
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
+import {
+  keyringBuilderFactory,
+  KeyringController,
+  KeyringTypes,
+} from '@metamask/keyring-controller';
+import { LoggingController, LogType } from '@metamask/logging-controller';
+import {
+  getDefaultNetworkControllerState,
+  NetworkController,
+} from '@metamask/network-controller';
+import { ObservableStore } from '@metamask/obs-store';
+import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import {
   MethodNames,
   PermissionController,
@@ -61,69 +51,79 @@ import {
   SubjectMetadataController,
   SubjectType,
 } from '@metamask/permission-controller';
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
-import { ClientId } from '@metamask/smart-transactions-controller/dist/types';
+import { PermissionLogController } from '@metamask/permission-log-controller';
+import { PhishingController } from '@metamask/phishing-controller';
+import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import {
+  createSelectedNetworkMiddleware,
   METAMASK_DOMAIN,
   SelectedNetworkController,
-  createSelectedNetworkMiddleware,
 } from '@metamask/selected-network-controller';
-import { LoggingController, LogType } from '@metamask/logging-controller';
-import { PermissionLogController } from '@metamask/permission-log-controller';
+import SmartTransactionsController from '@metamask/smart-transactions-controller';
+import { ClientId } from '@metamask/smart-transactions-controller/dist/types';
+import { captureException } from '@sentry/browser';
+import { Mutex } from 'await-semaphore';
+import { rawChainData } from 'eth-chainlist';
+import LatticeKeyring from 'eth-lattice-keyring';
+import EventEmitter from 'events';
+import { debounce, pick, uniq } from 'lodash';
+import log from 'loglevel';
+import { nanoid } from 'nanoid';
+import { finished, pipeline } from 'readable-stream';
 
-import { MultichainRouter } from '@metamask/snaps-controllers';
-import {
-  createSnapsMethodMiddleware,
-  buildSnapEndowmentSpecifications,
-  buildSnapRestrictedMethodSpecifications,
-} from '@metamask/snaps-rpc-methods';
 import {
   ApprovalType,
+  BlockExplorerUrl,
+  ChainId,
   ERC1155,
   ERC20,
   ERC721,
-  BlockExplorerUrl,
-  ChainId,
 } from '@metamask/controller-utils';
+import { MultichainRouter } from '@metamask/snaps-controllers';
+import {
+  buildSnapEndowmentSpecifications,
+  buildSnapRestrictedMethodSpecifications,
+  createSnapsMethodMiddleware,
+} from '@metamask/snaps-rpc-methods';
 
 import { AccountsController } from '@metamask/accounts-controller';
 import {
-  RemoteFeatureFlagController,
   ClientConfigApiService,
   ClientType,
   DistributionType,
   EnvironmentType,
+  RemoteFeatureFlagController,
 } from '@metamask/remote-feature-flag-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import { CustodyController } from '@metamask-institutional/custody-controller';
 import {
   CUSTODIAN_TYPES,
   MmiConfigurationController,
 } from '@metamask-institutional/custody-keyring';
 import { InstitutionalFeaturesController } from '@metamask-institutional/institutional-features';
-import { CustodyController } from '@metamask-institutional/custody-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 ///: END:ONLY_INCLUDE_IF
-import { SignatureController } from '@metamask/signature-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+import { SignatureController } from '@metamask/signature-controller';
 
 import {
-  NameController,
   ENSNameProvider,
   EtherscanNameProvider,
-  TokenNameProvider,
   LensNameProvider,
+  NameController,
+  TokenNameProvider,
 } from '@metamask/name-controller';
 
-import { UserOperationController } from '@metamask/user-operation-controller';
 import {
-  BridgeController,
   BRIDGE_CONTROLLER_NAME,
-  BridgeUserAction,
   BridgeBackgroundAction,
   BridgeClientId,
+  BridgeController,
+  BridgeUserAction,
   UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
 } from '@metamask/bridge-controller';
+import { UserOperationController } from '@metamask/user-operation-controller';
 
 import {
   TransactionStatus,
@@ -131,271 +131,265 @@ import {
 } from '@metamask/transaction-controller';
 
 import { Interface } from '@ethersproject/abi';
-import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
+import { normalize } from '@metamask/eth-sig-util';
 import {
   isEvmAccountType,
   SolAccountType,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SolScope,
-  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/keyring-api';
+import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import {
   hasProperty,
   hexToBigInt,
-  toCaipChainId,
   parseCaipAccountId,
+  toCaipChainId,
 } from '@metamask/utils';
-import { normalize } from '@metamask/eth-sig-util';
 
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 
 import {
-  multichainMethodCallValidatorMiddleware,
-  MultichainSubscriptionManager,
-  MultichainMiddlewareManager,
-  walletGetSession,
-  walletRevokeSession,
-  walletInvokeMethod,
   MultichainApiNotifications,
+  multichainMethodCallValidatorMiddleware,
+  MultichainMiddlewareManager,
+  MultichainSubscriptionManager,
+  walletGetSession,
+  walletInvokeMethod,
+  walletRevokeSession,
 } from '@metamask/multichain-api-middleware';
 
+import {
+  BRIDGE_STATUS_CONTROLLER_NAME,
+  BridgeStatusAction,
+  BridgeStatusController,
+} from '@metamask/bridge-status-controller';
 import {
   Caip25CaveatMutators,
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
   getEthAccounts,
-  getSessionScopes,
-  setPermittedEthChainIds,
-  setEthAccounts,
   getPermittedAccountsForScopes,
+  getSessionScopes,
   KnownSessionProperties,
+  setEthAccounts,
+  setPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
-import {
-  BridgeStatusController,
-  BRIDGE_STATUS_CONTROLLER_NAME,
-  BridgeStatusAction,
-} from '@metamask/bridge-status-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
 
-import { TokenStandard } from '../../shared/constants/transaction';
+import {
+  CHAIN_IDS,
+  CHAIN_SPEC_URL,
+  getFailoverUrlsForInfuraNetwork,
+  NETWORK_TYPES,
+  NetworkStatus,
+  UNSUPPORTED_RPC_METHODS,
+} from '../../shared/constants/network';
+import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
   SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
-import {
-  CHAIN_IDS,
-  CHAIN_SPEC_URL,
-  NETWORK_TYPES,
-  NetworkStatus,
-  UNSUPPORTED_RPC_METHODS,
-  getFailoverUrlsForInfuraNetwork,
-} from '../../shared/constants/network';
-import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
+import { TokenStandard } from '../../shared/constants/transaction';
 
+import {
+  MESSAGE_TYPE,
+  ORIGIN_METAMASK,
+  PLATFORM_FIREFOX,
+  POLLING_TOKEN_ENVIRONMENT_TYPES,
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
+} from '../../shared/constants/app';
 import {
   HardwareDeviceNames,
   HardwareKeyringType,
   LedgerTransportTypes,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
-import {
-  RestrictedMethods,
-  ExcludedSnapPermissions,
-  ExcludedSnapEndowments,
-  CaveatTypes,
-} from '../../shared/constants/permissions';
-import { UI_NOTIFICATIONS } from '../../shared/notifications';
-import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
-import {
-  ORIGIN_METAMASK,
-  POLLING_TOKEN_ENVIRONMENT_TYPES,
-  MESSAGE_TYPE,
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
-  PLATFORM_FIREFOX,
-} from '../../shared/constants/app';
+import { LOG_EVENT } from '../../shared/constants/logs';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
-import { LOG_EVENT } from '../../shared/constants/logs';
+import {
+  CaveatTypes,
+  ExcludedSnapEndowments,
+  ExcludedSnapPermissions,
+  RestrictedMethods,
+} from '../../shared/constants/permissions';
+import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
+import { UI_NOTIFICATIONS } from '../../shared/notifications';
 
+import { ENVIRONMENT } from '../../development/build/constants';
+import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
+import { MultichainNetworks } from '../../shared/constants/multichain/networks';
+import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
+import { BaseUrl } from '../../shared/constants/urls';
+import fetchWithCache from '../../shared/lib/fetch-with-cache';
+import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import {
   getStorageItem,
   setStorageItem,
 } from '../../shared/lib/storage-helpers';
 import {
-  getTokenIdParam,
-  fetchTokenBalance,
   fetchERC1155Balance,
+  fetchTokenBalance,
+  getTokenIdParam,
 } from '../../shared/lib/token-util';
-import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
-import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
-import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
-import { isManifestV3 } from '../../shared/modules/mv3.utils';
-import { convertNetworkId } from '../../shared/modules/network.utils';
-import {
-  getIsSmartTransaction,
-  getFeatureFlagsByChainId,
-} from '../../shared/modules/selectors';
-import { BaseUrl } from '../../shared/constants/urls';
+import { endTrace, trace } from '../../shared/lib/trace';
 import {
   TOKEN_TRANSFER_LOG_TOPIC_HASH,
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
+import { isManifestV3 } from '../../shared/modules/mv3.utils';
+import { convertNetworkId } from '../../shared/modules/network.utils';
+import {
+  getFeatureFlagsByChainId,
+  getIsSmartTransaction,
+} from '../../shared/modules/selectors';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
-import { endTrace, trace } from '../../shared/lib/trace';
-import { ENVIRONMENT } from '../../development/build/constants';
-import fetchWithCache from '../../shared/lib/fetch-with-cache';
-import { MultichainNetworks } from '../../shared/constants/multichain/networks';
-import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  handleMMITransactionUpdate,
   ///: END:ONLY_INCLUDE_IF
   createTransactionEventFragmentWithTxId,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  handleMMITransactionUpdate,
 } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
 
-import { SnapsNameProvider } from './lib/SnapsNameProvider';
-import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
-import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
-import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
 import {
-  onMessageReceived,
   checkForMultipleVersionsRunning,
+  onMessageReceived,
 } from './detect-multiple-instances';
+import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
+import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
+import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
+import { SnapsNameProvider } from './lib/SnapsNameProvider';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { MMIController } from './controllers/mmi-controller';
 import { mmiKeyringBuilderFactory } from './mmi-keyring-builder-factory';
 ///: END:ONLY_INCLUDE_IF
-import ComposableObservableStore from './lib/ComposableObservableStore';
+import { AccountOrderController } from './controllers/account-order';
 import AccountTrackerController from './controllers/account-tracker-controller';
+import { AlertController } from './controllers/alert-controller';
+import AppMetadataController from './controllers/app-metadata';
+import { AppStateController } from './controllers/app-state-controller';
+import DecryptMessageController from './controllers/decrypt-message';
+import EncryptionPublicKeyController from './controllers/encryption-public-key';
+import MetaMetricsController from './controllers/metametrics-controller';
+import { NetworkOrderController } from './controllers/network-order';
+import OnboardingController from './controllers/onboarding';
+import { PreferencesController } from './controllers/preferences-controller';
+import SwapsController from './controllers/swaps';
+import Backup from './lib/backup';
+import ComposableObservableStore from './lib/ComposableObservableStore';
 import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
+import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddleware';
+import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
+import createMetaRPCHandler from './lib/createMetaRPCHandler';
+import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
+import createOriginMiddleware from './lib/createOriginMiddleware';
+import createTabIdMiddleware from './lib/createTabIdMiddleware';
+import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';
 import {
-  createEthAccountsMethodMiddleware,
   createEip1193MethodMiddleware,
-  createUnsupportedMethodMiddleware,
+  createEthAccountsMethodMiddleware,
   createMultichainMethodMiddleware,
+  createUnsupportedMethodMiddleware,
   makeMethodMiddlewareMaker,
 } from './lib/rpc-method-middleware';
-import createOriginMiddleware from './lib/createOriginMiddleware';
-import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddleware';
-import createTabIdMiddleware from './lib/createTabIdMiddleware';
-import { NetworkOrderController } from './controllers/network-order';
-import { AccountOrderController } from './controllers/account-order';
-import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
-import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
-import { PreferencesController } from './controllers/preferences-controller';
-import { AppStateController } from './controllers/app-state-controller';
-import { AlertController } from './controllers/alert-controller';
-import OnboardingController from './controllers/onboarding';
-import Backup from './lib/backup';
-import DecryptMessageController from './controllers/decrypt-message';
-import SwapsController from './controllers/swaps';
-import MetaMetricsController from './controllers/metametrics-controller';
 import { segment } from './lib/segment';
-import createMetaRPCHandler from './lib/createMetaRPCHandler';
+import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import {
   addHexPrefix,
   getEnvironmentType,
   getMethodDataName,
-  previousValueComparator,
-  initializeRpcProviderDomains,
   getPlatform,
+  initializeRpcProviderDomains,
+  previousValueComparator,
 } from './lib/util';
-import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
-import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';
-import EncryptionPublicKeyController from './controllers/encryption-public-key';
-import AppMetadataController from './controllers/app-metadata';
 
+import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
 import {
-  getCaveatSpecifications,
   diffMap,
+  getAuthorizedScopesByOrigin,
+  getCaveatSpecifications,
+  getChangedAuthorizations,
+  getOriginsWithSessionProperty,
   getPermissionBackgroundApiMethods,
   getPermissionSpecifications,
   getPermittedAccountsByOrigin,
-  getPermittedChainsByOrigin,
-  NOTIFICATION_NAMES,
-  unrestrictedMethods,
-  PermissionNames,
-  getRemovedAuthorizations,
-  getChangedAuthorizations,
-  getAuthorizedScopesByOrigin,
   getPermittedAccountsForScopesByOrigin,
-  getOriginsWithSessionProperty,
+  getPermittedChainsByOrigin,
+  getRemovedAuthorizations,
+  NOTIFICATION_NAMES,
+  PermissionNames,
+  unrestrictedMethods,
 } from './controllers/permissions';
-import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
-import { DataDeletionService } from './services/data-deletion-service';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
-import { updateCurrentLocale } from './translate';
-import { TrezorOffscreenBridge } from './lib/offscreen-bridge/trezor-offscreen-bridge';
 import { LedgerOffscreenBridge } from './lib/offscreen-bridge/ledger-offscreen-bridge';
+import { TrezorOffscreenBridge } from './lib/offscreen-bridge/trezor-offscreen-bridge';
+import { DataDeletionService } from './services/data-deletion-service';
+import { updateCurrentLocale } from './translate';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
+import { getAccountsBySnapId, snapKeyringBuilder } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IF
 import { encryptorFactory } from './lib/encryptor-factory';
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
+import { addPersonalMessage, addTypedMessage } from './lib/signature/util';
 ///: END:ONLY_INCLUDE_IF
-import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
-import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 import {
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
   METAMASK_COOKIE_HANDLER,
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
+import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
+import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 
 // Notification controllers
-import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
+import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
+import { isEthAddress } from './lib/multichain/address';
 import {
   updateSecurityAlertResponse,
   validateRequestWithPPOM,
 } from './lib/ppom/ppom-util';
-import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
-import { isEthAddress } from './lib/multichain/address';
+import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
 
-import { decodeTransactionData } from './lib/transaction/decode/util';
-import createTracingMiddleware from './lib/createTracingMiddleware';
-import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddleware';
-import { PatchStore } from './lib/PatchStore';
-import { sanitizeUIState } from './lib/state-utils';
-import { walletCreateSession } from './lib/rpc-method-middleware/handlers/wallet-createSession';
-import {
-  rejectAllApprovals,
-  rejectOriginApprovals,
-} from './lib/approval/utils';
-import { InstitutionalSnapControllerInit } from './controller-init/institutional-snap/institutional-snap-controller-init';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-  MultichainAssetsControllerInit,
-  MultichainTransactionsControllerInit,
-  MultichainBalancesControllerInit,
-  MultichainAssetsRatesControllerInit,
-  ///: END:ONLY_INCLUDE_IF
-  MultichainNetworkControllerInit,
-} from './controller-init/multichain';
 import {
   AssetsContractControllerInit,
   NftControllerInit,
   NftDetectionControllerInit,
   TokenRatesControllerInit,
 } from './controller-init/assets';
-import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
-import { initControllers } from './controller-init/utils';
+import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
+import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
+import { DelegationControllerInit } from './controller-init/delegation/delegation-controller-init';
+import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
+import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
+import { InstitutionalSnapControllerInit } from './controller-init/institutional-snap/institutional-snap-controller-init';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  MultichainAssetsControllerInit,
+  MultichainAssetsRatesControllerInit,
+  MultichainBalancesControllerInit,
+  ///: END:ONLY_INCLUDE_IF
+  MultichainNetworkControllerInit,
+  MultichainTransactionsControllerInit,
+} from './controller-init/multichain';
+import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
+import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
 import {
   CronjobControllerInit,
   ExecutionServiceInit,
@@ -405,22 +399,27 @@ import {
   SnapInterfaceControllerInit,
   SnapsRegistryInit,
 } from './controller-init/snaps';
-import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
-import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
-import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
+import { initControllers } from './controller-init/utils';
+import {
+  rejectAllApprovals,
+  rejectOriginApprovals,
+} from './lib/approval/utils';
+import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddleware';
+import createTracingMiddleware from './lib/createTracingMiddleware';
+import {
+  onRpcEndpointDegraded,
+  onRpcEndpointUnavailable,
+} from './lib/network-controller/messenger-action-handlers';
+import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
+import { PatchStore } from './lib/PatchStore';
+import { walletCreateSession } from './lib/rpc-method-middleware/handlers/wallet-createSession';
+import { sanitizeUIState } from './lib/state-utils';
+import { decodeTransactionData } from './lib/transaction/decode/util';
 import {
   getCallsStatus,
   getCapabilities,
   processSendCalls,
 } from './lib/transaction/eip5792';
-import { NotificationServicesControllerInit } from './controller-init/notifications/notification-services-controller-init';
-import { NotificationServicesPushControllerInit } from './controller-init/notifications/notification-services-push-controller-init';
-import { DelegationControllerInit } from './controller-init/delegation/delegation-controller-init';
-import {
-  onRpcEndpointUnavailable,
-  onRpcEndpointDegraded,
-} from './lib/network-controller/messenger-action-handlers';
-import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -459,6 +458,46 @@ const buildTypeMappingForRemoteFeatureFlag = {
   main: DistributionType.Main,
   beta: DistributionType.Beta,
 };
+
+// Get all enabled multichain networks
+const enabledMultichainNetworks = Object.keys(
+  this.multichainNetworkController.state
+    .multichainNetworkConfigurationsByChainId,
+);
+
+const allNetworkConfigurations = {
+  ...this.multichainNetworkController.state
+    .multichainNetworkConfigurationsByChainId,
+};
+
+const { internalAccounts } = this.accountsController.state;
+
+// Get only enabled Solana scopes
+const enabledSolanaScopes = Object.values(allNetworkConfigurations)
+  .map((networkConfig) => networkConfig.caipChainId)
+  .filter(
+    (caipChainId) =>
+      caipChainId &&
+      [SolScope.Mainnet, SolScope.Devnet, SolScope.Testnet].includes(
+        caipChainId,
+      ),
+  )
+  .filter((caipChainId) => {
+    // Check if any account associated with this snap is enabled for this scope
+    return Object.values(internalAccounts.accounts).some((account) => {
+      const isSnapEnabled =
+        account.metadata.snap?.id === SOLANA_WALLET_SNAP_ID &&
+        account.metadata.snap?.enabled;
+      const matchesScope = account.scopes.some(
+        (scope) => scope === caipChainId,
+      );
+      return isSnapEnabled && matchesScope;
+    });
+  });
+
+// Default to Mainnet if no specific enabled Solana scopes are found
+const solanaScopes =
+  enabledSolanaScopes.length > 0 ? enabledSolanaScopes : [SolScope.Mainnet];
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -4939,6 +4978,45 @@ export default class MetamaskController extends EventEmitter {
   async _getSolanaWalletSnapClient() {
     const keyring = await this.getSnapKeyring();
     const messenger = this.controllerMessenger;
+
+    const enabledMultichainNetworks = Object.keys(
+      this.multichainNetworkController.state
+        .multichainNetworkConfigurationsByChainId,
+    );
+
+    const allNetworkConfigurations = {
+      ...this.multichainNetworkController.state
+        .multichainNetworkConfigurationsByChainId,
+    };
+
+    const { internalAccounts } = this.accountsController.state;
+
+    const enabledSolanaScopes = Object.values(allNetworkConfigurations)
+      .map((networkConfig) => networkConfig.caipChainId)
+      .filter(
+        (caipChainId) =>
+          caipChainId &&
+          [SolScope.Mainnet, SolScope.Devnet, SolScope.Testnet].includes(
+            caipChainId,
+          ),
+      )
+      .filter((caipChainId) => {
+        // Check if any account associated with this snap is enabled for this scope
+        return Object.values(internalAccounts.accounts).some((account) => {
+          const isSnapEnabled =
+            account.metadata.snap?.id === SOLANA_WALLET_SNAP_ID &&
+            account.metadata.snap?.enabled;
+          const matchesScope = account.scopes.some(
+            (scope) => scope === caipChainId,
+          );
+          return isSnapEnabled && matchesScope;
+        });
+      });
+
+    // Default to Mainnet if no specific enabled Solana scopes are found,
+    // or if the filtering results in an empty list for some reason.
+    const solanaScopes =
+      enabledSolanaScopes.length > 0 ? enabledSolanaScopes : [SolScope.Mainnet];
 
     return new MultichainWalletSnapClient(
       SOLANA_WALLET_SNAP_ID,
