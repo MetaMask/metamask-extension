@@ -99,7 +99,6 @@ const NetworkFilter = ({
     );
 
   const handleFilter = (chainFilters: Record<string, boolean>) => {
-    console.log('handleFilter', chainFilters);
     dispatch(setEnabledNetworks(Object.keys(chainFilters) as CaipChainId[]));
     if (handleFilterNetwork) {
       handleFilterNetwork(chainFilters);
