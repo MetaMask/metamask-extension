@@ -14,6 +14,7 @@ import {
   selectBridgeQuotes,
   selectIsQuoteExpired,
   selectBridgeFeatureFlags,
+  selectMaxBalanceButtonVisibilityForSrcToken,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SolAccountType } from '@metamask/keyring-api';
@@ -450,6 +451,17 @@ export const getBridgeQuotes = createSelector(
       selectedQuote,
     }),
 );
+
+export const getShouldShowMaxButton = (
+  state: BridgeAppState,
+  isStxEnabled: boolean,
+  balanceValue: string,
+) => {
+  return selectMaxBalanceButtonVisibilityForSrcToken(state.metamask, {
+    isStxEnabled,
+    balanceValue,
+  });
+};
 
 export const getIsBridgeTx = createDeepEqualSelector(
   getFromChain,
