@@ -60,15 +60,6 @@ development/circular-deps.jsonc      @MetaMask/extension-security-team @HowardBr
 # who were involved with the Codespaces project.
 .devcontainer/                       @MetaMask/extension-security-team @HowardBraham
 
-# Confirmations team to own code for confirmations on UI.
-app/scripts/controller-init/confirmations                         @MetaMask/confirmations
-app/scripts/lib/ppom                                              @MetaMask/confirmations
-app/scripts/lib/signature                                         @MetaMask/confirmations
-app/scripts/lib/transaction/decode                                @MetaMask/confirmations
-app/scripts/lib/transaction/metrics.*                             @MetaMask/confirmations
-app/scripts/lib/transaction/util.*                                @MetaMask/confirmations
-ui/pages/confirmations                                            @MetaMask/confirmations
-
 # Design System to own code for the component-library folder
 # Slack handle: @metamask-design-system-team | Slack channel: #metamask-design-system
 ui/components/component-library      @MetaMask/design-system-engineers
@@ -88,7 +79,6 @@ ui/components/component-library      @MetaMask/design-system-engineers
 # Identity team is responsible for authentication and backup and sync inside the Extension.
 # Slack handle: @identity_team | Slack channel: #metamask-identity
 **/identity/**                                          @MetaMask/identity
-
 
 # Accounts team is responsible for code related with snap management accounts
 # Slack handle: @accounts-team-devs | Slack channel: #metamask-accounts-team
@@ -122,17 +112,20 @@ ui/css                                @MetaMask/wallet-ux
 ui/pages/home                         @MetaMask/wallet-ux
 ui/pages/onboarding-flow              @MetaMask/wallet-ux
 
+# Confirmations team to own code for confirmations on UI.
+app/scripts/controller-init/confirmations                         @MetaMask/confirmations
+app/scripts/lib/ppom                                              @MetaMask/confirmations
+app/scripts/lib/signature                                         @MetaMask/confirmations
+app/scripts/lib/transaction/decode                                @MetaMask/confirmations
+app/scripts/lib/transaction/metrics.*                             @MetaMask/confirmations
+app/scripts/lib/transaction/util.*                                @MetaMask/confirmations
+ui/pages/confirmations                                            @MetaMask/confirmations
+ui/components/multichain/pages/send                               @MetaMask/confirmations
+
 # Assets
-ui/components/app/add-network                         @MetaMask/metamask-assets
-ui/components/app/auto-detect-nft                     @MetaMask/metamask-assets
-ui/components/app/auto-detect-token                   @MetaMask/metamask-assets
+ui/components/app/detected-token                   @MetaMask/metamask-assets
 ui/components/app/import-token                        @MetaMask/metamask-assets
-ui/components/app/nft-default-image                   @MetaMask/metamask-assets
-ui/components/app/nft-details                         @MetaMask/metamask-assets
-ui/components/app/nft-options                         @MetaMask/metamask-assets
-ui/components/app/nfts-detection-notice-import-nfts   @MetaMask/metamask-assets
-ui/components/app/nfts-items                          @MetaMask/metamask-assets
-ui/components/app/nfts-tab                            @MetaMask/metamask-assets
+ui/components/app/assets                              @MetaMask/metamask-assets
 ui/components/ui/deprecated-networks                  @MetaMask/metamask-assets
 ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets
 
