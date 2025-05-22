@@ -53,6 +53,7 @@ import { Patch } from 'immer';
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -130,10 +131,10 @@ import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import { EndTraceRequest, trace, TraceName } from '../../shared/lib/trace';
-import { isInternalAccountInPermittedAccountIds } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import { getDismissSmartAccountSuggestionEnabled } from '../pages/confirmations/selectors/preferences';
+import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -266,6 +267,7 @@ export function importMnemonicToVault(
     })
       .then(async () => {
         dispatch(hideLoadingIndication());
+        dispatch(setShowNewSrpAddedToast(true));
       })
       .catch((err) => {
         dispatch(displayWarning(err));
@@ -1025,6 +1027,15 @@ export function removeSlide(
       throw error;
     }
   };
+}
+
+export function setSplashPageAcknowledgedForAccount(account: string): void {
+  try {
+    submitRequestToBackground('setSplashPageAcknowledgedForAccount', [account]);
+  } catch (error) {
+    logErrorWithMessage(error);
+    throw error;
+  }
 }
 
 // TODO: Not a thunk, but rather a wrapper around a background call
@@ -2243,6 +2254,7 @@ export function addNft(
 export function addNftVerifyOwnership(
   address: string,
   tokenID: string,
+  networkClientId: string,
   dontShowLoadingIndicator: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
@@ -2254,6 +2266,9 @@ export function addNftVerifyOwnership(
     if (!tokenID) {
       throw new Error('MetaMask - Cannot add NFT without tokenID');
     }
+    if (!networkClientId) {
+      throw new Error('MetaMask - Cannot add NFT without a networkClientId');
+    }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
     }
@@ -2261,6 +2276,7 @@ export function addNftVerifyOwnership(
       await submitRequestToBackground('addNftVerifyOwnership', [
         address,
         tokenID,
+        { networkClientId },
       ]);
     } catch (error) {
       if (isErrorWithMessage(error)) {
