@@ -254,10 +254,16 @@ import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
+import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
+///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
-import { BITCOIN_WALLET_SNAP_ID, MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts';
+///: END:ONLY_INCLUDE_IF
+
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -5035,7 +5041,7 @@ export default class MetamaskController extends EventEmitter {
       ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(solana)
-      const solanaClient = await this._getSolanaWalletSnapClient(SOLANA_WALLET_SNAP_ID, [SolScope.Mainnet, SolScope.Devnet, SolScope.Testnet]);
+      const solanaClient = await this._getMultichainWalletSnapClient(SOLANA_WALLET_SNAP_ID, [SolScope.Mainnet, SolScope.Devnet, SolScope.Testnet]);
       const solanaAccounts = await solanaClient.discoverAccounts(entropySource);
 
       // If none accounts got discovered, we still create the first (default) one.
