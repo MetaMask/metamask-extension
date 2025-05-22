@@ -12,7 +12,6 @@ import {
   getAllChainsToPoll,
   getTokenNetworkFilter,
   getIsTokenNetworkFilterEqualCurrentNetwork,
-  getEnabledNetworks,
 } from '../../../../../selectors';
 import {
   getCurrentChainId,
