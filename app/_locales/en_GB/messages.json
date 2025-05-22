@@ -80,6 +80,16 @@
   "accountActivityText": {
     "message": "Select the accounts you want to be notified about:"
   },
+  "accountAlreadyExistsLogin": {
+    "message": "Log in"
+  },
+  "accountAlreadyExistsLoginDescription": {
+    "message": "An account with “$1” already exists. Do you want to try logging in instead?",
+    "description": "$1 is the account email"
+  },
+  "accountAlreadyExistsTitle": {
+    "message": "Account already exists"
+  },
   "accountDetails": {
     "message": "Account details"
   },
