@@ -123,7 +123,7 @@ export default function RemoteModeSetupSwaps() {
   });
 
   useEffect(() => {
-    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
+    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount) || true);
   }, [selectedHardwareAccount]);
 
   useEffect(() => {

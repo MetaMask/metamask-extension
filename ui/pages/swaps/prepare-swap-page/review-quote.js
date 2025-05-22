@@ -153,6 +153,10 @@ import { getHDEntropyIndex } from '../../../selectors/selectors';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 import SlippageNotificationModal from './slippage-notification-modal';
 
+import { getSelectedInternalAccount } from '../../../selectors';
+import { getRemoteSwapAllowance } from '../../../selectors/remote-mode';
+import { getRemoteModeDelegationEntries } from '../../../selectors/remote-mode';
+
 let intervalId;
 
 const ViewAllQuotesLink = React.memo(function ViewAllQuotesLink({
@@ -244,6 +248,7 @@ export default function ReviewQuote({
   const approveTxParams = useSelector(getApproveTxParams, isEqual);
   const topQuote = useSelector(getTopQuote, isEqual);
   const usedQuote = useSelector(getUsedQuote, isEqual);
+  console.log('usedQuote', usedQuote);
   const tradeValue = usedQuote?.trade?.value ?? '0x0';
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const chainId = useSelector(getCurrentChainId);
@@ -426,6 +431,20 @@ export default function ReviewQuote({
     sourceTokenSymbol,
     sourceTokenValue,
   } = renderableDataForUsedQuote;
+
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const currentChainId = useSelector(getCurrentChainId);
+  const delegation = useSelector((state) =>
+    getRemoteModeDelegationEntries(state, selectedAccount.address, currentChainId)
+  );
+  const remoteSwapAllowance = useSelector((state) =>
+    getRemoteSwapAllowance(state, {
+      fromTokenSymbol: selectedFromToken.symbol,
+      toTokenSymbol: destinationTokenSymbol,
+      chainId: currentChainId,
+    }),
+  );
+  console.log('remoteSwapAllowance', remoteSwapAllowance);
 
   let { feeInFiat, feeInEth, rawEthFee, feeInUsd, rawNetworkFees } =
     getRenderableNetworkFeesForQuote({
@@ -1191,6 +1210,58 @@ export default function ReviewQuote({
               />
             )}
           </>
+        )}
+
+        {!remoteSwapAllowance && (
+          <BannerAlert
+            title={'No remote mode allowance found'}
+            description={
+              <>
+                To use remote mode for this swap you will need to configure the allowance using your hardware wallet.
+                {usedQuote?.signature && (
+                  <div style={{ marginTop: 8 }}>
+                    <strong>Signature:</strong>
+                    <div style={{ fontFamily: 'monospace', wordBreak: 'break-all' }}>{usedQuote.signature}</div>
+                  </div>
+                )}
+                {usedQuote?.sigExpiration && (
+                  <div style={{ marginTop: 8 }}>
+                    <strong>Signature Expiration:</strong>
+                    <div>{new Date(usedQuote.sigExpiration).toLocaleString()}</div>
+                  </div>
+                )}
+              </>
+            }
+            titleProps={{ 'data-testid': 'swaps-banner-title' }}
+            severity={Severity.Warning}
+            marginTop={2}
+          />
+        )}
+
+        {remoteSwapAllowance && (
+          <BannerAlert
+            title={'Remote mode enabled'}
+            description={
+              <>
+                Remote mode is enabled for this swap, meaning you can swap without connecting your hardware wallet.
+                {usedQuote?.signature && (
+                  <div style={{ marginTop: 8 }}>
+                    <strong>Signature:</strong>
+                    <div style={{ fontFamily: 'monospace', wordBreak: 'break-all' }}>{usedQuote.signature}</div>
+                  </div>
+                )}
+                {usedQuote?.sigExpiration && (
+                  <div style={{ marginTop: 8 }}>
+                    <strong>Signature Expiration:</strong>
+                    <div>{new Date(usedQuote.sigExpiration).toLocaleString()}</div>
+                  </div>
+                )}
+              </>
+            }
+            titleProps={{ 'data-testid': 'swaps-banner-title' }}
+            severity={Severity.Info}
+            marginTop={2}
+          />
         )}
 
         <div className="review-quote__countdown-timer-container">

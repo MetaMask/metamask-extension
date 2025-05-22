@@ -13,7 +13,7 @@ import {
 import { getDeleGatorEnvironment } from '../../../shared/lib/delegation/environment';
 import { isHexEqual } from '../../../shared/lib/delegation/utils';
 
-import { encodeRedeemDelegations } from '../../../shared/lib/delegation/delegation';
+import { encodeRedeemDelegations, encodeDelegation } from '../../../shared/lib/delegation/delegation';
 import { DailyAllowanceMetadata } from '../../../shared/lib/remote-mode';
 import { ControllerFlatState } from '../controller-init/controller-list';
 import {
@@ -21,6 +21,99 @@ import {
   getRemoteModeEnabled,
   isExistingAccount,
 } from '../../../shared/modules/selectors/remote-mode';
+import { Interface, ParamType, defaultAbiCoder } from '@ethersproject/abi';
+
+const ABI_SWAP_BY_DELEGATION = [
+  {
+    "type": "function",
+    "name": "swapByDelegation",
+    "inputs": [
+      {
+        "name": "_signatureData",
+        "type": "tuple",
+        "internalType": "struct DelegationMetaSwapAdapter.SignatureData",
+        "components": [
+          {
+            "name": "apiData",
+            "type": "bytes",
+            "internalType": "bytes"
+          },
+          {
+            "name": "expiration",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "signature",
+            "type": "bytes",
+            "internalType": "bytes"
+          }
+        ]
+      },
+      {
+        "name": "_delegations",
+        "type": "tuple[]",
+        "internalType": "struct Delegation[]",
+        "components": [
+          {
+            "name": "delegate",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "delegator",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "authority",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "caveats",
+            "type": "tuple[]",
+            "internalType": "struct Caveat[]",
+            "components": [
+              {
+                "name": "enforcer",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "terms",
+                "type": "bytes",
+                "internalType": "bytes"
+              },
+              {
+                "name": "args",
+                "type": "bytes",
+                "internalType": "bytes"
+              }
+            ]
+          },
+          {
+            "name": "salt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "signature",
+            "type": "bytes",
+            "internalType": "bytes"
+          }
+        ]
+      },
+      {
+        "name": "_useTokenWhitelist",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+];
 
 const hasEnoughAllowance = (
   allowanceAmount: bigint,
@@ -163,7 +256,68 @@ export const updateRemoteModeTransaction = ({
       }
     }
 
-    // TODO: Swap
+    // TODO: confirm if / when approval is needed
+    // case TransactionType.swapApproval: {
+    //   return Promise.resolve({ updateTransaction: undefined });
+    // }
+
+    case TransactionType.swap: {
+
+      // DelegationMetaSwapAdapter
+      // Ethereum Mainnet: 0xe41eB5A3F6e35f1A8C77113F372892D09820C3fD
+      // Optimism, Base, Arbitrum, Linea: 0x5e4b49156D23D890e7DC264c378a443C2d22A80E
+      // BSC, Polygon: 0x9c06653D3f1A331eAf4C3833F7235156e47305F1
+
+      debugger;
+
+      console.log('executing swap', transactionMeta);
+
+      const { signature, sigExpiration, apiData } = transactionMeta;
+      const delegationMetaSwapAdapter = "0xe41eB5A3F6e35f1A8C77113F372892D09820C3fD";
+
+      // TODO: replace with actual delegation
+      const delegation = {
+        "authority": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "caveats": [],
+        "delegate": "0x8b869762be0a63ce02ddeec2ea1d83d2a82cbf79",
+        "delegator": "0x8b869762be0a63ce02ddeec2ea1d83d2a82cbf79",
+        "salt": "0x83fb4522",
+        "signature": "0x1e763b2f03a2b7282a8980c66bd9852b0aa7d256b539b0868d8c6e7fa7ef9b904ba731544b9c8e08e1d03535a3c1af631a17014fc73c1a3c919c7c20fa7df52f1c"
+      };
+
+      const swapByDelegationInterface = new Interface(ABI_SWAP_BY_DELEGATION);
+      const encodedSwapData = swapByDelegationInterface.encodeFunctionData('swapByDelegation', [
+        {
+          apiData: apiData,
+          expiration: sigExpiration,
+          signature: signature
+        },
+        [
+          delegation
+        ],
+        true
+      ]) as Hex;
+
+      const updatedFrom = delegation.delegate;
+      const updatedTo = delegationMetaSwapAdapter;
+      const updatedData = encodedSwapData;
+
+      try {
+        return Promise.resolve({
+          updateTransaction: buildUpdateTransaction({
+            updatedFrom: updatedFrom as `0x${string}`,
+            updatedTo: updatedTo as `0x${string}`,
+            updatedData,
+          }),
+        });
+      } catch (error) {
+        console.error('Error encoding redeemDelegations', error);
+        return Promise.resolve({ updateTransaction: undefined });
+      }
+
+      return Promise.resolve({ updateTransaction: undefined });
+    }
+
     default:
       return Promise.resolve({ updateTransaction: undefined });
   }

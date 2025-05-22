@@ -426,4 +426,6 @@ export type Quote = {
   sourceToken: string;
   sourceTokenRate: number;
   trade: null | Trade;
+  signature?: string;
+  sigExpiration?: number;
 };

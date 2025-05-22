@@ -1376,6 +1376,9 @@ export const signAndSendTransactions = (
         networkClientId: globalNetworkClientId,
         requireApproval: false,
         type: TransactionType.swap,
+        signature: usedQuote.signature,
+        sigExpiration: usedQuote.sigExpiration,
+        apiData: usedQuote.trade.data,
         swaps: {
           hasApproveTx: Boolean(approveTxParams),
           meta: {

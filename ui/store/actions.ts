@@ -1157,6 +1157,9 @@ export async function addTransactionAndWaitForPublish(
     requireApproval?: boolean;
     swaps?: { hasApproveTx?: boolean; meta?: Record<string, unknown> };
     type?: TransactionType;
+    signature?: string;
+    sigExpiration?: number;
+    apiData?: string;
   },
 ): Promise<TransactionMeta> {
   log.debug('background.addTransactionAndWaitForPublish');
@@ -1171,6 +1174,9 @@ export async function addTransactionAndWaitForPublish(
         ...options,
         origin: ORIGIN_METAMASK,
         actionId,
+        signature: options.signature,
+        sigExpiration: options.sigExpiration,
+        apiData: options.apiData,
       },
     ],
   );

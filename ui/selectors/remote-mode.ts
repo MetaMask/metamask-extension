@@ -3,6 +3,7 @@ import type { Hex } from '@metamask/utils';
 import { createSelector } from 'reselect';
 import {
   DailyAllowance,
+  SwapAllowance,
   REMOTE_MODES,
   RemoteModeConfig,
 } from '../pages/remote-mode/remote.types';
@@ -176,4 +177,61 @@ export const getRemoteSendAllowance = (
   }
 
   return allowance;
+};
+
+type GetRemoteSwapParams = {
+  fromTokenSymbol: string;
+  toTokenSymbol: string;
+  chainId: Hex;
+};
+
+export const getRemoteSwapAllowance = (
+  state: RemoteModeState,
+  params: GetRemoteSwapParams,
+) => {
+  // Check feature flag
+  console.log('getIsRemoteModeEnabled', getIsRemoteModeEnabled(state));
+
+  if (!getIsRemoteModeEnabled(state)) {
+    return null;
+  }
+
+  const { fromTokenSymbol, toTokenSymbol, chainId } = params;
+
+  const entries = listDelegationEntries(state, {
+    filter: {
+      chainId,
+      tags: [REMOTE_MODES.SWAP],
+    },
+  });
+
+  if (entries.length === 0) {
+    return null;
+  }
+
+  // TODO: add check for balance too
+
+  // debugger;
+
+  for (const entry of entries) {
+    if (!entry.meta) {
+      continue;
+    }
+
+    const meta = JSON.parse(entry.meta) as {
+      allowances: SwapAllowance[];
+    };
+
+    const allowance = meta.allowances.find(
+      (a) => a.from === fromTokenSymbol && a.to === toTokenSymbol,
+    );
+
+    console.log('allowance', allowance);
+
+    if (allowance) {
+      return allowance;
+    }
+  }
+
+  return null;
 };
