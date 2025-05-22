@@ -3,7 +3,7 @@ import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
-import { withFixtures, WINDOW_TITLES, largeDelayMs } from '../helpers';
+import { withFixtures, WINDOW_TITLES } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 
 describe('Test Snap Background Events', function () {
@@ -36,13 +36,17 @@ describe('Test Snap Background Events', function () {
 
         await testSnaps.clickButton('scheduleBackgroundEventWithDateButton');
 
-        // Add a Firefox-specific delay after scheduling to ensure event is registered
-        await driver.delayFirefox(largeDelayMs);
+        const scheduleResult = await driver.findElement(
+          '#scheduleBackgroundEventResult',
+        );
+        await driver.waitForNonEmptyElement(scheduleResult);
 
         await testSnaps.clickButton('getBackgroundEventResultButton');
 
-        // Add another delay after getting results to ensure they're loaded
-        await driver.delayFirefox(largeDelayMs);
+        const eventsResult = await driver.findElement(
+          '#getBackgroundEventsResult',
+        );
+        await driver.waitForNonEmptyElement(eventsResult);
 
         await testSnaps.check_messageResultSpanIncludes(
           'getBackgroundEventResultSpan',
@@ -101,13 +105,17 @@ describe('Test Snap Background Events', function () {
           'scheduleBackgroundEventWithDurationButton',
         );
 
-        // Add a Firefox-specific delay after scheduling to ensure event is registered
-        await driver.delayFirefox(largeDelayMs);
+        const scheduleResult = await driver.findElement(
+          '#scheduleBackgroundEventResult',
+        );
+        await driver.waitForNonEmptyElement(scheduleResult);
 
         await testSnaps.clickButton('getBackgroundEventResultButton');
 
-        // Add another delay after getting results to ensure they're loaded
-        await driver.delayFirefox(largeDelayMs);
+        const eventsResult = await driver.findElement(
+          '#getBackgroundEventsResult',
+        );
+        await driver.waitForNonEmptyElement(eventsResult);
 
         await testSnaps.check_messageResultSpanIncludes(
           'getBackgroundEventResultSpan',
@@ -158,35 +166,32 @@ describe('Test Snap Background Events', function () {
 
         await testSnaps.clickButton('scheduleBackgroundEventWithDateButton');
 
-        // Add a Firefox-specific delay after scheduling to ensure event is registered
-        await driver.delayFirefox(largeDelayMs);
+        const scheduleResult = await driver.findElement(
+          '#scheduleBackgroundEventResult',
+        );
+        await driver.waitForNonEmptyElement(scheduleResult);
 
         await testSnaps.clickButton('getBackgroundEventResultButton');
 
-        // Add another delay after getting results to ensure they're loaded
-        await driver.delayFirefox(largeDelayMs);
+        const eventsResult = await driver.findElement(
+          '#getBackgroundEventsResult',
+        );
+        await driver.waitForNonEmptyElement(eventsResult);
 
         await testSnaps.check_messageResultSpanIncludes(
           'getBackgroundEventResultSpan',
           'fireDialog',
         );
 
-        const eventId = await driver.findElement(
-          '#scheduleBackgroundEventResult',
-        );
-        const eventIdContent = await eventId.getAttribute('textContent');
-        const eventIdText = JSON.parse(eventIdContent);
+        const eventIdText = JSON.parse(await scheduleResult.getText());
         await testSnaps.fillMessage('cancelBackgroundEventInput', eventIdText);
 
         await testSnaps.clickButton('cancelBackgroundEventButton');
 
-        // Add a delay after cancellation to ensure it takes effect
-        await driver.delayFirefox(largeDelayMs);
+        // We don't have a visible event to wait for here, so we just wait a couple seconds.
+        await driver.delay(2000);
 
         await testSnaps.clickButton('getBackgroundEventResultButton');
-
-        // In Firefox, we might need extra time for the empty result to appear
-        await driver.delayFirefox(largeDelayMs);
 
         await testSnaps.check_messageResultSpan(
           'getBackgroundEventResultSpan',
