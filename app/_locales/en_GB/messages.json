@@ -1148,7 +1148,7 @@
     "message": "Bal:"
   },
   "confirmGasFeeTokenBalanceFuture": {
-    "message": "Funds added:"
+    "message": "New balance:"
   },
   "confirmGasFeeTokenInsufficientBalance": {
     "message": "Insufficient funds"
@@ -1175,7 +1175,7 @@
     "message": "You're paying this network fee with $1"
   },
   "confirmGasFeeTokenTooltip": {
-    "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens."
+    "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens or pre-funded ETH."
   },
   "confirmInfoAccountNow": {
     "message": "Now"
