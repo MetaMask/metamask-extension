@@ -157,7 +157,7 @@ describe('Wallet Created Events', function () {
           environment_type: 'fullscreen',
         });
         assert.ok(
-            events[3].properties.category === 'Onboarding' &&
+          events[3].properties.category === 'Onboarding' &&
             events[3].properties.chain_id === '0x539' &&
             events[3].properties.environment_type === 'fullscreen' &&
             events[3].properties.locale === 'en' &&
