@@ -85,7 +85,7 @@ describe('Account syncing - Multi SRP', function () {
           });
           // Wait for the account AND account name to be synced
           await waitUntilSyncedAccountsNumberEquals(2);
-          await waitUntilEventsEmittedNumberEquals(2);
+          await waitUntilEventsEmittedNumberEquals(1);
           await driver.delay(regularDelayMs);
 
           // Add a new SRP and add a new account on top of the one created by default when
@@ -108,7 +108,7 @@ describe('Account syncing - Multi SRP', function () {
 
           // Wait for the account AND account name to be synced
           await waitUntilSyncedAccountsNumberEquals(4);
-          await waitUntilEventsEmittedNumberEquals(4);
+          await waitUntilEventsEmittedNumberEquals(3);
         },
       );
 

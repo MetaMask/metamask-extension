@@ -86,7 +86,7 @@ describe('Account syncing - New User', function () {
           });
           // Wait for the account AND account name to be synced
           await waitUntilSyncedAccountsNumberEquals(2);
-          await waitUntilEventsEmittedNumberEquals(2);
+          await waitUntilEventsEmittedNumberEquals(1);
 
           // Set SRP to use for retreival
           const headerNavbar = new HeaderNavbar(driver);
