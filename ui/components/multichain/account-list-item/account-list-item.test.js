@@ -462,7 +462,7 @@ describe('AccountListItem', () => {
               networksWithTransactionActivity: {
                 [mockAccount.address]: {
                   activeChains: [1, 137, 10],
-                  namespace: KnownCaipNamespace.EIP155,
+                  namespace: KnownCaipNamespace.Eip155,
                 },
               },
             },
@@ -480,7 +480,7 @@ describe('AccountListItem', () => {
               networksWithTransactionActivity: {
                 [mockAccount.address]: {
                   activeChains: [1, 137, 10],
-                  namespace: KnownCaipNamespace.EIP155,
+                  namespace: KnownCaipNamespace.Eip155,
                 },
               },
             },
@@ -506,7 +506,7 @@ describe('AccountListItem', () => {
               networksWithTransactionActivity: {
                 [mockAccount.address]: {
                   activeChains: [],
-                  namespace: KnownCaipNamespace.EIP155,
+                  namespace: KnownCaipNamespace.Eip155,
                 },
               },
             },
@@ -529,7 +529,7 @@ describe('AccountListItem', () => {
               networksWithTransactionActivity: {
                 [mockBitcoinAccount.address]: {
                   activeChains: [],
-                  namespace: KnownCaipNamespace.BIP122,
+                  namespace: KnownCaipNamespace.Bip122,
                 },
               },
             },
@@ -548,7 +548,7 @@ describe('AccountListItem', () => {
               networksWithTransactionActivity: {
                 [mockBitcoinAccount.address]: {
                   activeChains: [],
-                  namespace: KnownCaipNamespace.BIP122,
+                  namespace: KnownCaipNamespace.Bip122,
                 },
               },
             },
@@ -578,7 +578,7 @@ describe('AccountListItem', () => {
               networksWithTransactionActivity: {
                 [mockSolanaAccount.address]: {
                   activeChains: [],
-                  namespace: KnownCaipNamespace.SOLANA,
+                  namespace: KnownCaipNamespace.Solana,
                 },
               },
             },
@@ -597,7 +597,7 @@ describe('AccountListItem', () => {
               networksWithTransactionActivity: {
                 [mockSolanaAccount.address]: {
                   activeChains: [],
-                  namespace: KnownCaipNamespace.SOLANA,
+                  namespace: KnownCaipNamespace.Solana,
                 },
               },
             },
@@ -627,7 +627,7 @@ describe('AccountListItem', () => {
               networksWithTransactionActivity: {
                 [mockSolanaAccount.address]: {
                   activeChains: [1, 137], // Adding some chains even though it's Solana
-                  namespace: KnownCaipNamespace.SOLANA,
+                  namespace: KnownCaipNamespace.Solana,
                 },
               },
             },
