@@ -337,10 +337,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Phí ưu tiên (hay còn được gọi là \"tiền thưởng cho thợ đào\") được chuyển trực tiếp cho các thợ đào và khuyến khích họ ưu tiên giao dịch của bạn."
   },
-  "agreeTermsOfUse": {
-    "message": "Tôi đồng ý với $1 của MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "Lịch sử trên chuỗi của token cho thấy trước đây đã từng có hoạt động tặng thưởng đáng ngờ."
   },
@@ -1320,9 +1316,6 @@
   },
   "createNewAccountHeader": {
     "message": "Tạo tài khoản mới"
-  },
-  "createNewWallet": {
-    "message": "Tạo ví mới"
   },
   "createPassword": {
     "message": "Tạo mật khẩu"
@@ -2381,9 +2374,6 @@
   },
   "importAccountMsg": {
     "message": "Tài khoản đã nhập sẽ không được liên kết với Cụm từ khôi phục bí mật MetaMask của bạn. Tìm hiểu thêm về tài khoản đã nhập"
-  },
-  "importMyWallet": {
-    "message": "Nhập ví của tôi"
   },
   "importNFT": {
     "message": "Nhập NFT"
@@ -3722,9 +3712,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Mật khẩu không đủ dài"
-  },
-  "passwordSetupDetails": {
-    "message": "Mật khẩu này sẽ chỉ mở khóa ví MetaMask của bạn trên thiết bị này. MetaMask không thể khôi phục mật khẩu này."
   },
   "passwordStrength": {
     "message": "Độ mạnh của mật khẩu: $1",
@@ -6442,23 +6429,8 @@
   "welcomeBack": {
     "message": "Chào mừng bạn trở lại!"
   },
-  "welcomeExploreDescription": {
-    "message": "Lưu trữ, gửi và chi tiêu các loại tiền và tài sản tiền điện tử."
-  },
-  "welcomeExploreTitle": {
-    "message": "Khám phá các ứng dụng phi tập trung"
-  },
-  "welcomeLoginDescription": {
-    "message": "Sử dụng MetaMask của bạn để đăng nhập vào các ứng dụng phi tập trung - không cần đăng ký."
-  },
-  "welcomeLoginTitle": {
-    "message": "Gửi lời chào đến ví của bạn"
-  },
   "welcomeToMetaMask": {
     "message": "Bắt đầu nào"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Được hàng triệu người tin dùng, MetaMask là một ví an toàn cho phép mọi người có thể truy cập vào thế giới web3."
   },
   "whatsThis": {
     "message": "Đây là gì?"

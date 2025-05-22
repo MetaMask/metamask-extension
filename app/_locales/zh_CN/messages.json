@@ -337,10 +337,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "优先费用（又称“矿工费”）直接向矿工支付，激励他们优先处理您的交易。"
   },
-  "agreeTermsOfUse": {
-    "message": "我同意MetaMask的$1",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "该代币的链上历史记录显示，此前存在可疑的空投活动实例。"
   },
@@ -1320,9 +1316,6 @@
   },
   "createNewAccountHeader": {
     "message": "创建新账户"
-  },
-  "createNewWallet": {
-    "message": "创建新钱包"
   },
   "createPassword": {
     "message": "创建密码"
@@ -2378,9 +2371,6 @@
   },
   "importAccountMsg": {
     "message": "导入的账户将不会与最初创建的 MetaMask 账户私钥助记词相关联。了解更多有关导入账户的信息"
-  },
-  "importMyWallet": {
-    "message": "导入我的钱包"
   },
   "importNFT": {
     "message": "导入 NFT"
@@ -3719,9 +3709,6 @@
   },
   "passwordNotLongEnough": {
     "message": "密码长度不足"
-  },
-  "passwordSetupDetails": {
-    "message": "此密码只会在此设备上解锁您的 MetaMask 钱包。MetaMask 无法恢复此密码。"
   },
   "passwordStrength": {
     "message": "密码强度：$1",
@@ -6439,23 +6426,8 @@
   "welcomeBack": {
     "message": "欢迎回来！"
   },
-  "welcomeExploreDescription": {
-    "message": "存储、发送和使用加密货币和资产。"
-  },
-  "welcomeExploreTitle": {
-    "message": "探索去中心化应用"
-  },
-  "welcomeLoginDescription": {
-    "message": "使用您的 MetaMask 登录去中心化应用 - 无需注册。"
-  },
-  "welcomeLoginTitle": {
-    "message": "迎接您的钱包"
-  },
   "welcomeToMetaMask": {
     "message": "让我们开始吧"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "MetaMask 深受数百万人信任，是一款可以让所有人进入 web3 世界的安全钱包。"
   },
   "whatsThis": {
     "message": "这是什么？"
