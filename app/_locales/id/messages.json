@@ -1129,9 +1129,6 @@
   "confusingEnsDomain": {
     "message": "Kami telah mendeteksi karakter yang membingungkan di nama ENS. Periksa nama ENS untuk menghindari kemungkinan penipuan."
   },
-  "congratulations": {
-    "message": "Selamat!"
-  },
   "connect": {
     "message": "Hubungkan"
   },
@@ -2331,10 +2328,6 @@
   "id": {
     "message": "ID"
   },
-  "ifYouGetLockedOut": {
-    "message": "Dana akan hilang jika Anda terkunci dari aplikasi atau menggunakan perangkat baru. Pastikan untuk mencadangkan Frasa Pemulihan Rahasia di $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "Abaikan semua"
   },
@@ -2572,10 +2565,6 @@
   "jsonFile": {
     "message": "File JSON",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Simpan pengingat Frasa Pemulihan Rahasia di tempat yang aman. Jika hilang, tidak ada yang bisa membantu Anda mendapatkannya kembali. Lebih buruknya, dompet Anda tidak dapat diakses lagi. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Nama akun"
@@ -4284,12 +4273,6 @@
   "rejected": {
     "message": "Ditolak"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Ingat, jika Anda kehilangan Frasa Pemulihan Rahasia, akses ke dompet Anda akan hilang. $1 untuk menyimpan rangkaian kata-kata ini dengan aman sehingga Anda dapat mengakses dana setiap saat."
-  },
-  "reminderSet": {
-    "message": "Pengingat diatur!"
-  },
   "remove": {
     "message": "Hapus"
   },
@@ -4540,9 +4523,6 @@
   "securityMessageLinkForNetworks": {
     "message": "penipuan jaringan dan risiko keamanan"
   },
-  "securityPrivacyPath": {
-    "message": "Pengaturan > Keamanan & Privasi."
-  },
   "securityProviderPoweredBy": {
     "message": "Didukung oleh $1",
     "description": "The security provider that is providing data"
@@ -4691,9 +4671,6 @@
   },
   "settings": {
     "message": "Pengaturan"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "Pengaturan dioptimalkan untuk kemudahan penggunaan dan keamanan. Ubah pengaturan ini kapan saja."
   },
   "settingsSearchMatchingNotFound": {
     "message": "Tidak menemukan hasil yang cocok."
@@ -6346,10 +6323,6 @@
   },
   "walletConnectionGuide": {
     "message": "panduan koneksi dompet perangkat keras kami"
-  },
-  "walletProtectedAndReadyToUse": {
-    "message": "Dompet Anda terlindungi dan siap digunakan. Temukan Frasa Pemulihan Rahasia di $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "Ingin menambahkan jaringan ini?"
