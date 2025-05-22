@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import { Hex } from '@metamask/utils';
 import {
   getAllChainsToPoll,
-  getEnabledNetworks,
   getIsLineaMainnet,
   getIsMainnet,
   getIsTokenNetworkFilterEqualCurrentNetwork,
@@ -91,7 +90,6 @@ const AssetListControlBar = ({
   const { collections } = useNftsCollections();
 
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
-  const enabledNetworks = useSelector(getEnabledNetworks);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
     useState(false);
@@ -121,10 +119,6 @@ const AssetListControlBar = ({
   Object.keys(allNetworks || {}).forEach((chainId) => {
     allOpts[chainId] = true;
   });
-
-  useEffect(() => {
-    console.log('enabledNetworks', enabledNetworks);
-  }, [enabledNetworks]);
 
   useEffect(() => {
     if (isTestNetwork) {
