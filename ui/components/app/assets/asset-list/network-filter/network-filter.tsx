@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { CaipChainId } from '@metamask/utils';
 import {
   setEnabledNetworks,
   setTokenNetworkFilter,
@@ -42,7 +43,6 @@ import {
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import InfoTooltip from '../../../../ui/info-tooltip';
-import { CaipChainId } from '@metamask/utils';
 
 type SortControlProps = {
   handleClose: () => void;
@@ -64,7 +64,6 @@ const NetworkFilter = ({
   const selectedAccount = useSelector(getSelectedAccount);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
-  const enabledNetworks = useSelector(getEnabledNetworks);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
