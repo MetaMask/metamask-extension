@@ -1,10 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { CaipChainId } from '@metamask/utils';
-import {
-  setEnabledNetworks,
-  setTokenNetworkFilter,
-} from '../../../../../store/actions';
+import { setTokenNetworkFilter } from '../../../../../store/actions';
 import {
   getCurrentNetwork,
   getShouldHideZeroBalanceTokens,
@@ -97,7 +93,6 @@ const NetworkFilter = ({
     );
 
   const handleFilter = (chainFilters: Record<string, boolean>) => {
-    dispatch(setEnabledNetworks(Object.keys(chainFilters) as CaipChainId[]));
     if (handleFilterNetwork) {
       handleFilterNetwork(chainFilters);
     } else {
