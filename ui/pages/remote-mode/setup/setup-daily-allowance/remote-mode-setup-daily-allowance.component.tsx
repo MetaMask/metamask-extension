@@ -55,7 +55,6 @@ import {
   REMOTE_MODES,
   TOKEN_DETAILS,
   TokenInfo,
-  TokenSymbol,
 } from '../../remote.types';
 
 import {

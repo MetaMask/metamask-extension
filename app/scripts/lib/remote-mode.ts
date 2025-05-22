@@ -14,19 +14,51 @@ import { getDeleGatorEnvironment } from '../../../shared/lib/delegation/environm
 import { isHexEqual } from '../../../shared/lib/delegation/utils';
 
 import { encodeRedeemDelegations } from '../../../shared/lib/delegation/delegation';
-import { DailyAllowanceMetadata } from '../../../shared/lib/remote-mode';
-import { ControllerFlatState } from '../controller-init/controller-list';
 import {
-  getDailyAllowance,
-  getRemoteModeEnabled,
-  isExistingAccount,
-} from '../../../shared/modules/selectors/remote-mode';
+  DailyAllowanceMetadata,
+  REMOTE_MODES,
+} from '../../../shared/lib/remote-mode';
+import { ControllerFlatState } from '../controller-init/controller-list';
 
-const hasEnoughAllowance = (
-  allowanceAmount: bigint,
-  transactionAmount: bigint,
-): boolean => {
-  return allowanceAmount >= transactionAmount;
+import { merge } from 'lodash';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
+
+export const getRemoteModeEnabled = (state: ControllerFlatState) => {
+  const manifestFlags = getManifestFlags().remoteFeatureFlags;
+  const stateFlags = state.remoteFeatureFlags;
+  const flags = merge({}, stateFlags, manifestFlags);
+  return Boolean(flags.vaultRemoteMode);
+};
+
+export const isExistingAccount = ({
+  state,
+  address,
+}: {
+  state: ControllerFlatState;
+  address: string;
+}) => {
+  const { accounts } = state.internalAccounts;
+  return Object.values(accounts).some((account) => account.address === address);
+};
+
+export const getDailyAllowance = ({
+  state,
+  address,
+  chainId,
+}: {
+  state: ControllerFlatState;
+  address: Hex;
+  chainId: Hex;
+}) => {
+  const entries = Object.values(state.delegations);
+  const dailyAllowance = entries.find(
+    (e) =>
+      isHexEqual(address, e.delegation.delegator) &&
+      isHexEqual(chainId, e.chainId) &&
+      e.tags.includes(REMOTE_MODES.DAILY_ALLOWANCE),
+  );
+
+  return dailyAllowance;
 };
 
 const buildUpdateTransaction = ({
@@ -97,7 +129,7 @@ const prepareDailyAllowanceTransaction = ({
     ? hexToBigInt(transactionMeta.txParams.value)
     : BigInt(0);
 
-  if (!hasEnoughAllowance(allowanceAmount, transactionAmount)) {
+  if (transactionAmount > allowanceAmount) {
     return undefined;
   }
 
