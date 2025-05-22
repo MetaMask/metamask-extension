@@ -70,7 +70,9 @@ export function GasFeeTokenListItem({
       isSelected={isSelected}
       leftPrimary={symbol}
       leftSecondary={`${
-        isFutureNative ? 'Funds added:' : t('confirmGasFeeTokenBalance')
+        isFutureNative
+          ? t('confirmGasFeeTokenBalanceFuture')
+          : t('confirmGasFeeTokenBalance')
       } ${balanceFiat} ${currentCurrency.toUpperCase()}`}
       rightPrimary={amountFiat}
       rightSecondary={`${amountFormatted} ${symbol}`}
