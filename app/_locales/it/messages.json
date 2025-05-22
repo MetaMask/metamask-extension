@@ -413,9 +413,6 @@
   "create": {
     "message": "Crea"
   },
-  "createNewWallet": {
-    "message": "Crea un nuovo portafoglio"
-  },
   "createPassword": {
     "message": "Crea Password"
   },
@@ -1376,9 +1373,6 @@
   },
   "termsOfService": {
     "message": "Termini di Servizio"
-  },
-  "tips": {
-    "message": "Suggerimenti"
   },
   "to": {
     "message": "A"
