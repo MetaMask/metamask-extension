@@ -47,7 +47,6 @@ export function GasFeeTokenListItem({
   const t = useI18nContext();
   const gasFeeToken = useGasFeeToken({ tokenAddress });
   const currentCurrency = useSelector(getCurrentCurrency);
-  const isFutureNative = tokenAddress === NATIVE_TOKEN_ADDRESS;
 
   if (!gasFeeToken) {
     return null;
@@ -65,11 +64,9 @@ export function GasFeeTokenListItem({
       }
       isSelected={isSelected}
       leftPrimary={symbol}
-      leftSecondary={`${
-        isFutureNative
-          ? t('confirmGasFeeTokenBalanceFuture')
-          : t('confirmGasFeeTokenBalance')
-      } ${balanceFiat} ${currentCurrency.toUpperCase()}`}
+      leftSecondary={`${t(
+        'confirmGasFeeTokenBalance',
+      )} ${balanceFiat} ${currentCurrency.toUpperCase()}`}
       rightPrimary={amountFiat}
       rightSecondary={`${amountFormatted} ${symbol}`}
       warning={warning && <WarningIndicator text={warning} />}

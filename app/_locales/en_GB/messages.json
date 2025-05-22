@@ -1147,9 +1147,6 @@
   "confirmGasFeeTokenBalance": {
     "message": "Bal:"
   },
-  "confirmGasFeeTokenBalanceFuture": {
-    "message": "New balance:"
-  },
   "confirmGasFeeTokenInsufficientBalance": {
     "message": "Insufficient funds"
   },

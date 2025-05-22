@@ -134,6 +134,7 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
             onClick={handleTokenClick}
             warning={
               hasInsufficientNative &&
+              !futureNativeSelected &&
               t('confirmGasFeeTokenInsufficientBalance')
             }
           />
