@@ -1,3 +1,6 @@
+# This workflow is meant to better structure the main.yaml one for redability reasons.
+# It is not meant to be a reusable workflow.
+
 name: E2E Chrome
 
 on:
@@ -5,12 +8,16 @@ on:
     secrets:
       PR_COMMENT_TOKEN:
         required: true
+      DOCKER_HUB_USERNAME:
+        required: true
+      DOCKER_HUB_TOKEN:
+        required: true
 
 jobs:
   test-e2e-chrome-browserify:
     uses: ./.github/workflows/run-e2e.yml
     strategy:
-      fail-fast: false
+      fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix:
         index:
           [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
@@ -21,12 +28,15 @@ jobs:
       test-command: yarn test:e2e:chrome
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-chrome-webpack:
     uses: ./.github/workflows/run-e2e.yml
     if: ${{ github.event_name != 'merge_group' }}
     strategy:
-      fail-fast: false
+      fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix:
         index:
           [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
@@ -37,6 +47,9 @@ jobs:
       test-command: yarn test:e2e:chrome:webpack
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-chrome-multiple-providers:
     uses: ./.github/workflows/run-e2e.yml
@@ -45,6 +58,9 @@ jobs:
       build-artifact: prep-build-test-browserify-chrome
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome:multi-provider
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-chrome-rpc:
     uses: ./.github/workflows/run-e2e.yml
@@ -53,11 +69,14 @@ jobs:
       build-artifact: prep-build-test-browserify-chrome
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome:rpc
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-chrome-flask:
     uses: ./.github/workflows/run-e2e.yml
     strategy:
-      fail-fast: false
+      fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix:
         index: [0, 1, 2, 3, 4]
     with:
@@ -67,6 +86,9 @@ jobs:
       test-command: yarn test:e2e:chrome:flask
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-chrome-vault-decryption:
     uses: ./.github/workflows/run-e2e.yml
@@ -74,6 +96,9 @@ jobs:
       test-suite-name: test-e2e-chrome-vault-decryption
       build-artifact: prep-build-dist-browserify-chrome
       test-command: yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-chrome-api-specs:
     uses: ./.github/workflows/run-e2e.yml
@@ -83,6 +108,9 @@ jobs:
       build-command: yarn build:test
       test-command: yarn test:api-specs
       test-artifacts-path: html-report
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-chrome-api-specs-alert-on-failure:
     needs:
@@ -124,6 +152,9 @@ jobs:
       build-command: yarn build:test:flask
       test-command: yarn test:api-specs-multichain
       test-artifacts-path: html-report-multichain
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-chrome-api-specs-multichain-alert-on-failure:
     needs:

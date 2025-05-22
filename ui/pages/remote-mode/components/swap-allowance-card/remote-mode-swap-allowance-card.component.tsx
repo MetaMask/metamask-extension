@@ -64,7 +64,7 @@ export default function RemoteModeSwapAllowanceCard({
         >
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
             <img
-              src={selectedToken.iconUrl}
+              src={selectedToken.image}
               alt={selectedToken.name}
               style={{ width: '24px', height: '24px', borderRadius: '50%' }}
             />
