@@ -16,6 +16,8 @@ export type MetaRpcClientFactory = MetaRPCClient &
 
 class DisconnectError extends Error {}
 
+type RequestId = string | number | null;
+
 export class MetaRPCClient {
   private connectionStream: Writable;
 
@@ -23,8 +25,8 @@ export class MetaRPCClient {
 
   private uncaughtErrorChannel = new SafeEventEmitter();
 
-  private requests = new Map<
-    string | number | null,
+  public readonly requests = new Map<
+    RequestId,
     {
       resolve: (result?: unknown) => void;
       reject: (error: Error) => void;
@@ -32,7 +34,7 @@ export class MetaRPCClient {
     }
   >();
 
-  public DisconnectError = DisconnectError;
+  public readonly DisconnectError = DisconnectError;
 
   constructor(connectionStream: Writable) {
     this.connectionStream = connectionStream;

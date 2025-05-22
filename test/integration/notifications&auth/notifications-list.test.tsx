@@ -11,6 +11,7 @@ import { createMockImplementation } from '../helpers';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsEventPayload,
 } from '../../../shared/constants/metametrics';
 import {
   ethSentNotification,
@@ -147,7 +148,7 @@ describe('Notifications List', () => {
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
             call[0] === 'trackMetaMetricsEvent' &&
-            call[1]?.[0].category ===
+            (call[1] as [MetaMetricsEventPayload] | undefined)?.[0].category ===
               MetaMetricsEventCategory.NotificationInteraction,
         );
 

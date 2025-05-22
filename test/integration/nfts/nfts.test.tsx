@@ -3,6 +3,7 @@ import nock from 'nock';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsEventPayload,
 } from '../../../shared/constants/metametrics';
 import * as backgroundConnection from '../../../ui/store/background-connection';
 import { integrationTestRender } from '../../lib/render-helpers';
@@ -91,7 +92,8 @@ describe('NFTs list', () => {
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
             call[0] === 'trackMetaMetricsEvent' &&
-            call[1]?.[0].category === MetaMetricsEventCategory.Home,
+            (call[1] as [MetaMetricsEventPayload] | undefined)?.[0].category ===
+              MetaMetricsEventCategory.Home,
         );
 
       expect(nftScreenOpenedMetricsEvent?.[0]).toBe('trackMetaMetricsEvent');

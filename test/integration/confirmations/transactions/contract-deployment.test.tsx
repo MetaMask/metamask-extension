@@ -12,6 +12,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,
   MetaMetricsEventName,
+  MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
 import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
@@ -209,7 +210,8 @@ describe('Contract Deployment Confirmation', () => {
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
           (call) =>
             call[0] === 'trackMetaMetricsEvent' &&
-            call[1]?.[0].category === MetaMetricsEventCategory.Confirmations,
+            (call[1] as [MetaMetricsEventPayload] | undefined)?.[0].category ===
+              MetaMetricsEventCategory.Confirmations,
         );
 
       expect(confirmAccountDetailsModalMetricsEvent?.[0]).toBe(
