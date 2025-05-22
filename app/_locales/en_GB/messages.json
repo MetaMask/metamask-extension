@@ -6616,9 +6616,6 @@
   "unlock": {
     "message": "Unlock"
   },
-  "unlockMessage": {
-    "message": "The decentralized web awaits"
-  },
   "unpin": {
     "message": "Unpin"
   },

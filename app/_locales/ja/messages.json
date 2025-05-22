@@ -6104,9 +6104,6 @@
   "unlock": {
     "message": "ロック解除"
   },
-  "unlockMessage": {
-    "message": "分散型インターネットが待っています"
-  },
   "unpin": {
     "message": "ピン留めを解除"
   },

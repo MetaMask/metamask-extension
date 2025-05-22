@@ -6104,9 +6104,6 @@
   "unlock": {
     "message": "登录"
   },
-  "unlockMessage": {
-    "message": "即将进入去中心化网络"
-  },
   "unpin": {
     "message": "取消置顶"
   },

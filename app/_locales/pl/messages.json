@@ -710,9 +710,6 @@
   "unlock": {
     "message": "Odblokuj"
   },
-  "unlockMessage": {
-    "message": "Zdecentralizowana sieć oczekuje"
-  },
   "urlErrorMsg": {
     "message": "URI wymaga prawidłowego prefiksu HTTP/HTTPS."
   },

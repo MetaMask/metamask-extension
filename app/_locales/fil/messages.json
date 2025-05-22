@@ -641,9 +641,6 @@
   "unlock": {
     "message": "I-unlock"
   },
-  "unlockMessage": {
-    "message": "Naghihintay ang decentralized web"
-  },
   "urlErrorMsg": {
     "message": "Kinakailangan ng mga URI ang naaangkop na HTTP/HTTPS prefix."
   },

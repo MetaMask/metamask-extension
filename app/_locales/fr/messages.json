@@ -6104,9 +6104,6 @@
   "unlock": {
     "message": "Déverrouiller"
   },
-  "unlockMessage": {
-    "message": "Le web décentralisé vous attend"
-  },
   "unpin": {
     "message": "Détacher"
   },

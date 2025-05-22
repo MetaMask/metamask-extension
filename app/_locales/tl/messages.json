@@ -6104,9 +6104,6 @@
   "unlock": {
     "message": "I-unlock"
   },
-  "unlockMessage": {
-    "message": "Naghihintay ang desentralisadong web"
-  },
   "unpin": {
     "message": "I-unpin"
   },

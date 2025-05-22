@@ -688,9 +688,6 @@
   "unlock": {
     "message": "Odomknúť"
   },
-  "unlockMessage": {
-    "message": "Decentralizovaný web čaká"
-  },
   "urlErrorMsg": {
     "message": "URI vyžadují korektní HTTP/HTTPS prefix."
   },
