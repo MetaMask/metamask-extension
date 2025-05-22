@@ -11,6 +11,7 @@ import {
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
   getSlides,
+  getUseExternalServices,
 } from '../../selectors';
 import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
 import {
@@ -28,6 +29,7 @@ import {
   MULTI_SRP_SLIDE,
   BACKUPANDSYNC_SLIDE,
   SWEEPSTAKES_SLIDE,
+  BASIC_FUNCTIONALITY_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
@@ -68,6 +70,7 @@ export const useCarouselManagement = ({
   const totalBalance = useSelector(getSelectedAccountCachedBalance);
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  const useExternalServices = useSelector(getUseExternalServices);
 
   const hasZeroBalance = totalBalance === ZERO_BALANCE;
 
@@ -83,7 +86,11 @@ export const useCarouselManagement = ({
       ...FUND_SLIDE,
       undismissable: hasZeroBalance,
     };
-
+    const basicFunctionalitySlide = {
+      ...BASIC_FUNCTIONALITY_SLIDE,
+      undismissable: !useExternalServices,
+    };
+    defaultSlides.push(basicFunctionalitySlide);
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     if (!isSolanaAddress(selectedAccount.address)) {
       defaultSlides.push(SMART_ACCOUNT_UPGRADE_SLIDE);
@@ -97,7 +104,6 @@ export const useCarouselManagement = ({
     ///: BEGIN:ONLY_INCLUDE_IF(solana)
     defaultSlides.push(SOLANA_SLIDE);
     ///: END:ONLY_INCLUDE_IF
-
     defaultSlides.splice(hasZeroBalance ? 0 : 2, 0, fundSlide);
 
     if (isRemoteModeEnabled) {
@@ -176,6 +182,7 @@ export const useCarouselManagement = ({
     inTest,
     slides,
     selectedAccount.address,
+    useExternalServices,
   ]);
 
   return { slides };
