@@ -4367,32 +4367,18 @@ export function updateAccountsList(
 }
 
 /**
- * Enables a single network and disables all others.
- * This is primarily used for custom/test networks.
+ * Sets the enabled networks in the controller state.
+ * This method updates the enabledNetworkMap to mark specified networks as enabled.
+ * It can handle both a single chain ID or an array of chain IDs.
  *
- * @param chainId - The CAIP chain ID of the network to enable
+ * @param chainIds - A single CAIP-2 chain ID (e.g. 'eip155:1') or an array of chain IDs
+ * to be enabled. All other networks will be implicitly disabled.
  */
-export function setSingleEnabledNetwork(
-  chainId: CaipChainId,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  console.log('setSingleEnabledNetwork', chainId);
-  return async () => {
-    await submitRequestToBackground('setSingleEnabledNetwork', [chainId]);
-  };
-}
-
-/**
- * Enables multiple networks and disables all others.
- * This is primarily used for popular networks.
- *
- * @param chainIds - Array of CAIP chain IDs to enable
- */
-export function setMultiEnabledNetworks(
+export function setEnabledNetworks(
   chainIds: CaipChainId[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  console.log('setMultiEnabledNetworks', chainIds);
   return async () => {
-    await submitRequestToBackground('setMultiEnabledNetworks', [chainIds]);
+    await submitRequestToBackground('setEnabledNetworks', [chainIds]);
   };
 }
 

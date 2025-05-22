@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  setMultiEnabledNetworks,
+  setEnabledNetworks,
   setTokenNetworkFilter,
 } from '../../../../../store/actions';
 import {
@@ -11,6 +11,7 @@ import {
   getAllChainsToPoll,
   getTokenNetworkFilter,
   getIsTokenNetworkFilterEqualCurrentNetwork,
+  getEnabledNetworks,
 } from '../../../../../selectors';
 import {
   getCurrentChainId,
@@ -63,6 +64,7 @@ const NetworkFilter = ({
   const selectedAccount = useSelector(getSelectedAccount);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
+  const enabledNetworks = useSelector(getEnabledNetworks);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
@@ -98,9 +100,7 @@ const NetworkFilter = ({
 
   const handleFilter = (chainFilters: Record<string, boolean>) => {
     console.log('handleFilter', chainFilters);
-    dispatch(
-      setMultiEnabledNetworks(Object.keys(chainFilters) as CaipChainId[]),
-    );
+    dispatch(setEnabledNetworks(Object.keys(chainFilters) as CaipChainId[]));
     if (handleFilterNetwork) {
       handleFilterNetwork(chainFilters);
     } else {

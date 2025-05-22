@@ -4077,8 +4077,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       updateNetworksList: this.updateNetworksList.bind(this),
       updateAccountsList: this.updateAccountsList.bind(this),
-      setSingleEnabledNetwork: this.setSingleEnabledNetwork.bind(this),
-      setMultiEnabledNetworks: this.setMultiEnabledNetworks.bind(this),
+      setEnabledNetworks: this.setEnabledNetworks.bind(this),
       updateHiddenAccountsList: this.updateHiddenAccountsList.bind(this),
       getPhishingResult: async (website) => {
         await phishingController.maybeUpdateState();
@@ -8140,18 +8139,9 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  setSingleEnabledNetwork = (chainId) => {
+  setEnabledNetworks = (chainIds) => {
     try {
-      this.networkOrderController.setSingleEnabledNetwork(chainId);
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
-  };
-
-  setMultiEnabledNetworks = (chainIds) => {
-    try {
-      this.networkOrderController.setMultiEnabledNetworks(chainIds);
+      this.networkOrderController.setEnabledNetworks(chainIds);
     } catch (err) {
       log.error(err.message);
       throw err;

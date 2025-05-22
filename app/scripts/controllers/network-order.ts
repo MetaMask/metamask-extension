@@ -169,40 +169,17 @@ export class NetworkOrderController extends BaseController<
   }
 
   /**
-   * Enables a single network and disables all others.
-   * This is primarily used for custom/test networks.
+   * Sets the enabled networks in the controller state.
+   * This method updates the enabledNetworkMap to mark specified networks as enabled.
+   * It can handle both a single chain ID or an array of chain IDs.
    *
-   * @param chainId - The CAIP chain ID of the network to enable
+   * @param chainIds - A single CAIP-2 chain ID (e.g. 'eip155:1') or an array of chain IDs
+   * to be enabled. All other networks will be implicitly disabled.
    */
-  setSingleEnabledNetwork(chainId: CaipChainId) {
+  setEnabledNetworks(chainIds: CaipChainId | CaipChainId[]) {
+    const ids = Array.isArray(chainIds) ? chainIds : [chainIds];
     this.update((state) => {
-      // Create a new map with all networks disabled
-      const newEnabledMap: Record<CaipChainId, boolean> = {};
-
-      // Enable only the specified network
-      newEnabledMap[chainId] = true;
-
-      state.enabledNetworkMap = newEnabledMap;
-    });
-  }
-
-  /**
-   * Enables multiple networks and disables all others.
-   * This is primarily used for popular networks.
-   *
-   * @param chainIds - Array of CAIP chain IDs to enable
-   */
-  setMultiEnabledNetworks(chainIds: CaipChainId[]) {
-    this.update((state) => {
-      // Create a new map with all networks disabled
-      const newEnabledMap: Record<CaipChainId, boolean> = {};
-
-      // Enable only the specified networks
-      chainIds.forEach((chainId) => {
-        newEnabledMap[chainId] = true;
-      });
-
-      state.enabledNetworkMap = newEnabledMap;
+      state.enabledNetworkMap = Object.fromEntries(ids.map((id) => [id, true]));
     });
   }
 }
