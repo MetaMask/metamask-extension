@@ -18051,7 +18051,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/bridge-status-controller
-20.0.0 <https://github.com/MetaMask/core>
+21.0.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2025 MetaMask
@@ -20906,7 +20906,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/solana-wallet-snap
-1.29.0 <https://github.com/MetaMask/snap-solana-wallet>
+1.30.4 <https://github.com/MetaMask/snap-solana-wallet>
 license: (MIT-0 OR Apache-2.0)
 authors: undefined
 
@@ -21008,7 +21008,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/user-operation-controller
-34.0.0 <https://github.com/MetaMask/core>
+35.0.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2023 MetaMask

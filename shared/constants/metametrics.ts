@@ -906,7 +906,8 @@ export enum MetaMetricsEventName {
   // Cross Chain Swaps
   ActionCompleted = 'Action Completed',
   ActionFailed = 'Action Failed',
-  ActionOpened = 'Action Opened',
+  ActionButtonClicked = 'Action Button Clicked',
+  ActionPageViewed = 'Action Page Viewed',
   ActionSubmitted = 'Action Submitted',
   AllQuotesOpened = 'All Quotes Opened',
   AllQuotesSorted = 'All Quotes Sorted',
