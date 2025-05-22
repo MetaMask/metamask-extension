@@ -168,7 +168,7 @@ function MetaMaskFee({
         variant={TextVariant.bodySm}
         color={TextColor.textAlternative}
       >
-        {isFutureNative && 'Funded by'}
+        {isFutureNative && t('confirmGasFeeTokenMetaMaskFeeNative')}
         {!isFutureNative && gasFeeToken
           ? t('confirmGasFeeTokenMetaMaskFee', [metamaskFeeFiat])
           : ' '}

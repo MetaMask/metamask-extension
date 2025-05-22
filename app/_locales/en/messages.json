@@ -1153,6 +1153,27 @@
   "confirmGasFeeTokenMetaMaskFee": {
     "message": "Includes $1 fee"
   },
+  "confirmGasFeeTokenMetaMaskFeeNative": {
+    "message": "Funded by"
+  },
+  "confirmGasFeeTokenModalNativeToggleMetaMask": {
+    "message": "MetaMask is supplementing the balance to complete this transaction."
+  },
+  "confirmGasFeeTokenModalNativeToggleWallet": {
+    "message": "Pay for network fee using the balance in your wallet."
+  },
+  "confirmGasFeeTokenModalPayETH": {
+    "message": "Pay with ETH"
+  },
+  "confirmGasFeeTokenModalPayETHTooltip": {
+    "message": "Test 1"
+  },
+  "confirmGasFeeTokenModalPayToken": {
+    "message": "Pay with other tokens"
+  },
+  "confirmGasFeeTokenModalPayTokenTooltip": {
+    "message": "Test 2"
+  },
   "confirmGasFeeTokenModalTitle": {
     "message": "Select a token"
   },

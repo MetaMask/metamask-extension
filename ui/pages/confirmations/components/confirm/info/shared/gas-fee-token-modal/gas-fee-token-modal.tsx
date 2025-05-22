@@ -63,6 +63,8 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
       ?.filter((token) => token.tokenAddress !== NATIVE_TOKEN_ADDRESS)
       .map((token) => token.tokenAddress) ?? [];
 
+  const hasGasFeeTokens = gasFeeTokenAddresses.length > 0;
+
   const handleTokenClick = useCallback(
     async (token: GasFeeToken) => {
       const selectedAddress =
@@ -107,7 +109,11 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
             alignItems={AlignItems.center}
             marginInline={4}
           >
-            <TextWithTooltip text="Pay with ETH" tooltip="Test 1" noMargin />
+            <TextWithTooltip
+              text={t('confirmGasFeeTokenModalPayETH')}
+              tooltip={t('confirmGasFeeTokenModalPayETHTooltip')}
+              noMargin
+            />
             {hasFutureNativeToken && (
               <NativeToggle
                 isFuture={futureNativeSelected}
@@ -125,7 +131,12 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
             }
             onClick={handleTokenClick}
           />
-          <TextWithTooltip text="Pay with other tokens" tooltip="Test 2" />
+          {hasGasFeeTokens && (
+            <TextWithTooltip
+              text={t('confirmGasFeeTokenModalPayToken')}
+              tooltip={t('confirmGasFeeTokenModalPayTokenTooltip')}
+            />
+          )}
           {gasFeeTokenAddresses.map((tokenAddress) => (
             <GasFeeTokenListItem
               key={tokenAddress}
@@ -190,6 +201,8 @@ function NativeToggle({
   isFuture?: boolean;
   onChange: (isFuture: boolean) => void;
 }) {
+  const t = useI18nContext();
+
   return (
     <Box
       data-testid="native-toggle"
@@ -204,7 +217,7 @@ function NativeToggle({
         onClick={() => {
           onChange(false);
         }}
-        tooltip="Pay for network fee using the balance in your wallet."
+        tooltip={t('confirmGasFeeTokenModalNativeToggleWallet')}
       >
         <Icon
           name={IconName.Wallet}
@@ -220,7 +233,7 @@ function NativeToggle({
         onClick={() => {
           onChange(true);
         }}
-        tooltip="MetaMask is supplementing the balance to complete this transaction."
+        tooltip={t('confirmGasFeeTokenModalNativeToggleMetaMask')}
       >
         <img
           src="./images/logo/metamask-fox.svg"
