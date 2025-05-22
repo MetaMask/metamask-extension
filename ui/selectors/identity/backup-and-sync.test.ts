@@ -14,6 +14,8 @@ describe('Backup And Sync Selectors', () => {
       isAccountSyncingReadyToBeDispatched: false,
       hasAccountSyncingSyncedAtLeastOnce: false,
       isAccountSyncingInProgress: false,
+      isContactSyncingEnabled: true,
+      isContactSyncingInProgress: false,
     },
   };
 

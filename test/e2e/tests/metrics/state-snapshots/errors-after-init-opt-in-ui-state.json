@@ -281,6 +281,8 @@
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
     "isAccountSyncingReadyToBeDispatched": "boolean",
     "isAccountSyncingInProgress": "boolean",
+    "isContactSyncingEnabled": true,
+    "isContactSyncingInProgress": "boolean",
     "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
     "isNotificationServicesEnabled": "boolean",

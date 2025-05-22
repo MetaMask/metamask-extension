@@ -5876,7 +5876,7 @@ export function syncInternalAccountsWithUserStorage(): ThunkAction<
  *
  * @returns A thunk action that, when dispatched, attempts to synchronize address book data with user storage between devices.
  */
-export function syncAddressBookWithUserStorage(): ThunkAction<
+export function syncContactsWithUserStorage(): ThunkAction<
   void,
   MetaMaskReduxState,
   unknown,
@@ -5885,7 +5885,7 @@ export function syncAddressBookWithUserStorage(): ThunkAction<
   return async () => {
     try {
       const response = await submitRequestToBackground(
-        'syncAddressBookWithUserStorage',
+        'syncContactsWithUserStorage',
       );
       return response;
     } catch (error) {

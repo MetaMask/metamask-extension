@@ -1,9 +1,9 @@
 import log from 'loglevel';
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { syncAddressBookWithUserStorage } from '../../../store/actions';
+import { syncContactsWithUserStorage } from '../../../store/actions';
 import {
-  selectIsAddressBookSyncingEnabled,
+  selectIsContactSyncingEnabled,
   selectIsBackupAndSyncEnabled,
 } from '../../../selectors/identity/backup-and-sync';
 import { getUseExternalServices } from '../../../selectors';
@@ -14,14 +14,14 @@ import {
 import { selectIsSignedIn } from '../../../selectors/identity/authentication';
 
 /**
- * A utility used internally to decide if address book syncing should be dispatched
+ * A utility used internally to decide if contact syncing should be dispatched
  * Considers factors like basic functionality; unlocked; finished onboarding, is logged in, and more specific logic.
  *
- * @returns a boolean if internally we can perform account syncing or not.
+ * @returns a boolean if internally we can perform contact syncing or not.
  */
-export const useShouldDispatchAddressBookSyncing = () => {
+export const useShouldDispatchContactSyncing = () => {
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
-  const isAccountSyncingEnabled = useSelector(selectIsAddressBookSyncingEnabled);
+  const isContactSyncingEnabled = useSelector(selectIsContactSyncingEnabled);
   const basicFunctionality: boolean | undefined = useSelector(
     getUseExternalServices,
   );
@@ -34,7 +34,7 @@ export const useShouldDispatchAddressBookSyncing = () => {
   const shouldDispatchAccountSyncing: boolean = Boolean(
     basicFunctionality &&
       isBackupAndSyncEnabled &&
-      isAccountSyncingEnabled &&
+      isContactSyncingEnabled &&
       isUnlocked &&
       isSignedIn &&
       completedOnboarding,
@@ -44,29 +44,29 @@ export const useShouldDispatchAddressBookSyncing = () => {
 };
 
 /**
- * Custom hook to dispatch address book syncing.
+ * Custom hook to dispatch contact syncing.
  *
- * @returns An object containing the `dispatchAddressBookSyncing` function, boolean `shouldDispatchAddressBookSyncing`,
+ * @returns An object containing the `dispatchContactSyncing` function, boolean `shouldDispatchContactSyncing`,
  * and error state.
  */
-export const useAddressBookSyncing = () => {
+export const useContactSyncing = () => {
   const dispatch = useDispatch();
 
-  const shouldDispatchAddressBookSyncing = useShouldDispatchAddressBookSyncing();
+  const shouldDispatchContactSyncing = useShouldDispatchContactSyncing();
 
-  const dispatchAddressBookSyncing = useCallback(() => {
+  const dispatchContactSyncing = useCallback(() => {
     try {
-      if (!shouldDispatchAddressBookSyncing) {
+      if (!shouldDispatchContactSyncing) {
         return;
       }
-      dispatch(syncAddressBookWithUserStorage());
+      dispatch(syncContactsWithUserStorage());
     } catch (e) {
       log.error(e);
     }
-  }, [dispatch, shouldDispatchAddressBookSyncing]);
+  }, [dispatch, shouldDispatchContactSyncing]);
 
   return {
-    dispatchAddressBookSyncing,
-    shouldDispatchAddressBookSyncing,
+    dispatchContactSyncing,
+    shouldDispatchContactSyncing,
   };
 };

@@ -177,6 +177,13 @@ const SETTINGS_CONSTANTS = [
     iconName: IconName.SecurityTime,
   },
   {
+    tabMessage: (t) => t('backupAndSync'),
+    sectionMessage: (t) => t('backupAndSyncFeatureContacts'),
+    descriptionMessage: (t) => t('backupAndSyncFeatureContacts'),
+    route: `${BACKUPANDSYNC_ROUTE}#backup-and-sync-features-toggles-contact-syncing`,
+    iconName: IconName.SecurityTime,
+  },
+  {
     tabMessage: (t) => t('contacts'),
     sectionMessage: (t) => t('contacts'),
     descriptionMessage: (t) => t('contacts'),

@@ -23,7 +23,8 @@ import {
   AddressBookControllerContactUpdatedEvent,
   AddressBookControllerContactDeletedEvent,
   AddressBookControllerListAction,
-  AddressBookControllerImportContactsFromSyncAction,
+  AddressBookControllerSetAction,
+  AddressBookControllerDeleteAction,
 } from '@metamask/address-book-controller';
 import {
   NetworkControllerAddNetworkAction,
@@ -52,9 +53,10 @@ type MessengerActions =
   | NetworkControllerAddNetworkAction
   | NetworkControllerRemoveNetworkAction
   | NetworkControllerUpdateNetworkAction
-  // Address Book Syncing
+  // Contact Syncing
   | AddressBookControllerListAction
-  | AddressBookControllerImportContactsFromSyncAction;
+  | AddressBookControllerSetAction
+  | AddressBookControllerDeleteAction;
 
 type MessengerEvents =
   | UserStorageControllerStateChangeEvent
@@ -63,7 +65,7 @@ type MessengerEvents =
   // Account Syncing Events
   | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRenamedEvent
-  // Address Book Syncing Events
+  // Contact Syncing Events
   | AddressBookControllerContactUpdatedEvent
   | AddressBookControllerContactDeletedEvent
   // Network Syncing Events
@@ -106,7 +108,8 @@ export function getUserStorageControllerMessenger(
       'NetworkController:updateNetwork',
       // Address Book Controller Requests
       'AddressBookController:list',
-      'AddressBookController:importContactsFromSync',
+      'AddressBookController:set',
+      'AddressBookController:delete',
     ],
     allowedEvents: [
       // Keyring Controller Events

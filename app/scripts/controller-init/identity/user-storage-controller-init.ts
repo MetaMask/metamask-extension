@@ -67,23 +67,23 @@ export const UserStorageControllerInit: ControllerInitFunction<
           });
         },
       },
-      addressBookSyncing: {
+      contactSyncing: {
         onContactUpdated: (profileId) => {
-          console.log('MetaMetrics:: Address book sync: contact updated for profileId:', profileId);
+          console.log('MetaMetrics:: Contact sync: contact updated for profileId:', profileId);
         },
         onContactDeleted: (profileId) => {
-          console.log('MetaMetrics:: Address book sync: contact deleted for profileId:', profileId);
+          console.log('MetaMetrics:: Contact sync: contact deleted for profileId:', profileId);
         },
-        onAddressBookSyncErroneousSituation: (
+        onContactSyncErroneousSituation: (
           profileId,
           situationMessage,
           sentryContext,
         ) => {
           captureException(
-            new Error(`Address book sync - ${situationMessage}`),
+            new Error(`Contact sync - ${situationMessage}`),
             sentryContext,
           );
-          console.log('MetaMetrics:: Address book sync: error for profileId:', profileId, 'situationMessage:', situationMessage);
+          console.log('MetaMetrics:: Contact sync: error for profileId:', profileId, 'situationMessage:', situationMessage);
         },
       },
     },

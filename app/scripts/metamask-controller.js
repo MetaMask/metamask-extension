@@ -4311,8 +4311,8 @@ export default class MetamaskController extends EventEmitter {
         userStorageController.performDeleteStorageAllFeatureEntries.bind(
           userStorageController,
         ),
-      syncAddressBookWithUserStorage:
-        userStorageController.syncAddressBookWithUserStorage.bind(
+      syncContactsWithUserStorage:
+        userStorageController.syncContactsWithUserStorage.bind(
           userStorageController,
         ),
 
