@@ -31,6 +31,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { parseSecretRecoveryPhrase } from '../../../app/srp-input/parse-secret-recovery-phrase';
 import { clearClipboard } from '../../../../helpers/utils/util';
+import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { useTheme } from '../../../../hooks/useTheme';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import ShowHideToggle from '../../../ui/show-hide-toggle';
@@ -389,6 +390,7 @@ export const ImportSrp = ({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={async () => {
+            trace({ name: TraceName.ImportSrp });
             try {
               setLoading(true);
               await importWallet();
@@ -404,6 +406,8 @@ export const ImportSrp = ({
                 e instanceof Error ? e.message : 'An unknown error occurred',
               );
               setLoading(false);
+            } finally {
+              endTrace({ name: TraceName.ImportSrp });
             }
           }}
         >
