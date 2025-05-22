@@ -516,9 +516,6 @@
   "general": {
     "message": "一般"
   },
-  "goBack": {
-    "message": "Go Back"
-  },
   "goerli": {
     "message": "Goerli 測試網路"
   },
@@ -570,9 +567,6 @@
   },
   "importAccountMsg": {
     "message": " 匯入的帳戶並不會與您原有 MetaMask 帳戶助憶詞建立關聯。請用以下連結瞭解匯入帳戶相關的資料： "
-  },
-  "importMyWallet": {
-    "message": "Import My Wallet"
   },
   "importTokensCamelCase": {
     "message": "Import Tokens"
@@ -971,24 +965,6 @@
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "存在安全保管箱裡。"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "您的助憶詞就是您的錢包與資金的「總鑰匙」。"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "如果有人向您詢問您的助憶詞，他們十之八九是在詐騙您。"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "永遠永遠不要洩漏您的助憶詞，即使是 MetaMask 官方也一樣！"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "什麼是助憶詞？"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "我應該分享我的助憶詞嗎？"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "我該如何存放我的助憶詞？"
   },
   "seedPhraseIntroTitle": {
     "message": "保護您的錢包"

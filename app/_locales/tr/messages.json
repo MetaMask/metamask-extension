@@ -337,10 +337,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Maks. öncelik ücreti (başka bir deyişle \"madenci bahşişi\") doğrudan madencilere gider ve işleminizin öncelikli olarak gerçekleştirilmesini teşvik eder."
   },
-  "agreeTermsOfUse": {
-    "message": "MetaMask'in $1 bölümünü kabul ediyorum",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "Token'ın zincir içi geçmişi, daha önce şüpheli airdrop faaliyetlerinin olduğu durumları açığa çıkarır."
   },
@@ -1133,9 +1129,6 @@
   "confusingEnsDomain": {
     "message": "ENS adında karıştırılabilir bir karakter tespit ettik. Olası bir dolandırıcılığı önlemek için ENS adını kontrol edin."
   },
-  "congratulations": {
-    "message": "Tebrikler!"
-  },
   "connect": {
     "message": "Bağla"
   },
@@ -1320,9 +1313,6 @@
   },
   "createNewAccountHeader": {
     "message": "Yeni bir hesap oluştur"
-  },
-  "createNewWallet": {
-    "message": "Yeni bir cüzdan oluştur"
   },
   "createPassword": {
     "message": "Şifre Oluştur"
@@ -2183,9 +2173,6 @@
   "genericExplorerView": {
     "message": "Hesabı $1 üzerinde görüntüleyin"
   },
-  "goBack": {
-    "message": "Geri git"
-  },
   "goToSite": {
     "message": "Siteye git"
   },
@@ -2341,10 +2328,6 @@
   "id": {
     "message": "Kimlik"
   },
-  "ifYouGetLockedOut": {
-    "message": "Uygulamaya giriş yapamazsanız veya yeni bir cihaz edinirseniz paranızı kaybedersiniz. Gizli Kurtarma İfadenizi şurada yedeklediğinizden emin olun: $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "Tümünü yoksay"
   },
@@ -2378,9 +2361,6 @@
   },
   "importAccountMsg": {
     "message": "İçe aktarılan hesaplar ilk olarak oluşturduğunuz MetaMask hesabı Gizli Kurtarma ifadenizle ilişkilendirilmez. İçe aktarılan hesaplar hakkında daha fazla bilgi edinin"
-  },
-  "importMyWallet": {
-    "message": "Cüzdanımı içe aktar"
   },
   "importNFT": {
     "message": "NFT'yi İçe Aktar"
@@ -2585,10 +2565,6 @@
   "jsonFile": {
     "message": "JSON Dosyası",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Gizli Kurtarma İfadenizin hatırlatıcısını güvenli bir yerde tutun. Güvenli kurtarma ifadenizi kaybederseniz hiç kimse geri almanıza yardımcı olamaz. Daha da kötüsü, cüzdanınıza bir daha asla erişemezsiniz. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Hesap adı"
@@ -3720,9 +3696,6 @@
   "passwordNotLongEnough": {
     "message": "Şifre yeterince uzun değil"
   },
-  "passwordSetupDetails": {
-    "message": "Bu şifre MetaMask cüzdanınızın kilidini sadece bu cihazda açacaktır. MetaMask bu şifreyi kurtaramaz."
-  },
   "passwordStrength": {
     "message": "Şifre güvenlik düzeyi: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -4300,12 +4273,6 @@
   "rejected": {
     "message": "Reddedildi"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Unutmayın, Gizli Kurtarma İfadenizi kaybederseniz cüzdanınıza erişiminizi kaybedersiniz. Paranıza her zaman erişebilmeniz için bu sözcük dizisini saklamak amacıyla şunu yapın: $1."
-  },
-  "reminderSet": {
-    "message": "Hatırlatıcı ayarlandı!"
-  },
   "remove": {
     "message": "Kaldır"
   },
@@ -4556,9 +4523,6 @@
   "securityMessageLinkForNetworks": {
     "message": "ağ dolandırıcılıkları ve güvenlik riskleri"
   },
-  "securityPrivacyPath": {
-    "message": "Ayarlar > Güvenlik ve Gizlilik."
-  },
   "securityProviderPoweredBy": {
     "message": "$1 hizmetidir",
     "description": "The security provider that is providing data"
@@ -4576,35 +4540,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Gizli Kurtarma İfadesini Onayla"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Daha sonra hatırlat (önerilmez)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Cüzdanımı koru (önerilir)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Birden fazla gizli yerde not ederek saklayın."
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Bir kasada saklayın."
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Gizli Kurtarma İfadesi, cüzdanınız ve paralarınız için \"ana anahtar\" niteliği taşıyan bir 12 kelimelik ifadedir"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Birileri sizden kurtarma ifadenizi istiyorsa büyük olasılıkla sizi dolandırmaya ve cüzdanınızdaki paraları çalmaya çalışıyordur"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Gizli Kurtarma İfadenizi MetaMask de dahil olmak üzere asla paylaşmayın!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Gizli Kurtarma İfadesi nedir?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Gizli Kurtarma İfademi paylaşmalı mıyım?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Gizli Kurtarma İfademi nasıl kaydederim?"
   },
   "seedPhraseIntroTitle": {
     "message": "Cüzdanınızı koruyun"
@@ -4731,9 +4671,6 @@
   },
   "settings": {
     "message": "Ayarlar"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "Ayarlar, kullanım kolaylığı ve güvenlik için optimize edildi. Bunları dilediğiniz zaman değiştirin."
   },
   "settingsSearchMatchingNotFound": {
     "message": "Eşleşen sonuç bulunamadı."
@@ -4888,9 +4825,6 @@
   },
   "siweURI": {
     "message": "URL adresi"
-  },
-  "skip": {
-    "message": "Atla"
   },
   "skipAccountSecurity": {
     "message": "Hesap güvenliğini atla?"
@@ -6390,10 +6324,6 @@
   "walletConnectionGuide": {
     "message": "donanım cüzdanı bağlantı kılavuzumuz"
   },
-  "walletProtectedAndReadyToUse": {
-    "message": "Cüzdanınız korunuyor ve kullanıma hazır. Gizli Kurtarma İfadenizi $1 bölümünde bulabilirsiniz ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "wantToAddThisNetwork": {
     "message": "Bu ağı eklemek istiyor musunuz?"
   },
@@ -6439,23 +6369,8 @@
   "welcomeBack": {
     "message": "Tekrar Hoş Geldin!"
   },
-  "welcomeExploreDescription": {
-    "message": "Kripto paraları ve varlıkları saklayın, gönderin ve harcayın."
-  },
-  "welcomeExploreTitle": {
-    "message": "Merkezsiz uygulamaları keşfedin"
-  },
-  "welcomeLoginDescription": {
-    "message": "Merkezsiz uygulamalarda oturum açmak için MetaMask'inizi kullanın - kaydolmak gerekmez."
-  },
-  "welcomeLoginTitle": {
-    "message": "Cüzdanınıza merhaba deyin"
-  },
   "welcomeToMetaMask": {
     "message": "Başlayalım"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Milyonların güvendiği MetaMask, web3 dünyasını herkes için erişilebilir kılan güvenli bir cüzdandır."
   },
   "whatsThis": {
     "message": "Bu nedir?"
