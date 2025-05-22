@@ -290,16 +290,20 @@ const TokenButtons = ({
   ]);
 
   return (
-    <Box display={Display.Flex} justifyContent={JustifyContent.spaceEvenly}>
+    <Box
+      display={Display.Flex}
+      gap={3}
+      justifyContent={JustifyContent.spaceEvenly}
+    >
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <IconButton
           className="token-overview__button"
           Icon={
             <Icon
-              name={IconName.PlusAndMinus}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
+              name={IconName.Money}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
             />
           }
           label={t('buyAndSell')}
@@ -308,7 +312,6 @@ const TokenButtons = ({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
           // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           disabled={token.isERC721 || !isBuyableChain}
-          tooltipRender={null}
         />
         ///: END:ONLY_INCLUDE_IF
       }
@@ -318,15 +321,14 @@ const TokenButtons = ({
         onClick={handleSendOnClick}
         Icon={
           <Icon
-            name={IconName.Arrow2UpRight}
-            color={IconColor.iconDefault}
-            size={IconSize.Sm}
+            name={IconName.Send}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
           />
         }
         label={t('send')}
         data-testid="eth-overview-send"
         disabled={token.isERC721}
-        tooltipRender={null}
       />
 
       <IconButton
@@ -334,13 +336,12 @@ const TokenButtons = ({
         Icon={
           <Icon
             name={IconName.SwapHorizontal}
-            color={IconColor.iconDefault}
-            size={IconSize.Sm}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
           />
         }
         onClick={handleSwapOnClick}
         label={t('swap')}
-        tooltipRender={null}
         disabled={!isSwapsChain}
       />
 
@@ -352,13 +353,12 @@ const TokenButtons = ({
           Icon={
             <Icon
               name={IconName.Bridge}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
             />
           }
           label={t('bridge')}
           onClick={() => handleBridgeOnClick(false)}
-          tooltipRender={null}
           disabled={!isBridgeChain}
         />
         ///: END:ONLY_INCLUDE_IF
