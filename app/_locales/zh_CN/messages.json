@@ -337,10 +337,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "优先费用（又称“矿工费”）直接向矿工支付，激励他们优先处理您的交易。"
   },
-  "agreeTermsOfUse": {
-    "message": "我同意MetaMask的$1",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "该代币的链上历史记录显示，此前存在可疑的空投活动实例。"
   },
@@ -1321,9 +1317,6 @@
   "createNewAccountHeader": {
     "message": "创建新账户"
   },
-  "createNewWallet": {
-    "message": "创建新钱包"
-  },
   "createPassword": {
     "message": "创建密码"
   },
@@ -2183,9 +2176,6 @@
   "genericExplorerView": {
     "message": "在$1查看账户"
   },
-  "goBack": {
-    "message": "返回"
-  },
   "goToSite": {
     "message": "转到网站"
   },
@@ -2378,9 +2368,6 @@
   },
   "importAccountMsg": {
     "message": "导入的账户将不会与最初创建的 MetaMask 账户私钥助记词相关联。了解更多有关导入账户的信息"
-  },
-  "importMyWallet": {
-    "message": "导入我的钱包"
   },
   "importNFT": {
     "message": "导入 NFT"
@@ -3720,9 +3707,6 @@
   "passwordNotLongEnough": {
     "message": "密码长度不足"
   },
-  "passwordSetupDetails": {
-    "message": "此密码只会在此设备上解锁您的 MetaMask 钱包。MetaMask 无法恢复此密码。"
-  },
   "passwordStrength": {
     "message": "密码强度：$1",
     "description": "Return password strength to the user when user wants to create password."
@@ -4576,35 +4560,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "确认私钥助记词"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "稍后提醒我（不推荐）"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "保护我的钱包（推荐）"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "写下并存储在多个秘密位置。"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "安全存放在保险箱内。"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "您的账户私钥助记词是由12个单词组成的短语，它是您的钱包和资金的“主私钥”"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "如果有人要求您的恢复短语，他们可能会试图欺诈您并偷窃您的钱包资金"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "切勿分享您的账户私钥助记词，包括也不能与 MetaMask 分享！"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "什么是账户私钥助记词？"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "我是否应该分享我的账户私钥助记词？"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "如何保存我的账户私钥助记词？"
   },
   "seedPhraseIntroTitle": {
     "message": "保护您的钱包安全"
@@ -4888,9 +4848,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "跳过"
   },
   "skipAccountSecurity": {
     "message": "跳过账户安全？"
@@ -6439,23 +6396,8 @@
   "welcomeBack": {
     "message": "欢迎回来！"
   },
-  "welcomeExploreDescription": {
-    "message": "存储、发送和使用加密货币和资产。"
-  },
-  "welcomeExploreTitle": {
-    "message": "探索去中心化应用"
-  },
-  "welcomeLoginDescription": {
-    "message": "使用您的 MetaMask 登录去中心化应用 - 无需注册。"
-  },
-  "welcomeLoginTitle": {
-    "message": "迎接您的钱包"
-  },
   "welcomeToMetaMask": {
     "message": "让我们开始吧"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "MetaMask 深受数百万人信任，是一款可以让所有人进入 web3 世界的安全钱包。"
   },
   "whatsThis": {
     "message": "这是什么？"

@@ -337,10 +337,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Biaya prioritas (alias “tip penambang”) langsung masuk ke penambang dan memberi insentif kepada mereka untuk memprioritaskan transaksi Anda."
   },
-  "agreeTermsOfUse": {
-    "message": "Saya menyetujui $1 MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "Riwayat token on-chain menampilkan kejadian sebelumnya mengenai aktivitas airdrop yang mencurigakan."
   },
@@ -1321,9 +1317,6 @@
   "createNewAccountHeader": {
     "message": "Buat akun baru"
   },
-  "createNewWallet": {
-    "message": "Buat dompet baru"
-  },
   "createPassword": {
     "message": "Buat kata sandi"
   },
@@ -2183,9 +2176,6 @@
   "genericExplorerView": {
     "message": "Lihat akun di $1"
   },
-  "goBack": {
-    "message": "Kembali"
-  },
   "goToSite": {
     "message": "Buka situs"
   },
@@ -2378,9 +2368,6 @@
   },
   "importAccountMsg": {
     "message": "Akun yang diimpor tidak akan ditautkan dengan Frasa Pemulihan Rahasia MetaMask Anda. Pelajari selengkapnya tentang akun yang diimpor"
-  },
-  "importMyWallet": {
-    "message": "Impor dompet saya"
   },
   "importNFT": {
     "message": "Impor NFT"
@@ -3720,9 +3707,6 @@
   "passwordNotLongEnough": {
     "message": "Kata sandi kurang panjang"
   },
-  "passwordSetupDetails": {
-    "message": "Kata sandi ini akan membuka dompet MetaMask Anda hanya pada perangkat ini. MetaMask tidak dapat memulihkan kata sandi ini."
-  },
   "passwordStrength": {
     "message": "Kekuatan kata sandi: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -4576,35 +4560,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Konfirmasikan Frasa Pemulihan Rahasia"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Ingatkan saya nanti (tidak direkomendasikan)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Amankan dompet saya (direkomendasikan)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Tuliskan dan simpan di beberapa tempat rahasia."
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Simpan di deposit box yang aman."
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Frasa Pemulihan Rahasia Anda adalah “kunci master” ke dompet dan dana Anda"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Jika seseorang menanyakan frasa pemulihan Anda, kemungkinan mereka akan mencoba menipu dan mencuri dana di dompet Anda"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Jangan pernah membagikan Frasa Pemulihan Rahasia Anda bahkan kepada MetaMask sekali pun!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Apa itu Frasa Pemulihan Rahasia?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Haruskah saya membagikan Frasa Pemulihan Rahasia saya?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Bagaimana cara menyimpan Frasa Pemulihan Rahasia saya?"
   },
   "seedPhraseIntroTitle": {
     "message": "Amankan dompet Anda"
@@ -4888,9 +4848,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "Lewati"
   },
   "skipAccountSecurity": {
     "message": "Lewati keamanan akun?"
@@ -6439,23 +6396,8 @@
   "welcomeBack": {
     "message": "Selamat datang kembali!"
   },
-  "welcomeExploreDescription": {
-    "message": "Simpan, kirim, dan gunakan mata uang dan aset kripto."
-  },
-  "welcomeExploreTitle": {
-    "message": "Jelajahi aplikasi terdesentralisasi"
-  },
-  "welcomeLoginDescription": {
-    "message": "Gunakan MetaMask Anda untuk masuk ke aplikasi terdesentralisasi. Tidak perlu mendaftar."
-  },
-  "welcomeLoginTitle": {
-    "message": "Ucapkan halo pada dompet Anda"
-  },
   "welcomeToMetaMask": {
     "message": "Mari kita mulai"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "MetaMask merupakan dompet aman yang dipercaya oleh jutaan orang, yang membuat dunia web3 dapat diakses oleh semua orang."
   },
   "whatsThis": {
     "message": "Apa ini?"
