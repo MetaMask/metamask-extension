@@ -70,6 +70,7 @@
     "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",
     "showBetaHeader": false,
+    "upgradeSplashPageAcknowledgedForAccounts": [],
     "gasFeeEstimatesByChainId": {
       "0x5": {
         "gasEstimateType": "fee-market",

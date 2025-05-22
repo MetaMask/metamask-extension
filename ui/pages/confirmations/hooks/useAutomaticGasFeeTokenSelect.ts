@@ -1,16 +1,17 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useConfirmContext } from '../context/confirm';
 import { useAsyncResult } from '../../../hooks/useAsync';
-import { updateSelectedGasFeeToken } from '../../../store/controller-actions/transaction-controller';
 import { forceUpdateMetamaskState } from '../../../store/actions';
+import { updateSelectedGasFeeToken } from '../../../store/controller-actions/transaction-controller';
+import { useConfirmContext } from '../context/confirm';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useIsGaslessSupported } from './gas/useIsGaslessSupported';
 
 export function useAutomaticGasFeeTokenSelect() {
   const dispatch = useDispatch();
   const isGaslessSupported = useIsGaslessSupported();
+  const [firstCheck, setFirstCheck] = useState(true);
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -39,10 +40,14 @@ export function useAutomaticGasFeeTokenSelect() {
     Boolean(firstGasFeeTokenAddress);
 
   useAsyncResult(async () => {
-    if (!shouldSelect) {
+    if (!gasFeeTokens || !transactionId || !firstCheck) {
       return;
     }
 
-    await selectFirstToken();
-  }, []);
+    setFirstCheck(false);
+
+    if (shouldSelect) {
+      await selectFirstToken();
+    }
+  }, [shouldSelect, selectFirstToken, firstCheck, gasFeeTokens, transactionId]);
 }
