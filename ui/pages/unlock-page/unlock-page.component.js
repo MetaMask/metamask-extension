@@ -114,10 +114,6 @@ export default class UnlockPage extends Component {
      */
     forceUpdateMetamaskState: PropTypes.func,
     /**
-     * Password hint
-     */
-    passwordHint: PropTypes.string.optional,
-    /**
      * Whether social login is enabled
      */
     socialLoginEnabled: PropTypes.bool,
@@ -126,7 +122,6 @@ export default class UnlockPage extends Component {
   state = {
     password: '',
     error: null,
-    showHint: false,
     showResetPasswordModal: false,
     isLocked: false,
   };
@@ -310,11 +305,9 @@ export default class UnlockPage extends Component {
   };
 
   renderHelpText = () => {
-    const { error, showHint } = this.state;
-    const { passwordHint } = this.props;
-    const { t } = this.context;
+    const { error } = this.state;
 
-    if (!error && !showHint) {
+    if (!error) {
       return null;
     }
 
@@ -333,11 +326,6 @@ export default class UnlockPage extends Component {
             {error}
           </Text>
         )}
-        {showHint && (
-          <Text textAlign={TextAlign.Left} color={TextColor.textMuted}>
-            {t('unlockPageHint', [passwordHint])}
-          </Text>
-        )}
       </Box>
     );
   };
@@ -352,10 +340,8 @@ export default class UnlockPage extends Component {
   };
 
   render() {
-    const { password, error, showHint, isLocked, showResetPasswordModal } =
-      this.state;
+    const { password, error, isLocked, showResetPasswordModal } = this.state;
     const { t } = this.context;
-    const { passwordHint } = this.props;
 
     const needHelpText = t('needHelpLinkText');
 
@@ -403,17 +389,6 @@ export default class UnlockPage extends Component {
                     <Text variant={TextVariant.bodyMdMedium}>
                       {t('password')}
                     </Text>
-                    {passwordHint && (
-                      <ButtonLink
-                        onClick={() => {
-                          this.setState({ showHint: !showHint });
-                        }}
-                      >
-                        {showHint
-                          ? t('unlockPageHintHide')
-                          : t('unlockPageHintShow')}
-                      </ButtonLink>
-                    )}
                   </Box>
                 }
                 placeholder={t('enterPassword')}
