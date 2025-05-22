@@ -6,16 +6,14 @@ import {
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-  setPermittedChainIds as setPermittedChainIdsOnCaveatValue,
-  setPermittedAccounts as setPermittedAccountsOnCaveatValue,
+  setNonSCACaipAccountIdsInCaip25CaveatValue,
+  getCaipAccountIdsFromCaip25CaveatValue,
+  isInternalAccountInPermittedAccountIds,
+  getAllScopesFromCaip25CaveatValue,
+  setChainIdsInCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import { isSnapId } from '@metamask/snaps-utils';
 import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
-import {
-  getCaipAccountIdsFromCaip25CaveatValue,
-  isInternalAccountInPermittedAccountIds,
-} from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
-import { getAllScopesFromCaip25CaveatValue } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
 import { getNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
 
 export function getPermissionBackgroundApiMethods({
@@ -113,12 +111,12 @@ export function getPermissionBackgroundApiMethods({
       }
     });
 
-    const updatedCaveatValueWithChainIds = setPermittedChainIdsOnCaveatValue(
+    const updatedCaveatValueWithChainIds = setChainIdsInCaip25CaveatValue(
       caip25Caveat.value,
       updatedPermittedChainIds,
     );
 
-    const updatedCaveatValueWithAccountIds = setPermittedAccountsOnCaveatValue(
+    const updatedCaveatValueWithAccountIds = setNonSCACaipAccountIdsInCaip25CaveatValue(
       updatedCaveatValueWithChainIds,
       caipAccountIds,
     );
@@ -147,7 +145,7 @@ export function getPermissionBackgroundApiMethods({
         Caip25EndowmentPermissionName,
       );
     } else {
-      const updatedCaveatValueWithChainIds = setPermittedChainIdsOnCaveatValue(
+      const updatedCaveatValueWithChainIds = setChainIdsInCaip25CaveatValue(
         caip25Caveat.value,
         chainIds,
       );
@@ -156,7 +154,7 @@ export function getPermissionBackgroundApiMethods({
         getCaipAccountIdsFromCaip25CaveatValue(caip25Caveat.value);
 
       const updatedCaveatValueWithAccountIds =
-        setPermittedAccountsOnCaveatValue(
+        setNonSCACaipAccountIdsInCaip25CaveatValue(
           updatedCaveatValueWithChainIds,
           existingPermittedAccountIds,
         );
