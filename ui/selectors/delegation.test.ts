@@ -3,7 +3,11 @@ import {
   createDelegation,
   getDelegationHashOffchain,
 } from '../../shared/lib/delegation';
-import { listDelegationEntries, type DelegationState } from './delegation';
+import {
+  listDelegationEntries,
+  getDelegationEntry,
+  type DelegationState,
+} from './delegation';
 
 const MOCK_CHAIN_ID = '0x1';
 
@@ -145,6 +149,24 @@ describe('Delegation Selectors', () => {
           },
         }),
       ).toStrictEqual([]);
+    });
+  });
+
+  describe('#getDelegationEntry', () => {
+    it('returns the correct entry for a valid hash', () => {
+      expect(getDelegationEntry(getMockState(), HASH_1)).toStrictEqual(ENTRY_1);
+      expect(getDelegationEntry(getMockState(), HASH_2)).toStrictEqual(ENTRY_2);
+      expect(getDelegationEntry(getMockState(), HASH_3)).toStrictEqual(ENTRY_3);
+    });
+
+    it('returns undefined for a non-existent hash', () => {
+      expect(getDelegationEntry(getMockState(), '0xdeadbeef')).toBeUndefined();
+    });
+
+    it('returns undefined if delegations object is empty', () => {
+      expect(
+        getDelegationEntry({ metamask: { delegations: {} } }, HASH_1),
+      ).toBeUndefined();
     });
   });
 });

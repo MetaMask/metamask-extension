@@ -99,6 +99,7 @@ export type ControllerFlatState = AccountsController['state'] &
   AuthenticationController['state'] &
   CronjobController['state'] &
   DeFiPositionsController['state'] &
+  DelegationController['state'] &
   GasFeeController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
@@ -125,5 +126,4 @@ export type ControllerFlatState = AccountsController['state'] &
   TokenRatesController['state'] &
   NftController['state'] &
   NftDetectionController['state'] &
-  RemoteFeatureFlagController['state'] &
-  DelegationController['state'];
+  RemoteFeatureFlagController['state'];
