@@ -116,10 +116,11 @@ export function getPermissionBackgroundApiMethods({
       updatedPermittedChainIds,
     );
 
-    const updatedCaveatValueWithAccountIds = setNonSCACaipAccountIdsInCaip25CaveatValue(
-      updatedCaveatValueWithChainIds,
-      caipAccountIds,
-    );
+    const updatedCaveatValueWithAccountIds =
+      setNonSCACaipAccountIdsInCaip25CaveatValue(
+        updatedCaveatValueWithChainIds,
+        caipAccountIds,
+      );
 
     permissionController.updateCaveat(
       origin,

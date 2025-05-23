@@ -9,7 +9,6 @@ import {
   KnownCaipNamespace,
 } from '@metamask/utils';
 import { uniq } from 'lodash';
-import { isCaipAccountIdInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import {
   AlignItems,
   BlockSize,
