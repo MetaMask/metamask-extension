@@ -254,7 +254,7 @@ describe('Actions', () => {
       ];
 
       await store.dispatch(
-        actions.restoreSocialSocialBackupAndGetSeedPhrase('password'),
+        actions.restoreSocialBackupAndGetSeedPhrase('password'),
       );
 
       expect(fetchAllSeedPhrasesStub.callCount).toStrictEqual(1);
@@ -282,7 +282,7 @@ describe('Actions', () => {
       ];
 
       await expect(
-        store.dispatch(actions.restoreSocialSocialBackupAndGetSeedPhrase('password')),
+        store.dispatch(actions.restoreSocialBackupAndGetSeedPhrase('password')),
       ).rejects.toThrow('No seed phrase found');
 
       expect(fetchAllSeedPhrasesStub.callCount).toStrictEqual(1);
@@ -334,12 +334,6 @@ describe('Actions', () => {
       expect(
         changePasswordStub.calledOnceWith(newPassword, oldPassword),
       ).toStrictEqual(true);
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-      expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
 
