@@ -1,3 +1,4 @@
+import { regularDelayMs } from '../../../helpers';
 import HomePage from './homepage';
 
 class NonEvmHomepage extends HomePage {
@@ -14,15 +15,15 @@ class NonEvmHomepage extends HomePage {
 
   async check_pageIsLoaded(amount: string = ''): Promise<void> {
     await super.check_pageIsLoaded();
+    await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
     if (amount) {
-      try {
+      await this.driver.wait(async () => {
         await this.driver.waitForSelector({
           text: `${amount}`,
           tag: 'span',
         });
-      } catch (e) {
-        console.log('Error in check_pageIsLoaded', e);
-      }
+        return true;
+      }, 60000);
     }
   }
 
@@ -32,6 +33,7 @@ class NonEvmHomepage extends HomePage {
    * Clicks the send button on the non-EVM account homepage.
    */
   async clickOnSendButton(): Promise<void> {
+    await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
     await this.driver.clickElement(this.sendButton);
   }
 
@@ -45,13 +47,22 @@ class NonEvmHomepage extends HomePage {
     balance: string,
     token: string = 'SOL',
   ): Promise<void> {
-    await this.driver.waitForSelector(
-      {
-        text: balance,
-        tag: 'span',
-      },
-      { timeout: 60000 },
-    );
+    await this.driver.wait(async () => {
+      try {
+        await this.driver.waitForSelector(
+          {
+            text: balance,
+            tag: 'span',
+          },
+          { timeout: 1000 },
+        );
+        return true;
+      } catch (e) {
+        console.log('Error in check_getBalance', e);
+        await this.driver.refresh();
+        return false;
+      }
+    }, 30000);
     await this.driver.waitForSelector(
       {
         text: token,
@@ -59,6 +70,7 @@ class NonEvmHomepage extends HomePage {
       },
       { timeout: 60000 },
     );
+    await this.driver.refresh();
   }
 
   /**

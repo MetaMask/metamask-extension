@@ -12,7 +12,10 @@ import {
   type BridgeAsset,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { TokenListMap, TokenListToken } from '@metamask/assets-controllers';
+import type {
+  TokenListMap,
+  TokenListToken,
+} from '@metamask/assets-controllers';
 import { AssetType } from '../../../shared/constants/transaction';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { useMultichainBalances } from '../useMultichainBalances';
@@ -98,6 +101,9 @@ export const useTokensWithFiltering = (
             url: url as string,
             ...requestOptions,
             fetchOptions: { method: 'GET', headers },
+            cacheOptions: {
+              cacheRefreshTime: 10 * MINUTE,
+            },
             functionName: 'fetchBridgeTokens',
           });
         },
@@ -274,9 +280,7 @@ export const useTokensWithFiltering = (
             token &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
-            if (token) {
-              yield token;
-            }
+            yield token;
           }
         }
 
@@ -285,12 +289,10 @@ export const useTokensWithFiltering = (
           const token = buildTokenData(token_);
           if (
             token &&
-            !token.symbol.includes('$') &&
+            token.symbol.indexOf('$') === -1 &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
-            if (token) {
-              yield token;
-            }
+            yield token;
           }
         }
       })(),

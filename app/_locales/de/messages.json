@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Bitcoin-Konto (Beta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Bitcoin-Konto (Testnet)"
-  },
   "addBlockExplorer": {
     "message": "Einen Block-Explorer hinzufügen"
   },
@@ -661,22 +658,6 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Bei Aktivierung dieser Funktion haben Sie die Möglichkeit, ein Bitcoin-Konto zu Ihrer MetaMask-Erweiterung hinzuzufügen, das von Ihrer bestehenden geheimen Wiederherstellungsphrase abgeleitet ist. Hierbei handelt es sich um eine experimentelle Beta-Funktion, deren Nutzung also auf eigene Gefahr erfolgt. Falls Sie uns Feedback zu dieser neuen Bitcoin-Funktion geben möchten, füllen Sie bitte dieses $1 aus.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Aktivierung der Funktion „Ein neues Bitcoin-Konto hinzufügen (Beta)“"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Bei Aktivierung dieser Funktion haben Sie die Möglichkeit, ein Bitcoin-Konto für das Test-Netzwerk hinzuzufügen."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Aktivierung der Funktion „Ein neues Bitcoin-Konto hinzufügen (Testnet)“"
   },
   "blockExplorerAccountAction": {
     "message": "Konto",
@@ -1338,10 +1319,6 @@
   },
   "creatorAddress": {
     "message": "Adresse des Erstellers"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Dies spiegelt den Wert aller Tokens wider, über die Sie in allen Netzwerken verfügen. Wenn Sie diesen Wert lieber in ETH oder anderen Währungen sehen möchten, gehen Sie zu $1.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "Netzwerkübergreifender Austausch mit MetaMask Portfolio"
@@ -3444,10 +3421,6 @@
   "notificationTransactionFailedMessage": {
     "message": "Transaktion $1 ist fehlgeschlagen! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
-  },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "Transaktion ist fehlgeschlagen $1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
   },
   "notificationTransactionFailedTitle": {
     "message": "Fehlgeschlagene Transaktion",
@@ -6492,9 +6465,6 @@
   },
   "yourBalance": {
     "message": "Ihr Kontostand"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Ihr Kontostand wird aggregiert"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Ihr NFT könnte gefährdet sein"

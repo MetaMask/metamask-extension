@@ -16,9 +16,9 @@ import {
   isSolanaChainId,
   isValidQuoteRequest,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-  type GenericQuoteRequest,
   getNativeAssetForChainId,
   isNativeAddress,
+  UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import {
   setFromToken,
@@ -29,6 +29,7 @@ import {
   updateQuoteRequestParams,
   resetBridgeState,
   setSlippage,
+  trackUnifiedSwapBridgeEvent,
 } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -81,7 +82,10 @@ import {
   setSelectedAccount,
 } from '../../../store/actions';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
-import { formatTokenAmount } from '../utils/quote';
+import {
+  formatTokenAmount,
+  isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
+} from '../utils/quote';
 import {
   CrossChainSwapsEventProperties,
   useCrossChainSwapsEventTracker,
@@ -126,6 +130,8 @@ import {
   fetchAssetMetadata,
   toAssetId,
 } from '../../../../shared/lib/asset-utils';
+import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -158,6 +164,8 @@ const PrepareBridgePage = () => {
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
 
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const slippage = useSelector(getSlippage);
 
@@ -166,6 +174,7 @@ const PrepareBridgePage = () => {
     isLoading,
     activeQuote: activeQuote_,
     isQuoteGoingToRefresh,
+    quotesRefreshCount,
   } = useSelector(getBridgeQuotes);
   const refreshRate = useSelector(getQuoteRefreshRate);
 
@@ -174,15 +183,19 @@ const PrepareBridgePage = () => {
   );
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
-  // If latest quote is expired and user has sufficient balance
-  // set activeQuote to undefined to hide stale quotes but keep inputs filled
-  const activeQuote =
-    isQuoteExpired &&
-    (!quoteRequest.insufficientBal ||
-      // insufficientBal is always true for solana
-      (fromChain && isSolanaChainId(fromChain.chainId)))
-      ? undefined
-      : activeQuote_;
+
+  // Determine if the current quote is expired or does not match the currently
+  // selected destination asset/chain.
+  const isQuoteExpiredOrInvalid = isQuoteExpiredOrInvalidUtil({
+    activeQuote: activeQuote_,
+    toToken,
+    toChain,
+    fromChain,
+    isQuoteExpired,
+    insufficientBal: quoteRequest.insufficientBal,
+  });
+
+  const activeQuote = isQuoteExpiredOrInvalid ? undefined : activeQuote_;
 
   const isEvm = useMultichainSelector(getMultichainIsEvm);
   const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);
@@ -208,7 +221,6 @@ const PrepareBridgePage = () => {
     isInsufficientGasForQuote,
     isInsufficientBalance,
   } = useSelector(getValidationErrors);
-  const { quotesRefreshCount } = useSelector(getBridgeQuotes);
   const { openBuyCryptoInPdapp } = useRamps();
 
   const nativeAsset = useMemo(
@@ -236,6 +248,21 @@ const PrepareBridgePage = () => {
 
   const { flippedRequestProperties } = useRequestProperties();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
+
+  // When entering the page for the first time emit an event for the page viewed
+  useEffect(() => {
+    trackCrossChainSwapsEvent({
+      event: MetaMetricsEventName.ActionPageViewed,
+      properties: {
+        chain_id_source: formatChainIdToCaip(fromChain?.chainId ?? ''),
+        token_symbol_source: fromToken?.symbol ?? '',
+        token_address_source: fromToken?.address ?? '',
+        chain_id_destination: formatChainIdToCaip(toChain?.chainId ?? ''),
+        token_symbol_destination: toToken?.symbol ?? '',
+        token_address_destination: toToken?.address ?? '',
+      },
+    });
+  }, []);
 
   const millisecondsUntilNextRefresh = useCountdownTimer();
 
@@ -373,17 +400,23 @@ const PrepareBridgePage = () => {
     ],
   );
 
-  const debouncedUpdateQuoteRequestInController = useCallback(
-    debounce((p: Partial<GenericQuoteRequest>) => {
-      dispatch(updateQuoteRequestParams(p));
-    }, 300),
-    [],
+  const debouncedUpdateQuoteRequestInController = debounce(
+    (...args: Parameters<typeof updateQuoteRequestParams>) => {
+      dispatch(updateQuoteRequestParams(...args));
+    },
+    300,
   );
 
   useEffect(() => {
     dispatch(setSelectedQuote(null));
-    debouncedUpdateQuoteRequestInController(quoteParams);
-  }, [quoteParams, debouncedUpdateQuoteRequestInController]);
+    debouncedUpdateQuoteRequestInController(quoteParams, {
+      stx_enabled: smartTransactionsEnabled,
+      token_symbol_source: fromToken?.symbol ?? '',
+      token_symbol_destination: toToken?.symbol ?? '',
+      security_warnings: [],
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quoteParams]);
 
   const trackInputEvent = useCallback(
     (
@@ -483,6 +516,10 @@ const PrepareBridgePage = () => {
 
   // Set the default destination token and slippage for swaps
   useEffect(() => {
+    endTrace({
+      name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
+      timestamp: Date.now(),
+    });
     if (isSwap) {
       dispatch(setSlippage(undefined));
       if (fromChain && !toToken) {
@@ -572,6 +609,7 @@ const PrepareBridgePage = () => {
             dispatch(setFromTokenInputValue(value));
           }}
           amountInFiat={fromAmountInCurrency.valueInCurrency.toString()}
+          balanceAmount={srcTokenBalance}
           amountFieldProps={{
             testId: 'from-amount',
             autoFocus: true,
@@ -637,6 +675,34 @@ const PrepareBridgePage = () => {
                 if (!isSwap && !isNetworkAdded(toChain)) {
                   return;
                 }
+                toChain?.chainId &&
+                  fromToken &&
+                  toToken &&
+                  dispatch(
+                    trackUnifiedSwapBridgeEvent(
+                      UnifiedSwapBridgeEventName.InputSourceDestinationFlipped,
+                      {
+                        token_symbol_source: toToken?.symbol ?? null,
+                        token_symbol_destination: fromToken?.symbol ?? null,
+                        token_address_source:
+                          toAssetId(
+                            toToken.address ?? '',
+                            formatChainIdToCaip(toToken.chainId ?? ''),
+                          ) ??
+                          getNativeAssetForChainId(toChain.chainId)?.assetId,
+                        token_address_destination:
+                          toAssetId(
+                            fromToken.address ?? '',
+                            formatChainIdToCaip(fromToken.chainId ?? ''),
+                          ) ?? null,
+                        chain_id_source: formatChainIdToCaip(toChain.chainId),
+                        chain_id_destination: fromChain?.chainId
+                          ? formatChainIdToCaip(fromChain?.chainId)
+                          : null,
+                        security_warnings: [],
+                      },
+                    ),
+                  );
                 setRotateSwitchTokens(!rotateSwitchTokens);
                 flippedRequestProperties &&
                   trackCrossChainSwapsEvent({
@@ -813,8 +879,15 @@ const PrepareBridgePage = () => {
                 ))}
               <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
                 <BridgeCTAButton
+                  nativeAssetBalance={nativeAssetBalance}
+                  srcTokenBalance={srcTokenBalance}
                   onFetchNewQuotes={() => {
-                    debouncedUpdateQuoteRequestInController(quoteParams);
+                    debouncedUpdateQuoteRequestInController(quoteParams, {
+                      stx_enabled: smartTransactionsEnabled,
+                      token_symbol_source: fromToken?.symbol ?? '',
+                      token_symbol_destination: toToken?.symbol ?? '',
+                      security_warnings: [], // TODO populate security warnings
+                    });
                   }}
                   needsDestinationAddress={
                     isSolanaBridgeEnabled &&
