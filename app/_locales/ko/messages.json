@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "비트코인 계정 (베타)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "비트코인 계정 (테스트넷)"
-  },
   "addBlockExplorer": {
     "message": "블록 탐색기 추가"
   },
@@ -657,22 +654,6 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "비트코인"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "이 기능을 켜면 기존 비밀복구구문에서 파생된 MetaMask 확장에 비트코인 계정을 추가할 수 있는 옵션을 이용할 수 있습니다. 이 기능은 실험적 베타 기능이므로 사용자의 책임하에 사용해야 합니다. 이 새로운 비트코인 경험에 대한 피드백을 보내려면 이 $1을(를) 작성해 주세요.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "'새 비트코인 계정 추가(베타)' 활성화"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "이 기능을 켜면 테스트 네트워크에 비트코인 계정을 추가할 수 있는 옵션이 제공됩니다."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "'새 비트코인 계정 추가(테스트넷)' 활성화"
   },
   "blockExplorerAccountAction": {
     "message": "계정",
@@ -1331,10 +1312,6 @@
   },
   "creatorAddress": {
     "message": "크리에이터 주소"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "이는 모든 네트워크에서 소유한 모든 토큰의 가치를 반영합니다. ETH나 다른 통화로 이 가치를 보고 싶으면 $1(으)로 이동하세요.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "MetaMask Portfolio로 네트워크 간 스왑"
@@ -6464,9 +6441,6 @@
   },
   "yourBalance": {
     "message": "내 잔액"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "잔액이 집계되었습니다."
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT가 위험할 수 있습니다"

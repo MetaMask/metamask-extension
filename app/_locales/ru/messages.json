@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Счет Биткойн (бета-версия)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Счет Биткойн (тестнет)"
-  },
   "addBlockExplorer": {
     "message": "Добавить обозреватель блоков"
   },
@@ -657,22 +654,6 @@
   "billionAbbreviation": {
     "message": "Б",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Биткойн"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Включение этой функции даст вам возможность добавить в ваше расширение MetaMask счет для биткойнов, созданный на основе вашей существующей секретной фразы для восстановления. Это экспериментальная бета-функция, которая используется на свой страх и риск. Пожалуйста, оставьте нам отзыв об этом новом способе взаимодействия с биткойном, заполнив эту $1.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Включить «Добавить новый счет в биткойнах (бета-версия)»"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Включение этой функции даст вам возможность добавить счет в биткойнах для тестнета."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Включить «Добавить новый счет в биткойнах (тестнет)»"
   },
   "blockExplorerAccountAction": {
     "message": "Счет",
@@ -1331,10 +1312,6 @@
   },
   "creatorAddress": {
     "message": "Адрес автора"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Это значение отражает стоимость всех токенов, которыми Вы владеете во всех сетях. Если Вы предпочитаете видеть это значение в ETH или других валютах, перейдите на $1.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "Меняйте сети с помощью MetaMask Portfolio"
@@ -6464,9 +6441,6 @@
   },
   "yourBalance": {
     "message": "Ваш баланс"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Ваш баланс суммируется"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Ваш NFT могут быть в опасности"
