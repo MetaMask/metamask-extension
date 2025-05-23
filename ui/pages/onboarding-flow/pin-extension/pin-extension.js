@@ -144,19 +144,27 @@ export default function OnboardingPinExtension() {
             >
               <Box
                 display={Display.Flex}
-                alignItems={AlignItems.center}
+                alignItems={AlignItems.flexStart}
                 justifyContent={JustifyContent.center}
                 className="onboarding-pin-extension__image-container"
               >
-                <img src="/images/onboarding-extension-pin.svg" alt="" />
+                <img
+                  src="/images/onboarding-extension-pin.svg"
+                  className="onboarding-pin-extension__image-pin"
+                  alt=""
+                />
               </Box>
               <Box
                 display={Display.Flex}
-                alignItems={AlignItems.center}
+                alignItems={AlignItems.flexStart}
                 justifyContent={JustifyContent.center}
                 className="onboarding-pin-extension__image-container"
               >
-                <img src="/images/onboarding-extension-launch.svg" alt="" />
+                <img
+                  src="/images/onboarding-extension-launch.svg"
+                  className="onboarding-pin-extension__image-launch"
+                  alt=""
+                />
               </Box>
             </Carousel>
             <Box
@@ -169,8 +177,8 @@ export default function OnboardingPinExtension() {
             >
               <Text
                 variant={TextVariant.headingLg}
+                fontWeight={FontWeight.Medium}
                 as="h2"
-                fontWeight={FontWeight.Bold}
               >
                 {t('onboardingPinExtensionTitle')}
               </Text>

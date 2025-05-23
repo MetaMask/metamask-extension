@@ -80,6 +80,9 @@ export const REVEAL_SEED_ROUTE = '/seed';
 PATH_NAME_MAP[`${REVEAL_SEED_ROUTE}/:keyringId`] =
   'Reveal Secret Recovery Phrase Page';
 
+export const IMPORT_SRP_ROUTE = '/import-srp';
+PATH_NAME_MAP[IMPORT_SRP_ROUTE] = 'Import Secret Recovery Phrase Page';
+
 export const RESTORE_VAULT_ROUTE = '/restore-vault';
 PATH_NAME_MAP[RESTORE_VAULT_ROUTE] = 'Restore Vault Page';
 
@@ -277,6 +280,8 @@ export const ONBOARDING_PRIVACY_SETTINGS_ROUTE = '/onboarding/privacy-settings';
 export const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
 export const ONBOARDING_WELCOME_ROUTE = '/onboarding/welcome';
 export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
+export const ONBOARDING_ACCOUNT_EXIST = '/onboarding/account-exist';
+export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
