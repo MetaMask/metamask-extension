@@ -57,6 +57,7 @@ export function getDeleGatorEnvironment(
       NonceEnforcer: c.NonceEnforcer,
       TimestampEnforcer: c.TimestampEnforcer,
       ValueLteEnforcer: c.ValueLteEnforcer,
+      MultiTokenPeriodEnforcer: c.MultiTokenPeriodEnforcer,
       NativeTokenTransferAmountEnforcer: c.NativeTokenTransferAmountEnforcer,
       NativeBalanceGteEnforcer: c.NativeBalanceGteEnforcer,
       NativeTokenStreamingEnforcer: c.NativeTokenStreamingEnforcer,

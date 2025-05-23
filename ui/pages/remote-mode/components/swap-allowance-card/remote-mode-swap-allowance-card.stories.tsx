@@ -4,13 +4,19 @@ import { MemoryRouter } from 'react-router-dom';
 import configureStore from '../../../../store/store';
 import RemoteModeSwapAllowanceCard from './remote-mode-swap-allowance-card.component';
 import testData from '../../../../../.storybook/test-data';
-import { TokenSymbol } from '../../../../../shared/lib/remote-mode';
+import { TokenInfo, TokenSymbol } from '../../../../../shared/lib/remote-mode';
+import { AssetType } from '@metamask/bridge-controller';
 const store = configureStore(testData);
 
 const mockSwapAllowance = {
   from: TokenSymbol.USDC,
-  to: 'High liquidity token',
+  to: TokenSymbol.ETH,
   amount: 1000,
+  decimals: 6,
+  type: AssetType.token,
+  address: '',
+  name: '',
+  image: '',
 };
 
 export default {
@@ -36,7 +42,7 @@ export const DifferentTokens = () => (
   <RemoteModeSwapAllowanceCard
     swapAllowance={{
       from: TokenSymbol.WETH,
-      to: 'Low liquidity token',
+      to: TokenSymbol.ETH,
       amount: 5,
     }}
     onRemove={() => {}}
@@ -47,7 +53,7 @@ export const LargeAmount = () => (
   <RemoteModeSwapAllowanceCard
     swapAllowance={{
       from: TokenSymbol.USDC,
-      to: 'Medium liquidity token',
+      to: TokenSymbol.ETH,
       amount: 1000000,
     }}
     onRemove={() => {}}
