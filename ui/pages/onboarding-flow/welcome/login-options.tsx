@@ -150,7 +150,7 @@ export default function LoginOptions({
               color={TextColor.textMuted}
               backgroundColor={BackgroundColor.backgroundDefault}
               paddingInline={2}
-              marginInline={'auto'}
+              marginInline="auto"
               textTransform={TextTransform.Uppercase}
               as="div"
               style={{
