@@ -91,10 +91,13 @@ function buildState({
   });
 }
 
-function runHook(stateOptions?: Parameters<typeof buildState>[0]) {
+function runHook(
+  stateOptions?: Parameters<typeof buildState>[0],
+  args: Parameters<typeof useInsufficientBalanceAlerts>[0] = {},
+) {
   const state = buildState(stateOptions);
   const response = renderHookWithConfirmContextProvider(
-    useInsufficientBalanceAlerts,
+    () => useInsufficientBalanceAlerts(args),
     state,
   );
 
@@ -183,6 +186,21 @@ describe('useInsufficientBalanceAlerts', () => {
     });
 
     expect(alerts).toEqual([]);
+  });
+
+  it('returns alerts if insufficient balance and gas fee token selected and ignoreGasFeeToken set', () => {
+    const alerts = runHook(
+      {
+        balance: 7,
+        currentConfirmation: TRANSACTION_MOCK,
+        transaction: { ...TRANSACTION_MOCK, selectedGasFeeToken: '0x123' },
+      },
+      {
+        ignoreGasFeeToken: true,
+      },
+    );
+
+    expect(alerts).toEqual(ALERT);
   });
 
   it('returns alert if account has balance less than gas fee plus value', () => {

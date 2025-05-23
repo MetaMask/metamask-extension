@@ -6,6 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import { Hex, hexToBigInt, hexToNumber } from '@metamask/utils';
 import { parseEther } from 'ethers/lib/utils';
+import { merge } from 'lodash';
 import {
   ExecutionStruct,
   SINGLE_DEFAULT_MODE,
@@ -14,19 +15,50 @@ import { getDeleGatorEnvironment } from '../../../shared/lib/delegation/environm
 import { isHexEqual } from '../../../shared/lib/delegation/utils';
 
 import { encodeRedeemDelegations } from '../../../shared/lib/delegation/delegation';
-import { DailyAllowanceMetadata } from '../../../shared/lib/remote-mode';
-import { ControllerFlatState } from '../controller-init/controller-list';
 import {
-  getDailyAllowance,
-  getRemoteModeEnabled,
-  isExistingAccount,
-} from '../../../shared/modules/selectors/remote-mode';
+  DailyAllowanceMetadata,
+  REMOTE_MODES,
+} from '../../../shared/lib/remote-mode';
+import { ControllerFlatState } from '../controller-init/controller-list';
 
-const hasEnoughAllowance = (
-  allowanceAmount: bigint,
-  transactionAmount: bigint,
-): boolean => {
-  return allowanceAmount >= transactionAmount;
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
+
+export const getRemoteModeEnabled = (state: ControllerFlatState) => {
+  const manifestFlags = getManifestFlags().remoteFeatureFlags;
+  const stateFlags = state.remoteFeatureFlags;
+  const flags = merge({}, stateFlags, manifestFlags);
+  return Boolean(flags.vaultRemoteMode);
+};
+
+export const isExistingAccount = ({
+  state,
+  address,
+}: {
+  state: ControllerFlatState;
+  address: string;
+}) => {
+  const { accounts } = state.internalAccounts;
+  return Object.values(accounts).some((account) => account.address === address);
+};
+
+export const getDailyAllowance = ({
+  state,
+  address,
+  chainId,
+}: {
+  state: ControllerFlatState;
+  address: Hex;
+  chainId: Hex;
+}) => {
+  const entries = Object.values(state.delegations);
+  const dailyAllowance = entries.find(
+    (e) =>
+      isHexEqual(address, e.delegation.delegator) &&
+      isHexEqual(chainId, e.chainId) &&
+      e.tags.includes(REMOTE_MODES.DAILY_ALLOWANCE),
+  );
+
+  return dailyAllowance;
 };
 
 const buildUpdateTransaction = ({
@@ -97,7 +129,7 @@ const prepareDailyAllowanceTransaction = ({
     ? hexToBigInt(transactionMeta.txParams.value)
     : BigInt(0);
 
-  if (!hasEnoughAllowance(allowanceAmount, transactionAmount)) {
+  if (transactionAmount > allowanceAmount) {
     return undefined;
   }
 
@@ -125,56 +157,45 @@ const prepareDailyAllowanceTransaction = ({
   };
 };
 
-export const updateRemoteModeTransaction = ({
+export const updateRemoteModeTransaction = async ({
   transactionMeta,
   state,
 }: {
   transactionMeta: TransactionMeta;
   state: ControllerFlatState;
-}): ReturnType<AfterAddHook> => {
+}): Promise<ReturnType<AfterAddHook>> => {
   const isRemoteModeEnabled = getRemoteModeEnabled(state);
   if (!isRemoteModeEnabled) {
-    return Promise.resolve({ updateTransaction: undefined });
+    return { updateTransaction: undefined };
   }
 
   switch (transactionMeta.type) {
     // Send
     case TransactionType.simpleSend:
     case TransactionType.tokenMethodTransfer: {
-      const result = prepareDailyAllowanceTransaction({
-        transactionMeta,
-        state,
-      });
-      if (!result) {
-        return Promise.resolve({ updateTransaction: undefined });
-      }
-      const { updatedFrom, updatedTo, updatedData } = result;
       try {
-        return Promise.resolve({
+        const result = prepareDailyAllowanceTransaction({
+          transactionMeta,
+          state,
+        });
+        if (!result) {
+          return { updateTransaction: undefined };
+        }
+        const { updatedFrom, updatedTo, updatedData } = result;
+        return {
           updateTransaction: buildUpdateTransaction({
             updatedFrom,
             updatedTo,
             updatedData,
           }),
-        });
+        };
       } catch (error) {
-        console.error('Error encoding redeemDelegations', error);
-        return Promise.resolve({ updateTransaction: undefined });
+        console.error('Error preparing daily allowance transaction', error);
+        return { updateTransaction: undefined };
       }
     }
 
-    // TODO: Swap
     default:
-      return Promise.resolve({ updateTransaction: undefined });
+      return { updateTransaction: undefined };
   }
-  // TODO:
-  // - Check if transaction is from HW wallet
-  // - Check if HW wallet has remote mode delegations
-  // - Check that delegate account is present in wallet
-  // - Check if transaction is Send or Swap
-  // - Then check allowances to make sure it's allowed
-  // - If everything matches, then return a function to update the transaction to
-  //   a new txMeta with a `redeemDelegations` operation
-  // - If any of the checks fails, don't return an update function (i.e., tx should not be modified)
-  return Promise.resolve({ updateTransaction: undefined });
 };
