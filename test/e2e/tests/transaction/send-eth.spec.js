@@ -237,8 +237,8 @@ describe('Send ETH', function () {
       );
     });
 
-    describe.only('from dapp using advanced gas controls', function () {
-      it.only('should display the correct gas price on the legacy transaction', async function () {
+    describe('from dapp using advanced gas controls', function () {
+      it('should display the correct gas price on the legacy transaction', async function () {
         await withFixtures(
           {
             dapp: true,
