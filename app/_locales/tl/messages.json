@@ -4354,9 +4354,6 @@
   "reusedTokenNameWarning": {
     "message": "Ang isang token dito ay muling ginagamit ang isang simbolo mula sa ibang token na tinitingnan mo, maaari itong maging nakakalito."
   },
-  "revealSecretRecoveryPhrase": {
-    "message": "Ipakita ang Secret Recovery Phrase"
-  },
   "revealSeedWords": {
     "message": "Ibunyag ang Lihim na Parirala sa Pagbawi"
   },

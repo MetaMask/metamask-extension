@@ -20,8 +20,10 @@ import {
 
 export default function ResetPasswordModal({
   onClose,
+  onRestore,
 }: {
   onClose: () => void;
+  onRestore: () => void;
 }) {
   const t = useI18nContext();
 
@@ -89,6 +91,7 @@ export default function ResetPasswordModal({
               </Text>
             </Box>
           </Box>
+          { /* TODO: add onRestore button */ }
         </Box>
       </ModalContent>
     </Modal>

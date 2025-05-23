@@ -18,15 +18,12 @@ import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
   const {
-    metamask: { isUnlocked, firstTimeFlow, socialLoginEmail },
+    metamask: { isUnlocked, firstTimeFlow },
   } = state;
-
-  const socialLoginEnabled = Boolean(socialLoginEmail);
 
   return {
     isUnlocked,
     firstTimeFlow,
-    socialLoginEnabled,
   };
 };
 

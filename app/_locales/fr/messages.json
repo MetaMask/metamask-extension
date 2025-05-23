@@ -4354,9 +4354,6 @@
   "reusedTokenNameWarning": {
     "message": "L’un de ces jetons réutilise le symbole d’un autre jeton que vous surveillez, ce qui peut être déroutant ou trompeur."
   },
-  "revealSecretRecoveryPhrase": {
-    "message": "Révéler la phrase secrète de récupération"
-  },
   "revealSeedWords": {
     "message": "Révéler la phrase secrète de récupération"
   },

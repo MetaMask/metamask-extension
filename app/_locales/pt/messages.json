@@ -4354,9 +4354,6 @@
   "reusedTokenNameWarning": {
     "message": "Um token aqui reutiliza um símbolo de outro token que você acompanha; isso pode causar confusão ou induzir a erros."
   },
-  "revealSecretRecoveryPhrase": {
-    "message": "Revelar Frase de Recuperação Secreta"
-  },
   "revealSeedWords": {
     "message": "Revelar Frase de Recuperação Secreta"
   },

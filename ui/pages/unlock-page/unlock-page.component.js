@@ -23,6 +23,7 @@ import {
   AlignItems,
   FlexDirection,
   TextAlign,
+  BackgroundColor,
 } from '../../helpers/constants/design-system';
 import Mascot from '../../components/ui/mascot';
 import {
@@ -113,10 +114,6 @@ export default class UnlockPage extends Component {
      * Force update metamask data state
      */
     forceUpdateMetamaskState: PropTypes.func,
-    /**
-     * Whether social login is enabled
-     */
-    socialLoginEnabled: PropTypes.bool,
   };
 
   state = {
@@ -314,12 +311,7 @@ export default class UnlockPage extends Component {
   };
 
   onForgotPassword = () => {
-    const { socialLoginEnabled } = this.props;
-    if (socialLoginEnabled) {
-      this.setState({ showResetPasswordModal: true });
-    } else {
-      this.props.onRestore();
-    }
+    this.setState({ showResetPasswordModal: true });
   };
 
   render() {
@@ -341,6 +333,12 @@ export default class UnlockPage extends Component {
         marginInline={0}
         className="unlock-page__container"
       >
+        {showResetPasswordModal && (
+          <ResetPasswordModal
+            onClose={() => this.setState({ showResetPasswordModal: false })}
+            onRestore={() => this.props.onRestore()}
+          />
+        )}
         <Box
           as="form"
           display={Display.Flex}
@@ -441,7 +439,7 @@ export default class UnlockPage extends Component {
               <ButtonLink
                 data-testid="unlock-forgot-password-button"
                 key="import-account"
-                onClick={() => onRestore()}
+                onClick={() => this.onForgotPassword()}
               >
                 {t('forgotPassword')}
               </ButtonLink>

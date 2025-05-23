@@ -3910,8 +3910,7 @@
     "message": "Access your MetaMask wallet with 1 click by clicking on the extension."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Click $1 extension icon to access it instantly",
-    "description": "$1 is the browser name"
+    "message": "Click Chrome extension icon to access it instantly"
   },
   "onboardingPinExtensionTitle": {
     "message": "Installation is complete!"
@@ -4669,6 +4668,25 @@
   "reset": {
     "message": "Reset"
   },
+  "resetPassword": {
+    "message": "Reset your password"
+  },
+  "resetPasswordDescription": {
+    "message": "If you have a mobile device where you’re already logged in, you can reset your password there."
+  },
+  "resetPasswordStep1": {
+    "message": "Open MetaMask mobile app and go to $1",
+    "description": "$1 is bold Settings > Security and passwords."
+  },
+  "resetPasswordStep1Settings": {
+    "message": "Settings > Security and passwords."
+  },
+  "resetPasswordStep2": {
+    "message": "Select “Change password” and update your password with Face ID."
+  },
+  "resetPasswordStep3": {
+    "message": "Login with your new password on any device."
+  },
   "resetWallet": {
     "message": "Reset wallet"
   },
@@ -4707,9 +4725,6 @@
   },
   "reusedTokenNameWarning": {
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
-  },
-  "revealSecretRecoveryPhrase": {
-    "message": "Reveal Secret Recovery Phrase"
   },
   "revealSeedWords": {
     "message": "Reveal Secret Recovery Phrase"
@@ -4882,9 +4897,6 @@
   "securitySocialLoginLabel": {
     "message": "$1 RECOVERY",
     "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securitySrpBackupSrp": {
-    "message": "Back up Secret Recovery Phrase"
   },
   "securitySrpDescription": {
     "message": "Back up your Secret Recovery Phrase. Be sure to store your Secret Recovery Phrase in a safe place that only you can access and won’t forget."
@@ -6667,12 +6679,6 @@
   },
   "unlock": {
     "message": "Unlock"
-  },
-  "unlockMessage": {
-    "message": "The decentralized web awaits"
-  },
-  "unlockPageIncorrectPassword": {
-    "message": "Password is incorrect. Please try again."
   },
   "unlockPageIncorrectPassword": {
     "message": "Password is incorrect. Please try again."
