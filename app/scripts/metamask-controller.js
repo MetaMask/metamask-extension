@@ -259,6 +259,7 @@ import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
 import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
+import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -4983,7 +4984,10 @@ export default class MetamaskController extends EventEmitter {
   async changePassword(newPassword, oldPassword) {
     const { firstTimeFlowType } = this.onboardingController.state;
 
-    if (firstTimeFlowType === FirstTimeFlowType.social) {
+    if (
+      firstTimeFlowType === FirstTimeFlowType.socialCreate ||
+      firstTimeFlowType === FirstTimeFlowType.socialImport
+    ) {
       // change password for the social login flow
       await this.seedlessOnboardingController.changePassword(
         newPassword,
