@@ -13,6 +13,8 @@ import {
   toggleExternalServices,
 } from '../../../store/actions';
 ///: END:ONLY_INCLUDE_IF
+// eslint-disable-next-line import/no-restricted-paths
+import { getPlatform } from '../../../../app/scripts/lib/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   TextVariant,
@@ -188,7 +190,7 @@ export default function OnboardingPinExtension() {
                     {t('onboardingPinExtensionDescription2')}
                   </Text>
                   <Text variant={TextVariant.bodyMd}>
-                    {t('onboardingPinExtensionDescription3')}
+                    {t('onboardingPinExtensionDescription3', [getPlatform()])}
                   </Text>
                 </Box>
               )}

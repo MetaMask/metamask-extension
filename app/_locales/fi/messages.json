@@ -641,9 +641,6 @@
   "terms": {
     "message": "Käyttöehdot"
   },
-  "tips": {
-    "message": "Tipit"
-  },
   "to": {
     "message": "Kohde"
   },
@@ -721,9 +718,6 @@
   },
   "unlock": {
     "message": "Poista lukitus"
-  },
-  "unlockMessage": {
-    "message": "Hajautettu verkko odottaa"
   },
   "urlErrorMsg": {
     "message": "URI:t vaativat asianmukaisen HTTP/HTTPS-etuliitteen."
