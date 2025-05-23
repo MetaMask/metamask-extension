@@ -1,20 +1,21 @@
-const { strict: assert } = require('assert');
-const {
-  withFixtures,
-  logInWithBalanceValidation,
-  unlockWallet,
-} = require('../../helpers');
-const {
-  switchToNetworkFlow,
-} = require('../../page-objects/flows/network.flow');
-
-const { mockServerJsonRpc } = require('../ppom/mocks/mock-server-json-rpc');
-const FixtureBuilder = require('../../fixture-builder');
+import { MockttpServer } from 'mockttp';
+import { withFixtures } from '../../helpers';
+import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
+import FixtureBuilder from '../../fixture-builder';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HomePage from '../../page-objects/pages/home/homepage';
+import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import {
+  loginWithBalanceValidation,
+  loginWithoutBalanceValidation,
+} from '../../page-objects/flows/login.flow';
 
 const infuraSepoliaUrl =
   'https://sepolia.infura.io/v3/00000000000000000000000000000000';
 
-async function mockInfura(mockServer) {
+async function mockInfura(mockServer: MockttpServer): Promise<void> {
   await mockServerJsonRpc(mockServer, [
     ['eth_blockNumber'],
     ['eth_getBlockByNumber'],
@@ -32,7 +33,7 @@ async function mockInfura(mockServer) {
     }));
 }
 
-async function mockInfuraResponses(mockServer) {
+async function mockInfuraResponses(mockServer: MockttpServer): Promise<void> {
   await mockInfura(mockServer);
 }
 
@@ -41,26 +42,15 @@ describe('Settings', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await logInWithBalanceValidation(driver);
-
-        await driver.clickElement(
-          '[data-testid="account-overview__asset-tab"]',
+        await loginWithBalanceValidation(driver);
+        await new AssetListPage(driver).check_tokenAmountIsDisplayed('25 ETH');
+        await new HeaderNavbar(driver).openAccountMenu();
+        await new AccountListPage(driver).check_accountBalanceDisplayed(
+          '25 ETH',
         );
-        const tokenValue = '25 ETH';
-        const tokenListAmount = await driver.findElement(
-          '[data-testid="multichain-token-list-item-value"]',
-        );
-        await driver.waitForNonEmptyElement(tokenListAmount);
-        assert.equal(await tokenListAmount.getText(), tokenValue);
-
-        await driver.clickElement('[data-testid="account-menu-icon"]');
-        await driver.waitForSelector({
-          css: '[data-testid="eth-overview__primary-currency"]',
-          text: '25 ETH',
-        });
       },
     );
   });
@@ -73,21 +63,16 @@ describe('Settings', function () {
           .withShowFiatTestnetEnabled()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockInfuraResponses,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
-
-        await driver.clickElement(
-          '[data-testid="account-overview__asset-tab"]',
+        await loginWithoutBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.check_expectedBalanceIsDisplayed('42,500.00', 'USD');
+        await new AssetListPage(driver).check_tokenFiatAmountIsDisplayed(
+          '$42,500.00',
         );
-
-        const tokenListAmount = await driver.findElement(
-          '.eth-overview__primary-container',
-        );
-        await driver.delay(1000);
-        assert.equal(await tokenListAmount.getText(), '$42,500.00\nUSD');
 
         // switch to Sepolia
         // the account list item used to always show account.balance as long as its EVM network.
@@ -102,12 +87,10 @@ describe('Settings', function () {
         // I think we can slightly modify this test to switch to Sepolia network before checking the account List item value
         await switchToNetworkFlow(driver, 'Sepolia');
 
-        await driver.clickElement('[data-testid="account-menu-icon"]');
-
-        await driver.waitForSelector({
-          css: '[data-testid="eth-overview__primary-currency"]',
-          text: '$42,500.00USD',
-        });
+        await new HeaderNavbar(driver).openAccountMenu();
+        await new AccountListPage(driver).check_accountValueAndSuffixDisplayed(
+          '$42,500.00',
+        );
       },
     );
   });
@@ -121,27 +104,15 @@ describe('Settings', function () {
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .withConversionRateDisabled()
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockInfuraResponses,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
-
-        await driver.clickElement(
-          '[data-testid="account-overview__asset-tab"]',
+        await loginWithBalanceValidation(driver);
+        await new HeaderNavbar(driver).openAccountMenu();
+        await new AccountListPage(driver).check_accountBalanceDisplayed(
+          '25 ETH',
         );
-
-        const tokenListAmount = await driver.findElement(
-          '.eth-overview__primary-container',
-        );
-        await driver.delay(1000);
-        assert.equal(await tokenListAmount.getText(), '25\nETH');
-
-        await driver.clickElement('[data-testid="account-menu-icon"]');
-        await driver.waitForSelector({
-          css: '[data-testid="eth-overview__primary-currency"]',
-          text: '25 ETH',
-        });
       },
     );
   });
