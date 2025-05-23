@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
   ButtonSize,
@@ -29,14 +29,17 @@ import {
 } from '../../../helpers/constants/routes';
 import { getFirstTimeFlowType, getSocialLoginEmail } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { setFirstTimeFlowType } from '../../../store/actions';
 
 export default function AccountExist() {
   const history = useHistory();
+  const dispatch = useDispatch();
   const t = useI18nContext();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
 
   const onDone = () => {
+    dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
     history.push(ONBOARDING_UNLOCK_ROUTE);
   };
 
