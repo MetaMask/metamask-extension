@@ -43,8 +43,8 @@ export default function AccountNotFound() {
   };
 
   useEffect(() => {
-    if (firstTimeFlowType !== FirstTimeFlowType.social) {
-      // if the onboarding flow is not seedless, redirect to the welcome page
+    if (firstTimeFlowType !== FirstTimeFlowType.socialImport) {
+      // if the onboarding flow is not social import, redirect to the welcome page
       history.push(ONBOARDING_WELCOME_ROUTE);
     }
   }, [firstTimeFlowType, history]);

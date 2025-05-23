@@ -8,6 +8,20 @@ import {
 } from '../helpers/constants/routes';
 
 /**
+ * Returns true if the user is on a social login flow
+ *
+ * @param {object} state - MetaMask state tree
+ * @returns {boolean} True if the user is on a social login flow
+ */
+export const isSocialLoginFlow = (state) => {
+  const { firstTimeFlowType } = state.metamask;
+  return (
+    firstTimeFlowType === FirstTimeFlowType.socialCreate ||
+    firstTimeFlowType === FirstTimeFlowType.socialImport
+  );
+};
+
+/**
  * When the user unlocks the wallet but onboarding has not fully completed we
  * must direct the user to the appropriate step in the onboarding process.
  *
@@ -23,7 +37,7 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
     return ONBOARDING_IMPORT_WITH_SRP_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
     return ONBOARDING_METAMETRICS;
-  } else if (firstTimeFlowType === FirstTimeFlowType.social) {
+  } else if (isSocialLoginFlow(state)) {
     return ONBOARDING_CREATE_PASSWORD_ROUTE;
   }
   return DEFAULT_ROUTE;
@@ -50,7 +64,7 @@ export function getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn(state) {
     return ONBOARDING_IMPORT_WITH_SRP_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
     return ONBOARDING_SECURE_YOUR_WALLET_ROUTE;
-  } else if (firstTimeFlowType === FirstTimeFlowType.social) {
+  } else if (isSocialLoginFlow(state)) {
     return ONBOARDING_CREATE_PASSWORD_ROUTE;
   }
   return DEFAULT_ROUTE;

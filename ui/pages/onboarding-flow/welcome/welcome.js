@@ -101,7 +101,7 @@ export default function OnboardingWelcome({
       setIsLoggingIn(true);
       try {
         setNewAccountCreationInProgress(true);
-        dispatch(setFirstTimeFlowType(FirstTimeFlowType.social));
+        dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
 
         const isNewUser = await dispatch(startOAuthLogin(socialConnectionType));
 
