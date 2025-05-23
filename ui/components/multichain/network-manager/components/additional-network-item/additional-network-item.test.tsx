@@ -15,7 +15,7 @@ describe('AdditionalNetworkItem', () => {
     const store = configureStore({});
     return renderWithProvider(
       <AdditionalNetworkItem {...mockProps} {...props} />,
-      store
+      store,
     );
   };
 
@@ -40,7 +40,9 @@ describe('AdditionalNetworkItem', () => {
   });
 
   it('renders with custom aria label for add button', () => {
-    const { getByLabelText } = renderComponent({ addButtonAriaLabel: 'Custom Add Label' });
+    const { getByLabelText } = renderComponent({
+      addButtonAriaLabel: 'Custom Add Label',
+    });
 
     expect(getByLabelText('Custom Add Label')).toBeInTheDocument();
   });

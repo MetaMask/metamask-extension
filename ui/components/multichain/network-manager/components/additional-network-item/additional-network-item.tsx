@@ -19,7 +19,7 @@ import {
 import { Box } from '../../../../component-library/box';
 import { Text } from '../../../../component-library/text';
 
-interface AdditionalNetworkItemProps {
+type AdditionalNetworkItemProps = {
   /**
    * The name of the network
    */
@@ -40,7 +40,7 @@ interface AdditionalNetworkItemProps {
    * Aria label for the add button
    */
   addButtonAriaLabel?: string;
-}
+};
 
 /**
  * AdditionalNetworkItem component
@@ -51,51 +51,56 @@ interface AdditionalNetworkItemProps {
  * @param props - Component props
  * @returns AdditionalNetworkItem component
  */
-export const AdditionalNetworkItem = memo(({
-  name,
-  src,
-  onClick,
-  className,
-  addButtonAriaLabel,
-}: AdditionalNetworkItemProps) => {
-  const t = useI18nContext();
+export const AdditionalNetworkItem = memo(
+  ({
+    name,
+    src,
+    onClick,
+    className,
+    addButtonAriaLabel,
+  }: AdditionalNetworkItemProps) => {
+    const t = useI18nContext();
 
-  const handleClick = useCallback(() => {
-    onClick();
-  }, [onClick]);
+    const handleClick = useCallback(() => {
+      onClick();
+    }, [onClick]);
 
-  return (
-    <Box
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.spaceBetween}
-      onClick={handleClick}
-      paddingTop={4}
-      paddingBottom={4}
-      className={className}
-      data-testid="additional-network-item"
-    >
-      <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
-        <Box className="additional-network-item__button-icon">
-          <ButtonIcon
-            size={ButtonIconSize.Lg}
-            color={IconColor.iconAlternative}
-            iconName={IconName.Add}
-            padding={0}
-            margin={0}
-            ariaLabel={addButtonAriaLabel || t('addNetwork')}
+    return (
+      <Box
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.spaceBetween}
+        onClick={handleClick}
+        paddingTop={4}
+        paddingBottom={4}
+        className={className}
+        data-testid="additional-network-item"
+      >
+        <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
+          <Box className="additional-network-item__button-icon">
+            <ButtonIcon
+              size={ButtonIconSize.Lg}
+              color={IconColor.iconAlternative}
+              iconName={IconName.Add}
+              padding={0}
+              margin={0}
+              ariaLabel={addButtonAriaLabel || t('addNetwork')}
+            />
+          </Box>
+          <AvatarNetwork
+            name={name}
+            size={AvatarNetworkSize.Md}
+            src={src}
+            borderRadius={BorderRadius.full}
           />
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            color={TextColor.textDefault}
+          >
+            {name}
+          </Text>
         </Box>
-        <AvatarNetwork
-          name={name}
-          size={AvatarNetworkSize.Md}
-          src={src}
-          borderRadius={BorderRadius.full}
-        />
-        <Text variant={TextVariant.bodyMdMedium} color={TextColor.textDefault}>
-          {name}
-        </Text>
       </Box>
-    </Box>
-  );
-});
+    );
+  },
+);
