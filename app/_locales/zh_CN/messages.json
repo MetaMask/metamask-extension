@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "比特币账户（测试版）"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "比特币账户（测试网）"
-  },
   "addBlockExplorer": {
     "message": "添加区块浏览器"
   },
@@ -657,22 +654,6 @@
   "billionAbbreviation": {
     "message": "十亿",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "比特币"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "启用此功能后，您可以选择将比特币账户添加到衍生自现有私钥助记词的 MetaMask Extension 中。这是一个实验性的测试版功能，因此您应自行承担使用风险。为了向我们提供有关此新比特币体验的反馈，请填写此 $1。",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "启用“添加新的比特币账户（测试版）”"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "启用此功能后，您可以选择为测试网络添加比特币账户。"
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "启用“添加新的比特币账户（测试网）”"
   },
   "blockExplorerAccountAction": {
     "message": "账户",
@@ -1328,10 +1309,6 @@
   },
   "creatorAddress": {
     "message": "创建者地址"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "这反映了您在所有网络上拥有的所有代币的价值。如果您更愿意看到以 ETH 或其他货币反映代币价值，请转到 $1。",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "使用 MetaMask Portfolio 跨网络兑换"
@@ -3562,9 +3539,6 @@
   "onboardingMetametricsDescription": {
     "message": "我们希望收集基本的使用和诊断数据，以改进 MetaMask。请注意，我们绝不会出卖您在此处提供的数据。"
   },
-  "onboardingMetametricsDescription2": {
-    "message": "当我们收集指标时，总是..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "如果我们决定将这些数据用于其他目的，我们会通知您。您可以查看我们的 $1 以了解更多信息。请记住，您可以随时转到设置并选择退出。",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3592,9 +3566,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "可选："
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "了解我们如何在收集您的个人资料使用数据的同时保护您的隐私。"
   },
   "onboardingMetametricsTitle": {
     "message": "请帮助我们改进 MetaMask"
@@ -6407,9 +6378,6 @@
   },
   "yourBalance": {
     "message": "您的余额"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "您的余额已汇总"
   },
   "yourNFTmayBeAtRisk": {
     "message": "您的 NFT 可能面临风险"
