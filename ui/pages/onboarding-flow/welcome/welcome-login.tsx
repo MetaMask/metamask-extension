@@ -25,7 +25,7 @@ import { LOGIN_OPTION, LoginOptionType, LoginType } from './types';
 export default function WelcomeLogin({
   onLogin,
 }: {
-  onLogin: (loginType: LoginType, loginOption: string) => void;
+  onLogin: (loginType: LoginType, loginOption: string) => Promise<void>;
 }) {
   const t = useI18nContext();
   const [eventEmitter] = useState(new EventEmitter());
@@ -48,12 +48,12 @@ export default function WelcomeLogin({
   };
 
   const handleLogin = useCallback(
-    (loginType: LoginType) => {
+    async (loginType: LoginType) => {
       if (!loginOption) {
         return;
       }
+      await onLogin(loginType, loginOption);
       setLoginOption(null);
-      onLogin(loginType, loginOption);
     },
     [loginOption, onLogin],
   );

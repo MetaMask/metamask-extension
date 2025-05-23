@@ -135,7 +135,7 @@ export default function CreatePassword({
         }
         if (socialLoginFlow) {
           ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-          history.push(ONBOARDING_COMPLETION_ROUTE);
+          history.push(ONBOARDING_METAMETRICS);
           ///: END:ONLY_INCLUDE_IF
         } else {
           ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
