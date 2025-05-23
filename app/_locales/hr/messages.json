@@ -641,9 +641,6 @@
   "terms": {
     "message": "Odredbe uporabe"
   },
-  "tips": {
-    "message": "Napojnice"
-  },
   "to": {
     "message": "Primatelj"
   },
@@ -718,9 +715,6 @@
   },
   "unlock": {
     "message": "Otključaj"
-  },
-  "unlockMessage": {
-    "message": "Decentralizirani internet čeka"
   },
   "urlErrorMsg": {
     "message": "URI-jevima se zahtijeva prikladan prefiks HTTP/HTTPS."
