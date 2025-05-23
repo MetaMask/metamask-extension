@@ -1,4 +1,5 @@
 import {
+  MultichainNetworkConfiguration,
   type MultichainNetworkConfiguration as InternalMultichainNetworkConfiguration,
   NON_EVM_TESTNET_IDS,
 } from '@metamask/multichain-network-controller';
@@ -6,11 +7,15 @@ import {
   RpcEndpointType,
   type NetworkState as InternalNetworkState,
   type NetworkConfiguration as InternalNetworkConfiguration,
+  NetworkConfiguration,
 } from '@metamask/network-controller';
 import { createSelector } from 'reselect';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import type { CaipChainId } from '@metamask/utils';
-import { NetworkStatus } from '../../constants/network';
+import {
+  CAIP_FORMATTED_EVM_TEST_CHAINS,
+  NetworkStatus,
+} from '../../constants/network';
 import { hexToDecimal } from '../conversion.utils';
 import { createDeepEqualSelector } from './util';
 
@@ -50,6 +55,13 @@ export type MultichainNetworkConfigurationsByChainIdState = {
       InternalNetworkConfiguration
     >;
   };
+};
+
+export type EvmAndMultichainNetworkConfigurationsWithCaipChainId = (
+  | NetworkConfiguration
+  | MultichainNetworkConfiguration
+) & {
+  caipChainId: CaipChainId;
 };
 
 export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
@@ -283,5 +295,86 @@ export const getIsAllNetworksFilterEnabled = createSelector(
       allOpts[chain] = true;
     });
     return allOpts;
+  },
+);
+
+// TODO: Check if there is better (optimal) way to get nonTestNetworks for all chains
+/**
+ * Filters and returns regular and test networks, as a tuple [nonTestNetworks, testNetworks].
+ *
+ * @returns A tuple with two distinct collections containing regular and test networks separately.
+ */
+export const getNonTestNetworksAndTestNetworks = createSelector(
+  getAllNetworkConfigurationsByCaipChainId,
+  (networkConfigurationsByCaipChainId) => {
+    return Object.entries(networkConfigurationsByCaipChainId).reduce(
+      ([nonTestNetworks, testNetworks], [chainId, network]) => {
+        const caipChainId = chainId as CaipChainId;
+        const isTestNetwork =
+          CAIP_FORMATTED_EVM_TEST_CHAINS.includes(caipChainId) ||
+          NON_EVM_TESTNET_IDS.includes(caipChainId);
+        (isTestNetwork ? testNetworks : nonTestNetworks).push({
+          ...network,
+          caipChainId,
+        });
+
+        return [nonTestNetworks, testNetworks];
+      },
+      [
+        [] as EvmAndMultichainNetworkConfigurationsWithCaipChainId[],
+        [] as EvmAndMultichainNetworkConfigurationsWithCaipChainId[],
+      ],
+    );
+  },
+);
+
+/**
+ * Returns an array of simplified network configurations available based on the CAIP account scopes.
+ *
+ * @param _state - Redux state object.
+ * @param scopes - Array of CAIP chain IDs to filter networks by.
+ * @returns Array of network configurations with chainId and name.
+ */
+export const getNetworksByScopes = createSelector(
+  [getNonTestNetworksAndTestNetworks, (_state, scopes: string[]) => scopes],
+  ([nonTestNetworks], scopes): { chainId: string | number; name: string }[] => {
+    if (!scopes || !nonTestNetworks) {
+      return [];
+    }
+
+    const networkConfigurationsArray = Object.values(nonTestNetworks);
+
+    return scopes.reduce(
+      (result: { chainId: string | number; name: string }[], scope) => {
+        // Special case for eip155:0 - include all EVM networks
+        if (scope === 'eip155:0') {
+          const evmNetworks = networkConfigurationsArray
+            .filter((network) => network.caipChainId?.startsWith('eip155:'))
+            .map((network) => ({
+              chainId: network.chainId,
+              name: network.name,
+            }));
+
+          return [...result, ...evmNetworks];
+        }
+
+        const matchingNetwork = networkConfigurationsArray.find(
+          (network) => network.caipChainId === scope,
+        );
+
+        if (matchingNetwork) {
+          return [
+            ...result,
+            {
+              chainId: matchingNetwork.chainId,
+              name: matchingNetwork.name,
+            },
+          ];
+        }
+
+        return result;
+      },
+      [],
+    );
   },
 );
