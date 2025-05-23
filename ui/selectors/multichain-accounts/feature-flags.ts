@@ -4,7 +4,7 @@ import {
 } from '../remote-feature-flags';
 
 /**
- *
+ * Feature flag type for multichain accounts features
  */
 export type MultichainAccountsFeatureFlag = {
   enabled: boolean;
@@ -24,7 +24,7 @@ const FEATURE_VERSION_2 = '2';
  * @param version2 - The second version string to compare.
  * @returns boolean - True if version1 is greater than or equal to version2, false otherwise.
  */
-const compareVersions = (version1: string, version2: string) => {
+export const compareVersions = (version1: string, version2: string) => {
   const regex = /^\d+\.\d+\.\d+$/u;
   if (!regex.test(version1) || !regex.test(version2)) {
     return false; // Invalid version format
@@ -57,37 +57,44 @@ const compareVersions = (version1: string, version2: string) => {
 export const getIsMultichainAccountsState1Enabled = (
   state: RemoteFeatureFlagsState,
 ) => {
-  const { enableMultichainAccounts } = getRemoteFeatureFlags(state);
-  const { enabled, featureVersion, minimumVersion } =
-    enableMultichainAccounts as MultichainAccountsFeatureFlag;
-  return (
-    enabled &&
-    featureVersion &&
-    minimumVersion &&
-    featureVersion === FEATURE_VERSION_1 &&
-    // @ts-expect-error - we can ignore the error for passing MINIMUM_SUPPORTED_VERSION as null
-    compareVersions(minimumVersion, MINIMUM_SUPPORTED_VERSION)
-  );
+  return false;
+
+  // TODO: Uncomment this section and update the value of MINIMUM_SUPPORTED_VERSION
+  // to use the remote feature flags for multichain accounts state 1.
+
+  // const { enabled, featureVersion, minimumVersion } =
+  //   enableMultichainAccounts as MultichainAccountsFeatureFlag;
+  // return (
+  //   enabled &&
+  //   featureVersion &&
+  //   minimumVersion &&
+  //   featureVersion === FEATURE_VERSION_1 &&
+  //   compareVersions(minimumVersion, MINIMUM_SUPPORTED_VERSION)
+  // );
 };
 
 /**
- * Checks if the multichain accounts feature is enabled for state 1.
+ * Checks if the multichain accounts feature is enabled for state 2.
  *
  * @param state - The MetaMask state object
- * @returns boolean - True if the feature is enabled for state 1, false otherwise.
+ * @returns boolean - True if the feature is enabled for state 2, false otherwise.
  */
 export const getIsMultichainAccountsState2Enabled = (
   state: RemoteFeatureFlagsState,
 ) => {
-  const { enableMultichainAccounts } = getRemoteFeatureFlags(state);
-  const { enabled, featureVersion, minimumVersion } =
-    enableMultichainAccounts as MultichainAccountsFeatureFlag;
-  return (
-    enabled &&
-    featureVersion &&
-    minimumVersion &&
-    featureVersion === FEATURE_VERSION_2 &&
-    // @ts-expect-error - we can ignore the error for passing MINIMUM_SUPPORTED_VERSION as null
-    compareVersions(minimumVersion, MINIMUM_SUPPORTED_VERSION)
-  );
+  return false;
+
+  // TODO: Uncomment this section and update the value of MINIMUM_SUPPORTED_VERSION
+  // to use the remote feature flags for multichain accounts state 2.
+
+  // const { enableMultichainAccounts } = getRemoteFeatureFlags(state);
+  // const { enabled, featureVersion, minimumVersion } =
+  //   enableMultichainAccounts as MultichainAccountsFeatureFlag;
+  // return (
+  //   enabled &&
+  //   featureVersion &&
+  //   minimumVersion &&
+  //   featureVersion === FEATURE_VERSION_2 &&
+  //   compareVersions(minimumVersion, MINIMUM_SUPPORTED_VERSION)
+  // );
 };
