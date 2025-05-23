@@ -1,10 +1,6 @@
 {
   "data": {
     "AuthenticationController": { "isSignedIn": "boolean" },
-    "UserStorageController": {
-      "isProfileSyncingEnabled": true,
-      "isAccountSyncingEnabled": true
-    },
     "NotificationServicesController": {
       "subscriptionAccountsSeen": "object",
       "isFeatureAnnouncementsEnabled": "boolean",
@@ -56,6 +52,11 @@
           "conversionDate": "number",
           "conversionRate": 1700,
           "usdConversionRate": 1700
+        },
+        "MON": {
+          "conversionDate": "number",
+          "conversionRate": 0.2,
+          "usdConversionRate": 0.2
         }
       }
     },

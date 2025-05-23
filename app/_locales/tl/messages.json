@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Bitcoin account (Beta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Bitcoin account (Testnet)"
-  },
   "addBlockExplorer": {
     "message": "Magdagdag ng block explorer"
   },
@@ -657,22 +654,6 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Ang pag-on sa tampok na ito ay nagbibigay sa iyo ng opsyon na magdagdag ng Account sa Bitcoin sa iyong MetaMask Extension na nagmula sa iyong umiiral na Lihim na Parirala sa Pagbawi. Ito ay isang eksperimental na tampok sa Beta, kaya gamitin ito nang may-pag-iingat. Upang bigyan kami ng feedback sa bagong karanasan na ito sa Bitcoin, mangyaring sagutan ito $1.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Paganahin ang \"Magdagdag ng bagong account sa Bitcoin (Beta)\""
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Ang pag-on sa tampok na ito ay magbibigay sa iyo ng opsyon na magdagdag ng Account sa Bitcoin para sa test network."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Paganahin ang \"Magdagdag ng bagong account sa Bitcoin (Testnet)\""
   },
   "blockExplorerAccountAction": {
     "message": "Account",
@@ -1328,10 +1309,6 @@
   },
   "creatorAddress": {
     "message": "Address ng creator"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Ipinapakita nito ang halaga ng lahat ng token na pagmamay-ari mo sa lahat ng network. Kung mas gusto mong makita ang halagang ito sa ETH o sa ibang currency, pumunta sa $1.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "Mag-swap sa mga network gamit ang MetaMask Portfolio"
@@ -3023,7 +3000,7 @@
     "message": "Hindi maaaring magpadala ng negatibo o zero na halaga ng asset."
   },
   "network": {
-    "message": "Network:"
+    "message": "Network"
   },
   "networkChanged": {
     "message": "Nagbago ang network"
@@ -3559,9 +3536,6 @@
   "onboardingMetametricsDescription": {
     "message": "Nais naming mangalap ng data para sa batayang paggamit upang mapahusay ang MetaMask. Dapat mong malaman na hindi namin ibebenta ang data na iyong ibibigay rito."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Kapag kami ay nangangalap ng metrics, ito ay palaging..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Ipapaalam namin sa iyo kung magdesisyon kaming gamitin ang data na ito para sa ibang layunin. Maaari mong suriin ang aming $1 para sa karagdagang impormasyon. Tandaan, maaari kang magpunta sa mga setting at mag-opt out anumang oras.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3589,9 +3563,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opsyonal:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Matuto kung paano namin pinoprotektahan ang iyong pagkapribado habang kinokolekta ang data sa paggamit para sa iyong profile."
   },
   "onboardingMetametricsTitle": {
     "message": "Tulungan kaming mapahusay ang MetaMask"
@@ -6363,9 +6334,6 @@
   },
   "yourBalance": {
     "message": "Iyong balanse"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Ang iyong balanse ay pinagsama-sama"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Maaaring nasa panganib ang iyong NFT"

@@ -22,7 +22,15 @@ async function mockSegment(mockServer: Mockttp) {
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'App Installed' }],
+        batch: [
+          {
+            type: 'track',
+            event: 'App Installed',
+            properties: {
+              category: 'App',
+            },
+          },
+        ],
       })
       .thenCallback(() => {
         return {
