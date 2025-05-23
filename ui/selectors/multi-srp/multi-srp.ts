@@ -46,7 +46,8 @@ const isPrimaryHdAndFirstPartySnapAccount = createDeepEqualSelector(
     }
 
     if (
-      isMultichainWalletSnap(account.metadata.snap?.id as SnapId) &&
+      account.metadata.snap &&
+      isMultichainWalletSnap(account.metadata.snap.id as SnapId) &&
       account.options?.entropySource === primaryKeyring.metadata.id
     ) {
       return true;
