@@ -171,7 +171,7 @@ export type MetaMaskState = {
     privacyMode: PreferencesControllerState['preferences']['privacyMode'];
     tokenNetworkFilter: string[];
   };
-  sessionData: AuthenticationControllerState['sessionData'];
+  srpSessionData: AuthenticationControllerState['srpSessionData'];
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   custodyAccountDetails: {
     [address: string]: {
@@ -1262,8 +1262,9 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
         metamaskState.preferences.tokenNetworkFilter || {},
       ),
-      [MetaMetricsUserTrait.ProfileId]:
-        metamaskState.sessionData?.profile?.profileId,
+      [MetaMetricsUserTrait.ProfileId]: Object.entries(
+        metamaskState.srpSessionData || {},
+      )?.[0]?.[1]?.profile?.profileId,
     };
 
     if (!this.previousUserTraits && metamaskState.participateInMetaMetrics) {

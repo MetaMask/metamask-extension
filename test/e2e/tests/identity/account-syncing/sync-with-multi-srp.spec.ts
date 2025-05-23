@@ -1,10 +1,14 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { veryLargeDelayMs, withFixtures } from '../../../helpers';
+import {
+  regularDelayMs,
+  veryLargeDelayMs,
+  withFixtures,
+} from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../../constants';
 import { mockIdentityServices } from '../mocks';
-import { IDENTITY_TEAM_PASSWORD } from '../constants';
+import { IDENTITY_TEAM_SEED_PHRASE_2 } from '../constants';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
@@ -12,24 +16,20 @@ import {
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
-import SettingsPage from '../../../page-objects/pages/settings/settings-page';
-import {
-  completeNewWalletFlowIdentity,
-  completeOnboardFlowIdentity,
-} from '../flows';
+import { completeOnboardFlowIdentity } from '../flows';
 import { arrangeTestUtils } from './helpers';
 
-describe('Account syncing - New User', function () {
+describe('Account syncing - Multi SRP', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
 
   describe('from inside MetaMask', function () {
-    it('syncs after new wallet creation', async function () {
+    it('syncs after adding a second SRP', async function () {
       const userStorageMockttpController = new UserStorageMockttpController();
-      let walletSrp: string;
 
       const defaultAccountOneName = 'Account 1';
       const secondAccountName = 'My Second Account';
+      const defaultAccountOneNameSrp2 = 'Account 3';
+      const thirdAccountNameSrp2 = 'My Fourth Account';
 
       await withFixtures(
         {
@@ -40,12 +40,11 @@ describe('Account syncing - New User', function () {
               USER_STORAGE_FEATURE_NAMES.accounts,
               server,
             );
-
             return mockIdentityServices(server, userStorageMockttpController);
           },
         },
         async ({ driver }) => {
-          await completeNewWalletFlowIdentity(driver);
+          await completeOnboardFlowIdentity(driver);
           const homePage = new HomePage(driver);
           await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
@@ -87,24 +86,29 @@ describe('Account syncing - New User', function () {
           // Wait for the account AND account name to be synced
           await waitUntilSyncedAccountsNumberEquals(2);
           await waitUntilEventsEmittedNumberEquals(1);
+          await driver.delay(regularDelayMs);
 
-          // Set SRP to use for retreival
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.check_pageIsLoaded();
-          await headerNavbar.openSettingsPage();
-          const settingsPage = new SettingsPage(driver);
-          await settingsPage.check_pageIsLoaded();
-          await settingsPage.goToPrivacySettings();
+          // Add a new SRP and add a new account on top of the one created by default when
+          // importing a new SRP
+          await header.openAccountMenu();
+          await accountListPage.startImportSecretPhrase(
+            IDENTITY_TEAM_SEED_PHRASE_2,
+          );
+          await homePage.check_newSrpAddedToastIsDisplayed();
 
-          const privacySettings = new PrivacySettings(driver);
-          await privacySettings.check_pageIsLoaded();
-          await privacySettings.openRevealSrpQuiz();
-          await privacySettings.completeRevealSrpQuiz();
-          await privacySettings.fillPasswordToRevealSrp(IDENTITY_TEAM_PASSWORD);
-          walletSrp = await privacySettings.getSrpInRevealSrpDialog();
-          if (!walletSrp) {
-            throw new Error('Wallet SRP was not set');
-          }
+          await driver.delay(veryLargeDelayMs);
+
+          await header.openAccountMenu();
+          await accountListPage.addAccount({
+            accountType: ACCOUNT_TYPE.Ethereum,
+            accountName: thirdAccountNameSrp2,
+            srpIndex: 2,
+          });
+          await driver.delay(regularDelayMs);
+
+          // Wait for the account AND account name to be synced
+          await waitUntilSyncedAccountsNumberEquals(4);
+          await waitUntilEventsEmittedNumberEquals(3);
         },
       );
 
@@ -122,18 +126,28 @@ describe('Account syncing - New User', function () {
         },
         async ({ driver }) => {
           // Onboard with import flow using SRP from new account created above
-          await completeOnboardFlowIdentity(driver, walletSrp);
+          await completeOnboardFlowIdentity(driver);
+          const homePage = new HomePage(driver);
+          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
-          // Open account menu and validate the 2 accounts have been retrieved
+          // Open account menu and validate the 4 accounts have been retrieved
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
           await header.openAccountMenu();
 
           const accountListPage = new AccountListPage(driver);
+          await accountListPage.startImportSecretPhrase(
+            IDENTITY_TEAM_SEED_PHRASE_2,
+          );
+          await homePage.check_newSrpAddedToastIsDisplayed();
+
+          await driver.delay(veryLargeDelayMs);
+
+          await header.openAccountMenu();
           await accountListPage.check_pageIsLoaded();
 
           await accountListPage.check_numberOfAvailableAccounts(
-            2,
+            4,
             ACCOUNT_TYPE.Ethereum,
           );
 
@@ -142,6 +156,12 @@ describe('Account syncing - New User', function () {
           );
           await accountListPage.check_accountDisplayedInAccountList(
             secondAccountName,
+          );
+          await accountListPage.check_accountDisplayedInAccountList(
+            thirdAccountNameSrp2,
+          );
+          await accountListPage.check_accountDisplayedInAccountList(
+            defaultAccountOneNameSrp2,
           );
         },
       );
