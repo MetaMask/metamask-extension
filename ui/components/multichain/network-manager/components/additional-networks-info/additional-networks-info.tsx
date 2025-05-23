@@ -1,12 +1,11 @@
-import React, { useState, useCallback, memo } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import {
-  AlignItems,
   BackgroundColor,
   Display,
   IconColor,
   JustifyContent,
   TextColor,
-  TextVariant,
+  TextVariant
 } from '../../../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -32,7 +31,7 @@ export const AdditionalNetworksInfo = memo(() => {
   const t = useI18nContext();
   const [isOpen, setIsOpen] = useState(false);
   // State and ref for positioning the popover relative to its trigger
-  const [referenceElement, setReferenceElement] = useState();
+  const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null);
 
   // Handler for mouse enter - shows the popover
   const handleMouseEnter = useCallback(() => {
@@ -44,7 +43,7 @@ export const AdditionalNetworksInfo = memo(() => {
     setIsOpen(false);
   }, []);
 
-  const setBoxRef = useCallback((ref: any) => {
+  const setBoxRef = useCallback((ref: HTMLDivElement | null) => {
     setReferenceElement(ref);
   }, []);
 

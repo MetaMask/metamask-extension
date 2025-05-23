@@ -9,8 +9,8 @@ import { AdditionalNetworksInfo } from './additional-networks-info';
 const mockOpenTab = jest.fn();
 global.platform = {
   openTab: mockOpenTab,
-  // Add other potential methods used by platform if needed
-} as any;
+  closeCurrentWindow: jest.fn(),
+};
 
 describe('AdditionalNetworksInfo', () => {
   beforeEach(() => {
@@ -46,7 +46,7 @@ describe('AdditionalNetworksInfo', () => {
 
     // Initially the popover should not show its content
     expect(
-      screen.queryByText(/Some of these networks rely on third parties/),
+      screen.queryByText('Some of these networks rely on third parties'),
     ).not.toBeInTheDocument();
 
     // Find the info icon box
@@ -66,7 +66,7 @@ describe('AdditionalNetworksInfo', () => {
 
     // Popover content should now be visible
     expect(
-      screen.getByText(/Some of these networks rely on third parties/),
+      screen.getByText((content) => content.startsWith('Some of these networks rely on third partie')),
     ).toBeInTheDocument();
     expect(screen.getByText(/Learn more/i)).toBeInTheDocument();
 
@@ -102,7 +102,7 @@ describe('AdditionalNetworksInfo', () => {
 
     // Find and click the learn more button
     await act(async () => {
-      const learnMoreButton = screen.getByText(/Learn more/i);
+      const learnMoreButton = screen.getByText('Learn more');
       fireEvent.click(learnMoreButton);
       // Small delay to allow the state update to complete
       await new Promise((r) => setTimeout(r, 0));
