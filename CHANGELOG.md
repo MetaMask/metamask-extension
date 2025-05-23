@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [12.20.0]
 ### Added
 - Rebrand "Profile syncing" to "Backup and sync", adding a dedicated settings menu and more ([#32129](https://github.com/MetaMask/metamask-extension/pull/32129))
 - Show UI error to user if vault should exist, but is missing ([#31404](https://github.com/MetaMask/metamask-extension/pull/31404))
@@ -6248,7 +6250,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.18.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.20.0...HEAD
+[12.20.0]: https://github.com/MetaMask/metamask-extension/compare/v12.18.1...v12.20.0
 [12.18.1]: https://github.com/MetaMask/metamask-extension/compare/v12.18.0...v12.18.1
 [12.18.0]: https://github.com/MetaMask/metamask-extension/compare/v12.17.3...v12.18.0
 [12.17.3]: https://github.com/MetaMask/metamask-extension/compare/v12.17.2...v12.17.3
