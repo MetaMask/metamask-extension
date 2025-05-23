@@ -1,11 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { hasProperty, Hex, isObject } from '@metamask/utils';
-import { isEvmAccountType } from '@metamask/keyring-api';
-import { AccountsControllerState } from '@metamask/accounts-controller';
-import {
-  TokenBalancesControllerState,
-  TokensControllerState,
-} from '@metamask/assets-controllers';
+import { hasProperty, isObject } from '@metamask/utils';
 
 type VersionedData = {
   meta: { version: number };
@@ -15,15 +9,13 @@ type VersionedData = {
 export const version = 159;
 
 /**
- * This migration removes from the TokensController state all tokens that belong to an EVM account that has been removed.
+ * This migration removes the `shouldShowAggregatedBalancePopover` property from the PreferencesController state.
  *
- * Also removed from TokenBalancesController all balances that belong to an EVM account that has been removed.
- *
- * If the Tokens is not found or is not an object, the migration logs an error,
- * but otherwise leaves the state unchanged.
+ * If the PreferenceController is not valid (not found or is not an object), the migration logs an error,
+ * however we will leave the state unchanged.
  *
  * @param originalVersionedData - The versioned extension state.
- * @returns The updated versioned extension state without the tokens property.
+ * @returns The updated versioned extension state without the `PreferencesController.shouldShowAggregatedBalancePopover` property.
  */
 export async function migrate(
   originalVersionedData: VersionedData,
@@ -39,127 +31,31 @@ export async function migrate(
 function transformState(
   state: Record<string, unknown>,
 ): Record<string, unknown> {
-  if (!hasProperty(state, 'TokensController')) {
+  if (!hasProperty(state, 'PreferencesController')) {
     global.sentry?.captureException?.(
-      new Error(`Migration ${version}: TokensController not found.`),
+      new Error(`Migration ${version}: PreferencesController not found.`),
     );
     return state;
   }
 
-  if (!hasProperty(state, 'AccountsController')) {
-    global.sentry?.captureException?.(
-      new Error(`Migration ${version}: AccountsController not found.`),
-    );
-    return state;
-  }
+  const preferencesControllerState = state.PreferencesController;
 
-  if (!hasProperty(state, 'TokenBalancesController')) {
-    global.sentry?.captureException?.(
-      new Error(`Migration ${version}: TokenBalancesController not found.`),
-    );
-    return state;
-  }
-
-  const tokensControllerState = state.TokensController as TokensControllerState;
-  const tokenBalancesControllerState =
-    state.TokenBalancesController as TokenBalancesControllerState;
-  const accountsControllerState =
-    state.AccountsController as AccountsControllerState;
-
-  if (!isObject(tokensControllerState)) {
+  if (!isObject(preferencesControllerState)) {
     global.sentry?.captureException?.(
       new Error(
-        `Migration ${version}: TokensController is type '${typeof tokensControllerState}', expected object.`,
+        `Migration ${version}: PreferencesController is type '${typeof preferencesControllerState}', expected object.`,
       ),
     );
     return state;
   }
 
-  if (!isObject(tokenBalancesControllerState)) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Migration ${version}: TokenBalancesController is type '${typeof tokenBalancesControllerState}', expected object.`,
-      ),
-    );
-    return state;
-  }
-
-  if (!isObject(accountsControllerState)) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Migration ${version}: AccountsController is type '${typeof accountsControllerState}', expected object.`,
-      ),
-    );
-    return state;
-  }
-
-  const { internalAccounts } = accountsControllerState;
-
-  const accounts = Object.values(internalAccounts.accounts);
-  const evmAccounts = accounts.filter((account) =>
-    isEvmAccountType(account.type),
-  );
-  const evmAccountAddresses = evmAccounts.map((account) => account.address);
-
-  // Check and clean up tokens in allTokens that do not belong to any EVM account
-  if (hasProperty(tokensControllerState, 'allTokens')) {
-    for (const chainId of Object.keys(tokensControllerState.allTokens)) {
-      const tokensByAccounts =
-        tokensControllerState.allTokens[chainId as `0x${string}`];
-      for (const account of Object.keys(tokensByAccounts)) {
-        if (!evmAccountAddresses.includes(account)) {
-          delete tokensControllerState.allTokens[chainId as `0x${string}`][
-            account
-          ];
-        }
-      }
-    }
-  }
-
-  // Check and clean up tokens in allDetectedTokens that do not belong to any EVM account
-  if (hasProperty(tokensControllerState, 'allDetectedTokens')) {
-    for (const chainId of Object.keys(
-      tokensControllerState.allDetectedTokens,
-    )) {
-      const tokensByAccounts =
-        tokensControllerState.allDetectedTokens[chainId as `0x${string}`];
-
-      for (const account of Object.keys(tokensByAccounts)) {
-        if (!evmAccountAddresses.includes(account)) {
-          delete tokensControllerState.allDetectedTokens[
-            chainId as `0x${string}`
-          ][account];
-        }
-      }
-    }
-  }
-
-  // Check and clean up tokens in allIgnoredTokens that do not belong to any EVM account
-  if (hasProperty(tokensControllerState, 'allIgnoredTokens')) {
-    for (const chainId of Object.keys(tokensControllerState.allIgnoredTokens)) {
-      const tokensByAccounts =
-        tokensControllerState.allIgnoredTokens[chainId as `0x${string}`];
-      for (const account of Object.keys(tokensByAccounts)) {
-        if (!evmAccountAddresses.includes(account)) {
-          delete tokensControllerState.allIgnoredTokens[
-            chainId as `0x${string}`
-          ][account];
-        }
-      }
-    }
-  }
-
-  // Check and clean up balances in tokenBalancesControllerState that do not belong to any EVM account
-  if (hasProperty(tokenBalancesControllerState, 'tokenBalances')) {
-    for (const accountAddress of Object.keys(
-      tokenBalancesControllerState.tokenBalances,
-    )) {
-      if (!evmAccountAddresses.includes(accountAddress)) {
-        delete tokenBalancesControllerState.tokenBalances[
-          accountAddress as Hex
-        ];
-      }
-    }
+  if (
+    hasProperty(
+      preferencesControllerState,
+      'shouldShowAggregatedBalancePopover',
+    )
+  ) {
+    delete preferencesControllerState.shouldShowAggregatedBalancePopover;
   }
 
   return state;

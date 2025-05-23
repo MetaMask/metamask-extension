@@ -129,6 +129,7 @@ export type ControllerStatePropertiesEnumerated = {
   noteToTraderMessage?: AppStateControllerState['noteToTraderMessage'];
   custodianDeepLink?: AppStateControllerState['custodianDeepLink'];
   slides: AppStateControllerState['slides'];
+  upgradeSplashPageAcknowledgedForAccounts: AppStateControllerState['upgradeSplashPageAcknowledgedForAccounts'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];
   quoteRequest: BridgeControllerState['quoteRequest'];
   quotes: BridgeControllerState['quotes'];
@@ -157,7 +158,6 @@ export type ControllerStatePropertiesEnumerated = {
   isUnlocked: KeyringControllerState['isUnlocked'];
   vault?: KeyringControllerState['vault'];
   keyrings: KeyringControllerState['keyrings'];
-  keyringsMetadata: KeyringControllerState['keyringsMetadata'];
   encryptionKey?: KeyringControllerState['encryptionKey'];
   encryptionSalt?: KeyringControllerState['encryptionSalt'];
   logs: LoggingControllerState['logs'];
@@ -237,10 +237,6 @@ export type ControllerStatePropertiesEnumerated = {
   useCurrencyRateCheck: PreferencesControllerState['useCurrencyRateCheck'];
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: PreferencesControllerState['watchEthereumAccountEnabled'];
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  bitcoinSupportEnabled: PreferencesControllerState['bitcoinSupportEnabled'];
-  bitcoinTestnetSupportEnabled: PreferencesControllerState['bitcoinTestnetSupportEnabled'];
   ///: END:ONLY_INCLUDE_IF
   addSnapAccountEnabled?: PreferencesControllerState['addSnapAccountEnabled'];
   advancedGasFee: PreferencesControllerState['advancedGasFee'];

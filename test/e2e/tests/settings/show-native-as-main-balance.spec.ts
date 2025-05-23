@@ -67,8 +67,7 @@ describe('Settings: Show native token as main balance', function () {
         await advancedSettingsPage.toggleShowConversionOnTestnets();
         await settingsPage.closeSettingsPage();
 
-        // close popover
-        await homePage.closePopover();
+        // assert amount displayed
         const assetListPage = new AssetListPage(driver);
         await assetListPage.check_tokenFiatAmountIsDisplayed('$42,500.00');
       },
@@ -99,17 +98,11 @@ describe('Settings: Show native token as main balance', function () {
         await advancedSettingsPage.toggleShowConversionOnTestnets();
         await settingsPage.closeSettingsPage();
 
-        // close popover for the first time
-        await homePage.closePopover();
-
         // go to setting and back to home page and make sure popover is not shown again
         await homePage.headerNavbar.openSettingsPage();
         await settingsPage.check_pageIsLoaded();
         await settingsPage.closeSettingsPage();
-
-        // assert popover does not exist
         await homePage.check_pageIsLoaded();
-        await homePage.check_popoverIsDisplayed(false);
       },
     );
   });
