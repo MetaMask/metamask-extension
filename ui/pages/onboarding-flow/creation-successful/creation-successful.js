@@ -148,10 +148,10 @@ export default function CreationSuccessful() {
             </Box>
           </Box>
           <Text variant={TextVariant.bodyMd} marginBottom={6}>
-            {renderDetails1()}
+            {renderDetails1}
           </Text>
           <Text variant={TextVariant.bodyMd} marginBottom={6}>
-            {renderDetails2()}
+            {renderDetails2}
           </Text>
         </Box>
 
