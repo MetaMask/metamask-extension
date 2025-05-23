@@ -3,11 +3,11 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
-import TransactionListItem from '.';
 import { Provider } from 'react-redux';
+import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
+import TransactionListItem from '.';
 
 /**
  * @typedef {(import('../../selectors/transactions').TransactionGroup} TransactionGroup
@@ -167,7 +167,7 @@ const configureBridgeStore = (status) =>
     createBridgeMockStore({
       metamaskStateOverrides: {
         txHistory: {
-          [4243712234858467]: {
+          4243712234858467: {
             account: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             quote: {
               srcChainId: 1,
@@ -186,7 +186,7 @@ const configureBridgeStore = (status) =>
                   '0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a',
               },
               destChain:
-                status == 'FAILED'
+                status === 'FAILED'
                   ? undefined
                   : {
                       chainId: 59144,
@@ -222,7 +222,7 @@ BridgePending.decorators = [
         createBridgeMockStore({
           metamaskStateOverrides: {
             txHistory: {
-              [4243712234858467]: {
+              4243712234858467: {
                 account: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
                 quote: {
                   srcChainId: 1,
