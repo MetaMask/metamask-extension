@@ -2,7 +2,7 @@ import React from 'react';
 import { act } from '@testing-library/react';
 import * as reactRouterUtils from 'react-router-dom-v5-compat';
 import { zeroAddress } from 'ethereumjs-util';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';

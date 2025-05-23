@@ -23,6 +23,7 @@ export const completeOnboardFlowIdentity = async (
 
   const header = new HeaderNavbar(driver);
   await header.check_pageIsLoaded();
+  await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
   return { homePage, header };
 };
 

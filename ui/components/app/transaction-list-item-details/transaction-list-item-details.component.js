@@ -33,7 +33,12 @@ export default class TransactionListItemDetails extends PureComponent {
     onRetry: PropTypes.func,
     showCancel: PropTypes.bool,
     showSpeedUp: PropTypes.bool,
-    showRetry: PropTypes.bool,
+    /**
+     * Disabling the retry button until further notice
+     *
+     * @see {@link https://github.com/MetaMask/metamask-extension/issues/28615}
+     */
+    // showRetry: PropTypes.bool,
     isEarliestNonce: PropTypes.bool,
     primaryCurrency: PropTypes.string,
     transactionGroup: PropTypes.object,
@@ -147,7 +152,7 @@ export default class TransactionListItemDetails extends PureComponent {
       transactionGroup,
       primaryCurrency,
       showSpeedUp,
-      showRetry,
+      // showRetry,
       recipientAddress,
       recipientName,
       senderAddress,
@@ -187,7 +192,7 @@ export default class TransactionListItemDetails extends PureComponent {
                   detailsModal
                 />
               )}
-              {showRetry && (
+              {/* {showRetry && (
                 <Tooltip title={t('retryTransaction')}>
                   <Button
                     type="raised"
@@ -198,7 +203,7 @@ export default class TransactionListItemDetails extends PureComponent {
                     <i className="fa fa-sync"></i>
                   </Button>
                 </Tooltip>
-              )}
+              )} */}
             </div>
           </div>
           <div className="transaction-list-item-details__header">

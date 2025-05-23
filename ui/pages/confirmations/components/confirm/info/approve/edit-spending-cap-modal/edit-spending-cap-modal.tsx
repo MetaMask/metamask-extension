@@ -241,6 +241,8 @@ export const EditSpendingCapModal = ({
           )}
         </ModalBody>
         <ModalFooter
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onSubmit={handleSubmit}
           onCancel={handleCancel}
           submitButtonProps={{

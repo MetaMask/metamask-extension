@@ -594,7 +594,11 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
       await dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
       if (ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId)) {
         await dispatch(setCurrentSmartTransactionsError(undefined));
-        await dispatch(fetchSmartTransactionsLiveness());
+        await dispatch(
+          fetchSmartTransactionsLiveness({
+            networkClientId: getSelectedNetworkClientId(state),
+          }),
+        );
         const transactions = await getTransactions({
           searchCriteria: {
             chainId,

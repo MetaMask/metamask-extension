@@ -10,7 +10,6 @@ import {
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
-import HomePage from '../../../page-objects/pages/home/homepage';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { completeOnboardFlowIdentity } from '../flows';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
@@ -20,8 +19,7 @@ import {
 } from './mock-data';
 import { arrangeTestUtils } from './helpers';
 
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Backup and Sync Settings', function () {
+describe('Backup and Sync Settings', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
 
   const arrange = async () => {
@@ -63,8 +61,6 @@ describe.skip('Backup and Sync Settings', function () {
         },
         async ({ driver }) => {
           await completeOnboardFlowIdentity(driver);
-          const homePage = new HomePage(driver);
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -127,8 +123,6 @@ describe.skip('Backup and Sync Settings', function () {
         },
         async ({ driver }) => {
           await completeOnboardFlowIdentity(driver);
-          const homePage = new HomePage(driver);
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();

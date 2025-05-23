@@ -1,4 +1,4 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import { GasFeeToken, TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { act } from '@testing-library/react';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
@@ -7,14 +7,16 @@ import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confi
 import { updateSelectedGasFeeToken } from '../../../store/controller-actions/transaction-controller';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { forceUpdateMetamaskState } from '../../../store/actions';
-import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../test/data/confirmations/gas';
+import { NATIVE_TOKEN_ADDRESS } from '../components/confirm/info/hooks/useGasFeeToken';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useAutomaticGasFeeTokenSelect } from './useAutomaticGasFeeTokenSelect';
+import { useIsGaslessSupported } from './gas/useIsGaslessSupported';
 
 jest.mock('../../../store/controller-actions/transaction-controller');
 jest.mock('./alerts/transactions/useInsufficientBalanceAlerts');
 jest.mock('../../../../shared/modules/selectors');
+jest.mock('./gas/useIsGaslessSupported');
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
@@ -22,17 +24,15 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 function runHook({
-  noGasFeeTokens,
+  gasFeeTokens,
   selectedGasFeeToken,
 }: {
-  maxFeePerGas?: Hex;
-  noGasFeeTokens?: boolean;
+  gasFeeTokens?: GasFeeToken[];
   selectedGasFeeToken?: Hex;
-  value?: Hex;
 } = {}) {
   const state = getMockConfirmStateForTransaction(
     genUnapprovedContractInteractionConfirmation({
-      gasFeeTokens: noGasFeeTokens ? undefined : [GAS_FEE_TOKEN_MOCK],
+      gasFeeTokens: gasFeeTokens ?? [GAS_FEE_TOKEN_MOCK],
       selectedGasFeeToken,
     }),
   );
@@ -48,7 +48,7 @@ function runHook({
 describe('useAutomaticGasFeeTokenSelect', () => {
   const updateSelectedGasFeeTokenMock = jest.mocked(updateSelectedGasFeeToken);
   const forceUpdateMetamaskStateMock = jest.mocked(forceUpdateMetamaskState);
-  const getIsSmartTransactionMock = jest.mocked(getIsSmartTransaction);
+  const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
 
   const useInsufficientBalanceAlertsMock = jest.mocked(
     useInsufficientBalanceAlerts,
@@ -59,7 +59,11 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     useInsufficientBalanceAlertsMock.mockReturnValue([{} as Alert]);
     updateSelectedGasFeeTokenMock.mockResolvedValue();
     forceUpdateMetamaskStateMock.mockResolvedValue();
-    getIsSmartTransactionMock.mockReturnValue(true);
+
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: true,
+    });
   });
 
   it('selects first gas fee token', () => {
@@ -78,7 +82,7 @@ describe('useAutomaticGasFeeTokenSelect', () => {
   });
 
   it('does not select first gas fee token if no gas fee tokens', () => {
-    runHook({ noGasFeeTokens: true });
+    runHook({ gasFeeTokens: [] });
     expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
   });
 
@@ -99,8 +103,11 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
   });
 
-  it('does not select first gas fee token if not smart transaction', () => {
-    getIsSmartTransactionMock.mockReturnValue(false);
+  it('does not select first gas fee token if gasless not supported', () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: false,
+    });
 
     runHook();
 
@@ -113,5 +120,72 @@ describe('useAutomaticGasFeeTokenSelect', () => {
     runHook();
 
     expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+  });
+
+  it('does not select first gas fee token after firstCheck is set to false', () => {
+    const { rerender, state } = runHook();
+    // Simulate a rerender with new state that would otherwise trigger selection
+    act(() => {
+      (
+        state.metamask.transactions[0] as unknown as TransactionMeta
+      ).selectedGasFeeToken = undefined;
+    });
+    rerender();
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(1); // Only first run
+  });
+
+  it('does not select if transactionId is falsy', () => {
+    const state = getMockConfirmStateForTransaction(
+      genUnapprovedContractInteractionConfirmation({
+        gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+        selectedGasFeeToken: undefined,
+      }),
+    );
+    // Remove transactionId
+    state.metamask.transactions = [];
+    renderHookWithConfirmContextProvider(useAutomaticGasFeeTokenSelect, state);
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+  });
+
+  it('does not select if gasFeeTokens is falsy', () => {
+    runHook({ gasFeeTokens: [] });
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+  });
+
+  it('does not select first gas fee token if 7702 and future native token', () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: false,
+    });
+
+    runHook({
+      gasFeeTokens: [
+        {
+          ...GAS_FEE_TOKEN_MOCK,
+          tokenAddress: NATIVE_TOKEN_ADDRESS,
+        },
+      ],
+    });
+
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(0);
+  });
+
+  it('selects second gas fee token if 7702 and future native token', () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: false,
+    });
+
+    runHook({
+      gasFeeTokens: [
+        {
+          ...GAS_FEE_TOKEN_MOCK,
+          tokenAddress: NATIVE_TOKEN_ADDRESS,
+        },
+        GAS_FEE_TOKEN_MOCK,
+      ],
+    });
+
+    expect(updateSelectedGasFeeTokenMock).toHaveBeenCalledTimes(1);
   });
 });

@@ -29,6 +29,7 @@ export default class ContactListTab extends Component {
 
   static propTypes = {
     addressBook: PropTypes.array,
+    completeAddressBook: PropTypes.array,
     internalAccounts: PropTypes.array,
     history: PropTypes.object,
     selectedAddress: PropTypes.string,
@@ -58,17 +59,28 @@ export default class ContactListTab extends Component {
   }
 
   renderAddresses() {
-    const { addressBook, internalAccounts, history, selectedAddress } =
-      this.props;
-    const contacts = addressBook.filter(({ name }) => Boolean(name));
-    const nonContacts = addressBook.filter(({ name }) => !name);
+    const {
+      completeAddressBook,
+      addressBook,
+      internalAccounts,
+      history,
+      selectedAddress,
+    } = this.props;
+
+    const updatedAddressBook = process.env.REMOVE_GNS
+      ? completeAddressBook.flatMap((add) => Object.values(add))
+      : addressBook;
+
+    const contacts = updatedAddressBook.filter(({ name }) => Boolean(name));
+    const nonContacts = updatedAddressBook.filter(({ name }) => !name);
+
     const { t } = this.context;
 
-    if (addressBook.length) {
+    if (updatedAddressBook.length) {
       return (
         <div>
           <ContactList
-            addressBook={addressBook}
+            addressBook={updatedAddressBook}
             internalAccounts={internalAccounts}
             searchForContacts={() => contacts}
             searchForRecents={() => nonContacts}
@@ -80,6 +92,7 @@ export default class ContactListTab extends Component {
         </div>
       );
     }
+
     return (
       <div className="address-book__container">
         <div>
@@ -161,7 +174,12 @@ export default class ContactListTab extends Component {
   }
 
   render() {
-    const { addingContact, addressBook, currentPath } = this.props;
+    const { addingContact, currentPath, completeAddressBook, addressBook } =
+      this.props;
+
+    const addressData = process.env.REMOVE_GNS
+      ? completeAddressBook
+      : addressBook;
 
     return (
       <div className="address-book-wrapper">
@@ -169,7 +187,7 @@ export default class ContactListTab extends Component {
         {this.renderContactContent()}
         {currentPath === CONTACT_LIST_ROUTE &&
         !addingContact &&
-        addressBook.length > 0
+        addressData.length > 0
           ? this.renderAddButton()
           : null}
       </div>

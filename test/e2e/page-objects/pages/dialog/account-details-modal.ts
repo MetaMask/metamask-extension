@@ -1,7 +1,13 @@
-import { tEn } from '../../../../lib/i18n-helpers';
 import { LavaDomeDebug } from '@lavamoat/lavadome-core';
+import { tEn } from '../../../../lib/i18n-helpers';
 import { Driver } from '../../../webdriver/driver';
 import { WALLET_PASSWORD } from '../../../constants';
+
+type RevealPrivateKeyOptions = {
+  expectedPrivateKey: string;
+  password?: string;
+  expectedPasswordError?: boolean;
+};
 
 class AccountDetailsModal {
   private driver: Driver;
@@ -105,15 +111,16 @@ class AccountDetailsModal {
   /**
    * Reveal the private key of the account and verify it is correct in account details modal.
    *
-   * @param expectedPrivateKey - The expected private key to verify.
-   * @param password - The password to authenticate with. Defaults to the default wallet password.
-   * @param expectedPasswordError - Whether to expect a password error. Defaults to false.
+   * @param options - The options object.
+   * @param options.expectedPrivateKey - The expected private key to verify.
+   * @param options.password - The password to authenticate with. Defaults to the default wallet password.
+   * @param options.expectedPasswordError - Whether to expect a password error. Defaults to false.
    */
   async revealPrivateKeyAndVerify({
     expectedPrivateKey,
     password = WALLET_PASSWORD,
     expectedPasswordError = false,
-  }): Promise<void> {
+  }: RevealPrivateKeyOptions): Promise<void> {
     console.log(
       `Reveal private key and verify it is correct in account details modal`,
     );
@@ -167,6 +174,12 @@ class AccountDetailsModal {
   async check_showPrivateKeyButtonIsNotDisplayed(): Promise<void> {
     console.log('Check that show private key button is not displayed');
     await this.driver.assertElementNotPresent(this.showPrivateKeyButton);
+  }
+
+  async triggerAccountSwitch(): Promise<void> {
+    await this.driver.clickElement(
+      '[data-testid="switch_account-Localhost 8545"]',
+    );
   }
 }
 

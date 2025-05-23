@@ -86,11 +86,17 @@ export const TotalFiatDisplay: React.FC<{
     return null;
   }
 
+  const totalFiatShorten = fiatFormatter(Math.abs(totalFiat), {
+    shorten: true,
+    truncatedCharLimit: 20,
+    truncatedStartChars: 17,
+  });
+
   return totalFiat === 0 ? (
     <FiatNotAvailableDisplay />
   ) : (
     <Text {...textStyle}>
-      {t('simulationDetailsTotalFiat', [fiatFormatter(Math.abs(totalFiat))])}
+      {t('simulationDetailsTotalFiat', [totalFiatShorten])}
     </Text>
   );
 };

@@ -38,12 +38,12 @@ jobs:
         with:
           name: lcov.info
           path: coverage
-          github-token: ${{ github.token }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
           run-id: ${{ github.event.workflow_run.id }} # Use the workflow id that triggered the workflow
 
       - name: Download sonar-project.properties
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPOSITORY: MetaMask/metamask-extension
         run: |
           sonar_project_properties=$(gh api -H "Accept: application/vnd.github.raw" "repos/$REPOSITORY/contents/sonar-project.properties")

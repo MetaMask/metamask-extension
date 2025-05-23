@@ -179,6 +179,8 @@ function groupFilesByTeam(fileOwners: Map<string, Set<string>>): TeamFiles {
   return teamFiles;
 }
 
+const policyReviewInstructions = `\n> [!TIP]  \n> Follow the policy review process outlined in the [LavaMoat Policy Review Process doc](https://github.com/MetaMask/metamask-extension/blob/main/docs/lavamoat-policy-review-process.md) before expecting an approval from Policy Reviewers.\n`
+
 function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string {
   let commentBody = `<!-- METAMASK-CODEOWNERS-BOT -->\n✨ Files requiring CODEOWNER review ✨\n---\n`;
 
@@ -197,6 +199,9 @@ function createCommentBody(teamFiles: TeamFiles, teamEmojis: TeamEmojis): string
   sortedOwners.forEach(team => {
     const emoji = teamEmojis[team] || '👨‍🔧';
     commentBody += `${emoji} ${team}\n`;
+    if(team === '@MetaMask/policy-reviewers') {
+      commentBody += policyReviewInstructions
+    }
     teamFiles[team].forEach(file => {
       commentBody += `- \`${file}\`\n`;
     });

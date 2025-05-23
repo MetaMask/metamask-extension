@@ -21,9 +21,12 @@ import {
   Caip25EndowmentPermissionName,
   getEthAccounts,
   getPermittedEthChainIds,
+  getAllScopesFromPermission,
+  getCaipAccountIdsFromCaip25CaveatValue,
+  getCaip25CaveatFromPermission,
 } from '@metamask/chain-agnostic-permission';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { BridgeFeatureFlagsKey } from '@metamask/bridge-controller';
+import { selectBridgeFeatureFlags } from '@metamask/bridge-controller';
 import {
   KnownCaipNamespace,
   parseCaipAccountId,
@@ -69,6 +72,7 @@ import {
   FEATURED_NETWORK_CHAIN_IDS,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   NETWORK_TO_NAME_MAP,
+  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -124,9 +128,6 @@ import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multic
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
-import { getAllScopesFromPermission } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
-import { getCaipAccountIdsFromCaip25CaveatValue } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
-import { getCaip25CaveatFromPermission } from '../../shared/lib/multichain/chain-agnostic-permission-utils/misc-utils';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
   getAllUnapprovedTransactions,
@@ -205,6 +206,10 @@ export function getEditedNetwork(state) {
 
 export function getIsAddingNewNetwork(state) {
   return state.appState.isAddingNewNetwork;
+}
+
+export function getIsAccessedFromDappConnectedSitePopover(state) {
+  return state.appState.isAccessedFromDappConnectedSitePopover;
 }
 
 export function getIsMultiRpcOnboarding(state) {
@@ -1047,6 +1052,14 @@ export function getAddressBook(state) {
   return Object.values(state.metamask.addressBook[chainId]);
 }
 
+export function getCompleteAddressBook(state) {
+  const addresses = state.metamask.addressBook;
+  const addressWithChainId = Object.fromEntries(
+    Object.entries(addresses).filter(([key]) => key !== '*'),
+  );
+  return Object.values(addressWithChainId);
+}
+
 export function getEnsResolutionByAddress(state, address) {
   if (state.metamask.ensResolutionsByAddress[address]) {
     const ensResolution = state.metamask.ensResolutionsByAddress[address];
@@ -1063,6 +1076,22 @@ export function getEnsResolutionByAddress(state, address) {
 }
 
 export function getAddressBookEntry(state, address) {
+  if (process.env.REMOVE_GNS) {
+    const addressBook = getCompleteAddressBook(state);
+
+    for (const item of addressBook) {
+      for (const key in item) {
+        if (Object.prototype.hasOwnProperty.call(item, key)) {
+          const contact = item[key];
+          if (isEqualCaseInsensitive(contact.address, address)) {
+            return contact;
+          }
+        }
+      }
+    }
+
+    return null;
+  }
   const addressBook = getAddressBook(state);
   const entry = addressBook.find((contact) =>
     isEqualCaseInsensitive(contact.address, address),
@@ -1176,6 +1205,15 @@ export const selectDefaultRpcEndpointByChainId = createSelector(
     const { defaultRpcEndpointIndex, rpcEndpoints } = networkConfiguration;
     return rpcEndpoints[defaultRpcEndpointIndex];
   },
+);
+
+/**
+ * @type (state: RemoteFeatureFlagsState) => boolean
+ */
+export const getIsRpcFailoverEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    remoteFeatureFlags.walletFrameworkRpcFailoverEnabled ?? false,
 );
 
 /**
@@ -1418,11 +1456,24 @@ export function getTestNetworkBackgroundColor(state) {
   }
 }
 
-export function getShouldShowFiat(state) {
-  const currentChainId = getCurrentChainId(state);
+export function getShouldShowFiat(state, chainId) {
+  let currentChainId;
+  let conversionRate;
+  if (chainId) {
+    currentChainId = chainId;
+    // Try known constants before user defined ticker
+    const ticker =
+      CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId] ??
+      CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION[chainId] ??
+      selectNetworkConfigurationByChainId(state, chainId)?.nativeCurrency;
+    conversionRate = getCurrencyRates(state)?.[ticker]?.conversionRate;
+  } else {
+    currentChainId = getCurrentChainId(state);
+    conversionRate = getConversionRate(state);
+  }
+
   const isTestnet = TEST_NETWORK_IDS.includes(currentChainId);
   const { showFiatInTestnets } = getPreferences(state);
-  const conversionRate = getConversionRate(state);
   const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
   const isConvertibleToFiat = Boolean(useCurrencyRateCheck && conversionRate);
 
@@ -1844,19 +1895,20 @@ export function getIsBridgeChain(state, overrideChainId) {
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
 
-function getBridgeFeatureFlags(state) {
-  return state.metamask.bridgeFeatureFlags;
-}
+const getBridgeFeatureFlags = createDeepEqualSelector(
+  [(state) => getRemoteFeatureFlags(state).bridgeConfig],
+  (bridgeConfig) => {
+    const validatedFlags = selectBridgeFeatureFlags({
+      remoteFeatureFlags: { bridgeConfig },
+    });
+    return validatedFlags;
+  },
+);
 
 export const getIsBridgeEnabled = createSelector(
   [getBridgeFeatureFlags, getUseExternalServices],
   (bridgeFeatureFlags, shouldUseExternalServices) => {
-    return (
-      (shouldUseExternalServices &&
-        bridgeFeatureFlags?.[BridgeFeatureFlagsKey.EXTENSION_CONFIG]
-          ?.support) ??
-      false
-    );
+    return (shouldUseExternalServices && bridgeFeatureFlags?.support) ?? false;
   },
 );
 
@@ -2053,26 +2105,6 @@ export const getConnectedSitesList = createDeepEqualSelector(
       });
     });
     return sitesList;
-  },
-);
-
-export function getShouldShowAggregatedBalancePopover(state) {
-  const { shouldShowAggregatedBalancePopover } = getPreferences(state);
-  return shouldShowAggregatedBalancePopover;
-}
-
-export const getConnectedSnapsList = createDeepEqualSelector(
-  getSnapsList,
-  (snapsData) => {
-    const snapsList = {};
-
-    Object.values(snapsData).forEach((snap) => {
-      if (!snapsList[snap.name]) {
-        snapsList[snap.name] = snap;
-      }
-    });
-
-    return snapsList;
   },
 );
 
@@ -2929,6 +2961,17 @@ export function getIsAddSnapAccountEnabled(state) {
 }
 ///: END:ONLY_INCLUDE_IF
 
+/**
+ * Get the state of the `solanaTestnetsEnabled` remote feature flag.
+ *
+ * @param {*} state
+ * @returns The state of the `solanaTestnetsEnabled` remote feature flag.
+ */
+export function getIsSolanaTestnetSupportEnabled(state) {
+  const { solanaTestnetsEnabled } = getRemoteFeatureFlags(state);
+  return Boolean(solanaTestnetsEnabled);
+}
+
 export function getIsWatchEthereumAccountEnabled(state) {
   return state.metamask.watchEthereumAccountEnabled;
 }
@@ -2940,24 +2983,8 @@ export function getIsWatchEthereumAccountEnabled(state) {
  * @returns The state of the `bitcoinSupportEnabled` flag.
  */
 export function getIsBitcoinSupportEnabled(state) {
-  // NOTE: We use this trick to avoid using code fence.
-  // If this flag is not in `state.metamask` it will be set
-  // as `undefined`, and the `Boolean(...)` will be evaluated
-  // to `false`.
-  const { bitcoinSupportEnabled } = state.metamask;
-  return Boolean(bitcoinSupportEnabled);
-}
-
-/**
- * Get the state of the `bitcoinTestnetSupportEnabled` flag.
- *
- * @param {*} state
- * @returns The state of the `bitcoinTestnetSupportEnabled` flag.
- */
-export function getIsBitcoinTestnetSupportEnabled(state) {
-  // See `getIsBitcoinSupportEnabled` for details.
-  const { bitcoinTestnetSupportEnabled } = state.metamask;
-  return Boolean(bitcoinTestnetSupportEnabled);
+  const { addBitcoinAccount } = getRemoteFeatureFlags(state);
+  return Boolean(addBitcoinAccount);
 }
 
 /**
@@ -2971,8 +2998,29 @@ export function getIsSolanaSupportEnabled(state) {
   return Boolean(addSolanaAccount);
 }
 
+/**
+ * Checks if the new settings redesign is enabled
+ *
+ * @param state - The state of the application
+ * @returns true if the new settings redesign is enabled, false otherwise
+ */
+export function getIsNewSettingsEnabled(state) {
+  const { settingsRedesign } = getRemoteFeatureFlags(state);
+  return Boolean(settingsRedesign);
+}
+
 export function getManageInstitutionalWallets(state) {
   return state.metamask.manageInstitutionalWallets;
+}
+/**
+ * Get the state of the `defiPositionsEnabled` remote feature flag.
+ *
+ * @param {*} state
+ * @returns The state of the `defiPositionsEnabled` remote feature flag.
+ */
+export function getIsDefiPositionsEnabled(state) {
+  const { assetsDefiPositionsEnabled } = getRemoteFeatureFlags(state);
+  return Boolean(assetsDefiPositionsEnabled);
 }
 
 export function getIsCustomNetwork(state) {
@@ -2982,15 +3030,15 @@ export function getIsCustomNetwork(state) {
 }
 
 /**
- * Get the state of the `nePortfolioDiscoverButton` remote feature flag.
+ * Get the state of the `neNetworkDiscoverButton` remote feature flag.
  * This flag determines whether the user should see a `Discover` button on the network menu list.
  *
  * @param {*} state
- * @returns The state of the `nePortfolioDiscoverButton` remote feature flag.
+ * @returns The state of the `neNetworkDiscoverButton` remote feature flag.
  */
-export function getIsPortfolioDiscoverButtonEnabled(state) {
-  const { nePortfolioDiscoverButton } = getRemoteFeatureFlags(state);
-  return Boolean(nePortfolioDiscoverButton);
+export function getNetworkDiscoverButtonEnabled(state) {
+  const { neNetworkDiscoverButton } = getRemoteFeatureFlags(state);
+  return neNetworkDiscoverButton;
 }
 
 export function getBlockExplorerLinkText(
