@@ -1,8 +1,10 @@
 // Note: just some initial types (will likely be refactored to pull from contract metadata
 
+import { AssetType } from '@metamask/bridge-controller';
 import { Delegation } from '../../../shared/lib/delegation';
 
 export enum TokenSymbol {
+  SEPOLIA_ETH = 'SepoliaETH',
   ETH = 'ETH',
   USDC = 'USDC',
   WETH = 'WETH',
@@ -14,40 +16,61 @@ export enum TokenSymbol {
 export type TokenInfo = {
   symbol: TokenSymbol;
   name: string;
-  iconUrl: string;
+  image: string;
+  address: string;
+  type: AssetType;
 };
 
 export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
+  [TokenSymbol.SEPOLIA_ETH]: {
+    symbol: TokenSymbol.SEPOLIA_ETH,
+    name: 'SepoliaETH',
+    image: './images/eth_logo.png',
+    address: '',
+    type: AssetType.native,
+  },
   [TokenSymbol.ETH]: {
     symbol: TokenSymbol.ETH,
     name: 'ETH',
-    iconUrl: './images/eth_logo.png',
+    image: './images/eth_logo.png',
+    address: '',
+    type: AssetType.native,
   },
   [TokenSymbol.USDC]: {
     symbol: TokenSymbol.USDC,
     name: 'USDC',
-    iconUrl: './images/icon-usdc.png',
+    image: './images/icon-usdc.png',
+    address: '',
+    type: AssetType.token,
   },
   [TokenSymbol.WETH]: {
     symbol: TokenSymbol.WETH,
     name: 'WETH',
-    iconUrl: './images/eth_logo.png',
+    image: './images/eth_logo.png',
+    address: '',
+    type: AssetType.token,
   },
   [TokenSymbol.WBTC]: {
     symbol: TokenSymbol.WBTC,
     name: 'WBTC',
-    iconUrl: './images/icon-btc.png',
+    image: './images/icon-btc.png',
+    address: '',
+    type: AssetType.token,
   },
   [TokenSymbol.BNB]: {
     symbol: TokenSymbol.BNB,
     name: 'BNB',
-    iconUrl: './images/icon-bnb.png',
+    image: './images/icon-bnb.png',
+    address: '',
+    type: AssetType.token,
   },
   // note: added for testing (finalized list tbd)
   [TokenSymbol.EURC]: {
     symbol: TokenSymbol.EURC,
     name: 'EURC',
-    iconUrl: './images/eth_logo.png',
+    image: './images/eth_logo.png',
+    address: '',
+    type: AssetType.token,
   },
 };
 
@@ -68,10 +91,8 @@ export enum DailyAllowanceTokenTypes {
   ETH = 'ETH',
 }
 
-export type DailyAllowance = {
-  tokenType: TokenSymbol;
+export type DailyAllowance = TokenInfo & {
   amount: number;
-  iconUrl: string;
 };
 
 export type RemoteModeConfig = {
