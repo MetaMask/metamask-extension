@@ -1,8 +1,8 @@
 /* eslint-disable jest/no-done-callback */
 import { Transform } from 'node:stream';
-import metaRPCClientFactory, { DisconnectError } from './metaRPCClientFactory';
 import { JsonRpcError } from '@metamask/rpc-errors';
 import { Json, JsonRpcRequest } from '@metamask/utils';
+import metaRPCClientFactory, { DisconnectError } from './metaRPCClientFactory';
 
 function createThroughStream<T>(transformFn?: (chunk: T) => void) {
   return new Transform({

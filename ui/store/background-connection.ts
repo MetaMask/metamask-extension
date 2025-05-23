@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-restricted-paths
 import { type MetaRpcClientFactory } from '../../app/scripts/lib/metaRPCClientFactory';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973

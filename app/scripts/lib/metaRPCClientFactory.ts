@@ -130,6 +130,7 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
 
   /**
    * Gets a resolver function for the specified method.
+   *
    * @returns A function that resolves the method on the client.
    */
   getRpcResolver = () => {
@@ -211,6 +212,8 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
 
   /**
    * Closes the connection and cleans up.
+   *
+   * @param reason
    */
   close = (reason: string = 'disconnected') => {
     this.#notificationChannel.removeAllListeners();
@@ -229,7 +232,6 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
    * Handles a JSON-RPC response.
    *
    * @param response - The response to handle.
-   * @returns
    */
   handleResponse = (
     response: JsonRpcApiResponse<Api> | JsonRpcRequest | JsonRpcNotification,
