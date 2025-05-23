@@ -6,12 +6,14 @@ import FixtureBuilder from '../fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { withFixtures, WINDOW_TITLES } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import { mockLookupSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 
 describe('Name lookup', function () {
   it('validate the recipient address appears in the send flow', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockLookupSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
