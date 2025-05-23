@@ -81,8 +81,6 @@ const ChangePassword = () => {
       history.goBack();
     } catch (error) {
       setIsIncorrectPasswordError(true);
-    } finally {
-      setStep(ChangePasswordSteps.CreatingPassword);
     }
   };
 

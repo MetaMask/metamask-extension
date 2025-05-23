@@ -30,7 +30,7 @@ import {
 
 import { getFirstTimeFlowType, getSocialLoginEmail } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { resetOAuthLoginState } from '../../../store/actions';
+import { setFirstTimeFlowType, resetOAuthLoginState } from '../../../store/actions';
 
 export default function AccountNotFound() {
   const history = useHistory();
@@ -39,7 +39,16 @@ export default function AccountNotFound() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
 
-  const onCreateOne = () => {
+  const onBack = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    await dispatch(resetOAuthLoginState());
+    history.goBack();
+  }
+
+  const onCreateWallet = () => {
+    dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
     history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
   };
 
@@ -50,8 +59,8 @@ export default function AccountNotFound() {
   };
 
   useEffect(() => {
-    if (firstTimeFlowType !== FirstTimeFlowType.social) {
-      // if the onboarding flow is not seedless, redirect to the welcome page
+    if (firstTimeFlowType !== FirstTimeFlowType.socialImport) {
+      // if the onboarding flow is not social import, redirect to the welcome page
       history.push(ONBOARDING_WELCOME_ROUTE);
     }
   }, [firstTimeFlowType, history]);
@@ -78,7 +87,7 @@ export default function AccountNotFound() {
             color={IconColor.iconDefault}
             size={ButtonIconSize.Md}
             data-testid="create-password-back-button"
-            onClick={() => history.goBack()}
+            onClick={onBack}
             ariaLabel="back"
           />
         </Box>
@@ -135,7 +144,7 @@ export default function AccountNotFound() {
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           width={BlockSize.Full}
-          onClick={onCreateOne}
+          onClick={onCreateWallet}
         >
           {t('accountNotFoundCreateOne')}
         </Button>

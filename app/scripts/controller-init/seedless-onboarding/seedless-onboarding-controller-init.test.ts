@@ -47,10 +47,12 @@ describe('SeedlessOnboardingControllerInit', () => {
     const requestMock = buildInitRequestMock();
     SeedlessOnboardingControllerInit(requestMock);
 
+    const network = process.env.WEB3AUTH_NETWORK as Web3AuthNetwork;
+
     expect(SeedlessOnboardingControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
       state: requestMock.persistedState.SeedlessOnboardingController,
-      network: Web3AuthNetwork.Devnet,
+      network,
       encryptor: {
         decrypt: expect.any(Function),
         decryptWithDetail: expect.any(Function),
