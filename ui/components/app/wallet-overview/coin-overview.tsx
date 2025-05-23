@@ -1,6 +1,5 @@
 import React, {
   useContext,
-  useState,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   useCallback,
   ///: END:ONLY_INCLUDE_IF
@@ -17,17 +16,10 @@ import {
   ButtonIcon,
   ButtonIconSize,
   ButtonLink,
-  ButtonLinkSize,
   IconName,
-  Popover,
-  PopoverPosition,
-  Text,
 } from '../../component-library';
 import {
-  AlignItems,
-  Display,
   JustifyContent,
-  TextAlign,
   TextVariant,
   IconColor,
 } from '../../../helpers/constants/design-system';
@@ -49,7 +41,6 @@ import {
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
   getIsTestnet,
-  getShouldShowAggregatedBalancePopover,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getChainIdsToPoll,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -66,12 +57,7 @@ import {
   getMultichainIsEvm,
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
-import {
-  setAggregatedBalancePopoverShown,
-  setPrivacyMode,
-} from '../../../store/actions';
-import { useTheme } from '../../../hooks/useTheme';
-import { getSpecificSettingsRoute } from '../../../helpers/utils/settings-search';
+import { setPrivacyMode } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 
@@ -80,7 +66,10 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { AggregatedBalance } from '../../ui/aggregated-balance/aggregated-balance';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
-import { AggregatedPercentageOverview } from './aggregated-percentage-overview';
+import {
+  AggregatedMultichainPercentageOverview,
+  AggregatedPercentageOverview,
+} from './aggregated-percentage-overview';
 import { AggregatedPercentageOverviewCrossChains } from './aggregated-percentage-overview-cross-chains';
 
 export type CoinOverviewProps = {
@@ -218,18 +207,9 @@ export const CoinOverview = ({
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   ///: END:ONLY_INCLUDE_IF
-
-  const showNativeTokenAsMainBalanceRoute = getSpecificSettingsRoute(
-    t,
-    t('general'),
-    t('showNativeTokenAsMainBalance'),
-  );
-  const theme = useTheme();
   const dispatch = useDispatch();
 
-  const shouldShowPopover = useSelector(getShouldShowAggregatedBalancePopover);
-  const isTestnet = useSelector(getIsTestnet);
-  const { showFiatInTestnets, privacyMode, showNativeTokenAsMainBalance } =
+  const { privacyMode, showNativeTokenAsMainBalance } =
     useSelector(getPreferences);
 
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
@@ -239,27 +219,9 @@ export const CoinOverview = ({
   const isEvm = useSelector(getMultichainIsEvm);
 
   const tokensMarketData = useSelector(getTokensMarketData);
-  const [isOpen, setIsOpen] = useState(true);
-
-  const handleMouseEnter = () => {
-    setIsOpen(true);
-  };
-
-  const handleClick = () => {
-    setIsOpen(!isOpen);
-    dispatch(setAggregatedBalancePopoverShown());
-  };
 
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
-  };
-
-  const [referenceElement, setReferenceElement] =
-    useState<HTMLSpanElement | null>(null);
-  const setBoxRef = (ref: HTMLSpanElement | null) => {
-    if (ref) {
-      setReferenceElement(ref);
-    }
   };
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -294,7 +256,7 @@ export const CoinOverview = ({
           data-testid="portfolio-link"
           textProps={{ variant: TextVariant.bodyMdMedium }}
         >
-          {t('portfolio')}
+          {process.env.REMOVE_GNS ? t('discover') : t('portfolio')}
         </ButtonLink>
       );
       ///: END:ONLY_INCLUDE_IF
@@ -326,6 +288,7 @@ export const CoinOverview = ({
 
     const renderNonEvmView = () => (
       <Box className="wallet-overview__currency-wrapper">
+        <AggregatedMultichainPercentageOverview privacyMode={privacyMode} />
         {renderPortfolioButton()}
       </Box>
     );
@@ -348,11 +311,7 @@ export const CoinOverview = ({
           disabled={!balanceIsCached}
         >
           <div className={`${classPrefix}-overview__balance`}>
-            <div
-              className={`${classPrefix}-overview__primary-container`}
-              onMouseEnter={handleMouseEnter}
-              ref={setBoxRef}
-            >
+            <div className={`${classPrefix}-overview__primary-container`}>
               {isEvm ? (
                 <LegacyAggregatedBalance
                   classPrefix={classPrefix}
@@ -374,65 +333,6 @@ export const CoinOverview = ({
                 </span>
               )}
             </div>
-            {shouldShowPopover &&
-            (!isTestnet || (isTestnet && showFiatInTestnets)) &&
-            !showNativeTokenAsMainBalance ? (
-              <Popover
-                referenceElement={referenceElement}
-                isOpen={isOpen}
-                position={PopoverPosition.BottomStart}
-                hasArrow
-                flip
-                data-theme={theme === 'light' ? 'dark' : 'light'}
-                className="balance-popover__container"
-                padding={3}
-                onClickOutside={handleClick}
-                onPressEscKey={handleClick}
-                preventOverflow
-              >
-                <Box>
-                  <Box
-                    display={Display.Flex}
-                    justifyContent={JustifyContent.spaceBetween}
-                  >
-                    <Text
-                      variant={TextVariant.bodySmBold}
-                      textAlign={TextAlign.Left}
-                      alignItems={AlignItems.flexStart}
-                    >
-                      {t('yourBalanceIsAggregated')}
-                    </Text>
-                    <ButtonIcon
-                      size={ButtonIconSize.Sm}
-                      onClick={handleClick}
-                      iconName={IconName.Close}
-                      justifyContent={JustifyContent.center}
-                      ariaLabel="close"
-                      data-testid="popover-close"
-                    />
-                  </Box>
-
-                  <Text variant={TextVariant.bodySm}>
-                    {t('crossChainAggregatedBalancePopover', [
-                      <ButtonLink
-                        size={ButtonLinkSize.Inherit}
-                        textProps={{
-                          variant: TextVariant.bodyMd,
-                          alignItems: AlignItems.flexStart,
-                        }}
-                        as="a"
-                        href={`#${showNativeTokenAsMainBalanceRoute.route}`}
-                        rel="noopener noreferrer"
-                        onClick={handleClick}
-                      >
-                        {t('settings')}
-                      </ButtonLink>,
-                    ])}
-                  </Text>
-                </Box>
-              </Popover>
-            ) : null}
-
             {renderPercentageAndAmountChange()}
           </div>
         </Tooltip>
