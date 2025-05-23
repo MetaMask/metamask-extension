@@ -259,7 +259,6 @@ import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
 import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
-import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -5118,8 +5117,7 @@ export default class MetamaskController extends EventEmitter {
   async createNewVaultAndRestore(password, encodedSeedPhrase) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      const { completedOnboarding, firstTimeFlowType } =
-        this.onboardingController.state;
+      const { completedOnboarding } = this.onboardingController.state;
 
       const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
 
@@ -5150,11 +5148,6 @@ export default class MetamaskController extends EventEmitter {
         password,
         this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
       );
-
-      if (firstTimeFlowType === FirstTimeFlowType.social) {
-        // update the Onboarding state when user restore the existing wallet with social login
-        this.onboardingController.setRestoreWithSocialLogin(true);
-      }
 
       if (completedOnboarding) {
         ///: BEGIN:ONLY_INCLUDE_IF(solana)

@@ -16,7 +16,6 @@ import {
   DEFAULT_ROUTE,
   NOTIFICATIONS_ROUTE,
   ONBOARDING_ROUTE,
-  ONBOARDING_UNLOCK_ROUTE,
   PERMISSIONS,
   REVIEW_PERMISSIONS,
   SEND_ROUTE,
@@ -55,16 +54,6 @@ function onConfirmPage(props) {
     matchPath(location.pathname, {
       path: CONFIRM_TRANSACTION_ROUTE,
       exact: false,
-    }),
-  );
-}
-
-function onInitializationUnlockPage(props) {
-  const { location } = props;
-  return Boolean(
-    matchPath(location.pathname, {
-      path: ONBOARDING_UNLOCK_ROUTE,
-      exact: true,
     }),
   );
 }
@@ -115,7 +104,7 @@ export function hideAppHeader(props) {
     }),
   );
 
-  if (isInitializing && !onInitializationUnlockPage(props)) {
+  if (isInitializing) {
     return true;
   }
 

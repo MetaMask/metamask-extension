@@ -31,7 +31,7 @@ describe('Account Not Found Seedless Onboarding View', () => {
       ...initializedMockState,
       metamask: {
         ...initializedMockState.metamask,
-        firstTimeFlowType: FirstTimeFlowType.social,
+        firstTimeFlowType: FirstTimeFlowType.socialImport,
       },
     };
     const customMockStore = configureMockStore([thunk])(
@@ -55,7 +55,7 @@ describe('Account Not Found Seedless Onboarding View', () => {
       ...initializedMockState,
       metamask: {
         ...initializedMockState.metamask,
-        firstTimeFlowType: FirstTimeFlowType.social,
+        firstTimeFlowType: FirstTimeFlowType.socialImport,
       },
     };
     const customMockStore = configureMockStore([thunk])(

@@ -31,7 +31,7 @@ import {
   unlockAndGetSeedPhrase,
   createNewVaultAndRestore,
   createNewVaultAndSyncWithSocial,
-  restoreBackupAndGetSeedPhrase,
+  restoreSocialBackupAndGetSeedPhrase,
 } from '../../store/actions';
 import {
   getFirstTimeFlowType,
@@ -142,7 +142,7 @@ export default function OnboardingFlow() {
 
   const handleCreateNewAccount = async (password) => {
     let newSecretRecoveryPhrase;
-    if (firstTimeFlowType === FirstTimeFlowType.social) {
+    if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
       newSecretRecoveryPhrase = await dispatch(
         createNewVaultAndSyncWithSocial(password),
       );
@@ -156,9 +156,9 @@ export default function OnboardingFlow() {
 
   const handleUnlock = async (password) => {
     let retrievedSecretRecoveryPhrase;
-    if (firstTimeFlowType === FirstTimeFlowType.social) {
+    if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
       retrievedSecretRecoveryPhrase = await dispatch(
-        restoreBackupAndGetSeedPhrase(password),
+        restoreSocialBackupAndGetSeedPhrase(password),
       );
 
       if (retrievedSecretRecoveryPhrase === null) {
