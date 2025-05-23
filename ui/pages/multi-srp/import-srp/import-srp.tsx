@@ -8,8 +8,9 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import * as actions from '../../../../store/actions';
+import { useHistory } from 'react-router-dom';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import * as actions from '../../../store/actions';
 import {
   Text,
   Box,
@@ -20,7 +21,9 @@ import {
   TextField,
   ButtonLink,
   TextFieldType,
-} from '../../../component-library';
+  ButtonIcon,
+  IconName,
+} from '../../../components/component-library';
 import {
   TextVariant,
   BlockSize,
@@ -28,15 +31,17 @@ import {
   FlexDirection,
   BorderRadius,
   BackgroundColor,
-} from '../../../../helpers/constants/design-system';
-import { parseSecretRecoveryPhrase } from '../../../app/srp-input/parse-secret-recovery-phrase';
-import { clearClipboard } from '../../../../helpers/utils/util';
-import { useTheme } from '../../../../hooks/useTheme';
-import { ThemeType } from '../../../../../shared/constants/preferences';
-import ShowHideToggle from '../../../ui/show-hide-toggle';
-import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
-import { getMetaMaskHdKeyrings } from '../../../../selectors';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+  AlignItems,
+} from '../../../helpers/constants/design-system';
+import { setShowNewSrpAddedToast } from '../../../components/app/toast-master/utils';
+import { parseSecretRecoveryPhrase } from '../../../components/app/srp-input/parse-secret-recovery-phrase';
+import { clearClipboard } from '../../../helpers/utils/util';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { Header, Page } from '../../../components/multichain/pages/page';
+import ShowHideToggle from '../../../components/ui/show-hide-toggle';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { getMetaMaskHdKeyrings } from '../../../selectors';
 
 const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
@@ -44,13 +49,9 @@ const hasUpperCase = (draftSrp: string) => {
 
 const defaultNumberOfWords = 12;
 
-export const ImportSrp = ({
-  onActionComplete,
-}: {
-  onActionComplete: (completed: boolean) => void;
-}) => {
+export const ImportSrp = () => {
   const t = useI18nContext();
-  const theme = useTheme();
+  const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const [srpError, setSrpError] = useState('');
@@ -259,66 +260,98 @@ export const ImportSrp = ({
   );
 
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      height={BlockSize.Max}
-      data-testid="import-srp-container"
-    >
-      <Text variant={TextVariant.bodyMd} marginTop={2}>
-        {t('importSRPDescription')}
-      </Text>
+    <Page className="import-srp__multi-srp">
+      <Header
+        startAccessory={
+          <ButtonIcon
+            ariaLabel="back"
+            iconName={IconName.ArrowLeft}
+            onClick={() => {
+              history.push(DEFAULT_ROUTE);
+            }}
+          />
+        }
+        endAccessory={
+          <ButtonIcon
+            ariaLabel="close"
+            iconName={IconName.Close}
+            onClick={() => {
+              history.push(DEFAULT_ROUTE);
+            }}
+          />
+        }
+        paddingLeft={0}
+        paddingRight={0}
+      >
+        {t('importSecretRecoveryPhrase')}
+      </Header>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        height={BlockSize.Max}
+        data-testid="import-srp-container"
+      >
+        <Text variant={TextVariant.bodyMd} marginTop={2}>
+          {t('importSRPDescription')}
+        </Text>
 
-      <Box className="import-srp__multi-srp__srp-inner-container">
-        <Box
-          className="import-srp__multi-srp__srp"
-          width={BlockSize.Full}
-          marginTop={4}
-        >
-          {Array.from({ length: numberOfWords }).map((_, index) => {
-            const id = `import-srp__multi-srp__srp-word-${index}`;
-            return (
-              <Box
-                key={index}
-                display={Display.Flex}
-                flexDirection={FlexDirection.Row}
-              >
-                <Label
-                  className="import-srp__multi-srp__label"
-                  variant={TextVariant.bodyMdMedium}
-                  marginRight={4}
-                >
-                  {index + 1}.
-                </Label>
+        <Box className="import-srp__multi-srp__srp-inner-container">
+          <Box
+            width={BlockSize.Full}
+            marginTop={4}
+            className="import-srp__multi-srp__srp"
+          >
+            {Array.from({ length: numberOfWords }).map((_, index) => {
+              const id = `import-srp__multi-srp__srp-word-${index}`;
+              return (
                 <Box
-                  className="import-srp__multi-srp__srp-word"
+                  key={index}
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Row}
+                  alignItems={AlignItems.center}
+                  width={BlockSize.Full}
                   marginBottom={4}
                 >
-                  <TextField
-                    id={id}
-                    data-testid={id}
-                    borderRadius={BorderRadius.LG}
-                    error={invalidSrpWords[index]}
-                    type={
-                      showSrp[index]
-                        ? TextFieldType.Text
-                        : TextFieldType.Password
-                    }
-                    onChange={(e) => {
-                      e.preventDefault();
-                      onSrpWordChange(index, e.target.value);
-                    }}
-                    value={secretRecoveryPhrase[index]}
-                    autoComplete={false}
-                    onPaste={(event: React.ClipboardEvent) => {
-                      const newSrp = event.clipboardData.getData('text');
-
-                      if (newSrp.trim().match(/\s/u)) {
-                        event.preventDefault();
-                        onSrpPaste(newSrp);
+                  <Label
+                    className="import-srp__multi-srp__label"
+                    variant={TextVariant.bodyMdMedium}
+                    marginRight={4}
+                  >
+                    {index + 1}.
+                  </Label>
+                  <Box
+                    className="import-srp__multi-srp__srp-word"
+                    flexDirection={FlexDirection.Row}
+                    alignItems={AlignItems.center}
+                    width={BlockSize.Full}
+                  >
+                    <TextField
+                      id={id}
+                      data-testid={id}
+                      width={BlockSize.Full}
+                      borderRadius={BorderRadius.LG}
+                      error={invalidSrpWords[index]}
+                      type={
+                        showSrp[index]
+                          ? TextFieldType.Text
+                          : TextFieldType.Password
                       }
-                    }}
-                  />
+                      onChange={(e) => {
+                        e.preventDefault();
+                        onSrpWordChange(index, e.target.value);
+                      }}
+                      value={secretRecoveryPhrase[index]}
+                      autoComplete={false}
+                      onPaste={(event: React.ClipboardEvent) => {
+                        const newSrp = event.clipboardData.getData('text');
+
+                        if (newSrp.trim().match(/\s/u)) {
+                          event.preventDefault();
+                          onSrpPaste(newSrp);
+                        }
+                      }}
+                    />
+                  </Box>
                   <ShowHideToggle
                     id={`${id}-checkbox`}
                     ariaLabelHidden={t('srpWordHidden')}
@@ -329,87 +362,82 @@ export const ImportSrp = ({
                     title={t('srpToggleShow')}
                   />
                 </Box>
-              </Box>
-            );
-          })}
-        </Box>
-        {srpError ? (
-          <BannerAlert
-            severity={BannerAlertSeverity.Danger}
-            description={srpError}
-            actionButtonLabel={t('clear')}
-            actionButtonOnClick={() => {
-              onSrpChange(Array(defaultNumberOfWords).fill(''));
-              setSrpError('');
-            }}
-            data-testid="bannerAlert"
-          />
-        ) : null}
-
-        {
-          <Box width={BlockSize.Full} marginTop={4}>
-            <ButtonLink
-              width={BlockSize.Full}
-              loading={loading}
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
-              onClick={async () => {
-                setNumberOfWords(numberOfWords === 12 ? 24 : 12);
-                setSrpError('');
-                setInvalidSrpWords(
-                  Array(numberOfWords === 12 ? 24 : 12).fill(false),
-                );
-                setShowSrp(
-                  new Array(numberOfWords === 12 ? 24 : 12).fill(false),
-                );
-              }}
-              data-testid="import-srp__multi-srp__switch-word-count-button"
-            >
-              {t('importNWordSRP', [numberOfWords === 12 ? '24' : '12'])}
-            </ButtonLink>
-          </Box>
-        }
-      </Box>
-      <Box
-        className="import-srp__multi-srp__import-button"
-        width={BlockSize.Full}
-        marginTop={4}
-        paddingBottom={6}
-        paddingTop={2}
-        backgroundColor={
-          theme === ThemeType.light
-            ? BackgroundColor.backgroundDefault
-            : BackgroundColor.backgroundDefault
-        }
-      >
-        <ButtonPrimary
-          width={BlockSize.Full}
-          disabled={!isValidSrp || hasEmptyWordsOrIncorrectLength}
-          loading={loading}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onClick={async () => {
-            try {
-              setLoading(true);
-              await importWallet();
-              trackEvent({
-                event: MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
-                properties: {
-                  hd_entropy_index: newHdEntropyIndex,
-                },
-              });
-              onActionComplete(true);
-            } catch (e) {
-              setSrpError(
-                e instanceof Error ? e.message : 'An unknown error occurred',
               );
-              setLoading(false);
-            }
-          }}
+            })}
+          </Box>
+          {srpError ? (
+            <BannerAlert
+              severity={BannerAlertSeverity.Danger}
+              description={srpError}
+              actionButtonLabel={t('clear')}
+              actionButtonOnClick={() => {
+                onSrpChange(Array(defaultNumberOfWords).fill(''));
+                setSrpError('');
+              }}
+              data-testid="bannerAlert"
+            />
+          ) : null}
+
+          {
+            <Box width={BlockSize.Full} marginTop={4}>
+              <ButtonLink
+                width={BlockSize.Full}
+                onClick={async () => {
+                  setNumberOfWords(numberOfWords === 12 ? 24 : 12);
+                  setSrpError('');
+                  setInvalidSrpWords(
+                    Array(numberOfWords === 12 ? 24 : 12).fill(false),
+                  );
+                  setShowSrp(
+                    new Array(numberOfWords === 12 ? 24 : 12).fill(false),
+                  );
+                }}
+                data-testid="import-srp__multi-srp__switch-word-count-button"
+              >
+                {t('importNWordSRP', [numberOfWords === 12 ? '24' : '12'])}
+              </ButtonLink>
+            </Box>
+          }
+        </Box>
+        <Box
+          className="import-srp__multi-srp__import-button"
+          marginTop={4}
+          paddingBottom={6}
+          paddingTop={2}
+          backgroundColor={BackgroundColor.backgroundDefault}
         >
-          {t('importWallet')}
-        </ButtonPrimary>
+          <ButtonPrimary
+            width={BlockSize.Full}
+            disabled={!isValidSrp || hasEmptyWordsOrIncorrectLength}
+            loading={loading}
+            onClick={async () => {
+              try {
+                setLoading(true);
+                await importWallet();
+                history.push(DEFAULT_ROUTE);
+                dispatch(setShowNewSrpAddedToast(true));
+                trackEvent({
+                  event:
+                    MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
+                  properties: {
+                    hd_entropy_index: newHdEntropyIndex,
+                  },
+                });
+              } catch (e) {
+                setSrpError(
+                  e instanceof Error
+                    ? e.message
+                    : t('importSecretRecoveryPhraseUnknownError'),
+                );
+              } finally {
+                setLoading(false);
+              }
+            }}
+          >
+            {t('importWallet')}
+          </ButtonPrimary>
+        </Box>
       </Box>
-    </Box>
+    </Page>
   );
 };
