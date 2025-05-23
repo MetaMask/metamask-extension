@@ -441,6 +441,14 @@ export const METAMASK_CONTROLLER_EVENTS = {
     'NotificationServicesController:markNotificationsAsRead',
 };
 
+/**
+ * @typedef {import('./controller-init/utils').InitControllersResult} InitControllersResult
+ */
+
+/**
+ * @typedef {import('./lib/metaRPCClientFactory').RpcMethods<ReturnType<MetamaskController["createMetaRpcHandlerApi"]>>} Api
+ */
+
 // Types of APIs
 const API_TYPE = {
   EIP1193: 'eip-1193',
@@ -463,6 +471,11 @@ const buildTypeMappingForRemoteFeatureFlag = {
 };
 
 export default class MetamaskController extends EventEmitter {
+  /**
+   * @type {Record<string, InitControllersResult['controllerApi']>}
+   */
+  controllerApi;
+
   /**
    * @param {object} opts
    */
@@ -3463,11 +3476,27 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Creates an API object that contains the API functions callable by the UI.
+   *
+   * @param {() => void} startPatches
+   * @param {PatchStore} patchStore
+   */
+  createMetaRpcHandlerApi(startPatches, patchStore) {
+    const api = {
+      ...this.getApi(),
+      ...this.controllerApi,
+      startPatches,
+      getStatePatches: () => patchStore.flushPendingPatches(),
+    };
+    return api;
+  }
+
+  /**
    * Returns an Object containing API Callback Functions.
    * These functions are the interface for the UI.
    * The API object can be transmitted over a stream via JSON-RPC.
    *
-   * @returns {object} Object containing API functions.
+   * @returns Object containing API functions.
    */
   getApi() {
     const {
@@ -6487,15 +6516,10 @@ export default class MetamaskController extends EventEmitter {
       });
     };
 
-    const api = {
-      ...this.getApi(),
-      ...this.controllerApi,
-      startPatches: () => {
-        uiReady = true;
-        handleUpdate();
-      },
-      getStatePatches: () => patchStore.flushPendingPatches(),
-    };
+    const api = this.createMetaRpcHandlerApi(() => {
+      uiReady = true;
+      handleUpdate();
+    });
 
     this.on('update', handleUpdate);
 

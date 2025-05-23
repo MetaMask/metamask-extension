@@ -1,8 +1,10 @@
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import type { MetaRpcClientFactory } from '../../app/scripts/lib/metaRPCClientFactory';
+import type { Api } from '../../app/scripts/metamask-controller';
 
-let background: MetaRpcClientFactory | null = null;
+type CallbackMethod<R = unknown> = (error?: unknown, result?: R) => void;
+
+let background: Api;
 
 export const generateActionId = () => Date.now() + Math.random();
 
@@ -13,14 +15,12 @@ export const generateActionId = () => Date.now() + Math.random();
  * @param args - arguments to that method, if any
  * @returns
  */
-export function submitRequestToBackground<R>(
-  method: string,
-  args: unknown[] = [],
-): Promise<R> {
-  return background?.[method](...args) as Promise<R>;
+export function submitRequestToBackground<
+  Method extends keyof Api,
+  Args extends Parameters<Api[Method]>,
+>(method: Method, args: Args) {
+  return Reflect.apply(background[method], background, args);
 }
-
-type CallbackMethod<R = unknown> = (error?: unknown, result?: R) => void;
 
 /**
  * [Deprecated] Callback-style call to background method.
@@ -30,28 +30,29 @@ type CallbackMethod<R = unknown> = (error?: unknown, result?: R) => void;
  * @param [args] - arguments to that method, if any
  * @param callback - Node style (error, result) callback for finishing the operation
  */
-export const callBackgroundMethod = <Result>(
-  method: string,
-  args: unknown[],
-  callback: CallbackMethod<Result>,
-) => {
-  background?.[method](...(args || [])).then(
+export function callBackgroundMethod<
+  Method extends keyof Api,
+  Args extends Parameters<Api[Method]>,
+>(
+  method: Method,
+  args: Args,
+  callback: CallbackMethod<Awaited<ReturnType<Api[Method]>>>,
+) {
+  submitRequestToBackground(method, args).then(
     (result) => {
-      callback(undefined, result as Result);
+      callback(undefined, result);
     },
     (error) => {
       callback(error);
     },
   );
-};
+}
 
 /**
  * Sets or replaces the background connection reference.
  *
  * @param backgroundConnection - the new background connection
  */
-export async function setBackgroundConnection(
-  backgroundConnection: MetaRpcClientFactory,
-) {
+export async function setBackgroundConnection(backgroundConnection: Api) {
   background = backgroundConnection;
 }

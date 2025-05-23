@@ -1,3 +1,4 @@
+import type { Duplex } from 'stream';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
 import {
   Json,
@@ -7,19 +8,26 @@ import {
   hasProperty,
 } from '@metamask/utils';
 import { JsonRpcError } from '@metamask/rpc-errors';
-import { Writable } from 'readable-stream-3';
 import { TEN_SECONDS_IN_MILLISECONDS } from '../../../shared/lib/transactions-controller-utils';
 import getNextId from '../../../shared/modules/random-id';
+// It is used: in TypeDoc comment, you silly goose.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type MetamaskController from '../metamask-controller';
 
-export type MetaRpcClientFactory = MetaRPCClient &
-  Record<string, (...args: unknown[]) => Promise<unknown>>;
+type HashMapFunctions = Record<string, (...args: unknown[]) => unknown>;
+
+export type RpcMethods<RemoteApi extends HashMapFunctions> = {
+  [K in keyof RemoteApi]: (
+    ...args: Parameters<RemoteApi[K]>
+  ) => Promise<Awaited<ReturnType<RemoteApi[K]>>>;
+};
 
 class DisconnectError extends Error {}
 
 type RequestId = string | number | null;
 
 export class MetaRPCClient {
-  private connectionStream: Writable;
+  private connectionStream: Duplex;
 
   private notificationChannel = new SafeEventEmitter();
 
@@ -36,7 +44,7 @@ export class MetaRPCClient {
 
   public readonly DisconnectError = DisconnectError;
 
-  constructor(connectionStream: Writable) {
+  constructor(connectionStream: Duplex) {
     this.connectionStream = connectionStream;
     this.connectionStream.on('data', this.handleResponse);
     this.connectionStream.on('end', this.close);
@@ -154,34 +162,87 @@ function isError(
 }
 
 /**
- * Creates a proxy of the MetaRPCClient that intercepts method calls and
+ * Checks if an object has a given key, including through its prototype chain.
  *
- * @param connectionStream - The connection stream to use for the RPC client.
- * @returns A proxy of the MetaRPCClient that intercepts method calls and
+ * This function acts as a type guard. If it returns `true`, TypeScript will
+ * narrow the type of the `key` to be `keyof O`, meaning it's a known key of
+ * the object's type.
+ *
+ * Differs from {@link hasProperty} in that it checks the prototype chain.
+ *
+ * @template O - The type of the object, constrained to be an object.
+ * @param obj - The object to inspect.
+ * @param key - The key (string, number, or symbol) to check for
+ * in the object.
+ * @returns `true` if the `key` exists in the `obj` (or its
+ * prototype chain), `false` otherwise.
+ * @example
+ * ```typescript
+ * const myObj = { name: "Alice", age: 30 };
+ * const someKey: string | number = "name";
+ * const anotherKey: string = "location";
+ *
+ * if (hasKey(myObj, someKey)) {
+ *   // Here, TypeScript knows someKey is "name" | "age"
+ *   console.log(myObj[someKey]); // Safe access
+ * } else {
+ *   // someKey is not a key of myObj
+ * }
+ *
+ * if (hasKey(myObj, anotherKey)) {
+ *   // This block would not be entered in this example
+ * }
+ *
+ * class Parent {
+ *   parentProp: string = "from parent";
+ * }
+ * class Child extends Parent {
+ *   childProp: string = "from child";
+ * }
+ * const instance = new Child();
+ * if (hasKey(instance, "parentProp")) {
+ *   console.log("parentProp exists on instance:", instance.parentProp); // true
+ * }
+ * ```
  */
-export default function metaRPCClientFactory(
-  connectionStream: Writable,
-): MetaRpcClientFactory {
+function hasKey<O extends object>(obj: O, key: PropertyKey): key is keyof O {
+  return key in obj;
+}
+
+/**
+ * In practiced this is used to send messages to methods exported by the
+ * {@link MetamaskController}'s `createMetaRpcHandlerApi` method.
+ *
+ * @template Api - The type of the methods available on the MetaRPCClient.
+ * @param connectionStream - The connection stream to use for the RPC client.
+ * @returns An API that blends methods of our `MetaRPCClient` and an RPC service
+ * that communicates over the provided `connectionStream` in order to remote
+ * invoke methods available over the provided `Api` template type.
+ */
+export default function metaRPCClientFactory<Api extends HashMapFunctions>(
+  connectionStream: Duplex,
+) {
   const metaRPCClient = new MetaRPCClient(connectionStream);
   return new Proxy(metaRPCClient, {
-    get: (object, property) => {
+    get: (
+      object,
+      property: keyof MetaRPCClient | Extract<keyof Api, 'string'>,
+    ) => {
+      // MetaRPCClient properties
       if (hasKey(object, property)) {
         return object[property];
       }
+      // RemoteApi methods
       return async (...params: Json[]) => {
         const id = getNextId();
         const payload: JsonRpcRequest = {
           jsonrpc: '2.0',
-          method: property as string,
+          method: property,
           params,
           id,
         };
         return await object.send(id, payload);
       };
     },
-  }) as MetaRpcClientFactory;
-}
-
-function hasKey<O extends object>(obj: O, key: PropertyKey): key is keyof O {
-  return key in obj;
+  }) as MetaRPCClient & Api;
 }

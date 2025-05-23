@@ -49,6 +49,10 @@ import metaRPCClientFactory from './lib/metaRPCClientFactory';
  * @typedef {import("@metamask/object-multiplex/dist/Substream").Substream} Substream
  */
 
+/**
+ * @typedef {import('./metamask-controller').Api} Api
+ */
+
 const PHISHING_WARNING_PAGE_TIMEOUT = 1 * 1000; // 1 Second
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
 const METHOD_START_UI_SYNC = 'startUISync';
@@ -94,6 +98,9 @@ async function start() {
 
   const connectionStream = new PortStream(extensionPort);
   const subStreams = connectSubstreams(connectionStream);
+  /**
+   * @type {Api}
+   */
   const backgroundConnection = metaRPCClientFactory(subStreams.controller);
   updateBackgroundConnection(backgroundConnection);
   setupProviderConnection(subStreams.provider);
@@ -250,6 +257,13 @@ async function loadPhishingWarningPage() {
   }
 }
 
+/**
+ *
+ * @param {*} tab
+ * @param {Api} backgroundConnection
+ * @param {*} windowType
+ * @param {*} traceContext
+ */
 async function initializeUiWithTab(
   tab,
   backgroundConnection,
@@ -318,6 +332,13 @@ async function queryCurrentActiveTab(windowType) {
   return { id, title, origin, protocol, url };
 }
 
+/**
+ *
+ * @param {*} activeTab
+ * @param {Api} backgroundConnection
+ * @param {*} traceContext
+ * @returns
+ */
 async function initializeUi(activeTab, backgroundConnection, traceContext) {
   return await launchMetaMaskUi({
     activeTab,
@@ -347,7 +368,7 @@ async function displayCriticalError(errorKey, err, metamaskState) {
  * streams.
  *
  * @param {PortStream} connectionStream - PortStream instance establishing a background connection
- * @returns { controller: Substream, provider: Substream } The multiplexed streams
+ * @returns The multiplexed streams
  */
 function connectSubstreams(connectionStream) {
   const mx = setupMultiplex(connectionStream);
