@@ -62,3 +62,14 @@ export const listDelegationEntries = (
 
   return list;
 };
+
+/**
+ * Gets a delegation entry by hash.
+ *
+ * @param state - The state object.
+ * @param hash - The hash of the delegation entry.
+ * @returns The delegation entry.
+ */
+export const getDelegationEntry = (state: DelegationState, hash: Hex) => {
+  return state.metamask.delegations[hash];
+};
