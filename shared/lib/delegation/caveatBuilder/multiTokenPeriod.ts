@@ -1,6 +1,6 @@
+import { bigIntToHex } from '@metamask/utils';
 import { concat, Hex, isAddress, pad, toHex } from '../utils';
 import type { DeleGatorEnvironment, Caveat } from '..';
-import { bigIntToHex } from '@metamask/utils';
 
 export type TokenPeriodConfig = {
   token: Hex;
@@ -65,7 +65,7 @@ export const multiTokenPeriodBuilder = (
   } = environment;
 
   return {
-    enforcer: MultiTokenPeriodEnforcer!,
+    enforcer: MultiTokenPeriodEnforcer,
     terms,
     args: '0x',
   };
