@@ -208,7 +208,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     if (namespace === KnownCaipNamespace.Eip155) {
       return TEST_CHAINS.includes(convertCaipToHexChainId(currentChainId));
     }
-    return false;
+    return NON_EVM_TESTNET_IDS.includes(currentChainId);
   }, [currentChainId]);
 
   const [nonTestNetworks, testNetworks] = useMemo(
@@ -453,9 +453,14 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   );
 
   const isNetworkEnabled = useCallback(
-    (network: MultichainNetworkConfiguration): boolean =>
-      network.isEvm || isUnlocked || hasAnyAccountsInNetwork(network.chainId),
-    [hasAnyAccountsInNetwork, isUnlocked],
+    (network: MultichainNetworkConfiguration): boolean => {
+      return (
+        network.isEvm ||
+        completedOnboarding ||
+        hasAnyAccountsInNetwork(network.chainId)
+      );
+    },
+    [hasAnyAccountsInNetwork, completedOnboarding],
   );
 
   const getItemCallbacks = useCallback(
@@ -551,6 +556,8 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                 .defaultRpcEndpoint
             : undefined
         }
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={async () => {
           if (canSelectNetwork) {
             await handleNetworkChange(network.chainId);
@@ -601,6 +608,8 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                       />
                     </Box>
                   }
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
                   onClose={() => hideNetworkBanner()}
                   description={t('dragAndDropBanner')}
                 />

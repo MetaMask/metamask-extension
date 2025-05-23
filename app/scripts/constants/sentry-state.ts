@@ -43,11 +43,7 @@ export const SENTRY_BACKGROUND_STATE = {
   AuthenticationController: {
     isSignedIn: false,
     sessionData: {
-      token: {
-        accessToken: false,
-        expiresIn: true,
-        obtainedAt: true,
-      },
+      token: false,
       profile: true,
     },
   },
@@ -384,8 +380,8 @@ export const SENTRY_BACKGROUND_STATE = {
     userOperations: false,
   },
   UserStorageController: {
-    isProfileSyncingEnabled: true,
-    isProfileSyncingUpdateLoading: false,
+    isBackupAndSyncEnabled: true,
+    isBackupAndSyncUpdateLoading: false,
     isAccountSyncingEnabled: true,
     hasAccountSyncingSyncedAtLeastOnce: false,
     isAccountSyncingReadyToBeDispatched: false,
@@ -426,10 +422,6 @@ export const SENTRY_UI_STATE = {
     isInitialized: true,
     useSafeChainsListValidation: true,
     watchEthereumAccountEnabled: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-    bitcoinSupportEnabled: false,
-    bitcoinTestnetSupportEnabled: false,
-    ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,

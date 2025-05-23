@@ -1,7 +1,11 @@
 import React, { useContext } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import {
+  formatChainIdToCaip,
+  formatChainIdToHex,
+} from '@metamask/bridge-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { isNumber } from 'lodash';
 import { getBridgeStatusKey } from '../../../../shared/lib/bridge-status/utils';
 import {
   Display,
@@ -417,20 +421,18 @@ function MultichainBridgeTransactionDetailsModal({
                   <AvatarNetwork
                     size={AvatarNetworkSize.Sm}
                     className="solana-bridge-transaction-details-modal__network-badge"
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                    name={currentBridgeInfo?.destChainName || ''}
+                    name={currentBridgeInfo?.destChainName ?? ''}
                     src={
                       CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                        bridgeInfo?.destChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                        isNumber(currentBridgeInfo?.destChainId)
+                          ? formatChainIdToHex(currentBridgeInfo?.destChainId)
+                          : (currentBridgeInfo?.destChainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP)
                       ] || ''
                     }
                     borderColor={BorderColor.backgroundDefault}
                   />
                   <Text variant={TextVariant.bodyMd}>
-                    {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
-                    {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
-                    {bridgeInfo?.destChainName || ''}
+                    {bridgeInfo?.destChainName ?? ''}
                   </Text>
                 </Box>
               </Box>

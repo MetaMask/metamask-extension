@@ -92,7 +92,8 @@ class AssetListPage {
   private readonly tokenListItem =
     '[data-testid="multichain-token-list-button"]';
 
-  private readonly tokenOptionsButton = '[data-testid="import-token-button"]';
+  private readonly tokenOptionsButton =
+    '[data-testid="asset-list-control-bar-action-button"]';
 
   private tokenImportSelectNetwork(chainId: string): string {
     return `[data-testid="select-network-item-${chainId}"]`;
@@ -266,6 +267,7 @@ class AssetListPage {
 
     for (const name of tokenNames) {
       await this.driver.fill(this.tokenSearchInput, name);
+      await this.driver.waitForElementToStopMoving({ text: name, tag: 'p' });
       await this.driver.clickElement({ text: name, tag: 'p' });
     }
     await this.driver.clickElement(this.importTokensNextButton);
