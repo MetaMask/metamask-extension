@@ -74,7 +74,7 @@ export default function WelcomeLogin({
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
-        justifyContent={JustifyContent.spaceBetween}
+        justifyContent={JustifyContent.center}
         className="welcome-login__content"
       >
         <Box

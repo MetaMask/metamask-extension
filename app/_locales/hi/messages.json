@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Bitcoin अकाउंट (बीटा)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Bitcoin अकाउंट (टैस्टनेट (testnet))"
-  },
   "addBlockExplorer": {
     "message": "ब्लॉक एक्सप्लोरर जोड़ें"
   },
@@ -657,22 +654,6 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "इस सुविधा को चालू करने से आपको अपने मौजूदा सीक्रेट रिकवरी फ्रेज़ से प्राप्त MetaMask एक्सटेंशन में एक Bitcoin अकाउंट जोड़ने का विकल्प मिलेगा। यह एक एक्सपेरिमेंटल बीटा सुविधा है, इसलिए आपको इसका उपयोग अपने जोखिम पर करना होगा। इस नए Bitcoin अनुभव पर हमें प्रतिक्रिया देने के लिए, कृपया यह $1 भरें।",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "\"एक नया Bitcoin अकाउंट जोड़ें (बीटा)\" को चालू करें"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "इस सुविधा को चालू करने से आपको परीक्षण नेटवर्क के लिए एक Bitcoin अकाउंट जोड़ने का विकल्प मिलेगा।"
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "\"एक नया Bitcoin अकाउंट जोड़ें (टैस्टनेट (testnet))\" को चालू करें"
   },
   "blockExplorerAccountAction": {
     "message": "अकाउंट",
@@ -1328,10 +1309,6 @@
   },
   "creatorAddress": {
     "message": "निर्माता का एड्रेस"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "यह सभी नेटवर्क पर आपके स्वामित्व वाले सभी टोकन के मूल्य को दर्शाता है। यदि आप इस मूल्य को ETH या अन्य मुद्राओं में देखना पसंद करते हैं, तो $1 पर जाएं।",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "MetaMask पोर्टफोलियो के साथ पूरे नेटवर्क में कहीं भी स्वैप करें"
@@ -3562,9 +3539,6 @@
   "onboardingMetametricsDescription": {
     "message": "हम MetaMask को बेहतर बनाने के लिए बुनियादी यूसेज और डाएगोनोस्टिक्स डेटा कलेक्ट करना चाहेंगे। जान लें कि हम आपके द्वारा यहां उपलब्ध कराया गया डेटा कभी नहीं बेचते हैं।"
   },
-  "onboardingMetametricsDescription2": {
-    "message": "जब हम मेट्रिक्स इकट्ठा करते हैं, तो यह हमेशा... रहेगा"
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "यदि हम इस डेटा का उपयोग अन्य उद्देश्यों के लिए करने का निर्णय लेते हैं तो हम आपको बताएंगे। अधिक जानकारी के लिए आप हमारे $1 की समीक्षा कर सकते हैं। याद रखें, आप किसी भी समय सेटिंग्स में जाकर ऑप्ट आउट कर सकते हैं।",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3592,9 +3566,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "वैकल्पिक:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "जानें कि आपके प्रोफ़ाइल के लिए यूसेज डेटा एकत्र करते समय हम आपकी गोपनीयता की सुरक्षा कैसे करते हैं।"
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMask को बेहतर बनाने में हमारी मदद करें"
@@ -6384,9 +6355,6 @@
   },
   "yourBalance": {
     "message": "आपका बैलेंस"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "आपका बैलेंस एकत्रित हो गया है"
   },
   "yourNFTmayBeAtRisk": {
     "message": "आपका NFT खतरे में हो सकता है"

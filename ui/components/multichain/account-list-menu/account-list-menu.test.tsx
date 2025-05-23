@@ -4,6 +4,7 @@ import reactRouterDom from 'react-router-dom';
 import {
   BtcAccountType,
   EthAccountType,
+  EthScope,
   KeyringAccountType,
 } from '@metamask/keyring-api';
 import { merge } from 'lodash';
@@ -18,6 +19,7 @@ import messages from '../../../../app/_locales/en/messages.json';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
+  IMPORT_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
 ///: END:ONLY_INCLUDE_IF
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
@@ -79,6 +81,9 @@ const render = (
     ...mockState,
     metamask: {
       ...mockState.metamask,
+      remoteFeatureFlags: {
+        addBitcoinAccount: true,
+      },
       permissionHistory: {
         'https://test.dapp': {
           eth_accounts: {
@@ -114,7 +119,6 @@ const render = (
           },
         },
       },
-      bitcoinSupportEnabled: true,
     },
     activeTab: {
       id: 113,
@@ -218,6 +222,7 @@ describe('AccountListMenu', () => {
               },
               options: {},
               methods: ETH_EOA_METHODS,
+              scopes: [EthScope.Eoa],
               type: EthAccountType.Eoa,
             },
           },
@@ -715,7 +720,7 @@ describe('AccountListMenu', () => {
       );
       addAccountButton.click();
 
-      expect(getByTestId('import-srp-container')).toBeInTheDocument();
+      expect(historyPushMock).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
     });
 
     it('shows srp list if there are multiple srps when adding a new account', async () => {
@@ -728,10 +733,10 @@ describe('AccountListMenu', () => {
       const secondHdKeyring = {
         accounts: [accountInSecondSrp.address],
         type: KeyringTypes.hd,
-      };
-      const secondHdKeyringMetadata = {
-        id: '01JN2RD391JM4K7Q5T4RP3JXMA',
-        name: '',
+        metadata: {
+          id: '01JN2RD391JM4K7Q5T4RP3JXMA',
+          name: '',
+        },
       };
 
       const { getByTestId } = render({
@@ -744,10 +749,6 @@ describe('AccountListMenu', () => {
             },
           },
           keyrings: [...mockState.metamask.keyrings, secondHdKeyring],
-          keyringsMetadata: [
-            ...mockState.metamask.keyringsMetadata,
-            secondHdKeyringMetadata,
-          ],
           internalAccounts: {
             ...mockState.metamask.internalAccounts,
             accounts: {

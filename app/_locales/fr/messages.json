@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Compte Bitcoin (Bêta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Compte Bitcoin (Testnet)"
-  },
   "addBlockExplorer": {
     "message": "Ajouter un explorateur de blocs"
   },
@@ -657,22 +654,6 @@
   "billionAbbreviation": {
     "message": "Mrd",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "En activant cette fonctionnalité, vous aurez la possibilité d’ajouter un compte Bitcoin à votre extension MetaMask dérivée de votre phrase secrète de récupération existante. Toute utilisation de cette fonctionnalité bêta expérimentale se fait à vos risques et périls. Pour nous faire part de vos commentaires sur cette nouvelle expérience Bitcoin, veuillez remplir ce $1.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Activer « Ajouter un nouveau compte Bitcoin (Bêta) »"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "En activant cette fonctionnalité, vous aurez la possibilité d’ajouter un compte Bitcoin pour le réseau de test."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Activer « Ajouter un nouveau compte Bitcoin (Testnet) »"
   },
   "blockExplorerAccountAction": {
     "message": "Compte",
@@ -1328,10 +1309,6 @@
   },
   "creatorAddress": {
     "message": "Adresse du créateur"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Cette valeur reflète la valeur de tous les jetons que vous possédez sur tous les réseaux. Si vous préférez que cette valeur soit affichée en ETH ou dans d’autres monnaies, veuillez accéder à $1.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "Échanges inter-réseaux avec MetaMask Portfolio"
@@ -3562,9 +3539,6 @@
   "onboardingMetametricsDescription": {
     "message": "Nous aimerions recueillir des données d’utilisation et de diagnostic de base afin d’améliorer MetaMask. Sachez que nous ne vendons jamais les données que vous nous fournissez ici."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Lorsque nous recueillons des données, elles sont toujours…"
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Nous vous informerons si nous décidons d’utiliser ces données à d’autres fins. Pour plus d’informations, vous pouvez consulter notre $1. N’oubliez pas que vous pouvez aller dans les paramètres et vous désinscrire à tout moment.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3592,9 +3566,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Facultatif :"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Découvrez comment nous protégeons votre vie privée lors de la collecte de données d’utilisation pour votre profil."
   },
   "onboardingMetametricsTitle": {
     "message": "Aidez-nous à améliorer MetaMask"
@@ -6384,9 +6355,6 @@
   },
   "yourBalance": {
     "message": "Votre solde"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Votre solde est agrégé"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Il peut y avoir des risques associés à votre NFT"

@@ -72,14 +72,12 @@ function fromEnv(declarations) {
 }
 
 function fromBuildsYML(buildType, config) {
-  const extractDeclarations = (envArray) =>
-    envArray === undefined
+  const extractDeclarations = (envObject) =>
+    envObject === undefined ? [] : Object.keys(envObject);
+  const extractDefinitions = (envObject) =>
+    envObject === undefined
       ? []
-      : envArray.map((env) => (typeof env === 'string' ? env : env.key));
-  const extractDefinitions = (envArray) =>
-    envArray === undefined
-      ? []
-      : envArray.filter((env) => typeof env !== 'string');
+      : Object.entries(envObject).filter(([, value]) => value !== undefined);
 
   // eslint-disable-next-line no-param-reassign
   buildType = buildType ?? config.default;
@@ -99,7 +97,7 @@ function fromBuildsYML(buildType, config) {
   const definitions = new Map();
 
   // 1. root env
-  extractDefinitions(config.env).forEach(({ key, value }) =>
+  extractDefinitions(config.env).forEach(([key, value]) =>
     definitions.set(key, value),
   );
   // 2. features env
@@ -108,9 +106,9 @@ function fromBuildsYML(buildType, config) {
     .map((key) => config.features[key].env)
     .map(extractDefinitions)
     .flat()
-    .forEach(({ key, value }) => definitions.set(key, value));
+    .forEach(([key, value]) => definitions.set(key, value));
   // 3. build type env
-  extractDefinitions(activeBuild.env).forEach(({ key, value }) =>
+  extractDefinitions(activeBuild.env).forEach(([key, value]) =>
     definitions.set(key, value),
   );
 

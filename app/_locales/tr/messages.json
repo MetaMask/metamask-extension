@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Bitcoin hesabı (Beta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Bitcoin hesabı (Test Ağı)"
-  },
   "addBlockExplorer": {
     "message": "Bir blok gezgini ekle"
   },
@@ -657,22 +654,6 @@
   "billionAbbreviation": {
     "message": "MR",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Bu özelliği açtığınızda mevcut Gizli Kurtarma İfadenizden türetilen MetaMask Uzantınıza bir Bitcoin Hesabı ekleme seçeneğiniz olacaktır. Bu, deneysel bir Beta özelliğidir, bu yüzden riski kendinize ait olarak kullanmalısınız. Bu yeni Bitcoin deneyimi hakkında bize geri bildirim göndermek için lütfen bu $1 bölümünü doldurun.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "\"Yeni bir Bitcoin hesabı ekle (Beta)\" seçeneğini etkinleştir"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Bu özelliği açtığınızda test ağı için bir Bitcoin Hesabı ekleme seçeneğiniz olacak."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "\"Yeni bir Bitcoin hesabı ekle (Test Ağı)\" seçeneğini etkinleştir"
   },
   "blockExplorerAccountAction": {
     "message": "Hesap",
@@ -1328,10 +1309,6 @@
   },
   "creatorAddress": {
     "message": "Oluşturucu adresi"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Bu, tüm ağlarda sahip olduğunuz tüm token'lerin değerini yansıtır. Bu değeri ETH olarak veya diğer para birimlerinde görmeyi tercih ediyorsanız şuraya gidin: $1.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "MetaMask Portfolio ile ağlar arasında swap gerçekleştirin"
@@ -3562,9 +3539,6 @@
   "onboardingMetametricsDescription": {
     "message": "MetaMask'i iyileştirmek için temel kullanım ve tanılama verilerini toplamak istiyoruz. Burada sunduğunuz verileri asla satmadığımızı bilmenizi isteriz."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Ölçümleri toplarken bu her zaman aşağıdaki gibi olacaktır..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Bu verileri başka amaçlar için kullanmaya karar vermemiz durumunda sizi bilgilendireceğiz. Daha fazla bilgi için $1 bölümümüzü inceleyebilirsiniz. Unutmayın, dilediğiniz zaman ayarlar kısmına giderek vazgeçebilirsiniz.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3592,9 +3566,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "İsteğe bağlı:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Profiliniz için kullanım verilerini toplarken gizliliğinizi nasıl koruduğumuzu öğrenin."
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMask'i iyileştirmemize yardımcı olun"
@@ -6384,9 +6355,6 @@
   },
   "yourBalance": {
     "message": "Bakiyeniz"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Bakiyeniz toplanıyor"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT'niz tehlikede olabilir"

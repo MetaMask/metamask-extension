@@ -6,11 +6,20 @@ class NftListPage {
   private readonly confirmImportNftButton =
     '[data-testid="import-nfts-modal-import-button"]';
 
+  private readonly importNftNetworkDropdown =
+    '[data-testid="test-import-tokens-drop-down-custom-import"]';
+
+  private readonly importNftNetworkName =
+    '[data-testid="select-network-item-0x539"]';
+
   private readonly importNftAddressInput = '#address';
 
-  private readonly importNftButton = '[data-testid="import-nft-button"]';
+  private readonly importNftButton = '[data-testid="import-nfts__button"]';
 
-  private readonly importNftModalTitle = { text: 'Import NFT', tag: 'header' };
+  private readonly actionBarButton =
+    '[data-testid="asset-list-control-bar-action-button"]';
+
+  private readonly importNftModalTitle = { text: 'Import NFT', tag: 'h4' };
 
   private readonly importNftTokenIdInput = '#token-id';
 
@@ -43,6 +52,17 @@ class NftListPage {
     this.driver = driver;
   }
 
+  async check_pageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.clickElement(this.actionBarButton);
+      await this.driver.waitForSelector(this.importNftButton);
+    } catch (e) {
+      console.log('Timeout while waiting for NFT list page to be loaded', e);
+      throw e;
+    }
+    console.log('NFT list page is loaded');
+  }
+
   async clickNFTIconOnActivityList() {
     await this.driver.clickElement(this.nftIconOnActivityList);
   }
@@ -59,8 +79,11 @@ class NftListPage {
     id: string,
     expectedErrorMessage?: string,
   ) {
+    await this.driver.clickElement(this.actionBarButton);
     await this.driver.clickElement(this.importNftButton);
     await this.driver.waitForSelector(this.importNftModalTitle);
+    await this.driver.clickElement(this.importNftNetworkDropdown);
+    await this.driver.clickElement(this.importNftNetworkName);
     await this.driver.fill(this.importNftAddressInput, nftContractAddress);
     await this.driver.fill(this.importNftTokenIdInput, id);
     if (expectedErrorMessage) {

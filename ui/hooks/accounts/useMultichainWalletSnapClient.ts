@@ -1,32 +1,30 @@
-import { Sender } from '@metamask/keyring-snap-client';
-import { HandlerType } from '@metamask/snaps-utils';
-import { Json, JsonRpcRequest } from '@metamask/utils';
-import { SnapId } from '@metamask/snaps-sdk';
-import { useMemo } from 'react';
 import { SnapKeyringInternalOptions } from '@metamask/eth-snap-keyring';
 import { KeyringAccount } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import {
-  createSnapAccount,
-  getNextAvailableAccountName,
-  handleSnapRequest,
-  multichainUpdateBalance,
-  multichainUpdateTransactions,
-} from '../../store/actions';
-import {
-  BITCOIN_WALLET_SNAP_ID,
-  BITCOIN_WALLET_NAME,
-} from '../../../shared/lib/accounts/bitcoin-wallet-snap';
-import {
-  SOLANA_WALLET_SNAP_ID,
-  SOLANA_WALLET_NAME,
-} from '../../../shared/lib/accounts/solana-wallet-snap';
+import { Sender } from '@metamask/keyring-snap-client';
+import { SnapId } from '@metamask/snaps-sdk';
+import { HandlerType } from '@metamask/snaps-utils';
+import { Json, JsonRpcRequest } from '@metamask/utils';
+import { useMemo } from 'react';
 import {
   getNextAvailableSnapAccountName,
   SnapAccountNameOptions,
   WalletSnapClient,
   WalletSnapOptions,
 } from '../../../shared/lib/accounts';
+import {
+  BITCOIN_WALLET_NAME,
+  BITCOIN_WALLET_SNAP_ID,
+} from '../../../shared/lib/accounts/bitcoin-wallet-snap';
+import {
+  SOLANA_WALLET_NAME,
+  SOLANA_WALLET_SNAP_ID,
+} from '../../../shared/lib/accounts/solana-wallet-snap';
+import {
+  createSnapAccount,
+  getNextAvailableAccountName,
+  handleSnapRequest,
+} from '../../store/actions';
 
 export enum WalletClientType {
   Bitcoin = 'bitcoin-wallet-snap',
@@ -112,14 +110,6 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
       snapOptions,
       internalOptions,
     );
-
-    // NOTE: The account's balance is going to be tracked automatically on when the new account
-    // will be added to the Snap bridge keyring (see `MultichainBalancesController:#handleOnAccountAdded`).
-    // However, the balance won't be fetched right away. To workaround this, we trigger the
-    // fetch explicitly here (since we are already in a `async` call) and wait for it to be updated!
-    await multichainUpdateBalance(account.id);
-    // TODO: Remove this and the above line once Snap account creation flow is async
-    await multichainUpdateTransactions(account.id);
 
     return account;
   }
