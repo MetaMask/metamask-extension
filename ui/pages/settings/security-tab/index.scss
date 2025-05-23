@@ -17,20 +17,6 @@
 }
 
 .change-password {
-  padding: 1rem;
-
-  &__form {
-    display: contents;
-  }
-
-  &__form-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    justify-content: space-between;
-    height: 100%;
-  }
-
   &__spinner {
     width: 1.5rem;
     height: 1.5rem;

@@ -319,8 +319,6 @@ export function changePassword(
   oldPassword: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
     try {
       await submitRequestToBackground<void>('changePassword', [
         newPassword,
@@ -329,8 +327,6 @@ export function changePassword(
     } catch (error) {
       dispatch(displayWarning(error));
       throw error;
-    } finally {
-      dispatch(hideLoadingIndication());
     }
   };
 }
