@@ -26,6 +26,7 @@ import {
   getCurrentKeyring,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
+  isSocialLoginFlow,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -50,6 +51,7 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getPlatform } from '../../../../app/scripts/lib/util';
 import PasswordForm from '../../../components/app/password-form/password-form';
 ///: END:ONLY_INCLUDE_IF
+import LoadingScreen from '../../../components/ui/loading-screen';
 
 export default function CreatePassword({
   createNewAccount,
@@ -63,6 +65,7 @@ export default function CreatePassword({
     useState(false);
   const history = useHistory();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const socialLoginFlow = useSelector(isSocialLoginFlow);
   const trackEvent = useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
 
@@ -86,7 +89,7 @@ export default function CreatePassword({
     if (currentKeyring && !newAccountCreationInProgress) {
       if (
         firstTimeFlowType === FirstTimeFlowType.import ||
-        firstTimeFlowType === FirstTimeFlowType.social
+        firstTimeFlowType === FirstTimeFlowType.socialImport
       ) {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         history.replace(ONBOARDING_METAMETRICS);
@@ -134,9 +137,9 @@ export default function CreatePassword({
           setNewAccountCreationInProgress(true);
           await createNewAccount(password);
         }
-        if (firstTimeFlowType === FirstTimeFlowType.social) {
+        if (socialLoginFlow) {
           ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-          history.push(ONBOARDING_COMPLETION_ROUTE);
+          history.push(ONBOARDING_METAMETRICS);
           ///: END:ONLY_INCLUDE_IF
         } else {
           ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -195,12 +198,17 @@ export default function CreatePassword({
           marginBottom={4}
           width={BlockSize.Full}
         >
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {t('stepOf', [
-              firstTimeFlowType === FirstTimeFlowType.import ? 2 : 1,
-              firstTimeFlowType === FirstTimeFlowType.import ? 2 : 3,
-            ])}
-          </Text>
+          {!socialLoginFlow && (
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+            >
+              {t('stepOf', [
+                firstTimeFlowType === FirstTimeFlowType.import ? 2 : 1,
+                firstTimeFlowType === FirstTimeFlowType.import ? 2 : 3,
+              ])}
+            </Text>
+          )}
           <Text variant={TextVariant.headingLg} as="h2">
             {t('createPassword')}
           </Text>
@@ -256,6 +264,7 @@ export default function CreatePassword({
           data-testid="create-password-iframe"
         />
       ) : null}
+      {newAccountCreationInProgress && <LoadingScreen />}
     </Box>
   );
 }

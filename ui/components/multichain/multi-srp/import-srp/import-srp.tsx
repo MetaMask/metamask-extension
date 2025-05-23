@@ -304,11 +304,10 @@ export const ImportSrp = ({
           />
         ) : null}
 
-        {
+        {!loading && (
           <Box width={BlockSize.Full} marginTop={4}>
             <ButtonLink
               width={BlockSize.Full}
-              loading={loading}
               onClick={async () => {
                 setNumberOfWords(numberOfWords === 12 ? 24 : 12);
                 setSrpError('');
@@ -321,7 +320,7 @@ export const ImportSrp = ({
               {t('importNWordSRP', [numberOfWords === 12 ? '24' : '12'])}
             </ButtonLink>
           </Box>
-        }
+        )}
       </Box>
       <Box
         className="import-srp__multi-srp__import-button"

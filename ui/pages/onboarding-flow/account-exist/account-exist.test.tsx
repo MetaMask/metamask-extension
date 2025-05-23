@@ -26,7 +26,7 @@ describe('Account Exist Seedless Onboarding View', () => {
       ...initializedMockState,
       metamask: {
         ...initializedMockState.metamask,
-        firstTimeFlowType: FirstTimeFlowType.social,
+        firstTimeFlowType: FirstTimeFlowType.socialCreate,
       },
     };
     const customMockStore = configureMockStore([thunk])(
@@ -50,7 +50,7 @@ describe('Account Exist Seedless Onboarding View', () => {
       ...initializedMockState,
       metamask: {
         ...initializedMockState.metamask,
-        firstTimeFlowType: FirstTimeFlowType.social,
+        firstTimeFlowType: FirstTimeFlowType.socialCreate,
       },
     };
     const customMockStore = configureMockStore([thunk])(

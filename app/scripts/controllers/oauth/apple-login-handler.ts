@@ -39,6 +39,7 @@ export class AppleLoginHandler extends BaseLoginHandler {
     authUrl.searchParams.set('redirect_uri', this.serverRedirectUri);
     authUrl.searchParams.set('response_mode', 'form_post');
     authUrl.searchParams.set('nonce', this.nonce);
+    authUrl.searchParams.set('prompt', this.prompt);
     authUrl.searchParams.set(
       'state',
       JSON.stringify({

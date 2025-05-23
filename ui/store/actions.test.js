@@ -254,7 +254,7 @@ describe('Actions', () => {
       ];
 
       await store.dispatch(
-        actions.restoreSocialBackupAndGetSeedPhrase('password'),
+        actions.restoreSocialSocialBackupAndGetSeedPhrase('password'),
       );
 
       expect(fetchAllSeedPhrasesStub.callCount).toStrictEqual(1);
@@ -282,7 +282,7 @@ describe('Actions', () => {
       ];
 
       await expect(
-        store.dispatch(actions.restoreSocialBackupAndGetSeedPhrase('password')),
+        store.dispatch(actions.restoreSocialSocialBackupAndGetSeedPhrase('password')),
       ).rejects.toThrow('No seed phrase found');
 
       expect(fetchAllSeedPhrasesStub.callCount).toStrictEqual(1);
