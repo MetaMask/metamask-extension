@@ -16,7 +16,7 @@ export default function MetaFoxHorizontalLogo({
       : themeProps,
   );
 
-  const fill = theme === 'dark' ? 'rgb(255,255,255)' : 'rgb(22,22,22)';
+  const fill = theme === ThemeType.dark ? 'rgb(255,255,255)' : 'rgb(22,22,22)';
 
   useEffect(() => {
     let newTheme = themeProps;
