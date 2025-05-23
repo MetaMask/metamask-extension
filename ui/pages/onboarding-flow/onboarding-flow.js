@@ -160,12 +160,6 @@ export default function OnboardingFlow() {
       retrievedSecretRecoveryPhrase = await dispatch(
         restoreSocialBackupAndGetSeedPhrase(password),
       );
-
-      if (retrievedSecretRecoveryPhrase === null) {
-        // if the seed phrase is not found, ask user to setup the password and generate a new seed phrase
-        history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
-        return;
-      }
     } else {
       retrievedSecretRecoveryPhrase = await dispatch(
         unlockAndGetSeedPhrase(password),
