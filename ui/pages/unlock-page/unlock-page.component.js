@@ -115,9 +115,8 @@ export default class UnlockPage extends Component {
     password: '',
     error: null,
     isLocked: false,
+    isSubmitting: false,
   };
-
-  submitting = false;
 
   failed_attempts = 0;
 
@@ -142,8 +141,7 @@ export default class UnlockPage extends Component {
       return;
     }
 
-    this.setState({ error: null });
-    this.submitting = true;
+    this.setState({ error: null, isSubmitting: true });
 
     try {
       await onSubmit(password);
@@ -176,7 +174,8 @@ export default class UnlockPage extends Component {
       }
 
       this.setState({ error: errorMessage });
-      this.submitting = false;
+    } finally {
+      this.setState({ isSubmitting: false });
     }
   };
 
@@ -240,7 +239,7 @@ export default class UnlockPage extends Component {
   };
 
   render() {
-    const { password, error, isLocked } = this.state;
+    const { password, error, isLocked, isSubmitting } = this.state;
     const { t } = this.context;
     const { onRestore } = this.props;
 
@@ -351,7 +350,8 @@ export default class UnlockPage extends Component {
                 block
                 type="submit"
                 data-testid="unlock-submit"
-                disabled={!password || isLocked}
+                disabled={!password || isLocked || isSubmitting}
+                loading={isSubmitting}
               >
                 {this.context.t('unlock')}
               </Button>
