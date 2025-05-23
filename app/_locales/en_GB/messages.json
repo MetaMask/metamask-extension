@@ -3731,6 +3731,10 @@
   "numberOfTokens": {
     "message": "Number of tokens"
   },
+  "ofNetworksLoaded": {
+    "message": "of $1 networks loaded",
+    "description": "$1 is replaced with the total number of networks"
+  },
   "ofTextNofM": {
     "message": "of"
   },
