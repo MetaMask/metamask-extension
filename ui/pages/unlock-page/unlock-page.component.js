@@ -74,7 +74,11 @@ function Counter({ remainingTime, unlock }) {
     return () => clearInterval(interval);
   }, [time, unlock]);
 
-  return <span>{timeDisplay}</span>;
+  return (
+    <Text variant={TextVariant.inherit} as="span">
+      {timeDisplay}
+    </Text>
+  );
 }
 
 Counter.propTypes = {
@@ -340,7 +344,12 @@ export default class UnlockPage extends Component {
           data-testid="unlock-page"
           onSubmit={this.handleSubmit}
         >
-          <Box width={BlockSize.Full} textAlign={TextAlign.center}>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            width={BlockSize.Full}
+            alignItems={AlignItems.center}
+          >
             <Box marginTop={6} className="unlock-page__mascot-container">
               {this.renderMascot()}
               {isBeta() ? (
@@ -393,7 +402,12 @@ export default class UnlockPage extends Component {
               }}
             />
           </Box>
-          <Box width={BlockSize.Full} textAlign={TextAlign.center}>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            width={BlockSize.Full}
+            alignItems={AlignItems.center}
+          >
             <Box
               className="unlock-page__buttons"
               display={Display.Flex}
