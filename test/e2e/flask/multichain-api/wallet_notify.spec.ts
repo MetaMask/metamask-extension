@@ -41,6 +41,8 @@ describe('Calling `eth_subscribe` on a particular network event', function () {
          * Currently we don't have `data-testid` setup for the desired result, so we click on all available results
          * to make the complete text available and later evaluate if scopes match.
          */
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         resultSummaries.forEach(async (element) => await element.click());
 
         const parsedNotificationResult = JSON.parse(
