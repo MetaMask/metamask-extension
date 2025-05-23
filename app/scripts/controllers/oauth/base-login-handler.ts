@@ -32,6 +32,9 @@ export abstract class BaseLoginHandler {
 
   public nonce: string;
 
+  // This prompt value is used to force the user to select an account before OAuth login
+  protected readonly prompt = 'select_account';
+
   constructor(options: LoginHandlerOptions) {
     this.options = options;
     this.nonce = this.#generateNonce();

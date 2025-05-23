@@ -3,9 +3,6 @@ import { BaseLoginHandler } from './base-login-handler';
 import { AuthTokenResponse, OAuthUserInfo } from './types';
 
 export class GoogleLoginHandler extends BaseLoginHandler {
-  // This prompt value is used to force the user to select an account before OAuth login
-  readonly #prompt = 'select_account';
-
   public readonly OAUTH_SERVER_URL =
     'https://accounts.google.com/o/oauth2/v2/auth';
 
@@ -31,7 +28,7 @@ export class GoogleLoginHandler extends BaseLoginHandler {
     authUrl.searchParams.set('scope', this.#scope.join(' '));
     authUrl.searchParams.set('redirect_uri', this.options.redirectUri);
     authUrl.searchParams.set('nonce', this.nonce);
-    authUrl.searchParams.set('prompt', this.#prompt);
+    authUrl.searchParams.set('prompt', this.prompt);
 
     return authUrl.toString();
   }
