@@ -119,8 +119,7 @@ export const BridgeQuoteCard = () => {
                             getNativeAssetForChainId(fromChain.chainId).assetId,
                           token_symbol_destination: toToken?.symbol ?? null,
                           price_impact: Number(
-                            activeQuote.quote?.bridgePriceData?.priceImpact ??
-                              '0',
+                            activeQuote.quote?.priceData?.priceImpact ?? '0',
                           ),
                           gas_included: false,
                         },
