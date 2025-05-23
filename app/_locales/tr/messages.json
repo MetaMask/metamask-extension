@@ -3422,10 +3422,6 @@
     "message": "$1 işlemi başarısız oldu! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
   },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "İşlem başarısız oldu! $1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
-  },
   "notificationTransactionFailedTitle": {
     "message": "Başarısız işlem",
     "description": "Title of the browser notification that appears when a transaction fails"
