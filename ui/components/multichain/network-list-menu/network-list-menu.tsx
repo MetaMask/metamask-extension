@@ -158,6 +158,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const isUnlocked = useSelector(getIsUnlocked);
   const domains = useSelector(getAllDomains);
   const orderedNetworksList = useSelector(getOrderedNetworksList);
+  console.log(`orderedNetworksList`, orderedNetworksList);
   const isAddingNewNetwork = useSelector(getIsAddingNewNetwork);
   const isMultiRpcOnboarding = useSelector(getIsMultiRpcOnboarding);
   const isAccessedFromDappConnectedSitePopover = useSelector(
@@ -180,6 +181,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const [multichainNetworks, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
+  console.log(`multichainNetworks`, multichainNetworks, evmNetworks);
   const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
   const { chainId: editingChainId, editCompleted } =
     useSelector(getEditedNetwork) ?? {};
@@ -192,6 +194,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   );
 
   const allChainIds = useSelector(getAllChainsToPoll);
+  console.log(`allChainIds`, allChainIds);
   const canSelectNetwork: boolean =
     !process.env.REMOVE_GNS ||
     (Boolean(process.env.REMOVE_GNS) &&
