@@ -635,9 +635,6 @@
   "terms": {
     "message": "Regulamin"
   },
-  "tips": {
-    "message": "Napiwki"
-  },
   "to": {
     "message": "Do"
   },
@@ -712,9 +709,6 @@
   },
   "unlock": {
     "message": "Odblokuj"
-  },
-  "unlockMessage": {
-    "message": "Zdecentralizowana sieć oczekuje"
   },
   "urlErrorMsg": {
     "message": "URI wymaga prawidłowego prefiksu HTTP/HTTPS."
