@@ -157,16 +157,16 @@ const prepareDailyAllowanceTransaction = ({
   };
 };
 
-export const updateRemoteModeTransaction = ({
+export const updateRemoteModeTransaction = async ({
   transactionMeta,
   state,
 }: {
   transactionMeta: TransactionMeta;
   state: ControllerFlatState;
-}): ReturnType<AfterAddHook> => {
+}): Promise<ReturnType<AfterAddHook>> => {
   const isRemoteModeEnabled = getRemoteModeEnabled(state);
   if (!isRemoteModeEnabled) {
-    return Promise.resolve({ updateTransaction: undefined });
+    return { updateTransaction: undefined };
   }
 
   switch (transactionMeta.type) {
@@ -179,34 +179,23 @@ export const updateRemoteModeTransaction = ({
           state,
         });
         if (!result) {
-          return Promise.resolve({ updateTransaction: undefined });
+          return { updateTransaction: undefined };
         }
         const { updatedFrom, updatedTo, updatedData } = result;
-        return Promise.resolve({
+        return {
           updateTransaction: buildUpdateTransaction({
             updatedFrom,
             updatedTo,
             updatedData,
           }),
-        });
+        };
       } catch (error) {
         console.error('Error preparing daily allowance transaction', error);
-        return Promise.resolve({ updateTransaction: undefined });
+        return { updateTransaction: undefined };
       }
     }
 
-    // TODO: Swap
     default:
-      return Promise.resolve({ updateTransaction: undefined });
+      return { updateTransaction: undefined };
   }
-  // TODO:
-  // - Check if transaction is from HW wallet
-  // - Check if HW wallet has remote mode delegations
-  // - Check that delegate account is present in wallet
-  // - Check if transaction is Send or Swap
-  // - Then check allowances to make sure it's allowed
-  // - If everything matches, then return a function to update the transaction to
-  //   a new txMeta with a `redeemDelegations` operation
-  // - If any of the checks fails, don't return an update function (i.e., tx should not be modified)
-  return Promise.resolve({ updateTransaction: undefined });
 };
