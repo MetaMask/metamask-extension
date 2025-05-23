@@ -22,11 +22,14 @@ import {
   nonceSortedCompletedTransactionsSelectorAllChains,
   nonceSortedPendingTransactionsSelector,
   nonceSortedPendingTransactionsSelectorAllChains,
+} from '../../../selectors/transactions';
+import {
   remoteModeNonceSortedCompletedTransactionsSelector,
   remoteModeNonceSortedCompletedTransactionsSelectorAllChains,
   remoteModeNonceSortedPendingTransactionsSelector,
   remoteModeNonceSortedPendingTransactionsSelectorAllChains,
-} from '../../../selectors/transactions';
+  getIsRemoteModeEnabled,
+} from '../../../selectors/remote-mode';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   getCurrentNetwork,
@@ -58,8 +61,6 @@ import {
   getSelectedMultichainNetworkConfiguration,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors/multichain/networks';
-
-import { getIsRemoteModeEnabled } from '../../../selectors/remote-mode';
 
 import {
   Box,
