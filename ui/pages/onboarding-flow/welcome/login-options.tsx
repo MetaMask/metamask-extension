@@ -44,7 +44,7 @@ export const SocialButton = React.forwardRef(
     ref?: PolymorphicRef<'button'>,
   ) => {
     return (
-      <Box
+      <Text
         ref={ref}
         as="button"
         className="options-modal__plain-button"
@@ -52,7 +52,7 @@ export const SocialButton = React.forwardRef(
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
         width={BlockSize.Full}
-        borderRadius={BorderRadius.pill}
+        borderRadius={BorderRadius.XL}
         borderColor={BorderColor.borderMuted}
         backgroundColor={BackgroundColor.transparent}
         gap={2}
@@ -68,7 +68,7 @@ export const SocialButton = React.forwardRef(
           </>
           ///: END:ONLY_INCLUDE_IF
         }
-      </Box>
+      </Text>
     );
   },
 );

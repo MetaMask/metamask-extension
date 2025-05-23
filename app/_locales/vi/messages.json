@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Tài khoản Bitcoin (Beta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Tài khoản Bitcoin (Mạng thử nghiệm)"
-  },
   "addBlockExplorer": {
     "message": "Thêm một trình khám phá khối"
   },
@@ -657,22 +654,6 @@
   "billionAbbreviation": {
     "message": "Tỷ",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Bật tính năng này sẽ cung cấp cho bạn tùy chọn thêm Tài khoản Bitcoin vào Tiện ích mở rộng MetaMask bắt nguồn từ Cụm từ khôi phục bí mật hiện có của bạn. Đây là một tính năng Beta thử nghiệm, nên bạn phải tự chịu rủi ro khi sử dụng nó. Để cung cấp phản hồi cho chúng tôi về trải nghiệm Bitcoin mới này, vui lòng điền vào $1 này.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Bật \"Thêm tài khoản Bitcoin mới (Beta)\""
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Bật tính năng này sẽ cung cấp cho bạn tùy chọn thêm Tài khoản Bitcoin cho mạng thử nghiệm."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Bật \"Thêm tài khoản Bitcoin mới (Mạng thử nghiệm)\""
   },
   "blockExplorerAccountAction": {
     "message": "Tài khoản",
@@ -1328,10 +1309,6 @@
   },
   "creatorAddress": {
     "message": "Địa chỉ của người tạo"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Giá trị này phản ánh giá trị của tất cả các token mà bạn sở hữu trên tất cả các mạng. Nếu bạn muốn xem giá trị này bằng ETH hoặc các loại tiền tệ khác, hãy truy cập $1.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "Hoán đổi trên các mạng với MetaMask Portfolio"
@@ -3562,9 +3539,6 @@
   "onboardingMetametricsDescription": {
     "message": "Chúng tôi muốn thu thập dữ liệu sử dụng và chẩn đoán cơ bản để cải tiến MetaMask. Xin lưu ý, chúng tôi không bao giờ bán dữ liệu mà bạn cung cấp ở đây."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Khi thu thập số liệu, chúng tôi sẽ luôn cam kết điều này..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Chúng tôi sẽ thông báo cho bạn nếu chúng tôi quyết định sử dụng dữ liệu này cho các mục đích khác. Bạn có thể xem lại $1 của chúng tôi để biết thêm thông tin. Lưu ý, bạn có thể truy cập cài đặt và chọn không tham gia bất kỳ lúc nào.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3592,9 +3566,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Không bắt buộc:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn khi thu thập dữ liệu sử dụng cho hồ sơ của bạn."
   },
   "onboardingMetametricsTitle": {
     "message": "Giúp chúng tôi cải thiện MetaMask"
@@ -6360,9 +6331,6 @@
   },
   "yourBalance": {
     "message": "Số dư của bạn"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Số dư của bạn đã được tổng hợp"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT của bạn có thể gặp rủi ro"

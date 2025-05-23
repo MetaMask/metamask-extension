@@ -44,21 +44,21 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-6 mm-box--color-text-alternative"
         >
           <span>
-             
-            This is your 
+
+            This is your
             <button
               class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
             >
               Secret Recovery Phrase
             </button>
-            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. 
+            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet.
             <p
               class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
             >
               Don’t share it with anyone, ever.
             </p>
-            
-             
+
+
           </span>
         </p>
       </div>
@@ -392,21 +392,21 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
           class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-6 mm-box--color-text-alternative"
         >
           <span>
-             
-            This is your 
+
+            This is your
             <button
               class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
             >
               Secret Recovery Phrase
             </button>
-            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. 
+            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet.
             <p
               class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
             >
               Don’t share it with anyone, ever.
             </p>
-            
-             
+
+
           </span>
         </p>
       </div>
