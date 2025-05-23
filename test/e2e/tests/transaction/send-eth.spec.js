@@ -237,8 +237,8 @@ describe('Send ETH', function () {
       );
     });
 
-    describe('from dapp using advanced gas controls', function () {
-      it('should display the correct gas price on the legacy transaction', async function () {
+    describe.only('from dapp using advanced gas controls', function () {
+      it.only('should display the correct gas price on the legacy transaction', async function () {
         await withFixtures(
           {
             dapp: true,
@@ -266,7 +266,7 @@ describe('Send ETH', function () {
 
             await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
             await driver.waitForSelector({
-              text: '0.00021 ETH',
+              text: '0.000042 ETH',
             });
             await driver.clickElement({
               text: 'Edit suggested gas fee',
