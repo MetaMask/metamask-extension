@@ -4985,7 +4985,10 @@ export default class MetamaskController extends EventEmitter {
   async changePassword(newPassword, oldPassword) {
     const { firstTimeFlowType } = this.onboardingController.state;
 
-    if (firstTimeFlowType === FirstTimeFlowType.social) {
+    if (
+      firstTimeFlowType === FirstTimeFlowType.socialCreate ||
+      firstTimeFlowType === FirstTimeFlowType.socialImport
+    ) {
       // change password for the social login flow
       await this.seedlessOnboardingController.changePassword(
         newPassword,
@@ -5239,11 +5242,6 @@ export default class MetamaskController extends EventEmitter {
         seedPhraseAsUint8Array,
       );
 
-      if (firstTimeFlowType === FirstTimeFlowType.social) {
-        // update the Onboarding state when user restore the existing wallet with social login
-        this.onboardingController.setRestoreWithSocialLogin(true);
-      }
-
       if (completedOnboarding) {
         ///: BEGIN:ONLY_INCLUDE_IF(solana)
         await this._addSolanaAccount();
@@ -5260,7 +5258,7 @@ export default class MetamaskController extends EventEmitter {
         );
       }
 
-      if (firstTimeFlowType === FirstTimeFlowType.social) {
+      if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
         // if the social login flow is completed, update the SocialBackupMetadataState with the restored seed phrase
         this.seedlessOnboardingController.updateBackupMetadataState({
           keyringId: this.keyringController.state.keyringsMetadata[0].id,

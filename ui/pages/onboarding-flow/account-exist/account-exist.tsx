@@ -29,7 +29,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { getFirstTimeFlowType, getSocialLoginEmail } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { resetOAuthLoginState } from '../../../store/actions';
+import { setFirstTimeFlowType, resetOAuthLoginState } from '../../../store/actions';
 
 export default function AccountExist() {
   const history = useHistory();
@@ -38,7 +38,16 @@ export default function AccountExist() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
 
-  const onDone = () => {
+  const onBack = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    await dispatch(resetOAuthLoginState());
+    history.goBack();
+  }
+
+  const onLogin = () => {
+    dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
     history.push(ONBOARDING_UNLOCK_ROUTE);
   };
 
@@ -49,7 +58,7 @@ export default function AccountExist() {
   };
 
   useEffect(() => {
-    if (firstTimeFlowType !== FirstTimeFlowType.social) {
+    if (firstTimeFlowType !== FirstTimeFlowType.socialCreate) {
       history.push(ONBOARDING_WELCOME_ROUTE);
     }
   }, [firstTimeFlowType, history]);
@@ -76,7 +85,7 @@ export default function AccountExist() {
             color={IconColor.iconDefault}
             size={ButtonIconSize.Md}
             data-testid="create-password-back-button"
-            onClick={() => history.goBack()}
+            onClick={onBack}
             ariaLabel="back"
           />
         </Box>
@@ -133,7 +142,7 @@ export default function AccountExist() {
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           width={BlockSize.Full}
-          onClick={onDone}
+          onClick={onLogin}
         >
           {t('accountAlreadyExistsLogin')}
         </Button>
