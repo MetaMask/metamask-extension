@@ -87,6 +87,8 @@ export const DEFAULT_SOLANA_BALANCE = 1; // SOL
 export const PORTFOLIO_PAGE_TITLE = 'MetaMask Portfolio';
 
 /* Account types */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export enum ACCOUNT_TYPE {
   Ethereum,
   Bitcoin,

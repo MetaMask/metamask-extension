@@ -67,6 +67,8 @@ const ListItem = ({
   </Box>
 );
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function SmartAccountUpdate() {
   const [acknowledged, setAcknowledged] = useState(false);
   const t = useI18nContext();

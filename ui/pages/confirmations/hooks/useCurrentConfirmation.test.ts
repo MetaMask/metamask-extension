@@ -41,6 +41,8 @@ const TRANSACTION_MOCK = {
   type: TransactionType.contractInteraction,
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function arrayToIdMap<T>(array: T[]): Record<string, T> {
   return array.reduce(
     (acc, item) => ({

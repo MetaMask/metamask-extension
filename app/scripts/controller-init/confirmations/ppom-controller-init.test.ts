@@ -65,6 +65,8 @@ describe('PPOM Controller Init', () => {
    * @param dependencyProperties - Any properties required on the controller dependencies.
    * @returns The extracted option.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   function testConstructorOption<T extends keyof PPOMControllerOptions>(
     option: T,
     dependencyProperties?: Record<string, unknown>,
