@@ -25,6 +25,8 @@ type ContentfulBanner = ContentfulSysField & {
   };
 };
 
+const noSlides: CarouselSlide[] = [];
+
 type ContentfulBannerResponse = {
   items: ContentfulBanner[];
   includes?: {
@@ -34,7 +36,13 @@ type ContentfulBannerResponse = {
   };
 };
 
-export async function fetchCarouselSlidesFromContentful() {
+export async function fetchCarouselSlidesFromContentful(): Promise<
+  CarouselSlide[]
+> {
+  if (!SPACE_ID || !ACCESS_TOKEN) {
+    return noSlides;
+  }
+
   const url = new URL(CONTENTFUL_API);
   url.searchParams.set('access_token', ACCESS_TOKEN);
   url.searchParams.set('content_type', CONTENT_TYPE);

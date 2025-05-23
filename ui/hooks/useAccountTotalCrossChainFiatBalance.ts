@@ -16,6 +16,7 @@ import {
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { TokenWithBalance } from '../components/app/assets/types';
 import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
+import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 
 type AddressBalances = {
   [address: string]: number;
@@ -56,7 +57,12 @@ export const useAccountTotalCrossChainFiatBalance = (
     () =>
       formattedTokensWithBalancesPerChain.map((singleChainTokenBalances) => {
         const { tokensWithBalances } = singleChainTokenBalances;
+        // Attempt to use known currency symbols in map
+        // Otherwise fallback to user defined currency
         const matchedChainSymbol =
+          CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
+            singleChainTokenBalances.chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
+          ] ??
           allNetworks[singleChainTokenBalances.chainId as `0x${string}`]
             .nativeCurrency;
         const conversionRate =
