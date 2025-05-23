@@ -659,7 +659,7 @@ exports[`NetworkListMenu renders properly 1`] = `
             class="mm-box mm-box--padding-4"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-right-2 mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
@@ -943,7 +943,7 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
               class="mm-box networks-tab__network-form__footer mm-box--padding-4 mm-box--width-full mm-box--background-color-background-default"
             >
               <button
-                class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+                class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
                 data-theme="light"
                 disabled=""
               >
@@ -967,6 +967,12 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
 <body>
   <div
     id="popover-content"
+  />
+  <div
+    aria-atomic="true"
+    aria-live="assertive"
+    id="rbd-announcement-0"
+    style="position: absolute; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip-path: inset(100%);"
   />
   <div />
   <div
@@ -1622,7 +1628,7 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
             class="mm-box mm-box--padding-4"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
             >
               <span
                 class="mm-box mm-icon mm-icon--size-sm mm-box--margin-right-2 mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"

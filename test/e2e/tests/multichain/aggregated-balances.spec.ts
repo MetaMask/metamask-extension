@@ -68,7 +68,6 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         await accountListPage.closeAccountModal();
 
         // Step 5: Verify balance in send flow
-        await homepage.closePopover();
         await homepage.startSendFlow();
         await sendTokenPage.checkAccountValueAndSuffix(
           EXPECTED_MAINNET_BALANCE_USD,
