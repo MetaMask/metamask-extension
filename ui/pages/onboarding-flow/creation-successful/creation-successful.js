@@ -31,7 +31,11 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getFirstTimeFlowType, getHDEntropyIndex } from '../../../selectors';
+import {
+  getFirstTimeFlowType,
+  getHDEntropyIndex,
+  isSocialLoginFlow,
+} from '../../../selectors';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -39,7 +43,6 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 
 export default function CreationSuccessful() {
@@ -49,27 +52,28 @@ export default function CreationSuccessful() {
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
+  const socialLoginFlow = useSelector(isSocialLoginFlow);
   const learnMoreLink =
     'https://support.metamask.io/hc/en-us/articles/360015489591-Basic-Safety-and-Security-Tips-for-MetaMask';
 
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
   const renderTitle = useMemo(() => {
-    if (firstTimeFlowType === FirstTimeFlowType.social || seedPhraseBackedUp) {
+    if (socialLoginFlow || seedPhraseBackedUp) {
       return t('yourWalletIsReady');
     }
 
     return t('yourWalletIsReadyRemind');
-  }, [firstTimeFlowType, seedPhraseBackedUp, t]);
+  }, [socialLoginFlow, seedPhraseBackedUp, t]);
 
   const renderFoxPath = useMemo(() => {
-    if (firstTimeFlowType === FirstTimeFlowType.social || seedPhraseBackedUp) {
+    if (socialLoginFlow || seedPhraseBackedUp) {
       return 'images/animations/fox/celebrating.lottie.json';
     }
 
     // TODO: Check figma teaching fox animation
     return 'images/animations/fox/celebrating.lottie.json';
-  }, [firstTimeFlowType, seedPhraseBackedUp]);
+  }, [socialLoginFlow, seedPhraseBackedUp]);
 
   return (
     <Box

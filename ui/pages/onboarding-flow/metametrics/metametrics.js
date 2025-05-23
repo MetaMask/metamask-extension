@@ -22,7 +22,7 @@ import {
 import {
   getDataCollectionForMarketing,
   getFirstTimeFlowType,
-  getFirstTimeFlowTypeRouteAfterUnlock,
+  getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
 } from '../../../selectors';
 
 import {
@@ -59,7 +59,9 @@ export default function OnboardingMetametrics() {
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const trackEvent = useContext(MetaMetricsContext);
 
-  let nextRouteByBrowser = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
+  let nextRouteByBrowser = useSelector(
+    getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
+  );
   if (isFirefox && firstTimeFlowType !== FirstTimeFlowType.restore) {
     nextRouteByBrowser = ONBOARDING_WELCOME_ROUTE;
   }

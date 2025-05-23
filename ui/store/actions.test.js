@@ -255,7 +255,7 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      await store.dispatch(actions.restoreBackupAndGetSeedPhrase('password'));
+      await store.dispatch(actions.restoreSocialBackupAndGetSeedPhrase('password'));
 
       expect(fetchAllSeedPhrasesStub.callCount).toStrictEqual(1);
       expect(createNewVaultAndRestoreStub.callCount).toStrictEqual(1);
@@ -286,7 +286,7 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      await store.dispatch(actions.restoreBackupAndGetSeedPhrase('password'));
+      await store.dispatch(actions.restoreSocialBackupAndGetSeedPhrase('password'));
 
       expect(fetchAllSeedPhrasesStub.callCount).toStrictEqual(1);
       expect(createNewVaultAndRestoreStub.callCount).toStrictEqual(0);
@@ -309,7 +309,7 @@ describe('Actions', () => {
       ];
 
       await expect(
-        store.dispatch(actions.restoreBackupAndGetSeedPhrase('password')),
+        store.dispatch(actions.restoreSocialBackupAndGetSeedPhrase('password')),
       ).rejects.toThrow('error');
       console.log('store.getActions()', store.getActions());
       expect(store.getActions()).toStrictEqual(expectedActions);

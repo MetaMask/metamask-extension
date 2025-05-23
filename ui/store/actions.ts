@@ -166,18 +166,18 @@ export function goHome() {
  * Starts the OAuth2 login process for the given Social Login type
  * and authenticate the user with the Seedless Onboarding Services.
  *
- * @param provider - The authentication connection to use (google | apple).
+ * @param authConnection - The authentication connection to use (google | apple).
  * @returns The social login result.
  */
 export function startOAuthLogin(
-  provider: AuthConnection,
+  authConnection: AuthConnection,
 ): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
 
     try {
       const isNewUser = await submitRequestToBackground('startOAuthLogin', [
-        provider,
+        authConnection,
       ]);
       return isNewUser;
     } catch (error) {
@@ -259,7 +259,7 @@ export function createNewVaultAndSyncWithSocial(
  * @param password - The password.
  * @returns The seed phrase.
  */
-export function restoreBackupAndGetSeedPhrase(
+export function restoreSocialBackupAndGetSeedPhrase(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {

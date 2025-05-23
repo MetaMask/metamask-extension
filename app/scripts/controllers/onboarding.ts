@@ -17,10 +17,6 @@ export type OnboardingControllerState = {
   seedPhraseBackedUp: boolean | null;
   firstTimeFlowType: FirstTimeFlowType | null;
   completedOnboarding: boolean;
-  /**
-   * Indicates if the user is restoring a wallet with social login
-   */
-  restoreWithSocialLogin: boolean;
   onboardingTabs?: Record<string, string>;
 };
 
@@ -31,7 +27,6 @@ export const getDefaultOnboardingControllerState = () => ({
   seedPhraseBackedUp: null,
   firstTimeFlowType: null,
   completedOnboarding: false,
-  restoreWithSocialLogin: false,
 });
 
 const defaultTransientState = {
@@ -61,10 +56,6 @@ const controllerMetadata = {
   onboardingTabs: {
     persist: false,
     anonymous: false,
-  },
-  restoreWithSocialLogin: {
-    persist: true,
-    anonymous: true,
   },
 };
 
@@ -159,17 +150,6 @@ export default class OnboardingController extends BaseController<
   setSeedPhraseBackedUp(newSeedPhraseBackUpState: boolean): void {
     this.update((state) => {
       state.seedPhraseBackedUp = newSeedPhraseBackUpState;
-    });
-  }
-
-  /**
-   * Setter for the `restoreWithSocialLogin` property
-   *
-   * @param restoreWithSocialLogin - Indicates if the user is restoring a wallet with social login
-   */
-  setRestoreWithSocialLogin(restoreWithSocialLogin: boolean): void {
-    this.update((state) => {
-      state.restoreWithSocialLogin = restoreWithSocialLogin;
     });
   }
 
