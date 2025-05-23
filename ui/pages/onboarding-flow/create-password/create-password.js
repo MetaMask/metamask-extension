@@ -51,6 +51,7 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getPlatform } from '../../../../app/scripts/lib/util';
 import PasswordForm from '../../../components/app/password-form/password-form';
 ///: END:ONLY_INCLUDE_IF
+import LoadingScreen from '../../../components/ui/loading-screen';
 
 export default function CreatePassword({
   createNewAccount,
@@ -263,6 +264,7 @@ export default function CreatePassword({
           data-testid="create-password-iframe"
         />
       ) : null}
+      {newAccountCreationInProgress && <LoadingScreen />}
     </Box>
   );
 }
