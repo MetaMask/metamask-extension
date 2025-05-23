@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-
+import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+
 import {
   Box,
   Icon,
@@ -12,11 +13,14 @@ import Card from '../../../components/ui/card';
 import {
   AlignItems,
   BackgroundColor,
+  BorderColor,
+  BlockSize,
   Display,
   FlexDirection,
   JustifyContent,
   TextColor,
   TextVariant,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 
 import {
@@ -29,6 +33,10 @@ import { getSelectedInternalAccount } from '../../../selectors';
 import { RevokeWithdrawlConfirmModalType } from '../components/revoke-withdrawl-confirm-modal';
 import { useRemoteMode } from '../hooks/useRemoteMode';
 import { REMOTE_MODES } from '../remote.types';
+import {
+  REMOTE_ROUTE_SETUP_SWAPS,
+  REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
+} from '../../../helpers/constants/routes';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -46,6 +54,8 @@ export default function RemoteModePermissions({
     useState(false);
   const [isRevokeSpendAllowanceVisible, setIsRevokeSpendAllowanceVisible] =
     useState(false);
+
+  const history = useHistory();
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
 
@@ -89,8 +99,7 @@ export default function RemoteModePermissions({
   return (
     <Box>
       <Text variant={TextVariant.bodyMd} color={TextColor.textAlternativeSoft}>
-        Safely access your hardware wallet funds without plugging it in. Revoke
-        permissions anytime.
+        Remote Mode lets you use your hardware wallet without plugging it in.{' '}
       </Text>
       <Box paddingTop={2} paddingBottom={2}>
         <Card backgroundColor={BackgroundColor.backgroundMuted}>
@@ -98,15 +107,19 @@ export default function RemoteModePermissions({
             display={Display.Flex}
             gap={2}
             justifyContent={JustifyContent.spaceBetween}
-            paddingTop={2}
-            paddingBottom={2}
           >
-            <Text>Remote Swaps</Text>
+            <Text fontWeight={FontWeight.Bold}>Remote Swaps</Text>
             {swapAllowance ? (
-              <Box display={Display.Flex} gap={6}>
+              <Box display={Display.Flex} gap={4}>
                 <Text
                   color={TextColor.infoDefault}
                   style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    history.push({
+                      pathname: REMOTE_ROUTE_SETUP_SWAPS,
+                      search: `?update=true`,
+                    });
+                  }}
                 >
                   Update
                 </Text>
@@ -133,9 +146,14 @@ export default function RemoteModePermissions({
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
               gap={4}
-              paddingTop={4}
-              paddingBottom={4}
+              paddingTop={2}
             >
+              <Box
+                borderColor={BorderColor.borderMuted}
+                width={BlockSize.Full}
+                style={{ height: '1px', borderBottomWidth: 0 }}
+                marginTop={2}
+              />
               <Box
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
@@ -172,7 +190,12 @@ export default function RemoteModePermissions({
                   MetaMask Swaps
                 </Text>
               </Box>
-
+              <Box
+                borderColor={BorderColor.borderMuted}
+                width={BlockSize.Full}
+                style={{ height: '1px', borderBottomWidth: 0 }}
+                marginTop={2}
+              />
               <Box
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
@@ -184,7 +207,7 @@ export default function RemoteModePermissions({
                   {swapAllowance.allowances.length} token
                   {swapAllowance.allowances.length === 1 ? '' : 's'} enabled
                 </Text>
-                <Text color={TextColor.infoDefault}>
+                <Text>
                   {isAllowancesExpanded ? (
                     <Icon name={IconName.ArrowUp} size={IconSize.Sm} />
                   ) : (
@@ -217,15 +240,19 @@ export default function RemoteModePermissions({
             display={Display.Flex}
             gap={2}
             justifyContent={JustifyContent.spaceBetween}
-            paddingTop={2}
-            paddingBottom={2}
           >
-            <Text>Withdrawal limit</Text>
+            <Text fontWeight={FontWeight.Bold}>Withdrawal limit</Text>
             {dailyAllowance ? (
-              <Box display={Display.Flex} gap={6}>
+              <Box display={Display.Flex} gap={4}>
                 <Text
                   color={TextColor.infoDefault}
                   style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    history.push({
+                      pathname: REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
+                      search: `?update=true`,
+                    });
+                  }}
                 >
                   Update
                 </Text>
@@ -252,9 +279,14 @@ export default function RemoteModePermissions({
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
               gap={4}
-              paddingTop={4}
-              paddingBottom={4}
+              paddingTop={2}
             >
+              <Box
+                borderColor={BorderColor.borderMuted}
+                width={BlockSize.Full}
+                style={{ height: '1px', borderBottomWidth: 0 }}
+                marginTop={2}
+              />
               <Box
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
@@ -291,7 +323,12 @@ export default function RemoteModePermissions({
                   MetaMask Swaps
                 </Text>
               </Box>
-
+              <Box
+                borderColor={BorderColor.borderMuted}
+                width={BlockSize.Full}
+                style={{ height: '1px', borderBottomWidth: 0 }}
+                marginTop={2}
+              />
               <Box
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
@@ -305,7 +342,7 @@ export default function RemoteModePermissions({
                   {dailyAllowance.allowances.length} token
                   {dailyAllowance.allowances.length === 1 ? '' : 's'} enabled
                 </Text>
-                <Text color={TextColor.infoDefault}>
+                <Text>
                   {isDailyAllowanceExpanded ? (
                     <Icon name={IconName.ArrowUp} size={IconSize.Sm} />
                   ) : (
