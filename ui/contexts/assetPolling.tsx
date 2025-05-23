@@ -5,6 +5,8 @@ import useAccountTrackerPolling from '../hooks/useAccountTrackerPolling';
 import useTokenDetectionPolling from '../hooks/useTokenDetectionPolling';
 import useTokenListPolling from '../hooks/useTokenListPolling';
 
+export const isGlobalNetworkSelectorEnabled = false;
+
 // This provider is a step towards making controller polling fully UI based.
 // Eventually, individual UI components will call the use*Polling hooks to
 // poll and return particular data. This polls globally in the meantime.
