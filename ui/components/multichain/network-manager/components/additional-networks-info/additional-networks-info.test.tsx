@@ -66,9 +66,11 @@ describe('AdditionalNetworksInfo', () => {
 
     // Popover content should now be visible
     expect(
-      screen.getByText((content) => content.startsWith('Some of these networks rely on third partie')),
+      screen.getByText((content) =>
+        content.startsWith('Some of these networks rely on third partie'),
+      ),
     ).toBeInTheDocument();
-    expect(screen.getByText(/Learn more/i)).toBeInTheDocument();
+    expect(screen.getByText('Learn more')).toBeInTheDocument();
 
     // Trigger mouse leave on the containing box to close the popover
     const containerBox = screen
