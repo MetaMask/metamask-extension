@@ -70,14 +70,12 @@ export default async function launchMetamaskUi(opts) {
 
   const metamaskState = await trace(
     { name: TraceName.GetState, parentContext: traceContext },
-    () => promisify(backgroundConnection.getState.bind(backgroundConnection))(),
+    backgroundConnection.getState.bind(backgroundConnection),
   );
 
   const store = await startApp(metamaskState, backgroundConnection, opts);
 
-  await promisify(
-    backgroundConnection.startPatches.bind(backgroundConnection),
-  )();
+  await backgroundConnection.startPatches();
 
   setupStateHooks(store);
 

@@ -15,6 +15,8 @@ import getNextId from '../../../shared/modules/random-id';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type MetamaskController from '../metamask-controller';
 
+type Timer = ReturnType<typeof setTimeout>;
+
 /**
  * A JSON-RPC 2.0 request object, types with our request types.
  */
@@ -114,7 +116,7 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
     {
       resolve: (value: Awaited<ReturnType<Api[keyof Api]>>) => void;
       reject: (error: Error) => void;
-      timer?: number;
+      timer?: Timer;
     }
   >();
 
@@ -122,7 +124,8 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
     this.#connectionStream = connectionStream;
     this.#connectionStream
       .on('data', this.handleResponse)
-      .on('end', this.close);
+      .on('end', this.close)
+      .on('error', (err) => this.destroy(err));
   }
 
   /**
@@ -168,11 +171,9 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
   async send(payload: JsonRpcApiRequest<Api>) {
     return new Promise<Awaited<ReturnType<Api[typeof payload.method]>>>(
       (resolve, reject) => {
-        let timer: number | undefined;
+        let timer: Timer | undefined;
         if (payload.method === 'getState') {
-          // `window.setTimeout` because typescript thinks the return type is
-          // `NodeJS.Timeout` if we use the global `setTimeout` reference.
-          timer = window.setTimeout(() => {
+          timer = setTimeout(() => {
             this.requests.delete(payload.id);
             reject(new Error('No response from RPC'));
           }, TEN_SECONDS_IN_MILLISECONDS);
@@ -188,12 +189,8 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
    *
    * @param handler - The handler to call when a notification is received.
    */
-  onNotification = (
-    handler: (data: { method: string; params: [unknown] }) => void,
-  ) => {
-    this.#notificationChannel.addListener('notification', (data) => {
-      handler(data);
-    });
+  onNotification = (handler: (data: JsonRpcNotification) => void) => {
+    this.#notificationChannel.addListener('notification', handler);
   };
 
   /**
@@ -202,17 +199,20 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
    * @param handler - The handler to call when an error is received.
    */
   onUncaughtError = (
-    handler: (error: JsonRpcError<undefined | Json>) => void,
+    handler: (error: JsonRpcError<Json | undefined>) => void,
   ) => {
-    this.#uncaughtErrorChannel.addListener('error', (error) => {
-      handler(error);
-    });
+    this.#uncaughtErrorChannel.addListener('error', handler);
+  };
+
+  destroy = (err: Error) => {
+    this.#connectionStream.destroy(err);
+    this.close('stream ended');
   };
 
   /**
    * Closes the connection and cleans up.
    */
-  close = () => {
+  close = (reason: string = 'disconnected') => {
     this.#notificationChannel.removeAllListeners();
     this.#uncaughtErrorChannel.removeAllListeners();
     this.#connectionStream.off('data', this.handleResponse);
@@ -220,7 +220,7 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
     // fail all unfinished requests
     this.requests.forEach(({ reject, timer }) => {
       clearTimeout(timer);
-      reject(new DisconnectError('disconnected'));
+      reject(new DisconnectError(reason));
     });
     this.requests.clear();
   };
@@ -239,10 +239,9 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
       !hasProperty(response, 'jsonrpc') ||
       response.jsonrpc !== '2.0'
     ) {
-      // ignore noise.
+      // ignore noise which can cause processing errors
       return;
     }
-
     if (hasProperty(response, 'method')) {
       if (!hasProperty(response, 'id')) {
         // react to server-side to client-side notifications
@@ -274,6 +273,9 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
   };
 }
 
+export type MetaRpcClientFactory<Api extends FunctionRegistry<Api>> =
+  MetaRPCClient<Api> & PromisifiedApi<Api>;
+
 /**
  * In practice, this is used to send messages to API methods configured within
  * {@link MetamaskController}.
@@ -290,5 +292,5 @@ export default function metaRPCClientFactory<Api extends FunctionRegistry<Api>>(
   const metaRPCClient = new MetaRPCClient<Api>(connectionStream);
   return new Proxy(metaRPCClient, {
     get: metaRPCClient.getRpcResolver(),
-  }) as MetaRPCClient<Api> & PromisifiedApi<Api>;
+  }) as MetaRpcClientFactory<Api>;
 }
