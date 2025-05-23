@@ -1,4 +1,3 @@
-import { ApprovalRequest } from '@metamask/approval-controller';
 import React, {
   ReactElement,
   createContext,
@@ -6,11 +5,13 @@ import React, {
   useContext,
   useState,
 } from 'react';
+import { useSelector } from 'react-redux';
 
 import useAlerts from '../../../../hooks/useAlerts';
 import { AlertActionHandlerProvider } from '../../../../components/app/alert-system/contexts/alertActionHandler';
 import { AlertMetricsProvider } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
 import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal';
+import { getMemoizedUnapprovedConfirmations } from '../../../../selectors';
 import { useTemplateConfirmationAlerts } from './useTemplateConfirmationAlerts';
 import { useAlertsActions } from './useAlertsActions';
 
@@ -27,21 +28,28 @@ export const TemplateAlertContext = createContext<
 
 export const TemplateAlertContextProvider: React.FC<{
   children: ReactElement;
-  pendingConfirmation: ApprovalRequest<{ id: string }>;
+  confirmationId: string;
   onSubmit: () => void;
-}> = ({ children, pendingConfirmation, onSubmit }) => {
-  const [isAlertsModalVisible, setAlertsModalVisible] = useState(false);
+}> = ({ children, confirmationId, onSubmit }) => {
+  const pendingConfirmations = useSelector(getMemoizedUnapprovedConfirmations);
+
+  const pendingConfirmation =
+    pendingConfirmations?.find(
+      (confirmation) => confirmation.id === confirmationId,
+    ) ?? pendingConfirmations[0];
+
+  const [isAlertsModalVisible, setIsAlertsModalVisible] = useState(false);
   const alertOwnerId = pendingConfirmation?.id;
   useTemplateConfirmationAlerts(pendingConfirmation);
   const { hasAlerts } = useAlerts(alertOwnerId);
 
   const showAlertsModal = useCallback(() => {
-    setAlertsModalVisible(true);
-  }, [setAlertsModalVisible]);
+    setIsAlertsModalVisible(true);
+  }, [setIsAlertsModalVisible]);
 
   const hideAlertModal = useCallback(() => {
-    setAlertsModalVisible(false);
-  }, [setAlertsModalVisible]);
+    setIsAlertsModalVisible(false);
+  }, [setIsAlertsModalVisible]);
 
   const onFinalSubmit = useCallback(() => {
     hideAlertModal();

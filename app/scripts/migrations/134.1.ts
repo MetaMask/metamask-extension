@@ -231,11 +231,6 @@ function transformState(
 
   const accountTokens = allTokensForChain[selectedAccountAddress];
   if (!Array.isArray(accountTokens)) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Migration ${version}: allTokens["${currentChainId}"]["${selectedAccountAddress}"] is not an array; skipping migration.`,
-      ),
-    );
     return state;
   }
 

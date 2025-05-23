@@ -516,6 +516,20 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setSplashPageAcknowledgedForAccount', () => {
+    it('adds the account to upgradeSplashPageAcknowledgedForAccounts', async () => {
+      await withController(({ controller }) => {
+        const mockAccount = '0x123';
+
+        controller.setSplashPageAcknowledgedForAccount(mockAccount);
+
+        expect(
+          controller.state.upgradeSplashPageAcknowledgedForAccounts,
+        ).toStrictEqual([mockAccount]);
+      });
+    });
+  });
+
   describe('setTermsOfUseLastAgreed', () => {
     it('set the termsOfUseLastAgreed timestamp', async () => {
       await withController(({ controller }) => {
@@ -660,6 +674,8 @@ async function withController<ReturnValue>(
   );
   controllerMessenger.registerActionHandler(
     'ApprovalController:addRequest',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     addRequestMock || jest.fn().mockResolvedValue(undefined),
   );
 

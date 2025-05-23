@@ -1,10 +1,5 @@
 import { Suite } from 'mocha';
-import {
-  multipleGanacheOptions,
-  PRIVATE_KEY_TWO,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../helpers';
+import { PRIVATE_KEY_TWO, WINDOW_TITLES, withFixtures } from '../../helpers';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/account-list-page';
@@ -16,13 +11,14 @@ import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionWithSnapAccount } from '../../page-objects/flows/send-transaction.flow';
+import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 describe('Snap Account Transfers', function (this: Suite) {
   it('can import a private key and transfer 1 ETH (sync flow)', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        localNodeOptions: multipleGanacheOptions,
+        testSpecificMock: mockSimpleKeyringSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -63,7 +59,7 @@ describe('Snap Account Transfers', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        localNodeOptions: multipleGanacheOptions,
+        testSpecificMock: mockSimpleKeyringSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -105,7 +101,7 @@ describe('Snap Account Transfers', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        localNodeOptions: multipleGanacheOptions,
+        testSpecificMock: mockSimpleKeyringSnap,
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: ['Request rejected by user or snap.'],
       },

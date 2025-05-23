@@ -12,7 +12,6 @@ import {
   getPreferences,
   getTheme,
   getIsTestnet,
-  getShouldShowSeedPhraseReminder,
   isCurrentProviderCustom,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getUnapprovedConfirmations,
@@ -51,6 +50,7 @@ import { getSendStage } from '../../ducks/send';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { selectSwitchedNetworkNeverShowMessage } from '../../components/app/toast-master/selectors';
+import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
 import Routes from './routes.component';
 
 function mapStateToProps(state) {
@@ -73,6 +73,9 @@ function mapStateToProps(state) {
   const oldestPendingApproval = oldestPendingConfirmationSelector(state);
   const pendingApprovals = getPendingApprovals(state);
   const transactionsMetadata = getUnapprovedTransactions(state);
+
+  const shouldShowSeedPhraseReminder =
+    account && getShouldShowSeedPhraseReminder(state, account);
 
   return {
     alertOpen,
@@ -97,7 +100,7 @@ function mapStateToProps(state) {
     isTestNet: getIsTestnet(state),
     showExtensionInFullSizeView: getShowExtensionInFullSizeView(state),
     currentChainId: getCurrentChainId(state),
-    shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
+    shouldShowSeedPhraseReminder,
     forgottenPassword: state.metamask.forgottenPassword,
     isCurrentProviderCustom: isCurrentProviderCustom(state),
     completedOnboarding,
@@ -146,7 +149,10 @@ function mapDispatchToProps(dispatch) {
     clearSwitchedNetworkDetails: () => dispatch(clearSwitchedNetworkDetails()),
     automaticallySwitchNetwork: (networkId, selectedTabOrigin) =>
       dispatch(automaticallySwitchNetwork(networkId, selectedTabOrigin)),
-    clearEditedNetwork: () => dispatch(setEditedNetwork()),
+    networkMenuClose: () => {
+      dispatch(toggleNetworkMenu());
+      dispatch(setEditedNetwork());
+    },
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     hideShowKeyringSnapRemovalResultModal: () =>
       dispatch(hideKeyringRemovalResultModal()),

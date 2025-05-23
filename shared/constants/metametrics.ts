@@ -91,7 +91,7 @@ export type MetaMetricsEventPayload = {
   /**
    * The category to associate the event to.
    */
-  category: string;
+  category?: string;
   /**
    * The action ID to deduplicate event requests from the UI.
    */
@@ -205,7 +205,7 @@ export type MetaMetricsEventFragment = {
   /**
    * The event category to use for both the success and failure events.
    */
-  category: string;
+  category?: string;
   /**
    * Should this fragment be persisted in state and progressed after the
    * extension is locked and unlocked.
@@ -304,7 +304,7 @@ export type SegmentEventPayload = {
     params?: Record<string, string>;
     legacy_event?: boolean;
     locale: string;
-    chain_id: string;
+    chain_id: string | null;
     environment_type?: string;
     revenue?: number;
     value?: number;
@@ -614,6 +614,10 @@ export enum MetaMetricsUserTrait {
    * Identified when the user signs in
    */
   ProfileId = 'profile_id',
+  /**
+   * Identified when the user adds or removes configured chains (evm or non-evm)
+   */
+  ChainIdList = 'chain_id_list',
 }
 
 /**
@@ -645,6 +649,7 @@ export enum MetaMetricsEventName {
   AccountAdded = 'Account Added',
   AccountAddSelected = 'Account Add Selected',
   AccountAddFailed = 'Account Add Failed',
+  AccountImportFailed = 'Account Import Failed',
   AccountDetailsOpened = 'Account Details Opened',
   AccountPasswordCreated = 'Account Password Created',
   AccountReset = 'Account Reset',
@@ -666,6 +671,7 @@ export enum MetaMetricsEventName {
   BannerSelect = 'Banner Select',
   BannerNavigated = 'Banner Navigated',
   BridgeLinkClicked = 'Bridge Link Clicked',
+  SwapLinkClicked = 'Swap Link Clicked',
   BitcoinSupportToggled = 'Bitcoin Support Toggled',
   BitcoinTestnetSupportToggled = 'Bitcoin Testnet Support Toggled',
   CurrentCurrency = 'Current Currency',
@@ -687,6 +693,8 @@ export enum MetaMetricsEventName {
   EncryptionPublicKeyRequested = 'Encryption Requested',
   ErrorOccured = 'Error occured',
   ExternalLinkClicked = 'External Link Clicked',
+  ImportSecretRecoveryPhraseClicked = 'Import Secret Recovery Phrase Clicked',
+  ImportSecretRecoveryPhraseCompleted = 'Import Secret Recovery Phrase Completed',
   KeyExportSelected = 'Key Export Selected',
   KeyExportRequested = 'Key Export Requested',
   KeyExportFailed = 'Key Export Failed',
@@ -751,6 +759,9 @@ export enum MetaMetricsEventName {
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
   QuoteError = 'Quote Error',
+  RpcServiceDegraded = 'RPC Service Degraded',
+  RpcServiceUnavailable = 'RPC Service Unavailable',
+  SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
   SettingsUpdated = 'Settings Updated',
   SignatureApproved = 'Signature Approved',
   SignatureFailed = 'Signature Failed',
@@ -827,6 +838,8 @@ export enum MetaMetricsEventName {
   TokenDetailsOpened = 'Token Details Opened',
   NftScreenOpened = 'NFT Screen Opened',
   NftDetailsOpened = 'NFT Details Opened',
+  DeFiScreenOpened = 'DeFi Screen Opened',
+  DeFiDetailsOpened = 'DeFi Details Opened',
   ActivityScreenOpened = 'Activity Screen Opened',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
@@ -843,7 +856,9 @@ export enum MetaMetricsEventName {
   TransactionFinalized = 'Transaction Finalized',
   ConfirmationQueued = 'Confirmation Queued',
   ExitedSwaps = 'Exited Swaps',
+  MakeAnotherSwap = 'Make Another Swap',
   SwapError = 'Swap Error',
+  SwapFailed = 'Swap Failed',
   SnapInstallStarted = 'Snap Install Started',
   SnapInstallFailed = 'Snap Install Failed',
   SnapInstallRejected = 'Snap Install Rejected',
@@ -894,7 +909,8 @@ export enum MetaMetricsEventName {
   // Cross Chain Swaps
   ActionCompleted = 'Action Completed',
   ActionFailed = 'Action Failed',
-  ActionOpened = 'Action Opened',
+  ActionButtonClicked = 'Action Button Clicked',
+  ActionPageViewed = 'Action Page Viewed',
   ActionSubmitted = 'Action Submitted',
   AllQuotesOpened = 'All Quotes Opened',
   AllQuotesSorted = 'All Quotes Sorted',
@@ -904,6 +920,7 @@ export enum MetaMetricsEventName {
   QuoteSelected = 'Quote Selected',
   CrossChainSwapsQuotesReceived = 'Cross-chain Quotes Received',
   CrossChainSwapsQuotesRequested = 'Cross-chain Quotes Requested',
+  Wallet5792Called = 'EIP-5792 API Called',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -917,7 +934,6 @@ export enum MetaMetricsEventAccountType {
 
 export enum QueueType {
   NavigationHeader = 'navigation_header',
-  QueueController = 'queue_controller',
 }
 
 export enum MetaMetricsEventAccountImportType {
@@ -936,9 +952,11 @@ export enum MetaMetricsEventCategory {
   // The TypeScript ESLint rule is incorrectly marking this line.
   /* eslint-disable-next-line @typescript-eslint/no-shadow */
   Error = 'Error',
+  DeFi = 'DeFi',
   Footer = 'Footer',
   Home = 'Home',
   InpageProvider = 'inpage_provider',
+  MultichainApi = 'multichain_api',
   Keys = 'Keys',
   Messages = 'Messages',
   Navigation = 'Navigation',
@@ -951,7 +969,7 @@ export enum MetaMetricsEventCategory {
   // eslint-disable-next-line @typescript-eslint/no-shadow
   Permissions = 'Permissions',
   Phishing = 'Phishing',
-  ProfileSyncing = 'Profile Syncing',
+  BackupAndSync = 'Backup And Sync',
   PushNotifications = 'Notifications',
   Retention = 'Retention',
   Send = 'Send',
@@ -1010,6 +1028,11 @@ export enum MetaMetricsTokenEventSource {
 export enum MetaMetricsTransactionEventSource {
   Dapp = 'dapp',
   User = 'user',
+}
+
+export enum MetaMetricsRequestedThrough {
+  EthereumProvider = 'ethereum_provider',
+  MultichainApi = 'multichain_api',
 }
 
 export enum MetaMetricsEventLocation {

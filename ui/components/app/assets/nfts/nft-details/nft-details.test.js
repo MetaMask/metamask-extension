@@ -121,6 +121,7 @@ describe('NFT Details', () => {
     await expect(removeAndIgnoreNft).toHaveBeenCalledWith(
       nfts[5].address,
       nfts[5].tokenId,
+      'testNetworkConfigurationId',
     );
     expect(setRemoveNftMessage).toHaveBeenCalledWith('success');
     expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
@@ -145,6 +146,7 @@ describe('NFT Details', () => {
     await expect(removeAndIgnoreNft).toHaveBeenCalledWith(
       nfts[5].address,
       nfts[5].tokenId,
+      'testNetworkConfigurationId',
     );
     expect(setRemoveNftMessage).toHaveBeenCalledWith('error');
     expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
@@ -180,7 +182,7 @@ describe('NFT Details', () => {
     await waitFor(() => {
       expect(startNewDraftTransaction).toHaveBeenCalledWith({
         type: AssetType.NFT,
-        details: { ...nfts[5], tokenId: 1 },
+        details: { ...nfts[5], tokenId: '1' },
       });
 
       expect(mockHistoryPush).toHaveBeenCalledWith(SEND_ROUTE);
@@ -217,6 +219,37 @@ describe('NFT Details', () => {
     const nftSendButton = queryByTestId('nft-send-button');
 
     expect(nftSendButton).not.toBeDisabled();
+  });
+
+  it('should render a single image if there is an array of images in an NFT', async () => {
+    const images = [
+      'ipfs://bafybeidgklvljyifilhtrxzh77brgnhcy6s2wxoxqc2l73zr2nxlwuxfcy',
+      'ipfs://bafybeic26kitpujb3q5h5w7yovmvgmtxl3y4ldsb2pfgual5jq62emsmxq',
+    ];
+    const mockNft = {
+      ...nfts[1],
+      image: images,
+    };
+
+    getAssetImageURL.mockResolvedValue(
+      'https://bafybeidgklvljyifilhtrxzh77brgnhcy6s2wxoxqc2l73zr2nxlwuxfcy.ipfs.dweb.link',
+    );
+
+    const { findByTestId } = renderWithProvider(
+      <NftDetails nft={mockNft} />,
+      mockStore,
+    );
+
+    // Assert - Component found
+    const image = await findByTestId('nft-image');
+    expect(image).toHaveAttribute(
+      'src',
+      'https://bafybeidgklvljyifilhtrxzh77brgnhcy6s2wxoxqc2l73zr2nxlwuxfcy.ipfs.dweb.link',
+    );
+
+    // Assert - modified correct image
+    const getAssetImageCall1stParam = getAssetImageURL.mock.calls[0][0];
+    expect(getAssetImageCall1stParam).toBe(images[0]);
   });
 
   describe(`Alternative Networks' OpenSea Links`, () => {

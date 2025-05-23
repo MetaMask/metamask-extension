@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import { useSelector } from 'react-redux';
+import { BRIDGE_DEFAULT_SLIPPAGE } from '@metamask/bridge-controller';
 import {
   getIsBridgeTx,
   getQuoteRequest,
@@ -7,14 +8,18 @@ import {
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { getCurrentKeyring } from '../../../selectors';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
-import { BRIDGE_DEFAULT_SLIPPAGE } from '../../../../shared/constants/bridge';
+import { getMultichainCurrentChainId } from '../../../selectors/multichain';
+import { type SmartTransactionsState } from '../../../../shared/modules/selectors/smart-transactions';
 import { ActionType } from './types';
 import { useConvertedUsdAmounts } from './useConvertedUsdAmounts';
 
 export const useRequestMetadataProperties = () => {
   const { slippage } = useSelector(getQuoteRequest);
   const isBridgeTx = useSelector(getIsBridgeTx);
-  const stx_enabled = useSelector(getIsSmartTransaction);
+  const currentChainId = useSelector(getMultichainCurrentChainId);
+  const stx_enabled = useSelector((state: SmartTransactionsState) => {
+    return getIsSmartTransaction(state, currentChainId);
+  });
   const { usd_amount_source } = useConvertedUsdAmounts();
 
   const keyring = useSelector(getCurrentKeyring);

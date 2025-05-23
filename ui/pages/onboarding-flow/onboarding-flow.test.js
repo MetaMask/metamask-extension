@@ -32,24 +32,34 @@ jest.mock('../../store/actions', () => ({
   unlockAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   createNewVaultAndRestore: jest.fn(),
   setOnboardingDate: jest.fn(() => ({ type: 'TEST_DISPATCH' })),
+  hideLoadingIndication: jest.fn(() => ({ type: 'HIDE_LOADING_INDICATION' })),
 }));
 
 describe('Onboarding Flow', () => {
   const mockState = {
     metamask: {
       internalAccounts: {
-        accounts: {},
+        accounts: {
+          accountId: {
+            address: '0x0000000000000000000000000000000000000000',
+            metadata: {
+              keyring: 'HD Key Tree',
+            },
+          },
+        },
         selectedAccount: '',
       },
+      keyrings: [
+        {
+          type: 'HD Key Tree',
+          accounts: ['0x0000000000000000000000000000000000000000'],
+        },
+      ],
       ...mockNetworkState(
         { chainId: CHAIN_IDS.GOERLI },
         { chainId: CHAIN_IDS.MAINNET },
         { chainId: CHAIN_IDS.LINEA_MAINNET },
       ),
-
-      incomingTransactionsPreferences: {
-        [CHAIN_IDS.MAINNET]: true,
-      },
       preferences: {
         petnamesEnabled: true,
       },
@@ -71,6 +81,23 @@ describe('Onboarding Flow', () => {
       metamask: {
         completedOnboarding: true,
         seedPhraseBackedUp: true,
+        internalAccounts: {
+          accounts: {
+            accountId: {
+              address: '0x0000000000000000000000000000000000000000',
+              metadata: {
+                keyring: 'HD Key Tree',
+              },
+            },
+          },
+          selectedAccount: 'accountId',
+        },
+        keyrings: [
+          {
+            type: 'HD Key Tree',
+            accounts: ['0x0000000000000000000000000000000000000000'],
+          },
+        ],
       },
     };
 

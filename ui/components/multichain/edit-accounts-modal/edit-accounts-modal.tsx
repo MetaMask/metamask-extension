@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { CaipAccountId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Modal,
@@ -17,7 +18,7 @@ import {
   IconName,
   Icon,
 } from '../../component-library';
-import { AccountListItem, CreateEthAccount } from '..';
+import { AccountListItem } from '..';
 
 import {
   JustifyContent,
@@ -29,20 +30,29 @@ import {
   AlignItems,
   BlockSize,
 } from '../../../helpers/constants/design-system';
-import { MergedInternalAccount } from '../../../selectors/selectors.types';
+import { MergedInternalAccountWithCaipAccountId } from '../../../selectors/selectors.types';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { WalletClientType } from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import { EditAccountAddAccountForm } from './add-account';
+import { EditAccountModalAddNewAccountOption } from './add-new-account-option';
 
 type EditAccountsModalProps = {
-  accounts: MergedInternalAccount[];
-  defaultSelectedAccountAddresses: string[];
+  accounts: MergedInternalAccountWithCaipAccountId[];
+  defaultSelectedAccountAddresses: CaipAccountId[];
   onClose: () => void;
-  onSubmit: (addresses: string[]) => void;
+  onSubmit: (addresses: CaipAccountId[]) => void;
 };
+
+enum EditAccountModalStage {
+  AccountList = 'account-list',
+  AddNewAccount = 'add-new-account',
+  EditAccounts = 'edit-accounts',
+}
 
 export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   accounts,
@@ -52,12 +62,15 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-
-  const [showAddNewAccounts, setShowAddNewAccounts] = useState(false);
+  const [modalStage, setModalStage] = useState<EditAccountModalStage>(
+    EditAccountModalStage.AccountList,
+  );
   const [selectedAccountAddresses, setSelectedAccountAddresses] = useState(
     defaultSelectedAccountAddresses,
   );
-
+  const [accountType, setAccountType] = useState<WalletClientType | 'EVM'>(
+    'EVM',
+  );
   useEffect(() => {
     setSelectedAccountAddresses(defaultSelectedAccountAddresses);
   }, [
@@ -66,7 +79,9 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   ]);
 
   const selectAll = () => {
-    const allNetworksAccountAddresses = accounts.map(({ address }) => address);
+    const allNetworksAccountAddresses = accounts.map(
+      ({ caipAccountId }) => caipAccountId,
+    );
     setSelectedAccountAddresses(allNetworksAccountAddresses);
   };
 
@@ -74,13 +89,19 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
     setSelectedAccountAddresses([]);
   };
 
-  const handleAccountClick = (address: string) => {
-    if (selectedAccountAddresses.includes(address)) {
-      setSelectedAccountAddresses(
-        selectedAccountAddresses.filter((_address) => _address !== address),
-      );
+  const handleAccountClick = (caipAccountId: CaipAccountId) => {
+    const updatedSelectedAccountAddresses = selectedAccountAddresses.filter(
+      (selectedAccountId) => {
+        return !isEqualCaseInsensitive(selectedAccountId, caipAccountId);
+      },
+    );
+
+    if (
+      updatedSelectedAccountAddresses.length === selectedAccountAddresses.length
+    ) {
+      setSelectedAccountAddresses([...selectedAccountAddresses, caipAccountId]);
     } else {
-      setSelectedAccountAddresses([...selectedAccountAddresses, address]);
+      setSelectedAccountAddresses(updatedSelectedAccountAddresses);
     }
   };
 
@@ -100,20 +121,14 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
       className="edit-accounts-modal"
     >
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader onClose={onClose}>{t('editAccounts')}</ModalHeader>
-        <ModalBody
-          paddingLeft={0}
-          paddingRight={0}
-          className="edit-accounts-modal__body"
-        >
-          {showAddNewAccounts ? (
-            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-              <CreateEthAccount
-                onActionComplete={() => setShowAddNewAccounts(false)}
-              />
-            </Box>
-          ) : (
+      {modalStage === EditAccountModalStage.AccountList && (
+        <ModalContent>
+          <ModalHeader onClose={onClose}>{t('editAccounts')}</ModalHeader>
+          <ModalBody
+            paddingLeft={0}
+            paddingRight={0}
+            className="edit-accounts-modal__body"
+          >
             <>
               <Box
                 padding={4}
@@ -129,24 +144,30 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                   }
                   isIndeterminate={isIndeterminate}
                 />
-                <ButtonLink onClick={() => setShowAddNewAccounts(true)}>
+                <ButtonLink
+                  onClick={() =>
+                    setModalStage(EditAccountModalStage.AddNewAccount)
+                  }
+                  data-testid="add-new-account-button"
+                >
                   {t('newAccount')}
                 </ButtonLink>
               </Box>
 
               {accounts.map((account) => (
                 <AccountListItem
-                  onClick={() => handleAccountClick(account.address)}
+                  onClick={() => handleAccountClick(account.caipAccountId)}
                   account={account}
-                  key={account.address}
+                  key={account.caipAccountId}
                   isPinned={Boolean(account.pinned)}
+                  showConnectedStatus={false}
                   startAccessory={
                     <Checkbox
                       isChecked={selectedAccountAddresses.some(
                         (selectedAccountAddress) =>
                           isEqualCaseInsensitive(
                             selectedAccountAddress,
-                            account.address,
+                            account.caipAccountId,
                           ),
                       )}
                     />
@@ -155,80 +176,98 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                 />
               ))}
             </>
-          )}
-        </ModalBody>
-
-        <ModalFooter>
-          {selectedAccountAddresses.length === 0 ? (
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              gap={4}
-              width={BlockSize.Full}
-              alignItems={AlignItems.center}
-            >
+          </ModalBody>
+          <ModalFooter>
+            {selectedAccountAddresses.length === 0 ? (
               <Box
                 display={Display.Flex}
-                gap={1}
+                flexDirection={FlexDirection.Column}
+                gap={4}
+                width={BlockSize.Full}
                 alignItems={AlignItems.center}
               >
-                <Icon
-                  name={IconName.Danger}
-                  size={IconSize.Xs}
-                  color={IconColor.errorDefault}
-                />
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={TextColor.errorDefault}
+                <Box
+                  display={Display.Flex}
+                  gap={1}
+                  alignItems={AlignItems.center}
                 >
-                  {t('disconnectMessage')}
-                </Text>
+                  <Icon
+                    name={IconName.Danger}
+                    size={IconSize.Xs}
+                    color={IconColor.errorDefault}
+                  />
+                  <Text
+                    variant={TextVariant.bodySm}
+                    color={TextColor.errorDefault}
+                  >
+                    {t('disconnectMessage')}
+                  </Text>
+                </Box>
+                <ButtonPrimary
+                  data-testid="disconnect-accounts-button"
+                  onClick={() => {
+                    onSubmit([]);
+                    onClose();
+                  }}
+                  size={ButtonPrimarySize.Lg}
+                  block
+                  danger
+                >
+                  {t('disconnect')}
+                </ButtonPrimary>
               </Box>
+            ) : (
               <ButtonPrimary
-                data-testid="disconnect-accounts-button"
+                data-testid="connect-more-accounts-button"
                 onClick={() => {
-                  onSubmit([]);
+                  const addedAccounts = selectedAccountAddresses.filter(
+                    (address) => !defaultSet.has(address),
+                  );
+                  const removedAccounts =
+                    defaultSelectedAccountAddresses.filter(
+                      (address) => !selectedSet.has(address),
+                    );
+
+                  onSubmit(selectedAccountAddresses);
+                  trackEvent({
+                    category: MetaMetricsEventCategory.Permissions,
+                    event: MetaMetricsEventName.UpdatePermissionedAccounts,
+                    properties: {
+                      addedAccounts: addedAccounts.length,
+                      removedAccounts: removedAccounts.length,
+                      location: 'Edit Accounts Modal',
+                    },
+                  });
+
                   onClose();
                 }}
                 size={ButtonPrimarySize.Lg}
                 block
-                danger
               >
-                {t('disconnect')}
+                {t('update')}
               </ButtonPrimary>
-            </Box>
-          ) : (
-            <ButtonPrimary
-              data-testid="connect-more-accounts-button"
-              onClick={() => {
-                const addedAccounts = selectedAccountAddresses.filter(
-                  (address) => !defaultSet.has(address),
-                );
-                const removedAccounts = defaultSelectedAccountAddresses.filter(
-                  (address) => !selectedSet.has(address),
-                );
-
-                onSubmit(selectedAccountAddresses);
-                trackEvent({
-                  category: MetaMetricsEventCategory.Permissions,
-                  event: MetaMetricsEventName.UpdatePermissionedAccounts,
-                  properties: {
-                    addedAccounts: addedAccounts.length,
-                    removedAccounts: removedAccounts.length,
-                    location: 'Edit Accounts Modal',
-                  },
-                });
-
-                onClose();
-              }}
-              size={ButtonPrimarySize.Lg}
-              block
-            >
-              {t('update')}
-            </ButtonPrimary>
-          )}
-        </ModalFooter>
-      </ModalContent>
+            )}
+          </ModalFooter>
+        </ModalContent>
+      )}
+      {modalStage === EditAccountModalStage.AddNewAccount && (
+        <EditAccountModalAddNewAccountOption
+          setAccountTypeToAdd={(accountTypeToAdd: WalletClientType | 'EVM') => {
+            setAccountType(accountTypeToAdd);
+            setModalStage(EditAccountModalStage.EditAccounts);
+          }}
+        />
+      )}
+      {modalStage === EditAccountModalStage.EditAccounts && (
+        <EditAccountAddAccountForm
+          onBack={() => setModalStage(EditAccountModalStage.AddNewAccount)}
+          onClose={() => setModalStage(EditAccountModalStage.AccountList)}
+          onActionComplete={async () => {
+            setModalStage(EditAccountModalStage.AccountList);
+          }}
+          accountType={accountType}
+        />
+      )}
     </Modal>
   );
 };

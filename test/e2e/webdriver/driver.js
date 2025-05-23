@@ -10,7 +10,7 @@ const {
 } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
-const { debounce } = require('lodash');
+const lodash = require('lodash');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
 const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 const { WindowHandles } = require('../background-socket/window-handles');
@@ -492,9 +492,28 @@ class Driver {
   /**
    * Quits the browser session, closing all windows and tabs.
    *
+   * This was previously implemented as just `await this.driver.quit()`, but on Windows,
+   * that was causing Google Chrome for Testing to not close, and sit open indefinitely
+   * taking CPU load. It is also possible that this was causing some cascading errors on CI.
+   *
    * @returns {Promise} promise resolving after quitting
    */
   async quit() {
+    if (this.browser === 'chrome') {
+      try {
+        const handles = await this.driver.getAllWindowHandles();
+
+        for (const handle of handles) {
+          await this.driver.switchTo().window(handle);
+          await this.driver.close();
+        }
+      } catch (e) {
+        console.info(
+          'Problem encountered closing Chrome windows/tabs, but continuing anyway',
+        );
+      }
+    }
+
     await this.driver.quit();
   }
 
@@ -545,10 +564,19 @@ class Driver {
    * Finds a clickable element on the page using the given locator.
    *
    * @param {string | object} rawLocator - Element locator
-   * @param {number} timeout - Timeout in milliseconds
+   * @param {object} guards
+   * @param {number} [guards.waitAtLeastGuard] - Minimum milliseconds to wait before passing
+   * @param {number} [guards.timeout]  - Timeout in milliseconds
    * @returns {Promise<WebElement>} A promise that resolves to the found clickable element.
    */
-  async findClickableElement(rawLocator, timeout = this.timeout) {
+  async findClickableElement(
+    rawLocator,
+    { waitAtLeastGuard = 0, timeout = this.timeout } = {},
+  ) {
+    assert(timeout > waitAtLeastGuard);
+    if (waitAtLeastGuard > 0) {
+      await this.delay(waitAtLeastGuard);
+    }
     const element = await this.findElement(rawLocator, timeout);
     await Promise.all([
       this.driver.wait(until.elementIsVisible(element), timeout),
@@ -671,7 +699,7 @@ class Driver {
    * @param {string} testTitle - The title of the test
    */
   #getArtifactDir(testTitle) {
-    return `./test-artifacts/${this.browser}/${testTitle}`;
+    return `./test-artifacts/${this.browser}/${sanitizeTestTitle(testTitle)}`;
   }
 
   /**
@@ -803,6 +831,26 @@ class Driver {
       'arguments[0].scrollIntoView(true)',
       element,
     );
+  }
+
+  /**
+   * Finds the element, scrolls the page until the element is in view, and clicks it.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @returns {Promise<void>} Promise resolving after scrolling and clicking
+   */
+  async findScrollToAndClickElement(rawLocator) {
+    try {
+      const element = await this.findElement(rawLocator);
+      await this.scrollToElement(element);
+      await this.clickElement(rawLocator);
+    } catch (error) {
+      console.error(
+        `Error finding, scrolling to, or clicking element with selector: ${rawLocator}`,
+        error,
+      );
+      throw error;
+    }
   }
 
   /**
@@ -1258,6 +1306,46 @@ class Driver {
     }
   }
 
+  /**
+   * Switches to a window by its title without using the background socket.
+   * To be used in specs that run against production builds.
+   *
+   * @param {string} title - The target window title to switch to
+   * @returns {Promise<void>}
+   * @throws {Error} Will throw an error if the target window is not found
+   */
+  async switchToWindowByTitleWithoutSocket(title) {
+    const windowHandles = await this.driver.getAllWindowHandles();
+    let targetWindowFound = false;
+
+    // Iterate through each window handle
+    for (const handle of windowHandles) {
+      await this.driver.switchTo().window(handle);
+      let currentTitle = await this.driver.getTitle();
+
+      // Wait 25 x 200ms = 5 seconds for the title to match the target title
+      for (let i = 0; i < 25; i++) {
+        if (currentTitle === title) {
+          targetWindowFound = true;
+          console.log(`Switched to ${title} window`);
+          break;
+        }
+        await this.driver.sleep(200);
+        currentTitle = await this.driver.getTitle();
+      }
+
+      // If the target window is found, break out of the outer loop
+      if (targetWindowFound) {
+        break;
+      }
+    }
+
+    // If target window is not found, throw an error
+    if (!targetWindowFound) {
+      throw new Error(`${title} window not found`);
+    }
+  }
+
   // Error handling
 
   async verboseReportOnFailure(testTitle, error) {
@@ -1369,7 +1457,7 @@ class Driver {
     const cdpConnection = await this.driver.createCDPConnection('page');
 
     // Flush the event processing stack 50ms after the last event is added
-    const debounceEventProcessingStack = debounce(
+    const debounceEventProcessingStack = lodash.debounce(
       this.#flushEventProcessingStack.bind(this),
       50,
     );
@@ -1493,6 +1581,20 @@ function collectMetrics() {
     ...results,
     ...window.stateHooks.getCustomTraces(),
   };
+}
+
+/**
+ * @param {string} testTitle - The title of the test
+ */
+function sanitizeTestTitle(testTitle) {
+  return testTitle
+    .toLowerCase()
+    .replace(/[<>:"/\\|?*\r\n]/gu, '') // Remove invalid characters
+    .trim()
+    .replace(/\s+/gu, '-') // Replace whitespace with dashes
+    .replace(/[^a-z0-9-]+/gu, '-') // Replace non-alphanumerics (excluding dash) with dash
+    .replace(/--+/gu, '-') // Collapse multiple dashes
+    .replace(/^-+|-+$/gu, ''); // Trim leading/trailing dashes
 }
 
 module.exports = { Driver, PAGES };

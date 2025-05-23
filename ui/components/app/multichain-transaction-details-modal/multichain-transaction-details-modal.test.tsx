@@ -10,7 +10,12 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MOCK_ACCOUNT_SOLANA_MAINNET } from '../../../../test/data/mock-accounts';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import {
+  MULTICHAIN_PROVIDER_CONFIGS,
+  MultichainNetworks,
+  MultichainProviderConfig,
+  SOLANA_BLOCK_EXPLORER_URL,
+} from '../../../../shared/constants/multichain/networks';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { MultichainTransactionDetailsModal } from './multichain-transaction-details-modal';
@@ -49,7 +54,16 @@ const mockTransaction = {
       asset: {
         fungible: true as const,
         type: 'native' as CaipAssetType,
-        amount: '1.2',
+        amount: '1.1',
+        unit: 'BTC',
+      },
+    },
+    {
+      address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+      asset: {
+        fungible: true as const,
+        type: 'native' as CaipAssetType,
+        amount: '0.1',
         unit: 'BTC',
       },
     },
@@ -114,6 +128,7 @@ const mockProps = {
   transaction: mockTransaction,
   onClose: jest.fn(),
   userAddress: MOCK_ACCOUNT_SOLANA_MAINNET.address,
+  networkConfig: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
 };
 
 describe('MultichainTransactionDetailsModal', () => {
@@ -133,6 +148,7 @@ describe('MultichainTransactionDetailsModal', () => {
       transaction: Transaction;
       onClose: jest.Mock;
       userAddress: string;
+      networkConfig: MultichainProviderConfig;
     } = mockProps,
   ) => {
     const store = configureStore(mockState.metamask);
@@ -171,6 +187,8 @@ describe('MultichainTransactionDetailsModal', () => {
     renderComponent();
 
     const feeElement =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       screen.queryByTestId('transaction-network-fee') ||
       screen.queryByTestId('transaction-base-fee');
 
@@ -195,20 +213,23 @@ describe('MultichainTransactionDetailsModal', () => {
   });
 
   // @ts-expect-error This is missing from the Mocha type definitions
-  it.each(['confirmed', 'pending', 'failed'] as const)(
+  it.each([
+    [TransactionStatus.Confirmed, 'Confirmed'],
+    [TransactionStatus.Unconfirmed, 'Pending'],
+    [TransactionStatus.Failed, 'Failed'],
+    [TransactionStatus.Submitted, 'Submitted'],
+  ])(
     'handles different transaction status: %s',
-    (status: string) => {
+    (status: TransactionStatus, expectedLabel: string) => {
       const propsWithStatus = {
         ...mockProps,
         transaction: {
           ...mockTransaction,
-          status: status as TransactionStatus,
+          status,
         },
       };
       renderComponent(propsWithStatus);
-      expect(
-        screen.getByText(status.charAt(0).toUpperCase() + status.slice(1)),
-      ).toBeInTheDocument();
+      expect(screen.getByText(expectedLabel)).toBeInTheDocument();
     },
   );
 
@@ -218,7 +239,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN;
 
     expect(getTransactionUrl(txId, chainId)).toBe(
-      `https://blockstream.info/tx/${txId}`,
+      `https://mempool.space/tx/${txId}`,
     );
   });
 
@@ -228,7 +249,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN_TESTNET;
 
     expect(getTransactionUrl(txId, chainId)).toBe(
-      `https://blockstream.info/testnet/tx/${txId}`,
+      `https://mempool.space/testnet/tx/${txId}`,
     );
   });
 
@@ -238,7 +259,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.SOLANA;
 
     expect(getTransactionUrl(txId, chainId)).toBe(
-      `https://explorer.solana.com/tx/${txId}`,
+      `${SOLANA_BLOCK_EXPLORER_URL}/tx/${txId}`,
     );
   });
 
@@ -248,7 +269,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.SOLANA_DEVNET;
 
     expect(getTransactionUrl(txId, chainId)).toBe(
-      `https://explorer.solana.com/tx/${txId}?cluster=devnet`,
+      `${SOLANA_BLOCK_EXPLORER_URL}/tx/${txId}?cluster=devnet`,
     );
   });
 
@@ -257,7 +278,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.SOLANA;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `https://explorer.solana.com/address/${address}`,
+      `${SOLANA_BLOCK_EXPLORER_URL}/account/${address}`,
     );
   });
 
@@ -266,7 +287,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.SOLANA_DEVNET;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `https://explorer.solana.com/address/${address}?cluster=devnet`,
+      `${SOLANA_BLOCK_EXPLORER_URL}/account/${address}?cluster=devnet`,
     );
   });
 
@@ -275,7 +296,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `https://blockstream.info/address/${address}`,
+      `https://mempool.space/address/${address}`,
     );
   });
 
@@ -284,7 +305,7 @@ describe('MultichainTransactionDetailsModal', () => {
     const chainId = MultichainNetworks.BITCOIN_TESTNET;
 
     expect(getAddressUrl(address, chainId)).toBe(
-      `https://blockstream.info/testnet/address/${address}`,
+      `https://mempool.space/testnet/address/${address}`,
     );
   });
 
@@ -294,23 +315,28 @@ describe('MultichainTransactionDetailsModal', () => {
       transaction: mockSwapTransaction,
       onClose: jest.fn(),
       userAddress,
+      networkConfig: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
     };
 
     renderComponent(swapProps);
 
     expect(screen.getByText('Swap')).toBeInTheDocument();
     expect(screen.getByTestId('transaction-amount')).toHaveTextContent(
-      '2.5 SOL',
+      '-2.5 SOL',
     );
 
     const addressStart = userAddress.substring(0, 6);
     const addressElements = screen.getAllByText((_content, element) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       return element?.textContent?.includes(addressStart) || false;
     });
 
     expect(addressElements.length).toBeGreaterThan(0);
 
     const feeElement =
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       screen.queryByTestId('transaction-network-fee') ||
       screen.queryByTestId('transaction-base-fee');
 

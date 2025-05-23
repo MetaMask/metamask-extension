@@ -45,7 +45,7 @@ describe('Edit Accounts Permissions', function () {
           accountName: accountLabel2,
         });
         const homepage = new Homepage(driver);
-        await homepage.check_expectedBalanceIsDisplayed('0');
+        await homepage.check_expectedBalanceIsDisplayed();
 
         // create third account with custom label
         await homepage.headerNavbar.openAccountMenu();
@@ -54,7 +54,7 @@ describe('Edit Accounts Permissions', function () {
           accountType: ACCOUNT_TYPE.Ethereum,
           accountName: accountLabel3,
         });
-        await homepage.check_expectedBalanceIsDisplayed('0');
+        await homepage.check_expectedBalanceIsDisplayed();
 
         // go to connections permissions page
         await homepage.headerNavbar.openPermissionsPage();

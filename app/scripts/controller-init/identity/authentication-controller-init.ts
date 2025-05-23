@@ -2,6 +2,7 @@ import {
   AuthenticationControllerState,
   Controller as AuthenticationController,
 } from '@metamask/profile-sync-controller/auth';
+import { Platform } from '@metamask/profile-sync-controller/sdk';
 import { ControllerInitFunction } from '../types';
 import { AuthenticationControllerMessenger } from '../messengers/identity';
 
@@ -24,7 +25,7 @@ export const AuthenticationControllerInit: ControllerInitFunction<
       persistedState.AuthenticationController as AuthenticationControllerState,
     metametrics: {
       getMetaMetricsId,
-      agent: 'extension',
+      agent: Platform.EXTENSION,
     },
   });
 

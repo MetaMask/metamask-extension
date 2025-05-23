@@ -17,6 +17,7 @@ import { EditGasFeesRow } from '../edit-gas-fees-row/edit-gas-fees-row';
 import { GasFeesRow } from '../gas-fees-row/gas-fees-row';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
+import { useAutomaticGasFeeTokenSelect } from '../../../../../hooks/useAutomaticGasFeeTokenSelect';
 
 export const GasFeesDetails = ({
   setShowCustomizeGasPopover,
@@ -24,6 +25,7 @@ export const GasFeesDetails = ({
   setShowCustomizeGasPopover: Dispatch<SetStateAction<boolean>>;
 }) => {
   const t = useI18nContext();
+  useAutomaticGasFeeTokenSelect();
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -86,7 +88,7 @@ export const GasFeesDetails = ({
           />
         </>
       )}
-      {supportsEIP1559 && (
+      {supportsEIP1559 && !transactionMeta.selectedGasFeeToken && (
         <ConfirmInfoAlertRow
           alertKey={RowAlertKey.Speed}
           data-testid="gas-fee-details-speed"
@@ -101,7 +103,7 @@ export const GasFeesDetails = ({
           </Box>
         </ConfirmInfoAlertRow>
       )}
-      {showAdvancedDetails && (
+      {showAdvancedDetails && !transactionMeta.selectedGasFeeToken && (
         <GasFeesRow
           data-testid="gas-fee-details-max-fee"
           label={t('maxFee')}

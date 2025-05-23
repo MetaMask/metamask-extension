@@ -1,8 +1,15 @@
 .snap-result {
-  box-shadow: none;
+  border: 1px solid var(--color-border-muted);
+  border-radius: 2px;
+  box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
 
   .page-container__footer {
     width: 100%;
     border-top: 0;
+  }
+
+  &__content {
+    flex: 1 1 auto;
+    overflow-y: auto;
   }
 }

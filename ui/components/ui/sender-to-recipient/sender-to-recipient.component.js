@@ -1,22 +1,20 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import { NameType } from '@metamask/name-controller';
 import classnames from 'classnames';
 import copyToClipboard from 'copy-to-clipboard';
-import { NameType } from '@metamask/name-controller';
-import Tooltip from '../tooltip';
-import Identicon from '../identicon';
-import { shortenAddress } from '../../../helpers/utils/util';
-import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import Name from '../../app/name/name';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
-import NicknamePopovers from '../../app/modals/nickname-popovers';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { shortenAddress } from '../../../helpers/utils/util';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import Name from '../../app/name/name';
 import { Icon, IconName } from '../../component-library';
-import { usePetnamesEnabled } from '../../../hooks/usePetnamesEnabled';
+import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component';
+import Identicon from '../identicon';
+import Tooltip from '../tooltip';
 import {
-  DEFAULT_VARIANT,
   CARDS_VARIANT,
+  DEFAULT_VARIANT,
   FLAT_VARIANT,
 } from './sender-to-recipient.constants';
 
@@ -104,17 +102,12 @@ export function RecipientWithAddress({
   checksummedRecipientAddress,
   onRecipientClick,
   addressOnly,
-  recipientNickname,
-  recipientEns,
   recipientName,
-  recipientMetadataName,
   recipientIsOwnedAccount,
   chainId,
 }) {
   const t = useI18nContext();
-  const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
   const [addressCopied, setAddressCopied] = useState(false);
-  const petnamesEnabled = usePetnamesEnabled();
 
   let tooltipHtml = <p>{t('copiedExclamation')}</p>;
   if (!addressCopied) {
@@ -129,14 +122,6 @@ export function RecipientWithAddress({
     );
   }
 
-  const displayName =
-    (recipientName ||
-      recipientNickname ||
-      recipientMetadataName ||
-      recipientEns ||
-      shortenAddress(checksummedRecipientAddress)) ??
-    (!addressOnly && t('newContract'));
-
   return (
     <>
       <div
@@ -145,19 +130,11 @@ export function RecipientWithAddress({
           if (recipientIsOwnedAccount) {
             setAddressCopied(true);
             copyToClipboard(checksummedRecipientAddress, COPY_OPTIONS);
-          } else {
-            setShowNicknamePopovers(true);
-            if (onRecipientClick) {
-              onRecipientClick();
-            }
+          } else if (onRecipientClick) {
+            onRecipientClick();
           }
         }}
       >
-        {!petnamesEnabled && (
-          <div className="sender-to-recipient__sender-icon">
-            <Identicon address={checksummedRecipientAddress} diameter={24} />
-          </div>
-        )}
         <Tooltip
           position="bottom"
           disabled={!recipientName}
@@ -166,28 +143,13 @@ export function RecipientWithAddress({
           containerClassName="sender-to-recipient__tooltip-container"
           onHidden={() => setAddressCopied(false)}
         >
-          {petnamesEnabled ? (
-            <Name
-              value={checksummedRecipientAddress}
-              type={NameType.ETHEREUM_ADDRESS}
-              variation={chainId}
-            />
-          ) : (
-            <div
-              className="sender-to-recipient__name"
-              data-testid="sender-to-recipient__name"
-            >
-              {displayName}
-            </div>
-          )}
+          <Name
+            value={checksummedRecipientAddress}
+            type={NameType.ETHEREUM_ADDRESS}
+            variation={chainId}
+          />
         </Tooltip>
       </div>
-      {showNicknamePopovers && !petnamesEnabled ? (
-        <NicknamePopovers
-          onClose={() => setShowNicknamePopovers(false)}
-          address={checksummedRecipientAddress}
-        />
-      ) : null}
     </>
   );
 }
@@ -195,9 +157,6 @@ export function RecipientWithAddress({
 RecipientWithAddress.propTypes = {
   checksummedRecipientAddress: PropTypes.string,
   recipientName: PropTypes.string,
-  recipientMetadataName: PropTypes.string,
-  recipientEns: PropTypes.string,
-  recipientNickname: PropTypes.string,
   addressOnly: PropTypes.bool,
   onRecipientClick: PropTypes.func,
   recipientIsOwnedAccount: PropTypes.bool,
@@ -226,10 +185,7 @@ export default function SenderToRecipient({
   senderAddress,
   addressOnly,
   senderName,
-  recipientNickname,
   recipientName,
-  recipientMetadataName,
-  recipientEns,
   onRecipientClick,
   onSenderClick,
   recipientAddress,
@@ -261,10 +217,7 @@ export default function SenderToRecipient({
           checksummedRecipientAddress={checksummedRecipientAddress}
           onRecipientClick={onRecipientClick}
           addressOnly={addressOnly}
-          recipientNickname={recipientNickname}
-          recipientEns={recipientEns}
           recipientName={recipientName}
-          recipientMetadataName={recipientMetadataName}
           recipientIsOwnedAccount={recipientIsOwnedAccount}
           chainId={chainId}
         />
@@ -287,10 +240,7 @@ SenderToRecipient.propTypes = {
   senderName: PropTypes.string,
   senderAddress: PropTypes.string,
   recipientName: PropTypes.string,
-  recipientMetadataName: PropTypes.string,
-  recipientEns: PropTypes.string,
   recipientAddress: PropTypes.string,
-  recipientNickname: PropTypes.string,
   variant: PropTypes.oneOf([DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT]),
   addressOnly: PropTypes.bool,
   onRecipientClick: PropTypes.func,

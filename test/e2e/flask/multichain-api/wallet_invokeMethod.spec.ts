@@ -1,5 +1,4 @@
 import { strict as assert } from 'assert';
-import { Browser } from 'selenium-webdriver';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
@@ -10,21 +9,20 @@ import {
   withFixtures,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
+import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
 import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   addAccountInWalletAndAuthorize,
-  describeBrowserOnly,
   escapeColon,
   type FixtureCallbackArgs,
 } from './testHelpers';
 
-describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
+describe('Multichain API', function () {
   const GANACHE_SCOPES = ['eip155:1337', 'eip155:1338', 'eip155:1000'];
   const ACCOUNTS = [ACCOUNT_1, ACCOUNT_2];
   const DEFAULT_INITIAL_BALANCE_HEX = convertETHToHexGwei(
-    DEFAULT_GANACHE_ETH_BALANCE_DEC,
+    DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   );
 
   describe('Calling `wallet_invokeMethod` on the same dapp across three different connected chains', function () {
@@ -34,7 +32,7 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
           {
             title: this.test?.fullTitle(),
             fixtures: new FixtureBuilder()
-              .withNetworkControllerTripleGanache()
+              .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
@@ -46,8 +44,10 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(GANACHE_SCOPES, ACCOUNTS);
             await addAccountInWalletAndAuthorize(driver);
-            await driver.clickElement({ text: 'Connect', tag: 'button' });
-            await driver.delay(largeDelayMs);
+            await driver.clickElementAndWaitForWindowToClose({
+              text: 'Connect',
+              tag: 'button',
+            });
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
@@ -73,17 +73,10 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
                 `[data-testid="invoke-method-${scope}-btn"]`,
               );
 
-              const resultElement = await driver.findElement(
-                `#invoke-method-${escapeColon(scope)}-${invokeMethod}-result-0`,
-              );
-
-              const result = await resultElement.getText();
-
-              assert.strictEqual(
-                result,
-                `"${EXPECTED_RESULTS[scope]}"`,
-                `${scope} method ${invokeMethod} expected "${EXPECTED_RESULTS[scope]}", got ${result} instead`,
-              );
+              await driver.waitForSelector({
+                css: `[id="invoke-method-${scope}-${invokeMethod}-result-0"]`,
+                text: `"${EXPECTED_RESULTS[scope]}"`,
+              });
             }
           },
         );
@@ -98,7 +91,7 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
           {
             title: this.test?.fullTitle(),
             fixtures: new FixtureBuilder()
-              .withNetworkControllerTripleGanache()
+              .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
@@ -110,9 +103,11 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(GANACHE_SCOPES, ACCOUNTS);
             await addAccountInWalletAndAuthorize(driver);
-            await driver.clickElement({ text: 'Connect', tag: 'button' });
+            await driver.clickElementAndWaitForWindowToClose({
+              text: 'Connect',
+              tag: 'button',
+            });
 
-            await driver.delay(largeDelayMs);
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
@@ -137,18 +132,13 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
               await driver.delay(largeDelayMs);
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-              const accountWebElement = await driver.findElement(
-                '[data-testid="sender-address"]',
-              );
-              const accountText = await accountWebElement.getText();
               const expectedAccount =
                 i === INDEX_FOR_ALTERNATE_ACCOUNT ? 'Account 2' : 'Account 1';
 
-              assert.strictEqual(
-                accountText,
-                expectedAccount,
-                `Should have ${expectedAccount} selected, got ${accountText}`,
-              );
+              await driver.waitForSelector({
+                tesId: 'sender-address',
+                text: expectedAccount,
+              });
 
               await driver.clickElement({
                 text: 'Confirm',
@@ -164,7 +154,7 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
           {
             title: this.test?.fullTitle(),
             fixtures: new FixtureBuilder()
-              .withNetworkControllerTripleGanache()
+              .withNetworkControllerTripleNode()
               .build(),
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
           },
@@ -176,9 +166,10 @@ describeBrowserOnly(Browser.CHROME, 'Multichain API', function () {
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(GANACHE_SCOPES, ACCOUNTS);
             await addAccountInWalletAndAuthorize(driver);
-            await driver.clickElement({ text: 'Connect', tag: 'button' });
-
-            await driver.delay(largeDelayMs);
+            await driver.clickElementAndWaitForWindowToClose({
+              text: 'Connect',
+              tag: 'button',
+            });
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );

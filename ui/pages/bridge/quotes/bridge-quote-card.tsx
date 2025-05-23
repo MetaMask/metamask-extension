@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  BRIDGE_MM_FEE_RATE,
+  formatEtaInMinutes,
+  getNativeAssetForChainId,
+  UnifiedSwapBridgeEventName,
+} from '@metamask/bridge-controller';
 import {
   Text,
   PopoverPosition,
@@ -13,15 +19,13 @@ import {
 import {
   getBridgeQuotes,
   getFromChain,
+  getFromToken,
   getToChain,
+  getToToken,
   getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  formatCurrencyAmount,
-  formatTokenAmount,
-  formatEtaInMinutes,
-} from '../utils/quote';
+import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
 import {
   getCurrentCurrency,
   getNativeCurrency,
@@ -41,13 +45,12 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Row, Column, Tooltip } from '../layout';
-import {
-  BRIDGE_MM_FEE_RATE,
-  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
-} from '../../../../shared/constants/bridge';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { TERMS_OF_USE_LINK } from '../../../../shared/constants/terms';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getImageForChainId } from '../../../selectors/multichain';
+import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
+import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 export const BridgeQuoteCard = () => {
@@ -70,6 +73,10 @@ export const BridgeQuoteCard = () => {
   const [shouldShowNetworkFeesInGasToken, setShouldShowNetworkFeesInGasToken] =
     useState(false);
 
+  const dispatch = useDispatch();
+  const isStxEnabled = useSelector(getSmartTransactionsEnabled);
+  const fromToken = useSelector(getFromToken);
+  const toToken = useSelector(getToToken);
   return (
     <>
       <BridgeQuotesModal
@@ -100,6 +107,24 @@ export const BridgeQuoteCard = () => {
                 variant={TextVariant.bodyMd}
                 color={TextColor.primaryDefault}
                 onClick={() => {
+                  fromChain?.chainId &&
+                    activeQuote &&
+                    dispatch(
+                      trackUnifiedSwapBridgeEvent(
+                        UnifiedSwapBridgeEventName.AllQuotesOpened,
+                        {
+                          stx_enabled: isStxEnabled,
+                          token_symbol_source:
+                            fromToken?.symbol ??
+                            getNativeAssetForChainId(fromChain.chainId).assetId,
+                          token_symbol_destination: toToken?.symbol ?? null,
+                          price_impact: Number(
+                            activeQuote.quote?.priceData?.priceImpact ?? '0',
+                          ),
+                          gas_included: false,
+                        },
+                      ),
+                    );
                   quoteRequestProperties &&
                     requestMetadataProperties &&
                     quoteListProperties &&
@@ -200,6 +225,7 @@ export const BridgeQuoteCard = () => {
                           ? TextColor.warningDefault
                           : undefined
                       }
+                      data-testid="network-fees"
                     >
                       {shouldShowNetworkFeesInGasToken
                         ? //  Network fee in gas token amounts
