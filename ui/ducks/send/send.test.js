@@ -106,11 +106,11 @@ describe('Send Slice', () => {
 
   beforeEach(() => {
     setBackgroundConnection({
-      addPollingTokenToAppState: jest.fn(),
-      addTransaction: jest.fn((_u, _v, cb) => {
-        cb(null, { transactionMeta: null });
+      addPollingTokenToAppState: jest.fn(() => Promise.resolve()),
+      addTransaction: jest.fn((_u, _v) => {
+        return Promise.resolve(null, { transactionMeta: null });
       }),
-      updateTransactionSendFlowHistory: jest.fn((_x, _y, _z, cb) => cb(null)),
+      updateTransactionSendFlowHistory: jest.fn((_x, _y, _z) => Promise.resolve(null)),
     });
 
     jest.useFakeTimers();
