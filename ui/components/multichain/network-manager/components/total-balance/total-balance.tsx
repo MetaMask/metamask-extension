@@ -50,7 +50,8 @@ export const TotalBalance = memo(
   }: TotalBalanceProps) => {
     const t = useI18nContext();
     const [isOpen, setIsOpen] = useState(false);
-    const [referenceElement, setReferenceElement] = useState();
+    const [referenceElement, setReferenceElement] =
+      useState<HTMLDivElement | null>(null);
 
     const handleMouseEnter = useCallback(() => {
       setIsOpen(true);
@@ -60,7 +61,7 @@ export const TotalBalance = memo(
       setIsOpen(false);
     }, []);
 
-    const setBoxRef = useCallback((ref: any) => {
+    const setBoxRef = useCallback((ref: HTMLDivElement | null) => {
       setReferenceElement(ref);
     }, []);
 
@@ -88,11 +89,11 @@ export const TotalBalance = memo(
           hasArrow
           isOpen={isOpen}
           position={PopoverPosition.BottomEnd}
+          // zIndex fix for Skeleton component
           style={{ zIndex: 100, width: '200px' }}
           arrowProps={{
             style: {
               right: -10,
-              // position: 'absolute',
             },
           }}
           referenceElement={referenceElement}
