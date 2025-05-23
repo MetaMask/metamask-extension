@@ -31,7 +31,7 @@ import { banner } from './banner';
 import { skeleton } from './skeleton';
 import { addressInput } from './address-input';
 import { assetSelector } from './asset-selector';
-import { accountSelector } from './accountSelector';
+import { accountSelector } from './account-selector';
 
 export const COMPONENT_MAPPING = {
   AssetSelector: assetSelector,

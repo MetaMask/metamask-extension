@@ -17,7 +17,7 @@ import { radioGroup as radioGroupFn } from './radioGroup';
 import { checkbox as checkboxFn } from './checkbox';
 import { selector as selectorFn } from './selector';
 import { assetSelector as assetSelectorFn } from './asset-selector';
-import { accountSelector as accountSelectorFn } from './accountSelector';
+import { accountSelector as accountSelectorFn } from './account-selector';
 import { UIComponentFactory, UIComponentParams } from './types';
 import { constructInputProps } from './input';
 
