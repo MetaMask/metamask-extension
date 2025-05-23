@@ -26,7 +26,7 @@ import {
 } from '../../../store/controller-actions/delegation-controller';
 import { useEIP7702Account } from '../../confirmations/hooks/useEIP7702Account';
 import { useEIP7702Networks } from '../../confirmations/hooks/useEIP7702Networks';
-import { REMOTE_MODES } from '../remote.types';
+import { REMOTE_MODES } from '../../../../shared/lib/remote-mode';
 import { useConfirmationNavigation } from '../../confirmations/hooks/useConfirmationNavigation';
 
 export const useRemoteMode = ({ account }: { account: Hex }) => {

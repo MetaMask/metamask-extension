@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import configureStore from '../../../../store/store';
 import RemoteModeSwapAllowanceCard from './remote-mode-swap-allowance-card.component';
 import testData from '../../../../../.storybook/test-data';
-import { TokenSymbol } from '../../remote.types';
+import { TokenSymbol } from '../../../../../shared/lib/remote-mode';
 const store = configureStore(testData);
 
 const mockSwapAllowance = {
