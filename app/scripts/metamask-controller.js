@@ -1612,7 +1612,11 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:handleRequest',
           'TransactionController:getState',
         ],
-        allowedEvents: [],
+        allowedEvents: [
+          'MultichainTransactionsController:transactionConfirmed',
+          'TransactionController:transactionFailed',
+          'TransactionController:transactionConfirmed',
+        ],
       });
     this.bridgeStatusController = new BridgeStatusController({
       messenger: bridgeStatusControllerMessenger,
