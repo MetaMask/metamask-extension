@@ -133,6 +133,7 @@ import {
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import {
+  BtcScope,
   isEvmAccountType,
   SolAccountType,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
@@ -253,10 +254,16 @@ import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
-///: BEGIN:ONLY_INCLUDE_IF(solana)
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts';
+///: END:ONLY_INCLUDE_IF
+
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -4939,14 +4946,14 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  async _getSolanaWalletSnapClient() {
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  async _getMultichainWalletSnapClient(snapId, scopes) {
     const keyring = await this.getSnapKeyring();
     const messenger = this.controllerMessenger;
 
     return new MultichainWalletSnapClient(
-      SOLANA_WALLET_SNAP_ID,
-      [SolScope.Mainnet, SolScope.Devnet, SolScope.Testnet],
+      snapId,
+      scopes,
       keyring,
       messenger,
     );
@@ -5022,13 +5029,24 @@ export default class MetamaskController extends EventEmitter {
           },
         );
       }
+      
+      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+      const btcClient = await this._getMultichainWalletSnapClient(BITCOIN_WALLET_SNAP_ID, [BtcScope.Mainnet]);
+      const btcAccounts = await btcClient.discoverAccounts(entropySource);
+
+      // If none accounts got discovered, we still create the first (default) one.
+      if (btcAccounts.length === 0) {
+        await this._addSnapAccount(entropySource, btcClient, {synchronize: true});
+      }
+      ///: END:ONLY_INCLUDE_IF
+
       ///: BEGIN:ONLY_INCLUDE_IF(solana)
-      const client = await this._getSolanaWalletSnapClient();
-      const solanaAccounts = await client.discoverAccounts(entropySource);
+      const solanaClient = await this._getMultichainWalletSnapClient(SOLANA_WALLET_SNAP_ID, [SolScope.Mainnet, SolScope.Devnet, SolScope.Testnet]);
+      const solanaAccounts = await solanaClient.discoverAccounts(entropySource);
 
       // If none accounts got discovered, we still create the first (default) one.
       if (solanaAccounts.length === 0) {
-        await this._addSolanaAccount(entropySource);
+        await this._addSnapAccount(entropySource, solanaClient);
       }
       ///: END:ONLY_INCLUDE_IF
     } catch (e) {
@@ -5040,13 +5058,16 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  /**
-   * Adds Solana account to the keyring.
+
+   /**
+   * Adds Snap account to the keyring.
    *
    * @param {string} keyringId - The ID of the keyring to add the account to.
+   * @param {object} client - The Snap client instance.
+   * @param {object} options - The options to pass to the createAccount method.
    */
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  async _addSolanaAccount(keyringId) {
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  async _addSnapAccount(keyringId, client, options = {}) {
     let entropySource = keyringId;
     try {
       if (!entropySource) {
@@ -5060,9 +5081,8 @@ export default class MetamaskController extends EventEmitter {
         entropySource = id;
       }
 
-      const client = await this._getSolanaWalletSnapClient();
       return await client.createAccount(
-        { entropySource },
+        {...options, entropySource },
         {
           displayConfirmation: false,
           displayAccountNameSuggestion: false,
@@ -5071,7 +5091,7 @@ export default class MetamaskController extends EventEmitter {
       );
     } catch (e) {
       // Do not block the onboarding flow if this fails
-      log.warn(`Failed to add Solana account. Error: ${e}`);
+      log.warn(`Failed to add Snap account. Error: ${e}`);
       captureException(e);
       return null;
     }

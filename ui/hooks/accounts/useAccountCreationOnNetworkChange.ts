@@ -27,6 +27,7 @@ export const useAccountCreationOnNetworkChange =
         case MultichainNetworks.BITCOIN:
           await bitcoinWalletSnapClient.createAccount({
             scope: MultichainNetworks.BITCOIN,
+            synchronize: true,
           });
           break;
         case MultichainNetworks.SOLANA:
