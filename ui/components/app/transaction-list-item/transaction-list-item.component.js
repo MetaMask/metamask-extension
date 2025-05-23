@@ -311,8 +311,7 @@ function TransactionListItemInner({
         subtitle={
           !FINAL_NON_CONFIRMED_STATUSES.includes(status) &&
           isBridgeTx &&
-          !isBridgeComplete &&
-          !isBridgeFailed &&
+          !(isBridgeComplete || isBridgeFailed) &&
           bridgeTxHistoryItem ? (
             <BridgeActivityItemTxSegments
               bridgeTxHistoryItem={bridgeTxHistoryItem}
