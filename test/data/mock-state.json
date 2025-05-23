@@ -479,9 +479,7 @@
         "blockExplorerUrls": []
       },
       "0x38": {
-        "blockExplorerUrls": [
-          "https://bscscan.com/"
-        ],
+        "blockExplorerUrls": ["https://bscscan.com/"],
         "chainId": "0x38",
         "defaultBlockExplorerUrlIndex": 0,
         "defaultRpcEndpointIndex": 0,
@@ -497,9 +495,7 @@
         ]
       },
       "0x89": {
-        "blockExplorerUrls": [
-          "https://polygonscan.com/"
-        ],
+        "blockExplorerUrls": ["https://polygonscan.com/"],
         "chainId": "0x89",
         "defaultBlockExplorerUrlIndex": 0,
         "defaultRpcEndpointIndex": 0,
@@ -515,9 +511,7 @@
         ]
       },
       "0xa4b1": {
-        "blockExplorerUrls": [
-          "https://explorer.arbitrum.io"
-        ],
+        "blockExplorerUrls": ["https://explorer.arbitrum.io"],
         "chainId": "0xa4b1",
         "defaultBlockExplorerUrlIndex": 0,
         "defaultRpcEndpointIndex": 0,
