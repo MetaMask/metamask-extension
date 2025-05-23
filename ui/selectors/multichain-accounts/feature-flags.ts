@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// We can ignore the unused vars warning while the flag is not active
+
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
@@ -67,7 +70,7 @@ const isMultichainAccountsFeatureEnabled = (
     currentFeatureVersion &&
     minimumVersion &&
     currentFeatureVersion === featureVersion &&
-    // @ts-expect-error - this error can be ignore while the minimum version is not defined
+    // @ts-expect-error - this error can be ignored while the minimum version is not defined
     compareVersions(minimumVersion, MINIMUM_SUPPORTED_VERSION)
   );
 };
