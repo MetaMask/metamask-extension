@@ -2,6 +2,7 @@ import React from 'react';
 import {
   TextVariant,
   TextAlign,
+  TextColor,
 } from '../../../../../helpers/constants/design-system';
 import {
   SensitiveText,
@@ -37,7 +38,8 @@ export function DeFiSymbolGroup({
 
   return (
     <SensitiveText
-      variant={TextVariant.bodyMd}
+      color={TextColor.textAlternative}
+      variant={TextVariant.bodySmMedium}
       textAlign={TextAlign.End}
       data-testid="defi-list-symbol-group"
       isHidden={privacyMode}
