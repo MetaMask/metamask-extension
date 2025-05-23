@@ -337,6 +337,7 @@
   "desktopEnabled": false,
   "detectedTokens": [],
   "dismissSeedBackUpReminder": false,
+  "enabledNetworkMap": {},
   "ensEntries": {},
   "ensResolutionsByAddress": {},
   "featureFlags": {},

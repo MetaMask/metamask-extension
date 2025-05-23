@@ -927,6 +927,7 @@
     "useNftDetection": true,
     "openSeaEnabled": true,
     "orderedNetworkList": [],
+    "enabledNetworkMap": {},
     "pinnedAccountList": [],
     "hiddenAccountList": [],
     "advancedGasFee": {

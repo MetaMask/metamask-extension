@@ -90,6 +90,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             networkRpcUrl: 'http://localhost:8545',
           },
         ],
+        enabledNetworkMap: {},
       },
       AccountOrderController: {
         pinnedAccountList: [],
