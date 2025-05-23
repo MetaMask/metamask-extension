@@ -87,12 +87,11 @@ if (shouldInjectProvider()) {
     },
   });
 
-  getMultichainClient({
+  const multichainClient = getMultichainClient({
     transport: getDefaultTransport(),
-  }).then((client) => {
-    registerSolanaWalletStandard({
-      client,
-      walletName: process.env.METAMASK_BUILD_NAME,
-    });
+  });
+  registerSolanaWalletStandard({
+    client: multichainClient,
+    walletName: process.env.METAMASK_BUILD_NAME,
   });
 }

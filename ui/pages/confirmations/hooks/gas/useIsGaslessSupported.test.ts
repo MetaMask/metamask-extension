@@ -4,10 +4,16 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../tes
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { isAtomicBatchSupported } from '../../../../store/controller-actions/transaction-controller';
+import { isRelaySupported } from '../../../../store/actions';
 import { useIsGaslessSupported } from './useIsGaslessSupported';
 
 jest.mock('../../../../../shared/modules/selectors');
 jest.mock('../../../../store/controller-actions/transaction-controller');
+
+jest.mock('../../../../store/actions', () => ({
+  ...jest.requireActual('../../../../store/actions'),
+  isRelaySupported: jest.fn(),
+}));
 
 const CHAIN_ID_MOCK = '0x5';
 
@@ -29,12 +35,14 @@ async function runHook() {
 describe('useIsGaslessSupported', () => {
   const getIsSmartTransactionMock = jest.mocked(getIsSmartTransaction);
   const isAtomicBatchSupportedMock = jest.mocked(isAtomicBatchSupported);
+  const isRelaySupportedMock = jest.mocked(isRelaySupported);
 
   beforeEach(() => {
     jest.resetAllMocks();
 
     getIsSmartTransactionMock.mockReturnValue(false);
     isAtomicBatchSupportedMock.mockResolvedValue([]);
+    isRelaySupportedMock.mockResolvedValue(false);
 
     process.env.TRANSACTION_RELAY_API_URL = 'test.com';
   });
@@ -44,60 +52,100 @@ describe('useIsGaslessSupported', () => {
 
     const result = await runHook();
 
-    expect(result).toBe(true);
+    expect(result).toStrictEqual({
+      isSupported: true,
+      isSmartTransaction: true,
+    });
   });
 
-  it('returns true if chain supports EIP-7702 and account is not upgraded', async () => {
-    getIsSmartTransactionMock.mockReturnValue(false);
-    isAtomicBatchSupportedMock.mockResolvedValue([
-      {
-        chainId: CHAIN_ID_MOCK,
-        isSupported: false,
-        delegationAddress: undefined,
-      },
-    ]);
+  describe('if smart transaction disabled', () => {
+    it('returns true if chain supports EIP-7702 and account is supported and relay supported', async () => {
+      getIsSmartTransactionMock.mockReturnValue(false);
+      isRelaySupportedMock.mockResolvedValue(true);
+      isAtomicBatchSupportedMock.mockResolvedValue([
+        {
+          chainId: CHAIN_ID_MOCK,
+          isSupported: true,
+          delegationAddress: '0x123',
+        },
+      ]);
 
-    const result = await runHook();
+      const result = await runHook();
 
-    expect(result).toBe(true);
-  });
-
-  it('returns true if chain supports EIP-7702 and account is upgraded and supported', async () => {
-    getIsSmartTransactionMock.mockReturnValue(false);
-    isAtomicBatchSupportedMock.mockResolvedValue([
-      {
-        chainId: CHAIN_ID_MOCK,
+      expect(result).toStrictEqual({
         isSupported: true,
-        delegationAddress: '0x123',
-      },
-    ]);
+        isSmartTransaction: false,
+      });
+    });
 
-    const result = await runHook();
+    it('returns false if account not upgraded', async () => {
+      getIsSmartTransactionMock.mockReturnValue(false);
+      isRelaySupportedMock.mockResolvedValue(true);
+      isAtomicBatchSupportedMock.mockResolvedValue([
+        {
+          chainId: CHAIN_ID_MOCK,
+          isSupported: false,
+          delegationAddress: undefined,
+        },
+      ]);
 
-    expect(result).toBe(true);
-  });
+      const result = await runHook();
 
-  it('returns false if not smart transaction and chain does not support EIP-7702', async () => {
-    getIsSmartTransactionMock.mockReturnValue(false);
-    isAtomicBatchSupportedMock.mockResolvedValue([]);
-
-    const result = await runHook();
-
-    expect(result).toBe(false);
-  });
-
-  it('returns false if not smart transaction and account is upgraded but not supported', async () => {
-    getIsSmartTransactionMock.mockReturnValue(false);
-    isAtomicBatchSupportedMock.mockResolvedValue([
-      {
-        chainId: CHAIN_ID_MOCK,
+      expect(result).toStrictEqual({
         isSupported: false,
-        delegationAddress: '0x123',
-      },
-    ]);
+        isSmartTransaction: false,
+      });
+    });
 
-    const result = await runHook();
+    it('returns false if chain does not support EIP-7702', async () => {
+      getIsSmartTransactionMock.mockReturnValue(false);
+      isRelaySupportedMock.mockResolvedValue(true);
+      isAtomicBatchSupportedMock.mockResolvedValue([]);
 
-    expect(result).toBe(false);
+      const result = await runHook();
+
+      expect(result).toStrictEqual({
+        isSupported: false,
+        isSmartTransaction: false,
+      });
+    });
+
+    it('returns false if upgraded account not supported', async () => {
+      getIsSmartTransactionMock.mockReturnValue(false);
+      isRelaySupportedMock.mockResolvedValue(true);
+      isAtomicBatchSupportedMock.mockResolvedValue([
+        {
+          chainId: CHAIN_ID_MOCK,
+          isSupported: false,
+          delegationAddress: '0x123',
+        },
+      ]);
+
+      const result = await runHook();
+
+      expect(result).toStrictEqual({
+        isSupported: false,
+        isSmartTransaction: false,
+      });
+    });
+
+    it('returns false if relay not supported', async () => {
+      getIsSmartTransactionMock.mockReturnValue(false);
+      isRelaySupportedMock.mockResolvedValue(false);
+      isAtomicBatchSupportedMock.mockResolvedValue([
+        {
+          chainId: CHAIN_ID_MOCK,
+          isSupported: true,
+          delegationAddress: '0x123',
+        },
+      ]);
+
+      const result = await runHook();
+
+      expect(result).toStrictEqual({
+        isSupported: false,
+        isSmartTransaction: false,
+      });
+    });
   });
 });
