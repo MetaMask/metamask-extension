@@ -1,4 +1,4 @@
-import { Server, server } from 'ganache';
+import { Server, server, ServerOptions } from 'ganache';
 import { BigNumber } from 'bignumber.js';
 import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../constants';
 
@@ -19,11 +19,15 @@ const defaultOptions = {
   quiet: true,
 };
 
+type GanacheStartOptions = Partial<ServerOptions> & {
+  mnemonic?: string;
+  accounts?: { secretKey: string; balance: string }[];
+};
+
 export class Ganache {
   #server: Server | undefined;
 
-
-  async start(opts: any) {
+  async start(opts: GanacheStartOptions) {
     let customOptions = {
       ...defaultOptions,
       ...opts,
@@ -114,11 +118,9 @@ export class Ganache {
     }
     try {
       await this.#server.close();
-
-
-    } catch (e: any) {
+    } catch (e: unknown) {
       // We can safely ignore the EBUSY error
-      if (e.code !== 'EBUSY') {
+      if ((e as { code?: string }).code !== 'EBUSY') {
         console.log('Caught error while Ganache closing:', e);
       }
     }

@@ -31,6 +31,11 @@ const state = {
     url: 'https://metamask.github.io/test-dapp/',
   },
   metamask: {
+    remoteFeatureFlags: {
+      bridgeConfig: {
+        support: true,
+      },
+    },
     txHistory: {},
     announcements: {
       22: {

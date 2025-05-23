@@ -5,6 +5,9 @@ const {
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const {
+  mockSignatureInsightsSnap,
+} = require('../mock-response-data/snaps/snap-binary-mocks');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Signature Insights', function () {
@@ -16,6 +19,7 @@ describe('Test Snap Signature Insights', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         failOnConsoleError: false,
+        testSpecificMock: mockSignatureInsightsSnap,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

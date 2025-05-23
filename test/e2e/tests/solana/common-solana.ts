@@ -6,6 +6,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3\/.*/u;
@@ -2322,6 +2323,7 @@ export async function withSolanaAccountSnap(
     mockZeroBalance,
     sendFailedTransaction,
     dappPaths,
+    withProtocolSnap,
   }: {
     title?: string;
     showNativeTokenAsMainBalance?: boolean;
@@ -2335,8 +2337,13 @@ export async function withSolanaAccountSnap(
     mockZeroBalance?: boolean;
     sendFailedTransaction?: boolean;
     dappPaths?: string[];
+    withProtocolSnap?: boolean;
   },
-  test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
+  test: (
+    driver: Driver,
+    mockServer: Mockttp,
+    extensionId: string,
+  ) => Promise<void>,
 ) {
   console.log('Starting withSolanaAccountSnap');
   let fixtures = new FixtureBuilder();
@@ -2437,6 +2444,9 @@ export async function withSolanaAccountSnap(
           mockList.push(await simulateSolanaTransaction(mockServer));
           mockList.push(await mockSendSolanaFailedTransaction(mockServer));
         }
+        if (withProtocolSnap) {
+          mockList.push(await mockProtocolSnap(mockServer));
+        }
         return mockList;
       },
       ignoredConsoleErrors: [
@@ -2446,7 +2456,15 @@ export async function withSolanaAccountSnap(
         'No Infura network client was found with the ID "linea-mainnet"',
       ],
     },
-    async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
+    async ({
+      driver,
+      mockServer,
+      extensionId,
+    }: {
+      driver: Driver;
+      mockServer: Mockttp;
+      extensionId: string;
+    }) => {
       await loginWithoutBalanceValidation(driver);
       const headerComponent = new HeaderNavbar(driver);
       const accountListPage = new AccountListPage(driver);
@@ -2465,7 +2483,7 @@ export async function withSolanaAccountSnap(
       }
 
       await driver.delay(regularDelayMs); // workaround to avoid flakiness
-      await test(driver, mockServer);
+      await test(driver, mockServer, extensionId);
     },
   );
 }

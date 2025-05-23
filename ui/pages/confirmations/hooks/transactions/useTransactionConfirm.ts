@@ -6,16 +6,20 @@ import { getCustomNonceValue } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
 import { updateAndApproveTx } from '../../../../store/actions';
-import { getIsSmartTransaction } from '../../../../../shared/modules/selectors';
+import {
+  getIsSmartTransaction,
+  type SmartTransactionsState,
+} from '../../../../../shared/modules/selectors';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();
-  const isSmartTransaction = useSelector(getIsSmartTransaction);
-
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
+  const isSmartTransaction = useSelector((state: SmartTransactionsState) =>
+    getIsSmartTransaction(state, transactionMeta?.chainId),
+  );
 
   const newTransactionMeta = useMemo(
     () => cloneDeep(transactionMeta),

@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Compte Bitcoin (Bêta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Compte Bitcoin (Testnet)"
-  },
   "addBlockExplorer": {
     "message": "Ajouter un explorateur de blocs"
   },
@@ -661,22 +658,6 @@
   "billionAbbreviation": {
     "message": "Mrd",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "En activant cette fonctionnalité, vous aurez la possibilité d’ajouter un compte Bitcoin à votre extension MetaMask dérivée de votre phrase secrète de récupération existante. Toute utilisation de cette fonctionnalité bêta expérimentale se fait à vos risques et périls. Pour nous faire part de vos commentaires sur cette nouvelle expérience Bitcoin, veuillez remplir ce $1.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Activer « Ajouter un nouveau compte Bitcoin (Bêta) »"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "En activant cette fonctionnalité, vous aurez la possibilité d’ajouter un compte Bitcoin pour le réseau de test."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Activer « Ajouter un nouveau compte Bitcoin (Testnet) »"
   },
   "blockExplorerAccountAction": {
     "message": "Compte",
@@ -1338,10 +1319,6 @@
   },
   "creatorAddress": {
     "message": "Adresse du créateur"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Cette valeur reflète la valeur de tous les jetons que vous possédez sur tous les réseaux. Si vous préférez que cette valeur soit affichée en ETH ou dans d’autres monnaies, veuillez accéder à $1.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "Échanges inter-réseaux avec MetaMask Portfolio"
@@ -2711,9 +2688,6 @@
   "ledgerLocked": {
     "message": "Impossible de se connecter au dispositif Ledger. Veuillez vous assurer que votre périphérique est déverrouillé et que l’application Ethereum est ouverte."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "Il n’est pas possible de connecter plusieurs dispositifs Ledger en même temps. Vous devez d’abord déconnecter le dispositif actuel avant d’en connecter un autre."
-  },
   "ledgerTimeout": {
     "message": "Ledger Live met trop de temps à répondre ou la connexion est interrompue. Assurez-vous que l’application Ledger Live est bien ouverte et que votre appareil est déverrouillé."
   },
@@ -4068,7 +4042,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "Certains de ces réseaux dépendent de services tiers. Ils peuvent être moins fiables ou permettre à des tiers de suivre l’activité des utilisateurs. $1",
-    "description": "$1 is Learn more link"
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "Réseaux populaires"
@@ -4134,18 +4108,6 @@
   },
   "productAnnouncements": {
     "message": "Annonces de produits"
-  },
-  "profileSync": {
-    "message": "Synchronisation du profil"
-  },
-  "profileSyncConfirmation": {
-    "message": "Si vous désactivez la synchronisation du profil, vous ne pourrez plus recevoir de notifications."
-  },
-  "profileSyncDescription": {
-    "message": "Crée un profil que MetaMask utilise pour synchroniser certains paramètres entre vos appareils. Ceci est nécessaire pour activer des notifications. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Découvrez comment nous protégeons vos données personnelles"
   },
   "proposedApprovalLimit": {
     "message": "Limite d’approbation proposée"
@@ -6507,9 +6469,6 @@
   },
   "yourBalance": {
     "message": "Votre solde"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Votre solde est agrégé"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Il peut y avoir des risques associés à votre NFT"

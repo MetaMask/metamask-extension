@@ -62,10 +62,6 @@ jest.mock('react-redux', () => {
   };
 });
 
-jest.mock('../../ducks/bridge/actions', () => ({
-  setBridgeFeatureFlags: () => jest.fn(),
-}));
-
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({

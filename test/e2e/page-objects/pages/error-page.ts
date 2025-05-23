@@ -63,7 +63,7 @@ class ErrorPage {
     await headerNavbar.openSettingsPage();
     const settingsPage = new SettingsPage(this.driver);
     await settingsPage.check_pageIsLoaded();
-    await settingsPage.goToDevelopOptionSettings();
+    await settingsPage.goToDeveloperOptions();
 
     const developOptionsPage = new DevelopOptionsPage(this.driver);
     await developOptionsPage.check_pageIsLoaded();
