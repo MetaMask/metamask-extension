@@ -273,21 +273,17 @@ const AccountListItem = ({
           />
         </Box>
         <Box display={[Display.None, Display.Flex]}>
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-            <AvatarAccount
-              borderColor={BorderColor.transparent}
-              size={Size.MD}
-              address={account.address}
-              variant={
-                useBlockie
-                  ? AvatarAccountVariant.Blockies
-                  : AvatarAccountVariant.Jazzicon
-              }
-              marginInlineEnd={2}
-            />
-            ///: END:ONLY_INCLUDE_IF
-          }
+          <AvatarAccount
+            borderColor={BorderColor.transparent}
+            size={Size.MD}
+            address={account.address}
+            variant={
+              useBlockie
+                ? AvatarAccountVariant.Blockies
+                : AvatarAccountVariant.Jazzicon
+            }
+            marginInlineEnd={2}
+          />
         </Box>
       </>
 
