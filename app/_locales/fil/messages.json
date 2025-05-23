@@ -569,9 +569,6 @@
   "terms": {
     "message": "Mga Tuntunin ng Paggamit"
   },
-  "tips": {
-    "message": "Mga Tip"
-  },
   "to": {
     "message": "Para sa"
   },
@@ -643,9 +640,6 @@
   },
   "unlock": {
     "message": "I-unlock"
-  },
-  "unlockMessage": {
-    "message": "Naghihintay ang decentralized web"
   },
   "urlErrorMsg": {
     "message": "Kinakailangan ng mga URI ang naaangkop na HTTP/HTTPS prefix."

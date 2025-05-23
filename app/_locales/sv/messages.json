@@ -629,9 +629,6 @@
   "terms": {
     "message": "Användarvillkor"
   },
-  "tips": {
-    "message": "Donationer"
-  },
   "to": {
     "message": "Till"
   },
@@ -703,9 +700,6 @@
   },
   "unlock": {
     "message": "Lås upp"
-  },
-  "unlockMessage": {
-    "message": "Den decentraliserade webben väntar"
   },
   "urlErrorMsg": {
     "message": "URI:er kräver lämpligt HTTP/HTTPS-prefix."
