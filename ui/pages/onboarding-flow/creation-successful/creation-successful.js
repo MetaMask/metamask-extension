@@ -15,6 +15,8 @@ import {
   BorderRadius,
   BlockSize,
   FontWeight,
+  TextColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
@@ -147,10 +149,18 @@ export default function CreationSuccessful() {
               <LottieAnimation path={renderFoxPath} loop autoplay />
             </Box>
           </Box>
-          <Text variant={TextVariant.bodyMd} marginBottom={6}>
+          <Text
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternative}
+            marginBottom={6}
+          >
             {renderDetails1}
           </Text>
-          <Text variant={TextVariant.bodyMd} marginBottom={6}>
+          <Text
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternative}
+            marginBottom={6}
+          >
             {renderDetails2}
           </Text>
         </Box>
@@ -178,7 +188,11 @@ export default function CreationSuccessful() {
                 {t('manageDefaultSettings')}
               </Text>
             </Box>
-            <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
+            <Icon
+              name={IconName.ArrowRight}
+              color={IconColor.iconAlternative}
+              size={IconSize.Sm}
+            />
           </ButtonBase>
         </Box>
       </Box>
