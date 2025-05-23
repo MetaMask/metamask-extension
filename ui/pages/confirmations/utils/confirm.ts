@@ -82,6 +82,8 @@ export const isValidASCIIURL = (urlString?: string): boolean => {
     return urlString.includes(new URL(urlString).host);
   } catch (exp: unknown) {
     console.error(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       `Failed to detect if URL hostname contains non-ASCII characters: ${urlString}. Error: ${exp}`,
     );
     return false;
@@ -101,6 +103,8 @@ export const toPunycodeURL = (urlString: string): string | undefined => {
 
     return isWithoutEndSlash ? url.href.slice(0, -1) : url.href;
   } catch (err: unknown) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.error(`Failed to convert URL to Punycode: ${err}`);
     return undefined;
   }

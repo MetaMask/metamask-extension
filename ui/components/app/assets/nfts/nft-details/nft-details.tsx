@@ -302,8 +302,14 @@ export function NftDetailsComponent({
         );
       } catch (err) {
         console.error(`Failed to switch chains for NFT.
-          Target chainId: ${nftChainId}, Current chainId: ${currentChain.chainId}.
-          ${err}`);
+          Target chainId: ${nftChainId}, Current chainId: ${
+          currentChain.chainId
+        }.
+          ${
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            err
+          }`);
         throw err;
       }
     }

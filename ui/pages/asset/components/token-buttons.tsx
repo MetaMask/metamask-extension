@@ -146,7 +146,11 @@ const TokenButtons = ({
       } catch (err) {
         console.error(`Failed to switch chains.
         Target chainId: ${token.chainId}, Current chainId: ${currentChainId}.
-        ${err}`);
+        ${
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          err
+        }`);
         throw err;
       }
     }

@@ -132,6 +132,8 @@ export const Connections = () => {
     const requestId = await dispatch(
       requestAccountsAndChainPermissionsWithId(tabToConnect.origin),
     );
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     history.push(`${CONNECT_ROUTE}/${requestId}`);
   };
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];

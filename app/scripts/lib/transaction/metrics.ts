@@ -373,7 +373,9 @@ export const handlePostTransactionBalanceUpdate = async (
       );
 
       const quoteVsExecutionRatio = tokensReceived
-        ? `${new BigNumber(tokensReceived, 10)
+        ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          `${new BigNumber(tokensReceived, 10)
             .div(transactionMeta.swapMetaData.token_to_amount, 10)
             .times(100)
             .round(2)}%`
@@ -382,7 +384,9 @@ export const handlePostTransactionBalanceUpdate = async (
       const estimatedVsUsedGasRatio =
         transactionMeta.txReceipt?.gasUsed &&
         transactionMeta.swapMetaData.estimated_gas
-          ? `${new BigNumber(transactionMeta.txReceipt.gasUsed, 16)
+          ? // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            `${new BigNumber(transactionMeta.txReceipt.gasUsed, 16)
               .div(transactionMeta.swapMetaData.estimated_gas, 10)
               .times(100)
               .round(2)}%`
@@ -1177,6 +1181,8 @@ function allowanceAmountInRelationToDappProposedValue(
     originalApprovalAmount &&
     finalApprovalAmount
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     return `${new BigNumber(originalApprovalAmount, 10)
       .div(finalApprovalAmount, 10)
       .times(100)
@@ -1204,6 +1210,8 @@ function allowanceAmountInRelationToTokenBalance(
     dappProposedTokenAmount &&
     currentTokenBalance
   ) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     return `${new BigNumber(dappProposedTokenAmount, 16)
       .div(currentTokenBalance, 10)
       .times(100)
