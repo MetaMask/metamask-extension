@@ -3422,10 +3422,6 @@
     "message": "¡La transacción $1 fallida! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
   },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "¡Transacción fallida! $1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
-  },
   "notificationTransactionFailedTitle": {
     "message": "Transacción fallida",
     "description": "Title of the browser notification that appears when a transaction fails"
