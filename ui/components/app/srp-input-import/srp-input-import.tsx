@@ -291,6 +291,10 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
               rows={7}
               resize={TextareaResize.None}
               value={firstWord}
+              paddingTop={0}
+              paddingBottom={0}
+              paddingLeft={0}
+              paddingRight={0}
               onChange={(e) => setFirstWord(e.target.value)}
               onKeyDown={handleOnKeyDown}
               onPaste={handleOnPaste}

@@ -3890,7 +3890,7 @@
     "message": "Import using Secret Recovery Phrase"
   },
   "onboardingSrpImportError": {
-    "message": "Not quite right. Double-check your Secret Recovery Phrase and try again."
+    "message": "Use only lowercase letters, check your spelling, and put the words in the original order."
   },
   "onboardingSrpInputClearAll": {
     "message": "Clear all"
