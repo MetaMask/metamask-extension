@@ -38,7 +38,7 @@ type JsonRpcApiResponse<Api extends FunctionRegistry<Api>> = {
  * The shape for the object that provides our list of functions that can be
  * called on the RPC client.
  */
-export type FunctionRegistry<T> = {
+type FunctionRegistry<T> = {
   [K in keyof T]: T[K] extends (...args: infer A) => infer R
     ? A extends Json[] // every param must be Json
       ? R extends Json | void | Promise<Json | void> // return must be Json
@@ -52,7 +52,7 @@ export type FunctionRegistry<T> = {
  * Api methods, promisified. All RPC methods are remote and have to be handled
  * asynchronously, so we wrap the return types in a Promise.
  */
-export type PromisifiedApi<Api extends FunctionRegistry<Api>> = {
+type PromisifiedApi<Api extends FunctionRegistry<Api>> = {
   [K in keyof Api]: (
     ...args: Parameters<Api[K]>
   ) => Promise<ReturnType<Api[K]>>;
@@ -275,8 +275,8 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
 }
 
 /**
- * In practice, this is used to send messages to methods exported by the
- * {@link MetamaskController}'s `createMetaRpcHandlerApi` method.
+ * In practice, this is used to send messages to API methods configured within
+ * {@link MetamaskController}.
  *
  * @template Api - The type of the methods available on the MetaRPCClient.
  * @param connectionStream - The connection stream to use for the RPC client.
