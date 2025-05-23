@@ -1,13 +1,21 @@
+# This workflow is meant to better structure the main.yaml one for redability reasons.
+# It is not meant to be a reusable workflow.
+
 name: E2E Firefox
 
 on:
   workflow_call:
+    secrets:
+      DOCKER_HUB_USERNAME:
+        required: true
+      DOCKER_HUB_TOKEN:
+        required: true
 
 jobs:
   test-e2e-firefox-browserify:
     uses: ./.github/workflows/run-e2e.yml
     strategy:
-      fail-fast: false
+      fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix:
         index:
           [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
@@ -18,11 +26,14 @@ jobs:
       test-command: yarn test:e2e:firefox
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-firefox-flask:
     uses: ./.github/workflows/run-e2e.yml
     strategy:
-      fail-fast: false
+      fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix:
         index: [0, 1, 2, 3, 4]
     with:
@@ -32,6 +43,9 @@ jobs:
       test-command: yarn test:e2e:firefox:flask
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-firefox-report:
     needs:
