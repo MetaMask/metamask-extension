@@ -39,6 +39,10 @@ const updateLedgerHardwareAccounts = (keyrings: KeyringObject[]) => {
     keyrings.push({
       type: KeyringType.ledger,
       accounts: [MOCK_LEDGER_ACCOUNT],
+      metadata: {
+        id: 'ledger-keyring',
+        name: '',
+      },
     });
   } else {
     // If 'Ledger Hardware' exists, update its accounts

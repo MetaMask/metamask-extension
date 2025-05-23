@@ -5,6 +5,7 @@ import {
   isNativeAddress,
 } from '@metamask/bridge-controller';
 import { getAccountLink } from '@metamask/etherscan-link';
+import { type BigNumber } from 'bignumber.js';
 import {
   Text,
   TextField,
@@ -27,7 +28,6 @@ import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import {
   getBridgeQuotes,
   getValidationErrors,
@@ -43,6 +43,7 @@ import {
 } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import type { BridgeToken } from '../../../ducks/bridge/types';
+import { getMultichainCurrentChainId } from '../../../selectors/multichain';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
 const sanitizeAmountInput = (textToSanitize: string) => {
@@ -70,7 +71,9 @@ export const BridgeInputGroup = ({
   isMultiselectEnabled,
   onBlockExplorerClick,
   buttonProps,
+  balanceAmount,
 }: {
+  balanceAmount?: BigNumber;
   amountInFiat?: string;
   onAmountChange?: (value: string) => void;
   token: BridgeToken | null;
@@ -98,8 +101,8 @@ export const BridgeInputGroup = ({
   const currency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
 
-  const selectedChainId = networkProps?.network?.chainId;
-  const balanceAmount = useLatestBalance(token);
+  const currentChainId = useSelector(getMultichainCurrentChainId);
+  const selectedChainId = networkProps?.network?.chainId ?? currentChainId;
 
   const [, handleCopy] = useCopyToClipboard(MINUTE) as [
     boolean,
