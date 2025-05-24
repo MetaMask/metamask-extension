@@ -212,11 +212,15 @@ describe('AccountTrackerController', () => {
 
         controller.start();
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(blockTrackerStub.removeListener).toHaveBeenNthCalledWith(
           1,
           'latest',
           expect.any(Function),
         );
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(blockTrackerStub.addListener).toHaveBeenNthCalledWith(
           1,
           'latest',
@@ -226,11 +230,15 @@ describe('AccountTrackerController', () => {
 
         controller.start();
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(blockTrackerStub.removeListener).toHaveBeenNthCalledWith(
           2,
           'latest',
           expect.any(Function),
         );
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(blockTrackerStub.addListener).toHaveBeenNthCalledWith(
           2,
           'latest',
@@ -248,6 +256,8 @@ describe('AccountTrackerController', () => {
       await withController(({ controller, blockTrackerStub }) => {
         controller.stop();
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(blockTrackerStub.removeListener).toHaveBeenNthCalledWith(
           1,
           'latest',
@@ -266,6 +276,8 @@ describe('AccountTrackerController', () => {
 
         controller.startPollingByNetworkClientId('mainnet');
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(blockTrackerFromHookStub.addListener).toHaveBeenCalledWith(
           'latest',
           expect.any(Function),
@@ -274,6 +286,8 @@ describe('AccountTrackerController', () => {
 
         controller.startPollingByNetworkClientId('mainnet');
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(blockTrackerFromHookStub.addListener).toHaveBeenCalledTimes(1);
         expect(updateAccountsSpy).toHaveBeenCalledTimes(1);
 
@@ -324,6 +338,8 @@ describe('AccountTrackerController', () => {
 
           controller.startPollingByNetworkClientId('mainnet');
 
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+          // eslint-disable-next-line @typescript-eslint/unbound-method
           expect(blockTrackerFromHookStub1.addListener).toHaveBeenCalledWith(
             'latest',
             expect.any(Function),
@@ -332,6 +348,8 @@ describe('AccountTrackerController', () => {
 
           controller.startPollingByNetworkClientId('goerli');
 
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+          // eslint-disable-next-line @typescript-eslint/unbound-method
           expect(blockTrackerFromHookStub2.addListener).toHaveBeenCalledWith(
             'latest',
             expect.any(Function),
@@ -340,6 +358,8 @@ describe('AccountTrackerController', () => {
 
           controller.startPollingByNetworkClientId('networkClientId1');
 
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+          // eslint-disable-next-line @typescript-eslint/unbound-method
           expect(blockTrackerFromHookStub3.addListener).toHaveBeenCalledWith(
             'latest',
             expect.any(Function),
@@ -362,6 +382,8 @@ describe('AccountTrackerController', () => {
 
         controller.stopPollingByPollingToken(pollingToken);
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(blockTrackerFromHookStub.removeListener).toHaveBeenCalledWith(
           'latest',
           expect.any(Function),
@@ -379,6 +401,8 @@ describe('AccountTrackerController', () => {
         controller.stopPollingByPollingToken('unknown-token');
         controller.stopPollingByPollingToken(pollingToken);
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(blockTrackerFromHookStub.removeListener).toHaveBeenCalledWith(
           'latest',
           expect.any(Function),
@@ -396,6 +420,8 @@ describe('AccountTrackerController', () => {
 
         controller.stopPollingByPollingToken(pollingToken1);
 
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+        // eslint-disable-next-line @typescript-eslint/unbound-method
         expect(blockTrackerFromHookStub.removeListener).not.toHaveBeenCalled();
 
         controller.stopAllPolling();
@@ -450,14 +476,20 @@ describe('AccountTrackerController', () => {
 
           controller.stopAllPolling();
 
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+          // eslint-disable-next-line @typescript-eslint/unbound-method
           expect(blockTrackerStub.removeListener).toHaveBeenCalledWith(
             'latest',
             expect.any(Function),
           );
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+          // eslint-disable-next-line @typescript-eslint/unbound-method
           expect(blockTrackerFromHookStub1.removeListener).toHaveBeenCalledWith(
             'latest',
             expect.any(Function),
           );
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+          // eslint-disable-next-line @typescript-eslint/unbound-method
           expect(blockTrackerFromHookStub2.removeListener).toHaveBeenCalledWith(
             'latest',
             expect.any(Function),

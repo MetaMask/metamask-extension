@@ -57,6 +57,8 @@ function fork(process: NodeJS.Process, file: string, argv: string[]) {
   // run the build in a child process so that we can exit the parent process as
   // soon as the build completes, but let the cache serialization finish in the
   // background (the cache can take 30% of build-time to serialize and persist).
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   const { connectToChild, destroy, stdio } = createOutputStreams(process);
 
   const node = process.execPath;
