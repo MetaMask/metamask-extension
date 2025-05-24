@@ -281,7 +281,7 @@ class AssetListPage {
     await this.driver.clickElement(this.networksToggle);
     await this.driver.waitUntil(
       async () => {
-        return await this.driver.findElement(this.allNetworksOption);
+        return Boolean(await this.driver.findElement(this.allNetworksOption));
       },
       {
         timeout: 5000,
