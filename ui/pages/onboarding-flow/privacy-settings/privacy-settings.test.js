@@ -148,7 +148,7 @@ describe('Privacy Settings Onboarding View', () => {
   });
 
   describe('IPFS', () => {
-    it('should handle proper IPFS input', async () => {
+    it('should handle proper IPFS input', () => {
       const { queryByTestId, queryByText } = renderWithProvider(
         <PrivacySettings />,
         store,
