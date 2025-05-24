@@ -4048,8 +4048,6 @@ describe('MetaMaskController', () => {
         expect(mockDiscoverAccounts.mock.calls[0][0]).toStrictEqual(
           expect.arrayContaining([
             SolScope.Mainnet,
-            SolScope.Testnet,
-            SolScope.Devnet,
           ]),
         );
 
