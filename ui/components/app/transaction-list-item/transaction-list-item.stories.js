@@ -221,7 +221,7 @@ RemoteModeTransaction.args = {
     },
     txParamsOriginal: {
       ...MOCK_TRANSACTION_BY_TYPE[TransactionType.simpleSend].txParams, // Spread default simpleSend params first
-      from: '0x2222222222222222222222222222222222222222', // Valid original 'from' address (simulating selectedAccount.address)
+      from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4', // Valid original 'from' address (simulating selectedAccount.address)
       to: '0x3333333333333333333333333333333333333333', // Consistent valid 'to' address
     },
   },
@@ -245,7 +245,7 @@ RemoteModeGasTransaction.args = {
     // This simulates a scenario where the selected account is paying for gas for a tx originally from another account.
     txParams: {
       ...MOCK_TRANSACTION_BY_TYPE[TransactionType.simpleSend].txParams,
-      from: '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // Simulates selectedInternalAccount.address
+      from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4', // Simulates selectedInternalAccount.address
       to: '0xCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC',
       // Ensure no 'data' field that would trigger 'isRedeemDelegationsCall'
       // data: undefined (or will be inherited as undefined from MOCK_TRANSACTION_BY_TYPE[TransactionType.simpleSend].txParams)
