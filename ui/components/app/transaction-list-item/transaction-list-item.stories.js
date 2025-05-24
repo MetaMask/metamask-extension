@@ -4,6 +4,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
+import { REDEEM_DELEGATIONS_SELECTOR } from '../../../../shared/lib/delegation/delegation';
 import TransactionListItem from '.';
 
 /**
@@ -16,10 +17,20 @@ import TransactionListItem from '.';
  */
 const getMockTransactionGroup = (args) => {
   const status = args['transactionGroup.primaryTransaction.status'];
+  const submittedTime =
+    args['transactionGroup.primaryTransaction.submittedTime'];
+  const specificDataForTxParams =
+    args['transactionGroup.primaryTransaction.txParams.data'];
+  const basePrimaryTransaction = args['transactionGroup.primaryTransaction'];
+
   const tx = {
-    ...args['transactionGroup.primaryTransaction'],
+    ...basePrimaryTransaction, // Spread type, txParamsOriginal, and base txParams (like .from, .to, .value)
     status,
-    submittedTime: args['transactionGroup.primaryTransaction.submittedTime'],
+    submittedTime,
+    txParams: {
+      ...(basePrimaryTransaction.txParams || {}), // Start with txParams from basePrimaryTransaction
+      data: specificDataForTxParams, // Override/set the data field
+    },
   };
 
   return {
@@ -56,6 +67,8 @@ export default {
     },
     'transactionGroup.primaryTransaction.submittedTime': { control: 'number' },
     'transactionGroup.primaryTransaction': { control: 'object' },
+    'transactionGroup.primaryTransaction.txParams': { control: 'object' },
+    'transactionGroup.primaryTransaction.txParams.data': { control: 'text' },
   },
   args: {
     isEarliestNonce: true,
@@ -63,6 +76,8 @@ export default {
     'transactionGroup.hasRetried': false,
     'transactionGroup.primaryTransaction.status': TransactionStatus.pending,
     'transactionGroup.primaryTransaction.submittedTime': 19999999999999,
+    'transactionGroup.primaryTransaction.txParams.data':
+      '0x0000000000000000000000000000000000000000000000000000000000000000',
   },
 };
 
@@ -92,6 +107,7 @@ export const TokenMethodApprove = Template.bind({});
 export const TokenMethodSafeTransferFrom = Template.bind({});
 export const TokenMethodTransfer = Template.bind({});
 export const TokenMethodTransferFrom = Template.bind({});
+export const RemoteModeTransaction = Template.bind({});
 
 ContractInteraction.storyName = 'contractInteraction';
 ContractInteraction.args = {
@@ -189,4 +205,59 @@ TokenMethodTransferFrom.args = {
   'transactionGroup.primaryTransaction': {
     ...MOCK_TRANSACTION_BY_TYPE[TransactionType.tokenMethodTransferFrom],
   },
+};
+
+RemoteModeTransaction.storyName = 'remoteModeTransaction';
+RemoteModeTransaction.args = {
+  'transactionGroup.primaryTransaction': {
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.simpleSend], // Base properties from simpleSend
+    type: TransactionType.simpleSend, // Explicitly set type
+    txParams: {
+      // Final txParams
+      ...MOCK_TRANSACTION_BY_TYPE[TransactionType.simpleSend].txParams, // Spread default simpleSend params first
+      from: '0x1111111111111111111111111111111111111111', // Valid 'from' address (e.g., Gator address)
+      to: '0x3333333333333333333333333333333333333333', // Explicitly set valid 'to' address
+      // 'data' will be overridden by the specific argType below
+    },
+    txParamsOriginal: {
+      ...MOCK_TRANSACTION_BY_TYPE[TransactionType.simpleSend].txParams, // Spread default simpleSend params first
+      from: '0x2222222222222222222222222222222222222222', // Valid original 'from' address (simulating selectedAccount.address)
+      to: '0x3333333333333333333333333333333333333333', // Consistent valid 'to' address
+    },
+  },
+  'transactionGroup.primaryTransaction.txParams.data': `${REDEEM_DELEGATIONS_SELECTOR}0000000000000000000000000000000000000000000000000000000000000000`,
+  'transactionGroup.primaryTransaction.status': TransactionStatus.pending,
+  'transactionGroup.hasCancelled': false,
+  'transactionGroup.hasRetried': false,
+  isEarliestNonce: true,
+};
+
+// New story for Remote Mode Gas Transaction
+export const RemoteModeGasTransaction = Template.bind({});
+
+RemoteModeGasTransaction.storyName = 'remoteModeGasTransaction';
+RemoteModeGasTransaction.args = {
+  'transactionGroup.primaryTransaction': {
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.simpleSend], // Base properties from simpleSend
+    type: TransactionType.simpleSend, // Explicitly set type
+    // txParamsOriginal.from is NOT the selected account
+    // txParams.from IS the selected account
+    // This simulates a scenario where the selected account is paying for gas for a tx originally from another account.
+    txParams: {
+      ...MOCK_TRANSACTION_BY_TYPE[TransactionType.simpleSend].txParams,
+      from: '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', // Simulates selectedInternalAccount.address
+      to: '0xCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC',
+      // Ensure no 'data' field that would trigger 'isRedeemDelegationsCall'
+      // data: undefined (or will be inherited as undefined from MOCK_TRANSACTION_BY_TYPE[TransactionType.simpleSend].txParams)
+    },
+    txParamsOriginal: {
+      ...MOCK_TRANSACTION_BY_TYPE[TransactionType.simpleSend].txParams,
+      from: '0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', // Original sender, different from selected account
+      to: '0xCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC',
+      // data: undefined
+    },
+  },
+  // No need to override 'transactionGroup.primaryTransaction.txParams.data' for this story,
+  // as we don't want it to be a redeem delegations call.
+  // Default args from export default will apply for status, hasCancelled, hasRetried, isEarliestNonce
 };
