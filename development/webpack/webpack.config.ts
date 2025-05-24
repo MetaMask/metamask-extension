@@ -19,6 +19,10 @@ import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
+import {
+  defineReactCompilerLoaderOption,
+  reactCompilerLoader,
+} from 'react-compiler-webpack';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import { SelfInjectPlugin } from './utils/plugins/SelfInjectPlugin';
 import {
@@ -270,13 +274,59 @@ const config = {
       {
         test: /\.(?:ts|mts|tsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [tsxLoader, codeFenceLoader],
+        use: [
+          {
+            loader: reactCompilerLoader,
+            // @ts-expect-error
+            options: defineReactCompilerLoaderOption({
+              target: '17',
+              // environment: EnvironmentConfig,
+              logger: null,
+              gating: null,
+              // panicThreshold: PanicThresholdOptions,
+              noEmit: true,
+              compilationMode: 'all',
+              eslintSuppressionRules: null,
+              flowSuppressions: false,
+              ignoreUseNoForget: false,
+              sources: (filename) => {
+                return filename.indexOf('ui/') !== -1;
+              },
+              enableReanimatedCheck: false,
+            }),
+          },
+          tsxLoader,
+          codeFenceLoader,
+        ],
       },
       // own javascript, and own javascript with jsx
       {
         test: /\.(?:js|mjs|jsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [jsxLoader, codeFenceLoader],
+        use: [
+          {
+            loader: reactCompilerLoader,
+            // @ts-expect-error
+            options: defineReactCompilerLoaderOption({
+              target: '17',
+              // environment: EnvironmentConfig,
+              logger: null,
+              gating: null,
+              // panicThreshold: PanicThresholdOptions,
+              noEmit: true,
+              compilationMode: 'all',
+              eslintSuppressionRules: null,
+              flowSuppressions: false,
+              ignoreUseNoForget: false,
+              sources: (filename) => {
+                return filename.indexOf('ui/') !== -1;
+              },
+              enableReanimatedCheck: false,
+            }),
+          },
+          jsxLoader,
+          codeFenceLoader,
+        ],
       },
       // vendor javascript
       {
