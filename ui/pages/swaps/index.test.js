@@ -28,7 +28,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 setBackgroundConnection({
-  getStatePatches: jest.fn(),
+  getStatePatches: jest.fn().mockResolvedValue([]),
   setSwapsFeatureFlags: jest.fn(),
   addPollingTokenToAppState: jest.fn(),
   resetPostFetchState: jest.fn(),
