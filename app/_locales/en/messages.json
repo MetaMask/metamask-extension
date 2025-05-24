@@ -628,6 +628,9 @@
   "backupAndSyncFeatureAccounts": {
     "message": "Accounts"
   },
+  "backupAndSyncFeatureContacts": {
+    "message": "Contacts"
+  },
   "backupAndSyncManageWhatYouSync": {
     "message": "Manage what you sync"
   },
