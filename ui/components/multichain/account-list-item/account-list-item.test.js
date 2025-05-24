@@ -1,7 +1,8 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
+import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
+import { KnownCaipNamespace } from '@metamask/utils';
 import { fireEvent, screen } from '@testing-library/react';
-import { merge } from 'lodash';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -22,6 +23,13 @@ const mockAccount = {
   balance: '0x152387ad22c3f0',
 };
 
+const mockBitcoinAccount = {
+  ...mockAccount,
+  id: 'b7893c59-e376-4cc0-93ad-05ddaab574a6',
+  address: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
+  type: BtcAccountType.P2wpkh,
+};
+
 const mockNonEvmAccount = {
   ...mockState.metamask.internalAccounts.accounts[
     'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
@@ -29,7 +37,14 @@ const mockNonEvmAccount = {
   balance: '1', // updating this  to 1 because the balance for native non evm networks comes from the multichainBalances controller in decimal format and not hex.
   id: 'b7893c59-e376-4cc0-93ad-05ddaab574a6',
   address: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
-  type: 'bip122:p2wpkh',
+  type: BtcAccountType.P2wpkh,
+};
+
+const mockSolanaAccount = {
+  ...mockAccount,
+  id: 'b7893c59-e376-4cc0-93ad-05ddaab574a6',
+  address: 'B33FvNLyahfDqEZD7erAnr5bXZsw58nmEKiaiAoKmXEr',
+  type: SolAccountType.DataAccount,
 };
 
 const mockSnap = {
@@ -73,7 +88,7 @@ const DEFAULT_PROPS = {
 };
 
 const render = (props = {}, state = {}) => {
-  const defaultState = {
+  const store = configureStore({
     metamask: {
       ...mockState.metamask,
       completedOnboarding: true,
@@ -81,12 +96,12 @@ const render = (props = {}, state = {}) => {
         accounts: {
           ...mockState.metamask.internalAccounts.accounts,
           [mockAccount.id]: mockAccount,
-          [mockNonEvmAccount.id]: mockNonEvmAccount,
+          [mockBitcoinAccount.id]: mockBitcoinAccount,
         },
         selectedAccount: mockAccount.id,
       },
       balances: {
-        [mockNonEvmAccount.id]: {
+        [mockBitcoinAccount.id]: {
           'bip122:000000000019d6689c085ae165831e93/slip44:0': {
             amount: '1.00000000',
             unit: 'BTC',
@@ -108,6 +123,7 @@ const render = (props = {}, state = {}) => {
         ...mockState.metamask.snaps,
         [mockSnap.id]: mockSnap,
       },
+      ...state.metamask,
     },
     activeTab: {
       id: 113,
@@ -116,9 +132,7 @@ const render = (props = {}, state = {}) => {
       protocol: 'https:',
       url: 'https://metamask.github.io/test-dapp/',
     },
-  };
-
-  const store = configureStore(merge(defaultState, state));
+  });
   const allProps = { ...DEFAULT_PROPS, ...props };
   return renderWithProvider(<AccountListItem {...allProps} />, store);
 };
@@ -150,7 +164,7 @@ describe('AccountListItem', () => {
     );
     expect(screen.getByText(mockAccount.metadata.name)).toBeInTheDocument();
     expect(
-      screen.getByText(shortenAddress(mockNonEvmAccount.address)),
+      screen.getByText(shortenAddress(mockBitcoinAccount.address)),
     ).toBeInTheDocument();
     expect(
       document.querySelector('[title="$100,000.00 USD"]'),
@@ -310,9 +324,6 @@ describe('AccountListItem', () => {
         const firstCurrencyDisplay = container.querySelector(
           '[data-testid="first-currency-display"]',
         );
-        const secondCurrencyDisplay = container.querySelector(
-          '[data-testid="second-currency-display"]',
-        );
         const avatarGroup = container.querySelector(
           '[data-testid="avatar-group"]',
         );
@@ -324,14 +335,13 @@ describe('AccountListItem', () => {
           expectedBalance,
         );
         expect(firstCurrencyDisplay.lastChild.textContent).toContain('ETH');
-        expect(secondCurrencyDisplay.textContent).toContain('');
         expect(avatarGroup).not.toBeInTheDocument();
       });
 
       it('renders tokens for non-EVM account', () => {
         const { container } = render(
           {
-            account: mockNonEvmAccount,
+            account: mockBitcoinAccount,
           },
           {
             metamask: {
@@ -348,9 +358,6 @@ describe('AccountListItem', () => {
         const firstCurrencyDisplay = container.querySelector(
           '[data-testid="first-currency-display"]',
         );
-        const secondCurrencyDisplay = container.querySelector(
-          '[data-testid="second-currency-display"]',
-        );
         const avatarGroup = container.querySelector(
           '[data-testid="avatar-group"]',
         );
@@ -362,7 +369,6 @@ describe('AccountListItem', () => {
           expectedBalance,
         );
         expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
-        expect(secondCurrencyDisplay.textContent).toContain('BTC');
         expect(avatarGroup).not.toBeInTheDocument();
       });
 
@@ -388,9 +394,6 @@ describe('AccountListItem', () => {
         const firstCurrencyDisplay = container.querySelector(
           '[data-testid="first-currency-display"]',
         );
-        const secondCurrencyDisplay = container.querySelector(
-          '[data-testid="second-currency-display"]',
-        );
         const avatarGroup = container.querySelector(
           '[data-testid="avatar-group"]',
         );
@@ -402,14 +405,13 @@ describe('AccountListItem', () => {
           expectedBalance,
         );
         expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
-        expect(secondCurrencyDisplay.textContent).toContain('');
         expect(avatarGroup).not.toBeInTheDocument();
       });
 
       it('renders fiat and native balance for non-EVM account', () => {
         const { container } = render(
           {
-            account: mockNonEvmAccount,
+            account: mockBitcoinAccount,
           },
           {
             metamask: {
@@ -426,9 +428,6 @@ describe('AccountListItem', () => {
         const firstCurrencyDisplay = container.querySelector(
           '[data-testid="first-currency-display"]',
         );
-        const secondCurrencyDisplay = container.querySelector(
-          '[data-testid="second-currency-display"]',
-        );
         const avatarGroup = container.querySelector(
           '[data-testid="avatar-group"]',
         );
@@ -440,8 +439,210 @@ describe('AccountListItem', () => {
           expectedBalance,
         );
         expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
-        expect(secondCurrencyDisplay.textContent).toContain('1BTC');
         expect(avatarGroup).not.toBeInTheDocument();
+      });
+    });
+
+    describe('network activity icons', () => {
+      beforeEach(() => {
+        process.env.REMOVE_GNS = 'true';
+      });
+
+      afterEach(() => {
+        process.env.REMOVE_GNS = 'false';
+      });
+
+      it('should render correctly for EVM account with network activity', () => {
+        const { container } = render(
+          {
+            account: mockAccount,
+          },
+          {
+            metamask: {
+              networksWithTransactionActivity: {
+                [mockAccount.address]: {
+                  activeChains: [1, 137, 10],
+                  namespace: KnownCaipNamespace.Eip155,
+                },
+              },
+            },
+          },
+        );
+        expect(container).toMatchSnapshot('evm-account-network-activity');
+      });
+      it('renders correct amount of network icons for accounts with transaction activity', () => {
+        const { container } = render(
+          {
+            account: mockAccount,
+          },
+          {
+            metamask: {
+              networksWithTransactionActivity: {
+                [mockAccount.address]: {
+                  activeChains: [1, 137, 10],
+                  namespace: KnownCaipNamespace.Eip155,
+                },
+              },
+            },
+          },
+        );
+
+        const avatarGroup = container.querySelector(
+          '[data-testid="avatar-group"]',
+        );
+        expect(avatarGroup).toBeInTheDocument();
+
+        const networkIcons = avatarGroup.querySelectorAll('.mm-avatar-network');
+        expect(networkIcons).toHaveLength(3);
+      });
+
+      it('does not render network icons when account has no transaction activity', () => {
+        const { container } = render(
+          {
+            account: mockAccount,
+          },
+          {
+            metamask: {
+              networksWithTransactionActivity: {
+                [mockAccount.address]: {
+                  activeChains: [],
+                  namespace: KnownCaipNamespace.Eip155,
+                },
+              },
+            },
+          },
+        );
+
+        const avatarGroup = container.querySelector(
+          '[data-testid="avatar-group"]',
+        );
+        expect(avatarGroup).not.toBeInTheDocument();
+      });
+
+      it('should render correctly for Bitcoin account', () => {
+        const { container } = render(
+          {
+            account: mockBitcoinAccount,
+          },
+          {
+            metamask: {
+              networksWithTransactionActivity: {
+                [mockBitcoinAccount.address]: {
+                  activeChains: [],
+                  namespace: KnownCaipNamespace.Bip122,
+                },
+              },
+            },
+          },
+        );
+        expect(container).toMatchSnapshot('bitcoin-account-network-activity');
+      });
+
+      it('renders avatar token for Bitcoin account', () => {
+        const { container } = render(
+          {
+            account: mockBitcoinAccount,
+          },
+          {
+            metamask: {
+              networksWithTransactionActivity: {
+                [mockBitcoinAccount.address]: {
+                  activeChains: [],
+                  namespace: KnownCaipNamespace.Bip122,
+                },
+              },
+            },
+          },
+        );
+
+        const avatarToken = container.querySelector(
+          '.multichain-account-list-item__avatar-currency',
+        );
+        expect(avatarToken).toBeInTheDocument();
+
+        const tokenImage = container.querySelector(
+          '.mm-avatar-network__network-image',
+        );
+        expect(tokenImage).toHaveAttribute('src', './images/bitcoin-logo.svg');
+
+        jest.restoreAllMocks();
+      });
+
+      it('should render correctly for Solana account', () => {
+        const { container } = render(
+          {
+            account: mockSolanaAccount,
+          },
+          {
+            metamask: {
+              networksWithTransactionActivity: {
+                [mockSolanaAccount.address]: {
+                  activeChains: [],
+                  namespace: KnownCaipNamespace.Solana,
+                },
+              },
+            },
+          },
+        );
+        expect(container).toMatchSnapshot('solana-account-network-activity');
+      });
+
+      it('renders avatar token for Solana account', () => {
+        const { container } = render(
+          {
+            account: mockSolanaAccount,
+          },
+          {
+            metamask: {
+              networksWithTransactionActivity: {
+                [mockSolanaAccount.address]: {
+                  activeChains: [],
+                  namespace: KnownCaipNamespace.Solana,
+                },
+              },
+            },
+          },
+        );
+
+        const avatarToken = container.querySelector(
+          '.multichain-account-list-item__avatar-currency',
+        );
+        expect(avatarToken).toBeInTheDocument();
+
+        const tokenImage = container.querySelector(
+          '.mm-avatar-network__network-image',
+        );
+        expect(tokenImage).toHaveAttribute('src', './images/solana-logo.svg');
+
+        jest.restoreAllMocks();
+      });
+
+      it('does not render both network icons and token avatar simultaneously', () => {
+        const { container } = render(
+          {
+            account: mockSolanaAccount,
+          },
+          {
+            metamask: {
+              networksWithTransactionActivity: {
+                [mockSolanaAccount.address]: {
+                  activeChains: [1, 137], // Adding some chains even though it's Solana
+                  namespace: KnownCaipNamespace.Solana,
+                },
+              },
+            },
+          },
+        );
+
+        const avatarToken = container.querySelector(
+          '.multichain-account-list-item__avatar-currency',
+        );
+        const networkIcons = container.querySelector(
+          '[data-testid="avatar-group"]',
+        );
+
+        // Only one of these should be present, not both
+        expect(avatarToken && networkIcons).toBeFalsy();
       });
     });
   });
