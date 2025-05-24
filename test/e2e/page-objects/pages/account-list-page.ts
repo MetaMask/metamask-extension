@@ -144,7 +144,7 @@ class AccountListPage {
 
   private readonly importSrpModalTitle = {
     text: 'Import Secret Recovery Phrase',
-    tag: 'h4',
+    tag: 'p',
   };
 
   private readonly importSrpInput = '#import-srp__multi-srp__srp-word-0';
