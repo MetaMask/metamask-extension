@@ -5,6 +5,7 @@ import { createMockImplementation } from '../helpers';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsEventPayload,
 } from '../../../shared/constants/metametrics';
 import { getMockedNotificationsState } from './data/notification-state';
 
@@ -59,7 +60,8 @@ const verifyMetametricsEvent = async (
       mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
         (call) =>
           call[0] === 'trackMetaMetricsEvent' &&
-          call[1]?.[0].category === expectedCategory,
+          (call[1] as [MetaMetricsEventPayload] | undefined)?.[0].category ===
+            expectedCategory,
       );
 
     expect(metametrics?.[0]).toBe('trackMetaMetricsEvent');

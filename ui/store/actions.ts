@@ -676,10 +676,11 @@ export function connectHardware(
         }
       }
 
-      accounts = await submitRequestToBackground<{ address: string }[]>(
-        'connectHardware',
-        [deviceName, page, hdPath],
-      );
+      accounts = await submitRequestToBackground('connectHardware', [
+        deviceName,
+        page,
+        hdPath,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       const message = getErrorMessage(error);
@@ -978,10 +979,7 @@ export async function backupUserData(): Promise<{
 }> {
   let backedupData;
   try {
-    backedupData = await submitRequestToBackground<{
-      filename: string;
-      data: string;
-    }>('backupUserData');
+    backedupData = await submitRequestToBackground('backupUserData', []);
   } catch (error) {
     logErrorWithMessage(error);
     throw error;
