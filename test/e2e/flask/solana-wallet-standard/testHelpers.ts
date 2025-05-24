@@ -170,6 +170,14 @@ export const switchToAccount = async (
 ): Promise<void> => {
   await driver.clickElementSafe('[data-testid="account-menu-icon"]');
   await driver.delay(regularDelayMs);
+  // List available accounts - available in a div with data-testid="account-item"
+  const accounts = await driver.findElements('div[data-testid="account-item"]');
+  for (const account of accounts) {
+    const listAccountName = await account.getText();
+    // Remove all newlines and spaces
+    console.log(listAccountName.replace(/\n/gu, ' - ').trim());
+  }
+
   await driver.clickElement({
     text: accountName,
     tag: 'button',

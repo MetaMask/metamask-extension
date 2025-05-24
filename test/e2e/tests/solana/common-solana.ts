@@ -2471,10 +2471,12 @@ export async function withSolanaAccountSnap(
 
       for (let i = 1; i <= numberOfAccounts; i++) {
         await headerComponent.openAccountMenu();
+        await driver.delay(regularDelayMs);
         await accountListPage.addAccount({
           accountType: ACCOUNT_TYPE.Solana,
           accountName: `Solana ${i}`,
         });
+        await driver.delay(regularDelayMs);
         await headerComponent.check_accountLabel(`Solana ${i}`);
       }
 
