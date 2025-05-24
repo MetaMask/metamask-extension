@@ -15,8 +15,8 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: true
-          fetch-depth: 0 # This is needed to get merge base to calculate bundle size diff
           skip-allow-scripts: true
+          fetch-depth: 0 # This is needed to get merge base to calculate bundle size diff
 
       - name: Get merge base commit hash
         id: get-merge-base
@@ -28,42 +28,16 @@ jobs:
           echo "MERGE_BASE=${merge_base}" >> "$GITHUB_OUTPUT"
           echo "Merge base is '${merge_base}'"
 
-      - name: Get CircleCI job details
-        id: get-circleci-job-details
-        env:
-          OWNER: ${{ github.repository_owner }}
-          REPOSITORY: ${{ github.event.repository.name }}
-          # For a `pull_request` event, the fork is `github.event.pull_request.head.repo.fork`, and the branch is `github.head_ref`.
-          BRANCH: ${{ github.event.pull_request.head.repo.fork && format('pull/{0}', github.event.pull_request.number) || github.head_ref }}
-          # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
-          HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
-          JOB_NAME: job-publish-prerelease
-        run: |
-          pipeline=$(curl --silent "https://circleci.com/api/v2/project/gh/${OWNER}/${REPOSITORY}/pipeline?branch=${BRANCH}" | jq --arg head_commit_hash "${HEAD_COMMIT_HASH}" -r '.items | map(select(.vcs.revision == $head_commit_hash)) | first')
-          pipeline_id=$(echo "${pipeline}" | jq -r '.id')
-          pipeline_number=$(echo "${pipeline}" | jq -r '.number')
-
-          workflow=$(curl --silent "https://circleci.com/api/v2/pipeline/${pipeline_id}/workflow" | jq -r '.items[0]')
-          workflow_id=$(echo "${workflow}" | jq -r '.id')
-
-          job=$(curl --silent "https://circleci.com/api/v2/workflow/${workflow_id}/job" | jq --arg job_name "${JOB_NAME}" -r '.items[] | select(.name == $job_name)')
-          job_id=$(echo "${job}" | jq -r '.id')
-          job_number=$(echo "${job}" | jq -r '.job_number')
-
-          echo "CIRCLE_WORKFLOW_JOB_ID=${job_id}" >> "$GITHUB_OUTPUT"
-          echo "CIRCLE_BUILD_NUM=${job_number}" >> "$GITHUB_OUTPUT"
-
-          echo "Getting artifacts from pipeline number '${pipeline_number}', workflow id '${workflow_id}', job number '${job_number}' at https://app.circleci.com/pipelines/github/${OWNER}/${REPOSITORY}/${pipeline_number}/workflows/${workflow_id}/jobs/${job_number}/artifacts"
-
       - name: Publish prerelease
         if: ${{ env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}
         env:
           PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+          REPOSITORY: ${{ github.event.repository.name }}
+          RUN_ID: ${{ github.run_id }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
           MERGE_BASE_COMMIT_HASH: ${{ steps.get-merge-base.outputs.MERGE_BASE }}
-          CIRCLE_BUILD_NUM: ${{ steps.get-circleci-job-details.outputs.CIRCLE_BUILD_NUM }}
-          CIRCLE_WORKFLOW_JOB_ID: ${{ steps.get-circleci-job-details.outputs.CIRCLE_WORKFLOW_JOB_ID }}
           CLOUDFRONT_REPO_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}
           HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
         run: yarn tsx ./development/metamaskbot-build-announce.ts

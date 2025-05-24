@@ -29,7 +29,7 @@
 # Run this script like so, passing in the version:
 #
 # ```
-# awk -v version='6.6.0' -f .circleci/scripts/show-changelog.awk CHANGELOG.md
+# awk -v version='6.6.0' -f .github/scripts/show-changelog.awk CHANGELOG.md
 # ```
 #
 

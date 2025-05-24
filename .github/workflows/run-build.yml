@@ -1,0 +1,100 @@
+name: Run build
+
+on:
+  workflow_call:
+    inputs:
+      build-name:
+        required: true
+        type: string
+        description: The name of the build
+      build-command:
+        type: string
+        required: true
+        description: The build command to run
+      validate-source-maps:
+        type: boolean
+        default: true
+        description: Whether to validate source maps
+      mozilla-lint:
+        type: boolean
+        default: false
+        description: Whether to run mozilla-lint
+      enable-mv3:
+        type: boolean
+        default: true
+        description: Whether to enable MV3 or not
+
+jobs:
+  run-build:
+    name: ${{ inputs.build-name }}
+    runs-on: ubuntu-latest
+    env:
+      CONTENTFUL_ACCESS_SPACE_ID: ${{ secrets.CONTENTFUL_ACCESS_SPACE_ID }}
+      CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+      ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+      FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+      FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+      FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+      FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
+      FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+      INFURA_BETA_PROJECT_ID: ${{ secrets.INFURA_BETA_PROJECT_ID }}
+      INFURA_FLASK_PROJECT_ID: ${{ secrets.INFURA_FLASK_PROJECT_ID }}
+      INFURA_PROD_PROJECT_ID: ${{ secrets.INFURA_PROD_PROJECT_ID }}
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      PUBNUB_PUB_KEY: ${{ secrets.PUBNUB_PUB_KEY }}
+      SEGMENT_BETA_WRITE_KEY: ${{ secrets.SEGMENT_BETA_WRITE_KEY }}
+      SEGMENT_FLASK_WRITE_KEY: ${{ secrets.SEGMENT_FLASK_WRITE_KEY }}
+      SEGMENT_PROD_WRITE_KEY: ${{ secrets.SEGMENT_PROD_WRITE_KEY }}
+      SEGMENT_WRITE_KEY: ${{ secrets.SEGMENT_WRITE_KEY }}
+      ANALYTICS_DATA_DELETION_SOURCE_ID: ${{ secrets.ANALYTICS_DATA_DELETION_SOURCE_ID }}
+      ANALYTICS_DATA_DELETION_ENDPOINT: ${{ secrets.ANALYTICS_DATA_DELETION_ENDPOINT }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      SENTRY_DSN_DEV: ${{ secrets.SENTRY_DSN_DEV }}
+      VAPID_KEY: ${{ secrets.VAPID_KEY }}
+      ENABLE_MV3: ${{ inputs.enable-mv3 }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: true
+          skip-allow-scripts: true
+
+      - name: Run build
+        run: ${{ inputs.build-command }}
+
+      - name: Validate source maps
+        if: ${{ inputs.validate-source-maps }}
+        run: yarn validate-source-maps
+
+      - name: Run mozilla-lint
+        if: ${{ inputs.mozilla-lint }}
+        run: yarn mozilla-lint
+
+      - name: Upload artifact '${{ inputs.build-name }}'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.build-name }}
+          path: |
+            builds
+            dist
+
+      - name: Upload 'builds' to S3
+        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/${{ inputs.build-name }}/builds
+          path: builds
+
+      - name: Upload 'dist' to S3
+        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE }}
+          s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/${{ inputs.build-name }}/dist
+          path: dist

@@ -21,7 +21,7 @@ jobs:
           [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
     with:
       test-suite-name: test-e2e-firefox-browserify
-      build-artifact: prep-build-test-browserify-firefox
+      build-artifact: build-test-mv2-browserify
       build-command: yarn build:test:mv2
       test-command: yarn test:e2e:firefox
       matrix-index: ${{ matrix.index }}
@@ -38,7 +38,7 @@ jobs:
         index: [0, 1, 2, 3, 4]
     with:
       test-suite-name: test-e2e-firefox-flask
-      build-artifact: prep-build-test-flask-mv2-browserify-firefox
+      build-artifact: build-test-flask-mv2-browserify
       build-command: yarn build:test:flask:mv2
       test-command: yarn test:e2e:firefox:flask
       matrix-index: ${{ matrix.index }}
