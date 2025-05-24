@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AssetType } from '@metamask/bridge-controller';
-import { SolScope } from '@metamask/keyring-api';
+import { SolMethod, SolScope } from '@metamask/keyring-api';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import { Asset } from '../types/asset';
 import { useCurrentPrice } from './useCurrentPrice';
@@ -49,6 +49,8 @@ describe('useCurrentPrice', () => {
             id: '5132883f-598e-482c-a02b-84eeaa352f5b',
             address: '8A4AptCThfbuknsbteHgGKXczfJpfjuVA9SLTSGaaLGC',
             type: 'solana:data-account',
+            scopes: [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet],
+            methods: [SolMethod.SendAndConfirmTransaction],
           },
         },
         selectedAccount: '', // To be set in each test
