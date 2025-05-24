@@ -16,11 +16,13 @@ import {
   DISPLAY,
   SEVERITIES,
   FlexDirection,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import {
   Slippage,
   SLIPPAGE_VERY_HIGH_ERROR,
   SLIPPAGE_NEGATIVE_ERROR,
+  isStablePair,
 } from '../../../../shared/constants/swaps';
 import {
   BannerAlert,
@@ -39,6 +41,8 @@ export default function TransactionSettings({
   maxAllowedSlippage,
   currentSlippage,
   isDirectWrappingEnabled,
+  sourceTokenSymbol,
+  destinationTokenSymbol,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -58,6 +62,8 @@ export default function TransactionSettings({
       return 1; // 3% slippage.
     } else if (currentSlippage === Slippage.default) {
       return 0; // 2% slippage.
+    } else if (currentSlippage === Slippage.stable) {
+      return 0; // 0.5% slippage for stable pairs.
     } else if (typeof currentSlippage === 'number') {
       return 2; // Custom slippage.
     }
@@ -168,97 +174,104 @@ export default function TransactionSettings({
                       contentText={t('swapSlippageTooltip')}
                     />
                   </Box>
-                  <Box display={DISPLAY.FLEX}>
-                    <ButtonGroup
-                      defaultActiveButtonIndex={
-                        activeButtonIndex === 2 && !customValue
-                          ? 1
-                          : activeButtonIndex
-                      }
-                      variant="radiogroup"
-                      newActiveButtonIndex={activeButtonIndex}
-                      className={classnames(
-                        'button-group',
-                        'transaction-settings__button-group',
-                      )}
+                  <ButtonGroup
+                    defaultActiveButtonIndex={
+                      activeButtonIndex === 2 && !customValue
+                        ? 1
+                        : activeButtonIndex
+                    }
+                    variant="radiogroup"
+                    newActiveButtonIndex={activeButtonIndex}
+                    className={classnames('transaction-settings__button-group')}
+                    style={{ width: BlockSize.Half }}
+                  >
+                    <Button
+                      onClick={() => {
+                        setCustomValue('');
+                        setEnteringCustomValue(false);
+                        setActiveButtonIndex(0);
+                        setNewSlippage(
+                          isStablePair(
+                            sourceTokenSymbol,
+                            destinationTokenSymbol,
+                          )
+                            ? Slippage.stable
+                            : Slippage.default,
+                        );
+                      }}
                     >
-                      <Button
-                        onClick={() => {
-                          setCustomValue('');
-                          setEnteringCustomValue(false);
-                          setActiveButtonIndex(0);
-                          setNewSlippage(Slippage.default);
-                        }}
-                      >
-                        {t('swapSlippagePercent', [Slippage.default])}
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          setCustomValue('');
-                          setEnteringCustomValue(false);
-                          setActiveButtonIndex(1);
-                          setNewSlippage(Slippage.high);
-                        }}
-                      >
-                        {t('swapSlippagePercent', [Slippage.high])}
-                      </Button>
-                      <Button
-                        className={classnames(
-                          'transaction-settings__button-group-custom-button',
-                          {
-                            'radio-button--danger': isDangerSeverity,
-                          },
-                        )}
-                        onClick={() => {
-                          setActiveButtonIndex(2);
-                          setEnteringCustomValue(true);
-                        }}
-                      >
-                        {enteringCustomValue ? (
-                          <div
-                            className={classnames(
-                              'transaction-settings__custom-input',
-                              {
-                                'transaction-settings__custom-input--danger':
-                                  isDangerSeverity,
-                              },
-                            )}
-                          >
-                            <input
-                              data-testid="transaction-settings-custom-slippage"
-                              onChange={(event) => {
-                                const { value } = event.target;
-                                const isValueNumeric = !isNaN(Number(value));
-                                if (isValueNumeric) {
-                                  setCustomValue(value);
-                                  setNewSlippage(Number(value));
-                                }
-                              }}
-                              type="text"
-                              maxLength="4"
-                              ref={setInputRef}
-                              onBlur={() => {
+                      {t('swapSlippagePercent', [
+                        isStablePair(sourceTokenSymbol, destinationTokenSymbol)
+                          ? Slippage.stable
+                          : Slippage.default,
+                      ])}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setCustomValue('');
+                        setEnteringCustomValue(false);
+                        setActiveButtonIndex(1);
+                        setNewSlippage(Slippage.high);
+                      }}
+                    >
+                      {t('swapSlippagePercent', [Slippage.high])}
+                    </Button>
+                    <Button
+                      className={classnames(
+                        'transaction-settings__button-group-custom-button',
+                        {
+                          'radio-button--danger': isDangerSeverity,
+                        },
+                      )}
+                      onClick={() => {
+                        setActiveButtonIndex(2);
+                        setEnteringCustomValue(true);
+                      }}
+                    >
+                      {enteringCustomValue ? (
+                        <div
+                          className={classnames(
+                            'transaction-settings__custom-input',
+                            {
+                              'transaction-settings__custom-input--danger':
+                                isDangerSeverity,
+                            },
+                          )}
+                        >
+                          <input
+                            data-testid="transaction-settings-custom-slippage"
+                            onChange={(event) => {
+                              const { value } = event.target;
+                              const isValueNumeric = !isNaN(Number(value));
+                              if (isValueNumeric) {
+                                setCustomValue(value);
+                                setNewSlippage(Number(value));
+                              }
+                            }}
+                            type="text"
+                            maxLength="4"
+                            ref={setInputRef}
+                            onBlur={() => {
+                              setEnteringCustomValue(false);
+                            }}
+                            onKeyDown={(event) => {
+                              if (event.key === 'Enter') {
                                 setEnteringCustomValue(false);
-                              }}
-                              onKeyDown={(event) => {
-                                if (event.key === 'Enter') {
-                                  setEnteringCustomValue(false);
-                                }
-                              }}
-                              value={customValue || ''}
-                            />
-                          </div>
-                        ) : (
-                          customValueText
-                        )}
-                        {(customValue || enteringCustomValue) && (
-                          <div className="transaction-settings__percentage-suffix">
-                            %
-                          </div>
-                        )}
-                      </Button>
-                    </ButtonGroup>
-                  </Box>
+                              }
+                            }}
+                            value={customValue || ''}
+                          />
+                        </div>
+                      ) : (
+                        customValueText
+                      )}
+                      {(customValue || enteringCustomValue) && (
+                        <div className="transaction-settings__percentage-suffix">
+                          %
+                        </div>
+                      )}
+                    </Button>
+                  </ButtonGroup>
                 </>
               )}
             </>
@@ -304,4 +317,6 @@ TransactionSettings.propTypes = {
   maxAllowedSlippage: PropTypes.number.isRequired,
   currentSlippage: PropTypes.number,
   isDirectWrappingEnabled: PropTypes.bool,
+  sourceTokenSymbol: PropTypes.string,
+  destinationTokenSymbol: PropTypes.string,
 };

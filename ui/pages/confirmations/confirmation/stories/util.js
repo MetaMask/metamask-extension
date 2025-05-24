@@ -56,7 +56,7 @@ const STORE_MOCK = {
       'npm:@test/test-snap': {
         id: 'npm:@test/test-snap',
         manifest: {
-          description: 'Test Snap',
+          proposedName: 'Test Snap',
         },
       },
     },
@@ -64,8 +64,12 @@ const STORE_MOCK = {
 };
 
 // eslint-disable-next-line react/prop-types
-export function PendingApproval({ children, requestData, type }) {
-  const mockState = { ...STORE_MOCK };
+export function PendingApproval({ children, requestData, state, type }) {
+  const mockState = {
+    ...STORE_MOCK,
+    metamask: { ...STORE_MOCK.metamask, ...state },
+  };
+
   const pendingApproval = mockState.metamask.pendingApprovals.testId;
 
   pendingApproval.type = type;
@@ -75,13 +79,29 @@ export function PendingApproval({ children, requestData, type }) {
     <Provider store={configureStore(mockState)}>
       <Box
         style={{
+          display: 'flex',
+          flexDirection: 'column',
           height: '592px',
           width: '360px',
-          border: '1px solid lightgrey',
           margin: '0 auto',
         }}
       >
-        {children}
+        <Box
+          style={{
+            display: 'flex',
+            height: '100%',
+            flexDirection: 'column',
+          }}
+        >
+          <Box
+            style={{
+              flex: '1 1 auto',
+              display: 'flex',
+            }}
+          >
+            {children}
+          </Box>
+        </Box>
       </Box>
     </Provider>
   );

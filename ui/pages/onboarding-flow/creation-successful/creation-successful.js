@@ -34,13 +34,14 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { useCreateSession } from '../../../hooks/metamask-notifications/useCreateSession';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
+import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 export default function CreationSuccessful() {
   const history = useHistory();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
   const learnMoreLink =
@@ -48,9 +49,7 @@ export default function CreationSuccessful() {
   const learnHowToKeepWordsSafe =
     'https://community.metamask.io/t/what-is-a-secret-recovery-phrase-and-how-to-keep-your-crypto-wallet-secure/3440';
 
-  const { createSession } = useCreateSession();
-
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
   return (
     <Box
@@ -202,10 +201,10 @@ export default function CreationSuccessful() {
               event: MetaMetricsEventName.OnboardingWalletCreationComplete,
               properties: {
                 method: firstTimeFlowType,
-                is_profile_syncing_enabled: isProfileSyncingEnabled,
+                is_profile_syncing_enabled: isBackupAndSyncEnabled,
+                hd_entropy_index: hdEntropyIndex,
               },
             });
-            createSession();
             history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
           }}
         >

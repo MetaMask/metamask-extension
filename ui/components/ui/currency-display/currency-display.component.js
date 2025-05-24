@@ -53,7 +53,7 @@ export default function CurrencyDisplay({
       className={classnames('currency-display-component', className)}
       data-testid={dataTestId}
       style={style}
-      title={(!hideTitle && title) || null}
+      title={(!hideTitle && !privacyMode && title) || null}
       display={Display.Flex}
       alignItems={AlignItems.center}
       flexWrap={FlexWrap.Wrap}

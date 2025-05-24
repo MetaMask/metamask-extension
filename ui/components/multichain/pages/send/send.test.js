@@ -1,7 +1,7 @@
 import React from 'react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
-import { EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { act } from '@testing-library/react';
 import {
   renderWithProvider,
@@ -99,7 +99,11 @@ const baseStore = {
         },
       },
     ],
-
+    tokenBalances: {
+      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+        '0x5': {},
+      },
+    },
     currencyRates: {
       ETH: {
         conversionDate: 1620710825.03,
@@ -136,23 +140,9 @@ const baseStore = {
           },
           options: {},
           methods: ETH_EOA_METHODS,
+          scopes: [EthScope.Eoa],
           type: EthAccountType.Eoa,
         },
-        permissionHistory: {
-          'https://uniswap.org/': {
-            eth_accounts: {
-              accounts: {
-                '0x0': 1709225290848,
-              },
-            },
-          },
-        },
-      },
-      activeTab: {
-        origin: 'https://uniswap.org/',
-      },
-      appState: {
-        sendInputCurrencySwitched: false,
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
@@ -160,6 +150,10 @@ const baseStore = {
       {
         type: KeyringType.hdKeyTree,
         accounts: ['0x0'],
+        metadata: {
+          id: 'test-keyring-id',
+          name: '',
+        },
       },
     ],
     ...mockNetworkState({
@@ -207,6 +201,10 @@ const baseStore = {
     completedOnboarding: true,
     useCurrencyRateCheck: true,
     ticker: 'ETH',
+    snaps: {},
+  },
+  localeMessages: {
+    currentLocale: 'en',
   },
   activeTab: {
     origin: 'https://uniswap.org/',

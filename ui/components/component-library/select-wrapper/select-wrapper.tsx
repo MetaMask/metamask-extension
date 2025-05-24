@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import classnames from 'classnames';
-import type { PolymorphicRef, BoxProps } from '../box';
-import { Box, Popover, PopoverPosition } from '..';
+import { Box, type PolymorphicRef, BoxProps } from '../box';
+import { Popover, PopoverPosition } from '../popover';
 import {
   SelectWrapperComponent,
   SelectWrapperProps,
@@ -29,7 +29,7 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
     }: SelectWrapperProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [uncontrolledValue, setUncontrolledValue] = useState<any | null>();
     const [isUncontrolledOpen, setIsUncontrolledOpen] =
@@ -89,6 +89,8 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
               ref: setBoxRef,
             })}
           <Popover
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             isOpen={isOpen || isUncontrolledOpen}
             position={PopoverPosition.Bottom}
             onClickOutside={handleClickOutside}
@@ -100,6 +102,8 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
             {...popoverProps}
             className={classnames(
               'mm-select-wrapper__popover',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               popoverProps?.className || '',
             )}
           >

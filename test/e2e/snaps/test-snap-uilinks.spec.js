@@ -1,10 +1,8 @@
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-  WINDOW_TITLES,
-} = require('../helpers');
+const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const {
+  mockDialogSnap,
+} = require('../mock-response-data/snaps/snap-binary-mocks');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap UI Links', function () {
@@ -12,8 +10,8 @@ describe('Test Snap UI Links', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
+        testSpecificMock: mockDialogSnap,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -118,7 +116,7 @@ describe('Test Snap UI Links', function () {
 
         // check that the correct page has been opened
         await driver.waitForSelector({
-          text: 'Most Popular',
+          text: 'Most popular',
           tag: 'h2',
         });
 

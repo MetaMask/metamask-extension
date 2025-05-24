@@ -3,19 +3,17 @@ import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import {
   DEFAULT_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   ONBOARDING_COMPLETION_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
   ONBOARDING_UNLOCK_ROUTE,
   LOCK_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   ONBOARDING_EXPERIMENTAL_AREA, // eslint-disable-line no-unused-vars
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
   ONBOARDING_WELCOME_ROUTE, // eslint-disable-line no-unused-vars
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  MMI_ONBOARDING_COMPLETION_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+  ONBOARDING_METAMETRICS, // eslint-disable-line no-unused-vars
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import {
@@ -24,6 +22,11 @@ import {
   getIsUnlocked,
   getSeedPhraseBackedUp,
 } from '../../../ducks/metamask/metamask';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+// eslint-disable-next-line import/no-restricted-paths
+import { getPlatform } from '../../../../app/scripts/lib/util'; // eslint-disable-line no-unused-vars
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app'; // eslint-disable-line no-unused-vars
+///: END:ONLY_INCLUDE_IF
 
 export default function OnboardingFlowSwitch() {
   /* eslint-disable prefer-const */
@@ -36,17 +39,9 @@ export default function OnboardingFlowSwitch() {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   if (seedPhraseBackedUp !== null) {
     return <Redirect to={{ pathname: ONBOARDING_COMPLETION_ROUTE }} />;
   }
-  ///: END:ONLY_INCLUDE_IF
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  if (seedPhraseBackedUp !== null) {
-    return <Redirect to={{ pathname: MMI_ONBOARDING_COMPLETION_ROUTE }} />;
-  }
-  ///: END:ONLY_INCLUDE_IF
 
   if (isUnlocked) {
     return <Redirect to={{ pathname: LOCK_ROUTE }} />;
@@ -58,8 +53,13 @@ export default function OnboardingFlowSwitch() {
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     redirect = <Redirect to={{ pathname: ONBOARDING_EXPERIMENTAL_AREA }} />;
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-mmi)
-    redirect = <Redirect to={{ pathname: ONBOARDING_WELCOME_ROUTE }} />;
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
+    redirect =
+      getPlatform() === PLATFORM_FIREFOX ? (
+        <Redirect to={{ pathname: ONBOARDING_METAMETRICS }} />
+      ) : (
+        <Redirect to={{ pathname: ONBOARDING_WELCOME_ROUTE }} />
+      );
     ///: END:ONLY_INCLUDE_IF
     return redirect;
   }

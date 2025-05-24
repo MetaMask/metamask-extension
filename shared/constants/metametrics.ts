@@ -91,7 +91,7 @@ export type MetaMetricsEventPayload = {
   /**
    * The category to associate the event to.
    */
-  category: string;
+  category?: string;
   /**
    * The action ID to deduplicate event requests from the UI.
    */
@@ -205,7 +205,7 @@ export type MetaMetricsEventFragment = {
   /**
    * The event category to use for both the success and failure events.
    */
-  category: string;
+  category?: string;
   /**
    * Should this fragment be persisted in state and progressed after the
    * extension is locked and unlocked.
@@ -304,7 +304,7 @@ export type SegmentEventPayload = {
     params?: Record<string, string>;
     legacy_event?: boolean;
     locale: string;
-    chain_id: string;
+    chain_id: string | null;
     environment_type?: string;
     revenue?: number;
     value?: number;
@@ -423,6 +423,10 @@ export type MetaMetricsUserTraits = {
    */
   number_of_tokens?: number;
   /**
+   * The number of HD Entropies the user has.
+   */
+  number_of_hd_entropies?: number;
+  /**
    * Does the user have the OpenSea API enabled?
    */
   opensea_api_enabled?: boolean;
@@ -468,20 +472,6 @@ export type MetaMetricsUserTraits = {
    * Whether the security provider feature has been enabled.
    */
   security_providers?: string[];
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  /**
-   * The address of the MMI account in question
-   */
-  mmi_account_address?: string | null;
-  /**
-   * What is the MMI extension ID
-   */
-  mmi_extension_id?: string;
-  /**
-   * Is the user using a custodian account
-   */
-  mmi_is_custodian?: boolean;
-  ///: END:ONLY_INCLUDE_IF
   /**
    * Does the user change the token sort order on the asset list
    */
@@ -490,6 +480,10 @@ export type MetaMetricsUserTraits = {
    * The number of petname addresses
    */
   petname_addresses_count?: number;
+  /**
+   * The profile ID of the user if they have been signed in
+   */
+  profile_id?: string;
 };
 
 export enum MetaMetricsUserTrait {
@@ -542,6 +536,10 @@ export enum MetaMetricsUserTrait {
    */
   NumberOfTokens = 'number_of_tokens',
   /**
+   * Identified when the user has HD Entropies.
+   */
+  NumberOfHDEntropies = 'number_of_hd_entropies',
+  /**
    * Identified when the OpenSea API is enabled.
    */
   OpenSeaApiEnabled = 'opensea_api_enabled',
@@ -567,20 +565,6 @@ export enum MetaMetricsUserTrait {
    * Identified when the security provider feature is enabled.
    */
   SecurityProviders = 'security_providers',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  /**
-   * Identified when we get the current account in question
-   */
-  MmiAccountAddress = 'mmi_account_address',
-  /**
-   * Identified when we the user has the extension
-   */
-  MmiExtensionId = 'mmi_extension_id',
-  /**
-   * Identified when the user connects a custodian
-   */
-  MmiIsCustodian = 'mmi_is_custodian',
-  ///: END:ONLY_INCLUDE_IF
   PetnameAddressCount = 'petname_addresses_count',
   /**
    * Identified when the user selects a currency from settings
@@ -598,6 +582,14 @@ export enum MetaMetricsUserTrait {
    * Identified when the user prefers to see all tokens or current network tokens in wallet list
    */
   NetworkFilterPreference = 'selected_network_filter',
+  /**
+   * Identified when the user signs in
+   */
+  ProfileId = 'profile_id',
+  /**
+   * Identified when the user adds or removes configured chains (evm or non-evm)
+   */
+  ChainIdList = 'chain_id_list',
 }
 
 /**
@@ -629,6 +621,7 @@ export enum MetaMetricsEventName {
   AccountAdded = 'Account Added',
   AccountAddSelected = 'Account Add Selected',
   AccountAddFailed = 'Account Add Failed',
+  AccountImportFailed = 'Account Import Failed',
   AccountDetailsOpened = 'Account Details Opened',
   AccountPasswordCreated = 'Account Password Created',
   AccountReset = 'Account Reset',
@@ -640,14 +633,19 @@ export enum MetaMetricsEventName {
   ActivityDetailsClosed = 'Activity Details Closed',
   AnalyticsPreferenceSelected = 'Analytics Preference Selected',
   AppInstalled = 'App Installed',
+  AppOpened = 'App Opened',
   AppUnlocked = 'App Unlocked',
   AppUnlockedFailed = 'App Unlocked Failed',
   AppLocked = 'App Locked',
   AppWindowExpanded = 'App Window Expanded',
+  BannerDisplay = 'Banner Display',
+  BannerCloseAll = 'Banner Close All',
+  BannerSelect = 'Banner Select',
+  BannerNavigated = 'Banner Navigated',
   BridgeLinkClicked = 'Bridge Link Clicked',
+  SwapLinkClicked = 'Swap Link Clicked',
   BitcoinSupportToggled = 'Bitcoin Support Toggled',
   BitcoinTestnetSupportToggled = 'Bitcoin Testnet Support Toggled',
-  SolanaSupportToggled = 'Solana Support Toggled',
   CurrentCurrency = 'Current Currency',
   DappViewed = 'Dapp Viewed',
   DecryptionApproved = 'Decryption Approved',
@@ -655,6 +653,7 @@ export enum MetaMetricsEventName {
   DecryptionRequested = 'Decryption Requested',
   DisablingNotifications = 'Notifications Disabled',
   EmptyBuyBannerDisplayed = 'Empty Buy Banner Displayed',
+  EmptyBuyBannerClosed = 'Empty Buy Banner Closed',
   EmptyBuyBannerClicked = 'Empty Buy Banner Clicked',
   EmptyReceiveBannerDisplayed = 'Empty Receive Banner Displayed',
   EmptyReceiveBannerClicked = 'Empty Receive Banner Clicked',
@@ -666,6 +665,8 @@ export enum MetaMetricsEventName {
   EncryptionPublicKeyRequested = 'Encryption Requested',
   ErrorOccured = 'Error occured',
   ExternalLinkClicked = 'External Link Clicked',
+  ImportSecretRecoveryPhraseClicked = 'Import Secret Recovery Phrase Clicked',
+  ImportSecretRecoveryPhraseCompleted = 'Import Secret Recovery Phrase Completed',
   KeyExportSelected = 'Key Export Selected',
   KeyExportRequested = 'Key Export Requested',
   KeyExportFailed = 'Key Export Failed',
@@ -730,6 +731,9 @@ export enum MetaMetricsEventName {
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
   QuoteError = 'Quote Error',
+  RpcServiceDegraded = 'RPC Service Degraded',
+  RpcServiceUnavailable = 'RPC Service Unavailable',
+  SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
   SettingsUpdated = 'Settings Updated',
   SignatureApproved = 'Signature Approved',
   SignatureFailed = 'Signature Failed',
@@ -765,6 +769,7 @@ export enum MetaMetricsEventName {
   TokenAdded = 'Token Added',
   TokenRemoved = 'Token Removed',
   TokenSortPreference = 'Token Sort Preference',
+  TokenListRefreshed = 'Token List Refreshed',
   NFTRemoved = 'NFT Removed',
   TokenDetected = 'Token Detected',
   TokenHidden = 'Token Hidden',
@@ -778,23 +783,6 @@ export enum MetaMetricsEventName {
   // BEGIN:ONLY_INCLUDE_IF(build-flask)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   // END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  DeeplinkClicked = 'Deeplink Clicked',
-  ConnectCustodialAccountClicked = 'Connect Custodial Account Clicked',
-  MMIPortfolioButtonClicked = 'MMI Portfolio Button Clicked',
-  PortfolioDashboardModalButtonClicked = 'Portfolio Dashboard Modal Button Clicked',
-  PortfolioDashboardModalOpened = 'Portfolio Dashboard Modal Opened',
-  StakeButtonClicked = 'Stake Button Clicked',
-  InteractiveReplacementTokenButtonClicked = 'Interactive Replacement Token Button Clicked',
-  RefreshTokenListClicked = 'Refresh Token List Clicked',
-  SignatureDeeplinkDisplayed = 'Signature Deeplink Displayed',
-  InstitutionalFeatureConnected = 'Institutional Feature Connected',
-  CustodianSelected = 'Custodian Selected',
-  CustodianConnected = 'Custodian Connected',
-  CustodianConnectionCanceled = 'Custodian Connection Canceled',
-  CustodianConnectionFailed = 'Custodian Connection Failed',
-  CustodialAccountsConnected = 'Custodial Accounts Connected',
-  ///: END:ONLY_INCLUDE_IF
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
   AccountRemoved = 'Account Removed',
@@ -805,6 +793,8 @@ export enum MetaMetricsEventName {
   TokenDetailsOpened = 'Token Details Opened',
   NftScreenOpened = 'NFT Screen Opened',
   NftDetailsOpened = 'NFT Details Opened',
+  DeFiScreenOpened = 'DeFi Screen Opened',
+  DeFiDetailsOpened = 'DeFi Details Opened',
   ActivityScreenOpened = 'Activity Screen Opened',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
@@ -821,7 +811,9 @@ export enum MetaMetricsEventName {
   TransactionFinalized = 'Transaction Finalized',
   ConfirmationQueued = 'Confirmation Queued',
   ExitedSwaps = 'Exited Swaps',
+  MakeAnotherSwap = 'Make Another Swap',
   SwapError = 'Swap Error',
+  SwapFailed = 'Swap Failed',
   SnapInstallStarted = 'Snap Install Started',
   SnapInstallFailed = 'Snap Install Failed',
   SnapInstallRejected = 'Snap Install Rejected',
@@ -861,7 +853,6 @@ export enum MetaMetricsEventName {
   NotificationsActivated = 'Notifications Activated',
   PushNotificationReceived = 'Push Notification Received',
   PushNotificationClicked = 'Push Notification Clicked',
-
   // Send
   sendAssetSelected = 'Send Asset Selected',
   sendFlowExited = 'Send Flow Exited',
@@ -870,6 +861,21 @@ export enum MetaMetricsEventName {
   sendSwapQuoteRequested = 'Send Swap Quote Requested',
   sendSwapQuoteReceived = 'Send Swap Quote Received',
   sendTokenModalOpened = 'Send Token Modal Opened',
+  // Cross Chain Swaps
+  ActionCompleted = 'Action Completed',
+  ActionFailed = 'Action Failed',
+  ActionButtonClicked = 'Action Button Clicked',
+  ActionPageViewed = 'Action Page Viewed',
+  ActionSubmitted = 'Action Submitted',
+  AllQuotesOpened = 'All Quotes Opened',
+  AllQuotesSorted = 'All Quotes Sorted',
+  InputChanged = 'Input Changed',
+  InputSourceDestinationFlipped = 'Source and Destination Flipped',
+  CrossChainSwapsQuoteError = 'Cross-chain Quote Error',
+  QuoteSelected = 'Quote Selected',
+  CrossChainSwapsQuotesReceived = 'Cross-chain Quotes Received',
+  CrossChainSwapsQuotesRequested = 'Cross-chain Quotes Requested',
+  Wallet5792Called = 'EIP-5792 API Called',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -883,7 +889,6 @@ export enum MetaMetricsEventAccountType {
 
 export enum QueueType {
   NavigationHeader = 'navigation_header',
-  QueueController = 'queue_controller',
 }
 
 export enum MetaMetricsEventAccountImportType {
@@ -898,12 +903,15 @@ export enum MetaMetricsEventCategory {
   App = 'App',
   Auth = 'Auth',
   Background = 'Background',
+  Banner = 'Banner',
   // The TypeScript ESLint rule is incorrectly marking this line.
   /* eslint-disable-next-line @typescript-eslint/no-shadow */
   Error = 'Error',
+  DeFi = 'DeFi',
   Footer = 'Footer',
   Home = 'Home',
   InpageProvider = 'inpage_provider',
+  MultichainApi = 'multichain_api',
   Keys = 'Keys',
   Messages = 'Messages',
   Navigation = 'Navigation',
@@ -916,7 +924,7 @@ export enum MetaMetricsEventCategory {
   // eslint-disable-next-line @typescript-eslint/no-shadow
   Permissions = 'Permissions',
   Phishing = 'Phishing',
-  ProfileSyncing = 'Profile Syncing',
+  BackupAndSync = 'Backup And Sync',
   PushNotifications = 'Notifications',
   Retention = 'Retention',
   Send = 'Send',
@@ -928,9 +936,7 @@ export enum MetaMetricsEventCategory {
   Transactions = 'Transactions',
   Wallet = 'Wallet',
   Confirmations = 'Confirmations',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  MMI = 'Institutional',
-  ///: END:ONLY_INCLUDE_IF
+  CrossChainSwaps = 'Cross Chain Swaps',
 }
 
 export enum MetaMetricsEventLinkType {
@@ -976,9 +982,15 @@ export enum MetaMetricsTransactionEventSource {
   User = 'user',
 }
 
+export enum MetaMetricsRequestedThrough {
+  EthereumProvider = 'ethereum_provider',
+  MultichainApi = 'multichain_api',
+}
+
 export enum MetaMetricsEventLocation {
   AlertFrictionModal = 'alert_friction_modal',
   Confirmation = 'confirmation',
+  OriginThrottleModal = 'origin_throttle_modal',
   SignatureConfirmation = 'signature_confirmation',
   TokenDetails = 'token_details',
   TokenDetection = 'token_detection',
@@ -1019,4 +1031,9 @@ export enum DeleteRegulationStatus {
   PartialSuccess = 'PARTIAL_SUCCESS',
   Running = 'RUNNING',
   Unknown = 'UNKNOWN',
+}
+
+export enum MetaMetricsEventTransactionEstimateType {
+  DappProposed = 'dapp_proposed',
+  DefaultEstimate = 'default_estimate',
 }

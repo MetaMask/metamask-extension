@@ -9,7 +9,8 @@ import {
 import { BigNumber } from 'bignumber.js';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
-import { SimulationDetails } from './simulation-details';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
+import { SimulationDetails, StaticRow } from './simulation-details';
 import { useBalanceChanges } from './useBalanceChanges';
 import { BalanceChangeList } from './balance-change-list';
 import { BalanceChange } from './types';
@@ -44,6 +45,7 @@ jest.mock('../../context/confirm', () => ({
 const renderSimulationDetails = (
   simulationData?: Partial<SimulationData>,
   metricsOnly?: boolean,
+  staticRows?: StaticRow[],
 ) =>
   renderWithProvider(
     <SimulationDetails
@@ -51,6 +53,7 @@ const renderSimulationDetails = (
         { id: 'testTransactionId', simulationData } as TransactionMeta
       }
       metricsOnly={metricsOnly}
+      staticRows={staticRows}
     />,
     store,
   );
@@ -149,5 +152,40 @@ describe('SimulationDetails', () => {
   it('does not render any UI elements when metricsOnly is true', () => {
     const { container } = renderSimulationDetails({}, true);
     expect(container).toBeEmptyDOMElement();
+  });
+
+  it('renders static rows if provided', () => {
+    (useBalanceChanges as jest.Mock).mockReturnValue({
+      pending: false,
+      value: [],
+    });
+
+    const staticRows: StaticRow[] = [
+      {
+        label: 'Test Label',
+        balanceChanges: [
+          {
+            asset: {
+              address: '0x123',
+              chainId: '0x321',
+              standard: TokenStandard.ERC20,
+            },
+            amount: new BigNumber(123),
+            fiatAmount: 456,
+          },
+        ],
+      },
+    ];
+
+    renderSimulationDetails({}, false, staticRows);
+
+    expect(BalanceChangeList).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({
+        heading: 'Test Label',
+        balanceChanges: staticRows[0].balanceChanges,
+      }),
+      {},
+    );
   });
 });

@@ -1,5 +1,7 @@
 import React from 'react';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { NetworkConfiguration } from '@metamask/network-controller';
+import { type CaipChainId } from '@metamask/utils';
 import classnames from 'classnames';
 import { useDispatch } from 'react-redux';
 import {
@@ -17,18 +19,15 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
-import {
-  setActiveNetwork,
-  setEditedNetwork,
-  toggleNetworkMenu,
-  updateNetwork,
-} from '../../../../store/actions';
+import { setEditedNetwork, updateNetwork } from '../../../../store/actions';
 import RpcListItem from '../rpc-list-item';
 
 export const SelectRpcUrlModal = ({
   networkConfiguration,
+  onNetworkChange,
 }: {
   networkConfiguration: NetworkConfiguration;
+  onNetworkChange: (chainId: CaipChainId, networkClientId: string) => void;
 }) => {
   const dispatch = useDispatch();
 
@@ -69,15 +68,16 @@ export const SelectRpcUrlModal = ({
           display={Display.Flex}
           key={rpcEndpoint.url}
           onClick={() => {
-            dispatch(
-              updateNetwork({
-                ...networkConfiguration,
-                defaultRpcEndpointIndex: index,
-              }),
-            );
-            dispatch(setActiveNetwork(rpcEndpoint.networkClientId));
+            const network = {
+              ...networkConfiguration,
+              defaultRpcEndpointIndex: index,
+            };
+            dispatch(updateNetwork(network));
             dispatch(setEditedNetwork());
-            dispatch(toggleNetworkMenu());
+            onNetworkChange(
+              toEvmCaipChainId(network.chainId),
+              rpcEndpoint.networkClientId,
+            );
           }}
           className={classnames('select-rpc-url__item', {
             'select-rpc-url__item--selected':

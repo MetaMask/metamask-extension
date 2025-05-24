@@ -4,6 +4,7 @@
 export enum HardwareKeyringType {
   ledger = 'Ledger Hardware',
   trezor = 'Trezor Hardware',
+  oneKey = 'OneKey Hardware',
   lattice = 'Lattice Hardware',
   qr = 'QR Hardware Wallet Device',
 }
@@ -11,6 +12,7 @@ export enum HardwareKeyringType {
 export enum HardwareKeyringNames {
   ledger = 'Ledger',
   trezor = 'Trezor',
+  oneKey = 'OneKey',
   lattice = 'Lattice1',
   qr = 'QR',
 }
@@ -18,7 +20,7 @@ export enum HardwareKeyringNames {
 export enum HardwareDeviceNames {
   ledger = 'ledger',
   trezor = 'trezor',
-  oneKeyViaTrezor = 'OneKey via Trezor',
+  oneKey = 'oneKey',
   lattice = 'lattice',
   qr = 'QR Hardware',
 }

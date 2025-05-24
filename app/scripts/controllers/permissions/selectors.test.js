@@ -1,51 +1,15 @@
 import { cloneDeep } from 'lodash';
-import { CaveatTypes } from '../../../../shared/constants/permissions';
 import {
-  diffMap,
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '@metamask/chain-agnostic-permission';
+import {
   getPermittedAccountsByOrigin,
   getPermittedChainsByOrigin,
+  getOriginsWithSessionProperty,
 } from './selectors';
-import { PermissionNames } from './specifications';
 
 describe('PermissionController selectors', () => {
-  describe('diffMap', () => {
-    it('returns the new value if the previous value is undefined', () => {
-      const newAccounts = new Map([['foo.bar', ['0x1']]]);
-      expect(diffMap(newAccounts)).toBe(newAccounts);
-    });
-
-    it('returns an empty map if the new and previous values are the same', () => {
-      const newAccounts = new Map([['foo.bar', ['0x1']]]);
-      expect(diffMap(newAccounts, newAccounts)).toStrictEqual(new Map());
-    });
-
-    it('returns a new map of the changed key/value pairs if the new and previous maps differ', () => {
-      // We set this on the new and previous value under the key 'foo.bar' to
-      // check that identical values are excluded.
-      const identicalValue = ['0x1'];
-
-      const previousAccounts = new Map([
-        ['bar.baz', ['0x1']], // included: different accounts
-        ['fizz.buzz', ['0x1']], // included: removed in new value
-      ]);
-      previousAccounts.set('foo.bar', identicalValue);
-
-      const newAccounts = new Map([
-        ['bar.baz', ['0x1', '0x2']], // included: different accounts
-        ['baz.fizz', ['0x3']], // included: brand new
-      ]);
-      newAccounts.set('foo.bar', identicalValue);
-
-      expect(diffMap(newAccounts, previousAccounts)).toStrictEqual(
-        new Map([
-          ['bar.baz', ['0x1', '0x2']],
-          ['fizz.buzz', []],
-          ['baz.fizz', ['0x3']],
-        ]),
-      );
-    });
-  });
-
   describe('getPermittedAccountsByOrigin', () => {
     it('memoizes and gets permitted accounts by origin', () => {
       const state1 = {
@@ -53,25 +17,72 @@ describe('PermissionController selectors', () => {
           'foo.bar': {
             origin: 'foo.bar',
             permissions: {
-              eth_accounts: {
-                caveats: [{ type: 'restrictReturnedAccounts', value: ['0x1'] }],
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:1': {
+                          accounts: ['eip155:1:0x1'],
+                        },
+                      },
+                      optionalScopes: {
+                        'bip122:000000000019d6689c085ae165831e93': {
+                          accounts: [
+                            'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
+                          ],
+                        },
+                      },
+                      isMultichainOrigin: true,
+                    },
+                  },
+                ],
               },
             },
           },
           'bar.baz': {
             origin: 'bar.baz',
             permissions: {
-              eth_accounts: {
-                caveats: [{ type: 'restrictReturnedAccounts', value: ['0x2'] }],
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: ['eip155:1:0x2'],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
+                ],
               },
             },
           },
           'baz.bizz': {
             origin: 'baz.fizz',
             permissions: {
-              eth_accounts: {
+              [Caip25EndowmentPermissionName]: {
                 caveats: [
-                  { type: 'restrictReturnedAccounts', value: ['0x1', '0x2'] },
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:1': {
+                          accounts: ['eip155:1:0x1'],
+                        },
+                      },
+                      optionalScopes: {
+                        'eip155:1': {
+                          accounts: ['eip155:1:0x2'],
+                        },
+                      },
+                      isMultichainOrigin: false,
+                    },
+                  },
                 ],
               },
             },
@@ -125,11 +136,23 @@ describe('PermissionController selectors', () => {
           'foo.bar': {
             origin: 'foo.bar',
             permissions: {
-              [PermissionNames.permittedChains]: {
+              [Caip25EndowmentPermissionName]: {
                 caveats: [
                   {
-                    type: CaveatTypes.restrictNetworkSwitching,
-                    value: ['0x1'],
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:1': {
+                          accounts: [],
+                        },
+                      },
+                      optionalScopes: {
+                        'bip122:000000000019d6689c085ae165831e93': {
+                          accounts: [],
+                        },
+                      },
+                      isMultichainOrigin: true,
+                    },
                   },
                 ],
               },
@@ -138,11 +161,19 @@ describe('PermissionController selectors', () => {
           'bar.baz': {
             origin: 'bar.baz',
             permissions: {
-              [PermissionNames.permittedChains]: {
+              [Caip25EndowmentPermissionName]: {
                 caveats: [
                   {
-                    type: CaveatTypes.restrictNetworkSwitching,
-                    value: ['0x2'],
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:2': {
+                          accounts: [],
+                        },
+                      },
+                      optionalScopes: {},
+                      isMultichainOrigin: true,
+                    },
                   },
                 ],
               },
@@ -151,17 +182,29 @@ describe('PermissionController selectors', () => {
           'baz.bizz': {
             origin: 'baz.fizz',
             permissions: {
-              [PermissionNames.permittedChains]: {
+              [Caip25EndowmentPermissionName]: {
                 caveats: [
                   {
-                    type: CaveatTypes.restrictNetworkSwitching,
-                    value: ['0x1', '0x2'],
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {
+                        'eip155:1': {
+                          accounts: [],
+                        },
+                      },
+                      optionalScopes: {
+                        'eip155:2': {
+                          accounts: [],
+                        },
+                      },
+                      isMultichainOrigin: true,
+                    },
                   },
                 ],
               },
             },
           },
-          'no.accounts': {
+          'no.chains': {
             // we shouldn't see this in the result
             permissions: {
               foobar: {},
@@ -200,6 +243,274 @@ describe('PermissionController selectors', () => {
       // Since we didn't mutate the state at this point, the value should once
       // again be the memoized.
       expect(selected2).toBe(getPermittedChainsByOrigin(state2));
+    });
+  });
+
+  describe('getOriginsWithSessionProperty', () => {
+    it('returns origins that have the specified session property', () => {
+      const state = {
+        subjects: {
+          'dapp1.example.com': {
+            origin: 'dapp1.example.com',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {},
+                      sessionProperties: {
+                        solana_accountChanged_notifications: true,
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          'dapp2.example.com': {
+            origin: 'dapp2.example.com',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {},
+                      sessionProperties: {
+                        another_property: 'value',
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      };
+
+      const result = getOriginsWithSessionProperty(
+        state,
+        'solana_accountChanged_notifications',
+      );
+
+      expect(result).toStrictEqual({
+        'dapp1.example.com': true,
+      });
+    });
+
+    it('returns empty object when no origins have the specified session property', () => {
+      const state = {
+        subjects: {
+          'dapp1.example.com': {
+            origin: 'dapp1.example.com',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {},
+                      sessionProperties: {
+                        some_property: 'value',
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      };
+
+      const result = getOriginsWithSessionProperty(
+        state,
+        'non_existent_property',
+      );
+
+      expect(result).toStrictEqual({});
+    });
+
+    it('returns multiple origins that have the specified session property', () => {
+      const state = {
+        subjects: {
+          'dapp1.example.com': {
+            origin: 'dapp1.example.com',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {},
+                      sessionProperties: {
+                        solana_accountChanged_notifications: true,
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          'dapp2.example.com': {
+            origin: 'dapp2.example.com',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {},
+                      sessionProperties: {
+                        solana_accountChanged_notifications: false,
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          'dapp3.example.com': {
+            origin: 'dapp3.example.com',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {},
+                      sessionProperties: {
+                        other_property: 'value',
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      };
+
+      const result = getOriginsWithSessionProperty(
+        state,
+        'solana_accountChanged_notifications',
+      );
+
+      expect(result).toStrictEqual({
+        'dapp1.example.com': true,
+        'dapp2.example.com': false,
+      });
+    });
+
+    it('ignores origins without CAIP-25 permissions', () => {
+      const state = {
+        subjects: {
+          'dapp1.example.com': {
+            origin: 'dapp1.example.com',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {},
+                      sessionProperties: {
+                        solana_accountChanged_notifications: true,
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          'dapp2.example.com': {
+            origin: 'dapp2.example.com',
+            permissions: {
+              eth_accounts: {
+                caveats: [],
+              },
+            },
+          },
+        },
+      };
+
+      const result = getOriginsWithSessionProperty(
+        state,
+        'solana_accountChanged_notifications',
+      );
+
+      expect(result).toStrictEqual({
+        'dapp1.example.com': true,
+      });
+    });
+
+    it('ignores origins with CAIP-25 permissions but without sessionProperties', () => {
+      const state = {
+        subjects: {
+          'dapp1.example.com': {
+            origin: 'dapp1.example.com',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {},
+                      // No sessionProperties
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          'dapp2.example.com': {
+            origin: 'dapp2.example.com',
+            permissions: {
+              [Caip25EndowmentPermissionName]: {
+                caveats: [
+                  {
+                    type: Caip25CaveatType,
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {},
+                      sessionProperties: {
+                        solana_accountChanged_notifications: true,
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      };
+
+      const result = getOriginsWithSessionProperty(
+        state,
+        'solana_accountChanged_notifications',
+      );
+
+      expect(result).toStrictEqual({
+        'dapp2.example.com': true,
+      });
+    });
+
+    it('handles empty subjects', () => {
+      const state = {
+        subjects: {},
+      };
+
+      const result = getOriginsWithSessionProperty(state, 'any_property');
+
+      expect(result).toStrictEqual({});
     });
   });
 });

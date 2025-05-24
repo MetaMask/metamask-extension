@@ -1,9 +1,7 @@
 const MOCK_BLOCK_NUMBER = '0x1';
 
 export type mockJsonRpcResultType = {
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [methodName: string]: { [arbitraryVariantName: string]: any };
+  [methodName: string]: { [arbitraryVariantName: string]: unknown };
 };
 
 export const mockJsonRpcResult: mockJsonRpcResultType = {

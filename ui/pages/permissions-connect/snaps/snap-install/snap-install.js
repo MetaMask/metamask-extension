@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { isSnapId } from '@metamask/snaps-utils';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
@@ -34,7 +35,6 @@ import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
 import PermissionConnectHeader from '../../../../components/app/permission-connect-header';
-import { isSnapId } from '../../../../helpers/utils/snaps';
 
 export default function SnapInstall({
   request,

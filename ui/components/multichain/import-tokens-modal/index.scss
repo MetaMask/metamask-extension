@@ -25,10 +25,10 @@
   &__confirmation-list {
     overflow-y: scroll;
     overflow: auto;
-    height: 332px;
+    height: 356px;
 
     @include design-system.screen-sm-max {
-      height: 320px;
+      height: 356px;
     }
   }
 
@@ -63,7 +63,7 @@
   }
 
   &__active-tab {
-    color: var(--color-primary-default);
+    color: var(--color-text-default);
   }
 
   &__button-tab {

@@ -136,7 +136,7 @@ export async function fetchResolutions({ domain, chainId, state }) {
     filteredNameLookupSnapsIds.map((snapId) => {
       return handleSnapRequest({
         snapId,
-        origin: '',
+        origin: 'metamask',
         handler: 'onNameLookup',
         request: {
           jsonrpc: '2.0',

@@ -3,8 +3,8 @@ import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
-import { getManifestFlags } from './manifestFlags';
 import { filterEvents } from './sentry-filter-events';
 
 const projectLogger = createProjectLogger('sentry');
@@ -127,9 +127,9 @@ function getTracesSampleRate(sentryTarget) {
   }
 
   if (flags.circleci) {
-    // Report very frequently on develop branch, and never on other branches
+    // Report very frequently on main branch, and never on other branches
     // (Unless you use a `flags = {"sentry": {"tracesSampleRate": x.xx}}` override)
-    if (flags.circleci.branch === 'develop') {
+    if (flags.circleci.branch === 'main') {
       return 0.015;
     }
     return 0;
@@ -139,7 +139,7 @@ function getTracesSampleRate(sentryTarget) {
     return 1.0;
   }
 
-  return 0.01;
+  return 0.0075;
 }
 
 /**

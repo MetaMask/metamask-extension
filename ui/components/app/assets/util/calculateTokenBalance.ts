@@ -2,10 +2,10 @@ import BN from 'bn.js';
 import { Hex } from '@metamask/utils';
 import { stringifyBalance } from '../../../../hooks/useTokenBalances';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
-import { AddressBalanceMapping } from '../token-list/token-list';
+import { AddressBalanceMapping } from '../types';
 
 type CalculateTokenBalanceParams = {
-  isNative: boolean;
+  isNative?: boolean;
   chainId: Hex;
   address: Hex;
   decimals: number;

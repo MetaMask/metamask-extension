@@ -1,0 +1,1 @@
+export { Splash } from './splash';

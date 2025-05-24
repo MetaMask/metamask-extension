@@ -13,6 +13,9 @@ jest.mock('../../../store/actions', () => ({
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
   tokenBalancesStopPollingByPollingToken: jest.fn(),
   setTokenNetworkFilter: jest.fn(),
+  updateSlides: jest.fn(),
+  removeSlide: jest.fn(),
+  addImportedTokens: jest.fn(),
 }));
 
 // Mock the dispatch function
@@ -30,6 +33,7 @@ const render = (props: AccountOverviewEthProps) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+      remoteFeatureFlags: { assetsDefiPositionsEnabled: true }, // this to be removed when the feature flag is removed
       preferences: {
         ...mockState.metamask.preferences,
         tokenNetworkFilter: {
@@ -46,7 +50,6 @@ const render = (props: AccountOverviewEthProps) => {
 describe('AccountOverviewEth', () => {
   beforeEach(() => {
     setBackgroundConnection({
-      setBridgeFeatureFlags: jest.fn(),
       tokenBalancesStartPolling: jest.fn(),
     } as never);
   });
@@ -61,5 +64,6 @@ describe('AccountOverviewEth', () => {
     expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
     expect(queryByTestId('account-overview__nfts-tab')).toBeInTheDocument();
     expect(queryByTestId('account-overview__activity-tab')).toBeInTheDocument();
+    expect(queryByTestId('account-overview__defi-tab')).toBeInTheDocument();
   });
 });
