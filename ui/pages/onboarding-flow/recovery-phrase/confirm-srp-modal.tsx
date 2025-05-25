@@ -45,13 +45,13 @@ export default function ConfirmSrpModal({
   return (
     <Modal
       isOpen
-      onClose={onClose}
+      onClose={() => null}
       className="confirm-srp-modal"
       data-testid="confirm-srp-modal"
     >
       <ModalOverlay />
       <ModalContent alignItems={AlignItems.center}>
-        <ModalHeader onClose={onClose}>
+        <ModalHeader>
           <Box textAlign={TextAlign.Center}>
             <Icon
               name={isError ? IconName.CircleX : IconName.Confirmation}
@@ -64,7 +64,7 @@ export default function ConfirmSrpModal({
             <Text
               variant={TextVariant.headingMd}
               textAlign={TextAlign.Center}
-              marginTop={4}
+              marginTop={2}
               as="h2"
             >
               {isError

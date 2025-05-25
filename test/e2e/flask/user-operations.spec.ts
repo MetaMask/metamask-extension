@@ -25,6 +25,7 @@ import { Bundler } from '../bundler';
 import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
 import { Mockttp } from '../mock-e2e';
 import TestDapp from '../page-objects/pages/test-dapp';
+import { mockAccountAbstractionKeyringSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -198,6 +199,12 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
       })),
   ];
 }
+async function mockSnapAndSwaps(mockServer: Mockttp) {
+  return [
+    await mockSwapsTransactionQuote(mockServer),
+    await mockAccountAbstractionKeyringSnap(mockServer),
+  ];
+}
 
 async function withAccountSnap(
   {
@@ -219,7 +226,7 @@ async function withAccountSnap(
         mnemonic:
           'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
       },
-      testSpecificMock: mockSwapsTransactionQuote,
+      testSpecificMock: mockSnapAndSwaps,
     },
     async ({
       driver,

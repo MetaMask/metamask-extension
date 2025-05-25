@@ -86,8 +86,8 @@ exports[`Unlock Page should match snapshot 1`] = `
           class="mm-box unlock-page__support mm-box--margin-top-6"
         >
           <span>
-             
-            Need help? Contact 
+
+            Need help? Contact
             <a
               href="https://support.metamask.io"
               rel="noopener noreferrer"
@@ -95,8 +95,8 @@ exports[`Unlock Page should match snapshot 1`] = `
             >
               MetaMask support
             </a>
-            
-             
+
+
           </span>
         </div>
       </div>
