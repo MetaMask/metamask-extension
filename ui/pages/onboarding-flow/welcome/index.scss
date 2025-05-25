@@ -41,7 +41,8 @@
 }
 
 .welcome-login {
-  height: 728px;
+  height: calc(100% - 16px);
+  max-height: 728px;
   width: 446px;
   background-color: var(--brand-colors-purple-purple100);
   border-radius: 24px;
@@ -49,7 +50,6 @@
 
   &__content {
     flex: 1;
-    padding: 80px 0;
   }
 
   &__title {
@@ -61,7 +61,7 @@
 
   &__mascot {
     &--image {
-      margin-top: 34px;
+      margin-bottom: 60px;
     }
   }
 

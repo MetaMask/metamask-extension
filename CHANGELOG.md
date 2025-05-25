@@ -7,27 +7,155 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Rebrand "Profile syncing" to "Backup and sync", adding a dedicated settings menu and more ([#32129](https://github.com/MetaMask/metamask-extension/pull/32129))
-- Adding slide for smart account upgrade to home page carousel ([#32048](https://github.com/MetaMask/metamask-extension/pull/32048))
-- Improvements in confirmation page to upgrade to smart account ([#32034](https://github.com/MetaMask/metamask-extension/pull/32034))
+- Show UI error to user if vault should exist, but is missing ([#31404](https://github.com/MetaMask/metamask-extension/pull/31404))
+- Add RPC (sub)domain tracking to transaction event metrics for RPC endpoints usage ([#32076](https://github.com/MetaMask/metamask-extension/pull/32076))
+- Integrate dynamic content banners ([#32101](https://github.com/MetaMask/metamask-extension/pull/32101))
+
+### Changed
+- Unify confirmation page styles and responsive behavior ([#31454](https://github.com/MetaMask/metamask-extension/pull/31454))
+- Hide failed transaction retry button ([#32024](https://github.com/MetaMask/metamask-extension/pull/32024))
+
+### Fixed
 - When `selectedNetworkClientId` is invalid at startup, set it back to mainnet default RPC ([#31517](https://github.com/MetaMask/metamask-extension/pull/31517))
+
+## [12.18.0]
+### Added
+- Adding slide for smart account upgrade to home page carousel ([#32048](https://github.com/MetaMask/metamask-extension/pull/32048))
 - Adds the Solana banner/slide to the existing home carousel ([#32000](https://github.com/MetaMask/metamask-extension/pull/32000))
-- Support for Solana on Firefox ([#32104](https://github.com/MetaMask/metamask-extension/pull/32104))
-- Show error to user if vault should exist, but is missing ([#31404](https://github.com/MetaMask/metamask-extension/pull/31404))
 - Update CAIP-294 wallet announcement event to include `targets` property and new `caip-348` target object ([#32070](https://github.com/MetaMask/metamask-extension/pull/32070))
 - Replace `caip-x` with `caip-348` in Multichain API over externally_connectable ([#32070](https://github.com/MetaMask/metamask-extension/pull/32070))
-- Unify confirmation page styles and responsive behavior ([#31454](https://github.com/MetaMask/metamask-extension/pull/31454))
 - Integrate @metamask/bridge-status-controller@^14.0.0 and replace existing BridgeStatusController instance ([#31907](https://github.com/MetaMask/metamask-extension/pull/31907))
-- Add RPC (sub)domain tracking to transaction event metrics for RPC endpoints usage ([#32076](https://github.com/MetaMask/metamask-extension/pull/32076))
+- Use MetaMask build name for solana ([#32356](https://github.com/MetaMask/metamask-extension/pull/32356))
+- Add info alert linked to account type in transaction request page ([#31840](https://github.com/MetaMask/metamask-extension/pull/31840))
+- Add Remote Mode settings screen logic ([#32214](https://github.com/MetaMask/metamask-extension/pull/32214))
+- Add tracing for UX core flows ([#31732](https://github.com/MetaMask/metamask-extension/pull/31732))
+- Adding Base to STX Supported Chains Array ([#32171](https://github.com/MetaMask/metamask-extension/pull/32171))
+- Prepopulate fromtoken on solana if navigated through assetpicker ([#32143](https://github.com/MetaMask/metamask-extension/pull/32143))
+- Show Import secret recovery phrase in the account menu ([#31832](https://github.com/MetaMask/metamask-extension/pull/31832))
+- Enable users use MetaMask on Solana dApps ([#31705](https://github.com/MetaMask/metamask-extension/pull/31705))
+- Enable review permissions for non EVM networks ([#31825](https://github.com/MetaMask/metamask-extension/pull/31825))
+- Add initial screen to enable swaps and daily allowances for the upcoming remote mode feature ([#31582](https://github.com/MetaMask/metamask-extension/pull/31582))
+- Add market details and price change indicators for non-EVM assets ([#32149](https://github.com/MetaMask/metamask-extension/pull/32149))
+- Introduce a new banner for multi srp feature in account overview page ([#31782](https://github.com/MetaMask/metamask-extension/pull/31782))
+- Trigger Solana account discovery when importing an SRP and creates Solana accounts for all active addresses found ([#31485](https://github.com/MetaMask/metamask-extension/pull/31485))
+- Remote Mode smart account update info component ([#32123](https://github.com/MetaMask/metamask-extension/pull/32123))
+- Add support for non-EVM to the asset historical prices chart ([#32364](https://github.com/MetaMask/metamask-extension/pull/32364))
+- Use ramp api to determine solana buyability ([#32431](https://github.com/MetaMask/metamask-extension/pull/32431))
 
 ### Changed
 - Update multichain network controller to implement `getNetworksWithActivityByAccounts` method and add state management for networks with activity ([#31414](https://github.com/MetaMask/metamask-extension/pull/31414))
 - Update security and privacy policy description to reflect Solana account handling ([#32231](https://github.com/MetaMask/metamask-extension/pull/32231))
 - Updates the Solana modal by adding a learn more link, UI tweaks and auto selects a solana account when it exists. ([#32087](https://github.com/MetaMask/metamask-extension/pull/32087))
-- Hide failed transaction retry button ([#32024](https://github.com/MetaMask/metamask-extension/pull/32024))
+- Update the content for Choose you network to reference solana accounts.0 ([#32375](https://github.com/MetaMask/metamask-extension/pull/32375))
+- Update: Don't show Solana banner if the select account is Solana ([#32332](https://github.com/MetaMask/metamask-extension/pull/32332))
+- Update: simplify the calculation of bridge quote metadata ([#31752](https://github.com/MetaMask/metamask-extension/pull/31752))
+- UI improvements in smart account confirmation page ([#32034](https://github.com/MetaMask/metamask-extension/pull/32034))
+- Update padding for the  gas fee pill component ([#32170](https://github.com/MetaMask/metamask-extension/pull/32170))
+- Remove support link on the home page ([#32157](https://github.com/MetaMask/metamask-extension/pull/32157))
+- Update unlock page text and border styles ([#31811](https://github.com/MetaMask/metamask-extension/pull/31811))
+- Update Send network avatar styling and search spacing ([#31955](https://github.com/MetaMask/metamask-extension/pull/31955))
+- Increases parity with designs for both the splash screen and swap setup flow ([#32134](https://github.com/MetaMask/metamask-extension/pull/32134))
+- Change the ordering for test networks ([#31827](https://github.com/MetaMask/metamask-extension/pull/31827))
+- Cancel account update transaction when clicking "Don't use smart account" from splash screen  ([#31774](https://github.com/MetaMask/metamask-extension/pull/31774))
+- Improve Solana bridge transaction tracking with custom UI components and status indicators ([#31546](https://github.com/MetaMask/metamask-extension/pull/31546))
+- Update Sepolia background color ([#31680](https://github.com/MetaMask/metamask-extension/pull/31680))
+- Add font-smoothing and optimize legibility ([#31922](https://github.com/MetaMask/metamask-extension/pull/31922))
+- Increase notification popup width from 360px to 400px to improve the content display and align with the extension popup ([#31960](https://github.com/MetaMask/metamask-extension/pull/31960))
+- Update padding on the add account screen ([#31936](https://github.com/MetaMask/metamask-extension/pull/31936))
+- Add Base to STX Supported Chains Array (prod) ([#31562](https://github.com/MetaMask/metamask-extension/pull/31562))
+- Update carousel styling and images ([#31687](https://github.com/MetaMask/metamask-extension/pull/31687))
+- Updated styles for connections menu ([#31112](https://github.com/MetaMask/metamask-extension/pull/31112))
+- Adds tooltip to truncated NFT Grid titles ([#31625](https://github.com/MetaMask/metamask-extension/pull/31625))
+- Increase padding bewtween Key-Value rows and divider in Confirmations ([#31431](https://github.com/MetaMask/metamask-extension/pull/31431))
+- Do not display Solana Testnet nor Solana Devnet in the network list ([#32678](https://github.com/MetaMask/metamask-extension/pull/32678))
+- Update the app description for the upcoming release ([#32970](https://github.com/MetaMask/metamask-extension/pull/32970))
+- Skip collecting metrics on RPC calls made by preinstalled Snaps ([#32977](https://github.com/MetaMask/metamask-extension/pull/32977))
 
 ### Fixed
-- updates display decimals in Bridge experience 'More Quotes' section ([#32080](https://github.com/MetaMask/metamask-extension/pull/32080))
+- Updates display decimals in Bridge experience 'More Quotes' section ([#32080](https://github.com/MetaMask/metamask-extension/pull/32080))
 - Add Multichain API analytics support ([#32013](https://github.com/MetaMask/metamask-extension/pull/32013))
+- Updates default bridge destination token addresses with valid values so they can trigger quote fetching ([#32353](https://github.com/MetaMask/metamask-extension/pull/32353))
+- Remove getNetworksWithTransactionActivityByAccounts unnecessary method call ([#32392](https://github.com/MetaMask/metamask-extension/pull/32392))
+- Fix infinite Load on switching networks or reveal SRP ([#32441](https://github.com/MetaMask/metamask-extension/pull/32441))
+- Fix non-evm automatic naming ([#32122](https://github.com/MetaMask/metamask-extension/pull/32122))
+- Use simulation gas for future gas fee tokens([#32163](https://github.com/MetaMask/metamask-extension/pull/32163))
+- Enable performing transaction with a Ledger account and enable the send button ([#32426](https://github.com/MetaMask/metamask-extension/pull/32426))
+- Change 'Buy' button for non-EVM networks to use LD feature flag ([#32374](https://github.com/MetaMask/metamask-extension/pull/32374))
+- Associate metrics event to capture when changing "Switch to Smart Account" suggestion ([#32360](https://github.com/MetaMask/metamask-extension/pull/32360))
+- Show interacting with Smart contract for all nested transactions (#32190) ([#32190](https://github.com/MetaMask/metamask-extension/pull/32190))
+- Fix timeout chrome runtime messages for Ledger ([#31766](https://github.com/MetaMask/metamask-extension/pull/31766))
+- Show Active Badge for Connected Solana Account ([#32169](https://github.com/MetaMask/metamask-extension/pull/32169))
+- Ensure the safechain API calls respect basic functionality ([#32200](https://github.com/MetaMask/metamask-extension/pull/32200))
+- Fix MetaMask causing uncaught exception error if installed alongside Rabby ([#32175](https://github.com/MetaMask/metamask-extension/pull/32175))
+- Show Connection Toast when at least one account is connected to Dapp ([#32199](https://github.com/MetaMask/metamask-extension/pull/32199))
+- Add dom-purify to sanitize announcement notifications ([#32001](https://github.com/MetaMask/metamask-extension/pull/32001))
+- Show hidden accounts upon re-import SRP after resetting password ([#31745](https://github.com/MetaMask/metamask-extension/pull/31745))
+- Trigger NFT detection when switching accounts while in the NFT tab if auto-detection is enabled ([#31481](https://github.com/MetaMask/metamask-extension/pull/31481))
+- Filter NFTs on send flow to only show those from the currently selected network ([#31850](https://github.com/MetaMask/metamask-extension/pull/31850))
+- Improve Solana transaction handling with updated keyring API and simplified transaction mapping logic ([#31816](https://github.com/MetaMask/metamask-extension/pull/31816))
+- Remove gas speed indicator when an alternate token is used to pay for gas ([#32167](https://github.com/MetaMask/metamask-extension/pull/32167))
+- Display correct aggregated balance including non-EVM accounts when EVM network is selected ([#32145](https://github.com/MetaMask/metamask-extension/pull/32145))
+- Show connection toast when switching to a Solana account that is not connected to the current dapp ([#32107](https://github.com/MetaMask/metamask-extension/pull/32107))
+- Retry failed transaction will not show unvailable emoji ([#31537](https://github.com/MetaMask/metamask-extension/pull/31537))
+- Reveal first party snap accounts in srp account list. ([#31833](https://github.com/MetaMask/metamask-extension/pull/31833))
+- Add missing padding in Retry (Cancel/Speed up) popover ([#31904](https://github.com/MetaMask/metamask-extension/pull/31904))
+- Enable keyboard shortcut(Alt+Shift+M) on Chrome ([#31844](https://github.com/MetaMask/metamask-extension/pull/31844))
+- Display different message and track analytics events in Solana's "What's New" modal based on whether user already has a Solana account ([#31318](https://github.com/MetaMask/metamask-extension/pull/31318))
+- Add missing emoji in transaction speed-up modal and improved error handling for estimate displays ([#31866](https://github.com/MetaMask/metamask-extension/pull/31866))
+- Prevent address input crash on invalid CAIP account ID ([#31934](https://github.com/MetaMask/metamask-extension/pull/31934))
+- Prevent re-render of images when a user tries to watch multiple nfts ([#32031](https://github.com/MetaMask/metamask-extension/pull/32031))
+- Ensures that the toast to connect to the currently selected Solana account displays ([#32107](https://github.com/MetaMask/metamask-extension/pull/32107))
+- Use correct networkClientId when switching account ([#32359](https://github.com/MetaMask/metamask-extension/pull/32359))
+- Ensure app functions when basic Functionality turned off during onboarding flow ([#32421](https://github.com/MetaMask/metamask-extension/pull/32421))
+- Display the modal to have the choice to cancel or temporarily block the site after reject 3 all transactions ([#32466](https://github.com/MetaMask/metamask-extension/pull/32466))
+- Display MegaETH Testnet in the network list when it is a new install wallet ([#32552](https://github.com/MetaMask/metamask-extension/pull/32552))
+- Keep showing NFT in custom networks when upgrading ([#32504](https://github.com/MetaMask/metamask-extension/pull/32504))
+- Enable user to submit a solana tx after account discovery ([#32487](https://github.com/MetaMask/metamask-extension/pull/32487))
+- Prevent bridge confirmation if user doesn't have enough balance ([#32485](https://github.com/MetaMask/metamask-extension/pull/32485))
+- Fix bridge activity log doesn't update and may show incorrect token amounts ([#32387](https://github.com/MetaMask/metamask-extension/pull/32387))
+- Fix text flashing on Solana's "What's New" modal ([#32469](https://github.com/MetaMask/metamask-extension/pull/32469))
+- Fix duplicate and orphaned accounts appearing in the Send flow account selector ([#32642](https://github.com/MetaMask/metamask-extension/pull/32642))
+- Display Solana account details with correct prefixed address format and QR code showing the proper Solana address ([#32670](https://github.com/MetaMask/metamask-extension/pull/32670))
+- Fix accessing InApp notification and feature announcement notification([#32714](https://github.com/MetaMask/metamask-extension/pull/32714))
+- Show SOL balance in account picker and FIAT conversion in account list on flask build ([#32684](https://github.com/MetaMask/metamask-extension/pull/32684))
+- Display correct information for batch transaction confirmations that includes an account upgrade ([#32662](https://github.com/MetaMask/metamask-extension/pull/32662))
+- Display correct information for insufficient balance network alert for Dapp Connected Accounts ([#32673](https://github.com/MetaMask/metamask-extension/pull/32673))
+- Order accounts sequentially with SRP when discoveredAccounts is triggered ([#32690](https://github.com/MetaMask/metamask-extension/pull/32690))
+- Suppress the alert when interacting with some contracts (WETH, DAI) on Base and Polygon ([#32593](https://github.com/MetaMask/metamask-extension/pull/32593))
+- Fix inconsistent state after wallet restart where a Solana account could be selected with an EVM network (like Sepolia) ([#32738](https://github.com/MetaMask/metamask-extension/pull/32738))
+- Direct "View Assets in Explorer" link for Solana tokens to Solscan instead of Etherscan ([#32634](https://github.com/MetaMask/metamask-extension/pull/32634))
+- Gracefully show no conversion rate available warning instead of fiat values showing zero balances where asset conversion rates failed ([#32634](https://github.com/MetaMask/metamask-extension/pull/32634))
+- Add missing wallet address and copy functionality on the Receive QR code screen for both EVM and Solana accounts ([#32749](https://github.com/MetaMask/metamask-extension/pull/32749))
+- Display crypto balance displayed correctly when Fiat Conversion is disabled EVM networks ([#32822](https://github.com/MetaMask/metamask-extension/pull/32822))
+- Improve security of Secret Recovery Phrase import by changing from text fields to password fields with show/hide option ([#32859](https://github.com/MetaMask/metamask-extension/pull/32859))
+- Remove validation that internal transaction can only be submitted from selected account ([#32863](https://github.com/MetaMask/metamask-extension/pull/32863))
+- Truncated token name on send when it is long ([#32900](https://github.com/MetaMask/metamask-extension/pull/32900))
+- Do not display smart account slider in carousel if selected account is solana account ([#32894](https://github.com/MetaMask/metamask-extension/pull/32894))
+- Display the correct quote when fetching a quote and then changing the destination token in a Solana swap([#32878](https://github.com/MetaMask/metamask-extension/pull/32878))
+- Users with duplicates in the vault should be able to add new accounts and sign transactions and duplicates shouldn't be visible in the account list ([#32621](https://github.com/MetaMask/metamask-extension/pull/32621))
+- Fix UI responsiveness when bridge certain solana tokens (like PYUSD or AI16Z) with Solana as destination network in Bridge ([#32934](https://github.com/MetaMask/metamask-extension/pull/32934))
+- Show Ethereum network icon in the transaction details page within activity tab when bridging on solana to EVM chain([#32895](https://github.com/MetaMask/metamask-extension/pull/32895))
+- Fix activity list filtering by token shows the responding selected asset history ([#32930](https://github.com/MetaMask/metamask-extension/pull/32930))
+- Fix rejecting the upgrading to a Smart Contract Account to return correct error code ([#32957](https://github.com/MetaMask/metamask-extension/pull/32957))
+- Fix user can successfully connect to Polygon using dApps from Sushi Swaps and Uniswap ([#32885](https://github.com/MetaMask/metamask-extension/pull/32885))
+- Submit transaction successfully when swapping or approving from dapp ([#32885](https://github.com/MetaMask/metamask-extension/pull/32885))
+- Display correct balance for all tokens after performing Uniswap transaction on Polygon ([#32885](https://github.com/MetaMask/metamask-extension/pull/32885))
+- Ensures enough of the token title and the "v" display in the Send flow asset picker ([#32997](https://github.com/MetaMask/metamask-extension/pull/32997))
+- Ensure smooth switch from a non-EVM network to an EVM ([#33010](https://github.com/MetaMask/metamask-extension/pull/33010))
+- Display truncated long token name and price unavailable when no conversion rate is available ([#32996](https://github.com/MetaMask/metamask-extension/pull/32996))
+- Remove duplicated ETH Accounts in the SRP Picker ([#33009](https://github.com/MetaMask/metamask-extension/pull/33009))
+
+
+## [12.17.3]
+### Changed
+- Update supported browser versions ([#32520](https://github.com/MetaMask/metamask-extension/pull/32520))
+
+### Fixed
+- Stop emitting Dapp Viewed events on Firefox ([#32583](https://github.com/MetaMask/metamask-extension/pull/32583))
+- Make phishing warning events anonymous ([#32635](https://github.com/MetaMask/metamask-extension/pull/32635))
+- Fix momentary disappearance of approve row in batch transaction confirmation ([#32658](https://github.com/MetaMask/metamask-extension/pull/32658))
+- Support permit2 approvals in batch simulation ([#32733](https://github.com/MetaMask/metamask-extension/pull/32733))
+- Allow users to upgrade to a smart contract account after rejecting it once in the past ([#32697](https://github.com/MetaMask/metamask-extension/pull/32697))
 
 ## [12.17.2]
 ### Changed
@@ -84,6 +212,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix `wallet_getCapabilities` with missing networks ([#32237](https://github.com/MetaMask/metamask-extension/pull/32237))
 - Fix NFT removal on different networks ([#32102](https://github.com/MetaMask/metamask-extension/pull/32102))
+- Prevents duplicate account to be added when importing HD Keyring or adding HD Keyring account ([#32121](https://github.com/MetaMask/metamask-extension/pull/32121))
 - [Beta] Fix exchange rate lookups on Solana Swap page to prevent crashing when values are undefined ([#32114](https://github.com/MetaMask/metamask-extension/pull/32114))
 - Fix Display "🦊 Smart contract" in "interacting with" row for batch[ transaction](https://github.com/MetaMask/metamask-extension/pull/31507) confirmations (#31507)
 - Fix improvements in page to revert smart account to EOA account ([#31605](https://github.com/MetaMask/metamask-extension/pull/31605))
@@ -6111,7 +6240,9 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.17.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.18.0...HEAD
+[12.18.0]: https://github.com/MetaMask/metamask-extension/compare/v12.17.3...v12.18.0
+[12.17.3]: https://github.com/MetaMask/metamask-extension/compare/v12.17.2...v12.17.3
 [12.17.2]: https://github.com/MetaMask/metamask-extension/compare/v12.17.1...v12.17.2
 [12.17.1]: https://github.com/MetaMask/metamask-extension/compare/v12.17.0...v12.17.1
 [12.17.0]: https://github.com/MetaMask/metamask-extension/compare/v12.16.2...v12.17.0

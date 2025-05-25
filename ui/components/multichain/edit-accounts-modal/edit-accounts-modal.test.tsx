@@ -14,7 +14,7 @@ const mockKeyringId = '01JKAF3DSGM3AB87EM9N0K41AJ';
 
 const goToAddNewAccount = (
   getByTestId: (testId: string) => HTMLElement,
-  accountType: 'solana' | 'evm',
+  accountType: 'bitcoin' | 'solana' | 'evm',
 ) => {
   const addNewAccountButton = getByTestId('add-new-account-button');
   fireEvent.click(addNewAccountButton);
@@ -24,11 +24,16 @@ const goToAddNewAccount = (
       'multichain-account-menu-popover-add-account',
     );
     fireEvent.click(addEvmAccountButton);
-  } else {
+  } else if (accountType === 'solana') {
     const addSolanaAccountButton = getByTestId(
       'multichain-account-menu-popover-add-solana-account',
     );
     fireEvent.click(addSolanaAccountButton);
+  } else {
+    const addBitcoinAccountButton = getByTestId(
+      'multichain-account-menu-popover-add-bitcoin-account',
+    );
+    fireEvent.click(addBitcoinAccountButton);
   }
 };
 
@@ -214,22 +219,21 @@ describe('EditAccountsModal', () => {
         address: '0x67B2fAf7959fB61eb9746571041476Bbd0672569',
       });
 
-      const hdKeyringMetadata = {
-        id: '01JKAF3DSGM3AB87EM9N0K41AJ',
-        name: '',
-      };
-      const hdKeyring2Metadata = {
-        id: '01JKAF3DSGM3AB87EM9N0K4444',
-        name: '',
-      };
-
       const hdKeyring = {
         type: KeyringTypes.hd,
         accounts: [hdAccount.address],
+        metadata: {
+          id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+          name: '',
+        },
       };
       const hdKeyring2 = {
         type: KeyringTypes.hd,
         accounts: [hdAccount2.address],
+        metadata: {
+          id: '01JKAF3DSGM3AB87EM9N0K4444',
+          name: '',
+        },
       };
 
       const { getByTestId } = render(undefined, {
@@ -241,7 +245,6 @@ describe('EditAccountsModal', () => {
           selectedAccount: hdAccount.id,
         },
         keyrings: [hdKeyring, hdKeyring2],
-        keyringsMetadata: [hdKeyringMetadata, hdKeyring2Metadata],
       });
       goToAddNewAccount(getByTestId, 'solana');
 
