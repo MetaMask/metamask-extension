@@ -6,6 +6,9 @@ import { type MetaRpcClientFactory } from '../../app/scripts/lib/metaRPCClientFa
 type Api = Record<string, (...params: any[]) => any>;
 type BackgroundRpcClient = MetaRpcClientFactory<Api>;
 
+const NO_BACKGROUND_CONNECTION_ERROR =
+  'Background connection is not set. Please initialize the background connection before making requests.';
+
 let background: BackgroundRpcClient | null = null;
 
 export const generateActionId = () => Date.now() + Math.random();
@@ -21,7 +24,10 @@ export function submitRequestToBackground<R>(
   method: keyof Api,
   args?: Parameters<Api[typeof method]>,
 ): Promise<R> {
-  return background?.[method](...(args ?? [])) as unknown as Promise<R>;
+  if (!background) {
+    throw new Error(NO_BACKGROUND_CONNECTION_ERROR);
+  }
+  return background[method](...(args ?? [])) as unknown as Promise<R>;
 }
 
 type CallbackMethod<R = unknown> = (error?: unknown, result?: R) => void;
@@ -43,9 +49,10 @@ export const callBackgroundMethod = <R>(
   args: Parameters<Api[typeof method]>,
   callback: CallbackMethod<R>,
 ) => {
-  background?.[method](...args).then((result) => {
-    callback(undefined, result);
-  }, callback);
+  submitRequestToBackground<R>(method, args).then(
+    (result) => callback(null, result),
+    callback,
+  );
 };
 
 /**
