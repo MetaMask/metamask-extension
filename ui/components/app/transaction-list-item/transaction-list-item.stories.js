@@ -77,7 +77,7 @@ export default {
     'transactionGroup.primaryTransaction.status': TransactionStatus.pending,
     'transactionGroup.primaryTransaction.submittedTime': 19999999999999,
     'transactionGroup.primaryTransaction.txParams.data':
-      '0x0000000000000000000000000000000000000000000000000000000000000000',
+      '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
   },
 };
 
@@ -151,6 +151,13 @@ PersonalSign.args = {
   },
 };
 
+Sign.storyName = 'sign';
+Sign.args = {
+  'transactionGroup.primaryTransaction': {
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.sign],
+  },
+};
+
 SignTypeData.storyName = 'eth_signTypedData';
 SignTypeData.args = {
   'transactionGroup.primaryTransaction': {
@@ -162,6 +169,13 @@ SimpleSend.storyName = 'simpleSend';
 SimpleSend.args = {
   'transactionGroup.primaryTransaction': {
     ...MOCK_TRANSACTION_BY_TYPE[TransactionType.simpleSend],
+  },
+};
+
+Smart.storyName = 'smart';
+Smart.args = {
+  'transactionGroup.primaryTransaction': {
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.smart],
   },
 };
 
