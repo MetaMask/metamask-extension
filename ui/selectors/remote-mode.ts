@@ -5,7 +5,7 @@ import {
   DailyAllowance,
   REMOTE_MODES,
   RemoteModeConfig,
-} from '../pages/remote-mode/remote.types';
+} from '../../shared/lib/remote-mode';
 import { Asset } from '../ducks/send';
 import {
   getRemoteFeatureFlags,
