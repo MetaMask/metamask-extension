@@ -3422,10 +3422,6 @@
     "message": "トランザクション $1 に失敗しました！$2",
     "description": "Content of the browser notification that appears when a transaction fails"
   },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "トランザクションに失敗しました！$1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
-  },
   "notificationTransactionFailedTitle": {
     "message": "トランザクション失敗",
     "description": "Title of the browser notification that appears when a transaction fails"
