@@ -38,7 +38,7 @@ describe('Account Exist Seedless Onboarding View', () => {
       customMockStore,
     );
 
-    expect(getByText('Account already exists')).toBeInTheDocument();
+    expect(getByText('Wallet already exists')).toBeInTheDocument();
     // should show the correct button
     const loginButton = getByText('Log in');
     expect(loginButton).toBeInTheDocument();
