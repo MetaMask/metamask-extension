@@ -58,16 +58,10 @@ export const SocialButton = React.forwardRef(
         gap={2}
         {...props}
       >
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-          <>
-            {icon}
-            <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-              {label}
-            </Text>
-          </>
-          ///: END:ONLY_INCLUDE_IF
-        }
+        {icon}
+        <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+          {label}
+        </Text>
       </Text>
     );
   },
