@@ -4,7 +4,11 @@ import { MemoryRouter } from 'react-router-dom';
 import configureStore from '../../../../store/store';
 import SendAllowanceBanner from './send-allowance-banner.component';
 import testData from '../../../../../.storybook/test-data';
-import { DailyAllowance, TOKEN_DETAILS, TokenSymbol } from '../../remote.types';
+import {
+  DailyAllowance,
+  TOKEN_DETAILS,
+  TokenSymbol,
+} from '../../../../../shared/lib/remote-mode';
 import { AssetType } from '@metamask/bridge-controller';
 
 const store = configureStore(testData);
