@@ -163,9 +163,6 @@
   "addBitcoinAccountLabel": {
     "message": "Λογαριασμός Bitcoin (Beta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Λογαριασμός Bitcoin (Testnet)"
-  },
   "addBlockExplorer": {
     "message": "Προσθήκη ενός block explorer"
   },
@@ -650,22 +647,6 @@
   "billionAbbreviation": {
     "message": "Δ",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Η ενεργοποίηση αυτής της λειτουργίας θα σας δώσει τη δυνατότητα να προσθέσετε έναν λογαριασμό Bitcoin στην επέκταση σας του MetaMask που προέρχεται από την υπάρχουσα Μυστική Φράση Ανάκτησης. Πρόκειται για μια πειραματική λειτουργία Beta, οπότε θα πρέπει να τη χρησιμοποιήσετε με δική σας ευθύνη. Για να μας δώσετε τα σχόλιά σας σχετικά με αυτή τη νέα εμπειρία Bitcoin, συμπληρώστε αυτή την $1.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Ενεργοποίηση της λειτουργίας \"Προσθήκη νέου λογαριασμού Bitcoin (Beta)\""
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Η ενεργοποίηση αυτής της λειτουργίας θα σας δώσει τη δυνατότητα να προσθέσετε έναν λογαριασμό Bitcoin για το δίκτυο δοκιμών."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Ενεργοποίηση της λειτουργίας \"Προσθήκη νέου λογαριασμού Bitcoin (Testnet)\""
   },
   "blockExplorerAccountAction": {
     "message": "Λογαριασμός",
@@ -1321,10 +1302,6 @@
   },
   "creatorAddress": {
     "message": "Διεύθυνση δημιουργού"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Αυτό αντικατοπτρίζει την αξία όλων των tokens που έχετε στην κατοχή σας σε όλα τα δίκτυα. Αν προτιμάτε να βλέπετε αυτή την αξία σε ETH ή άλλα νομίσματα, μεταβείτε στις $1.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "Εναλλαγή σε διάφορα δίκτυα με το MetaMask Portfolio"
@@ -3552,9 +3529,6 @@
   "onboardingMetametricsDescription": {
     "message": "Θέλουμε να συλλέξουμε βασικά δεδομένα χρήσης και διάγνωσης για να βελτιώσουμε το MetaMask. Λάβετε υπόψη ότι δεν πουλάμε ποτέ τα δεδομένα που μας παρέχετε εδώ."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Όταν συγκεντρώνουμε μετρήσεις, θα είναι πάντα..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Θα σας ενημερώσουμε εάν αποφασίσουμε να χρησιμοποιήσουμε αυτά τα δεδομένα για άλλους σκοπούς. Για περισσότερες πληροφορίες, μπορείτε να ανατρέξετε στην $1. Να θυμάστε ότι μπορείτε να μεταβείτε στις ρυθμίσεις και να εξαιρεθείτε ανά πάσα στιγμή.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3582,9 +3556,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Προαιρετικές:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Μάθετε πώς προστατεύουμε το απόρρητό σας ενώ συλλέγουμε δεδομένα χρήσης για το προφίλ σας."
   },
   "onboardingMetametricsTitle": {
     "message": "Βοηθήστε μας να βελτιώσουμε το MetaMask"
@@ -6344,9 +6315,6 @@
   },
   "yourBalance": {
     "message": "Το υπόλοιπό σας"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Το υπόλοιπό σας είναι συγκεντρωτικό"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Τα NFT μπορεί να κινδυνεύουν"

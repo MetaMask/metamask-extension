@@ -3,9 +3,27 @@ import { Driver } from '../../../webdriver/driver';
 class SelectNetwork {
   private driver: Driver;
 
+  private readonly addCustomNetworkButton = {
+    text: 'Add a custom network',
+    tag: 'button',
+  };
+
   private readonly addNetworkButton = '[data-testid="test-add-button"]';
 
   private readonly closeButton = 'button[aria-label="Close"]';
+
+  private readonly confirmDeleteNetworkButton = {
+    text: 'Delete',
+    tag: 'button',
+  };
+
+  private readonly confirmDeleteNetworkModal = {
+    testId: 'confirm-delete-network-modal',
+  };
+
+  private readonly deleteNetworkButton = {
+    testId: 'network-list-item-options-delete',
+  };
 
   private readonly editNetworkButton =
     '[data-testid="network-list-item-options-edit"]';
@@ -57,9 +75,31 @@ class SelectNetwork {
     await this.driver.clickElementAndWaitToDisappear(this.closeButton);
   }
 
+  /**
+   * Delete a network from the network list.
+   *
+   * @param chainId - The chain ID of the network to delete.
+   */
+  async deleteNetwork(chainId: string): Promise<void> {
+    console.log(`Delete network ${chainId} from network list`);
+    await this.openNetworkListOptions(chainId);
+    await this.driver.clickElementAndWaitToDisappear(this.deleteNetworkButton);
+    await this.driver.waitForSelector(this.confirmDeleteNetworkModal);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmDeleteNetworkButton,
+    );
+  }
+
   async fillNetworkSearchInput(networkName: string): Promise<void> {
     console.log(`Fill network search input with ${networkName}`);
     await this.driver.fill(this.searchInput, networkName);
+  }
+
+  async openAddCustomNetworkModal(): Promise<void> {
+    console.log('Open add custom network modal');
+    await this.driver.clickElementAndWaitToDisappear(
+      this.addCustomNetworkButton,
+    );
   }
 
   async openEditNetworkModal(): Promise<void> {
@@ -101,6 +141,29 @@ class SelectNetwork {
   async toggleShowTestNetwork(): Promise<void> {
     console.log('Toggle show test network in select network dialog');
     await this.driver.clickElement(this.toggleButton);
+  }
+
+  /**
+   * Check if a network option is displayed in the select network dialog.
+   *
+   * @param networkName - The name of the network to check.
+   * @param shouldBeDisplayed - Whether the network should be displayed. Defaults to true.
+   */
+  async check_networkOptionIsDisplayed(
+    networkName: string,
+    shouldBeDisplayed: boolean = true,
+  ): Promise<void> {
+    console.log(
+      `Check if ${networkName} is ${
+        shouldBeDisplayed ? 'displayed' : 'not displayed'
+      } in select network dialog`,
+    );
+    const networkNameItem = `[data-testid="${networkName}"]`;
+    if (shouldBeDisplayed) {
+      await this.driver.waitForSelector(networkNameItem);
+    } else {
+      await this.driver.assertElementNotPresent(networkNameItem);
+    }
   }
 
   async check_networkRPCNumber(expectedNumber: number): Promise<void> {

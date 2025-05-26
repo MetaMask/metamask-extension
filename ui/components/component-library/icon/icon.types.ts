@@ -271,6 +271,8 @@ export enum IconName {
   Trash = 'trash',
   TrendDown = 'trend-down',
   TrendUp = 'trend-up',
+  TriangleUp = 'triangle-up',
+  TriangleDown = 'triangle-down',
   Undo = 'undo',
   Unfold = 'unfold',
   UnlockedFilled = 'unlocked-filled',

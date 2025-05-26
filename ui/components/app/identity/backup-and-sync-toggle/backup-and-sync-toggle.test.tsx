@@ -25,9 +25,9 @@ const initialStore = () => ({
   metamask: {
     isSignedIn: false,
     useExternalServices: true,
-    isProfileSyncingEnabled: true,
+    isBackupAndSyncEnabled: true,
     participateInMetaMetrics: false,
-    isProfileSyncingUpdateLoading: false,
+    isBackupAndSyncUpdateLoading: false,
   },
   appState: {
     externalServicesOnboardingToggleState: true,
@@ -52,7 +52,7 @@ describe('BackupAndSyncToggle', () => {
     const mockTrackEvent = jest.fn();
     const store = initialStore();
 
-    store.metamask.isProfileSyncingEnabled = true;
+    store.metamask.isBackupAndSyncEnabled = true;
     arrangeMocks();
 
     const { getByTestId } = renderWithProvider(
@@ -78,7 +78,7 @@ describe('BackupAndSyncToggle', () => {
 
   it('enables backup and sync when the toggle is turned on and basic functionality is already on', () => {
     const store = initialStore();
-    store.metamask.isProfileSyncingEnabled = false;
+    store.metamask.isBackupAndSyncEnabled = false;
 
     const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
 
@@ -96,7 +96,7 @@ describe('BackupAndSyncToggle', () => {
 
   it('opens the confirm modal when the toggle is turned on and basic functionality is off', () => {
     const store = initialStore();
-    store.metamask.isProfileSyncingEnabled = false;
+    store.metamask.isBackupAndSyncEnabled = false;
     store.metamask.useExternalServices = false;
     const { setIsBackupAndSyncFeatureEnabledMock } = arrangeMocks();
     const { getByTestId } = render(
