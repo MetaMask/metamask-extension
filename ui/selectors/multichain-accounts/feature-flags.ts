@@ -63,8 +63,11 @@ const isMultichainAccountsFeatureEnabled = (
   featureVersion: string,
 ) => {
   const { enableMultichainAccounts } = getRemoteFeatureFlags(state);
-  const { enabled, featureVersion: currentFeatureVersion, minimumVersion } =
-    enableMultichainAccounts as MultichainAccountsFeatureFlag;
+  const {
+    enabled,
+    featureVersion: currentFeatureVersion,
+    minimumVersion,
+  } = enableMultichainAccounts as MultichainAccountsFeatureFlag;
   return (
     enabled &&
     currentFeatureVersion &&
