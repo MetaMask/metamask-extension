@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Akun Bitcoin (Beta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Akun Bitcoin (Testnet)"
-  },
   "addBlockExplorer": {
     "message": "Tambahkan block explorer"
   },
@@ -661,22 +658,6 @@
   "billionAbbreviation": {
     "message": "M",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Mengaktifkan fitur ini akan memberi Anda opsi untuk menambahkan Akun Bitcoin ke Ekstensi MetaMask yang berasal dari Frasa Pemulihan Rahasia yang ada. Ini merupakan fitur Beta eksperimental, jadi Anda harus menggunakannya dengan risiko yang ditanggung sendiri. Untuk memberikan masukan seputar pengalaman Bitcoin baru ini, isi $1 ini.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Aktifkan \"Tambahkan akun Bitcoin baru (Beta)\""
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Mengaktifkan fitur ini akan memberi Anda opsi untuk menambahkan Akun Bitcoin bagi jaringan uji."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Aktifkan \"Tambahkan akun Bitcoin baru (Testnet)\""
   },
   "blockExplorerAccountAction": {
     "message": "Akun",
@@ -1338,10 +1319,6 @@
   },
   "creatorAddress": {
     "message": "Alamat pembuat"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Ini mencerminkan nilai seluruh token yang Anda miliki di semua jaringan. Jika Anda lebih suka melihat nilai ini dalam ETH atau mata uang lainnya, pilih $1.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "Bertukar antar jaringan dengan Portfolio MetaMask"
@@ -3444,10 +3421,6 @@
   "notificationTransactionFailedMessage": {
     "message": "Transaksi $1 gagal! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
-  },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "Transaksi gagal! $1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
   },
   "notificationTransactionFailedTitle": {
     "message": "Transaksi gagal",
@@ -6492,9 +6465,6 @@
   },
   "yourBalance": {
     "message": "Saldo Anda"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Saldo Anda diagregasi"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT Anda mungkin berisiko"

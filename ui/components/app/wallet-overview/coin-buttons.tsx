@@ -1,56 +1,34 @@
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  useHistory,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  useLocation,
-  ///: END:ONLY_INCLUDE_IF
-} from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { useHistory, useLocation } from 'react-router-dom';
 import { toHex } from '@metamask/controller-utils';
-///: END:ONLY_INCLUDE_IF
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  isCaipChainId,
-  ///: END:ONLY_INCLUDE_IF
-  CaipChainId,
-} from '@metamask/utils';
+import { isCaipChainId, CaipChainId } from '@metamask/utils';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { ChainId } from '../../../../shared/constants/network';
-///: END:ONLY_INCLUDE_IF
 
 import { I18nContext } from '../../../contexts/i18n';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   PREPARE_SWAP_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
   SEND_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   SwapsEthToken,
   getCurrentKeyring,
-  ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
   getNetworkConfigurationIdByChainId,
   isNonEvmAccount,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
-///: END:ONLY_INCLUDE_IF
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   MetaMetricsSwapsEventSource,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -63,10 +41,12 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box, Icon, IconName, IconSize } from '../../component-library';
 import IconButton from '../../ui/icon-button';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
-///: END:ONLY_INCLUDE_IF
+import {
+  getIsUnifiedUIEnabled,
+  type BridgeAppState,
+} from '../../../ducks/bridge/selectors';
 import { ReceiveModal } from '../../multichain/receive-modal';
 import {
   setSwitchedNetworkDetails,
@@ -92,11 +72,9 @@ type CoinButtonsProps = {
   trackingLocation: string;
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   isBridgeChain: boolean;
   isBuyableChain: boolean;
   defaultSwapsToken?: SwapsEthToken;
-  ///: END:ONLY_INCLUDE_IF
   classPrefix?: string;
   iconButtonClassName?: string;
 };
@@ -107,11 +85,9 @@ const CoinButtons = ({
   trackingLocation,
   isSwapsChain,
   isSigningEnabled,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   isBridgeChain,
   isBuyableChain,
   defaultSwapsToken,
-  ///: END:ONLY_INCLUDE_IF
   classPrefix = 'coin',
   iconButtonClassName = '',
 }: CoinButtonsProps) => {
@@ -133,11 +109,9 @@ const CoinButtons = ({
   const handleSendNonEvm = useHandleSendNonEvm();
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
-  ///: END:ONLY_INCLUDE_IF
 
   // Initially, those events were using a "ETH" as `token_symbol`, so we keep this behavior
   // for EVM, no matter the currently selected native token (e.g. SepoliaETH if you are on Sepolia
@@ -158,11 +132,7 @@ const CoinButtons = ({
     !isExternalServicesEnabled && isNonEvmAccount(account);
 
   const buttonTooltips = {
-    buyButton: [
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      { condition: !isBuyableChain, message: '' },
-      ///: END:ONLY_INCLUDE_IF
-    ],
+    buyButton: [{ condition: !isBuyableChain, message: '' }],
     sendButton: [
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
@@ -171,9 +141,7 @@ const CoinButtons = ({
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
     bridgeButton: [
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       { condition: !isBridgeChain, message: 'currentlyUnavailable' },
-      ///: END:ONLY_INCLUDE_IF
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
   };
@@ -194,7 +162,6 @@ const CoinButtons = ({
     return contents;
   };
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const getChainId = (): CaipChainId | ChainId => {
     if (isCaipChainId(chainId)) {
       return chainId as CaipChainId;
@@ -202,7 +169,6 @@ const CoinButtons = ({
     // Otherwise we assume that's an EVM chain ID, so use the usual 0x prefix
     return toHex(chainId) as ChainId;
   };
-  ///: END:ONLY_INCLUDE_IF
 
   const getSnapAccountMetaMetricsPropertiesIfAny = (
     internalAccount: InternalAccount,
@@ -221,11 +187,13 @@ const CoinButtons = ({
     return {};
   };
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const { openBuyCryptoInPdapp } = useRamps();
 
   const { openBridgeExperience } = useBridging();
-  ///: END:ONLY_INCLUDE_IF
+
+  const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
+    getIsUnifiedUIEnabled(state, chainId),
+  );
 
   const setCorrectChain = useCallback(async () => {
     if (currentChainId !== chainId && multichainChainId !== chainId) {
@@ -284,7 +252,6 @@ const CoinButtons = ({
     ///: END:ONLY_INCLUDE_IF
   ]);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const handleBuyAndSellOnClick = useCallback(() => {
     openBuyCryptoInPdapp(getChainId());
     trackEvent({
@@ -316,9 +283,12 @@ const CoinButtons = ({
     },
     [defaultSwapsToken, location, openBridgeExperience],
   );
-  ///: END:ONLY_INCLUDE_IF
 
   const handleSwapOnClick = useCallback(async () => {
+    if (isUnifiedUIEnabled) {
+      handleBridgeOnClick(true);
+      return;
+    }
     ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
     if (multichainChainId === MultichainNetworks.SOLANA) {
       handleBridgeOnClick(true);
@@ -328,7 +298,6 @@ const CoinButtons = ({
 
     await setCorrectChain();
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     if (isSwapsChain) {
       trackEvent({
         event: MetaMetricsEventName.NavSwapButtonClicked,
@@ -349,15 +318,13 @@ const CoinButtons = ({
         history.push(PREPARE_SWAP_ROUTE);
       }
     }
-    ///: END:ONLY_INCLUDE_IF
   }, [
     setCorrectChain,
     isSwapsChain,
     chainId,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    isUnifiedUIEnabled,
     usingHardwareWallet,
     defaultSwapsToken,
-    ///: END:ONLY_INCLUDE_IF
   ]);
 
   return (
@@ -367,7 +334,6 @@ const CoinButtons = ({
       width={BlockSize.Full}
     >
       {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <IconButton
           className={`${classPrefix}-overview__button`}
           iconButtonClassName={iconButtonClassName}
@@ -386,14 +352,15 @@ const CoinButtons = ({
             generateTooltip('buyButton', contents)
           }
         />
-        ///: END:ONLY_INCLUDE_IF
       }
 
       <IconButton
         className={`${classPrefix}-overview__button`}
         iconButtonClassName={iconButtonClassName}
         disabled={
-          !isSwapsChain || !isSigningEnabled || !isExternalServicesEnabled
+          (!isSwapsChain && !isUnifiedUIEnabled) ||
+          !isSigningEnabled ||
+          !isExternalServicesEnabled
         }
         Icon={
           <Icon
@@ -410,7 +377,6 @@ const CoinButtons = ({
         }
       />
       {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <IconButton
           className={`${classPrefix}-overview__button`}
           iconButtonClassName={iconButtonClassName}
@@ -433,7 +399,6 @@ const CoinButtons = ({
             generateTooltip('bridgeButton', contents)
           }
         />
-        ///: END:ONLY_INCLUDE_IF
       }
       <IconButton
         className={`${classPrefix}-overview__button`}

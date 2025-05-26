@@ -172,10 +172,7 @@
     "message": "Add alias"
   },
   "addBitcoinAccountLabel": {
-    "message": "Bitcoin account (Beta)"
-  },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Bitcoin account (Testnet)"
+    "message": "Bitcoin account"
   },
   "addBlockExplorer": {
     "message": "Add a block explorer"
@@ -727,22 +724,6 @@
     "message": "B",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Turning on this feature will give you the option to add a Bitcoin Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk. To give us feedback on this new Bitcoin experience, please fill out this $1.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Enable \"Add a new Bitcoin account (Beta)\""
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Turning on this feature will give you the option to add a Bitcoin Account for the test network."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Enable \"Add a new Bitcoin account (Testnet)\""
-  },
   "blockExplorerAccountAction": {
     "message": "Account",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -1172,6 +1153,18 @@
   "confirmGasFeeTokenMetaMaskFee": {
     "message": "Includes $1 fee"
   },
+  "confirmGasFeeTokenModalNativeToggleMetaMask": {
+    "message": "MetaMask is supplementing the balance to complete this transaction."
+  },
+  "confirmGasFeeTokenModalNativeToggleWallet": {
+    "message": "Pay for network fee using the balance in your wallet."
+  },
+  "confirmGasFeeTokenModalPayETH": {
+    "message": "Pay with ETH"
+  },
+  "confirmGasFeeTokenModalPayToken": {
+    "message": "Pay with other tokens"
+  },
   "confirmGasFeeTokenModalTitle": {
     "message": "Select a token"
   },
@@ -1179,7 +1172,7 @@
     "message": "You're paying this network fee with $1"
   },
   "confirmGasFeeTokenTooltip": {
-    "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens."
+    "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens or pre-funded ETH."
   },
   "confirmInfoAccountNow": {
     "message": "Now"
@@ -1383,7 +1376,7 @@
     "message": "Connecting to Sepolia test network"
   },
   "connectionDescription": {
-    "message": "Connect this website with MetaMask."
+    "message": "Connect this website with MetaMask"
   },
   "connectionFailed": {
     "message": "Connection failed"
@@ -1476,10 +1469,6 @@
   },
   "creatorAddress": {
     "message": "Creator address"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "This reflects the value of all tokens you own on all networks. If you prefer seeing this value in ETH or other currencies, go to $1.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "Swap across networks with MetaMask Portfolio"
@@ -1660,10 +1649,10 @@
     "message": "DeFi"
   },
   "defiTabErrorContent": {
-    "message": "Your funds are safe, try to visit this page again later."
+    "message": "Try visiting again later."
   },
   "defiTabErrorTitle": {
-    "message": "Oops! Something went wrong."
+    "message": "We could not load this page."
   },
   "delete": {
     "message": "Delete"
@@ -2625,6 +2614,9 @@
   "importSecretRecoveryPhrase": {
     "message": "Import Secret Recovery Phrase"
   },
+  "importSecretRecoveryPhraseUnknownError": {
+    "message": "An unknown error occurred."
+  },
   "importSelectedTokens": {
     "message": "Import selected tokens?"
   },
@@ -3330,9 +3322,6 @@
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
-  "networkNameBitcoinTestnet": {
-    "message": "Bitcoin Testnet"
-  },
   "networkNameDefinition": {
     "message": "The name associated with this network."
   },
@@ -3511,6 +3500,9 @@
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
+  "noActivity": {
+    "message": "No activity yet"
+  },
   "noConnectedAccountTitle": {
     "message": "MetaMask isn’t connected to this site"
   },
@@ -3519,6 +3511,9 @@
   },
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
+  },
+  "noDeFiPositions": {
+    "message": "No positions yet"
   },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
@@ -3685,10 +3680,6 @@
   "notificationTransactionFailedMessage": {
     "message": "Transaction $1 failed! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
-  },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "Transaction failed! $1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
   },
   "notificationTransactionFailedTitle": {
     "message": "Failed transaction",
@@ -3909,6 +3900,9 @@
   "onekey": {
     "message": "OneKey"
   },
+  "only": {
+    "message": "only"
+  },
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3939,9 +3933,15 @@
   "osTheme": {
     "message": "System"
   },
+  "other": {
+    "message": "other"
+  },
   "otherSnaps": {
     "message": "other snaps",
     "description": "Used in the 'permission_rpc' message."
+  },
+  "others": {
+    "message": "others"
   },
   "outdatedBrowserNotification": {
     "message": "Your browser is out of date. If you don't update your browser, you won't be able to get security patches and new features from MetaMask."
@@ -5490,7 +5490,7 @@
     "message": "Something's gone wrong. Try reloading the page."
   },
   "somethingWentWrong": {
-    "message": "Oops! Something went wrong."
+    "message": "We could not load this page."
   },
   "sortBy": {
     "message": "Sort by"
@@ -5679,6 +5679,9 @@
   },
   "standardAccountLabel": {
     "message": "Standard Account"
+  },
+  "startEarning": {
+    "message": "Start earning"
   },
   "stateCorruptionDetectedErrorMessage": {
     "message": "MetaMask's state file is damaged or missing. The files are possibly recoverable, so don't uninstall the MetaMask extension!"
@@ -6857,9 +6860,6 @@
   },
   "yourBalance": {
     "message": "Your balance"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Your balance is aggregated"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"

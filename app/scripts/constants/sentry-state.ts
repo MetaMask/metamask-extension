@@ -1,18 +1,5 @@
 import { AllProperties } from '../../../shared/modules/object.utils';
 
-export const MMI_SENTRY_BACKGROUND_STATE = {
-  MMIController: {
-    opts: true,
-  },
-  CustodyController: {
-    store: true,
-  },
-  MmiConfigurationController: {
-    store: true,
-    configurationClient: true,
-  },
-};
-
 // This describes the subset of background controller state attached to errors
 // sent to Sentry These properties have some potential to be useful for
 // debugging, and they do not contain any identifiable information.
@@ -386,9 +373,6 @@ export const SENTRY_BACKGROUND_STATE = {
     hasAccountSyncingSyncedAtLeastOnce: false,
     isAccountSyncingReadyToBeDispatched: false,
   },
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  ...MMI_SENTRY_BACKGROUND_STATE,
-  ///: END:ONLY_INCLUDE_IF
 };
 
 const flattenedBackgroundStateMask = Object.values(
@@ -422,10 +406,6 @@ export const SENTRY_UI_STATE = {
     isInitialized: true,
     useSafeChainsListValidation: true,
     watchEthereumAccountEnabled: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-    bitcoinSupportEnabled: false,
-    bitcoinTestnetSupportEnabled: false,
-    ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,

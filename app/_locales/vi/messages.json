@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Tài khoản Bitcoin (Beta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Tài khoản Bitcoin (Mạng thử nghiệm)"
-  },
   "addBlockExplorer": {
     "message": "Thêm một trình khám phá khối"
   },
@@ -661,22 +658,6 @@
   "billionAbbreviation": {
     "message": "Tỷ",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Bật tính năng này sẽ cung cấp cho bạn tùy chọn thêm Tài khoản Bitcoin vào Tiện ích mở rộng MetaMask bắt nguồn từ Cụm từ khôi phục bí mật hiện có của bạn. Đây là một tính năng Beta thử nghiệm, nên bạn phải tự chịu rủi ro khi sử dụng nó. Để cung cấp phản hồi cho chúng tôi về trải nghiệm Bitcoin mới này, vui lòng điền vào $1 này.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Bật \"Thêm tài khoản Bitcoin mới (Beta)\""
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Bật tính năng này sẽ cung cấp cho bạn tùy chọn thêm Tài khoản Bitcoin cho mạng thử nghiệm."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Bật \"Thêm tài khoản Bitcoin mới (Mạng thử nghiệm)\""
   },
   "blockExplorerAccountAction": {
     "message": "Tài khoản",
@@ -1338,10 +1319,6 @@
   },
   "creatorAddress": {
     "message": "Địa chỉ của người tạo"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Giá trị này phản ánh giá trị của tất cả các token mà bạn sở hữu trên tất cả các mạng. Nếu bạn muốn xem giá trị này bằng ETH hoặc các loại tiền tệ khác, hãy truy cập $1.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "Hoán đổi trên các mạng với MetaMask Portfolio"
@@ -3447,10 +3424,6 @@
   "notificationTransactionFailedMessage": {
     "message": "Giao dịch $1 không thành công! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
-  },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "Giao dịch không thành công! $1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
   },
   "notificationTransactionFailedTitle": {
     "message": "Giao dịch không thành công",
@@ -6495,9 +6468,6 @@
   },
   "yourBalance": {
     "message": "Số dư của bạn"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Số dư của bạn đã được tổng hợp"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT của bạn có thể gặp rủi ro"
