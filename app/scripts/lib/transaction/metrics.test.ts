@@ -985,6 +985,8 @@ describe('Transaction metrics', () => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         transaction_advanced_view: undefined,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         rpc_domain: 'private',
       };
       const sensitiveProperties = {

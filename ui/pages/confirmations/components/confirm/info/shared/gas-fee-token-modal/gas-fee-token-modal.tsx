@@ -162,6 +162,8 @@ export function GasFeeTokenModal({ onClose }: { onClose?: () => void }) {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function Title({ noMargin, text }: { noMargin?: boolean; text: string }) {
   return (
     <Text
@@ -176,6 +178,8 @@ function Title({ noMargin, text }: { noMargin?: boolean; text: string }) {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function NativeToggle({
   isFuture,
   onChange,
@@ -229,6 +233,8 @@ function NativeToggle({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function NativeToggleOption({
   children,
   isSelected,

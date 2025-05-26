@@ -33,6 +33,8 @@ export const confirmTurnOnBackupAndSyncModalTestIds = {
   cancelButton: 'confirm-turn-on-backup-and-sync-cancel-button',
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function ConfirmTurnOnBackupAndSyncModal() {
   const { props, hideModal } = useModalProps();
   const { enableBackupAndSync } = props;

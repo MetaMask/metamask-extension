@@ -109,16 +109,30 @@ export const BridgeQuotesModal = ({
                     trackUnifiedSwapBridgeEvent(
                       UnifiedSwapBridgeEventName.AllQuotesSorted,
                       {
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         sort_order: sortOrder,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         price_impact: Number(
                           recommendedQuote.quote?.priceData?.priceImpact ?? '0',
                         ),
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         gas_included: false,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         token_symbol_source:
                           fromToken?.symbol ??
                           getNativeAssetForChainId(fromChain.chainId).symbol,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         token_symbol_destination: toToken?.symbol ?? null,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         stx_enabled: isStxEnabled,
+                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                        // eslint-disable-next-line @typescript-eslint/naming-convention
                         best_quote_provider: formatProviderLabel(
                           recommendedQuote.quote,
                         ),
@@ -210,15 +224,27 @@ export const BridgeQuotesModal = ({
                         trackUnifiedSwapBridgeEvent(
                           UnifiedSwapBridgeEventName.QuoteSelected,
                           {
+                            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                            // eslint-disable-next-line @typescript-eslint/naming-convention
                             is_best_quote: isRecommendedQuote,
+                            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                            // eslint-disable-next-line @typescript-eslint/naming-convention
                             best_quote_provider: formatProviderLabel(
                               quote?.quote,
                             ),
+                            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                            // eslint-disable-next-line @typescript-eslint/naming-convention
                             usd_quoted_gas: Number(quote.gasFee.usd),
+                            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                            // eslint-disable-next-line @typescript-eslint/naming-convention
                             quoted_time_minutes:
                               quote.estimatedProcessingTimeInSeconds / 60,
+                            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                            // eslint-disable-next-line @typescript-eslint/naming-convention
                             usd_quoted_return: Number(quote.toTokenAmount.usd),
                             provider: formatProviderLabel(quote.quote),
+                            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                            // eslint-disable-next-line @typescript-eslint/naming-convention
                             price_impact: Number(
                               // TODO remove this once we bump to the latest version of the bridge controller
                               (
@@ -227,6 +253,8 @@ export const BridgeQuotesModal = ({
                                 }
                               )?.priceData?.priceImpact ?? '0',
                             ),
+                            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                            // eslint-disable-next-line @typescript-eslint/naming-convention
                             gas_included: false,
                           },
                         ),
