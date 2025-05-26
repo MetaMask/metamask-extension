@@ -15,9 +15,7 @@ import {
 import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
 import {
   FUND_SLIDE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   BRIDGE_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
   CARD_SLIDE,
   CASH_SLIDE,
   REMOTE_MODE_SLIDE,
@@ -85,12 +83,10 @@ export const useCarouselManagement = ({
       undismissable: hasZeroBalance,
     };
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     if (!isSolanaAddress(selectedAccount.address)) {
       defaultSlides.push(SMART_ACCOUNT_UPGRADE_SLIDE);
     }
     defaultSlides.push(BRIDGE_SLIDE);
-    ///: END:ONLY_INCLUDE_IF
     defaultSlides.push(CARD_SLIDE);
     defaultSlides.push(CASH_SLIDE);
     defaultSlides.push(MULTI_SRP_SLIDE);
