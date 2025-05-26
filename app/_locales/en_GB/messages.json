@@ -4018,7 +4018,7 @@
     "message": "Your password was changed recently."
   },
   "passwordNotLongEnough": {
-    "message": "Password not long enough"
+    "message": "Password must have at least 8 characters"
   },
   "passwordStrength": {
     "message": "Password strength: $1",
@@ -4702,6 +4702,10 @@
   },
   "resetPasswordStep3": {
     "message": "Login with your new password on any device."
+  },
+  "resetPasswordSocialReset": {
+    "message": "Not logged in on mobile? $1 with your Secret Recovery Phrase.",
+    "description": "$1 is the button text 'Reset wallet'"
   },
   "resetWallet": {
     "message": "Reset wallet"

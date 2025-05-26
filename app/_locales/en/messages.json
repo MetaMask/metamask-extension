@@ -4018,7 +4018,7 @@
     "message": "Your password was changed recently."
   },
   "passwordNotLongEnough": {
-    "message": "Password not long enough"
+    "message": "Password must have at least 8 characters"
   },
   "passwordStrength": {
     "message": "Password strength: $1",
