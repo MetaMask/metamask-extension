@@ -43,7 +43,7 @@ describe('Account Not Found Seedless Onboarding View', () => {
       customMockStore,
     );
 
-    expect(getByText('Account not found')).toBeInTheDocument();
+    expect(getByText('Wallet not found')).toBeInTheDocument();
     // should show the correct button
     const loginButton = getByText('Yes, create a new wallet');
     expect(loginButton).toBeInTheDocument();

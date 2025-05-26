@@ -33,7 +33,7 @@ exports[`AssetPage should render a native asset 1`] = `
       </p>
     </div>
     <div
-      class="mm-box mm-box--rounded-lg"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--rounded-lg"
     >
       <div
         class="mm-box mm-box--margin-right-4 mm-box--margin-left-4"
@@ -61,7 +61,7 @@ exports[`AssetPage should render a native asset 1`] = `
         data-testid="asset-price-chart"
       >
         <div
-          class="mm-box asset-chart__skeleton-container"
+          class="mm-box asset-chart__empty-or-loading-state-container"
           data-testid="asset-chart-loading"
         >
           <div
@@ -479,7 +479,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
       </p>
     </div>
     <div
-      class="mm-box mm-box--rounded-lg"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--rounded-lg"
     >
       <div
         class="mm-box mm-box--margin-right-4 mm-box--margin-left-4"
@@ -510,7 +510,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         data-testid="asset-price-chart"
       >
         <div
-          class="mm-box asset-chart__skeleton-container"
+          class="mm-box asset-chart__empty-or-loading-state-container"
           data-testid="asset-chart-loading"
         >
           <div
@@ -952,7 +952,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
       </p>
     </div>
     <div
-      class="mm-box mm-box--rounded-lg"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--rounded-lg"
     >
       <div
         class="mm-box mm-box--margin-right-4 mm-box--margin-left-4"
@@ -980,7 +980,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         data-testid="asset-price-chart"
       >
         <div
-          class="mm-box asset-chart__skeleton-container"
+          class="mm-box asset-chart__empty-or-loading-state-container"
           data-testid="asset-chart-loading"
         >
           <div

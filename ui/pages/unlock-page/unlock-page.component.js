@@ -353,7 +353,7 @@ export default class UnlockPage extends Component {
               onChange={(event) => this.handleInputChange(event)}
               error={Boolean(error)}
               helpText={this.renderHelpText()}
-              autoComplete="current-password"
+              autoComplete
               autoFocus
               disabled={isLocked}
               width={BlockSize.Full}
