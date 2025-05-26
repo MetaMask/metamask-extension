@@ -28,7 +28,7 @@ export default class OAuthService {
     authConnection: AuthConnection,
   ): Promise<OAuthLoginResult> {
     // get the redirect URI for the OAuth login
-    const redirectUri = this.#webAuthenticator.getRedirectUrl();
+    const redirectUri = this.#webAuthenticator.getRedirectURL();
 
     // create the login handler for the given social login type
     // this is to get the Jwt Token in the exchange for the Authorization Code
