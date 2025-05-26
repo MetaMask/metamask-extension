@@ -190,7 +190,11 @@ const AssetChart = ({
   }, [currentPrice]);
 
   return (
-    <Box borderRadius={BorderRadius.LG}>
+    <Box
+      borderRadius={BorderRadius.LG}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+    >
       <AssetChartPrice
         ref={priceRef}
         loading={loading}
