@@ -35,7 +35,6 @@ import { useSupportsEIP1559 } from './useSupportsEIP1559';
  *
  * @requires useConfirmContext - Must be used within a confirmation context
  * @requires Redux store - Requires access to account balance and transaction state
- *
  */
 export const useMaxValueRefresher = () => {
   const { currentConfirmation: transactionMeta } =
