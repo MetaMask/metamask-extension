@@ -65,7 +65,7 @@ describe('OAuthService', () => {
 
     const googleLoginHandler = createLoginHandler(
       AuthConnection.Google,
-      chrome.identity.getRedirectURL(),
+      mockWebAuthenticator.getRedirectUrl(),
       getOAuthLoginEnvs(),
     );
 
@@ -85,7 +85,7 @@ describe('OAuthService', () => {
 
     const appleLoginHandler = createLoginHandler(
       AuthConnection.Apple,
-      chrome.identity.getRedirectURL(),
+      mockWebAuthenticator.getRedirectUrl(),
       getOAuthLoginEnvs(),
     );
 
