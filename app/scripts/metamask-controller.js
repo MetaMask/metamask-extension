@@ -802,7 +802,7 @@ export default class MetamaskController extends EventEmitter {
         'PreferencesController:stateChange',
         'TokenListController:stateChange',
         'NetworkController:stateChange',
-        'AccountsController:accountRemoved',
+        'KeyringController:accountRemoved',
       ],
     });
     this.tokensController = new TokensController({
@@ -952,7 +952,7 @@ export default class MetamaskController extends EventEmitter {
         'PreferencesController:stateChange',
         'TokensController:stateChange',
         'NetworkController:stateChange',
-        'AccountsController:accountRemoved',
+        'KeyringController:accountRemoved',
       ],
     });
 
