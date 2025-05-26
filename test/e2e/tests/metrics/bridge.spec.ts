@@ -47,7 +47,30 @@ async function mockSegment(mockServer: Mockttp) {
         batch: [{ type: 'track', event: eventType }],
       })
       .always()
-      .thenCallback(async () => {
+      .thenCallback(async (request) => {
+        let bodyText = '';
+
+        try {
+          if (request.body.buffer) {
+            bodyText = request.body.buffer.toString('utf8');
+          } else {
+            bodyText = JSON.stringify(request.body);
+          }
+        } catch (e) {
+          bodyText = 'Unable to parse request body';
+        }
+
+        try {
+          const parsedBody = JSON.parse(bodyText);
+          console.log(`\n=== Segment API Request (${eventType}) ===`);
+          console.log(JSON.stringify(parsedBody, null, 2));
+          console.log('=== End Request ===\n');
+        } catch (e) {
+          console.log(`\n=== Segment API Request (${eventType}) - Raw ===`);
+          console.log(bodyText);
+          console.log('=== End Request ===\n');
+        }
+
         return {
           statusCode: 200,
         };
@@ -109,6 +132,12 @@ describe('Bridge tests', function (this: Suite) {
           assert.fail(
             `Missing expected event types: ${missingEventTypes.join(', ')}`,
           );
+        }
+
+        let c = 0;
+        for (const event of events) {
+          console.log(`Event ${c}:`, event);
+          c += 1;
         }
 
         // Bridge Link Clicked
