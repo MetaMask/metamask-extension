@@ -1,7 +1,10 @@
-import { AuthConnection, Web3AuthNetwork } from "@metamask/seedless-onboarding-controller";
-import { OAuthLoginEnv } from "./types";
-import OAuthService from "./oauth-service";
-import { createLoginHandler } from "./create-login-handler";
+import {
+  AuthConnection,
+  Web3AuthNetwork,
+} from '@metamask/seedless-onboarding-controller';
+import { OAuthLoginEnv, WebAuthenticator } from './types';
+import OAuthService from './oauth-service';
+import { createLoginHandler } from './create-login-handler';
 
 const DEFAULT_GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
 const DEFAULT_APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID as string;
@@ -21,15 +24,20 @@ function getOAuthLoginEnvs(): OAuthLoginEnv {
   };
 }
 
+const getRedirectUrlSpy = jest
+  .fn()
+    .mockReturnValue('https://mocked-redirect-uri');
+const launchWebAuthFlowSpy = jest
+  .fn()
+    .mockResolvedValue('https://mocked-redirect-uri?code=mocked-code');
+
+const mockWebAuthenticator: WebAuthenticator = {
+  getRedirectUrl: getRedirectUrlSpy,
+  launchWebAuthFlow: launchWebAuthFlowSpy,
+};
+
 describe('OAuthService', () => {
-  let launchWebAuthFlowSpy: jest.SpyInstance;
-
   beforeEach(() => {
-    // mock chrome.identity.launchWebAuthFlow to return a mocked redirect URI with a mocked code
-    launchWebAuthFlowSpy = jest
-      .spyOn(chrome.identity, 'launchWebAuthFlow')
-      .mockResolvedValueOnce('https://mocked-redirect-uri?code=mocked-code');
-
     // mock the fetch call to auth-server
     jest.spyOn(global, 'fetch').mockResolvedValue({
       json: jest.fn().mockResolvedValue({
@@ -50,6 +58,7 @@ describe('OAuthService', () => {
   it('should start the OAuth login process with `Google`', async () => {
     const oauthService = new OAuthService({
       env: getOAuthLoginEnvs(),
+      webAuthenticator: mockWebAuthenticator,
     });
 
     await oauthService.startOAuthLogin(AuthConnection.Google);
@@ -69,6 +78,7 @@ describe('OAuthService', () => {
   it('should start the OAuth login process with `Apple`', async () => {
     const oauthService = new OAuthService({
       env: getOAuthLoginEnvs(),
+      webAuthenticator: mockWebAuthenticator,
     });
 
     await oauthService.startOAuthLogin(AuthConnection.Apple);

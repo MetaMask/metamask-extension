@@ -1,13 +1,21 @@
-import { AuthConnection } from "@metamask/seedless-onboarding-controller";
-import { BaseLoginHandler } from "./base-login-handler";
-import { createLoginHandler } from "./create-login-handler";
-import { OAuthLoginEnv, OAuthLoginResult, OAuthServiceOptions } from "./types";
+import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { BaseLoginHandler } from './base-login-handler';
+import { createLoginHandler } from './create-login-handler';
+import type {
+  OAuthLoginEnv,
+  OAuthLoginResult,
+  OAuthServiceOptions,
+  WebAuthenticator,
+} from './types';
 
 export default class OAuthService {
   #env: OAuthLoginEnv;
 
-  constructor({ env }: OAuthServiceOptions) {
+  #webAuthenticator: WebAuthenticator;
+
+  constructor({ env, webAuthenticator }: OAuthServiceOptions) {
     this.#env = env;
+    this.#webAuthenticator = webAuthenticator;
   }
 
   /**
@@ -20,7 +28,7 @@ export default class OAuthService {
     authConnection: AuthConnection,
   ): Promise<OAuthLoginResult> {
     // get the redirect URI for the OAuth login
-    const redirectUri = chrome.identity.getRedirectURL();
+    const redirectUri = this.#webAuthenticator.getRedirectUrl();
 
     // create the login handler for the given social login type
     // this is to get the Jwt Token in the exchange for the Authorization Code
@@ -31,10 +39,12 @@ export default class OAuthService {
     );
 
     // launch the web auth flow to get the Authorization Code from the social login provider
-    const redirectUrlFromOAuth = await chrome.identity.launchWebAuthFlow({
-      interactive: true,
-      url: loginHandler.getAuthUrl(),
-    });
+    const redirectUrlFromOAuth = await this.#webAuthenticator.launchWebAuthFlow(
+      {
+        interactive: true,
+        url: loginHandler.getAuthUrl(),
+      },
+    );
 
     if (!redirectUrlFromOAuth) {
       console.error('[identity auth] redirectUrl is null');
