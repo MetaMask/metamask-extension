@@ -119,45 +119,6 @@
         "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
       }
     },
-    "@metamask-institutional/custody-controller>@ethereumjs/util": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
-        "browserify>buffer": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "webpack>events": true,
-        "browserify>insert-module-globals>is-buffer": true,
-        "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
-      }
-    },
-    "@metamask-institutional/custody-keyring>@ethereumjs/util": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
-        "browserify>buffer": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "webpack>events": true,
-        "browserify>insert-module-globals>is-buffer": true,
-        "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
-      }
-    },
-    "@metamask-institutional/transaction-update>@ethereumjs/util": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@keystonehq/metamask-airgapped-keyring>@ethereumjs/rlp": true,
-        "browserify>buffer": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "webpack>events": true,
-        "browserify>insert-module-globals>is-buffer": true,
-        "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
-      }
-    },
     "@metamask/eth-sig-util>@ethereumjs/util": {
       "globals": {
         "console.warn": true
@@ -1009,98 +970,6 @@
         "react-redux>react-is": true
       }
     },
-    "@metamask-institutional/custody-keyring>@metamask-institutional/configuration-client": {
-      "globals": {
-        "console.log": true,
-        "fetch": true
-      }
-    },
-    "@metamask-institutional/custody-controller": {
-      "packages": {
-        "@metamask-institutional/custody-controller>@ethereumjs/util": true,
-        "@metamask-institutional/custody-keyring": true,
-        "@metamask/obs-store": true
-      }
-    },
-    "@metamask-institutional/custody-keyring": {
-      "globals": {
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true
-      },
-      "packages": {
-        "@metamask-institutional/custody-keyring>@ethereumjs/util": true,
-        "@metamask-institutional/custody-keyring>@metamask-institutional/configuration-client": true,
-        "@metamask-institutional/sdk": true,
-        "@metamask-institutional/types": true,
-        "@metamask/obs-store": true,
-        "crypto-browserify": true,
-        "webpack>events": true,
-        "gulp-sass>lodash.clonedeep": true
-      }
-    },
-    "@metamask-institutional/extension": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "@metamask-institutional/custody-controller": true,
-        "@metamask-institutional/sdk": true,
-        "@metamask-institutional/types": true,
-        "gulp-sass>lodash.clonedeep": true
-      }
-    },
-    "@metamask-institutional/institutional-features": {
-      "packages": {
-        "@metamask-institutional/custody-keyring": true,
-        "@metamask/obs-store": true
-      }
-    },
-    "@metamask-institutional/rpc-allowlist": {
-      "globals": {
-        "URL": true
-      }
-    },
-    "@metamask-institutional/sdk": {
-      "globals": {
-        "URLSearchParams": true,
-        "console.debug": true,
-        "console.error": true,
-        "console.log": true,
-        "fetch": true
-      },
-      "packages": {
-        "@metamask-institutional/sdk>@metamask-institutional/simplecache": true,
-        "crypto-browserify": true,
-        "webpack>events": true
-      }
-    },
-    "@metamask-institutional/transaction-update": {
-      "globals": {
-        "clearInterval": true,
-        "console.info": true,
-        "console.log": true,
-        "setInterval": true
-      },
-      "packages": {
-        "@metamask-institutional/transaction-update>@ethereumjs/util": true,
-        "@metamask-institutional/sdk": true,
-        "@metamask-institutional/transaction-update>@metamask-institutional/websocket-client": true,
-        "@metamask/obs-store": true,
-        "webpack>events": true
-      }
-    },
-    "@metamask-institutional/transaction-update>@metamask-institutional/websocket-client": {
-      "globals": {
-        "WebSocket": true,
-        "clearTimeout": true,
-        "console.log": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "webpack>events": true
-      }
-    },
     "@metamask/abi-utils": {
       "packages": {
         "@metamask/superstruct": true,
@@ -1294,6 +1163,7 @@
     "@metamask/bridge-status-controller": {
       "globals": {
         "URLSearchParams": true,
+        "console.error": true,
         "console.log": true,
         "setTimeout": true
       },
