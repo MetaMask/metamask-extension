@@ -17,14 +17,6 @@ if [[ -z "${GITHUB_SHA}" ]]; then
     exit 1
 fi
 
-function install_github_cli() {
-    printf '%s\n' 'Installing hub CLI'
-    pushd "$(mktemp -d)"
-    curl -sSL 'https://github.com/github/hub/releases/download/v2.11.2/hub-linux-amd64-2.11.2.tgz' | tar xz
-    PATH="${PATH}:${PWD}/hub-linux-amd64-2.11.2/bin"
-    popd
-}
-
 function print_build_version() {
     local build_type="${1}"
     shift
@@ -59,19 +51,16 @@ if [[ "${current_commit_msg}" =~ Version[-[:space:]](v[[:digit:]]+.[[:digit:]]+.
     tag="${BASH_REMATCH[1]}"
     flask_version="$(print_build_version 'flask')"
 
-    install_github_cli
-
     printf '%s\n' 'Creating GitHub Release'
     release_body="$(awk -v version="[${tag##v}]" -f .github/scripts/show-changelog.awk CHANGELOG.md)"
-    hub release create \
-        --attach build-dist-browserify/builds/metamask-chrome-*.zip \
-        --attach build-dist-mv2-browserify/builds/metamask-firefox-*.zip \
-        --attach build-flask-browserify/builds/metamask-flask-chrome-*.zip \
-        --attach build-flask-mv2-browserify/builds/metamask-flask-firefox-*.zip \
-        --message "Version ${tag##v}" \
-        --message "${release_body}" \
-        --commitish "${GITHUB_SHA}" \
-        "${tag}"
+    gh release create "${tag}" \
+        build-dist-browserify/builds/metamask-chrome-*.zip \
+        build-dist-mv2-browserify/builds/metamask-firefox-*.zip \
+        build-flask-browserify/builds/metamask-flask-chrome-*.zip \
+        build-flask-mv2-browserify/builds/metamask-flask-firefox-*.zip \
+        --title "Version ${tag##v}" \
+        --notes "${release_body}" \
+        --target "${GITHUB_SHA}"
 
     publish_tag 'Flask' "${flask_version}"
 else

@@ -347,7 +347,7 @@ jobs:
 
   publish-release:
     name: Publish release
-    if: ${{ (github.head_ref || github.ref_name) == 'master' }}
+    if: ${{ github.event_name == 'push' && (github.head_ref || github.ref_name) == 'master' }}
     needs:
       - build-dist-browserify
       - build-dist-mv2-browserify
