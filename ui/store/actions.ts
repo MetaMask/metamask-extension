@@ -239,7 +239,11 @@ export function createNewVaultAndSyncWithSocial(
         throw new Error('No keyring found');
       }
 
-      await createSeedPhraseBackup(password, seedPhrase, firstKeyring.id);
+      await createSeedPhraseBackup(
+        password,
+        seedPhrase,
+        firstKeyring.metadata.id,
+      );
       return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error));
@@ -290,7 +294,10 @@ export function restoreSocialBackupAndGetSeedPhrase(
       }
 
       // update the backup metadata state for the seedless onboarding flow
-      await updateBackupMetadataState(firstKeyring.id, firstSeedPhrase);
+      await updateBackupMetadataState(
+        firstKeyring.metadata.id,
+        firstSeedPhrase,
+      );
 
       await forceUpdateMetamaskState(dispatch);
       return firstSeedPhrase;

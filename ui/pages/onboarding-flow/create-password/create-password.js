@@ -52,7 +52,6 @@ import { getPlatform } from '../../../../app/scripts/lib/util';
 import PasswordForm from '../../../components/app/password-form/password-form';
 import LoadingScreen from '../../../components/ui/loading-screen';
 ///: END:ONLY_INCLUDE_IF
-import LoadingScreen from '../../../components/ui/loading-screen';
 
 export default function CreatePassword({
   createNewAccount,

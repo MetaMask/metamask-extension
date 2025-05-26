@@ -4939,7 +4939,7 @@ export default class MetamaskController extends EventEmitter {
     try {
       await this.keyringController.createNewVaultAndKeychain(password);
 
-      return this.keyringController.state.keyringsMetadata;
+      return this.keyringController.state.keyrings;
     } finally {
       releaseLock();
     }
@@ -5081,7 +5081,7 @@ export default class MetamaskController extends EventEmitter {
         );
       }
 
-      return this.keyringController.state.keyringsMetadata;
+      return this.keyringController.state.keyrings;
     } finally {
       releaseLock();
     }
