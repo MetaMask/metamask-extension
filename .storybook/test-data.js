@@ -34,6 +34,7 @@ const state = {
     remoteFeatureFlags: {
       bridgeConfig: {
         support: true,
+        minimumVersion: '0.0.0',
       },
     },
     txHistory: {},
