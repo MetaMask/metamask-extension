@@ -50,6 +50,7 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 // eslint-disable-next-line import/no-restricted-paths
 import { getPlatform } from '../../../../app/scripts/lib/util';
 import PasswordForm from '../../../components/app/password-form/password-form';
+import LoadingScreen from '../../../components/ui/loading-screen';
 ///: END:ONLY_INCLUDE_IF
 
 export default function CreatePassword({
@@ -185,6 +186,7 @@ export default function CreatePassword({
             color={IconColor.iconDefault}
             size={ButtonIconSize.Md}
             data-testid="create-password-back-button"
+            type="button"
             onClick={() => history.goBack()}
             ariaLabel="back"
           />
@@ -255,6 +257,7 @@ export default function CreatePassword({
           data-testid="create-password-iframe"
         />
       ) : null}
+      {newAccountCreationInProgress && <LoadingScreen />}
     </Box>
   );
 }

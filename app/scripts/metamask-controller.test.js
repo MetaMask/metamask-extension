@@ -1333,7 +1333,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('returns approval from the PermissionsController for only eth_accounts when only permittedChains is specified in params and origin is snapId', async () => {
+      it('returns approval from the PermissionsController for both eth_accounts and permittedChains when only permittedChains is specified in params and origin is snapId', async () => {
         const permissions =
           await metamaskController.getCaip25PermissionFromLegacyPermissions(
             'npm:snap',
@@ -1358,6 +1358,9 @@ describe('MetaMaskController', () => {
                   value: {
                     requiredScopes: {},
                     optionalScopes: {
+                      'eip155:100': {
+                        accounts: [],
+                      },
                       'wallet:eip155': {
                         accounts: [],
                       },
@@ -1372,7 +1375,7 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('returns approval from the PermissionsController for only eth_accounts when both eth_accounts and permittedChains are specified in params and origin is snapId', async () => {
+      it('returns approval from the PermissionsController for both eth_accounts and permittedChains when both eth_accounts and permittedChains are specified in params and origin is snapId', async () => {
         const permissions =
           await metamaskController.getCaip25PermissionFromLegacyPermissions(
             'npm:snap',
@@ -1405,6 +1408,9 @@ describe('MetaMaskController', () => {
                   value: {
                     requiredScopes: {},
                     optionalScopes: {
+                      'eip155:100': {
+                        accounts: ['eip155:100:foo'],
+                      },
                       'wallet:eip155': {
                         accounts: ['wallet:eip155:foo'],
                       },
@@ -1472,31 +1478,28 @@ describe('MetaMaskController', () => {
         );
       });
 
-      it('returns CAIP-25 approval with approved accounts for the `wallet:eip155` scope (and no approved chainIds) with isMultichainOrigin: false if origin is snapId', async () => {
+      it('returns CAIP-25 approval with approved accounts and chain IDs with isMultichainOrigin: false if origin is snapId', async () => {
         const origin = 'npm:snap';
 
         const permissions =
-          await metamaskController.getCaip25PermissionFromLegacyPermissions(
-            origin,
-            {
-              [RestrictedEthMethods.eth_accounts]: {
-                caveats: [
-                  {
-                    type: 'restrictReturnedAccounts',
-                    value: ['0xdeadbeef'],
-                  },
-                ],
-              },
-              [EndowmentTypes.permittedChains]: {
-                caveats: [
-                  {
-                    type: 'restrictNetworkSwitching',
-                    value: ['0x1', '0x5'],
-                  },
-                ],
-              },
+          metamaskController.getCaip25PermissionFromLegacyPermissions(origin, {
+            [RestrictedEthMethods.eth_accounts]: {
+              caveats: [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: ['0xdeadbeef'],
+                },
+              ],
             },
-          );
+            [EndowmentTypes.permittedChains]: {
+              caveats: [
+                {
+                  type: 'restrictNetworkSwitching',
+                  value: ['0x1', '0x5'],
+                },
+              ],
+            },
+          });
 
         expect(permissions).toStrictEqual(
           expect.objectContaining({
@@ -1507,6 +1510,12 @@ describe('MetaMaskController', () => {
                   value: {
                     requiredScopes: {},
                     optionalScopes: {
+                      'eip155:1': {
+                        accounts: ['eip155:1:0xdeadbeef'],
+                      },
+                      'eip155:5': {
+                        accounts: ['eip155:5:0xdeadbeef'],
+                      },
                       'wallet:eip155': {
                         accounts: ['wallet:eip155:0xdeadbeef'],
                       },
@@ -1580,19 +1589,6 @@ describe('MetaMaskController', () => {
     });
 
     describe('requestPermittedChainsPermissionIncremental', () => {
-      it('throws if the origin is snapId', async () => {
-        await expect(() =>
-          metamaskController.requestPermittedChainsPermissionIncremental({
-            origin: 'npm:snap',
-            chainId: '0x1',
-          }),
-        ).rejects.toThrow(
-          new Error(
-            'Cannot request permittedChains permission for Snaps with origin "npm:snap"',
-          ),
-        );
-      });
-
       it('requests permittedChains approval if autoApprove: false', async () => {
         const expectedCaip25Permission = {
           [Caip25EndowmentPermissionName]: {
@@ -4032,10 +4028,9 @@ describe('MetaMaskController', () => {
           metamaskController.keyringController.state.keyrings;
 
         const newlyAddedKeyringId =
-          metamaskController.keyringController.state.keyringsMetadata[
-            metamaskController.keyringController.state.keyringsMetadata.length -
-              2 // -1 for the snap keyring, -1 for the newly added keyring
-          ].id;
+          metamaskController.keyringController.state.keyrings[
+            metamaskController.keyringController.state.keyrings.length - 2 // -1 for the snap keyring, -1 for the newly added keyring
+          ].metadata.id;
 
         const newSRP = Buffer.from(
           await metamaskController.getSeedPhrase(password, newlyAddedKeyringId),
@@ -4063,7 +4058,6 @@ describe('MetaMaskController', () => {
         );
       });
 
-      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
       it('discovers and creates Solana accounts through KeyringInternalSnapClient when importing a mnemonic', async () => {
         const password = 'what-what-what';
         jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
@@ -4107,14 +4101,14 @@ describe('MetaMaskController', () => {
         expect(mockDiscoverAccounts.mock.calls[2][2]).toBe(2);
 
         // Assert that createAccount was called correctly for each discovered account
-        expect(mockCreateAccount).toHaveBeenCalledTimes(3);
+        expect(mockCreateAccount).toHaveBeenCalledTimes(2);
 
         // All calls should use the solana snap ID
         expect(mockCreateAccount.mock.calls[0][0]).toStrictEqual(
           expect.stringContaining('solana-wallet'),
         );
-        // Second call should use derivation path on index 0
-        expect(mockCreateAccount.mock.calls[1][1]).toStrictEqual({
+        // First call should use derivation path on index 0
+        expect(mockCreateAccount.mock.calls[0][1]).toStrictEqual({
           accountNameSuggestion: expect.stringContaining('Solana Account'),
           derivationPath: "m/44'/501'/0'/0'",
           entropySource: expect.any(String),
@@ -4126,14 +4120,13 @@ describe('MetaMaskController', () => {
           setSelectedAccount: false,
         });
 
-        // Third call should use derivation path on index 1
-        expect(mockCreateAccount.mock.calls[2][1]).toStrictEqual({
+        // Second call should use derivation path on index 1
+        expect(mockCreateAccount.mock.calls[1][1]).toStrictEqual({
           accountNameSuggestion: expect.stringContaining('Solana Account'),
           derivationPath: "m/44'/501'/1'/0'",
           entropySource: expect.any(String),
         });
       });
-      ///: END:ONLY_INCLUDE_IF
     });
 
     describe('NetworkController state', () => {

@@ -15,6 +15,8 @@ import {
   BorderRadius,
   BlockSize,
   FontWeight,
+  TextColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
@@ -58,6 +60,9 @@ export default function CreationSuccessful() {
 
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
+  const isWalletReady =
+    firstTimeFlowType === FirstTimeFlowType.import || seedPhraseBackedUp;
+
   const renderTitle = useMemo(() => {
     if (socialLoginFlow || seedPhraseBackedUp) {
       return t('yourWalletIsReady');
@@ -73,7 +78,38 @@ export default function CreationSuccessful() {
 
     // TODO: Check figma teaching fox animation
     return 'images/animations/fox/celebrating.lottie.json';
-  }, [socialLoginFlow, seedPhraseBackedUp]);
+  }, [socialLoginFlow, isWalletReady]);
+
+  const renderDetails1 = useMemo(() => {
+    if (isWalletReady) {
+      return t('walletReadyLoseSrp');
+    }
+
+    return t('walletReadyLoseSrpRemind');
+  }, [isWalletReady, t]);
+
+  const renderDetails2 = useMemo(() => {
+    if (isWalletReady) {
+      return t('walletReadyLearn', [
+        <ButtonLink
+          key="walletReadyLearn"
+          size={ButtonLinkSize.Inherit}
+          textProps={{
+            variant: TextVariant.bodyMd,
+            alignItems: AlignItems.flexStart,
+          }}
+          as="a"
+          href={learnMoreLink}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t('learnHow')}
+        </ButtonLink>,
+      ]);
+    }
+
+    return t('walletReadyLearnRemind');
+  }, [isWalletReady, t]);
 
   return (
     <Box
@@ -117,30 +153,19 @@ export default function CreationSuccessful() {
               <LottieAnimation path={renderFoxPath} loop autoplay />
             </Box>
           </Box>
-          <Text variant={TextVariant.bodyMd} marginBottom={6}>
-            {seedPhraseBackedUp
-              ? t('walletReadyLoseSrp')
-              : t('walletReadyLoseSrpRemind')}
+          <Text
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternative}
+            marginBottom={6}
+          >
+            {renderDetails1}
           </Text>
-          <Text variant={TextVariant.bodyMd} marginBottom={6}>
-            {seedPhraseBackedUp
-              ? t('walletReadyLearn', [
-                  <ButtonLink
-                    key="walletReadyLearn"
-                    size={ButtonLinkSize.Inherit}
-                    textProps={{
-                      variant: TextVariant.bodyMd,
-                      alignItems: AlignItems.flexStart,
-                    }}
-                    as="a"
-                    href={learnMoreLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {t('learnHow')}
-                  </ButtonLink>,
-                ])
-              : t('walletReadyLearnRemind')}
+          <Text
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternative}
+            marginBottom={6}
+          >
+            {renderDetails2}
           </Text>
         </Box>
 
@@ -167,7 +192,11 @@ export default function CreationSuccessful() {
                 {t('manageDefaultSettings')}
               </Text>
             </Box>
-            <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
+            <Icon
+              name={IconName.ArrowRight}
+              color={IconColor.iconAlternative}
+              size={IconSize.Sm}
+            />
           </ButtonBase>
         </Box>
       </Box>
