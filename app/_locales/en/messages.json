@@ -114,11 +114,11 @@
     "message": "Yes, create a new wallet"
   },
   "accountNotFoundDescription": {
-    "message": "No existing wallet found for “$1.” Want to create one now with this social login?",
+    "message": "We couldn’t find a wallet for “$1”. Do you want to create a new one with this login?",
     "description": "$1 is the account email"
   },
   "accountNotFoundTitle": {
-    "message": "Account not found"
+    "message": "Wallet not found"
   },
   "accountOptions": {
     "message": "Account options"
