@@ -1,11 +1,11 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
-import PortStream from 'extension-port-stream';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
 import { pipeline, Transform } from 'readable-stream';
 import browser from 'webextension-polyfill';
+import { PortStream } from '../lib/extension-port-stream';
 import {
   CONTENT_SCRIPT,
   LEGACY_CONTENT_SCRIPT,

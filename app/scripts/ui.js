@@ -12,7 +12,6 @@ import '../../development/wdyr';
 // dev only, "react-devtools" import is skipped in prod builds
 import 'react-devtools';
 
-import PortStream from 'extension-port-stream';
 import browser from 'webextension-polyfill';
 
 import { StreamProvider } from '@metamask/providers';
@@ -31,6 +30,7 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import { getErrorHtml } from '../../shared/lib/error-utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
+import { PortStream } from './lib/extension-port-stream';
 import {
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
   displayStateCorruptionError,

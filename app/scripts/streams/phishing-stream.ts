@@ -5,7 +5,7 @@ import { Substream } from '@metamask/object-multiplex/dist/Substream';
 // @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
 import { pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
-import PortStream from 'extension-port-stream';
+import { PortStream } from '../lib/extension-port-stream';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
 import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
 import {
