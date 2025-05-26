@@ -4046,9 +4046,7 @@ describe('MetaMaskController', () => {
 
         // All calls should include the solana scopes
         expect(mockDiscoverAccounts.mock.calls[0][0]).toStrictEqual(
-          expect.arrayContaining([
-            SolScope.Mainnet,
-          ]),
+          expect.arrayContaining([SolScope.Mainnet]),
         );
 
         // First call should be for index 0
