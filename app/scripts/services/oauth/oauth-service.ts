@@ -1,45 +1,12 @@
-import { BaseController } from '@metamask/base-controller';
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
-import {
-  controllerName,
-  OAuthControllerMessenger,
-  OAuthControllerOptions,
-  OAuthControllerState,
-  OAuthLoginEnv,
-  OAuthLoginResult,
-} from './types';
-import { createLoginHandler } from './login-handler-factory';
-import { BaseLoginHandler } from './base-login-handler';
+import { AuthConnection } from "@metamask/seedless-onboarding-controller";
+import { BaseLoginHandler } from "./base-login-handler";
+import { createLoginHandler } from "./create-login-handler";
+import { OAuthLoginEnv, OAuthLoginResult, OAuthServiceOptions } from "./types";
 
-/**
- * Function to get default state of the {@link OAuthController}.
- */
-export const getDefaultOAuthControllerState =
-  (): Partial<OAuthControllerState> => ({});
-
-/**
- * The OAuth Controller is responsible for handling the Social (OAuth) login process.
- *
- * It will initiate the webAuthFlow to get the authentication code from the social login provider.
- * Then it will use the authentication code to get the Jwt Token from the Web3Auth Authentication Server.
- *
- * The JWT Token will be used to authenticate with the Seedless Onboarding Services.
- */
-export default class OAuthController extends BaseController<
-  typeof controllerName,
-  OAuthControllerState,
-  OAuthControllerMessenger
-> {
+export default class OAuthService {
   #env: OAuthLoginEnv;
 
-  constructor({ messenger, env }: OAuthControllerOptions) {
-    super({
-      messenger,
-      metadata: {}, // OAuth Controller is stateless and does not need metadata
-      name: controllerName,
-      state: {}, // OAuth Controller is stateless and does not need any state
-    });
-
+  constructor({ env }: OAuthServiceOptions) {
     this.#env = env;
   }
 

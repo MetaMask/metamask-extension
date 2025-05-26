@@ -421,8 +421,8 @@ import {
   onRpcEndpointDegraded,
 } from './lib/network-controller/messenger-action-handlers';
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
-import OAuthController from './controllers/oauth/oauth-controller';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
+import OAuthService from './services/oauth/oauth-service';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1078,14 +1078,7 @@ export default class MetamaskController extends EventEmitter {
       state: initState.OnboardingController,
     });
 
-    const oauthControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'OAuthController',
-      allowedActions: [],
-      allowedEvents: [],
-    });
-    this.oauthController = new OAuthController({
-      messenger: oauthControllerMessenger,
-      state: initState.OAuthController,
+    this.oauthService = new OAuthService({
       env: {
         web3AuthNetwork: process.env.WEB3AUTH_NETWORK,
         authServerUrl: process.env.AUTH_SERVER_URL,
@@ -2263,7 +2256,6 @@ export default class MetamaskController extends EventEmitter {
       NetworkController: this.networkController,
       AlertController: this.alertController,
       OnboardingController: this.onboardingController,
-      OAuthController: this.oauthController,
       PermissionController: this.permissionController,
       PermissionLogController: this.permissionLogController,
       SubjectMetadataController: this.subjectMetadataController,
@@ -2323,7 +2315,6 @@ export default class MetamaskController extends EventEmitter {
         CurrencyController: this.currencyRateController,
         AlertController: this.alertController,
         OnboardingController: this.onboardingController,
-        OAuthController: this.oauthController,
         PermissionController: this.permissionController,
         PermissionLogController: this.permissionLogController,
         SubjectMetadataController: this.subjectMetadataController,

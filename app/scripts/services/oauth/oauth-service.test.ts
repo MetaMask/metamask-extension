@@ -1,20 +1,7 @@
-import {
-  Web3AuthNetwork,
-  AuthConnection,
-} from '@metamask/seedless-onboarding-controller';
-import OAuthController from './oauth-controller';
-import { OAuthControllerMessenger, OAuthLoginEnv } from './types';
-import { createLoginHandler } from './login-handler-factory';
-
-function buildOAuthControllerMessenger() {
-  return {
-    call: jest.fn(),
-    publish: jest.fn(),
-    registerActionHandler: jest.fn(),
-    registerInitialEventPayload: jest.fn(),
-    subscribe: jest.fn(),
-  } as unknown as jest.Mocked<OAuthControllerMessenger>;
-}
+import { AuthConnection, Web3AuthNetwork } from "@metamask/seedless-onboarding-controller";
+import { OAuthLoginEnv } from "./types";
+import OAuthService from "./oauth-service";
+import { createLoginHandler } from "./create-login-handler";
 
 const DEFAULT_GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
 const DEFAULT_APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID as string;
@@ -34,8 +21,7 @@ function getOAuthLoginEnvs(): OAuthLoginEnv {
   };
 }
 
-describe('OAuthController', () => {
-  const messenger = buildOAuthControllerMessenger();
+describe('OAuthService', () => {
   let launchWebAuthFlowSpy: jest.SpyInstance;
 
   beforeEach(() => {
@@ -62,12 +48,11 @@ describe('OAuthController', () => {
   });
 
   it('should start the OAuth login process with `Google`', async () => {
-    const controller = new OAuthController({
-      messenger,
+    const oauthService = new OAuthService({
       env: getOAuthLoginEnvs(),
     });
 
-    await controller.startOAuthLogin(AuthConnection.Google);
+    await oauthService.startOAuthLogin(AuthConnection.Google);
 
     const googleLoginHandler = createLoginHandler(
       AuthConnection.Google,
@@ -82,12 +67,11 @@ describe('OAuthController', () => {
   });
 
   it('should start the OAuth login process with `Apple`', async () => {
-    const controller = new OAuthController({
-      messenger,
+    const oauthService = new OAuthService({
       env: getOAuthLoginEnvs(),
     });
 
-    await controller.startOAuthLogin(AuthConnection.Apple);
+    await oauthService.startOAuthLogin(AuthConnection.Apple);
 
     const appleLoginHandler = createLoginHandler(
       AuthConnection.Apple,

@@ -1,14 +1,9 @@
 import {
-  ControllerGetStateAction,
-  ControllerStateChangeEvent,
-  RestrictedMessenger,
-} from '@metamask/base-controller';
-import {
   Web3AuthNetwork,
   AuthConnection,
 } from '@metamask/seedless-onboarding-controller';
 
-export const controllerName = 'OAuthController';
+export const SERVICE_NAME = 'OAuthService';
 
 export type LoginHandlerOptions = {
   oAuthClientId: string;
@@ -23,45 +18,6 @@ export type LoginHandlerOptions = {
    */
   serverRedirectUri?: string;
 };
-
-/**
- * The state of the {@link OAuthController}
- */
-export type OAuthControllerState = {
-  // OAuth Controller is stateless
-};
-
-export type OAuthControllerGetStateAction = ControllerGetStateAction<
-  typeof controllerName,
-  OAuthControllerState
->;
-
-export type OAuthControllerActions = OAuthControllerGetStateAction;
-
-export type OAuthControllerStateChangeEvent = ControllerStateChangeEvent<
-  typeof controllerName,
-  OAuthControllerState
->;
-
-export type OAuthControllerControllerEvents = OAuthControllerStateChangeEvent;
-
-/**
- * Actions that this controller is allowed to call.
- */
-export type AllowedActions = never;
-
-/**
- * Events that this controller is allowed to subscribe.
- */
-export type AllowedEvents = never;
-
-export type OAuthControllerMessenger = RestrictedMessenger<
-  typeof controllerName,
-  OAuthControllerActions | AllowedActions,
-  OAuthControllerControllerEvents | AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
->;
 
 /**
  * The configuration to initiate the OAuth login and get the Authorization Code.
@@ -89,9 +45,7 @@ export type OAuthLoginEnv = {
   serverRedirectUri?: string;
 };
 
-export type OAuthControllerOptions = {
-  messenger: OAuthControllerMessenger;
-
+export type OAuthServiceOptions = {
   /**
    * The environment variables required for the OAuth login and get JWT Token.
    */
