@@ -1,7 +1,5 @@
-// Note: just some initial types (will likely be refactored to pull from contract metadata
-
 import { AssetType } from '@metamask/bridge-controller';
-import { Delegation } from '../../../shared/lib/delegation';
+import { Delegation } from './delegation';
 
 export enum TokenSymbol {
   SEPOLIA_ETH = 'SepoliaETH',
@@ -19,6 +17,19 @@ export type TokenInfo = {
   image: string;
   address: string;
   type: AssetType;
+};
+
+export enum REMOTE_MODES {
+  SWAP = 'swap',
+  DAILY_ALLOWANCE = 'daily-allowance',
+}
+
+export type DailyAllowance = TokenInfo & {
+  amount: number;
+};
+
+export type DailyAllowanceMetadata = {
+  allowances: DailyAllowance[];
 };
 
 export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
@@ -87,14 +98,6 @@ export type SwapAllowance = {
   amount: number;
 };
 
-export enum DailyAllowanceTokenTypes {
-  ETH = 'ETH',
-}
-
-export type DailyAllowance = TokenInfo & {
-  amount: number;
-};
-
 export type RemoteModeConfig = {
   swapAllowance:
     | {
@@ -111,8 +114,3 @@ export type RemoteModeConfig = {
     | null
     | undefined;
 };
-
-export enum REMOTE_MODES {
-  SWAP = 'swap',
-  DAILY_ALLOWANCE = 'daily-allowance',
-}
