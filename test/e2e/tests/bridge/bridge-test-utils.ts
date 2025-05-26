@@ -1,4 +1,4 @@
-import { MockedEndpoint, Mockttp } from 'mockttp';
+import { Mockttp } from 'mockttp';
 import { type FeatureFlagResponse } from '@metamask/bridge-controller';
 
 import { emptyHtmlPage } from '../../mock-e2e';
@@ -13,6 +13,7 @@ import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { MOCK_META_METRICS_ID } from '../../constants';
+import { mockSegment } from '../metrics/mocks/segment';
 import {
   ETH_CONVERSION_RATE_USD,
   MOCK_CURRENCY_RATES,
@@ -499,13 +500,35 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
     });
 }
 
+// Expected event types for Bridge metrics
+export enum EventTypes {
+  BridgeLinkClicked = 'Bridge Link Clicked',
+  SwapBridgeButtonClicked = 'Unified SwapBridge Button Clicked',
+  SwapBridgePageViewed = 'Unified SwapBridge Page Viewed',
+  SwapBridgeInputChanged = 'Unified SwapBridge Input Changed',
+  SwapBridgeQuotesRequested = 'Unified SwapBridge Quotes Requested',
+  CrossChainQuotesReceived = 'Cross-chain Quotes Received',
+  ActionSubmitted = 'Action Submitted',
+  SwapBridgeSubmitted = 'Unified SwapBridge Submitted',
+  TransactionAddedAnon = 'Transaction Added Anon',
+  TransactionAdded = 'Transaction Added',
+  TransactionSubmittedAnon = 'Transaction Submitted Anon',
+  TransactionSubmitted = 'Transaction Submitted',
+  TransactionApprovedAnon = 'Transaction Approved Anon',
+  TransactionApproved = 'Transaction Approved',
+  TransactionFinalizedAnon = 'Transaction Finalized Anon',
+  TransactionFinalized = 'Transaction Finalized',
+  SwapBridgeCompleted = 'Unified SwapBridge Completed',
+  UnifiedSwapBridgeSubmitted = 'Unified SwapBridge Submitted',
+}
+
+export const EXPECTED_EVENT_TYPES = Object.values(EventTypes);
+
 export const getBridgeFixtures = (
   title?: string,
   featureFlags: Partial<FeatureFlagResponse> = {},
   withErc20: boolean = true,
-  mockSegment:
-    | ((mockServer: Mockttp) => Promise<MockedEndpoint[]>)
-    | null = null,
+  withMockedSegment: boolean = false,
 ) => {
   const fixtureBuilder = new FixtureBuilder({
     inputChainId: CHAIN_IDS.MAINNET,
@@ -557,8 +580,27 @@ export const getBridgeFixtures = (
         await mockPriceSpotPricesV3(mockServer),
       ];
 
-      if (mockSegment) {
-        const segmentMocks = await mockSegment(mockServer);
+      if (withMockedSegment) {
+        const segmentMocks = await mockSegment(mockServer, [
+          EventTypes.BridgeLinkClicked,
+          EventTypes.SwapBridgeButtonClicked,
+          EventTypes.SwapBridgePageViewed,
+          EventTypes.SwapBridgeInputChanged,
+          EventTypes.SwapBridgeQuotesRequested,
+          EventTypes.CrossChainQuotesReceived,
+          EventTypes.ActionSubmitted,
+          EventTypes.SwapBridgeSubmitted,
+          EventTypes.TransactionAddedAnon,
+          EventTypes.TransactionAdded,
+          EventTypes.TransactionSubmittedAnon,
+          EventTypes.TransactionSubmitted,
+          EventTypes.TransactionApprovedAnon,
+          EventTypes.TransactionApproved,
+          EventTypes.TransactionFinalizedAnon,
+          EventTypes.TransactionFinalized,
+          EventTypes.SwapBridgeCompleted,
+          EventTypes.UnifiedSwapBridgeSubmitted,
+        ]);
         standardMocks.push(...segmentMocks);
       } else {
         console.log('No custom segment mock provided');
