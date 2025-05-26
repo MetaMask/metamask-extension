@@ -170,7 +170,7 @@ export const MultichainBridgeQuoteCard = () => {
               </Text>
               <Text>
                 {formatCurrencyAmount(
-                  activeQuote.totalNetworkFee?.valueInCurrency,
+                  activeQuote.totalMaxNetworkFee?.valueInCurrency,
                   currency,
                   2,
                 )}
@@ -228,8 +228,7 @@ export const MultichainBridgeQuoteCard = () => {
                             getNativeAssetForChainId(fromChain.chainId).symbol,
                           token_symbol_destination: toToken?.symbol ?? null,
                           price_impact: Number(
-                            activeQuote.quote?.bridgePriceData?.priceImpact ??
-                              0,
+                            activeQuote.quote?.priceData?.priceImpact ?? '0',
                           ),
                           gas_included: false,
                         },

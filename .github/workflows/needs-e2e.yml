@@ -71,8 +71,6 @@ jobs:
 
       - name: Get last completed main workflow
         id: get-last-completed-main-workflow
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           last_completed_main_workflow=$(gh api "/repos/${OWNER}/${REPOSITORY}/actions/workflows/${WORKFLOW_ID}/runs?branch=${DEFAULT_BRANCH}&per_page=1&status=success" | jq -r .workflow_runs[0].id)
           echo 'LAST_COMPLETED_MAIN_WORKFLOW='"$last_completed_main_workflow" >> "$GITHUB_OUTPUT"
@@ -83,7 +81,7 @@ jobs:
         with:
           name: test-e2e-chrome-report
           path: test/test-results/
-          github-token: ${{ github.token }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          github-token: ${{ env.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
           run-id: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW }} # Use the workflow id of the last completed main workflow
 
       - name: Download test-e2e-firefox-report
@@ -92,7 +90,7 @@ jobs:
         with:
           name: test-e2e-firefox-report
           path: test/test-results/
-          github-token: ${{ github.token }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          github-token: ${{ env.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
           run-id: ${{ steps.get-last-completed-main-workflow.outputs.LAST_COMPLETED_MAIN_WORKFLOW }} # Use the workflow id of the last completed main workflow
 
       - name: Upload test-runs-for-splitting

@@ -109,6 +109,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
               <Text
                 key="seedPhraseReviewDetails2"
                 fontWeight={FontWeight.Medium}
+                color={TextColor.textAlternative}
               >
                 {t('seedPhraseReviewDetails2')}
               </Text>,

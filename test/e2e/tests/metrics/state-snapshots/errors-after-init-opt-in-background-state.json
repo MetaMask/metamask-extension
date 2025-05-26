@@ -47,6 +47,7 @@
     "switchedNetworkNeverShowMessage": "boolean",
     "slides": "object",
     "throttledOrigins": "object",
+    "upgradeSplashPageAcknowledgedForAccounts": "object",
     "qrHardware": {},
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
@@ -62,7 +63,6 @@
   },
   "AuthenticationController": { "isSignedIn": "boolean" },
   "BridgeController": {
-    "assetExchangeRates": "object",
     "quoteRequest": {
       "srcTokenAddress": "0x0000000000000000000000000000000000000000"
     },
@@ -71,7 +71,8 @@
     "quotesLastFetched": null,
     "quotesLoadingStatus": null,
     "quoteFetchError": null,
-    "quotesRefreshCount": 0
+    "quotesRefreshCount": 0,
+    "assetExchangeRates": "object"
   },
   "BridgeStatusController": { "txHistory": "object" },
   "CronjobController": { "jobs": "object", "events": "object" },
@@ -83,20 +84,10 @@
         "conversionRate": 1700,
         "usdConversionRate": 1700
       },
-      "SepoliaETH": {
+      "MON": {
         "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
-      },
-      "LineaETH": {
-        "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
-      },
-      "MegaETH": {
-        "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
+        "conversionRate": 0.2,
+        "usdConversionRate": 0.2
       }
     }
   },
@@ -125,7 +116,6 @@
   "KeyringController": {
     "isUnlocked": true,
     "keyrings": "object",
-    "keyringsMetadata": "object",
     "vault": "string",
     "encryptionKey": "string",
     "encryptionSalt": "string"
@@ -153,9 +143,7 @@
     "conversionRates": "object",
     "historicalPrices": "object"
   },
-  "MultichainBalancesController": {
-    "balances": "object"
-  },
+  "MultichainBalancesController": { "balances": "object" },
   "MultichainNetworkController": "object",
   "MultichainRatesController": {
     "fiatCurrency": "usd",
@@ -231,8 +219,6 @@
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
     "watchEthereumAccountEnabled": "boolean",
-    "bitcoinSupportEnabled": "boolean",
-    "bitcoinTestnetSupportEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},
@@ -267,8 +253,7 @@
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
     "showIncomingTransactions": "object",
-    "manageInstitutionalWallets": "boolean",
-    "disabledUpgradeAccountsByChain": "object"
+    "manageInstitutionalWallets": "boolean"
   },
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {
@@ -357,8 +342,8 @@
   },
   "UserOperationController": { "userOperations": "object" },
   "UserStorageController": {
-    "isProfileSyncingEnabled": null,
-    "isProfileSyncingUpdateLoading": "boolean",
+    "isBackupAndSyncEnabled": false,
+    "isBackupAndSyncUpdateLoading": "boolean",
     "isAccountSyncingEnabled": true,
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
     "isAccountSyncingReadyToBeDispatched": "boolean",

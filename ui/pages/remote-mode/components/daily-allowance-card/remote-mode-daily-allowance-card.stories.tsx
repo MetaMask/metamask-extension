@@ -4,13 +4,18 @@ import { MemoryRouter } from 'react-router-dom';
 import configureStore from '../../../../store/store';
 import RemoteModeDailyAllowanceCard from './remote-mode-daily-allowance-card.component';
 import testData from '../../../../../.storybook/test-data';
-import { DailyAllowanceTokenTypes } from '../../remote.types';
+import { TOKEN_DETAILS, TokenSymbol } from '../../remote.types';
+import { AssetType } from '@metamask/bridge-controller';
 
 const store = configureStore(testData);
 
 const mockDailyAllowance = {
-  tokenType: DailyAllowanceTokenTypes.ETH,
+  symbol: TokenSymbol.ETH,
   amount: 1000,
+  image: TOKEN_DETAILS[TokenSymbol.ETH].image,
+  name: TOKEN_DETAILS[TokenSymbol.ETH].name,
+  type: AssetType.native,
+  address: '',
 };
 
 export default {
@@ -35,7 +40,11 @@ export const Default = () => (
 export const DifferentTokens = () => (
   <RemoteModeDailyAllowanceCard
     dailyAllowance={{
-      tokenType: DailyAllowanceTokenTypes.ETH,
+      symbol: TokenSymbol.ETH,
+      image: TOKEN_DETAILS[TokenSymbol.ETH].image,
+      name: TOKEN_DETAILS[TokenSymbol.ETH].name,
+      type: AssetType.native,
+      address: '',
       amount: 5,
     }}
     onRemove={() => {}}
@@ -45,7 +54,11 @@ export const DifferentTokens = () => (
 export const LargeAmount = () => (
   <RemoteModeDailyAllowanceCard
     dailyAllowance={{
-      tokenType: DailyAllowanceTokenTypes.ETH,
+      symbol: TokenSymbol.ETH,
+      image: TOKEN_DETAILS[TokenSymbol.ETH].image,
+      name: TOKEN_DETAILS[TokenSymbol.ETH].name,
+      type: AssetType.native,
+      address: '',
       amount: 1000000,
     }}
     onRemove={() => {}}
