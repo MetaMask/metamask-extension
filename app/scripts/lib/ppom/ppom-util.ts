@@ -27,6 +27,7 @@ import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { AppStateController } from '../../controllers/app-state-controller';
 import { sanitizeMessageRecursively } from '../../../../shared/modules/typed-signature';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SecurityAlertResponse, UpdateSecurityAlertResponse } from './types';
 import {
   isSecurityAlertsAPIEnabled,
@@ -37,10 +38,6 @@ import {
 const log = createProjectLogger('ppom-util');
 
 const { sentry } = global;
-
-const METHOD_SEND_TRANSACTION = 'eth_sendTransaction';
-export const METHOD_SIGN_TYPED_DATA_V3 = 'eth_signTypedData_v3';
-export const METHOD_SIGN_TYPED_DATA_V4 = 'eth_signTypedData_v4';
 
 const SECURITY_ALERT_RESPONSE_ERROR = {
   result_type: BlockaidResultType.Errored,
@@ -91,6 +88,8 @@ export async function validateRequestWithPPOM({
 
     await updateSecurityResponse(request.method, securityAlertId, ppomResponse);
   } catch (error: unknown) {
+    log('Error', error);
+
     await updateSecurityResponse(
       request.method,
       securityAlertId,
@@ -201,7 +200,7 @@ function normalizeTransactionRequest(
   request: PPOMRequest,
   transactionMeta: TransactionMeta,
 ): PPOMRequest {
-  if (request.method !== METHOD_SEND_TRANSACTION) {
+  if (request.method !== MESSAGE_TYPE.ETH_SEND_TRANSACTION) {
     return request;
   }
 
@@ -233,8 +232,8 @@ function normalizeTransactionRequest(
 function normalizeSignatureRequest(request: PPOMRequest): PPOMRequest {
   // This is a temporary fix to prevent a PPOM bypass
   if (
-    request.method !== METHOD_SIGN_TYPED_DATA_V4 &&
-    request.method !== METHOD_SIGN_TYPED_DATA_V3
+    request.method !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3 &&
+    request.method !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4
   ) {
     return request;
   }
