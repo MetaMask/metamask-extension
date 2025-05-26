@@ -10,7 +10,7 @@ import {
   getNextAvailableSnapAccountName,
   SnapAccountNameOptions,
   WalletSnapClient,
-  WalletSnapOptions,
+  CreateAccountSnapOptions,
 } from '../../../shared/lib/accounts';
 import {
   BITCOIN_WALLET_NAME,
@@ -71,7 +71,7 @@ export function useMultichainWalletSnapSender(snapId: SnapId) {
   return client;
 }
 
-export type MultichainWalletSnapOptions = WalletSnapOptions;
+export type MultichainWalletSnapOptions = CreateAccountSnapOptions;
 
 export class MultichainWalletSnapClient implements WalletSnapClient {
   readonly #snapId: SnapId;
@@ -96,7 +96,7 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
   }
 
   async createAccount(
-    options: WalletSnapOptions,
+    options: CreateAccountSnapOptions,
     internalOptions?: SnapKeyringInternalOptions,
   ): Promise<KeyringAccount> {
     // This will trigger the Snap account creation flow (+ account renaming)

@@ -165,12 +165,7 @@ describe('ConnectPage', () => {
 
   it('should render subtitle correctly', () => {
     const { getByText } = render();
-    expect(getByText('Connect this website with MetaMask.')).toBeDefined();
-  });
-
-  it('should render learn more link correctly', () => {
-    const { getByText } = render();
-    expect(getByText('Learn more')).toBeDefined();
+    expect(getByText('Connect this website with MetaMask')).toBeDefined();
   });
 
   it('should render accounts tab correctly', () => {

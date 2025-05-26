@@ -18,7 +18,7 @@ import {
   getUniqueAccountName,
   MultichainWalletSnapClient,
   SnapAccountNameOptions,
-  WalletSnapOptions,
+  CreateAccountSnapOptions,
 } from './accounts';
 import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
 import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
@@ -147,7 +147,7 @@ describe('accounts', () => {
 
         mockSnapKeyringCreateAccount.mockResolvedValue({});
 
-        const options: WalletSnapOptions = {
+        const options: CreateAccountSnapOptions = {
           derivationPath: 'm/',
           accountNameSuggestion: 'My Main Solana Account',
         };
@@ -175,7 +175,7 @@ describe('accounts', () => {
         const autoInjectedAccountNameSuggestion =
           await client.getNextAvailableAccountName(); // Will be named for Solana account index 2.
 
-        const options: WalletSnapOptions = {
+        const options: CreateAccountSnapOptions = {
           derivationPath: 'm/',
           // No explicit `accountNameSuggestion`.
         };
