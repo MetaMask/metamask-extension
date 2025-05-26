@@ -26,10 +26,10 @@ function getOAuthLoginEnvs(): OAuthLoginEnv {
 
 const getRedirectUrlSpy = jest
   .fn()
-    .mockReturnValue('https://mocked-redirect-uri');
+  .mockReturnValue('https://mocked-redirect-uri');
 const launchWebAuthFlowSpy = jest
   .fn()
-    .mockResolvedValue('https://mocked-redirect-uri?code=mocked-code');
+  .mockResolvedValue('https://mocked-redirect-uri?code=mocked-code');
 
 const mockWebAuthenticator: WebAuthenticator = {
   getRedirectURL: getRedirectUrlSpy,
