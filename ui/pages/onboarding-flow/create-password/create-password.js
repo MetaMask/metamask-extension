@@ -210,7 +210,7 @@ export default function CreatePassword({
               setTermsChecked(!termsChecked);
             }}
             label={
-              <Text variant={TextVariant.bodyMd} marginLeft={2}>
+              <Text variant={TextVariant.bodySm} marginLeft={1}>
                 {t('passwordTermsWarning')}
                 &nbsp;
                 {createPasswordLink}
