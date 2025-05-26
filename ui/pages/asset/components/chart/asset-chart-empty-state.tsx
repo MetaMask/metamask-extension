@@ -12,7 +12,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 export const AssetChartEmptyState = () => {
   const t = useI18nContext();
   return (
-    <Box className="asset-chart__empty-state-container">
+    <Box className="asset-chart__empty-or-loading-state-container">
       <Box className="asset-chart__empty-state-content">
         <img
           src="./images/asset-chart-empty-state-illustration.png"
