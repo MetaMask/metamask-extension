@@ -55,7 +55,7 @@ import {
   REMOTE_MODES,
   TOKEN_DETAILS,
   TokenInfo,
-} from '../../remote.types';
+} from '../../../../../shared/lib/remote-mode';
 
 import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';

@@ -518,26 +518,6 @@ export type MetaMetricsUserTraits = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   security_providers?: string[];
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  /**
-   * The address of the MMI account in question
-   */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  mmi_account_address?: string | null;
-  /**
-   * What is the MMI extension ID
-   */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  mmi_extension_id?: string;
-  /**
-   * Is the user using a custodian account
-   */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  mmi_is_custodian?: boolean;
-  ///: END:ONLY_INCLUDE_IF
   /**
    * Does the user change the token sort order on the asset list
    */
@@ -637,20 +617,6 @@ export enum MetaMetricsUserTrait {
    * Identified when the security provider feature is enabled.
    */
   SecurityProviders = 'security_providers',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  /**
-   * Identified when we get the current account in question
-   */
-  MmiAccountAddress = 'mmi_account_address',
-  /**
-   * Identified when we the user has the extension
-   */
-  MmiExtensionId = 'mmi_extension_id',
-  /**
-   * Identified when the user connects a custodian
-   */
-  MmiIsCustodian = 'mmi_is_custodian',
-  ///: END:ONLY_INCLUDE_IF
   PetnameAddressCount = 'petname_addresses_count',
   /**
    * Identified when the user selects a currency from settings
@@ -869,23 +835,6 @@ export enum MetaMetricsEventName {
   // BEGIN:ONLY_INCLUDE_IF(build-flask)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   // END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  DeeplinkClicked = 'Deeplink Clicked',
-  ConnectCustodialAccountClicked = 'Connect Custodial Account Clicked',
-  MMIPortfolioButtonClicked = 'MMI Portfolio Button Clicked',
-  PortfolioDashboardModalButtonClicked = 'Portfolio Dashboard Modal Button Clicked',
-  PortfolioDashboardModalOpened = 'Portfolio Dashboard Modal Opened',
-  StakeButtonClicked = 'Stake Button Clicked',
-  InteractiveReplacementTokenButtonClicked = 'Interactive Replacement Token Button Clicked',
-  RefreshTokenListClicked = 'Refresh Token List Clicked',
-  SignatureDeeplinkDisplayed = 'Signature Deeplink Displayed',
-  InstitutionalFeatureConnected = 'Institutional Feature Connected',
-  CustodianSelected = 'Custodian Selected',
-  CustodianConnected = 'Custodian Connected',
-  CustodianConnectionCanceled = 'Custodian Connection Canceled',
-  CustodianConnectionFailed = 'Custodian Connection Failed',
-  CustodialAccountsConnected = 'Custodial Accounts Connected',
-  ///: END:ONLY_INCLUDE_IF
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
   AccountRemoved = 'Account Removed',
@@ -1053,9 +1002,6 @@ export enum MetaMetricsEventCategory {
   Transactions = 'Transactions',
   Wallet = 'Wallet',
   Confirmations = 'Confirmations',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  MMI = 'Institutional',
-  ///: END:ONLY_INCLUDE_IF
   CrossChainSwaps = 'Cross Chain Swaps',
 }
 

@@ -1,8 +1,6 @@
 import React, { useContext, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { isEqual } from 'lodash';
-///: END:ONLY_INCLUDE_IF
 import {
   showModal,
   removeSlide,
@@ -15,16 +13,12 @@ import { Carousel } from '..';
 import {
   getAppIsLoading,
   getSelectedAccount,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   hasCreatedSolanaAccount,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useBridging from '../../../hooks/bridge/useBridging';
-///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventName,
@@ -70,18 +64,13 @@ export const AccountOverviewLayout = ({
   const selectedSolanaAccount = useSelector(getLastSelectedSolanaAccount);
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
-  ///: END:ONLY_INCLUDE_IF
 
   const { slides } = useCarouselManagement();
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const { openBridgeExperience } = useBridging();
-  ///: END:ONLY_INCLUDE_IF
 
   const handleCarouselClick = (id: string) => {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     if (id === 'bridge') {
       openBridgeExperience(
         'Carousel',
@@ -89,7 +78,6 @@ export const AccountOverviewLayout = ({
         location.pathname.includes('asset') ? '&token=native' : '',
       );
     }
-    ///: END:ONLY_INCLUDE_IF
 
     if (id === BACKUPANDSYNC_SLIDE.id) {
       dispatch(showModal({ name: TURN_ON_BACKUP_AND_SYNC_MODAL_NAME }));
