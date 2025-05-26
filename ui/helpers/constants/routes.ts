@@ -84,6 +84,9 @@ export const REVEAL_SEED_ROUTE = '/seed';
 PATH_NAME_MAP[`${REVEAL_SEED_ROUTE}/:keyringId`] =
   'Reveal Secret Recovery Phrase Page';
 
+export const IMPORT_SRP_ROUTE = '/import-srp';
+PATH_NAME_MAP[IMPORT_SRP_ROUTE] = 'Import Secret Recovery Phrase Page';
+
 export const RESTORE_VAULT_ROUTE = '/restore-vault';
 PATH_NAME_MAP[RESTORE_VAULT_ROUTE] = 'Restore Vault Page';
 

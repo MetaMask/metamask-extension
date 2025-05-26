@@ -160,8 +160,9 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
           <ButtonIcon
             iconName={showPassword ? IconName.EyeSlash : IconName.Eye}
             data-testid="show-password"
+            type="button"
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-              e.preventDefault();
+              e.stopPropagation();
               setShowPassword(!showPassword);
             }}
             ariaLabel={
@@ -194,8 +195,9 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
           <ButtonIcon
             iconName={showConfirmPassword ? IconName.EyeSlash : IconName.Eye}
             data-testid="show-confirm-password"
+            type="button"
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-              e.preventDefault();
+              e.stopPropagation();
               setShowConfirmPassword(!showConfirmPassword);
             }}
             ariaLabel={

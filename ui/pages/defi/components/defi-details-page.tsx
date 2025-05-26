@@ -5,6 +5,7 @@ import {
   Display,
   FlexDirection,
   IconColor,
+  JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
@@ -21,9 +22,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 import { getPreferences, getSelectedAccount } from '../../../selectors';
-import { getDefiPositions } from '../../../components/app/assets/defi-list/defi-list';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { formatWithThreshold } from '../../../components/app/assets/util/formatWithThreshold';
+import { AssetCellBadge } from '../../../components/app/assets/asset-list/cells/asset-cell-badge';
+import { getDefiPositions } from '../../../selectors/assets';
 import DefiDetailsList, {
   PositionTypeKeys,
   PositionTypeLabels,
@@ -84,28 +86,44 @@ const DeFiPage = () => {
 
   return (
     <Box className="main-container asset__container">
-      <Box paddingLeft={2}>
-        <Box display={Display.Flex} paddingBottom={4} paddingTop={4}>
-          <ButtonIcon
-            data-testid="defi-details-page-back-button"
-            color={IconColor.iconAlternative}
-            marginRight={1}
-            size={ButtonIconSize.Sm}
-            ariaLabel={t('back')}
-            iconName={IconName.ArrowLeft}
-            onClick={() => history.push(DEFAULT_ROUTE)}
-          />
-        </Box>
+      <Box
+        paddingLeft={2}
+        display={Display.Flex}
+        paddingBottom={4}
+        paddingTop={4}
+      >
+        <ButtonIcon
+          data-testid="defi-details-page-back-button"
+          color={IconColor.iconAlternative}
+          marginRight={1}
+          size={ButtonIconSize.Sm}
+          ariaLabel={t('back')}
+          iconName={IconName.ArrowLeft}
+          onClick={() => history.push(DEFAULT_ROUTE)}
+        />
       </Box>
 
-      <Text
-        variant={TextVariant.headingLg}
-        paddingLeft={4}
-        paddingBottom={2}
-        data-testid="defi-details-page-title"
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        paddingRight={4}
       >
-        {protocolPosition.protocolDetails.name}
-      </Text>
+        <Text
+          variant={TextVariant.headingLg}
+          paddingLeft={4}
+          paddingBottom={2}
+          data-testid="defi-details-page-title"
+        >
+          {protocolPosition.protocolDetails.name}
+        </Text>
+        <AssetCellBadge
+          chainId={chainId}
+          tokenImage={protocolPosition.protocolDetails.iconUrl}
+          symbol={protocolPosition.protocolDetails.name}
+          data-testid="defi-details-page-protocol-badge"
+        />
+      </Box>
       <Box paddingLeft={4} paddingBottom={4}>
         <SensitiveText
           data-testid="defi-details-page-market-value"

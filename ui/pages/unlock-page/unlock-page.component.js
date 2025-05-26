@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import React, { Component, useEffect, useState } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { SeedlessOnboardingControllerError } from '@metamask/seedless-onboarding-controller';
 import {
@@ -38,53 +38,7 @@ import {
 import { isFlask, isBeta } from '../../helpers/utils/build-types';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { getCaretCoordinates } from './unlock-page.util';
-
-const formatTimeToUnlock = (timeInSeconds) => {
-  if (timeInSeconds <= 60) {
-    return `${timeInSeconds}s`;
-  } else if (timeInSeconds < 3600) {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = timeInSeconds % 60;
-    return `${minutes}m:${seconds.toString().padStart(2, '0')}s`;
-  }
-  const hours = Math.floor(timeInSeconds / 3600);
-  const minutes = Math.floor((timeInSeconds % 3600) / 60);
-  const seconds = timeInSeconds % 60;
-  return `${hours}hr:${minutes.toString().padStart(2, '0')}m:${seconds
-    .toString()
-    .padStart(2, '0')}s`;
-};
-
-function Counter({ remainingTime, unlock }) {
-  const [time, setTime] = useState(remainingTime);
-  const [timeDisplay, setTimeDisplay] = useState(
-    formatTimeToUnlock(remainingTime),
-  );
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const newTime = time - 1;
-      if (newTime < 0) {
-        unlock();
-      } else {
-        setTime(newTime);
-        setTimeDisplay(formatTimeToUnlock(newTime));
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [time, unlock]);
-
-  return (
-    <Text variant={TextVariant.inherit} as="span">
-      {timeDisplay}
-    </Text>
-  );
-}
-
-Counter.propTypes = {
-  remainingTime: PropTypes.number.isRequired,
-  unlock: PropTypes.func.isRequired,
-};
+import FormattedCounter from './formatted-counter';
 
 export default class UnlockPage extends Component {
   static contextTypes = {
@@ -191,7 +145,7 @@ export default class UnlockPage extends Component {
         } else {
           const initialRemainingTime = data.remainingTime;
           finalErrorMessage = t('unlockPageTooManyFailedAttempts', [
-            <Counter
+            <FormattedCounter
               key="unlockPageTooManyFailedAttempts"
               remainingTime={initialRemainingTime}
               unlock={() => this.setState({ isLocked: false, error: '' })}
@@ -428,6 +382,7 @@ export default class UnlockPage extends Component {
               <ButtonLink
                 data-testid="unlock-forgot-password-button"
                 key="import-account"
+                type="button"
                 onClick={() => onRestore()}
               >
                 {t('forgotPassword')}
