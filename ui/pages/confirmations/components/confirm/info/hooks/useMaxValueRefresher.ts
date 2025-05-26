@@ -32,8 +32,10 @@ import { useSupportsEIP1559 } from './useSupportsEIP1559';
  * - Supports both legacy gas pricing and EIP-1559 fee structures
  * - Handles Layer 1 gas fees for Layer 2 network transactions
  * - Does not update the value if the remaining balance would be negative or zero
+ *
  * @requires useConfirmContext - Must be used within a confirmation context
  * @requires Redux store - Requires access to account balance and transaction state
+ *
  */
 export const useMaxValueRefresher = () => {
   const { currentConfirmation: transactionMeta } =
