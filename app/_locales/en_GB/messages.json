@@ -84,11 +84,11 @@
     "message": "Log in"
   },
   "accountAlreadyExistsLoginDescription": {
-    "message": "An account with “$1” already exists. Do you want to try logging in instead?",
+    "message": "A wallet using “$1” already exists. Do you want to try logging in instead?",
     "description": "$1 is the account email"
   },
   "accountAlreadyExistsTitle": {
-    "message": "Account already exists"
+    "message": "Wallet already exists"
   },
   "accountDetails": {
     "message": "Account details"
