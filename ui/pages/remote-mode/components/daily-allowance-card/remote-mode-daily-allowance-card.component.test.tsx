@@ -2,7 +2,11 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { AssetType } from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
-import { DailyAllowance, TOKEN_DETAILS, TokenSymbol } from '../../remote.types';
+import {
+  DailyAllowance,
+  TOKEN_DETAILS,
+  TokenSymbol,
+} from '../../../../../shared/lib/remote-mode';
 import RemoteModeDailyAllowanceCard from './remote-mode-daily-allowance-card.component';
 
 const mockDailyAllowance: DailyAllowance = {
