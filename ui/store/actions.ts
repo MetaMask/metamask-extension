@@ -1276,9 +1276,7 @@ export function updateAndApproveTx(
         dispatch(completedTx(txMeta.id));
         dispatch(hideLoadingIndication());
         dispatch(updateCustomNonce(''));
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         dispatch(closeCurrentNotificationWindow());
-        ///: END:ONLY_INCLUDE_IF
         return txMeta;
       })
       .catch((err) => {
@@ -2254,6 +2252,7 @@ export function addNft(
 export function addNftVerifyOwnership(
   address: string,
   tokenID: string,
+  networkClientId: string,
   dontShowLoadingIndicator: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
@@ -2265,6 +2264,9 @@ export function addNftVerifyOwnership(
     if (!tokenID) {
       throw new Error('MetaMask - Cannot add NFT without tokenID');
     }
+    if (!networkClientId) {
+      throw new Error('MetaMask - Cannot add NFT without a networkClientId');
+    }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
     }
@@ -2272,6 +2274,7 @@ export function addNftVerifyOwnership(
       await submitRequestToBackground('addNftVerifyOwnership', [
         address,
         tokenID,
+        { networkClientId },
       ]);
     } catch (error) {
       if (isErrorWithMessage(error)) {
