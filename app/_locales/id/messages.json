@@ -3422,10 +3422,6 @@
     "message": "Transaksi $1 gagal! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
   },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "Transaksi gagal! $1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
-  },
   "notificationTransactionFailedTitle": {
     "message": "Transaksi gagal",
     "description": "Title of the browser notification that appears when a transaction fails"
