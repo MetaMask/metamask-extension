@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "ビットコインアカウント (ベータ)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "ビットコインアカウント (テストネット)"
-  },
   "addBlockExplorer": {
     "message": "ブロックエクスプローラーを追加"
   },
@@ -661,22 +658,6 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "ビットコイン"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "この機能をオンにすると、既存のシークレットリカバリーフレーズで取得したビットコインアカウントをMetaMask拡張機能に追加できるようになります。これは試験運用中のベータ機能であるため、自己責任でご使用ください。新しいビットコインエクスペリエンスのフィードバックをご提供いただくには、こちらの$1に入力してください。",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "「新しいビットコインアカウントの追加 (ベータ)」を有効にする"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "この機能をオンにすると、テストネットワーク用にビットコインアカウントを追加できるようになります。"
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "「新しいビットコインアカウントの追加 (テストネット)」を有効にする"
   },
   "blockExplorerAccountAction": {
     "message": "アカウント",
@@ -1338,10 +1319,6 @@
   },
   "creatorAddress": {
     "message": "クリエイターのアドレス"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "これにはすべてのネットワークで所有している全トークンの価値が反映されています。この値をETHまたはその他の通貨で表示する場合は、$1に移動します。",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "MetaMask Portfolioでネットワーク間でスワップ"
@@ -3444,10 +3421,6 @@
   "notificationTransactionFailedMessage": {
     "message": "トランザクション $1 に失敗しました！$2",
     "description": "Content of the browser notification that appears when a transaction fails"
-  },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "トランザクションに失敗しました！$1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
   },
   "notificationTransactionFailedTitle": {
     "message": "トランザクション失敗",
@@ -6492,9 +6465,6 @@
   },
   "yourBalance": {
     "message": "残高"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "残高は集計されます"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFTが危険にさらされている可能性があります"

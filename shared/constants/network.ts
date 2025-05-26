@@ -87,6 +87,7 @@ export const NETWORK_TYPES = {
   LINEA_SEPOLIA: 'linea-sepolia',
   LINEA_MAINNET: 'linea-mainnet',
   MEGAETH_TESTNET: 'megaeth-testnet',
+  MONAD_TESTNET: 'monad-testnet',
 } as const;
 
 export type NetworkTypes = (typeof NETWORK_TYPES)[keyof typeof NETWORK_TYPES];
@@ -187,6 +188,7 @@ export const CHAIN_IDS = {
   MATCHAIN: '0x2ba',
   FLOW: '0x2eb',
   KATANA: '0xb67d2',
+  MONAD_TESTNET: '0x279f',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -326,6 +328,7 @@ export const PLUME_DISPLAY_NAME = 'Plume';
 export const MATCHAIN_DISPLAY_NAME = 'Matchain';
 export const FLOW_DISPLAY_NAME = 'Flow EVM Mainnet';
 export const KATANA_DISPLAY_NAME = 'Katana';
+export const MONAD_TESTNET_DISPLAY_NAME = 'Monad Testnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -353,6 +356,7 @@ export const LINEA_MAINNET_RPC_URL = getRpcUrl({
 });
 export const LOCALHOST_RPC_URL = 'http://localhost:8545';
 export const MEGAETH_TESTNET_RPC_URL = 'https://carrot.megaeth.com/rpc';
+export const MONAD_TESTNET_RPC_URL = 'https://testnet-rpc.monad.xyz';
 
 /**
  * An object containing the token symbols for various tokens that are either
@@ -565,11 +569,12 @@ export const XRPLEVM_TESTNET_IMAGE_URL = './images/xrplevm-testnet.svg';
 export const XRP_TOKEN_IMAGE_URL = './images/xrp-logo.svg';
 export const LENS_IMAGE_URL = './images/lens.png';
 export const LENS_NATIVE_TOKEN_IMAGE_URL = './images/lens-native.svg';
-export const PLUME_IMAGE_URL = './images/plume.svg';
+export const PLUME_IMAGE_URL = './images/plume.png';
 export const PLUME_NATIVE_TOKEN_IMAGE_URL = './images/plume-native.svg';
 export const MATCHAIN_IMAGE_URL = './images/matchain.svg';
 export const FLOW_IMAGE_URL = './images/flow.svg';
 export const KATANA_IMAGE_URL = './images/katana.svg';
+export const MONAD_TESTNET_IMAGE_URL = './images/monad-testnet-logo.png';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -583,6 +588,7 @@ export const TEST_CHAINS: Hex[] = [
   CHAIN_IDS.LINEA_SEPOLIA,
   CHAIN_IDS.LOCALHOST,
   CHAIN_IDS.MEGAETH_TESTNET,
+  CHAIN_IDS.MONAD_TESTNET,
 ];
 
 export const CAIP_FORMATTED_EVM_TEST_CHAINS = TEST_CHAINS.map(
@@ -612,6 +618,7 @@ export const TEST_NETWORK_TICKER_MAP: {
   [NETWORK_TYPES.LINEA_GOERLI]: `Linea${CURRENCY_SYMBOLS.ETH}`,
   [NETWORK_TYPES.LINEA_SEPOLIA]: `Linea${CURRENCY_SYMBOLS.ETH}`,
   [NETWORK_TYPES.MEGAETH_TESTNET]: 'MegaETH',
+  [NETWORK_TYPES.MONAD_TESTNET]: 'MON',
 };
 
 /**
@@ -646,6 +653,11 @@ export const BUILT_IN_NETWORKS = {
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
     blockExplorerUrl: 'https://megaexplorer.xyz',
   },
+  [NETWORK_TYPES.MONAD_TESTNET]: {
+    chainId: CHAIN_IDS.MONAD_TESTNET,
+    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MONAD_TESTNET],
+    blockExplorerUrl: 'https://testnet.monadexplorer.com',
+  },
 } as const;
 
 export const BUILT_IN_INFURA_NETWORKS = pick(
@@ -672,6 +684,7 @@ export const NETWORK_TO_NAME_MAP = {
   [NETWORK_TYPES.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
   [NETWORK_TYPES.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
   [NETWORK_TYPES.MEGAETH_TESTNET]: MEGAETH_TESTNET_DISPLAY_NAME,
+  [NETWORK_TYPES.MONAD_TESTNET]: MONAD_TESTNET_DISPLAY_NAME,
 
   [CHAIN_IDS.ARBITRUM]: ARBITRUM_DISPLAY_NAME,
   [CHAIN_IDS.AVALANCHE]: AVALANCHE_DISPLAY_NAME,
@@ -700,6 +713,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.MATCHAIN]: MATCHAIN_DISPLAY_NAME,
   [CHAIN_IDS.FLOW]: FLOW_DISPLAY_NAME,
   [CHAIN_IDS.KATANA]: KATANA_DISPLAY_NAME,
+  [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -837,6 +851,8 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.MATCHAIN]: CURRENCY_SYMBOLS.BNB,
   [CHAIN_IDS.FLOW]: CURRENCY_SYMBOLS.FLOW,
   [CHAIN_IDS.KATANA]: CURRENCY_SYMBOLS.KATANA,
+  [CHAIN_IDS.MONAD_TESTNET]:
+    TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MONAD_TESTNET],
 } as const;
 
 /**
@@ -865,6 +881,7 @@ export const CHAIN_ID_TO_TYPE_MAP = {
   [CHAIN_IDS.LINEA_MAINNET]: NETWORK_TYPES.LINEA_MAINNET,
   [CHAIN_IDS.LOCALHOST]: NETWORK_TYPES.LOCALHOST,
   [CHAIN_IDS.MEGAETH_TESTNET]: NETWORK_TYPES.MEGAETH_TESTNET,
+  [CHAIN_IDS.MONAD_TESTNET]: NETWORK_TYPES.MONAD_TESTNET,
 } as const;
 
 export const CHAIN_ID_TO_RPC_URL_MAP = {
@@ -876,6 +893,7 @@ export const CHAIN_ID_TO_RPC_URL_MAP = {
   [CHAIN_IDS.LINEA_MAINNET]: LINEA_MAINNET_RPC_URL,
   [CHAIN_IDS.LOCALHOST]: LOCALHOST_RPC_URL,
   [CHAIN_IDS.MEGAETH_TESTNET]: MEGAETH_TESTNET_RPC_URL,
+  [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_RPC_URL,
 } as const;
 
 export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
@@ -980,6 +998,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.MATCHAIN]: MATCHAIN_IMAGE_URL,
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
   [CHAIN_IDS.KATANA]: KATANA_IMAGE_URL,
+  [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -990,6 +1009,7 @@ export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
   [CHAIN_IDS.MAINNET]: NETWORK_NAMES.HOMESTEAD,
   [CHAIN_IDS.LINEA_MAINNET]: NETWORK_TYPES.LINEA_MAINNET,
   [CHAIN_IDS.MEGAETH_TESTNET]: NETWORK_TYPES.MEGAETH_TESTNET,
+  [CHAIN_IDS.MONAD_TESTNET]: NETWORK_TYPES.MONAD_TESTNET,
 } as const;
 
 export const CHAIN_ID_TOKEN_IMAGE_MAP = {
@@ -1039,6 +1059,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.MATCHAIN]: BNB_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
   [CHAIN_IDS.KATANA]: KATANA_IMAGE_URL,
+  [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_IMAGE_URL,
 } as const;
 
 /**
@@ -1395,6 +1416,7 @@ export const TEST_NETWORKS = [
   LINEA_GOERLI_DISPLAY_NAME,
   LINEA_SEPOLIA_DISPLAY_NAME,
   MEGAETH_TESTNET_DISPLAY_NAME,
+  MONAD_TESTNET_DISPLAY_NAME,
 ];
 
 export const TEST_NETWORK_IDS = [
@@ -1404,4 +1426,5 @@ export const TEST_NETWORK_IDS = [
   CHAIN_IDS.LINEA_SEPOLIA,
   CHAIN_IDS.ARBITRUM_SEPOLIA,
   CHAIN_IDS.MEGAETH_TESTNET,
+  CHAIN_IDS.MONAD_TESTNET,
 ];
