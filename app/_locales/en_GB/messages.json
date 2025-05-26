@@ -3991,7 +3991,7 @@
     "message": "Show Password"
   },
   "passwordNotLongEnough": {
-    "message": "Password not long enough"
+    "message": "Password must have at least 8 characters"
   },
   "passwordSetupDetails": {
     "message": "This password will unlock your MetaMask wallet only on this device. MetaMask can not recover this password."
