@@ -403,121 +403,117 @@ describe('useMaxValueRefresher', () => {
     });
   });
 
-  describe('Hook Dependencies and Re-renders', () => {
-    it('updates value when balance changes', () => {
-      const { rerender } = renderHook(() => useMaxValueRefresher());
+  it('updates value when balance changes', () => {
+    const { rerender } = renderHook(() => useMaxValueRefresher());
 
-      expect(updateEditableParamsMock).toHaveBeenCalledTimes(1);
+    expect(updateEditableParamsMock).toHaveBeenCalledTimes(1);
 
-      getSelectedAccountCachedBalanceMock.mockReturnValue('0x2386f26fc10000'); // 0.01 ETH
-      rerender();
+    getSelectedAccountCachedBalanceMock.mockReturnValue('0x2386f26fc10000'); // 0.01 ETH
+    rerender();
 
-      expect(updateEditableParamsMock).toHaveBeenCalledTimes(2);
-      // 0.01 ETH - (21000 * 1 gwei) = 0x2386f26fc10000 - 0x4c4b4000000000 = 0x2373d8fe36b000
-      expect(updateEditableParamsMock).toHaveBeenLastCalledWith(
-        baseTransactionMeta.id,
-        {
-          value: '0x2373d8fe36b000',
-        },
-      );
-    });
-
-    it('updates value when gas parameters change', () => {
-      const { rerender } = renderHook(() => useMaxValueRefresher());
-
-      expect(updateEditableParamsMock).toHaveBeenCalledTimes(1);
-
-      const updatedTransactionMeta = {
-        ...baseTransactionMeta,
-        txParams: {
-          ...baseTransactionMeta.txParams,
-          maxFeePerGas: '0x77359400', // 2 gwei instead of 1
-        },
-      };
-
-      useConfirmContextMock.mockReturnValue({
-        currentConfirmation: updatedTransactionMeta,
-      } as unknown as ReturnType<typeof useConfirmContext>);
-
-      rerender();
-
-      expect(updateEditableParamsMock).toHaveBeenCalledTimes(2);
-    });
-
-    it('updates value when EIP-1559 support changes', () => {
-      const { rerender } = renderHook(() => useMaxValueRefresher());
-
-      expect(updateEditableParamsMock).toHaveBeenCalledTimes(1);
-
-      useSupportsEIP1559Mock.mockReturnValue({ supportsEIP1559: false });
-      rerender();
-
-      expect(updateEditableParamsMock).toHaveBeenCalledTimes(2);
-    });
-
-    it('does not update when max amount mode is toggled off', () => {
-      const { rerender } = renderHook(() => useMaxValueRefresher());
-
-      expect(updateEditableParamsMock).toHaveBeenCalledTimes(1);
-
-      selectMaxValueModeForTransactionMock.mockReturnValue(false);
-      rerender();
-
-      expect(updateEditableParamsMock).toHaveBeenCalledTimes(1);
-    });
+    expect(updateEditableParamsMock).toHaveBeenCalledTimes(2);
+    // 0.01 ETH - (21000 * 1 gwei) = 0x2386f26fc10000 - 0x4c4b4000000000 = 0x2373d8fe36b000
+    expect(updateEditableParamsMock).toHaveBeenLastCalledWith(
+      baseTransactionMeta.id,
+      {
+        value: '0x2373d8fe36b000',
+      },
+    );
   });
 
-  describe('Integration Scenarios', () => {
-    it('handles complete transaction flow with realistic values', () => {
-      const realisticTransactionMeta = {
-        id: 'realistic-tx-id',
-        type: TransactionType.simpleSend,
-        txParams: {
-          gas: '0x5208', // 21000 gas
-          maxFeePerGas: '0x12a05f200', // 5 gwei
-        },
-        layer1GasFee: '0x5af3107a4000', // 0.0001 ETH L1 fee
-      };
+  it('updates value when gas parameters change', () => {
+    const { rerender } = renderHook(() => useMaxValueRefresher());
 
-      useConfirmContextMock.mockReturnValue({
-        currentConfirmation: realisticTransactionMeta,
-      } as unknown as ReturnType<typeof useConfirmContext>);
+    expect(updateEditableParamsMock).toHaveBeenCalledTimes(1);
 
-      // 1 ETH balance
-      getSelectedAccountCachedBalanceMock.mockReturnValue('0xde0b6b3a7640000');
+    const updatedTransactionMeta = {
+      ...baseTransactionMeta,
+      txParams: {
+        ...baseTransactionMeta.txParams,
+        maxFeePerGas: '0x77359400', // 2 gwei instead of 1
+      },
+    };
 
-      renderHook(() => useMaxValueRefresher());
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: updatedTransactionMeta,
+    } as unknown as ReturnType<typeof useConfirmContext>);
 
-      // Gas fee: 21000 * 5 gwei + 0.0001 ETH = 0x18e946000000000 + 0x5af3107a4000 = 0x19495b07a4000
-      // Remaining: 0xde0b6b3a7640000 - 0x19495b07a4000 = 0xddffc415f363000
-      expect(updateEditableParamsMock).toHaveBeenCalledWith(
-        realisticTransactionMeta.id,
-        {
-          value: '0xddffc415f363000',
-        },
-      );
-    });
+    rerender();
 
-    it('dispatches updateEditableParams with correct transaction ID', () => {
-      const customTransactionId = 'custom-transaction-123';
-      const transactionMeta = {
-        ...baseTransactionMeta,
-        id: customTransactionId,
-      };
+    expect(updateEditableParamsMock).toHaveBeenCalledTimes(2);
+  });
 
-      useConfirmContextMock.mockReturnValue({
-        currentConfirmation: transactionMeta,
-      } as unknown as ReturnType<typeof useConfirmContext>);
+  it('updates value when EIP-1559 support changes', () => {
+    const { rerender } = renderHook(() => useMaxValueRefresher());
 
-      renderHook(() => useMaxValueRefresher());
+    expect(updateEditableParamsMock).toHaveBeenCalledTimes(1);
 
-      expect(updateEditableParamsMock).toHaveBeenCalledWith(
-        customTransactionId,
-        expect.any(Object),
-      );
-      expect(mockDispatch).toHaveBeenCalledWith(
-        updateEditableParamsMock(customTransactionId, expect.any(Object)),
-      );
-    });
+    useSupportsEIP1559Mock.mockReturnValue({ supportsEIP1559: false });
+    rerender();
+
+    expect(updateEditableParamsMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not update when max amount mode is toggled off', () => {
+    const { rerender } = renderHook(() => useMaxValueRefresher());
+
+    expect(updateEditableParamsMock).toHaveBeenCalledTimes(1);
+
+    selectMaxValueModeForTransactionMock.mockReturnValue(false);
+    rerender();
+
+    expect(updateEditableParamsMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('handles complete transaction flow with realistic values', () => {
+    const realisticTransactionMeta = {
+      id: 'realistic-tx-id',
+      type: TransactionType.simpleSend,
+      txParams: {
+        gas: '0x5208', // 21000 gas
+        maxFeePerGas: '0x12a05f200', // 5 gwei
+      },
+      layer1GasFee: '0x5af3107a4000', // 0.0001 ETH L1 fee
+    };
+
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: realisticTransactionMeta,
+    } as unknown as ReturnType<typeof useConfirmContext>);
+
+    // 1 ETH balance
+    getSelectedAccountCachedBalanceMock.mockReturnValue('0xde0b6b3a7640000');
+
+    renderHook(() => useMaxValueRefresher());
+
+    // Gas fee: 21000 * 5 gwei + 0.0001 ETH = 0x18e946000000000 + 0x5af3107a4000 = 0x19495b07a4000
+    // Remaining: 0xde0b6b3a7640000 - 0x19495b07a4000 = 0xddffc415f363000
+    expect(updateEditableParamsMock).toHaveBeenCalledWith(
+      realisticTransactionMeta.id,
+      {
+        value: '0xddffc415f363000',
+      },
+    );
+  });
+
+  it('dispatches updateEditableParams with correct transaction ID', () => {
+    const customTransactionId = 'custom-transaction-123';
+    const transactionMeta = {
+      ...baseTransactionMeta,
+      id: customTransactionId,
+    };
+
+    useConfirmContextMock.mockReturnValue({
+      currentConfirmation: transactionMeta,
+    } as unknown as ReturnType<typeof useConfirmContext>);
+
+    renderHook(() => useMaxValueRefresher());
+
+    expect(updateEditableParamsMock).toHaveBeenCalledWith(
+      customTransactionId,
+      expect.any(Object),
+    );
+    expect(mockDispatch).toHaveBeenCalledWith(
+      updateEditableParamsMock(customTransactionId, expect.any(Object)),
+    );
   });
 });
