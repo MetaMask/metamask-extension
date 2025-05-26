@@ -20,6 +20,9 @@ export const useRemoteModeTransaction = ({
   const selectedInternalAccount = useSelector(getSelectedInternalAccount);
 
   const isRemoteModeTransaction = useMemo(() => {
+    if (!transaction.txParams) {
+      return false;
+    }
     const isSupportedTransactionType = transaction.type
       ? SUPPORTED_TRANSACTION_TYPES.includes(transaction.type)
       : false;
