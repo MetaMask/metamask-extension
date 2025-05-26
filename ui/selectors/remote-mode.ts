@@ -2,9 +2,11 @@ import { DelegationEntry } from '@metamask/delegation-controller';
 import type { Hex } from '@metamask/utils';
 import { createSelector } from 'reselect';
 import {
+  DailyAllowance,
   REMOTE_MODES,
   RemoteModeConfig,
 } from '../pages/remote-mode/remote.types';
+import { Asset } from '../ducks/send';
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
@@ -127,3 +129,51 @@ export const getRemoteModeConfig = createSelector(
     return config;
   },
 );
+
+type GetRemoteSendAllowanceParams = {
+  from: Address;
+  chainId: Hex;
+  asset?: Asset;
+};
+
+export const getRemoteSendAllowance = (
+  state: RemoteModeState,
+  params: GetRemoteSendAllowanceParams,
+) => {
+  // Check feature flag
+  if (!getIsRemoteModeEnabled(state)) {
+    return null;
+  }
+
+  const { from, chainId, asset } = params;
+
+  const entry = listDelegationEntries(state, {
+    filter: {
+      from,
+      chainId,
+      tags: [REMOTE_MODES.DAILY_ALLOWANCE],
+    },
+  })[0];
+
+  if (!entry?.meta) {
+    return null;
+  }
+
+  const meta = JSON.parse(entry.meta) as {
+    allowances: DailyAllowance[];
+  };
+
+  if (meta.allowances.length === 0) {
+    return null;
+  }
+
+  const address = asset?.details?.address ?? '';
+
+  const allowance = meta.allowances.find((a) => a.address === address);
+
+  if (!allowance) {
+    return null;
+  }
+
+  return allowance;
+};

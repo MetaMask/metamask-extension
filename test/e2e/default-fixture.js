@@ -20,10 +20,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       AuthenticationController: {
         isSignedIn: true,
       },
-      UserStorageController: {
-        isProfileSyncingEnabled: true,
-        isAccountSyncingEnabled: true,
-      },
       NotificationServicesController: {
         subscriptionAccountsSeen: [],
         isFeatureAnnouncementsEnabled: false,
@@ -128,6 +124,11 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             conversionDate: 1665507600.0,
             conversionRate: 1700.0,
             usdConversionRate: 1700.0,
+          },
+          MON: {
+            conversionDate: 1665507600.0,
+            conversionRate: 0.2,
+            usdConversionRate: 0.2,
           },
         },
       },

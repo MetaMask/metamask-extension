@@ -53,7 +53,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
             </button>
             . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. 
             <p
-              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-alternative"
             >
               Don’t share it with anyone, ever.
             </p>
@@ -336,7 +336,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
       class="mm-box mm-box--width-full"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled recovery-phrase__footer--button mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled recovery-phrase__footer--button mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
         data-testid="recovery-phrase-continue"
         data-theme="light"
         disabled=""
@@ -401,7 +401,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
             </button>
             . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. 
             <p
-              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-alternative"
             >
               Don’t share it with anyone, ever.
             </p>
@@ -658,7 +658,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
       class="mm-box mm-box--width-full"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg recovery-phrase__footer--button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg recovery-phrase__footer--button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
         data-testid="recovery-phrase-continue"
         data-theme="light"
       >

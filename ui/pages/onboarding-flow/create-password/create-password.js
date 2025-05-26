@@ -50,6 +50,7 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 // eslint-disable-next-line import/no-restricted-paths
 import { getPlatform } from '../../../../app/scripts/lib/util';
 import PasswordForm from '../../../components/app/password-form/password-form';
+import LoadingScreen from '../../../components/ui/loading-screen';
 ///: END:ONLY_INCLUDE_IF
 import LoadingScreen from '../../../components/ui/loading-screen';
 
@@ -189,6 +190,7 @@ export default function CreatePassword({
             color={IconColor.iconDefault}
             size={ButtonIconSize.Md}
             data-testid="create-password-back-button"
+            type="button"
             onClick={() => history.goBack()}
             ariaLabel="back"
           />
