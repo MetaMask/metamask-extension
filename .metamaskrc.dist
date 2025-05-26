@@ -4,7 +4,7 @@
 ; This variable is required
 INFURA_PROJECT_ID=00000000000
 
-; This variable is required for OAuth Service
+; This variables are required for OAuth Login
 AUTH_CONNECTION_ID=
 GROUPED_AUTH_CONNECTION_ID=
 GOOGLE_CLIENT_ID=
@@ -15,16 +15,6 @@ WEB3AUTH_NETWORK=
 ; This variable is not required but it's necessary for the storybook
 ; to render stories that use onchain data.
 INFURA_STORYBOOK_PROJECT_ID=
-
-; This variable is required for OAuth login
-AUTH_CONNECTION_ID=
-GROUPED_AUTH_CONNECTION_ID=
-GOOGLE_CLIENT_ID=
-APPLE_CLIENT_ID=
-AUTH_CONNECTION_ID=byoa-server
-GROUPED_AUTH_CONNECTION_ID=mm-seedless-onboarding
-AUTH_SERVER_URL=
-WEB3AUTH_NETWORK=
 
 ;PASSWORD=METAMASK PASSWORD
 ;SEGMENT_WRITE_KEY=
