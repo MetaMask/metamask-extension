@@ -217,12 +217,20 @@ describe('Bridge tests', function (this: Suite) {
         );
 
         const assetTypeCheck1 = [
-          (req) => req.properties.asset_type === 'TOKEN',
-          (req) => req.properties.token_standard === 'ERC20',
+          (req: {
+            properties: { asset_type: string; token_standard: string };
+          }) => req.properties.asset_type === 'TOKEN',
+          (req: {
+            properties: { asset_type: string; token_standard: string };
+          }) => req.properties.token_standard === 'ERC20',
         ];
         const assetTypeCheck2 = [
-          (req) => req.properties.asset_type === 'NATIVE',
-          (req) => req.properties.token_standard === 'NONE',
+          (req: {
+            properties: { asset_type: string; token_standard: string };
+          }) => req.properties.asset_type === 'NATIVE',
+          (req: {
+            properties: { asset_type: string; token_standard: string };
+          }) => req.properties.token_standard === 'NONE',
         ];
 
         const transactionAddedAnonEvents = findEventsByName(
