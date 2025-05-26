@@ -68,13 +68,6 @@
     "message": "$1を読んで同意しました",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "シークレットリカバリーフレーズでウォレットにアクセス"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMaskはユーザーのパスワードを復元できません。代わりにシークレットリカバリーフレーズを使用して所有者を確認し、ウォレットを復元して新しいパスワードを設定します。まずはじめに、ウォレットの作成時に提供されたシークレットリカバリーフレーズを入力してください。$1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "カメラにアクセス中..."
   },
@@ -169,9 +162,6 @@
   },
   "addBitcoinAccountLabel": {
     "message": "ビットコインアカウント (ベータ)"
-  },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "ビットコインアカウント (テストネット)"
   },
   "addBlockExplorer": {
     "message": "ブロックエクスプローラーを追加"
@@ -336,10 +326,6 @@
   },
   "advancedPriorityFeeToolTip": {
     "message": "優先手数料 (別名「マイナーチップ」) はマイナーに直接支払われ、トランザクションを優先するインセンティブとなります。"
-  },
-  "agreeTermsOfUse": {
-    "message": "MetaMaskの$1に同意します",
-    "description": "$1 is the `terms` link"
   },
   "airDropPatternDescription": {
     "message": "トークンのオンチェーン履歴で、不審なエアドロップアクティビティの以前のインスタンスを確認できます。"
@@ -661,22 +647,6 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "ビットコイン"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "この機能をオンにすると、既存のシークレットリカバリーフレーズで取得したビットコインアカウントをMetaMask拡張機能に追加できるようになります。これは試験運用中のベータ機能であるため、自己責任でご使用ください。新しいビットコインエクスペリエンスのフィードバックをご提供いただくには、こちらの$1に入力してください。",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "「新しいビットコインアカウントの追加 (ベータ)」を有効にする"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "この機能をオンにすると、テストネットワーク用にビットコインアカウントを追加できるようになります。"
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "「新しいビットコインアカウントの追加 (テストネット)」を有効にする"
   },
   "blockExplorerAccountAction": {
     "message": "アカウント",
@@ -1133,9 +1103,6 @@
   "confusingEnsDomain": {
     "message": "ENS名に混乱しやすい文字が発見されました。詐欺を防ぐためにENS名を確認して下さい。"
   },
-  "congratulations": {
-    "message": "おめでとうございます！"
-  },
   "connect": {
     "message": "接続"
   },
@@ -1321,9 +1288,6 @@
   "createNewAccountHeader": {
     "message": "新しいアカウントの作成"
   },
-  "createNewWallet": {
-    "message": "新規ウォレットを作成"
-  },
   "createPassword": {
     "message": "パスワードを作成"
   },
@@ -1338,10 +1302,6 @@
   },
   "creatorAddress": {
     "message": "クリエイターのアドレス"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "これにはすべてのネットワークで所有している全トークンの価値が反映されています。この値をETHまたはその他の通貨で表示する場合は、$1に移動します。",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "MetaMask Portfolioでネットワーク間でスワップ"
@@ -2183,9 +2143,6 @@
   "genericExplorerView": {
     "message": "$1でアカウントを表示"
   },
-  "goBack": {
-    "message": "戻る"
-  },
   "goToSite": {
     "message": "サイトに移動"
   },
@@ -2241,9 +2198,6 @@
   },
   "hideAdvancedDetails": {
     "message": "高度な詳細を非表示"
-  },
-  "hideSeedPhrase": {
-    "message": "シードフレーズを非表示"
   },
   "hideSentitiveInfo": {
     "message": "機密情報を非表示"
@@ -2341,10 +2295,6 @@
   "id": {
     "message": "ID"
   },
-  "ifYouGetLockedOut": {
-    "message": "アプリからロックアウトされてしまったり、新しいデバイスを入手した場合、資金が失われます。シークレットリカバリーフレーズは必ず$1にバックアップしてください ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "すべて無視"
   },
@@ -2378,9 +2328,6 @@
   },
   "importAccountMsg": {
     "message": "インポートされたアカウントは、MetaMaskアカウントのシークレットリカバリーフレーズと関連付けられません。インポートされたアカウントの詳細を表示"
-  },
-  "importMyWallet": {
-    "message": "ウォレットをインポート"
   },
   "importNFT": {
     "message": "NFTをインポート"
@@ -2585,10 +2532,6 @@
   "jsonFile": {
     "message": "JSONファイル",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "シークレットリカバリーフレーズは忘れないように安全な場所に保管してください。なくしてしまうと、誰にも取り戻すことはできません。さらに、ウォレットに二度とアクセスできなくなります。$1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "アカウント名"
@@ -3586,9 +3529,6 @@
   "onboardingMetametricsDescription": {
     "message": "MetaMaskの改善を目的に、基本的な使用状況および診断データを収集したいと思います。ここで提供されるデータが販売されることはありません。"
   },
-  "onboardingMetametricsDescription2": {
-    "message": "指標を収集する際、常に次の条件が適用されます..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "このデータを他の目的に使用する際は、お知らせします。詳細は当社の$1をご覧ください。設定でいつでもオプトアウトできます。",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3617,29 +3557,11 @@
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "任意:"
   },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "当社がプロファイル用に使用状況データを収集しつつ、どのようにユーザーのプライバシーを守るのかご覧ください。"
-  },
   "onboardingMetametricsTitle": {
     "message": "MetaMaskの改善にご協力ください"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "このデータは、ユーザーによる当社のマーケティングコミュニケーションとのインタラクションを把握するために使用されます。また、関連ニュースをお伝えする場合もあります (製品の機能など)。"
-  },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "フルアクセス"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "これらの拡張機能は、情報を表示および変更できます"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "このサイトで。"
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "拡張機能"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "ブラウザの拡張機能アイコンをクリックします"
   },
   "onboardingPinExtensionDescription": {
     "message": "MetaMaskをブラウザにピン留めすることで、アクセスしやすくなり、トランザクションの承認を簡単に表示できるようになります。"
@@ -3648,16 +3570,8 @@
     "message": "拡張機能をクリックしてMetaMaskを開き、ワンクリックでウォレットにアクセスできます。"
   },
   "onboardingPinExtensionDescription3": {
-    "message": "ブラウザの拡張機能アイコンをクリックすると、すぐにアクセスできます"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "MetaMaskをピン留めする"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "ブラウザの拡張機能アイコンをクリックすると、すぐにアクセスできます",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "MetaMaskのインストールが完了しました！"
@@ -3719,9 +3633,6 @@
   },
   "passwordNotLongEnough": {
     "message": "パスワードの長さが足りません"
-  },
-  "passwordSetupDetails": {
-    "message": "このパスワードは、このデバイスでのみMetaMaskウォレットのロックを解除します。MetaMaskはこのパスワードを復元できません。"
   },
   "passwordStrength": {
     "message": "パスワードの強度: $1",
@@ -4300,12 +4211,6 @@
   "rejected": {
     "message": "拒否されました"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "シークレットリカバリーフレーズをなくしてしまうと、ウォレットにアクセスできなくなります。この単語のセットを安全に保管し、いつでも資金にアクセスできるように、$1してください。"
-  },
-  "reminderSet": {
-    "message": "リマインダーが設定されました！"
-  },
   "remove": {
     "message": "削除"
   },
@@ -4420,9 +4325,6 @@
   "reusedTokenNameWarning": {
     "message": "ここのトークンは、監視する別のトークンのシンボルを再使用します。これは混乱を招いたり紛らわしい場合があります。"
   },
-  "revealSecretRecoveryPhrase": {
-    "message": "シークレットリカバリーフレーズを確認"
-  },
   "revealSeedWords": {
     "message": "シークレットリカバリーフレーズを確認"
   },
@@ -4459,9 +4361,6 @@
   },
   "revealSensitiveContent": {
     "message": "機密のコンテンツを確認"
-  },
-  "revealTheSeedPhrase": {
-    "message": "シードフレーズを確認"
   },
   "review": {
     "message": "確認"
@@ -4556,9 +4455,6 @@
   "securityMessageLinkForNetworks": {
     "message": "ネットワーク詐欺とセキュリティのリスク"
   },
-  "securityPrivacyPath": {
-    "message": "「設定」>「セキュリティとプライバシー」で確認できます。"
-  },
   "securityProviderPoweredBy": {
     "message": "データソース: $1",
     "description": "The security provider that is providing data"
@@ -4570,53 +4466,11 @@
   "seeDetails": {
     "message": "詳細を表示"
   },
-  "seedPhraseConfirm": {
-    "message": "シークレットリカバリーフレーズの確認"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "シークレットリカバリーフレーズの確認"
-  },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "後で通知 (非推奨)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "ウォレットの安全を確保 (推奨)"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "書き留めて、複数の秘密の場所に保管してください。"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "セーフティボックスに保管する。"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "シークレットリカバリーフレーズは12単語のフレーズで、ウォレットと資金への「マスターキー」となります。"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "誰かにリカバリーフレーズを尋ねられたら、ウォレットの資金を盗もうとする詐欺の可能性が高いです。"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "シークレットリカバリ フレーズはMetaMaskを含め、決して誰とも共有しないでください！"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "シークレットリカバリーフレーズとは何ですか？"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "シークレットリカバリーフレーズは共有すべきですか？"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "シークレットリカバリーフレーズはどのように保管すべきですか？"
-  },
   "seedPhraseIntroTitle": {
     "message": "ウォレットの保護"
   },
   "seedPhraseReq": {
     "message": "シークレットリカバリーフレーズは、12、15、18、21、24語で構成されます"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "この12単語のシークレットリカバリーフレーズを書き留めて、自分だけがアクセスできる信頼できる場所に保管してください。"
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "シークレットリカバリーフレーズを書き留めてください"
   },
   "select": {
     "message": "選択"
@@ -4731,9 +4585,6 @@
   },
   "settings": {
     "message": "設定"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "設定は使いやすさとセキュリティを確保するために最適化されています。これらはいつでも変更できます。"
   },
   "settingsSearchMatchingNotFound": {
     "message": "一致する結果が見つかりませんでした。"
@@ -4888,9 +4739,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "スキップ"
   },
   "skipAccountSecurity": {
     "message": "アカウントのセキュリティをスキップしますか？"
@@ -5947,9 +5795,6 @@
   "time": {
     "message": "時間"
   },
-  "tips": {
-    "message": "ヒント"
-  },
   "tipsForUsingAWallet": {
     "message": "ウォレット使用のヒント"
   },
@@ -6227,9 +6072,6 @@
   "unlock": {
     "message": "ロック解除"
   },
-  "unlockMessage": {
-    "message": "分散型インターネットが待っています"
-  },
   "unpin": {
     "message": "ピン留めを解除"
   },
@@ -6390,10 +6232,6 @@
   "walletConnectionGuide": {
     "message": "弊社のハードウェアウォレット接続ガイド"
   },
-  "walletProtectedAndReadyToUse": {
-    "message": "ウォレットが保護され、使用する準備ができました。シークレットリカバリーフレーズは、$1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "wantToAddThisNetwork": {
     "message": "このネットワークを追加しますか？"
   },
@@ -6439,23 +6277,8 @@
   "welcomeBack": {
     "message": "お帰りなさい！"
   },
-  "welcomeExploreDescription": {
-    "message": "仮想通貨やアセットを保管、送金、使用。"
-  },
-  "welcomeExploreTitle": {
-    "message": "分散型アプリを閲覧"
-  },
-  "welcomeLoginDescription": {
-    "message": "MetaMaskを使用して分散型アプリにログイン。サインアップは不要です。"
-  },
-  "welcomeLoginTitle": {
-    "message": "ウォレットにようこそ"
-  },
   "welcomeToMetaMask": {
     "message": "始めましょう"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "MetaMaskは何百万人もに信頼されている安全なウォレットで、すべての人々によるWeb3の世界へのアクセスを可能にしています。"
   },
   "whatsThis": {
     "message": "これは何ですか？"
@@ -6492,9 +6315,6 @@
   },
   "yourBalance": {
     "message": "残高"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "残高は集計されます"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFTが危険にさらされている可能性があります"

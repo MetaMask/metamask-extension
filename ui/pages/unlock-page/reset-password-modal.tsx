@@ -4,6 +4,8 @@ import {
   AvatarBase,
   AvatarBaseSize,
   Box,
+  ButtonLink,
+  ButtonLinkSize,
   Modal,
   ModalContent,
   ModalHeader,
@@ -17,11 +19,14 @@ import {
   TextColor,
   TextVariant,
 } from '../../helpers/constants/design-system';
+import Divider from '../../components/app/divider';
 
 export default function ResetPasswordModal({
   onClose,
+  onRestore,
 }: {
   onClose: () => void;
+  onRestore: () => void;
 }) {
   const t = useI18nContext();
 
@@ -89,6 +94,25 @@ export default function ResetPasswordModal({
               </Text>
             </Box>
           </Box>
+          <Divider
+            marginTop={2}
+            marginBottom={4}
+          />
+          <Text>
+            {t('resetPasswordSocialReset', [
+              [
+                <ButtonLink
+                  key="resetPasswordSocialReset"
+                  size={ButtonLinkSize.Inherit}
+                  onClick={() => {
+                    onRestore();
+                  }}
+                >
+                  {t('resetWallet')}
+                </ButtonLink>,
+              ],
+            ])}
+          </Text>
         </Box>
       </ModalContent>
     </Modal>

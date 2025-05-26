@@ -3,7 +3,6 @@
  */
 import { Messenger } from '@metamask/base-controller';
 import { AccountsController } from '@metamask/accounts-controller';
-import { Hex } from '@metamask/utils';
 import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
 import type { MultichainNetworkControllerNetworkDidChangeEvent } from '@metamask/multichain-network-controller';
 import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
@@ -153,12 +152,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -204,12 +201,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -261,12 +256,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -302,12 +295,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -512,12 +503,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -569,21 +558,6 @@ describe('preferences controller', () => {
     it('should set the setServiceWorkerKeepAlivePreference property in state', () => {
       controller.setServiceWorkerKeepAlivePreference(false);
       expect(controller.state.enableMV3TimestampSave).toStrictEqual(false);
-    });
-  });
-
-  describe('setBitcoinSupportEnabled', () => {
-    const { controller } = setupController({});
-    it('has the default value as false', () => {
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(false);
-    });
-
-    it('sets the bitcoinSupportEnabled property in state to true and then false', () => {
-      controller.setBitcoinSupportEnabled(true);
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(true);
-
-      controller.setBitcoinSupportEnabled(false);
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(false);
     });
   });
 
@@ -651,21 +625,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('bitcoinTestnetSupportEnabled', () => {
-    it('defaults bitcoinTestnetSupportEnabled to false', () => {
-      const { controller } = setupController({});
-      expect(controller.state.bitcoinTestnetSupportEnabled).toStrictEqual(
-        false,
-      );
-    });
-
-    it('setBitcoinTestnetSupportEnabled to true', () => {
-      const { controller } = setupController({});
-      controller.setBitcoinTestnetSupportEnabled(true);
-      expect(controller.state.bitcoinTestnetSupportEnabled).toStrictEqual(true);
-    });
-  });
-
   describe('knownMethodData', () => {
     it('defaults knownMethodData', () => {
       const { controller } = setupController({});
@@ -710,7 +669,6 @@ describe('preferences controller', () => {
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
-        shouldShowAggregatedBalancePopover: true,
         dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
         showConfirmationAdvancedDetails: false,
@@ -739,7 +697,6 @@ describe('preferences controller', () => {
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         privacyMode: false,
-        shouldShowAggregatedBalancePopover: true,
         dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
         showConfirmationAdvancedDetails: true,
@@ -838,74 +795,6 @@ describe('preferences controller', () => {
       expect(controller.state.snapsAddSnapAccountModalDismissed).toStrictEqual(
         true,
       );
-    });
-  });
-
-  describe('getDisabledUpgradeAccountsByChain', () => {
-    it('returns empty object if disabledAccountUpgradeChainsAddresses is empty', () => {
-      const { controller } = setupController({});
-      expect(controller.getDisabledUpgradeAccountsByChain()).toStrictEqual({});
-    });
-
-    it('returns disabledAccountUpgrades state', () => {
-      const mockStateObject = {
-        [CHAIN_IDS.MAINNET]: ['0x0'] as Hex[],
-        [CHAIN_IDS.GOERLI]: ['0x1'] as Hex[],
-      };
-      const { controller } = setupController({
-        state: {
-          disabledUpgradeAccountsByChain: mockStateObject,
-        },
-      });
-
-      expect(controller.getDisabledUpgradeAccountsByChain()).toStrictEqual(
-        mockStateObject,
-      );
-    });
-  });
-
-  describe('disableAccountUpgrade', () => {
-    it('adds chain ID, address to disabledAccountUpgrades if empty', () => {
-      const { controller } = setupController({});
-
-      controller.disableAccountUpgrade(CHAIN_IDS.GOERLI, '0x0');
-
-      expect(controller.state.disabledUpgradeAccountsByChain).toStrictEqual({
-        [CHAIN_IDS.GOERLI]: ['0x0'],
-      });
-    });
-
-    it('adds chain ID, address to disabledAccountUpgrades if not empty', () => {
-      const { controller } = setupController({
-        state: {
-          disabledUpgradeAccountsByChain: {
-            [CHAIN_IDS.MAINNET]: ['0x0'],
-          },
-        },
-      });
-
-      controller.disableAccountUpgrade(CHAIN_IDS.GOERLI, '0x1');
-
-      expect(controller.state.disabledUpgradeAccountsByChain).toStrictEqual({
-        [CHAIN_IDS.MAINNET]: ['0x0'],
-        [CHAIN_IDS.GOERLI]: ['0x1'],
-      });
-    });
-
-    it('does not add chain ID to disabledAccountUpgrades if duplicate', () => {
-      const { controller } = setupController({
-        state: {
-          disabledUpgradeAccountsByChain: {
-            [CHAIN_IDS.MAINNET]: ['0x0'],
-          },
-        },
-      });
-
-      controller.disableAccountUpgrade(CHAIN_IDS.MAINNET, '0x0');
-
-      expect(controller.state.disabledUpgradeAccountsByChain).toStrictEqual({
-        [CHAIN_IDS.MAINNET]: ['0x0'],
-      });
     });
   });
 

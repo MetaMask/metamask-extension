@@ -68,13 +68,6 @@
     "message": "Tôi đã đọc và đồng ý với $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Truy cập ví của bạn bằng Cụm từ khôi phục bí mật"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask không thể khôi phục mật khẩu của bạn. Chúng tôi sẽ sử dụng Cụm từ khôi phục bí mật của bạn để xác thực quyền sở hữu, khôi phục ví và thiết lập mật khẩu mới. Trước tiên, hãy nhập Cụm từ khôi phục bí mật mà bạn đã được cấp khi tạo ví. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Đang truy cập máy ảnh..."
   },
@@ -169,9 +162,6 @@
   },
   "addBitcoinAccountLabel": {
     "message": "Tài khoản Bitcoin (Beta)"
-  },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Tài khoản Bitcoin (Mạng thử nghiệm)"
   },
   "addBlockExplorer": {
     "message": "Thêm một trình khám phá khối"
@@ -336,10 +326,6 @@
   },
   "advancedPriorityFeeToolTip": {
     "message": "Phí ưu tiên (hay còn được gọi là \"tiền thưởng cho thợ đào\") được chuyển trực tiếp cho các thợ đào và khuyến khích họ ưu tiên giao dịch của bạn."
-  },
-  "agreeTermsOfUse": {
-    "message": "Tôi đồng ý với $1 của MetaMask",
-    "description": "$1 is the `terms` link"
   },
   "airDropPatternDescription": {
     "message": "Lịch sử trên chuỗi của token cho thấy trước đây đã từng có hoạt động tặng thưởng đáng ngờ."
@@ -661,22 +647,6 @@
   "billionAbbreviation": {
     "message": "Tỷ",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Bật tính năng này sẽ cung cấp cho bạn tùy chọn thêm Tài khoản Bitcoin vào Tiện ích mở rộng MetaMask bắt nguồn từ Cụm từ khôi phục bí mật hiện có của bạn. Đây là một tính năng Beta thử nghiệm, nên bạn phải tự chịu rủi ro khi sử dụng nó. Để cung cấp phản hồi cho chúng tôi về trải nghiệm Bitcoin mới này, vui lòng điền vào $1 này.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Bật \"Thêm tài khoản Bitcoin mới (Beta)\""
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Bật tính năng này sẽ cung cấp cho bạn tùy chọn thêm Tài khoản Bitcoin cho mạng thử nghiệm."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Bật \"Thêm tài khoản Bitcoin mới (Mạng thử nghiệm)\""
   },
   "blockExplorerAccountAction": {
     "message": "Tài khoản",
@@ -1133,9 +1103,6 @@
   "confusingEnsDomain": {
     "message": "Chúng tôi đã phát hiện thấy một ký tự có thể gây nhầm lẫn trong tên ENS. Hãy kiểm tra tên ENS để tránh nguy cơ bị lừa đảo."
   },
-  "congratulations": {
-    "message": "Chúc mừng!"
-  },
   "connect": {
     "message": "Kết nối"
   },
@@ -1321,9 +1288,6 @@
   "createNewAccountHeader": {
     "message": "Tạo tài khoản mới"
   },
-  "createNewWallet": {
-    "message": "Tạo ví mới"
-  },
   "createPassword": {
     "message": "Tạo mật khẩu"
   },
@@ -1338,10 +1302,6 @@
   },
   "creatorAddress": {
     "message": "Địa chỉ của người tạo"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Giá trị này phản ánh giá trị của tất cả các token mà bạn sở hữu trên tất cả các mạng. Nếu bạn muốn xem giá trị này bằng ETH hoặc các loại tiền tệ khác, hãy truy cập $1.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "Hoán đổi trên các mạng với MetaMask Portfolio"
@@ -2186,9 +2146,6 @@
   "genericExplorerView": {
     "message": "Xem tài khoản trên $1"
   },
-  "goBack": {
-    "message": "Quay Lại"
-  },
   "goToSite": {
     "message": "Đến trang web"
   },
@@ -2244,9 +2201,6 @@
   },
   "hideAdvancedDetails": {
     "message": "Ẩn chi tiết nâng cao"
-  },
-  "hideSeedPhrase": {
-    "message": "Ẩn cụm từ khôi phục bí mật"
   },
   "hideSentitiveInfo": {
     "message": "Ẩn thông tin nhạy cảm"
@@ -2344,10 +2298,6 @@
   "id": {
     "message": "ID"
   },
-  "ifYouGetLockedOut": {
-    "message": "Nếu bạn bị khóa ứng dụng hoặc sử dụng thiết bị mới, bạn sẽ mất tiền. Nhớ sao lưu Cụm từ khôi phục bí mật của bạn trong $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "Bỏ qua tất cả"
   },
@@ -2381,9 +2331,6 @@
   },
   "importAccountMsg": {
     "message": "Tài khoản đã nhập sẽ không được liên kết với Cụm từ khôi phục bí mật MetaMask của bạn. Tìm hiểu thêm về tài khoản đã nhập"
-  },
-  "importMyWallet": {
-    "message": "Nhập ví của tôi"
   },
   "importNFT": {
     "message": "Nhập NFT"
@@ -2588,10 +2535,6 @@
   "jsonFile": {
     "message": "Tập tin JSON",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Cất giữ lời nhắc về Cụm từ khôi phục bí mật ở một nơi an toàn. Nếu bạn làm mất, không ai có thể giúp bạn lấy lại. Tệ hơn nữa, bạn sẽ không bao giờ truy cập được vào ví của bạn nữa. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Tên tài khoản"
@@ -3589,9 +3532,6 @@
   "onboardingMetametricsDescription": {
     "message": "Chúng tôi muốn thu thập dữ liệu sử dụng và chẩn đoán cơ bản để cải tiến MetaMask. Xin lưu ý, chúng tôi không bao giờ bán dữ liệu mà bạn cung cấp ở đây."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Khi thu thập số liệu, chúng tôi sẽ luôn cam kết điều này..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Chúng tôi sẽ thông báo cho bạn nếu chúng tôi quyết định sử dụng dữ liệu này cho các mục đích khác. Bạn có thể xem lại $1 của chúng tôi để biết thêm thông tin. Lưu ý, bạn có thể truy cập cài đặt và chọn không tham gia bất kỳ lúc nào.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3620,29 +3560,11 @@
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Không bắt buộc:"
   },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn khi thu thập dữ liệu sử dụng cho hồ sơ của bạn."
-  },
   "onboardingMetametricsTitle": {
     "message": "Giúp chúng tôi cải thiện MetaMask"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Chúng tôi sẽ sử dụng dữ liệu này để tìm hiểu cách bạn tương tác với các thông tin tiếp thị. Chúng tôi có thể chia sẻ tin tức liên quan (chẳng hạn như tính năng sản phẩm)."
-  },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Toàn quyền truy cập"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Các tiện ích này có thể xem và thay đổi thông tin"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "trên trang web này."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Tiện ích"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Nhấp vào biểu tượng tiện ích trên trình duyệt"
   },
   "onboardingPinExtensionDescription": {
     "message": "Ghim MetaMask trên trình duyệt để bạn có thể truy cập và dễ dàng xem các xác nhận giao dịch."
@@ -3651,16 +3573,8 @@
     "message": "Bạn có thể mở MetaMask bằng cách nhấp vào tiện ích và truy cập ví của mình chỉ với 1 cú nhấp chuột."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Nhấp vào biểu tượng tiện ích trên trình duyệt để truy cập tức thì"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "Ghim MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Nhấp vào biểu tượng tiện ích trên trình duyệt để truy cập tức thì",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Quá trình cài đặt MetaMask đã hoàn tất!"
@@ -3722,9 +3636,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Mật khẩu không đủ dài"
-  },
-  "passwordSetupDetails": {
-    "message": "Mật khẩu này sẽ chỉ mở khóa ví MetaMask của bạn trên thiết bị này. MetaMask không thể khôi phục mật khẩu này."
   },
   "passwordStrength": {
     "message": "Độ mạnh của mật khẩu: $1",
@@ -4303,12 +4214,6 @@
   "rejected": {
     "message": "Đã từ chối"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Hãy nhớ rằng, nếu bạn làm mất Cụm từ khôi phục bí mật, bạn sẽ mất quyền truy cập vào ví. $1 để cất giữ cụm từ này ở nơi an toàn, nhờ đó bạn luôn có thể truy cập vào tiền của bạn."
-  },
-  "reminderSet": {
-    "message": "Đã thiết lập lời nhắc!"
-  },
   "remove": {
     "message": "Xóa"
   },
@@ -4423,9 +4328,6 @@
   "reusedTokenNameWarning": {
     "message": "Một token trong đây sử dụng lại ký hiệu của một token khác mà bạn thấy, điều này có thể gây nhầm lẫn hoặc mang tính lừa dối."
   },
-  "revealSecretRecoveryPhrase": {
-    "message": "Hiện Cụm từ khôi phục bí mật"
-  },
   "revealSeedWords": {
     "message": "Hiện Cụm từ khôi phục bí mật"
   },
@@ -4462,9 +4364,6 @@
   },
   "revealSensitiveContent": {
     "message": "Tiết lộ nội dung nhạy cảm"
-  },
-  "revealTheSeedPhrase": {
-    "message": "Hiển thị cụm từ khôi phục bí mật"
   },
   "review": {
     "message": "Xem lại"
@@ -4559,9 +4458,6 @@
   "securityMessageLinkForNetworks": {
     "message": "lừa đảo mạng và rủi ro bảo mật"
   },
-  "securityPrivacyPath": {
-    "message": "Cài đặt > Bảo mật & Quyền riêng tư."
-  },
   "securityProviderPoweredBy": {
     "message": "Được cung cấp bởi $1",
     "description": "The security provider that is providing data"
@@ -4573,53 +4469,11 @@
   "seeDetails": {
     "message": "Xem chi tiết"
   },
-  "seedPhraseConfirm": {
-    "message": "Xác nhận Cụm từ khôi phục bí mật"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Xác nhận Cụm từ khôi phục bí mật"
-  },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Nhắc tôi sau (không khuyến khích)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Bảo mật ví của tôi (khuyến khích)"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Viết ra và cất ở nhiều nơi bí mật."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Lưu giữ trong hộp ký gửi an toàn."
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Cụm từ khôi phục bí mật gồm 12 từ là “chìa khóa chính” để truy cập ví và số tiền của bạn"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Nếu ai đó hỏi bạn cụm từ khôi phục bí mật, thì họ đang cố gắng lừa đảo và đánh cắp tiền trong ví của bạn"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Đừng bao giờ cho ai biết cụm từ khôi phục bí mật, kể cả MetaMask!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Cụm từ khôi phục bí mật là gì?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Tôi có nên cho ai biết cụm từ khôi phục bí mật của mình không?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Tôi lưu Cụm từ khôi phục bí mật của mình bằng cách nào?"
-  },
   "seedPhraseIntroTitle": {
     "message": "Bảo mật cho ví của bạn"
   },
   "seedPhraseReq": {
     "message": "Cụm từ khôi phục bí mật gồm 12, 15, 18, 21 hoặc 24 từ"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Viết ra Cụm từ khôi phục bí mật gồm 12 từ này, sau đó lưu ở một nơi mà bạn tin tưởng và chỉ có bạn mới được phép truy cập."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Viết ra Cụm từ khôi phục bí mật của bạn"
   },
   "select": {
     "message": "Chọn"
@@ -4734,9 +4588,6 @@
   },
   "settings": {
     "message": "Cài đặt"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "Chế độ cài đặt được tối ưu hóa để đảm bảo an toàn và dễ sử dụng. Thay đổi các chế độ cài đặt này bất cứ lúc nào."
   },
   "settingsSearchMatchingNotFound": {
     "message": "Không tìm thấy kết quả trùng khớp."
@@ -4891,9 +4742,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "Bỏ qua"
   },
   "skipAccountSecurity": {
     "message": "Bỏ qua bảo mật tài khoản?"
@@ -5950,9 +5798,6 @@
   "time": {
     "message": "Thời gian"
   },
-  "tips": {
-    "message": "Mẹo"
-  },
   "tipsForUsingAWallet": {
     "message": "Lời khuyên sử dụng ví"
   },
@@ -6230,9 +6075,6 @@
   "unlock": {
     "message": "Mở khóa"
   },
-  "unlockMessage": {
-    "message": "Web phi tập trung đang chờ đón bạn"
-  },
   "unpin": {
     "message": "Bỏ ghim"
   },
@@ -6393,10 +6235,6 @@
   "walletConnectionGuide": {
     "message": "hướng dẫn của chúng tôi về cách kết nối ví cứng"
   },
-  "walletProtectedAndReadyToUse": {
-    "message": "Ví của bạn đã được bảo vệ và sẵn sàng để sử dụng. Bạn có thể xem Cụm từ khôi phục bí mật trong $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "wantToAddThisNetwork": {
     "message": "Bạn muốn thêm mạng này?"
   },
@@ -6442,23 +6280,8 @@
   "welcomeBack": {
     "message": "Chào mừng bạn trở lại!"
   },
-  "welcomeExploreDescription": {
-    "message": "Lưu trữ, gửi và chi tiêu các loại tiền và tài sản tiền điện tử."
-  },
-  "welcomeExploreTitle": {
-    "message": "Khám phá các ứng dụng phi tập trung"
-  },
-  "welcomeLoginDescription": {
-    "message": "Sử dụng MetaMask của bạn để đăng nhập vào các ứng dụng phi tập trung - không cần đăng ký."
-  },
-  "welcomeLoginTitle": {
-    "message": "Gửi lời chào đến ví của bạn"
-  },
   "welcomeToMetaMask": {
     "message": "Bắt đầu nào"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Được hàng triệu người tin dùng, MetaMask là một ví an toàn cho phép mọi người có thể truy cập vào thế giới web3."
   },
   "whatsThis": {
     "message": "Đây là gì?"
@@ -6495,9 +6318,6 @@
   },
   "yourBalance": {
     "message": "Số dư của bạn"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Số dư của bạn đã được tổng hợp"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT của bạn có thể gặp rủi ro"

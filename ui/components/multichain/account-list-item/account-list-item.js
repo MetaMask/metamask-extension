@@ -57,6 +57,7 @@ import {
   isSolanaAccount,
 } from '../../../selectors';
 import {
+  getMultichainBalances,
   getMultichainIsTestnet,
   getMultichainNativeCurrency,
   getMultichainNativeCurrencyImage,
@@ -122,7 +123,10 @@ const AccountListItem = ({
   );
 
   const useBlockie = useSelector(getUseBlockie);
-  const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
+  const { isEvmNetwork, chainId: multichainChainId } = useMultichainSelector(
+    getMultichainNetwork,
+    account,
+  );
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
@@ -143,6 +147,10 @@ const AccountListItem = ({
     getMultichainAggregatedBalance(state, account),
   );
 
+  const multichainBalances = useSelector(getMultichainBalances);
+  const accountMultichainBalances = multichainBalances?.[account.id];
+  const accountMultichainNativeBalance =
+    accountMultichainBalances?.[`${multichainChainId}/slip44:501`]?.amount;
   // cross chain agg balance
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -176,7 +184,10 @@ const AccountListItem = ({
         ? account.balance
         : totalFiatBalance;
   } else {
-    balanceToTranslate = multichainAggregatedBalance;
+    balanceToTranslate =
+      !shouldShowFiat || isTestnet
+        ? accountMultichainNativeBalance
+        : multichainAggregatedBalance;
   }
 
   // If this is the selected item in the Account menu,
@@ -207,7 +218,7 @@ const AccountListItem = ({
   const getIsAggregatedFiatOverviewBalanceProp = () => {
     const isAggregatedFiatOverviewBalance =
       (!isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat) ||
-      !isEvmNetwork;
+      (!isEvmNetwork && shouldShowFiat);
 
     return isAggregatedFiatOverviewBalance;
   };

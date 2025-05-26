@@ -629,9 +629,6 @@
   "terms": {
     "message": "የአጠቃቀም ደንቦች"
   },
-  "tips": {
-    "message": "መረጃዎች"
-  },
   "to": {
     "message": "ለ"
   },
@@ -709,9 +706,6 @@
   },
   "unlock": {
     "message": "ክፈት"
-  },
-  "unlockMessage": {
-    "message": "ያልተማከለ ድር ይጠባበቃል"
   },
   "urlErrorMsg": {
     "message": "URIs አግባብነት ያለው የ HTTP/HTTPS ቅድመ ቅጥያ ይፈልጋል።"

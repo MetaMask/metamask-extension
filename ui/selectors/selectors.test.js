@@ -1011,6 +1011,10 @@ describe('Selectors', () => {
             {
               type: KeyringType.ledger,
               accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+              metadata: {
+                name: 'Ledger',
+                id: 'ledger',
+              },
             },
           ],
         },
@@ -1423,7 +1427,9 @@ describe('Selectors', () => {
             type: 'HD Key Tree',
           },
         },
-        options: {},
+        options: {
+          entropySource: '01JKAF3DSGM3AB87EM9N0K41AJ',
+        },
         methods: [
           'personal_sign',
           'eth_signTransaction',
@@ -1449,7 +1455,9 @@ describe('Selectors', () => {
             type: 'HD Key Tree',
           },
         },
-        options: {},
+        options: {
+          entropySource: '01JKAF3PJ247KAM6C03G5Q0NP8',
+        },
         methods: [
           'personal_sign',
           'eth_signTransaction',
@@ -1474,7 +1482,9 @@ describe('Selectors', () => {
             type: 'HD Key Tree',
           },
         },
-        options: {},
+        options: {
+          entropySource: '01JKAF3DSGM3AB87EM9N0K41AJ',
+        },
         methods: [
           'personal_sign',
           'eth_signTransaction',
@@ -2401,6 +2411,338 @@ describe('#getConnectedSitesList', () => {
       expect(selectors.getManageInstitutionalWallets(state)).toBe(true);
     });
   });
+
+  describe('#getHDEntropyIndex', () => {
+    const selectedAddress = '0xSelectedAddress';
+    const otherAddress = '0xOtherAddress';
+    const hdKeyringType = KeyringType.hdKeyTree;
+    const nonHdKeyringType = 'some-other-keyring-type';
+    const entropySourceId1 = 'entropy-id-1';
+    const entropySourceId2 = 'entropy-id-2';
+
+    const baseMockState = {
+      metamask: {
+        internalAccounts: {
+          accounts: {
+            acc1: {
+              address: selectedAddress,
+              metadata: { keyring: { type: 'some-type' } },
+              options: {},
+            },
+            acc2: {
+              address: otherAddress,
+              metadata: { keyring: { type: 'some-type' } },
+              options: {},
+            },
+          },
+          selectedAccount: 'acc1',
+        },
+        keyrings: [],
+      },
+    };
+
+    it('should return the index of the HD keyring containing the selected address', () => {
+      const state = {
+        ...baseMockState,
+        metamask: {
+          ...baseMockState.metamask,
+          keyrings: [
+            {
+              type: nonHdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: 'mock-keyring-id-1',
+                name: '',
+              },
+            },
+            {
+              type: hdKeyringType,
+              accounts: [otherAddress, selectedAddress],
+              metadata: {
+                id: 'mock-keyring-id-2',
+                name: '',
+              },
+            }, // Index 1 (0 for hdKeyrings filter)
+            {
+              type: hdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: 'mock-keyring-id-3',
+                name: '',
+              },
+            }, // Index 2 (1 for hdKeyrings filter)
+          ],
+        },
+      };
+      expect(selectors.getHDEntropyIndex(state)).toBe(0);
+    });
+
+    it('should return the index based on metadata if account not in HD keyring but entropySource matches', () => {
+      const state = {
+        ...baseMockState,
+        metamask: {
+          ...baseMockState.metamask,
+          internalAccounts: {
+            ...baseMockState.metamask.internalAccounts,
+            accounts: {
+              ...baseMockState.metamask.internalAccounts.accounts,
+              acc1: {
+                ...baseMockState.metamask.internalAccounts.accounts.acc1,
+                options: { entropySource: entropySourceId2 },
+              },
+            },
+          },
+          keyrings: [
+            {
+              type: hdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: 'some-other-id',
+                name: '',
+              },
+            }, // No selectedAddress here
+            {
+              type: nonHdKeyringType,
+              accounts: [selectedAddress],
+              metadata: {
+                id: entropySourceId1,
+                name: '',
+              },
+            },
+            {
+              type: nonHdKeyringType,
+              accounts: [selectedAddress],
+              metadata: {
+                id: entropySourceId2,
+                name: '',
+              },
+            },
+          ],
+        },
+      };
+      expect(selectors.getHDEntropyIndex(state)).toBe(2);
+    });
+
+    it('should return undefined if account not in HD keyring and entropySource does not match any metadata id', () => {
+      const state = {
+        ...baseMockState,
+        metamask: {
+          ...baseMockState.metamask,
+          internalAccounts: {
+            ...baseMockState.metamask.internalAccounts,
+            accounts: {
+              ...baseMockState.metamask.internalAccounts.accounts,
+              acc1: {
+                ...baseMockState.metamask.internalAccounts.accounts.acc1,
+                options: { entropySource: 'non-matching-entropy-id' },
+              },
+            },
+          },
+          keyrings: [
+            {
+              type: hdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: entropySourceId1,
+                name: '',
+              },
+            },
+          ],
+        },
+      };
+      expect(selectors.getHDEntropyIndex(state)).toBeUndefined();
+    });
+
+    it('should return undefined if account not in HD keyring and no entropySource in account options', () => {
+      const state = {
+        ...baseMockState,
+        metamask: {
+          ...baseMockState.metamask,
+          // selected account acc1 has no options.entropySource by default in baseMockState
+          keyrings: [
+            {
+              type: hdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: entropySourceId1,
+                name: '',
+              },
+            },
+          ],
+        },
+      };
+      expect(selectors.getHDEntropyIndex(state)).toBeUndefined();
+    });
+
+    it('should return undefined if account not in HD keyring and no selected internal account found', () => {
+      const state = {
+        ...baseMockState,
+        metamask: {
+          ...baseMockState.metamask,
+          internalAccounts: {
+            ...baseMockState.metamask.internalAccounts,
+            selectedAccount: 'non-existent-acc-id',
+          },
+          keyrings: [
+            {
+              type: hdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: entropySourceId1,
+                name: '',
+              },
+            },
+          ],
+        },
+      };
+      expect(selectors.getHDEntropyIndex(state)).toBeUndefined();
+    });
+
+    it('should return undefined if no HD keyrings and no matching entropySource', () => {
+      const state = {
+        ...baseMockState,
+        metamask: {
+          ...baseMockState.metamask,
+          internalAccounts: {
+            ...baseMockState.metamask.internalAccounts,
+            accounts: {
+              ...baseMockState.metamask.internalAccounts.accounts,
+              acc1: {
+                ...baseMockState.metamask.internalAccounts.accounts.acc1,
+                options: { entropySource: 'non-matching-entropy-id' },
+              },
+            },
+          },
+          keyrings: [
+            {
+              type: nonHdKeyringType,
+              accounts: [selectedAddress],
+              metadata: {
+                id: entropySourceId1,
+                name: '',
+              },
+            },
+            {
+              type: nonHdKeyringType,
+              accounts: [otherAddress],
+              metadata: { id: 'some-other-id', name: '' },
+            },
+          ],
+        },
+      };
+      expect(selectors.getHDEntropyIndex(state)).toBeUndefined();
+    });
+
+    it('should return correct index from metadata if no HD keyrings but matching entropySource', () => {
+      const state = {
+        ...baseMockState,
+        metamask: {
+          ...baseMockState.metamask,
+          internalAccounts: {
+            ...baseMockState.metamask.internalAccounts,
+            accounts: {
+              ...baseMockState.metamask.internalAccounts.accounts,
+              acc1: {
+                ...baseMockState.metamask.internalAccounts.accounts.acc1,
+                options: { entropySource: entropySourceId1 },
+              },
+            },
+          },
+          keyrings: [
+            {
+              type: nonHdKeyringType,
+              accounts: [selectedAddress],
+              metadata: {
+                id: 'another-id',
+                name: '',
+              },
+            },
+            {
+              type: nonHdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: entropySourceId1,
+                name: '',
+              },
+            },
+          ],
+        },
+      };
+      expect(selectors.getHDEntropyIndex(state)).toBe(1);
+    });
+
+    it('should correctly identify the first HD keyring if multiple HD keyrings exist and selected address is in the first one', () => {
+      const state = {
+        ...baseMockState,
+        metamask: {
+          ...baseMockState.metamask,
+          keyrings: [
+            {
+              type: hdKeyringType,
+              accounts: [selectedAddress, otherAddress],
+              metadata: {
+                id: 'mock-keyring-id-1',
+                name: '',
+              },
+            }, // Index 0 (0 for hdKeyrings filter)
+            {
+              type: hdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: 'mock-keyring-id-2',
+                name: '',
+              },
+            }, // Index 1 (1 for hdKeyrings filter)
+            {
+              type: nonHdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: 'mock-keyring-id-3',
+                name: '',
+              },
+            },
+          ],
+        },
+      };
+      expect(selectors.getHDEntropyIndex(state)).toBe(0);
+    });
+
+    it('should correctly identify a later HD keyring if selected address is not in earlier ones', () => {
+      const state = {
+        ...baseMockState,
+        metamask: {
+          ...baseMockState.metamask,
+          keyrings: [
+            {
+              type: hdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: 'mock-keyring-id-1',
+                name: '',
+              },
+            }, // Index 0 (0 for hdKeyrings filter)
+            {
+              type: nonHdKeyringType,
+              accounts: [otherAddress],
+              metadata: {
+                id: 'mock-keyring-id-2',
+                name: '',
+              },
+            },
+            {
+              type: hdKeyringType,
+              accounts: [selectedAddress, otherAddress],
+              metadata: {
+                id: 'mock-keyring-id-3',
+                name: '',
+              },
+            }, // Index 2 (1 for hdKeyrings filter)
+          ],
+        },
+      };
+      expect(selectors.getHDEntropyIndex(state)).toBe(1); // 1st HD keyring (index 1 of filtered hdKeyrings)
+    });
+  });
 });
 
 describe('getNativeTokenInfo', () => {
@@ -2552,28 +2894,27 @@ describe('getInternalAccountsSortedByKeyring', () => {
   const mockHdKeyring1 = {
     type: KeyringTypes.hd,
     accounts: [hdAccountFromHdKeyring1.address],
+    metadata: {
+      id: 'mockHdKeyring1',
+      name: '',
+    },
   };
 
   const mockHdKeyring2 = {
     type: KeyringTypes.hd,
     accounts: [hdAccountFromHdKeyring2.address],
+    metadata: {
+      id: 'mockHdKeyring2',
+      name: '',
+    },
   };
   const mockSnapKeyring = {
     type: KeyringTypes.snap,
     accounts: [solanaAccount1.address, solanaAccount2.address],
-  };
-
-  const mockHdKeyring1Metadata = {
-    id: 'mockHdKeyring1',
-    name: '',
-  };
-  const mockHdKeyring2Metadata = {
-    id: 'mockHdKeyring2',
-    name: '',
-  };
-  const mockSnapKeyringMetadata = {
-    id: 'mockSnapKeyring',
-    name: '',
+    metadata: {
+      id: 'mockSnapKeyring',
+      name: '',
+    },
   };
 
   it('returns internal accounts sorted by keyring', () => {
@@ -2589,11 +2930,6 @@ describe('getInternalAccountsSortedByKeyring', () => {
           selectedAccount: solanaAccount1.id,
         },
         keyrings: [mockHdKeyring1, mockHdKeyring2, mockSnapKeyring],
-        keyringsMetadata: [
-          mockHdKeyring1Metadata,
-          mockHdKeyring2Metadata,
-          mockSnapKeyringMetadata,
-        ],
         networkConfigurationsByChainId:
           mockState.metamask.networkConfigurationsByChainId,
         selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,

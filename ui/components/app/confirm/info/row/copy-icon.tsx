@@ -33,6 +33,8 @@ export const CopyIcon: React.FC<{
         top: 2,
         ...style,
       }}
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={handleClick}
       ariaLabel="copy-button"
     />

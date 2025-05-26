@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+import { isValidMnemonic } from '@ethersproject/hdnode';
+
 import { Textarea, TextareaResize } from '../../component-library/textarea';
 import {
   Box,
@@ -45,7 +47,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
   const [draftSrp, setDraftSrp] = useState<DraftSrp[]>([]);
   const [firstWord, setFirstWord] = useState('');
   const [showAll, setShowAll] = useState(false);
-  const [missSpelledWords, setMissSpelledWords] = useState<string[]>([]);
+  const [misSpelledWords, setMisSpelledWords] = useState<string[]>([]);
 
   const srpRefs = useRef<ListOfTextFieldRefs>({});
 
@@ -60,7 +62,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
   const onSrpPaste = (rawSrp: string) => {
     const parsedSrp = parseSecretRecoveryPhrase(rawSrp);
     const splittedSrp = parsedSrp.split(' ');
-    const newDraftSrp = splittedSrp.map((word: string) => ({
+    const newDraftSrp: DraftSrp[] = splittedSrp.map((word: string) => ({
       word,
       id: uuidv4(),
       active: false,
@@ -95,6 +97,14 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
         (word) => word.id === currentWordId,
       );
       const isLastWord = currentWordIndex === draftSrp.length - 1;
+
+      if (
+        (SRP_LENGTHS.includes(draftSrp.length) &&
+          isValidMnemonic(draftSrp.map((word) => word.word).join(' '))) ||
+        draftSrp.length === MAX_SRP_LENGTH
+      ) {
+        return;
+      }
 
       // if last word, add new word
       if (isLastWord && draftSrp.length < MAX_SRP_LENGTH) {
@@ -182,9 +192,9 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
     }
 
     const wordsNotInWordList = draftSrp
-      .map((word) => word.word)
-      .filter((word) => word !== '' && !wordlist.includes(word));
-    setMissSpelledWords(wordsNotInWordList);
+      .filter((word) => word.word !== '' && !wordlist.includes(word.word))
+      .map((word) => word.word);
+    setMisSpelledWords(wordsNotInWordList);
 
     // if srp length is valid and no empty word trigger onChange
     if (
@@ -226,12 +236,12 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
                   }}
                   testId={`import-srp__srp-word-${index}`}
                   key={word.id}
-                  error={missSpelledWords.includes(word.word)}
+                  error={misSpelledWords.includes(word.word)}
                   value={word.word}
                   type={
                     word.active ||
                     showAll ||
-                    missSpelledWords.includes(word.word)
+                    misSpelledWords.includes(word.word)
                       ? TextFieldType.Text
                       : TextFieldType.Password
                   }
@@ -281,6 +291,10 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
               rows={7}
               resize={TextareaResize.None}
               value={firstWord}
+              paddingTop={0}
+              paddingBottom={0}
+              paddingLeft={0}
+              paddingRight={0}
               onChange={(e) => setFirstWord(e.target.value)}
               onKeyDown={handleOnKeyDown}
               onPaste={handleOnPaste}
@@ -327,7 +341,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
           )}
         </Box>
       </Box>
-      {missSpelledWords.length > 0 && (
+      {misSpelledWords.length > 0 && (
         <Box marginTop={2}>
           <Text color={TextColor.errorDefault} variant={TextVariant.bodySm}>
             {t('onboardingSrpImportError')}

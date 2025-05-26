@@ -14,7 +14,7 @@ import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce, throttle, memoize, wrap, pick, uniq } from 'lodash';
+import { debounce, pick, uniq } from 'lodash';
 import {
   KeyringController,
   KeyringTypes,
@@ -129,8 +129,6 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-
-import { isSnapId } from '@metamask/snaps-utils';
 
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
@@ -424,7 +422,8 @@ import {
   onRpcEndpointDegraded,
 } from './lib/network-controller/messenger-action-handlers';
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
-import OAuthController from './controllers/oauth/oauth-controller';
+import { isRelaySupported } from './lib/transaction/transaction-relay';
+import OAuthService from './services/oauth/oauth-service';
 import { SeedlessOnboardingControllerInit } from './controller-init/seedless-onboarding/seedless-onboarding-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -581,9 +580,12 @@ export default class MetamaskController extends EventEmitter {
       name: 'NetworkController',
     });
 
-    const additionalDefaultNetworks = [ChainId['megaeth-testnet']];
-
     let initialNetworkControllerState = initState.NetworkController;
+    const additionalDefaultNetworks = [
+      ChainId['megaeth-testnet'],
+      ChainId['monad-testnet'],
+    ];
+
     if (!initialNetworkControllerState) {
       initialNetworkControllerState = getDefaultNetworkControllerState(
         additionalDefaultNetworks,
@@ -1078,14 +1080,7 @@ export default class MetamaskController extends EventEmitter {
       state: initState.OnboardingController,
     });
 
-    const oauthControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'OAuthController',
-      allowedActions: [],
-      allowedEvents: [],
-    });
-    this.oauthController = new OAuthController({
-      messenger: oauthControllerMessenger,
-      state: initState.OAuthController,
+    this.oauthService = new OAuthService({
       env: {
         web3AuthNetwork: process.env.WEB3AUTH_NETWORK,
         authServerUrl: process.env.AUTH_SERVER_URL,
@@ -1094,6 +1089,7 @@ export default class MetamaskController extends EventEmitter {
         authConnectionId: process.env.AUTH_CONNECTION_ID,
         groupedAuthConnectionId: process.env.GROUPED_AUTH_CONNECTION_ID,
       },
+      webAuthenticator: window.chrome.identity,
     });
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
@@ -1380,14 +1376,19 @@ export default class MetamaskController extends EventEmitter {
       `${this.onboardingController.name}:stateChange`,
       previousValueComparator(async (prevState, currState) => {
         const { completedOnboarding: prevCompletedOnboarding } = prevState;
-        const { completedOnboarding: currCompletedOnboarding } = currState;
+        const {
+          completedOnboarding: currCompletedOnboarding,
+          firstTimeFlowType,
+        } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
           const { address } = this.accountsController.getSelectedAccount();
 
-          ///: BEGIN:ONLY_INCLUDE_IF(solana)
-          await this._addSolanaAccount();
-          ///: END:ONLY_INCLUDE_IF
-          await this._addAccountsWithBalance();
+          if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+            // importing multiple SRPs on social login rehydration
+            await this._importAccountsWithBalances();
+          } else {
+            await this._addAccountsWithBalance();
+          }
 
           this.postOnboardingInitialization();
           this.triggerNetworkrequests();
@@ -1734,6 +1735,7 @@ export default class MetamaskController extends EventEmitter {
           },
         });
       },
+      traceFn: (...args) => trace(...args),
       config: {
         customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       },
@@ -1773,6 +1775,7 @@ export default class MetamaskController extends EventEmitter {
       config: {
         customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       },
+      traceFn: (...args) => trace(...args),
     });
 
     const smartTransactionsControllerMessenger =
@@ -2200,10 +2203,6 @@ export default class MetamaskController extends EventEmitter {
           addTransactionBatch: this.txController.addTransactionBatch.bind(
             this.txController,
           ),
-          getDisabledUpgradeAccountsByChain:
-            this.preferencesController.getDisabledUpgradeAccountsByChain.bind(
-              this.preferencesController,
-            ),
           getDismissSmartAccountSuggestionEnabled: () =>
             this.preferencesController.state.preferences
               .dismissSmartAccountSuggestionEnabled,
@@ -2223,18 +2222,18 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
       ),
       getCallsStatus: getCallsStatus.bind(null, this.controllerMessenger),
-      getCapabilities: getCapabilities.bind(null, {
-        getDisabledUpgradeAccountsByChain:
-          this.preferencesController.getDisabledUpgradeAccountsByChain.bind(
-            this.preferencesController,
+      getCapabilities: getCapabilities.bind(
+        null,
+        {
+          getDismissSmartAccountSuggestionEnabled: () =>
+            this.preferencesController.state.preferences
+              .dismissSmartAccountSuggestionEnabled,
+          isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
+            this.txController,
           ),
-        getDismissSmartAccountSuggestionEnabled: () =>
-          this.preferencesController.state.preferences
-            .dismissSmartAccountSuggestionEnabled,
-        isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
-          this.txController,
-        ),
-      }),
+        },
+        this.controllerMessenger,
+      ),
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
@@ -2271,7 +2270,6 @@ export default class MetamaskController extends EventEmitter {
       NetworkController: this.networkController,
       AlertController: this.alertController,
       OnboardingController: this.onboardingController,
-      OAuthController: this.oauthController,
       SeedlessOnboardingController: this.seedlessOnboardingController,
       PermissionController: this.permissionController,
       PermissionLogController: this.permissionLogController,
@@ -2332,7 +2330,6 @@ export default class MetamaskController extends EventEmitter {
         CurrencyController: this.currencyRateController,
         AlertController: this.alertController,
         OnboardingController: this.onboardingController,
-        OAuthController: this.oauthController,
         SeedlessOnboardingController: this.seedlessOnboardingController,
         PermissionController: this.permissionController,
         PermissionLogController: this.permissionLogController,
@@ -2546,38 +2543,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Tracks snaps export usage.
-   * Note: This function is throttled to 1 call per 60 seconds per snap id + handler combination.
-   *
-   * @param {string} snapId - The ID of the snap the handler is being triggered on.
-   * @param {string} handler - The handler to trigger on the snap for the request.
-   * @param {boolean} success - Whether the invocation was successful or not.
-   * @param {string} origin - The origin of the request.
-   */
-  _trackSnapExportUsage = wrap(
-    memoize(
-      () =>
-        throttle(
-          (snapId, handler, success, origin) =>
-            this.metaMetricsController.trackEvent({
-              event: MetaMetricsEventName.SnapExportUsed,
-              category: MetaMetricsEventCategory.Snaps,
-              properties: {
-                snap_id: snapId,
-                export: handler,
-                snap_category: this._getSnapMetadata(snapId)?.category,
-                success,
-                origin,
-              },
-            }),
-          SECOND * 60,
-        ),
-      (snapId, handler, _, origin) => `${snapId}${handler}${origin}`,
-    ),
-    (getFunc, ...args) => getFunc(...args)(...args),
-  );
-
-  /**
    * Passes a JSON-RPC request object to the SnapController for execution.
    *
    * @param {object} args - A bag of options.
@@ -2588,17 +2553,10 @@ export default class MetamaskController extends EventEmitter {
    * @returns The result of the JSON-RPC request.
    */
   async handleSnapRequest(args) {
-    try {
-      const response = await this.controllerMessenger.call(
-        'SnapController:handleRequest',
-        args,
-      );
-      this._trackSnapExportUsage(args.snapId, args.handler, true, args.origin);
-      return response;
-    } catch (error) {
-      this._trackSnapExportUsage(args.snapId, args.handler, false, args.origin);
-      throw error;
-    }
+    return await this.controllerMessenger.call(
+      'SnapController:handleRequest',
+      args,
+    );
   }
 
   /**
@@ -2631,6 +2589,7 @@ export default class MetamaskController extends EventEmitter {
 
     return {
       privacyMode: preferences.privacyMode,
+      showTestnets: preferences.showTestNetworks,
       securityAlertsEnabled,
       useCurrencyRateCheck,
       useTransactionSimulations,
@@ -2662,6 +2621,7 @@ export default class MetamaskController extends EventEmitter {
               useMultiAccountBalanceChecker,
               openSeaEnabled,
               useNftDetection,
+              showTestnets,
             } = this.getPreferences();
             return {
               locale,
@@ -2674,6 +2634,7 @@ export default class MetamaskController extends EventEmitter {
               batchCheckBalances: useMultiAccountBalanceChecker,
               displayNftMedia: openSeaEnabled,
               useNftDetection,
+              showTestnets,
             };
           },
           clearSnapState: this.controllerMessenger.call.bind(
@@ -3149,7 +3110,9 @@ export default class MetamaskController extends EventEmitter {
         if (this.preferencesController.state.useExternalServices === true) {
           this.txController.stopIncomingTransactionPolling();
 
-          await this.txController.updateIncomingTransactions();
+          await this.txController.updateIncomingTransactions({
+            tags: ['network-change'],
+          });
 
           this.txController.startIncomingTransactionPolling();
         }
@@ -3643,16 +3606,6 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-      setBitcoinSupportEnabled:
-        preferencesController.setBitcoinSupportEnabled.bind(
-          preferencesController,
-        ),
-      setBitcoinTestnetSupportEnabled:
-        preferencesController.setBitcoinTestnetSupportEnabled.bind(
-          preferencesController,
-        ),
-      ///: END:ONLY_INCLUDE_IF
       setUseExternalNameSources:
         preferencesController.setUseExternalNameSources.bind(
           preferencesController,
@@ -3821,9 +3774,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
-      disableAccountUpgrade: preferencesController.disableAccountUpgrade.bind(
-        preferencesController,
-      ),
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       setSnapsAddSnapAccountModalDismissed:
         preferencesController.setSnapsAddSnapAccountModalDismissed.bind(
@@ -3968,6 +3918,10 @@ export default class MetamaskController extends EventEmitter {
         ),
       updateSlides: appStateController.updateSlides.bind(appStateController),
       removeSlide: appStateController.removeSlide.bind(appStateController),
+      setSplashPageAcknowledgedForAccount:
+        appStateController.setSplashPageAcknowledgedForAccount.bind(
+          appStateController,
+        ),
 
       // EnsController
       tryReverseResolveAddress:
@@ -4564,8 +4518,9 @@ export default class MetamaskController extends EventEmitter {
         this.metaMetricsDataDeletionController.updateDataDeletionTaskStatus.bind(
           this.metaMetricsDataDeletionController,
         ),
-      // Trace
+      // Other
       endTrace,
+      isRelaySupported,
     };
   }
 
@@ -4866,7 +4821,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async startOAuthLogin(provider) {
     try {
-      const oAuthLoginResult = await this.oauthController.startOAuthLogin(
+      const oAuthLoginResult = await this.oauthService.startOAuthLogin(
         provider,
       );
 
@@ -4983,9 +4938,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<void>}
    */
   async changePassword(newPassword, oldPassword) {
-    const { firstTimeFlowType } = this.onboardingController.state;
+    const isSocialLoginFlow = this.onboardingController.isSocialLoginFlowType();
 
-    if (firstTimeFlowType === FirstTimeFlowType.social) {
+    if (isSocialLoginFlow) {
       // change password for the social login flow
       await this.seedlessOnboardingController.changePassword(
         newPassword,
@@ -5049,7 +5004,7 @@ export default class MetamaskController extends EventEmitter {
     try {
       await this.keyringController.createNewVaultAndKeychain(password);
 
-      return this.keyringController.state.keyringsMetadata;
+      return this.keyringController.state.keyrings;
     } finally {
       releaseLock();
     }
@@ -5059,15 +5014,25 @@ export default class MetamaskController extends EventEmitter {
    * Imports a new mnemonic to the vault.
    *
    * @param {string} mnemonic - The mnemonic to import.
-   * @param {boolean} shouldCreateSocialBackup - whether to create a backup for the seedless onboarding flow
-   * @param {boolean} shouldSelectAccount - whether to select the new account in the wallet
+   * @param {object} options - The options for the import.
+   * @param {boolean} options.shouldCreateSocialBackup - whether to create a backup for the seedless onboarding flow
+   * @param {boolean} options.shouldSelectAccount - whether to select the new account in the wallet
+   * @param {boolean} options.shouldImportSolanaAccount - whether to import a Solana account
    * @returns {Promise<string>} new account address
    */
   async importMnemonicToVault(
     mnemonic,
-    shouldCreateSocialBackup = false,
-    shouldSelectAccount = true,
+    options = {
+      shouldCreateSocialBackup: true,
+      shouldSelectAccount: true,
+      shouldImportSolanaAccount: true,
+    },
   ) {
+    const {
+      shouldCreateSocialBackup,
+      shouldSelectAccount,
+      shouldImportSolanaAccount,
+    } = options;
     const releaseLock = await this.createVaultMutex.acquire();
     try {
       // TODO: `getKeyringsByType` is deprecated, this logic should probably be moved to the `KeyringController`.
@@ -5096,8 +5061,7 @@ export default class MetamaskController extends EventEmitter {
         },
       );
 
-      const { firstTimeFlowType } = this.onboardingController.state;
-      if (firstTimeFlowType === FirstTimeFlowType.social) {
+      if (this.onboardingController.isSocialLoginFlowType()) {
         // if social backup is requested, add the seed phrase backup
         await this.addNewSeedPhraseBackup(
           mnemonic,
@@ -5116,10 +5080,7 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.setSelectedAccount(account.id);
       }
 
-      ///: BEGIN:ONLY_INCLUDE_IF(solana)
-      await this._addSolanaAccount(id);
-      ///: END:ONLY_INCLUDE_IF
-      await this._addAccountsWithBalance(id);
+      await this._addAccountsWithBalance(id, shouldImportSolanaAccount);
 
       return newAccountAddress;
     } finally {
@@ -5136,9 +5097,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<void>}
    */
   async restoreSeedPhrasesToVault(seedPhrases) {
-    const { firstTimeFlowType } = this.onboardingController.state;
+    const isSocialLoginFlow = this.onboardingController.isSocialLoginFlowType();
 
-    if (firstTimeFlowType !== FirstTimeFlowType.social) {
+    if (!isSocialLoginFlow) {
       // import the restored seed phrase (mnemonics) to the vault
       // this is only available for social login flow
       return; // or throw error here?
@@ -5150,16 +5111,22 @@ export default class MetamaskController extends EventEmitter {
     // During the restore seed phrases, we just do the import, but don't change the selected account.
     // Just let the user select the account manually after the restore.
     const shouldSetSelectedAccount = false;
+
+    // This method is called during the social login rehydration.
+    // At that point, we won't import the Solana account yet, since the wallet onboarding is not completed yet.
+    // Solana accounts will be imported after the wallet onboarding is completed.
+    const shouldImportSolanaAccount = false;
+
     for (const seedPhrase of seedPhrases) {
       // convert the seed phrase to a mnemonic (string)
       const mnemonicToRestore = Buffer.from(seedPhrase).toString('utf8');
 
       // import the new mnemonic to the vault
-      await this.importMnemonicToVault(
-        mnemonicToRestore,
+      await this.importMnemonicToVault(mnemonicToRestore, {
         shouldCreateSocialBackup,
-        shouldSetSelectedAccount,
-      );
+        shouldSelectAccount: shouldSetSelectedAccount,
+        shouldImportSolanaAccount,
+      });
     }
   }
 
@@ -5239,15 +5206,7 @@ export default class MetamaskController extends EventEmitter {
         seedPhraseAsUint8Array,
       );
 
-      if (firstTimeFlowType === FirstTimeFlowType.social) {
-        // update the Onboarding state when user restore the existing wallet with social login
-        this.onboardingController.setRestoreWithSocialLogin(true);
-      }
-
       if (completedOnboarding) {
-        ///: BEGIN:ONLY_INCLUDE_IF(solana)
-        await this._addSolanaAccount();
-        ///: END:ONLY_INCLUDE_IF
         await this._addAccountsWithBalance();
 
         // This must be set as soon as possible to communicate to the
@@ -5260,15 +5219,15 @@ export default class MetamaskController extends EventEmitter {
         );
       }
 
-      if (firstTimeFlowType === FirstTimeFlowType.social) {
+      if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
         // if the social login flow is completed, update the SocialBackupMetadataState with the restored seed phrase
         this.seedlessOnboardingController.updateBackupMetadataState({
-          keyringId: this.keyringController.state.keyringsMetadata[0].id,
+          keyringId: this.keyringController.state.keyrings[0].metadata.id,
           seedPhrase: seedPhraseAsUint8Array,
         });
       }
 
-      return this.keyringController.state.keyringsMetadata;
+      return this.keyringController.state.keyrings;
     } finally {
       releaseLock();
     }
@@ -5288,7 +5247,14 @@ export default class MetamaskController extends EventEmitter {
   }
   ///: END:ONLY_INCLUDE_IF
 
-  async _addAccountsWithBalance(keyringId) {
+  /**
+   * Adds accounts with balances to the keyring.
+   *
+   * @param {string} keyringId - The Optional ID of the keyring to add the accounts to.
+   * @param {boolean} shouldImportSolanaAccount - Whether to import Solana accounts.
+   * For the context, we do not need to import the Solana account if the onboarding flow has not completed yet during the social login import flow.
+   */
+  async _addAccountsWithBalance(keyringId, shouldImportSolanaAccount = true) {
     try {
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
@@ -5358,8 +5324,15 @@ export default class MetamaskController extends EventEmitter {
         );
       }
       ///: BEGIN:ONLY_INCLUDE_IF(solana)
-      const client = await this._getSolanaWalletSnapClient();
-      await client.discoverAccounts(entropySource);
+      if (shouldImportSolanaAccount) {
+        const client = await this._getSolanaWalletSnapClient();
+        const solanaAccounts = await client.discoverAccounts(entropySource);
+
+        // If none accounts got discovered, we still create the first (default) one.
+        if (solanaAccounts.length === 0) {
+          await this._addSolanaAccount(entropySource);
+        }
+      }
       ///: END:ONLY_INCLUDE_IF
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
@@ -5367,6 +5340,31 @@ export default class MetamaskController extends EventEmitter {
       await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
         true,
       );
+    }
+  }
+
+  /**
+   * Imports accounts with balances to the keyring.
+   */
+  async _importAccountsWithBalances() {
+    const shouldImportSolanaAccount = true;
+    const { keyrings } = this.keyringController.state;
+
+    // walk through all the keyrings and import the solana accounts for the HD keyrings
+    for (const { metadata } of keyrings) {
+      // check if the keyring is an HD keyring
+      const isHdKeyring = await this.keyringController.withKeyring(
+        { id: metadata.id },
+        async ({ keyring }) => {
+          return keyring.type === KeyringTypes.hd;
+        },
+      );
+      if (isHdKeyring) {
+        await this._addAccountsWithBalance(
+          metadata.id,
+          shouldImportSolanaAccount,
+        );
+      }
     }
   }
 
@@ -5473,8 +5471,8 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} password - The user's password
    */
   async submitPassword(password) {
-    const { completedOnboarding, firstTimeFlowType } =
-      this.onboardingController.state;
+    const { completedOnboarding } = this.onboardingController.state;
+    const isSocialLoginFlow = this.onboardingController.isSocialLoginFlowType();
 
     // Before attempting to unlock the keyrings, we need the offscreen to have loaded.
     await this.offscreenPromise;
@@ -5498,7 +5496,7 @@ export default class MetamaskController extends EventEmitter {
     // Optimistically called to not block MetaMask login due to
     // Ledger Keyring GitHub downtime
     if (completedOnboarding) {
-      if (firstTimeFlowType === FirstTimeFlowType.social) {
+      if (isSocialLoginFlow) {
         // unlock the seedless onboarding vault
         this.seedlessOnboardingController.submitPassword(password);
       }
@@ -5886,6 +5884,10 @@ export default class MetamaskController extends EventEmitter {
         }
 
         const [newAddress] = await keyring.addAccounts(1);
+        if (oldAccounts.includes(newAddress)) {
+          await keyring.removeAccount(newAddress);
+          throw new Error(`Cannot add duplicate ${newAddress} account`);
+        }
         return newAddress;
       },
     );
@@ -6239,12 +6241,6 @@ export default class MetamaskController extends EventEmitter {
     autoApprove,
     metadata,
   }) {
-    if (isSnapId(origin)) {
-      throw new Error(
-        `Cannot request permittedChains permission for Snaps with origin "${origin}"`,
-      );
-    }
-
     const caveatValueWithChains = setPermittedEthChainIds(
       {
         requiredScopes: {},
@@ -6296,11 +6292,11 @@ export default class MetamaskController extends EventEmitter {
    * Requests user approval for the CAIP-25 permission for the specified origin
    * and returns a granted permissions object.
    *
-   * @param {string} origin - The origin to request approval for.
+   * @param {string} _origin - The origin to request approval for.
    * @param requestedPermissions - The legacy permissions to request approval for.
    * @returns the approved permissions object.
    */
-  getCaip25PermissionFromLegacyPermissions(origin, requestedPermissions = {}) {
+  getCaip25PermissionFromLegacyPermissions(_origin, requestedPermissions = {}) {
     const permissions = pick(requestedPermissions, [
       RestrictedMethods.eth_accounts,
       PermissionNames.permittedChains,
@@ -6312,10 +6308,6 @@ export default class MetamaskController extends EventEmitter {
 
     if (!permissions[PermissionNames.permittedChains]) {
       permissions[PermissionNames.permittedChains] = {};
-    }
-
-    if (isSnapId(origin)) {
-      delete permissions[PermissionNames.permittedChains];
     }
 
     const requestedAccounts =
@@ -6341,7 +6333,7 @@ export default class MetamaskController extends EventEmitter {
 
     const caveatValueWithChains = setPermittedEthChainIds(
       newCaveatValue,
-      isSnapId(origin) ? [] : requestedChains,
+      requestedChains,
     );
 
     const caveatValueWithAccountsAndChains = setEthAccounts(
@@ -7433,6 +7425,9 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:get',
         ),
+        trackEvent: this.metaMetricsController.trackEvent.bind(
+          this.metaMetricsController,
+        ),
         getAllSnaps: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:getAll',
@@ -7462,8 +7457,8 @@ export default class MetamaskController extends EventEmitter {
             .map((keyring, index) => {
               if (keyring.type === KeyringTypes.hd) {
                 return {
-                  id: state.keyringsMetadata[index].id,
-                  name: state.keyringsMetadata[index].name,
+                  id: keyring.metadata.id,
+                  name: keyring.metadata.name,
                   type: 'mnemonic',
                   primary: index === 0,
                 };
@@ -8563,7 +8558,9 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
-    await this.txController.updateIncomingTransactions();
+    await this.txController.updateIncomingTransactions({
+      tags: ['account-change'],
+    });
   }
 
   _notifyAccountsChange(origin, newAccounts) {

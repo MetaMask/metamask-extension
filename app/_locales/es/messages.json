@@ -68,13 +68,6 @@
     "message": "Leí y estoy de acuerdo con $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Acceda a su monedero con la frase secreta de recuperación"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask no puede recuperar su contraseña. Usaremos su frase secreta de recuperación para validar su propiedad, restaurar su monedero y configurar una nueva contraseña. Primero, ingrese la frase secreta de recuperación que recibió cuando creó su monedero. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Accediendo a la cámara…"
   },
@@ -169,9 +162,6 @@
   },
   "addBitcoinAccountLabel": {
     "message": "Cuenta de Bitcoin (Beta)"
-  },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Cuenta de Bitcoin (Testnet)"
   },
   "addBlockExplorer": {
     "message": "Agregar un explorador de bloque"
@@ -336,10 +326,6 @@
   },
   "advancedPriorityFeeToolTip": {
     "message": "La tarifa de prioridad (también llamada “propina del minero”) va directamente a los mineros para incentivarlos a priorizar su transacción."
-  },
-  "agreeTermsOfUse": {
-    "message": "Acepto los $1 de MetaMask",
-    "description": "$1 is the `terms` link"
   },
   "airDropPatternDescription": {
     "message": "El historial en cadena del token revela instancias anteriores de actividades sospechosas de airdrop."
@@ -661,22 +647,6 @@
   "billionAbbreviation": {
     "message": "mm",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Activar esta función le dará la opción de añadir una cuenta de Bitcoin a su extensión MetaMask derivada de su frase secreta de recuperación existente. Esta es una característica Beta experimental, por lo que debe utilizarla bajo su propio riesgo. Para darnos su opinión sobre esta nueva experiencia Bitcoin, llene este $1.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Activar \"Añadir una nueva cuenta Bitcoin (Beta)\""
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "La activación de esta función le dará la opción de añadir una cuenta de Bitcoin para la red de prueba."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Activar \"Añadir una nueva cuenta Bitcoin (Testnet)\""
   },
   "blockExplorerAccountAction": {
     "message": "Cuenta",
@@ -1133,9 +1103,6 @@
   "confusingEnsDomain": {
     "message": "Se detectó un carácter que puede confundirse con otro similar en el nombre de ENS. Verifique el nombre de ENS para evitar una posible estafa."
   },
-  "congratulations": {
-    "message": "¡Felicidades!"
-  },
   "connect": {
     "message": "Conectar"
   },
@@ -1321,9 +1288,6 @@
   "createNewAccountHeader": {
     "message": "Crear una nueva cuenta"
   },
-  "createNewWallet": {
-    "message": "Crear un monedero nuevo"
-  },
   "createPassword": {
     "message": "Crear contraseña"
   },
@@ -1338,10 +1302,6 @@
   },
   "creatorAddress": {
     "message": "Dirección del creador"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Esto refleja el valor de todos los tokens que posee en todas las redes. Si prefiere ver este valor en ETH u otras monedas, vaya a $1.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "Intercambie entre redes con MetaMask Portfolio"
@@ -2183,9 +2143,6 @@
   "genericExplorerView": {
     "message": "Ver cuenta en $1"
   },
-  "goBack": {
-    "message": "Volver"
-  },
   "goToSite": {
     "message": "Ir al sitio"
   },
@@ -2241,9 +2198,6 @@
   },
   "hideAdvancedDetails": {
     "message": "Ocultar detalles avanzados"
-  },
-  "hideSeedPhrase": {
-    "message": "Ocultar frase inicial"
   },
   "hideSentitiveInfo": {
     "message": "Ocultar información confidencial"
@@ -2341,10 +2295,6 @@
   "id": {
     "message": "ID"
   },
-  "ifYouGetLockedOut": {
-    "message": "Si se le bloquea el acceso a la aplicación o adquiere un nuevo dispositivo, perderá sus fondos. Asegúrese de hacer una copia de seguridad de su frase secreta de recuperación en $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "Ignorar todo"
   },
@@ -2378,9 +2328,6 @@
   },
   "importAccountMsg": {
     "message": "Las cuentas importadas no se asociarán con su frase secreta de recuperación de MetaMask. Obtenga más información sobre las cuentas importadas"
-  },
-  "importMyWallet": {
-    "message": "Importar mi monedero"
   },
   "importNFT": {
     "message": "Agregar NFT"
@@ -2585,10 +2532,6 @@
   "jsonFile": {
     "message": "Archivo JSON",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Guarde un recordatorio de su frase secreta de recuperación en algún lugar seguro. Si la pierde, nadie podrá ayudarlo a recuperarla. Y lo que es peor, no podrá volver a acceder a su monedero. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Nombre de la cuenta"
@@ -3586,9 +3529,6 @@
   "onboardingMetametricsDescription": {
     "message": "Nos gustaría recopilar datos básicos de uso y diagnóstico para mejorar MetaMask. Tenga presente que nunca venderemos los datos que nos proporcione aquí."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Al recopilar métricas, siempre será..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Le informaremos si decidimos usar estos datos para otros fines. Puede consultar $1 para obtener más información. Recuerde que puede acceder a la configuración y excluirse en cualquier momento.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3617,29 +3557,11 @@
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opcionales:"
   },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Descubra cómo protegemos su privacidad al recopilar datos de uso para su perfil."
-  },
   "onboardingMetametricsTitle": {
     "message": "Ayúdenos a mejorar MetaMask"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Utilizaremos estos datos para saber cómo interactúa con nuestras comunicaciones de marketing. Es posible que compartamos noticias relevantes (como características del producto)."
-  },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Acceso completo"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Estas extensiones pueden ver y cambiar la información"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "en este sitio."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Extensiones"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Haga clic en el icono de la extensión del navegador"
   },
   "onboardingPinExtensionDescription": {
     "message": "Ancle MetaMask en su navegador para que sea accesible y las confirmaciones de las transacciones se vean fácilmente."
@@ -3648,16 +3570,8 @@
     "message": "Para abrir MetaMask haga clic en la extensión y acceda a su monedero con 1 clic."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Haga clic en el icono de la extensión del navegador para tener acceso instantáneo"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "Ancle MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Haga clic en el icono de la extensión del navegador para tener acceso instantáneo",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "¡Su instalación de MetaMask ha finalizado!"
@@ -3719,9 +3633,6 @@
   },
   "passwordNotLongEnough": {
     "message": "La contraseña no es suficientemente larga"
-  },
-  "passwordSetupDetails": {
-    "message": "Esta contraseña desbloqueará su monedero MetaMask solo en este dispositivo. MetaMask no puede recuperar esta contraseña."
   },
   "passwordStrength": {
     "message": "Solidez de la contraseña: $1",
@@ -4300,12 +4211,6 @@
   "rejected": {
     "message": "Rechazado"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Recuerde que si pierde su frase secreta de recuperación, perderá el acceso a su monedero. $1 para mantener seguro este conjunto de palabras y poder acceder siempre a sus fondos."
-  },
-  "reminderSet": {
-    "message": "¡Recordatorio creado!"
-  },
   "remove": {
     "message": "Quitar"
   },
@@ -4420,9 +4325,6 @@
   "reusedTokenNameWarning": {
     "message": "Un token reutiliza un símbolo de otro token que se le muestra. Esto puede ser confuso o engañoso."
   },
-  "revealSecretRecoveryPhrase": {
-    "message": "Revelar frase secreta de recuperación"
-  },
   "revealSeedWords": {
     "message": "Revelar frase secreta de recuperación"
   },
@@ -4459,9 +4361,6 @@
   },
   "revealSensitiveContent": {
     "message": "Revelar contenido sensible"
-  },
-  "revealTheSeedPhrase": {
-    "message": "Revelar frase semilla"
   },
   "review": {
     "message": "Revisar"
@@ -4556,9 +4455,6 @@
   "securityMessageLinkForNetworks": {
     "message": "estafas en la red y riesgos de seguridad"
   },
-  "securityPrivacyPath": {
-    "message": "Configuración > Seguridad y privacidad."
-  },
   "securityProviderPoweredBy": {
     "message": "Impulsado por $1",
     "description": "The security provider that is providing data"
@@ -4570,53 +4466,11 @@
   "seeDetails": {
     "message": "Ver detalles"
   },
-  "seedPhraseConfirm": {
-    "message": "Confirmar frase secreta de recuperación"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Confirmar frase secreta de recuperación"
-  },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Recordarme más tarde (no recomendado)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Proteger mi monedero (recomendado)"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Escríbala y guárdela en varios lugares secretos."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Guárdela en una caja fuerte."
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Su frase secreta de recuperación es una frase de 12 palabras que es la “clave maestra” de su monedero y sus fondos"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Si alguien le pide su frase de recuperación, es posible que tenga intenciones de estafarlo."
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Nunca comparta su frase secreta de recuperación, ni siquiera con MetaMask."
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "¿Qué es una frase secreta de recuperación?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "¿Debería compartir mi frase secreta de recuperación?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "¿Cómo guardo mi frase secreta de recuperación?"
-  },
   "seedPhraseIntroTitle": {
     "message": "Proteger su cartera"
   },
   "seedPhraseReq": {
     "message": "Las frases secretas de recuperación contienen 12, 15, 18, 21 o 24 palabras"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Escriba esta frase secreta de recuperación de 12 palabras y guárdela en un lugar de confianza al que solo usted pueda acceder."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Anote la frase secreta de recuperación"
   },
   "select": {
     "message": "Seleccionar"
@@ -4731,9 +4585,6 @@
   },
   "settings": {
     "message": "Configuración"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "La configuración está optimizada para facilitar su uso y garantizar la seguridad. Cámbiela en cualquier momento."
   },
   "settingsSearchMatchingNotFound": {
     "message": "No se encontraron resultados coincidentes."
@@ -4888,9 +4739,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "Omitir"
   },
   "skipAccountSecurity": {
     "message": "¿Omitir la seguridad de la cuenta?"
@@ -5947,9 +5795,6 @@
   "time": {
     "message": "Tiempo"
   },
-  "tips": {
-    "message": "Sugerencias"
-  },
   "tipsForUsingAWallet": {
     "message": "Consejos para utilizar un monedero"
   },
@@ -6227,9 +6072,6 @@
   "unlock": {
     "message": "Desbloquear"
   },
-  "unlockMessage": {
-    "message": "La Web descentralizada espera"
-  },
   "unpin": {
     "message": "Desanclar"
   },
@@ -6390,10 +6232,6 @@
   "walletConnectionGuide": {
     "message": "nuestra guía de conexión del monedero físico"
   },
-  "walletProtectedAndReadyToUse": {
-    "message": "Su monedero está protegido y listo para usar. Puede encontrar su frase secreta de recuperación en $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "wantToAddThisNetwork": {
     "message": "¿Desea añadir esta red?"
   },
@@ -6439,23 +6277,8 @@
   "welcomeBack": {
     "message": "¡Bienvenido de nuevo!"
   },
-  "welcomeExploreDescription": {
-    "message": "Almacenar, enviar y gastar criptomonedas y activos."
-  },
-  "welcomeExploreTitle": {
-    "message": "Explorar aplicaciones descentralizadas"
-  },
-  "welcomeLoginDescription": {
-    "message": "Use su MetaMask para acceder a aplicaciones descentralizadas, sin necesidad de registrarse."
-  },
-  "welcomeLoginTitle": {
-    "message": "Diga hola a su monedero"
-  },
   "welcomeToMetaMask": {
     "message": "Comencemos"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Con la confianza de millones de usuarios, MetaMask es un monedero seguro que permite que todos puedan acceder al mundo de Web3."
   },
   "whatsThis": {
     "message": "¿Qué es esto?"
@@ -6492,9 +6315,6 @@
   },
   "yourBalance": {
     "message": "Su saldo"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Su saldo es un acumulado"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Sus NFT podrían estar en riesgo"

@@ -94,7 +94,7 @@ export default function RecoveryPhraseChips({
   );
 
   useEffect(() => {
-    setInputValue && setInputValue(quizAnswers);
+    setInputValue?.(quizAnswers);
   }, [quizAnswers, setInputValue]);
 
   useEffect(() => {
@@ -202,7 +202,7 @@ export default function RecoveryPhraseChips({
               gap={2}
               className="recovery-phrase__secret-blocker-text"
               onClick={() => {
-                revealPhrase && revealPhrase();
+                revealPhrase?.();
               }}
               data-testid="recovery-phrase-reveal"
             >

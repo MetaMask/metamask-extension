@@ -68,13 +68,6 @@
     "message": "मैंने $1 पढ़ लिया है और मैं सहमत हूं",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "अपने सीक्रेट रिकवरी फ्रेज़ का इस्तेमाल कर अपने वॉलेट का एक्सेस पाएं"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask आपका पासवर्ड रिकवर नहीं कर सकता। हम आपकी ओनरशिप को वेलिडेट करने, आपके वॉलेट को रिस्टोर करने और एक नया पासवर्ड सेट करने के लिए आपके सीक्रेट रिकवरी फ्रेज़ का इस्तेमाल करेंगे। सबसे पहले, अपना वह सीक्रेट रिकवरी फ्रेज़ डालें जिसे आपको अपना वॉलेट बनाते समय दिया गया था। $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "आपके कैमरे को एक्सेस कर रहे हैं..."
   },
@@ -169,9 +162,6 @@
   },
   "addBitcoinAccountLabel": {
     "message": "Bitcoin अकाउंट (बीटा)"
-  },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Bitcoin अकाउंट (टैस्टनेट (testnet))"
   },
   "addBlockExplorer": {
     "message": "ब्लॉक एक्सप्लोरर जोड़ें"
@@ -336,10 +326,6 @@
   },
   "advancedPriorityFeeToolTip": {
     "message": "प्रायोरिटी फ़ीस (उर्फ \"माइनर टिप\") सीधे माइनरों के पास जाती है और उन्हें आपके ट्रांसेक्शन को प्राथमिकता देने के लिए प्रोत्साहित करती है।"
-  },
-  "agreeTermsOfUse": {
-    "message": "मैं MetaMask के $1 से सहमत हूं",
-    "description": "$1 is the `terms` link"
   },
   "airDropPatternDescription": {
     "message": "टोकन के ऑन-चेन इतिहास से संदिग्ध एयरड्रॉप गतिविधियों के पूर्व उदाहरणों का पता चलता है।"
@@ -661,22 +647,6 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "इस सुविधा को चालू करने से आपको अपने मौजूदा सीक्रेट रिकवरी फ्रेज़ से प्राप्त MetaMask एक्सटेंशन में एक Bitcoin अकाउंट जोड़ने का विकल्प मिलेगा। यह एक एक्सपेरिमेंटल बीटा सुविधा है, इसलिए आपको इसका उपयोग अपने जोखिम पर करना होगा। इस नए Bitcoin अनुभव पर हमें प्रतिक्रिया देने के लिए, कृपया यह $1 भरें।",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "\"एक नया Bitcoin अकाउंट जोड़ें (बीटा)\" को चालू करें"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "इस सुविधा को चालू करने से आपको परीक्षण नेटवर्क के लिए एक Bitcoin अकाउंट जोड़ने का विकल्प मिलेगा।"
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "\"एक नया Bitcoin अकाउंट जोड़ें (टैस्टनेट (testnet))\" को चालू करें"
   },
   "blockExplorerAccountAction": {
     "message": "अकाउंट",
@@ -1133,9 +1103,6 @@
   "confusingEnsDomain": {
     "message": "हमने ENS नाम में एक कंफ्यूज़ करने वाले करैक्टर का पता लगाया है। संभावित धोखाधड़ी से बचने के लिए ENS नाम की जाँच करें।"
   },
-  "congratulations": {
-    "message": "बधाइयां!"
-  },
   "connect": {
     "message": "कनेक्ट करें"
   },
@@ -1321,9 +1288,6 @@
   "createNewAccountHeader": {
     "message": "एक नया अकाउंट बनाएं"
   },
-  "createNewWallet": {
-    "message": "एक नया वॉलेट बनाएं"
-  },
   "createPassword": {
     "message": "पासवर्ड बनाएं"
   },
@@ -1338,10 +1302,6 @@
   },
   "creatorAddress": {
     "message": "निर्माता का एड्रेस"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "यह सभी नेटवर्क पर आपके स्वामित्व वाले सभी टोकन के मूल्य को दर्शाता है। यदि आप इस मूल्य को ETH या अन्य मुद्राओं में देखना पसंद करते हैं, तो $1 पर जाएं।",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "MetaMask पोर्टफोलियो के साथ पूरे नेटवर्क में कहीं भी स्वैप करें"
@@ -2183,9 +2143,6 @@
   "genericExplorerView": {
     "message": "$1 पर अकाउंट देखें"
   },
-  "goBack": {
-    "message": "वापस जाएं"
-  },
   "goToSite": {
     "message": "साइट पर जाएं"
   },
@@ -2241,9 +2198,6 @@
   },
   "hideAdvancedDetails": {
     "message": "एडवांस्ड विवरण छिपाएं"
-  },
-  "hideSeedPhrase": {
-    "message": "सीड फ्रेज़ छुपा दें"
   },
   "hideSentitiveInfo": {
     "message": "संवेदनशील जानकारी छिपाएं"
@@ -2341,10 +2295,6 @@
   "id": {
     "message": "ID"
   },
-  "ifYouGetLockedOut": {
-    "message": "यदि आप ऐप से बाहर हो जाते हैं या कोई नया डिवाइस प्राप्त करते हैं, तो आप अपना फंड खो देंगे। $1 में अपना सीक्रेट रिकवरी फ्रेज़ का बैकअप लेना सुनिश्चित करें ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "सभी को अनदेखा करें"
   },
@@ -2378,9 +2328,6 @@
   },
   "importAccountMsg": {
     "message": "इम्पोर्ट किए एकाउंट्स आपके MetaMask सीक्रेट रिकवरी फ्रेज़ से जुड़े नहीं होंगे। इम्पोर्ट किए एकाउंट्स के बारे में अधिक जानें"
-  },
-  "importMyWallet": {
-    "message": "मेरा वॉलेट इम्पोर्ट करें"
   },
   "importNFT": {
     "message": "NFT इंपोर्ट करें"
@@ -2585,10 +2532,6 @@
   "jsonFile": {
     "message": "JSON फाइल",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "अपने सीक्रेट रिकवरी फ्रेज़ का रिमाइंडर कहीं सुरक्षित रखें। यदि आप इसे खो देते हैं, तो इसे वापस पाने में कोई आपकी मदद नहीं कर सकता। इससे भी बुरी बात यह है कि आप कभी भी अपने वॉलेट तक पहुंच नहीं पाएंगे। $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "अकाउंट का नाम"
@@ -3586,9 +3529,6 @@
   "onboardingMetametricsDescription": {
     "message": "हम MetaMask को बेहतर बनाने के लिए बुनियादी यूसेज और डाएगोनोस्टिक्स डेटा कलेक्ट करना चाहेंगे। जान लें कि हम आपके द्वारा यहां उपलब्ध कराया गया डेटा कभी नहीं बेचते हैं।"
   },
-  "onboardingMetametricsDescription2": {
-    "message": "जब हम मेट्रिक्स इकट्ठा करते हैं, तो यह हमेशा... रहेगा"
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "यदि हम इस डेटा का उपयोग अन्य उद्देश्यों के लिए करने का निर्णय लेते हैं तो हम आपको बताएंगे। अधिक जानकारी के लिए आप हमारे $1 की समीक्षा कर सकते हैं। याद रखें, आप किसी भी समय सेटिंग्स में जाकर ऑप्ट आउट कर सकते हैं।",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3617,29 +3557,11 @@
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "वैकल्पिक:"
   },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "जानें कि आपके प्रोफ़ाइल के लिए यूसेज डेटा एकत्र करते समय हम आपकी गोपनीयता की सुरक्षा कैसे करते हैं।"
-  },
   "onboardingMetametricsTitle": {
     "message": "MetaMask को बेहतर बनाने में हमारी मदद करें"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "हम इस डेटा का उपयोग यह जानने के लिए करेंगे कि आप हमारे मार्केटिंग कम्यूनिकेशन्स के साथ कैसे इंटरैक्ट करते हैं। हम प्रासंगिक समाचार (जैसे प्रॉडक्ट फीचर्स) साझा कर सकते हैं।"
-  },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "पूरी एक्सेस"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "ये एक्सटेंशन जानकारी देख और बदल सकते हैं"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "इस साइट पर।"
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "एक्सटेंशन"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "ब्राउज़र एक्सटेंशन आइकन पर क्लिक करें"
   },
   "onboardingPinExtensionDescription": {
     "message": "अपने ब्राउज़र पर MetaMask को पिन करें ताकि यह सुलभ हो और ट्रांसेक्शन के कन्फर्मेशन को देखना आसान हो सके।"
@@ -3648,16 +3570,8 @@
     "message": "आप एक्सटेंशन पर क्लिक करके MetaMask खोल सकते हैं और 1 क्लिक से अपने वॉलेट तक पहुंच सकते हैं।"
   },
   "onboardingPinExtensionDescription3": {
-    "message": "ब्राउज़र एक्सटेंशन आइकन पर क्लिक करें ताकि इस तक तुरंत पहुंच सकें"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "MetaMask को पिन करें"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "ब्राउज़र एक्सटेंशन आइकन पर क्लिक करें ताकि इस तक तुरंत पहुंच सकें",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "आपका MetaMask इंस्टॉल पूरा हो गया है!"
@@ -3719,9 +3633,6 @@
   },
   "passwordNotLongEnough": {
     "message": "पासवर्ड की लंबाई पर्याप्त नहीं है"
-  },
-  "passwordSetupDetails": {
-    "message": "यह पासवर्ड आपके MetaMask वॉलेट को केवल इसी डिवाइस पर अनलॉक करेगा। MetaMask इस पासवर्ड को फिर से प्राप्त नहीं कर सकता है।"
   },
   "passwordStrength": {
     "message": "पासवर्ड की मजबूती: $1",
@@ -4300,12 +4211,6 @@
   "rejected": {
     "message": "रिजेक्ट"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "याद रखें, यदि आप अपना सीक्रेट रिकवरी फ्रेज़ खो देते हैं, तो आप अपने वॉलेट तक पहुंच खो देते हैं। शब्दों के इस सेट को सुरक्षित रखने के लिए $1 ताकि आप हमेशा अपने फंड तक पहुंच सकें।"
-  },
-  "reminderSet": {
-    "message": "रिमाइंडर सेट किया गया!"
-  },
   "remove": {
     "message": "हटाएं"
   },
@@ -4420,9 +4325,6 @@
   "reusedTokenNameWarning": {
     "message": "यहां पर एक टोकन आपके द्वारा देखे जाने वाले दूसरे टोकन से प्रतीक का पुनः इस्तेमाल करता है, यह भ्रामक या धोखाधड़ी वाला हो सकता है।"
   },
-  "revealSecretRecoveryPhrase": {
-    "message": "सीक्रेट रिकवरी फ्रेज़ दिखाएं"
-  },
   "revealSeedWords": {
     "message": "सीक्रेट रिकवरी फ्रेज प्रकट करें"
   },
@@ -4459,9 +4361,6 @@
   },
   "revealSensitiveContent": {
     "message": "संवेदनशील कंटेंट दिखाएं"
-  },
-  "revealTheSeedPhrase": {
-    "message": "सीड फ़्रेज़ दिखाएं"
   },
   "review": {
     "message": "समीक्षा करें"
@@ -4556,9 +4455,6 @@
   "securityMessageLinkForNetworks": {
     "message": "नेटवर्क संबंधी स्कैम और सुरक्षा जोखिम"
   },
-  "securityPrivacyPath": {
-    "message": "सेटिंग्स > सुरक्षा और गोपनीयता।"
-  },
   "securityProviderPoweredBy": {
     "message": "$1 द्वारा पावर्ड",
     "description": "The security provider that is providing data"
@@ -4570,53 +4466,11 @@
   "seeDetails": {
     "message": "ब्यौरा देखें"
   },
-  "seedPhraseConfirm": {
-    "message": "सीक्रेट रिकवरी फ्रेज की कन्फर्म करें"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "सीक्रेट रिकवरी फ्रेज की कन्फर्म करें"
-  },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "मुझे बाद में याद दिलाएं (अनुशंसित नहीं)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "मेरा वॉलेट सुरक्षित करें (अनुशंसित)"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "लिखें और कई गुप्त स्थानों में स्टोर करें।"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "सेफ डिपॉजिट बॉक्स में स्टोर करें।"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "आपका सीक्रेट रिकवरी फ्रेज 12- शब्दों का फ्रेज है जो आपके वॉलेट और धन के लिए “मास्टर कुंजी” है।"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "यदि कोई व्यक्ति आपका रिकवरी फ्रेज मांगता है, तो संभावना है कि वे आपको धोखा देने की कोशिश कर रहे हैं।"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "कभी भी अपना सीक्रेट रिकवरी फ्रेज शेयर न करें, MetaMask के साथ भी नहीं!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "सीक्रेट रिकवरी फ्रेज क्या है?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "क्या मुझे अपना सीक्रेट रिकवरी फ्रेज शेयर करना चाहिए?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "मैं अपना सीक्रेट रिकवरी फ्रेज कैसे सहेजूं?"
-  },
   "seedPhraseIntroTitle": {
     "message": "अपने वॉलेट को सुरक्षित करें"
   },
   "seedPhraseReq": {
     "message": "सीक्रेट रिकवरी फ्रेज में 12, 15, 18, 21 या 24 शब्द होते हैं"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "12-शब्दों के इस सीक्रेट रिकवरी फ्रेज को लिखें और ऐसे स्थान पर सेव करें, जहां आप भरोसा करते हैं और केवल आप ही पहुंच सकते हैं।"
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "अपना सीक्रेट रिकवरी फ्रेज लिखें"
   },
   "select": {
     "message": "चयन करें"
@@ -4731,9 +4585,6 @@
   },
   "settings": {
     "message": "सेटिंग"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "उपयोग में आसानी और सुरक्षा के लिए सेटिंग्स को अनुकूलित किया गया है। इन्हें किसी भी समय बदलें।"
   },
   "settingsSearchMatchingNotFound": {
     "message": "कोई मेल खाने वाला परिणाम नहीं मिला।"
@@ -4888,9 +4739,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "छोड़ें"
   },
   "skipAccountSecurity": {
     "message": "अकाउंट सुरक्षा छोड़ें?"
@@ -5947,9 +5795,6 @@
   "time": {
     "message": "समय"
   },
-  "tips": {
-    "message": "युक्तियां"
-  },
   "tipsForUsingAWallet": {
     "message": "वॉलेट का उपयोग करने के लिए टिप्स"
   },
@@ -6227,9 +6072,6 @@
   "unlock": {
     "message": "अनलॉक करें"
   },
-  "unlockMessage": {
-    "message": "विकेंद्रीकृत वेब प्रतीक्षारत है"
-  },
   "unpin": {
     "message": "अनपिन करें"
   },
@@ -6390,10 +6232,6 @@
   "walletConnectionGuide": {
     "message": "हमारी hardware wallet कनेक्शन गाइड"
   },
-  "walletProtectedAndReadyToUse": {
-    "message": "आपका वॉलेट सुरक्षित है और उपयोग के लिए तैयार है। आप अपना सीक्रेट रिकवरी फ्रेज़ $1 में पा सकते हैं ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "wantToAddThisNetwork": {
     "message": "इस नेटवर्क को जोड़ना चाहते हैं?"
   },
@@ -6439,23 +6277,8 @@
   "welcomeBack": {
     "message": "वापसी पर स्वागत है!"
   },
-  "welcomeExploreDescription": {
-    "message": "क्रिप्टो करेंसी और संपत्तियों को स्टोर करें, भेजें और खर्च करें।"
-  },
-  "welcomeExploreTitle": {
-    "message": "विकेन्द्रीकृत ऐप को एक्सप्लोर करें"
-  },
-  "welcomeLoginDescription": {
-    "message": "विकेंद्रीकृत ऐप में लॉगिन करने के लिए अपने MetaMask का इस्तेमाल करें - किसी साइनअप की जरूरत नहीं है।"
-  },
-  "welcomeLoginTitle": {
-    "message": "अपने वॉलेट को हैलो कहें"
-  },
   "welcomeToMetaMask": {
     "message": "चलिए शुरु करते हैं"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "लाखों लोगों का भरोसेमंद, MetaMask एक सुरक्षित वॉलेट है जो वेब3 की दुनिया को सबके लिए सुलभ बनाता है।"
   },
   "whatsThis": {
     "message": "यह क्या है?"
@@ -6492,9 +6315,6 @@
   },
   "yourBalance": {
     "message": "आपका बैलेंस"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "आपका बैलेंस एकत्रित हो गया है"
   },
   "yourNFTmayBeAtRisk": {
     "message": "आपका NFT खतरे में हो सकता है"

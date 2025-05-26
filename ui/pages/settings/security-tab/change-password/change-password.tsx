@@ -11,8 +11,10 @@ import {
 } from '../../../../components/component-library';
 import {
   AlignItems,
+  BlockSize,
   Display,
   FlexDirection,
+  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -25,7 +27,7 @@ import PasswordForm from '../../../../components/app/password-form/password-form
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
-  CurrentPassword: 1,
+  VerifyCurrentPassword: 1,
   ChangePassword: 2,
   CreatingPassword: 3,
 };
@@ -35,7 +37,7 @@ const ChangePassword = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [eventEmitter] = useState(new EventEmitter());
-  const [step, setStep] = useState(ChangePasswordSteps.CurrentPassword);
+  const [step, setStep] = useState(ChangePasswordSteps.VerifyCurrentPassword);
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
@@ -80,9 +82,8 @@ const ChangePassword = () => {
       // upon successful password change, go back to the settings page
       history.goBack();
     } catch (error) {
-      setIsIncorrectPasswordError(true);
-    } finally {
-      setStep(ChangePasswordSteps.CreatingPassword);
+      console.error(error);
+      setStep(ChangePasswordSteps.VerifyCurrentPassword);
     }
   };
 
@@ -93,67 +94,78 @@ const ChangePassword = () => {
     setShowChangePasswordWarning(true);
   };
 
+  const onSubmitChangePasswordForm = () => {
+    if (!newPassword) {
+      return;
+    }
+    setShowChangePasswordWarning(true);
+  };
+
   return (
-    <div className="change-password">
-      {step === ChangePasswordSteps.CurrentPassword && (
-        <form
-          className="change-password__form"
+    <Box padding={4} className="change-password">
+      {step === ChangePasswordSteps.VerifyCurrentPassword && (
+        <Box
+          as="form"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={6}
+          justifyContent={JustifyContent.spaceBetween}
+          height={BlockSize.Full}
           onSubmit={(e) => {
             e.preventDefault();
             handleSubmitCurrentPassword();
           }}
         >
-          <Box className="change-password__form-container">
-            <FormTextField
-              id="current-password"
-              label={t('enterPasswordContinue')}
-              placeholder={t('makeSureNoOneWatching')}
-              textFieldProps={{ type: TextFieldType.Password }}
-              labelProps={{
-                marginBottom: 1,
-                children: t('enterPasswordContinue'),
-              }}
-              value={currentPassword}
-              error={isIncorrectPasswordError}
-              helpText={
-                isIncorrectPasswordError
-                  ? t('unlockPageIncorrectPassword')
-                  : null
-              }
-              onChange={(e) => {
-                setCurrentPassword(e.target.value);
-                setIsIncorrectPasswordError(false);
-              }}
-            />
+          <FormTextField
+            id="current-password"
+            label={t('enterPasswordContinue')}
+            placeholder={t('makeSureNoOneWatching')}
+            textFieldProps={{ type: TextFieldType.Password }}
+            labelProps={{
+              marginBottom: 1,
+              children: t('enterPasswordContinue'),
+            }}
+            value={currentPassword}
+            error={isIncorrectPasswordError}
+            helpText={
+              isIncorrectPasswordError ? t('unlockPageIncorrectPassword') : null
+            }
+            onChange={(e) => {
+              setCurrentPassword(e.target.value);
+              setIsIncorrectPasswordError(false);
+            }}
+          />
 
-            <Button
-              type="submit"
-              block
-              disabled={isIncorrectPasswordError || !currentPassword}
-            >
-              {t('save')}
-            </Button>
-          </Box>
-        </form>
+          <Button
+            type="submit"
+            block
+            disabled={isIncorrectPasswordError || !currentPassword}
+          >
+            {t('save')}
+          </Button>
+        </Box>
       )}
 
       {step === ChangePasswordSteps.ChangePassword && (
-        <form
-          className="change-password__form"
+        <Box
+          as="form"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={6}
+          justifyContent={JustifyContent.spaceBetween}
+          height={BlockSize.Full}
           onSubmit={(e) => {
             e.preventDefault();
             onSubmitChangePasswordForm();
           }}
         >
-          <Box className="change-password__form-container">
-            <div className="change-password__form-container__content">
-              <PasswordForm onChange={(password) => setNewPassword(password)} />
-            </div>
-            <Button type="submit" disabled={!newPassword} block>
-              {t('save')}
-            </Button>
+          <Box>
+            <PasswordForm onChange={(password) => setNewPassword(password)} />
           </Box>
-        </form>
+          <Button type="submit" disabled={!newPassword} block>
+            {t('save')}
+          </Button>
+        </Box>
       )}
 
       {step === ChangePasswordSteps.CreatingPassword && (
@@ -181,7 +193,7 @@ const ChangePassword = () => {
           onCancel={() => setShowChangePasswordWarning(false)}
         />
       )}
-    </div>
+    </Box>
   );
 };
 
