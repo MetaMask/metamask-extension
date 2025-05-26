@@ -29,6 +29,10 @@
       align-items: center;
       grid-template-columns: 197px 1fr 1fr;
 
+      &--hide-search {
+        grid-template-columns: 197px 1fr;
+      }
+
       @include design-system.screen-sm-max {
         grid-template-rows: 1fr 1fr;
         grid-template-columns: 0.5fr 2fr 0.5fr;
@@ -52,6 +56,12 @@
 
         &__search {
           grid-area: search;
+        }
+
+        &--hide-search {
+          grid-template-rows: 1fr;
+          grid-template-areas:
+            'back title close';
         }
       }
 

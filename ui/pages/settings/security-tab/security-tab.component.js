@@ -251,6 +251,7 @@ export default class SecurityTab extends PureComponent {
           </div>
           <Button
             width={BlockSize.Full}
+            size={ButtonSize.Lg}
             marginTop={4}
             block
             onClick={() => {

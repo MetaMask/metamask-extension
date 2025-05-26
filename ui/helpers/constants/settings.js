@@ -14,6 +14,7 @@ import {
   EXPERIMENTAL_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
   BACKUPANDSYNC_ROUTE,
+  SECURITY_PASSWORD_CHANGE_ROUTE,
 } from './routes';
 
 /**
@@ -200,6 +201,13 @@ const SETTINGS_CONSTANTS = [
     icon: 'fa fa-lock',
   },
   // securityAndPrivacy settingsRefs[3]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('securityChangePasswordChange'),
+    descriptionMessage: (t) => t('securityChangePasswordChange'),
+    route: SECURITY_PASSWORD_CHANGE_ROUTE,
+    icon: 'fa fa-lock',
+  },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('usePhishingDetection'),
