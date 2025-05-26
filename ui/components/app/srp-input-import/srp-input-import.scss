@@ -6,10 +6,8 @@
   }
 
   &__srp-note {
-    // SRP_OVERRIDE: remove padding from textarea add weight to style
+    // SRP_OVERRIDE: remove focus outline from textarea
     .mm-textarea {
-      padding: 0;
-
       &:focus {
         outline: none;
       }

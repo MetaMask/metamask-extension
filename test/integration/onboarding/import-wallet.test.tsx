@@ -58,7 +58,7 @@ describe('Import Wallet Events', () => {
         ...mockMetaMaskState,
         firstTimeFlowType: 'import',
         completedOnboarding: false,
-        isProfileSyncingEnabled: true,
+        isBackupAndSyncEnabled: true,
       },
       backgroundConnection: backgroundConnectionMocked,
     });

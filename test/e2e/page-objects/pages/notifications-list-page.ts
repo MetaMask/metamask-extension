@@ -11,6 +11,9 @@ class NotificationsListPage {
   private readonly notificationsSettingsButton =
     '[data-testid="notifications-settings-button"]';
 
+  private readonly notificationListItem = (id: string) =>
+    `[data-testid="notification-list-item-${id}"]`;
+
   private readonly snapsNotificationMessage =
     '.snap-notifications__item__details__message';
 
@@ -60,6 +63,18 @@ class NotificationsListPage {
       css: this.snapsNotificationMessage,
       text: message,
     });
+  }
+
+  async check_notificationItemByTestId(id: string) {
+    console.log('Checking notification list item by id');
+    await this.driver.scrollToElement(
+      await this.driver.waitForSelector(this.notificationListItem(id)),
+    );
+  }
+
+  async clickNotificationItemByTestId(id: string) {
+    console.log('Clicking notification list item by id');
+    await this.driver.clickElement(this.notificationListItem(id));
   }
 }
 

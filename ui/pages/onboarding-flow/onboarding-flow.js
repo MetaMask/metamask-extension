@@ -225,6 +225,7 @@ export default function OnboardingFlow() {
         style={{
           maxWidth: isWelcomeAndUnlockPage ? 'none' : '446px',
           minHeight: isWelcomeAndUnlockPage ? 'auto' : '627px',
+          height: pathname === ONBOARDING_WELCOME_ROUTE ? '100%' : 'auto',
         }}
       >
         <Switch>

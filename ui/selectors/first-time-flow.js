@@ -34,7 +34,7 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
   const { firstTimeFlowType } = state.metamask;
 
   if (firstTimeFlowType === FirstTimeFlowType.create) {
-    return ONBOARDING_METAMETRICS;
+    return ONBOARDING_CREATE_PASSWORD_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.import) {
     return ONBOARDING_IMPORT_WITH_SRP_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
@@ -67,7 +67,7 @@ export function getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn(state) {
   } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
     return ONBOARDING_SECURE_YOUR_WALLET_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-    return ONBOARDING_CREATE_PASSWORD_ROUTE;
+    return ONBOARDING_COMPLETION_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
     return ONBOARDING_PIN_EXTENSION_ROUTE;
   }
