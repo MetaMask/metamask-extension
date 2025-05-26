@@ -72,9 +72,7 @@ export default function OnboardingWelcome({
       },
     });
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
-    ///: END:ONLY_INCLUDE_IF
   }, [dispatch, history, trackEvent]);
 
   const onImportClick = useCallback(async () => {
@@ -88,9 +86,7 @@ export default function OnboardingWelcome({
       },
     });
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
-    ///: END:ONLY_INCLUDE_IF
   }, [dispatch, history, trackEvent]);
 
   const handleLogin = useCallback(
