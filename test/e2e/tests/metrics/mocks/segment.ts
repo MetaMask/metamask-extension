@@ -6,19 +6,29 @@ import { Mockttp } from 'mockttp';
  *
  * @param mockServer - The mock server instance.
  * @param events - An array of event names to mock.
+ * @param options - Options for the mock.
+ * @param options.shouldAlwaysMatch - Whether to always match the request.
+ * @param options.debug - Logs the request body to the console.
  * @returns
  */
-export async function mockSegment(mockServer: Mockttp, events: string[]) {
+export async function mockSegment(
+  mockServer: Mockttp,
+  events: string[],
+  options: {
+    shouldAlwaysMatch?: boolean;
+    debug?: boolean;
+  } = { shouldAlwaysMatch: false, debug: false },
+) {
   // Create a comprehensive mock that catches all segment requests
   // This will match any batch that contains at least one of our expected events
   const comprehensiveMock = await mockServer
     .forPost('https://api.segment.io/v1/batch')
-    .always()
-    .thenCallback((request) => {
-      console.log(
-        'Segment request received:',
-        JSON.stringify(request.body, null, 2),
-      );
+    [options.shouldAlwaysMatch ? 'always' : 'once']()
+    .thenCallback(async (request) => {
+      if (options.debug) {
+        const body = await request.body.getJson();
+        console.log('Segment request received:', JSON.stringify(body, null, 2));
+      }
       return {
         statusCode: 200,
       };
@@ -32,11 +42,14 @@ export async function mockSegment(mockServer: Mockttp, events: string[]) {
         batch: [{ event }],
       })
       .always()
-      .thenCallback((request) => {
-        console.log(
-          `Individual segment mock matched for ${event}:`,
-          JSON.stringify(request.body, null, 2),
-        );
+      .thenCallback(async (request) => {
+        if (options.debug) {
+          const body = await request.body.getJson();
+          console.log(
+            `Individual segment mock matched for ${event}:`,
+            JSON.stringify(body, null, 2),
+          );
+        }
         return {
           statusCode: 200,
         };

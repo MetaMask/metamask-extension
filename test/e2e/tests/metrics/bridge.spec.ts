@@ -196,9 +196,6 @@ describe('Bridge tests', function (this: Suite) {
         const unifiedSwapBridgeSubmitted = findEventsByName(
           EventTypes.UnifiedSwapBridgeSubmitted,
         );
-        console.log(
-          `CHRIS DBEUG: ${JSON.stringify(unifiedSwapBridgeSubmitted)}`,
-        );
 
         assert.ok(unifiedSwapBridgeSubmitted.length === 1);
         assert.ok(

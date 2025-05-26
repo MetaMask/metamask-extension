@@ -581,26 +581,30 @@ export const getBridgeFixtures = (
       ];
 
       if (withMockedSegment) {
-        const segmentMocks = await mockSegment(mockServer, [
-          EventTypes.BridgeLinkClicked,
-          EventTypes.SwapBridgeButtonClicked,
-          EventTypes.SwapBridgePageViewed,
-          EventTypes.SwapBridgeInputChanged,
-          EventTypes.SwapBridgeQuotesRequested,
-          EventTypes.CrossChainQuotesReceived,
-          EventTypes.ActionSubmitted,
-          EventTypes.SwapBridgeSubmitted,
-          EventTypes.TransactionAddedAnon,
-          EventTypes.TransactionAdded,
-          EventTypes.TransactionSubmittedAnon,
-          EventTypes.TransactionSubmitted,
-          EventTypes.TransactionApprovedAnon,
-          EventTypes.TransactionApproved,
-          EventTypes.TransactionFinalizedAnon,
-          EventTypes.TransactionFinalized,
-          EventTypes.SwapBridgeCompleted,
-          EventTypes.UnifiedSwapBridgeSubmitted,
-        ]);
+        const segmentMocks = await mockSegment(
+          mockServer,
+          [
+            EventTypes.BridgeLinkClicked,
+            EventTypes.SwapBridgeButtonClicked,
+            EventTypes.SwapBridgePageViewed,
+            EventTypes.SwapBridgeInputChanged,
+            EventTypes.SwapBridgeQuotesRequested,
+            EventTypes.CrossChainQuotesReceived,
+            EventTypes.ActionSubmitted,
+            EventTypes.SwapBridgeSubmitted,
+            EventTypes.TransactionAddedAnon,
+            EventTypes.TransactionAdded,
+            EventTypes.TransactionSubmittedAnon,
+            EventTypes.TransactionSubmitted,
+            EventTypes.TransactionApprovedAnon,
+            EventTypes.TransactionApproved,
+            EventTypes.TransactionFinalizedAnon,
+            EventTypes.TransactionFinalized,
+            EventTypes.SwapBridgeCompleted,
+            EventTypes.UnifiedSwapBridgeSubmitted,
+          ],
+          { shouldAlwaysMatch: true },
+        );
         standardMocks.push(...segmentMocks);
       } else {
         console.log('No custom segment mock provided');
