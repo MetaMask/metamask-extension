@@ -55,7 +55,7 @@ export type WebAuthenticator = {
    *
    * @returns The redirect URL for the OAuth login.
    */
-  getRedirectUrl: () => string;
+  getRedirectURL: () => string;
 
   /**
    * Launch the oauth2 web flow to get the Authorization Code from the social login provider.

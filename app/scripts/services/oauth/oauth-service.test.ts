@@ -32,7 +32,7 @@ const launchWebAuthFlowSpy = jest
     .mockResolvedValue('https://mocked-redirect-uri?code=mocked-code');
 
 const mockWebAuthenticator: WebAuthenticator = {
-  getRedirectUrl: getRedirectUrlSpy,
+  getRedirectURL: getRedirectUrlSpy,
   launchWebAuthFlow: launchWebAuthFlowSpy,
 };
 
@@ -65,7 +65,7 @@ describe('OAuthService', () => {
 
     const googleLoginHandler = createLoginHandler(
       AuthConnection.Google,
-      mockWebAuthenticator.getRedirectUrl(),
+      mockWebAuthenticator.getRedirectURL(),
       getOAuthLoginEnvs(),
     );
 
@@ -85,7 +85,7 @@ describe('OAuthService', () => {
 
     const appleLoginHandler = createLoginHandler(
       AuthConnection.Apple,
-      mockWebAuthenticator.getRedirectUrl(),
+      mockWebAuthenticator.getRedirectURL(),
       getOAuthLoginEnvs(),
     );
 
