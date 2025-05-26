@@ -40,7 +40,7 @@ class HomePage {
   };
 
   private readonly erc20TokenDropdown = {
-    testId: 'import-token-button',
+    testId: 'asset-list-control-bar-action-button',
   };
 
   private readonly nftTab = {
