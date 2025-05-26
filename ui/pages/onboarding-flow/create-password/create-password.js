@@ -14,11 +14,9 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   ONBOARDING_METAMETRICS,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
@@ -45,13 +43,11 @@ import {
   Text,
 } from '../../../components/component-library';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 // eslint-disable-next-line import/no-restricted-paths
 import { getPlatform } from '../../../../app/scripts/lib/util';
 import PasswordForm from '../../../components/app/password-form/password-form';
 import LoadingScreen from '../../../components/ui/loading-screen';
-///: END:ONLY_INCLUDE_IF
 
 export default function CreatePassword({
   createNewAccount,
@@ -88,13 +84,9 @@ export default function CreatePassword({
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {
       if (firstTimeFlowType === FirstTimeFlowType.import) {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         history.replace(ONBOARDING_METAMETRICS);
-        ///: END:ONLY_INCLUDE_IF
       } else {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
-        ///: END:ONLY_INCLUDE_IF
       }
     }
   }, [
@@ -122,11 +114,9 @@ export default function CreatePassword({
       firstTimeFlowType === FirstTimeFlowType.import
     ) {
       await importWithRecoveryPhrase(password, secretRecoveryPhrase);
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       getPlatform() === PLATFORM_FIREFOX
         ? history.push(ONBOARDING_COMPLETION_ROUTE)
         : history.push(ONBOARDING_METAMETRICS);
-      ///: END:ONLY_INCLUDE_IF
     } else {
       // Otherwise we are in create new wallet flow
       try {
@@ -137,11 +127,8 @@ export default function CreatePassword({
         if (socialLoginFlow) {
           ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           history.push(ONBOARDING_METAMETRICS);
-          ///: END:ONLY_INCLUDE_IF
         } else {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
-          ///: END:ONLY_INCLUDE_IF
         }
       } catch (error) {
         console.error(error);
@@ -224,31 +211,23 @@ export default function CreatePassword({
             }}
             label={
               <Text variant={TextVariant.bodyMd} marginLeft={2}>
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-                  t('passwordTermsWarning')
-                  ///: END:ONLY_INCLUDE_IF
-                }
+                {t('passwordTermsWarning')}
                 &nbsp;
                 {createPasswordLink}
               </Text>
             }
           />
         </Box>
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-          <Button
-            data-testid="create-password-submit"
-            variant={ButtonVariant.Primary}
-            width={BlockSize.Full}
-            size={ButtonSize.Lg}
-            className="create-password__form--submit-button"
-            disabled={!password || !termsChecked}
-          >
-            {t('confirm')}
-          </Button>
-          ///: END:ONLY_INCLUDE_IF
-        }
+        <Button
+          data-testid="create-password-submit"
+          variant={ButtonVariant.Primary}
+          width={BlockSize.Full}
+          size={ButtonSize.Lg}
+          className="create-password__form--submit-button"
+          disabled={!password || !termsChecked}
+        >
+          {t('confirm')}
+        </Button>
       </Box>
       {shouldInjectMetametricsIframe ? (
         <iframe
