@@ -22,11 +22,12 @@ import {
   IconColor,
   TextTransform,
 } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
+  isSocialLoginFlow,
   getSocialLoginEmail,
   getSocialLoginType,
-} from '../../../../selectors/social-sync';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+} from '../../../../selectors';
 
 export const RevealSrpList = () => {
   const t = useI18nContext();
@@ -34,7 +35,7 @@ export const RevealSrpList = () => {
   const [selectedKeyringId, setSelectedKeyringId] = useState('');
 
   const socialLoginEmail = useSelector(getSocialLoginEmail);
-  const socialLoginEnabled = Boolean(socialLoginEmail);
+  const socialLoginEnabled = useSelector(isSocialLoginFlow);
   const socialLoginType = useSelector(getSocialLoginType);
 
   return (
