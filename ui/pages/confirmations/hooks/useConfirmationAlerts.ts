@@ -11,14 +11,13 @@ import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
 import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTransactionAlerts';
 import { useResimulationAlert } from './alerts/transactions/useResimulationAlert';
 import { useFirstTimeInteractionAlert } from './alerts/transactions/useFirstTimeInteractionAlert';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useSigningOrSubmittingAlerts } from './alerts/transactions/useSigningOrSubmittingAlerts';
-///: END:ONLY_INCLUDE_IF
 import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
 import useBlockaidAlerts from './alerts/useBlockaidAlerts';
 import { useNetworkAndOriginSwitchingAlerts } from './alerts/useNetworkAndOriginSwitchingAlerts';
 import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
 import { useNonContractAddressAlerts } from './alerts/transactions/useNonContractAddressAlerts';
+import { useAccountTypeUpgrade } from './alerts/transactions/useAccountTypeUpgrade';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -31,6 +30,7 @@ function useSignatureAlerts(): Alert[] {
 }
 
 function useTransactionAlerts(): Alert[] {
+  const accountTypeUpgradeAlerts = useAccountTypeUpgrade();
   const gasEstimateFailedAlerts = useGasEstimateFailedAlerts();
   const gasFeeLowAlerts = useGasFeeLowAlerts();
   const gasTooLowAlerts = useGasTooLowAlerts();
@@ -40,13 +40,12 @@ function useTransactionAlerts(): Alert[] {
   const pendingTransactionAlerts = usePendingTransactionAlerts();
   const resimulationAlert = useResimulationAlert();
   const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
-  ///: END:ONLY_INCLUDE_IF
   const nonContractAddressAlerts = useNonContractAddressAlerts();
 
   return useMemo(
     () => [
+      ...accountTypeUpgradeAlerts,
       ...gasEstimateFailedAlerts,
       ...gasFeeLowAlerts,
       ...gasTooLowAlerts,
@@ -56,12 +55,11 @@ function useTransactionAlerts(): Alert[] {
       ...pendingTransactionAlerts,
       ...resimulationAlert,
       ...firstTimeInteractionAlert,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       ...signingOrSubmittingAlerts,
-      ///: END:ONLY_INCLUDE_IF
       ...nonContractAddressAlerts,
     ],
     [
+      accountTypeUpgradeAlerts,
       gasEstimateFailedAlerts,
       gasFeeLowAlerts,
       gasTooLowAlerts,
@@ -71,9 +69,7 @@ function useTransactionAlerts(): Alert[] {
       pendingTransactionAlerts,
       resimulationAlert,
       firstTimeInteractionAlert,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       signingOrSubmittingAlerts,
-      ///: END:ONLY_INCLUDE_IF
       nonContractAddressAlerts,
     ],
   );

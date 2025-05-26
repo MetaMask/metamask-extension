@@ -32,7 +32,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
         maxNumberOfAccountsToAdd: isProduction() ? undefined : 100,
         onAccountAdded: (profileId) => {
           trackEvent({
-            category: MetaMetricsEventCategory.ProfileSyncing,
+            category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.AccountsSyncAdded,
             properties: {
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -43,7 +43,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
         },
         onAccountNameUpdated: (profileId) => {
           trackEvent({
-            category: MetaMetricsEventCategory.ProfileSyncing,
+            category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.AccountsSyncNameUpdated,
             properties: {
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -62,7 +62,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
             sentryContext,
           );
           trackEvent({
-            category: MetaMetricsEventCategory.ProfileSyncing,
+            category: MetaMetricsEventCategory.BackupAndSync,
             event: MetaMetricsEventName.AccountsSyncErroneousSituation,
             properties: {
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

@@ -10,8 +10,8 @@ import {
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountDetailsModal from '../../../page-objects/pages/dialog/account-details-modal';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
-import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeOnboardFlowIdentity } from '../flows';
+import { ACCOUNT_TYPE } from '../../../constants';
 import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
@@ -63,8 +63,6 @@ describe('Account syncing - Rename Accounts', function () {
         },
         async ({ driver }) => {
           await completeOnboardFlowIdentity(driver);
-          const homePage = new HomePage(driver);
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -74,6 +72,7 @@ describe('Account syncing - Rename Accounts', function () {
           await accountListPage.check_pageIsLoaded();
           await accountListPage.check_numberOfAvailableAccounts(
             mockedAccountSyncResponse.length,
+            ACCOUNT_TYPE.Ethereum,
           );
           await accountListPage.check_accountDisplayedInAccountList(
             unencryptedAccounts[0].n,
@@ -118,8 +117,6 @@ describe('Account syncing - Rename Accounts', function () {
         },
         async ({ driver }) => {
           await completeOnboardFlowIdentity(driver);
-          const homePage = new HomePage(driver);
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -129,6 +126,7 @@ describe('Account syncing - Rename Accounts', function () {
           await accountListPage.check_pageIsLoaded();
           await accountListPage.check_numberOfAvailableAccounts(
             mockedAccountSyncResponse.length,
+            ACCOUNT_TYPE.Ethereum,
           );
           await accountListPage.check_accountIsNotDisplayedInAccountList(
             unencryptedAccounts[0].n,

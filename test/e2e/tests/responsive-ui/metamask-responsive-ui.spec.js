@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { Browser } = require('selenium-webdriver');
 const {
   TEST_SEED_PHRASE_TWO,
   locateAccountBalanceDOM,
@@ -21,14 +22,21 @@ describe('MetaMask Responsive UI', function () {
       async ({ driver }) => {
         await driver.navigate();
 
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          // metrics
+          await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+        }
+
         // agree to terms of use
         await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
 
         // welcome
         await driver.clickElement('[data-testid="onboarding-create-wallet"]');
 
-        // metrics
-        await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+          // metrics
+          await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+        }
 
         // create password
         await driver.fill(

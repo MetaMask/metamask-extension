@@ -497,6 +497,7 @@ describe('migration #139', () => {
     });
   });
 
+  // @ts-expect-error This function is missing from the Mocha type definitions
   describe.each([
     [
       'built-in',

@@ -50,6 +50,7 @@ describe('AssetPill', () => {
       },
     ];
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(cases)(
       'renders chain $chainId',
       ({

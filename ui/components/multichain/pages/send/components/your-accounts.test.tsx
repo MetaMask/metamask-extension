@@ -86,10 +86,18 @@ describe('SendPageYourAccounts', () => {
             {
               type: 'HD Key Tree',
               accounts: [mockAccount.address],
+              metadata: {
+                id: 'mock-keyring-id-1',
+                name: '',
+              },
             },
             {
               type: 'Snap Keyring',
               accounts: [mockBtcAccount.address],
+              metadata: {
+                id: 'mock-keyring-id-2',
+                name: '',
+              },
             },
           ],
           balances: {

@@ -136,6 +136,7 @@ describe('AmountPill', () => {
   ];
 
   describe('Native', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(nativeAndErc20Cases)(
       'renders the correct sign and amount for $amount',
       ({
@@ -151,6 +152,7 @@ describe('AmountPill', () => {
   });
 
   describe('ERC20', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(nativeAndErc20Cases)(
       'renders the correct sign and amount for $amount',
       ({
@@ -183,6 +185,7 @@ describe('AmountPill', () => {
       },
     ];
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(cases)(
       'renders the token ID with just a plus or minus for $expected.text',
       ({
@@ -222,6 +225,7 @@ describe('AmountPill', () => {
       },
     ];
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each(cases)(
       'renders the correct sign, amount, and token ID for $expected.text',
       ({

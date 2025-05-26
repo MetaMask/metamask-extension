@@ -6,14 +6,16 @@ import {
   isSolanaChainId,
   formatChainIdToCaip,
   formatChainIdToHex,
-  type BridgeToken,
   isNativeAddress,
   fetchBridgeTokens,
   BridgeClientId,
   type BridgeAsset,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { selectERC20TokensByChain } from '../../selectors';
+import type {
+  TokenListMap,
+  TokenListToken,
+} from '@metamask/assets-controllers';
 import { AssetType } from '../../../shared/constants/transaction';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { useMultichainBalances } from '../useMultichainBalances';
@@ -31,8 +33,9 @@ import type {
   ERC20Asset,
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
+import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
+import type { BridgeToken } from '../../ducks/bridge/types';
 
 type FilterPredicate = (
   symbol: string,
@@ -67,18 +70,25 @@ export const useTokensWithFiltering = (
   const { assetsWithBalance: multichainTokensWithBalance } =
     useMultichainBalances(accountId);
 
-  const cachedTokens = useSelector(selectERC20TokensByChain);
+  const cachedTokens = useSelector(
+    (state: BridgeAppState) => state.metamask.tokensChainsCache,
+  );
 
   const { value: tokenList, pending: isTokenListLoading } = useAsyncResult<
-    Record<string, BridgeAsset>
+    Record<string, BridgeAsset> | TokenListMap
   >(async () => {
     if (chainId) {
       if (!isSolanaChainId(chainId)) {
         const hexChainId = formatChainIdToHex(chainId);
         const timestamp = cachedTokens[hexChainId]?.timestamp;
+        const cachedTokenList = cachedTokens[hexChainId]?.data;
         // Use cached token data if updated in the last 10 minutes
-        if (timestamp && Date.now() - timestamp <= 10 * MINUTE) {
-          return cachedTokens[hexChainId]?.data;
+        if (
+          timestamp &&
+          Date.now() - timestamp <= 10 * MINUTE &&
+          Object.values(cachedTokenList).length > 0
+        ) {
+          return cachedTokenList;
         }
       }
       // Otherwise fetch new token data
@@ -91,6 +101,9 @@ export const useTokensWithFiltering = (
             url: url as string,
             ...requestOptions,
             fetchOptions: { method: 'GET', headers },
+            cacheOptions: {
+              cacheRefreshTime: 10 * MINUTE,
+            },
             functionName: 'fetchBridgeTokens',
           });
         },
@@ -119,7 +132,7 @@ export const useTokensWithFiltering = (
 
   // This transforms the token object from the bridge-api into the format expected by the AssetPicker
   const buildTokenDataFn = (
-    token?: BridgeAsset,
+    token?: BridgeAsset | TokenListToken,
   ):
     | AssetWithDisplayData<NativeAsset>
     | AssetWithDisplayData<ERC20Asset>
@@ -133,7 +146,10 @@ export const useTokensWithFiltering = (
       chainId: isSolanaChainId(chainId)
         ? formatChainIdToCaip(chainId)
         : formatChainIdToHex(chainId),
-      assetId: token.assetId,
+      assetId:
+        'assetId' in token
+          ? token.assetId
+          : toAssetId(token.address, formatChainIdToCaip(chainId)),
     };
 
     if (isNativeAddress(token.address)) {
@@ -147,7 +163,7 @@ export const useTokensWithFiltering = (
           ] ??
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
           // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-          (token.iconUrl || token.icon || ''),
+          (token.iconUrl || ('icon' in token ? token.icon : '') || ''),
         // Only unimported native assets are processed here so hardcode balance to 0
         balance: '0',
         string: '0',
@@ -157,7 +173,7 @@ export const useTokensWithFiltering = (
     return {
       ...sharedFields,
       type: AssetType.token,
-      image: token.iconUrl ?? token.icon ?? '',
+      image: token.iconUrl ?? ('icon' in token ? token.icon : '') ?? '',
       // Only tokens with 0 balance are processed here so hardcode empty string
       balance: '',
       string: undefined,
@@ -234,6 +250,7 @@ export const useTokensWithFiltering = (
               };
             } else {
               yield {
+                ...token,
                 symbol: token.symbol,
                 chainId: token.chainId,
                 tokenFiatAmount: token.tokenFiatAmount,
@@ -265,9 +282,7 @@ export const useTokensWithFiltering = (
             token &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
-            if (token) {
-              yield token;
-            }
+            yield token;
           }
         }
 
@@ -278,12 +293,10 @@ export const useTokensWithFiltering = (
           const token = buildTokenData(token_);
           if (
             token &&
-            !token.symbol.includes('$') &&
+            token.symbol.indexOf('$') === -1 &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
-            if (token) {
-              yield token;
-            }
+            yield token;
           }
         }
       })(),

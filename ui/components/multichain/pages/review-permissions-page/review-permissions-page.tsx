@@ -9,6 +9,7 @@ import {
   KnownCaipNamespace,
 } from '@metamask/utils';
 import { uniq } from 'lodash';
+import { isCaipAccountIdInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import {
   AlignItems,
   BlockSize,
@@ -60,6 +61,7 @@ import {
   MergedInternalAccountWithCaipAccountId,
 } from '../../../../selectors/selectors.types';
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
+import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { SiteCell } from './site-cell/site-cell';
 
 export const ReviewPermissions = () => {
@@ -206,39 +208,16 @@ export const ReviewPermissions = () => {
     // TODO: we should refactor addPermittedAccounts to accept CaipAccountIds
     dispatch(addPermittedAccounts(activeTabOrigin, addresses));
 
-    connectedAccountAddresses.forEach((connectedAddress: string) => {
-      // TODO: seems like similar logic to selector logic in ui/index.js
-      // See if we can DRY this
-      const parsedConnectedAddress = parseCaipAccountId(
-        connectedAddress as CaipAccountId,
-      );
-
-      const includesCaipAccountId = parsedCaipAccountIds.some(
-        (parsedAddress) => {
-          if (
-            parsedConnectedAddress.chain.namespace !==
-              parsedAddress.chain.namespace ||
-            parsedConnectedAddress.address !== parsedAddress.address
-          ) {
-            return false;
-          }
-
-          return (
-            parsedAddress.chain.reference === '0' ||
-            parsedAddress.chain.reference ===
-              parsedConnectedAddress.chain.reference
-          );
-        },
+    connectedAccountAddresses.forEach((connectedAddress: CaipAccountId) => {
+      const includesCaipAccountId = isCaipAccountIdInPermittedAccountIds(
+        connectedAddress,
+        caipAccountIds,
       );
 
       if (!includesCaipAccountId) {
+        const { address } = parseCaipAccountId(connectedAddress);
         // TODO: we should refactor removePermittedAccount to accept CaipAccountIds
-        dispatch(
-          removePermittedAccount(
-            activeTabOrigin,
-            parsedConnectedAddress.address,
-          ),
-        );
+        dispatch(removePermittedAccount(activeTabOrigin, address));
       }
     });
 
@@ -267,6 +246,8 @@ export const ReviewPermissions = () => {
               testNetworks={testNetworks}
               accounts={allAccounts}
               onSelectAccountAddresses={handleSelectAccountAddresses}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onSelectChainIds={handleSelectChainIds}
               selectedAccountAddresses={connectedAccountAddresses}
               selectedChainIds={connectedChainIds}
@@ -281,8 +262,10 @@ export const ReviewPermissions = () => {
               hostname={activeTabOrigin}
               onClose={() => setShowDisconnectAllModal(false)}
               onClick={() => {
+                trace({ name: TraceName.DisconnectAllModal });
                 disconnectAllPermissions();
                 setShowDisconnectAllModal(false);
+                endTrace({ name: TraceName.DisconnectAllModal });
               }}
             />
           ) : null}
@@ -346,6 +329,8 @@ export const ReviewPermissions = () => {
                     size={ButtonPrimarySize.Lg}
                     block
                     data-test-id="no-connections-button"
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={requestAccountsAndChainPermissions}
                   >
                     {t('connectAccounts')}

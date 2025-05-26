@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { Token } from '../types';
@@ -48,8 +48,6 @@ const useAssetListTokenDetection = () => {
   const multichainDetectedTokensLength = Object.values(
     detectedTokensMultichain || {},
   ).reduce((acc, tokens) => acc + tokens.length, 0);
-
-  const [showDetectedTokens, setShowDetectedTokens] = useState(false);
 
   const handleAddImportedTokens = async (
     tokens: Token[],
@@ -102,6 +100,8 @@ const useAssetListTokenDetection = () => {
       networkClientId,
       currentChainId,
       detectedTokens,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       handleAddImportedTokens,
       trackTokenAddedEvent,
     );
@@ -112,8 +112,6 @@ const useAssetListTokenDetection = () => {
     detectedTokens.length,
     multichainDetectedTokensLength,
   ]);
-
-  return { showDetectedTokens, setShowDetectedTokens };
 };
 
 export default useAssetListTokenDetection;

@@ -15,6 +15,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../../shared/constants/security-provider';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
@@ -29,7 +30,6 @@ import {
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
-import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 
 describe('Confirmation Signature - SIWE', function (this: Suite) {
   it('initiates and confirms', async function () {

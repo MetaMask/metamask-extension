@@ -23,6 +23,7 @@ const render = (
       ...mockState.metamask,
     },
   });
+  // @ts-expect-error TODO: Remove once `react-redux` is upgraded to v8 and `connect` type is fixed.
   return renderWithProvider(<QRCodeView Qr={Qr} warning={warning} />, store);
 };
 
@@ -37,6 +38,7 @@ describe('QRCodeView', () => {
     expect(qrCodeImage).toBeInTheDocument();
   });
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     {
       test: 'lowercased ETH address to checksummed',

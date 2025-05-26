@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Счет Биткойн (бета-версия)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Счет Биткойн (тестнет)"
-  },
   "addBlockExplorer": {
     "message": "Добавить обозреватель блоков"
   },
@@ -662,22 +659,6 @@
     "message": "Б",
     "description": "Shortened form of 'billion'"
   },
-  "bitcoinSupportSectionTitle": {
-    "message": "Биткойн"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Включение этой функции даст вам возможность добавить в ваше расширение MetaMask счет для биткойнов, созданный на основе вашей существующей секретной фразы для восстановления. Это экспериментальная бета-функция, которая используется на свой страх и риск. Пожалуйста, оставьте нам отзыв об этом новом способе взаимодействия с биткойном, заполнив эту $1.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Включить «Добавить новый счет в биткойнах (бета-версия)»"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Включение этой функции даст вам возможность добавить счет в биткойнах для тестнета."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Включить «Добавить новый счет в биткойнах (тестнет)»"
-  },
   "blockExplorerAccountAction": {
     "message": "Счет",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -955,7 +936,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "Мы используем Infura в качестве нашего поставщика удаленного вызова процедур (RPC), чтобы предложить наиболее надежный и конфиденциальный доступ к данным Ethereum из возможных. Вы можете выбрать свой собственного RPC, но помните, что любой RPC получит ваш IP-адрес и номер кошелька Ethereum для совершения транзакций. См. наше $1, чтобы узнать больше о том, как Infura обрабатывает данные.",
-    "description": "$1 is a link to the privacy policy"
+    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Вам необходимо использовать MetaMask в Google Chrome, чтобы подключиться к аппаратному кошельку."
@@ -1024,9 +1005,6 @@
   },
   "confirm": {
     "message": "Подтвердить"
-  },
-  "confirmAccountType": {
-    "message": "Тип"
   },
   "confirmAccountTypeSmartContract": {
     "message": "Смарт-счет"
@@ -1341,10 +1319,6 @@
   },
   "creatorAddress": {
     "message": "Адрес автора"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Это значение отражает стоимость всех токенов, которыми Вы владеете во всех сетях. Если Вы предпочитаете видеть это значение в ETH или других валютах, перейдите на $1.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "Меняйте сети с помощью MetaMask Portfolio"
@@ -2714,9 +2688,6 @@
   "ledgerLocked": {
     "message": "Не удалось подключиться к Ledger. Убедитесь, что устройство разблокировано и приложение Ethereum открыто."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "Несколько устройств Ledger нельзя подключить одновременно. Для подключения нового устройства Ledger сначала нужно отключить предыдущее."
-  },
   "ledgerTimeout": {
     "message": "Ledger Live слишком долго не отвечает, или время ожидания подключения истекло. Убедитесь, что приложение Ledger Live открыто и устройство разблокировано."
   },
@@ -3451,10 +3422,6 @@
     "message": "Транзакция $1 не удалась! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
   },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "Транзакция не удалась! $1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
-  },
   "notificationTransactionFailedTitle": {
     "message": "Неудачная транзакция",
     "description": "Title of the browser notification that appears when a transaction fails"
@@ -3667,22 +3634,6 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "Установка MetaMask завершена!"
-  },
-  "oneDayAbbreviation": {
-    "message": "1 Д",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1 М",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1 Н",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1 Г",
-    "description": "Shortened form of '1 year'"
   },
   "onlyConnectTrust": {
     "message": "Подключайтесь только к сайтам, которым доверяете. $1",
@@ -4087,7 +4038,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "Некоторые из этих сетей являются зависимыми от третьих сторон. Соединения могут быть менее надежными или позволять третьим сторонам отслеживать активность. $1",
-    "description": "$1 is Learn more link"
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "Популярные сети"
@@ -4153,18 +4104,6 @@
   },
   "productAnnouncements": {
     "message": "Объявления о продуктах"
-  },
-  "profileSync": {
-    "message": "Синхронизация профиля"
-  },
-  "profileSyncConfirmation": {
-    "message": "Если вы отключите синхронизацию профиля, вы не сможете получать уведомления."
-  },
-  "profileSyncDescription": {
-    "message": "Создает профиль, который MetaMask использует для синхронизации некоторых настроек между вашими устройствами. Это необходимо для получения уведомлений. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Узнайте, как мы защищаем вашу конфиденциальность"
   },
   "proposedApprovalLimit": {
     "message": "Предлагаемый лимит одобрения"
@@ -5978,10 +5917,6 @@
     "message": "Уведомление о стороннем ПО",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
-  "threeMonthsAbbreviation": {
-    "message": "3 М",
-    "description": "Shortened form of '3 months'"
-  },
   "time": {
     "message": "Время"
   },
@@ -6530,9 +6465,6 @@
   },
   "yourBalance": {
     "message": "Ваш баланс"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Ваш баланс суммируется"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Ваш NFT могут быть в опасности"

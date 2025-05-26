@@ -57,11 +57,6 @@
     "33": { "id": 33, "date": "2024-04-09", "isShown": false }
   },
   "approvalFlows": [],
-  "bridgeFeatureFlags": {
-    "extensionConfig": {
-      "support": false
-    }
-  },
   "browserEnvironment": { "os": "mac", "browser": "firefox" },
   "completedOnboarding": false,
   "confirmationExchangeRates": {},
@@ -210,6 +205,16 @@
     }
   },
   "networksMetadata": { "sepolia": { "status": "unknown", "EIPS": {} } },
+  "networksWithTransactionActivity": {
+    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+      "namespace": "eip155",
+      "activeChain": ["0x5"]
+    },
+    "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
+      "namespace": "solana",
+      "activeChain": []
+    }
+  },
   "nextNonce": null,
   "nftsDetectionNoticeDismissed": false,
   "nftsDropdownState": {},
