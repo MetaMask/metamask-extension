@@ -40,50 +40,46 @@ const EXPECTED_EVENT_TYPES = Object.values(EventTypes);
  * @returns Array of mocked endpoints
  */
 async function mockSegment(mockServer: Mockttp) {
-  const createSegmentMock = async (eventType: string) => {
-    return await mockServer
-      .forPost('https://api.segment.io/v1/batch')
-      .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: eventType }],
-      })
-      .always()
-      .thenCallback(async (request) => {
-        let bodyText = '';
+  const segmentMock = await mockServer
+    .forPost('https://api.segment.io/v1/batch')
+    .withJsonBodyIncluding({
+      batch: [{ type: 'track' }],
+    })
+    .always()
+    .thenCallback(async (request) => {
+      let bodyText = '';
 
-        try {
-          if (request.body.buffer) {
-            bodyText = request.body.buffer.toString('utf8');
-          } else {
-            bodyText = JSON.stringify(request.body);
-          }
-        } catch (e) {
-          bodyText = 'Unable to parse request body';
+      try {
+        if (request.body.buffer) {
+          bodyText = request.body.buffer.toString('utf8');
+        } else {
+          bodyText = JSON.stringify(request.body);
         }
+      } catch (e) {
+        bodyText = 'Unable to parse request body';
+      }
 
-        try {
-          const parsedBody = JSON.parse(bodyText);
-          console.log(`\n=== Segment API Request (${eventType}) ===`);
-          console.log(JSON.stringify(parsedBody, null, 2));
-          console.log('=== End Request ===\n');
-        } catch (e) {
-          console.log(`\n=== Segment API Request (${eventType}) - Raw ===`);
-          console.log(bodyText);
-          console.log('=== End Request ===\n');
-        }
+      try {
+        const parsedBody = JSON.parse(bodyText);
+        console.log(
+          `\n=== Segment API Request (Batch of ${
+            parsedBody.batch?.length || 0
+          } events) ===`,
+        );
+        console.log(JSON.stringify(parsedBody, null, 2));
+        console.log('=== End Request ===\n');
+      } catch (e) {
+        console.log(`\n=== Segment API Request - Raw ===`);
+        console.log(bodyText);
+        console.log('=== End Request ===\n');
+      }
 
-        return {
-          statusCode: 200,
-        };
-      });
-  };
+      return {
+        statusCode: 200,
+      };
+    });
 
-  // Create mock endpoints for all event types
-  const mocks = [];
-  for (const eventType of EXPECTED_EVENT_TYPES) {
-    mocks.push(await createSegmentMock(eventType));
-  }
-
-  return mocks;
+  return [segmentMock];
 }
 
 describe('Bridge tests', function (this: Suite) {
