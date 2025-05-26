@@ -94,13 +94,6 @@ const ChangePassword = () => {
     setShowChangePasswordWarning(true);
   };
 
-  const onSubmitChangePasswordForm = () => {
-    if (!newPassword) {
-      return;
-    }
-    setShowChangePasswordWarning(true);
-  };
-
   return (
     <Box padding={4} className="change-password">
       {step === ChangePasswordSteps.VerifyCurrentPassword && (
