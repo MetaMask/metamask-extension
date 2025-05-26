@@ -14,11 +14,21 @@
     }
 
     .slide .onboarding-pin-extension__image-container {
+      height: 200px;
+
       img {
-        width: 346px;
-        height: auto;
         object-fit: contain;
       }
+    }
+
+    .slide .onboarding-pin-extension__image-pin {
+      width: 243px;
+      height: auto;
+    }
+
+    .slide .onboarding-pin-extension__image-launch {
+      width: 265px;
+      height: auto;
     }
   }
 
@@ -29,12 +39,12 @@
     width: 30px;
     height: 30px;
     cursor: pointer;
-    left: 15px;
+    left: 0;
     border: 2px solid var(--color-icon-default);
   }
 
   &__arrow--next {
-    right: 15px;
+    right: 0;
     left: unset;
   }
 }

@@ -6,10 +6,8 @@
   }
 
   &__srp-note {
-    // SRP_OVERRIDE: remove padding from textarea add weight to style
+    // SRP_OVERRIDE: remove focus outline from textarea
     .mm-textarea {
-      padding: 0;
-
       &:focus {
         outline: none;
       }
@@ -28,7 +26,7 @@
     grid-template-columns: repeat(3, 1fr);
     // SRP_OVERRIDE: custom text field style
     .mm-text-field {
-      padding-left: 8px;
+      padding-inline-start: 8px;
       border-radius: 8px;
     }
 
@@ -41,8 +39,8 @@
     }
     // SRP_OVERRIDE: custom text field style
     .mm-input {
-      padding-right: 8px;
-      padding-left: 4px;
+      padding-inline-end: 8px;
+      padding-inline-start: 4px;
     }
   }
 

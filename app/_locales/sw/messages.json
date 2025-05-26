@@ -626,9 +626,6 @@
   "terms": {
     "message": "Masharti ya Matumizi"
   },
-  "tips": {
-    "message": "Michango"
-  },
   "to": {
     "message": "Kwenda"
   },
@@ -706,9 +703,6 @@
   },
   "unlock": {
     "message": "Fungua"
-  },
-  "unlockMessage": {
-    "message": "Wavuti uliotenganishwa unasubiri"
   },
   "urlErrorMsg": {
     "message": "URI huhitaji kiambishi sahihi cha  HTTP/HTTPS."

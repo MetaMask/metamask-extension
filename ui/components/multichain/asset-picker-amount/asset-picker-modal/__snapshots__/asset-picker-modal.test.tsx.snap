@@ -19,7 +19,7 @@ exports[`AssetPickerModal token filtering should fetch metadata for unlisted tok
       "isTitleHidden": false,
       "isTitleNetworkName": true,
     },
-    "handleAssetChange": [MockFunction],
+    "handleAssetChange": [Function],
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -47,7 +47,7 @@ exports[`AssetPickerModal token filtering should filter tokens by address 1`] = 
       "isTitleHidden": false,
       "isTitleNetworkName": true,
     },
-    "handleAssetChange": [MockFunction],
+    "handleAssetChange": [Function],
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -77,7 +77,7 @@ exports[`AssetPickerModal token filtering should filter tokens by address 2`] = 
       "isTitleHidden": false,
       "isTitleNetworkName": true,
     },
-    "handleAssetChange": [MockFunction],
+    "handleAssetChange": [Function],
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -107,7 +107,7 @@ exports[`AssetPickerModal token filtering should filter tokens by chain when mul
       "isTitleHidden": true,
       "isTitleNetworkName": true,
     },
-    "handleAssetChange": [MockFunction],
+    "handleAssetChange": [Function],
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -147,7 +147,7 @@ exports[`AssetPickerModal token filtering should filter tokens by symbol 1`] = `
       "isTitleHidden": false,
       "isTitleNetworkName": true,
     },
-    "handleAssetChange": [MockFunction],
+    "handleAssetChange": [Function],
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -177,7 +177,7 @@ exports[`AssetPickerModal token filtering should handle case-insensitive search 
       "isTitleHidden": false,
       "isTitleNetworkName": true,
     },
-    "handleAssetChange": [MockFunction],
+    "handleAssetChange": [Function],
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -207,7 +207,7 @@ exports[`AssetPickerModal token filtering should handle case-insensitive search 
       "isTitleHidden": false,
       "isTitleNetworkName": true,
     },
-    "handleAssetChange": [MockFunction],
+    "handleAssetChange": [Function],
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -237,7 +237,7 @@ exports[`AssetPickerModal token filtering should only show tokens with balances 
       "isTitleHidden": false,
       "isTitleNetworkName": false,
     },
-    "handleAssetChange": [MockFunction],
+    "handleAssetChange": [Function],
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -277,7 +277,7 @@ exports[`AssetPickerModal token filtering should only show tokens with balances 
       "isTitleHidden": false,
       "isTitleNetworkName": false,
     },
-    "handleAssetChange": [MockFunction],
+    "handleAssetChange": [Function],
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -317,7 +317,7 @@ exports[`AssetPickerModal token filtering should render all tokens from multiple
       "isTitleHidden": false,
       "isTitleNetworkName": true,
     },
-    "handleAssetChange": [MockFunction],
+    "handleAssetChange": [Function],
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -385,7 +385,7 @@ exports[`AssetPickerModal token filtering should render all tokens from single c
       "isTitleHidden": true,
       "isTitleNetworkName": false,
     },
-    "handleAssetChange": [MockFunction],
+    "handleAssetChange": [Function],
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -425,7 +425,7 @@ exports[`AssetPickerModal token filtering should respect MAX_UNOWNED_TOKENS_REND
       "isTitleHidden": false,
       "isTitleNetworkName": true,
     },
-    "handleAssetChange": [MockFunction],
+    "handleAssetChange": [Function],
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -493,7 +493,7 @@ exports[`AssetPickerModal token filtering should show all tokens when search que
       "isTitleHidden": false,
       "isTitleNetworkName": true,
     },
-    "handleAssetChange": [MockFunction],
+    "handleAssetChange": [Function],
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -523,7 +523,7 @@ exports[`AssetPickerModal token filtering should show all tokens when search que
       "isTitleHidden": false,
       "isTitleNetworkName": true,
     },
-    "handleAssetChange": [MockFunction],
+    "handleAssetChange": [Function],
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -597,7 +597,7 @@ exports[`AssetPickerModal token filtering should show selected token first when 
       "isTitleHidden": false,
       "isTitleNetworkName": true,
     },
-    "handleAssetChange": [MockFunction],
+    "handleAssetChange": [Function],
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -671,7 +671,7 @@ exports[`AssetPickerModal token filtering should show selected token first when 
       "isTitleHidden": true,
       "isTitleNetworkName": false,
     },
-    "handleAssetChange": [MockFunction],
+    "handleAssetChange": [Function],
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {

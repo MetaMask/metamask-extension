@@ -8,15 +8,16 @@ import {
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { ThemeType } from '../../../shared/constants/preferences';
 import {
+  ASSET_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_ROUTE,
   CONNECTIONS,
   CROSS_CHAIN_SWAP_ROUTE,
+  IMPORT_SRP_ROUTE,
   DEFAULT_ROUTE,
   NOTIFICATIONS_ROUTE,
   ONBOARDING_ROUTE,
-  ONBOARDING_UNLOCK_ROUTE,
   PERMISSIONS,
   REVIEW_PERMISSIONS,
   SEND_ROUTE,
@@ -55,16 +56,6 @@ function onConfirmPage(props) {
     matchPath(location.pathname, {
       path: CONFIRM_TRANSACTION_ROUTE,
       exact: false,
-    }),
-  );
-}
-
-function onInitializationUnlockPage(props) {
-  const { location } = props;
-  return Boolean(
-    matchPath(location.pathname, {
-      path: ONBOARDING_UNLOCK_ROUTE,
-      exact: true,
     }),
   );
 }
@@ -132,7 +123,7 @@ export function hideAppHeader(props) {
     }),
   );
 
-  if (isInitializing && !onInitializationUnlockPage(props)) {
+  if (isInitializing) {
     return true;
   }
 
@@ -216,6 +207,17 @@ export function hideAppHeader(props) {
     return true;
   }
 
+  const isAssetsPage = Boolean(
+    matchPath(location.pathname, {
+      path: ASSET_ROUTE,
+      exact: false,
+    }),
+  );
+
+  if (isAssetsPage) {
+    return true;
+  }
+
   const isHandlingAddEthereumChainRequest = Boolean(
     matchPath(location.pathname, {
       path: CONFIRMATION_V_NEXT_ROUTE,
@@ -223,10 +225,18 @@ export function hideAppHeader(props) {
     }),
   );
 
+  const isImportSrpPage = Boolean(
+    matchPath(location.pathname, {
+      path: IMPORT_SRP_ROUTE,
+      exact: false,
+    }),
+  );
+
   return (
     isHandlingPermissionsRequest ||
     isHandlingAddEthereumChainRequest ||
-    isConfirmTransactionRoute(location.pathname)
+    isConfirmTransactionRoute(location.pathname) ||
+    isImportSrpPage
   );
 }
 

@@ -25,10 +25,11 @@ import { LOGIN_OPTION, LoginOptionType, LoginType } from './types';
 export default function WelcomeLogin({
   onLogin,
 }: {
-  onLogin: (loginType: LoginType, loginOption: string) => void;
+  onLogin: (loginType: LoginType, loginOption: string) => Promise<void>;
 }) {
   const t = useI18nContext();
   const [eventEmitter] = useState(new EventEmitter());
+  const [showLoginOptions, setShowLoginOptions] = useState(false);
   const [loginOption, setLoginOption] = useState<LoginOptionType | null>(null);
 
   const renderMascot = () => {
@@ -48,12 +49,12 @@ export default function WelcomeLogin({
   };
 
   const handleLogin = useCallback(
-    (loginType: LoginType) => {
+    async (loginType: LoginType) => {
       if (!loginOption) {
         return;
       }
-      setLoginOption(null);
-      onLogin(loginType, loginOption);
+      setShowLoginOptions(false);
+      await onLogin(loginType, loginOption);
     },
     [loginOption, onLogin],
   );
@@ -64,7 +65,7 @@ export default function WelcomeLogin({
       flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.spaceBetween}
       gap={4}
-      marginInline={'auto'}
+      marginInline="auto"
       marginTop={2}
       padding={6}
       className="welcome-login"
@@ -74,7 +75,7 @@ export default function WelcomeLogin({
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
-        justifyContent={JustifyContent.spaceBetween}
+        justifyContent={JustifyContent.center}
         className="welcome-login__content"
       >
         <Box
@@ -102,6 +103,7 @@ export default function WelcomeLogin({
           size={ButtonBaseSize.Lg}
           className="welcome-login__create-button"
           onClick={() => {
+            setShowLoginOptions(true);
             setLoginOption(LOGIN_OPTION.NEW);
           }}
         >
@@ -113,13 +115,14 @@ export default function WelcomeLogin({
           backgroundColor={BackgroundColor.transparent}
           className="welcome-login__import-button"
           onClick={() => {
+            setShowLoginOptions(true);
             setLoginOption(LOGIN_OPTION.EXISTING);
           }}
         >
           {t('onboardingImportWallet')}
         </ButtonBase>
       </Box>
-      {loginOption && (
+      {showLoginOptions && loginOption && (
         <LoginOptions
           loginOption={loginOption}
           onClose={() => {

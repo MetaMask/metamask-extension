@@ -14,6 +14,7 @@ exports[`SnapUIAssetSelector renders an asset selector 1`] = `
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+          style="overflow: hidden;"
         >
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--ellipsis snap-ui-renderer__selector snap-ui-renderer__asset-selector mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-lg"
@@ -119,6 +120,7 @@ exports[`SnapUIAssetSelector renders inside a field 1`] = `
       >
         <div
           class="mm-box snap-ui-renderer__field mm-box--display-flex mm-box--flex-direction-column"
+          style="overflow: hidden;"
         >
           <label
             class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"

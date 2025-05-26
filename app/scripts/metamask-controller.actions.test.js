@@ -212,18 +212,19 @@ describe('MetaMaskController', function () {
       const result2 = metamaskController.keyringController.state;
 
       // On restore, a new keyring metadata is generated.
-      expect(result1.keyringsMetadata[0].id).toBe(mockULIDs[0]);
-      expect(result2).toStrictEqual(
-        expect.objectContaining({
-          ...result1,
-          keyringsMetadata: [
-            {
+      expect(result1.keyrings[0].metadata.id).toBe(mockULIDs[0]);
+      expect(result2).toStrictEqual({
+        ...result1,
+        keyrings: [
+          {
+            ...result1.keyrings[0],
+            metadata: {
+              ...result1.keyrings[0].metadata,
               id: mockULIDs[1],
-              name: '',
             },
-          ],
-        }),
-      );
+          },
+        ],
+      });
     });
   });
 

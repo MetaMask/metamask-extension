@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import React, { Component, useEffect, useState } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { SeedlessOnboardingControllerError } from '@metamask/seedless-onboarding-controller';
 import {
@@ -23,6 +23,7 @@ import {
   AlignItems,
   FlexDirection,
   TextAlign,
+  BackgroundColor,
 } from '../../helpers/constants/design-system';
 import Mascot from '../../components/ui/mascot';
 import {
@@ -38,49 +39,7 @@ import { isFlask, isBeta } from '../../helpers/utils/build-types';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
-
-const formatTimeToUnlock = (timeInSeconds) => {
-  if (timeInSeconds <= 60) {
-    return `${timeInSeconds}s`;
-  } else if (timeInSeconds < 3600) {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = timeInSeconds % 60;
-    return `${minutes}m:${seconds.toString().padStart(2, '0')}s`;
-  }
-  const hours = Math.floor(timeInSeconds / 3600);
-  const minutes = Math.floor((timeInSeconds % 3600) / 60);
-  const seconds = timeInSeconds % 60;
-  return `${hours}hr:${minutes.toString().padStart(2, '0')}m:${seconds
-    .toString()
-    .padStart(2, '0')}s`;
-};
-
-function Counter({ remainingTime, unlock }) {
-  const [time, setTime] = useState(remainingTime);
-  const [timeDisplay, setTimeDisplay] = useState(
-    formatTimeToUnlock(remainingTime),
-  );
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const newTime = time - 1;
-      if (newTime < 0) {
-        unlock();
-      } else {
-        setTime(newTime);
-        setTimeDisplay(formatTimeToUnlock(newTime));
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [time, unlock]);
-
-  return <span>{timeDisplay}</span>;
-}
-
-Counter.propTypes = {
-  remainingTime: PropTypes.number.isRequired,
-  unlock: PropTypes.func.isRequired,
-};
+import FormattedCounter from './formatted-counter';
 
 export default class UnlockPage extends Component {
   static contextTypes = {
@@ -113,10 +72,6 @@ export default class UnlockPage extends Component {
      * Force update metamask data state
      */
     forceUpdateMetamaskState: PropTypes.func,
-    /**
-     * Whether social login is enabled
-     */
-    socialLoginEnabled: PropTypes.bool,
   };
 
   state = {
@@ -124,9 +79,8 @@ export default class UnlockPage extends Component {
     error: null,
     showResetPasswordModal: false,
     isLocked: false,
+    isSubmitting: false,
   };
-
-  submitting = false;
 
   failed_attempts = 0;
 
@@ -168,8 +122,7 @@ export default class UnlockPage extends Component {
       return;
     }
 
-    this.setState({ error: null });
-    this.submitting = true;
+    this.setState({ error: null, isSubmitting: true });
 
     try {
       await onSubmit(password);
@@ -187,6 +140,8 @@ export default class UnlockPage extends Component {
       );
     } catch (error) {
       await this.handleLoginError(error);
+    } finally {
+      this.setState({ isSubmitting: false });
     }
   };
 
@@ -213,7 +168,7 @@ export default class UnlockPage extends Component {
         } else {
           const initialRemainingTime = data.remainingTime;
           finalErrorMessage = t('unlockPageTooManyFailedAttempts', [
-            <Counter
+            <FormattedCounter
               key="unlockPageTooManyFailedAttempts"
               remainingTime={initialRemainingTime}
               unlock={() => this.setState({ isLocked: false, error: '' })}
@@ -242,7 +197,6 @@ export default class UnlockPage extends Component {
       });
     }
     this.setState({ error: finalErrorMessage, isLocked });
-    this.submitting = false;
   };
 
   handleInputChange(event) {
@@ -331,142 +285,173 @@ export default class UnlockPage extends Component {
   };
 
   onForgotPassword = () => {
-    const { socialLoginEnabled } = this.props;
-    if (socialLoginEnabled) {
-      this.setState({ showResetPasswordModal: true });
-    } else {
-      this.props.onRestore();
-    }
+    this.setState({ showResetPasswordModal: true });
   };
 
   render() {
-    const { password, error, isLocked, showResetPasswordModal } = this.state;
+    const { password, error, isLocked, isSubmitting, showResetPasswordModal } =
+      this.state;
     const { t } = this.context;
 
     const needHelpText = t('needHelpLinkText');
 
     return (
-      <div className="unlock-page__container">
-        <div className="unlock-page" data-testid="unlock-page">
-          <form className="unlock-page__form" onSubmit={this.handleSubmit}>
-            <div className="unlock-page__content">
-              {showResetPasswordModal && (
-                <ResetPasswordModal
-                  onClose={() =>
-                    this.setState({ showResetPasswordModal: false })
-                  }
-                />
-              )}
-              <div className="unlock-page__mascot-container">
-                {this.renderMascot()}
-                {isBeta() ? (
-                  <div className="unlock-page__mascot-container__beta">
-                    {t('beta')}
-                  </div>
-                ) : null}
-              </div>
-              <Text
-                data-testid="unlock-page-title"
-                as="h1"
-                variant={TextVariant.headingLg}
-                marginTop={1}
-                marginBottom={2}
-                color={TextColor.textDefault}
-              >
-                {t('welcomeBack')}
-              </Text>
-              <FormTextField
-                value={password}
-                id="password"
-                label={
-                  <Box
-                    display={Display.Flex}
-                    width={BlockSize.Full}
-                    justifyContent={JustifyContent.spaceBetween}
-                    alignItems={AlignItems.center}
-                    marginBottom={1}
-                  >
-                    <Text variant={TextVariant.bodyMdMedium}>
-                      {t('password')}
-                    </Text>
-                  </Box>
-                }
-                placeholder={t('enterPassword')}
-                size={FormTextFieldSize.Lg}
-                inputProps={{
-                  'data-testid': 'unlock-password',
-                  type: InputType.Password,
-                }}
-                onChange={(event) => this.handleInputChange(event)}
-                error={Boolean(error)}
-                helpText={this.renderHelpText()}
-                autoComplete="current-password"
-                autoFocus
-                disabled={isLocked}
-                width={BlockSize.Full}
-                textFieldProps={{
-                  borderRadius: BorderRadius.LG,
-                }}
-              />
-            </div>
-            <div className="unlock-page__footer">
-              <Box
-                className="unlock-page__buttons"
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                width={BlockSize.Full}
-                gap={4}
-              >
-                <Button
-                  variant={ButtonVariant.Primary}
-                  size={ButtonSize.Lg}
-                  block
-                  type="submit"
-                  data-testid="unlock-submit"
-                  disabled={!password || isLocked}
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        justifyContent={JustifyContent.center}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        width={BlockSize.Full}
+        height={BlockSize.Full}
+        marginTop={0}
+        marginBottom="auto"
+        marginInline={0}
+        className="unlock-page__container"
+      >
+        {showResetPasswordModal && (
+          <ResetPasswordModal
+            onClose={() => this.setState({ showResetPasswordModal: false })}
+            onRestore={() => this.props.onRestore()}
+          />
+        )}
+        <Box
+          as="form"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.spaceBetween}
+          alignItems={AlignItems.center}
+          margin="auto"
+          padding={6}
+          width={BlockSize.Full}
+          height={BlockSize.Full}
+          borderRadius={BorderRadius.LG}
+          gap={6}
+          className="unlock-page"
+          data-testid="unlock-page"
+          onSubmit={this.handleSubmit}
+        >
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            width={BlockSize.Full}
+            alignItems={AlignItems.center}
+          >
+            <Box marginTop={6} className="unlock-page__mascot-container">
+              {this.renderMascot()}
+              {isBeta() ? (
+                <Box className="unlock-page__mascot-container__beta">
+                  {t('beta')}
+                </Box>
+              ) : null}
+            </Box>
+            <Text
+              data-testid="unlock-page-title"
+              as="h1"
+              variant={TextVariant.headingLg}
+              marginTop={1}
+              marginBottom={2}
+              color={TextColor.textDefault}
+            >
+              {t('welcomeBack')}
+            </Text>
+            <FormTextField
+              value={password}
+              id="password"
+              label={
+                <Box
+                  display={Display.Flex}
+                  width={BlockSize.Full}
+                  justifyContent={JustifyContent.spaceBetween}
+                  alignItems={AlignItems.center}
+                  marginBottom={1}
                 >
-                  {this.context.t('unlock')}
-                </Button>
-                <ButtonLink
-                  data-testid="unlock-forgot-password-button"
-                  key="import-account"
-                  onClick={() => this.onForgotPassword()}
+                  <Text variant={TextVariant.bodyMdMedium}>
+                    {t('password')}
+                  </Text>
+                </Box>
+              }
+              placeholder={t('enterPassword')}
+              size={FormTextFieldSize.Lg}
+              inputProps={{
+                'data-testid': 'unlock-password',
+                type: InputType.Password,
+              }}
+              onChange={(event) => this.handleInputChange(event)}
+              error={Boolean(error)}
+              helpText={this.renderHelpText()}
+              autoComplete="current-password"
+              autoFocus
+              disabled={isLocked}
+              width={BlockSize.Full}
+              textFieldProps={{
+                borderRadius: BorderRadius.LG,
+              }}
+            />
+          </Box>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            width={BlockSize.Full}
+            alignItems={AlignItems.center}
+          >
+            <Box
+              className="unlock-page__buttons"
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              width={BlockSize.Full}
+              gap={4}
+            >
+              <Button
+                variant={ButtonVariant.Primary}
+                size={ButtonSize.Lg}
+                block
+                type="submit"
+                data-testid="unlock-submit"
+                disabled={!password || isLocked || isSubmitting}
+                loading={isSubmitting}
+              >
+                {this.context.t('unlock')}
+              </Button>
+              <ButtonLink
+                data-testid="unlock-forgot-password-button"
+                key="import-account"
+                type="button"
+                onClick={() => this.onForgotPassword()}
+              >
+                {t('forgotPassword')}
+              </ButtonLink>
+            </Box>
+            <Box marginTop={6} className="unlock-page__support">
+              {t('needHelp', [
+                <a
+                  href={SUPPORT_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  key="need-help-link"
+                  onClick={() => {
+                    this.context.trackEvent(
+                      {
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.SupportLinkClicked,
+                        properties: {
+                          url: SUPPORT_LINK,
+                        },
+                      },
+                      {
+                        contextPropsIntoEventProperties: [
+                          MetaMetricsContextProp.PageTitle,
+                        ],
+                      },
+                    );
+                  }}
                 >
-                  {t('forgotPassword')}
-                </ButtonLink>
-              </Box>
-              <div className="unlock-page__support">
-                {t('needHelp', [
-                  <a
-                    href={SUPPORT_LINK}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    key="need-help-link"
-                    onClick={() => {
-                      this.context.trackEvent(
-                        {
-                          category: MetaMetricsEventCategory.Navigation,
-                          event: MetaMetricsEventName.SupportLinkClicked,
-                          properties: {
-                            url: SUPPORT_LINK,
-                          },
-                        },
-                        {
-                          contextPropsIntoEventProperties: [
-                            MetaMetricsContextProp.PageTitle,
-                          ],
-                        },
-                      );
-                    }}
-                  >
-                    {needHelpText}
-                  </a>,
-                ])}
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
+                  {needHelpText}
+                </a>,
+              ])}
+            </Box>
+          </Box>
+        </Box>
+      </Box>
     );
   }
 }

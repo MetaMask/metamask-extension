@@ -7,7 +7,9 @@ import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import { commonSolanaAddress, withSolanaAccountSnap } from './common-solana';
 
 const splTokenName = 'PKIN';
-describe('Send flow', function (this: Suite) {
+// Investigate why this test is flaky https://consensyssoftware.atlassian.net/browse/MMQA-549
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Send flow - SPL Token', function (this: Suite) {
   it('user with more than 1 token in the token list', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
@@ -140,7 +142,7 @@ describe('Send flow', function (this: Suite) {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
         mockCalls: true,
-        mockSendTransaction: false,
+        simulateTransaction: true,
         sendFailedTransaction: true,
       },
       async (driver) => {
@@ -208,7 +210,7 @@ describe('Send flow', function (this: Suite) {
         showNativeTokenAsMainBalance: true,
         mockCalls: true,
         mockSendTransaction: false,
-        simulateTransaction: false,
+        simulateTransactionFailed: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);

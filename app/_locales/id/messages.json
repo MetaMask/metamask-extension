@@ -68,13 +68,6 @@
     "message": "Saya telah membaca dan menyetujui $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Akses dompet Anda dengan Frasa Pemulihan Rahasia"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask tidak dapat memulihkan kata sandi Anda. Kami akan menggunakan Frasa Pemulihan Rahasia untuk memvalidasi kepemilikan Anda, memulihkan dompet Anda, dan mengatur kata sandi baru. Pertama, masukkan Frasa Pemulihan Rahasia yang diberikan saat membuat dompet. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Mengakses kamera Anda..."
   },
@@ -169,9 +162,6 @@
   },
   "addBitcoinAccountLabel": {
     "message": "Akun Bitcoin (Beta)"
-  },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Akun Bitcoin (Testnet)"
   },
   "addBlockExplorer": {
     "message": "Tambahkan block explorer"
@@ -336,10 +326,6 @@
   },
   "advancedPriorityFeeToolTip": {
     "message": "Biaya prioritas (alias “tip penambang”) langsung masuk ke penambang dan memberi insentif kepada mereka untuk memprioritaskan transaksi Anda."
-  },
-  "agreeTermsOfUse": {
-    "message": "Saya menyetujui $1 MetaMask",
-    "description": "$1 is the `terms` link"
   },
   "airDropPatternDescription": {
     "message": "Riwayat token on-chain menampilkan kejadian sebelumnya mengenai aktivitas airdrop yang mencurigakan."
@@ -661,22 +647,6 @@
   "billionAbbreviation": {
     "message": "M",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Mengaktifkan fitur ini akan memberi Anda opsi untuk menambahkan Akun Bitcoin ke Ekstensi MetaMask yang berasal dari Frasa Pemulihan Rahasia yang ada. Ini merupakan fitur Beta eksperimental, jadi Anda harus menggunakannya dengan risiko yang ditanggung sendiri. Untuk memberikan masukan seputar pengalaman Bitcoin baru ini, isi $1 ini.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Aktifkan \"Tambahkan akun Bitcoin baru (Beta)\""
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Mengaktifkan fitur ini akan memberi Anda opsi untuk menambahkan Akun Bitcoin bagi jaringan uji."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Aktifkan \"Tambahkan akun Bitcoin baru (Testnet)\""
   },
   "blockExplorerAccountAction": {
     "message": "Akun",
@@ -1133,9 +1103,6 @@
   "confusingEnsDomain": {
     "message": "Kami telah mendeteksi karakter yang membingungkan di nama ENS. Periksa nama ENS untuk menghindari kemungkinan penipuan."
   },
-  "congratulations": {
-    "message": "Selamat!"
-  },
   "connect": {
     "message": "Hubungkan"
   },
@@ -1321,9 +1288,6 @@
   "createNewAccountHeader": {
     "message": "Buat akun baru"
   },
-  "createNewWallet": {
-    "message": "Buat dompet baru"
-  },
   "createPassword": {
     "message": "Buat kata sandi"
   },
@@ -1338,10 +1302,6 @@
   },
   "creatorAddress": {
     "message": "Alamat pembuat"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Ini mencerminkan nilai seluruh token yang Anda miliki di semua jaringan. Jika Anda lebih suka melihat nilai ini dalam ETH atau mata uang lainnya, pilih $1.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "Bertukar antar jaringan dengan Portfolio MetaMask"
@@ -2183,9 +2143,6 @@
   "genericExplorerView": {
     "message": "Lihat akun di $1"
   },
-  "goBack": {
-    "message": "Kembali"
-  },
   "goToSite": {
     "message": "Buka situs"
   },
@@ -2241,9 +2198,6 @@
   },
   "hideAdvancedDetails": {
     "message": "Sembunyikan detail lanjutan"
-  },
-  "hideSeedPhrase": {
-    "message": "Sembunyikan frasa seed"
   },
   "hideSentitiveInfo": {
     "message": "Sembunyikan informasi sensitif"
@@ -2341,10 +2295,6 @@
   "id": {
     "message": "ID"
   },
-  "ifYouGetLockedOut": {
-    "message": "Dana akan hilang jika Anda terkunci dari aplikasi atau menggunakan perangkat baru. Pastikan untuk mencadangkan Frasa Pemulihan Rahasia di $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "Abaikan semua"
   },
@@ -2378,9 +2328,6 @@
   },
   "importAccountMsg": {
     "message": "Akun yang diimpor tidak akan ditautkan dengan Frasa Pemulihan Rahasia MetaMask Anda. Pelajari selengkapnya tentang akun yang diimpor"
-  },
-  "importMyWallet": {
-    "message": "Impor dompet saya"
   },
   "importNFT": {
     "message": "Impor NFT"
@@ -2585,10 +2532,6 @@
   "jsonFile": {
     "message": "File JSON",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Simpan pengingat Frasa Pemulihan Rahasia di tempat yang aman. Jika hilang, tidak ada yang bisa membantu Anda mendapatkannya kembali. Lebih buruknya, dompet Anda tidak dapat diakses lagi. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Nama akun"
@@ -3586,9 +3529,6 @@
   "onboardingMetametricsDescription": {
     "message": "Kami ingin mengumpulkan data penggunaan dasar dan diagnostik untuk meningkatkan MetaMask. Pahami bahwa kami tidak pernah menjual data yang Anda berikan di sini."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Saat kami mengumpulkan metrik, maka akan selalu..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Kami akan memberitahukan keputusan untuk menggunakan data ini dengan tujuan lain. Anda dapat meninjau $1 kami untuk informasi selengkapnya. Ingat, Anda dapat membuka pengaturan dan memilih keluar setiap saat.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3617,29 +3557,11 @@
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opsional:"
   },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Pelajari cara kami melindungi privasi Anda saat mengumpulkan data penggunaan untuk profil Anda."
-  },
   "onboardingMetametricsTitle": {
     "message": "Bantu kami meningkatkan MetaMask"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Kami akan menggunakan data ini untuk mempelajari cara Anda berinteraksi dengan komunikasi pemasaran. Kami mungkin akan membagikan berita yang relevan (seperti fitur produk)."
-  },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Akses penuh"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Ekstensi ini dapat melihat dan mengubah informasi"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "di situs ini."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Ekstensi"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Klik ikon ekstensi browser"
   },
   "onboardingPinExtensionDescription": {
     "message": "Sematkan MetaMask pada browser Anda agar dapat diakses dan memudahkan dalam melihat konfirmasi transaksi."
@@ -3648,16 +3570,8 @@
     "message": "Anda dapat membuka MetaMask dengan mengeklik ekstensi dan mengakses dompet Anda dalam 1 klik."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Klik ikon ekstensi browser untuk mengaksesnya secara langsung"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "Sematkan MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Klik ikon ekstensi browser untuk mengaksesnya secara langsung",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Pemasangan MetaMask Anda selesai!"
@@ -3719,9 +3633,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Kata sandi kurang panjang"
-  },
-  "passwordSetupDetails": {
-    "message": "Kata sandi ini akan membuka dompet MetaMask Anda hanya pada perangkat ini. MetaMask tidak dapat memulihkan kata sandi ini."
   },
   "passwordStrength": {
     "message": "Kekuatan kata sandi: $1",
@@ -4300,12 +4211,6 @@
   "rejected": {
     "message": "Ditolak"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Ingat, jika Anda kehilangan Frasa Pemulihan Rahasia, akses ke dompet Anda akan hilang. $1 untuk menyimpan rangkaian kata-kata ini dengan aman sehingga Anda dapat mengakses dana setiap saat."
-  },
-  "reminderSet": {
-    "message": "Pengingat diatur!"
-  },
   "remove": {
     "message": "Hapus"
   },
@@ -4420,9 +4325,6 @@
   "reusedTokenNameWarning": {
     "message": "Token di sini menggunakan kembali simbol dari token lain yang Anda lihat, ini bisa jadi membingungkan atau menipu."
   },
-  "revealSecretRecoveryPhrase": {
-    "message": "Tampilkan Frasa Pemulihan Rahasia"
-  },
   "revealSeedWords": {
     "message": "Tampilkan Frasa Pemulihan Rahasia"
   },
@@ -4459,9 +4361,6 @@
   },
   "revealSensitiveContent": {
     "message": "Tampilkan konten sensitif"
-  },
-  "revealTheSeedPhrase": {
-    "message": "Ungkap frasa seed"
   },
   "review": {
     "message": "Tinjau"
@@ -4556,9 +4455,6 @@
   "securityMessageLinkForNetworks": {
     "message": "penipuan jaringan dan risiko keamanan"
   },
-  "securityPrivacyPath": {
-    "message": "Pengaturan > Keamanan & Privasi."
-  },
   "securityProviderPoweredBy": {
     "message": "Didukung oleh $1",
     "description": "The security provider that is providing data"
@@ -4570,53 +4466,11 @@
   "seeDetails": {
     "message": "Lihat detailnya"
   },
-  "seedPhraseConfirm": {
-    "message": "Konfirmasikan Frasa Pemulihan Rahasia"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Konfirmasikan Frasa Pemulihan Rahasia"
-  },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Ingatkan saya nanti (tidak direkomendasikan)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Amankan dompet saya (direkomendasikan)"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Tuliskan dan simpan di beberapa tempat rahasia."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Simpan di deposit box yang aman."
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Frasa Pemulihan Rahasia Anda adalah “kunci master” ke dompet dan dana Anda"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Jika seseorang menanyakan frasa pemulihan Anda, kemungkinan mereka akan mencoba menipu dan mencuri dana di dompet Anda"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Jangan pernah membagikan Frasa Pemulihan Rahasia Anda bahkan kepada MetaMask sekali pun!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Apa itu Frasa Pemulihan Rahasia?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Haruskah saya membagikan Frasa Pemulihan Rahasia saya?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Bagaimana cara menyimpan Frasa Pemulihan Rahasia saya?"
-  },
   "seedPhraseIntroTitle": {
     "message": "Amankan dompet Anda"
   },
   "seedPhraseReq": {
     "message": "Frasa Pemulihan Rahasia berisi 12, 15, 18, 21, atau 24 kata"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Tuliskan Frasa Pemulihan Rahasia 12 kata ini, simpan di tempat yang aman dan hanya Anda yang dapat mengaksesnya."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Tuliskan Frasa Pemulihan Rahasia Anda"
   },
   "select": {
     "message": "Pilih"
@@ -4731,9 +4585,6 @@
   },
   "settings": {
     "message": "Pengaturan"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "Pengaturan dioptimalkan untuk kemudahan penggunaan dan keamanan. Ubah pengaturan ini kapan saja."
   },
   "settingsSearchMatchingNotFound": {
     "message": "Tidak menemukan hasil yang cocok."
@@ -4888,9 +4739,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "Lewati"
   },
   "skipAccountSecurity": {
     "message": "Lewati keamanan akun?"
@@ -5947,9 +5795,6 @@
   "time": {
     "message": "Waktu"
   },
-  "tips": {
-    "message": "Kiat"
-  },
   "tipsForUsingAWallet": {
     "message": "Tip menggunakan dompet"
   },
@@ -6227,9 +6072,6 @@
   "unlock": {
     "message": "Buka"
   },
-  "unlockMessage": {
-    "message": "Web terdesentralisasi menunggu"
-  },
   "unpin": {
     "message": "Batal semat"
   },
@@ -6390,10 +6232,6 @@
   "walletConnectionGuide": {
     "message": "panduan koneksi dompet perangkat keras kami"
   },
-  "walletProtectedAndReadyToUse": {
-    "message": "Dompet Anda terlindungi dan siap digunakan. Temukan Frasa Pemulihan Rahasia di $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "wantToAddThisNetwork": {
     "message": "Ingin menambahkan jaringan ini?"
   },
@@ -6439,23 +6277,8 @@
   "welcomeBack": {
     "message": "Selamat datang kembali!"
   },
-  "welcomeExploreDescription": {
-    "message": "Simpan, kirim, dan gunakan mata uang dan aset kripto."
-  },
-  "welcomeExploreTitle": {
-    "message": "Jelajahi aplikasi terdesentralisasi"
-  },
-  "welcomeLoginDescription": {
-    "message": "Gunakan MetaMask Anda untuk masuk ke aplikasi terdesentralisasi. Tidak perlu mendaftar."
-  },
-  "welcomeLoginTitle": {
-    "message": "Ucapkan halo pada dompet Anda"
-  },
   "welcomeToMetaMask": {
     "message": "Mari kita mulai"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "MetaMask merupakan dompet aman yang dipercaya oleh jutaan orang, yang membuat dunia web3 dapat diakses oleh semua orang."
   },
   "whatsThis": {
     "message": "Apa ini?"
@@ -6492,9 +6315,6 @@
   },
   "yourBalance": {
     "message": "Saldo Anda"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Saldo Anda diagregasi"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT Anda mungkin berisiko"
