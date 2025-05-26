@@ -1385,10 +1385,7 @@ export default class MetamaskController extends EventEmitter {
 
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
             // importing multiple SRPs on social login rehydration
-
-            ///: BEGIN:ONLY_INCLUDE_IF(solana)
-            await this._addSolanaAccountsWithBalances();
-            ///: END:ONLY_INCLUDE_IF
+            await this._importAccountsWithBalances();
           } else {
             await this._addAccountsWithBalance();
           }
@@ -5083,7 +5080,7 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.setSelectedAccount(account.id);
       }
 
-      await this._addAccountsWithBalance(id);
+      await this._addAccountsWithBalance(id, shouldImportSolanaAccount);
 
       return newAccountAddress;
     } finally {
@@ -5225,14 +5222,6 @@ export default class MetamaskController extends EventEmitter {
       if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
         // if the social login flow is completed, update the SocialBackupMetadataState with the restored seed phrase
         this.seedlessOnboardingController.updateBackupMetadataState({
-          keyringId: this.keyringController.state.keyringsMetadata[0].id,
-          seedPhrase: seedPhraseAsUint8Array,
-        });
-      }
-
-      if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-        // if the social login flow is completed, update the SocialBackupMetadataState with the restored seed phrase
-        this.seedlessOnboardingController.updateBackupMetadataState({
           keyringId: this.keyringController.state.keyrings[0].metadata.id,
           seedPhrase: seedPhraseAsUint8Array,
         });
@@ -5258,7 +5247,14 @@ export default class MetamaskController extends EventEmitter {
   }
   ///: END:ONLY_INCLUDE_IF
 
-  async _addAccountsWithBalance(keyringId) {
+  /**
+   * Adds accounts with balances to the keyring.
+   *
+   * @param {string} keyringId - The Optional ID of the keyring to add the accounts to.
+   * @param {boolean} shouldImportSolanaAccount - Whether to import Solana accounts.
+   * For the context, we do not need to import the Solana account if the onboarding flow has not completed yet during the social login import flow.
+   */
+  async _addAccountsWithBalance(keyringId, shouldImportSolanaAccount = true) {
     try {
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
@@ -5328,12 +5324,14 @@ export default class MetamaskController extends EventEmitter {
         );
       }
       ///: BEGIN:ONLY_INCLUDE_IF(solana)
-      const client = await this._getSolanaWalletSnapClient();
-      const solanaAccounts = await client.discoverAccounts(entropySource);
+      if (shouldImportSolanaAccount) {
+        const client = await this._getSolanaWalletSnapClient();
+        const solanaAccounts = await client.discoverAccounts(entropySource);
 
-      // If none accounts got discovered, we still create the first (default) one.
-      if (solanaAccounts.length === 0) {
-        await this._addSolanaAccount(entropySource);
+        // If none accounts got discovered, we still create the first (default) one.
+        if (solanaAccounts.length === 0) {
+          await this._addSolanaAccount(entropySource);
+        }
       }
       ///: END:ONLY_INCLUDE_IF
     } catch (e) {
@@ -5346,31 +5344,29 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Adds Solana accounts to the keyring.
-   *
-   * This method also adds the accounts with balances to the account list.
+   * Imports accounts with balances to the keyring.
    */
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  async _addSolanaAccountsWithBalances() {
-    const { keyringsMetadata } = this.keyringController.state;
+  async _importAccountsWithBalances() {
+    const shouldImportSolanaAccount = true;
+    const { keyrings } = this.keyringController.state;
 
     // walk through all the keyrings and import the solana accounts for the HD keyrings
-    for (const { id } of keyringsMetadata) {
+    for (const { metadata } of keyrings) {
       // check if the keyring is an HD keyring
       const isHdKeyring = await this.keyringController.withKeyring(
-        { id },
+        { id: metadata.id },
         async ({ keyring }) => {
           return keyring.type === KeyringTypes.hd;
         },
       );
       if (isHdKeyring) {
-        // add the solana account and the balance to the account list
-        await this._addSolanaAccount(id);
-        await this._addAccountsWithBalance(id);
+        await this._addAccountsWithBalance(
+          metadata.id,
+          shouldImportSolanaAccount,
+        );
       }
     }
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Adds Solana account to the keyring.
