@@ -33,23 +33,23 @@ describe('View DeFi details', function () {
         const defiTab = new DeFiTab(driver);
 
         // Empty state
-        await defiTab.check_tokenName('Start earning');
+        await defiTab.check_noPositionsMessageIsDisplayed();
         await defiTab.waitForStakeLink();
 
         // check ethereum positions present
         await switchToNetworkFlow(driver, 'Ethereum Mainnet');
         await defiTab.check_groupIconIsDisplayed();
-        await defiTab.check_tokenName('Aave V3');
-        await defiTab.check_tokenMarketValue('$14.74');
-        await defiTab.check_tokenName('Aave V2');
-        await defiTab.check_tokenMarketValue('$0.33');
+        await defiTab.defiTabCells.check_tokenName('Aave V3');
+        await defiTab.defiTabCells.check_tokenMarketValue('$14.74');
+        await defiTab.defiTabCells.check_tokenName('Aave V2');
+        await defiTab.defiTabCells.check_tokenMarketValue('$0.33');
 
         // switch popular networks and check linea positions present
         await defiTab.openNetworksFilterAndClickPopularNetworks();
-        await defiTab.check_tokenName('UniswapV3');
-        await defiTab.check_tokenMarketValue('$8.48');
-        await defiTab.check_tokenName('UniswapV2');
-        await defiTab.check_tokenMarketValue('$4.24');
+        await defiTab.defiTabCells.check_tokenName('UniswapV3');
+        await defiTab.defiTabCells.check_tokenMarketValue('$8.48');
+        await defiTab.defiTabCells.check_tokenName('UniswapV2');
+        await defiTab.defiTabCells.check_tokenMarketValue('$4.24');
 
         // click detils page for AaveV3
         await defiTab.clickIntoAaveV3DetailsPage();

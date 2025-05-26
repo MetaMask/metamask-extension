@@ -66,6 +66,10 @@ import IconButton from '../../ui/icon-button';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
+import {
+  getIsUnifiedUIEnabled,
+  type BridgeAppState,
+} from '../../../ducks/bridge/selectors';
 ///: END:ONLY_INCLUDE_IF
 import { ReceiveModal } from '../../multichain/receive-modal';
 import {
@@ -225,6 +229,10 @@ const CoinButtons = ({
   const { openBuyCryptoInPdapp } = useRamps();
 
   const { openBridgeExperience } = useBridging();
+
+  const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
+    getIsUnifiedUIEnabled(state, chainId),
+  );
   ///: END:ONLY_INCLUDE_IF
 
   const setCorrectChain = useCallback(async () => {
@@ -319,6 +327,10 @@ const CoinButtons = ({
   ///: END:ONLY_INCLUDE_IF
 
   const handleSwapOnClick = useCallback(async () => {
+    if (isUnifiedUIEnabled) {
+      handleBridgeOnClick(true);
+      return;
+    }
     ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
     if (multichainChainId === MultichainNetworks.SOLANA) {
       handleBridgeOnClick(true);
@@ -354,6 +366,7 @@ const CoinButtons = ({
     setCorrectChain,
     isSwapsChain,
     chainId,
+    isUnifiedUIEnabled,
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     usingHardwareWallet,
     defaultSwapsToken,
@@ -393,7 +406,9 @@ const CoinButtons = ({
         className={`${classPrefix}-overview__button`}
         iconButtonClassName={iconButtonClassName}
         disabled={
-          !isSwapsChain || !isSigningEnabled || !isExternalServicesEnabled
+          (!isSwapsChain && !isUnifiedUIEnabled) ||
+          !isSigningEnabled ||
+          !isExternalServicesEnabled
         }
         Icon={
           <Icon

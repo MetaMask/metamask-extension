@@ -46,15 +46,15 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
             class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
             <span>
-               
-              
+
+
               <span
                 class="mm-box mm-text mm-text--inherit mm-text--font-weight-bold mm-box--margin-top-0 mm-box--color-text-default"
               >
                 Private:
               </span>
                Clicks and views on the app are stored, but other details (like your public address) are not.
-               
+
             </span>
           </p>
         </div>
@@ -71,15 +71,15 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
             class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
             <span>
-               
-              
+
+
               <span
                 class="mm-box mm-text mm-text--inherit mm-text--font-weight-bold mm-box--color-text-default"
               >
                 General:
               </span>
                We temporarily use your IP address to detect a general location (like your country or region), but it's never stored.
-               
+
             </span>
           </p>
         </div>
@@ -96,15 +96,15 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
             class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
             <span>
-               
-              
+
+
               <span
                 class="mm-box mm-text mm-text--inherit mm-text--font-weight-bold mm-box--color-text-default"
               >
                 Optional:
               </span>
                You decide if you want to share or delete your usage data via settings any time.
-               
+
             </span>
           </p>
         </div>
@@ -137,8 +137,8 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
       class="mm-box mm-text onboarding-metametrics__terms mm-text--body-sm mm-text--text-align-left mm-box--padding-top-4 mm-box--color-text-alternative"
     >
       <span>
-         
-        We’ll let you know if we decide to use this data for other purposes. You can review our 
+
+        We’ll let you know if we decide to use this data for other purposes. You can review our
         <a
           href="https://metamask.io/privacy.html"
           rel="noopener noreferrer"
@@ -147,20 +147,20 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
           Privacy Policy
         </a>
          for more information. Remember, you can go to settings and opt out at any time.
-         
+
       </span>
     </p>
     <div
       class="mm-box onboarding-metametrics__buttons mm-box--margin-top-6 mm-box--margin-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
         data-testid="metametrics-no-thanks"
       >
         No thanks
       </button>
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
         data-testid="metametrics-i-agree"
         data-theme="light"
       >
@@ -217,15 +217,15 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
             class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
             <span>
-               
-              
+
+
               <span
                 class="mm-box mm-text mm-text--inherit mm-text--font-weight-bold mm-box--margin-top-0 mm-box--color-text-default"
               >
                 Private:
               </span>
                Clicks and views on the app are stored, but other details (like your public address) are not.
-               
+
             </span>
           </p>
         </div>
@@ -242,15 +242,15 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
             class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
             <span>
-               
-              
+
+
               <span
                 class="mm-box mm-text mm-text--inherit mm-text--font-weight-bold mm-box--color-text-default"
               >
                 General:
               </span>
                We temporarily use your IP address to detect a general location (like your country or region), but it's never stored.
-               
+
             </span>
           </p>
         </div>
@@ -267,15 +267,15 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
             class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
             <span>
-               
-              
+
+
               <span
                 class="mm-box mm-text mm-text--inherit mm-text--font-weight-bold mm-box--color-text-default"
               >
                 Optional:
               </span>
                You decide if you want to share or delete your usage data via settings any time.
-               
+
             </span>
           </p>
         </div>
@@ -308,8 +308,8 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
       class="mm-box mm-text onboarding-metametrics__terms mm-text--body-sm mm-text--text-align-left mm-box--padding-top-4 mm-box--color-text-alternative"
     >
       <span>
-         
-        We’ll let you know if we decide to use this data for other purposes. You can review our 
+
+        We’ll let you know if we decide to use this data for other purposes. You can review our
         <a
           href="https://metamask.io/privacy.html"
           rel="noopener noreferrer"
@@ -318,20 +318,20 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
           Privacy Policy
         </a>
          for more information. Remember, you can go to settings and opt out at any time.
-         
+
       </span>
     </p>
     <div
       class="mm-box onboarding-metametrics__buttons mm-box--margin-top-6 mm-box--margin-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
         data-testid="metametrics-no-thanks"
       >
         No thanks
       </button>
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
         data-testid="metametrics-i-agree"
         data-theme="light"
       >

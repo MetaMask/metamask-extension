@@ -110,27 +110,15 @@
         "conversionRate": 1700,
         "usdConversionRate": 1700
       },
-      "SepoliaETH": {
+      "MON": {
         "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
-      },
-      "LineaETH": {
-        "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
-      },
-      "MegaETH": {
-        "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
+        "conversionRate": 0.2,
+        "usdConversionRate": 0.2
       }
     },
     "throttledOrigins": "object",
     "connectedStatusPopoverHasBeenShown": true,
-    "conversionRates": "object",
     "defaultHomeActiveTabName": null,
-    "delegations": "object",
     "browserEnvironment": { "os": "string", "browser": "string" },
     "popupGasPollTokens": "object",
     "notificationGasPollTokens": "object",
@@ -154,9 +142,9 @@
     "surveyLinkLastClickedOrClosed": "object",
     "switchedNetworkNeverShowMessage": "boolean",
     "slides": "object",
+    "upgradeSplashPageAcknowledgedForAccounts": "object",
     "qrHardware": {},
     "nftsDropdownState": {},
-    "nonEvmTransactions": "object",
     "signatureSecurityAlertResponses": "object",
     "switchedNetworkDetails": null,
     "currentExtensionPopupId": "number",
@@ -166,11 +154,17 @@
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
+    "accountsAssets": "object",
+    "assetsMetadata": "object",
+    "balances": "object",
+    "nonEvmTransactions": "object",
+    "conversionRates": "object",
+    "historicalPrices": "object",
     "marketData": "object",
     "multichainNetworkConfigurationsByChainId": "object",
     "selectedMultichainNetworkChainId": "string",
-    "networksWithTransactionActivity": "object",
     "isEvmSelected": "boolean",
+    "networksWithTransactionActivity": "object",
     "selectedNetworkClientId": "string",
     "networksMetadata": {
       "networkConfigurationId": {
@@ -180,7 +174,6 @@
     },
     "networkConfigurationsByChainId": "object",
     "keyrings": "object",
-    "keyringsMetadata": "object",
     "selectedAddress": "string",
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
@@ -193,9 +186,6 @@
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
     "watchEthereumAccountEnabled": "boolean",
-    "balances": "object",
-    "bitcoinSupportEnabled": "boolean",
-    "bitcoinTestnetSupportEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "identities": "object",
@@ -215,7 +205,6 @@
     "isMultiAccountBalancesEnabled": "boolean",
     "showIncomingTransactions": "object",
     "manageInstitutionalWallets": "boolean",
-    "disabledUpgradeAccountsByChain": "object",
     "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
     "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
@@ -238,7 +227,6 @@
     "orderedNetworkList": { "0": "object", "1": "object" },
     "pinnedAccountList": {},
     "hiddenAccountList": {},
-    "historicalPrices": "object",
     "gasFeeEstimatesByChainId": {},
     "gasFeeEstimates": {},
     "estimatedGasFeeTimeBounds": {},
@@ -280,8 +268,8 @@
     "nameSources": "object",
     "userOperations": "object",
     "isSignedIn": "boolean",
-    "isProfileSyncingEnabled": null,
-    "isProfileSyncingUpdateLoading": "boolean",
+    "isBackupAndSyncEnabled": false,
+    "isBackupAndSyncUpdateLoading": "boolean",
     "isAccountSyncingEnabled": true,
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
     "isAccountSyncingReadyToBeDispatched": "boolean",
@@ -305,9 +293,8 @@
       "feature3": { "name": "groupC", "value": "valueC" }
     },
     "cacheTimestamp": "number",
+    "allDeFiPositions": "object",
     "accounts": "object",
-    "accountsAssets": "object",
-    "assetsMetadata": "object",
     "accountsByChainId": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
@@ -346,7 +333,6 @@
       "swapsStxMaxFeeMultiplier": 2,
       "swapsFeatureFlags": {}
     },
-    "assetExchangeRates": "object",
     "quoteRequest": {
       "srcTokenAddress": "0x0000000000000000000000000000000000000000"
     },
@@ -356,6 +342,7 @@
     "quotesLoadingStatus": null,
     "quoteFetchError": null,
     "quotesRefreshCount": 0,
+    "assetExchangeRates": "object",
     "txHistory": "object",
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",
@@ -366,9 +353,9 @@
     "methodData": "object",
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object",
+    "delegations": "object",
     "encryptionKey": "string",
-    "encryptionSalt": "string",
-    "allDeFiPositions": "object"
+    "encryptionSalt": "string"
   },
   "ramps": "object",
   "send": "object",
