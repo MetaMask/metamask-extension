@@ -177,6 +177,8 @@ describe('PatchStore', () => {
 
       patchStore.destroy();
 
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31863
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(composableStoreMock.removeListener).toHaveBeenCalledTimes(1);
     });
   });
