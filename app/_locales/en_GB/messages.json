@@ -4857,9 +4857,6 @@
   "securityChangePasswordTitle": {
     "message": "Password"
   },
-  "securityChangePasswordTitle": {
-    "message": "Password"
-  },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
   },
@@ -4887,19 +4884,16 @@
     "message": "Back up Secret Recovery Phrase"
   },
   "securitySrpDescription": {
-    "message": "Back up your Secret Recovery Phrase. Be sure to store your Secret Recovery Phrase in a safe place that only you can access and won’t forget."
+    "message": "Back up your Secret Recovery Phrase so you never lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget."
   },
   "securitySrpLabel": {
     "message": "SECRET RECOVERY PHRASES"
-  },
-  "securitySrpSocialLoginDescription": {
-    "message": "Back up your Secret Recovery Phrase and link your wallet to an Apple or Google account. Be sure to store your Secret Recovery Phrase in a safe place that only you can access and won’t forget."
   },
   "securitySrpTitle": {
     "message": "Secret Recovery Phrase"
   },
   "securitySrpWalletRecovery": {
-    "message": "Wallet recovery"
+    "message": "Manage recovery methods"
   },
   "seeAllPermissions": {
     "message": "See all permissions",
