@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import log from 'loglevel';
@@ -15,9 +15,7 @@ import {
 import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
 import {
   FUND_SLIDE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   BRIDGE_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
   CARD_SLIDE,
   CASH_SLIDE,
   REMOTE_MODE_SLIDE,
@@ -68,6 +66,7 @@ export const useCarouselManagement = ({
   const totalBalance = useSelector(getSelectedAccountCachedBalance);
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  const prevSlidesRef = useRef<CarouselSlide[]>();
 
   const hasZeroBalance = totalBalance === ZERO_BALANCE;
 
@@ -84,12 +83,10 @@ export const useCarouselManagement = ({
       undismissable: hasZeroBalance,
     };
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     if (!isSolanaAddress(selectedAccount.address)) {
       defaultSlides.push(SMART_ACCOUNT_UPGRADE_SLIDE);
     }
     defaultSlides.push(BRIDGE_SLIDE);
-    ///: END:ONLY_INCLUDE_IF
     defaultSlides.push(CARD_SLIDE);
     defaultSlides.push(CASH_SLIDE);
     defaultSlides.push(MULTI_SRP_SLIDE);
@@ -152,17 +149,20 @@ export const useCarouselManagement = ({
               isActive(slide, testDate ? new Date(testDate) : new Date()),
             );
           const mergedSlides = [...defaultSlides, ...checkedContentfulSlides];
-          if (!isEqual(slides, mergedSlides)) {
+          if (!isEqual(prevSlidesRef.current, mergedSlides)) {
             dispatch(updateSlides(mergedSlides));
+            prevSlidesRef.current = mergedSlides;
           }
         } catch (err) {
           log.warn('Failed to fetch Contentful slides:', err);
-          if (!isEqual(slides, defaultSlides)) {
+          if (!isEqual(prevSlidesRef.current, defaultSlides)) {
             dispatch(updateSlides(defaultSlides));
+            prevSlidesRef.current = defaultSlides;
           }
         }
-      } else if (!isEqual(slides, defaultSlides)) {
+      } else if (!isEqual(prevSlidesRef.current, defaultSlides)) {
         dispatch(updateSlides(defaultSlides));
+        prevSlidesRef.current = defaultSlides;
       }
     };
 

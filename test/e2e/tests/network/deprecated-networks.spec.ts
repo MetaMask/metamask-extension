@@ -1,38 +1,40 @@
-const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
-const {
-  withFixtures,
-  unlockWallet,
-  openDapp,
-  WINDOW_TITLES,
-} = require('../../helpers');
-const { CHAIN_IDS } = require('../../../../shared/constants/network');
+import { Suite } from 'mocha';
+import FixtureBuilder from '../../fixture-builder';
+import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { Mockttp } from '../../mock-e2e';
+import AddNetworkConfirmation from '../../page-objects/pages/confirmations/redesign/add-network-confirmations';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import Homepage from '../../page-objects/pages/home/homepage';
+import SelectNetwork from '../../page-objects/pages/dialog/select-network';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-describe('Deprecated networks', function () {
+describe('Deprecated networks', function (this: Suite) {
   it('User should not find goerli network when clicking on the network selector', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
+        await new HeaderNavbar(driver).clickSwitchNetworkDropDown();
 
-        await driver.clickElement('[data-testid="network-display"]');
-
-        const isGoerliNetworkPresent = await driver.isElementPresent(
-          '[data-testid="Goerli"]',
+        const selectNetworkDialog = new SelectNetwork(driver);
+        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.check_networkOptionIsDisplayed(
+          'Goerli',
+          false,
         );
-
-        assert.equal(isGoerliNetworkPresent, false);
       },
     );
   });
 
   it('Should show deprecation warning when switching to Arbitrum goerli testnet', async function () {
     const TEST_CHAIN_ID = CHAIN_IDS.ARBITRUM_GOERLI;
-    async function mockRPCURLAndChainId(mockServer) {
+    async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
           .forPost('https://responsive-rpc.test/')
@@ -54,13 +56,15 @@ describe('Deprecated networks', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({ useSafeChainsListValidation: false })
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
 
-        await openDapp(driver);
         await driver.executeScript(`
         var params = [{
           chainId: "${TEST_CHAIN_ID}",
@@ -78,32 +82,15 @@ describe('Deprecated networks', function () {
           params
         })
       `);
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        const [extension] = windowHandles;
-
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const addNetworkConfirmation = new AddNetworkConfirmation(driver);
+        await addNetworkConfirmation.check_pageIsLoaded('Arbitrum Goerli');
+        await addNetworkConfirmation.approveAddNetwork();
         await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
+          WINDOW_TITLES.ExtensionInFullScreenView,
         );
-
-        await driver.clickElement({
-          tag: 'button',
-          text: 'Approve',
-        });
-
-        await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
-        const deprecationWarningText =
-          'Because of updates to the Ethereum system, the Goerli test network will be phased out soon.';
-        const isDeprecationWarningDisplayed = await driver.isElementPresent({
-          text: deprecationWarningText,
-        });
-
-        assert.equal(
-          isDeprecationWarningDisplayed,
-          true,
-          'Goerli deprecation warning is not displayed',
+        await new Homepage(driver).check_warningMessageIsDisplayed(
+          'Because of updates to the Ethereum system, the Goerli test network will be phased out soon.',
         );
       },
     );
@@ -111,7 +98,7 @@ describe('Deprecated networks', function () {
 
   it('Should show deprecation warning when switching to Optimism goerli testnet', async function () {
     const TEST_CHAIN_ID = CHAIN_IDS.OPTIMISM_GOERLI;
-    async function mockRPCURLAndChainId(mockServer) {
+    async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
           .forPost('https://responsive-rpc.test/')
@@ -133,13 +120,15 @@ describe('Deprecated networks', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({ useSafeChainsListValidation: false })
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
 
-        await openDapp(driver);
         await driver.executeScript(`
         var params = [{
           chainId: "${TEST_CHAIN_ID}",
@@ -157,32 +146,16 @@ describe('Deprecated networks', function () {
           params
         })
       `);
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        const [extension] = windowHandles;
 
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const addNetworkConfirmation = new AddNetworkConfirmation(driver);
+        await addNetworkConfirmation.check_pageIsLoaded('Optimism Goerli');
+        await addNetworkConfirmation.approveAddNetwork();
         await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
+          WINDOW_TITLES.ExtensionInFullScreenView,
         );
-
-        await driver.clickElement({
-          tag: 'button',
-          text: 'Approve',
-        });
-
-        await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
-        const deprecationWarningText =
-          'Because of updates to the Ethereum system, the Goerli test network will be phased out soon.';
-        const isDeprecationWarningDisplayed = await driver.isElementPresent({
-          text: deprecationWarningText,
-        });
-
-        assert.equal(
-          isDeprecationWarningDisplayed,
-          true,
-          'Goerli deprecation warning is not displayed',
+        await new Homepage(driver).check_warningMessageIsDisplayed(
+          'Because of updates to the Ethereum system, the Goerli test network will be phased out soon.',
         );
       },
     );
@@ -190,7 +163,7 @@ describe('Deprecated networks', function () {
 
   it('Should show deprecation warning when switching to Polygon mumbai', async function () {
     const TEST_CHAIN_ID = CHAIN_IDS.POLYGON_TESTNET;
-    async function mockRPCURLAndChainId(mockServer) {
+    async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
           .forPost('https://responsive-rpc.test/')
@@ -212,13 +185,15 @@ describe('Deprecated networks', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({ useSafeChainsListValidation: false })
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
 
-        await openDapp(driver);
         await driver.executeScript(`
         var params = [{
           chainId: "${TEST_CHAIN_ID}",
@@ -236,31 +211,16 @@ describe('Deprecated networks', function () {
           params
         })
       `);
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        const [extension] = windowHandles;
 
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const addNetworkConfirmation = new AddNetworkConfirmation(driver);
+        await addNetworkConfirmation.check_pageIsLoaded('Polygon Mumbai');
+        await addNetworkConfirmation.approveAddNetwork();
         await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
+          WINDOW_TITLES.ExtensionInFullScreenView,
         );
-
-        await driver.clickElement({
-          tag: 'button',
-          text: 'Approve',
-        });
-
-        await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
-        const deprecationWarningText = 'This network is deprecated';
-        const isDeprecationWarningDisplayed = await driver.isElementPresent({
-          text: deprecationWarningText,
-        });
-
-        assert.equal(
-          isDeprecationWarningDisplayed,
-          true,
-          'Goerli deprecation warning is not displayed',
+        await new Homepage(driver).check_warningMessageIsDisplayed(
+          'This network is deprecated',
         );
       },
     );

@@ -3422,10 +3422,6 @@
     "message": "交易 $1 失败！$2",
     "description": "Content of the browser notification that appears when a transaction fails"
   },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "交易失败！ $1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
-  },
   "notificationTransactionFailedTitle": {
     "message": "失败交易",
     "description": "Title of the browser notification that appears when a transaction fails"
