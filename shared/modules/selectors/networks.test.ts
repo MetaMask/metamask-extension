@@ -1,5 +1,6 @@
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
+import { CaipChainId } from '@metamask/utils';
 import mockState from '../../../test/data/mock-state.json';
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../constants/network';
 import {
@@ -28,8 +29,7 @@ const extendedMockState = {
           id: '499e262e-eed1-4743-b9bf-92b1a23b4a98',
           address: '7sN9JNHfJNcj6gNv3UgeGY6qpwHeA4pis1Sk2pskvGjQ',
           options: {
-            scope:
-              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' as `${string}:${string}`,
+            scope: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' as CaipChainId,
             entropySource: '01JN20TXMMZWAMCBGB8J6VA4HD',
             imported: false,
           },
@@ -43,7 +43,7 @@ const extendedMockState = {
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
             'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
             'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
-          ] as `${string}:${string}`[],
+          ] as CaipChainId[],
           metadata: {
             name: 'Solana Account 2',
             importTime: 1741868741042,
