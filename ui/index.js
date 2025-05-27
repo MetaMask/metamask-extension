@@ -94,7 +94,7 @@ export default async function launchMetamaskUi(opts) {
     backgroundConnection.getState.bind(backgroundConnection),
   );
 
-  const store = await startApp(metamaskState, backgroundConnection, opts);
+  const store = await startApp(metamaskState, opts);
 
   await backgroundConnection.startPatches();
 
@@ -107,15 +107,10 @@ export default async function launchMetamaskUi(opts) {
  * Method to setup initial redux store for the ui application
  *
  * @param {*} metamaskState - flatten background state
- * @param {*} backgroundConnection - rpc client connecting to the background process
  * @param {*} activeTab - active browser tab
  * @returns redux store
  */
-export async function setupInitialStore(
-  metamaskState,
-  backgroundConnection,
-  activeTab,
-) {
+export async function setupInitialStore(metamaskState, activeTab) {
   // parse opts
   if (!metamaskState.featureFlags) {
     metamaskState.featureFlags = {};
@@ -144,8 +139,6 @@ export async function setupInitialStore(
       en: enLocaleMessages,
     },
   };
-
-  connectToBackground(backgroundConnection);
 
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
     const { origin } = draftInitialState.activeTab;
@@ -207,7 +200,7 @@ export async function setupInitialStore(
   return store;
 }
 
-async function startApp(metamaskState, backgroundConnection, opts) {
+async function startApp(metamaskState, opts) {
   const { traceContext } = opts;
 
   const tags = getStartupTraceTags({ metamask: metamaskState });
@@ -218,8 +211,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       parentContext: traceContext,
       tags,
     },
-    () =>
-      setupInitialStore(metamaskState, backgroundConnection, opts.activeTab),
+    () => setupInitialStore(metamaskState, opts.activeTab),
   );
 
   // global metamask api - used by tooling
