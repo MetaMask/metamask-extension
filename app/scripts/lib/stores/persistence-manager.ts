@@ -220,14 +220,17 @@ export class PersistenceManager {
    * Retrieves the current state of the local store. If the store is empty,
    * it returns undefined. If the store is not open, it throws an error.
    *
-   * @param validateVault - A flag indicating whether to validate the vault
+   * @param options - An object containing options for the retrieval.
+   * @param options.validateVault - A flag indicating whether to validate the vault
    * @returns The current state of the local store or null if the store is empty.
    * @throws Error if the vault is missing and a backup vault is found in IndexedDB.
    * @throws Error if the local store is not open.
    */
-  async get(
-    validateVault: boolean,
-  ): Promise<MetaMaskStorageStructure | undefined> {
+  async get({
+    validateVault,
+  }: {
+    validateVault: boolean;
+  }): Promise<MetaMaskStorageStructure | undefined> {
     await this.open();
 
     return await navigator.locks.request(

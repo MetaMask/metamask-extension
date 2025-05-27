@@ -110,14 +110,14 @@ describe('PersistenceManager', () => {
   describe('get', () => {
     it('returns undefined and clears mostRecentRetrievedState if store returns empty', async () => {
       mockStoreGet.mockReturnValueOnce({});
-      const result = await manager.get(false);
+      const result = await manager.get({ validateVault: false });
       expect(result).toBeUndefined();
       expect(manager.mostRecentRetrievedState).toBeNull();
     });
 
     it('returns undefined if store returns null', async () => {
       mockStoreGet.mockReturnValueOnce(null);
-      const result = await manager.get(false);
+      const result = await manager.get({ validateVault: false });
       expect(result).toBeUndefined();
       expect(manager.mostRecentRetrievedState).toBeNull();
     });
@@ -125,7 +125,7 @@ describe('PersistenceManager', () => {
     it('updates mostRecentRetrievedState if extension has not been initialized', async () => {
       mockStoreGet.mockResolvedValueOnce({ data: MOCK_DATA });
 
-      const result = await manager.get(false);
+      const result = await manager.get({ validateVault: false });
       expect(result).toStrictEqual({ data: MOCK_DATA });
       expect(manager.mostRecentRetrievedState).toStrictEqual({
         data: MOCK_DATA,
@@ -135,7 +135,7 @@ describe('PersistenceManager', () => {
     it('does not overwrite mostRecentRetrievedState if already initialized', async () => {
       mockStoreGet.mockResolvedValueOnce({ data: MOCK_DATA });
       // First call to get -> sets isExtensionInitialized = false -> sets mostRecentRetrievedState
-      await manager.get(false);
+      await manager.get({ validateVault: false });
       // The act of calling set will set isExtensionInitialized to true
       manager.setMetadata({ version: 10 });
       await manager.set({ appState: { test: true } });
@@ -144,7 +144,7 @@ describe('PersistenceManager', () => {
       mockStoreGet.mockResolvedValueOnce({
         data: { config: { newData: true } },
       });
-      await manager.get(false);
+      await manager.get({ validateVault: false });
       expect(manager.mostRecentRetrievedState).toStrictEqual({
         data: MOCK_DATA,
       });
@@ -163,7 +163,7 @@ describe('PersistenceManager', () => {
       };
       mockStoreGet.mockResolvedValueOnce({ data: mockData });
 
-      const result = await manager.get(true);
+      const result = await manager.get({ validateVault: true });
       expect(result).toStrictEqual({ data: mockData });
       expect(manager.mostRecentRetrievedState).toStrictEqual({
         data: mockData,
@@ -180,7 +180,7 @@ describe('PersistenceManager', () => {
       };
       mockStoreGet.mockResolvedValueOnce({ data: mockData });
 
-      const result = await manager.get(true);
+      const result = await manager.get({ validateVault: true });
       expect(result).toStrictEqual({ data: mockData });
       expect(manager.mostRecentRetrievedState).toStrictEqual({
         data: mockData,
@@ -202,7 +202,9 @@ describe('PersistenceManager', () => {
         },
       });
 
-      await expect(manager.get(true)).rejects.toThrow(MISSING_VAULT_ERROR);
+      await expect(manager.get({ validateVault: true })).rejects.toThrow(
+        MISSING_VAULT_ERROR,
+      );
     });
   });
 
@@ -210,7 +212,7 @@ describe('PersistenceManager', () => {
     it('sets mostRecentRetrievedState to null if previously set', async () => {
       mockStoreGet.mockResolvedValueOnce({ data: MOCK_DATA });
 
-      await manager.get(false);
+      await manager.get({ validateVault: false });
       manager.cleanUpMostRecentRetrievedState();
       expect(manager.mostRecentRetrievedState).toBeNull();
     });
