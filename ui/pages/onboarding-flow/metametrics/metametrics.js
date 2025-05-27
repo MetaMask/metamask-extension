@@ -116,6 +116,7 @@ export default function OnboardingMetametrics() {
     e.preventDefault();
     await dispatch(setParticipateInMetaMetrics(false));
     await dispatch(setDataCollectionForMarketing(false));
+    discardBufferedTraces();
     history.push(nextRouteByBrowser);
   };
 

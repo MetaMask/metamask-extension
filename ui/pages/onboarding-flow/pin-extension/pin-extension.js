@@ -69,6 +69,7 @@ export default function OnboardingPinExtension() {
         new_wallet: firstTimeFlowType === FirstTimeFlowType.create,
       },
     });
+    await flushBufferedTraces();
     history.push(DEFAULT_ROUTE);
   };
 

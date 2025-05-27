@@ -97,6 +97,9 @@ const OP_DEFAULT = 'custom';
 const tracesByKey: Map<string, PendingTrace> = new Map();
 const durationsByName: { [name: string]: number } = {};
 
+let consentCache: boolean | null = null;
+const preConsentCallBuffer: PreConsentCallBuffer[] = [];
+
 if (process.env.IN_TEST && globalThis.stateHooks) {
   globalThis.stateHooks.getCustomTraces = () => durationsByName;
 }
@@ -493,4 +496,12 @@ function sentrySetMeasurement(
   }
 
   actual(key, value, unit);
+}
+
+/**
+ * Updates the consentCache by calling getMetaMetricsEnabled.
+ */
+async function updateIsConsentGivenForSentry(): Promise<boolean> {
+  consentCache = await getMetaMetricsEnabled();
+  return consentCache;
 }
