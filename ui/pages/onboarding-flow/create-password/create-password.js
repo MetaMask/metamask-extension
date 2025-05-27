@@ -125,7 +125,6 @@ export default function CreatePassword({
           await createNewAccount(password);
         }
         if (socialLoginFlow) {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           history.push(ONBOARDING_METAMETRICS);
         } else {
           history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
