@@ -2,18 +2,18 @@ import 'navigator.locks';
 import {
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
   METHOD_REPAIR_DATABASE,
-} from '../state-corruption-errors';
+} from '../../../../shared/constants/state-corruption';
 import {
   Backup,
   PersistenceError,
   PersistenceManager,
 } from '../stores/persistence-manager';
+import { CorruptionHandler } from './state-corruption-recovery';
 import {
   waitForMicrotask,
   PortPolyfill,
   generateScenarios,
 } from './state-corruption-recovery.test.ts-utils.test';
-import { CorruptionHandler } from './state-corruption-recovery';
 
 /**
  * Creates a connected mock Port objects with a background<->ui connection.
