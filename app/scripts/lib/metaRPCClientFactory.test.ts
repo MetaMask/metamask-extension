@@ -30,6 +30,7 @@ describe('metaRPCClientFactory', () => {
     const metaRPCClient = metaRPCClientFactory<FooApi>(streamTest);
     metaRPCClient.foo();
   });
+
   it('should be able to make an rpc request/response with the method and params', (done) => {
     const streamTest = createThroughStream();
     const metaRPCClient = metaRPCClientFactory<FooApi>(streamTest);
