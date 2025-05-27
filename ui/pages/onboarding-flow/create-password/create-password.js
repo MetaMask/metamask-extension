@@ -49,6 +49,13 @@ import { getPlatform } from '../../../../app/scripts/lib/util';
 import PasswordForm from '../../../components/app/password-form/password-form';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import { resetOAuthLoginState } from '../../../store/actions';
+import {
+  bufferedTrace,
+  TraceName,
+  TraceOperation,
+  bufferedEndTrace,
+} from '../../../../shared/lib/trace';
+import { useSentryTrace } from '../../../contexts/sentry-trace';
 
 export default function CreatePassword({
   createNewAccount,
@@ -83,6 +90,8 @@ export default function CreatePassword({
     analyticsIframeQuery,
   )}`;
 
+  const { onboardingParentContext } = useSentryTrace();
+
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {
       if (
@@ -101,11 +110,37 @@ export default function CreatePassword({
     newAccountCreationInProgress,
   ]);
 
+  useEffect(() => {
+    bufferedTrace({
+      name: TraceName.OnboardingPasswordSetupAttempt,
+      op: TraceOperation.OnboardingUserJourney,
+      parentContext: onboardingParentContext.current,
+    });
+    return () => {
+      bufferedEndTrace({ name: TraceName.OnboardingPasswordSetupAttempt });
+    };
+  }, [onboardingParentContext]);
+
   const handleBackClick = (event) => {
     event.preventDefault();
     // reset the social login state
     dispatch(resetOAuthLoginState());
     history.goBack();
+  };
+
+  const handlePasswordSetupError = (error) => {
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
+
+    bufferedTrace({
+      name: TraceName.OnboardingPasswordSetupError,
+      op: TraceOperation.OnboardingUserJourney,
+      parentContext: onboardingParentContext.current,
+      tags: { errorMessage },
+    });
+    bufferedEndTrace({ name: TraceName.OnboardingPasswordSetupError });
+
+    console.error(error);
   };
 
   const handleCreate = async (event) => {
@@ -125,10 +160,19 @@ export default function CreatePassword({
       secretRecoveryPhrase &&
       firstTimeFlowType === FirstTimeFlowType.import
     ) {
-      await importWithRecoveryPhrase(password, secretRecoveryPhrase);
-      getPlatform() === PLATFORM_FIREFOX
-        ? history.push(ONBOARDING_COMPLETION_ROUTE)
-        : history.push(ONBOARDING_METAMETRICS);
+      try {
+        await importWithRecoveryPhrase(password, secretRecoveryPhrase);
+
+        bufferedEndTrace({ name: TraceName.OnboardingExistingSrpImport });
+        bufferedEndTrace({ name: TraceName.OnboardingJourneyOverall });
+
+        getPlatform() === PLATFORM_FIREFOX
+          ? history.push(ONBOARDING_COMPLETION_ROUTE)
+          : history.push(ONBOARDING_METAMETRICS);
+      } catch (error) {
+        handlePasswordSetupError(error);
+        throw error;
+      }
     } else {
       // Otherwise we are in create new wallet flow
       try {
@@ -137,12 +181,15 @@ export default function CreatePassword({
           await createNewAccount(password);
         }
         if (socialLoginFlow) {
+          bufferedEndTrace({ name: TraceName.OnboardingNewSocialCreateWallet });
+          bufferedEndTrace({ name: TraceName.OnboardingJourneyOverall });
           history.push(ONBOARDING_METAMETRICS);
         } else {
           history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
         }
       } catch (error) {
-        console.error(error);
+        handlePasswordSetupError(error);
+        throw error;
       }
     }
   };

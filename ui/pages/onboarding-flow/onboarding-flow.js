@@ -39,6 +39,7 @@ import {
   getShowTermsOfUse,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import { useSentryTrace } from '../../contexts/sentry-trace';
 import Button from '../../components/ui/button';
 import RevealSRPModal from '../../components/app/reveal-SRP-modal';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -64,6 +65,11 @@ import {
   JustifyContent,
 } from '../../helpers/constants/design-system';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import {
+  TraceName,
+  TraceOperation,
+  bufferedTrace,
+} from '../../../shared/lib/trace';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -96,6 +102,7 @@ export default function OnboardingFlow() {
   const trackEvent = useContext(MetaMetricsContext);
   const isUnlocked = useSelector(getIsUnlocked);
   const showTermsOfUse = useSelector(getShowTermsOfUse);
+  const { updateOnboardingParentContext } = useSentryTrace();
 
   // If the user has not agreed to the terms of use, we show the banner
   // Otherwise, we show the login page
@@ -139,6 +146,14 @@ export default function OnboardingFlow() {
     history,
     showTermsOfUse,
   ]);
+
+  useEffect(() => {
+    const trace = bufferedTrace({
+      name: TraceName.OnboardingJourneyOverall,
+      op: TraceOperation.OnboardingUserJourney,
+    });
+    updateOnboardingParentContext(trace);
+  }, [updateOnboardingParentContext]);
 
   const handleCreateNewAccount = async (password) => {
     let newSecretRecoveryPhrase;
