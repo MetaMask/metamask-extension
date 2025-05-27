@@ -501,7 +501,7 @@ browser.runtime.onConnect.addListener(async (...args) => {
             // from the database, and then reinitialize the background script
             // with the first time state.
             await persistenceManager.reset();
-            await initBackground();
+            await initBackground(null);
           }
         },
       );
