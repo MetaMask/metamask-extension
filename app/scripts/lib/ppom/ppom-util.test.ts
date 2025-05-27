@@ -457,7 +457,7 @@ describe('PPOM Utils', () => {
   });
 
   describe('updateSecurityAlertResponse', () => {
-    it('adds response to app state controller if signature request already exisists', async () => {
+    it('adds response to app state controller if signature request already exists', async () => {
       const appStateController = createAppStateControllerMock();
 
       const signatureController = createSignatureControllerMock({
