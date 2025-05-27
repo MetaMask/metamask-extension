@@ -251,7 +251,7 @@ describe('metaRPCClientFactory', () => {
     const streamTest = createThroughStream();
     metaRPCClientFactory<FooApi>(streamTest);
 
-    // this would throw if we just tried parsing any data
+    // this would throw if we just tried parsing any `data` `metaRPCClientFactory` received as if it were what we expected.
     streamTest.write(undefined);
     streamTest.write('junk');
     streamTest.write(Buffer.from('junk'));
