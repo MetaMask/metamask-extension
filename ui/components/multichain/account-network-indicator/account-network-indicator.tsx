@@ -80,8 +80,7 @@ export const AccountNetworkIndicator = ({ scopes }: { scopes: string[] }) => {
                     color={TextColor.textMuted}
                     variant={TextVariant.bodyMdMedium}
                   >
-                    {networks?.length > 0 &&
-                      t('moreNetworks', [networks.length - TOOLTIP_LIMIT])}
+                    t('moreNetworks', [networks.length - TOOLTIP_LIMIT])
                   </Text>
                 </Box>
               ) : null}
@@ -95,14 +94,12 @@ export const AccountNetworkIndicator = ({ scopes }: { scopes: string[] }) => {
         size="small"
         title={t('alertDisableTooltip')}
       >
-        {networks?.length > 0 && (
-          <AvatarGroup
-            members={avatarNetworksData}
-            limit={AVATAR_GROUP_LIMIT}
-            avatarType={AvatarType.NETWORK}
-            size={AvatarTokenSize.Xl}
-          />
-        )}
+        <AvatarGroup
+          members={avatarNetworksData}
+          limit={AVATAR_GROUP_LIMIT}
+          avatarType={AvatarType.NETWORK}
+          size={AvatarTokenSize.Xl}
+        />
       </Tooltip>
     </Box>
   );
