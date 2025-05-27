@@ -51,6 +51,7 @@ describe('metaRPCClientFactory', () => {
       });
     });
   });
+
   it('should be able to make an rpc request/error with the method and params', async () => {
     const streamTest = createThroughStream();
     const metaRPCClient = metaRPCClientFactory<FooApi>(streamTest);
