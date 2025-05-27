@@ -34,7 +34,8 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import { getErrorHtml } from '../../shared/lib/error-utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
-import { METHOD_DISPLAY_STATE_CORRUPTION_ERROR } from '../../shared/constants/state-corruption';
+// eslint-disable-next-line import/no-restricted-paths
+import { METHOD_DISPLAY_STATE_CORRUPTION_ERROR } from './lib/state-corruption-errors';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
