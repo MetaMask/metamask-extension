@@ -82,7 +82,7 @@ export const BITCOIN_TOKEN_IMAGE_URL = './images/bitcoin-logo.svg';
 export const BITCOIN_TESTNET_TOKEN_IMAGE_URL =
   './images/bitcoin-testnet-logo.svg';
 export const BITCOIN_SIGNET_TOKEN_IMAGE_URL =
-  './images/bitcoin-testnet-logo.svg';
+  './images/bitcoin-signet-logo.svg';
 
 export const SOLANA_TOKEN_IMAGE_URL = './images/solana-logo.svg';
 export const SOLANA_TESTNET_IMAGE_URL = './images/solana-testnet-logo.svg';
