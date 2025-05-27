@@ -21,7 +21,7 @@ import log from 'loglevel';
 import launchMetaMaskUi, {
   updateBackgroundConnection,
   displayStateCorruptionError,
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../ui';
 import {
