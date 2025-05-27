@@ -21,6 +21,7 @@ import {
   FontWeight,
   IconColor,
   TextTransform,
+  BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -50,7 +51,11 @@ export const RevealSrpList = () => {
           >
             {t('securitySocialLoginLabel', [socialLoginType])}
           </Text>
-          <Card className="srp-reveal-list__social-login-card">
+          <Card
+            className="srp-reveal-list__social-login-card"
+            backgroundColor={BackgroundColor.backgroundMuted}
+            border={false}
+          >
             <Box
               display={Display.Flex}
               flexDirection={FlexDirection.Row}
@@ -103,7 +108,13 @@ export const RevealSrpList = () => {
           />
         </Box>
       )}
-      <Box paddingTop={4} paddingLeft={4} paddingRight={4} paddingBottom={0}>
+      <Box
+        paddingTop={4}
+        paddingLeft={4}
+        paddingRight={4}
+        paddingBottom={0}
+        className="srp-reveal-list__srp-list"
+      >
         <Text
           marginBottom={2}
           variant={TextVariant.bodyMd}
@@ -120,17 +131,6 @@ export const RevealSrpList = () => {
           }}
           hideShowAccounts={false}
         />
-      </Box>
-      <Box paddingBottom={4} paddingLeft={4} paddingRight={4}>
-        <Box
-          width={BlockSize.Full}
-          className="srp-reveal-list__divider"
-          marginTop={1}
-          marginBottom={4}
-        />
-        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
-          {t('securityFooterText')}
-        </Text>
       </Box>
       {srpQuizModalVisible && selectedKeyringId && (
         <SRPQuizModal
