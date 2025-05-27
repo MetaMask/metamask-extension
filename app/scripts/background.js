@@ -1117,7 +1117,7 @@ export function setupController(
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
 
-    const isDappConnecting = remotePort.sender.tab?.id;
+    const isDappConnecting = !remotePort.sender.id;
     if (isDappConnecting) {
       if (metamaskBlockedPorts.includes(remotePort.name)) {
         return;
