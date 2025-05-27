@@ -3422,10 +3422,6 @@
     "message": "Η συναλλαγή $1 απέτυχε! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
   },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "Η συναλλαγή απέτυχε! $1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
-  },
   "notificationTransactionFailedTitle": {
     "message": "Αποτυχημένη συναλλαγή",
     "description": "Title of the browser notification that appears when a transaction fails"

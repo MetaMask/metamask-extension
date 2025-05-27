@@ -3422,10 +3422,6 @@
     "message": "ट्रांसेक्शन $1 नहीं हो पाया! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
   },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "ट्रांसेक्शन नहीं हो पाया! $1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
-  },
   "notificationTransactionFailedTitle": {
     "message": "ट्रांसेक्शन नहीं हो पाया",
     "description": "Title of the browser notification that appears when a transaction fails"

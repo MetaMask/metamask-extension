@@ -125,9 +125,6 @@ export type ControllerStatePropertiesEnumerated = {
   lastInteractedConfirmationInfo?: AppStateControllerState['lastInteractedConfirmationInfo'];
   termsOfUseLastAgreed?: AppStateControllerState['termsOfUseLastAgreed'];
   snapsInstallPrivacyWarningShown?: AppStateControllerState['snapsInstallPrivacyWarningShown'];
-  interactiveReplacementToken?: AppStateControllerState['interactiveReplacementToken'];
-  noteToTraderMessage?: AppStateControllerState['noteToTraderMessage'];
-  custodianDeepLink?: AppStateControllerState['custodianDeepLink'];
   slides: AppStateControllerState['slides'];
   upgradeSplashPageAcknowledgedForAccounts: AppStateControllerState['upgradeSplashPageAcknowledgedForAccounts'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];
@@ -189,6 +186,7 @@ export type ControllerStatePropertiesEnumerated = {
   networksMetadata: NetworkState['networksMetadata'];
   selectedNetworkClientId: NetworkState['selectedNetworkClientId'];
   orderedNetworkList: NetworkOrderControllerState['orderedNetworkList'];
+  enabledNetworkMap: NetworkOrderControllerState['enabledNetworkMap'];
   allNftContracts: NftControllerState['allNftContracts'];
   allNfts: NftControllerState['allNfts'];
   ignoredNfts: NftControllerState['ignoredNfts'];
