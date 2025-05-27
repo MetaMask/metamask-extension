@@ -137,8 +137,6 @@ const ConfirmTransaction = () => {
         dispatch(setTransactionToConfirm(txId));
       }
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

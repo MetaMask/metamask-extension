@@ -66,7 +66,6 @@ function TokenList({ onTokenClick }: TokenListProps) {
 
     // sort filtered tokens based on the tokenSortConfig in state
     return sortAssets([...filteredAssets], tokenSortConfig);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isEvm,
     evmBalances,

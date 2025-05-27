@@ -62,7 +62,6 @@ export default function AwaitingSignatures() {
         token_to_amount: activeQuote?.quote?.destTokenAmount ?? '',
       },
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

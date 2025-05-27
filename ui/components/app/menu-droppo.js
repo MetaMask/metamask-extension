@@ -38,7 +38,7 @@ export default class MenuDroppoComponent extends Component {
 
   globalClickOccurred = (event) => {
     const { target } = event;
-    // eslint-disable-next-line react/no-find-dom-node
+
     const container = findDOMNode(this);
 
     if (
@@ -53,7 +53,7 @@ export default class MenuDroppoComponent extends Component {
   componentDidMount() {
     if (this && document.body) {
       document.body.addEventListener('click', this.globalClickOccurred);
-      // eslint-disable-next-line react/no-find-dom-node
+
       const container = findDOMNode(this);
       this.container = container;
     }
