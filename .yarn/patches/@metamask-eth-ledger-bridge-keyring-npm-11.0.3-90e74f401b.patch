@@ -45,7 +45,7 @@ index b8bdf04a3de250bcdbe1064382682bc18f460cbc..9d1dc5c32b721a2cb1792358510dd6ee
 +            * for blind signing disabled error
 +            */
 +            if(error?.errorCode === "6a80" && error?.message === 'Invalid data'){
-+                        throw new Error('Ledger: Blind signing disabled');
++                        throw new Error('Ledger: Blind signing must be enabled');
 +                }
              throw error instanceof Error
                  ? error
@@ -64,7 +64,7 @@ index b8bdf04a3de250bcdbe1064382682bc18f460cbc..9d1dc5c32b721a2cb1792358510dd6ee
 +        * for blind signing disabled error
 +        */
 +       if(error?.errorCode === "6a80" && error?.message === 'Invalid data'){
-+               throw new Error('Ledger: Blind signing disabled');
++               throw new Error('Ledger: Blind signing must be enabled');
 +       }
          throw error instanceof Error
              ? error
