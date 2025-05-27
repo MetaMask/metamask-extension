@@ -4712,9 +4712,9 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} globalPassword - latest global seedless password
    */
   async submitLatestGlobalSeedlessPassword(globalPassword) {
-    const { firstTimeFlowType } = this.onboardingController.state;
+    const isSocialLoginFlow = this.onboardingController.isSocialLoginFlowType();
 
-    if (firstTimeFlowType !== FirstTimeFlowType.social) {
+    if (!isSocialLoginFlow) {
       // this is only available for seedless onboarding flow
       throw new Error(
         'This method is only available for seedless onboarding flow',
@@ -4763,9 +4763,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<boolean | undefined>} true if the password is outdated, false otherwise, undefined if the flow is not seedless
    */
   async checkIsSeedlessPasswordOutdated(skipCache = false) {
-    const { firstTimeFlowType } = this.onboardingController.state;
+    const isSocialLoginFlow = this.onboardingController.isSocialLoginFlowType();
 
-    if (firstTimeFlowType !== FirstTimeFlowType.social) {
+    if (!isSocialLoginFlow) {
       // this is only available for seedless onboarding flow
       return undefined;
     }
