@@ -87,6 +87,8 @@ function transformState(
       isObject(accountTransactions) &&
       !Array.isArray(accountTransactions.transactions)
     ) {
+      // This state is only used for Solana's transactions (at that time), we assume it's already well-shaped
+      // and don't run any validation on the object itself (hence the `as unknown`).
       newNonEvmTransactions[accountId] =
         accountTransactions as unknown as NewTransactionsState[string];
       continue;
