@@ -51,6 +51,11 @@ function onboardingFixture() {
         }),
         providerConfig: { id: 'networkConfigurationId' },
       },
+      NetworkOrderController: {
+        enabledNetworkMap: {
+          '0x539': true,
+        },
+      },
       NotificationServicesController: {},
       PreferencesController: {
         advancedGasFee: {},
