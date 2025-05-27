@@ -1389,6 +1389,7 @@ export const getTokenSortConfig = createDeepEqualSelector(
  * Returns an object indicating which networks
  * tokens should be shown on in the portfolio view.
  */
+// @deprecated('Use `getEnabledNetworks` instead')
 export const getTokenNetworkFilter = createDeepEqualSelector(
   getCurrentChainId,
   getPreferences,
@@ -1418,6 +1419,7 @@ export const getTokenNetworkFilter = createDeepEqualSelector(
   },
 );
 
+// @deprecated('Use `getEnabledNetworks` instead')
 export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const chainId = getCurrentChainId(state);
   const tokenNetworkFilter = getTokenNetworkFilter(state);

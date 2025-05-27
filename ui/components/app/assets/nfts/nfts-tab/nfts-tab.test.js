@@ -174,6 +174,9 @@ const render = ({
         [CHAIN_IDS.MAINNET]: {},
         [CHAIN_IDS.GOERLI]: {},
       },
+      enabledNetworkMap: {
+        [chainId]: true,
+      },
       ...mockNetworkState({ chainId }),
       currencyRates: {},
       accounts: {

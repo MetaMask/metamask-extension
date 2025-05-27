@@ -1,6 +1,10 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setTokenNetworkFilter } from '../../../../../store/actions';
+import { CaipChainId } from '@metamask/utils';
+import {
+  setEnabledNetworks,
+  setTokenNetworkFilter,
+} from '../../../../../store/actions';
 import {
   getCurrentNetwork,
   getShouldHideZeroBalanceTokens,
@@ -38,6 +42,7 @@ import {
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import InfoTooltip from '../../../../ui/info-tooltip';
+import { isGlobalNetworkSelectorEnabled } from '../../../../../contexts/assetPolling';
 
 type SortControlProps = {
   handleClose: () => void;
@@ -96,7 +101,11 @@ const NetworkFilter = ({
     if (handleFilterNetwork) {
       handleFilterNetwork(chainFilters);
     } else {
-      dispatch(setTokenNetworkFilter(chainFilters));
+      isGlobalNetworkSelectorEnabled
+        ? dispatch(setTokenNetworkFilter(chainFilters))
+        : dispatch(
+            setEnabledNetworks(Object.keys(chainFilters) as CaipChainId[]),
+          );
     }
 
     // TODO Add metrics
