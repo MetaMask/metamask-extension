@@ -23,6 +23,7 @@ describe('metaRPCClientFactory', () => {
     bar: (bar: string) => string;
     getState: () => Record<string, Json>;
   };
+
   it('should be able to make an rpc request with the method', () => {
     const streamTest = createThroughStream<JsonRpcRequest>((chunk) => {
       expect(chunk.method).toStrictEqual('foo');
