@@ -1,5 +1,5 @@
 import { getMessage, fetchLocale, FALLBACK_LOCALE } from '../modules/i18n';
-import { t, updateCurrentLocale } from '../../shared/lib/translate';
+import { t, updateCurrentLocale } from './translate';
 
 const localeCodeMock = 'te';
 const keyMock = 'testKey';
