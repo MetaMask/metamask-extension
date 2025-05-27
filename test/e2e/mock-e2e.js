@@ -148,7 +148,7 @@ async function setupMocking(
 ) {
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
-    beforeRequest: ({ headers: { host }, url }) => {
+    beforeRequest: ({ headers: { host }, url, body }) => {
       if (blocklistedHosts.includes(host)) {
         return {
           url: 'http://localhost:8545',
@@ -159,6 +159,11 @@ async function setupMocking(
       ) {
         // If the URL or the host is in the allowlist, we pass the request as it is, to the live server.
         console.log('Request going to a live server ============', url);
+        if (url.includes('solana-mainnet.infura.io')) {
+          body.getJson().then((body) => {
+            console.log('Body ============', body);
+          });
+        }
         return {};
       }
       console.log('Request redirected to the catch all mock ============', url);

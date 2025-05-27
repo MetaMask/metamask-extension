@@ -107,9 +107,9 @@ export async function bridgeTransaction(
 
   //await bridgePage.check_expectedNetworkFeeIsDisplayed();
   await bridgePage.submitQuote();
-  await driver.delay(100000);
-
+  if (quote.fromChain === 'Solana') await bridgePage.confirmBridgeTransaction();
   await homePage.goToActivityList();
+  await driver.delay(10000000);
   const activityList = new ActivityListPage(driver);
   await activityList.check_completedBridgeTransactionActivity(
     transactionsCount,

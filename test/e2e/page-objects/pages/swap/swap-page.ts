@@ -1,6 +1,23 @@
 import { Driver } from '../../../webdriver/driver';
 
+
+export type SwapSolanaOptions = {
+  amount: number;
+  swapFrom: string;
+  swapTo?: string;
+  swapToContractAddress?: string;
+};
+
+export type SwapSolanaReviewOptions = {
+  swapFrom: string;
+  swapTo: string;
+  swapToAmount: number;
+  swapFromAmount?: number;
+  skipCounter?: boolean;
+};
+
 class SwapPage {
+
   private readonly driver: Driver;
 
   private readonly swapAmount =
@@ -19,11 +36,18 @@ class SwapPage {
     text: 'Close',
   };
 
+  private readonly bridgeSourceButton = '[data-testid="bridge-source-button"]';
+
+  private readonly bridgeDestinationButton = '[data-testid="bridge-destination-button"]';
+
+  private readonly fromAmount = '[data-testid="from-amount"]';
+
   private readonly transactionHeader = '[data-testid="awaiting-swap-header"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
+
 
   async check_pageIsLoaded(): Promise<void> {
     try {
@@ -83,6 +107,46 @@ class SwapPage {
       text: 'Continue swapping',
       tag: 'button',
     });
+  }
+
+  async createSolanaSwap(options: SwapSolanaOptions) {
+    if (options.swapFrom !== 'SOL') {
+      await this.driver.clickElement(this.bridgeSourceButton);
+
+      await this.driver.clickElement({
+        text: options.swapFrom,
+        tag: 'p',
+      });
+    }
+
+    if (options.swapTo !== 'USDC') {
+      await this.driver.clickElement(this.bridgeDestinationButton);
+
+      await this.driver.clickElement({
+        text: options.swapTo,
+        tag: 'p',
+      });
+    }
+    await this.driver.waitForSelector(this.fromAmount);
+    await this.driver.fill(this.fromAmount, options.amount.toString());
+  }
+
+  async reviewSolanaQuote(options: SwapSolanaReviewOptions) {
+    await this.driver.waitForSelector({
+      text: `1 ${options.swapFrom} = ${options.swapToAmount} ${options.swapTo}`,
+      tag: 'p',
+    });
+    await this.driver.waitForSelector({
+      text: `Rate includes 0.875% fee`,
+      tag: 'p',
+    });
+    await this.driver.waitForSelector({
+      text: `More quotes`,
+      tag: 'button',
+    })
+
+    await this.driver.clickElement('[data-testid="bridge-cta-button"]');
+
   }
 }
 
