@@ -4365,6 +4365,22 @@ export function updateAccountsList(
 }
 
 /**
+ * Sets the enabled networks in the controller state.
+ * This method updates the enabledNetworkMap to mark specified networks as enabled.
+ * It can handle both a single chain ID or an array of chain IDs.
+ *
+ * @param chainIds - A single CAIP-2 chain ID (e.g. 'eip155:1') or an array of chain IDs
+ * to be enabled. All other networks will be implicitly disabled.
+ */
+export function setEnabledNetworks(
+  chainIds: CaipChainId[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('setEnabledNetworks', [chainIds]);
+  };
+}
+
+/**
  * Hides account in the accounts list
  *
  * @param hiddenAccountList

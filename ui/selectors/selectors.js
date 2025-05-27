@@ -2338,6 +2338,10 @@ export function getOrderedNetworksList(state) {
   return state.metamask.orderedNetworkList;
 }
 
+export function getEnabledNetworks(state) {
+  return state.metamask.enabledNetworkMap;
+}
+
 export function getPinnedAccountsList(state) {
   return state.metamask.pinnedAccountList;
 }
