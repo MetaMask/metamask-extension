@@ -94,7 +94,6 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
         location: 'Terms Of Use Popover',
       },
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -51,7 +51,7 @@ jest.mock('../../../ducks/app/app.ts', () => {
 const mockHistoryPush = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  // eslint-disable-next-line react/display-name
+
   withRouter: (Component) => (props) =>
     (
       <Component

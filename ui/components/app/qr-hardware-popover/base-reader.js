@@ -128,7 +128,6 @@ const BaseReader = ({
       mounted.current = false;
       clearTimeout(permissionChecker);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -137,7 +136,6 @@ const BaseReader = ({
     } else if (ready === READY_STATE.NEED_TO_ALLOW_ACCESS) {
       checkPermissions();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready]);
 
   const tryAgain = () => {

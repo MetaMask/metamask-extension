@@ -33,7 +33,6 @@ export default function SearchableItemList({
       // Only if there is no searchQuery we want to show all tokens.
       setResults(initialResultsState);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialResultsState.length, searchQuery]);
 
   return (

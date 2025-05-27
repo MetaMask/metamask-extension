@@ -179,7 +179,6 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
       await checkEnvironment();
     })();
     // only renders when component is mounted and unmounted
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
