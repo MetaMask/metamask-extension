@@ -49,6 +49,7 @@ import {
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
+import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import {
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
   KNOWN_STATE_CORRUPTION_ERRORS,
@@ -68,7 +69,6 @@ import NotificationManager, {
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
-import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
