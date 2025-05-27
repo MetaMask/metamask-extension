@@ -4860,9 +4860,6 @@
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
   },
-  "securityFooterText": {
-    "message": "Your wallet is most protected when both recovery methods are set up. If one fail, the other helps you recover your wallet."
-  },
   "securityMessageLinkForNetworks": {
     "message": "network scams and security risks"
   },
