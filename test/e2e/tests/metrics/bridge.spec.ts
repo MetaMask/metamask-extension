@@ -14,6 +14,15 @@ import {
   EventTypes,
   EXPECTED_EVENT_TYPES,
 } from '../bridge/bridge-test-utils';
+import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+
+const quote = {
+  amount: '25',
+  tokenFrom: 'DAI',
+  tokenTo: 'ETH',
+  fromChain: 'Ethereum',
+  toChain: 'Linea',
+};
 
 describe('Bridge tests', function (this: Suite) {
   this.timeout(160000);
@@ -30,19 +39,16 @@ describe('Bridge tests', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.check_expectedBalanceIsDisplayed('24');
 
-        await bridgeTransaction(
-          driver,
-          {
-            amount: '25',
-            tokenFrom: 'DAI',
-            tokenTo: 'ETH',
-            fromChain: 'Ethereum',
-            toChain: 'Linea',
-            unapproved: true,
-          },
-          2,
-          '24.9',
-        );
+        await bridgeTransaction(driver, quote, 2, '24.9');
+
+        // Start the flow again
+        await homePage.startBridgeFlow();
+
+        const bridgePage = new BridgeQuotePage(driver);
+        await bridgePage.enterBridgeQuote(quote);
+        await bridgePage.waitForQuote();
+        await bridgePage.check_expectedNetworkFeeIsDisplayed();
+        await bridgePage.switchTokens();
 
         let events = await getEventPayloads(driver, mockedEndpoints);
         events = events.filter((event) => event !== null);
@@ -105,19 +111,8 @@ describe('Bridge tests', function (this: Suite) {
          * chain_destination
          * slippage
          */
-        console.log(
-          'SwapBridge Input Changed events:',
-          swapBridgeInputChanged.length,
-        );
-        swapBridgeInputChanged.forEach((event, index) => {
-          console.log(`Event ${index}:`, {
-            event: event.event,
-            input: event.properties.input,
-            action_type: event.properties.action_type,
-          });
-        });
 
-        assert.ok(swapBridgeInputChanged.length === 5);
+        assert.ok(swapBridgeInputChanged.length === 14);
 
         const inputTypes = [
           'token_source',
@@ -133,10 +128,7 @@ describe('Bridge tests', function (this: Suite) {
               event.properties.input === inputType,
           ),
         );
-        console.log('hasAllInputs result:', hasAllInputs);
-        console.log('About to assert hasAllInputs...');
         assert.ok(hasAllInputs, 'Should have all 5 input types');
-        console.log('SwapBridge Input Changed assertion PASSED!');
 
         const swapBridgeQuotesRequested = findEventsByName(
           EventTypes.SwapBridgeQuotesRequested,
@@ -337,6 +329,11 @@ describe('Bridge tests', function (this: Suite) {
             swapBridgeCompletedEvents[0].properties.token_symbol_destination ===
               'ETH',
         );
+
+        const swapBridgeTokenFlippedEvents = findEventsByName(
+          EventTypes.SwapBridgeTokenFlipped,
+        );
+        assert.ok(swapBridgeTokenFlippedEvents.length === 1);
       },
     );
   });

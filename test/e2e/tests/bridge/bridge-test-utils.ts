@@ -520,6 +520,7 @@ export enum EventTypes {
   TransactionFinalized = 'Transaction Finalized',
   SwapBridgeCompleted = 'Unified SwapBridge Completed',
   UnifiedSwapBridgeSubmitted = 'Unified SwapBridge Submitted',
+  SwapBridgeTokenFlipped = 'Source and Destination Flipped',
 }
 
 export const EXPECTED_EVENT_TYPES = Object.values(EventTypes);
@@ -602,6 +603,8 @@ export const getBridgeFixtures = (
             EventTypes.TransactionFinalized,
             EventTypes.SwapBridgeCompleted,
             EventTypes.UnifiedSwapBridgeSubmitted,
+            EventTypes.SwapBridgeInputChanged,
+            EventTypes.SwapBridgeTokenFlipped,
           ],
           { shouldAlwaysMatch: true },
         );
