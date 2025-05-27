@@ -1,5 +1,5 @@
 import React from 'react';
-import { CaipAccountId, parseCaipChainId } from '@metamask/utils';
+import { CaipAccountId } from '@metamask/utils';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { SolAccountType, SolScope } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';

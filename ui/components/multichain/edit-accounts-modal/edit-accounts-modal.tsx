@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { CaipAccountId, parseCaipChainId } from '@metamask/utils';
+import { CaipAccountId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
