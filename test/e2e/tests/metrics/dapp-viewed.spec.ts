@@ -17,6 +17,8 @@ async function mockedDappViewedEndpointFirstVisit(mockServer: Mockttp) {
           type: 'track',
           event: MetaMetricsEventName.DappViewed,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             is_first_visit: true,
           },
         },
@@ -38,6 +40,8 @@ async function mockedDappViewedEndpointReVisit(mockServer: Mockttp) {
           type: 'track',
           event: MetaMetricsEventName.DappViewed,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             is_first_visit: false,
           },
         },

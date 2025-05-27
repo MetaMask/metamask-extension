@@ -25,7 +25,11 @@ export enum ChangeType {
 }
 
 enum SyncDirection {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   SOURCE_TO_PETNAMES = 'Source->Petnames',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   PETNAMES_TO_SOURCE = 'Petnames->Source',
 }
 

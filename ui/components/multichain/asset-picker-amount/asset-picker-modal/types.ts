@@ -55,6 +55,8 @@ export type NativeAsset = {
 /**
  * ERC20Asset or NativeAsset, plus additional fields for display purposes in the Asset component
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type AssetWithDisplayData<T extends ERC20Asset | NativeAsset> = T & {
   balance: string; // raw balance
   string: string | undefined; // normalized balance as a stringified number

@@ -9,6 +9,8 @@ if (process.env.SELENIUM_BROWSER === undefined) {
 
 export const folder = `dist/${process.env.SELENIUM_BROWSER}`;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type ManifestType = { _flags?: ManifestFlags; manifest_version: string };
 let manifest: ManifestType;
 

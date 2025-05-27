@@ -1,12 +1,26 @@
 import { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from './network';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export enum EXPERIENCES_TYPE {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   METAMASK_VALIDATOR_STAKING = 'MetaMask Validator Staking',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   METAMASK_POOLED_STAKING = 'MetaMask Pooled Staking',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   METAMASK_THIRD_PARTY_STAKING = 'MetaMask Third Party Staking',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   METAMASK_POOLED_STAKING_V1 = 'MetaMask Pool Staking (v1)',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   METAMASK_BRIDGE = 'MetaMask Bridge',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   METAMASK_SWAPS = 'MetaMask Swaps',
 }
 
