@@ -1163,6 +1163,7 @@
     "@metamask/bridge-status-controller": {
       "globals": {
         "URLSearchParams": true,
+        "console.error": true,
         "console.log": true,
         "setTimeout": true
       },

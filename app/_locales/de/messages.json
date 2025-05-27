@@ -3422,10 +3422,6 @@
     "message": "Transaktion $1 ist fehlgeschlagen! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
   },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "Transaktion ist fehlgeschlagen $1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
-  },
   "notificationTransactionFailedTitle": {
     "message": "Fehlgeschlagene Transaktion",
     "description": "Title of the browser notification that appears when a transaction fails"

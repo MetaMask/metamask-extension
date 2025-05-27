@@ -1,5 +1,11 @@
-import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
+import { hasProperty, Hex, isObject } from '@metamask/utils';
+import { isEvmAccountType } from '@metamask/keyring-api';
+import { AccountsControllerState } from '@metamask/accounts-controller';
+import {
+  TokenBalancesControllerState,
+  TokensControllerState,
+} from '@metamask/assets-controllers';
 
 type VersionedData = {
   meta: { version: number };
@@ -8,111 +14,153 @@ type VersionedData = {
 
 export const version = 162;
 
-const SOLANA_MAINNET_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
-
-type TransactionStateEntry = {
-  transactions: unknown[];
-  next: string | null;
-  lastUpdated: number;
-};
-
-type LegacyTransactionsState = {
-  [accountId: string]: TransactionStateEntry;
-};
-
-type NewTransactionsState = {
-  [accountId: string]: {
-    [chainId: string]: TransactionStateEntry;
-  };
-};
-
 /**
- * This migration transforms the MultichainTransactionsController state structure
- * to support per-chain transaction storage. It moves transactions from directly
- * under the account to be nested under the chainId (Solana in this case).
+ * This migration removes from the TokensController state all tokens that belong to an EVM account that has been removed.
  *
- * @param originalVersionedData - Versioned MetaMask extension state, exactly
- * what we persist to disk.
- * @returns Updated versioned MetaMask extension state.
+ * Also removed from TokenBalancesController all balances that belong to an EVM account that has been removed.
+ *
+ * If the Tokens is not found or is not an object, the migration logs an error,
+ * but otherwise leaves the state unchanged.
+ *
+ * @param originalVersionedData - The versioned extension state.
+ * @returns The updated versioned extension state without the tokens property.
  */
 export async function migrate(
   originalVersionedData: VersionedData,
 ): Promise<VersionedData> {
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
-  transformState(versionedData.data);
+
+  versionedData.data = transformState(versionedData.data);
+
   return versionedData;
 }
 
 function transformState(
   state: Record<string, unknown>,
 ): Record<string, unknown> {
-  if (
-    !hasProperty(state, 'MultichainTransactionsController') ||
-    !isObject(state.MultichainTransactionsController)
-  ) {
+  if (!hasProperty(state, 'TokensController')) {
+    global.sentry?.captureException?.(
+      new Error(`Migration ${version}: TokensController not found.`),
+    );
+    return state;
+  }
+
+  if (!hasProperty(state, 'AccountsController')) {
+    global.sentry?.captureException?.(
+      new Error(`Migration ${version}: AccountsController not found.`),
+    );
+    return state;
+  }
+
+  if (!hasProperty(state, 'TokenBalancesController')) {
+    global.sentry?.captureException?.(
+      new Error(`Migration ${version}: TokenBalancesController not found.`),
+    );
+    return state;
+  }
+
+  const tokensControllerState = state.TokensController as TokensControllerState;
+  const tokenBalancesControllerState =
+    state.TokenBalancesController as TokenBalancesControllerState;
+  const accountsControllerState =
+    state.AccountsController as AccountsControllerState;
+
+  if (!isObject(tokensControllerState)) {
     global.sentry?.captureException?.(
       new Error(
-        `Invalid MultichainTransactionsController state: ${typeof state.MultichainTransactionsController}`,
+        `Migration ${version}: TokensController is type '${typeof tokensControllerState}', expected object.`,
       ),
     );
     return state;
   }
 
-  const transactionsController = state.MultichainTransactionsController;
-
-  if (
-    !hasProperty(transactionsController, 'nonEvmTransactions') ||
-    !isObject(transactionsController.nonEvmTransactions)
-  ) {
+  if (!isObject(tokenBalancesControllerState)) {
     global.sentry?.captureException?.(
       new Error(
-        `Invalid nonEvmTransactions state: ${typeof transactionsController.nonEvmTransactions}`,
+        `Migration ${version}: TokenBalancesController is type '${typeof tokenBalancesControllerState}', expected object.`,
       ),
     );
     return state;
   }
 
-  const { nonEvmTransactions } = transactionsController;
-  const newNonEvmTransactions: NewTransactionsState = {};
+  if (!isObject(accountsControllerState)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: AccountsController is type '${typeof accountsControllerState}', expected object.`,
+      ),
+    );
+    return state;
+  }
 
-  // Migrate each account's transactions to the new nested structure
-  for (const [accountId, accountTransactions] of Object.entries(
-    nonEvmTransactions as LegacyTransactionsState,
-  )) {
-    // If the account already has the new structure, meaning the accountTransactions
-    // doesn't have a direct transactions property, instead it has a chainId as a key,
-    // so we can skip it and continue to the next account
-    if (
-      isObject(accountTransactions) &&
-      !Array.isArray(accountTransactions.transactions)
-    ) {
-      // This state is only used for Solana's transactions (at that time), we assume it's already well-shaped
-      // and don't run any validation on the object itself (hence the `as unknown`).
-      newNonEvmTransactions[accountId] =
-        accountTransactions as unknown as NewTransactionsState[string];
-      continue;
+  const { internalAccounts } = accountsControllerState;
+
+  const accounts = Object.values(internalAccounts.accounts);
+  const evmAccounts = accounts.filter((account) =>
+    isEvmAccountType(account.type),
+  );
+  const evmAccountAddresses = evmAccounts.map((account) => account.address);
+
+  // Check and clean up tokens in allTokens that do not belong to any EVM account
+  if (hasProperty(tokensControllerState, 'allTokens')) {
+    for (const chainId of Object.keys(tokensControllerState.allTokens)) {
+      const tokensByAccounts =
+        tokensControllerState.allTokens[chainId as `0x${string}`];
+      for (const account of Object.keys(tokensByAccounts)) {
+        if (!evmAccountAddresses.includes(account)) {
+          delete tokensControllerState.allTokens[chainId as `0x${string}`][
+            account
+          ];
+        }
+      }
     }
-
-    // Creates the new structure for this account
-    // Since we know the transactions are from Solana, we use the Solana chainId
-    // 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' is Solana mainnet (the only supported so far)
-    newNonEvmTransactions[accountId] = {
-      [SOLANA_MAINNET_ADDRESS]: {
-        transactions: Array.isArray(accountTransactions.transactions)
-          ? accountTransactions.transactions
-          : [],
-        next: accountTransactions.next || null,
-        lastUpdated:
-          typeof accountTransactions.lastUpdated === 'number'
-            ? accountTransactions.lastUpdated
-            : Date.now(),
-      },
-    };
   }
 
-  // Update the state with the new structure
-  transactionsController.nonEvmTransactions = newNonEvmTransactions;
+  // Check and clean up tokens in allDetectedTokens that do not belong to any EVM account
+  if (hasProperty(tokensControllerState, 'allDetectedTokens')) {
+    for (const chainId of Object.keys(
+      tokensControllerState.allDetectedTokens,
+    )) {
+      const tokensByAccounts =
+        tokensControllerState.allDetectedTokens[chainId as `0x${string}`];
+
+      for (const account of Object.keys(tokensByAccounts)) {
+        if (!evmAccountAddresses.includes(account)) {
+          delete tokensControllerState.allDetectedTokens[
+            chainId as `0x${string}`
+          ][account];
+        }
+      }
+    }
+  }
+
+  // Check and clean up tokens in allIgnoredTokens that do not belong to any EVM account
+  if (hasProperty(tokensControllerState, 'allIgnoredTokens')) {
+    for (const chainId of Object.keys(tokensControllerState.allIgnoredTokens)) {
+      const tokensByAccounts =
+        tokensControllerState.allIgnoredTokens[chainId as `0x${string}`];
+      for (const account of Object.keys(tokensByAccounts)) {
+        if (!evmAccountAddresses.includes(account)) {
+          delete tokensControllerState.allIgnoredTokens[
+            chainId as `0x${string}`
+          ][account];
+        }
+      }
+    }
+  }
+
+  // Check and clean up balances in tokenBalancesControllerState that do not belong to any EVM account
+  if (hasProperty(tokenBalancesControllerState, 'tokenBalances')) {
+    for (const accountAddress of Object.keys(
+      tokenBalancesControllerState.tokenBalances,
+    )) {
+      if (!evmAccountAddresses.includes(accountAddress)) {
+        delete tokenBalancesControllerState.tokenBalances[
+          accountAddress as Hex
+        ];
+      }
+    }
+  }
 
   return state;
 }
