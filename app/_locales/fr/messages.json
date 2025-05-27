@@ -3422,10 +3422,6 @@
     "message": "La transaction $1 a échoué ! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
   },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "La transaction a échoué ! $1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
-  },
   "notificationTransactionFailedTitle": {
     "message": "Transaction non conclue",
     "description": "Title of the browser notification that appears when a transaction fails"
