@@ -52,6 +52,19 @@ const mockSnapAccount = createMockInternalAccount({
     entropySource: mockKeyringId,
   },
 });
+const mockSnapAccountWithSecondaryEntropySource = createMockInternalAccount({
+  address: 'HMc6khkRUVrZAuwNQz7DRVrMDjYbNZsiHmFCnkh9b7bV',
+  type: SolAccountType.DataAccount,
+  keyringType: KeyringTypes.snap,
+  snapOptions: {
+    enabled: true,
+    id: SOLANA_WALLET_SNAP_ID,
+    name: 'snap-name',
+  },
+  options: {
+    entropySource: mockKeyringIdFromSecondSrp,
+  },
+});
 const mockThirdPartySnapAccount = createMockInternalAccount({
   address: 'Hcmtoy9Qw2redSMVhKD8tFBB376Y6wqevmHwgjSWxRzW',
   type: SolAccountType.DataAccount,
@@ -118,6 +131,7 @@ const generateMockState = ({
           accounts: [
             mockSnapAccount.address,
             mockThirdPartySnapAccount.address,
+            mockSnapAccountWithSecondaryEntropySource.address,
           ],
           metadata: {
             id: mockSnapKeyringId,
@@ -282,6 +296,21 @@ describe('Multi SRP Selectors', () => {
       const result = getShouldShowSeedPhraseReminder(
         mockState,
         mockThirdPartySnapAccount,
+      );
+
+      expect(result).toBe(false);
+    });
+
+    it('returns false when a snap account is selected but the entropy source is not the primary hd keyring', () => {
+      const mockState = generateMockState({
+        account: mockSnapAccountWithSecondaryEntropySource,
+        seedPhraseBackedUp: false,
+        dismissSeedBackUpReminder: false,
+      });
+
+      const result = getShouldShowSeedPhraseReminder(
+        mockState,
+        mockSnapAccountWithSecondaryEntropySource,
       );
 
       expect(result).toBe(false);
