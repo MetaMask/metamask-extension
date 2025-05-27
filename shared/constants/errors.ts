@@ -12,7 +12,7 @@ export const MISSING_VAULT_ERROR =
 export const CORRUPTION_BLOCK_CHECKSUM_MISMATCH =
   'Corruption: block checksum mismatch';
 
-export function isStateCorruptionError(err: ErrorLike): err is ErrorLike {
+export function isStateCorruptionError(err: ErrorLike) {
   return (
     err.message === MISSING_VAULT_ERROR ||
     err.message === CORRUPTION_BLOCK_CHECKSUM_MISMATCH
