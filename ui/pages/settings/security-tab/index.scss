@@ -36,6 +36,12 @@
 
   &__social-login-card {
     padding: 12px 16px;
+    border-radius: 8px;
+  }
+
+  .select-srp__container{
+    background-color: var(--color-background-muted);
+    border: 0;
   }
 
   // SRP_OVERRIDE: Remove padding from the srp list container

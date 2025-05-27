@@ -180,9 +180,7 @@ export default class SecurityTab extends PureComponent {
         </div>
         <div className="settings-page__content-padded">
           <div className="settings-page__content-description">
-            {socialLoginEnabled
-              ? t('securitySrpSocialLoginDescription')
-              : t('securitySrpDescription')}
+            {t('securitySrpDescription')}
           </div>
           <Button
             data-testid="reveal-seed-words"
@@ -218,7 +216,7 @@ export default class SecurityTab extends PureComponent {
               this.setState({ srpQuizModalVisible: true });
             }}
           >
-            {hasMultipleHdKeyrings || socialLoginEnabled
+            {socialLoginEnabled
               ? t('securitySrpWalletRecovery')
               : t('revealSeedWords')}
           </Button>

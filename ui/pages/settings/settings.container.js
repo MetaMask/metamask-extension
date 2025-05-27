@@ -67,7 +67,7 @@ const mapStateToProps = (state, ownProps) => {
   const { pathname } = location;
   const { ticker } = getProviderConfig(state);
   const {
-    metamask: { currencyRates },
+    metamask: { currencyRates, socialLoginEmail },
   } = state;
   const settingsPageSnapsIds = getSettingsPageSnapsIds(state);
   const snapsMetadata = getSnapsMetadata(state);
@@ -91,7 +91,14 @@ const mapStateToProps = (state, ownProps) => {
   const isSnapSettingsRoute = Boolean(pathname.match(SNAP_SETTINGS_ROUTE));
 
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
-  const pathnameI18nKey = ROUTES_TO_I18N_KEYS[pathname];
+  const socialLoginEnabled = Boolean(socialLoginEmail);
+
+  let pathnameI18nKey = ROUTES_TO_I18N_KEYS[pathname];
+
+  // if pathname is `REVEAL_SRP_LIST_ROUTE` and socialLoginEnabled rename the tab title to "Manage recovery methods"
+  if (isRevealSrpListPage && socialLoginEnabled) {
+    pathnameI18nKey = 'securitySrpWalletRecovery';
+  }
 
   let backRoute = SETTINGS_ROUTE;
   if (isEditContactPage) {
