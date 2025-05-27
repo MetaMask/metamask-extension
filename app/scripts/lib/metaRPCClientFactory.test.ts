@@ -23,6 +23,7 @@ describe('metaRPCClientFactory', () => {
     bar: (bar: string) => string;
     getState: () => Record<string, Json>;
   };
+
   it('should be able to make an rpc request with the method', () => {
     const streamTest = createThroughStream<JsonRpcRequest>((chunk) => {
       expect(chunk.method).toStrictEqual('foo');
@@ -30,6 +31,7 @@ describe('metaRPCClientFactory', () => {
     const metaRPCClient = metaRPCClientFactory<FooApi>(streamTest);
     metaRPCClient.foo();
   });
+
   it('should be able to make an rpc request/response with the method and params', (done) => {
     const streamTest = createThroughStream();
     const metaRPCClient = metaRPCClientFactory<FooApi>(streamTest);
@@ -49,6 +51,7 @@ describe('metaRPCClientFactory', () => {
       });
     });
   });
+
   it('should be able to make an rpc request/error with the method and params', async () => {
     const streamTest = createThroughStream();
     const metaRPCClient = metaRPCClientFactory<FooApi>(streamTest);
@@ -250,7 +253,7 @@ describe('metaRPCClientFactory', () => {
     const streamTest = createThroughStream();
     metaRPCClientFactory<FooApi>(streamTest);
 
-    // this would throw if we just tried parsing any data
+    // this would throw if we just tried parsing any `data` `metaRPCClientFactory` received as if it were what we expected.
     streamTest.write(undefined);
     streamTest.write('junk');
     streamTest.write(Buffer.from('junk'));
