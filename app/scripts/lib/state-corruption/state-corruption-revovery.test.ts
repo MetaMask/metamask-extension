@@ -67,7 +67,7 @@ describe('CorruptionHandler.handleStateCorruptionError', () => {
         const reloadFn = jest.fn((port: chrome.runtime.Port) => {
           return port.disconnect();
         });
-        const repairFn =
+        const repairCallback =
           repairValue instanceof Error
             ? jest.fn().mockRejectedValue(repairValue)
             : jest.fn().mockResolvedValue(undefined);
@@ -136,13 +136,13 @@ describe('CorruptionHandler.handleStateCorruptionError', () => {
           // *all* UIs, even ones that are closed early. We do this because the
           // `port` we already have might bbe disconnected while the background
           // is still processing everything.
-          portPairs.map(({ background }) =>
-            corruptionHandler.handleStateCorruptionError(
-              background,
+          portPairs.map(({ background: port }) =>
+            corruptionHandler.handleStateCorruptionError({
+              port,
               error,
               database,
-              repairFn,
-            ),
+              repairCallback,
+            }),
           ),
         );
 
