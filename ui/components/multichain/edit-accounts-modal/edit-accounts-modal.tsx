@@ -114,11 +114,20 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   const defaultSet = new Set(defaultSelectedAccountAddresses);
   const selectedSet = new Set(selectedAccountAddresses);
 
-  const handleNewAccount = useCallback(
+  const handleAddAccount = useCallback(
     async (completed: boolean, newAccount?: InternalAccount) => {
       if (completed && newAccount) {
-        const { namespace, reference } = parseCaipChainId(newAccount.scopes[0]);
-        const newAccountCaipAccountId: CaipAccountId = `${namespace}:${reference}:${newAccount.address}`;
+        const [scope] = newAccount.scopes;
+        if (!scope) {
+          // Should never happen since `scopes` is declared as a non-empty array on the
+          // account type.
+          throw new Error('Account has no scope');
+        }
+        // NOTE: For now we only rely on 1 single CAIP-10. The CAIP namespace is
+        // used under the hood and we assume all account's scope use the same
+        // namespace.
+        // TODO: Maybe use multiple CAIP-10 for each scopes instead?
+        const newAccountCaipAccountId: CaipAccountId = `${scope}:${newAccount.address}`;
         onSubmit([...selectedAccountAddresses, newAccountCaipAccountId]);
         onClose();
       }
@@ -275,7 +284,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
         <EditAccountAddAccountForm
           onBack={() => setModalStage(EditAccountModalStage.AddNewAccount)}
           onClose={() => setModalStage(EditAccountModalStage.AccountList)}
-          onActionComplete={handleNewAccount}
+          onActionComplete={handleAddAccount}
           accountType={accountType}
         />
       )}

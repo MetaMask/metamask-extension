@@ -68,9 +68,9 @@ jest.mock('../../../store/actions.ts', () => ({
   setAccountLabel: jest.fn(),
 }));
 
-const getCaipAccountId = (account: InternalAccount) => {
-  const { namespace, reference } = parseCaipChainId(account.scopes[0]);
-  return `${namespace}:${reference}:${account.address}` as CaipAccountId;
+const getCaipAccountId = (account: InternalAccount): CaipAccountId => {
+  const [scope] = account.scopes;
+  return `${scope}:${account.address}`;
 };
 
 const render = (
@@ -268,7 +268,7 @@ describe('EditAccountsModal', () => {
     });
   });
 
-  it('selects the new caipId of the account when it is created', async () => {
+  it('selects the new CAIP account ID of the account when it is created', async () => {
     const caipAccountIdOfOriginalAccount = getCaipAccountId(
       mockState.metamask.internalAccounts.accounts[
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
