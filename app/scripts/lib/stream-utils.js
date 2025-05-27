@@ -1,8 +1,6 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { pipeline } from 'readable-stream';
 
-import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
-
 /**
  * Sets up stream multiplexing for the given stream
  *
