@@ -47,6 +47,7 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { isBtcTestnetAddress } from '../../shared/lib/multichain/accounts';
 import {
   AccountsState,
   getInternalAccounts,
@@ -240,9 +241,11 @@ export function getMultichainNetwork(
   // If still no network found, we try to find a network that is address compatible
   // TODO: This runtime logic is not supported by the `MultichainNetworkController`, we should remove this and rely
   // only on the network configs provided by this controller.
-  nonEvmNetwork = nonEvmNetworks.find((provider) => {
-    return provider.isAddressCompatible(selectedAccount.address);
-  });
+  if (!nonEvmNetwork) {
+    nonEvmNetwork = nonEvmNetworks.find((provider) => {
+      return provider.isAddressCompatible(selectedAccount.address);
+    });
+  }
 
   if (!nonEvmNetwork) {
     throw new Error(
@@ -412,6 +415,11 @@ export function getMultichainIsMainnet(
     return false;
   }
 
+  // If it's Bitcoin case, check if it's a testnet address
+  if (isBtcTestnetAddress(selectedAccount.address)) {
+    return false;
+  }
+
   return providerConfig.chainId === mainnet;
 }
 
@@ -430,6 +438,11 @@ export function getMultichainIsTestnet(
     // `getIsTestnet` here and uses the actual `TEST_NETWORK_IDS` which seems
     // more up-to-date
     return (TEST_NETWORK_IDS as string[]).includes(providerConfig.chainId);
+  }
+
+  // For Bitcoin case, check address format as well
+  if (isBtcTestnetAddress(selectedAccount.address)) {
+    return true;
   }
 
   // TODO: For now we only check for bitcoin and Solana, but we will need to
