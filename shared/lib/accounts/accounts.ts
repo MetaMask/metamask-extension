@@ -114,11 +114,6 @@ export type WalletSnapClient = {
     internalOptions?: SnapKeyringInternalOptions,
   ): Promise<KeyringAccount>;
 
-  discoverAccounts(
-    entropySource: string,
-    scope: CaipChainId,
-  ): Promise<KeyringAccount[]>;
-
   getNextAvailableAccountName(
     options?: SnapAccountNameOptions,
   ): Promise<string>;
@@ -227,7 +222,6 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
             scope,
             derivationPath,
             entropySource,
-            synchronize: true,
           };
 
           const account = await this.createAccount(options, {

@@ -100,13 +100,11 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
     internalOptions?: SnapKeyringInternalOptions,
   ): Promise<KeyringAccount> {
     // This will trigger the Snap account creation flow (+ account renaming)
-    const account = await createSnapAccount(
+    return await createSnapAccount(
       this.#snapId,
-      options,
+      { ...options, synchronize: true },
       internalOptions,
     );
-
-    return account;
   }
 
   async getNextAvailableAccountName(

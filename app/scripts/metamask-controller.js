@@ -4813,7 +4813,7 @@ export default class MetamaskController extends EventEmitter {
       
       ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
       const btcClient = await this._getMultichainWalletSnapClient(BITCOIN_WALLET_SNAP_ID);
-      const btcScope = BtcScope.Signet;
+      const btcScope = BtcScope.Mainnet;
       const btcAccounts = await btcClient.discoverAccounts(entropySource, btcScope);
 
       // If none accounts got discovered, we still create the first (default) one.
