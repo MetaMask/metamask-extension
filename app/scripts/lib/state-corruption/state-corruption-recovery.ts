@@ -10,6 +10,13 @@ import { ErrorLike } from '../../../../shared/constants/errors';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Message = any;
 
+export type HandleStateCorruptionErrorConfig = {
+  port: chrome.runtime.Port;
+  error: ErrorLike;
+  database: PersistenceManager;
+  repairCallback: (backup: Backup | null) => void | Promise<void>;
+};
+
 const REPAIR_LOCK_NAME = 'repairDatabase';
 
 /**
@@ -152,17 +159,19 @@ export class CorruptionHandler {
    * Handles a state corruption error by sending a message to the UI and
    * initiating a repair process if requested by the UI port.
    *
-   * @param port - The port to send the error message to.
-   * @param error - The error that caused the state corruption.
-   * @param database - The database to get the backup from.
-   * @param repair - The function to call to repair the database.
+   * @param config - The configuration parameters for handling the state
+   * corruption error.
+   * @param config.port - The port to send the error message to.
+   * @param config.error - The error that caused the state corruption.
+   * @param config.database - The database to get the backup from.
+   * @param config.repairCallback - The function to call to repair the database.
    */
-  async handleStateCorruptionError(
-    port: chrome.runtime.Port,
-    error: ErrorLike,
-    database: PersistenceManager,
-    repair: (backup: Backup | null) => void | Promise<void>,
-  ): Promise<void> {
+  async handleStateCorruptionError({
+    port,
+    error,
+    database,
+    repairCallback,
+  }: HandleStateCorruptionErrorConfig): Promise<void> {
     const { connectedPorts } = this;
     const backup = await maybeGetBackup(error, database);
     const currentLocale = maybeGetCurrentLocale(backup);
@@ -225,7 +234,7 @@ export class CorruptionHandler {
               // is already in progress.
 
               try {
-                await repair(backup);
+                await repairCallback(backup);
               } finally {
                 // always reload the UI because if `initBackground` worked, the UI
                 // will redirect to the login screen, and if it didn't work, it'll

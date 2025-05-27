@@ -479,11 +479,11 @@ browser.runtime.onConnect.addListener(async (...args) => {
     // if we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
     // restore from a backup, if we have one.
     if (isStateCorruptionError(error)) {
-      await corruptionHandler.handleStateCorruptionError(
-        args[0],
+      await corruptionHandler.handleStateCorruptionError({
+        port: args[0],
         error,
-        persistenceManager,
-        async (backup) => {
+        database: persistenceManager,
+        repairCallback: async (backup) => {
           // we are going to reinitialize the background script, so we need to
           // reset the initialization promises. this is gross since it is
           // possible the original references could have been passed to other
@@ -504,7 +504,7 @@ browser.runtime.onConnect.addListener(async (...args) => {
             await initBackground(null);
           }
         },
-      );
+      });
     }
   }
 });
