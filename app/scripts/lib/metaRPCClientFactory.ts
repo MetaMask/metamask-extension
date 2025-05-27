@@ -15,13 +15,15 @@ import getNextId from '../../../shared/modules/random-id';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type MetamaskController from '../metamask-controller';
 
+const JSON_RPC_VERSION = '2.0' as const;
+
 type Timer = ReturnType<typeof setTimeout>;
 
 /**
  * A JSON-RPC 2.0 request object, types with our request types.
  */
 type JsonRpcApiRequest<Api extends FunctionRegistry<Api>> = {
-  jsonrpc: '2.0';
+  jsonrpc: typeof JSON_RPC_VERSION;
   id: number;
   method: Extract<keyof Api, string>;
   params: Parameters<Api[keyof Api]>;
@@ -31,7 +33,7 @@ type JsonRpcApiRequest<Api extends FunctionRegistry<Api>> = {
  * A JSON-RPC 2.0 response object, typed with our response types.
  */
 type JsonRpcApiResponse<Api extends FunctionRegistry<Api>> = {
-  jsonrpc: '2.0';
+  jsonrpc: typeof JSON_RPC_VERSION;
   id: number;
   result: Awaited<ReturnType<Api[keyof Api]>>;
 };
@@ -124,8 +126,7 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
     this.#connectionStream = connectionStream;
     this.#connectionStream
       .on('data', this.handleResponse)
-      .on('end', this.close)
-      .on('error', (err) => this.destroy(err));
+      .on('end', this.close);
   }
 
   /**
@@ -152,7 +153,7 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
       const rpc = async (...params: Parameters<Api[MethodName]>) =>
         await client.send({
           id: getNextId(),
-          jsonrpc: '2.0',
+          jsonrpc: JSON_RPC_VERSION,
           method,
           params,
         });
@@ -205,27 +206,26 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
     this.#uncaughtErrorChannel.addListener('error', handler);
   };
 
-  destroy = (err: Error) => {
-    this.#connectionStream.destroy(err);
-    this.close('stream ended');
-  };
-
   /**
    * Closes the connection and cleans up.
    *
    * @param reason
    */
   close = (reason: string = 'disconnected') => {
-    this.#notificationChannel.removeAllListeners();
-    this.#uncaughtErrorChannel.removeAllListeners();
+    // stop processing the stream
     this.#connectionStream.off('data', this.handleResponse);
     this.#connectionStream.off('end', this.close);
+
     // fail all unfinished requests
     this.requests.forEach(({ reject, timer }) => {
       clearTimeout(timer);
       reject(new DisconnectError(reason));
     });
     this.requests.clear();
+
+    // remove all external listeners
+    this.#notificationChannel.removeAllListeners();
+    this.#uncaughtErrorChannel.removeAllListeners();
   };
 
   /**
@@ -239,38 +239,44 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
     if (
       !isObject(response) ||
       !hasProperty(response, 'jsonrpc') ||
-      response.jsonrpc !== '2.0'
+      response.jsonrpc !== JSON_RPC_VERSION
     ) {
       // ignore noise which can cause processing errors
       return;
     }
+
     if (hasProperty(response, 'method')) {
       if (!hasProperty(response, 'id')) {
-        // react to server-side to client-side notifications
+        // react to server-side to client-side notifications.
+        // A JSON-RPC notification is a request without an `id`.
         this.#notificationChannel.emit('notification', response);
       }
-      // ignore server-side to client side *requests*
+      // ignore server-side to client side *requests* (messages with an `id` and
+      // a `method`).
       return;
     }
 
     const { id } = response;
-    const request = this.requests.get(id as number);
-
-    this.requests.delete(id as number) && clearTimeout(request?.timer);
+    const { requests } = this;
+    const request = requests.get(id);
 
     if (isError(response)) {
       const { error } = response;
-      const { code, data, message, stack } = error;
+      const { code, message, data, stack } = error;
       const e = new JsonRpcError(code, message, data);
-      // preserve the stack from serializeError
+      // preserve the stack
       e.stack = stack;
       if (request) {
-        request?.reject(e);
+        requests.delete(id);
+        clearTimeout(request.timer);
+        request.reject(e);
       } else {
         this.#uncaughtErrorChannel.emit('error', e);
       }
-    } else {
-      request?.resolve(response.result);
+    } else if (request) {
+      requests.delete(id);
+      clearTimeout(request.timer);
+      request.resolve(response.result);
     }
   };
 }
@@ -279,8 +285,15 @@ export type MetaRpcClientFactory<Api extends FunctionRegistry<Api>> =
   MetaRPCClient<Api> & PromisifiedApi<Api>;
 
 /**
- * In practice, this is used to send messages to API methods configured within
- * {@link MetamaskController}.
+ * Creates a `MetaRPCClient` instance that also proxies requests/responses to
+ * the background process over the provided `connectionStream`. It listens to
+ * the stream bi-directionally, allowing it to send requests and receive
+ * both responses and unsolicited notifications.
+ *
+ * It can parse JSON-RPC 2.0 requests and responses.
+ *
+ * In practice, this is used to send messages to from the UI to the background's
+ * API methods configured within {@link MetamaskController}.
  *
  * @template Api - The type of the methods available on the MetaRPCClient.
  * @param connectionStream - The connection stream to use for the RPC client.

@@ -268,19 +268,4 @@ describe('metaRPCClientFactory', () => {
       new DisconnectError('disconnected'),
     );
   });
-
-  it('should fail all pending actions with a DisconnectError if the stream errors', async () => {
-    const streamTest = createThroughStream();
-    const metaRPCClient = metaRPCClientFactory<FooApi>(streamTest);
-
-    // create a request that we don't wait for
-    const requestProm = metaRPCClient.foo();
-
-    // emit an error on the stream
-    streamTest.emit('error', new Error());
-
-    await expect(requestProm).rejects.toThrow(
-      new DisconnectError('stream ended'),
-    );
-  });
 });
