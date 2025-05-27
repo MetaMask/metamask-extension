@@ -73,7 +73,7 @@ let METAMASK_EXTENSION_CONNECT_SENT = false;
 export const setupExtensionStreams = () => {
   METAMASK_EXTENSION_CONNECT_SENT = true;
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
-  extensionStream = new PortStream(extensionPort);
+  extensionStream = new PortStream(extensionPort, { chunkSize: 0 });
   extensionStream.on('data', extensionStreamMessageListener);
 
   // create and connect channel muxers

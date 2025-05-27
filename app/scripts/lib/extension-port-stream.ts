@@ -19,6 +19,10 @@ export type ChunkFrame = `${id}|${total}|${seq}|${data}`;
 export type Options = {
   log?: (data: unknown, outgoing: boolean) => void;
   debug?: boolean;
+  /**
+   * The size of each chunk in bytes. Set to 0 to disabled chunking.
+   */
+  chunkSize?: number;
 } & DuplexOptions;
 
 export const CHUNK_SIZE = 8 * 1024 * 1024; // 8 MB (< any browser cap)
@@ -30,15 +34,24 @@ export const isChunkFrame = (x: unknown): x is ChunkFrame =>
  * Converts a JSON object into a generator of chunk frames.
  *
  * @param payload - the payload to be chunked
- * @yields - a chunk frame or the original payload if it fits within a single frame
+ * @param chunkSize - the size of each chunk in bytes. If `0`, returns the
+ * payload as is. If the given `chunkSize` will result in a single frame, the
+ * payload is returned as is.
+ * @yields - a chunk frame or the original payload if it fits within a single
+ * frame
  */
 export function* toFrames<T extends Json>(
   payload: T,
+  chunkSize: number = CHUNK_SIZE,
 ): Generator<ChunkFrame | T, void> {
+  if (chunkSize <= 0) {
+    yield payload;
+    return;
+  }
+
   const json = JSON.stringify(payload);
   const len = json.length;
-  const size = CHUNK_SIZE;
-  const total = Math.ceil(len / size);
+  const total = Math.ceil(len / chunkSize);
 
   if (total === 1) {
     // no need to chunk if it fits within a single frame
@@ -49,8 +62,8 @@ export function* toFrames<T extends Json>(
   const id = createRandomId();
   const header = `${id}|${total}` as const;
   // eslint-disable-next-line no-restricted-syntax
-  for (let pos = 0, seq = 0; pos < len; pos += size, seq++) {
-    const data = json.substring(pos, pos + size);
+  for (let pos = 0, seq = 0; pos < len; pos += chunkSize, seq++) {
+    const data = json.substring(pos, pos + chunkSize);
     yield `${header}|${seq}|${data}`;
   }
 }
@@ -65,15 +78,21 @@ export class PortStream extends Duplex {
 
   private readonly queue = new Map<string, BufferEntry>();
 
-  private log: (d: unknown, out: boolean) => void;
+  private chunkSize: number;
 
   private debug = false;
 
-  constructor(port: Runtime.Port, { log, debug, ...opts }: Options = {}) {
+  private log: (d: unknown, out: boolean) => void;
+
+  constructor(
+    port: Runtime.Port,
+    { chunkSize, debug, log, ...opts }: Options = {},
+  ) {
     super({ objectMode: true, highWaterMark: 256, ...opts });
 
     this.port = port;
 
+    this.chunkSize = chunkSize ?? CHUNK_SIZE;
     this.debug = Boolean(debug);
     this.log = log ?? (() => undefined);
 
@@ -96,7 +115,7 @@ export class PortStream extends Duplex {
       console.debug(TAG, STYLE_IN, '← raw', msg);
     }
 
-    if (isChunkFrame(msg)) {
+    if (this.chunkSize > 0 && isChunkFrame(msg)) {
       this.handleChunk(msg);
     } else {
       // handle smaller, un‑framed messages
@@ -201,12 +220,13 @@ export class PortStream extends Duplex {
     }
 
     try {
+      const { chunkSize } = this;
       // if the frame is already chunked, send it as is
-      if (isChunkFrame(chunk)) {
+      if (chunkSize > 0 && isChunkFrame(chunk)) {
         this.postMessage(chunk);
       } else {
         // chunk it ourselves
-        for (const frame of toFrames(chunk)) {
+        for (const frame of toFrames(chunk, chunkSize)) {
           this.postMessage(frame);
         }
       }
@@ -216,7 +236,8 @@ export class PortStream extends Duplex {
       if (this.debug) {
         console.debug(TAG, STYLE_SYS, '⚠ write error', err);
       }
-      callback(new Error('PortStream write failed'));
+      console.error(err);
+      callback(new AggregateError([err], 'PortStream write failed'));
     }
   }
 

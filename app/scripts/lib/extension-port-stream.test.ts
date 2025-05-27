@@ -460,6 +460,22 @@ describe('extension-port-stream', () => {
         });
       });
 
+      it('should not chunk large payload with chunkSize is 0', (done) => {
+        stream = createStream({ chunkSize: 0, log: mockLog, debug: true });
+        mockCreateRandomId.mockReturnValue(3001);
+
+        const data = { data: 'B'.repeat(CHUNK_SIZE + 100) }; // large!
+
+        stream._write(data, 'utf-8', (err?: Error | null) => {
+          expect(err).toBeFalsy();
+          expect(mockPort.postMessage).toHaveBeenCalledTimes(1);
+          // data has been untouched!
+          expect(mockPort.postMessage).toHaveBeenCalledWith(data);
+          expect(mockLog).toHaveBeenCalledWith(data, true);
+          done();
+        });
+      });
+
       it('should call callback with error for non-UTF-8 encoding', (done) => {
         stream = createStream();
         const data = { message: 'test' };
@@ -480,7 +496,7 @@ describe('extension-port-stream', () => {
         });
 
         stream._write(data, 'utf-8', (err?: Error | null) => {
-          expect(err).toBeInstanceOf(Error);
+          expect(err).toBeInstanceOf(AggregateError);
           expect(err?.message).toBe('PortStream write failed');
           // Log is called after successful loop in _write
           expect(mockLog).not.toHaveBeenCalled();

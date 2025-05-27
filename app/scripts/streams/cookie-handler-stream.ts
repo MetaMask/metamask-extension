@@ -72,7 +72,9 @@ export const setupCookieHandlerExtStreams = (): void => {
   cookieHandlerExtPort = browser.runtime.connect({
     name: CONTENT_SCRIPT,
   });
-  cookieHandlerExtStream = new PortStream(cookieHandlerExtPort);
+  cookieHandlerExtStream = new PortStream(cookieHandlerExtPort, {
+    chunkSize: 0,
+  });
 
   // create and connect channel muxers
   // so we can handle the channels individually
