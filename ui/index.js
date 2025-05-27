@@ -20,6 +20,12 @@ import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
+import {
+  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+  displayStateCorruptionError,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../app/scripts/lib/state-corruption-errors';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -39,6 +45,10 @@ import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+
+const METHOD_START_UI_SYNC = 'startUISync';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
@@ -47,13 +57,25 @@ let reduxStore;
 /**
  * Method to update backgroundConnection object use by UI
  *
+ * @param container - container to render the UI
  * @param backgroundConnection - connection object to background
+ * @param handleStartUISync - function to call when startUISync notification is received
  */
-export const updateBackgroundConnection = (backgroundConnection) => {
+export const connectToBackground = (
+  container,
+  backgroundConnection,
+  handleStartUISync,
+) => {
   setBackgroundConnection(backgroundConnection);
   backgroundConnection.onNotification((data) => {
-    if (data.method === 'sendUpdate') {
-      reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
+    const { method, params } = data;
+    if (method === 'sendUpdate') {
+      reduxStore.dispatch(actions.updateMetamaskState(params[0]));
+    } else if (method === METHOD_START_UI_SYNC) {
+      handleStartUISync();
+    } else if (method === METHOD_DISPLAY_STATE_CORRUPTION_ERROR) {
+      const { error, currentLocale } = params;
+      displayStateCorruptionError(container, error, currentLocale);
     } else {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
@@ -123,7 +145,7 @@ export async function setupInitialStore(
     },
   };
 
-  updateBackgroundConnection(backgroundConnection);
+  connectToBackground(backgroundConnection);
 
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
     const { origin } = draftInitialState.activeTab;

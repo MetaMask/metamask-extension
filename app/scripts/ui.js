@@ -18,10 +18,9 @@ import browser from 'webextension-polyfill';
 import { StreamProvider } from '@metamask/providers';
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import log from 'loglevel';
-import { isObject, hasProperty } from '@metamask/utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import launchMetaMaskUi, { updateBackgroundConnection } from '../../ui';
+import launchMetaMaskUi, { connectToBackground } from '../../ui';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
@@ -32,10 +31,6 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import { getErrorHtml } from '../../shared/lib/error-utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
-import {
-  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
-  displayStateCorruptionError,
-} from './lib/state-corruption-errors';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -43,7 +38,6 @@ import metaRPCClientFactory from './lib/metaRPCClientFactory';
 
 const PHISHING_WARNING_PAGE_TIMEOUT = 1 * 1000; // 1 Second
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
-const METHOD_START_UI_SYNC = 'startUISync';
 
 const container = document.getElementById('app-content');
 
@@ -91,40 +85,8 @@ async function start() {
   const connectionStream = new PortStream(extensionPort);
   const subStreams = connectSubstreams(connectionStream);
   const backgroundConnection = metaRPCClientFactory(subStreams.controller);
-  updateBackgroundConnection(backgroundConnection);
+  connectToBackground(container, backgroundConnection, handleStartUISync);
   setupProviderConnection(subStreams.provider);
-  setupBootstrapListener(subStreams.controller);
-
-  /**
-   * Sets up a listener for the bootstrap messages.
-   *
-   * @param {MetamaskController} controller
-   */
-  async function setupBootstrapListener(controller) {
-    /**
-     * Handles the bootstrap messages.
-     *
-     * @param {unknown} data
-     * @returns
-     */
-    async function bootstrapListener(data) {
-      if (!isObject(data) || !hasProperty(data, 'method')) {
-        return;
-      }
-      switch (data.method) {
-        case METHOD_START_UI_SYNC:
-          await handleStartUISync();
-          break;
-        case METHOD_DISPLAY_STATE_CORRUPTION_ERROR:
-          handleDisplayStateCorruptionError(data.params);
-          break;
-        default:
-          return;
-      }
-      controller.off('data', bootstrapListener);
-    }
-    controller.on('data', bootstrapListener);
-  }
 
   async function handleStartUISync() {
     endTrace({ name: TraceName.BackgroundConnect });
@@ -141,19 +103,6 @@ async function start() {
     if (isManifestV3) {
       await loadPhishingWarningPage();
     }
-  }
-
-  /**
-   * @typedef {import('./lib/state-corruption-errors').ErrorLike} ErrorLike
-   */
-
-  /**
-   * Updates the DOM with the state corruption error UI.
-   *
-   * @param {{ error: ErrorLike, currentLocale?: string }} params
-   */
-  function handleDisplayStateCorruptionError({ error, currentLocale }) {
-    displayStateCorruptionError(container, error, currentLocale);
   }
 
   trace({
