@@ -4881,7 +4881,7 @@
     "message": "Back up Secret Recovery Phrase"
   },
   "securitySrpDescription": {
-    "message": "Back up your Secret Recovery Phrase. Be sure to store your Secret Recovery Phrase in a safe place that only you can access and won’t forget."
+    "message": "Back up your Secret Recovery Phrase so you don’t lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget."
   },
   "securitySrpSocialLoginDescription": {
     "message": "Back up your Secret Recovery Phrase and link your wallet to an Apple or Google account. Be sure to store your Secret Recovery Phrase in a safe place that only you can access and won’t forget."
@@ -4890,7 +4890,7 @@
     "message": "Secret Recovery Phrase"
   },
   "securitySrpWalletRecovery": {
-    "message": "Wallet recovery"
+    "message": "Reveal Secret Recovery Phrase"
   },
   "seeAllPermissions": {
     "message": "See all permissions",
