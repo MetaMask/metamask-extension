@@ -42,7 +42,7 @@ import {
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import InfoTooltip from '../../../../ui/info-tooltip';
-import { isGlobalNetworkSelectorEnabled } from '../../../../../contexts/assetPolling';
+import { isGlobalNetworkSelectorEnabled } from '../../../../../selectors/selectors';
 
 type SortControlProps = {
   handleClose: () => void;

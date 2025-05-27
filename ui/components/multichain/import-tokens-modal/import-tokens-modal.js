@@ -115,7 +115,7 @@ import { getImageForChainId } from '../../../selectors/multichain';
 import { NetworkListItem } from '../network-list-item';
 import TokenListPlaceholder from '../../app/import-token/token-list/token-list-placeholder';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
-import { isGlobalNetworkSelectorEnabled } from '../../../contexts/assetPolling';
+import { isGlobalNetworkSelectorEnabled } from '../../../selectors/selectors';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 const ACTION_MODES = {

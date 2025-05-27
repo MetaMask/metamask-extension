@@ -16,7 +16,7 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../ducks/metamask/metamask';
-import { isGlobalNetworkSelectorEnabled } from '../contexts/assetPolling';
+import { isGlobalNetworkSelectorEnabled } from '../selectors/selectors';
 import usePolling from './usePolling';
 
 const usePollingEnabled = () => {
