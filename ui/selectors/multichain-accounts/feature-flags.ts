@@ -1,6 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // We can ignore the unused vars warning while the flag is not active
 
+import {
+  Infer,
+  object,
+  boolean,
+  nullable,
+  string,
+  assert,
+} from '@metamask/superstruct';
 import semver from 'semver';
 import {
   getRemoteFeatureFlags,
@@ -8,13 +16,20 @@ import {
 } from '../remote-feature-flags';
 
 /**
+ * Feature flag structure for multichain accounts features
+ */
+const MultichainAccountsFeatureFlag = object({
+  enabled: boolean(),
+  featureVersion: nullable(string()),
+  minimumVersion: nullable(string()),
+});
+
+/**
  * Feature flag type for multichain accounts features
  */
-export type MultichainAccountsFeatureFlag = {
-  enabled: boolean;
-  featureVersion: string | null;
-  minimumVersion: string | null;
-};
+export type MultichainAccountsFeatureFlag = Infer<
+  typeof MultichainAccountsFeatureFlag
+>;
 
 // TODO: Update the value to the decided version multichain accounts will be released
 const MINIMUM_SUPPORTED_VERSION = null;
@@ -33,6 +48,13 @@ const isMultichainAccountsFeatureEnabled = (
   featureVersion: string,
 ) => {
   const { enableMultichainAccounts } = getRemoteFeatureFlags(state);
+  try {
+    assert(enableMultichainAccounts, MultichainAccountsFeatureFlag);
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+
   const {
     enabled,
     featureVersion: currentFeatureVersion,
