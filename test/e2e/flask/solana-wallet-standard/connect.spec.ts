@@ -197,7 +197,9 @@ describe('Solana Wallet Standard - e2e tests', function () {
           await testDapp.openTestDappPage();
 
           // Explicitly select the second account before connecting
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
           await switchToAccount(driver, 'Solana 2');
           await testDapp.switchTo();
 
@@ -212,7 +214,9 @@ describe('Solana Wallet Standard - e2e tests', function () {
           assertConnected(account, account2Short);
 
           // Now switch to the first account
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
           await switchToAccount(driver, 'Solana 1');
           await testDapp.switchTo();
           await driver.delay(regularDelayMs);
@@ -221,7 +225,9 @@ describe('Solana Wallet Standard - e2e tests', function () {
           assertConnected(account, account2Short);
 
           // Switch back to the second account
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
           await switchToAccount(driver, 'Solana 2');
           await testDapp.switchTo();
 
