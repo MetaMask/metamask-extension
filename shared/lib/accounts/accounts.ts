@@ -97,8 +97,6 @@ export async function getNextAvailableSnapAccountName(
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 export type CreateAccountSnapOptions = {
-  // scope is singular as the Snap decides if an account of the desired scope groups others.
-  // For example, the Solana Snap receiving mainnet scope will create an account for devnet and testnet as well.
   scope?: CaipChainId;
   derivationPath?: DiscoveredAccount['derivationPath'];
   entropySource?: string;
