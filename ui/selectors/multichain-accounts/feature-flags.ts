@@ -33,7 +33,6 @@ export type MultichainAccountsFeatureFlag = Infer<
   typeof MultichainAccountsFeatureFlag
 >;
 
-// TODO: Update the value to the decided version multichain accounts will be released
 const APP_VERSION = packageJson.version;
 const FEATURE_VERSION_1 = '1';
 const FEATURE_VERSION_2 = '2';
@@ -67,30 +66,38 @@ export const isMultichainAccountsFeatureEnabled = (
     currentFeatureVersion &&
     minimumVersion &&
     currentFeatureVersion === featureVersion &&
-    semver.gt(minimumVersion, APP_VERSION)
+    semver.gte(minimumVersion, APP_VERSION)
   );
 };
 
 /**
  * Selector to check if the multichain accounts feature is enabled for state 1.
+ *
+ * @param state - The MetaMask state object
+ * @returns boolean - True if the feature is enabled for state 1, false otherwise.
  */
 export const getIsMultichainAccountsState1Enabled = createDeepEqualSelector(
-  (state: RemoteFeatureFlagsState) => state,
+  [(state) => getRemoteFeatureFlags(state).enableMultichainAccounts],
   (state) => {
-    return false;
-    // TODO: Uncomment this when the feature is ready for release
-    // return isMultichainAccountsFeatureEnabled(state, FEATURE_VERSION_1);
+    return isMultichainAccountsFeatureEnabled(
+      state as RemoteFeatureFlagsState,
+      FEATURE_VERSION_1,
+    );
   },
 );
 
 /**
  * Selector to check if the multichain accounts feature is enabled for state 2.
+ *
+ * @param state - The MetaMask state object
+ * @returns boolean - True if the feature is enabled for state 1, false otherwise.
  */
 export const getIsMultichainAccountsState2Enabled = createDeepEqualSelector(
-  (state: RemoteFeatureFlagsState) => state,
+  [(state) => getRemoteFeatureFlags(state).enableMultichainAccounts],
   (state) => {
-    return false;
-    // TODO: Uncomment this when the feature is ready for release
-    // return isMultichainAccountsFeatureEnabled(state, FEATURE_VERSION_2);
+    return isMultichainAccountsFeatureEnabled(
+      state as RemoteFeatureFlagsState,
+      FEATURE_VERSION_2,
+    );
   },
 );
