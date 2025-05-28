@@ -38,6 +38,10 @@ import {
   updateSendAsset,
 } from '../../../../ducks/send';
 
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
+import { getRemoteSendAllowance } from '../../../../selectors/remote-mode';
+import { SendAllowanceBanner } from '../../../../pages/remote-mode/components';
+
 import {
   TokenStandard,
   AssetType,
@@ -61,9 +65,13 @@ import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import { AssetPickerAmount } from '../..';
 import useUpdateSwapsState from '../../../../pages/swaps/hooks/useUpdateSwapsState';
 import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
-import { smartTransactionsListSelector } from '../../../../selectors';
+import {
+  getSelectedInternalAccount,
+  smartTransactionsListSelector,
+} from '../../../../selectors';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
+import { trace, TraceName } from '../../../../../shared/lib/trace';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -285,8 +293,14 @@ export const SendPage = () => {
     setError(undefined);
 
     try {
-      await dispatch(signTransaction(history));
-
+      await trace(
+        {
+          name: TraceName.SendCompleted,
+        },
+        async () => {
+          await dispatch(signTransaction(history));
+        },
+      );
       trackEvent({
         category: MetaMetricsEventCategory.Transactions,
         event: 'Complete',
@@ -356,6 +370,19 @@ export const SendPage = () => {
     [dispatch],
   );
 
+  // Remote Mode
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const currentChainId = useSelector(getCurrentChainId);
+  const remoteSendAllowance = useSelector((state) =>
+    getRemoteSendAllowance(state, {
+      from: selectedAccount.address,
+      chainId: currentChainId,
+      asset: transactionAsset,
+    }),
+  );
+  const isRemoteSendPossible = Boolean(remoteSendAllowance);
+  const showRemoteSendBanner = isRemoteSendPossible && isSendFormShown;
+
   let tooltipTitle = '';
 
   if (isSwapAndSend) {
@@ -382,7 +409,10 @@ export const SendPage = () => {
         {t('send')}
       </Header>
       <Content>
-        <SendPageAccountPicker />
+        {showRemoteSendBanner && (
+          <SendAllowanceBanner allowance={remoteSendAllowance} />
+        )}
+        <SendPageAccountPicker isRemoteModeEnabled={isRemoteSendPossible} />
         {isSendFormShown && (
           <AssetPickerAmount
             error={error}
@@ -390,9 +420,11 @@ export const SendPage = () => {
             header={t('sendSelectSendAsset')}
             asset={transactionAsset}
             amount={amount}
+            disableMaxButton={isRemoteSendPossible}
             onAssetChange={handleSelectSendToken}
             onAmountChange={onAmountChange}
             onClick={() => handleAssetPickerClick(false)}
+            showNetworkPicker
           />
         )}
         <Box marginTop={6}>

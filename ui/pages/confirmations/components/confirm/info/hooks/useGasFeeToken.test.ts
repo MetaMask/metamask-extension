@@ -20,25 +20,35 @@ const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
   symbol: 'USDC',
 };
 
-const STATE_MOCK = getMockConfirmStateForTransaction(
-  genUnapprovedContractInteractionConfirmation({
-    address: FROM_MOCK,
-    gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
-    selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
-  }),
-  {
-    metamask: {
-      preferences: {
-        showFiatInTestnets: true,
+function getState({ gasFeeTokens }: { gasFeeTokens?: GasFeeToken[] } = {}) {
+  return getMockConfirmStateForTransaction(
+    genUnapprovedContractInteractionConfirmation({
+      address: FROM_MOCK,
+      gasFeeTokens: gasFeeTokens ?? [GAS_FEE_TOKEN_MOCK],
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    }),
+    {
+      metamask: {
+        preferences: {
+          showFiatInTestnets: true,
+        },
       },
     },
-  },
-);
+  );
+}
 
-function runHook({ tokenAddress }: { tokenAddress: Hex }) {
+function runHook({
+  gasFeeTokens,
+  tokenAddress,
+}: {
+  gasFeeTokens?: GasFeeToken[];
+  tokenAddress?: Hex;
+}) {
+  const state = getState({ gasFeeTokens });
+
   const { result } = renderHookWithConfirmContextProvider(
     () => useGasFeeToken({ tokenAddress }),
-    STATE_MOCK,
+    state,
   );
 
   return result.current;
@@ -47,7 +57,7 @@ function runHook({ tokenAddress }: { tokenAddress: Hex }) {
 function runUseSelectedGasFeeTokenHook() {
   const { result } = renderHookWithConfirmContextProvider(
     useSelectedGasFeeToken,
-    STATE_MOCK,
+    getState(),
   );
 
   return result.current;
@@ -74,7 +84,7 @@ describe('useGasFeeToken', () => {
     expect(result.balanceFiat).toStrictEqual('$2,345.00');
   });
 
-  it('returns transfer tranasction', () => {
+  it('returns token transfer tranasction', () => {
     const result = runHook({ tokenAddress: GAS_FEE_TOKEN_MOCK.tokenAddress });
     expect(result.transferTransaction).toStrictEqual({
       data: `0xa9059cbb000000000000000000000000${GAS_FEE_TOKEN_MOCK.recipient.slice(
@@ -87,9 +97,25 @@ describe('useGasFeeToken', () => {
     });
   });
 
-  it('returns undefined if no gas fee token', () => {
-    const result = runHook({ tokenAddress: '0x123' });
-    expect(result).toBeUndefined();
+  it('returns native transfer tranasction if future native token', () => {
+    const result = runHook({
+      gasFeeTokens: [
+        { ...GAS_FEE_TOKEN_MOCK, tokenAddress: NATIVE_TOKEN_ADDRESS },
+      ],
+      tokenAddress: NATIVE_TOKEN_ADDRESS,
+    });
+    expect(result.transferTransaction).toStrictEqual({
+      gas: GAS_FEE_TOKEN_MOCK.gasTransfer,
+      maxFeePerGas: GAS_FEE_TOKEN_MOCK.maxFeePerGas,
+      maxPriorityFeePerGas: GAS_FEE_TOKEN_MOCK.maxPriorityFeePerGas,
+      to: GAS_FEE_TOKEN_MOCK.recipient,
+      value: GAS_FEE_TOKEN_MOCK.amount,
+    });
+  });
+
+  it('returns native gas fee token if no token address', () => {
+    const result = runHook({ tokenAddress: undefined });
+    expect(result.tokenAddress).toStrictEqual(NATIVE_TOKEN_ADDRESS);
   });
 
   describe('returns native gas fee token', () => {

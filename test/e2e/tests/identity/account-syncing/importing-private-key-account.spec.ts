@@ -7,7 +7,6 @@ import { IDENTITY_TEAM_IMPORTED_PRIVATE_KEY } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
-import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeOnboardFlowIdentity } from '../flows';
 import { ACCOUNT_TYPE } from '../../../constants';
 import {
@@ -57,8 +56,6 @@ describe('Account syncing - Import With Private Key', function () {
         },
         async ({ driver }) => {
           await completeOnboardFlowIdentity(driver);
-          const homePage = new HomePage(driver);
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -97,8 +94,6 @@ describe('Account syncing - Import With Private Key', function () {
         },
         async ({ driver }) => {
           await completeOnboardFlowIdentity(driver);
-          const homePage = new HomePage(driver);
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();

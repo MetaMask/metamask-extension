@@ -59,7 +59,6 @@ export default function SkipSRPBackup({ handleClose }) {
               handleClose();
             }}
             type="secondary"
-            rounded
           >
             {t('goBack')}
           </Button>
@@ -67,7 +66,6 @@ export default function SkipSRPBackup({ handleClose }) {
             data-testid="skip-srp-backup"
             disabled={!checked}
             type="primary"
-            rounded
             onClick={async () => {
               await dispatch(setSeedPhraseBackedUp(false));
               trackEvent({

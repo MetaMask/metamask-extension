@@ -1,5 +1,86 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`AggregatedMultichainPercentageOverview render renders correctly with negative values 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex"
+  >
+    <p
+      class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-error-default"
+      data-testid="aggregated-value-change"
+      style="white-space: pre;"
+    >
+      -
+      $51.23
+       
+    </p>
+    <p
+      class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-error-default"
+      data-testid="aggregated-percentage-change"
+    >
+      (
+      -
+      4.87%
+      )
+    </p>
+  </div>
+</div>
+`;
+
+exports[`AggregatedMultichainPercentageOverview render renders correctly with positive values 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex"
+  >
+    <p
+      class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-success-default"
+      data-testid="aggregated-value-change"
+      style="white-space: pre;"
+    >
+      +
+      $51.23
+       
+    </p>
+    <p
+      class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-success-default"
+      data-testid="aggregated-percentage-change"
+    >
+      (
+      +
+      5.12%
+      )
+    </p>
+  </div>
+</div>
+`;
+
+exports[`AggregatedMultichainPercentageOverview render renders correctly with zero values 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex"
+  >
+    <p
+      class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-alternative"
+      data-testid="aggregated-value-change"
+      style="white-space: pre;"
+    >
+      +
+      $0.00
+       
+    </p>
+    <p
+      class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-alternative"
+      data-testid="aggregated-percentage-change"
+    >
+      (
+      +
+      0.00%
+      )
+    </p>
+  </div>
+</div>
+`;
+
 exports[`AggregatedPercentageOverview render renders correctly 1`] = `
 <div>
   <div

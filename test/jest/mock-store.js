@@ -135,6 +135,11 @@ export const createSwapsMockStore = () => {
       swapsSTXLoading: false,
     },
     metamask: {
+      remoteFeatureFlags: {
+        bridgeConfig: {
+          support: false,
+        },
+      },
       preferences: {
         showFiatInTestnets: true,
         smartTransactionsOptInStatus: true,

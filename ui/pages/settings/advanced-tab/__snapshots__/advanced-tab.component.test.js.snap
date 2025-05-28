@@ -28,7 +28,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <button
-            class="button btn--rounded btn-secondary btn--large"
+            class="button btn-secondary btn--large"
             data-testid="advanced-setting-state-logs-button"
           >
             Download state logs
@@ -59,7 +59,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <button
-            class="button btn--rounded btn-danger btn--large settings-tab__button--red"
+            class="button btn-danger btn--large settings-tab__button--red"
           >
             Clear activity tab data
           </button>
@@ -587,7 +587,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
             
           </div>
           <button
-            class="button btn--rounded btn-primary settings-tab__rpc-save-button"
+            class="button btn-primary settings-tab__rpc-save-button"
             data-testid="auto-lockout-button"
           >
             Save
@@ -618,7 +618,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
           class="settings-page__content-item-col"
         >
           <button
-            class="button btn--rounded btn-secondary btn--large"
+            class="button btn-secondary btn--large"
             data-testid="export-data-button"
           >
             Download

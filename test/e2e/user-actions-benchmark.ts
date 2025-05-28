@@ -4,19 +4,17 @@ import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import { exitWithError } from '../../development/lib/exit-with-error';
 import { getFirstParentDirectoryThatExists, isWritable } from '../helpers/file';
+import { Driver } from './webdriver/driver';
 import FixtureBuilder from './fixture-builder';
-import { Mockttp } from 'mockttp';
 import HomePage from './page-objects/pages/home/homepage';
-import { mockFeatureFlag } from './tests/bridge/bridge-test-utils';
 import BridgeQuotePage from './page-objects/pages/bridge/quote-page';
-import { DEFAULT_FEATURE_FLAGS_RESPONSE } from './tests/bridge/constants';
+import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './tests/bridge/constants';
 import {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   unlockWallet,
   withFixtures,
 } from './helpers';
-import { Driver } from './webdriver/driver';
 
 async function loadNewAccount(): Promise<number> {
   let loadingTimes: number = 0;
@@ -24,8 +22,10 @@ async function loadNewAccount(): Promise<number> {
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
-      localNodeOptions: 'ganache',
       disableServerMochaToBackground: true,
+      localNodeOptions: {
+        accounts: 1,
+      },
       title: 'benchmark-userActions-loadNewAccount',
     },
     async ({ driver }: { driver: Driver }) => {
@@ -58,7 +58,6 @@ async function confirmTx(): Promise<number> {
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
-      localNodeOptions: 'ganache',
       disableServerMochaToBackground: true,
       title: 'benchmark-userActions-confirmTx',
     },
@@ -101,7 +100,11 @@ async function confirmTx(): Promise<number> {
   return loadingTimes;
 }
 
-async function bridgeUserActions(): Promise<any> {
+async function bridgeUserActions(): Promise<{
+  loadPage: number;
+  loadAssetPicker: number;
+  searchToken: number;
+}> {
   let loadPage: number = 0;
   let loadAssetPicker: number = 0;
   let searchToken: number = 0;
@@ -112,16 +115,12 @@ async function bridgeUserActions(): Promise<any> {
     {
       fixtures: fixtureBuilder.build(),
       disableServerMochaToBackground: true,
-      localNodeOptions: 'ganache',
       title: 'benchmark-userActions-bridgeUserActions',
-      testSpecificMock: async (mockServer: Mockttp) => [
-        await mockFeatureFlag(mockServer, {
-          'extension-config': {
-            ...DEFAULT_FEATURE_FLAGS_RESPONSE['extension-config'],
-            support: true,
-          },
-        }),
-      ],
+      manifestFlags: {
+        remoteFeatureFlags: {
+          bridgeConfig: DEFAULT_BRIDGE_FEATURE_FLAGS,
+        },
+      },
     },
     async ({ driver }: { driver: Driver }) => {
       await logInWithBalanceValidation(driver);
@@ -173,7 +172,10 @@ async function main(): Promise<void> {
       }),
   );
 
-  const results: Record<string, number> = {};
+  const results: Record<
+    string,
+    number | { loadPage: number; loadAssetPicker: number; searchToken: number }
+  > = {};
   results.loadNewAccount = await loadNewAccount();
   results.confirmTx = await confirmTx();
   const bridgeResults = await bridgeUserActions();

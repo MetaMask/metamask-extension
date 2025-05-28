@@ -44,8 +44,8 @@ module.exports = {
   // We have to specify the environment we are running in, which is jsdom. The
   // default is 'node'. This can be modified *per file* using a comment at the
   // head of the file. So it may be worthwhile to switch to 'node' in any
-  // background tests.
-  testEnvironment: 'jsdom',
+  // background tests. `jest-fixed-jsdom` is an improved version of jsdom.
+  testEnvironment: 'jest-fixed-jsdom',
   testEnvironmentOptions: {
     customExportConditions: ['node', 'node-addons'],
   },

@@ -3,7 +3,7 @@
 exports[`AssetPicker matches snapshot 1`] = `
 <DocumentFragment>
   <button
-    class="mm-box mm-text mm-button-base mm-button-base--size-md asset-picker mm-text--body-md-medium mm-box--padding-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-pill"
+    class="mm-box mm-text mm-button-base mm-button-base--size-md asset-picker mm-text--body-md-medium mm-box--padding-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-xl"
     data-testid="asset-picker-button"
   >
     <span
@@ -73,7 +73,7 @@ exports[`AssetPicker matches snapshot 1`] = `
 exports[`AssetPicker render if disabled 1`] = `
 <div>
   <button
-    class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--disabled asset-picker mm-text--body-md-medium mm-box--padding-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-pill"
+    class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--disabled asset-picker mm-text--body-md-medium mm-box--padding-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-xl"
     data-testid="asset-picker-button"
     disabled=""
     title="[swapTokenNotAvailable]"
@@ -135,7 +135,7 @@ exports[`AssetPicker render if disabled 1`] = `
 exports[`AssetPicker should render network picker when networks prop is defined 1`] = `
 <DocumentFragment>
   <button
-    class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--disabled asset-picker mm-text--body-md-medium mm-box--padding-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-pill"
+    class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--disabled asset-picker mm-text--body-md-medium mm-box--padding-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-xl"
     data-testid="asset-picker-button"
     disabled=""
     title="[swapTokenNotAvailable]"

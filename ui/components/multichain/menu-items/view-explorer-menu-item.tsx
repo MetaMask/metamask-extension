@@ -101,7 +101,6 @@ export const ViewExplorerMenuItem = ({
   const LABEL = t('viewOnExplorer');
 
   return (
-    // @ts-expect-error - TODO: Fix MenuItem props types
     <MenuItem
       onClick={() => {
         blockExplorerLinkText.firstPart === 'addBlockExplorer'

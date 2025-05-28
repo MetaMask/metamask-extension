@@ -9,7 +9,9 @@ class PreinstalledExampleSettings {
   };
 
   private readonly snapRenderPanel = '.snap-ui-renderer__panel';
+
   private readonly toggleButton = '.toggle-button';
+
   private readonly settingsDropdown = '[data-testid="snaps-dropdown"]';
 
   constructor(driver: Driver) {
@@ -37,7 +39,7 @@ class PreinstalledExampleSettings {
     await this.driver.clickElement(this.toggleButton);
   }
 
-  async selectRadioOption(option:string): Promise<void> {
+  async selectRadioOption(option: string): Promise<void> {
     console.log(`Selecting option: ${option} radio button`);
     await this.driver.clickElement({ text: option, tag: `label` });
   }
@@ -50,21 +52,25 @@ class PreinstalledExampleSettings {
 
   async check_isToggleOn(): Promise<void> {
     console.log('Checking if the toggle is on');
-    await this.driver.waitForSelector(this.toggleButton+'--on');
+    await this.driver.waitForSelector(`${this.toggleButton}--on`);
   }
 
-  async check_selectedRadioOption(option: string): Promise<Boolean> {
+  async check_selectedRadioOption(option: string): Promise<boolean> {
     console.log(`Checking if the radio option "${option}" is selected`);
-    const radioOption = await this.driver.findElement(`input[type="radio"][id="${option}"]`);
-    const isChecked = await radioOption.getAttribute('checked') === 'true';
+    const radioOption = await this.driver.findElement(
+      `input[type="radio"][id="${option}"]`,
+    );
+    const isChecked = (await radioOption.getAttribute('checked')) === 'true';
     return isChecked;
   }
 
   async check_selectedDropdownOption(option: string): Promise<void> {
     console.log(`Checking if the dropdown option "${option}" is selected`);
-    await this.driver.waitForSelector({ css: this.settingsDropdown, text: option });
+    await this.driver.waitForSelector({
+      css: this.settingsDropdown,
+      text: option,
+    });
   }
-
 }
 
 export default PreinstalledExampleSettings;

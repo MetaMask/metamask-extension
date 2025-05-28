@@ -16,6 +16,7 @@ const MOCK_TX_TYPE = {
   TOKEN_METHOD_SAFE_TRANSFER_FROM: 'safetransferfrom',
   TOKEN_METHOD_TRANSFER: 'transfer',
   TOKEN_METHOD_TRANSFER_FROM: 'transferfrom',
+  BRIDGE: 'bridge',
 };
 
 export const MOCK_TRANSACTION_BY_TYPE = {
@@ -506,6 +507,25 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     destinationTokenSymbol: 'ABC',
     sourceTokenSymbol: 'ETH',
     type: 'swap',
+  },
+  [MOCK_TX_TYPE.BRIDGE]: {
+    blockNumber: '6195527',
+    id: 4243712234858467,
+    chainId: '0x1',
+    status: 'confirmed',
+    time: 1585088013000,
+    txParams: {
+      from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      gas: '0x5208',
+      gasPrice: '0x77359400',
+      nonce: '0x3',
+      to: '0xefga64466f257793eaa52fcfff5066894b76a149',
+      value: '0xde0b6b3a7640000',
+    },
+    hash: '0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a',
+    destinationTokenSymbol: 'ABC',
+    sourceTokenSymbol: 'ETH',
+    type: 'bridge',
   },
   [MOCK_TX_TYPE.SWAP_APPROVAL]: {
     blockNumber: '6195527',

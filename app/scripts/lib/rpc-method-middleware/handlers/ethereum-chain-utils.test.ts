@@ -253,6 +253,7 @@ describe('Ethereum Chain Utils', () => {
       });
     });
 
+    // @ts-expect-error This function is missing from the Mocha type definitions
     describe.each([
       ['legacy', false],
       ['multichain', true],

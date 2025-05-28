@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Switch, useHistory } from 'react-router-dom';
+import { UnifiedSwapBridgeEventName } from '@metamask/bridge-controller';
 import { I18nContext } from '../../contexts/i18n';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
 import {
@@ -27,7 +28,10 @@ import {
   Page,
 } from '../../components/multichain/pages/page';
 import { useSwapsFeatureFlags } from '../swaps/hooks/useSwapsFeatureFlags';
-import { resetBridgeState } from '../../ducks/bridge/actions';
+import {
+  resetBridgeState,
+  trackUnifiedSwapBridgeEvent,
+} from '../../ducks/bridge/actions';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRates';
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
@@ -55,11 +59,19 @@ const CrossChainSwap = () => {
     await dispatch(resetBridgeState());
   };
 
-  useEffect(() => {
-    // Reset controller and inputs before unloading the page
-    window.addEventListener('beforeunload', resetControllerAndInputStates);
+  const isSwap = useIsMultichainSwap();
 
+  useEffect(() => {
+    dispatch(
+      trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.PageViewed, {}),
+    );
+    // Reset controller and inputs before unloading the page
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    window.addEventListener('beforeunload', resetControllerAndInputStates);
     return () => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       window.removeEventListener('beforeunload', resetControllerAndInputStates);
       resetControllerAndInputStates();
     };
@@ -71,8 +83,6 @@ const CrossChainSwap = () => {
   useBridgeExchangeRates();
   // Emits events related to quote-fetching
   useQuoteFetchEvents();
-
-  const isSwap = useIsMultichainSwap();
 
   const redirectToDefaultRoute = async () => {
     history.push({
@@ -95,6 +105,8 @@ const CrossChainSwap = () => {
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={redirectToDefaultRoute}
           />
         }

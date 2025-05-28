@@ -30,6 +30,10 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
+      # not installed by checkout-and-setup when cache is restored
+      - name: Install anvil
+        run: yarn foundryup
+
       - name: Download artifact ${{ env.ARTIFACT_NAME }}
         uses: actions/download-artifact@v4
         with:

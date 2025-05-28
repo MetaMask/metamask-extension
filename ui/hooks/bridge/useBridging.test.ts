@@ -1,11 +1,6 @@
-import nock from 'nock';
 import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
-import {
-  ETH_SWAPS_TOKEN_OBJECT,
-  SwapsTokenObject,
-} from '../../../shared/constants/swaps';
+import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
-import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import useBridging from './useBridging';
@@ -47,11 +42,9 @@ describe('useBridging', () => {
 
   describe('extensionConfig.support=false, chainId=1', () => {
     beforeEach(() => {
-      nock(BRIDGE_API_BASE_URL)
-        .get('/getAllFeatureFlags')
-        .reply(200, { 'extension-config': { support: false } });
       jest.clearAllMocks();
     });
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
         'https://portfolio.test/bridge?metamaskEntry=ext_bridge_button&metametricsId=0xtestMetaMetricsId&metricsEnabled=false&marketingEnabled=null&token=0x0000000000000000000000000000000000000000',
@@ -73,7 +66,7 @@ describe('useBridging', () => {
           address: '0x00232f2jksdauo',
           balance: '0x5f5e100',
           string: '123',
-        } as unknown as SwapsTokenObject,
+        },
         MetaMetricsSwapsEventSource.TokenView,
         undefined,
       ],
@@ -81,9 +74,9 @@ describe('useBridging', () => {
       'should open %s with the currently selected token: %p',
       (
         expectedUrl: string,
-        token: SwapsTokenObject,
+        token: string,
         location: string,
-        urlSuffix: string | undefined,
+        urlSuffix: string,
       ) => {
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         const { result } = renderUseBridging({
@@ -91,9 +84,17 @@ describe('useBridging', () => {
             useExternalServices: true,
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
             metaMetricsId: MOCK_METAMETRICS_ID,
-            bridgeFeatureFlags: {
-              extensionConfig: {
+            remoteFeatureFlags: {
+              bridgeConfig: {
                 support: false,
+                refreshRate: 5000,
+                maxRefreshCount: 5,
+                chains: {
+                  '1': {
+                    isActiveSrc: true,
+                    isActiveDest: false,
+                  },
+                },
               },
             },
             internalAccounts: {
@@ -103,9 +104,8 @@ describe('useBridging', () => {
           },
         });
 
-        expect(mockDispatch.mock.calls).toHaveLength(1);
+        expect(mockDispatch.mock.calls).toHaveLength(0);
 
-        expect(nock(BRIDGE_API_BASE_URL).isDone()).toBe(true);
         result.current.openBridgeExperience(location, token, urlSuffix);
 
         expect(openTabSpy).toHaveBeenCalledWith({
@@ -117,11 +117,9 @@ describe('useBridging', () => {
 
   describe('extensionConfig.support=true, chain=1', () => {
     beforeEach(() => {
-      nock(BRIDGE_API_BASE_URL)
-        .get('/getAllFeatureFlags')
-        .reply(200, { 'extension-config': { support: true } });
       jest.clearAllMocks();
     });
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
         '/cross-chain/swaps/prepare-swap-page?token=0x0000000000000000000000000000000000000000',
@@ -143,17 +141,17 @@ describe('useBridging', () => {
           address: '0x00232f2jksdauo',
           balance: '0x5f5e100',
           string: '123',
-        } as unknown as SwapsTokenObject,
+        },
         MetaMetricsSwapsEventSource.TokenView,
         undefined,
       ],
     ])(
       'should open %s with the currently selected token: %p',
-      (
+      async (
         expectedUrl: string,
-        token: SwapsTokenObject,
+        token: string,
         location: string,
-        urlSuffix: string | undefined,
+        urlSuffix: string,
       ) => {
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         const { result } = renderUseBridging({
@@ -161,10 +159,17 @@ describe('useBridging', () => {
             useExternalServices: true,
             ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
             metaMetricsId: MOCK_METAMETRICS_ID,
-            isBridgeEnabled: true,
-            bridgeFeatureFlags: {
-              extensionConfig: {
+            remoteFeatureFlags: {
+              bridgeConfig: {
                 support: true,
+                refreshRate: 5000,
+                maxRefreshCount: 5,
+                chains: {
+                  '1': {
+                    isActiveSrc: true,
+                    isActiveDest: false,
+                  },
+                },
               },
             },
             internalAccounts: {

@@ -7,6 +7,7 @@
 import type { Options as YargsOptions } from 'yargs';
 import yargs from 'yargs/yargs';
 import parser from 'yargs-parser';
+import type { BuildTypesConfig } from '../../lib/build-type';
 import {
   Browsers,
   type Manifest,
@@ -14,7 +15,6 @@ import {
   uniqueSort,
   toOrange,
 } from './helpers';
-import { type BuildConfig } from './config';
 
 const ENV_PREFIX = 'BUNDLE';
 const addFeat = 'addFeature' as const;
@@ -91,7 +91,7 @@ export type Features = ReturnType<typeof parseArgv>['features'];
  */
 export function parseArgv(
   argv: string[],
-  { buildTypes, features }: BuildConfig,
+  { buildTypes, features }: BuildTypesConfig,
 ) {
   const allBuildTypeNames = Object.keys(buildTypes);
   const allFeatureNames = Object.keys(features);

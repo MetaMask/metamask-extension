@@ -6,11 +6,18 @@ import configureStore from '../../../../../../../store/store';
 
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
-import { getIsSmartTransaction } from '../../../../../../../../shared/modules/selectors';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmations/gas';
+import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
+import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
+import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
+import { Severity } from '../../../../../../../helpers/constants/design-system';
 import { SelectedGasFeeToken } from './selected-gas-fee-token';
 
 jest.mock('../../../../../../../../shared/modules/selectors');
+jest.mock('../../../../../hooks/gas/useIsGaslessSupported');
+jest.mock(
+  '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts',
+);
 
 function getStore({
   gasFeeTokens,
@@ -37,11 +44,26 @@ function getStore({
 }
 
 describe('SelectedGasFeeToken', () => {
-  const getIsSmartTransactionMock = jest.mocked(getIsSmartTransaction);
+  const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
+  const useInsufficientBalanceAlertsMock = jest.mocked(
+    useInsufficientBalanceAlerts,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
-    getIsSmartTransactionMock.mockReturnValue(true);
+
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: true,
+      isSupported: true,
+    });
+
+    useInsufficientBalanceAlertsMock.mockReturnValue([
+      {
+        content: 'Insufficient balance',
+        key: 'insufficientBalance',
+        severity: Severity.Danger,
+      },
+    ]);
   });
 
   it('renders native symbol', () => {
@@ -82,12 +104,48 @@ describe('SelectedGasFeeToken', () => {
     expect(result.queryByTestId('selected-gas-fee-token-arrow')).toBeNull();
   });
 
-  it('does not render arrow icon if smart transactions disabled', () => {
-    getIsSmartTransactionMock.mockReturnValue(false);
+  it('does not render arrow icon if gasless not supported', () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: false,
+    });
 
     const result = renderWithConfirmContextProvider(
       <SelectedGasFeeToken />,
       getStore(),
+    );
+
+    expect(result.queryByTestId('selected-gas-fee-token-arrow')).toBeNull();
+  });
+
+  it('does not render arrow icon if not smart transaction and future native only', () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: true,
+    });
+
+    const result = renderWithConfirmContextProvider(
+      <SelectedGasFeeToken />,
+      getStore({
+        gasFeeTokens: [
+          { ...GAS_FEE_TOKEN_MOCK, tokenAddress: NATIVE_TOKEN_ADDRESS },
+        ],
+      }),
+    );
+
+    expect(result.queryByTestId('selected-gas-fee-token-arrow')).toBeNull();
+  });
+
+  it('does not render arrow icon if sufficient balance and future native only', () => {
+    useInsufficientBalanceAlertsMock.mockReturnValue([]);
+
+    const result = renderWithConfirmContextProvider(
+      <SelectedGasFeeToken />,
+      getStore({
+        gasFeeTokens: [
+          { ...GAS_FEE_TOKEN_MOCK, tokenAddress: NATIVE_TOKEN_ADDRESS },
+        ],
+      }),
     );
 
     expect(result.queryByTestId('selected-gas-fee-token-arrow')).toBeNull();

@@ -5,7 +5,12 @@ import { InternalScopeString } from '@metamask/chain-agnostic-permission';
 import { Driver } from '../webdriver/driver';
 
 // eslint-disable-next-line @typescript-eslint/no-shadow
-declare let window: any;
+declare let window: Window & {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ethereum: any;
+};
 
 type QueueItem = {
   task: () => Promise<unknown>;

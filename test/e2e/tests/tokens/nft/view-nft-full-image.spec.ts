@@ -6,8 +6,8 @@ import NFTListPage from '../../../page-objects/pages/home/nft-list';
 import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import { setupAutoDetectMocking } from './mocks';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
+import { setupAutoDetectMocking } from './mocks';
 
 describe('NFT full', function () {
   it('displays NFT full image when NFT is on a network different from the current network', async function () {

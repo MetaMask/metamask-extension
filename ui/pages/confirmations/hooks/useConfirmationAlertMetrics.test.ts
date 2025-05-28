@@ -107,16 +107,11 @@ describe('useConfirmationAlertMetrics', () => {
     );
   });
 
-  type Action =
-    | 'trackAlertRender'
-    | 'trackInlineAlertClicked'
-    | 'trackAlertActionClicked';
-
   const testCases = [
     {
       description: 'updates metrics properties when trackAlertRender is called',
       alertKey: AlertsName.GasFeeLow,
-      action: 'trackAlertRender' as Action,
+      action: 'trackAlertRender',
       expectedProperties: {
         alert_visualized: [ALERT_NAME_METRICS_MOCK],
         alert_visualized_count: 1,
@@ -126,7 +121,7 @@ describe('useConfirmationAlertMetrics', () => {
       description:
         'updates metrics properties when trackInlineAlertClicked is called',
       alertKey: AlertsName.GasFeeLow,
-      action: 'trackInlineAlertClicked' as Action,
+      action: 'trackInlineAlertClicked',
       expectedProperties: {
         alert_key_clicked: [ALERT_NAME_METRICS_MOCK],
       },
@@ -135,7 +130,7 @@ describe('useConfirmationAlertMetrics', () => {
       description:
         'updates metrics properties when trackAlertActionClicked is called',
       alertKey: AlertsName.GasFeeLow,
-      action: 'trackAlertActionClicked' as Action,
+      action: 'trackAlertActionClicked',
       expectedProperties: {
         alert_action_clicked: [ALERT_NAME_METRICS_MOCK],
       },
@@ -144,7 +139,7 @@ describe('useConfirmationAlertMetrics', () => {
       description:
         'updates metrics properties when receives alertKey as a valid UUID',
       alertKey: UUID_ALERT_KEY_MOCK,
-      action: 'trackAlertRender' as Action,
+      action: 'trackAlertRender',
       expectedProperties: {
         alert_visualized: [ALERTS_NAME_METRICS[AlertsName.Blockaid]],
         alert_visualized_count: 1,
@@ -152,6 +147,7 @@ describe('useConfirmationAlertMetrics', () => {
     },
   ];
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each(testCases)(
     '$description',
     ({
@@ -161,7 +157,10 @@ describe('useConfirmationAlertMetrics', () => {
     }: {
       description: string;
       alertKey: string;
-      action: Action;
+      action:
+        | 'trackAlertRender'
+        | 'trackInlineAlertClicked'
+        | 'trackAlertActionClicked';
       expectedProperties: Record<string, unknown>;
     }) => {
       const finalExpectedProperties = {

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { type BigNumber } from 'bignumber.js';
 import {
   ButtonLink,
   ButtonPrimary,
@@ -9,8 +9,6 @@ import {
 } from '../../../components/component-library';
 import {
   getFromAmount,
-  getFromChain,
-  getFromToken,
   getToToken,
   getBridgeQuotes,
   getValidationErrors,
@@ -28,7 +26,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
@@ -40,16 +37,17 @@ import { Row } from '../layout';
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
   needsDestinationAddress = false,
+  nativeAssetBalance,
+  srcTokenBalance,
 }: {
+  nativeAssetBalance?: BigNumber;
+  srcTokenBalance?: BigNumber;
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
 }) => {
   const t = useI18nContext();
 
-  const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
-
-  const fromChain = useSelector(getFromChain);
 
   const fromAmount = useSelector(getFromAmount);
 
@@ -70,21 +68,16 @@ export const BridgeCTAButton = ({
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
-  const balanceAmount = useLatestBalance(fromToken);
-  const nativeAsset = useMemo(
-    () =>
-      fromChain?.chainId ? getNativeAssetForChainId(fromChain.chainId) : null,
-    [fromChain?.chainId],
+  const isTxSubmittable = useIsTxSubmittable(
+    nativeAssetBalance,
+    srcTokenBalance,
   );
-  const nativeAssetBalance = useLatestBalance(nativeAsset);
-
-  const isTxSubmittable = useIsTxSubmittable();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
   const { quoteRequestProperties } = useRequestProperties();
   const requestMetadataProperties = useRequestMetadataProperties();
   const tradeProperties = useTradeProperties();
 
-  const isInsufficientBalance = isInsufficientBalance_(balanceAmount);
+  const isInsufficientBalance = isInsufficientBalance_(srcTokenBalance);
 
   const isInsufficientGasBalance =
     isInsufficientGasBalance_(nativeAssetBalance);
@@ -162,6 +155,8 @@ export const BridgeCTAButton = ({
       variant={TextVariant.bodyMd}
       data-testid="bridge-cta-button"
       style={{ boxShadow: 'none' }}
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={async () => {
         if (activeQuote && isTxSubmittable && !isSubmitting) {
           try {

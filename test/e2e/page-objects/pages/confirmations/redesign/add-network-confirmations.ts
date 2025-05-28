@@ -1,7 +1,9 @@
 import { Driver } from '../../../../webdriver/driver';
 
 class AddNetworkConfirmation {
-  driver: Driver;
+  private readonly driver: Driver;
+
+  private readonly approveButton = '[data-testid="confirmation-submit-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -24,6 +26,11 @@ class AddNetworkConfirmation {
       throw e;
     }
     console.log(`Add network ${networkName} confirmation page is loaded`);
+  }
+
+  async approveAddNetwork() {
+    console.log('Approving add network on confirmation dialog');
+    await this.driver.clickElementAndWaitForWindowToClose(this.approveButton);
   }
 }
 

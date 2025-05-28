@@ -70,6 +70,7 @@
     "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",
     "showBetaHeader": false,
+    "upgradeSplashPageAcknowledgedForAccounts": [],
     "gasFeeEstimatesByChainId": {
       "0x5": {
         "gasEstimateType": "fee-market",
@@ -2022,8 +2023,6 @@
     ],
     "addSnapAccountEnabled": false,
     "watchEthereumAccountEnabled": false,
-    "bitcoinSupportEnabled": false,
-    "bitcoinTestnetSupportEnabled": false,
     "pendingApprovals": {
       "testApprovalId": {
         "id": "testApprovalId",
@@ -2154,7 +2153,8 @@
       }
     },
     "txHistory": {},
-    "throttledOrigins": {}
+    "throttledOrigins": {},
+    "delegations": {}
   },
   "ramps": {
     "buyableChains": [
