@@ -314,7 +314,7 @@ export class PersistenceManager {
     let state: MetaMaskStateType | Backup | undefined;
     let source: string | null = null;
     try {
-      state = (await this.get(false))?.data;
+      state = (await this.get({ validateVault: false }))?.data;
       source = 'primary database';
     } catch (e) {
       console.error('Error getting state from persistence manager', e);
