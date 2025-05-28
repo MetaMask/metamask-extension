@@ -99,17 +99,16 @@ export async function bridgeTransaction(
 ) {
   // Navigate to Bridge page
   const homePage = new HomePage(driver);
-  await homePage.startBridgeFlow(quote.fromChain === 'Solana');
+  await homePage.startBridgeFlow();
 
   const bridgePage = new BridgeQuotePage(driver);
   await bridgePage.enterBridgeQuote(quote);
   await bridgePage.waitForQuote();
-
-  //await bridgePage.check_expectedNetworkFeeIsDisplayed();
+  await bridgePage.check_expectedNetworkFeeIsDisplayed();
   await bridgePage.submitQuote();
-  if (quote.fromChain === 'Solana') await bridgePage.confirmBridgeTransaction();
+
   await homePage.goToActivityList();
-  await driver.delay(10000000);
+
   const activityList = new ActivityListPage(driver);
   await activityList.check_completedBridgeTransactionActivity(
     transactionsCount,

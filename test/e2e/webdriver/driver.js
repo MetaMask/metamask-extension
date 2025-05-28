@@ -1533,7 +1533,7 @@ class Driver {
 
 function logBrowserError(ignoredConsoleErrors, errorMessage) {
   let ignored = false;
-/*
+
   console.error('\n-----Received an error from Chrome-----');
   console.error(errorMessage);
   console.error('----------End of Chrome error----------');
@@ -1547,7 +1547,7 @@ function logBrowserError(ignoredConsoleErrors, errorMessage) {
   }
 
   console.error('\n');
-*/
+
   return ignored;
 }
 

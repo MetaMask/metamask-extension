@@ -24,37 +24,6 @@ type SwapOptions = {
   mainnet?: boolean;
 };
 
-type SwapSolanaOptions = {
-  amount: number;
-  swapFrom: string;
-  swapTo?: string;
-  swapToContractAddress?: string;
-};
-
-export const buildSolanaQuote = async (driver: Driver, options: SwapSolanaOptions) => {
-
-  await driver.clickElement('[data-testid="token-overview-button-swap"]');
-  if (options.swapFrom !== 'SOL') {
-    await driver.clickElement('[data-testid="bridge-source-button"]');
-
-    await driver.clickElement({
-      text: options.swapFrom,
-      tag: 'p',
-    });
-  }
-
-  if (options.swapTo !== 'USDC') {
-    await driver.clickElement('[data-testid="bridge-destination-button"]');
-
-    await driver.clickElement({
-      text: options.swapTo,
-      tag: 'p',
-    });
-  }
-  await driver.waitForSelector('[data-testid="from-amount"]');
-  await driver.fill('[data-testid="from-amount"]', options.amount.toString());
-};
-
 export const buildQuote = async (driver: Driver, options: SwapOptions) => {
   await driver.clickElement('[data-testid="token-overview-button-swap"]');
   await driver.fill(
@@ -100,34 +69,6 @@ export const buildQuote = async (driver: Driver, options: SwapOptions) => {
   );
 };
 
-export const confirmSolanaQuote = async (driver: Driver) => {
-  await driver.clickElement('[data-testid="confirm-sign-and-send-transaction-confirm-snap-footer-button"]');
-}
-
-export const reviewAndConfirmSolanaQuote = async (driver: Driver, options: {
-  swapFrom: string;
-  swapTo: string;
-  swapToAmount: number;
-  swapFromAmount?: number;
-  skipCounter?: boolean;
-}) => {
-  await driver.waitForSelector({
-    text: `1 ${options.swapFrom} = ${options.swapToAmount} ${options.swapTo}`,
-    tag: 'p',
-  });
-  await driver.waitForSelector({
-    text: `Rate includes 0.875% fee`,
-    tag: 'p',
-  });
-  await driver.waitForSelector({
-    text: `More quotes`,
-    tag: 'button',
-  })
-  await driver.clickElement('[data-testid="bridge-cta-button"]');
-  await driver.clickElement('[data-testid="confirm-sign-and-send-transaction-confirm-snap-footer-button"]');
-
-}
-
 export const reviewQuote = async (
   driver: Driver,
   options: {
@@ -137,7 +78,6 @@ export const reviewQuote = async (
     skipCounter?: boolean;
   },
 ) => {
-
   const summary = await driver.waitForSelector(
     '[data-testid="exchange-rate-display-quote-rate"]',
   );

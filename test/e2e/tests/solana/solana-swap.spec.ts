@@ -1,14 +1,14 @@
-
-import { withSolanaAccountSnap } from './common-solana';
-
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import SwapPage from '../../page-objects/pages/swap/swap-page';
+import { strict as assert } from 'assert';
+import { Suite } from 'mocha';
 import ConfirmSolanaTxPage from '../../page-objects/pages/send/solana-confirm-tx-page';
-const swapRate = 174.7;
-describe('Swap on Solana', function () {
-  it('Completes a Swap between SOL and SPL', async function () {
-    this.timeout(100000000)
+import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
+import { withSolanaAccountSnap } from './common-solana';
+import SwapPage from '../../page-objects/pages/swap/swap-page';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
+
+describe('Send flow', function (this: Suite) {
+  it('with some field validation', async function () {
+    this.timeout(120000);
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
@@ -18,7 +18,7 @@ describe('Swap on Solana', function () {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_pageIsLoaded('50');
+        await homePage.check_pageIsLoaded('0');
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         await swapPage.createSolanaSwap({
@@ -27,23 +27,23 @@ describe('Swap on Solana', function () {
           swapFrom: 'SOL',});
 
         await swapPage.reviewSolanaQuote({
-          swapToAmount: swapRate,
+          swapToAmount: 174.7,
           swapFrom: 'SOL',
           swapTo: 'USDC',
           swapFromAmount: 0,
         });
 
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
-        console.log('confirmSolanaPage', confirmSolanaPage);
 
         await confirmSolanaPage.clickOnConfirm();
 
         const activityListPage = new ActivityListPage(driver);
+
         await activityListPage.check_txAmountInActivity('-0.01 SOL', 1);
 
-
         await activityListPage.check_swapTransactionActivity('Swap SOL to USDC');
-      }
+        console.log('aqui no hace aun');
+      },
     );
   });
-})
+});
