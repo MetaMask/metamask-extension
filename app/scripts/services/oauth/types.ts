@@ -63,17 +63,25 @@ export type WebAuthenticator = {
    * @param options - The options for the web auth flow.
    * @returns The redirect URL from the social login provider.
    */
-  launchWebAuthFlow: (options: {
-    /** The URL that initiates the auth flow. */
-    url: string;
+  launchWebAuthFlow: (
+    options: {
+      /** The URL that initiates the auth flow. */
+      url: string;
+      /**
+       * Optional.
+       * Whether to launch auth flow in interactive mode.
+       * Since some auth flows may immediately redirect to a result URL, launchWebAuthFlow hides its web view until the first navigation either redirects to the final URL, or finishes loading a page meant to be displayed.
+       * If the interactive flag is true, the window will be displayed when a page load completes. If the flag is false or omitted, launchWebAuthFlow will return with an error if the initial navigation does not complete the flow.
+       */
+      interactive?: boolean;
+    },
     /**
-     * Optional.
-     * Whether to launch auth flow in interactive mode.
-     * Since some auth flows may immediately redirect to a result URL, launchWebAuthFlow hides its web view until the first navigation either redirects to the final URL, or finishes loading a page meant to be displayed.
-     * If the interactive flag is true, the window will be displayed when a page load completes. If the flag is false or omitted, launchWebAuthFlow will return with an error if the initial navigation does not complete the flow.
+     * The callback function to handle the response from the social login provider.
+     *
+     * @param responseUrl - The redirect URL from the social login provider.
      */
-    interactive?: boolean;
-  }) => Promise<string | null>;
+    callback: (responseUrl?: string) => void,
+  ) => Promise<string | null>;
 };
 
 export type OAuthServiceOptions = {

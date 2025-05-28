@@ -84,11 +84,11 @@
     "message": "Log in"
   },
   "accountAlreadyExistsLoginDescription": {
-    "message": "An account with “$1” already exists. Do you want to try logging in instead?",
+    "message": "A wallet using “$1” already exists. Do you want to try logging in instead?",
     "description": "$1 is the account email"
   },
   "accountAlreadyExistsTitle": {
-    "message": "Account already exists"
+    "message": "Wallet already exists"
   },
   "accountDetails": {
     "message": "Account details"
@@ -114,11 +114,11 @@
     "message": "Yes, create a new wallet"
   },
   "accountNotFoundDescription": {
-    "message": "No existing wallet found for “$1.” Want to create one now with this social login?",
+    "message": "We couldn’t find a wallet for “$1”. Do you want to create a new one with this login?",
     "description": "$1 is the account email"
   },
   "accountNotFoundTitle": {
-    "message": "Account not found"
+    "message": "Wallet not found"
   },
   "accountOptions": {
     "message": "Account options"
@@ -4878,16 +4878,23 @@
     "message": "Back up Secret Recovery Phrase"
   },
   "securitySrpDescription": {
-    "message": "Back up your Secret Recovery Phrase. Be sure to store your Secret Recovery Phrase in a safe place that only you can access and won’t forget."
-  },
-  "securitySrpSocialLoginDescription": {
-    "message": "Back up your Secret Recovery Phrase and link your wallet to an Apple or Google account. Be sure to store your Secret Recovery Phrase in a safe place that only you can access and won’t forget."
+    "message": "Back up your Secret Recovery Phrase so you never lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget."
   },
   "securitySrpTitle": {
     "message": "Secret Recovery Phrase"
   },
   "securitySrpWalletRecovery": {
-    "message": "Wallet recovery"
+    "message": "Manage recovery methods"
+  },
+  "securityLoginWithSocial": {
+    "message": "Login with $1",
+    "description": "The $1 is the text 'Google' or 'Apple'"
+  },
+  "securityLoginWithSrpBackedUp": {
+    "message": "Secret Recovery Phrase backed up"
+  },
+  "securityLoginWithSrpNotBackedUp": {
+    "message": "Back up Secret Recovery Phrase"
   },
   "seeAllPermissions": {
     "message": "See all permissions",
@@ -5652,6 +5659,12 @@
   "srpListSingleOrZero": {
     "message": "$1 account",
     "description": "$1 is the number of accounts in the list, it is either 1 or 0"
+  },
+  "srpListStateBackedUp": {
+    "message": "Reveal"
+  },
+  "srpListStateNotBackedUp": {
+    "message": "Backup"
   },
   "srpPasteFailedTooManyWords": {
     "message": "Paste failed because it contained over 24 words. A secret recovery phrase can have a maximum of 24 words.",
@@ -6658,9 +6671,6 @@
   },
   "unlock": {
     "message": "Unlock"
-  },
-  "unlockMessage": {
-    "message": "The decentralized web awaits"
   },
   "unlockPageIncorrectPassword": {
     "message": "Password is incorrect. Please try again."

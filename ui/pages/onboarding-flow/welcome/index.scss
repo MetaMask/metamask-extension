@@ -49,10 +49,6 @@
   box-shadow: var(--shadow-size-md) var(--color-shadow-default);
 
   &__content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     flex: 1;
   }
 
@@ -86,18 +82,6 @@
     height: 24px;
   }
 
-  &__plain-button {
-    height: 48px;
-
-    &:hover {
-      background-color: var(--color-background-hover);
-    }
-
-    &:active {
-      background-color: var(--color-background-pressed);
-    }
-  }
-
   &__or {
     position: relative;
 
@@ -112,41 +96,15 @@
     }
   }
 
-  &__or-text {
-    background-color: var(--color-background-default);
-    padding: 0 10px;
-    width: fit-content;
-    margin: auto;
-    position: relative;
-    z-index: 1;
-    text-transform: uppercase;
-  }
+  &__plain-button {
+    height: 48px;
 
-  &__buttons {
-    li:not(:last-child) {
-      margin-bottom: 16px;
+    &:hover {
+      background-color: var(--color-background-hover);
     }
 
-    &--modal {
-      margin: 0 16px;
-      max-width: none;
+    &:active {
+      background-color: var(--color-background-pressed);
     }
-  }
-
-  &__terms-checkbox {
-    margin: 0;
-    align-self: flex-start;
-  }
-
-  // override to be above the modal
-  .loading-overlay {
-    z-index: 1055;
-  }
-}
-
-.options-modal {
-  // SRP_OVERRIDE: center modal content
-  .mm-modal-content {
-    align-items: center;
   }
 }
