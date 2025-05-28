@@ -1,9 +1,10 @@
 import { AccountSelector, Box, Field } from '@metamask/snaps-sdk/jsx';
-import { renderInterface } from '../test-utils';
 import { fireEvent } from '@testing-library/react';
 import { SnapId } from '@metamask/snaps-sdk';
-import mockState from '../../../../../../test/data/mock-state.json';
 import { SolAccountType, SolScope } from '@metamask/keyring-api';
+
+import mockState from '../../../../../../test/data/mock-state.json';
+import { renderInterface } from '../test-utils';
 
 describe('SnapUIAccountSelector', () => {
   it('renders an account selector', () => {
@@ -130,7 +131,7 @@ describe('SnapUIAccountSelector', () => {
         }),
       }),
       {
-        //@ts-expect-error - type missmatch with mockState
+        // @ts-expect-error - type mismatch with mockState
         metamaskState: mockedMetamaskState,
         state: {
           'account-selector': {
