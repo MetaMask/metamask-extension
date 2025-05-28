@@ -571,6 +571,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     const unapprovedTxs = getUnapprovedTransactions(state);
     const transaction = unapprovedTxs[draftTransaction.id];
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
+    const chainId = getCurrentChainId(state);
     const selectedAccount = getSelectedInternalAccountWithBalance(state);
 
     const gasTotalForLayer1 = await thunkApi.dispatch(
