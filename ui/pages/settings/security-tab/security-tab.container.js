@@ -31,6 +31,7 @@ import {
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
+import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
@@ -80,6 +81,7 @@ const mapStateToProps = (state) => {
     hasMultipleHdKeyrings,
     socialLoginEnabled: isSocialLoginFlow(state),
     socialLoginType: getSocialLoginType(state),
+    seedPhraseBackedUp: getSeedPhraseBackedUp(state),
   };
 };
 
