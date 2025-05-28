@@ -6816,6 +6816,9 @@ export default class MetamaskController extends EventEmitter {
         getIsLocked: () => {
           return !this.appStateController.isUnlocked();
         },
+        getIsActive: () => {
+          return this._isClientOpen;
+        },
         getInterfaceState: (...args) =>
           this.controllerMessenger.call(
             'SnapInterfaceController:getInterface',
