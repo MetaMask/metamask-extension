@@ -102,7 +102,6 @@ import {
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   MultichainWalletSnapClient,
-  MultichainWalletSnapOptions,
   WalletClientType,
   useMultichainWalletSnapClient,
 } from '../../../hooks/accounts/useMultichainWalletSnapClient';
@@ -120,6 +119,7 @@ import {
 import { CreateEthAccount } from '../create-eth-account';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { CreateSnapAccount } from '../create-snap-account';
+import { CreateAccountSnapOptions } from '../../../../shared/lib/accounts';
 ///: END:ONLY_INCLUDE_IF
 import { ImportAccount } from '../import-account';
 import { SrpList } from '../multi-srp/srp-list';
@@ -317,7 +317,7 @@ export const AccountListMenu = ({
 
   const handleMultichainSnapAccountCreation = async (
     client: MultichainWalletSnapClient,
-    _options: MultichainWalletSnapOptions,
+    _options: CreateAccountSnapOptions,
     action: ActionMode,
   ) => {
     trackEvent({

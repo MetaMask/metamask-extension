@@ -71,8 +71,6 @@ export function useMultichainWalletSnapSender(snapId: SnapId) {
   return client;
 }
 
-export type MultichainWalletSnapOptions = CreateAccountSnapOptions;
-
 export class MultichainWalletSnapClient implements WalletSnapClient {
   readonly #snapId: SnapId;
 
@@ -99,12 +97,19 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
     options: CreateAccountSnapOptions,
     internalOptions?: SnapKeyringInternalOptions,
   ): Promise<KeyringAccount> {
+    const snapOptions =
+      this.#snapId === BITCOIN_WALLET_SNAP_ID
+        ? { ...options, synchronize: true }
+        : options;
+
     // This will trigger the Snap account creation flow (+ account renaming)
-    return await createSnapAccount(
+    const account = await createSnapAccount(
       this.#snapId,
-      { ...options, synchronize: true }, // For now we always synchronize accounts on creation
+      snapOptions,
       internalOptions,
     );
+
+    return account;
   }
 
   async getNextAvailableAccountName(
