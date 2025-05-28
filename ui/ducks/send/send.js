@@ -2715,6 +2715,7 @@ export function updateSendAsset(
           asset.error = INVALID_ASSET_TYPE;
           throw new Error(INVALID_ASSET_TYPE);
         } else {
+          const selectedNetworkClientId = getSelectedNetworkClientId(state);
           let isCurrentOwner = true;
           try {
             // TODO add networkClientId
@@ -2724,7 +2725,6 @@ export function updateSendAsset(
               details.tokenId,
               selectedNetworkClientId,
             );
-            console.log('🚀 ~ return ~ isCurrentOwner:', isCurrentOwner);
           } catch (err) {
             const message = getErrorMessage(err);
             if (message.includes('Unable to verify ownership.')) {
