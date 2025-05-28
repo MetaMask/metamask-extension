@@ -1,19 +1,75 @@
-diff --git a/PATCH.txt b/PATCH.txt
-new file mode 100644
-index 0000000000000000000000000000000000000000..ce3b18534f055ee00aa5821793f855fd300fb72c
---- /dev/null
-+++ b/PATCH.txt
-@@ -0,0 +1,4 @@
-+We remove lookupNetwork from initializeProvider in the network controller to prevent network requests before user onboarding is completed.
-+The network lookup is done after onboarding is completed, and when the extension reloads if onboarding has been completed.
-+This patch is part of a temporary fix that will be reverted soon to make way for a more permanent solution. https://github.com/MetaMask/metamask-extension/pull/23005
-+You can see the changes before compilation on this branch: https://github.com/MetaMask/core/compare/pnf/ext-23622-review?expand=1
-\ No newline at end of file
 diff --git a/dist/NetworkController.cjs b/dist/NetworkController.cjs
-index ca0fdc1a5984b51ba6d2cc50655c2b8c789a6be2..c6044c6799a3e444b249c1a1607688cc94758397 100644
+index ca0fdc1a5984b51ba6d2cc50655c2b8c789a6be2..efda018e73b86bf681438f17b7cbb4285c76164c 100644
 --- a/dist/NetworkController.cjs
 +++ b/dist/NetworkController.cjs
-@@ -515,7 +515,6 @@ class NetworkController extends base_controller_1.BaseController {
+@@ -45,6 +45,7 @@ const eth_query_1 = __importDefault(require("@metamask/eth-query"));
+ const rpc_errors_1 = require("@metamask/rpc-errors");
+ const swappable_obj_proxy_1 = require("@metamask/swappable-obj-proxy");
+ const utils_1 = require("@metamask/utils");
++const immer_1 = require("immer");
+ const fast_deep_equal_1 = __importDefault(require("fast-deep-equal"));
+ const lodash_1 = require("lodash");
+ const reselect_1 = require("reselect");
+@@ -286,7 +287,7 @@ function deriveInfuraNetworkNameFromRpcEndpointUrl(rpcEndpointUrl) {
+  * @param state - The NetworkController state to verify.
+  * @throws if the state is invalid in some way.
+  */
+-function validateNetworkControllerState(state) {
++function validateInitialState(state) {
+     const networkConfigurationEntries = Object.entries(state.networkConfigurationsByChainId);
+     const networkClientIds = getAvailableNetworkClientIds(getNetworkConfigurations(state));
+     if (networkConfigurationEntries.length === 0) {
+@@ -310,12 +311,27 @@ function validateNetworkControllerState(state) {
+     if ([...new Set(networkClientIds)].length < networkClientIds.length) {
+         throw new Error('NetworkController state has invalid `networkConfigurationsByChainId`: Every RPC endpoint across all network configurations must have a unique `networkClientId`');
+     }
+-    if (!networkClientIds.includes(state.selectedNetworkClientId)) {
+-        throw new Error(
+-        // This ESLint rule mistakenly produces an error.
+-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+-        `NetworkController state is invalid: \`selectedNetworkClientId\` '${state.selectedNetworkClientId}' does not refer to an RPC endpoint within a network configuration`);
+-    }
++}
++/**
++ * Checks that the given initial NetworkController state is internally
++ * consistent similar to `validateInitialState`, but if an anomaly is detected,
++ * it does its best to correct the state and logs an error to Sentry.
++ *
++ * @param state - The NetworkController state to verify.
++ * @param captureException - The function that logs an error to Sentry.
++ * @returns The corrected state.
++ */
++function correctInitialState(state, captureException) {
++    const networkConfigurationsSortedByChainId = getNetworkConfigurations(state).sort((a, b) => a.chainId.localeCompare(b.chainId));
++    const networkClientIds = getAvailableNetworkClientIds(networkConfigurationsSortedByChainId);
++    return (0, immer_1.produce)(state, (newState) => {
++        if (!networkClientIds.includes(state.selectedNetworkClientId)) {
++            const firstNetworkConfiguration = networkConfigurationsSortedByChainId[0];
++            const newSelectedNetworkClientId = firstNetworkConfiguration.rpcEndpoints[firstNetworkConfiguration.defaultRpcEndpointIndex].networkClientId;
++            captureException(new Error(`\`selectedNetworkClientId\` '${state.selectedNetworkClientId}' does not refer to an RPC endpoint within a network configuration; correcting to '${newSelectedNetworkClientId}'`));
++            newState.selectedNetworkClientId = newSelectedNetworkClientId;
++        }
++    });
+ }
+ /**
+  * Transforms a map of chain ID to network configuration to a map of network
+@@ -342,12 +358,13 @@ class NetworkController extends base_controller_1.BaseController {
+      * @param options - The options; see {@link NetworkControllerOptions}.
+      */
+     constructor(options) {
+-        const { messenger, state, infuraProjectId, log, getRpcServiceOptions, additionalDefaultNetworks, } = options;
++        const { messenger, state, infuraProjectId, log, getRpcServiceOptions, additionalDefaultNetworks, captureException, } = options;
+         const initialState = {
+             ...getDefaultNetworkControllerState(additionalDefaultNetworks),
+             ...state,
+         };
+-        validateNetworkControllerState(initialState);
++        validateInitialState(initialState);
++        correctInitialState(initialState, captureException);
+         if (!infuraProjectId || typeof infuraProjectId !== 'string') {
+             throw new Error('Invalid Infura project ID');
+         }
+@@ -515,7 +532,6 @@ class NetworkController extends base_controller_1.BaseController {
       */
      async initializeProvider() {
          __classPrivateFieldGet(this, _NetworkController_instances, "m", _NetworkController_applyNetworkSelection).call(this, this.state.selectedNetworkClientId);
@@ -22,10 +78,77 @@ index ca0fdc1a5984b51ba6d2cc50655c2b8c789a6be2..c6044c6799a3e444b249c1a1607688cc
      /**
       * Refreshes the network meta with EIP-1559 support and the network status
 diff --git a/dist/NetworkController.mjs b/dist/NetworkController.mjs
-index 0efca6773120ea8be324446febfbcee68ca4281d..aecd1d9bf31433742d315c616355924fbd8dc3b7 100644
+index 0efca6773120ea8be324446febfbcee68ca4281d..8b50f352c6b620a090f95f83fe8878b1ccabd518 100644
 --- a/dist/NetworkController.mjs
 +++ b/dist/NetworkController.mjs
-@@ -491,7 +491,6 @@ export class NetworkController extends BaseController {
+@@ -25,6 +25,7 @@ import { createEventEmitterProxy } from "@metamask/swappable-obj-proxy";
+ import { hasProperty, isPlainObject, isStrictHexString } from "@metamask/utils";
+ import $deepEqual from "fast-deep-equal";
+ const deepEqual = $importDefault($deepEqual);
++import { produce } from "immer";
+ import $lodash from "lodash";
+ const { cloneDeep } = $lodash;
+ import { createSelector } from "reselect";
+@@ -262,7 +263,7 @@ function deriveInfuraNetworkNameFromRpcEndpointUrl(rpcEndpointUrl) {
+  * @param state - The NetworkController state to verify.
+  * @throws if the state is invalid in some way.
+  */
+-function validateNetworkControllerState(state) {
++function validateInitialState(state) {
+     const networkConfigurationEntries = Object.entries(state.networkConfigurationsByChainId);
+     const networkClientIds = getAvailableNetworkClientIds(getNetworkConfigurations(state));
+     if (networkConfigurationEntries.length === 0) {
+@@ -286,12 +287,27 @@ function validateNetworkControllerState(state) {
+     if ([...new Set(networkClientIds)].length < networkClientIds.length) {
+         throw new Error('NetworkController state has invalid `networkConfigurationsByChainId`: Every RPC endpoint across all network configurations must have a unique `networkClientId`');
+     }
+-    if (!networkClientIds.includes(state.selectedNetworkClientId)) {
+-        throw new Error(
+-        // This ESLint rule mistakenly produces an error.
+-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+-        `NetworkController state is invalid: \`selectedNetworkClientId\` '${state.selectedNetworkClientId}' does not refer to an RPC endpoint within a network configuration`);
+-    }
++}
++/**
++ * Checks that the given initial NetworkController state is internally
++ * consistent similar to `validateInitialState`, but if an anomaly is detected,
++ * it does its best to correct the state and logs an error to Sentry.
++ *
++ * @param state - The NetworkController state to verify.
++ * @param captureException - The function that logs an error to Sentry.
++ * @returns The corrected state.
++ */
++function correctInitialState(state, captureException) {
++    const networkConfigurationsSortedByChainId = getNetworkConfigurations(state).sort((a, b) => a.chainId.localeCompare(b.chainId));
++    const networkClientIds = getAvailableNetworkClientIds(networkConfigurationsSortedByChainId);
++    return produce(state, (newState) => {
++        if (!networkClientIds.includes(state.selectedNetworkClientId)) {
++            const firstNetworkConfiguration = networkConfigurationsSortedByChainId[0];
++            const newSelectedNetworkClientId = firstNetworkConfiguration.rpcEndpoints[firstNetworkConfiguration.defaultRpcEndpointIndex].networkClientId;
++            captureException(new Error(`\`selectedNetworkClientId\` '${state.selectedNetworkClientId}' does not refer to an RPC endpoint within a network configuration; correcting to '${newSelectedNetworkClientId}'`));
++            newState.selectedNetworkClientId = newSelectedNetworkClientId;
++        }
++    });
+ }
+ /**
+  * Transforms a map of chain ID to network configuration to a map of network
+@@ -318,12 +334,13 @@ export class NetworkController extends BaseController {
+      * @param options - The options; see {@link NetworkControllerOptions}.
+      */
+     constructor(options) {
+-        const { messenger, state, infuraProjectId, log, getRpcServiceOptions, additionalDefaultNetworks, } = options;
++        const { messenger, state, infuraProjectId, log, getRpcServiceOptions, additionalDefaultNetworks, captureException, } = options;
+         const initialState = {
+             ...getDefaultNetworkControllerState(additionalDefaultNetworks),
+             ...state,
+         };
+-        validateNetworkControllerState(initialState);
++        validateInitialState(initialState);
++        correctInitialState(initialState, captureException);
+         if (!infuraProjectId || typeof infuraProjectId !== 'string') {
+             throw new Error('Invalid Infura project ID');
+         }
+@@ -491,7 +508,6 @@ export class NetworkController extends BaseController {
       */
      async initializeProvider() {
          __classPrivateFieldGet(this, _NetworkController_instances, "m", _NetworkController_applyNetworkSelection).call(this, this.state.selectedNetworkClientId);
