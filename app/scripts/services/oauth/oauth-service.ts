@@ -39,10 +39,22 @@ export default class OAuthService {
     );
 
     // launch the web auth flow to get the Authorization Code from the social login provider
-    const redirectUrlFromOAuth = await this.#webAuthenticator.launchWebAuthFlow(
-      {
-        interactive: true,
-        url: loginHandler.getAuthUrl(),
+    const redirectUrlFromOAuth = await new Promise<string>(
+      (resolve, reject) => {
+        // since promise returns aren't supported until MV3, we need to use a callback function to support MV2
+        this.#webAuthenticator.launchWebAuthFlow(
+          {
+            interactive: true,
+            url: loginHandler.getAuthUrl(),
+          },
+          (responseUrl) => {
+            if (responseUrl) {
+              resolve(responseUrl);
+            } else {
+              reject(new Error('No redirect URL found'));
+            }
+          },
+        );
       },
     );
 
