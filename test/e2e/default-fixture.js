@@ -91,14 +91,10 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           },
         ],
         enabledNetworkMap: {
-          '0x1': true, // Ethereum Mainnet
-          '0xa4b1': true, // Arbitrum One
-          '0xa86a': true, // Avalanche
-          '0x38': true, // BSC
-          '0xa': true, // Optimism
-          '0x89': true, // Polygon
-          '0x144': true, // zkSync Era
-          '0x2105': true, // Base
+          '0x1': true,
+          '0xe708': true,
+          '0x539': true,
+          '0xa4b1': true,
         },
       },
       AccountOrderController: {
