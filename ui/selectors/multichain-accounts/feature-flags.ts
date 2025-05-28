@@ -10,6 +10,7 @@ import {
   assert,
 } from '@metamask/superstruct';
 import semver from 'semver';
+import packageJson from '../../../package.json';
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
@@ -32,7 +33,7 @@ export type MultichainAccountsFeatureFlag = Infer<
 >;
 
 // TODO: Update the value to the decided version multichain accounts will be released
-const MINIMUM_SUPPORTED_VERSION = null;
+const APP_VERSION = packageJson.version;
 const FEATURE_VERSION_1 = '1';
 const FEATURE_VERSION_2 = '2';
 
@@ -59,14 +60,13 @@ const isMultichainAccountsFeatureEnabled = (
     enabled,
     featureVersion: currentFeatureVersion,
     minimumVersion,
-  } = enableMultichainAccounts as MultichainAccountsFeatureFlag;
+  } = enableMultichainAccounts;
   return (
     enabled &&
     currentFeatureVersion &&
     minimumVersion &&
     currentFeatureVersion === featureVersion &&
-    // @ts-expect-error - this error can be ignored while the minimum version is not defined
-    semver.gt(minimumVersion, MINIMUM_SUPPORTED_VERSION)
+    semver.gt(minimumVersion, APP_VERSION)
   );
 };
 

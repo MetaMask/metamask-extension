@@ -5,6 +5,12 @@ import {
   getIsMultichainAccountsState2Enabled,
 } from './feature-flags';
 
+jest.mock('../../../package.json', () => ({
+  packageJson: {
+    version: '12.0.0',
+  },
+}));
+
 type TestState = RemoteFeatureFlagsState & {
   metamask: {
     remoteFeatureFlags: {
