@@ -13,6 +13,7 @@ import { Action, AnyAction } from 'redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import {
+  CaipAccountId,
   type CaipAssetType,
   type CaipChainId,
   type Hex,
@@ -556,12 +557,15 @@ export function addNewAccount(
 
     dispatch(showLoadingIndication());
 
-    let addedAccountAddress;
+    let newAccount;
     try {
-      addedAccountAddress = await submitRequestToBackground('addNewAccount', [
-        oldAccounts.length,
-        keyringId,
-      ]);
+      const addedAccountAddress = await submitRequestToBackground(
+        'addNewAccount',
+        [oldAccounts.length, keyringId],
+      );
+      await forceUpdateMetamaskState(dispatch);
+      const newState = getState();
+      newAccount = getInternalAccountByAddress(newState, addedAccountAddress);
     } catch (error) {
       dispatch(displayWarning(error));
       throw error;
@@ -569,8 +573,7 @@ export function addNewAccount(
       dispatch(hideLoadingIndication());
     }
 
-    await forceUpdateMetamaskState(dispatch);
-    return addedAccountAddress;
+    return newAccount;
   };
 }
 
@@ -1894,6 +1897,25 @@ export function setSelectedInternalAccount(
   };
 }
 
+/**
+ * Sets the selected internal account without loading indication.
+ *
+ * @param accountId - The ID of the account to set as selected.
+ * @returns A thunk action that dispatches an account switch.
+ */
+export function setSelectedInternalAccountWithoutLoading(
+  accountId: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await _setSelectedInternalAccount(accountId);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      dispatch(displayWarning(error));
+    }
+  };
+}
+
 export function setSelectedAccount(
   address: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -2014,6 +2036,28 @@ export function removePermittedAccount(
   };
 }
 
+export function setPermittedAccounts(
+  origin: string,
+  caipAccountIds: CaipAccountId[],
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await new Promise<void>((resolve, reject) => {
+      callBackgroundMethod(
+        'setPermittedAccounts',
+        [origin, caipAccountIds],
+        (error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          resolve();
+        },
+      );
+    });
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function addPermittedChain(
   origin: string,
   chainId: CaipChainId,
@@ -2062,6 +2106,28 @@ export function removePermittedChain(
       callBackgroundMethod(
         'removePermittedChain',
         [origin, chainId],
+        (error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          resolve();
+        },
+      );
+    });
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setPermittedChains(
+  origin: string,
+  chainIds: string[],
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await new Promise<void>((resolve, reject) => {
+      callBackgroundMethod(
+        'setPermittedChains',
+        [origin, chainIds],
         (error) => {
           if (error) {
             reject(error);
