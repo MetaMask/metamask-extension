@@ -376,7 +376,7 @@ export const ImportTokensModal = ({ onClose }) => {
       const {
         symbol = '',
         decimals,
-        name,
+        name = '',
       } = await infoGetter.current(
         address,
         tokenListByChain?.[selectedNetworkForCustomImport]?.data,
