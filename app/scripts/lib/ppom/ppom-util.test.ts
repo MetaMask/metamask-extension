@@ -1,15 +1,21 @@
 import { PPOMController } from '@metamask/ppom-validator';
-import { PPOM } from '@blockaid/ppom_release';
 import {
   TransactionController,
+  TransactionControllerUnapprovedTransactionAddedEvent,
+  TransactionEnvelopeType,
+  TransactionMeta,
   TransactionParams,
   normalizeTransactionParams,
 } from '@metamask/transaction-controller';
 import {
   SignatureController,
+  SignatureControllerState,
   SignatureRequest,
+  SignatureStateChange,
 } from '@metamask/signature-controller';
 import { Hex, JsonRpcRequest } from '@metamask/utils';
+import { PPOM } from '@blockaid/ppom_release';
+import { Messenger } from '@metamask/base-controller';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -17,10 +23,10 @@ import {
   SecurityAlertSource,
 } from '../../../../shared/constants/security-provider';
 import { AppStateController } from '../../controllers/app-state-controller';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   generateSecurityAlertId,
-  METHOD_SIGN_TYPED_DATA_V3,
-  METHOD_SIGN_TYPED_DATA_V4,
+  PPOMMessenger,
   updateSecurityAlertResponse,
   validateRequestWithPPOM,
 } from './ppom-util';
@@ -35,6 +41,8 @@ jest.mock('@metamask/transaction-controller', () => ({
 const SECURITY_ALERT_ID_MOCK = '1234-5678';
 const TRANSACTION_ID_MOCK = '123';
 const CHAIN_ID_MOCK = '0x1' as Hex;
+const GAS_MOCK = '0x1234';
+const GAS_PRICE_MOCK = '0x5678';
 
 const REQUEST_MOCK = {
   method: 'eth_signTypedData_v4',
@@ -65,6 +73,10 @@ const TRANSACTION_PARAMS_MOCK_2: TransactionParams = {
   to: '0x456',
 };
 
+const MESSENGER_MOCK = {
+  subscribe: jest.fn(),
+} as unknown as PPOMMessenger;
+
 function createPPOMMock() {
   return {
     validateJsonRpc: jest.fn(),
@@ -91,10 +103,12 @@ function createAppStateControllerMock() {
 }
 
 function createSignatureControllerMock(
-  messages: SignatureController['messages'],
+  signatureRequests: SignatureControllerState['signatureRequests'],
 ) {
   return {
-    messages,
+    state: {
+      signatureRequests,
+    },
   } as unknown as jest.Mocked<SignatureController>;
 }
 
@@ -107,13 +121,22 @@ function createTransactionControllerMock(
   } as unknown as jest.Mocked<TransactionController>;
 }
 
+function createMessengerMock() {
+  return new Messenger<
+    never,
+    SignatureStateChange | TransactionControllerUnapprovedTransactionAddedEvent
+  >();
+}
+
 describe('PPOM Utils', () => {
+  const updateSecurityAlertResponseMock = jest.fn();
+  let isSecurityAlertsEnabledMock: jest.SpyInstance;
+  let ppomController: jest.Mocked<PPOMController>;
+  let ppom: jest.Mocked<PPOM>;
+
   const normalizeTransactionParamsMock = jest.mocked(
     normalizeTransactionParams,
   );
-  let isSecurityAlertsEnabledMock: jest.SpyInstance;
-
-  const updateSecurityAlertResponseMock = jest.fn();
 
   const validateRequestWithPPOMOptionsBase = {
     request: REQUEST_MOCK,
@@ -125,23 +148,25 @@ describe('PPOM Utils', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
+
     isSecurityAlertsEnabledMock = jest
       .spyOn(securityAlertAPI, 'isSecurityAlertsAPIEnabled')
       .mockReturnValue(false);
+
+    ppomController = createPPOMControllerMock();
+    ppom = createPPOMMock();
+
+    // @ts-expect-error PPOM from package does not match controller type
+    ppomController.usePPOM.mockImplementation((callback) => callback(ppom));
+
+    normalizeTransactionParamsMock.mockImplementation(
+      (params: TransactionParams) => params,
+    );
   });
 
   describe('validateRequestWithPPOM', () => {
     it('updates response from validation with PPOM instance via controller', async () => {
-      const ppom = createPPOMMock();
-      const ppomController = createPPOMControllerMock();
-
       ppom.validateJsonRpc.mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
-
-      ppomController.usePPOM.mockImplementation(
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (callback) => callback(ppom as any) as any,
-      );
 
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
@@ -161,8 +186,6 @@ describe('PPOM Utils', () => {
     });
 
     it('updates securityAlertResponse with loading state', async () => {
-      const ppomController = createPPOMControllerMock();
-
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
         ppomController,
@@ -176,17 +199,7 @@ describe('PPOM Utils', () => {
     });
 
     it('updates error response if validation with PPOM instance throws', async () => {
-      const ppom = createPPOMMock();
-      const ppomController = createPPOMControllerMock();
-
       ppom.validateJsonRpc.mockRejectedValue(createErrorMock());
-
-      ppomController.usePPOM.mockImplementation(
-        (callback) =>
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          callback(ppom as any) as any,
-      );
 
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
@@ -206,8 +219,6 @@ describe('PPOM Utils', () => {
     });
 
     it('updates error response if controller throws', async () => {
-      const ppomController = createPPOMControllerMock();
-
       ppomController.usePPOM.mockRejectedValue(createErrorMock());
 
       await validateRequestWithPPOM({
@@ -227,71 +238,21 @@ describe('PPOM Utils', () => {
       );
     });
 
-    it('normalizes request if method is eth_sendTransaction', async () => {
-      const ppom = createPPOMMock();
-      const ppomController = createPPOMControllerMock();
-
-      ppomController.usePPOM.mockImplementation(
-        (callback) =>
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          callback(ppom as any) as any,
-      );
-
-      normalizeTransactionParamsMock.mockReturnValue(TRANSACTION_PARAMS_MOCK_2);
-
-      const request = {
-        ...REQUEST_MOCK,
-        method: 'eth_sendTransaction',
-        params: [TRANSACTION_PARAMS_MOCK_1],
-      };
-
-      await validateRequestWithPPOM({
-        ...validateRequestWithPPOMOptionsBase,
-        ppomController,
-        request,
-      });
-
-      expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
-      expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
-        ...request,
-        params: [TRANSACTION_PARAMS_MOCK_2],
-      });
-
-      expect(normalizeTransactionParamsMock).toHaveBeenCalledTimes(1);
-      expect(normalizeTransactionParamsMock).toHaveBeenCalledWith(
-        TRANSACTION_PARAMS_MOCK_1,
-      );
-    });
-
-    // @ts-expect-error This is missing from the Mocha type definitions
-    it.each([METHOD_SIGN_TYPED_DATA_V3, METHOD_SIGN_TYPED_DATA_V4])(
-      'sanitizes request params if method is %s',
-      async (method: string) => {
-        const ppom = createPPOMMock();
-        const ppomController = createPPOMControllerMock();
-
-        ppomController.usePPOM.mockImplementation(
-          (callback) =>
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            callback(ppom as any) as any,
+    describe('if method is eth_sendTransaction', () => {
+      it('normalizes transaction params', async () => {
+        normalizeTransactionParamsMock.mockReturnValue(
+          TRANSACTION_PARAMS_MOCK_2,
         );
 
-        const firstTwoParams = [
-          SIGN_TYPED_DATA_PARAMS_MOCK_1,
-          SIGN_TYPED_DATA_PARAMS_MOCK_2,
-        ];
-
-        const unwantedParams = [{}, undefined, 1, null];
-
-        const params = [...firstTwoParams, ...unwantedParams];
+        updateSecurityAlertResponseMock.mockResolvedValue({
+          txParams: TRANSACTION_PARAMS_MOCK_1,
+        });
 
         const request = {
           ...REQUEST_MOCK,
-          method,
-          params,
-        } as unknown as JsonRpcRequest;
+          method: 'eth_sendTransaction',
+          params: [TRANSACTION_PARAMS_MOCK_1],
+        };
 
         await validateRequestWithPPOM({
           ...validateRequestWithPPOMOptionsBase,
@@ -302,10 +263,187 @@ describe('PPOM Utils', () => {
         expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
         expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
           ...request,
-          params: firstTwoParams,
+          params: [TRANSACTION_PARAMS_MOCK_2],
         });
-      },
-    );
+
+        expect(normalizeTransactionParamsMock).toHaveBeenCalledTimes(1);
+        expect(normalizeTransactionParamsMock).toHaveBeenCalledWith(
+          TRANSACTION_PARAMS_MOCK_1,
+        );
+      });
+
+      it('includes gas properties', async () => {
+        updateSecurityAlertResponseMock.mockResolvedValue({
+          txParams: {
+            ...TRANSACTION_PARAMS_MOCK_1,
+            gas: GAS_MOCK,
+            maxFeePerGas: GAS_PRICE_MOCK,
+          },
+        });
+
+        const request = {
+          ...REQUEST_MOCK,
+          method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+          params: [TRANSACTION_PARAMS_MOCK_1],
+        };
+
+        await validateRequestWithPPOM({
+          ...validateRequestWithPPOMOptionsBase,
+          ppomController,
+          request,
+        });
+
+        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
+          ...request,
+          params: [
+            {
+              ...TRANSACTION_PARAMS_MOCK_1,
+              gas: GAS_MOCK,
+              gasPrice: GAS_PRICE_MOCK,
+            },
+          ],
+        });
+      });
+
+      it('includes gas properties using gas price', async () => {
+        updateSecurityAlertResponseMock.mockResolvedValue({
+          txParams: {
+            ...TRANSACTION_PARAMS_MOCK_1,
+            gas: GAS_MOCK,
+            gasPrice: GAS_PRICE_MOCK,
+          },
+        });
+
+        const request = {
+          ...REQUEST_MOCK,
+          method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+          params: [TRANSACTION_PARAMS_MOCK_1],
+        };
+
+        await validateRequestWithPPOM({
+          ...validateRequestWithPPOMOptionsBase,
+          ppomController,
+          request,
+        });
+
+        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
+          ...request,
+          params: [
+            {
+              ...TRANSACTION_PARAMS_MOCK_1,
+              gas: GAS_MOCK,
+              gasPrice: GAS_PRICE_MOCK,
+            },
+          ],
+        });
+      });
+
+      it('removes unnecessary params', async () => {
+        updateSecurityAlertResponseMock.mockResolvedValue({
+          txParams: {
+            ...TRANSACTION_PARAMS_MOCK_1,
+            gas: GAS_MOCK,
+            maxFeePerGas: GAS_PRICE_MOCK,
+          },
+        });
+
+        const request = {
+          ...REQUEST_MOCK,
+          method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
+          params: [
+            {
+              ...TRANSACTION_PARAMS_MOCK_1,
+              gasLimit: GAS_MOCK,
+              maxFeePerGas: GAS_PRICE_MOCK,
+              maxPriorityFeePerGas: GAS_PRICE_MOCK,
+              type: TransactionEnvelopeType.feeMarket,
+            },
+          ],
+        };
+
+        await validateRequestWithPPOM({
+          ...validateRequestWithPPOMOptionsBase,
+          ppomController,
+          request,
+        });
+
+        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
+          ...request,
+          params: [
+            {
+              ...TRANSACTION_PARAMS_MOCK_1,
+              gas: GAS_MOCK,
+              gasPrice: GAS_PRICE_MOCK,
+            },
+          ],
+        });
+      });
+    });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3,
+      MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+    ])('sanitizes request params if method is %s', async (method: string) => {
+      const firstTwoParams = [
+        SIGN_TYPED_DATA_PARAMS_MOCK_1,
+        SIGN_TYPED_DATA_PARAMS_MOCK_2,
+      ];
+
+      const unwantedParams = [{}, undefined, 1, null];
+
+      const params = [...firstTwoParams, ...unwantedParams];
+
+      const request = {
+        ...REQUEST_MOCK,
+        method,
+        params,
+      } as unknown as JsonRpcRequest;
+
+      await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
+        ppomController,
+        request,
+      });
+
+      expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+      expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
+        ...request,
+        params: firstTwoParams,
+      });
+    });
+
+    it('removes unnecessary properties from request', async () => {
+      updateSecurityAlertResponseMock.mockResolvedValue({
+        txParams: TRANSACTION_PARAMS_MOCK_1,
+      });
+
+      const request = {
+        ...REQUEST_MOCK,
+        delegationMock: '0x123',
+        method: 'eth_sendTransaction',
+        origin: 'test.com',
+        params: [TRANSACTION_PARAMS_MOCK_1],
+        test1: 'test1',
+        test2: 'test2',
+      };
+
+      await validateRequestWithPPOM({
+        ...validateRequestWithPPOMOptionsBase,
+        ppomController,
+        request: request as never,
+      });
+
+      expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+      expect(ppom.validateJsonRpc).toHaveBeenCalledWith({
+        ...request,
+        test1: undefined,
+        test2: undefined,
+      });
+    });
   });
 
   describe('generateSecurityAlertId', () => {
@@ -319,7 +457,7 @@ describe('PPOM Utils', () => {
   });
 
   describe('updateSecurityAlertResponse', () => {
-    it('adds response to app state controller if matching message found', async () => {
+    it('adds response to app state controller if signature request already exists', async () => {
       const appStateController = createAppStateControllerMock();
 
       const signatureController = createSignatureControllerMock({
@@ -333,7 +471,8 @@ describe('PPOM Utils', () => {
 
       await updateSecurityAlertResponse({
         appStateController,
-        method: 'eth_signTypedData_v4',
+        method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+        messenger: MESSENGER_MOCK,
         securityAlertId: SECURITY_ALERT_ID_MOCK,
         securityAlertResponse: SECURITY_ALERT_RESPONSE_MOCK,
         signatureController,
@@ -349,7 +488,45 @@ describe('PPOM Utils', () => {
       ).toHaveBeenCalledWith(SECURITY_ALERT_RESPONSE_MOCK);
     });
 
-    it('adds response to transaction controller if matching transaction found', async () => {
+    it('adds response to app state controller after signature controller state change event', async () => {
+      const appStateController = createAppStateControllerMock();
+      const signatureController = createSignatureControllerMock({});
+      const messenger = createMessengerMock();
+
+      const updatePromise = updateSecurityAlertResponse({
+        appStateController,
+        method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+        messenger,
+        securityAlertId: SECURITY_ALERT_ID_MOCK,
+        securityAlertResponse: SECURITY_ALERT_RESPONSE_MOCK,
+        signatureController,
+        transactionController: {} as unknown as TransactionController,
+      });
+
+      messenger.publish(
+        'SignatureController:stateChange',
+        {
+          signatureRequests: {
+            '123': {
+              securityAlertResponse: SECURITY_ALERT_RESPONSE_MOCK,
+            } as unknown as SignatureRequest,
+          },
+        } as unknown as SignatureControllerState,
+        [],
+      );
+
+      await updatePromise;
+
+      expect(
+        appStateController.addSignatureSecurityAlertResponse,
+      ).toHaveBeenCalledTimes(1);
+
+      expect(
+        appStateController.addSignatureSecurityAlertResponse,
+      ).toHaveBeenCalledWith(SECURITY_ALERT_RESPONSE_MOCK);
+    });
+
+    it('adds response to transaction controller if transaction already exists', async () => {
       const transactionController = createTransactionControllerMock({
         transactions: [
           {
@@ -366,6 +543,7 @@ describe('PPOM Utils', () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         appStateController: {} as any,
         method: 'eth_sendTransaction',
+        messenger: MESSENGER_MOCK,
         securityAlertId: SECURITY_ALERT_ID_MOCK,
         securityAlertResponse: SECURITY_ALERT_RESPONSE_MOCK,
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -373,6 +551,44 @@ describe('PPOM Utils', () => {
         signatureController: {} as any,
         transactionController,
       });
+
+      expect(
+        transactionController.updateSecurityAlertResponse,
+      ).toHaveBeenCalledTimes(1);
+
+      expect(
+        transactionController.updateSecurityAlertResponse,
+      ).toHaveBeenCalledWith(TRANSACTION_ID_MOCK, SECURITY_ALERT_RESPONSE_MOCK);
+    });
+
+    it('adds response to transaction controller after transaction added event', async () => {
+      const transactionController = createTransactionControllerMock({
+        transactions: [],
+      } as unknown as TransactionController['state']);
+
+      const messenger = createMessengerMock();
+
+      const updatePromise = updateSecurityAlertResponse({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        appStateController: {} as any,
+        method: 'eth_sendTransaction',
+        messenger,
+        securityAlertId: SECURITY_ALERT_ID_MOCK,
+        securityAlertResponse: SECURITY_ALERT_RESPONSE_MOCK,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        signatureController: {} as any,
+        transactionController,
+      });
+
+      messenger.publish('TransactionController:unapprovedTransactionAdded', {
+        id: TRANSACTION_ID_MOCK,
+        securityAlertResponse: SECURITY_ALERT_RESPONSE_MOCK,
+        txParams: TRANSACTION_PARAMS_MOCK_1,
+      } as TransactionMeta);
+
+      await updatePromise;
 
       expect(
         transactionController.updateSecurityAlertResponse,
@@ -393,13 +609,14 @@ describe('PPOM Utils', () => {
 
     it('uses security alerts API if enabled', async () => {
       isSecurityAlertsEnabledMock.mockReturnValue(true);
-      normalizeTransactionParamsMock.mockReturnValue(TRANSACTION_PARAMS_MOCK_1);
+
       const validateWithSecurityAlertsAPIMock = jest
         .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
         .mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
 
-      const ppom = createPPOMMock();
-      const ppomController = createPPOMControllerMock();
+      updateSecurityAlertResponseMock.mockResolvedValue({
+        txParams: TRANSACTION_PARAMS_MOCK_1,
+      });
 
       await validateRequestWithPPOM({
         ...validateRequestWithPPOMOptionsBase,
@@ -419,9 +636,10 @@ describe('PPOM Utils', () => {
 
     it('uses controller if security alerts API throws', async () => {
       isSecurityAlertsEnabledMock.mockReturnValue(true);
-      normalizeTransactionParamsMock.mockReturnValue(TRANSACTION_PARAMS_MOCK_1);
 
-      const ppomController = createPPOMControllerMock();
+      updateSecurityAlertResponseMock.mockResolvedValue({
+        txParams: TRANSACTION_PARAMS_MOCK_1,
+      });
 
       const validateWithSecurityAlertsAPIMock = jest
         .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')

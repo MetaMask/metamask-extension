@@ -511,10 +511,6 @@
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
   },
-  "appNameMmi": {
-    "message": "MetaMask Institutional",
-    "description": "The name of the application (MMI)"
-  },
   "apply": {
     "message": "Apply"
   },
@@ -615,7 +611,7 @@
     "description": "$1 is backupAndSyncBasicFunctionalityNameMention in bold."
   },
   "backupAndSyncEnableDescription": {
-    "message": "Backup and sync lets us store encrypted data for your custom settings and features. This keeps your MetaMask experience the same across devices and restores settings and features if you ever need to reinstall MetaMask. $1.",
+    "message": "Backup and sync lets us store encrypted data for your custom settings and features. This keeps your MetaMask experience the same across devices and restores settings and features if you ever need to reinstall MetaMask. This doesn’t back up your Secret Recovery Phrase. $1.",
     "description": "$1 is link to the backup and sync privacy policy."
   },
   "backupAndSyncEnableDescriptionUpdatePreferences": {
@@ -1153,6 +1149,18 @@
   "confirmGasFeeTokenMetaMaskFee": {
     "message": "Includes $1 fee"
   },
+  "confirmGasFeeTokenModalNativeToggleMetaMask": {
+    "message": "MetaMask is supplementing the balance to complete this transaction."
+  },
+  "confirmGasFeeTokenModalNativeToggleWallet": {
+    "message": "Pay for network fee using the balance in your wallet."
+  },
+  "confirmGasFeeTokenModalPayETH": {
+    "message": "Pay with ETH"
+  },
+  "confirmGasFeeTokenModalPayToken": {
+    "message": "Pay with other tokens"
+  },
   "confirmGasFeeTokenModalTitle": {
     "message": "Select a token"
   },
@@ -1160,7 +1168,7 @@
     "message": "You're paying this network fee with $1"
   },
   "confirmGasFeeTokenTooltip": {
-    "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens."
+    "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens or pre-funded ETH."
   },
   "confirmInfoAccountNow": {
     "message": "Now"
@@ -1364,7 +1372,7 @@
     "message": "Connecting to Sepolia test network"
   },
   "connectionDescription": {
-    "message": "Connect this website with MetaMask."
+    "message": "Connect this website with MetaMask"
   },
   "connectionFailed": {
     "message": "Connection failed"
@@ -2602,6 +2610,9 @@
   "importSecretRecoveryPhrase": {
     "message": "Import Secret Recovery Phrase"
   },
+  "importSecretRecoveryPhraseUnknownError": {
+    "message": "An unknown error occurred."
+  },
   "importSelectedTokens": {
     "message": "Import selected tokens?"
   },
@@ -3665,10 +3676,6 @@
   "notificationTransactionFailedMessage": {
     "message": "Transaction $1 failed! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
-  },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "Transaction failed! $1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
   },
   "notificationTransactionFailedTitle": {
     "message": "Failed transaction",
