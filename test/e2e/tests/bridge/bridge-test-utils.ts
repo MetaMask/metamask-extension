@@ -583,7 +583,12 @@ export const getQuoteNegativeCasesFixtures = (
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
-    .withTokensControllerERC20({ chainId: 1 });
+    .withTokensControllerERC20({ chainId: 1 })
+    .withEnabledNetworks({
+      '0x1': true,
+      '0xe708': true,
+      '0xa4b1': true,
+    });
 
   return {
     fixtures: fixtureBuilder.build(),
@@ -620,7 +625,11 @@ export const getBridgeNegativeCasesFixtures = (
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
-    .withTokensControllerERC20({ chainId: 1 });
+    .withTokensControllerERC20({ chainId: 1 })
+    .withEnabledNetworks({
+      '0x1': true,
+      '0xe708': true,
+    });
 
   return {
     fixtures: fixtureBuilder.build(),
