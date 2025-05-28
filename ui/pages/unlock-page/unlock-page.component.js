@@ -34,6 +34,7 @@ import {
 import { isFlask, isBeta } from '../../helpers/utils/build-types';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { getCaretCoordinates } from './unlock-page.util';
+import ResetPasswordModal from './reset-password-modal';
 
 export default class UnlockPage extends Component {
   static contextTypes = {
@@ -67,6 +68,7 @@ export default class UnlockPage extends Component {
   state = {
     password: '',
     error: null,
+    showResetPasswordModal: false,
     isLocked: false,
   };
 
@@ -192,10 +194,13 @@ export default class UnlockPage extends Component {
     );
   };
 
+  onForgotPassword = () => {
+    this.setState({ showResetPasswordModal: true });
+  };
+
   render() {
-    const { password, error, isLocked } = this.state;
+    const { password, error, isLocked, showResetPasswordModal } = this.state;
     const { t } = this.context;
-    const { onRestore } = this.props;
 
     const needHelpText = t('needHelpLinkText');
 
@@ -212,6 +217,12 @@ export default class UnlockPage extends Component {
         marginInline={0}
         className="unlock-page__container"
       >
+        {showResetPasswordModal && (
+          <ResetPasswordModal
+            onClose={() => this.setState({ showResetPasswordModal: false })}
+            onRestore={() => this.props.onRestore()}
+          />
+        )}
         <Box
           as="form"
           display={Display.Flex}
@@ -312,7 +323,7 @@ export default class UnlockPage extends Component {
                 data-testid="unlock-forgot-password-button"
                 key="import-account"
                 type="button"
-                onClick={() => onRestore()}
+                onClick={() => this.onForgotPassword()}
               >
                 {t('forgotPassword')}
               </ButtonLink>
