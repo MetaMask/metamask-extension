@@ -49,7 +49,8 @@ import {
 } from '../../../../../../shared/constants/app';
 import NetworkFilter from '../network-filter';
 import {
-  checkAndUpdateAllNftsOwnershipStatus,
+  // TODO: fix this call
+  // checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
   detectTokens,
   setTokenNetworkFilter,
@@ -232,7 +233,7 @@ const AssetListControlBar = ({
     if (isMainnet || isLineaMainnet) {
       dispatch(detectNfts(allChainIds));
     }
-    checkAndUpdateAllNftsOwnershipStatus();
+    // checkAndUpdateAllNftsOwnershipStatus();
   };
   const isDisabled = useMemo(() => {
     const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(
