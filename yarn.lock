@@ -6688,7 +6688,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-rpc-methods@npm:^12.1.0":
+"@metamask/snaps-rpc-methods@npm:12.1.0":
   version: 12.1.0
   resolution: "@metamask/snaps-rpc-methods@npm:12.1.0"
   dependencies:
@@ -6702,6 +6702,23 @@ __metadata:
     "@noble/hashes": "npm:^1.7.1"
     luxon: "npm:^3.5.0"
   checksum: 10/2692f815d8c85c6fe54e3730ee056066d75870695d54d47b466bb26829c7d6126b3db2b7f8c4fd3672e010aa2453c19034b4cf442f17d3522338e77ca4a57330
+  languageName: node
+  linkType: hard
+
+"@metamask/snaps-rpc-methods@patch:@metamask/snaps-rpc-methods@npm%3A12.1.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-12.1.0-052e5af572.patch":
+  version: 12.1.0
+  resolution: "@metamask/snaps-rpc-methods@patch:@metamask/snaps-rpc-methods@npm%3A12.1.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-12.1.0-052e5af572.patch::version=12.1.0&hash=35b5d0"
+  dependencies:
+    "@metamask/key-tree": "npm:^10.1.1"
+    "@metamask/permission-controller": "npm:^11.0.6"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/snaps-sdk": "npm:^6.22.0"
+    "@metamask/snaps-utils": "npm:^9.2.0"
+    "@metamask/superstruct": "npm:^3.2.1"
+    "@metamask/utils": "npm:^11.2.0"
+    "@noble/hashes": "npm:^1.7.1"
+    luxon: "npm:^3.5.0"
+  checksum: 10/51bff8b6285709da7cc8405c96182ba06f9f88e145d131956c6a21433e3e13778005b0838b2db88dd88bf8d62ee7625013815721b8354b3988686c3aa5217131
   languageName: node
   linkType: hard
 
@@ -6781,10 +6798,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^1.30.4":
-  version: 1.30.4
-  resolution: "@metamask/solana-wallet-snap@npm:1.30.4"
-  checksum: 10/72ca2257ff8037ce7a95d12c50da3896f14f5a4d1b78f88784944427efb3d21281963aae1a063e10b07c0f340dbdb1d7f0dbb282238cae1e5465fa3606ae1b8f
+"@metamask/solana-wallet-snap@npm:^1.31.1":
+  version: 1.31.1
+  resolution: "@metamask/solana-wallet-snap@npm:1.31.1"
+  checksum: 10/714d14591bf1c45d266139d1864a0428a0b799c71ae9efc2924d4b3e2ae3301a795b4ec321ef597984f0af991707e4d922d0f29912e214a81adcc123a52a61c7
   languageName: node
   linkType: hard
 
@@ -30277,10 +30294,10 @@ __metadata:
     "@metamask/smart-transactions-controller": "npm:^16.3.1"
     "@metamask/snaps-controllers": "patch:@metamask/snaps-controllers@npm%3A11.2.2#~/.yarn/patches/@metamask-snaps-controllers-npm-11.2.2-59e531c8d0.patch"
     "@metamask/snaps-execution-environments": "npm:^7.2.1"
-    "@metamask/snaps-rpc-methods": "npm:^12.1.0"
+    "@metamask/snaps-rpc-methods": "patch:@metamask/snaps-rpc-methods@npm%3A12.1.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-12.1.0-052e5af572.patch"
     "@metamask/snaps-sdk": "npm:^6.22.0"
     "@metamask/snaps-utils": "npm:^9.2.0"
-    "@metamask/solana-wallet-snap": "npm:^1.30.4"
+    "@metamask/solana-wallet-snap": "npm:^1.31.1"
     "@metamask/solana-wallet-standard": "npm:^0.4.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"

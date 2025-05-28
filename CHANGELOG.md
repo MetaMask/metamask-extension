@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.18.2]
+### Added
+- Add a flag to `snap_getClientStatus` to indicate whether the client is "active" ([#33203](https://github.com/MetaMask/metamask-extension/pull/33203))
+
+### Fixed
+- Addressed an issue where threat actors exploited Blockaid’s simulation engine by manipulating gas values, causing incorrect simulation results. Updated integration to include wallet-provided gas estimations for accurate simulations ([#33180](https://github.com/MetaMask/metamask-extension/pull/33180))
+- Fix EIP-1193 connections from other extensions ([#33199](https://github.com/MetaMask/metamask-extension/pull/33199))
+
 ## [12.18.1]
 ### Fixed
 - Allow users to load ERC20 tokens automatically while Activity or NFT tab are open ([#33014](https://github.com/MetaMask/metamask-extension/pull/33014))
@@ -6236,7 +6244,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.18.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.18.2...HEAD
+[12.18.2]: https://github.com/MetaMask/metamask-extension/compare/v12.18.1...v12.18.2
 [12.18.1]: https://github.com/MetaMask/metamask-extension/compare/v12.18.0...v12.18.1
 [12.18.0]: https://github.com/MetaMask/metamask-extension/compare/v12.17.3...v12.18.0
 [12.17.3]: https://github.com/MetaMask/metamask-extension/compare/v12.17.2...v12.17.3
