@@ -112,12 +112,6 @@ describe('SendPageRecipientContent', () => {
     jest.clearAllMocks();
   });
 
-  it('renders AssetPickerAmount with correct props', () => {
-    render(<SendPageRecipientContent {...defaultProps} />);
-
-    expect(screen.getByText('AssetPickerAmount')).toBeInTheDocument();
-  });
-
   it('renders SendHexData if showHexDataFlag is true', () => {
     useSelectorMock.mockImplementation((selector) => {
       if (selector === getCurrentDraftTransaction) {

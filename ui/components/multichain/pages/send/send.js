@@ -385,8 +385,6 @@ export const SendPage = () => {
               requireContractAddressAcknowledgement={
                 requireContractAddressAcknowledgement
               }
-              onAssetChange={handleSelectToken}
-              onClick={() => handleAssetPickerClick(true)}
             />
           ) : (
             <SendPageRecipient />
@@ -403,6 +401,7 @@ export const SendPage = () => {
           {sendStage === SEND_STAGES.EDIT ? t('reject') : t('cancel')}
         </ButtonSecondary>
         <ButtonPrimary
+          className="multichain-send-page__nav-button"
           onClick={onSubmit}
           loading={isSubmitting}
           size={ButtonPrimarySize.Lg}
