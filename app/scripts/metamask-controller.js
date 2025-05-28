@@ -1062,7 +1062,10 @@ export default class MetamaskController extends EventEmitter {
         authConnectionId: process.env.AUTH_CONNECTION_ID,
         groupedAuthConnectionId: process.env.GROUPED_AUTH_CONNECTION_ID,
       },
-      webAuthenticator: window.chrome.identity,
+      webAuthenticator:
+        getPlatform() === PLATFORM_FIREFOX
+          ? globalThis.browser.identity // use browser.identity for Firefox
+          : window.chrome.identity, // use chrome.identity for Chromium based browsers
     });
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
