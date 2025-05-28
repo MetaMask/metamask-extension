@@ -31,8 +31,6 @@ export function useMultipleApprovalsAlerts(): Alert[] {
   const simulationDataArray =
     currentConfirmation?.simulationData?.tokenBalanceChanges;
 
-  console.log({ nestedTransactions, simulationDataArray });
-
   // Extract all approvals from nested transactions
   const approvals = useMemo((): ApprovalInfo[] => {
     if (!isBatchTransaction || !nestedTransactions) {
