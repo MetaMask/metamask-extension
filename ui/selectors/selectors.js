@@ -1422,10 +1422,10 @@ export const getTokenNetworkFilter = createDeepEqualSelector(
 // @deprecated('Use `getEnabledNetworks` instead')
 export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const chainId = getCurrentChainId(state);
-  const tokenNetworkFilter = getTokenNetworkFilter(state);
+  const enabledNetworks = getEnabledNetworks(state);
   if (
-    Object.keys(tokenNetworkFilter).length === 1 &&
-    Object.keys(tokenNetworkFilter)[0] === chainId
+    Object.keys(enabledNetworks).length === 1 &&
+    Object.keys(enabledNetworks)[0] === chainId
   ) {
     return true;
   }
