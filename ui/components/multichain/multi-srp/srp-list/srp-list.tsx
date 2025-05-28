@@ -16,6 +16,7 @@ import {
   AlignItems,
   BlockSize,
   TextVariant,
+  IconColor,
 } from '../../../../helpers/constants/design-system';
 import { getMetaMaskAccounts } from '../../../../selectors/selectors';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
@@ -51,6 +52,8 @@ export const SrpList = ({
   const [showAccounts, setShowAccounts] = useState<boolean[]>(
     showAccountsInitState,
   );
+
+  const srpListStateBackedUp = true;
 
   const showHideText = (index: number, numberOfAccounts: number): string => {
     if (numberOfAccounts > 1) {
@@ -89,7 +92,9 @@ export const SrpList = ({
             justifyContent={JustifyContent.spaceBetween}
           >
             <Box>
-              <Text>{t('srpListName', [index + 1])}</Text>
+              <Text variant={TextVariant.bodyMdMedium}>
+                {t('srpListName', [index + 1])}
+              </Text>
               {!hideShowAccounts && (
                 <Text
                   variant={TextVariant.bodySm}
@@ -117,7 +122,25 @@ export const SrpList = ({
                 </Text>
               )}
             </Box>
-            <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
+            <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
+              <Text
+                variant={TextVariant.bodyMdMedium}
+                color={TextColor.textAlternative}
+              >
+                {srpListStateBackedUp
+                  ? t('srpListStateBackedUp')
+                  : t('srpListStateNotBackedUp')}
+              </Text>
+              <Icon
+                name={IconName.ArrowRight}
+                size={IconSize.Sm}
+                color={
+                  srpListStateBackedUp
+                    ? IconColor.iconAlternative
+                    : IconColor.errorDefault
+                }
+              />
+            </Box>
           </Box>
           {showAccounts[index] && (
             <Box>
