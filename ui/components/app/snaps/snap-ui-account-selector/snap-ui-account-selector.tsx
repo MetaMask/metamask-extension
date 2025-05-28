@@ -41,55 +41,57 @@ export type SnapUIAccountSelectorProps = {
  */
 export const SnapUIAccountSelector: FunctionComponent<
   SnapUIAccountSelectorProps
-> = ({ chainIds, switchGlobalAccount, hideExternalAccounts, ...props }) => {
+> = ({
+  chainIds,
+  switchGlobalAccount,
+  hideExternalAccounts,
+  disabled,
+  ...props
+}) => {
   const { snapId } = useSnapInterfaceContext();
   const dispatch = useDispatch();
-  const accounts: InternalAccountWithBalance[] = useSelector(
+  const internalAccounts: InternalAccountWithBalance[] = useSelector(
     getMetaMaskAccountsOrdered,
   );
 
-  const { options: selectorOptions, optionComponents: selectorComponents } =
-    useMemo(() => {
-      // Filter out the accounts that are not owned by the snap
-      const ownedAccounts = accounts.filter(
-        (account) => account.metadata.snap?.id === snapId,
-      );
+  const accounts = useMemo(() => {
+    // Filter out the accounts that are not owned by the snap
+    const ownedAccounts = internalAccounts.filter(
+      (account) => account.metadata.snap?.id === snapId,
+    );
 
-      // Select which accounts to show and filter them by chainId
-      const filteredAccounts = (
-        hideExternalAccounts ? ownedAccounts : accounts
-      ).filter((account) => {
-        const filteredChainIds = createChainIdList(account.scopes, chainIds);
+    // Select which accounts to show and filter them by chainId
+    const filteredAccounts = (
+      hideExternalAccounts ? ownedAccounts : internalAccounts
+    ).filter((account) => {
+      const filteredChainIds = createChainIdList(account.scopes, chainIds);
 
-        return filteredChainIds.length > 0;
-      });
+      return filteredChainIds.length > 0;
+    });
 
-      const options = filteredAccounts.map((account) => ({
-        key: 'accountId',
-        value: {
-          accountId: account.id,
-          addresses: createAccountList(
-            account.address,
-            createChainIdList(account.scopes, chainIds),
-          ),
-        },
-        disabled: false,
-      }));
+    return filteredAccounts;
+  }, [internalAccounts, chainIds, hideExternalAccounts, snapId]);
 
-      const optionComponents = filteredAccounts.map((account, index) => (
-        <AccountListItem
-          account={account}
-          selected={false}
-          key={index}
-          showConnectedStatus={false}
-        />
-      ));
+  const options = accounts.map((account) => ({
+    key: 'accountId',
+    value: {
+      accountId: account.id,
+      addresses: createAccountList(
+        account.address,
+        createChainIdList(account.scopes, chainIds),
+      ),
+    },
+    disabled: false,
+  }));
 
-      return {
-        options,
-        optionComponents,
-      };
-    }, [accounts, chainIds, hideExternalAccounts, snapId]);
+  const optionComponents = accounts.map((account, index) => (
+    <AccountListItem
+      account={account}
+      selected={false}
+      key={index}
+      showConnectedStatus={false}
+    />
+  ));
 
   const handleSelect = (value: State) => {
     if (switchGlobalAccount) {
@@ -105,10 +107,11 @@ export const SnapUIAccountSelector: FunctionComponent<
     <SnapUISelector
       className="snap-ui-renderer__account-selector"
       title={'Select account'}
-      options={selectorOptions}
+      options={options}
       {...props}
-      optionComponents={selectorComponents}
+      optionComponents={optionComponents}
       onSelect={handleSelect}
+      disabled={disabled || accounts.length === 0}
       style={{
         maxHeight: '82px',
       }}
