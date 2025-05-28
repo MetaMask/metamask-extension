@@ -192,15 +192,6 @@ export default class SecurityTab extends PureComponent {
           <div className="settings-page__content-description">
             {t('securitySrpDescription')}
           </div>
-          {socialLoginEnabled && (
-            <BannerAlert
-              description={t('securityLoginWithSocial', [socialLoginType])}
-              paddingTop={2}
-              paddingBottom={2}
-              marginTop={4}
-              severity={BannerAlertSeverity.Success}
-            />
-          )}
           {socialLoginEnabled ? (
             <BannerAlert
               description={t('securityLoginWithSocial', [socialLoginType])}

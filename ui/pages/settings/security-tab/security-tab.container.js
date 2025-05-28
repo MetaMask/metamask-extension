@@ -25,10 +25,12 @@ import {
   getIsSecurityAlertsEnabled,
   getMetaMetricsDataDeletionId,
   getHDEntropyIndex,
-} from '../../../selectors/selectors';
+  getMetaMaskHdKeyrings,
+  getSocialLoginType,
+  isSocialLoginFlow,
+} from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
-import { getMetaMaskHdKeyrings } from '../../../selectors';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
@@ -76,6 +78,8 @@ const mapStateToProps = (state) => {
     metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
     hdEntropyIndex: getHDEntropyIndex(state),
     hasMultipleHdKeyrings,
+    socialLoginEnabled: isSocialLoginFlow(state),
+    socialLoginType: getSocialLoginType(state),
   };
 };
 
