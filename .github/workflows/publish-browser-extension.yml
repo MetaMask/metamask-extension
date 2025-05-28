@@ -114,7 +114,7 @@ jobs:
       # Deploy to Chrome Web Store (dummy test)
       - name: Deploy to Chrome Web Store
         if: ${{ !inputs.skip_chrome }}
-        run: tsx ./scripts/submit-chrome.ts
+        run: yarn tsx .github/scripts/submit-chrome.ts
         # env:
         #   CHROME_ZIP_PATH: chrome-mv3-build/builds/chrome.zip
         #   ROLLOUT_PERCENTAGE: ${{ inputs.chrome_rollout }}
@@ -126,7 +126,7 @@ jobs:
       # Deploy to Firefox Add-ons (dummy test)
       - name: Deploy to Firefox Add-ons
         if: ${{ !inputs.skip_firefox }}
-        run: tsx ./scripts/submit-firefox.ts
+        run: yarn tsx .github/scripts/submit-firefox.ts
         # env:
         #   FIREFOX_XPI_PATH: firefox-mv2-build/builds/firefox.xpi
         #   AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
