@@ -1117,7 +1117,10 @@ export function setupController(
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
 
-    const isDappConnecting = remotePort.sender.tab?.id;
+    // if the sender.id value is present it means the caller is an extension rather
+    // than a site. When the caller is an extension we want to fallback to connecting
+    // it with the 1193 provider
+    const isDappConnecting = !remotePort.sender.id;
     if (isDappConnecting) {
       if (metamaskBlockedPorts.includes(remotePort.name)) {
         return;
