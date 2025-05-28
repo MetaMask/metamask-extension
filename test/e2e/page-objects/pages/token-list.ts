@@ -5,8 +5,10 @@ class TokenList {
 
   protected readonly tokenListItemTokenName =
     '[data-testid="multichain-token-list-item-token-name"]';
+
   protected readonly tokenListItemValue =
     '[data-testid="multichain-token-list-item-value"]';
+
   protected readonly tokenListItemSecondaryValue =
     '[data-testid="multichain-token-list-item-secondary-value"]';
 

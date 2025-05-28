@@ -1,47 +1,47 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import {
   Box,
-  Text,
   Icon,
   IconName,
   IconSize,
+  Text,
 } from '../../../components/component-library';
 import Card from '../../../components/ui/card';
 import {
   AlignItems,
-  TextVariant,
+  BackgroundColor,
+  BorderColor,
+  BlockSize,
   Display,
+  FlexDirection,
   JustifyContent,
   TextColor,
-  BackgroundColor,
-  FlexDirection,
+  TextVariant,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 
 import {
-  RemoteModeSwapAllowanceCard,
   RemoteModeDailyAllowanceCard,
+  RemoteModeSwapAllowanceCard,
   RevokeWithdrawlConfirm,
 } from '../components';
 
-import { DailyAllowance, SwapAllowance } from '../remote.types';
+import { getSelectedInternalAccount } from '../../../selectors';
 import { RevokeWithdrawlConfirmModalType } from '../components/revoke-withdrawl-confirm-modal';
-
-type RemoteModeConfig = {
-  swapAllowance: {
-    allowances: SwapAllowance[];
-  };
-  dailyAllowance: {
-    allowances: DailyAllowance[];
-  };
-};
+import { useRemoteMode } from '../hooks/useRemoteMode';
+import { REMOTE_MODES } from '../../../../shared/lib/remote-mode';
+import {
+  REMOTE_ROUTE_SETUP_SWAPS,
+  REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
+} from '../../../helpers/constants/routes';
 
 export default function RemoteModePermissions({
-  remoteModeConfig,
   setStartEnableRemoteSwap,
   setStartEnableDailyAllowance,
 }: {
-  remoteModeConfig: RemoteModeConfig | null;
   setStartEnableRemoteSwap?: (startEnableRemoteSwap: boolean) => void;
   setStartEnableDailyAllowance?: (startEnableDailyAllowance: boolean) => void;
 }) {
@@ -53,8 +53,16 @@ export default function RemoteModePermissions({
   const [isRevokeSpendAllowanceVisible, setIsRevokeSpendAllowanceVisible] =
     useState(false);
 
-  const swapAllowance = remoteModeConfig?.swapAllowance || null;
-  const dailyAllowance = remoteModeConfig?.dailyAllowance || null;
+  const history = useHistory();
+
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+
+  const {
+    disableRemoteMode,
+    remoteModeConfig: { swapAllowance, dailyAllowance },
+  } = useRemoteMode({
+    account: selectedAccount.address as `0x${string}`,
+  });
 
   const handleEnableRemoteSwap = () => {
     if (setStartEnableRemoteSwap) {
@@ -68,35 +76,28 @@ export default function RemoteModePermissions({
     }
   };
 
-  const handleRevokeRemoteSwap = () => {
+  const handleRevokeRemoteSwap = async () => {
     // todo: handoff to the confirmation screen (when available)
-    const remoteModeData = JSON.parse(
-      localStorage.getItem('remoteMode') || 'null',
-    );
-    if (remoteModeData) {
-      const { swapAllowance: _, ...updatedRemoteMode } = remoteModeData;
-      localStorage.setItem('remoteMode', JSON.stringify(updatedRemoteMode));
-    }
     setIsRevokeWithdrawlConfirmVisible(false);
+
+    await disableRemoteMode({
+      mode: REMOTE_MODES.SWAP,
+    });
   };
 
-  const handleRevokeDailyAllowance = () => {
+  const handleRevokeDailyAllowance = async () => {
     // todo: handoff to the confirmation screen (when available)
-    const remoteModeData = JSON.parse(
-      localStorage.getItem('remoteMode') || 'null',
-    );
-    if (remoteModeData) {
-      const { dailyAllowance: _, ...updatedRemoteMode } = remoteModeData;
-      localStorage.setItem('remoteMode', JSON.stringify(updatedRemoteMode));
-    }
     setIsRevokeSpendAllowanceVisible(false);
+
+    await disableRemoteMode({
+      mode: REMOTE_MODES.DAILY_ALLOWANCE,
+    });
   };
 
   return (
     <Box>
       <Text variant={TextVariant.bodyMd} color={TextColor.textAlternativeSoft}>
-        Safely access your hardware wallet funds without plugging it in. Revoke
-        permissions anytime.
+        Remote Mode lets you use your hardware wallet without plugging it in.{' '}
       </Text>
       <Box paddingTop={2} paddingBottom={2}>
         <Card backgroundColor={BackgroundColor.backgroundMuted}>
@@ -104,15 +105,19 @@ export default function RemoteModePermissions({
             display={Display.Flex}
             gap={2}
             justifyContent={JustifyContent.spaceBetween}
-            paddingTop={2}
-            paddingBottom={2}
           >
-            <Text>Remote Swaps</Text>
+            <Text fontWeight={FontWeight.Bold}>Remote Swaps</Text>
             {swapAllowance ? (
-              <Box display={Display.Flex} gap={6}>
+              <Box display={Display.Flex} gap={4}>
                 <Text
                   color={TextColor.infoDefault}
                   style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    history.push({
+                      pathname: REMOTE_ROUTE_SETUP_SWAPS,
+                      search: `?update=true`,
+                    });
+                  }}
                 >
                   Update
                 </Text>
@@ -139,9 +144,14 @@ export default function RemoteModePermissions({
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
               gap={4}
-              paddingTop={4}
-              paddingBottom={4}
+              paddingTop={2}
             >
+              <Box
+                borderColor={BorderColor.borderMuted}
+                width={BlockSize.Full}
+                style={{ height: '1px', borderBottomWidth: 0 }}
+                marginTop={2}
+              />
               <Box
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
@@ -178,7 +188,12 @@ export default function RemoteModePermissions({
                   MetaMask Swaps
                 </Text>
               </Box>
-
+              <Box
+                borderColor={BorderColor.borderMuted}
+                width={BlockSize.Full}
+                style={{ height: '1px', borderBottomWidth: 0 }}
+                marginTop={2}
+              />
               <Box
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
@@ -190,7 +205,7 @@ export default function RemoteModePermissions({
                   {swapAllowance.allowances.length} token
                   {swapAllowance.allowances.length === 1 ? '' : 's'} enabled
                 </Text>
-                <Text color={TextColor.infoDefault}>
+                <Text>
                   {isAllowancesExpanded ? (
                     <Icon name={IconName.ArrowUp} size={IconSize.Sm} />
                   ) : (
@@ -223,15 +238,19 @@ export default function RemoteModePermissions({
             display={Display.Flex}
             gap={2}
             justifyContent={JustifyContent.spaceBetween}
-            paddingTop={2}
-            paddingBottom={2}
           >
-            <Text>Withdrawal limit</Text>
+            <Text fontWeight={FontWeight.Bold}>Withdrawal limit</Text>
             {dailyAllowance ? (
-              <Box display={Display.Flex} gap={6}>
+              <Box display={Display.Flex} gap={4}>
                 <Text
                   color={TextColor.infoDefault}
                   style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    history.push({
+                      pathname: REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
+                      search: `?update=true`,
+                    });
+                  }}
                 >
                   Update
                 </Text>
@@ -258,9 +277,14 @@ export default function RemoteModePermissions({
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
               gap={4}
-              paddingTop={4}
-              paddingBottom={4}
+              paddingTop={2}
             >
+              <Box
+                borderColor={BorderColor.borderMuted}
+                width={BlockSize.Full}
+                style={{ height: '1px', borderBottomWidth: 0 }}
+                marginTop={2}
+              />
               <Box
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
@@ -297,7 +321,12 @@ export default function RemoteModePermissions({
                   MetaMask Swaps
                 </Text>
               </Box>
-
+              <Box
+                borderColor={BorderColor.borderMuted}
+                width={BlockSize.Full}
+                style={{ height: '1px', borderBottomWidth: 0 }}
+                marginTop={2}
+              />
               <Box
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
@@ -311,7 +340,7 @@ export default function RemoteModePermissions({
                   {dailyAllowance.allowances.length} token
                   {dailyAllowance.allowances.length === 1 ? '' : 's'} enabled
                 </Text>
-                <Text color={TextColor.infoDefault}>
+                <Text>
                   {isDailyAllowanceExpanded ? (
                     <Icon name={IconName.ArrowUp} size={IconSize.Sm} />
                   ) : (
@@ -323,7 +352,7 @@ export default function RemoteModePermissions({
                 <Box>
                   {dailyAllowance.allowances.map((allowance) => (
                     <RemoteModeDailyAllowanceCard
-                      key={allowance.tokenType}
+                      key={allowance.symbol}
                       dailyAllowance={allowance}
                     />
                   ))}
@@ -339,12 +368,16 @@ export default function RemoteModePermissions({
         </Card>
         <RevokeWithdrawlConfirm
           visible={isRevokeWithdrawlConfirmVisible}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onConfirm={handleRevokeRemoteSwap}
           onClose={() => setIsRevokeWithdrawlConfirmVisible(false)}
           type={RevokeWithdrawlConfirmModalType.Swap}
         />
         <RevokeWithdrawlConfirm
           visible={isRevokeSpendAllowanceVisible}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onConfirm={handleRevokeDailyAllowance}
           onClose={() => setIsRevokeSpendAllowanceVisible(false)}
           type={RevokeWithdrawlConfirmModalType.Spend}

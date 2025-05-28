@@ -77,6 +77,7 @@
 
   &__icon-button {
     margin-top: 0 !important;
+    color: var(--color-icon-default);
   }
 
   &__primary-container {
@@ -168,12 +169,5 @@
 
   &__button:last-of-type {
     margin-right: 0;
-  }
-}
-
-.balance-popover {
-  &__container {
-    z-index: design-system.$modal-z-index;
-    margin-top: -4px;
   }
 }

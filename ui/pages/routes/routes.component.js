@@ -51,6 +51,7 @@ import {
   REMOTE_ROUTE,
   REMOTE_ROUTE_SETUP_SWAPS,
   REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
+  IMPORT_SRP_ROUTE,
   DEFI_ROUTE,
 } from '../../helpers/constants/routes';
 
@@ -89,6 +90,7 @@ import {
   isConfirmTransactionRoute,
   setTheme,
   showOnboardingHeader,
+  showAppHeader,
 } from './utils';
 
 // Begin Lazy Routes
@@ -98,6 +100,7 @@ const OnboardingFlow = mmLazy(() =>
 const Lock = mmLazy(() => import('../lock'));
 const UnlockPage = mmLazy(() => import('../unlock-page'));
 const RestoreVaultPage = mmLazy(() => import('../keychains/restore-vault'));
+const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp'));
 const RevealSeedConfirmation = mmLazy(() => import('../keychains/reveal-seed'));
 const Settings = mmLazy(() => import('../settings'));
 const NotificationsSettings = mmLazy(() => import('../notifications-settings'));
@@ -305,6 +308,7 @@ export default class Routes extends Component {
             path={`${REVEAL_SEED_ROUTE}/:keyringId?`}
             component={RevealSeedConfirmation}
           />
+          <Authenticated path={IMPORT_SRP_ROUTE} component={ImportSrpPage} />
           <Authenticated path={SETTINGS_ROUTE} component={Settings} />
           <Authenticated
             path={NOTIFICATIONS_SETTINGS_ROUTE}
@@ -520,7 +524,9 @@ export default class Routes extends Component {
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
-        {!hideAppHeader(this.props) && <AppHeader location={location} />}
+        {process.env.REMOVE_GNS
+          ? showAppHeader(this.props) && <AppHeader location={location} />
+          : !hideAppHeader(this.props) && <AppHeader location={location} />}
         {isConfirmTransactionRoute(this.pathname) && <MultichainMetaFoxLogo />}
         {showOnboardingHeader(location) && <OnboardingAppHeader />}
         {isAccountMenuOpen ? (

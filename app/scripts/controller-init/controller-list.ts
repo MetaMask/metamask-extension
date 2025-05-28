@@ -9,7 +9,6 @@ import {
 import { PPOMController } from '@metamask/ppom-validator';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { TransactionController } from '@metamask/transaction-controller';
-import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { AccountsController } from '@metamask/accounts-controller';
 import {
   AssetsContractController,
@@ -39,7 +38,9 @@ import { Controller as AuthenticationController } from '@metamask/profile-sync-c
 import { Controller as UserStorageController } from '@metamask/profile-sync-controller/user-storage';
 import { Controller as NotificationServicesController } from '@metamask/notification-services-controller/notification-services';
 import { Controller as NotificationServicesPushController } from '@metamask/notification-services-controller/push-services';
+import { DelegationController } from '@metamask/delegation-controller';
 
+import { RemoteFeatureFlagController } from '@metamask/remote-feature-flag-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -51,6 +52,7 @@ import { InstitutionalSnapController } from '../controllers/institutional-snap/I
 export type Controller =
   | AuthenticationController
   | CronjobController
+  | DelegationController
   | DeFiPositionsController
   | ExecutionService
   | GasFeeController
@@ -77,10 +79,6 @@ export type Controller =
   | SnapInterfaceController
   | SnapInsightsController
   | TransactionController
-  | (TransactionUpdateController & {
-      name: 'TransactionUpdateController';
-      state: Record<string, unknown>;
-    })
   | InstitutionalSnapController
   | UserStorageController
   | TokenRatesController
@@ -96,6 +94,7 @@ export type ControllerFlatState = AccountsController['state'] &
   AuthenticationController['state'] &
   CronjobController['state'] &
   DeFiPositionsController['state'] &
+  DelegationController['state'] &
   GasFeeController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
@@ -121,4 +120,5 @@ export type ControllerFlatState = AccountsController['state'] &
   UserStorageController['state'] &
   TokenRatesController['state'] &
   NftController['state'] &
-  NftDetectionController['state'];
+  NftDetectionController['state'] &
+  RemoteFeatureFlagController['state'];
