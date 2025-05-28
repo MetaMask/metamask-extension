@@ -316,7 +316,7 @@
     "@metamask/signature-controller": "^27.1.0",
     "@metamask/smart-transactions-controller": "^16.3.1",
     "@metamask/snaps-controllers": "^12.3.1",
-    "@metamask/snaps-execution-environments": "^8.1.0",
+    "@metamask/snaps-execution-environments": "^8.2.0",
     "@metamask/snaps-rpc-methods": "^12.4.0",
     "@metamask/snaps-sdk": "^7.1.0",
     "@metamask/snaps-utils": "^9.4.0",

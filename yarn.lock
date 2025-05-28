@@ -6340,21 +6340,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-execution-environments@npm:^8.1.0":
-  version: 8.1.0
-  resolution: "@metamask/snaps-execution-environments@npm:8.1.0"
+"@metamask/snaps-execution-environments@npm:^8.2.0":
+  version: 8.2.0
+  resolution: "@metamask/snaps-execution-environments@npm:8.2.0"
   dependencies:
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/object-multiplex": "npm:^2.1.0"
     "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/providers": "npm:^22.1.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/snaps-sdk": "npm:^6.24.0"
-    "@metamask/snaps-utils": "npm:^9.3.0"
+    "@metamask/snaps-sdk": "npm:^7.1.0"
+    "@metamask/snaps-utils": "npm:^9.4.0"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.4.0"
     readable-stream: "npm:^3.6.2"
-  checksum: 10/b4450dc1e88dc496dd2e33f42e1e490abb54580a7c7fe2c5768f16dd05638e7976ae7eb458138d286555749a6c85ae94ec6e3e3aa946b53869fe3196577ecfd0
+  checksum: 10/56456b6a0b0d9b3d6070b636f65ced85a010ee2edaf14b428189752f4b8ba4a0e4c32a110334e8e5ca50fec13e89e127bcc99395551ebb3fee34508c4cbab5d8
   languageName: node
   linkType: hard
 
@@ -6431,7 +6431,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^9.2.0, @metamask/snaps-utils@npm:^9.3.0, @metamask/snaps-utils@npm:^9.4.0":
+"@metamask/snaps-utils@npm:^9.2.0, @metamask/snaps-utils@npm:^9.4.0":
   version: 9.4.0
   resolution: "@metamask/snaps-utils@npm:9.4.0"
   dependencies:
@@ -29846,7 +29846,7 @@ __metadata:
     "@metamask/signature-controller": "npm:^27.1.0"
     "@metamask/smart-transactions-controller": "npm:^16.3.1"
     "@metamask/snaps-controllers": "npm:^12.3.1"
-    "@metamask/snaps-execution-environments": "npm:^8.1.0"
+    "@metamask/snaps-execution-environments": "npm:^8.2.0"
     "@metamask/snaps-rpc-methods": "npm:^12.4.0"
     "@metamask/snaps-sdk": "npm:^7.1.0"
     "@metamask/snaps-utils": "npm:^9.4.0"
