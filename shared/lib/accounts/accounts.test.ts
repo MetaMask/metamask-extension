@@ -25,8 +25,6 @@ import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
 
 const SOLANA_SCOPES = [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet];
 
-const BITCOIN_SCOPES = [BtcScope.Mainnet, BtcScope.Testnet];
-
 describe('accounts', () => {
   describe('getUniqueAccountName', () => {
     it('returns the suggested name if not used', () => {
@@ -120,21 +118,20 @@ describe('accounts', () => {
       return messenger;
     };
 
-    const getClient = (snapId: SnapId, scopes: CaipChainId[]) => {
+    const getClient = (snapId: SnapId) => {
       return new MultichainWalletSnapClient(
         snapId,
-        scopes,
         getSnapKeyring(),
         getMessenger(),
       );
     };
 
     const getSolanaClient = () => {
-      return getClient(SOLANA_WALLET_SNAP_ID, SOLANA_SCOPES);
+      return getClient(SOLANA_WALLET_SNAP_ID);
     };
 
     const getBitcoinClient = () => {
-      return getClient(BITCOIN_WALLET_SNAP_ID, BITCOIN_SCOPES);
+      return getClient(BITCOIN_WALLET_SNAP_ID);
     };
 
     beforeEach(() => {
@@ -264,7 +261,7 @@ describe('accounts', () => {
             params: {
               entropySource,
               groupIndex,
-              scopes: SOLANA_SCOPES,
+              scopes: [SolScope.Mainnet],
             },
           },
           snapId: SOLANA_WALLET_SNAP_ID,
@@ -298,7 +295,7 @@ describe('accounts', () => {
           },
         );
 
-        await client.discoverAccounts(entropySource);
+        await client.discoverAccounts(entropySource, SolScope.Mainnet);
         expect(mockSnapControllerHandleRequest).toHaveBeenCalledTimes(3);
         expect(mockSnapControllerHandleRequest).toHaveBeenNthCalledWith(
           1,
