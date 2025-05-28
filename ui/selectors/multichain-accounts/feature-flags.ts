@@ -15,6 +15,7 @@ import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
 } from '../remote-feature-flags';
+import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 
 /**
  * Feature flag structure for multichain accounts features
@@ -44,7 +45,7 @@ const FEATURE_VERSION_2 = '2';
  * @param featureVersion - The specific feature version to check
  * @returns boolean - True if the feature is enabled for the given state and version, false otherwise.
  */
-const isMultichainAccountsFeatureEnabled = (
+export const isMultichainAccountsFeatureEnabled = (
   state: RemoteFeatureFlagsState,
   featureVersion: string,
 ) => {
@@ -71,31 +72,25 @@ const isMultichainAccountsFeatureEnabled = (
 };
 
 /**
- * Checks if the multichain accounts feature is enabled for state 1.
- *
- * @param state - The MetaMask state object
- * @returns boolean - True if the feature is enabled for state 1, false otherwise.
+ * Selector to check if the multichain accounts feature is enabled for state 1.
  */
-export const getIsMultichainAccountsState1Enabled = (
-  state: RemoteFeatureFlagsState,
-) => {
-  return false;
-
-  // TODO: Uncomment this when the feature is ready for release
-  // return isMultichainAccountsFeatureEnabled(state, FEATURE_VERSION_1);
-};
+export const getIsMultichainAccountsState1Enabled = createDeepEqualSelector(
+  (state: RemoteFeatureFlagsState) => state,
+  (state) => {
+    return false;
+    // TODO: Uncomment this when the feature is ready for release
+    // return isMultichainAccountsFeatureEnabled(state, FEATURE_VERSION_1);
+  },
+);
 
 /**
- * Checks if the multichain accounts feature is enabled for state 2.
- *
- * @param state - The MetaMask state object
- * @returns boolean - True if the feature is enabled for state 2, false otherwise.
+ * Selector to check if the multichain accounts feature is enabled for state 2.
  */
-export const getIsMultichainAccountsState2Enabled = (
-  state: RemoteFeatureFlagsState,
-) => {
-  return false;
-
-  // TODO: Uncomment this when the feature is ready for release
-  // return isMultichainAccountsFeatureEnabled(state, FEATURE_VERSION_2);
-};
+export const getIsMultichainAccountsState2Enabled = createDeepEqualSelector(
+  (state: RemoteFeatureFlagsState) => state,
+  (state) => {
+    return false;
+    // TODO: Uncomment this when the feature is ready for release
+    // return isMultichainAccountsFeatureEnabled(state, FEATURE_VERSION_2);
+  },
+);
