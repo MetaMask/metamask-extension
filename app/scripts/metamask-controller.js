@@ -5213,6 +5213,12 @@ export default class MetamaskController extends EventEmitter {
     const shouldImportSolanaAccount = true;
     const { keyrings } = this.keyringController.state;
 
+    // Set the account syncing ready to be dispatched to false first,
+    // so that the account syncing is not started before the accounts are imported.
+    await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
+      false,
+    );
+
     // walk through all the keyrings and import the solana accounts for the HD keyrings
     for (const { metadata } of keyrings) {
       // check if the keyring is an HD keyring

@@ -83,6 +83,8 @@ export default function CreatePassword({
     analyticsIframeQuery,
   )}`;
 
+  const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {
       if (
@@ -126,9 +128,11 @@ export default function CreatePassword({
       firstTimeFlowType === FirstTimeFlowType.import
     ) {
       await importWithRecoveryPhrase(password, secretRecoveryPhrase);
-      getPlatform() === PLATFORM_FIREFOX
-        ? history.push(ONBOARDING_COMPLETION_ROUTE)
-        : history.push(ONBOARDING_METAMETRICS);
+      if (isFirefox) {
+        history.push(ONBOARDING_COMPLETION_ROUTE);
+      } else {
+        history.push(ONBOARDING_METAMETRICS);
+      }
     } else {
       // Otherwise we are in create new wallet flow
       try {
@@ -137,7 +141,11 @@ export default function CreatePassword({
           await createNewAccount(password);
         }
         if (socialLoginFlow) {
-          history.push(ONBOARDING_METAMETRICS);
+          if (isFirefox) {
+            history.push(ONBOARDING_COMPLETION_ROUTE);
+          } else {
+            history.push(ONBOARDING_METAMETRICS);
+          }
         } else {
           history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
         }
