@@ -4677,24 +4677,25 @@
   "reset": {
     "message": "Reset"
   },
-  "resetPassword": {
-    "message": "Reset your password"
+  "forgotPasswordSocialDescription": {
+    "message": "Already logged in on mobile? Reset your password from there."
   },
-  "resetPasswordDescription": {
-    "message": "If you have a mobile device where you’re already logged in, you can reset your password there."
-  },
-  "resetPasswordStep1": {
+  "forgotPasswordSocialStep1": {
     "message": "Open MetaMask mobile app and go to $1",
     "description": "$1 is bold Settings > Security and passwords."
   },
-  "resetPasswordStep1Settings": {
+  "forgotPasswordSocialStep1Settings": {
     "message": "Settings > Security and passwords."
   },
-  "resetPasswordStep2": {
-    "message": "Select “Change password” and update your password with Face ID."
+  "forgotPasswordSocialStep2": {
+    "message": "Select “Change password” and update your password using biometrics (like Face ID)."
   },
-  "resetPasswordStep3": {
+  "forgotPasswordSocialStep3": {
     "message": "Login with your new password on any device."
+  },
+  "forgotPasswordSocialSocialReset": {
+    "message": "Not logged in on mobile? $1 with your Secret Recovery Phrase.",
+    "description": "$1 is the button text 'Reset wallet'"
   },
   "resetWallet": {
     "message": "Reset wallet"
