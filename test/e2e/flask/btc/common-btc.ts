@@ -7,6 +7,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import FixtureBuilder from '../../fixture-builder';
 import {
+  mockDiscover,
   mockExchangeRates,
   mockInitialFullScan,
   mockRampsDynamicFeatureFlag,
@@ -22,6 +23,7 @@ export async function withBtcAccountSnap(
       title,
       dapp: true,
       testSpecificMock: async (mockServer: Mockttp) => [
+        await mockDiscover(mockServer),
         await mockInitialFullScan(mockServer),
         await mockExchangeRates(mockServer),
 
