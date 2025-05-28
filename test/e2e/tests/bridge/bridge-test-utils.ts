@@ -522,6 +522,11 @@ export const getBridgeFixtures = (
           ],
         },
       },
+    })
+    .withEnabledNetworks({
+      '0x1': true,
+      '0xe708': true,
+      '0xa4b1': true,
     });
 
   if (withErc20) {

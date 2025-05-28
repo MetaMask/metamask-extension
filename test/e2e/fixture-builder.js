@@ -192,6 +192,14 @@ class FixtureBuilder {
     return this;
   }
 
+  withEnabledNetworks(data) {
+    merge(this.fixture.data.NetworkOrderController, {
+      networkOrder: this.fixture.data.NetworkOrderController?.networkOrder,
+      enabledNetworkMap: data,
+    });
+    return this;
+  }
+
   withAccountOrderController(data) {
     merge(this.fixture.data.AccountOrderController, data);
     return this;
