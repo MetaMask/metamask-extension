@@ -1,9 +1,9 @@
 import { Messenger } from '@metamask/base-controller';
 import {
+  NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
   NetworkControllerStateChangeEvent,
-  NetworkControllerGetNetworkClientIdByChainIdAction,
 } from '@metamask/network-controller';
 import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
@@ -14,7 +14,7 @@ type Actions =
   | NetworkControllerGetStateAction
   | AccountsControllerGetSelectedAccountAction
   | NetworkControllerGetNetworkClientByIdAction
-  | NetworkControllerGetNetworkClientIdByChainIdAction;
+  | NetworkControllerFindNetworkClientIdByChainIdAction;
 type Events =
   | PreferencesControllerStateChangeEvent
   | NetworkControllerStateChangeEvent;
@@ -44,7 +44,7 @@ export function getNftDetectionControllerMessenger(
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
       'AccountsController:getSelectedAccount',
-      'NetworkController:getNetworkClientIdByChainId',
+      'NetworkController:findNetworkClientIdByChainId',
     ],
   });
 }

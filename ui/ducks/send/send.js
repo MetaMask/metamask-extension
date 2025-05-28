@@ -571,7 +571,6 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     const unapprovedTxs = getUnapprovedTransactions(state);
     const transaction = unapprovedTxs[draftTransaction.id];
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
-    const chainId = getCurrentChainId(state);
     const selectedAccount = getSelectedInternalAccountWithBalance(state);
 
     const gasTotalForLayer1 = await thunkApi.dispatch(
@@ -2717,11 +2716,14 @@ export function updateSendAsset(
         } else {
           let isCurrentOwner = true;
           try {
+            // TODO add networkClientId
             isCurrentOwner = await isNftOwner(
               sendingAddress,
               details.address,
               details.tokenId,
+              selectedNetworkClientId,
             );
+            console.log('🚀 ~ return ~ isCurrentOwner:', isCurrentOwner);
           } catch (err) {
             const message = getErrorMessage(err);
             if (message.includes('Unable to verify ownership.')) {

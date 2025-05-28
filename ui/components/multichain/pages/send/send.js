@@ -350,6 +350,7 @@ export const SendPage = () => {
     requireContractAddressAcknowledgement ||
     (isSwapAndSend && isSmartTransactionPending) ||
     isHexDataInvalid;
+  console.log('submitDisabled', submitDisabled);
 
   const isSendFormShown =
     draftTransactionExists &&

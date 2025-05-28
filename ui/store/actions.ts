@@ -2281,7 +2281,7 @@ export function addNftVerifyOwnership(
       await submitRequestToBackground('addNftVerifyOwnership', [
         address,
         tokenID,
-        { networkClientId },
+        networkClientId,
       ]);
     } catch (error) {
       if (isErrorWithMessage(error)) {
@@ -2325,7 +2325,7 @@ export function removeAndIgnoreNft(
       await submitRequestToBackground('removeAndIgnoreNft', [
         address,
         tokenID,
-        { networkClientId },
+        networkClientId,
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -2384,11 +2384,13 @@ export async function isNftOwner(
   ownerAddress: string,
   nftAddress: string,
   nftId: string,
+  networkClientId: NetworkClientId,
 ): Promise<boolean> {
   return await submitRequestToBackground('isNftOwner', [
     ownerAddress,
     nftAddress,
     nftId,
+    networkClientId,
   ]);
 }
 
