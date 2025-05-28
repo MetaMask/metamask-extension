@@ -4970,10 +4970,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@file:../snap-bitcoin-wallet/packages/snap::locator=metamask-crx%40workspace%3A.":
-  version: 0.13.0
-  resolution: "@metamask/bitcoin-wallet-snap@file:../snap-bitcoin-wallet/packages/snap#../snap-bitcoin-wallet/packages/snap::hash=22344c&locator=metamask-crx%40workspace%3A."
-  checksum: 10/7d5c8dc7e45e80ec3b67cff2f594416b2168c3c0c652547c9564d8d9b757517bdd170a182a8fb2cca3ee905a70f59560a5c33ee89eadf62c43f6e9e96e826cf1
+"@metamask/bitcoin-wallet-snap@npm:^0.14.0":
+  version: 0.14.0
+  resolution: "@metamask/bitcoin-wallet-snap@npm:0.14.0"
+  checksum: 10/5a82f8e905e5ae73ae848d1d9525345c6923eafb60380eff3b03fc976215d036c52c90972e9b33f61148f925e242a3e7e25cfae736168d8e87327375686f5ed5
   languageName: node
   linkType: hard
 
@@ -5637,7 +5637,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^17.4.0, @metamask/keyring-api@npm:^17.6.0":
+"@metamask/keyring-api@npm:^17.4.0":
+  version: 17.5.0
+  resolution: "@metamask/keyring-api@npm:17.5.0"
+  dependencies:
+    "@metamask/keyring-utils": "npm:^3.0.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.1.0"
+    bech32: "npm:^2.0.0"
+  checksum: 10/b6409b235c02f102f142ec9bf89486591262fdc717341a0a8425454755b625c5ab63f1c5fd745ec743e220772bed51f1315c43e219e88c3e4fbe9d19efce660c
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-api@npm:^17.6.0":
   version: 17.6.0
   resolution: "@metamask/keyring-api@npm:17.6.0"
   dependencies:
@@ -5684,7 +5696,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-internal-api@npm:^6.0.1, @metamask/keyring-internal-api@npm:^6.1.0":
+"@metamask/keyring-internal-api@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "@metamask/keyring-internal-api@npm:6.0.1"
+  dependencies:
+    "@metamask/keyring-api": "npm:^17.4.0"
+    "@metamask/keyring-utils": "npm:^3.0.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+  checksum: 10/a503cef8d20e9f45d96afb796f9e9c32147d2ae984b92e5a26657a5bef2718c4590c2c43671ed3ee6379ba34109379e80b9f16ba7622e1951068be298176ca58
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-internal-api@npm:^6.1.0":
   version: 6.2.0
   resolution: "@metamask/keyring-internal-api@npm:6.2.0"
   dependencies:
@@ -13355,14 +13378,14 @@ __metadata:
   linkType: hard
 
 "@types/react-redux@npm:^7.1.20, @types/react-redux@npm:^7.1.25":
-  version: 7.1.33
-  resolution: "@types/react-redux@npm:7.1.33"
+  version: 7.1.34
+  resolution: "@types/react-redux@npm:7.1.34"
   dependencies:
     "@types/hoist-non-react-statics": "npm:^3.3.0"
     "@types/react": "npm:*"
     hoist-non-react-statics: "npm:^3.3.0"
     redux: "npm:^4.0.0"
-  checksum: 10/65f4e0a3f0e532bbbe44ae6522d1fce91bfcb3bacc90904c35d3f819e77932cc489b6945988acb4a2320f6e78c57dd1c149556aa241a68efc51de15a2cd73fc0
+  checksum: 10/febcd1db0c83c5002c6bee0fdda9e70da0653454ffbb72d6c37cbf2f5c005e06fb5271cff344d7164c385c944526565282de9a95ff379e040476b71d27fc2512
   languageName: node
   linkType: hard
 
@@ -29786,7 +29809,7 @@ __metadata:
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A63.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-63.0.0-7f30a89d62.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/bitcoin-wallet-snap": "file:../snap-bitcoin-wallet/packages/snap"
+    "@metamask/bitcoin-wallet-snap": "npm:^0.14.0"
     "@metamask/bridge-controller": "npm:^26.0.0"
     "@metamask/bridge-status-controller": "npm:^23.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"

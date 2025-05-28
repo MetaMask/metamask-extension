@@ -248,7 +248,7 @@ import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts';
+import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -4733,11 +4733,7 @@ export default class MetamaskController extends EventEmitter {
     const keyring = await this.getSnapKeyring();
     const messenger = this.controllerMessenger;
 
-    return new MultichainWalletSnapClient(
-      snapId,
-      keyring,
-      messenger,
-    );
+    return new MultichainWalletSnapClient(snapId, keyring, messenger);
   }
   ///: END:ONLY_INCLUDE_IF
 
@@ -4810,26 +4806,41 @@ export default class MetamaskController extends EventEmitter {
           },
         );
       }
-      
+
       ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-      const btcClient = await this._getMultichainWalletSnapClient(BITCOIN_WALLET_SNAP_ID);
+      const btcClient = await this._getMultichainWalletSnapClient(
+        BITCOIN_WALLET_SNAP_ID,
+      );
       const btcScope = BtcScope.Mainnet;
-      const btcAccounts = await btcClient.discoverAccounts(entropySource, btcScope);
+      const btcAccounts = await btcClient.discoverAccounts(
+        entropySource,
+        btcScope,
+      );
 
       // If none accounts got discovered, we still create the first (default) one.
       if (btcAccounts.length === 0) {
-        await this._addSnapAccount(entropySource, btcClient, {scope: btcScope, synchronize: true});
+        await this._addSnapAccount(entropySource, btcClient, {
+          scope: btcScope,
+          synchronize: true,
+        });
       }
       ///: END:ONLY_INCLUDE_IF
 
       ///: BEGIN:ONLY_INCLUDE_IF(solana)
-      const solanaClient = await this._getMultichainWalletSnapClient(SOLANA_WALLET_SNAP_ID);
+      const solanaClient = await this._getMultichainWalletSnapClient(
+        SOLANA_WALLET_SNAP_ID,
+      );
       const solScope = SolScope.Mainnet;
-      const solanaAccounts = await solanaClient.discoverAccounts(entropySource, solScope);
+      const solanaAccounts = await solanaClient.discoverAccounts(
+        entropySource,
+        solScope,
+      );
 
       // If none accounts got discovered, we still create the first (default) one.
       if (solanaAccounts.length === 0) {
-        await this._addSnapAccount(entropySource, solanaClient, {scope: solScope});
+        await this._addSnapAccount(entropySource, solanaClient, {
+          scope: solScope,
+        });
       }
       ///: END:ONLY_INCLUDE_IF
     } catch (e) {
@@ -4841,8 +4852,7 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-
-   /**
+  /**
    * Adds Snap account to the keyring.
    *
    * @param {string} keyringId - The ID of the keyring to add the account to.
@@ -4865,7 +4875,7 @@ export default class MetamaskController extends EventEmitter {
       }
 
       return await client.createAccount(
-        {...options, entropySource },
+        { ...options, entropySource },
         {
           displayConfirmation: false,
           displayAccountNameSuggestion: false,
