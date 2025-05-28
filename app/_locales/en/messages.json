@@ -2292,6 +2292,18 @@
   "forgotPassword": {
     "message": "Forgot password?"
   },
+  "forgotPasswordModalTitle": {
+    "message": "Forgot your password?"
+  },
+  "forgotPasswordModalDescription1": {
+    "message": "MetaMask can’t recover your password for you."
+  },
+  "forgotPasswordModalDescription2": {
+    "message": "You can reset your wallet by entering the Secret Recovery Phrase you used when you set up your wallet."
+  },
+  "forgotPasswordModalButton": {
+    "message": "Reset wallet"
+  },
   "form": {
     "message": "form"
   },
