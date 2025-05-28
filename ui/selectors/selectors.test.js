@@ -831,9 +831,7 @@ describe('Selectors', () => {
     it('returns only non-test chain IDs', () => {
       const chainIds = selectors.getChainIdsToPoll({
         metamask: {
-          preferences: {
-            tokenNetworkFilter: {},
-          },
+          enabledNetworkMap: {},
           networkConfigurationsByChainId,
           selectedNetworkClientId: 'mainnet',
         },
@@ -881,9 +879,7 @@ describe('Selectors', () => {
     it('returns only non-test chain IDs', () => {
       const chainIds = selectors.getNetworkClientIdsToPoll({
         metamask: {
-          preferences: {
-            tokenNetworkFilter: {},
-          },
+          enabledNetworkMap: {},
           networkConfigurationsByChainId,
           selectedNetworkClientId: 'mainnet',
         },
@@ -2191,10 +2187,8 @@ describe('#getConnectedSitesList', () => {
     it('returns true when the token network filter is equal to the current network', () => {
       const state = {
         metamask: {
-          preferences: {
-            tokenNetworkFilter: {
-              '0x1': true,
-            },
+          enabledNetworkMap: {
+            '0x1': true,
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
           networkConfigurationsByChainId: {
@@ -2215,11 +2209,9 @@ describe('#getConnectedSitesList', () => {
     it('returns false when the token network filter is on multiple networks', () => {
       const state = {
         metamask: {
-          preferences: {
-            tokenNetworkFilter: {
-              '0x1': true,
-              '0x89': true,
-            },
+          enabledNetworkMap: {
+            '0x1': true,
+            '0x89': true,
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
           networkConfigurationsByChainId: {
@@ -2252,10 +2244,8 @@ describe('#getConnectedSitesList', () => {
 
       const state = {
         metamask: {
-          preferences: {
-            tokenNetworkFilter: {
-              [CHAIN_IDS.MAINNET]: true,
-            },
+          enabledNetworkMap: {
+            '0x1': true,
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
           networkConfigurationsByChainId: {
@@ -2269,7 +2259,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      expect(selectors.getTokenNetworkFilter(state)).toStrictEqual({
+      expect(selectors.getEnabledNetworks(state)).toStrictEqual({
         [CHAIN_IDS.MAINNET]: true,
       });
     });
@@ -2277,10 +2267,8 @@ describe('#getConnectedSitesList', () => {
     it('always returns an object containing the network if it is not included in popular networks', () => {
       const state = {
         metamask: {
-          preferences: {
-            tokenNetworkFilter: {
-              '0xNotPopularNetwork': true,
-            },
+          enabledNetworkMap: {
+            '0xNotPopularNetwork': true,
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
           networkConfigurationsByChainId: {
@@ -2294,7 +2282,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      expect(selectors.getTokenNetworkFilter(state)).toStrictEqual({
+      expect(selectors.getEnabledNetworks(state)).toStrictEqual({
         '0xNotPopularNetwork': true,
       });
     });
@@ -2302,18 +2290,16 @@ describe('#getConnectedSitesList', () => {
     it('returns an object containing all the popular networks for portfolio view', () => {
       const state = {
         metamask: {
-          preferences: {
-            tokenNetworkFilter: {
-              [CHAIN_IDS.MAINNET]: true,
-              [CHAIN_IDS.LINEA_MAINNET]: true,
-              [CHAIN_IDS.ARBITRUM]: true,
-              [CHAIN_IDS.AVALANCHE]: true,
-              [CHAIN_IDS.BSC]: true,
-              [CHAIN_IDS.OPTIMISM]: true,
-              [CHAIN_IDS.POLYGON]: true,
-              [CHAIN_IDS.ZKSYNC_ERA]: true,
-              [CHAIN_IDS.BASE]: true,
-            },
+          enabledNetworkMap: {
+            [CHAIN_IDS.MAINNET]: true,
+            [CHAIN_IDS.LINEA_MAINNET]: true,
+            [CHAIN_IDS.ARBITRUM]: true,
+            [CHAIN_IDS.AVALANCHE]: true,
+            [CHAIN_IDS.BSC]: true,
+            [CHAIN_IDS.OPTIMISM]: true,
+            [CHAIN_IDS.POLYGON]: true,
+            [CHAIN_IDS.ZKSYNC_ERA]: true,
+            [CHAIN_IDS.BASE]: true,
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
           networkConfigurationsByChainId: {
@@ -2327,7 +2313,7 @@ describe('#getConnectedSitesList', () => {
         },
       };
 
-      expect(selectors.getTokenNetworkFilter(state)).toStrictEqual({
+      expect(selectors.getEnabledNetworks(state)).toStrictEqual({
         [CHAIN_IDS.MAINNET]: true,
         [CHAIN_IDS.LINEA_MAINNET]: true,
         [CHAIN_IDS.ARBITRUM]: true,
@@ -2343,18 +2329,16 @@ describe('#getConnectedSitesList', () => {
     it('always returns the same object (memoized) if the same state is given', () => {
       const state = {
         metamask: {
-          preferences: {
-            tokenNetworkFilter: {
-              [CHAIN_IDS.MAINNET]: true,
-              [CHAIN_IDS.LINEA_MAINNET]: true,
-              [CHAIN_IDS.ARBITRUM]: true,
-              [CHAIN_IDS.AVALANCHE]: true,
-              [CHAIN_IDS.BSC]: true,
-              [CHAIN_IDS.OPTIMISM]: true,
-              [CHAIN_IDS.POLYGON]: true,
-              [CHAIN_IDS.ZKSYNC_ERA]: true,
-              [CHAIN_IDS.BASE]: true,
-            },
+          enabledNetworkMap: {
+            [CHAIN_IDS.MAINNET]: true,
+            [CHAIN_IDS.LINEA_MAINNET]: true,
+            [CHAIN_IDS.ARBITRUM]: true,
+            [CHAIN_IDS.AVALANCHE]: true,
+            [CHAIN_IDS.BSC]: true,
+            [CHAIN_IDS.OPTIMISM]: true,
+            [CHAIN_IDS.POLYGON]: true,
+            [CHAIN_IDS.ZKSYNC_ERA]: true,
+            [CHAIN_IDS.BASE]: true,
           },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
           networkConfigurationsByChainId: {
