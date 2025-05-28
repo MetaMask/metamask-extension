@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // We can ignore the unused vars warning while the flag is not active
 
+import semver from 'semver';
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
@@ -19,37 +20,6 @@ export type MultichainAccountsFeatureFlag = {
 const MINIMUM_SUPPORTED_VERSION = null;
 const FEATURE_VERSION_1 = '1';
 const FEATURE_VERSION_2 = '2';
-
-/**
- * Compare is the version1 is greater than or equal to version2
- *
- * @param version1 - The first version string to compare.
- * @param version2 - The second version string to compare.
- * @returns boolean - True if version1 is greater than or equal to version2, false otherwise.
- */
-export const compareVersions = (version1: string, version2: string) => {
-  const regex = /^\d+\.\d+\.\d+$/u;
-  if (!regex.test(version1) || !regex.test(version2)) {
-    return false; // Invalid version format
-  }
-
-  const v1 = version1.split('.').map(Number);
-  const v2 = version2.split('.').map(Number);
-
-  for (let i = 0; i < Math.max(v1.length, v2.length); i++) {
-    const num1 = v1[i] || 0;
-    const num2 = v2[i] || 0;
-
-    if (num1 > num2) {
-      return true;
-    }
-    if (num1 < num2) {
-      return false;
-    }
-  }
-
-  return true; // Versions are equal
-};
 
 /**
  * Checks if the multichain accounts feature is enabled for a given state and feature version.
@@ -74,7 +44,7 @@ const isMultichainAccountsFeatureEnabled = (
     minimumVersion &&
     currentFeatureVersion === featureVersion &&
     // @ts-expect-error - this error can be ignored while the minimum version is not defined
-    compareVersions(minimumVersion, MINIMUM_SUPPORTED_VERSION)
+    semver.gt(minimumVersion, MINIMUM_SUPPORTED_VERSION)
   );
 };
 
