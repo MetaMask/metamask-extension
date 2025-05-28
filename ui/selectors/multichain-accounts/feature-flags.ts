@@ -50,7 +50,6 @@ export const isMultichainAccountsFeatureEnabled = (
     minimumVersion,
   } = enableMultichainAccounts;
 
-  console.log({ minimumVersion, APP_VERSION });
   return (
     enabled &&
     currentFeatureVersion &&
