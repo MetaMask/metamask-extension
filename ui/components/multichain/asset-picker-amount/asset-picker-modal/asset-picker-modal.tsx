@@ -601,6 +601,7 @@ export function AssetPickerModal({
             <AvatarToken
               borderRadius={BorderRadius.full}
               src={sendingAsset.image}
+              name={sendingAsset.symbol}
               size={AvatarTokenSize.Xs}
             />
             <Text variant={TextVariant.bodySm}>
