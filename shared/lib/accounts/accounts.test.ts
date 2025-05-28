@@ -1,7 +1,6 @@
 import { JsonRpcRequest, SnapId } from '@metamask/snaps-sdk';
 import {
   BtcScope,
-  CaipChainId,
   DiscoverAccountsRequest,
   SolScope,
 } from '@metamask/keyring-api';
