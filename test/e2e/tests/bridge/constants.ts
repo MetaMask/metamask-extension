@@ -120,11 +120,8 @@ export const FAILED_SOURCE_TRANSACTION = {
   bridge: 'across',
   srcChain: {
     chainId: 1,
-    txHash: null,
-  },
-  destChain: {
-    chainId: 59144,
-    txHash: null,
+    txHash:
+      '0x5a7af400d9b5dc2e342ecef1fc596d888f0536e6bca64f12bcac6a8d63cbb0ab',
   },
 };
 
@@ -139,7 +136,6 @@ export const FAILED_DEST_TRANSACTION = {
   },
   destChain: {
     chainId: 59144,
-    txHash: null,
   },
 };
 
