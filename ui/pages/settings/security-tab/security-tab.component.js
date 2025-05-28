@@ -32,6 +32,8 @@ import {
   Box,
   Text,
   ButtonSize,
+  BannerAlert,
+  BannerAlertSeverity,
 } from '../../../components/component-library';
 import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
@@ -108,6 +110,8 @@ export default class SecurityTab extends PureComponent {
     hdEntropyIndex: PropTypes.number,
     hasMultipleHdKeyrings: PropTypes.bool,
     socialLoginEnabled: PropTypes.bool,
+    socialLoginType: PropTypes.string,
+    seedPhraseBackedUp: PropTypes.bool,
   };
 
   state = {
@@ -168,7 +172,13 @@ export default class SecurityTab extends PureComponent {
 
   renderSeedWords() {
     const { t } = this.context;
-    const { history, hasMultipleHdKeyrings, socialLoginEnabled } = this.props;
+    const {
+      history,
+      hasMultipleHdKeyrings,
+      seedPhraseBackedUp,
+      socialLoginEnabled,
+      socialLoginType,
+    } = this.props;
 
     return (
       <>
@@ -182,6 +192,31 @@ export default class SecurityTab extends PureComponent {
           <div className="settings-page__content-description">
             {t('securitySrpDescription')}
           </div>
+          {socialLoginEnabled ? (
+            <BannerAlert
+              description={t('securityLoginWithSocial', [socialLoginType])}
+              paddingTop={2}
+              paddingBottom={2}
+              marginTop={4}
+              severity={BannerAlertSeverity.Success}
+            />
+          ) : (
+            <BannerAlert
+              description={
+                seedPhraseBackedUp
+                  ? t('securityLoginWithSrpBackedUp')
+                  : t('securityLoginWithSrpNotBackedUp')
+              }
+              paddingTop={2}
+              paddingBottom={2}
+              marginTop={4}
+              severity={
+                seedPhraseBackedUp
+                  ? BannerAlertSeverity.Success
+                  : BannerAlertSeverity.Danger
+              }
+            />
+          )}
           <Button
             data-testid="reveal-seed-words"
             type="danger"
