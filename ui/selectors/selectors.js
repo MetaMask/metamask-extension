@@ -303,7 +303,7 @@ export function getCurrentKeyring(state) {
     return null;
   }
 
-  return internalAccount.metadata.keyring;
+  return internalAccount.metadata?.keyring;
 }
 
 /**
@@ -2336,6 +2336,10 @@ export function getSortedAnnouncementsToShow(state) {
  */
 export function getOrderedNetworksList(state) {
   return state.metamask.orderedNetworkList;
+}
+
+export function getEnabledNetworks(state) {
+  return state.metamask.enabledNetworkMap;
 }
 
 export function getPinnedAccountsList(state) {
