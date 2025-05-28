@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import log from 'loglevel';
+import { BigNumber } from 'bignumber.js';
 import { isSolanaAddress } from '../../../shared/lib/multichain/accounts';
 import type { CarouselSlide } from '../../../shared/constants/app-state';
 import { updateSlides } from '../../store/actions';
@@ -68,7 +69,9 @@ export const useCarouselManagement = ({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const prevSlidesRef = useRef<CarouselSlide[]>();
 
-  const hasZeroBalance = totalBalance === ZERO_BALANCE;
+  const hasZeroBalance = new BigNumber(totalBalance ?? ZERO_BALANCE).eq(
+    ZERO_BALANCE,
+  );
 
   useEffect(() => {
     const defaultSlides: CarouselSlide[] = [];
@@ -129,8 +132,7 @@ export const useCarouselManagement = ({
     }
     // Handle Contentful Data
     const maybeFetchContentful = async () => {
-      const contentfulEnabled =
-        remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
+      const contentfulEnabled = false;
 
       if (contentfulEnabled) {
         try {
