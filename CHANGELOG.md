@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Addressed an issue where threat actors exploited Blockaid’s simulation engine by manipulating gas values, causing incorrect simulation results. Updated integration to include wallet-provided gas estimations for accurate simulations ([#33180](https://github.com/MetaMask/metamask-extension/pull/33180))
+- Fix EIP-1193 connections from other extensions ([#33199](https://github.com/MetaMask/metamask-extension/pull/33199))
 
 ## [12.18.1]
 ### Fixed
