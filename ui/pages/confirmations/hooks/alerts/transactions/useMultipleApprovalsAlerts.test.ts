@@ -43,7 +43,9 @@ const CONTENT_MULTIPLE_APPROVALS_ERC20 =
 const CONTENT_MULTIPLE_APPROVALS_NFT =
   "You're giving someone else permission to withdraw your NFTs, even though it's not necessary for this transaction.";
 
-const createBatchTransaction = (nestedTransactions: any[]): TransactionMeta =>
+const createBatchTransaction = (
+  nestedTransactions: { data: Hex; to: Hex; value: string }[],
+): TransactionMeta =>
   ({
     id: 'batch-123',
     type: TransactionType.batch,
