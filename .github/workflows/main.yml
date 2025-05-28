@@ -56,6 +56,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          cache-node-modules: true
           skip-allow-scripts: true
 
       - name: Check circular dependencies
@@ -91,6 +92,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          cache-node-modules: true
           skip-allow-scripts: true
 
       - run: yarn build:test
@@ -110,6 +112,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          cache-node-modules: true
           skip-allow-scripts: true
 
       - run: yarn build:test:mv2
@@ -129,6 +132,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          cache-node-modules: true
           skip-allow-scripts: true
 
       - run: yarn build:test:webpack
@@ -154,6 +158,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          cache-node-modules: true
           skip-allow-scripts: true
 
       # GHA does not allow the : ? ternary operator, you must write && ||
@@ -176,6 +181,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          cache-node-modules: true
           skip-allow-scripts: true
 
       - run: yarn build:test:flask
@@ -195,6 +201,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          cache-node-modules: true
           skip-allow-scripts: true
 
       - run: yarn build:test:flask:mv2
@@ -243,6 +250,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          cache-node-modules: true
           skip-allow-scripts: true
 
       - name: Download artifact prep-build-dist-browserify-chrome

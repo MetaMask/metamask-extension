@@ -62,6 +62,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          cache-node-modules: true
           skip-allow-scripts: true
       - name: Get commit SHA
         id: commit-sha
@@ -87,6 +88,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          cache-node-modules: true
           skip-allow-scripts: true
       - name: Generate Attributions
         run: yarn attributions:generate

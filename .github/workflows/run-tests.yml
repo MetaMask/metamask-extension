@@ -22,6 +22,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          cache-node-modules: true
           skip-allow-scripts: true
 
       - name: test:unit:coverage
@@ -43,6 +44,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          cache-node-modules: true
           skip-allow-scripts: true
 
       - name: test:unit:webpack:coverage
@@ -64,6 +66,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          cache-node-modules: true
           skip-allow-scripts: true
 
       - name: test:integration:coverage
@@ -92,6 +95,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          cache-node-modules: true
           skip-allow-scripts: true
 
       - name: Download artifacts

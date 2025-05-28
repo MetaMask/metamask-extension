@@ -62,6 +62,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          cache-node-modules: true
           skip-allow-scripts: true
       - name: Get commit SHA
         id: commit-sha
@@ -84,6 +85,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          cache-node-modules: true
           skip-allow-scripts: true
       - name: Update LavaMoat build policy
         run: yarn lavamoat:build:auto
@@ -116,6 +118,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          cache-node-modules: true
           skip-allow-scripts: true
       - name: Restore build policy
         uses: actions/cache/restore@v4
