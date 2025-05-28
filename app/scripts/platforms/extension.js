@@ -8,7 +8,7 @@ import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getURLHostName } from '../../../ui/helpers/utils/util';
-import { t } from '../translate';
+import { t } from '../../../shared/lib/translate';
 
 export default class ExtensionPlatform {
   //
