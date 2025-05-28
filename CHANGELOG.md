@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.18.2]
+### Added
+- Add a flag to `snap_getClientStatus` to indicate whether the client is "active" ([#33203](https://github.com/MetaMask/metamask-extension/pull/33203))
+
+### Fixed
+- Addressed an issue where threat actors exploited Blockaid’s simulation engine by manipulating gas values, causing incorrect simulation results. Updated integration to include wallet-provided gas estimations for accurate simulations ([#33180](https://github.com/MetaMask/metamask-extension/pull/33180))
 
 ## [12.18.1]
 ### Fixed
