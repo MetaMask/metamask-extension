@@ -2,22 +2,23 @@ import { useMemo } from 'react';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import useAccountMismatchAlerts from './alerts/signatures/useAccountMismatchAlerts';
 import useDomainMismatchAlerts from './alerts/signatures/useDomainMismatchAlerts';
+import { useAccountTypeUpgrade } from './alerts/transactions/useAccountTypeUpgrade';
+import { useFirstTimeInteractionAlert } from './alerts/transactions/useFirstTimeInteractionAlert';
 import { useGasEstimateFailedAlerts } from './alerts/transactions/useGasEstimateFailedAlerts';
 import { useGasFeeLowAlerts } from './alerts/transactions/useGasFeeLowAlerts';
 import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
+import { useMultipleApprovalsAlerts } from './alerts/transactions/useMultipleApprovalsAlerts';
 import { useNetworkBusyAlerts } from './alerts/transactions/useNetworkBusyAlerts';
 import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
+import { useNonContractAddressAlerts } from './alerts/transactions/useNonContractAddressAlerts';
 import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTransactionAlerts';
 import { useResimulationAlert } from './alerts/transactions/useResimulationAlert';
-import { useFirstTimeInteractionAlert } from './alerts/transactions/useFirstTimeInteractionAlert';
 import { useSigningOrSubmittingAlerts } from './alerts/transactions/useSigningOrSubmittingAlerts';
-import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
 import useBlockaidAlerts from './alerts/useBlockaidAlerts';
+import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
 import { useNetworkAndOriginSwitchingAlerts } from './alerts/useNetworkAndOriginSwitchingAlerts';
 import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
-import { useNonContractAddressAlerts } from './alerts/transactions/useNonContractAddressAlerts';
-import { useAccountTypeUpgrade } from './alerts/transactions/useAccountTypeUpgrade';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -42,6 +43,7 @@ function useTransactionAlerts(): Alert[] {
   const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
   const nonContractAddressAlerts = useNonContractAddressAlerts();
+  const multipleApprovalAlerts = useMultipleApprovalsAlerts();
 
   return useMemo(
     () => [
@@ -57,6 +59,7 @@ function useTransactionAlerts(): Alert[] {
       ...firstTimeInteractionAlert,
       ...signingOrSubmittingAlerts,
       ...nonContractAddressAlerts,
+      ...multipleApprovalAlerts,
     ],
     [
       accountTypeUpgradeAlerts,
@@ -71,6 +74,7 @@ function useTransactionAlerts(): Alert[] {
       firstTimeInteractionAlert,
       signingOrSubmittingAlerts,
       nonContractAddressAlerts,
+      multipleApprovalAlerts,
     ],
   );
 }

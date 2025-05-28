@@ -3,8 +3,11 @@ import {
   SimulationErrorCode,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import React from 'react';
-import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
+import React, { useState } from 'react';
+import {
+  ConfirmInfoAlertRow,
+  getAlertTextColors,
+} from '../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoSection } from '../../../../components/app/confirm/info/row/section';
 import {
@@ -32,6 +35,10 @@ import { BalanceChangeList } from './balance-change-list';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
 import { BalanceChange } from './types';
+import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal';
+import InlineAlert from '../../../../components/app/alert-system/inline-alert';
+import { useAlertMetrics } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
+import useAlerts from '../../../../hooks/useAlerts';
 
 export type StaticRow = {
   label: string;
@@ -285,6 +292,23 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     transactionId,
   });
 
+  const { trackInlineAlertClicked } = useAlertMetrics();
+  const { getFieldAlerts } = useAlerts(transaction.id);
+  const fieldAlerts = getFieldAlerts(RowAlertKey.EstimatedApprovalChanges);
+  const selectedAlertSeverity = fieldAlerts[0]?.severity;
+  const selectedAlertKey = fieldAlerts[0]?.key;
+
+  const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
+
+  const handleModalClose = () => {
+    setAlertModalVisible(false);
+  };
+
+  const handleInlineAlertClick = () => {
+    setAlertModalVisible(true);
+    trackInlineAlertClicked(selectedAlertKey);
+  };
+
   if (metricsOnly) {
     return null;
   }
@@ -351,11 +375,20 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
         {staticRows.map((staticRow, index) => (
-          <BalanceChangeList
-            key={index}
-            heading={staticRow.label}
-            balanceChanges={staticRow.balanceChanges}
-          />
+          <>
+            <BalanceChangeList
+              key={index}
+              heading={staticRow.label}
+              balanceChanges={staticRow.balanceChanges}
+              labelColor={getAlertTextColors(selectedAlertSeverity)}
+            />
+            <Box marginLeft={1}>
+              <InlineAlert
+                onClick={handleInlineAlertClick}
+                severity={selectedAlertSeverity}
+              />
+            </Box>
+          </>
         ))}
         <BalanceChangeList
           heading={t('simulationDetailsOutgoingHeading')}
@@ -367,6 +400,16 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
           balanceChanges={incoming}
           testId="simulation-rows-incoming"
         />
+        {alertModalVisible && (
+          <MultipleAlertModal
+            alertKey={selectedAlertKey}
+            ownerId={transaction.id}
+            onFinalAcknowledgeClick={handleModalClose}
+            onClose={handleModalClose}
+            showCloseIcon={false}
+            skipAlertNavigation={true}
+          />
+        )}
       </Box>
     </SimulationDetailsLayout>
   );

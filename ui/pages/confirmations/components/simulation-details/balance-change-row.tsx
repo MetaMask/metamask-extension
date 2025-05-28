@@ -5,6 +5,7 @@ import {
   FlexDirection,
   FlexWrap,
   IconColor,
+  TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
@@ -32,7 +33,8 @@ export const BalanceChangeRow: React.FC<{
   label?: string;
   showFiat?: boolean;
   balanceChange: BalanceChange;
-}> = ({ label, showFiat, balanceChange }) => {
+  labelColor?: TextColor;
+}> = ({ label, showFiat, balanceChange, labelColor }) => {
   const t = useI18nContext();
 
   const {
@@ -55,7 +57,11 @@ export const BalanceChangeRow: React.FC<{
       flexWrap={FlexWrap.Wrap}
     >
       {label && (
-        <Text style={{ whiteSpace: 'nowrap' }} variant={TextVariant.bodyMd}>
+        <Text
+          style={{ whiteSpace: 'nowrap' }}
+          color={labelColor}
+          variant={TextVariant.bodyMd}
+        >
           {label}
         </Text>
       )}
