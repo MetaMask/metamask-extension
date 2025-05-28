@@ -40,6 +40,7 @@ import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
+import ResetPasswordModal from './reset-password-modal';
 
 export default class UnlockPage extends Component {
   static contextTypes = {
