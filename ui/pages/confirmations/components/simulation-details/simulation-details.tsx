@@ -4,6 +4,9 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import React, { useState } from 'react';
+import { useAlertMetrics } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
+import InlineAlert from '../../../../components/app/alert-system/inline-alert';
+import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal';
 import {
   ConfirmInfoAlertRow,
   getAlertTextColors,
@@ -30,15 +33,12 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { BalanceChangeList } from './balance-change-list';
+import { BalanceChange } from './types';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
-import { BalanceChange } from './types';
-import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal';
-import InlineAlert from '../../../../components/app/alert-system/inline-alert';
-import { useAlertMetrics } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
-import useAlerts from '../../../../hooks/useAlerts';
 
 export type StaticRow = {
   label: string;

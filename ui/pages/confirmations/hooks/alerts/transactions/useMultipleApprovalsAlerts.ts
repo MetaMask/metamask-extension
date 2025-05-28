@@ -9,18 +9,18 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 
-interface ApprovalInfo {
+type ApprovalInfo = {
   tokenAddress: Hex;
   spenderAddress?: Hex;
   amount?: BigNumber;
   isNFT: boolean;
-}
+};
 
-interface TokenOutflow {
+type TokenOutflow = {
   tokenAddress: Hex;
   amount: BigNumber;
   isDecrease: boolean;
-}
+};
 
 export function useMultipleApprovalsAlerts(): Alert[] {
   const t = useI18nContext();
@@ -41,18 +41,19 @@ export function useMultipleApprovalsAlerts(): Alert[] {
 
     nestedTransactions.forEach((transaction) => {
       const { data, to } = transaction;
-      if (!data || !to) return;
+      if (!data || !to) {
+        return;
+      }
 
       const parseResult = parseApprovalTransactionData(data);
-      if (!parseResult) return;
+      if (!parseResult) {
+        return;
+      }
 
       const { name, amountOrTokenId, tokenAddress } = parseResult;
 
       // Skip revocations (zero amounts or setApprovalForAll with false)
-      if (
-        (amountOrTokenId && amountOrTokenId.isZero()) ||
-        parseResult.isRevokeAll
-      ) {
+      if (amountOrTokenId?.isZero() || parseResult.isRevokeAll) {
         return;
       }
 

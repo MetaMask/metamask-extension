@@ -18,6 +18,7 @@ import { sortBalanceChanges } from './sortBalanceChanges';
  * @param props.heading
  * @param props.balanceChanges
  * @param props.testId
+ * @param props.labelColor
  * @returns
  */
 export const BalanceChangeList: React.FC<{
