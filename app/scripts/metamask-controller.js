@@ -632,6 +632,7 @@ export default class MetamaskController extends EventEmitter {
         btoa: globalThis.btoa.bind(globalThis),
       }),
       additionalDefaultNetworks,
+      captureException,
     });
     this.networkController.initializeProvider();
 
