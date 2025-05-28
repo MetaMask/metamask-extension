@@ -200,6 +200,18 @@ describe('metaRPCClientFactory', () => {
     jest.useRealTimers();
   });
 
+  it('should fail all pending actions with a DisconnectError when the stream ends', async () => {
+    const streamTest = createThroughStream();
+    const metaRPCClient = metaRPCClientFactory(streamTest);
+
+    const requestProm = metaRPCClient.foo();
+    streamTest.emit('end');
+
+    await expect(requestProm).rejects.toThrow(
+      new DisconnectError('disconnected'),
+    );
+  });
+
   it('should cancel the request timer when handling its response', async () => {
     jest.useFakeTimers();
     const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
@@ -251,17 +263,5 @@ describe('metaRPCClientFactory', () => {
     streamTest.write('junk');
     streamTest.write(Buffer.from('junk'));
     streamTest.write(123);
-  });
-
-  it('should fail all pending actions with a DisconnectError when the stream ends', async () => {
-    const streamTest = createThroughStream();
-    const metaRPCClient = metaRPCClientFactory(streamTest);
-
-    const requestProm = metaRPCClient.foo();
-    streamTest.emit('end');
-
-    await expect(requestProm).rejects.toThrow(
-      new DisconnectError('disconnected'),
-    );
   });
 });
