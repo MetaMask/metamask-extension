@@ -47,7 +47,6 @@ import {
 } from '../../../../shared/modules/transaction.utils';
 import {
   getBlockaidMetricsProps,
-  getSwapAndSendMetricsProps,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/helpers/utils/metrics';
@@ -972,9 +971,6 @@ async function buildEventFragmentProperties({
       transactionMeta,
     );
 
-  const swapAndSendMetricsProperties =
-    getSwapAndSendMetricsProps(transactionMeta);
-
   // Add Entropy Properties
   const hdEntropyProperties = {
     hd_entropy_index: transactionMetricsRequest.getHDEntropyIndex(),
@@ -1011,7 +1007,6 @@ async function buildEventFragmentProperties({
       ? [transactionContractMethod]
       : [],
     ...smartTransactionMetricsProperties,
-    ...swapAndSendMetricsProperties,
     ...hdEntropyProperties,
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973

@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getCurrentDraftTransaction,
-  getBestQuote,
   getSendAsset,
   getSwapsBlockedTokens,
   acknowledgeRecipientWarning,
@@ -36,9 +35,7 @@ jest.mock('../../../../../hooks/useI18nContext', () => ({
 
 jest.mock('../../../../../ducks/send', () => ({
   getCurrentDraftTransaction: jest.fn(),
-  getBestQuote: jest.fn(),
   getSendAsset: jest.fn(),
-  getSwapsBlockedTokens: jest.fn(),
   acknowledgeRecipientWarning: jest.fn(),
 }));
 
@@ -57,10 +54,6 @@ jest.mock('../../..', () => ({
 
 jest.mock('./hex', () => ({
   SendHexData: jest.fn(() => <div>SendHexData</div>),
-}));
-
-jest.mock('./quote-card', () => ({
-  QuoteCard: jest.fn(() => <div>QuoteCard</div>),
 }));
 
 jest.mock('./send-page-row', () => ({
@@ -94,14 +87,10 @@ describe('SendPageRecipientContent', () => {
           },
           sendAsset: { type: AssetType.token, details: { address: '0xToken' } },
           amount: { value: '100' },
-          isSwapQuoteLoading: false,
         };
       }
       if (selector === getSendHexDataFeatureFlagState) {
         return false;
-      }
-      if (selector === getBestQuote) {
-        return { destinationAmount: '200' };
       }
       if (selector === getSendAsset) {
         return { type: AssetType.token };
@@ -127,7 +116,6 @@ describe('SendPageRecipientContent', () => {
     render(<SendPageRecipientContent {...defaultProps} />);
 
     expect(screen.getByText('AssetPickerAmount')).toBeInTheDocument();
-    expect(screen.getByText('QuoteCard')).toBeInTheDocument();
   });
 
   it('renders SendHexData if showHexDataFlag is true', () => {
@@ -139,14 +127,10 @@ describe('SendPageRecipientContent', () => {
           },
           sendAsset: { type: AssetType.native },
           amount: { value: '100' },
-          isSwapQuoteLoading: false,
         };
       }
       if (selector === getSendHexDataFeatureFlagState) {
         return true;
-      }
-      if (selector === getBestQuote) {
-        return { destinationAmount: '200' };
       }
       if (selector === getSendAsset) {
         return { type: AssetType.native };

@@ -7,7 +7,6 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
-import { Tooltip } from 'react-tippy';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
   ButtonIcon,
@@ -45,7 +44,6 @@ import { SendAllowanceBanner } from '../../../../pages/remote-mode/components';
 import {
   TokenStandard,
   AssetType,
-  SmartTransactionStatus,
 } from '../../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
@@ -63,12 +61,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import { AssetPickerAmount } from '../..';
-import useUpdateSwapsState from '../../../../pages/swaps/hooks/useUpdateSwapsState';
-import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
-import {
-  getSelectedInternalAccount,
-  smartTransactionsListSelector,
-} from '../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../selectors';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
@@ -85,19 +78,12 @@ export const SendPage = () => {
 
   const startedNewDraftTransaction = useRef(false);
   const draftTransactionExists = useSelector(getDraftTransactionExists);
-
   const draftTransaction = useSelector(getCurrentDraftTransaction);
-
-  const {
-    sendAsset: transactionAsset,
-    amount,
-    swapQuotesError,
-  } = draftTransaction;
+  const { sendAsset: transactionAsset, amount } = draftTransaction;
 
   const draftTransactionID = useSelector(getDraftTransactionID);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendStage = useSelector(getSendStage);
-  const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
 
   const history = useHistory();
   const location = useLocation();
@@ -266,26 +252,6 @@ export const SendPage = () => {
     history.push(nextRoute);
   };
 
-  useEffect(() => {
-    if (swapQuotesError) {
-      trackEvent(
-        {
-          event: MetaMetricsEventName.sendSwapQuoteError,
-          category: MetaMetricsEventCategory.Send,
-          properties: {
-            error: swapQuotesError,
-          },
-          sensitiveProperties: {
-            ...sendAnalytics,
-          },
-        },
-        { excludeMetaMetricsId: false },
-      );
-    }
-    // sendAnalytics should not result in the event refiring
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trackEvent, swapQuotesError]);
-
   const onSubmit = async (event) => {
     event.preventDefault();
 
@@ -306,7 +272,7 @@ export const SendPage = () => {
         event: 'Complete',
         properties: {
           ...sendAnalytics,
-          action: isSwapAndSend ? 'Submit Immediately' : 'Edit Screen',
+          action: 'Edit Screen',
           legacy_event: true,
         },
       });
@@ -332,12 +298,6 @@ export const SendPage = () => {
 
   const sendErrors = useSelector(getSendErrors);
   const isInvalidSendForm = useSelector(isSendFormInvalid);
-
-  const smartTransactions = useSelector(smartTransactionsListSelector);
-
-  const isSmartTransactionPending = smartTransactions?.find(
-    ({ status }) => status === SmartTransactionStatus.pending,
-  );
   const isGasTooLow = sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR;
 
   const isInsufficientFundsError =
@@ -349,7 +309,6 @@ export const SendPage = () => {
     isInsufficientFundsError ||
       (isInvalidSendForm && !isGasTooLow) ||
       requireContractAddressAcknowledgement ||
-      (isSwapAndSend && isSmartTransactionPending) ||
       isHexDataInvalid,
   );
 
@@ -361,8 +320,6 @@ export const SendPage = () => {
     (newToken) => handleSelectToken(newToken, false),
     [handleSelectToken],
   );
-
-  useUpdateSwapsState();
 
   const onAmountChange = useCallback(
     (newAmountRaw, newAmountFormatted) => {
@@ -384,14 +341,6 @@ export const SendPage = () => {
   );
   const isRemoteSendPossible = Boolean(remoteSendAllowance);
   const showRemoteSendBanner = isRemoteSendPossible && isSendFormShown;
-
-  let tooltipTitle = '';
-
-  if (isSwapAndSend) {
-    tooltipTitle = isSmartTransactionPending
-      ? t('isSigningOrSubmitting')
-      : t('sendSwapSubmissionWarning');
-  }
 
   return (
     <Page className="multichain-send-page">
@@ -453,29 +402,15 @@ export const SendPage = () => {
         >
           {sendStage === SEND_STAGES.EDIT ? t('reject') : t('cancel')}
         </ButtonSecondary>
-        <Tooltip
-          // changing key forces remount on title change
-          key={tooltipTitle}
-          className="multichain-send-page__nav-button"
-          title={tooltipTitle}
-          disabled={!isSwapAndSend}
-          arrow
-          hideOnClick={false}
-          // explicitly inherit display since Tooltip will default to block
-          style={{
-            display: 'inline-flex',
-          }}
+        <ButtonPrimary
+          onClick={onSubmit}
+          loading={isSubmitting}
+          size={ButtonPrimarySize.Lg}
+          disabled={submitDisabled || isSubmitting}
+          block
         >
-          <ButtonPrimary
-            onClick={onSubmit}
-            loading={isSubmitting}
-            size={ButtonPrimarySize.Lg}
-            disabled={submitDisabled || isSubmitting}
-            block
-          >
-            {t(isSwapAndSend ? 'confirm' : 'continue')}
-          </ButtonPrimary>
-        </Tooltip>
+          {t('continue')}
+        </ButtonPrimary>
       </Footer>
     </Page>
   );
