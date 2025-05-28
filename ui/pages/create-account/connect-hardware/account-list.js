@@ -44,15 +44,15 @@ class AccountList extends Component {
 
     return (
       <div>
-        <h3 className="hw-connect__hdPath__title">
-          {this.context.t('selectHdPath')}
-        </h3>
         <Box>
           <BannerAlert
             marginTop={6}
             title={this.context.t('ledgerAppOpenMessageTitle')}
           />
         </Box>
+        <h3 className="hw-connect__hdPath__title">
+          {this.context.t('selectHdPath')}
+        </h3>
         <p className="hw-connect__msg">{this.context.t('selectPathHelp')}</p>
         <div className="hw-connect__hdPath">
           <Dropdown
