@@ -71,7 +71,7 @@ export const MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET = {
 export const MULTICHAIN_NETWORK_TO_NICKNAME: Record<CaipChainId, string> = {
   [MultichainNetworks.BITCOIN]: 'Bitcoin',
   [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
-  [MultichainNetworks.BITCOIN_SIGNET]: 'Bitcoin Signet',
+  [MultichainNetworks.BITCOIN_SIGNET]: 'Bitcoin Mutinynet',
   [MultichainNetworks.SOLANA]: 'Solana',
   [MultichainNetworks.SOLANA_DEVNET]: 'Solana Devnet',
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
@@ -196,7 +196,7 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     chainId: MultichainNetworks.BITCOIN_SIGNET,
     rpcUrl: '', // not used
     ticker: 'sBTC',
-    nickname: 'Bitcoin Signet',
+    nickname: 'Bitcoin Mutinynet',
     id: 'btc-signet',
     type: 'rpc',
     decimals: 8,
