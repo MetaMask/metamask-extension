@@ -44,8 +44,6 @@ export const isMultichainAccountsFeatureEnabled = (
   enableMultichainAccounts: MultichainAccountsFeatureFlag,
   featureVersion: string,
 ) => {
-  console.log('isMultichainAccountsFeatureEnabled', enableMultichainAccounts);
-
   const {
     enabled,
     featureVersion: currentFeatureVersion,
@@ -73,8 +71,6 @@ export const getMultichainAccountsRemoteFeatureFlags = (
 ) => {
   const multichainAccountsFeatureFlags =
     getRemoteFeatureFlags(state).enableMultichainAccounts;
-
-  console.log('guto', multichainAccountsFeatureFlags);
 
   try {
     assert(multichainAccountsFeatureFlags, MultichainAccountsFeatureFlag);
