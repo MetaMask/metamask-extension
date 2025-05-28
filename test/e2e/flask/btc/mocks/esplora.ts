@@ -300,25 +300,6 @@ const mockFeeEstimates = (mockServer: Mockttp) =>
   });
 
 /**
- * Mocks the Esplora calls needed for the account discovery.
- * Contains the same calls as the initial full scan + calls for not found accounts.
- *
- * @param mockServer - The mock server
- */
-export async function mockDiscover(mockServer: Mockttp) {
-  // Mock latest blocks
-  await mockBlocks(mockServer);
-  // Mock the funding transaction setting the balance to default
-  await mockFundingTx(mockServer);
-  // Mock funding tx block hash
-  await mockBlockHeight(mockServer, FUNDING_BLOCK_HEIGHT, FUNDING_BLOCK_HASH);
-  // Mock other calls to fetch txs given the stop gap (returns empty)
-  await mockAnyTxs(mockServer);
-  // Mock genesis block hash
-  await mockBlockHeight(mockServer, 0, GENESIS_BLOCK_HASH);
-}
-
-/**
  * Mocks the Esplora calls needed for the initial full scan.
  * Consists of 1 transaction on the first address of the account.
  *
