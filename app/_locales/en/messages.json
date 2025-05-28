@@ -2941,7 +2941,7 @@
     "message": "You can only connect one Ledger at a time"
   },
   "ledgerAppOpenMessageDescription": {
-    "message": "Make sure to keep ledger app open during transaction"
+    "message": "Keep the Ledger app open while confirming on your Ledger device"
   },
   "ledgerAppOpenMessageTitle": {
     "message": "Ensure the Ledger app remains open while connecting accounts and confirming requests"
