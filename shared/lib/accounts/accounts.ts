@@ -222,6 +222,7 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
             scope,
             derivationPath,
             entropySource,
+            synchronize: true,
           };
 
           const account = await this.createAccount(options, {

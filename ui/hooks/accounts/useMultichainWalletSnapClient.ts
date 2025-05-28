@@ -102,7 +102,7 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
     // This will trigger the Snap account creation flow (+ account renaming)
     return await createSnapAccount(
       this.#snapId,
-      { ...options, synchronize: true },
+      { ...options, synchronize: true }, // For now we always synchronize accounts on creation
       internalOptions,
     );
   }

@@ -212,10 +212,9 @@ export function getMultichainNetwork(
   // on having a non-EVM account being selected!
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const nonEvmNetworks = getMultichainNetworkProviders(state);
-  const nonEvmNetwork = nonEvmNetworks.find((provider) => {
-    return provider.chainId === selectedAccount.scopes[0]; // Temporarily assume first scope is the chain ID
-  });
-
+  const nonEvmNetwork = nonEvmNetworks.find((provider) =>
+    selectedAccount.scopes.includes(provider.chainId),
+  );
   if (!nonEvmNetwork) {
     throw new Error(
       'Could not find non-EVM provider for the current configuration. This should never happen.',
