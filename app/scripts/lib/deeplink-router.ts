@@ -6,6 +6,29 @@ import {
   PREPARE_SWAP_ROUTE,
   ADVANCED_ROUTE,
 } from '../../../ui/helpers/constants/routes';
+import chainList from 'eth-chainlist';
+
+const assetIdRE = /^c(\d+)_t(.*?)$/u;
+
+// https://link.metamask.io/bridge?from=c714_t0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56
+
+const parseUniversalAssetId = (universalAssetId: string | null) => {
+  if (!universalAssetId) {
+    return null;
+  }
+  const match = universalAssetId.match(assetIdRE);
+  if (!match) {
+    return null;
+  }
+  const chainId = parseInt(match[1], 10);
+  const tokenAddress = match[2];
+
+  if (!chainList.rawChainData().find((c) => c.slip44 === chainId)) {
+    return null;
+  }
+
+  return { chainId, tokenAddress };
+};
 
 const { sentry } = global;
 
@@ -41,7 +64,6 @@ const routes = new Map<string, RouteHandler>([
   [
     '/swap',
     function handleSwap(params: URLSearchParams) {
-      // hey, don't blame me for this, someone else wrote the route like this!
       const path = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
       const query = new URLSearchParams();
       query.set('swaps', true.toString());
@@ -51,10 +73,19 @@ const routes = new Map<string, RouteHandler>([
   [
     '/bridge',
     function handleSwap(params: URLSearchParams) {
-      // hey, don't blame me for this, someone else wrote the route like this!
-      const path = `${CROSS_CHAIN_SWAP_ROUTE}/${PREPARE_SWAP_ROUTE}`;
+      const path = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
+
       const query = new URLSearchParams();
-      return { path, query: params };
+      const from = parseUniversalAssetId(params.get('from'));
+      const to = parseUniversalAssetId(params.get('to'));
+
+      if (from) {
+        query.set('token', from?.tokenAddress || '');
+      }
+      if (to) {
+        query.set('to', to?.tokenAddress || '');
+      }
+      return { path, query };
     },
   ],
   [
@@ -124,8 +155,7 @@ export class DeeplinkRouter {
         return this.tryNavigateTo(tabId, url);
       },
       {
-        // urls: ['http://' + DEEP_LINK_HOST, 'https://' + DEEP_LINK_HOST],
-        urls: ['http://*/*', 'https://*/*', 'ws://*/*', 'wss://*/*'],
+        urls: [`http://${DEEP_LINK_HOST}/*`, `https://${DEEP_LINK_HOST}/*`],
         // redirect only top level frames
         types: ['main_frame'],
       },
