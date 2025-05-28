@@ -82,7 +82,6 @@ export const SMART_TRANSACTION_CONFIRMATION_TYPES = {
  * Custom messages to send and be received by the extension
  */
 export const EXTENSION_MESSAGES = {
-  CONNECTION_READY: 'CONNECTION_READY',
   READY: 'METAMASK_EXTENSION_READY',
 } as const;
 

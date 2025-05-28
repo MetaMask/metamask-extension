@@ -1,4 +1,3 @@
-import { promisify } from 'util';
 import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
 import { clone } from 'lodash';
@@ -41,6 +40,10 @@ import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 
+/**
+ * @typedef {import('./metamask-controller').Api} Api
+ */
+
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
 let reduxStore;
@@ -48,7 +51,7 @@ let reduxStore;
 /**
  * Method to update backgroundConnection object use by UI
  *
- * @param backgroundConnection - connection object to background
+ * @param {Api} backgroundConnection - connection object to background
  */
 export const updateBackgroundConnection = (backgroundConnection) => {
   setBackgroundConnection(backgroundConnection);
@@ -65,19 +68,22 @@ export const updateBackgroundConnection = (backgroundConnection) => {
   });
 };
 
+/**
+ *
+ * @param {object} opts
+ * @param {Api} opts.backgroundConnection - connection object to background
+ */
 export default async function launchMetamaskUi(opts) {
   const { backgroundConnection, traceContext } = opts;
 
   const metamaskState = await trace(
     { name: TraceName.GetState, parentContext: traceContext },
-    () => promisify(backgroundConnection.getState.bind(backgroundConnection))(),
+    async () => await backgroundConnection.getState(),
   );
 
   const store = await startApp(metamaskState, backgroundConnection, opts);
 
-  await promisify(
-    backgroundConnection.startPatches.bind(backgroundConnection),
-  )();
+  await backgroundConnection.startPatches();
 
   setupStateHooks(store);
 
