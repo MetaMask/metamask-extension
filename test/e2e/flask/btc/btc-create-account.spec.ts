@@ -103,7 +103,7 @@ describe('Create BTC Account', function (this: Suite) {
     }, this.test?.fullTitle());
   });
 
-  it.only('can recreate BTC account after restoring wallet with SRP', async function () {
+  it('can recreate BTC account after restoring wallet with SRP', async function () {
     await withBtcAccountSnap(async (driver) => {
       // check that we have one BTC account
       const headerNavbar = new HeaderNavbar(driver);
