@@ -330,6 +330,8 @@ const PrepareBridgePage = () => {
   const insufficientBalanceBannerRef = useRef<HTMLDivElement>(null);
   const isEstimatedReturnLowRef = useRef<HTMLDivElement>(null);
   const tokenAlertBannerRef = useRef<HTMLDivElement>(null);
+  const fromAssetsPageFixAppliedRef = useRef<boolean>(false);
+
   useEffect(() => {
     if (isInsufficientGasForQuote(nativeAssetBalance)) {
       insufficientBalanceBannerRef.current?.scrollIntoView({
@@ -537,7 +539,8 @@ const PrepareBridgePage = () => {
       !fromChain ||
       !isSolanaChainId(fromChain.chainId) ||
       !fromToken?.address ||
-      !toToken?.address
+      !toToken?.address ||
+      fromAssetsPageFixAppliedRef.current // Prevent multiple applications of the fix as it's only needed initially.
     ) {
       return;
     }
@@ -550,6 +553,7 @@ const PrepareBridgePage = () => {
     if (isBothUsdc) {
       const solNativeAsset = getNativeAssetForChainId(fromChain.chainId);
       dispatch(setToToken(solNativeAsset));
+      fromAssetsPageFixAppliedRef.current = true;
     }
   }, [isSwap, fromChain?.chainId, fromToken?.address, toToken?.address]);
 
