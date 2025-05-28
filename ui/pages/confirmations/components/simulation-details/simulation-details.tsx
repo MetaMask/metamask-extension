@@ -382,12 +382,14 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
               balanceChanges={staticRow.balanceChanges}
               labelColor={getAlertTextColors(selectedAlertSeverity)}
             />
-            <Box marginLeft={1}>
-              <InlineAlert
-                onClick={handleInlineAlertClick}
-                severity={selectedAlertSeverity}
-              />
-            </Box>
+            {fieldAlerts.length > 0 && (
+              <Box marginLeft={1}>
+                <InlineAlert
+                  onClick={handleInlineAlertClick}
+                  severity={selectedAlertSeverity}
+                />
+              </Box>
+            )}
           </>
         ))}
         <BalanceChangeList

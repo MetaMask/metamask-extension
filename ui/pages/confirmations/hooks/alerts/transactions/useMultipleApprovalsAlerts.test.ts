@@ -44,7 +44,7 @@ const CONTENT_MULTIPLE_APPROVALS_NFT =
   "You're giving someone else permission to withdraw your NFTs, even though it's not necessary for this transaction.";
 
 const createBatchTransaction = (
-  nestedTransactions: { data: Hex; to: Hex; value: string }[],
+  nestedTransactions: { data?: Hex; to?: Hex; value: string }[],
 ): TransactionMeta =>
   ({
     id: 'batch-123',
@@ -454,7 +454,7 @@ describe('useMultipleApprovalsAlerts', () => {
   describe('edge cases', () => {
     it('handles transactions without data field', () => {
       const nestedTx = {
-        to: TOKEN_ADDRESS_1,
+        to: TOKEN_ADDRESS_1 as Hex,
         value: '0x0',
         // no data field
       };
