@@ -1,10 +1,9 @@
 /* eslint-disable jest/no-done-callback */
 import { Transform } from 'node:stream';
 import { JsonRpcError } from '@metamask/rpc-errors';
-import { Json, JsonRpcRequest } from '@metamask/utils';
 import metaRPCClientFactory, { DisconnectError } from './metaRPCClientFactory';
 
-function createThroughStream<T>(transformFn?: (chunk: T) => void) {
+function createThroughStream(transformFn) {
   return new Transform({
     objectMode: true,
     transform(chunk, _encoding, callback) {
@@ -18,23 +17,17 @@ function createThroughStream<T>(transformFn?: (chunk: T) => void) {
 }
 
 describe('metaRPCClientFactory', () => {
-  type FooApi = {
-    foo: () => string;
-    bar: (bar: string) => string;
-    getState: () => Record<string, Json>;
-  };
-
   it('should be able to make an rpc request with the method', () => {
-    const streamTest = createThroughStream<JsonRpcRequest>((chunk) => {
+    const streamTest = createThroughStream((chunk) => {
       expect(chunk.method).toStrictEqual('foo');
     });
-    const metaRPCClient = metaRPCClientFactory<FooApi>(streamTest);
+    const metaRPCClient = metaRPCClientFactory(streamTest);
     metaRPCClient.foo();
   });
 
   it('should be able to make an rpc request/response with the method and params', (done) => {
     const streamTest = createThroughStream();
-    const metaRPCClient = metaRPCClientFactory<FooApi>(streamTest);
+    const metaRPCClient = metaRPCClientFactory(streamTest);
 
     // make a "foo" method call
     metaRPCClient.bar('baz').then((result) => {
@@ -54,7 +47,7 @@ describe('metaRPCClientFactory', () => {
 
   it('should be able to make an rpc request/error with the method and params', async () => {
     const streamTest = createThroughStream();
-    const metaRPCClient = metaRPCClientFactory<FooApi>(streamTest);
+    const metaRPCClient = metaRPCClientFactory(streamTest);
 
     // make a "bar" method call
     const requestProm = metaRPCClient.bar('baz');
@@ -77,8 +70,8 @@ describe('metaRPCClientFactory', () => {
 
   it('should be able to make an rpc request/response with the method and params with multiple instances of metaRPCClientFactory and the same connectionStream', async () => {
     const streamTest = createThroughStream();
-    const metaRPCClient = metaRPCClientFactory<FooApi>(streamTest);
-    const metaRPCClient2 = metaRPCClientFactory<FooApi>(streamTest);
+    const metaRPCClient = metaRPCClientFactory(streamTest);
+    const metaRPCClient2 = metaRPCClientFactory(streamTest);
 
     // make a "foo" method call, followed by "bar" call on metaRPCClient2
     const requestProm = metaRPCClient.foo();
@@ -109,7 +102,7 @@ describe('metaRPCClientFactory', () => {
 
   it('should be able to handle notifications', (done) => {
     const streamTest = createThroughStream();
-    const metaRPCClient = metaRPCClientFactory<FooApi>(streamTest);
+    const metaRPCClient = metaRPCClientFactory(streamTest);
 
     metaRPCClient.onNotification((notification) => {
       expect(notification.method).toStrictEqual('foobarbaz');
@@ -126,7 +119,7 @@ describe('metaRPCClientFactory', () => {
 
   it('should be able to handle errors with no id', (done) => {
     const streamTest = createThroughStream();
-    const metaRPCClient = metaRPCClientFactory<FooApi>(streamTest);
+    const metaRPCClient = metaRPCClientFactory(streamTest);
 
     metaRPCClient.onUncaughtError((error) => {
       expect(error.code).toStrictEqual(1);
@@ -144,7 +137,7 @@ describe('metaRPCClientFactory', () => {
 
   it('should cache the proxied rpc *methods*, but not the results', async () => {
     const streamTest = createThroughStream();
-    const metaRPCClient = metaRPCClientFactory<FooApi>(streamTest);
+    const metaRPCClient = metaRPCClientFactory(streamTest);
 
     const rpcMethod1 = metaRPCClient.bar;
     const rpcMethod2 = metaRPCClient.bar;
@@ -173,7 +166,7 @@ describe('metaRPCClientFactory', () => {
 
   it('should be able to handle errors with null id', (done) => {
     const streamTest = createThroughStream();
-    const metaRPCClient = metaRPCClientFactory<FooApi>(streamTest);
+    const metaRPCClient = metaRPCClientFactory(streamTest);
 
     metaRPCClient.onUncaughtError((error) => {
       expect(error.code).toStrictEqual(1);
@@ -193,7 +186,7 @@ describe('metaRPCClientFactory', () => {
   it('should be able to handle no message within TIMEOUT secs for getState', async () => {
     jest.useFakeTimers();
     const streamTest = createThroughStream();
-    const metaRPCClient = metaRPCClientFactory<FooApi>(streamTest);
+    const metaRPCClient = metaRPCClientFactory(streamTest);
 
     const errorPromise = new Promise((_resolve, reject) =>
       metaRPCClient.getState().catch((error) => {
@@ -211,7 +204,7 @@ describe('metaRPCClientFactory', () => {
     jest.useFakeTimers();
     const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
     const streamTest = createThroughStream();
-    const metaRPCClient = metaRPCClientFactory<FooApi>(streamTest);
+    const metaRPCClient = metaRPCClientFactory(streamTest);
 
     // getState is special, as it is the only method that starts a timeout
     const requestProm = metaRPCClient.getState();
@@ -236,7 +229,7 @@ describe('metaRPCClientFactory', () => {
     jest.useFakeTimers();
     const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
     const streamTest = createThroughStream();
-    const metaRPCClient = metaRPCClientFactory<FooApi>(streamTest);
+    const metaRPCClient = metaRPCClientFactory(streamTest);
 
     // getState is special, as it is the only method that starts a timeout
     const requestProm = metaRPCClient.getState();
@@ -251,7 +244,7 @@ describe('metaRPCClientFactory', () => {
 
   it('should not throw when receiving junk data over the stream', async () => {
     const streamTest = createThroughStream();
-    metaRPCClientFactory<FooApi>(streamTest);
+    metaRPCClientFactory(streamTest);
 
     // this would throw if we just tried parsing any `data` `metaRPCClientFactory` received as if it were what we expected.
     streamTest.write(undefined);
@@ -262,7 +255,7 @@ describe('metaRPCClientFactory', () => {
 
   it('should fail all pending actions with a DisconnectError when the stream ends', async () => {
     const streamTest = createThroughStream();
-    const metaRPCClient = metaRPCClientFactory<FooApi>(streamTest);
+    const metaRPCClient = metaRPCClientFactory(streamTest);
 
     const requestProm = metaRPCClient.foo();
     streamTest.emit('end');
