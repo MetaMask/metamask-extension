@@ -262,7 +262,7 @@ const AccountListItem = ({
 
       <>
         <Box
-          marginRight={showConnectedStatus ? 3 : 0}
+          marginRight={3}
           display={[Display.Flex, Display.None]}
           data-testid="account-list-item-badge"
         >

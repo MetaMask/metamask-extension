@@ -2,8 +2,9 @@
   .multichain-account-list-item {
     padding: 0;
 
-    &:first-child {
+    & > div:first-child {
       align-items: center;
+      margin-right: 0px;
     }
   }
 }
@@ -12,8 +13,10 @@
   .multichain-account-list-item {
     padding: 0;
 
-    &:first-child {
+    & > div:first-child {
       align-items: center;
+      margin-right: 0px;
+
     }
   }
 }
