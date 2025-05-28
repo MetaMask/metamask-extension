@@ -23,8 +23,7 @@ export const useRequestMetadataProperties = () => {
   const { usd_amount_source } = useConvertedUsdAmounts();
 
   const keyring = useSelector(getCurrentKeyring);
-  // @ts-expect-error keyring type is possibly wrong
-  const is_hardware_wallet = isHardwareKeyring(keyring.type) ?? false;
+  const is_hardware_wallet = isHardwareKeyring(keyring?.type) ?? false;
 
   const slippage_limit = slippage;
   const swap_type = isBridgeTx
