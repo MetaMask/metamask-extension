@@ -115,6 +115,9 @@ export const SnapUIAccountSelector: FunctionComponent<
       style={{
         maxHeight: '82px',
       }}
+      itemStyle={{
+        maxHeight: '82px',
+      }}
     />
   );
 };

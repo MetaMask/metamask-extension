@@ -46,6 +46,7 @@ export type SnapUISelectorProps = {
   disabled?: boolean;
   onSelect?: (value: State) => void;
   style?: CSSProperties;
+  itemStyle?: CSSProperties;
 };
 
 type SelectorItemProps = {
@@ -75,7 +76,7 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
     <ButtonBase
       className={
         className
-          ? classnames('snap-ui-renderer__selector-item', `${className}-item`)
+          ? classnames('snap-ui-renderer__selector-item', className)
           : 'snap-ui-renderer__selector-item'
       }
       data-testid="snap-ui-renderer__selector-item"
@@ -135,6 +136,7 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
   disabled,
   onSelect,
   style,
+  itemStyle,
 }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
@@ -253,13 +255,13 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
             >
               {optionComponents.map((component, index) => (
                 <SelectorItem
-                  className={className}
+                  className={className && `${className}-item`}
                   value={options[index].value}
                   disabled={options[index]?.disabled}
                   onSelect={handleSelect}
                   selected={index === selectedOptionIndex}
                   key={index}
-                  style={style}
+                  style={itemStyle}
                 >
                   {component}
                 </SelectorItem>

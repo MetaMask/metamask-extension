@@ -133,6 +133,5 @@ export const safeComponentList = {
   SnapAccountRedirect,
   SnapAccountSuccessMessage,
   SnapAuthorshipHeader,
-
   ///: END:ONLY_INCLUDE_IF
 };
