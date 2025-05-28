@@ -4857,9 +4857,6 @@
   "securityChangePasswordTitle": {
     "message": "Password"
   },
-  "securityChangePasswordTitle": {
-    "message": "Password"
-  },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
   },
@@ -4870,14 +4867,21 @@
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
   },
-  "securitySrpBackupSrp": {
-    "message": "Back up Secret Recovery Phrase"
-  },
   "securitySrpDescription": {
     "message": "Back up your Secret Recovery Phrase so you don’t lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget."
   },
   "securitySrpWalletRecovery": {
     "message": "Reveal Secret Recovery Phrase"
+  },
+  "securityLoginWithSocial": {
+    "message": "Login with $1",
+    "description": "The $1 is the text 'Google' or 'Apple'"
+  },
+  "securityLoginWithSrpBackedUp": {
+    "message": "Secret Recovery Phrase backed up"
+  },
+  "securityLoginWithSrpNotBackedUp": {
+    "message": "Back up Secret Recovery Phrase"
   },
   "seeAllPermissions": {
     "message": "See all permissions",
@@ -5642,6 +5646,12 @@
   "srpListSingleOrZero": {
     "message": "$1 account",
     "description": "$1 is the number of accounts in the list, it is either 1 or 0"
+  },
+  "srpListStateBackedUp": {
+    "message": "Reveal"
+  },
+  "srpListStateNotBackedUp": {
+    "message": "Backup"
   },
   "srpPasteFailedTooManyWords": {
     "message": "Paste failed because it contained over 24 words. A secret recovery phrase can have a maximum of 24 words.",
@@ -6648,9 +6658,6 @@
   },
   "unlock": {
     "message": "Unlock"
-  },
-  "unlockMessage": {
-    "message": "The decentralized web awaits"
   },
   "unlockPageIncorrectPassword": {
     "message": "Password is incorrect. Please try again."
