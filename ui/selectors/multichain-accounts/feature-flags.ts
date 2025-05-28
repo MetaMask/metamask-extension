@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// We can ignore the unused vars warning while the flag is not active
-
 import {
   Infer,
   object,
@@ -15,7 +12,6 @@ import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
 } from '../remote-feature-flags';
-import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 
 /**
  * Feature flag structure for multichain accounts features
@@ -40,27 +36,23 @@ const FEATURE_VERSION_2 = '2';
 /**
  * Checks if the multichain accounts feature is enabled for a given state and feature version.
  *
- * @param state - The MetaMask state object
+ * @param enableMultichainAccounts - The MetaMask state object
  * @param featureVersion - The specific feature version to check
  * @returns boolean - True if the feature is enabled for the given state and version, false otherwise.
  */
 export const isMultichainAccountsFeatureEnabled = (
-  state: RemoteFeatureFlagsState,
+  enableMultichainAccounts: MultichainAccountsFeatureFlag,
   featureVersion: string,
 ) => {
-  const { enableMultichainAccounts } = getRemoteFeatureFlags(state);
-  try {
-    assert(enableMultichainAccounts, MultichainAccountsFeatureFlag);
-  } catch (error) {
-    console.error(error);
-    return false;
-  }
+  console.log('isMultichainAccountsFeatureEnabled', enableMultichainAccounts);
 
   const {
     enabled,
     featureVersion: currentFeatureVersion,
     minimumVersion,
   } = enableMultichainAccounts;
+
+  console.log({ minimumVersion, APP_VERSION });
   return (
     enabled &&
     currentFeatureVersion &&
@@ -71,33 +63,58 @@ export const isMultichainAccountsFeatureEnabled = (
 };
 
 /**
+ * Selector to get the multichain accounts remote feature flags.
+ *
+ * @param state - The MetaMask state object
+ * @returns MultichainAccountsFeatureFlag - The feature flags for multichain accounts.
+ */
+export const getMultichainAccountsRemoteFeatureFlags = (
+  state: RemoteFeatureFlagsState,
+) => {
+  const multichainAccountsFeatureFlags =
+    getRemoteFeatureFlags(state).enableMultichainAccounts;
+
+  console.log('guto', multichainAccountsFeatureFlags);
+
+  try {
+    assert(multichainAccountsFeatureFlags, MultichainAccountsFeatureFlag);
+  } catch (error) {
+    console.warn('Invalid multichain accounts feature flags:', error);
+    return {
+      enabled: false,
+      featureVersion: null,
+      minimumVersion: null,
+    };
+  }
+
+  return multichainAccountsFeatureFlags;
+};
+
+/**
  * Selector to check if the multichain accounts feature is enabled for state 1.
  *
  * @param state - The MetaMask state object
  * @returns boolean - True if the feature is enabled for state 1, false otherwise.
  */
-export const getIsMultichainAccountsState1Enabled = createDeepEqualSelector(
-  [(state) => getRemoteFeatureFlags(state).enableMultichainAccounts],
-  (state) => {
-    return isMultichainAccountsFeatureEnabled(
-      state as RemoteFeatureFlagsState,
-      FEATURE_VERSION_1,
-    );
-  },
-);
+export const getIsMultichainAccountsState1Enabled = (
+  state: RemoteFeatureFlagsState,
+) => {
+  const flags = getMultichainAccountsRemoteFeatureFlags(state);
+  return (
+    isMultichainAccountsFeatureEnabled(flags, FEATURE_VERSION_2) ||
+    isMultichainAccountsFeatureEnabled(flags, FEATURE_VERSION_1)
+  );
+};
 
 /**
  * Selector to check if the multichain accounts feature is enabled for state 2.
  *
  * @param state - The MetaMask state object
- * @returns boolean - True if the feature is enabled for state 1, false otherwise.
+ * @returns boolean - True if the feature is enabled for state 2, false otherwise.
  */
-export const getIsMultichainAccountsState2Enabled = createDeepEqualSelector(
-  [(state) => getRemoteFeatureFlags(state).enableMultichainAccounts],
-  (state) => {
-    return isMultichainAccountsFeatureEnabled(
-      state as RemoteFeatureFlagsState,
-      FEATURE_VERSION_2,
-    );
-  },
-);
+export const getIsMultichainAccountsState2Enabled = (
+  state: RemoteFeatureFlagsState,
+) => {
+  const flags = getMultichainAccountsRemoteFeatureFlags(state);
+  return isMultichainAccountsFeatureEnabled(flags, FEATURE_VERSION_2);
+};
