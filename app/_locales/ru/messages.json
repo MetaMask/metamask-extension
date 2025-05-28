@@ -3247,18 +3247,6 @@
   "networkName": {
     "message": "Имя сети"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "Base"
-  },
   "networkNameBitcoin": {
     "message": "Биткоин"
   },
@@ -3268,26 +3256,8 @@
   "networkNameEthereum": {
     "message": "Ethereum"
   },
-  "networkNameGoerli": {
-    "message": "Goerli"
-  },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "Мейн-нет OP"
-  },
-  "networkNamePolygon": {
-    "message": "Polygon"
-  },
   "networkNameSolana": {
     "message": "Solana"
-  },
-  "networkNameTestnet": {
-    "message": "Тестнет"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "Параметры сети"
@@ -4799,9 +4769,6 @@
     "message": "Отправить $1",
     "description": "Symbol of the specified token"
   },
-  "sendSwapSubmissionWarning": {
-    "message": "Нажатие этой кнопки немедленно инициирует транзакцию обмена. Прежде чем продолжить, проверьте детали транзакции."
-  },
   "sendTokenAsToken": {
     "message": "Отправить $1 как $2",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
@@ -5774,9 +5741,6 @@
     "message": "Своп $1 на $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "Плата за газ является примерной и будет колебаться в зависимости от сетевого трафика и сложности транзакции."
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask не получает плату за газ. Сумма этой платы являются приблизительной и может меняться в зависимости от загруженности сети и сложности транзакции. Узнайте подробнее $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -5785,15 +5749,8 @@
     "message": "здесь",
     "description": "Text for link in swapGasFeesExplanation"
   },
-  "swapGasFeesLearnMore": {
-    "message": "Узнать больше о плате за газ"
-  },
   "swapGasFeesSplit": {
     "message": "Плата за газ, указанная на предыдущем экране, распределяется между этими двумя транзакциями."
-  },
-  "swapGasFeesSummary": {
-    "message": "Плата за газ переводится криптомайнерам, которые обрабатывают транзакции в сети $1. MetaMask не получает прибыли от платы за газ.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "Плата за газ включена в эту котировку путем корректировки суммы отправленных или полученных токенов. Вы можете получить ETH отдельной транзакцией в своем списке действий."
@@ -5811,10 +5768,6 @@
   "swapIncludesMMFee": {
     "message": "Включает комиссию MetaMask в размере $1%.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "Котировка с учетом комиссии MetaMask в размере $1 %",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Включает комиссию MetaMask в размере $1% — $2.",
