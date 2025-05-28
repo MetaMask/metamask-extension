@@ -607,7 +607,12 @@ const PrepareBridgePage = () => {
           onMaxButtonClick={(value: string) => {
             dispatch(setFromTokenInputValue(value));
           }}
-          amountInFiat={fromAmountInCurrency.valueInCurrency.toString()}
+          // Hides fiat amount string before a token quantity is entered.
+          amountInFiat={
+            fromAmountInCurrency.valueInCurrency.gt(0)
+              ? fromAmountInCurrency.valueInCurrency.toString()
+              : undefined
+          }
           balanceAmount={srcTokenBalance}
           amountFieldProps={{
             testId: 'from-amount',
