@@ -11,7 +11,6 @@ describe('metaRPCClientFactory', () => {
     const metaRPCClient = metaRPCClientFactory(streamTest);
     metaRPCClient.foo();
   });
-
   it('should be able to make an rpc request/response with the method and params', (done) => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
@@ -31,7 +30,6 @@ describe('metaRPCClientFactory', () => {
       });
     });
   });
-
   it('should be able to make an rpc request/error with the method and params', async () => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
@@ -80,11 +78,11 @@ describe('metaRPCClientFactory', () => {
       streamTest.write({
         jsonrpc: '2.0',
         id: key,
-        result: 'bazbarfoo',
+        result: 'foobarbaz',
       });
     });
 
-    await expect(requestProm2).resolves.toStrictEqual('bazbarfoo');
+    await expect(requestProm2).resolves.toStrictEqual('foobarbaz');
   });
 
   it('should be able to handle notifications', (done) => {
@@ -243,12 +241,14 @@ describe('metaRPCClientFactory', () => {
 
   it('should not throw when receiving junk data over the stream', async () => {
     const streamTest = createThoughStream();
-    metaRPCClientFactory(streamTest);
+    const metaRPCClient = metaRPCClientFactory(streamTest);
 
     // this would throw if we just tried parsing any `data` `metaRPCClientFactory` received as if it were what we expected.
     streamTest.write(undefined);
     streamTest.write('junk');
     streamTest.write(Buffer.from('junk'));
     streamTest.write(123);
+    // requests were all ignored
+    expect(metaRPCClient.requests.size).toBe(0);
   });
 });
