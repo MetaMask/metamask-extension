@@ -78,6 +78,8 @@ class TestDapp {
 
   private readonly erc20WatchAssetButton = '#watchAssets';
 
+  private readonly erc721DeployButton = '#deployNFTsButton';
+
   private readonly erc721MintButton = '#mintButton';
 
   private readonly erc721RevokeSetApprovalForAllButton = '#revokeButton';
@@ -688,6 +690,10 @@ class TestDapp {
 
   async clickERC20WatchAssetButton() {
     await this.driver.clickElement(this.erc20WatchAssetButton);
+  }
+
+  async clickERC721DeployButton() {
+    await this.driver.clickElement(this.erc721DeployButton);
   }
 
   async clickERC721MintButton() {

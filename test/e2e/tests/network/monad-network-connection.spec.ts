@@ -6,6 +6,25 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import { Driver } from '../../webdriver/driver';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
+// Helper function to verify network display
+const verifyNetworkDisplay = async (driver: Driver) => {
+  await driver.waitForSelector({
+    css: 'p',
+    text: 'Monad Testnet',
+  });
+};
+
+// Helper function to perform Dapp action and verify
+const performDappActionAndVerify = async (
+  driver: Driver,
+  action: () => Promise<void>,
+  verify: (driver: Driver) => Promise<void>,
+) => {
+  await action();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await verify(driver);
+};
+
 describe('Monad Network Connection Tests', function (this: Suite) {
   it('should connect dapp to Monad network and verify Monad network and tokens', async function () {
     await withFixtures(
@@ -66,13 +85,48 @@ describe('Monad Network Connection Tests', function (this: Suite) {
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         );
 
-        // Click Send button on Dapp and verify network on extension matches
-        await driver.clickElement('#sendButton');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.waitForSelector({
-          css: 'p',
-          text: 'Monad Testnet',
-        });
+        // Test various Dapp functionalities
+        await performDappActionAndVerify(
+          driver,
+          () => testDapp.clickSimpleSendButton(),
+          verifyNetworkDisplay,
+        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+        await performDappActionAndVerify(
+          driver,
+          () => testDapp.findAndClickCreateToken(),
+          verifyNetworkDisplay,
+        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+        await performDappActionAndVerify(
+          driver,
+          () => testDapp.clickERC721DeployButton(),
+          verifyNetworkDisplay,
+        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+        await performDappActionAndVerify(
+          driver,
+          () => testDapp.clickPersonalSign(),
+          verifyNetworkDisplay,
+        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+        await performDappActionAndVerify(
+          driver,
+          () => testDapp.clickSignTypedData(),
+          verifyNetworkDisplay,
+        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+        await performDappActionAndVerify(
+          driver,
+          () => testDapp.clickSignTypedDatav4(),
+          verifyNetworkDisplay,
+        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
       },
     );
   });
