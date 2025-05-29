@@ -138,37 +138,48 @@ const privateHostMatchers = [
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
  * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH.
+ * @param {boolean} options.disableMocking - Whether to disable mocking and allow all requests to pass through.
  * @returns {Promise<SetupMockReturn>}
  */
 async function setupMocking(
   server,
   testSpecificMock,
-  { chainId, ethConversionInUsd = 1700 },
+  { chainId, ethConversionInUsd = 1700, disableMocking = false },
 ) {
   const privacyReport = new Set();
-  await server.forAnyRequest().thenPassThrough({
-    beforeRequest: ({ headers: { host }, url }) => {
-      if (blocklistedHosts.includes(host)) {
+
+  if (disableMocking) {
+    // If disableMocking is true, allow all requests to pass through
+    await server.forAnyRequest().thenPassThrough();
+    console.log('disableMocking is true, allow all requests to pass through');
+  } else {
+    await server.forAnyRequest().thenPassThrough({
+      beforeRequest: ({ headers: { host }, url }) => {
+        if (blocklistedHosts.includes(host)) {
+          return {
+            url: 'http://localhost:8545',
+          };
+        } else if (
+          ALLOWLISTED_URLS.includes(url) ||
+          ALLOWLISTED_HOSTS.includes(host)
+        ) {
+          // If the URL or the host is in the allowlist, we pass the request as it is, to the live server.
+          console.log('Request going to a live server ============', url);
+          return {};
+        }
+        console.log(
+          'Request redirected to the catch all mock ============',
+          url,
+        );
         return {
-          url: 'http://localhost:8545',
+          // If the URL or the host is not in the allowlsit nor blocklisted, we return a 200.
+          response: {
+            statusCode: 200,
+          },
         };
-      } else if (
-        ALLOWLISTED_URLS.includes(url) ||
-        ALLOWLISTED_HOSTS.includes(host)
-      ) {
-        // If the URL or the host is in the allowlist, we pass the request as it is, to the live server.
-        console.log('Request going to a live server ============', url);
-        return {};
-      }
-      console.log('Request redirected to the catch all mock ============', url);
-      return {
-        // If the URL or the host is not in the allowlsit nor blocklisted, we return a 200.
-        response: {
-          statusCode: 200,
-        },
-      };
-    },
-  });
+      },
+    });
+  }
 
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks

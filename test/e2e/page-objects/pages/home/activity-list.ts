@@ -167,6 +167,29 @@ class ActivityListPage {
     );
   }
 
+  async check_txStatusConfirmed() {
+    // Get initial number of confirmed transactions
+    const initialConfirmedTxs = await this.driver.findElements(
+      '.transaction-status-label--confirmed',
+    );
+    const initialLength = initialConfirmedTxs.length;
+    console.log('Initial number of confirmed transactions:', initialLength);
+
+    // Wait until the number of confirmed transactions increases by 1
+    await this.driver.wait(async () => {
+      try {
+        const currentConfirmedTxs = await this.driver.findElements(
+          '.transaction-status-label--confirmed',
+        );
+        const currentLength = currentConfirmedTxs.length;
+        console.log('Current number of confirmed transactions:', currentLength);
+        return currentLength === initialLength + 1;
+      } catch (e) {
+        return false;
+      }
+    }, 20000);
+  }
+
   /**
    * This function checks the specified number of pending Birdge transactions are displayed in the activity list on the homepage.
    * It waits up to 10 seconds for the expected number of pending transactions to be visible.
