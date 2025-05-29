@@ -99,7 +99,7 @@ export async function displayStateCorruptionError(
   hasBackup: boolean,
   currentLocale?: string,
 ) {
-  log.error(err.stack);
+  log.error(err);
 
   function handleRestoreClick(this: HTMLButtonElement) {
     // eslint-disable-next-line no-alert
