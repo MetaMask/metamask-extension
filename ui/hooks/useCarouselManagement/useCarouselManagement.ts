@@ -68,7 +68,7 @@ export const useCarouselManagement = ({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const prevSlidesRef = useRef<CarouselSlide[]>();
 
-  const hasZeroBalance = !totalBalance || totalBalance === ZERO_BALANCE;
+  const hasZeroBalance = totalBalance === ZERO_BALANCE;
 
   useEffect(() => {
     const defaultSlides: CarouselSlide[] = [];
