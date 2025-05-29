@@ -2,6 +2,8 @@ version: 2.1
 
 jobs:
   placeholder:
+    docker:
+      - image: cimg/node:22.15-browsers
     steps:
       - run:
           name: Placeholder Job
