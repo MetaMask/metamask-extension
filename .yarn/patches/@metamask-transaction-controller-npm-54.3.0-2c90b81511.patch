@@ -24,6 +24,30 @@ index 45129a2bdc8f5bcb3955eb7c1a82a1164364a084..138efb1d178be8d2c5dc623ecd18b499
  export class IncomingTransactionHelper {
      constructor({ getCache, getCurrentAccount, getLocalTransactions, includeTokenTransfers, isEnabled, queryEntireHistory, remoteTransactionSource, trimTransactions, updateCache, updateTransactions, }) {
          _IncomingTransactionHelper_instances.add(this);
+diff --git a/dist/utils/batch.cjs b/dist/utils/batch.cjs
+index e06922cfc070dbbffb0439adb28c0746df9afce2..51b6677bc0d3ff8904b3f1df5235e4ee00788131 100644
+--- a/dist/utils/batch.cjs
++++ b/dist/utils/batch.cjs
+@@ -72,6 +72,7 @@ async function addTransactionBatch(request) {
+                 },
+             ],
+             delegationMock: txParams.authorizationList?.[0]?.address,
++            origin,
+         };
+         log('Security request', securityRequest);
+         validateSecurity(securityRequest, chainId).catch((error) => {
+diff --git a/dist/utils/batch.mjs b/dist/utils/batch.mjs
+index 387e4886a0e938411efd2997caeba92052e866b1..24ac5e67f82d441fa1c6890957ee5ce256649a60 100644
+--- a/dist/utils/batch.mjs
++++ b/dist/utils/batch.mjs
+@@ -69,6 +69,7 @@ export async function addTransactionBatch(request) {
+                 },
+             ],
+             delegationMock: txParams.authorizationList?.[0]?.address,
++            origin,
+         };
+         log('Security request', securityRequest);
+         validateSecurity(securityRequest, chainId).catch((error) => {
 diff --git a/dist/utils/validation.cjs b/dist/utils/validation.cjs
 index 71521677f3b61f3cc19c78707b09cb83a9a8505c..15997a10940bdfdae2f0250b0af511c40c1c6ff9 100644
 --- a/dist/utils/validation.cjs
