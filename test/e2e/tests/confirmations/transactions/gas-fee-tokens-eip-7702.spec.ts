@@ -6,10 +6,13 @@ import { Driver } from '../../../webdriver/driver';
 import FixtureBuilder from '../../../fixture-builder';
 import { WINDOW_TITLES, unlockWallet, withFixtures } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import GasFeeTokenModal from '../../../page-objects/pages/confirmations/redesign/gas-fee-token-modal';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import AdvancedSettings from '../../../page-objects/pages/settings/advanced-settings';
+import GasFeeTokenModal from '../../../page-objects/pages/confirmations/redesign/gas-fee-token-modal';
+import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
+import SettingsPage from '../../../page-objects/pages/settings/settings-page';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 import { mockEip7702FeatureFlag } from '../helpers';
 import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transaction-relay';
@@ -25,7 +28,6 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         dapp: true,
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesControllerSmartTransactionsOptedOut()
           .build(),
         localNodeOptions: {
           hardfork: 'prague',
@@ -44,6 +46,21 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
         await unlockWallet(driver);
+
+        // disable smart transactions step by step
+        // we cannot use fixtures because migration 135 overrides the opt in value to true
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.check_pageIsLoaded();
+        await headerNavbar.openSettingsPage();
+
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.check_pageIsLoaded();
+        await settingsPage.clickAdvancedTab();
+        const advancedSettingsPage = new AdvancedSettings(driver);
+        await advancedSettingsPage.check_pageIsLoaded();
+        await advancedSettingsPage.toggleSmartTransactions();
+        await settingsPage.closeSettingsPage();
+
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -86,7 +103,6 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         dapp: true,
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesControllerSmartTransactionsOptedIn()
           .withNetworkControllerOnMainnet()
           .build(),
         localNodeOptions: {

@@ -9,6 +9,9 @@ const {
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const AdvancedSettings = require('../page-objects/pages/settings/advanced-settings');
+const HeaderNavbar = require('../page-objects/pages/header-navbar');
+const SettingsPage = require('../page-objects/pages/settings/settings-page');
 
 describe('Switch Ethereum Chain for two dapps', function () {
   it('switches the chainId of two dapps when switchEthereumChain of one dapp is confirmed', async function () {
@@ -92,7 +95,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
-          .withPreferencesControllerSmartTransactionsOptedOut()
           .build(),
         dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
@@ -115,6 +117,20 @@ describe('Switch Ethereum Chain for two dapps', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        // disable smart transactions step by step
+        // we cannot use fixtures because migration 135 overrides the opt in value to true
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.check_pageIsLoaded();
+        await headerNavbar.openSettingsPage();
+
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.check_pageIsLoaded();
+        await settingsPage.clickAdvancedTab();
+        const advancedSettingsPage = new AdvancedSettings(driver);
+        await advancedSettingsPage.check_pageIsLoaded();
+        await advancedSettingsPage.toggleSmartTransactions();
+        await settingsPage.closeSettingsPage();
 
         // open two dapps
         await openDapp(driver, undefined, DAPP_URL);
