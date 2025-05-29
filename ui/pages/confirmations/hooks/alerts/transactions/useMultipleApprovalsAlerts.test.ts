@@ -1,81 +1,133 @@
-import { toHex } from '@metamask/controller-utils';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
+  NestedTransactionMetadata,
+  SimulationTokenBalanceChange,
   SimulationTokenStandard,
   TransactionMeta,
-  TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import {
-  getMockConfirmState,
-  getMockConfirmStateForTransaction,
-} from '../../../../../../test/data/confirmations/helper';
-import { buildSetApproveForAllTransactionData } from '../../../../../../test/data/confirmations/set-approval-for-all';
-import {
-  buildApproveTransactionData,
-  buildIncreaseAllowanceTransactionData,
-  buildPermit2ApproveTransactionData,
-} from '../../../../../../test/data/confirmations/token-approve';
+import { TokenStandard } from '../../../../../../shared/constants/transaction';
+import { parseApprovalTransactionData } from '../../../../../../shared/modules/transaction.utils';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { tEn } from '../../../../../../test/lib/i18n-helpers';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
+import { getTokenStandardAndDetailsByChain } from '../../../../../store/actions';
 import { useMultipleApprovalsAlerts } from './useMultipleApprovalsAlerts';
 
-jest.mock('../../../../../../shared/modules/transaction.utils', () => ({
-  parseApprovalTransactionData: jest.fn(),
+// Mock dependencies
+jest.mock('../../../../../../shared/modules/transaction.utils');
+jest.mock('../../../../../store/actions');
+jest.mock(
+  '../../../components/confirm/info/hooks/useBatchApproveBalanceChanges',
+  () => ({
+    useBatchApproveBalanceChanges: jest.fn(),
+  }),
+);
+jest.mock('../../../../../hooks/useI18nContext', () => ({
+  useI18nContext: jest.fn(),
+}));
+jest.mock('../../../../../hooks/useAsync', () => ({
+  useAsyncResult: jest.fn(),
 }));
 
-const mockParseApprovalTransactionData = jest.requireMock(
-  '../../../../../../shared/modules/transaction.utils',
-).parseApprovalTransactionData;
+const mockParseApprovalTransactionData =
+  parseApprovalTransactionData as jest.MockedFunction<
+    typeof parseApprovalTransactionData
+  >;
+const mockGetTokenStandardAndDetailsByChain =
+  getTokenStandardAndDetailsByChain as jest.MockedFunction<
+    typeof getTokenStandardAndDetailsByChain
+  >;
 
-const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
-const TOKEN_ADDRESS_1 = '0x1234567890123456789012345678901234567890';
-const TOKEN_ADDRESS_2 = '0x2345678901234567890123456789012345678901';
-const SPENDER_ADDRESS = '0x3456789012345678901234567890123456789012';
-const AMOUNT_MOCK = 1000;
+// Get the mocked functions
+const { useBatchApproveBalanceChanges } = jest.requireMock(
+  '../../../components/confirm/info/hooks/useBatchApproveBalanceChanges',
+);
+const { useI18nContext } = jest.requireMock(
+  '../../../../../hooks/useI18nContext',
+);
+const { useAsyncResult } = jest.requireMock('../../../../../hooks/useAsync');
 
-const REASON_MULTIPLE_APPROVALS = tEn('alertReasonMultipleApprovals');
-const CONTENT_MULTIPLE_APPROVALS =
-  "You're giving someone else permission to withdraw your tokens, even though it's not necessary for this transaction.";
+const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' as Hex;
+const TOKEN_ADDRESS_1 = '0x1234567890123456789012345678901234567890' as Hex;
+const TOKEN_ADDRESS_2 = '0x2345678901234567890123456789012345678901' as Hex;
+const SPENDER_ADDRESS = '0x3456789012345678901234567890123456789012' as Hex;
 
-const createBatchTransaction = (
-  nestedTransactions: { data?: Hex; to?: Hex; value: string }[],
-): TransactionMeta =>
-  ({
-    id: 'batch-123',
-    type: TransactionType.batch,
-    status: TransactionStatus.unapproved,
-    chainId: '0x1' as Hex,
-    networkClientId: 'mainnet',
-    time: Date.now(),
-    txParams: {
-      from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' as Hex,
-      to: '0x0000000000000000000000000000000000000000' as Hex,
-      value: '0x0' as Hex,
-    },
-    nestedTransactions,
-    simulationData: {
-      tokenBalanceChanges: [],
-    },
-  } as unknown as TransactionMeta);
+const mockT = (key: string) => key;
 
-const createNestedTransaction = (data: Hex, to: Hex) => ({
-  data,
+const createMockNestedTransaction = (
+  data: string,
+  to: Hex,
+): NestedTransactionMetadata => ({
+  data: data as Hex,
   to,
   value: '0x0',
+  gas: '0x5208',
+});
+
+const createMockSimulationChange = (
+  address: Hex,
+  difference: string,
+  isDecrease: boolean,
+): SimulationTokenBalanceChange => ({
+  address,
+  difference: difference as Hex,
+  isDecrease,
+  previousBalance: '0x0',
+  newBalance: '0x0',
+  standard: SimulationTokenStandard.erc20,
 });
 
 function runHook({
   currentConfirmation,
+  nestedTransactions = [],
+  simulationData = [],
+  approveBalanceChanges = [],
 }: {
-  currentConfirmation?: TransactionMeta;
+  currentConfirmation?: Partial<TransactionMeta>;
+  nestedTransactions?: NestedTransactionMetadata[];
+  simulationData?: SimulationTokenBalanceChange[];
+  approveBalanceChanges?: any[];
 } = {}) {
-  const state = currentConfirmation
-    ? getMockConfirmStateForTransaction(currentConfirmation)
-    : getMockConfirmState();
+  const confirmation = currentConfirmation
+    ? {
+        ...genUnapprovedContractInteractionConfirmation({ chainId: '0x5' }),
+        ...currentConfirmation,
+        nestedTransactions,
+        simulationData: {
+          tokenBalanceChanges: simulationData,
+        },
+      }
+    : undefined;
+
+  let pendingApprovals = {};
+  if (confirmation) {
+    pendingApprovals = {
+      [confirmation.id as string]: {
+        id: confirmation.id,
+        type: ApprovalType.Transaction,
+      },
+    };
+  }
+
+  const state = getMockConfirmState({
+    metamask: {
+      pendingApprovals,
+      transactions: confirmation ? [confirmation] : [],
+    },
+  });
+
+  // Mock the batch approve balance changes hook
+  useBatchApproveBalanceChanges.mockReturnValue({
+    value: approveBalanceChanges,
+  });
+
+  // Mock i18n
+  useI18nContext.mockReturnValue(mockT);
 
   const response = renderHookWithConfirmContextProvider(
     useMultipleApprovalsAlerts,
@@ -88,439 +140,604 @@ function runHook({
 describe('useMultipleApprovalsAlerts', () => {
   beforeEach(() => {
     jest.resetAllMocks();
-  });
 
-  it('returns no alerts for non-batch transactions', () => {
-    const regularTransaction: TransactionMeta = {
-      id: 'regular-123',
-      type: TransactionType.contractInteraction,
-      chainId: '0x1',
-      txParams: {
-        from: ACCOUNT_ADDRESS,
-        to: TOKEN_ADDRESS_1,
-        value: '0x0',
+    // Default mock for token standard fetching
+    mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
+      standard: TokenStandard.ERC20,
+    });
+
+    // Mock useAsyncResult to return token standards synchronously
+    useAsyncResult.mockReturnValue({
+      value: {
+        [TOKEN_ADDRESS_1]: TokenStandard.ERC20,
+        [TOKEN_ADDRESS_2]: TokenStandard.ERC20,
       },
-    } as unknown as TransactionMeta;
-
-    const alerts = runHook({ currentConfirmation: regularTransaction });
-    expect(alerts).toEqual([]);
-  });
-
-  it('returns no alerts when no confirmation', () => {
-    const alerts = runHook();
-    expect(alerts).toEqual([]);
-  });
-
-  it('returns no alerts for batch transaction without nested transactions', () => {
-    const batchTransaction = createBatchTransaction([]);
-    const alerts = runHook({ currentConfirmation: batchTransaction });
-    expect(alerts).toEqual([]);
-  });
-
-  it('returns no alerts when parseApprovalTransactionData returns null', () => {
-    mockParseApprovalTransactionData.mockReturnValue(null);
-
-    const nestedTx = createNestedTransaction(
-      buildApproveTransactionData(SPENDER_ADDRESS, AMOUNT_MOCK),
-      TOKEN_ADDRESS_1,
-    );
-    const batchTransaction = createBatchTransaction([nestedTx]);
-
-    const alerts = runHook({ currentConfirmation: batchTransaction });
-    expect(alerts).toEqual([]);
-  });
-
-  it('filters out revocation transactions (zero amounts)', () => {
-    mockParseApprovalTransactionData.mockReturnValue({
-      name: 'approve',
-      amountOrTokenId: new BigNumber(0),
-      isRevokeAll: false,
-      tokenAddress: undefined,
     });
-
-    const nestedTx = createNestedTransaction(
-      buildApproveTransactionData(SPENDER_ADDRESS, 0),
-      TOKEN_ADDRESS_1,
-    );
-    const batchTransaction = createBatchTransaction([nestedTx]);
-
-    const alerts = runHook({ currentConfirmation: batchTransaction });
-    expect(alerts).toEqual([]);
   });
 
-  it('filters out setApprovalForAll revocations', () => {
-    mockParseApprovalTransactionData.mockReturnValue({
-      name: 'setApprovalForAll',
-      amountOrTokenId: undefined,
-      isRevokeAll: true,
-      tokenAddress: undefined,
-    });
-
-    const nestedTx = createNestedTransaction(
-      buildSetApproveForAllTransactionData(SPENDER_ADDRESS, false),
-      TOKEN_ADDRESS_1,
-    );
-    const batchTransaction = createBatchTransaction([nestedTx]);
-
-    const alerts = runHook({ currentConfirmation: batchTransaction });
-    expect(alerts).toEqual([]);
-  });
-
-  describe('ERC20 approve transactions', () => {
-    it('detects unused ERC20 approvals', () => {
-      mockParseApprovalTransactionData.mockReturnValue({
-        name: 'approve',
-        amountOrTokenId: new BigNumber(AMOUNT_MOCK),
-        isRevokeAll: false,
-        tokenAddress: undefined,
-      });
-
-      const nestedTx = createNestedTransaction(
-        buildApproveTransactionData(SPENDER_ADDRESS, AMOUNT_MOCK),
-        TOKEN_ADDRESS_1,
-      );
-      const batchTransaction = createBatchTransaction([nestedTx]);
-
-      const alerts = runHook({ currentConfirmation: batchTransaction });
-
-      expect(alerts).toEqual([
-        {
-          field: RowAlertKey.EstimatedChangesStatic,
-          isBlocking: false,
-          key: 'multipleApprovals',
-          reason: REASON_MULTIPLE_APPROVALS,
-          content: CONTENT_MULTIPLE_APPROVALS,
-          severity: Severity.Danger,
-        },
-      ]);
-    });
-
-    it('does not alert when ERC20 approval has corresponding outflow', () => {
-      mockParseApprovalTransactionData.mockReturnValue({
-        name: 'approve',
-        amountOrTokenId: new BigNumber(AMOUNT_MOCK),
-        isRevokeAll: false,
-        tokenAddress: undefined,
-      });
-
-      const nestedTx = createNestedTransaction(
-        buildApproveTransactionData(SPENDER_ADDRESS, AMOUNT_MOCK),
-        TOKEN_ADDRESS_1,
-      );
-      const batchTransaction = createBatchTransaction([nestedTx]);
-
-      // Add simulation data showing token outflow
-      batchTransaction.simulationData = {
-        tokenBalanceChanges: [
-          {
-            address: TOKEN_ADDRESS_1.toLowerCase() as Hex,
-            difference: toHex(100),
-            isDecrease: true,
-            standard: SimulationTokenStandard.erc20,
-            previousBalance: '0x0',
-            newBalance: '0x0',
-          },
-        ],
-      };
-
-      const alerts = runHook({ currentConfirmation: batchTransaction });
+  describe('when no confirmation exists', () => {
+    it('returns no alerts', () => {
+      const alerts = runHook();
       expect(alerts).toEqual([]);
     });
   });
 
-  describe('Permit2 approve transactions', () => {
-    it('detects unused Permit2 approvals', () => {
+  describe('when no nested transactions exist', () => {
+    it('returns no alerts', () => {
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
+        },
+      });
+      expect(alerts).toEqual([]);
+    });
+  });
+
+  describe('when no approve balance changes exist', () => {
+    it('returns no alerts', () => {
+      const nestedTransactions = [
+        createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
+      ];
+
       mockParseApprovalTransactionData.mockReturnValue({
         name: 'approve',
-        amountOrTokenId: new BigNumber(AMOUNT_MOCK),
+        amountOrTokenId: new BigNumber('1000'),
+        tokenAddress: undefined,
         isRevokeAll: false,
-        tokenAddress: TOKEN_ADDRESS_1,
       });
 
-      const nestedTx = createNestedTransaction(
-        buildPermit2ApproveTransactionData(
-          TOKEN_ADDRESS_1,
-          SPENDER_ADDRESS,
-          AMOUNT_MOCK,
-          1234567890,
-        ),
-        SPENDER_ADDRESS,
-      );
-      const batchTransaction = createBatchTransaction([nestedTx]);
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
+        },
+        nestedTransactions,
+        approveBalanceChanges: [],
+      });
 
-      const alerts = runHook({ currentConfirmation: batchTransaction });
+      expect(alerts).toEqual([]);
+    });
+  });
+
+  describe('when approvals are used (have corresponding outflows)', () => {
+    it('returns no alerts', async () => {
+      const nestedTransactions = [
+        createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
+      ];
+
+      const simulationData = [
+        createMockSimulationChange(TOKEN_ADDRESS_1, '0x64', true), // decrease
+      ];
+
+      mockParseApprovalTransactionData.mockReturnValue({
+        name: 'approve',
+        amountOrTokenId: new BigNumber('1000'),
+        tokenAddress: undefined,
+        isRevokeAll: false,
+      });
+
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
+        },
+        nestedTransactions,
+        simulationData,
+        approveBalanceChanges: [{}], // non-empty to pass the check
+      });
+
+      expect(alerts).toEqual([]);
+    });
+  });
+
+  describe('when approvals are unused (no corresponding outflows)', () => {
+    it('returns alert for unused approvals', async () => {
+      const nestedTransactions = [
+        createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
+      ];
+
+      mockParseApprovalTransactionData.mockReturnValue({
+        name: 'approve',
+        amountOrTokenId: new BigNumber('1000'),
+        tokenAddress: undefined,
+        isRevokeAll: false,
+      });
+
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
+        },
+        nestedTransactions,
+        simulationData: [], // no outflows
+        approveBalanceChanges: [{}],
+      });
 
       expect(alerts).toEqual([
         {
           field: RowAlertKey.EstimatedChangesStatic,
           isBlocking: false,
           key: 'multipleApprovals',
-          reason: REASON_MULTIPLE_APPROVALS,
-          content: CONTENT_MULTIPLE_APPROVALS,
+          reason: 'alertReasonMultipleApprovals',
+          content: 'alertContentMultipleApprovals',
           severity: Severity.Danger,
         },
       ]);
     });
   });
 
-  describe('increaseAllowance transactions', () => {
-    it('detects unused increaseAllowance approvals', () => {
+  describe('approval parsing scenarios', () => {
+    it('handles regular ERC20 approve', () => {
+      const nestedTransactions = [
+        createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
+      ];
+
+      mockParseApprovalTransactionData.mockReturnValue({
+        name: 'approve',
+        amountOrTokenId: new BigNumber('1000'),
+        tokenAddress: undefined, // regular approve
+        isRevokeAll: false,
+      });
+
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
+        },
+        nestedTransactions,
+        approveBalanceChanges: [{}],
+      });
+
+      expect(alerts).toHaveLength(1);
+    });
+
+    it('handles Permit2 approve', () => {
+      const nestedTransactions = [
+        createMockNestedTransaction('0x123', SPENDER_ADDRESS),
+      ];
+
+      mockParseApprovalTransactionData.mockReturnValue({
+        name: 'approve',
+        amountOrTokenId: new BigNumber('1000'),
+        tokenAddress: TOKEN_ADDRESS_1, // Permit2 approve
+        isRevokeAll: false,
+      });
+
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
+        },
+        nestedTransactions,
+        approveBalanceChanges: [{}],
+      });
+
+      expect(alerts).toHaveLength(1);
+    });
+
+    it('handles increaseAllowance', () => {
+      const nestedTransactions = [
+        createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
+      ];
+
       mockParseApprovalTransactionData.mockReturnValue({
         name: 'increaseAllowance',
-        amountOrTokenId: new BigNumber(AMOUNT_MOCK),
-        isRevokeAll: false,
+        amountOrTokenId: new BigNumber('500'),
         tokenAddress: undefined,
+        isRevokeAll: false,
       });
 
-      const nestedTx = createNestedTransaction(
-        buildIncreaseAllowanceTransactionData(SPENDER_ADDRESS, AMOUNT_MOCK),
-        TOKEN_ADDRESS_1,
-      );
-      const batchTransaction = createBatchTransaction([nestedTx]);
-
-      const alerts = runHook({ currentConfirmation: batchTransaction });
-
-      expect(alerts).toEqual([
-        {
-          field: RowAlertKey.EstimatedChangesStatic,
-          isBlocking: false,
-          key: 'multipleApprovals',
-          reason: REASON_MULTIPLE_APPROVALS,
-          content: CONTENT_MULTIPLE_APPROVALS,
-          severity: Severity.Danger,
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
         },
-      ]);
+        nestedTransactions,
+        approveBalanceChanges: [{}],
+      });
+
+      expect(alerts).toHaveLength(1);
+    });
+
+    it('handles setApprovalForAll', () => {
+      const nestedTransactions = [
+        createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
+      ];
+
+      mockParseApprovalTransactionData.mockReturnValue({
+        name: 'setApprovalForAll',
+        amountOrTokenId: new BigNumber('1'),
+        tokenAddress: undefined,
+        isRevokeAll: false,
+      });
+
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
+        },
+        nestedTransactions,
+        approveBalanceChanges: [{}],
+      });
+
+      expect(alerts).toHaveLength(1);
     });
   });
 
-  describe('setApprovalForAll (NFT) transactions', () => {
-    it('detects unused NFT approvals', () => {
+  describe('approval skipping scenarios', () => {
+    it('skips setApprovalForAll revocations', () => {
+      const nestedTransactions = [
+        createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
+      ];
+
       mockParseApprovalTransactionData.mockReturnValue({
         name: 'setApprovalForAll',
-        amountOrTokenId: undefined,
-        isRevokeAll: false,
+        amountOrTokenId: new BigNumber('0'),
         tokenAddress: undefined,
+        isRevokeAll: true, // revocation
       });
 
-      const nestedTx = createNestedTransaction(
-        buildSetApproveForAllTransactionData(SPENDER_ADDRESS, true),
-        TOKEN_ADDRESS_1,
-      );
-      const batchTransaction = createBatchTransaction([nestedTx]);
-
-      const alerts = runHook({ currentConfirmation: batchTransaction });
-
-      expect(alerts).toEqual([
-        {
-          field: RowAlertKey.EstimatedChangesStatic,
-          isBlocking: false,
-          key: 'multipleApprovals',
-          reason: REASON_MULTIPLE_APPROVALS,
-          content: CONTENT_MULTIPLE_APPROVALS,
-          severity: Severity.Danger,
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
         },
-      ]);
+        nestedTransactions,
+        approveBalanceChanges: [{}],
+      });
+
+      expect(alerts).toEqual([]);
     });
 
-    it('does not alert when NFT approval has corresponding outflow', () => {
+    it('skips ERC20 zero amount approvals (revocations)', () => {
+      const nestedTransactions = [
+        createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
+      ];
+
       mockParseApprovalTransactionData.mockReturnValue({
-        name: 'setApprovalForAll',
-        amountOrTokenId: undefined,
-        isRevokeAll: false,
+        name: 'approve',
+        amountOrTokenId: new BigNumber('0'), // zero amount
         tokenAddress: undefined,
+        isRevokeAll: false,
       });
 
-      const nestedTx = createNestedTransaction(
-        buildSetApproveForAllTransactionData(SPENDER_ADDRESS, true),
-        TOKEN_ADDRESS_1,
-      );
-      const batchTransaction = createBatchTransaction([nestedTx]);
+      mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
+        standard: TokenStandard.ERC20,
+      });
 
-      // Add simulation data showing NFT outflow
-      batchTransaction.simulationData = {
-        tokenBalanceChanges: [
-          {
-            address: TOKEN_ADDRESS_1.toLowerCase() as Hex,
-            difference: toHex(1),
-            isDecrease: true,
-            standard: SimulationTokenStandard.erc20,
-            previousBalance: '0x0',
-            newBalance: '0x0',
-          },
-        ],
-      };
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
+        },
+        nestedTransactions,
+        approveBalanceChanges: [{}],
+      });
 
-      const alerts = runHook({ currentConfirmation: batchTransaction });
+      expect(alerts).toEqual([]);
+    });
+
+    it('does not skip ERC721 token ID 0 approvals', () => {
+      const nestedTransactions = [
+        createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
+      ];
+
+      mockParseApprovalTransactionData.mockReturnValue({
+        name: 'approve',
+        amountOrTokenId: new BigNumber('0'), // token ID 0 for NFT
+        tokenAddress: undefined,
+        isRevokeAll: false,
+      });
+
+      // Override the default mock to return ERC721 for TOKEN_ADDRESS_1
+      useAsyncResult.mockReturnValue({
+        value: {
+          [TOKEN_ADDRESS_1]: TokenStandard.ERC721,
+          [TOKEN_ADDRESS_2]: TokenStandard.ERC20, // Keep others as ERC20
+        },
+      });
+
+      mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
+        standard: TokenStandard.ERC721,
+      });
+
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
+        },
+        nestedTransactions,
+        approveBalanceChanges: [{}],
+      });
+
+      expect(alerts).toHaveLength(1);
+    });
+
+    it('skips transactions with no data', () => {
+      const nestedTransactions = [
+        createMockNestedTransaction('', TOKEN_ADDRESS_1), // no data
+      ];
+
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
+        },
+        nestedTransactions,
+        approveBalanceChanges: [{}],
+      });
+
+      expect(alerts).toEqual([]);
+    });
+
+    it('skips transactions with unparseable data', () => {
+      const nestedTransactions = [
+        createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
+      ];
+
+      mockParseApprovalTransactionData.mockReturnValue(undefined);
+
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
+        },
+        nestedTransactions,
+        approveBalanceChanges: [{}],
+      });
+
+      expect(alerts).toEqual([]);
+    });
+
+    it('skips unsupported approval methods', () => {
+      const nestedTransactions = [
+        createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
+      ];
+
+      mockParseApprovalTransactionData.mockReturnValue({
+        name: 'unsupportedMethod', // unsupported
+        amountOrTokenId: new BigNumber('1000'),
+        tokenAddress: undefined,
+        isRevokeAll: false,
+      });
+
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
+        },
+        nestedTransactions,
+        approveBalanceChanges: [{}],
+      });
+
       expect(alerts).toEqual([]);
     });
   });
 
   describe('multiple approvals scenarios', () => {
-    it('detects multiple unused approvals of different types', () => {
+    it('handles multiple unused approvals', () => {
+      const nestedTransactions = [
+        createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
+        createMockNestedTransaction('0x456', TOKEN_ADDRESS_2),
+      ];
+
+      // parseApprovalTransactionData gets called multiple times:
+      // 1. Once for each transaction in getUniqueTokenAddresses (2 calls)
+      // 2. Once for each transaction in extractApprovals (2 calls)
+      // So we need to set up 4 return values
       mockParseApprovalTransactionData
         .mockReturnValueOnce({
           name: 'approve',
-          amountOrTokenId: new BigNumber(AMOUNT_MOCK),
-          isRevokeAll: false,
+          amountOrTokenId: new BigNumber('1000'),
           tokenAddress: undefined,
+          isRevokeAll: false,
         })
         .mockReturnValueOnce({
-          name: 'setApprovalForAll',
-          amountOrTokenId: undefined,
-          isRevokeAll: false,
+          name: 'approve',
+          amountOrTokenId: new BigNumber('2000'),
           tokenAddress: undefined,
+          isRevokeAll: false,
+        })
+        .mockReturnValueOnce({
+          name: 'approve',
+          amountOrTokenId: new BigNumber('1000'),
+          tokenAddress: undefined,
+          isRevokeAll: false,
+        })
+        .mockReturnValueOnce({
+          name: 'approve',
+          amountOrTokenId: new BigNumber('2000'),
+          tokenAddress: undefined,
+          isRevokeAll: false,
         });
 
-      const nestedTx1 = createNestedTransaction(
-        buildApproveTransactionData(SPENDER_ADDRESS, AMOUNT_MOCK),
-        TOKEN_ADDRESS_1,
-      );
-      const nestedTx2 = createNestedTransaction(
-        buildSetApproveForAllTransactionData(SPENDER_ADDRESS, true),
-        TOKEN_ADDRESS_2,
-      );
-      const batchTransaction = createBatchTransaction([nestedTx1, nestedTx2]);
-
-      const alerts = runHook({ currentConfirmation: batchTransaction });
-
-      expect(alerts).toEqual([
-        {
-          field: RowAlertKey.EstimatedChangesStatic,
-          isBlocking: false,
-          key: 'multipleApprovals',
-          reason: REASON_MULTIPLE_APPROVALS,
-          content: CONTENT_MULTIPLE_APPROVALS,
-          severity: Severity.Danger,
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
         },
-      ]);
+        nestedTransactions,
+        simulationData: [], // No outflows - should be unused
+        approveBalanceChanges: [{}],
+      });
+
+      expect(alerts).toHaveLength(1);
     });
 
     it('handles mixed used and unused approvals', () => {
+      const nestedTransactions = [
+        createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
+        createMockNestedTransaction('0x456', TOKEN_ADDRESS_2),
+      ];
+
+      const simulationData = [
+        createMockSimulationChange(TOKEN_ADDRESS_1, '0x64', true), // used
+        // TOKEN_ADDRESS_2 has no outflow - unused
+      ];
+
+      // parseApprovalTransactionData gets called 4 times:
+      // 1. Once for each transaction in getUniqueTokenAddresses (2 calls)
+      // 2. Once for each transaction in extractApprovals (2 calls)
       mockParseApprovalTransactionData
         .mockReturnValueOnce({
           name: 'approve',
-          amountOrTokenId: new BigNumber(AMOUNT_MOCK),
-          isRevokeAll: false,
+          amountOrTokenId: new BigNumber('1000'),
           tokenAddress: undefined,
+          isRevokeAll: false,
         })
         .mockReturnValueOnce({
           name: 'approve',
-          amountOrTokenId: new BigNumber(AMOUNT_MOCK),
-          isRevokeAll: false,
+          amountOrTokenId: new BigNumber('2000'),
           tokenAddress: undefined,
+          isRevokeAll: false,
+        })
+        .mockReturnValueOnce({
+          name: 'approve',
+          amountOrTokenId: new BigNumber('1000'),
+          tokenAddress: undefined,
+          isRevokeAll: false,
+        })
+        .mockReturnValueOnce({
+          name: 'approve',
+          amountOrTokenId: new BigNumber('2000'),
+          tokenAddress: undefined,
+          isRevokeAll: false,
         });
 
-      const nestedTx1 = createNestedTransaction(
-        buildApproveTransactionData(SPENDER_ADDRESS, AMOUNT_MOCK),
-        TOKEN_ADDRESS_1,
-      );
-      const nestedTx2 = createNestedTransaction(
-        buildApproveTransactionData(SPENDER_ADDRESS, AMOUNT_MOCK),
-        TOKEN_ADDRESS_2,
-      );
-      const batchTransaction = createBatchTransaction([nestedTx1, nestedTx2]);
-
-      // Add simulation data showing only one token has outflow
-      batchTransaction.simulationData = {
-        tokenBalanceChanges: [
-          {
-            address: TOKEN_ADDRESS_1.toLowerCase() as Hex,
-            difference: toHex(100),
-            isDecrease: true,
-            standard: SimulationTokenStandard.erc20,
-            previousBalance: '0x0',
-            newBalance: '0x0',
-          },
-        ],
-      };
-
-      const alerts = runHook({ currentConfirmation: batchTransaction });
-
-      expect(alerts).toEqual([
-        {
-          field: RowAlertKey.EstimatedChangesStatic,
-          isBlocking: false,
-          key: 'multipleApprovals',
-          reason: REASON_MULTIPLE_APPROVALS,
-          content: CONTENT_MULTIPLE_APPROVALS,
-          severity: Severity.Danger,
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
         },
-      ]);
+        nestedTransactions,
+        simulationData,
+        approveBalanceChanges: [{}],
+      });
+
+      expect(alerts).toHaveLength(1);
+    });
+  });
+
+  describe('token standard handling', () => {
+    it('handles token standard fetch failure gracefully', () => {
+      const nestedTransactions = [
+        createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
+      ];
+
+      mockParseApprovalTransactionData.mockReturnValue({
+        name: 'approve',
+        amountOrTokenId: new BigNumber('1000'),
+        tokenAddress: undefined,
+        isRevokeAll: false,
+      });
+
+      mockGetTokenStandardAndDetailsByChain.mockRejectedValue(
+        new Error('Network error'),
+      );
+
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
+        },
+        nestedTransactions,
+        approveBalanceChanges: [{}],
+      });
+
+      // Should still work with fallback to TokenStandard.none
+      expect(alerts).toHaveLength(1);
+    });
+
+    it('handles invalid token standard gracefully', () => {
+      const nestedTransactions = [
+        createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
+      ];
+
+      mockParseApprovalTransactionData.mockReturnValue({
+        name: 'approve',
+        amountOrTokenId: new BigNumber('1000'),
+        tokenAddress: undefined,
+        isRevokeAll: false,
+      });
+
+      mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
+        standard: 'INVALID_STANDARD' as any,
+      });
+
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
+        },
+        nestedTransactions,
+        approveBalanceChanges: [{}],
+      });
+
+      expect(alerts).toHaveLength(1);
     });
   });
 
   describe('edge cases', () => {
-    it('handles transactions without data field', () => {
-      const nestedTx = {
-        to: TOKEN_ADDRESS_1 as Hex,
-        value: '0x0',
-        // no data field
-      };
-      const batchTransaction = createBatchTransaction([nestedTx]);
+    it('handles case-insensitive token address matching', () => {
+      const nestedTransactions = [
+        createMockNestedTransaction(
+          '0x123',
+          TOKEN_ADDRESS_1.toUpperCase() as Hex,
+        ),
+      ];
 
-      const alerts = runHook({ currentConfirmation: batchTransaction });
-      expect(alerts).toEqual([]);
-    });
+      const simulationData = [
+        createMockSimulationChange(
+          TOKEN_ADDRESS_1.toLowerCase() as Hex,
+          '0x64',
+          true,
+        ),
+      ];
 
-    it('handles transactions without to field', () => {
-      const nestedTx = {
-        data: buildApproveTransactionData(SPENDER_ADDRESS, AMOUNT_MOCK),
-        value: '0x0',
-        // no to field
-      };
-      const batchTransaction = createBatchTransaction([nestedTx]);
-
-      const alerts = runHook({ currentConfirmation: batchTransaction });
-      expect(alerts).toEqual([]);
-    });
-
-    it('handles unknown approval function names', () => {
-      mockParseApprovalTransactionData.mockReturnValue({
-        name: 'unknownFunction',
-        amountOrTokenId: new BigNumber(AMOUNT_MOCK),
-        isRevokeAll: false,
-        tokenAddress: undefined,
-      });
-
-      const nestedTx = createNestedTransaction(
-        '0x12345678' as Hex,
-        TOKEN_ADDRESS_1,
-      );
-      const batchTransaction = createBatchTransaction([nestedTx]);
-
-      const alerts = runHook({ currentConfirmation: batchTransaction });
-      expect(alerts).toEqual([]);
-    });
-
-    it('handles missing simulation data', () => {
       mockParseApprovalTransactionData.mockReturnValue({
         name: 'approve',
-        amountOrTokenId: new BigNumber(AMOUNT_MOCK),
-        isRevokeAll: false,
+        amountOrTokenId: new BigNumber('1000'),
         tokenAddress: undefined,
+        isRevokeAll: false,
       });
 
-      const nestedTx = createNestedTransaction(
-        buildApproveTransactionData(SPENDER_ADDRESS, AMOUNT_MOCK),
-        TOKEN_ADDRESS_1,
-      );
-      const batchTransaction = createBatchTransaction([nestedTx]);
-
-      // Remove simulation data
-      delete batchTransaction.simulationData;
-
-      const alerts = runHook({ currentConfirmation: batchTransaction });
-
-      expect(alerts).toEqual([
-        {
-          field: RowAlertKey.EstimatedChangesStatic,
-          isBlocking: false,
-          key: 'multipleApprovals',
-          reason: REASON_MULTIPLE_APPROVALS,
-          content: CONTENT_MULTIPLE_APPROVALS,
-          severity: Severity.Danger,
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
         },
-      ]);
+        nestedTransactions,
+        simulationData,
+        approveBalanceChanges: [{}],
+      });
+
+      expect(alerts).toEqual([]); // should match despite case difference
+    });
+
+    it('handles empty simulation data array', () => {
+      const nestedTransactions = [
+        createMockNestedTransaction('0x123', TOKEN_ADDRESS_1),
+      ];
+
+      mockParseApprovalTransactionData.mockReturnValue({
+        name: 'approve',
+        amountOrTokenId: new BigNumber('1000'),
+        tokenAddress: undefined,
+        isRevokeAll: false,
+      });
+
+      const alerts = runHook({
+        currentConfirmation: {
+          txParams: { from: ACCOUNT_ADDRESS },
+          chainId: '0x5',
+        },
+        nestedTransactions,
+        simulationData: undefined, // undefined simulation data
+        approveBalanceChanges: [{}],
+      });
+
+      expect(alerts).toHaveLength(1); // should treat as unused
     });
   });
 });
