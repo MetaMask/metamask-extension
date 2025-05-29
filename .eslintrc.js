@@ -246,8 +246,6 @@ module.exports = {
         'test/lib/render-helpers.js',
         'test/jest/rendering.js',
         'ui/**/*.js',
-        'ui/**/*.ts',
-        'ui/**/*.tsx'
       ],
       extends: ['plugin:react/recommended', 'plugin:react-hooks/recommended'],
       parserOptions: {
@@ -258,6 +256,19 @@ module.exports = {
       plugins: ['react', 'react-compiler'],
       rules: {
         'react-compiler/react-compiler': 'error',
+        'react/no-unused-prop-types': 'error',
+        'react/no-unused-state': 'error',
+        'react/jsx-boolean-value': 'error',
+        'react/jsx-curly-brace-presence': [
+          'error',
+          {
+            props: 'never',
+            children: 'never',
+          },
+        ],
+        'react/no-deprecated': 'error',
+        'react/default-props-match-prop-types': 'error',
+        'react/jsx-no-duplicate-props': 'error',
       },
       settings: {
         react: {
@@ -271,6 +282,48 @@ module.exports = {
       },
     },
 
+    /**
+     * TypeScript React-specific code
+     *
+     * Similar to above, but marks a majority of errors to warnings.
+     * TODO - combine rulesets and resolve errors
+     */
+    {
+      files: ['ui/**/*.ts', 'ui/**/*.tsx'],
+      extends: ['plugin:react/recommended', 'plugin:react-hooks/recommended'],
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      plugins: ['react', 'react-compiler'],
+      rules: {
+        'react-compiler/react-compiler': 'error',
+        'react/no-unused-prop-types': 'warn',
+        'react/no-unused-state': 'warn',
+        'react/jsx-boolean-value': 'off',
+        'react/jsx-curly-brace-presence': 'off',
+        'react/no-deprecated': 'warn',
+        'react/default-props-match-prop-types': 'warn',
+        'react/jsx-no-duplicate-props': 'warn',
+        'react/display-name': 'off',
+        'react/no-unescaped-entities': 'warn',
+        'react/prop-types': 'off',
+        'react/no-children-prop': 'off',
+        'react/jsx-key': 'warn', // TODO - increase this into 'error' level
+        'react-hooks/rules-of-hooks': 'error',
+      },
+      settings: {
+        react: {
+          // If this is set to 'detect', ESLint will import React in order to
+          // find its version. Because we run ESLint in the build system under
+          // LavaMoat, this means that detecting the React version requires a
+          // LavaMoat policy for all of React, in the build system. That's a
+          // no-go, so we grab it from React's package.json.
+          version: reactVersion,
+        },
+      },
+    },
     /**
      * Mocha tests
      *
