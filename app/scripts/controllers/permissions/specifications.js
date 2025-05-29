@@ -193,15 +193,5 @@ export const unrestrictedMethods = Object.freeze([
   'snap_cancelBackgroundEvent',
   'snap_getBackgroundEvents',
   'snap_experimentalProviderRequest',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  'metamaskinstitutional_authenticate',
-  'metamaskinstitutional_reauthenticate',
-  'metamaskinstitutional_refresh_token',
-  'metamaskinstitutional_supported',
-  'metamaskinstitutional_portfolio',
-  'metamaskinstitutional_open_swaps',
-  'metamaskinstitutional_checkIfTokenIsPresent',
-  'metamaskinstitutional_setAccountAndNetwork',
-  'metamaskinstitutional_openAddHardwareWallet',
-  ///: END:ONLY_INCLUDE_IF
+  'snap_trackEvent',
 ]);

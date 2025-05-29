@@ -16,10 +16,8 @@ import {
   isSolanaChainId,
   isValidQuoteRequest,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-  type GenericQuoteRequest,
   getNativeAssetForChainId,
   isNativeAddress,
-  type BridgeController,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import {
@@ -84,7 +82,10 @@ import {
   setSelectedAccount,
 } from '../../../store/actions';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
-import { formatTokenAmount } from '../utils/quote';
+import {
+  formatTokenAmount,
+  isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
+} from '../utils/quote';
 import {
   CrossChainSwapsEventProperties,
   useCrossChainSwapsEventTracker,
@@ -130,6 +131,7 @@ import {
   toAssetId,
 } from '../../../../shared/lib/asset-utils';
 import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -172,6 +174,7 @@ const PrepareBridgePage = () => {
     isLoading,
     activeQuote: activeQuote_,
     isQuoteGoingToRefresh,
+    quotesRefreshCount,
   } = useSelector(getBridgeQuotes);
   const refreshRate = useSelector(getQuoteRefreshRate);
 
@@ -180,15 +183,19 @@ const PrepareBridgePage = () => {
   );
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
-  // If latest quote is expired and user has sufficient balance
-  // set activeQuote to undefined to hide stale quotes but keep inputs filled
-  const activeQuote =
-    isQuoteExpired &&
-    (!quoteRequest.insufficientBal ||
-      // insufficientBal is always true for solana
-      (fromChain && isSolanaChainId(fromChain.chainId)))
-      ? undefined
-      : activeQuote_;
+
+  // Determine if the current quote is expired or does not match the currently
+  // selected destination asset/chain.
+  const isQuoteExpiredOrInvalid = isQuoteExpiredOrInvalidUtil({
+    activeQuote: activeQuote_,
+    toToken,
+    toChain,
+    fromChain,
+    isQuoteExpired,
+    insufficientBal: quoteRequest.insufficientBal,
+  });
+
+  const activeQuote = isQuoteExpiredOrInvalid ? undefined : activeQuote_;
 
   const isEvm = useMultichainSelector(getMultichainIsEvm);
   const selectedEvmAccount = useSelector(getSelectedEvmInternalAccount);
@@ -201,8 +208,7 @@ const PrepareBridgePage = () => {
     : selectedMultichainAccount;
 
   const keyring = useSelector(getCurrentKeyring);
-  // @ts-expect-error keyring type is wrong maybe?
-  const isUsingHardwareWallet = isHardwareKeyring(keyring.type);
+  const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
   const hardwareWalletName = useSelector(getHardwareWalletName);
   const isTxSubmittable = useIsTxSubmittable();
   const locale = useSelector(getIntlLocale);
@@ -214,7 +220,6 @@ const PrepareBridgePage = () => {
     isInsufficientGasForQuote,
     isInsufficientBalance,
   } = useSelector(getValidationErrors);
-  const { quotesRefreshCount } = useSelector(getBridgeQuotes);
   const { openBuyCryptoInPdapp } = useRamps();
 
   const nativeAsset = useMemo(
@@ -242,6 +247,21 @@ const PrepareBridgePage = () => {
 
   const { flippedRequestProperties } = useRequestProperties();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
+
+  // When entering the page for the first time emit an event for the page viewed
+  useEffect(() => {
+    trackCrossChainSwapsEvent({
+      event: MetaMetricsEventName.ActionPageViewed,
+      properties: {
+        chain_id_source: formatChainIdToCaip(fromChain?.chainId ?? ''),
+        token_symbol_source: fromToken?.symbol ?? '',
+        token_address_source: fromToken?.address ?? '',
+        chain_id_destination: formatChainIdToCaip(toChain?.chainId ?? ''),
+        token_symbol_destination: toToken?.symbol ?? '',
+        token_address_destination: toToken?.address ?? '',
+      },
+    });
+  }, []);
 
   const millisecondsUntilNextRefresh = useCountdownTimer();
 
@@ -379,17 +399,11 @@ const PrepareBridgePage = () => {
     ],
   );
 
-  const debouncedUpdateQuoteRequestInController = useCallback(
-    debounce(
-      (
-        p: Partial<GenericQuoteRequest>,
-        c: Parameters<BridgeController['updateBridgeQuoteRequestParams']>[1],
-      ) => {
-        dispatch(updateQuoteRequestParams(p, c));
-      },
-      300,
-    ),
-    [],
+  const debouncedUpdateQuoteRequestInController = debounce(
+    (...args: Parameters<typeof updateQuoteRequestParams>) => {
+      dispatch(updateQuoteRequestParams(...args));
+    },
+    300,
   );
 
   useEffect(() => {
@@ -400,7 +414,8 @@ const PrepareBridgePage = () => {
       token_symbol_destination: toToken?.symbol ?? '',
       security_warnings: [],
     });
-  }, [quoteParams, debouncedUpdateQuoteRequestInController]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quoteParams]);
 
   const trackInputEvent = useCallback(
     (
@@ -500,6 +515,10 @@ const PrepareBridgePage = () => {
 
   // Set the default destination token and slippage for swaps
   useEffect(() => {
+    endTrace({
+      name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
+      timestamp: Date.now(),
+    });
     if (isSwap) {
       dispatch(setSlippage(undefined));
       if (fromChain && !toToken) {
@@ -589,6 +608,7 @@ const PrepareBridgePage = () => {
             dispatch(setFromTokenInputValue(value));
           }}
           amountInFiat={fromAmountInCurrency.valueInCurrency.toString()}
+          balanceAmount={srcTokenBalance}
           amountFieldProps={{
             testId: 'from-amount',
             autoFocus: true,
@@ -858,6 +878,8 @@ const PrepareBridgePage = () => {
                 ))}
               <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
                 <BridgeCTAButton
+                  nativeAssetBalance={nativeAssetBalance}
+                  srcTokenBalance={srcTokenBalance}
                   onFetchNewQuotes={() => {
                     debouncedUpdateQuoteRequestInController(quoteParams, {
                       stx_enabled: smartTransactionsEnabled,

@@ -59,6 +59,7 @@ import {
   getSelectedAccountCachedBalance,
   getShouldShowFiat,
   getShowFiatInTestnets,
+  getUseCurrencyRateCheck,
 } from './selectors';
 import {
   getSelectedMultichainNetworkConfiguration,
@@ -329,17 +330,25 @@ export function getMultichainNativeCurrencyImage(
   return getMultichainCurrencyImage(state, account);
 }
 
+export const makeGetMultichainShouldShowFiatByChainId =
+  (chainId: Hex | CaipChainId) =>
+  (state: MultichainState, account?: InternalAccount) =>
+    getMultichainShouldShowFiat(state, account, chainId);
+
 export function getMultichainShouldShowFiat(
   state: MultichainState,
   account?: InternalAccount,
+  chainId?: Hex | CaipChainId,
 ) {
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const isTestnet = getMultichainIsTestnet(state, selectedAccount);
   const isMainnet = !isTestnet;
+  const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
 
   return getMultichainIsEvm(state, selectedAccount)
-    ? getShouldShowFiat(state)
-    : isMainnet || (isTestnet && getShowFiatInTestnets(state));
+    ? getShouldShowFiat(state, chainId)
+    : (useCurrencyRateCheck && isMainnet) ||
+        (useCurrencyRateCheck && isTestnet && getShowFiatInTestnets(state));
 }
 
 export function getMultichainDefaultToken(

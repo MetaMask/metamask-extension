@@ -1,9 +1,15 @@
 import { renderHook } from '@testing-library/react-hooks';
+import { waitFor } from '@testing-library/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateSlides } from '../../store/actions';
-import { getSelectedAccountCachedBalance, getSlides } from '../../selectors';
+import {
+  getSelectedAccountCachedBalance,
+  getSelectedInternalAccount,
+  getSlides,
+} from '../../selectors';
 import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
 import { CarouselSlide } from '../../../shared/constants/app-state';
+import * as AccountUtils from '../../../shared/lib/multichain/accounts';
 import {
   getSweepstakesCampaignActive,
   useCarouselManagement,
@@ -23,6 +29,10 @@ import {
   SOLANA_SLIDE,
   SMART_ACCOUNT_UPGRADE_SLIDE,
 } from './constants';
+import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
+
+jest.mock('./fetchCarouselSlidesFromContentful');
+jest.mocked(fetchCarouselSlidesFromContentful).mockResolvedValue([]);
 
 const SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF = [
   { ...FUND_SLIDE, undismissable: true },
@@ -152,6 +162,33 @@ const SLIDES_POSITIVE_FUNDS_REMOTE_ON_SWEEPSTAKES_ON = [
   ///: END:ONLY_INCLUDE_IF
 ];
 
+const MOCK_ACCOUNT = {
+  address: '0xb552685e3d2790efd64a175b00d51f02cdafee5d',
+  id: 'c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3',
+  metadata: {
+    importTime: 0,
+    name: 'Snap Account 1',
+    keyring: {
+      type: 'Snap Keyring',
+    },
+    snap: {
+      enabled: true,
+      id: 'local:snap-id',
+      name: 'snap-name',
+    },
+  },
+  options: {},
+  methods: [
+    'personal_sign',
+    'eth_signTransaction',
+    'eth_signTypedData_v1',
+    'eth_signTypedData_v3',
+    'eth_signTypedData_v4',
+  ],
+  scopes: ['eip155:0'],
+  type: 'eip155:eoa',
+};
+
 jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
   useSelector: jest.fn((selector) => selector()),
@@ -177,6 +214,9 @@ const mockUseDispatch = jest.mocked(useDispatch);
 
 const mockGetSlides = jest.fn();
 const mockGetSelectedAccountCachedBalance = jest.fn();
+const mockGetSelectedInternalAccount = jest
+  .fn()
+  .mockImplementation(() => MOCK_ACCOUNT);
 const mockGetIsRemoteModeEnabled = jest.fn();
 
 describe('useCarouselManagement', () => {
@@ -198,6 +238,9 @@ describe('useCarouselManagement', () => {
       }
       if (selector === getSelectedAccountCachedBalance) {
         return mockGetSelectedAccountCachedBalance();
+      }
+      if (selector === getSelectedInternalAccount) {
+        return mockGetSelectedInternalAccount();
       }
       if (selector === getIsRemoteModeEnabled) {
         return mockGetIsRemoteModeEnabled();
@@ -234,9 +277,10 @@ describe('useCarouselManagement', () => {
   });
 
   describe('zero funds, remote off, sweepstakes off', () => {
-    it('should have correct slide order', () => {
+    it('should have correct slide order', async () => {
       renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
 
+      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
       expect(updatedSlides).toStrictEqual(
@@ -244,9 +288,10 @@ describe('useCarouselManagement', () => {
       );
     });
 
-    it('should mark fund slide as undismissable', () => {
+    it('should mark fund slide as undismissable', async () => {
       renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
 
+      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
       expect(updatedSlides[0].undismissable).toBe(true);
@@ -258,9 +303,10 @@ describe('useCarouselManagement', () => {
       mockGetIsRemoteModeEnabled.mockReturnValue(true);
     });
 
-    it('should have correct slide order', () => {
+    it('should have correct slide order', async () => {
       renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
 
+      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
       expect(updatedSlides).toStrictEqual(
@@ -270,9 +316,10 @@ describe('useCarouselManagement', () => {
   });
 
   describe('zero funds, remote off, sweepstakes on', () => {
-    it('should have correct slide order', () => {
+    it('should have correct slide order', async () => {
       renderHook(() => useCarouselManagement({ testDate: validTestDate }));
 
+      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
       expect(updatedSlides).toStrictEqual(
@@ -286,9 +333,10 @@ describe('useCarouselManagement', () => {
       mockGetIsRemoteModeEnabled.mockReturnValue(true);
     });
 
-    it('should have correct slide order', () => {
+    it('should have correct slide order', async () => {
       renderHook(() => useCarouselManagement({ testDate: validTestDate }));
 
+      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
       expect(updatedSlides).toStrictEqual(
@@ -302,9 +350,10 @@ describe('useCarouselManagement', () => {
       mockGetSelectedAccountCachedBalance.mockReturnValue('0x1');
     });
 
-    it('should have correct slide order', () => {
+    it('should have correct slide order', async () => {
       renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
 
+      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
       expect(updatedSlides).toStrictEqual(
@@ -319,9 +368,10 @@ describe('useCarouselManagement', () => {
       mockGetIsRemoteModeEnabled.mockReturnValue(true);
     });
 
-    it('should have correct slide order', () => {
+    it('should have correct slide order', async () => {
       renderHook(() => useCarouselManagement({ testDate: invalidTestDate }));
 
+      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
       expect(updatedSlides).toStrictEqual(
@@ -335,9 +385,10 @@ describe('useCarouselManagement', () => {
       mockGetSelectedAccountCachedBalance.mockReturnValue('0x1');
     });
 
-    it('should have correct slide order', () => {
+    it('should have correct slide order', async () => {
       renderHook(() => useCarouselManagement({ testDate: validTestDate }));
 
+      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
       expect(updatedSlides).toStrictEqual(
@@ -352,9 +403,10 @@ describe('useCarouselManagement', () => {
       mockGetIsRemoteModeEnabled.mockReturnValue(true);
     });
 
-    it('should have correct slide order', () => {
+    it('should have correct slide order', async () => {
       renderHook(() => useCarouselManagement({ testDate: validTestDate }));
 
+      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
       expect(updatedSlides).toStrictEqual(
@@ -364,14 +416,14 @@ describe('useCarouselManagement', () => {
   });
 
   describe('state changes', () => {
-    it('should update slides when balance changes', () => {
+    it('should update slides when balance changes', async () => {
       mockGetSelectedAccountCachedBalance.mockReturnValue('0x1');
 
       const { rerender } = renderHook((props) => useCarouselManagement(props), {
         initialProps: { testDate: invalidTestDate },
       });
 
-      expect(mockUpdateSlides).toHaveBeenCalled();
+      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       let updatedSlides = mockUpdateSlides.mock.calls[0][0];
       expect(updatedSlides).toStrictEqual(
         SLIDES_POSITIVE_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF,
@@ -382,7 +434,7 @@ describe('useCarouselManagement', () => {
 
       rerender({ testDate: invalidTestDate });
 
-      expect(mockUpdateSlides).toHaveBeenCalled();
+      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
 
       updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
@@ -391,12 +443,12 @@ describe('useCarouselManagement', () => {
       );
     });
 
-    it('should update slides when testDate changes', () => {
+    it('should update slides when testDate changes', async () => {
       const { rerender } = renderHook((props) => useCarouselManagement(props), {
         initialProps: { hasZeroBalance: false, testDate: invalidTestDate },
       });
 
-      expect(mockUpdateSlides).toHaveBeenCalled();
+      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       let updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
       expect(updatedSlides).toStrictEqual(
@@ -407,7 +459,7 @@ describe('useCarouselManagement', () => {
 
       rerender({ hasZeroBalance: false, testDate: validTestDate });
 
-      expect(mockUpdateSlides).toHaveBeenCalled();
+      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       updatedSlides = mockUpdateSlides.mock.calls[0][0];
       expect(updatedSlides).toStrictEqual(
         SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_ON,
@@ -416,7 +468,7 @@ describe('useCarouselManagement', () => {
   });
 
   describe('edge cases', () => {
-    it('should handle exactly at SWEEPSTAKES_START time', () => {
+    it('should handle exactly at SWEEPSTAKES_START time', async () => {
       const testDate = SWEEPSTAKES_START.toISOString();
 
       renderHook(() =>
@@ -425,12 +477,13 @@ describe('useCarouselManagement', () => {
         }),
       );
 
+      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock
         .calls[0][0] as CarouselSlide[];
       expect(updatedSlides[0].id).toBe(SWEEPSTAKES_SLIDE.id);
     });
 
-    it('should handle exactly at SWEEPSTAKES_END time', () => {
+    it('should handle exactly at SWEEPSTAKES_END time', async () => {
       const testDate = SWEEPSTAKES_END.toISOString();
 
       renderHook(() =>
@@ -439,12 +492,13 @@ describe('useCarouselManagement', () => {
         }),
       );
 
+      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
       const updatedSlides = mockUpdateSlides.mock
         .calls[0][0] as CarouselSlide[];
       expect(updatedSlides[0].id).toBe(SWEEPSTAKES_SLIDE.id);
     });
 
-    it('should handle invalid testDate gracefully', () => {
+    it('should handle invalid testDate for sweepstakes gracefully', async () => {
       const testDate = 'invalid-date';
 
       expect(() =>
@@ -455,7 +509,29 @@ describe('useCarouselManagement', () => {
         ),
       ).not.toThrow();
 
-      expect(mockUpdateSlides).toHaveBeenCalled();
+      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
+    });
+  });
+
+  describe('Smart account upgrade slide', () => {
+    it('should not be displayed if solana address is selected', () => {
+      jest.spyOn(AccountUtils, 'isSolanaAddress').mockReturnValue(true);
+      renderHook(() => useCarouselManagement({ testDate: validTestDate }));
+
+      const updatedSlides = mockUpdateSlides.mock.calls[0][0];
+
+      expect(updatedSlides).toStrictEqual([
+        { ...SWEEPSTAKES_SLIDE, dismissed: false },
+        { ...FUND_SLIDE, undismissable: true },
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+        BRIDGE_SLIDE,
+        ///: END:ONLY_INCLUDE_IF
+        CARD_SLIDE,
+        CASH_SLIDE,
+        MULTI_SRP_SLIDE,
+        BACKUPANDSYNC_SLIDE,
+        SOLANA_SLIDE,
+      ]);
     });
   });
 });
