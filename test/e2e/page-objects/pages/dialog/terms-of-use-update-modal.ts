@@ -16,7 +16,7 @@ class TermsOfUseUpdateModal {
   };
 
   private readonly termsOfUseModalTitle = {
-    text: 'Our Terms of Use have updated',
+    text: 'Review our Terms of Use',
     tag: 'h2',
   };
 
