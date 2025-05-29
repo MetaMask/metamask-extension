@@ -5712,7 +5712,8 @@
     "message": "Restoring database…"
   },
   "stateCorruptionTheseInstructions": {
-    "message": "these instructions"
+    "message": "these instructions",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
   },
   "stateCorruptionTheseInstructionsLinkTitle": {
     "message": "How to recover your Secret Recovery Phrase"
