@@ -68,7 +68,7 @@ export const useCarouselManagement = ({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const prevSlidesRef = useRef<CarouselSlide[]>();
 
-  const hasZeroBalance = totalBalance === ZERO_BALANCE;
+  const hasZeroBalance = !totalBalance || totalBalance === ZERO_BALANCE;
 
   useEffect(() => {
     const defaultSlides: CarouselSlide[] = [];
@@ -134,21 +134,34 @@ export const useCarouselManagement = ({
 
       if (contentfulEnabled) {
         try {
-          const contentfulSlides = await fetchCarouselSlidesFromContentful();
-          const checkedContentfulSlides = contentfulSlides
-            .map((slide) => {
-              const existing = slides.find(
-                (s: CarouselSlide) => s.id === slide.id,
+          const { prioritySlides, regularSlides } =
+            await fetchCarouselSlidesFromContentful();
+          const normalizeContentfulSlides = (slidesToCheck: CarouselSlide[]) =>
+            slidesToCheck
+              .map((slide) => {
+                const existing = slides.find(
+                  (s: CarouselSlide) => s.id === slide.id,
+                );
+                return {
+                  ...slide,
+                  dismissed: existing?.dismissed ?? false,
+                  undismissable:
+                    slide.undismissable || existing?.undismissable || false,
+                };
+              })
+              .filter((slide) =>
+                isActive(slide, testDate ? new Date(testDate) : new Date()),
               );
-              return {
-                ...slide,
-                dismissed: existing?.dismissed ?? false,
-              };
-            })
-            .filter((slide) =>
-              isActive(slide, testDate ? new Date(testDate) : new Date()),
-            );
-          const mergedSlides = [...defaultSlides, ...checkedContentfulSlides];
+          const activePrioritySlides =
+            normalizeContentfulSlides(prioritySlides);
+          const activeRegularSlides = normalizeContentfulSlides(regularSlides);
+
+          const mergedSlides = [
+            ...activePrioritySlides,
+            ...defaultSlides,
+            ...activeRegularSlides,
+          ];
+
           if (!isEqual(prevSlidesRef.current, mergedSlides)) {
             dispatch(updateSlides(mergedSlides));
             prevSlidesRef.current = mergedSlides;
