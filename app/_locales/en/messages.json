@@ -373,7 +373,7 @@
     "message": "Update gas options"
   },
   "alertContentMultipleApprovals": {
-    "message": "You're giving someone else permission to withdraw your $1, even though it's not necessary for this transaction."
+    "message": "You're giving someone else permission to withdraw your tokens, even though it's not necessary for this transaction."
   },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""

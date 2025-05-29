@@ -32,49 +32,49 @@ function useSignatureAlerts(): Alert[] {
 
 function useTransactionAlerts(): Alert[] {
   const accountTypeUpgradeAlerts = useAccountTypeUpgrade();
+  const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
   const gasEstimateFailedAlerts = useGasEstimateFailedAlerts();
   const gasFeeLowAlerts = useGasFeeLowAlerts();
   const gasTooLowAlerts = useGasTooLowAlerts();
   const insufficientBalanceAlerts = useInsufficientBalanceAlerts();
+  const multipleApprovalAlerts = useMultipleApprovalsAlerts();
   const networkBusyAlerts = useNetworkBusyAlerts();
   const noGasPriceAlerts = useNoGasPriceAlerts();
+  const nonContractAddressAlerts = useNonContractAddressAlerts();
   const pendingTransactionAlerts = usePendingTransactionAlerts();
   const resimulationAlert = useResimulationAlert();
-  const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
-  const nonContractAddressAlerts = useNonContractAddressAlerts();
-  const multipleApprovalAlerts = useMultipleApprovalsAlerts();
 
   return useMemo(
     () => [
       ...accountTypeUpgradeAlerts,
+      ...firstTimeInteractionAlert,
       ...gasEstimateFailedAlerts,
       ...gasFeeLowAlerts,
       ...gasTooLowAlerts,
       ...insufficientBalanceAlerts,
+      ...multipleApprovalAlerts,
       ...networkBusyAlerts,
       ...noGasPriceAlerts,
+      ...nonContractAddressAlerts,
       ...pendingTransactionAlerts,
       ...resimulationAlert,
-      ...firstTimeInteractionAlert,
       ...signingOrSubmittingAlerts,
-      ...nonContractAddressAlerts,
-      ...multipleApprovalAlerts,
     ],
     [
       accountTypeUpgradeAlerts,
+      firstTimeInteractionAlert,
       gasEstimateFailedAlerts,
       gasFeeLowAlerts,
       gasTooLowAlerts,
       insufficientBalanceAlerts,
+      multipleApprovalAlerts,
       networkBusyAlerts,
       noGasPriceAlerts,
+      nonContractAddressAlerts,
       pendingTransactionAlerts,
       resimulationAlert,
-      firstTimeInteractionAlert,
       signingOrSubmittingAlerts,
-      nonContractAddressAlerts,
-      multipleApprovalAlerts,
     ],
   );
 }

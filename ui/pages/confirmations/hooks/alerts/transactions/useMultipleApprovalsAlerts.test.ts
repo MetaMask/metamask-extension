@@ -38,10 +38,8 @@ const SPENDER_ADDRESS = '0x3456789012345678901234567890123456789012';
 const AMOUNT_MOCK = 1000;
 
 const REASON_MULTIPLE_APPROVALS = tEn('alertReasonMultipleApprovals');
-const CONTENT_MULTIPLE_APPROVALS_ERC20 =
-  "You're giving someone else permission to withdraw your Tokens, even though it's not necessary for this transaction.";
-const CONTENT_MULTIPLE_APPROVALS_NFT =
-  "You're giving someone else permission to withdraw your NFTs, even though it's not necessary for this transaction.";
+const CONTENT_MULTIPLE_APPROVALS =
+  "You're giving someone else permission to withdraw your tokens, even though it's not necessary for this transaction.";
 
 const createBatchTransaction = (
   nestedTransactions: { data?: Hex; to?: Hex; value: string }[],
@@ -187,11 +185,11 @@ describe('useMultipleApprovalsAlerts', () => {
 
       expect(alerts).toEqual([
         {
-          field: RowAlertKey.EstimatedApprovalChanges,
+          field: RowAlertKey.EstimatedChangesStatic,
           isBlocking: false,
           key: 'multipleApprovals',
           reason: REASON_MULTIPLE_APPROVALS,
-          content: CONTENT_MULTIPLE_APPROVALS_ERC20,
+          content: CONTENT_MULTIPLE_APPROVALS,
           severity: Severity.Danger,
         },
       ]);
@@ -254,11 +252,11 @@ describe('useMultipleApprovalsAlerts', () => {
 
       expect(alerts).toEqual([
         {
-          field: RowAlertKey.EstimatedApprovalChanges,
+          field: RowAlertKey.EstimatedChangesStatic,
           isBlocking: false,
           key: 'multipleApprovals',
           reason: REASON_MULTIPLE_APPROVALS,
-          content: CONTENT_MULTIPLE_APPROVALS_ERC20,
+          content: CONTENT_MULTIPLE_APPROVALS,
           severity: Severity.Danger,
         },
       ]);
@@ -284,11 +282,11 @@ describe('useMultipleApprovalsAlerts', () => {
 
       expect(alerts).toEqual([
         {
-          field: RowAlertKey.EstimatedApprovalChanges,
+          field: RowAlertKey.EstimatedChangesStatic,
           isBlocking: false,
           key: 'multipleApprovals',
           reason: REASON_MULTIPLE_APPROVALS,
-          content: CONTENT_MULTIPLE_APPROVALS_ERC20,
+          content: CONTENT_MULTIPLE_APPROVALS,
           severity: Severity.Danger,
         },
       ]);
@@ -314,11 +312,11 @@ describe('useMultipleApprovalsAlerts', () => {
 
       expect(alerts).toEqual([
         {
-          field: RowAlertKey.EstimatedApprovalChanges,
+          field: RowAlertKey.EstimatedChangesStatic,
           isBlocking: false,
           key: 'multipleApprovals',
           reason: REASON_MULTIPLE_APPROVALS,
-          content: CONTENT_MULTIPLE_APPROVALS_NFT,
+          content: CONTENT_MULTIPLE_APPROVALS,
           severity: Severity.Danger,
         },
       ]);
@@ -387,11 +385,11 @@ describe('useMultipleApprovalsAlerts', () => {
 
       expect(alerts).toEqual([
         {
-          field: RowAlertKey.EstimatedApprovalChanges,
+          field: RowAlertKey.EstimatedChangesStatic,
           isBlocking: false,
           key: 'multipleApprovals',
           reason: REASON_MULTIPLE_APPROVALS,
-          content: CONTENT_MULTIPLE_APPROVALS_NFT,
+          content: CONTENT_MULTIPLE_APPROVALS,
           severity: Severity.Danger,
         },
       ]);
@@ -440,11 +438,11 @@ describe('useMultipleApprovalsAlerts', () => {
 
       expect(alerts).toEqual([
         {
-          field: RowAlertKey.EstimatedApprovalChanges,
+          field: RowAlertKey.EstimatedChangesStatic,
           isBlocking: false,
           key: 'multipleApprovals',
           reason: REASON_MULTIPLE_APPROVALS,
-          content: CONTENT_MULTIPLE_APPROVALS_ERC20,
+          content: CONTENT_MULTIPLE_APPROVALS,
           severity: Severity.Danger,
         },
       ]);
@@ -515,11 +513,11 @@ describe('useMultipleApprovalsAlerts', () => {
 
       expect(alerts).toEqual([
         {
-          field: RowAlertKey.EstimatedApprovalChanges,
+          field: RowAlertKey.EstimatedChangesStatic,
           isBlocking: false,
           key: 'multipleApprovals',
           reason: REASON_MULTIPLE_APPROVALS,
-          content: CONTENT_MULTIPLE_APPROVALS_ERC20,
+          content: CONTENT_MULTIPLE_APPROVALS,
           severity: Severity.Danger,
         },
       ]);

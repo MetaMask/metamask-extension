@@ -257,6 +257,49 @@ const SimulationDetailsLayout: React.FC<{
     </Box>
   );
 
+const BalanceChangesAlert = ({ transactionId }: { transactionId: string }) => {
+  const { getFieldAlerts } = useAlerts(transactionId);
+  const fieldAlerts = getFieldAlerts(RowAlertKey.EstimatedChangesStatic);
+  const selectedAlertSeverity = fieldAlerts[0]?.severity;
+  const selectedAlertKey = fieldAlerts[0]?.key;
+
+  const { trackInlineAlertClicked } = useAlertMetrics();
+
+  const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
+
+  const handleModalClose = () => {
+    setAlertModalVisible(false);
+  };
+
+  const handleInlineAlertClick = () => {
+    setAlertModalVisible(true);
+    trackInlineAlertClicked(selectedAlertKey);
+  };
+
+  return (
+    <>
+      {fieldAlerts.length > 0 && (
+        <Box marginLeft={1}>
+          <InlineAlert
+            onClick={handleInlineAlertClick}
+            severity={selectedAlertSeverity}
+          />
+        </Box>
+      )}
+      {alertModalVisible && (
+        <MultipleAlertModal
+          alertKey={selectedAlertKey}
+          ownerId={transactionId}
+          onFinalAcknowledgeClick={handleModalClose}
+          onClose={handleModalClose}
+          showCloseIcon={false}
+          skipAlertNavigation={true}
+        />
+      )}
+    </>
+  );
+};
+
 /**
  * Preview of a transaction's effects using simulation data.
  *
@@ -292,22 +335,9 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     transactionId,
   });
 
-  const { trackInlineAlertClicked } = useAlertMetrics();
-  const { getFieldAlerts } = useAlerts(transaction.id);
-  const fieldAlerts = getFieldAlerts(RowAlertKey.EstimatedApprovalChanges);
+  const { getFieldAlerts } = useAlerts(transactionId);
+  const fieldAlerts = getFieldAlerts(RowAlertKey.EstimatedChangesStatic);
   const selectedAlertSeverity = fieldAlerts[0]?.severity;
-  const selectedAlertKey = fieldAlerts[0]?.key;
-
-  const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
-
-  const handleModalClose = () => {
-    setAlertModalVisible(false);
-  };
-
-  const handleInlineAlertClick = () => {
-    setAlertModalVisible(true);
-    trackInlineAlertClicked(selectedAlertKey);
-  };
 
   if (metricsOnly) {
     return null;
@@ -382,14 +412,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
               balanceChanges={staticRow.balanceChanges}
               labelColor={getAlertTextColors(selectedAlertSeverity)}
             />
-            {fieldAlerts.length > 0 && (
-              <Box marginLeft={1}>
-                <InlineAlert
-                  onClick={handleInlineAlertClick}
-                  severity={selectedAlertSeverity}
-                />
-              </Box>
-            )}
+            <BalanceChangesAlert transactionId={transactionId} />
           </>
         ))}
         <BalanceChangeList
@@ -402,16 +425,6 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
           balanceChanges={incoming}
           testId="simulation-rows-incoming"
         />
-        {alertModalVisible && (
-          <MultipleAlertModal
-            alertKey={selectedAlertKey}
-            ownerId={transaction.id}
-            onFinalAcknowledgeClick={handleModalClose}
-            onClose={handleModalClose}
-            showCloseIcon={false}
-            skipAlertNavigation={true}
-          />
-        )}
       </Box>
     </SimulationDetailsLayout>
   );
