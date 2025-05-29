@@ -166,7 +166,8 @@
     "networkConfigurationsByChainId": "object"
   },
   "NetworkOrderController": {
-    "orderedNetworkList": { "0": "object", "1": "object" }
+    "orderedNetworkList": { "0": "object", "1": "object" },
+    "enabledNetworkMap": {}
   },
   "NftController": {
     "allNftContracts": "object",
