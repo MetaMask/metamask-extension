@@ -33,14 +33,14 @@ import {
   SEVERITIES,
 } from '../../../helpers/constants/design-system';
 import {
-  getSlippage,
-  getIsToOrFromSolana,
+  getIsSolanaSwap,
+  getEffectiveSlippage,
 } from '../../../ducks/bridge/selectors';
 import { setSlippage } from '../../../ducks/bridge/actions';
+import { setSolanaSlippage } from '../../../store/actions';
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { Column, Row, Tooltip } from '../layout';
-import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 
 const HARDCODED_SLIPPAGE_OPTIONS = [BRIDGE_DEFAULT_SLIPPAGE, 3];
 
@@ -52,12 +52,11 @@ export const BridgeTransactionSettingsModal = ({
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
   const dispatch = useDispatch();
-  const isSwap = useIsMultichainSwap();
-  const isToOrFromSolana = useSelector(getIsToOrFromSolana);
-  const slippage = useSelector(getSlippage);
+  const isSolanaSwap = useSelector(getIsSolanaSwap);
+  const slippage = useSelector(getEffectiveSlippage);
 
-  // For Solana trades, undefined slippage means AUTO
-  const shouldShowAutoOption = isSwap || isToOrFromSolana;
+  // AUTO option should only show for Solana-to-Solana swaps
+  const shouldShowAutoOption = isSolanaSwap;
 
   const [localSlippage, setLocalSlippage] = useState<number | undefined>(
     undefined,
@@ -71,7 +70,9 @@ export const BridgeTransactionSettingsModal = ({
   // Initialize state when modal opens
   useEffect(() => {
     if (isOpen) {
-      const shouldSelectAuto = slippage === undefined && shouldShowAutoOption;
+      // Note: We check for both null and undefined since JSON serialization converts undefined to null
+      const shouldSelectAuto =
+        (slippage === null || slippage === undefined) && shouldShowAutoOption;
       setIsAutoSelected(shouldSelectAuto);
       setLocalSlippage(shouldSelectAuto ? undefined : slippage);
       setCustomSlippage(
@@ -80,7 +81,7 @@ export const BridgeTransactionSettingsModal = ({
           : undefined,
       );
     }
-  }, [slippage, shouldShowAutoOption, isOpen]);
+  }, [slippage, shouldShowAutoOption, isOpen, isSolanaSwap]);
 
   const getNotificationConfig = () => {
     if (!customSlippage) {
@@ -148,7 +149,7 @@ export const BridgeTransactionSettingsModal = ({
                       : TextColor.textDefault
                   }
                 >
-                  AUTO
+                  {t('swapSlippageAutoDescription')}
                 </Text>
               </Button>
             )}
@@ -270,7 +271,8 @@ export const BridgeTransactionSettingsModal = ({
             size={ButtonPrimarySize.Md}
             variant={TextVariant.bodyMd}
             disabled={
-              (isAutoSelected && slippage === undefined) ||
+              (isAutoSelected &&
+                (slippage === null || slippage === undefined)) ||
               (!isAutoSelected &&
                 ((customSlippage !== undefined &&
                   Number(customSlippage.replace(',', '.')) === slippage) ||
@@ -289,7 +291,12 @@ export const BridgeTransactionSettingsModal = ({
                     value: newSlippage?.toString() ?? 'auto',
                   },
                 });
-                dispatch(setSlippage(newSlippage));
+
+                if (isSolanaSwap) {
+                  dispatch(setSolanaSlippage(newSlippage));
+                } else {
+                  dispatch(setSlippage(newSlippage));
+                }
                 onClose();
               }
             }}

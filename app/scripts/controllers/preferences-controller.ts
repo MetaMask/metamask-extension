@@ -106,6 +106,7 @@ export type Preferences = {
   };
   tokenNetworkFilter: Record<string, boolean>;
   dismissSmartAccountSuggestionEnabled: boolean;
+  solanaSlippage?: number;
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
@@ -200,6 +201,7 @@ export const getDefaultPreferencesControllerState =
         sortCallback: 'stringNumeric',
       },
       tokenNetworkFilter: {},
+      solanaSlippage: undefined,
     },
     // ENS decentralized website resolution
     ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -354,6 +356,10 @@ const controllerMetadata = {
         anonymous: true,
       },
       smartTransactionsMigrationApplied: {
+        persist: true,
+        anonymous: true,
+      },
+      solanaSlippage: {
         persist: true,
         anonymous: true,
       },

@@ -19,6 +19,7 @@ import {
   getNativeAssetForChainId,
   isNativeAddress,
   UnifiedSwapBridgeEventName,
+  BRIDGE_DEFAULT_SLIPPAGE,
 } from '@metamask/bridge-controller';
 import {
   setFromToken,
@@ -38,7 +39,7 @@ import {
   getFromChains,
   getFromToken,
   getQuoteRequest,
-  getSlippage,
+  getEffectiveSlippage,
   getToChain,
   getToChains,
   getToToken,
@@ -47,6 +48,7 @@ import {
   getValidationErrors,
   isBridgeSolanaEnabled,
   getIsToOrFromSolana,
+  getIsSolanaSwap,
   getQuoteRefreshRate,
   getHardwareWalletName,
   getIsQuoteExpired,
@@ -167,7 +169,7 @@ const PrepareBridgePage = () => {
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
 
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
-  const slippage = useSelector(getSlippage);
+  const slippage = useSelector(getEffectiveSlippage);
 
   const quoteRequest = useSelector(getQuoteRequest);
   const {
@@ -350,6 +352,7 @@ const PrepareBridgePage = () => {
   ]);
 
   const isToOrFromSolana = useSelector(getIsToOrFromSolana);
+  const isSolanaSwap = useSelector(getIsSolanaSwap);
 
   const isDestinationSolana = useMemo(() => {
     if (!toChain?.chainId) {
@@ -520,7 +523,16 @@ const PrepareBridgePage = () => {
       timestamp: Date.now(),
     });
     if (isSwap) {
-      dispatch(setSlippage(undefined));
+      // Check if this is a Solana-to-Solana swap at execution time to avoid adding it as a dependency
+      const currentIsSolanaSwap = isSolanaSwap;
+      if (currentIsSolanaSwap) {
+        // For Solana-to-Solana swaps, use undefined (AUTO)
+        // getEffectiveSlippage will use solanaSlippage preference or default to undefined
+        dispatch(setSlippage(undefined));
+      } else {
+        // For EVM swaps, use the bridge default slippage
+        dispatch(setSlippage(BRIDGE_DEFAULT_SLIPPAGE));
+      }
       if (fromChain && !toToken) {
         dispatch(setToChainId(fromChain.chainId));
         dispatch(setToToken(SOLANA_USDC_ASSET));

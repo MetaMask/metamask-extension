@@ -6085,6 +6085,9 @@
   "swapShowLatestQuotes": {
     "message": "Show latest quotes"
   },
+  "swapSlippageAutoDescription": {
+    "message": "Auto"
+  },
   "swapSlippageHighDescription": {
     "message": "The slippage entered ($1%) is considered very high and may result in a bad rate",
     "description": "$1 is the amount of % for slippage"
