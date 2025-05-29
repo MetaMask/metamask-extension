@@ -37,57 +37,53 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  # Production release builds - only dist and flask versions
-  # Uncomment when ready to use actual builds:
+  build-dist-browserify:
+    if: ${{ inputs.build_type == 'dist' || inputs.build_type == '' || github.event_name != 'workflow_dispatch' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-dist-browserify
+      build-command: yarn build dist  # Using 'dist' instead of 'prod' for testing
+    secrets: inherit
 
-  # build-dist-browserify:
-  #   if: ${{ inputs.build_type == 'dist' || inputs.build_type == '' || github.event_name != 'workflow_dispatch' }}
-  #   uses: ./.github/workflows/run-build.yml
-  #   with:
-  #     build-name: build-dist-browserify
-  #     build-command: yarn build prod
-  #   secrets: inherit
+  build-dist-mv2-browserify:
+    if: ${{ inputs.build_type == 'dist' || inputs.build_type == '' || github.event_name != 'workflow_dispatch' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-dist-mv2-browserify
+      build-command: yarn build dist  # Using 'dist' instead of 'prod' for testing
+      mozilla-lint: true
+      enable-mv3: false
+    secrets: inherit
 
-  # build-dist-mv2-browserify:
-  #   if: ${{ inputs.build_type == 'dist' || inputs.build_type == '' || github.event_name != 'workflow_dispatch' }}
-  #   uses: ./.github/workflows/run-build.yml
-  #   with:
-  #     build-name: build-dist-mv2-browserify
-  #     build-command: yarn build prod
-  #     mozilla-lint: true
-  #     enable-mv3: false
-  #   secrets: inherit
+  build-flask-browserify:
+    if: ${{ inputs.build_type == 'flask' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-flask-browserify
+      build-command: yarn build --build-type flask dist  # Using 'dist' instead of 'prod' for testing
+    secrets: inherit
 
-  # build-flask-browserify:
-  #   if: ${{ inputs.build_type == 'flask' }}
-  #   uses: ./.github/workflows/run-build.yml
-  #   with:
-  #     build-name: build-flask-browserify
-  #     build-command: yarn build --build-type flask prod
-  #   secrets: inherit
-
-  # build-flask-mv2-browserify:
-  #   if: ${{ inputs.build_type == 'flask' }}
-  #   uses: ./.github/workflows/run-build.yml
-  #   with:
-  #     build-name: build-flask-mv2-browserify
-  #     build-command: yarn build --build-type flask prod
-  #     mozilla-lint: true
-  #     enable-mv3: false
-  #   secrets: inherit
+  build-flask-mv2-browserify:
+    if: ${{ inputs.build_type == 'flask' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-flask-mv2-browserify
+      build-command: yarn build --build-type flask dist  # Using 'dist' instead of 'prod' for testing
+      mozilla-lint: true
+      enable-mv3: false
+    secrets: inherit
 
   publish:
     runs-on: ubuntu-latest
-    # Uncomment when using actual builds:
-    # needs:
-    #   - build-dist-browserify
-    #   - build-dist-mv2-browserify
-    #   - build-flask-browserify
-    #   - build-flask-mv2-browserify
-    # if: |
-    #   always() &&
-    #   (needs.build-dist-browserify.result == 'success' ||
-    #    needs.build-flask-browserify.result == 'success')
+    needs:
+      - build-dist-browserify
+      - build-dist-mv2-browserify
+      - build-flask-browserify
+      - build-flask-mv2-browserify
+    if: |
+      always() &&
+      (needs.build-dist-browserify.result == 'success' ||
+       needs.build-flask-browserify.result == 'success')
 
     steps:
       - name: Checkout and setup environment
@@ -98,40 +94,78 @@ jobs:
           skip-allow-scripts: true
 
       # Download production build artifacts
-      # Uncomment when using actual builds:
-      # - name: Download Chrome MV3 build artifact
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: build-${{ inputs.build_type || 'dist' }}-browserify
-      #     path: chrome-mv3-build/
+      - name: Download Chrome MV3 build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ inputs.build_type || 'dist' }}-browserify
+          path: chrome-mv3-build/
 
-      # - name: Download Firefox MV2 build artifact
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: build-${{ inputs.build_type || 'dist' }}-mv2-browserify
-      #     path: firefox-mv2-build/
+      - name: Download Firefox MV2 build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ inputs.build_type || 'dist' }}-mv2-browserify
+          path: firefox-mv2-build/
+
+      # List build contents for verification
+      - name: Verify build artifacts
+        run: |
+          echo "📦 Chrome MV3 build contents:"
+          ls -la chrome-mv3-build/
+          if [ -d "chrome-mv3-build/builds" ]; then
+            echo "  Builds directory:"
+            ls -la chrome-mv3-build/builds/
+          fi
+
+          echo ""
+          echo "📦 Firefox MV2 build contents:"
+          ls -la firefox-mv2-build/
+          if [ -d "firefox-mv2-build/builds" ]; then
+            echo "  Builds directory:"
+            ls -la firefox-mv2-build/builds/
+          fi
+
+      # TEST MODE: Create mock build artifacts
+      # Remove this section when using real builds
+      # - name: Create mock build artifacts for testing
+      #   run: |
+      #     echo "🧪 TEST MODE: Creating mock build artifacts..."
+      #     mkdir -p chrome-mv3-build/builds
+      #     mkdir -p firefox-mv2-build/builds
+      #
+      #     # Create mock zip files with some content
+      #     echo "Mock Chrome extension content" > chrome-mv3-build/builds/chrome-content.txt
+      #     cd chrome-mv3-build/builds && zip chrome.zip chrome-content.txt && rm chrome-content.txt && cd ../..
+      #
+      #     echo "Mock Firefox extension content" > firefox-mv2-build/builds/firefox-content.txt
+      #     cd firefox-mv2-build/builds && zip firefox.xpi firefox-content.txt && rm firefox-content.txt && cd ../..
+      #
+      #     echo "✅ Mock artifacts created:"
+      #     ls -la chrome-mv3-build/builds/
+      #     ls -la firefox-mv2-build/builds/
 
       # Deploy to Chrome Web Store (dummy test)
       - name: Deploy to Chrome Web Store
         if: ${{ !inputs.skip_chrome }}
         run: yarn tsx .github/scripts/submit-chrome.ts
-        # env:
-        #   CHROME_ZIP_PATH: chrome-mv3-build/builds/chrome.zip
-        #   ROLLOUT_PERCENTAGE: ${{ inputs.chrome_rollout }}
-        #   CWS_CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
-        #   CWS_CLIENT_SECRET: ${{ secrets.CWS_CLIENT_SECRET }}
-        #   CWS_REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
-        #   EXTENSION_ID: ${{ secrets.CWS_EXTENSION_ID }}
+        env:
+          CHROME_ZIP_PATH: chrome-mv3-build/builds/metamask-chrome-*.zip
+          ROLLOUT_PERCENTAGE: ${{ inputs.chrome_rollout || '1' }}
+          # Production credentials (add when ready):
+          # CWS_CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
+          # CWS_CLIENT_SECRET: ${{ secrets.CWS_CLIENT_SECRET }}
+          # CWS_REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
+          # EXTENSION_ID: ${{ secrets.CWS_EXTENSION_ID }}
 
       # Deploy to Firefox Add-ons (dummy test)
       - name: Deploy to Firefox Add-ons
         if: ${{ !inputs.skip_firefox }}
         run: yarn tsx .github/scripts/submit-firefox.ts
-        # env:
-        #   FIREFOX_XPI_PATH: firefox-mv2-build/builds/firefox.xpi
-        #   AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
-        #   AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
-        #   ADDON_ID: ${{ secrets.AMO_ADDON_ID }}
+        env:
+          FIREFOX_XPI_PATH: firefox-mv2-build/builds/metamask-firefox-*.zip
+          # Production credentials (add when ready):
+          # AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
+          # AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
+          # ADDON_ID: ${{ secrets.AMO_ADDON_ID }}
 
       # Upload deployment artifacts for debugging
       # - name: Upload deployment logs
