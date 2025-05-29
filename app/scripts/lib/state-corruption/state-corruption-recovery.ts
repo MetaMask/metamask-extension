@@ -1,11 +1,11 @@
 import { hasProperty, isObject } from '@metamask/utils';
 import log from 'loglevel';
-import { type Backup, PersistenceManager } from '../stores/persistence-manager';
 import {
-  ErrorLike,
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
   METHOD_REPAIR_DATABASE,
-} from '../state-corruption-errors';
+} from '../../../../shared/constants/state-corruption';
+import { type Backup, PersistenceManager } from '../stores/persistence-manager';
+import { ErrorLike } from '../../../../shared/constants/errors';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Message = any;

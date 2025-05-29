@@ -41,8 +41,7 @@ import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 
-// eslint-disable-next-line import/no-restricted-paths
-export { displayStateCorruptionError } from '../app/scripts/lib/state-corruption-errors';
+export { displayStateCorruptionError } from './helpers/utils/state-corruption-html';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
