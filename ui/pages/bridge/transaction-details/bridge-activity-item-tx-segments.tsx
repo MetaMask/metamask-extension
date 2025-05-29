@@ -1,9 +1,9 @@
 import React from 'react';
 import {
-  TransactionMeta,
+  type TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
 import { Box, Text } from '../../../components/component-library';
 import {
@@ -12,7 +12,7 @@ import {
   FlexDirection,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
+import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Segment from './segment';
 

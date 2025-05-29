@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Bitcoin hesabı (Beta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Bitcoin hesabı (Test Ağı)"
-  },
   "addBlockExplorer": {
     "message": "Bir blok gezgini ekle"
   },
@@ -504,10 +501,6 @@
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
   },
-  "appNameMmi": {
-    "message": "MetaMask Institutional",
-    "description": "The name of the application (MMI)"
-  },
   "apply": {
     "message": "Uygula"
   },
@@ -661,22 +654,6 @@
   "billionAbbreviation": {
     "message": "MR",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Bu özelliği açtığınızda mevcut Gizli Kurtarma İfadenizden türetilen MetaMask Uzantınıza bir Bitcoin Hesabı ekleme seçeneğiniz olacaktır. Bu, deneysel bir Beta özelliğidir, bu yüzden riski kendinize ait olarak kullanmalısınız. Bu yeni Bitcoin deneyimi hakkında bize geri bildirim göndermek için lütfen bu $1 bölümünü doldurun.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "\"Yeni bir Bitcoin hesabı ekle (Beta)\" seçeneğini etkinleştir"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Bu özelliği açtığınızda test ağı için bir Bitcoin Hesabı ekleme seçeneğiniz olacak."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "\"Yeni bir Bitcoin hesabı ekle (Test Ağı)\" seçeneğini etkinleştir"
   },
   "blockExplorerAccountAction": {
     "message": "Hesap",
@@ -1338,10 +1315,6 @@
   },
   "creatorAddress": {
     "message": "Oluşturucu adresi"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Bu, tüm ağlarda sahip olduğunuz tüm token'lerin değerini yansıtır. Bu değeri ETH olarak veya diğer para birimlerinde görmeyi tercih ediyorsanız şuraya gidin: $1.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "MetaMask Portfolio ile ağlar arasında swap gerçekleştirin"
@@ -3444,10 +3417,6 @@
   "notificationTransactionFailedMessage": {
     "message": "$1 işlemi başarısız oldu! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
-  },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "İşlem başarısız oldu! $1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
   },
   "notificationTransactionFailedTitle": {
     "message": "Başarısız işlem",
@@ -6492,9 +6461,6 @@
   },
   "yourBalance": {
     "message": "Bakiyeniz"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Bakiyeniz toplanıyor"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT'niz tehlikede olabilir"

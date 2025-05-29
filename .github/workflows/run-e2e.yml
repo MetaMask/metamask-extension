@@ -21,7 +21,7 @@ on:
         description: The test command to run
       test-timeout-minutes:
         type: number
-        default: 40
+        default: 30
         description: The timeout in minutes for the test command
       matrix-index:
         type: number
@@ -31,6 +31,17 @@ on:
         type: number
         default: 1
         description: The total number of jobs in the matrix
+      test-artifacts-path:
+        type: string
+        default: |
+          ./test-artifacts
+          ./test/test-results/e2e
+        description: The path to the test artifacts
+    secrets:
+      DOCKER_HUB_USERNAME:
+        required: true
+      DOCKER_HUB_TOKEN:
+        required: true
 
 jobs:
   run-e2e:
@@ -38,6 +49,9 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: cimg/node:22.15-browsers
+      credentials:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # For a `pull_request` event, the branch is `github.head_ref``.
@@ -48,6 +62,7 @@ jobs:
       JOB_NAME: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
       RUN_ID: ${{ github.run_id }}
       PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+      TEST_SUITE_NAME: ${{ inputs.test-suite-name }}
     steps:
       - name: Install dependencies
         run: |
@@ -93,6 +108,13 @@ jobs:
       - run: yarn tsx .github/scripts/git-diff-default-branch.ts
         if: ${{ steps.download-changed-files.outcome == 'failure' }}
 
+      - name: Download test-runs-for-splitting
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: test-runs-for-splitting
+          path: test/test-results/
+
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
         run: ${{ inputs.test-command }} --retries 1
@@ -100,11 +122,9 @@ jobs:
           # The properties are picked up by mocha-junit-reporter and added to the XML test results
           PROPERTIES: 'JOB_NAME:${{ env.JOB_NAME }},RUN_ID:${{ env.RUN_ID }},PR_NUMBER:${{ env.PR_NUMBER }}'
 
-      - name: Upload test results and artifacts
+      - name: Upload test artifacts
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.JOB_NAME }}
-          path: |
-            ./test-artifacts
-            ./test/test-results/e2e
+          path: ${{ inputs.test-artifacts-path }}

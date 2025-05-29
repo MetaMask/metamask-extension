@@ -14,10 +14,15 @@ import {
   SendCalls,
   SendCallsParams,
 } from '@metamask/eth-json-rpc-middleware';
-import { Hex, JsonRpcRequest } from '@metamask/utils';
+import { JsonRpcRequest } from '@metamask/utils';
 import { Messenger } from '@metamask/base-controller';
-import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
+import {
+  AccountsControllerGetSelectedAccountAction,
+  AccountsControllerGetStateAction,
+  AccountsControllerState,
+} from '@metamask/accounts-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import {
   AtomicCapabilityStatus,
   EIP5792Messenger,
@@ -31,6 +36,8 @@ const CHAIN_ID_2_MOCK = '0xabc';
 const BATCH_ID_MOCK = '0xf3472db2a4134607a17213b7e9ca26e3';
 const NETWORK_CLIENT_ID_MOCK = 'test-client';
 const FROM_MOCK = '0xabc123';
+const FROM_MOCK_HARDWARE = '0xdef456';
+const FROM_MOCK_SIMPLE = '0x789abc';
 const ORIGIN_MOCK = 'test.com';
 const DELEGATION_ADDRESS_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
 
@@ -93,10 +100,6 @@ describe('EIP-5792', () => {
     TransactionControllerGetStateAction['handler']
   > = jest.fn();
 
-  const getDisabledUpgradeAccountsByChainMock: jest.MockedFn<
-    () => Record<Hex, Hex[]>
-  > = jest.fn();
-
   const isAtomicBatchSupportedMock: jest.MockedFn<
     TransactionController['isAtomicBatchSupported']
   > = jest.fn();
@@ -109,15 +112,24 @@ describe('EIP-5792', () => {
     () => boolean
   > = jest.fn();
 
+  const getAccountsStateMock: jest.MockedFn<
+    AccountsControllerGetStateAction['handler']
+  > = jest.fn();
+
   let messenger: EIP5792Messenger;
 
   const sendCallsHooks = {
     addTransactionBatch: addTransactionBatchMock,
-    getDisabledUpgradeAccountsByChain: getDisabledUpgradeAccountsByChainMock,
     getDismissSmartAccountSuggestionEnabled:
       getDismissSmartAccountSuggestionEnabledMock,
     isAtomicBatchSupported: isAtomicBatchSupportedMock,
     validateSecurity: validateSecurityMock,
+  };
+
+  const getCapabilitiesHooks = {
+    getDismissSmartAccountSuggestionEnabled:
+      getDismissSmartAccountSuggestionEnabledMock,
+    isAtomicBatchSupported: isAtomicBatchSupportedMock,
   };
 
   beforeEach(() => {
@@ -140,6 +152,11 @@ describe('EIP-5792', () => {
       getSelectedAccountMock,
     );
 
+    messenger.registerActionHandler(
+      'AccountsController:getState',
+      getAccountsStateMock,
+    );
+
     getNetworkClientByIdMock.mockReturnValue({
       configuration: {
         chainId: CHAIN_ID_MOCK,
@@ -150,7 +167,6 @@ describe('EIP-5792', () => {
       batchId: BATCH_ID_MOCK,
     });
 
-    getDisabledUpgradeAccountsByChainMock.mockReturnValue({});
     getDismissSmartAccountSuggestionEnabledMock.mockReturnValue(false);
 
     isAtomicBatchSupportedMock.mockResolvedValue([
@@ -161,6 +177,37 @@ describe('EIP-5792', () => {
         upgradeContractAddress: DELEGATION_ADDRESS_MOCK,
       },
     ]);
+
+    getAccountsStateMock.mockReturnValue({
+      internalAccounts: {
+        accounts: {
+          [FROM_MOCK]: {
+            address: FROM_MOCK,
+            metadata: {
+              keyring: {
+                type: KeyringTypes.hd,
+              },
+            },
+          },
+          [FROM_MOCK_HARDWARE]: {
+            address: FROM_MOCK_HARDWARE,
+            metadata: {
+              keyring: {
+                type: KeyringTypes.ledger,
+              },
+            },
+          },
+          [FROM_MOCK_SIMPLE]: {
+            address: FROM_MOCK_SIMPLE,
+            metadata: {
+              keyring: {
+                type: KeyringTypes.simple,
+              },
+            },
+          },
+        },
+      },
+    } as unknown as AccountsControllerState);
   });
 
   describe('processSendCalls', () => {
@@ -180,6 +227,17 @@ describe('EIP-5792', () => {
         transactions: [{ params: SEND_CALLS_MOCK.calls[0] }],
         validateSecurity: expect.any(Function),
       });
+    });
+
+    it('calls adds transaction batch hook if simple keyring', async () => {
+      await processSendCalls(
+        sendCallsHooks,
+        messenger,
+        { ...SEND_CALLS_MOCK, from: FROM_MOCK_SIMPLE },
+        REQUEST_MOCK,
+      );
+
+      expect(addTransactionBatchMock).toHaveBeenCalledTimes(1);
     });
 
     it('calls adds transaction batch hook with selected account if no from', async () => {
@@ -236,46 +294,6 @@ describe('EIP-5792', () => {
       );
     });
 
-    it('throws if disabled preference for chain and account', async () => {
-      getDisabledUpgradeAccountsByChainMock.mockReturnValue({
-        [CHAIN_ID_MOCK]: [FROM_MOCK],
-      });
-
-      await expect(
-        processSendCalls(
-          sendCallsHooks,
-          messenger,
-          SEND_CALLS_MOCK,
-          REQUEST_MOCK,
-        ),
-      ).rejects.toThrow(
-        `EIP-7702 upgrade rejected for this chain and account - Chain ID: ${CHAIN_ID_MOCK}, Account: ${SEND_CALLS_MOCK.from}`,
-      );
-    });
-
-    it('does not throw if disabled preference for chain and account if already upgraded', async () => {
-      getDisabledUpgradeAccountsByChainMock.mockReturnValue({
-        [CHAIN_ID_MOCK]: [FROM_MOCK],
-      });
-
-      isAtomicBatchSupportedMock.mockResolvedValueOnce([
-        {
-          chainId: CHAIN_ID_MOCK,
-          delegationAddress: DELEGATION_ADDRESS_MOCK,
-          isSupported: true,
-        },
-      ]);
-
-      expect(
-        await processSendCalls(
-          sendCallsHooks,
-          messenger,
-          SEND_CALLS_MOCK,
-          REQUEST_MOCK,
-        ),
-      ).toBeDefined();
-    });
-
     it('throws if user enabled preference to dismiss option to upgrade account', async () => {
       getDismissSmartAccountSuggestionEnabledMock.mockReturnValue(true);
 
@@ -286,9 +304,7 @@ describe('EIP-5792', () => {
           SEND_CALLS_MOCK,
           REQUEST_MOCK,
         ),
-      ).rejects.toThrow(
-        `EIP-7702 upgrade rejected for this chain and account - Chain ID: ${CHAIN_ID_MOCK}, Account: ${SEND_CALLS_MOCK.from}`,
-      );
+      ).rejects.toThrow('EIP-7702 upgrade disabled by the user');
     });
 
     it('does not throw if user enabled preference to dismiss option to upgrade account if already upgraded', async () => {
@@ -365,6 +381,30 @@ describe('EIP-5792', () => {
           REQUEST_MOCK,
         ),
       ).rejects.toThrow(`EIP-7702 not supported on chain: ${CHAIN_ID_MOCK}`);
+    });
+
+    it('throws if keyring type not supported', async () => {
+      await expect(
+        processSendCalls(
+          sendCallsHooks,
+          messenger,
+          { ...SEND_CALLS_MOCK, from: FROM_MOCK_HARDWARE },
+          REQUEST_MOCK,
+        ),
+      ).rejects.toThrow(`EIP-7702 upgrade not supported on account`);
+    });
+
+    it('throws if keyring type not found', async () => {
+      await expect(
+        processSendCalls(
+          sendCallsHooks,
+          messenger,
+          { ...SEND_CALLS_MOCK, from: '0x456' },
+          REQUEST_MOCK,
+        ),
+      ).rejects.toThrow(
+        `EIP-7702 upgrade not supported as account type is unknown`,
+      );
     });
   });
 
@@ -529,13 +569,8 @@ describe('EIP-5792', () => {
       ]);
 
       const capabilities = await getCapabilities(
-        {
-          getDisabledUpgradeAccountsByChain:
-            getDisabledUpgradeAccountsByChainMock,
-          getDismissSmartAccountSuggestionEnabled:
-            getDismissSmartAccountSuggestionEnabledMock,
-          isAtomicBatchSupported: isAtomicBatchSupportedMock,
-        },
+        getCapabilitiesHooks,
+        messenger,
         FROM_MOCK,
         [CHAIN_ID_MOCK],
       );
@@ -560,14 +595,35 @@ describe('EIP-5792', () => {
       ]);
 
       const capabilities = await getCapabilities(
-        {
-          getDisabledUpgradeAccountsByChain:
-            getDisabledUpgradeAccountsByChainMock,
-          getDismissSmartAccountSuggestionEnabled:
-            getDismissSmartAccountSuggestionEnabledMock,
-          isAtomicBatchSupported: isAtomicBatchSupportedMock,
-        },
+        getCapabilitiesHooks,
+        messenger,
         FROM_MOCK,
+        [CHAIN_ID_MOCK],
+      );
+
+      expect(capabilities).toStrictEqual({
+        [CHAIN_ID_MOCK]: {
+          atomic: {
+            status: AtomicCapabilityStatus.Ready,
+          },
+        },
+      });
+    });
+
+    it('includes atomic capability if not yet upgraded and simple keyring', async () => {
+      isAtomicBatchSupportedMock.mockResolvedValueOnce([
+        {
+          chainId: CHAIN_ID_MOCK,
+          delegationAddress: undefined,
+          isSupported: false,
+          upgradeContractAddress: DELEGATION_ADDRESS_MOCK,
+        },
+      ]);
+
+      const capabilities = await getCapabilities(
+        getCapabilitiesHooks,
+        messenger,
+        FROM_MOCK_SIMPLE,
         [CHAIN_ID_MOCK],
       );
 
@@ -584,13 +640,8 @@ describe('EIP-5792', () => {
       isAtomicBatchSupportedMock.mockResolvedValueOnce([]);
 
       const capabilities = await getCapabilities(
-        {
-          getDisabledUpgradeAccountsByChain:
-            getDisabledUpgradeAccountsByChainMock,
-          getDismissSmartAccountSuggestionEnabled:
-            getDismissSmartAccountSuggestionEnabledMock,
-          isAtomicBatchSupported: isAtomicBatchSupportedMock,
-        },
+        getCapabilitiesHooks,
+        messenger,
         FROM_MOCK,
         [CHAIN_ID_MOCK],
       );
@@ -611,42 +662,8 @@ describe('EIP-5792', () => {
       getDismissSmartAccountSuggestionEnabledMock.mockReturnValue(true);
 
       const capabilities = await getCapabilities(
-        {
-          getDisabledUpgradeAccountsByChain:
-            getDisabledUpgradeAccountsByChainMock,
-          getDismissSmartAccountSuggestionEnabled:
-            getDismissSmartAccountSuggestionEnabledMock,
-          isAtomicBatchSupported: isAtomicBatchSupportedMock,
-        },
-        FROM_MOCK,
-        [CHAIN_ID_MOCK],
-      );
-
-      expect(capabilities).toStrictEqual({});
-    });
-
-    it('does not include atomic capability if upgrade disabled for chain and account', async () => {
-      isAtomicBatchSupportedMock.mockResolvedValueOnce([
-        {
-          chainId: CHAIN_ID_MOCK,
-          delegationAddress: undefined,
-          isSupported: false,
-          upgradeContractAddress: DELEGATION_ADDRESS_MOCK,
-        },
-      ]);
-
-      getDisabledUpgradeAccountsByChainMock.mockReturnValue({
-        [CHAIN_ID_MOCK]: [FROM_MOCK],
-      });
-
-      const capabilities = await getCapabilities(
-        {
-          getDisabledUpgradeAccountsByChain:
-            getDisabledUpgradeAccountsByChainMock,
-          getDismissSmartAccountSuggestionEnabled:
-            getDismissSmartAccountSuggestionEnabledMock,
-          isAtomicBatchSupported: isAtomicBatchSupportedMock,
-        },
+        getCapabilitiesHooks,
+        messenger,
         FROM_MOCK,
         [CHAIN_ID_MOCK],
       );
@@ -664,19 +681,50 @@ describe('EIP-5792', () => {
         },
       ]);
 
-      getDisabledUpgradeAccountsByChainMock.mockReturnValue({
-        [CHAIN_ID_MOCK]: [FROM_MOCK],
-      });
+      const capabilities = await getCapabilities(
+        getCapabilitiesHooks,
+        messenger,
+        FROM_MOCK,
+        [CHAIN_ID_MOCK],
+      );
+
+      expect(capabilities).toStrictEqual({});
+    });
+
+    it('does not include atomic capability if keyring type not supported', async () => {
+      isAtomicBatchSupportedMock.mockResolvedValueOnce([
+        {
+          chainId: CHAIN_ID_MOCK,
+          delegationAddress: undefined,
+          isSupported: false,
+          upgradeContractAddress: DELEGATION_ADDRESS_MOCK,
+        },
+      ]);
 
       const capabilities = await getCapabilities(
+        getCapabilitiesHooks,
+        messenger,
+        FROM_MOCK_HARDWARE,
+        [CHAIN_ID_MOCK],
+      );
+
+      expect(capabilities).toStrictEqual({});
+    });
+
+    it('does not include atomic capability if keyring type not found', async () => {
+      isAtomicBatchSupportedMock.mockResolvedValueOnce([
         {
-          getDisabledUpgradeAccountsByChain:
-            getDisabledUpgradeAccountsByChainMock,
-          getDismissSmartAccountSuggestionEnabled:
-            getDismissSmartAccountSuggestionEnabledMock,
-          isAtomicBatchSupported: isAtomicBatchSupportedMock,
+          chainId: CHAIN_ID_MOCK,
+          delegationAddress: undefined,
+          isSupported: false,
+          upgradeContractAddress: DELEGATION_ADDRESS_MOCK,
         },
-        FROM_MOCK,
+      ]);
+
+      const capabilities = await getCapabilities(
+        getCapabilitiesHooks,
+        messenger,
+        '0x456',
         [CHAIN_ID_MOCK],
       );
 

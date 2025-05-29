@@ -40,7 +40,7 @@ class HomePage {
   };
 
   private readonly erc20TokenDropdown = {
-    testId: 'import-token-button',
+    testId: 'asset-list-control-bar-action-button',
   };
 
   private readonly nftTab = {
@@ -52,10 +52,6 @@ class HomePage {
   };
 
   private readonly popoverBackground = '.popover-bg';
-
-  private readonly popoverCloseButton = {
-    testId: 'popover-close',
-  };
 
   private readonly portfolioLink = '[data-testid="portfolio-link"]';
 
@@ -93,11 +89,6 @@ class HomePage {
       throw e;
     }
     console.log('Home page is loaded');
-  }
-
-  async closePopover(): Promise<void> {
-    console.log('Closing popover');
-    await this.driver.clickElement(this.popoverCloseButton);
   }
 
   async closeUseNetworkNotificationModal(): Promise<void> {
@@ -327,6 +318,19 @@ class HomePage {
   ): Promise<void> {
     await this.driver.waitForSelector({
       text: `Secret Recovery Phrase ${srpNumber} imported`,
+    });
+  }
+
+  /**
+   * Check if the expected warning message is displayed on homepage.
+   *
+   * @param message - The message to be displayed.
+   */
+  async check_warningMessageIsDisplayed(message: string): Promise<void> {
+    console.log(`Check if warning message ${message} is displayed on homepage`);
+    await this.driver.waitForSelector({
+      text: message,
+      tag: 'p',
     });
   }
 }

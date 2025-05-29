@@ -2,6 +2,7 @@ import {
   type DelegationEntry,
   type DelegationFilter,
 } from '@metamask/delegation-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import type { UnsignedDelegation } from '../../../shared/lib/delegation';
 import { submitRequestToBackground } from '../background-connection';
@@ -44,4 +45,18 @@ export const getDelegationEntryChain = async (
 
 export const deleteDelegationEntry = async (hash: Hex) => {
   return await submitRequestToBackground('deleteDelegationEntry', [hash]);
+};
+
+export const awaitDeleteDelegationEntry = async ({
+  hash,
+  txMeta,
+  entryToStore,
+}: {
+  hash: Hex;
+  txMeta: TransactionMeta;
+  entryToStore?: DelegationEntry;
+}) => {
+  return await submitRequestToBackground('awaitDeleteDelegationEntry', [
+    { hash, txMeta, entryToStore },
+  ]);
 };

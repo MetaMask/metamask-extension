@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Conta Bitcoin (Beta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Conta Bitcoin (Testnet)"
-  },
   "addBlockExplorer": {
     "message": "Adicionar um explorador de blocos"
   },
@@ -504,10 +501,6 @@
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
   },
-  "appNameMmi": {
-    "message": "MetaMask Institutional",
-    "description": "The name of the application (MMI)"
-  },
   "apply": {
     "message": "Aplicar"
   },
@@ -661,22 +654,6 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Ativar esse recurso lhe dará a opção de adicionar uma conta Bitcoin à sua extensão da MetaMask derivada de sua Frase de Recuperação Secreta existente. Este é um recurso beta experimental, portanto seu uso será por sua conta e risco. Para nos dar seu feedback sobre esta nova experiência Bitcoin, preencha este $1.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Ative \"Adicionar uma nova conta Bitcoin (Beta)\""
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Ao ativar esse recurso, você terá a opção de adicionar uma conta Bitcoin para a rede de teste."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Ative \"Adicionar uma nova conta Bitcoin (Testnet)\""
   },
   "blockExplorerAccountAction": {
     "message": "Conta",
@@ -1338,10 +1315,6 @@
   },
   "creatorAddress": {
     "message": "Endereço do criador"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Aqui é refletido o valor de todos os tokens que você possui em todas as redes. Se você preferir visualizar esse valor em ETH ou em outras moedas, acesse $1.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "Faça trocas entre redes com o MetaMask Portfolio"
@@ -3444,10 +3417,6 @@
   "notificationTransactionFailedMessage": {
     "message": "Falha na transação $1! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
-  },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "Falha na transação! $1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
   },
   "notificationTransactionFailedTitle": {
     "message": "Falha na transação",
@@ -6492,9 +6461,6 @@
   },
   "yourBalance": {
     "message": "Seu saldo"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Seu saldo é agregado"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Seu NFT pode estar em risco"

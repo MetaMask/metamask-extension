@@ -55,6 +55,10 @@ describe('Unconnected Account Alert', () => {
         '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
       ],
+      metadata: {
+        id: 'mock-keyring-id',
+        name: '',
+      },
     },
   ];
 

@@ -49,6 +49,7 @@ import {
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
+import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import {
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
   KNOWN_STATE_CORRUPTION_ERRORS,
@@ -68,7 +69,6 @@ import NotificationManager, {
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
-import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
@@ -342,19 +342,28 @@ function maybeDetectPhishing(theController) {
         blockedUrl = details.initiator;
       }
 
-      theController.metaMetricsController.trackEvent({
-        // should we differentiate between background redirection and content script redirection?
-        event: MetaMetricsEventName.PhishingPageDisplayed,
-        category: MetaMetricsEventCategory.Phishing,
-        properties: {
-          url: blockedUrl,
-          referrer: {
-            url: blockedUrl,
+      if (!isFirefox) {
+        theController.metaMetricsController.trackEvent(
+          {
+            // should we differentiate between background redirection and content script redirection?
+            event: MetaMetricsEventName.PhishingPageDisplayed,
+            category: MetaMetricsEventCategory.Phishing,
+            properties: {
+              url: blockedUrl,
+              referrer: {
+                url: blockedUrl,
+              },
+              reason: blockReason,
+              requestDomain: blockedRequestResponse.result
+                ? hostname
+                : undefined,
+            },
           },
-          reason: blockReason,
-          requestDomain: blockedRequestResponse.result ? hostname : undefined,
-        },
-      });
+          {
+            excludeMetaMetricsId: true,
+          },
+        );
+      }
       const querystring = new URLSearchParams({ hostname, href });
       const redirectUrl = new URL(phishingPageHref);
       redirectUrl.hash = querystring.toString();
@@ -1108,7 +1117,10 @@ export function setupController(
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
 
-    const isDappConnecting = remotePort.sender.tab?.id;
+    // if the sender.id value is present it means the caller is an extension rather
+    // than a site. When the caller is an extension we want to fallback to connecting
+    // it with the 1193 provider
+    const isDappConnecting = !remotePort.sender.id;
     if (isDappConnecting) {
       if (metamaskBlockedPorts.includes(remotePort.name)) {
         return;
