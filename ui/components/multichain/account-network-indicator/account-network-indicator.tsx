@@ -21,17 +21,25 @@ import {
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
-import { getNetworksByScopes } from '../../../../shared/modules/selectors/networks';
+import { getActiveNetworksByScopes } from '../../../selectors/multichain/networks';
+import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import Tooltip from '../../ui/tooltip';
 
-export const AccountNetworkIndicator = ({ scopes }: { scopes: string[] }) => {
+type AccountNetworkIndicatorProps = {
+  account: MergedInternalAccount;
+};
+
+export const AccountNetworkIndicator = ({
+  account,
+}: AccountNetworkIndicatorProps) => {
   const t = useI18nContext();
   const AVATAR_GROUP_LIMIT = 4;
   const TOOLTIP_LIMIT = 12;
 
-  const networks = useSelector((state) => getNetworksByScopes(state, scopes));
-
-  const avatarNetworksData = networks?.map(
+  const networksWithTransactionActivity = useSelector((state) =>
+    getActiveNetworksByScopes(state, account),
+  );
+  const avatarNetworksData = networksWithTransactionActivity?.map(
     (network: { chainId: string | number; name: string }) => ({
       avatarValue: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
       symbol: network.name,
@@ -45,31 +53,33 @@ export const AccountNetworkIndicator = ({ scopes }: { scopes: string[] }) => {
         html={
           <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
             <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-              {networks?.slice(0, TOOLTIP_LIMIT).map((network) => {
-                return (
-                  <Box
-                    display={Display.Flex}
-                    flexDirection={FlexDirection.Row}
-                    alignItems={AlignItems.center}
-                    textAlign={TextAlign.Left}
-                    key={network.chainId}
-                    padding={1}
-                    paddingInline={2}
-                    gap={2}
-                  >
-                    <AvatarNetwork
-                      size={AvatarNetworkSize.Xs}
-                      src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
-                      name={network.name}
-                      borderStyle={BorderStyle.none}
-                    />
-                    <Text variant={TextVariant.bodyMdMedium} ellipsis>
-                      {network.name}
-                    </Text>
-                  </Box>
-                );
-              })}
-              {networks?.length > TOOLTIP_LIMIT ? (
+              {networksWithTransactionActivity
+                ?.slice(0, TOOLTIP_LIMIT)
+                .map((network) => {
+                  return (
+                    <Box
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Row}
+                      alignItems={AlignItems.center}
+                      textAlign={TextAlign.Left}
+                      key={network.chainId}
+                      padding={1}
+                      paddingInline={2}
+                      gap={2}
+                    >
+                      <AvatarNetwork
+                        size={AvatarNetworkSize.Xs}
+                        src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
+                        name={network.name}
+                        borderStyle={BorderStyle.none}
+                      />
+                      <Text variant={TextVariant.bodyMdMedium} ellipsis>
+                        {network.name}
+                      </Text>
+                    </Box>
+                  );
+                })}
+              {networksWithTransactionActivity?.length > TOOLTIP_LIMIT ? (
                 <Box
                   display={Display.Flex}
                   alignItems={AlignItems.center}
@@ -108,5 +118,5 @@ AccountNetworkIndicator.propTypes = {
   /**
    * An array of CAIP scope strings, used to determine which networks to display.
    */
-  scopes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  account: PropTypes.object.isRequired,
 };

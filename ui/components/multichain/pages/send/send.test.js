@@ -257,6 +257,12 @@ const baseStore = {
     useCurrencyRateCheck: true,
     ticker: 'ETH',
     snaps: {},
+    networksWithTransactionActivity: {
+      '0x0': {
+        namespace: 'eip155',
+        activeChains: [],
+      },
+    },
   },
   localeMessages: {
     currentLocale: 'en',

@@ -8,6 +8,7 @@ import {
 import { type NetworkConfiguration as InternalNetworkConfiguration } from '@metamask/network-controller';
 import { BtcScope, SolScope } from '@metamask/keyring-api';
 import { type CaipChainId, type Hex } from '@metamask/utils';
+import { toHex } from '@metamask/controller-utils';
 
 import {
   type ProviderConfigState,
@@ -23,6 +24,9 @@ import {
   getIsSolanaTestnetSupportEnabled,
 } from '../selectors';
 import { getInternalAccounts } from '../accounts';
+import { MergedInternalAccount } from '../selectors.types';
+import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 
 // Selector types
 
@@ -214,4 +218,57 @@ export const getNetworksWithActivity = (state: MultichainNetworkConfigState) =>
 export const getNetworksWithTransactionActivity = createDeepEqualSelector(
   getNetworksWithActivity,
   (networksWithActivity) => networksWithActivity,
+);
+
+export const getActiveNetworksByScopes = createDeepEqualSelector(
+  [
+    getNetworksWithTransactionActivity,
+    (_state, account: MergedInternalAccount) => account,
+  ],
+  (
+    networksWithTransactionActivity,
+    account,
+  ): {
+    chainId: string | number | Hex | MultichainNetworks;
+    name: string;
+  }[] => {
+    if (!account) {
+      return [];
+    }
+
+    const chainsWithActivityByAddress =
+      networksWithTransactionActivity[account?.address]?.activeChains;
+
+    if (account.scopes.includes('eip155:0') && chainsWithActivityByAddress) {
+      return chainsWithActivityByAddress.map((chainNumber) => {
+        const chainId = toHex(chainNumber);
+        return {
+          chainId,
+          name:
+            NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP] ??
+            chainId,
+        };
+      });
+    }
+
+    if (account.scopes.includes(MultichainNetworks.SOLANA)) {
+      return [
+        {
+          chainId: MultichainNetworks.SOLANA,
+          name: NETWORK_TO_NAME_MAP[MultichainNetworks.SOLANA],
+        },
+      ];
+    }
+
+    if (account.scopes.includes(MultichainNetworks.BITCOIN)) {
+      return [
+        {
+          chainId: MultichainNetworks.BITCOIN,
+          name: NETWORK_TO_NAME_MAP[MultichainNetworks.BITCOIN],
+        },
+      ];
+    }
+
+    return [];
+  },
 );

@@ -327,6 +327,8 @@ export const PLUME_DISPLAY_NAME = 'Plume';
 export const MATCHAIN_DISPLAY_NAME = 'Matchain';
 export const FLOW_DISPLAY_NAME = 'Flow EVM Mainnet';
 export const MONAD_TESTNET_DISPLAY_NAME = 'Monad Testnet';
+export const SOLANA_MAINNET_DISPLAY_NAME = 'Solana';
+export const BITCOIN_MAINNET_DISPLAY_NAME = 'Bitcoin';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -562,6 +564,7 @@ export const SHAPE_IMAGE_URL = './images/shape.svg';
 export const UNICHAIN_IMAGE_URL = './images/unichain.svg';
 export const MEGAETH_TESTNET_IMAGE_URL = './images/MegaETH-logo-testnet.png';
 export const SOLANA_IMAGE_URL = './images/solana-logo.svg';
+export const BITCOIN_IMAGE_URL = './images/bitcoin-logo.svg';
 export const XRPLEVM_TESTNET_IMAGE_URL = './images/xrplevm-testnet.svg';
 export const XRP_TOKEN_IMAGE_URL = './images/xrp-logo.svg';
 export const LENS_IMAGE_URL = './images/lens.png';
@@ -709,6 +712,8 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.MATCHAIN]: MATCHAIN_DISPLAY_NAME,
   [CHAIN_IDS.FLOW]: FLOW_DISPLAY_NAME,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_DISPLAY_NAME,
+  [MultichainNetworks.SOLANA]: SOLANA_MAINNET_DISPLAY_NAME,
+  [MultichainNetworks.BITCOIN]: BITCOIN_MAINNET_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -986,6 +991,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: UNICHAIN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: UNICHAIN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
+  [MultichainNetworks.BITCOIN]: BITCOIN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]: XRPLEVM_TESTNET_IMAGE_URL,
   [CHAIN_IDS.LENS]: LENS_IMAGE_URL,
   [CHAIN_IDS.PLUME]: PLUME_IMAGE_URL,

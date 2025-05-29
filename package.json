@@ -291,7 +291,7 @@
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/multichain-api-client": "^0.6.0",
     "@metamask/multichain-api-middleware": "^0.1.1",
-    "@metamask/multichain-network-controller": "^0.5.1",
+    "@metamask/multichain-network-controller": "^0.7.0",
     "@metamask/multichain-transactions-controller": "^0.9.0",
     "@metamask/name-controller": "^8.0.3",
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A23.5.0#~/.yarn/patches/@metamask-network-controller-npm-23.5.0-56b87eea93.patch",

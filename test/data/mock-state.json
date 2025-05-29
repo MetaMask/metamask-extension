@@ -764,11 +764,15 @@
     "networksWithTransactionActivity": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
         "namespace": "eip155",
-        "activeChain": ["0x5"]
+        "activeChains": ["137", "56"]
       },
       "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
         "namespace": "solana",
         "activeChain": []
+      },
+      "0xd5e099c71b797516c10ed0f0d895f429c2781111": {
+        "namespace": "eip155",
+        "activeChains": ["1", "137"]
       }
     },
     "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",

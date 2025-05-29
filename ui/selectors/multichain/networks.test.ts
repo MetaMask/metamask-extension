@@ -1,4 +1,9 @@
-import { BtcScope, SolScope } from '@metamask/keyring-api';
+import {
+  BtcScope,
+  SolScope,
+  BtcAccountType,
+  SolAccountType,
+} from '@metamask/keyring-api';
 import {
   type NetworkConfiguration,
   RpcEndpointType,
@@ -6,7 +11,6 @@ import {
 } from '@metamask/network-controller';
 import type { Hex, CaipChainId } from '@metamask/utils';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
-
 import { type NetworkState } from '../../../shared/modules/selectors/networks';
 import type { AccountsState } from '../accounts';
 import {
@@ -15,6 +19,7 @@ import {
   MOCK_ACCOUNT_SOLANA_MAINNET,
 } from '../../../test/data/mock-accounts';
 import { RemoteFeatureFlagsState } from '../remote-feature-flags';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
   type MultichainNetworkControllerState,
   getNonEvmMultichainNetworkConfigurationsByChainId,
@@ -22,6 +27,7 @@ import {
   getSelectedMultichainNetworkChainId,
   getSelectedMultichainNetworkConfiguration,
   getIsEvmMultichainNetworkSelected,
+  getActiveNetworksByScopes,
 } from './networks';
 
 type TestState = AccountsState &
@@ -153,6 +159,42 @@ const mockState: TestState = {
       },
     },
   },
+};
+
+const mockAccount = {
+  ...mockState.metamask.internalAccounts.accounts[
+    'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+  ],
+  balance: '0x152387ad22c3f0',
+  pinned: false,
+  hidden: false,
+  lastSelected: 0,
+  active: 0,
+  keyring: { type: 'HD Key Tree' },
+  label: null,
+};
+
+const mockBitcoinAccount = {
+  ...mockAccount,
+  id: 'b5893c59-e376-4cc0-93ad-35ddaab574a1',
+  address: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
+  type: BtcAccountType.P2wpkh,
+  scopes: [MultichainNetworks.BITCOIN],
+};
+
+const mockSolanaAccount = {
+  ...mockAccount,
+  id: 'b7893c54-e376-4cc0-93ad-05dd1ab574a4',
+  address: 'B33FvNLyahfDqEZD7erAnr5bXZsw58nmEKiaiAoKmXEr',
+  type: SolAccountType.DataAccount,
+  scopes: [MultichainNetworks.SOLANA, MultichainNetworks.SOLANA_TESTNET],
+};
+
+const mockEvmAccount = {
+  ...mockAccount,
+  id: 'b7893c54-e376-4cc0-93ad-05dd1ab574a4',
+  address: '0x884d0eGA54cc9C222d355D2A3D3e9F0C23155cDz',
+  scopes: ['eip155:0'] as `${string}:${string}`[],
 };
 
 describe('Multichain network selectors', () => {
@@ -365,5 +407,91 @@ describe('Multichain network selectors', () => {
         ),
       ).toStrictEqual(mockEvmNetworksWithNewConfig['eip155:1']);
     });
+  });
+});
+
+describe('getActiveNetworksByScopes', () => {
+  it('returns EVM networks for account with eip155:0 scope and activeChains', () => {
+    const state = {
+      metamask: {
+        networksWithTransactionActivity: {
+          '0x884d0eGA54cc9C222d355D2A3D3e9F0C23155cDz': {
+            namespace: 'eip155',
+            activeChains: ['1', '137'],
+          },
+        },
+      },
+    };
+    const result = getActiveNetworksByScopes(state, mockEvmAccount);
+    expect(result).toEqual([
+      expect.objectContaining({ chainId: '0x1', name: expect.any(String) }),
+      expect.objectContaining({ chainId: '0x89', name: expect.any(String) }),
+    ]);
+  });
+
+  it('returns Solana network for account with solana scope', () => {
+    const state = {
+      metamask: {
+        networksWithTransactionActivity: {
+          'solana-address': {
+            namespace: 'solana',
+            activeChains: [],
+          },
+        },
+      },
+    };
+    const result = getActiveNetworksByScopes(state, mockSolanaAccount);
+    expect(result).toEqual([
+      expect.objectContaining({
+        chainId: SolScope.Mainnet,
+        name: expect.any(String),
+      }),
+    ]);
+  });
+
+  it('returns Bitcoin network for account with bitcoin scope', () => {
+    const state = {
+      metamask: {
+        networksWithTransactionActivity: {
+          'btc-address': {
+            namespace: 'bip122',
+            activeChains: [],
+          },
+        },
+      },
+    };
+    const result = getActiveNetworksByScopes(state, mockBitcoinAccount);
+    expect(result).toEqual([
+      expect.objectContaining({
+        chainId: BtcScope.Mainnet,
+        name: expect.any(String),
+      }),
+    ]);
+  });
+
+  it('returns empty array for account with no scopes', () => {
+    const account = { ...mockEvmAccount, scopes: [] };
+    const state = {
+      metamask: {
+        networksWithTransactionActivity: {
+          '0xevm1': {
+            namespace: 'eip155',
+            activeChains: [1],
+          },
+        },
+      },
+    };
+    const result = getActiveNetworksByScopes(state, account);
+    expect(result).toEqual([]);
+  });
+
+  it('returns empty array for account with no activity', () => {
+    const state = {
+      metamask: {
+        networksWithTransactionActivity: {},
+      },
+    };
+    const result = getActiveNetworksByScopes(state, mockEvmAccount);
+    expect(result).toEqual([]);
   });
 });
