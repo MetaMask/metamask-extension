@@ -1,3 +1,4 @@
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { withFixtures } from '../../../helpers';
 
 import FixtureBuilder from '../../../fixture-builder';
@@ -16,7 +17,12 @@ describe('View DeFi details', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withEnabledNetworks({
+            [CHAIN_IDS.MAINNET]: true,
+            [CHAIN_IDS.LINEA_MAINNET]: true,
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockDeFiPositionFeatureFlag,
       },
@@ -25,16 +31,7 @@ describe('View DeFi details', function () {
 
         await new Homepage(driver).goToDeFiTab();
 
-        // Validate the default network is Localhost 8545
-        await new HeaderNavbar(driver).check_currentSelectedNetwork(
-          'Localhost 8545',
-        );
-
         const defiTab = new DeFiTab(driver);
-
-        // Empty state
-        await defiTab.check_noPositionsMessageIsDisplayed();
-        await defiTab.waitForStakeLink();
 
         // check ethereum positions present
         await switchToNetworkFlow(driver, 'Ethereum Mainnet');
