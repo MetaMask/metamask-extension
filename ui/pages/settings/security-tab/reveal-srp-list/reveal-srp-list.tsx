@@ -28,8 +28,11 @@ import {
   getSocialLoginType,
 } from '../../../../selectors/social-sync';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useSyncSRPs } from '../../../../hooks/social-sync/useSyncSRPs';
 
 export const RevealSrpList = () => {
+  // sync SRPs
+  useSyncSRPs();
   const t = useI18nContext();
   const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
   const [selectedKeyringId, setSelectedKeyringId] = useState('');

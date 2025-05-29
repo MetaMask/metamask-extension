@@ -308,6 +308,26 @@ export function restoreSocialBackupAndGetSeedPhrase(
   };
 }
 
+export function syncSeedPhrases(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      await submitRequestToBackground('syncSeedPhrases');
+    } catch (error) {
+      console.error('[syncSeedPhrases] error', error);
+      dispatch(displayWarning(error.message));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
 /**
  * Changes the password of the currently unlocked account.
  *
