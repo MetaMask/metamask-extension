@@ -99,6 +99,9 @@ describe('Onboarding Flow', () => {
           },
         ],
       },
+      localeMessages: {
+        currentLocale: 'en',
+      },
     };
 
     const completedOnboardingStore = configureMockStore()(
