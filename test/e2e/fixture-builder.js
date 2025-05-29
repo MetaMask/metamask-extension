@@ -302,12 +302,6 @@ class FixtureBuilder {
     });
   }
 
-  withNetworkControllerOnMonad() {
-    return this.withNetworkController({
-      selectedNetworkClientId: 'monad-testnet',
-    });
-  }
-
   withNetworkControllerOnLineaLocahost() {
     return this.withNetworkController({
       networkConfigurations: {
@@ -319,36 +313,6 @@ class FixtureBuilder {
           ticker: 'ETH',
           networkConfigurationId: 'networkConfigurationId',
           id: 'networkConfigurationId',
-        },
-      },
-    });
-  }
-
-  withNetworkControllerOnMonadLocalhost() {
-    return this.withNetworkController({
-      networkConfigurations: {
-        networkConfigurationId: {
-          chainId: CHAIN_IDS.MONAD_TESTNET,
-          nickname: 'Localhost 8545',
-          rpcPrefs: {},
-          rpcUrl: 'http://localhost:8545',
-          ticker: 'MON',
-          networkConfigurationId: 'networkConfigurationId',
-          id: 'networkConfigurationId',
-        },
-      },
-    });
-  }
-
-  withNetworkControllerOnMegaETHLocalhost() {
-    return this.withNetworkController({
-      networkConfigurations: {
-        networkConfigurationId: {
-          chainId: CHAIN_IDS.MEGAETH_TESTNET,
-          nickname: 'Localhost 8545',
-          rpcPrefs: {},
-          rpcUrl: 'http://localhost:8545',
-          ticker: 'ETH',
         },
       },
     });
