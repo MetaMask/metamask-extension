@@ -48,6 +48,8 @@ describe('Vault Corruption', function () {
 
   /**
    * Script to break both the primary and backup databases.
+   *
+   * @param backupKeyToDelete - The key to delete from the backup database.
    */
   const breakAllDatabasesScript = (
     backupKeyToDelete: 'meta' | 'KeyringController',
