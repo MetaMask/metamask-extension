@@ -145,8 +145,8 @@ const destroyCookieExtStreams = () => {
 };
 
 /**
- * This listener destroys the phishing extension streams when the extension port is disconnected,
- * so that streams may be re-established later the phishing extension port is reconnected.
+ * This listener destroys the cookie extension streams when the extension port is disconnected,
+ * so that streams may be re-established later the cookie extension port is reconnected.
  */
 const onDisconnectDestroyCookieStreams = () => {
   const err = checkForLastError();
@@ -165,7 +165,7 @@ const onDisconnectDestroyCookieStreams = () => {
    * once the port and connections are ready. Delay time is arbitrary.
    */
   if (err) {
-    console.warn(`${err} Resetting the phishing streams.`);
+    console.warn(`${err} Resetting the cookie streams.`);
     setTimeout(setupCookieHandlerExtStreams, 1000);
   }
 };
@@ -179,7 +179,7 @@ const onMessageSetUpCookieHandlerStreams = (msg: {
       setupCookieHandlerExtStreams();
     }
     return Promise.resolve(
-      `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for phishing streams`,
+      `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for cookie streams`,
     );
   }
   return undefined;

@@ -50,6 +50,8 @@ import { getStartupTraceTags } from './helpers/utils/tags';
 
 const METHOD_START_UI_SYNC = 'startUISync';
 
+const METHOD_START_UI_SYNC = 'startUISync';
+
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
 let reduxStore;
