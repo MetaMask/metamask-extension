@@ -129,7 +129,7 @@ describe('metaRPCClientFactory', () => {
     const rpcMethod1 = metaRPCClient.bar;
     const rpcMethod2 = metaRPCClient.bar;
     // make sure we are using a cached function.
-    expect(rpcMethod1).toEqual(rpcMethod2);
+    expect(rpcMethod1).toStrictEqual(rpcMethod2);
     const rpcPromise1 = rpcMethod1.call(metaRPCClient, 'baz');
     const rpcPromise2 = rpcMethod2.call(metaRPCClient, 'baz');
 
@@ -142,7 +142,7 @@ describe('metaRPCClientFactory', () => {
         result: `Fake response for ${key}`,
       });
     }
-    expect(keys[0]).not.toEqual(keys[1]); // sanity check; keys should be unique
+    expect(keys[0]).not.toStrictEqual(keys[1]); // sanity check; keys should be unique
     await expect(rpcPromise1).resolves.toStrictEqual(
       `Fake response for ${keys[0]}`,
     );
@@ -235,7 +235,7 @@ describe('metaRPCClientFactory', () => {
     const [, { timer }] = [...metaRPCClient.requests][0];
     streamTest.emit('end');
 
-    await expect(requestProm).rejects.toThrow();
+    await expect(requestProm).rejects.toThrow(new DisconnectError('disconnected'));
 
     expect(clearTimeoutSpy).toHaveBeenCalledWith(timer);
     jest.useRealTimers();
