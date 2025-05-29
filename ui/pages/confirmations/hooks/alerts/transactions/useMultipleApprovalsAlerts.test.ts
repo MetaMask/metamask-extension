@@ -4,7 +4,6 @@ import {
   SimulationTokenBalanceChange,
   SimulationTokenStandard,
   TransactionMeta,
-  TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
@@ -16,6 +15,7 @@ import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { getTokenStandardAndDetailsByChain } from '../../../../../store/actions';
+import { ApprovalBalanceChange } from '../../../components/confirm/info/hooks/useBatchApproveBalanceChanges';
 import { useMultipleApprovalsAlerts } from './useMultipleApprovalsAlerts';
 
 // Mock dependencies
@@ -59,6 +59,21 @@ const SPENDER_ADDRESS = '0x3456789012345678901234567890123456789012' as Hex;
 
 const mockT = (key: string) => key;
 
+// Mock approval balance change for tests
+const MOCK_APPROVAL_BALANCE_CHANGE: ApprovalBalanceChange = {
+  asset: {
+    address: TOKEN_ADDRESS_1,
+    chainId: '0x5',
+    standard: TokenStandard.ERC20,
+  },
+  amount: new BigNumber('1000'),
+  fiatAmount: null,
+  isApproval: true,
+  isAllApproval: false,
+  isUnlimitedApproval: false,
+  nestedTransactionIndex: 0,
+};
+
 const createMockNestedTransaction = (
   data: string,
   to: Hex,
@@ -91,7 +106,7 @@ function runHook({
   currentConfirmation?: Partial<TransactionMeta>;
   nestedTransactions?: NestedTransactionMetadata[];
   simulationData?: SimulationTokenBalanceChange[];
-  approveBalanceChanges?: any[];
+  approveBalanceChanges?: ApprovalBalanceChange[];
 } = {}) {
   const confirmation = currentConfirmation
     ? {
@@ -224,7 +239,7 @@ describe('useMultipleApprovalsAlerts', () => {
         },
         nestedTransactions,
         simulationData,
-        approveBalanceChanges: [{}], // non-empty to pass the check
+        approveBalanceChanges: [], // non-empty to pass the check
       });
 
       expect(alerts).toEqual([]);
@@ -251,7 +266,7 @@ describe('useMultipleApprovalsAlerts', () => {
         },
         nestedTransactions,
         simulationData: [], // no outflows
-        approveBalanceChanges: [{}],
+        approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
       });
 
       expect(alerts).toEqual([
@@ -286,7 +301,7 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
-        approveBalanceChanges: [{}],
+        approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
       });
 
       expect(alerts).toHaveLength(1);
@@ -310,7 +325,7 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
-        approveBalanceChanges: [{}],
+        approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
       });
 
       expect(alerts).toHaveLength(1);
@@ -334,7 +349,7 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
-        approveBalanceChanges: [{}],
+        approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
       });
 
       expect(alerts).toHaveLength(1);
@@ -358,7 +373,7 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
-        approveBalanceChanges: [{}],
+        approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
       });
 
       expect(alerts).toHaveLength(1);
@@ -384,7 +399,7 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
-        approveBalanceChanges: [{}],
+        approveBalanceChanges: [],
       });
 
       expect(alerts).toEqual([]);
@@ -412,7 +427,7 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
-        approveBalanceChanges: [{}],
+        approveBalanceChanges: [],
       });
 
       expect(alerts).toEqual([]);
@@ -448,7 +463,7 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
-        approveBalanceChanges: [{}],
+        approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
       });
 
       expect(alerts).toHaveLength(1);
@@ -465,7 +480,7 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
-        approveBalanceChanges: [{}],
+        approveBalanceChanges: [],
       });
 
       expect(alerts).toEqual([]);
@@ -484,7 +499,7 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
-        approveBalanceChanges: [{}],
+        approveBalanceChanges: [],
       });
 
       expect(alerts).toEqual([]);
@@ -508,7 +523,7 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
-        approveBalanceChanges: [{}],
+        approveBalanceChanges: [],
       });
 
       expect(alerts).toEqual([]);
@@ -559,7 +574,7 @@ describe('useMultipleApprovalsAlerts', () => {
         },
         nestedTransactions,
         simulationData: [], // No outflows - should be unused
-        approveBalanceChanges: [{}],
+        approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
       });
 
       expect(alerts).toHaveLength(1);
@@ -612,7 +627,7 @@ describe('useMultipleApprovalsAlerts', () => {
         },
         nestedTransactions,
         simulationData,
-        approveBalanceChanges: [{}],
+        approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
       });
 
       expect(alerts).toHaveLength(1);
@@ -642,7 +657,7 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
-        approveBalanceChanges: [{}],
+        approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
       });
 
       // Should still work with fallback to TokenStandard.none
@@ -662,7 +677,7 @@ describe('useMultipleApprovalsAlerts', () => {
       });
 
       mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
-        standard: 'INVALID_STANDARD' as any,
+        standard: 'INVALID_STANDARD' as TokenStandard,
       });
 
       const alerts = runHook({
@@ -671,7 +686,7 @@ describe('useMultipleApprovalsAlerts', () => {
           chainId: '0x5',
         },
         nestedTransactions,
-        approveBalanceChanges: [{}],
+        approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
       });
 
       expect(alerts).toHaveLength(1);
@@ -709,7 +724,7 @@ describe('useMultipleApprovalsAlerts', () => {
         },
         nestedTransactions,
         simulationData,
-        approveBalanceChanges: [{}],
+        approveBalanceChanges: [],
       });
 
       expect(alerts).toEqual([]); // should match despite case difference
@@ -734,7 +749,7 @@ describe('useMultipleApprovalsAlerts', () => {
         },
         nestedTransactions,
         simulationData: undefined, // undefined simulation data
-        approveBalanceChanges: [{}],
+        approveBalanceChanges: [MOCK_APPROVAL_BALANCE_CHANGE],
       });
 
       expect(alerts).toHaveLength(1); // should treat as unused
