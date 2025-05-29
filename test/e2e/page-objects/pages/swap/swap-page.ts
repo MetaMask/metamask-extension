@@ -110,23 +110,23 @@ class SwapPage {
   }
 
   async createSolanaSwap(options: SwapSolanaOptions) {
-    if (options.swapFrom !== 'SOL') {
-      await this.driver.clickElement(this.bridgeSourceButton);
 
-      await this.driver.clickElement({
-        text: options.swapFrom,
-        tag: 'p',
-      });
-    }
+    await this.driver.clickElement(this.bridgeSourceButton, 3);
+    await this.driver.delay(2000)
 
-    if (options.swapTo !== 'USDC') {
-      await this.driver.clickElement(this.bridgeDestinationButton);
+    await this.driver.clickElement({
+      text: options.swapFrom,
+      css: '[data-testid="multichain-token-list-button"] p',
+    });
 
-      await this.driver.clickElement({
-        text: options.swapTo,
-        tag: 'p',
-      });
-    }
+    await this.driver.clickElement(this.bridgeDestinationButton, 3);
+
+
+    await this.driver.clickElement({
+      text: options.swapTo,
+      css: '[data-testid="multichain-token-list-button"] p',
+    });
+
     await this.driver.waitForSelector(this.fromAmount);
     await this.driver.fill(this.fromAmount, options.amount.toString());
   }
