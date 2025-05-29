@@ -6555,7 +6555,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^56.2.0":
+"@metamask/transaction-controller@npm:56.2.0":
   version: 56.2.0
   resolution: "@metamask/transaction-controller@npm:56.2.0"
   dependencies:
@@ -6588,6 +6588,42 @@ __metadata:
     "@metamask/network-controller": ^23.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
   checksum: 10/3175b943d030adf473dec141343c870bda2233e60a2fc84110440e658c5890a9517f54ed91c898d350dc10095e01d240ae2bb75d04973fb1a3d2be851d5c6ce6
+  languageName: node
+  linkType: hard
+
+"@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A56.2.0#~/.yarn/patches/@metamask-transaction-controller-npm-56.2.0-492cd61b62.patch":
+  version: 56.2.0
+  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A56.2.0#~/.yarn/patches/@metamask-transaction-controller-npm-56.2.0-492cd61b62.patch::version=56.2.0&hash=f25007"
+  dependencies:
+    "@ethereumjs/common": "npm:^4.4.0"
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@ethersproject/wallet": "npm:^5.7.0"
+    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/controller-utils": "npm:^11.9.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/nonce-tracker": "npm:^6.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^11.2.0"
+    async-mutex: "npm:^0.5.0"
+    bn.js: "npm:^5.2.1"
+    eth-method-registry: "npm:^4.0.0"
+    fast-json-patch: "npm:^3.1.1"
+    lodash: "npm:^4.17.21"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+    "@metamask/accounts-controller": ^29.0.0
+    "@metamask/approval-controller": ^7.0.0
+    "@metamask/eth-block-tracker": ">=9"
+    "@metamask/gas-fee-controller": ^23.0.0
+    "@metamask/network-controller": ^23.0.0
+    "@metamask/remote-feature-flag-controller": ^1.5.0
+  checksum: 10/6dd19934b0511be1e860c241698f4706fd532030847708d2dd552003f84764a333a71dd7f63f6940af9e2f67d5cc14a4315b878e22efb4c7dad3f91b31d32bd3
   languageName: node
   linkType: hard
 
@@ -29857,7 +29893,7 @@ __metadata:
     "@metamask/test-dapp": "npm:9.3.0"
     "@metamask/test-dapp-multichain": "npm:^0.10.0"
     "@metamask/test-dapp-solana": "npm:^0.1.0"
-    "@metamask/transaction-controller": "npm:^56.2.0"
+    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A56.2.0#~/.yarn/patches/@metamask-transaction-controller-npm-56.2.0-492cd61b62.patch"
     "@metamask/user-operation-controller": "npm:^31.0.0"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.13"

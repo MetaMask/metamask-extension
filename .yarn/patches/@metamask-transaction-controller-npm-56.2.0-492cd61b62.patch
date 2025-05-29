@@ -1,0 +1,50 @@
+diff --git a/dist/types.d.cts b/dist/types.d.cts
+index 688e2b61f615f8412425f2c50e6704533178d963..3809ec07684ea825d99cb061d9492394a42c5bc2 100644
+--- a/dist/types.d.cts
++++ b/dist/types.d.cts
+@@ -1362,6 +1362,8 @@ export type ValidateSecurityRequest = {
+     params: unknown[];
+     /** Optional EIP-7702 delegation to mock for the transaction sender. */
+     delegationMock?: Hex;
++    /** Origin of the request, such as a dApp hostname or `ORIGIN_METAMASK` if internal. */
++    origin?: string;
+ };
+ /** Data required to pay for transaction gas using an ERC-20 token. */
+ export type GasFeeToken = {
+diff --git a/dist/types.d.mts b/dist/types.d.mts
+index 39437379176b51b13bed5ce5aa3d470d8758f760..53f75ff89a5a1a7ae1d4a820faa0dacbe9eb472c 100644
+--- a/dist/types.d.mts
++++ b/dist/types.d.mts
+@@ -1362,6 +1362,8 @@ export type ValidateSecurityRequest = {
+     params: unknown[];
+     /** Optional EIP-7702 delegation to mock for the transaction sender. */
+     delegationMock?: Hex;
++    /** Origin of the request, such as a dApp hostname or `ORIGIN_METAMASK` if internal. */
++    origin?: string;
+ };
+ /** Data required to pay for transaction gas using an ERC-20 token. */
+ export type GasFeeToken = {
+diff --git a/dist/utils/batch.cjs b/dist/utils/batch.cjs
+index e01a7feec6cd543b7e574615dadf8fd52910d02f..cbd1955afeecde4177b85b788da4b93ede48fb0e 100644
+--- a/dist/utils/batch.cjs
++++ b/dist/utils/batch.cjs
+@@ -148,6 +148,7 @@ async function addTransactionBatchWith7702(request) {
+                 },
+             ],
+             delegationMock: txParams.authorizationList?.[0]?.address,
++            origin,
+         };
+         log('Security request', securityRequest);
+         /* istanbul ignore next */
+diff --git a/dist/utils/batch.mjs b/dist/utils/batch.mjs
+index 4294b5d2c2276883ece19519d499dde9224c6f4d..c434d27b5fbce61bd2b8ebeb45b080b387e77e3d 100644
+--- a/dist/utils/batch.mjs
++++ b/dist/utils/batch.mjs
+@@ -143,6 +143,7 @@ async function addTransactionBatchWith7702(request) {
+                 },
+             ],
+             delegationMock: txParams.authorizationList?.[0]?.address,
++            origin,
+         };
+         log('Security request', securityRequest);
+         /* istanbul ignore next */
