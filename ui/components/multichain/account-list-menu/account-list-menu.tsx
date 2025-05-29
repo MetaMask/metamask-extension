@@ -88,7 +88,10 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
   ACCOUNT_WATCHER_NAME,
@@ -722,7 +725,10 @@ export const AccountListMenu = ({
                       hd_entropy_index: hdEntropyIndex,
                     },
                   });
-                  if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+                  if (
+                    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
+                    getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
+                  ) {
                     global.platform.openExtensionInBrowser?.(
                       CONNECT_HARDWARE_ROUTE,
                     );
