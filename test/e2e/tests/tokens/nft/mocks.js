@@ -367,6 +367,12 @@ function setupAutoDetectMocking(
   // Get assets for account
   server
     .forGet(`https://nft.api.cx.metamask.io/users/${testAddress}/tokens`)
+    .withQuery({
+      limit: 50,
+      includeTopBid: true,
+      chainIds: ['1', '59144'],
+      continuation: '',
+    })
     .thenCallback(() => {
       return {
         statusCode: 200,
