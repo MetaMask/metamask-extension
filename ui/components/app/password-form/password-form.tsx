@@ -120,8 +120,7 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
   const handleConfirmPasswordChange = useCallback(
     (confirmPasswordInput: string) => {
       const error =
-        password === confirmPasswordInput ||
-        confirmPasswordInput.length < PASSWORD_MIN_LENGTH
+        password === confirmPasswordInput || confirmPasswordInput.length === 0
           ? ''
           : t('passwordsDontMatch');
 
