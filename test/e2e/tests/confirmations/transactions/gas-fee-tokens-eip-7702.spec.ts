@@ -5,14 +5,12 @@ import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { Driver } from '../../../webdriver/driver';
 import FixtureBuilder from '../../../fixture-builder';
 import { WINDOW_TITLES, unlockWallet, withFixtures } from '../../../helpers';
+import { toggleStxSetting } from '../../../page-objects/flows/toggle-stx-setting.flow';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
-import ActivityListPage from '../../../page-objects/pages/home/activity-list';
-import AdvancedSettings from '../../../page-objects/pages/settings/advanced-settings';
-import GasFeeTokenModal from '../../../page-objects/pages/confirmations/redesign/gas-fee-token-modal';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import HomePage from '../../../page-objects/pages/home/homepage';
-import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import GasFeeTokenModal from '../../../page-objects/pages/confirmations/redesign/gas-fee-token-modal';
+import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 import { mockEip7702FeatureFlag } from '../helpers';
 import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transaction-relay';
@@ -49,17 +47,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
 
         // disable smart transactions step by step
         // we cannot use fixtures because migration 135 overrides the opt in value to true
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_pageIsLoaded();
-        await headerNavbar.openSettingsPage();
-
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
-        await settingsPage.clickAdvancedTab();
-        const advancedSettingsPage = new AdvancedSettings(driver);
-        await advancedSettingsPage.check_pageIsLoaded();
-        await advancedSettingsPage.toggleSmartTransactions();
-        await settingsPage.closeSettingsPage();
+        await toggleStxSetting(driver);
 
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

@@ -847,7 +847,7 @@ class FixtureBuilder {
 
   /**
    * @deprecated this method should not be used, as the `smartTransactionsOptInStatus` value is overridden by the migration 135
-   * Use the step by step flow to disable this setting.
+   * Use the `toggleStxSetting` flow to disable this setting effectively.
    */
   withPreferencesControllerSmartTransactionsOptedOut() {
     return this.withPreferencesController({
