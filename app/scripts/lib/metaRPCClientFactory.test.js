@@ -233,7 +233,9 @@ describe('metaRPCClientFactory', () => {
     const [, { timer }] = [...metaRPCClient.requests][0];
     streamTest.emit('end');
 
-    await expect(requestProm).rejects.toThrow(new DisconnectError('disconnected'));
+    await expect(requestProm).rejects.toThrow(
+      new DisconnectError('disconnected'),
+    );
 
     expect(clearTimeoutSpy).toHaveBeenCalledWith(timer);
     jest.useRealTimers();
