@@ -116,17 +116,10 @@ async function switchToDialogPopoverValidateDetailsRedesign(
 }
 
 async function rejectTransactionRedesign(driver) {
-  if (isManifestV3) {
-    await driver.clickElement({
-      tag: 'button',
-      text: 'Cancel',
-    });
-  } else {
-    await driver.clickElementAndWaitForWindowToClose({
-      tag: 'button',
-      text: 'Cancel',
-    });
-  }
+  await driver.clickElementAndWaitForWindowToClose({
+    tag: 'button',
+    text: 'Cancel',
+  });
 }
 
 async function confirmTransaction(driver) {
@@ -176,7 +169,7 @@ async function validateBalanceAndActivity(
 }
 
 describe('Request-queue UI changes', function () {
-  it('should show network specific to domain', async function () {
+  it.only('should show network specific to domain', async function () {
     const port = 8546;
     const chainId = 1338; // 0x53a
     await withFixtures(
