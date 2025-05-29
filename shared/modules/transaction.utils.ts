@@ -366,9 +366,6 @@ export function parseApprovalTransactionData(data: Hex):
     args?.increment ?? // Fiat Token V2 - increaseAllowance
     args?.amount; // Permit2 - approve
 
-  console.log({ args });
-  console.log('rawAmountOrTokenId', rawAmountOrTokenId);
-
   const amountOrTokenId = rawAmountOrTokenId
     ? new BigNumber(rawAmountOrTokenId?.toString())
     : undefined;
