@@ -100,7 +100,9 @@ const AssetListControlBar = ({
   const allNetworkClientIds = useMemo(() => {
     return Object.keys(tokenNetworkFilter).flatMap((chainId) => {
       const entry = allNetworks[chainId as `0x${string}`];
-      if (!entry) return [];
+      if (!entry) {
+        return [];
+      }
       const index = entry.defaultRpcEndpointIndex;
       const endpoint = entry.rpcEndpoints[index];
       return endpoint?.networkClientId ? [endpoint.networkClientId] : [];
