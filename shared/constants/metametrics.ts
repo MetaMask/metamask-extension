@@ -472,20 +472,6 @@ export type MetaMetricsUserTraits = {
    * Whether the security provider feature has been enabled.
    */
   security_providers?: string[];
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  /**
-   * The address of the MMI account in question
-   */
-  mmi_account_address?: string | null;
-  /**
-   * What is the MMI extension ID
-   */
-  mmi_extension_id?: string;
-  /**
-   * Is the user using a custodian account
-   */
-  mmi_is_custodian?: boolean;
-  ///: END:ONLY_INCLUDE_IF
   /**
    * Does the user change the token sort order on the asset list
    */
@@ -579,20 +565,6 @@ export enum MetaMetricsUserTrait {
    * Identified when the security provider feature is enabled.
    */
   SecurityProviders = 'security_providers',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  /**
-   * Identified when we get the current account in question
-   */
-  MmiAccountAddress = 'mmi_account_address',
-  /**
-   * Identified when we the user has the extension
-   */
-  MmiExtensionId = 'mmi_extension_id',
-  /**
-   * Identified when the user connects a custodian
-   */
-  MmiIsCustodian = 'mmi_is_custodian',
-  ///: END:ONLY_INCLUDE_IF
   PetnameAddressCount = 'petname_addresses_count',
   /**
    * Identified when the user selects a currency from settings
@@ -694,6 +666,7 @@ export enum MetaMetricsEventName {
   ErrorOccured = 'Error occured',
   ExternalLinkClicked = 'External Link Clicked',
   ImportSecretRecoveryPhraseClicked = 'Import Secret Recovery Phrase Clicked',
+  ImportSecretRecoveryPhraseCompleted = 'Import Secret Recovery Phrase Completed',
   KeyExportSelected = 'Key Export Selected',
   KeyExportRequested = 'Key Export Requested',
   KeyExportFailed = 'Key Export Failed',
@@ -761,8 +734,6 @@ export enum MetaMetricsEventName {
   RpcServiceDegraded = 'RPC Service Degraded',
   RpcServiceUnavailable = 'RPC Service Unavailable',
   SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
-  SecretRecoveryPhrasePickerDetailsClicked = 'Secret Recovery Phrase Details Clicked',
-  SecretRecoveryPhrasePickerSelected = 'Secret Recovery Phrase Picker Selected',
   SettingsUpdated = 'Settings Updated',
   SignatureApproved = 'Signature Approved',
   SignatureFailed = 'Signature Failed',
@@ -812,23 +783,6 @@ export enum MetaMetricsEventName {
   // BEGIN:ONLY_INCLUDE_IF(build-flask)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   // END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  DeeplinkClicked = 'Deeplink Clicked',
-  ConnectCustodialAccountClicked = 'Connect Custodial Account Clicked',
-  MMIPortfolioButtonClicked = 'MMI Portfolio Button Clicked',
-  PortfolioDashboardModalButtonClicked = 'Portfolio Dashboard Modal Button Clicked',
-  PortfolioDashboardModalOpened = 'Portfolio Dashboard Modal Opened',
-  StakeButtonClicked = 'Stake Button Clicked',
-  InteractiveReplacementTokenButtonClicked = 'Interactive Replacement Token Button Clicked',
-  RefreshTokenListClicked = 'Refresh Token List Clicked',
-  SignatureDeeplinkDisplayed = 'Signature Deeplink Displayed',
-  InstitutionalFeatureConnected = 'Institutional Feature Connected',
-  CustodianSelected = 'Custodian Selected',
-  CustodianConnected = 'Custodian Connected',
-  CustodianConnectionCanceled = 'Custodian Connection Canceled',
-  CustodianConnectionFailed = 'Custodian Connection Failed',
-  CustodialAccountsConnected = 'Custodial Accounts Connected',
-  ///: END:ONLY_INCLUDE_IF
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
   AccountRemoved = 'Account Removed',
@@ -910,7 +864,8 @@ export enum MetaMetricsEventName {
   // Cross Chain Swaps
   ActionCompleted = 'Action Completed',
   ActionFailed = 'Action Failed',
-  ActionOpened = 'Action Opened',
+  ActionButtonClicked = 'Action Button Clicked',
+  ActionPageViewed = 'Action Page Viewed',
   ActionSubmitted = 'Action Submitted',
   AllQuotesOpened = 'All Quotes Opened',
   AllQuotesSorted = 'All Quotes Sorted',
@@ -969,7 +924,7 @@ export enum MetaMetricsEventCategory {
   // eslint-disable-next-line @typescript-eslint/no-shadow
   Permissions = 'Permissions',
   Phishing = 'Phishing',
-  ProfileSyncing = 'Profile Syncing',
+  BackupAndSync = 'Backup And Sync',
   PushNotifications = 'Notifications',
   Retention = 'Retention',
   Send = 'Send',
@@ -981,9 +936,6 @@ export enum MetaMetricsEventCategory {
   Transactions = 'Transactions',
   Wallet = 'Wallet',
   Confirmations = 'Confirmations',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  MMI = 'Institutional',
-  ///: END:ONLY_INCLUDE_IF
   CrossChainSwaps = 'Cross Chain Swaps',
 }
 

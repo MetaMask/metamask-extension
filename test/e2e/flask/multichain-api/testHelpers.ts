@@ -86,11 +86,10 @@ export const addAccountInWalletAndAuthorize = async (
   await freshEditButtons[0].click();
   await driver.delay(regularDelayMs);
 
-  const checkboxes = await driver.findElements('input[type="checkbox" i]');
-  await checkboxes[0].click(); // select all checkbox
-  await driver.delay(regularDelayMs);
-
-  await driver.clickElement({ text: 'Update', tag: 'button' });
+  await driver.clickElementAndWaitToDisappear({
+    text: 'Update',
+    tag: 'button',
+  });
 };
 
 /**
