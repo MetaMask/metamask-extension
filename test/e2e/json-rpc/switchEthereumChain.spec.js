@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { Key } = require('selenium-webdriver');
 const {
   withFixtures,
   openDapp,
@@ -9,9 +10,6 @@ const {
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-const AdvancedSettings = require('../page-objects/pages/settings/advanced-settings');
-const HeaderNavbar = require('../page-objects/pages/header-navbar');
-const SettingsPage = require('../page-objects/pages/settings/settings-page');
 
 describe('Switch Ethereum Chain for two dapps', function () {
   it('switches the chainId of two dapps when switchEthereumChain of one dapp is confirmed', async function () {
@@ -120,17 +118,18 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
         // disable smart transactions step by step
         // we cannot use fixtures because migration 135 overrides the opt in value to true
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.check_pageIsLoaded();
-        await headerNavbar.openSettingsPage();
-
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
-        await settingsPage.clickAdvancedTab();
-        const advancedSettingsPage = new AdvancedSettings(driver);
-        await advancedSettingsPage.check_pageIsLoaded();
-        await advancedSettingsPage.toggleSmartTransactions();
-        await settingsPage.closeSettingsPage();
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
+        await driver.clickElement({
+          text: 'Advanced',
+          tag: 'div',
+        });
+        const stxToggle = await driver.findElement(
+          '[data-testid="settings-page-stx-opt-in-toggle"]',
+        );
+        stxToggle.sendKeys(Key.ENTER);
 
         // open two dapps
         await openDapp(driver, undefined, DAPP_URL);
