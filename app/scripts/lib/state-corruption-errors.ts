@@ -14,7 +14,7 @@ import {
   CORRUPTION_BLOCK_CHECKSUM_MISMATCH,
 } from '../../../shared/constants/errors';
 import { switchDirectionForPreferredLocale } from '../../../shared/lib/switch-direction';
-import getFirstPreferredLangCode from './get-first-preferred-lang-code';
+import getFirstPreferredLangCode from '../../../shared/lib/get-first-preferred-lang-code';
 
 export type ErrorLike = {
   message: string;
