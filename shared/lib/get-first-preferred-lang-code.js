@@ -1,5 +1,7 @@
 import browser from 'webextension-polyfill';
-import allLocales from '../../_locales/index.json';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import allLocales from '../../app/_locales/index.json';
 
 // ensure that we default users with browser language code 'zh' to the supported 'zh_CN' language code
 const existingLocaleCodes = { zh: 'zh_CN' };
