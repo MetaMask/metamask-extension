@@ -670,7 +670,6 @@ function createFactoredBuild({
               browserPlatforms,
               shouldIncludeSnow,
               applyLavaMoat,
-              isMMI: buildType === 'mmi',
               scripts,
             });
             renderHtmlFile({
@@ -692,7 +691,6 @@ function createFactoredBuild({
               browserPlatforms,
               shouldIncludeSnow,
               applyLavaMoat,
-              isMMI: buildType === 'mmi',
               isTest,
               scripts,
             });
@@ -701,7 +699,6 @@ function createFactoredBuild({
               browserPlatforms,
               shouldIncludeSnow,
               applyLavaMoat,
-              isMMI: buildType === 'mmi',
               isTest,
               scripts,
             });
@@ -1191,7 +1188,6 @@ function renderHtmlFile({
   browserPlatforms,
   shouldIncludeSnow,
   applyLavaMoat,
-  isMMI,
   isTest,
   scripts = [],
 }) {
@@ -1216,7 +1212,7 @@ function renderHtmlFile({
 
   const eta = new Eta();
   const htmlOutput = eta
-    .renderString(htmlTemplate, { isMMI, isTest, shouldIncludeSnow })
+    .renderString(htmlTemplate, { isTest, shouldIncludeSnow })
     // these replacements are added to support the webpack build's automatic
     // compilation of html files, which the gulp-based process doesn't support.
     .replace('./scripts/load/background.ts', './load-background.js')
