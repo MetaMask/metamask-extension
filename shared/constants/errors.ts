@@ -1,8 +1,6 @@
-export type ErrorLike = {
-  message: string;
-  name: string;
-  stack?: string;
-};
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { ErrorLike } from '../../app/scripts/lib/state-corruption-errors';
 
 // This error is emitted from background.js and meant to be handled in the ui
 export const MISSING_VAULT_ERROR =
