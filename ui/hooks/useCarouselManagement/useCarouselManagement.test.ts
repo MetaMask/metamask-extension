@@ -32,7 +32,9 @@ import {
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
 jest.mock('./fetchCarouselSlidesFromContentful');
-jest.mocked(fetchCarouselSlidesFromContentful).mockResolvedValue([]);
+jest
+  .mocked(fetchCarouselSlidesFromContentful)
+  .mockResolvedValue({ prioritySlides: [], regularSlides: [] });
 
 const SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF = [
   { ...FUND_SLIDE, undismissable: true },
