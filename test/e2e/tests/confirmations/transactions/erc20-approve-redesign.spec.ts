@@ -104,7 +104,11 @@ async function importTST(driver: Driver) {
     '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
   );
 
-  await driver.delay(tinyDelayMs);
+  await driver.waitForSelector(
+    '[data-testid="import-tokens-modal-custom-symbol"]',
+  );
+  await driver.fill('[data-testid="import-tokens-modal-custom-symbol"]', 'TST');
+  await driver.fill('[data-testid="import-tokens-modal-custom-decimals"]', '0');
 
   await driver.clickElement({
     css: '[data-testid="import-tokens-button-next"]',
