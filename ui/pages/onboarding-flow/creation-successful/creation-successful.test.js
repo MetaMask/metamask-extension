@@ -130,7 +130,7 @@ describe('Creation Successful Onboarding View', () => {
     ).toBeInTheDocument();
   });
 
-  it('should redirect to privacy-settings view when "Manage default privacy settings" button is clicked', () => {
+  it('should redirect to privacy-settings view when "Manage default settings" button is clicked', () => {
     const { getByText } = renderWithProvider(<CreationSuccessful />, store);
     const privacySettingsButton = getByText('Manage default settings');
     fireEvent.click(privacySettingsButton);
