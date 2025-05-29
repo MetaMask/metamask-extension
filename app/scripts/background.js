@@ -766,6 +766,10 @@ export async function loadStateFromPersistence(backup) {
     // migrations will behave correctly.
     if (hasProperty(backup, 'meta')) {
       preMigrationVersionedData.meta = backup.meta;
+    } else {
+      log.error(
+        "The `backup`'s `meta` property was missing during backup restore",
+      );
     }
   } else {
     const validateVault = true;
