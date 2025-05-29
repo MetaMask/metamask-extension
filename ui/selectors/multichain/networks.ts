@@ -232,7 +232,7 @@ export const getActiveNetworksByScopes = createDeepEqualSelector(
     chainId: string | number | Hex | MultichainNetworks;
     name: string;
   }[] => {
-    if (!account) {
+    if (!account || !account.scopes || account.scopes.length === 0) {
       return [];
     }
 
