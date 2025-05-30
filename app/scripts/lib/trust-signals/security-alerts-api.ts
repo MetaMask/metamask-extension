@@ -9,10 +9,10 @@ export async function scanAddress(
   address: string,
 ): Promise<ScanAddressResponse> {
   const endpoint = `${process.env.SECURITY_ALERTS_API_URL}/address/evm/scan`;
-  const body = {
+  const body: ScanAddressRequest = {
     chain,
     address,
-  } as ScanAddressRequest;
+  };
 
   const response = await fetch(endpoint, {
     method: 'POST',
