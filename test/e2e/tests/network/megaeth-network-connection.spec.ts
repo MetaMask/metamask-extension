@@ -9,7 +9,7 @@ import { Driver } from '../../webdriver/driver';
 const verifyNetworkDisplay = async (driver: Driver) => {
   await driver.waitForSelector({
     css: 'p',
-    text: 'Monad Testnet',
+    text: 'Mega Testnet',
   });
 };
 
@@ -24,13 +24,13 @@ const performDappActionAndVerify = async (
   await verify(driver);
 };
 
-describe('Monad Network Connection Tests', function (this: Suite) {
-  it('should connect dapp to Monad network and verify Monad network and tokens', async function () {
+describe('MegaETH Network Connection Tests', function (this: Suite) {
+  it('should connect dapp to MegaETH network and verify MegaETH network and tokens', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMonad()
+          .withNetworkControllerOnMegaETH()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test?.fullTitle(),
@@ -44,17 +44,17 @@ describe('Monad Network Connection Tests', function (this: Suite) {
         // Verify network is selected
         await driver.waitForSelector({
           css: 'p',
-          text: 'Monad Testnet',
+          text: 'Mega Testnet',
         });
 
-        // Verify MON is displayed
+        // Verify ETH is displayed
         await driver.waitForSelector({
           css: 'span',
-          text: 'MON',
+          text: 'ETH',
         });
         await driver.waitForSelector({
           css: '[data-testid="multichain-token-list-item-token-name"]',
-          text: 'MON',
+          text: 'ETH',
         });
 
         // Open the test dapp and verify balance

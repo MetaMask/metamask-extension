@@ -75,7 +75,7 @@ const blocklistedHosts = [
   'linea-mainnet.infura.io',
   'linea-sepolia.infura.io',
   'testnet-rpc.monad.xyz',
-  'carrot.megaeth.com/rpc',
+  'carrot.megaeth.com',
 ];
 const {
   mockEmptyStalelistAndHotlist,

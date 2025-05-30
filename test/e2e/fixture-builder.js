@@ -377,6 +377,46 @@ class FixtureBuilder {
     return this;
   }
 
+  withNetworkControllerOnMegaETH() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'megaeth-testnet',
+      networkConfigurations: {
+        'megaeth-testnet': {
+          chainId: CHAIN_IDS.MEGAETH_TESTNET,
+          nickname: 'Mega Testnet',
+          rpcUrl: 'https://carrot.megaeth.com/rpc',
+          ticker: 'MegaETH',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://testnet.megaeth.com',
+          },
+          id: 'megaeth-testnet',
+          type: 'rpc',
+          isCustom: true,
+        },
+      },
+    });
+  }
+
+  withNetworkControllerOnMonad() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'monad-testnet',
+      networkConfigurations: {
+        'monad-testnet': {
+          chainId: CHAIN_IDS.MONAD_TESTNET,
+          nickname: 'Monad Testnet',
+          rpcUrl: 'https://testnet-rpc.monad.xyz',
+          ticker: 'MON',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://testnet.monadexplorer.com',
+          },
+          id: 'monad-testnet',
+          type: 'rpc',
+          isCustom: true,
+        },
+      },
+    });
+  }
+
   withNftController(data) {
     merge(
       this.fixture.data.NftController
