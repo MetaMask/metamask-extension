@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
+import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import {
   onboardingMetametricsAgree,
   noThanks,
@@ -92,23 +92,9 @@ describe('Onboarding Metametrics Component', () => {
 
     await waitFor(() => {
       expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(true);
-      expect(mockPushHistory).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
-    });
-  });
-
-  it('should set setParticipateInMetaMetrics to false when clicking cancel', async () => {
-    const { queryByText } = renderWithProvider(
-      <OnboardingMetametrics />,
-      mockStore,
-    );
-
-    const confirmCancel = queryByText(noThanks.message);
-
-    fireEvent.click(confirmCancel);
-
-    await waitFor(() => {
-      expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
-      expect(mockPushHistory).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
+      expect(mockPushHistory).toHaveBeenCalledWith(
+        ONBOARDING_CREATE_PASSWORD_ROUTE,
+      );
     });
   });
 
@@ -124,7 +110,9 @@ describe('Onboarding Metametrics Component', () => {
 
     await waitFor(() => {
       expect(setDataCollectionForMarketing).toHaveBeenCalledWith(false);
-      expect(mockPushHistory).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
+      expect(mockPushHistory).toHaveBeenCalledWith(
+        ONBOARDING_CREATE_PASSWORD_ROUTE,
+      );
     });
   });
 
