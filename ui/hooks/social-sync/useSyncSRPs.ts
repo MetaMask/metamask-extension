@@ -11,7 +11,6 @@ export const useSyncSRPs = () => {
     (async () => {
       try {
         setLoading(true);
-        console.log('[useSyncSRPs] syncing seed phrases...');
         await dispatch(syncSeedPhrases());
       } catch (error) {
         console.error('[useSyncSRPs] error', error);
