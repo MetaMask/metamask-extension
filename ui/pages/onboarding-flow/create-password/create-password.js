@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useHistory } from 'react-router-dom';
 import zxcvbn from 'zxcvbn';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -61,7 +61,7 @@ export default function CreatePassword({
   const [showPassword, setShowPassword] = useState(false);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
-  const navigate = useNavigate();
+  const history = useHistory();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
@@ -87,14 +87,14 @@ export default function CreatePassword({
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {
       if (firstTimeFlowType === FirstTimeFlowType.import) {
-        navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
+        history.replace(ONBOARDING_COMPLETION_ROUTE);
       } else {
-        navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
+        history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       }
     }
   }, [
     currentKeyring,
-    navigate,
+    history,
     firstTimeFlowType,
     newAccountCreationInProgress,
   ]);
@@ -195,7 +195,7 @@ export default function CreatePassword({
       firstTimeFlowType === FirstTimeFlowType.import
     ) {
       await importWithRecoveryPhrase(password, secretRecoveryPhrase);
-      navigate(ONBOARDING_COMPLETION_ROUTE);
+      history.push(ONBOARDING_COMPLETION_ROUTE);
     } else {
       // Otherwise we are in create new wallet flow
       try {
@@ -203,7 +203,7 @@ export default function CreatePassword({
           setNewAccountCreationInProgress(true);
           await createNewAccount(password);
         }
-        navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+        history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       } catch (error) {
         setPasswordError(error.message);
       }

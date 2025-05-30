@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useHistory } from 'react-router-dom';
 import { toHex } from '@metamask/controller-utils';
 import {
   AlignItems,
@@ -45,7 +45,7 @@ import AssetListControlBar from '../../asset-list/asset-list-control-bar';
 import PulseLoader from '../../../../ui/pulse-loader';
 
 export default function NftsTab() {
-  const navigate = useNavigate();
+  const history = useHistory();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const { privacyMode } = useSelector(getPreferences);
@@ -94,7 +94,7 @@ export default function NftsTab() {
   }, [nftsLoading, nftsStillFetchingIndication]);
 
   const handleNftClick = (nft: NFT) => {
-    navigate(
+    history.push(
       `${ASSET_ROUTE}/${toHex(nft.chainId)}/${nft.address}/${nft.tokenId}`,
     );
   };

@@ -18,12 +18,12 @@ exports[`Transaction Confirmed should match snapshot 1`] = `
         <h3
           class="mm-box mm-text mm-text--heading-md mm-text--font-weight-medium mm-text--text-align-center mm-box--color-text-default"
         >
-          Confirmed!
+          [confirmed]!
         </h3>
         <p
           class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-default"
         >
-          Your initial transaction was confirmed by the network. Click OK to go back.
+          [initialTransactionConfirmed]
         </p>
       </div>
     </div>
@@ -33,7 +33,7 @@ exports[`Transaction Confirmed should match snapshot 1`] = `
       <button
         class="button btn-primary modal-container__footer-button"
       >
-        Ok
+        [ok]
       </button>
     </div>
   </div>

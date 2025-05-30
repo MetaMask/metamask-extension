@@ -6,7 +6,6 @@ import SelectedToken from './selected-token';
 const createProps = (customProps = {}) => {
   return {
     onClick: jest.fn(),
-    onClose: jest.fn(),
     selectedToken: {
       iconUrl: 'iconUrl',
       symbol: 'ETH',

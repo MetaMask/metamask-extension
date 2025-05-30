@@ -96,7 +96,7 @@ export default class Home extends PureComponent {
   };
 
   static propTypes = {
-    navigate: PropTypes.func,
+    history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
@@ -210,7 +210,7 @@ export default class Home extends PureComponent {
 
   checkStatusAndNavigate() {
     const {
-      navigate,
+      history,
       isNotification,
       haveSwapsQuotes,
       haveBridgeQuotes,
@@ -224,22 +224,24 @@ export default class Home extends PureComponent {
 
     const canRedirect = !isNotification && !stayOnHomePage;
     if (canRedirect && showAwaitingSwapScreen) {
-      navigate(AWAITING_SWAP_ROUTE);
+      history.push(AWAITING_SWAP_ROUTE);
     } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
-      navigate(PREPARE_SWAP_ROUTE);
+      history.push(PREPARE_SWAP_ROUTE);
     } else if (canRedirect && haveBridgeQuotes) {
-      navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
+      history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
     } else if (pendingApprovals.length || hasApprovalFlows) {
       navigateToConfirmation(
         pendingApprovals?.[0]?.id,
         pendingApprovals,
         hasApprovalFlows,
-        navigate,
+        history,
       );
     }
   }
 
   componentDidMount() {
+    this.checkStatusAndNavigate();
+
     this.props.fetchBuyableChains();
   }
 
@@ -327,7 +329,7 @@ export default class Home extends PureComponent {
     const { t } = this.context;
 
     const {
-      navigate,
+      history,
       shouldShowSeedPhraseReminder,
       isPopup,
       shouldShowWeb3ShimUsageNotification,
@@ -587,7 +589,7 @@ export default class Home extends PureComponent {
             if (isPopup) {
               global.platform.openExtensionInBrowser(backUpSRPRoute);
             } else {
-              navigate(backUpSRPRoute);
+              history.push(backUpSRPRoute);
             }
           }}
           infoText={t('backupApprovalInfo')}
@@ -792,8 +794,6 @@ export default class Home extends PureComponent {
       newNetworkAddedConfigurationId,
       showMultiRpcModal,
     } = this.props;
-
-    this.checkStatusAndNavigate();
 
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />;

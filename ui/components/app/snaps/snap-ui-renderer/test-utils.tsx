@@ -1,6 +1,6 @@
 import React from 'react';
-import { RenderResult } from '@testing-library/react';
 import { DeepPartial, Reducer } from 'redux';
+import { RenderResult } from '@testing-library/react';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { JSXElement } from '@metamask/snaps-sdk/jsx';
 import configureStore, { MetaMaskReduxState } from '../../../../store/store';
@@ -20,8 +20,17 @@ type RenderInterfaceOptions = {
   metamaskState?: DeepPartial<MetaMaskReduxState>;
 };
 
+// The return type from renderWithProvider includes RenderResult plus a history property
+type RenderWithProviderResult = RenderResult & {
+  history: {
+    location: {
+      pathname: string;
+    };
+  };
+};
+
 // Combine the renderWithProvider result with our custom properties
-type RenderInterfaceResult = RenderResult & {
+type RenderInterfaceResult = RenderWithProviderResult & {
   updateInterface: (
     newContent: JSXElement,
     newState?: Record<string, unknown> | null,
@@ -125,9 +134,5 @@ export function renderInterface(
       10,
     );
 
-  return {
-    ...result,
-    updateInterface,
-    getRenderCount,
-  };
+  return { ...result, updateInterface, getRenderCount };
 }

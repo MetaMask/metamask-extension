@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 import React, { useContext, useRef, useState, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useHistory } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
@@ -80,7 +80,7 @@ export default function AwaitingSwap({
 }) {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
-  const navigate = useNavigate();
+  const history = useHistory();
   const dispatch = useDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const animationEventEmitter = useRef(new EventEmitter());
@@ -329,31 +329,31 @@ export default function AwaitingSwap({
           /* istanbul ignore next */
           if (errorKey === OFFLINE_FOR_MAINTENANCE) {
             await dispatch(prepareToLeaveSwaps());
-            navigate(DEFAULT_ROUTE);
+            history.push(DEFAULT_ROUTE);
           } else if (errorKey === QUOTES_EXPIRED_ERROR) {
             dispatch(prepareForRetryGetQuotes());
             await dispatch(
               fetchQuotesAndSetQuoteState(
-                navigate,
+                history,
                 fromTokenInputValue,
                 maxSlippage,
                 trackEvent,
               ),
             );
           } else if (errorKey) {
-            await dispatch(navigateBackToPrepareSwap(navigate));
+            await dispatch(navigateBackToPrepareSwap(history));
           } else if (
             isSwapsDefaultTokenSymbol(destinationTokenSymbol, chainId) ||
             swapComplete
           ) {
-            navigate(DEFAULT_ROUTE);
+            history.push(DEFAULT_ROUTE);
           } else {
             await dispatch(setDefaultHomeActiveTabName('activity'));
-            navigate(DEFAULT_ROUTE);
+            history.push(DEFAULT_ROUTE);
           }
         }}
         onCancel={async () =>
-          await dispatch(navigateBackToPrepareSwap(navigate))
+          await dispatch(navigateBackToPrepareSwap(history))
         }
         submitText={submitText}
         disabled={submittingSwap}

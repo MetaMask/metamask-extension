@@ -21,12 +21,13 @@ const selectedAddress =
 const nfts = mockState.metamask.allNfts[selectedAddress][toHex(5)];
 const mockAsset = nfts[0].address;
 const mockId = nfts[0].tokenId;
-
-const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
+  const original = jest.requireActual('react-router-dom');
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
-    useNavigate: () => mockUseNavigate,
+    ...original,
+    useHistory: () => ({
+      push: jest.fn(),
+    }),
     useParams: () => ({
       asset: mockAsset,
       id: mockId,

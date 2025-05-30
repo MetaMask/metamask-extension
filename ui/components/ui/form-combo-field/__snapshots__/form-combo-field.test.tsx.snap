@@ -25,7 +25,7 @@ exports[`FormComboField renders with no options 1`] = `
               value="TestValue"
             />
             <button
-              aria-label="Clear"
+              aria-label="[clear]"
               class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
             >
               <span
@@ -81,7 +81,7 @@ exports[`FormComboField renders with options 1`] = `
               value="TestValue"
             />
             <button
-              aria-label="Clear"
+              aria-label="[clear]"
               class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
             >
               <span
@@ -157,7 +157,7 @@ exports[`FormComboField should not render "no options" if hideDropdownIfNoOption
               value="TestValue"
             />
             <button
-              aria-label="Clear"
+              aria-label="[clear]"
               class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
             >
               <span

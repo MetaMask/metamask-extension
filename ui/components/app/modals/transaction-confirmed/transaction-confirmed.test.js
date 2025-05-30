@@ -22,7 +22,7 @@ describe('Transaction Confirmed', () => {
       <TransactionConfirmed.WrappedComponent {...props} />,
     );
 
-    fireEvent.click(queryByText('Ok'));
+    fireEvent.click(queryByText('[ok]'));
 
     expect(props.onSubmit).toHaveBeenCalled();
     expect(props.hideModal).toHaveBeenCalled();

@@ -1,7 +1,7 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import React, { useEffect, useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import { Hex } from '@metamask/utils';
 import { AssetType } from '@metamask/bridge-controller';
@@ -119,7 +119,7 @@ export default function RemoteModeSetupDailyAllowance() {
     getMetaMaskAccountsOrdered,
   );
 
-  const navigate = useNavigate();
+  const history = useHistory();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const isUpdate = params.get('update') === 'true';
@@ -155,9 +155,9 @@ export default function RemoteModeSetupDailyAllowance() {
 
   useEffect(() => {
     if (!isRemoteModeEnabled) {
-      navigate(DEFAULT_ROUTE);
+      history.push(DEFAULT_ROUTE);
     }
-  }, [isRemoteModeEnabled, navigate]);
+  }, [isRemoteModeEnabled, history]);
 
   const handleNext = () => {
     if (currentStep < TOTAL_STEPS) {
@@ -169,7 +169,7 @@ export default function RemoteModeSetupDailyAllowance() {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     } else {
-      navigate(-1);
+      history.goBack();
     }
   };
 
@@ -245,7 +245,7 @@ export default function RemoteModeSetupDailyAllowance() {
         });
 
         // TODO: check better way to route to remote mode if upgrade is needed
-        navigate(REMOTE_ROUTE, { replace: true });
+        history.replace(REMOTE_ROUTE);
       }
     } catch (error) {
       // TODO: show error on UI
@@ -254,7 +254,7 @@ export default function RemoteModeSetupDailyAllowance() {
   };
 
   const onCancel = () => {
-    navigate(-1);
+    history.goBack();
   };
 
   const renderStepContent = () => {

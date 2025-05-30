@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import reactRouterDom from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/jest';
@@ -25,6 +26,11 @@ const mockDispatch = jest.fn().mockImplementation(() => {
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => mockDispatch,
+}));
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: jest.fn(() => []),
 }));
 
 describe('Creation Successful Onboarding View', () => {
@@ -56,6 +62,12 @@ describe('Creation Successful Onboarding View', () => {
 
     toggleExternalServices.mockClear();
     setCompletedOnboarding.mockClear();
+
+    const pushMock = jest.fn();
+    jest
+      .spyOn(reactRouterDom, 'useHistory')
+      .mockImplementation()
+      .mockReturnValue({ push: pushMock });
 
     return store;
   };

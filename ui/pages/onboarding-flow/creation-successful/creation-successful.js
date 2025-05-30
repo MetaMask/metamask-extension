@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   Button,
@@ -38,7 +38,7 @@ import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 export default function CreationSuccessful() {
-  const navigate = useNavigate();
+  const history = useHistory();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
@@ -168,7 +168,7 @@ export default function CreationSuccessful() {
           style={{
             fontSize: 'var(--font-size-5)',
           }}
-          onClick={() => navigate(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
+          onClick={() => history.push(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
           marginTop={4}
           marginBottom={4}
         >
@@ -205,7 +205,7 @@ export default function CreationSuccessful() {
                 hd_entropy_index: hdEntropyIndex,
               },
             });
-            navigate(ONBOARDING_PIN_EXTENSION_ROUTE);
+            history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
           }}
         >
           {t('done')}

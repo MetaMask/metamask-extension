@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useHistory } from 'react-router-dom';
 import SnapListItem from '../../../components/app/snaps/snap-list-item';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -40,10 +40,10 @@ import { getSnapRoute } from '../../../helpers/utils/util';
 
 const SnapList = () => {
   const t = useI18nContext();
-  const navigate = useNavigate();
+  const history = useHistory();
   const settingsRef = useRef();
   const onClick = (snap) => {
-    navigate(getSnapRoute(snap.id));
+    history.push(getSnapRoute(snap.id));
   };
 
   useEffect(() => {
@@ -63,7 +63,7 @@ const SnapList = () => {
               ariaLabel="Back"
               iconName="arrow-left"
               size="sm"
-              onClick={() => navigate(DEFAULT_ROUTE)}
+              onClick={() => history.push(DEFAULT_ROUTE)}
             />
           }
         >

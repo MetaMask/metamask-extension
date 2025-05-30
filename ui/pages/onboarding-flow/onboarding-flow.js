@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Switch, Route } from 'react-router-dom';
-import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
+import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Unlock from '../unlock-page';
 import {
@@ -61,7 +60,7 @@ export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const dispatch = useDispatch();
   const { pathname, search } = useLocation();
-  const navigate = useNavigate();
+  const history = useHistory();
   const t = useI18nContext();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const completedOnboarding = useSelector(getCompletedOnboarding);
@@ -76,9 +75,9 @@ export default function OnboardingFlow() {
 
   useEffect(() => {
     if (completedOnboarding && !isFromReminder) {
-      navigate(DEFAULT_ROUTE);
+      history.push(DEFAULT_ROUTE);
     }
-  }, [navigate, completedOnboarding, isFromReminder]);
+  }, [history, completedOnboarding, isFromReminder]);
 
   useEffect(() => {
     if (isUnlocked && !completedOnboarding && !secretRecoveryPhrase) {
@@ -88,7 +87,7 @@ export default function OnboardingFlow() {
       ].some((route) => pathname.startsWith(route));
 
       if (needsSRP) {
-        navigate(ONBOARDING_UNLOCK_ROUTE);
+        history.push(ONBOARDING_UNLOCK_ROUTE);
       }
     }
   }, [
@@ -96,7 +95,7 @@ export default function OnboardingFlow() {
     completedOnboarding,
     secretRecoveryPhrase,
     pathname,
-    navigate,
+    history,
   ]);
 
   const handleCreateNewAccount = async (password) => {
@@ -111,7 +110,7 @@ export default function OnboardingFlow() {
       unlockAndGetSeedPhrase(password),
     );
     setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
-    navigate(nextRoute);
+    history.push(nextRoute);
   };
 
   const handleImportWithRecoveryPhrase = async (password, srp) => {
@@ -128,7 +127,7 @@ export default function OnboardingFlow() {
     <div className="onboarding-flow">
       <RevealSRPModal
         setSecretRecoveryPhrase={setSecretRecoveryPhrase}
-        onClose={() => navigate(DEFAULT_ROUTE)}
+        onClose={() => history.push(DEFAULT_ROUTE)}
         isOpen={showPasswordModalToAllowSRPReveal}
       />
       <div className="onboarding-flow__wrapper">

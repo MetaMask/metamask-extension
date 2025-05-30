@@ -2,7 +2,7 @@ import { SnapId } from '@metamask/snaps-sdk';
 import { parseCaipAssetType, CaipAssetType } from '@metamask/utils';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useHistory } from 'react-router-dom';
 import {
   sendMultichainTransaction,
   setDefaultHomeActiveTabName,
@@ -30,7 +30,7 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
   );
 
   const account = useSelector(getSelectedInternalAccount);
-  const navigate = useNavigate();
+  const history = useHistory();
   const dispatch = useDispatch();
 
   const currentActivityTabName = useSelector(
@@ -55,9 +55,9 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
     );
 
     if (templatedSnapApproval) {
-      navigate(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
+      history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
     }
-  }, [unapprovedTemplatedConfirmations, navigate, account]);
+  }, [unapprovedTemplatedConfirmations, history, account]);
 
   return async () => {
     // Non-EVM (Snap) Send flow

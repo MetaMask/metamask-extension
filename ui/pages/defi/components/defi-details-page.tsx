@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useNavigate, useParams, Navigate } from 'react-router-dom-v5-compat';
+import { useHistory, useParams, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   Display,
@@ -54,7 +54,7 @@ const DeFiPage = () => {
   const defiPositions = useSelector(getDefiPositions);
   const selectedAccount = useSelector(getSelectedAccount);
 
-  const navigate = useNavigate();
+  const history = useHistory();
   const t = useI18nContext();
   const { privacyMode } = useSelector(getPreferences);
 
@@ -81,7 +81,7 @@ const DeFiPage = () => {
   };
 
   if (!protocolPosition) {
-    return <Navigate to={{ pathname: DEFAULT_ROUTE }} />;
+    return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
 
   return (
@@ -99,7 +99,7 @@ const DeFiPage = () => {
           size={ButtonIconSize.Sm}
           ariaLabel={t('back')}
           iconName={IconName.ArrowLeft}
-          onClick={() => navigate(DEFAULT_ROUTE)}
+          onClick={() => history.push(DEFAULT_ROUTE)}
         />
       </Box>
 

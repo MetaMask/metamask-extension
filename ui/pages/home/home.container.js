@@ -1,6 +1,6 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import withRouterV5Compat from '../../helpers/higher-order-components/with-router-v5-compat';
+import { withRouter } from 'react-router-dom';
 
 import {
   activeTabHasPermissions,
@@ -234,6 +234,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default compose(
-  withRouterV5Compat,
+  withRouter,
   connect(mapStateToProps, mapDispatchToProps),
 )(Home);

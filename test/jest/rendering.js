@@ -1,10 +1,9 @@
 import React, { useMemo } from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
-import { Router } from 'react-router-dom';
-import { CompatRouter } from 'react-router-dom-v5-compat';
-import { createMemoryHistory } from 'history';
+import { MemoryRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
+
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as en from '../../app/_locales/en/messages.json';
@@ -36,21 +35,15 @@ I18nProvider.defaultProps = {
 };
 
 export function renderWithProvider(component, store, initialEntries) {
-  const history = createMemoryHistory({ initialEntries });
-
   const Wrapper = ({ children }) => {
     const WithoutStore = () => (
-      // <MemoryRouter initialEntries={initialEntries || ['/']} initialIndex={0}>
-      <Router history={history}>
-        <CompatRouter>
-          <I18nProvider currentLocale="en" current={en} en={en}>
-            <LegacyI18nProvider>
-              <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
-            </LegacyI18nProvider>
-          </I18nProvider>
-        </CompatRouter>
-      </Router>
-      // </MemoryRouter>
+      <MemoryRouter initialEntries={initialEntries || ['/']} initialIndex={0}>
+        <I18nProvider currentLocale="en" current={en} en={en}>
+          <LegacyI18nProvider>
+            <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
+          </LegacyI18nProvider>
+        </I18nProvider>
+      </MemoryRouter>
     );
     return store ? (
       <Provider store={store}>

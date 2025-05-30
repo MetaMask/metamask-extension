@@ -3,9 +3,9 @@ import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import { userEvent } from '@testing-library/user-event';
-import { Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
+import { CompatRouter } from 'react-router-dom-v5-compat';
 import PropTypes from 'prop-types';
-import { createMemoryHistory } from 'history';
 import configureStore from '../../ui/store/store';
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
 import { LegacyMetaMetricsProvider } from '../../ui/contexts/metametrics';
@@ -40,33 +40,37 @@ I18nProvider.defaultProps = {
 };
 
 const createProviderWrapper = (store, pathname = '/') => {
-  const history = createMemoryHistory({ initialEntries: [pathname] });
   const Wrapper = ({ children }) =>
     store ? (
       <Provider store={store}>
-        <Router history={history}>
+        <MemoryRouter initialEntries={[pathname]}>
+          <CompatRouter>
+            <I18nProvider currentLocale="en" current={en} en={en}>
+              <LegacyI18nProvider>
+                <LegacyMetaMetricsProvider>
+                  {children}
+                </LegacyMetaMetricsProvider>
+              </LegacyI18nProvider>
+            </I18nProvider>
+          </CompatRouter>
+        </MemoryRouter>
+      </Provider>
+    ) : (
+      <MemoryRouter initialEntries={[pathname]}>
+        <CompatRouter>
           <I18nProvider currentLocale="en" current={en} en={en}>
             <LegacyI18nProvider>
               <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
             </LegacyI18nProvider>
           </I18nProvider>
-        </Router>
-      </Provider>
-    ) : (
-      <Router history={history}>
-        <LegacyI18nProvider>
-          <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
-        </LegacyI18nProvider>
-      </Router>
+        </CompatRouter>
+      </MemoryRouter>
     );
 
   Wrapper.propTypes = {
     children: PropTypes.node,
   };
-  return {
-    Wrapper,
-    history,
-  };
+  return Wrapper;
 };
 
 export function renderWithProvider(
@@ -75,20 +79,15 @@ export function renderWithProvider(
   pathname = '/',
   renderer = render,
 ) {
-  const { history, Wrapper } = createProviderWrapper(store, pathname);
-  return {
-    ...renderer(component, { wrapper: Wrapper }),
-    history,
-  };
+  const wrapper = createProviderWrapper(store, pathname);
+
+  return renderer(component, { wrapper });
 }
 
 export function renderHookWithProvider(hook, state, pathname = '/', Container) {
   const store = state ? configureStore(state) : undefined;
 
-  const { history, Wrapper: ProviderWrapper } = createProviderWrapper(
-    store,
-    pathname,
-  );
+  const ProviderWrapper = createProviderWrapper(store, pathname);
 
   const wrapper = Container
     ? ({ children }) => (
@@ -98,10 +97,10 @@ export function renderHookWithProvider(hook, state, pathname = '/', Container) {
       )
     : ProviderWrapper;
 
-  return {
-    ...renderHook(hook, { wrapper }),
-    history,
-  };
+  // render(ProviderWrapper({ children: null }));
+  // screen.debug();
+
+  return renderHook(hook, { wrapper });
 }
 
 /**
@@ -167,7 +166,7 @@ export function renderWithUserEvent(jsx) {
  * It uses the Root component and sets up the store with the provided preloaded state.
  *
  * @param {*} extendedRenderOptions
- * @param {*} extendedRenderOptions.preloadedState - The initial state used to initialised the redux store. For integration tests we rely on a real store instance following the redux recommendations - https://redux.js.org/usage/writing-tests#guiding-principles
+ * @param {*} extendedRenderOptions.preloadedState - The initial state used to initialize the redux store. For integration tests we rely on a real store instance following the redux recommendations - https://redux.js.org/usage/writing-tests#guiding-principles
  * @param {*} extendedRenderOptions.backgroundConnection - The background connection rpc method. When writing integration tests, we can pass a mock background connection to simulate the background connection methods.
  * @param {*} extendedRenderOptions.activeTab - The active tab object.
  * @returns The rendered result from testing library.

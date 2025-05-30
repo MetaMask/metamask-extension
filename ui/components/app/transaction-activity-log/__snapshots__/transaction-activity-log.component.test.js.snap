@@ -8,7 +8,7 @@ exports[`TransactionActivityLog Component should match snapshot 1`] = `
     <div
       class="transaction-activity-log__title"
     >
-      Activity log
+      [activityLog]
     </div>
     <div
       class="transaction-activity-log__activities-container"
@@ -29,9 +29,9 @@ exports[`TransactionActivityLog Component should match snapshot 1`] = `
         >
           <div
             class="transaction-activity-log__activity-text"
-            title="Transaction created with a value of 0.01 ETH at 21:13 on 12/4/2018."
+            title="[transactionCreated]"
           >
-            Transaction created with a value of 0.01 ETH at 21:13 on 12/4/2018.
+            [transactionCreated]
           </div>
         </div>
       </div>
@@ -51,9 +51,9 @@ exports[`TransactionActivityLog Component should match snapshot 1`] = `
         >
           <div
             class="transaction-activity-log__activity-text"
-            title="Transaction submitted with estimated gas fee of 0.000021 ETH at 21:13 on 12/4/2018."
+            title="[transactionSubmitted]"
           >
-            Transaction submitted with estimated gas fee of 0.000021 ETH at 21:13 on 12/4/2018.
+            [transactionSubmitted]
           </div>
         </div>
       </div>
@@ -73,9 +73,9 @@ exports[`TransactionActivityLog Component should match snapshot 1`] = `
         >
           <div
             class="transaction-activity-log__activity-text"
-            title="Transaction resubmitted with estimated gas fee increased to 0.000023 ETH at 21:13 on 12/4/2018"
+            title="[transactionResubmitted]"
           >
-            Transaction resubmitted with estimated gas fee increased to 0.000023 ETH at 21:13 on 12/4/2018
+            [transactionResubmitted]
           </div>
         </div>
       </div>
@@ -95,9 +95,9 @@ exports[`TransactionActivityLog Component should match snapshot 1`] = `
         >
           <div
             class="transaction-activity-log__activity-text"
-            title="Transaction confirmed at 21:13 on 12/4/2018."
+            title="[transactionConfirmed]"
           >
-            Transaction confirmed at 21:13 on 12/4/2018.
+            [transactionConfirmed]
           </div>
         </div>
       </div>

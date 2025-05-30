@@ -11,7 +11,7 @@ exports[`Reject Transactions Model should match snapshot 1`] = `
       <div
         class="modal-container__header-text"
       >
-        Reject 2 transactions
+        [rejectTxsN]
       </div>
       <div
         class="modal-container__header-close"
@@ -25,7 +25,7 @@ exports[`Reject Transactions Model should match snapshot 1`] = `
         <div
           class="reject-transactions__description"
         >
-          You are about to batch reject 2 transactions.
+          [rejectTxsDescription]
         </div>
       </div>
     </div>
@@ -35,12 +35,12 @@ exports[`Reject Transactions Model should match snapshot 1`] = `
       <button
         class="button btn-secondary modal-container__footer-button"
       >
-        Cancel
+        [cancel]
       </button>
       <button
         class="button btn-primary modal-container__footer-button"
       >
-        Reject all
+        [rejectAll]
       </button>
     </div>
   </div>

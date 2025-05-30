@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import { useHistory, useParams } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import { Nft } from '@metamask/assets-controllers';
@@ -120,7 +120,7 @@ export function NftDetailsComponent({
   } = nft;
 
   const t = useI18nContext();
-  const navigate = useNavigate();
+  const history = useHistory();
   const dispatch = useDispatch();
   const ipfsGateway = useSelector(getIpfsGateway);
   const currentNetwork = useSelector(getCurrentChainId);
@@ -251,7 +251,7 @@ export function NftDetailsComponent({
           isSuccessful: isSuccessfulEvent,
         },
       });
-      navigate(DEFAULT_ROUTE);
+      history.push(DEFAULT_ROUTE);
     }
   };
 
@@ -323,7 +323,7 @@ export function NftDetailsComponent({
       }),
     );
     // We only allow sending one NFT at a time
-    navigate(SEND_ROUTE);
+    history.push(SEND_ROUTE);
   };
 
   const getDateCreatedTimestamp = (dateString: string) => {
@@ -359,7 +359,7 @@ export function NftDetailsComponent({
   };
 
   const handleImageClick = () => {
-    return navigate(`${ASSET_ROUTE}/image/${address}/${tokenId}`);
+    return history.push(`${ASSET_ROUTE}/image/${address}/${tokenId}`);
   };
 
   const getValueInFormattedCurrency = (
@@ -395,7 +395,7 @@ export function NftDetailsComponent({
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => navigate(DEFAULT_ROUTE)}
+            onClick={() => history.push(DEFAULT_ROUTE)}
             data-testid="nft__back"
           />
           <NftOptions

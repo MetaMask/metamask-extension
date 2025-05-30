@@ -17,11 +17,16 @@ import {
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import OnboardingMetametrics from './metametrics';
 
-const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+const mockPushHistory = jest.fn();
+
+jest.mock('react-router-dom', () => {
+  const original = jest.requireActual('react-router-dom');
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
-    useNavigate: () => mockUseNavigate,
+    ...original,
+    useLocation: jest.fn(() => ({ search: '' })),
+    useHistory: () => ({
+      push: mockPushHistory,
+    }),
   };
 });
 
@@ -87,7 +92,7 @@ describe('Onboarding Metametrics Component', () => {
 
     await waitFor(() => {
       expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(true);
-      expect(mockUseNavigate).toHaveBeenCalledWith(
+      expect(mockPushHistory).toHaveBeenCalledWith(
         ONBOARDING_CREATE_PASSWORD_ROUTE,
       );
     });
@@ -105,7 +110,7 @@ describe('Onboarding Metametrics Component', () => {
 
     await waitFor(() => {
       expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
-      expect(mockUseNavigate).toHaveBeenCalledWith(
+      expect(mockPushHistory).toHaveBeenCalledWith(
         ONBOARDING_CREATE_PASSWORD_ROUTE,
       );
     });
@@ -123,7 +128,7 @@ describe('Onboarding Metametrics Component', () => {
 
     await waitFor(() => {
       expect(setDataCollectionForMarketing).toHaveBeenCalledWith(false);
-      expect(mockUseNavigate).toHaveBeenCalledWith(
+      expect(mockPushHistory).toHaveBeenCalledWith(
         ONBOARDING_CREATE_PASSWORD_ROUTE,
       );
     });

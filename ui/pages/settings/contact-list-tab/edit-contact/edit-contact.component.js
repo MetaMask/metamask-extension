@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { Redirect, useHistory } from 'react-router-dom';
 import Button from '../../../../components/ui/button/button.component';
 import TextField from '../../../../components/ui/text-field';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
@@ -50,7 +49,7 @@ const EditContact = ({
   listRoute,
 }) => {
   const t = useContext(I18nContext);
-  const navigate = useNavigate();
+  const history = useHistory();
   const [contactName, setContactName] = useState(name);
   const [newAddress, setNewAddress] = useState(address);
   const [newMemo, setNewMemo] = useState(memo);
@@ -112,7 +111,7 @@ const EditContact = ({
             style={{ display: 'contents' }}
             onClick={async () => {
               await removeFromAddressBook(contactChainId, address);
-              navigate(listRoute);
+              history.push(listRoute);
             }}
             data-testid="delete-contact-button"
           >
@@ -228,7 +227,7 @@ const EditContact = ({
                 newMemo || memo,
                 selectedChainId,
               );
-              navigate(listRoute);
+              history.push(listRoute);
             } else {
               setAddressError(t('invalidAddress'));
             }
@@ -240,7 +239,7 @@ const EditContact = ({
               newMemo || memo,
               selectedChainId,
             );
-            navigate(listRoute);
+            history.push(listRoute);
           } else {
             await addToAddressBook(
               address,
@@ -248,10 +247,10 @@ const EditContact = ({
               newMemo || memo,
               selectedChainId,
             );
-            navigate(listRoute);
+            history.push(listRoute);
           }
         }}
-        onCancel={() => navigate(`${viewRoute}/${address}`)}
+        onCancel={() => history.push(`${viewRoute}/${address}`)}
         submitText={t('save')}
         disabled={Boolean(
           (contactName === name &&

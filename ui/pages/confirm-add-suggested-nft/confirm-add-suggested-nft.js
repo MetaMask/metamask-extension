@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
+import { useHistory, useLocation } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
@@ -66,7 +66,7 @@ import { hideAppHeader } from '../routes/utils';
 const ConfirmAddSuggestedNFT = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const history = useHistory();
 
   const location = useLocation();
   const hasAppHeader = location?.pathname ? !hideAppHeader({ location }) : true;
@@ -126,8 +126,8 @@ const ConfirmAddSuggestedNFT = () => {
         });
       }),
     );
-    navigate(mostRecentOverviewPage);
-  }, [dispatch, navigate, trackEvent, mostRecentOverviewPage, suggestedNfts]);
+    history.push(mostRecentOverviewPage);
+  }, [dispatch, history, trackEvent, mostRecentOverviewPage, suggestedNfts]);
 
   const handleCancelNftClick = useCallback(async () => {
     await Promise.all(
@@ -140,17 +140,17 @@ const ConfirmAddSuggestedNFT = () => {
         );
       }),
     );
-    navigate(mostRecentOverviewPage);
-  }, [dispatch, navigate, mostRecentOverviewPage, suggestedNfts]);
+    history.push(mostRecentOverviewPage);
+  }, [dispatch, history, mostRecentOverviewPage, suggestedNfts]);
 
   useEffect(() => {
     const goBackIfNoSuggestedNftsOnFirstRender = () => {
       if (!suggestedNfts.length) {
-        navigate(mostRecentOverviewPage);
+        history.push(mostRecentOverviewPage);
       }
     };
     goBackIfNoSuggestedNftsOnFirstRender();
-  }, [navigate, mostRecentOverviewPage, suggestedNfts]);
+  }, [history, mostRecentOverviewPage, suggestedNfts]);
 
   let origin;
   let link;

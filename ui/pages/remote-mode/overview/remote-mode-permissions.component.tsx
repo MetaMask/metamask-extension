@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import {
@@ -53,7 +53,7 @@ export default function RemoteModePermissions({
   const [isRevokeSpendAllowanceVisible, setIsRevokeSpendAllowanceVisible] =
     useState(false);
 
-  const navigate = useNavigate();
+  const history = useHistory();
 
   const selectedAccount = useSelector(getSelectedInternalAccount);
 
@@ -113,7 +113,7 @@ export default function RemoteModePermissions({
                   color={TextColor.infoDefault}
                   style={{ cursor: 'pointer' }}
                   onClick={() => {
-                    navigate({
+                    history.push({
                       pathname: REMOTE_ROUTE_SETUP_SWAPS,
                       search: `?update=true`,
                     });
@@ -246,7 +246,7 @@ export default function RemoteModePermissions({
                   color={TextColor.infoDefault}
                   style={{ cursor: 'pointer' }}
                   onClick={() => {
-                    navigate({
+                    history.push({
                       pathname: REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
                       search: `?update=true`,
                     });

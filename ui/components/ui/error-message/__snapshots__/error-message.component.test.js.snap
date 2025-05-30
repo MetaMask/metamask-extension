@@ -12,7 +12,7 @@ exports[`ErrorMessage Component should render a message from props.errorMessage 
     <div
       class="error-message__text"
     >
-      Error message
+      This is an error.
     </div>
   </div>
 </div>
@@ -30,7 +30,7 @@ exports[`ErrorMessage Component should render a message translated from props.er
     <div
       class="error-message__text"
     >
-      Error message
+      [testKey]
     </div>
   </div>
 </div>

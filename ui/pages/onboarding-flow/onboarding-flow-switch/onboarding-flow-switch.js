@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom-v5-compat';
+import { Redirect } from 'react-router-dom';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
@@ -36,33 +36,33 @@ export default function OnboardingFlowSwitch() {
   const isUnlocked = useSelector(getIsUnlocked);
 
   if (completedOnboarding) {
-    return <Navigate to={{ pathname: DEFAULT_ROUTE }} />;
+    return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
 
   if (seedPhraseBackedUp !== null) {
-    return <Navigate to={{ pathname: ONBOARDING_COMPLETION_ROUTE }} />;
+    return <Redirect to={{ pathname: ONBOARDING_COMPLETION_ROUTE }} />;
   }
 
   if (isUnlocked) {
-    return <Navigate to={{ pathname: LOCK_ROUTE }} />;
+    return <Redirect to={{ pathname: LOCK_ROUTE }} />;
   }
 
   // TODO(ritave): Remove allow-list and only leave experimental_area exception
   if (!isInitialized) {
     let redirect;
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-    redirect = <Navigate to={{ pathname: ONBOARDING_EXPERIMENTAL_AREA }} />;
+    redirect = <Redirect to={{ pathname: ONBOARDING_EXPERIMENTAL_AREA }} />;
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
     redirect =
       getPlatform() === PLATFORM_FIREFOX ? (
-        <Navigate to={{ pathname: ONBOARDING_METAMETRICS }} />
+        <Redirect to={{ pathname: ONBOARDING_METAMETRICS }} />
       ) : (
-        <Navigate to={{ pathname: ONBOARDING_WELCOME_ROUTE }} />
+        <Redirect to={{ pathname: ONBOARDING_WELCOME_ROUTE }} />
       );
     ///: END:ONLY_INCLUDE_IF
     return redirect;
   }
 
-  return <Navigate to={{ pathname: ONBOARDING_UNLOCK_ROUTE }} />;
+  return <Redirect to={{ pathname: ONBOARDING_UNLOCK_ROUTE }} />;
 }

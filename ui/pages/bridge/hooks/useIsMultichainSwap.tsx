@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useEffect, useMemo } from 'react';
 import {
   getIsUnifiedUIEnabled,
@@ -19,7 +19,7 @@ import { getCurrentChainId } from '../../../../shared/modules/selectors/networks
  */
 export const useIsMultichainSwap = () => {
   const { search, pathname } = useLocation();
-  const navigate = useNavigate();
+  const history = useHistory();
 
   const isSolana = useSelector(getMultichainIsSolana);
 
@@ -40,21 +40,16 @@ export const useIsMultichainSwap = () => {
       !isSwapQueryParamSet
     ) {
       searchParams.set('swaps', 'true');
-      navigate(
-        {
-          pathname,
-          search: searchParams.toString(),
-        },
-        {
-          replace: true,
-        },
-      );
+      history.replace({
+        pathname,
+        search: searchParams.toString(),
+      });
     }
   }, [
     isQuoteRequestSwap,
     isSolana,
     isUnifiedUIEnabled,
-    navigate,
+    history,
     search,
     pathname,
   ]);

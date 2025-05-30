@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom-v5-compat';
+import { useParams } from 'react-router-dom';
 
 import { Confirmation } from '../types/confirm';
 import { useConfirmationNavigation } from './useConfirmationNavigation';

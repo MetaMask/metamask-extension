@@ -3,10 +3,10 @@ import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { shuffle } from 'lodash';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useHistory } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 import {
-  navigateBackToPrepareSwap2,
+  navigateBackToPrepareSwap,
   getFetchParams,
   getQuotesFetchStartTime,
   getCurrentSmartTransactionsEnabled,
@@ -46,7 +46,7 @@ export default function LoadingSwapsQuotes({
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  const navigate = useNavigate();
+  const history = useHistory();
   const animationEventEmitter = useRef(new EventEmitter());
 
   const fetchParams = useSelector(getFetchParams, isEqual);
@@ -205,7 +205,7 @@ export default function LoadingSwapsQuotes({
         submitText={t('back')}
         onSubmit={async () => {
           trackEvent(quotesRequestCancelledEventConfig);
-          await dispatch(navigateBackToPrepareSwap2(navigate));
+          await dispatch(navigateBackToPrepareSwap(history));
         }}
         hideCancel
       />

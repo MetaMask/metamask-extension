@@ -7,7 +7,7 @@ import React, {
   useCallback,
 } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useHistory } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 import { isEqual } from 'lodash';
 import classnames from 'classnames';
@@ -187,7 +187,7 @@ export default function ReviewQuote({
   setReceiveToAmount,
   setIsEstimatedReturnLow,
 }) {
-  const navigate = useNavigate();
+  const history = useHistory();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
@@ -217,11 +217,11 @@ export default function ReviewQuote({
   const quotes = useSelector(getQuotes, isEqual);
   useEffect(() => {
     if (!Object.values(quotes).length) {
-      navigate(PREPARE_SWAP_ROUTE);
+      history.push(PREPARE_SWAP_ROUTE);
     } else if (routeState === 'awaiting') {
-      navigate(AWAITING_SWAP_ROUTE);
+      history.push(AWAITING_SWAP_ROUTE);
     }
-  }, [navigate, quotes, routeState]);
+  }, [history, quotes, routeState]);
 
   const quotesLastFetched = useSelector(getQuotesLastFetched);
   const prevQuotesLastFetched = usePrevious(quotesLastFetched);
@@ -1079,23 +1079,23 @@ export default function ReviewQuote({
           signAndSendSwapsSmartTransaction({
             unsignedTransaction,
             trackEvent,
-            navigate,
+            history,
             additionalTrackingParams,
           }),
         );
       } else {
         dispatch(
           signAndSendTransactions(
-            navigate,
+            history,
             trackEvent,
             additionalTrackingParams,
           ),
         );
       }
     } else if (destinationToken.symbol === defaultSwapsToken.symbol) {
-      navigate(DEFAULT_ROUTE);
+      history.push(DEFAULT_ROUTE);
     } else {
-      navigate(`${ASSET_ROUTE}/${destinationToken.address}`);
+      history.push(`${ASSET_ROUTE}/${destinationToken.address}`);
     }
   };
 

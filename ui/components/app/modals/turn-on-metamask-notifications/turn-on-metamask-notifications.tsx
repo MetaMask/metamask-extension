@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useHistory } from 'react-router-dom';
 import { I18nContext } from '../../../../contexts/i18n';
 import { useModalProps } from '../../../../hooks/useModalProps';
 import { useMetamaskNotificationsContext } from '../../../../contexts/metamask-notifications/metamask-notifications';
@@ -38,7 +38,7 @@ import {
 
 export default function TurnOnMetamaskNotifications() {
   const { hideModal } = useModalProps();
-  const navigate = useNavigate();
+  const history = useHistory();
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const { listNotifications } = useMetamaskNotificationsContext();
@@ -89,11 +89,11 @@ export default function TurnOnMetamaskNotifications() {
 
   useEffect(() => {
     if (isNotificationEnabled && !error) {
-      navigate(NOTIFICATIONS_ROUTE);
+      history.push(NOTIFICATIONS_ROUTE);
       hideModal();
       listNotifications();
     }
-  }, [isNotificationEnabled, error, navigate, hideModal, listNotifications]);
+  }, [isNotificationEnabled, error, history, hideModal, listNotifications]);
 
   const privacyLink = (
     <Text

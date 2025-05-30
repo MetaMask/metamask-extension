@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useHistory } from 'react-router-dom';
 import semver from 'semver';
 import { isSnapId } from '@metamask/snaps-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -57,7 +57,7 @@ import { KeyringSnapRemovalResultStatus } from './constants';
 ///: END:ONLY_INCLUDE_IF
 
 function SnapSettings({ snapId, initRemove, resetInitRemove }) {
-  const navigate = useNavigate();
+  const history = useHistory();
   const t = useI18nContext();
   const snaps = useSelector(getSnaps);
   const dispatch = useDispatch();
@@ -126,7 +126,7 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
     const approvalId = await dispatch(updateSnap('MetaMask', snapToInstall));
 
     if (approvalId) {
-      navigate(`${CONNECT_ROUTE}/${approvalId}`);
+      history.push(`${CONNECT_ROUTE}/${approvalId}`);
     }
   };
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { hasProperty } from '@metamask/utils';
 import {
@@ -22,7 +22,7 @@ import { SnapHomeRenderer } from '../../../components/app/snaps/snap-home-page/s
 import SnapSettings from './snap-settings';
 
 function SnapView() {
-  const navigate = useNavigate();
+  const history = useHistory();
   const location = useLocation();
   const { pathname } = location;
   // The snap ID is in URI-encoded form in the last path segment of the URL.
@@ -34,9 +34,9 @@ function SnapView() {
 
   useEffect(() => {
     if (!snap) {
-      navigate(SNAPS_ROUTE);
+      history.push(SNAPS_ROUTE);
     }
-  }, [navigate, snap]);
+  }, [history, snap]);
 
   const permissions = useSelector(
     (state) => snap && getPermissions(state, snap.id),
@@ -66,11 +66,11 @@ function SnapView() {
 
   const handleBackClick = () => {
     if (snap.preinstalled && snap.hidden) {
-      navigate(DEFAULT_ROUTE);
+      history.push(DEFAULT_ROUTE);
     } else if (showSettings && hasHomePage) {
       setShowSettings(false);
     } else {
-      navigate(SNAPS_ROUTE);
+      history.push(SNAPS_ROUTE);
     }
   };
 

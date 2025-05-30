@@ -1,7 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { createSwapsMockStore } from '../../../../test/jest';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+
+import {
+  renderWithProvider,
+  createSwapsMockStore,
+} from '../../../../test/jest';
 import LoadingSwapsQuotes from '.';
 
 const createProps = (customProps = {}) => {

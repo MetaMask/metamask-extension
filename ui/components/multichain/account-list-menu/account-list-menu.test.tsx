@@ -1,5 +1,6 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
+import reactRouterDom from 'react-router-dom';
 import {
   BtcAccountType,
   EthAccountType,
@@ -48,13 +49,10 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
-const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
-  return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
-    useNavigate: () => mockUseNavigate,
-  };
-});
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: jest.fn(() => []),
+}));
 
 jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
   ...jest.requireActual(
@@ -138,6 +136,20 @@ const render = (
 };
 
 describe('AccountListMenu', () => {
+  const historyPushMock = jest.fn();
+
+  beforeEach(() => {
+    jest
+      .spyOn(reactRouterDom, 'useHistory')
+      .mockImplementation()
+      .mockReturnValue({ push: historyPushMock });
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
+    jest.clearAllMocks();
+  });
+
   it('displays important controls', () => {
     const { getByPlaceholderText, getByText } = render();
 
@@ -343,10 +355,7 @@ describe('AccountListMenu', () => {
     button.click();
 
     fireEvent.click(getByText('Hardware wallet'));
-
-    waitFor(() => {
-      expect(mockUseNavigate).toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
-    });
+    expect(historyPushMock).toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
   });
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -639,7 +648,7 @@ describe('AccountListMenu', () => {
       const addBtcAccountButton = getByTestId('submit-add-account-with-name');
       addBtcAccountButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(CONFIRMATION_V_NEXT_ROUTE);
+      expect(historyPushMock).toHaveBeenCalledWith(CONFIRMATION_V_NEXT_ROUTE);
       expect(mockBitcoinClientCreateAccount).toHaveBeenCalled();
     });
   });
@@ -711,9 +720,7 @@ describe('AccountListMenu', () => {
       );
       addAccountButton.click();
 
-      waitFor(() => {
-        expect(mockUseNavigate).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
-      });
+      expect(historyPushMock).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
     });
 
     it('shows srp list if there are multiple srps when adding a new account', async () => {

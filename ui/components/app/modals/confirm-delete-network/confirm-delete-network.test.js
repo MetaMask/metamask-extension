@@ -42,7 +42,7 @@ describe('Confirm Delete Network', () => {
       <ConfirmDeleteNetwork.WrappedComponent {...props} />,
     );
 
-    fireEvent.click(queryByText('Cancel'));
+    fireEvent.click(queryByText('[cancel]'));
 
     expect(props.removeNetwork).not.toHaveBeenCalled();
     expect(props.onConfirm).not.toHaveBeenCalled();
@@ -55,7 +55,7 @@ describe('Confirm Delete Network', () => {
       <ConfirmDeleteNetwork.WrappedComponent {...props} />,
     );
 
-    fireEvent.click(queryByText('Delete'));
+    fireEvent.click(queryByText('[delete]'));
 
     await waitFor(() => {
       expect(props.removeNetwork).toHaveBeenCalled();

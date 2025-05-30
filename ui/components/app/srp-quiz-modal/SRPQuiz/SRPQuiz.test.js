@@ -15,6 +15,16 @@ const store = configureStore({
 
 let openTabSpy;
 
+jest.mock('react-router-dom', () => {
+  const original = jest.requireActual('react-router-dom');
+  return {
+    ...original,
+    useHistory: () => ({
+      push: jest.fn(),
+    }),
+  };
+});
+
 async function waitForStage(stage) {
   return await waitFor(() => {
     expect(screen.getByTestId(`srp_stage_${stage}`)).toBeInTheDocument();

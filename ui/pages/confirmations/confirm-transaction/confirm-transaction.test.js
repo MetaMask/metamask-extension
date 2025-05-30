@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import ReactRouterDOM from 'react-router-dom-v5-compat';
+import ReactRouterDOM from 'react-router-dom';
 
 import * as ConfirmTransactionDucks from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import * as Actions from '../../../store/actions';
@@ -53,11 +53,13 @@ jest.mock(
   }),
 );
 
-const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
+  const original = jest.requireActual('react-router-dom');
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
-    useNavigate: () => mockUseNavigate,
+    ...original,
+    useHistory: () => ({
+      replace: jest.fn(),
+    }),
   };
 });
 
@@ -192,11 +194,17 @@ describe('Confirmation Transaction Page', () => {
     });
 
     describe('when unapproved transactions exist or a sendTo recipient exists', () => {
-      it('should not call navigate(mostRecentOverviewPage)', () => {
+      it('should not call history.replace(mostRecentOverviewPage)', () => {
         const mockStore = configureMockStore(middleware)(mockState);
+        const replaceSpy = jest.fn();
+        jest.spyOn(ReactRouterDOM, 'useHistory').mockImplementation(() => {
+          return {
+            replace: replaceSpy,
+          };
+        });
 
         renderWithProvider(<ConfirmTransaction />, mockStore);
-        expect(mockUseNavigate).not.toHaveBeenCalled();
+        expect(replaceSpy).not.toHaveBeenCalled();
       });
     });
   });

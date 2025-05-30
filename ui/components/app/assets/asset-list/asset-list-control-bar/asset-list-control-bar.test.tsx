@@ -1,7 +1,8 @@
 import React from 'react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
+import { fireEvent } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,

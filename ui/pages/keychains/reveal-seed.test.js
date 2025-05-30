@@ -40,8 +40,11 @@ jest.mock('../../store/actions.ts', () => ({
     mockRequestRevealSeedWords(userPassword, keyringId),
 }));
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: () => ({
+    push: jest.fn(),
+  }),
   useParams: () => mockUseParams(),
 }));
 

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import {
@@ -35,7 +35,7 @@ import { getHDEntropyIndex } from '../../../selectors/selectors';
 import SkipSRPBackup from './skip-srp-backup-popover';
 
 export default function SecureYourWallet() {
-  const navigate = useNavigate();
+  const history = useHistory();
   const t = useI18nContext();
   const { search } = useLocation();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
@@ -56,7 +56,7 @@ export default function SecureYourWallet() {
         hd_entropy_index: hdEntropyIndex,
       },
     });
-    navigate(`${ONBOARDING_REVIEW_SRP_ROUTE}${isFromReminderParam}`);
+    history.push(`${ONBOARDING_REVIEW_SRP_ROUTE}${isFromReminderParam}`);
   };
 
   const handleClickNotRecommended = () => {
