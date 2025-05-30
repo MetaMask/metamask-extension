@@ -174,7 +174,6 @@ export class CorruptionHandler {
     const { connectedPorts } = this;
     const backup = await maybeGetBackup(error, database);
     const currentLocale = maybeGetCurrentLocale(backup);
-    // console.log('currentLocale', error.backup, backup, currentLocale);
     // it is not worth claiming we have a backup if the vault doesn't actually
     // exist
     const hasBackup = Boolean(hasVault(backup));
