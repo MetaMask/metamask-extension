@@ -2,24 +2,25 @@ import { useMemo } from 'react';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import useAccountMismatchAlerts from './alerts/signatures/useAccountMismatchAlerts';
 import useDomainMismatchAlerts from './alerts/signatures/useDomainMismatchAlerts';
+import { useAccountTypeUpgrade } from './alerts/transactions/useAccountTypeUpgrade';
+import { useFirstTimeInteractionAlert } from './alerts/transactions/useFirstTimeInteractionAlert';
 import { useGasEstimateFailedAlerts } from './alerts/transactions/useGasEstimateFailedAlerts';
 import { useGasFeeLowAlerts } from './alerts/transactions/useGasFeeLowAlerts';
 import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
+import { useMultipleApprovalsAlerts } from './alerts/transactions/useMultipleApprovalsAlerts';
 import { useNetworkBusyAlerts } from './alerts/transactions/useNetworkBusyAlerts';
 import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
+import { useNonContractAddressAlerts } from './alerts/transactions/useNonContractAddressAlerts';
 import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTransactionAlerts';
 import { useResimulationAlert } from './alerts/transactions/useResimulationAlert';
-import { useFirstTimeInteractionAlert } from './alerts/transactions/useFirstTimeInteractionAlert';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useSigningOrSubmittingAlerts } from './alerts/transactions/useSigningOrSubmittingAlerts';
 ///: END:ONLY_INCLUDE_IF
-import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
 import useBlockaidAlerts from './alerts/useBlockaidAlerts';
+import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
 import { useNetworkAndOriginSwitchingAlerts } from './alerts/useNetworkAndOriginSwitchingAlerts';
 import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
-import { useNonContractAddressAlerts } from './alerts/transactions/useNonContractAddressAlerts';
-import { useAccountTypeUpgrade } from './alerts/transactions/useAccountTypeUpgrade';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -37,25 +38,29 @@ function useTransactionAlerts(): Alert[] {
   const gasFeeLowAlerts = useGasFeeLowAlerts();
   const gasTooLowAlerts = useGasTooLowAlerts();
   const insufficientBalanceAlerts = useInsufficientBalanceAlerts();
+  const multipleApprovalAlerts = useMultipleApprovalsAlerts();
   const networkBusyAlerts = useNetworkBusyAlerts();
   const noGasPriceAlerts = useNoGasPriceAlerts();
+  const nonContractAddressAlerts = useNonContractAddressAlerts();
   const pendingTransactionAlerts = usePendingTransactionAlerts();
   const resimulationAlert = useResimulationAlert();
   const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
   ///: END:ONLY_INCLUDE_IF
-  const nonContractAddressAlerts = useNonContractAddressAlerts();
 
   return useMemo(
     () => [
       ...accountTypeUpgradeAlerts,
+      ...firstTimeInteractionAlert,
       ...gasEstimateFailedAlerts,
       ...gasFeeLowAlerts,
       ...gasTooLowAlerts,
       ...insufficientBalanceAlerts,
+      ...multipleApprovalAlerts,
       ...networkBusyAlerts,
       ...noGasPriceAlerts,
+      ...nonContractAddressAlerts,
       ...pendingTransactionAlerts,
       ...resimulationAlert,
       ...firstTimeInteractionAlert,
@@ -66,19 +71,26 @@ function useTransactionAlerts(): Alert[] {
     ],
     [
       accountTypeUpgradeAlerts,
+      firstTimeInteractionAlert,
       gasEstimateFailedAlerts,
       gasFeeLowAlerts,
       gasTooLowAlerts,
       insufficientBalanceAlerts,
+      multipleApprovalAlerts,
       networkBusyAlerts,
       noGasPriceAlerts,
+      nonContractAddressAlerts,
       pendingTransactionAlerts,
       resimulationAlert,
+<<<<<<< HEAD
       firstTimeInteractionAlert,
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       signingOrSubmittingAlerts,
       ///: END:ONLY_INCLUDE_IF
       nonContractAddressAlerts,
+=======
+      signingOrSubmittingAlerts,
+>>>>>>> e43f610a77 (feat: Add alert for malicious batch transactions cp-12.18.3 (#33237))
     ],
   );
 }
