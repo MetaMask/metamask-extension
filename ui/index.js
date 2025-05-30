@@ -45,10 +45,6 @@ import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-
-const METHOD_START_UI_SYNC = 'startUISync';
 
 const METHOD_START_UI_SYNC = 'startUISync';
 

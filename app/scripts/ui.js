@@ -80,6 +80,8 @@ async function start() {
 
   // identify window type (popup, notification)
   const windowType = getEnvironmentType();
+
+  // setup stream to background
   const extensionPort = browser.runtime.connect({ name: windowType });
 
   const connectionStream = new PortStream(extensionPort);

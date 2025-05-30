@@ -298,6 +298,18 @@ describe('useCarouselManagement', () => {
 
       expect(updatedSlides[0].undismissable).toBe(true);
     });
+
+    it('should mark fund slide as undismissable when using the hex 0x00 for zero balance', async () => {
+      mockGetSelectedAccountCachedBalance.mockReturnValue('0x00');
+      renderHook(() => useCarouselManagement({ testDate: validTestDate }));
+
+      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
+      const updatedSlides: CarouselSlide[] = mockUpdateSlides.mock.calls[0][0];
+
+      const fundsSlide = updatedSlides.find((s) => s.id === FUND_SLIDE.id);
+      expect(fundsSlide).toBeDefined();
+      expect(fundsSlide?.undismissable).toBe(true);
+    });
   });
 
   describe('zero funds, remote on, sweepstakes off', () => {
