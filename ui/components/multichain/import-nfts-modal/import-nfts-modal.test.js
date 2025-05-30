@@ -20,15 +20,13 @@ const INVALID_ADDRESS = 'aoinsafasdfa';
 const VALID_TOKENID = '1201';
 const INVALID_TOKENID = 'abcde';
 
-// Create a spy for the history push function
-const mockPush = jest.fn();
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockPush,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 jest.mock('../../../store/actions.ts', () => ({
   addNftVerifyOwnership: jest
@@ -47,12 +45,6 @@ jest.mock('../../../store/actions.ts', () => ({
 
 describe('ImportNftsModal', () => {
   let store = configureMockStore([thunk])(mockState);
-
-  beforeEach(() => {
-    jest.restoreAllMocks();
-    // Reset the push spy before each test
-    mockPush.mockClear();
-  });
 
   it('should enable the "Import" button when valid entries are input into both Address and TokenId fields', () => {
     const { getByText, getByPlaceholderText } = renderWithProvider(
@@ -279,9 +271,9 @@ describe('ImportNftsModal', () => {
     const cancelButton = getByText('Cancel');
     fireEvent.click(cancelButton);
 
-    // Verify both onClose and history.push are called
+    // Verify both onClose and mockUseNavigate are called
     expect(onClose).toHaveBeenCalled();
-    expect(mockPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it('should route to default route when close button is clicked', () => {
@@ -290,8 +282,8 @@ describe('ImportNftsModal', () => {
 
     fireEvent.click(document.querySelector('button[aria-label="Close"]'));
 
-    // Verify both onClose and history.push are called
+    // Verify both onClose and mockUseNavigate are called
     expect(onClose).toHaveBeenCalled();
-    expect(mockPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 });

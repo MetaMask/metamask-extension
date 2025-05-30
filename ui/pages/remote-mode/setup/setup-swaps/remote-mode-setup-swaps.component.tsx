@@ -1,7 +1,7 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 
 import { Hex } from '@metamask/utils';
 import {
@@ -112,7 +112,7 @@ export default function RemoteModeSetupSwaps() {
     getMetaMaskAccountsOrdered,
   );
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const isUpdate = params.get('update') === 'true';
@@ -139,9 +139,9 @@ export default function RemoteModeSetupSwaps() {
 
   useEffect(() => {
     if (!isRemoteModeEnabled) {
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     }
-  }, [isRemoteModeEnabled, history]);
+  }, [isRemoteModeEnabled, navigate]);
 
   const handleNext = () => {
     if (currentStep < TOTAL_STEPS) {
@@ -153,7 +153,7 @@ export default function RemoteModeSetupSwaps() {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     } else {
-      history.goBack();
+      navigate(-1);
     }
   };
 
@@ -235,7 +235,7 @@ export default function RemoteModeSetupSwaps() {
           mode: REMOTE_MODES.SWAP,
           meta: JSON.stringify({ allowances: swapAllowance }),
         });
-        history.replace(REMOTE_ROUTE);
+        navigate(REMOTE_ROUTE);
       }
     } catch (error) {
       // TODO: show error on UI
@@ -244,7 +244,7 @@ export default function RemoteModeSetupSwaps() {
   };
 
   const onCancel = () => {
-    history.goBack();
+    navigate(-1);
   };
 
   const renderStepContent = () => {

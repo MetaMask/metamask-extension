@@ -2,7 +2,7 @@ import { isValidHexAddress } from '@metamask/controller-utils';
 import PropTypes from 'prop-types';
 import React, { useContext, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { getErrorMessage } from '../../../../shared/modules/error';
 import {
   MetaMetricsEventName,
@@ -79,7 +79,7 @@ const ACTION_MODES = {
 
 export const ImportNftsModal = ({ onClose }) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const isDisplayNFTMediaToggleEnabled = useSelector(getOpenSeaEnabled);
   const isMainnet = useSelector(getIsMainnet);
@@ -170,7 +170,7 @@ export const ImportNftsModal = ({ onClose }) => {
       },
     });
 
-    history.push(DEFAULT_ROUTE);
+    navigate(DEFAULT_ROUTE);
     onClose();
   };
 
@@ -217,7 +217,7 @@ export const ImportNftsModal = ({ onClose }) => {
             onBack={() => setActionMode(ACTION_MODES.IMPORT_NFT)}
             onClose={() => {
               onClose();
-              history.push();
+              navigate();
             }}
           >
             <Text variant={TextVariant.headingSm} align={TextAlign.Center}>
@@ -281,7 +281,7 @@ export const ImportNftsModal = ({ onClose }) => {
         <ModalHeader
           onClose={() => {
             onClose();
-            history.push(DEFAULT_ROUTE);
+            navigate(DEFAULT_ROUTE);
           }}
         >
           {t('importNFT')}
@@ -402,7 +402,7 @@ export const ImportNftsModal = ({ onClose }) => {
             size={ButtonSecondarySize.Lg}
             onClick={() => {
               onClose();
-              history.push(DEFAULT_ROUTE);
+              navigate(DEFAULT_ROUTE);
             }}
             block
             className="import-nfts-modal__cancel-button"

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import isEqual from 'lodash/isEqual';
 
 import { I18nContext } from '../../../contexts/i18n';
@@ -39,7 +39,7 @@ import SwapStepIcon from './swap-step-icon';
 
 export default function AwaitingSignatures() {
   const t = useContext(I18nContext);
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const fetchParams = useSelector(getFetchParams, isEqual);
   const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {};
@@ -149,8 +149,8 @@ export default function AwaitingSignatures() {
           await dispatch(prepareToLeaveSwaps());
           // Go to the default route and then to the build quote route in order to clean up
           // the `inputValue` local state in `pages/swaps/index.js`
-          history.push(DEFAULT_ROUTE);
-          history.push(PREPARE_SWAP_ROUTE);
+          navigate(DEFAULT_ROUTE);
+          navigate(PREPARE_SWAP_ROUTE);
         }}
         submitText={t('cancel')}
         hideCancel

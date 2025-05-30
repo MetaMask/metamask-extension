@@ -5,13 +5,13 @@ import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import useBridging from './useBridging';
 
-const mockHistoryPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const mockDispatch = jest.fn().mockReturnValue(() => jest.fn());
 jest.mock('react-redux', () => ({
@@ -184,8 +184,8 @@ describe('useBridging', () => {
         result.current.openBridgeExperience(location, token, urlSuffix);
 
         expect(mockDispatch.mock.calls).toHaveLength(1);
-        expect(mockHistoryPush.mock.calls).toHaveLength(1);
-        expect(mockHistoryPush).toHaveBeenCalledWith(expectedUrl);
+        expect(mockUseNavigate.mock.calls).toHaveLength(1);
+        expect(mockUseNavigate).toHaveBeenCalledWith(expectedUrl);
         expect(openTabSpy).not.toHaveBeenCalled();
       },
     );

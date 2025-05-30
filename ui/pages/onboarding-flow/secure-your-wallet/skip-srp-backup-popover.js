@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../../components/ui/button';
@@ -32,7 +32,7 @@ import { getHDEntropyIndex } from '../../../selectors/selectors';
 export default function SkipSRPBackup({ handleClose }) {
   const [checked, setChecked] = useState(false);
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const trackEvent = useContext(MetaMetricsContext);
@@ -76,7 +76,7 @@ export default function SkipSRPBackup({ handleClose }) {
                   hd_entropy_index: hdEntropyIndex,
                 },
               });
-              history.push(ONBOARDING_COMPLETION_ROUTE);
+              navigate(ONBOARDING_COMPLETION_ROUTE);
             }}
           >
             {t('skip')}

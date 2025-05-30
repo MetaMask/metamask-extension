@@ -23,7 +23,7 @@ describe('Reject Transactions Model', () => {
       <RejectTransactionsModal.WrappedComponent {...props} />,
     );
 
-    fireEvent.click(queryByText('[cancel]'));
+    fireEvent.click(queryByText('Cancel'));
 
     expect(props.onSubmit).not.toHaveBeenCalled();
     expect(props.hideModal).toHaveBeenCalled();
@@ -34,7 +34,7 @@ describe('Reject Transactions Model', () => {
       <RejectTransactionsModal.WrappedComponent {...props} />,
     );
 
-    fireEvent.click(queryByText('[rejectAll]'));
+    fireEvent.click(queryByText('Reject all'));
 
     await waitFor(() => {
       expect(props.onSubmit).toHaveBeenCalled();

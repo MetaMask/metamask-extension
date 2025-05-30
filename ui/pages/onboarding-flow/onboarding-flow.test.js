@@ -35,6 +35,14 @@ jest.mock('../../store/actions', () => ({
   hideLoadingIndication: jest.fn(() => ({ type: 'HIDE_LOADING_INDICATION' })),
 }));
 
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
+
 describe('Onboarding Flow', () => {
   const mockState = {
     metamask: {
@@ -105,13 +113,9 @@ describe('Onboarding Flow', () => {
       completedOnboardingState,
     );
 
-    const { history } = renderWithProvider(
-      <OnboardingFlow />,
-      completedOnboardingStore,
-      '/other',
-    );
+    renderWithProvider(<OnboardingFlow />, completedOnboardingStore, '/other');
 
-    expect(history.location.pathname).toStrictEqual(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   describe('Create Password', () => {

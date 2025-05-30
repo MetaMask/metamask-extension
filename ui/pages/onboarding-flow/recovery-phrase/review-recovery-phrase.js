@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Button from '../../../components/ui/button';
@@ -32,7 +32,7 @@ import { getHDEntropyIndex } from '../../../selectors/selectors';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 export default function RecoveryPhrase({ secretRecoveryPhrase }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const t = useI18nContext();
   const { search } = useLocation();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
@@ -148,7 +148,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
                     hd_entropy_index: hdEntropyIndex,
                   },
                 });
-                history.push(
+                navigate(
                   `${ONBOARDING_CONFIRM_SRP_ROUTE}${isFromReminderParam}`,
                 );
               }}

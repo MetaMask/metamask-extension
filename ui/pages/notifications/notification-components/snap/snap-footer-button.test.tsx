@@ -90,8 +90,8 @@ describe('SnapFooterButton', () => {
 
     // Confirm Leave
     await waitFor(() => {
-      const leaveModalTitle = getByText('[leaveMetaMask]');
-      const leaveModalButton = getByText('[visitSite]');
+      const leaveModalTitle = getByText('Leave MetaMask?');
+      const leaveModalButton = getByText('Visit site');
       expect(leaveModalTitle).toBeInTheDocument();
       expect(leaveModalButton).toBeInTheDocument();
     });

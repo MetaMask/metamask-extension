@@ -535,6 +535,15 @@ export const navigateBackToPrepareSwap = (history) => {
   };
 };
 
+export const navigateBackToPrepareSwap2 = (navigate) => {
+  return async (dispatch) => {
+    // TODO: Ensure any fetch in progress is cancelled
+    await dispatch(setBackgroundSwapRouteState(''));
+    dispatch(navigatedBackToBuildQuote());
+    navigate(PREPARE_SWAP_ROUTE);
+  };
+};
+
 export const prepareForRetryGetQuotes = () => {
   return async (dispatch) => {
     // TODO: Ensure any fetch in progress is cancelled

@@ -1,6 +1,6 @@
 import { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { isStrictHexString } from '@metamask/utils';
 import {
@@ -34,7 +34,7 @@ import { trace, TraceName } from '../../../shared/lib/trace';
 import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
 
 const useBridging = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
@@ -110,7 +110,7 @@ const useBridging = () => {
         if (isSwap) {
           url += '&swaps=true';
         }
-        history.push(url);
+        navigate(url);
       } else {
         const portfolioUrl = getPortfolioUrl(
           'bridge',
@@ -140,7 +140,7 @@ const useBridging = () => {
     [
       isBridgeSupported,
       isBridgeChain,
-      history,
+      navigate,
       metaMetricsId,
       trackEvent,
       trackCrossChainSwapsEvent,

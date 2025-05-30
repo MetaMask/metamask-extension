@@ -1,6 +1,5 @@
 import React from 'react';
-
-import { renderWithProvider, fireEvent } from '../../../../test/jest';
+import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import ExchangeRateDisplay from '.';
 
 const createProps = (customProps = {}) => {

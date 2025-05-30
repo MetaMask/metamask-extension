@@ -6,14 +6,13 @@ import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/rou
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import ImportSrp from './import-srp';
 
-const mockHistoryReplace = jest.fn();
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: mockHistoryReplace,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
@@ -42,8 +41,9 @@ describe('Import SRP', () => {
     const mockStore = configureMockStore()(initializedMockState);
     renderWithProvider(<ImportSrp />, mockStore);
 
-    expect(mockHistoryReplace).toHaveBeenCalledWith(
+    expect(mockUseNavigate).toHaveBeenCalledWith(
       ONBOARDING_CREATE_PASSWORD_ROUTE,
+      { replace: true },
     );
   });
 
@@ -77,8 +77,9 @@ describe('Import SRP', () => {
     fireEvent.click(confirmSrpButton);
 
     expect(mockSubmitSecretRecoveryPhrase).toHaveBeenCalledWith(TEST_SEED);
-    expect(mockHistoryReplace).toHaveBeenCalledWith(
+    expect(mockUseNavigate).toHaveBeenCalledWith(
       ONBOARDING_CREATE_PASSWORD_ROUTE,
+      { replace: true },
     );
   });
 

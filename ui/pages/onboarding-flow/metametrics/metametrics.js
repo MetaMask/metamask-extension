@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 // eslint-disable-next-line import/no-restricted-paths
 import { getPlatform } from '../../../../app/scripts/lib/util';
 import {
@@ -52,7 +52,7 @@ const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn);
 
@@ -108,14 +108,14 @@ export default function OnboardingMetametrics() {
         },
       });
     } finally {
-      history.push(nextRouteByBrowser);
+      navigate(nextRouteByBrowser);
     }
   };
 
   const onCancel = async () => {
     await dispatch(setParticipateInMetaMetrics(false));
     await dispatch(setDataCollectionForMarketing(false));
-    history.push(nextRouteByBrowser);
+    navigate(nextRouteByBrowser);
   };
 
   return (

@@ -2,31 +2,20 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import reactRouterDom from 'react-router-dom';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import * as Actions from '../../../store/actions';
 import SecureYourWallet from './secure-your-wallet';
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(() => []),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 describe('Secure Your Wallet Onboarding View', () => {
-  const pushMock = jest.fn();
-  beforeEach(() => {
-    jest
-      .spyOn(reactRouterDom, 'useHistory')
-      .mockImplementation()
-      .mockReturnValue({ push: pushMock });
-  });
-
-  afterEach(() => {
-    jest.resetAllMocks();
-    jest.clearAllMocks();
-  });
-
   const mockStore = {
     metamask: {
       internalAccounts: {
@@ -78,13 +67,13 @@ describe('Secure Your Wallet Onboarding View', () => {
     fireEvent.click(remindMeLaterButton);
     const skipButton = getByText('Skip');
     fireEvent.click(skipButton);
-    expect(pushMock).toHaveBeenCalledTimes(0);
+    expect(mockUseNavigate).toHaveBeenCalledTimes(0);
     const checkbox = getByTestId('skip-srp-backup-popover-checkbox');
     fireEvent.click(checkbox);
     const confirmSkip = getByTestId('skip-srp-backup');
     await fireEvent.click(confirmSkip);
     expect(setSeedPhraseBackedUpSpy).toHaveBeenCalledTimes(1);
-    expect(pushMock).toHaveBeenCalledTimes(1);
-    expect(pushMock).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
   });
 });

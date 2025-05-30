@@ -7,13 +7,13 @@ jest.mock('../../../selectors/multichain', () => ({
   getMultichainIsSolana: jest.fn(),
 }));
 
-const mockHistoryReplace = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: mockHistoryReplace,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const renderUseIsMultichainSwap = (
   initialPath: string,
@@ -74,10 +74,15 @@ describe('useIsMultichainSwap', () => {
 
     expect(result.current).toBe(false);
     // Check if URL was updated
-    expect(mockHistoryReplace).toHaveBeenCalledWith({
-      pathname: '/bridge',
-      search: 'swaps=true',
-    });
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      {
+        pathname: '/bridge',
+        search: 'swaps=true',
+      },
+      {
+        replace: true,
+      },
+    );
   });
 
   it('does not modify URL when not a Solana swap', () => {
@@ -113,10 +118,15 @@ describe('useIsMultichainSwap', () => {
     });
 
     expect(result.current).toBe(false);
-    expect(mockHistoryReplace).toHaveBeenCalledWith({
-      pathname: '/bridge',
-      search: 'existing=param&swaps=true',
-    });
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      {
+        pathname: '/bridge',
+        search: 'existing=param&swaps=true',
+      },
+      {
+        replace: true,
+      },
+    );
   });
 
   it('returns true when there are other query params and swaps=true is added', () => {
@@ -137,6 +147,6 @@ describe('useIsMultichainSwap', () => {
     );
 
     expect(result.current).toBe(true);
-    expect(mockHistoryReplace).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 });

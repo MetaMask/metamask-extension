@@ -12,18 +12,17 @@ import initializedMockState from '../../../../test/data/mock-state.json';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import CreationSuccessful from './creation-successful';
 
-const mockHistoryPush = jest.fn();
-
 const completeOnboardingStub = jest
   .fn()
   .mockImplementation(() => Promise.resolve());
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 describe('Creation Successful Onboarding View', () => {
   const mockStore = {
@@ -134,7 +133,7 @@ describe('Creation Successful Onboarding View', () => {
     const { getByText } = renderWithProvider(<CreationSuccessful />, store);
     const privacySettingsButton = getByText('Manage default privacy settings');
     fireEvent.click(privacySettingsButton);
-    expect(mockHistoryPush).toHaveBeenCalledWith(
+    expect(mockUseNavigate).toHaveBeenCalledWith(
       ONBOARDING_PRIVACY_SETTINGS_ROUTE,
     );
   });
@@ -144,7 +143,7 @@ describe('Creation Successful Onboarding View', () => {
     const doneButton = getByText('Done');
     fireEvent.click(doneButton);
     await waitFor(() => {
-      expect(mockHistoryPush).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_PIN_EXTENSION_ROUTE,
       );
     });

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { Hex } from '@metamask/utils';
 import {
   getAllChainsToPoll,
@@ -75,7 +75,7 @@ const AssetListControlBar = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const history = useHistory();
+  const navigate = useNavigate();
   const popoverRef = useRef<HTMLDivElement>(null);
   const useNftDetection = useSelector(getUseNftDetection);
   const currentMultichainNetwork = useSelector(getMultichainNetwork);
@@ -225,7 +225,7 @@ const AssetListControlBar = ({
   };
 
   const onEnableAutoDetect = () => {
-    history.push(SECURITY_ROUTE);
+    navigate(SECURITY_ROUTE);
   };
 
   const handleNftRefresh = () => {

@@ -1,7 +1,7 @@
 import qrCode from 'qrcode-generator';
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { getErrorMessage } from '../../../shared/modules/error';
 import {
   MetaMetricsEventCategory,
@@ -45,7 +45,7 @@ const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN';
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';
 
 export default function RevealSeedPage() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { keyringId } = useParams();
   const dispatch = useDispatch();
   const t = useI18nContext();
@@ -266,7 +266,7 @@ export default function RevealSeedPage() {
                 hd_entropy_index: hdEntropyIndex,
               },
             });
-            history.push(mostRecentOverviewPage);
+            navigate(mostRecentOverviewPage);
           }}
         >
           {t('cancel')}
@@ -315,7 +315,7 @@ export default function RevealSeedPage() {
                 key_type: MetaMetricsEventKeyType.Srp,
               },
             });
-            history.push(mostRecentOverviewPage);
+            navigate(mostRecentOverviewPage);
           }}
         >
           {t('close')}

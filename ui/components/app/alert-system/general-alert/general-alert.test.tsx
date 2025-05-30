@@ -29,7 +29,7 @@ describe('GeneralAlert', () => {
         details={details}
       />,
     );
-    expect(getByText('[seeDetails]')).toBeInTheDocument();
+    expect(getByText('See details')).toBeInTheDocument();
   });
 
   it('renders the security provider information when provided', () => {
@@ -42,6 +42,6 @@ describe('GeneralAlert', () => {
       />,
     );
 
-    expect(getByText('[securityProviderPoweredBy]')).toBeInTheDocument();
+    expect(getByText('Powered by')).toBeInTheDocument();
   });
 });

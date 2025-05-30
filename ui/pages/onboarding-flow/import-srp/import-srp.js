@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -28,16 +28,16 @@ import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 export default function ImportSRP({ submitSecretRecoveryPhrase }) {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
-  const history = useHistory();
+  const navigate = useNavigate();
   const t = useI18nContext();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const currentKeyring = useSelector(getCurrentKeyring);
 
   useEffect(() => {
     if (currentKeyring) {
-      history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
+      navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
     }
-  }, [currentKeyring, history]);
+  }, [currentKeyring, navigate]);
   const trackEvent = useContext(MetaMetricsContext);
 
   return (
@@ -87,7 +87,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
                   hd_entropy_index: hdEntropyIndex,
                 },
               });
-              history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
+              navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
             }}
             disabled={!secretRecoveryPhrase.trim()}
           >

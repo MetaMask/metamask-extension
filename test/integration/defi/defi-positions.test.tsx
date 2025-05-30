@@ -290,11 +290,9 @@ describe('Defi positions list', () => {
   });
 
   it('displays the defi positions details', async () => {
-    await act(async () => {
-      await integrationTestRender({
-        preloadedState: withMetamaskConnectedToMainnet,
-        backgroundConnection: backgroundConnectionMocked,
-      });
+    await integrationTestRender({
+      preloadedState: withMetamaskConnectedToMainnet,
+      backgroundConnection: backgroundConnectionMocked,
     });
 
     await clickElementById('account-overview__defi-tab');
@@ -302,55 +300,55 @@ describe('Defi positions list', () => {
     await waitForElementByText('AaveV3 Mainnet');
     await clickElementByText('AaveV3 Mainnet');
 
-    const title = screen.getByTestId('defi-details-page-title');
-    expect(title).toHaveTextContent('AaveV3 Mainnet');
+    waitFor(async () => {
+      const title = screen.getByTestId('defi-details-page-title');
+      expect(title).toHaveTextContent('AaveV3 Mainnet');
 
-    const marketValue = screen.getByTestId('defi-details-page-market-value');
-    expect(marketValue).toHaveTextContent('$4,650.38');
+      const marketValue = screen.getByTestId('defi-details-page-market-value');
+      expect(marketValue).toHaveTextContent('$4,650.38');
 
-    const supplyPosition = screen.getByTestId(
-      'defi-details-list-supply-position',
-    );
-    expect(supplyPosition).toHaveTextContent('Supplied');
-    expect(supplyPosition.parentElement).toHaveTextContent('Wrapped Ether');
-    expect(supplyPosition.parentElement).toHaveTextContent('1.5 Wrapped Ether');
-    expect(supplyPosition.parentElement).toHaveTextContent('$4,650.38');
+      const supplyPosition = screen.getByTestId(
+        'defi-details-list-supply-position',
+      );
+      expect(supplyPosition).toHaveTextContent('Supplied');
+      expect(supplyPosition.parentElement).toHaveTextContent('Wrapped Ether');
+      expect(supplyPosition.parentElement).toHaveTextContent(
+        '1.5 Wrapped Ether',
+      );
+      expect(supplyPosition.parentElement).toHaveTextContent('$4,650.38');
 
-    const borrowPosition = screen.getByTestId(
-      'defi-details-list-borrow-position',
-    );
-    expect(borrowPosition).toHaveTextContent('Borrowed');
-    expect(borrowPosition.parentElement).toHaveTextContent('USD Coin');
-    expect(borrowPosition.parentElement).toHaveTextContent('1,050 USD Coin');
-    expect(borrowPosition.parentElement).toHaveTextContent('$1,050.00');
+      const borrowPosition = screen.getByTestId(
+        'defi-details-list-borrow-position',
+      );
+      expect(borrowPosition).toHaveTextContent('Borrowed');
+      expect(borrowPosition.parentElement).toHaveTextContent('USD Coin');
+      expect(borrowPosition.parentElement).toHaveTextContent('1,050 USD Coin');
+      expect(borrowPosition.parentElement).toHaveTextContent('$1,050.00');
 
-    await clickElementById('defi-details-page-back-button');
-    await clickElementById('account-overview__defi-tab');
-    await waitForElementByText('MetaMask Staking');
-    await clickElementByText('MetaMask Staking');
+      await clickElementById('defi-details-page-back-button');
+      await clickElementById('account-overview__defi-tab');
+      await waitForElementByText('MetaMask Staking');
+      await clickElementByText('MetaMask Staking');
 
-    const titleStaking = screen.getByTestId('defi-details-page-title');
-    expect(titleStaking).toHaveTextContent('MetaMask Staking');
+      const titleStaking = screen.getByTestId('defi-details-page-title');
+      expect(titleStaking).toHaveTextContent('MetaMask Staking');
 
-    const marketValueStaking = screen.getByTestId(
-      'defi-details-page-market-value',
-    );
-    expect(marketValueStaking).toHaveTextContent('$6,522.67');
+      const marketValueStaking = screen.getByTestId(
+        'defi-details-page-market-value',
+      );
+      expect(marketValueStaking).toHaveTextContent('$6,522.67');
 
-    const stakingPosition = screen.getByTestId(
-      'defi-details-list-stake-position',
-    );
-    expect(stakingPosition).toHaveTextContent('Staked');
-    expect(stakingPosition.parentElement).toHaveTextContent('Wrapped Ether');
-    expect(stakingPosition.parentElement).toHaveTextContent(
-      '2.10267 Wrapped Ether',
-    );
-    expect(stakingPosition.parentElement).toHaveTextContent('$6,522.67');
+      const stakingPosition = screen.getByTestId(
+        'defi-details-list-stake-position',
+      );
+      expect(stakingPosition).toHaveTextContent('Staked');
+      expect(stakingPosition.parentElement).toHaveTextContent('Wrapped Ether');
+      expect(stakingPosition.parentElement).toHaveTextContent(
+        '2.10267 Wrapped Ether',
+      );
+      expect(stakingPosition.parentElement).toHaveTextContent('$6,522.67');
 
-    let metricsEvents;
-
-    await waitFor(() => {
-      metricsEvents =
+      const metricsEvents =
         mockedBackgroundConnection.submitRequestToBackground.mock.calls?.filter(
           (call) =>
             call[0] === 'trackMetaMetricsEvent' &&
@@ -360,47 +358,47 @@ describe('Defi positions list', () => {
 
       console.log(JSON.stringify(metricsEvents));
       expect(metricsEvents).toHaveLength(2);
-    });
 
-    const aaveEvent = metricsEvents?.[0]?.[1]?.[0] as unknown as Record<
-      string,
-      unknown
-    >;
-    const stakingEvent = metricsEvents?.[1]?.[1]?.[0] as unknown as Record<
-      string,
-      unknown
-    >;
+      const aaveEvent = metricsEvents?.[0]?.[1]?.[0] as unknown as Record<
+        string,
+        unknown
+      >;
+      const stakingEvent = metricsEvents?.[1]?.[1]?.[0] as unknown as Record<
+        string,
+        unknown
+      >;
 
-    expect(aaveEvent).toMatchObject({
-      category: MetaMetricsEventCategory.DeFi,
-      event: MetaMetricsEventName.DeFiDetailsOpened,
-      properties: {
-        location: 'Home',
-        chain_id: '0x1',
-        protocol_id: 'aave-v3',
-      },
-      environmentType: 'background',
-      page: {
-        path: '/',
-        title: 'Home',
-        url: '/',
-      },
-    });
+      expect(aaveEvent).toMatchObject({
+        category: MetaMetricsEventCategory.DeFi,
+        event: MetaMetricsEventName.DeFiDetailsOpened,
+        properties: {
+          location: 'Home',
+          chain_id: '0x1',
+          protocol_id: 'aave-v3',
+        },
+        environmentType: 'background',
+        page: {
+          path: '/',
+          title: 'Home',
+          url: '/',
+        },
+      });
 
-    expect(stakingEvent).toMatchObject({
-      category: MetaMetricsEventCategory.DeFi,
-      event: MetaMetricsEventName.DeFiDetailsOpened,
-      properties: {
-        location: 'Home',
-        chain_id: '0x1',
-        protocol_id: 'metamask-staking',
-      },
-      environmentType: 'background',
-      page: {
-        path: '/',
-        title: 'Home',
-        url: '/',
-      },
+      expect(stakingEvent).toMatchObject({
+        category: MetaMetricsEventCategory.DeFi,
+        event: MetaMetricsEventName.DeFiDetailsOpened,
+        properties: {
+          location: 'Home',
+          chain_id: '0x1',
+          protocol_id: 'metamask-staking',
+        },
+        environmentType: 'background',
+        page: {
+          path: '/',
+          title: 'Home',
+          url: '/',
+        },
+      });
     });
   });
 });

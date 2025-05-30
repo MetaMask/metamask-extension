@@ -19,13 +19,13 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
   getEnvironmentType: jest.fn(),
 }));
 
-const mockUseHistory = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockUseHistory,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const render = ({
   stateChanges = {},
@@ -135,7 +135,9 @@ describe('App Header', () => {
       expect(connectionPickerButton).toBeInTheDocument();
       fireEvent.click(connectionPickerButton);
 
-      expect(mockUseHistory).toHaveBeenCalled();
+      waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalled();
+      });
     });
   });
 

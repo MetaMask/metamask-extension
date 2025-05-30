@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, import/no-commonjs */
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
@@ -70,7 +70,7 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
   const [stage, setStage] = useState<QuizStage>(QuizStage.introduction);
 
   const trackEvent = useContext(MetaMetricsContext);
-  const history = useHistory();
+  const navigate = useNavigate();
   const t = useI18nContext();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
@@ -235,7 +235,7 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
                 route = `${REVEAL_SEED_ROUTE}/${props.keyringId}`;
               }
 
-              history.push(route);
+              navigate(route);
               if (props.closeAfterCompleting) {
                 props.onClose();
               }

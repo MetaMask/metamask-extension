@@ -1,6 +1,6 @@
 import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom-v5-compat';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import copyToClipboard from 'copy-to-clipboard';
@@ -33,15 +33,14 @@ jest.mock('../../../../../helpers/utils/util', () => ({
 
 jest.mock('copy-to-clipboard');
 
-const mockHistoryPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useLocation: jest.fn(() => ({ search: '' })),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-  useParams: jest.fn(),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useParams: jest.fn(),
+  };
+});
 
 jest.mock('../../../../../ducks/send/index.js', () => ({
   ...jest.requireActual('../../../../../ducks/send/index.js'),
@@ -101,7 +100,7 @@ describe('NFT Details', () => {
 
     fireEvent.click(backButton);
 
-    expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it(`should call removeAndIgnoreNFT with proper nft details and route to '/' when removing nft`, async () => {
@@ -124,7 +123,7 @@ describe('NFT Details', () => {
       'testNetworkConfigurationId',
     );
     expect(setRemoveNftMessage).toHaveBeenCalledWith('success');
-    expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it(`should call setRemoveNftMessage with error when removeAndIgnoreNft fails and route to '/'`, async () => {
@@ -149,7 +148,7 @@ describe('NFT Details', () => {
       'testNetworkConfigurationId',
     );
     expect(setRemoveNftMessage).toHaveBeenCalledWith('error');
-    expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it('should copy nft address', async () => {
@@ -185,7 +184,7 @@ describe('NFT Details', () => {
         details: { ...nfts[5], tokenId: '1' },
       });
 
-      expect(mockHistoryPush).toHaveBeenCalledWith(SEND_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(SEND_ROUTE);
     });
   });
 
@@ -222,10 +221,12 @@ describe('NFT Details', () => {
   });
 
   it('should render a single image if there is an array of images in an NFT', async () => {
+    // cspell:disable
     const images = [
       'ipfs://bafybeidgklvljyifilhtrxzh77brgnhcy6s2wxoxqc2l73zr2nxlwuxfcy',
       'ipfs://bafybeic26kitpujb3q5h5w7yovmvgmtxl3y4ldsb2pfgual5jq62emsmxq',
     ];
+    // cspell:enable
     const mockNft = {
       ...nfts[1],
       image: images,
@@ -253,7 +254,7 @@ describe('NFT Details', () => {
   });
 
   describe(`Alternative Networks' OpenSea Links`, () => {
-    it('should open opeasea link with goeli testnet chainId', async () => {
+    it('should open opensea link with goerli testnet chainId', async () => {
       useParams.mockReturnValue({ chainId: CHAIN_IDS.GOERLI });
       global.platform = { openTab: jest.fn() };
 

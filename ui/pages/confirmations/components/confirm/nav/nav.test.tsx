@@ -16,13 +16,13 @@ jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn(),
 }));
 
-const mockHistoryReplace = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: mockHistoryReplace,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const render = () => {
   const store = configureStore(
@@ -105,11 +105,11 @@ describe('ConfirmNav', () => {
     expect(getByLabelText('Next Confirmation')).toBeInTheDocument();
   });
 
-  it('invoke history replace method when next button is clicked', () => {
+  it('invoke navigate method when next button is clicked', () => {
     const { getByLabelText } = render();
     const nextButton = getByLabelText('Next Confirmation');
     fireEvent.click(nextButton);
-    expect(mockHistoryReplace).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledTimes(1);
   });
 
   it('invoke action rejectAllApprovals when "Reject all" button is clicked', () => {

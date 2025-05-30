@@ -15,11 +15,8 @@ import Swap from '.';
 
 const middleware = [thunk];
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: jest.fn(),
-  }),
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
   useLocation: jest.fn(() => {
     return {
       pathname: '/swaps/prepare-swap-page',

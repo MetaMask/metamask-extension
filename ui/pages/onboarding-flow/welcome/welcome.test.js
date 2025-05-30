@@ -16,9 +16,6 @@ import {
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import OnboardingWelcome from './welcome';
 
-const mockHistoryReplace = jest.fn();
-const mockHistoryPush = jest.fn();
-
 jest.mock('../../../store/actions.ts', () => ({
   setFirstTimeFlowType: jest.fn().mockReturnValue(
     jest.fn((type) => {
@@ -37,13 +34,13 @@ jest.mock('../../../store/actions.ts', () => ({
   ),
 }));
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-    replace: mockHistoryReplace,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 describe('Onboarding Welcome Component', () => {
   const mockState = {
@@ -64,8 +61,9 @@ describe('Onboarding Welcome Component', () => {
       const mockStore = configureMockStore([thunk])(initializedMockState);
 
       renderWithProvider(<OnboardingWelcome />, mockStore);
-      expect(mockHistoryReplace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+        { replace: true },
       );
     });
 
@@ -80,8 +78,9 @@ describe('Onboarding Welcome Component', () => {
       const mockStore = configureMockStore([thunk])(importFirstTimeFlowState);
 
       renderWithProvider(<OnboardingWelcome />, mockStore);
-      expect(mockHistoryReplace).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_COMPLETION_ROUTE,
+        { replace: true },
       );
     });
   });
@@ -119,7 +118,7 @@ describe('Onboarding Welcome Component', () => {
       await waitFor(() => {
         expect(setTermsOfUseLastAgreed).toHaveBeenCalled();
         expect(setFirstTimeFlowType).toHaveBeenCalledWith('import');
-        expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
+        expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
       });
     });
   });

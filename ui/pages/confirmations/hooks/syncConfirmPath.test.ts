@@ -4,12 +4,13 @@ import { unapprovedPersonalSignMsg } from '../../../../test/data/confirmations/p
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import syncConfirmPath from './syncConfirmPath';
 
-const mockHistoryReplace = jest.fn();
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({ replace: mockHistoryReplace }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const STATE_MOCK = {
   ...mockState,
@@ -34,11 +35,14 @@ describe('syncConfirmPath', () => {
   });
 
   it('should replace history route', () => {
-    mockHistoryReplace.mockClear();
+    mockUseNavigate.mockClear();
     renderHookWithConfirmContextProvider(
       () => syncConfirmPath(unapprovedPersonalSignMsg),
       STATE_MOCK,
     );
-    expect(mockHistoryReplace).toHaveBeenCalled();
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      '/confirm-transaction/0050d5b0-c023-11ee-a0cb-3390a510a0ab/signature-request',
+      { replace: true },
+    );
   });
 });

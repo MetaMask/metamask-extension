@@ -126,7 +126,7 @@ describe('FormComboField', () => {
       />,
     );
 
-    const clearButton = getByLabelText('[clear]');
+    const clearButton = getByLabelText('Clear');
 
     await act(async () => {
       fireEvent.click(clearButton);

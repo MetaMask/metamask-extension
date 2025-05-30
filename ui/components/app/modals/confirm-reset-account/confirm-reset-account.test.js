@@ -22,7 +22,7 @@ describe('Confirm Reset Account', () => {
       <ConfirmResetAccount.WrappedComponent {...props} />,
     );
 
-    fireEvent.click(queryByText('[nevermind]'));
+    fireEvent.click(queryByText('Nevermind'));
 
     expect(props.resetAccount).not.toHaveBeenCalled();
     expect(props.hideModal).toHaveBeenCalled();
@@ -33,7 +33,7 @@ describe('Confirm Reset Account', () => {
       <ConfirmResetAccount.WrappedComponent {...props} />,
     );
 
-    fireEvent.click(queryByText('[clear]'));
+    fireEvent.click(queryByText('Clear'));
 
     expect(props.resetAccount).toHaveBeenCalled();
     expect(props.hideModal).toHaveBeenCalled();

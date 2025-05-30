@@ -5,7 +5,7 @@ import ErrorMessage from '.';
 describe('ErrorMessage Component', () => {
   it('should render a message from props.errorMessage', () => {
     const props = {
-      errorMessage: 'This is an error.',
+      errorMessage: 'Error message',
     };
     const { container } = renderWithProvider(<ErrorMessage {...props} />);
 
@@ -14,7 +14,7 @@ describe('ErrorMessage Component', () => {
 
   it('should render a message translated from props.errorKey', () => {
     const props = {
-      errorKey: 'testKey',
+      errorKey: 'errorPageMessageTitle',
     };
     const { container } = renderWithProvider(<ErrorMessage {...props} />);
 
