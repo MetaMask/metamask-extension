@@ -60,7 +60,6 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
-          cache-node-modules: true
           skip-allow-scripts: true
 
       - name: Check circular dependencies
@@ -199,7 +198,6 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
-          cache-node-modules: true
           skip-allow-scripts: true
 
       - name: Download artifact 'build-dist-browserify'
@@ -275,7 +273,6 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
-          cache-node-modules: true
           skip-allow-scripts: true
 
       - name: Download artifact 'build-dist-browserify'
@@ -306,7 +303,6 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
-          cache-node-modules: true
           skip-allow-scripts: true
 
       - name: Download artifact 'build-dist-browserify'
