@@ -5679,12 +5679,6 @@
   "startEarning": {
     "message": "开始赚取"
   },
-  "stateCorruptionDetectedErrorMessage": {
-    "message": "MetaMask 的状态文件已损坏或丢失。相关文件可能仍可恢复，请勿卸载 MetaMask 扩展程序！"
-  },
-  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
-    "message": "如果您想尝试自行恢复您的私钥助记词，请遵照以下说明操作。"
-  },
   "stateLogError": {
     "message": "检索状态日志时出错。"
   },
