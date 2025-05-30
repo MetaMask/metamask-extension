@@ -947,6 +947,7 @@ describe('Bridge selectors', () => {
           fromChain: { chainId: CHAIN_IDS.MAINNET },
         },
         bridgeStateOverrides: {
+          minimumBalanceForRentExemption: '890880',
           srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
           srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),

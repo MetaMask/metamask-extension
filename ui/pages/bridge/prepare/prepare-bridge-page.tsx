@@ -905,7 +905,9 @@ const PrepareBridgePage = () => {
               {!wasTxDeclined &&
                 activeQuote &&
                 (isSolanaBridgeEnabled ? (
-                  <MultichainBridgeQuoteCard />
+                  <MultichainBridgeQuoteCard
+                    balanceAmount={nativeAssetBalance}
+                  />
                 ) : (
                   <BridgeQuoteCard />
                 ))}
