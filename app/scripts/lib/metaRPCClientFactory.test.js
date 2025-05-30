@@ -189,7 +189,7 @@ describe('metaRPCClientFactory', () => {
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     metaRPCClient.foo('bar').catch((err) => {
-      expect(err).toBeInstanceOf(metaRPCClient.DisconnectError);
+      expect(err).toBeInstanceOf(DisconnectError);
       expect(err.message).toStrictEqual('disconnected');
       done();
     });
