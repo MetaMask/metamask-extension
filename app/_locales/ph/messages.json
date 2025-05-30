@@ -754,17 +754,11 @@
   "networkName": {
     "message": "Pangalan ng Network"
   },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
   "networkNameDefinition": {
     "message": "Ang pangalang nauugnay sa network na ito."
   },
   "networkNameEthereum": {
     "message": "Ethereum"
-  },
-  "networkNameTestnet": {
-    "message": "Testnet"
   },
   "networkURL": {
     "message": "URL ng Network"

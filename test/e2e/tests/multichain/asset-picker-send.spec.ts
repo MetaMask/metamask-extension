@@ -47,11 +47,10 @@ describe('AssetPickerSendFlow', function () {
         await driver.fill('[data-testid="ens-input"]', RECIPIENT_ADDRESS_MOCK);
         await driver.fill('.unit-input__input', '2');
 
-        const isDest = 'dest';
         const buttons = await driver.findElements(
           '[data-testid="asset-picker-button"]',
         );
-        const indexOfButtonToClick = isDest ? 1 : 0;
+        const indexOfButtonToClick = 0;
         await buttons[indexOfButtonToClick].click();
 
         // check that the name , crypto amount and fiat amount are correctly displayed
@@ -87,16 +86,8 @@ describe('AssetPickerSendFlow', function () {
 
         await driver.elementCountBecomesN(
           '[data-testid="multichain-token-list-button"]',
-          1,
+          0,
         );
-        // check that CHZ is disabled
-        const [tkn] = await driver.findElements(
-          '[data-testid="multichain-token-list-button"]',
-        );
-
-        await tkn.click();
-        const isSelected = await tkn.isSelected();
-        assert.equal(isSelected, false);
       },
     );
   });

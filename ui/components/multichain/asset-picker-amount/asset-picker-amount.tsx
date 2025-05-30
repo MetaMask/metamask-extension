@@ -7,7 +7,7 @@ import {
 } from '@metamask/network-controller';
 import { CaipChainId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Box, Text } from '../../component-library';
+import { Box } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -15,8 +15,6 @@ import {
   BorderRadius,
   BorderStyle,
   Display,
-  TextColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   getCurrentNetwork,
@@ -31,7 +29,6 @@ import {
   TokenStandard,
 } from '../../../../shared/constants/transaction';
 import {
-  getCurrentDraftTransaction,
   getIsNativeSendPossible,
   getSendMaxModeState,
   type Amount,
@@ -95,11 +92,8 @@ export const AssetPickerAmount = ({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { swapQuotesError, sendAsset, receiveAsset } = useSelector(
-    getCurrentDraftTransaction,
-  );
   const isDisabled = !onAmountChange;
-  const isSwapsErrorShown = isDisabled && swapQuotesError;
+  const isSwapsErrorShown = isDisabled;
 
   const isMaxMode = useSelector(getSendMaxModeState);
   const isNativeSendPossible = useSelector(getIsNativeSendPossible);
@@ -182,10 +176,6 @@ export const AssetPickerAmount = ({
   } else if (isFocused) {
     borderColor = BorderColor.primaryDefault;
   }
-
-  const isSwapAndSendFromNative =
-    sendAsset.type === AssetType.native &&
-    receiveAsset.type !== AssetType.native;
 
   let standardizedAsset;
   if (asset?.type === AssetType.native) {
@@ -284,16 +274,10 @@ export const AssetPickerAmount = ({
           // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           <AssetBalance asset={asset} error={passedError || error} />
         )}
-        {isSwapsErrorShown && (
-          <Text variant={TextVariant.bodySm} color={TextColor.errorDefault}>
-            {t(swapQuotesError)}
-          </Text>
-        )}
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        {onAmountChange &&
-          isNativeSendPossible &&
-          !isSwapAndSendFromNative &&
-          !disableMaxButton && <MaxClearButton asset={asset} />}
+        {onAmountChange && isNativeSendPossible && !disableMaxButton && (
+          <MaxClearButton asset={asset} />
+        )}
       </Box>
     </Box>
   );

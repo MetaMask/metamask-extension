@@ -1155,20 +1155,11 @@
   "networkName": {
     "message": "Nombre de la red"
   },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
   "networkNameDefinition": {
     "message": "El nombre asociado a esta red."
   },
   "networkNameEthereum": {
     "message": "Ethereum"
-  },
-  "networkNamePolygon": {
-    "message": "Polygon"
-  },
-  "networkNameTestnet": {
-    "message": "Red de prueba"
   },
   "networkStatus": {
     "message": "Estado de la red"
@@ -1833,18 +1824,8 @@
     "message": "El canje de $1 por $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "Las tarifas de gas son estimadas y fluctuarán en función del tráfico de la red y la complejidad de las transacciones."
-  },
-  "swapGasFeesLearnMore": {
-    "message": "Más información sobre las tarifas de gas"
-  },
   "swapGasFeesSplit": {
     "message": "Las tarifas de gas de la pantalla anterior se dividen entre estas dos transacciones."
-  },
-  "swapGasFeesSummary": {
-    "message": "Las tarifas de gas se pagan a los mineros de criptomonedas que procesan transacciones en la red $1. MetaMask no se beneficia de las tarifas de gas.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapIncludesMMFee": {
     "message": "Incluye una tasa de MetaMask del $1%.",

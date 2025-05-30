@@ -140,20 +140,6 @@ export async function fetchToken(
   });
 }
 
-export async function fetchBlockedTokens(
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  chainId: any,
-): Promise<string[]> {
-  const blockedTokensUrl = getBaseApi('blockedTokens', chainId);
-  return await fetchWithCache({
-    url: `${blockedTokensUrl}`,
-    fetchOptions: { method: 'GET', headers: clientIdHeader },
-    cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
-    functionName: 'fetchBlockedTokens',
-  });
-}
-
 type Token = { symbol: string; address: string };
 export async function fetchTokens(
   chainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
