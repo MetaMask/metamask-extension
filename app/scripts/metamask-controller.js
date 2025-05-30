@@ -2719,13 +2719,15 @@ export default class MetamaskController extends EventEmitter {
               scopeObject.methods.includes('eth_subscribe')
             ) {
               // for each tabId
-              Object.values(this.connections[origin]).forEach(({ tabId }) => {
-                this.addMultichainApiEthSubscriptionMiddleware({
-                  scope,
-                  origin,
-                  tabId,
-                });
-              });
+              Object.values(this.connections[origin] ?? {}).forEach(
+                ({ tabId }) => {
+                  this.addMultichainApiEthSubscriptionMiddleware({
+                    scope,
+                    origin,
+                    tabId,
+                  });
+                },
+              );
             } else {
               this.removeMultichainApiEthSubscriptionMiddleware({
                 scope,
@@ -7357,17 +7359,15 @@ export default class MetamaskController extends EventEmitter {
         ? (origin) => payload(origin)
         : () => payload;
 
-    Object.keys(this.connections).forEach((origin) => {
-      Object.values(this.connections[origin]).forEach(async (conn) => {
-        if (apiType && conn.apiType !== apiType) {
-          return;
-        }
-        try {
-          this.notifyConnection(conn, await getPayload(origin));
-        } catch (err) {
-          console.error(err);
-        }
-      });
+    Object.entries(this.connections).forEach(async ([origin, conn]) => {
+      if (apiType && conn.apiType !== apiType) {
+        return;
+      }
+      try {
+        this.notifyConnection(conn, await getPayload(origin));
+      } catch (err) {
+        console.error(err);
+      }
     });
   }
 
