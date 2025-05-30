@@ -284,7 +284,7 @@ async function setupMocking(
     });
 
   await server
-    .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/gasPrices`)
+    .forGet(new RegExp(`^${GAS_API_BASE_URL}/networks/\\d+/gasPrices$`, 'u'))
     .thenCallback(() => {
       return {
         statusCode: 200,
