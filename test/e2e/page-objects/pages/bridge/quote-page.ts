@@ -43,6 +43,8 @@ class BridgeQuotePage {
 
   private applyButton = { text: 'Apply', tag: 'button' };
 
+  private confirmButton = '[data-testid="confirm-sign-and-send-transaction-confirm-snap-footer-button"]';
+
   private selectAllButton = { text: 'Select all', tag: 'button' };
 
   private noOptionAvailable = {
@@ -61,6 +63,8 @@ class BridgeQuotePage {
 
   enterBridgeQuote = async (quote: BridgeQuote) => {
     // Source
+    console.log('Entering bridge quote');
+    console.log(quote);
     await this.driver.clickElement(this.sourceAssetPickerButton);
     await this.driver.clickElement(this.networkSelector);
     await this.driver.clickElement(this.selectAllButton);
@@ -102,6 +106,10 @@ class BridgeQuotePage {
 
   submitQuote = async () => {
     await this.driver.clickElement(this.submitButton);
+  };
+
+  confirmBridgeTransaction = async () => {
+    await this.driver.clickElement(this.confirmButton);
   };
 
   goBack = async () => {

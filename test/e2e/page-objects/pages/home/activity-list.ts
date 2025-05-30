@@ -316,6 +316,15 @@ class ActivityListPage {
       timeout: 5000,
     });
   }
+
+  async check_swapTransactionActivity(
+    swapText: string,
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      text: swapText,
+      tag: 'p',
+    });
+  }
 }
 
 export default ActivityListPage;
