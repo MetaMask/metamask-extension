@@ -2004,6 +2004,9 @@
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
+  "enableIt": {
+    "message": " Enable it"
+  },
   "enableSnap": {
     "message": "Enable"
   },
