@@ -5,8 +5,6 @@ import {
   EthAccountType,
   SolAccountType,
 } from '@metamask/keyring-api';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { BannerAlert, BannerAlertSeverity } from '../../component-library';
 import { getSelectedInternalAccount } from '../../../selectors';
 import { AccountOverviewEth } from './account-overview-eth';
 import { AccountOverviewUnknown } from './account-overview-unknown';
@@ -18,10 +16,7 @@ export type AccountOverviewProps = AccountOverviewCommonProps & {
 };
 
 export function AccountOverview(props: AccountOverviewProps) {
-  const t = useI18nContext();
   const account = useSelector(getSelectedInternalAccount);
-
-  const { useExternalServices, setBasicFunctionalityModalOpen } = props;
 
   const renderAccountOverviewOption = () => {
     switch (account.type) {
@@ -36,21 +31,5 @@ export function AccountOverview(props: AccountOverviewProps) {
     }
   };
 
-  return (
-    <>
-      {!process.env.REMOVE_GNS && !useExternalServices && (
-        <BannerAlert
-          margin={4}
-          marginBottom={0}
-          severity={BannerAlertSeverity.Danger}
-          actionButtonLabel={t('basicConfigurationBannerCTA')}
-          actionButtonOnClick={() => {
-            setBasicFunctionalityModalOpen();
-          }}
-          title={t('basicConfigurationBannerTitle')}
-        />
-      )}
-      {renderAccountOverviewOption()}
-    </>
-  );
+  return <>{renderAccountOverviewOption()}</>;
 }

@@ -89,11 +89,7 @@ export const useCarouselManagement = ({
       ...FUND_SLIDE,
       undismissable: hasZeroBalance,
     };
-    const basicFunctionalitySlide = {
-      ...BASIC_FUNCTIONALITY_SLIDE,
-      undismissable: !useExternalServices,
-    };
-    defaultSlides.push(basicFunctionalitySlide);
+    defaultSlides.push(BASIC_FUNCTIONALITY_SLIDE);
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 
     if (!isSolanaAddress(selectedAccount.address)) {

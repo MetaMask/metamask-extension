@@ -67,11 +67,13 @@ export const Carousel = React.forwardRef(
         ) {
           return false;
         }
+        if (slide.id === BASIC_FUNCTIONALITY_SLIDE.id && useExternalServices) {
+          return false;
+        }
         ///: END:ONLY_INCLUDE_IF
         return !slide.dismissed || slide.undismissable;
       })
       .sort((a, b) => {
-        // eslint-disable-next-line no-negated-condition
         if (!useExternalServices) {
           if (a.id === BASIC_FUNCTIONALITY_SLIDE.id) {
             return -1;
@@ -79,17 +81,16 @@ export const Carousel = React.forwardRef(
           if (b.id === BASIC_FUNCTIONALITY_SLIDE.id) {
             return 1;
           }
-        } else {
-          ///: BEGIN:ONLY_INCLUDE_IF(solana)
-          // prioritize Solana slide
-          if (a.id === SOLANA_SLIDE.id) {
-            return -1;
-          }
-          if (b.id === SOLANA_SLIDE.id) {
-            return 1;
-          }
-          ///: END:ONLY_INCLUDE_IF
         }
+        ///: BEGIN:ONLY_INCLUDE_IF(solana)
+        // prioritize Solana slide
+        if (a.id === SOLANA_SLIDE.id) {
+          return -1;
+        }
+        if (b.id === SOLANA_SLIDE.id) {
+          return 1;
+        }
+        ///: END:ONLY_INCLUDE_IF
 
         const isSweepstakesActive = getSweepstakesCampaignActive(
           new Date(new Date().toISOString()),
