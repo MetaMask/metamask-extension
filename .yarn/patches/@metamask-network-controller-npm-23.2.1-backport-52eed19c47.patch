@@ -10,7 +10,7 @@ index 0000000000000000000000000000000000000000..ce3b18534f055ee00aa5821793f855fd
 +You can see the changes before compilation on this branch: https://github.com/MetaMask/core/compare/pnf/ext-23622-review?expand=1
 \ No newline at end of file
 diff --git a/dist/NetworkController.cjs b/dist/NetworkController.cjs
-index ca0fdc1a5984b51ba6d2cc50655c2b8c789a6be2..efda018e73b86bf681438f17b7cbb4285c76164c 100644
+index ca0fdc1a5984b51ba6d2cc50655c2b8c789a6be2..de196cee61386c8a5ab5720bcc5822f305533a30 100644
 --- a/dist/NetworkController.cjs
 +++ b/dist/NetworkController.cjs
 @@ -45,6 +45,7 @@ const eth_query_1 = __importDefault(require("@metamask/eth-query"));
@@ -76,10 +76,19 @@ index ca0fdc1a5984b51ba6d2cc50655c2b8c789a6be2..efda018e73b86bf681438f17b7cbb428
          };
 -        validateNetworkControllerState(initialState);
 +        validateInitialState(initialState);
-+        correctInitialState(initialState, captureException);
++        const correctedInitialState = correctInitialState(initialState, captureException);
          if (!infuraProjectId || typeof infuraProjectId !== 'string') {
              throw new Error('Invalid Infura project ID');
          }
+@@ -368,7 +385,7 @@ class NetworkController extends base_controller_1.BaseController {
+                 },
+             },
+             messenger,
+-            state: initialState,
++            state: correctedInitialState,
+         });
+         _NetworkController_instances.add(this);
+         _NetworkController_ethQuery.set(this, void 0);
 @@ -515,7 +532,6 @@ class NetworkController extends base_controller_1.BaseController {
       */
      async initializeProvider() {
@@ -89,7 +98,7 @@ index ca0fdc1a5984b51ba6d2cc50655c2b8c789a6be2..efda018e73b86bf681438f17b7cbb428
      /**
       * Refreshes the network meta with EIP-1559 support and the network status
 diff --git a/dist/NetworkController.mjs b/dist/NetworkController.mjs
-index 0efca6773120ea8be324446febfbcee68ca4281d..8b50f352c6b620a090f95f83fe8878b1ccabd518 100644
+index 0efca6773120ea8be324446febfbcee68ca4281d..bd47f0d796322a62bde9a6eec6cb5333b7f5b925 100644
 --- a/dist/NetworkController.mjs
 +++ b/dist/NetworkController.mjs
 @@ -25,6 +25,7 @@ import { createEventEmitterProxy } from "@metamask/swappable-obj-proxy";
@@ -155,10 +164,19 @@ index 0efca6773120ea8be324446febfbcee68ca4281d..8b50f352c6b620a090f95f83fe8878b1
          };
 -        validateNetworkControllerState(initialState);
 +        validateInitialState(initialState);
-+        correctInitialState(initialState, captureException);
++        const correctedInitialState = correctInitialState(initialState, captureException);
          if (!infuraProjectId || typeof infuraProjectId !== 'string') {
              throw new Error('Invalid Infura project ID');
          }
+@@ -344,7 +361,7 @@ export class NetworkController extends BaseController {
+                 },
+             },
+             messenger,
+-            state: initialState,
++            state: correctedInitialState,
+         });
+         _NetworkController_instances.add(this);
+         _NetworkController_ethQuery.set(this, void 0);
 @@ -491,7 +508,6 @@ export class NetworkController extends BaseController {
       */
      async initializeProvider() {
