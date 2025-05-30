@@ -13755,6 +13755,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/zxcvbn@npm:^4.4.5":
+  version: 4.4.5
+  resolution: "@types/zxcvbn@npm:4.4.5"
+  checksum: 10/279b0d43e21b8de48a9ef98b5753e343673fdb6cfdd2679e2afbb292410d610a0f01d7c1cb1dad1acbd0d35ee01e8a8dbe21cb034a2e2f3458492cf5fd3b44c3
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/eslint-plugin@npm:^7.10.0":
   version: 7.11.0
   resolution: "@typescript-eslint/eslint-plugin@npm:7.11.0"
@@ -29945,6 +29952,7 @@ __metadata:
     "@types/xml2js": "npm:^0"
     "@types/yargs": "npm:^17.0.32"
     "@types/yargs-parser": "npm:^21.0.3"
+    "@types/zxcvbn": "npm:^4.4.5"
     "@typescript-eslint/eslint-plugin": "npm:^7.10.0"
     "@typescript-eslint/parser": "npm:^7.10.0"
     "@viem/anvil": "npm:^0.0.10"
