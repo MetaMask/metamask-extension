@@ -4733,9 +4733,14 @@ export default class MetamaskController extends EventEmitter {
     const keyring = await this.getSnapKeyring();
     const messenger = this.controllerMessenger;
 
+    const scopes = this.remoteFeatureFlagController.state.remoteFeatureFlags
+      .solanaTestnetsEnabled
+      ? [SolScope.Mainnet, SolScope.Devnet, SolScope.Testnet]
+      : [SolScope.Mainnet];
+
     return new MultichainWalletSnapClient(
       SOLANA_WALLET_SNAP_ID,
-      [SolScope.Mainnet, SolScope.Devnet, SolScope.Testnet],
+      scopes,
       keyring,
       messenger,
     );
