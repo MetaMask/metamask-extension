@@ -3,28 +3,23 @@ import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers
 import * as actions from '../../../store/actions';
 import { MetamaskIdentityProvider } from '../../../contexts/identity';
 import { useContactSyncing, useShouldDispatchContactSyncing } from './useContactSyncing';
-import { useDeleteAccountSyncingDataFromUserStorage } from '../useAccountSyncing';
 
 type ArrangeMocksMetamaskStateOverrides = {
   isSignedIn?: boolean;
   isBackupAndSyncEnabled?: boolean;
-  isAccountSyncingEnabled?: boolean;
   isContactSyncingEnabled?: boolean;
   isUnlocked?: boolean;
   useExternalServices?: boolean;
   completedOnboarding?: boolean;
-  isAccountSyncingReadyToBeDispatched?: boolean;
 };
 
 const initialMetamaskState: ArrangeMocksMetamaskStateOverrides = {
   isSignedIn: true,
   isBackupAndSyncEnabled: true,
-  isAccountSyncingEnabled: false,
   isContactSyncingEnabled: true,
   isUnlocked: true,
   useExternalServices: true,
   completedOnboarding: true,
-  isAccountSyncingReadyToBeDispatched: false,
 };
 
 const arrangeMockState = (
@@ -45,22 +40,18 @@ describe('useShouldDispatchContactSyncing()', () => {
     const properties = [
       'isSignedIn',
       'isBackupAndSyncEnabled',
-      'isAccountSyncingEnabled',
       'isContactSyncingEnabled',
       'isUnlocked',
       'useExternalServices',
       'completedOnboarding',
-      'isAccountSyncingReadyToBeDispatched',
     ] as const;
     const baseState = {
       isSignedIn: true,
       isBackupAndSyncEnabled: true,
-      isAccountSyncingEnabled: false,
       isContactSyncingEnabled: true,
       isUnlocked: true,
       useExternalServices: true,
       completedOnboarding: true,
-      isAccountSyncingReadyToBeDispatched: false,
     };
 
     const failureStateCases: {
@@ -152,7 +143,7 @@ describe('useContactSyncing', () => {
 
   it('should not dispatch conditions are not met', async () => {
     const { mocks, dispatchContactSyncing, shouldDispatchContactSyncing } =
-      arrangeAndAct({ isAccountSyncingReadyToBeDispatched: false });
+      arrangeAndAct({ isContactSyncingEnabled: false });
 
     await dispatchContactSyncing();
 
