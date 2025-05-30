@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { AppSliceState } from '../../../ducks/app/app';
 import { getInternalAccountByAddress, getUseBlockie } from '../../../selectors';
 import {
@@ -9,23 +9,11 @@ import {
   Box,
   ButtonIcon,
   ButtonIconSize,
-  ModalHeader,
-  Modal,
-  Text,
-  ModalContent,
-  ModalOverlay,
-  ModalBody,
-  ModalFooter,
-  FormTextField,
 } from '../../component-library';
 import { Content, Header, Page } from '../../multichain/pages/page';
 import {
-  AlignItems,
   BackgroundColor,
-  Display,
   IconColor,
-  JustifyContent,
-  TextColor,
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { IconName } from '../../component-library/icon';
@@ -34,7 +22,8 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setAccountLabel } from '../../../store/actions';
+import { AccountDetailsRow } from '../account-details-row';
+import { EditAccountNameModal } from '../edit-account-name-modal';
 
 type BaseAccountDetailsProps = {
   children: React.ReactNode | React.ReactNode[];
@@ -46,7 +35,6 @@ export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
   );
   const useBlockie = useSelector(getUseBlockie);
   const history = useHistory();
-  const dispatch = useDispatch();
   const t = useI18nContext();
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, address),
@@ -61,71 +49,13 @@ export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
   const shortenedAddress = shortenAddress(formattedAddress);
 
   const [isEditingAccountName, setIsEditingAccountName] = useState(false);
-  const [accountName, setAccountName] = useState('');
+
   const handleEditAccountName = () => {
     setIsEditingAccountName(true);
   };
 
   const handleShowAddress = () => {
     // TODO: Implement new route for show QR code/address
-  }
-
-  const handleSaveAccountName = () => {
-    setIsEditingAccountName(false);
-    dispatch(setAccountLabel(address, accountName));
-
-  }
-
-  // TODO: move this to its own file
-  const DetailRow = ({
-    label,
-    value,
-    endAccessory,
-    style,
-  }: {
-    label: string;
-    value: string;
-    endAccessory?: React.ReactNode;
-    style?: React.CSSProperties;
-  }) => {
-    return (
-      <Box
-        backgroundColor={BackgroundColor.backgroundAlternative}
-        display={Display.Flex}
-        justifyContent={JustifyContent.spaceBetween}
-        style={{ ...style, height: '48px' }}
-        paddingLeft={4}
-        paddingRight={4}
-        alignItems={AlignItems.center}
-      >
-        <Text color={TextColor.textDefault}>{label}</Text>
-        <Box display={Display.Flex} alignItems={AlignItems.center}>
-          <Text color={TextColor.textAlternative}>{value}</Text>
-          {endAccessory}
-        </Box>
-      </Box>
-    );
-  };
-
-  const EditAccountNameModal = () => {
-    return (
-      <Modal isOpen={isEditingAccountName} onClose={() => setIsEditingAccountName(false)}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader onBack={() => setIsEditingAccountName(false)} onClose={() => setIsEditingAccountName(false)}>{t('editAccountName')}</ModalHeader>
-          <ModalBody>
-            <FormTextField
-              label={t('name')}
-              value={accountName}
-              onChange={(e) => setAccountName(e.target.value)}
-              placeholder={name}
-              helpText={address}
-            />
-          </ModalBody>
-          <ModalFooter onSubmit={handleSaveAccountName} submitButtonProps={{ children: t('save'), disabled: !accountName }} />
-        </ModalContent>
-      </Modal>
-    )
   }
 
   return (
@@ -155,7 +85,7 @@ export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
           style={{ margin: '0 auto' }}
         />
         <Box className="multichain-account-details__section">
-          <DetailRow
+          <AccountDetailsRow
             label={t('accountName')}
             value={name}
             endAccessory={
@@ -176,7 +106,7 @@ export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
               borderTopRightRadius: '8px',
             }}
           />
-          <DetailRow
+          <AccountDetailsRow
             label={t('address')}
             value={shortenedAddress}
             endAccessory={
@@ -196,6 +126,14 @@ export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
           />
         </Box>
         {children}
+        {isEditingAccountName && (
+          <EditAccountNameModal
+            isOpen={isEditingAccountName}
+            onClose={() => setIsEditingAccountName(false)}
+            currentAccountName={name}
+            address={address}
+          />
+        )}
       </Content>
     </Page>
   );
