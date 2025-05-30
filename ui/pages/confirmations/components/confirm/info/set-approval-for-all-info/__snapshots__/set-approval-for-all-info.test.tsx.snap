@@ -98,7 +98,7 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
               <p
                 class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
               >
-                0x07614...3ad68
+                0x0761...ad68
               </p>
             </div>
           </div>
@@ -160,7 +160,7 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
             <p
               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              0x2e0D7...5d09B
+              0x2e0D...d09B
             </p>
           </div>
         </div>

@@ -25,7 +25,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
     >
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; flex-direction: column;"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; flex-direction: column; flex: 1; overflow: hidden;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
@@ -60,7 +60,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
                 <p
                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                 >
-                  0x2e0D7...5d09B
+                  0x2e0D...d09B
                 </p>
               </div>
             </div>
@@ -73,7 +73,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
       />
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; flex-direction: column;"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; flex-direction: column; flex: 1; overflow: hidden;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
@@ -108,7 +108,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
                 <p
                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                 >
-                  0x2e0D7...5d09B
+                  0x2e0D...d09B
                 </p>
               </div>
             </div>
@@ -341,7 +341,7 @@ exports[`NativeTransferInfo renders correctly 1`] = `
             <p
               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              0x07614...3ad68
+              0x0761...ad68
             </p>
           </div>
         </div>

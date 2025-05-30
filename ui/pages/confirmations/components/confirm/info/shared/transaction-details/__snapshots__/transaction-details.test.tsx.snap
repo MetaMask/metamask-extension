@@ -109,7 +109,7 @@ exports[`Transaction Details <TransactionDetails /> renders component for transa
             <p
               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              0x88AA6...A5125
+              0x88AA...5125
             </p>
           </div>
         </div>

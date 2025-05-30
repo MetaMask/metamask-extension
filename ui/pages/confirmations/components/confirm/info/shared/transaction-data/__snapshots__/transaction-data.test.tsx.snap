@@ -136,7 +136,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
               <p
                 class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
               >
-                0xDc477...0c164
+                0xDc47...c164
               </p>
             </div>
           </div>
@@ -192,7 +192,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
               <p
                 class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
               >
-                0x24867...F563A
+                0x2486...563A
               </p>
             </div>
           </div>
@@ -478,7 +478,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                   <p
                     class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                   >
-                    0x00000...00002
+                    0x0000...0002
                   </p>
                 </div>
               </div>
@@ -642,7 +642,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                   <p
                     class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                   >
-                    0x00000...00002
+                    0x0000...0002
                   </p>
                 </div>
               </div>
@@ -791,7 +791,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                     <p
                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                     >
-                      0xC02aa...56Cc2
+                      0xC02a...6Cc2
                     </p>
                   </div>
                 </div>
@@ -822,7 +822,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                     <p
                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                     >
-                      0xA0b86...6eB48
+                      0xA0b8...eB48
                     </p>
                   </div>
                 </div>
@@ -853,7 +853,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                     <p
                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                     >
-                      0xd02Aa...56cc3
+                      0xd02A...6cc3
                     </p>
                   </div>
                 </div>
@@ -1018,7 +1018,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                   <p
                     class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                   >
-                    0xA0b86...6eB48
+                    0xA0b8...eB48
                   </p>
                 </div>
               </div>
@@ -1074,7 +1074,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                   <p
                     class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                   >
-                    0x27213...71c47
+                    0x2721...1c47
                   </p>
                 </div>
               </div>
@@ -1238,7 +1238,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                   <p
                     class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                   >
-                    0xA0b86...6eB48
+                    0xA0b8...eB48
                   </p>
                 </div>
               </div>
@@ -1294,7 +1294,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                   <p
                     class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                   >
-                    0x00000...00001
+                    0x0000...0001
                   </p>
                 </div>
               </div>
@@ -1517,7 +1517,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
               <p
                 class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
               >
-                0x12345...67890
+                0x1234...7890
               </p>
             </div>
           </div>
@@ -1709,7 +1709,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               <p
                 class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
               >
-                0xBe3be...06AFe
+                0xBe3b...6AFe
               </p>
             </div>
           </div>
@@ -1879,7 +1879,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                     <p
                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                     >
-                      0x0305f...2Cc0B
+                      0x0305...Cc0B
                     </p>
                   </div>
                 </div>
@@ -2109,7 +2109,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                     <p
                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                     >
-                      0x43853...83449
+                      0x4385...3449
                     </p>
                   </div>
                 </div>
@@ -2339,7 +2339,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                     <p
                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                     >
-                      0xdAC17...31ec7
+                      0xdAC1...1ec7
                     </p>
                   </div>
                 </div>
@@ -2532,7 +2532,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 <p
                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                 >
-                  0xCC97F...6ee0a
+                  0xCC97...ee0a
                 </p>
               </div>
             </div>

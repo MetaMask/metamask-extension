@@ -96,7 +96,7 @@ exports[`Info renders info section for approve request 1`] = `
               <p
                 class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
               >
-                0x07614...3ad68
+                0x0761...ad68
               </p>
             </div>
           </div>
@@ -158,7 +158,7 @@ exports[`Info renders info section for approve request 1`] = `
             <p
               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              0x2e0D7...5d09B
+              0x2e0D...d09B
             </p>
           </div>
         </div>
@@ -548,7 +548,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
             <p
               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              0x88AA6...A5125
+              0x88AA...5125
             </p>
           </div>
         </div>
@@ -898,7 +898,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
               <p
                 class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
               >
-                0x07614...3ad68
+                0x0761...ad68
               </p>
             </div>
           </div>
@@ -960,7 +960,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
             <p
               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              0x2e0D7...5d09B
+              0x2e0D...d09B
             </p>
           </div>
         </div>
@@ -1242,7 +1242,7 @@ exports[`Info renders info section for typed sign request 1`] = `
             <p
               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              0xCcCCc...ccccC
+              0xCcCC...cccC
             </p>
           </div>
         </div>
@@ -1452,7 +1452,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                             <p
                               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              0xCD2a3...DD826
+                              0xCD2a...D826
                             </p>
                           </div>
                         </div>
@@ -1492,7 +1492,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                             <p
                               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              0xDeaDb...DbeeF
+                              0xDeaD...beeF
                             </p>
                           </div>
                         </div>
@@ -1532,7 +1532,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                             <p
                               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              0x06195...43896
+                              0x0619...3896
                             </p>
                           </div>
                         </div>
@@ -1668,7 +1668,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                                 <p
                                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                 >
-                                  0xbBbBB...bBBbB
+                                  0xbBbB...BBbB
                                 </p>
                               </div>
                             </div>
@@ -1708,7 +1708,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                                 <p
                                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                 >
-                                  0xB0Bda...bEa57
+                                  0xB0Bd...Ea57
                                 </p>
                               </div>
                             </div>
@@ -1748,7 +1748,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                                 <p
                                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                 >
-                                  0xB0B0b...00000
+                                  0xB0B0...0000
                                 </p>
                               </div>
                             </div>
