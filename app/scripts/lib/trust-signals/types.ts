@@ -41,11 +41,11 @@ export enum ResultType {
   Warning = 'Warning',
   Benign = 'Benign',
   Trusted = 'Trusted',
-  Error = 'Error',
+  ErrorResult = 'Error',
 }
 
 export type ScanAddressRequest = {
-  chain: string;
+  chain: SupportedEVMChain;
   address: string;
 };
 

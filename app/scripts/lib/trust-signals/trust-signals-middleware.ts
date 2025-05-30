@@ -54,7 +54,7 @@ export function createTrustSignalsMiddleware(
         }
 
         const chainId = getChainId(networkController);
-        const result = await scanAddress(chainId as SupportedEVMChain, to);
+        const result = await scanAddress(chainId, to);
         appStateController.addAddressSecurityAlertResponse(to, result);
       }
     } catch (error) {
