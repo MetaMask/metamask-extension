@@ -30,7 +30,7 @@
     "message": "kumbukumbu ya shughuli"
   },
   "addAcquiredTokens": {
-    "message": "Ongeza vianzio ulivyopata kwa kutumia MetaMask"
+    "message": "Ongeza vianzio ulivyopata kwa kutumia Widllet"
   },
   "addAlias": {
     "message": "Ongeza jina jingine"
@@ -55,15 +55,15 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Widllet",
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "Widllet Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "Widllet Flask",
     "description": "The name of the application (Flask)"
   },
   "approve": {
@@ -82,7 +82,7 @@
     "message": "Kihesabu Muda wa Kuondoka Kwenye Akaunti Kiotomatiki (dakika)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Weka muda katika dakika kabla MetaMask haijaondoa kwenye akaunti kiotomatiki."
+    "message": "Weka muda katika dakika kabla Widllet haijaondoa kwenye akaunti kiotomatiki."
   },
   "average": {
     "message": "Wastani"
@@ -91,7 +91,7 @@
     "message": "Nyuma"
   },
   "backupApprovalInfo": {
-    "message": "Msimbo huu wa siri unahitajika ili kurejesha waleti yako ikitokea umepoteza kifaa chako, umesahau nenosiri lako, umelazimika kusakinisha MetaMask, au unataka kufikia waleti yako kwenye kifaa kingine."
+    "message": "Msimbo huu wa siri unahitajika ili kurejesha waleti yako ikitokea umepoteza kifaa chako, umesahau nenosiri lako, umelazimika kusakinisha Widllet, au unataka kufikia waleti yako kwenye kifaa kingine."
   },
   "backupApprovalNotice": {
     "message": "Hifadhi msimbo wa Siri wa Kurejesha data ili kuweka salama waleti yako na fedha."
@@ -125,7 +125,7 @@
     "message": "Utambulisho wa Mnyororo"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Unapaswa kutumia MetaMask kwenye Google Chrome ili kuungnisha kwenye Waleti yako ya Programu Maunzi."
+    "message": "Unapaswa kutumia Widllet kwenye Google Chrome ili kuungnisha kwenye Waleti yako ya Programu Maunzi."
   },
   "close": {
     "message": "Funga"
@@ -285,7 +285,7 @@
     "message": "Unganisha waleti ya programu maunzi"
   },
   "hardwareWalletsMsg": {
-    "message": "Chagua waleti ya programu maunzi ambayo ungependa kutumia kwenye MetaMask"
+    "message": "Chagua waleti ya programu maunzi ambayo ungependa kutumia kwenye Widllet"
   },
   "here": {
     "message": "hapa",
@@ -305,7 +305,7 @@
     "description": "Button to import an account from a selected file"
   },
   "importAccountMsg": {
-    "message": "Akaunti zilizoingizwa hazitahusishwa na kirai chako cha kianzio cha akaunti ya MetaMask iliyoundwa awali. Pata maelezo zaidi kuhusu akaunti zilizoingizwa"
+    "message": "Akaunti zilizoingizwa hazitahusishwa na kirai chako cha kianzio cha akaunti ya Widllet iliyoundwa awali. Pata maelezo zaidi kuhusu akaunti zilizoingizwa"
   },
   "imported": {
     "message": "Zilizoingizwa",
@@ -376,7 +376,7 @@
     "message": "Ujumbe"
   },
   "metamaskVersion": {
-    "message": "Toleo la MetaMask"
+    "message": "Toleo la Widllet"
   },
   "mustSelectOne": {
     "message": "Lazima uchague angalau kianzio 1."
@@ -447,7 +447,7 @@
     "message": "Shiriki katika MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Shiriki katika MetaMetrics ili kutusaidia kufanya MetaMask kuwa bora zaidi"
+    "message": "Shiriki katika MetaMetrics ili kutusaidia kufanya Widllet kuwa bora zaidi"
   },
   "password": {
     "message": "Nenosiri"

@@ -72,7 +72,7 @@
     "message": "使用账户私钥助记词访问钱包"
   },
   "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask无法恢复您的密码。我们将使用您的私钥助记词来验证您的所有权、恢复您的钱包并设置新密码。首先，请输入创建钱包时获得的私钥助记词。$1",
+    "message": "Widllet无法恢复您的密码。我们将使用您的私钥助记词来验证您的所有权、恢复您的钱包并设置新密码。首先，请输入创建钱包时获得的私钥助记词。$1",
     "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
   },
   "accessingYourCamera": {
@@ -159,10 +159,10 @@
     "message": "添加账户"
   },
   "addAccountToMetaMask": {
-    "message": "向 MetaMask 添加账户"
+    "message": "向 Widllet 添加账户"
   },
   "addAcquiredTokens": {
-    "message": "添加您通过MetaMask获得的代币"
+    "message": "添加您通过Widllet获得的代币"
   },
   "addAlias": {
     "message": "添加别名"
@@ -335,7 +335,7 @@
     "message": "优先费用（又称“矿工费”）直接向矿工支付，激励他们优先处理您的交易。"
   },
   "agreeTermsOfUse": {
-    "message": "我同意MetaMask的$1",
+    "message": "我同意Widllet的$1",
     "description": "$1 is the `terms` link"
   },
   "airDropPatternDescription": {
@@ -490,15 +490,15 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Widllet",
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "Widllet Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "Widllet Flask",
     "description": "The name of the application (Flask)"
   },
   "apply": {
@@ -576,7 +576,7 @@
     "message": "自动锁定计时器（分钟）"
   },
   "autoLockTimeLimitDescription": {
-    "message": "设置 MetaMask 将被锁定前的空闲时间（单位：分钟）。"
+    "message": "设置 Widllet 将被锁定前的空闲时间（单位：分钟）。"
   },
   "average": {
     "message": "平均值"
@@ -585,7 +585,7 @@
     "message": "返回"
   },
   "backupApprovalInfo": {
-    "message": "如果不慎丢失个人设备，忘记密码，需要重新安装 MetaMask，或者需在另一台设备上访问钱包，使用此助记词才能恢复您的钱包。"
+    "message": "如果不慎丢失个人设备，忘记密码，需要重新安装 Widllet，或者需在另一台设备上访问钱包，使用此助记词才能恢复您的钱包。"
   },
   "backupApprovalNotice": {
     "message": "请备份您的私钥助记词，确保您的钱包和资金安全。"
@@ -615,7 +615,7 @@
     "message": "基本功能已关闭"
   },
   "basicConfigurationDescription": {
-    "message": "MetaMask 通过互联网服务提供代币详情和燃料设置等基本功能。当您使用互联网服务时，您的 IP 地址会共享，在本例中与 MetaMask 共享。这就像您访问任何网站一样。MetaMask 暂时使用这些数据，并且绝不会出卖您的数据。您可以使用 VPN 或关闭这些服务，但这可能会影响您的 MetaMask 体验。要了解详情，请参阅我们的 $1。",
+    "message": "Widllet 通过互联网服务提供代币详情和燃料设置等基本功能。当您使用互联网服务时，您的 IP 地址会共享，在本例中与 Widllet 共享。这就像您访问任何网站一样。Widllet 暂时使用这些数据，并且绝不会出卖您的数据。您可以使用 VPN 或关闭这些服务，但这可能会影响您的 Widllet 体验。要了解详情，请参阅我们的 $1。",
     "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationLabel": {
@@ -625,10 +625,10 @@
     "message": "我理解并想继续"
   },
   "basicConfigurationModalDisclaimerOff": {
-    "message": "这意味着您不能充分优化您在 MetaMask 上的时间。您将无法使用基本功能（例如代币详情、最优燃料设置等）。"
+    "message": "这意味着您不能充分优化您在 Widllet 上的时间。您将无法使用基本功能（例如代币详情、最优燃料设置等）。"
   },
   "basicConfigurationModalDisclaimerOn": {
-    "message": "如需优化您在 MetaMask 上的时间，您将需要开启此功能。基本功能（例如代币详情、最优燃料设置等）对于 Web3 体验至关重要。"
+    "message": "如需优化您在 Widllet 上的时间，您将需要开启此功能。基本功能（例如代币详情、最优燃料设置等）对于 Web3 体验至关重要。"
   },
   "basicConfigurationModalHeadingOff": {
     "message": "关闭基本功能"
@@ -646,7 +646,7 @@
     "message": "此为测试版。请$1报告错误"
   },
   "betaMetamaskVersion": {
-    "message": "MetaMask 测试版本"
+    "message": "Widllet 测试版本"
   },
   "betaTerms": {
     "message": "测试版使用条款"
@@ -827,7 +827,7 @@
     "message": "联系"
   },
   "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "MetaMask 支持团队"
+    "message": "Widllet 支持团队"
   },
   "bridgeTxDetailsDelayedTitle": {
     "message": "超过 3 小时了吗？"
@@ -874,7 +874,7 @@
     "message": "建立您的联系人列表"
   },
   "builtAroundTheWorld": {
-    "message": "MetaMask 是在世界各地设计和建造的。"
+    "message": "Widllet 是在世界各地设计和建造的。"
   },
   "bulletpoint": {
     "message": "·"
@@ -935,7 +935,7 @@
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "您需要在 Google Chrome 上使用 MetaMask 以连接到您的硬件钱包。"
+    "message": "您需要在 Google Chrome 上使用 Widllet 以连接到您的硬件钱包。"
   },
   "circulatingSupply": {
     "message": "循环供应"
@@ -985,10 +985,10 @@
     "message": "供应分布集中化"
   },
   "configureSnapPopupDescription": {
-    "message": "您现在要离开MetaMask来配置此snap。"
+    "message": "您现在要离开Widllet来配置此snap。"
   },
   "configureSnapPopupInstallDescription": {
-    "message": "您现在要离开MetaMask来安装此snap。"
+    "message": "您现在要离开Widllet来安装此snap。"
   },
   "configureSnapPopupInstallTitle": {
     "message": "安装snap"
@@ -1036,7 +1036,7 @@
     "message": "您正在使用 $1 支付此网络费"
   },
   "confirmGasFeeTokenTooltip": {
-    "message": "此费用支付给网络以处理您的交易，其中包含针对非 ETH 代币收取的 $1 MetaMask 手续费。"
+    "message": "此费用支付给网络以处理您的交易，其中包含针对非 ETH 代币收取的 $1 Widllet 手续费。"
   },
   "confirmNestedTransactionTitle": {
     "message": "交易 $1"
@@ -1139,7 +1139,7 @@
     "description": "$1 is the snap for which a connection is being requested."
   },
   "connectWithMetaMask": {
-    "message": "与 MetaMask 连接"
+    "message": "与 Widllet 连接"
   },
   "connectedAccounts": {
     "message": "已连接的账户"
@@ -1152,7 +1152,7 @@
     "message": "您有1个账户连接到了该网站。"
   },
   "connectedAccountsEmptyDescription": {
-    "message": "MetaMask 没有连接到该网站。要连接到 web3 网站，请找到并点击连接按钮。"
+    "message": "Widllet 没有连接到该网站。要连接到 web3 网站，请找到并点击连接按钮。"
   },
   "connectedAccountsListTooltip": {
     "message": "$1 可以查看账户余额、地址、活动，并建议要批准的关联账户交易。",
@@ -1176,7 +1176,7 @@
     "description": "$1 is the account name"
   },
   "connectedSnapAndNoAccountDescription": {
-    "message": "MetaMask 已连接到此网站，但尚未连接任何账户"
+    "message": "Widllet 已连接到此网站，但尚未连接任何账户"
   },
   "connectedSnaps": {
     "message": "连接的 Snap"
@@ -1235,7 +1235,7 @@
     "description": "$1 is the name of the snap being fetched."
   },
   "connectionPopoverDescription": {
-    "message": "如要连接网站，请选择“连接”按钮。MetaMask 仅支持连接 Web3 网站。"
+    "message": "如要连接网站，请选择“连接”按钮。Widllet 仅支持连接 Web3 网站。"
   },
   "connectionRequest": {
     "message": "连接请求"
@@ -1269,7 +1269,7 @@
     "message": "合约交互"
   },
   "convertTokenToNFTDescription": {
-    "message": "我们检测到该资产是NFT。MetaMask现在完全原生支持NFT。您想将它从您的代币列表中删除并将它添加为NFT吗？"
+    "message": "我们检测到该资产是NFT。Widllet现在完全原生支持NFT。您想将它从您的代币列表中删除并将它添加为NFT吗？"
   },
   "convertTokenToNFTExistDescription": {
     "message": "我们检测到该资产已作为NFT添加。是否要将其从代币列表中删除？"
@@ -1305,7 +1305,7 @@
     "message": "创建密码"
   },
   "createSnapAccountDescription": {
-    "message": "$1 想在 MetaMask 添加一个新账户。"
+    "message": "$1 想在 Widllet 添加一个新账户。"
   },
   "createSnapAccountTitle": {
     "message": "创建账户"
@@ -1317,7 +1317,7 @@
     "message": "创建者地址"
   },
   "crossChainSwapsLink": {
-    "message": "使用 MetaMask Portfolio 跨网络兑换"
+    "message": "使用 Widllet Portfolio 跨网络兑换"
   },
   "crossChainSwapsLinkNative": {
     "message": "使用跨链桥跨网络兑换"
@@ -1442,7 +1442,7 @@
     "message": "好的"
   },
   "dataCollectionWarningPopoverDescription": {
-    "message": "您关闭了我们用于营销目的的数据收集。此操作仅适用于此设备。如果您在其他设备上使用 MetaMask，请务必也在其他设备上选择关闭。"
+    "message": "您关闭了我们用于营销目的的数据收集。此操作仅适用于此设备。如果您在其他设备上使用 Widllet，请务必也在其他设备上选择关闭。"
   },
   "dataUnavailable": {
     "message": "数据不可用"
@@ -1486,7 +1486,7 @@
     "message": "默认 RPC（远程过程调用）URL"
   },
   "defaultSettingsSubTitle": {
-    "message": "MetaMask 使用默认设置达到安全性和易用性的最佳平衡。更改这些设置以进一步保护您的隐私。"
+    "message": "Widllet 使用默认设置达到安全性和易用性的最佳平衡。更改这些设置以进一步保护您的隐私。"
   },
   "defaultSettingsTitle": {
     "message": "默认隐私设置"
@@ -1822,13 +1822,13 @@
     "message": "$1. $2目前提供增强型代币检测"
   },
   "ensDomainsSettingDescriptionIntroduction": {
-    "message": "MetaMask 让您可以直接在浏览器地址栏中看到 ENS（Ethereum 域名服务）域。其工作原理如下："
+    "message": "Widllet 让您可以直接在浏览器地址栏中看到 ENS（Ethereum 域名服务）域。其工作原理如下："
   },
   "ensDomainsSettingDescriptionOutroduction": {
     "message": "请谨记，使用此功能时，IPFS 第三方服务可以看到您的 IP 地址。"
   },
   "ensDomainsSettingDescriptionPart1": {
-    "message": "MetaMask 会检查以太坊的 ENS（Ethereum 域名服务）合约，以查找与 ENS 名称相关的代码。"
+    "message": "Widllet 会检查以太坊的 ENS（Ethereum 域名服务）合约，以查找与 ENS 名称相关的代码。"
   },
   "ensDomainsSettingDescriptionPart2": {
     "message": "如果代码与 IPFS 关联，您就可以看到与之相关的内容（通常是网站）。"
@@ -1913,7 +1913,7 @@
     "description": "In sentry feedback form, The message displayed after a successful feedback submission."
   },
   "errorPageTitle": {
-    "message": "MetaMask 遇到了一个错误",
+    "message": "Widllet 遇到了一个错误",
     "description": "Title of generic error page"
   },
   "errorPageTryAgain": {
@@ -2022,15 +2022,15 @@
   },
   "flaskWelcomeWarning2": {
     "message": "我们不保证此扩展程序的安全性或稳定性。Flask 提供的新API并未针对网络钓鱼攻击进行强化，这意味着任何需要 Flask 的站点或快取都可能是窃取您资产的恶意企图。",
-    "description": "This explains the risks of using MetaMask Flask"
+    "description": "This explains the risks of using Widllet Flask"
   },
   "flaskWelcomeWarning3": {
-    "message": "所有Flask API都是实验性的。它们可能会在未事先通知的情况下被更改或删除，它们也可能会无限期地留在 Flask 上而不会迁移到稳定的 MetaMask。您需要自行承担使用它们的风险。",
+    "message": "所有Flask API都是实验性的。它们可能会在未事先通知的情况下被更改或删除，它们也可能会无限期地留在 Flask 上而不会迁移到稳定的 Widllet。您需要自行承担使用它们的风险。",
     "description": "This message warns developers about unstable Flask APIs"
   },
   "flaskWelcomeWarning4": {
-    "message": "确保在使用Flask时禁用常规 MetaMask 扩展程序。",
-    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
+    "message": "确保在使用Flask时禁用常规 Widllet 扩展程序。",
+    "description": "This message calls to pay attention about multiple versions of Widllet running on the same site (Flask + Prod)"
   },
   "flaskWelcomeWarningAcceptButton": {
     "message": "我接受风险",
@@ -2194,7 +2194,7 @@
     "message": "硬件钱包集成使用API调用外部服务器，这些外部服务器可以看到您的IP地址和您与之交互的智能合约地址。"
   },
   "hardwareWalletsMsg": {
-    "message": "选择希望用于 MetaMask 的硬件钱包。"
+    "message": "选择希望用于 Widllet 的硬件钱包。"
   },
   "here": {
     "message": "此处",
@@ -2263,7 +2263,7 @@
     "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
   },
   "holdToRevealContent4": {
-    "message": "MetaMask 支持团队不会要求提供此项信息，",
+    "message": "Widllet 支持团队不会要求提供此项信息，",
     "description": "Part of 'holdToRevealContent3'"
   },
   "holdToRevealContent5": {
@@ -2309,7 +2309,7 @@
     "message": "报价如何运作"
   },
   "howQuotesWorkExplanation": {
-    "message": "在我们搜索到的报价中，该报价的回报率最高。这是基于兑换价格计算的，其中包括桥接费和 $1% 的 MetaMask 费用，减去燃料费。燃料费取决于网络的繁忙程度和交易的复杂程度。"
+    "message": "在我们搜索到的报价中，该报价的回报率最高。这是基于兑换价格计算的，其中包括桥接费和 $1% 的 Widllet 费用，减去燃料费。燃料费取决于网络的繁忙程度和交易的复杂程度。"
   },
   "id": {
     "message": "ID"
@@ -2344,13 +2344,13 @@
     "message": "这不是有效的私钥。必须输入长度为 64 个字符的十六进制字符串。"
   },
   "importAccountJsonLoading1": {
-    "message": "预计此 JSON 导入需要几分钟时间并暂停 MetaMask。"
+    "message": "预计此 JSON 导入需要几分钟时间并暂停 Widllet。"
   },
   "importAccountJsonLoading2": {
     "message": "很抱歉，在未来我们将会加快此流程。"
   },
   "importAccountMsg": {
-    "message": "导入的账户将不会与最初创建的 MetaMask 账户私钥助记词相关联。了解更多有关导入账户的信息"
+    "message": "导入的账户将不会与最初创建的 Widllet 账户私钥助记词相关联。了解更多有关导入账户的信息"
   },
   "importMyWallet": {
     "message": "导入我的钱包"
@@ -2430,7 +2430,7 @@
     "message": "包括"
   },
   "infuraBlockedNotification": {
-    "message": "MetaMask 无法连接到区块链主机。请检查可能的原因 $1。",
+    "message": "Widllet 无法连接到区块链主机。请检查可能的原因 $1。",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
   "initialTransactionConfirmed": {
@@ -2447,7 +2447,7 @@
     "message": "安装源"
   },
   "installRequest": {
-    "message": "添加到 MetaMask"
+    "message": "添加到 Widllet"
   },
   "installedOn": {
     "message": "已在 $1 上安装",
@@ -2534,7 +2534,7 @@
     "message": "IPFS网关"
   },
   "ipfsGatewayDescription": {
-    "message": "MetaMask使用第三方服务来显示您存储在IPFS上的NFT图像，显示与您输入到浏览器地址栏中的ENS地址相关信息，并获取不同代币的图标。当您使用这些服务时，这些服务可能会获悉您的IP地址。"
+    "message": "Widllet使用第三方服务来显示您存储在IPFS上的NFT图像，显示与您输入到浏览器地址栏中的ENS地址相关信息，并获取不同代币的图标。当您使用这些服务时，这些服务可能会获悉您的IP地址。"
   },
   "ipfsToggleModalDescriptionOne": {
     "message": "我们使用第三方服务来显示存储在 IPFS 中的 NFT 图像，显示与在浏览器地址栏中输入的 ENS 地址相关的信息，并获取不同代币的图标。当您使用这些服务时，您的 IP 地址可能会被其获悉。"
@@ -2643,10 +2643,10 @@
     "message": "欺诈和安全风险信息。"
   },
   "leaveMetaMask": {
-    "message": "要离开 MetaMask？"
+    "message": "要离开 Widllet？"
   },
   "leaveMetaMaskDesc": {
-    "message": "您即将访问 MetaMask 之外的网站。继续之前请仔细检查 URL。"
+    "message": "您即将访问 Widllet 之外的网站。继续之前请仔细检查 URL。"
   },
   "ledgerAccountRestriction": {
     "message": "您需要先使用最后一个账户，然后才能添加新账户。"
@@ -2716,7 +2716,7 @@
     "message": "链接"
   },
   "linkCentralizedExchanges": {
-    "message": "链接您的 Coinbase 或 Binance 账户，将加密货币免费转移到 MetaMask。"
+    "message": "链接您的 Coinbase 或 Binance 账户，将加密货币免费转移到 Widllet。"
   },
   "links": {
     "message": "链接"
@@ -2740,7 +2740,7 @@
     "message": "注销"
   },
   "lockMetaMask": {
-    "message": "锁定 MetaMask"
+    "message": "锁定 Widllet"
   },
   "lockTimeInvalid": {
     "message": "锁定时间必须是 0 到 10080 之间的数字"
@@ -2819,7 +2819,7 @@
     "message": "消息"
   },
   "metaMaskConnectStatusParagraphOne": {
-    "message": "现在您可以更好地控制 MetaMask 中的账户连接。"
+    "message": "现在您可以更好地控制 Widllet 中的账户连接。"
   },
   "metaMaskConnectStatusParagraphThree": {
     "message": "点击它以管理您的连接账户。"
@@ -2838,10 +2838,10 @@
     "message": "钱包通知目前未开启。"
   },
   "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swaps 正在进行维护。请稍后再查看。"
+    "message": "Widllet Swaps 正在进行维护。请稍后再查看。"
   },
   "metamaskVersion": {
-    "message": "MetaMask 版本"
+    "message": "Widllet 版本"
   },
   "methodData": {
     "message": "方法"
@@ -2900,7 +2900,7 @@
     "message": "更多报价"
   },
   "multichainAddEthereumChainConfirmationDescription": {
-    "message": "您正在将此网络添加到 MetaMask 并授予该网站其使用许可。"
+    "message": "您正在将此网络添加到 Widllet 并授予该网站其使用许可。"
   },
   "multichainQuoteCardBridgingLabel": {
     "message": "桥接"
@@ -2974,7 +2974,7 @@
     "message": "Lens 协议"
   },
   "nameProvider_token": {
-    "message": "MetaMask"
+    "message": "Widllet"
   },
   "nameSetPlaceholder": {
     "message": "选择昵称......",
@@ -3007,7 +3007,7 @@
     "message": "分享您的反馈"
   },
   "needHelpLinkText": {
-    "message": "MetaMask 支持"
+    "message": "Widllet 支持"
   },
   "needHelpSubmitTicket": {
     "message": "提交工单"
@@ -3162,7 +3162,7 @@
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
   },
   "newNFTDetectedInNFTsTabMessage": {
-    "message": "让 MetaMask 自动检测您钱包中的 NFT，并在检测到时显示那些 NFT。"
+    "message": "让 Widllet 自动检测您钱包中的 NFT，并在检测到时显示那些 NFT。"
   },
   "newNFTsAutodetected": {
     "message": "NFT 自动检测"
@@ -3212,7 +3212,7 @@
     "message": "已启用 NFT 自动检测"
   },
   "nftDisclaimer": {
-    "message": "免责声明：MetaMask 从源网址中提取媒体文件。该网址有时会因铸造 NFT 的市场而改变。"
+    "message": "免责声明：Widllet 从源网址中提取媒体文件。该网址有时会因铸造 NFT 的市场而改变。"
   },
   "nftOptions": {
     "message": "NFT 期权"
@@ -3244,10 +3244,10 @@
     "message": "未找到符合给定查询条件的账户"
   },
   "noConnectedAccountTitle": {
-    "message": "MetaMask 未连接到此站点"
+    "message": "Widllet 未连接到此站点"
   },
   "noConnectionDescription": {
-    "message": "要连接到网站，请找到并选择“连接”按钮。记住，MetaMask 仅限连接到 Web3 上的网站"
+    "message": "要连接到网站，请找到并选择“连接”按钮。记住，Widllet 仅限连接到 Web3 上的网站"
   },
   "noConversionRateAvailable": {
     "message": "无可用汇率"
@@ -3553,7 +3553,7 @@
     "message": "我同意"
   },
   "onboardingMetametricsDescription": {
-    "message": "我们希望收集基本的使用和诊断数据，以改进 MetaMask。请注意，我们绝不会出卖您在此处提供的数据。"
+    "message": "我们希望收集基本的使用和诊断数据，以改进 Widllet。请注意，我们绝不会出卖您在此处提供的数据。"
   },
   "onboardingMetametricsDescription2": {
     "message": "当我们收集指标时，总是..."
@@ -3590,7 +3590,7 @@
     "message": "了解我们如何在收集您的个人资料使用数据的同时保护您的隐私。"
   },
   "onboardingMetametricsTitle": {
-    "message": "请帮助我们改进 MetaMask"
+    "message": "请帮助我们改进 Widllet"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "我们将使用此数据来了解您如何与我们的营销通信交互。我们可能会分享相关资讯（例如产品特点）。"
@@ -3611,16 +3611,16 @@
     "message": "点击浏览器扩展程序图标"
   },
   "onboardingPinExtensionDescription": {
-    "message": "在您的浏览器上固定 MetaMask，以便访问并轻松查看交易确认。"
+    "message": "在您的浏览器上固定 Widllet，以便访问并轻松查看交易确认。"
   },
   "onboardingPinExtensionDescription2": {
-    "message": "您可以通过点击扩展程序打开 MetaMask，并一键访问您的钱包。"
+    "message": "您可以通过点击扩展程序打开 Widllet，并一键访问您的钱包。"
   },
   "onboardingPinExtensionDescription3": {
     "message": "点击浏览器扩展程序图标即可即时访问它"
   },
   "onboardingPinExtensionLabel": {
-    "message": "固定 MetaMask"
+    "message": "固定 Widllet"
   },
   "onboardingPinExtensionStep1": {
     "message": "1"
@@ -3629,7 +3629,7 @@
     "message": "2"
   },
   "onboardingPinExtensionTitle": {
-    "message": "您的 MetaMask 安装完成！"
+    "message": "您的 Widllet 安装完成！"
   },
   "onlyConnectTrust": {
     "message": "仅连接您信任的网站。$1",
@@ -3637,7 +3637,7 @@
   },
   "openFullScreenForLedgerWebHid": {
     "message": "全屏打开以连接您的 Ledger。",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+    "description": "Shown to the user on the confirm screen when they are viewing Widllet in a popup window but need to connect their ledger via webhid."
   },
   "openInBlockExplorer": {
     "message": "在区块浏览器上打开"
@@ -3666,7 +3666,7 @@
     "description": "Used in the 'permission_rpc' message."
   },
   "outdatedBrowserNotification": {
-    "message": "您的浏览器已过期。如果不更新浏览器，您将无法获取MetaMask的安全补丁和新功能。"
+    "message": "您的浏览器已过期。如果不更新浏览器，您将无法获取Widllet的安全补丁和新功能。"
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "覆盖 Content-Security-Policy 标头"
@@ -3681,7 +3681,7 @@
     "message": "参加 MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "加入 MetaMetrics ，帮助我们改进 MetaMask"
+    "message": "加入 MetaMetrics ，帮助我们改进 Widllet"
   },
   "password": {
     "message": "密码"
@@ -3690,7 +3690,7 @@
     "message": "密码长度不足"
   },
   "passwordSetupDetails": {
-    "message": "此密码只会在此设备上解锁您的 MetaMask 钱包。MetaMask 无法恢复此密码。"
+    "message": "此密码只会在此设备上解锁您的 Widllet 钱包。Widllet 无法恢复此密码。"
   },
   "passwordStrength": {
     "message": "密码强度：$1",
@@ -3700,7 +3700,7 @@
     "message": "强密码可以提高钱包的安全性，以防设备被盗或被入侵。"
   },
   "passwordTermsWarning": {
-    "message": "我明白 MetaMask 无法为我恢复此密码。$1"
+    "message": "我明白 Widllet 无法为我恢复此密码。$1"
   },
   "passwordsDontMatch": {
     "message": "密码不匹配"
@@ -3772,11 +3772,11 @@
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
   },
   "permission_assets": {
-    "message": "在 MetaMask 中显示账户资产。",
+    "message": "在 Widllet 中显示账户资产。",
     "description": "The description for the `endowment:assets` permission."
   },
   "permission_assetsDescription": {
-    "message": "允许 $1 向 MetaMask 客户端提供资产信息。资产可以是链上的，也可以是链下的。",
+    "message": "允许 $1 向 Widllet 客户端提供资产信息。资产可以是链上的，也可以是链下的。",
     "description": "An extended description for the `endowment:assets` permission. $1 is the name of the Snap."
   },
   "permission_cronjob": {
@@ -3788,11 +3788,11 @@
     "description": "An extended description for the `snap_cronjob` permission. $1 is the snap name."
   },
   "permission_dialog": {
-    "message": "在 MetaMask 中显示对话框窗口。",
+    "message": "在 Widllet 中显示对话框窗口。",
     "description": "The description for the `snap_dialog` permission"
   },
   "permission_dialogDescription": {
-    "message": "允许 $1 显示带有以下内容的 MetaMask 弹出窗口：自定义文本、输入字段以及用于批准或拒绝操作的按钮。\n这适用于创建 snap 的提醒、确认和流程加入选项等。",
+    "message": "允许 $1 显示带有以下内容的 Widllet 弹出窗口：自定义文本、输入字段以及用于批准或拒绝操作的按钮。\n这适用于创建 snap 的提醒、确认和流程加入选项等。",
     "description": "An extended description for the `snap_dialog` permission. $1 is the snap name."
   },
   "permission_ethereumAccounts": {
@@ -3804,7 +3804,7 @@
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
   "permission_ethereumProviderDescription": {
-    "message": "允许 $1 直接与 MetaMask 通信，使其可以从区块链中读取数据，并提供消息和交易建议。",
+    "message": "允许 $1 直接与 Widllet 通信，使其可以从区块链中读取数据，并提供消息和交易建议。",
     "description": "An extended description for the `endowment:ethereum-provider` permission. $1 is the snap name."
   },
   "permission_getEntropy": {
@@ -3812,7 +3812,7 @@
     "description": "The description for the `snap_getEntropy` permission. $1 is the snap name."
   },
   "permission_getEntropyDescription": {
-    "message": "允许 $1 派生 $1 独有的任意私钥，但不公开私钥。这些私钥与您的 MetaMask 账户是分开的，与您的私钥或私钥助记词无关。其他 snap 无法访问此信息。",
+    "message": "允许 $1 派生 $1 独有的任意私钥，但不公开私钥。这些私钥与您的 Widllet 账户是分开的，与您的私钥或私钥助记词无关。其他 snap 无法访问此信息。",
     "description": "An extended description for the `snap_getEntropy` permission. $1 is the snap name."
   },
   "permission_getLocale": {
@@ -3820,7 +3820,7 @@
     "description": "The description for the `snap_getLocale` permission"
   },
   "permission_getLocaleDescription": {
-    "message": "允许 $1 访问您的 MetaMask 首选语言设置。这可用于进行本地化，以及使用您的语言显示$1的内容。",
+    "message": "允许 $1 访问您的 Widllet 首选语言设置。这可用于进行本地化，以及使用您的语言显示$1的内容。",
     "description": "An extended description for the `snap_getLocale` permission. $1 is the snap name."
   },
   "permission_getPreferences": {
@@ -3828,7 +3828,7 @@
     "description": "The description for the `snap_getPreferences` permission"
   },
   "permission_getPreferencesDescription": {
-    "message": "让 $1 访问 MetaMask 设置中的首选语言和法币等信息。这有助于 $1 显示符合您偏好的内容。 ",
+    "message": "让 $1 访问 Widllet 设置中的首选语言和法币等信息。这有助于 $1 显示符合您偏好的内容。 ",
     "description": "An extended description for the `snap_getPreferences` permission. $1 is the snap name."
   },
   "permission_homePage": {
@@ -3836,7 +3836,7 @@
     "description": "The description for the `endowment:page-home` permission"
   },
   "permission_homePageDescription": {
-    "message": "让 $1 在 MetaMask 中显示自定义主屏幕。这可以用于用户界面、配置和控制面板。",
+    "message": "让 $1 在 Widllet 中显示自定义主屏幕。这可以用于用户界面、配置和控制面板。",
     "description": "An extended description for the `endowment:page-home` permission. $1 is the snap name."
   },
   "permission_keyring": {
@@ -3888,7 +3888,7 @@
     "description": "The description for the `endowment:name-lookup` permission."
   },
   "permission_nameLookupDescription": {
-    "message": "允许 Snap 在 MetaMask UI 的不同部分中获取和显示地址并进行域查找。",
+    "message": "允许 Snap 在 Widllet UI 的不同部分中获取和显示地址并进行域查找。",
     "description": "An extended description for the `endowment:name-lookup` permission."
   },
   "permission_notifications": {
@@ -3896,7 +3896,7 @@
     "description": "The description for the `snap_notify` permission"
   },
   "permission_notificationsDescription": {
-    "message": "允许 $1 在 MetaMask 中显示通知。snap 可以触发简短的通知文本，以提供可操作或对时间敏感的信息。",
+    "message": "允许 $1 在 Widllet 中显示通知。snap 可以触发简短的通知文本，以提供可操作或对时间敏感的信息。",
     "description": "An extended description for the `snap_notify` permission. $1 is the snap name."
   },
   "permission_protocol": {
@@ -3904,7 +3904,7 @@
     "description": "The description for the `endowment:protocol` permission."
   },
   "permission_protocolDescription": {
-    "message": "允许 $1 向 MetaMask 提供协议数据，例如燃料估算或代币信息。",
+    "message": "允许 $1 向 Widllet 提供协议数据，例如燃料估算或代币信息。",
     "description": "An extended description for the `endowment:protocol` permission. $1 is the name of the Snap."
   },
   "permission_rpc": {
@@ -3940,7 +3940,7 @@
     "description": "The description for the `endowment:transaction-insight` permission"
   },
   "permission_transactionInsightDescription": {
-    "message": "允许 $1 在 MetaMask UI 中对交易进行解码，并显示见解。这可用于防止网络钓鱼和采取安全措施。",
+    "message": "允许 $1 在 Widllet UI 中对交易进行解码，并显示见解。这可用于防止网络钓鱼和采取安全措施。",
     "description": "An extended description for the `endowment:transaction-insight` permission. $1 is the snap name."
   },
   "permission_transactionInsightOrigin": {
@@ -4177,7 +4177,7 @@
     "message": "解除质押完成"
   },
   "pushPlatformNotificationsSwapCompletedDescription": {
-    "message": "您的 MetaMask 兑换已成功"
+    "message": "您的 Widllet 兑换已成功"
   },
   "pushPlatformNotificationsSwapCompletedTitle": {
     "message": "兑换已完成"
@@ -4237,7 +4237,7 @@
     "message": "切勿与任何人分享您的账户私钥助记词"
   },
   "recoveryPhraseReminderItemTwo": {
-    "message": "MetaMask 团队绝对不会索要您的账户私钥助记词"
+    "message": "Widllet 团队绝对不会索要您的账户私钥助记词"
   },
   "recoveryPhraseReminderSubText": {
     "message": "您的账户私钥助记词控制您的所有账户。"
@@ -4285,10 +4285,10 @@
     "message": "该账户将从您的钱包中删除。在继续操作前，确认您已拥有该导入账户的原始账户私钥助记词或私钥。您可以通过账户下拉菜单再次导入或创建账户。 "
   },
   "removeKeyringSnap": {
-    "message": "去除此Snap，会同时将以下账户从MetaMask中去除："
+    "message": "去除此Snap，会同时将以下账户从Widllet中去除："
   },
   "removeKeyringSnapToolTip": {
-    "message": "Snap控制这些账户，去除此Snap，会同时将这些账户从MetaMask中去除，但账户将保留在区块链中。"
+    "message": "Snap控制这些账户，去除此Snap，会同时将这些账户从Widllet中去除，但账户将保留在区块链中。"
   },
   "removeNFT": {
     "message": "删除 NFT"
@@ -4303,7 +4303,7 @@
     "message": "移除 Snap"
   },
   "removeSnapAccountDescription": {
-    "message": "如果您继续，此账户将不可在 MetaMask 中使用。"
+    "message": "如果您继续，此账户将不可在 Widllet 中使用。"
   },
   "removeSnapAccountTitle": {
     "message": "去除账户"
@@ -4354,7 +4354,7 @@
     "message": "重置钱包"
   },
   "resetWalletSubHeader": {
-    "message": "MetaMask不会保留密码的副本。如果您在解锁账户时遇到问题，需要重置您的钱包。您可以提供设置钱包时使用的私钥助记词，以进行重置。"
+    "message": "Widllet不会保留密码的副本。如果您在解锁账户时遇到问题，需要重置您的钱包。您可以提供设置钱包时使用的私钥助记词，以进行重置。"
   },
   "resetWalletUsingSRP": {
     "message": "此操作将从此设备中删除您当前的钱包和私钥助记词，以及您编制的账户列表。使用助记词进行重置后，您将会看到一个账户列表（基于用于重置的助记词）。这个新列表将自动包括有余额的账户。您还可以使用之前创建的$1。您导入的自定义账户需要是$2，添加到账户中的任何自定义代币也需要是$3。"
@@ -4363,7 +4363,7 @@
     "message": "在继续之前，请确保您所使用的私钥助记词正确无误。您将无法撤消此操作。"
   },
   "restartMetamask": {
-    "message": "重新启动MetaMask"
+    "message": "重新启动Widllet"
   },
   "restore": {
     "message": "恢复"
@@ -4400,7 +4400,7 @@
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
   },
   "revealSeedWordsDescription2": {
-    "message": "MetaMask 是$1。这意味着您是自己的 SRP 的所有者。",
+    "message": "Widllet 是$1。这意味着您是自己的 SRP 的所有者。",
     "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
   },
   "revealSeedWordsDescription3": {
@@ -4423,7 +4423,7 @@
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSeedWordsWarning2": {
-    "message": "MetaMask 支持团队绝对不会要求提供此项信息。",
+    "message": "Widllet 支持团队绝对不会要求提供此项信息。",
     "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
@@ -4564,7 +4564,7 @@
     "message": "如果有人要求您的恢复短语，他们可能会试图欺诈您并偷窃您的钱包资金"
   },
   "seedPhraseIntroSidebarCopyTwo": {
-    "message": "切勿分享您的账户私钥助记词，包括也不能与 MetaMask 分享！"
+    "message": "切勿分享您的账户私钥助记词，包括也不能与 Widllet 分享！"
   },
   "seedPhraseIntroSidebarTitleOne": {
     "message": "什么是账户私钥助记词？"
@@ -4606,7 +4606,7 @@
     "message": "选择一个账户"
   },
   "selectAnAccountAlreadyConnected": {
-    "message": "此账户已连接到 MetaMask"
+    "message": "此账户已连接到 Widllet"
   },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "打开\"显示 NFT 媒体\""
@@ -4877,13 +4877,13 @@
     "message": "卖出加密货币，获取现金"
   },
   "slideCashOutTitle": {
-    "message": "通过 MetaMask 兑现"
+    "message": "通过 Widllet 兑现"
   },
   "slideDebitCardDescription": {
     "message": "特定地区可用"
   },
   "slideDebitCardTitle": {
-    "message": "MetaMask 借记卡"
+    "message": "Widllet 借记卡"
   },
   "slideFundWalletDescription": {
     "message": "添加或转入代币即可开始使用"
@@ -4916,7 +4916,7 @@
     "message": "您的交易失败"
   },
   "smartTransactionErrorDescription": {
-    "message": "市场的突然变化可导致失败。如果问题仍然存在，请联系 MetaMask 客户支持团队。"
+    "message": "市场的突然变化可导致失败。如果问题仍然存在，请联系 Widllet 客户支持团队。"
   },
   "smartTransactionPending": {
     "message": "正在提交您的交易"
@@ -4966,7 +4966,7 @@
     "message": "账户已去除"
   },
   "snapAccountRemovedDescription": {
-    "message": "此账户将在 MetaMask 中不再可用。"
+    "message": "此账户将在 Widllet 中不再可用。"
   },
   "snapAccounts": {
     "message": "账户Snap"
@@ -5118,7 +5118,7 @@
     "message": "Solana 去中心化应用、NFT、硬件钱包支持等功能即将上线。"
   },
   "solanaOnMetaMask": {
-    "message": "MetaMask 支持 Solana"
+    "message": "Widllet 支持 Solana"
   },
   "solanaSendReceiveSwapTokens": {
     "message": "发送、接收和兑换代币"
@@ -5256,7 +5256,7 @@
     "message": "要查看私钥助记词，您需要答对两个问题"
   },
   "srpSecurityQuizQuestionOneQuestion": {
-    "message": "如果您丢失了私钥助记词，MetaMask..."
+    "message": "如果您丢失了私钥助记词，Widllet..."
   },
   "srpSecurityQuizQuestionOneRightAnswer": {
     "message": "无法帮助您"
@@ -5325,7 +5325,7 @@
     "message": "检索状态日志时出错。"
   },
   "stateLogFileName": {
-    "message": "MetaMask 状态日志"
+    "message": "Widllet 状态日志"
   },
   "stateLogs": {
     "message": "状态日志"
@@ -5346,7 +5346,7 @@
     "message": "关联您的 Lattice1"
   },
   "step1LatticeWalletMsg": {
-    "message": "当您的 Lattice1 设备设置好并在线时，您可以将 MetaMask 与其相关联。解锁您的设备并准备好您的设备 ID。",
+    "message": "当您的 Lattice1 设备设置好并在线时，您可以将 Widllet 与其相关联。解锁您的设备并准备好您的设备 ID。",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1LedgerWallet": {
@@ -5456,7 +5456,7 @@
     "message": "参与我们的调查"
   },
   "surveyTitle": {
-    "message": "塑造MetaMask的未来"
+    "message": "塑造Widllet的未来"
   },
   "swap": {
     "message": "兑换"
@@ -5522,7 +5522,7 @@
     "message": "编辑限制"
   },
   "swapEnableDescription": {
-    "message": "这是必须的，并且允许 MetaMask 兑换您的 $1。",
+    "message": "这是必须的，并且允许 Widllet 兑换您的 $1。",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
   },
   "swapEnableTokenForSwapping": {
@@ -5569,7 +5569,7 @@
     "message": "燃料费用是估算的，并将根据网络流量和交易复杂性而波动。"
   },
   "swapGasFeesExplanation": {
-    "message": "MetaMask 不从燃料费中赚钱。这些费用是估计值，可能会根据网络的繁忙程度和交易的复杂程度而变化。了解更多信息 $1。",
+    "message": "Widllet 不从燃料费中赚钱。这些费用是估计值，可能会根据网络的繁忙程度和交易的复杂程度而变化。了解更多信息 $1。",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
   },
   "swapGasFeesExplanationLinkText": {
@@ -5583,7 +5583,7 @@
     "message": "上一个屏幕上的燃料费用在这两笔交易之间分摊。"
   },
   "swapGasFeesSummary": {
-    "message": "燃料费用支付给在 $1 网络上处理交易的加密矿工。MetaMask 不会从燃料费用中获利。",
+    "message": "燃料费用支付给在 $1 网络上处理交易的加密矿工。Widllet 不会从燃料费用中获利。",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
@@ -5596,19 +5596,19 @@
     "message": "高滑点"
   },
   "swapIncludesGasAndMetaMaskFee": {
-    "message": "包括燃料和 $1% 的 MetaMask 费用",
+    "message": "包括燃料和 $1% 的 Widllet 费用",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
-    "message": "包括 $1% 的 MetaMask 费用。",
+    "message": "包括 $1% 的 Widllet 费用。",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
-    "message": "报价反映了 $1% MetaMask 费用",
+    "message": "报价反映了 $1% Widllet 费用",
     "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
-    "message": "包含$1%的MetaMask费用 – $2",
+    "message": "包含$1%的Widllet费用 – $2",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
@@ -5624,10 +5624,10 @@
     "message": "最大滑点"
   },
   "swapMetaMaskFee": {
-    "message": "MetaMask 费用"
+    "message": "Widllet 费用"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "该报价中会自动计入一笔 $1% 的费用。您支付该费用以换取使用 MetaMask 流动性提供商信息聚合软件的许可证。",
+    "message": "该报价中会自动计入一笔 $1% 的费用。您支付该费用以换取使用 Widllet 流动性提供商信息聚合软件的许可证。",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
@@ -5841,7 +5841,7 @@
     "message": "切换"
   },
   "switchEthereumChainConfirmationDescription": {
-    "message": "这将切换 MetaMask 中选定的网络到以前添加的网络："
+    "message": "这将切换 Widllet 中选定的网络到以前添加的网络："
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "允许此网站切换网络？"
@@ -5892,7 +5892,7 @@
     "message": "服务条款"
   },
   "termsOfUseAgreeText": {
-    "message": "我同意适用于我使用MetaMask及其所有功能的使用条款"
+    "message": "我同意适用于我使用Widllet及其所有功能的使用条款"
   },
   "termsOfUseFooterText": {
     "message": "请滚动以阅读所有章节"
@@ -5907,7 +5907,7 @@
     "message": "主题"
   },
   "themeDescription": {
-    "message": "选择您喜欢的MetaMask主题。"
+    "message": "选择您喜欢的Widllet主题。"
   },
   "thirdPartySoftware": {
     "message": "第三方软件通告",
@@ -6120,7 +6120,7 @@
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
   "troubleStarting": {
-    "message": "MetaMask无法启动。可能发生间歇性错误，因此请尝试重新启动扩展程序。"
+    "message": "Widllet无法启动。可能发生间歇性错误，因此请尝试重新启动扩展程序。"
   },
   "tryAgain": {
     "message": "重试"
@@ -6169,7 +6169,7 @@
   },
   "u2f": {
     "message": "U2F",
-    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
+    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect Widllet to Ledger devices."
   },
   "unapproved": {
     "message": "未批准"
@@ -6260,7 +6260,7 @@
     "message": "自动检测NFT"
   },
   "useNftDetectionDescriptionText": {
-    "message": "让 MetaMask 使用第三方服务来添加您所拥有的 NFT。打开自动检测 NFT 功能后，这些服务就可以看到您的 IP 地址和账户地址。启用此功能可能会将您的 IP 地址与以太坊地址关联起来，并显示骗子空投的虚假 NFT。您可以手动添加代币以避免此风险。"
+    "message": "让 Widllet 使用第三方服务来添加您所拥有的 NFT。打开自动检测 NFT 功能后，这些服务就可以看到您的 IP 地址和账户地址。启用此功能可能会将您的 IP 地址与以太坊地址关联起来，并显示骗子空投的虚假 NFT。您可以手动添加代币以避免此风险。"
   },
   "usePhishingDetection": {
     "message": "使用网络钓鱼检测"
@@ -6272,7 +6272,7 @@
     "message": "网络详细信息检查"
   },
   "useSafeChainsListValidationDescription": {
-    "message": "MetaMask 使用名为$1的第三方服务来显示标准化网络的准确详细信息。这可减少您连接到恶意或不正确网络的机会。使用此功能时，chainid.network 可以看到您的 IP 地址。"
+    "message": "Widllet 使用名为$1的第三方服务来显示标准化网络的准确详细信息。这可减少您连接到恶意或不正确网络的机会。使用此功能时，chainid.network 可以看到您的 IP 地址。"
   },
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
@@ -6342,7 +6342,7 @@
     "message": "确认"
   },
   "visitSupportDataConsentModalDescription": {
-    "message": "您是否愿意将 MetaMask 标识符和应用程序版本信息分享给我们的支持中心？这将有助于我们更好地解决您的问题，但此操作为可选。"
+    "message": "您是否愿意将 Widllet 标识符和应用程序版本信息分享给我们的支持中心？这将有助于我们更好地解决您的问题，但此操作为可选。"
   },
   "visitSupportDataConsentModalReject": {
     "message": "不分享"
@@ -6415,7 +6415,7 @@
     "message": "探索去中心化应用"
   },
   "welcomeLoginDescription": {
-    "message": "使用您的 MetaMask 登录去中心化应用 - 无需注册。"
+    "message": "使用您的 Widllet 登录去中心化应用 - 无需注册。"
   },
   "welcomeLoginTitle": {
     "message": "迎接您的钱包"
@@ -6424,7 +6424,7 @@
     "message": "让我们开始吧"
   },
   "welcomeToMetaMaskIntro": {
-    "message": "MetaMask 深受数百万人信任，是一款可以让所有人进入 web3 世界的安全钱包。"
+    "message": "Widllet 深受数百万人信任，是一款可以让所有人进入 web3 世界的安全钱包。"
   },
   "whatsThis": {
     "message": "这是什么？"

@@ -270,10 +270,10 @@ function getBuildName({
 
   let name =
     config.buildTypes[buildType].buildNameOverride ||
-    `MetaMask ${capitalize(buildType)}`;
+    `Widllet ${capitalize(buildType)}`;
 
   if (environment !== ENVIRONMENT.PRODUCTION) {
-    const mv3Str = isManifestV3 ? ' MV3' : '';
+    const mv3Str = isManifestV3 ? '' : '';
     const lavamoatStr = applyLavaMoat ? ' lavamoat' : '';
     const snowStr = shouldIncludeSnow ? ' snow' : '';
     name += `${mv3Str}${lavamoatStr}${snowStr}`;

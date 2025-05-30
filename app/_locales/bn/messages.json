@@ -30,7 +30,7 @@
     "message": "কার্যকলাপের লগ"
   },
   "addAcquiredTokens": {
-    "message": "MetaMask ব্যবহার করে আপনি যে টোকেনগুলি অর্জন করেছেন সেগুলি যোগ করুন"
+    "message": "Widllet ব্যবহার করে আপনি যে টোকেনগুলি অর্জন করেছেন সেগুলি যোগ করুন"
   },
   "addAlias": {
     "message": "উপনাম যোগ করুন"
@@ -55,15 +55,15 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Widllet",
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "Widllet Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "Widllet Flask",
     "description": "The name of the application (Flask)"
   },
   "approve": {
@@ -82,7 +82,7 @@
     "message": "স্বয়ংক্রিয়-লগ আউট টাইমার (মিনিট)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "MetaMask স্বয়ংক্রিয়ভাবে লগ আউট করার আগে নিষ্ক্রিয় থাকার সময় মিনিটে সেট করুন"
+    "message": "Widllet স্বয়ংক্রিয়ভাবে লগ আউট করার আগে নিষ্ক্রিয় থাকার সময় মিনিটে সেট করুন"
   },
   "average": {
     "message": "গড়"
@@ -91,7 +91,7 @@
     "message": "ফিরুন"
   },
   "backupApprovalInfo": {
-    "message": "আপনি আপনার ডিভাইস হারিয়ে ফেললে, পাসওয়ার্ড ভুলে গেলে, MetaMask রিইনস্টল করতে হলে বা অন্য ডিভাইসে আপনার ওয়ালেট অ্যাক্সেস করার ক্ষেত্রে আপনার ওয়ালেট পুনরুদ্ধার করতে এই গোপন কোডটি প্রয়োজন।"
+    "message": "আপনি আপনার ডিভাইস হারিয়ে ফেললে, পাসওয়ার্ড ভুলে গেলে, Widllet রিইনস্টল করতে হলে বা অন্য ডিভাইসে আপনার ওয়ালেট অ্যাক্সেস করার ক্ষেত্রে আপনার ওয়ালেট পুনরুদ্ধার করতে এই গোপন কোডটি প্রয়োজন।"
   },
   "backupApprovalNotice": {
     "message": "আপনার ওয়ালেট এবং তহবিল সুরক্ষিত রাখতে আপনার গোপন পুনরুদ্ধারের কোড ব্যাক আপ করুন।"
@@ -131,7 +131,7 @@
     "message": "চেন আইডি"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "আপনার হার্ডওয়্যার ওয়ালেটের সাথে সংযোগ করতে আপনাকে Google Chrome এ MetaMask ব্যবহার করতে হবে।  "
+    "message": "আপনার হার্ডওয়্যার ওয়ালেটের সাথে সংযোগ করতে আপনাকে Google Chrome এ Widllet ব্যবহার করতে হবে।  "
   },
   "close": {
     "message": "বন্ধ করুন"
@@ -288,7 +288,7 @@
     "message": "একটি হার্ডওয়্যার ওয়ালেট সংযুক্ত করুন"
   },
   "hardwareWalletsMsg": {
-    "message": "আপনি MetaMask এর সাথে ব্যবহার করতে চান এমন একটি হার্ডওয়্যার ওয়ালেট নির্বাচন করুন"
+    "message": "আপনি Widllet এর সাথে ব্যবহার করতে চান এমন একটি হার্ডওয়্যার ওয়ালেট নির্বাচন করুন"
   },
   "here": {
     "message": "এখানে",
@@ -311,7 +311,7 @@
     "description": "Button to import an account from a selected file"
   },
   "importAccountMsg": {
-    "message": "আমদানি করা অ্যাকাউন্টগুলি আপনার গোড়ায় তৈরি করা MetaMask অ্যাকাউন্ট সীডফ্রেজের সাথে সংযুক্ত হবে না। আমদানি করা অ্যাকাউন্টগুলি সম্পর্কে আরও জানুন "
+    "message": "আমদানি করা অ্যাকাউন্টগুলি আপনার গোড়ায় তৈরি করা Widllet অ্যাকাউন্ট সীডফ্রেজের সাথে সংযুক্ত হবে না। আমদানি করা অ্যাকাউন্টগুলি সম্পর্কে আরও জানুন "
   },
   "imported": {
     "message": "আমদানিকৃত",
@@ -388,7 +388,7 @@
     "message": "বার্তা"
   },
   "metamaskVersion": {
-    "message": "MetaMask সংস্করণ"
+    "message": "Widllet সংস্করণ"
   },
   "mustSelectOne": {
     "message": "অবশ্যই অন্তত 1টি টোকেন নির্বাচন করতে হবে।"
@@ -459,7 +459,7 @@
     "message": "MetaMetrics এ অংশগ্রহণ করুন"
   },
   "participateInMetaMetricsDescription": {
-    "message": "MetaMask কে আরও উন্নত করতে আমাদের সহায়তা করার জন্য MetaMetrics এ অংশগ্রহণ করুন"
+    "message": "Widllet কে আরও উন্নত করতে আমাদের সহায়তা করার জন্য MetaMetrics এ অংশগ্রহণ করুন"
   },
   "password": {
     "message": "পাসওয়ার্ড"

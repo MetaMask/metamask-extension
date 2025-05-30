@@ -72,7 +72,7 @@
     "message": "비밀복구구문으로 지갑에 액세스하세요"
   },
   "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask는 사용자의 비밀번호를 복구할 수 없습니다. 사용자의 비밀복구구문을 이용하여 사용자의 소유권을 확인한 후, 지갑을 복구하고 새 비밀번호를 설정해 드립니다. 먼저 지갑을 생성할 때 받은 비밀복구구문을 입력하세요. $1",
+    "message": "Widllet는 사용자의 비밀번호를 복구할 수 없습니다. 사용자의 비밀복구구문을 이용하여 사용자의 소유권을 확인한 후, 지갑을 복구하고 새 비밀번호를 설정해 드립니다. 먼저 지갑을 생성할 때 받은 비밀복구구문을 입력하세요. $1",
     "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
   },
   "accessingYourCamera": {
@@ -159,10 +159,10 @@
     "message": "계정 추가"
   },
   "addAccountToMetaMask": {
-    "message": "MetaMask에 계정 추가"
+    "message": "Widllet에 계정 추가"
   },
   "addAcquiredTokens": {
-    "message": "MetaMask를 이용해 얻은 토큰 추가"
+    "message": "Widllet를 이용해 얻은 토큰 추가"
   },
   "addAlias": {
     "message": "별칭 추가"
@@ -335,7 +335,7 @@
     "message": "우선 요금(일명 \"채굴자 팁\")이란 내 트랜잭션을 우선 거래한 것에 대한 인센티브로 채굴자에게 직접 전달되는 금액입니다."
   },
   "agreeTermsOfUse": {
-    "message": "MetaMask의 $1에 동의합니다",
+    "message": "Widllet의 $1에 동의합니다",
     "description": "$1 is the `terms` link"
   },
   "airDropPatternDescription": {
@@ -490,15 +490,15 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Widllet",
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "Widllet Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "Widllet Flask",
     "description": "The name of the application (Flask)"
   },
   "apply": {
@@ -576,7 +576,7 @@
     "message": "자동 잠금 타이머(분)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "MetaMask가 잠길 때까지 걸리는 시간을 분 단위로 설정합니다."
+    "message": "Widllet가 잠길 때까지 걸리는 시간을 분 단위로 설정합니다."
   },
   "average": {
     "message": "평균"
@@ -585,7 +585,7 @@
     "message": "뒤로"
   },
   "backupApprovalInfo": {
-    "message": "이 비밀 코드는 장치를 분실하여 지갑을 복구해야 하거나, 비밀번호를 잊은 경우, MetaMask를 다시 설치해야 하거나, 다른 장치에서 지갑에 액세스해야 할 때 필요합니다."
+    "message": "이 비밀 코드는 장치를 분실하여 지갑을 복구해야 하거나, 비밀번호를 잊은 경우, Widllet를 다시 설치해야 하거나, 다른 장치에서 지갑에 액세스해야 할 때 필요합니다."
   },
   "backupApprovalNotice": {
     "message": "비밀복구구문을 백업하여 지갑과 자금을 안전하게 보호하세요."
@@ -615,7 +615,7 @@
     "message": "기본 기능이 꺼져 있습니다."
   },
   "basicConfigurationDescription": {
-    "message": "MetaMask는 인터넷 서비스를 통해 토큰 세부 정보 및 가스 설정과 같은 기본 기능을 제공합니다. 인터넷 서비스를 이용할 때 IP 주소가 공유되며, 이 경우 MetaMask와 공유됩니다. 이는 다른 웹사이트를 방문할 때와 마찬가지입니다. MetaMask는 이 데이터를 일시적으로 사용하며 데이터를 절대 판매하지 않습니다. VPN을 사용하거나 이러한 서비스를 비활성화할 수 있지만 MetaMask 사용 환경에 영향을 미칠 수 있습니다. 자세한 내용은 $1 내용을 참고하세요.",
+    "message": "Widllet는 인터넷 서비스를 통해 토큰 세부 정보 및 가스 설정과 같은 기본 기능을 제공합니다. 인터넷 서비스를 이용할 때 IP 주소가 공유되며, 이 경우 Widllet와 공유됩니다. 이는 다른 웹사이트를 방문할 때와 마찬가지입니다. Widllet는 이 데이터를 일시적으로 사용하며 데이터를 절대 판매하지 않습니다. VPN을 사용하거나 이러한 서비스를 비활성화할 수 있지만 Widllet 사용 환경에 영향을 미칠 수 있습니다. 자세한 내용은 $1 내용을 참고하세요.",
     "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationLabel": {
@@ -625,10 +625,10 @@
     "message": "이해했습니다. 계속 진행하겠습니다"
   },
   "basicConfigurationModalDisclaimerOff": {
-    "message": "이렇게 하면 MetaMask에서 시간을 완전히 최적화할 수 없습니다. 기본 기능(토큰 세부 정보, 최적의 가스 설정 등)을 사용할 수 없게 됩니다."
+    "message": "이렇게 하면 Widllet에서 시간을 완전히 최적화할 수 없습니다. 기본 기능(토큰 세부 정보, 최적의 가스 설정 등)을 사용할 수 없게 됩니다."
   },
   "basicConfigurationModalDisclaimerOn": {
-    "message": "MetaMask에서 시간을 최적화하려면 이 기능을 켜야 합니다. 기본 기능(토큰 세부 정보, 최적의 가스 설정 등)은 웹3 경험에 중요한 요소입니다."
+    "message": "Widllet에서 시간을 최적화하려면 이 기능을 켜야 합니다. 기본 기능(토큰 세부 정보, 최적의 가스 설정 등)은 웹3 경험에 중요한 요소입니다."
   },
   "basicConfigurationModalHeadingOff": {
     "message": "기본 기능 끄기"
@@ -646,7 +646,7 @@
     "message": "베타 버전입니다. 버그는 $1로 보고하세요"
   },
   "betaMetamaskVersion": {
-    "message": "MetaMask 베타 버전"
+    "message": "Widllet 베타 버전"
   },
   "betaTerms": {
     "message": "베타 이용약관"
@@ -827,7 +827,7 @@
     "message": "다음으로 연락하기:"
   },
   "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "MetaMask 지원"
+    "message": "Widllet 지원"
   },
   "bridgeTxDetailsDelayedTitle": {
     "message": "3시간 이상 걸렸나요?"
@@ -874,7 +874,7 @@
     "message": "연락처 목록 작성하기"
   },
   "builtAroundTheWorld": {
-    "message": "MetaMask는 전 세계적으로 설계 및 구축되어 있습니다."
+    "message": "Widllet는 전 세계적으로 설계 및 구축되어 있습니다."
   },
   "bulletpoint": {
     "message": "·"
@@ -935,7 +935,7 @@
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "하드웨어 지갑에 연결하려면 Google Chrome에서 MetaMask를 사용해야 합니다."
+    "message": "하드웨어 지갑에 연결하려면 Google Chrome에서 Widllet를 사용해야 합니다."
   },
   "circulatingSupply": {
     "message": "순환 공급"
@@ -985,10 +985,10 @@
     "message": "집중적 공급 분배"
   },
   "configureSnapPopupDescription": {
-    "message": "이제 이 스냅 구성을 위해 MetaMask 페이지를 떠나게 됩니다."
+    "message": "이제 이 스냅 구성을 위해 Widllet 페이지를 떠나게 됩니다."
   },
   "configureSnapPopupInstallDescription": {
-    "message": "이제 이 스냅 설치를 위해 MetaMask 페이지를 떠나게 됩니다."
+    "message": "이제 이 스냅 설치를 위해 Widllet 페이지를 떠나게 됩니다."
   },
   "configureSnapPopupInstallTitle": {
     "message": "스냅 설치"
@@ -1036,7 +1036,7 @@
     "message": "이 네트워크 수수료는 $1(으)로 지불됩니다"
   },
   "confirmGasFeeTokenTooltip": {
-    "message": "이 수수료는 트랜잭션 처리를 위해 네트워크에 지불하는 것으로, ETH 토큰이 아닌 경우 $1의 MetaMask 수수료가 포함됩니다."
+    "message": "이 수수료는 트랜잭션 처리를 위해 네트워크에 지불하는 것으로, ETH 토큰이 아닌 경우 $1의 Widllet 수수료가 포함됩니다."
   },
   "confirmNestedTransactionTitle": {
     "message": "트랜잭션 $1"
@@ -1139,7 +1139,7 @@
     "description": "$1 is the snap for which a connection is being requested."
   },
   "connectWithMetaMask": {
-    "message": "MetaMask로 연결"
+    "message": "Widllet로 연결"
   },
   "connectedAccounts": {
     "message": "연결된 계정"
@@ -1152,7 +1152,7 @@
     "message": "이 사이트에 계정 1개가 연결되어 있습니다."
   },
   "connectedAccountsEmptyDescription": {
-    "message": "MetaMask가 이 사이트에 연결되어 있지 않습니다. web3 사이트를 연결하려면 사이트에서 연결 버튼을 찾아 클릭하세요."
+    "message": "Widllet가 이 사이트에 연결되어 있지 않습니다. web3 사이트를 연결하려면 사이트에서 연결 버튼을 찾아 클릭하세요."
   },
   "connectedAccountsListTooltip": {
     "message": "$1은(는) 계정 잔액, 주소, 활동을 확인하고 연결된 계정에 대해 승인할 거래를 제안할 수 있습니다.",
@@ -1176,7 +1176,7 @@
     "description": "$1 is the account name"
   },
   "connectedSnapAndNoAccountDescription": {
-    "message": "MetaMask는 이 사이트와 연결되어 있지만, 아직 연결된 계정이 없습니다"
+    "message": "Widllet는 이 사이트와 연결되어 있지만, 아직 연결된 계정이 없습니다"
   },
   "connectedSnaps": {
     "message": "연결된 Snap"
@@ -1235,7 +1235,7 @@
     "description": "$1 is the name of the snap being fetched."
   },
   "connectionPopoverDescription": {
-    "message": "사이트에 연결하려면 연결 버튼을 선택하세요. MetaMask는 웹3 사이트에만 연결할 수 있습니다."
+    "message": "사이트에 연결하려면 연결 버튼을 선택하세요. Widllet는 웹3 사이트에만 연결할 수 있습니다."
   },
   "connectionRequest": {
     "message": "연결 요청"
@@ -1305,7 +1305,7 @@
     "message": "비밀번호 생성"
   },
   "createSnapAccountDescription": {
-    "message": "$1에서 MetaMask에 새로운 계정을 추가하려고 합니다."
+    "message": "$1에서 Widllet에 새로운 계정을 추가하려고 합니다."
   },
   "createSnapAccountTitle": {
     "message": "계정 생성"
@@ -1317,7 +1317,7 @@
     "message": "크리에이터 주소"
   },
   "crossChainSwapsLink": {
-    "message": "MetaMask Portfolio로 네트워크 간 스왑"
+    "message": "Widllet Portfolio로 네트워크 간 스왑"
   },
   "crossChainSwapsLinkNative": {
     "message": "브릿지로 네트워크 간 스왑"
@@ -1442,7 +1442,7 @@
     "message": "확인"
   },
   "dataCollectionWarningPopoverDescription": {
-    "message": "마케팅 목적의 데이터 수집을 비활성화했습니다. 이는 이 장치에만 적용됩니다. 다른 장치에서 MetaMask를 사용하면 해당 장치에서도 데이터 수집을 비활성화해야 합니다."
+    "message": "마케팅 목적의 데이터 수집을 비활성화했습니다. 이는 이 장치에만 적용됩니다. 다른 장치에서 Widllet를 사용하면 해당 장치에서도 데이터 수집을 비활성화해야 합니다."
   },
   "dataUnavailable": {
     "message": "데이터 사용 불가"
@@ -1486,7 +1486,7 @@
     "message": "기본 RPC URL"
   },
   "defaultSettingsSubTitle": {
-    "message": "MetaMask의 기본 설정은 보안과 사용의 편의성 사이에서 최적의 균형을 맞추기 위한 설정입니다. 개인정보 보호 기능을 강화하려면 설정을 변경하세요."
+    "message": "Widllet의 기본 설정은 보안과 사용의 편의성 사이에서 최적의 균형을 맞추기 위한 설정입니다. 개인정보 보호 기능을 강화하려면 설정을 변경하세요."
   },
   "defaultSettingsTitle": {
     "message": "기본 개인정보 보호 설정"
@@ -1822,13 +1822,13 @@
     "message": "$1에서 향상된 토큰 감지 기능을 사용할 수 있습니다. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
-    "message": "MetaMask를 사용하면 브라우저의 주소창에서 ENS 도메인을 바로 볼 수 있습니다. 방법은 다음과 같습니다."
+    "message": "Widllet를 사용하면 브라우저의 주소창에서 ENS 도메인을 바로 볼 수 있습니다. 방법은 다음과 같습니다."
   },
   "ensDomainsSettingDescriptionOutroduction": {
     "message": "이 기능을 사용하면 IPFS 제삼자 서비스에 회원님의 IP 주소가 노출된다는 사실을 명심하세요."
   },
   "ensDomainsSettingDescriptionPart1": {
-    "message": "MetaMask에서는 이더리움의 ENS 계약을 확인하여 해당 ENS 이름과 연결되어 있는 코드를 찾습니다."
+    "message": "Widllet에서는 이더리움의 ENS 계약을 확인하여 해당 ENS 이름과 연결되어 있는 코드를 찾습니다."
   },
   "ensDomainsSettingDescriptionPart2": {
     "message": "해당 코드가 IPFS와 링크되어 있으면 관련 콘텐츠(주로 웹사이트)를 볼 수 있습니다."
@@ -1913,7 +1913,7 @@
     "description": "In sentry feedback form, The message displayed after a successful feedback submission."
   },
   "errorPageTitle": {
-    "message": "MetaMask 오류 발생",
+    "message": "Widllet 오류 발생",
     "description": "Title of generic error page"
   },
   "errorPageTryAgain": {
@@ -2022,15 +2022,15 @@
   },
   "flaskWelcomeWarning2": {
     "message": "이 확장 프로그램은 안전성이나 안정성을 보장하지 않습니다. Flask에서 제공하는 새로운 API는 피싱 공격에 대비한 강화 과정을 거치지 않았습니다. 즉, Flask가 필요한 모든 사이트나 스냅은 자산을 훔치려는 악의적 시도일 수 있습니다.",
-    "description": "This explains the risks of using MetaMask Flask"
+    "description": "This explains the risks of using Widllet Flask"
   },
   "flaskWelcomeWarning3": {
-    "message": "모든 Flask의 API는 실험 단계입니다. 따라서 예고 없이 변경, 제거되거나 안정적인 MetaMask로 마이그레이션되지 않고 Flask에 무기한 남아 있을 수 있습니다. 사용 시 위험은 본인 책임입니다.",
+    "message": "모든 Flask의 API는 실험 단계입니다. 따라서 예고 없이 변경, 제거되거나 안정적인 Widllet로 마이그레이션되지 않고 Flask에 무기한 남아 있을 수 있습니다. 사용 시 위험은 본인 책임입니다.",
     "description": "This message warns developers about unstable Flask APIs"
   },
   "flaskWelcomeWarning4": {
-    "message": "Flask를 사용할 때는 정규 MetaMask 익스텐션을 비활성화하세요.",
-    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
+    "message": "Flask를 사용할 때는 정규 Widllet 익스텐션을 비활성화하세요.",
+    "description": "This message calls to pay attention about multiple versions of Widllet running on the same site (Flask + Prod)"
   },
   "flaskWelcomeWarningAcceptButton": {
     "message": "본인은 이 위험을 감수합니다",
@@ -2194,7 +2194,7 @@
     "message": "하드웨어 지갑을 통합하면 외부 서버에 API 호출을 사용하며, 이 서버는 사용자의 IP 주소와 사용자와 인터렉션하는 스마트 계약의 주소를 볼 수 있습니다."
   },
   "hardwareWalletsMsg": {
-    "message": "MetaMask와 함께 사용할 하드웨어 지갑을 선택하세요."
+    "message": "Widllet와 함께 사용할 하드웨어 지갑을 선택하세요."
   },
   "here": {
     "message": "여기",
@@ -2263,7 +2263,7 @@
     "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
   },
   "holdToRevealContent4": {
-    "message": "MetaMask 지원팀은 이러한 정보를 절대로 묻지 않습니다,",
+    "message": "Widllet 지원팀은 이러한 정보를 절대로 묻지 않습니다,",
     "description": "Part of 'holdToRevealContent3'"
   },
   "holdToRevealContent5": {
@@ -2309,7 +2309,7 @@
     "message": "견적 방식"
   },
   "howQuotesWorkExplanation": {
-    "message": "이 견적은 검색한 견적 중 최고의 수익률을 제공합니다. 이는 브릿지 수수료와 $1% MetaMask 수수료를 포함한 스왑 비율에서 가스비를 뺀 것을 기준으로 합니다. 가스비는 네트워크 혼잡도와 트랜잭션의 복잡성에 따라 달라집니다."
+    "message": "이 견적은 검색한 견적 중 최고의 수익률을 제공합니다. 이는 브릿지 수수료와 $1% Widllet 수수료를 포함한 스왑 비율에서 가스비를 뺀 것을 기준으로 합니다. 가스비는 네트워크 혼잡도와 트랜잭션의 복잡성에 따라 달라집니다."
   },
   "id": {
     "message": "ID"
@@ -2344,13 +2344,13 @@
     "message": "유효한 개인 키가 아닙니다. 반드시 64자의 16진수 문자열인 개인 키를 입력해야 합니다."
   },
   "importAccountJsonLoading1": {
-    "message": "이 JSON 파일을 가져오려면 몇 분 정도 걸리며 MetaMask가 정지됩니다."
+    "message": "이 JSON 파일을 가져오려면 몇 분 정도 걸리며 Widllet가 정지됩니다."
   },
   "importAccountJsonLoading2": {
     "message": "죄송합니다. 향후에는 더 빠르게 개선하겠습니다."
   },
   "importAccountMsg": {
-    "message": "가져온 계정은 MetaMask 계정 비밀복구구문과 연결하지 못합니다. 가져온 계정에 대해 자세히 알아보기"
+    "message": "가져온 계정은 Widllet 계정 비밀복구구문과 연결하지 못합니다. 가져온 계정에 대해 자세히 알아보기"
   },
   "importMyWallet": {
     "message": "내 지갑 가져오기"
@@ -2430,7 +2430,7 @@
     "message": "포함됨"
   },
   "infuraBlockedNotification": {
-    "message": "MetaMask이 블록체인 호스트에 연결할 수 없습니다. $1 오류 가능성을 검토하세요.",
+    "message": "Widllet이 블록체인 호스트에 연결할 수 없습니다. $1 오류 가능성을 검토하세요.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
   "initialTransactionConfirmed": {
@@ -2447,7 +2447,7 @@
     "message": "출처 설치"
   },
   "installRequest": {
-    "message": "MetaMask에 추가"
+    "message": "Widllet에 추가"
   },
   "installedOn": {
     "message": "$1에 설치됨",
@@ -2534,7 +2534,7 @@
     "message": "IPFS 게이트웨이"
   },
   "ipfsGatewayDescription": {
-    "message": "MetaMask는 타사 서비스를 이용하여 IPFS에 저장된 NFT 이미지를 표시하고, 브라우저 주소창에 입력한 ENS 주소 관련 정보도 표시하며, 다른 토큰의 아이콘도 가져옵니다. 이 기능을 이용하면 IP 주소가 해당 서비스에 노출될 수 있습니다."
+    "message": "Widllet는 타사 서비스를 이용하여 IPFS에 저장된 NFT 이미지를 표시하고, 브라우저 주소창에 입력한 ENS 주소 관련 정보도 표시하며, 다른 토큰의 아이콘도 가져옵니다. 이 기능을 이용하면 IP 주소가 해당 서비스에 노출될 수 있습니다."
   },
   "ipfsToggleModalDescriptionOne": {
     "message": "당사는 타사 서비스를 사용하여 IPFS에 저장된 NFT 이미지를 표시하고, 브라우저 주소창에 입력된 ENS 주소와 관련된 정보를 표시하며, 다양한 토큰의 아이콘을 가져옵니다. 이러한 서비스를 사용하면 귀하의 IP 주소가 해당 서비스에 노출될 수 있습니다."
@@ -2643,10 +2643,10 @@
     "message": "사기 및 보안 위험"
   },
   "leaveMetaMask": {
-    "message": "MetaMask를 나가시겠습니까?"
+    "message": "Widllet를 나가시겠습니까?"
   },
   "leaveMetaMaskDesc": {
-    "message": "MetaMask 외부의 사이트를 방문하려고 합니다. 계속하기 전에 URL을 다시 한번 확인하세요."
+    "message": "Widllet 외부의 사이트를 방문하려고 합니다. 계속하기 전에 URL을 다시 한번 확인하세요."
   },
   "ledgerAccountRestriction": {
     "message": "새 계정을 추가하려면 먼저 기존의 최종 계정을 사용해야 합니다."
@@ -2716,7 +2716,7 @@
     "message": "링크"
   },
   "linkCentralizedExchanges": {
-    "message": "Coinbase나 Binance 계정을 연결하여 무료로 암호화폐를 MetaMask로 전송하세요."
+    "message": "Coinbase나 Binance 계정을 연결하여 무료로 암호화폐를 Widllet로 전송하세요."
   },
   "links": {
     "message": "링크"
@@ -2740,7 +2740,7 @@
     "message": "잠금"
   },
   "lockMetaMask": {
-    "message": "MetaMask 고정"
+    "message": "Widllet 고정"
   },
   "lockTimeInvalid": {
     "message": "잠금 시간은 반드시 0에서 10080 사이여야 합니다"
@@ -2819,7 +2819,7 @@
     "message": "메시지"
   },
   "metaMaskConnectStatusParagraphOne": {
-    "message": "이제 MetaMask에서 계정 연결을 더 효과적으로 제어할 수 있습니다."
+    "message": "이제 Widllet에서 계정 연결을 더 효과적으로 제어할 수 있습니다."
   },
   "metaMaskConnectStatusParagraphThree": {
     "message": "클릭하여 연결된 계정을 관리하세요."
@@ -2838,10 +2838,10 @@
     "message": "현재 지갑 알림이 꺼져 있습니다."
   },
   "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swaps 점검 중입니다. 나중에 다시 확인하세요."
+    "message": "Widllet Swaps 점검 중입니다. 나중에 다시 확인하세요."
   },
   "metamaskVersion": {
-    "message": "MetaMask 버전"
+    "message": "Widllet 버전"
   },
   "methodData": {
     "message": "메소드"
@@ -2900,7 +2900,7 @@
     "message": "더 많은 견적"
   },
   "multichainAddEthereumChainConfirmationDescription": {
-    "message": "MetaMask에 이 네트워크를 추가하고 이 사이트에 사용 권한을 허용합니다."
+    "message": "Widllet에 이 네트워크를 추가하고 이 사이트에 사용 권한을 허용합니다."
   },
   "multichainQuoteCardBridgingLabel": {
     "message": "브릿징"
@@ -2974,7 +2974,7 @@
     "message": "Lens Protocol"
   },
   "nameProvider_token": {
-    "message": "MetaMask"
+    "message": "Widllet"
   },
   "nameSetPlaceholder": {
     "message": "닉네임을 선택하세요...",
@@ -3007,7 +3007,7 @@
     "message": "피드백 공유"
   },
   "needHelpLinkText": {
-    "message": "MetaMask 지원"
+    "message": "Widllet 지원"
   },
   "needHelpSubmitTicket": {
     "message": "티켓 제출"
@@ -3162,7 +3162,7 @@
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
   },
   "newNFTDetectedInNFTsTabMessage": {
-    "message": "MetaMask를 통해 자동으로 NFT를 감지하여 지갑에 표시할 수 있습니다."
+    "message": "Widllet를 통해 자동으로 NFT를 감지하여 지갑에 표시할 수 있습니다."
   },
   "newNFTsAutodetected": {
     "message": "NFT 자동 감지"
@@ -3212,7 +3212,7 @@
     "message": "NFT 자동 감지 활성화 완료"
   },
   "nftDisclaimer": {
-    "message": "면책 조항: MetaMask는 소스 URL에서 미디어 파일을 가져옵니다. 이러한 URL은 때때로 NFT가 민팅된 마켓플레이스에 의해 변경되기도 합니다."
+    "message": "면책 조항: Widllet는 소스 URL에서 미디어 파일을 가져옵니다. 이러한 URL은 때때로 NFT가 민팅된 마켓플레이스에 의해 변경되기도 합니다."
   },
   "nftOptions": {
     "message": "NFT 옵션"
@@ -3244,10 +3244,10 @@
     "message": "검색어에 해당하는 계정이 없습니다."
   },
   "noConnectedAccountTitle": {
-    "message": "MetaMask가 이 사이트와 연결되어 있지 않습니다"
+    "message": "Widllet가 이 사이트와 연결되어 있지 않습니다"
   },
   "noConnectionDescription": {
-    "message": "사이트에 연결하려면 \"연결\" 버튼을 찾아 클릭하세요. MetaMask는 웹3의 사이트에만 연결할 수 있습니다."
+    "message": "사이트에 연결하려면 \"연결\" 버튼을 찾아 클릭하세요. Widllet는 웹3의 사이트에만 연결할 수 있습니다."
   },
   "noConversionRateAvailable": {
     "message": "사용 가능한 환율 없음"
@@ -3553,7 +3553,7 @@
     "message": "동의함"
   },
   "onboardingMetametricsDescription": {
-    "message": "MetaMask를 개선하기 위해 기본적인 사용 및 진단 데이터를 수집하고자 합니다. MetaMask는 제공받은 데이터를 절대 판매하지 않습니다."
+    "message": "Widllet를 개선하기 위해 기본적인 사용 및 진단 데이터를 수집하고자 합니다. Widllet는 제공받은 데이터를 절대 판매하지 않습니다."
   },
   "onboardingMetametricsDescription2": {
     "message": "메트릭을 수집할 때는 항상..."
@@ -3573,7 +3573,7 @@
     "message": "개인 정보:"
   },
   "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 MetaMask는 사용자의 국가나 지역과 같은 일반적인 위치를 찾기 위해 일시적으로 사용자의 IP 주소를 사용하지만, 이 정보는 저장되지 않습니다.",
+    "message": "$1 Widllet는 사용자의 국가나 지역과 같은 일반적인 위치를 찾기 위해 일시적으로 사용자의 IP 주소를 사용하지만, 이 정보는 저장되지 않습니다.",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
   },
   "onboardingMetametricsNeverCollectIPEmphasis": {
@@ -3590,7 +3590,7 @@
     "message": "프로필의 사용 데이터를 수집하는 동안 개인정보를 보호하는 방법을 알아보세요."
   },
   "onboardingMetametricsTitle": {
-    "message": "MetaMask 개선에 도움을 주세요"
+    "message": "Widllet 개선에 도움을 주세요"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "해당 데이터를 사용하여 사용자가 마케팅 커뮤니케이션과 어떻게 상호 작용하는지 파악할 것입니다. 관련 뉴스(예: 제품 기능 및 기타 자료)를 공유할 수 있습니다."
@@ -3611,16 +3611,16 @@
     "message": "브라우저 확장 아이콘 클릭"
   },
   "onboardingPinExtensionDescription": {
-    "message": "쉽게 액세스하여 트랜잭션을 컨펌할 있도록 브라우저에 MetaMask를 고정해 놓으세요."
+    "message": "쉽게 액세스하여 트랜잭션을 컨펌할 있도록 브라우저에 Widllet를 고정해 놓으세요."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "확장을 클릭하여 MetaMask를 열면 클릭 한 번으로 지갑에 액세스할 수 있습니다."
+    "message": "확장을 클릭하여 Widllet를 열면 클릭 한 번으로 지갑에 액세스할 수 있습니다."
   },
   "onboardingPinExtensionDescription3": {
     "message": "브라우저 확장 아이콘을 클릭하여 즉시 액세스하세요."
   },
   "onboardingPinExtensionLabel": {
-    "message": "MetaMask 고정"
+    "message": "Widllet 고정"
   },
   "onboardingPinExtensionStep1": {
     "message": "1"
@@ -3629,7 +3629,7 @@
     "message": "2"
   },
   "onboardingPinExtensionTitle": {
-    "message": "MetaMask 설치가 완료되었습니다!"
+    "message": "Widllet 설치가 완료되었습니다!"
   },
   "onlyConnectTrust": {
     "message": "신뢰하는 사이트만 연결하세요. $1",
@@ -3637,7 +3637,7 @@
   },
   "openFullScreenForLedgerWebHid": {
     "message": "전체 화면으로 이동하여 Ledger를 연결하세요.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+    "description": "Shown to the user on the confirm screen when they are viewing Widllet in a popup window but need to connect their ledger via webhid."
   },
   "openInBlockExplorer": {
     "message": "블록 탐색기 열기"
@@ -3666,7 +3666,7 @@
     "description": "Used in the 'permission_rpc' message."
   },
   "outdatedBrowserNotification": {
-    "message": "현재 사용 중인 브라우저가 최신 버전이 아닙니다. 브라우저를 업데이트하지 않으면 보안 패치와 MetaMask의 새 기능을 이용할 수 없습니다."
+    "message": "현재 사용 중인 브라우저가 최신 버전이 아닙니다. 브라우저를 업데이트하지 않으면 보안 패치와 Widllet의 새 기능을 이용할 수 없습니다."
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Content-Security-Policy 헤더 무시"
@@ -3681,7 +3681,7 @@
     "message": "MetaMetrics에 참여"
   },
   "participateInMetaMetricsDescription": {
-    "message": "MetaMetrics에 참여하여 MetaMask 개선에 도움을 주세요."
+    "message": "MetaMetrics에 참여하여 Widllet 개선에 도움을 주세요."
   },
   "password": {
     "message": "비밀번호"
@@ -3690,7 +3690,7 @@
     "message": "비밀번호가 짧습니다."
   },
   "passwordSetupDetails": {
-    "message": "이 비밀번호는 이 장치에서만 MetaMask 지갑의 잠금을 해제합니다. MetaMask는 이 비밀번호를 복구할 수 없습니다."
+    "message": "이 비밀번호는 이 장치에서만 Widllet 지갑의 잠금을 해제합니다. Widllet는 이 비밀번호를 복구할 수 없습니다."
   },
   "passwordStrength": {
     "message": "비밀번호 강도: $1",
@@ -3700,7 +3700,7 @@
     "message": "장치가 도난되거나 해킹되는 경우에 대비해 강력한 암호를 설정하면 지갑의 보안을 향상시킬 수 있습니다."
   },
   "passwordTermsWarning": {
-    "message": "MetaMask가 이 비밀번호를 복구할 수 없음을 이해합니다. $1"
+    "message": "Widllet가 이 비밀번호를 복구할 수 없음을 이해합니다. $1"
   },
   "passwordsDontMatch": {
     "message": "비밀번호가 일치하지 않습니다."
@@ -3772,11 +3772,11 @@
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
   },
   "permission_assets": {
-    "message": "MetaMask에서 계정 자산 표시",
+    "message": "Widllet에서 계정 자산 표시",
     "description": "The description for the `endowment:assets` permission."
   },
   "permission_assetsDescription": {
-    "message": "MetaMask 클라이언트에 자산 정보를 제공하도록 $1을(를) 허용하세요. 자산은 온체인 또는 오프체인에 있을 수 있습니다.",
+    "message": "Widllet 클라이언트에 자산 정보를 제공하도록 $1을(를) 허용하세요. 자산은 온체인 또는 오프체인에 있을 수 있습니다.",
     "description": "An extended description for the `endowment:assets` permission. $1 is the name of the Snap."
   },
   "permission_cronjob": {
@@ -3788,11 +3788,11 @@
     "description": "An extended description for the `snap_cronjob` permission. $1 is the snap name."
   },
   "permission_dialog": {
-    "message": "MetaMask 대화창 표시",
+    "message": "Widllet 대화창 표시",
     "description": "The description for the `snap_dialog` permission"
   },
   "permission_dialogDescription": {
-    "message": "$1 스냅이 MetaMask 팝업을 만들고 여기에 맞춤 텍스트와 입력란, 그리고 버튼을 표시하여 승인 또는 거부에 활용하도록 허용합니다.\n이는 경고, 컨펌, Snap에 필요한 옵트인 플로우 등을 만드는 데 사용할 수 있습니다.",
+    "message": "$1 스냅이 Widllet 팝업을 만들고 여기에 맞춤 텍스트와 입력란, 그리고 버튼을 표시하여 승인 또는 거부에 활용하도록 허용합니다.\n이는 경고, 컨펌, Snap에 필요한 옵트인 플로우 등을 만드는 데 사용할 수 있습니다.",
     "description": "An extended description for the `snap_dialog` permission. $1 is the snap name."
   },
   "permission_ethereumAccounts": {
@@ -3804,7 +3804,7 @@
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
   "permission_ethereumProviderDescription": {
-    "message": "$1 스냅이 MetaMask와 직접 소통하여 블록체인에서 데이터를 읽고 메시지 및 트랜잭션을 제안하도록 허용합니다.",
+    "message": "$1 스냅이 Widllet와 직접 소통하여 블록체인에서 데이터를 읽고 메시지 및 트랜잭션을 제안하도록 허용합니다.",
     "description": "An extended description for the `endowment:ethereum-provider` permission. $1 is the snap name."
   },
   "permission_getEntropy": {
@@ -3812,7 +3812,7 @@
     "description": "The description for the `snap_getEntropy` permission. $1 is the snap name."
   },
   "permission_getEntropyDescription": {
-    "message": "$1 스냅이 노출을 피하여 $1에 고유한 임의의 키를 파생하도록 허용합니다. 이 키는 MetaMask 계정과 별개이며 개인 키 또는 비밀복구구문과 관련이 없습니다. 다른 Snap은 이 정보에 액세스할 수 없습니다.",
+    "message": "$1 스냅이 노출을 피하여 $1에 고유한 임의의 키를 파생하도록 허용합니다. 이 키는 Widllet 계정과 별개이며 개인 키 또는 비밀복구구문과 관련이 없습니다. 다른 Snap은 이 정보에 액세스할 수 없습니다.",
     "description": "An extended description for the `snap_getEntropy` permission. $1 is the snap name."
   },
   "permission_getLocale": {
@@ -3820,7 +3820,7 @@
     "description": "The description for the `snap_getLocale` permission"
   },
   "permission_getLocaleDescription": {
-    "message": "MetaMask 설정에서 원하는 언어로 $1 스냅을 사용하세요. 이 기능을 사용하면 선택한 언어로 $1의 콘텐츠를 현지화하고 표시할 수 있습니다.",
+    "message": "Widllet 설정에서 원하는 언어로 $1 스냅을 사용하세요. 이 기능을 사용하면 선택한 언어로 $1의 콘텐츠를 현지화하고 표시할 수 있습니다.",
     "description": "An extended description for the `snap_getLocale` permission. $1 is the snap name."
   },
   "permission_getPreferences": {
@@ -3828,7 +3828,7 @@
     "description": "The description for the `snap_getPreferences` permission"
   },
   "permission_getPreferencesDescription": {
-    "message": "MetaMask 설정에서 $1이(가) 회원님이 선호하는 언어 및 명목화폐와 같은 정보에 접근할 수 있도록 허용하세요. 이렇게 하면 $1이(가) 회원님의 선호도에 맞는 콘텐츠를 표시하는 데 도움이 됩니다. ",
+    "message": "Widllet 설정에서 $1이(가) 회원님이 선호하는 언어 및 명목화폐와 같은 정보에 접근할 수 있도록 허용하세요. 이렇게 하면 $1이(가) 회원님의 선호도에 맞는 콘텐츠를 표시하는 데 도움이 됩니다. ",
     "description": "An extended description for the `snap_getPreferences` permission. $1 is the snap name."
   },
   "permission_homePage": {
@@ -3836,7 +3836,7 @@
     "description": "The description for the `endowment:page-home` permission"
   },
   "permission_homePageDescription": {
-    "message": "$1에서 MetaMask의 사용자 지정 홈 화면 구성에 참여하도록 허용합니다. 이는 사용자 인터페이스, 구성, 대시보드에 사용할 수 있습니다.",
+    "message": "$1에서 Widllet의 사용자 지정 홈 화면 구성에 참여하도록 허용합니다. 이는 사용자 인터페이스, 구성, 대시보드에 사용할 수 있습니다.",
     "description": "An extended description for the `endowment:page-home` permission. $1 is the snap name."
   },
   "permission_keyring": {
@@ -3888,7 +3888,7 @@
     "description": "The description for the `endowment:name-lookup` permission."
   },
   "permission_nameLookupDescription": {
-    "message": "Snap이 주소 및 도메인 조회를 가져와 MetaMask UI의 다른 부분에 표시하도록 허용합니다.",
+    "message": "Snap이 주소 및 도메인 조회를 가져와 Widllet UI의 다른 부분에 표시하도록 허용합니다.",
     "description": "An extended description for the `endowment:name-lookup` permission."
   },
   "permission_notifications": {
@@ -3896,7 +3896,7 @@
     "description": "The description for the `snap_notify` permission"
   },
   "permission_notificationsDescription": {
-    "message": "$1 스냅이 MetaMask에서 알림을 표시하도록 허용합니다. Snap이 작업이 필요하거나 기한이 있는 정보를 짧은 알림으로 트리거할 수 있습니다.",
+    "message": "$1 스냅이 Widllet에서 알림을 표시하도록 허용합니다. Snap이 작업이 필요하거나 기한이 있는 정보를 짧은 알림으로 트리거할 수 있습니다.",
     "description": "An extended description for the `snap_notify` permission. $1 is the snap name."
   },
   "permission_protocol": {
@@ -3904,7 +3904,7 @@
     "description": "The description for the `endowment:protocol` permission."
   },
   "permission_protocolDescription": {
-    "message": "MetaMask에 예상 가스비나 토큰 정보와 같은 프로토콜 데이터를 제공하려면 $1을(를) 허용하세요.",
+    "message": "Widllet에 예상 가스비나 토큰 정보와 같은 프로토콜 데이터를 제공하려면 $1을(를) 허용하세요.",
     "description": "An extended description for the `endowment:protocol` permission. $1 is the name of the Snap."
   },
   "permission_rpc": {
@@ -3940,7 +3940,7 @@
     "description": "The description for the `endowment:transaction-insight` permission"
   },
   "permission_transactionInsightDescription": {
-    "message": "$1 스냅이 트랜잭션을 디코딩하고 MetaMask UI에서 인사이트를 표시하도록 허용합니다. 피싱 방지와 보안 솔루션에 사용할 수 있습니다.",
+    "message": "$1 스냅이 트랜잭션을 디코딩하고 Widllet UI에서 인사이트를 표시하도록 허용합니다. 피싱 방지와 보안 솔루션에 사용할 수 있습니다.",
     "description": "An extended description for the `endowment:transaction-insight` permission. $1 is the snap name."
   },
   "permission_transactionInsightOrigin": {
@@ -4177,7 +4177,7 @@
     "message": "언스테이킹 완료"
   },
   "pushPlatformNotificationsSwapCompletedDescription": {
-    "message": "MetaMask 스왑에 성공했습니다"
+    "message": "Widllet 스왑에 성공했습니다"
   },
   "pushPlatformNotificationsSwapCompletedTitle": {
     "message": "스왑 완료"
@@ -4237,7 +4237,7 @@
     "message": "절대로 다른 사람과 비밀복구구문을 공유하지 마십시오"
   },
   "recoveryPhraseReminderItemTwo": {
-    "message": "MetaMask 팀에서는 절대로 비밀복구구문을 묻지 않습니다"
+    "message": "Widllet 팀에서는 절대로 비밀복구구문을 묻지 않습니다"
   },
   "recoveryPhraseReminderSubText": {
     "message": "비밀복구구문은 모든 계정을 관리합니다."
@@ -4285,10 +4285,10 @@
     "message": "이 계정이 지갑에서 제거됩니다. 계속하기 전에 가져온 이 계정에 대한 원본 비밀복구구문이나 비공개 키가 있는지 확인하세요. 계정 드롭다운에서 계정을 가져오거나 다시 만들 수 있습니다. "
   },
   "removeKeyringSnap": {
-    "message": "이 Snap을 제거하면 이 계정들이 MetaMask에서 제거됩니다:"
+    "message": "이 Snap을 제거하면 이 계정들이 Widllet에서 제거됩니다:"
   },
   "removeKeyringSnapToolTip": {
-    "message": "Snap은 계정을 제어하며 Snap을 제거하면 계정도 MetaMask에서 제거되지만, 블록체인에는 남게 됩니다."
+    "message": "Snap은 계정을 제어하며 Snap을 제거하면 계정도 Widllet에서 제거되지만, 블록체인에는 남게 됩니다."
   },
   "removeNFT": {
     "message": "NFT 제거"
@@ -4303,7 +4303,7 @@
     "message": "스냅 제거"
   },
   "removeSnapAccountDescription": {
-    "message": "계속하면 이 계정을 MetaMask에서 사용할 수 없습니다."
+    "message": "계속하면 이 계정을 Widllet에서 사용할 수 없습니다."
   },
   "removeSnapAccountTitle": {
     "message": "계정 제거"
@@ -4354,7 +4354,7 @@
     "message": "지갑 초기화"
   },
   "resetWalletSubHeader": {
-    "message": "MetaMask는 사용자의 비밀번호를 보관하지 않습니다. 계정 잠금을 해제하는 데 문제가 있는 경우, 지갑 설정 시 사용한 비밀복구구문을 이용하여 지갑을 초기화해야 합니다."
+    "message": "Widllet는 사용자의 비밀번호를 보관하지 않습니다. 계정 잠금을 해제하는 데 문제가 있는 경우, 지갑 설정 시 사용한 비밀복구구문을 이용하여 지갑을 초기화해야 합니다."
   },
   "resetWalletUsingSRP": {
     "message": "이 작업을 하면 정리해둔 계정 목록과 함께 현재 지갑과 비밀복구구문이 이 기기에서 삭제됩니다. 비밀복구구문으로 초기화하면 해당 비밀복구구문과 연관된 계정 목록이 표시됩니다. 새 목록에는 잔액이 남아있는 계정이 자동으로 나타납니다. 이전에 생성한 $1도 가능합니다. 가져온 사용자 정의 계정은 $2이어야 하며 계정에 추가한 사용자 정의 토큰도 $3이어야 합니다."
@@ -4363,7 +4363,7 @@
     "message": "계속하기 전에 비밀복구구문이 정확한지 확인하세요. 이 작업은 취소할 수 없습니다."
   },
   "restartMetamask": {
-    "message": "MetaMask 재시작"
+    "message": "Widllet 재시작"
   },
   "restore": {
     "message": "복구"
@@ -4400,7 +4400,7 @@
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
   },
   "revealSeedWordsDescription2": {
-    "message": "MetaMask는 $1입니다. 이는 회원님이 SRP의 소유자라는 의미입니다.",
+    "message": "Widllet는 $1입니다. 이는 회원님이 SRP의 소유자라는 의미입니다.",
     "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
   },
   "revealSeedWordsDescription3": {
@@ -4423,7 +4423,7 @@
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSeedWordsWarning2": {
-    "message": "MetaMask 지원팀은 이러한 정보를 절대로 묻지 않습니다,",
+    "message": "Widllet 지원팀은 이러한 정보를 절대로 묻지 않습니다,",
     "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
@@ -4564,7 +4564,7 @@
     "message": "복구 구문을 요청하는 사람은 사기를 치려는 것입니다."
   },
   "seedPhraseIntroSidebarCopyTwo": {
-    "message": "절대로, 누구와도, 심지어 MetaMask와도 비밀복구구문을 공유하면 안 됩니다!"
+    "message": "절대로, 누구와도, 심지어 Widllet와도 비밀복구구문을 공유하면 안 됩니다!"
   },
   "seedPhraseIntroSidebarTitleOne": {
     "message": "'비밀복구구문'이란 무엇인가요?"
@@ -4606,7 +4606,7 @@
     "message": "계정 선택"
   },
   "selectAnAccountAlreadyConnected": {
-    "message": "이 계정은 이미 MetaMask와 연결되어 있습니다."
+    "message": "이 계정은 이미 Widllet와 연결되어 있습니다."
   },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "NFT 미디어 표시 켜기"
@@ -4877,13 +4877,13 @@
     "message": "암호화폐를 현금으로 매도"
   },
   "slideCashOutTitle": {
-    "message": "MetaMask로 현금화"
+    "message": "Widllet로 현금화"
   },
   "slideDebitCardDescription": {
     "message": "일부 지역에서 사용 가능"
   },
   "slideDebitCardTitle": {
-    "message": "MetaMask 직불카드"
+    "message": "Widllet 직불카드"
   },
   "slideFundWalletDescription": {
     "message": "시작하려면 토큰을 추가하거나 전송하세요"
@@ -4916,7 +4916,7 @@
     "message": "트랜잭션 실패"
   },
   "smartTransactionErrorDescription": {
-    "message": "시장 상황이 갑자기 변하면 실패할 수 있습니다. 문제가 지속되면 MetaMask 고객 지원으로 문의하세요."
+    "message": "시장 상황이 갑자기 변하면 실패할 수 있습니다. 문제가 지속되면 Widllet 고객 지원으로 문의하세요."
   },
   "smartTransactionPending": {
     "message": "트랜잭션 제출 중"
@@ -4966,7 +4966,7 @@
     "message": "계정 제거됨"
   },
   "snapAccountRemovedDescription": {
-    "message": "이 계정은 더 이상 MetaMask에서 사용할 수 없습니다."
+    "message": "이 계정은 더 이상 Widllet에서 사용할 수 없습니다."
   },
   "snapAccounts": {
     "message": "계정 Snap"
@@ -5118,7 +5118,7 @@
     "message": "솔라나 디앱, NFT, 하드웨어 지갑 지원 등이 곧 추가됩니다."
   },
   "solanaOnMetaMask": {
-    "message": "MetaMask 플랫폼에서의 솔라나 이용"
+    "message": "Widllet 플랫폼에서의 솔라나 이용"
   },
   "solanaSendReceiveSwapTokens": {
     "message": "토큰 송금, 받기, 스왑"
@@ -5256,7 +5256,7 @@
     "message": "비밀복구구문을 찾으려면 두 가지 질문에 올바르게 답해야 합니다"
   },
   "srpSecurityQuizQuestionOneQuestion": {
-    "message": "비밀복구구문을 분실하시면 MetaMask가..."
+    "message": "비밀복구구문을 분실하시면 Widllet가..."
   },
   "srpSecurityQuizQuestionOneRightAnswer": {
     "message": "도와드릴 수 없습니다"
@@ -5325,7 +5325,7 @@
     "message": "상태 로그를 가져오는 도중 오류가 발생했습니다."
   },
   "stateLogFileName": {
-    "message": "MetaMask 상태 로그"
+    "message": "Widllet 상태 로그"
   },
   "stateLogs": {
     "message": "상태 로그"
@@ -5346,7 +5346,7 @@
     "message": "Lattice1을 연결하세요."
   },
   "step1LatticeWalletMsg": {
-    "message": "Lattice1이 장치 설정을 마치고 온라인 상태가 되면 MetaMask를 연결할 수 있습니다. 장치의 잠금을 해제하고 장치 ID를 준비하세요.",
+    "message": "Lattice1이 장치 설정을 마치고 온라인 상태가 되면 Widllet를 연결할 수 있습니다. 장치의 잠금을 해제하고 장치 ID를 준비하세요.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1LedgerWallet": {
@@ -5456,7 +5456,7 @@
     "message": "설문조사에 참여하세요"
   },
   "surveyTitle": {
-    "message": "MetaMask의 미래를 그리세요"
+    "message": "Widllet의 미래를 그리세요"
   },
   "swap": {
     "message": "스왑"
@@ -5522,7 +5522,7 @@
     "message": "한도 편집"
   },
   "swapEnableDescription": {
-    "message": "이는 MetaMask에게 $1 스왑 권한을 부여하는 것으로, 필수 사항입니다.",
+    "message": "이는 Widllet에게 $1 스왑 권한을 부여하는 것으로, 필수 사항입니다.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
   },
   "swapEnableTokenForSwapping": {
@@ -5569,7 +5569,7 @@
     "message": "가스비는 예상치이며 네트워크 트래픽 및 트랜잭션 복잡성에 따라 변동됩니다."
   },
   "swapGasFeesExplanation": {
-    "message": "MetaMask는 가스비로 수익을 얻지 않습니다. 이 가스비는 추정치이며 네트워크의 혼잡도와 거래의 복잡성에 따라 변할 수 있습니다. 자세히 알아보기 $1.",
+    "message": "Widllet는 가스비로 수익을 얻지 않습니다. 이 가스비는 추정치이며 네트워크의 혼잡도와 거래의 복잡성에 따라 변할 수 있습니다. 자세히 알아보기 $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
   },
   "swapGasFeesExplanationLinkText": {
@@ -5583,7 +5583,7 @@
     "message": "이전 화면의 가스비는 이 두 트랜잭션으로 나뉩니다."
   },
   "swapGasFeesSummary": {
-    "message": "가스비는 $1 네트워크에서 트랜잭션을 처리하는 암호화폐 채굴자에게 지급됩니다. MetaMask는 가스비로 수익을 창출하지 않습니다.",
+    "message": "가스비는 $1 네트워크에서 트랜잭션을 처리하는 암호화폐 채굴자에게 지급됩니다. Widllet는 가스비로 수익을 창출하지 않습니다.",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
@@ -5596,19 +5596,19 @@
     "message": "높은 슬리피지"
   },
   "swapIncludesGasAndMetaMaskFee": {
-    "message": "가스비 및 $1%의 MetaMask 수수료가 포함됩니다",
+    "message": "가스비 및 $1%의 Widllet 수수료가 포함됩니다",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
-    "message": "$1%의 MetaMask 요금이 포함됩니다.",
+    "message": "$1%의 Widllet 요금이 포함됩니다.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
-    "message": "견적에는 $1%의 MetaMask 수수료가 반영됩니다",
+    "message": "견적에는 $1%의 Widllet 수수료가 반영됩니다",
     "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
-    "message": "$1% MetaMask 요금 - $2 포함",
+    "message": "$1% Widllet 요금 - $2 포함",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
@@ -5624,10 +5624,10 @@
     "message": "최대 슬리패지"
   },
   "swapMetaMaskFee": {
-    "message": "MetaMask 수수료"
+    "message": "Widllet 수수료"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "$1%의 수수료는 자동으로 각 견적에 반영됩니다. 이는 MetaMask의 유동성 공급자 정보 집계용 소프트웨어 사용 라이선스 비용입니다.",
+    "message": "$1%의 수수료는 자동으로 각 견적에 반영됩니다. 이는 Widllet의 유동성 공급자 정보 집계용 소프트웨어 사용 라이선스 비용입니다.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
@@ -5841,7 +5841,7 @@
     "message": "전환"
   },
   "switchEthereumChainConfirmationDescription": {
-    "message": "이는 MetaMask에서 선택한 네트워크를 이전에 추가한 다음 네트워크로 전환하게 됩니다:"
+    "message": "이는 Widllet에서 선택한 네트워크를 이전에 추가한 다음 네트워크로 전환하게 됩니다:"
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "이 사이트가 네트워크를 전환하도록 허용하시겠습니까?"
@@ -5892,7 +5892,7 @@
     "message": "서비스 약관"
   },
   "termsOfUseAgreeText": {
-    "message": " 본인은 MetaMask의 사용 및 관련 모든 기능에 적용되는 이용약관에 동의합니다"
+    "message": " 본인은 Widllet의 사용 및 관련 모든 기능에 적용되는 이용약관에 동의합니다"
   },
   "termsOfUseFooterText": {
     "message": "스크롤하여 모든 섹션의 내용을 확인하세요"
@@ -5907,7 +5907,7 @@
     "message": "테마"
   },
   "themeDescription": {
-    "message": "원하는 MetaMask 테마를 선택하세요."
+    "message": "원하는 Widllet 테마를 선택하세요."
   },
   "thirdPartySoftware": {
     "message": "타사 소프트웨어 알림",
@@ -6120,7 +6120,7 @@
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
   "troubleStarting": {
-    "message": "MetaMask 실행 중 오류가 발생했습니다. 일시적인 오류일 수 있으니 확장 프로그램을 재시작해 보세요."
+    "message": "Widllet 실행 중 오류가 발생했습니다. 일시적인 오류일 수 있으니 확장 프로그램을 재시작해 보세요."
   },
   "tryAgain": {
     "message": "다시 시도"
@@ -6169,7 +6169,7 @@
   },
   "u2f": {
     "message": "U2F",
-    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
+    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect Widllet to Ledger devices."
   },
   "unapproved": {
     "message": "승인되지 않음"
@@ -6260,7 +6260,7 @@
     "message": "NFT 자동 감지"
   },
   "useNftDetectionDescriptionText": {
-    "message": "MetaMask가 제삼자 서비스를 이용하여 회원님의 NFT를 추가할 수 있도록 합니다. NFT를 자동 감지하면 이러한 서비스에 IP와 계정 주소가 노출됩니다. 이 기능을 켜면 IP 주소가 이더리움 주소와 연결되고 사기꾼이 에어드랍한 가짜 NFT가 표시될 수 있습니다. 이러한 위험을 피하기 위해 수동으로 토큰을 추가할 수 있습니다."
+    "message": "Widllet가 제삼자 서비스를 이용하여 회원님의 NFT를 추가할 수 있도록 합니다. NFT를 자동 감지하면 이러한 서비스에 IP와 계정 주소가 노출됩니다. 이 기능을 켜면 IP 주소가 이더리움 주소와 연결되고 사기꾼이 에어드랍한 가짜 NFT가 표시될 수 있습니다. 이러한 위험을 피하기 위해 수동으로 토큰을 추가할 수 있습니다."
   },
   "usePhishingDetection": {
     "message": "피싱 감지 사용"
@@ -6272,7 +6272,7 @@
     "message": "네트워크 세부 정보 확인"
   },
   "useSafeChainsListValidationDescription": {
-    "message": "MetaMask는 $1(이)라는 제삼자 서비스를 사용하여 정확하고 표준화된 네트워크 세부 정보를 표시합니다. 이를 통해 악성 또는 잘못된 네트워크에 연결할 가능성이 줄어듭니다. 이 기능을 사용하면 사용자의 IP 주소가 chainid.network에 노출됩니다."
+    "message": "Widllet는 $1(이)라는 제삼자 서비스를 사용하여 정확하고 표준화된 네트워크 세부 정보를 표시합니다. 이를 통해 악성 또는 잘못된 네트워크에 연결할 가능성이 줄어듭니다. 이 기능을 사용하면 사용자의 IP 주소가 chainid.network에 노출됩니다."
   },
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
@@ -6342,7 +6342,7 @@
     "message": "컨펌"
   },
   "visitSupportDataConsentModalDescription": {
-    "message": "MetaMask 식별자와 앱 버전을 지원 센터에 공유하시겠습니까? 문제 해결에 도움이 될 수 있으며, 선택 사항입니다."
+    "message": "Widllet 식별자와 앱 버전을 지원 센터에 공유하시겠습니까? 문제 해결에 도움이 될 수 있으며, 선택 사항입니다."
   },
   "visitSupportDataConsentModalReject": {
     "message": "공유하지 않기"
@@ -6415,7 +6415,7 @@
     "message": "Explore 분산화 앱"
   },
   "welcomeLoginDescription": {
-    "message": "MetaMask를 사용하여 분산화 앱에 로그인하세요. 가입은 필요 없습니다."
+    "message": "Widllet를 사용하여 분산화 앱에 로그인하세요. 가입은 필요 없습니다."
   },
   "welcomeLoginTitle": {
     "message": "내 지갑 처음 알아보기"
@@ -6424,7 +6424,7 @@
     "message": "시작하기"
   },
   "welcomeToMetaMaskIntro": {
-    "message": "수백만 명이 신뢰하는 MetaMask는 모든 사람이 web3의 세계에 접근할 수 있도록 하는 안전한 지갑입니다."
+    "message": "수백만 명이 신뢰하는 Widllet는 모든 사람이 web3의 세계에 접근할 수 있도록 하는 안전한 지갑입니다."
   },
   "whatsThis": {
     "message": "이것은 무엇인가요?"

@@ -30,7 +30,7 @@
     "message": "aktivitetshistorikk"
   },
   "addAcquiredTokens": {
-    "message": "Legg til sjetongene du har kjøpt med MetaMask"
+    "message": "Legg til sjetongene du har kjøpt med Widllet"
   },
   "addAlias": {
     "message": "Legg til alias "
@@ -55,15 +55,15 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Widllet",
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "Widllet Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "Widllet Flask",
     "description": "The name of the application (Flask)"
   },
   "approve": {
@@ -82,7 +82,7 @@
     "message": "Timer for automatisk utlogging (minutter) "
   },
   "autoLockTimeLimitDescription": {
-    "message": "Innstill hviletiden i minutter før MetaMask automatisk logger ut"
+    "message": "Innstill hviletiden i minutter før Widllet automatisk logger ut"
   },
   "average": {
     "message": "Gjennomsnitt"
@@ -91,7 +91,7 @@
     "message": "Tilbake"
   },
   "backupApprovalInfo": {
-    "message": "Denne hemmelige koden behøves for å gjenopprette lommeboken din i tilfelle du mister enheten din, glemmer passordet ditt, trenger å re-installere MetaMask, eller ønsker å få tilgang til lommeboken din på en annen enhet."
+    "message": "Denne hemmelige koden behøves for å gjenopprette lommeboken din i tilfelle du mister enheten din, glemmer passordet ditt, trenger å re-installere Widllet, eller ønsker å få tilgang til lommeboken din på en annen enhet."
   },
   "backupApprovalNotice": {
     "message": "Sikkerhetskopier den hemmelige gjenopprettingskoden for å sikre lommeboken og midlene."
@@ -128,7 +128,7 @@
     "message": "Blokkjede "
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Du må bruke MetaMask på Google Chrome for å koble deg til maskinvare-lommeboken."
+    "message": "Du må bruke Widllet på Google Chrome for å koble deg til maskinvare-lommeboken."
   },
   "close": {
     "message": "Lukk"
@@ -285,7 +285,7 @@
     "message": "Koble til en hardware-lommebok"
   },
   "hardwareWalletsMsg": {
-    "message": "Velg maskinvarelommeboken som du vil bruke med MetaMask"
+    "message": "Velg maskinvarelommeboken som du vil bruke med Widllet"
   },
   "here": {
     "message": "her",
@@ -305,7 +305,7 @@
     "description": "Button to import an account from a selected file"
   },
   "importAccountMsg": {
-    "message": "Importerte kontoer blir ikke tilknyttet den opprinnelig opprettede mnemoniske gjenopprettingsfrasen for MetaMask-kontoen din. Finn ut mer om importerte kontoer"
+    "message": "Importerte kontoer blir ikke tilknyttet den opprinnelig opprettede mnemoniske gjenopprettingsfrasen for Widllet-kontoen din. Finn ut mer om importerte kontoer"
   },
   "imported": {
     "message": "Importert",
@@ -382,7 +382,7 @@
     "message": "Melding "
   },
   "metamaskVersion": {
-    "message": "MetaMask-versjon "
+    "message": "Widllet-versjon "
   },
   "mustSelectOne": {
     "message": "Må velge minst 1 token. "
@@ -453,7 +453,7 @@
     "message": "Delta i MetaMetrics "
   },
   "participateInMetaMetricsDescription": {
-    "message": "Delta i MetaMetrics for å hjelpe oss med å gjøre MetaMask bedre"
+    "message": "Delta i MetaMetrics for å hjelpe oss med å gjøre Widllet bedre"
   },
   "password": {
     "message": "Passord"

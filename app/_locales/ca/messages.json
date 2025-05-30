@@ -30,7 +30,7 @@
     "message": "registre d'activitat"
   },
   "addAcquiredTokens": {
-    "message": "Afegeix les fitxes que has adquirit fent servir MetaMask"
+    "message": "Afegeix les fitxes que has adquirit fent servir Widllet"
   },
   "addAlias": {
     "message": "Afegeix un àlies"
@@ -55,15 +55,15 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Widllet",
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "Widllet Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "Widllet Flask",
     "description": "The name of the application (Flask)"
   },
   "approve": {
@@ -82,7 +82,7 @@
     "message": "Temporitzador de tancament de sessió automàtic (minuts)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Configura el temps de repòs com minuts abans que MetaMask tanqui la sessió automàticament"
+    "message": "Configura el temps de repòs com minuts abans que Widllet tanqui la sessió automàticament"
   },
   "average": {
     "message": "Mitjana"
@@ -91,7 +91,7 @@
     "message": "Enrere"
   },
   "backupApprovalInfo": {
-    "message": "Aquest codi secret es requereix per recuperar el teu moneder en cas que perdis el dispositiu, oblidis la teva contrasenya, hagis de reinstal·lar MetaMask, o vulguis accedir al teu moneder des d'un altre dispositiu."
+    "message": "Aquest codi secret es requereix per recuperar el teu moneder en cas que perdis el dispositiu, oblidis la teva contrasenya, hagis de reinstal·lar Widllet, o vulguis accedir al teu moneder des d'un altre dispositiu."
   },
   "backupApprovalNotice": {
     "message": "Fes una còpia de seguretat del teu codi Secret de Recuperació per mantenir el teu moneder i els teus fons segurs."
@@ -128,7 +128,7 @@
     "message": "Cadena ID"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Necessites fer servir MetaMask amb Google Chrome per a connectar-te al teu Moneder Hardware."
+    "message": "Necessites fer servir Widllet amb Google Chrome per a connectar-te al teu Moneder Hardware."
   },
   "close": {
     "message": "Tanca"
@@ -282,7 +282,7 @@
     "message": "Connectar un moneder hardware"
   },
   "hardwareWalletsMsg": {
-    "message": "Selecciona una cartera de hardware que t'agradaria utilizar amb MetaMask"
+    "message": "Selecciona una cartera de hardware que t'agradaria utilizar amb Widllet"
   },
   "here": {
     "message": "aquí",
@@ -305,7 +305,7 @@
     "description": "Button to import an account from a selected file"
   },
   "importAccountMsg": {
-    "message": "Els comptes importats no s'associaran amb la teva frase de recuperació creada originalment a MetaMask. Aprèn més sobre els comptes importats"
+    "message": "Els comptes importats no s'associaran amb la teva frase de recuperació creada originalment a Widllet. Aprèn més sobre els comptes importats"
   },
   "imported": {
     "message": "Importats",
@@ -382,7 +382,7 @@
     "message": "Missatge"
   },
   "metamaskVersion": {
-    "message": "Versió MetaMask"
+    "message": "Versió Widllet"
   },
   "mustSelectOne": {
     "message": "Has de seleccionar "
@@ -453,7 +453,7 @@
     "message": "Participar a MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Participa a MetaMetrics per ajudar-nos a fer MetaMask millor"
+    "message": "Participa a MetaMetrics per ajudar-nos a fer Widllet millor"
   },
   "password": {
     "message": "Contrasenya"

@@ -72,7 +72,7 @@
     "message": "Akses dompet Anda dengan Frasa Pemulihan Rahasia"
   },
   "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask tidak dapat memulihkan kata sandi Anda. Kami akan menggunakan Frasa Pemulihan Rahasia untuk memvalidasi kepemilikan Anda, memulihkan dompet Anda, dan mengatur kata sandi baru. Pertama, masukkan Frasa Pemulihan Rahasia yang diberikan saat membuat dompet. $1",
+    "message": "Widllet tidak dapat memulihkan kata sandi Anda. Kami akan menggunakan Frasa Pemulihan Rahasia untuk memvalidasi kepemilikan Anda, memulihkan dompet Anda, dan mengatur kata sandi baru. Pertama, masukkan Frasa Pemulihan Rahasia yang diberikan saat membuat dompet. $1",
     "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
   },
   "accessingYourCamera": {
@@ -159,10 +159,10 @@
     "message": "Tambahkan akun"
   },
   "addAccountToMetaMask": {
-    "message": "Tambahkan akun ke MetaMask"
+    "message": "Tambahkan akun ke Widllet"
   },
   "addAcquiredTokens": {
-    "message": "Tambahkan token yang Anda peroleh menggunakan MetaMask"
+    "message": "Tambahkan token yang Anda peroleh menggunakan Widllet"
   },
   "addAlias": {
     "message": "Tambahkan alias"
@@ -335,7 +335,7 @@
     "message": "Biaya prioritas (alias “tip penambang”) langsung masuk ke penambang dan memberi insentif kepada mereka untuk memprioritaskan transaksi Anda."
   },
   "agreeTermsOfUse": {
-    "message": "Saya menyetujui $1 MetaMask",
+    "message": "Saya menyetujui $1 Widllet",
     "description": "$1 is the `terms` link"
   },
   "airDropPatternDescription": {
@@ -490,15 +490,15 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Widllet",
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "Widllet Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "Widllet Flask",
     "description": "The name of the application (Flask)"
   },
   "apply": {
@@ -576,7 +576,7 @@
     "message": "Timer kunci otomatis (menit)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Atur waktu siaga dalam menit sebelum MetaMask terkunci."
+    "message": "Atur waktu siaga dalam menit sebelum Widllet terkunci."
   },
   "average": {
     "message": "Rata-rata"
@@ -585,7 +585,7 @@
     "message": "Kembali"
   },
   "backupApprovalInfo": {
-    "message": "Kode rahasia ini diperlukan untuk memulihkan dompet seandainya perangkat Anda hilang, lupa kata sandi, harus memasang kembali MetaMask, atau ingin mengakses dompet Anda di perangkat lain."
+    "message": "Kode rahasia ini diperlukan untuk memulihkan dompet seandainya perangkat Anda hilang, lupa kata sandi, harus memasang kembali Widllet, atau ingin mengakses dompet Anda di perangkat lain."
   },
   "backupApprovalNotice": {
     "message": "Cadangkan Frasa Pemulihan Rahasia untuk menjaga keamanan dompet dan dana Anda."
@@ -615,7 +615,7 @@
     "message": "Fungsionalitas dasar tidak aktif"
   },
   "basicConfigurationDescription": {
-    "message": "MetaMask menawarkan fitur dasar seperti detail token dan pengaturan gas melalui layanan internet. Alamat IP dibagikan saat menggunakan layanan internet, dalam hal ini kepada MetaMask. Ini sama seperti saat Anda mengunjungi situs web mana pun. MetaMask menggunakan data ini untuk sementara dan tidak akan pernah menjual data Anda. Anda dapat menggunakan VPN atau menonaktifkan layanan ini, akan tetapi hal ini dapat memengaruhi pengalaman dalam menggunakan MetaMask. Untuk selengkapnya, baca $1 kami.",
+    "message": "Widllet menawarkan fitur dasar seperti detail token dan pengaturan gas melalui layanan internet. Alamat IP dibagikan saat menggunakan layanan internet, dalam hal ini kepada Widllet. Ini sama seperti saat Anda mengunjungi situs web mana pun. Widllet menggunakan data ini untuk sementara dan tidak akan pernah menjual data Anda. Anda dapat menggunakan VPN atau menonaktifkan layanan ini, akan tetapi hal ini dapat memengaruhi pengalaman dalam menggunakan Widllet. Untuk selengkapnya, baca $1 kami.",
     "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationLabel": {
@@ -625,10 +625,10 @@
     "message": "Saya memahami dan ingin melanjutkan"
   },
   "basicConfigurationModalDisclaimerOff": {
-    "message": "Artinya, Anda tidak akan benar-benar mengoptimalkan waktu di MetaMask. Fitur dasar (seperti detail token, pengaturan gas optimal, dan lainnya) tidak akan tersedia untuk Anda."
+    "message": "Artinya, Anda tidak akan benar-benar mengoptimalkan waktu di Widllet. Fitur dasar (seperti detail token, pengaturan gas optimal, dan lainnya) tidak akan tersedia untuk Anda."
   },
   "basicConfigurationModalDisclaimerOn": {
-    "message": "Untuk mengoptimalkan waktu di MetaMask, Anda perlu mengaktifkan fitur ini. Fungsi dasar (seperti detail token, pengaturan gas optimal, dan lainnya) penting untuk pengalaman web3."
+    "message": "Untuk mengoptimalkan waktu di Widllet, Anda perlu mengaktifkan fitur ini. Fungsi dasar (seperti detail token, pengaturan gas optimal, dan lainnya) penting untuk pengalaman web3."
   },
   "basicConfigurationModalHeadingOff": {
     "message": "Nonaktifkan fungsionalitas dasar"
@@ -646,7 +646,7 @@
     "message": "Ini merupakan versi beta. Harap laporkan bug $1"
   },
   "betaMetamaskVersion": {
-    "message": "Versi MetaMask Beta"
+    "message": "Versi Widllet Beta"
   },
   "betaTerms": {
     "message": "Ketentuan penggunaan Beta"
@@ -827,7 +827,7 @@
     "message": "Hubungi kami"
   },
   "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "Dukungan MetaMask"
+    "message": "Dukungan Widllet"
   },
   "bridgeTxDetailsDelayedTitle": {
     "message": "Apakah sudah lebih dari 3 jam?"
@@ -874,7 +874,7 @@
     "message": "Buat daftar kontak Anda"
   },
   "builtAroundTheWorld": {
-    "message": "MetaMask dirancang dan dibangun di seluruh dunia."
+    "message": "Widllet dirancang dan dibangun di seluruh dunia."
   },
   "bulletpoint": {
     "message": "·"
@@ -935,7 +935,7 @@
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Anda perlu menggunakan MetaMask di Google Chrome untuk terhubung ke Dompet Perangkat Keras Anda."
+    "message": "Anda perlu menggunakan Widllet di Google Chrome untuk terhubung ke Dompet Perangkat Keras Anda."
   },
   "circulatingSupply": {
     "message": "Suplai yang beredar"
@@ -985,10 +985,10 @@
     "message": "Distribusi Suplai Terkonsentrasi"
   },
   "configureSnapPopupDescription": {
-    "message": "Sekarang, Anda akan meninggalkan MetaMask untuk mengonfigurasi snap ini."
+    "message": "Sekarang, Anda akan meninggalkan Widllet untuk mengonfigurasi snap ini."
   },
   "configureSnapPopupInstallDescription": {
-    "message": "Sekarang, Anda akan meninggalkan MetaMask untuk menginstal snap ini."
+    "message": "Sekarang, Anda akan meninggalkan Widllet untuk menginstal snap ini."
   },
   "configureSnapPopupInstallTitle": {
     "message": "Instal snap"
@@ -1036,7 +1036,7 @@
     "message": "Anda membayar biaya jaringan ini dengan $1"
   },
   "confirmGasFeeTokenTooltip": {
-    "message": "Biaya ini dibayarkan ke jaringan untuk memproses transaksi Anda. Biaya ini mencakup biaya MetaMask sebesar $1 untuk token non-ETH."
+    "message": "Biaya ini dibayarkan ke jaringan untuk memproses transaksi Anda. Biaya ini mencakup biaya Widllet sebesar $1 untuk token non-ETH."
   },
   "confirmNestedTransactionTitle": {
     "message": "Transaksi $1"
@@ -1139,7 +1139,7 @@
     "description": "$1 is the snap for which a connection is being requested."
   },
   "connectWithMetaMask": {
-    "message": "Hubungkan dengan MetaMask"
+    "message": "Hubungkan dengan Widllet"
   },
   "connectedAccounts": {
     "message": "Akun yang terhubung"
@@ -1152,7 +1152,7 @@
     "message": "Anda memiliki 1 akun yang terhubung ke situs ini."
   },
   "connectedAccountsEmptyDescription": {
-    "message": "MetaMask tidak terhubung ke situs ini. Untuk terhubung ke situs web3, cari dan klik tombol hubungkan."
+    "message": "Widllet tidak terhubung ke situs ini. Untuk terhubung ke situs web3, cari dan klik tombol hubungkan."
   },
   "connectedAccountsListTooltip": {
     "message": "$1 dapat melihat saldo akun, alamat, aktivitas, dan menyarankan transaksi yang akan disetujui untuk akun terhubung.",
@@ -1176,7 +1176,7 @@
     "description": "$1 is the account name"
   },
   "connectedSnapAndNoAccountDescription": {
-    "message": "MetaMask terhubung ke situs ini, tetapi belum ada akun yang terhubung"
+    "message": "Widllet terhubung ke situs ini, tetapi belum ada akun yang terhubung"
   },
   "connectedSnaps": {
     "message": "Snaps yang Terhubung"
@@ -1235,7 +1235,7 @@
     "description": "$1 is the name of the snap being fetched."
   },
   "connectionPopoverDescription": {
-    "message": "Untuk terhubung ke situs, pilih tombol hubungkan. MetaMask hanya dapat terhubung ke situs web3."
+    "message": "Untuk terhubung ke situs, pilih tombol hubungkan. Widllet hanya dapat terhubung ke situs web3."
   },
   "connectionRequest": {
     "message": "Permintaan koneksi"
@@ -1269,7 +1269,7 @@
     "message": "Interaksi kontrak"
   },
   "convertTokenToNFTDescription": {
-    "message": "Kami mendeteksi bahwa aset ini merupakan NFT. Kini MetaMask memiliki dukungan asli penuh untuk NFT. Ingin menghapusnya dari daftar token dan menambahkannya sebagai NFT?"
+    "message": "Kami mendeteksi bahwa aset ini merupakan NFT. Kini Widllet memiliki dukungan asli penuh untuk NFT. Ingin menghapusnya dari daftar token dan menambahkannya sebagai NFT?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Kami mendeteksi bahwa aset ini telah ditambahkan sebagai NFT. Anda ingin menghapusnya dari daftar token?"
@@ -1305,7 +1305,7 @@
     "message": "Buat kata sandi"
   },
   "createSnapAccountDescription": {
-    "message": "$1 ingin menambahkan akun baru ke MetaMask."
+    "message": "$1 ingin menambahkan akun baru ke Widllet."
   },
   "createSnapAccountTitle": {
     "message": "Buat akun"
@@ -1317,7 +1317,7 @@
     "message": "Alamat pembuat"
   },
   "crossChainSwapsLink": {
-    "message": "Bertukar antar jaringan dengan Portfolio MetaMask"
+    "message": "Bertukar antar jaringan dengan Portfolio Widllet"
   },
   "crossChainSwapsLinkNative": {
     "message": "Bertukar antara jaringan dengan Bridge"
@@ -1442,7 +1442,7 @@
     "message": "Oke"
   },
   "dataCollectionWarningPopoverDescription": {
-    "message": "Anda menonaktifkan pengumpulan data untuk tujuan pemasaran kami. Ini hanya berlaku untuk perangkat ini. Jika Anda menggunakan MetaMask di perangkat lain, pastikan untuk keluar terlebih dahulu."
+    "message": "Anda menonaktifkan pengumpulan data untuk tujuan pemasaran kami. Ini hanya berlaku untuk perangkat ini. Jika Anda menggunakan Widllet di perangkat lain, pastikan untuk keluar terlebih dahulu."
   },
   "dataUnavailable": {
     "message": "data tidak tersedia"
@@ -1486,7 +1486,7 @@
     "message": "URL RPC Default"
   },
   "defaultSettingsSubTitle": {
-    "message": "MetaMask menggunakan pengaturan default untuk menyeimbangkan keamanan dan kemudahan penggunaan. Ubah pengaturan ini untuk lebih meningkatkan privasi Anda."
+    "message": "Widllet menggunakan pengaturan default untuk menyeimbangkan keamanan dan kemudahan penggunaan. Ubah pengaturan ini untuk lebih meningkatkan privasi Anda."
   },
   "defaultSettingsTitle": {
     "message": "Pengaturan privasi default"
@@ -1822,13 +1822,13 @@
     "message": "Saat ini, deteksi token lanjutan tersedia di $1. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
-    "message": "MetaMask memungkinkan Anda melihat domain ENS pada bilah alamat browser Anda. Berikut cara kerjanya:"
+    "message": "Widllet memungkinkan Anda melihat domain ENS pada bilah alamat browser Anda. Berikut cara kerjanya:"
   },
   "ensDomainsSettingDescriptionOutroduction": {
     "message": "Ingatlah bahwa alamat IP akan diketahui oleh layanan pihak ketiga IPFS saat menggunakan fitur ini."
   },
   "ensDomainsSettingDescriptionPart1": {
-    "message": "MetaMask memeriksa kontrak ENS Ethereum untuk menemukan kode yang terhubung ke nama ENS."
+    "message": "Widllet memeriksa kontrak ENS Ethereum untuk menemukan kode yang terhubung ke nama ENS."
   },
   "ensDomainsSettingDescriptionPart2": {
     "message": "Jika kode terhubung ke IPFS, Anda dapat melihat konten yang dikaitkan dengannya (umumnya situs web)."
@@ -1913,7 +1913,7 @@
     "description": "In sentry feedback form, The message displayed after a successful feedback submission."
   },
   "errorPageTitle": {
-    "message": "MetaMask mengalami kesalahan",
+    "message": "Widllet mengalami kesalahan",
     "description": "Title of generic error page"
   },
   "errorPageTryAgain": {
@@ -2022,15 +2022,15 @@
   },
   "flaskWelcomeWarning2": {
     "message": "Kami tidak menjamin keamanan atau stabilitas ekstensi ini. API baru yang ditawarkan oleh Flask tidak diperkuat untuk menghadapi serangan pengelabuan, artinya setiap situs atau snap yang memerlukan Flask mungkin merupakan upaya jahat untuk mencuri aset Anda.",
-    "description": "This explains the risks of using MetaMask Flask"
+    "description": "This explains the risks of using Widllet Flask"
   },
   "flaskWelcomeWarning3": {
-    "message": "Semua API Flask bersifat eksperimental. API dapat diubah atau dihapus tanpa pemberitahuan, atau tetap berada di Flask tanpa batas waktu dan tanpa pernah dimigrasikan ke MetaMask yang stabil. Gunakan API dengan risiko Anda sendiri.",
+    "message": "Semua API Flask bersifat eksperimental. API dapat diubah atau dihapus tanpa pemberitahuan, atau tetap berada di Flask tanpa batas waktu dan tanpa pernah dimigrasikan ke Widllet yang stabil. Gunakan API dengan risiko Anda sendiri.",
     "description": "This message warns developers about unstable Flask APIs"
   },
   "flaskWelcomeWarning4": {
-    "message": "Pastikan untuk menonaktifkan ekstensi MetaMask reguler Anda saat menggunakan Flask.",
-    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
+    "message": "Pastikan untuk menonaktifkan ekstensi Widllet reguler Anda saat menggunakan Flask.",
+    "description": "This message calls to pay attention about multiple versions of Widllet running on the same site (Flask + Prod)"
   },
   "flaskWelcomeWarningAcceptButton": {
     "message": "Saya menerima risikonya",
@@ -2194,7 +2194,7 @@
     "message": "Integrasi dompet perangkat keras menggunakan panggilan API ke server eksternal, yang dapat melihat alamat IP Anda dan alamat kontrak cerdas tempat Anda berinteraksi."
   },
   "hardwareWalletsMsg": {
-    "message": "Pilih dompet perangkat keras yang ingin Anda gunakan dengan MetaMask."
+    "message": "Pilih dompet perangkat keras yang ingin Anda gunakan dengan Widllet."
   },
   "here": {
     "message": "di sini",
@@ -2263,7 +2263,7 @@
     "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
   },
   "holdToRevealContent4": {
-    "message": "Dukungan MetaMask tidak akan memintanya,",
+    "message": "Dukungan Widllet tidak akan memintanya,",
     "description": "Part of 'holdToRevealContent3'"
   },
   "holdToRevealContent5": {
@@ -2309,7 +2309,7 @@
     "message": "Cara kerja kuotasi"
   },
   "howQuotesWorkExplanation": {
-    "message": "Kuotasi ini memiliki laba terbaik dari kuotasi yang kami cari. Ini berdasarkan pada nilai tukar, yang mencakup biaya bridge dan biaya MetaMask sebesar $1%, dikurangi biaya gas. Biaya gas bergantung pada seberapa sibuk jaringan dan seberapa rumit transaksinya."
+    "message": "Kuotasi ini memiliki laba terbaik dari kuotasi yang kami cari. Ini berdasarkan pada nilai tukar, yang mencakup biaya bridge dan biaya Widllet sebesar $1%, dikurangi biaya gas. Biaya gas bergantung pada seberapa sibuk jaringan dan seberapa rumit transaksinya."
   },
   "id": {
     "message": "ID"
@@ -2344,13 +2344,13 @@
     "message": "Ini bukan kunci pribadi yang valid. Anda harus memasukkan string heksadesimal dengan panjang 64 karakter."
   },
   "importAccountJsonLoading1": {
-    "message": "Impor JSON diperkirakan memerlukan waktu beberapa menit dan bekukan MetaMask."
+    "message": "Impor JSON diperkirakan memerlukan waktu beberapa menit dan bekukan Widllet."
   },
   "importAccountJsonLoading2": {
     "message": "Mohon maaf, kami akan berupaya untuk membuatnya semakin cepat di masa mendatang."
   },
   "importAccountMsg": {
-    "message": "Akun yang diimpor tidak akan ditautkan dengan Frasa Pemulihan Rahasia MetaMask Anda. Pelajari selengkapnya tentang akun yang diimpor"
+    "message": "Akun yang diimpor tidak akan ditautkan dengan Frasa Pemulihan Rahasia Widllet Anda. Pelajari selengkapnya tentang akun yang diimpor"
   },
   "importMyWallet": {
     "message": "Impor dompet saya"
@@ -2430,7 +2430,7 @@
     "message": "termasuk"
   },
   "infuraBlockedNotification": {
-    "message": "MetaMask tidak dapat terhubung ke host blockchain. Tinjau alasan yang mungkin $1.",
+    "message": "Widllet tidak dapat terhubung ke host blockchain. Tinjau alasan yang mungkin $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
   "initialTransactionConfirmed": {
@@ -2447,7 +2447,7 @@
     "message": "Instal asal"
   },
   "installRequest": {
-    "message": "Tambahkan ke MetaMask"
+    "message": "Tambahkan ke Widllet"
   },
   "installedOn": {
     "message": "Diinstal di $1",
@@ -2534,7 +2534,7 @@
     "message": "Gateway IPFS"
   },
   "ipfsGatewayDescription": {
-    "message": "MetaMask menggunakan layanan pihak ketiga untuk menampilkan gambar NFT Anda yang disimpan di IPFS, menampilkan informasi terkait alamat ENS yang dimasukkan di bilah alamat browser Anda, serta mengambil ikon untuk token yang berbeda. Alamat IP Anda mungkin tidak memberikan perlindungan terhadap layanan ini saat Anda menggunakannya."
+    "message": "Widllet menggunakan layanan pihak ketiga untuk menampilkan gambar NFT Anda yang disimpan di IPFS, menampilkan informasi terkait alamat ENS yang dimasukkan di bilah alamat browser Anda, serta mengambil ikon untuk token yang berbeda. Alamat IP Anda mungkin tidak memberikan perlindungan terhadap layanan ini saat Anda menggunakannya."
   },
   "ipfsToggleModalDescriptionOne": {
     "message": "Kami menggunakan layanan pihak ketiga untuk menampilkan gambar NFT Anda yang disimpan di IPFS, menampilkan informasi terkait alamat ENS yang dimasukkan di bilah alamat browser Anda, serta mengambil ikon untuk token yang berbeda. Alamat IP Anda mungkin tidak memberikan perlindungan terhadap layanan ini saat Anda menggunakannya."
@@ -2643,10 +2643,10 @@
     "message": "penipuan dan risiko keamanan."
   },
   "leaveMetaMask": {
-    "message": "Keluar dari MetaMask?"
+    "message": "Keluar dari Widllet?"
   },
   "leaveMetaMaskDesc": {
-    "message": "Anda akan mengunjungi situs di luar MetaMask. Periksa kembali URL sebelum melanjutkan."
+    "message": "Anda akan mengunjungi situs di luar Widllet. Periksa kembali URL sebelum melanjutkan."
   },
   "ledgerAccountRestriction": {
     "message": "Manfaatkan akun terakhir Anda sebelum menambahkan yang baru."
@@ -2716,7 +2716,7 @@
     "message": "Tautan"
   },
   "linkCentralizedExchanges": {
-    "message": "Tautkan akun Coinbase atau Binance untuk mentransfer kripto ke MetaMask secara gratis."
+    "message": "Tautkan akun Coinbase atau Binance untuk mentransfer kripto ke Widllet secara gratis."
   },
   "links": {
     "message": "Tautan"
@@ -2740,7 +2740,7 @@
     "message": "Kunci"
   },
   "lockMetaMask": {
-    "message": "Kunci MetaMask"
+    "message": "Kunci Widllet"
   },
   "lockTimeInvalid": {
     "message": "Waktu kunci harus berupa angka antara 0 dan 10080"
@@ -2819,7 +2819,7 @@
     "message": "Pesan"
   },
   "metaMaskConnectStatusParagraphOne": {
-    "message": "Sekarang, Anda memiliki kontrol lebih banyak atas koneksi akun Anda di MetaMask."
+    "message": "Sekarang, Anda memiliki kontrol lebih banyak atas koneksi akun Anda di Widllet."
   },
   "metaMaskConnectStatusParagraphThree": {
     "message": "Klik untuk mengelola akun Anda yang terhubung."
@@ -2838,10 +2838,10 @@
     "message": "Saat ini notifikasi dompet tidak aktif."
   },
   "metamaskSwapsOfflineDescription": {
-    "message": "MetaMask Swap sedang dalam pemeliharaan. Harap periksa kembali nanti."
+    "message": "Widllet Swap sedang dalam pemeliharaan. Harap periksa kembali nanti."
   },
   "metamaskVersion": {
-    "message": "Versi MetaMask"
+    "message": "Versi Widllet"
   },
   "methodData": {
     "message": "Metode"
@@ -2900,7 +2900,7 @@
     "message": "Kuotasi lainnya"
   },
   "multichainAddEthereumChainConfirmationDescription": {
-    "message": "Anda menambahkan jaringan ini ke MetaMask dan memberikan situs ini izin untuk menggunakannya."
+    "message": "Anda menambahkan jaringan ini ke Widllet dan memberikan situs ini izin untuk menggunakannya."
   },
   "multichainQuoteCardBridgingLabel": {
     "message": "Bridge"
@@ -2974,7 +2974,7 @@
     "message": "Lens Protocol"
   },
   "nameProvider_token": {
-    "message": "MetaMask"
+    "message": "Widllet"
   },
   "nameSetPlaceholder": {
     "message": "Pilih nama panggilan...",
@@ -3007,7 +3007,7 @@
     "message": "Bagikan umpan balik Anda"
   },
   "needHelpLinkText": {
-    "message": "Dukungan MetaMask"
+    "message": "Dukungan Widllet"
   },
   "needHelpSubmitTicket": {
     "message": "Kirimkan tiket"
@@ -3162,7 +3162,7 @@
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
   },
   "newNFTDetectedInNFTsTabMessage": {
-    "message": "Izinkan MetaMask mendeteksi dan menampilkan NFT di dompet secara otomatis."
+    "message": "Izinkan Widllet mendeteksi dan menampilkan NFT di dompet secara otomatis."
   },
   "newNFTsAutodetected": {
     "message": "Autodeteksi NFT"
@@ -3212,7 +3212,7 @@
     "message": "Autodeteksi NFT diaktifkan"
   },
   "nftDisclaimer": {
-    "message": "Penafian: MetaMask mengambil file media dari url sumber. Url ini terkadang diubah oleh pasar tempat NFT dicetak."
+    "message": "Penafian: Widllet mengambil file media dari url sumber. Url ini terkadang diubah oleh pasar tempat NFT dicetak."
   },
   "nftOptions": {
     "message": "Opsi NFT"
@@ -3244,10 +3244,10 @@
     "message": "Tidak ditemukan akun untuk kueri pencarian yang diberikan"
   },
   "noConnectedAccountTitle": {
-    "message": "MetaMask tidak terhubung ke situs ini"
+    "message": "Widllet tidak terhubung ke situs ini"
   },
   "noConnectionDescription": {
-    "message": "Untuk terhubung ke situs, cari dan pilih tombol \"hubungkan\". Ingat MetaMask hanya dapat terhubung ke situs di web3"
+    "message": "Untuk terhubung ke situs, cari dan pilih tombol \"hubungkan\". Ingat Widllet hanya dapat terhubung ke situs di web3"
   },
   "noConversionRateAvailable": {
     "message": "Nilai konversi tidak tersedia"
@@ -3553,7 +3553,7 @@
     "message": "Saya setuju"
   },
   "onboardingMetametricsDescription": {
-    "message": "Kami ingin mengumpulkan data penggunaan dasar dan diagnostik untuk meningkatkan MetaMask. Pahami bahwa kami tidak pernah menjual data yang Anda berikan di sini."
+    "message": "Kami ingin mengumpulkan data penggunaan dasar dan diagnostik untuk meningkatkan Widllet. Pahami bahwa kami tidak pernah menjual data yang Anda berikan di sini."
   },
   "onboardingMetametricsDescription2": {
     "message": "Saat kami mengumpulkan metrik, maka akan selalu..."
@@ -3590,7 +3590,7 @@
     "message": "Pelajari cara kami melindungi privasi Anda saat mengumpulkan data penggunaan untuk profil Anda."
   },
   "onboardingMetametricsTitle": {
-    "message": "Bantu kami meningkatkan MetaMask"
+    "message": "Bantu kami meningkatkan Widllet"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Kami akan menggunakan data ini untuk mempelajari cara Anda berinteraksi dengan komunikasi pemasaran. Kami mungkin akan membagikan berita yang relevan (seperti fitur produk)."
@@ -3611,16 +3611,16 @@
     "message": "Klik ikon ekstensi browser"
   },
   "onboardingPinExtensionDescription": {
-    "message": "Sematkan MetaMask pada browser Anda agar dapat diakses dan memudahkan dalam melihat konfirmasi transaksi."
+    "message": "Sematkan Widllet pada browser Anda agar dapat diakses dan memudahkan dalam melihat konfirmasi transaksi."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "Anda dapat membuka MetaMask dengan mengeklik ekstensi dan mengakses dompet Anda dalam 1 klik."
+    "message": "Anda dapat membuka Widllet dengan mengeklik ekstensi dan mengakses dompet Anda dalam 1 klik."
   },
   "onboardingPinExtensionDescription3": {
     "message": "Klik ikon ekstensi browser untuk mengaksesnya secara langsung"
   },
   "onboardingPinExtensionLabel": {
-    "message": "Sematkan MetaMask"
+    "message": "Sematkan Widllet"
   },
   "onboardingPinExtensionStep1": {
     "message": "1"
@@ -3629,7 +3629,7 @@
     "message": "2"
   },
   "onboardingPinExtensionTitle": {
-    "message": "Pemasangan MetaMask Anda selesai!"
+    "message": "Pemasangan Widllet Anda selesai!"
   },
   "onlyConnectTrust": {
     "message": "Hanya hubungkan ke situs yang Anda percayai. $1",
@@ -3637,7 +3637,7 @@
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Buka layar penuh untuk menghubungkan Ledger Anda.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+    "description": "Shown to the user on the confirm screen when they are viewing Widllet in a popup window but need to connect their ledger via webhid."
   },
   "openInBlockExplorer": {
     "message": "Buka di block explorer"
@@ -3666,7 +3666,7 @@
     "description": "Used in the 'permission_rpc' message."
   },
   "outdatedBrowserNotification": {
-    "message": "Browser Anda sudah usang. Jika browser tidak diperbarui, Anda tidak akan bisa mendapatkan tambalan keamanan dan fitur baru dari MetaMask."
+    "message": "Browser Anda sudah usang. Jika browser tidak diperbarui, Anda tidak akan bisa mendapatkan tambalan keamanan dan fitur baru dari Widllet."
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Batalkan header Content-Security-Policy"
@@ -3681,7 +3681,7 @@
     "message": "Berpartisipasilah dalam MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Berpartisipasilah dalam MetaMetrics untuk membantu kami menjadikan MetaMask lebih baik lagi"
+    "message": "Berpartisipasilah dalam MetaMetrics untuk membantu kami menjadikan Widllet lebih baik lagi"
   },
   "password": {
     "message": "Kata sandi"
@@ -3690,7 +3690,7 @@
     "message": "Kata sandi kurang panjang"
   },
   "passwordSetupDetails": {
-    "message": "Kata sandi ini akan membuka dompet MetaMask Anda hanya pada perangkat ini. MetaMask tidak dapat memulihkan kata sandi ini."
+    "message": "Kata sandi ini akan membuka dompet Widllet Anda hanya pada perangkat ini. Widllet tidak dapat memulihkan kata sandi ini."
   },
   "passwordStrength": {
     "message": "Kekuatan kata sandi: $1",
@@ -3700,7 +3700,7 @@
     "message": "Kata sandi yang kuat dapat meningkatkan keamanan dompet jika perangkat Anda dicuri atau disusupi."
   },
   "passwordTermsWarning": {
-    "message": "Saya memahami bahwa MetaMask tidak dapat memulihkan kata sandi ini untuk saya. $1"
+    "message": "Saya memahami bahwa Widllet tidak dapat memulihkan kata sandi ini untuk saya. $1"
   },
   "passwordsDontMatch": {
     "message": "Kata sandi tidak cocok"
@@ -3772,11 +3772,11 @@
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
   },
   "permission_assets": {
-    "message": "Menampilkan aset akun di MetaMask.",
+    "message": "Menampilkan aset akun di Widllet.",
     "description": "The description for the `endowment:assets` permission."
   },
   "permission_assetsDescription": {
-    "message": "Izinkan $1 untuk memberikan informasi aset kepada klien MetaMask. Aset dapat berupa onchain atau offchain.",
+    "message": "Izinkan $1 untuk memberikan informasi aset kepada klien Widllet. Aset dapat berupa onchain atau offchain.",
     "description": "An extended description for the `endowment:assets` permission. $1 is the name of the Snap."
   },
   "permission_cronjob": {
@@ -3788,11 +3788,11 @@
     "description": "An extended description for the `snap_cronjob` permission. $1 is the snap name."
   },
   "permission_dialog": {
-    "message": "Tampilkan jendela dialog di MetaMask.",
+    "message": "Tampilkan jendela dialog di Widllet.",
     "description": "The description for the `snap_dialog` permission"
   },
   "permission_dialogDescription": {
-    "message": "Izinkan $1 untuk menampilkan sembulan MetaMask yang berisi teks khusus, kolom input, dan tombol untuk menyetujui atau menolak suatu tindakan.\nDapat digunakan untuk membuat peringatan, konfirmasi, dan alur keikutsertaan untuk Snap.",
+    "message": "Izinkan $1 untuk menampilkan sembulan Widllet yang berisi teks khusus, kolom input, dan tombol untuk menyetujui atau menolak suatu tindakan.\nDapat digunakan untuk membuat peringatan, konfirmasi, dan alur keikutsertaan untuk Snap.",
     "description": "An extended description for the `snap_dialog` permission. $1 is the snap name."
   },
   "permission_ethereumAccounts": {
@@ -3804,7 +3804,7 @@
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
   "permission_ethereumProviderDescription": {
-    "message": "Izinkan $1 untuk berkomunikasi dengan MetaMask secara langsung, agar dapat membaca data dari blockchain serta menyarankan pesan dan transaksi.",
+    "message": "Izinkan $1 untuk berkomunikasi dengan Widllet secara langsung, agar dapat membaca data dari blockchain serta menyarankan pesan dan transaksi.",
     "description": "An extended description for the `endowment:ethereum-provider` permission. $1 is the snap name."
   },
   "permission_getEntropy": {
@@ -3812,7 +3812,7 @@
     "description": "The description for the `snap_getEntropy` permission. $1 is the snap name."
   },
   "permission_getEntropyDescription": {
-    "message": "Izinkan $1 untuk mendapatkan kunci arbitrer unik untuk $1 tanpa mengeksposnya. Kunci ini terpisah dari akun MetaMask dan tidak terkait dengan kunci pribadi atau Frasa Pemulihan Rahasia. Snap lain tidak dapat mengakses informasi ini.",
+    "message": "Izinkan $1 untuk mendapatkan kunci arbitrer unik untuk $1 tanpa mengeksposnya. Kunci ini terpisah dari akun Widllet dan tidak terkait dengan kunci pribadi atau Frasa Pemulihan Rahasia. Snap lain tidak dapat mengakses informasi ini.",
     "description": "An extended description for the `snap_getEntropy` permission. $1 is the snap name."
   },
   "permission_getLocale": {
@@ -3820,7 +3820,7 @@
     "description": "The description for the `snap_getLocale` permission"
   },
   "permission_getLocaleDescription": {
-    "message": "Izinkan $1 mengakses bahasa pilihan Anda dari pengaturan MetaMask. Ini dapat digunakan untuk melokalisasi dan menampilkan konten $1 menggunakan bahasa Anda.",
+    "message": "Izinkan $1 mengakses bahasa pilihan Anda dari pengaturan Widllet. Ini dapat digunakan untuk melokalisasi dan menampilkan konten $1 menggunakan bahasa Anda.",
     "description": "An extended description for the `snap_getLocale` permission. $1 is the snap name."
   },
   "permission_getPreferences": {
@@ -3828,7 +3828,7 @@
     "description": "The description for the `snap_getPreferences` permission"
   },
   "permission_getPreferencesDescription": {
-    "message": "Izinkan $1 mengakses informasi seperti bahasa pilihan dan mata uang fiat di pengaturan MetaMask Anda. Ini membantu $1 menampilkan konten yang disesuaikan dengan preferensi Anda. ",
+    "message": "Izinkan $1 mengakses informasi seperti bahasa pilihan dan mata uang fiat di pengaturan Widllet Anda. Ini membantu $1 menampilkan konten yang disesuaikan dengan preferensi Anda. ",
     "description": "An extended description for the `snap_getPreferences` permission. $1 is the snap name."
   },
   "permission_homePage": {
@@ -3836,7 +3836,7 @@
     "description": "The description for the `endowment:page-home` permission"
   },
   "permission_homePageDescription": {
-    "message": "Izinkan $1 menampilkan layar beranda khusus di MetaMask. Ini dapat digunakan untuk antarmuka pengguna, konfigurasi, dan dasbor.",
+    "message": "Izinkan $1 menampilkan layar beranda khusus di Widllet. Ini dapat digunakan untuk antarmuka pengguna, konfigurasi, dan dasbor.",
     "description": "An extended description for the `endowment:page-home` permission. $1 is the snap name."
   },
   "permission_keyring": {
@@ -3888,7 +3888,7 @@
     "description": "The description for the `endowment:name-lookup` permission."
   },
   "permission_nameLookupDescription": {
-    "message": "Izinkan Snap untuk mengambil dan menampilkan pencarian alamat dan domain pada bagian UI MetaMask yang berbeda.",
+    "message": "Izinkan Snap untuk mengambil dan menampilkan pencarian alamat dan domain pada bagian UI Widllet yang berbeda.",
     "description": "An extended description for the `endowment:name-lookup` permission."
   },
   "permission_notifications": {
@@ -3896,7 +3896,7 @@
     "description": "The description for the `snap_notify` permission"
   },
   "permission_notificationsDescription": {
-    "message": "Izinkan $1 untuk menampilkan notifikasi dalam MetaMask. Teks notifikasi singkat dapat dipicu oleh Snap untuk informasi yang dapat ditindaklanjuti atau peka terhadap waktu.",
+    "message": "Izinkan $1 untuk menampilkan notifikasi dalam Widllet. Teks notifikasi singkat dapat dipicu oleh Snap untuk informasi yang dapat ditindaklanjuti atau peka terhadap waktu.",
     "description": "An extended description for the `snap_notify` permission. $1 is the snap name."
   },
   "permission_protocol": {
@@ -3904,7 +3904,7 @@
     "description": "The description for the `endowment:protocol` permission."
   },
   "permission_protocolDescription": {
-    "message": "Izinkan $1 untuk memberikan data protokol kepada MetaMask seperti estimasi gas atau informasi token.",
+    "message": "Izinkan $1 untuk memberikan data protokol kepada Widllet seperti estimasi gas atau informasi token.",
     "description": "An extended description for the `endowment:protocol` permission. $1 is the name of the Snap."
   },
   "permission_rpc": {
@@ -3940,7 +3940,7 @@
     "description": "The description for the `endowment:transaction-insight` permission"
   },
   "permission_transactionInsightDescription": {
-    "message": "Izinkan $1 untuk membaca kode transaksi dan menampilkan wawasan dalam UI MetaMask. Ini dapat digunakan sebagai solusi anti pengelabuan dan keamanan.",
+    "message": "Izinkan $1 untuk membaca kode transaksi dan menampilkan wawasan dalam UI Widllet. Ini dapat digunakan sebagai solusi anti pengelabuan dan keamanan.",
     "description": "An extended description for the `endowment:transaction-insight` permission. $1 is the snap name."
   },
   "permission_transactionInsightOrigin": {
@@ -4177,7 +4177,7 @@
     "message": "Pembatalan stake selesai"
   },
   "pushPlatformNotificationsSwapCompletedDescription": {
-    "message": "Swap MetaMask berhasil"
+    "message": "Swap Widllet berhasil"
   },
   "pushPlatformNotificationsSwapCompletedTitle": {
     "message": "Swap selesai"
@@ -4237,7 +4237,7 @@
     "message": "Jangan membagikan Frasa Pemulihan Rahasia Anda kepada siapa pun"
   },
   "recoveryPhraseReminderItemTwo": {
-    "message": "Tim MetaMask tidak akan pernah meminta Frasa Pemulihan Rahasia Anda"
+    "message": "Tim Widllet tidak akan pernah meminta Frasa Pemulihan Rahasia Anda"
   },
   "recoveryPhraseReminderSubText": {
     "message": "Frasa Pemulihan Rahasia Anda mengendalikan semua akun Anda."
@@ -4285,10 +4285,10 @@
     "message": "Akun ini akan dihapus dari dompet Anda. Pastikan Anda memiliki Frasa Pemulihan Rahasia asli atau kunci pribadi untuk akun impor ini sebelum melanjutkan. Anda dapat mengimpor atau membuat akun lagi dari menu gulir bawah akun. "
   },
   "removeKeyringSnap": {
-    "message": "Akun berikut akan dihapus dari MetaMask saat menghapus Snap ini:"
+    "message": "Akun berikut akan dihapus dari Widllet saat menghapus Snap ini:"
   },
   "removeKeyringSnapToolTip": {
-    "message": "Snap mengontrol akun. Jika dihapus, maka akun tersebut akan dihapus juga dari MetaMask, tetapi akun tersebut akan tetap berada di blockchain."
+    "message": "Snap mengontrol akun. Jika dihapus, maka akun tersebut akan dihapus juga dari Widllet, tetapi akun tersebut akan tetap berada di blockchain."
   },
   "removeNFT": {
     "message": "Hapus NFT"
@@ -4303,7 +4303,7 @@
     "message": "Hapus Snap"
   },
   "removeSnapAccountDescription": {
-    "message": "Jika Anda melanjutkan, akun ini tidak lagi tersedia di MetaMask."
+    "message": "Jika Anda melanjutkan, akun ini tidak lagi tersedia di Widllet."
   },
   "removeSnapAccountTitle": {
     "message": "Hapus akun"
@@ -4354,7 +4354,7 @@
     "message": "Reset dompet"
   },
   "resetWalletSubHeader": {
-    "message": "MetaMask tidak menyimpan salinan kata sandi Anda. Jika terjadi masalah saat membuka akun, reset dompet Anda. Anda dapat melakukannya dengan memberikan Frasa Pemulihan Rahasia yang digunakan saat mengatur dompet."
+    "message": "Widllet tidak menyimpan salinan kata sandi Anda. Jika terjadi masalah saat membuka akun, reset dompet Anda. Anda dapat melakukannya dengan memberikan Frasa Pemulihan Rahasia yang digunakan saat mengatur dompet."
   },
   "resetWalletUsingSRP": {
     "message": "Tindakan ini akan menghapus dompet saat ini dan Frasa Pemulihan Rahasia dari perangkat ini, bersama dengan daftar akun yang telah Anda kelola. Setelah direset dengan Frasa Pemulihan Rahasia, Anda akan melihat daftar akun berdasarkan Frasa Pemulihan Rahasia yang Anda gunakan untuk mereset. Daftar baru ini secara otomatis akan menyertakan akun yang memiliki saldo. Anda juga dapat $1 yang telah dibuat sebelumnya. Akun khusus yang Anda impor harus $2, serta token khusus yang Anda tambahkan ke akun harus $3."
@@ -4363,7 +4363,7 @@
     "message": "Pastikan Anda menggunakan Frasa Pemulihan Rahasia yang benar sebelum melanjutkan. Anda tidak dapat membatalkan tindakan ini."
   },
   "restartMetamask": {
-    "message": "Mulai ulang MetaMask"
+    "message": "Mulai ulang Widllet"
   },
   "restore": {
     "message": "Pulihkan"
@@ -4400,7 +4400,7 @@
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
   },
   "revealSeedWordsDescription2": {
-    "message": "MetaMask merupakan $1. Artinya, Anda adalah pemilik SRP Anda sendiri.",
+    "message": "Widllet merupakan $1. Artinya, Anda adalah pemilik SRP Anda sendiri.",
     "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
   },
   "revealSeedWordsDescription3": {
@@ -4423,7 +4423,7 @@
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSeedWordsWarning2": {
-    "message": "Dukungan MetaMask tidak akan pernah memintanya.",
+    "message": "Dukungan Widllet tidak akan pernah memintanya.",
     "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
@@ -4564,7 +4564,7 @@
     "message": "Jika seseorang menanyakan frasa pemulihan Anda, kemungkinan mereka akan mencoba menipu dan mencuri dana di dompet Anda"
   },
   "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Jangan pernah membagikan Frasa Pemulihan Rahasia Anda bahkan kepada MetaMask sekali pun!"
+    "message": "Jangan pernah membagikan Frasa Pemulihan Rahasia Anda bahkan kepada Widllet sekali pun!"
   },
   "seedPhraseIntroSidebarTitleOne": {
     "message": "Apa itu Frasa Pemulihan Rahasia?"
@@ -4606,7 +4606,7 @@
     "message": "Pilih akun"
   },
   "selectAnAccountAlreadyConnected": {
-    "message": "Akun ini sudah terhubung ke MetaMask."
+    "message": "Akun ini sudah terhubung ke Widllet."
   },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Aktifkan Tampilkan Media NFT"
@@ -4877,13 +4877,13 @@
     "message": "Jual kripto dan dapatkan uang tunai"
   },
   "slideCashOutTitle": {
-    "message": "Cairkan uang tunai dengan MetaMask"
+    "message": "Cairkan uang tunai dengan Widllet"
   },
   "slideDebitCardDescription": {
     "message": "Tersedia di wilayah tertentu"
   },
   "slideDebitCardTitle": {
-    "message": "Kartu debit MetaMask"
+    "message": "Kartu debit Widllet"
   },
   "slideFundWalletDescription": {
     "message": "Tambah atau transfer token untuk memulai"
@@ -4916,7 +4916,7 @@
     "message": "Transaksi Anda gagal"
   },
   "smartTransactionErrorDescription": {
-    "message": "Perubahan pasar yang mendadak dapat menyebabkan kegagalan. Jika masalah berlanjut, hubungi dukungan pelanggan MetaMask."
+    "message": "Perubahan pasar yang mendadak dapat menyebabkan kegagalan. Jika masalah berlanjut, hubungi dukungan pelanggan Widllet."
   },
   "smartTransactionPending": {
     "message": "Mengirimkan transaksi Anda"
@@ -4966,7 +4966,7 @@
     "message": "Akun dihapus"
   },
   "snapAccountRemovedDescription": {
-    "message": "Akun ini tidak lagi tersedia untuk digunakan di MetaMask."
+    "message": "Akun ini tidak lagi tersedia untuk digunakan di Widllet."
   },
   "snapAccounts": {
     "message": "Akun Snap"
@@ -5118,7 +5118,7 @@
     "message": "Dapp Solana, NFT, dukungan dompet perangkat keras, dan lainnya segera hadir."
   },
   "solanaOnMetaMask": {
-    "message": "Solana di MetaMask"
+    "message": "Solana di Widllet"
   },
   "solanaSendReceiveSwapTokens": {
     "message": "Kirim, terima, dan tukar token"
@@ -5256,7 +5256,7 @@
     "message": "Untuk mengungkapkan Frasa Pemulihan Rahasia, Anda perlu menjawab dua pertanyaan dengan benar"
   },
   "srpSecurityQuizQuestionOneQuestion": {
-    "message": "Jika Anda kehilangan Frasa Pemulihan Rahasia, MetaMask..."
+    "message": "Jika Anda kehilangan Frasa Pemulihan Rahasia, Widllet..."
   },
   "srpSecurityQuizQuestionOneRightAnswer": {
     "message": "Tidak dapat membantu Anda"
@@ -5325,7 +5325,7 @@
     "message": "Terjadi kesalahan pada log status pengambilan."
   },
   "stateLogFileName": {
-    "message": "Log status MetaMask"
+    "message": "Log status Widllet"
   },
   "stateLogs": {
     "message": "Log status"
@@ -5346,7 +5346,7 @@
     "message": "Hubungkan Lattice1 Anda"
   },
   "step1LatticeWalletMsg": {
-    "message": "Anda dapat menghubungkan MetaMask ke perangkat Lattice1 setelah diatur dan daring. Buka perangkat Anda dan siapkan ID Perangkat Anda.",
+    "message": "Anda dapat menghubungkan Widllet ke perangkat Lattice1 setelah diatur dan daring. Buka perangkat Anda dan siapkan ID Perangkat Anda.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1LedgerWallet": {
@@ -5456,7 +5456,7 @@
     "message": "Ikuti survei kami"
   },
   "surveyTitle": {
-    "message": "Bentuk masa depan MetaMask"
+    "message": "Bentuk masa depan Widllet"
   },
   "swap": {
     "message": "Pertukaran"
@@ -5522,7 +5522,7 @@
     "message": "Edit batas"
   },
   "swapEnableDescription": {
-    "message": "Ini diwajibkan dan memberikan MetaMask izin untuk menukar $1 Anda.",
+    "message": "Ini diwajibkan dan memberikan Widllet izin untuk menukar $1 Anda.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
   },
   "swapEnableTokenForSwapping": {
@@ -5569,7 +5569,7 @@
     "message": "Biaya gas diperkirakan dan akan berfluktuasi berdasarkan lalu lintas jaringan dan kompleksitas transaksi."
   },
   "swapGasFeesExplanation": {
-    "message": "MetaMask tidak menghasilkan uang dari biaya gas. Biaya ini merupakan estimasi dan dapat berubah berdasarkan seberapa sibuk jaringan dan seberapa rumit transaksinya. Pelajari selengkapnya $1.",
+    "message": "Widllet tidak menghasilkan uang dari biaya gas. Biaya ini merupakan estimasi dan dapat berubah berdasarkan seberapa sibuk jaringan dan seberapa rumit transaksinya. Pelajari selengkapnya $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
   },
   "swapGasFeesExplanationLinkText": {
@@ -5583,7 +5583,7 @@
     "message": "Biaya gas pada layar sebelumnya dibagi antara kedua transaksi ini."
   },
   "swapGasFeesSummary": {
-    "message": "Biaya gas dibayarkan kepada penambang kripto yang memproses transaksi di jaringan $1. MetaMask tidak mengambil keuntungan dari biaya gas.",
+    "message": "Biaya gas dibayarkan kepada penambang kripto yang memproses transaksi di jaringan $1. Widllet tidak mengambil keuntungan dari biaya gas.",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
@@ -5596,19 +5596,19 @@
     "message": "Selip tinggi"
   },
   "swapIncludesGasAndMetaMaskFee": {
-    "message": "Termasuk biaya gas dan MetaMask sebesar $1%",
+    "message": "Termasuk biaya gas dan Widllet sebesar $1%",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
-    "message": "Termasuk $1% biaya MetaMask.",
+    "message": "Termasuk $1% biaya Widllet.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
-    "message": "Kuotasi mencerminkan biaya MetaMask sebesar $1%",
+    "message": "Kuotasi mencerminkan biaya Widllet sebesar $1%",
     "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
-    "message": "Termasuk $1% biaya MetaMask – $2",
+    "message": "Termasuk $1% biaya Widllet – $2",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
@@ -5624,10 +5624,10 @@
     "message": "Selipi maks"
   },
   "swapMetaMaskFee": {
-    "message": "Biaya MetaMask"
+    "message": "Biaya Widllet"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "Biaya sebesar $1% otomatis diperhitungkan ke dalam kuotasi ini. Anda membayarnya sebagai ganti lisensi untuk menggunakan perangkat lunak pengumpul informasi penyedia likuiditas MetaMask.",
+    "message": "Biaya sebesar $1% otomatis diperhitungkan ke dalam kuotasi ini. Anda membayarnya sebagai ganti lisensi untuk menggunakan perangkat lunak pengumpul informasi penyedia likuiditas Widllet.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
@@ -5841,7 +5841,7 @@
     "message": "Alihkan"
   },
   "switchEthereumChainConfirmationDescription": {
-    "message": "Ini akan mengalihkan jaringan yang dipilih dalam MetaMask ke jaringan yang ditambahkan sebelumnya:"
+    "message": "Ini akan mengalihkan jaringan yang dipilih dalam Widllet ke jaringan yang ditambahkan sebelumnya:"
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "Izinkan situs ini untuk beralih jaringan?"
@@ -5892,7 +5892,7 @@
     "message": "Ketentuan layanan"
   },
   "termsOfUseAgreeText": {
-    "message": " Saya menyetujui Syarat Penggunaan, yang berlaku untuk penggunaan atas MetaMask dan semua fiturnya"
+    "message": " Saya menyetujui Syarat Penggunaan, yang berlaku untuk penggunaan atas Widllet dan semua fiturnya"
   },
   "termsOfUseFooterText": {
     "message": "Gulirkan layar untuk membaca semua bagian"
@@ -5904,10 +5904,10 @@
     "message": "Testnet"
   },
   "theme": {
-    "message": " Saya menyetujui Ketentuan Penggunaan, yang berlaku untuk penggunaan atas MetaMask dan semua fiturnya"
+    "message": " Saya menyetujui Ketentuan Penggunaan, yang berlaku untuk penggunaan atas Widllet dan semua fiturnya"
   },
   "themeDescription": {
-    "message": "Pilih tema MetaMask yang Anda sukai."
+    "message": "Pilih tema Widllet yang Anda sukai."
   },
   "thirdPartySoftware": {
     "message": "Pemberitahuan perangkat lunak pihak ketiga",
@@ -6120,7 +6120,7 @@
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
   "troubleStarting": {
-    "message": "MetaMask mengalami masalah saat memulai. Kesalahan ini dapat terjadi berselang, coba mulai ulang ekstensi."
+    "message": "Widllet mengalami masalah saat memulai. Kesalahan ini dapat terjadi berselang, coba mulai ulang ekstensi."
   },
   "tryAgain": {
     "message": "Coba lagi"
@@ -6169,7 +6169,7 @@
   },
   "u2f": {
     "message": "U2F",
-    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
+    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect Widllet to Ledger devices."
   },
   "unapproved": {
     "message": "Tidak disetujui"
@@ -6260,7 +6260,7 @@
     "message": "Deteksi otomatis NFT"
   },
   "useNftDetectionDescriptionText": {
-    "message": "Izinkan MetaMask menambahkan NFT yang Anda miliki menggunakan layanan pihak ketiga. Autodeteksi NFT mengekspos alamat IP dan akun Anda ke layanan ini. Mengaktifkan fitur ini dapat mengaitkan alamat IP dengan alamat Ethereum Anda dan menampilkan NFT palsu yang di-airdrop oleh penipu. Anda dapat menambahkan token secara manual untuk menghindari risiko ini."
+    "message": "Izinkan Widllet menambahkan NFT yang Anda miliki menggunakan layanan pihak ketiga. Autodeteksi NFT mengekspos alamat IP dan akun Anda ke layanan ini. Mengaktifkan fitur ini dapat mengaitkan alamat IP dengan alamat Ethereum Anda dan menampilkan NFT palsu yang di-airdrop oleh penipu. Anda dapat menambahkan token secara manual untuk menghindari risiko ini."
   },
   "usePhishingDetection": {
     "message": "Gunakan deteksi phishing"
@@ -6272,7 +6272,7 @@
     "message": "Pemeriksaan detail jaringan"
   },
   "useSafeChainsListValidationDescription": {
-    "message": "MetaMask menggunakan layanan pihak ketiga yang disebut $1 untuk menampilkan detail jaringan yang akurat dan terstandardisasi. Hal ini dapat mengurangi kemungkinan Anda untuk terhubung ke jaringan berbahaya atau salah. Saat menggunakan fitur ini, alamat IP akan diketahui oleh chainid.network."
+    "message": "Widllet menggunakan layanan pihak ketiga yang disebut $1 untuk menampilkan detail jaringan yang akurat dan terstandardisasi. Hal ini dapat mengurangi kemungkinan Anda untuk terhubung ke jaringan berbahaya atau salah. Saat menggunakan fitur ini, alamat IP akan diketahui oleh chainid.network."
   },
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
@@ -6342,7 +6342,7 @@
     "message": "Konfirmasikan"
   },
   "visitSupportDataConsentModalDescription": {
-    "message": "Ingin membagikan Pengidentifikasi MetaMask dan versi aplikasi dengan Pusat Dukungan kami? Ini dapat membantu kami menyelesaikan masalah Anda dengan lebih baik, tetapi tindakan ini bersifat opsional."
+    "message": "Ingin membagikan Pengidentifikasi Widllet dan versi aplikasi dengan Pusat Dukungan kami? Ini dapat membantu kami menyelesaikan masalah Anda dengan lebih baik, tetapi tindakan ini bersifat opsional."
   },
   "visitSupportDataConsentModalReject": {
     "message": "Jangan bagikan"
@@ -6415,7 +6415,7 @@
     "message": "Jelajahi aplikasi terdesentralisasi"
   },
   "welcomeLoginDescription": {
-    "message": "Gunakan MetaMask Anda untuk masuk ke aplikasi terdesentralisasi. Tidak perlu mendaftar."
+    "message": "Gunakan Widllet Anda untuk masuk ke aplikasi terdesentralisasi. Tidak perlu mendaftar."
   },
   "welcomeLoginTitle": {
     "message": "Ucapkan halo pada dompet Anda"
@@ -6424,7 +6424,7 @@
     "message": "Mari kita mulai"
   },
   "welcomeToMetaMaskIntro": {
-    "message": "MetaMask merupakan dompet aman yang dipercaya oleh jutaan orang, yang membuat dunia web3 dapat diakses oleh semua orang."
+    "message": "Widllet merupakan dompet aman yang dipercaya oleh jutaan orang, yang membuat dunia web3 dapat diakses oleh semua orang."
   },
   "whatsThis": {
     "message": "Apa ini?"

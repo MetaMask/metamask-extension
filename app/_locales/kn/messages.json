@@ -30,7 +30,7 @@
     "message": "ಚಟುವಟಿಕೆ ಲಾಗ್"
   },
   "addAcquiredTokens": {
-    "message": "MetaMask ಬಳಸಿಕೊಂಡು ನೀವು ಸ್ವಾಧೀನಪಡಿಸಿಕೊಂಡಿರುವ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
+    "message": "Widllet ಬಳಸಿಕೊಂಡು ನೀವು ಸ್ವಾಧೀನಪಡಿಸಿಕೊಂಡಿರುವ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
   },
   "addAlias": {
     "message": "ಅಲಿಯಾಸ್ ಸೇರಿಸಿ"
@@ -55,15 +55,15 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Widllet",
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "Widllet Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "Widllet Flask",
     "description": "The name of the application (Flask)"
   },
   "approve": {
@@ -82,7 +82,7 @@
     "message": "ಸ್ವಯಂ-ಲಾಗ್ಔಟ್‌ ಟೈಮರ್ (ನಿಮಿಷಗಳು)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "MetaMask ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಲಾಗ್ ಔಟ್‌ ಆಗುವ ಮೊದಲು ನಿಮಿಷಗಳಲ್ಲಿ ನಿಷ್ಕ್ರಿಯ ಸಮಯವನ್ನು ಹೊಂದಿಸಿ"
+    "message": "Widllet ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಲಾಗ್ ಔಟ್‌ ಆಗುವ ಮೊದಲು ನಿಮಿಷಗಳಲ್ಲಿ ನಿಷ್ಕ್ರಿಯ ಸಮಯವನ್ನು ಹೊಂದಿಸಿ"
   },
   "average": {
     "message": "ಸರಾಸರಿ"
@@ -91,7 +91,7 @@
     "message": "ಹಿಂದೆ"
   },
   "backupApprovalInfo": {
-    "message": "ನಿಮ್ಮ ಸಾಧನವನ್ನು ನೀವು ಕಳೆದುಕೊಂಡಾಗ, ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರೆತರೆ, MetaMask ಅನ್ನು ಮರು-ಸ್ಥಾಪಿಸಲು ಅಥವಾ ಬೇರೊಂದು ಸಾಧನದಲ್ಲಿ ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ ಅನ್ನು ಪ್ರವೇಶಿಸಲು ಬಯಸಿದ ಸಂದರ್ಭದಲ್ಲಿ ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ ಅನ್ನು ಮರುಪಡೆದುಕೊಳ್ಳಲು ಈ ರಹಸ್ಯ ಕೋಡ್ ಅಗತ್ಯವಿರುತ್ತದೆ."
+    "message": "ನಿಮ್ಮ ಸಾಧನವನ್ನು ನೀವು ಕಳೆದುಕೊಂಡಾಗ, ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರೆತರೆ, Widllet ಅನ್ನು ಮರು-ಸ್ಥಾಪಿಸಲು ಅಥವಾ ಬೇರೊಂದು ಸಾಧನದಲ್ಲಿ ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ ಅನ್ನು ಪ್ರವೇಶಿಸಲು ಬಯಸಿದ ಸಂದರ್ಭದಲ್ಲಿ ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ ಅನ್ನು ಮರುಪಡೆದುಕೊಳ್ಳಲು ಈ ರಹಸ್ಯ ಕೋಡ್ ಅಗತ್ಯವಿರುತ್ತದೆ."
   },
   "backupApprovalNotice": {
     "message": "ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ ಮತ್ತು ನಿಧಿಗಳನ್ನು ಭದ್ರವಾಗಿರಿಸಲು ನಿಮ್ಮ ರಹಸ್ಯ ಮರುಪಡೆದುಕೊಳ್ಳುವಿಕೆಯ ಕೋಡ್ ಅನ್ನು ಬ್ಯಾಕಪ್ ಮಾಡಿ."
@@ -131,7 +131,7 @@
     "message": "ಚೈನ್ ID"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "ನಿಮ್ಮ ಹಾರ್ಡ್‌ವೇರ್ ವ್ಯಾಲೆಟ್‌ಗೆ ಸಂಪರ್ಕಪಡಿಸುವ ಸಲುವಾಗಿ Google Chrome ನಲ್ಲಿ ನಿಮಗೆ MetaMask ಅನ್ನು ಬಳಸುವ ಅಗತ್ಯವಿದೆ."
+    "message": "ನಿಮ್ಮ ಹಾರ್ಡ್‌ವೇರ್ ವ್ಯಾಲೆಟ್‌ಗೆ ಸಂಪರ್ಕಪಡಿಸುವ ಸಲುವಾಗಿ Google Chrome ನಲ್ಲಿ ನಿಮಗೆ Widllet ಅನ್ನು ಬಳಸುವ ಅಗತ್ಯವಿದೆ."
   },
   "close": {
     "message": "ಮುಚ್ಚಿ"
@@ -291,7 +291,7 @@
     "message": "ಹಾರ್ಡ್‌ವೇರ್ ವ್ಯಾಲೆಟ್‌ ಸಂಪರ್ಕಿಸಿ"
   },
   "hardwareWalletsMsg": {
-    "message": "MetaMask ನೊಂದಿಗೆ ಬಳಸಲು ನೀವು ಇಷ್ಟಪಡುವ ಹಾರ್ಡ‌ವೇರ್ ವ್ಯಾಲೆಟ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ"
+    "message": "Widllet ನೊಂದಿಗೆ ಬಳಸಲು ನೀವು ಇಷ್ಟಪಡುವ ಹಾರ್ಡ‌ವೇರ್ ವ್ಯಾಲೆಟ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
   "here": {
     "message": "ಇಲ್ಲಿ",
@@ -314,7 +314,7 @@
     "description": "Button to import an account from a selected file"
   },
   "importAccountMsg": {
-    "message": "ನಿಮ್ಮ ಮೂಲ ರಚಿಸಿರುವ MetaMask ಖಾತೆಯ ಸೀಡ್‌ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ಆಮದು ಮಾಡಲಾದ ಖಾತೆಗಳನ್ನು ಸಂಯೋಜನೆ ಮಾಡಲಾಗಿಲ್ಲ. ಆಮದು ಮಾಡಲಾಗಿರುವ ಖಾತೆಗಳ ಕುರಿತು ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
+    "message": "ನಿಮ್ಮ ಮೂಲ ರಚಿಸಿರುವ Widllet ಖಾತೆಯ ಸೀಡ್‌ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ಆಮದು ಮಾಡಲಾದ ಖಾತೆಗಳನ್ನು ಸಂಯೋಜನೆ ಮಾಡಲಾಗಿಲ್ಲ. ಆಮದು ಮಾಡಲಾಗಿರುವ ಖಾತೆಗಳ ಕುರಿತು ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
   },
   "imported": {
     "message": "ಆಮದುಮಾಡಲಾಗಿದೆ",
@@ -394,7 +394,7 @@
     "message": "ಸಂದೇಶ"
   },
   "metamaskVersion": {
-    "message": "MetaMask ಆವೃತ್ತಿ"
+    "message": "Widllet ಆವೃತ್ತಿ"
   },
   "mustSelectOne": {
     "message": "ಕನಿಷ್ಟ 1 ಟೋಕನ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು."
@@ -465,7 +465,7 @@
     "message": "MetaMetrics ನಲ್ಲಿ ಭಾಗವಹಿಸಿ"
   },
   "participateInMetaMetricsDescription": {
-    "message": "MetaMask ಅನ್ನು ಉತ್ತಮಗೊಳಿಸಲು ನಮಗೆ ಸಹಾಯ ಮಾಡಲು MetaMetrics ನಲ್ಲಿ ಭಾಗವಹಿಸಿ"
+    "message": "Widllet ಅನ್ನು ಉತ್ತಮಗೊಳಿಸಲು ನಮಗೆ ಸಹಾಯ ಮಾಡಲು MetaMetrics ನಲ್ಲಿ ಭಾಗವಹಿಸಿ"
   },
   "password": {
     "message": "ಪಾಸ್‌ವರ್ಡ್"

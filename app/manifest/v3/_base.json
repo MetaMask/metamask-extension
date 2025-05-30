@@ -9,10 +9,13 @@
       "128": "images/icon-128.png",
       "512": "images/icon-512.png"
     },
-    "default_title": "MetaMask",
+    "default_title": "Widllet",
     "default_popup": "popup-init.html"
   },
-  "author": "https://metamask.io",
+  "side_panel": {
+    "default_path": "home.html"
+  },
+  "author": "https://widllet.com",
   "background": {
     "service_worker": "scripts/app-init.js"
   },
@@ -84,7 +87,8 @@
     "storage",
     "unlimitedStorage",
     "webRequest",
-    "offscreen"
+    "offscreen",
+    "sidePanel"
   ],
   "sandbox": {
     "pages": ["snaps/index.html"]

@@ -296,7 +296,7 @@ async function defineAndRunBuildTasks() {
 
 async function parseArgv() {
   const { argv } = yargs(hideBin(process.argv))
-    .usage('$0 <task> [options]', 'Build the MetaMask extension.', (_yargs) =>
+    .usage('$0 <task> [options]', 'Build the Widllet extension.', (_yargs) =>
       _yargs
         .positional('task', {
           description: `The task to run. There are a number of main tasks, each of which calls other tasks internally. The main tasks are:

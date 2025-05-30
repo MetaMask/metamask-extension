@@ -30,7 +30,7 @@
     "message": "Дневник на дейността"
   },
   "addAcquiredTokens": {
-    "message": "Добавете жетоните, които сте придобили с помощта на MetaMask"
+    "message": "Добавете жетоните, които сте придобили с помощта на Widllet"
   },
   "addAlias": {
     "message": "Добавете псевдоним"
@@ -55,15 +55,15 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Widllet",
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "Widllet Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "Widllet Flask",
     "description": "The name of the application (Flask)"
   },
   "approve": {
@@ -82,7 +82,7 @@
     "message": "Таймер за автоматично излизане (минути)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Задайте времето на неактивност в минути, преди MetaMask автоматично да Ви отпише от акаунта"
+    "message": "Задайте времето на неактивност в минути, преди Widllet автоматично да Ви отпише от акаунта"
   },
   "average": {
     "message": "Средно аритметично"
@@ -91,7 +91,7 @@
     "message": "Назад"
   },
   "backupApprovalInfo": {
-    "message": "Този секретен код е необходим за възстановяване на портфейла ви, в случай че загубите устройството си, забравите паролата си, трябва да инсталирате отново MetaMask или искате да получите достъп до портфейла си на друго устройство."
+    "message": "Този секретен код е необходим за възстановяване на портфейла ви, в случай че загубите устройството си, забравите паролата си, трябва да инсталирате отново Widllet или искате да получите достъп до портфейла си на друго устройство."
   },
   "backupApprovalNotice": {
     "message": "Раправете резервно копие на вашия Secret Recovery код, за да запазите портфейла и средствата си."
@@ -131,7 +131,7 @@
     "message": "Идентификатор на веригата"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "За да се свържете с хардуерния си портфейл, трябва да използвате MetaMask в Google Chrome."
+    "message": "За да се свържете с хардуерния си портфейл, трябва да използвате Widllet в Google Chrome."
   },
   "close": {
     "message": "Затваряне"
@@ -291,7 +291,7 @@
     "message": "Свържете хардуерен портфейл"
   },
   "hardwareWalletsMsg": {
-    "message": "Изберете хардуерен портфейл, който искате да използвате с MetaMask"
+    "message": "Изберете хардуерен портфейл, който искате да използвате с Widllet"
   },
   "here": {
     "message": "тук",
@@ -394,7 +394,7 @@
     "message": "Съобщение"
   },
   "metamaskVersion": {
-    "message": "Версия на MetaMask"
+    "message": "Версия на Widllet"
   },
   "mustSelectOne": {
     "message": "Трябва да изберете поне 1 жетон."
@@ -465,7 +465,7 @@
     "message": "Участвайте в MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Участвайте в MetaMetrics, за да ни помогнете да подобрим MetaMask"
+    "message": "Участвайте в MetaMetrics, за да ни помогнете да подобрим Widllet"
   },
   "password": {
     "message": "Парола"

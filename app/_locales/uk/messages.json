@@ -30,7 +30,7 @@
     "message": "журнал активності"
   },
   "addAcquiredTokens": {
-    "message": "Додайте токени, отримані за допомогою MetaMask"
+    "message": "Додайте токени, отримані за допомогою Widllet"
   },
   "addAlias": {
     "message": "Додати псевдо"
@@ -55,15 +55,15 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Widllet",
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "Widllet Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "Widllet Flask",
     "description": "The name of the application (Flask)"
   },
   "approve": {
@@ -82,7 +82,7 @@
     "message": "Таймер автоматичного виходу (хвилин)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Встановіть час відсутності активності у хвилинах після якого MetaMask буде здійснювати автоматичний вихід"
+    "message": "Встановіть час відсутності активності у хвилинах після якого Widllet буде здійснювати автоматичний вихід"
   },
   "average": {
     "message": "У середньому"
@@ -91,7 +91,7 @@
     "message": "Назад"
   },
   "backupApprovalInfo": {
-    "message": "Цей секретний код буде потрібен, щоб відновити ваш гаманець у разі втрати вашого пристрою, забуття паролю, потреби у перевстановленні MetaMask або виникнення бажання отримати доступ до вашого гаманця з іншого пристрою."
+    "message": "Цей секретний код буде потрібен, щоб відновити ваш гаманець у разі втрати вашого пристрою, забуття паролю, потреби у перевстановленні Widllet або виникнення бажання отримати доступ до вашого гаманця з іншого пристрою."
   },
   "backupApprovalNotice": {
     "message": "Створіть резервну копію вашого Секретного кода відновлення, щоб ваш гаманець та ваші кошти залишались у безпеці."
@@ -131,7 +131,7 @@
     "message": "ID мережі"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Щоб підключитися до апаратного гаманця, розширення MetaMask потрібно використовувати в Google Chrome."
+    "message": "Щоб підключитися до апаратного гаманця, розширення Widllet потрібно використовувати в Google Chrome."
   },
   "close": {
     "message": "Близько"
@@ -291,7 +291,7 @@
     "message": "Під'єднати апаратний гаманець"
   },
   "hardwareWalletsMsg": {
-    "message": "Оберіть апаратний гаманець, який ви хочете використовувати з MetaMask"
+    "message": "Оберіть апаратний гаманець, який ви хочете використовувати з Widllet"
   },
   "here": {
     "message": "тут",
@@ -314,7 +314,7 @@
     "description": "Button to import an account from a selected file"
   },
   "importAccountMsg": {
-    "message": "Імпортовані облікові записи не будуть пов'язані з вашою первісно створеною початковою фразою облікового запису MetaMask. Дізнайтесь більше про імпортовані облікові записи"
+    "message": "Імпортовані облікові записи не будуть пов'язані з вашою первісно створеною початковою фразою облікового запису Widllet. Дізнайтесь більше про імпортовані облікові записи"
   },
   "imported": {
     "message": "Імпортовано",
@@ -394,7 +394,7 @@
     "message": "Повідомлення"
   },
   "metamaskVersion": {
-    "message": "Версія MetaMask"
+    "message": "Версія Widllet"
   },
   "mustSelectOne": {
     "message": "Слід вибрати хоча б 1 токен."
@@ -465,7 +465,7 @@
     "message": "Взяти участь у MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Беріть участь у програмі MetaMetrics, щоб допомогти нам покращити MetaMask"
+    "message": "Беріть участь у програмі MetaMetrics, щоб допомогти нам покращити Widllet"
   },
   "password": {
     "message": "Пароль"

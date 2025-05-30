@@ -19,7 +19,7 @@ const { logError } = require('./utils');
 
 async function runTask(taskName, { skipStats } = {}) {
   if (!(taskName in tasks)) {
-    throw new Error(`MetaMask build: Unrecognized task name "${taskName}"`);
+    throw new Error(`Widllet build: Unrecognized task name "${taskName}"`);
   }
   if (!skipStats) {
     setupTaskDisplay(taskEvents);
@@ -29,7 +29,7 @@ async function runTask(taskName, { skipStats } = {}) {
     await tasks[taskName]();
   } catch (err) {
     console.error(
-      `MetaMask build: Encountered an error while running task "${taskName}".`,
+      `Widllet build: Encountered an error while running task "${taskName}".`,
     );
     logError(err);
     process.exit(1);
@@ -40,7 +40,7 @@ async function runTask(taskName, { skipStats } = {}) {
 function createTask(taskName, taskFn) {
   if (taskName in tasks) {
     throw new Error(
-      `MetaMask build: task "${taskName}" already exists. Refusing to redefine`,
+      `Widllet build: task "${taskName}" already exists. Refusing to redefine`,
     );
   }
   const task = instrumentForTaskStats(taskName, taskFn);
@@ -63,7 +63,7 @@ function runInChildProcess(
   const taskName = typeof task === 'string' ? task : task.taskName;
   if (!taskName) {
     throw new Error(
-      `MetaMask build: runInChildProcess unable to identify task name`,
+      `Widllet build: runInChildProcess unable to identify task name`,
     );
   }
 
@@ -103,7 +103,7 @@ function runInChildProcess(
         if (errCode !== 0) {
           reject(
             new Error(
-              `MetaMask build: runInChildProcess for task "${taskName}" encountered an error "${errCode}".`,
+              `Widllet build: runInChildProcess for task "${taskName}" encountered an error "${errCode}".`,
             ),
           );
           return;

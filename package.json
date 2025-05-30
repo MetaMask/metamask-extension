@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "12.18.1",
+  "version": "0.0.1-beta.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -14,25 +14,18 @@
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",
     "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
     "start:with-state": "node ./app/scripts/start-with-wallet-state.mjs",
-    "start:mv2": "ENABLE_MV3=false yarn build:dev dev --apply-lavamoat=false --snow=false",
     "start:flask": "yarn start --build-type flask",
-    "start:flask:mv2": "ENABLE_MV3=false yarn start --build-type flask --apply-lavamoat=false --snow=false",
     "start:lavamoat": "yarn build:dev dev --apply-lavamoat=true",
     "dist": "yarn build dist",
-    "dist:mv2": "ENABLE_MV3=false yarn build dist",
     "build": "yarn lavamoat:build",
     "build:dev": "node development/build/index.js",
     "circular-deps:check": "tsx development/circular-deps.ts check",
     "circular-deps:update": "tsx development/circular-deps.ts update",
     "start:test": "yarn env:e2e build:dev testDev --apply-lavamoat=false",
     "start:test:flask": "yarn start:test --build-type flask --apply-lavamoat=false",
-    "start:test:mv2:flask": "ENABLE_MV3=false yarn start:test:flask --apply-lavamoat=false --snow=false",
-    "start:test:mv2": "ENABLE_MV3=false BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom yarn start:test --apply-lavamoat=false --snow=false",
     "build:test": "yarn env:e2e build test",
     "build:test:dev": "yarn env:e2e build:dev testDev --apply-lavamoat=false",
     "build:test:flask": "yarn build:test --build-type flask",
-    "build:test:flask:mv2": "ENABLE_MV3=false yarn build:test:flask",
-    "build:test:mv2": "ENABLE_MV3=false BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom yarn build:test",
     "build:test:webpack": "BLOCKAID_FILE_CDN=static.cx.metamask.io/api/v1/confirmations/ppom yarn env:e2e webpack --test --browser=chrome --browser=firefox --no-cache --zip --lockdown --sentry --snow",
     "test": "yarn lint && yarn test:unit",
     "dapp": "node development/static-server.js node_modules/@metamask/test-dapp/dist --port 8080",
@@ -779,5 +772,6 @@
       }
     },
     "version": "v0.3.0"
-  }
+  },
+  "stableVersion": "0.0.1"
 }

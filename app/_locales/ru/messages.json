@@ -59,7 +59,7 @@
     "message": "Показать 1 счет"
   },
   "about": {
-    "message": "О MetaMask"
+    "message": "О Widllet"
   },
   "accept": {
     "message": "Согласиться"
@@ -72,7 +72,7 @@
     "message": "Получайте доступ к кошельку с помощью секретной фразы для восстановления"
   },
   "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask не может восстановить ваш пароль. Мы используем вашу cекретную фразу для восстановления, чтобы подтвердить ваше право собственности, восстановить ваш кошелек и установить новый пароль. Сначала введите секретную фразу для восстановления, которую вы получили при создании кошелька. $1",
+    "message": "Widllet не может восстановить ваш пароль. Мы используем вашу cекретную фразу для восстановления, чтобы подтвердить ваше право собственности, восстановить ваш кошелек и установить новый пароль. Сначала введите секретную фразу для восстановления, которую вы получили при создании кошелька. $1",
     "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
   },
   "accessingYourCamera": {
@@ -159,10 +159,10 @@
     "message": "Добавить счет"
   },
   "addAccountToMetaMask": {
-    "message": "Добавить счет в MetaMask"
+    "message": "Добавить счет в Widllet"
   },
   "addAcquiredTokens": {
-    "message": "Добавьте токены, которые вы приобрели с помощью MetaMask"
+    "message": "Добавьте токены, которые вы приобрели с помощью Widllet"
   },
   "addAlias": {
     "message": "Добавить псевдоним"
@@ -335,7 +335,7 @@
     "message": "Плата за приоритет (также известная как «чаевые» майнеру) направляется непосредственно майнерам, чтобы они уделили приоритетное внимание вашей транзакции."
   },
   "agreeTermsOfUse": {
-    "message": "Я соглашаюсь с $1 MetaMask",
+    "message": "Я соглашаюсь с $1 Widllet",
     "description": "$1 is the `terms` link"
   },
   "airDropPatternDescription": {
@@ -490,15 +490,15 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "Widllet",
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "Бета-версия MetaMask",
+    "message": "Бета-версия Widllet",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "Widllet Flask",
     "description": "The name of the application (Flask)"
   },
   "apply": {
@@ -576,7 +576,7 @@
     "message": "Таймер автоблокировки (минуты)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Установите время бездействия в минутах, прежде чем MetaMask будет заблокирован."
+    "message": "Установите время бездействия в минутах, прежде чем Widllet будет заблокирован."
   },
   "average": {
     "message": "Средний"
@@ -585,7 +585,7 @@
     "message": "Назад"
   },
   "backupApprovalInfo": {
-    "message": "Этот секретный код необходим для восстановления вашего кошелька в случае, если вы потеряете свое устройство, забудете пароль, вам придется переустановить MetaMask или захотите получить доступ к своему кошельку на другом устройстве."
+    "message": "Этот секретный код необходим для восстановления вашего кошелька в случае, если вы потеряете свое устройство, забудете пароль, вам придется переустановить Widllet или захотите получить доступ к своему кошельку на другом устройстве."
   },
   "backupApprovalNotice": {
     "message": "Создайте резервную копию своей секретной фразы для восстановления, чтобы обезопасить свой кошелек и средства."
@@ -615,7 +615,7 @@
     "message": "Базовый функционал отключен"
   },
   "basicConfigurationDescription": {
-    "message": "MetaMask предлагает базовые функции, такие как сведения о токенах и настройки газа, через интернет-службы. Когда вы пользуетесь интернет-службами, ваш IP-адрес передается, в данном случае MetaMask. Это похоже на посещенеи вами любого веб-сайта. MetaMask временно использует ваши данные и никогда не продает их. Вы можете использовать VPN или отключить эти службы, но это может негативно повлиять на вашу работу с MetaMask. Чтобы узнать больше, прочитайте нашу $1.",
+    "message": "Widllet предлагает базовые функции, такие как сведения о токенах и настройки газа, через интернет-службы. Когда вы пользуетесь интернет-службами, ваш IP-адрес передается, в данном случае Widllet. Это похоже на посещенеи вами любого веб-сайта. Widllet временно использует ваши данные и никогда не продает их. Вы можете использовать VPN или отключить эти службы, но это может негативно повлиять на вашу работу с Widllet. Чтобы узнать больше, прочитайте нашу $1.",
     "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationLabel": {
@@ -625,10 +625,10 @@
     "message": "Я понимаю и хочу продолжить"
   },
   "basicConfigurationModalDisclaimerOff": {
-    "message": "Это означает, что вы не сможете полностью оптимизировать свое время в MetaMask. Вам будут недоступны базовые функции (например, сведения о токенах, оптимальные настройки газа и т. д.)."
+    "message": "Это означает, что вы не сможете полностью оптимизировать свое время в Widllet. Вам будут недоступны базовые функции (например, сведения о токенах, оптимальные настройки газа и т. д.)."
   },
   "basicConfigurationModalDisclaimerOn": {
-    "message": "Чтобы оптимизировать свое время в MetaMask, вам необходимо включить эту функцию. Базовые функции (например, сведения о токенах, оптимальные настройки газа и другие) важны для работы с web3."
+    "message": "Чтобы оптимизировать свое время в Widllet, вам необходимо включить эту функцию. Базовые функции (например, сведения о токенах, оптимальные настройки газа и другие) важны для работы с web3."
   },
   "basicConfigurationModalHeadingOff": {
     "message": "Выключить базовый функционал"
@@ -646,7 +646,7 @@
     "message": "Это бета-версия. Пожалуйста, сообщайте об ошибках $1"
   },
   "betaMetamaskVersion": {
-    "message": "Бета-версия MetaMask"
+    "message": "Бета-версия Widllet"
   },
   "betaTerms": {
     "message": "Условия использования бета-версии"
@@ -827,7 +827,7 @@
     "message": "Обратитесь в"
   },
   "bridgeTxDetailsDelayedDescriptionSupport": {
-    "message": "Поддержка MetaMask"
+    "message": "Поддержка Widllet"
   },
   "bridgeTxDetailsDelayedTitle": {
     "message": "Прошло больше 3 часов?"
@@ -874,7 +874,7 @@
     "message": "Создайте список контактов"
   },
   "builtAroundTheWorld": {
-    "message": "MetaMask разработан и создан с учетом потребностей мира."
+    "message": "Widllet разработан и создан с учетом потребностей мира."
   },
   "bulletpoint": {
     "message": "·"
@@ -935,7 +935,7 @@
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Вам необходимо использовать MetaMask в Google Chrome, чтобы подключиться к аппаратному кошельку."
+    "message": "Вам необходимо использовать Widllet в Google Chrome, чтобы подключиться к аппаратному кошельку."
   },
   "circulatingSupply": {
     "message": "Циркулирующее предложение"
@@ -985,10 +985,10 @@
     "message": "Концентрированное распределение запаса"
   },
   "configureSnapPopupDescription": {
-    "message": "Теперь вы покидаете MetaMask, чтобы настроить этот snap."
+    "message": "Теперь вы покидаете Widllet, чтобы настроить этот snap."
   },
   "configureSnapPopupInstallDescription": {
-    "message": "Теперь вы покидаете MetaMask, чтобы установить этот snap."
+    "message": "Теперь вы покидаете Widllet, чтобы установить этот snap."
   },
   "configureSnapPopupInstallTitle": {
     "message": "Установить snap"
@@ -1036,7 +1036,7 @@
     "message": "Вы оплачиваете эту сетевую комиссию с помощью $1"
   },
   "confirmGasFeeTokenTooltip": {
-    "message": "Эта сумма выплачивается сети за обработку вашей транзакции. Включает комиссию MetaMask в размере $1 за токены, не относящиеся к ETH."
+    "message": "Эта сумма выплачивается сети за обработку вашей транзакции. Включает комиссию Widllet в размере $1 за токены, не относящиеся к ETH."
   },
   "confirmNestedTransactionTitle": {
     "message": "Транзакция $1"
@@ -1139,7 +1139,7 @@
     "description": "$1 is the snap for which a connection is being requested."
   },
   "connectWithMetaMask": {
-    "message": "Подключиться с помощью MetaMask"
+    "message": "Подключиться с помощью Widllet"
   },
   "connectedAccounts": {
     "message": "Подключенные счета"
@@ -1152,7 +1152,7 @@
     "message": "К этому сайту подключен 1 ваш счет."
   },
   "connectedAccountsEmptyDescription": {
-    "message": "MetaMask не подключен к этому сайту. Чтобы подключиться к сайту web3, найдите и нажмите кнопку подключения."
+    "message": "Widllet не подключен к этому сайту. Чтобы подключиться к сайту web3, найдите и нажмите кнопку подключения."
   },
   "connectedAccountsListTooltip": {
     "message": "$1 может видеть баланс счета, адрес, активность и предлагать транзакции для одобрения для подключенных счетов.",
@@ -1176,7 +1176,7 @@
     "description": "$1 is the account name"
   },
   "connectedSnapAndNoAccountDescription": {
-    "message": "MetaMask подключен к этому сайту, но счета пока не подключены"
+    "message": "Widllet подключен к этому сайту, но счета пока не подключены"
   },
   "connectedSnaps": {
     "message": "Подключенные Snaps"
@@ -1235,7 +1235,7 @@
     "description": "$1 is the name of the snap being fetched."
   },
   "connectionPopoverDescription": {
-    "message": "Для подключения к сайту нажмите кнопку подключения. MetaMask может подключаться только к сайтам web3."
+    "message": "Для подключения к сайту нажмите кнопку подключения. Widllet может подключаться только к сайтам web3."
   },
   "connectionRequest": {
     "message": "Запрос подключения"
@@ -1269,7 +1269,7 @@
     "message": "Взаимодействие по контракту"
   },
   "convertTokenToNFTDescription": {
-    "message": "Мы обнаружили, что этот актив является NFT. MetaMask теперь имеет полную встроенную поддержку NFT. Хотите удалить его из списка токенов и добавить в качестве NFT?"
+    "message": "Мы обнаружили, что этот актив является NFT. Widllet теперь имеет полную встроенную поддержку NFT. Хотите удалить его из списка токенов и добавить в качестве NFT?"
   },
   "convertTokenToNFTExistDescription": {
     "message": "Мы обнаружили, что этот актив был добавлен как NFT. Хотите удалить его из списка токенов?"
@@ -1305,7 +1305,7 @@
     "message": "Создать пароль"
   },
   "createSnapAccountDescription": {
-    "message": "$1 хочет добавить новый счет в MetaMask."
+    "message": "$1 хочет добавить новый счет в Widllet."
   },
   "createSnapAccountTitle": {
     "message": "Создать счет"
@@ -1317,7 +1317,7 @@
     "message": "Адрес автора"
   },
   "crossChainSwapsLink": {
-    "message": "Меняйте сети с помощью MetaMask Portfolio"
+    "message": "Меняйте сети с помощью Widllet Portfolio"
   },
   "crossChainSwapsLinkNative": {
     "message": "Переключайтесь между сетями с помощью моста"
@@ -1442,7 +1442,7 @@
     "message": "Хорошо"
   },
   "dataCollectionWarningPopoverDescription": {
-    "message": "Вы отключили сбор данных для наших маркетинговых целей. Это касается только этого устройства. Если вы используете MetaMask на других устройствах, обязательно отключите его и там."
+    "message": "Вы отключили сбор данных для наших маркетинговых целей. Это касается только этого устройства. Если вы используете Widllet на других устройствах, обязательно отключите его и там."
   },
   "dataUnavailable": {
     "message": "данные недоступны"
@@ -1486,7 +1486,7 @@
     "message": "URL-адрес RPC по умолчанию"
   },
   "defaultSettingsSubTitle": {
-    "message": "MetaMask использует настройки по умолчанию, чтобы наилучшим образом сбалансировать безопасность и простоту использования. Измените эти настройки, чтобы еще больше повысить свою конфиденциальность."
+    "message": "Widllet использует настройки по умолчанию, чтобы наилучшим образом сбалансировать безопасность и простоту использования. Измените эти настройки, чтобы еще больше повысить свою конфиденциальность."
   },
   "defaultSettingsTitle": {
     "message": "Настройки конфиденциальности по умолчанию"
@@ -1822,13 +1822,13 @@
     "message": "Улучшенное определение токенов в настоящее время доступно на $1. $2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
-    "message": "MetaMask позволяет вам видеть домены ENS прямо в адресной строке вашего браузера. Вот как это работает:"
+    "message": "Widllet позволяет вам видеть домены ENS прямо в адресной строке вашего браузера. Вот как это работает:"
   },
   "ensDomainsSettingDescriptionOutroduction": {
     "message": "Имейте в виду, что использование этой функции открывает доступ к вашему IP-адресу сторонним сервисам IPFS."
   },
   "ensDomainsSettingDescriptionPart1": {
-    "message": "MetaMask сверяется с контрактом ENS Ethereum, чтобы найти код, связанный с именем ENS."
+    "message": "Widllet сверяется с контрактом ENS Ethereum, чтобы найти код, связанный с именем ENS."
   },
   "ensDomainsSettingDescriptionPart2": {
     "message": "Если код ссылается на IPFS, вы можете увидеть связанный с ним контент (обычно веб-сайт)."
@@ -1913,7 +1913,7 @@
     "description": "In sentry feedback form, The message displayed after a successful feedback submission."
   },
   "errorPageTitle": {
-    "message": "MetaMask обнаружил ошибку",
+    "message": "Widllet обнаружил ошибку",
     "description": "Title of generic error page"
   },
   "errorPageTryAgain": {
@@ -2022,15 +2022,15 @@
   },
   "flaskWelcomeWarning2": {
     "message": "Мы не гарантируем безопасность и стабильность этого расширения. Новые API-интерфейсы, предлагаемые Flask, не защищены от фишинговых атак, а это означает, что любой сайт или snap, для которых требуется Flask, могут быть злонамеренной попыткой украсть ваши активы.",
-    "description": "This explains the risks of using MetaMask Flask"
+    "description": "This explains the risks of using Widllet Flask"
   },
   "flaskWelcomeWarning3": {
-    "message": "Все API Flask являются экспериментальными. Они могут быть изменены или удалены без предварительного уведомления или могут оставаться во Flask на неопределенный срок без переноса в стабильную версию MetaMask. Используйте их на свой страх и риск.",
+    "message": "Все API Flask являются экспериментальными. Они могут быть изменены или удалены без предварительного уведомления или могут оставаться во Flask на неопределенный срок без переноса в стабильную версию Widllet. Используйте их на свой страх и риск.",
     "description": "This message warns developers about unstable Flask APIs"
   },
   "flaskWelcomeWarning4": {
-    "message": "Обязательно отключите свое обычное расширение MetaMask при использовании Flask.",
-    "description": "This message calls to pay attention about multiple versions of MetaMask running on the same site (Flask + Prod)"
+    "message": "Обязательно отключите свое обычное расширение Widllet при использовании Flask.",
+    "description": "This message calls to pay attention about multiple versions of Widllet running on the same site (Flask + Prod)"
   },
   "flaskWelcomeWarningAcceptButton": {
     "message": "Я принимаю риски",
@@ -2194,7 +2194,7 @@
     "message": "Интеграция с аппаратным кошельком использует вызовы API к внешним серверам, которые могут видеть ваш IP-адрес и адреса смарт-контрактов, с которыми вы взаимодействуете"
   },
   "hardwareWalletsMsg": {
-    "message": "Выберите аппаратный кошелек, который хотите использовать с MetaMask."
+    "message": "Выберите аппаратный кошелек, который хотите использовать с Widllet."
   },
   "here": {
     "message": "здесь",
@@ -2263,7 +2263,7 @@
     "description": "$1 is a message from 'holdToRevealContent4' and $2 is a text link with the message from 'holdToRevealContent5'"
   },
   "holdToRevealContent4": {
-    "message": "Поддержка MetaMask не будет запрашивать это,",
+    "message": "Поддержка Widllet не будет запрашивать это,",
     "description": "Part of 'holdToRevealContent3'"
   },
   "holdToRevealContent5": {
@@ -2309,7 +2309,7 @@
     "message": "Как работают котировки"
   },
   "howQuotesWorkExplanation": {
-    "message": "Эта котировка имеет лучшую доходность из всех котировок, которые мы искали. Она основана на курсе свопа, который включает комиссию за промежуточное соединение и комиссию MetaMask в размере $1% за вычетом платы за газ. Плата за газ зависит от загруженности сети и сложности транзакции."
+    "message": "Эта котировка имеет лучшую доходность из всех котировок, которые мы искали. Она основана на курсе свопа, который включает комиссию за промежуточное соединение и комиссию Widllet в размере $1% за вычетом платы за газ. Плата за газ зависит от загруженности сети и сложности транзакции."
   },
   "id": {
     "message": "ID"
@@ -2344,13 +2344,13 @@
     "message": "Это недействительный закрытый ключ. Вам нужно ввести шестнадцатеричную строку длиной 64 символа."
   },
   "importAccountJsonLoading1": {
-    "message": "Ожидайте, что этот импорт JSON займет несколько минут и заблокирует MetaMask."
+    "message": "Ожидайте, что этот импорт JSON займет несколько минут и заблокирует Widllet."
   },
   "importAccountJsonLoading2": {
     "message": "Мы приносим свои извинения, и мы сделаем это быстрее в будущем."
   },
   "importAccountMsg": {
-    "message": "Импортированные счета не будут связаны с вашей секретной фразой для восстановления MetaMask. Узнайте больше об импортированных счетах"
+    "message": "Импортированные счета не будут связаны с вашей секретной фразой для восстановления Widllet. Узнайте больше об импортированных счетах"
   },
   "importMyWallet": {
     "message": "Импорт моего кошелька"
@@ -2430,7 +2430,7 @@
     "message": "включено"
   },
   "infuraBlockedNotification": {
-    "message": "MetaMask не удалось подключиться к хосту блокчейна. Узнать возможные причины можно $1.",
+    "message": "Widllet не удалось подключиться к хосту блокчейна. Узнать возможные причины можно $1.",
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
   "initialTransactionConfirmed": {
@@ -2447,7 +2447,7 @@
     "message": "Источник установки"
   },
   "installRequest": {
-    "message": "Добавить в MetaMask"
+    "message": "Добавить в Widllet"
   },
   "installedOn": {
     "message": "Установлено на $1",
@@ -2534,7 +2534,7 @@
     "message": "Шлюз IPFS"
   },
   "ipfsGatewayDescription": {
-    "message": "MetaMask использует сторонние службы для показа изображений ваших NFT, хранящихся в IPFS, отображения информации, связанной с адресами ENS, введенными в адресную строку вашего браузера, и получения значков для различных токенов. Ваш IP-адрес может быть открыт для этих служб, когда вы их используете."
+    "message": "Widllet использует сторонние службы для показа изображений ваших NFT, хранящихся в IPFS, отображения информации, связанной с адресами ENS, введенными в адресную строку вашего браузера, и получения значков для различных токенов. Ваш IP-адрес может быть открыт для этих служб, когда вы их используете."
   },
   "ipfsToggleModalDescriptionOne": {
     "message": "Мы задействуем сторонние службы для показа изображений ваших NFT, хранящихся в IPFS, отображения информации, связанной с адресами ENS, введенными в адресную строку вашего браузера, и получения значков для различных токенов. При использовании вами этих служб они могут узнать ваш IP-адрес."
@@ -2643,10 +2643,10 @@
     "message": "мошенничество и угрозы безопасности."
   },
   "leaveMetaMask": {
-    "message": "Выйти из MetaMask?"
+    "message": "Выйти из Widllet?"
   },
   "leaveMetaMaskDesc": {
-    "message": "Вы собираетесь посетить сайт за пределами MetaMask. Прежде чем продолжить, перепроверьте URL-адрес."
+    "message": "Вы собираетесь посетить сайт за пределами Widllet. Прежде чем продолжить, перепроверьте URL-адрес."
   },
   "ledgerAccountRestriction": {
     "message": "Вам необходимо использовать свой последний счет, прежде чем вы сможете добавить новый."
@@ -2716,7 +2716,7 @@
     "message": "Ссылка"
   },
   "linkCentralizedExchanges": {
-    "message": "Привяжите счета Coinbase или Binance, чтобы бесплатно переводить криптовалюту в MetaMask."
+    "message": "Привяжите счета Coinbase или Binance, чтобы бесплатно переводить криптовалюту в Widllet."
   },
   "links": {
     "message": "Ссылки"
@@ -2740,7 +2740,7 @@
     "message": "Заблокировать"
   },
   "lockMetaMask": {
-    "message": "Заблокировать MetaMask"
+    "message": "Заблокировать Widllet"
   },
   "lockTimeInvalid": {
     "message": "Время блокировки будет числом от 0 до 10080"
@@ -2819,7 +2819,7 @@
     "message": "Сообщение"
   },
   "metaMaskConnectStatusParagraphOne": {
-    "message": "Теперь у вас больше возможностей контроля за подключениями счетов в MetaMask."
+    "message": "Теперь у вас больше возможностей контроля за подключениями счетов в Widllet."
   },
   "metaMaskConnectStatusParagraphThree": {
     "message": "Нажмите на него, чтобы управлять подключенными счетами."
@@ -2838,10 +2838,10 @@
     "message": "Уведомления кошелька в настоящее время неактивны."
   },
   "metamaskSwapsOfflineDescription": {
-    "message": "Сервис свопов MetaMask на техобслуживании. Зайдите позже."
+    "message": "Сервис свопов Widllet на техобслуживании. Зайдите позже."
   },
   "metamaskVersion": {
-    "message": "Версия MetaMask"
+    "message": "Версия Widllet"
   },
   "methodData": {
     "message": "Метод"
@@ -2900,7 +2900,7 @@
     "message": "Больше котировок"
   },
   "multichainAddEthereumChainConfirmationDescription": {
-    "message": "Вы добавляете эту сеть в MetaMask и разрешаете этому сайту использовать ее."
+    "message": "Вы добавляете эту сеть в Widllet и разрешаете этому сайту использовать ее."
   },
   "multichainQuoteCardBridgingLabel": {
     "message": "Создание моста"
@@ -2974,7 +2974,7 @@
     "message": "Протокол Lens"
   },
   "nameProvider_token": {
-    "message": "MetaMask"
+    "message": "Widllet"
   },
   "nameSetPlaceholder": {
     "message": "Выберите псевдоним...",
@@ -3007,7 +3007,7 @@
     "message": "Оставьте отзыв"
   },
   "needHelpLinkText": {
-    "message": "Поддержка MetaMask"
+    "message": "Поддержка Widllet"
   },
   "needHelpSubmitTicket": {
     "message": "Отправить запрос о поддержке"
@@ -3162,7 +3162,7 @@
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
   },
   "newNFTDetectedInNFTsTabMessage": {
-    "message": "Разрешите MetaMask автоматически определять и отображать NFT в вашем кошельке."
+    "message": "Разрешите Widllet автоматически определять и отображать NFT в вашем кошельке."
   },
   "newNFTsAutodetected": {
     "message": "Автоопределение NFT"
@@ -3212,7 +3212,7 @@
     "message": "Автоопределение NFT включено"
   },
   "nftDisclaimer": {
-    "message": "Отказ от ответственности: MetaMask извлекает медиафайл из исходного URL. Этот URL иногда изменяется торговой площадкой, на которой был выполнен минтинг NFT."
+    "message": "Отказ от ответственности: Widllet извлекает медиафайл из исходного URL. Этот URL иногда изменяется торговой площадкой, на которой был выполнен минтинг NFT."
   },
   "nftOptions": {
     "message": "Опционы NFT"
@@ -3244,10 +3244,10 @@
     "message": "По данному поисковому запросу счетов не найдено"
   },
   "noConnectedAccountTitle": {
-    "message": "MetaMask не подключен к этому сайту"
+    "message": "Widllet не подключен к этому сайту"
   },
   "noConnectionDescription": {
-    "message": "Для подключения к сайту найдите и нажмите кнопку «подключиться». Помните, что MetaMask может подключаться только к сайтам в web3"
+    "message": "Для подключения к сайту найдите и нажмите кнопку «подключиться». Помните, что Widllet может подключаться только к сайтам в web3"
   },
   "noConversionRateAvailable": {
     "message": "Нет доступного обменного курса"
@@ -3553,7 +3553,7 @@
     "message": "Я согласен(-на)"
   },
   "onboardingMetametricsDescription": {
-    "message": "Мы хотели бы собрать базовые данные об использовании и диагностике для улучшения MetaMask. Помните, что мы никогда не продаем данные, которые вы здесь предоставляете."
+    "message": "Мы хотели бы собрать базовые данные об использовании и диагностике для улучшения Widllet. Помните, что мы никогда не продаем данные, которые вы здесь предоставляете."
   },
   "onboardingMetametricsDescription2": {
     "message": "Когда мы собираем показатели, они всегда будут..."
@@ -3590,7 +3590,7 @@
     "message": "Узнайте, как мы защищаем вашу конфиденциальность при сборе данных об использовании вашего профиля."
   },
   "onboardingMetametricsTitle": {
-    "message": "Помогите нам улучшить MetaMask"
+    "message": "Помогите нам улучшить Widllet"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Мы будем использовать эти данные, чтобы узнать, как вы взаимодействуете с нашими маркетинговыми сообщениями. Мы можем отправлять соответствующие новости (например, об особенностях продукта)."
@@ -3611,16 +3611,16 @@
     "message": "Нажмите на значок расширения браузера"
   },
   "onboardingPinExtensionDescription": {
-    "message": "Закрепите расширение MetaMask в браузере для его постоянной доступности и легкого просмотра подтверждений транзакций."
+    "message": "Закрепите расширение Widllet в браузере для его постоянной доступности и легкого просмотра подтверждений транзакций."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "Вы можете открыть MetaMask, нажав на расширение, и получить доступ к своему кошельку одним щелчком мыши."
+    "message": "Вы можете открыть Widllet, нажав на расширение, и получить доступ к своему кошельку одним щелчком мыши."
   },
   "onboardingPinExtensionDescription3": {
     "message": "Нажмите на значок расширения браузера для мгновенного перехода к нему"
   },
   "onboardingPinExtensionLabel": {
-    "message": "Закрепить MetaMask"
+    "message": "Закрепить Widllet"
   },
   "onboardingPinExtensionStep1": {
     "message": "1"
@@ -3629,7 +3629,7 @@
     "message": "2"
   },
   "onboardingPinExtensionTitle": {
-    "message": "Установка MetaMask завершена!"
+    "message": "Установка Widllet завершена!"
   },
   "onlyConnectTrust": {
     "message": "Подключайтесь только к сайтам, которым доверяете. $1",
@@ -3637,7 +3637,7 @@
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Перейдите в полноэкранный режим, чтобы подключить свой Ledger.",
-    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+    "description": "Shown to the user on the confirm screen when they are viewing Widllet in a popup window but need to connect their ledger via webhid."
   },
   "openInBlockExplorer": {
     "message": "Открыть в обозревателе блоков"
@@ -3666,7 +3666,7 @@
     "description": "Used in the 'permission_rpc' message."
   },
   "outdatedBrowserNotification": {
-    "message": "Ваш браузер устарел. Если вы не обновите его, то не сможете получать исправления безопасности и новые функции от MetaMask."
+    "message": "Ваш браузер устарел. Если вы не обновите его, то не сможете получать исправления безопасности и новые функции от Widllet."
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Переопределить заголовок Content-Security-Policy"
@@ -3690,7 +3690,7 @@
     "message": "Пароль недостаточно длинный"
   },
   "passwordSetupDetails": {
-    "message": "Этот пароль разблокирует ваш кошелек MetaMask только на этом устройстве. MetaMask не может восстановить этот пароль."
+    "message": "Этот пароль разблокирует ваш кошелек Widllet только на этом устройстве. Widllet не может восстановить этот пароль."
   },
   "passwordStrength": {
     "message": "Надежность пароля: $1",
@@ -3700,7 +3700,7 @@
     "message": "Надежный пароль может повысить безопасность вашего кошелька в случае кражи или взлома вашего устройства."
   },
   "passwordTermsWarning": {
-    "message": "Я понимаю, что MetaMask не может восстановить этот пароль для меня. $1"
+    "message": "Я понимаю, что Widllet не может восстановить этот пароль для меня. $1"
   },
   "passwordsDontMatch": {
     "message": "Пароли не совпадают"
@@ -3788,11 +3788,11 @@
     "description": "An extended description for the `snap_cronjob` permission. $1 is the snap name."
   },
   "permission_dialog": {
-    "message": "Отображение диалоговых окон в MetaMask.",
+    "message": "Отображение диалоговых окон в Widllet.",
     "description": "The description for the `snap_dialog` permission"
   },
   "permission_dialogDescription": {
-    "message": "Разрешите $1 отображать всплывающие окна MetaMask с настраиваемым текстом, полем ввода и кнопками для одобрения или отклонения действия.\nМожет использоваться для создания, например, оповещения, подтверждения и процедуры получения согласия для snap.",
+    "message": "Разрешите $1 отображать всплывающие окна Widllet с настраиваемым текстом, полем ввода и кнопками для одобрения или отклонения действия.\nМожет использоваться для создания, например, оповещения, подтверждения и процедуры получения согласия для snap.",
     "description": "An extended description for the `snap_dialog` permission. $1 is the snap name."
   },
   "permission_ethereumAccounts": {
@@ -3804,7 +3804,7 @@
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
   "permission_ethereumProviderDescription": {
-    "message": "Разрешите $1 связываться с MetaMask напрямую, чтобы он мог считывать данные из блокчейна и предлагать сообщения и транзакции.",
+    "message": "Разрешите $1 связываться с Widllet напрямую, чтобы он мог считывать данные из блокчейна и предлагать сообщения и транзакции.",
     "description": "An extended description for the `endowment:ethereum-provider` permission. $1 is the snap name."
   },
   "permission_getEntropy": {
@@ -3812,7 +3812,7 @@
     "description": "The description for the `snap_getEntropy` permission. $1 is the snap name."
   },
   "permission_getEntropyDescription": {
-    "message": "Разрешите $1 извлекать произвольные ключи, уникальные для этого $1, не раскрывая их. Эти ключи отделены от вашего(-их) счета(-ов) MetaMask и не связаны с вашими закрытыми ключами или секретной фразой для восстановления. Другие snaps не могут получить доступ к этой информации.",
+    "message": "Разрешите $1 извлекать произвольные ключи, уникальные для этого $1, не раскрывая их. Эти ключи отделены от вашего(-их) счета(-ов) Widllet и не связаны с вашими закрытыми ключами или секретной фразой для восстановления. Другие snaps не могут получить доступ к этой информации.",
     "description": "An extended description for the `snap_getEntropy` permission. $1 is the snap name."
   },
   "permission_getLocale": {
@@ -3820,7 +3820,7 @@
     "description": "The description for the `snap_getLocale` permission"
   },
   "permission_getLocaleDescription": {
-    "message": "Разрешите $1 получить доступ к предпочитаемому вами языку в настройках MetaMask. Его можно использовать для локализации и отображения содержимого $1 на вашем языке.",
+    "message": "Разрешите $1 получить доступ к предпочитаемому вами языку в настройках Widllet. Его можно использовать для локализации и отображения содержимого $1 на вашем языке.",
     "description": "An extended description for the `snap_getLocale` permission. $1 is the snap name."
   },
   "permission_getPreferences": {
@@ -3828,7 +3828,7 @@
     "description": "The description for the `snap_getPreferences` permission"
   },
   "permission_getPreferencesDescription": {
-    "message": "Предоставьте $1 доступ к такой информации, как ваш предпочитаемый язык и фиатная валюта, в настройках MetaMask. Это помогает $1 отображать контент с учетом ваших предпочтений. ",
+    "message": "Предоставьте $1 доступ к такой информации, как ваш предпочитаемый язык и фиатная валюта, в настройках Widllet. Это помогает $1 отображать контент с учетом ваших предпочтений. ",
     "description": "An extended description for the `snap_getPreferences` permission. $1 is the snap name."
   },
   "permission_homePage": {
@@ -3836,7 +3836,7 @@
     "description": "The description for the `endowment:page-home` permission"
   },
   "permission_homePageDescription": {
-    "message": "Разрешите $1 отображает собственный главный экран в MetaMask. Эту функцию можно использовать для пользовательских интерфейсов, конфигурации и инфопанелей.",
+    "message": "Разрешите $1 отображает собственный главный экран в Widllet. Эту функцию можно использовать для пользовательских интерфейсов, конфигурации и инфопанелей.",
     "description": "An extended description for the `endowment:page-home` permission. $1 is the snap name."
   },
   "permission_keyring": {
@@ -3888,7 +3888,7 @@
     "description": "The description for the `endowment:name-lookup` permission."
   },
   "permission_nameLookupDescription": {
-    "message": "Разрешите snap получать и отображать результаты поиска адресов и доменов в разных частях пользовательского интерфейса MetaMask.",
+    "message": "Разрешите snap получать и отображать результаты поиска адресов и доменов в разных частях пользовательского интерфейса Widllet.",
     "description": "An extended description for the `endowment:name-lookup` permission."
   },
   "permission_notifications": {
@@ -3896,7 +3896,7 @@
     "description": "The description for the `snap_notify` permission"
   },
   "permission_notificationsDescription": {
-    "message": "Разрешите $1 отображать уведомления в MetaMask. Текст короткого уведомления может отображаться snap для получения информации, требующей действий, или срочной информации.",
+    "message": "Разрешите $1 отображать уведомления в Widllet. Текст короткого уведомления может отображаться snap для получения информации, требующей действий, или срочной информации.",
     "description": "An extended description for the `snap_notify` permission. $1 is the snap name."
   },
   "permission_protocol": {
@@ -3904,7 +3904,7 @@
     "description": "The description for the `endowment:protocol` permission."
   },
   "permission_protocolDescription": {
-    "message": "Разрешить $1 предоставлять MetaMask данные протокола, такие как оценки суммы газа или информацию о токенах.",
+    "message": "Разрешить $1 предоставлять Widllet данные протокола, такие как оценки суммы газа или информацию о токенах.",
     "description": "An extended description for the `endowment:protocol` permission. $1 is the name of the Snap."
   },
   "permission_rpc": {
@@ -3940,7 +3940,7 @@
     "description": "The description for the `endowment:transaction-insight` permission"
   },
   "permission_transactionInsightDescription": {
-    "message": "Разрешите $1 декодировать транзакции и показывать информацию в пользовательском интерфейсе MetaMask. Это можно использовать для защиты от фишинга и обеспечения безопасности.",
+    "message": "Разрешите $1 декодировать транзакции и показывать информацию в пользовательском интерфейсе Widllet. Это можно использовать для защиты от фишинга и обеспечения безопасности.",
     "description": "An extended description for the `endowment:transaction-insight` permission. $1 is the snap name."
   },
   "permission_transactionInsightOrigin": {
@@ -4177,7 +4177,7 @@
     "message": "Отмена стейкинга завершена"
   },
   "pushPlatformNotificationsSwapCompletedDescription": {
-    "message": "Ваш обмен MetaMask выполнен"
+    "message": "Ваш обмен Widllet выполнен"
   },
   "pushPlatformNotificationsSwapCompletedTitle": {
     "message": "Обмен выполнен"
@@ -4237,7 +4237,7 @@
     "message": "Никогда никому не сообщайте никому свою секретную фразу для восстановления."
   },
   "recoveryPhraseReminderItemTwo": {
-    "message": "Команда MetaMask никогда неожиданно не запросит вашу секретную фразу для восстановления"
+    "message": "Команда Widllet никогда неожиданно не запросит вашу секретную фразу для восстановления"
   },
   "recoveryPhraseReminderSubText": {
     "message": "Ваша секретная фраза для восстановления контролирует все ваши счета."
@@ -4285,10 +4285,10 @@
     "message": "Этот счет будет удален из вашего кошелька. Перед продолжением убедитесь, что у вас есть секретная фраза для восстановления или закрытый ключ для этого импортированного счета. Вы можете импортировать или снова создать счета из раскрывающегося списка счетов. "
   },
   "removeKeyringSnap": {
-    "message": "Удаление этого Snap приведет к удалению этих счетов из MetaMask:"
+    "message": "Удаление этого Snap приведет к удалению этих счетов из Widllet:"
   },
   "removeKeyringSnapToolTip": {
-    "message": "Snap контролирует счета, и при его удалении счета будут удалены и из MetaMask, но останутся в блокчейне."
+    "message": "Snap контролирует счета, и при его удалении счета будут удалены и из Widllet, но останутся в блокчейне."
   },
   "removeNFT": {
     "message": "Удалить NFT"
@@ -4303,7 +4303,7 @@
     "message": "Удалить Snap"
   },
   "removeSnapAccountDescription": {
-    "message": "Если вы продолжите, этот счет больше не будет доступен в MetaMask."
+    "message": "Если вы продолжите, этот счет больше не будет доступен в Widllet."
   },
   "removeSnapAccountTitle": {
     "message": "Удалить счет"
@@ -4354,7 +4354,7 @@
     "message": "Сбросить кошелек"
   },
   "resetWalletSubHeader": {
-    "message": "MetaMask не хранит копию вашего пароля. Если у вас возникли проблемы с разблокировкой счета, вам необходимо сбросить настройки кошелька. Вы можете сделать это, введя секретную фразу для восстановления, которую вы использовали при настройке кошелька."
+    "message": "Widllet не хранит копию вашего пароля. Если у вас возникли проблемы с разблокировкой счета, вам необходимо сбросить настройки кошелька. Вы можете сделать это, введя секретную фразу для восстановления, которую вы использовали при настройке кошелька."
   },
   "resetWalletUsingSRP": {
     "message": "Это действие удалит ваш текущий кошелек и секретную фразу для восстановления с этого устройства, а также список счетов, которые вы курировали. После сброса с помощью секретной фразы для восстановления вы увидите список счетов, основанный на секретной фразе для восстановления, которую вы использовали для сброса. Этот новый список будет автоматически включать счета с балансом средств. Вы также сможете получить $1, созданный ранее. Пользовательские счета, которые вы импортировали, должны будут $2, и любые пользовательские токены, которые вы добавили на счет, также должны будут $3."
@@ -4363,7 +4363,7 @@
     "message": "Прежде чем продолжить, убедитесь, что вы используете правильную секретную фразу для восстановления. Вы не сможете отменить это."
   },
   "restartMetamask": {
-    "message": "Перезапустить MetaMask"
+    "message": "Перезапустить Widllet"
   },
   "restore": {
     "message": "Восстановить"
@@ -4400,7 +4400,7 @@
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1 and bolded text using 'revealSeedWordsDescription3' as $2."
   },
   "revealSeedWordsDescription2": {
-    "message": "MetaMask — $1. Это означает, что вы являетесь владельцем своей СВФ.",
+    "message": "Widllet — $1. Это означает, что вы являетесь владельцем своей СВФ.",
     "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
   },
   "revealSeedWordsDescription3": {
@@ -4423,7 +4423,7 @@
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
   },
   "revealSeedWordsWarning2": {
-    "message": "Поддержка MetaMask никогда не будет запрашивать этот ключ.",
+    "message": "Поддержка Widllet никогда не будет запрашивать этот ключ.",
     "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
@@ -4564,7 +4564,7 @@
     "message": "Если кто-то просит вас сообщить фразу для восстановления, этот человек, скорее всего, пытается вас обмануть и похитить деньги из вашего кошелька."
   },
   "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Никогда не сообщайте секретную фразу для восстановления никому, даже сотрудникам MetaMask!"
+    "message": "Никогда не сообщайте секретную фразу для восстановления никому, даже сотрудникам Widllet!"
   },
   "seedPhraseIntroSidebarTitleOne": {
     "message": "Что такое секретная фраза для восстановления?"
@@ -4606,7 +4606,7 @@
     "message": "Выберите счет"
   },
   "selectAnAccountAlreadyConnected": {
-    "message": "Этот счет уже подключен к MetaMask"
+    "message": "Этот счет уже подключен к Widllet"
   },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Включить отображение носителя NFT"
@@ -4877,13 +4877,13 @@
     "message": "Продайте свою криптовалюту за наличные"
   },
   "slideCashOutTitle": {
-    "message": "Вывести деньги с помощью MetaMask"
+    "message": "Вывести деньги с помощью Widllet"
   },
   "slideDebitCardDescription": {
     "message": "Доступна в некоторых регионах"
   },
   "slideDebitCardTitle": {
-    "message": "Дебетовая карта MetaMask"
+    "message": "Дебетовая карта Widllet"
   },
   "slideFundWalletDescription": {
     "message": "Добавьте или переведите токены, чтобы начать"
@@ -4916,7 +4916,7 @@
     "message": "Ваша транзакция не удалась"
   },
   "smartTransactionErrorDescription": {
-    "message": "Внезапные изменения на рынке могут привести к неудачам. Если проблема не исчезнет, ​​обратитесь в поддержку MetaMask."
+    "message": "Внезапные изменения на рынке могут привести к неудачам. Если проблема не исчезнет, ​​обратитесь в поддержку Widllet."
   },
   "smartTransactionPending": {
     "message": "Ваша транзакция отправляется"
@@ -4966,7 +4966,7 @@
     "message": "Счет удален"
   },
   "snapAccountRemovedDescription": {
-    "message": "Этот счет больше не будет доступен для использования в MetaMask."
+    "message": "Этот счет больше не будет доступен для использования в Widllet."
   },
   "snapAccounts": {
     "message": "Snaps счета"
@@ -5118,7 +5118,7 @@
     "message": "Скоро появятся dapps Solana, NFT, поддержка аппаратного кошелька и многое другое."
   },
   "solanaOnMetaMask": {
-    "message": "Solana в MetaMask"
+    "message": "Solana в Widllet"
   },
   "solanaSendReceiveSwapTokens": {
     "message": "Отправляйте, получайте и обменивайте токены"
@@ -5256,7 +5256,7 @@
     "message": "Чтобы увидеть свою секретную фразу для восстановления, вам нужно правильно ответить на два вопроса"
   },
   "srpSecurityQuizQuestionOneQuestion": {
-    "message": "Если вы потеряете свою секретную фразу для восстановления, MetaMask..."
+    "message": "Если вы потеряете свою секретную фразу для восстановления, Widllet..."
   },
   "srpSecurityQuizQuestionOneRightAnswer": {
     "message": "Не сможет вам помочь"
@@ -5325,7 +5325,7 @@
     "message": "Ошибка при получении журналов состояния."
   },
   "stateLogFileName": {
-    "message": "Журналы состояния MetaMask"
+    "message": "Журналы состояния Widllet"
   },
   "stateLogs": {
     "message": "Журналы состояний"
@@ -5346,7 +5346,7 @@
     "message": "Подключите Lattice1"
   },
   "step1LatticeWalletMsg": {
-    "message": "Вы можете подключить MetaMask к своему устройству Lattice1, как только оно будет настроено и подключено к сети. Разблокируйте устройство и подготовьте свой ID устройства.",
+    "message": "Вы можете подключить Widllet к своему устройству Lattice1, как только оно будет настроено и подключено к сети. Разблокируйте устройство и подготовьте свой ID устройства.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1LedgerWallet": {
@@ -5456,7 +5456,7 @@
     "message": "Пройдите наш опрос"
   },
   "surveyTitle": {
-    "message": "Сформируйте будущее MetaMask"
+    "message": "Сформируйте будущее Widllet"
   },
   "swap": {
     "message": "Своп"
@@ -5522,7 +5522,7 @@
     "message": "Изменить лимит"
   },
   "swapEnableDescription": {
-    "message": "Это необходимо и дает MetaMask разрешение на своп вашего $1.",
+    "message": "Это необходимо и дает Widllet разрешение на своп вашего $1.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
   },
   "swapEnableTokenForSwapping": {
@@ -5569,7 +5569,7 @@
     "message": "Плата за газ является примерной и будет колебаться в зависимости от сетевого трафика и сложности транзакции."
   },
   "swapGasFeesExplanation": {
-    "message": "MetaMask не получает плату за газ. Сумма этой платы являются приблизительной и может меняться в зависимости от загруженности сети и сложности транзакции. Узнайте подробнее $1.",
+    "message": "Widllet не получает плату за газ. Сумма этой платы являются приблизительной и может меняться в зависимости от загруженности сети и сложности транзакции. Узнайте подробнее $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
   },
   "swapGasFeesExplanationLinkText": {
@@ -5583,7 +5583,7 @@
     "message": "Плата за газ, указанная на предыдущем экране, распределяется между этими двумя транзакциями."
   },
   "swapGasFeesSummary": {
-    "message": "Плата за газ переводится криптомайнерам, которые обрабатывают транзакции в сети $1. MetaMask не получает прибыли от платы за газ.",
+    "message": "Плата за газ переводится криптомайнерам, которые обрабатывают транзакции в сети $1. Widllet не получает прибыли от платы за газ.",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
@@ -5596,19 +5596,19 @@
     "message": "Высокое проскальзывание"
   },
   "swapIncludesGasAndMetaMaskFee": {
-    "message": "Включает плату за газ и комиссию MetaMask в размере $1%",
+    "message": "Включает плату за газ и комиссию Widllet в размере $1%",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
-    "message": "Включает комиссию MetaMask в размере $1%.",
+    "message": "Включает комиссию Widllet в размере $1%.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
-    "message": "Котировка с учетом комиссии MetaMask в размере $1 %",
+    "message": "Котировка с учетом комиссии Widllet в размере $1 %",
     "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
-    "message": "Включает комиссию MetaMask в размере $1% — $2.",
+    "message": "Включает комиссию Widllet в размере $1% — $2.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
@@ -5624,10 +5624,10 @@
     "message": "Максимальное проскальзывание"
   },
   "swapMetaMaskFee": {
-    "message": "Комиссия MetaMask"
+    "message": "Комиссия Widllet"
   },
   "swapMetaMaskFeeDescription": {
-    "message": "В этой котировке автоматически учитывается комиссия в размере $1%. Вы платите ее в обмен на лицензию на использование программного обеспечения MetaMask для сбора информации о поставщиках ликвидности.",
+    "message": "В этой котировке автоматически учитывается комиссия в размере $1%. Вы платите ее в обмен на лицензию на использование программного обеспечения Widllet для сбора информации о поставщиках ликвидности.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
@@ -5841,7 +5841,7 @@
     "message": "Сменить"
   },
   "switchEthereumChainConfirmationDescription": {
-    "message": "В результате этого сеть, выбранная в MetaMask, будет изменена на ранее добавленную:"
+    "message": "В результате этого сеть, выбранная в Widllet, будет изменена на ранее добавленную:"
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "Разрешить этому сайту сменить сеть?"
@@ -5892,7 +5892,7 @@
     "message": "Условия обслуживания"
   },
   "termsOfUseAgreeText": {
-    "message": " Я согласен(-на) с Условиями использования, которые применяются к использованию мною MetaMask и всех его функций"
+    "message": " Я согласен(-на) с Условиями использования, которые применяются к использованию мною Widllet и всех его функций"
   },
   "termsOfUseFooterText": {
     "message": "Прокрутите, чтобы прочитать все разделы"
@@ -5907,7 +5907,7 @@
     "message": "Тема"
   },
   "themeDescription": {
-    "message": "Выберите предпочитаемую тему MetaMask."
+    "message": "Выберите предпочитаемую тему Widllet."
   },
   "thirdPartySoftware": {
     "message": "Уведомление о стороннем ПО",
@@ -6120,7 +6120,7 @@
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
   },
   "troubleStarting": {
-    "message": "У MetaMask возникли проблемы с запуском. Эта ошибка может быть непостоянной, поэтому попробуйте перезапустить расширение."
+    "message": "У Widllet возникли проблемы с запуском. Эта ошибка может быть непостоянной, поэтому попробуйте перезапустить расширение."
   },
   "tryAgain": {
     "message": "Попробуйте еще раз"
@@ -6169,7 +6169,7 @@
   },
   "u2f": {
     "message": "U2F",
-    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
+    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect Widllet to Ledger devices."
   },
   "unapproved": {
     "message": "Не одобрен"
@@ -6260,7 +6260,7 @@
     "message": "Автоопределение NFT"
   },
   "useNftDetectionDescriptionText": {
-    "message": "Разрешает MetaMask добавлять ваши собственные NFT с помощью сторонних сервисов. Автоопределение NFT раскрывает ваш IP-адрес и адрес счета этим сервисам. Включение этой функции может связать ваш IP-адрес с вашим адресом Ethereum и отобразить поддельные NFT-файлы, аирдропнутые мошенниками. Вы можете добавлять токены вручную, чтобы избежать этой угрозы."
+    "message": "Разрешает Widllet добавлять ваши собственные NFT с помощью сторонних сервисов. Автоопределение NFT раскрывает ваш IP-адрес и адрес счета этим сервисам. Включение этой функции может связать ваш IP-адрес с вашим адресом Ethereum и отобразить поддельные NFT-файлы, аирдропнутые мошенниками. Вы можете добавлять токены вручную, чтобы избежать этой угрозы."
   },
   "usePhishingDetection": {
     "message": "Использовать обнаружение фишинга"
@@ -6272,7 +6272,7 @@
     "message": "Проверка сведений о сети"
   },
   "useSafeChainsListValidationDescription": {
-    "message": "MetaMask использует сторонний сервис под названием $1 для отображения точных и стандартизированных сведений о сети. Это снижает ваши шансы подключиться к вредоносной или неправильной сети. При использовании этой функции ваш IP-адрес доступен сети chainid.network."
+    "message": "Widllet использует сторонний сервис под названием $1 для отображения точных и стандартизированных сведений о сети. Это снижает ваши шансы подключиться к вредоносной или неправильной сети. При использовании этой функции ваш IP-адрес доступен сети chainid.network."
   },
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
@@ -6342,7 +6342,7 @@
     "message": "Подтвердить"
   },
   "visitSupportDataConsentModalDescription": {
-    "message": "Хотите сообщить свой идентификатор MetaMask и версию приложения в наш Центр поддержки? Возможно, это поможет нам лучше решить вашу проблему, хотя это не гарантируется."
+    "message": "Хотите сообщить свой идентификатор Widllet и версию приложения в наш Центр поддержки? Возможно, это поможет нам лучше решить вашу проблему, хотя это не гарантируется."
   },
   "visitSupportDataConsentModalReject": {
     "message": "Не сообщать"
@@ -6415,7 +6415,7 @@
     "message": "Ознакомьтесь с децентрализованными приложениями"
   },
   "welcomeLoginDescription": {
-    "message": "Используйте кошелек MetaMask для входа в децентрализованные приложения — регистрация не потребуется."
+    "message": "Используйте кошелек Widllet для входа в децентрализованные приложения — регистрация не потребуется."
   },
   "welcomeLoginTitle": {
     "message": "Поприветствуйте свой кошелек"
@@ -6424,7 +6424,7 @@
     "message": "Давайте приступим к делу"
   },
   "welcomeToMetaMaskIntro": {
-    "message": "MetaMask, которому доверяют миллионы, — это безопасный кошелек, предоставляющий всем доступ к миру web3."
+    "message": "Widllet, которому доверяют миллионы, — это безопасный кошелек, предоставляющий всем доступ к миру web3."
   },
   "whatsThis": {
     "message": "Что это?"

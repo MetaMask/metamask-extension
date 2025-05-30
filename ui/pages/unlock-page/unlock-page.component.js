@@ -185,14 +185,17 @@ export default class UnlockPage extends Component {
     return (
       <div className="unlock-page__container">
         <div className="unlock-page" data-testid="unlock-page">
-          <div className="unlock-page__mascot-container">
-            {this.renderMascot()}
-            {isBeta() ? (
-              <div className="unlock-page__mascot-container__beta">
-                {t('beta')}
-              </div>
-            ) : null}
-          </div>
+          {/* {this.renderMascot()}*/}
+          {/* {isBeta() ? (*/}
+          {/*  <div className="unlock-page__mascot-container__beta">*/}
+          {/*    {t('beta')}*/}
+          {/*  </div>*/}
+          {/* ) : null}*/}
+          <img
+            alt=""
+            style={{ height: 100 }}
+            src="./images/logo/metamask-fox.svg"
+          />
           <Text
             data-testid="unlock-page-title"
             as="h1"
