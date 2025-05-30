@@ -1,6 +1,3 @@
-# This suite originally ran on 7 individual VMs that each took about 1m30s to execute
-# It's now combined onto a single VM that takes about 1m20s
-# The `if: ${{ !cancelled() }}` statements make all independent tests run, even if one fails.
 name: Repository health checks
 
 on:
@@ -10,6 +7,10 @@ jobs:
   repository-health-checks:
     name: Repository health checks
     runs-on: ubuntu-latest
+    env:
+      # For a `pull_request` event, the branch is `github.head_ref``.
+      # For a `push` event, the branch is `github.ref_name`.
+      BRANCH: ${{ github.head_ref || github.ref_name }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -17,25 +18,18 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      # test-lint-shellcheck
       - name: ShellCheck Lint
         if: ${{ !cancelled() }}
         run: ./development/shellcheck.sh
 
-      # test-lint-changelog
       - name: Validate changelog
-        # For a `pull_request` event, the branch is `github.head_ref``.
-        # For a `push` event, the branch is `github.ref_name`.
-        if: ${{ !startsWith(github.head_ref || github.ref_name, 'Version-v') }}
+        if: ${{ !startsWith(env.BRANCH, 'Version-v') }}
         run: yarn lint:changelog
 
       - name: Validate release candidate changelog
-        # For a `pull_request` event, the branch is `github.head_ref``.
-        # For a `push` event, the branch is `github.ref_name`.
-        if: ${{ startsWith(github.head_ref || github.ref_name, 'Version-v') }}
-        run: .circleci/scripts/validate-changelog-in-rc.sh
+        if: ${{ startsWith(env.BRANCH, 'Version-v') }}
+        run: .github/scripts/validate-changelog-in-rc.sh
 
-      # test-lint-lockfile
       - name: Lint lockfile
         if: ${{ !cancelled() }}
         run: yarn lint:lockfile
@@ -44,22 +38,18 @@ jobs:
         if: ${{ !cancelled() }}
         run: yarn --check-resolutions
 
-      # test-deps-audit
       - name: Run audit
         if: ${{ !cancelled() }}
         run: yarn audit
 
-      # test-yarn-dedupe
       - name: Detect yarn lock deduplications
         if: ${{ !cancelled() }}
         run: yarn dedupe --check
 
-      # test-deps-depcheck
       - name: Run depcheck
         if: ${{ !cancelled() }}
         run: yarn depcheck
 
-      # validate-lavamoat-allow-scripts
       - name: Validate allow-scripts config
         if: ${{ !cancelled() }}
         run: yarn allow-scripts auto
