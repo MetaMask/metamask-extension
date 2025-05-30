@@ -1059,7 +1059,10 @@ export default class MetamaskController extends EventEmitter {
         authConnectionId: process.env.AUTH_CONNECTION_ID,
         groupedAuthConnectionId: process.env.GROUPED_AUTH_CONNECTION_ID,
       },
-      webAuthenticator: window.chrome.identity,
+      webAuthenticator:
+        getPlatform() === PLATFORM_FIREFOX
+          ? globalThis.browser.identity // use browser.identity for Firefox
+          : window.chrome.identity, // use chrome.identity for Chromium based browsers
     });
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
@@ -3515,6 +3518,7 @@ export default class MetamaskController extends EventEmitter {
       updateBackupMetadataState: this.updateBackupMetadataState.bind(this),
       changePassword: this.changePassword.bind(this),
       restoreSeedPhrasesToVault: this.restoreSeedPhrasesToVault.bind(this),
+      syncSeedPhrases: this.syncSeedPhrases.bind(this),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
@@ -4695,6 +4699,48 @@ export default class MetamaskController extends EventEmitter {
       }
 
       throw error;
+    }
+  }
+
+  /**
+   * Syncs the seed phrases with the social login flow.
+   *
+   * @returns {Promise<void>}
+   */
+  async syncSeedPhrases() {
+    const isSocialLoginFlow = this.onboardingController.isSocialLoginFlowType();
+
+    if (!isSocialLoginFlow) {
+      throw new Error(
+        'Syncing seed phrases is only available for social login flow',
+      );
+    }
+
+    // 1. fetch all seed phrases
+    const [rootSRP, ...otherSRPs] =
+      await this.seedlessOnboardingController.fetchAllSeedPhrases();
+
+    if (!rootSRP) {
+      throw new Error('No root SRP found');
+    }
+
+    for (const srp of otherSRPs) {
+      // Get the SRP hash, and find the hash in the local state
+      const srpHash =
+        this.seedlessOnboardingController.getSeedPhraseBackupHash(srp);
+      if (!srpHash) {
+        // If SRP is not in the local state, import it to the vault
+        // convert the seed phrase to a mnemonic (string)
+        const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(srp);
+        const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
+
+        // import the new mnemonic to the current vault
+        await this.importMnemonicToVault(mnemonicToRestore, {
+          shouldCreateSocialBackup: false,
+          shouldSelectAccount: false,
+          shouldImportSolanaAccount: true,
+        });
+      }
     }
   }
 
