@@ -138,21 +138,15 @@ describe('Create BTC Account', function (this: Suite) {
       await resetPasswordPage.check_pageIsLoaded();
       await resetPasswordPage.resetPassword(seedPhrase, WALLET_PASSWORD);
 
-      // create a BTC account and check that the address is the same
-      await headerNavbar.check_pageIsLoaded();
-      await headerNavbar.openAccountMenu();
-      await accountListPage.check_pageIsLoaded();
-      await accountListPage.addAccount({ accountType: ACCOUNT_TYPE.Bitcoin });
-      await headerNavbar.check_accountLabel(DEFAULT_ACCOUNT_NAME);
-
+      // check discovered account address is the same
       await headerNavbar.openAccountMenu();
       await accountListPage.check_pageIsLoaded();
       await accountListPage.openAccountDetailsModal(DEFAULT_ACCOUNT_NAME);
       await accountDetailsModal.check_pageIsLoaded();
-      const recreatedAccountAddress =
+      const discoveredAccountAddress =
         await accountDetailsModal.getAccountAddress();
 
-      assert(accountAddress === recreatedAccountAddress);
+      assert(accountAddress === discoveredAccountAddress);
     }, this.test?.fullTitle());
   });
 });
