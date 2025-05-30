@@ -52,7 +52,7 @@ describe('metaRPCClientFactory', () => {
     });
   });
 
-  it('should be able to make an rpc request/response with the method and params with multiple instances of metaRPCClientFactory and the same connectionStream', () => {
+  it('should be able to make an rpc request/response with the method and params with multiple instances of metaRPCClientFactory and the same connectionStream', (done) => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
     const metaRPCClient2 = metaRPCClientFactory(streamTest);
