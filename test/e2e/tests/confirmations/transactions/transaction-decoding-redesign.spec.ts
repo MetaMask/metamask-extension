@@ -11,6 +11,7 @@ import { TRANSACTION_DATA_UNISWAP } from '../../../../data/confirmations/transac
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { TestSuiteArguments } from './shared';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 
 const { withFixtures } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
@@ -123,6 +124,9 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            [CHAIN_IDS.MAINNET]: true,
+          })
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         testSpecificMock: mockInfura,

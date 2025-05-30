@@ -4,10 +4,12 @@ import { Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import {
   getChainIdsToPoll,
+  getEnabledNetworks,
   getNewTokensImported,
   getPreferences,
   getSelectedAccount,
   getTokenSortConfig,
+  isGlobalNetworkSelectorEnabled,
 } from '../../../../selectors';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
@@ -53,13 +55,18 @@ function TokenList({ onTokenClick }: TokenListProps) {
   // network filter to determine which tokens to show in list
   // on EVM we want to filter based on network filter controls, on non-evm we only want tokens from that chain identifier
   const { networkFilter } = useNetworkFilter();
+  const enabledNetworks = useSelector(getEnabledNetworks);
+
+  const networksToShow = useMemo(() => {
+    return isGlobalNetworkSelectorEnabled ? networkFilter : enabledNetworks;
+  }, [networkFilter, enabledNetworks]);
 
   const sortedFilteredTokens = useMemo(() => {
     const balances = isEvm ? evmBalances : multichainAssets;
     const filteredAssets = filterAssets(balances as TokenWithFiatAmount[], [
       {
         key: 'chainId',
-        opts: isEvm ? networkFilter : { [currentNetwork.chainId]: true },
+        opts: isEvm ? networksToShow : { [currentNetwork.chainId]: true },
         filterCallback: 'inclusive',
       },
     ]);
@@ -71,7 +78,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
     isEvm,
     evmBalances,
     multichainAssets,
-    networkFilter,
+    networksToShow,
     currentNetwork.chainId,
     tokenSortConfig,
     // newTokensImported included in deps, but not in hook's logic

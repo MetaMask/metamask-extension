@@ -231,12 +231,8 @@ describe('Swap', function () {
         {
           fixtures: new FixtureBuilder()
             .withNetworkControllerOnMainnet()
-            .withPreferencesController({
-              preferences: {
-                tokenNetworkFilter: {
-                  '0x1': true,
-                },
-              },
+            .withEnabledNetworks({
+              '0x1': true,
             })
             .withTokensController({
               allTokens: {
