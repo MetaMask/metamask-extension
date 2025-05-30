@@ -130,10 +130,12 @@ export default function RevealSeedPage() {
           },
         });
         setError(getErrorMessage(e));
+      })
+      .finally(() => {
+        endTrace({
+          name: TraceName.RevealSeed,
+        });
       });
-    endTrace({
-      name: TraceName.RevealSeed,
-    });
   };
 
   const renderWarning = () => {
