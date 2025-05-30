@@ -1,4 +1,4 @@
-/* eslint-disable jest/no-done-callback */
+/* eslint-disable jest/no-done-callback jest/no-conditional-expect */
 import { obj as createThoughStream } from 'through2';
 import metaRPCClientFactory, { DisconnectError } from './metaRPCClientFactory';
 
