@@ -14,7 +14,7 @@ import { AssetPollingProvider } from '../contexts/assetPolling';
 import { MetamaskIdentityProvider } from '../contexts/identity';
 import ErrorPage from './error-page/error-page.component';
 
-import Routes from './routes';
+import Routes from './routes/routes.component';
 
 class Index extends PureComponent {
   state = {};
