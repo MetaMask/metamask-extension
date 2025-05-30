@@ -134,7 +134,7 @@ describe('CorruptionHandler.handleStateCorruptionError', () => {
         const handledResults = await Promise.allSettled(
           // run the background's `handleStateCorruptionError` function for
           // *all* UIs, even ones that are closed early. We do this because the
-          // `port` we already have might bbe disconnected while the background
+          // `port` we already have might be disconnected while the background
           // is still processing everything.
           portPairs.map(({ background: port }) =>
             corruptionHandler.handleStateCorruptionError({
