@@ -114,7 +114,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
                 <p
                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                 >
-                  0xCcCCc...ccccC
+                  0xCcCC...cccC
                 </p>
               </div>
             </div>
@@ -163,7 +163,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
             <p
               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              0x5B38D...eddC4
+              0x5B38...ddC4
             </p>
           </div>
         </div>
@@ -251,7 +251,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
             <p
               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              0xCcCCc...ccccC
+              0xCcCC...cccC
             </p>
           </div>
         </div>
@@ -419,7 +419,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
                 <p
                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                 >
-                  0xCcCCc...ccccC
+                  0xCcCC...cccC
                 </p>
               </div>
             </div>
@@ -468,7 +468,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
             <p
               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              0x5B38D...eddC4
+              0x5B38...ddC4
             </p>
           </div>
         </div>
@@ -556,7 +556,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
             <p
               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              0xCcCCc...ccccC
+              0xCcCC...cccC
             </p>
           </div>
         </div>
@@ -693,7 +693,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
             <p
               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              0xCcCCc...ccccC
+              0xCcCC...cccC
             </p>
           </div>
         </div>
@@ -903,7 +903,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                             <p
                               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              0xCD2a3...DD826
+                              0xCD2a...D826
                             </p>
                           </div>
                         </div>
@@ -943,7 +943,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                             <p
                               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              0xDeaDb...DbeeF
+                              0xDeaD...beeF
                             </p>
                           </div>
                         </div>
@@ -983,7 +983,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                             <p
                               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              0x06195...43896
+                              0x0619...3896
                             </p>
                           </div>
                         </div>
@@ -1119,7 +1119,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                                 <p
                                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                 >
-                                  0xbBbBB...bBBbB
+                                  0xbBbB...BBbB
                                 </p>
                               </div>
                             </div>
@@ -1159,7 +1159,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                                 <p
                                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                 >
-                                  0xB0Bda...bEa57
+                                  0xB0Bd...Ea57
                                 </p>
                               </div>
                             </div>
@@ -1199,7 +1199,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                                 <p
                                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                 >
-                                  0xB0B0b...00000
+                                  0xB0B0...0000
                                 </p>
                               </div>
                             </div>
@@ -1300,7 +1300,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
             <p
               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              0xCcCCc...ccccC
+              0xCcCC...cccC
             </p>
           </div>
         </div>
@@ -1460,7 +1460,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                         <p
                           class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                         >
-                          0xCD2a3...DD826
+                          0xCD2a...D826
                         </p>
                       </div>
                     </div>
@@ -1552,7 +1552,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                         <p
                           class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                         >
-                          0xbBbBB...bBBbB
+                          0xbBbB...BBbB
                         </p>
                       </div>
                     </div>
@@ -1678,7 +1678,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
             <p
               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              0xCcCCc...ccccC
+              0xCcCC...cccC
             </p>
           </div>
         </div>
@@ -1888,7 +1888,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                             <p
                               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              0xCD2a3...DD826
+                              0xCD2a...D826
                             </p>
                           </div>
                         </div>
@@ -1928,7 +1928,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                             <p
                               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              0xDeaDb...DbeeF
+                              0xDeaD...beeF
                             </p>
                           </div>
                         </div>
@@ -1968,7 +1968,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                             <p
                               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              0x06195...43896
+                              0x0619...3896
                             </p>
                           </div>
                         </div>
@@ -2104,7 +2104,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                                 <p
                                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                 >
-                                  0xbBbBB...bBBbB
+                                  0xbBbB...BBbB
                                 </p>
                               </div>
                             </div>
@@ -2144,7 +2144,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                                 <p
                                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                 >
-                                  0xB0Bda...bEa57
+                                  0xB0Bd...Ea57
                                 </p>
                               </div>
                             </div>
@@ -2184,7 +2184,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                                 <p
                                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                 >
-                                  0xB0B0b...00000
+                                  0xB0B0...0000
                                 </p>
                               </div>
                             </div>

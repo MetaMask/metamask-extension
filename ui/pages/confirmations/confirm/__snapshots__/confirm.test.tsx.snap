@@ -467,7 +467,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           <p
                             class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                           >
-                            0xA0b86...6eB48
+                            0xA0b8...eB48
                           </p>
                         </div>
                       </div>
@@ -520,7 +520,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           <p
                             class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                           >
-                            0xb0B86...6EB48
+                            0xb0B8...EB48
                           </p>
                         </div>
                       </div>
@@ -570,7 +570,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                     <p
                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                     >
-                      0x3fC91...b7FAD
+                      0x3fC9...7FAD
                     </p>
                   </div>
                 </div>
@@ -658,7 +658,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                     <p
                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                     >
-                      0x00000...78BA3
+                      0x0000...8BA3
                     </p>
                   </div>
                 </div>
@@ -942,7 +942,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                           <p
                             class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                           >
-                            0xA0b86...6eB48
+                            0xA0b8...eB48
                           </p>
                         </div>
                       </div>
@@ -992,7 +992,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                     <p
                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                     >
-                      0x3fC91...b7FAD
+                      0x3fC9...7FAD
                     </p>
                   </div>
                 </div>
@@ -1080,7 +1080,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                     <p
                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                     >
-                      0x00000...78BA3
+                      0x0000...8BA3
                     </p>
                   </div>
                 </div>
@@ -1373,7 +1373,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                     <p
                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                     >
-                      0xCcCCc...ccccC
+                      0xCcCC...cccC
                     </p>
                   </div>
                 </div>
@@ -1583,7 +1583,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                     <p
                                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                     >
-                                      0xCD2a3...DD826
+                                      0xCD2a...D826
                                     </p>
                                   </div>
                                 </div>
@@ -1623,7 +1623,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                     <p
                                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                     >
-                                      0xDeaDb...DbeeF
+                                      0xDeaD...beeF
                                     </p>
                                   </div>
                                 </div>
@@ -1663,7 +1663,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                     <p
                                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                     >
-                                      0x06195...43896
+                                      0x0619...3896
                                     </p>
                                   </div>
                                 </div>
@@ -1799,7 +1799,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                         <p
                                           class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                         >
-                                          0xbBbBB...bBBbB
+                                          0xbBbB...BBbB
                                         </p>
                                       </div>
                                     </div>
@@ -1839,7 +1839,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                         <p
                                           class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                         >
-                                          0xB0Bda...bEa57
+                                          0xB0Bd...Ea57
                                         </p>
                                       </div>
                                     </div>
@@ -1879,7 +1879,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                         <p
                                           class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                         >
-                                          0xB0B0b...00000
+                                          0xB0B0...0000
                                         </p>
                                       </div>
                                     </div>
@@ -2169,7 +2169,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                         <p
                           class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                         >
-                          0xCcCCc...ccccC
+                          0xCcCC...cccC
                         </p>
                       </div>
                     </div>
@@ -2218,7 +2218,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                     <p
                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                     >
-                      0x5B38D...eddC4
+                      0x5B38...ddC4
                     </p>
                   </div>
                 </div>
@@ -2306,7 +2306,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                     <p
                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                     >
-                      0xCcCCc...ccccC
+                      0xCcCC...cccC
                     </p>
                   </div>
                 </div>
@@ -2597,7 +2597,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                     <p
                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                     >
-                      0xDef1C...25EfF
+                      0xDef1...5EfF
                     </p>
                   </div>
                 </div>
@@ -2747,7 +2747,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                             <p
                               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              0x0DCD5...3E7bc
+                              0x0DCD...E7bc
                             </p>
                           </div>
                         </div>
@@ -2787,7 +2787,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                             <p
                               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              0xCD2a3...DD826
+                              0xCD2a...D826
                             </p>
                           </div>
                         </div>
@@ -2885,7 +2885,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                             <p
                               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              0xC02aa...56Cc2
+                              0xC02a...6Cc2
                             </p>
                           </div>
                         </div>
@@ -2976,7 +2976,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                             <p
                               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                             >
-                              0x8a90C...8992e
+                              0x8a90...992e
                             </p>
                           </div>
                         </div>
@@ -3349,7 +3349,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                     <p
                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                     >
-                      0xCcCCc...ccccC
+                      0xCcCC...cccC
                     </p>
                   </div>
                 </div>
@@ -3559,7 +3559,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                     <p
                                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                     >
-                                      0xCD2a3...DD826
+                                      0xCD2a...D826
                                     </p>
                                   </div>
                                 </div>
@@ -3599,7 +3599,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                     <p
                                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                     >
-                                      0xDeaDb...DbeeF
+                                      0xDeaD...beeF
                                     </p>
                                   </div>
                                 </div>
@@ -3639,7 +3639,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                     <p
                                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                     >
-                                      0x06195...43896
+                                      0x0619...3896
                                     </p>
                                   </div>
                                 </div>
@@ -3775,7 +3775,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                         <p
                                           class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                         >
-                                          0xbBbBB...bBBbB
+                                          0xbBbB...BBbB
                                         </p>
                                       </div>
                                     </div>
@@ -3815,7 +3815,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                         <p
                                           class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                         >
-                                          0xB0Bda...bEa57
+                                          0xB0Bd...Ea57
                                         </p>
                                       </div>
                                     </div>
@@ -3855,7 +3855,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                         <p
                                           class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                                         >
-                                          0xB0B0b...00000
+                                          0xB0B0...0000
                                         </p>
                                       </div>
                                     </div>

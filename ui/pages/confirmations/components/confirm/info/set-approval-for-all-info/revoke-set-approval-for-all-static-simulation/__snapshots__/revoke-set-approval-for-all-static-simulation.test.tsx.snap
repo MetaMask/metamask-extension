@@ -86,7 +86,7 @@ exports[`<RevokeSetApprovalForAllStaticSimulation /> renders component for setAp
               <p
                 class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
               >
-                0x07614...3ad68
+                0x0761...ad68
               </p>
             </div>
           </div>
@@ -130,7 +130,7 @@ exports[`<RevokeSetApprovalForAllStaticSimulation /> renders component for setAp
               <p
                 class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
               >
-                0x9bc5b...AfEF4
+                0x9bc5...fEF4
               </p>
             </div>
           </div>
