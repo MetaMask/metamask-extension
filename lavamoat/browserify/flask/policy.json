@@ -1667,7 +1667,7 @@
         "@metamask/keyring-api>@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>bech32": true
+        "bitcoin-address-validation": true
       }
     },
     "@metamask/keyring-controller": {
@@ -4085,7 +4085,7 @@
         "@ethereumjs/tx": true,
         "@ethersproject/abi": true,
         "eth-lattice-keyring>gridplus-sdk>aes-js": true,
-        "@metamask/keyring-api>bech32": true,
+        "bitcoin-address-validation>bech32": true,
         "eth-lattice-keyring>gridplus-sdk>bignumber.js": true,
         "eth-lattice-keyring>gridplus-sdk>bitwise": true,
         "bn.js": true,
