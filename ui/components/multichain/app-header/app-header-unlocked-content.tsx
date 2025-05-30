@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import browser from 'webextension-polyfill';
 
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
@@ -96,10 +96,31 @@ export const AppHeaderUnlockedContent = ({
 
   // Passing non-evm address to checksum function will throw an error
   const normalizedCurrentAddress = normalizeSafeAddress(currentAddress);
-  const [copied, handleCopy] = useCopyToClipboard(MINUTE) as [
+  const [copied, setCopied] = useState(false);
+  const [, handleCopy] = useCopyToClipboard(MINUTE) as [
     boolean,
     (text: string) => void,
   ];
+
+  // Handles clipboard copying and prevents duplicate actions
+  const handleCopyWithTimeout = (text: string): void => {
+    if (copied) return;
+    handleCopy(text);
+    setCopied(true);
+  };
+
+  // Sets a timer to reset the copied state after MINUTE
+  useEffect(() => {
+    if (copied) {
+      const timeout = setTimeout(() => setCopied(false), MINUTE);
+      return () => clearTimeout(timeout);
+    }
+  }, [copied]);
+
+  // Resets the copied state when the account address changes
+  useEffect(() => {
+    setCopied(false);
+  }, [normalizedCurrentAddress]);
 
   const showConnectedStatus =
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
@@ -211,7 +232,7 @@ export const AppHeaderUnlockedContent = ({
           >
             <ButtonBase
               className="multichain-app-header__address-copy-button"
-              onClick={() => handleCopy(normalizedCurrentAddress)}
+              onClick={() => handleCopyWithTimeout(normalizedCurrentAddress)}
               size={ButtonBaseSize.Sm}
               backgroundColor={BackgroundColor.transparent}
               borderRadius={BorderRadius.LG}
