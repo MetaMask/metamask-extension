@@ -8,6 +8,9 @@ class PrivacySettings {
   private readonly autodetectNftToggleButton =
     '[data-testid="useNftDetection"] .toggle-button > div';
 
+  private readonly autoDetectToken =
+    '[data-testid="autoDetectTokens"] .toggle-button';
+
   private readonly closeRevealSrpDialogButton = {
     text: tEn('close'),
     tag: 'button',
@@ -313,6 +316,13 @@ class PrivacySettings {
       css: this.displayedSrpText,
       text: expectedSrpText,
     });
+  }
+
+  async toggleAutoDetectTokens(): Promise<void> {
+    console.log(
+      'Toggle auto detect tokens in Security and Privacy settings page',
+    );
+    await this.driver.clickElement(this.autoDetectToken);
   }
 
   async toggleParticipateInMetaMetrics(): Promise<void> {

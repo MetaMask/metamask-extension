@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
 export type BridgeQuote = {
@@ -108,6 +109,23 @@ class BridgeQuotePage {
     await this.driver.waitForSelector(this.backButton);
     await this.driver.clickElement(this.backButton);
   };
+
+  async searchAssetAndVerifyCount(
+    searchInput: string,
+    count: number,
+  ): Promise<void> {
+    console.log(`Fill search input with ${searchInput}`);
+    await this.driver.pasteIntoField(this.assetPrickerSearchInput, searchInput);
+    await this.driver.elementCountBecomesN(this.tokenButton, count);
+  }
+
+  async check_tokenIsDisabled() {
+    const [tkn] = await this.driver.findElements(this.tokenButton);
+
+    await tkn.click();
+    const isSelected = await tkn.isSelected();
+    assert.equal(isSelected, false);
+  }
 
   async check_noTradeRouteMessageIsDisplayed(): Promise<void> {
     try {
