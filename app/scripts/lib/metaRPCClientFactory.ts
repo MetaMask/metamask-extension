@@ -122,9 +122,13 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
     }
   >();
 
+  /**
+   * Creates a new MetaRPCClient instance.
+   *
+   * @param connectionStream - The stream to use for the RPC client.
+   */
   constructor(connectionStream: Duplex) {
-    this.#connectionStream = connectionStream;
-    this.#connectionStream
+    this.#connectionStream = connectionStream
       .on('data', this.handleResponse)
       .on('end', this.close);
   }
