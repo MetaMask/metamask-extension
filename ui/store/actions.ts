@@ -13,6 +13,7 @@ import { Action, AnyAction } from 'redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
 import {
+  CaipAccountId,
   type CaipAssetType,
   type CaipChainId,
   type Hex,
@@ -54,6 +55,7 @@ import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -131,10 +133,10 @@ import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import { EndTraceRequest, trace, TraceName } from '../../shared/lib/trace';
-import { isInternalAccountInPermittedAccountIds } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 import { getDismissSmartAccountSuggestionEnabled } from '../pages/confirmations/selectors/preferences';
+import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -267,6 +269,7 @@ export function importMnemonicToVault(
     })
       .then(async () => {
         dispatch(hideLoadingIndication());
+        dispatch(setShowNewSrpAddedToast(true));
       })
       .catch((err) => {
         dispatch(displayWarning(err));
@@ -555,12 +558,15 @@ export function addNewAccount(
 
     dispatch(showLoadingIndication());
 
-    let addedAccountAddress;
+    let newAccount;
     try {
-      addedAccountAddress = await submitRequestToBackground('addNewAccount', [
-        oldAccounts.length,
-        keyringId,
-      ]);
+      const addedAccountAddress = await submitRequestToBackground(
+        'addNewAccount',
+        [oldAccounts.length, keyringId],
+      );
+      await forceUpdateMetamaskState(dispatch);
+      const newState = getState();
+      newAccount = getInternalAccountByAddress(newState, addedAccountAddress);
     } catch (error) {
       dispatch(displayWarning(error));
       throw error;
@@ -568,8 +574,7 @@ export function addNewAccount(
       dispatch(hideLoadingIndication());
     }
 
-    await forceUpdateMetamaskState(dispatch);
-    return addedAccountAddress;
+    return newAccount;
   };
 }
 
@@ -1028,6 +1033,15 @@ export function removeSlide(
   };
 }
 
+export function setSplashPageAcknowledgedForAccount(account: string): void {
+  try {
+    submitRequestToBackground('setSplashPageAcknowledgedForAccount', [account]);
+  } catch (error) {
+    logErrorWithMessage(error);
+    throw error;
+  }
+}
+
 // TODO: Not a thunk, but rather a wrapper around a background call
 export function updateTransactionGasFees(
   txId: string,
@@ -1266,9 +1280,7 @@ export function updateAndApproveTx(
         dispatch(completedTx(txMeta.id));
         dispatch(hideLoadingIndication());
         dispatch(updateCustomNonce(''));
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         dispatch(closeCurrentNotificationWindow());
-        ///: END:ONLY_INCLUDE_IF
         return txMeta;
       })
       .catch((err) => {
@@ -1886,6 +1898,25 @@ export function setSelectedInternalAccount(
   };
 }
 
+/**
+ * Sets the selected internal account without loading indication.
+ *
+ * @param accountId - The ID of the account to set as selected.
+ * @returns A thunk action that dispatches an account switch.
+ */
+export function setSelectedInternalAccountWithoutLoading(
+  accountId: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await _setSelectedInternalAccount(accountId);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      dispatch(displayWarning(error));
+    }
+  };
+}
+
 export function setSelectedAccount(
   address: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -2006,6 +2037,28 @@ export function removePermittedAccount(
   };
 }
 
+export function setPermittedAccounts(
+  origin: string,
+  caipAccountIds: CaipAccountId[],
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await new Promise<void>((resolve, reject) => {
+      callBackgroundMethod(
+        'setPermittedAccounts',
+        [origin, caipAccountIds],
+        (error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          resolve();
+        },
+      );
+    });
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function addPermittedChain(
   origin: string,
   chainId: CaipChainId,
@@ -2054,6 +2107,28 @@ export function removePermittedChain(
       callBackgroundMethod(
         'removePermittedChain',
         [origin, chainId],
+        (error) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          resolve();
+        },
+      );
+    });
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setPermittedChains(
+  origin: string,
+  chainIds: string[],
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await new Promise<void>((resolve, reject) => {
+      callBackgroundMethod(
+        'setPermittedChains',
+        [origin, chainIds],
         (error) => {
           if (error) {
             reject(error);
@@ -2244,6 +2319,7 @@ export function addNft(
 export function addNftVerifyOwnership(
   address: string,
   tokenID: string,
+  networkClientId: string,
   dontShowLoadingIndicator: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
@@ -2255,6 +2331,9 @@ export function addNftVerifyOwnership(
     if (!tokenID) {
       throw new Error('MetaMask - Cannot add NFT without tokenID');
     }
+    if (!networkClientId) {
+      throw new Error('MetaMask - Cannot add NFT without a networkClientId');
+    }
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
     }
@@ -2262,6 +2341,7 @@ export function addNftVerifyOwnership(
       await submitRequestToBackground('addNftVerifyOwnership', [
         address,
         tokenID,
+        { networkClientId },
       ]);
     } catch (error) {
       if (isErrorWithMessage(error)) {
@@ -4351,6 +4431,22 @@ export function updateAccountsList(
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async () => {
     await submitRequestToBackground('updateAccountsList', [pinnedAccountList]);
+  };
+}
+
+/**
+ * Sets the enabled networks in the controller state.
+ * This method updates the enabledNetworkMap to mark specified networks as enabled.
+ * It can handle both a single chain ID or an array of chain IDs.
+ *
+ * @param chainIds - A single CAIP-2 chain ID (e.g. 'eip155:1') or an array of chain IDs
+ * to be enabled. All other networks will be implicitly disabled.
+ */
+export function setEnabledNetworks(
+  chainIds: CaipChainId[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('setEnabledNetworks', [chainIds]);
   };
 }
 
