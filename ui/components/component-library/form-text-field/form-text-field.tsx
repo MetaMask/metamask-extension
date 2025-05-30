@@ -119,6 +119,7 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
         />
         {helpText && (
           <HelpText
+            data-testid="help-text"
             severity={error ? HelpTextSeverity.Danger : undefined}
             marginTop={1}
             {...helpTextProps}

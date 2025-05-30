@@ -571,9 +571,6 @@
   "importAccountMsg": {
     "message": " 匯入的帳戶並不會與您原有 MetaMask 帳戶助憶詞建立關聯。請用以下連結瞭解匯入帳戶相關的資料： "
   },
-  "importMyWallet": {
-    "message": "Import My Wallet"
-  },
   "importTokensCamelCase": {
     "message": "Import Tokens"
   },
