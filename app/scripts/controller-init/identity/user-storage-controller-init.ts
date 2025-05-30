@@ -69,10 +69,16 @@ export const UserStorageControllerInit: ControllerInitFunction<
       },
       contactSyncing: {
         onContactUpdated: (profileId) => {
-          console.log('MetaMetrics:: Contact sync: contact updated for profileId:', profileId);
+          console.log(
+            'MetaMetrics:: Contact sync: contact updated for profileId:',
+            profileId,
+          );
         },
         onContactDeleted: (profileId) => {
-          console.log('MetaMetrics:: Contact sync: contact deleted for profileId:', profileId);
+          console.log(
+            'MetaMetrics:: Contact sync: contact deleted for profileId:',
+            profileId,
+          );
         },
         onContactSyncErroneousSituation: (
           profileId,
@@ -83,7 +89,12 @@ export const UserStorageControllerInit: ControllerInitFunction<
             new Error(`Contact sync - ${situationMessage}`),
             sentryContext,
           );
-          console.log('MetaMetrics:: Contact sync: error for profileId:', profileId, 'situationMessage:', situationMessage);
+          console.log(
+            'MetaMetrics:: Contact sync: error for profileId:',
+            profileId,
+            'situationMessage:',
+            situationMessage,
+          );
         },
       },
     },

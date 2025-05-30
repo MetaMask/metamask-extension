@@ -6235,8 +6235,6 @@ export function deleteAccountSyncingDataFromUserStorage(): ThunkAction<
   };
 }
 
-
-
 /**
  * Marks MetaMask notifications as read.
  *
