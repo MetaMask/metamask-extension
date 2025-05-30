@@ -28,7 +28,7 @@ export async function migrate(originalVersionedData: {
   try {
     versionedData.data = transformState(versionedData.data);
   } catch (error) {
-    console.error(
+    global.sentry?.captureException?.(
       new Error(`Migration #${version}: ${getErrorMessage(error)}`),
     );
   }
@@ -39,7 +39,8 @@ function transformState(state: Record<string, unknown>) {
   const newState = cloneDeep(state);
 
   if (!hasProperty(newState, 'NftController')) {
-    throw new Error(`newState.NftController must be present`);
+    console.error(`newState.NftController must be present`);
+    return state;
   }
 
   if (!isObject(newState.NftController)) {
