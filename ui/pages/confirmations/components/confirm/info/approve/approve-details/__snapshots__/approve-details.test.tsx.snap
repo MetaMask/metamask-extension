@@ -56,7 +56,7 @@ exports[`<ApproveDetails /> renders component for approve details 1`] = `
             <p
               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              0x2e0D7...5d09B
+              0x2e0D...d09B
             </p>
           </div>
         </div>
@@ -173,7 +173,7 @@ exports[`<ApproveDetails /> renders component for approve details for setApprova
             <p
               class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
             >
-              0x2e0D7...5d09B
+              0x2e0D...d09B
             </p>
           </div>
         </div>

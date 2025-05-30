@@ -96,7 +96,7 @@ exports[`<ApproveStaticSimulation /> renders component when token is an NFT 1`] 
               <p
                 class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
               >
-                0x07614...3ad68
+                0x0761...ad68
               </p>
             </div>
           </div>
@@ -213,7 +213,7 @@ exports[`<ApproveStaticSimulation /> renders component when token is not an NFT 
               <p
                 class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
               >
-                0x07614...3ad68
+                0x0761...ad68
               </p>
             </div>
           </div>
