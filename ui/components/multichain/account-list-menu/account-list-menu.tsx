@@ -74,8 +74,13 @@ import {
   getManageInstitutionalWallets,
   getHDEntropyIndex,
   getAllChainsToPoll,
+  getUseExternalServices,
 } from '../../../selectors';
-import { detectNfts, setSelectedAccount } from '../../../store/actions';
+import {
+  detectNfts,
+  setSelectedAccount,
+  getNetworksWithTransactionActivityByAccounts,
+} from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -264,6 +269,7 @@ export const AccountListMenu = ({
   );
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
+  const useExternalServices = useSelector(getUseExternalServices);
   const filteredUpdatedAccountList = useMemo(
     () =>
       updatedAccountsList.filter((account) =>
@@ -493,6 +499,12 @@ export const AccountListMenu = ({
     chainId: null,
   };
   ///: END:ONLY_INCLUDE_IF(multichain)
+
+  useEffect(() => {
+    if (filteredAccounts.length > 0 && useExternalServices) {
+      dispatch(getNetworksWithTransactionActivityByAccounts());
+    }
+  }, [dispatch, filteredAccounts.length, useExternalServices]);
 
   return (
     <Modal isOpen onClose={onClose}>
