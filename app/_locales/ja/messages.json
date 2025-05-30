@@ -334,10 +334,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "優先手数料 (別名「マイナーチップ」) はマイナーに直接支払われ、トランザクションを優先するインセンティブとなります。"
   },
-  "agreeTermsOfUse": {
-    "message": "MetaMaskの$1に同意します",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "トークンのオンチェーン履歴で、不審なエアドロップアクティビティの以前のインスタンスを確認できます。"
   },
@@ -6408,23 +6404,8 @@
   "welcomeBack": {
     "message": "お帰りなさい！"
   },
-  "welcomeExploreDescription": {
-    "message": "仮想通貨やアセットを保管、送金、使用。"
-  },
-  "welcomeExploreTitle": {
-    "message": "分散型アプリを閲覧"
-  },
-  "welcomeLoginDescription": {
-    "message": "MetaMaskを使用して分散型アプリにログイン。サインアップは不要です。"
-  },
-  "welcomeLoginTitle": {
-    "message": "ウォレットにようこそ"
-  },
   "welcomeToMetaMask": {
     "message": "始めましょう"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "MetaMaskは何百万人もに信頼されている安全なウォレットで、すべての人々によるWeb3の世界へのアクセスを可能にしています。"
   },
   "whatsThis": {
     "message": "これは何ですか？"

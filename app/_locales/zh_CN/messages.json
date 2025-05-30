@@ -334,10 +334,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "优先费用（又称“矿工费”）直接向矿工支付，激励他们优先处理您的交易。"
   },
-  "agreeTermsOfUse": {
-    "message": "我同意MetaMask的$1",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "该代币的链上历史记录显示，此前存在可疑的空投活动实例。"
   },
@@ -6408,23 +6404,8 @@
   "welcomeBack": {
     "message": "欢迎回来！"
   },
-  "welcomeExploreDescription": {
-    "message": "存储、发送和使用加密货币和资产。"
-  },
-  "welcomeExploreTitle": {
-    "message": "探索去中心化应用"
-  },
-  "welcomeLoginDescription": {
-    "message": "使用您的 MetaMask 登录去中心化应用 - 无需注册。"
-  },
-  "welcomeLoginTitle": {
-    "message": "迎接您的钱包"
-  },
   "welcomeToMetaMask": {
     "message": "让我们开始吧"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "MetaMask 深受数百万人信任，是一款可以让所有人进入 web3 世界的安全钱包。"
   },
   "whatsThis": {
     "message": "这是什么？"

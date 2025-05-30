@@ -2230,23 +2230,8 @@
   "welcomeBack": {
     "message": "¡Bienvenido de nuevo!"
   },
-  "welcomeExploreDescription": {
-    "message": "Almacenar, enviar y gastar criptomonedas y activos."
-  },
-  "welcomeExploreTitle": {
-    "message": "Explorar aplicaciones descentralizadas"
-  },
-  "welcomeLoginDescription": {
-    "message": "Use su MetaMask para acceder a aplicaciones descentralizadas, sin necesidad de registrarse."
-  },
-  "welcomeLoginTitle": {
-    "message": "Diga hola a su cartera"
-  },
   "welcomeToMetaMask": {
     "message": "Comencemos"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Con la confianza de millones de personas, MetaMask es una cartera segura que pone el mundo de la web3 al alcance de todos."
   },
   "whatsThis": {
     "message": "¿Qué es esto?"

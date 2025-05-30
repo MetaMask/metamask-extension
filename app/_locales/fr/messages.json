@@ -334,10 +334,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Les frais de priorité (aussi appelés « pourboire du mineur ») vont directement aux mineurs et les incitent à accorder la priorité à votre transaction."
   },
-  "agreeTermsOfUse": {
-    "message": "J’accepte les $1 de MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "L’historique du jeton sur la chaîne révèle des cas antérieurs d’activités d’airdrop suspectes."
   },
@@ -6408,23 +6404,8 @@
   "welcomeBack": {
     "message": "Nous sommes heureux de vous revoir !"
   },
-  "welcomeExploreDescription": {
-    "message": "Stockez, envoyez et dépensez des cryptomonnaies et des actifs."
-  },
-  "welcomeExploreTitle": {
-    "message": "Explorer des applications décentralisées"
-  },
-  "welcomeLoginDescription": {
-    "message": "Utilisez votre MetaMask pour vous connecter à des applications décentralisées. Nul besoin de vous inscrire !"
-  },
-  "welcomeLoginTitle": {
-    "message": "Dites bonjour à votre portefeuille"
-  },
   "welcomeToMetaMask": {
     "message": "C’est parti !"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "MetaMask est un portefeuille sécurisé utilisé par des millions de personnes qui rend l’univers du web3 accessible à toutes et à tous."
   },
   "whatsThis": {
     "message": "Qu’est-ce que c’est ?"

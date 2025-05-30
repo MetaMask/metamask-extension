@@ -338,10 +338,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
-  "agreeTermsOfUse": {
-    "message": "I agree to MetaMask's $1",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "The token's on-chain history reveals prior instances of suspicious airdrop activities."
   },
@@ -3805,6 +3801,10 @@
   "onboardingAdvancedPrivacyNetworkTitle": {
     "message": "Choose your network"
   },
+  "onboardingContinueWith": {
+    "message": "Continue with $1",
+    "description": "$1 is the type of login used Google, Apple, etc."
+  },
   "onboardingCreateWallet": {
     "message": "Create new wallet"
   },
@@ -3857,6 +3857,13 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
   },
+  "onboardingOptionIcon": {
+    "message": "$1 icon",
+    "description": "$1 is the icon name"
+  },
+  "onboardingOptionTitle": {
+    "message": "Choose an option to continue"
+  },
   "onboardingPinExtensionBillboardAccess": {
     "message": "Full access"
   },
@@ -3893,6 +3900,16 @@
   "onboardingPinExtensionTitle": {
     "message": "Installation is complete!"
   },
+  "onboardingSignInWith": {
+    "message": "Sign in with $1",
+    "description": "$1 is the type of login used Google, Apple, etc."
+  },
+  "onboardingSrpCreate": {
+    "message": "Continue with Secret Recovery Phrase"
+  },
+  "onboardingSrpImport": {
+    "message": "Import using Secret Recovery Phrase"
+  },
   "onekey": {
     "message": "OneKey"
   },
@@ -3915,6 +3932,9 @@
   },
   "options": {
     "message": "Options"
+  },
+  "or": {
+    "message": "Or"
   },
   "origin": {
     "message": "Origin"
@@ -6798,23 +6818,17 @@
   "welcomeBack": {
     "message": "Welcome back"
   },
-  "welcomeExploreDescription": {
-    "message": "Store, send, and spend crypto currencies and assets."
+  "welcomeDescription": {
+    "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
   },
-  "welcomeExploreTitle": {
-    "message": "Explore decentralized apps"
+  "welcomeGetStarted": {
+    "message": "Get started"
   },
-  "welcomeLoginDescription": {
-    "message": "Use your MetaMask to login to decentralized apps - no signup needed."
-  },
-  "welcomeLoginTitle": {
-    "message": "Say hello to your wallet"
+  "welcomeTitle": {
+    "message": "Welcome to MetaMask"
   },
   "welcomeToMetaMask": {
     "message": "Let's get started"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
   },
   "whatsThis": {
     "message": "What's this?"

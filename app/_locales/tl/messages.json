@@ -334,10 +334,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Ang bayad sa priyoridad (kilala rin bilang “tip ng minero”) ay direktang napupunta sa mga minero at ginagawang insentibo ang mga ito upang unahin ang iyong mga transaksyon."
   },
-  "agreeTermsOfUse": {
-    "message": "Sumasang-ayon ako sa $1 ng MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "Isinasaad ng on-chain history ng token na may mga dati nang kahina-hinalang aktibidad ng airdrop."
   },
@@ -6408,23 +6404,8 @@
   "welcomeBack": {
     "message": "Maligayang Pagbabalik!"
   },
-  "welcomeExploreDescription": {
-    "message": "Mag-imbak, magpadala at gumastos ng mga cryto currency at asset."
-  },
-  "welcomeExploreTitle": {
-    "message": "Magsaliksik sa mga decentralized app"
-  },
-  "welcomeLoginDescription": {
-    "message": "Gamitin ang iyong MetaMask para mag-log in sa mga decentralized app, hindi na kailangang mag-sign up."
-  },
-  "welcomeLoginTitle": {
-    "message": "Mag-hello sa iyong wallet"
-  },
   "welcomeToMetaMask": {
     "message": "Magsimula na tayo"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Ang MetaMask na pinagkakatiwalaan ng milyun-milyon ay isang ligtas na wallet na ginagawang accessible ang mundo ng web3 para sa lahat."
   },
   "whatsThis": {
     "message": "Ano ito?"

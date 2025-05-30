@@ -334,10 +334,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "A taxa de prioridade (ou seja, \"gorjeta do minerador\") vai diretamente para os mineradores e os incentiva a priorizar a sua transação."
   },
-  "agreeTermsOfUse": {
-    "message": "Concordo com os $1 da MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "O histórico do token na rede revela ocorrências anteriores de atividades de airdrop suspeitas."
   },
@@ -6408,23 +6404,8 @@
   "welcomeBack": {
     "message": "Boas-vindas de volta!"
   },
-  "welcomeExploreDescription": {
-    "message": "Armazene, envie e gaste criptomoedas e criptoativos."
-  },
-  "welcomeExploreTitle": {
-    "message": "Explore aplicativos descentralizados"
-  },
-  "welcomeLoginDescription": {
-    "message": "Use a sua MetaMask para fazer login em aplicativos descentralizados, sem necessidade de cadastro."
-  },
-  "welcomeLoginTitle": {
-    "message": "Diga olá à sua carteira"
-  },
   "welcomeToMetaMask": {
     "message": "Vamos começar"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Com a confiança de milhões de usuários, a MetaMask é uma carteira segura que torna o mundo da Web3 acessível a todos."
   },
   "whatsThis": {
     "message": "O que é isso?"

@@ -334,10 +334,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Maks. öncelik ücreti (başka bir deyişle \"madenci bahşişi\") doğrudan madencilere gider ve işleminizin öncelikli olarak gerçekleştirilmesini teşvik eder."
   },
-  "agreeTermsOfUse": {
-    "message": "MetaMask'in $1 bölümünü kabul ediyorum",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "Token'ın zincir içi geçmişi, daha önce şüpheli airdrop faaliyetlerinin olduğu durumları açığa çıkarır."
   },
@@ -6408,23 +6404,8 @@
   "welcomeBack": {
     "message": "Tekrar Hoş Geldin!"
   },
-  "welcomeExploreDescription": {
-    "message": "Kripto paraları ve varlıkları saklayın, gönderin ve harcayın."
-  },
-  "welcomeExploreTitle": {
-    "message": "Merkezsiz uygulamaları keşfedin"
-  },
-  "welcomeLoginDescription": {
-    "message": "Merkezsiz uygulamalarda oturum açmak için MetaMask'inizi kullanın - kaydolmak gerekmez."
-  },
-  "welcomeLoginTitle": {
-    "message": "Cüzdanınıza merhaba deyin"
-  },
   "welcomeToMetaMask": {
     "message": "Başlayalım"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Milyonların güvendiği MetaMask, web3 dünyasını herkes için erişilebilir kılan güvenli bir cüzdandır."
   },
   "whatsThis": {
     "message": "Bu nedir?"

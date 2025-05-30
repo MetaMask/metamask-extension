@@ -334,10 +334,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Biaya prioritas (alias “tip penambang”) langsung masuk ke penambang dan memberi insentif kepada mereka untuk memprioritaskan transaksi Anda."
   },
-  "agreeTermsOfUse": {
-    "message": "Saya menyetujui $1 MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "Riwayat token on-chain menampilkan kejadian sebelumnya mengenai aktivitas airdrop yang mencurigakan."
   },
@@ -6408,23 +6404,8 @@
   "welcomeBack": {
     "message": "Selamat datang kembali!"
   },
-  "welcomeExploreDescription": {
-    "message": "Simpan, kirim, dan gunakan mata uang dan aset kripto."
-  },
-  "welcomeExploreTitle": {
-    "message": "Jelajahi aplikasi terdesentralisasi"
-  },
-  "welcomeLoginDescription": {
-    "message": "Gunakan MetaMask Anda untuk masuk ke aplikasi terdesentralisasi. Tidak perlu mendaftar."
-  },
-  "welcomeLoginTitle": {
-    "message": "Ucapkan halo pada dompet Anda"
-  },
   "welcomeToMetaMask": {
     "message": "Mari kita mulai"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "MetaMask merupakan dompet aman yang dipercaya oleh jutaan orang, yang membuat dunia web3 dapat diakses oleh semua orang."
   },
   "whatsThis": {
     "message": "Apa ini?"

@@ -334,10 +334,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Το τέλος προτεραιότητας (γνωστό και ως “miner tip”) πηγαίνει άμεσα στους miner και τους ενθαρρύνει να δώσουν προτεραιότητα στη συναλλαγή σας."
   },
-  "agreeTermsOfUse": {
-    "message": "Συμφωνώ με το $1 του MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "Το ιστορικό του token στην αλυσίδα αποκαλύπτει προηγούμενες ύποπτες τακτικές airdrop."
   },
@@ -6408,23 +6404,8 @@
   "welcomeBack": {
     "message": "Καλώς ήρθατε και πάλι!"
   },
-  "welcomeExploreDescription": {
-    "message": "Αποθηκεύστε, στείλτε και ξοδέψτε κρυπτονομίσματα και περιουσιακά στοιχεία."
-  },
-  "welcomeExploreTitle": {
-    "message": "Εξερεύνηση αποκεντρωμένων εφαρμογών"
-  },
-  "welcomeLoginDescription": {
-    "message": "Χρησιμοποιήστε το MetaMask για να συνδεθείτε σε αποκεντρωμένες εφαρμογές - δεν απαιτείται εγγραφή."
-  },
-  "welcomeLoginTitle": {
-    "message": "Χαιρετίστε το πορτοφόλι σας"
-  },
   "welcomeToMetaMask": {
     "message": "Ας ξεκινήσουμε"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Το MetaMask, το οποίο εμπιστεύονται εκατομμύρια χρήστες, είναι ένα ασφαλές πορτοφόλι που κάνει τον κόσμο του web3 προσβάσιμο σε όλους."
   },
   "whatsThis": {
     "message": "Τι είναι αυτό;"

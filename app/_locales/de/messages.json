@@ -334,10 +334,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Prioritätsgebühr (alias „Miner Tip“) geht direkt an Miner und veranlasst sie, Ihre Transaktion zu priorisieren."
   },
-  "agreeTermsOfUse": {
-    "message": "Ich stimme MetaMasks $1 zu",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "Der On-Chain-Verlauf des Tokens zeigt frühere Fälle von verdächtigen Airdrop-Aktivitäten."
   },
@@ -6408,23 +6404,8 @@
   "welcomeBack": {
     "message": "Willkommen zurück!"
   },
-  "welcomeExploreDescription": {
-    "message": "Speichern, versenden und ausgeben von Kryptowährungen und Assets."
-  },
-  "welcomeExploreTitle": {
-    "message": "Erkunden dezentraler Apps"
-  },
-  "welcomeLoginDescription": {
-    "message": "Verwenden Sie MetaMask, um sich bei dezentralen Apps anzumelden – keine Anmeldung erforderlich."
-  },
-  "welcomeLoginTitle": {
-    "message": "Sagen Sie Hallo zu Ihrer Wallet"
-  },
   "welcomeToMetaMask": {
     "message": "Los geht's"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "MetaMask ist eine sichere Wallet, welche die Welt von web3 für alle zugänglich macht und die das Vertrauen von Millionen genießt."
   },
   "whatsThis": {
     "message": "Was ist das?"
