@@ -31,13 +31,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
-import {
-  ONBOARDING_COMPLETION_ROUTE,
-  ONBOARDING_METAMETRICS,
-} from '../../../helpers/constants/routes';
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../../app/scripts/lib/util';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 
 type SkipSRPBackupProps = {
   onClose: () => void;
