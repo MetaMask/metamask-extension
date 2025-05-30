@@ -56,6 +56,11 @@ describe('UserStorageControllerInit', () => {
           onAccountNameUpdated: expect.any(Function),
           onAccountSyncErroneousSituation: expect.any(Function),
         },
+        contactSyncing: {
+          onContactUpdated: expect.any(Function),
+          onContactDeleted: expect.any(Function),
+          onContactSyncErroneousSituation: expect.any(Function),
+        },
       },
     });
   });

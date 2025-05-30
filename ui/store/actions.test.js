@@ -2855,6 +2855,22 @@ describe('Actions', () => {
     });
   });
 
+  describe('syncContactsWithUserStorage', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls syncContactsWithUserStorage in the background', async () => {
+      const store = mockStore();
+
+      const syncContactsWithUserStorageStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      background.getApi.returns({
+    });
+  });
+
   describe('deleteAccountSyncingDataFromUserStorage', () => {
     afterEach(() => {
       sinon.restore();

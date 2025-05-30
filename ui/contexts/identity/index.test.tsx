@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import * as redux from 'react-redux';
 import { useAccountSyncing } from '../../hooks/identity/useAccountSyncing';
+import { useContactSyncing } from '../../hooks/identity/useContactSyncing';
 import {
   useAutoSignIn,
   useAutoSignOut,
@@ -10,10 +11,12 @@ import { MetamaskIdentityProvider } from '.';
 
 jest.mock('../../hooks/identity/useBackupAndSync');
 jest.mock('../../hooks/identity/useAccountSyncing');
+jest.mock('../../hooks/identity/useContactSyncing');
 jest.mock('../../hooks/identity/useAuthentication');
 
 describe('MetamaskIdentityProvider', () => {
   const mockUseAccountSyncing = jest.mocked(useAccountSyncing);
+  const mockUseContactSyncing = jest.mocked(useContactSyncing);
   const mockUseAutoSignIn = jest.mocked(useAutoSignIn);
   const mockUseAutoSignOut = jest.mocked(useAutoSignOut);
 
@@ -76,6 +79,38 @@ describe('MetamaskIdentityProvider', () => {
     );
 
     expect(dispatchAccountSyncing).not.toHaveBeenCalled();
+  });
+
+  it('calls dispatchContactSyncing if shouldDispatchContactSyncing is true', () => {
+    const dispatchContactSyncing = jest.fn();
+    mockUseContactSyncing.mockReturnValue({
+      dispatchContactSyncing,
+      shouldDispatchContactSyncing: true,
+    });
+
+    render(
+      <MetamaskIdentityProvider>
+        <div>Child Component</div>
+      </MetamaskIdentityProvider>,
+    );
+
+    expect(dispatchContactSyncing).toHaveBeenCalled();
+  });
+
+  it('does not call dispatchContactSyncing if shouldDispatchContactSyncing is false', () => {
+    const dispatchContactSyncing = jest.fn();
+    mockUseContactSyncing.mockReturnValue({
+      dispatchContactSyncing,
+      shouldDispatchContactSyncing: false,
+    });
+
+    render(
+      <MetamaskIdentityProvider>
+        <div>Child Component</div>
+      </MetamaskIdentityProvider>,
+    );
+
+    expect(dispatchContactSyncing).not.toHaveBeenCalled();
   });
 
   it('calls autoSignIn if shouldAutoSignIn returns true', () => {
