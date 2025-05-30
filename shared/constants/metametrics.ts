@@ -827,12 +827,9 @@ export enum MetaMetricsEventName {
   ShowNativeTokenAsMainBalance = 'Show native token as main balance',
   WalletSetupStarted = 'Wallet Setup Started',
   WalletImportStarted = 'Wallet Import Started',
-  WalletImportAttempted = 'Wallet Import Attempted',
-  WalletImported = 'Wallet Imported',
-  WalletCreationAttempted = 'Wallet Creation Attempted',
-  WalletCreated = 'Wallet Created (Onboarding)',
-  WalletSetupFailure = 'Wallet Setup Failure',
-  WalletSetupCompleted = 'Wallet Setup Completed',
+  WalletSetupCanceled = 'Wallet Setup Canceled',
+  WalletSetupFailed = 'Wallet Setup Failed',
+  WalletCreated = 'Wallet Created',
   // BEGIN:ONLY_INCLUDE_IF(build-flask)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   // END:ONLY_INCLUDE_IF

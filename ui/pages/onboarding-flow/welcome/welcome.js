@@ -186,7 +186,7 @@ export default function OnboardingWelcome({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.WalletSetupStarted,
           properties: {
-            account_type: MetaMetricsEventAccountType.Social,
+            account_type: `metamask_${socialConnectionType}`,
           },
         });
         if (isNewUser) {
@@ -228,7 +228,7 @@ export default function OnboardingWelcome({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.WalletImportStarted,
           properties: {
-            account_type: MetaMetricsEventAccountType.Social,
+            account_type: `imported_${socialConnectionType}`,
           },
         });
 
