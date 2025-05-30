@@ -283,8 +283,9 @@ async function setupMocking(
       };
     });
 
+  // even if we are at chain id 1337, a call is made to chain id 1
   await server
-    .forGet(new RegExp(`^${GAS_API_BASE_URL}/networks/\\d+/gasPrices$`, 'u'))
+    .forGet(`${GAS_API_BASE_URL}/networks/1/gasPrices`)
     .thenCallback(() => {
       return {
         statusCode: 200,
