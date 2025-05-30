@@ -3,11 +3,6 @@ import { Driver } from '../../../webdriver/driver';
 class OnboardingCompletePage {
   private driver: Driver;
 
-  private readonly congratulationsMessage = {
-    text: 'Congratulations!',
-    tag: 'h2',
-  };
-
   private readonly installCompleteMessage = {
     text: 'Installation is complete!',
     tag: 'h2',
@@ -77,10 +72,6 @@ class OnboardingCompletePage {
     await this.driver.clickElementAndWaitToDisappear(
       this.manageDefaultSettingsButton,
     );
-  }
-
-  async check_congratulationsMessageIsDisplayed(): Promise<void> {
-    await this.driver.waitForSelector(this.congratulationsMessage);
   }
 
   async check_walletReadyMessageIsDisplayed(): Promise<void> {
