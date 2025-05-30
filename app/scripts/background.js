@@ -89,7 +89,7 @@ import {
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
-import { DeeplinkRouter } from './lib/deeplink-router';
+import { DeeplinkRouter } from './lib/deeplinks/deeplink-router';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -275,7 +275,6 @@ function maybeDetectPhishing(theController) {
   const isManifestV2 = !isManifestV3;
   browser.webRequest.onBeforeRequest.addListener(
     (details) => {
-      debugger;
       if (details.tabId === browser.tabs.TAB_ID_NONE) {
         return {};
       }
