@@ -7359,16 +7359,17 @@ export default class MetamaskController extends EventEmitter {
         ? (origin) => payload(origin)
         : () => payload;
 
-    Object.entries(this.connections).forEach(async ([origin, conn]) => {
-      if (apiType && conn.apiType !== apiType) {
-        return;
-      }
-      try {
-        this.notifyConnection(conn, await getPayload(origin));
-      } catch (err) {
-        console.error(err);
-      }
-    });
+    Object.keys(this.connections).forEach((origin) => {
+      Object.values(this.connections[origin]).forEach(async (conn) => {
+        if (apiType && conn.apiType !== apiType) {
+          return;
+        }
+        try {
+          this.notifyConnection(conn, await getPayload(origin));
+        } catch (err) {
+          console.error(err);
+        }
+      });
   }
 
   /**
