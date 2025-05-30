@@ -24,6 +24,7 @@ import {
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useSyncSRPs } from '../../../../hooks/social-sync/useSyncSRPs';
 import {
   isSocialLoginFlow,
   getSocialLoginEmail,
@@ -31,6 +32,8 @@ import {
 } from '../../../../selectors';
 
 export const RevealSrpList = () => {
+  // sync SRPs
+  useSyncSRPs();
   const t = useI18nContext();
   const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
   const [selectedKeyringId, setSelectedKeyringId] = useState('');
