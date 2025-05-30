@@ -7,6 +7,7 @@ import type {
 import { NetworkType } from '@metamask/controller-utils';
 import { isEvmAccountType, Transaction } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { isScopeEqualToAny } from '@metamask/keyring-utils';
 import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import {
   NetworkConfiguration,
@@ -46,6 +47,7 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { isBtcTestnetAddress } from '../../shared/lib/multichain/accounts';
 import {
   AccountsState,
   getInternalAccounts,
@@ -212,9 +214,38 @@ export function getMultichainNetwork(
   // on having a non-EVM account being selected!
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const nonEvmNetworks = getMultichainNetworkProviders(state);
-  const nonEvmNetwork = nonEvmNetworks.find((provider) => {
-    return provider.isAddressCompatible(selectedAccount.address);
-  });
+  const selectedChainId = state.metamask.selectedMultichainNetworkChainId;
+
+  let nonEvmNetwork: MultichainProviderConfig | undefined;
+
+  // First try to find network by selectedChainId
+  if (selectedChainId) {
+    nonEvmNetwork = nonEvmNetworks.find(
+      (provider) => provider.chainId === selectedChainId,
+    );
+  }
+
+  // If no network found by selectedChainId, we try to find by scopes
+  if (!nonEvmNetwork && selectedAccount.scopes.length > 0) {
+    // If we have a selectedChainId but didn't find a match, we try to find a network
+    // that matches both the selectedChainId and is in the scopes
+    if (selectedChainId) {
+      nonEvmNetwork = nonEvmNetworks.find(
+        (provider) =>
+          provider.chainId === selectedChainId &&
+          isScopeEqualToAny(provider.chainId, selectedAccount.scopes),
+      );
+    }
+  }
+
+  // If still no network found, we try to find a network that is address compatible
+  // TODO: This runtime logic is not supported by the `MultichainNetworkController`, we should remove this and rely
+  // only on the network configs provided by this controller.
+  if (!nonEvmNetwork) {
+    nonEvmNetwork = nonEvmNetworks.find((provider) => {
+      return provider.isAddressCompatible(selectedAccount.address);
+    });
+  }
 
   if (!nonEvmNetwork) {
     throw new Error(
@@ -223,7 +254,6 @@ export function getMultichainNetwork(
   }
 
   return {
-    // TODO: Adapt this for other non-EVM networks
     nickname: nonEvmNetwork.nickname,
     isEvmNetwork: false,
     chainId: nonEvmNetwork?.chainId,
@@ -386,7 +416,17 @@ export function getMultichainIsMainnet(
   const mainnet = (
     MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET as Record<string, string>
   )[selectedAccount.type];
-  return providerConfig.chainId === mainnet ?? false;
+
+  if (!mainnet) {
+    return false;
+  }
+
+  // If it's Bitcoin case, check if it's a testnet address
+  if (isBtcTestnetAddress(selectedAccount.address)) {
+    return false;
+  }
+
+  return providerConfig.chainId === mainnet;
 }
 
 export function getMultichainIsTestnet(
@@ -397,21 +437,28 @@ export function getMultichainIsTestnet(
   // the same pattern here too!
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const providerConfig = getMultichainProviderConfig(state, selectedAccount);
-  return getMultichainIsEvm(state, account)
-    ? // FIXME: There are multiple ways of checking for an EVM test network, but
-      // current implementation differ between each other. So we do not use
-      // `getIsTestnet` here and uses the actual `TEST_NETWORK_IDS` which seems
-      // more up-to-date
-      (TEST_NETWORK_IDS as string[]).includes(providerConfig.chainId)
-    : // TODO: For now we only check for bitcoin and Solana, but we will need to
-      // update this for other non-EVM networks later!
-      (
-        [
-          MultichainNetworks.BITCOIN_TESTNET,
-          MultichainNetworks.SOLANA_DEVNET,
-          MultichainNetworks.SOLANA_TESTNET,
-        ] as string[]
-      ).includes(providerConfig.chainId);
+
+  if (getMultichainIsEvm(state, account)) {
+    // FIXME: There are multiple ways of checking for an EVM test network, but
+    // current implementation differ between each other. So we do not use
+    // `getIsTestnet` here and uses the actual `TEST_NETWORK_IDS` which seems
+    // more up-to-date
+    return (TEST_NETWORK_IDS as string[]).includes(providerConfig.chainId);
+  }
+
+  // For Bitcoin case, check address format as well
+  if (isBtcTestnetAddress(selectedAccount.address)) {
+    return true;
+  }
+
+  // TODO: For now we only check for bitcoin and Solana, but we will need to
+  // update this for other non-EVM networks later!
+  return [
+    MultichainNetworks.BITCOIN_TESTNET,
+    MultichainNetworks.BITCOIN_SIGNET,
+    MultichainNetworks.SOLANA_DEVNET,
+    MultichainNetworks.SOLANA_TESTNET,
+  ].includes(providerConfig.chainId as MultichainNetworks);
 }
 
 export function getMultichainBalances(
@@ -437,7 +484,14 @@ export function getSelectedAccountMultichainTransactions(
     return undefined;
   }
 
-  return state.metamask.nonEvmTransactions[selectedAccount.id];
+  const transactions = state.metamask.nonEvmTransactions[selectedAccount.id];
+
+  // We need to get the provider config for the selected account to get the correct chainId
+  const providerConfig = getMultichainProviderConfig(state, selectedAccount);
+  const currentChainId = providerConfig.chainId as MultichainNetworks;
+
+  // And then return the transactions for the current chain
+  return transactions?.[currentChainId];
 }
 
 export const getMultichainCoinRates = (state: MultichainState) => {

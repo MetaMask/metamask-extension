@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { zeroAddress } from 'ethereumjs-util';
+import { SolMethod, SolScope } from '@metamask/keyring-api';
 import {
   type QuoteMetadata,
   type QuoteResponse,
@@ -1490,6 +1491,8 @@ describe('Bridge selectors', () => {
               'account-1': {
                 address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
                 type: 'solana:data-account',
+                scopes: [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet],
+                methods: [SolMethod.SendAndConfirmTransaction],
               },
             },
           },
@@ -1547,6 +1550,8 @@ describe('Bridge selectors', () => {
               'account-1': {
                 address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
                 type: 'solana:data-account',
+                scopes: [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet],
+                methods: [SolMethod.SendAndConfirmTransaction],
               },
             },
           },
@@ -1731,6 +1736,8 @@ describe('Bridge selectors', () => {
               'account-1': {
                 address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
                 type: 'solana:data-account',
+                scopes: [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet],
+                methods: [SolMethod.SendAndConfirmTransaction],
               },
             },
           },
