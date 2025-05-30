@@ -134,6 +134,6 @@ export default function OnboardingWelcome({
 }
 
 OnboardingWelcome.propTypes = {
-  pageState: PropTypes.oneOf(Object.values(WelcomePageState)).isRequired,
+  pageState: PropTypes.oneOf(Object.values(WelcomePageState)),
   setPageState: PropTypes.func.isRequired,
 };
