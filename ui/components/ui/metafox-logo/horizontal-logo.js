@@ -16,12 +16,14 @@ export default function MetaFoxHorizontalLogo({
       : themeProps,
   );
 
-  const fill = theme === 'dark' ? 'rgb(255,255,255)' : 'rgb(22,22,22)';
+  const fill = theme === ThemeType.dark ? 'rgb(255,255,255)' : 'rgb(22,22,22)';
 
   useEffect(() => {
-    if (themeProps !== undefined) {
-      setTheme(themeProps);
+    let newTheme = themeProps;
+    if (newTheme === undefined) {
+      newTheme = document.documentElement.getAttribute('data-theme');
     }
+    setTheme(newTheme);
   }, [themeProps, setTheme]);
 
   return (

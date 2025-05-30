@@ -523,6 +523,7 @@
     "@types/xml2js": "^0",
     "@types/yargs": "^17.0.32",
     "@types/yargs-parser": "^21.0.3",
+    "@types/zxcvbn": "^4.4.5",
     "@typescript-eslint/eslint-plugin": "^7.10.0",
     "@typescript-eslint/parser": "^7.10.0",
     "@viem/anvil": "^0.0.10",
