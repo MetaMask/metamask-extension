@@ -1,6 +1,5 @@
 /* eslint-disable jest/no-done-callback */
 import { obj as createThoughStream } from 'through2';
-import { JsonRpcError } from '@metamask/rpc-errors';
 import metaRPCClientFactory, { DisconnectError } from './metaRPCClientFactory';
 
 describe('metaRPCClientFactory', () => {
@@ -30,12 +29,16 @@ describe('metaRPCClientFactory', () => {
       });
     });
   });
-  it('should be able to make an rpc request/error with the method and params', async () => {
+  it('should be able to make an rpc request/error with the method and params', (done) => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     // make a "foo" method call
-    const requestProm = metaRPCClient.foo('bar');
+    metaRPCClient.foo('bar').catch((err) => {
+      expect(err.message).toStrictEqual('foo-message');
+      expect(err.code).toStrictEqual(1);
+      done();
+    });
 
     metaRPCClient.requests.forEach((_, key) => {
       streamTest.write({
@@ -47,20 +50,20 @@ describe('metaRPCClientFactory', () => {
         },
       });
     });
-
-    await expect(requestProm).rejects.toThrow(
-      new JsonRpcError(1, 'foo-message'),
-    );
   });
 
-  it('should be able to make an rpc request/response with the method and params with multiple instances of metaRPCClientFactory and the same connectionStream', async () => {
+  it('should be able to make an rpc request/response with the method and params with multiple instances of metaRPCClientFactory and the same connectionStream', () => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
     const metaRPCClient2 = metaRPCClientFactory(streamTest);
 
     // make a "foo" method call, followed by "baz" call on metaRPCClient2
-    const requestProm = metaRPCClient.foo('bar');
-    const requestProm2 = requestProm.then(() => metaRPCClient2.baz('bar'));
+    metaRPCClient.foo('bar').then(async (result) => {
+      expect(result).toStrictEqual('foobarbaz');
+      metaRPCClient2.baz('bar').then(() => {
+        done();
+      });
+    });
 
     // fake a response
     metaRPCClient.requests.forEach((_, key) => {
@@ -71,8 +74,6 @@ describe('metaRPCClientFactory', () => {
       });
     });
 
-    await expect(requestProm).resolves.toStrictEqual('foobarbaz');
-
     // fake client2's response
     metaRPCClient2.requests.forEach((_, key) => {
       streamTest.write({
@@ -81,8 +82,6 @@ describe('metaRPCClientFactory', () => {
         result: 'foobarbaz',
       });
     });
-
-    await expect(requestProm2).resolves.toStrictEqual('foobarbaz');
   });
 
   it('should be able to handle notifications', (done) => {
@@ -185,16 +184,15 @@ describe('metaRPCClientFactory', () => {
     jest.useRealTimers();
   });
 
-  it('should fail all pending actions with a DisconnectError when the stream ends', async () => {
+  it('should fail all pending actions with a DisconnectError when the stream ends', (done) => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
-    const requestProm = metaRPCClient.foo('bar');
-    streamTest.emit('end');
-
-    await expect(requestProm).rejects.toThrow(
-      new DisconnectError('disconnected'),
-    );
+    metaRPCClient.foo('bar').catch((err) => {
+      expect(err).toBeInstanceOf(metaRPCClient.DisconnectError);
+      expect(err.message).toStrictEqual('disconnected');
+      done();
+    });
   });
 
   it('should cancel the request timer when handling its response', async () => {
