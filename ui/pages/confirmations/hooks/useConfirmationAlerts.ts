@@ -82,15 +82,10 @@ function useTransactionAlerts(): Alert[] {
       nonContractAddressAlerts,
       pendingTransactionAlerts,
       resimulationAlert,
-<<<<<<< HEAD
-      firstTimeInteractionAlert,
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       signingOrSubmittingAlerts,
       ///: END:ONLY_INCLUDE_IF
       nonContractAddressAlerts,
-=======
-      signingOrSubmittingAlerts,
->>>>>>> e43f610a77 (feat: Add alert for malicious batch transactions cp-12.18.3 (#33237))
     ],
   );
 }
