@@ -401,46 +401,6 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('institutional', () => {
-    it('set the interactive replacement token with a url and the old refresh token', async () => {
-      await withController(({ controller }) => {
-        const mockParams = {
-          url: 'https://example.com',
-          oldRefreshToken: 'old',
-        };
-
-        controller.showInteractiveReplacementTokenBanner(mockParams);
-
-        expect(controller.state.interactiveReplacementToken).toStrictEqual(
-          mockParams,
-        );
-      });
-    });
-
-    it('set the setCustodianDeepLink with the fromAddress and custodyId', async () => {
-      await withController(({ controller }) => {
-        const mockParams = {
-          fromAddress: '0x',
-          custodyId: 'custodyId',
-        };
-
-        controller.setCustodianDeepLink(mockParams);
-
-        expect(controller.state.custodianDeepLink).toStrictEqual(mockParams);
-      });
-    });
-
-    it('set the setNoteToTraderMessage with a message', async () => {
-      await withController(({ controller }) => {
-        const mockParams = 'some message';
-
-        controller.setNoteToTraderMessage(mockParams);
-
-        expect(controller.state.noteToTraderMessage).toStrictEqual(mockParams);
-      });
-    });
-  });
-
   describe('setSurveyLinkLastClickedOrClosed', () => {
     it('set the surveyLinkLastClickedOrClosed time', async () => {
       await withController(({ controller }) => {
@@ -512,6 +472,20 @@ describe('AppStateController', () => {
         expect(controller.state.newPrivacyPolicyToastShownDate).toStrictEqual(
           mockParams,
         );
+      });
+    });
+  });
+
+  describe('setSplashPageAcknowledgedForAccount', () => {
+    it('adds the account to upgradeSplashPageAcknowledgedForAccounts', async () => {
+      await withController(({ controller }) => {
+        const mockAccount = '0x123';
+
+        controller.setSplashPageAcknowledgedForAccount(mockAccount);
+
+        expect(
+          controller.state.upgradeSplashPageAcknowledgedForAccounts,
+        ).toStrictEqual([mockAccount]);
       });
     });
   });
