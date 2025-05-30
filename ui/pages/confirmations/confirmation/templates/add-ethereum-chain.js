@@ -9,6 +9,7 @@ import {
   Display,
   FlexDirection,
   Severity,
+  TextColor,
   TypographyVariant,
 } from '../../../../helpers/constants/design-system';
 import {
@@ -244,11 +245,19 @@ function getValues(pendingApproval, t, actions, history, data) {
   return {
     content: [
       {
+        element: 'OriginPill',
+        key: 'origin-pill',
+        props: {
+          origin: pendingApproval.origin,
+          dataTestId: 'signature-origin-pill',
+        },
+      },
+      {
         element: 'Typography',
         key: 'title',
         children: title,
         props: {
-          variant: TypographyVariant.H3,
+          variant: TypographyVariant.H4,
           align: 'center',
           fontWeight: 'bold',
           boxProps: {
@@ -262,18 +271,11 @@ function getValues(pendingApproval, t, actions, history, data) {
         children: subtitle,
         props: {
           variant: TypographyVariant.H6,
+          color: TextColor.textAlternative,
           align: 'center',
           boxProps: {
-            margin: originIsMetaMask ? [0, 8, 4] : [0, 0, 4],
+            margin: originIsMetaMask ? [0, 8, 0] : [0, 0, 0],
           },
-        },
-      },
-      {
-        element: 'OriginPill',
-        key: 'origin-pill',
-        props: {
-          origin: pendingApproval.origin,
-          dataTestId: 'signature-origin-pill',
         },
       },
       {
@@ -296,18 +298,18 @@ function getValues(pendingApproval, t, actions, history, data) {
             [t('currencySymbol')]: data.currencySymbolWarning,
           },
           dictionary: {
-            [t('currencySymbol')]: pendingApproval.requestData.ticker,
+            [t('networkName')]: pendingApproval.requestData.chainName,
             [t('networkURL')]: customRpcUrl
               .toLowerCase()
               ?.includes(`/v3/${infuraProjectId}`)
               ? customRpcUrl.replace(`/v3/${infuraProjectId}`, '').toLowerCase()
               : customRpcUrl.toLowerCase(),
             [t('chainId')]: parseInt(pendingApproval.requestData.chainId, 16),
-            [t('networkName')]: pendingApproval.requestData.chainName,
+            [t('currencySymbol')]: pendingApproval.requestData.ticker,
             [t('blockExplorerUrl')]:
               pendingApproval.requestData.rpcPrefs.blockExplorerUrl,
           },
-          prefaceKeys: [t('currencySymbol'), t('networkURL')],
+          prefaceKeys: [t('networkName'), t('networkURL'), t('chainId')],
         },
       },
       {
@@ -335,6 +337,7 @@ function getValues(pendingApproval, t, actions, history, data) {
         ],
         props: {
           variant: TypographyVariant.H6,
+          color: TextColor.textAlternative,
           boxProps: {
             margin: originIsMetaMask ? [0, 8] : 0,
             display: Display.Flex,
