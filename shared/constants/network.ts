@@ -188,6 +188,7 @@ export const CHAIN_IDS = {
   MATCHAIN: '0x2ba',
   FLOW: '0x2eb',
   MONAD_TESTNET: '0x279f',
+  PEAQ: '0xd0a',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -261,6 +262,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   SHAPE_SEPOLIA: '0x2b03',
   SHAPE: '0x168',
   XRPLEVM_TESTNET: '0x161c28',
+  PEAQ: '0xd0a',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -327,6 +329,7 @@ export const PLUME_DISPLAY_NAME = 'Plume';
 export const MATCHAIN_DISPLAY_NAME = 'Matchain';
 export const FLOW_DISPLAY_NAME = 'Flow EVM Mainnet';
 export const MONAD_TESTNET_DISPLAY_NAME = 'Monad Testnet';
+export const PEAQ_DISPLAY_NAME = 'peaq';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -464,6 +467,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   SHAPE: 'ETH',
   SHAPE_SEPOLIA: 'ETH',
   XRPLEVM_TESTNET: 'XRP',
+  PEAQ: 'PEAQ',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -571,6 +575,7 @@ export const PLUME_NATIVE_TOKEN_IMAGE_URL = './images/plume-native.svg';
 export const MATCHAIN_IMAGE_URL = './images/matchain.svg';
 export const FLOW_IMAGE_URL = './images/flow.svg';
 export const MONAD_TESTNET_IMAGE_URL = './images/monad-testnet-logo.png';
+export const PEAQ_IMAGE_URL = './images/peaq.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -847,6 +852,8 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.FLOW]: CURRENCY_SYMBOLS.FLOW,
   [CHAIN_IDS.MONAD_TESTNET]:
     TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MONAD_TESTNET],
+  [CHAINLIST_CHAIN_IDS_MAP.PEAQ]:
+    CHAINLIST_CURRENCY_SYMBOLS_MAP.PEAQ,
 } as const;
 
 /**
@@ -992,6 +999,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.MATCHAIN]: MATCHAIN_IMAGE_URL,
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.PEAQ]: PEAQ_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1052,6 +1060,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.MATCHAIN]: BNB_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_IMAGE_URL,
+  [CHAIN_IDS.PEAQ]: PEAQ_IMAGE_URL,
 } as const;
 
 /**
