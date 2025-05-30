@@ -104,8 +104,8 @@ describe('Petnames - Signatures', function () {
         await expectName(driver, '0xbBbBB...bBBbB', false);
         await saveName(driver, '0xCD2a3...DD826', undefined, 'test.lens');
         await saveName(driver, '0xbBbBB...bBBbB', undefined, 'test2.lens');
-        await expectName(driver, '0xCcCCc...ccccC', false);
-        await saveName(driver, '0xCcCCc...ccccC', 'Custom Name');
+        await expectName(driver, '0xCcCC...cccC', false);
+        await saveName(driver, '0xCcCC...cccC', 'Custom Name');
         await rejectRedesignedSignatureOrTransactionRequest(driver);
         await focusTestDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V3);
@@ -139,8 +139,8 @@ describe('Petnames - Signatures', function () {
         await expectName(driver, '0xB0B0b...00000', false);
         await saveName(driver, '0xCD2a3...DD826', undefined, 'test.lens');
         await saveName(driver, '0xB0Bda...bEa57', undefined, 'Test Token 2');
-        await expectName(driver, '0xCcCCc...ccccC', false);
-        await saveName(driver, '0xCcCCc...ccccC', 'Custom Name');
+        await expectName(driver, '0xCcCC...cccC', false);
+        await saveName(driver, '0xCcCC...cccC', 'Custom Name');
         await rejectRedesignedSignatureOrTransactionRequest(driver);
         await focusTestDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
