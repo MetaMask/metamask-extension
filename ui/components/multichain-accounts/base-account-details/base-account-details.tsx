@@ -15,7 +15,7 @@ import {
   BackgroundColor,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { ACCOUNT_DETAILS_QR_CODE_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { IconName } from '../../component-library/icon';
 import { useHistory } from 'react-router-dom';
 import { isEvmAccountType } from '@metamask/keyring-api';
@@ -50,12 +50,8 @@ export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
 
   const [isEditingAccountName, setIsEditingAccountName] = useState(false);
 
-  const handleEditAccountName = () => {
-    setIsEditingAccountName(true);
-  };
-
   const handleShowAddress = () => {
-    // TODO: Implement new route for show QR code/address
+    history.push(`${ACCOUNT_DETAILS_QR_CODE_ROUTE}`);
   }
 
   return (
@@ -94,9 +90,7 @@ export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
                 color={IconColor.iconAlternative}
                 size={ButtonIconSize.Md}
                 ariaLabel={t('edit')}
-                onClick={() => {
-
-                }}
+                onClick={handleShowAddress}
                 marginLeft={2}
               />
             }
