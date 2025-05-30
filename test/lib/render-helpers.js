@@ -11,7 +11,7 @@ import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
 import { LegacyMetaMetricsProvider } from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as en from '../../app/_locales/en/messages.json';
-import { setupInitialStore } from '../../ui';
+import { setupInitialStore, connectToBackground } from '../../ui';
 import Root from '../../ui/pages';
 
 export const I18nProvider = (props) => {
@@ -186,7 +186,11 @@ export async function integrationTestRender(extendedRenderOptions) {
     ...renderOptions
   } = extendedRenderOptions;
 
-  const store = await setupInitialStore(preloadedState, backgroundConnection, {
+  connectToBackground(null, backgroundConnection, () => {
+    // our lint rules waste so much of my time.
+  });
+
+  const store = await setupInitialStore(preloadedState, {
     activeTab,
   });
 
