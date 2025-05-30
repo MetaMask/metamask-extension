@@ -12,22 +12,8 @@
   z-index: 55;
   min-height: 68px;
 
-  &__contents-layout-old-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-
-  &__contents-layout-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-
   &__contents {
     height: 68px;
-
-    @include design-system.screen-sm-max {
-      height: $height-screen-sm-max;
-    }
 
     @include design-system.screen-sm-min {
       width: $width-screen-sm-min;
@@ -53,6 +39,13 @@
     &-layout-old-grid {
       display: grid;
       grid-template-columns: 1fr 2fr 1fr;
+
+      @include design-system.screen-sm-max {
+      height: $height-screen-sm-max;
+
+      /* Ensures network picker column and icons column are always the same size */
+      grid-template-columns: 64px 2fr 64px;
+    }
     }
 
     &-layout-grid {

@@ -144,7 +144,9 @@ export const AppHeaderUnlockedContent = ({
             as="div"
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.flexStart}
+            alignItems={
+              process.env.REMOVE_GNS ? AlignItems.flexStart : AlignItems.center
+            }
             ellipsis
           >
             <AccountPicker
@@ -201,17 +203,7 @@ export const AppHeaderUnlockedContent = ({
         )}
       </>
     ),
-    [
-      copied,
-      disableAccountPicker,
-      dispatch,
-      handleCopy,
-      internalAccount,
-      normalizedCurrentAddress,
-      shortenedAddress,
-      trackEvent,
-      useBlockie,
-    ],
+    [copied, disableAccountPicker, dispatch, handleCopy],
   );
 
   return (
