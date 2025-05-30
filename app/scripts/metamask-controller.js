@@ -7370,6 +7370,7 @@ export default class MetamaskController extends EventEmitter {
           console.error(err);
         }
       });
+    });
   }
 
   /**
