@@ -184,6 +184,20 @@ class SelectNetwork {
       tag: 'button',
     });
   }
+
+  async clickDiscoverButton(): Promise<void> {
+    console.log('Click Discover button in network options');
+    await this.driver.clickElement(
+      '[data-testid="network-list-item-options-discover"]',
+    );
+  }
+
+  async check_discoverButtonIsVisible(): Promise<void> {
+    console.log('Check Discover button is visible in network options');
+    await this.driver.waitForSelector(
+      '[data-testid="network-list-item-options-discover"]',
+    );
+  }
 }
 
 export default SelectNetwork;
