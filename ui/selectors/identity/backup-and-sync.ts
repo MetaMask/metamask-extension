@@ -71,3 +71,16 @@ export const selectIsAccountSyncingEnabled = createSelector(
     return metamask.isAccountSyncingEnabled;
   },
 );
+
+/**
+ * Selector to determine if contact syncing is enabled.
+ *
+ * This selector uses the `createSelector` function from 'reselect' to compute whether contact syncing is enabled,
+ * based on the `isContactSyncingEnabled` property of the `metamask` object in the Redux store.
+ */
+export const selectIsContactSyncingEnabled = createSelector(
+  [getMetamask],
+  (metamask) => {
+    return metamask.isContactSyncingEnabled;
+  },
+);
