@@ -36,6 +36,7 @@ import {
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 // eslint-disable-next-line import/no-restricted-paths
 import { getPlatform } from '../../../../app/scripts/lib/util';
+import { TraceName, bufferedEndTrace } from '../../../../shared/lib/trace';
 import ConfirmSrpModal from './confirm-srp-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
@@ -118,6 +119,8 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         hd_entropy_index: hdEntropyIndex,
       },
     });
+    bufferedEndTrace({ name: TraceName.OnboardingNewSrpCreateWallet });
+    bufferedEndTrace({ name: TraceName.OnboardingJourneyOverall });
 
     getPlatform() === PLATFORM_FIREFOX
       ? history.push(ONBOARDING_COMPLETION_ROUTE)

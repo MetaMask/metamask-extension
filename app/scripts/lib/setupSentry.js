@@ -272,7 +272,7 @@ function getSentryTarget() {
  *
  * @returns `true` if MetaMetrics is enabled, `false` otherwise.
  */
-async function getMetaMetricsEnabled() {
+export async function getMetaMetricsEnabled() {
   const flags = getManifestFlags();
 
   if (

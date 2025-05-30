@@ -1,4 +1,10 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import {
+  bufferedTrace,
+  TraceName,
+  TraceOperation,
+  bufferedEndTrace,
+} from '../../../../shared/lib/trace';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import type {
@@ -63,12 +69,40 @@ export default class OAuthService {
       throw new Error('No redirect URL found');
     }
 
-    // handle the OAuth response from the social login provider and get the Jwt Token in exchange
-    const loginResult = await this.#handleOAuthResponse(
-      loginHandler,
-      redirectUrlFromOAuth,
-    );
-    return loginResult;
+    let getAuthTokensSuccess = false;
+
+    try {
+      bufferedTrace({
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+        op: TraceOperation.OnboardingSecurityOp,
+      });
+      // handle the OAuth response from the social login provider and get the Jwt Token in exchange
+      const loginResult = await this.#handleOAuthResponse(
+        loginHandler,
+        redirectUrlFromOAuth,
+      );
+      getAuthTokensSuccess = true;
+      return loginResult;
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+
+      bufferedTrace({
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokensError,
+        op: TraceOperation.OnboardingError,
+        tags: { errorMessage },
+      });
+      bufferedEndTrace({
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokensError,
+      });
+
+      throw error;
+    } finally {
+      bufferedEndTrace({
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+        data: { success: getAuthTokensSuccess },
+      });
+    }
   }
 
   /**
