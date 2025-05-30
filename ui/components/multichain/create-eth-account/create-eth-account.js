@@ -20,12 +20,15 @@ export const CreateEthAccount = ({
 
   const onCreateAccount = async (name) => {
     trace({ name: TraceName.AddAccount });
-    const newAccount = await dispatch(addNewAccount(selectedKeyringId));
-    if (name) {
-      dispatch(setAccountLabel(newAccount.address, name));
+    try {
+      const newAccount = await dispatch(addNewAccount(selectedKeyringId));
+      if (name) {
+        dispatch(setAccountLabel(newAccount.address, name));
+      }
+      onActionComplete(true, newAccount);
+    } finally {
+      endTrace({ name: TraceName.AddAccount });
     }
-    onActionComplete(true, newAccount);
-    endTrace({ name: TraceName.AddAccount });
   };
 
   const getNextAvailableAccountName = async () => {
