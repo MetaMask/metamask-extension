@@ -759,7 +759,7 @@ export enum MetaMetricsEventName {
   OnboardingWalletSecurityPhraseRevealed = 'SRP Revealed',
   OnboardingWalletSecurityPhraseWrittenDown = 'SRP Backup Confirm Display',
   OnboardingWalletSecurityPhraseConfirmed = 'SRP Backup Confirmed',
-  OnboardingWalletCreationComplete = 'Wallet Created',
+  OnboardingWalletCreationComplete = 'Onboarding Wallet Created',
   OnboardingWalletAdvancedSettings = 'Settings Updated',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingTwitterClick = 'External Link Clicked',
@@ -827,9 +827,12 @@ export enum MetaMetricsEventName {
   ShowNativeTokenAsMainBalance = 'Show native token as main balance',
   WalletSetupStarted = 'Wallet Setup Started',
   WalletImportStarted = 'Wallet Import Started',
-  WalletSetupCanceled = 'Wallet Setup Canceled',
-  WalletSetupFailed = 'Wallet Setup Failed',
+  WalletImportAttempted = 'Wallet Import Attempted',
+  WalletImported = 'Wallet Imported',
+  WalletCreationAttempted = 'Wallet Creation Attempted',
   WalletCreated = 'Wallet Created',
+  WalletSetupFailure = 'Wallet Setup Failure',
+  WalletSetupCompleted = 'Wallet Setup Completed',
   // BEGIN:ONLY_INCLUDE_IF(build-flask)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   // END:ONLY_INCLUDE_IF

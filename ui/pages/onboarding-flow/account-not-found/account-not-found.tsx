@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
@@ -28,18 +28,28 @@ import {
   setFirstTimeFlowType,
 } from '../../../store/actions';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import {
+  MetaMetricsEventAccountType,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AccountNotFound() {
   const history = useHistory();
+  const location = useLocation();
   const dispatch = useDispatch();
   const t = useI18nContext();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
+  const trackEvent = useContext(MetaMetricsContext);
   const { bufferedTrace, bufferedEndTrace, onboardingParentContext } =
-    useContext(MetaMetricsContext);
+    trackEvent;
+  // Get socialConnectionType from query parameters
+  const urlParams = new URLSearchParams(location.search);
+  const socialConnectionType = urlParams.get('socialConnectionType') || '';
 
   const onLoginWithDifferentMethod = async () => {
     // clear the social login state
@@ -54,6 +64,15 @@ export default function AccountNotFound() {
       op: TraceOperation.OnboardingUserJourney,
       tags: { source: 'account_status_redirect' },
       parentContext: onboardingParentContext?.current,
+    });
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletSetupStarted,
+      properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`,
+      },
     });
     dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
     history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);

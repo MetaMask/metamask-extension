@@ -193,6 +193,14 @@ export default function CreatePassword({
 
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletCreated,
+      properties: {
+        account_type: MetaMetricsEventAccountType.Default,
+      },
+    });
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletSetupCompleted,
       properties: {
         wallet_setup_type: 'new',
