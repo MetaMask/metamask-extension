@@ -93,14 +93,14 @@ describe('TransactionAccountDetails', () => {
 
   it('renders required data for upgrade only request', () => {
     const { getByText } = renderConfirmation(upgradeAccountConfirmationOnly);
-    expect(getByText('0x935E7...05477')).toBeInTheDocument();
+    expect(getByText('0x935E...5477')).toBeInTheDocument();
     expect(getByText('Standard account')).toBeInTheDocument();
     expect(getByText('Smart contract')).toBeInTheDocument();
   });
 
   it('renders required data for revoke request', () => {
     const { getByText } = renderConfirmation(downgradeAccountConfirmation);
-    expect(getByText('0x8a0bb...bDB87')).toBeInTheDocument();
+    expect(getByText('0x8a0b...DB87')).toBeInTheDocument();
     expect(getByText('Standard account')).toBeInTheDocument();
     expect(getByText('Smart account')).toBeInTheDocument();
   });
