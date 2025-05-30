@@ -44,6 +44,8 @@ export const TransactionFlowSection = () => {
           ownerId={transactionMeta.id}
           style={{
             flexDirection: FlexDirection.Column,
+            flex: 1,
+            overflow: 'hidden',
           }}
         >
           <Box marginTop={1} data-testid="sender-address">
@@ -66,6 +68,8 @@ export const TransactionFlowSection = () => {
             ownerId={transactionMeta.id}
             style={{
               flexDirection: FlexDirection.Column,
+              flex: 1,
+              overflow: 'hidden',
             }}
           >
             <Box marginTop={1} data-testid="recipient-address">
