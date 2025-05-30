@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import browser from 'webextension-polyfill';
 
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
@@ -14,7 +14,6 @@ import {
   FontWeight,
   IconColor,
   JustifyContent,
-  Size,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -126,17 +125,10 @@ export const AppHeaderUnlockedContent = ({
   const handleConnectionsRoute = () => {
     history.push(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
   };
-
-  return (
-    <>
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
-        gap={2}
-      >
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  const AppContent = useMemo(
+    () => (
+      <>
+        {process.env.REMOVE_GNS ? (
           <AvatarAccount
             variant={
               useBlockie
@@ -146,8 +138,7 @@ export const AppHeaderUnlockedContent = ({
             address={internalAccount.address}
             size={AvatarAccountSize.Md}
           />
-          ///: END:ONLY_INCLUDE_IF
-        }
+        ) : null}
         {internalAccount && (
           <Text
             as="div"
@@ -175,79 +166,126 @@ export const AppHeaderUnlockedContent = ({
               paddingLeft={0}
               paddingRight={0}
             />
-            {process.env.REMOVE_GNS ? (
-              <ButtonBase
-                className="multichain-app-header__address-copy-button"
-                onClick={() => handleCopy(normalizedCurrentAddress)}
-                size={ButtonBaseSize.Sm}
-                backgroundColor={BackgroundColor.transparent}
-                borderRadius={BorderRadius.LG}
-                endIconName={copied ? IconName.CopySuccess : IconName.Copy}
-                endIconProps={{
-                  color: IconColor.iconAlternative,
-                  size: IconSize.Sm,
-                }}
-                paddingLeft={0}
-                paddingRight={0}
+            <ButtonBase
+              className="multichain-app-header__address-copy-button"
+              onClick={() => handleCopy(normalizedCurrentAddress)}
+              size={ButtonBaseSize.Sm}
+              backgroundColor={BackgroundColor.transparent}
+              borderRadius={BorderRadius.LG}
+              endIconName={copied ? IconName.CopySuccess : IconName.Copy}
+              endIconProps={{
+                color: IconColor.iconAlternative,
+                size: IconSize.Sm,
+              }}
+              paddingLeft={0}
+              paddingRight={0}
+              ellipsis
+              textProps={{
+                display: Display.Flex,
+                gap: 2,
+                variant: TextVariant.bodyMdMedium,
+              }}
+              style={{ height: 'auto' }} // ButtonBase doesn't have auto size
+              data-testid="app-header-copy-button"
+            >
+              <Text
+                color={TextColor.textAlternative}
+                variant={TextVariant.bodySmMedium}
                 ellipsis
-                textProps={{
-                  display: Display.Flex,
-                  gap: 2,
-                  variant: TextVariant.bodyMdMedium,
-                }}
-                style={{ height: 'auto' }} // ButtonBase doesn't have auto size
-                data-testid="app-header-copy-button"
+                as="span"
               >
-                <Text
-                  color={TextColor.textAlternative}
-                  variant={TextVariant.bodySmMedium}
-                  ellipsis
-                  as="span"
-                >
-                  {shortenedAddress}
-                </Text>
-              </ButtonBase>
-            ) : (
-              <Tooltip
-                position="left"
-                title={copied ? t('addressCopied') : t('copyToClipboard')}
-              >
-                <ButtonBase
-                  className="multichain-app-header__address-copy-button"
-                  onClick={() => handleCopy(normalizedCurrentAddress)}
-                  size={ButtonBaseSize.Sm}
-                  backgroundColor={BackgroundColor.transparent}
-                  borderRadius={BorderRadius.LG}
-                  endIconName={copied ? IconName.CopySuccess : IconName.Copy}
-                  endIconProps={{
-                    color: IconColor.iconAlternative,
-                    size: IconSize.Sm,
-                  }}
-                  paddingLeft={0}
-                  paddingRight={0}
-                  ellipsis
-                  textProps={{
-                    display: Display.Flex,
-                    gap: 2,
-                    variant: TextVariant.bodyMdMedium,
-                  }}
-                  style={{ height: 'auto' }} // ButtonBase doesn't have auto size
-                  data-testid="app-header-copy-button"
-                >
-                  <Text
-                    color={TextColor.textAlternative}
-                    variant={TextVariant.bodySmMedium}
-                    ellipsis
-                    as="span"
-                  >
-                    {shortenedAddress}
-                  </Text>
-                </ButtonBase>
-              </Tooltip>
-            )}
+                {shortenedAddress}
+              </Text>
+            </ButtonBase>
           </Text>
         )}
-      </Box>
+      </>
+    ),
+    [
+      copied,
+      disableAccountPicker,
+      dispatch,
+      handleCopy,
+      internalAccount,
+      normalizedCurrentAddress,
+      shortenedAddress,
+      trackEvent,
+      useBlockie,
+    ],
+  );
+
+  return (
+    <>
+      {process.env.REMOVE_GNS ? null : (
+        <>
+          {popupStatus ? (
+            <Box className="multichain-app-header__contents__container">
+              <Tooltip title={currentNetwork.name} position="right">
+                <PickerNetwork
+                  avatarNetworkProps={{
+                    backgroundColor: testNetworkBackgroundColor,
+                    role: 'img',
+                    name: currentNetwork.name,
+                  }}
+                  className="multichain-app-header__contents--avatar-network"
+                  ref={menuRef}
+                  as="button"
+                  src={networkIconSrc}
+                  label={currentNetwork.name}
+                  aria-label={`${t('networkMenu')} ${currentNetwork.name}`}
+                  labelProps={{
+                    display: Display.None,
+                  }}
+                  onClick={(e: React.MouseEvent<HTMLElement>) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    trace({ name: TraceName.NetworkList });
+                    networkOpenCallback();
+                  }}
+                  display={[Display.Flex, Display.None]} // show on popover hide on desktop
+                  disabled={disableNetworkPicker}
+                />
+              </Tooltip>
+            </Box>
+          ) : (
+            <div>
+              <PickerNetwork
+                avatarNetworkProps={{
+                  backgroundColor: testNetworkBackgroundColor,
+                  role: 'img',
+                  name: currentNetwork.name,
+                }}
+                margin={2}
+                aria-label={`${t('networkMenu')} ${currentNetwork.name}`}
+                label={currentNetwork.name}
+                src={networkIconSrc}
+                onClick={(e: React.MouseEvent<HTMLElement>) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  trace({ name: TraceName.NetworkList });
+                  networkOpenCallback();
+                }}
+                display={[Display.None, Display.Flex]} // show on desktop hide on popover
+                className="multichain-app-header__contents__network-picker"
+                disabled={disableNetworkPicker}
+                data-testid="network-display"
+              />
+            </div>
+          )}
+        </>
+      )}
+      {process.env.REMOVE_GNS ? (
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          alignItems={AlignItems.center}
+          gap={2}
+        >
+          {AppContent}
+        </Box>
+      ) : (
+        <>{AppContent}</>
+      )}
       <Box
         display={Display.Flex}
         alignItems={AlignItems.center}

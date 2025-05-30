@@ -43,7 +43,11 @@ export const AccountPicker = ({
   const shortenedAddress = shortenAddress(toChecksumHexAddress(address));
 
   return (
-    <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      alignItems={AlignItems.center}
+    >
       <ButtonBase
         className={classnames('multichain-account-picker', className)}
         data-testid="account-menu-icon"
@@ -70,7 +74,14 @@ export const AccountPicker = ({
         {...props}
         gap={1}
       >
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+        <Box
+          display={Display.Flex}
+          flexDirection={
+            process.env.REMOVE_GNS ? FlexDirection.Column : FlexDirection.Row
+          }
+          alignItems={AlignItems.center}
+          gap={process.env.REMOVE_GNS ? 0 : 2}
+        >
           {
             process.env.REMOVE_GNS ? null : (
               ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
