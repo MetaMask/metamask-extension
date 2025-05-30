@@ -465,6 +465,7 @@ const state = {
         ],
       },
     ],
+    transactionBatches: {},
     addressBook: {
       undefined: {
         0: {

@@ -5129,17 +5129,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^4.0.0":
-  version: 4.2.0
-  resolution: "@metamask/design-tokens@npm:4.2.0"
-  checksum: 10/aa92b20f8860a59b2b272e7a8a704d7e426a94030081c69c42b87ea81985c5d6585122def5906ce5a5751cb99f070efed77fabecc751ae0a7d84738f0e0ae522
-  languageName: node
-  linkType: hard
-
-"@metamask/design-tokens@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/design-tokens@npm:7.0.0"
-  checksum: 10/37b0c958aa8c9e58731e6a3c73f30ff64d34eeaaf90725acdb3843834a8b61de9cea9f6277aca729585e240a994e6b82f13b0b75ee36ff00713e973d021f1ddb
+"@metamask/design-tokens@npm:^7.0.0, @metamask/design-tokens@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "@metamask/design-tokens@npm:7.1.0"
+  checksum: 10/a4f1379bdf5f6b99c9a228ce4f5bb07ace4ed5abc61384e7f04cf5bdf943b32dd13ec9676a88f6b6c7314cdba6e2967b9fd99707a64a645865f21f8d8a2566d9
   languageName: node
   linkType: hard
 
@@ -6027,18 +6020,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-warning@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "@metamask/phishing-warning@npm:4.1.0"
+"@metamask/phishing-warning@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@metamask/phishing-warning@npm:5.0.0"
   dependencies:
-    "@metamask/design-tokens": "npm:^4.0.0"
+    "@metamask/design-tokens": "npm:^7.1.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/post-message-stream": "npm:^8.0.0"
     eth-phishing-detect: "npm:^1.2.0"
     punycode: "npm:^2.3.1"
     readable-stream: "npm:^3.6.2"
     ses: "npm:^1.1.0"
-  checksum: 10/6bb1ef9dc2f9dcbcfd3472855dca579e6f7b155082e95bf16259ef734ca8baeb0cd5ab3f06b583c7fc73393e4b03e5ec3937130e19aa98e9a003378c0179a2ed
+  checksum: 10/446e72dad36729afb5830f88ccfa4e49ce9f89f64a3edc61f7b2548b17c39a5aaf9e537773fc990a5e2fc59fa973d860b6bf1d2d1c7601138553e7fb8aff5dbf
   languageName: node
   linkType: hard
 
@@ -6555,9 +6548,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^56.2.0":
-  version: 56.2.0
-  resolution: "@metamask/transaction-controller@npm:56.2.0"
+"@metamask/transaction-controller@npm:^56.3.0":
+  version: 56.3.0
+  resolution: "@metamask/transaction-controller@npm:56.3.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6587,7 +6580,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^23.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/3175b943d030adf473dec141343c870bda2233e60a2fc84110440e658c5890a9517f54ed91c898d350dc10095e01d240ae2bb75d04973fb1a3d2be851d5c6ce6
+  checksum: 10/9c300f5417e7b23f16a1882f50a6319f0d374c823d87ff9d2793b329f1119b04cc9e2399f8d80fe67b2f23a32f239ee727e82beec31e02a638eb947b8f1b47d8
   languageName: node
   linkType: hard
 
@@ -29830,7 +29823,7 @@ __metadata:
     "@metamask/permission-controller": "npm:^11.0.6"
     "@metamask/permission-log-controller": "npm:^3.0.3"
     "@metamask/phishing-controller": "npm:^12.3.2"
-    "@metamask/phishing-warning": "npm:^4.1.0"
+    "@metamask/phishing-warning": "npm:^5.0.0"
     "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^17.0.0"
@@ -29857,7 +29850,7 @@ __metadata:
     "@metamask/test-dapp": "npm:9.3.0"
     "@metamask/test-dapp-multichain": "npm:^0.10.0"
     "@metamask/test-dapp-solana": "npm:^0.1.0"
-    "@metamask/transaction-controller": "npm:^56.2.0"
+    "@metamask/transaction-controller": "npm:^56.3.0"
     "@metamask/user-operation-controller": "npm:^31.0.0"
     "@metamask/utils": "npm:^11.1.0"
     "@ngraveio/bc-ur": "npm:^1.1.13"
