@@ -154,6 +154,8 @@ describe('BackupAndSyncFeaturesToggles', () => {
     );
     expect(setIsBackupAndSyncFeatureEnabledMock).toHaveBeenCalledWith(
       BACKUPANDSYNC_FEATURES.contactSyncing,
+      false,
+    );
   });
 
   function arrangeMocks() {
