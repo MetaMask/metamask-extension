@@ -16,7 +16,7 @@ export default class SignTypedData extends Confirmation {
 
   private signTypedDataMessage = { text: 'Hi, Alice!' };
 
-  private contract = { css: '.name__value', text: '0xCcCCc...ccccC' };
+  private contract = { css: '.name__value', text: '0xCcCC...cccC' };
 
   private primaryType = { text: 'Mail' };
 
