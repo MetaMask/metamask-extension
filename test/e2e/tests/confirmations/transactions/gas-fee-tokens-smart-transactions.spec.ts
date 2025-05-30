@@ -26,7 +26,6 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         dapp: true,
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesControllerSmartTransactionsOptedIn()
           .withNetworkControllerOnMainnet()
           .build(),
         localNodeOptions: {
@@ -84,7 +83,6 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         dapp: true,
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesControllerSmartTransactionsOptedIn()
           .withNetworkControllerOnMainnet()
           .build(),
         localNodeOptions: {
