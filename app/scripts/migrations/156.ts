@@ -28,7 +28,7 @@ export async function migrate(originalVersionedData: {
   try {
     versionedData.data = transformState(versionedData.data);
   } catch (error) {
-    global.sentry?.captureException?.(
+    console.error(
       new Error(`Migration #${version}: ${getErrorMessage(error)}`),
     );
   }
