@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import * as redux from 'react-redux';
 import { useAccountSyncing } from '../../hooks/identity/useAccountSyncing';
 import { useContactSyncing } from '../../hooks/identity/useContactSyncing';
@@ -24,6 +25,11 @@ describe('MetamaskIdentityProvider', () => {
     mockUseAccountSyncing.mockReturnValue({
       dispatchAccountSyncing: jest.fn(),
       shouldDispatchAccountSyncing: false,
+    });
+
+    mockUseContactSyncing.mockReturnValue({
+      dispatchContactSyncing: jest.fn(),
+      shouldDispatchContactSyncing: false,
     });
 
     mockUseAutoSignIn.mockReturnValue({

@@ -31,7 +31,7 @@ export const useShouldDispatchContactSyncing = () => {
     getCompletedOnboarding,
   );
 
-  const shouldDispatchAccountSyncing: boolean = Boolean(
+  const shouldDispatchContactSyncing: boolean = Boolean(
     basicFunctionality &&
       isBackupAndSyncEnabled &&
       isContactSyncingEnabled &&
@@ -40,7 +40,7 @@ export const useShouldDispatchContactSyncing = () => {
       completedOnboarding,
   );
 
-  return shouldDispatchAccountSyncing;
+  return shouldDispatchContactSyncing;
 };
 
 /**

@@ -2865,9 +2865,15 @@ describe('Actions', () => {
 
       const syncContactsWithUserStorageStub = sinon
         .stub()
-        .callsFake((_, cb) => cb());
+        .callsFake((cb) => cb());
 
       background.getApi.returns({
+        syncContactsWithUserStorage: syncContactsWithUserStorageStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.syncContactsWithUserStorage());
+      expect(syncContactsWithUserStorageStub.calledOnceWith()).toBe(true);
     });
   });
 
