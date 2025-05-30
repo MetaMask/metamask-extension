@@ -103,14 +103,7 @@ async function importTST(driver: Driver) {
     '[data-testid="import-tokens-modal-custom-address"]',
     '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
   );
-
-  await driver.waitForSelector(
-    '[data-testid="import-tokens-modal-custom-symbol"]',
-  );
-  await driver.fill('[data-testid="import-tokens-modal-custom-symbol"]', 'TST');
-  await driver.fill('[data-testid="import-tokens-modal-custom-decimals"]', '0');
-
-  await driver.clickElement({
+  await driver.clickElementAndWaitToDisappear({
     css: '[data-testid="import-tokens-button-next"]',
     text: 'Next',
   });
@@ -127,7 +120,6 @@ async function createERC20ApproveTransaction(driver: Driver) {
 }
 
 async function assertApproveDetails(driver: Driver) {
-  await driver.delay(veryLargeDelayMs);
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
