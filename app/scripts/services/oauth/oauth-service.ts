@@ -44,45 +44,94 @@ export default class OAuthService {
       this.#env,
     );
 
-    // launch the web auth flow to get the Authorization Code from the social login provider
-    const redirectUrlFromOAuth = await new Promise<string>(
-      (resolve, reject) => {
-        // since promise returns aren't supported until MV3, we need to use a callback function to support MV2
-        this.#webAuthenticator.launchWebAuthFlow(
-          {
-            interactive: true,
-            url: loginHandler.getAuthUrl(),
-          },
-          (responseUrl) => {
-            if (responseUrl) {
-              resolve(responseUrl);
-            } else {
-              reject(new Error('No redirect URL found'));
-            }
-          },
-        );
-      },
-    );
+    let providerLoginSuccess = false;
+    let redirectUrlFromOAuth = null;
+
+    bufferedTrace({
+      name: TraceName.OnboardingOAuthProviderLogin,
+      op: TraceOperation.OnboardingSecurityOp,
+    });
+
+    try {
+      // launch the web auth flow to get the Authorization Code from the social login provider
+      redirectUrlFromOAuth = await new Promise<string>(
+        (resolve, reject) => {
+          // since promise returns aren't supported until MV3, we need to use a callback function to support MV2
+          this.#webAuthenticator.launchWebAuthFlow(
+            {
+              interactive: true,
+              url: loginHandler.getAuthUrl(),
+            },
+            (responseUrl) => {
+              if (responseUrl) {
+                resolve(responseUrl);
+              } else {
+                reject(new Error('No redirect URL found'));
+              }
+            },
+          );
+        },
+      );
+      providerLoginSuccess = true;
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+
+      bufferedTrace({
+        name: TraceName.OnboardingOAuthProviderLoginError,
+        op: TraceOperation.OnboardingError,
+        tags: { errorMessage },
+      });
+      bufferedEndTrace({ name: TraceName.OnboardingOAuthProviderLoginError });
+    } finally {
+      bufferedEndTrace({
+        name: TraceName.OnboardingOAuthProviderLogin,
+        data: { success: providerLoginSuccess },
+      });
+    }
 
     if (!redirectUrlFromOAuth) {
       console.error('[identity auth] redirectUrl is null');
       throw new Error('No redirect URL found');
     }
 
+
+    return this.#handleOAuthResponse(
+      loginHandler,
+      redirectUrlFromOAuth,
+    );
+  }
+
+  /**
+   * Handle the OAuth response from the social login provider and get the Jwt Token in exchange.
+   *
+   * The Social Login Auth Server returned the Authorization Code in the redirect URL.
+   * This function will extract the Authorization Code from the redirect URL,
+   * use it to get the Jwt Token from the Web3Auth Authentication Server.
+   *
+   * @param loginHandler - The login handler to use.
+   * @param redirectUrl - The redirect URL from webAuthFlow which includes the Authorization Code.
+   * @returns The login result.
+   */
+  async #handleOAuthResponse(
+    loginHandler: BaseLoginHandler,
+    redirectUrl: string,
+  ): Promise<OAuthLoginResult> {
     let getAuthTokensSuccess = false;
+    let oauthLoginResult: OAuthLoginResult | null = null;
 
     try {
       bufferedTrace({
         name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
         op: TraceOperation.OnboardingSecurityOp,
       });
-      // handle the OAuth response from the social login provider and get the Jwt Token in exchange
-      const loginResult = await this.#handleOAuthResponse(
-        loginHandler,
-        redirectUrlFromOAuth,
-      );
+
+      const authCode = this.#getRedirectUrlAuthCode(redirectUrl);
+      if (!authCode) {
+        throw new Error('No auth code found');
+      }
+      oauthLoginResult = await this.#getAuthIdToken(loginHandler, authCode);
       getAuthTokensSuccess = true;
-      return loginResult;
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
@@ -103,29 +152,12 @@ export default class OAuthService {
         data: { success: getAuthTokensSuccess },
       });
     }
-  }
 
-  /**
-   * Handle the OAuth response from the social login provider and get the Jwt Token in exchange.
-   *
-   * The Social Login Auth Server returned the Authorization Code in the redirect URL.
-   * This function will extract the Authorization Code from the redirect URL,
-   * use it to get the Jwt Token from the Web3Auth Authentication Server.
-   *
-   * @param loginHandler - The login handler to use.
-   * @param redirectUrl - The redirect URL from webAuthFlow which includes the Authorization Code.
-   * @returns The login result.
-   */
-  async #handleOAuthResponse(
-    loginHandler: BaseLoginHandler,
-    redirectUrl: string,
-  ): Promise<OAuthLoginResult> {
-    const authCode = this.#getRedirectUrlAuthCode(redirectUrl);
-    if (!authCode) {
-      throw new Error('No auth code found');
+    if (!oauthLoginResult) {
+      throw new Error('Failed to get OAuth login result');
     }
-    const res = await this.#getAuthIdToken(loginHandler, authCode);
-    return res;
+
+    return oauthLoginResult;
   }
 
   /**
