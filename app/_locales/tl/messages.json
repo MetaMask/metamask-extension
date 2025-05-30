@@ -5679,12 +5679,6 @@
   "startEarning": {
     "message": "Simulang kumita"
   },
-  "stateCorruptionDetectedErrorMessage": {
-    "message": "Nasira o nawawala ang state file ng MetaMask. Posibleng ma-recover ang mga file, kaya huwag i-uninstall ang MetaMask extension!"
-  },
-  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
-    "message": "Kung gusto mong ikaw mismo ang mag-recover ng secret recovery phrase, sundin ang mga tagubiling ito."
-  },
   "stateLogError": {
     "message": "Error sa pagkuha ng mga log ng estado."
   },

@@ -5679,12 +5679,6 @@
   "startEarning": {
     "message": "Comece a ganhar"
   },
-  "stateCorruptionDetectedErrorMessage": {
-    "message": "O arquivo de estado da MetaMask está corrompido ou ausente. Os arquivos provavelmente são recuperáveis, então não desinstale a extensão da MetaMask!"
-  },
-  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
-    "message": "Se você quiser tentar recuperar sua Frase de Recuperação Secreta por conta própria, siga estas instruções."
-  },
   "stateLogError": {
     "message": "Erro ao recuperar os logs de estado."
   },

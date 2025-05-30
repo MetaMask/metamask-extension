@@ -4,6 +4,7 @@ import 'navigator.locks';
 import { captureException } from '@sentry/browser';
 import log from 'loglevel';
 
+import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { PersistenceManager } from './persistence-manager';
 import ExtensionStore from './extension-store';
 import { MetaMaskStateType } from './base-store';
@@ -109,14 +110,14 @@ describe('PersistenceManager', () => {
   describe('get', () => {
     it('returns undefined and clears mostRecentRetrievedState if store returns empty', async () => {
       mockStoreGet.mockReturnValueOnce({});
-      const result = await manager.get();
+      const result = await manager.get({ validateVault: false });
       expect(result).toBeUndefined();
       expect(manager.mostRecentRetrievedState).toBeNull();
     });
 
     it('returns undefined if store returns null', async () => {
       mockStoreGet.mockReturnValueOnce(null);
-      const result = await manager.get();
+      const result = await manager.get({ validateVault: false });
       expect(result).toBeUndefined();
       expect(manager.mostRecentRetrievedState).toBeNull();
     });
@@ -124,7 +125,7 @@ describe('PersistenceManager', () => {
     it('updates mostRecentRetrievedState if extension has not been initialized', async () => {
       mockStoreGet.mockResolvedValueOnce({ data: MOCK_DATA });
 
-      const result = await manager.get();
+      const result = await manager.get({ validateVault: false });
       expect(result).toStrictEqual({ data: MOCK_DATA });
       expect(manager.mostRecentRetrievedState).toStrictEqual({
         data: MOCK_DATA,
@@ -134,7 +135,7 @@ describe('PersistenceManager', () => {
     it('does not overwrite mostRecentRetrievedState if already initialized', async () => {
       mockStoreGet.mockResolvedValueOnce({ data: MOCK_DATA });
       // First call to get -> sets isExtensionInitialized = false -> sets mostRecentRetrievedState
-      await manager.get();
+      await manager.get({ validateVault: false });
       // The act of calling set will set isExtensionInitialized to true
       manager.setMetadata({ version: 10 });
       await manager.set({ appState: { test: true } });
@@ -143,10 +144,67 @@ describe('PersistenceManager', () => {
       mockStoreGet.mockResolvedValueOnce({
         data: { config: { newData: true } },
       });
-      await manager.get();
+      await manager.get({ validateVault: false });
       expect(manager.mostRecentRetrievedState).toStrictEqual({
         data: MOCK_DATA,
       });
+    });
+
+    it('does not throw when validating state with a *missing vault* and no backup', async () => {
+      // the reason this does NOT throw is because this could be an initial
+      // state; we have no good evidence that this isn't the first time
+      // state is being initialized, so we just assume it is fine.
+      const mockData = {
+        data: {
+          KeyringController: {
+            vault: undefined, // vault is missing on purpose
+          },
+        },
+      };
+      mockStoreGet.mockResolvedValueOnce({ data: mockData });
+
+      const result = await manager.get({ validateVault: true });
+      expect(result).toStrictEqual({ data: mockData });
+      expect(manager.mostRecentRetrievedState).toStrictEqual({
+        data: mockData,
+      });
+    });
+
+    it('does not throw when validating a valid vault', async () => {
+      const mockData = {
+        data: {
+          KeyringController: {
+            vault: 'vault',
+          },
+        },
+      };
+      mockStoreGet.mockResolvedValueOnce({ data: mockData });
+
+      const result = await manager.get({ validateVault: true });
+      expect(result).toStrictEqual({ data: mockData });
+      expect(manager.mostRecentRetrievedState).toStrictEqual({
+        data: mockData,
+      });
+    });
+
+    it('does throw when validating state with a *missing vault* but has a backup', async () => {
+      const mockData = {
+        data: {
+          KeyringController: {
+            vault: undefined, // vault is missing on purpose
+          },
+        },
+      };
+      mockStoreGet.mockResolvedValueOnce({ data: mockData });
+      manager.getBackup = jest.fn().mockResolvedValueOnce({
+        KeyringController: {
+          vault: 'vault',
+        },
+      });
+
+      await expect(manager.get({ validateVault: true })).rejects.toThrow(
+        MISSING_VAULT_ERROR,
+      );
     });
   });
 
@@ -154,7 +212,7 @@ describe('PersistenceManager', () => {
     it('sets mostRecentRetrievedState to null if previously set', async () => {
       mockStoreGet.mockResolvedValueOnce({ data: MOCK_DATA });
 
-      await manager.get();
+      await manager.get({ validateVault: false });
       manager.cleanUpMostRecentRetrievedState();
       expect(manager.mostRecentRetrievedState).toBeNull();
     });
