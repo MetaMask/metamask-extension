@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { CaipChainId } from '@metamask/utils';
+import { KeyringAccount } from '@metamask/keyring-api';
 import { CreateAccount } from '../create-account';
 import {
   WalletClientType,
@@ -10,7 +11,10 @@ type CreateSnapAccountProps = {
   /**
    * Executes when the Create button is clicked
    */
-  onActionComplete: (completed: boolean) => Promise<void>;
+  onActionComplete: (
+    completed: boolean,
+    newAccount?: KeyringAccount,
+  ) => Promise<void>;
   /**
    * Callback to select the SRP
    */
@@ -27,6 +31,14 @@ type CreateSnapAccountProps = {
    * The chain ID to create the account
    */
   chainId: CaipChainId;
+  /**
+   * Whether to set the newly created account as the selected account
+   */
+  setNewlyCreatedAccountAsSelected?: boolean;
+  /**
+   * Whether to redirect to the overview page after creating the account
+   */
+  redirectToOverview?: boolean;
 };
 
 export const CreateSnapAccount = ({
@@ -35,19 +47,30 @@ export const CreateSnapAccount = ({
   selectedKeyringId,
   clientType,
   chainId,
+  setNewlyCreatedAccountAsSelected,
+  redirectToOverview,
 }: CreateSnapAccountProps) => {
   const client = useMultichainWalletSnapClient(clientType);
 
   const onCreateAccount = useCallback(
     async (accountNameSuggestion?: string) => {
-      client.createAccount({
-        scope: chainId,
-        entropySource: selectedKeyringId,
-        accountNameSuggestion,
-      });
-      onActionComplete(true);
+      const newAccount = await client.createAccount(
+        {
+          scope: chainId,
+          entropySource: selectedKeyringId,
+          accountNameSuggestion,
+        },
+        { setSelectedAccount: setNewlyCreatedAccountAsSelected },
+      );
+      onActionComplete(true, newAccount);
     },
-    [client, chainId, selectedKeyringId, onActionComplete],
+    [
+      client,
+      chainId,
+      selectedKeyringId,
+      setNewlyCreatedAccountAsSelected,
+      onActionComplete,
+    ],
   );
 
   const getNextAccountName = async () => {
@@ -64,6 +87,7 @@ export const CreateSnapAccount = ({
       scope={chainId}
       onSelectSrp={onSelectSrp}
       selectedKeyringId={selectedKeyringId}
+      redirectToOverview={redirectToOverview}
     />
   );
 };

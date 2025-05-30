@@ -60,17 +60,6 @@ export const MESSAGE_TYPE = {
   SNAP_DIALOG_CONFIRMATION: DIALOG_APPROVAL_TYPES.confirmation,
   SNAP_DIALOG_PROMPT: DIALOG_APPROVAL_TYPES.prompt,
   SNAP_DIALOG_DEFAULT: DIALOG_APPROVAL_TYPES.default,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  MMI_AUTHENTICATE: 'metamaskinstitutional_authenticate',
-  MMI_REAUTHENTICATE: 'metamaskinstitutional_reauthenticate',
-  MMI_REFRESH_TOKEN: 'metamaskinstitutional_refresh_token',
-  MMI_SUPPORTED: 'metamaskinstitutional_supported',
-  MMI_PORTFOLIO: 'metamaskinstitutional_portfolio',
-  MMI_OPEN_SWAPS: 'metamaskinstitutional_open_swaps',
-  MMI_CHECK_IF_TOKEN_IS_PRESENT: 'metamaskinstitutional_checkIfTokenIsPresent',
-  MMI_SET_ACCOUNT_AND_NETWORK: 'metamaskinstitutional_setAccountAndNetwork',
-  MMI_OPEN_ADD_HARDWARE_WALLET: 'metamaskinstitutional_openAddHardwareWallet',
-  ///: END:ONLY_INCLUDE_IF
 } as const;
 
 export type MessageType = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE];
@@ -93,7 +82,6 @@ export const SMART_TRANSACTION_CONFIRMATION_TYPES = {
  * Custom messages to send and be received by the extension
  */
 export const EXTENSION_MESSAGES = {
-  CONNECTION_READY: 'CONNECTION_READY',
   READY: 'METAMASK_EXTENSION_READY',
 } as const;
 

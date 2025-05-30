@@ -2,8 +2,7 @@ export const REMOTE_MODE_SLIDE = {
   id: 'remoteMode',
   title: 'slideRemoteModeTitle',
   description: 'slideRemoteModeDescription',
-  // TODO: Update image once we have a remote mode icon
-  image: './images/slide-fund-icon.svg',
+  image: './images/slide-cold-storage.svg',
   href: '/home.html#remote',
 };
 
@@ -39,14 +38,12 @@ export const FUND_SLIDE = {
   href: 'https://portfolio.metamask.io/buy/build-quote',
 };
 
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 export const BRIDGE_SLIDE = {
   id: 'bridge',
   title: 'slideBridgeTitle',
   description: 'slideBridgeDescription',
   image: './images/slide-bridge-icon.svg',
 };
-///: END:ONLY_INCLUDE_IF
 
 export const CARD_SLIDE = {
   id: 'card',
@@ -69,6 +66,7 @@ export const MULTI_SRP_SLIDE = {
   title: 'slideMultiSrpTitle',
   description: 'slideMultiSrpDescription',
   image: './images/slide-multi-srp-icon.svg',
+  href: '/home.html#import-srp',
 };
 
 export const BACKUPANDSYNC_SLIDE = {

@@ -1,21 +1,15 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-///: BEGIN:ONLY_INCLUDE_IF(build-main)
-import { BigNumber } from 'bignumber.js';
-///: END:ONLY_INCLUDE_IF
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
 
 import { AccountListItemMenu } from '../account-list-item-menu';
-import { AvatarGroup } from '../avatar-group';
 import { ConnectedAccountsMenu } from '../connected-accounts-menu';
 import {
   AvatarAccount,
   AvatarAccountVariant,
-  AvatarToken,
-  AvatarTokenSize,
   Box,
   ButtonIcon,
   Icon,
@@ -36,12 +30,11 @@ import {
   JustifyContent,
   Size,
   TextAlign,
-  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
-import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
+import { PRIMARY } from '../../../helpers/constants/common';
 import Tooltip from '../../ui/tooltip/tooltip';
 import {
   MetaMetricsEventCategory,
@@ -57,18 +50,14 @@ import {
   getChainIdsToPoll,
   getSnapsMetadata,
   getMetaMaskKeyrings,
+  isSolanaAccount,
 } from '../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(build-main)
-import { getIntlLocale } from '../../../ducks/locale/locale';
-///: END:ONLY_INCLUDE_IF
 import {
+  getMultichainBalances,
   getMultichainIsTestnet,
-  getMultichainNativeCurrency,
-  getMultichainNativeCurrencyImage,
   getMultichainNetwork,
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
-import { useMultichainAccountTotalFiatBalance } from '../../../hooks/useMultichainAccountTotalFiatBalance';
 import { ConnectedStatus } from '../connected-status';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 // TODO: Remove restricted import
@@ -78,12 +67,10 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { getAccountLabels } from '../../../helpers/utils/accounts';
-///: BEGIN:ONLY_INCLUDE_IF(multichain)
+
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-main)
-import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
-///: END:ONLY_INCLUDE_IF
+
+import { AccountNetworkIndicator } from '../account-network-indicator';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -108,9 +95,7 @@ const AccountListItem = ({
   privacyMode = false,
 }) => {
   const t = useI18nContext();
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  const locale = useSelector(getIntlLocale);
-  ///: END:ONLY_INCLUDE_IF
+
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
@@ -132,7 +117,10 @@ const AccountListItem = ({
   );
 
   const useBlockie = useSelector(getUseBlockie);
-  const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
+  const { isEvmNetwork, chainId: multichainChainId } = useMultichainSelector(
+    getMultichainNetwork,
+    account,
+  );
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
@@ -146,15 +134,15 @@ const AccountListItem = ({
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
   const showFiat =
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
-  const accountTotalFiatBalances =
-    useMultichainAccountTotalFiatBalance(account);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const multichainAggregatedBalance = useSelector((state) =>
     getMultichainAggregatedBalance(state, account),
   );
-  ///: END:ONLY_INCLUDE_IF
 
+  const multichainBalances = useSelector(getMultichainBalances);
+  const accountMultichainBalances = multichainBalances?.[account.id];
+  const accountMultichainNativeBalance =
+    accountMultichainBalances?.[`${multichainChainId}/slip44:501`]?.amount;
   // cross chain agg balance
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -173,14 +161,6 @@ const AccountListItem = ({
     account,
     formattedTokensWithBalancesPerChain,
   );
-  // cross chain agg balance
-  const mappedOrderedTokenList = useMemo(
-    () =>
-      accountTotalFiatBalances.orderedTokenList.map((item) => ({
-        avatarValue: item.iconUrl,
-      })),
-    [accountTotalFiatBalances.orderedTokenList],
-  );
   let balanceToTranslate;
   if (isEvmNetwork) {
     balanceToTranslate =
@@ -188,23 +168,10 @@ const AccountListItem = ({
         ? account.balance
         : totalFiatBalance;
   } else {
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    balanceToTranslate = multichainAggregatedBalance;
-    ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-    const balanceOrFallback = accountTotalFiatBalances?.totalBalance ?? 0;
-    const bnBalance = new BigNumber(balanceOrFallback);
-    const formattedBalanceToTranslate = formatWithThreshold(
-      bnBalance.toNumber(),
-      0.00001,
-      locale,
-      {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 5,
-      },
-    );
-    balanceToTranslate = formattedBalanceToTranslate;
-    ///: END:ONLY_INCLUDE_IF
+    balanceToTranslate =
+      !shouldShowFiat || isTestnet
+        ? accountMultichainNativeBalance
+        : multichainAggregatedBalance;
   }
 
   // If this is the selected item in the Account menu,
@@ -217,14 +184,6 @@ const AccountListItem = ({
   }, [itemRef, selected, shouldScrollToWhenSelected]);
 
   const trackEvent = useContext(MetaMetricsContext);
-  const primaryTokenImage = useMultichainSelector(
-    getMultichainNativeCurrencyImage,
-    account,
-  );
-  const nativeCurrency = useMultichainSelector(
-    getMultichainNativeCurrency,
-    account,
-  );
   const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
     isAccountConnectedToCurrentTab(state, account.address),
   );
@@ -233,28 +192,11 @@ const AccountListItem = ({
   const isSingleAccount = accountsCount === 1;
 
   const getIsAggregatedFiatOverviewBalanceProp = () => {
-    let isAggregatedFiatOverviewBalance;
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    isAggregatedFiatOverviewBalance =
+    const isAggregatedFiatOverviewBalance =
       (!isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat) ||
-      !isEvmNetwork;
-    ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-    isAggregatedFiatOverviewBalance =
-      !isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat;
-    ///: END:ONLY_INCLUDE_IF
-    return isAggregatedFiatOverviewBalance;
-  };
+      (!isEvmNetwork && shouldShowFiat);
 
-  const getPreferredCurrencyValue = () => {
-    let value;
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    value = account.balance;
-    ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-    value = isEvmNetwork ? account.balance : balanceToTranslate;
-    ///: END:ONLY_INCLUDE_IF
-    return value;
+    return isAggregatedFiatOverviewBalance;
   };
 
   return (
@@ -292,6 +234,7 @@ const AccountListItem = ({
 
       <>
         <Box
+          marginRight={3}
           display={[Display.Flex, Display.None]}
           data-testid="account-list-item-badge"
         >
@@ -302,21 +245,17 @@ const AccountListItem = ({
           />
         </Box>
         <Box display={[Display.None, Display.Flex]}>
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-            <AvatarAccount
-              borderColor={BorderColor.transparent}
-              size={Size.MD}
-              address={account.address}
-              variant={
-                useBlockie
-                  ? AvatarAccountVariant.Blockies
-                  : AvatarAccountVariant.Jazzicon
-              }
-              marginInlineEnd={2}
-            />
-            ///: END:ONLY_INCLUDE_IF
-          }
+          <AvatarAccount
+            borderColor={BorderColor.transparent}
+            size={Size.MD}
+            address={account.address}
+            variant={
+              useBlockie
+                ? AvatarAccountVariant.Blockies
+                : AvatarAccountVariant.Jazzicon
+            }
+            marginInlineEnd={2}
+          />
         </Box>
       </>
 
@@ -355,8 +294,10 @@ const AccountListItem = ({
               <Text
                 as="button"
                 onClick={(e) => {
-                  e.stopPropagation();
-                  onClick?.(account);
+                  if (onClick) {
+                    e.stopPropagation();
+                    onClick(account);
+                  }
                 }}
                 variant={TextVariant.bodyMdMedium}
                 className="multichain-account-list-item__account-name__button"
@@ -416,40 +357,9 @@ const AccountListItem = ({
               {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>
-          {mappedOrderedTokenList.length > 1 ? (
-            <AvatarGroup members={mappedOrderedTokenList} limit={4} />
-          ) : (
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
-              gap={1}
-              className="multichain-account-list-item__avatar-currency"
-            >
-              <AvatarToken
-                src={primaryTokenImage}
-                name={nativeCurrency}
-                size={AvatarTokenSize.Xs}
-                borderColor={BorderColor.borderDefault}
-              />
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-                textAlign={TextAlign.End}
-                as="div"
-              >
-                <UserPreferencedCurrencyDisplay
-                  account={account}
-                  ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                  value={getPreferredCurrencyValue()}
-                  type={SECONDARY}
-                  showNative
-                  data-testid="second-currency-display"
-                  privacyMode={privacyMode}
-                />
-              </Text>
-            </Box>
-          )}
+          <Box className="network-indicator">
+            <AccountNetworkIndicator scopes={account.scopes} />
+          </Box>
         </Box>
         {accountLabels.length > 0 ? (
           <Box flexDirection={FlexDirection.Row}>
@@ -471,53 +381,62 @@ const AccountListItem = ({
         ) : null}
       </Box>
 
-      {menuType === AccountListItemMenuTypes.None ? null : (
-        <ButtonIcon
-          ariaLabel={`${account.metadata.name} ${t('options')}`}
-          iconName={IconName.MoreVertical}
-          size={IconSize.Sm}
-          ref={setAccountListItemMenuRef}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (!accountOptionsMenuOpen) {
-              trackEvent({
-                event: MetaMetricsEventName.AccountDetailMenuOpened,
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  location: 'Account Options',
-                  hd_entropy_index: hdEntropyIndex,
-                },
-              });
+      <Box
+        display={Display.Flex}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+      >
+        {menuType === AccountListItemMenuTypes.None ? null : (
+          <ButtonIcon
+            ariaLabel={`${account.metadata.name} ${t('options')}`}
+            iconName={IconName.MoreVertical}
+            size={IconSize.Sm}
+            ref={setAccountListItemMenuRef}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (!accountOptionsMenuOpen) {
+                trackEvent({
+                  event: MetaMetricsEventName.AccountDetailMenuOpened,
+                  category: MetaMetricsEventCategory.Navigation,
+                  properties: {
+                    location: 'Account Options',
+                    hd_entropy_index: hdEntropyIndex,
+                  },
+                });
+              }
+              setAccountOptionsMenuOpen(!accountOptionsMenuOpen);
+            }}
+            data-testid="account-list-item-menu-button"
+          />
+        )}
+        {menuType === AccountListItemMenuTypes.Account && (
+          <AccountListItemMenu
+            anchorElement={accountListItemMenuElement}
+            account={account}
+            onClose={() => setAccountOptionsMenuOpen(false)}
+            isOpen={accountOptionsMenuOpen}
+            isRemovable={
+              account.metadata.keyring.type !== KeyringType.hdKeyTree &&
+              !isSolanaAccount(account)
             }
-            setAccountOptionsMenuOpen(!accountOptionsMenuOpen);
-          }}
-          data-testid="account-list-item-menu-button"
-        />
-      )}
-      {menuType === AccountListItemMenuTypes.Account && (
-        <AccountListItemMenu
-          anchorElement={accountListItemMenuElement}
-          account={account}
-          onClose={() => setAccountOptionsMenuOpen(false)}
-          isOpen={accountOptionsMenuOpen}
-          isRemovable={account.metadata.keyring.type !== KeyringType.hdKeyTree}
-          closeMenu={closeMenu}
-          isPinned={isPinned}
-          isHidden={isHidden}
-          isConnected={isConnected}
-        />
-      )}
-      {menuType === AccountListItemMenuTypes.Connection && (
-        <ConnectedAccountsMenu
-          anchorElement={accountListItemMenuElement}
-          account={account}
-          onClose={() => setAccountOptionsMenuOpen(false)}
-          disableAccountSwitcher={isSingleAccount && selected}
-          isOpen={accountOptionsMenuOpen}
-          onActionClick={onActionClick}
-          activeTabOrigin={currentTabOrigin}
-        />
-      )}
+            closeMenu={closeMenu}
+            isPinned={isPinned}
+            isHidden={isHidden}
+            isConnected={isConnected}
+          />
+        )}
+        {menuType === AccountListItemMenuTypes.Connection && (
+          <ConnectedAccountsMenu
+            anchorElement={accountListItemMenuElement}
+            account={account}
+            onClose={() => setAccountOptionsMenuOpen(false)}
+            disableAccountSwitcher={isSingleAccount && selected}
+            isOpen={accountOptionsMenuOpen}
+            onActionClick={onActionClick}
+            activeTabOrigin={currentTabOrigin}
+          />
+        )}
+      </Box>
     </Box>
   );
 };
@@ -541,6 +460,7 @@ AccountListItem.propTypes = {
         type: PropTypes.string.isRequired,
       }).isRequired,
     }).isRequired,
+    scopes: PropTypes.arrayOf(PropTypes.string).isRequired,
   }).isRequired,
   /**
    * Represents if this account is currently selected

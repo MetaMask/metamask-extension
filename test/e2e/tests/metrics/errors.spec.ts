@@ -47,6 +47,7 @@ const maskedBackgroundFields = [
   'CurrencyController.currencyRates.LineaETH.conversionDate',
   'CurrencyController.currencyRates.SepoliaETH.conversionDate',
   'CurrencyController.currencyRates.MegaETH.conversionDate',
+  'CurrencyController.currencyRates.MON.conversionDate',
 ];
 const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
@@ -129,6 +130,7 @@ async function matchesSnapshot({
   update?: boolean;
 }): Promise<void> {
   const snapshotPath = resolve(__dirname, `./state-snapshots/${snapshot}.json`);
+  console.log('snapshotPath', snapshotPath);
   const rawSnapshotData = await fs.readFile(snapshotPath, {
     encoding: 'utf-8',
   });
@@ -894,20 +896,12 @@ describe('Sentry errors', function () {
       // Part of the AuthenticationController store, but initialized as undefined
       // Only populated once the client is authenticated
       sessionData: {
-        token: {
-          accessToken: false,
-          expiresIn: true,
-          obtainedAt: true,
-        },
+        token: false,
         profile: true,
       },
       // This can get erased due to a bug in the app state controller's
       // preferences state change handler
       timeoutMinutes: true,
-      // MMI properties
-      opts: true,
-      store: true,
-      configurationClient: true,
       lastInteractedConfirmationInfo: undefined,
     };
     await withFixtures(

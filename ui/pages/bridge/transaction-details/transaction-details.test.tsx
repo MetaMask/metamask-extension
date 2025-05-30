@@ -1,4 +1,4 @@
-import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
 import { MINUTE } from '../../../../shared/constants/time';
 import { getIsDelayed } from './transaction-details';

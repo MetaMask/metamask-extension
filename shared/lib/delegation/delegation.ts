@@ -3,8 +3,12 @@ import { getChecksumAddress } from '@metamask/utils';
 import { keccak } from 'ethereumjs-util';
 import { getCaveatArrayPacketHash, type Caveat } from './caveat';
 import { resolveCaveats, type Caveats } from './caveatBuilder';
-import { toHex, type Hex } from './utils';
-
+import { concat, toFunctionSelector, toHex, type Hex } from './utils';
+import {
+  encodeExecutionCalldatas,
+  ExecutionMode,
+  ExecutionStruct,
+} from './execution';
 /**
  * To be used on a delegation as the root authority.
  */
@@ -91,11 +95,20 @@ export type DelegationStruct = Omit<Delegation, 'salt'> & {
  * @returns
  */
 export const encodeDelegation = (delegations: Delegation[]): Hex => {
-  const delegationStructs = delegations.map(toDelegationStruct);
+  const flatDelegations = delegations
+    .map(toDelegationStruct)
+    .map((delegation) => [
+      delegation.delegate,
+      delegation.delegator,
+      delegation.authority,
+      delegation.caveats.map((c) => [c.enforcer, c.terms, c.args]),
+      delegation.salt,
+      delegation.signature,
+    ]);
   return toHex(
     encode(
       ['(address,address,bytes32,(address,bytes,bytes)[],uint256,bytes)[]'],
-      [delegationStructs],
+      [flatDelegations],
     ),
   );
 };
@@ -185,7 +198,7 @@ export const createDelegation = (
     delegator: options.from,
     authority: resolveAuthority(options.parentDelegation),
     caveats: resolveCaveats(options.caveats),
-    salt: '0x',
+    salt: `0x${Math.random().toString(16).slice(2, 10)}`,
     signature: '0x',
   };
 };
@@ -207,4 +220,73 @@ export const createOpenDelegation = (
     salt: '0x',
     signature: '0x',
   };
+};
+
+/**
+ * Encodes the calldata for a disableDelegation(delegation) call.
+ *
+ * @param params
+ * @param params.delegation - The delegation to disable.
+ * @returns The encoded calldata.
+ */
+export const encodeDisableDelegation = ({
+  delegation,
+}: {
+  delegation: Delegation;
+}) => {
+  const delegationStruct = toDelegationStruct(delegation);
+
+  const encodedSignature = toFunctionSelector(
+    'disableDelegation((address,address,bytes32,(address,bytes,bytes)[],uint256,bytes))',
+  );
+
+  const encodedData = toHex(
+    encode(
+      ['(address,address,bytes32,(address,bytes,bytes)[],uint256,bytes)'],
+      [
+        [
+          delegationStruct.delegate,
+          delegationStruct.delegator,
+          delegationStruct.authority,
+          delegationStruct.caveats.map((c) => [c.enforcer, c.terms, c.args]),
+          delegationStruct.salt,
+          delegationStruct.signature,
+        ],
+      ],
+    ),
+  );
+
+  return concat([encodedSignature, encodedData]);
+};
+
+/**
+ * Encodes the calldata for a redeemDelegations(delegations,modes,executions) call.
+ *
+ * @param params
+ * @param params.delegations - The delegations to redeem.
+ * @param params.modes - The modes to redeem the delegations with.
+ * @param params.executions - The executions to redeem the delegations with.
+ * @returns The encoded calldata.
+ */
+export const encodeRedeemDelegations = ({
+  delegations,
+  modes,
+  executions,
+}: {
+  delegations: Delegation[][];
+  modes: ExecutionMode[];
+  executions: ExecutionStruct[][];
+}) => {
+  const encodedSignature = toFunctionSelector(
+    'redeemDelegations(bytes[],bytes32[],bytes[])',
+  );
+
+  const contexts = encodePermissionContexts(delegations);
+  const calldatas = encodeExecutionCalldatas(executions);
+
+  const encodedData = toHex(
+    encode(['bytes[]', 'bytes32[]', 'bytes[]'], [contexts, modes, calldatas]),
+  );
+
+  return concat([encodedSignature, encodedData]);
 };

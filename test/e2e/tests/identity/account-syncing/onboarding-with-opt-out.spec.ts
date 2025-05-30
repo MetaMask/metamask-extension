@@ -99,7 +99,10 @@ describe('Account syncing - Opt-out Backup and sync', function () {
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(1);
+          await accountListPage.check_numberOfAvailableAccounts(
+            1,
+            ACCOUNT_TYPE.Ethereum,
+          );
           await accountListPage.check_accountIsNotDisplayedInAccountList(
             unencryptedAccounts[0].n,
           );
@@ -157,7 +160,10 @@ describe('Account syncing - Opt-out Backup and sync', function () {
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(1);
+          await accountListPage.check_numberOfAvailableAccounts(
+            1,
+            ACCOUNT_TYPE.Ethereum,
+          );
           await accountListPage.check_accountDisplayedInAccountList(
             defaultAccountOneName,
           );
@@ -209,7 +215,10 @@ describe('Account syncing - Opt-out Backup and sync', function () {
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(1);
+          await accountListPage.check_numberOfAvailableAccounts(
+            1,
+            ACCOUNT_TYPE.Ethereum,
+          );
           await accountListPage.check_accountDisplayedInAccountList(
             defaultAccountOneName,
           );

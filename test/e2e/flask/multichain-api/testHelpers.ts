@@ -33,12 +33,16 @@ export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
   localNodeOptions: [
     {
       type: 'anvil',
+      options: {
+        hardfork: 'muirGlacier',
+      },
     },
     {
       type: 'anvil',
       options: {
         port: 8546,
         chainId: 1338,
+        hardfork: 'muirGlacier',
       },
     },
     {
@@ -46,6 +50,7 @@ export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
       options: {
         port: 7777,
         chainId: 1000,
+        hardfork: 'muirGlacier',
       },
     },
   ],
@@ -70,6 +75,7 @@ export const addAccountInWalletAndAuthorize = async (
   const editButtons = await driver.findElements('[data-testid="edit"]');
   await editButtons[0].click();
   await driver.clickElement({ text: 'New account', tag: 'button' });
+  await driver.clickElement({ text: 'Ethereum account', tag: 'button' });
   await driver.clickElement({ text: 'Add account', tag: 'button' });
   await driver.delay(regularDelayMs);
 
@@ -80,11 +86,10 @@ export const addAccountInWalletAndAuthorize = async (
   await freshEditButtons[0].click();
   await driver.delay(regularDelayMs);
 
-  const checkboxes = await driver.findElements('input[type="checkbox" i]');
-  await checkboxes[0].click(); // select all checkbox
-  await driver.delay(regularDelayMs);
-
-  await driver.clickElement({ text: 'Update', tag: 'button' });
+  await driver.clickElementAndWaitToDisappear({
+    text: 'Update',
+    tag: 'button',
+  });
 };
 
 /**

@@ -262,28 +262,6 @@ describe('Bridge selectors', () => {
   });
 
   describe('getIsBridgeTx', () => {
-    it('returns false if bridge is not enabled', () => {
-      const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          extensionConfig: {
-            support: false,
-            chains: {
-              '0x1': { isActiveSrc: true, isActiveDest: false },
-              '0x38': { isActiveSrc: false, isActiveDest: true },
-            },
-          },
-        },
-        bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0x38') },
-        metamaskStateOverrides: {
-          ...mockNetworkState({ chainId: '0x1' }),
-        },
-      });
-
-      const result = getIsBridgeTx(state as never);
-
-      expect(result).toBe(false);
-    });
-
     it('returns false if toChainId is null', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
@@ -326,29 +304,7 @@ describe('Bridge selectors', () => {
       expect(result).toBe(false);
     });
 
-    it('returns false if useExternalServices is not enabled', () => {
-      const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          extensionConfig: {
-            support: true,
-            chains: {
-              '0x1': { isActiveSrc: true, isActiveDest: false },
-              '0x38': { isActiveSrc: false, isActiveDest: true },
-            },
-          },
-        },
-        bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0x38') },
-        metamaskStateOverrides: {
-          ...mockNetworkState({ chainId: '0x1' }),
-        },
-      });
-
-      const result = getIsBridgeTx(state as never);
-
-      expect(result).toBe(false);
-    });
-
-    it('returns true if bridge is enabled and fromChain and toChainId have different chainIds', () => {
+    it('returns true if fromChain and toChainId have different chainIds', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           extensionConfig: {
@@ -857,14 +813,16 @@ describe('Bridge selectors', () => {
 
   describe('getBridgeQuotes', () => {
     it('should return empty values when quotes are not present', () => {
-      const state = createBridgeMockStore();
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: { quotes: [] },
+      });
 
       const result = getBridgeQuotes(state as never);
 
       expect(result).toStrictEqual({
         activeQuote: null,
         isLoading: false,
-        isQuoteGoingToRefresh: false,
+        isQuoteGoingToRefresh: true,
         quotesLastFetchedMs: null,
         quotesRefreshCount: 0,
         recommendedQuote: null,

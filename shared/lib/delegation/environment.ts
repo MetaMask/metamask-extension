@@ -6,6 +6,7 @@ import type { Hex } from './utils';
  */
 export type DeleGatorEnvironment = {
   DelegationManager: Hex;
+  EIP7702StatelessDeleGatorImpl: Hex;
   EntryPoint: Hex;
   SimpleFactory: Hex;
   implementations: {
@@ -30,6 +31,7 @@ export function getDeleGatorEnvironment(
     );
   }
   return {
+    EIP7702StatelessDeleGatorImpl: c.EIP7702StatelessDeleGatorImpl,
     DelegationManager: c.DelegationManager,
     EntryPoint: c.EntryPoint,
     SimpleFactory: c.SimpleFactory,
@@ -55,6 +57,7 @@ export function getDeleGatorEnvironment(
       NonceEnforcer: c.NonceEnforcer,
       TimestampEnforcer: c.TimestampEnforcer,
       ValueLteEnforcer: c.ValueLteEnforcer,
+      MultiTokenPeriodEnforcer: c.MultiTokenPeriodEnforcer,
       NativeTokenTransferAmountEnforcer: c.NativeTokenTransferAmountEnforcer,
       NativeBalanceGteEnforcer: c.NativeBalanceGteEnforcer,
       NativeTokenStreamingEnforcer: c.NativeTokenStreamingEnforcer,
