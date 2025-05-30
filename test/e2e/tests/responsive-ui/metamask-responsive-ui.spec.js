@@ -92,7 +92,6 @@ describe('MetaMask Responsive UI', function () {
         await driver.clickElement('[data-testid="onboarding-complete-done"]');
 
         // pin extension
-        await driver.clickElement('[data-testid="pin-extension-next"]');
         await driver.clickElement('[data-testid="pin-extension-done"]');
         await driver.assertElementNotPresent('.loading-overlay__spinner');
         // assert balance
