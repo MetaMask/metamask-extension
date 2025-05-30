@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars -- ESLint is confused here */
 import React, { useMemo, useState } from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
@@ -96,9 +97,6 @@ export function renderHookWithProvider(hook, state, pathname = '/', Container) {
         </ProviderWrapper>
       )
     : ProviderWrapper;
-
-  // render(ProviderWrapper({ children: null }));
-  // screen.debug();
 
   return renderHook(hook, { wrapper });
 }
