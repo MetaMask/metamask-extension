@@ -124,6 +124,7 @@ async function withFixtures(options, testSuite) {
     useBundler,
     usePaymaster,
     ethConversionInUsd,
+    monConversionInUsd,
     manifestFlags,
   } = options;
 
@@ -260,6 +261,7 @@ async function withFixtures(options, testSuite) {
       {
         chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
         ethConversionInUsd,
+        monConversionInUsd,
       },
     );
     if ((await detectPort(8000)) !== 8000) {

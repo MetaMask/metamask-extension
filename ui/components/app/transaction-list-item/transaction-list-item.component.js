@@ -92,11 +92,15 @@ function TransactionListItemInner({
   // Bridge transactions
   const isBridgeTx =
     transactionGroup.initialTransaction.type === TransactionType.bridge;
-  const { bridgeTxHistoryItem, isBridgeComplete, showBridgeTxDetails } =
-    useBridgeTxHistoryData({
-      transactionGroup,
-      isEarliestNonce,
-    });
+  const {
+    bridgeTxHistoryItem,
+    isBridgeComplete,
+    showBridgeTxDetails,
+    isBridgeFailed,
+  } = useBridgeTxHistoryData({
+    transactionGroup,
+    isEarliestNonce,
+  });
 
   const getTestNetworkBackgroundColor = (networkId) => {
     switch (true) {
@@ -179,10 +183,13 @@ function TransactionListItemInner({
     primaryCurrency,
     recipientAddress,
     secondaryCurrency,
-    displayedStatusKey,
+    displayedStatusKey: displayedStatusKeyFromSrcTransaction,
     isPending,
     senderAddress,
   } = useTransactionDisplayData(transactionGroup);
+  const displayedStatusKey = isBridgeFailed
+    ? TransactionStatus.failed
+    : displayedStatusKeyFromSrcTransaction;
   const date = formatDateWithYearContext(
     transactionGroup.primaryTransaction.time,
     'MMM d, y',
@@ -304,7 +311,7 @@ function TransactionListItemInner({
         subtitle={
           !FINAL_NON_CONFIRMED_STATUSES.includes(status) &&
           isBridgeTx &&
-          !isBridgeComplete &&
+          !(isBridgeComplete || isBridgeFailed) &&
           bridgeTxHistoryItem ? (
             <BridgeActivityItemTxSegments
               bridgeTxHistoryItem={bridgeTxHistoryItem}

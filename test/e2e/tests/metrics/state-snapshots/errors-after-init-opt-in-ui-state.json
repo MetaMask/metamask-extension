@@ -80,6 +80,7 @@
     "isUnlocked": true,
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "transactions": "object",
+    "transactionBatches": "object",
     "networkConfigurations": "object",
     "addressBook": "object",
     "useBlockie": false,
@@ -110,20 +111,10 @@
         "conversionRate": 1700,
         "usdConversionRate": 1700
       },
-      "SepoliaETH": {
+      "MON": {
         "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
-      },
-      "LineaETH": {
-        "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
-      },
-      "MegaETH": {
-        "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
+        "conversionRate": 0.2,
+        "usdConversionRate": 0.2
       }
     },
     "throttledOrigins": "object",
@@ -152,6 +143,7 @@
     "surveyLinkLastClickedOrClosed": "object",
     "switchedNetworkNeverShowMessage": "boolean",
     "slides": "object",
+    "upgradeSplashPageAcknowledgedForAccounts": "object",
     "qrHardware": {},
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
@@ -234,6 +226,7 @@
     "subjectMetadata": "object",
     "announcements": "object",
     "orderedNetworkList": { "0": "object", "1": "object" },
+    "enabledNetworkMap": {},
     "pinnedAccountList": {},
     "hiddenAccountList": {},
     "gasFeeEstimatesByChainId": {},
@@ -342,7 +335,6 @@
       "swapsStxMaxFeeMultiplier": 2,
       "swapsFeatureFlags": {}
     },
-    "assetExchangeRates": "object",
     "quoteRequest": {
       "srcTokenAddress": "0x0000000000000000000000000000000000000000"
     },
@@ -352,6 +344,7 @@
     "quotesLoadingStatus": null,
     "quoteFetchError": null,
     "quotesRefreshCount": 0,
+    "assetExchangeRates": "object",
     "txHistory": "object",
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",

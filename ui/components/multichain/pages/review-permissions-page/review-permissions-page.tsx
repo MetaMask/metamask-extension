@@ -26,13 +26,11 @@ import {
   getUpdatedAndSortedAccountsWithCaipAccountId,
 } from '../../../../selectors';
 import {
-  addPermittedAccounts,
-  addPermittedChains,
   hidePermittedNetworkToast,
   removePermissionsFor,
-  removePermittedAccount,
-  removePermittedChain,
   requestAccountsAndChainPermissionsWithId,
+  setPermittedAccounts,
+  setPermittedChains,
 } from '../../../../store/actions';
 import {
   AvatarFavicon,
@@ -155,13 +153,7 @@ export const ReviewPermissions = () => {
       return;
     }
 
-    dispatch(addPermittedChains(activeTabOrigin, chainIds));
-
-    connectedChainIds.forEach((chainId: string) => {
-      if (!chainIds.includes(chainId)) {
-        dispatch(removePermittedChain(activeTabOrigin, chainId));
-      }
-    });
+    dispatch(setPermittedChains(activeTabOrigin, chainIds));
 
     setShowNetworkToast(true);
   };
@@ -198,50 +190,7 @@ export const ReviewPermissions = () => {
       return;
     }
 
-    const parsedCaipAccountIds = caipAccountIds.map((caipAccountId) => {
-      return parseCaipAccountId(caipAccountId);
-    });
-
-    const addresses = parsedCaipAccountIds.map(({ address }) => address);
-
-    // TODO: we should refactor addPermittedAccounts to accept CaipAccountIds
-    dispatch(addPermittedAccounts(activeTabOrigin, addresses));
-
-    connectedAccountAddresses.forEach((connectedAddress: string) => {
-      // TODO: seems like similar logic to selector logic in ui/index.js
-      // See if we can DRY this
-      const parsedConnectedAddress = parseCaipAccountId(
-        connectedAddress as CaipAccountId,
-      );
-
-      const includesCaipAccountId = parsedCaipAccountIds.some(
-        (parsedAddress) => {
-          if (
-            parsedConnectedAddress.chain.namespace !==
-              parsedAddress.chain.namespace ||
-            parsedConnectedAddress.address !== parsedAddress.address
-          ) {
-            return false;
-          }
-
-          return (
-            parsedAddress.chain.reference === '0' ||
-            parsedAddress.chain.reference ===
-              parsedConnectedAddress.chain.reference
-          );
-        },
-      );
-
-      if (!includesCaipAccountId) {
-        // TODO: we should refactor removePermittedAccount to accept CaipAccountIds
-        dispatch(
-          removePermittedAccount(
-            activeTabOrigin,
-            parsedConnectedAddress.address,
-          ),
-        );
-      }
-    });
+    dispatch(setPermittedAccounts(activeTabOrigin, caipAccountIds));
 
     setShowAccountToast(true);
   };

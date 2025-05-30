@@ -68,7 +68,10 @@ export const BridgeCTAButton = ({
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
-  const isTxSubmittable = useIsTxSubmittable();
+  const isTxSubmittable = useIsTxSubmittable(
+    nativeAssetBalance,
+    srcTokenBalance,
+  );
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
   const { quoteRequestProperties } = useRequestProperties();
   const requestMetadataProperties = useRequestMetadataProperties();
