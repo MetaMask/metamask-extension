@@ -16,7 +16,7 @@ describe('metaRPCClientFactory', () => {
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     // make a "foo" method call
-    metaRPCClient.bar('baz').then((result) => {
+    metaRPCClient.foo('bar').then((result) => {
       expect(result).toStrictEqual('foobarbaz');
       done();
     });
@@ -34,8 +34,8 @@ describe('metaRPCClientFactory', () => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
-    // make a "bar" method call
-    const requestProm = metaRPCClient.bar('baz');
+    // make a "foo" method call
+    const requestProm = metaRPCClient.foo('bar');
 
     metaRPCClient.requests.forEach((_, key) => {
       streamTest.write({
@@ -43,13 +43,13 @@ describe('metaRPCClientFactory', () => {
         id: key,
         error: {
           code: 1,
-          message: 'bar-message',
+          message: 'foo-message',
         },
       });
     });
 
     await expect(requestProm).rejects.toThrow(
-      new JsonRpcError(1, 'bar-message'),
+      new JsonRpcError(1, 'foo-message'),
     );
   });
 
@@ -58,9 +58,9 @@ describe('metaRPCClientFactory', () => {
     const metaRPCClient = metaRPCClientFactory(streamTest);
     const metaRPCClient2 = metaRPCClientFactory(streamTest);
 
-    // make a "foo" method call, followed by "bar" call on metaRPCClient2
-    const requestProm = metaRPCClient.foo();
-    const requestProm2 = requestProm.then(() => metaRPCClient2.bar('baz'));
+    // make a "foo" method call, followed by "baz" call on metaRPCClient2
+    const requestProm = metaRPCClient.foo('bar');
+    const requestProm2 = requestProm.then(() => metaRPCClient2.baz('bar'));
 
     // fake a response
     metaRPCClient.requests.forEach((_, key) => {
@@ -174,7 +174,7 @@ describe('metaRPCClientFactory', () => {
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     const errorPromise = new Promise((_resolve, reject) =>
-      metaRPCClient.getState().catch((error) => {
+      metaRPCClient.getState('bad').catch((error) => {
         reject(error);
       }),
     );
@@ -189,7 +189,7 @@ describe('metaRPCClientFactory', () => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
-    const requestProm = metaRPCClient.foo();
+    const requestProm = metaRPCClient.foo('bar');
     streamTest.emit('end');
 
     await expect(requestProm).rejects.toThrow(
