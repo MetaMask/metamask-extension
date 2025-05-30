@@ -52,18 +52,14 @@ describe('metaRPCClientFactory', () => {
     });
   });
 
-  it('should be able to make an rpc request/response with the method and params with multiple instances of metaRPCClientFactory and the same connectionStream', (done) => {
+  it('should be able to make an rpc request/response with the method and params with multiple instances of metaRPCClientFactory and the same connectionStream', async () => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
     const metaRPCClient2 = metaRPCClientFactory(streamTest);
 
     // make a "foo" method call, followed by "baz" call on metaRPCClient2
-    metaRPCClient.foo('bar').then(async (result) => {
-      expect(result).toStrictEqual('foobarbaz');
-      metaRPCClient2.baz('bar').then(() => {
-        done();
-      });
-    });
+    const requestProm = metaRPCClient.foo('bar');
+    const requestProm2 = requestProm.then(() => metaRPCClient2.baz('bar'));
 
     // fake a response
     metaRPCClient.requests.forEach((_, key) => {
@@ -74,6 +70,8 @@ describe('metaRPCClientFactory', () => {
       });
     });
 
+    await expect(requestProm).resolves.toStrictEqual('foobarbaz');
+
     // fake client2's response
     metaRPCClient2.requests.forEach((_, key) => {
       streamTest.write({
@@ -82,6 +80,8 @@ describe('metaRPCClientFactory', () => {
         result: 'foobarbaz',
       });
     });
+
+    await expect(requestProm2).resolves.toStrictEqual('foobarbaz');
   });
 
   it('should be able to handle notifications', (done) => {
