@@ -3023,7 +3023,7 @@
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "manageDefaultSettings": {
-    "message": "Manage default privacy settings"
+    "message": "Manage default settings"
   },
   "manageInstitutionalWallets": {
     "message": "Manage Institutional Wallets"
@@ -3430,7 +3430,7 @@
     "message": "NFT was successfully added!"
   },
   "newPassword": {
-    "message": "New password (8 characters min)"
+    "message": "New password"
   },
   "newPrivacyPolicyActionButton": {
     "message": "Read more"
@@ -3806,16 +3806,16 @@
     "message": "Choose your network"
   },
   "onboardingCreateWallet": {
-    "message": "Create a new wallet"
+    "message": "Create new wallet"
   },
   "onboardingImportWallet": {
-    "message": "Import an existing wallet"
+    "message": "I have an existing wallet"
   },
   "onboardingMetametricsAgree": {
     "message": "I agree"
   },
   "onboardingMetametricsDescription": {
-    "message": "We’d like to gather basic usage and diagnostics data to improve MetaMask. Know that we never sell the data you provide here."
+    "message": "We'd like to gather basic usage and diagnostics data to improve MetaMask. It will always be:"
   },
   "onboardingMetametricsDescription2": {
     "message": "When we gather metrics, it will always be..."
@@ -3828,7 +3828,7 @@
     "message": "Privacy Policy"
   },
   "onboardingMetametricsNeverCollect": {
-    "message": "$1 clicks and views on the app are stored, but other details (like your public address) are not.",
+    "message": "$1 Clicks and views on the app are stored, but other details (like your public address) are not.",
     "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
   },
   "onboardingMetametricsNeverCollectEmphasis": {
@@ -3873,13 +3873,13 @@
     "message": "Click the browser extension icon"
   },
   "onboardingPinExtensionDescription": {
-    "message": "Pin MetaMask on your browser so it's accessible and easy to view transaction confirmations."
+    "message": "Pin MetaMask on your browser so it’s accessible and easy to view transaction confirmations."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "You can open MetaMask by clicking on the extension and access your wallet with 1 click."
+    "message": "Access your MetaMask wallet with 1 click by clicking on the extension."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Click browser extension icon to access it instantly"
+    "message": "Click Chrome extension icon to access it instantly"
   },
   "onboardingPinExtensionLabel": {
     "message": "Pin MetaMask"
@@ -3891,7 +3891,7 @@
     "message": "2"
   },
   "onboardingPinExtensionTitle": {
-    "message": "Your MetaMask install is complete!"
+    "message": "Installation is complete!"
   },
   "onekey": {
     "message": "OneKey"
@@ -3974,7 +3974,7 @@
     "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
   },
   "passwordTermsWarning": {
-    "message": "I understand that MetaMask cannot recover this password for me. $1"
+    "message": "MetaMask can’t recover this password."
   },
   "passwordsDontMatch": {
     "message": "Passwords don't match"
@@ -5145,7 +5145,7 @@
     "message": "Skip account security?"
   },
   "skipAccountSecurityDetails": {
-    "message": "I understand that until I back up my Secret Recovery Phrase, I may lose my accounts and all of their assets."
+    "message": "If you lose this Secret Recovery Phrase, you won’t be able to access this wallet."
   },
   "slideBridgeDescription": {
     "message": "Move across 9 chains, all within your wallet"
@@ -6258,14 +6258,17 @@
   "termsOfService": {
     "message": "Terms of service"
   },
+  "termsOfUseAgree": {
+    "message": "Agree"
+  },
   "termsOfUseAgreeText": {
-    "message": " I agree to the Terms of Use, which apply to my use of MetaMask and all of its features"
+    "message": "I agree to the Terms of use, which apply to my use of MetaMask and all of its features"
   },
   "termsOfUseFooterText": {
     "message": "Please scroll to read all sections"
   },
   "termsOfUseTitle": {
-    "message": "Our Terms of Use have updated"
+    "message": "Review our Terms of Use"
   },
   "testNetworks": {
     "message": "Test networks"
@@ -6873,7 +6876,7 @@
     "message": "We weren't able to cancel your transaction before it was confirmed on the blockchain."
   },
   "yourWalletIsReady": {
-    "message": "Your wallet is ready"
+    "message": "Your wallet is ready!"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
