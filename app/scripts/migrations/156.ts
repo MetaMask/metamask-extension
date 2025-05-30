@@ -39,7 +39,8 @@ function transformState(state: Record<string, unknown>) {
   const newState = cloneDeep(state);
 
   if (!hasProperty(newState, 'NftController')) {
-    throw new Error(`newState.NftController must be present`);
+    console.warn(`newState.NftController must be present`);
+    return state;
   }
 
   if (!isObject(newState.NftController)) {
