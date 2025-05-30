@@ -72,7 +72,7 @@ describe('TransactionAccountDetails', () => {
   it('does not render if no authorization list', () => {
     const { queryByText } = render({});
 
-    expect(queryByText('0x12345...67890')).toBeNull();
+    expect(queryByText('0x1234...7890')).toBeNull();
     expect(queryByText('Smart account')).toBeNull();
   });
 
