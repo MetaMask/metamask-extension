@@ -87,6 +87,17 @@ class SendTokenPage {
     await elements[1].click();
   }
 
+  async clickOnAssetPicker(
+    driver: Driver,
+    location: 'src' | 'dest' = 'src',
+  ): Promise<void> {
+    console.log('Clicking on asset picker button');
+    const isDest = location === 'dest';
+    const buttons = await driver.findElements(this.assetPickerButton);
+    const indexOfButtonToClick = isDest ? 1 : 0;
+    await buttons[indexOfButtonToClick].click();
+  }
+
   async checkAccountValueAndSuffix(value: string): Promise<void> {
     console.log(`Checking if account value and suffix is ${value}`);
     const element = await this.driver.waitForSelector(this.assetValue);
