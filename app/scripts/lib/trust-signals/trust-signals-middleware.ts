@@ -45,7 +45,6 @@ export function createTrustSignalsMiddleware(
   ) => {
     try {
       if (isEthSendTransaction(req) && hasValidTransactionParams(req)) {
-        console.log('[createTrustSignalsMiddleware] req', req);
         const { to } = req.params[0] as TransactionParams;
 
         const cachedResponse =
@@ -56,7 +55,6 @@ export function createTrustSignalsMiddleware(
 
         const chainId = getChainId(networkController);
         const result = await scanAddress(chainId as SupportedEVMChain, to);
-        console.log('[createTrustSignalsMiddleware] result', result);
         appStateController.addAddressSecurityAlertResponse(to, result);
       }
     } catch (error) {
