@@ -12,6 +12,7 @@ import {
   CHAIN_IDS,
 } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
+import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
 import { AccountListItem, AccountListItemMenuTypes } from '.';
 
 const mockAccount = {
@@ -22,7 +23,10 @@ const mockAccount = {
 };
 
 const mockNonEvmAccount = {
-  ...mockAccount,
+  ...mockState.metamask.internalAccounts.accounts[
+    'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+  ],
+  balance: '1', // updating this  to 1 because the balance for native non evm networks comes from the multichainBalances controller in decimal format and not hex.
   id: 'b7893c59-e376-4cc0-93ad-05ddaab574a6',
   address: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
   type: 'bip122:p2wpkh',
@@ -129,12 +133,22 @@ describe('AccountListItem', () => {
       ),
     ).toBeInTheDocument();
     expect(document.querySelector('[title="0.006 ETH"]')).toBeInTheDocument();
+    expect(screen.getByTestId('account-network-indicator')).toBeInTheDocument();
 
     expect(container).toMatchSnapshot('evm-account-list-item');
   });
 
   it('renders AccountListItem component and shows account name, address, and balance for non-EVM account', () => {
-    const { container } = render({ account: mockNonEvmAccount });
+    const { container } = render(
+      { account: mockNonEvmAccount },
+      {
+        metamask: {
+          accountsAssets: {
+            [mockNonEvmAccount.id]: [MultichainNativeAssets.BITCOIN],
+          },
+        },
+      },
+    );
     expect(screen.getByText(mockAccount.metadata.name)).toBeInTheDocument();
     expect(
       screen.getByText(shortenAddress(mockNonEvmAccount.address)),
@@ -142,6 +156,7 @@ describe('AccountListItem', () => {
     expect(
       document.querySelector('[title="$100,000.00 USD"]'),
     ).toBeInTheDocument();
+    expect(screen.getByTestId('account-network-indicator')).toBeInTheDocument();
 
     expect(container).toMatchSnapshot('non-EVM-account-list-item');
   });
@@ -279,77 +294,6 @@ describe('AccountListItem', () => {
 
   describe('Multichain Behaviour', () => {
     describe('currency display', () => {
-      it('renders tokens for EVM account', () => {
-        const { container } = render(
-          {
-            account: mockAccount,
-          },
-          {
-            metamask: {
-              ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
-              preferences: {
-                showFiatInTestnets: false,
-              },
-            },
-          },
-        );
-
-        const firstCurrencyDisplay = container.querySelector(
-          '[data-testid="first-currency-display"]',
-        );
-        const secondCurrencyDisplay = container.querySelector(
-          '[data-testid="second-currency-display"]',
-        );
-        const avatarGroup = container.querySelector(
-          '[data-testid="avatar-group"]',
-        );
-
-        const expectedBalance = '0.006';
-
-        expect(firstCurrencyDisplay).toBeInTheDocument();
-        expect(firstCurrencyDisplay.firstChild.textContent).toContain(
-          expectedBalance,
-        );
-        expect(firstCurrencyDisplay.lastChild.textContent).toContain('ETH');
-        expect(secondCurrencyDisplay.textContent).toContain('');
-        expect(avatarGroup).not.toBeInTheDocument();
-      });
-
-      it('renders tokens for non-EVM account', () => {
-        const { container } = render(
-          {
-            account: mockNonEvmAccount,
-          },
-          {
-            metamask: {
-              preferences: {
-                showFiatInTestnets: false,
-              },
-            },
-          },
-        );
-
-        const firstCurrencyDisplay = container.querySelector(
-          '[data-testid="first-currency-display"]',
-        );
-        const secondCurrencyDisplay = container.querySelector(
-          '[data-testid="second-currency-display"]',
-        );
-        const avatarGroup = container.querySelector(
-          '[data-testid="avatar-group"]',
-        );
-
-        const expectedBalance = '$100,000.00';
-
-        expect(firstCurrencyDisplay).toBeInTheDocument();
-        expect(firstCurrencyDisplay.firstChild.textContent).toContain(
-          expectedBalance,
-        );
-        expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
-        expect(secondCurrencyDisplay.textContent).toContain('BTC');
-        expect(avatarGroup).not.toBeInTheDocument();
-      });
-
       it('renders fiat for EVM account', () => {
         const { container } = render(
           {
@@ -372,12 +316,6 @@ describe('AccountListItem', () => {
         const firstCurrencyDisplay = container.querySelector(
           '[data-testid="first-currency-display"]',
         );
-        const secondCurrencyDisplay = container.querySelector(
-          '[data-testid="second-currency-display"]',
-        );
-        const avatarGroup = container.querySelector(
-          '[data-testid="avatar-group"]',
-        );
 
         const expectedBalance = '$3.31';
 
@@ -386,8 +324,6 @@ describe('AccountListItem', () => {
           expectedBalance,
         );
         expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
-        expect(secondCurrencyDisplay.textContent).toContain('');
-        expect(avatarGroup).not.toBeInTheDocument();
       });
 
       it('renders fiat and native balance for non-EVM account', () => {
@@ -400,18 +336,15 @@ describe('AccountListItem', () => {
               preferences: {
                 showFiatInTestnets: true,
               },
+              accountsAssets: {
+                [mockNonEvmAccount.id]: [MultichainNativeAssets.BITCOIN],
+              },
             },
           },
         );
 
         const firstCurrencyDisplay = container.querySelector(
           '[data-testid="first-currency-display"]',
-        );
-        const secondCurrencyDisplay = container.querySelector(
-          '[data-testid="second-currency-display"]',
-        );
-        const avatarGroup = container.querySelector(
-          '[data-testid="avatar-group"]',
         );
 
         const expectedBalance = '$100,000.00';
@@ -421,8 +354,6 @@ describe('AccountListItem', () => {
           expectedBalance,
         );
         expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
-        expect(secondCurrencyDisplay.textContent).toContain('1BTC');
-        expect(avatarGroup).not.toBeInTheDocument();
       });
     });
   });

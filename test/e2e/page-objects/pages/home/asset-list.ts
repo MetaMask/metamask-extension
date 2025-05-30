@@ -56,11 +56,17 @@ class AssetListPage {
 
   private readonly priceChart = '[data-testid="asset-price-chart"]';
 
-  private sortByAlphabetically = '[data-testid="sortByAlphabetically"]';
+  private readonly sortByAlphabetically =
+    '[data-testid="sortByAlphabetically"]';
 
-  private sortByDecliningBalance = '[data-testid="sortByDecliningBalance"]';
+  private readonly sortByDecliningBalance =
+    '[data-testid="sortByDecliningBalance"]';
 
-  private sortByPopoverToggle = '[data-testid="sort-by-popover-toggle"]';
+  private readonly sortByPopoverToggle =
+    '[data-testid="sort-by-popover-toggle"]';
+
+  private readonly tokenFiatAmount =
+    '[data-testid="multichain-token-list-item-secondary-value"]';
 
   private readonly sendButton = '[data-testid="eth-overview-send"]';
 
@@ -86,7 +92,8 @@ class AssetListPage {
   private readonly tokenListItem =
     '[data-testid="multichain-token-list-button"]';
 
-  private readonly tokenOptionsButton = '[data-testid="import-token-button"]';
+  private readonly tokenOptionsButton =
+    '[data-testid="asset-list-control-bar-action-button"]';
 
   private tokenImportSelectNetwork(chainId: string): string {
     return `[data-testid="select-network-item-${chainId}"]`;
@@ -260,6 +267,7 @@ class AssetListPage {
 
     for (const name of tokenNames) {
       await this.driver.fill(this.tokenSearchInput, name);
+      await this.driver.waitForElementToStopMoving({ text: name, tag: 'p' });
       await this.driver.clickElement({ text: name, tag: 'p' });
     }
     await this.driver.clickElement(this.importTokensNextButton);
@@ -273,7 +281,7 @@ class AssetListPage {
     await this.driver.clickElement(this.networksToggle);
     await this.driver.waitUntil(
       async () => {
-        return await this.driver.findElement(this.allNetworksOption);
+        return Boolean(await this.driver.findElement(this.allNetworksOption));
       },
       {
         timeout: 5000,
@@ -367,6 +375,18 @@ class AssetListPage {
     await this.driver.waitForSelector({
       css: this.tokenAmountValue,
       text: tokenAmount,
+    });
+  }
+
+  async check_tokenFiatAmountIsDisplayed(
+    tokenFiatAmount: string,
+  ): Promise<void> {
+    console.log(
+      `Waiting for token fiat amount ${tokenFiatAmount} to be displayed`,
+    );
+    await this.driver.waitForSelector({
+      css: this.tokenFiatAmount,
+      text: tokenFiatAmount,
     });
   }
 

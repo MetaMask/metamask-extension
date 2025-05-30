@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "Compte Bitcoin (Bêta)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Compte Bitcoin (Testnet)"
-  },
   "addBlockExplorer": {
     "message": "Ajouter un explorateur de blocs"
   },
@@ -504,10 +501,6 @@
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
   },
-  "appNameMmi": {
-    "message": "MetaMask institutionnel",
-    "description": "The name of the application (MMI)"
-  },
   "apply": {
     "message": "Appliquer"
   },
@@ -661,22 +654,6 @@
   "billionAbbreviation": {
     "message": "Mrd",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "En activant cette fonctionnalité, vous aurez la possibilité d’ajouter un compte Bitcoin à votre extension MetaMask dérivée de votre phrase secrète de récupération existante. Toute utilisation de cette fonctionnalité bêta expérimentale se fait à vos risques et périls. Pour nous faire part de vos commentaires sur cette nouvelle expérience Bitcoin, veuillez remplir ce $1.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Activer « Ajouter un nouveau compte Bitcoin (Bêta) »"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "En activant cette fonctionnalité, vous aurez la possibilité d’ajouter un compte Bitcoin pour le réseau de test."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Activer « Ajouter un nouveau compte Bitcoin (Testnet) »"
   },
   "blockExplorerAccountAction": {
     "message": "Compte",
@@ -955,7 +932,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "Nous utilisons Infura comme fournisseur de RPC (Remote Procedure Call) pour vous fournir l’accès le plus fiable et le plus privé possible aux données Ethereum. Vous pouvez choisir votre propre RPC, mais n’oubliez pas que tout RPC a besoin d’accéder à votre adresse IP et à l’adresse de votre portefeuille Ethereum pour valider les transactions. Lisez notre $1 pour en savoir plus sur la façon dont Infura traite les données personnelles.",
-    "description": "$1 is a link to the privacy policy"
+    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Pour connecter votre portefeuille matériel, vous devez utiliser MetaMask pour Google Chrome."
@@ -1338,10 +1315,6 @@
   },
   "creatorAddress": {
     "message": "Adresse du créateur"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "Cette valeur reflète la valeur de tous les jetons que vous possédez sur tous les réseaux. Si vous préférez que cette valeur soit affichée en ETH ou dans d’autres monnaies, veuillez accéder à $1.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "Échanges inter-réseaux avec MetaMask Portfolio"
@@ -2711,9 +2684,6 @@
   "ledgerLocked": {
     "message": "Impossible de se connecter au dispositif Ledger. Veuillez vous assurer que votre périphérique est déverrouillé et que l’application Ethereum est ouverte."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "Il n’est pas possible de connecter plusieurs dispositifs Ledger en même temps. Vous devez d’abord déconnecter le dispositif actuel avant d’en connecter un autre."
-  },
   "ledgerTimeout": {
     "message": "Ledger Live met trop de temps à répondre ou la connexion est interrompue. Assurez-vous que l’application Ledger Live est bien ouverte et que votre appareil est déverrouillé."
   },
@@ -3448,10 +3418,6 @@
     "message": "La transaction $1 a échoué ! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
   },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "La transaction a échoué ! $1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
-  },
   "notificationTransactionFailedTitle": {
     "message": "Transaction non conclue",
     "description": "Title of the browser notification that appears when a transaction fails"
@@ -3664,22 +3630,6 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "Votre installation de MetaMask est terminée !"
-  },
-  "oneDayAbbreviation": {
-    "message": "1 j",
-    "description": "Shortened form of '1 day'"
-  },
-  "oneMonthAbbreviation": {
-    "message": "1 mois",
-    "description": "Shortened form of '1 month'"
-  },
-  "oneWeekAbbreviation": {
-    "message": "1 sem.",
-    "description": "Shortened form of '1 week'"
-  },
-  "oneYearAbbreviation": {
-    "message": "1 an",
-    "description": "Shortened form of '1 year'"
   },
   "onlyConnectTrust": {
     "message": "Ne vous connectez qu’aux sites auxquels vous faites confiance. $1",
@@ -4150,18 +4100,6 @@
   },
   "productAnnouncements": {
     "message": "Annonces de produits"
-  },
-  "profileSync": {
-    "message": "Synchronisation du profil"
-  },
-  "profileSyncConfirmation": {
-    "message": "Si vous désactivez la synchronisation du profil, vous ne pourrez plus recevoir de notifications."
-  },
-  "profileSyncDescription": {
-    "message": "Crée un profil que MetaMask utilise pour synchroniser certains paramètres entre vos appareils. Ceci est nécessaire pour activer des notifications. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Découvrez comment nous protégeons vos données personnelles"
   },
   "proposedApprovalLimit": {
     "message": "Limite d’approbation proposée"
@@ -5975,10 +5913,6 @@
     "message": "Avis sur les logiciels développés par des tiers",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
-  "threeMonthsAbbreviation": {
-    "message": "3 mois",
-    "description": "Shortened form of '3 months'"
-  },
   "time": {
     "message": "Temps"
   },
@@ -6527,9 +6461,6 @@
   },
   "yourBalance": {
     "message": "Votre solde"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Votre solde est agrégé"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Il peut y avoir des risques associés à votre NFT"

@@ -56,7 +56,10 @@ describe('Account syncing - New User', function () {
 
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
-          await accountListPage.check_numberOfAvailableAccounts(1);
+          await accountListPage.check_numberOfAvailableAccounts(
+            1,
+            ACCOUNT_TYPE.Ethereum,
+          );
           await accountListPage.check_accountDisplayedInAccountList(
             defaultAccountOneName,
           );
@@ -116,8 +119,6 @@ describe('Account syncing - New User', function () {
         async ({ driver }) => {
           // Onboard with import flow using SRP from new account created above
           await completeOnboardFlowIdentity(driver, walletSrp);
-          const homePage = new HomePage(driver);
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           // Open account menu and validate the 2 accounts have been retrieved
           const header = new HeaderNavbar(driver);
@@ -127,7 +128,10 @@ describe('Account syncing - New User', function () {
           const accountListPage = new AccountListPage(driver);
           await accountListPage.check_pageIsLoaded();
 
-          await accountListPage.check_numberOfAvailableAccounts(2);
+          await accountListPage.check_numberOfAvailableAccounts(
+            2,
+            ACCOUNT_TYPE.Ethereum,
+          );
 
           await accountListPage.check_accountDisplayedInAccountList(
             defaultAccountOneName,

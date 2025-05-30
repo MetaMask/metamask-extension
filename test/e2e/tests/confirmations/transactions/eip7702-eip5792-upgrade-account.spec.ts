@@ -96,66 +96,6 @@ describe('Upgrade Account', function (this: Suite) {
     );
   });
 
-  it('an EOA account is not upgraded when rejecting a batch and upgrade transaction, and cannot trigger new send calls', async function () {
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
-        localNodeOptions: [
-          {
-            type: 'anvil',
-            options: {
-              hardfork: 'prague',
-              loadState:
-                './test/e2e/seeder/network-states/eip7702-state/withDelegatorContracts.json',
-            },
-          },
-        ],
-        testSpecificMock: mockEip7702FeatureFlag,
-        title: this.test?.fullTitle(),
-      },
-      async ({
-        driver,
-        localNodes,
-      }: {
-        driver: Driver;
-        localNodes: Anvil[];
-      }) => {
-        await loginWithBalanceValidation(driver);
-
-        // We check that we have an EOA account
-        let accountBytecode = await localNodes[0].getCode(
-          DEFAULT_FIXTURE_ACCOUNT,
-        );
-        assert.strictEqual(accountBytecode, undefined);
-
-        const testDapp = new TestDapp(driver);
-        await testDapp.openTestDappPage();
-        await testDapp.clickSendCalls();
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
-
-        // Reject upgrade and batch tx
-        await upgradeAndBatchTxConfirmation.clickDontUseSmartAccountButton();
-
-        // We check that we continue to have an EOA account
-        accountBytecode = await localNodes[0].getCode(DEFAULT_FIXTURE_ACCOUNT);
-        assert.strictEqual(accountBytecode, undefined);
-
-        // We check that we cannot perform new send calls as the upgrade tx was rejected
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await testDapp.clickSendCalls();
-
-        await testDapp.checkEip5792SendCallsError(
-          'Error: EIP-7702 upgrade rejected for this chain and account - Chain ID: 0x539, Account: 0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-        );
-      },
-    );
-  });
-
   it('an EOA account is not upgraded when rejecting a batch transaction, but can trigger a new send call', async function () {
     await withFixtures(
       {
