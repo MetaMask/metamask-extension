@@ -72,7 +72,6 @@ export const useCarouselManagement = ({
   const useExternalServices = useSelector(getUseExternalServices);
   const prevSlidesRef = useRef<CarouselSlide[]>();
 
-
   const hasZeroBalance = new BigNumber(totalBalance ?? ZERO_BALANCE).eq(
     ZERO_BALANCE,
   );
@@ -90,7 +89,6 @@ export const useCarouselManagement = ({
       undismissable: hasZeroBalance,
     };
     defaultSlides.push(BASIC_FUNCTIONALITY_SLIDE);
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 
     if (!isSolanaAddress(selectedAccount.address)) {
       defaultSlides.push(SMART_ACCOUNT_UPGRADE_SLIDE);
