@@ -97,10 +97,6 @@ export const DeepLink = () => {
               href={route.href}
               size={ButtonSize.Lg}
               danger={!route.signed}
-              onClick={(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-                e.preventDefault();
-                history.push(route.href);
-              }}
             >
               {route.title}
             </Button>
