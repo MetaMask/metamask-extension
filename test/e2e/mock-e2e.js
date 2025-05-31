@@ -283,14 +283,10 @@ async function setupMocking(
       };
     });
 
-  // even if we are at chain id 1337, a call is made to chain id 1
+  // when we are at chain id 1337, a call is made to chain id 1
+  const callToChainId = chainId === '1337' ? '1' : chainId;
   await server
-    .forGet(
-      new RegExp(
-        `^${GAS_API_BASE_URL.replace(/\./g, '\\.')}/networks/\\d+/gasPrices$`,
-        'u',
-      ),
-    )
+    .forGet(`${GAS_API_BASE_URL}/${callToChainId}/1/gasPrices`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -320,15 +316,7 @@ async function setupMocking(
     });
 
   await server
-    .forGet(
-      new RegExp(
-        `^${GAS_API_BASE_URL.replace(
-          /\./g,
-          '\\.',
-        )}/networks/\\d+/suggestedGasFees$`,
-        'u',
-      ),
-    )
+    .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/suggestedGasFees`)
     .thenCallback(() => {
       return {
         statusCode: 200,
