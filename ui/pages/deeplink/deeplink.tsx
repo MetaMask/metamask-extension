@@ -12,6 +12,7 @@ import log from 'loglevel';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { Display } from '../../helpers/constants/design-system';
 import { Box } from '../../components/component-library/box';
+import { BaseUrl } from '../../../shared/constants/urls';
 
 const { getExtensionURL } = globalThis.platform;
 
@@ -78,10 +79,15 @@ export const DeepLink = () => {
             <Button
               size={ButtonSize.Lg}
               variant={ButtonVariant.Secondary}
-              href={'./home.html'}
               onClick={(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
                 e.preventDefault();
-                history.push('');
+                if (window.history.length > 1) {
+                  // If there is a history, go back to the previous page
+                  window.history.back();
+                } else {
+                  // If there is no history, redirect to https://metamask.io/
+                  window.location.href = BaseUrl.MetaMask;
+                }
               }}
             >
               {t('cancel')}
