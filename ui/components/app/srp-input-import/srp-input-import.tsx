@@ -329,10 +329,17 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
             <Button
               variant={ButtonVariant.Link}
               onClick={async () => {
-                // TODO: this requires user permission
-                const newSrp = await window.navigator.clipboard.readText();
-                if (newSrp.trim().match(/\s/u)) {
-                  onSrpPaste(newSrp);
+                const permissionResult = await navigator.permissions.query({
+                  name: 'clipboard-read' as PermissionName,
+                });
+                if (
+                  permissionResult.state === 'granted' ||
+                  permissionResult.state === 'prompt'
+                ) {
+                  const newSrp = await navigator.clipboard.readText();
+                  if (newSrp.trim().match(/\s/u)) {
+                    onSrpPaste(newSrp);
+                  }
                 }
               }}
             >
