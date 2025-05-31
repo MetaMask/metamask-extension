@@ -124,7 +124,7 @@ class SecureWalletPage {
 
     // confirm SRP
     const quizWords = JSON.parse(quizWordsString).sort(
-      (a, b) => a.index - b.index,
+      (a: { index: number }, b: { index: number }) => a.index - b.index,
     );
     const quizInputSelector0 = `[data-testid="recovery-phrase-quiz-unanswered-${quizWords[0].index}"]`;
     const quizInputSelector1 = `[data-testid="recovery-phrase-quiz-unanswered-${quizWords[1].index}"]`;
