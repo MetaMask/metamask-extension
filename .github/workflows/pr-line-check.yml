@@ -1,0 +1,12 @@
+name: PR Lines Changed Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  pr-line-check:
+    uses: metamask/github-tools/.github/actions/pr-line-check.yml@main
+    with:
+      base_ref: main
+      is-high-risk-environment: false
