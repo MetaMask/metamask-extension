@@ -44,6 +44,7 @@ export class AppleLoginHandler extends BaseLoginHandler {
       'state',
       JSON.stringify({
         client_redirect_back_uri: this.options.redirectUri,
+        nonce: this.nonce,
       }),
     );
     authUrl.searchParams.set('scope', this.#scope.join(' '));

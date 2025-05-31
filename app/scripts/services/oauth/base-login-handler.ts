@@ -50,6 +50,13 @@ export abstract class BaseLoginHandler {
    */
   abstract getUserInfo(idToken: string): Promise<OAuthUserInfo>;
 
+  validateState(state: string): void {
+    const { client_redirect_back_uri, nonce } = JSON.parse(state);
+    if (client_redirect_back_uri !== this.options.redirectUri || nonce !== this.nonce) {
+      throw new Error('Invalid state');
+    }
+  }
+
   /**
    * Make a request to the Web3Auth Authentication Server to get the JWT Token.
    *
