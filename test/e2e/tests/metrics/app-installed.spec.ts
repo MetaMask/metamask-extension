@@ -5,7 +5,9 @@ import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { MOCK_META_METRICS_ID, WALLET_PASSWORD } from '../../constants';
+import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
+import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
 
 /**
  * Mocks the segment API multiple times for specific payloads that we expect to
@@ -68,6 +70,14 @@ describe('App Installed Events', function () {
         await startOnboardingPage.check_loginPageIsLoaded();
         await startOnboardingPage.createWalletWithSrp();
 
+        const onboardingPasswordPage = new OnboardingPasswordPage(driver);
+        await onboardingPasswordPage.check_pageIsLoaded();
+        await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
+
+        const secureWalletPage = new SecureWalletPage(driver);
+        await secureWalletPage.check_pageIsLoaded();
+        await secureWalletPage.revealAndConfirmSRP();
+
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
           await onboardingMetricsPage.check_pageIsLoaded();
@@ -111,6 +121,14 @@ describe('App Installed Events', function () {
         await startOnboardingPage.agreeToTermsOfUse();
         await startOnboardingPage.check_loginPageIsLoaded();
         await startOnboardingPage.createWalletWithSrp();
+
+        const onboardingPasswordPage = new OnboardingPasswordPage(driver);
+        await onboardingPasswordPage.check_pageIsLoaded();
+        await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
+
+        const secureWalletPage = new SecureWalletPage(driver);
+        await secureWalletPage.check_pageIsLoaded();
+        await secureWalletPage.revealAndConfirmSRP();
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);

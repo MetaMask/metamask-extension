@@ -51,13 +51,6 @@ export const createNewWalletOnboardingFlow = async ({
   await startOnboardingPage.check_loginPageIsLoaded();
   await startOnboardingPage.createWalletWithSrp();
 
-  if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-    await onboardingMetricsFlow(driver, {
-      participateInMetaMetrics,
-      dataCollectionForMarketing,
-    });
-  }
-
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.check_pageIsLoaded();
   await onboardingPasswordPage.createWalletPassword(password);
@@ -65,6 +58,13 @@ export const createNewWalletOnboardingFlow = async ({
   const secureWalletPage = new SecureWalletPage(driver);
   await secureWalletPage.check_pageIsLoaded();
   await secureWalletPage.revealAndConfirmSRP();
+
+  if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+    await onboardingMetricsFlow(driver, {
+      participateInMetaMetrics,
+      dataCollectionForMarketing,
+    });
+  }
 };
 
 /**
@@ -107,13 +107,6 @@ export const incompleteCreateNewWalletOnboardingFlow = async ({
   await startOnboardingPage.agreeToTermsOfUse();
   await startOnboardingPage.check_loginPageIsLoaded();
   await startOnboardingPage.createWalletWithSrp();
-
-  if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-    await onboardingMetricsFlow(driver, {
-      participateInMetaMetrics,
-      dataCollectionForMarketing,
-    });
-  }
 
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.check_pageIsLoaded();
@@ -191,13 +184,6 @@ export const importSRPOnboardingFlow = async ({
   await startOnboardingPage.check_loginPageIsLoaded();
   await startOnboardingPage.importWallet();
 
-  if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-    await onboardingMetricsFlow(driver, {
-      participateInMetaMetrics,
-      dataCollectionForMarketing,
-    });
-  }
-
   const onboardingSrpPage = new OnboardingSrpPage(driver);
   await onboardingSrpPage.check_pageIsLoaded();
   if (fillSrpWordByWord) {
@@ -210,6 +196,13 @@ export const importSRPOnboardingFlow = async ({
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.check_pageIsLoaded();
   await onboardingPasswordPage.createWalletPassword(password);
+
+  if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+    await onboardingMetricsFlow(driver, {
+      participateInMetaMetrics,
+      dataCollectionForMarketing,
+    });
+  }
 };
 
 /**
