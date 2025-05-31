@@ -46,9 +46,8 @@ export async function onPushNotificationClicked(
   const data: INotification = notification ?? event?.notification?.data;
 
   // Navigate
-  const destination = `${extensionPlatform.getExtensionURL(
-    null,
-    null,
-  )}#notifications/${data.id}`;
+  const destination = extensionPlatform.getExtensionURL(
+    `notifications/${data.id}`,
+  );
   event.waitUntil(sw.clients.openWindow(destination));
 }

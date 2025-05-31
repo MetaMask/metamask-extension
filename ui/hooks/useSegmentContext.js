@@ -3,7 +3,7 @@ import { useRouteMatch } from 'react-router-dom';
 import { PATH_NAME_MAP } from '../helpers/constants/routes';
 import { txDataSelector } from '../selectors';
 
-const PATHS_TO_CHECK = Object.keys(PATH_NAME_MAP);
+const PATHS_TO_CHECK = PATH_NAME_MAP.keys();
 
 /**
  * Returns the current page if it matches our route map, as well as the origin
@@ -34,7 +34,7 @@ export function useSegmentContext() {
   const page = match
     ? {
         path: match.path,
-        title: PATH_NAME_MAP[match.path],
+        title: PATH_NAME_MAP.get(match.path),
         url: match.path,
       }
     : undefined;

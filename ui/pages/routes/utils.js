@@ -23,6 +23,7 @@ import {
   REVIEW_PERMISSIONS,
   SEND_ROUTE,
   SNAPS_VIEW_ROUTE,
+  DEEPLINK_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -116,6 +117,17 @@ export function hideAppHeader(props) {
   );
 
   if (isNotificationsPage) {
+    return true;
+  }
+
+  const isDeepLinksPage = Boolean(
+    matchPath(location.pathname, {
+      path: DEEPLINK_ROUTE,
+      exact: false,
+    }),
+  );
+
+  if (isDeepLinksPage) {
     return true;
   }
 

@@ -22,6 +22,7 @@ import {
   TrezorAction,
 } from '../shared/constants/offscreen-communication';
 import type { Preferences } from '../app/scripts/controllers/preferences-controller';
+import type ExtensionPlatform from '../app/scripts/platforms/extension';
 
 declare class Platform {
   openTab: (opts: { url: string }) => void;
@@ -279,7 +280,7 @@ type StateHooks = {
 };
 
 export declare global {
-  var platform: Platform;
+  var platform: ExtensionPlatform;
   // Sentry is undefined in dev, so use optional chaining
   var sentry: SentryObject | undefined;
 

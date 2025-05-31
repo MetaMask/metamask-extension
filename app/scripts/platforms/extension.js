@@ -57,6 +57,13 @@ export default class ExtensionPlatform {
     return browser.runtime.getManifest().version;
   }
 
+  /**
+   * Returns the URL of the extension's home page.
+   *
+   * @param {string | null} route
+   * @param {string | null} queryString
+   * @returns
+   */
   getExtensionURL(route = null, queryString = null) {
     let extensionURL = browser.runtime.getURL('home.html');
 
@@ -71,6 +78,13 @@ export default class ExtensionPlatform {
     return extensionURL;
   }
 
+  /**
+   * Opens the extension in a new browser tab or window.
+   *
+   * @param {string | null} route
+   * @param {string | null} queryString
+   * @param {boolean} keepWindowOpen
+   */
   openExtensionInBrowser(
     route = null,
     queryString = null,
