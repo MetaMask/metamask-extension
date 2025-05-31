@@ -19,9 +19,9 @@ function preventSinonAssertSyntax(diff: string): boolean {
   const diffAdditions = filterDiffFileCreations(diffByFilePath);
   const hashmap = hasNumberOfCodeBlocksIncreased(diffAdditions, codeBlocks);
 
-  const haveOccurencesOfAtLeastOneCodeBlockIncreased =
+  const haveOccurrencesOfAtLeastOneCodeBlockIncreased =
     Object.values(hashmap).includes(true);
-  if (haveOccurencesOfAtLeastOneCodeBlockIncreased) {
+  if (haveOccurrencesOfAtLeastOneCodeBlockIncreased) {
     return false;
   }
   return true;
