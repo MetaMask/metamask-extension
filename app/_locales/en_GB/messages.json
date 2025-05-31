@@ -110,6 +110,16 @@
     "message": "This account name is reserved",
     "description": "This is an error message shown when the user enters a new account name that is reserved for future use"
   },
+  "accountNotFoundCreateOne": {
+    "message": "Yes, create a new wallet"
+  },
+  "accountNotFoundDescription": {
+    "message": "We couldn’t find a wallet for “$1”. Do you want to create a new one with this login?",
+    "description": "$1 is the account email"
+  },
+  "accountNotFoundTitle": {
+    "message": "Wallet not found"
+  },
   "accountOptions": {
     "message": "Account options"
   },
