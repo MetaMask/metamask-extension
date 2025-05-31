@@ -39,8 +39,6 @@ export class SignUpPage {
 
   readonly gotItBtn: Locator;
 
-  readonly nextBtn: Locator;
-
   readonly enableBtn: Locator;
 
   readonly secureWalletBtn: Locator;
