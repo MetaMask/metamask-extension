@@ -37,7 +37,7 @@ describe('Unlock Page', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('changes password and submits', () => {
+  it('changes password and submits', async () => {
     const props = {
       onSubmit: jest.fn(),
     };
@@ -50,8 +50,15 @@ describe('Unlock Page', () => {
     const passwordField = queryByTestId('unlock-password');
     const loginButton = queryByTestId('unlock-submit');
 
+    expect(passwordField).toBeInTheDocument();
+    expect(passwordField).toHaveAttribute('type', 'password');
+    expect(passwordField.nodeName).toBe('INPUT');
+    expect(loginButton).toBeInTheDocument();
+    expect(loginButton).toBeDisabled();
+
     fireEvent.change(passwordField, { target: { value: 'a-password' } });
-    expect(passwordField).toHaveAttribute('value', 'a-password');
+
+    expect(loginButton).toBeEnabled();
 
     fireEvent.click(loginButton);
 
@@ -59,9 +66,18 @@ describe('Unlock Page', () => {
   });
 
   it('clicks imports seed button', () => {
-    const { getByText } = renderWithProvider(<UnlockPage />, mockStore);
+    const { getByText, getByTestId } = renderWithProvider(
+      <UnlockPage />,
+      mockStore,
+    );
 
     fireEvent.click(getByText('Forgot password?'));
+
+    const resetPasswordButton = getByTestId('reset-password-modal-button');
+
+    expect(resetPasswordButton).toBeInTheDocument();
+
+    fireEvent.click(resetPasswordButton);
 
     expect(mockMarkPasswordForgotten).toHaveBeenCalled();
   });

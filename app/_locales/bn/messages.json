@@ -716,9 +716,6 @@
   "unlock": {
     "message": "আনলক"
   },
-  "unlockMessage": {
-    "message": "ছড়িয়ে ছিটিয়ে থাকা ওয়েব অপেক্ষা করছে"
-  },
   "urlErrorMsg": {
     "message": "URI গুলির যথাযথ HTTP/HTTPS প্রেফিক্সের প্রয়োজন।"
   },

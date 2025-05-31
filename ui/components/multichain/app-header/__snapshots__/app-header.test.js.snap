@@ -3,7 +3,7 @@
 exports[`App Header locked state matches snapshot: locked 1`] = `
 <div>
   <div
-    class="mm-box multichain-app-header multichain-app-header-shadow mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
+    class="mm-box multichain-app-header mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
   >
     <div
       class="mm-box multichain-app-header__lock-contents mm-box--padding-2 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"

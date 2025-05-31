@@ -6067,9 +6067,6 @@
   "unlock": {
     "message": "Entsperren"
   },
-  "unlockMessage": {
-    "message": "Das dezentrale Web erwartet Sie"
-  },
   "unpin": {
     "message": "Lösen"
   },

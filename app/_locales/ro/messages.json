@@ -707,9 +707,6 @@
   "unlock": {
     "message": "Deblochează"
   },
-  "unlockMessage": {
-    "message": "Web-ul descentralizat așteaptă"
-  },
   "urlErrorMsg": {
     "message": "URL necesită prefixul potrivit HTTP/HTTPS."
   },

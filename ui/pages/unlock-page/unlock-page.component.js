@@ -1,14 +1,29 @@
 import { EventEmitter } from 'events';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Text } from '../../components/component-library';
 import {
-  FontWeight,
+  Text,
+  FormTextField,
+  Box,
+  ButtonLink,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  InputType,
+  FormTextFieldSize,
+} from '../../components/component-library';
+import {
   TextVariant,
   TextColor,
+  BlockSize,
+  BorderRadius,
+  Display,
+  JustifyContent,
+  AlignItems,
+  FlexDirection,
+  TextAlign,
+  BackgroundColor,
 } from '../../helpers/constants/design-system';
-import Button from '../../components/ui/button';
-import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
@@ -16,9 +31,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { isFlask, isBeta } from '../../helpers/utils/build-types';
+import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { getCaretCoordinates } from './unlock-page.util';
+import ResetPasswordModal from './reset-password-modal';
 
 export default class UnlockPage extends Component {
   static contextTypes = {
@@ -52,6 +68,8 @@ export default class UnlockPage extends Component {
   state = {
     password: '',
     error: null,
+    showResetPasswordModal: false,
+    isLocked: false,
   };
 
   submitting = false;
@@ -96,10 +114,11 @@ export default class UnlockPage extends Component {
           isNewVisit: true,
         },
       );
-    } catch ({ message }) {
+    } catch (error) {
       this.failed_attempts += 1;
+      const errorMessage = error instanceof Error ? error.message : error;
 
-      if (message === 'Incorrect password') {
+      if (errorMessage === 'Incorrect password') {
         await forceUpdateMetamaskState();
         this.context.trackEvent({
           category: MetaMetricsEventCategory.Navigation,
@@ -111,48 +130,22 @@ export default class UnlockPage extends Component {
         });
       }
 
-      this.setState({ error: message });
+      this.setState({ error: errorMessage });
       this.submitting = false;
     }
   };
 
-  handleInputChange({ target }) {
+  handleInputChange(event) {
+    const { target } = event;
     this.setState({ password: target.value, error: null });
-    // tell mascot to look at page action
-    if (target.getBoundingClientRect) {
-      const element = target;
-      const boundingRect = element.getBoundingClientRect();
-      const coordinates = getCaretCoordinates(element, element.selectionEnd);
-      this.animationEventEmitter.emit('point', {
-        x: boundingRect.left + coordinates.left - element.scrollLeft,
-        y: boundingRect.top + coordinates.top - element.scrollTop,
-      });
-    }
-  }
 
-  renderSubmitButton() {
-    const style = {
-      backgroundColor: 'var(--color-primary-default)',
-      color: 'var(--color-primary-inverse)',
-      marginTop: '20px',
-      height: '56px',
-      fontWeight: '500',
-      boxShadow: 'none',
-    };
-
-    return (
-      <Button
-        type="submit"
-        data-testid="unlock-submit"
-        style={style}
-        disabled={!this.state.password}
-        variant="contained"
-        size="large"
-        onClick={this.handleSubmit}
-      >
-        {this.context.t('unlock')}
-      </Button>
-    );
+    const element = target;
+    const boundingRect = element.getBoundingClientRect();
+    const coordinates = getCaretCoordinates(element, element.selectionEnd ?? 0);
+    this.animationEventEmitter.emit('point', {
+      x: boundingRect.left + coordinates.left - element.scrollLeft,
+      y: boundingRect.top + coordinates.top - element.scrollTop,
+    });
   }
 
   renderMascot = () => {
@@ -175,93 +168,197 @@ export default class UnlockPage extends Component {
     );
   };
 
+  renderHelpText = () => {
+    const { error } = this.state;
+
+    if (!error) {
+      return null;
+    }
+
+    return (
+      <Box
+        className="unlock-page__help-text"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+      >
+        {error && (
+          <Text
+            variant={TextVariant.bodySm}
+            textAlign={TextAlign.Left}
+            color={TextColor.errorDefault}
+          >
+            {error}
+          </Text>
+        )}
+      </Box>
+    );
+  };
+
+  onForgotPassword = () => {
+    this.setState({ showResetPasswordModal: true });
+  };
+
   render() {
-    const { password, error } = this.state;
+    const { password, error, isLocked, showResetPasswordModal } = this.state;
     const { t } = this.context;
-    const { onRestore } = this.props;
 
     const needHelpText = t('needHelpLinkText');
 
     return (
-      <div className="unlock-page__container">
-        <div className="unlock-page" data-testid="unlock-page">
-          <div className="unlock-page__mascot-container">
-            {this.renderMascot()}
-            {isBeta() ? (
-              <div className="unlock-page__mascot-container__beta">
-                {t('beta')}
-              </div>
-            ) : null}
-          </div>
-          <Text
-            data-testid="unlock-page-title"
-            as="h1"
-            variant={TextVariant.displayMd}
-            fontWeight={FontWeight.Medium}
-            marginTop={1}
-            marginBottom={1}
-            color={TextColor.textDefault}
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        justifyContent={JustifyContent.center}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        width={BlockSize.Full}
+        height={BlockSize.Full}
+        marginTop={0}
+        marginBottom="auto"
+        marginInline={0}
+        className="unlock-page__container"
+      >
+        {showResetPasswordModal && (
+          <ResetPasswordModal
+            onClose={() => this.setState({ showResetPasswordModal: false })}
+            onRestore={() => this.props.onRestore()}
+          />
+        )}
+        <Box
+          as="form"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.spaceBetween}
+          alignItems={AlignItems.center}
+          margin="auto"
+          padding={6}
+          width={BlockSize.Full}
+          height={BlockSize.Full}
+          borderRadius={BorderRadius.LG}
+          gap={6}
+          className="unlock-page"
+          data-testid="unlock-page"
+          onSubmit={this.handleSubmit}
+        >
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            width={BlockSize.Full}
+            alignItems={AlignItems.center}
           >
-            {t('welcomeBack')}
-          </Text>
-
-          <Text color={TextColor.textAlternative}>{t('unlockMessage')}</Text>
-          <form className="unlock-page__form" onSubmit={this.handleSubmit}>
-            <TextField
-              id="password"
-              data-testid="unlock-password"
-              label={t('password')}
-              type="password"
-              value={password}
-              onChange={(event) => this.handleInputChange(event)}
-              error={error}
-              autoFocus
-              autoComplete="current-password"
-              theme="material"
-              fullWidth
-            />
-          </form>
-          {this.renderSubmitButton()}
-          <div className="unlock-page__links">
-            <Button
-              type="link"
-              key="import-account"
-              className="unlock-page__link"
-              onClick={() => onRestore()}
+            <Box marginTop={6} className="unlock-page__mascot-container">
+              {this.renderMascot()}
+              {isBeta() ? (
+                <Box className="unlock-page__mascot-container__beta">
+                  {t('beta')}
+                </Box>
+              ) : null}
+            </Box>
+            <Text
+              data-testid="unlock-page-title"
+              as="h1"
+              variant={TextVariant.headingLg}
+              marginTop={1}
+              marginBottom={2}
+              color={TextColor.textDefault}
             >
-              {t('forgotPassword')}
-            </Button>
-          </div>
-          <div className="unlock-page__support">
-            {t('needHelp', [
-              <a
-                href={SUPPORT_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                key="need-help-link"
-                onClick={() => {
-                  this.context.trackEvent(
-                    {
-                      category: MetaMetricsEventCategory.Navigation,
-                      event: MetaMetricsEventName.SupportLinkClicked,
-                      properties: {
-                        url: SUPPORT_LINK,
-                      },
-                    },
-                    {
-                      contextPropsIntoEventProperties: [
-                        MetaMetricsContextProp.PageTitle,
-                      ],
-                    },
-                  );
-                }}
+              {t('welcomeBack')}
+            </Text>
+            <FormTextField
+              id="password"
+              label={
+                <Box
+                  display={Display.Flex}
+                  width={BlockSize.Full}
+                  justifyContent={JustifyContent.spaceBetween}
+                  alignItems={AlignItems.center}
+                  marginBottom={1}
+                >
+                  <Text variant={TextVariant.bodyMdMedium}>
+                    {t('password')}
+                  </Text>
+                </Box>
+              }
+              placeholder={t('enterPassword')}
+              size={FormTextFieldSize.Lg}
+              inputProps={{
+                'data-testid': 'unlock-password',
+                type: InputType.Password,
+              }}
+              onChange={(event) => this.handleInputChange(event)}
+              error={Boolean(error)}
+              helpText={this.renderHelpText()}
+              autoComplete
+              autoFocus
+              disabled={isLocked}
+              width={BlockSize.Full}
+              textFieldProps={{
+                borderRadius: BorderRadius.LG,
+              }}
+            />
+          </Box>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            width={BlockSize.Full}
+            alignItems={AlignItems.center}
+          >
+            <Box
+              className="unlock-page__buttons"
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              width={BlockSize.Full}
+              gap={4}
+            >
+              <Button
+                variant={ButtonVariant.Primary}
+                size={ButtonSize.Lg}
+                block
+                type="submit"
+                data-testid="unlock-submit"
+                disabled={!password || isLocked}
               >
-                {needHelpText}
-              </a>,
-            ])}
-          </div>
-        </div>
-      </div>
+                {this.context.t('unlock')}
+              </Button>
+              <ButtonLink
+                data-testid="unlock-forgot-password-button"
+                key="import-account"
+                type="button"
+                onClick={() => this.onForgotPassword()}
+              >
+                {t('forgotPassword')}
+              </ButtonLink>
+            </Box>
+            <Box marginTop={6} className="unlock-page__support">
+              {t('needHelp', [
+                <a
+                  href={SUPPORT_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  key="need-help-link"
+                  onClick={() => {
+                    this.context.trackEvent(
+                      {
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.SupportLinkClicked,
+                        properties: {
+                          url: SUPPORT_LINK,
+                        },
+                      },
+                      {
+                        contextPropsIntoEventProperties: [
+                          MetaMetricsContextProp.PageTitle,
+                        ],
+                      },
+                    );
+                  }}
+                >
+                  {needHelpText}
+                </a>,
+              ])}
+            </Box>
+          </Box>
+        </Box>
+      </Box>
     );
   }
 }
