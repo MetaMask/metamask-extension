@@ -286,7 +286,7 @@ async function setupMocking(
   // when we are at chain id 1337, a call is made to chain id 1
   const callToChainId = chainId === '1337' ? '1' : chainId;
   await server
-    .forGet(`${GAS_API_BASE_URL}/${callToChainId}/1/gasPrices`)
+    .forGet(`${GAS_API_BASE_URL}/networks/${callToChainId}/1/gasPrices`)
     .thenCallback(() => {
       return {
         statusCode: 200,
