@@ -1,12 +1,18 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { BaseLoginHandler } from './base-login-handler';
 import { AuthTokenResponse, OAuthUserInfo } from './types';
+import { bytesToBase64 } from '@metamask/utils';
+import { base64urlencode } from './utils';
 
 export class GoogleLoginHandler extends BaseLoginHandler {
   public readonly OAUTH_SERVER_URL =
     'https://accounts.google.com/o/oauth2/v2/auth';
 
-  readonly #scope = ['openid', 'profile', 'email'];
+  readonly #scope = ['profile', 'email'];
+
+  readonly CODE_CHALLENGE_METHOD = 'S256';
+
+  #codeVerifier: string | undefined;
 
   get authConnection() {
     return AuthConnection.Google;
@@ -21,11 +27,18 @@ export class GoogleLoginHandler extends BaseLoginHandler {
    *
    * @returns The URL to initiate the OAuth login.
    */
-  getAuthUrl(): string {
+  async getAuthUrl(): Promise<string> {
+    const codeVerifierChallenge = await this.generateCodeVerifierChallenge();
+
     const authUrl = new URL(this.OAUTH_SERVER_URL);
     authUrl.searchParams.set('client_id', this.options.oAuthClientId);
     authUrl.searchParams.set('response_type', 'code');
     authUrl.searchParams.set('scope', this.#scope.join(' '));
+    authUrl.searchParams.set('code_challenge_method', this.CODE_CHALLENGE_METHOD);
+    authUrl.searchParams.set('code_challenge', codeVerifierChallenge);
+    authUrl.searchParams.set('state', JSON.stringify({
+      nonce: this.nonce,
+    }));
     authUrl.searchParams.set('redirect_uri', this.options.redirectUri);
     authUrl.searchParams.set('nonce', this.nonce);
     authUrl.searchParams.set('prompt', this.prompt);
@@ -59,6 +72,7 @@ export class GoogleLoginHandler extends BaseLoginHandler {
       redirect_uri: redirectUri,
       login_provider: this.authConnection,
       network: web3AuthNetwork,
+      code_verifier: this.#codeVerifier,
     };
 
     return JSON.stringify(requestData);
@@ -77,5 +91,20 @@ export class GoogleLoginHandler extends BaseLoginHandler {
       email: payload.email,
       sub: payload.sub,
     };
+  }
+
+  private async generateCodeVerifierChallenge(): Promise<string> {
+    const bytes = new Uint8Array(32);
+    crypto.getRandomValues(bytes);
+    this.#codeVerifier = Array.from(bytes).join('');
+
+    const challengeBuffer = await crypto.subtle.digest(
+      'SHA-256',
+      new TextEncoder().encode(this.#codeVerifier),
+    );
+
+    const challenge = base64urlencode(challengeBuffer);
+
+    return challenge;
   }
 }

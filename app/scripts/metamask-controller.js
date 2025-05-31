@@ -4595,6 +4595,7 @@ export default class MetamaskController extends EventEmitter {
       const oAuthLoginResult = await this.oauthService.startOAuthLogin(
         provider,
       );
+      console.log('oAuthLoginResult', oAuthLoginResult);
 
       const { isNewUser } =
         await this.seedlessOnboardingController.authenticate(oAuthLoginResult);

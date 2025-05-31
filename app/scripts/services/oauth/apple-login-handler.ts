@@ -32,7 +32,7 @@ export class AppleLoginHandler extends BaseLoginHandler {
    *
    * @returns The URL to initiate the OAuth login.
    */
-  getAuthUrl(): string {
+  async getAuthUrl(): Promise<string> {
     const authUrl = new URL(this.OAUTH_SERVER_URL);
     authUrl.searchParams.set('client_id', this.options.oAuthClientId);
     authUrl.searchParams.set('response_type', 'code');
@@ -48,7 +48,7 @@ export class AppleLoginHandler extends BaseLoginHandler {
     );
     authUrl.searchParams.set('scope', this.#scope.join(' '));
 
-    return authUrl.toString();
+    return Promise.resolve(authUrl.toString());
   }
 
   /**
