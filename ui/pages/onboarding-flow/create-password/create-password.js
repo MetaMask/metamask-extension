@@ -79,7 +79,7 @@ export default function CreatePassword({
     if (currentKeyring && !newAccountCreationInProgress) {
       if (firstTimeFlowType === FirstTimeFlowType.import) {
         // SOCIAL: change to metametrics when social login is available
-        history.push(ONBOARDING_COMPLETION_ROUTE);
+        history.replace(ONBOARDING_COMPLETION_ROUTE);
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       }

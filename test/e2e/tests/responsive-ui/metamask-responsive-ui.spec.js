@@ -71,28 +71,43 @@ describe('MetaMask Responsive UI', function () {
 
         // review
         await driver.clickElement('[data-testid="recovery-phrase-reveal"]');
-        const chipTwo = await (
-          await driver.findElement('[data-testid="recovery-phrase-chip-2"]')
-        ).getText();
-        const chipThree = await (
-          await driver.findElement('[data-testid="recovery-phrase-chip-3"]')
-        ).getText();
-        const chipSeven = await (
-          await driver.findElement('[data-testid="recovery-phrase-chip-7"]')
-        ).getText();
-        await driver.clickElement('[data-testid="recovery-phrase-next"]');
+        await driver.clickElementAndWaitToDisappear(
+          '[data-testid="recovery-phrase-continue"]',
+        );
 
-        // confirm
-        await driver.fill('[data-testid="recovery-phrase-input-2"]', chipTwo);
-        await driver.fill('[data-testid="recovery-phrase-input-3"]', chipThree);
-        await driver.fill('[data-testid="recovery-phrase-input-7"]', chipSeven);
+        let quizWordsString = '';
+        const recoveryPhraseChips = await driver.findElement(
+          '[data-testid="recovery-phrase-chips"]',
+        );
+        quizWordsString = await recoveryPhraseChips.getAttribute(
+          'data-quiz-words',
+        );
+
+        // confirm SRP
+        const quizWords = JSON.parse(quizWordsString).sort(
+          (a, b) => a.index - b.index,
+        );
+        const quizInputSelector0 = `[data-testid="recovery-phrase-quiz-unanswered-${quizWords[0].index}"]`;
+        const quizInputSelector1 = `[data-testid="recovery-phrase-quiz-unanswered-${quizWords[1].index}"]`;
+        const quizInputSelector2 = `[data-testid="recovery-phrase-quiz-unanswered-${quizWords[2].index}"]`;
+
+        await driver.waitForMultipleSelectors([
+          quizInputSelector0,
+          quizInputSelector1,
+          quizInputSelector2,
+        ]);
+        await driver.clickElement(quizInputSelector0);
+        await driver.clickElement(quizInputSelector1);
+        await driver.clickElement(quizInputSelector2);
         await driver.clickElement('[data-testid="recovery-phrase-confirm"]');
+        await driver.clickElementAndWaitToDisappear(
+          '[data-testid="confirm-srp-modal-button"]',
+        );
 
         // complete
         await driver.clickElement('[data-testid="onboarding-complete-done"]');
 
         // pin extension
-        await driver.clickElement('[data-testid="pin-extension-next"]');
         await driver.clickElement('[data-testid="pin-extension-done"]');
         await driver.assertElementNotPresent('.loading-overlay__spinner');
         // assert balance
