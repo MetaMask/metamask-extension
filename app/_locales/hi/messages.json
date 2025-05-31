@@ -68,13 +68,6 @@
     "message": "मैंने $1 पढ़ लिया है और मैं सहमत हूं",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "अपने सीक्रेट रिकवरी फ्रेज़ का इस्तेमाल कर अपने वॉलेट का एक्सेस पाएं"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask आपका पासवर्ड रिकवर नहीं कर सकता। हम आपकी ओनरशिप को वेलिडेट करने, आपके वॉलेट को रिस्टोर करने और एक नया पासवर्ड सेट करने के लिए आपके सीक्रेट रिकवरी फ्रेज़ का इस्तेमाल करेंगे। सबसे पहले, अपना वह सीक्रेट रिकवरी फ्रेज़ डालें जिसे आपको अपना वॉलेट बनाते समय दिया गया था। $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "आपके कैमरे को एक्सेस कर रहे हैं..."
   },
