@@ -75,7 +75,6 @@ describe('Import SRP', () => {
     srpNote.focus();
 
     await userEvent.paste(TEST_SEED);
-    console.log('srpNote.value', srpNote.value);
     // fireEvent.change(srpNote, { target: { value: TEST_SEED } });
 
     const confirmSrpButton = queryByTestId('import-srp-confirm');
