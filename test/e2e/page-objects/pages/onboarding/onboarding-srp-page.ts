@@ -99,40 +99,6 @@ class OnboardingSrpPage {
     assert.equal(await confirmSeedPhrase.isEnabled(), false);
   }
 
-  /**
-   * Check the SRP dropdown iterates through each option
-   *
-   * @param numOptions - The number of options to check. Defaults to 5.
-   */
-  async check_srpDropdownIterations(numOptions: number = 5) {
-    console.log(
-      `Check the SRP dropdown iterates through ${numOptions} options`,
-    );
-    await this.driver.clickElement(this.srpDropdown);
-    await this.driver.wait(async () => {
-      const options = await this.driver.findElements(this.srpDropdownOptions);
-      return options.length === numOptions;
-    }, this.driver.timeout);
-
-    const options = await this.driver.findElements(this.srpDropdownOptions);
-    for (let i = 0; i < options.length; i++) {
-      if (i !== 0) {
-        await this.driver.clickElement(this.srpDropdown);
-      }
-      await options[i].click();
-      const expectedNumFields = 12 + i * 3;
-      await this.driver.wait(async () => {
-        const srpWordsFields = await this.driver.findElements(this.srpWords);
-        return expectedNumFields === srpWordsFields.length;
-      }, this.driver.timeout);
-    }
-  }
-
-  async check_wrongSrpWarningMessage(): Promise<void> {
-    console.log('Check that wrong SRP warning message is displayed');
-    await this.driver.waitForSelector(this.wrongSrpWarningMessage);
-  }
-
   async check_srpError(): Promise<void> {
     console.log('Check that SRP error is displayed');
     await this.driver.waitForSelector(this.srpError);
