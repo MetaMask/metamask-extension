@@ -116,6 +116,7 @@ export default function OnboardingPinExtension() {
               title={label}
               onClick={onClickHandler}
               ariaLabel="next"
+              data-testid="pin-extension-next"
             />
           )}
           onChange={(index) => setSelectedIndex(index)}
