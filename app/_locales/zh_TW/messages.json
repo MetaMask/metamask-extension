@@ -811,9 +811,6 @@
   "on": {
     "message": "開啟"
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Full Access"
-  },
   "onlyConnectTrust": {
     "message": "記住，只連線到您信任的網站。",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."

@@ -78,3 +78,21 @@ export function getIsBrowserPrerenderBroken(
     false
   );
 }
+/**
+ * Returns the name of the browser
+ *
+ * @param {Bowser} bowser - optional Bowser instance to check against
+ * @param {Navigator} navigator - optional Navigator instance to check against
+ * @returns {string} The name of the browser
+ */
+export function getBrowserName(
+  bowser = Bowser.getParser(window.navigator.userAgent),
+  navigator = window.navigator,
+) {
+  // Handle case for brave by parsing navigator.userAgent
+  if ('brave' in navigator) {
+    return 'Brave';
+  }
+
+  return bowser.getBrowserName();
+}
