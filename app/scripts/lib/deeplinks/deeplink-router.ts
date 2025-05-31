@@ -74,7 +74,10 @@ export class DeeplinkRouter {
     search.set('u', destination.url.pathname + destination.url.search);
 
     const interstitial = this.getExtensionURL(
-      DEEPLINK_ROUTE.replace('/', ''),
+      // routes.ts seem to require routes have a leading slash, but then the UI
+      // always redirects it to the non-slashed version. so we just use the non-slashed
+      // version from the start
+      DEEPLINK_ROUTE.replace(/^\//, ''),
       search.toString() || null,
     );
     this.redirectTab(tabId, interstitial);
