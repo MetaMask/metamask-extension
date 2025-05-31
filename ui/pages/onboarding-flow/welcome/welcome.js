@@ -2,9 +2,10 @@ import EventEmitter from 'events';
 import React, { useState, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { Carousel } from 'react-responsive-carousel';
-///: END:ONLY_INCLUDE_IF
+// eslint-disable-next-line import/no-restricted-paths
+import { getPlatform } from '../../../../app/scripts/lib/util';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import Mascot from '../../../components/ui/mascot';
 import Button from '../../../components/ui/button';
 import { Text } from '../../../components/component-library';
@@ -25,23 +26,17 @@ import {
 import {
   setFirstTimeFlowType,
   setTermsOfUseLastAgreed,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  setParticipateInMetaMetrics,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   ONBOARDING_METAMETRICS,
-  ///: END:ONLY_INCLUDE_IF
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 
 export default function OnboardingWelcome() {
   const t = useI18nContext();
@@ -87,14 +82,11 @@ export default function OnboardingWelcome() {
     });
     dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    history.push(ONBOARDING_METAMETRICS);
-    ///: END:ONLY_INCLUDE_IF
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    await dispatch(setParticipateInMetaMetrics(false));
-    history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
-    ///: END:ONLY_INCLUDE_IF
+    history.push(
+      getPlatform() === PLATFORM_FIREFOX
+        ? ONBOARDING_CREATE_PASSWORD_ROUTE
+        : ONBOARDING_METAMETRICS,
+    );
   };
   const toggleTermsCheck = () => {
     setTermsChecked((currentTermsChecked) => !currentTermsChecked);
@@ -122,115 +114,95 @@ export default function OnboardingWelcome() {
     });
     dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    history.push(ONBOARDING_METAMETRICS);
-    ///: END:ONLY_INCLUDE_IF
+    history.push(
+      getPlatform() === PLATFORM_FIREFOX
+        ? ONBOARDING_IMPORT_WITH_SRP_ROUTE
+        : ONBOARDING_METAMETRICS,
+    );
+  };
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    await dispatch(setParticipateInMetaMetrics(false));
-    history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
-    ///: END:ONLY_INCLUDE_IF
+  const renderMascot = () => {
+    if (isFlask()) {
+      return (
+        <img src="./images/logo/metamask-fox.svg" width="240" height="240" />
+      );
+    }
+    if (isBeta()) {
+      return (
+        <img src="./images/logo/metamask-fox.svg" width="240" height="240" />
+      );
+    }
+    return (
+      <Mascot animationEventEmitter={eventEmitter} width="250" height="300" />
+    );
   };
 
   return (
     <div className="onboarding-welcome" data-testid="onboarding-welcome">
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        <Carousel showThumbs={false} showStatus={false} showArrows>
-          <div>
-            <Text
-              variant={TextVariant.headingLg}
-              as="h2"
-              textAlign={TextAlign.Center}
-              fontWeight={FontWeight.Bold}
-            >
-              {t('welcomeToMetaMask')}
-            </Text>
-            <Text textAlign={TextAlign.Center} marginLeft={6} marginRight={6}>
-              {t('welcomeToMetaMaskIntro')}
-            </Text>
-            <div className="onboarding-welcome__mascot">
-              <Mascot
-                animationEventEmitter={eventEmitter}
-                width="250"
-                height="250"
-              />
-            </div>
-          </div>
-          <div>
-            <Text
-              variant={TextVariant.headingLg}
-              as="h2"
-              textAlign={TextAlign.Center}
-              fontWeight={FontWeight.Bold}
-            >
-              {t('welcomeExploreTitle')}
-            </Text>
-            <Text textAlign={TextAlign.Center}>
-              {t('welcomeExploreDescription')}
-            </Text>
-            <div className="onboarding-welcome__image">
-              <img
-                src="/images/onboarding-welcome-say-hello.svg"
-                width="169"
-                height="237"
-                alt=""
-              />
-            </div>
-          </div>
-          <div>
-            <Text
-              variant={TextVariant.headingLg}
-              as="h2"
-              textAlign={TextAlign.Center}
-              fontWeight={FontWeight.Bold}
-            >
-              {t('welcomeLoginTitle')}
-            </Text>
-            <Text textAlign={TextAlign.Center}>
-              {t('welcomeLoginDescription')}
-            </Text>
-            <div className="onboarding-welcome__image">
-              <img
-                src="/images/onboarding-welcome-decentralised-apps.svg"
-                width="327"
-                height="256"
-                alt=""
-              />
-            </div>
-          </div>
-        </Carousel>
-        ///: END:ONLY_INCLUDE_IF
-      }
-
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      <Carousel showThumbs={false} showStatus={false} showArrows>
         <div>
           <Text
             variant={TextVariant.headingLg}
+            as="h2"
             textAlign={TextAlign.Center}
             fontWeight={FontWeight.Bold}
           >
-            {t('installExtension')}
+            {t('welcomeToMetaMask')}
           </Text>
+          <Text textAlign={TextAlign.Center} marginLeft={6} marginRight={6}>
+            {t('welcomeToMetaMaskIntro')}
+          </Text>
+          <div className="onboarding-welcome__mascot">{renderMascot()}</div>
+        </div>
+        <div>
           <Text
+            variant={TextVariant.headingLg}
+            as="h2"
             textAlign={TextAlign.Center}
-            marginTop={2}
-            marginLeft={6}
-            marginRight={6}
+            fontWeight={FontWeight.Bold}
           >
-            {t('installExtensionDescription')}
+            {t('welcomeExploreTitle')}
           </Text>
-          <div className="onboarding-welcome__mascot">
-            <Mascot
-              animationEventEmitter={eventEmitter}
-              width="250"
-              height="250"
+          <Text textAlign={TextAlign.Center}>
+            {t('welcomeExploreDescription')}
+          </Text>
+          <div className="onboarding-welcome__image">
+            <img
+              src="/images/onboarding-welcome-say-hello.png"
+              width="200"
+              height="275"
+              style={{
+                objectFit: 'contain',
+              }}
+              alt="onboarding-welcome-say-hello"
             />
           </div>
         </div>
-        ///: END:ONLY_INCLUDE_IF
-      }
+        <div>
+          <Text
+            variant={TextVariant.headingLg}
+            as="h2"
+            textAlign={TextAlign.Center}
+            fontWeight={FontWeight.Bold}
+          >
+            {t('welcomeLoginTitle')}
+          </Text>
+          <Text textAlign={TextAlign.Center}>
+            {t('welcomeLoginDescription')}
+          </Text>
+          <div className="onboarding-welcome__image">
+            <img
+              src="/images/onboarding-welcome-decentralised-apps.png"
+              width="200"
+              height="275"
+              alt="onboarding-welcome-decentralised-apps"
+              style={{
+                objectFit: 'contain',
+              }}
+            />
+          </div>
+        </div>
+      </Carousel>
 
       <ul className="onboarding-welcome__buttons">
         <li>
@@ -263,16 +235,7 @@ export default function OnboardingWelcome() {
             onClick={onCreateClick}
             disabled={!termsChecked}
           >
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-              t('onboardingCreateWallet')
-              ///: END:ONLY_INCLUDE_IF
-            }
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-              t('continue')
-              ///: END:ONLY_INCLUDE_IF
-            }
+            {t('onboardingCreateWallet')}
           </Button>
         </li>
         <li>

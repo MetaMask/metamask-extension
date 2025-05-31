@@ -229,14 +229,15 @@ exports[`ConfirmDecryptMessage Component should match snapshot when preference i
     >
       <footer>
         <button
-          class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button page-container__footer-button__cancel mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
           data-testid="page-container-footer-cancel"
         >
           Cancel
         </button>
         <button
-          class="button btn--rounded btn-primary page-container__footer-button"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
           data-testid="page-container-footer-next"
+          data-theme="light"
         >
           Provide
         </button>

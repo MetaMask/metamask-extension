@@ -40,7 +40,7 @@ export const EditGasIconButton = ({
   return (
     <Button
       style={{ textDecoration: 'none' }}
-      size={ButtonSize.Sm}
+      size={ButtonSize.Auto}
       variant={ButtonVariant.Link}
       startIconName={IconName.Edit}
       color={IconColor.primaryDefault}

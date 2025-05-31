@@ -1,7 +1,7 @@
 import React from 'react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
-import { EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { act } from '@testing-library/react';
 import {
   renderWithProvider,
@@ -99,7 +99,11 @@ const baseStore = {
         },
       },
     ],
-
+    tokenBalances: {
+      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+        '0x5': {},
+      },
+    },
     currencyRates: {
       ETH: {
         conversionDate: 1620710825.03,
@@ -136,23 +140,9 @@ const baseStore = {
           },
           options: {},
           methods: ETH_EOA_METHODS,
+          scopes: [EthScope.Eoa],
           type: EthAccountType.Eoa,
         },
-        permissionHistory: {
-          'https://uniswap.org/': {
-            eth_accounts: {
-              accounts: {
-                '0x0': 1709225290848,
-              },
-            },
-          },
-        },
-      },
-      activeTab: {
-        origin: 'https://uniswap.org/',
-      },
-      appState: {
-        sendInputCurrencySwitched: false,
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
@@ -160,6 +150,10 @@ const baseStore = {
       {
         type: KeyringType.hdKeyTree,
         accounts: ['0x0'],
+        metadata: {
+          id: 'test-keyring-id',
+          name: '',
+        },
       },
     ],
     ...mockNetworkState({
@@ -175,6 +169,61 @@ const baseStore = {
     nativeCurrency: 'ETH',
     featureFlags: {
       sendHexData: false,
+    },
+    networkConfigurationsByChainId: {
+      '0x1': {
+        chainId: '0x1',
+        name: 'Custom Mainnet RPC',
+        nativeCurrency: 'ETH',
+        defaultRpcEndpointIndex: 0,
+        ticker: 'ETH',
+        rpcEndpoints: [
+          {
+            type: 'custom',
+            url: 'https://testrpc.com',
+            networkClientId: 'testNetworkConfigurationId',
+          },
+        ],
+        blockExplorerUrls: [],
+      },
+      '0x5': {
+        chainId: '0x5',
+        name: 'Goerli',
+        nativeCurrency: 'ETH',
+        defaultRpcEndpointIndex: 0,
+        ticker: 'ETH',
+        rpcEndpoints: [
+          {
+            type: 'custom',
+            url: 'https://goerli.com',
+            networkClientId: 'goerli',
+          },
+        ],
+        blockExplorerUrls: [],
+      },
+    },
+    selectedNetworkClientId: 'goerli',
+    networksMetadata: {
+      goerli: {
+        EIPS: {
+          1559: true,
+        },
+        status: 'available',
+      },
+    },
+    multichainNetworkConfigurationsByChainId: {
+      'bip122:000000000019d6689c085ae165831e93': {
+        chainId: 'bip122:000000000019d6689c085ae165831e93',
+        name: 'Bitcoin',
+        nativeCurrency: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+        isEvm: false,
+      },
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        name: 'Solana',
+        nativeCurrency: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        isEvm: false,
+      },
     },
     addressBook: {
       [CHAIN_IDS.GOERLI]: [],
@@ -207,6 +256,10 @@ const baseStore = {
     completedOnboarding: true,
     useCurrencyRateCheck: true,
     ticker: 'ETH',
+    snaps: {},
+  },
+  localeMessages: {
+    currentLocale: 'en',
   },
   activeTab: {
     origin: 'https://uniswap.org/',

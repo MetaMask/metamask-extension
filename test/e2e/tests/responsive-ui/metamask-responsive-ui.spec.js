@@ -1,17 +1,16 @@
 const { strict: assert } = require('assert');
+const { Browser } = require('selenium-webdriver');
 const {
   TEST_SEED_PHRASE_TWO,
-  defaultGanacheOptions,
   locateAccountBalanceDOM,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   withFixtures,
-  tempToggleSettingRedesignedTransactionConfirmations,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('MetaMask Responsive UI', function () {
-  it('Creating a new wallet @no-mmi', async function () {
+  it('Creating a new wallet', async function () {
     const driverOptions = { constrainWindowSize: true };
 
     await withFixtures(
@@ -23,14 +22,21 @@ describe('MetaMask Responsive UI', function () {
       async ({ driver }) => {
         await driver.navigate();
 
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          // metrics
+          await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+        }
+
         // agree to terms of use
         await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
 
         // welcome
         await driver.clickElement('[data-testid="onboarding-create-wallet"]');
 
-        // metrics
-        await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+          // metrics
+          await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+        }
 
         // create password
         await driver.fill(
@@ -91,12 +97,12 @@ describe('MetaMask Responsive UI', function () {
         driverOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
+      async ({ driver }) => {
         await driver.navigate();
 
         // Import Secret Recovery Phrase
         await driver.waitForSelector({
-          tag: 'span',
+          tag: 'p',
           text: 'Localhost 8545',
         });
         await driver.clickElement({
@@ -114,7 +120,7 @@ describe('MetaMask Responsive UI', function () {
         await driver.press('#confirm-password', driver.Key.ENTER);
 
         // balance renders
-        await locateAccountBalanceDOM(driver, ganacheServer);
+        await locateAccountBalanceDOM(driver);
       },
     );
   });
@@ -125,13 +131,10 @@ describe('MetaMask Responsive UI', function () {
       {
         fixtures: new FixtureBuilder().build(),
         driverOptions,
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
-      async ({ driver, ganacheServer }) => {
-        await logInWithBalanceValidation(driver, ganacheServer);
-
-        await tempToggleSettingRedesignedTransactionConfirmations(driver);
+      async ({ driver }) => {
+        await logInWithBalanceValidation(driver);
 
         // Send ETH from inside MetaMask
         // starts to send a transaction
@@ -149,8 +152,8 @@ describe('MetaMask Responsive UI', function () {
 
         // wait for transaction value to be rendered and confirm
         await driver.waitForSelector({
-          css: '.currency-display-component__text',
-          text: '1.000042',
+          css: 'h2',
+          text: '1 ETH',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 

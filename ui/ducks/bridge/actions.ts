@@ -1,19 +1,17 @@
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { Hex } from '@metamask/utils';
 import {
   BridgeBackgroundAction,
+  type BridgeController,
   BridgeUserAction,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../app/scripts/controllers/bridge/types';
+  type RequiredEventContextFromClient,
+  UnifiedSwapBridgeEventName,
+} from '@metamask/bridge-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { QuoteRequest } from '../../pages/bridge/types';
-import { MetaMaskReduxDispatch } from '../../store/store';
+import type { MetaMaskReduxDispatch } from '../../store/store';
 import {
   bridgeSlice,
   setDestTokenExchangeRates,
+  setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
 } from './bridge';
 
@@ -25,6 +23,8 @@ const {
   resetInputFields,
   setSortOrder,
   setSelectedQuote,
+  setWasTxDeclined,
+  setSlippage,
 } = bridgeSlice.actions;
 
 export {
@@ -34,30 +34,25 @@ export {
   setFromToken,
   setFromTokenInputValue,
   setDestTokenExchangeRates,
+  setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
   setSortOrder,
   setSelectedQuote,
+  setWasTxDeclined,
+  setSlippage,
 };
 
-const callBridgeControllerMethod = <T>(
+const callBridgeControllerMethod = (
   bridgeAction: BridgeUserAction | BridgeBackgroundAction,
-  args?: T,
+  ...args: unknown[]
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground(bridgeAction, [args]);
+    await submitRequestToBackground(bridgeAction, args);
     await forceUpdateMetamaskState(dispatch);
   };
 };
 
 // Background actions
-export const setBridgeFeatureFlags = () => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    return dispatch(
-      callBridgeControllerMethod(BridgeBackgroundAction.SET_FEATURE_FLAGS),
-    );
-  };
-};
-
 export const resetBridgeState = () => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(resetInputFields());
@@ -65,43 +60,36 @@ export const resetBridgeState = () => {
   };
 };
 
-// User actions
-export const setFromChain = (chainId: Hex) => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(
-      callBridgeControllerMethod<Hex>(
-        BridgeUserAction.SELECT_SRC_NETWORK,
-        chainId,
-      ),
-    );
-  };
-};
-
-export const setToChain = (chainId: Hex) => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(
-      callBridgeControllerMethod<Hex>(
-        BridgeUserAction.SELECT_DEST_NETWORK,
-        chainId,
-      ),
-    );
-  };
-};
-
-export const updateQuoteRequestParams = (params: Partial<QuoteRequest>) => {
+export const trackUnifiedSwapBridgeEvent = <
+  T extends (typeof UnifiedSwapBridgeEventName)[keyof typeof UnifiedSwapBridgeEventName],
+>(
+  eventName: T,
+  propertiesFromClient: Pick<RequiredEventContextFromClient, T>[T],
+) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(
-      callBridgeControllerMethod(BridgeUserAction.UPDATE_QUOTE_PARAMS, params),
+      callBridgeControllerMethod(
+        BridgeBackgroundAction.TRACK_METAMETRICS_EVENT,
+        eventName,
+        propertiesFromClient,
+      ),
     );
   };
 };
 
-export const getBridgeERC20Allowance = async (
-  contractAddress: string,
-  chainId: Hex,
-): Promise<string> => {
-  return await submitRequestToBackground(
-    BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE,
-    [contractAddress, chainId],
-  );
+// User actions
+export const updateQuoteRequestParams = (
+  ...[params, context]: Parameters<
+    BridgeController['updateBridgeQuoteRequestParams']
+  >
+) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await dispatch(
+      callBridgeControllerMethod(
+        BridgeUserAction.UPDATE_QUOTE_PARAMS,
+        params,
+        context,
+      ),
+    );
+  };
 };

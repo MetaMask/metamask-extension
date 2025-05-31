@@ -55,6 +55,7 @@ describe('Trace', () => {
       }),
     );
 
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     withIsolationScopeMock.mockImplementation((fn: any) =>
       fn({ setTag: setTagMock }),

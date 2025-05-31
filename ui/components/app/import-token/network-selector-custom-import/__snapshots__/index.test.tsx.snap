@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NetworkSelectorCustomImport should match snapshot 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--padding-4"
+    data-testid="network-selector-button"
+  >
+    <div
+      class="mm-box dropdown-editor__item-dropdown mm-box--padding-right-2 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--color-text-default"
+      >
+        Test Title
+      </p>
+      <div
+        class="mm-box mm-box--margin-left-auto mm-box--display-flex mm-box--align-items-center"
+      >
+        <button
+          aria-label="Test Title"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-right.svg');"
+          />
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

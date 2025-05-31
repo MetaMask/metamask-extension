@@ -1,10 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  withFixtures,
-  defaultGanacheOptions,
-  DAPP_URL,
-  openDapp,
-} = require('../helpers');
+const { withFixtures, DAPP_URL, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 const triggerBFCache = async (driver) => {
@@ -35,7 +30,6 @@ describe('BFCache', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

@@ -1,61 +1,57 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import { withFixtures, defaultGanacheOptions } from '../../helpers';
-import { Ganache } from '../../seeder/ganache';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
-import AssetListPage from '../../page-objects/pages/asset-list';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 
 const NETWORK_NAME_MAINNET = 'Ethereum Mainnet';
 const LINEA_NAME_MAINNET = 'Linea Mainnet';
-const LOCALHOST = 'Localhost 8545';
+const POLYGON_NAME_MAINNET = 'Polygon';
 const BALANCE_AMOUNT = '24.9956';
 
-function buildFixtures(title: string) {
+function buildFixtures(title: string, chainId: number = 1337) {
   return {
     fixtures: new FixtureBuilder()
       .withPermissionControllerConnectedToTestDapp()
-      .withTokensControllerERC20()
+      .withNetworkControllerOnPolygon()
+      .withTokensControllerERC20({ chainId })
       .build(),
-    ganacheOptions: defaultGanacheOptions,
     smartContract: SMART_CONTRACTS.HST,
     title,
   };
 }
 
 describe('Multichain Asset List', function (this: Suite) {
-  if (!process.env.PORTFOLIO_VIEW) {
-    return;
-  }
+  // Apply to all tests in this suite
+  before(function () {
+    if (!process.env.PORTFOLIO_VIEW) {
+      this.skip();
+    }
+  });
 
   it('persists the preferred asset list preference when changing networks', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
-        await assetListPage.waitUntilAssetListHasItems(2);
+        await assetListPage.check_tokenItemNumber(3);
         await assetListPage.openNetworksFilter();
         await assetListPage.clickCurrentNetworkOption();
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(LINEA_NAME_MAINNET);
         await assetListPage.waitUntilFilterLabelIs(LINEA_NAME_MAINNET);
-        await assetListPage.waitUntilAssetListHasItems(1);
+        await assetListPage.check_tokenItemNumber(1);
         assert.equal(
           await assetListPage.getNetworksFilterLabel(),
           LINEA_NAME_MAINNET,
@@ -66,20 +62,14 @@ describe('Multichain Asset List', function (this: Suite) {
   it('allows clicking into the asset details page of native token on another network', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
-        await assetListPage.waitUntilAssetListHasItems(2);
+        await assetListPage.check_tokenItemNumber(3);
         await driver.clickElement('.multichain-token-list-item');
         const coinOverviewElement = await driver.findElement(
           '[data-testid="coin-overview-buy"]',
@@ -97,25 +87,19 @@ describe('Multichain Asset List', function (this: Suite) {
   });
   it('switches networks when clicking on send for a token on another network', async function () {
     await withFixtures(
-      buildFixtures(this.test?.fullTitle() as string),
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      buildFixtures(this.test?.fullTitle() as string, 137),
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
         const sendPage = new SendTokenPage(driver);
-        await assetListPage.waitUntilAssetListHasItems(2);
+        await assetListPage.check_tokenItemNumber(4);
         await assetListPage.clickOnAsset('TST');
         await driver.clickElement('[data-testid="eth-overview-send"]');
-        await sendPage.check_networkChange(LOCALHOST);
+        await sendPage.check_networkChange(POLYGON_NAME_MAINNET);
         await sendPage.check_pageIsLoaded();
         await sendPage.fillRecipient(
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
@@ -132,28 +116,22 @@ describe('Multichain Asset List', function (this: Suite) {
   });
   it('switches networks when clicking on swap for a token on another network', async function () {
     await withFixtures(
-      buildFixtures(this.test?.fullTitle() as string),
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      buildFixtures(this.test?.fullTitle() as string, 137),
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         const headerNavbar = new HeaderNavbar(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         const assetListPage = new AssetListPage(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(NETWORK_NAME_MAINNET);
-        await assetListPage.waitUntilAssetListHasItems(2);
+        await assetListPage.check_tokenItemNumber(4);
         await assetListPage.clickOnAsset('TST');
         await driver.clickElement('.mm-box > button:nth-of-type(3)');
         const toastTextElement = await driver.findElement('.toast-text');
         const toastText = await toastTextElement.getText();
         assert.equal(
           toastText,
-          `You're now using ${LOCALHOST}`,
+          `You're now using ${POLYGON_NAME_MAINNET}`,
           'Toast text is correct',
         );
       },
@@ -162,21 +140,14 @@ describe('Multichain Asset List', function (this: Suite) {
   it('shows correct asset and balance when swapping on a different chain', async function () {
     await withFixtures(
       buildFixtures(this.test?.fullTitle() as string),
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
-        await loginWithBalanceValidation(driver, ganacheServer);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         const headerNavbar = new HeaderNavbar(driver);
         const assetListPage = new AssetListPage(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.selectNetworkName(LINEA_NAME_MAINNET);
-        await assetListPage.waitUntilAssetListHasItems(2);
-
+        await assetListPage.check_tokenItemNumber(3);
         await assetListPage.clickOnAsset('Ethereum');
 
         const swapButton = await driver.findElement(
@@ -187,7 +158,7 @@ describe('Multichain Asset List', function (this: Suite) {
         const toastText = await toastTextElement.getText();
         assert.equal(
           toastText,
-          `You're now using ${LOCALHOST}`,
+          `You're now using Ethereum Mainnet`,
           'Toast text is correct',
         );
         const balanceMessageElement = await driver.findElement(

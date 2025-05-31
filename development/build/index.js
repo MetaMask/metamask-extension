@@ -102,6 +102,7 @@ async function defineAndRunBuildTasks() {
       'removeEventListener',
       'ShadowRoot',
       'HTMLElement',
+      'HTMLFormElement',
       'Element',
       'pageXOffset',
       'pageYOffset',
@@ -143,6 +144,7 @@ async function defineAndRunBuildTasks() {
       'stateHooks',
       'sentryHooks',
       'sentry',
+      'logEncryptedVault',
     ];
 
     if (
@@ -155,6 +157,7 @@ async function defineAndRunBuildTasks() {
         // in the future, more of the globals above can be put in this list
         'Proxy',
         'ret_nodes',
+        'getSelection',
       ];
     }
 

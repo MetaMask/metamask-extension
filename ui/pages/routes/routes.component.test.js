@@ -1,8 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { act, waitFor } from '@testing-library/react';
+import { act } from '@testing-library/react';
 import thunk from 'redux-thunk';
-import { BtcAccountType } from '@metamask/keyring-api';
+import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
 import { SEND_STAGES } from '../../ducks/send';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
@@ -15,10 +15,6 @@ import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeT
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
-import {
-  MOCK_ACCOUNT_BIP122_P2WPKH,
-  MOCK_ACCOUNT_EOA,
-} from '../../../test/data/mock-accounts';
 import useMultiPolling from '../../hooks/useMultiPolling';
 import Routes from '.';
 
@@ -65,10 +61,6 @@ jest.mock('react-redux', () => {
     useDispatch: () => mockDispatch,
   };
 });
-
-jest.mock('../../ducks/bridge/actions', () => ({
-  setBridgeFeatureFlags: () => jest.fn(),
-}));
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -191,102 +183,6 @@ describe('Routes Component', () => {
       expect(getByTestId('account-menu-icon')).not.toBeDisabled();
     });
   });
-
-  describe('new network popup', () => {
-    const mockBtcAccount = MOCK_ACCOUNT_BIP122_P2WPKH;
-    const mockEvmAccount = MOCK_ACCOUNT_EOA;
-
-    const mockNewlyAddedNetwork = {
-      chainId: CHAIN_IDS.BASE,
-      name: 'Base',
-      nativeCurrency: 'ETH',
-      defaultRpcEndpointIndex: 0,
-      rpcEndpoints: [
-        {
-          type: 'custom',
-          url: 'https://base.com',
-          networkClientId: CHAIN_IDS.BASE,
-        },
-      ],
-    };
-
-    const renderPopup = async (account) => {
-      // This popup does not show up for tests, so we have to disable this:
-      process.env.IN_TEST = '';
-      const state = {
-        ...mockSendState,
-        metamask: {
-          ...mockState.metamask,
-          completedOnboarding: true,
-          selectedNetworkClientId: mockNewlyAddedNetwork.chainId,
-          internalAccounts: {
-            accounts: {
-              [account.id]: account,
-            },
-            selectedAccount: account.id,
-          },
-          usedNetworks: {
-            '0x1': true,
-            '0x5': true,
-            '0x539': true,
-            [mockNewlyAddedNetwork.chainId]: false,
-          },
-          networkConfigurationsByChainId: {
-            ...mockState.metamask.networkConfigurationsByChainId,
-            [mockNewlyAddedNetwork.chainId]: mockNewlyAddedNetwork,
-          },
-          networksMetadata: {
-            ...mockState.metamask.networksMetadata,
-            [mockNewlyAddedNetwork.chainId]: {
-              EIPS: {
-                1559: true,
-              },
-              status: 'available',
-            },
-          },
-          tokens: [],
-          swapsState: { swapsFeatureIsLive: false },
-          announcements: {},
-          pendingApprovals: {},
-          termsOfUseLastAgreed: new Date('2999-03-25'),
-          shouldShowSeedPhraseReminder: false,
-          useExternalServices: true,
-        },
-        send: {
-          ...mockSendState.send,
-          stage: SEND_STAGES.INACTIVE,
-          currentTransactionUUID: null,
-          draftTransactions: {},
-        },
-        appState: {
-          ...mockSendState.appState,
-          showWhatsNewPopup: false,
-          onboardedInThisUISession: false,
-        },
-      };
-      return await render(['/'], state);
-    };
-
-    it('displays new EVM network popup for EVM accounts', async () => {
-      const { getAllByText, getByTestId } = await renderPopup(mockEvmAccount);
-
-      const networkInfo = getByTestId('new-network-info__bullet-paragraph');
-
-      await waitFor(() => {
-        expect(getAllByText(mockNewlyAddedNetwork.name).length).toBeGreaterThan(
-          0,
-        );
-        expect(networkInfo).toBeInTheDocument();
-      });
-    });
-
-    it('does not display new EVM network popup for non-EVM accounts', async () => {
-      const { queryByTestId } = await renderPopup(mockBtcAccount);
-
-      const networkInfo = queryByTestId('new-network-info__bullet-paragraph');
-      expect(networkInfo).not.toBeInTheDocument();
-    });
-  });
 });
 
 describe('toast display', () => {
@@ -302,6 +198,12 @@ describe('toast display', () => {
     id: '4174eb0c-0a73-4213-b807-a2e5a5c4ebfd',
     address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
   });
+  const mockSolanaAccount = createMockInternalAccount({
+    name: 'Solana Account 1',
+    address: '2byhg1jregmqQx2VfLGLn7hb5mStJw2iVVU8sfM5xTYj',
+    id: 'xx-solana-account',
+    type: SolAccountType.DataAccount,
+  });
   const mockOrigin = 'https://metamask.github.io';
 
   const getToastDisplayTestState = (date) => ({
@@ -312,7 +214,6 @@ describe('toast display', () => {
       announcements: {},
       approvalFlows: [],
       completedOnboarding: true,
-      usedNetworks: [],
       pendingApprovals: {},
       pendingApprovalCount: 0,
       preferences: {
@@ -341,11 +242,11 @@ describe('toast display', () => {
       announcements: {},
       approvalFlows: [],
       completedOnboarding: true,
-      usedNetworks: [],
       pendingApprovals: {},
       pendingApprovalCount: 0,
       swapsState: { swapsFeatureIsLive: true },
       newPrivacyPolicyToastShownDate: new Date(0),
+      isRampCardClosed: false,
       newPrivacyPolicyToastClickedOrClosed: true,
       preferences: {
         tokenSortConfig: {
@@ -375,25 +276,52 @@ describe('toast display', () => {
           [mockAccount.id]: mockAccount,
           [mockNonEvmAccount.id]: mockNonEvmAccount,
           [mockAccount2.id]: mockAccount2,
+          [mockSolanaAccount.id]: mockSolanaAccount,
         },
         selectedAccount: selectedAccountId ?? mockAccount.id,
+      },
+      accountsAssets: {
+        [selectedAccountId ?? mockAccount.id]: [],
       },
       subjects: {
         [mockOrigin]: {
           permissions: {
-            eth_accounts: {
+            'endowment:caip25': {
               caveats: [
                 {
-                  type: 'restrictReturnedAccounts',
-                  value: [mockAccount.address],
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [`eip155:1:${mockAccount.address}`],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
                 },
               ],
               date: 1719910288437,
               invoker: 'https://metamask.github.io',
-              parentCapability: 'eth_accounts',
+              parentCapability: 'endowment:caip25',
             },
           },
         },
+      },
+      conversionRates: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
+          conversionTime: 1745405595549,
+          currency: 'swift:0/iso4217:USD',
+          expirationTime: 1745409195549,
+          rate: '151.36',
+        },
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+          {
+            conversionTime: 1745405595549,
+            currency: 'swift:0/iso4217:USD',
+            expirationTime: 1745409195549,
+            rate: '1.00',
+          },
       },
     },
     activeTab: {
@@ -442,6 +370,15 @@ describe('toast display', () => {
     const { getByTestId } = await render(
       [DEFAULT_ROUTE],
       getToastConnectAccountDisplayTestState(mockAccount2.id),
+    );
+    const toastContainer = getByTestId('connect-account-toast');
+    expect(toastContainer).toBeInTheDocument();
+  });
+
+  it('does render toastContainer if the unconnected selected account is Solana', async () => {
+    const { getByTestId } = await render(
+      [DEFAULT_ROUTE],
+      getToastConnectAccountDisplayTestState(mockSolanaAccount.id),
     );
     const toastContainer = getByTestId('connect-account-toast');
     expect(toastContainer).toBeInTheDocument();

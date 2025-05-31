@@ -3,7 +3,6 @@ const FixtureBuilder = require('../../fixture-builder');
 
 const {
   WINDOW_TITLES,
-  defaultGanacheOptions,
   openDapp,
   unlockWallet,
   withFixtures,
@@ -209,7 +208,7 @@ async function mockInfura(mockServer) {
     });
 }
 
-describe('PPOM Blockaid Alert - Malicious ERC20 Approval @no-mmi', function () {
+describe('PPOM Blockaid Alert - Malicious ERC20 Approval', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should show banner alert', async function () {
     await withFixtures(
@@ -222,7 +221,6 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Approval @no-mmi', function () {
             securityAlertsEnabled: true,
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfura,
         title: this.test.fullTitle(),
       },

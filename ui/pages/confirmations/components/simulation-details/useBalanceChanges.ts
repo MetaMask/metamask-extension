@@ -8,12 +8,10 @@ import {
 } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import { ContractExchangeRates } from '@metamask/assets-controllers';
-import { useAsyncResultOrThrow } from '../../../../hooks/useAsyncResult';
+import { useAsyncResultOrThrow } from '../../../../hooks/useAsync';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import {
-  getCurrentCurrency,
-  selectConversionRateByChainId,
-} from '../../../../selectors';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { selectConversionRateByChainId } from '../../../../selectors';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import { ERC20_DEFAULT_DECIMALS, fetchErc20Decimals } from '../../utils/token';
 
@@ -140,7 +138,7 @@ function getTokenBalanceChanges(
         : 0;
     const amount = getAssetAmount(tokenBc, decimals);
 
-    const fiatRate = erc20FiatRates[tokenBc.address];
+    const fiatRate = erc20FiatRates[tokenBc.address.toLowerCase() as Hex];
     const fiatAmount = fiatRate
       ? amount
           .times(convertNumberToStringWithPrecisionWarning(fiatRate))

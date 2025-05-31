@@ -13,10 +13,11 @@ import {
   METAMASK_COOKIE_HANDLER,
   CONTENT_SCRIPT,
   LEGACY_PUBLIC_CONFIG,
-  METAMASK_PROVIDER,
+  METAMASK_EIP_1193_PROVIDER,
   PHISHING_SAFELIST,
   LEGACY_PROVIDER,
   PHISHING_STREAM,
+  METAMASK_CAIP_MULTICHAIN_PROVIDER,
 } from '../constants/stream';
 import { logStreamDisconnectWarning } from './stream-utils';
 
@@ -58,7 +59,8 @@ function setupCookieHandlerStreamsFromOrigin(origin: string): void {
   );
   cookieHandlerPageMux.ignoreStream(LEGACY_PUBLIC_CONFIG);
   cookieHandlerPageMux.ignoreStream(LEGACY_PROVIDER);
-  cookieHandlerPageMux.ignoreStream(METAMASK_PROVIDER);
+  cookieHandlerPageMux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
+  cookieHandlerPageMux.ignoreStream(METAMASK_CAIP_MULTICHAIN_PROVIDER);
   cookieHandlerPageMux.ignoreStream(PHISHING_SAFELIST);
   cookieHandlerPageMux.ignoreStream(PHISHING_STREAM);
 }
@@ -106,7 +108,8 @@ export const setupCookieHandlerExtStreams = (): void => {
   );
   cookieHandlerMux.ignoreStream(LEGACY_PUBLIC_CONFIG);
   cookieHandlerMux.ignoreStream(LEGACY_PROVIDER);
-  cookieHandlerMux.ignoreStream(METAMASK_PROVIDER);
+  cookieHandlerMux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
+  cookieHandlerMux.ignoreStream(METAMASK_CAIP_MULTICHAIN_PROVIDER);
   cookieHandlerMux.ignoreStream(PHISHING_SAFELIST);
   cookieHandlerMux.ignoreStream(PHISHING_STREAM);
   pipeline(
@@ -140,8 +143,8 @@ const destroyCookieExtStreams = () => {
 };
 
 /**
- * This listener destroys the phishing extension streams when the extension port is disconnected,
- * so that streams may be re-established later the phishing extension port is reconnected.
+ * This listener destroys the cookie extension streams when the extension port is disconnected,
+ * so that streams may be re-established later the cookie extension port is reconnected.
  */
 const onDisconnectDestroyCookieStreams = () => {
   const err = checkForLastError();
@@ -160,7 +163,7 @@ const onDisconnectDestroyCookieStreams = () => {
    * once the port and connections are ready. Delay time is arbitrary.
    */
   if (err) {
-    console.warn(`${err} Resetting the phishing streams.`);
+    console.warn(`${err} Resetting the cookie streams.`);
     setTimeout(setupCookieHandlerExtStreams, 1000);
   }
 };
@@ -174,7 +177,7 @@ const onMessageSetUpCookieHandlerStreams = (msg: {
       setupCookieHandlerExtStreams();
     }
     return Promise.resolve(
-      `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for phishing streams`,
+      `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for cookie streams`,
     );
   }
   return undefined;

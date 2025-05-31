@@ -165,9 +165,6 @@
     "message": "இறக்குமதி செய்",
     "description": "Button to import an account from a selected file"
   },
-  "importAccount": {
-    "message": "கணக்கை இறக்குமதி செய்க"
-  },
   "importAccountMsg": {
     "message": " இறக்குமதி செய்யப்பட்ட கணக்கு உங்கள் முதலில் உருவாக்கப்பட்ட மெட்டாமாஸ்க் கணக்கு விதை மூலம் தொடர்புடையதாக இருக்காது. இறக்குமதி செய்யப்பட்ட கணக்குகள் பற்றி மேலும் அறிக "
   },
@@ -208,9 +205,6 @@
   },
   "loading": {
     "message": "ஏற்றுகிறது…"
-  },
-  "loadingTokens": {
-    "message": "டோக்கன்களை ஏற்றுகிறது ..."
   },
   "localhost": {
     "message": "லோக்கல் ஹோஸ்ட் 8545"
@@ -255,9 +249,6 @@
   },
   "next": {
     "message": "அடுத்தது"
-  },
-  "noTransactions": {
-    "message": "பரிவர்த்தனைகள் இல்லை"
   },
   "off": {
     "message": "ஆஃப்"
@@ -349,9 +340,6 @@
   "settings": {
     "message": "அமைப்புகள்"
   },
-  "sigRequest": {
-    "message": "கையொப்பம் கோரிக்கை"
-  },
   "sign": {
     "message": "உள்நுழை"
   },
@@ -403,9 +391,6 @@
   "unknown": {
     "message": "தெரியவில்லை"
   },
-  "unknownNetwork": {
-    "message": "அறியப்படாத தனியார் நெட்வொர்க்"
-  },
   "unlock": {
     "message": "பூட்டைத் திற"
   },
@@ -420,8 +405,5 @@
   },
   "visitWebSite": {
     "message": "எங்கள் வலைத்தளத்தைப் பார்வையிடவும்"
-  },
-  "youSign": {
-    "message": "நீங்கள் கையெழுத்திடுகிறீர்கள்"
   }
 }

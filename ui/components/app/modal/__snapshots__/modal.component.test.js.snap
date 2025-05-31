@@ -12,12 +12,12 @@ exports[`Modal Component should render a modal with a cancel and a submit button
       class="modal-container__footer"
     >
       <button
-        class="button btn--rounded btn-secondary modal-container__footer-button"
+        class="button btn-secondary modal-container__footer-button"
       >
         Cancel
       </button>
       <button
-        class="button btn--rounded btn-primary modal-container__footer-button"
+        class="button btn-primary modal-container__footer-button"
       >
         Submit
       </button>
@@ -51,12 +51,12 @@ exports[`Modal Component should render a modal with a header 1`] = `
       class="modal-container__footer"
     >
       <button
-        class="button btn--rounded btn-secondary modal-container__footer-button"
+        class="button btn-secondary modal-container__footer-button"
       >
         Cancel
       </button>
       <button
-        class="button btn--rounded btn-primary modal-container__footer-button"
+        class="button btn-primary modal-container__footer-button"
       >
         Submit
       </button>
@@ -77,7 +77,7 @@ exports[`Modal Component should render a modal with a submit button 1`] = `
       class="modal-container__footer"
     >
       <button
-        class="button btn--rounded btn-primary modal-container__footer-button"
+        class="button btn-primary modal-container__footer-button"
       />
     </div>
   </div>
@@ -100,12 +100,12 @@ exports[`Modal Component should render a modal with children 1`] = `
       class="modal-container__footer"
     >
       <button
-        class="button btn--rounded btn-secondary modal-container__footer-button"
+        class="button btn-secondary modal-container__footer-button"
       >
         Cancel
       </button>
       <button
-        class="button btn--rounded btn-primary modal-container__footer-button"
+        class="button btn-primary modal-container__footer-button"
       >
         Submit
       </button>
@@ -126,12 +126,12 @@ exports[`Modal Component should render a modal with different button types 1`] =
       class="modal-container__footer"
     >
       <button
-        class="button btn--rounded btn-default modal-container__footer-button"
+        class="button btn-default modal-container__footer-button"
       >
         Cancel
       </button>
       <button
-        class="button btn--rounded btn-default modal-container__footer-button"
+        class="button btn-default modal-container__footer-button"
       >
         Submit
       </button>

@@ -1,7 +1,10 @@
+import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { TransactionMeta } from '@metamask/transaction-controller';
-
+import {
+  getIsSmartTransaction,
+  type SmartTransactionsState,
+} from '../../../../../../../../shared/modules/selectors';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
@@ -11,17 +14,17 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import {
   getCustomNonceValue,
   getNextSuggestedNonce,
-  getUseNonceField,
 } from '../../../../../../../selectors';
 import {
   getNextNonce,
   showModal,
   updateCustomNonce,
 } from '../../../../../../../store/actions';
-import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { isSignatureTransactionType } from '../../../../../utils';
 import { TransactionData } from '../transaction-data/transaction-data';
+import { NestedTransactionData } from '../../batch/nested-transaction-data/nested-transaction-data';
 
 const NonceDetails = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -37,7 +40,6 @@ const NonceDetails = () => {
     }
   }, [currentConfirmation, dispatch]);
 
-  const enableCustomNonce = useSelector(getUseNonceField);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
 
@@ -55,6 +57,10 @@ const NonceDetails = () => {
     );
 
   const displayedNonce = customNonceValue || nextNonce;
+  const isSmartTransactionsEnabled = useSelector(
+    (state: SmartTransactionsState) =>
+      getIsSmartTransaction(state, currentConfirmation?.chainId),
+  );
 
   return (
     <ConfirmInfoSection data-testid="advanced-details-nonce-section">
@@ -66,7 +72,7 @@ const NonceDetails = () => {
           data-testid="advanced-details-displayed-nonce"
           text={`${displayedNonce}`}
           onEditClick={
-            enableCustomNonce ? () => openEditNonceModal() : undefined
+            isSmartTransactionsEnabled ? undefined : () => openEditNonceModal()
           }
           editIconClassName="edit-nonce-btn"
           editIconDataTestId="edit-nonce-icon"
@@ -93,6 +99,7 @@ export const AdvancedDetails = ({
     <>
       <NonceDetails />
       <TransactionData />
+      <NestedTransactionData />
     </>
   );
 };

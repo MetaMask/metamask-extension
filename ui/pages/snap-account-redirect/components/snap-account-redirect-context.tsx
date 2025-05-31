@@ -8,7 +8,7 @@ import {
   ButtonVariant,
   Text,
 } from '../../../components/component-library';
-import { SnapAccountRedirectProps } from '../snap-account-redirect';
+import type { SnapAccountRedirectProps } from '../snap-account-redirect';
 import {
   AlignItems,
   Display,
@@ -48,6 +48,7 @@ const SnapAccountRedirectContent = ({
           data-testid="snap-account-redirect-content-title"
           textAlign={TextAlign.Center}
           variant={TextVariant.headingLg}
+          paddingBottom={2}
         >
           {t('snapAccountRedirectFinishSigningTitle')}
         </Text>

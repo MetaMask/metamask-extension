@@ -37,7 +37,6 @@ export type SignatureRequestType = {
     siwe?: SIWEMessage;
   };
   type: TransactionType;
-  custodyId?: string;
   securityAlertResponse?: SecurityAlertResponse;
   decodingLoading?: boolean;
   decodingData?: DecodingData;
@@ -50,5 +49,6 @@ export type ConfirmMetamaskState = {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
     approvalFlows: ApprovalControllerState['approvalFlows'];
     signatureSecurityAlertResponses?: Record<string, SecurityAlertResponse>;
+    upgradeSplashPageAcknowledgedForAccounts?: string[];
   };
 };

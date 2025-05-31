@@ -1,14 +1,10 @@
 @use "design-system";
 
 .show-more {
-  max-height: 5.5rem;
+  max-height: 6rem;
 
   &:first-child {
     text-overflow: ellipsis;
-  }
-
-  @include design-system.screen-md-min {
-    max-height: 6rem;
   }
 
   &__button {

@@ -1,9 +1,9 @@
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { isEqual } from 'lodash';
-import { createSelectorCreator, defaultMemoize } from 'reselect';
+import { createSelectorCreator, lruMemoize } from 'reselect';
 
 export const createDeepEqualSelector = createSelectorCreator(
-  defaultMemoize,
+  lruMemoize,
   isEqual,
 );
 

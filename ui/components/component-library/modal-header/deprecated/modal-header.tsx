@@ -1,12 +1,15 @@
 import React from 'react';
 import classnames from 'classnames';
-import { HeaderBase, Text, ButtonIcon, ButtonIconSize, IconName } from '../..';
+import { Text } from '../../text';
 import {
   TextVariant,
   TextAlign,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ModalHeaderProps } from '.';
+import { ModalHeaderProps } from '../modal-header.types';
+import { HeaderBase } from '../../header-base';
+import { ButtonIcon, ButtonIconSize } from '../../button-icon';
+import { IconName } from '../../icon';
 
 /**
  * @deprecated This version of `ModalHeader` is deprecated. Please use the version from the component-library in ui/components/component-library/modal-header/modal-header.tsx
@@ -37,6 +40,8 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
     <HeaderBase
       className={classnames('mm-modal-header', className)}
       startAccessory={
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         startAccessory ||
         (onBack && (
           <ButtonIcon
@@ -49,6 +54,8 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
         ))
       }
       endAccessory={
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         endAccessory ||
         (onClose && (
           <ButtonIcon

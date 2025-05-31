@@ -1,0 +1,22 @@
+name: Check Changelog
+
+on:
+  pull_request:
+    types: [opened, synchronize, labeled, unlabeled]
+
+jobs:
+  check_changelog:
+    # Asking engineers to update CHANGELOG.md increases the potential for
+    # conflicts across all pull requests.
+    # Disable this workflow until we can refine the new changelog process.
+    if: false
+
+    uses: MetaMask/github-tools/.github/workflows/changelog-check.yml@91e349d177db2c569e03c7aa69d2acb404b62f75
+    with:
+      base-branch: ${{ github.event.pull_request.base.ref }}
+      head-ref: ${{ github.head_ref }}
+      labels: ${{ toJSON(github.event.pull_request.labels) }}
+      pr-number: ${{ github.event.pull_request.number }}
+      repo: ${{ github.repository }}
+    secrets:
+      gh-token: ${{ secrets.GITHUB_TOKEN }}

@@ -7,6 +7,10 @@
   font-size: 12px;
   max-width: 100%;
 
+  &__clickable {
+    cursor: pointer;
+  }
+
   &__missing {
     background-color: var(--color-background-alternative);
 

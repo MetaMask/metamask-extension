@@ -1,7 +1,7 @@
 import { toHex } from '@metamask/controller-utils';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import HomePage from '../../page-objects/pages/homepage';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Add hide token', function () {
@@ -38,12 +38,12 @@ describe('Add hide token', function () {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        const homepage = new HomePage(driver);
-        await homepage.check_tokenItemNumber(2);
-        await homepage.check_tokenAmountIsDisplayed('0 TST');
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.check_tokenItemNumber(2);
+        await assetListPage.check_tokenAmountIsDisplayed('0 TST');
 
-        await homepage.hideToken('TST');
-        await homepage.check_tokenItemNumber(1);
+        await assetListPage.hideToken('TST');
+        await assetListPage.check_tokenItemNumber(1);
       },
     );
   });

@@ -1,4 +1,4 @@
-import { CaipAssetType } from '@metamask/keyring-api';
+import { CaipAssetType, CaipChainId } from '@metamask/keyring-api';
 import { MultichainNetworks } from './networks';
 
 export const MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 = {
@@ -20,7 +20,7 @@ export enum MultichainNativeAssets {
  * Each network is mapped to an array containing its native asset for consistency.
  */
 export const MULTICHAIN_NETWORK_TO_ASSET_TYPES: Record<
-  MultichainNetworks,
+  CaipChainId,
   CaipAssetType[]
 > = {
   [MultichainNetworks.SOLANA]: [MultichainNativeAssets.SOLANA],
@@ -30,4 +30,4 @@ export const MULTICHAIN_NETWORK_TO_ASSET_TYPES: Record<
   [MultichainNetworks.BITCOIN_TESTNET]: [
     MultichainNativeAssets.BITCOIN_TESTNET,
   ],
-};
+} as const;

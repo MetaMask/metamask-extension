@@ -2,8 +2,9 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { TextColor } from '../../../helpers/constants/design-system';
-import { Icon, IconName } from '..';
-import { HelpText, HelpTextSeverity } from '.';
+import { Icon, IconName } from '../icon';
+import { HelpText } from './help-text';
+import { HelpTextSeverity } from './help-text.types';
 
 describe('HelpText', () => {
   it('should render with text inside the HelpText', () => {

@@ -251,9 +251,6 @@
   "from": {
     "message": "Od"
   },
-  "functionType": {
-    "message": "Tip funkcije"
-  },
   "gasLimit": {
     "message": "Limit gasa"
   },
@@ -312,9 +309,6 @@
   "import": {
     "message": "Uvoz",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Uvezite nalog"
   },
   "importAccountMsg": {
     "message": "Uvezeni nalozi neće biti povezani sa početnom frazom koju ste prvobitno kreirali za MetaMask nalog. Saznajte više o uvezenim nalozima."
@@ -378,9 +372,6 @@
   "loading": {
     "message": "Учитава се..."
   },
-  "loadingTokens": {
-    "message": "Učitavanje tokena..."
-  },
   "lock": {
     "message": "Odjavi se"
   },
@@ -437,9 +428,6 @@
   "noConversionRateAvailable": {
     "message": "Nije dostupan kurs za konverziju"
   },
-  "noTransactions": {
-    "message": "Nemate transakcije"
-  },
   "noWebcamFound": {
     "message": "Nije pronađena veb kamera na vašem kompjuteru. Molimo vas pokušajte ponovo."
   },
@@ -463,9 +451,6 @@
   },
   "origin": {
     "message": "Извор"
-  },
-  "parameters": {
-    "message": "Parametri"
   },
   "participateInMetaMetrics": {
     "message": "Učestvujte u MetaMetrics"
@@ -535,9 +520,6 @@
   "removeAccountDescription": {
     "message": "Uklonićemo ovaj nalog iz vašeg novčanika. Pre nego što nastavite, proverite da li za ovaj uvezeni nalog imate originalnu početnu frazu ili privatni ključ. Ponovo možete da uvezete ili kreirate naloge izborom iz padajućeg menija na nalogu."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "zahtevi koji čekaju da budu potvrđeni"
-  },
   "required": {
     "message": "Obavezno"
   },
@@ -604,9 +586,6 @@
   },
   "showHexDataDescription": {
     "message": "Izaberite ovo da bi se pokazalo polje sa hex podacima na „Pošalji” ekranu "
-  },
-  "sigRequest": {
-    "message": "Zahtev za potpisom"
   },
   "sign": {
     "message": "Potpišite"
@@ -701,9 +680,6 @@
   "transactionErrored": {
     "message": "Transakcija je naišla na grešku"
   },
-  "transactionFee": {
-    "message": "Provizija"
-  },
   "transactionResubmitted": {
     "message": "Transakcija je ponovo prosleđena sa naknadom za gas povećanom sa $1 na $2"
   },
@@ -730,9 +706,6 @@
   },
   "unknown": {
     "message": "Непознато"
-  },
-  "unknownNetwork": {
-    "message": "Nepoznata privatna mreža"
   },
   "unknownQrCode": {
     "message": "Greška: nismo uspeli da identifikujemo taj QR kod"
@@ -763,9 +736,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Za upotrebu ove funkcije morate omogućiti pristup kameri."
-  },
-  "youSign": {
-    "message": "Vi potpisujete"
   },
   "yourPrivateSeedPhrase": {
     "message": "Vaša privatna šifra za oporavak naloga (seed phrase)"

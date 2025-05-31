@@ -1,4 +1,6 @@
 import { providerErrors } from '@metamask/rpc-errors';
+import { isSnapId } from '@metamask/snaps-utils';
+
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   validateSwitchEthereumChainParams,
@@ -11,10 +13,13 @@ const switchEthereumChain = {
   hookNames: {
     getNetworkConfigurationByChainId: true,
     setActiveNetwork: true,
+    requestUserApproval: true,
     getCaveat: true,
-    requestPermittedChainsPermission: true,
     getCurrentChainIdForDomain: true,
-    grantPermittedChainsPermissionIncremental: true,
+    requestPermittedChainsPermissionIncrementalForOrigin: true,
+    rejectApprovalRequestsForOrigin: true,
+    setTokenNetworkFilter: true,
+    hasApprovalRequestsForOrigin: true,
   },
 };
 
@@ -28,15 +33,18 @@ async function switchEthereumChainHandler(
   {
     getNetworkConfigurationByChainId,
     setActiveNetwork,
-    requestPermittedChainsPermission,
+    requestUserApproval,
     getCaveat,
     getCurrentChainIdForDomain,
-    grantPermittedChainsPermissionIncremental,
+    requestPermittedChainsPermissionIncrementalForOrigin,
+    rejectApprovalRequestsForOrigin,
+    setTokenNetworkFilter,
+    hasApprovalRequestsForOrigin,
   },
 ) {
   let chainId;
   try {
-    chainId = validateSwitchEthereumChainParams(req, end);
+    chainId = validateSwitchEthereumChainParams(req);
   } catch (error) {
     return end(error);
   }
@@ -64,10 +72,24 @@ async function switchEthereumChainHandler(
     );
   }
 
-  return switchChain(res, end, chainId, networkClientIdToSwitchTo, null, {
+  const fromNetworkConfiguration = getNetworkConfigurationByChainId(
+    currentChainIdForOrigin,
+  );
+
+  const toNetworkConfiguration = getNetworkConfigurationByChainId(chainId);
+
+  return switchChain(res, end, chainId, networkClientIdToSwitchTo, {
+    origin,
+    isSwitchFlow: true,
+    autoApprove: isSnapId(origin),
     setActiveNetwork,
     getCaveat,
-    requestPermittedChainsPermission,
-    grantPermittedChainsPermissionIncremental,
+    requestPermittedChainsPermissionIncrementalForOrigin,
+    rejectApprovalRequestsForOrigin,
+    setTokenNetworkFilter,
+    requestUserApproval,
+    hasApprovalRequestsForOrigin,
+    toNetworkConfiguration,
+    fromNetworkConfiguration,
   });
 }
