@@ -1,6 +1,6 @@
 import React from 'react';
-import FormattedCounter from "./formatted-counter";
 import { act, render } from '@testing-library/react';
+import FormattedCounter from './formatted-counter';
 
 const mockUnlockCallback = jest.fn();
 
@@ -17,7 +17,9 @@ describe('FormattedCounter', () => {
 
   it('should render and start triggering the countdown', async () => {
     await act(async () => {
-      render(<FormattedCounter remainingTime={10} unlock={mockUnlockCallback} />);
+      render(
+        <FormattedCounter remainingTime={10} unlock={mockUnlockCallback} />,
+      );
 
       // speed up the countdown
       jest.advanceTimersByTime(12 * 1000);
@@ -28,4 +30,3 @@ describe('FormattedCounter', () => {
     });
   });
 });
-

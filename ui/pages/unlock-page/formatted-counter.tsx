@@ -30,7 +30,7 @@ export default function FormattedCounter({
   useEffect(() => {
     let updatedTime = time;
     const interval = setInterval(() => {
-      updatedTime = updatedTime - 1;
+      updatedTime -= 1;
       if (updatedTime < 0) {
         clearInterval(interval);
         unlock();
