@@ -1,7 +1,7 @@
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import initializedMockState from '../../../../test/data/mock-state.json';
 import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
