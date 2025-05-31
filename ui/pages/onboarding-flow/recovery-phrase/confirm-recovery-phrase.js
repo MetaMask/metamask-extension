@@ -29,13 +29,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
-import {
-  ONBOARDING_COMPLETION_ROUTE,
-  ONBOARDING_METAMETRICS,
-} from '../../../helpers/constants/routes';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../../app/scripts/lib/util';
+import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import ConfirmSrpModal from './confirm-srp-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
@@ -119,9 +113,11 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       },
     });
 
-    getPlatform() === PLATFORM_FIREFOX
-      ? history.push(ONBOARDING_COMPLETION_ROUTE)
-      : history.push(ONBOARDING_METAMETRICS);
+    // getPlatform() === PLATFORM_FIREFOX
+    //   ? history.push(ONBOARDING_COMPLETION_ROUTE)
+    //   : history.push(ONBOARDING_METAMETRICS);
+    // SOCIAL: change metametrics flow on later PR
+    history.push(ONBOARDING_COMPLETION_ROUTE);
   }, [dispatch, hdEntropyIndex, history, trackEvent]);
 
   return (
