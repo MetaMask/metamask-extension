@@ -38,6 +38,8 @@ export default class OAuthService {
       this.#env,
     );
 
+    const authUrl = await loginHandler.getAuthUrl();
+
     // launch the web auth flow to get the Authorization Code from the social login provider
     const redirectUrlFromOAuth = await new Promise<string>(
       (resolve, reject) => {
@@ -45,7 +47,7 @@ export default class OAuthService {
         this.#webAuthenticator.launchWebAuthFlow(
           {
             interactive: true,
-            url: loginHandler.getAuthUrl(),
+            url: authUrl,
           },
           (responseUrl) => {
             if (responseUrl) {
