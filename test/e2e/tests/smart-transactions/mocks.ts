@@ -2,6 +2,7 @@ import { MockttpServer } from 'mockttp';
 import { mockEthDaiTrade } from '../swaps/shared';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
+import { GAS_API_BASE_URL } from '../../../../shared/constants/swaps';
 
 const STX_UUID = '0d506aaa-5e38-4cab-ad09-2039cb7a0f33';
 
@@ -266,6 +267,8 @@ export async function mockSmartTransactionRequests(mockServer: MockttpServer) {
 
   await mockEthDaiTrade(mockServer);
 
+  await mockGasPricesForSwaps(mockServer);
+
   await mockServer
     .forPost(
       'https://transaction.api.cx.metamask.io/networks/1/submitTransactions',
@@ -361,4 +364,21 @@ async function mockSmartTransactionRequestsBase(mockServer: MockttpServer) {
       params: [BLOCK_HASH],
     })
     .thenJson(200, GET_BLOCK_BY_HASH_RESPONSE);
+}
+
+async function mockGasPricesForSwaps(mockServer: MockttpServer) {
+  // on the Swap flow, when we are in a network with chain id 1337,
+  // the gasPrices request is made passing chain id 1
+  await mockServer
+    .forGet(`${GAS_API_BASE_URL}/networks/1/gasPrices`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          SafeGasPrice: '1',
+          ProposeGasPrice: '2',
+          FastGasPrice: '3',
+        },
+      };
+    });
 }
