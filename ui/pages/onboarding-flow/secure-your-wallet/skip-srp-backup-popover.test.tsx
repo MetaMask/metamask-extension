@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent } from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -34,20 +34,21 @@ describe('SkipSRPBackup', () => {
   const store = configureMockStore([thunk])(mockStore);
 
   it('should render', async () => {
-    await act(async () => {
-      const { getByTestId } = renderWithProvider(
-        <SkipSRPBackup onClose={jest.fn()} secureYourWallet={jest.fn()} />,
-        store,
-      );
+    const { getByTestId } = renderWithProvider(
+      <SkipSRPBackup onClose={jest.fn()} secureYourWallet={jest.fn()} />,
+      store,
+    );
 
-      const checkbox = getByTestId('skip-srp-backup-checkbox');
-      expect(checkbox).toBeInTheDocument();
+    const checkbox = getByTestId('skip-srp-backup-checkbox');
+    expect(checkbox).toBeInTheDocument();
 
-      const confirmSkip = getByTestId('skip-srp-backup-button');
-      expect(confirmSkip).toBeInTheDocument();
-      expect(confirmSkip).toBeDisabled();
+    const confirmSkip = getByTestId('skip-srp-backup-button');
+    expect(confirmSkip).toBeInTheDocument();
+    expect(confirmSkip).toBeDisabled();
 
-      fireEvent.click(checkbox);
+    fireEvent.click(checkbox);
+
+    await waitFor(() => {
       expect(confirmSkip).toBeEnabled();
     });
   });
