@@ -136,10 +136,12 @@ describe('MetaMask Responsive UI', function () {
           tag: 'p',
           text: 'Localhost 8545',
         });
-        await driver.clickElement({
-          css: '.unlock-page__link',
-          text: 'Forgot password?',
-        });
+        await driver.clickElement(
+          '[data-testid="unlock-forgot-password-button"]',
+        );
+        await driver.clickElementAndWaitToDisappear(
+          '[data-testid="reset-password-modal-button"]',
+        );
 
         await driver.pasteIntoField(
           '[data-testid="import-srp__srp-word-0"]',
