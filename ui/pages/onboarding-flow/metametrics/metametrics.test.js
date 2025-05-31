@@ -98,6 +98,24 @@ describe('Onboarding Metametrics Component', () => {
     });
   });
 
+  it('should set setParticipateInMetaMetrics to false when clicking cancel', async () => {
+    const { queryByText } = renderWithProvider(
+      <OnboardingMetametrics />,
+      mockStore,
+    );
+
+    const confirmCancel = queryByText(noThanks.message);
+
+    fireEvent.click(confirmCancel);
+
+    await waitFor(() => {
+      expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
+      expect(mockPushHistory).toHaveBeenCalledWith(
+        ONBOARDING_CREATE_PASSWORD_ROUTE,
+      );
+    });
+  });
+
   it('should set setDataCollectionForMarketing to false when clicking cancel', async () => {
     const { queryByText } = renderWithProvider(
       <OnboardingMetametrics />,
