@@ -1010,24 +1010,6 @@
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Ilagay sa safe-deposit box."
   },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Ang iyong recovery phrase ay ang iyong “pangunahing key” sa wallet at pondo mo."
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Kung may manghihingi man ng iyong recovery phrase, malamang na sinusubukan ka niyang i-scam."
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Huwag kailanmang ibahagi ang iyong recovery phrase kahit na sa MetaMask!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Ano ang recovery phrase?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Dapat kong ibahagi ang aking recovery phrase?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Paano ko mase-save ang aking recovery phrase?"
-  },
   "seedPhraseIntroTitle": {
     "message": "I-secure ang iyong wallet"
   },

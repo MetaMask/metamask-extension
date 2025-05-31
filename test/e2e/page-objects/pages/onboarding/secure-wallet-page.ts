@@ -53,10 +53,10 @@ class SecureWalletPage {
   };
 
   private readonly skipSRPBackupCheckbox =
-    '[data-testid="skip-srp-backup-popover-checkbox"]';
+    '[data-testid="skip-srp-backup-checkbox"]';
 
   private readonly skipSRPBackupConfirmButton =
-    '[data-testid="skip-srp-backup"]';
+    '[data-testid="skip-srp-backup-button"]';
 
   private readonly writeDownSecretRecoveryPhraseMessage = {
     text: 'Write down your Secret Recovery Phrase',
