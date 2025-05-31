@@ -3,11 +3,11 @@
 exports[`Review Recovery Phrase Component should match snapshot 1`] = `
 <div>
   <div
-    class="recovery-phrase"
+    class="mm-box recovery-phrase mm-box--display-flex mm-box--gap-6 mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--height-full"
     data-testid="recovery-phrase"
   >
     <div
-      class="recovery-phrase__content"
+      class="mm-box"
     >
       <div
         class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-flex-start mm-box--width-full"
@@ -44,21 +44,21 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-6 mm-box--color-text-alternative"
         >
           <span>
-
-            This is your
+             
+            This is your 
             <button
               class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
             >
               Secret Recovery Phrase
             </button>
-            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet.
+            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. 
             <p
-              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-alternative"
             >
               Don’t share it with anyone, ever.
             </p>
-
-
+            
+             
           </span>
         </p>
       </div>
@@ -66,10 +66,10 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
         class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
       >
         <div
-          class="mm-box recovery-phrase__secret mm-box--padding-4 mm-box--display-grid mm-box--rounded-lg"
+          class="mm-box recovery-phrase__secret mm-box--padding-4 mm-box--display-grid mm-box--width-full mm-box--background-color-background-muted mm-box--rounded-lg"
         >
           <div
-            class="recovery-phrase__chips recovery-phrase__chips--hidden"
+            class="mm-box recovery-phrase__chips recovery-phrase__chips--hidden mm-box--display-grid mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
             data-quiz-words="[]"
             data-recovery-phrase="debris:dizzy:just:program:just:float:decrease:vacant:alarm:reduce:speak:stadium"
             data-testid="recovery-phrase-chips"
@@ -304,13 +304,13 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
             </div>
           </div>
           <div
-            class="recovery-phrase__secret-blocker-container"
+            class="mm-box recovery-phrase__secret-blocker-container mm-box--width-full mm-box--height-full"
           >
             <div
-              class="recovery-phrase__secret-blocker"
+              class="mm-box recovery-phrase__secret-blocker mm-box--padding-top-2 mm-box--padding-bottom-9 mm-box--padding-inline-0 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--background-color-background-muted mm-box--rounded-sm"
             />
             <div
-              class="mm-box recovery-phrase__secret-blocker-text"
+              class="mm-box recovery-phrase__secret-blocker-text mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--height-full"
               data-testid="recovery-phrase-reveal"
             >
               <span
@@ -336,7 +336,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
       class="mm-box mm-box--width-full"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled recovery-phrase__footer--button mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled recovery-phrase__footer--button mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
         data-testid="recovery-phrase-continue"
         data-theme="light"
         disabled=""
@@ -351,11 +351,11 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
 exports[`Review Recovery Phrase Component should match snapshot after reveal recovery button is clicked 1`] = `
 <div>
   <div
-    class="recovery-phrase"
+    class="mm-box recovery-phrase mm-box--display-flex mm-box--gap-6 mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--height-full"
     data-testid="recovery-phrase"
   >
     <div
-      class="recovery-phrase__content"
+      class="mm-box"
     >
       <div
         class="mm-box mm-box--margin-bottom-4 mm-box--justify-content-flex-start mm-box--width-full"
@@ -392,21 +392,21 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
           class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-6 mm-box--color-text-alternative"
         >
           <span>
-
-            This is your
+             
+            This is your 
             <button
               class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
             >
               Secret Recovery Phrase
             </button>
-            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet.
+            . Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. 
             <p
-              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-alternative"
             >
               Don’t share it with anyone, ever.
             </p>
-
-
+            
+             
           </span>
         </p>
       </div>
@@ -414,10 +414,10 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
         class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
       >
         <div
-          class="mm-box recovery-phrase__secret mm-box--padding-4 mm-box--display-grid mm-box--rounded-lg"
+          class="mm-box recovery-phrase__secret mm-box--padding-4 mm-box--display-grid mm-box--width-full mm-box--background-color-background-muted mm-box--rounded-lg"
         >
           <div
-            class="recovery-phrase__chips"
+            class="mm-box recovery-phrase__chips mm-box--display-grid mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
             data-quiz-words="[]"
             data-recovery-phrase="debris:dizzy:just:program:just:float:decrease:vacant:alarm:reduce:speak:stadium"
             data-testid="recovery-phrase-chips"
@@ -658,7 +658,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
       class="mm-box mm-box--width-full"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg recovery-phrase__footer--button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg recovery-phrase__footer--button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
         data-testid="recovery-phrase-continue"
         data-theme="light"
       >
