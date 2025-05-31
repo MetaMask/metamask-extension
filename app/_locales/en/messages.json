@@ -2424,9 +2424,6 @@
   "hideAdvancedDetails": {
     "message": "Hide advanced details"
   },
-  "hideSeedPhrase": {
-    "message": "Hide seed phrase"
-  },
   "hideSentitiveInfo": {
     "message": "Hide sensitive information"
   },
@@ -4680,9 +4677,6 @@
   "revealSensitiveContent": {
     "message": "Reveal sensitive content"
   },
-  "revealTheSeedPhrase": {
-    "message": "Reveal seed phrase"
-  },
   "review": {
     "message": "Review"
   },
@@ -4809,23 +4803,21 @@
   "seedPhraseEnterMissingWords": {
     "message": "Confirm Secret Recovery Phrase"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Write down and store in multiple secret places"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Store in a safe deposit box"
-  },
   "seedPhraseIntroTitle": {
     "message": "Secure your wallet"
   },
   "seedPhraseReq": {
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
   },
-  "seedPhraseWriteDownDetails": {
-    "message": "Write down this 12-word Secret Recovery Phrase and save it in a place that you trust and only you can access."
+  "seedPhraseReviewDetails": {
+    "message": "This is your $1. Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. $2",
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
   },
-  "seedPhraseWriteDownHeader": {
-    "message": "Write down your Secret Recovery Phrase"
+  "seedPhraseReviewDetails2": {
+    "message": "Don’t share it with anyone, ever."
+  },
+  "seedPhraseReviewTitle": {
+    "message": "Save your Secret Recovery Phrase"
   },
   "select": {
     "message": "Select"
@@ -6234,6 +6226,12 @@
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be 11 characters or fewer."
   },
+  "tapToReveal": {
+    "message": "Tap to reveal"
+  },
+  "tapToRevealNote": {
+    "message": "Make sure no one is watching your screen."
+  },
   "tenPercentIncreased": {
     "message": "10% increase"
   },
@@ -6273,9 +6271,6 @@
   },
   "time": {
     "message": "Time"
-  },
-  "tips": {
-    "message": "Tips"
   },
   "tipsForUsingAWallet": {
     "message": "Tips for using a wallet"

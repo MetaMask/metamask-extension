@@ -2202,9 +2202,6 @@
   "hideAdvancedDetails": {
     "message": "Sembunyikan detail lanjutan"
   },
-  "hideSeedPhrase": {
-    "message": "Sembunyikan frasa seed"
-  },
   "hideSentitiveInfo": {
     "message": "Sembunyikan informasi sensitif"
   },
@@ -4367,9 +4364,6 @@
   "revealSensitiveContent": {
     "message": "Tampilkan konten sensitif"
   },
-  "revealTheSeedPhrase": {
-    "message": "Ungkap frasa seed"
-  },
   "review": {
     "message": "Tinjau"
   },
@@ -4480,23 +4474,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Konfirmasikan Frasa Pemulihan Rahasia"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Tuliskan dan simpan di beberapa tempat rahasia."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Simpan di deposit box yang aman."
-  },
   "seedPhraseIntroTitle": {
     "message": "Amankan dompet Anda"
   },
   "seedPhraseReq": {
     "message": "Frasa Pemulihan Rahasia berisi 12, 15, 18, 21, atau 24 kata"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Tuliskan Frasa Pemulihan Rahasia 12 kata ini, simpan di tempat yang aman dan hanya Anda yang dapat mengaksesnya."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Tuliskan Frasa Pemulihan Rahasia Anda"
   },
   "select": {
     "message": "Pilih"
@@ -5820,9 +5802,6 @@
   },
   "time": {
     "message": "Waktu"
-  },
-  "tips": {
-    "message": "Kiat"
   },
   "tipsForUsingAWallet": {
     "message": "Tip menggunakan dompet"

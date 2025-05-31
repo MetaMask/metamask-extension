@@ -2202,9 +2202,6 @@
   "hideAdvancedDetails": {
     "message": "高度な詳細を非表示"
   },
-  "hideSeedPhrase": {
-    "message": "シードフレーズを非表示"
-  },
   "hideSentitiveInfo": {
     "message": "機密情報を非表示"
   },
@@ -4367,9 +4364,6 @@
   "revealSensitiveContent": {
     "message": "機密のコンテンツを確認"
   },
-  "revealTheSeedPhrase": {
-    "message": "シードフレーズを確認"
-  },
   "review": {
     "message": "確認"
   },
@@ -4480,23 +4474,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "シークレットリカバリーフレーズの確認"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "書き留めて、複数の秘密の場所に保管してください。"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "セーフティボックスに保管する。"
-  },
   "seedPhraseIntroTitle": {
     "message": "ウォレットの保護"
   },
   "seedPhraseReq": {
     "message": "シークレットリカバリーフレーズは、12、15、18、21、24語で構成されます"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "この12単語のシークレットリカバリーフレーズを書き留めて、自分だけがアクセスできる信頼できる場所に保管してください。"
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "シークレットリカバリーフレーズを書き留めてください"
   },
   "select": {
     "message": "選択"
@@ -5820,9 +5802,6 @@
   },
   "time": {
     "message": "時間"
-  },
-  "tips": {
-    "message": "ヒント"
   },
   "tipsForUsingAWallet": {
     "message": "ウォレット使用のヒント"

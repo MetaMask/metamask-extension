@@ -2202,9 +2202,6 @@
   "hideAdvancedDetails": {
     "message": "Скрыть дополнительные сведения"
   },
-  "hideSeedPhrase": {
-    "message": "Скрыть сид-фразу"
-  },
   "hideSentitiveInfo": {
     "message": "Скрыть конфиденциальную информацию"
   },
@@ -4367,9 +4364,6 @@
   "revealSensitiveContent": {
     "message": "Показать конфиденциальный контент"
   },
-  "revealTheSeedPhrase": {
-    "message": "Показать сид-фразу"
-  },
   "review": {
     "message": "Проверить"
   },
@@ -4480,23 +4474,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Подтвердите секретную фразу для восстановления"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Запишите и храните в нескольких секретных местах."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Храните в банковской ячейке."
-  },
   "seedPhraseIntroTitle": {
     "message": "Защитите свой кошелек"
   },
   "seedPhraseReq": {
     "message": "Секретные фразы для восстановления содержат 12, 15, 18, 21 или 24 слова"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Запишите эту секретную фразу для восстановления из 12 слов и сохраните ее в надежном месте, доступном только вам."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Запишите секретную фразу для восстановления"
   },
   "select": {
     "message": "Выбрать"
@@ -5820,9 +5802,6 @@
   },
   "time": {
     "message": "Время"
-  },
-  "tips": {
-    "message": "Советы"
   },
   "tipsForUsingAWallet": {
     "message": "Советы по использованию кошелька"

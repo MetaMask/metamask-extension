@@ -2202,9 +2202,6 @@
   "hideAdvancedDetails": {
     "message": "Gelişmiş bilgileri gizle"
   },
-  "hideSeedPhrase": {
-    "message": "Anahtar cümleyi gizle"
-  },
   "hideSentitiveInfo": {
     "message": "Hassas bilgileri gizle"
   },
@@ -4367,9 +4364,6 @@
   "revealSensitiveContent": {
     "message": "Hassas içeriği açığa çıkar"
   },
-  "revealTheSeedPhrase": {
-    "message": "Anahtar cümleyi göster"
-  },
   "review": {
     "message": "İncele"
   },
@@ -4480,23 +4474,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Gizli Kurtarma İfadesini Onayla"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Birden fazla gizli yerde not ederek saklayın."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Bir kasada saklayın."
-  },
   "seedPhraseIntroTitle": {
     "message": "Cüzdanınızı koruyun"
   },
   "seedPhraseReq": {
     "message": "Gizli Kurtarma İfadeleri 12, 15, 18, 21 veya 24 kelimeden oluşur"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Bu 12 kelimelik Gizli Kurtarma İfadesini not ederek güvendiğiniz ve sadece sizin erişim sağlayabileceğiniz bir yerde saklayın."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Gizli Kurtarma İfadenizi not edin"
   },
   "select": {
     "message": "Seç"
@@ -5820,9 +5802,6 @@
   },
   "time": {
     "message": "Zaman"
-  },
-  "tips": {
-    "message": "İpuçları"
   },
   "tipsForUsingAWallet": {
     "message": "Cüzdan kullanma ipuçları"

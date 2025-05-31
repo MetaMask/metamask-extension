@@ -957,12 +957,6 @@
   "securityAndPrivacy": {
     "message": "安全＆隱私"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "寫下來並且存放在不同的秘密地點。"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "存在安全保管箱裡。"
-  },
   "seedPhraseIntroTitle": {
     "message": "保護您的錢包"
   },
@@ -1131,9 +1125,6 @@
   },
   "termsOfService": {
     "message": "服務條款"
-  },
-  "tips": {
-    "message": "提示"
   },
   "to": {
     "message": "目的帳戶"
