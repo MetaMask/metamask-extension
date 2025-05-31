@@ -12,6 +12,7 @@ import {
   TextColor,
   IconColor,
   BlockSize,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -125,86 +126,94 @@ export default function OnboardingMetametrics() {
     >
       <Text
         variant={TextVariant.headingLg}
-        textAlign={TextAlign.Center}
+        textAlign={TextAlign.Left}
         fontWeight={FontWeight.Bold}
+        marginBottom={4}
       >
         {t('onboardingMetametricsTitle')}
       </Text>
       <Text className="onboarding-metametrics__desc" textAlign={TextAlign.Left}>
         {t('onboardingMetametricsDescription')}
       </Text>
-      <Box paddingTop={2} paddingBottom={2}>
-        <Text
-          color={TextColor.primaryDefault}
-          as="a"
-          href="https://support.metamask.io/privacy-and-security/profile-privacy#how-is-the-profile-created"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {t('onboardingMetametricsPrivacyDescription')}
-        </Text>
-      </Box>
-      <Text className="onboarding-metametrics__desc" textAlign={TextAlign.Left}>
-        {t('onboardingMetametricsDescription2')}
-      </Text>
       <ul>
         <li>
-          <Box>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            paddingBottom={4}
+          >
             <Icon
               marginInlineEnd={2}
               name={IconName.Check}
               size={IconSize.Sm}
               color={IconColor.successDefault}
             />
-            {t('onboardingMetametricsNeverCollect', [
-              <Text
-                variant={TextVariant.inherit}
-                key="never"
-                fontWeight={FontWeight.Bold}
-                marginTop={0}
-              >
-                {t('onboardingMetametricsNeverCollectEmphasis')}
-              </Text>,
-            ])}
+            <Text color={TextColor.textAlternative}>
+              {t('onboardingMetametricsNeverCollect', [
+                <Text
+                  variant={TextVariant.inherit}
+                  key="never"
+                  fontWeight={FontWeight.Bold}
+                  color={TextColor.textDefault}
+                  marginTop={0}
+                >
+                  {t('onboardingMetametricsNeverCollectEmphasis')}
+                </Text>,
+              ])}
+            </Text>
           </Box>
         </li>
         <li>
-          <Box>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            paddingBottom={4}
+          >
             <Icon
               marginInlineEnd={2}
               name={IconName.Check}
               size={IconSize.Sm}
               color={IconColor.successDefault}
             />
-            {t('onboardingMetametricsNeverCollectIP', [
-              <Text
-                variant={TextVariant.inherit}
-                key="never-collect"
-                fontWeight={FontWeight.Bold}
-              >
-                {t('onboardingMetametricsNeverCollectIPEmphasis')}
-              </Text>,
-            ])}
+            <Text color={TextColor.textAlternative}>
+              {t('onboardingMetametricsNeverCollectIP', [
+                <Text
+                  variant={TextVariant.inherit}
+                  key="never-collect"
+                  fontWeight={FontWeight.Bold}
+                  color={TextColor.textDefault}
+                >
+                  {t('onboardingMetametricsNeverCollectIPEmphasis')}
+                </Text>,
+              ])}
+            </Text>
           </Box>
         </li>
         <li>
-          <Box>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            paddingBottom={4}
+          >
             <Icon
               marginInlineEnd={2}
               name={IconName.Check}
               size={IconSize.Sm}
               color={IconColor.successDefault}
             />
-            {t('onboardingMetametricsNeverSellData', [
-              <Text
-                variant={TextVariant.inherit}
-                key="never-sell"
-                fontWeight={FontWeight.Bold}
-              >
-                {t('onboardingMetametricsNeverSellDataEmphasis')}
-              </Text>,
-            ])}
-          </Box>{' '}
+            <Text color={TextColor.textAlternative}>
+              {t('onboardingMetametricsNeverSellData', [
+                <Text
+                  variant={TextVariant.inherit}
+                  key="never-sell"
+                  fontWeight={FontWeight.Bold}
+                  color={TextColor.textDefault}
+                >
+                  {t('onboardingMetametricsNeverSellDataEmphasis')}
+                </Text>,
+              ])}
+            </Text>
+          </Box>
         </li>
       </ul>
       <Checkbox
@@ -214,13 +223,19 @@ export default function OnboardingMetametrics() {
         onClick={() =>
           dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))
         }
-        label={t('onboardingMetametricsUseDataCheckbox')}
+        label={
+          <Text variant={TextVariant.bodySm} fontWeight={FontWeight.Medium}>
+            {t('onboardingMetametricsUseDataCheckbox')}
+          </Text>
+        }
         paddingBottom={3}
+        alignItems={AlignItems.flexStart}
       />
       <Text
         color={TextColor.textAlternative}
         textAlign={TextAlign.Left}
         variant={TextVariant.bodySm}
+        paddingTop={4}
         className="onboarding-metametrics__terms"
       >
         {t('onboardingMetametricsInfuraTerms', [
@@ -244,12 +259,15 @@ export default function OnboardingMetametrics() {
         flexDirection={FlexDirection.Row}
         width={BlockSize.Full}
         className="onboarding-metametrics__buttons"
+        marginTop={6}
+        marginBottom={4}
         gap={4}
       >
         <Button
           data-testid="metametrics-no-thanks"
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
+          width={BlockSize.Full}
           onClick={onCancel}
         >
           {t('noThanks')}
@@ -257,6 +275,7 @@ export default function OnboardingMetametrics() {
         <Button
           data-testid="metametrics-i-agree"
           size={ButtonSize.Lg}
+          width={BlockSize.Full}
           onClick={onConfirm}
         >
           {t('onboardingMetametricsAgree')}
