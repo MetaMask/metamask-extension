@@ -41,7 +41,6 @@ export const DeepLink = () => {
         if (parsed) {
           const { url, destination, signed } = parsed;
           const { path, query } = destination;
-          debugger;
           const href = getExtensionURL(path, query.toString() ?? null);
           const title =
             routes.get(url.pathname)!.getTitle(url.searchParams) ?? '';
