@@ -833,6 +833,8 @@ export enum MetaMetricsEventName {
   WalletCreated = 'Wallet Created',
   WalletSetupFailure = 'Wallet Setup Failure',
   WalletSetupCompleted = 'Wallet Setup Completed',
+  WalletLoginSelected = 'Wallet Login Selected',
+  WalletLoginCompleted = 'Wallet Login Completed',
   // BEGIN:ONLY_INCLUDE_IF(build-flask)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   // END:ONLY_INCLUDE_IF

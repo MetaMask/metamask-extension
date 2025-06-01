@@ -224,9 +224,26 @@ export default function OnboardingWelcome({
       setIsLoggingIn(true);
       dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
 
+      // Track wallet login selected for existing social login users
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.WalletLoginSelected,
+        properties: {
+          account_type: socialConnectionType,
+        },
+      });
+
       try {
         const isNewUser = await handleSocialLogin(socialConnectionType);
 
+        // Track wallet login completed for existing social login users
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.WalletLoginCompleted,
+          properties: {
+            account_type: socialConnectionType,
+          },
+        });
         trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.WalletImportStarted,
