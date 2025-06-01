@@ -36,6 +36,7 @@ export default class OAuthService {
       authConnection,
       redirectUri,
       this.#env,
+      this.#webAuthenticator,
     );
 
     const authUrl = await loginHandler.getAuthUrl();

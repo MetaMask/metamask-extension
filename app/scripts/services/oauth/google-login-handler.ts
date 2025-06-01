@@ -1,7 +1,6 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { BaseLoginHandler } from './base-login-handler';
 import { AuthTokenResponse, OAuthUserInfo } from './types';
-import { bytesToBase64 } from '@metamask/utils';
 import { base64urlencode } from './utils';
 
 export class GoogleLoginHandler extends BaseLoginHandler {
@@ -25,22 +24,31 @@ export class GoogleLoginHandler extends BaseLoginHandler {
   /**
    * Generate the Auth URL to initiate the OAuth login to get the Authorization Code from Google Authorization server.
    *
+   * @param codeChallenge - The optional code verifier challenge string.
    * @returns The URL to initiate the OAuth login.
    */
   async getAuthUrl(): Promise<string> {
-    const codeVerifierChallenge = await this.generateCodeVerifierChallenge();
-
     const authUrl = new URL(this.OAUTH_SERVER_URL);
+
+    const codeChallenge = await this.generateCodeVerifierChallenge();
+    const nonce = this.generateNonce();
+
     authUrl.searchParams.set('client_id', this.options.oAuthClientId);
     authUrl.searchParams.set('response_type', 'code');
     authUrl.searchParams.set('scope', this.#scope.join(' '));
-    authUrl.searchParams.set('code_challenge_method', this.CODE_CHALLENGE_METHOD);
-    authUrl.searchParams.set('code_challenge', codeVerifierChallenge);
-    authUrl.searchParams.set('state', JSON.stringify({
-      nonce: this.nonce,
-    }));
+    authUrl.searchParams.set(
+      'code_challenge_method',
+      this.CODE_CHALLENGE_METHOD,
+    );
+    authUrl.searchParams.set('code_challenge', codeChallenge);
+    authUrl.searchParams.set(
+      'state',
+      JSON.stringify({
+        nonce,
+      }),
+    );
     authUrl.searchParams.set('redirect_uri', this.options.redirectUri);
-    authUrl.searchParams.set('nonce', this.nonce);
+    authUrl.searchParams.set('nonce', nonce);
     authUrl.searchParams.set('prompt', this.prompt);
 
     return authUrl.toString();
@@ -93,18 +101,18 @@ export class GoogleLoginHandler extends BaseLoginHandler {
     };
   }
 
-  private async generateCodeVerifierChallenge(): Promise<string> {
-    const bytes = new Uint8Array(32);
-    crypto.getRandomValues(bytes);
-    this.#codeVerifier = Array.from(bytes).join('');
+  // private async generateCodeVerifierChallenge(): Promise<string> {
+  //   const bytes = new Uint8Array(32);
+  //   crypto.getRandomValues(bytes);
+  //   this.#codeVerifier = Array.from(bytes).join('');
 
-    const challengeBuffer = await crypto.subtle.digest(
-      'SHA-256',
-      new TextEncoder().encode(this.#codeVerifier),
-    );
+  //   const challengeBuffer = await crypto.subtle.digest(
+  //     'SHA-256',
+  //     new TextEncoder().encode(this.#codeVerifier),
+  //   );
 
-    const challenge = base64urlencode(challengeBuffer);
+  //   const challenge = base64urlencode(challengeBuffer);
 
-    return challenge;
-  }
+  //   return challenge;
+  // }
 }
