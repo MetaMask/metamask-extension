@@ -663,9 +663,6 @@
   "basic": {
     "message": "Βασικά"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Ενεργοποίηση βασικών λειτουργιών"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Οι βασικές λειτουργίες είναι απενεργοποιημένες"
   },

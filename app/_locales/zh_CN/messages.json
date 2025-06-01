@@ -663,9 +663,6 @@
   "basic": {
     "message": "基本"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "开启基本功能"
-  },
   "basicConfigurationBannerTitle": {
     "message": "基本功能已关闭"
   },

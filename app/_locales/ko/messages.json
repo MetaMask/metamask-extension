@@ -663,9 +663,6 @@
   "basic": {
     "message": "기본"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "기본 기능 켜기"
-  },
   "basicConfigurationBannerTitle": {
     "message": "기본 기능이 꺼져 있습니다."
   },

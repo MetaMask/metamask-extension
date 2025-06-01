@@ -663,9 +663,6 @@
   "basic": {
     "message": "Grundlegend"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Grundfunktionalität einschalten"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Grundfunktionalität ist ausgeschaltet"
   },

@@ -663,9 +663,6 @@
   "basic": {
     "message": "Cơ bản"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Bật chức năng cơ bản"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Chức năng cơ bản đã tắt"
   },
