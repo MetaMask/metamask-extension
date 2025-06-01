@@ -49,9 +49,6 @@ describe('Carousel component e2e tests', function () {
             await driver.waitForSelector(
               `[data-testid="slide-${slideIds[i]}"]`,
             );
-            await driver.waitForElementToStopMoving(
-              `[data-testid="slide-${slideIds[i]}"]`,
-            );
           }
 
           const slideSelector = `[data-testid="slide-${slideIds[i]}"]`;
