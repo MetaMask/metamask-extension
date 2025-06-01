@@ -41,14 +41,17 @@ export type WebAuthenticator = {
      * @param responseUrl - The redirect URL from the social login provider.
      */
     callback: (responseUrl?: string) => void,
-  ) => Promise<string | null>;
+  ) => Promise<string | null | void>;
 
   /**
    * Generate a code verifier challenge for the OAuth login PKCE flow.
    *
    * @returns The code verifier challenge string.
    */
-  generateCodeVerifierChallenge: () => Promise<string>;
+  generateCodeVerifierAndChallenge: () => Promise<{
+    codeVerifier: string;
+    challenge: string;
+  }>;
 
   /**
    * Generate a nonce for the OAuth login.

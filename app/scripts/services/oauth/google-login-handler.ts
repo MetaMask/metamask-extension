@@ -9,8 +9,6 @@ export class GoogleLoginHandler extends BaseLoginHandler {
 
   readonly #scope = ['profile', 'email'];
 
-  readonly CODE_CHALLENGE_METHOD = 'S256';
-
   #codeVerifier: string | undefined;
 
   get authConnection() {
@@ -24,14 +22,15 @@ export class GoogleLoginHandler extends BaseLoginHandler {
   /**
    * Generate the Auth URL to initiate the OAuth login to get the Authorization Code from Google Authorization server.
    *
-   * @param codeChallenge - The optional code verifier challenge string.
    * @returns The URL to initiate the OAuth login.
    */
   async getAuthUrl(): Promise<string> {
     const authUrl = new URL(this.OAUTH_SERVER_URL);
 
-    const codeChallenge = await this.generateCodeVerifierChallenge();
+    const { codeVerifier, challenge } =
+      await this.generateCodeVerifierChallenge();
     const nonce = this.generateNonce();
+    this.#codeVerifier = codeVerifier;
 
     authUrl.searchParams.set('client_id', this.options.oAuthClientId);
     authUrl.searchParams.set('response_type', 'code');
@@ -40,7 +39,7 @@ export class GoogleLoginHandler extends BaseLoginHandler {
       'code_challenge_method',
       this.CODE_CHALLENGE_METHOD,
     );
-    authUrl.searchParams.set('code_challenge', codeChallenge);
+    authUrl.searchParams.set('code_challenge', challenge);
     authUrl.searchParams.set(
       'state',
       JSON.stringify({
@@ -100,19 +99,4 @@ export class GoogleLoginHandler extends BaseLoginHandler {
       sub: payload.sub,
     };
   }
-
-  // private async generateCodeVerifierChallenge(): Promise<string> {
-  //   const bytes = new Uint8Array(32);
-  //   crypto.getRandomValues(bytes);
-  //   this.#codeVerifier = Array.from(bytes).join('');
-
-  //   const challengeBuffer = await crypto.subtle.digest(
-  //     'SHA-256',
-  //     new TextEncoder().encode(this.#codeVerifier),
-  //   );
-
-  //   const challenge = base64urlencode(challengeBuffer);
-
-  //   return challenge;
-  // }
 }

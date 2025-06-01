@@ -109,7 +109,10 @@ export abstract class BaseLoginHandler {
     return this.nonce;
   }
 
-  protected generateCodeVerifierChallenge(): Promise<string> {
-    return this.options.webAuthenticator.generateCodeVerifierChallenge();
+  protected generateCodeVerifierChallenge(): Promise<{
+    codeVerifier: string;
+    challenge: string;
+  }> {
+    return this.options.webAuthenticator.generateCodeVerifierAndChallenge();
   }
 }

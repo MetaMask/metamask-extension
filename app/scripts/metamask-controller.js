@@ -399,6 +399,7 @@ import {
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import OAuthService from './services/oauth/oauth-service';
+import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1060,10 +1061,7 @@ export default class MetamaskController extends EventEmitter {
         authConnectionId: process.env.AUTH_CONNECTION_ID,
         groupedAuthConnectionId: process.env.GROUPED_AUTH_CONNECTION_ID,
       },
-      webAuthenticator:
-        getPlatform() === PLATFORM_FIREFOX
-          ? globalThis.browser.identity // use browser.identity for Firefox
-          : window.chrome.identity, // use chrome.identity for Chromium based browsers
+      webAuthenticator: webAuthenticatorFactory(),
     });
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
