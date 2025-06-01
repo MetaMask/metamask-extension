@@ -203,7 +203,7 @@ export const AppHeaderUnlockedContent = ({
         )}
       </>
     ),
-    [copied, dispatch, handleCopy],
+    [copied, handleCopy],
   );
 
   return (

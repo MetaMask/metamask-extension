@@ -45,8 +45,12 @@ exports[`SendPage render and initialization should render correctly even when a 
           <div
             class="mm-box mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
           >
-            From
-          </label>
+            <label
+              class="mm-box mm-text mm-label mm-text--body-md mm-text--font-weight-medium mm-box--padding-bottom-2 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+            >
+              From
+            </label>
+          </div>
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
           >
