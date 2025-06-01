@@ -203,7 +203,7 @@ export const AppHeaderUnlockedContent = ({
         )}
       </>
     ),
-    [copied, disableAccountPicker, dispatch, handleCopy],
+    [copied, dispatch, handleCopy],
   );
 
   return (
