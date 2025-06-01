@@ -10,7 +10,9 @@ class LoginPage {
 
   private welcomeBackMessage: object;
 
-  private forgotPasswordButton: object;
+  private forgotPasswordButton: string;
+
+  private resetPasswordModalButton: string;
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -20,10 +22,10 @@ class LoginPage {
       css: '[data-testid="unlock-page-title"]',
       text: 'Welcome back',
     };
-    this.forgotPasswordButton = {
-      text: 'Forgot password?',
-      tag: 'a',
-    };
+    this.forgotPasswordButton = '[data-testid="unlock-forgot-password-button"]';
+
+    this.resetPasswordModalButton =
+      '[data-testid="reset-password-modal-button"]';
   }
 
   async check_pageIsLoaded(): Promise<void> {
@@ -54,6 +56,9 @@ class LoginPage {
   async gotoResetPasswordPage(): Promise<void> {
     console.log('Navigating to reset password page');
     await this.driver.clickElement(this.forgotPasswordButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.resetPasswordModalButton,
+    );
   }
 }
 

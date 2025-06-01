@@ -244,6 +244,7 @@ import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
 import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
+import { updateCurrentLocale } from '../../shared/lib/translate';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -317,7 +318,6 @@ import {
 import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from './services/data-deletion-service';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
-import { updateCurrentLocale } from './translate';
 import { TrezorOffscreenBridge } from './lib/offscreen-bridge/trezor-offscreen-bridge';
 import { LedgerOffscreenBridge } from './lib/offscreen-bridge/ledger-offscreen-bridge';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -795,6 +795,7 @@ export default class MetamaskController extends EventEmitter {
         'NetworkController:getNetworkClientById',
         'AccountsController:getSelectedAccount',
         'AccountsController:getAccount',
+        'AccountsController:listAccounts',
       ],
       allowedEvents: [
         'NetworkController:networkDidChange',
@@ -802,6 +803,7 @@ export default class MetamaskController extends EventEmitter {
         'PreferencesController:stateChange',
         'TokenListController:stateChange',
         'NetworkController:stateChange',
+        'KeyringController:accountRemoved',
       ],
     });
     this.tokensController = new TokensController({
@@ -945,11 +947,13 @@ export default class MetamaskController extends EventEmitter {
         'TokensController:getState',
         'PreferencesController:getState',
         'AccountsController:getSelectedAccount',
+        'AccountsController:listAccounts',
       ],
       allowedEvents: [
         'PreferencesController:stateChange',
         'TokensController:stateChange',
         'NetworkController:stateChange',
+        'KeyringController:accountRemoved',
       ],
     });
 
@@ -1374,6 +1378,7 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:networkDidChange',
           'PreferencesController:stateChange',
           'TokenListController:stateChange',
+          'TransactionController:transactionConfirmed',
         ],
       });
 
@@ -3876,6 +3881,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       updateNetworksList: this.updateNetworksList.bind(this),
       updateAccountsList: this.updateAccountsList.bind(this),
+      setEnabledNetworks: this.setEnabledNetworks.bind(this),
       updateHiddenAccountsList: this.updateHiddenAccountsList.bind(this),
       getPhishingResult: async (website) => {
         await phishingController.maybeUpdateState();
@@ -5983,8 +5989,9 @@ export default class MetamaskController extends EventEmitter {
     securityAlertId,
     securityAlertResponse,
   ) {
-    await updateSecurityAlertResponse({
+    return await updateSecurityAlertResponse({
       appStateController: this.appStateController,
+      messenger: this.controllerMessenger,
       method,
       securityAlertId,
       securityAlertResponse,
@@ -6824,6 +6831,9 @@ export default class MetamaskController extends EventEmitter {
         ),
         getIsLocked: () => {
           return !this.appStateController.isUnlocked();
+        },
+        getIsActive: () => {
+          return this._isClientOpen;
         },
         getInterfaceState: (...args) =>
           this.controllerMessenger.call(
@@ -7893,6 +7903,15 @@ export default class MetamaskController extends EventEmitter {
   updateAccountsList = (pinnedAccountList) => {
     try {
       this.accountOrderController.updateAccountsList(pinnedAccountList);
+    } catch (err) {
+      log.error(err.message);
+      throw err;
+    }
+  };
+
+  setEnabledNetworks = (chainIds) => {
+    try {
+      this.networkOrderController.setEnabledNetworks(chainIds);
     } catch (err) {
       log.error(err.message);
       throw err;
