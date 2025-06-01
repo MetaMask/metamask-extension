@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import reactRouterDom from 'react-router-dom';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
+import { ONBOARDING_METAMETRICS } from '../../../helpers/constants/routes';
 import * as Actions from '../../../store/actions';
 import SecureYourWallet from './secure-your-wallet';
 
@@ -86,7 +86,7 @@ describe('Secure Your Wallet Onboarding View', () => {
 
     await waitFor(() => {
       expect(setSeedPhraseBackedUpSpy).toHaveBeenCalledWith(false);
-      expect(pushMock).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
+      expect(pushMock).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
     });
   });
 });
