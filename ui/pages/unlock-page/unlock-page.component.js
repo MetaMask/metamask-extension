@@ -134,8 +134,33 @@ class UnlockPage extends Component {
 
     this.setState({ error: null, isSubmitting: true });
 
+    // Track wallet rehydration attempted for social login users
+    if (this.props.isSocialLoginFlow) {
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.WalletRehydrationAttempted,
+        properties: {
+          account_type: 'social',
+          biometrics: false,
+        },
+      });
+    }
+
     try {
       await onSubmit(password);
+
+      // Track wallet rehydration completed for social login users
+      if (this.props.isSocialLoginFlow) {
+        this.context.trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.WalletRehydrationCompleted,
+          properties: {
+            account_type: 'social',
+            biometrics: false,
+          },
+        });
+      }
+
       this.context.trackEvent(
         {
           category: MetaMetricsEventCategory.Navigation,
@@ -188,15 +213,28 @@ class UnlockPage extends Component {
       });
     }
 
+    // Track wallet rehydration failed for social login users
+    if (this.props.isSocialLoginFlow) {
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.WalletRehydrationFailed,
+        properties: {
+          account_type: 'social',
+        },
+      });
+    }
+
     // Check if we are in the onboarding flow
     if (this.props.onboardingParentContext.current) {
-      bufferedTrace({
+      this.context.bufferedTrace?.({
         name: TraceName.OnboardingPasswordLoginError,
         op: TraceOperation.OnboardingError,
         tags: { errorMessage: message },
         parentContext: this.props.onboardingParentContext.current,
       });
-      bufferedEndTrace({ name: TraceName.OnboardingPasswordLoginError });
+      this.context.bufferedEndTrace?.({
+        name: TraceName.OnboardingPasswordLoginError,
+      });
     }
 
     switch (message) {
