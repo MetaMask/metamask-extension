@@ -99,6 +99,17 @@ const ChangePassword = () => {
       setStep(ChangePasswordSteps.ChangePasswordLoading);
       await dispatch(changePassword(newPassword, currentPassword));
 
+      // Track password changed event
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasswordChanged,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          biometrics_enabled: false,
+        },
+      });
+
       // upon successful password change, go back to the settings page
       history.push(SECURITY_ROUTE);
       dispatch(setShowPasswordChangeToast(PasswordChangeToastType.Success));
