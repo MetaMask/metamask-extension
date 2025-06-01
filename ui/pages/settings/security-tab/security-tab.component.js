@@ -177,15 +177,10 @@ export default class SecurityTab extends PureComponent {
           {t('secretRecoveryPhrase')}
         </div>
         <div className="settings-page__content-padded">
-          <div className="settings-page__content-description">
-            {t('securitySrpDescription')}
-          </div>
           <Button
             data-testid="reveal-seed-words"
             type="danger"
             size={ButtonSize.Lg}
-            block
-            marginTop={4}
             onClick={(event) => {
               event.preventDefault();
               this.context.trackEvent({
@@ -214,9 +209,7 @@ export default class SecurityTab extends PureComponent {
               this.setState({ srpQuizModalVisible: true });
             }}
           >
-            {hasMultipleHdKeyrings
-              ? t('securitySrpWalletRecovery')
-              : t('revealSeedWords')}
+            {t('revealSeedWords')}
           </Button>
           {this.state.srpQuizModalVisible && (
             <SRPQuiz

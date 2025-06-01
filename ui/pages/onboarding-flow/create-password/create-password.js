@@ -15,7 +15,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   ONBOARDING_COMPLETION_ROUTE,
-  ONBOARDING_METAMETRICS,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -44,9 +43,6 @@ import {
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import PasswordForm from '../../../components/app/password-form/password-form';
 import LoadingScreen from '../../../components/ui/loading-screen';
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../../app/scripts/lib/util';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 
 export default function CreatePassword({
   createNewAccount,
@@ -82,7 +78,8 @@ export default function CreatePassword({
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {
       if (firstTimeFlowType === FirstTimeFlowType.import) {
-        history.replace(ONBOARDING_METAMETRICS);
+        // SOCIAL: change to metametrics when social login is available
+        history.replace(ONBOARDING_COMPLETION_ROUTE);
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       }
@@ -112,9 +109,11 @@ export default function CreatePassword({
       firstTimeFlowType === FirstTimeFlowType.import
     ) {
       await importWithRecoveryPhrase(password, secretRecoveryPhrase);
-      getPlatform() === PLATFORM_FIREFOX
-        ? history.push(ONBOARDING_COMPLETION_ROUTE)
-        : history.push(ONBOARDING_METAMETRICS);
+      // getPlatform() === PLATFORM_FIREFOX
+      //   ? history.push(ONBOARDING_COMPLETION_ROUTE)
+      //   : history.push(ONBOARDING_METAMETRICS);
+      // SOCIAL: change to metametrics when social login is available
+      history.push(ONBOARDING_COMPLETION_ROUTE);
     } else {
       // Otherwise we are in create new wallet flow
       try {
@@ -123,7 +122,9 @@ export default function CreatePassword({
           await createNewAccount(password);
         }
         if (firstTimeFlowType === FirstTimeFlowType.social) {
-          history.push(ONBOARDING_METAMETRICS);
+          // history.push(ONBOARDING_METAMETRICS);
+          // SOCIAL: change to metametrics when social login is available
+          history.push(ONBOARDING_COMPLETION_ROUTE);
         } else {
           history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
         }
