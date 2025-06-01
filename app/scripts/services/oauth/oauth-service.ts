@@ -56,13 +56,7 @@ export default class OAuthService {
                 const url = new URL(responseUrl);
                 const state = url.searchParams.get('state');
 
-                if (!state) {
-                  reject(new Error('No state value found in redirect URL'));
-                  return;
-                }
-
                 loginHandler.validateState(state);
-
                 resolve(responseUrl);
               } else {
                 reject(new Error('No redirect URL found'));

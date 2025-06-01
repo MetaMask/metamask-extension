@@ -50,14 +50,19 @@ export abstract class BaseLoginHandler {
    */
   abstract getUserInfo(idToken: string): Promise<OAuthUserInfo>;
 
-  validateState(state: string): void {
+  /**
+   * Validate the state value from the OAuth login redirect URL.
+   *
+   * @param state - The state value from the OAuth login redirect URL.
+   */
+  validateState(state: unknown): void {
+    if (typeof state !== 'string') {
+      throw new Error('Invalid state');
+    }
+
     const parsedState = JSON.parse(state);
 
-    if (
-      // eslint-disable-next-line camelcase
-      parsedState.client_redirect_back_uri !== this.options.redirectUri ||
-      parsedState.nonce !== this.nonce
-    ) {
+    if (parsedState.nonce !== this.nonce) {
       throw new Error('Invalid state');
     }
   }
@@ -103,11 +108,21 @@ export abstract class BaseLoginHandler {
     return Buffer.from(base64String, 'base64').toString('utf-8');
   }
 
+  /**
+   * Generate a nonce value.
+   *
+   * @returns The nonce value.
+   */
   protected generateNonce(): string {
     this.nonce = this.options.webAuthenticator.generateNonce();
     return this.nonce;
   }
 
+  /**
+   * Generate a code verifier and challenge value for PKCE flow.
+   *
+   * @returns The code verifier and challenge value.
+   */
   protected generateCodeVerifierChallenge(): Promise<{
     codeVerifier: string;
     challenge: string;
