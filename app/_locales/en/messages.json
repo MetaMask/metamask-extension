@@ -520,10 +520,6 @@
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
   },
-  "appNameMmi": {
-    "message": "MetaMask Institutional",
-    "description": "The name of the application (MMI)"
-  },
   "apply": {
     "message": "Apply"
   },
@@ -624,7 +620,7 @@
     "description": "$1 is backupAndSyncBasicFunctionalityNameMention in bold."
   },
   "backupAndSyncEnableDescription": {
-    "message": "Backup and sync lets us store encrypted data for your custom settings and features. This keeps your MetaMask experience the same across devices and restores settings and features if you ever need to reinstall MetaMask. $1.",
+    "message": "Backup and sync lets us store encrypted data for your custom settings and features. This keeps your MetaMask experience the same across devices and restores settings and features if you ever need to reinstall MetaMask. This doesn’t back up your Secret Recovery Phrase. $1.",
     "description": "$1 is link to the backup and sync privacy policy."
   },
   "backupAndSyncEnableDescriptionUpdatePreferences": {
@@ -2292,8 +2288,8 @@
   "forgotPassword": {
     "message": "Forgot password?"
   },
-  "forgotPasswordModalTitle": {
-    "message": "Forgot your password?"
+  "forgotPasswordModalButton": {
+    "message": "Reset wallet"
   },
   "forgotPasswordModalDescription1": {
     "message": "MetaMask can’t recover your password for you."
@@ -2301,8 +2297,8 @@
   "forgotPasswordModalDescription2": {
     "message": "You can reset your wallet by entering the Secret Recovery Phrase you used when you set up your wallet."
   },
-  "forgotPasswordModalButton": {
-    "message": "Reset wallet"
+  "forgotPasswordModalTitle": {
+    "message": "Forgot your password?"
   },
   "form": {
     "message": "form"
@@ -4863,15 +4859,6 @@
   "securityProviderPoweredBy": {
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
-  },
-  "securitySrpBackupSrp": {
-    "message": "Back up Secret Recovery Phrase"
-  },
-  "securitySrpDescription": {
-    "message": "Back up your Secret Recovery Phrase. Be sure to store your Secret Recovery Phrase in a safe place that only you can access and won’t forget."
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Wallet recovery"
   },
   "seeAllPermissions": {
     "message": "See all permissions",

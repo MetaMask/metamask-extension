@@ -4,14 +4,15 @@ import { padBase64String } from './utils';
 export abstract class BaseLoginHandler {
   public options: LoginHandlerOptions;
 
-  public nonce: string;
+  public nonce: string | undefined;
 
   // This prompt value is used to force the user to select an account before OAuth login
   protected readonly prompt = 'select_account';
 
+  protected readonly CODE_CHALLENGE_METHOD = 'S256';
+
   constructor(options: LoginHandlerOptions) {
     this.options = options;
-    this.nonce = this.#generateNonce();
   }
 
   abstract get authConnection(): AuthConnection;
@@ -48,6 +49,18 @@ export abstract class BaseLoginHandler {
    * @returns The user's information from the JWT Token.
    */
   abstract getUserInfo(idToken: string): Promise<OAuthUserInfo>;
+
+  validateState(state: string): void {
+    const parsedState = JSON.parse(state);
+
+    if (
+      // eslint-disable-next-line camelcase
+      parsedState.client_redirect_back_uri !== this.options.redirectUri ||
+      parsedState.nonce !== this.nonce
+    ) {
+      throw new Error('Invalid state');
+    }
+  }
 
   /**
    * Make a request to the Web3Auth Authentication Server to get the JWT Token.
@@ -90,7 +103,15 @@ export abstract class BaseLoginHandler {
     return Buffer.from(base64String, 'base64').toString('utf-8');
   }
 
-  #generateNonce(): string {
-    return crypto.randomUUID();
+  protected generateNonce(): string {
+    this.nonce = this.options.webAuthenticator.generateNonce();
+    return this.nonce;
+  }
+
+  protected generateCodeVerifierChallenge(): Promise<{
+    codeVerifier: string;
+    challenge: string;
+  }> {
+    return this.options.webAuthenticator.generateCodeVerifierAndChallenge();
   }
 }

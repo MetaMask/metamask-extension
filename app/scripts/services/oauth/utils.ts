@@ -37,7 +37,7 @@ export function base64urlencode(buffer: ArrayBuffer) {
     str += String.fromCharCode(bytes[i]);
   }
   return btoa(str)
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '');
+    .replace(/\+/u, '-')
+    .replace(/\//u, '_')
+    .replace(/[=]+$/u, '');
 }

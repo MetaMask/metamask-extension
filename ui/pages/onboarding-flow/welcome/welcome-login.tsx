@@ -99,6 +99,7 @@ export default function WelcomeLogin({
 
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
         <ButtonBase
+          data-testid="onboarding-create-wallet"
           width={BlockSize.Full}
           size={ButtonBaseSize.Lg}
           className="welcome-login__create-button"
@@ -110,6 +111,7 @@ export default function WelcomeLogin({
           {t('onboardingCreateWallet')}
         </ButtonBase>
         <ButtonBase
+          data-testid="onboarding-import-wallet"
           width={BlockSize.Full}
           size={ButtonBaseSize.Lg}
           backgroundColor={BackgroundColor.transparent}

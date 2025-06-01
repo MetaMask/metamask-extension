@@ -20,6 +20,9 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+// eslint-disable-next-line import/no-restricted-paths
+import { getPlatform } from '../../../../app/scripts/lib/util';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import WelcomeLogin from './welcome-login';
 import WelcomeBanner from './welcome-banner';
 import { LOGIN_OPTION, LOGIN_TYPE } from './types';
@@ -75,7 +78,13 @@ export default function OnboardingWelcome({
       },
     });
 
-    history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
+    history.push(
+      getPlatform() === PLATFORM_FIREFOX
+        ? ONBOARDING_CREATE_PASSWORD_ROUTE
+        : ONBOARDING_METAMETRICS,
+    );
+    // SOCIAL: metametrics has new flow
+    // history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
   }, [dispatch, history, trackEvent]);
 
   const onImportClick = useCallback(async () => {
@@ -89,7 +98,13 @@ export default function OnboardingWelcome({
       },
     });
 
-    history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
+    history.push(
+      getPlatform() === PLATFORM_FIREFOX
+        ? ONBOARDING_IMPORT_WITH_SRP_ROUTE
+        : ONBOARDING_METAMETRICS,
+    );
+    // SOCIAL: metametrics has new flow
+    // history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
   }, [dispatch, history, trackEvent]);
 
   const handleSocialLogin = useCallback(
@@ -192,6 +207,6 @@ export default function OnboardingWelcome({
 }
 
 OnboardingWelcome.propTypes = {
-  pageState: PropTypes.oneOf(Object.values(WelcomePageState)).isRequired,
+  pageState: PropTypes.oneOf(Object.values(WelcomePageState)),
   setPageState: PropTypes.func.isRequired,
 };

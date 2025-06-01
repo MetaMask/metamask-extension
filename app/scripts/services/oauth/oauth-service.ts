@@ -36,6 +36,7 @@ export default class OAuthService {
       authConnection,
       redirectUri,
       this.#env,
+      this.#webAuthenticator,
     );
 
     const authUrl = await loginHandler.getAuthUrl();
@@ -50,10 +51,24 @@ export default class OAuthService {
             url: authUrl,
           },
           (responseUrl) => {
-            if (responseUrl) {
-              resolve(responseUrl);
-            } else {
-              reject(new Error('No redirect URL found'));
+            try {
+              if (responseUrl) {
+                const url = new URL(responseUrl);
+                const state = url.searchParams.get('state');
+
+                if (!state) {
+                  reject(new Error('No state value found in redirect URL'));
+                  return;
+                }
+
+                loginHandler.validateState(state);
+
+                resolve(responseUrl);
+              } else {
+                reject(new Error('No redirect URL found'));
+              }
+            } catch (error: unknown) {
+              reject(error);
             }
           },
         );
