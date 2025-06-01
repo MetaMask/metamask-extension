@@ -31,7 +31,13 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
-import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_METAMETRICS,
+} from '../../../helpers/constants/routes';
+// eslint-disable-next-line import/no-restricted-paths
+import { getPlatform } from '../../../../app/scripts/lib/util';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 
 type SkipSRPBackupProps = {
   onClose: () => void;
@@ -59,13 +65,11 @@ export default function SkipSRPBackup({
       },
     });
 
-    // if (getPlatform() === PLATFORM_FIREFOX) {
-    //   history.push(ONBOARDING_COMPLETION_ROUTE);
-    // } else {
-    //   history.push(ONBOARDING_METAMETRICS);
-    // }
-    // SOCIAL: change metametrics flow on later PR
-    history.push(ONBOARDING_COMPLETION_ROUTE);
+    if (getPlatform() === PLATFORM_FIREFOX) {
+      history.push(ONBOARDING_COMPLETION_ROUTE);
+    } else {
+      history.push(ONBOARDING_METAMETRICS);
+    }
   }, [dispatch, hdEntropyIndex, history, trackEvent]);
 
   return (
