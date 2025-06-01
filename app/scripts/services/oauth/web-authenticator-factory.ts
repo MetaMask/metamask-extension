@@ -1,7 +1,7 @@
-import { PLATFORM_FIREFOX } from "../../../../shared/constants/app";
-import { getPlatform } from "../../lib/util";
-import { WebAuthenticator } from "./types";
-import { base64urlencode } from "./utils";
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { getPlatform } from '../../lib/util';
+import { WebAuthenticator } from './types';
+import { base64urlencode } from './utils';
 
 async function generateCodeVerifierAndChallenge(): Promise<{
   codeVerifier: string;
@@ -32,7 +32,9 @@ export function webAuthenticatorFactory(): WebAuthenticator {
   const isFirefox = getPlatform() === PLATFORM_FIREFOX;
   const identityAPI = isFirefox
     ? globalThis.browser.identity // use browser.identity for Firefox
-    : window.chrome.identity; // use chrome.identity for Chromium based browsers
+    : chrome.identity; // use chrome.identity for Chromium based browsers
+
+  console.log('chrome', chrome);
 
   return {
     launchWebAuthFlow: identityAPI.launchWebAuthFlow,

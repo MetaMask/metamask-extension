@@ -26,12 +26,12 @@ import {
 import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
   Button,
+  ButtonSize,
   Icon,
   IconSize,
   IconName,
   Box,
   Text,
-  ButtonSize,
 } from '../../../components/component-library';
 import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';

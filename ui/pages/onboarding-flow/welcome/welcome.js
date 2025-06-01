@@ -96,7 +96,13 @@ export default function OnboardingWelcome({
       },
     });
 
-    history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
+    history.push(
+      getPlatform() === PLATFORM_FIREFOX
+        ? ONBOARDING_IMPORT_WITH_SRP_ROUTE
+        : ONBOARDING_METAMETRICS,
+    );
+    // SOCIAL: metametrics has new flow
+    // history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
   }, [dispatch, history, trackEvent]);
 
   const handleLogin = useCallback(

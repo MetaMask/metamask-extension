@@ -1,7 +1,11 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { AppleLoginHandler } from './apple-login-handler';
 import { GoogleLoginHandler } from './google-login-handler';
-import type { LoginHandlerOptions, OAuthLoginEnv, WebAuthenticator } from './types';
+import type {
+  LoginHandlerOptions,
+  OAuthLoginEnv,
+  WebAuthenticator,
+} from './types';
 
 export function createLoginHandler(
   authConnection: AuthConnection,
