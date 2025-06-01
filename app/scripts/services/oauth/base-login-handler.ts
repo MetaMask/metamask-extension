@@ -1,6 +1,7 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { LoginHandlerOptions, AuthTokenResponse, OAuthUserInfo } from './types';
 import { padBase64String } from './utils';
+
 export abstract class BaseLoginHandler {
   public options: LoginHandlerOptions;
 

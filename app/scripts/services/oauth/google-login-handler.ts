@@ -1,8 +1,6 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { BaseLoginHandler } from './base-login-handler';
 import { AuthTokenResponse, OAuthUserInfo } from './types';
-import { bytesToBase64 } from '@metamask/utils';
-import { base64urlencode } from './utils';
 
 export class GoogleLoginHandler extends BaseLoginHandler {
   public readonly OAUTH_SERVER_URL =
