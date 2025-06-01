@@ -682,7 +682,7 @@ describe('MetaMaskController', () => {
     describe('#startOAuthLogin', () => {
       it('should start the OAuth login flow', async () => {
         const startOAuthLoginSpy = jest
-          .spyOn(metamaskController.oauthController, 'startOAuthLogin')
+          .spyOn(metamaskController.oauthService, 'startOAuthLogin')
           .mockResolvedValueOnce({
             idTokens: ['mocked-id-token'],
             authConnection: AuthConnection.Google,

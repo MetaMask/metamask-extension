@@ -46,6 +46,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
 export default function CreationSuccessful() {
   const history = useHistory();
@@ -64,15 +65,15 @@ export default function CreationSuccessful() {
     firstTimeFlowType === FirstTimeFlowType.import || seedPhraseBackedUp;
 
   const renderTitle = useMemo(() => {
-    if (socialLoginFlow || seedPhraseBackedUp) {
+    if (socialLoginFlow || isWalletReady) {
       return t('yourWalletIsReady');
     }
 
     return t('yourWalletIsReadyRemind');
-  }, [socialLoginFlow, seedPhraseBackedUp, t]);
+  }, [socialLoginFlow, isWalletReady, t]);
 
   const renderFoxPath = useMemo(() => {
-    if (socialLoginFlow || seedPhraseBackedUp) {
+    if (socialLoginFlow || isWalletReady) {
       return 'images/animations/fox/celebrating.lottie.json';
     }
 

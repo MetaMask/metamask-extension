@@ -34,8 +34,6 @@ export function webAuthenticatorFactory(): WebAuthenticator {
     ? globalThis.browser.identity // use browser.identity for Firefox
     : chrome.identity; // use chrome.identity for Chromium based browsers
 
-  console.log('chrome', chrome);
-
   return {
     launchWebAuthFlow: identityAPI.launchWebAuthFlow,
     generateCodeVerifierAndChallenge,
