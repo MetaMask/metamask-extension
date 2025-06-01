@@ -116,6 +116,9 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         newPrivacyPolicyToastClickedOrClosed: true,
         newPrivacyPolicyToastShownDate: Date.now(),
         snapsInstallPrivacyWarningShown: true,
+        isUpdateAvailable: false,
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: null,
       },
       BridgeController: {},
       CurrencyController: {

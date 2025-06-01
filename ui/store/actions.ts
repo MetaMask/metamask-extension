@@ -4761,6 +4761,30 @@ export function setTermsOfUseLastAgreed(lastAgreed: number) {
   };
 }
 
+export function setIsUpdateAvailable(isUpdateAvailable: boolean) {
+  return async () => {
+    await submitRequestToBackground('setIsUpdateAvailable', [
+      isUpdateAvailable,
+    ]);
+  };
+}
+
+export function setUpdateModalLastDismissedAt(
+  updateModalLastDismissedAt: number,
+) {
+  return async () => {
+    await submitRequestToBackground('setUpdateModalLastDismissedAt', [
+      updateModalLastDismissedAt,
+    ]);
+  };
+}
+
+export function setLastUpdatedAt(lastUpdatedAt: number) {
+  return async () => {
+    await submitRequestToBackground('setLastUpdatedAt', [lastUpdatedAt]);
+  };
+}
+
 export function setLastViewedUserSurvey(id: number) {
   return async () => {
     await submitRequestToBackground('setLastViewedUserSurvey', [id]);

@@ -325,6 +325,15 @@
   "advancedDetailsNonceTooltip": {
     "message": "This is the transaction number of an account. Nonce for the first transaction is 0 and it increases in sequential order."
   },
+  "getTheNewestFeatures": {
+    "message": "Get the newest features"
+  },
+  "updateInformation": {
+    "message": "We’ve made your wallet safer, smoother, and added some new features. Update now to stay protected and use our latest improvements."
+  },
+  "updateToTheLatestVersion": {
+    "message": "Update to the latest version"
+  },
   "advancedGasFeeDefaultOptIn": {
     "message": "Save these values as my default for the $1 network.",
     "description": "$1 is the current network name."

@@ -187,6 +187,10 @@ if (!isManifestV3) {
   globalThis.stateHooks.metamaskTriggerOnInstall = () => onInstall();
 }
 
+browser.runtime.onUpdateAvailable.addListener(() => {
+  controller.appStateController.setIsUpdateAvailable(true);
+});
+
 /**
  * This deferred Promise is used to track whether initialization has finished.
  *

@@ -84,6 +84,9 @@ export type AppStateControllerState = {
   slides: CarouselSlide[];
   throttledOrigins: ThrottledOrigins;
   upgradeSplashPageAcknowledgedForAccounts: string[];
+  isUpdateAvailable: boolean;
+  updateModalLastDismissedAt: number | null;
+  lastUpdatedAt: number | null;
 };
 
 const controllerName = 'AppStateController';
@@ -198,6 +201,9 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   slides: [],
   throttledOrigins: {},
   upgradeSplashPageAcknowledgedForAccounts: [],
+  isUpdateAvailable: false,
+  updateModalLastDismissedAt: null,
+  lastUpdatedAt: null,
   ...getInitialStateOverrides(),
 });
 
@@ -358,6 +364,18 @@ const controllerMetadata = {
   },
   upgradeSplashPageAcknowledgedForAccounts: {
     persist: false,
+    anonymous: true,
+  },
+  isUpdateAvailable: {
+    persist: true,
+    anonymous: true,
+  },
+  updateModalLastDismissedAt: {
+    persist: true,
+    anonymous: true,
+  },
+  lastUpdatedAt: {
+    persist: true,
     anonymous: true,
   },
 };
@@ -661,6 +679,39 @@ export class AppStateController extends BaseController<
         ...state.upgradeSplashPageAcknowledgedForAccounts,
         account.toLowerCase(),
       ];
+    });
+  }
+
+  /**
+   * Set whether or not there is an update available
+   *
+   * @param isUpdateAvailable - Whether or not there is an update available
+   */
+  setIsUpdateAvailable(isUpdateAvailable: boolean): void {
+    this.update((state) => {
+      state.isUpdateAvailable = isUpdateAvailable;
+    });
+  }
+
+  /**
+   * Record the timestamp of the last time the user has dismissed the update modal
+   *
+   * @param updateModalLastDismissedAt - timestamp of the last time the user has dismissed the update modal.
+   */
+  setUpdateModalLastDismissedAt(updateModalLastDismissedAt: number): void {
+    this.update((state) => {
+      state.updateModalLastDismissedAt = updateModalLastDismissedAt;
+    });
+  }
+
+  /**
+   * Record the timestamp of the last time the user has updated
+   *
+   * @param lastUpdatedAt - timestamp of the last time the user has updated
+   */
+  setLastUpdatedAt(lastUpdatedAt: number): void {
+    this.update((state) => {
+      state.lastUpdatedAt = lastUpdatedAt;
     });
   }
 

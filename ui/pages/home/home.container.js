@@ -1,7 +1,7 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-
+import semver from 'semver';
 import {
   activeTabHasPermissions,
   getUseExternalServices,
@@ -72,6 +72,7 @@ import {
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
 import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
+import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -86,10 +87,13 @@ const mapStateToProps = (state) => {
     participateInMetaMetrics,
     firstTimeFlowType,
     completedOnboarding,
+    forgottenPassword,
+    isUpdateAvailable,
+    updateModalLastDismissedAt,
+    lastUpdatedAt,
   } = metamask;
   const selectedAccount = getSelectedInternalAccount(state);
   const { address: selectedAddress } = selectedAccount;
-  const { forgottenPassword } = metamask;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingApprovals = selectPendingApprovalsForNavigation(state);
@@ -133,6 +137,27 @@ const mapStateToProps = (state) => {
 
   const shouldShowSeedPhraseReminder =
     selectedAccount && getShouldShowSeedPhraseReminder(state, selectedAccount);
+
+  const extensionCurrentVersion = process.env.METAMASK_VERSION;
+  const { extensionMinimumVersion } = getRemoteFeatureFlags(state);
+  const isExtensionOutdated =
+    extensionCurrentVersion && extensionMinimumVersion
+      ? semver.lt(extensionCurrentVersion, extensionMinimumVersion)
+      : false;
+
+  const updateModalCooldown = 24 * 60 * 60 * 1000; // 24 hours
+  const enoughTimePassedSinceLastDismissal = updateModalLastDismissedAt
+    ? Date.now() - updateModalLastDismissedAt > updateModalCooldown
+    : true;
+  const enoughTimePassedSinceLastUpdate = lastUpdatedAt
+    ? Date.now() - lastUpdatedAt > updateModalCooldown
+    : true;
+
+  const showUpdateModal =
+    isExtensionOutdated &&
+    isUpdateAvailable &&
+    enoughTimePassedSinceLastDismissal &&
+    enoughTimePassedSinceLastUpdate;
 
   return {
     useExternalServices: getUseExternalServices(state),
@@ -178,6 +203,7 @@ const mapStateToProps = (state) => {
     onboardedInThisUISession: appState.onboardedInThisUISession,
     hasAllowedPopupRedirectApprovals,
     showMultiRpcModal: state.metamask.preferences.showMultiRpcModal,
+    showUpdateModal,
   };
 };
 

@@ -43,7 +43,10 @@
       "isRampCardClosed": false,
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
-      "snapsInstallPrivacyWarningShown": true
+      "snapsInstallPrivacyWarningShown": true,
+      "isUpdateAvailable": false,
+      "updateModalLastDismissedAt": null,
+      "lastUpdatedAt": null
     },
     "BridgeController": {},
     "CurrencyController": {

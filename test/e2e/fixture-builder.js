@@ -39,6 +39,9 @@ function onboardingFixture() {
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,
         trezorModel: null,
+        isUpdateAvailable: false,
+        updateModalLastDismissedAt: null,
+        lastUpdatedAt: null,
       },
       NetworkController: {
         ...mockNetworkStateOld({
