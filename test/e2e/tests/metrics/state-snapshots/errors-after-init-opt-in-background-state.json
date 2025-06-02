@@ -339,6 +339,7 @@
   "TxController": {
     "methodData": "object",
     "transactions": "object",
+    "transactionBatches": "object",
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object"
   },
