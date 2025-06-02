@@ -666,7 +666,11 @@ export const getInsufficientFundsFixtures = (
   })
     .withCurrencyController(MOCK_CURRENCY_RATES)
     .withBridgeControllerDefaultState()
-    .withTokensControllerERC20({ chainId: 1 });
+    .withTokensControllerERC20({ chainId: 1 })
+    .withEnabledNetworks({
+      '0x1': true,
+      '0xe708': true,
+    });
 
   return {
     fixtures: fixtureBuilder.build(),
