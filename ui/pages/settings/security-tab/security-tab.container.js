@@ -28,10 +28,12 @@ import {
   getMetaMaskHdKeyrings,
   getSocialLoginType,
   isSocialLoginFlow,
+  getFirstTimeFlowType,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
@@ -57,6 +59,9 @@ const mapStateToProps = (state) => {
   const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
   const hasMultipleHdKeyrings = getMetaMaskHdKeyrings(state).length > 1;
+  const seedPhraseBackedUp =
+    getSeedPhraseBackedUp(state) ||
+    getFirstTimeFlowType(state) !== FirstTimeFlowType.create;
 
   return {
     networkConfigurations,
@@ -81,7 +86,7 @@ const mapStateToProps = (state) => {
     hasMultipleHdKeyrings,
     socialLoginEnabled: isSocialLoginFlow(state),
     socialLoginType: getSocialLoginType(state),
-    seedPhraseBackedUp: getSeedPhraseBackedUp(state),
+    seedPhraseBackedUp,
   };
 };
 
