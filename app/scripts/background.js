@@ -756,7 +756,7 @@ export async function loadStateFromPersistence(backup) {
    */
   let preMigrationVersionedData;
   if (backup) {
-    preMigrationVersionedData = { data: {} };
+    preMigrationVersionedData = { data: {}, meta: {} };
     for (const key of backedUpStateKeys) {
       if (hasProperty(backup, key)) {
         preMigrationVersionedData.data[key] = backup[key];
@@ -764,8 +764,17 @@ export async function loadStateFromPersistence(backup) {
     }
     // use the meta property from the backup if it exists, that way the
     // migrations will behave correctly.
-    if (hasProperty(backup, 'meta')) {
+    if (hasProperty(backup, 'meta') && isObject(backup.meta)) {
       preMigrationVersionedData.meta = backup.meta;
+    }
+    // sanity check on the meta property
+    if (typeof preMigrationVersionedData.meta.version !== 'number') {
+      log.error(
+        "The `backup`'s `meta.version` property was missing during backup restore.",
+      );
+      // the last migration version before we started storing backups was `155`
+      // so we can use that version as a fallback.
+      preMigrationVersionedData.meta.version = 155;
     }
   } else {
     const validateVault = true;

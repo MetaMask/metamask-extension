@@ -48,25 +48,31 @@ describe('Vault Corruption', function () {
 
   /**
    * Script to break both the primary and backup databases.
+   *
+   * @param backupKeyToDelete - The key to delete from the backup database.
    */
-  const breakAllDatabasesScript = createCorruptionScript(`
-    // indexedDB is not scuttled in test builds, so we can use it to access the
-    // backup database here
-    const request = globalThis.indexedDB.open('metamask-backup', 1);
-    request.onupgradeneeded = () => {
-      const db = request.result;
-      db.createObjectStore('store', { keyPath: 'id' });
-    };
-    request.onsuccess = () => {
-      const db = request.result;
-      const transaction = db.transaction('store', 'readwrite');
-      const store = transaction.objectStore('store');
-      // remove the KeyringController data from the backup database
-      store.delete('KeyringController');
-      transaction.oncomplete = () => {
-        ${reloadAndCallbackScript}
+  const breakAllDatabasesScript = (
+    backupKeyToDelete: 'meta' | 'KeyringController',
+  ) => {
+    return createCorruptionScript(`
+      // indexedDB is not scuttled in test builds, so we can use it to access the
+      // backup database here
+      const request = globalThis.indexedDB.open('metamask-backup', 1);
+      request.onupgradeneeded = () => {
+        const db = request.result;
+        db.createObjectStore('store', { keyPath: 'id' });
       };
-    };`);
+      request.onsuccess = () => {
+        const db = request.result;
+        const transaction = db.transaction('store', 'readwrite');
+        const store = transaction.objectStore('store');
+        // remove the ${backupKeyToDelete} data from the backup database
+        store.delete(${JSON.stringify(backupKeyToDelete)});
+        transaction.oncomplete = () => {
+          ${reloadAndCallbackScript}
+        };
+      };`);
+  };
 
   /**
    * Returns the common config for these tests.
@@ -276,7 +282,7 @@ describe('Vault Corruption', function () {
       async ({ driver }: { driver: Driver }) => {
         const initialFirstAddress = await onboardThenCorruptVault(
           driver,
-          breakAllDatabasesScript,
+          breakAllDatabasesScript('KeyringController'),
         );
 
         // start reset
@@ -327,6 +333,32 @@ describe('Vault Corruption', function () {
 
         // verify that the UI has completed recovery this time
         const restoredFirstAddress = await onboardAfterRecovery(driver);
+        assert.equal(
+          restoredFirstAddress,
+          initialFirstAddress,
+          'Addresses should match',
+        );
+      },
+    );
+  });
+
+  it('restores a backup that is missing its `meta` property successfully', async function () {
+    // this test will run all migrations
+    await withFixtures(
+      getConfig(this.test?.title),
+      async ({ driver }: { driver: Driver }) => {
+        const initialFirstAddress = await onboardThenCorruptVault(
+          driver,
+          breakAllDatabasesScript('meta'),
+        );
+
+        // start recovery
+        await clickRecover({ driver, confirm: true });
+
+        // onboard again
+        const restoredFirstAddress = await onboardAfterRecovery(driver);
+
+        // make sure the address is the same as before
         assert.equal(
           restoredFirstAddress,
           initialFirstAddress,
