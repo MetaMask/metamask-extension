@@ -23,7 +23,6 @@ import {
   SECURITY_ALERTS_LEARN_MORE_LINK,
   TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
-import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
   Button,
   ButtonSize,
@@ -108,16 +107,15 @@ export default class SecurityTab extends PureComponent {
     setSecurityAlertsEnabled: PropTypes.func,
     metaMetricsDataDeletionId: PropTypes.string,
     hdEntropyIndex: PropTypes.number,
-    hasMultipleHdKeyrings: PropTypes.bool,
     socialLoginEnabled: PropTypes.bool,
     socialLoginType: PropTypes.string,
     seedPhraseBackedUp: PropTypes.bool,
+    hasMultipleHdKeyrings: PropTypes.bool,
   };
 
   state = {
     ipfsGateway: this.props.ipfsGateway || IPFS_DEFAULT_GATEWAY_URL,
     ipfsGatewayError: '',
-    srpQuizModalVisible: false,
     showDataCollectionDisclaimer: false,
     ipfsToggle: this.props.ipfsGateway.length > 0,
   };
@@ -168,16 +166,14 @@ export default class SecurityTab extends PureComponent {
     toggleMethod(!value);
   }
 
-  hideSrpQuizModal = () => this.setState({ srpQuizModalVisible: false });
-
   renderSeedWords() {
     const { t } = this.context;
     const {
       history,
-      hasMultipleHdKeyrings,
       seedPhraseBackedUp,
       socialLoginEnabled,
       socialLoginType,
+      hasMultipleHdKeyrings,
     } = this.props;
 
     const getBannerDescription = () => {
@@ -242,21 +238,13 @@ export default class SecurityTab extends PureComponent {
                 history.push({
                   pathname: REVEAL_SRP_LIST_ROUTE,
                 });
-                return;
               }
-              this.setState({ srpQuizModalVisible: true });
             }}
           >
             {socialLoginEnabled
               ? t('securitySrpWalletRecovery')
               : t('revealSeedWords')}
           </Button>
-          {this.state.srpQuizModalVisible && (
-            <SRPQuiz
-              isOpen={this.state.srpQuizModalVisible}
-              onClose={this.hideSrpQuizModal}
-            />
-          )}
         </div>
       </>
     );

@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
 import {
   Text,
   FormTextField,
@@ -35,6 +36,7 @@ import { isFlask, isBeta } from '../../helpers/utils/build-types';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
+import FormattedCounter from './formatted-counter';
 
 export default class UnlockPage extends Component {
   static contextTypes = {
@@ -89,10 +91,10 @@ export default class UnlockPage extends Component {
     event.preventDefault();
     event.stopPropagation();
 
-    const { password } = this.state;
-    const { onSubmit, forceUpdateMetamaskState } = this.props;
+    const { password, isSubmitting } = this.state;
+    const { onSubmit } = this.props;
 
-    if (password === '' || this.submitting) {
+    if (password === '' || isSubmitting) {
       return;
     }
 
@@ -113,25 +115,54 @@ export default class UnlockPage extends Component {
         },
       );
     } catch (error) {
-      this.failed_attempts += 1;
-      const errorMessage = error instanceof Error ? error.message : error;
-
-      if (errorMessage === 'Incorrect password') {
-        await forceUpdateMetamaskState();
-        this.context.trackEvent({
-          category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.AppUnlockedFailed,
-          properties: {
-            reason: 'incorrect_password',
-            failed_attempts: this.failed_attempts,
-          },
-        });
-      }
-
-      this.setState({ error: errorMessage });
+      await this.handleLoginError(error);
     } finally {
       this.setState({ isSubmitting: false });
     }
+  };
+
+  handleLoginError = async (error) => {
+    const { t } = this.context;
+    this.failed_attempts += 1;
+    const { message, data } = error;
+    let finalErrorMessage = message;
+    let errorReason;
+
+    switch (message) {
+      case 'Incorrect password':
+      case SeedlessOnboardingControllerErrorMessage.IncorrectPassword:
+        finalErrorMessage = t('unlockPageIncorrectPassword');
+        errorReason = 'incorrect_password';
+        break;
+      case SeedlessOnboardingControllerErrorMessage.TooManyLoginAttempts:
+        this.setState({ isLocked: true });
+
+        finalErrorMessage = t('unlockPageTooManyFailedAttempts', [
+          <FormattedCounter
+            key="unlockPageTooManyFailedAttempts"
+            remainingTime={data.remainingTime}
+            unlock={() => this.setState({ isLocked: false, error: '' })}
+          />,
+        ]);
+        errorReason = 'too_many_login_attempts';
+        break;
+      default:
+        finalErrorMessage = message;
+        break;
+    }
+
+    if (errorReason) {
+      await this.props.forceUpdateMetamaskState();
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.AppUnlockedFailed,
+        properties: {
+          reason: errorReason,
+          failed_attempts: this.failed_attempts,
+        },
+      });
+    }
+    this.setState({ error: finalErrorMessage });
   };
 
   handleInputChange(event) {
@@ -198,7 +229,7 @@ export default class UnlockPage extends Component {
   };
 
   render() {
-    const { password, error, isLocked, isSubmitting, showResetPasswordModal } =
+    const { password, error, isLocked, showResetPasswordModal, isSubmitting } =
       this.state;
     const { t } = this.context;
 
@@ -268,6 +299,7 @@ export default class UnlockPage extends Component {
               {t('welcomeBack')}
             </Text>
             <FormTextField
+              value={password}
               id="password"
               label={
                 <Box
@@ -314,13 +346,13 @@ export default class UnlockPage extends Component {
               gap={4}
             >
               <Button
+                loading={isSubmitting}
                 variant={ButtonVariant.Primary}
                 size={ButtonSize.Lg}
                 block
                 type="submit"
                 data-testid="unlock-submit"
                 disabled={!password || isLocked || isSubmitting}
-                loading={isSubmitting}
               >
                 {this.context.t('unlock')}
               </Button>
