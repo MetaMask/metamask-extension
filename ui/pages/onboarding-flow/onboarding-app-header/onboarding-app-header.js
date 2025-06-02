@@ -77,5 +77,5 @@ export default function OnboardingAppHeader({ pageState }) {
 }
 
 OnboardingAppHeader.propTypes = {
-  pageState: PropTypes.oneOf(Object.values(WelcomePageState)).isRequired,
+  pageState: PropTypes.oneOf(Object.values(WelcomePageState)),
 };

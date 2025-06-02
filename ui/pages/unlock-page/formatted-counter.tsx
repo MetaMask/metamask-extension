@@ -26,18 +26,16 @@ export default function FormattedCounter({
   unlock: () => void;
 }) {
   const [time, setTime] = useState(remainingTime);
-  const [timeDisplay, setTimeDisplay] = useState(
-    formatTimeToUnlock(remainingTime),
-  );
 
   useEffect(() => {
+    let updatedTime = time;
     const interval = setInterval(() => {
-      const newTime = time - 1;
-      if (newTime < 0) {
+      updatedTime -= 1;
+      if (updatedTime < 0) {
+        clearInterval(interval);
         unlock();
       } else {
-        setTime(newTime);
-        setTimeDisplay(formatTimeToUnlock(newTime));
+        setTime(updatedTime);
       }
     }, 1000);
     return () => clearInterval(interval);
@@ -45,7 +43,7 @@ export default function FormattedCounter({
 
   return (
     <Text variant={TextVariant.inherit} color={TextColor.inherit} as="span">
-      {timeDisplay}
+      {formatTimeToUnlock(time)}
     </Text>
   );
 }
