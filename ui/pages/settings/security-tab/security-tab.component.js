@@ -180,6 +180,24 @@ export default class SecurityTab extends PureComponent {
       socialLoginType,
     } = this.props;
 
+    const getBannerDescription = () => {
+      if (socialLoginEnabled) {
+        return t('securityLoginWithSocial', [socialLoginType]);
+      }
+      return seedPhraseBackedUp
+        ? t('securityLoginWithSrpBackedUp')
+        : t('securityLoginWithSrpNotBackedUp');
+    };
+
+    const getBannerSeverity = () => {
+      if (socialLoginEnabled) {
+        return BannerAlertSeverity.Success;
+      }
+      return seedPhraseBackedUp
+        ? BannerAlertSeverity.Success
+        : BannerAlertSeverity.Danger;
+    };
+
     return (
       <>
         <div
@@ -189,31 +207,14 @@ export default class SecurityTab extends PureComponent {
           {t('secretRecoveryPhrase')}
         </div>
         <div className="settings-page__content-padded">
-          {socialLoginEnabled ? (
-            <BannerAlert
-              description={t('securityLoginWithSocial', [socialLoginType])}
-              paddingTop={2}
-              paddingBottom={2}
-              marginTop={4}
-              severity={BannerAlertSeverity.Success}
-            />
-          ) : (
-            <BannerAlert
-              description={
-                seedPhraseBackedUp
-                  ? t('securityLoginWithSrpBackedUp')
-                  : t('securityLoginWithSrpNotBackedUp')
-              }
-              paddingTop={2}
-              paddingBottom={2}
-              marginTop={4}
-              severity={
-                seedPhraseBackedUp
-                  ? BannerAlertSeverity.Success
-                  : BannerAlertSeverity.Danger
-              }
-            />
-          )}
+          <BannerAlert
+            description={getBannerDescription()}
+            paddingTop={2}
+            paddingBottom={2}
+            marginTop={4}
+            marginBottom={4}
+            severity={getBannerSeverity()}
+          />
           <Button
             data-testid="reveal-seed-words"
             type="danger"
