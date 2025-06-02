@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -12,6 +12,7 @@ import TokenList from '../token-list';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 import AssetListControlBar from './asset-list-control-bar';
 import AssetListFundingModals from './asset-list-funding-modals';
+import { showModal } from '../../../../store/actions';
 
 export type AssetListProps = {
   onClickAsset: (chainId: string, address: string) => void;
@@ -49,10 +50,20 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   // NOTE: Since we can parametrize it now, we keep the original behavior
   // for EVM assets
   const shouldShowTokensLinks = showTokensLinks ?? isEvm;
+  const dispatch = useDispatch();
 
   return (
     <>
       <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />
+      <div>
+        <button
+          onClick={() => {
+            dispatch(showModal({ name: 'NETWORK_MANAGER' }));
+          }}
+        >
+          Open Network Manager
+        </button>
+      </div>
       <TokenListContainer onClickAsset={onClickAsset} />
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />

@@ -4522,6 +4522,7 @@ export function setEditedNetwork(
         nickname?: string;
         editCompleted?: boolean;
         newNetwork?: boolean;
+        networkType?: 'custom' | 'test';
       }
     | undefined = undefined,
 ): PayloadAction<object> {

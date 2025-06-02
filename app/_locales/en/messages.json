@@ -1966,6 +1966,9 @@
   "editNetworksTitle": {
     "message": "Edit networks"
   },
+  "editNetwork": {
+    "message": "Edit network"
+  },
   "editNonceField": {
     "message": "Edit nonce"
   },

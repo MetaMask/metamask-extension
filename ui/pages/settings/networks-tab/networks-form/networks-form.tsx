@@ -81,11 +81,17 @@ export const NetworksForm = ({
   existingNetwork,
   onRpcAdd,
   onBlockExplorerAdd,
+  toggleNetworkMenuAfterSubmit = true,
+  onComplete = () => {},
+  networkType,
 }: {
   networkFormState: ReturnType<typeof useNetworkFormState>;
   existingNetwork?: UpdateNetworkFields;
   onRpcAdd: () => void;
   onBlockExplorerAdd: () => void;
+  toggleNetworkMenuAfterSubmit?: boolean;
+  onComplete?: () => void;
+  networkType?: 'custom' | 'test';
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -321,13 +327,15 @@ export const NetworksForm = ({
             nickname: name,
             editCompleted: true,
             newNetwork: !existingNetwork,
+            networkType,
           }),
         );
       }
     } catch (e) {
       console.error(e);
     } finally {
-      dispatch(toggleNetworkMenu());
+      toggleNetworkMenuAfterSubmit && dispatch(toggleNetworkMenu());
+      onComplete();
     }
   };
 
