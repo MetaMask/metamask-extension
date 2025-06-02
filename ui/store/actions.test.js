@@ -3226,7 +3226,7 @@ describe('Actions', () => {
       const store = mockStore();
       const importMnemonicToVaultStub = sinon
         .stub()
-        .callsFake((_, __, cb) => cb(null, {}));
+        .callsFake((_, cb) => cb(null, {}));
       background.getApi.returns({
         importMnemonicToVault: importMnemonicToVaultStub,
       });
