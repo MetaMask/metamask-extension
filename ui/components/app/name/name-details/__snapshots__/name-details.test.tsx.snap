@@ -515,7 +515,7 @@ exports[`NameDetails renders with no saved name 1`] = `
                 <p
                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                 >
-                  0xc0ffe...54979
+                  0xc0ff...4979
                 </p>
               </div>
             </div>
