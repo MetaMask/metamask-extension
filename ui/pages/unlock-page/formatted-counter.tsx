@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextVariant } from '../../helpers/constants/design-system';
+import { TextColor, TextVariant } from '../../helpers/constants/design-system';
 import { Text } from '../../components/component-library';
 
 const formatTimeToUnlock = (timeInSeconds: number) => {
@@ -42,7 +42,7 @@ export default function FormattedCounter({
   }, [time, unlock]);
 
   return (
-    <Text variant={TextVariant.inherit} as="span">
+    <Text variant={TextVariant.inherit} color={TextColor.inherit} as="span">
       {formatTimeToUnlock(time)}
     </Text>
   );
