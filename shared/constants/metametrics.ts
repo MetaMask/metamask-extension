@@ -766,6 +766,8 @@ export enum MetaMetricsEventName {
   OnrampProviderSelected = 'On-ramp Provider Selected',
   ResetWallet = 'Reset Wallet',
   PasswordChanged = 'Password Changed',
+  ForgotPassword = 'Forgot Password',
+  ResetWallet = 'Reset Wallet',
   PermissionsApproved = 'Permissions Approved',
   PermissionsRejected = 'Permissions Rejected',
   PermissionsRequested = 'Permissions Requested',

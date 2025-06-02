@@ -349,13 +349,28 @@ class UnlockPage extends Component {
   };
 
   onForgotPassword = () => {
+    const { socialLoginFlow } = this.props;
+
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.ForgotPassword,
+      properties: {
+        account_type: socialLoginFlow ? 'social' : 'metamask',
+      },
+    });
+
     this.setState({ showResetPasswordModal: true });
   };
 
   onRestoreWallet = () => {
+    const { socialLoginFlow } = this.props;
+
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Accounts,
       event: MetaMetricsEventName.ResetWallet,
+      properties: {
+        account_type: socialLoginFlow ? 'social' : 'metamask',
+      },
     });
     this.props.onRestore();
   };
