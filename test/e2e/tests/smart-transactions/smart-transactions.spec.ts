@@ -29,6 +29,9 @@ async function withFixturesForSmartTransactions(
         .withPermissionControllerConnectedToTestDapp()
         .withPreferencesControllerSmartTransactionsOptedIn()
         .withNetworkControllerOnMainnet()
+        .withEnabledNetworks({
+          '0x1': true,
+        })
         .build(),
       title,
       localNodeOptions: {
