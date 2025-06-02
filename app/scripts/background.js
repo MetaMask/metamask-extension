@@ -169,7 +169,8 @@ if (!isManifestV3) {
   const onInstalledListener = (details) => {
     if (details.reason === 'install') {
       onInstall();
-      browser.runtime.onInstalled.removeListener(onInstalledListener);
+    } else if (details.reason === 'update') {
+      onUpdate();
     }
   };
 
@@ -187,9 +188,22 @@ if (!isManifestV3) {
   globalThis.stateHooks.metamaskTriggerOnInstall = () => onInstall();
 }
 
-browser.runtime.onUpdateAvailable.addListener(() => {
-  controller.appStateController.setIsUpdateAvailable(true);
-});
+/**
+ * Trigger actions that should happen only when an update is available
+ */
+function onUpdateAvailable() {
+  if (controller) {
+    log.debug('An update is available');
+    controller.appStateController.setIsUpdateAvailable(true);
+    return;
+  }
+  setTimeout(() => {
+    // If the controller is not set yet, we wait and try again
+    onUpdateAvailable();
+  }, 500);
+}
+
+browser.runtime.onUpdateAvailable.addListener(onUpdateAvailable);
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -1423,6 +1437,21 @@ function onInstall() {
   if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
     platform.openExtensionInBrowser();
   }
+}
+
+/**
+ * Trigger actions that should happen only upon update
+ */
+function onUpdate() {
+  if (controller) {
+    log.debug('Update detected');
+    controller.appStateController.setLastUpdatedAt(Date.now());
+    return;
+  }
+  setTimeout(() => {
+    // If the controller is not set yet, we wait and try again
+    onUpdate();
+  }, 500);
 }
 
 function onNavigateToTab() {

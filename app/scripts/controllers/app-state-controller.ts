@@ -367,7 +367,7 @@ const controllerMetadata = {
     anonymous: true,
   },
   isUpdateAvailable: {
-    persist: true,
+    persist: false,
     anonymous: true,
   },
   updateModalLastDismissedAt: {

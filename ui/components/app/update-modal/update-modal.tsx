@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import browser from 'webextension-polyfill';
 import {
   Modal,
@@ -21,20 +20,15 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  setUpdateModalLastDismissedAt,
-  setLastUpdatedAt,
-  setIsUpdateAvailable,
-} from '../../../store/actions';
+import { setUpdateModalLastDismissedAt } from '../../../store/actions';
 
 function UpdateModal() {
   const t = useI18nContext();
-  const dispatch = useDispatch();
 
   return (
     <Modal
       isOpen={true}
-      onClose={() => dispatch(setUpdateModalLastDismissedAt(Date.now()))}
+      onClose={async () => await setUpdateModalLastDismissedAt(Date.now())}
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
       data-testid="update-modal"
@@ -43,7 +37,7 @@ function UpdateModal() {
       <ModalOverlay />
       <ModalContent>
         <ModalHeader
-          onClose={() => dispatch(setUpdateModalLastDismissedAt(Date.now()))}
+          onClose={async () => await setUpdateModalLastDismissedAt(Date.now())}
           startAccessory={true}
           closeButtonProps={{ 'data-testid': 'update-modal-close-button' }}
         />
@@ -70,11 +64,7 @@ function UpdateModal() {
           </Text>
         </ModalBody>
         <ModalFooter
-          onSubmit={() => {
-            dispatch(setLastUpdatedAt(Date.now()));
-            dispatch(setIsUpdateAvailable(false));
-            browser.runtime.reload();
-          }}
+          onSubmit={() => browser.runtime.reload()}
           submitButtonProps={{
             children: t('updateToTheLatestVersion'),
             block: true,
