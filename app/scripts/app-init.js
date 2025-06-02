@@ -4,7 +4,7 @@
 // "chunks" via `importScripts`; but in this case `promise-with-resolvers` file
 // is so small we won't ever have a problem with these two files being "split".
 // Import to set up global `Promise.withResolvers` polyfill
-import "../../shared/lib/promise-with-resolvers";
+import '../../shared/lib/promise-with-resolvers';
 
 // Represents if importAllScripts has been run
 // eslint-disable-next-line
