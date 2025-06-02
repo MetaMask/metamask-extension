@@ -5689,7 +5689,7 @@
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
   "srpRevealListTitle": {
-    "message": "Protect your wallet"
+    "message": "Secret Recovery Phrase"
   },
   "srpSecurityQuizGetStarted": {
     "message": "Get started"

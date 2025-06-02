@@ -42,10 +42,5 @@
   .select-srp__container{
     background-color: var(--color-background-muted);
     border: 0;
-  }
-
-  // SRP_OVERRIDE: Remove padding from the srp list container
-  .srp-list__container {
-    padding: 0px;
-  }
+  } 
 }

@@ -197,6 +197,9 @@ export default class SecurityTab extends PureComponent {
           {t('secretRecoveryPhrase')}
         </div>
         <div className="settings-page__content-padded">
+          <div className="settings-page__content-description">
+            {t('securitySrpDescription')}
+          </div>
           <BannerAlert
             description={getBannerDescription()}
             paddingTop={2}
@@ -234,7 +237,9 @@ export default class SecurityTab extends PureComponent {
               });
             }}
           >
-            {t('revealSeedWords')}
+            {socialLoginEnabled
+              ? t('securitySrpWalletRecovery')
+              : t('revealSeedWords')}
           </Button>
         </div>
       </>
