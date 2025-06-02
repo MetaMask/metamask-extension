@@ -168,9 +168,6 @@ export const MultichainBridgeQuoteCard = () => {
               >
                 {t('networkFee')}
               </Text>
-            </Row>
-
-            <Row justifyContent={JustifyContent.spaceBetween}>
               <Text>
                 {formatCurrencyAmount(
                   activeQuote.totalMaxNetworkFee?.valueInCurrency,
