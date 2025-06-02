@@ -27,56 +27,87 @@ describe('MetaMask Responsive UI', function () {
           await driver.clickElement('[data-testid="metametrics-no-thanks"]');
         }
 
-        // agree to terms of use
-        await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
-
         // welcome
-        await driver.clickElement('[data-testid="onboarding-create-wallet"]');
+        await driver.clickElement(
+          '[data-testid="onboarding-get-started-button"]',
+        );
 
-        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-          // metrics
-          await driver.clickElement('[data-testid="metametrics-no-thanks"]');
-        }
+        // show terms of use
+        await driver.clickElementAndWaitToDisappear(
+          '[data-testid="terms-of-use-scroll-button"]',
+        );
+        await driver.clickElement('[data-testid="terms-of-use-checkbox"]');
+        // agree to terms of use
+        await driver.clickElementAndWaitToDisappear(
+          '[data-testid="terms-of-use-agree-button"]',
+        );
+
+        // get started
+        await driver.clickElement('[data-testid="onboarding-create-wallet"]');
+        // create with srp
+        await driver.clickElementAndWaitToDisappear(
+          '[data-testid="onboarding-create-with-srp-button"]',
+        );
 
         // create password
         await driver.fill(
-          '[data-testid="create-password-new"]',
+          '[data-testid="create-password-new-input"]',
           'correct horse battery staple',
         );
         await driver.fill(
-          '[data-testid="create-password-confirm"]',
+          '[data-testid="create-password-confirm-input"]',
           'correct horse battery staple',
         );
         await driver.clickElement('[data-testid="create-password-terms"]');
-        await driver.clickElement('[data-testid="create-password-wallet"]');
+        await driver.clickElement('[data-testid="create-password-submit"]');
 
         // secure wallet
         await driver.clickElement('[data-testid="secure-wallet-recommended"]');
 
         // review
         await driver.clickElement('[data-testid="recovery-phrase-reveal"]');
-        const chipTwo = await (
-          await driver.findElement('[data-testid="recovery-phrase-chip-2"]')
-        ).getText();
-        const chipThree = await (
-          await driver.findElement('[data-testid="recovery-phrase-chip-3"]')
-        ).getText();
-        const chipSeven = await (
-          await driver.findElement('[data-testid="recovery-phrase-chip-7"]')
-        ).getText();
-        await driver.clickElement('[data-testid="recovery-phrase-next"]');
+        await driver.clickElementAndWaitToDisappear(
+          '[data-testid="recovery-phrase-continue"]',
+        );
 
-        // confirm
-        await driver.fill('[data-testid="recovery-phrase-input-2"]', chipTwo);
-        await driver.fill('[data-testid="recovery-phrase-input-3"]', chipThree);
-        await driver.fill('[data-testid="recovery-phrase-input-7"]', chipSeven);
+        let quizWordsString = '';
+        const recoveryPhraseChips = await driver.findElement(
+          '[data-testid="recovery-phrase-chips"]',
+        );
+        quizWordsString = await recoveryPhraseChips.getAttribute(
+          'data-quiz-words',
+        );
+
+        // confirm SRP
+        const quizWords = JSON.parse(quizWordsString).sort(
+          (a, b) => a.index - b.index,
+        );
+        const quizInputSelector0 = `[data-testid="recovery-phrase-quiz-unanswered-${quizWords[0].index}"]`;
+        const quizInputSelector1 = `[data-testid="recovery-phrase-quiz-unanswered-${quizWords[1].index}"]`;
+        const quizInputSelector2 = `[data-testid="recovery-phrase-quiz-unanswered-${quizWords[2].index}"]`;
+
+        await driver.waitForMultipleSelectors([
+          quizInputSelector0,
+          quizInputSelector1,
+          quizInputSelector2,
+        ]);
+        await driver.clickElement(quizInputSelector0);
+        await driver.clickElement(quizInputSelector1);
+        await driver.clickElement(quizInputSelector2);
         await driver.clickElement('[data-testid="recovery-phrase-confirm"]');
+        await driver.clickElementAndWaitToDisappear(
+          '[data-testid="confirm-srp-modal-button"]',
+        );
+
+        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+          // metrics
+          await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+        }
 
         // complete
         await driver.clickElement('[data-testid="onboarding-complete-done"]');
 
         // pin extension
-        await driver.clickElement('[data-testid="pin-extension-next"]');
         await driver.clickElement('[data-testid="pin-extension-done"]');
         await driver.assertElementNotPresent('.loading-overlay__spinner');
         // assert balance
@@ -105,10 +136,12 @@ describe('MetaMask Responsive UI', function () {
           tag: 'p',
           text: 'Localhost 8545',
         });
-        await driver.clickElement({
-          css: '.unlock-page__link',
-          text: 'Forgot password?',
-        });
+        await driver.clickElement(
+          '[data-testid="unlock-forgot-password-button"]',
+        );
+        await driver.clickElementAndWaitToDisappear(
+          '[data-testid="reset-password-modal-button"]',
+        );
 
         await driver.pasteIntoField(
           '[data-testid="import-srp__srp-word-0"]',

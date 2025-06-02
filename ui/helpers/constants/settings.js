@@ -1,8 +1,6 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex*/
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../app/scripts/lib/util';
 import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
+import { getBrowserName } from '../../../shared/modules/browser-runtime.utils';
 import { IconName } from '../../components/component-library';
 import {
   ADVANCED_ROUTE,
@@ -14,6 +12,7 @@ import {
   EXPERIMENTAL_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
   BACKUPANDSYNC_ROUTE,
+  SECURITY_PASSWORD_CHANGE_ROUTE,
 } from './routes';
 
 /**
@@ -160,7 +159,7 @@ const SETTINGS_CONSTANTS = [
       t('overrideContentSecurityPolicyHeaderDescription'),
     route: `${ADVANCED_ROUTE}#override-content-security-policy-header`,
     icon: 'fas fa-sliders-h',
-    hidden: getPlatform() !== PLATFORM_FIREFOX,
+    hidden: getBrowserName() !== PLATFORM_FIREFOX,
   },
   {
     tabMessage: (t) => t('backupAndSync'),
@@ -197,6 +196,14 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('revealSeedWords'),
     descriptionMessage: (t) => t('revealSeedWords'),
     route: `${SECURITY_ROUTE}#reveal-secretrecovery`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[2]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('securityChangePasswordChange'),
+    descriptionMessage: (t) => t('securityChangePasswordChange'),
+    route: SECURITY_PASSWORD_CHANGE_ROUTE,
     icon: 'fa fa-lock',
   },
   // securityAndPrivacy settingsRefs[3]

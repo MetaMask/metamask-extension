@@ -1105,6 +1105,7 @@
     },
     "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils": {
       "globals": {
+        "clearTimeout": true,
         "setTimeout": true
       },
       "packages": {
@@ -2097,6 +2098,7 @@
         "@metamask/base-controller": true,
         "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": true,
         "@metamask/utils": true,
+        "viem>ox>@noble/curves": true,
         "@metamask/name-controller>async-mutex": true
       }
     },
@@ -4445,7 +4447,7 @@
     "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils>json-stable-stringify": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>side-channel>side-channel-map>call-bound": true,
+        "browserify>util>which-typed-array>call-bound": true,
         "@lavamoat/lavapack>json-stable-stringify>isarray": true,
         "@lavamoat/lavapack>json-stable-stringify>jsonify": true,
         "@lavamoat/lavapack>json-stable-stringify>object-keys": true

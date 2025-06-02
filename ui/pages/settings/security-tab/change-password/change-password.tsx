@@ -24,6 +24,7 @@ import Spinner from '../../../../components/ui/spinner';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { changePassword, verifyPassword } from '../../../../store/actions';
 import PasswordForm from '../../../../components/app/password-form/password-form';
+import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
@@ -80,7 +81,7 @@ const ChangePassword = () => {
       await dispatch(changePassword(newPassword, currentPassword));
 
       // upon successful password change, go back to the settings page
-      history.goBack();
+      history.push(SECURITY_ROUTE);
     } catch (error) {
       console.error(error);
       setStep(ChangePasswordSteps.VerifyCurrentPassword);
@@ -104,7 +105,7 @@ const ChangePassword = () => {
           gap={6}
           justifyContent={JustifyContent.spaceBetween}
           height={BlockSize.Full}
-          onSubmit={(e) => {
+          onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             handleSubmitCurrentPassword();
           }}
@@ -147,7 +148,7 @@ const ChangePassword = () => {
           gap={6}
           justifyContent={JustifyContent.spaceBetween}
           height={BlockSize.Full}
-          onSubmit={(e) => {
+          onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             onSubmitChangePasswordForm();
           }}

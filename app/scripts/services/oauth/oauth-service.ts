@@ -36,7 +36,10 @@ export default class OAuthService {
       authConnection,
       redirectUri,
       this.#env,
+      this.#webAuthenticator,
     );
+
+    const authUrl = await loginHandler.getAuthUrl();
 
     // launch the web auth flow to get the Authorization Code from the social login provider
     const redirectUrlFromOAuth = await new Promise<string>(
@@ -45,13 +48,21 @@ export default class OAuthService {
         this.#webAuthenticator.launchWebAuthFlow(
           {
             interactive: true,
-            url: loginHandler.getAuthUrl(),
+            url: authUrl,
           },
           (responseUrl) => {
-            if (responseUrl) {
-              resolve(responseUrl);
-            } else {
-              reject(new Error('No redirect URL found'));
+            try {
+              if (responseUrl) {
+                const url = new URL(responseUrl);
+                const state = url.searchParams.get('state');
+
+                loginHandler.validateState(state);
+                resolve(responseUrl);
+              } else {
+                reject(new Error('No redirect URL found'));
+              }
+            } catch (error: unknown) {
+              reject(error);
             }
           },
         );

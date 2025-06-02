@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  Box,
-  BoxProps,
-  Text,
-  TextProps,
-} from '../../component-library';
+import { Box, BoxProps, Text, TextProps } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -25,11 +20,7 @@ const Divider = React.forwardRef(
     const t = useI18nContext();
     const dividerText = text === undefined ? t('or') : text;
     return (
-      <Box
-        alignItems={AlignItems.center}
-        className="or-divider"
-        {...props}
-      >
+      <Box alignItems={AlignItems.center} className="or-divider" {...props}>
         {dividerText && (
           <Text
             width={BlockSize.Min}

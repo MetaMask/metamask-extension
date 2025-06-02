@@ -13,7 +13,7 @@ exports[`Unlock Page should match snapshot 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
       >
         <div
-          class="mm-box unlock-page__mascot-container mm-box--margin-top-6"
+          class="mm-box unlock-page__mascot-container mm-box--margin-top-6 mm-box--margin-bottom-0"
         >
           <div
             style="z-index: 0;"
@@ -67,7 +67,7 @@ exports[`Unlock Page should match snapshot 1`] = `
           class="mm-box unlock-page__buttons mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
         >
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
             data-testid="unlock-submit"
             data-theme="light"
             disabled=""
@@ -78,6 +78,7 @@ exports[`Unlock Page should match snapshot 1`] = `
           <button
             class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
             data-testid="unlock-forgot-password-button"
+            type="button"
           >
             Forgot password?
           </button>
@@ -86,8 +87,8 @@ exports[`Unlock Page should match snapshot 1`] = `
           class="mm-box unlock-page__support mm-box--margin-top-6"
         >
           <span>
-
-            Need help? Contact
+             
+            Need help? Contact 
             <a
               href="https://support.metamask.io"
               rel="noopener noreferrer"
@@ -95,8 +96,8 @@ exports[`Unlock Page should match snapshot 1`] = `
             >
               MetaMask support
             </a>
-
-
+            
+             
           </span>
         </div>
       </div>
