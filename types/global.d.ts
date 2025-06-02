@@ -267,15 +267,12 @@ type StateHooks = {
   throwTestBackgroundError?: (msg?: string) => Promise<void>;
   throwTestError?: (msg?: string) => void;
   /**
-   * This is set in `app-init.js` to communicate why MetaMask started up, and is
-   * read in `background.js`.
-   *
-   * Resolves with `install` if this was the first time the extension was
-   * installed, or `startup` if it was already installed but starting up for
-   * other reasons, like a browser opening, browser profile launching, or
-   * incognito mode.
+   * This is set in `app-init.js` to communicate why MetaMask installed or
+   * updated. It is handled in `background.js`.
    */
-  onReadyListener?: Promise<'install' | 'startup'>;
+  onInstalledListener?: Promise<{
+    reason: chrome.runtime.InstalledDetails;
+  }>;
 };
 
 export declare global {

@@ -13,7 +13,7 @@ const { chrome } = globalThis;
 const testMode = process.env.IN_TEST;
 
 /**
- * @type {globalThis.stateHooks}
+ * @type {import('../../types/global').StateHooks}
  */
 globalThis.stateHooks = globalThis.stateHooks || {};
 
@@ -195,23 +195,25 @@ const registerInPageContentScript = async () => {
   }
 };
 
-globalThis.stateHooks.onInstalledListener = Promise.withResolvers();
+/**
+ * A promise that resolves when the `onInstalled` event is fired.
+ *
+ * @type {PromiseWithResolvers<chrome.runtime.InstalledDetails>}
+ */
+const deferredOnInstalledListener = Promise.withResolvers();
+globalThis.stateHooks.onInstalledListener = deferredOnInstalledListener.promise;
 
 /**
  * `onInstalled` event handler.
  *
- * On MV3 builds we must listen for this event in `app-init`, otherwise we found that the listener
- * is never called.
+ * On MV3 builds we must listen for this event in `app-init`, otherwise we found
+ * that the listener is never called.
  * For MV2 builds, the listener is added in `background.js` instead.
- *
- * @param {chrome.runtime.InstalledDetails} details - Event details.
  */
-function onInstalledListener({ reason }) {
-  chrome.runtime.onInstalled.removeListener(onInstalledListener);
-  if (reason === 'install') {
-    globalThis.stateHooks.onInstalledListener.resolve('install');
-  }
-}
-chrome.runtime.onInstalled.addListener(onInstalledListener);
+chrome.runtime.onInstalled.addListener(function listener(details) {
+  chrome.runtime.onInstalled.removeListener(listener);
+  deferredOnInstalledListener.resolve(details);
+  delete globalThis.stateHooks.onInstalledListener;
+});
 
 registerInPageContentScript();
