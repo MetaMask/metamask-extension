@@ -57,7 +57,7 @@ describe('TransactionAccountDetails', () => {
   it('renders from address', () => {
     const { getByText } = renderConfirmation(upgradeAccountConfirmationOnly);
 
-    expect(getByText('0x935E7...05477')).toBeInTheDocument();
+    expect(getByText('0x935E...5477')).toBeInTheDocument();
   });
 
   it('renders type row', () => {
