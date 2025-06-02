@@ -28,7 +28,12 @@ describe('Remove ERC1155 NFT', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
+        fixtures: new FixtureBuilder()
+          .withNftControllerERC1155()
+          .withEnabledNetworks({
+            '0xe708': true,
+          })
+          .build(),
         smartContract,
         title: this.test?.fullTitle(),
         testSpecificMock: mockIPFSRequest,
@@ -56,7 +61,12 @@ describe('Remove ERC1155 NFT', function () {
     const driverOptions = { mock: true };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnLinea().build(),
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerOnLinea()
+          .withEnabledNetworks({
+            '0xe708': true,
+          })
+          .build(),
         driverOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: setupAutoDetectMocking,
