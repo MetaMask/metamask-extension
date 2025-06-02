@@ -53,6 +53,14 @@ describe('SeedlessOnboardingControllerInit', () => {
       messenger: requestMock.controllerMessenger,
       state: requestMock.persistedState.SeedlessOnboardingController,
       network,
+      encryptor: {
+        decrypt: expect.any(Function),
+        decryptWithDetail: expect.any(Function),
+        decryptWithKey: expect.any(Function),
+        encrypt: expect.any(Function),
+        encryptWithDetail: expect.any(Function),
+        importKey: expect.any(Function),
+      },
     });
   });
 });

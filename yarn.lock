@@ -4936,9 +4936,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/auth-network-utils@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "@metamask/auth-network-utils@npm:0.1.0"
+"@metamask/auth-network-utils@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/auth-network-utils@npm:0.3.0"
   dependencies:
     "@noble/curves": "npm:^1.8.1"
     "@noble/hashes": "npm:^1.7.1"
@@ -4949,7 +4949,7 @@ __metadata:
     elliptic: "npm:^6.6.1"
     json-stable-stringify: "npm:^1.2.1"
     loglevel: "npm:^1.9.2"
-  checksum: 10/5becc59a4fbb76be0411a50118ca67bbf9d15dcf3552062c6c873dd1662a2f1ff438a7c0afa3f9112a7a539a0c1e5a5d853bf69b3e35219ac54889cefb895d9c
+  checksum: 10/6239dd540cd289ef3a3d8ba2456c3968a1c25bf8b6c73459221da52cf34ce6e61922ad910434de5ccd7ab99443165f2f8bc53aff337f660124c4c65c0d6d05ff
   languageName: node
   linkType: hard
 
@@ -6247,15 +6247,16 @@ __metadata:
 
 "@metamask/seedless-onboarding-controller@file:./seedless-onboarding-controller.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/seedless-onboarding-controller@file:./seedless-onboarding-controller.tgz#./seedless-onboarding-controller.tgz::hash=ad9329&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/seedless-onboarding-controller@file:./seedless-onboarding-controller.tgz#./seedless-onboarding-controller.tgz::hash=3567a0&locator=metamask-crx%40workspace%3A."
   dependencies:
-    "@metamask/auth-network-utils": "npm:^0.1.0"
+    "@metamask/auth-network-utils": "npm:^0.3.0"
     "@metamask/base-controller": "npm:^8.0.1"
-    "@metamask/browser-passworder": "npm:^4.3.0"
-    "@metamask/toprf-secure-backup": "npm:^0.1.0"
+    "@metamask/toprf-secure-backup": "npm:^0.3.1"
     "@metamask/utils": "npm:^11.2.0"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/709d13393ec836fa22c7e00ca92d28f31af83b6ada2de1da3c1a4a4e917b1f7aea83676822c59ed6d62901a6f5f07561b85513bf9fb5a6bd9cc433e8255861f4
+  peerDependencies:
+    "@metamask/keyring-controller": ^22.0.0
+  checksum: 10/7ec6546bc5be05be91844daa302aaa60494acf430db008563ef67dd7abc105620bd723eb272ac1f1018dd0c71650ecccc4f5e494ce2aebbcd8d9d6cbf5d00392
   languageName: node
   linkType: hard
 
@@ -6586,11 +6587,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/toprf-secure-backup@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "@metamask/toprf-secure-backup@npm:0.1.0"
+"@metamask/toprf-secure-backup@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "@metamask/toprf-secure-backup@npm:0.3.1"
   dependencies:
-    "@metamask/auth-network-utils": "npm:^0.1.0"
+    "@metamask/auth-network-utils": "npm:^0.3.0"
     "@noble/ciphers": "npm:^1.2.1"
     "@noble/curves": "npm:^1.8.1"
     "@noble/hashes": "npm:^1.7.1"
@@ -6600,7 +6601,7 @@ __metadata:
     "@toruslabs/fetch-node-details": "npm:^15.0.0"
     "@toruslabs/http-helpers": "npm:^8.1.1"
     bn.js: "npm:^5.2.1"
-  checksum: 10/ef6d1cfabe13b793807398c1bd00a27c0eb20f84411d54425da49c5742dffee83b3cf0d12daa7af170d4175eeca4b2eceecbf1465992ba3a35f4ace77d49e4c1
+  checksum: 10/fec535a02236faf9b0dd4123a079e6f8f211d9fc9758944f823cc018ad5000957ed9402c38bbdf0fdfd660b365a10af52903438c477125db8a6880c325f09cdf
   languageName: node
   linkType: hard
 
