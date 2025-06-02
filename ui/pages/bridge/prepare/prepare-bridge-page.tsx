@@ -208,8 +208,7 @@ const PrepareBridgePage = () => {
     : selectedMultichainAccount;
 
   const keyring = useSelector(getCurrentKeyring);
-  // @ts-expect-error keyring type is wrong maybe?
-  const isUsingHardwareWallet = isHardwareKeyring(keyring.type);
+  const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
   const hardwareWalletName = useSelector(getHardwareWalletName);
   const isTxSubmittable = useIsTxSubmittable();
   const locale = useSelector(getIntlLocale);

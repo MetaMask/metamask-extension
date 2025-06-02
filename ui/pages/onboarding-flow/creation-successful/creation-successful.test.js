@@ -76,7 +76,7 @@ describe('Wallet Ready Page', () => {
     ).toBeInTheDocument();
   });
 
-  it('should redirect to privacy-settings view when "Manage default privacy settings" button is clicked', () => {
+  it('should redirect to privacy-settings view when "Manage default settings" button is clicked', () => {
     const mockStore = configureMockStore([thunk])(mockState);
     const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
     const privacySettingsButton = getByText('Manage default settings');

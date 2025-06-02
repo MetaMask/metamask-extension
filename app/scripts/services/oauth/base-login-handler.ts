@@ -1,43 +1,19 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { LoginHandlerOptions, AuthTokenResponse, OAuthUserInfo } from './types';
-
-/**
- * Pads a string to a length of 4 characters
- *
- * @param input - The base64 encoded string to pad
- * @returns The padded string
- */
-function padBase64String(input: string) {
-  const segmentLength = 4;
-  const stringLength = input.length;
-  const diff = stringLength % segmentLength;
-  if (!diff) {
-    return input;
-  }
-  let position = stringLength;
-  let padLength = segmentLength - diff;
-  const paddedStringLength = stringLength + padLength;
-  const buffer = Buffer.alloc(paddedStringLength);
-  buffer.write(input);
-  while (padLength > 0) {
-    buffer.write('=', position);
-    position += 1;
-    padLength -= 1;
-  }
-  return buffer.toString();
-}
+import { padBase64String } from './utils';
 
 export abstract class BaseLoginHandler {
   public options: LoginHandlerOptions;
 
-  public nonce: string;
+  public nonce: string | undefined;
 
   // This prompt value is used to force the user to select an account before OAuth login
   protected readonly prompt = 'select_account';
 
+  protected readonly CODE_CHALLENGE_METHOD = 'S256';
+
   constructor(options: LoginHandlerOptions) {
     this.options = options;
-    this.nonce = this.#generateNonce();
   }
 
   abstract get authConnection(): AuthConnection;
@@ -49,7 +25,7 @@ export abstract class BaseLoginHandler {
    *
    * @returns The URL to initiate the OAuth login.
    */
-  abstract getAuthUrl(): string;
+  abstract getAuthUrl(): Promise<string>;
 
   /**
    * Get the JWT Token from the Web3Auth Authentication Server.
@@ -74,6 +50,23 @@ export abstract class BaseLoginHandler {
    * @returns The user's information from the JWT Token.
    */
   abstract getUserInfo(idToken: string): Promise<OAuthUserInfo>;
+
+  /**
+   * Validate the state value from the OAuth login redirect URL.
+   *
+   * @param state - The state value from the OAuth login redirect URL.
+   */
+  validateState(state: unknown): void {
+    if (typeof state !== 'string') {
+      throw new Error('Invalid state');
+    }
+
+    const parsedState = JSON.parse(state);
+
+    if (parsedState.nonce !== this.nonce) {
+      throw new Error('Invalid state');
+    }
+  }
 
   /**
    * Make a request to the Web3Auth Authentication Server to get the JWT Token.
@@ -116,7 +109,25 @@ export abstract class BaseLoginHandler {
     return Buffer.from(base64String, 'base64').toString('utf-8');
   }
 
-  #generateNonce(): string {
-    return Math.random().toString(16).substring(2, 15);
+  /**
+   * Generate a nonce value.
+   *
+   * @returns The nonce value.
+   */
+  protected generateNonce(): string {
+    this.nonce = this.options.webAuthenticator.generateNonce();
+    return this.nonce;
+  }
+
+  /**
+   * Generate a code verifier and challenge value for PKCE flow.
+   *
+   * @returns The code verifier and challenge value.
+   */
+  protected generateCodeVerifierChallenge(): Promise<{
+    codeVerifier: string;
+    challenge: string;
+  }> {
+    return this.options.webAuthenticator.generateCodeVerifierAndChallenge();
   }
 }

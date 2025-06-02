@@ -30,7 +30,10 @@ import {
 
 import { getFirstTimeFlowType, getSocialLoginEmail } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { setFirstTimeFlowType, resetOAuthLoginState } from '../../../store/actions';
+import {
+  setFirstTimeFlowType,
+  resetOAuthLoginState,
+} from '../../../store/actions';
 
 export default function AccountNotFound() {
   const history = useHistory();
@@ -39,13 +42,11 @@ export default function AccountNotFound() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
 
-  const onBack = async (
-    e: React.MouseEvent<HTMLButtonElement>
-  ) => {
+  const onBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     await dispatch(resetOAuthLoginState());
     history.goBack();
-  }
+  };
 
   const onCreateWallet = () => {
     dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));

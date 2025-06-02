@@ -3,14 +3,20 @@ import React from 'react';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { CreateEthAccount } from '.';
+
+const mockNewEthAccount = createMockInternalAccount({
+  name: 'Eth Account 1',
+  address: '0xb552685e3d2790efd64a175b00d51f02cdafee5d',
+});
 
 const render = (props = { onActionComplete: () => jest.fn() }) => {
   const store = configureStore(mockState);
   return renderWithProvider(<CreateEthAccount {...props} />, store);
 };
 
-const mockAddNewAccount = jest.fn().mockReturnValue({ type: 'TYPE' });
+const mockAddNewAccount = jest.fn().mockReturnValue(mockNewEthAccount);
 const mockSetAccountLabel = jest.fn().mockReturnValue({ type: 'TYPE' });
 const mockGetNextAvailableAccountName = jest.fn().mockReturnValue('Account 7');
 
@@ -49,7 +55,7 @@ describe('CreateEthAccount', () => {
     await waitFor(() => expect(mockAddNewAccount).toHaveBeenCalled());
     await waitFor(() =>
       expect(mockSetAccountLabel).toHaveBeenCalledWith(
-        { type: 'TYPE' },
+        mockNewEthAccount.address,
         newAccountName,
       ),
     );
@@ -89,6 +95,8 @@ describe('CreateEthAccount', () => {
     await waitFor(() =>
       expect(mockAddNewAccount).toHaveBeenCalledWith(selectedKeyringId),
     );
-    await waitFor(() => expect(onActionComplete).toHaveBeenCalledWith(true));
+    await waitFor(() =>
+      expect(onActionComplete).toHaveBeenCalledWith(true, mockNewEthAccount),
+    );
   });
 });

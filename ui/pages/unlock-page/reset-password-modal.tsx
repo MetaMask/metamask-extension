@@ -65,6 +65,7 @@ export default function ResetPasswordModal({
             {t('forgotPasswordModalDescription2')}
           </Text>
           <Button
+            data-testid="reset-password-modal-button"
             variant={ButtonVariant.Primary}
             onClick={onRestore}
             size={ButtonSize.Lg}
