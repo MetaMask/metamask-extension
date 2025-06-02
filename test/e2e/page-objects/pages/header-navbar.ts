@@ -84,6 +84,9 @@ class HeaderNavbar {
 
   async openThreeDotMenu(): Promise<void> {
     console.log('Open account options menu');
+    await this.driver.waitForSelector(this.threeDotMenuButton, {
+      state: 'enabled',
+    });
     await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
   }
 
