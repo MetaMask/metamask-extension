@@ -9,8 +9,8 @@ describe('Carousel component e2e tests', function () {
   const SLIDE_IDS = [
     'solana',
     'smartAccountUpgrade',
-    'bridge',
     'fund',
+    'bridge',
     'card',
     'cash',
     'multiSrp',
