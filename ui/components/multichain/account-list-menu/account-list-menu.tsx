@@ -107,7 +107,6 @@ import {
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   MultichainWalletSnapClient,
-  MultichainWalletSnapOptions,
   WalletClientType,
   useMultichainWalletSnapClient,
 } from '../../../hooks/accounts/useMultichainWalletSnapClient';
@@ -125,6 +124,7 @@ import {
 import { CreateEthAccount } from '../create-eth-account';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { CreateSnapAccount } from '../create-snap-account';
+import { CreateAccountSnapOptions } from '../../../../shared/lib/accounts';
 ///: END:ONLY_INCLUDE_IF
 import { ImportAccount } from '../import-account';
 import { SrpList } from '../multi-srp/srp-list';
@@ -147,8 +147,6 @@ const ACTION_MODES = {
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   // Displays the add account form controls (for bitcoin account)
   ADD_BITCOIN: 'add-bitcoin',
-  // Same but for testnet
-  ADD_BITCOIN_TESTNET: 'add-bitcoin-testnet',
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   // Displays the add account form controls (for solana account)
@@ -171,10 +169,6 @@ const SNAP_CLIENT_CONFIG_MAP: Record<
   [ACTION_MODES.ADD_BITCOIN]: {
     clientType: WalletClientType.Bitcoin,
     chainId: MultichainNetworks.BITCOIN,
-  },
-  [ACTION_MODES.ADD_BITCOIN_TESTNET]: {
-    clientType: WalletClientType.Bitcoin,
-    chainId: MultichainNetworks.BITCOIN_TESTNET,
   },
   [ACTION_MODES.ADD_SOLANA]: {
     clientType: WalletClientType.Solana,
@@ -333,7 +327,7 @@ export const AccountListMenu = ({
 
   const handleMultichainSnapAccountCreation = async (
     client: MultichainWalletSnapClient,
-    _options: MultichainWalletSnapOptions,
+    _options: CreateAccountSnapOptions,
     action: ActionMode,
   ) => {
     trackEvent({
@@ -659,6 +653,7 @@ export const AccountListMenu = ({
                         bitcoinWalletSnapClient,
                         {
                           scope: MultichainNetworks.BITCOIN,
+                          entropySource: primaryKeyring.metadata.id,
                         },
                         ACTION_MODES.ADD_BITCOIN,
                       );
