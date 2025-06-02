@@ -246,6 +246,7 @@ import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import { updateCurrentLocale } from '../../shared/lib/translate';
+import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -3509,7 +3510,6 @@ export default class MetamaskController extends EventEmitter {
       resetOAuthLoginState: this.resetOAuthLoginState.bind(this),
       createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
       fetchAllSeedPhrases: this.fetchAllSeedPhrases.bind(this),
-      updateBackupMetadataState: this.updateBackupMetadataState.bind(this),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
@@ -4828,7 +4828,8 @@ export default class MetamaskController extends EventEmitter {
   async createNewVaultAndRestore(password, encodedSeedPhrase) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      const { completedOnboarding } = this.onboardingController.state;
+      const { completedOnboarding, firstTimeFlowType } =
+        this.onboardingController.state;
 
       const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
 
@@ -4855,9 +4856,11 @@ export default class MetamaskController extends EventEmitter {
       }
 
       // create new vault
+      const seedPhraseAsUint8Array =
+        this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
       await this.keyringController.createNewVaultAndRestore(
         password,
-        this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
+        seedPhraseAsUint8Array,
       );
 
       if (completedOnboarding) {
@@ -4871,6 +4874,14 @@ export default class MetamaskController extends EventEmitter {
           { name: HardwareDeviceNames.ledger },
           async (keyring) => this.setLedgerTransportPreference(keyring),
         );
+      }
+
+      if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+        // if the social login flow is completed, update the SocialBackupMetadataState with the restored seed phrase
+        this.seedlessOnboardingController.updateBackupMetadataState({
+          keyringId: this.keyringController.state.keyrings[0].metadata.id,
+          seedPhrase: seedPhraseAsUint8Array,
+        });
       }
 
       return this.keyringController.state.keyrings;

@@ -243,8 +243,6 @@ describe('Actions', () => {
         background.createNewVaultAndRestore.callsFake((_, __, cb) =>
           cb(null, mockKeyrings),
         );
-      const updateBackupMetadataStateStub =
-        background.updateBackupMetadataState.callsFake((_, __, cb) => cb());
 
       setBackgroundConnection(background);
 
@@ -259,12 +257,6 @@ describe('Actions', () => {
 
       expect(fetchAllSeedPhrasesStub.callCount).toStrictEqual(1);
       expect(createNewVaultAndRestoreStub.callCount).toStrictEqual(1);
-      expect(
-        updateBackupMetadataStateStub.calledOnceWith(
-          mockKeyrings[0].metadata.id,
-          mockEncodedSeedPhrase,
-        ),
-      ).toStrictEqual(true);
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
@@ -284,11 +276,13 @@ describe('Actions', () => {
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', payload: 'No seed phrase found' },
       ];
 
-      await store.dispatch(
-        actions.restoreSocialBackupAndGetSeedPhrase('password'),
-      );
+      await expect(
+        store.dispatch(actions.restoreSocialBackupAndGetSeedPhrase('password')),
+      ).rejects.toThrow('No seed phrase found');
+      expect(store.getActions()).toStrictEqual(expectedActions);
 
       expect(fetchAllSeedPhrasesStub.callCount).toStrictEqual(1);
       expect(createNewVaultAndRestoreStub.callCount).toStrictEqual(0);
@@ -306,14 +300,13 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
       ];
 
       await expect(
         store.dispatch(actions.restoreSocialBackupAndGetSeedPhrase('password')),
       ).rejects.toThrow('error');
-      console.log('store.getActions()', store.getActions());
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
