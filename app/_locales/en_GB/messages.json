@@ -2306,6 +2306,26 @@
   "forgotPasswordModalTitle": {
     "message": "Forgot your password?"
   },
+  "forgotPasswordSocialDescription": {
+    "message": "Already logged in on mobile? Reset your password from there."
+  },
+  "forgotPasswordSocialSocialReset": {
+    "message": "Not logged in on mobile? $1 with your Secret Recovery Phrase.",
+    "description": "$1 is the button text 'Reset wallet'"
+  },
+  "forgotPasswordSocialStep1": {
+    "message": "Open MetaMask mobile app and go to $1",
+    "description": "$1 is bold Settings > Security and passwords."
+  },
+  "forgotPasswordSocialStep1Settings": {
+    "message": "Settings > Security and passwords."
+  },
+  "forgotPasswordSocialStep2": {
+    "message": "Select “Change password” and update your password using biometrics (like Face ID)."
+  },
+  "forgotPasswordSocialStep3": {
+    "message": "Login with your new password on any device."
+  },
   "form": {
     "message": "form"
   },
@@ -4672,26 +4692,6 @@
   },
   "reset": {
     "message": "Reset"
-  },
-  "forgotPasswordSocialDescription": {
-    "message": "Already logged in on mobile? Reset your password from there."
-  },
-  "forgotPasswordSocialStep1": {
-    "message": "Open MetaMask mobile app and go to $1",
-    "description": "$1 is bold Settings > Security and passwords."
-  },
-  "forgotPasswordSocialStep1Settings": {
-    "message": "Settings > Security and passwords."
-  },
-  "forgotPasswordSocialStep2": {
-    "message": "Select “Change password” and update your password using biometrics (like Face ID)."
-  },
-  "forgotPasswordSocialStep3": {
-    "message": "Login with your new password on any device."
-  },
-  "forgotPasswordSocialSocialReset": {
-    "message": "Not logged in on mobile? $1 with your Secret Recovery Phrase.",
-    "description": "$1 is the button text 'Reset wallet'"
   },
   "resetWallet": {
     "message": "Reset wallet"
