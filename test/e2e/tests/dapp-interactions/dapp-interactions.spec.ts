@@ -104,6 +104,11 @@ describe('Dapp interactions', function () {
   });
 
   it('should lock the wallet while connected to a dapp, prompt for unlock successfully unlock', async function () {
+    // Check if the browser is Firefox and skip the test if true
+    // Due to this issue - https://github.com/MetaMask/metamask-extension/issues/32071
+    if (process.env.SELENIUM_BROWSER === 'firefox') {
+      this.skip();
+    }
     await withFixtures(
       {
         dapp: true,
