@@ -68,6 +68,7 @@ function UpdateModal() {
           submitButtonProps={{
             children: t('updateToTheLatestVersion'),
             block: true,
+            'data-testid': 'update-modal-submit-button',
           }}
         />
       </ModalContent>
