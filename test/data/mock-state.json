@@ -478,6 +478,54 @@
           }
         ],
         "blockExplorerUrls": []
+      },
+      "0x38": {
+        "blockExplorerUrls": ["https://bscscan.com/"],
+        "chainId": "0x38",
+        "defaultBlockExplorerUrlIndex": 0,
+        "defaultRpcEndpointIndex": 0,
+        "lastUpdatedAt": 1738689643708,
+        "name": "Binance Smart Chain",
+        "nativeCurrency": "BNB",
+        "rpcEndpoints": [
+          {
+            "networkClientId": "ae8c8c36-7478-42bf-9b1a-610c81380000",
+            "type": "custom",
+            "url": "https://bsc-dataseed.binance.org/"
+          }
+        ]
+      },
+      "0x89": {
+        "blockExplorerUrls": ["https://polygonscan.com/"],
+        "chainId": "0x89",
+        "defaultBlockExplorerUrlIndex": 0,
+        "defaultRpcEndpointIndex": 0,
+        "lastUpdatedAt": 1738689655105,
+        "name": "Polygon Mainnet",
+        "nativeCurrency": "POL",
+        "rpcEndpoints": [
+          {
+            "networkClientId": "b46d8e79-ebf2-4fdc-8cb9-45610e990000",
+            "type": "custom",
+            "url": "https://polygon-mainnet.infura.io/v3/"
+          }
+        ]
+      },
+      "0xa4b1": {
+        "blockExplorerUrls": ["https://explorer.arbitrum.io"],
+        "chainId": "0xa4b1",
+        "defaultBlockExplorerUrlIndex": 0,
+        "defaultRpcEndpointIndex": 0,
+        "lastUpdatedAt": 1738689624782,
+        "name": "Arbitrum One",
+        "nativeCurrency": "ETH",
+        "rpcEndpoints": [
+          {
+            "networkClientId": "100849a6-a63c-4ebd-9bbe-0c84134d0000",
+            "type": "custom",
+            "url": "https://arbitrum-mainnet.infura.io/v3/"
+          }
+        ]
       }
     },
     "internalAccounts": {
@@ -927,6 +975,7 @@
     "useNftDetection": true,
     "openSeaEnabled": true,
     "orderedNetworkList": [],
+    "enabledNetworkMap": {},
     "pinnedAccountList": [],
     "hiddenAccountList": [],
     "advancedGasFee": {

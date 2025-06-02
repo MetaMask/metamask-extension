@@ -40,6 +40,7 @@ import { Controller as NotificationServicesController } from '@metamask/notifica
 import { Controller as NotificationServicesPushController } from '@metamask/notification-services-controller/push-services';
 import { DelegationController } from '@metamask/delegation-controller';
 
+import { RemoteFeatureFlagController } from '@metamask/remote-feature-flag-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -93,6 +94,7 @@ export type ControllerFlatState = AccountsController['state'] &
   AuthenticationController['state'] &
   CronjobController['state'] &
   DeFiPositionsController['state'] &
+  DelegationController['state'] &
   GasFeeController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
@@ -118,4 +120,5 @@ export type ControllerFlatState = AccountsController['state'] &
   UserStorageController['state'] &
   TokenRatesController['state'] &
   NftController['state'] &
-  NftDetectionController['state'];
+  NftDetectionController['state'] &
+  RemoteFeatureFlagController['state'];

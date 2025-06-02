@@ -16,6 +16,7 @@ import {
 import {
   BtcAccountType,
   BtcMethod,
+  BtcScope,
   EthAccountType,
   SolScope,
 } from '@metamask/keyring-api';
@@ -4024,6 +4025,7 @@ describe('MetaMaskController', () => {
 
         const mockDiscoverAccounts = jest
           .fn()
+          .mockResolvedValueOnce([]) // Nothing discovered for Bitcoin
           .mockResolvedValueOnce([{ derivationPath: "m/44'/501'/0'/0'" }])
           .mockResolvedValueOnce([{ derivationPath: "m/44'/501'/1'/0'" }])
           .mockResolvedValueOnce([]); // Return empty array on third call to stop the discovery loop
@@ -4040,18 +4042,92 @@ describe('MetaMaskController', () => {
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
 
-        // Assert that discoverAccounts was called correctly
-        // Should be called 3 times (twice with discovered accounts, once with empty array)
-        expect(mockDiscoverAccounts).toHaveBeenCalledTimes(3);
+        // Assert that discoverAccounts was called correctly:
+        // - 1 time for Bitcoin
+        // - 3 times for Solana (twice with discovered accounts, once with empty array)
+        expect(mockDiscoverAccounts).toHaveBeenCalledTimes(1 + 3);
 
         // All calls should include the solana scopes
-        expect(mockDiscoverAccounts.mock.calls[0][0]).toStrictEqual(
-          expect.arrayContaining([
-            SolScope.Mainnet,
-            SolScope.Testnet,
-            SolScope.Devnet,
-          ]),
+        expect(mockDiscoverAccounts.mock.calls[1][0]).toStrictEqual([
+          SolScope.Mainnet,
+        ]);
+
+        // First call should be for index 0
+        expect(mockDiscoverAccounts.mock.calls[1][2]).toBe(0);
+        // Second call should be for index 1
+        expect(mockDiscoverAccounts.mock.calls[2][2]).toBe(1);
+        // Third call should be for index 2
+        expect(mockDiscoverAccounts.mock.calls[3][2]).toBe(2);
+
+        // Assert that createAccount was called correctly for each discovered account:
+        // - 1 Bitcoin default account
+        // - 2 discovered Solana accounts
+        expect(mockCreateAccount).toHaveBeenCalledTimes(1 + 2);
+
+        // All calls should use the solana snap ID
+        expect(mockCreateAccount.mock.calls[1][0]).toStrictEqual(
+          expect.stringContaining('solana-wallet'),
         );
+        // First call should use derivation path on index 0
+        expect(mockCreateAccount.mock.calls[1][1]).toStrictEqual({
+          accountNameSuggestion: expect.stringContaining('Solana Account'),
+          derivationPath: "m/44'/501'/0'/0'",
+          entropySource: expect.any(String),
+          scope: SolScope.Mainnet,
+          synchronize: true,
+        });
+        // All calls should use the same internal options
+        expect(mockCreateAccount.mock.calls[1][2]).toStrictEqual({
+          displayConfirmation: false,
+          displayAccountNameSuggestion: false,
+          setSelectedAccount: false,
+        });
+
+        // Second call should use derivation path on index 1
+        expect(mockCreateAccount.mock.calls[2][1]).toStrictEqual({
+          accountNameSuggestion: expect.stringContaining('Solana Account'),
+          derivationPath: "m/44'/501'/1'/0'",
+          entropySource: expect.any(String),
+          scope: SolScope.Mainnet,
+          synchronize: true,
+        });
+      });
+
+      it('discovers and creates Bitcoin accounts through KeyringInternalSnapClient when importing a mnemonic', async () => {
+        const password = 'what-what-what';
+        jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
+
+        const mockDiscoverAccounts = jest
+          .fn()
+          .mockResolvedValueOnce([
+            { derivationPath: "m/84'/0'/0'" },
+            { derivationPath: "m/86'/0'/0'" },
+          ])
+          .mockResolvedValueOnce([{ derivationPath: "m/84'/0'/1'" }])
+          .mockResolvedValueOnce([]) // Return empty array on third call to stop the discovery loop
+          .mockResolvedValueOnce([]); // Nothing discovered for Solana
+
+        jest
+          .spyOn(KeyringInternalSnapClient.prototype, 'discoverAccounts')
+          .mockImplementation(mockDiscoverAccounts);
+
+        const mockCreateAccount = jest.fn().mockResolvedValue(undefined);
+        jest
+          .spyOn(metamaskController, 'getSnapKeyring')
+          .mockResolvedValue({ createAccount: mockCreateAccount });
+
+        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+        await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
+
+        // Assert that discoverAccounts was called correctly:
+        // - 3 times for Bitcoin (twice with discovered accounts, once with empty array)
+        // - 1 time for Solana
+        expect(mockDiscoverAccounts).toHaveBeenCalledTimes(3 + 1);
+
+        // All calls should include the solana scopes
+        expect(mockDiscoverAccounts.mock.calls[0][0]).toStrictEqual([
+          BtcScope.Mainnet,
+        ]);
 
         // First call should be for index 0
         expect(mockDiscoverAccounts.mock.calls[0][2]).toBe(0);
@@ -4060,31 +4136,44 @@ describe('MetaMaskController', () => {
         // Third call should be for index 2
         expect(mockDiscoverAccounts.mock.calls[2][2]).toBe(2);
 
-        // Assert that createAccount was called correctly for each discovered account
-        expect(mockCreateAccount).toHaveBeenCalledTimes(2);
+        // Assert that createAccount was called correctly for each discovered account:
+        // - 3 discovered Bitcoin accounts
+        // - 1 Solana default account
+        expect(mockCreateAccount).toHaveBeenCalledTimes(3 + 1);
 
-        // All calls should use the solana snap ID
+        // All calls should use the bitcoin snap ID
         expect(mockCreateAccount.mock.calls[0][0]).toStrictEqual(
-          expect.stringContaining('solana-wallet'),
+          expect.stringContaining('bitcoin-wallet'),
         );
         // First call should use derivation path on index 0
         expect(mockCreateAccount.mock.calls[0][1]).toStrictEqual({
-          accountNameSuggestion: expect.stringContaining('Solana Account'),
-          derivationPath: "m/44'/501'/0'/0'",
+          accountNameSuggestion: expect.stringContaining('Bitcoin Account'),
+          derivationPath: "m/84'/0'/0'",
           entropySource: expect.any(String),
+          scope: BtcScope.Mainnet,
+          synchronize: true,
+        });
+        // Second call should use derivation path on index 0 and Taproot account
+        expect(mockCreateAccount.mock.calls[1][1]).toStrictEqual({
+          accountNameSuggestion: expect.stringContaining('Bitcoin Account'),
+          derivationPath: "m/86'/0'/0'",
+          entropySource: expect.any(String),
+          scope: BtcScope.Mainnet,
+          synchronize: true,
+        });
+        // Third call should use derivation path on index 1
+        expect(mockCreateAccount.mock.calls[2][1]).toStrictEqual({
+          accountNameSuggestion: expect.stringContaining('Bitcoin Account'),
+          derivationPath: "m/84'/0'/1'",
+          entropySource: expect.any(String),
+          scope: BtcScope.Mainnet,
+          synchronize: true,
         });
         // All calls should use the same internal options
         expect(mockCreateAccount.mock.calls[0][2]).toStrictEqual({
           displayConfirmation: false,
           displayAccountNameSuggestion: false,
           setSelectedAccount: false,
-        });
-
-        // Second call should use derivation path on index 1
-        expect(mockCreateAccount.mock.calls[1][1]).toStrictEqual({
-          accountNameSuggestion: expect.stringContaining('Solana Account'),
-          derivationPath: "m/44'/501'/1'/0'",
-          entropySource: expect.any(String),
         });
       });
     });
