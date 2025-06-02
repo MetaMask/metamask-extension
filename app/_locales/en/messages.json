@@ -2294,8 +2294,8 @@
   "forgotPassword": {
     "message": "Forgot password?"
   },
-  "forgotPasswordModalButton": {
-    "message": "Reset wallet"
+  "forgotPasswordModalTitle": {
+    "message": "Forgot your password?"
   },
   "forgotPasswordModalDescription1": {
     "message": "MetaMask can’t recover your password for you."
@@ -2303,8 +2303,8 @@
   "forgotPasswordModalDescription2": {
     "message": "You can reset your wallet by entering the Secret Recovery Phrase you used when you set up your wallet."
   },
-  "forgotPasswordModalTitle": {
-    "message": "Forgot your password?"
+  "forgotPasswordModalButton": {
+    "message": "Reset wallet"
   },
   "form": {
     "message": "form"
@@ -4868,6 +4868,38 @@
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
   },
+  "securityMessageLinkForNetworks": {
+    "message": "network scams and security risks"
+  },
+  "securityProviderPoweredBy": {
+    "message": "Powered by $1",
+    "description": "The security provider that is providing data"
+  },
+  "securitySocialLoginEnabled": {
+    "message": "Enabled"
+  },
+  "securitySocialLoginEnabledDescription": {
+    "message": "This email and your MetaMask password will help you recover your account and recovery phrases."
+  },
+  "securitySocialLoginLabel": {
+    "message": "$1 RECOVERY",
+    "description": "The $1 is the text 'Google' or 'Apple'"
+  },
+  "securitySrpBackupSrp": {
+    "message": "Back up Secret Recovery Phrase"
+  },
+  "securitySrpDescription": {
+    "message": "Back up your Secret Recovery Phrase so you never lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget."
+  },
+  "securitySrpLabel": {
+    "message": "SECRET RECOVERY PHRASES"
+  },
+  "securitySrpTitle": {
+    "message": "Secret Recovery Phrase"
+  },
+  "securitySrpWalletRecovery": {
+    "message": "Manage recovery methods"
+  },
   "securityLoginWithSocial": {
     "message": "Login with $1",
     "description": "The $1 is the text 'Google' or 'Apple'"
@@ -4877,19 +4909,6 @@
   },
   "securityLoginWithSrpNotBackedUp": {
     "message": "Back up Secret Recovery Phrase"
-  },
-  "securityMessageLinkForNetworks": {
-    "message": "network scams and security risks"
-  },
-  "securityProviderPoweredBy": {
-    "message": "Powered by $1",
-    "description": "The security provider that is providing data"
-  },
-  "securitySrpDescription": {
-    "message": "Back up your Secret Recovery Phrase so you don’t lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget."
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Reveal Secret Recovery Phrase"
   },
   "seeAllPermissions": {
     "message": "See all permissions",
@@ -5668,6 +5687,9 @@
   "srpPasteTip": {
     "message": "You can paste your entire secret recovery phrase into any field",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpRevealListTitle": {
+    "message": "Protect your wallet"
   },
   "srpSecurityQuizGetStarted": {
     "message": "Get started"
