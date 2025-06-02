@@ -6549,9 +6549,6 @@
   "unapproved": {
     "message": "Non autorisé"
   },
-  "unexpectedBehavior": {
-    "message": "Ce comportement est inattendu et doit être signalé comme un bogue, même si vos comptes sont restaurés correctement. Utilisez le lien ci-dessous pour envoyer un signalement de bogue à MetaMask."
-  },
   "units": {
     "message": "unités"
   },

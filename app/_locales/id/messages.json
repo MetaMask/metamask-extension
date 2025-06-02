@@ -6549,9 +6549,6 @@
   "unapproved": {
     "message": "Tidak disetujui"
   },
-  "unexpectedBehavior": {
-    "message": "Perilaku ini tidak terduga dan harus dilaporkan sebagai bug, meskipun akun Anda telah dipulihkan dengan benar. Gunakan tautan di bawah ini untuk mengirim laporan bug ke MetaMask."
-  },
   "units": {
     "message": "unit"
   },

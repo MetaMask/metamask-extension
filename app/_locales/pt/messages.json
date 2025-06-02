@@ -6549,9 +6549,6 @@
   "unapproved": {
     "message": "Não aprovado"
   },
-  "unexpectedBehavior": {
-    "message": "Este comportamento é inesperado e deve ser relatado como um bug, mesmo que suas contas sejam restauradas corretamente. Use o link abaixo para enviar um relatório de bug para a MetaMask."
-  },
   "units": {
     "message": "unidades"
   },

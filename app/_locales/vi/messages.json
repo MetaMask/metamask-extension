@@ -6549,9 +6549,6 @@
   "unapproved": {
     "message": "Chưa chấp thuận"
   },
-  "unexpectedBehavior": {
-    "message": "Đây là hành vi bất thường và cần được báo cáo như một lỗi, ngay cả khi tài khoản của bạn đã được khôi phục đúng cách. Sử dụng liên kết bên dưới để gửi báo cáo lỗi cho MetaMask."
-  },
   "units": {
     "message": "đơn vị"
   },

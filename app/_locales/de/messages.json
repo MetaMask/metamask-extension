@@ -6549,9 +6549,6 @@
   "unapproved": {
     "message": "Nicht genehmigt"
   },
-  "unexpectedBehavior": {
-    "message": "Dieses Verhalten ist unerwartet und sollte als Fehler gemeldet werden, selbst wenn Ihre Konten korrekt wiederhergestellt wurden. Verwenden Sie den unten stehenden Link, um MetaMask einen Fehlerbericht zu senden."
-  },
   "units": {
     "message": "Einheiten"
   },

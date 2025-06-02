@@ -6549,9 +6549,6 @@
   "unapproved": {
     "message": "未承認"
   },
-  "unexpectedBehavior": {
-    "message": "これは想定外の動作であるため、アカウントが適切に復元された場合も、バグとして報告する必要があります。下のリンクを使用して、MetaMaskにバグの報告を送信してください。"
-  },
   "units": {
     "message": "単位"
   },

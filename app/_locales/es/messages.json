@@ -611,7 +611,7 @@
     "description": "$1 is backupAndSyncBasicFunctionalityNameMention in bold."
   },
   "backupAndSyncEnableDescription": {
-    "message": "La copia de respaldo y la sincronización nos permiten almacenar datos cifrados para tu configuración y funciones personalizadas. Esto garantiza la misma experiencia con MetaMask en todos los dispositivos y restaura la configuración y las funciones si alguna vez necesitas reinstalar MetaMask. Esto no crea un copia de repaldo de tu frase secreta de recuperación. $1.",
+    "message": "La copia de respaldo y la sincronización nos permiten almacenar datos cifrados para tu configuración y funciones personalizadas. Esto garantiza la misma experiencia con MetaMask en todos los dispositivos y restaura la configuración y las funciones si alguna vez necesitas reinstalar MetaMask. Esto no crea una copia de respaldo de tu frase secreta de recuperación. $1.",
     "description": "$1 is link to the backup and sync privacy policy."
   },
   "backupAndSyncEnableDescriptionUpdatePreferences": {
@@ -6548,9 +6548,6 @@
   },
   "unapproved": {
     "message": "No aprobado"
-  },
-  "unexpectedBehavior": {
-    "message": "Este comportamiento es inesperado y debe comunicarse como un error, incluso si sus cuentas se restauran correctamente. Use el enlace a continuación para enviar un informe de errores a MetaMask."
   },
   "units": {
     "message": "unidades"

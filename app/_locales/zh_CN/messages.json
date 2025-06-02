@@ -6549,9 +6549,6 @@
   "unapproved": {
     "message": "未批准"
   },
-  "unexpectedBehavior": {
-    "message": "此行为属于异常情况，即使您的账户已成功恢复，也应作为错误上报。请通过下方链接向 MetaMask 提交错误报告。"
-  },
   "units": {
     "message": "单位"
   },

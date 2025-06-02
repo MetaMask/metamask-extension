@@ -6549,9 +6549,6 @@
   "unapproved": {
     "message": "승인되지 않음"
   },
-  "unexpectedBehavior": {
-    "message": "이 동작은 예상치 못한 것으로, 계정이 정상적으로 복구되었더라도 버그로 신고해야 합니다. 아래 링크를 통해 MetaMask에 버그를 신고해 주세요."
-  },
   "units": {
     "message": "단위"
   },

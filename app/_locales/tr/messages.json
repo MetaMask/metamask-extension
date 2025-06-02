@@ -6549,9 +6549,6 @@
   "unapproved": {
     "message": "Onaylanmadı"
   },
-  "unexpectedBehavior": {
-    "message": "Bu davranış beklenmeyen bir davranıştı ve hesaplarınız düzgün bir şekilde geri yüklenmiş olsa bile hata olarak bildirilmelidir. Aşağıdaki bağlantıyı kullanarak MetaMask'e hata raporu gönderin."
-  },
   "units": {
     "message": "birim"
   },

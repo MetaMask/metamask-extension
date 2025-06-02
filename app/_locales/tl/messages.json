@@ -6549,9 +6549,6 @@
   "unapproved": {
     "message": "Hindi inaprubahan"
   },
-  "unexpectedBehavior": {
-    "message": "Hindi inaasahan ang nangyaring ito at dapat itong iulat bilang bug, kahit na na-restore nang maayos ang mga account mo. Gamitin ang link sa ibaba para magpadala sa MetaMask ng ulat sa bug."
-  },
   "units": {
     "message": "mga unit"
   },
