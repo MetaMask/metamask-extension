@@ -13,7 +13,7 @@ exports[`Unlock Page should match snapshot 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
       >
         <div
-          class="mm-box unlock-page__mascot-container mm-box--margin-top-6"
+          class="mm-box unlock-page__mascot-container mm-box--margin-top-6 mm-box--margin-bottom-0"
         >
           <div
             style="z-index: 0;"
