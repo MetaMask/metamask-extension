@@ -247,7 +247,7 @@ describe('ERC721 Approve Confirmation', () => {
 
     expect(approveDetails).toContainElement(approveDetailsSpender);
     expect(approveDetailsSpender).toHaveTextContent(tEn('spender') as string);
-    expect(approveDetailsSpender).toHaveTextContent('0x2e0D7...5d09B');
+    expect(approveDetailsSpender).toHaveTextContent('0x2e0D...d09B');
     const spenderTooltip = await screen.findByTestId(
       'confirmation__approve-spender-tooltip',
     );
@@ -363,7 +363,7 @@ describe('ERC721 Approve Confirmation', () => {
     );
     expect(dataSection).toContainElement(approveDataParams1);
     expect(approveDataParams1).toHaveTextContent('Param #1');
-    expect(approveDataParams1).toHaveTextContent('0x2e0D7...5d09B');
+    expect(approveDataParams1).toHaveTextContent('0x2e0D...d09B');
 
     const approveDataParams2 = await screen.findByTestId(
       'advanced-details-data-param-1',

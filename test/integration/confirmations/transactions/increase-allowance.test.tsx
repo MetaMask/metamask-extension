@@ -359,7 +359,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     );
     expect(dataSection).toContainElement(approveDataParams1);
     expect(approveDataParams1).toHaveTextContent('Param #1');
-    expect(approveDataParams1).toHaveTextContent('0x2e0D7...5d09B');
+    expect(approveDataParams1).toHaveTextContent('0x2e0D...d09B');
 
     const approveDataParams2 = await screen.findByTestId(
       'advanced-details-data-param-1',

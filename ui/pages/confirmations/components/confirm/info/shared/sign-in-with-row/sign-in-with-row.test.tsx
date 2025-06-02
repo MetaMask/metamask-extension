@@ -46,6 +46,6 @@ describe('<TransactionDetails />', () => {
       mockStore,
     );
     expect(getByText('Signing in with')).toBeInTheDocument();
-    expect(getByText('0x2e0D7...5d09B')).toBeInTheDocument();
+    expect(getByText('0x2e0D...d09B')).toBeInTheDocument();
   });
 });
