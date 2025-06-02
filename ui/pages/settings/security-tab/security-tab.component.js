@@ -192,7 +192,7 @@ export default class SecurityTab extends PureComponent {
       if (socialLoginEnabled) {
         return t('securitySrpWalletRecovery');
       }
-      return t('revealSeedWords');
+      return t('revealSecretRecoveryPhrase');
     };
 
     return (

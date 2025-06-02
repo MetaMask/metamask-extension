@@ -29,9 +29,11 @@ import {
   isSocialLoginFlow,
   getSocialLoginEmail,
   getSocialLoginType,
+  getFirstTimeFlowType,
 } from '../../../../selectors';
 import { getSeedPhraseBackedUp } from '../../../../ducks/metamask/metamask';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../../helpers/constants/routes';
+import { FirstTimeFlowType } from '../../../../../shared/constants/onboarding';
 import { useSyncSRPs } from '../../../../hooks/social-sync/useSyncSRPs';
 
 export const RevealSrpList = () => {
@@ -43,11 +45,14 @@ export const RevealSrpList = () => {
   const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
   const [selectedKeyringId, setSelectedKeyringId] = useState('');
 
+  const firstTimeFlow = useSelector(getFirstTimeFlowType);
   const socialLoginEmail = useSelector(getSocialLoginEmail);
   const socialLoginEnabled = useSelector(isSocialLoginFlow);
   const socialLoginType = useSelector(getSocialLoginType);
   const seedPhraseBackedUp =
-    useSelector(getSeedPhraseBackedUp) || socialLoginEnabled;
+    useSelector(getSeedPhraseBackedUp) ||
+    socialLoginEnabled ||
+    firstTimeFlow !== FirstTimeFlowType.create;
 
   const onSrpActionComplete = (keyringId: string, triggerBackup?: boolean) => {
     if (triggerBackup) {
