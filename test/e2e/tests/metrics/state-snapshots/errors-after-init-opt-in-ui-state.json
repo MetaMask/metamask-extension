@@ -80,6 +80,7 @@
     "isUnlocked": true,
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "transactions": "object",
+    "transactionBatches": "object",
     "networkConfigurations": "object",
     "addressBook": "object",
     "useBlockie": false,
