@@ -5709,19 +5709,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-internal-snap-client@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "@metamask/keyring-internal-snap-client@npm:4.0.2"
-  dependencies:
-    "@metamask/base-controller": "npm:^7.1.1"
-    "@metamask/keyring-api": "npm:^17.4.0"
-    "@metamask/keyring-snap-client": "npm:^4.1.0"
-    "@metamask/keyring-utils": "npm:^3.0.0"
-  checksum: 10/0b63346875b291045d470c7eeb67a4c3c738836db42c64450e0d9087cea2b235ff14f84754c2132964ed04166e7e9548ddfeed25114d633d981fa702025cd6b6
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-internal-snap-client@npm:^4.1.0":
+"@metamask/keyring-internal-snap-client@npm:^4.0.2, @metamask/keyring-internal-snap-client@npm:^4.1.0":
   version: 4.1.0
   resolution: "@metamask/keyring-internal-snap-client@npm:4.1.0"
   dependencies:
