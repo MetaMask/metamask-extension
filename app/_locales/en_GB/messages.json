@@ -4868,6 +4868,16 @@
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
   },
+  "securityLoginWithSocial": {
+    "message": "Login with $1",
+    "description": "The $1 is the text 'Google' or 'Apple'"
+  },
+  "securityLoginWithSrpBackedUp": {
+    "message": "Secret Recovery Phrase backed up"
+  },
+  "securityLoginWithSrpNotBackedUp": {
+    "message": "Back up Secret Recovery Phrase"
+  },
   "securityMessageLinkForNetworks": {
     "message": "network scams and security risks"
   },
@@ -4880,16 +4890,6 @@
   },
   "securitySrpWalletRecovery": {
     "message": "Reveal Secret Recovery Phrase"
-  },
-  "securityLoginWithSocial": {
-    "message": "Login with $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Secret Recovery Phrase backed up"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Back up Secret Recovery Phrase"
   },
   "seeAllPermissions": {
     "message": "See all permissions",
