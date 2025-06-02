@@ -27,7 +27,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
     {
       onClick,
       Icon,
-      disabled = false,
+      disabled,
       label,
       className = '',
       tooltipRender,
