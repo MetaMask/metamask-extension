@@ -1105,6 +1105,7 @@
     },
     "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils": {
       "globals": {
+        "clearTimeout": true,
         "setTimeout": true
       },
       "packages": {
@@ -2095,9 +2096,9 @@
       "packages": {
         "@metamask/seedless-onboarding-controller>@metamask/auth-network-utils": true,
         "@metamask/base-controller": true,
-        "@metamask/browser-passworder": true,
         "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": true,
         "@metamask/utils": true,
+        "viem>ox>@noble/curves": true,
         "@metamask/name-controller>async-mutex": true
       }
     },
