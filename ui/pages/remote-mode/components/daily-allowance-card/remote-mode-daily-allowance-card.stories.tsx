@@ -19,6 +19,7 @@ const mockDailyAllowance = {
   name: TOKEN_DETAILS[TokenSymbol.ETH].name,
   type: AssetType.native,
   address: '',
+  decimals: 18,
 };
 
 export default {
@@ -49,6 +50,7 @@ export const DifferentTokens = () => (
       type: AssetType.native,
       address: '',
       amount: 5,
+      decimals: 18,
     }}
     onRemove={() => {}}
   />
@@ -63,6 +65,7 @@ export const LargeAmount = () => (
       type: AssetType.native,
       address: '',
       amount: 1000000,
+      decimals: 18,
     }}
     onRemove={() => {}}
   />

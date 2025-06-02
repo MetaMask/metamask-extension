@@ -8,15 +8,15 @@
 // It must be run first in case an error is thrown later during initialization.
 import './lib/setup-initial-state-hooks';
 
-import EventEmitter from 'events';
 import { finished, pipeline } from 'readable-stream';
 import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
-import { isObject } from '@metamask/utils';
+import { isObject, hasProperty } from '@metamask/utils';
 import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -49,11 +49,17 @@ import {
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
+import { isStateCorruptionError } from '../../shared/constants/errors';
+import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
+import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import {
-  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
-  KNOWN_STATE_CORRUPTION_ERRORS,
-} from './lib/state-corruption-errors';
-import { PersistenceManager } from './lib/stores/persistence-manager';
+  CorruptionHandler,
+  hasVault,
+} from './lib/state-corruption/state-corruption-recovery';
+import {
+  backedUpStateKeys,
+  PersistenceManager,
+} from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
 import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
 import migrations from './migrations';
@@ -68,7 +74,6 @@ import NotificationManager, {
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
-import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
@@ -90,17 +95,24 @@ import {
 } from './constants/stream';
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
 
+/**
+ * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
+ */
+
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_NOTIFICATION = '#D73847';
 const BADGE_MAX_COUNT = 9;
 
-// Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
-
-const localStore = inTest ? new ReadOnlyNetworkStore() : new ExtensionStore();
+const useReadOnlyNetworkStore =
+  inTest && getManifestFlags().testing?.forceExtensionStore !== true;
+const localStore = useReadOnlyNetworkStore
+  ? new ReadOnlyNetworkStore()
+  : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
+// Setup global hook for improved Sentry state snapshots during initialization
 global.stateHooks.getMostRecentPersistedState = () =>
   persistenceManager.mostRecentRetrievedState;
 
@@ -139,8 +151,10 @@ let controller;
 const tabOriginMapping = {};
 
 if (inTest || process.env.METAMASK_DEBUG) {
-  global.stateHooks.metamaskGetState =
-    persistenceManager.get.bind(persistenceManager);
+  global.stateHooks.metamaskGetState = persistenceManager.get.bind(
+    persistenceManager,
+    { validateVault: false },
+  );
 }
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
@@ -152,9 +166,6 @@ const phishingPageHref = phishingPageUrl.toString();
 const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
-
-// Event emitter for state persistence
-export const statePersistenceEvents = new EventEmitter();
 
 if (!isManifestV3) {
   /**
@@ -194,11 +205,30 @@ if (!isManifestV3) {
  * called once initialization has completed, and that `rejectInitialization` is
  * called if initialization fails in an unrecoverable way.
  */
-const {
-  promise: isInitialized,
-  resolve: resolveInitialization,
-  reject: rejectInitialization,
-} = deferredPromise();
+/**
+ * @type {Promise<void>}
+ */
+let isInitialized;
+/**
+ * @type {() => void}
+ */
+let resolveInitialization;
+/**
+ * @type {() => void}
+ */
+let rejectInitialization;
+
+/**
+ * Creates a deferred Promise and sets the global variables to track the
+ * state of application initialization (or re-initialization).
+ */
+function setGlobalInitializers() {
+  const deferred = deferredPromise();
+  isInitialized = deferred.promise;
+  resolveInitialization = deferred.resolve;
+  rejectInitialization = deferred.reject;
+}
+setGlobalInitializers();
 
 /**
  * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
@@ -242,8 +272,11 @@ const sendReadyMessageToTabs = async () => {
         checkForLastErrorAndLog();
       })
       .catch(() => {
-        // An error may happen if the contentscript is blocked from loading,
-        // and thus there is no runtime.onMessage handler to listen to the message.
+        // An error may happen if:
+        //  * a contentscript is blocked from loading, and thus there is no
+        // `runtime.onMessage` handlers to listen to the message, or
+        //  * if MetaMask reloads/installs while tabs are already open, as these
+        // tabs won't have a valid Port to send the message to.
         checkForLastErrorAndLog();
       });
   }
@@ -434,6 +467,7 @@ let connectEip1193;
 /** @type {ConnectCaipMultichain} */
 let connectCaipMultichain;
 
+const corruptionHandler = new CorruptionHandler();
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   try {
@@ -444,33 +478,35 @@ browser.runtime.onConnect.addListener(async (...args) => {
   } catch (error) {
     sentry?.captureException(error);
 
-    // if have a STATE_CORRUPTION_ERROR tell the user about it and offer to
+    // if we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
     // restore from a backup, if we have one.
-    if (KNOWN_STATE_CORRUPTION_ERRORS.has(error.message)) {
-      const _state = await localStore.get().catch((_) => null);
+    if (isStateCorruptionError(error)) {
+      await corruptionHandler.handleStateCorruptionError({
+        port: args[0],
+        error,
+        database: persistenceManager,
+        repairCallback: async (backup) => {
+          // we are going to reinitialize the background script, so we need to
+          // reset the initialization promises. this is gross since it is
+          // possible the original references could have been passed to other
+          // functions, and we can't update those references from here.
+          // right now, that isn't the case though.
+          setGlobalInitializers();
 
-      const port = args[0];
-      try {
-        // send the `error` TO THE ui
-        port.postMessage({
-          data: {
-            method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
-            params: {
-              error: {
-                message: error.message,
-                name: error.name,
-                stack: error.stack,
-              },
-              currentLocale: _state?.data?.PreferencesController?.currentLocale,
-            },
-          },
-        });
-      } catch (e) {
-        // an exception can occur here if the Window has since disconnected from
-        // the background, this is expected if the UI is closed while we are
-        // still initializing the background (during `await isInitialized;`)
-        log.error('MetaMask - Failed to send state corruption error', e);
-      }
+          if (hasVault(backup)) {
+            await initBackground(backup);
+            controller.onboardingController.setFirstTimeFlowType(
+              FirstTimeFlowType.restore,
+            );
+          } else {
+            // if we don't have a backup we need to make sure we clear the state
+            // from the database, and then reinitialize the background script
+            // with the first time state.
+            await persistenceManager.reset();
+            await initBackground(null);
+          }
+        },
+      });
     }
   }
 });
@@ -539,12 +575,13 @@ function saveTimestamp() {
 /**
  * Initializes the MetaMask controller, and sets up all platform configuration.
  *
+ * @param {Backup | null} backup
  * @returns {Promise} Setup complete.
  */
-async function initialize() {
+async function initialize(backup) {
   const offscreenPromise = isManifestV3 ? createOffscreen() : null;
 
-  const initData = await loadStateFromPersistence();
+  const initData = await loadStateFromPersistence(backup);
 
   const initState = initData.data;
   const initLangCode = await getFirstPreferredLangCode();
@@ -703,9 +740,10 @@ async function loadPhishingWarningPage() {
  * Loads any stored data, prioritizing the latest storage strategy.
  * Migrates that data schema in case it was last loaded on an older version.
  *
+ * @param {Backup | null} backup
  * @returns {Promise<{data: MetaMaskState meta: {version: number}}>} Last data emitted from previous instance of MetaMask.
  */
-export async function loadStateFromPersistence() {
+export async function loadStateFromPersistence(backup) {
   if (process.env.WITH_STATE) {
     const stateOverrides = await generateWalletState();
     firstTimeState = { ...firstTimeState, ...stateOverrides };
@@ -713,7 +751,35 @@ export async function loadStateFromPersistence() {
 
   // read from disk
   // first from preferred, async API:
-  let preMigrationVersionedData = await persistenceManager.get();
+  /**
+   * @type {import("./lib/stores/base-store").MetaMaskStorageStructure | undefined}
+   */
+  let preMigrationVersionedData;
+  if (backup) {
+    preMigrationVersionedData = { data: {}, meta: {} };
+    for (const key of backedUpStateKeys) {
+      if (hasProperty(backup, key)) {
+        preMigrationVersionedData.data[key] = backup[key];
+      }
+    }
+    // use the meta property from the backup if it exists, that way the
+    // migrations will behave correctly.
+    if (hasProperty(backup, 'meta') && isObject(backup.meta)) {
+      preMigrationVersionedData.meta = backup.meta;
+    }
+    // sanity check on the meta property
+    if (typeof preMigrationVersionedData.meta.version !== 'number') {
+      log.error(
+        "The `backup`'s `meta.version` property was missing during backup restore.",
+      );
+      // the last migration version before we started storing backups was `155`
+      // so we can use that version as a fallback.
+      preMigrationVersionedData.meta.version = 155;
+    }
+  } else {
+    const validateVault = true;
+    preMigrationVersionedData = await persistenceManager.get({ validateVault });
+  }
 
   const migrator = new Migrator({
     migrations,
@@ -953,7 +1019,6 @@ export function setupController(
     debounce(1000),
     createStreamSink(async (state) => {
       await persistenceManager.set(state);
-      statePersistenceEvents.emit('state-persisted', state);
     }),
     (error) => {
       log.error('MetaMask - Persistence pipeline failed', error);
@@ -1448,10 +1513,14 @@ function setupSentryGetStateGlobal(store) {
   };
 }
 
-async function initBackground() {
+/**
+ *
+ * @param {Backup | null} backup
+ */
+async function initBackground(backup) {
   onNavigateToTab();
   try {
-    await initialize();
+    await initialize(backup);
     if (process.env.IN_TEST) {
       // Send message to offscreen document
       if (browser.offscreen) {
@@ -1473,5 +1542,5 @@ async function initBackground() {
   }
 }
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
-  initBackground();
+  initBackground(null);
 }
