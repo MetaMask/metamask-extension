@@ -26,7 +26,7 @@
     &__title-container {
       display: grid;
       align-items: center;
-      grid-template-columns: 197px 1fr 1fr;
+      grid-template-columns: 197px 1fr 40px;
 
       @include design-system.screen-sm-max {
         grid-template-rows: 1fr 1fr;
