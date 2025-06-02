@@ -72,15 +72,6 @@ export default function CreationSuccessful() {
     return t('yourWalletIsReadyRemind');
   }, [socialLoginFlow, isWalletReady, t]);
 
-  const renderFoxPath = useMemo(() => {
-    if (socialLoginFlow || isWalletReady) {
-      return 'images/animations/fox/celebrating.lottie.json';
-    }
-
-    // TODO: Check figma teaching fox animation
-    return 'images/animations/fox/celebrating.lottie.json';
-  }, [socialLoginFlow, isWalletReady]);
-
   const renderDetails1 = useMemo(() => {
     if (isWalletReady) {
       return t('walletReadyLoseSrp');
@@ -111,6 +102,26 @@ export default function CreationSuccessful() {
 
     return t('walletReadyLearnRemind');
   }, [isWalletReady, t]);
+
+  const renderFox = useMemo(() => {
+    if (socialLoginFlow || isWalletReady) {
+      return (
+        <LottieAnimation
+          path="images/animations/fox/celebrating.lottie.json"
+          loop={false}
+          autoplay
+        />
+      );
+    }
+
+    return (
+      <LottieAnimation
+        path="images/animations/fox/celebrating.lottie.json"
+        loop={false}
+        autoplay
+      />
+    );
+  }, [socialLoginFlow, isWalletReady]);
 
   return (
     <Box
@@ -151,7 +162,7 @@ export default function CreationSuccessful() {
               display={Display.Flex}
               style={{ width: '144px', height: '144px' }}
             >
-              <LottieAnimation path={renderFoxPath} loop autoplay />
+              {renderFox}
             </Box>
           </Box>
           <Text
