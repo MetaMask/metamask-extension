@@ -129,6 +129,7 @@ import { CreateSnapAccount } from '../create-snap-account';
 import { ImportAccount } from '../import-account';
 import { SrpList } from '../multi-srp/srp-list';
 import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
+import { getNetworksWithTransactionActivity } from '../../../selectors/multichain/networks';
 import { HiddenAccountList } from './hidden-account-list';
 
 // TODO: Should we use an enum for this instead?
@@ -265,6 +266,9 @@ export const AccountListMenu = ({
     getConnectedSubjectsForAllAddresses,
   ) as AccountConnections;
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
+  const networksWithTransactionActivity = useSelector(
+    getNetworksWithTransactionActivity,
+  );
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -507,10 +511,20 @@ export const AccountListMenu = ({
   ///: END:ONLY_INCLUDE_IF(multichain)
 
   useEffect(() => {
-    if (filteredAccounts.length > 0 && useExternalServices) {
+    if (
+      (filteredAccounts.length > 0 &&
+        useExternalServices &&
+        networksWithTransactionActivity === null) ||
+      networksWithTransactionActivity === undefined
+    ) {
       dispatch(getNetworksWithTransactionActivityByAccounts());
     }
-  }, [dispatch, filteredAccounts.length, useExternalServices]);
+  }, [
+    dispatch,
+    filteredAccounts.length,
+    useExternalServices,
+    networksWithTransactionActivity,
+  ]);
 
   return (
     <Modal isOpen onClose={onClose}>

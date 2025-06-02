@@ -564,6 +564,10 @@ export function addNewAccount(
         [oldAccounts.length, keyringId],
       );
       await forceUpdateMetamaskState(dispatch);
+      const { useExternalServices } = getState().metamask;
+      if (useExternalServices) {
+        dispatch(getNetworksWithTransactionActivityByAccounts());
+      }
       const newState = getState();
       newAccount = getInternalAccountByAddress(newState, addedAccountAddress);
     } catch (error) {
@@ -1280,6 +1284,10 @@ export function updateAndApproveTx(
         dispatch(hideLoadingIndication());
         dispatch(updateCustomNonce(''));
         dispatch(closeCurrentNotificationWindow());
+        const { useExternalServices } = getState().metamask;
+        if (useExternalServices) {
+          dispatch(getNetworksWithTransactionActivityByAccounts());
+        }
         return txMeta;
       })
       .catch((err) => {
