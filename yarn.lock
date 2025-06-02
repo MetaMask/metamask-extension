@@ -5821,25 +5821,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-network-controller@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "@metamask/multichain-network-controller@npm:0.7.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^8.0.1"
-    "@metamask/controller-utils": "npm:^11.8.0"
-    "@metamask/keyring-api": "npm:^17.4.0"
-    "@metamask/keyring-internal-api": "npm:^6.0.1"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.2.0"
-    "@solana/addresses": "npm:^2.0.0"
-    lodash: "npm:^4.17.21"
-  peerDependencies:
-    "@metamask/accounts-controller": ^29.0.0
-    "@metamask/network-controller": ^23.0.0
-  checksum: 10/7760997522e5e7d4b27352e9a8f4354eb8fc06a187f7d7140c2f88cb712814a66f2dd4fcaf23d7bad910f46d9120dd8e46dcd86c93eb7be47bf566b727331c58
-  languageName: node
-  linkType: hard
-
 "@metamask/multichain-network-controller@npm:^0.8.0":
   version: 0.8.0
   resolution: "@metamask/multichain-network-controller@npm:0.8.0"
@@ -6612,32 +6593,6 @@ __metadata:
     "@metamask/network-controller": ^23.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
   checksum: 10/9a9a384cd1449e8edf79687af894383c2601d489f645e0ca2691968659eb667e33781147dea12f897936a8d81f0a12fa340a8af8a76ee149b1322b891e0e898d
-  languageName: node
-  linkType: hard
-
-"@metamask/user-operation-controller@npm:^35.0.0":
-  version: 35.0.0
-  resolution: "@metamask/user-operation-controller@npm:35.0.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^8.0.1"
-    "@metamask/controller-utils": "npm:^11.8.0"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/polling-controller": "npm:^13.0.0"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.2.0"
-    bn.js: "npm:^5.2.1"
-    immer: "npm:^9.0.6"
-    lodash: "npm:^4.17.21"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@metamask/approval-controller": ^7.0.0
-    "@metamask/eth-block-tracker": ">=9"
-    "@metamask/gas-fee-controller": ^23.0.0
-    "@metamask/keyring-controller": ^22.0.0
-    "@metamask/network-controller": ^23.0.0
-    "@metamask/transaction-controller": ^56.0.0
-  checksum: 10/417eaaaf705f26b2c5758a77aa112b3b6935fd05665b99eb421cd8f947f5ec68aeb4e40dabdcc711cd211e1b7facc775e3d47fc178f9fc0360b2bf5efd338c6f
   languageName: node
   linkType: hard
 
