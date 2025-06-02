@@ -285,7 +285,7 @@ export function restoreSocialBackupAndGetSeedPhrase(
       );
 
       // restore the vault using the seed phrase
-      const [firstKeyring] = await submitRequestToBackground<KeyringMetadata[]>(
+      const [firstKeyring] = await submitRequestToBackground(
         'createNewVaultAndRestore',
         [password, encodedSeedPhrase],
       );
