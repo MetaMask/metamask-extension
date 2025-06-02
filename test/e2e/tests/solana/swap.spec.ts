@@ -7,7 +7,7 @@ import SwapPage from '../../page-objects/pages/swap/swap-page';
 import ConfirmSolanaTxPage from '../../page-objects/pages/send/solana-confirm-tx-page';
 const swapRate = 174.7;
 describe('Swap on Solana', function () {
-  it.only('Completes a Swap between SOL and SPL', async function () {
+  it('Completes a Swap between SOL and SPL', async function () {
     this.timeout(100000000)
     await withSolanaAccountSnap(
       {
@@ -39,24 +39,25 @@ describe('Swap on Solana', function () {
         await confirmSolanaPage.clickOnConfirm();
 
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.check_txAmountInActivity('0.00708 SOL', 1);
+        await activityListPage.check_txAmountInActivity('1 USDC', 1);
 
 
-        await activityListPage.check_swapTransactionActivity('Swap SOL to USDC');
+        await activityListPage.check_swapTransactionActivity('Swap USDC to SOL');
       }
     );
   });
-  it('Completes a Swap between SPL and SOL', async function () {
+  it.only('Completes a Swap between SPL and SOL', async function () {
     this.timeout(100000000)
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
         mockCalls: true,
-        mockSwapSOLtoUSDC: true,
+        mockSwapUSDtoSOL: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
+
         await homePage.check_pageIsLoaded('50');
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
@@ -64,10 +65,8 @@ describe('Swap on Solana', function () {
           amount: 0.01,
           swapTo: 'SOL',
           swapFrom: 'USDC',});
-
-
         await swapPage.reviewSolanaQuote({
-          swapToAmount: 0.000009,
+          swapToAmount: 0.00589,
           swapFrom: 'USDC',
           swapTo: 'SOL',
           swapFromAmount: 0,
@@ -79,12 +78,11 @@ describe('Swap on Solana', function () {
         await confirmSolanaPage.clickOnConfirm();
 
         const activityListPage = new ActivityListPage(driver);
-        await driver.delay(100000000)
-        await activityListPage.check_txAmountInActivity('-1 PKIN', 1);
+        await activityListPage.check_txAmountInActivity('-1 USDC', 1);
 
 
-        await activityListPage.check_swapTransactionActivity('Swap PKIN to SOL');
+        await activityListPage.check_swapTransactionActivity('Swap USDC to SOL');
       }
     );
-  });
+  })
 })

@@ -1734,77 +1734,6 @@ export async function mockGetSuccessTransaction(mockServer: Mockttp) {
     });
 }
 
-export async function mockGetSuccessTransactionDevnet(mockServer: Mockttp) {
-  const response = {
-    statusCode: 200,
-    json: {
-      id: '1337',
-      jsonrpc: '2.0',
-      result: {
-        blockTime: 1739973211,
-        meta: {
-          computeUnitsConsumed: 150,
-          err: null,
-          fee: 5000,
-          innerInstructions: [],
-          loadedAddresses: {
-            readonly: [],
-            writable: [],
-          },
-          logMessages: [
-            'Program 11111111111111111111111111111111 invoke [1]',
-            'Program 11111111111111111111111111111111 success',
-          ],
-          postBalances: [6995200, 525845878579, 1],
-          postTokenBalances: [],
-          preBalances: [14078760, 525838800019, 1],
-          preTokenBalances: [],
-          rewards: [],
-          status: {
-            Ok: null,
-          },
-        },
-        slot: 321700491,
-        transaction: {
-          message: {
-            accountKeys: [
-              'HH9ZzgQvSVmznKcRfwHuEphuxk7zU5f92CkXFDQfVJcq',
-              'AL9Z5JgZdeCKnaYg6jduy9PQGzo3moo7vZYVSTJwnSEq',
-              '11111111111111111111111111111111',
-            ],
-            addressTableLookups: [],
-            header: {
-              numReadonlySignedAccounts: 0,
-              numReadonlyUnsignedAccounts: 1,
-              numRequiredSignatures: 1,
-            },
-            instructions: [
-              {
-                accounts: [0, 1],
-                data: '3Bxs4TcxCSkLAdy9',
-                programIdIndex: 2,
-                stackHeight: null,
-              },
-            ],
-            recentBlockhash: 'BV3s6CSZXUiNkFvdzQjpD6jB3ZSNqhnbpRQ1acu2DG5L',
-          },
-          signatures: [
-            '3AcYfpsSaFYogY4Y4YN77MkhDgVBEgUe1vuEeqKnCMm5udTrFCyw9w17mNM8DUnHnQD2VHRFeipMUb27Q3iqMQJr',
-          ],
-        },
-        version: 0,
-      },
-    },
-  };
-
-  return await mockServer
-    .forPost(SOLANA_URL_REGEX_DEVNET)
-    .withBodyIncluding('getTransaction')
-    .thenCallback(() => {
-      return response;
-    });
-}
-
 export async function mockGetLatestBlockhash(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
@@ -1860,6 +1789,7 @@ export async function mockGetLatestBlockhashDevnet(mockServer: Mockttp) {
     });
 }
 export async function mockGetFailedSignaturesForAddress(mockServer: Mockttp) {
+  console.log('mockGetFailedSignaturesForAddress');
   return await mockServer
     .forPost(SOLANA_URL_REGEX_MAINNET)
     .withBodyIncluding('getSignaturesForAddress')
@@ -1886,36 +1816,9 @@ export async function mockGetFailedSignaturesForAddress(mockServer: Mockttp) {
       };
     });
 }
-export async function mockGetFailedSignaturesForAddressDevnet(
-  mockServer: Mockttp,
-) {
-  return await mockServer
-    .forPost(SOLANA_URL_REGEX_DEVNET)
-    .withBodyIncluding('getSignaturesForAddress')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          id: '1337',
-          jsonrpc: '2.0',
-          result: [
-            {
-              blockTime: 1739973211,
-              confirmationStatus: 'finalized',
-              err: {
-                InstructionError: [0, 'CustomError'],
-              },
-              memo: null,
-              signature:
-                '3AcYfpsSaFYogY4Y4YN77MkhDgVBEgUe1vuEeqKnCMm5udTrFCyw9w17mNM8DUnHnQD2VHRFeipMUb27Q3iqMQJr',
-              slot: 321700491,
-            },
-          ],
-        },
-      };
-    });
-}
+
 export async function mockGetSuccessSignaturesForAddress(mockServer: Mockttp) {
+  console.log('mockGetSuccessSignaturesForAddress');
   return await mockServer
     .forPost(SOLANA_URL_REGEX_MAINNET)
     .withBodyIncluding('getSignaturesForAddress')
@@ -1942,6 +1845,7 @@ export async function mockGetSuccessSignaturesForAddress(mockServer: Mockttp) {
 }
 
 export async function mockGetSuccessSignaturesForBridge(mockServer: Mockttp) {
+  console.log('mockGetSuccessSignaturesForBridge');
   return await mockServer
     .forPost(SOLANA_URL_REGEX_MAINNET)
     .withBodyIncluding('getSignaturesForAddress')
@@ -2064,12 +1968,19 @@ export async function mockGetSignaturesSuccessSwap(mockServer: Mockttp) {
           "confirmationStatus": "finalized",
           "err": null,
           "memo": null,
-          "signature": "VANfMMouDKRNzDLo7Vy6buXKpQPwm35HRu9kN2Q5zebF9TEdDmaVVZzeMvaufjswMXCxswauPuaxrtGXZVfeKbh",
+          "signature": "28rWme56aMyaP8oX18unFeZg65iyDEhjLhvMBpxyFgKcn38P37ZRsssSZoHDCCr5xUfwfpqsVSSBoShLitHQLdrr",
           "slot": 342840492
       }
       ],
     },
   };
+
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX_MAINNET)
+    .withBodyIncluding('getSignaturesForAddress')
+    .thenCallback(() => {
+      return response;
+    });
 }
 
 export async function mockSendSwapSolanaTransaction(mockServer: Mockttp) {
@@ -2077,7 +1988,7 @@ export async function mockSendSwapSolanaTransaction(mockServer: Mockttp) {
     statusCode: 200,
     json: {
       result:
-        'VANfMMouDKRNzDLo7Vy6buXKpQPwm35HRu9kN2Q5zebF9TEdDmaVVZzeMvaufjswMXCxswauPuaxrtGXZVfeKbh',
+        '28rWme56aMyaP8oX18unFeZg65iyDEhjLhvMBpxyFgKcn38P37ZRsssSZoHDCCr5xUfwfpqsVSSBoShLitHQLdrr',
       id: '1337',
       jsonrpc: '2.0',
     },
@@ -2538,6 +2449,467 @@ export async function mockGetSOLPKINTransaction(mockServer: Mockttp) {
             },
             "signatures": [
                 "2fBvzrQ3Yg1EuURsLjQ34LL3TKB4me5oc4mAiPkhTVnUC8ycu8FoP7vWjYW2Sc1ta3jkzszwxkoihxryqezLo46y"
+            ]
+        },
+        "version": 0
+      },
+      id: '1337',
+      jsonrpc: '2.0',
+    },
+  };
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX_MAINNET)
+    .withJsonBodyIncluding({
+      method: 'getTransaction',
+    })
+    .thenCallback(() => {
+      return response;
+    });
+}
+
+export async function mockGetUSDCSOLTransaction(mockServer: Mockttp) {
+  const response = {
+    statusCode: 200,
+    json: {
+      result: {
+        "blockTime": 1748545222,
+        "meta": {
+            "computeUnitsConsumed": 101807,
+            "err": null,
+            "fee": 17129,
+            "innerInstructions": [
+                {
+                    "index": 2,
+                    "instructions": [
+                        {
+                            "accounts": [
+                                18
+                            ],
+                            "data": "84eT",
+                            "programIdIndex": 11,
+                            "stackHeight": 2
+                        },
+                        {
+                            "accounts": [
+                                0,
+                                2
+                            ],
+                            "data": "11119os1e9qSs2u7TsThXqkBSRVFxhmYaFKFZ1waB2X7armDmvK3p5GmLdUxYdg3h7QSrL",
+                            "programIdIndex": 4,
+                            "stackHeight": 2
+                        },
+                        {
+                            "accounts": [
+                                2
+                            ],
+                            "data": "P",
+                            "programIdIndex": 11,
+                            "stackHeight": 2
+                        },
+                        {
+                            "accounts": [
+                                2,
+                                18
+                            ],
+                            "data": "6Q6A46mVa7ntxYLTkQL1uwuXsmxKehnHCxSemuaNkzZYa",
+                            "programIdIndex": 11,
+                            "stackHeight": 2
+                        }
+                    ]
+                },
+                {
+                    "index": 3,
+                    "instructions": [
+                        {
+                            "accounts": [
+                                14,
+                                9,
+                                5,
+                                12,
+                                13,
+                                2,
+                                1,
+                                15,
+                                16,
+                                19,
+                                0,
+                                11
+                            ],
+                            "data": "2j6vnwYDURn8yxjpGDgSwCk2TC7zm3ds9vF",
+                            "programIdIndex": 17,
+                            "stackHeight": 2
+                        },
+                        {
+                            "accounts": [
+                                1,
+                                13,
+                                0
+                            ],
+                            "data": "3GVQAnZaHe7Z",
+                            "programIdIndex": 11,
+                            "stackHeight": 3
+                        },
+                        {
+                            "accounts": [
+                                12,
+                                2,
+                                14
+                            ],
+                            "data": "3YCx4dunCXKm",
+                            "programIdIndex": 11,
+                            "stackHeight": 3
+                        },
+                        {
+                            "accounts": [
+                                8
+                            ],
+                            "data": "QMqFu4fYGGeUEysFnenhAvD866YwW6jMndC6NeFLmgrgSsQrYzqQkLQZLriiyYAHU6DY9CABySGbF8TQvwB3my7Y4x2mCV92TazD1F3CPHC5Lc1t9Sxvsw4uAWevnAMmvZuNDYJ2mVPStyXdQdpeMWPunS72XGr9kntRo29mYiYQRSF",
+                            "programIdIndex": 10,
+                            "stackHeight": 2
+                        }
+                    ]
+                }
+            ],
+            "loadedAddresses": {
+                "readonly": [
+                    "J4HJYz4p7TRP96WVFky3vh7XryxoFehHjoRySUTeSeXw",
+                    "obriQD1zbpyLz95G5n7nJe6a4DPjpFwa5XYPoNm113y",
+                    "So11111111111111111111111111111111111111112",
+                    "Sysvar1nstructions1111111111111111111111111"
+                ],
+                "writable": [
+                    "86KSdCfcqnJo9TCLFi3zxsJAJzvx9QU7oEPd6Fn5ZPom",
+                    "8ofECjHnVGLU4ywyPdK6mFddEqAuXsnrrov8m2zeFhvj",
+                    "Fn68NZzCCgZKtYmnAYbkL6w5NNx3TgjW91dGkLA3hsDK",
+                    "FpCMFDFGYotvufJ7HrFHsWEiiQCGbkLCtwHiDnh7o28Q"
+                ]
+            },
+            "logMessages": [
+                "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+                "Program ComputeBudget111111111111111111111111111111 success",
+                "Program ComputeBudget111111111111111111111111111111 invoke [1]",
+                "Program ComputeBudget111111111111111111111111111111 success",
+                "Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL invoke [1]",
+                "Program log: CreateIdempotent",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [2]",
+                "Program log: Instruction: GetAccountDataSize",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 1569 of 115585 compute units",
+                "Program return: TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA pQAAAAAAAAA=",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success",
+                "Program 11111111111111111111111111111111 invoke [2]",
+                "Program 11111111111111111111111111111111 success",
+                "Program log: Initialize the associated token account",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [2]",
+                "Program log: Instruction: InitializeImmutableOwner",
+                "Program log: Please upgrade to SPL Token 2022 for immutable owner support",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 1405 of 108998 compute units",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [2]",
+                "Program log: Instruction: InitializeAccount3",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 3158 of 105116 compute units",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success",
+                "Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL consumed 19315 of 120990 compute units",
+                "Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL success",
+                "Program JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4 invoke [1]",
+                "Program log: Instruction: Route",
+                "Program obriQD1zbpyLz95G5n7nJe6a4DPjpFwa5XYPoNm113y invoke [2]",
+                "Program log: Instruction: Swap",
+                "Program log: price_x: 1679383",
+                "Program log: price_y: 10000",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [3]",
+                "Program log: Instruction: Transfer",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 4645 of 49483 compute units",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [3]",
+                "Program log: Instruction: Transfer",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 4736 of 41962 compute units",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success",
+                "Program log: YX15 224719444972,123013945942,991250,5903984",
+                "Program obriQD1zbpyLz95G5n7nJe6a4DPjpFwa5XYPoNm113y consumed 66637 of 97183 compute units",
+                "Program obriQD1zbpyLz95G5n7nJe6a4DPjpFwa5XYPoNm113y success",
+                "Program JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4 invoke [2]",
+                "Program JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4 consumed 184 of 28810 compute units",
+                "Program JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4 success",
+                "Program JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4 consumed 74633 of 101675 compute units",
+                "Program return: JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4 cBZaAAAAAAA=",
+                "Program JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4 success",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [1]",
+                "Program log: Instruction: CloseAccount",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 2915 of 27042 compute units",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA invoke [1]",
+                "Program log: Instruction: Transfer",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA consumed 4644 of 24127 compute units",
+                "Program TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA success"
+            ],
+            "postBalances": [
+                1538468067,
+                2039280,
+                0,
+                2039280,
+                1,
+                29900160,
+                731913600,
+                1,
+                1017968,
+                8741760,
+                1141440,
+                934087680,
+                224715580269,
+                2039280,
+                5526241,
+                3167032033,
+                2561280,
+                1141440,
+                1045539216193,
+                0
+            ],
+            "postTokenBalances": [
+                {
+                    "accountIndex": 1,
+                    "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "owner": "3xTPAZxmpwd8GrNEKApaTw6VH4jqJ31WFXUvQzgwhR7c",
+                    "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                    "uiTokenAmount": {
+                        "amount": "11827324",
+                        "decimals": 6,
+                        "uiAmount": 11.827324,
+                        "uiAmountString": "11.827324"
+                    }
+                },
+                {
+                    "accountIndex": 3,
+                    "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "owner": "4cLUBQKZgCv2AqGXbh8ncGhrDRcicUe3WSDzjgPY2oTA",
+                    "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                    "uiTokenAmount": {
+                        "amount": "244533398",
+                        "decimals": 6,
+                        "uiAmount": 244.533398,
+                        "uiAmountString": "244.533398"
+                    }
+                },
+                {
+                    "accountIndex": 12,
+                    "mint": "So11111111111111111111111111111111111111112",
+                    "owner": "Fn68NZzCCgZKtYmnAYbkL6w5NNx3TgjW91dGkLA3hsDK",
+                    "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                    "uiTokenAmount": {
+                        "amount": "224713540988",
+                        "decimals": 9,
+                        "uiAmount": 224.713540988,
+                        "uiAmountString": "224.713540988"
+                    }
+                },
+                {
+                    "accountIndex": 13,
+                    "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "owner": "Fn68NZzCCgZKtYmnAYbkL6w5NNx3TgjW91dGkLA3hsDK",
+                    "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                    "uiTokenAmount": {
+                        "amount": "123014937192",
+                        "decimals": 6,
+                        "uiAmount": 123014.937192,
+                        "uiAmountString": "123014.937192"
+                    }
+                }
+            ],
+            "preBalances": [
+                1532581212,
+                2039280,
+                0,
+                2039280,
+                1,
+                29900160,
+                731913600,
+                1,
+                1017968,
+                8741760,
+                1141440,
+                934087680,
+                224721484253,
+                2039280,
+                5526241,
+                3167032033,
+                2561280,
+                1141440,
+                1045539216193,
+                0
+            ],
+            "preTokenBalances": [
+                {
+                    "accountIndex": 1,
+                    "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "owner": "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
+                    "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                    "uiTokenAmount": {
+                        "amount": "12827324",
+                        "decimals": 6,
+                        "uiAmount": 12.827324,
+                        "uiAmountString": "12.827324"
+                    }
+                },
+                {
+                    "accountIndex": 3,
+                    "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "owner": "4cLUBQKZgCv2AqGXbh8ncGhrDRcicUe3WSDzjgPY2oTA",
+                    "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                    "uiTokenAmount": {
+                        "amount": "244524648",
+                        "decimals": 6,
+                        "uiAmount": 244.524648,
+                        "uiAmountString": "244.524648"
+                    }
+                },
+                {
+                    "accountIndex": 12,
+                    "mint": "So11111111111111111111111111111111111111112",
+                    "owner": "Fn68NZzCCgZKtYmnAYbkL6w5NNx3TgjW91dGkLA3hsDK",
+                    "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                    "uiTokenAmount": {
+                        "amount": "224719444972",
+                        "decimals": 9,
+                        "uiAmount": 224.719444972,
+                        "uiAmountString": "224.719444972"
+                    }
+                },
+                {
+                    "accountIndex": 13,
+                    "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "owner": "Fn68NZzCCgZKtYmnAYbkL6w5NNx3TgjW91dGkLA3hsDK",
+                    "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                    "uiTokenAmount": {
+                        "amount": "123013945942",
+                        "decimals": 6,
+                        "uiAmount": 123013.945942,
+                        "uiAmountString": "123013.945942"
+                    }
+                }
+            ],
+            "rewards": [],
+            "status": {
+                "Ok": null
+            }
+        },
+        "slot": 343302515,
+        "transaction": {
+            "message": {
+                "accountKeys": [
+                    "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
+                    "F77xG4vz2CJeMxxAmFW8pvPx2c5Uk75pksr6Wwx6HFhV",
+                    "Ffqao4nxSvgaR5kvFz1F718WaxSv6LnNfHuGqFEZ8fzL",
+                    "H4FVf2mGfHN26D1CkZ6sJAb6xUhhnW1w9abpaxHnUbUD",
+                    "11111111111111111111111111111111",
+                    "6YawcNeZ74tRyCv4UfGydYMr7eho7vbUR6ScVffxKAb3",
+                    "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+                    "ComputeBudget111111111111111111111111111111",
+                    "D8cy77BBepLMngZx6ZukaTff5hCt1HrWyKk3Hnd9oitf",
+                    "GZsNmWKbqhMYtdSkkvMdEyQF9k5mLmP7tTKYWZjcHVPE",
+                    "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+                    "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+                ],
+                "addressTableLookups": [
+                    {
+                        "accountKey": "HPLCVFcCMgt6mp5uZLo9u8WnqAe2Yan7Sf285fRmitYP",
+                        "readonlyIndexes": [
+                            14,
+                            15,
+                            42,
+                            16
+                        ],
+                        "writableIndexes": [
+                            18,
+                            13,
+                            12,
+                            11
+                        ]
+                    }
+                ],
+                "header": {
+                    "numReadonlySignedAccounts": 0,
+                    "numReadonlyUnsignedAccounts": 8,
+                    "numRequiredSignatures": 1
+                },
+                "instructions": [
+                    {
+                        "accounts": [],
+                        "data": "3gJqkocMWaMm",
+                        "programIdIndex": 7,
+                        "stackHeight": null
+                    },
+                    {
+                        "accounts": [],
+                        "data": "KGo3nf",
+                        "programIdIndex": 7,
+                        "stackHeight": null
+                    },
+                    {
+                        "accounts": [
+                            0,
+                            2,
+                            0,
+                            18,
+                            4,
+                            11
+                        ],
+                        "data": "2",
+                        "programIdIndex": 6,
+                        "stackHeight": null
+                    },
+                    {
+                        "accounts": [
+                            11,
+                            0,
+                            1,
+                            2,
+                            10,
+                            18,
+                            10,
+                            8,
+                            10,
+                            17,
+                            14,
+                            9,
+                            5,
+                            12,
+                            13,
+                            2,
+                            1,
+                            15,
+                            16,
+                            19,
+                            0,
+                            11
+                        ],
+                        "data": "2jtsaD446yyqqK5qJ4cgMnD16xhu3vMUQSmXDEWJrsxn4RTnsh",
+                        "programIdIndex": 10,
+                        "stackHeight": null
+                    },
+                    {
+                        "accounts": [
+                            2,
+                            0,
+                            0
+                        ],
+                        "data": "A",
+                        "programIdIndex": 11,
+                        "stackHeight": null
+                    },
+                    {
+                        "accounts": [
+                            1,
+                            3,
+                            0
+                        ],
+                        "data": "3MB7Gffrb7zX",
+                        "programIdIndex": 11,
+                        "stackHeight": null
+                    }
+                ],
+                "recentBlockhash": "FN4BriKgvHGgyzrz1iZ1rv2zfAvogZ9fFbKiwL8b9Eru"
+            },
+            "signatures": [
+                "28rWme56aMyaP8oX18unFeZg65iyDEhjLhvMBpxyFgKcn38P37ZRsssSZoHDCCr5xUfwfpqsVSSBoShLitHQLdrr"
             ]
         },
         "version": 0
@@ -5569,6 +5941,215 @@ export async function mockETHQuote(mockServer: Mockttp) {
       }
     })
 }
+export async function mockQuoteFromUSDCtoSOL(mockServer: Mockttp) {
+  const quotesResponse = {
+    statusCode: 200,
+    json: [
+      {
+          "quote": {
+              "bridgeId": "lifi",
+              "requestId": "0xd9990728abf1185f5accffaf77842ed6744e413ce5a626a63e8f455c26176f78",
+              "aggregator": "lifi",
+              "srcChainId": 1151111081099710,
+              "srcTokenAmount": "991250",
+              "srcAsset": {
+                  "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                  "chainId": 1151111081099710,
+                  "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                  "symbol": "USDC",
+                  "decimals": 6,
+                  "name": "USD Coin",
+                  "coingeckoId": "usd-coin",
+                  "aggregators": [
+                      "orca",
+                      "jupiter",
+                      "coinGecko",
+                      "lifi"
+                  ],
+                  "occurrences": 4,
+                  "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png",
+                  "metadata": {},
+                  "price": "0.999774"
+              },
+              "destChainId": 1151111081099710,
+              "destTokenAmount": "5836864",
+              "destAsset": {
+                  "address": "0x0000000000000000000000000000000000000000",
+                  "chainId": 1151111081099710,
+                  "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+                  "symbol": "SOL",
+                  "decimals": 9,
+                  "name": "SOL",
+                  "aggregators": [],
+                  "occurrences": 100,
+                  "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+                  "metadata": {},
+                  "price": "168.49"
+              },
+              "feeData": {
+                  "metabridge": {
+                      "amount": "8750",
+                      "asset": {
+                          "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                          "chainId": 1151111081099710,
+                          "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                          "symbol": "USDC",
+                          "decimals": 6,
+                          "name": "USD Coin",
+                          "coingeckoId": "usd-coin",
+                          "aggregators": [
+                              "orca",
+                              "jupiter",
+                              "coinGecko",
+                              "lifi"
+                          ],
+                          "occurrences": 4,
+                          "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png",
+                          "metadata": {}
+                      }
+                  }
+              },
+              "bridges": [
+                  "jupiter (via LiFi)"
+              ],
+              "steps": [
+                  {
+                      "action": "swap",
+                      "srcChainId": 1151111081099710,
+                      "destChainId": 1151111081099710,
+                      "protocol": {
+                          "name": "jupiter",
+                          "displayName": "Jupiter",
+                          "icon": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/exchanges/jupiter.svg"
+                      },
+                      "srcAsset": {
+                          "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                          "chainId": 1151111081099710,
+                          "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                          "symbol": "USDC",
+                          "decimals": 6,
+                          "name": "USD Coin",
+                          "coingeckoId": "usd-coin",
+                          "aggregators": [
+                              "orca",
+                              "jupiter",
+                              "coinGecko",
+                              "lifi"
+                          ],
+                          "occurrences": 4,
+                          "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png",
+                          "metadata": {}
+                      },
+                      "destAsset": {
+                          "address": "0x0000000000000000000000000000000000000000",
+                          "chainId": 1151111081099710,
+                          "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+                          "symbol": "SOL",
+                          "decimals": 9,
+                          "name": "SOL",
+                          "aggregators": [],
+                          "occurrences": 100,
+                          "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+                          "metadata": {}
+                      },
+                      "srcAmount": "982577",
+                      "destAmount": "5836864"
+                  }
+              ],
+              "priceData": {
+                  "totalFromAmountUsd": "0.999772",
+                  "totalToAmountUsd": "0.98421200768",
+                  "priceImpact": "0.015563540807304115"
+              }
+          },
+          "trade": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAMESvsJhRtumFSoGZgsFcJr6DNYguB2VI+8YX3cCnnfUCfcvRFs6GawEjSqSj+B3TPe4te+nxkV8vMvILs8OrJPHnRlPacsnehxGUzvfBQOykkiuk2ZeKpI2vhOrOop7hbVO6QHypJEnWgmyavRZDxgbUvMIThv/+Q/ffa0JMGYGY62faezBYvIPIdPqffzy0Ah08sYIqHynXY7u6aYSziWQ0oPQ3SgjVP7wrjsOIn03zYnKJm+xfd+PfLfM775OvcVQan1RcYx3TJKFZjmGkdXraLXrijm0ttXHNVWyEAAAAAA9Bq6GrSQ0IG2/BL7eCIiLNUD6si3bkLQciA0jpQI1IDBkZv5SEXMv/srbpyw5vnvIzlu8X3EmssQ5s6QAAAAIyXJY9OJInxuz0QKRSODYMLWhOZ2v8QhASOe9jb6fhZHoxPq4mUSUyPHlwSh0RbKRfWDEPHmqlZFi9dYABZjTLG+nrzvtutOj1l82qryXQxsbvkwtL24OR8pgIDRS9dYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABt324ddloZPZy+FGzut5rBy0he1fWzeROoz1hX7/AKk1oGb+rLnywLjLSrIQx6MkqNBhCFbxqY1YmoGZVORW/QR51VvyMcBu7nTFbs5oFQf9sbLeo/SOUQKxzaJWvBOPtD/6J/XX9kp0wJsfKVh53ksJqzbfyd1RSzIap7OM5egED3F5rF3k3hTNBPd+KF4A2ipwMZyQ55D61KqG8HByUAoFAgYHCQBNyg9IqNelAAgABQIplQMACAAJA8T1AwAAAAAACQYAAQoLDA0BAQ0EAgsBAAoMAAAAAAAAAAAGCQYAAw4LDA0BAQ0EAgsDAAoM4CEAAAAAAAAGCQYABAAVDA0BAQ8VDQACBA8VDxAPFhcREgIEExQAGA0PJOUXy5d6460qAQAAABIBZAABMf4OAAAAAAA/DVkAAAAAAGQAAA0DBAAAAQkB4DYa6jZ39WscUTqRj/ZBkWPcZSOrplXadxvYM7bt86MEzc7LxwQ3gIHM",
+          "estimatedProcessingTimeInSeconds": 0
+      },
+      {
+          "quote": {
+              "requestId": "0xdd4446ad2ed2e500538395a106da44f20c3ca939260089460aeddaec52388127",
+              "bridgeId": "jupiter",
+              "aggregator": "jupiter",
+              "srcChainId": 1151111081099710,
+              "srcTokenAmount": "991250",
+              "srcAsset": {
+                  "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                  "chainId": 1151111081099710,
+                  "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                  "symbol": "USDC",
+                  "decimals": 6,
+                  "name": "USD Coin",
+                  "coingeckoId": "usd-coin",
+                  "aggregators": [
+                      "orca",
+                      "jupiter",
+                      "coinGecko",
+                      "lifi"
+                  ],
+                  "occurrences": 4,
+                  "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png",
+                  "metadata": {}
+              },
+              "destChainId": 1151111081099710,
+              "destTokenAmount": "5891206",
+              "destAsset": {
+                  "address": "0x0000000000000000000000000000000000000000",
+                  "chainId": 1151111081099710,
+                  "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+                  "symbol": "SOL",
+                  "decimals": 9,
+                  "name": "SOL",
+                  "aggregators": [],
+                  "occurrences": 100,
+                  "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
+                  "metadata": {}
+              },
+              "feeData": {
+                  "metabridge": {
+                      "amount": "8750",
+                      "asset": {
+                          "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                          "chainId": 1151111081099710,
+                          "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                          "symbol": "USDC",
+                          "decimals": 6,
+                          "name": "USD Coin",
+                          "coingeckoId": "usd-coin",
+                          "aggregators": [
+                              "orca",
+                              "jupiter",
+                              "coinGecko",
+                              "lifi"
+                          ],
+                          "occurrences": 4,
+                          "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png",
+                          "metadata": {}
+                      }
+                  }
+              },
+              "bridges": [
+                  "Invariant"
+              ],
+              "steps": [],
+              "priceData": {
+                  "totalFromAmountUsd": "0.999772",
+                  "totalToAmountUsd": "0.9933751557200001",
+                  "priceImpact": "0.006398303093105098"
+              }
+          },
+          "trade": "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAGCivsJhRtumFSoGZgsFcJr6DNYguB2VI+8YX3cCnnfUCf2faezBYvIPIdPqffzy0Ah08sYIqHynXY7u6aYSziWQ3RlPacsnehxGUzvfBQOykkiuk2ZeKpI2vhOrOop7hbVO6QHypJEnWgmyavRZDxgbUvMIThv/+Q/ffa0JMGYGY6AwZGb+UhFzL/7K26csOb57yM5bvF9xJrLEObOkAAAACMlyWPTiSJ8bs9ECkUjg2DC1oTmdr/EIQEjnvY2+n4WQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABt324ddloZPZy+FGzut5rBy0he1fWzeROoz1hX7/AKkEedVb8jHAbu50xW7OaBUH/bGy3qP0jlECsc2iVrwTj7Q/+if11/ZKdMCbHylYed5LCas238ndUUsyGqezjOXoSYaBAfYzguASD94F7oIIriSrPiNpNaY3cm888v4vTHcGBAAJA9xQAQAAAAAABAAFAuJvAgAFBgABAA4GBwEBCBUHAAIBCA4ICQgPEAoLAgEMDQARBwgk5RfLl3rjrSoBAAAAEgFkAAESIA8AAAAAAIbkWQAAAAAADwAABwMBAAABCQcDAgMACQMuIgAAAAAAAAHgNhrqNnf1axxROpGP9kGRY9xlI6umVdp3G9gztu3zowTNzsvHBDeAgcw=",
+          "estimatedProcessingTimeInSeconds": 0
+      }
+  ]
+  }
+  return await mockServer
+    .forGet(BRIDGE_GET_QUOTE_API)
+    .thenCallback(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 3000)); // just to see fetching quotes
+      return quotesResponse;
+    });
+}
+
 export async function mockQuoteFromSoltoUSDC(mockServer: Mockttp) {
   const quotesResponse = {
     statusCode: 200,
@@ -7313,8 +7894,7 @@ export async function mockGetTransactionBridge(mockServer: Mockttp) {
       return response;
     });
 }
-
-export async function mockPriceApiSpotPriceSwapSOLUSDC(mockServer: Mockttp) {
+export async function mockPriceApiSpotPriceSwap(mockServer: Mockttp) {
   return await mockServer.forGet(SPOT_PRICE_API).thenCallback(() => {
     return {
       statusCode: 200,
@@ -7423,7 +8003,7 @@ export async function withSolanaAccountSnap(
     dappPaths,
     withProtocolSnap,
     mockBridge,
-    mockSwap,
+    mockSwapUSDtoSOL,
     mockSwapSOLtoUSDC,
   }: {
     title?: string;
@@ -7440,7 +8020,7 @@ export async function withSolanaAccountSnap(
     dappPaths?: string[];
     withProtocolSnap?: boolean;
     mockBridge?: boolean;
-    mockSwap?: boolean;
+    mockSwapUSDtoSOL?: boolean;
     mockSwapSOLtoUSDC?: boolean;
   },
   test: (
@@ -7473,14 +8053,15 @@ export async function withSolanaAccountSnap(
         const mockList: MockedEndpoint[] = [];
 
         if (mockGetTransactionSuccess && !mockGetTransactionFailed) {
+          console.log('mockGetTransactionSuccess');
           mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
           mockList.push(await mockGetSuccessTransaction(mockServer));
           mockList.push(
             await mockGetSuccessSignaturesForAddressDevnet(mockServer),
           );
-          mockList.push(await mockGetSuccessTransactionDevnet(mockServer));
         }
         if (mockGetTransactionFailed && !mockGetTransactionSuccess) {
+          console.log('mockGetTransactionFailed');
           mockList.push(await mockGetFailedSignaturesForAddress(mockServer));
           mockList.push(await mockGetFailedTransaction(mockServer));
           mockList.push(
@@ -7488,14 +8069,14 @@ export async function withSolanaAccountSnap(
           );
           mockList.push(await mockGetFailedTransactionDevnet(mockServer));
         }
-        if (!mockGetTransactionSuccess && !mockGetTransactionFailed && !mockBridge) {
+        if (!mockGetTransactionSuccess && !mockGetTransactionFailed && !mockSwapUSDtoSOL && !mockSwapSOLtoUSDC) {
           // success tx by default
+          console.log('mockGetTransactionSuccess');
           mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
           mockList.push(await mockGetSuccessTransaction(mockServer));
           mockList.push(
             await mockGetSuccessSignaturesForAddressDevnet(mockServer),
           );
-          mockList.push(await mockGetSuccessTransactionDevnet(mockServer));
         }
         if (mockCalls) {
           mockList.push(
@@ -7542,63 +8123,41 @@ export async function withSolanaAccountSnap(
         if (simulateTransaction) {
           mockList.push(await simulateSolanaTransaction(mockServer));
         }
+        if (mockSwapUSDtoSOL) {
+          mockList.push(
+            ...[
+              await mockQuoteFromUSDCtoSOL(mockServer),
+              await mockSendSwapSolanaTransaction(mockServer),
+              await mockPriceApiSpotPriceSwap(mockServer),
+              await mockBridgeGetTokens(mockServer),
+              await mockGetUSDCSOLTransaction(mockServer),
+              await mockGetTokenAccountsTokenProgramSwaps(mockServer),
+              await mockGetTokenAccountsTokenProgram2022Swaps(mockServer),
+              await mockGetMultipleAccounts(mockServer),
+              await mockSecurityAlertSwap(mockServer),
+              await mockGetSignaturesSuccessSwap(mockServer),
+
+              //await mockTopAssetsSolana(mockServer),
+            ]
+          );
+        }
         if (mockSwapSOLtoUSDC) {
-          console.log('mockSwap');
 
           mockList.push(
             ...[
               await mockQuoteFromSoltoUSDC(mockServer),
               await mockSendSwapSolanaTransaction(mockServer),
-              await mockPriceApiSpotPriceSwapSOLUSDC(mockServer),
+              await mockPriceApiSpotPriceSwap(mockServer),
               await mockBridgeGetTokens(mockServer),
               await mockGetSOLUSDCTransaction(mockServer),
               await mockGetTokenAccountsTokenProgramSwaps(mockServer),
               await mockGetTokenAccountsTokenProgram2022Swaps(mockServer),
               await mockGetMultipleAccounts(mockServer),
               await mockSecurityAlertSwap(mockServer),
-
               //await mockTopAssetsSolana(mockServer),
             ]
           );
         }
-        if (mockBridge) {
-          mockList.push(
-            ...[
-            // await mockGetEthereumTokenList(mockServer),
-            await mockETHQuote(mockServer),
-            await mockSOLtoETHQuote(mockServer),
-            await mockGetBridgeStatus(mockServer),
-            await mockGetMultipleAccounts(mockServer),
-            await mockSendBridgeSolanaTransaction(mockServer),
-            await mockEthCallForBridge(mockServer),
-            await mockGetTransactionBridge(mockServer),
-            await mockGetSuccessSignaturesForBridge(mockServer),
-            await mockGetTokenAccountsTokenProgramSwaps(mockServer),
-            await mockGetTokenAccountsTokenProgram2022Swaps(mockServer),
-            await mockTopAssetsSolana(mockServer),
-            ]
-          );
-        }
-        if(mockSwap) {
-          mockList.push(
-            ...[
-              await mockSendSwapSolanaTransaction(mockServer),
-              await mockGetSOLPKINTransaction(mockServer),
-              await mockQuoteFromSoltoUSDC(mockServer),
-              await mockQuoteFromPKINtoSOL(mockServer),
-              await mockGetPKINSOLTransaction(mockServer),
-              await mockGetMultipleAccounts(mockServer),
-              await mockSecurityAlertSwap(mockServer),
-              await mockGetTokenAccountsTokenProgramSwaps(mockServer),
-              await mockGetTokenAccountsTokenProgram2022Swaps(mockServer),
-              //await mockTopAssetsSolana(mockServer),
-              //await mockPriceApiSpotPrice(mockServer),
-              //await mockPriceApiExchangeRates(mockServer),
-              //await mockPriceApiSpotPriceSolanaUsdc(mockServer),
-            ]
-          );
-        }
-
           if (mockSendTransaction) {
             mockList.push(await simulateSolanaTransaction(mockServer));
             mockList.push(await mockSendSolanaTransaction(mockServer));
