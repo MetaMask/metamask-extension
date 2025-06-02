@@ -5679,12 +5679,6 @@
   "startEarning": {
     "message": "Kazanmaya başla"
   },
-  "stateCorruptionDetectedErrorMessage": {
-    "message": "MetaMask'in durum dosyası hasarlı veya eksik. Dosyalar muhtemelen kurtarılabilir, bu yüzden MetaMask uzantısını kaldırmayın!"
-  },
-  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
-    "message": "Gizli kurtarma ifadenizi kendiniz kurtarmayı denemek istiyorsanız bu talimatları izleyin."
-  },
   "stateLogError": {
     "message": "Durum günlükleri alınırken hata."
   },

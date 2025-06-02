@@ -5679,12 +5679,6 @@
   "startEarning": {
     "message": "Comienza a ganar"
   },
-  "stateCorruptionDetectedErrorMessage": {
-    "message": "El archivo de estado de MetaMask falta o está dañado. Es posible que los archivos se puedan recuperar, ¡así que no desinstale la extensión de MetaMask!"
-  },
-  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
-    "message": "Si desea intentar recuperar su frase secreta de recuperación por su cuenta, siga estas instrucciones."
-  },
   "stateLogError": {
     "message": "Error al recuperar los registros de estado."
   },
