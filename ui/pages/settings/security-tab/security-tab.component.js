@@ -192,7 +192,7 @@ export default class SecurityTab extends PureComponent {
       if (socialLoginEnabled) {
         return t('securitySrpWalletRecovery');
       }
-      return t('revealSeedWords');
+      return t('revealSecretRecoveryPhrase');
     };
 
     return (
@@ -201,7 +201,7 @@ export default class SecurityTab extends PureComponent {
           ref={this.settingsRefs[1]}
           className="settings-page__security-tab-sub-header"
         >
-          {t('secretRecoveryPhrase')}
+          {t('securitySrpTitle')}
         </div>
         <div className="settings-page__content-padded">
           <div className="settings-page__content-description">
