@@ -4911,6 +4911,10 @@
     "message": "$1 RECOVERY",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
+  "securitySocialLoginLabel": {
+    "message": "$1 RECOVERY",
+    "description": "The $1 is the text 'Google' or 'Apple'"
+  },
   "securitySrpDescription": {
     "message": "Back up your Secret Recovery Phrase so you never lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget."
   },
@@ -5702,7 +5706,7 @@
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
   "srpRevealListTitle": {
-    "message": "Protect your wallet"
+    "message": "Secret Recovery Phrase"
   },
   "srpSecurityQuizGetStarted": {
     "message": "Get started"
@@ -6708,9 +6712,6 @@
   "unlockPageTooManyFailedAttempts": {
     "message": "Too many failed attempts. Please try again in $1.",
     "description": "$1 time to try again"
-  },
-  "unlockPageTooManyFailedAttemptsPermanent": {
-    "message": "Too many failed attempts. Your account is permanently locked."
   },
   "unpin": {
     "message": "Unpin"
