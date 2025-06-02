@@ -23,6 +23,9 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+// eslint-disable-next-line import/no-restricted-paths
+import { getPlatform } from '../../../../app/scripts/lib/util';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
 const SRP_LENGTHS = [12, 15, 18, 21, 24];
@@ -185,6 +188,30 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
     [draftSrp],
   );
 
+  const onTriggerPaste = async () => {
+    if (getPlatform() === PLATFORM_FIREFOX) {
+      const newSrp = await navigator.clipboard.readText();
+      if (newSrp.trim().match(/\s/u)) {
+        onSrpPaste(newSrp);
+      }
+      return;
+    }
+
+    const permissionResult = await navigator.permissions.query({
+      name: 'clipboard-read' as PermissionName,
+    });
+
+    if (
+      permissionResult.state === 'granted' ||
+      permissionResult.state === 'prompt'
+    ) {
+      const newSrp = await navigator.clipboard.readText();
+      if (newSrp.trim().match(/\s/u)) {
+        onSrpPaste(newSrp);
+      }
+    }
+  };
+
   useEffect(() => {
     const activeWord = draftSrp.find((word) => word.active);
     if (activeWord) {
@@ -326,23 +353,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
               {t('onboardingSrpInputClearAll')}
             </Button>
           ) : (
-            <Button
-              variant={ButtonVariant.Link}
-              onClick={async () => {
-                const permissionResult = await navigator.permissions.query({
-                  name: 'clipboard-read' as PermissionName,
-                });
-                if (
-                  permissionResult.state === 'granted' ||
-                  permissionResult.state === 'prompt'
-                ) {
-                  const newSrp = await navigator.clipboard.readText();
-                  if (newSrp.trim().match(/\s/u)) {
-                    onSrpPaste(newSrp);
-                  }
-                }
-              }}
-            >
+            <Button variant={ButtonVariant.Link} onClick={onTriggerPaste}>
               {t('paste')}
             </Button>
           )}
