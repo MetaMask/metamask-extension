@@ -66,9 +66,18 @@ describe('Unlock Page', () => {
   });
 
   it('clicks imports seed button', () => {
-    const { getByText } = renderWithProvider(<UnlockPage />, mockStore);
+    const { getByText, getByTestId } = renderWithProvider(
+      <UnlockPage />,
+      mockStore,
+    );
 
     fireEvent.click(getByText('Forgot password?'));
+
+    const resetPasswordButton = getByTestId('reset-password-modal-button');
+
+    expect(resetPasswordButton).toBeInTheDocument();
+
+    fireEvent.click(resetPasswordButton);
 
     expect(mockMarkPasswordForgotten).toHaveBeenCalled();
   });

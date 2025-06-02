@@ -6,7 +6,9 @@ export class GoogleLoginHandler extends BaseLoginHandler {
   public readonly OAUTH_SERVER_URL =
     'https://accounts.google.com/o/oauth2/v2/auth';
 
-  readonly #scope = ['openid', 'profile', 'email'];
+  readonly #scope = ['profile', 'email'];
+
+  #codeVerifier: string | undefined;
 
   get authConnection() {
     return AuthConnection.Google;
@@ -21,13 +23,30 @@ export class GoogleLoginHandler extends BaseLoginHandler {
    *
    * @returns The URL to initiate the OAuth login.
    */
-  getAuthUrl(): string {
+  async getAuthUrl(): Promise<string> {
     const authUrl = new URL(this.OAUTH_SERVER_URL);
+
+    const { codeVerifier, challenge } =
+      await this.generateCodeVerifierChallenge();
+    const nonce = this.generateNonce();
+    this.#codeVerifier = codeVerifier;
+
     authUrl.searchParams.set('client_id', this.options.oAuthClientId);
     authUrl.searchParams.set('response_type', 'code');
     authUrl.searchParams.set('scope', this.#scope.join(' '));
+    authUrl.searchParams.set(
+      'code_challenge_method',
+      this.CODE_CHALLENGE_METHOD,
+    );
+    authUrl.searchParams.set('code_challenge', challenge);
+    authUrl.searchParams.set(
+      'state',
+      JSON.stringify({
+        nonce,
+      }),
+    );
     authUrl.searchParams.set('redirect_uri', this.options.redirectUri);
-    authUrl.searchParams.set('nonce', this.nonce);
+    authUrl.searchParams.set('nonce', nonce);
     authUrl.searchParams.set('prompt', this.prompt);
 
     return authUrl.toString();
@@ -59,6 +78,7 @@ export class GoogleLoginHandler extends BaseLoginHandler {
       redirect_uri: redirectUri,
       login_provider: this.authConnection,
       network: web3AuthNetwork,
+      code_verifier: this.#codeVerifier,
     };
 
     return JSON.stringify(requestData);

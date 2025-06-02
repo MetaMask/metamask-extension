@@ -94,7 +94,7 @@ async function start() {
 
   /*
    * In case of MV3 the issue of blank screen was very frequent, it is caused by UI initialising before background is ready to send state.
-   * Code below ensures that UI is rendered only after "CONNECTION_READY" or "startUISync"
+   * Code below ensures that UI is rendered only after "startUISync"
    * messages are received thus the background is ready, and ensures that streams and
    * phishing warning page load only after the "startUISync" message is received.
    * In case the UI is already rendered, only update the streams.
