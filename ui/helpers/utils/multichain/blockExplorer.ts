@@ -16,7 +16,7 @@ export const getMultichainBlockExplorerUrl = (
 export const getMultichainAccountUrl = (
   address: string,
   network: MultichainNetwork,
-): string => {
+): string | null => {
   const { namespace } = parseCaipChainId(network.chainId);
   if (namespace === KnownCaipNamespace.Eip155) {
     return getAccountLink(
@@ -24,6 +24,11 @@ export const getMultichainAccountUrl = (
       network.network.chainId,
       network.network?.rpcPrefs,
     );
+  }
+
+  // No URL for Bitcoin as accounts are not identified by address.
+  if (namespace === KnownCaipNamespace.Bip122) {
+    return null;
   }
 
   // We're in a non-EVM context, so we assume we can use format URLs instead.

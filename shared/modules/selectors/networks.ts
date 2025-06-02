@@ -307,10 +307,7 @@ export const getNonTestNetworks = createSelector(
     return Object.entries(networkConfigurationsByCaipChainId)
       .filter(([chainId]) => {
         const caipChainId = chainId as CaipChainId;
-        return (
-          !CAIP_FORMATTED_EVM_TEST_CHAINS.includes(caipChainId) &&
-          !NON_EVM_TESTNET_IDS.includes(caipChainId)
-        );
+        return !CAIP_FORMATTED_EVM_TEST_CHAINS.includes(caipChainId);
       })
       .map(([chainId, network]) => ({
         ...network,
