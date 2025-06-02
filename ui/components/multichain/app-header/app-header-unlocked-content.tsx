@@ -125,6 +125,44 @@ export const AppHeaderUnlockedContent = ({
   const handleConnectionsRoute = () => {
     history.push(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
   };
+
+  const CopyButton = useMemo(
+    () => (
+      <ButtonBase
+        className="multichain-app-header__address-copy-button"
+        onClick={() => handleCopy(normalizedCurrentAddress)}
+        size={ButtonBaseSize.Sm}
+        backgroundColor={BackgroundColor.transparent}
+        borderRadius={BorderRadius.LG}
+        endIconName={copied ? IconName.CopySuccess : IconName.Copy}
+        endIconProps={{
+          color: IconColor.iconAlternative,
+          size: IconSize.Sm,
+        }}
+        paddingLeft={0}
+        paddingRight={0}
+        ellipsis
+        textProps={{
+          display: Display.Flex,
+          gap: 2,
+          variant: TextVariant.bodyMdMedium,
+        }}
+        style={{ height: 'auto' }} // ButtonBase doesn't have auto size
+        data-testid="app-header-copy-button"
+      >
+        <Text
+          color={TextColor.textAlternative}
+          variant={TextVariant.bodySmMedium}
+          ellipsis
+          as="span"
+        >
+          {shortenedAddress}
+        </Text>
+      </ButtonBase>
+    ),
+    [copied, handleCopy, normalizedCurrentAddress, shortenedAddress],
+  );
+
   const AppContent = useMemo(
     () => (
       <>
@@ -168,42 +206,28 @@ export const AppHeaderUnlockedContent = ({
               paddingLeft={0}
               paddingRight={0}
             />
-            <ButtonBase
-              className="multichain-app-header__address-copy-button"
-              onClick={() => handleCopy(normalizedCurrentAddress)}
-              size={ButtonBaseSize.Sm}
-              backgroundColor={BackgroundColor.transparent}
-              borderRadius={BorderRadius.LG}
-              endIconName={copied ? IconName.CopySuccess : IconName.Copy}
-              endIconProps={{
-                color: IconColor.iconAlternative,
-                size: IconSize.Sm,
-              }}
-              paddingLeft={0}
-              paddingRight={0}
-              ellipsis
-              textProps={{
-                display: Display.Flex,
-                gap: 2,
-                variant: TextVariant.bodyMdMedium,
-              }}
-              style={{ height: 'auto' }} // ButtonBase doesn't have auto size
-              data-testid="app-header-copy-button"
-            >
-              <Text
-                color={TextColor.textAlternative}
-                variant={TextVariant.bodySmMedium}
-                ellipsis
-                as="span"
+            {process.env.REMOVE_GNS ? (
+              <>{CopyButton}</>
+            ) : (
+              <Tooltip
+                position="left"
+                title={copied ? t('addressCopied') : t('copyToClipboard')}
               >
-                {shortenedAddress}
-              </Text>
-            </ButtonBase>
+                {CopyButton}
+              </Tooltip>
+            )}
           </Text>
         )}
       </>
     ),
-    [copied, handleCopy],
+    [
+      disableAccountPicker,
+      dispatch,
+      internalAccount,
+      t,
+      trackEvent,
+      useBlockie,
+    ],
   );
 
   return (
