@@ -7,11 +7,8 @@ import {
   formatEtaInMinutes,
   UnifiedSwapBridgeEventName,
   getNativeAssetForChainId,
-  selectMinimumBalanceForRentExemptionInSOL,
 } from '@metamask/bridge-controller';
 import type { ChainId } from '@metamask/bridge-controller';
-// eslint-disable-next-line import/no-named-as-default
-import BigNumber from 'bignumber.js';
 import {
   Text,
   PopoverPosition,
@@ -31,7 +28,8 @@ import {
   getFromToken,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { formatTokenAmount } from '../utils/quote';
+import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
 import { useRequestMetadataProperties } from '../../../hooks/bridge/events/useRequestMetadataProperties';
@@ -55,13 +53,10 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
-export const MultichainBridgeQuoteCard = ({
-  balanceAmount,
-}: {
-  balanceAmount: BigNumber;
-}) => {
+export const MultichainBridgeQuoteCard = () => {
   const t = useI18nContext();
   const { activeQuote } = useSelector(getBridgeQuotes);
+  const currency = useSelector(getCurrentCurrency);
 
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
   const { quoteRequestProperties } = useRequestProperties();
@@ -76,9 +71,6 @@ export const MultichainBridgeQuoteCard = ({
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const dispatch = useDispatch();
-  const minimumBalanceForRentExemption = useSelector(
-    selectMinimumBalanceForRentExemptionInSOL,
-  );
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
@@ -176,25 +168,15 @@ export const MultichainBridgeQuoteCard = ({
               >
                 {t('networkFee')}
               </Text>
-              <Text>{activeQuote.totalMaxNetworkFee?.amount}</Text>
             </Row>
 
             <Row justifyContent={JustifyContent.spaceBetween}>
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textAlternative}
-              >
-                TOTAL
-              </Text>
               <Text>
-                {activeQuote.sentAmount.amount} +{' '}
-                {minimumBalanceForRentExemption} +
-                {activeQuote.totalMaxNetworkFee?.amount} ={' '}
-                {new BigNumber(activeQuote.sentAmount.amount)
-                  .add(minimumBalanceForRentExemption)
-                  .add(activeQuote.totalMaxNetworkFee?.amount)
-                  .toString()}{' '}
-                = {balanceAmount.toString()}
+                {formatCurrencyAmount(
+                  activeQuote.totalMaxNetworkFee?.valueInCurrency,
+                  currency,
+                  2,
+                )}
               </Text>
             </Row>
 
