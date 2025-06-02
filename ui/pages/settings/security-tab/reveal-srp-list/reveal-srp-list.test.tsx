@@ -1,4 +1,5 @@
 import React from 'react';
+import { waitFor } from '@testing-library/react';
 import configureStore, { MetaMaskReduxState } from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
@@ -36,6 +37,8 @@ describe('RevealSrpList', () => {
 
     hdKeyring.click();
 
-    expect(getByTestId('srp-quiz-get-started')).toBeInTheDocument();
+    waitFor(() => {
+      expect(getByTestId('srp-quiz-get-started')).toBeInTheDocument();
+    });
   });
 });

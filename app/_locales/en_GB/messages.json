@@ -4886,17 +4886,23 @@
     "description": "The security provider that is providing data"
   },
   "securitySocialLoginEnabled": {
-    "message": "Email recovery enabled"
+    "message": "Enabled"
   },
   "securitySocialLoginEnabledDescription": {
-    "message": "Access your wallet anytime with your $1 login and password.",
-    "description": "The $1 is the text 'Apple/Google'"
+    "message": "This email and your MetaMask password will help you recover your account and recovery phrases."
+  },
+  "securitySocialLoginLabel": {
+    "message": "$1 RECOVERY",
+    "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySrpBackupSrp": {
     "message": "Back up Secret Recovery Phrase"
   },
   "securitySrpDescription": {
     "message": "Back up your Secret Recovery Phrase so you never lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget."
+  },
+  "securitySrpLabel": {
+    "message": "SECRET RECOVERY PHRASES"
   },
   "securitySrpTitle": {
     "message": "Secret Recovery Phrase"
@@ -5681,6 +5687,9 @@
   "srpPasteTip": {
     "message": "You can paste your entire secret recovery phrase into any field",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpRevealListTitle": {
+    "message": "Secret Recovery Phrase"
   },
   "srpSecurityQuizGetStarted": {
     "message": "Get started"

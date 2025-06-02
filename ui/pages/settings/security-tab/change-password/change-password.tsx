@@ -98,7 +98,7 @@ const ChangePassword = () => {
           gap={6}
           justifyContent={JustifyContent.spaceBetween}
           height={BlockSize.Full}
-          onSubmit={(e) => {
+          onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             handleSubmitCurrentPassword();
           }}
@@ -141,7 +141,7 @@ const ChangePassword = () => {
           gap={6}
           justifyContent={JustifyContent.spaceBetween}
           height={BlockSize.Full}
-          onSubmit={(e) => {
+          onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             handleSubmitNewPassword();
           }}

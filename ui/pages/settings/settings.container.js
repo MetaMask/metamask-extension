@@ -57,7 +57,7 @@ const ROUTES_TO_I18N_KEYS = {
   [GENERAL_ROUTE]: 'general',
   [NETWORKS_FORM_ROUTE]: 'networks',
   [NETWORKS_ROUTE]: 'networks',
-  [REVEAL_SRP_LIST_ROUTE]: 'revealSecretRecoveryPhrase',
+  [REVEAL_SRP_LIST_ROUTE]: 'srpRevealListTitle',
   [SECURITY_PASSWORD_CHANGE_ROUTE]: 'securityPassword',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
 };

@@ -110,7 +110,6 @@ export default class SecurityTab extends PureComponent {
     socialLoginEnabled: PropTypes.bool,
     socialLoginType: PropTypes.string,
     seedPhraseBackedUp: PropTypes.bool,
-    hasMultipleHdKeyrings: PropTypes.bool,
   };
 
   state = {
@@ -168,13 +167,8 @@ export default class SecurityTab extends PureComponent {
 
   renderSeedWords() {
     const { t } = this.context;
-    const {
-      history,
-      seedPhraseBackedUp,
-      socialLoginEnabled,
-      socialLoginType,
-      hasMultipleHdKeyrings,
-    } = this.props;
+    const { history, seedPhraseBackedUp, socialLoginEnabled, socialLoginType } =
+      this.props;
 
     const getBannerDescription = () => {
       if (socialLoginEnabled) {
@@ -194,6 +188,13 @@ export default class SecurityTab extends PureComponent {
         : BannerAlertSeverity.Danger;
     };
 
+    const getButtonText = () => {
+      if (socialLoginEnabled) {
+        return t('securitySrpWalletRecovery');
+      }
+      return t('revealSeedWords');
+    };
+
     return (
       <>
         <div
@@ -203,6 +204,9 @@ export default class SecurityTab extends PureComponent {
           {t('securitySrpTitle')}
         </div>
         <div className="settings-page__content-padded">
+          <div className="settings-page__content-description">
+            {t('securitySrpDescription')}
+          </div>
           <BannerAlert
             description={getBannerDescription()}
             paddingTop={2}
@@ -215,6 +219,7 @@ export default class SecurityTab extends PureComponent {
             data-testid="reveal-seed-words"
             type="danger"
             size={ButtonSize.Lg}
+            block
             onClick={(event) => {
               event.preventDefault();
               this.context.trackEvent({
@@ -234,16 +239,12 @@ export default class SecurityTab extends PureComponent {
                   location: 'Settings',
                 },
               });
-              if (hasMultipleHdKeyrings || socialLoginEnabled) {
-                history.push({
-                  pathname: REVEAL_SRP_LIST_ROUTE,
-                });
-              }
+              history.push({
+                pathname: REVEAL_SRP_LIST_ROUTE,
+              });
             }}
           >
-            {socialLoginEnabled
-              ? t('securitySrpWalletRecovery')
-              : t('revealSeedWords')}
+            {getButtonText()}
           </Button>
         </div>
       </>
