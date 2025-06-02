@@ -3,6 +3,8 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+// Import to set up global `Promise.withResolvers` polyfill
+import '../../../shared/lib/promise-with-resolvers';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_FULLSCREEN,
