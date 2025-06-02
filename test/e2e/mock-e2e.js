@@ -69,11 +69,11 @@ const snapsExecutionEnvJs = fs.readFileSync(snapsExecutionEnvJsPath, 'utf-8');
 
 const blocklistedHosts = [
   'arbitrum-mainnet.infura.io',
-  'goerli.infura.io',
-  'mainnet.infura.io',
-  'sepolia.infura.io',
+  'bsc-dataseed.binance.org',
   'linea-mainnet.infura.io',
   'linea-sepolia.infura.io',
+  'mainnet.infura.io',
+  'sepolia.infura.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,
