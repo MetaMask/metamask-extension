@@ -120,7 +120,7 @@ describe('Permit Trade Order Tests', () => {
       'Direction',
       '0',
       'Maker',
-      '0x8Eeee...73D12',
+      '0x8Eee...3D12',
       'Taker',
       '0xCD2a...D826',
       'Expiry',
