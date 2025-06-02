@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Hex } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import {
   getAllChainsToPoll,
   getEnabledNetworks,
@@ -53,6 +53,7 @@ import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
   detectTokens,
+  setEnabledNetworks,
   setTokenNetworkFilter,
   showImportNftsModal,
   showImportTokensModal,
@@ -156,6 +157,18 @@ const AssetListControlBar = ({
       );
     }
   }, []);
+
+  // TODO: Can this be moved to ethereum-chain-utils? This is to fix the request queueing e2e test: multiple-networks-dapps-txs.spec.js
+  // Here is a PR where we did the same for the tokenNetworkFilter: https://github.com/MetaMask/metamask-extension/pull/30211
+  useEffect(() => {
+    if (Object.keys(enabledNetworks).length === 1) {
+      dispatch(
+        setEnabledNetworks([
+          currentMultichainNetwork.network.chainId,
+        ] as CaipChainId[]),
+      );
+    }
+  }, [currentMultichainNetwork.network.chainId]);
 
   // When a network gets added/removed we want to make sure that we switch to the filtered list of the current network
   // We only want to do this if the "Current Network" filter is selected
