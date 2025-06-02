@@ -5676,12 +5676,6 @@
   "startEarning": {
     "message": "Mit dem Verdienen beginnen"
   },
-  "stateCorruptionDetectedErrorMessage": {
-    "message": "Die Statusdatei von MetaMask ist defekt oder nicht vorhanden. Die Dateien sind möglicherweise wiederherstellbar, deinstallieren Sie also nicht die MetaMask-Erweiterung!"
-  },
-  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
-    "message": "Falls Sie Ihre geheime Wiederherstellungsphrase selbst wiederherstellen möchten, dann folgen Sie diesen Anweisungen."
-  },
   "stateLogError": {
     "message": "Fehler beim Abfragen der Statusprotokolle."
   },

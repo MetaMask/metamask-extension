@@ -5676,12 +5676,6 @@
   "startEarning": {
     "message": "कमाना शुरू करें"
   },
-  "stateCorruptionDetectedErrorMessage": {
-    "message": "MetaMask की स्टेट फ़ाइल क्षतिग्रस्त या गुम है। फ़ाइलें संभवतः फिर से प्राप्त करने योग्य हैं, इसलिए MetaMask एक्सटेंशन को अनइंस्टॉल न करें!"
-  },
-  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
-    "message": "यदि आप अपना सीक्रेट रिकवरी फ्रेज़ स्वयं पुनर्प्राप्त करने की कोशिश करना चाहते हैं, तो इन निर्देशों का पालन करें।"
-  },
   "stateLogError": {
     "message": "स्टेट लॉग को पुनर्प्राप्त करने में गड़बड़ी।"
   },

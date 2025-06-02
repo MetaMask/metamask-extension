@@ -5676,12 +5676,6 @@
   "startEarning": {
     "message": "Начните зарабатывать"
   },
-  "stateCorruptionDetectedErrorMessage": {
-    "message": "Файл состояния MetaMask поврежден или отсутствует. Возможно, что файлы еще можно восстановить, поэтому не удаляйте расширение MetaMask!"
-  },
-  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
-    "message": "Если вы хотите попытаться восстановить свою секретную фразу для восстановления самостоятельно, следуйте этим инструкциям."
-  },
   "stateLogError": {
     "message": "Ошибка при получении журналов состояния."
   },

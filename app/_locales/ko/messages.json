@@ -5676,12 +5676,6 @@
   "startEarning": {
     "message": "수익 창출 시작"
   },
-  "stateCorruptionDetectedErrorMessage": {
-    "message": "MetaMask의 상태 파일이 손상되었거나 누락되었습니다. 파일이 복구될 가능성이 있으니 MetaMask 확장 프로그램을 삭제하지 마세요!"
-  },
-  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
-    "message": "비밀복구구문을 직접 복원하려면 다음 지침을 따르세요."
-  },
   "stateLogError": {
     "message": "상태 로그를 가져오는 도중 오류가 발생했습니다."
   },

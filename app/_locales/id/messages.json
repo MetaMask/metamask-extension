@@ -5676,12 +5676,6 @@
   "startEarning": {
     "message": "Mulai menghasilkan"
   },
-  "stateCorruptionDetectedErrorMessage": {
-    "message": "File state MetaMask rusak atau hilang. File tersebut mungkin dapat dipulihkan, jadi jangan mencopot instalasi ekstensi MetaMask!"
-  },
-  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
-    "message": "Jika Anda ingin mencoba memulihkan sendiri frasa pemulihan rahasia, ikuti petunjuk berikut."
-  },
   "stateLogError": {
     "message": "Terjadi kesalahan pada log status pengambilan."
   },

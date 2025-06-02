@@ -5676,12 +5676,6 @@
   "startEarning": {
     "message": "Bắt đầu kiếm tiền"
   },
-  "stateCorruptionDetectedErrorMessage": {
-    "message": "Tệp trạng thái của MetaMask bị hỏng hoặc bị thiếu. Các tệp này có thể khôi phục được, vì vậy đừng gỡ cài đặt tiện ích mở rộng MetaMask!"
-  },
-  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
-    "message": "Nếu bạn muốn tự thử khôi phục cụm từ khôi phục bí mật của mình, hãy làm theo các hướng dẫn này."
-  },
   "stateLogError": {
     "message": "Lỗi khi truy xuất nhật ký trạng thái."
   },

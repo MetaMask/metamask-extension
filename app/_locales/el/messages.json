@@ -5676,12 +5676,6 @@
   "startEarning": {
     "message": "Ξεκινήστε να κερδίζετε"
   },
-  "stateCorruptionDetectedErrorMessage": {
-    "message": "Το αρχείο κατάστασης του MetaMask έχει καταστραφεί ή λείπει. Ενδεχομένως μπορείτε να ανακτήσετε τα αρχεία, γι' αυτό μην απεγκαταστήσετε την επέκταση του MetaMask!"
-  },
-  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
-    "message": "Εάν προσπαθήσετε να ανακτήσετε μόνοι σας τη μυστική φράση ανάκτησης, ακολουθήστε τις παρακάτω οδηγίες."
-  },
   "stateLogError": {
     "message": "Σφάλμα κατά την ανάκτηση αρχείων καταγραφής κατάστασης."
   },

@@ -5676,12 +5676,6 @@
   "startEarning": {
     "message": "収益化を開始"
   },
-  "stateCorruptionDetectedErrorMessage": {
-    "message": "MetaMaskのステートファイルが破損しているか、見つかりません。このファイルは復元できる可能性があるため、MetaMask拡張機能をアンインストールしないでください。"
-  },
-  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
-    "message": "シークレットリカバリーフレーズをご自身で取り戻す場合は、次の指示に従ってください。"
-  },
   "stateLogError": {
     "message": "ステートログの取得中にエラーが発生しました。"
   },
