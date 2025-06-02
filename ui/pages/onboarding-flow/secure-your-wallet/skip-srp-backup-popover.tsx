@@ -59,7 +59,7 @@ export default function SkipSRPBackup({
       },
     });
 
-    // if (getPlatform() === PLATFORM_FIREFOX) {
+    // if (getBrowserName() === PLATFORM_FIREFOX) {
     //   history.push(ONBOARDING_COMPLETION_ROUTE);
     // } else {
     //   history.push(ONBOARDING_METAMETRICS);
