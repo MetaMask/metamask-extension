@@ -1460,6 +1460,8 @@ const addAppInstalledEvent = () => {
  * Trigger actions that should happen only upon initial install (e.g. open tab for onboarding).
  */
 function onInstall() {
+  // Delete just to clean up global namespace
+  delete globalThis.stateHooks.onInstalledListener;
   log.debug('First install detected');
   addAppInstalledEvent();
   if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
