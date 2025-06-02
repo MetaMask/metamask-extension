@@ -183,7 +183,7 @@ describe('Actions', () => {
 
     it('should create KeyChain, vault and Backup in the background', async () => {
       const store = mockStore();
-      const mockKeyringsMetadata = [{ id: 'mock-keyring-id' }];
+      const mockKeyrings = [{ metadata: { id: 'mock-keyring-id' } }];
       const mockSeedPhrase = 'mock seed phrase';
       const mockEncodedSeedPhrase = Array.from(
         Buffer.from(mockSeedPhrase).values(),
@@ -195,7 +195,7 @@ describe('Actions', () => {
         );
       const createNewVaultAndKeychainStub =
         background.createNewVaultAndKeychain.callsFake((_, cb) =>
-          cb(null, mockKeyringsMetadata),
+          cb(null, mockKeyrings),
         );
       const getSeedPhraseStub = background.getSeedPhrase.callsFake(
         (_, __, cb) => cb(null, mockEncodedSeedPhrase),
@@ -217,7 +217,7 @@ describe('Actions', () => {
         createSeedPhraseBackupStub.calledOnceWith(
           'password',
           mockEncodedSeedPhrase,
-          mockKeyringsMetadata[0].id,
+          mockKeyrings[0].metadata.id,
         ),
       ).toStrictEqual(true);
     });
@@ -231,7 +231,7 @@ describe('Actions', () => {
     it('fetches all seed phrases from the metadata store, restores the vault and updates the SocialbackupMetadata state', async () => {
       const store = mockStore();
       const mockSeedPhrase = 'mock seed phrase';
-      const mockKeyringsMetadata = [{ id: 'mock-keyring-id' }];
+      const mockKeyrings = [{ metadata: { id: 'mock-keyring-id' } }];
       const mockEncodedSeedPhrase = Array.from(
         Buffer.from(mockSeedPhrase).values(),
       );
@@ -241,7 +241,7 @@ describe('Actions', () => {
       );
       const createNewVaultAndRestoreStub =
         background.createNewVaultAndRestore.callsFake((_, __, cb) =>
-          cb(null, mockKeyringsMetadata),
+          cb(null, mockKeyrings),
         );
       const updateBackupMetadataStateStub =
         background.updateBackupMetadataState.callsFake((_, __, cb) => cb());
@@ -261,7 +261,7 @@ describe('Actions', () => {
       expect(createNewVaultAndRestoreStub.callCount).toStrictEqual(1);
       expect(
         updateBackupMetadataStateStub.calledOnceWith(
-          mockKeyringsMetadata[0].id,
+          mockKeyrings[0].metadata.id,
           mockEncodedSeedPhrase,
         ),
       ).toStrictEqual(true);

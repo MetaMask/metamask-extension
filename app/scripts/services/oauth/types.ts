@@ -5,46 +5,6 @@ import {
 
 export const SERVICE_NAME = 'OAuthService';
 
-export type LoginHandlerOptions = {
-  oAuthClientId: string;
-  authServerUrl: string;
-  web3AuthNetwork: Web3AuthNetwork;
-  redirectUri: string;
-  scopes?: string[];
-  /**
-   * The server redirect URI to use for the OAuth login.
-   * This is the URI that the OAuth provider will redirect to after the user has logged in.
-   * This is required for Apple login.
-   */
-  serverRedirectUri?: string;
-};
-
-/**
- * The configuration to initiate the OAuth login and get the Authorization Code.
- *
- * - clientId: string - the client ID of the OAuth provider
- * - redirectUri: string - the redirect URI of the OAuth provider
- * - serverRedirectUri: string - the server redirect URI of the OAuth provider, to be used for Apple login
- * - scopes: string[] - the scopes of the OAuth provider
- */
-export type OAuthProviderConfig = {
-  clientId: string;
-  redirectUri?: string;
-  /** for apple, we need to redirect to a server endpoint that will handle the post request and redirect back to client */
-  serverRedirectUri?: string;
-  scopes?: string[];
-};
-
-export type OAuthLoginEnv = {
-  authConnectionId: string;
-  groupedAuthConnectionId: string;
-  googleClientId: string;
-  appleClientId: string;
-  authServerUrl: string;
-  web3AuthNetwork: Web3AuthNetwork;
-  serverRedirectUri?: string;
-};
-
 /**
  * The WebAuthenticator is a type that defines the methods for the Web Authenticator API to launch the OAuth2 login flow.
  * It is used to abstract the Web Authenticator API from the OAuthService.
@@ -81,7 +41,65 @@ export type WebAuthenticator = {
      * @param responseUrl - The redirect URL from the social login provider.
      */
     callback: (responseUrl?: string) => void,
-  ) => Promise<string | null>;
+  ) => Promise<string | null | void>;
+
+  /**
+   * Generate a code verifier challenge for the OAuth login PKCE flow.
+   *
+   * @returns The code verifier challenge string.
+   */
+  generateCodeVerifierAndChallenge: () => Promise<{
+    codeVerifier: string;
+    challenge: string;
+  }>;
+
+  /**
+   * Generate a nonce for the OAuth login.
+   *
+   * @returns The nonce string.
+   */
+  generateNonce: () => string;
+};
+
+export type LoginHandlerOptions = {
+  oAuthClientId: string;
+  authServerUrl: string;
+  web3AuthNetwork: Web3AuthNetwork;
+  redirectUri: string;
+  webAuthenticator: WebAuthenticator;
+  scopes?: string[];
+  /**
+   * The server redirect URI to use for the OAuth login.
+   * This is the URI that the OAuth provider will redirect to after the user has logged in.
+   * This is required for Apple login.
+   */
+  serverRedirectUri?: string;
+};
+
+/**
+ * The configuration to initiate the OAuth login and get the Authorization Code.
+ *
+ * - clientId: string - the client ID of the OAuth provider
+ * - redirectUri: string - the redirect URI of the OAuth provider
+ * - serverRedirectUri: string - the server redirect URI of the OAuth provider, to be used for Apple login
+ * - scopes: string[] - the scopes of the OAuth provider
+ */
+export type OAuthProviderConfig = {
+  clientId: string;
+  redirectUri?: string;
+  /** for apple, we need to redirect to a server endpoint that will handle the post request and redirect back to client */
+  serverRedirectUri?: string;
+  scopes?: string[];
+};
+
+export type OAuthLoginEnv = {
+  authConnectionId: string;
+  groupedAuthConnectionId: string;
+  googleClientId: string;
+  appleClientId: string;
+  authServerUrl: string;
+  web3AuthNetwork: Web3AuthNetwork;
+  serverRedirectUri?: string;
 };
 
 export type OAuthServiceOptions = {

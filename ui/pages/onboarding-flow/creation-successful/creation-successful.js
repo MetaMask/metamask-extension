@@ -65,6 +65,23 @@ export default function CreationSuccessful() {
   const isWalletReady =
     firstTimeFlowType === FirstTimeFlowType.import || seedPhraseBackedUp;
 
+  const renderTitle = useMemo(() => {
+    if (socialLoginFlow || isWalletReady) {
+      return t('yourWalletIsReady');
+    }
+
+    return t('yourWalletIsReadyRemind');
+  }, [socialLoginFlow, isWalletReady, t]);
+
+  const renderFoxPath = useMemo(() => {
+    if (socialLoginFlow || isWalletReady) {
+      return 'images/animations/fox/celebrating.lottie.json';
+    }
+
+    // TODO: Check figma teaching fox animation
+    return 'images/animations/fox/celebrating.lottie.json';
+  }, [socialLoginFlow, isWalletReady]);
+
   const renderDetails1 = useMemo(() => {
     if (userSocialLoginType) {
       return t('walletReadySocialDetails1', [capitalize(userSocialLoginType)]);
@@ -103,23 +120,6 @@ export default function CreationSuccessful() {
 
     return t('walletReadyLearnRemind');
   }, [isWalletReady, userSocialLoginType, t]);
-
-  const renderTitle = useMemo(() => {
-    if (socialLoginFlow || isWalletReady) {
-      return t('yourWalletIsReady');
-    }
-
-    return t('yourWalletIsReadyRemind');
-  }, [socialLoginFlow, isWalletReady, t]);
-
-  const renderFoxPath = useMemo(() => {
-    if (socialLoginFlow || isWalletReady) {
-      return 'images/animations/fox/celebrating.lottie.json';
-    }
-
-    // TODO: Check figma teaching fox animation
-    return 'images/animations/fox/celebrating.lottie.json';
-  }, [socialLoginFlow, isWalletReady]);
 
   return (
     <Box
