@@ -808,14 +808,19 @@ export default class Home extends PureComponent {
       completedOnboarding &&
       (!onboardedInThisUISession ||
         firstTimeFlowType === FirstTimeFlowType.import) &&
-      !process.env.IN_TEST &&
       !newNetworkAddedConfigurationId;
 
     const showWhatsNew =
-      canSeeModals && announcementsToShow && showWhatsNewPopup;
+      canSeeModals &&
+      announcementsToShow &&
+      showWhatsNewPopup &&
+      !process.env.IN_TEST;
 
     const showMultiRpcEditModal =
-      canSeeModals && showMultiRpcModal && !showWhatsNew;
+      canSeeModals &&
+      showMultiRpcModal &&
+      !showWhatsNew &&
+      !process.env.IN_TEST;
 
     const displayUpdateModal =
       canSeeModals &&
