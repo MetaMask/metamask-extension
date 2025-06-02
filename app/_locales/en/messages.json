@@ -325,15 +325,6 @@
   "advancedDetailsNonceTooltip": {
     "message": "This is the transaction number of an account. Nonce for the first transaction is 0 and it increases in sequential order."
   },
-  "getTheNewestFeatures": {
-    "message": "Get the newest features"
-  },
-  "updateInformation": {
-    "message": "We’ve made your wallet safer, smoother, and added some new features. Update now to stay protected and use our latest improvements."
-  },
-  "updateToTheLatestVersion": {
-    "message": "Update to the latest version"
-  },
   "advancedGasFeeDefaultOptIn": {
     "message": "Save these values as my default for the $1 network.",
     "description": "$1 is the current network name."
@@ -2380,6 +2371,9 @@
   },
   "genericExplorerView": {
     "message": "View account on $1"
+  },
+  "getTheNewestFeatures": {
+    "message": "Get the newest features"
   },
   "goBack": {
     "message": "Go back"
@@ -6624,6 +6618,9 @@
   "updateEthereumChainConfirmationDescription": {
     "message": "This site is requesting to update your default network URL. You can edit defaults and network information any time."
   },
+  "updateInformation": {
+    "message": "We’ve made your wallet safer, smoother, and added some new features. Update now to stay protected and use our latest improvements."
+  },
   "updateNetworkConfirmationTitle": {
     "message": "Update $1",
     "description": "$1 represents network name"
@@ -6633,6 +6630,9 @@
   },
   "updateRequest": {
     "message": "Update request"
+  },
+  "updateToTheLatestVersion": {
+    "message": "Update to the latest version"
   },
   "updatedRpcForNetworks": {
     "message": "Network RPCs Updated"
