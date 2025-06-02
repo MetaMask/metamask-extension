@@ -81,7 +81,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { CONNECT_HARDWARE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  CONNECT_HARDWARE_ROUTE,
+  IMPORT_SRP_ROUTE,
+} from '../../../helpers/constants/routes';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -99,7 +102,6 @@ import {
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   MultichainWalletSnapClient,
-  MultichainWalletSnapOptions,
   WalletClientType,
   useMultichainWalletSnapClient,
 } from '../../../hooks/accounts/useMultichainWalletSnapClient';
@@ -117,9 +119,9 @@ import {
 import { CreateEthAccount } from '../create-eth-account';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { CreateSnapAccount } from '../create-snap-account';
+import { CreateAccountSnapOptions } from '../../../../shared/lib/accounts';
 ///: END:ONLY_INCLUDE_IF
 import { ImportAccount } from '../import-account';
-import { ImportSrp } from '../multi-srp/import-srp';
 import { SrpList } from '../multi-srp/srp-list';
 import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
 import { HiddenAccountList } from './hidden-account-list';
@@ -139,8 +141,6 @@ const ACTION_MODES = {
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   // Displays the add account form controls (for bitcoin account)
   ADD_BITCOIN: 'add-bitcoin',
-  // Same but for testnet
-  ADD_BITCOIN_TESTNET: 'add-bitcoin-testnet',
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   // Displays the add account form controls (for solana account)
@@ -163,10 +163,6 @@ const SNAP_CLIENT_CONFIG_MAP: Record<
   [ACTION_MODES.ADD_BITCOIN]: {
     clientType: WalletClientType.Bitcoin,
     chainId: MultichainNetworks.BITCOIN,
-  },
-  [ACTION_MODES.ADD_BITCOIN_TESTNET]: {
-    clientType: WalletClientType.Bitcoin,
-    chainId: MultichainNetworks.BITCOIN_TESTNET,
   },
   [ACTION_MODES.ADD_SOLANA]: {
     clientType: WalletClientType.Solana,
@@ -321,7 +317,7 @@ export const AccountListMenu = ({
 
   const handleMultichainSnapAccountCreation = async (
     client: MultichainWalletSnapClient,
-    _options: MultichainWalletSnapOptions,
+    _options: CreateAccountSnapOptions,
     action: ActionMode,
   ) => {
     trackEvent({
@@ -547,19 +543,6 @@ export const AccountListMenu = ({
             <ImportAccount onActionComplete={onActionComplete} />
           </Box>
         ) : null}
-        {actionMode === ACTION_MODES.IMPORT_SRP && (
-          <Box
-            paddingLeft={4}
-            paddingRight={4}
-            paddingBottom={4}
-            paddingTop={0}
-            style={{ overflowY: 'scroll' }}
-          >
-            {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879 */}
-            {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-            <ImportSrp onActionComplete={onActionComplete} />
-          </Box>
-        )}
         {actionMode === ACTION_MODES.SELECT_SRP && (
           <SrpList
             onActionComplete={(keyringId: string) => {
@@ -644,6 +627,7 @@ export const AccountListMenu = ({
                         bitcoinWalletSnapClient,
                         {
                           scope: MultichainNetworks.BITCOIN,
+                          entropySource: primaryKeyring.metadata.id,
                         },
                         ACTION_MODES.ADD_BITCOIN,
                       );
@@ -677,7 +661,8 @@ export const AccountListMenu = ({
                       event:
                         MetaMetricsEventName.ImportSecretRecoveryPhraseClicked,
                     });
-                    setActionMode(ACTION_MODES.IMPORT_SRP);
+                    history.push(IMPORT_SRP_ROUTE);
+                    onClose();
                   }}
                   data-testid="multichain-account-menu-popover-import-srp"
                 >
