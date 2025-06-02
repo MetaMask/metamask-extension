@@ -309,6 +309,221 @@ export function generateNewMnemonicAndAddToVault(): ThunkAction<
       });
   };
 }
+
+// Constants for WebAuthn PRF
+// const PRF_EXTENSION = 'prf';
+const SALT_LENGTH = 32;
+const KEY_LENGTH = 32;
+const IV_LENGTH = 12; // 96 bits for AES-GCM
+
+function bufferToBase64Url(buffer: Uint8Array): string {
+  const binary = String.fromCharCode(...buffer);
+  const base64 = btoa(binary);
+  return base64
+    .replace(/\+/gu, '-')
+    .replace(/\//gu, '_')
+    .replace(/[=]+$/gu, '');
+}
+
+function base64urlToBuffer(base64url: string): Uint8Array {
+  const base64 = base64url.replace(/-/gu, '+').replace(/_/gu, '/');
+  const padding = '='.repeat((4 - (base64.length % 4)) % 4);
+  const base64Complete = base64 + padding;
+  const binary = atob(base64Complete);
+  const buffer = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    buffer[i] = binary.charCodeAt(i);
+  }
+  return buffer;
+}
+
+export async function createCredentialWebAuthn(): Promise<{
+  salt: Uint8Array;
+  prfResult: Uint8Array;
+  transports: string[];
+  credentialId: string;
+}> {
+  // Generate random salt and IV
+  console.log('Generating salt and IV...');
+  const salt = crypto.getRandomValues(new Uint8Array(SALT_LENGTH));
+
+  // Create credential options
+  console.log('Creating credential options...');
+  const createCredentialOptions = {
+    publicKey: {
+      challenge: crypto.getRandomValues(new Uint8Array(32)),
+      rp: {
+        name: 'MetaMask',
+      },
+      user: {
+        id: crypto.getRandomValues(new Uint8Array(32)),
+        name: 'user@example.com',
+        displayName: 'Example User',
+      },
+      pubKeyCredParams: [
+        { alg: -7, type: 'public-key' }, // ES256
+        { alg: -257, type: 'public-key' }, // RS256
+      ],
+      authenticatorSelection: {
+        userVerification: 'required',
+      },
+      extensions: {
+        prf: {
+          eval: {
+            first: salt.buffer,
+            length: KEY_LENGTH,
+          },
+        },
+      },
+    },
+  };
+
+  // Create credential
+  console.log('Creating credential...');
+  const credential = await navigator.credentials.create(
+    createCredentialOptions,
+  );
+
+  console.log('Credential created:', credential);
+
+  if (!credential.getClientExtensionResults().prf?.enabled) {
+    throw new Error(
+      'WebAuthn PRF extension is not supported by this authenticator',
+    );
+  }
+
+  // Get PRF result and use it as encryption key
+  console.log('Getting PRF result...');
+  const prfResult = credential.getClientExtensionResults().prf?.results?.first;
+  if (!prfResult) {
+    throw new Error('Failed to get PRF result');
+  }
+
+  const transports = credential.response.getTransports?.() || [];
+  const credentialId = credential.id;
+
+  return { salt, prfResult, transports, credentialId };
+}
+
+export async function getCredentialWebAuthn(
+  credentialId: string,
+  _transports: string[],
+  salt: Uint8Array,
+): Promise<Uint8Array> {
+  const getCredentialOptions = {
+    publicKey: {
+      challenge: crypto.getRandomValues(new Uint8Array(32)),
+      allowCredentials: [
+        {
+          id: base64urlToBuffer(credentialId),
+          type: 'public-key',
+          transports: ['internal'],
+        },
+      ],
+      userVerification: 'required',
+      extensions: {
+        prf: {
+          eval: {
+            first: salt.buffer,
+            length: KEY_LENGTH,
+          },
+        },
+      },
+    },
+  };
+
+  // Get assertion
+  const assertion = await navigator.credentials.get(getCredentialOptions);
+
+  const prfResult = assertion.getClientExtensionResults().prf?.results?.first;
+  if (!prfResult) {
+    throw new Error('Failed to get PRF result');
+  }
+
+  return prfResult;
+}
+
+export async function storePasswordWebAuthn(password: string): Promise<void> {
+  const { salt, prfResult, transports, credentialId } =
+    await createCredentialWebAuthn();
+
+  const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH));
+
+  const key = await crypto.subtle.importKey(
+    'raw',
+    prfResult,
+    { name: 'AES-GCM' },
+    false,
+    ['encrypt'],
+  );
+
+  const encoder = new TextEncoder();
+  const passwordData = encoder.encode(password);
+  const encryptedData = new Uint8Array(
+    await crypto.subtle.encrypt(
+      {
+        name: 'AES-GCM',
+        iv,
+      },
+      key,
+      passwordData,
+    ),
+  );
+
+  console.log('PRF result:', prfResult);
+  console.log('Salt:', salt);
+  console.log('IV:', iv);
+  console.log('Password:', password);
+
+  const passwordStore = {
+    salt: bufferToBase64Url(salt),
+    iv: bufferToBase64Url(iv),
+    encryptedPassword: bufferToBase64Url(encryptedData),
+    transports,
+    credentialId,
+  };
+
+  await browser.storage.local.set({ passwordStore });
+}
+
+export async function loadPasswordWebAuthn(): Promise<string | null> {
+  const passwordStore = await browser.storage.local.get('passwordStore');
+  if (!passwordStore.passwordStore) {
+    return null;
+  }
+
+  const { salt, iv, encryptedPassword, transports, credentialId } =
+    passwordStore.passwordStore;
+
+  const prfResult = await getCredentialWebAuthn(
+    credentialId,
+    transports,
+    base64urlToBuffer(salt),
+  );
+
+  const key = await crypto.subtle.importKey(
+    'raw',
+    prfResult,
+    { name: 'AES-GCM' },
+    false,
+    ['decrypt'],
+  );
+
+  const decryptedData = new Uint8Array(
+    await crypto.subtle.decrypt(
+      {
+        name: 'AES-GCM',
+        iv: base64urlToBuffer(iv),
+      },
+      key,
+      base64urlToBuffer(encryptedPassword),
+    ),
+  );
+
+  const decoder = new TextDecoder();
+  return decoder.decode(decryptedData);
+}
+
 export function createNewVaultAndGetSeedPhrase(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -316,6 +531,22 @@ export function createNewVaultAndGetSeedPhrase(
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
+
+    try {
+      console.log('Storing password...');
+      await storePasswordWebAuthn(password);
+    } catch (error) {
+      console.error('Failed to store password:', error);
+      throw error;
+    }
+
+    try {
+      const pw = await loadPasswordWebAuthn();
+      console.log('Loaded password:', pw);
+    } catch (error) {
+      console.error('Failed to load password:', error);
+      throw error;
+    }
 
     try {
       await createNewVault(password);
