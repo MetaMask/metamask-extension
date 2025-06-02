@@ -7,8 +7,7 @@ import {
 import { type Backup, PersistenceManager } from '../stores/persistence-manager';
 import { ErrorLike } from '../../../../shared/constants/errors';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Message = any;
+type Message = Parameters<chrome.runtime.Port['postMessage']>[0];
 
 export type HandleStateCorruptionErrorConfig = {
   port: chrome.runtime.Port;
