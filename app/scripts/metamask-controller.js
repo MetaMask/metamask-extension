@@ -1133,6 +1133,7 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:listMultichainAccounts',
         'SnapController:handleRequest',
         'SnapController:get',
+        'SnapController:isMinimumPlatformVersion',
         'PreferencesController:getState',
       ],
     });
