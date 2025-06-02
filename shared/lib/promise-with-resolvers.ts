@@ -2,7 +2,6 @@
 // June 24 2025) Chrome v119 (after November 14, 2025). If you are removing
 // this, you should also remove the types polyfill for it in types/global.d.ts
 // and app/scripts/app-init.js
-
 if (typeof Promise.withResolvers === 'undefined') {
   Promise.withResolvers = function withResolvers<T>() {
     let resolve!: (value: T | PromiseLike<T>) => void;

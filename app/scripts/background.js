@@ -16,6 +16,8 @@ import { storeAsStream } from '@metamask/obs-store';
 import { isObject, hasProperty } from '@metamask/utils';
 import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+// Import to set up global `Promise.withResolvers` polyfill
+import '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 
 import {
@@ -76,11 +78,7 @@ import MetamaskController, {
 } from './metamask-controller';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import {
-  deferredPromise,
-  getPlatform,
-  shouldEmitDappViewedEvent,
-} from './lib/util';
+import { getPlatform, shouldEmitDappViewedEvent } from './lib/util';
 import { createOffscreen } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import { generateWalletState } from './fixtures/generate-wallet-state';
@@ -206,7 +204,7 @@ let rejectInitialization;
  * state of application initialization (or re-initialization).
  */
 function setGlobalInitializers() {
-  const deferred = deferredPromise();
+  const deferred = Promise.withResolvers();
   isInitialized = deferred.promise;
   resolveInitialization = deferred.resolve;
   rejectInitialization = deferred.reject;
