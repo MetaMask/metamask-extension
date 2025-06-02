@@ -3841,7 +3841,7 @@
     "description": "$1 is the type of login used Google, Apple, etc."
   },
   "onboardingCreateWallet": {
-    "message": "Create new wallet"
+    "message": "Create a new wallet"
   },
   "onboardingImportWallet": {
     "message": "I have an existing wallet"
@@ -3908,7 +3908,7 @@
   },
   "onboardingSignInWith": {
     "message": "Sign in with $1",
-    "description": "$1 is the type of login used Google, Apple, etc."
+    "description": "$1 is the type of login used Google, Apple, etc"
   },
   "onboardingSrpCreate": {
     "message": "Continue with Secret Recovery Phrase"

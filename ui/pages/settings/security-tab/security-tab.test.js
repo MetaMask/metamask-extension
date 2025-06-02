@@ -154,27 +154,7 @@ describe('Security Tab', () => {
     ).toBe(true);
   });
 
-  it('toggles SRP Quiz if there is only one srp', async () => {
-    renderWithProviders(<SecurityTab />, mockStore);
-
-    expect(
-      screen.queryByTestId(`srp_stage_introduction`),
-    ).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByTestId('reveal-seed-words'));
-
-    expect(screen.getByTestId(`srp_stage_introduction`)).toBeInTheDocument();
-
-    const container = screen.getByTestId('srp-quiz-header');
-    const checkbox = queryByRole(container, 'button');
-    fireEvent.click(checkbox);
-
-    expect(
-      screen.queryByTestId(`srp_stage_introduction`),
-    ).not.toBeInTheDocument();
-  });
-
-  it('redirects to srp list if there are multiple srps', async () => {
+  it('redirects to srp list upon clicking reveal seed words', async () => {
     const mockStoreWithMultipleSRPs = configureMockStore([thunk])({
       ...mockState,
       metamask: {
