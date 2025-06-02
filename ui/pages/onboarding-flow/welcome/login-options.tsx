@@ -5,6 +5,9 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
+  Icon,
+  IconName,
+  IconSize,
   Modal,
   ModalContent,
   ModalContentSize,
@@ -21,8 +24,11 @@ import {
   BorderRadius,
   Display,
   FontWeight,
+  IconColor,
   JustifyContent,
   TextAlign,
+  TextColor,
+  TextTransform,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -94,8 +100,6 @@ export default function LoginOptions({
           </Text>
         </ModalHeader>
         <Box paddingInline={4}>
-          {/*
-          SOCIAL: Add when social login is available
           <SocialButton
             icon={
               <img
@@ -151,7 +155,6 @@ export default function LoginOptions({
               {t('or')}
             </Text>
           </Box>
-          */}
           <Button
             data-testid={
               loginOption === LOGIN_OPTION.EXISTING
