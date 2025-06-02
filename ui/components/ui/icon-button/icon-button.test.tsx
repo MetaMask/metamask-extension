@@ -22,7 +22,9 @@ describe('IconButton', () => {
     const { container } = render(<IconButton {...defaultProps} />);
 
     expect(screen.getByText('Test Button')).toBeInTheDocument();
-    expect(container.querySelector('.icon-button')).toHaveClass('test-class');
+    expect(container.querySelector('.icon-button-round')).toHaveClass(
+      'test-class',
+    );
     expect(screen.getByRole('button')).toBeInTheDocument();
   });
 
