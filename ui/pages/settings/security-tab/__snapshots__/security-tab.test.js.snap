@@ -101,6 +101,26 @@ exports[`Security Tab should match snapshot 1`] = `
     <div
       class="settings-page__content-padded"
     >
+      <div
+        class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--margin-top-4 mm-box--margin-bottom-4 mm-box--padding-3 mm-box--padding-top-2 mm-box--padding-bottom-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-error-muted mm-box--rounded-sm"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+          style="mask-image: url('./images/icons/danger.svg');"
+        />
+        <div
+          class="mm-box mm-box--min-width-0"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            Back up Secret Recovery Phrase
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          />
+        </div>
+      </div>
       <button
         class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
         data-testid="reveal-seed-words"
@@ -108,6 +128,26 @@ exports[`Security Tab should match snapshot 1`] = `
         type="danger"
       >
         Reveal Secret Recovery Phrase
+      </button>
+    </div>
+    <div
+      class="settings-page__security-tab-sub-header"
+    >
+      Password
+    </div>
+    <div
+      class="settings-page__content-padded"
+    >
+      <div
+        class="settings-page__content-description"
+      >
+        Choose a strong password to unlock MetaMask app on your device. If you lose this password, you will need your Secret Recovery Phrase to re-import your wallet.
+      </div>
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--margin-top-4 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
+        data-theme="light"
+      >
+        Change password
       </button>
     </div>
     <div>

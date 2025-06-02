@@ -150,19 +150,19 @@ export default class UnlockPage extends Component {
   renderMascot = () => {
     if (isFlask()) {
       return (
-        <img src="./images/logo/metamask-fox.svg" width="120" height="120" />
+        <img src="./images/logo/metamask-fox.svg" width="115" height="115" />
       );
     }
     if (isBeta()) {
       return (
-        <img src="./images/logo/metamask-fox.svg" width="120" height="120" />
+        <img src="./images/logo/metamask-fox.svg" width="115" height="115" />
       );
     }
     return (
       <Mascot
         animationEventEmitter={this.animationEventEmitter}
-        width="120"
-        height="120"
+        width="170"
+        height="170"
       />
     );
   };
@@ -245,7 +245,11 @@ export default class UnlockPage extends Component {
             width={BlockSize.Full}
             alignItems={AlignItems.center}
           >
-            <Box marginTop={6} className="unlock-page__mascot-container">
+            <Box
+              marginTop={6}
+              marginBottom={isBeta() || isFlask() ? 6 : 0}
+              className="unlock-page__mascot-container"
+            >
               {this.renderMascot()}
               {isBeta() ? (
                 <Box className="unlock-page__mascot-container__beta">
