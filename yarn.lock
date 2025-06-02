@@ -6133,7 +6133,7 @@ __metadata:
 
 "@metamask/network-controller@patch:@metamask/network-controller@npm%3A23.2.1-backport#~/.yarn/patches/@metamask-network-controller-npm-23.2.1-backport-52eed19c47.patch":
   version: 23.2.1-backport
-  resolution: "@metamask/network-controller@patch:@metamask/network-controller@npm%3A23.2.1-backport#~/.yarn/patches/@metamask-network-controller-npm-23.2.1-backport-52eed19c47.patch::version=23.2.1-backport&hash=21cfa1"
+  resolution: "@metamask/network-controller@patch:@metamask/network-controller@npm%3A23.2.1-backport#~/.yarn/patches/@metamask-network-controller-npm-23.2.1-backport-52eed19c47.patch::version=23.2.1-backport&hash=f7da9d"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/controller-utils": "npm:^11.7.1-backport"
@@ -6153,7 +6153,7 @@ __metadata:
     reselect: "npm:^5.1.1"
     uri-js: "npm:^4.4.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/035784cb591e22629fdce2c0d5cb33a4cf15ef21d8738f3fd7b70cc9cab075c133f6091f2bcd2983316974cadb4d696cae33789c90b7b87f03d760df0760a4b2
+  checksum: 10/c07cb1e69a98b79e4d4d8f130fcb6a9d2dabbb2c066451818f31de54b313138cd172f14cb07ffd439a3a6c5e8082511a9b518a3e4e9c6c37815f2e059f79fd20
   languageName: node
   linkType: hard
 
@@ -6798,10 +6798,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^1.31.1":
-  version: 1.31.1
-  resolution: "@metamask/solana-wallet-snap@npm:1.31.1"
-  checksum: 10/714d14591bf1c45d266139d1864a0428a0b799c71ae9efc2924d4b3e2ae3301a795b4ec321ef597984f0af991707e4d922d0f29912e214a81adcc123a52a61c7
+"@metamask/solana-wallet-snap@npm:^1.31.2":
+  version: 1.31.2
+  resolution: "@metamask/solana-wallet-snap@npm:1.31.2"
+  checksum: 10/044617de1078147335de1a96593e54da7c9859eeff4742e7324665f52c89b1a58cf4dd6256a9d9ee34085ccf750aec819faa12217446ee33eb644df6dda73055
   languageName: node
   linkType: hard
 
@@ -6928,7 +6928,7 @@ __metadata:
 
 "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A54.3.0#~/.yarn/patches/@metamask-transaction-controller-npm-54.3.0-2c90b81511.patch":
   version: 54.3.0
-  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A54.3.0#~/.yarn/patches/@metamask-transaction-controller-npm-54.3.0-2c90b81511.patch::version=54.3.0&hash=dc308f"
+  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A54.3.0#~/.yarn/patches/@metamask-transaction-controller-npm-54.3.0-2c90b81511.patch::version=54.3.0&hash=6d7da5"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6958,7 +6958,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^23.0.0
     "@metamask/network-controller": ^23.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/6683a9cc160a318f7770993188c1c19f23bc1b580629e59a812762a10271a200a315fbb02b458ca02464abb3054318dca2c062417edab832f5f3d544a510138e
+  checksum: 10/b3139952c9bf6cd15271b9783a4d7a5b56c55222325dac4a8015c8536e52e30dfe81af8dfe048c9eb51ade00bf7877e1a7dd887975ec260d12e7790faa6711e4
   languageName: node
   linkType: hard
 
@@ -30297,7 +30297,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "patch:@metamask/snaps-rpc-methods@npm%3A12.1.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-12.1.0-052e5af572.patch"
     "@metamask/snaps-sdk": "npm:^6.22.0"
     "@metamask/snaps-utils": "npm:^9.2.0"
-    "@metamask/solana-wallet-snap": "npm:^1.31.1"
+    "@metamask/solana-wallet-snap": "npm:^1.31.2"
     "@metamask/solana-wallet-standard": "npm:^0.4.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
