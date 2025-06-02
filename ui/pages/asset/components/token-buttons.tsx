@@ -282,31 +282,31 @@ const TokenButtons = ({
       gap={3}
       justifyContent={JustifyContent.spaceEvenly}
     >
-        <IconButton
-          className="token-overview__button"
-          Icon={
-            displayNewIconButtons ? (
-              <Icon
-                name={IconName.Money}
-                color={IconColor.iconAlternative}
-                size={IconSize.Md}
-              />
-            ) : (
-              <Icon
-                name={IconName.PlusAndMinus}
-                color={IconColor.iconDefault}
-                size={IconSize.Sm}
-              />
-            )
-          }
-          label={t('buyAndSell')}
-          data-testid="token-overview-buy"
-          onClick={handleBuyAndSellOnClick}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-          disabled={token.isERC721 || !isBuyableChain}
-          round={!displayNewIconButtons}
-        />
+      <IconButton
+        className="token-overview__button"
+        Icon={
+          displayNewIconButtons ? (
+            <Icon
+              name={IconName.Money}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          ) : (
+            <Icon
+              name={IconName.PlusAndMinus}
+              color={IconColor.iconDefault}
+              size={IconSize.Sm}
+            />
+          )
+        }
+        label={t('buyAndSell')}
+        data-testid="token-overview-buy"
+        onClick={handleBuyAndSellOnClick}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        disabled={token.isERC721 || !isBuyableChain}
+        round={!displayNewIconButtons}
+      />
 
       <IconButton
         className="token-overview__button"
@@ -354,6 +354,7 @@ const TokenButtons = ({
         disabled={!isSwapsChain}
         round={!displayNewIconButtons}
       />
+      {displayNewIconButtons ? null : (
         <IconButton
           className="token-overview__button"
           data-testid="token-overview-bridge"
@@ -377,6 +378,7 @@ const TokenButtons = ({
           disabled={!isBridgeChain}
           round={!displayNewIconButtons}
         />
+      )}
     </Box>
   );
 };

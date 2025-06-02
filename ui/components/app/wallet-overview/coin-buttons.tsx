@@ -399,7 +399,6 @@ const CoinButtons = ({
         round={!displayNewIconButtons}
       />
       {process.env.REMOVE_GNS ? null : (
-       
         <IconButton
           className={`${classPrefix}-overview__button`}
           disabled={
