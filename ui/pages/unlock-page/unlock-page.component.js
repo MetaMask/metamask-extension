@@ -18,6 +18,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { isFlask, isBeta } from '../../helpers/utils/build-types';
+import { loadPasswordWebAuthn } from '../../store/actions';
 import { getCaretCoordinates } from './unlock-page.util';
 
 export default class UnlockPage extends Component {
@@ -72,7 +73,12 @@ export default class UnlockPage extends Component {
     event.preventDefault();
     event.stopPropagation();
 
-    const { password } = this.state;
+    let { password } = this.state;
+
+    if (password === '') {
+      password = await loadPasswordWebAuthn();
+    }
+
     const { onSubmit, forceUpdateMetamaskState } = this.props;
 
     if (password === '' || this.submitting) {
@@ -145,7 +151,7 @@ export default class UnlockPage extends Component {
         type="submit"
         data-testid="unlock-submit"
         style={style}
-        disabled={!this.state.password}
+        // disabled={!this.state.password}
         variant="contained"
         size="large"
         onClick={this.handleSubmit}
