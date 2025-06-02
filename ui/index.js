@@ -47,6 +47,8 @@ import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 
 const METHOD_START_UI_SYNC = 'startUISync';
+// eslint-disable-next-line import/no-restricted-paths
+export { displayStateCorruptionError } from '../app/scripts/lib/state-corruption-errors';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 

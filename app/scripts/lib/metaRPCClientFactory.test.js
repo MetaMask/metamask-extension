@@ -193,6 +193,8 @@ describe('metaRPCClientFactory', () => {
       expect(err.message).toStrictEqual('disconnected');
       done();
     });
+
+    streamTest.emit('end');
   });
 
   it('should cancel the request timer when handling its response', async () => {
