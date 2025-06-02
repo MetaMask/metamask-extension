@@ -61,7 +61,6 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-
       - name: Check circular dependencies
         run: yarn circular-deps:check
 
@@ -199,19 +198,15 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
         with:
           name: build-dist-browserify
-
       - name: Measure bundle size
         run: yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts --out test-artifacts/chrome
-
       - name: Record bundle size at commit
         if: ${{ env.BRANCH == 'main' && env.IS_FORK == 'false'}}
         run: ./.github/scripts/bundle-stats-commit.sh
-
       - name: Upload 'bundle-size' to S3
         if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
@@ -274,14 +269,11 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
         with:
           name: build-dist-browserify
-
       - run: ./development/source-map-explorer.sh
-
       - name: Upload 'source-map-explorer' to S3
         if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
@@ -304,14 +296,11 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
         with:
           name: build-dist-browserify
-
       - run: ./.github/scripts/create-lavamoat-viz.sh
-
       - name: Upload 'build-viz' to S3
         if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
