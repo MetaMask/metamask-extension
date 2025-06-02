@@ -188,6 +188,13 @@ export default class SecurityTab extends PureComponent {
         : BannerAlertSeverity.Danger;
     };
 
+    const getButtonText = () => {
+      if (socialLoginEnabled) {
+        return t('securitySrpWalletRecovery');
+      }
+      return t('revealSeedWords');
+    };
+
     return (
       <>
         <div
@@ -237,9 +244,7 @@ export default class SecurityTab extends PureComponent {
               });
             }}
           >
-            {socialLoginEnabled
-              ? t('securitySrpWalletRecovery')
-              : t('revealSeedWords')}
+            {getButtonText()}
           </Button>
         </div>
       </>
