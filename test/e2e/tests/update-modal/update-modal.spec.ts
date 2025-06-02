@@ -70,7 +70,7 @@ describe('Update modal', function (this: Suite) {
     );
   });
 
-  it.only('should reload the extension when confirmed', async function () {
+  it('should reload the extension when confirmed', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
