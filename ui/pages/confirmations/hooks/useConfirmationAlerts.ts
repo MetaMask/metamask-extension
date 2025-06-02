@@ -34,6 +34,7 @@ function useSignatureAlerts(): Alert[] {
 
 function useTransactionAlerts(): Alert[] {
   const accountTypeUpgradeAlerts = useAccountTypeUpgrade();
+  const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
   const gasEstimateFailedAlerts = useGasEstimateFailedAlerts();
   const gasFeeLowAlerts = useGasFeeLowAlerts();
   const gasTooLowAlerts = useGasTooLowAlerts();
@@ -44,7 +45,6 @@ function useTransactionAlerts(): Alert[] {
   const nonContractAddressAlerts = useNonContractAddressAlerts();
   const pendingTransactionAlerts = usePendingTransactionAlerts();
   const resimulationAlert = useResimulationAlert();
-  const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
   ///: END:ONLY_INCLUDE_IF
@@ -63,11 +63,9 @@ function useTransactionAlerts(): Alert[] {
       ...nonContractAddressAlerts,
       ...pendingTransactionAlerts,
       ...resimulationAlert,
-      ...firstTimeInteractionAlert,
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       ...signingOrSubmittingAlerts,
       ///: END:ONLY_INCLUDE_IF
-      ...nonContractAddressAlerts,
     ],
     [
       accountTypeUpgradeAlerts,
@@ -85,7 +83,6 @@ function useTransactionAlerts(): Alert[] {
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       signingOrSubmittingAlerts,
       ///: END:ONLY_INCLUDE_IF
-      nonContractAddressAlerts,
     ],
   );
 }
