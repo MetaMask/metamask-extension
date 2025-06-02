@@ -1,5 +1,8 @@
 import { KeyringControllerState } from '@metamask/keyring-controller';
-import { AuthConnection, SeedlessOnboardingControllerState } from '@metamask/seedless-onboarding-controller';
+import {
+  AuthConnection,
+  SeedlessOnboardingControllerState,
+} from '@metamask/seedless-onboarding-controller';
 
 export type BackupState = {
   metamask: KeyringControllerState & SeedlessOnboardingControllerState;
