@@ -67,10 +67,10 @@ export const Carousel = React.forwardRef(
         ) {
           return false;
         }
+        ///: END:ONLY_INCLUDE_IF
         if (slide.id === BASIC_FUNCTIONALITY_SLIDE.id && useExternalServices) {
           return false;
         }
-        ///: END:ONLY_INCLUDE_IF
         return !slide.dismissed || slide.undismissable;
       })
       .sort((a, b) => {

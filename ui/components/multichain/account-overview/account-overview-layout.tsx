@@ -30,9 +30,9 @@ import {
   useCarouselManagement,
   BACKUPANDSYNC_SLIDE,
   SMART_ACCOUNT_UPGRADE_SLIDE,
+  BASIC_FUNCTIONALITY_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
-  BASIC_FUNCTIONALITY_SLIDE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../hooks/useCarouselManagement';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
