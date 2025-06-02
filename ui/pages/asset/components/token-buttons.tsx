@@ -105,6 +105,7 @@ const TokenButtons = ({
   const isSwapsChain = useSelector((state) =>
     getIsSwapsChain(state, isEvm ? currentChainId : multichainChainId),
   );
+  const displayNewIconButtons = process.env.REMOVE_GNS;
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBridgeChain = useSelector((state) =>
     getIsBridgeChain(state, isEvm ? currentChainId : multichainChainId),
@@ -300,11 +301,19 @@ const TokenButtons = ({
         <IconButton
           className="token-overview__button"
           Icon={
-            <Icon
-              name={IconName.Money}
-              color={IconColor.iconAlternative}
-              size={IconSize.Md}
-            />
+            displayNewIconButtons ? (
+              <Icon
+                name={IconName.Money}
+                color={IconColor.iconAlternative}
+                size={IconSize.Md}
+              />
+            ) : (
+              <Icon
+                name={IconName.PlusAndMinus}
+                color={IconColor.iconDefault}
+                size={IconSize.Sm}
+              />
+            )
           }
           label={t('buyAndSell')}
           data-testid="token-overview-buy"
@@ -312,6 +321,7 @@ const TokenButtons = ({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
           // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           disabled={token.isERC721 || !isBuyableChain}
+          round={!displayNewIconButtons}
         />
         ///: END:ONLY_INCLUDE_IF
       }
@@ -320,29 +330,47 @@ const TokenButtons = ({
         className="token-overview__button"
         onClick={handleSendOnClick}
         Icon={
-          <Icon
-            name={IconName.Send}
-            color={IconColor.iconAlternative}
-            size={IconSize.Md}
-          />
+          displayNewIconButtons ? (
+            <Icon
+              name={IconName.Send}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          ) : (
+            <Icon
+              name={IconName.Arrow2UpRight}
+              color={IconColor.iconDefault}
+              size={IconSize.Sm}
+            />
+          )
         }
         label={t('send')}
         data-testid="eth-overview-send"
         disabled={token.isERC721}
+        round={!displayNewIconButtons}
       />
 
       <IconButton
         className="token-overview__button"
         Icon={
-          <Icon
-            name={IconName.SwapHorizontal}
-            color={IconColor.iconAlternative}
-            size={IconSize.Md}
-          />
+          displayNewIconButtons ? (
+            <Icon
+              name={IconName.SwapHorizontal}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          ) : (
+            <Icon
+              name={IconName.SwapHorizontal}
+              color={IconColor.iconDefault}
+              size={IconSize.Sm}
+            />
+          )
         }
         onClick={handleSwapOnClick}
         label={t('swap')}
         disabled={!isSwapsChain}
+        round={!displayNewIconButtons}
       />
 
       {
@@ -351,15 +379,24 @@ const TokenButtons = ({
           className="token-overview__button"
           data-testid="token-overview-bridge"
           Icon={
-            <Icon
-              name={IconName.Bridge}
-              color={IconColor.iconAlternative}
-              size={IconSize.Md}
-            />
+            displayNewIconButtons ? (
+              <Icon
+                name={IconName.Bridge}
+                color={IconColor.iconAlternative}
+                size={IconSize.Md}
+              />
+            ) : (
+              <Icon
+                name={IconName.Bridge}
+                color={IconColor.iconDefault}
+                size={IconSize.Sm}
+              />
+            )
           }
           label={t('bridge')}
           onClick={() => handleBridgeOnClick(false)}
           disabled={!isBridgeChain}
+          round={!displayNewIconButtons}
         />
         ///: END:ONLY_INCLUDE_IF
       }
