@@ -22,7 +22,7 @@ export default class SignTypedData extends Confirmation {
 
   private fromName = { text: 'Cow' };
 
-  private fromAddress = { css: '.name__value', text: '0xCD2a3...DD826' };
+  private fromAddress = { css: '.name__value', text: '0xCD2a...D826' };
 
   private toName = { text: 'Bob' };
 

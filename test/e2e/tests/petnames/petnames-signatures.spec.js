@@ -100,9 +100,9 @@ describe('Petnames - Signatures', function () {
         await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await expectName(driver, '0xCD2a3...DD826', false);
+        await expectName(driver, '0xCD2a...D826', false);
         await expectName(driver, '0xbBbBB...bBBbB', false);
-        await saveName(driver, '0xCD2a3...DD826', undefined, 'test.lens');
+        await saveName(driver, '0xCD2a...D826', undefined, 'test.lens');
         await saveName(driver, '0xbBbBB...bBBbB', undefined, 'test2.lens');
         await expectName(driver, '0xCcCC...cccC', false);
         await saveName(driver, '0xCcCC...cccC', 'Custom Name');
@@ -132,12 +132,12 @@ describe('Petnames - Signatures', function () {
         await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await expectName(driver, '0xCD2a3...DD826', false);
+        await expectName(driver, '0xCD2a...D826', false);
         await expectName(driver, '0xDeaDb...DbeeF', false);
         await expectName(driver, '0xbBbBB...bBBbB', false);
         await expectName(driver, '0xB0Bda...bEa57', false);
         await expectName(driver, '0xB0B0b...00000', false);
-        await saveName(driver, '0xCD2a3...DD826', undefined, 'test.lens');
+        await saveName(driver, '0xCD2a...D826', undefined, 'test.lens');
         await saveName(driver, '0xB0Bda...bEa57', undefined, 'Test Token 2');
         await expectName(driver, '0xCcCC...cccC', false);
         await saveName(driver, '0xCcCC...cccC', 'Custom Name');
@@ -171,7 +171,7 @@ describe('Petnames - Signatures', function () {
         await focusTestDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await expectProposedNames(driver, '0xCD2a3...DD826', [
+        await expectProposedNames(driver, '0xCD2a...D826', [
           ['test.lens', 'Lens Protocol'],
           ['cd2.1337.test.domain', 'Name Lookup Example Snap'],
         ]);
