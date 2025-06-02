@@ -109,7 +109,7 @@ export default function CreatePassword({
       firstTimeFlowType === FirstTimeFlowType.import
     ) {
       await importWithRecoveryPhrase(password, secretRecoveryPhrase);
-      // getPlatform() === PLATFORM_FIREFOX
+      // getBrowserName() === PLATFORM_FIREFOX
       //   ? history.push(ONBOARDING_COMPLETION_ROUTE)
       //   : history.push(ONBOARDING_METAMETRICS);
       // SOCIAL: change to metametrics when social login is available
