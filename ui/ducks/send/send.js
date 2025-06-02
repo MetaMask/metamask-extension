@@ -2718,7 +2718,6 @@ export function updateSendAsset(
           const selectedNetworkClientId = getSelectedNetworkClientId(state);
           let isCurrentOwner = true;
           try {
-            // TODO add networkClientId
             isCurrentOwner = await isNftOwner(
               sendingAddress,
               details.address,

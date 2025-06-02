@@ -2300,7 +2300,6 @@ describe('Actions', () => {
   });
 
   describe('#removeAndIgnoreNft', () => {
-    // TODO: add test for networkClientId
     afterEach(() => {
       sinon.restore();
     });
@@ -2309,7 +2308,7 @@ describe('Actions', () => {
       const store = mockStore();
 
       await expect(
-        store.dispatch(actions.removeAndIgnoreNft(undefined, '55')),
+        store.dispatch(actions.removeAndIgnoreNft(undefined, '55', 'mainnet')),
       ).rejects.toThrow('MetaMask - Cannot ignore NFT without address');
     });
 
@@ -2317,7 +2316,9 @@ describe('Actions', () => {
       const store = mockStore();
 
       await expect(
-        store.dispatch(actions.removeAndIgnoreNft('Oxtest', undefined)),
+        store.dispatch(
+          actions.removeAndIgnoreNft('Oxtest', undefined, 'mainnet'),
+        ),
       ).rejects.toThrow('MetaMask - Cannot ignore NFT without tokenID');
     });
 
@@ -2329,7 +2330,7 @@ describe('Actions', () => {
       setBackgroundConnection(background);
 
       await expect(
-        store.dispatch(actions.removeAndIgnoreNft('Oxtest', '6')),
+        store.dispatch(actions.removeAndIgnoreNft('Oxtest', '6', 'mainnet')),
       ).rejects.toThrow(error);
     });
   });
