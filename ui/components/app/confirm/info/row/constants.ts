@@ -9,6 +9,7 @@ export enum RowAlertKey {
   Resimulation = 'resimulation',
   Speed = 'speed',
   InteractingWith = 'interactingWith',
+  EstimatedChangesStatic = 'estimatedChangesStatic',
 }
 
 export enum AlertActionKey {
