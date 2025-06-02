@@ -1,7 +1,6 @@
 {
   "data": {
     "AuthenticationController": { "isSignedIn": "boolean" },
-    "UserStorageController": { "isProfileSyncingEnabled": true },
     "NotificationServicesController": {
       "subscriptionAccountsSeen": "object",
       "isFeatureAnnouncementsEnabled": "boolean",
@@ -20,7 +19,8 @@
     },
     "AnnouncementController": { "announcements": "object" },
     "NetworkOrderController": {
-      "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
+      "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
+      "enabledNetworkMap": {}
     },
     "AccountOrderController": {
       "pinnedAccountList": {},
@@ -45,6 +45,7 @@
       "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true
     },
+    "BridgeController": {},
     "CurrencyController": {
       "currentCurrency": "usd",
       "currencyRates": {
@@ -52,6 +53,11 @@
           "conversionDate": "number",
           "conversionRate": 1700,
           "usdConversionRate": 1700
+        },
+        "MON": {
+          "conversionDate": "number",
+          "conversionRate": 0.2,
+          "usdConversionRate": 0.2
         }
       }
     },
@@ -104,17 +110,17 @@
       "openSeaEnabled": false,
       "preferences": {
         "hideZeroBalanceTokens": false,
-        "petnamesEnabled": "boolean",
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showTestNetworks": false,
         "smartTransactionsOptInStatus": true,
         "showNativeTokenAsMainBalance": true,
+        "petnamesEnabled": "boolean",
+        "showMultiRpcModal": "boolean",
         "showConfirmationAdvancedDetails": false,
         "tokenSortConfig": "object",
-        "tokenNetworkFilter": {},
-        "showMultiRpcModal": "boolean",
-        "shouldShowAggregatedBalancePopover": "boolean"
+        "shouldShowAggregatedBalancePopover": "boolean",
+        "tokenNetworkFilter": {}
       },
       "selectedAddress": "string",
       "theme": "light",
@@ -127,7 +133,6 @@
       "isMultiAccountBalancesEnabled": "boolean",
       "showIncomingTransactions": "object"
     },
-    "QueuedRequestController": { "queuedRequestCount": 0 },
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {
       "smartTransactionsState": {
@@ -138,27 +143,11 @@
         "smartTransactions": "object"
       }
     },
-    "BridgeController": {
-      "bridgeFeatureFlags": {
-        "mobileConfig": "object",
-        "extensionConfig": {
-          "support": "boolean",
-          "chains": {
-            "eip155:1": "object",
-            "eip155:10": "object",
-            "eip155:59144": "object"
-          }
-        }
-      }
-    },
     "SubjectMetadataController": { "subjectMetadata": "object" },
     "TokensController": {
       "allDetectedTokens": {},
       "allIgnoredTokens": {},
-      "allTokens": {},
-      "detectedTokens": "object",
-      "ignoredTokens": "object",
-      "tokens": "object"
+      "allTokens": {}
     },
     "TransactionController": { "transactions": "object" },
     "config": "object",

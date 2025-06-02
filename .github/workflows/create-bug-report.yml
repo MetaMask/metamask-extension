@@ -22,6 +22,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          skip-allow-scripts: true
 
       - name: Create bug report issue on planning repo
         if: steps.extract_version.outputs.version

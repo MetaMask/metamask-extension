@@ -1,0 +1,285 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransaction executes bridge transaction 1`] = `
+[
+  [
+    {
+      "adjustedReturn": {
+        "usd": "12",
+        "valueInCurrency": "12",
+      },
+      "approval": {
+        "chainId": 1,
+        "data": "0x095ea7b30000000000000000000000000439e60f02a8900a951603950d8d4527f400c3f10000000000000000000000000000000000000000000000000000000000a7d8c0",
+        "from": "0xc5fe6ef47965741f6f7a4734bf784bf3ae3f2452",
+        "gasLimit": 56349,
+        "to": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "value": "0x00",
+      },
+      "cost": {
+        "usd": "12",
+        "valueInCurrency": "12",
+      },
+      "estimatedProcessingTimeInSeconds": 15,
+      "gasFee": {
+        "amount": "12",
+        "usd": "12",
+        "valueInCurrency": "12",
+      },
+      "quote": {
+        "bridgeId": "lifi",
+        "bridges": [
+          "across",
+        ],
+        "destAsset": {
+          "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          "chainId": 42161,
+          "coinKey": "USDC",
+          "decimals": 6,
+          "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+          "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+          "name": "USD Coin",
+          "priceUSD": "1.0002000400080016",
+          "symbol": "USDC",
+        },
+        "destChainId": 42161,
+        "destTokenAmount": "10876521",
+        "feeData": {
+          "metabridge": {
+            "amount": "96250",
+            "asset": {
+              "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "chainId": 1,
+              "coinKey": "USDC",
+              "decimals": 6,
+              "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+              "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+              "name": "USD Coin",
+              "priceUSD": "1.0002000400080016",
+              "symbol": "USDC",
+            },
+          },
+        },
+        "requestId": "0cd5caf6-9844-465b-89ad-9c89b639f432",
+        "srcAsset": {
+          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "chainId": 1,
+          "coinKey": "USDC",
+          "decimals": 6,
+          "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+          "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+          "name": "USD Coin",
+          "priceUSD": "1.0002000400080016",
+          "symbol": "USDC",
+        },
+        "srcChainId": 1,
+        "srcTokenAmount": "10903750",
+        "steps": [
+          {
+            "action": "bridge",
+            "destAmount": "10876521",
+            "destAsset": {
+              "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+              "chainId": 42161,
+              "coinKey": "USDC",
+              "decimals": 6,
+              "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+              "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+              "name": "USD Coin",
+              "priceUSD": "1.0002000400080016",
+              "symbol": "USDC",
+            },
+            "destChainId": 42161,
+            "protocol": {
+              "displayName": "Across",
+              "icon": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/bridges/acrossv2.png",
+              "name": "across",
+            },
+            "srcAmount": "10903750",
+            "srcAsset": {
+              "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+              "chainId": 1,
+              "coinKey": "USDC",
+              "decimals": 6,
+              "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+              "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+              "name": "USD Coin",
+              "priceUSD": "1.0002000400080016",
+              "symbol": "USDC",
+            },
+            "srcChainId": 1,
+          },
+        ],
+      },
+      "sentAmount": {
+        "amount": "1.0903750",
+        "usd": "1000",
+        "valueInCurrency": "1000",
+      },
+      "swapRate": "12",
+      "toTokenAmount": {
+        "amount": "12",
+        "usd": "12",
+        "valueInCurrency": "12",
+      },
+      "totalMaxNetworkFee": {
+        "amount": "12",
+        "usd": "12",
+        "valueInCurrency": "12",
+      },
+      "totalNetworkFee": {
+        "amount": "12",
+        "usd": "12",
+        "valueInCurrency": "12",
+      },
+      "trade": {
+        "chainId": 1,
+        "data": "0x3ce33bff0000000000000000000000000000000000000000000000000000000000000080000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000a7d8c000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000d6c6966694164617074657256320000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001e0000000000000000000000000e397c4883ec89ed4fc9d258f00c689708b2799c9000000000000000000000000e397c4883ec89ed4fc9d258f00c689708b2799c9000000000000000000000000000000000000000000000000000000000000a4b1000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000af88d065e77c8cc2239327c5edb3a432268e58310000000000000000000000000000000000000000000000000000000000a660c6000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000177fa000000000000000000000000e6b738da243e8fa2a0ed5915645789add5de515200000000000000000000000000000000000000000000000000000000000000902340ab8fc3119af1d016a0eec5fe6ef47965741f6f7a4734bf784bf3ae3f2452a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000a660c60000a4b10008df3abdeb853d66fefedfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd00dfeeddeadbeef8932eb23bad9bddb5cf81426f78279a53c6c3b7100000000000000000000000000000000740cfc1bc02079862368cb4eea1332bd9f2dfa925fc757fd51e40919859b87ca031a2a12d67e4ca4ba67d52b59114b3e18c1e8c839ae015112af82e92251db701b",
+        "from": "0xc5fe6ef47965741f6f7a4734bf784bf3ae3f2452",
+        "gasLimit": 209923,
+        "to": "0x0439e60F02a8900a951603950d8D4527f400C3f1",
+        "value": "0x00",
+      },
+    },
+    true,
+  ],
+]
+`;
+
+exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransaction executes bridge transaction with no approval 1`] = `
+[
+  [
+    {
+      "adjustedReturn": {
+        "usd": "12",
+        "valueInCurrency": "12",
+      },
+      "cost": {
+        "usd": "12",
+        "valueInCurrency": "12",
+      },
+      "estimatedProcessingTimeInSeconds": 15,
+      "gasFee": {
+        "amount": "12",
+        "usd": "12",
+        "valueInCurrency": "12",
+      },
+      "quote": {
+        "bridgeId": "lifi",
+        "bridges": [
+          "across",
+        ],
+        "destAsset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "chainId": 42161,
+          "coinKey": "ETH",
+          "decimals": 18,
+          "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+          "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+          "name": "ETH",
+          "priceUSD": "2641",
+          "symbol": "ETH",
+        },
+        "destChainId": 42161,
+        "destTokenAmount": "4927504629714929",
+        "feeData": {
+          "metabridge": {
+            "amount": "43750000000000",
+            "asset": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "chainId": 10,
+              "coinKey": "ETH",
+              "decimals": 18,
+              "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+              "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+              "name": "ETH",
+              "priceUSD": "2641.2",
+              "symbol": "ETH",
+            },
+          },
+        },
+        "requestId": "be448070-7849-4d14-bb35-8dcdaf7a4d69",
+        "srcAsset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "chainId": 10,
+          "coinKey": "ETH",
+          "decimals": 18,
+          "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+          "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+          "name": "ETH",
+          "priceUSD": "2641.2",
+          "symbol": "ETH",
+        },
+        "srcChainId": 10,
+        "srcTokenAmount": "4956250000000000",
+        "steps": [
+          {
+            "action": "bridge",
+            "destAmount": "4927504629714929",
+            "destAsset": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "chainId": 42161,
+              "coinKey": "ETH",
+              "decimals": 18,
+              "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+              "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+              "name": "ETH",
+              "priceUSD": "2641",
+              "symbol": "ETH",
+            },
+            "destChainId": 42161,
+            "protocol": {
+              "displayName": "Across",
+              "icon": "https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/bridges/acrossv2.png",
+              "name": "across",
+            },
+            "srcAmount": "4956250000000000",
+            "srcAsset": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "chainId": 10,
+              "coinKey": "ETH",
+              "decimals": 18,
+              "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+              "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+              "name": "ETH",
+              "priceUSD": "2641.2",
+              "symbol": "ETH",
+            },
+            "srcChainId": 10,
+          },
+        ],
+      },
+      "sentAmount": {
+        "amount": "0.005",
+        "usd": "1000",
+        "valueInCurrency": "1000",
+      },
+      "swapRate": "12",
+      "toTokenAmount": {
+        "amount": "12",
+        "usd": "12",
+        "valueInCurrency": "12",
+      },
+      "totalMaxNetworkFee": {
+        "amount": "12",
+        "usd": "12",
+        "valueInCurrency": "12",
+      },
+      "totalNetworkFee": {
+        "amount": "12",
+        "usd": "12",
+        "valueInCurrency": "12",
+      },
+      "trade": {
+        "chainId": 10,
+        "data": "0x3ce33bff000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011c37937e0800000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000000d6c6966694164617074657256320000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000e397c4883ec89ed4fc9d258f00c689708b2799c9000000000000000000000000e397c4883ec89ed4fc9d258f00c689708b2799c9000000000000000000000000000000000000000000000000000000000000a4b10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000119baee0ab04000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000027ca57357c00000000000000000000000000716a8b9dd056055c84b7a2ba0a016099465a5187000000000000000000000000000000000000000000000000000000000000006c5a39b10ad191481350ef776ac5fe6ef47965741f6f7a4734bf784bf3ae3f24520000a4b100149ae8681b4efd66f30743ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd00dfeeddeadbeef8932eb23bad9bddb5cf81426f78279a53c6c3b710000000000000000000000000000000000000000a98f352a08c48ebdbb94ced425b06cf909d74f41e3dfea3c72061a0d88423d867545801fa572404f63d531757a740fd1fd0f12a89217856e4d59f771328fd4bb1c",
+        "from": "0xc5fe6ef47965741f6f7a4734bf784bf3ae3f2452",
+        "gasLimit": 155983,
+        "to": "0xB90357f2b86dbfD59c3502215d4060f71DF8ca0e",
+        "value": "0x11c37937e08000",
+      },
+    },
+    true,
+  ],
+]
+`;

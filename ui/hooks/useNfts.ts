@@ -12,7 +12,11 @@ import { NFT } from '../components/multichain/asset-picker-amount/asset-picker-m
 import { usePrevious } from './usePrevious';
 import { useI18nContext } from './useI18nContext';
 
-export function useNfts() {
+export function useNfts({
+  overridePopularNetworkFilter = false,
+}: {
+  overridePopularNetworkFilter?: boolean;
+} = {}) {
   const t = useI18nContext();
 
   const allUserNfts = useSelector(getAllNfts);
@@ -26,10 +30,16 @@ export function useNfts() {
   );
 
   const nfts = useMemo(() => {
-    return isTokenNetworkFilterEqualCurrentNetwork
+    return isTokenNetworkFilterEqualCurrentNetwork ||
+      overridePopularNetworkFilter
       ? allUserNfts?.[chainId] ?? []
       : allUserNfts;
-  }, [isTokenNetworkFilterEqualCurrentNetwork, allUserNfts, chainId]);
+  }, [
+    isTokenNetworkFilterEqualCurrentNetwork,
+    allUserNfts,
+    chainId,
+    overridePopularNetworkFilter,
+  ]);
 
   const nftContracts = useSelector(getNftContracts);
 

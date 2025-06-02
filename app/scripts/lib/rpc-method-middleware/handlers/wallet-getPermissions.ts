@@ -9,7 +9,7 @@ import {
   Caip25CaveatValue,
   Caip25EndowmentPermissionName,
   getPermittedEthChainIds,
-} from '@metamask/multichain';
+} from '@metamask/chain-agnostic-permission';
 import {
   AsyncJsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,

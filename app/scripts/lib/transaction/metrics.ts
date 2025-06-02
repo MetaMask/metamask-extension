@@ -6,9 +6,8 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Json } from '@metamask/utils';
+import { Json, add0x } from '@metamask/utils';
 import { Hex } from 'viem';
-import { errorCodes } from '@metamask/rpc-errors';
 import {
   MESSAGE_TYPE,
   ORIGIN_METAMASK,
@@ -24,6 +23,7 @@ import {
   MetaMetricsEventTransactionEstimateType,
 } from '../../../../shared/constants/metametrics';
 import {
+  EIP5792ErrorCode,
   TokenStandard,
   TransactionApprovalAmountType,
   TransactionMetaMetricsEvent,
@@ -34,6 +34,7 @@ import {
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
 import {
+  addHexes,
   hexToDecimal,
   hexWEIToDecETH,
   hexWEIToDecGWEI,
@@ -57,8 +58,24 @@ import type {
 
 import { getSnapAndHardwareInfoForMetrics } from '../snap-keyring/metrics';
 import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
+import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils';
+import { Numeric } from '../../../../shared/modules/Numeric';
+import { extractRpcDomain } from '../util';
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
+
+const CONTRACT_INTERACTION_TYPES = [
+  TransactionType.contractInteraction,
+  TransactionType.tokenMethodApprove,
+  TransactionType.tokenMethodIncreaseAllowance,
+  TransactionType.tokenMethodSafeTransferFrom,
+  TransactionType.tokenMethodSetApprovalForAll,
+  TransactionType.tokenMethodTransfer,
+  TransactionType.tokenMethodTransferFrom,
+  TransactionType.swap,
+  TransactionType.swapAndSend,
+  TransactionType.swapApproval,
+];
 
 /**
  * This function is called when a transaction is added to the controller.
@@ -129,7 +146,7 @@ export const handleTransactionFailed = async (
     return;
   }
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const extraParams = {} as Record<string, any>;
   if (transactionEventPayload.error) {
@@ -161,7 +178,7 @@ export const handleTransactionConfirmed = async (
     return;
   }
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const extraParams = {} as Record<string, any>;
   const transactionMeta = { ...transactionEventPayload };
@@ -417,32 +434,6 @@ export const handlePostTransactionBalanceUpdate = async (
   }
 };
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-/**
- * This function is called when a transaction metadata updated in the MMI controller.
- *
- * @param transactionMetricsRequest - Contains controller actions needed to create/update/finalize event fragments
- * @param transactionEventPayload - The event payload
- * @param transactionEventPayload.transactionMeta - The transaction meta object
- * @param eventName - The event name
- */
-export const handleMMITransactionUpdate = async (
-  transactionMetricsRequest: TransactionMetricsRequest,
-  transactionEventPayload: TransactionEventPayload,
-  eventName: TransactionMetaMetricsEvent,
-) => {
-  if (!transactionEventPayload.transactionMeta) {
-    return;
-  }
-
-  await createUpdateFinalizeTransactionEventFragment({
-    eventName,
-    transactionEventPayload,
-    transactionMetricsRequest,
-  });
-};
-///: END:ONLY_INCLUDE_IF
-
 function calculateTransactionsCost(
   transactionMeta: TransactionMeta,
   approvalTransactionMeta?: TransactionMeta,
@@ -479,7 +470,8 @@ function createTransactionEventFragment({
   eventName: TransactionMetaMetricsEvent;
   transactionEventPayload: TransactionEventPayload;
   transactionMetricsRequest: TransactionMetricsRequest;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload: any;
 }) {
@@ -599,7 +591,8 @@ function updateTransactionEventFragment({
   eventName: TransactionMetaMetricsEvent;
   transactionEventPayload: TransactionEventPayload;
   transactionMetricsRequest: TransactionMetricsRequest;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload: any;
 }) {
@@ -657,7 +650,8 @@ async function createUpdateFinalizeTransactionEventFragment({
   eventName: TransactionMetaMetricsEvent;
   transactionEventPayload: TransactionEventPayload;
   transactionMetricsRequest: TransactionMetricsRequest;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   extraParams?: Record<string, any>;
 }) {
@@ -696,7 +690,7 @@ async function createUpdateFinalizeTransactionEventFragment({
 }
 
 function hasFragment(
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getEventFragmentById: (arg0: string) => any,
   eventName: TransactionMetaMetricsEvent,
@@ -726,7 +720,7 @@ async function buildEventFragmentProperties({
   transactionMetricsRequest,
   extraParams = {},
 }: {
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   extraParams?: Record<string, any>;
   transactionEventPayload: TransactionEventPayload;
@@ -778,7 +772,7 @@ async function buildEventFragmentProperties({
     contractMethodName = methodData?.name;
   }
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const gasParams = {} as Record<string, any>;
 
@@ -856,19 +850,7 @@ async function buildEventFragmentProperties({
   }
 
   const contractInteractionTypes =
-    type &&
-    [
-      TransactionType.contractInteraction,
-      TransactionType.tokenMethodApprove,
-      TransactionType.tokenMethodIncreaseAllowance,
-      TransactionType.tokenMethodSafeTransferFrom,
-      TransactionType.tokenMethodSetApprovalForAll,
-      TransactionType.tokenMethodTransfer,
-      TransactionType.tokenMethodTransferFrom,
-      TransactionType.swap,
-      TransactionType.swapAndSend,
-      TransactionType.swapApproval,
-    ].includes(type);
+    type && CONTRACT_INTERACTION_TYPES.includes(type);
 
   const contractMethodNames = {
     APPROVE: 'Approve',
@@ -960,7 +942,7 @@ async function buildEventFragmentProperties({
     );
   }
 
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const blockaidProperties: any = getBlockaidMetricsProps(transactionMeta);
 
@@ -1030,7 +1012,8 @@ async function buildEventFragmentProperties({
     ...smartTransactionMetricsProperties,
     ...swapAndSendMetricsProperties,
     ...hdEntropyProperties,
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>;
 
@@ -1062,7 +1045,8 @@ async function buildEventFragmentProperties({
     transaction_contract_method_4byte: transactionContractMethod4Byte,
     ...extraParams,
     ...gasParamsInGwei,
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>;
 
@@ -1083,13 +1067,33 @@ async function buildEventFragmentProperties({
     sensitiveProperties,
   );
 
+  addGaslessProperties(
+    transactionMeta,
+    properties,
+    sensitiveProperties,
+    transactionMetricsRequest.getAccountBalance,
+  );
+
+  // Only calculate and add domain to properties for "Transaction Submitted" and "Transaction Finalized" events
+  if (
+    status === TransactionStatus.submitted ||
+    status === TransactionStatus.confirmed
+  ) {
+    // Get RPC URL from provider
+    const rpcUrl = transactionMetricsRequest.getNetworkRpcUrl(
+      transactionMeta.chainId,
+    );
+    const domain = extractRpcDomain(rpcUrl);
+    properties.rpc_domain = domain;
+  }
+
   return { properties, sensitiveProperties };
 }
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getGasValuesInGWEI(gasParams: Record<string, any>) {
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const gasValuesInGwei = {} as Record<string, any>;
   for (const param in gasParams) {
@@ -1213,7 +1217,8 @@ async function addBatchProperties(
     sensitiveProperties.transaction_contract_address = nestedTransactions
       ?.filter(
         (tx) =>
-          tx.type === TransactionType.contractInteraction && tx.to?.length,
+          CONTRACT_INTERACTION_TYPES.includes(tx.type as TransactionType) &&
+          tx.to?.length,
       )
       .map((tx) => tx.to as string);
   }
@@ -1223,11 +1228,45 @@ async function addBatchProperties(
 
     properties.eip7702_upgrade_rejection =
       // @ts-expect-error Code has string type in controller
-      isUpgrade && error.code === errorCodes.rpc.methodNotSupported;
+      isUpgrade && error.code === EIP5792ErrorCode.RejectedUpgrade;
   }
 
   properties.eip7702_upgrade_transaction = isUpgrade;
   sensitiveProperties.account_eip7702_upgraded = delegationAddress;
+}
+
+function addGaslessProperties(
+  transactionMeta: TransactionMeta,
+  properties: Record<string, Json | undefined>,
+  _sensitiveProperties: Record<string, Json | undefined>,
+  getAccountBalance: (account: Hex, chainId: Hex) => Hex,
+) {
+  const {
+    batchId,
+    batchTransactions,
+    gasFeeTokens,
+    nestedTransactions,
+    selectedGasFeeToken,
+  } = transactionMeta;
+
+  properties.gas_payment_tokens_available = gasFeeTokens?.map(
+    (token) => token.symbol,
+  );
+
+  properties.gas_paid_with = gasFeeTokens?.find(
+    (token) =>
+      token.tokenAddress.toLowerCase() === selectedGasFeeToken?.toLowerCase(),
+  )?.symbol;
+
+  properties.gas_insufficient_native_asset = isInsufficientNativeBalance(
+    transactionMeta,
+    getAccountBalance,
+  );
+
+  // Temporary pending nested transaction type support
+  if (batchId && !batchTransactions?.length && !nestedTransactions?.length) {
+    properties.transaction_type = 'gas_payment';
+  }
 }
 
 async function getNestedMethodNames(
@@ -1235,7 +1274,11 @@ async function getNestedMethodNames(
   getMethodData: (data: string) => Promise<{ name?: string } | undefined>,
 ): Promise<string[]> {
   const allData = transactions
-    .filter((tx) => tx.type === TransactionType.contractInteraction && tx.data)
+    .filter(
+      (tx) =>
+        CONTRACT_INTERACTION_TYPES.includes(tx.type as TransactionType) &&
+        tx.data,
+    )
     .map((tx) => tx.data as Hex);
 
   const results = await Promise.all(allData.map((data) => getMethodData(data)));
@@ -1245,4 +1288,23 @@ async function getNestedMethodNames(
     .filter((name) => name?.length) as string[];
 
   return names;
+}
+
+function isInsufficientNativeBalance(
+  transactionMeta: TransactionMeta,
+  getAccountBalance: (account: Hex, chainId: Hex) => Hex,
+) {
+  const { chainId, txParams } = transactionMeta;
+  const { from, gas, gasPrice, maxFeePerGas, value } = txParams;
+  const nativeBalance = getAccountBalance(from as Hex, chainId);
+
+  const gasCost = getMaximumGasTotalInHexWei({
+    gasLimit: gas,
+    gasPrice,
+    maxFeePerGas,
+  });
+
+  const totalCost = add0x(addHexes(gasCost, value ?? '0x0'));
+
+  return new Numeric(totalCost, 16).greaterThan(new Numeric(nativeBalance, 16));
 }

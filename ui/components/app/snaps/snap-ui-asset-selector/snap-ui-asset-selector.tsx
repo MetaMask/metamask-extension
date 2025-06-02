@@ -48,6 +48,7 @@ const SnapUIAssetSelectorOption: FunctionComponent<SnapUIAsset> = ({
   networkIcon,
 }) => (
   <Box
+    className="snap-ui-renderer__asset-selector-option"
     display={Display.Flex}
     alignItems={AlignItems.center}
     width={BlockSize.Full}
@@ -65,7 +66,7 @@ const SnapUIAssetSelectorOption: FunctionComponent<SnapUIAsset> = ({
           />
         }
       >
-        <AvatarToken src={icon} />
+        <AvatarToken src={icon} name={symbol} />
       </BadgeWrapper>
     </Box>
     <Box
@@ -145,6 +146,8 @@ export const SnapUIAssetSelector: FunctionComponent<
       title={t('snapUIAssetSelectorTitle')}
       options={options}
       optionComponents={optionComponents}
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       disabled={disabled || assets.length === 0}
       {...props}
     />

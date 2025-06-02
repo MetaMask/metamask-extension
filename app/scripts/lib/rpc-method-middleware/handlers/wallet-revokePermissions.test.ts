@@ -1,5 +1,5 @@
 import { invalidParams } from '@metamask/permission-controller';
-import { Caip25EndowmentPermissionName } from '@metamask/multichain';
+import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 import { Json, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import { PermissionNames } from '../../../controllers/permissions';
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
@@ -87,6 +87,7 @@ describe('revokePermissionsHandler', () => {
     );
   });
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   describe.each([
     [RestrictedMethods.eth_accounts],
     [PermissionNames.permittedChains],

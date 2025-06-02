@@ -3,7 +3,7 @@ import * as bridgeController from '@metamask/bridge-controller';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { createBridgeMockStore } from '../../../test/jest/mock-store';
+import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import useLatestBalance from './useLatestBalance';
@@ -18,10 +18,12 @@ jest.mock('@metamask/bridge-controller', () => {
 });
 
 const renderUseLatestBalance = (
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   token: { address: string; decimals?: number | string; chainId: any },
   mockStoreState: object,
 ) =>
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   renderHookWithProvider(() => useLatestBalance(token as any), mockStoreState);
 
@@ -113,7 +115,7 @@ describe('useLatestBalance', () => {
             'test-account-id': {
               id: 'test-account-id',
               type: 'solana',
-              address: 'account-address',
+              address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
             },
           },
         },

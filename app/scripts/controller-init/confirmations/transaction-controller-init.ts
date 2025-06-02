@@ -1,5 +1,4 @@
 import {
-  CHAIN_IDS,
   type PublishBatchHookRequest,
   type PublishBatchHookTransaction,
   TransactionController,
@@ -10,7 +9,7 @@ import SmartTransactionsController from '@metamask/smart-transactions-controller
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import { Hex } from '@metamask/utils';
 import {
-  getCurrentChainSupportsSmartTransactions,
+  getChainSupportsSmartTransactions,
   getFeatureFlagsByChainId,
   getIsSmartTransaction,
   getSmartTransactionsPreferenceEnabled,
@@ -23,14 +22,7 @@ import {
 } from '../../lib/transaction/smart-transactions';
 import { getTransactionById } from '../../lib/transaction/util';
 import { trace } from '../../../../shared/lib/trace';
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import {
-  afterTransactionSign as afterTransactionSignMMI,
-  beforeCheckPendingTransaction as beforeCheckPendingTransactionMMI,
-  beforeTransactionPublish as beforeTransactionPublishMMI,
-  getAdditionalSignArguments as getAdditionalSignArgumentsMMI,
-} from '../../lib/transaction/mmi-hooks';
-///: END:ONLY_INCLUDE_IF
+
 import {
   handlePostTransactionBalanceUpdate,
   handleTransactionAdded,
@@ -49,6 +41,8 @@ import {
 import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import { ControllerFlatState } from '../controller-list';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
+import { Delegation7702PublishHook } from '../../lib/transaction/hooks/delegation-7702-publish';
+import { updateRemoteModeTransaction } from '../../lib/remote-mode';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -62,6 +56,7 @@ export const TransactionControllerInit: ControllerInitFunction<
     getGlobalChainId,
     getPermittedAccounts,
     getTransactionMetricsRequest,
+    updateAccountBalanceForTransactionNetwork,
     persistedState,
   } = request;
 
@@ -72,13 +67,9 @@ export const TransactionControllerInit: ControllerInitFunction<
     onboardingController,
     preferencesController,
     smartTransactionsController,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    transactionUpdateController,
-    ///: END:ONLY_INCLUDE_IF
   } = getControllers(request);
 
   const controller: TransactionController = new TransactionController({
-    enableTxParamsGasFeeUpdates: true,
     getCurrentNetworkEIP1559Compatibility: () =>
       // @ts-expect-error Controller type does not support undefined return value
       initMessenger.call('NetworkController:getEIP1559Compatibility'),
@@ -99,18 +90,21 @@ export const TransactionControllerInit: ControllerInitFunction<
       return preferencesController().state.advancedGasFee[globalChainId];
     },
     incomingTransactions: {
-      etherscanApiKeysByChainId: {
-        // @ts-expect-error Controller does not support undefined values
-        [CHAIN_IDS.MAINNET]: process.env.ETHERSCAN_API_KEY,
-        // @ts-expect-error Controller does not support undefined values
-        [CHAIN_IDS.SEPOLIA]: process.env.ETHERSCAN_API_KEY,
-      },
+      client: `extension-${process.env.METAMASK_VERSION?.replace(/\./gu, '-')}`,
       includeTokenTransfers: false,
       isEnabled: () =>
         preferencesController().state.useExternalServices &&
         onboardingController().state.completedOnboarding,
       queryEntireHistory: false,
       updateTransactions: false,
+    },
+    isAutomaticGasFeeUpdateEnabled: () => true,
+    isEIP7702GasFeeTokensEnabled: async (transactionMeta) => {
+      const { chainId } = transactionMeta;
+      const uiState = getUIState(getFlatState());
+
+      // @ts-expect-error Smart transaction selector types does not match controller state
+      return !getIsSmartTransaction(uiState, chainId);
     },
     isFirstTimeInteractionEnabled: () =>
       preferencesController().state.securityAlertsEnabled,
@@ -122,7 +116,7 @@ export const TransactionControllerInit: ControllerInitFunction<
         const uiState = getUIState(getFlatState());
         return !(
           getSmartTransactionsPreferenceEnabled(uiState) &&
-          getCurrentChainSupportsSmartTransactions(uiState)
+          getChainSupportsSmartTransactions(uiState)
         );
       },
     },
@@ -131,31 +125,38 @@ export const TransactionControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      afterSign: (txMeta, signedEthTx) =>
-        afterTransactionSignMMI(
-          txMeta,
-          signedEthTx,
-          transactionUpdateController().addTransactionToWatchList.bind(
-            transactionUpdateController(),
-          ),
-        ),
-      beforeCheckPendingTransaction:
-        beforeCheckPendingTransactionMMI.bind(this),
-      beforePublish: beforeTransactionPublishMMI.bind(this),
-      getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
-      ///: END:ONLY_INCLUDE_IF
-      // @ts-expect-error Controller type does not support undefined return value
-      publish: (transactionMeta, rawTx: Hex) =>
-        publishSmartTransactionHook(
-          controller,
-          smartTransactionsController(),
-          // Init messenger cannot yet be further restricted so is a superset of what is needed
-          initMessenger as SmartTransactionHookMessenger,
-          getFlatState(),
+      afterAdd: async ({ transactionMeta }) => {
+        return updateRemoteModeTransaction({
           transactionMeta,
-          rawTx,
-        ),
+          state: getFlatState(),
+        });
+      },
+      beforePublish: (transactionMeta: TransactionMeta) => {
+        const response = initMessenger.call(
+          'InstitutionalSnapController:publishHook',
+          transactionMeta,
+        );
+        return response;
+      },
+
+      beforeCheckPendingTransactions: (transactionMeta: TransactionMeta) => {
+        const response = initMessenger.call(
+          'InstitutionalSnapController:beforeCheckPendingTransactionHook',
+          transactionMeta,
+        );
+
+        return response;
+      },
+      // @ts-expect-error Controller type does not support undefined return value
+      publish: (transactionMeta, signedTx) =>
+        publishHook({
+          flatState: getFlatState(),
+          initMessenger,
+          signedTx,
+          smartTransactionsController: smartTransactionsController(),
+          transactionController: controller,
+          transactionMeta,
+        }),
       publishBatch: async (_request: PublishBatchHookRequest) =>
         await publishBatchSmartTransactionHook({
           transactionController: controller,
@@ -174,6 +175,7 @@ export const TransactionControllerInit: ControllerInitFunction<
   addTransactionControllerListeners(
     initMessenger,
     getTransactionMetricsRequest,
+    updateAccountBalanceForTransactionNetwork,
   );
 
   const api = getApi(controller);
@@ -189,6 +191,7 @@ function getApi(
       controller.abortTransactionSigning.bind(controller),
     getLayer1GasFee: controller.getLayer1GasFee.bind(controller),
     getTransactions: controller.getTransactions.bind(controller),
+    isAtomicBatchSupported: controller.isAtomicBatchSupported.bind(controller),
     updateAtomicBatchData: controller.updateAtomicBatchData.bind(controller),
     updateBatchTransactions:
       controller.updateBatchTransactions.bind(controller),
@@ -218,21 +221,24 @@ function getControllers(
     preferencesController: () => request.getController('PreferencesController'),
     smartTransactionsController: () =>
       request.getController('SmartTransactionsController'),
-    transactionUpdateController: () =>
-      request.getController('TransactionUpdateController'),
+    institutionalSnapController: () =>
+      request.getController('InstitutionalSnapController'),
   };
 }
 
-function getSmartTransactionCommonParams(flatState: ControllerFlatState) {
+function getSmartTransactionCommonParams(
+  flatState: ControllerFlatState,
+  chainId?: string,
+) {
   // UI state is required to support shared selectors to avoid duplicate logic in frontend and backend.
   // Ideally all backend logic would instead rely on messenger event / state subscriptions.
   const uiState = getUIState(flatState);
 
   // @ts-expect-error Smart transaction selector types does not match controller state
-  const isSmartTransaction = getIsSmartTransaction(uiState);
+  const isSmartTransaction = getIsSmartTransaction(uiState, chainId);
 
   // @ts-expect-error Smart transaction selector types does not match controller state
-  const featureFlags = getFeatureFlagsByChainId(uiState);
+  const featureFlags = getFeatureFlagsByChainId(uiState, chainId);
 
   const isHardwareWalletAccount = isHardwareWallet(uiState);
 
@@ -243,7 +249,45 @@ function getSmartTransactionCommonParams(flatState: ControllerFlatState) {
   };
 }
 
-function publishSmartTransactionHook(
+async function publishHook({
+  flatState,
+  initMessenger,
+  signedTx,
+  smartTransactionsController,
+  transactionController,
+  transactionMeta,
+}: {
+  flatState: ControllerFlatState;
+  initMessenger: TransactionControllerInitMessenger;
+  signedTx: string;
+  smartTransactionsController: SmartTransactionsController;
+  transactionController: TransactionController;
+  transactionMeta: TransactionMeta;
+}) {
+  const result = await publishSmartTransactionHook(
+    transactionController,
+    smartTransactionsController,
+    initMessenger,
+    flatState,
+    transactionMeta,
+    signedTx as Hex,
+  );
+
+  if (result?.transactionHash) {
+    return result;
+  }
+
+  const hook = new Delegation7702PublishHook({
+    isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
+      transactionController,
+    ),
+    messenger: initMessenger,
+  }).getHook();
+
+  return await hook(transactionMeta, signedTx);
+}
+
+async function publishSmartTransactionHook(
   transactionController: TransactionController,
   smartTransactionsController: SmartTransactionsController,
   hookControllerMessenger: SmartTransactionHookMessenger,
@@ -252,14 +296,14 @@ function publishSmartTransactionHook(
   signedTransactionInHex: Hex,
 ) {
   const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
-    getSmartTransactionCommonParams(flatState);
+    getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
 
   if (!isSmartTransaction) {
     // Will cause TransactionController to publish to the RPC provider as normal.
     return { transactionHash: undefined };
   }
 
-  return submitSmartTransactionHook({
+  return await submitSmartTransactionHook({
     transactionMeta,
     signedTransactionInHex,
     transactionController,
@@ -285,16 +329,6 @@ function publishBatchSmartTransactionHook({
   flatState: ControllerFlatState;
   transactions: PublishBatchHookTransaction[];
 }) {
-  const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
-    getSmartTransactionCommonParams(flatState);
-
-  if (!isSmartTransaction) {
-    // Will cause TransactionController to publish to the RPC provider as normal.
-    throw new Error(
-      'publishBatchSmartTransactionHook: Smart Transaction is required for batch submissions',
-    );
-  }
-
   // Get transactionMeta based on the last transaction ID
   const lastTransaction = transactions[transactions.length - 1];
   const transactionMeta = getTransactionById(
@@ -306,6 +340,15 @@ function publishBatchSmartTransactionHook({
   if (!transactionMeta) {
     throw new Error(
       `publishBatchSmartTransactionHook: Could not find transaction with id ${lastTransaction.id}`,
+    );
+  }
+
+  const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
+    getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
+
+  if (!isSmartTransaction) {
+    throw new Error(
+      'publishBatchSmartTransactionHook: Smart Transaction is required for batch submissions',
     );
   }
 
@@ -335,38 +378,63 @@ function getExternalPendingTransactions(
 function addTransactionControllerListeners(
   initMessenger: TransactionControllerInitMessenger,
   getTransactionMetricsRequest: () => TransactionMetricsRequest,
+  updateAccountBalanceForTransactionNetwork: (
+    transactionMeta: TransactionMeta,
+  ) => void,
 ) {
   const transactionMetricsRequest = getTransactionMetricsRequest();
 
   initMessenger.subscribe(
+    'TransactionController:unapprovedTransactionAdded',
+    updateAccountBalanceForTransactionNetwork,
+  );
+
+  initMessenger.subscribe(
+    'TransactionController:transactionConfirmed',
+    updateAccountBalanceForTransactionNetwork,
+  );
+
+  initMessenger.subscribe(
     'TransactionController:postTransactionBalanceUpdated',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     handlePostTransactionBalanceUpdate.bind(null, transactionMetricsRequest),
   );
 
   initMessenger.subscribe(
     'TransactionController:unapprovedTransactionAdded',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     (transactionMeta) =>
       handleTransactionAdded(transactionMetricsRequest, { transactionMeta }),
   );
 
   initMessenger.subscribe(
     'TransactionController:transactionApproved',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     handleTransactionApproved.bind(null, transactionMetricsRequest),
   );
 
   initMessenger.subscribe(
     'TransactionController:transactionDropped',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     handleTransactionDropped.bind(null, transactionMetricsRequest),
   );
 
   initMessenger.subscribe(
     'TransactionController:transactionConfirmed',
     // @ts-expect-error Error is string in metrics code but TransactionError in TransactionMeta type from controller
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     handleTransactionConfirmed.bind(null, transactionMetricsRequest),
   );
 
   initMessenger.subscribe(
     'TransactionController:transactionFailed',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     handleTransactionFailed.bind(null, transactionMetricsRequest),
   );
 
@@ -388,11 +456,15 @@ function addTransactionControllerListeners(
 
   initMessenger.subscribe(
     'TransactionController:transactionRejected',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     handleTransactionRejected.bind(null, transactionMetricsRequest),
   );
 
   initMessenger.subscribe(
     'TransactionController:transactionSubmitted',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     handleTransactionSubmitted.bind(null, transactionMetricsRequest),
   );
 }

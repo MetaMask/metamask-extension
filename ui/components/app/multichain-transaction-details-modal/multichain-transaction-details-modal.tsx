@@ -70,11 +70,21 @@ export function MultichainTransactionDetailsModal({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const { assetInputs, assetOutputs, isRedeposit, baseFee, priorityFee } =
-    useMultichainTransactionDisplay(transaction, networkConfig);
+  const {
+    from,
+    to,
+    isRedeposit,
+    baseFee,
+    priorityFee,
+    status,
+    chain,
+    type,
+    timestamp,
+    id,
+  } = useMultichainTransactionDisplay(transaction, networkConfig);
 
   const getStatusColor = (txStatus: string) => {
-    switch (txStatus.toLowerCase()) {
+    switch (txStatus?.toLowerCase()) {
       case TransactionStatus.Confirmed:
         return TextColor.successDefault;
       case TransactionStatus.Unconfirmed:
@@ -85,13 +95,13 @@ export function MultichainTransactionDetailsModal({
         return TextColor.textDefault;
     }
   };
-  const statusKey = KEYRING_TRANSACTION_STATUS_KEY[transaction.status];
+  const statusKey = KEYRING_TRANSACTION_STATUS_KEY[status];
 
-  const accountComponent = (title: string, address?: string) =>
+  const accountComponent = (label: string, address?: string) =>
     address ? (
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
         <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-          {title}
+          {label}
         </Text>
         <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
           <ButtonLink
@@ -102,7 +112,7 @@ export function MultichainTransactionDetailsModal({
             }}
             as="a"
             externalLink
-            href={getAddressUrl(address, transaction.chain)}
+            href={getAddressUrl(address, chain)}
           >
             {shortenAddress(address)}
             <Icon
@@ -110,9 +120,11 @@ export function MultichainTransactionDetailsModal({
               name={IconName.Export}
               size={IconSize.Sm}
               color={IconColor.primaryDefault}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={() =>
                 navigator.clipboard.writeText(
-                  getAddressUrl(address as string, transaction.chain),
+                  getAddressUrl(address as string, chain),
                 )
               }
             />
@@ -122,31 +134,44 @@ export function MultichainTransactionDetailsModal({
     ) : null;
 
   const amountComponent = (
-    {
-      amount,
-      unit,
-    }: {
-      amount: string;
-      unit: string;
-    },
-    title: string,
+    asset:
+      | {
+          amount: string;
+          unit: string;
+        }
+      | undefined,
+    label: string,
     dataTestId: string,
-  ) => (
-    <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
-      <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-        {title}
-      </Text>
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexEnd}
-      >
-        <Text variant={TextVariant.bodyMd} data-testid={dataTestId}>
-          {amount} {unit}
+  ) => {
+    if (!asset) {
+      return null;
+    }
+
+    return (
+      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
+        <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+          {label}
         </Text>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          alignItems={AlignItems.flexEnd}
+        >
+          <Text variant={TextVariant.bodyMd} data-testid={dataTestId}>
+            {asset.amount} {asset.unit}
+          </Text>
+        </Box>
       </Box>
-    </Box>
-  );
+    );
+  };
+
+  const typeToTitle: Partial<Record<TransactionType, string>> = {
+    // TODO: Add support for other transaction types
+    [TransactionType.Send]: t('send'),
+    [TransactionType.Receive]: t('receive'),
+    [TransactionType.Swap]: t('swap'),
+    [TransactionType.Unknown]: t('interaction'),
+  };
 
   return (
     <Modal
@@ -166,14 +191,14 @@ export function MultichainTransactionDetailsModal({
       >
         <ModalHeader onClose={onClose} padding={0}>
           <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
-            {capitalize(isRedeposit ? t('redeposit') : transaction.type)}
+            {capitalize(isRedeposit ? t('redeposit') : typeToTitle[type])}
           </Text>
           <Text
             variant={TextVariant.bodyMd}
             color={TextColor.textAlternative}
             textAlign={TextAlign.Center}
           >
-            {formatTimestamp(transaction.timestamp)}
+            {formatTimestamp(timestamp)}
           </Text>
         </ModalHeader>
 
@@ -187,20 +212,25 @@ export function MultichainTransactionDetailsModal({
             gap={4}
           >
             {/* Status */}
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-            >
-              <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-                {t('status')}
-              </Text>
-              <Text
-                variant={TextVariant.bodyMd}
-                color={getStatusColor(transaction.status)}
+            {status && (
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
               >
-                {capitalize(t(statusKey))}
-              </Text>
-            </Box>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {t('status')}
+                </Text>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={getStatusColor(status)}
+                >
+                  {capitalize(t(statusKey))}
+                </Text>
+              </Box>
+            )}
 
             {/* Transaction ID */}
             <Box
@@ -223,17 +253,19 @@ export function MultichainTransactionDetailsModal({
                   }}
                   as="a"
                   externalLink
-                  href={getTransactionUrl(transaction.id, transaction.chain)}
+                  href={getTransactionUrl(id, chain)}
                 >
-                  {shortenTransactionId(transaction.id)}
+                  {shortenTransactionId(id)}
                   <Icon
                     marginLeft={2}
                     name={IconName.Export}
                     size={IconSize.Sm}
                     color={IconColor.primaryDefault}
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={() =>
                       navigator.clipboard.writeText(
-                        getTransactionUrl(transaction.id, transaction.chain),
+                        getTransactionUrl(id, chain),
                       )
                     }
                   />
@@ -252,32 +284,26 @@ export function MultichainTransactionDetailsModal({
             gap={4}
           >
             {/* From */}
-            {transaction.type === TransactionType.Send
+            {type === TransactionType.Send
               ? accountComponent(t('from'), userAddress)
-              : assetInputs.map((input) =>
-                  accountComponent(t('from'), input.address),
-                )}
+              : accountComponent(t('from'), from?.address)}
 
             {/* Amounts per token */}
-            {assetOutputs.map((output) => (
-              <>
-                {accountComponent(t('to'), output.address)}
-                {amountComponent(output, t('amount'), 'transaction-amount')}
-              </>
-            ))}
-
+            <>
+              {accountComponent(t('to'), to?.address)}
+              {amountComponent(
+                type === TransactionType.Swap ? from : to,
+                t('amount'),
+                'transaction-amount',
+              )}
+            </>
             {/* Base Fees */}
-            {baseFee.map((fee) =>
-              amountComponent(fee, t('networkFee'), 'transaction-base-fee'),
-            )}
-
+            {amountComponent(baseFee, t('networkFee'), 'transaction-base-fee')}
             {/* Priority Fees */}
-            {priorityFee.map((fee) =>
-              amountComponent(
-                fee,
-                t('priorityFee'),
-                'transaction-priority-fee',
-              ),
+            {amountComponent(
+              priorityFee,
+              t('priorityFee'),
+              'transaction-priority-fee',
             )}
           </Box>
         </Box>
@@ -293,7 +319,7 @@ export function MultichainTransactionDetailsModal({
             variant={ButtonVariant.Link}
             onClick={() => {
               global.platform.openTab({
-                url: getTransactionUrl(transaction.id, transaction.chain),
+                url: getTransactionUrl(id, chain),
               });
 
               trackEvent({
@@ -302,9 +328,7 @@ export function MultichainTransactionDetailsModal({
                 properties: {
                   link_type: MetaMetricsEventLinkType.AccountTracker,
                   location: 'Transaction Details',
-                  url_domain: getURLHostName(
-                    getTransactionUrl(transaction.id, transaction.chain),
-                  ),
+                  url_domain: getURLHostName(getTransactionUrl(id, chain)),
                 },
               });
             }}

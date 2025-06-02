@@ -1,5 +1,4 @@
 import { Driver } from '../../../webdriver/driver';
-import { veryLargeDelayMs } from '../../../helpers';
 
 class SnapTxInsights {
   private driver: Driver;
@@ -30,7 +29,9 @@ class SnapTxInsights {
       );
       throw e;
     }
-    console.log('Snap txInsight section is loaded under transaction confirmation dialog');
+    console.log(
+      'Snap txInsight section is loaded under transaction confirmation dialog',
+    );
   }
 
   async check_transactionInsightsTitle() {

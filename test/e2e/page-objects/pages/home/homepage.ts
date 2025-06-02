@@ -13,6 +13,16 @@ class HomePage {
     testId: 'account-overview__activity-tab',
   };
 
+  private readonly backupSecretRecoveryPhraseButton = {
+    text: 'Back up now',
+    css: '.home-notification__accept-button',
+  };
+
+  private readonly backupSecretRecoveryPhraseNotification = {
+    text: 'Back up your Secret Recovery Phrase to keep your wallet and funds secure.',
+    css: '.home-notification__text',
+  };
+
   protected readonly balance: string =
     '[data-testid="eth-overview__primary-currency"]';
 
@@ -30,18 +40,18 @@ class HomePage {
   };
 
   private readonly erc20TokenDropdown = {
-    testId: 'import-token-button',
+    testId: 'asset-list-control-bar-action-button',
   };
 
   private readonly nftTab = {
     testId: 'account-overview__nfts-tab',
   };
 
-  private readonly popoverBackground = '.popover-bg';
-
-  private readonly popoverCloseButton = {
-    testId: 'popover-close',
+  private readonly defiTab = {
+    testId: 'account-overview__defi-tab',
   };
+
+  private readonly popoverBackground = '.popover-bg';
 
   private readonly portfolioLink = '[data-testid="portfolio-link"]';
 
@@ -81,11 +91,6 @@ class HomePage {
     console.log('Home page is loaded');
   }
 
-  async closePopover(): Promise<void> {
-    console.log('Closing popover');
-    await this.driver.clickElement(this.popoverCloseButton);
-  }
-
   async closeUseNetworkNotificationModal(): Promise<void> {
     // We need to use clickElementSafe + assertElementNotPresent as sometimes the network dialog doesn't appear, as per this issue (#25788)
     // TODO: change the 2 actions for clickElementAndWaitToDisappear, once the issue is fixed
@@ -103,9 +108,22 @@ class HomePage {
     await this.driver.clickElement(this.activityTab);
   }
 
+  async goToBackupSRPPage(): Promise<void> {
+    console.log(`Go to backup secret recovery phrase on homepage`);
+    await this.driver.waitForSelector(
+      this.backupSecretRecoveryPhraseNotification,
+    );
+    await this.driver.clickElement(this.backupSecretRecoveryPhraseButton);
+  }
+
   async goToNftTab(): Promise<void> {
     console.log(`Go to NFT tab on homepage`);
     await this.driver.clickElement(this.nftTab);
+  }
+
+  async goToDeFiTab(): Promise<void> {
+    console.log(`Go to DeFi tab on homepage`);
+    await this.driver.clickElement(this.defiTab);
   }
 
   async goToTokensTab(): Promise<void> {
@@ -149,6 +167,13 @@ class HomePage {
       tag: 'h6',
       text: `“${networkName}” was successfully added!`,
     });
+  }
+
+  async check_backupReminderIsNotDisplayed(): Promise<void> {
+    console.log('Check backup reminder is not displayed on homepage');
+    await this.driver.assertElementNotPresent(
+      this.backupSecretRecoveryPhraseNotification,
+    );
   }
 
   async check_basicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
@@ -238,7 +263,9 @@ class HomePage {
 
   async check_ifBridgeButtonIsClickable(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(this.bridgeButton, 1000);
+      await this.driver.findClickableElement(this.bridgeButton, {
+        timeout: 1000,
+      });
     } catch (e) {
       console.log('Bridge button not clickable', e);
       return false;
@@ -249,7 +276,9 @@ class HomePage {
 
   async check_ifSendButtonIsClickable(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(this.sendButton, 1000);
+      await this.driver.findClickableElement(this.sendButton, {
+        timeout: 1000,
+      });
     } catch (e) {
       console.log('Send button not clickable', e);
       return false;
@@ -260,7 +289,9 @@ class HomePage {
 
   async check_ifSwapButtonIsClickable(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(this.swapButton, 1000);
+      await this.driver.findClickableElement(this.swapButton, {
+        timeout: 1000,
+      });
     } catch (e) {
       console.log('Swap button not clickable', e);
       return false;
@@ -287,6 +318,19 @@ class HomePage {
   ): Promise<void> {
     await this.driver.waitForSelector({
       text: `Secret Recovery Phrase ${srpNumber} imported`,
+    });
+  }
+
+  /**
+   * Check if the expected warning message is displayed on homepage.
+   *
+   * @param message - The message to be displayed.
+   */
+  async check_warningMessageIsDisplayed(message: string): Promise<void> {
+    console.log(`Check if warning message ${message} is displayed on homepage`);
+    await this.driver.waitForSelector({
+      text: message,
+      tag: 'p',
     });
   }
 }

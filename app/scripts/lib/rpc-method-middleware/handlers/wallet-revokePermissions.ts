@@ -5,7 +5,7 @@ import {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
-import { Caip25EndowmentPermissionName } from '@metamask/multichain';
+import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 import {
   AsyncJsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,

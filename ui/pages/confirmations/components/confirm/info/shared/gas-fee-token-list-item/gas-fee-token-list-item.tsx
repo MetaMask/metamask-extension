@@ -28,28 +28,25 @@ import {
   NATIVE_TOKEN_ADDRESS,
   useGasFeeToken,
 } from '../../hooks/useGasFeeToken';
-import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import { getCurrentCurrency } from '../../../../../../../ducks/metamask/metamask';
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
 
 export type GasFeeTokenListItemProps = {
-  tokenAddress: Hex;
   isSelected?: boolean;
   onClick?: (token: GasFeeToken) => void;
+  tokenAddress?: Hex;
+  warning?: string;
 };
 
 export function GasFeeTokenListItem({
-  tokenAddress,
   isSelected,
   onClick,
+  tokenAddress,
+  warning,
 }: GasFeeTokenListItemProps) {
   const t = useI18nContext();
   const gasFeeToken = useGasFeeToken({ tokenAddress });
   const currentCurrency = useSelector(getCurrentCurrency);
-
-  const hasInsufficientNative =
-    Boolean(useInsufficientBalanceAlerts().length) &&
-    tokenAddress === NATIVE_TOKEN_ADDRESS;
 
   if (!gasFeeToken) {
     return null;
@@ -61,7 +58,7 @@ export function GasFeeTokenListItem({
     <ListItem
       image={
         <GasFeeTokenIcon
-          tokenAddress={tokenAddress}
+          tokenAddress={tokenAddress ?? NATIVE_TOKEN_ADDRESS}
           size={GasFeeTokenIconSize.Md}
         />
       }
@@ -72,7 +69,7 @@ export function GasFeeTokenListItem({
       )} ${balanceFiat} ${currentCurrency.toUpperCase()}`}
       rightPrimary={amountFiat}
       rightSecondary={`${amountFormatted} ${symbol}`}
-      warning={hasInsufficientNative && <InsufficientBalanceIndicator />}
+      warning={warning && <WarningIndicator text={warning} />}
       onClick={() => onClick?.(gasFeeToken)}
     />
   );
@@ -99,7 +96,7 @@ function ListItem({
 }) {
   return (
     <Box
-      data-testid="gas-fee-token-list-item"
+      data-testid={`gas-fee-token-list-item-${leftPrimary}`}
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.spaceBetween}
@@ -126,6 +123,7 @@ function ListItem({
             gap={2}
           >
             <Text
+              data-testid="gas-fee-token-list-item-symbol"
               as="button"
               variant={TextVariant.bodyMdMedium}
               backgroundColor={BackgroundColor.transparent}
@@ -136,6 +134,7 @@ function ListItem({
             {warning}
           </Box>
           <Text
+            data-testid="gas-fee-token-list-item-balance"
             variant={TextVariant.bodySmMedium}
             color={TextColor.textAlternative}
           >
@@ -144,8 +143,14 @@ function ListItem({
         </Box>
       </Box>
       <Box textAlign={TextAlign.Right} paddingRight={2}>
-        <Text variant={TextVariant.bodyMdMedium}>{rightPrimary}</Text>
         <Text
+          data-testid="gas-fee-token-list-item-amount-fiat"
+          variant={TextVariant.bodyMdMedium}
+        >
+          {rightPrimary}
+        </Text>
+        <Text
+          data-testid="gas-fee-token-list-item-amount-token"
           variant={TextVariant.bodySmMedium}
           color={TextColor.textAlternative}
         >
@@ -156,9 +161,7 @@ function ListItem({
   );
 }
 
-function InsufficientBalanceIndicator() {
-  const t = useI18nContext();
-
+function WarningIndicator({ text }: { text: string }) {
   return (
     <Box
       display={Display.Flex}
@@ -175,7 +178,7 @@ function InsufficientBalanceIndicator() {
         color={IconColor.iconMuted}
       />
       <Text variant={TextVariant.bodyXsMedium} color={TextColor.textMuted}>
-        {t('confirmGasFeeTokenInsufficientBalance')}
+        {text}
       </Text>
     </Box>
   );

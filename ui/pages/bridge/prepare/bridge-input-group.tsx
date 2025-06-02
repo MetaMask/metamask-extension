@@ -1,8 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { BigNumber } from 'bignumber.js';
-import { isNativeAddress } from '@metamask/bridge-controller';
-import type { BridgeToken } from '@metamask/bridge-controller';
+import {
+  formatChainIdToCaip,
+  isNativeAddress,
+} from '@metamask/bridge-controller';
+import { getAccountLink } from '@metamask/etherscan-link';
+import { type BigNumber } from 'bignumber.js';
 import {
   Text,
   TextField,
@@ -25,7 +28,6 @@ import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import {
   getBridgeQuotes,
   getValidationErrors,
@@ -35,6 +37,13 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
+import {
+  MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP,
+  MultichainNetworks,
+} from '../../../../shared/constants/multichain/networks';
+import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
+import type { BridgeToken } from '../../../ducks/bridge/types';
+import { getMultichainCurrentChainId } from '../../../selectors/multichain';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
 const sanitizeAmountInput = (textToSanitize: string) => {
@@ -60,9 +69,12 @@ export const BridgeInputGroup = ({
   amountInFiat,
   onMaxButtonClick,
   isMultiselectEnabled,
+  onBlockExplorerClick,
   buttonProps,
+  balanceAmount,
 }: {
-  amountInFiat?: BigNumber;
+  balanceAmount?: BigNumber;
+  amountInFiat?: string;
   onAmountChange?: (value: string) => void;
   token: BridgeToken | null;
   buttonProps: { testId: string };
@@ -71,6 +83,7 @@ export const BridgeInputGroup = ({
     'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
   >;
   onMaxButtonClick?: (value: string) => void;
+  onBlockExplorerClick?: (token: BridgeToken) => void;
 } & Pick<
   React.ComponentProps<typeof AssetPicker>,
   | 'networkProps'
@@ -88,8 +101,8 @@ export const BridgeInputGroup = ({
   const currency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
 
-  const selectedChainId = networkProps?.network?.chainId;
-  const balanceAmount = useLatestBalance(token);
+  const currentChainId = useSelector(getMultichainCurrentChainId);
+  const selectedChainId = networkProps?.network?.chainId ?? currentChainId;
 
   const [, handleCopy] = useCopyToClipboard(MINUTE) as [
     boolean,
@@ -99,6 +112,8 @@ export const BridgeInputGroup = ({
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const isAmountReadOnly =
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     amountFieldProps?.readOnly || amountFieldProps?.disabled;
 
   useEffect(() => {
@@ -109,6 +124,45 @@ export const BridgeInputGroup = ({
   }, [amountFieldProps?.value, isAmountReadOnly, token]);
 
   const isSwap = useIsMultichainSwap();
+
+  const handleAddressClick = () => {
+    if (token && selectedChainId) {
+      const caipChainId = formatChainIdToCaip(selectedChainId);
+      const isSolana = caipChainId === MultichainNetworks.SOLANA;
+
+      let blockExplorerUrl = '';
+      if (isSolana) {
+        const blockExplorerUrls =
+          MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[caipChainId];
+        if (blockExplorerUrls) {
+          blockExplorerUrl = formatBlockExplorerAddressUrl(
+            blockExplorerUrls,
+            token.address,
+          );
+        }
+      } else {
+        const explorerUrl =
+          networkProps?.network?.blockExplorerUrls?.[
+            networkProps?.network?.defaultBlockExplorerUrlIndex ?? 0
+          ];
+        if (explorerUrl) {
+          blockExplorerUrl = getAccountLink(
+            token.address,
+            selectedChainId,
+            {
+              blockExplorerUrl: explorerUrl,
+            },
+            undefined,
+          );
+        }
+      }
+
+      if (blockExplorerUrl) {
+        handleCopy(blockExplorerUrl);
+        onBlockExplorerClick?.(token);
+      }
+    }
+  };
 
   return (
     <Column paddingInline={6} gap={1}>
@@ -239,10 +293,16 @@ export const BridgeInputGroup = ({
           }
           onClick={() => {
             if (isAmountReadOnly && token && selectedChainId) {
+              handleAddressClick();
+            } else if (token && selectedChainId) {
               handleCopy(token.address);
             }
           }}
           as={isAmountReadOnly ? 'a' : 'p'}
+          style={{
+            cursor: isAmountReadOnly ? 'pointer' : 'default',
+            textDecoration: isAmountReadOnly ? 'underline' : 'none',
+          }}
         >
           {isAmountReadOnly &&
             token &&
@@ -256,7 +316,7 @@ export const BridgeInputGroup = ({
                   skipCharacterInEnd: false,
                 }))}
           {!isAmountReadOnly && balanceAmount
-            ? formatTokenAmount(locale, balanceAmount, token?.symbol)
+            ? formatTokenAmount(locale, balanceAmount.toString(), token?.symbol)
             : undefined}
           {onMaxButtonClick &&
             token &&

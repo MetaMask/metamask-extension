@@ -15,7 +15,7 @@ type MockResponse = {
 };
 
 /**
- * E2E mock setup for identity APIs (Auth, UserStorage, Profile syncing)
+ * E2E mock setup for identity APIs (Auth, UserStorage, Backup and sync)
  *
  * @param server - server obj used to mock our endpoints
  * @param userStorageMockttpControllerInstance - optional instance of UserStorageMockttpController, useful if you need persisted user storage between tests
@@ -135,4 +135,32 @@ export async function mockInfuraAndAccountSync(
   }
 
   mockIdentityServices(mockServer, userStorageMockttpController);
+}
+
+/**
+ * Sets up mock responses for NFT API calls
+ *
+ * @param mockServer - The Mockttp server instance
+ * @param userAddress - The user address to mock the NFT API call for
+ */
+export async function mockNftApiCall(
+  mockServer: Mockttp,
+  userAddress: string,
+): Promise<void> {
+  mockServer
+    .forGet(`https://nft.api.cx.metamask.io/users/${userAddress}/tokens`)
+    .withQuery({
+      limit: 50,
+      includeTopBid: 'true',
+      chainIds: ['1', '59144'],
+      continuation: '',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          tokens: [],
+        },
+      };
+    });
 }

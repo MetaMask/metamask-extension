@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { TokensControllerState } from '@metamask/assets-controllers';
+import { Token, TokensControllerState } from '@metamask/assets-controllers';
 import { migrate, version } from './133.1';
 
 const sentryCaptureExceptionMock = jest.fn();
@@ -93,7 +93,10 @@ describe(`migration #${version}`, () => {
     const newStorage = await migrate(oldStorage);
 
     const tokensControllerState = newStorage.data
-      .TokensController as TokensControllerState;
+      .TokensController as TokensControllerState & {
+      tokens: Token[];
+      detectedTokens: Token[];
+    };
     const { tokens } = tokensControllerState;
 
     expect(tokens).toEqual([
@@ -107,7 +110,10 @@ describe(`migration #${version}`, () => {
     const newStorage = await migrate(oldStorage);
 
     const tokensControllerState = newStorage.data
-      .TokensController as TokensControllerState;
+      .TokensController as TokensControllerState & {
+      tokens: Token[];
+      detectedTokens: Token[];
+    };
     const { detectedTokens } = tokensControllerState;
 
     expect(detectedTokens).toEqual([
@@ -198,6 +204,7 @@ describe(`migration #${version}`, () => {
     },
   ];
 
+  // @ts-expect-error 'each' function is not recognized by TypeScript types
   it.each(invalidState)(
     'captures error when state is invalid due to: $label',
     async ({
