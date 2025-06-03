@@ -28,10 +28,8 @@ import {
   ButtonIconSize,
   IconName,
   IconSize,
-  PickerNetwork,
   Text,
 } from '../../component-library';
-import Tooltip from '../../ui/tooltip';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
@@ -43,7 +41,6 @@ import { AccountPicker } from '../account-picker';
 import { GlobalMenu } from '../global-menu';
 import {
   getSelectedInternalAccount,
-  getTestNetworkBackgroundColor,
   getOriginOfCurrentTab,
   getUseBlockie,
 } from '../../../selectors';
@@ -60,8 +57,6 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
-import { getNetworkIcon } from '../../../../shared/modules/network.utils';
-import { TraceName, trace } from '../../../../shared/lib/trace';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;
@@ -73,10 +68,6 @@ type AppHeaderUnlockedContentProps = {
 };
 
 export const AppHeaderUnlockedContent = ({
-  popupStatus,
-  currentNetwork,
-  networkOpenCallback,
-  disableNetworkPicker,
   disableAccountPicker,
   menuRef,
 }: AppHeaderUnlockedContentProps) => {
@@ -87,8 +78,6 @@ export const AppHeaderUnlockedContent = ({
   const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const useBlockie = useSelector(getUseBlockie);
-  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
-  const networkIconSrc = getNetworkIcon(currentNetwork);
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
@@ -172,25 +161,21 @@ export const AppHeaderUnlockedContent = ({
   const AppContent = useMemo(
     () => (
       <>
-        {process.env.REMOVE_GNS ? (
-          <AvatarAccount
-            variant={
-              useBlockie
-                ? AvatarAccountVariant.Blockies
-                : AvatarAccountVariant.Jazzicon
-            }
-            address={internalAccount.address}
-            size={AvatarAccountSize.Md}
-          />
-        ) : null}
+        <AvatarAccount
+          variant={
+            useBlockie
+              ? AvatarAccountVariant.Blockies
+              : AvatarAccountVariant.Jazzicon
+          }
+          address={internalAccount.address}
+          size={AvatarAccountSize.Md}
+        />
         {internalAccount && (
           <Text
             as="div"
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
-            alignItems={
-              process.env.REMOVE_GNS ? AlignItems.flexStart : AlignItems.center
-            }
+            alignItems={AlignItems.flexStart}
             ellipsis
           >
             <AccountPicker
@@ -212,16 +197,7 @@ export const AppHeaderUnlockedContent = ({
               paddingLeft={0}
               paddingRight={0}
             />
-            {process.env.REMOVE_GNS ? (
-              <>{CopyButton}</>
-            ) : (
-              <Tooltip
-                position="left"
-                title={copied ? t('addressCopied') : t('copyToClipboard')}
-              >
-                {CopyButton}
-              </Tooltip>
-            )}
+            <>{CopyButton}</>
           </Text>
         )}
       </>
@@ -240,76 +216,14 @@ export const AppHeaderUnlockedContent = ({
 
   return (
     <>
-      {process.env.REMOVE_GNS ? null : (
-        <>
-          {popupStatus ? (
-            <Box className="multichain-app-header__contents__container">
-              <Tooltip title={currentNetwork.name} position="right">
-                <PickerNetwork
-                  avatarNetworkProps={{
-                    backgroundColor: testNetworkBackgroundColor,
-                    role: 'img',
-                    name: currentNetwork.name,
-                  }}
-                  className="multichain-app-header__contents--avatar-network"
-                  ref={menuRef}
-                  as="button"
-                  src={networkIconSrc}
-                  label={currentNetwork.name}
-                  aria-label={`${t('networkMenu')} ${currentNetwork.name}`}
-                  labelProps={{
-                    display: Display.None,
-                  }}
-                  onClick={(e: React.MouseEvent<HTMLElement>) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    trace({ name: TraceName.NetworkList });
-                    networkOpenCallback();
-                  }}
-                  display={[Display.Flex, Display.None]} // show on popover hide on desktop
-                  disabled={disableNetworkPicker}
-                />
-              </Tooltip>
-            </Box>
-          ) : (
-            <div>
-              <PickerNetwork
-                avatarNetworkProps={{
-                  backgroundColor: testNetworkBackgroundColor,
-                  role: 'img',
-                  name: currentNetwork.name,
-                }}
-                margin={2}
-                aria-label={`${t('networkMenu')} ${currentNetwork.name}`}
-                label={currentNetwork.name}
-                src={networkIconSrc}
-                onClick={(e: React.MouseEvent<HTMLElement>) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  trace({ name: TraceName.NetworkList });
-                  networkOpenCallback();
-                }}
-                display={[Display.None, Display.Flex]} // show on desktop hide on popover
-                className="multichain-app-header__contents__network-picker"
-                disabled={disableNetworkPicker}
-                data-testid="network-display"
-              />
-            </div>
-          )}
-        </>
-      )}
-      {process.env.REMOVE_GNS ? (
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
-          gap={2}
-        >
-          {AppContent}
-        </Box>
-      ) : (
-        <>{AppContent}</>
-      )}
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        alignItems={AlignItems.center}
+        gap={2}
+      >
+        {AppContent}
+      </Box>
       <Box
         display={Display.Flex}
         alignItems={AlignItems.center}

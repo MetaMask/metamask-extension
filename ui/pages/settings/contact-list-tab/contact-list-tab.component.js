@@ -59,17 +59,12 @@ export default class ContactListTab extends Component {
   }
 
   renderAddresses() {
-    const {
-      completeAddressBook,
-      addressBook,
-      internalAccounts,
-      history,
-      selectedAddress,
-    } = this.props;
+    const { completeAddressBook, internalAccounts, history, selectedAddress } =
+      this.props;
 
-    const updatedAddressBook = process.env.REMOVE_GNS
-      ? completeAddressBook.flatMap((add) => Object.values(add))
-      : addressBook;
+    const updatedAddressBook = completeAddressBook.flatMap((add) =>
+      Object.values(add),
+    );
 
     const contacts = updatedAddressBook.filter(({ name }) => Boolean(name));
     const nonContacts = updatedAddressBook.filter(({ name }) => !name);
@@ -174,13 +169,9 @@ export default class ContactListTab extends Component {
   }
 
   render() {
-    const { addingContact, currentPath, completeAddressBook, addressBook } =
-      this.props;
+    const { addingContact, currentPath, completeAddressBook } = this.props;
 
-    const addressData = process.env.REMOVE_GNS
-      ? completeAddressBook
-      : addressBook;
-
+    const addressData = completeAddressBook;
     return (
       <div className="address-book-wrapper">
         {this.renderAddressBookContent()}
