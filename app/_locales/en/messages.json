@@ -4926,10 +4926,6 @@
     "message": "$1 RECOVERY",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySocialLoginLabel": {
-    "message": "$1 RECOVERY",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
   "securitySrpDescription": {
     "message": "Back up your Secret Recovery Phrase so you never lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget."
   },
