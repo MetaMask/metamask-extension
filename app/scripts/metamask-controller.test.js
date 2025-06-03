@@ -4237,6 +4237,13 @@ describe('MetaMaskController', () => {
           CHAIN_IDS.LINEA_MAINNET,
           CHAIN_IDS.BASE,
         ];
+        const networksWithoutFailoverUrls = [
+          CHAIN_IDS.SEPOLIA,
+          CHAIN_IDS.LINEA_SEPOLIA,
+          CHAIN_IDS.MEGAETH_TESTNET,
+          '0x279f', // Monad Testnet
+          '0x539', // Localhost
+        ];
 
         // Assert - ensure networks with failovers have failovers, and other networks do not have failovers
         // NOTE - if a network enabled by default is missing a failover, double check if it needs to be inserted
@@ -4245,24 +4252,29 @@ describe('MetaMaskController', () => {
             /** @type {import('@metamask/utils').Hex} */
             chainId,
           ) => {
-            const networkConfig =
-              networkState.networkConfigurationsByChainId[chainId];
-
-            const shouldHaveFailover =
-              networksWithFailoverUrls.includes(chainId);
-            const expectedFailoverLength = shouldHaveFailover ? 1 : 0;
-
-            expect(networkConfig.rpcEndpoints[0].failoverUrls).toHaveLength(
-              expectedFailoverLength,
-            );
+            // Assert ensure we are checking all known networks
+            // NOTE - if network is missing, append it to either with failover or wthout failovers
+            expect([
+              ...networksWithFailoverUrls,
+              ...networksWithoutFailoverUrls,
+            ]).toContain(chainId);
           },
         );
 
+        // Assert - networks have failovers
         networksWithFailoverUrls.forEach((chainId) => {
           expect(
             networkState.networkConfigurationsByChainId[chainId].rpcEndpoints[0]
               .failoverUrls,
           ).toHaveLength(1);
+        });
+
+        // Assert - networks without failovers
+        networksWithoutFailoverUrls.forEach((chainId) => {
+          expect(
+            networkState.networkConfigurationsByChainId[chainId].rpcEndpoints[0]
+              .failoverUrls,
+          ).toHaveLength(0);
         });
       });
     });
