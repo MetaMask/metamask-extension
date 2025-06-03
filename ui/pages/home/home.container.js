@@ -92,6 +92,7 @@ const mapStateToProps = (state) => {
     updateModalLastDismissedAt,
     lastUpdatedAt,
   } = metamask;
+  const remoteFeatureFlags = getRemoteFeatureFlags(state);
   const selectedAccount = getSelectedInternalAccount(state);
   const { address: selectedAddress } = selectedAccount;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
@@ -138,8 +139,10 @@ const mapStateToProps = (state) => {
   const shouldShowSeedPhraseReminder =
     selectedAccount && getShouldShowSeedPhraseReminder(state, selectedAccount);
 
-  const extensionCurrentVersion = process.env.METAMASK_VERSION;
-  const { extensionMinimumVersion } = getRemoteFeatureFlags(state);
+  const extensionCurrentVersion = semver.valid(process.env.METAMASK_VERSION);
+  const extensionMinimumVersion = semver.valid(
+    remoteFeatureFlags.extensionMinimumVersion,
+  );
   const isExtensionOutdated =
     extensionCurrentVersion && extensionMinimumVersion
       ? semver.lt(extensionCurrentVersion, extensionMinimumVersion)
