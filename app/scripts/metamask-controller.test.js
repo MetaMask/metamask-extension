@@ -59,6 +59,7 @@ import {
   EndowmentTypes,
   RestrictedEthMethods,
 } from '../../shared/constants/permissions';
+import * as NetworkConstantsModule from '../../shared/constants/network';
 import { deferredPromise } from './lib/util';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import MetaMaskController from './metamask-controller';
@@ -4207,6 +4208,62 @@ describe('MetaMaskController', () => {
             .networkConfigurationsByChainId[CHAIN_IDS.MAINNET].rpcEndpoints[0]
             .networkClientId,
         );
+      });
+
+      it('ensures initial network state networks contain failover RPCs', () => {
+        jest
+          .spyOn(NetworkConstantsModule, 'getFailoverUrlsForInfuraNetwork')
+          .mockReturnValue(['https://mock_rpc']);
+
+        const initState = cloneDeep(firstTimeState);
+        delete initState.NetworkController;
+        metamaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState,
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+
+        const networkState = metamaskController.networkController.state;
+        const networksWithFailoverUrls = [
+          CHAIN_IDS.MAINNET,
+          CHAIN_IDS.LINEA_MAINNET,
+          CHAIN_IDS.BASE,
+        ];
+
+        // Assert - ensure networks with failovers have failovers, and other networks do not have failovers
+        // NOTE - if a network enabled by default is missing a failover, double check if it needs to be inserted
+        Object.keys(networkState.networkConfigurationsByChainId).forEach(
+          (
+            /** @type {import('@metamask/utils').Hex} */
+            chainId,
+          ) => {
+            const networkConfig =
+              networkState.networkConfigurationsByChainId[chainId];
+
+            const shouldHaveFailover =
+              networksWithFailoverUrls.includes(chainId);
+            const expectedFailoverLength = shouldHaveFailover ? 1 : 0;
+
+            expect(networkConfig.rpcEndpoints[0].failoverUrls).toHaveLength(
+              expectedFailoverLength,
+            );
+          },
+        );
+
+        networksWithFailoverUrls.forEach((chainId) => {
+          expect(
+            networkState.networkConfigurationsByChainId[chainId].rpcEndpoints[0]
+              .failoverUrls,
+          ).toHaveLength(1);
+        });
       });
     });
   });
