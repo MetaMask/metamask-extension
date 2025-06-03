@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
+import { Browser } from 'selenium-webdriver';
 
 class HeaderNavbar {
   protected driver: Driver;
@@ -87,7 +88,11 @@ class HeaderNavbar {
     await this.driver.waitForSelector(this.threeDotMenuButton, {
       state: 'enabled',
     });
-    await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
+    } else {
+      this.driver.clickElement(this.threeDotMenuButton);
+    }
   }
 
   async openPermissionsPage(): Promise<void> {
