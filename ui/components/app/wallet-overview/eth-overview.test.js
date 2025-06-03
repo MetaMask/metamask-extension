@@ -258,14 +258,14 @@ describe('EthOverview', () => {
       };
       const mockedStore = configureMockStore([thunk])(mockedAvalancheStore);
 
-      const { queryByTestId } = renderWithProvider(
+      const { queryByTestId, queryByText } = renderWithProvider(
         <EthOverview />,
         mockedStore,
       );
       const bridgeButton = queryByTestId(ETH_OVERVIEW_BRIDGE);
       expect(bridgeButton).toBeInTheDocument();
       expect(bridgeButton).toBeEnabled();
-      expect(bridgeButton.parentElement).not.toHaveAttribute(
+      expect(queryByText('Bridge').parentElement).not.toHaveAttribute(
         'data-original-title',
         'Unavailable on this network',
       );
@@ -322,14 +322,14 @@ describe('EthOverview', () => {
       };
       const mockedStore = configureMockStore([thunk])(mockedFantomStore);
 
-      const { queryByTestId } = renderWithProvider(
+      const { queryByTestId, queryByText } = renderWithProvider(
         <EthOverview />,
         mockedStore,
       );
       const bridgeButton = queryByTestId(ETH_OVERVIEW_BRIDGE);
       expect(bridgeButton).toBeInTheDocument();
       expect(bridgeButton).toBeDisabled();
-      expect(bridgeButton.parentElement).toHaveAttribute(
+      expect(queryByText('Bridge').parentElement).toHaveAttribute(
         'data-original-title',
         'Unavailable on this network',
       );
@@ -343,7 +343,7 @@ describe('EthOverview', () => {
 
     it('should always show the Portfolio button', () => {
       const { queryByTestId } = renderWithProvider(<EthOverview />, store);
-      const portfolioButton = queryByTestId('portfolio-link');
+      const portfolioButton = queryByTestId(ETH_OVERVIEW_RECEIVE);
       expect(portfolioButton).toBeInTheDocument();
     });
 
@@ -484,7 +484,7 @@ describe('EthOverview', () => {
 
     it.each(buttonTestCases)(
       'should have the $buttonText button disabled when an account cannot sign transactions or user operations',
-      ({ testId }) => {
+      ({ testId, buttonText }) => {
         const mockedStoreWithoutSigningMethods = {
           ...mockStore,
           metamask: {
@@ -509,7 +509,7 @@ describe('EthOverview', () => {
         const mockedStore = configureMockStore([thunk])(
           mockedStoreWithoutSigningMethods,
         );
-        const { queryByTestId } = renderWithProvider(
+        const { queryByTestId, queryByText } = renderWithProvider(
           <EthOverview />,
           mockedStore,
         );
@@ -517,7 +517,7 @@ describe('EthOverview', () => {
         const button = queryByTestId(testId);
         expect(button).toBeInTheDocument();
         expect(button).toBeDisabled();
-        expect(button.parentElement).toHaveAttribute(
+        expect(queryByText(buttonText).parentElement).toHaveAttribute(
           'data-original-title',
           'Not supported with this account.',
         );
