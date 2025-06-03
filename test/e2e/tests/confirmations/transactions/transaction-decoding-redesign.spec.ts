@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import {
   createDappTransaction,
   DAPP_URL,
@@ -11,7 +12,6 @@ import { TRANSACTION_DATA_UNISWAP } from '../../../../data/confirmations/transac
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { TestSuiteArguments } from './shared';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 
 const { withFixtures } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
