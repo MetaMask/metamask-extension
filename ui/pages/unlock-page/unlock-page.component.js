@@ -26,10 +26,7 @@ import {
   BackgroundColor,
 } from '../../helpers/constants/design-system';
 import Mascot from '../../components/ui/mascot';
-import {
-  DEFAULT_ROUTE,
-  ONBOARDING_CREATE_PASSWORD_ROUTE,
-} from '../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
