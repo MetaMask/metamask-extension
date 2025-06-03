@@ -48,6 +48,7 @@ import {
   setNextNonce,
   addPermittedChain,
   setTokenNetworkFilter,
+  setEnabledNetworks,
   detectNfts,
 } from '../../../store/actions';
 import {
@@ -354,12 +355,14 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     // the network changes.
     if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
       dispatch(setTokenNetworkFilter({ [hexChainId]: true }));
+      dispatch(setEnabledNetworks([hexChainId] as CaipChainId[]));
     } else {
       const allOpts = Object.keys(evmNetworks).reduce((acc, id) => {
         acc[id] = true;
         return acc;
       }, {} as Record<string, boolean>);
       dispatch(setTokenNetworkFilter(allOpts));
+      dispatch(setEnabledNetworks(Object.keys(allOpts) as CaipChainId[]));
     }
 
     // If presently on a dapp, communicate a change to

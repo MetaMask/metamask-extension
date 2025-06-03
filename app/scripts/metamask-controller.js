@@ -6768,6 +6768,9 @@ export default class MetamaskController extends EventEmitter {
             });
           }
         },
+        setEnabledNetworks: (chainIds) => {
+          this.networkOrderController.setEnabledNetworks(chainIds);
+        },
         getCurrentChainIdForDomain: (domain) => {
           const networkClientId =
             this.selectedNetworkController.getNetworkClientIdForDomain(domain);
