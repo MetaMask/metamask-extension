@@ -28,12 +28,12 @@ on:
           - flask
   push:
     branches:
-      - 'infra-2607-runway-pipelines'
+      - 'infra-2607-runway-pipelines-poc'
     tags:
       - 'v*'  # Triggers on version tags like v12.18.1
   pull_request:
     branches:
-      - 'infra-2607-runway-pipelines'
+      - 'infra-2607-runway-pipelines-poc'
     types: [opened, synchronize, reopened]
 
 jobs:
