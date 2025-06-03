@@ -4980,7 +4980,7 @@ __metadata:
   linkType: hard
 
 "@metamask/bridge-controller@npm:^32.0.1":
-  version: 32.0.0
+  version: 32.0.1
   resolution: "@metamask/bridge-controller@npm:^32.0.1"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
