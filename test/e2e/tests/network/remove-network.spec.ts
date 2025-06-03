@@ -15,6 +15,9 @@ import {
 import { Driver } from '../../webdriver/driver';
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
 import { CaveatTypes } from '../../../../shared/constants/permissions';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
+import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 
 const getPermittedChains = async (driver: Driver) => {
   const getPermissionsRequest = JSON.stringify({
@@ -87,6 +90,9 @@ describe('Remove Network:', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
+        const headerNavbar = new HeaderNavbar(driver);
+        const selectNetwork = new SelectNetwork(driver);
+
         await unlockWallet(driver);
         await openDapp(driver);
 
@@ -100,25 +106,14 @@ describe('Remove Network:', function (this: Suite) {
 
         // Avoid a stale element error
         await driver.delay(regularDelayMs);
-        await driver.clickElement('[data-testid="network-display"]');
 
-        // Go to Edit Menu
-        await driver.clickElement(
-          '[data-testid="network-list-item-options-button-eip155:1338"]',
-        );
+        // Open the network dropdown
+        await headerNavbar.clickSwitchNetworkDropDown();
 
-        await driver.delay(regularDelayMs);
-        await driver.clickElement(
-          '[data-testid="network-list-item-options-delete"]',
-        );
-
-        await driver.delay(regularDelayMs);
-        await driver.clickElement({ text: 'Delete', tag: 'button' });
-
+        // Delete the network
+        await selectNetwork.deleteNetwork('eip155:1338');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-
         const afterPermittedChains = await getPermittedChains(driver);
-
         assert.deepEqual(afterPermittedChains, ['0x539']);
       },
     );
@@ -180,6 +175,10 @@ describe('Remove Network:', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
+        const headerNavbar = new HeaderNavbar(driver);
+        const addEditNetworkModal = new AddEditNetworkModal(driver);
+        const selectNetwork = new SelectNetwork(driver);
+
         await unlockWallet(driver);
         await openDapp(driver);
 
@@ -191,32 +190,22 @@ describe('Remove Network:', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // Avoid a stale element error
-        await driver.delay(regularDelayMs);
-        await driver.clickElement('[data-testid="network-display"]');
-
-        // Go to Edit Menu
-        await driver.clickElement(
-          '[data-testid="network-list-item-options-button-eip155:1338"]',
-        );
-
-        await driver.delay(regularDelayMs);
-        await driver.clickElement(
-          '[data-testid="network-list-item-options-edit"]',
-        );
-
-        await driver.delay(regularDelayMs);
-        await driver.clickElement('[data-testid="test-add-rpc-drop-down"]');
-        await driver.delay(regularDelayMs);
+        // Open the network dropdown
+        await headerNavbar.clickSwitchNetworkDropDown();
+        await selectNetwork.openEditNetworkModal('eip155:1338');
+        await addEditNetworkModal.check_pageIsLoaded();
 
         // Assert the endpoint is in the list
+        console.log(
+          'Asserting that the RPC endpoint "127.0.0.1:8546" is present',
+        );
         await driver.findElement({
           text: '127.0.0.1:8546',
           tag: 'p',
         });
 
-        // Delete it
-        await driver.clickElement('[data-testid="delete-item-1"]');
+        // Edit the network and remove an RPC
+        await addEditNetworkModal.removeRPCInEditNetworkModal(2);
 
         // Verify it went away
         await driver.assertElementNotPresent({
@@ -225,8 +214,7 @@ describe('Remove Network:', function (this: Suite) {
         });
 
         // Save the network
-        await driver.clickElement({ text: 'Save', tag: 'button' });
-
+        await addEditNetworkModal.saveEditedNetwork();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         const afterPermittedChains = await getPermittedChains(driver);
