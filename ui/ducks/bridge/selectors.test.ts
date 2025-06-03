@@ -7,6 +7,7 @@ import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
+import { SolScope } from '@metamask/keyring-api';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
@@ -33,7 +34,6 @@ import {
   getFromTokenConversionRate,
   getToTokenConversionRate,
 } from './selectors';
-import { SolScope } from '@metamask/keyring-api';
 
 describe('Bridge selectors', () => {
   describe('getFromChain', () => {
