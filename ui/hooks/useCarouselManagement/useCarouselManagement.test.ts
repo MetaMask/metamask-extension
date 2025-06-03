@@ -32,7 +32,9 @@ import {
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
 jest.mock('./fetchCarouselSlidesFromContentful');
-jest.mocked(fetchCarouselSlidesFromContentful).mockResolvedValue([]);
+jest
+  .mocked(fetchCarouselSlidesFromContentful)
+  .mockResolvedValue({ prioritySlides: [], regularSlides: [] });
 
 const SLIDES_ZERO_FUNDS_REMOTE_OFF_SWEEPSTAKES_OFF = [
   { ...FUND_SLIDE, undismissable: true },
@@ -295,6 +297,18 @@ describe('useCarouselManagement', () => {
       const updatedSlides = mockUpdateSlides.mock.calls[0][0];
 
       expect(updatedSlides[0].undismissable).toBe(true);
+    });
+
+    it('should mark fund slide as undismissable when using the hex 0x00 for zero balance', async () => {
+      mockGetSelectedAccountCachedBalance.mockReturnValue('0x00');
+      renderHook(() => useCarouselManagement({ testDate: validTestDate }));
+
+      await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
+      const updatedSlides: CarouselSlide[] = mockUpdateSlides.mock.calls[0][0];
+
+      const fundsSlide = updatedSlides.find((s) => s.id === FUND_SLIDE.id);
+      expect(fundsSlide).toBeDefined();
+      expect(fundsSlide?.undismissable).toBe(true);
     });
   });
 
