@@ -140,8 +140,6 @@ const ALLOWLISTED_HOSTS = [
   'start.metamask.io',
   'token.api.cx.metamask.io',
   'widget.intercom.io',
-  'swap.api.cx.metamask.io',
-  'bridge.api.cx.metamask.io',
 ];
 
 module.exports = { ALLOWLISTED_HOSTS, ALLOWLISTED_URLS };

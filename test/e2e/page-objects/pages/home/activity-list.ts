@@ -317,9 +317,7 @@ class ActivityListPage {
     });
   }
 
-  async check_swapTransactionActivity(
-    swapText: string,
-  ): Promise<void> {
+  async check_swapTransactionActivity(swapText: string): Promise<void> {
     await this.driver.waitForSelector({
       text: swapText,
       tag: 'p',

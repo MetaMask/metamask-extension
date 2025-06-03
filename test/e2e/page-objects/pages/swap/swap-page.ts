@@ -1,6 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
 
-
 export type SwapSolanaOptions = {
   amount: number;
   swapFrom: string;
@@ -16,8 +15,21 @@ export type SwapSolanaReviewOptions = {
   skipCounter?: boolean;
 };
 
-class SwapPage {
+export type SwapQuoteOptions = {
+  swapFrom: string;
+  swapTo: string;
+  swapToAmount: number;
+};
 
+export type SwapQuote = {
+  amount: string;
+  totalCost: string;
+  receivedAmount: string;
+  estimatedTime?: string;
+  provider?: string;
+};
+
+class SwapPage {
   private readonly driver: Driver;
 
   private readonly swapAmount =
@@ -38,7 +50,8 @@ class SwapPage {
 
   private readonly bridgeSourceButton = '[data-testid="bridge-source-button"]';
 
-  private readonly bridgeDestinationButton = '[data-testid="bridge-destination-button"]';
+  private readonly bridgeDestinationButton =
+    '[data-testid="bridge-destination-button"]';
 
   private readonly fromAmount = '[data-testid="from-amount"]';
 
@@ -47,7 +60,6 @@ class SwapPage {
   constructor(driver: Driver) {
     this.driver = driver;
   }
-
 
   async check_pageIsLoaded(): Promise<void> {
     try {
@@ -63,6 +75,40 @@ class SwapPage {
       throw e;
     }
     console.log('Advanced Settings page is loaded');
+  }
+
+  async clickOnMoreQuotes(): Promise<void> {
+    await this.driver.clickElement({
+      text: `More quotes`,
+      tag: 'button',
+    });
+  }
+
+  async checkQuote(quote: SwapQuote): Promise<void> {
+    await this.driver.waitForSelector({
+      text: quote.amount,
+      tag: 'p',
+    });
+    await this.driver.waitForSelector({
+      text: `${quote.totalCost} total cost`,
+      tag: 'p',
+    });
+    await this.driver.waitForSelector({
+      text: `${quote.receivedAmount} receive amount`,
+      tag: 'p',
+    });
+    await this.driver.waitForSelector({
+      text: quote.estimatedTime,
+      tag: 'p',
+    });
+    await this.driver.waitForSelector({
+      text: quote.provider,
+      tag: 'p',
+    });
+  }
+
+  async closeQuotes(): Promise<void> {
+    await this.driver.clickElement('header button');
   }
 
   async enterSwapAmount(amount: string): Promise<void> {
@@ -109,10 +155,16 @@ class SwapPage {
     });
   }
 
-  async createSolanaSwap(options: SwapSolanaOptions) {
+  async checkNoQuotesAvailable(): Promise<void> {
+    await this.driver.waitForSelector({
+      text: `This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option`,
+      tag: 'p',
+    });
+  }
 
+  async createSolanaSwap(options: SwapSolanaOptions) {
     await this.driver.clickElement(this.bridgeSourceButton, 3);
-    await this.driver.delay(2000)
+    await this.driver.delay(2000);
 
     await this.driver.clickElement({
       text: options.swapFrom,
@@ -120,7 +172,6 @@ class SwapPage {
     });
 
     await this.driver.clickElement(this.bridgeDestinationButton, 3);
-
 
     await this.driver.clickElement({
       text: options.swapTo,
@@ -143,10 +194,9 @@ class SwapPage {
     await this.driver.waitForSelector({
       text: `More quotes`,
       tag: 'button',
-    })
+    });
 
     await this.driver.clickElement('[data-testid="bridge-cta-button"]');
-
   }
 }
 

@@ -138,17 +138,16 @@ const privateHostMatchers = [
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
  * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH.
- * @param {string} options.monConversionInUsd - The USD conversion rate for MON.
  * @returns {Promise<SetupMockReturn>}
  */
 async function setupMocking(
   server,
   testSpecificMock,
-  { chainId, ethConversionInUsd = 1700, monConversionInUsd = 0.2 },
+  { chainId, ethConversionInUsd = 1700 },
 ) {
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
-    beforeRequest: ({ headers: { host }, url, body }) => {
+    beforeRequest: ({ headers: { host }, url }) => {
       if (blocklistedHosts.includes(host)) {
         return {
           url: 'http://localhost:8545',
@@ -159,11 +158,6 @@ async function setupMocking(
       ) {
         // If the URL or the host is in the allowlist, we pass the request as it is, to the live server.
         console.log('Request going to a live server ============', url);
-        if (url.includes('solana-mainnet.infura.io')) {
-          body.getJson().then((body) => {
-            console.log('Body ============', body);
-          });
-        }
         return {};
       }
       console.log('Request redirected to the catch all mock ============', url);
@@ -676,16 +670,13 @@ async function setupMocking(
 
   await server
     .forGet('https://min-api.cryptocompare.com/data/pricemulti')
-    .withQuery({ fsyms: 'ETH,MON', tsyms: 'usd' })
+    .withQuery({ fsyms: 'ETH', tsyms: 'usd' })
     .thenCallback(() => {
       return {
         statusCode: 200,
         json: {
           ETH: {
             USD: ethConversionInUsd,
-          },
-          MON: {
-            USD: monConversionInUsd,
           },
         },
       };
