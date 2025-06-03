@@ -210,7 +210,7 @@ jobs:
       TEST_RUNS_PATH: test/test-results/test-runs-chrome.json
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@feat-custom-url-yarn-package
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
