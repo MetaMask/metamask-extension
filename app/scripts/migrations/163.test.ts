@@ -25,7 +25,6 @@ describe(`migration #${version}`, () => {
   });
 
   describe(`migration #${version}`, () => {
-
     it('does not capture sentry error and returns the original state if TokensController is missing', async () => {
       const oldStorage = {
         meta: { version: oldVersion },
@@ -71,7 +70,6 @@ describe(`migration #${version}`, () => {
       expect(global.sentry.captureException).not.toHaveBeenCalled();
       expect(newStorage.data).toStrictEqual(oldStorage.data);
     });
-
     it('Captures sentry error and returns the original state if TokenListController exists but is not an object', async () => {
       const oldStorage = {
         meta: { version: oldVersion },
@@ -140,7 +138,5 @@ describe(`migration #${version}`, () => {
       expect(newStorage.meta).toStrictEqual({ version });
       expect(newStorage.data).toStrictEqual(expectedData);
     });
-
-
   });
 });
