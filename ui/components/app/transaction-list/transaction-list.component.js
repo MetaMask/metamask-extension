@@ -529,6 +529,8 @@ export default function TransactionList({
 
   if (!isEvmAccountType(selectedAccount.type)) {
     const { namespace } = parseCaipAccountId(multichainNetworkConfig.chainId);
+    const isBitcoinNetwork = namespace === KnownCaipNamespace.Bip122;
+
     const addressLink = getMultichainAccountUrl(
       selectedAccount.address,
       multichainNetworkForSelectedAccount,
@@ -602,7 +604,7 @@ export default function TransactionList({
                   ),
                 )}
 
-                {namespace !== KnownCaipNamespace.Bip122 && (
+                {!isBitcoinNetwork && (
                   <Box className="transaction-list__view-on-block-explorer">
                     <Button
                       display={Display.Flex}
