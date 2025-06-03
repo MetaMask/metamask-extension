@@ -1673,22 +1673,6 @@
         "bitcoin-address-validation": true
       }
     },
-    "@metamask/bridge-controller>@metamask/keyring-api": {
-      "packages": {
-        "@metamask/keyring-api>@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
-    "@metamask/bridge-status-controller>@metamask/keyring-api": {
-      "packages": {
-        "@metamask/keyring-api>@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
     "@metamask/multichain-transactions-controller>@metamask/keyring-api": {
       "packages": {
         "@metamask/keyring-api>@metamask/keyring-utils": true,
