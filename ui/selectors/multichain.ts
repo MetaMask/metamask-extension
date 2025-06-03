@@ -213,7 +213,7 @@ export function getMultichainNetwork(
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const nonEvmNetworks = getMultichainNetworkProviders(state);
   const nonEvmNetwork = nonEvmNetworks.find((provider) => {
-    return provider.chainId === selectedAccount.scopes[0];
+    return selectedAccount.scopes.includes(provider.chainId);
   });
 
   if (!nonEvmNetwork) {
