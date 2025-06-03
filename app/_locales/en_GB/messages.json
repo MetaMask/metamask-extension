@@ -172,10 +172,7 @@
     "message": "Add alias"
   },
   "addBitcoinAccountLabel": {
-    "message": "Bitcoin account (Beta)"
-  },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "Bitcoin account (Testnet)"
+    "message": "Bitcoin account"
   },
   "addBlockExplorer": {
     "message": "Add a block explorer"
@@ -472,7 +469,7 @@
     "message": "All networks"
   },
   "allPermissions": {
-    "message": "All Permissions"
+    "message": "All permissions"
   },
   "allTimeHigh": {
     "message": "All time high"
@@ -519,10 +516,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "appNameMmi": {
-    "message": "MetaMask Institutional",
-    "description": "The name of the application (MMI)"
   },
   "apply": {
     "message": "Apply"
@@ -610,6 +603,48 @@
   "back": {
     "message": "Back"
   },
+  "backupAndSync": {
+    "message": "Backup and sync"
+  },
+  "backupAndSyncBasicFunctionalityNameMention": {
+    "message": "basic functionality"
+  },
+  "backupAndSyncEnable": {
+    "message": "Turn on backup and sync"
+  },
+  "backupAndSyncEnableConfirmation": {
+    "message": "When you turn on backup and sync, you’re also turning on $1. Do you want to continue?",
+    "description": "$1 is backupAndSyncBasicFunctionalityNameMention in bold."
+  },
+  "backupAndSyncEnableDescription": {
+    "message": "Backup and sync lets us store encrypted data for your custom settings and features. This keeps your MetaMask experience the same across devices and restores settings and features if you ever need to reinstall MetaMask. This doesn’t back up your Secret Recovery Phrase. $1.",
+    "description": "$1 is link to the backup and sync privacy policy."
+  },
+  "backupAndSyncEnableDescriptionUpdatePreferences": {
+    "message": "You can update your preferences at any time in $1",
+    "description": "$1 is a bolded text that highlights the path to the settings page."
+  },
+  "backupAndSyncEnableDescriptionUpdatePreferencesPath": {
+    "message": "Settings > Backup and sync."
+  },
+  "backupAndSyncFeatureAccounts": {
+    "message": "Accounts"
+  },
+  "backupAndSyncManageWhatYouSync": {
+    "message": "Manage what you sync"
+  },
+  "backupAndSyncManageWhatYouSyncDescription": {
+    "message": "Turn on what’s synced between your devices."
+  },
+  "backupAndSyncPrivacyLink": {
+    "message": "Learn how we protect your privacy"
+  },
+  "backupAndSyncSlideDescription": {
+    "message": "Back up your accounts and sync settings."
+  },
+  "backupAndSyncSlideTitle": {
+    "message": "Introducing backup and sync"
+  },
   "backupApprovalInfo": {
     "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
   },
@@ -653,6 +688,16 @@
   "basicConfigurationModalDisclaimerOff": {
     "message": "This means you won't fully optimize your time on MetaMask. Basic features (like token details, optimal gas settings, and others) won't be available to you."
   },
+  "basicConfigurationModalDisclaimerOffAdditionalText": {
+    "message": "Turning this off also disables all features within $1, and $2.",
+    "description": "$1 and $2 are bold text for basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst and basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast respectively"
+  },
+  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesFirst": {
+    "message": "security and privacy, backup and sync"
+  },
+  "basicConfigurationModalDisclaimerOffAdditionalTextFeaturesLast": {
+    "message": "notifications"
+  },
   "basicConfigurationModalDisclaimerOn": {
     "message": "To optimize your time on MetaMask, you’ll need to turn on this feature. Basic functions (like token details, optimal gas settings, and others) are important to the web3 experience."
   },
@@ -680,22 +725,6 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "Bitcoin"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "Turning on this feature will give you the option to add a Bitcoin Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk. To give us feedback on this new Bitcoin experience, please fill out this $1.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "Enable \"Add a new Bitcoin account (Beta)\""
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "Turning on this feature will give you the option to add a Bitcoin Account for the test network."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "Enable \"Add a new Bitcoin account (Testnet)\""
   },
   "blockExplorerAccountAction": {
     "message": "Account",
@@ -775,6 +804,9 @@
   },
   "blockies": {
     "message": "Blockies"
+  },
+  "borrowed": {
+    "message": "Borrowed"
   },
   "boughtFor": {
     "message": "Bought for"
@@ -974,7 +1006,7 @@
     "message": "Busy"
   },
   "buyAndSell": {
-    "message": "Buy & Sell"
+    "message": "Buy/Sell"
   },
   "buyMoreAsset": {
     "message": "Buy more $1",
@@ -1022,7 +1054,7 @@
     "message": "Choose your network"
   },
   "chooseYourNetworkDescription": {
-    "message": "We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our $1 to learn more about how Infura handles data for EVM accounts, for Solana accounts $2.",
+    "message": "When you use our default settings and configurations, we use Infura as our default remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. In limited cases, we may use other RPC providers in order to provide the best experience for our users. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. To learn more about how Infura handles data for EVM accounts, read our $1, and for Solana accounts, $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chooseYourNetworkDescriptionCallToAction": {
@@ -1123,6 +1155,18 @@
   "confirmGasFeeTokenMetaMaskFee": {
     "message": "Includes $1 fee"
   },
+  "confirmGasFeeTokenModalNativeToggleMetaMask": {
+    "message": "MetaMask is supplementing the balance to complete this transaction."
+  },
+  "confirmGasFeeTokenModalNativeToggleWallet": {
+    "message": "Pay for network fee using the balance in your wallet."
+  },
+  "confirmGasFeeTokenModalPayETH": {
+    "message": "Pay with ETH"
+  },
+  "confirmGasFeeTokenModalPayToken": {
+    "message": "Pay with other tokens"
+  },
   "confirmGasFeeTokenModalTitle": {
     "message": "Select a token"
   },
@@ -1130,7 +1174,7 @@
     "message": "You're paying this network fee with $1"
   },
   "confirmGasFeeTokenTooltip": {
-    "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens."
+    "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens or pre-funded ETH."
   },
   "confirmInfoAccountNow": {
     "message": "Now"
@@ -1334,7 +1378,7 @@
     "message": "Connecting to Sepolia test network"
   },
   "connectionDescription": {
-    "message": "Connect this website with MetaMask."
+    "message": "Connect this website with MetaMask"
   },
   "connectionFailed": {
     "message": "Connection failed"
@@ -1427,10 +1471,6 @@
   },
   "creatorAddress": {
     "message": "Creator address"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "This reflects the value of all tokens you own on all networks. If you prefer seeing this value in ETH or other currencies, go to $1.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "Swap across networks with MetaMask Portfolio"
@@ -1606,6 +1646,15 @@
   },
   "defaultSettingsTitle": {
     "message": "Default privacy settings"
+  },
+  "defi": {
+    "message": "DeFi"
+  },
+  "defiTabErrorContent": {
+    "message": "Try visiting again later."
+  },
+  "defiTabErrorTitle": {
+    "message": "We could not load this page."
   },
   "delete": {
     "message": "Delete"
@@ -1824,6 +1873,9 @@
   "durationSuffixYear": {
     "message": "Y",
     "description": "Shortened form of 'year'"
+  },
+  "earn": {
+    "message": "Earn"
   },
   "edit": {
     "message": "Edit"
@@ -2156,6 +2208,12 @@
   },
   "failedToFetchChainId": {
     "message": "Could not fetch chain ID. Is your RPC URL correct?"
+  },
+  "failover": {
+    "message": "Failover"
+  },
+  "failoverRpcUrl": {
+    "message": "Failover RPC URL"
   },
   "failureMessage": {
     "message": "Something went wrong, and we were unable to complete the action"
@@ -2558,6 +2616,9 @@
   "importSecretRecoveryPhrase": {
     "message": "Import Secret Recovery Phrase"
   },
+  "importSecretRecoveryPhraseUnknownError": {
+    "message": "An unknown error occurred."
+  },
   "importSelectedTokens": {
     "message": "Import selected tokens?"
   },
@@ -2867,8 +2928,11 @@
   "ledgerLocked": {
     "message": "Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "Multiple Ledger devices cannot be connected at the same time. To connect a new Ledger device, you'll need to first disconnect the previous one."
+  "ledgerMultipleDevicesUnsupportedInfoDescription": {
+    "message": "To connect a new device, disconnect the previous one."
+  },
+  "ledgerMultipleDevicesUnsupportedInfoTitle": {
+    "message": "You can only connect one Ledger at a time"
   },
   "ledgerTimeout": {
     "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
@@ -2972,6 +3036,9 @@
   },
   "manageInstitutionalWalletsDescription": {
     "message": "Turn this on to enable institutional wallets."
+  },
+  "manageNetworksMenuHeading": {
+    "message": "Manage networks"
   },
   "managePermissions": {
     "message": "Manage permissions"
@@ -3215,7 +3282,7 @@
     "message": "Cannot send negative or zero amounts of asset."
   },
   "network": {
-    "message": "Network:"
+    "message": "Network"
   },
   "networkChanged": {
     "message": "Network changed"
@@ -3256,9 +3323,6 @@
   },
   "networkNameBitcoin": {
     "message": "Bitcoin"
-  },
-  "networkNameBitcoinTestnet": {
-    "message": "Bitcoin Testnet"
   },
   "networkNameDefinition": {
     "message": "The name associated with this network."
@@ -3438,6 +3502,9 @@
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
+  "noActivity": {
+    "message": "No activity yet"
+  },
   "noConnectedAccountTitle": {
     "message": "MetaMask isn’t connected to this site"
   },
@@ -3446,6 +3513,9 @@
   },
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
+  },
+  "noDeFiPositions": {
+    "message": "No positions yet"
   },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
@@ -3613,10 +3683,6 @@
     "message": "Transaction $1 failed! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
   },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "Transaction failed! $1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
-  },
   "notificationTransactionFailedTitle": {
     "message": "Failed transaction",
     "description": "Title of the browser notification that appears when a transaction fails"
@@ -3737,7 +3803,7 @@
     "message": "IPFS gateway URL is valid"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
-    "message": "We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our Privacy policy to learn more about how Infura handles data for EVM accounts, for Solana accounts $2."
+    "message": "When you use our default settings and configurations, we use Infura as our default remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. In limited cases, we may use other RPC providers in order to provide the best experience for our users. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. To learn more about how Infura handles data for EVM accounts, read our $1; for Solana accounts, $2."
   },
   "onboardingAdvancedPrivacyNetworkDescriptionCallToAction": {
     "message": "click here"
@@ -3833,6 +3899,12 @@
   "onboardingPinExtensionTitle": {
     "message": "Your MetaMask install is complete!"
   },
+  "onekey": {
+    "message": "OneKey"
+  },
+  "only": {
+    "message": "only"
+  },
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -3863,9 +3935,15 @@
   "osTheme": {
     "message": "System"
   },
+  "other": {
+    "message": "other"
+  },
   "otherSnaps": {
     "message": "other snaps",
     "description": "Used in the 'permission_rpc' message."
+  },
+  "others": {
+    "message": "others"
   },
   "outdatedBrowserNotification": {
     "message": "Your browser is out of date. If you don't update your browser, you won't be able to get security patches and new features from MetaMask."
@@ -4235,8 +4313,8 @@
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "popularNetworkAddToolTip": {
-    "message": "Some of these networks rely on third parties. The connections may be less reliable or enable third-parties to track activity. $1",
-    "description": "$1 is Learn more link"
+    "message": "Some of these networks rely on third parties. The connections may be less reliable or enable third-parties to track activity.",
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "Popular networks"
@@ -4302,18 +4380,6 @@
   },
   "productAnnouncements": {
     "message": "Product announcements"
-  },
-  "profileSync": {
-    "message": "Profile Sync"
-  },
-  "profileSyncConfirmation": {
-    "message": "If you turn off profile sync, you won’t be able to receive notifications."
-  },
-  "profileSyncDescription": {
-    "message": "Creates a profile that MetaMask uses to sync some settings among your devices. This is required to get notifications. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "Learn how we protect your privacy"
   },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
@@ -4673,6 +4739,9 @@
   },
   "revokeSimulationDetailsDesc": {
     "message": "You're removing someone's permission to spend tokens from your account."
+  },
+  "reward": {
+    "message": "Reward"
   },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"
@@ -5115,10 +5184,10 @@
     "message": "Add multiple Secret Recovery Phrases"
   },
   "slideRemoteModeDescription": {
-    "message": "Access your hardware wallet without plugging it in"
+    "message": "Use your cold wallet wirelessly"
   },
   "slideRemoteModeTitle": {
-    "message": "Remote mode is here!"
+    "message": "Cold storage, fast access"
   },
   "slideSmartAccountUpgradeDescription": {
     "message": "Same address, smarter features"
@@ -5423,7 +5492,7 @@
     "message": "Something's gone wrong. Try reloading the page."
   },
   "somethingWentWrong": {
-    "message": "Oops! Something went wrong."
+    "message": "We could not load this page."
   },
   "sortBy": {
     "message": "Sort by"
@@ -5607,8 +5676,53 @@
   "stake": {
     "message": "Stake"
   },
+  "staked": {
+    "message": "Staked"
+  },
   "standardAccountLabel": {
     "message": "Standard Account"
+  },
+  "startEarning": {
+    "message": "Start earning"
+  },
+  "stateCorruptionAreYouSure": {
+    "message": "Are you sure you want to proceed?"
+  },
+  "stateCorruptionCopyAndRestoreBeforeRecovery": {
+    "message": "You can try to copy and restore your state file manually before you decide to restore your vault by following $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "You can try to copy and restore your state file manually before you decide to reset MetaMask by following $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionDetectedNoBackup": {
+    "message": "Your vault cannot be automatically recovered."
+  },
+  "stateCorruptionDetectedWithBackup": {
+    "message": "Your vault can be recovered from an automated backup. Automatic recovery will delete your current settings and preferences, and restore only your vault."
+  },
+  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
+    "message": "Internal Error: Database cannot be accessed"
+  },
+  "stateCorruptionResetMetaMaskState": {
+    "message": "Reset MetaMask State"
+  },
+  "stateCorruptionResettingDatabase": {
+    "message": "Resetting database…"
+  },
+  "stateCorruptionRestoreAccountsFromBackup": {
+    "message": "Restore Accounts"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "Restoring database…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "these instructions",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "How to recover your Secret Recovery Phrase"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
@@ -5731,6 +5845,9 @@
   },
   "suggestedTokenName": {
     "message": "Suggested name:"
+  },
+  "supplied": {
+    "message": "Supplied"
   },
   "support": {
     "message": "Support"
@@ -5969,7 +6086,7 @@
     "message": "Quotes timeout"
   },
   "swapQuotesNotAvailableDescription": {
-    "message": "Reduce the size of your trade or use a different token."
+    "message": "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option."
   },
   "swapQuotesNotAvailableErrorDescription": {
     "message": "Try adjusting the amount or slippage settings and try again."
@@ -6188,6 +6305,9 @@
   },
   "termsOfUseTitle": {
     "message": "Our Terms of Use have updated"
+  },
+  "testNetworks": {
+    "message": "Test networks"
   },
   "testnets": {
     "message": "Testnets"
@@ -6473,6 +6593,9 @@
   },
   "unapproved": {
     "message": "Unapproved"
+  },
+  "unexpectedBehavior": {
+    "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored."
   },
   "units": {
     "message": "units"
@@ -6772,9 +6895,6 @@
   },
   "yourBalance": {
     "message": "Your balance"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "Your balance is aggregated"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"

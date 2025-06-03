@@ -6,14 +6,16 @@ import {
   isSolanaChainId,
   formatChainIdToCaip,
   formatChainIdToHex,
-  type BridgeToken,
   isNativeAddress,
   fetchBridgeTokens,
   BridgeClientId,
   type BridgeAsset,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { TokenListMap, TokenListToken } from '@metamask/assets-controllers';
+import type {
+  TokenListMap,
+  TokenListToken,
+} from '@metamask/assets-controllers';
 import { AssetType } from '../../../shared/constants/transaction';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { useMultichainBalances } from '../useMultichainBalances';
@@ -33,6 +35,7 @@ import type {
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
+import type { BridgeToken } from '../../ducks/bridge/types';
 
 type FilterPredicate = (
   symbol: string,

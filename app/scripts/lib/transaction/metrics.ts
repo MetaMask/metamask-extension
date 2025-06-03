@@ -60,6 +60,7 @@ import { getSnapAndHardwareInfoForMetrics } from '../snap-keyring/metrics';
 import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
 import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
+import { extractRpcDomain } from '../util';
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
 
@@ -432,32 +433,6 @@ export const handlePostTransactionBalanceUpdate = async (
     }
   }
 };
-
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-/**
- * This function is called when a transaction metadata updated in the MMI controller.
- *
- * @param transactionMetricsRequest - Contains controller actions needed to create/update/finalize event fragments
- * @param transactionEventPayload - The event payload
- * @param transactionEventPayload.transactionMeta - The transaction meta object
- * @param eventName - The event name
- */
-export const handleMMITransactionUpdate = async (
-  transactionMetricsRequest: TransactionMetricsRequest,
-  transactionEventPayload: TransactionEventPayload,
-  eventName: TransactionMetaMetricsEvent,
-) => {
-  if (!transactionEventPayload.transactionMeta) {
-    return;
-  }
-
-  await createUpdateFinalizeTransactionEventFragment({
-    eventName,
-    transactionEventPayload,
-    transactionMetricsRequest,
-  });
-};
-///: END:ONLY_INCLUDE_IF
 
 function calculateTransactionsCost(
   transactionMeta: TransactionMeta,
@@ -1098,6 +1073,19 @@ async function buildEventFragmentProperties({
     sensitiveProperties,
     transactionMetricsRequest.getAccountBalance,
   );
+
+  // Only calculate and add domain to properties for "Transaction Submitted" and "Transaction Finalized" events
+  if (
+    status === TransactionStatus.submitted ||
+    status === TransactionStatus.confirmed
+  ) {
+    // Get RPC URL from provider
+    const rpcUrl = transactionMetricsRequest.getNetworkRpcUrl(
+      transactionMeta.chainId,
+    );
+    const domain = extractRpcDomain(rpcUrl);
+    properties.rpc_domain = domain;
+  }
 
   return { properties, sensitiveProperties };
 }

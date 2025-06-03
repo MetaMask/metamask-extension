@@ -8,18 +8,22 @@ import {
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { getCurrentKeyring } from '../../../selectors';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+import { getMultichainCurrentChainId } from '../../../selectors/multichain';
+import { type SmartTransactionsState } from '../../../../shared/modules/selectors/smart-transactions';
 import { ActionType } from './types';
 import { useConvertedUsdAmounts } from './useConvertedUsdAmounts';
 
 export const useRequestMetadataProperties = () => {
   const { slippage } = useSelector(getQuoteRequest);
   const isBridgeTx = useSelector(getIsBridgeTx);
-  const stx_enabled = useSelector(getIsSmartTransaction);
+  const currentChainId = useSelector(getMultichainCurrentChainId);
+  const stx_enabled = useSelector((state: SmartTransactionsState) => {
+    return getIsSmartTransaction(state, currentChainId);
+  });
   const { usd_amount_source } = useConvertedUsdAmounts();
 
   const keyring = useSelector(getCurrentKeyring);
-  // @ts-expect-error keyring type is possibly wrong
-  const is_hardware_wallet = isHardwareKeyring(keyring.type) ?? false;
+  const is_hardware_wallet = isHardwareKeyring(keyring?.type) ?? false;
 
   const slippage_limit = slippage;
   const swap_type = isBridgeTx

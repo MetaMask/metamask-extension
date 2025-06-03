@@ -833,6 +833,156 @@ describe('permission background API methods', () => {
     });
   });
 
+  describe('setPermittedAccounts', () => {
+    it('gets the CAIP-25 caveat', () => {
+      const permissionController = {
+        getCaveat: jest.fn(),
+      };
+
+      try {
+        setupPermissionBackgroundApiMethods({
+          permissionController,
+        }).setPermittedAccounts('foo.com', ['eip155:1:0x1']);
+      } catch (err) {
+        // noop
+      }
+
+      expect(permissionController.getCaveat).toHaveBeenCalledWith(
+        'foo.com',
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+      );
+    });
+
+    it('throws an error if there is no existing CAIP-25 caveat', () => {
+      const permissionController = {
+        getCaveat: jest.fn().mockImplementation(() => {
+          throw new PermissionDoesNotExistError();
+        }),
+      };
+
+      expect(() =>
+        setupPermissionBackgroundApiMethods({
+          permissionController,
+        }).setPermittedAccounts('foo.com', ['eip155:1:0x1']),
+      ).toThrow(
+        new Error(
+          `Cannot set account permissions "eip155:1:0x1" for origin "foo.com": no permission currently exists for this origin.`,
+        ),
+      );
+    });
+
+    it('throws an error if getCaveat fails unexpectedly', () => {
+      const permissionController = {
+        getCaveat: jest.fn().mockImplementation(() => {
+          throw new Error('unexpected getCaveat error');
+        }),
+      };
+
+      expect(() =>
+        setupPermissionBackgroundApiMethods({
+          permissionController,
+        }).setPermittedAccounts('foo.com', ['eip155:1:0x1']),
+      ).toThrow(new Error(`unexpected getCaveat error`));
+    });
+
+    it('revokes the entire permission if the no accounts are set', () => {
+      const permissionController = {
+        getCaveat: jest.fn().mockReturnValue({
+          value: {
+            requiredScopes: {
+              'eip155:1': {
+                accounts: [],
+              },
+              'eip155:10': {
+                accounts: ['eip155:10:0x1'],
+              },
+            },
+            optionalScopes: {
+              'bip122:000000000019d6689c085ae165831e93': {
+                accounts: [],
+              },
+            },
+            isMultichainOrigin: true,
+          },
+        }),
+        revokePermission: jest.fn(),
+      };
+      setupPermissionBackgroundApiMethods({
+        permissionController,
+      }).setPermittedAccounts('foo.com', []);
+
+      expect(permissionController.revokePermission).toHaveBeenCalledWith(
+        'foo.com',
+        Caip25EndowmentPermissionName,
+      );
+    });
+
+    it('updates the caveat with the accounts set and all accounts synced across respective scope', () => {
+      const permissionController = {
+        getCaveat: jest.fn().mockReturnValue({
+          value: {
+            requiredScopes: {
+              'eip155:1': {
+                accounts: [],
+              },
+              'eip155:10': {
+                accounts: ['eip155:10:0x1', 'eip155:10:0x2'],
+              },
+            },
+            optionalScopes: {
+              'bip122:000000000019d6689c085ae165831e93': {
+                accounts: [
+                  'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
+                ],
+              },
+              'eip155:1': {
+                accounts: ['eip155:1:0x2', 'eip155:1:0x3'],
+              },
+            },
+            isMultichainOrigin: true,
+          },
+        }),
+        updateCaveat: jest.fn(),
+      };
+
+      setupPermissionBackgroundApiMethods({
+        permissionController,
+      }).setPermittedAccounts('foo.com', [
+        'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
+        'eip155:0:0x1',
+        'eip155:0:0x4',
+      ]);
+
+      expect(permissionController.updateCaveat).toHaveBeenCalledWith(
+        'foo.com',
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+        {
+          requiredScopes: {
+            'eip155:1': {
+              accounts: ['eip155:1:0x1', 'eip155:1:0x4'],
+            },
+            'eip155:10': {
+              accounts: ['eip155:10:0x1', 'eip155:10:0x4'],
+            },
+          },
+          optionalScopes: {
+            'bip122:000000000019d6689c085ae165831e93': {
+              accounts: [
+                'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
+              ],
+            },
+            'eip155:1': {
+              accounts: ['eip155:1:0x1', 'eip155:1:0x4'],
+            },
+          },
+          isMultichainOrigin: true,
+        },
+      );
+    });
+  });
+
   describe('requestAccountsAndChainPermissionsWithId', () => {
     const approvedPermissions = {
       [Caip25EndowmentPermissionName]: {
@@ -1283,7 +1433,7 @@ describe('permission background API methods', () => {
       );
     });
 
-    it('updates the caveat with the chain removed', () => {
+    it('updates the caveat with the chain removed and accounts synced', () => {
       const permissionController = {
         getCaveat: jest.fn().mockReturnValue({
           value: {
@@ -1319,7 +1469,140 @@ describe('permission background API methods', () => {
         {
           requiredScopes: {
             'eip155:1': {
-              accounts: [],
+              accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
+            },
+          },
+          optionalScopes: {
+            'bip122:000000000019d6689c085ae165831e93': {
+              accounts: [
+                'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
+              ],
+            },
+          },
+          isMultichainOrigin: true,
+        },
+      );
+    });
+  });
+
+  describe('setPermittedChains', () => {
+    it('gets the CAIP-25 caveat', () => {
+      const permissionController = {
+        getCaveat: jest.fn(),
+      };
+
+      try {
+        setupPermissionBackgroundApiMethods({
+          permissionController,
+        }).setPermittedChains('foo.com', ['eip155:1']);
+      } catch (err) {
+        // noop
+      }
+
+      expect(permissionController.getCaveat).toHaveBeenCalledWith(
+        'foo.com',
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+      );
+    });
+
+    it('throws an error if there is no existing CAIP-25 caveat', () => {
+      const permissionController = {
+        getCaveat: jest.fn().mockImplementation(() => {
+          throw new PermissionDoesNotExistError();
+        }),
+      };
+
+      expect(() =>
+        setupPermissionBackgroundApiMethods({
+          permissionController,
+        }).setPermittedChains('foo.com', ['eip155:1']),
+      ).toThrow(
+        new Error(
+          `Cannot set permission for chainIds "eip155:1": No permissions exist for origin "foo.com".`,
+        ),
+      );
+    });
+
+    it('throws an error if getCaveat fails unexpectedly', () => {
+      const permissionController = {
+        getCaveat: jest.fn().mockImplementation(() => {
+          throw new Error('unexpected getCaveat error');
+        }),
+      };
+
+      expect(() =>
+        setupPermissionBackgroundApiMethods({
+          permissionController,
+        }).setPermittedChains('foo.com', ['eip155:1']),
+      ).toThrow(new Error(`unexpected getCaveat error`));
+    });
+
+    // TODO: Verify this behavior (wallet vs non-wallet scopes)
+    it('revokes the entire permission if no chain are set', () => {
+      const permissionController = {
+        getCaveat: jest.fn().mockReturnValue({
+          value: {
+            requiredScopes: {
+              'eip155:1': {},
+            },
+            optionalScopes: {},
+            isMultichainOrigin: true,
+          },
+        }),
+        revokePermission: jest.fn(),
+      };
+
+      setupPermissionBackgroundApiMethods({
+        permissionController,
+      }).setPermittedChains('foo.com', []);
+
+      expect(permissionController.revokePermission).toHaveBeenCalledWith(
+        'foo.com',
+        Caip25EndowmentPermissionName,
+      );
+    });
+
+    it('updates the caveat with the chains set and accounts synced', () => {
+      const permissionController = {
+        getCaveat: jest.fn().mockReturnValue({
+          value: {
+            requiredScopes: {
+              'eip155:1': {
+                accounts: [],
+              },
+              'eip155:10': {
+                accounts: ['eip155:10:0x1', 'eip155:10:0x2'],
+              },
+            },
+            optionalScopes: {
+              'bip122:000000000019d6689c085ae165831e93': {
+                accounts: [
+                  'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
+                ],
+              },
+            },
+            isMultichainOrigin: true,
+          },
+        }),
+        updateCaveat: jest.fn(),
+      };
+
+      setupPermissionBackgroundApiMethods({
+        permissionController,
+      }).setPermittedChains('foo.com', [
+        'eip155:1',
+        'bip122:000000000019d6689c085ae165831e93',
+      ]);
+
+      expect(permissionController.updateCaveat).toHaveBeenCalledWith(
+        'foo.com',
+        Caip25EndowmentPermissionName,
+        Caip25CaveatType,
+        {
+          requiredScopes: {
+            'eip155:1': {
+              accounts: ['eip155:1:0x1', 'eip155:1:0x2'],
             },
           },
           optionalScopes: {

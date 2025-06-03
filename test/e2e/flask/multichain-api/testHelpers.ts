@@ -5,15 +5,8 @@ import {
   KnownNotifications,
 } from '@metamask/chain-agnostic-permission';
 import { JsonRpcRequest } from '@metamask/utils';
-import {
-  convertETHToHexGwei,
-  multipleGanacheOptions,
-  PRIVATE_KEY,
-  regularDelayMs,
-  WINDOW_TITLES,
-} from '../../helpers';
+import { regularDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
 import {
   CONTENT_SCRIPT,
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
@@ -39,27 +32,25 @@ export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
   ],
   localNodeOptions: [
     {
-      type: 'ganache',
+      type: 'anvil',
       options: {
-        secretKey: PRIVATE_KEY,
-        balance: convertETHToHexGwei(DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC),
-        accounts: multipleGanacheOptions.accounts,
+        hardfork: 'muirGlacier',
       },
     },
     {
-      type: 'ganache',
+      type: 'anvil',
       options: {
         port: 8546,
         chainId: 1338,
-        accounts: multipleGanacheOptions.accounts,
+        hardfork: 'muirGlacier',
       },
     },
     {
-      type: 'ganache',
+      type: 'anvil',
       options: {
         port: 7777,
         chainId: 1000,
-        accounts: multipleGanacheOptions.accounts,
+        hardfork: 'muirGlacier',
       },
     },
   ],
@@ -95,11 +86,10 @@ export const addAccountInWalletAndAuthorize = async (
   await freshEditButtons[0].click();
   await driver.delay(regularDelayMs);
 
-  const checkboxes = await driver.findElements('input[type="checkbox" i]');
-  await checkboxes[0].click(); // select all checkbox
-  await driver.delay(regularDelayMs);
-
-  await driver.clickElement({ text: 'Update', tag: 'button' });
+  await driver.clickElementAndWaitToDisappear({
+    text: 'Update',
+    tag: 'button',
+  });
 };
 
 /**

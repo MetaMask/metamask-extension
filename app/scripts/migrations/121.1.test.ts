@@ -212,6 +212,7 @@ describe('migration #121.1', () => {
     },
   ];
 
+  // @ts-expect-error 'each' function missing from type definitions, but it does exist
   it.each(invalidState)(
     'captures error when state is invalid due to: $label',
     async ({

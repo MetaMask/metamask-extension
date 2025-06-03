@@ -1,4 +1,5 @@
 import { Browser } from 'selenium-webdriver';
+import { Mockttp } from 'mockttp';
 import {
   convertToHexValue,
   TEST_SEED_PHRASE,
@@ -26,17 +27,25 @@ import {
 } from '../../page-objects/flows/onboarding.flow';
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
 
-describe('MetaMask onboarding', function () {
-  const ganacheOptions2 = {
-    accounts: [
-      {
-        secretKey:
-          '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-        balance: convertToHexValue(10000000000000000000),
-      },
-    ],
-  };
+const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
+async function tokensMock(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(
+      `https://nft.api.cx.metamask.io/users/${IMPORTED_SRP_ACCOUNT_1.toLowerCase()}/tokens`,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          tokens: [],
+          continuation: null,
+        },
+      };
+    });
+}
+
+describe('MetaMask onboarding', function () {
   it("Creates a new wallet, sets up a secure password, and doesn't complete the onboarding process and refreshes the page", async function () {
     await withFixtures(
       {
@@ -225,20 +234,24 @@ describe('MetaMask onboarding', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         localNodeOptions: [
           {
-            type: 'ganache',
+            type: 'anvil',
           },
           {
-            type: 'ganache',
+            type: 'anvil',
             options: {
               port,
               chainId,
-              ...ganacheOptions2,
             },
           },
         ],
+        testSpecificMock: tokensMock,
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes }) => {
+        await localNodes[1].setAccountBalance(
+          IMPORTED_SRP_ACCOUNT_1,
+          convertToHexValue(10000000000000000000),
+        );
         await importSRPOnboardingFlow({
           driver,
           seedPhrase: TEST_SEED_PHRASE,
@@ -270,9 +283,9 @@ describe('MetaMask onboarding', function () {
 
         // Check the correct balance for the custom network is displayed
         if (localNodes[1] && Array.isArray(localNodes)) {
-          await homePage.check_localNodeBalanceIsDisplayed(localNodes[1]);
+          await homePage.check_expectedBalanceIsDisplayed('10');
         } else {
-          throw new Error('Custom network Ganache server not available');
+          throw new Error('Custom network server not available');
         }
       },
     );

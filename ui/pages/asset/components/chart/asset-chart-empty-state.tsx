@@ -12,12 +12,11 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 export const AssetChartEmptyState = () => {
   const t = useI18nContext();
   return (
-    <Box className="asset-chart__empty-state-container">
+    <Box className="asset-chart__empty-or-loading-state-container">
       <Box className="asset-chart__empty-state-content">
         <img
           src="./images/asset-chart-empty-state-illustration.png"
-          width="134"
-          height="106"
+          className="asset-chart__empty-state-illustration"
         />
         <Text
           textAlign={TextAlign.Center}
