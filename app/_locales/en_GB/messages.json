@@ -1053,6 +1053,12 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
   },
+  "changePasswordLoading": {
+    "message": "Chaning password..."
+  },
+  "changePasswordLoadingNote": {
+    "message": "This shouldn't take long"
+  },
   "chooseYourNetwork": {
     "message": "Choose your network"
   },
@@ -1477,12 +1483,6 @@
   },
   "createPassword": {
     "message": "Create password"
-  },
-  "createPasswordCreating": {
-    "message": "Creating password..."
-  },
-  "createPasswordCreatingNote": {
-    "message": "This shouldn't take long"
   },
   "createSnapAccountDescription": {
     "message": "$1 wants to add a new account to MetaMask."
