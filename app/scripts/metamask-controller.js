@@ -1137,6 +1137,7 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:listMultichainAccounts',
         'SnapController:handleRequest',
         'SnapController:get',
+        'SnapController:isMinimumPlatformVersion',
         'PreferencesController:getState',
       ],
     });
@@ -2731,13 +2732,15 @@ export default class MetamaskController extends EventEmitter {
               scopeObject.methods.includes('eth_subscribe')
             ) {
               // for each tabId
-              Object.values(this.connections[origin]).forEach(({ tabId }) => {
-                this.addMultichainApiEthSubscriptionMiddleware({
-                  scope,
-                  origin,
-                  tabId,
-                });
-              });
+              Object.values(this.connections[origin] ?? {}).forEach(
+                ({ tabId }) => {
+                  this.addMultichainApiEthSubscriptionMiddleware({
+                    scope,
+                    origin,
+                    tabId,
+                  });
+                },
+              );
             } else {
               this.removeMultichainApiEthSubscriptionMiddleware({
                 scope,
