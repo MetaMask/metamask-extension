@@ -4317,6 +4317,9 @@
   "reusedTokenNameWarning": {
     "message": "Buradaki bir token izlediğiniz başka bir tokenden sembol kullanıyor, bu kafa karıştırıcı veya aldatıcı olabilir."
   },
+  "revealSecretRecoveryPhrase": {
+    "message": "Gizli Kurtarma İfadesini Açığa Çıkar"
+  },
   "revealSeedWords": {
     "message": "Gizli Kurtarma İfadesini Göster"
   },
