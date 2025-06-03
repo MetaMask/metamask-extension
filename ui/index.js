@@ -20,6 +20,12 @@ import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
+import {
+  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+  displayStateCorruptionError,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../app/scripts/lib/state-corruption-errors';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -40,6 +46,7 @@ import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 
+const METHOD_START_UI_SYNC = 'startUISync';
 // eslint-disable-next-line import/no-restricted-paths
 export { displayStateCorruptionError } from '../app/scripts/lib/state-corruption-errors';
 
@@ -50,13 +57,25 @@ let reduxStore;
 /**
  * Method to update backgroundConnection object use by UI
  *
+ * @param container - container to render the UI
  * @param backgroundConnection - connection object to background
+ * @param handleStartUISync - function to call when startUISync notification is received
  */
-export const updateBackgroundConnection = (backgroundConnection) => {
+export const connectToBackground = (
+  container,
+  backgroundConnection,
+  handleStartUISync,
+) => {
   setBackgroundConnection(backgroundConnection);
   backgroundConnection.onNotification((data) => {
-    if (data.method === 'sendUpdate') {
-      reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
+    const { method, params } = data;
+    if (method === 'sendUpdate') {
+      reduxStore.dispatch(actions.updateMetamaskState(params[0]));
+    } else if (method === METHOD_START_UI_SYNC) {
+      handleStartUISync();
+    } else if (method === METHOD_DISPLAY_STATE_CORRUPTION_ERROR) {
+      const { error, currentLocale } = params;
+      displayStateCorruptionError(container, error, currentLocale);
     } else {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
@@ -75,7 +94,7 @@ export default async function launchMetamaskUi(opts) {
     backgroundConnection.getState.bind(backgroundConnection),
   );
 
-  const store = await startApp(metamaskState, backgroundConnection, opts);
+  const store = await startApp(metamaskState, opts);
 
   await backgroundConnection.startPatches();
 
@@ -88,15 +107,10 @@ export default async function launchMetamaskUi(opts) {
  * Method to setup initial redux store for the ui application
  *
  * @param {*} metamaskState - flatten background state
- * @param {*} backgroundConnection - rpc client connecting to the background process
  * @param {*} activeTab - active browser tab
  * @returns redux store
  */
-export async function setupInitialStore(
-  metamaskState,
-  backgroundConnection,
-  activeTab,
-) {
+export async function setupInitialStore(metamaskState, activeTab) {
   // parse opts
   if (!metamaskState.featureFlags) {
     metamaskState.featureFlags = {};
@@ -125,8 +139,6 @@ export async function setupInitialStore(
       en: enLocaleMessages,
     },
   };
-
-  updateBackgroundConnection(backgroundConnection);
 
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
     const { origin } = draftInitialState.activeTab;
@@ -188,7 +200,7 @@ export async function setupInitialStore(
   return store;
 }
 
-async function startApp(metamaskState, backgroundConnection, opts) {
+async function startApp(metamaskState, opts) {
   const { traceContext } = opts;
 
   const tags = getStartupTraceTags({ metamask: metamaskState });
@@ -199,8 +211,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       parentContext: traceContext,
       tags,
     },
-    () =>
-      setupInitialStore(metamaskState, backgroundConnection, opts.activeTab),
+    () => setupInitialStore(metamaskState, opts.activeTab),
   );
 
   // global metamask api - used by tooling
