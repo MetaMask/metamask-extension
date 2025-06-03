@@ -272,7 +272,9 @@ export const filterTransactionsByToken = (
 
   const transactionForToken = (nonEvmTransactions.transactions || []).filter(
     (transaction) => {
-      return transaction.to.some((item) => item.asset.type === tokenAddress);
+      return [...transaction.to, ...transaction.from].some(
+        (item) => item.asset.type === tokenAddress,
+      );
     },
   );
 
@@ -316,9 +318,9 @@ export default function TransactionList({
     getSelectedAccountMultichainTransactions,
   );
 
-  const nonEvmTransactionFilteredByToken = filterTransactionsByToken(
-    nonEvmTransactions,
-    tokenAddress,
+  const nonEvmTransactionFilteredByToken = useMemo(
+    () => filterTransactionsByToken(nonEvmTransactions, tokenAddress),
+    [nonEvmTransactions, tokenAddress],
   );
 
   // Use our custom hook to map Solana bridge transactions with destination chain info
