@@ -4,6 +4,7 @@ import reactRouterDom from 'react-router-dom';
 import {
   BtcAccountType,
   EthAccountType,
+  EthScope,
   KeyringAccountType,
 } from '@metamask/keyring-api';
 import { merge } from 'lodash';
@@ -18,6 +19,7 @@ import messages from '../../../../app/_locales/en/messages.json';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
+  IMPORT_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
 ///: END:ONLY_INCLUDE_IF
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
@@ -220,6 +222,7 @@ describe('AccountListMenu', () => {
               },
               options: {},
               methods: ETH_EOA_METHODS,
+              scopes: [EthScope.Eoa],
               type: EthAccountType.Eoa,
             },
           },
@@ -717,7 +720,7 @@ describe('AccountListMenu', () => {
       );
       addAccountButton.click();
 
-      expect(getByTestId('import-srp-container')).toBeInTheDocument();
+      expect(historyPushMock).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
     });
 
     it('shows srp list if there are multiple srps when adding a new account', async () => {

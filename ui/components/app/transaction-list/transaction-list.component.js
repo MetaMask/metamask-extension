@@ -23,14 +23,19 @@ import {
   nonceSortedPendingTransactionsSelector,
   nonceSortedPendingTransactionsSelectorAllChains,
 } from '../../../selectors/transactions';
+import {
+  remoteModeNonceSortedCompletedTransactionsSelector,
+  remoteModeNonceSortedCompletedTransactionsSelectorAllChains,
+  remoteModeNonceSortedPendingTransactionsSelector,
+  remoteModeNonceSortedPendingTransactionsSelectorAllChains,
+  getIsRemoteModeEnabled,
+} from '../../../selectors/remote-mode';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   getCurrentNetwork,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedAccount,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getShouldHideZeroBalanceTokens,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import useSolanaBridgeTransactionMapping from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
@@ -86,14 +91,12 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import {
   RAMPS_CARD_VARIANT_TYPES,
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
@@ -375,10 +378,55 @@ export default function TransactionList({
     overrideFilterForCurrentChain,
   ]);
 
+  const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
+
+  const unfilteredRemoteModePendingTransactionsCurrentChain = useSelector(
+    remoteModeNonceSortedPendingTransactionsSelector,
+  );
+
+  const unfilteredRemoteModePendingTransactionsAllChains = useSelector(
+    remoteModeNonceSortedPendingTransactionsSelectorAllChains,
+  );
+
+  const unfilteredRemoteModePendingTransactions = useMemo(() => {
+    if (!isRemoteModeEnabled) {
+      return [];
+    }
+    return isTokenNetworkFilterEqualCurrentNetwork
+      ? unfilteredRemoteModePendingTransactionsCurrentChain
+      : unfilteredRemoteModePendingTransactionsAllChains;
+  }, [
+    isRemoteModeEnabled,
+    isTokenNetworkFilterEqualCurrentNetwork,
+    unfilteredRemoteModePendingTransactionsAllChains,
+    unfilteredRemoteModePendingTransactionsCurrentChain,
+  ]);
+
+  const unfilteredRemoteModeCompletedTransactionsAllChains = useSelector(
+    remoteModeNonceSortedCompletedTransactionsSelectorAllChains,
+  );
+
+  const unfilteredRemoteModeCompletedTransactionsCurrentChain = useSelector(
+    remoteModeNonceSortedCompletedTransactionsSelector,
+  );
+
+  const unfilteredRemoteModeCompletedTransactions = useMemo(() => {
+    if (!isRemoteModeEnabled) {
+      return [];
+    }
+    return isTokenNetworkFilterEqualCurrentNetwork
+      ? unfilteredRemoteModeCompletedTransactionsCurrentChain
+      : unfilteredRemoteModeCompletedTransactionsAllChains;
+  }, [
+    isTokenNetworkFilterEqualCurrentNetwork,
+    unfilteredRemoteModeCompletedTransactionsAllChains,
+    unfilteredRemoteModeCompletedTransactionsCurrentChain,
+    isRemoteModeEnabled,
+  ]);
+
   const chainId = useSelector(getCurrentChainId);
   const isEvmNetwork = useSelector(getIsEvmMultichainNetworkSelected);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -389,7 +437,6 @@ export default function TransactionList({
   const balanceIsZero = Number(totalFiatBalance) === 0;
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const showRampsCard = isBuyableChain && balanceIsZero;
-  ///: END:ONLY_INCLUDE_IF
 
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
@@ -417,16 +464,20 @@ export default function TransactionList({
     () =>
       groupEvmTransactionsByDate(
         getFilteredTransactionGroups(
-          unfilteredPendingTransactions,
+          [
+            ...unfilteredPendingTransactions,
+            ...unfilteredRemoteModePendingTransactions,
+          ],
           hideTokenTransactions,
           tokenAddress,
           chainId,
         ),
       ),
     [
+      unfilteredPendingTransactions,
+      unfilteredRemoteModePendingTransactions,
       hideTokenTransactions,
       tokenAddress,
-      unfilteredPendingTransactions,
       chainId,
     ],
   );
@@ -435,12 +486,20 @@ export default function TransactionList({
     () =>
       groupEvmTransactionsByDate(
         getFilteredTransactionGroupsAllChains(
-          unfilteredCompletedTransactions,
+          [
+            ...unfilteredCompletedTransactions,
+            ...unfilteredRemoteModeCompletedTransactions,
+          ],
           hideTokenTransactions,
           tokenAddress,
         ),
       ),
-    [hideTokenTransactions, tokenAddress, unfilteredCompletedTransactions],
+    [
+      hideTokenTransactions,
+      tokenAddress,
+      unfilteredCompletedTransactions,
+      unfilteredRemoteModeCompletedTransactions,
+    ],
   );
 
   const viewMore = useCallback(
@@ -640,13 +699,9 @@ export default function TransactionList({
 
   return (
     <>
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        showRampsCard ? (
-          <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
-        ) : null
-        ///: END:ONLY_INCLUDE_IF
-      }
+      {showRampsCard ? (
+        <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
+      ) : null}
       <Box className="transaction-list" {...boxProps}>
         {renderFilterButton()}
         {process.env.REMOVE_GNS &&

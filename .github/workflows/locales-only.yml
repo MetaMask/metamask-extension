@@ -25,7 +25,7 @@ jobs:
         run: yarn tsx .github/scripts/git-diff-default-branch.ts
 
       - name: Validate locales only
-        run: yarn tsx .circleci/scripts/validate-locales-only.ts
+        run: yarn tsx .github/scripts/validate-locales-only.ts
 
       - name: Run lint
         run: yarn lint && yarn verify-locales --quiet
