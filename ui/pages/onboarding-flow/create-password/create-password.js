@@ -184,7 +184,10 @@ export default function CreatePassword({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletCreationAttempted,
       properties: {
-        account_type: MetaMetricsEventAccountType.Default,
+        account_type: getAccountType(
+          MetaMetricsEventAccountType.Default,
+          isSocialLoginFlow,
+        ),
       },
     });
 
