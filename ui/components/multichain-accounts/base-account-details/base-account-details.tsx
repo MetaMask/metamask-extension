@@ -26,7 +26,7 @@ import { AccountDetailsRow } from '../account-details-row';
 import { EditAccountNameModal } from '../edit-account-name-modal';
 
 type BaseAccountDetailsProps = {
-  children: React.ReactNode | React.ReactNode[];
+  children?: React.ReactNode | React.ReactNode[];
 };
 
 export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
@@ -51,7 +51,7 @@ export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
   const [isEditingAccountName, setIsEditingAccountName] = useState(false);
 
   const handleShowAddress = () => {
-    history.push(`${ACCOUNT_DETAILS_QR_CODE_ROUTE}`);
+    history.push(ACCOUNT_DETAILS_QR_CODE_ROUTE);
   }
 
   return (
@@ -90,7 +90,7 @@ export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
                 color={IconColor.iconAlternative}
                 size={ButtonIconSize.Md}
                 ariaLabel={t('edit')}
-                onClick={handleShowAddress}
+                onClick={() => setIsEditingAccountName(true)}
                 marginLeft={2}
               />
             }
