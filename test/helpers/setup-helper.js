@@ -21,6 +21,14 @@ global.chrome = {
       },
     },
   },
+  identity: {
+    launchWebAuthFlow: () => {
+      // no-op
+    },
+    getRedirectURL: () => {
+      // no-op
+    },
+  },
 };
 
 nock.disableNetConnect();

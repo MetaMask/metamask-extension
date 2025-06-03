@@ -22,6 +22,7 @@ export type NetworksInfo = {
 // State shape for NetworkOrderController
 export type NetworkOrderControllerState = {
   orderedNetworkList: NetworksInfo[];
+  enabledNetworkMap: Record<CaipChainId, boolean>;
 };
 
 // Describes the structure of a state change event
@@ -52,11 +53,16 @@ export type NetworkOrderControllerMessenger = RestrictedMessenger<
 // Default state for the controller
 const defaultState: NetworkOrderControllerState = {
   orderedNetworkList: [],
+  enabledNetworkMap: {},
 };
 
 // Metadata for the controller state
 const metadata = {
   orderedNetworkList: {
+    persist: true,
+    anonymous: true,
+  },
+  enabledNetworkMap: {
     persist: true,
     anonymous: true,
   },
@@ -159,6 +165,21 @@ export class NetworkOrderController extends BaseController<
       state.orderedNetworkList = chainIds.map((chainId) => ({
         networkId: chainId,
       }));
+    });
+  }
+
+  /**
+   * Sets the enabled networks in the controller state.
+   * This method updates the enabledNetworkMap to mark specified networks as enabled.
+   * It can handle both a single chain ID or an array of chain IDs.
+   *
+   * @param chainIds - A single CAIP-2 chain ID (e.g. 'eip155:1') or an array of chain IDs
+   * to be enabled. All other networks will be implicitly disabled.
+   */
+  setEnabledNetworks(chainIds: CaipChainId | CaipChainId[]) {
+    const ids = Array.isArray(chainIds) ? chainIds : [chainIds];
+    this.update((state) => {
+      state.enabledNetworkMap = Object.fromEntries(ids.map((id) => [id, true]));
     });
   }
 }

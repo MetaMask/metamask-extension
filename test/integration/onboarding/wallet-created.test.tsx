@@ -70,7 +70,7 @@ describe('Wallet Created Events', () => {
       backgroundConnection: backgroundConnectionMocked,
     });
 
-    await waitForElementByText('Congratulations!');
+    await waitForElementByText('Your wallet is ready!');
 
     const completeOnboardingBtnId = 'onboarding-complete-done';
     const pinExtensionNextBtnId = 'pin-extension-next';
@@ -121,7 +121,7 @@ describe('Wallet Created Events', () => {
     });
 
     await waitForElementByText(
-      `Pin MetaMask on your browser so it's accessible and easy to view transaction confirmations.`,
+      `Access your MetaMask wallet with 1 click by clicking on the extension.`,
     );
 
     await waitForElementById(pinExtensionDoneBtnId);

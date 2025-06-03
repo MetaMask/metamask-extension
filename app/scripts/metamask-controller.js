@@ -246,6 +246,7 @@ import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import { updateCurrentLocale } from '../../shared/lib/translate';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -319,7 +320,6 @@ import {
 import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from './services/data-deletion-service';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
-import { updateCurrentLocale } from './translate';
 import { TrezorOffscreenBridge } from './lib/offscreen-bridge/trezor-offscreen-bridge';
 import { LedgerOffscreenBridge } from './lib/offscreen-bridge/ledger-offscreen-bridge';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -402,6 +402,7 @@ import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import OAuthService from './services/oauth/oauth-service';
 import { SeedlessOnboardingControllerInit } from './controller-init/seedless-onboarding/seedless-onboarding-controller-init';
+import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -801,6 +802,7 @@ export default class MetamaskController extends EventEmitter {
         'NetworkController:getNetworkClientById',
         'AccountsController:getSelectedAccount',
         'AccountsController:getAccount',
+        'AccountsController:listAccounts',
       ],
       allowedEvents: [
         'NetworkController:networkDidChange',
@@ -808,6 +810,7 @@ export default class MetamaskController extends EventEmitter {
         'PreferencesController:stateChange',
         'TokenListController:stateChange',
         'NetworkController:stateChange',
+        'KeyringController:accountRemoved',
       ],
     });
     this.tokensController = new TokensController({
@@ -951,11 +954,13 @@ export default class MetamaskController extends EventEmitter {
         'TokensController:getState',
         'PreferencesController:getState',
         'AccountsController:getSelectedAccount',
+        'AccountsController:listAccounts',
       ],
       allowedEvents: [
         'PreferencesController:stateChange',
         'TokensController:stateChange',
         'NetworkController:stateChange',
+        'KeyringController:accountRemoved',
       ],
     });
 
@@ -1062,10 +1067,7 @@ export default class MetamaskController extends EventEmitter {
         authConnectionId: process.env.AUTH_CONNECTION_ID,
         groupedAuthConnectionId: process.env.GROUPED_AUTH_CONNECTION_ID,
       },
-      webAuthenticator:
-        getPlatform() === PLATFORM_FIREFOX
-          ? globalThis.browser.identity // use browser.identity for Firefox
-          : window.chrome.identity, // use chrome.identity for Chromium based browsers
+      webAuthenticator: webAuthenticatorFactory(),
     });
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
@@ -1388,6 +1390,7 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:networkDidChange',
           'PreferencesController:stateChange',
           'TokenListController:stateChange',
+          'TransactionController:transactionConfirmed',
         ],
       });
 
@@ -3518,7 +3521,6 @@ export default class MetamaskController extends EventEmitter {
       resetOAuthLoginState: this.resetOAuthLoginState.bind(this),
       createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
       fetchAllSeedPhrases: this.fetchAllSeedPhrases.bind(this),
-      updateBackupMetadataState: this.updateBackupMetadataState.bind(this),
       changePassword: this.changePassword.bind(this),
       restoreSeedPhrasesToVault: this.restoreSeedPhrasesToVault.bind(this),
       syncSeedPhrases: this.syncSeedPhrases.bind(this),
@@ -3909,6 +3911,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       updateNetworksList: this.updateNetworksList.bind(this),
       updateAccountsList: this.updateAccountsList.bind(this),
+      setEnabledNetworks: this.setEnabledNetworks.bind(this),
       updateHiddenAccountsList: this.updateHiddenAccountsList.bind(this),
       getPhishingResult: async (website) => {
         await phishingController.maybeUpdateState();
@@ -4619,6 +4622,7 @@ export default class MetamaskController extends EventEmitter {
       const oAuthLoginResult = await this.oauthService.startOAuthLogin(
         provider,
       );
+      console.log('oAuthLoginResult', oAuthLoginResult);
 
       const { isNewUser } =
         await this.seedlessOnboardingController.authenticate(oAuthLoginResult);
@@ -6433,8 +6437,9 @@ export default class MetamaskController extends EventEmitter {
     securityAlertId,
     securityAlertResponse,
   ) {
-    await updateSecurityAlertResponse({
+    return await updateSecurityAlertResponse({
       appStateController: this.appStateController,
+      messenger: this.controllerMessenger,
       method,
       securityAlertId,
       securityAlertResponse,
@@ -7274,6 +7279,9 @@ export default class MetamaskController extends EventEmitter {
         ),
         getIsLocked: () => {
           return !this.appStateController.isUnlocked();
+        },
+        getIsActive: () => {
+          return this._isClientOpen;
         },
         getInterfaceState: (...args) =>
           this.controllerMessenger.call(
@@ -8343,6 +8351,15 @@ export default class MetamaskController extends EventEmitter {
   updateAccountsList = (pinnedAccountList) => {
     try {
       this.accountOrderController.updateAccountsList(pinnedAccountList);
+    } catch (err) {
+      log.error(err.message);
+      throw err;
+    }
+  };
+
+  setEnabledNetworks = (chainIds) => {
+    try {
+      this.networkOrderController.setEnabledNetworks(chainIds);
     } catch (err) {
       log.error(err.message);
       throw err;

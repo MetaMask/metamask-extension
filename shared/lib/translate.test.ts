@@ -1,8 +1,4 @@
-import {
-  getMessage,
-  fetchLocale,
-  FALLBACK_LOCALE,
-} from '../../shared/modules/i18n';
+import { getMessage, fetchLocale, FALLBACK_LOCALE } from '../modules/i18n';
 import { t, updateCurrentLocale } from './translate';
 
 const localeCodeMock = 'te';
@@ -12,8 +8,8 @@ const messageMock = 'testMessage';
 const messageMock2 = 'testMessage2';
 const alternateLocaleDataMock = { [keyMock]: { message: messageMock2 } };
 
-jest.mock('../../shared/modules/i18n');
-jest.mock('../_locales/en/messages.json', () => ({
+jest.mock('../modules/i18n');
+jest.mock('../../app/_locales/en/messages.json', () => ({
   [keyMock]: { message: messageMock },
 }));
 
