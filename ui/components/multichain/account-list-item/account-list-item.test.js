@@ -14,6 +14,7 @@ import {
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
 import { AccountListItem, AccountListItemMenuTypes } from '.';
+import { BtcScope } from '@metamask/keyring-api';
 
 const mockAccount = {
   ...mockState.metamask.internalAccounts.accounts[
@@ -30,6 +31,7 @@ const mockNonEvmAccount = {
   id: 'b7893c59-e376-4cc0-93ad-05ddaab574a6',
   address: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
   type: 'bip122:p2wpkh',
+  scopes: [BtcScope.Mainnet]
 };
 
 const mockSnap = {
