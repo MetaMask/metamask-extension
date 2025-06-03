@@ -440,6 +440,7 @@ const AssetPage = ({
             </Text>
             {type === AssetType.native ? (
               <TransactionList
+                tokenAddress={address}
                 hideNetworkFilter
                 overrideFilterForCurrentChain={true}
               />
