@@ -193,6 +193,7 @@ export function getAccountLabels(
   if (namespace === KnownCaipNamespace.Bip122) {
     labels.push({
       label: `${MULTICHAIN_ACCOUNT_TYPE_TO_NAME[account.type]}`,
+      icon: null,
     });
   }
   ///: END:ONLY_INCLUDE_IF
