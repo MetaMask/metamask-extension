@@ -126,6 +126,9 @@ import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import {
   isEvmAccountType,
   SolAccountType,
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  BtcScope,
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SolScope,
   ///: END:ONLY_INCLUDE_IF
@@ -240,10 +243,16 @@ import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { BRIDGE_API_BASE_URL } from '../../shared/constants/bridge';
-///: BEGIN:ONLY_INCLUDE_IF(solana)
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
+import { updateCurrentLocale } from '../../shared/lib/translate';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -317,7 +326,6 @@ import {
 import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from './services/data-deletion-service';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
-import { updateCurrentLocale } from './translate';
 import { TrezorOffscreenBridge } from './lib/offscreen-bridge/trezor-offscreen-bridge';
 import { LedgerOffscreenBridge } from './lib/offscreen-bridge/ledger-offscreen-bridge';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -794,6 +802,7 @@ export default class MetamaskController extends EventEmitter {
         'NetworkController:getNetworkClientById',
         'AccountsController:getSelectedAccount',
         'AccountsController:getAccount',
+        'AccountsController:listAccounts',
       ],
       allowedEvents: [
         'NetworkController:networkDidChange',
@@ -801,6 +810,7 @@ export default class MetamaskController extends EventEmitter {
         'PreferencesController:stateChange',
         'TokenListController:stateChange',
         'NetworkController:stateChange',
+        'KeyringController:accountRemoved',
       ],
     });
     this.tokensController = new TokensController({
@@ -944,11 +954,13 @@ export default class MetamaskController extends EventEmitter {
         'TokensController:getState',
         'PreferencesController:getState',
         'AccountsController:getSelectedAccount',
+        'AccountsController:listAccounts',
       ],
       allowedEvents: [
         'PreferencesController:stateChange',
         'TokensController:stateChange',
         'NetworkController:stateChange',
+        'KeyringController:accountRemoved',
       ],
     });
 
@@ -1121,6 +1133,7 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:listMultichainAccounts',
         'SnapController:handleRequest',
         'SnapController:get',
+        'SnapController:isMinimumPlatformVersion',
         'PreferencesController:getState',
       ],
     });
@@ -1358,6 +1371,7 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:networkDidChange',
           'PreferencesController:stateChange',
           'TokenListController:stateChange',
+          'TransactionController:transactionConfirmed',
         ],
       });
 
@@ -2714,13 +2728,15 @@ export default class MetamaskController extends EventEmitter {
               scopeObject.methods.includes('eth_subscribe')
             ) {
               // for each tabId
-              Object.values(this.connections[origin]).forEach(({ tabId }) => {
-                this.addMultichainApiEthSubscriptionMiddleware({
-                  scope,
-                  origin,
-                  tabId,
-                });
-              });
+              Object.values(this.connections[origin] ?? {}).forEach(
+                ({ tabId }) => {
+                  this.addMultichainApiEthSubscriptionMiddleware({
+                    scope,
+                    origin,
+                    tabId,
+                  });
+                },
+              );
             } else {
               this.removeMultichainApiEthSubscriptionMiddleware({
                 scope,
@@ -3860,6 +3876,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       updateNetworksList: this.updateNetworksList.bind(this),
       updateAccountsList: this.updateAccountsList.bind(this),
+      setEnabledNetworks: this.setEnabledNetworks.bind(this),
       updateHiddenAccountsList: this.updateHiddenAccountsList.bind(this),
       getPhishingResult: async (website) => {
         await phishingController.maybeUpdateState();
@@ -4722,17 +4739,12 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  async _getSolanaWalletSnapClient() {
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  async _getMultichainWalletSnapClient(snapId) {
     const keyring = await this.getSnapKeyring();
     const messenger = this.controllerMessenger;
 
-    return new MultichainWalletSnapClient(
-      SOLANA_WALLET_SNAP_ID,
-      [SolScope.Mainnet, SolScope.Devnet, SolScope.Testnet],
-      keyring,
-      messenger,
-    );
+    return new MultichainWalletSnapClient(snapId, keyring, messenger);
   }
   ///: END:ONLY_INCLUDE_IF
 
@@ -4805,13 +4817,41 @@ export default class MetamaskController extends EventEmitter {
           },
         );
       }
+
+      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+      const btcClient = await this._getMultichainWalletSnapClient(
+        BITCOIN_WALLET_SNAP_ID,
+      );
+      const btcScope = BtcScope.Mainnet;
+      const btcAccounts = await btcClient.discoverAccounts(
+        entropySource,
+        btcScope,
+      );
+
+      // If none accounts got discovered, we still create the first (default) one.
+      if (btcAccounts.length === 0) {
+        await this._addSnapAccount(entropySource, btcClient, {
+          scope: btcScope,
+          synchronize: true,
+        });
+      }
+      ///: END:ONLY_INCLUDE_IF
+
       ///: BEGIN:ONLY_INCLUDE_IF(solana)
-      const client = await this._getSolanaWalletSnapClient();
-      const solanaAccounts = await client.discoverAccounts(entropySource);
+      const solanaClient = await this._getMultichainWalletSnapClient(
+        SOLANA_WALLET_SNAP_ID,
+      );
+      const solScope = SolScope.Mainnet;
+      const solanaAccounts = await solanaClient.discoverAccounts(
+        entropySource,
+        solScope,
+      );
 
       // If none accounts got discovered, we still create the first (default) one.
       if (solanaAccounts.length === 0) {
-        await this._addSolanaAccount(entropySource);
+        await this._addSnapAccount(entropySource, solanaClient, {
+          scope: solScope,
+        });
       }
       ///: END:ONLY_INCLUDE_IF
     } catch (e) {
@@ -4824,12 +4864,14 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Adds Solana account to the keyring.
+   * Adds Snap account to the keyring.
    *
    * @param {string} keyringId - The ID of the keyring to add the account to.
+   * @param {object} client - The Snap client instance.
+   * @param {object} options - The options to pass to the createAccount method.
    */
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  async _addSolanaAccount(keyringId) {
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  async _addSnapAccount(keyringId, client, options = {}) {
     let entropySource = keyringId;
     try {
       if (!entropySource) {
@@ -4843,9 +4885,8 @@ export default class MetamaskController extends EventEmitter {
         entropySource = id;
       }
 
-      const client = await this._getSolanaWalletSnapClient();
       return await client.createAccount(
-        { entropySource },
+        { ...options, entropySource },
         {
           displayConfirmation: false,
           displayAccountNameSuggestion: false,
@@ -4854,7 +4895,7 @@ export default class MetamaskController extends EventEmitter {
       );
     } catch (e) {
       // Do not block the onboarding flow if this fails
-      log.warn(`Failed to add Solana account. Error: ${e}`);
+      log.warn(`Failed to add Snap account. Error: ${e}`);
       captureException(e);
       return null;
     }
@@ -5967,8 +6008,9 @@ export default class MetamaskController extends EventEmitter {
     securityAlertId,
     securityAlertResponse,
   ) {
-    await updateSecurityAlertResponse({
+    return await updateSecurityAlertResponse({
       appStateController: this.appStateController,
+      messenger: this.controllerMessenger,
       method,
       securityAlertId,
       securityAlertResponse,
@@ -6808,6 +6850,9 @@ export default class MetamaskController extends EventEmitter {
         ),
         getIsLocked: () => {
           return !this.appStateController.isUnlocked();
+        },
+        getIsActive: () => {
+          return this._isClientOpen;
         },
         getInterfaceState: (...args) =>
           this.controllerMessenger.call(
@@ -7877,6 +7922,15 @@ export default class MetamaskController extends EventEmitter {
   updateAccountsList = (pinnedAccountList) => {
     try {
       this.accountOrderController.updateAccountsList(pinnedAccountList);
+    } catch (err) {
+      log.error(err.message);
+      throw err;
+    }
+  };
+
+  setEnabledNetworks = (chainIds) => {
+    try {
+      this.networkOrderController.setEnabledNetworks(chainIds);
     } catch (err) {
       log.error(err.message);
       throw err;
