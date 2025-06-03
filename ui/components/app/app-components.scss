@@ -18,6 +18,7 @@
 @import 'snaps/snap-content-footer/index';
 @import 'snaps/snap-install-warning/index';
 @import 'snaps/snap-ui-renderer/index';
+@import 'snaps/snap-ui-account-selector/index';
 @import 'snaps/snap-ui-markdown/index';
 @import 'snaps/snap-ui-button/index';
 @import 'snaps/snap-ui-input/index';
@@ -43,7 +44,7 @@
 @import 'permission-page-container/index';
 @import 'permissions-connect-header/index';
 @import 'permissions-connect-permission-list/index';
-@import 'password-changed-modal/index';
+@import 'password-outdated-modal/index';
 @import 'permission-cell/index';
 @import 'recovery-phrase-reminder/index';
 @import 'step-progress-bar/index.scss';

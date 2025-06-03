@@ -162,7 +162,7 @@ export default function AccountExist() {
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         width={BlockSize.Full}
-        gap={2}
+        gap={4}
       >
         <Button
           data-testid="onboarding-complete-done"

@@ -16,23 +16,6 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
     >
       We'd like to gather basic usage and diagnostics data to improve MetaMask. It will always be:
     </p>
-    <div
-      class="mm-box mm-box--padding-top-2 mm-box--padding-bottom-2"
-    >
-      <a
-        class="mm-box mm-text mm-text--body-md mm-box--color-primary-default"
-        href="https://support.metamask.io/privacy-and-security/profile-privacy#how-is-the-profile-created"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        Learn how we protect your privacy while collecting usage data for your profile.
-      </a>
-    </div>
-    <p
-      class="mm-box mm-text onboarding-metametrics__desc mm-text--body-md mm-text--text-align-left mm-box--color-text-default"
-    >
-      When we gather metrics, it will always be...
-    </p>
     <ul>
       <li>
         <div
@@ -46,15 +29,15 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
             class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
             <span>
-
-
+               
+              
               <span
                 class="mm-box mm-text mm-text--inherit mm-text--font-weight-bold mm-box--margin-top-0 mm-box--color-text-default"
               >
                 Private:
               </span>
                Clicks and views on the app are stored, but other details (like your public address) are not.
-
+               
             </span>
           </p>
         </div>
@@ -71,15 +54,15 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
             class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
             <span>
-
-
+               
+              
               <span
                 class="mm-box mm-text mm-text--inherit mm-text--font-weight-bold mm-box--color-text-default"
               >
                 General:
               </span>
                We temporarily use your IP address to detect a general location (like your country or region), but it's never stored.
-
+               
             </span>
           </p>
         </div>
@@ -96,15 +79,15 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
             class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
             <span>
-
-
+               
+              
               <span
                 class="mm-box mm-text mm-text--inherit mm-text--font-weight-bold mm-box--color-text-default"
               >
                 Optional:
               </span>
                You decide if you want to share or delete your usage data via settings any time.
-
+               
             </span>
           </p>
         </div>
@@ -137,8 +120,8 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
       class="mm-box mm-text onboarding-metametrics__terms mm-text--body-sm mm-text--text-align-left mm-box--padding-top-4 mm-box--color-text-alternative"
     >
       <span>
-
-        We’ll let you know if we decide to use this data for other purposes. You can review our
+         
+        We’ll let you know if we plan to use this data for other purposes. You can review our 
         <a
           href="https://metamask.io/privacy.html"
           rel="noopener noreferrer"
@@ -146,8 +129,8 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
         >
           Privacy Policy
         </a>
-         for more information. Remember, you can go to settings and opt out at any time.
-
+         any time (we never sell the data you provide here).
+         
       </span>
     </p>
     <div
@@ -187,23 +170,6 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
     >
       We'd like to gather basic usage and diagnostics data to improve MetaMask. It will always be:
     </p>
-    <div
-      class="mm-box mm-box--padding-top-2 mm-box--padding-bottom-2"
-    >
-      <a
-        class="mm-box mm-text mm-text--body-md mm-box--color-primary-default"
-        href="https://support.metamask.io/privacy-and-security/profile-privacy#how-is-the-profile-created"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        Learn how we protect your privacy while collecting usage data for your profile.
-      </a>
-    </div>
-    <p
-      class="mm-box mm-text onboarding-metametrics__desc mm-text--body-md mm-text--text-align-left mm-box--color-text-default"
-    >
-      When we gather metrics, it will always be...
-    </p>
     <ul>
       <li>
         <div
@@ -217,15 +183,15 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
             class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
             <span>
-
-
+               
+              
               <span
                 class="mm-box mm-text mm-text--inherit mm-text--font-weight-bold mm-box--margin-top-0 mm-box--color-text-default"
               >
                 Private:
               </span>
                Clicks and views on the app are stored, but other details (like your public address) are not.
-
+               
             </span>
           </p>
         </div>
@@ -242,15 +208,15 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
             class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
             <span>
-
-
+               
+              
               <span
                 class="mm-box mm-text mm-text--inherit mm-text--font-weight-bold mm-box--color-text-default"
               >
                 General:
               </span>
                We temporarily use your IP address to detect a general location (like your country or region), but it's never stored.
-
+               
             </span>
           </p>
         </div>
@@ -267,15 +233,15 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
             class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
             <span>
-
-
+               
+              
               <span
                 class="mm-box mm-text mm-text--inherit mm-text--font-weight-bold mm-box--color-text-default"
               >
                 Optional:
               </span>
                You decide if you want to share or delete your usage data via settings any time.
-
+               
             </span>
           </p>
         </div>
@@ -308,8 +274,8 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
       class="mm-box mm-text onboarding-metametrics__terms mm-text--body-sm mm-text--text-align-left mm-box--padding-top-4 mm-box--color-text-alternative"
     >
       <span>
-
-        We’ll let you know if we decide to use this data for other purposes. You can review our
+         
+        We’ll let you know if we plan to use this data for other purposes. You can review our 
         <a
           href="https://metamask.io/privacy.html"
           rel="noopener noreferrer"
@@ -317,8 +283,8 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
         >
           Privacy Policy
         </a>
-         for more information. Remember, you can go to settings and opt out at any time.
-
+         any time (we never sell the data you provide here).
+         
       </span>
     </p>
     <div

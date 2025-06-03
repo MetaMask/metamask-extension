@@ -17,6 +17,7 @@ import {
   EthereumSignTypedDataTypes,
 } from '@trezor/connect-web';
 import type { Provider } from '@metamask/network-controller';
+import { Browser } from 'webextension-polyfill';
 import {
   OffscreenCommunicationTarget,
   TrezorAction,
@@ -284,6 +285,8 @@ export declare global {
   var sentry: SentryObject | undefined;
 
   var chrome: Chrome;
+
+  var browser: Browser;
 
   var ethereumProvider: Provider;
 

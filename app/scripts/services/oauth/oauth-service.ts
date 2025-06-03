@@ -42,7 +42,10 @@ export default class OAuthService {
       authConnection,
       redirectUri,
       this.#env,
+      this.#webAuthenticator,
     );
+
+    const authUrl = await loginHandler.getAuthUrl();
 
     let providerLoginSuccess = false;
     let redirectUrlFromOAuth = null;
@@ -54,24 +57,30 @@ export default class OAuthService {
 
     try {
       // launch the web auth flow to get the Authorization Code from the social login provider
-      redirectUrlFromOAuth = await new Promise<string>(
-        (resolve, reject) => {
-          // since promise returns aren't supported until MV3, we need to use a callback function to support MV2
-          this.#webAuthenticator.launchWebAuthFlow(
-            {
-              interactive: true,
-              url: loginHandler.getAuthUrl(),
-            },
-            (responseUrl) => {
+      redirectUrlFromOAuth = await new Promise<string>((resolve, reject) => {
+        // since promise returns aren't supported until MV3, we need to use a callback function to support MV2
+        this.#webAuthenticator.launchWebAuthFlow(
+          {
+            interactive: true,
+            url: authUrl,
+          },
+          (responseUrl) => {
+            try {
               if (responseUrl) {
+                const url = new URL(responseUrl);
+                const state = url.searchParams.get('state');
+
+                loginHandler.validateState(state);
                 resolve(responseUrl);
               } else {
                 reject(new Error('No redirect URL found'));
               }
-            },
-          );
-        },
-      );
+            } catch (error: unknown) {
+              reject(error);
+            }
+          },
+        );
+      });
       providerLoginSuccess = true;
     } catch (error: unknown) {
       const errorMessage =
@@ -95,11 +104,7 @@ export default class OAuthService {
       throw new Error('No redirect URL found');
     }
 
-
-    return this.#handleOAuthResponse(
-      loginHandler,
-      redirectUrlFromOAuth,
-    );
+    return this.#handleOAuthResponse(loginHandler, redirectUrlFromOAuth);
   }
 
   /**

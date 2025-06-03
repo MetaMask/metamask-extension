@@ -490,10 +490,6 @@
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
   },
-  "appNameMmi": {
-    "message": "MetaMask Institutional",
-    "description": "The name of the application (MMI)"
-  },
   "apply": {
     "message": "적용"
   },
@@ -4320,6 +4316,9 @@
   },
   "reusedTokenNameWarning": {
     "message": "여기에 있는 토큰은 사용자가 주시 중인 다른 토큰의 기호를 재사용하기 때문에 혼동되거나 속기 쉽습니다."
+  },
+  "revealSecretRecoveryPhrase": {
+    "message": "비밀복구구문 공개"
   },
   "revealSeedWords": {
     "message": "비밀복구구문 공개"

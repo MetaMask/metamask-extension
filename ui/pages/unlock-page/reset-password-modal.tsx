@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   AvatarBase,
@@ -25,8 +26,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../helpers/constants/design-system';
-import { useSelector } from 'react-redux';
-import { getSocialLoginEmail } from '../../selectors';
+import { isSocialLoginFlow } from '../../selectors';
 import Divider from '../../components/app/divider';
 
 export default function ResetPasswordModal({
@@ -36,10 +36,9 @@ export default function ResetPasswordModal({
   onClose: () => void;
   onRestore: () => void;
 }) {
-  const userSocialLoginEmail = useSelector(getSocialLoginEmail);
   const t = useI18nContext();
 
-  const isSocialLoginEnabled = Boolean(userSocialLoginEmail);
+  const isSocialLoginEnabled = useSelector(isSocialLoginFlow);
 
   const socialLoginContent = () => {
     return (
@@ -80,7 +79,9 @@ export default function ResetPasswordModal({
             >
               2
             </AvatarBase>
-            <Text variant={TextVariant.bodyMd}>{t('forgotPasswordSocialStep2')}</Text>
+            <Text variant={TextVariant.bodyMd}>
+              {t('forgotPasswordSocialStep2')}
+            </Text>
           </Box>
           <Box display={Display.Flex} gap={4} as="li">
             <AvatarBase
@@ -90,7 +91,9 @@ export default function ResetPasswordModal({
             >
               3
             </AvatarBase>
-            <Text variant={TextVariant.bodyMd}>{t('forgotPasswordSocialStep3')}</Text>
+            <Text variant={TextVariant.bodyMd}>
+              {t('forgotPasswordSocialStep3')}
+            </Text>
           </Box>
         </Box>
         <Divider marginTop={2} marginBottom={4} />
@@ -140,6 +143,7 @@ export default function ResetPasswordModal({
           {t('forgotPasswordModalDescription2')}
         </Text>
         <Button
+          data-testid="reset-password-modal-button"
           variant={ButtonVariant.Primary}
           onClick={onRestore}
           size={ButtonSize.Lg}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { useHistory } from 'react-router-dom';
 import {
   Box,
   Icon,
@@ -26,21 +27,42 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useSyncSRPs } from '../../../../hooks/social-sync/useSyncSRPs';
 import {
-  isSocialLoginFlow,
   getSocialLoginEmail,
   getSocialLoginType,
+  getFirstTimeFlowType,
+  isSocialLoginFlow,
 } from '../../../../selectors';
+import { getSeedPhraseBackedUp } from '../../../../ducks/metamask/metamask';
+import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../../helpers/constants/routes';
+import { FirstTimeFlowType } from '../../../../../shared/constants/onboarding';
 
 export const RevealSrpList = () => {
   // sync SRPs
   useSyncSRPs();
+
   const t = useI18nContext();
+  const history = useHistory();
   const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
   const [selectedKeyringId, setSelectedKeyringId] = useState('');
 
+  const firstTimeFlow = useSelector(getFirstTimeFlowType);
   const socialLoginEmail = useSelector(getSocialLoginEmail);
   const socialLoginEnabled = useSelector(isSocialLoginFlow);
   const socialLoginType = useSelector(getSocialLoginType);
+  const seedPhraseBackedUp =
+    useSelector(getSeedPhraseBackedUp) ||
+    socialLoginEnabled ||
+    firstTimeFlow !== FirstTimeFlowType.create;
+
+  const onSrpActionComplete = (keyringId: string, triggerBackup?: boolean) => {
+    if (triggerBackup) {
+      const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
+      history.push(backUpSRPRoute);
+    } else {
+      setSelectedKeyringId(keyringId);
+      setSrpQuizModalVisible(true);
+    }
+  };
 
   return (
     <Box className="srp-reveal-list">
@@ -127,12 +149,10 @@ export const RevealSrpList = () => {
           {t('securitySrpLabel')}
         </Text>
         <SrpList
-          onActionComplete={(keyringId) => {
-            // TODO: if srp is not backed up do the secure srp flow else reveal the srp flow
-            setSelectedKeyringId(keyringId);
-            setSrpQuizModalVisible(true);
-          }}
+          onActionComplete={onSrpActionComplete}
           hideShowAccounts={false}
+          seedPhraseBackedUp={seedPhraseBackedUp}
+          isSettingsPage={true}
         />
       </Box>
       {srpQuizModalVisible && selectedKeyringId && (

@@ -322,8 +322,10 @@ const AccountListItem = ({
               <Text
                 as="button"
                 onClick={(e) => {
-                  e.stopPropagation();
-                  onClick?.(account);
+                  if (onClick) {
+                    e.stopPropagation();
+                    onClick(account);
+                  }
                 }}
                 variant={TextVariant.bodyMdMedium}
                 className="multichain-account-list-item__account-name__button"

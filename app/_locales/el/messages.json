@@ -490,10 +490,6 @@
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
   },
-  "appNameMmi": {
-    "message": "MetaMask Institutional",
-    "description": "The name of the application (MMI)"
-  },
   "apply": {
     "message": "Εφαρμογή"
   },
@@ -4320,6 +4316,9 @@
   },
   "reusedTokenNameWarning": {
     "message": "Ένα token εδώ επαναχρησιμοποιεί ένα σύμβολο από ένα άλλο token που παρακολουθείτε, αυτό μπορεί να προκαλέσει σύγχυση ή να είναι παραπλανητικό."
+  },
+  "revealSecretRecoveryPhrase": {
+    "message": "Αποκάλυψη της Μυστικής Φράσης Ανάκτησης"
   },
   "revealSeedWords": {
     "message": "Αποκάλυψη της Μυστικής Φράσης Ανάκτησης"

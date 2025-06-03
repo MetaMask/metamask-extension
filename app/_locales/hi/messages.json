@@ -490,10 +490,6 @@
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
   },
-  "appNameMmi": {
-    "message": "MetaMask Institutional",
-    "description": "The name of the application (MMI)"
-  },
   "apply": {
     "message": "लागू करें"
   },
@@ -4320,6 +4316,9 @@
   },
   "reusedTokenNameWarning": {
     "message": "यहां पर एक टोकन आपके द्वारा देखे जाने वाले दूसरे टोकन से प्रतीक का पुनः इस्तेमाल करता है, यह भ्रामक या धोखाधड़ी वाला हो सकता है।"
+  },
+  "revealSecretRecoveryPhrase": {
+    "message": "सीक्रेट रिकवरी फ्रेज़ दिखाएं"
   },
   "revealSeedWords": {
     "message": "सीक्रेट रिकवरी फ्रेज प्रकट करें"

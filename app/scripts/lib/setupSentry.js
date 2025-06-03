@@ -25,7 +25,6 @@ const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT;
 const RELEASE = process.env.METAMASK_VERSION;
 const SENTRY_DSN = process.env.SENTRY_DSN;
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
-const SENTRY_DSN_MMI = process.env.SENTRY_MMI_DSN;
 /* eslint-enable prefer-destructuring */
 
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
@@ -253,10 +252,6 @@ function getSentryTarget() {
     return SENTRY_DSN_DEV;
   }
 
-  if (METAMASK_BUILD_TYPE === 'mmi') {
-    return SENTRY_DSN_MMI;
-  }
-
   if (!SENTRY_DSN) {
     throw new Error(
       `Missing SENTRY_DSN environment variable in production environment`,
@@ -275,10 +270,7 @@ function getSentryTarget() {
 export async function getMetaMetricsEnabled() {
   const flags = getManifestFlags();
 
-  if (
-    METAMASK_BUILD_TYPE === 'mmi' ||
-    (flags.circleci && flags.sentry.forceEnable)
-  ) {
+  if (flags.circleci && flags.sentry.forceEnable) {
     return true;
   }
 

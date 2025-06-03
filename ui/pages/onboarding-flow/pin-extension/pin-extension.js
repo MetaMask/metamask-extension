@@ -6,8 +6,6 @@ import {
   setCompletedOnboarding,
   toggleExternalServices,
 } from '../../../store/actions';
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../../app/scripts/lib/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   TextVariant,
@@ -41,6 +39,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { flushBufferedTraces } from '../../../../shared/lib/trace';
 
 export default function OnboardingPinExtension() {
@@ -118,6 +117,7 @@ export default function OnboardingPinExtension() {
               title={label}
               onClick={onClickHandler}
               ariaLabel="next"
+              data-testid="pin-extension-next"
             />
           )}
           onChange={(index) => setSelectedIndex(index)}
@@ -178,7 +178,7 @@ export default function OnboardingPinExtension() {
                 {t('onboardingPinExtensionDescription2')}
               </Text>
               <Text variant={TextVariant.bodyMd}>
-                {t('onboardingPinExtensionDescription3', [getPlatform()])}
+                {t('onboardingPinExtensionDescription3', [getBrowserName()])}
               </Text>
             </Box>
           )}

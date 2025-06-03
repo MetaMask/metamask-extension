@@ -14,8 +14,8 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 import {
-  ONBOARDING_METAMETRICS,
   ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_METAMETRICS,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -43,11 +43,11 @@ import {
   Text,
 } from '../../../components/component-library';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../../app/scripts/lib/util';
 import PasswordForm from '../../../components/app/password-form/password-form';
 import LoadingScreen from '../../../components/ui/loading-screen';
+// eslint-disable-next-line import/no-restricted-paths
+import { getPlatform } from '../../../../app/scripts/lib/util';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { resetOAuthLoginState } from '../../../store/actions';
 import {
   bufferedTrace,

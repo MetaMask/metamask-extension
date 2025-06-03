@@ -490,10 +490,6 @@
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
   },
-  "appNameMmi": {
-    "message": "MetaMask Institutional",
-    "description": "The name of the application (MMI)"
-  },
   "apply": {
     "message": "Ilapat"
   },
@@ -4320,6 +4316,9 @@
   },
   "reusedTokenNameWarning": {
     "message": "Ang isang token dito ay muling ginagamit ang isang simbolo mula sa ibang token na tinitingnan mo, maaari itong maging nakakalito."
+  },
+  "revealSecretRecoveryPhrase": {
+    "message": "Ipakita ang Secret Recovery Phrase"
   },
   "revealSeedWords": {
     "message": "Ibunyag ang Lihim na Parirala sa Pagbawi"

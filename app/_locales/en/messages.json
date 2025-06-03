@@ -520,10 +520,6 @@
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
   },
-  "appNameMmi": {
-    "message": "MetaMask Institutional",
-    "description": "The name of the application (MMI)"
-  },
   "apply": {
     "message": "Apply"
   },
@@ -624,7 +620,7 @@
     "description": "$1 is backupAndSyncBasicFunctionalityNameMention in bold."
   },
   "backupAndSyncEnableDescription": {
-    "message": "Backup and sync lets us store encrypted data for your custom settings and features. This keeps your MetaMask experience the same across devices and restores settings and features if you ever need to reinstall MetaMask. $1.",
+    "message": "Backup and sync lets us store encrypted data for your custom settings and features. This keeps your MetaMask experience the same across devices and restores settings and features if you ever need to reinstall MetaMask. This doesn’t back up your Secret Recovery Phrase. $1.",
     "description": "$1 is link to the backup and sync privacy policy."
   },
   "backupAndSyncEnableDescriptionUpdatePreferences": {
@@ -2304,8 +2300,8 @@
   "forgotPassword": {
     "message": "Forgot password?"
   },
-  "forgotPasswordModalTitle": {
-    "message": "Forgot your password?"
+  "forgotPasswordModalButton": {
+    "message": "Reset wallet"
   },
   "forgotPasswordModalDescription1": {
     "message": "MetaMask can’t recover your password for you."
@@ -2313,8 +2309,28 @@
   "forgotPasswordModalDescription2": {
     "message": "You can reset your wallet by entering the Secret Recovery Phrase you used when you set up your wallet."
   },
-  "forgotPasswordModalButton": {
-    "message": "Reset wallet"
+  "forgotPasswordModalTitle": {
+    "message": "Forgot your password?"
+  },
+  "forgotPasswordSocialDescription": {
+    "message": "Already logged in on mobile? Reset your password from there."
+  },
+  "forgotPasswordSocialSocialReset": {
+    "message": "Not logged in on mobile? $1 with your Secret Recovery Phrase.",
+    "description": "$1 is the button text 'Reset wallet'"
+  },
+  "forgotPasswordSocialStep1": {
+    "message": "Open MetaMask mobile app and go to $1",
+    "description": "$1 is bold Settings > Security and passwords."
+  },
+  "forgotPasswordSocialStep1Settings": {
+    "message": "Settings > Security and passwords."
+  },
+  "forgotPasswordSocialStep2": {
+    "message": "Select “Change password” and update your password using biometrics (like Face ID)."
+  },
+  "forgotPasswordSocialStep3": {
+    "message": "Login with your new password on any device."
   },
   "form": {
     "message": "form"
@@ -3857,7 +3873,7 @@
     "description": "$1 is the type of login used Google, Apple, etc."
   },
   "onboardingCreateWallet": {
-    "message": "Create new wallet"
+    "message": "Create a new wallet"
   },
   "onboardingImportWallet": {
     "message": "I have an existing wallet"
@@ -3916,14 +3932,15 @@
     "message": "Access your MetaMask wallet with 1 click by clicking on the extension."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Click Chrome extension icon to access it instantly"
+    "message": "Click $1 extension icon to access it instantly",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Installation is complete!"
   },
   "onboardingSignInWith": {
     "message": "Sign in with $1",
-    "description": "$1 is the type of login used Google, Apple, etc."
+    "description": "$1 is the type of login used Google, Apple, etc"
   },
   "onboardingSrpCreate": {
     "message": "Continue with Secret Recovery Phrase"
@@ -4021,9 +4038,6 @@
   },
   "passwordChangedRecentlyDescription": {
     "message": "Your password has been changed recently. You would need to type in your new password to continue being logged in."
-  },
-  "passwordChangedRecentlyError": {
-    "message": "Your password was changed recently."
   },
   "passwordNotLongEnough": {
     "message": "Password must have at least 8 characters"
@@ -4692,26 +4706,6 @@
   "reset": {
     "message": "Reset"
   },
-  "forgotPasswordSocialDescription": {
-    "message": "Already logged in on mobile? Reset your password from there."
-  },
-  "forgotPasswordSocialStep1": {
-    "message": "Open MetaMask mobile app and go to $1",
-    "description": "$1 is bold Settings > Security and passwords."
-  },
-  "forgotPasswordSocialStep1Settings": {
-    "message": "Settings > Security and passwords."
-  },
-  "forgotPasswordSocialStep2": {
-    "message": "Select “Change password” and update your password using biometrics (like Face ID)."
-  },
-  "forgotPasswordSocialStep3": {
-    "message": "Login with your new password on any device."
-  },
-  "forgotPasswordSocialSocialReset": {
-    "message": "Not logged in on mobile? $1 with your Secret Recovery Phrase.",
-    "description": "$1 is the button text 'Reset wallet'"
-  },
   "resetWallet": {
     "message": "Reset wallet"
   },
@@ -4750,6 +4744,9 @@
   },
   "reusedTokenNameWarning": {
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
+  },
+  "revealSecretRecoveryPhrase": {
+    "message": "Reveal Secret Recovery Phrase"
   },
   "revealSeedWords": {
     "message": "Reveal Secret Recovery Phrase"
@@ -4903,6 +4900,16 @@
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
   },
+  "securityLoginWithSocial": {
+    "message": "Login with $1",
+    "description": "The $1 is the text 'Google' or 'Apple'"
+  },
+  "securityLoginWithSrpBackedUp": {
+    "message": "Secret Recovery Phrase backed up"
+  },
+  "securityLoginWithSrpNotBackedUp": {
+    "message": "Back up Secret Recovery Phrase"
+  },
   "securityMessageLinkForNetworks": {
     "message": "network scams and security risks"
   },
@@ -4931,16 +4938,6 @@
   },
   "securitySrpWalletRecovery": {
     "message": "Manage recovery methods"
-  },
-  "securityLoginWithSocial": {
-    "message": "Login with $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Secret Recovery Phrase backed up"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Back up Secret Recovery Phrase"
   },
   "seeAllPermissions": {
     "message": "See all permissions",
@@ -5721,7 +5718,7 @@
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
   "srpRevealListTitle": {
-    "message": "Protect your wallet"
+    "message": "Secret Recovery Phrase"
   },
   "srpSecurityQuizGetStarted": {
     "message": "Get started"
@@ -6727,9 +6724,6 @@
   "unlockPageTooManyFailedAttempts": {
     "message": "Too many failed attempts. Please try again in $1.",
     "description": "$1 time to try again"
-  },
-  "unlockPageTooManyFailedAttemptsPermanent": {
-    "message": "Too many failed attempts. Your account is permanently locked."
   },
   "unpin": {
     "message": "Unpin"

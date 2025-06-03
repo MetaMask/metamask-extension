@@ -27,7 +27,7 @@
     &__title-container {
       display: grid;
       align-items: center;
-      grid-template-columns: 197px 1fr 1fr;
+      grid-template-columns: 197px 1fr 40px;
 
       &--hide-search {
         grid-template-columns: 197px 1fr;
@@ -60,8 +60,7 @@
 
         &--hide-search {
           grid-template-rows: 1fr;
-          grid-template-areas:
-            'back title close';
+          grid-template-areas: 'back title close';
         }
       }
 
