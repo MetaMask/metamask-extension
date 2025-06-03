@@ -54,6 +54,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
   const onSubmit = async (password) => {
     await tryUnlockMetamask(password);
+    // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
     const redirectTo = location.state?.from?.pathname || DEFAULT_ROUTE;
     history.push(redirectTo);
   };
