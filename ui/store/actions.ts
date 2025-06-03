@@ -2182,8 +2182,7 @@ export function lockMetamask(): ThunkAction<
         return Promise.resolve();
       })
       .catch((error) => {
-        log.error('Metamask - seedless password outdated check error', error);
-        return Promise.resolve();
+        return Promise.reject(error);
       })
       .then(() => forceUpdateMetamaskState(dispatch))
       .catch((error) => {
