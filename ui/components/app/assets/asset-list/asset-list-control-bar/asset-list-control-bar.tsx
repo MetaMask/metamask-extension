@@ -101,9 +101,23 @@ const AssetListControlBar = ({
     useState(false);
   const [isImportNftPopoverOpen, setIsImportNftPopoverOpen] = useState(false);
 
-  const networksToDisplay = isGlobalNetworkSelectorEnabled
-    ? tokenNetworkFilter
-    : enabledNetworks;
+  const allNetworkClientIds = useMemo(() => {
+    return Object.keys(tokenNetworkFilter).flatMap((chainId) => {
+      const entry = allNetworks[chainId as `0x${string}`];
+      if (!entry) {
+        return [];
+      }
+      const index = entry.defaultRpcEndpointIndex;
+      const endpoint = entry.rpcEndpoints[index];
+      return endpoint?.networkClientId ? [endpoint.networkClientId] : [];
+    });
+  }, [tokenNetworkFilter, allNetworks]);
+
+  const networksToDisplay = useMemo(() => {
+    return isGlobalNetworkSelectorEnabled
+      ? tokenNetworkFilter
+      : enabledNetworks;
+  }, [tokenNetworkFilter, enabledNetworks]);
 
   const shouldShowRefreshButtons = useMemo(
     () =>
@@ -258,7 +272,10 @@ const AssetListControlBar = ({
     if (isMainnet || isLineaMainnet) {
       dispatch(detectNfts(allChainIds));
     }
-    checkAndUpdateAllNftsOwnershipStatus();
+    // loop through allNetworkClientIds and call checkAndUpdateAllNftsOwnershipStatus for each one
+    allNetworkClientIds.forEach((networkClientId) => {
+      checkAndUpdateAllNftsOwnershipStatus(networkClientId);
+    });
   };
   const isDisabled = useMemo(() => {
     const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(

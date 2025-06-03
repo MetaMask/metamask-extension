@@ -298,6 +298,7 @@
     },
     "cacheTimestamp": "number",
     "allDeFiPositions": "object",
+    "allDeFiPositionsCount": "object",
     "accounts": "object",
     "accountsByChainId": "object",
     "unapprovedDecryptMsgs": "object",

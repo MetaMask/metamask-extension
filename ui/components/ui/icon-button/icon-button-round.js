@@ -23,8 +23,8 @@ export default function IconButton(props) {
 
   return (
     <button
-      className={classNames('icon-button', className, {
-        'icon-button--disabled': disabled,
+      className={classNames('icon-button-round', className, {
+        'icon-button-round--disabled': disabled,
       })}
       data-testid={otherProps['data-testid'] ?? undefined}
       onClick={onClick}
@@ -33,14 +33,17 @@ export default function IconButton(props) {
       {renderWrapper(
         <>
           <div
-            className={classNames('icon-button__circle', iconButtonClassName)}
+            className={classNames(
+              'icon-button-round__circle',
+              iconButtonClassName,
+            )}
           >
             {Icon}
           </div>
           {label.length > 10 ? (
             <Tooltip title={label} position="bottom">
               <Text
-                className="icon-button__label-large"
+                className="icon-button-round__label-large"
                 ellipsis
                 variant={TextVariant.bodySmMedium}
               >
@@ -49,7 +52,7 @@ export default function IconButton(props) {
             </Tooltip>
           ) : (
             <Text
-              className="icon-button__label"
+              className="icon-button-round_label"
               ellipsis
               variant={TextVariant.bodySmMedium}
             >
