@@ -31,15 +31,15 @@ export async function migrate(
 function transformState(
   state: Record<string, unknown>,
 ): Record<string, unknown> {
+  // If property TokensController is not present, only log a warning and return the original state.
   if (!hasProperty(state, 'TokensController')) {
-    global.sentry?.captureException?.(
-      new Error(`Migration ${version}: TokensController not found.`),
-    );
+    console.warn(`newState.TokensController is not present`);
     return state;
   }
 
   const tokensControllerState = state.TokensController;
 
+  // If property tokensControllerState is there but not an object, capture a sentry error and return state
   if (!isObject(tokensControllerState)) {
     global.sentry?.captureException?.(
       new Error(
@@ -48,26 +48,43 @@ function transformState(
     );
     return state;
   }
+
+  // If property TokenListController is not present, only log a warning and return the original state.
+  if (!hasProperty(state, 'TokenListController')) {
+    console.warn(`newState.TokenListController is not present`);
+    return state;
+  }
+
   const tokenListControllerState = state.TokenListController;
 
+  // If property tokenListControllerState is there but not an object, capture a sentry error and return state
   if (!isObject(tokenListControllerState)) {
-    console.warn(`newState.TokenListController is not present`);
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: TokenListController is type '${typeof tokenListControllerState}', expected object.`,
+      ),
+    );
+    return state;
+  }
 
-    // Clean up the TokensController state only if TokenListController state is not present.
-    if (hasProperty(tokensControllerState, 'tokens')) {
-      // Remove the tokens property from the TokensController state.
-      delete tokensControllerState.tokens;
-    }
+  if (hasProperty(tokensControllerState, 'tokens')) {
+    // Remove the tokens property from the TokensController state.
+    delete tokensControllerState.tokens;
+  }
 
-    if (hasProperty(tokensControllerState, 'detectedTokens')) {
-      // Remove the detectedTokens property from the TokensController state.
-      delete tokensControllerState.detectedTokens;
-    }
+  if (hasProperty(tokensControllerState, 'detectedTokens')) {
+    // Remove the detectedTokens property from the TokensController state.
+    delete tokensControllerState.detectedTokens;
+  }
 
-    if (hasProperty(tokensControllerState, 'ignoredTokens')) {
-      // Remove the ignoredTokens property from the TokensController state.
-      delete tokensControllerState.ignoredTokens;
-    }
+  if (hasProperty(tokensControllerState, 'ignoredTokens')) {
+    // Remove the ignoredTokens property from the TokensController state.
+    delete tokensControllerState.ignoredTokens;
+  }
+
+  if (hasProperty(tokenListControllerState, 'tokenList')) {
+    // Remove the tokenList property from the TokenListController state.
+    delete tokenListControllerState.tokenList;
   }
 
   return state;
