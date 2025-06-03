@@ -25,7 +25,7 @@ import {
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
 
-export default function PasswordChangedModal() {
+export default function PasswordOutdatedModal() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -36,8 +36,8 @@ export default function PasswordChangedModal() {
       onClose={() => {
         // NOTE: this modal is not closable, user can only press continue
       }}
-      className="password-changed-modal"
-      data-testid="password-changed-modal"
+      className=".password-outdated-modall"
+      data-testid=".password-outdated-modal"
     >
       <ModalOverlay />
       <ModalContent>

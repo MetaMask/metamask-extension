@@ -60,8 +60,7 @@
 
         &--hide-search {
           grid-template-rows: 1fr;
-          grid-template-areas:
-            'back title close';
+          grid-template-areas: 'back title close';
         }
       }
 

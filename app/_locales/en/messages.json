@@ -4039,9 +4039,6 @@
   "passwordChangedRecentlyDescription": {
     "message": "Your password has been changed recently. You would need to type in your new password to continue being logged in."
   },
-  "passwordChangedRecentlyError": {
-    "message": "Your password was changed recently."
-  },
   "passwordNotLongEnough": {
     "message": "Password must have at least 8 characters"
   },
