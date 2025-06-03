@@ -16,6 +16,7 @@ import { TextVariant, TextColor } from '../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { isSocialLoginFlow } from '../../selectors';
 
 class RestoreVaultPage extends Component {
   static contextTypes = {
@@ -30,6 +31,7 @@ class RestoreVaultPage extends Component {
     resetOAuthLoginState: PropTypes.func,
     history: PropTypes.object,
     isLoading: PropTypes.bool,
+    isSocialLoginFlow: PropTypes.bool,
   };
 
   handleImport = async (password, seedPhrase) => {
@@ -42,12 +44,17 @@ class RestoreVaultPage extends Component {
       resetOAuthLoginState,
       leaveImportSeedScreenState,
       history,
+      // eslint-disable-next-line no-shadow
+      isSocialLoginFlow,
     } = this.props;
 
     leaveImportSeedScreenState();
 
-    // reset oauth and onboarding state
-    await resetOAuthLoginState();
+    if (isSocialLoginFlow) {
+      // reset oauth and onboarding state
+      await resetOAuthLoginState();
+    }
+
     // update the first time flow type to restore
     await setFirstTimeFlowType(FirstTimeFlowType.restore);
     // import the seed phrase and create a new vault
@@ -140,7 +147,12 @@ class RestoreVaultPage extends Component {
 }
 
 export default connect(
-  ({ appState: { isLoading } }) => ({ isLoading }),
+  (state) => {
+    return {
+      isLoading: state.appState.isLoading,
+      isSocialLoginFlow: isSocialLoginFlow(state),
+    };
+  },
   (dispatch) => ({
     leaveImportSeedScreenState: () => {
       dispatch(unMarkPasswordForgotten());
