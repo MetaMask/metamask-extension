@@ -83,7 +83,6 @@ export const NetworksForm = ({
   onBlockExplorerAdd,
   toggleNetworkMenuAfterSubmit = true,
   onComplete = () => {},
-  networkType,
 }: {
   networkFormState: ReturnType<typeof useNetworkFormState>;
   existingNetwork?: UpdateNetworkFields;
@@ -91,7 +90,6 @@ export const NetworksForm = ({
   onBlockExplorerAdd: () => void;
   toggleNetworkMenuAfterSubmit?: boolean;
   onComplete?: () => void;
-  networkType?: 'custom' | 'test';
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -327,7 +325,6 @@ export const NetworksForm = ({
             nickname: name,
             editCompleted: true,
             newNetwork: !existingNetwork,
-            networkType,
           }),
         );
       }

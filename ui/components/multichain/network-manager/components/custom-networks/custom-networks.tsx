@@ -1,16 +1,10 @@
-import {
-  ApprovalType
-} from '@metamask/controller-utils';
 import { EthScope } from '@metamask/keyring-api';
 import {
   NON_EVM_TESTNET_IDS,
   type MultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
 import { type UpdateNetworkFields } from '@metamask/network-controller';
-import {
-  type CaipChainId,
-  type Hex
-} from '@metamask/utils';
+import { type CaipChainId, type Hex } from '@metamask/utils';
 import React, {
   useCallback,
   useContext,
@@ -20,24 +14,21 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  MetaMetricsNetworkEventSource,
+  MetaMetricsEventName
 } from '../../../../../../shared/constants/metametrics';
 import {
   CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP,
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_RPCS,
-  TEST_CHAINS,
+  TEST_CHAINS
 } from '../../../../../../shared/constants/network';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import {
   convertCaipToHexChainId,
   getNetworkIcon,
   getRpcDataByChainId,
-  sortNetworks
+  sortNetworks,
 } from '../../../../../../shared/modules/network.utils';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
@@ -46,13 +37,10 @@ import {
 } from '../../../../../ducks/metamask/metamask';
 import {
   AlignItems,
-  BorderRadius,
   Display,
   FlexDirection,
-  IconColor,
   JustifyContent,
-  TextColor,
-  TextVariant,
+  TextColor
 } from '../../../../../helpers/constants/design-system';
 import { openWindow } from '../../../../../helpers/utils/window';
 import { useAccountCreationOnNetworkChange } from '../../../../../hooks/accounts/useAccountCreationOnNetworkChange';
@@ -73,13 +61,11 @@ import {
   getPermittedEVMChainsForSelectedTab,
   getPreferences,
   getSelectedMultichainNetworkChainId,
-  getShowTestNetworks
+  getShowTestNetworks,
 } from '../../../../../selectors';
 import {
   addPermittedChain,
   detectNfts,
-  hideModal,
-  requestUserApproval,
   setActiveNetwork,
   setEditedNetwork,
   setNetworkClientIdForDomain,
@@ -88,20 +74,17 @@ import {
   showModal,
   showPermittedNetworkToast,
   toggleNetworkMenu,
-  updateCustomNonce,
+  updateCustomNonce
 } from '../../../../../store/actions';
 import {
-  AvatarNetwork,
   AvatarNetworkSize,
   Box,
-  ButtonIcon,
-  ButtonIconSize,
-  Checkbox,
+  ButtonLink,
+  ButtonLinkSize,
   IconName,
-  Text,
+  IconSize
 } from '../../../../component-library';
 import { NetworkListItem } from '../../../network-list-item';
-import { AdditionalNetworksInfo } from '../additional-networks-info';
 
 export enum ACTION_MODE {
   // Displays the search box and network list
@@ -118,7 +101,7 @@ export enum ACTION_MODE {
   ADD_NON_EVM_ACCOUNT,
 }
 
-export const DefaultNetworks = () => {
+export const CustomNetworks = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -225,6 +208,10 @@ export const DefaultNetworks = () => {
 
   const [orderedNetworks, setOrderedNetworks] = useState(
     sortNetworks(nonTestNetworks, orderedNetworksList),
+  );
+
+  const [orderedTestNetworks, setOrderedTestNetworks] = useState(
+    sortNetworks(testNetworks, orderedNetworksList),
   );
 
   useEffect(
@@ -401,8 +388,6 @@ export const DefaultNetworks = () => {
                 showModal({
                   name: 'CONFIRM_DELETE_NETWORK',
                   target: hexChainId,
-                  onConfirm: () => undefined,
-                  onHide: () => undefined,
                 }),
               );
             }
@@ -449,6 +434,7 @@ export const DefaultNetworks = () => {
   const generateMultichainNetworkListItem = (
     network: MultichainNetworkConfiguration,
   ) => {
+    const isCurrentNetwork = network.chainId === currentChainId;
     const networkChainId = network.chainId; // eip155:59144
     // Convert CAIP format to hex format for comparison
     const hexChainId = network.isEvm
@@ -464,9 +450,7 @@ export const DefaultNetworks = () => {
     const isCustomNetwork = findInAllEnabledNetworks.find(
       (network: any) => network.chainId === hexChainId,
     );
-    console.log(`findInAllEnabledNetworks`, customNetworks);
-
-    if (isCustomNetwork) {
+    if (!isCustomNetwork) {
       return null;
     }
 
@@ -476,9 +460,6 @@ export const DefaultNetworks = () => {
 
     return (
       <NetworkListItem
-        startAccessory={
-          <Checkbox label="" onChange={() => {}} isChecked={true} />
-        }
         key={network.chainId}
         chainId={network.chainId}
         name={network.name}
@@ -487,7 +468,7 @@ export const DefaultNetworks = () => {
         rpcEndpoint={
           hasMultiRpcOptions(network)
             ? getRpcDataByChainId(network.chainId, evmNetworks)
-                .defaultRpcEndpoint
+              .defaultRpcEndpoint
             : undefined
         }
         onClick={async () => {
@@ -498,7 +479,7 @@ export const DefaultNetworks = () => {
         onDeleteClick={onDelete}
         onEditClick={onEdit}
         onDiscoverClick={onDiscoverClick}
-        // selected={isCurrentNetwork}
+        selected={isCurrentNetwork}
         onRpcEndpointClick={onRpcConfigEdit}
         disabled={!isNetworkEnabled(network)}
         notSelectable={!canSelectNetwork}
@@ -506,96 +487,30 @@ export const DefaultNetworks = () => {
     );
   };
 
-  const handleAdditionalNetworkClick = async (network: any) => {
-    dispatch(hideModal());
-    await dispatch(
-      requestUserApproval({
-        origin: ORIGIN_METAMASK,
-        type: ApprovalType.AddEthereumChain,
-        requestData: {
-          chainId: network.chainId,
-          rpcUrl: network.rpcEndpoints[network.defaultRpcEndpointIndex].url,
-          failoverRpcUrls:
-            network.rpcEndpoints[network.defaultRpcEndpointIndex].failoverUrls,
-          ticker: network.nativeCurrency,
-          rpcPrefs: {
-            blockExplorerUrl:
-              network.defaultBlockExplorerUrlIndex === undefined
-                ? undefined
-                : network.blockExplorerUrls[
-                    network.defaultBlockExplorerUrlIndex
-                  ],
-          },
-          imageUrl:
-            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-              network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-            ],
-          chainName: network.name,
-          referrer: ORIGIN_METAMASK,
-          source: MetaMetricsNetworkEventSource.NewAddNetworkFlow,
-        },
-      }),
-    );
-  };
-
-  const generateAdditionalNetworkListItem = (network: any) => {
-    const networkImageUrl =
-      CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-        network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-      ];
-
-    return (
-      <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.spaceBetween}
-        onClick={() => {
-          handleAdditionalNetworkClick(network);
-        }}
-        paddingTop={4}
-        paddingBottom={4}
-        data-testid="additional-network-item"
-      >
-        <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
-          <Box className="additional-network-item__button-icon">
-            <ButtonIcon
-              size={ButtonIconSize.Lg}
-              color={IconColor.iconAlternative}
-              iconName={IconName.Add}
-              padding={0}
-              margin={0}
-              ariaLabel={t('addNetwork')}
-            />
-          </Box>
-          <AvatarNetwork
-            name={network.name}
-            size={AvatarNetworkSize.Md}
-            src={networkImageUrl}
-            borderRadius={BorderRadius.LG}
-          />
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textDefault}
-          >
-            {network.name}
-          </Text>
-        </Box>
-      </Box>
-    );
-  };
-
   return (
     <>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-        {orderedNetworks.map((network) =>
+        {[...orderedNetworks, ...orderedTestNetworks].map((network) =>
           generateMultichainNetworkListItem(network),
         )}
-        <AdditionalNetworksInfo />
-        {featuredNetworksNotYetEnabled.map((network) =>
-          generateAdditionalNetworkListItem(network),
-        ) || null}
       </Box>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column}></Box>
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+        <ButtonLink
+          size={ButtonLinkSize.Md}
+          startIconProps={{
+            size: IconSize.Lg,
+          }}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.flexStart}
+          color={TextColor.textDefault}
+          startIconName={IconName.Add}
+          onClick={() => {
+            history.push('/add');
+          }}
+        >
+          Add Custom  Network
+        </ButtonLink>
+      </Box>
     </>
   );
 };

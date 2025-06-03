@@ -3,8 +3,14 @@ import {
   UpdateNetworkFields,
 } from '@metamask/network-controller';
 import React, { useCallback, useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { MemoryRouter, Route, Switch, useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  MemoryRouter,
+  Route,
+  Switch,
+  useHistory,
+  useLocation,
+} from 'react-router-dom';
 import * as URI from 'uri-js';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
@@ -12,21 +18,19 @@ import {
   getEditedNetwork,
   getMultichainNetworkConfigurationsByChainId,
 } from '../../../selectors';
+import { hideModal } from '../../../store/actions';
 import {
-  ButtonLink,
-  ButtonLinkSize,
   Modal,
   ModalContent,
   ModalContentSize,
-  ModalHeader,
+  ModalHeader
 } from '../../component-library';
-import { Box } from '../../component-library/box';
 import { Tab, Tabs } from '../../ui/tabs';
 import AddBlockExplorerModal from '../network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
 import AddRpcUrlModal from '../network-list-menu/add-rpc-url-modal/add-rpc-url-modal';
 import { AddNetwork } from './components/add-network';
+import { CustomNetworks } from './components/custom-networks';
 import { DefaultNetworks } from './components/default-networks';
-import { EditNetwork } from './components/edit-network';
 import { TestNetworks } from './components/test-networks';
 
 export type NetworkItemProps = {
@@ -38,54 +42,15 @@ export type NetworkItemProps = {
   onMoreOptionsClick?: () => void;
 };
 
-// Custom networks list component with routing
-const CustomNetworksTab = () => {
-  const history = useHistory();
-
-  const handleAddNetwork = () => {
-    history.push('/add');
-  };
-
-  const handleEditNetwork = (id: string) => {
-    history.push(`/edit/${id}`);
-  };
-
-  return (
-    <Box>
-      <div>Custom Networks</div>
-      <Box marginTop={2}>
-        <ButtonLink size={ButtonLinkSize.Sm} onClick={handleAddNetwork}>
-          Add New Network
-        </ButtonLink>
-      </Box>
-      {/* Demo edit button */}
-      <Box marginTop={2}>
-        <ButtonLink
-          size={ButtonLinkSize.Sm}
-          onClick={() => handleEditNetwork('demo-network-123')}
-        >
-          Edit Demo Network
-        </ButtonLink>
-      </Box>
-      <Box marginTop={2}>
-        <ButtonLink
-          size={ButtonLinkSize.Sm}
-          onClick={() => {
-            history.push('/add-rpc');
-          }}
-        >
-          Add RPC URL
-        </ButtonLink>
-      </Box>
-    </Box>
-  );
-};
-
 // Main network list component
 const NetworkList = () => {
+  const dispatch = useDispatch();
+  const handleClose = useCallback(() => {
+    dispatch(hideModal());
+  }, [dispatch]);
   return (
     <>
-      <ModalHeader>Networks</ModalHeader>
+      <ModalHeader onBack={handleClose} onClose={handleClose}>Networks</ModalHeader>
       <Tabs
         defaultActiveTabKey="networks"
         onTabClick={() => {
@@ -100,7 +65,7 @@ const NetworkList = () => {
           <DefaultNetworks />
         </Tab>
         <Tab tabKey="networks1" name="Custom">
-          <CustomNetworksTab />
+          <CustomNetworks />
         </Tab>
         <Tab tabKey="networks2" name="Test">
           <TestNetworks />
@@ -114,29 +79,32 @@ const NetworkList = () => {
 const NetworkManagerRouter = () => {
   const t = useI18nContext();
   const history = useHistory();
+  const location = useLocation();
 
   const handleNewNetwork = () => {
     history.push('/add');
   };
 
-  // Get network data and editing state using selectors like in network-list-menu.tsx
   const [multichainNetworks, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
   const { chainId: editingChainId, editCompleted } =
     useSelector(getEditedNetwork) ?? {};
 
-  const editedNetwork = useMemo(
-    (): UpdateNetworkFields | undefined =>
-      !editingChainId || editCompleted
-        ? undefined
-        : Object.entries(evmNetworks).find(
-            ([chainId]) => chainId === editingChainId,
-          )?.[1],
-    [editingChainId, editCompleted, evmNetworks],
-  );
+  const editedNetwork = useMemo((): UpdateNetworkFields | undefined => {
+    if (location.pathname === '/add') {
+      return undefined;
+    }
+    return !editingChainId || editCompleted
+      ? undefined
+      : Object.entries(evmNetworks).find(
+          ([chainId]) => chainId === editingChainId,
+        )?.[1];
+  }, [editingChainId, editCompleted, evmNetworks, location.pathname]);
 
   const networkFormState = useNetworkFormState(editedNetwork);
+
+  console.log(`editedNetwork`, editedNetwork);
 
   const handleAddRPC = useCallback(
     (url: string, name?: string) => {
@@ -159,24 +127,28 @@ const NetworkManagerRouter = () => {
   );
 
   const handleAddExplorerUrl = useCallback(
-    (url: string) => {
-      if (
-        networkFormState.blockExplorers.blockExplorerUrls?.every(
-          (u) => u !== url,
-        )
-      ) {
-        networkFormState.setBlockExplorers({
-          blockExplorerUrls: [
-            ...networkFormState.blockExplorers.blockExplorerUrls,
-            url,
-          ],
-          defaultBlockExplorerUrlIndex:
-            networkFormState.blockExplorers.blockExplorerUrls.length,
-        });
-        history.push('/add');
-      }
+    (onComplete?: () => void) => {
+      return (url: string) => {
+        console.log(`networkFormState`, networkFormState);
+        if (
+          networkFormState.blockExplorers.blockExplorerUrls?.every(
+            (u) => u !== url,
+          )
+        ) {
+          networkFormState.setBlockExplorers({
+            blockExplorerUrls: [
+              ...networkFormState.blockExplorers.blockExplorerUrls,
+              url,
+            ],
+            defaultBlockExplorerUrlIndex:
+              networkFormState.blockExplorers.blockExplorerUrls.length,
+          });
+          history.push('/add');
+          onComplete?.();
+        }
+      };
     },
-    [networkFormState],
+    [networkFormState, history],
   );
 
   const handleClose = () => {
@@ -186,6 +158,14 @@ const NetworkManagerRouter = () => {
   const handleGoHome = () => {
     history.push('/');
   };
+
+  const handleEditOnComplete = useCallback(() => {
+    history.push('/edit');
+  }, [history]);
+
+  const handleAddOnComplete = useCallback(() => {
+    history.push('/add');
+  }, [history]);
 
   return (
     <Switch>
@@ -199,20 +179,25 @@ const NetworkManagerRouter = () => {
         <ModalHeader onClose={handleClose} onBack={handleNewNetwork}>
           {t('addBlockExplorerUrl')}
         </ModalHeader>
-        <AddBlockExplorerModal onAdded={handleAddExplorerUrl} />
+        <AddBlockExplorerModal onAdded={handleAddExplorerUrl(handleAddOnComplete)} />
+      </Route>
+      <Route path="/edit-explorer-url">
+        <ModalHeader onClose={handleClose} onBack={handleNewNetwork}>
+          {t('addBlockExplorerUrl')}
+        </ModalHeader>
+        <AddBlockExplorerModal onAdded={handleAddExplorerUrl(handleEditOnComplete)} />
       </Route>
       <Route path="/add">
         <ModalHeader onClose={handleClose} onBack={handleGoHome}>
-          {t('addNetwork')} {history.location.pathname.includes('add')
+          {t('addNetwork')}{' '}
+          {history.location.pathname.includes('add')
             ? 'Custom Network'
             : 'Test Network'}
         </ModalHeader>
         <AddNetwork
           networkFormState={networkFormState}
           network={editedNetwork as UpdateNetworkFields}
-          networkType={
-            history.location.pathname.includes('add') ? 'custom' : 'test'
-          }
+          networkType={location.pathname.includes('add') ? 'custom' : 'test'}
         />
       </Route>
       <Route path="/edit">
@@ -222,6 +207,7 @@ const NetworkManagerRouter = () => {
         <AddNetwork
           networkFormState={networkFormState}
           network={editedNetwork as UpdateNetworkFields}
+          isEdit={true}
         />
       </Route>
       <Route path="/">

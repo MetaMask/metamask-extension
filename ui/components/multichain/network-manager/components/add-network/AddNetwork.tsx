@@ -7,13 +7,13 @@ import { useNetworkFormState } from '../../../../../pages/settings/networks-tab/
 type AddNetworkProps = {
   networkFormState: ReturnType<typeof useNetworkFormState>;
   network: UpdateNetworkFields;
-  networkType?: 'custom' | 'test';
+  isEdit?: boolean;
 };
 
 export const AddNetwork: React.FC<AddNetworkProps> = ({
   networkFormState,
   network,
-  networkType,
+  isEdit = false,
 }) => {
   const history = useHistory();
   return (
@@ -24,12 +24,11 @@ export const AddNetwork: React.FC<AddNetworkProps> = ({
       }}
       networkFormState={networkFormState}
       existingNetwork={network}
-      networkType={networkType}
       onRpcAdd={() => {
-        history.push('/add-rpc');
+        history.push(isEdit ? '/edit-rpc' : '/add-rpc');
       }}
       onBlockExplorerAdd={() => {
-        history.push('/add-explorer-url');
+        history.push(isEdit ? '/edit-explorer-url' : '/add-explorer-url');
       }}
     />
   );
