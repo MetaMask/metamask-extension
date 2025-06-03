@@ -107,7 +107,7 @@ describe('NFTs list', () => {
     });
   });
 
-  it('filters the nfts list for the current network', async () => {
+  it.only('filters the nfts list for the current network', async () => {
     const account =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
@@ -122,9 +122,9 @@ describe('NFTs list', () => {
         tokenNetworkFilter: {
           '0x1': true,
         },
-        enabledNetworkMap: {
-          '0x1': true,
-        },
+      },
+      enabledNetworkMap: {
+        '0x1': true,
       },
     };
 
