@@ -6,6 +6,9 @@ on:
   pull_request_target:
     types: [opened, edited]
 
+env:
+  COREPACK_ENABLE_UNSAFE_CUSTOM_URLS: 1
+
 jobs:
   check-template-and-add-labels:
     runs-on: ubuntu-latest

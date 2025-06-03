@@ -6,6 +6,9 @@ on:
       TS_MIGRATION_DASHBOARD_TOKEN:
         required: true
 
+env:
+  COREPACK_ENABLE_UNSAFE_CUSTOM_URLS: 1
+
 jobs:
   build-ts-migration-dashboard:
     runs-on: ubuntu-latest

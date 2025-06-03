@@ -2,6 +2,9 @@ name: Create release bug report issue when release branch gets created
 
 on: create
 
+env:
+  COREPACK_ENABLE_UNSAFE_CUSTOM_URLS: 1
+
 jobs:
   create-bug-report:
     runs-on: ubuntu-latest

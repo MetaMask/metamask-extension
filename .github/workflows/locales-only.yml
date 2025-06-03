@@ -7,6 +7,9 @@ on:
       - reopened
       - synchronize
 
+env:
+  COREPACK_ENABLE_UNSAFE_CUSTOM_URLS: 1
+
 jobs:
   locales-only:
     # For the `pull_request` event, the branch is `github.head_ref``.

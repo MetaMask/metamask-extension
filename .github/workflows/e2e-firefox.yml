@@ -11,6 +11,9 @@ on:
       DOCKER_HUB_TOKEN:
         required: true
 
+env:
+  COREPACK_ENABLE_UNSAFE_CUSTOM_URLS: 1
+
 jobs:
   test-e2e-firefox-browserify:
     uses: ./.github/workflows/run-e2e.yml

@@ -10,6 +10,9 @@ on:
         description: Stored coverage
         value: ${{ jobs.report-coverage.outputs.stored-coverage }}
 
+env:
+  COREPACK_ENABLE_UNSAFE_CUSTOM_URLS: 1
+
 jobs:
   test-unit:
     name: Unit tests

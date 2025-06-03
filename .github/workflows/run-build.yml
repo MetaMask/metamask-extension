@@ -24,6 +24,9 @@ on:
         default: true
         description: Whether to enable MV3 or not
 
+env:
+  COREPACK_ENABLE_UNSAFE_CUSTOM_URLS: 1
+
 jobs:
   run-build:
     name: ${{ inputs.build-name }}

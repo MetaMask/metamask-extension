@@ -2,6 +2,7 @@ on:
   workflow_call:
 
 env:
+  COREPACK_ENABLE_UNSAFE_CUSTOM_URLS: 1
   COMMANDS: |
     {
       pageload: 'yarn tsx test/e2e/benchmark.mjs --out test-artifacts/benchmarks/benchmark-{0}-{1}-pageload.json --retries 2',

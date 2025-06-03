@@ -6,6 +6,9 @@ on:
       STORYBOOK_TOKEN:
         required: true
 
+env:
+  COREPACK_ENABLE_UNSAFE_CUSTOM_URLS: 1
+
 jobs:
   build-storybook:
     name: Build storybook

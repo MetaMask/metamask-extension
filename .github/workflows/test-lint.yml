@@ -3,6 +3,9 @@ name: Test lint
 on:
   workflow_call:
 
+env:
+  COREPACK_ENABLE_UNSAFE_CUSTOM_URLS: 1
+
 jobs:
   test-lint:
     name: Test lint

@@ -6,6 +6,9 @@ on:
       PR_COMMENT_TOKEN:
         required: true
 
+env:
+  COREPACK_ENABLE_UNSAFE_CUSTOM_URLS: 1
+
 jobs:
   publish-prerelease:
     name: Publish prerelease

@@ -4,6 +4,9 @@ on:
   push:
     branches: Version-v*
 
+env:
+  COREPACK_ENABLE_UNSAFE_CUSTOM_URLS: 1
+
 jobs:
   check-attributions:
     runs-on: ubuntu-latest

@@ -4,6 +4,9 @@ on:
   issue_comment:
     types: created
 
+env:
+  COREPACK_ENABLE_UNSAFE_CUSTOM_URLS: 1
+
 jobs:
   is-fork-pull-request:
     name: Determine whether this issue comment was on a pull request from a fork

@@ -3,6 +3,9 @@ name: Validate lavamoat policy webapp
 on:
   workflow_call:
 
+env:
+  COREPACK_ENABLE_UNSAFE_CUSTOM_URLS: 1
+
 jobs:
   validate-lavamoat-policy-webapp:
     name: Validate lavamoat policy webapp

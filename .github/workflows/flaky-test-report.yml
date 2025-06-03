@@ -9,6 +9,9 @@ permissions:
   contents: read
   actions: read
 
+env:
+  COREPACK_ENABLE_UNSAFE_CUSTOM_URLS: 1
+
 jobs:
   flaky-test-report:
     runs-on: ubuntu-latest
