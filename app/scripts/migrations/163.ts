@@ -49,7 +49,6 @@ function transformState(
     return state;
   }
 
-
   if (hasProperty(tokensControllerState, 'tokens')) {
     // Remove the tokens property from the TokensController state.
     delete tokensControllerState.tokens;
