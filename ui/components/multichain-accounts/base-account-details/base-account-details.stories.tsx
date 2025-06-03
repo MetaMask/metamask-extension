@@ -3,10 +3,8 @@ import { Provider } from 'react-redux';
 import { EthAccountType, SolAccountType } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import configureStore from '../../../store/store';
-import testData from '../../../../.storybook/test-data';
 import { Box } from '../../component-library';
 import { BaseAccountDetails } from './base-account-details';
-import { mockNetworkState } from '../../../../test/stub/networks';
 
 // Mock Ethereum Account
 const MOCK_ETH_ACCOUNT = {
@@ -58,15 +56,12 @@ const MOCK_SOLANA_ACCOUNT = {
   type: SolAccountType.DataAccount,
 };
 
-// Create base store mock
+// Minimal mock store data
 const createBaseMockStore = (account, address) => ({
-  ...testData,
   appState: {
-    ...testData.appState,
     accountDetailsAddress: address,
   },
   metamask: {
-    ...testData.metamask,
     internalAccounts: {
       accounts: {
         [account.id]: account,
@@ -79,37 +74,31 @@ const createBaseMockStore = (account, address) => ({
         balance: '0x1bc16d674ec80000', // 2 ETH in hex
       },
     },
-    accountsByChainId: {
-      '0x1': {
-        [account.address]: {
-          address: account.address,
-          balance: '0x1bc16d674ec80000',
-        },
-      },
-    },
-    ...mockNetworkState({
-      id: 'mainnet',
-      rpcUrl: 'https://mainnet.infura.io/v3/abc123',
-      chainId: '0x1',
-      nickname: 'Ethereum Mainnet',
-    }),
-    useBlockie: false,
     keyrings: [
       {
         type: KeyringTypes.hd,
         accounts: account.type === EthAccountType.Eoa ? [account.address] : [],
-        metadata: {
-          id: 'mock-hd-keyring-id',
-        },
       },
       {
         type: KeyringTypes.snap,
         accounts: account.type === SolAccountType.DataAccount ? [account.address] : [],
-        metadata: {
-          id: 'mock-snap-keyring-id',
-        },
       },
     ],
+    useBlockie: false,
+    preferences: {},
+    currentCurrency: 'USD',
+    providerConfig: {
+      chainId: '0x1',
+      type: 'mainnet',
+    },
+    networkConfigurations: {
+      mainnet: {
+        chainId: '0x1',
+        nickname: 'Ethereum Mainnet',
+        rpcUrl: 'https://mainnet.infura.io/v3/abc123',
+      },
+    },
+    selectedNetworkClientId: 'mainnet',
   },
 });
 
