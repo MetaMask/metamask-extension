@@ -1,0 +1,179 @@
+name: Publish browser extension
+
+on:
+  workflow_dispatch:
+    inputs:
+      chrome_rollout:
+        description: 'Chrome rollout percentage (1-100)'
+        default: '1'
+        required: true
+        type: string
+      skip_chrome:
+        description: 'Skip Chrome Web Store deployment'
+        default: false
+        required: false
+        type: boolean
+      skip_firefox:
+        description: 'Skip Firefox Add-ons deployment'
+        default: false
+        required: false
+        type: boolean
+      build_type:
+        description: 'Build type to deploy (dist or flask)'
+        default: 'dist'
+        required: false
+        type: choice
+        options:
+          - dist
+          - flask
+  push:
+    branches:
+      - 'infra-2607-runway-pipelines'
+    tags:
+      - 'v*'  # Triggers on version tags like v12.18.1
+  pull_request:
+    branches:
+      - 'infra-2607-runway-pipelines'
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build-dist-browserify:
+    if: ${{ inputs.build_type == 'dist' || inputs.build_type == '' || github.event_name != 'workflow_dispatch' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-dist-browserify
+      build-command: yarn build dist  # Using 'dist' instead of 'prod' for testing
+    secrets: inherit
+
+  build-dist-mv2-browserify:
+    if: ${{ inputs.build_type == 'dist' || inputs.build_type == '' || github.event_name != 'workflow_dispatch' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-dist-mv2-browserify
+      build-command: yarn build dist  # Using 'dist' instead of 'prod' for testing
+      mozilla-lint: true
+      enable-mv3: false
+    secrets: inherit
+
+  build-flask-browserify:
+    if: ${{ inputs.build_type == 'flask' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-flask-browserify
+      build-command: yarn build --build-type flask dist  # Using 'dist' instead of 'prod' for testing
+    secrets: inherit
+
+  build-flask-mv2-browserify:
+    if: ${{ inputs.build_type == 'flask' }}
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-flask-mv2-browserify
+      build-command: yarn build --build-type flask dist  # Using 'dist' instead of 'prod' for testing
+      mozilla-lint: true
+      enable-mv3: false
+    secrets: inherit
+
+  publish:
+    runs-on: ubuntu-latest
+    needs:
+      - build-dist-browserify
+      - build-dist-mv2-browserify
+      - build-flask-browserify
+      - build-flask-mv2-browserify
+    if: |
+      always() &&
+      (needs.build-dist-browserify.result == 'success' ||
+       needs.build-flask-browserify.result == 'success')
+
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          #is-high-risk-environment: true
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      # Download production build artifacts
+      - name: Download Chrome MV3 build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ inputs.build_type || 'dist' }}-browserify
+          path: chrome-mv3-build/
+
+      - name: Download Firefox MV2 build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ inputs.build_type || 'dist' }}-mv2-browserify
+          path: firefox-mv2-build/
+
+      # List build contents for verification
+      - name: Verify build artifacts
+        run: |
+          echo "📦 Chrome MV3 build contents:"
+          ls -la chrome-mv3-build/
+          if [ -d "chrome-mv3-build/builds" ]; then
+            echo "  Builds directory:"
+            ls -la chrome-mv3-build/builds/
+          fi
+
+          echo ""
+          echo "📦 Firefox MV2 build contents:"
+          ls -la firefox-mv2-build/
+          if [ -d "firefox-mv2-build/builds" ]; then
+            echo "  Builds directory:"
+            ls -la firefox-mv2-build/builds/
+          fi
+
+      # TEST MODE: Create mock build artifacts
+      # Remove this section when using real builds
+      # - name: Create mock build artifacts for testing
+      #   run: |
+      #     echo "🧪 TEST MODE: Creating mock build artifacts..."
+      #     mkdir -p chrome-mv3-build/builds
+      #     mkdir -p firefox-mv2-build/builds
+      #
+      #     # Create mock zip files with some content
+      #     echo "Mock Chrome extension content" > chrome-mv3-build/builds/chrome-content.txt
+      #     cd chrome-mv3-build/builds && zip chrome.zip chrome-content.txt && rm chrome-content.txt && cd ../..
+      #
+      #     echo "Mock Firefox extension content" > firefox-mv2-build/builds/firefox-content.txt
+      #     cd firefox-mv2-build/builds && zip firefox.xpi firefox-content.txt && rm firefox-content.txt && cd ../..
+      #
+      #     echo "✅ Mock artifacts created:"
+      #     ls -la chrome-mv3-build/builds/
+      #     ls -la firefox-mv2-build/builds/
+
+      # Deploy to Chrome Web Store (dummy test)
+      - name: Deploy to Chrome Web Store
+        if: ${{ !inputs.skip_chrome }}
+        run: yarn tsx .github/scripts/submit-chrome.ts
+        env:
+          CHROME_ZIP_PATH: chrome-mv3-build/builds/metamask-chrome-*.zip
+          ROLLOUT_PERCENTAGE: ${{ inputs.chrome_rollout || '1' }}
+          # Production credentials (add when ready):
+          # CWS_CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
+          # CWS_CLIENT_SECRET: ${{ secrets.CWS_CLIENT_SECRET }}
+          # CWS_REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
+          # EXTENSION_ID: ${{ secrets.CWS_EXTENSION_ID }}
+
+      # Deploy to Firefox Add-ons (dummy test)
+      - name: Deploy to Firefox Add-ons
+        if: ${{ !inputs.skip_firefox }}
+        run: yarn tsx .github/scripts/submit-firefox.ts
+        env:
+          FIREFOX_XPI_PATH: firefox-mv2-build/builds/metamask-firefox-*.zip
+          # Production credentials (add when ready):
+          # AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
+          # AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
+          # ADDON_ID: ${{ secrets.AMO_ADDON_ID }}
+
+      # Upload deployment artifacts for debugging
+      # - name: Upload deployment logs
+      #   if: always()
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: deployment-logs-${{ github.run_id }}
+      #     path: |
+      #       chrome-mv3-build/
+      #       firefox-mv2-build/
+      #     retention-days: 7
