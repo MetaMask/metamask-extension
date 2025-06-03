@@ -25,6 +25,8 @@ env:
   # For a `pull_request` event, the fork is `github.event.pull_request.head.repo.fork`.
   # For a `push` event, the fork is `github.event.repository.fork`.
   IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
+  # Enable corepack support for custom yarn URLs
+  COREPACK_ENABLE_UNSAFE_CUSTOM_URLS: 1
 
 permissions:
   contents: write # required for releases
