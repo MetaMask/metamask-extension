@@ -1,5 +1,7 @@
 import { IconName } from '@metamask/snaps-sdk/jsx';
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+///: END:ONLY_INCLUDE_IF
 import { InvisibleCharacter } from '../../components/component-library';
 import {
   GOERLI_DISPLAY_NAME,

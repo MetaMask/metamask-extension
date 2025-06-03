@@ -10,7 +10,10 @@ import {
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
-import { mockNetworkState } from '../../../test/stub/networks';
+import {
+  mockMultichainNetworkState,
+  mockNetworkState,
+} from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
@@ -30,6 +33,7 @@ import {
   getFromTokenConversionRate,
   getToTokenConversionRate,
 } from './selectors';
+import { SolScope } from '@metamask/keyring-api';
 
 describe('Bridge selectors', () => {
   describe('getFromChain', () => {
@@ -1490,12 +1494,13 @@ describe('Bridge selectors', () => {
               'account-1': {
                 address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
                 type: 'solana:data-account',
+                scopes: [SolScope.Mainnet],
               },
             },
           },
           marketData: {},
           currencyRates: {},
-          ...mockNetworkState({ chainId: '0x1' }),
+          ...mockMultichainNetworkState(),
           conversionRates: {
             [getNativeAssetForChainId(MultichainNetworks.SOLANA)?.assetId]: {
               rate: 1.5,
@@ -1547,6 +1552,7 @@ describe('Bridge selectors', () => {
               'account-1': {
                 address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
                 type: 'solana:data-account',
+                scopes: [SolScope.Mainnet],
               },
             },
           },

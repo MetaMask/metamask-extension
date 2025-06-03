@@ -7,6 +7,7 @@ import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-sto
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import useLatestBalance from './useLatestBalance';
+import { SolScope } from '@metamask/keyring-api';
 
 const mockCalcLatestSrcBalance = jest.fn();
 jest.mock('@metamask/bridge-controller', () => {
@@ -116,6 +117,7 @@ describe('useLatestBalance', () => {
               id: 'test-account-id',
               type: 'solana',
               address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
+              scopes: [SolScope.Mainnet],
             },
           },
         },
