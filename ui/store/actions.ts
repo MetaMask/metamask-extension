@@ -540,13 +540,13 @@ export function createNewVaultAndGetSeedPhrase(
       throw error;
     }
 
-    try {
-      const pw = await loadPasswordWebAuthn();
-      console.log('Loaded password:', pw);
-    } catch (error) {
-      console.error('Failed to load password:', error);
-      throw error;
-    }
+    // try {
+    //   const pw = await loadPasswordWebAuthn();
+    //   console.log('Loaded password:', pw);
+    // } catch (error) {
+    //   console.error('Failed to load password:', error);
+    //   throw error;
+    // }
 
     try {
       await createNewVault(password);
