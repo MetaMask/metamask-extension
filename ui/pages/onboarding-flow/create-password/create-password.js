@@ -27,6 +27,7 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   getIsSocialLoginFlow,
+  getSocialLoginType,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -76,6 +77,7 @@ export default function CreatePassword({
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
+  const socialLoginType = useSelector(getSocialLoginType);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const metametricsId = useSelector(getMetaMetricsId);
@@ -161,7 +163,10 @@ export default function CreatePassword({
       properties: {
         wallet_setup_type: 'import',
         new_wallet: false,
-        account_type: MetaMetricsEventAccountType.Imported,
+        account_type: getAccountType(
+          MetaMetricsEventAccountType.Imported,
+          isSocialLoginFlow,
+        ),
       },
     });
 
@@ -205,7 +210,10 @@ export default function CreatePassword({
       properties: {
         wallet_setup_type: 'new',
         new_wallet: true,
-        account_type: MetaMetricsEventAccountType.Default,
+        account_type: getAccountType(
+          MetaMetricsEventAccountType.Default,
+          isSocialLoginFlow,
+        ),
       },
     });
 
@@ -254,6 +262,15 @@ export default function CreatePassword({
     bufferedEndTrace?.({ name: TraceName.OnboardingPasswordSetupError });
 
     console.error(error);
+  };
+
+  // Helper function to determine account type for analytics
+  const getAccountType = (baseType, includesSocialLogin = false) => {
+    if (includesSocialLogin && socialLoginType) {
+      const socialProvider = String(socialLoginType).toLowerCase();
+      return `${baseType}_${socialProvider}`;
+    }
+    return baseType;
   };
 
   const handleCreatePassword = async (event) => {
