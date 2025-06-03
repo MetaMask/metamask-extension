@@ -1,0 +1,71 @@
+diff --git a/dist/permitted/getClientStatus.cjs b/dist/permitted/getClientStatus.cjs
+index aac07b4bf23798e5e6fa2ea7deca324d7563df1b..5448bd4c5111ba82e65a5a9fef36866a007bfe90 100644
+--- a/dist/permitted/getClientStatus.cjs
++++ b/dist/permitted/getClientStatus.cjs
+@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.getClientStatusHandler = void 0;
+ const hookNames = {
+     getIsLocked: true,
++    getIsActive: true,
+ };
+ /**
+  * `snap_getClientStatus` returns useful information about the client running the snap.
+@@ -23,10 +24,11 @@ exports.getClientStatusHandler = {
+  * @param end - The `json-rpc-engine` "end" callback.
+  * @param hooks - The RPC method hooks.
+  * @param hooks.getIsLocked - A function that returns whether the client is locked or not.
++ * @param hooks.getIsActive - A function that returns whether the client is opened or not.
+  * @returns Nothing.
+  */
+-async function getClientStatusImplementation(_request, response, _next, end, { getIsLocked }) {
+-    response.result = { locked: getIsLocked() };
++async function getClientStatusImplementation(_request, response, _next, end, { getIsLocked, getIsActive }) {
++    response.result = { locked: getIsLocked(), active: getIsActive() };
+     return end();
+ }
+ //# sourceMappingURL=getClientStatus.cjs.map
+\ No newline at end of file
+diff --git a/dist/permitted/getClientStatus.cjs.map b/dist/permitted/getClientStatus.cjs.map
+index ea53f17d2621e5032abe0656bc3ee42d5adec838..4d6d7375c3144d7d2b14754cefd346e807418cf5 100644
+--- a/dist/permitted/getClientStatus.cjs.map
++++ b/dist/permitted/getClientStatus.cjs.map
+@@ -1 +1 @@
+-{"version":3,"file":"getClientStatus.cjs","sourceRoot":"","sources":["../../src/permitted/getClientStatus.ts"],"names":[],"mappings":";;;AAWA,MAAM,SAAS,GAA4C;IACzD,WAAW,EAAE,IAAI;CAClB,CAAC;AAEF;;GAEG;AACU,QAAA,sBAAsB,GAI/B;IACF,WAAW,EAAE,CAAC,sBAAsB,CAAC;IACrC,cAAc,EAAE,6BAA6B;IAC7C,SAAS;CACV,CAAC;AASF;;;;;;;;;;;;GAYG;AACH,KAAK,UAAU,6BAA6B,CAC1C,QAAwB,EACxB,QAAuD,EACvD,KAAc,EACd,GAA6B,EAC7B,EAAE,WAAW,EAAwB;IAErC,QAAQ,CAAC,MAAM,GAAG,EAAE,MAAM,EAAE,WAAW,EAAE,EAAE,CAAC;IAC5C,OAAO,GAAG,EAAE,CAAC;AACf,CAAC","sourcesContent":["import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';\nimport type { PermittedHandlerExport } from '@metamask/permission-controller';\nimport type { GetClientStatusResult } from '@metamask/snaps-sdk';\nimport type {\n  JsonRpcParams,\n  JsonRpcRequest,\n  PendingJsonRpcResponse,\n} from '@metamask/utils';\n\nimport type { MethodHooksObject } from '../utils';\n\nconst hookNames: MethodHooksObject<GetClientStatusHooks> = {\n  getIsLocked: true,\n};\n\n/**\n * `snap_getClientStatus` returns useful information about the client running the snap.\n */\nexport const getClientStatusHandler: PermittedHandlerExport<\n  GetClientStatusHooks,\n  JsonRpcParams,\n  GetClientStatusResult\n> = {\n  methodNames: ['snap_getClientStatus'],\n  implementation: getClientStatusImplementation,\n  hookNames,\n};\n\nexport type GetClientStatusHooks = {\n  /**\n   * @returns Whether the client is locked or not.\n   */\n  getIsLocked: () => boolean;\n};\n\n/**\n * The `snap_getClientStatus` method implementation.\n * Returns useful information about the client running the snap.\n *\n * @param _request - The JSON-RPC request object. Not used by this function.\n * @param response - The JSON-RPC response object.\n * @param _next - The `json-rpc-engine` \"next\" callback. Not used by this\n * function.\n * @param end - The `json-rpc-engine` \"end\" callback.\n * @param hooks - The RPC method hooks.\n * @param hooks.getIsLocked - A function that returns whether the client is locked or not.\n * @returns Nothing.\n */\nasync function getClientStatusImplementation(\n  _request: JsonRpcRequest,\n  response: PendingJsonRpcResponse<GetClientStatusResult>,\n  _next: unknown,\n  end: JsonRpcEngineEndCallback,\n  { getIsLocked }: GetClientStatusHooks,\n): Promise<void> {\n  response.result = { locked: getIsLocked() };\n  return end();\n}\n"]}
+\ No newline at end of file
++{"version":3,"file":"getClientStatus.cjs","sourceRoot":"","sources":["../../src/permitted/getClientStatus.ts"],"names":[],"mappings":";;;AAWA,MAAM,SAAS,GAA4C;IACzD,WAAW,EAAE,IAAI;IACjB,WAAW,EAAE,IAAI;CAClB,CAAC;AAEF;;GAEG;AACU,QAAA,sBAAsB,GAI/B;IACF,WAAW,EAAE,CAAC,sBAAsB,CAAC;IACrC,cAAc,EAAE,6BAA6B;IAC7C,SAAS;CACV,CAAC;AAcF;;;;;;;;;;;;;GAaG;AACH,KAAK,UAAU,6BAA6B,CAC1C,QAAwB,EACxB,QAAuD,EACvD,KAAc,EACd,GAA6B,EAC7B,EAAE,WAAW,EAAE,WAAW,EAAwB;IAElD,QAAQ,CAAC,MAAM,GAAG,EAAE,MAAM,EAAE,WAAW,EAAE,EAAE,MAAM,EAAE,WAAW,EAAE,EAAE,CAAC;IACnE,OAAO,GAAG,EAAE,CAAC;AACf,CAAC","sourcesContent":["import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';\nimport type { PermittedHandlerExport } from '@metamask/permission-controller';\nimport type { GetClientStatusResult } from '@metamask/snaps-sdk';\nimport type {\n  JsonRpcParams,\n  JsonRpcRequest,\n  PendingJsonRpcResponse,\n} from '@metamask/utils';\n\nimport type { MethodHooksObject } from '../utils';\n\nconst hookNames: MethodHooksObject<GetClientStatusHooks> = {\n  getIsLocked: true,\n  getIsActive: true,\n};\n\n/**\n * `snap_getClientStatus` returns useful information about the client running the snap.\n */\nexport const getClientStatusHandler: PermittedHandlerExport<\n  GetClientStatusHooks,\n  JsonRpcParams,\n  GetClientStatusResult\n> = {\n  methodNames: ['snap_getClientStatus'],\n  implementation: getClientStatusImplementation,\n  hookNames,\n};\n\nexport type GetClientStatusHooks = {\n  /**\n   * @returns Whether the client is locked or not.\n   */\n  getIsLocked: () => boolean;\n\n  /**\n   * @returns Whether the client is active or not.\n   */\n  getIsActive: () => boolean;\n};\n\n/**\n * The `snap_getClientStatus` method implementation.\n * Returns useful information about the client running the snap.\n *\n * @param _request - The JSON-RPC request object. Not used by this function.\n * @param response - The JSON-RPC response object.\n * @param _next - The `json-rpc-engine` \"next\" callback. Not used by this\n * function.\n * @param end - The `json-rpc-engine` \"end\" callback.\n * @param hooks - The RPC method hooks.\n * @param hooks.getIsLocked - A function that returns whether the client is locked or not.\n * @param hooks.getIsActive - A function that returns whether the client is opened or not.\n * @returns Nothing.\n */\nasync function getClientStatusImplementation(\n  _request: JsonRpcRequest,\n  response: PendingJsonRpcResponse<GetClientStatusResult>,\n  _next: unknown,\n  end: JsonRpcEngineEndCallback,\n  { getIsLocked, getIsActive }: GetClientStatusHooks,\n): Promise<void> {\n  response.result = { locked: getIsLocked(), active: getIsActive() };\n  return end();\n}\n"]}
+\ No newline at end of file
+diff --git a/dist/permitted/getClientStatus.mjs b/dist/permitted/getClientStatus.mjs
+index 35e693ad0750f70885a9a90e9d11cad55bf3e511..7ee29914180e20ef08581482db9a4ed52ca2034e 100644
+--- a/dist/permitted/getClientStatus.mjs
++++ b/dist/permitted/getClientStatus.mjs
+@@ -1,5 +1,6 @@
+ const hookNames = {
+     getIsLocked: true,
++    getIsActive: true,
+ };
+ /**
+  * `snap_getClientStatus` returns useful information about the client running the snap.
+@@ -20,10 +21,11 @@ export const getClientStatusHandler = {
+  * @param end - The `json-rpc-engine` "end" callback.
+  * @param hooks - The RPC method hooks.
+  * @param hooks.getIsLocked - A function that returns whether the client is locked or not.
++ * @param hooks.getIsActive - A function that returns whether the client is opened or not.
+  * @returns Nothing.
+  */
+-async function getClientStatusImplementation(_request, response, _next, end, { getIsLocked }) {
+-    response.result = { locked: getIsLocked() };
++async function getClientStatusImplementation(_request, response, _next, end, { getIsLocked, getIsActive }) {
++    response.result = { locked: getIsLocked(), active: getIsActive() };
+     return end();
+ }
+ //# sourceMappingURL=getClientStatus.mjs.map
+\ No newline at end of file
+diff --git a/dist/permitted/getClientStatus.mjs.map b/dist/permitted/getClientStatus.mjs.map
+index 014a078390174e739a5e166412d6e543f3e1f69a..6cb2c0e008cce986bcdab017507856ba2bdebf8f 100644
+--- a/dist/permitted/getClientStatus.mjs.map
++++ b/dist/permitted/getClientStatus.mjs.map
+@@ -1 +1 @@
+-{"version":3,"file":"getClientStatus.mjs","sourceRoot":"","sources":["../../src/permitted/getClientStatus.ts"],"names":[],"mappings":"AAWA,MAAM,SAAS,GAA4C;IACzD,WAAW,EAAE,IAAI;CAClB,CAAC;AAEF;;GAEG;AACH,MAAM,CAAC,MAAM,sBAAsB,GAI/B;IACF,WAAW,EAAE,CAAC,sBAAsB,CAAC;IACrC,cAAc,EAAE,6BAA6B;IAC7C,SAAS;CACV,CAAC;AASF;;;;;;;;;;;;GAYG;AACH,KAAK,UAAU,6BAA6B,CAC1C,QAAwB,EACxB,QAAuD,EACvD,KAAc,EACd,GAA6B,EAC7B,EAAE,WAAW,EAAwB;IAErC,QAAQ,CAAC,MAAM,GAAG,EAAE,MAAM,EAAE,WAAW,EAAE,EAAE,CAAC;IAC5C,OAAO,GAAG,EAAE,CAAC;AACf,CAAC","sourcesContent":["import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';\nimport type { PermittedHandlerExport } from '@metamask/permission-controller';\nimport type { GetClientStatusResult } from '@metamask/snaps-sdk';\nimport type {\n  JsonRpcParams,\n  JsonRpcRequest,\n  PendingJsonRpcResponse,\n} from '@metamask/utils';\n\nimport type { MethodHooksObject } from '../utils';\n\nconst hookNames: MethodHooksObject<GetClientStatusHooks> = {\n  getIsLocked: true,\n};\n\n/**\n * `snap_getClientStatus` returns useful information about the client running the snap.\n */\nexport const getClientStatusHandler: PermittedHandlerExport<\n  GetClientStatusHooks,\n  JsonRpcParams,\n  GetClientStatusResult\n> = {\n  methodNames: ['snap_getClientStatus'],\n  implementation: getClientStatusImplementation,\n  hookNames,\n};\n\nexport type GetClientStatusHooks = {\n  /**\n   * @returns Whether the client is locked or not.\n   */\n  getIsLocked: () => boolean;\n};\n\n/**\n * The `snap_getClientStatus` method implementation.\n * Returns useful information about the client running the snap.\n *\n * @param _request - The JSON-RPC request object. Not used by this function.\n * @param response - The JSON-RPC response object.\n * @param _next - The `json-rpc-engine` \"next\" callback. Not used by this\n * function.\n * @param end - The `json-rpc-engine` \"end\" callback.\n * @param hooks - The RPC method hooks.\n * @param hooks.getIsLocked - A function that returns whether the client is locked or not.\n * @returns Nothing.\n */\nasync function getClientStatusImplementation(\n  _request: JsonRpcRequest,\n  response: PendingJsonRpcResponse<GetClientStatusResult>,\n  _next: unknown,\n  end: JsonRpcEngineEndCallback,\n  { getIsLocked }: GetClientStatusHooks,\n): Promise<void> {\n  response.result = { locked: getIsLocked() };\n  return end();\n}\n"]}
+\ No newline at end of file
++{"version":3,"file":"getClientStatus.mjs","sourceRoot":"","sources":["../../src/permitted/getClientStatus.ts"],"names":[],"mappings":"AAWA,MAAM,SAAS,GAA4C;IACzD,WAAW,EAAE,IAAI;IACjB,WAAW,EAAE,IAAI;CAClB,CAAC;AAEF;;GAEG;AACH,MAAM,CAAC,MAAM,sBAAsB,GAI/B;IACF,WAAW,EAAE,CAAC,sBAAsB,CAAC;IACrC,cAAc,EAAE,6BAA6B;IAC7C,SAAS;CACV,CAAC;AAcF;;;;;;;;;;;;;GAaG;AACH,KAAK,UAAU,6BAA6B,CAC1C,QAAwB,EACxB,QAAuD,EACvD,KAAc,EACd,GAA6B,EAC7B,EAAE,WAAW,EAAE,WAAW,EAAwB;IAElD,QAAQ,CAAC,MAAM,GAAG,EAAE,MAAM,EAAE,WAAW,EAAE,EAAE,MAAM,EAAE,WAAW,EAAE,EAAE,CAAC;IACnE,OAAO,GAAG,EAAE,CAAC;AACf,CAAC","sourcesContent":["import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';\nimport type { PermittedHandlerExport } from '@metamask/permission-controller';\nimport type { GetClientStatusResult } from '@metamask/snaps-sdk';\nimport type {\n  JsonRpcParams,\n  JsonRpcRequest,\n  PendingJsonRpcResponse,\n} from '@metamask/utils';\n\nimport type { MethodHooksObject } from '../utils';\n\nconst hookNames: MethodHooksObject<GetClientStatusHooks> = {\n  getIsLocked: true,\n  getIsActive: true,\n};\n\n/**\n * `snap_getClientStatus` returns useful information about the client running the snap.\n */\nexport const getClientStatusHandler: PermittedHandlerExport<\n  GetClientStatusHooks,\n  JsonRpcParams,\n  GetClientStatusResult\n> = {\n  methodNames: ['snap_getClientStatus'],\n  implementation: getClientStatusImplementation,\n  hookNames,\n};\n\nexport type GetClientStatusHooks = {\n  /**\n   * @returns Whether the client is locked or not.\n   */\n  getIsLocked: () => boolean;\n\n  /**\n   * @returns Whether the client is active or not.\n   */\n  getIsActive: () => boolean;\n};\n\n/**\n * The `snap_getClientStatus` method implementation.\n * Returns useful information about the client running the snap.\n *\n * @param _request - The JSON-RPC request object. Not used by this function.\n * @param response - The JSON-RPC response object.\n * @param _next - The `json-rpc-engine` \"next\" callback. Not used by this\n * function.\n * @param end - The `json-rpc-engine` \"end\" callback.\n * @param hooks - The RPC method hooks.\n * @param hooks.getIsLocked - A function that returns whether the client is locked or not.\n * @param hooks.getIsActive - A function that returns whether the client is opened or not.\n * @returns Nothing.\n */\nasync function getClientStatusImplementation(\n  _request: JsonRpcRequest,\n  response: PendingJsonRpcResponse<GetClientStatusResult>,\n  _next: unknown,\n  end: JsonRpcEngineEndCallback,\n  { getIsLocked, getIsActive }: GetClientStatusHooks,\n): Promise<void> {\n  response.result = { locked: getIsLocked(), active: getIsActive() };\n  return end();\n}\n"]}
+\ No newline at end of file

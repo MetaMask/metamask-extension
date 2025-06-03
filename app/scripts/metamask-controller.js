@@ -711,6 +711,7 @@ export default class MetamaskController extends EventEmitter {
         };
       },
       additionalDefaultNetworks,
+      captureException,
     });
     networkControllerMessenger.subscribe(
       'NetworkController:rpcEndpointUnavailable',
@@ -6199,8 +6200,9 @@ export default class MetamaskController extends EventEmitter {
     securityAlertId,
     securityAlertResponse,
   ) {
-    await updateSecurityAlertResponse({
+    return await updateSecurityAlertResponse({
       appStateController: this.appStateController,
+      messenger: this.controllerMessenger,
       method,
       securityAlertId,
       securityAlertResponse,
@@ -7060,6 +7062,9 @@ export default class MetamaskController extends EventEmitter {
         ),
         getIsLocked: () => {
           return !this.appStateController.isUnlocked();
+        },
+        getIsActive: () => {
+          return this._isClientOpen;
         },
         getInterfaceState: (...args) =>
           this.controllerMessenger.call(
