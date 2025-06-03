@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import zxcvbn from 'zxcvbn';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   JustifyContent,
@@ -54,6 +55,7 @@ import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils
 import { resetOAuthLoginState } from '../../../store/actions';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
@@ -201,6 +203,8 @@ export default function CreatePassword({
       event: MetaMetricsEventName.WalletCreated,
       properties: {
         account_type: MetaMetricsEventAccountType.Default,
+        biometrics_enabled: false,
+        password_strength: getPasswordStrengthCategory(password),
       },
     });
 
@@ -271,6 +275,19 @@ export default function CreatePassword({
       return `${baseType}_${socialProvider}`;
     }
     return baseType;
+  };
+
+  const getPasswordStrengthCategory = (passwordValue) => {
+    const isTooShort = passwordValue.length < PASSWORD_MIN_LENGTH;
+    const { score } = zxcvbn(passwordValue);
+
+    if (isTooShort || score < 3) {
+      return 'weak';
+    }
+    if (score === 3) {
+      return 'average';
+    }
+    return 'strong';
   };
 
   const handleCreatePassword = async (event) => {
