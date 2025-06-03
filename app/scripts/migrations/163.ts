@@ -48,25 +48,21 @@ function transformState(
     );
     return state;
   }
-  // If property TokenListController is not present, log a warning and remove tokens, detectedTokens, and ignoredTokens from the TokensController state if they exist.
-  if (!hasProperty(state, 'TokenListController')) {
-    console.warn(`newState.TokenListController is not present`);
 
-    if (hasProperty(tokensControllerState, 'tokens')) {
-      // Remove the tokens property from the TokensController state.
-      delete tokensControllerState.tokens;
-    }
 
-    if (hasProperty(tokensControllerState, 'detectedTokens')) {
-      // Remove the detectedTokens property from the TokensController state.
-      delete tokensControllerState.detectedTokens;
-    }
+  if (hasProperty(tokensControllerState, 'tokens')) {
+    // Remove the tokens property from the TokensController state.
+    delete tokensControllerState.tokens;
+  }
 
-    if (hasProperty(tokensControllerState, 'ignoredTokens')) {
-      // Remove the ignoredTokens property from the TokensController state.
-      delete tokensControllerState.ignoredTokens;
-    }
-    return state;
+  if (hasProperty(tokensControllerState, 'detectedTokens')) {
+    // Remove the detectedTokens property from the TokensController state.
+    delete tokensControllerState.detectedTokens;
+  }
+
+  if (hasProperty(tokensControllerState, 'ignoredTokens')) {
+    // Remove the ignoredTokens property from the TokensController state.
+    delete tokensControllerState.ignoredTokens;
   }
 
   return state;

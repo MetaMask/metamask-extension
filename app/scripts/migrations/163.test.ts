@@ -74,7 +74,7 @@ describe(`migration #${version}`, () => {
 
       expect(newStorage.data).toStrictEqual(oldStorage.data);
     });
-    it('removes tokens, detectedTokens, and ignoredTokens from TokensController when user has tokensController state but no tokenListController state', async () => {
+    it('removes tokens, detectedTokens, and ignoredTokens from TokensController when user has tokensController state with those properties', async () => {
       const oldStorage = {
         meta: { version: oldVersion },
         data: {
