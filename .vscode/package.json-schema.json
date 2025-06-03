@@ -2,10 +2,16 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "allOf": [
     {
-      "required": ["lavamoat"],
+      "required": [
+        "lavamoat"
+      ],
       "properties": {
         "scripts": {
-          "required": ["webpack", "webpack:clearcache", "postinstall"],
+          "required": [
+            "webpack",
+            "webpack:clearcache",
+            "postinstall"
+          ],
           "properties": {
             "start:dev": {
               "description": "Runs `yarn start` with the addition of react/redux backend devtool servers enabled."
@@ -29,7 +35,9 @@
           }
         },
         "devDependencies": {
-          "required": ["lavamoat"],
+          "required": [
+            "lavamoat"
+          ],
           "properties": {
             "autoprefixer": {
               "description": "Used by our build systems to automatically add prefixes to CSS rules based on our browserslist."
@@ -94,7 +102,9 @@
         },
         "lavamoat": {
           "type": "object",
-          "required": ["allowScripts"],
+          "required": [
+            "allowScripts"
+          ],
           "additionalProperties": false,
           "properties": {
             "allowScripts": {
@@ -108,7 +118,9 @@
         },
         "resolutions": {
           "type": "object",
-          "required": ["ts-mixer@npm:^6.0.3"],
+          "required": [
+            "ts-mixer@npm:^6.0.3"
+          ],
           "properties": {
             "ts-mixer@npm:^6.0.3": {
               "type": "string",

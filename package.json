@@ -9,8 +9,8 @@
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",
-    "foundryup": "tsx ./test/helpers/foundry/foundryup.ts",
-    "postinstall": "yarn webpack:clearcache && yarn foundryup",
+    "foundryup": "npx mm-foundryup",
+    "postinstall": "yarn webpack:clearcache && foundryup",
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",
     "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
     "start:with-state": "node ./app/scripts/start-with-wallet-state.mjs",
@@ -441,6 +441,7 @@
     "@metamask/eslint-plugin-design-tokens": "^1.1.0",
     "@metamask/eth-json-rpc-provider": "^4.1.6",
     "@metamask/forwarder": "^1.1.0",
+    "@metamask/foundryup": "^1.0.0",
     "@metamask/phishing-warning": "^5.0.0",
     "@metamask/preferences-controller": "^17.0.0",
     "@metamask/superstruct": "^3.2.1",
