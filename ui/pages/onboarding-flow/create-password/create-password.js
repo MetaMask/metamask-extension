@@ -48,6 +48,7 @@ import LoadingScreen from '../../../components/ui/loading-screen';
 // eslint-disable-next-line import/no-restricted-paths
 import { getPlatform } from '../../../../app/scripts/lib/util';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { resetOAuthLoginState } from '../../../store/actions';
 
 export default function CreatePassword({
   createNewAccount,
