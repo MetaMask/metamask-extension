@@ -838,9 +838,9 @@ export enum MetaMetricsEventName {
   WalletSetupCompleted = 'Wallet Setup Completed',
   WalletRehydrationSelected = 'Wallet Rehydration Selected',
   SocialLoginCompleted = 'Social Login Completed',
-  WalletRehydrationAttempted = 'Wallet Rehydration Attempted',
-  WalletRehydrationCompleted = 'Wallet Rehydration Completed',
-  WalletRehydrationFailed = 'Wallet Rehydration Failed',
+  RehydrationPasswordAttempted = 'Rehydration Password Attempted',
+  RehydrationPasswordCompleted = 'Rehydration Password Completed',
+  RehydrationPasswordFailed = 'Rehydration Password Failed',
   // BEGIN:ONLY_INCLUDE_IF(build-flask)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   // END:ONLY_INCLUDE_IF

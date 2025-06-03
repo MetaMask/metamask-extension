@@ -138,7 +138,7 @@ class UnlockPage extends Component {
     if (this.props.isSocialLoginFlow) {
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.WalletRehydrationAttempted,
+        event: MetaMetricsEventName.RehydrationPasswordAttempted,
         properties: {
           account_type: 'social',
           biometrics: false,
@@ -153,7 +153,7 @@ class UnlockPage extends Component {
       if (this.props.isSocialLoginFlow) {
         this.context.trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.WalletRehydrationCompleted,
+          event: MetaMetricsEventName.RehydrationPasswordCompleted,
           properties: {
             account_type: 'social',
             biometrics: false,
@@ -217,7 +217,7 @@ class UnlockPage extends Component {
     if (this.props.isSocialLoginFlow) {
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.WalletRehydrationFailed,
+        event: MetaMetricsEventName.RehydrationPasswordFailed,
         properties: {
           account_type: 'social',
         },
