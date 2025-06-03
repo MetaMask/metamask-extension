@@ -6159,14 +6159,11 @@ __metadata:
 "@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@15.0.0-preview-2723071f":
   version: 15.0.0-preview-2723071f
   resolution: "@metamask-previews/profile-sync-controller@npm:15.0.0-preview-2723071f"
-"@metamask/profile-sync-controller@npm:^16.0.0":
-  version: 16.0.0
-  resolution: "@metamask/profile-sync-controller@npm:16.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
-    "@metamask/keyring-api": "npm:^18.0.0"
-    "@metamask/snaps-sdk": "npm:^7.1.0"
-    "@metamask/snaps-utils": "npm:^9.4.0"
+    "@metamask/keyring-api": "npm:^17.4.0"
+    "@metamask/snaps-sdk": "npm:^6.22.0"
+    "@metamask/snaps-utils": "npm:^9.2.0"
     "@noble/ciphers": "npm:^0.5.2"
     "@noble/hashes": "npm:^1.4.0"
     immer: "npm:^9.0.6"
@@ -6175,14 +6172,11 @@ __metadata:
   peerDependencies:
     "@metamask/accounts-controller": ^29.0.0
     "@metamask/keyring-controller": ^22.0.0
-    "@metamask/accounts-controller": ^30.0.0
-    "@metamask/keyring-controller": ^22.0.0
     "@metamask/network-controller": ^23.0.0
-    "@metamask/providers": ^22.0.0
-    "@metamask/snaps-controllers": ^12.0.0
+    "@metamask/providers": ^21.0.0
+    "@metamask/snaps-controllers": ^11.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
   checksum: 10/4d9ed624bab8b6b281c6d533b32100f7e73167ea45e0d619137ec1e7cfaf06a86d1b8f5fb9e46965e48dac885b636fc5352cf2d3f7962c05895aeee34ce63927
-  checksum: 10/9fd47c49f9ed7d76d69541e1d176b02c7ba0f8c19e26cb35f921293dc1b983c1264392ef4feabdba1a6f7248cac5d9d63afa22f96092a12eabbe93e8edee62d7
   languageName: node
   linkType: hard
 
@@ -29865,7 +29859,6 @@ __metadata:
     "@metamask/preferences-controller": "npm:^17.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.4.0"
     "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@15.0.0-preview-2723071f"
-    "@metamask/profile-sync-controller": "npm:^16.0.0"
     "@metamask/providers": "npm:^22.1.0"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
     "@metamask/remote-feature-flag-controller": "npm:^1.6.0"
