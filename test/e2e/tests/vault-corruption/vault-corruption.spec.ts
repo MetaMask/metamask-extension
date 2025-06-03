@@ -60,7 +60,9 @@ describe('Vault Corruption', function () {
       const request = globalThis.indexedDB.open('metamask-backup', 1);
       request.onupgradeneeded = () => {
         const db = request.result;
-        db.createObjectStore('store', { keyPath: 'id' });
+        if (!db.objectStoreNames.contains('store')) {
+          db.createObjectStore('store', { keyPath: 'id' });
+        }
       };
       request.onsuccess = () => {
         const db = request.result;
@@ -69,6 +71,7 @@ describe('Vault Corruption', function () {
         // remove the ${backupKeyToDelete} data from the backup database
         store.delete(${JSON.stringify(backupKeyToDelete)});
         transaction.oncomplete = () => {
+          db.close();
           ${reloadAndCallbackScript}
         };
       };`);
@@ -134,23 +137,34 @@ describe('Vault Corruption', function () {
   }
 
   async function debug(driver: Driver) {
-    await driver.executeAsyncScript(`
+    return await driver.executeAsyncScript(`
       // callback is injected by Selenium
       const callback = arguments[arguments.length - 1];
 
       const browser = globalThis.browser ?? globalThis.chrome;
 
       // get the current storage
-      browser.storage.local.get({ data, meta }, ([data, meta]) => {
+      browser.storage.local.get([ 'data', 'meta' ], ({ data, meta }) => {
         // get the current indexedDB state
         const request = globalThis.indexedDB.open('metamask-backup', 1);
+        request.onupgradeneeded = () => {
+          const db = request.result;
+          if (!db.objectStoreNames.contains('store')) {
+            db.createObjectStore('store', { keyPath: 'id' });
+          }
+        };
         request.onsuccess = () => {
           const db = request.result;
           const transaction = db.transaction('store', 'readonly');
           const store = transaction.objectStore('store');
           const getRequest = store.getAll();
+          getRequest.onerror = () => {
+            db.close();
+            callback({ error: getRequest.error });
+          };
           getRequest.onsuccess = () => {
-            const backup = getRequest.result;
+            db.close();
+            const backup = getRequest.result || [];
             callback({ data, meta, backup });
           };
         };
@@ -189,18 +203,12 @@ describe('Vault Corruption', function () {
     // use the home page to destroy the vault
     await driver.executeAsyncScript(script);
 
-    console.log(await debug(driver));
-
     // the previous tab we were using is now closed, so we need to tell Selenium
     // to switch back to the other page (required for Chrome)
     await driver.switchToWindow(initialWindow);
 
-    console.log(await debug(driver));
-
     // get a new tab ready to use (required for Firefox)
     await driver.openNewPage('about:blank');
-
-    console.log(await debug(driver));
 
     // wait for the background page to reload
     await waitForVaultRestorePage(driver);
@@ -289,7 +297,7 @@ describe('Vault Corruption', function () {
     return accountAddress;
   }
 
-  it('recovers metamask vault when primary database is broken but backup is intact', async function () {
+  it.only('recovers metamask vault when primary database is broken but backup is intact', async function () {
     await withFixtures(
       getConfig(this.test?.title),
       async ({ driver }: { driver: Driver }) => {
