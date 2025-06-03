@@ -110,10 +110,15 @@ describe('Remove Network:', function (this: Suite) {
         // Open the network dropdown
         await headerNavbar.clickSwitchNetworkDropDown();
 
+        await driver.delay(regularDelayMs);
+
         // Delete the network
         await selectNetwork.deleteNetwork('eip155:1338');
+
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
         const afterPermittedChains = await getPermittedChains(driver);
+
         assert.deepEqual(afterPermittedChains, ['0x539']);
       },
     );
@@ -190,15 +195,18 @@ describe('Remove Network:', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
+        // Avoid a stale element error
+        await driver.delay(regularDelayMs);
+
         // Open the network dropdown
         await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetwork.openEditNetworkModal('eip155:1338');
+        await selectNetwork.openNetworkListOptions('eip155:1338');
+        await driver.delay(regularDelayMs);
+        await selectNetwork.openEditNetworkModal();
+        await driver.delay(regularDelayMs);
         await addEditNetworkModal.check_pageIsLoaded();
 
         // Assert the endpoint is in the list
-        console.log(
-          'Asserting that the RPC endpoint "127.0.0.1:8546" is present',
-        );
         await driver.findElement({
           text: '127.0.0.1:8546',
           tag: 'p',
