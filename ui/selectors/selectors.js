@@ -1078,27 +1078,20 @@ export function getEnsResolutionByAddress(state, address) {
 }
 
 export function getAddressBookEntry(state, address) {
-  if (process.env.REMOVE_GNS) {
-    const addressBook = getCompleteAddressBook(state);
+  const addressBook = getCompleteAddressBook(state);
 
-    for (const item of addressBook) {
-      for (const key in item) {
-        if (Object.prototype.hasOwnProperty.call(item, key)) {
-          const contact = item[key];
-          if (isEqualCaseInsensitive(contact.address, address)) {
-            return contact;
-          }
+  for (const item of addressBook) {
+    for (const key in item) {
+      if (Object.prototype.hasOwnProperty.call(item, key)) {
+        const contact = item[key];
+        if (isEqualCaseInsensitive(contact.address, address)) {
+          return contact;
         }
       }
     }
-
-    return null;
   }
-  const addressBook = getAddressBook(state);
-  const entry = addressBook.find((contact) =>
-    isEqualCaseInsensitive(contact.address, address),
-  );
-  return entry;
+
+  return null;
 }
 
 export function getAddressBookEntryOrAccountName(state, address) {
