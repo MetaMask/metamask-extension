@@ -17520,7 +17520,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/auth-network-utils
-0.1.0 <https://github.com/MetaMask/toprf-secure-backup>
+0.3.0 <https://github.com/MetaMask/toprf-secure-backup>
 MIT License
 
 Copyright (c) 2025 MetaMask
@@ -19715,7 +19715,7 @@ THE SOFTWARE.
 ******************************
 
 @metamask/seedless-onboarding-controller
-0.0.0 <https://github.com/MetaMask/core>
+1.0.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2025 MetaMask
@@ -20218,7 +20218,7 @@ authors: undefined
 ******************************
 
 @metamask/toprf-secure-backup
-0.1.0 <https://github.com/MetaMask/toprf-secure-backup>
+0.3.2 <https://github.com/MetaMask/toprf-secure-backup>
 MIT License
 
 Copyright (c) 2024 MetaMask
@@ -25909,7 +25909,7 @@ SOFTWARE.
 ******************************
 
 @sentry/core
-9.17.0 <https://github.com/getsentry/sentry-javascript>
+9.25.0 <https://github.com/getsentry/sentry-javascript>
 MIT License
 
 Copyright (c) 2019 Functional Software, Inc. dba Sentry
