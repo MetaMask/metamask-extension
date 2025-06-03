@@ -43,6 +43,7 @@ import { ControllerFlatState } from '../controller-list';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import { Delegation7702PublishHook } from '../../lib/transaction/hooks/delegation-7702-publish';
 import { updateRemoteModeTransaction } from '../../lib/remote-mode';
+import { EnforceSimulationHook } from '../../lib/transaction/hooks/enforce-simulation-hook';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -131,6 +132,9 @@ export const TransactionControllerInit: ControllerInitFunction<
           state: getFlatState(),
         });
       },
+      afterSimulate: new EnforceSimulationHook({
+        messenger: initMessenger,
+      }).getHook(),
       beforePublish: (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(
           'InstitutionalSnapController:publishHook',
