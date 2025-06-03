@@ -39,7 +39,7 @@ class UpdateModal {
 
   async confirm() {
     console.log('Click to confirm the update modal');
-    await this.driver.clickElement(this.submitButton);
+    await this.driver.clickElementAndWaitForWindowToClose(this.submitButton);
   }
 
   async close() {

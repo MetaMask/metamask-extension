@@ -1,11 +1,11 @@
 [
   "accounts.api.cx.metamask.io",
   "acl.execution.metamask.io",
+  "api.devnet.solana.com",
   "api.lens.dev",
   "api.segment.io",
   "api.simplehash.com",
   "api.testnet.solana.com",
-  "api.devnet.solana.com",
   "api.web3modal.com",
   "api.web3modal.org",
   "app.ens.domains",
@@ -36,6 +36,8 @@
   "gas.api.cx.metamask.io",
   "github.com",
   "goerli.infura.io",
+  "i.seadn.io",
+  "images.ctfassets.net",
   "lattice.gridplus.io",
   "linea-mainnet.infura.io",
   "linea-sepolia.infura.io",
@@ -46,6 +48,7 @@
   "metamask-sdk.api.cx.metamask.io",
   "metamask.eth",
   "metamask.github.io",
+  "metamask.io",
   "metametrics.metamask.test",
   "min-api.cryptocompare.com",
   "nft.api.cx.metamask.io",
@@ -87,7 +90,5 @@
   "unresponsive-rpc.url",
   "user-storage.api.cx.metamask.io",
   "verify.walletconnect.com",
-  "www.4byte.directory",
-  "i.seadn.io",
-  "images.ctfassets.net"
+  "www.4byte.directory"
 ]

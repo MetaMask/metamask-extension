@@ -64,7 +64,13 @@ function UpdateModal() {
           </Text>
         </ModalBody>
         <ModalFooter
-          onSubmit={() => browser.runtime.reload()}
+          onSubmit={() => {
+            browser.tabs.create({
+              url: 'https://metamask.io/updating',
+              active: true,
+            });
+            browser.runtime.reload();
+          }}
           submitButtonProps={{
             children: t('updateToTheLatestVersion'),
             block: true,

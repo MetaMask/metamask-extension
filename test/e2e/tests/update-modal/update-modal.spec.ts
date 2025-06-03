@@ -1,11 +1,11 @@
 import { Suite } from 'mocha';
 import semver from 'semver';
+import type { Mockttp } from 'mockttp';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import UpdateModal from '../../page-objects/pages/dialog/update-modal';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { version } from '../../../../package.json';
-import TestDapp from '../../page-objects/pages/test-dapp';
 
 describe('Update modal', function (this: Suite) {
   it('should not be shown by default', async function () {
@@ -79,28 +79,33 @@ describe('Update modal', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
         disableServerMochaToBackground: true,
         manifestFlags: {
           remoteFeatureFlags: {
             extensionMinimumVersion: semver.inc(version, 'patch'),
           },
         },
+        // we need to mock the updating page that is opened when the user confirms the update
+        testSpecificMock: async (server: Mockttp) => {
+          await server
+            .forGet('https://metamask.io/updating')
+            .thenCallback(() => ({
+              statusCode: 200,
+              body: '<title>MetaMask Updating</title>',
+            }));
+          await server
+            .forGet('https://metamask.io/favicon.ico')
+            .thenCallback(() => ({ statusCode: 200, body: '' }));
+        },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const updateModal = new UpdateModal(driver);
         await updateModal.check_pageIsLoaded();
-        // we need to open another tab to avoid the browser being closed
-        // when the extension is reloaded, as there is only one tab
-        const testDapp = new TestDapp(driver);
-        await testDapp.openTestDappPage();
-        await driver.switchToWindowByTitleWithoutSocket(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
         await updateModal.confirm();
-        await driver.switchToWindowByTitleWithoutSocket(WINDOW_TITLES.TestDApp);
-        await driver.waitUntilXWindowHandles(1);
+        await driver.switchToWindowByTitleWithoutSocket(
+          WINDOW_TITLES.ExtensionUpdating,
+        );
       },
     );
   });
