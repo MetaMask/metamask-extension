@@ -89,10 +89,11 @@ describe('Update modal', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const updateModal = new UpdateModal(driver);
         await updateModal.check_pageIsLoaded();
+        const extensionWindowHandle = await driver.driver.getWindowHandle();
+        await driver.openNewPage('about:blank');
+        await driver.switchToWindow(extensionWindowHandle);
         await updateModal.confirm();
-        const windowHandles = await driver.getAllWindowHandles();
-        const extension = windowHandles[0];
-        assert.equal(extension, undefined, 'Extension failed to reload');
+        await driver.waitUntilXWindowHandles(1);
       },
     );
   });
