@@ -117,7 +117,7 @@ const AssetListControlBar = ({
     return isGlobalNetworkSelectorEnabled
       ? tokenNetworkFilter
       : enabledNetworks;
-  }, [tokenNetworkFilter, enabledNetworks]);
+  }, [isGlobalNetworkSelectorEnabled, tokenNetworkFilter, enabledNetworks]);
 
   const shouldShowRefreshButtons = useMemo(
     () =>

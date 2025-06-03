@@ -75,6 +75,7 @@ import {
   getSelectedMultichainNetworkChainId,
   getNetworkDiscoverButtonEnabled,
   getAllChainsToPoll,
+  getEnabledNetworks,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -154,6 +155,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
   const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
 
   const { tokenNetworkFilter } = useSelector(getPreferences);
+  const enabledNetworks = useSelector(getEnabledNetworks);
   const showTestnets = useSelector(getShowTestNetworks);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const isUnlocked = useSelector(getIsUnlocked);
@@ -355,14 +357,18 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     // the network changes.
     if (Object.keys(tokenNetworkFilter || {}).length <= 1) {
       dispatch(setTokenNetworkFilter({ [hexChainId]: true }));
-      dispatch(setEnabledNetworks([hexChainId] as CaipChainId[]));
     } else {
       const allOpts = Object.keys(evmNetworks).reduce((acc, id) => {
         acc[id] = true;
         return acc;
       }, {} as Record<string, boolean>);
       dispatch(setTokenNetworkFilter(allOpts));
-      dispatch(setEnabledNetworks(Object.keys(allOpts) as CaipChainId[]));
+    }
+
+    if (Object.keys(enabledNetworks).length === 1) {
+      dispatch(setEnabledNetworks([hexChainId] as CaipChainId[]));
+    } else {
+      dispatch(setEnabledNetworks(Object.keys(evmNetworks) as CaipChainId[]));
     }
 
     // If presently on a dapp, communicate a change to
