@@ -241,6 +241,7 @@ export const SENTRY_BACKGROUND_STATE = {
     snapRegistryList: false,
     theme: true,
     signatureSecurityAlertResponses: false,
+    addressSecurityAlertResponses: false,
     use4ByteResolution: true,
     useAddressBarEnsResolution: true,
     useBlockie: true,
