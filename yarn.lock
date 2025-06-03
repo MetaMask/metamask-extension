@@ -6245,9 +6245,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/seedless-onboarding-controller@file:./seedless-onboarding-controller.tgz::locator=metamask-crx%40workspace%3A.":
-  version: 0.0.0
-  resolution: "@metamask/seedless-onboarding-controller@file:./seedless-onboarding-controller.tgz#./seedless-onboarding-controller.tgz::hash=3567a0&locator=metamask-crx%40workspace%3A."
+"@metamask/seedless-onboarding-controller@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/seedless-onboarding-controller@npm:1.0.0"
   dependencies:
     "@metamask/auth-network-utils": "npm:^0.3.0"
     "@metamask/base-controller": "npm:^8.0.1"
@@ -6256,7 +6256,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
   peerDependencies:
     "@metamask/keyring-controller": ^22.0.0
-  checksum: 10/7ec6546bc5be05be91844daa302aaa60494acf430db008563ef67dd7abc105620bd723eb272ac1f1018dd0c71650ecccc4f5e494ce2aebbcd8d9d6cbf5d00392
+  checksum: 10/adec82564da18a422f094ee41e636d4656fc962a82e4c9d9ce8d4119ca3bee3e088768b03c30ecc90706038a7e632dd01ae1531732f53049c921e9a3c142c18f
   languageName: node
   linkType: hard
 
@@ -6588,8 +6588,8 @@ __metadata:
   linkType: hard
 
 "@metamask/toprf-secure-backup@npm:^0.3.1":
-  version: 0.3.1
-  resolution: "@metamask/toprf-secure-backup@npm:0.3.1"
+  version: 0.3.2
+  resolution: "@metamask/toprf-secure-backup@npm:0.3.2"
   dependencies:
     "@metamask/auth-network-utils": "npm:^0.3.0"
     "@noble/ciphers": "npm:^1.2.1"
@@ -6601,7 +6601,7 @@ __metadata:
     "@toruslabs/fetch-node-details": "npm:^15.0.0"
     "@toruslabs/http-helpers": "npm:^8.1.1"
     bn.js: "npm:^5.2.1"
-  checksum: 10/fec535a02236faf9b0dd4123a079e6f8f211d9fc9758944f823cc018ad5000957ed9402c38bbdf0fdfd660b365a10af52903438c477125db8a6880c325f09cdf
+  checksum: 10/14e942eeb5f89aeb44ac02b1a2167ad287eaf2f533941f290d98cdf86560e932afcf784d25365bddd6e66dfb669adea798b9055cbb5dc223cc90b1b1cb42d66e
   languageName: node
   linkType: hard
 
@@ -8743,9 +8743,9 @@ __metadata:
   linkType: hard
 
 "@sentry/core@npm:^9.10.0":
-  version: 9.17.0
-  resolution: "@sentry/core@npm:9.17.0"
-  checksum: 10/0eca892199cfcf5a80bce411bf7d70f07ba94fc1595212f55daaa8232341328969e5b9c54fe259e5aa1ae6279c5c444cd37f92aac40f2f8a115bea0a930521e6
+  version: 9.25.0
+  resolution: "@sentry/core@npm:9.25.0"
+  checksum: 10/7f16b0389c67db2b4f795157cbd3223eda85ad1611b8f6860eabec09f6f33c469bbd655882c28c1122f6cb7ed4dcfd68b5ffec6a0c0cdd505cab79d7c674ca1c
   languageName: node
   linkType: hard
 
@@ -29981,7 +29981,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/seedless-onboarding-controller": ./seedless-onboarding-controller.tgz
+    "@metamask/seedless-onboarding-controller": "npm:^1.0.0"
     "@metamask/selected-network-controller": "npm:^22.1.0"
     "@metamask/signature-controller": "npm:^27.1.0"
     "@metamask/smart-transactions-controller": "npm:^16.3.1"
