@@ -17,7 +17,6 @@ import { BaseUrl } from '../../../shared/constants/urls';
 const { getExtensionURL } = globalThis.platform;
 
 export const DeepLink = () => {
-  const history = useHistory();
   const location = useLocation();
   const t = useI18nContext();
   const [route, setRoute] = useState<null | {
