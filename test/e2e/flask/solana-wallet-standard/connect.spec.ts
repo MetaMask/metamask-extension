@@ -198,6 +198,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
           title: this.test?.fullTitle(),
           numberOfAccounts: 2, // we create two account
         },
+        // trigger test suite to run
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
