@@ -35,8 +35,8 @@ describe('Vault Corruption', function () {
    * database corruption scripts.
    */
   const reloadAndCallbackScript = `
-    browser.runtime.reload();
     callback();
+    browser.runtime.reload();
   `;
 
   /**
