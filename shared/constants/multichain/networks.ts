@@ -280,3 +280,8 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     isAddressCompatible: isSolanaAddress,
   },
 };
+
+export const SOLANA_TEST_CHAINS: CaipChainId[] = [
+  SolScope.Testnet,
+  SolScope.Devnet,
+];
