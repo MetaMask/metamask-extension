@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import semver from 'semver';
-import { withFixtures } from '../../helpers';
+import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import UpdateModal from '../../page-objects/pages/dialog/update-modal';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -77,7 +77,9 @@ describe('Update modal', function (this: Suite) {
             isUpdateAvailable: true,
           })
           .build(),
+        dapp: true,
         title: this.test?.fullTitle(),
+        disableServerMochaToBackground: true,
         manifestFlags: {
           remoteFeatureFlags: {
             extensionMinimumVersion: semver.inc(version, 'patch'),
@@ -88,10 +90,12 @@ describe('Update modal', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const updateModal = new UpdateModal(driver);
         await updateModal.check_pageIsLoaded();
-        const extensionWindowHandle = await driver.driver.getWindowHandle();
-        await driver.openNewPage('about:blank');
-        await driver.switchToWindow(extensionWindowHandle);
+        await driver.openNewPage('http://127.0.0.1:8080');
+        await driver.switchToWindowByTitleWithoutSocket(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await updateModal.confirm();
+        await driver.switchToWindowByTitleWithoutSocket(WINDOW_TITLES.TestDApp);
         await driver.waitUntilXWindowHandles(1);
       },
     );
