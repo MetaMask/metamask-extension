@@ -4317,6 +4317,9 @@
   "reusedTokenNameWarning": {
     "message": "ここのトークンは、監視する別のトークンのシンボルを再使用します。これは混乱を招いたり紛らわしい場合があります。"
   },
+  "revealSecretRecoveryPhrase": {
+    "message": "シークレットリカバリーフレーズを確認"
+  },
   "revealSeedWords": {
     "message": "シークレットリカバリーフレーズを確認"
   },
