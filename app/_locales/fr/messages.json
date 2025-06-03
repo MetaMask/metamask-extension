@@ -5679,12 +5679,6 @@
   "startEarning": {
     "message": "Commencer à générer des revenus"
   },
-  "stateCorruptionDetectedErrorMessage": {
-    "message": "Le fichier d’état de MetaMask est endommagé ou manquant. Les fichiers peuvent être récupérés, alors ne désinstallez pas l’extension MetaMask !"
-  },
-  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
-    "message": "Si vous voulez essayer de récupérer vous-même votre phrase secrète de récupération, suivez ces instructions."
-  },
   "stateLogError": {
     "message": "Erreur lors du chargement des journaux d’état."
   },
