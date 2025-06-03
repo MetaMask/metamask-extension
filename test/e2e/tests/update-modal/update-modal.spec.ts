@@ -1,11 +1,11 @@
+import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
+import semver from 'semver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import UpdateModal from '../../page-objects/pages/dialog/update-modal';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import semver from 'semver';
 import { version } from '../../../../package.json';
-import { strict as assert } from 'assert';
 
 describe('Update modal', function (this: Suite) {
   it('should not be shown by default', async function () {
