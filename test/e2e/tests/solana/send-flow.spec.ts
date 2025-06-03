@@ -10,7 +10,7 @@ import { withSolanaAccountSnap } from './common-solana';
 const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
 // Investigate why this test is flaky https://consensyssoftware.atlassian.net/browse/MMQA-549
 // eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Send flow', function (this: Suite) {
+describe('Send flow', function (this: Suite) {
   it('with some field validation', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
@@ -385,7 +385,7 @@ describe.skip('Send flow', function (this: Suite) {
   });
 
   // eslint-disable-next-line mocha/no-skipped-tests
-  it('and transaction simulation fails', async function () {
+  it.skip('and transaction simulation fails', async function () {
     this.timeout(120000); // there is a bug open for this big timeout https://consensyssoftware.atlassian.net/browse/SOL-90
     await withSolanaAccountSnap(
       {
