@@ -202,7 +202,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
 
-          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          // Explicitly select the second account before connecting
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Now connect with the currently selected account
           await connectSolanaTestDapp(driver, testDapp, {
             selectAllAccounts: false,
           });
@@ -339,7 +346,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
 
-          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          // Explicitly select the second account before connecting
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Now connect with the currently selected account
           await connectSolanaTestDapp(driver, testDapp, {
             selectAllAccounts: false,
           });
@@ -387,7 +401,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
 
-          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          // Explicitly select the second account before connecting
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Now connect with the currently selected account
           await connectSolanaTestDapp(driver, testDapp, {
             selectAllAccounts: false,
           });
@@ -435,7 +456,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
 
-          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          // Explicitly select the second account before connecting
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Now connect with the currently selected account
           await connectSolanaTestDapp(driver, testDapp, {
             selectAllAccounts: false,
           });
@@ -483,7 +511,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
 
-          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          // Explicitly select the second account before connecting
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Now connect with the currently selected account
           await connectSolanaTestDapp(driver, testDapp, {
             selectAllAccounts: false,
           });
@@ -531,7 +566,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
 
-          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          // Explicitly select the second account before connecting
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Now connect with the currently selected account
           await connectSolanaTestDapp(driver, testDapp, {
             selectAllAccounts: false,
           });
@@ -579,7 +621,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
 
-          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          // Explicitly select the second account before connecting
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Now connect with the currently selected account
           await connectSolanaTestDapp(driver, testDapp, {
             selectAllAccounts: false,
           });
@@ -627,7 +676,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
 
-          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          // Explicitly select the second account before connecting
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Now connect with the currently selected account
           await connectSolanaTestDapp(driver, testDapp, {
             selectAllAccounts: false,
           });
@@ -675,7 +731,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
 
-          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          // Explicitly select the second account before connecting
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Now connect with the currently selected account
           await connectSolanaTestDapp(driver, testDapp, {
             selectAllAccounts: false,
           });
@@ -723,7 +786,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
 
-          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          // Explicitly select the second account before connecting
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Now connect with the currently selected account
           await connectSolanaTestDapp(driver, testDapp, {
             selectAllAccounts: false,
           });
@@ -771,7 +841,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
 
-          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          // Explicitly select the second account before connecting
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Now connect with the currently selected account
           await connectSolanaTestDapp(driver, testDapp, {
             selectAllAccounts: false,
           });
@@ -819,7 +896,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
 
-          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          // Explicitly select the second account before connecting
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Now connect with the currently selected account
           await connectSolanaTestDapp(driver, testDapp, {
             selectAllAccounts: false,
           });
@@ -867,7 +951,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
 
-          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          // Explicitly select the second account before connecting
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Now connect with the currently selected account
           await connectSolanaTestDapp(driver, testDapp, {
             selectAllAccounts: false,
           });
@@ -915,7 +1006,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
 
-          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          // Explicitly select the second account before connecting
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Now connect with the currently selected account
           await connectSolanaTestDapp(driver, testDapp, {
             selectAllAccounts: false,
           });
@@ -963,7 +1061,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
 
-          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          // Explicitly select the second account before connecting
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Now connect with the currently selected account
           await connectSolanaTestDapp(driver, testDapp, {
             selectAllAccounts: false,
           });
@@ -1011,7 +1116,14 @@ describe('Solana Wallet Standard - e2e tests', function () {
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();
 
-          // By default, the connection is established with the second account, which is the last one selected in the UI.
+          // Explicitly select the second account before connecting
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await switchToAccount(driver, 'Solana 2');
+          await testDapp.switchTo();
+
+          // Now connect with the currently selected account
           await connectSolanaTestDapp(driver, testDapp, {
             selectAllAccounts: false,
           });
