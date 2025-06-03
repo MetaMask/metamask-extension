@@ -184,6 +184,8 @@ export const CustomNetworks = () => {
     [multichainNetworks],
   );
 
+
+  console.log(`nonTestNetworks`, testNetworks);
   // The network currently being edited, or undefined
   // if the user is not currently editing a network.
   //
@@ -450,7 +452,9 @@ export const CustomNetworks = () => {
     const isCustomNetwork = findInAllEnabledNetworks.find(
       (network: any) => network.chainId === hexChainId,
     );
-    if (!isCustomNetwork) {
+
+    const isTestNetwork = TEST_CHAINS.includes(hexChainId as Hex);
+    if (!isCustomNetwork && !isTestNetwork) {
       return null;
     }
 

@@ -3,7 +3,7 @@ import {
   UpdateNetworkFields,
 } from '@metamask/network-controller';
 import React, { useCallback, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   MemoryRouter,
   Route,
@@ -18,20 +18,16 @@ import {
   getEditedNetwork,
   getMultichainNetworkConfigurationsByChainId,
 } from '../../../selectors';
-import { hideModal } from '../../../store/actions';
 import {
   Modal,
   ModalContent,
   ModalContentSize,
-  ModalHeader
+  ModalHeader,
 } from '../../component-library';
-import { Tab, Tabs } from '../../ui/tabs';
 import AddBlockExplorerModal from '../network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
 import AddRpcUrlModal from '../network-list-menu/add-rpc-url-modal/add-rpc-url-modal';
 import { AddNetwork } from './components/add-network';
-import { CustomNetworks } from './components/custom-networks';
-import { DefaultNetworks } from './components/default-networks';
-import { TestNetworks } from './components/test-networks';
+import { NetworkTabs } from './network-tabs';
 
 export type NetworkItemProps = {
   name: string;
@@ -40,39 +36,6 @@ export type NetworkItemProps = {
   isChecked?: boolean;
   onCheckboxChange?: () => void;
   onMoreOptionsClick?: () => void;
-};
-
-// Main network list component
-const NetworkList = () => {
-  const dispatch = useDispatch();
-  const handleClose = useCallback(() => {
-    dispatch(hideModal());
-  }, [dispatch]);
-  return (
-    <>
-      <ModalHeader onBack={handleClose} onClose={handleClose}>Networks</ModalHeader>
-      <Tabs
-        defaultActiveTabKey="networks"
-        onTabClick={() => {
-          // Tab click handler - intentionally empty for now
-        }}
-        tabListProps={{
-          className: 'network-manager__tab-list',
-        }}
-        padding={4}
-      >
-        <Tab tabKey="networks" name="Default">
-          <DefaultNetworks />
-        </Tab>
-        <Tab tabKey="networks1" name="Custom">
-          <CustomNetworks />
-        </Tab>
-        <Tab tabKey="networks2" name="Test">
-          <TestNetworks />
-        </Tab>
-      </Tabs>
-    </>
-  );
 };
 
 // Router content component
@@ -129,7 +92,6 @@ const NetworkManagerRouter = () => {
   const handleAddExplorerUrl = useCallback(
     (onComplete?: () => void) => {
       return (url: string) => {
-        console.log(`networkFormState`, networkFormState);
         if (
           networkFormState.blockExplorers.blockExplorerUrls?.every(
             (u) => u !== url,
@@ -179,13 +141,17 @@ const NetworkManagerRouter = () => {
         <ModalHeader onClose={handleClose} onBack={handleNewNetwork}>
           {t('addBlockExplorerUrl')}
         </ModalHeader>
-        <AddBlockExplorerModal onAdded={handleAddExplorerUrl(handleAddOnComplete)} />
+        <AddBlockExplorerModal
+          onAdded={handleAddExplorerUrl(handleAddOnComplete)}
+        />
       </Route>
       <Route path="/edit-explorer-url">
         <ModalHeader onClose={handleClose} onBack={handleNewNetwork}>
           {t('addBlockExplorerUrl')}
         </ModalHeader>
-        <AddBlockExplorerModal onAdded={handleAddExplorerUrl(handleEditOnComplete)} />
+        <AddBlockExplorerModal
+          onAdded={handleAddExplorerUrl(handleEditOnComplete)}
+        />
       </Route>
       <Route path="/add">
         <ModalHeader onClose={handleClose} onBack={handleGoHome}>
@@ -197,7 +163,6 @@ const NetworkManagerRouter = () => {
         <AddNetwork
           networkFormState={networkFormState}
           network={editedNetwork as UpdateNetworkFields}
-          networkType={location.pathname.includes('add') ? 'custom' : 'test'}
         />
       </Route>
       <Route path="/edit">
@@ -211,7 +176,7 @@ const NetworkManagerRouter = () => {
         />
       </Route>
       <Route path="/">
-        <NetworkList />
+        <NetworkTabs />
       </Route>
     </Switch>
   );
