@@ -78,8 +78,8 @@ describe('Update modal', function (this: Suite) {
             isUpdateAvailable: true,
           })
           .build(),
-        dapp: true,
         title: this.test?.fullTitle(),
+        dapp: true,
         disableServerMochaToBackground: true,
         manifestFlags: {
           remoteFeatureFlags: {
@@ -91,6 +91,8 @@ describe('Update modal', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const updateModal = new UpdateModal(driver);
         await updateModal.check_pageIsLoaded();
+        // we need to open another tab to avoid the browser being closed
+        // when the extension is reloaded, as there is only one tab
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await driver.switchToWindowByTitleWithoutSocket(
