@@ -88,10 +88,14 @@ async function start() {
   const subStreams = connectSubstreams(connectionStream);
   const backgroundConnection = metaRPCClientFactory(subStreams.controller);
   connectToBackground(container, backgroundConnection, handleStartUISync);
-  setupProviderConnection(subStreams.provider);
 
   async function handleStartUISync() {
     endTrace({ name: TraceName.BackgroundConnect });
+
+    // Only after startUiSync has started can we set up the provider connection
+    // The provider connection *must* be set up before the UI is initialized, as
+    // it sets a global variable, `ethereumProvider`, that the UI relies on.
+    await setupProviderConnection(subStreams.provider);
 
     const activeTab = await queryCurrentActiveTab(windowType);
 
@@ -313,13 +317,14 @@ function connectSubstreams(connectionStream) {
  *
  * @param {Substream} connectionStream - PortStream instance establishing a background connection
  */
-function setupProviderConnection(connectionStream) {
+async function setupProviderConnection(connectionStream) {
   const providerStream = new StreamProvider(connectionStream, {
     rpcMiddleware: [createIdRemapMiddleware()],
   });
   connectionStream.on('error', console.error.bind(console));
   providerStream.on('error', console.error.bind(console));
-  providerStream.initialize().then(() => {
+
+  return await providerStream.initialize().then(() => {
     global.ethereumProvider = providerStream;
   });
 }
