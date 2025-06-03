@@ -64,8 +64,8 @@ function UpdateModal() {
           </Text>
         </ModalBody>
         <ModalFooter
-          onSubmit={() => {
-            browser.tabs.create({
+          onSubmit={async () => {
+            await browser.tabs.create({
               url: 'https://metamask.io/updating',
               active: true,
             });
