@@ -14,6 +14,7 @@ import {
   selectBridgeQuotes,
   selectIsQuoteExpired,
   selectBridgeFeatureFlags,
+  selectMinimumBalanceForRentExemptionInSOL,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SolAccountType } from '@metamask/keyring-api';
@@ -517,21 +518,30 @@ export const getValidationErrors = createDeepEqualSelector(
   _getValidatedSrcAmount,
   getFromToken,
   getFromAmount,
+  selectMinimumBalanceForRentExemptionInSOL,
   (
-    { activeQuote, quotesLastFetchedMs, isLoading },
+    { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
     validatedSrcAmount,
     fromToken,
     fromTokenInputValue,
+    minimumBalanceForRentExemptionInSOL,
   ) => {
+    const minimumBalanceToUse =
+      activeQuote?.quote && isSolanaChainId(activeQuote.quote.srcChainId)
+        ? minimumBalanceForRentExemptionInSOL
+        : '0';
     return {
       isNoQuotesAvailable: Boolean(
-        !activeQuote && quotesLastFetchedMs && !isLoading,
+        !activeQuote &&
+          quotesLastFetchedMs &&
+          !isLoading &&
+          quotesRefreshCount > 0,
       ),
       // Shown prior to fetching quotes
       isInsufficientGasBalance: (balance?: BigNumber) => {
         if (balance && !activeQuote && validatedSrcAmount && fromToken) {
           return isNativeAddress(fromToken.address)
-            ? balance.eq(validatedSrcAmount)
+            ? balance.sub(minimumBalanceToUse).lte(validatedSrcAmount)
             : balance.lte(0);
         }
         return false;
@@ -543,6 +553,7 @@ export const getValidationErrors = createDeepEqualSelector(
             ? balance
                 .sub(activeQuote.totalMaxNetworkFee.amount)
                 .sub(activeQuote.sentAmount.amount)
+                .sub(minimumBalanceToUse)
                 .lte(0)
             : balance.lte(activeQuote.totalMaxNetworkFee.amount);
         }

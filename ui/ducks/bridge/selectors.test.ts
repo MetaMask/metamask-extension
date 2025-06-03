@@ -918,6 +918,7 @@ describe('Bridge selectors', () => {
           srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotes: [],
           quotesLastFetched: Date.now(),
+          quotesRefreshCount: 1,
         },
       });
       const result = getValidationErrors(state as never);
@@ -947,6 +948,7 @@ describe('Bridge selectors', () => {
           fromChain: { chainId: CHAIN_IDS.MAINNET },
         },
         bridgeStateOverrides: {
+          minimumBalanceForRentExemption: '890880',
           srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
           srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),

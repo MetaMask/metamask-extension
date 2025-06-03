@@ -54,6 +54,7 @@ import { Patch } from 'immer';
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -4102,6 +4103,9 @@ export function fetchAndSetQuotes(
     const [quotes, selectedAggId] = await trace(
       {
         name: TraceName.SwapQuotesFetched,
+        data: {
+          srcChainId: formatChainIdToCaip(fetchParamsMetaData.chainId),
+        },
       },
       async () =>
         await submitRequestToBackground<Quotes>('fetchAndSetQuotes', [
