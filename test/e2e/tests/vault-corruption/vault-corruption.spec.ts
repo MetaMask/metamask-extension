@@ -198,6 +198,17 @@ describe('Vault Corruption', function () {
     const firstAddress = await getFirstAddress(driver, headerNavbar);
     await headerNavbar.lockMetaMask();
 
+    console.log('before delay:');
+    console.log(await debug(driver));
+
+    // hack alert! :-(
+    // we need to wait for the background to persist the vault to the database
+    // and backup. it currently happens at a max rate of once per second, but
+    // due to the current behavior of `debounce` in our state persistence
+    // pipeline it can take longer, so i'm using a 2 second delay here.
+    driver.delay(2000);
+
+    console.log('after delay:');
     console.log(await debug(driver));
 
     // use the home page to destroy the vault
@@ -213,6 +224,7 @@ describe('Vault Corruption', function () {
     // wait for the background page to reload
     await waitForVaultRestorePage(driver);
 
+    console.log('after restart:');
     console.log(await debug(driver));
 
     return firstAddress;
