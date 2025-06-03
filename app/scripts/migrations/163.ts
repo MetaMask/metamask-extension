@@ -48,43 +48,25 @@ function transformState(
     );
     return state;
   }
-
-  // If property TokenListController is not present, only log a warning and return the original state.
+  // If property TokenListController is not present, log a warning and remove tokens, detectedTokens, and ignoredTokens from the TokensController state if they exist.
   if (!hasProperty(state, 'TokenListController')) {
     console.warn(`newState.TokenListController is not present`);
+
+    if (hasProperty(tokensControllerState, 'tokens')) {
+      // Remove the tokens property from the TokensController state.
+      delete tokensControllerState.tokens;
+    }
+
+    if (hasProperty(tokensControllerState, 'detectedTokens')) {
+      // Remove the detectedTokens property from the TokensController state.
+      delete tokensControllerState.detectedTokens;
+    }
+
+    if (hasProperty(tokensControllerState, 'ignoredTokens')) {
+      // Remove the ignoredTokens property from the TokensController state.
+      delete tokensControllerState.ignoredTokens;
+    }
     return state;
-  }
-
-  const tokenListControllerState = state.TokenListController;
-
-  // If property tokenListControllerState is there but not an object, capture a sentry error and return state
-  if (!isObject(tokenListControllerState)) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Migration ${version}: TokenListController is type '${typeof tokenListControllerState}', expected object.`,
-      ),
-    );
-    return state;
-  }
-
-  if (hasProperty(tokensControllerState, 'tokens')) {
-    // Remove the tokens property from the TokensController state.
-    delete tokensControllerState.tokens;
-  }
-
-  if (hasProperty(tokensControllerState, 'detectedTokens')) {
-    // Remove the detectedTokens property from the TokensController state.
-    delete tokensControllerState.detectedTokens;
-  }
-
-  if (hasProperty(tokensControllerState, 'ignoredTokens')) {
-    // Remove the ignoredTokens property from the TokensController state.
-    delete tokensControllerState.ignoredTokens;
-  }
-
-  if (hasProperty(tokenListControllerState, 'tokenList')) {
-    // Remove the tokenList property from the TokenListController state.
-    delete tokenListControllerState.tokenList;
   }
 
   return state;
