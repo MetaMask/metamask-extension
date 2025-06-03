@@ -518,18 +518,24 @@ export const getValidationErrors = createDeepEqualSelector(
   _getValidatedSrcAmount,
   getFromToken,
   getFromAmount,
-  selectMinimumBalanceForRentExemptionInSOL,
+  ({ metamask }: BridgeAppState) =>
+    selectMinimumBalanceForRentExemptionInSOL(metamask),
+  getQuoteRequest,
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
     validatedSrcAmount,
     fromToken,
     fromTokenInputValue,
     minimumBalanceForRentExemptionInSOL,
+    quoteRequest,
   ) => {
+    const srcChainId =
+      quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
     const minimumBalanceToUse =
-      activeQuote?.quote && isSolanaChainId(activeQuote.quote.srcChainId)
+      srcChainId && isSolanaChainId(srcChainId)
         ? minimumBalanceForRentExemptionInSOL
         : '0';
+
     return {
       isNoQuotesAvailable: Boolean(
         !activeQuote &&
