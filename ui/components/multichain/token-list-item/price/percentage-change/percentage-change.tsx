@@ -28,10 +28,8 @@ export const PercentageChange = ({
   value: number | null | undefined;
   address: `0x${string}` | CaipAssetType;
 }) => {
-  let color = process.env.REMOVE_GNS
-    ? TextColor.textAlternative
-    : TextColor.textDefault;
-  if (!process.env.REMOVE_GNS && isValidAmount(value)) {
+  let color = TextColor.textAlternative;
+  if (isValidAmount(value)) {
     if ((value as number) === 0) {
       color = TextColor.textDefault;
     } else if ((value as number) > 0) {
@@ -45,17 +43,13 @@ export const PercentageChange = ({
   const balanceIsNegative = isValidAmount(value) && (value as number) < 0;
   return (
     <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
-      {process.env.REMOVE_GNS ? (
-        <Icon
-          name={balanceIsNegative ? IconName.TriangleDown : IconName.TriangleUp}
-          size={IconSize.Xs}
-          color={
-            balanceIsNegative
-              ? IconColor.errorDefault
-              : IconColor.successDefault
-          }
-        />
-      ) : null}
+      <Icon
+        name={balanceIsNegative ? IconName.TriangleDown : IconName.TriangleUp}
+        size={IconSize.Xs}
+        color={
+          balanceIsNegative ? IconColor.errorDefault : IconColor.successDefault
+        }
+      />
       <Text
         variant={TextVariant.bodySmMedium}
         color={color}

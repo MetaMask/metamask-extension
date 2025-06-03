@@ -64,6 +64,10 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { Asset } from '../types/asset';
+import {
+  BridgeAppState,
+  getIsUnifiedUIEnabled,
+} from '../../../ducks/bridge/selectors';
 
 const TokenButtons = ({
   token,
@@ -93,8 +97,11 @@ const TokenButtons = ({
   const isSwapsChain = useSelector((state) =>
     getIsSwapsChain(state, isEvm ? currentChainId : multichainChainId),
   );
+  const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
+    getIsUnifiedUIEnabled(state, multichainChainId),
+  );
 
-  const displayNewIconButtons = process.env.REMOVE_GNS;
+  const displayNewIconButtons = isUnifiedUIEnabled;
 
   const isBridgeChain = useSelector((state) =>
     getIsBridgeChain(state, isEvm ? currentChainId : multichainChainId),

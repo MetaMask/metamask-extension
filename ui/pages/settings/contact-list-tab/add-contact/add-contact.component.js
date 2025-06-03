@@ -206,7 +206,6 @@ const AddContact = ({
             </div>
           )}
         </div>
-        {process.env.REMOVE_GNS ? (
           <div className="address-book__view-contact__group">
             <div className="address-book__view-contact__group__label">
               {t('network')}
@@ -246,7 +245,6 @@ const AddContact = ({
               />
             )}
           </div>
-        ) : null}
       </div>
       <PageContainerFooter
         cancelText={t('cancel')}

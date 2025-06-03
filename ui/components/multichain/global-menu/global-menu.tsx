@@ -279,17 +279,15 @@ export const GlobalMenu = ({
           {t('expandView')}
         </MenuItem>
       )}
-      {process.env.REMOVE_GNS && (
-        <MenuItem
-          iconName={IconName.Hierarchy}
-          onClick={() => {
-            dispatch(toggleNetworkMenu());
-            closeMenu();
-          }}
-        >
-          {t('networks')}
-        </MenuItem>
-      )}
+      <MenuItem
+        iconName={IconName.Hierarchy}
+        onClick={() => {
+          dispatch(toggleNetworkMenu());
+          closeMenu();
+        }}
+      >
+        {t('networks')}
+      </MenuItem>
       <MenuItem
         iconName={IconName.Snaps}
         onClick={() => {

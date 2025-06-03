@@ -103,7 +103,6 @@ const CoinButtons = ({
     string
   >;
   const currentChainId = useSelector(getCurrentChainId);
-  const displayNewIconButtons = process.env.REMOVE_GNS;
 
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const handleSendNonEvm = useHandleSendNonEvm();
@@ -198,7 +197,7 @@ const CoinButtons = ({
   const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
     getIsUnifiedUIEnabled(state, chainId),
   );
-
+  const displayNewIconButtons = isUnifiedUIEnabled;
   const setCorrectChain = useCallback(async () => {
     if (currentChainId !== chainId && multichainChainId !== chainId) {
       try {
@@ -398,7 +397,7 @@ const CoinButtons = ({
         }
         round={!displayNewIconButtons}
       />
-      {process.env.REMOVE_GNS ? null : (
+      {isUnifiedUIEnabled ? null : (
         <IconButton
           className={`${classPrefix}-overview__button`}
           disabled={
