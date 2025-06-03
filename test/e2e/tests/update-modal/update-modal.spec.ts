@@ -5,6 +5,7 @@ import FixtureBuilder from '../../fixture-builder';
 import UpdateModal from '../../page-objects/pages/dialog/update-modal';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { version } from '../../../../package.json';
+import TestDapp from '../../page-objects/pages/test-dapp';
 
 describe('Update modal', function (this: Suite) {
   it('should not be shown by default', async function () {
@@ -90,7 +91,8 @@ describe('Update modal', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const updateModal = new UpdateModal(driver);
         await updateModal.check_pageIsLoaded();
-        await driver.openNewPage('http://127.0.0.1:8080');
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
         await driver.switchToWindowByTitleWithoutSocket(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
