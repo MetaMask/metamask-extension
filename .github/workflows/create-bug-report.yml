@@ -19,7 +19,7 @@ jobs:
 
       - name: Checkout and setup environment
         if: steps.extract_version.outputs.version
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@feat-INFRA-2575-yarn-issues
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
