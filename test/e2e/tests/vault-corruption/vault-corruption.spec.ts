@@ -81,6 +81,9 @@ describe('Vault Corruption', function () {
    */
   function getConfig(title?: string) {
     return {
+      driverOptions: {
+        openDevToolsForTabs: true,
+      },
       title,
       ignoredConsoleErrors: [
         // expected error caused by breaking the database:
@@ -130,6 +133,31 @@ describe('Vault Corruption', function () {
     );
   }
 
+  async function debug(driver: Driver) {
+    await driver.executeAsyncScript(`
+      // callback is injected by Selenium
+      const callback = arguments[arguments.length - 1];
+
+      const browser = globalThis.browser ?? globalThis.chrome;
+
+      // get the current storage
+      browser.storage.local.get({ data, meta }, ([data, meta]) => {
+        // get the current indexedDB state
+        const request = globalThis.indexedDB.open('metamask-backup', 1);
+        request.onsuccess = () => {
+          const db = request.result;
+          const transaction = db.transaction('store', 'readonly');
+          const store = transaction.objectStore('store');
+          const getRequest = store.getAll();
+          getRequest.onsuccess = () => {
+            const backup = getRequest.result;
+            callback({ data, meta, backup });
+          };
+        };
+      });
+    `);
+  }
+
   /**
    * Breaks the databases and then begins recovery. Only returns once the
    * background page has reloaded and the UI is available again.
@@ -156,18 +184,28 @@ describe('Vault Corruption', function () {
     const firstAddress = await getFirstAddress(driver, headerNavbar);
     await headerNavbar.lockMetaMask();
 
+    console.log(await debug(driver));
+
     // use the home page to destroy the vault
     await driver.executeAsyncScript(script);
+
+    console.log(await debug(driver));
 
     // the previous tab we were using is now closed, so we need to tell Selenium
     // to switch back to the other page (required for Chrome)
     await driver.switchToWindow(initialWindow);
 
+    console.log(await debug(driver));
+
     // get a new tab ready to use (required for Firefox)
     await driver.openNewPage('about:blank');
 
+    console.log(await debug(driver));
+
     // wait for the background page to reload
     await waitForVaultRestorePage(driver);
+
+    console.log(await debug(driver));
 
     return firstAddress;
   }
