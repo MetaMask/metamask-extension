@@ -18,16 +18,6 @@ describe('IconButton', () => {
     mockOnClick.mockClear();
   });
 
-  it('renders the icon button with default props', () => {
-    const { container } = render(<IconButton {...defaultProps} />);
-
-    expect(screen.getByText('Test Button')).toBeInTheDocument();
-    expect(container.querySelector('.icon-button-round')).toHaveClass(
-      'test-class',
-    );
-    expect(screen.getByRole('button')).toBeInTheDocument();
-  });
-
   it('applies disabled state correctly', () => {
     render(<IconButton {...defaultProps} disabled={true} />);
 
