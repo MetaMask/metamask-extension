@@ -1,0 +1,74 @@
+import { cloneDeep } from 'lodash';
+import { hasProperty, isObject } from '@metamask/utils';
+
+type VersionedData = {
+  meta: { version: number };
+  data: Record<string, unknown>;
+};
+
+export const version = 163;
+
+/**
+ * This migration removes the `tokens`, `detectedTokens`, and `ignoredTokens` properties from the TokensController state for users who do not have tokenListController state.
+ *
+ * If the TokensController is not found or is not an object, the migration logs an error,
+ * but otherwise leaves the state unchanged.
+ *
+ * @param originalVersionedData - The versioned extension state.
+ * @returns The updated versioned extension state without the tokens property.
+ */
+export async function migrate(
+  originalVersionedData: VersionedData,
+): Promise<VersionedData> {
+  const versionedData = cloneDeep(originalVersionedData);
+  versionedData.meta.version = version;
+
+  versionedData.data = transformState(versionedData.data);
+
+  return versionedData;
+}
+
+function transformState(
+  state: Record<string, unknown>,
+): Record<string, unknown> {
+  if (!hasProperty(state, 'TokensController')) {
+    global.sentry?.captureException?.(
+      new Error(`Migration ${version}: TokensController not found.`),
+    );
+    return state;
+  }
+
+  const tokensControllerState = state.TokensController;
+
+  if (!isObject(tokensControllerState)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: TokensController is type '${typeof tokensControllerState}', expected object.`,
+      ),
+    );
+    return state;
+  }
+  const tokenListControllerState = state.TokenListController;
+
+  if (!isObject(tokenListControllerState)) {
+    console.warn(`newState.TokenListController is not present`);
+
+    // Clean up the TokensController state only if TokenListController state is not present.
+    if (hasProperty(tokensControllerState, 'tokens')) {
+      // Remove the tokens property from the TokensController state.
+      delete tokensControllerState.tokens;
+    }
+
+    if (hasProperty(tokensControllerState, 'detectedTokens')) {
+      // Remove the detectedTokens property from the TokensController state.
+      delete tokensControllerState.detectedTokens;
+    }
+
+    if (hasProperty(tokensControllerState, 'ignoredTokens')) {
+      // Remove the ignoredTokens property from the TokensController state.
+      delete tokensControllerState.ignoredTokens;
+    }
+  }
+
+  return state;
+}
