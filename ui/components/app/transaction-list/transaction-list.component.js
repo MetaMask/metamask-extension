@@ -17,7 +17,7 @@ import {
   TransactionType as KeyringTransactionType,
 } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
-import { KnownCaipNamespace, parseCaipAccountId } from '@metamask/utils';
+import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedCompletedTransactionsSelectorAllChains,
@@ -528,7 +528,7 @@ export default function TransactionList({
   const trackEvent = useContext(MetaMetricsContext);
 
   if (!isEvmAccountType(selectedAccount.type)) {
-    const { namespace } = parseCaipAccountId(multichainNetworkConfig.chainId);
+    const { namespace } = parseCaipChainId(multichainNetworkConfig.chainId);
     const isBitcoinNetwork = namespace === KnownCaipNamespace.Bip122;
 
     const addressLink = getMultichainAccountUrl(
