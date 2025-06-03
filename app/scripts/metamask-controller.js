@@ -645,6 +645,7 @@ export default class MetamaskController extends EventEmitter {
         ].rpcEndpoints[0].networkClientId;
     }
 
+    // HERE
     this.networkController = new NetworkController({
       messenger: networkControllerMessenger,
       state: initialNetworkControllerState,
