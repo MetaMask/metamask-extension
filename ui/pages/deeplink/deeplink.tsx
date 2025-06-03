@@ -12,7 +12,6 @@ import log from 'loglevel';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   AlignItems,
-  BlockSize,
   Display,
   FlexDirection,
   FontWeight,
@@ -63,7 +62,6 @@ export const DeepLink = () => {
       const fullUrlStr = `https://${DEEP_LINK_HOST}${urlStr}`;
       try {
         const parsed = await parse(fullUrlStr);
-        await new Promise((resolve) => setTimeout(resolve, 250)); // Simulate a delay for loading
         if (parsed) {
           const { url, destination, signed } = parsed;
           const { path, query } = destination;
