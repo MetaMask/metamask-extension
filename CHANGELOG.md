@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - When `selectedNetworkClientId` is invalid at startup, set it back to mainnet default RPC ([#31517](https://github.com/MetaMask/metamask-extension/pull/31517))
+
 ## [12.18.3]
 ### Fixed
 - Add `origin` to security alerts request to improve transaction validation ([#33282](https://github.com/MetaMask/metamask-extension/pull/33282))
@@ -6267,8 +6268,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.20.0...HEAD
-[12.20.0]: https://github.com/MetaMask/metamask-extension/compare/v12.18.1...v12.20.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.18.3...HEAD
+[12.20.0]: https://github.com/MetaMask/metamask-extension/compare/v12.18.3...v12.20.0
 [12.18.3]: https://github.com/MetaMask/metamask-extension/compare/v12.18.2...v12.18.3
 [12.18.2]: https://github.com/MetaMask/metamask-extension/compare/v12.18.1...v12.18.2
 [12.18.1]: https://github.com/MetaMask/metamask-extension/compare/v12.18.0...v12.18.1
