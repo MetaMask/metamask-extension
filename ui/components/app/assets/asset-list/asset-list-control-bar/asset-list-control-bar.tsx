@@ -243,10 +243,6 @@ const AssetListControlBar = ({
     allNetworkClientIds.forEach((networkClientId) => {
       checkAndUpdateAllNftsOwnershipStatus(networkClientId);
     });
-    // loop through allNetworkClientIds and call checkAndUpdateAllNftsOwnershipStatus for each one
-    allNetworkClientIds.forEach((networkClientId) => {
-      checkAndUpdateAllNftsOwnershipStatus(networkClientId);
-    });
   };
   const isDisabled = useMemo(() => {
     const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(
