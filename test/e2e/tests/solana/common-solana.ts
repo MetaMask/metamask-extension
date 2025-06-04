@@ -11,7 +11,7 @@ import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.fl
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 const SOLANA_URL_REGEX_MAINNET =
-  /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3\/.*/u;
+  /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3*/u;
 const SOLANA_URL_REGEX_DEVNET = /^https:\/\/solana-devnet\.infura\.io\/v3\/.*/u;
 const SPOT_PRICE_API =
   /^https:\/\/price\.api\.cx\.metamask\.io\/v[1-9]\/spot-prices/u;
@@ -1188,6 +1188,59 @@ export async function mockGetTokenAccountsByOwner(
     });
 }
 
+export async function mockGetTokenAccountsByOwnerDevnet(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX_DEVNET)
+    .withJsonBodyIncluding({
+      method: 'getTokenAccountsByOwner',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          id: '1337',
+          jsonrpc: '2.0',
+          result: {
+            context: {
+              slot: 137568828,
+            },
+            value: [
+              {
+                account: {
+                  data: {
+                    parsed: {
+                      info: {
+                        isNative: false,
+                        mint: '2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
+                        owner: '14BLn1WLBf3coaPj1fZ5ZqJKQArEjJHvw7rvSktGv2b5',
+                        state: 'initialized',
+                        tokenAmount: {
+                          amount: '6000000',
+                          decimals: 6,
+                          uiAmount: 6,
+                          uiAmountString: '6',
+                        },
+                      },
+                      type: 'account',
+                    },
+                    program: 'spl-token',
+                    space: 165,
+                  },
+                  executable: false,
+                  lamports: 2039280,
+                  owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+                  rentEpoch: 18446744073709552000,
+                  space: 165,
+                },
+                pubkey: 'EzG33TbDzHVaWBqgQgHhtQSY6tcAVsWub6hBRepcsDt4',
+              },
+            ],
+          },
+        },
+      };
+    });
+}
+
 export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
   console.log('mockGetTokenAccountInfo');
   const response = {
@@ -1990,6 +2043,7 @@ export async function withSolanaAccountSnap(
     mockSwapUSDtoSOL,
     mockSwapSOLtoUSDC,
     mockSwapWithNoQuotes,
+    walletConnect = false,
     dappPaths,
     withProtocolSnap,
   }: {
@@ -2003,6 +2057,7 @@ export async function withSolanaAccountSnap(
     mockSwapUSDtoSOL?: boolean;
     mockSwapSOLtoUSDC?: boolean;
     mockSwapWithNoQuotes?: boolean;
+    walletConnect?: boolean;
     dappPaths?: string[];
     withProtocolSnap?: boolean;
   },
@@ -2037,11 +2092,17 @@ export async function withSolanaAccountSnap(
       dappPaths,
       testSpecificMock: async (mockServer: Mockttp) => {
         const mockList: MockedEndpoint[] = [];
-
-        mockList.push(await mockGetTokenAccountsTokenProgramSwaps(mockServer));
-        mockList.push(
-          await mockGetTokenAccountsTokenProgram2022Swaps(mockServer),
-        );
+        mockList.push(await simulateSolanaTransaction(mockServer));
+        if (walletConnect) {
+          mockList.push(await mockGetTokenAccountsByOwnerDevnet(mockServer));
+        } else {
+          mockList.push(
+            await mockGetTokenAccountsTokenProgramSwaps(mockServer),
+          );
+          mockList.push(
+            await mockGetTokenAccountsTokenProgram2022Swaps(mockServer),
+          );
+        }
         mockList.push(await mockGetMultipleAccounts(mockServer));
         if (mockGetTransactionSuccess) {
           console.log('mockGetTransactionSuccess');
