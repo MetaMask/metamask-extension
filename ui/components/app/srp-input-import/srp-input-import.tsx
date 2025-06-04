@@ -71,8 +71,6 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
       active: false,
     }));
 
-    newDraftSrp[newDraftSrp.length - 1].active = true;
-
     setDraftSrp(newDraftSrp);
   };
 
