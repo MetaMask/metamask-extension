@@ -25,7 +25,7 @@ jobs:
       test-suite-name: test-e2e-chrome-browserify
       build-artifact: build-test-browserify
       build-command: yarn build:test
-      test-command: SELENIUM_BROWSER=chrome yarn test:e2e:single ./test/e2e/flask/solana-wallet-standard/connect.spec.ts
+      test-command: yarn test:e2e:chrome
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
     secrets:
