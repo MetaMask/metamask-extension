@@ -148,12 +148,13 @@ const mapStateToProps = (state) => {
       ? semver.lt(extensionCurrentVersion, extensionMinimumVersion)
       : false;
 
+  const currentTime = Date.now();
   const updateModalCooldown = 24 * 60 * 60 * 1000; // 24 hours
   const enoughTimePassedSinceLastDismissal = updateModalLastDismissedAt
-    ? Date.now() - updateModalLastDismissedAt > updateModalCooldown
+    ? currentTime - updateModalLastDismissedAt > updateModalCooldown
     : true;
   const enoughTimePassedSinceLastUpdate = lastUpdatedAt
-    ? Date.now() - lastUpdatedAt > updateModalCooldown
+    ? currentTime - lastUpdatedAt > updateModalCooldown
     : true;
 
   const showUpdateModal =
