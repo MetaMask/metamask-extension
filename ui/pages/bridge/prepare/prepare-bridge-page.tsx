@@ -39,7 +39,7 @@ import {
   getFromChains,
   getFromToken,
   getQuoteRequest,
-  getEffectiveSlippage,
+  getSlippage,
   getToChain,
   getToChains,
   getToToken,
@@ -169,7 +169,7 @@ const PrepareBridgePage = () => {
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
 
   const providerConfig = useMultichainSelector(getMultichainProviderConfig);
-  const slippage = useSelector(getEffectiveSlippage);
+  const slippage = useSelector(getSlippage);
 
   const quoteRequest = useSelector(getQuoteRequest);
   const {
@@ -516,29 +516,30 @@ const PrepareBridgePage = () => {
     handleToken();
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
-  // Set the default destination token and slippage for swaps
+  // Set slippage based on swap type
+  const slippageInitializedRef = useRef(false);
+  useEffect(() => {
+    if (isSwap && fromChain && toChain && !slippageInitializedRef.current) {
+      slippageInitializedRef.current = true;
+      // For Solana swaps, use undefined (AUTO), otherwise use default 0.5%
+      const targetSlippage = isSolanaSwap ? undefined : BRIDGE_DEFAULT_SLIPPAGE;
+      dispatch(setSlippage(targetSlippage));
+    }
+  }, [isSwap, isSolanaSwap, fromChain, toChain, dispatch]);
+
+  // Set the default destination token for swaps
   useEffect(() => {
     endTrace({
       name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
       timestamp: Date.now(),
     });
-    if (isSwap) {
-      // Check if this is a Solana-to-Solana swap at execution time to avoid adding it as a dependency
-      const currentIsSolanaSwap = isSolanaSwap;
-      if (currentIsSolanaSwap) {
-        // For Solana-to-Solana swaps, use undefined (AUTO)
-        // getEffectiveSlippage will use solanaSlippage preference or default to undefined
-        dispatch(setSlippage(undefined));
-      } else {
-        // For EVM swaps, use the bridge default slippage
-        dispatch(setSlippage(BRIDGE_DEFAULT_SLIPPAGE));
-      }
-      if (fromChain && !toToken) {
-        dispatch(setToChainId(fromChain.chainId));
-        dispatch(setToToken(SOLANA_USDC_ASSET));
-      }
+
+    // Set default destination token for swaps
+    if (isSwap && fromChain && !toToken) {
+      dispatch(setToChainId(fromChain.chainId));
+      dispatch(setToToken(SOLANA_USDC_ASSET));
     }
-  }, []);
+  }, [isSwap, dispatch, fromChain, toToken]);
 
   const occurrences = Number(
     toToken?.occurrences ?? toToken?.aggregators?.length ?? 0,

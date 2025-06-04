@@ -3521,10 +3521,6 @@ export function setAutoLockTimeLimit(value: number | null) {
   return setPreference('autoLockTimeLimit', value);
 }
 
-export function setSolanaSlippage(value: number | undefined) {
-  return setPreference('solanaSlippage', value);
-}
-
 export function setCompletedOnboarding(): ThunkAction<
   void,
   MetaMaskReduxState,

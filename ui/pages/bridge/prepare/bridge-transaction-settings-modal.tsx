@@ -32,12 +32,8 @@ import {
   TextVariant,
   SEVERITIES,
 } from '../../../helpers/constants/design-system';
-import {
-  getIsSolanaSwap,
-  getEffectiveSlippage,
-} from '../../../ducks/bridge/selectors';
+import { getIsSolanaSwap, getSlippage } from '../../../ducks/bridge/selectors';
 import { setSlippage } from '../../../ducks/bridge/actions';
-import { setSolanaSlippage } from '../../../store/actions';
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { Column, Row, Tooltip } from '../layout';
@@ -53,7 +49,7 @@ export const BridgeTransactionSettingsModal = ({
 
   const dispatch = useDispatch();
   const isSolanaSwap = useSelector(getIsSolanaSwap);
-  const slippage = useSelector(getEffectiveSlippage);
+  const slippage = useSelector(getSlippage);
 
   // AUTO option should only show for Solana-to-Solana swaps
   const shouldShowAutoOption = isSolanaSwap;
@@ -70,18 +66,27 @@ export const BridgeTransactionSettingsModal = ({
   // Initialize state when modal opens
   useEffect(() => {
     if (isOpen) {
-      // Note: We check for both null and undefined since JSON serialization converts undefined to null
-      const shouldSelectAuto =
-        (slippage === null || slippage === undefined) && shouldShowAutoOption;
-      setIsAutoSelected(shouldSelectAuto);
-      setLocalSlippage(shouldSelectAuto ? undefined : slippage);
-      setCustomSlippage(
-        slippage && !HARDCODED_SLIPPAGE_OPTIONS.includes(slippage)
-          ? slippage.toString()
-          : undefined,
-      );
+      // Simply display what's in the state
+      if (shouldShowAutoOption && slippage === undefined) {
+        setIsAutoSelected(true);
+        setLocalSlippage(undefined);
+        setCustomSlippage(undefined);
+      } else {
+        setIsAutoSelected(false);
+        if (slippage && HARDCODED_SLIPPAGE_OPTIONS.includes(slippage)) {
+          setLocalSlippage(slippage);
+          setCustomSlippage(undefined);
+        } else if (slippage) {
+          setLocalSlippage(undefined);
+          setCustomSlippage(slippage.toString());
+        } else {
+          // Default to first option if no slippage set and not showing AUTO
+          setLocalSlippage(BRIDGE_DEFAULT_SLIPPAGE);
+          setCustomSlippage(undefined);
+        }
+      }
     }
-  }, [slippage, shouldShowAutoOption, isOpen, isSolanaSwap]);
+  }, [slippage, shouldShowAutoOption, isOpen]);
 
   const getNotificationConfig = () => {
     if (!customSlippage) {
@@ -270,20 +275,24 @@ export const BridgeTransactionSettingsModal = ({
             width={BlockSize.Full}
             size={ButtonPrimarySize.Md}
             variant={TextVariant.bodyMd}
-            disabled={
-              (isAutoSelected &&
-                (slippage === null || slippage === undefined)) ||
-              (!isAutoSelected &&
-                ((customSlippage !== undefined &&
-                  Number(customSlippage.replace(',', '.')) === slippage) ||
-                  (localSlippage !== undefined && localSlippage === slippage)))
-            }
+            disabled={(() => {
+              // Calculate what the new slippage would be
+              const newSlippage = isAutoSelected
+                ? undefined
+                : localSlippage ??
+                  (customSlippage
+                    ? Number(customSlippage.replace(',', '.'))
+                    : undefined);
+
+              // Button is disabled if nothing has changed
+              return newSlippage === slippage;
+            })()}
             onClick={() => {
               const newSlippage = isAutoSelected
                 ? undefined
                 : localSlippage ?? Number(customSlippage?.replace(',', '.'));
 
-              if (newSlippage !== undefined || isAutoSelected) {
+              if (newSlippage !== slippage) {
                 trackCrossChainSwapsEvent({
                   event: MetaMetricsEventName.InputChanged,
                   properties: {
@@ -292,11 +301,7 @@ export const BridgeTransactionSettingsModal = ({
                   },
                 });
 
-                if (isSolanaSwap) {
-                  dispatch(setSolanaSlippage(newSlippage));
-                } else {
-                  dispatch(setSlippage(newSlippage));
-                }
+                dispatch(setSlippage(newSlippage));
                 onClose();
               }
             }}

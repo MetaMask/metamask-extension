@@ -66,7 +66,6 @@ import {
 } from '../../../shared/constants/hardware-wallets';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
-import { getPreferences } from '../../selectors';
 import {
   exchangeRateFromMarketData,
   exchangeRatesFromNativeAndCurrencyRates,
@@ -244,9 +243,6 @@ export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
 
 export const getSlippage = (state: BridgeAppState) => state.bridge.slippage;
-
-export const getSolanaSlippage = (state: BridgeAppState) =>
-  getPreferences(state)?.solanaSlippage;
 
 export const getQuoteRequest = (state: BridgeAppState) => {
   const { quoteRequest } = state.metamask;
@@ -637,24 +633,6 @@ export const getIsSolanaSwap = createSelector(
     return fromChainIsSolana && toChainIsSolana;
   },
 );
-
-export const getEffectiveSlippage = (state: BridgeAppState) => {
-  const isSolanaSwap = getIsSolanaSwap(state);
-  const solanaSlippage = getSolanaSlippage(state);
-  const regularSlippage = getSlippage(state);
-
-  // For Solana transactions (either bridge to/from Solana or Solana-to-Solana swap),
-  // use solanaSlippage if it's been set by the user, otherwise default to undefined (AUTO)
-  // Note: We check for both null and undefined since JSON serialization converts undefined to null
-  if (isSolanaSwap) {
-    return solanaSlippage === null || solanaSlippage === undefined
-      ? undefined
-      : solanaSlippage;
-  }
-
-  // For EVM transactions, use the regular slippage
-  return regularSlippage;
-};
 
 export const getHardwareWalletName = (state: BridgeAppState) => {
   const type = getHardwareWalletType(state);
