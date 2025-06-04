@@ -48,7 +48,7 @@ jobs:
     name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
     runs-on: ubuntu-latest
     container:
-      image: public.ecr.aws/y2l1v8k6/metamask-core-staging/metamask-extension-e2e:1.0.0-155f8fc
+      image: public.ecr.aws/a6f6j9d3/metamask-core/metamask-extension-e2e:v22.15.0
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # For a `pull_request` event, the branch is `github.head_ref``.
