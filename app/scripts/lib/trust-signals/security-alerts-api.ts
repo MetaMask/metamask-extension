@@ -1,8 +1,12 @@
+import { SECOND } from '../../../../shared/constants/time';
+import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import {
   ScanAddressRequest,
   ScanAddressResponse,
   SupportedEVMChain,
 } from './types';
+
+const TIMEOUT = 5 * SECOND;
 
 export async function scanAddress(
   chain: SupportedEVMChain,
@@ -14,7 +18,7 @@ export async function scanAddress(
     address,
   };
 
-  const response = await fetch(endpoint, {
+  const response = await getFetchWithTimeout(TIMEOUT)(endpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
