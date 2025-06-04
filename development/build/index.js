@@ -158,6 +158,10 @@ async function defineAndRunBuildTasks() {
         'Proxy',
         'ret_nodes',
         'getSelection',
+
+        'browser', // for testing vault corruption
+        'chrome', // for testing vault corruption
+        `indexedDB`, // for testing vault corruption
       ];
     }
 
