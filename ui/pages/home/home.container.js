@@ -139,9 +139,11 @@ const mapStateToProps = (state) => {
   const shouldShowSeedPhraseReminder =
     selectedAccount && getShouldShowSeedPhraseReminder(state, selectedAccount);
 
-  const extensionCurrentVersion = semver.valid(process.env.METAMASK_VERSION);
+  const extensionCurrentVersion = semver.valid(
+    semver.coerce(global.platform.getVersion()),
+  );
   const extensionMinimumVersion = semver.valid(
-    remoteFeatureFlags.extensionMinimumVersion,
+    semver.coerce(remoteFeatureFlags.extensionMinimumVersion),
   );
   const isExtensionOutdated =
     extensionCurrentVersion && extensionMinimumVersion
