@@ -1894,6 +1894,7 @@
         "@metamask/utils": true,
         "addons-linter>deepmerge": true,
         "eslint>fast-deep-equal": true,
+        "immer": true,
         "lodash": true,
         "reselect": true,
         "uri-js": true,
