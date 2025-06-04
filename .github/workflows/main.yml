@@ -37,6 +37,7 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@feat-custom-url-yarn-package
         with:
+          yarn-custom-url: 'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension/yarn-4.9.1/yarn.js#sha224.4285002185abb91fe2b781f27fd1e078086c37a7b095f6ea4ee25971'
           is-high-risk-environment: false
           cache-node-modules: true
           skip-allow-scripts: true
@@ -59,6 +60,7 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@feat-custom-url-yarn-package
         with:
+          yarn-custom-url: 'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension/yarn-4.9.1/yarn.js#sha224.4285002185abb91fe2b781f27fd1e078086c37a7b095f6ea4ee25971'
           is-high-risk-environment: false
           skip-allow-scripts: true
 
@@ -197,6 +199,7 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@feat-custom-url-yarn-package
         with:
+          yarn-custom-url: 'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension/yarn-4.9.1/yarn.js#sha224.4285002185abb91fe2b781f27fd1e078086c37a7b095f6ea4ee25971'
           is-high-risk-environment: false
           skip-allow-scripts: true
 
@@ -272,6 +275,7 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@feat-custom-url-yarn-package
         with:
+          yarn-custom-url: 'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension/yarn-4.9.1/yarn.js#sha224.4285002185abb91fe2b781f27fd1e078086c37a7b095f6ea4ee25971'
           is-high-risk-environment: false
           skip-allow-scripts: true
 
@@ -302,6 +306,7 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@feat-custom-url-yarn-package
         with:
+          yarn-custom-url: 'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension/yarn-4.9.1/yarn.js#sha224.4285002185abb91fe2b781f27fd1e078086c37a7b095f6ea4ee25971'
           is-high-risk-environment: false
           skip-allow-scripts: true
 
