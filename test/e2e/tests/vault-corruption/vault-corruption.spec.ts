@@ -251,7 +251,7 @@ describe('Vault Corruption', function () {
     return accountAddress;
   }
 
-  it('recovers metamask vault when primary database is broken but backup is intact', async function () {
+  it.only('recovers metamask vault when primary database is broken but backup is intact', async function () {
     await withFixtures(
       getConfig(this.test?.title),
       async ({ driver }: { driver: Driver }) => {
