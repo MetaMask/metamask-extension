@@ -6652,7 +6652,7 @@
     "message": "This site is requesting to update your default network URL. You can edit defaults and network information any time."
   },
   "updateInformation": {
-    "message": "We’ve made your wallet safer, smoother, and added some new features. Update now to stay protected and use our latest improvements."
+    "message": "We've made your wallet safer, smoother, and added some new features. Update now to stay protected and use our latest improvements."
   },
   "updateNetworkConfirmationTitle": {
     "message": "Update $1",
