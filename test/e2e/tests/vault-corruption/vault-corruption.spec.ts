@@ -206,7 +206,7 @@ describe('Vault Corruption', function () {
     // and backup. it currently happens at a max rate of once per second, but
     // due to the current behavior of `debounce` in our state persistence
     // pipeline it can take longer, so i'm using a 2 second delay here.
-    driver.delay(2000);
+    await driver.delay(2000);
 
     console.log('after delay:');
     console.log(await debug(driver));
