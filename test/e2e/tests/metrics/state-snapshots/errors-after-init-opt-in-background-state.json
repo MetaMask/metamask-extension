@@ -263,6 +263,7 @@
     },
     "cacheTimestamp": "number"
   },
+  "SeedlessOnboardingController": "object",
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
     "signatureRequests": "object",
@@ -337,6 +338,7 @@
   "TxController": {
     "methodData": "object",
     "transactions": "object",
+    "transactionBatches": "object",
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object"
   },

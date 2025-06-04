@@ -15,9 +15,15 @@ import { TextVariant } from '../../../helpers/constants/design-system';
 
 type PasswordFormProps = {
   onChange: (password: string) => void;
+  pwdInputTestId?: string;
+  confirmPwdInputTestId?: string;
 };
 
-export default function PasswordForm({ onChange }: PasswordFormProps) {
+export default function PasswordForm({
+  onChange,
+  pwdInputTestId,
+  confirmPwdInputTestId,
+}: PasswordFormProps) {
   const t = useI18nContext();
 
   const [password, setPassword] = useState('');
@@ -142,7 +148,7 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
         size={FormTextFieldSize.Lg}
         value={password}
         inputProps={{
-          'data-testid': 'create-password-new-input',
+          'data-testid': pwdInputTestId || 'create-password-new-input',
           type: showPassword ? InputType.Text : InputType.Password,
         }}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -184,7 +190,8 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
         value={confirmPassword}
         disabled={password.length < PASSWORD_MIN_LENGTH}
         inputProps={{
-          'data-testid': 'create-password-confirm-input',
+          'data-testid':
+            confirmPwdInputTestId || 'create-password-confirm-input',
           type: showConfirmPassword ? InputType.Text : InputType.Password,
         }}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {

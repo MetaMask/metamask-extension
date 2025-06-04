@@ -30,7 +30,7 @@ import ChangePasswordWarning from './change-password-warning';
 const ChangePasswordSteps = {
   VerifyCurrentPassword: 1,
   ChangePassword: 2,
-  CreatingPassword: 3,
+  ChangePasswordLoading: 3,
 };
 
 const ChangePassword = () => {
@@ -77,7 +77,7 @@ const ChangePassword = () => {
   const onChangePassword = async () => {
     try {
       setShowChangePasswordWarning(false);
-      setStep(ChangePasswordSteps.CreatingPassword);
+      setStep(ChangePasswordSteps.ChangePasswordLoading);
       await dispatch(changePassword(newPassword, currentPassword));
 
       // upon successful password change, go back to the settings page
@@ -119,6 +119,10 @@ const ChangePassword = () => {
               marginBottom: 1,
               children: t('enterPasswordContinue'),
             }}
+            inputProps={{
+              autoFocus: true,
+              'data-testid': 'verify-current-password-input',
+            }}
             value={currentPassword}
             error={isIncorrectPasswordError}
             helpText={
@@ -134,6 +138,7 @@ const ChangePassword = () => {
             type="submit"
             block
             disabled={isIncorrectPasswordError || !currentPassword}
+            data-testid="verify-current-password-button"
           >
             {t('save')}
           </Button>
@@ -154,15 +159,24 @@ const ChangePassword = () => {
           }}
         >
           <Box>
-            <PasswordForm onChange={(password) => setNewPassword(password)} />
+            <PasswordForm
+              onChange={(password) => setNewPassword(password)}
+              pwdInputTestId="change-password-input"
+              confirmPwdInputTestId="change-password-confirm-input"
+            />
           </Box>
-          <Button type="submit" disabled={!newPassword} block>
+          <Button
+            type="submit"
+            disabled={!newPassword}
+            data-testid="change-password-button"
+            block
+          >
             {t('save')}
           </Button>
         </Box>
       )}
 
-      {step === ChangePasswordSteps.CreatingPassword && (
+      {step === ChangePasswordSteps.ChangePasswordLoading && (
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -172,10 +186,10 @@ const ChangePassword = () => {
           <div>{renderMascot()}</div>
           <Spinner className="change-password__spinner" />
           <Text variant={TextVariant.bodyLgMedium} marginBottom={4}>
-            {t('createPasswordCreating')}
+            {t('changePasswordLoading')}
           </Text>
           <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
-            {t('createPasswordCreatingNote')}
+            {t('changePasswordLoadingNote')}
           </Text>
         </Box>
       )}
