@@ -1366,7 +1366,7 @@ class Driver {
   async verboseReportOnFailure(testTitle, error) {
     console.error(
       `Failure on testcase: '${testTitle}', for more information see the ${
-        process.env.CIRCLECI ? 'artifacts tab in CI' : 'test-artifacts folder'
+        process.env.CI ? 'artifacts tab in CI' : 'test-artifacts folder'
       }\n`,
     );
     console.error(`${error}\n`);

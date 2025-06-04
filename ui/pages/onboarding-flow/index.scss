@@ -13,12 +13,12 @@
 .onboarding-flow {
   &--welcome-banner {
     background: url('/images/welcome-banner.png') no-repeat calc(50% + 500px) 160px;
-    background-color: var(--brand-colors-lime-lime050);
+    background-color: var(--color-accent03-light);
   }
 
   &--welcome-login {
     background: url('/images/welcome-page.png') no-repeat center top;
-    background-color: var(--brand-colors-purple-purple800);
+    background-color: var(--color-accent02-dark);
   }
 
   &__twitter-button {
