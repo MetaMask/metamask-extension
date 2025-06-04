@@ -52,7 +52,6 @@ export const AddressQRCode = () => {
 
   const chainId = parseCaipChainId(multichainNetwork.chainId).reference;
 
-
   const handleNavigation = useCallback(() => {
     trackEvent({
       event: MetaMetricsEventName.BlockExplorerLinkClicked,
@@ -80,7 +79,7 @@ export const AddressQRCode = () => {
       >
         {t('address')}
       </Header>
-      <Content>
+      <Content paddingTop={0}>
         <QrCodeView Qr={{ data: address }} location="Account Details Page" />
       </Content>
       <Footer>
@@ -89,6 +88,9 @@ export const AddressQRCode = () => {
           size={ButtonSecondarySize.Lg}
           textProps={{
             variant: TextVariant.bodyMdMedium,
+          }}
+          style={{
+            width: '100%',
           }}
         >
           {t('viewOnExplorer')}

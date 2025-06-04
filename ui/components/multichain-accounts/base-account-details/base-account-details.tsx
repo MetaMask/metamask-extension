@@ -55,7 +55,7 @@ export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
 
   const handleShowAddress = () => {
     history.push(ACCOUNT_DETAILS_QR_CODE_ROUTE);
-  }
+  };
 
   return (
     <Page backgroundColor={BackgroundColor.backgroundDefault}>
