@@ -68,37 +68,7 @@ const createBaseMockStore = (account, address) => ({
       },
       selectedAccount: account.id,
     },
-    accounts: {
-      [account.address]: {
-        address: account.address,
-        balance: '0x1bc16d674ec80000', // 2 ETH in hex
-      },
-    },
-    keyrings: [
-      {
-        type: KeyringTypes.hd,
-        accounts: account.type === EthAccountType.Eoa ? [account.address] : [],
-      },
-      {
-        type: KeyringTypes.snap,
-        accounts: account.type === SolAccountType.DataAccount ? [account.address] : [],
-      },
-    ],
     useBlockie: false,
-    preferences: {},
-    currentCurrency: 'USD',
-    providerConfig: {
-      chainId: '0x1',
-      type: 'mainnet',
-    },
-    networkConfigurations: {
-      mainnet: {
-        chainId: '0x1',
-        nickname: 'Ethereum Mainnet',
-        rpcUrl: 'https://mainnet.infura.io/v3/abc123',
-      },
-    },
-    selectedNetworkClientId: 'mainnet',
   },
 });
 
