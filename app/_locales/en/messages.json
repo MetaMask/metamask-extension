@@ -4862,7 +4862,7 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
-  "securityChangePasswordChange": {
+  "securityChangePassword": {
     "message": "Change password"
   },
   "securityChangePasswordDescription": {
