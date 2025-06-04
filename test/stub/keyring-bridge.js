@@ -179,6 +179,21 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
     return Promise.resolve();
   }
 
+  /**
+   * Signs a transaction using a private key.
+   * This function supports both legacy (type 0) and EIP-1559 (type 2) transactions.
+   * It decodes the RLP-encoded transaction, signs it, and then returns the
+   * signature components (v, r, s) as hexadecimal strings.
+   *
+   * @param {object} params - The parameters object.
+   * @param {string} params.tx - The RLP-encoded transaction as a hex string.
+   * @returns {Promise<object>} A promise that resolves to an object containing the
+   * signature components:
+   * - `v`: The recovery id as a hex string.
+   * - `r`: The R component of the signature as a hex string.
+   * - `s`: The S component of the signature as a hex string.
+   * @throws {Error} If the transaction type is unsupported.
+   */
   async deviceSignTransaction({ tx }) {
     // chainId hardcoded for now
     const chainId = 1337;
@@ -215,16 +230,26 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
       const rlpData = txBuffer;
       const rlpTx = rlp.decode(rlpData);
 
-      return LegacyTransaction.fromValuesArray(rlpTx.slice(0, 6), {
+      const signedTx = LegacyTransaction.fromValuesArray(rlpTx.slice(0, 6), {
         common,
       }).sign(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
+      return {
+        v: bigIntToHex(signedTx.v),
+        r: bigIntToHex(signedTx.r),
+        s: bigIntToHex(signedTx.s),
+      };
     } else if (txType === 2) {
-      const rlpData = txBuffer.slice(1, tx.length);
+      const rlpData = txBuffer.slice(1);
       const rlpTx = rlp.decode(rlpData);
 
-      return FeeMarketEIP1559Transaction.fromValuesArray(rlpTx, {
+      const signedTx = FeeMarketEIP1559Transaction.fromValuesArray(rlpTx, {
         common,
       }).sign(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
+      return {
+        v: bigIntToHex(signedTx.v),
+        r: bigIntToHex(signedTx.r),
+        s: bigIntToHex(signedTx.s),
+      };
     }
 
     throw new Error('Unsupported transaction type.');
