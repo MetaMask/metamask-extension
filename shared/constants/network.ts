@@ -188,6 +188,8 @@ export const CHAIN_IDS = {
   MATCHAIN: '0x2ba',
   FLOW: '0x2eb',
   MONAD_TESTNET: '0x279f',
+  SOPHON: '0xc3b8',
+  SOPHON_TESTNET: '0x1fa72e78',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -261,6 +263,8 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   SHAPE_SEPOLIA: '0x2b03',
   SHAPE: '0x168',
   XRPLEVM_TESTNET: '0x161c28',
+  SOPHON: '0xc3b8',
+  SOPHON_TESTNET: '0x1fa72e78',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -327,6 +331,8 @@ export const PLUME_DISPLAY_NAME = 'Plume';
 export const MATCHAIN_DISPLAY_NAME = 'Matchain';
 export const FLOW_DISPLAY_NAME = 'Flow EVM Mainnet';
 export const MONAD_TESTNET_DISPLAY_NAME = 'Monad Testnet';
+export const SOPHON_DISPLAY_NAME = 'Sophon';
+export const SOPHON_TESTNET_DISPLAY_NAME = 'Sophon Testnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -355,6 +361,8 @@ export const LINEA_MAINNET_RPC_URL = getRpcUrl({
 export const LOCALHOST_RPC_URL = 'http://localhost:8545';
 export const MEGAETH_TESTNET_RPC_URL = 'https://carrot.megaeth.com/rpc';
 export const MONAD_TESTNET_RPC_URL = 'https://testnet-rpc.monad.xyz';
+export const SOPHON_RPC_URL = 'https://rpc.sophon.xyz';
+export const SOPHON_TESTNET_RPC_URL = 'https://rpc.testnet.sophon.xyz';
 
 /**
  * An object containing the token symbols for various tokens that are either
@@ -387,6 +395,7 @@ export const CURRENCY_SYMBOLS = {
   LENS: 'GHO',
   PLUME: 'PLUME',
   FLOW: 'FLOW',
+  SOPHON: 'SOPH',
 } as const;
 
 // Non-EVM currency symbols
@@ -464,6 +473,8 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   SHAPE: 'ETH',
   SHAPE_SEPOLIA: 'ETH',
   XRPLEVM_TESTNET: 'XRP',
+  SOPHON: 'SOPH',
+  SOPHON_TESTNET: 'SOPH',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -571,6 +582,8 @@ export const PLUME_NATIVE_TOKEN_IMAGE_URL = './images/plume-native.svg';
 export const MATCHAIN_IMAGE_URL = './images/matchain.svg';
 export const FLOW_IMAGE_URL = './images/flow.svg';
 export const MONAD_TESTNET_IMAGE_URL = './images/monad-testnet-logo.png';
+export const SOPHON_IMAGE_URL = './images/sophon.svg';
+export const SOPHON_TESTNET_IMAGE_URL = './images/sophon-testnet.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -709,6 +722,8 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.MATCHAIN]: MATCHAIN_DISPLAY_NAME,
   [CHAIN_IDS.FLOW]: FLOW_DISPLAY_NAME,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_DISPLAY_NAME,
+  [CHAIN_IDS.SOPHON]: SOPHON_DISPLAY_NAME,
+  [CHAIN_IDS.SOPHON_TESTNET]: SOPHON_TESTNET_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -847,6 +862,8 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.FLOW]: CURRENCY_SYMBOLS.FLOW,
   [CHAIN_IDS.MONAD_TESTNET]:
     TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MONAD_TESTNET],
+  [CHAIN_IDS.SOPHON]: CURRENCY_SYMBOLS.SOPHON,
+  [CHAIN_IDS.SOPHON_TESTNET]: CURRENCY_SYMBOLS.SOPHON,
 } as const;
 
 /**
@@ -992,6 +1009,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.MATCHAIN]: MATCHAIN_IMAGE_URL,
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_IMAGE_URL,
+  [CHAIN_IDS.SOPHON]: SOPHON_IMAGE_URL,
+  [CHAIN_IDS.SOPHON_TESTNET]: SOPHON_TESTNET_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1156,6 +1175,14 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
     domain: 'gnosisscan.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}-gnosis`,
   },
+  [CHAIN_IDS.SOPHON]: {
+    domain: 'sophscan.xyx',
+    subdomain: `${defaultEtherscanSubdomainPrefix}`,
+  },
+  [CHAIN_IDS.SOPHON_TESTNET]: {
+    domain: 'sophscan.xyx',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-sepolia`,
+  },
 };
 
 export const CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP = {
@@ -1316,6 +1343,22 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     blockExplorerUrls: ['https://basescan.org'],
     defaultBlockExplorerUrlIndex: 0,
   },
+  {
+    chainId: CHAIN_IDS.SOPHON,
+    name: SOPHON_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.SOPHON,
+    rpcEndpoints: [
+      {
+        url: SOPHON_RPC_URL,
+        failoverUrls: ["https://rpc-quicknode.sophon.xyz"],
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://sophscan.xyx'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+
 ];
 
 export const FEATURED_NETWORK_CHAIN_IDS = [
