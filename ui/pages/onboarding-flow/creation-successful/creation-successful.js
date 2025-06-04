@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
 import {
@@ -54,6 +54,7 @@ export default function CreationSuccessful() {
   const history = useHistory();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const { search } = useLocation();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
@@ -65,13 +66,20 @@ export default function CreationSuccessful() {
   const isWalletReady =
     firstTimeFlowType === FirstTimeFlowType.import || seedPhraseBackedUp;
 
+  const searchParams = new URLSearchParams(search);
+  const isFromReminderParam = searchParams.get('isFromReminder')
+    ? '/?isFromReminder=true'
+    : '';
+
   const renderTitle = useMemo(() => {
     if (socialLoginFlow || isWalletReady) {
-      return t('yourWalletIsReady');
+      return isFromReminderParam
+        ? t('yourWalletIsReadyFromReminder')
+        : t('yourWalletIsReadyRemind');
     }
 
     return t('yourWalletIsReadyRemind');
-  }, [socialLoginFlow, isWalletReady, t]);
+  }, [socialLoginFlow, isFromReminderParam, isWalletReady, t]);
 
   const renderDetails1 = useMemo(() => {
     if (userSocialLoginType) {
@@ -189,37 +197,41 @@ export default function CreationSuccessful() {
             {renderDetails2}
           </Text>
         </Box>
-
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.flexStart}
-          className="creation-successful__settings-actions"
-          gap={4}
-        >
-          <ButtonBase
-            data-testid="manage-default-settings"
-            borderRadius={BorderRadius.LG}
-            width={BlockSize.Full}
-            onClick={() => history.push(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
+        {!isFromReminderParam && (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            alignItems={AlignItems.flexStart}
+            className="creation-successful__settings-actions"
+            gap={4}
           >
-            <Box display={Display.Flex} alignItems={AlignItems.center}>
+            <ButtonBase
+              data-testid="manage-default-settings"
+              borderRadius={BorderRadius.LG}
+              width={BlockSize.Full}
+              onClick={() => history.push(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
+            >
+              <Box display={Display.Flex} alignItems={AlignItems.center}>
+                <Icon
+                  name={IconName.Setting}
+                  size={IconSize.Md}
+                  marginInlineEnd={3}
+                />
+                <Text
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {t('manageDefaultSettings')}
+                </Text>
+              </Box>
               <Icon
-                name={IconName.Setting}
-                size={IconSize.Md}
-                marginInlineEnd={3}
+                name={IconName.ArrowRight}
+                color={IconColor.iconAlternative}
+                size={IconSize.Sm}
               />
-              <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-                {t('manageDefaultSettings')}
-              </Text>
-            </Box>
-            <Icon
-              name={IconName.ArrowRight}
-              color={IconColor.iconAlternative}
-              size={IconSize.Sm}
-            />
-          </ButtonBase>
-        </Box>
+            </ButtonBase>
+          </Box>
+        )}
       </Box>
 
       <Box

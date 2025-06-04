@@ -7037,6 +7037,9 @@
   "yourWalletIsReady": {
     "message": "Your wallet is ready!"
   },
+  "yourWalletIsReadyFromReminder": {
+    "message": "Keep your Secret Recovery Phrase safe!"
+  },
   "yourWalletIsReadyRemind": {
     "message": "We’ll remind you later"
   },
