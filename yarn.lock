@@ -4798,14 +4798,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/address-book-controller@npm:@metamask-previews/address-book-controller@6.0.3-preview-510657d5":
-  version: 6.0.3-preview-510657d5
-  resolution: "@metamask-previews/address-book-controller@npm:6.0.3-preview-510657d5"
+"@metamask/address-book-controller@npm:@metamask-previews/address-book-controller@6.1.0-preview-4da9cec1":
+  version: 6.1.0-preview-4da9cec1
+  resolution: "@metamask-previews/address-book-controller@npm:6.1.0-preview-4da9cec1"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/controller-utils": "npm:^11.9.0"
     "@metamask/utils": "npm:^11.2.0"
-  checksum: 10/889ad31049048579a26c666e6f1131ceea23fc62cad8c287015e29ae43b5d4b7de5a236dbd6b9f6a9e1fd4838623edaba06627a7bd009e658973084a886e9044
+  checksum: 10/5587bf3e7c1c3f8731318207dbf173551ab964550ad32a4c853bb214d8aae2bb0e8530fd3859c5fe758a0520e7f6d3f543d580dc5b7601f51cf072bb16e80bca
   languageName: node
   linkType: hard
 
@@ -6156,9 +6156,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@16.0.0-preview-510657d5":
-  version: 16.0.0-preview-510657d5
-  resolution: "@metamask-previews/profile-sync-controller@npm:16.0.0-preview-510657d5"
+"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@17.0.0-preview-4da9cec1":
+  version: 17.0.0-preview-4da9cec1
+  resolution: "@metamask-previews/profile-sync-controller@npm:17.0.0-preview-4da9cec1"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/snaps-sdk": "npm:^7.1.0"
@@ -6175,7 +6175,7 @@ __metadata:
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^12.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/9ec6850876abae914dc175dfa3a3676b1700198859732fe698ac554ced59cb2dbe7f4c58ab41f832a4fca63fe0c5d6fb194668131cd57b883365895911a32b43
+  checksum: 10/e469c9eacef84b88cd0b9161c2fbc48bd200312e44124c9c1685f0fb9ce168709040e6b1702e3fef2ce5068c8ca9a7a33491db80f39530cedf09d47267cd1927
   languageName: node
   linkType: hard
 
@@ -29789,7 +29789,7 @@ __metadata:
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/account-watcher": "npm:^4.1.3"
     "@metamask/accounts-controller": "npm:^30.0.0"
-    "@metamask/address-book-controller": "npm:@metamask-previews/address-book-controller@6.0.3-preview-510657d5"
+    "@metamask/address-book-controller": "npm:@metamask-previews/address-book-controller@6.1.0-preview-4da9cec1"
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^7.0.0"
@@ -29857,7 +29857,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.36.0"
     "@metamask/preferences-controller": "npm:^17.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.4.0"
-    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@16.0.0-preview-510657d5"
+    "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@17.0.0-preview-4da9cec1"
     "@metamask/providers": "npm:^22.1.0"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
     "@metamask/remote-feature-flag-controller": "npm:^1.6.0"
