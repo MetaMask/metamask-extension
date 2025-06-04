@@ -50,6 +50,8 @@ import {
   getQuoteRefreshRate,
   getHardwareWalletName,
   getIsQuoteExpired,
+  getIsUnifiedUIEnabled,
+  getIsSwap,
   BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import {
@@ -141,7 +143,13 @@ const PrepareBridgePage = () => {
 
   const t = useI18nContext();
 
-  const isSwap = useIsMultichainSwap();
+  const isMultichainSwap = useIsMultichainSwap();
+  const fromChain = useSelector(getFromChain);
+  const isQuoteRequestSwap = useSelector(getIsSwap);
+  const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
+    getIsUnifiedUIEnabled(state, fromChain?.chainId),
+  );
+  const isSwap = isUnifiedUIEnabled ? isQuoteRequestSwap : isMultichainSwap;
 
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getTokenList) as TokenListMap;
@@ -150,7 +158,6 @@ const PrepareBridgePage = () => {
 
   const fromChains = useSelector(getFromChains);
   const toChains = useSelector(getToChains);
-  const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
 
   const isFromTokensLoading = useMemo(() => {
@@ -569,11 +576,25 @@ const PrepareBridgePage = () => {
     useState<BridgeToken | null>(null);
   const [toastTriggerCounter, setToastTriggerCounter] = useState(0);
 
+  const getFromInputHeader = () => {
+    if (isUnifiedUIEnabled) {
+      return t('yourNetworks');
+    }
+    return isSwap ? t('swapSwapFrom') : t('bridgeFrom');
+  };
+
+  const getToInputHeader = () => {
+    if (isUnifiedUIEnabled) {
+      return t('swapSelectToken');
+    }
+    return isSwap ? t('swapSwapTo') : t('bridgeTo');
+  };
+
   return (
     <>
       <Column className="prepare-bridge-page" gap={8}>
         <BridgeInputGroup
-          header={isSwap ? t('swapSwapFrom') : t('bridgeFrom')}
+          header={getFromInputHeader()}
           token={fromToken}
           onAmountChange={(e) => {
             dispatch(setFromTokenInputValue(e));
@@ -596,7 +617,7 @@ const PrepareBridgePage = () => {
           }}
           networkProps={{
             network: fromChain,
-            networks: isSwap ? undefined : fromChains,
+            networks: isSwap && !isUnifiedUIEnabled ? undefined : fromChains,
             onNetworkChange: (networkConfig) => {
               networkConfig?.chainId &&
                 networkConfig.chainId !== fromChain?.chainId &&
@@ -631,7 +652,7 @@ const PrepareBridgePage = () => {
             },
             header: t('yourNetworks'),
           }}
-          isMultiselectEnabled={!isSwap}
+          isMultiselectEnabled={isUnifiedUIEnabled || !isSwap}
           onMaxButtonClick={(value: string) => {
             dispatch(setFromTokenInputValue(value));
           }}
@@ -701,10 +722,14 @@ const PrepareBridgePage = () => {
               disabled={
                 isSwitchingTemporarilyDisabled ||
                 !isValidQuoteRequest(quoteRequest, false) ||
-                (!isSwap && !isNetworkAdded(toChain))
+                (!isUnifiedUIEnabled && !isSwap && !isNetworkAdded(toChain))
               }
               onClick={() => {
-                if (!isSwap && !isNetworkAdded(toChain)) {
+                if (
+                  !isUnifiedUIEnabled &&
+                  !isSwap &&
+                  !isNetworkAdded(toChain)
+                ) {
                   return;
                 }
                 toChain?.chainId &&
@@ -741,7 +766,10 @@ const PrepareBridgePage = () => {
                     event: MetaMetricsEventName.InputSourceDestinationFlipped,
                     properties: flippedRequestProperties,
                   });
-                if (!isSwap) {
+                const shouldFlipNetworks = isUnifiedUIEnabled
+                  ? fromChain?.chainId !== toChain?.chainId
+                  : !isSwap;
+                if (shouldFlipNetworks) {
                   // Only flip networks if bridging
                   const toChainClientId =
                     toChain?.defaultRpcEndpointIndex !== undefined &&
@@ -773,7 +801,7 @@ const PrepareBridgePage = () => {
           </Box>
 
           <BridgeInputGroup
-            header={t('swapSelectToken')}
+            header={getToInputHeader()}
             token={toToken}
             onAssetChange={(token) => {
               const bridgeToken = {
@@ -788,7 +816,7 @@ const PrepareBridgePage = () => {
               dispatch(setToToken(bridgeToken));
             }}
             networkProps={
-              isSwap
+              isSwap && !isUnifiedUIEnabled
                 ? undefined
                 : {
                     network: toChain,
@@ -805,9 +833,10 @@ const PrepareBridgePage = () => {
                       );
                       dispatch(setToToken(destNativeAsset));
                     },
-                    header: isSwap ? t('swapSwapTo') : t('bridgeTo'),
-                    shouldDisableNetwork: ({ chainId }) =>
-                      chainId === fromChain?.chainId,
+                    header: getToInputHeader(),
+                    shouldDisableNetwork: isUnifiedUIEnabled
+                      ? undefined
+                      : ({ chainId }) => chainId === fromChain?.chainId,
                   }
             }
             customTokenListGenerator={
