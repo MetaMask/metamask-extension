@@ -369,15 +369,15 @@ export const completeVaultRecoveryOnboardingFlow = async ({
   await loginPage.check_pageIsLoaded();
   await loginPage.loginToHomepage(password);
 
+  const secureWalletPage = new SecureWalletPage(driver);
+  await secureWalletPage.check_pageIsLoaded();
+  await secureWalletPage.skipSRPBackup();
+
   // complete metrics onboarding flow
   await onboardingMetricsFlow(driver, {
     participateInMetaMetrics: false,
     dataCollectionForMarketing: false,
   });
-
-  const secureWalletPage = new SecureWalletPage(driver);
-  await secureWalletPage.check_pageIsLoaded();
-  await secureWalletPage.skipSRPBackup();
 
   // finish up onboarding screens
   const onboardingCompletePage = new OnboardingCompletePage(driver);
