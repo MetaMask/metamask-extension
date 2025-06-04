@@ -176,23 +176,6 @@ if (globalThis.stateHooks.onInstalledListener) {
 }
 
 /**
- * Trigger actions that should happen only when an update is available
- */
-function onUpdateAvailable() {
-  if (controller) {
-    log.debug('An update is available');
-    controller.appStateController.setIsUpdateAvailable(true);
-    return;
-  }
-  setTimeout(() => {
-    // If the controller is not set yet, we wait and try again
-    onUpdateAvailable();
-  }, 500);
-}
-
-browser.runtime.onUpdateAvailable.addListener(onUpdateAvailable);
-
-/**
  * This deferred Promise is used to track whether initialization has finished.
  *
  * It is very important to ensure that `resolveInitialization` is *always*
@@ -1494,19 +1477,24 @@ function onInstall() {
 }
 
 /**
- * Trigger actions that should happen only upon update
+ * Trigger actions that should happen only upon update installation
  */
-function onUpdate() {
-  if (controller) {
-    log.debug('Update detected');
-    controller.appStateController.setLastUpdatedAt(Date.now());
-    return;
-  }
-  setTimeout(() => {
-    // If the controller is not set yet, we wait and try again
-    onUpdate();
-  }, 500);
+async function onUpdate() {
+  await isInitialized;
+  log.debug('Update installation detected');
+  controller.appStateController.setLastUpdatedAt(Date.now());
 }
+
+/**
+ * Trigger actions that should happen only when an update is available
+ */
+async function onUpdateAvailable() {
+  await isInitialized;
+  log.debug('An update is available');
+  controller.appStateController.setIsUpdateAvailable(true);
+}
+
+browser.runtime.onUpdateAvailable.addListener(onUpdateAvailable);
 
 function onNavigateToTab() {
   browser.tabs.onActivated.addListener((onActivatedTab) => {
