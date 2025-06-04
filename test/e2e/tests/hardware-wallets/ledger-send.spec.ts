@@ -62,7 +62,6 @@ describe('Ledger Hardware', function (this: Suite) {
         // Unlock first account of first page and check that the correct account has been added
         await selectLedgerAccountPage.unlockAccount(1);
         await headerNavbar.check_pageIsLoaded();
-        await new HomePage(driver).check_expectedBalanceIsDisplayed('0');
         await homePage.check_expectedBalanceIsDisplayed('1208925.8196');
         await sendRedesignedTransactionToAddress({
           driver,
@@ -124,7 +123,6 @@ describe('Ledger Hardware', function (this: Suite) {
         // Unlock first account of first page and check that the correct account has been added
         await selectLedgerAccountPage.unlockAccount(1);
         await headerNavbar.check_pageIsLoaded();
-        await new HomePage(driver).check_expectedBalanceIsDisplayed('0');
         await homePage.check_expectedBalanceIsDisplayed('1208925.8196');
         await sendRedesignedTransactionToAddress({
           driver,
