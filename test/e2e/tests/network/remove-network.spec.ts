@@ -7,7 +7,6 @@ import {
 import FixtureBuilder from '../../fixture-builder';
 import {
   openDapp,
-  regularDelayMs,
   unlockWallet,
   WINDOW_TITLES,
   withFixtures,
@@ -104,9 +103,6 @@ describe('Remove Network:', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // Avoid a stale element error
-        await driver.waitForSelector('[data-testid="network-display"]');
-
         // Open the network dropdown
         await headerNavbar.clickSwitchNetworkDropDown();
 
@@ -193,20 +189,10 @@ describe('Remove Network:', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // Avoid a stale element error
-        await driver.waitForSelector('[data-testid="network-display"]');
-
         // Go to Edit Menu
         await headerNavbar.clickSwitchNetworkDropDown();
-        await driver.waitForSelector(
-          '[data-testid="network-list-item-options-button-eip155:1338"]',
-        );
         await selectNetwork.openNetworkListOptions('eip155:1338');
-        await driver.waitForSelector(
-          '[data-testid="network-list-item-options-edit"]',
-        );
         await selectNetwork.openEditNetworkModal();
-        await driver.waitForSelector('[data-testid="test-add-rpc-drop-down"]');
         await addEditNetworkModal.clickRpcDropDown();
 
         // Assert the endpoint is in the list
@@ -216,7 +202,7 @@ describe('Remove Network:', function (this: Suite) {
         await addEditNetworkModal.removeRPCInEditNetworkModal(2);
 
         // Verify it went away
-        await addEditNetworkModal.check_rpcIsNotDisplayed('127.0.0.1:8546');
+        await addEditNetworkModal.checkRpcIsNotDisplayed('127.0.0.1:8546');
 
         // Save the network
         await addEditNetworkModal.saveEditedNetwork();

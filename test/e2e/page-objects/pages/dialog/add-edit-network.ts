@@ -61,7 +61,7 @@ class AddEditNetworkModal {
    *
    * @param rpcName - The name of the RPC to check.
    */
-  async check_rpcIsNotDisplayed(rpcName: string): Promise<void> {
+  async checkRpcIsNotDisplayed(rpcName: string): Promise<void> {
     console.log(
       `Check that RPC ${rpcName} is not displayed in the edit network modal`,
     );
