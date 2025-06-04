@@ -170,6 +170,61 @@ const baseStore = {
     featureFlags: {
       sendHexData: false,
     },
+    networkConfigurationsByChainId: {
+      '0x1': {
+        chainId: '0x1',
+        name: 'Custom Mainnet RPC',
+        nativeCurrency: 'ETH',
+        defaultRpcEndpointIndex: 0,
+        ticker: 'ETH',
+        rpcEndpoints: [
+          {
+            type: 'custom',
+            url: 'https://testrpc.com',
+            networkClientId: 'testNetworkConfigurationId',
+          },
+        ],
+        blockExplorerUrls: [],
+      },
+      '0x5': {
+        chainId: '0x5',
+        name: 'Goerli',
+        nativeCurrency: 'ETH',
+        defaultRpcEndpointIndex: 0,
+        ticker: 'ETH',
+        rpcEndpoints: [
+          {
+            type: 'custom',
+            url: 'https://goerli.com',
+            networkClientId: 'goerli',
+          },
+        ],
+        blockExplorerUrls: [],
+      },
+    },
+    selectedNetworkClientId: 'goerli',
+    networksMetadata: {
+      goerli: {
+        EIPS: {
+          1559: true,
+        },
+        status: 'available',
+      },
+    },
+    multichainNetworkConfigurationsByChainId: {
+      'bip122:000000000019d6689c085ae165831e93': {
+        chainId: 'bip122:000000000019d6689c085ae165831e93',
+        name: 'Bitcoin',
+        nativeCurrency: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+        isEvm: false,
+      },
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        name: 'Solana',
+        nativeCurrency: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        isEvm: false,
+      },
+    },
     addressBook: {
       [CHAIN_IDS.GOERLI]: [],
     },

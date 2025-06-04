@@ -49,26 +49,25 @@
   &__dropdown--welcome--banner {
     .dropdown__select {
       border: 0;
-      background-color: var(--brand-colors-lime-lime700);
-      color: var(--brand-colors-lime-lime050);
+      background-color: var(--color-accent03-dark);
+      color: var(--color-accent03-light);
     }
 
     .dropdown__icon-caret-down {
-      color: var(--brand-colors-lime-lime050);
+      color: var(--color-accent03-light);
     }
   }
-
 
   // SRP_OVERRIDE: dropdown on welcome banner page
   &__dropdown--welcome--login {
     .dropdown__select {
       border: 0;
-      background-color: var(--brand-colors-purple-purple100);
-      color: var(--brand-colors-purple-purple800);
+      background-color: var(--color-accent02-light);
+      color: var(--color-accent02-dark);
     }
 
     .dropdown__icon-caret-down {
-      color: var(--brand-colors-purple-purple800);
+      color: var(--color-accent02-dark);
     }
   }
 

@@ -206,6 +206,7 @@ export enum IconName {
   Receive = 'receive',
   Received = 'received',
   Refresh = 'refresh',
+  RemoteMode = 'remote-mode',
   RemoveMinus = 'remove-minus',
   Report = 'report',
   Rocket = 'rocket',
