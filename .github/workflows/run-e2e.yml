@@ -48,10 +48,7 @@ jobs:
     name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
     runs-on: ubuntu-latest
     container:
-      image: cimg/node:22.15-browsers
-      credentials:
-        username: ${{ secrets.DOCKER_HUB_USERNAME }}
-        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+      image: public.ecr.aws/y2l1v8k6/metamask-core-staging/metamask-extension-e2e:1.0.0-155f8fc
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # For a `pull_request` event, the branch is `github.head_ref``.
@@ -64,29 +61,6 @@ jobs:
       PR_NUMBER: ${{ github.event.pull_request.number || '' }}
       TEST_SUITE_NAME: ${{ inputs.test-suite-name }}
     steps:
-      - name: Install dependencies (with retries)
-        run: |
-          # Retry apt-get commands up to 5 times with 5s delay
-          for i in {1..5}; do
-            if sudo apt-get update; then
-              break
-            else
-              echo "Retry $i/5 failed, waiting..."
-              sleep 5
-            fi
-          done
-
-          for i in {1..5}; do
-            if sudo apt-get install -y zstd; then
-              break
-            else
-              echo "Retry $i/5 failed, waiting..."
-              sleep 5
-            fi
-          done
-
-          sudo corepack enable
-
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
