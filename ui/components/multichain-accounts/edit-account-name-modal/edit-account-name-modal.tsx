@@ -9,7 +9,7 @@ import {
   ButtonPrimary,
   ButtonSecondary,
   FormTextField,
-  Box
+  Box,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setAccountLabel } from '../../../store/actions';
@@ -51,9 +51,7 @@ export const EditAccountNameModal = ({
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onClose}>
-          {t('editAccountName')}
-        </ModalHeader>
+        <ModalHeader onClose={onClose}>{t('editAccountName')}</ModalHeader>
         <ModalBody>
           <Box
             display={Display.Flex}
@@ -67,15 +65,8 @@ export const EditAccountNameModal = ({
               placeholder={t('enterAccountName')}
               autoFocus
             />
-            <Box
-              display={Display.Flex}
-              gap={3}
-              marginTop={4}
-            >
-              <ButtonSecondary
-                onClick={handleCancel}
-                block
-              >
+            <Box display={Display.Flex} gap={3} marginTop={4}>
+              <ButtonSecondary onClick={handleCancel} block>
                 {t('cancel')}
               </ButtonSecondary>
               <ButtonPrimary
