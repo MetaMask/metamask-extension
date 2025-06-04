@@ -86,6 +86,7 @@ export const ImportNftsModal = ({ onClose }) => {
   const nftsDropdownState = useSelector(getNftsDropdownState);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const chainId = useSelector(getCurrentChainId);
+  const networkClientId = useSelector(getSelectedNetworkClientId);
   const {
     tokenAddress: initialTokenAddress,
     tokenId: initialTokenId,
@@ -110,7 +111,6 @@ export const ImportNftsModal = ({ onClose }) => {
   const [nftAddressValidationError, setNftAddressValidationError] =
     useState(null);
   const [duplicateTokenIdError, setDuplicateTokenIdError] = useState(null);
-  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   const handleAddNft = async () => {
     trace({ name: TraceName.ImportNfts });
