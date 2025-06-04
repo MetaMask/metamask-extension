@@ -1,5 +1,6 @@
 import { Messenger } from '@metamask/base-controller';
 import {
+  NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
   NetworkControllerStateChangeEvent,
@@ -12,8 +13,8 @@ type Actions =
   | AddApprovalRequest
   | NetworkControllerGetStateAction
   | AccountsControllerGetSelectedAccountAction
-  | NetworkControllerGetNetworkClientByIdAction;
-
+  | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerFindNetworkClientIdByChainIdAction;
 type Events =
   | PreferencesControllerStateChangeEvent
   | NetworkControllerStateChangeEvent;
@@ -43,6 +44,7 @@ export function getNftDetectionControllerMessenger(
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
       'AccountsController:getSelectedAccount',
+      'NetworkController:findNetworkClientIdByChainId',
     ],
   });
 }
