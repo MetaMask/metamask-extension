@@ -3852,7 +3852,7 @@ export function getShowUpdateModal(state) {
   const remoteFeatureFlags = getRemoteFeatureFlags(state);
 
   const extensionCurrentVersion = semver.valid(
-    semver.coerce(global.platform.getVersion()),
+    semver.coerce(global.platform?.getVersion()),
   );
   const extensionMinimumVersion = semver.valid(
     semver.coerce(remoteFeatureFlags.extensionMinimumVersion),
