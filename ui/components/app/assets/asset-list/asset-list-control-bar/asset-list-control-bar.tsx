@@ -142,12 +142,7 @@ const AssetListControlBar = ({
     allOpts[chainId] = true;
   });
 
-  console.log('tokenNetworkFilter: ', tokenNetworkFilter);
-  console.log('enabledNetworks: ', enabledNetworks);
-  console.log('networksToDisplay: ', networksToDisplay);
-
   useEffect(() => {
-    console.log('foo: ', isTestNetwork);
     if (isTestNetwork) {
       const testnetFilter = {
         [currentMultichainNetwork.network.chainId]: true,
@@ -160,7 +155,6 @@ const AssetListControlBar = ({
   // We need to set the default filter for all users to be all included networks, rather than defaulting to empty object
   // This effect is to unblock and derisk in the short-term
   useEffect(() => {
-    console.log('bar: ', networksToDisplay);
     if (Object.keys(networksToDisplay).length === 0) {
       dispatch(setTokenNetworkFilter(allOpts));
     } else {
