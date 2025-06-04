@@ -5,7 +5,7 @@ import {
   getEnabledNetworks,
   getSelectedAccount,
   getTokenSortConfig,
-  isGlobalNetworkSelectorEnabled,
+  isGlobalNetworkSelectorRemoved,
 } from '../../../../selectors';
 import { useNetworkFilter } from '../hooks';
 import { filterAssets } from '../util/filter';
@@ -95,7 +95,7 @@ export default function DefiList({ onClick }: DefiListProps) {
     const filteredAssets = filterAssets(defiProtocolCells, [
       {
         key: 'chainId',
-        opts: isGlobalNetworkSelectorEnabled ? networkFilter : enabledNetworks,
+        opts: isGlobalNetworkSelectorRemoved ? enabledNetworks : networkFilter,
         filterCallback: 'inclusive',
       },
     ]);
