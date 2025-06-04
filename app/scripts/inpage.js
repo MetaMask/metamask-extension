@@ -40,7 +40,7 @@ import { pipeline } from 'readable-stream';
 
 import {
   getMultichainClient,
-  getWindowPostMessageTransport,
+  getDefaultTransport,
 } from '@metamask/multichain-api-client';
 import { registerSolanaWalletStandard } from '@metamask/solana-wallet-standard';
 
@@ -88,7 +88,7 @@ if (shouldInjectProvider()) {
   });
 
   const multichainClient = getMultichainClient({
-    transport: getWindowPostMessageTransport(),
+    transport: getDefaultTransport(),
   });
   registerSolanaWalletStandard({
     client: multichainClient,
