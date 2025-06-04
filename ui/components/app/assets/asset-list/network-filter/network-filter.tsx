@@ -1,6 +1,10 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setTokenNetworkFilter } from '../../../../../store/actions';
+import { CaipChainId } from '@metamask/utils';
+import {
+  setEnabledNetworks,
+  setTokenNetworkFilter,
+} from '../../../../../store/actions';
 import {
   getCurrentNetwork,
   getShouldHideZeroBalanceTokens,
@@ -8,6 +12,7 @@ import {
   getAllChainsToPoll,
   getTokenNetworkFilter,
   getIsTokenNetworkFilterEqualCurrentNetwork,
+  getEnabledNetworks,
 } from '../../../../../selectors';
 import {
   getCurrentChainId,
@@ -38,6 +43,7 @@ import {
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import InfoTooltip from '../../../../ui/info-tooltip';
+import { isGlobalNetworkSelectorEnabled } from '../../../../../selectors/selectors';
 
 type SortControlProps = {
   handleClose: () => void;
@@ -59,6 +65,7 @@ const NetworkFilter = ({
   const selectedAccount = useSelector(getSelectedAccount);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
+  const enabledNetworks = useSelector(getEnabledNetworks);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
@@ -96,7 +103,11 @@ const NetworkFilter = ({
     if (handleFilterNetwork) {
       handleFilterNetwork(chainFilters);
     } else {
-      dispatch(setTokenNetworkFilter(chainFilters));
+      isGlobalNetworkSelectorEnabled
+        ? dispatch(setTokenNetworkFilter(chainFilters))
+        : dispatch(
+            setEnabledNetworks(Object.keys(chainFilters) as CaipChainId[]),
+          );
     }
 
     // TODO Add metrics
@@ -110,9 +121,13 @@ const NetworkFilter = ({
   ).map((chain) => {
     return allNetworks[chain].name;
   });
+
+  const networks = isGlobalNetworkSelectorEnabled
+    ? tokenNetworkFilter
+    : enabledNetworks;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  const filter = networkFilter || tokenNetworkFilter;
+  const filter = networkFilter || networks;
 
   return (
     <>
