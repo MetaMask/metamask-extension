@@ -65,10 +65,14 @@ function UpdateModal() {
         </ModalBody>
         <ModalFooter
           onSubmit={async () => {
-            await browser.tabs.create({
-              url: 'https://metamask.io/updating',
-              active: true,
-            });
+            try {
+              await browser.tabs.create({
+                url: 'https://metamask.io/updating',
+                active: true,
+              });
+            } catch (error) {
+              console.error(error);
+            }
             browser.runtime.reload();
           }}
           submitButtonProps={{
