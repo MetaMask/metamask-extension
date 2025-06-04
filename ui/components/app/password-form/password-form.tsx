@@ -174,6 +174,9 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
         labelProps={{ marginBottom: 1 }}
         size={FormTextFieldSize.Lg}
         error={Boolean(confirmPasswordError)}
+        helpTextProps={{
+          'data-testid': 'confirm-password-error',
+        }}
         helpText={confirmPasswordError}
         value={confirmPassword}
         disabled={password.length < PASSWORD_MIN_LENGTH}
