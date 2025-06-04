@@ -43,7 +43,7 @@ function QrCodeView({
   Qr: { message?: string; data: string };
   warning: string | null | undefined;
   accountName?: string;
-  location: string;
+  location?: string;
 }) {
   const trackEvent = useContext(MetaMetricsContext);
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);
