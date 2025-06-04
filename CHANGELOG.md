@@ -18,6 +18,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - When `selectedNetworkClientId` is invalid at startup, set it back to mainnet default RPC ([#31517](https://github.com/MetaMask/metamask-extension/pull/31517))
 
+## [12.18.3]
+### Fixed
+- Add `origin` to security alerts request to improve transaction validation ([#33282](https://github.com/MetaMask/metamask-extension/pull/33282))
+- Add alert for malicious batch transactions ([#33237](https://github.com/MetaMask/metamask-extension/pull/33237))
+- Improve slippage messages ([#33396](https://github.com/MetaMask/metamask-extension/pull/33396))
+- Disable "Confirm" button in confirmation when transaction simulation fails ([#33396](https://github.com/MetaMask/metamask-extension/pull/33396))
+- Improve error message when an unknown Solana transaction error occurs ([#33396](https://github.com/MetaMask/metamask-extension/pull/33396))
+- Fix infinite load when selected network invalid upon startup ([#33249](https://github.com/MetaMask/metamask-extension/pull/33249), [#33350](https://github.com/MetaMask/metamask-extension/pull/33350))
+
+## [12.18.2]
+### Added
+- Add a flag to `snap_getClientStatus` to indicate whether the client is "active" ([#33203](https://github.com/MetaMask/metamask-extension/pull/33203))
+
+### Fixed
+- Addressed an issue where threat actors exploited Blockaid’s simulation engine by manipulating gas values, causing incorrect simulation results. Updated integration to include wallet-provided gas estimations for accurate simulations ([#33180](https://github.com/MetaMask/metamask-extension/pull/33180))
+- Fix EIP-1193 connections from other extensions ([#33199](https://github.com/MetaMask/metamask-extension/pull/33199))
+
+## [12.18.1]
+### Fixed
+- Allow users to load ERC20 tokens automatically while Activity or NFT tab are open ([#33014](https://github.com/MetaMask/metamask-extension/pull/33014))
+- Validate keyring type in EIP-5792 requests ([#33034](https://github.com/MetaMask/metamask-extension/pull/33034))
+- Prevent requesting getTxStatus endpoint for a swap transaction ([#33081](https://github.com/MetaMask/metamask-extension/pull/33081))
+- Poll for account changes every 5 minutes instead of 1 min in Solana ([#33079](https://github.com/MetaMask/metamask-extension/pull/33079))
+- Spread cronjob load time randomly per user in Solana ([#33128](https://github.com/MetaMask/metamask-extension/pull/33128))
+
 ## [12.18.0]
 ### Added
 - Adding slide for smart account upgrade to home page carousel ([#32048](https://github.com/MetaMask/metamask-extension/pull/32048))
@@ -6240,7 +6265,10 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.18.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.18.3...HEAD
+[12.18.3]: https://github.com/MetaMask/metamask-extension/compare/v12.18.2...v12.18.3
+[12.18.2]: https://github.com/MetaMask/metamask-extension/compare/v12.18.1...v12.18.2
+[12.18.1]: https://github.com/MetaMask/metamask-extension/compare/v12.18.0...v12.18.1
 [12.18.0]: https://github.com/MetaMask/metamask-extension/compare/v12.17.3...v12.18.0
 [12.17.3]: https://github.com/MetaMask/metamask-extension/compare/v12.17.2...v12.17.3
 [12.17.2]: https://github.com/MetaMask/metamask-extension/compare/v12.17.1...v12.17.2

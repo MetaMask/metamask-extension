@@ -1,3 +1,4 @@
+const { setTimeout: asyncSetTimeout } = require('node:timers/promises');
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
 const {
@@ -856,24 +857,38 @@ class Driver {
   /**
    * Waits for a condition to be met within a given timeout period.
    *
-   * @param {Function} condition - The condition to wait for. This function should return a boolean indicating whether the condition is met.
+   * @param {() => Promise<boolean>} condition - The condition to wait for. This function must return a boolean indicating whether the condition is met.
    * @param {object} options - Options for the wait.
    * @param {number} options.timeout - The maximum amount of time (in milliseconds) to wait for the condition to be met.
    * @param {number} options.interval - The interval (in milliseconds) between checks for the condition.
    * @returns {Promise<void>} A promise that resolves when the condition is met or the timeout is reached.
    * @throws {Error} Throws an error if the condition is not met within the timeout period.
    */
-  async waitUntil(condition, options) {
-    const { timeout, interval } = options;
-    const endTime = Date.now() + timeout;
+  async waitUntil(condition, { interval, timeout }) {
+    const startTime = Date.now();
+    const endTime = startTime + timeout;
 
-    while (Date.now() < endTime) {
-      if (await condition()) {
-        return true;
+    // Loop indefinitely until condition met or timeout
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const result = await condition();
+      if (result === true) {
+        return; // Condition met
       }
-      await new Promise((resolve) => setTimeout(resolve, interval));
+
+      const currentTime = Date.now();
+      if (currentTime >= endTime) {
+        throw new Error(`Condition not met within ${timeout}ms.`);
+      }
+
+      // Calculate remaining time to ensure we don't overshoot the timeout
+      const remainingTime = endTime - currentTime;
+      const waitTime = Math.min(interval, remainingTime);
+
+      // always yield to the event loop, even for an interval of `0`, to avoid a
+      // macro-task deadlock
+      await asyncSetTimeout(waitTime, null, { ref: false });
     }
-    throw new Error('Condition not met within timeout');
   }
 
   /**
@@ -1351,7 +1366,7 @@ class Driver {
   async verboseReportOnFailure(testTitle, error) {
     console.error(
       `Failure on testcase: '${testTitle}', for more information see the ${
-        process.env.CIRCLECI ? 'artifacts tab in CI' : 'test-artifacts folder'
+        process.env.CI ? 'artifacts tab in CI' : 'test-artifacts folder'
       }\n`,
     );
     console.error(`${error}\n`);

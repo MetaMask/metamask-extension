@@ -372,6 +372,9 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Update gas options"
   },
+  "alertContentMultipleApprovals": {
+    "message": "You're giving someone else permission to withdraw your tokens, even though it's not necessary for this transaction."
+  },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
@@ -434,6 +437,9 @@
   },
   "alertReasonInsufficientBalance": {
     "message": "Insufficient funds"
+  },
+  "alertReasonMultipleApprovals": {
+    "message": "Unnecessary permission"
   },
   "alertReasonNetworkBusy": {
     "message": "Network is busy"
@@ -510,10 +516,6 @@
   "appNameFlask": {
     "message": "MetaMask Flask",
     "description": "The name of the application (Flask)"
-  },
-  "appNameMmi": {
-    "message": "MetaMask Institutional",
-    "description": "The name of the application (MMI)"
   },
   "apply": {
     "message": "Apply"
@@ -615,7 +617,7 @@
     "description": "$1 is backupAndSyncBasicFunctionalityNameMention in bold."
   },
   "backupAndSyncEnableDescription": {
-    "message": "Backup and sync lets us store encrypted data for your custom settings and features. This keeps your MetaMask experience the same across devices and restores settings and features if you ever need to reinstall MetaMask. $1.",
+    "message": "Backup and sync lets us store encrypted data for your custom settings and features. This keeps your MetaMask experience the same across devices and restores settings and features if you ever need to reinstall MetaMask. This doesn’t back up your Secret Recovery Phrase. $1.",
     "description": "$1 is link to the backup and sync privacy policy."
   },
   "backupAndSyncEnableDescriptionUpdatePreferences": {
@@ -1153,6 +1155,18 @@
   "confirmGasFeeTokenMetaMaskFee": {
     "message": "Includes $1 fee"
   },
+  "confirmGasFeeTokenModalNativeToggleMetaMask": {
+    "message": "MetaMask is supplementing the balance to complete this transaction."
+  },
+  "confirmGasFeeTokenModalNativeToggleWallet": {
+    "message": "Pay for network fee using the balance in your wallet."
+  },
+  "confirmGasFeeTokenModalPayETH": {
+    "message": "Pay with ETH"
+  },
+  "confirmGasFeeTokenModalPayToken": {
+    "message": "Pay with other tokens"
+  },
   "confirmGasFeeTokenModalTitle": {
     "message": "Select a token"
   },
@@ -1160,7 +1174,7 @@
     "message": "You're paying this network fee with $1"
   },
   "confirmGasFeeTokenTooltip": {
-    "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens."
+    "message": "This is paid to the network to process your transaction. It includes a $1 MetaMask fee for non-ETH tokens or pre-funded ETH."
   },
   "confirmInfoAccountNow": {
     "message": "Now"
@@ -1364,7 +1378,7 @@
     "message": "Connecting to Sepolia test network"
   },
   "connectionDescription": {
-    "message": "Connect this website with MetaMask."
+    "message": "Connect this website with MetaMask"
   },
   "connectionFailed": {
     "message": "Connection failed"
@@ -2602,6 +2616,9 @@
   "importSecretRecoveryPhrase": {
     "message": "Import Secret Recovery Phrase"
   },
+  "importSecretRecoveryPhraseUnknownError": {
+    "message": "An unknown error occurred."
+  },
   "importSelectedTokens": {
     "message": "Import selected tokens?"
   },
@@ -3012,7 +3029,7 @@
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "manageDefaultSettings": {
-    "message": "Manage default privacy settings"
+    "message": "Manage default settings"
   },
   "manageInstitutionalWallets": {
     "message": "Manage Institutional Wallets"
@@ -3419,7 +3436,7 @@
     "message": "NFT was successfully added!"
   },
   "newPassword": {
-    "message": "New password (8 characters min)"
+    "message": "New password"
   },
   "newPrivacyPolicyActionButton": {
     "message": "Read more"
@@ -3666,10 +3683,6 @@
     "message": "Transaction $1 failed! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
   },
-  "notificationTransactionFailedMessageMMI": {
-    "message": "Transaction failed! $1",
-    "description": "Content of the browser notification that appears when a transaction fails in MMI"
-  },
   "notificationTransactionFailedTitle": {
     "message": "Failed transaction",
     "description": "Title of the browser notification that appears when a transaction fails"
@@ -3799,16 +3812,16 @@
     "message": "Choose your network"
   },
   "onboardingCreateWallet": {
-    "message": "Create a new wallet"
+    "message": "Create new wallet"
   },
   "onboardingImportWallet": {
-    "message": "Import an existing wallet"
+    "message": "I have an existing wallet"
   },
   "onboardingMetametricsAgree": {
     "message": "I agree"
   },
   "onboardingMetametricsDescription": {
-    "message": "We’d like to gather basic usage and diagnostics data to improve MetaMask. Know that we never sell the data you provide here."
+    "message": "We'd like to gather basic usage and diagnostics data to improve MetaMask. It will always be:"
   },
   "onboardingMetametricsDescription2": {
     "message": "When we gather metrics, it will always be..."
@@ -3821,7 +3834,7 @@
     "message": "Privacy Policy"
   },
   "onboardingMetametricsNeverCollect": {
-    "message": "$1 clicks and views on the app are stored, but other details (like your public address) are not.",
+    "message": "$1 Clicks and views on the app are stored, but other details (like your public address) are not.",
     "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
   },
   "onboardingMetametricsNeverCollectEmphasis": {
@@ -3866,13 +3879,13 @@
     "message": "Click the browser extension icon"
   },
   "onboardingPinExtensionDescription": {
-    "message": "Pin MetaMask on your browser so it's accessible and easy to view transaction confirmations."
+    "message": "Pin MetaMask on your browser so it’s accessible and easy to view transaction confirmations."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "You can open MetaMask by clicking on the extension and access your wallet with 1 click."
+    "message": "Access your MetaMask wallet with 1 click by clicking on the extension."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Click browser extension icon to access it instantly"
+    "message": "Click Chrome extension icon to access it instantly"
   },
   "onboardingPinExtensionLabel": {
     "message": "Pin MetaMask"
@@ -3884,7 +3897,7 @@
     "message": "2"
   },
   "onboardingPinExtensionTitle": {
-    "message": "Your MetaMask install is complete!"
+    "message": "Installation is complete!"
   },
   "onekey": {
     "message": "OneKey"
@@ -3967,7 +3980,7 @@
     "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
   },
   "passwordTermsWarning": {
-    "message": "I understand that MetaMask cannot recover this password for me. $1"
+    "message": "MetaMask can’t recover this password."
   },
   "passwordsDontMatch": {
     "message": "Passwords don't match"
@@ -5138,7 +5151,7 @@
     "message": "Skip account security?"
   },
   "skipAccountSecurityDetails": {
-    "message": "I understand that until I back up my Secret Recovery Phrase, I may lose my accounts and all of their assets."
+    "message": "If you lose this Secret Recovery Phrase, you won’t be able to access this wallet."
   },
   "slideBridgeDescription": {
     "message": "Move across 9 chains, all within your wallet"
@@ -5672,11 +5685,44 @@
   "startEarning": {
     "message": "Start earning"
   },
-  "stateCorruptionDetectedErrorMessage": {
-    "message": "MetaMask's state file is damaged or missing. The files are possibly recoverable, so don't uninstall the MetaMask extension!"
+  "stateCorruptionAreYouSure": {
+    "message": "Are you sure you want to proceed?"
   },
-  "stateCorruptionDetectedErrorMessageVaultRecoveryLink": {
-    "message": "If you want to try to recover your secret recovery phrase yourself, follow these instructions."
+  "stateCorruptionCopyAndRestoreBeforeRecovery": {
+    "message": "You can try to copy and restore your state file manually before you decide to restore your vault by following $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "You can try to copy and restore your state file manually before you decide to reset MetaMask by following $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionDetectedNoBackup": {
+    "message": "Your vault cannot be automatically recovered."
+  },
+  "stateCorruptionDetectedWithBackup": {
+    "message": "Your vault can be recovered from an automated backup. Automatic recovery will delete your current settings and preferences, and restore only your vault."
+  },
+  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
+    "message": "Internal Error: Database cannot be accessed"
+  },
+  "stateCorruptionResetMetaMaskState": {
+    "message": "Reset MetaMask State"
+  },
+  "stateCorruptionResettingDatabase": {
+    "message": "Resetting database…"
+  },
+  "stateCorruptionRestoreAccountsFromBackup": {
+    "message": "Restore Accounts"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "Restoring database…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "these instructions",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "How to recover your Secret Recovery Phrase"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
@@ -6251,14 +6297,17 @@
   "termsOfService": {
     "message": "Terms of service"
   },
+  "termsOfUseAgree": {
+    "message": "Agree"
+  },
   "termsOfUseAgreeText": {
-    "message": " I agree to the Terms of Use, which apply to my use of MetaMask and all of its features"
+    "message": "I agree to the Terms of use, which apply to my use of MetaMask and all of its features"
   },
   "termsOfUseFooterText": {
     "message": "Please scroll to read all sections"
   },
   "termsOfUseTitle": {
-    "message": "Our Terms of Use have updated"
+    "message": "Review our Terms of Use"
   },
   "testNetworks": {
     "message": "Test networks"
@@ -6549,7 +6598,7 @@
     "message": "Unapproved"
   },
   "unexpectedBehavior": {
-    "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored properly. Use the link below to send MetaMask a bug report."
+    "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored."
   },
   "units": {
     "message": "units"
@@ -6866,7 +6915,7 @@
     "message": "We weren't able to cancel your transaction before it was confirmed on the blockchain."
   },
   "yourWalletIsReady": {
-    "message": "Your wallet is ready"
+    "message": "Your wallet is ready!"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"

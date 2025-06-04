@@ -208,8 +208,7 @@ const PrepareBridgePage = () => {
     : selectedMultichainAccount;
 
   const keyring = useSelector(getCurrentKeyring);
-  // @ts-expect-error keyring type is wrong maybe?
-  const isUsingHardwareWallet = isHardwareKeyring(keyring.type);
+  const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
   const hardwareWalletName = useSelector(getHardwareWalletName);
   const isTxSubmittable = useIsTxSubmittable();
   const locale = useSelector(getIntlLocale);
@@ -330,6 +329,8 @@ const PrepareBridgePage = () => {
   const insufficientBalanceBannerRef = useRef<HTMLDivElement>(null);
   const isEstimatedReturnLowRef = useRef<HTMLDivElement>(null);
   const tokenAlertBannerRef = useRef<HTMLDivElement>(null);
+  const fromAssetsPageFixAppliedRef = useRef<boolean>(false);
+
   useEffect(() => {
     if (isInsufficientGasForQuote(nativeAssetBalance)) {
       insufficientBalanceBannerRef.current?.scrollIntoView({
@@ -529,6 +530,32 @@ const PrepareBridgePage = () => {
     }
   }, []);
 
+  // Edge-case fix: if user lands with USDC selected for both sides on Solana,
+  // switch destination to SOL (native asset).
+  useEffect(() => {
+    if (
+      !isSwap ||
+      !fromChain ||
+      !isSolanaChainId(fromChain.chainId) ||
+      !fromToken?.address ||
+      !toToken?.address ||
+      fromAssetsPageFixAppliedRef.current // Prevent multiple applications of the fix as it's only needed initially.
+    ) {
+      return;
+    }
+
+    const isBothUsdc =
+      fromToken.address.toLowerCase() ===
+        SOLANA_USDC_ASSET.address.toLowerCase() &&
+      toToken.address.toLowerCase() === SOLANA_USDC_ASSET.address.toLowerCase();
+
+    if (isBothUsdc) {
+      const solNativeAsset = getNativeAssetForChainId(fromChain.chainId);
+      dispatch(setToToken(solNativeAsset));
+      fromAssetsPageFixAppliedRef.current = true;
+    }
+  }, [isSwap, fromChain?.chainId, fromToken?.address, toToken?.address]);
+
   const occurrences = Number(
     toToken?.occurrences ?? toToken?.aggregators?.length ?? 0,
   );
@@ -608,7 +635,12 @@ const PrepareBridgePage = () => {
           onMaxButtonClick={(value: string) => {
             dispatch(setFromTokenInputValue(value));
           }}
-          amountInFiat={fromAmountInCurrency.valueInCurrency.toString()}
+          // Hides fiat amount string before a token quantity is entered.
+          amountInFiat={
+            fromAmountInCurrency.valueInCurrency.gt(0)
+              ? fromAmountInCurrency.valueInCurrency.toString()
+              : undefined
+          }
           balanceAmount={srcTokenBalance}
           amountFieldProps={{
             testId: 'from-amount',
