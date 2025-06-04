@@ -1,5 +1,5 @@
 function base64StringToBytes(unpaddedBase64: string) {
-  let standardB64 = unpaddedBase64.replace(/-/g, '+').replace(/_/g, '/');
+  let standardB64 = unpaddedBase64.replace(/-/gu, '+').replace(/_/gu, '/');
   // Add padding if needed
   const pad = standardB64.length % 4;
   if (pad === 2) {
