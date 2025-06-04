@@ -3014,40 +3014,29 @@ const featureFlags = {
 export async function withSolanaAccountSnap(
   {
     title,
-    showNativeTokenAsMainBalance,
-    mockCalls,
-    mockSendTransaction,
-    numberOfAccounts = 1,
-    simulateTransaction,
-    simulateTransactionFailed,
+    showNativeTokenAsMainBalance = true,
     mockGetTransactionSuccess,
     mockGetTransactionFailed,
     mockZeroBalance,
-    sendFailedTransaction,
-    dappPaths,
-    withProtocolSnap,
+    numberOfAccounts = 1,
     mockSwapUSDtoSOL,
     mockSwapSOLtoUSDC,
     mockSwapWithNoQuotes,
-    mockSendSPLToken,
+    dappPaths,
+    withProtocolSnap,
   }: {
     title?: string;
     showNativeTokenAsMainBalance?: boolean;
-    mockCalls?: boolean;
-    mockSendTransaction?: boolean;
     numberOfAccounts?: number;
-    simulateTransaction?: boolean;
-    simulateTransactionFailed?: boolean;
     mockGetTransactionSuccess?: boolean;
     mockGetTransactionFailed?: boolean;
     mockZeroBalance?: boolean;
     sendFailedTransaction?: boolean;
-    dappPaths?: string[];
-    withProtocolSnap?: boolean;
     mockSwapUSDtoSOL?: boolean;
     mockSwapSOLtoUSDC?: boolean;
     mockSwapWithNoQuotes?: boolean;
-    mockSendSPLToken?: boolean;
+    dappPaths?: string[];
+    withProtocolSnap?: boolean;
   },
   test: (
     driver: Driver,
@@ -3081,77 +3070,58 @@ export async function withSolanaAccountSnap(
       testSpecificMock: async (mockServer: Mockttp) => {
         const mockList: MockedEndpoint[] = [];
 
-        if (mockGetTransactionSuccess && !mockGetTransactionFailed) {
+        mockList.push(await mockGetTokenAccountsTokenProgramSwaps(mockServer));
+        mockList.push(
+          await mockGetTokenAccountsTokenProgram2022Swaps(mockServer),
+        );
+        mockList.push(await mockGetMultipleAccounts(mockServer));
+        mockList.push(await mockGetSuccessTransaction(mockServer));
+        mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
+        if (mockGetTransactionSuccess) {
           console.log('mockGetTransactionSuccess');
+          mockList.push(await mockSendSolanaTransaction(mockServer));
           mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
           mockList.push(await mockGetSuccessTransaction(mockServer));
         }
-        if (mockGetTransactionFailed && !mockGetTransactionSuccess) {
+        if (mockGetTransactionFailed) {
           console.log('mockGetTransactionFailed');
+          mockList.push(await mockSendSolanaFailedTransaction(mockServer));
           mockList.push(await mockGetFailedSignaturesForAddress(mockServer));
           mockList.push(await mockGetFailedTransaction(mockServer));
         }
-        if (
-          !mockGetTransactionSuccess &&
-          !mockGetTransactionFailed &&
-          !mockSwapUSDtoSOL &&
-          !mockSwapSOLtoUSDC
-        ) {
-          // success tx by default
-          console.log('mockGetTransactionSuccess');
-          mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
-          mockList.push(await mockGetSuccessTransaction(mockServer));
-        }
-        if (mockCalls) {
-          mockList.push(
-            await mockSolanaBalanceQuote(mockServer, mockZeroBalance),
-            await mockGetMinimumBalanceForRentExemption(mockServer),
-            await mockMultiCoinPrice(mockServer),
-            await mockGetLatestBlockhash(mockServer),
-            await mockGetFeeForMessage(mockServer),
-            await mockPriceApiSpotPrice(mockServer),
-            await mockPriceApiExchangeRates(mockServer),
-            await mockClientSideDetectionApi(mockServer),
-            await mockPhishingDetectionApi(mockServer),
-            await mockGetTokenAccountInfo(mockServer),
-            await mockGetAccountInfoDevnet(mockServer),
-            await mockTokenApiMainnetTest(mockServer),
-            await mockAccountsApi(mockServer),
-          );
-        }
-        if (mockZeroBalance) {
-          mockList.push(await mockSolanaBalanceQuote(mockServer, true));
-        }
-        if (simulateTransactionFailed) {
-          mockList.push(await simulateSolanaTransactionFailed(mockServer));
-        }
-        if (simulateTransaction) {
-          mockList.push(await simulateSolanaTransaction(mockServer));
-        }
+
+        mockList.push(
+          await mockSolanaBalanceQuote(mockServer, mockZeroBalance),
+        );
+        mockList.push(
+          await mockGetMinimumBalanceForRentExemption(mockServer),
+          await mockMultiCoinPrice(mockServer),
+          await mockGetLatestBlockhash(mockServer),
+          await mockGetFeeForMessage(mockServer),
+          await mockPriceApiSpotPrice(mockServer),
+          await mockPriceApiExchangeRates(mockServer),
+          await mockClientSideDetectionApi(mockServer),
+          await mockPhishingDetectionApi(mockServer),
+          await mockGetTokenAccountInfo(mockServer),
+          await mockTokenApiMainnetTest(mockServer),
+          await mockAccountsApi(mockServer),
+          await mockGetMultipleAccounts(mockServer),
+        );
+
         if (mockSwapWithNoQuotes) {
           mockList.push(await mockBridgeGetTokens(mockServer));
           mockList.push(await mockNoQuotesAvailable(mockServer));
-          mockList.push(
-            await mockGetTokenAccountsTokenProgramSwaps(mockServer),
-          );
-          mockList.push(
-            await mockGetTokenAccountsTokenProgram2022Swaps(mockServer),
-          );
-          mockList.push(await mockGetMultipleAccounts(mockServer));
         }
         if (mockSwapUSDtoSOL) {
           mockList.push(
             ...[
               await mockQuoteFromUSDCtoSOL(mockServer),
               await mockSendSwapSolanaTransaction(mockServer),
-              await mockPriceApiSpotPriceSwap(mockServer),
               await mockGetUSDCSOLTransaction(mockServer),
-              await mockGetTokenAccountsTokenProgramSwaps(mockServer),
-              await mockGetTokenAccountsTokenProgram2022Swaps(mockServer),
-              await mockGetMultipleAccounts(mockServer),
               await mockSecurityAlertSwap(mockServer),
               await mockGetSignaturesSuccessSwap(mockServer),
               await mockBridgeGetTokens(mockServer),
+              await mockPriceApiSpotPriceSwap(mockServer),
               // await mockTopAssetsSolana(mockServer),
             ],
           );
@@ -3161,25 +3131,16 @@ export async function withSolanaAccountSnap(
             ...[
               await mockQuoteFromSoltoUSDC(mockServer),
               await mockSendSwapSolanaTransaction(mockServer),
-              await mockPriceApiSpotPriceSwap(mockServer),
               await mockGetSOLUSDCTransaction(mockServer),
-              await mockGetTokenAccountsTokenProgramSwaps(mockServer),
-              await mockGetTokenAccountsTokenProgram2022Swaps(mockServer),
-              await mockGetMultipleAccounts(mockServer),
               await mockSecurityAlertSwap(mockServer),
               await mockGetSignaturesSuccessSwap(mockServer),
               await mockBridgeGetTokens(mockServer),
+              await mockPriceApiSpotPriceSwap(mockServer),
               // await mockTopAssetsSolana(mockServer),
             ],
           );
         }
-        if (mockSendTransaction) {
-          mockList.push(await simulateSolanaTransaction(mockServer));
-          mockList.push(await mockSendSolanaTransaction(mockServer));
-        } else if (sendFailedTransaction) {
-          mockList.push(await simulateSolanaTransaction(mockServer));
-          mockList.push(await mockSendSolanaFailedTransaction(mockServer));
-        }
+
         if (withProtocolSnap) {
           mockList.push(await mockProtocolSnap(mockServer));
         }

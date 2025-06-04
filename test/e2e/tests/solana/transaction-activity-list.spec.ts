@@ -17,9 +17,7 @@ describe('Transaction activity list', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
-        mockCalls: true,
-        mockSendTransaction: true,
-        simulateTransaction: true,
+        mockSendSOLToken: true,
         mockGetTransactionSuccess: true,
       },
       async (driver) => {
@@ -58,9 +56,7 @@ describe('Transaction activity list', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
-        mockCalls: true,
-        mockSendTransaction: true,
-        simulateTransaction: true,
+        mockSendSOLToken: true,
         mockGetTransactionFailed: true,
       },
       async (driver) => {

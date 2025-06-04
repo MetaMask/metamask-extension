@@ -17,7 +17,6 @@ describe('Send flow', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
-        mockCalls: true,
         mockZeroBalance: true,
       },
       async (driver) => {
@@ -70,9 +69,8 @@ describe('Send flow', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
-        mockCalls: true,
-        mockSendTransaction: true,
-        simulateTransaction: true,
+        mockSendSOLToken: true,
+        mockGetTransactionSuccess: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
@@ -204,9 +202,8 @@ describe('Send flow', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
-        mockCalls: true,
-        mockSendTransaction: true,
-        simulateTransaction: true,
+        mockSendSOLToken: true,
+        mockGetTransactionSuccess: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
@@ -328,9 +325,8 @@ describe('Send flow', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
-        mockCalls: true,
-        mockSendTransaction: false,
-        sendFailedTransaction: true,
+        mockGetTransactionFailed: true,
+        mockSendSOLToken: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);

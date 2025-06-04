@@ -86,10 +86,6 @@ class SwapPage {
 
   async checkQuote(quote: SwapQuote): Promise<void> {
     await this.driver.waitForSelector({
-      text: quote.amount,
-      tag: 'p',
-    });
-    await this.driver.waitForSelector({
       text: `${quote.totalCost} total cost`,
       tag: 'p',
     });

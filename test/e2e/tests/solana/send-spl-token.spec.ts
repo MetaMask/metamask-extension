@@ -10,15 +10,14 @@ const splTokenName = 'USDC';
 // Investigate why this test is flaky https://consensyssoftware.atlassian.net/browse/MMQA-549
 // eslint-disable-next-line mocha/no-skipped-tests
 describe('Send flow - SPL Token', function (this: Suite) {
-  it.only('user with more than 1 token in the token list', async function () {
+  it('user with more than 1 token in the token list', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
-        mockCalls: true,
-        mockSendTransaction: true,
-        simulateTransaction: true,
+        mockSendSPLToken: true,
+        mockGetTransactionSuccess: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
@@ -45,10 +44,13 @@ describe('Send flow - SPL Token', function (this: Suite) {
         await sendSolanaPage.selectTokenFromTokenList(splTokenName);
 
         await sendSolanaPage.check_amountCurrencyIsDisplayed(splTokenName);
-        await sendSolanaPage.check_tokenBalanceIsDisplayed('6', splTokenName);
+
+        await sendSolanaPage.check_tokenBalanceIsDisplayed(
+          '8.908',
+          splTokenName,
+        );
         await sendSolanaPage.setAmount('0.1');
         await sendSolanaPage.clickOnContinue();
-
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
         assert.equal(
           await confirmSolanaPage.checkAmountDisplayed('0.1', splTokenName),
@@ -141,9 +143,8 @@ describe('Send flow - SPL Token', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
-        mockCalls: true,
-        simulateTransaction: true,
-        sendFailedTransaction: true,
+        mockSendSPLToken: true,
+        mockGetTransactionFailed: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);

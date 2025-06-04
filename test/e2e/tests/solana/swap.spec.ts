@@ -10,7 +10,6 @@ describe('Swap on Solana', function () {
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
-        mockCalls: true,
         mockSwapSOLtoUSDC: true,
       },
       async (driver) => {
@@ -27,24 +26,24 @@ describe('Swap on Solana', function () {
 
         await swapPage.clickOnMoreQuotes();
         await swapPage.checkQuote({
-          amount: '$1.19',
-          totalCost: '$168.88',
-          receivedAmount: '$167.70',
-          estimatedTime: '< 1 min',
-          provider: 'Sol Fi',
-        });
-        await swapPage.checkQuote({
-          amount: '$2.65',
-          totalCost: '$168.88',
-          receivedAmount: '$166.23',
+          amount: '0.000005 SOL',
+          totalCost: '0.000005 SOL',
+          receivedAmount: '166.3 USDC',
           estimatedTime: '< 1 min',
           provider: 'Jupiter Via Li Fi',
+        });
+        await swapPage.checkQuote({
+          amount: '0.000005 SOL',
+          totalCost: '0.000005 SOL',
+          receivedAmount: '167.7 USDC',
+          estimatedTime: '< 1 min',
+          provider: 'Sol Fi',
         });
 
         await swapPage.closeQuotes();
 
         await swapPage.reviewSolanaQuote({
-          swapToAmount: 167.7,
+          swapToAmount: 166.3,
           swapFrom: 'SOL',
           swapTo: 'USDC',
           swapFromAmount: 0,
@@ -69,7 +68,6 @@ describe('Swap on Solana', function () {
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
-        mockCalls: true,
         mockSwapUSDtoSOL: true,
       },
       async (driver) => {
@@ -79,13 +77,12 @@ describe('Swap on Solana', function () {
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         await swapPage.createSolanaSwap({
-          amount: 0.01,
+          amount: 1,
           swapTo: 'SOL',
           swapFrom: 'USDC',
         });
-
         await swapPage.reviewSolanaQuote({
-          swapToAmount: 0.00589,
+          swapToAmount: 0.00584,
           swapFrom: 'USDC',
           swapTo: 'SOL',
           swapFromAmount: 0,
@@ -109,7 +106,6 @@ describe('Swap on Solana', function () {
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
-        mockCalls: true,
         mockSwapWithNoQuotes: true,
       },
       async (driver) => {
