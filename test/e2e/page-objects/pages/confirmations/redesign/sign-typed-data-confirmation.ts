@@ -26,7 +26,7 @@ export default class SignTypedData extends Confirmation {
 
   private toName = { text: 'Bob' };
 
-  private toAddress = { css: '.name__value', text: '0xbBbBB...bBBbB' };
+  private toAddress = { css: '.name__value', text: '0xbBbB...BBbB' };
 
   private contents = { text: 'Hello, Bob!' };
 
