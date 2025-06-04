@@ -45,7 +45,9 @@ export const EditAccountNameModal = ({
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onClose}>{t('editAccountName')}</ModalHeader>
+        <ModalHeader onClose={onClose} onBack={onClose}>
+          {t('editAccountName')}
+        </ModalHeader>
         <ModalBody>
           <Box
             display={Display.Flex}
