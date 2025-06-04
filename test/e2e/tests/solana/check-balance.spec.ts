@@ -39,7 +39,7 @@ describe('Check balance', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_getBalance('$8,060.00', 'USD');
+        await homePage.check_getBalance('$5,643.50', 'USD');
       },
     );
   });
