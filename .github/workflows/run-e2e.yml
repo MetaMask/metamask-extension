@@ -64,9 +64,27 @@ jobs:
       PR_NUMBER: ${{ github.event.pull_request.number || '' }}
       TEST_SUITE_NAME: ${{ inputs.test-suite-name }}
     steps:
-      - name: Install dependencies
+      - name: Install dependencies (with retries)
         run: |
-          sudo apt-get update && sudo apt-get install zstd
+          # Retry apt-get commands up to 5 times with 5s delay
+          for i in {1..5}; do
+            if sudo apt-get update; then
+              break
+            else
+              echo "Retry $i/5 failed, waiting..."
+              sleep 5
+            fi
+          done
+
+          for i in {1..5}; do
+            if sudo apt-get install -y zstd; then
+              break
+            else
+              echo "Retry $i/5 failed, waiting..."
+              sleep 5
+            fi
+          done
+
           sudo corepack enable
 
       - name: Checkout and setup environment
@@ -86,7 +104,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.build-artifact }}
-          path: ./dist/
 
       # if there is a build-command and there is no build artifact, or the specified artifact does not exist, we run the build command
       - run: ${{ inputs.build-command }}

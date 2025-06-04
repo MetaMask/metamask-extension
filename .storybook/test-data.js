@@ -465,6 +465,7 @@ const state = {
         ],
       },
     ],
+    transactionBatches: {},
     addressBook: {
       undefined: {
         0: {
@@ -1248,6 +1249,14 @@ const state = {
         status: 'unapproved',
         type: 'eth_getEncryptionPublicKey',
         origin: 'https://metamask.github.io',
+        txParams: {
+          from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+          to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
+          value: '0x0',
+          data: '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
+          gas: '0xcb28',
+          gasPrice: '0x77359400',
+        },
       },
     },
     unapprovedEncryptionPublicKeyMsgCount: 0,
