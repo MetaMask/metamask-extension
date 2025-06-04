@@ -3838,3 +3838,44 @@ export function getRequestType(state, id) {
 }
 
 // #endregion permissions selectors
+
+/**
+ * Determines whether the update modal should be shown.
+ *
+ * @param {import('../../ui/store/store').MetaMaskReduxState} state - The MetaMask state.
+ * @returns {boolean} True if the update modal should be shown, false otherwise.
+ */
+export function getShowUpdateModal(state) {
+  const {
+    metamask: { isUpdateAvailable, updateModalLastDismissedAt, lastUpdatedAt },
+  } = state;
+  const remoteFeatureFlags = getRemoteFeatureFlags(state);
+
+  const extensionCurrentVersion = semver.valid(
+    semver.coerce(global.platform.getVersion()),
+  );
+  const extensionMinimumVersion = semver.valid(
+    semver.coerce(remoteFeatureFlags.extensionMinimumVersion),
+  );
+  const isExtensionOutdated =
+    extensionCurrentVersion && extensionMinimumVersion
+      ? semver.lt(extensionCurrentVersion, extensionMinimumVersion)
+      : false;
+
+  const currentTime = Date.now();
+  const updateModalCooldown = 24 * 60 * 60 * 1000; // 24 hours
+  const enoughTimePassedSinceLastDismissal = updateModalLastDismissedAt
+    ? currentTime - updateModalLastDismissedAt > updateModalCooldown
+    : true;
+  const enoughTimePassedSinceLastUpdate = lastUpdatedAt
+    ? currentTime - lastUpdatedAt > updateModalCooldown
+    : true;
+
+  const showUpdateModal =
+    isExtensionOutdated &&
+    isUpdateAvailable &&
+    enoughTimePassedSinceLastDismissal &&
+    enoughTimePassedSinceLastUpdate;
+
+  return showUpdateModal;
+}

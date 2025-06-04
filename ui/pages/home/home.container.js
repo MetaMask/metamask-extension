@@ -1,7 +1,6 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import semver from 'semver';
 import {
   activeTabHasPermissions,
   getUseExternalServices,
@@ -28,6 +27,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   getIsSolanaSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
+  getShowUpdateModal,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
@@ -72,7 +72,6 @@ import {
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
 import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
-import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -88,11 +87,7 @@ const mapStateToProps = (state) => {
     firstTimeFlowType,
     completedOnboarding,
     forgottenPassword,
-    isUpdateAvailable,
-    updateModalLastDismissedAt,
-    lastUpdatedAt,
   } = metamask;
-  const remoteFeatureFlags = getRemoteFeatureFlags(state);
   const selectedAccount = getSelectedInternalAccount(state);
   const { address: selectedAddress } = selectedAccount;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
@@ -139,32 +134,6 @@ const mapStateToProps = (state) => {
   const shouldShowSeedPhraseReminder =
     selectedAccount && getShouldShowSeedPhraseReminder(state, selectedAccount);
 
-  const extensionCurrentVersion = semver.valid(
-    semver.coerce(global.platform.getVersion()),
-  );
-  const extensionMinimumVersion = semver.valid(
-    semver.coerce(remoteFeatureFlags.extensionMinimumVersion),
-  );
-  const isExtensionOutdated =
-    extensionCurrentVersion && extensionMinimumVersion
-      ? semver.lt(extensionCurrentVersion, extensionMinimumVersion)
-      : false;
-
-  const currentTime = Date.now();
-  const updateModalCooldown = 24 * 60 * 60 * 1000; // 24 hours
-  const enoughTimePassedSinceLastDismissal = updateModalLastDismissedAt
-    ? currentTime - updateModalLastDismissedAt > updateModalCooldown
-    : true;
-  const enoughTimePassedSinceLastUpdate = lastUpdatedAt
-    ? currentTime - lastUpdatedAt > updateModalCooldown
-    : true;
-
-  const showUpdateModal =
-    isExtensionOutdated &&
-    isUpdateAvailable &&
-    enoughTimePassedSinceLastDismissal &&
-    enoughTimePassedSinceLastUpdate;
-
   return {
     useExternalServices: getUseExternalServices(state),
     isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
@@ -209,7 +178,7 @@ const mapStateToProps = (state) => {
     onboardedInThisUISession: appState.onboardedInThisUISession,
     hasAllowedPopupRedirectApprovals,
     showMultiRpcModal: state.metamask.preferences.showMultiRpcModal,
-    showUpdateModal,
+    showUpdateModal: getShowUpdateModal(state),
   };
 };
 
