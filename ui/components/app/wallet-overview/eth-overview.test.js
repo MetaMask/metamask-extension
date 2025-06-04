@@ -335,6 +335,12 @@ describe('EthOverview', () => {
       );
     });
 
+    it('should always show the Receive button', () => {
+      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+      const receiveButton = queryByTestId(ETH_OVERVIEW_RECEIVE);
+      expect(receiveButton).toBeInTheDocument();
+    });
+
     it('should always show the Portfolio button', () => {
       const { queryByTestId } = renderWithProvider(<EthOverview />, store);
       const portfolioButton = queryByTestId(ETH_OVERVIEW_RECEIVE);
