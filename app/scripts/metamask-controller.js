@@ -460,6 +460,7 @@ export default class MetamaskController extends EventEmitter {
       MILLISECOND * 200,
     );
     this.opts = opts;
+    this.triggerSafeReload = opts.triggerSafeReload;
     this.extension = opts.browser;
     this.platform = opts.platform;
     this.notificationManager = opts.notificationManager;
@@ -4284,6 +4285,7 @@ export default class MetamaskController extends EventEmitter {
       // Other
       endTrace,
       isRelaySupported,
+      triggerSafeReload: this.triggerSafeReload.bind(this),
     };
   }
 

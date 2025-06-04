@@ -177,6 +177,7 @@ export class PersistenceManager {
       throw new Error('MetaMask - metadata must be set before calling "set"');
     }
 
+    // TODO: look into abort signals to cancel when we pile up muliple write requests (beyond 2)
     await navigator.locks.request(
       STATE_LOCK,
       { mode: 'exclusive' },

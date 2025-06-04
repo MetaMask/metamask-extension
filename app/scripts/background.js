@@ -8,11 +8,9 @@
 // It must be run first in case an error is thrown later during initialization.
 import './lib/setup-initial-state-hooks';
 
-import { finished, pipeline } from 'readable-stream';
-import debounce from 'debounce-stream';
+import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
-import { storeAsStream } from '@metamask/obs-store';
 import { isObject, hasProperty } from '@metamask/utils';
 import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
@@ -69,7 +67,6 @@ import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
-import createStreamSink from './lib/createStreamSink';
 import NotificationManager, {
   NOTIFICATION_MANAGER_EVENTS,
 } from './lib/notification-manager';
@@ -92,6 +89,7 @@ import {
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
+import { WriteManager } from './lib/safe-reload';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
@@ -603,6 +601,17 @@ async function initialize(backup) {
 
   const preinstalledSnaps = await loadPreinstalledSnaps();
 
+  const writeManager = new WriteManager({
+    write: async (...params) => {
+      try {
+        await persistenceManager.set(...params);
+      } catch (error) {
+        log.error('MetaMask - Persistence failed', error);
+      }
+    },
+    frequency: 1000,
+  });
+
   setupController(
     initState,
     initLangCode,
@@ -611,6 +620,7 @@ async function initialize(backup) {
     initData.meta,
     offscreenPromise,
     preinstalledSnaps,
+    writeManager,
   );
 
   // `setupController` sets up the `controller` object, so we can use it now:
@@ -940,6 +950,7 @@ function trackAppOpened(environment) {
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
+ * @param {WriteManager} writeManager - A WriteManager instance to handle state persistence.
  */
 export function setupController(
   initState,
@@ -949,6 +960,7 @@ export function setupController(
   stateMetadata,
   offscreenPromise,
   preinstalledSnaps,
+  writeManager,
 ) {
   //
   // MetaMask Controller
@@ -957,6 +969,10 @@ export function setupController(
     infuraProjectId: process.env.INFURA_PROJECT_ID,
     // User confirmation callbacks:
     showUserConfirmation: triggerUi,
+    // hook to trigger a "safe" reload of the extension
+    triggerSafeReload: () => {
+      writeManager.safeReload();
+    },
     // initial state
     initState,
     // initial locale code
@@ -977,6 +993,7 @@ export function setupController(
     featureFlags: {},
     offscreenPromise,
     preinstalledSnaps,
+    requestSafeReload: writeManager.safeReload.bind(writeManager),
   });
 
   setupEnsIpfsResolver({
@@ -991,16 +1008,38 @@ export function setupController(
   });
 
   // setup state persistence
-  pipeline(
-    storeAsStream(controller.store),
-    debounce(1000),
-    createStreamSink(async (state) => {
-      await persistenceManager.set(state);
-    }),
-    (error) => {
-      log.error('MetaMask - Persistence pipeline failed', error);
-    },
-  );
+  // let paused = false;
+  // let abortController;
+  // const writeState = require('lodash').debounce(async (state) => {
+  //   abortController = new AbortController();
+  //   await navigator.locks.request(
+  //     'storage-write',
+  //     { mode: 'exclusive', abortSignal: abortController.signal },
+  //     async () => {
+  //       try {
+  //         await persistenceManager.set(state);
+  //       } catch (error) {
+  //         log.error('MetaMask - Persistence failed', error);
+  //       }
+  //     },
+  //   );
+  // }, 1000);
+
+  controller.store.on('update', async (state) => {
+    return await writeManager.write(state);
+  });
+
+  // // wait for lock then shutdown
+  // // an actions in background on some controller
+  // controller.requestRestart(() => {
+  //   writeState.cancel();
+  //   paused = true;
+  //   abortController.abort();
+
+  //   navigator.locks.request('storage-write', { mode: 'exclusive' }, () => {
+  //     browser.runtime.reload();
+  //   });
+  // });
 
   setupSentryGetStateGlobal(controller);
 
