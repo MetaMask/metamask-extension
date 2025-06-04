@@ -116,7 +116,7 @@ const AssetListControlBar = ({
     return isGlobalNetworkSelectorEnabled
       ? tokenNetworkFilter
       : enabledNetworks;
-  }, [isGlobalNetworkSelectorEnabled, tokenNetworkFilter, enabledNetworks]);
+  }, [tokenNetworkFilter, enabledNetworks]);
 
   const shouldShowRefreshButtons = useMemo(
     () =>
@@ -239,6 +239,10 @@ const AssetListControlBar = ({
     if (isMainnet || isLineaMainnet) {
       dispatch(detectNfts(allChainIds));
     }
+    // loop through allNetworkClientIds and call checkAndUpdateAllNftsOwnershipStatus for each one
+    allNetworkClientIds.forEach((networkClientId) => {
+      checkAndUpdateAllNftsOwnershipStatus(networkClientId);
+    });
     // loop through allNetworkClientIds and call checkAndUpdateAllNftsOwnershipStatus for each one
     allNetworkClientIds.forEach((networkClientId) => {
       checkAndUpdateAllNftsOwnershipStatus(networkClientId);
