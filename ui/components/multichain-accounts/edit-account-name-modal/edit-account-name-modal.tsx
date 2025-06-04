@@ -7,7 +7,6 @@ import {
   ModalHeader,
   ModalBody,
   ButtonPrimary,
-  ButtonSecondary,
   FormTextField,
   Box,
 } from '../../component-library';
@@ -42,11 +41,6 @@ export const EditAccountNameModal = ({
     onClose();
   };
 
-  const handleCancel = () => {
-    setAccountName(currentAccountName);
-    onClose();
-  };
-
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -59,24 +53,21 @@ export const EditAccountNameModal = ({
             gap={4}
           >
             <FormTextField
-              label={t('accountName')}
+              label={t('name')}
               value={accountName}
               onChange={(e) => setAccountName(e.target.value)}
               placeholder={t('enterAccountName')}
               autoFocus
+              helpText={address}
             />
-            <Box display={Display.Flex} gap={3} marginTop={4}>
-              <ButtonSecondary onClick={handleCancel} block>
-                {t('cancel')}
-              </ButtonSecondary>
-              <ButtonPrimary
-                onClick={handleSave}
-                disabled={!accountName.trim()}
-                block
-              >
-                {t('save')}
-              </ButtonPrimary>
-            </Box>
+            <ButtonPrimary
+              onClick={handleSave}
+              disabled={!accountName.trim()}
+              block
+              marginTop={4}
+            >
+              {t('save')}
+            </ButtonPrimary>
           </Box>
         </ModalBody>
       </ModalContent>
