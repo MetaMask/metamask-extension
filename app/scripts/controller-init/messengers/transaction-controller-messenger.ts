@@ -11,6 +11,7 @@ import {
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
 import {
+  TransactionControllerEstimateGasAction,
   TransactionControllerMessenger,
   TransactionControllerPostTransactionBalanceUpdatedEvent,
   TransactionControllerTransactionApprovedEvent,
@@ -53,7 +54,8 @@ type MessengerActions =
   | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction
   | SwapsControllerSetApproveTxIdAction
-  | SwapsControllerSetTradeTxIdAction;
+  | SwapsControllerSetTradeTxIdAction
+  | TransactionControllerEstimateGasAction;
 
 type MessengerEvents =
   | TransactionControllerTransactionApprovedEvent
@@ -124,6 +126,7 @@ export function getTransactionControllerInitMessenger(
       'RemoteFeatureFlagController:getState',
       'SwapsController:setApproveTxId',
       'SwapsController:setTradeTxId',
+      'TransactionController:estimateGas',
     ],
   });
 }
