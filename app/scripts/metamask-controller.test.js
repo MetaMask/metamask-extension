@@ -59,7 +59,6 @@ import {
   EndowmentTypes,
   RestrictedEthMethods,
 } from '../../shared/constants/permissions';
-import { deferredPromise } from './lib/util';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import MetaMaskController from './metamask-controller';
 import { PermissionNames } from './controllers/permissions';
@@ -2332,9 +2331,9 @@ describe('MetaMaskController', () => {
           data: { id: 2, method: 'backToSafetyPhishingWarning', params: [] },
         };
 
-        const { promise, resolve } = deferredPromise();
+        const { promise, resolve } = Promise.withResolvers();
         const { promise: promiseStream, resolve: resolveStream } =
-          deferredPromise();
+          Promise.withResolvers();
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.name !== 'metamask-phishing-safelist') {
             cb();
@@ -2404,9 +2403,9 @@ describe('MetaMaskController', () => {
           },
         };
 
-        const { promise, resolve } = deferredPromise();
+        const { promise, resolve } = Promise.withResolvers();
         const { promise: promiseStream, resolve: resolveStream } =
-          deferredPromise();
+          Promise.withResolvers();
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.name !== METAMASK_COOKIE_HANDLER) {
             cb();
@@ -2455,7 +2454,7 @@ describe('MetaMaskController', () => {
           tab: {},
         };
 
-        const { promise, resolve } = deferredPromise();
+        const { promise, resolve } = Promise.withResolvers();
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.name !== 'phishing') {
             cb();
@@ -2491,7 +2490,7 @@ describe('MetaMaskController', () => {
           tab: {},
         };
 
-        const { resolve } = deferredPromise();
+        const { resolve } = Promise.withResolvers();
         const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.name !== 'phishing') {
             cb();
@@ -2815,7 +2814,7 @@ describe('MetaMaskController', () => {
           url: 'http://mycrypto.com',
           tab: {},
         };
-        const { promise, resolve } = deferredPromise();
+        const { promise, resolve } = Promise.withResolvers();
         const streamTest = createThroughStream((chunk, _, cb) => {
           expect(chunk.name).toStrictEqual('controller');
           resolve();
@@ -2852,9 +2851,9 @@ describe('MetaMaskController', () => {
         const {
           promise: onFinishedCallbackPromise,
           resolve: onFinishedCallbackResolve,
-        } = deferredPromise();
+        } = Promise.withResolvers();
         const { promise: onStreamEndPromise, resolve: onStreamEndResolve } =
-          deferredPromise();
+          Promise.withResolvers();
         const testStream = createThroughStream((chunk, _, cb) => {
           expect(chunk.name).toStrictEqual('controller');
           onStreamEndResolve();
