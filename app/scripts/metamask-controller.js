@@ -6001,7 +6001,12 @@ export default class MetamaskController extends EventEmitter {
         });
       case ERC721:
       case ERC1155:
-        return this.nftController.watchNft(asset, type, origin);
+        return this.nftController.watchNft(
+          asset,
+          type,
+          origin,
+          networkClientId,
+        );
       default:
         throw new Error(`Asset type ${type} not supported`);
     }
@@ -8174,6 +8179,13 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
+    const networkClientId =
+      this.networkController?.state?.networkConfigurationsByChainId?.[chainId]
+        ?.rpcEndpoints[
+        this.networkController?.state?.networkConfigurationsByChainId?.[chainId]
+          ?.defaultRpcEndpointIndex
+      ]?.networkClientId;
+
     if (isTransferFromTx) {
       const { data, to: contractAddress, from: userAddress } = txParams;
       const transactionData = parseStandardTokenTransactionData(data);
@@ -8195,6 +8207,7 @@ export default class MetamaskController extends EventEmitter {
         this.nftController.checkAndUpdateSingleNftOwnershipStatus(
           knownNft,
           false,
+          networkClientId,
           // TODO add networkClientId once it is available in the transactionMeta
           // the chainId previously passed here didn't actually allow us to check for ownership on a non globally selected network
           // because the check would use the provider for the globally selected network, not the chainId passed here.
@@ -8288,6 +8301,7 @@ export default class MetamaskController extends EventEmitter {
           return this.nftController.checkAndUpdateSingleNftOwnershipStatus(
             singleNft,
             false,
+            networkClientId,
             // TODO add networkClientId once it is available in the transactionMeta
             // the chainId previously passed here didn't actually allow us to check for ownership on a non globally selected network
             // because the check would use the provider for the globally selected network, not the chainId passed here.
@@ -8300,6 +8314,7 @@ export default class MetamaskController extends EventEmitter {
           return this.nftController.addNft(
             singleNft.contract,
             singleNft.tokenId,
+            networkClientId,
           );
         });
         await Promise.allSettled(addNftPromises);
