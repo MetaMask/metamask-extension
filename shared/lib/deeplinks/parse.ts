@@ -6,7 +6,7 @@ import { INVALID, MISSING, VALID, verify } from './verify';
 
 export async function parse(urlStr: string) {
   if (urlStr.length > DEEP_LINK_MAX_LENGTH) {
-    log.debug('Url is too long, skipping deeplink handling');
+    log.debug('Url is too long, skipping deep link handling');
     return false;
   }
 
@@ -24,7 +24,7 @@ export async function parse(urlStr: string) {
 
   const isValidSignature = await verify(url);
   if (isValidSignature === INVALID) {
-    log.debug('Invalid signature for deeplink url. Ignoring.', urlStr);
+    log.debug('Invalid signature for deep link url. Ignoring.', urlStr);
     return false;
   }
 
@@ -34,13 +34,14 @@ export async function parse(urlStr: string) {
   } catch (error) {
     // tab may have closed in the meantime, the searchParams may have
     // been rejected by the handler, etc.
-    log.debug('Error handling deeplink:', error);
+    log.debug('Error handling deep link:', error);
     return false;
   }
   const signed = isValidSignature === VALID;
 
-  if (!signed && isValidSignature !== MISSING) {
-    return false;
+  if (signed || isValidSignature === MISSING) {
+    return { normalizedUrl: url, destination, signed };
   }
-  return { url, destination, signed };
+  // ignore signed deep links that are not valid
+  return false;
 }

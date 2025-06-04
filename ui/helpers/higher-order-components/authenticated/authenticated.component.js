@@ -15,7 +15,9 @@ export default function Authenticated(props) {
     case !completedOnboarding:
       return <Redirect to={OnboardingRoute} />;
     default:
-      return <Redirect to={{ pathname: UNLOCK_ROUTE, state: { from: location } }} />;
+      return (
+        <Redirect to={{ pathname: UNLOCK_ROUTE, state: { from: location } }} />
+      );
   }
 }
 

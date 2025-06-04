@@ -2,8 +2,11 @@ function base64StringToBytes(unpaddedBase64: string) {
   let standardB64 = unpaddedBase64.replace(/-/g, '+').replace(/_/g, '/');
   // Add padding if needed
   const pad = standardB64.length % 4;
-  if (pad === 2) standardB64 += '==';
-  else if (pad === 3) standardB64 += '=';
+  if (pad === 2) {
+    standardB64 += '==';
+  } else if (pad === 3) {
+    standardB64 += '=';
+  }
 
   // Decode to bytes
   const binaryString = atob(standardB64);
@@ -21,45 +24,46 @@ function canonicalize(url: URL): string {
   return fullUrl;
 }
 
-export const MISSING = 0 as const;
-export const VALID = 1 as const;
-export const INVALID = 2 as const;
+export const MISSING = 'MISSING' as const;
+export const VALID = 'VALID' as const;
+export const INVALID = 'INVALID' as const;
 
 let tools: { algorithm: EcdsaParams; encoder: TextEncoder; key: CryptoKey };
 async function lazyGetTools() {
   if (tools) {
     return tools;
-  } else {
-    const curve = 'P-256' as NamedCurve;
-    const algorithm = { name: 'ECDSA', hash: 'SHA-256' } as EcdsaParams;
-    const keyUsage = ['verify'] as KeyUsage[];
-    const key = await crypto.subtle.importKey(
-      'jwk',
-      {
-        crv: curve,
-        ext: true,
-        key_ops: keyUsage,
-        kty: 'EC',
-        x: 'Bhp73TQ0keNmZWmdPlT7U3dbqbvZRdywIe5RpVFwIuk',
-        y: '4BFtBenx-ZjECrt6YUNRk4isSBTAFMn_21vDiFgI7h8',
-      },
-      { name: algorithm.name, namedCurve: curve },
-      false, // extractable
-      keyUsage,
-    );
-
-    tools = {
-      algorithm,
-      encoder: new TextEncoder(),
-      key,
-    };
-    return tools;
   }
+  const curve = 'P-256' as NamedCurve;
+  const algorithm = { name: 'ECDSA', hash: 'SHA-256' } as EcdsaParams;
+  const keyUsage = ['verify'] as KeyUsage[];
+  const key = await crypto.subtle.importKey(
+    'jwk',
+    {
+      crv: curve,
+      ext: true,
+      key_ops: keyUsage,
+      kty: 'EC',
+      x: 'Bhp73TQ0keNmZWmdPlT7U3dbqbvZRdywIe5RpVFwIuk',
+      y: '4BFtBenx-ZjECrt6YUNRk4isSBTAFMn_21vDiFgI7h8',
+    },
+    { name: algorithm.name, namedCurve: curve },
+    false, // extractable
+    keyUsage,
+  );
+
+  tools = {
+    algorithm,
+    encoder: new TextEncoder(),
+    key,
+  };
+  return tools;
 }
 
 export const verify = async (url: URL) => {
   const signatureStr = url.searchParams.get('sig');
-  if (!signatureStr) return MISSING;
+  if (!signatureStr) {
+    return MISSING;
+  }
   const signature = base64StringToBytes(signatureStr);
 
   if (signature.length !== 64) {

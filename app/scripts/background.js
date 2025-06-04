@@ -622,7 +622,10 @@ async function initialize(backup) {
   }
   await sendReadyMessageToTabs();
 
-  const deepLinkRouter = new DeeplinkRouter({getExtensionURL: platform.getExtensionURL, controller });
+  const deepLinkRouter = new DeeplinkRouter({
+    getExtensionURL: platform.getExtensionURL,
+    controller,
+  });
   deepLinkRouter.install();
 }
 

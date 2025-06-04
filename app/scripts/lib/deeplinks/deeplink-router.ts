@@ -1,5 +1,7 @@
 import browser from 'webextension-polyfill';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { DEEPLINK_ROUTE } from '../../../../ui/helpers/constants/routes';
 import { parse } from '../../../../shared/lib/deeplinks/parse';
 import { DEEP_LINK_HOST } from '../../../../shared/lib/deeplinks/constants';
@@ -12,8 +14,11 @@ export type Options = {
   controller: MetamaskController;
 };
 
+const slashRe = /^\//u;
+
 export class DeeplinkRouter {
   private getExtensionURL: Options['getExtensionURL'];
+
   private controller: MetamaskController;
 
   constructor({ getExtensionURL, controller }: Options) {
@@ -34,7 +39,7 @@ export class DeeplinkRouter {
   private handleBeforeRequest = ({
     tabId,
     url,
-  }: browser.WebRequest.OnBeforeRequestDetailsType) => {
+  }: browser.WebRequest.OnBeforeRequestDetailsType): browser.WebRequest.BlockingResponseOrPromise => {
     if (tabId === browser.tabs.TAB_ID_NONE) {
       return {};
     }
@@ -43,7 +48,6 @@ export class DeeplinkRouter {
   };
 
   public install() {
-    const isManifestV2 = !isManifestV3;
     browser.webRequest.onBeforeRequest.addListener(
       this.handleBeforeRequest,
       {
@@ -53,7 +57,7 @@ export class DeeplinkRouter {
       },
       // blocking is only in MV2, but is better because it lets us completely
       // replace the URL before any requests are made.
-      isManifestV2 ? ['blocking'] : [],
+      isManifestV3 ? [] : ['blocking'],
     );
   }
 
@@ -61,16 +65,19 @@ export class DeeplinkRouter {
     browser.webRequest.onBeforeRequest.removeListener(this.handleBeforeRequest);
   }
 
-  public async tryNavigateTo(tabId: number, urlStr: string) {
+  public async tryNavigateTo(
+    tabId: number,
+    urlStr: string,
+  ): Promise<browser.WebRequest.BlockingResponse> {
     const parsed = await parse(urlStr);
     if (parsed === false) {
+      // unable to parse, ignore the request
       return {};
     }
 
     let link: string;
-    debugger;
 
-    let skipDeepLinkIntersticial = Boolean(
+    const skipDeepLinkIntersticial = Boolean(
       this.controller.getState().preferences?.skipDeepLinkIntersticial,
     );
 
@@ -80,16 +87,29 @@ export class DeeplinkRouter {
         parsed.destination.query.toString(),
       );
     } else {
-      const search = new URLSearchParams();
-      search.set('u', parsed.url.pathname + parsed.url.search);
+      const search = new URLSearchParams({
+        u: parsed.normalizedUrl.pathname + parsed.normalizedUrl.search,
+      });
       link = this.getExtensionURL(
-        // routes.ts seem to require routes have a leading slash, but then the UI
-        // always redirects it to the non-slashed version. so we just use the non-slashed
-        // version from the start
-        DEEPLINK_ROUTE.replace(/^\//, ''),
+        // `routes.ts` seem to require routes have a leading slash, but then the
+        // UI always redirects it to the non-slashed version. So we just use the
+        // non-slashed version here to skip that redirect step.
+        DEEPLINK_ROUTE.replace(slashRe, ''),
         search.toString() || null,
       );
     }
-    this.redirectTab(tabId, link);
+
+    if (isManifestV3) {
+      // We need to use the redirect API in MV3, because the webRequest API does
+      // not support blocking redirects.
+      this.redirectTab(tabId, link);
+      return {};
+    }
+    // In MV2 we can just return the redirect URL, and the browser will
+    // redirect the tab to it for us, without letting the request to even
+    // begin.
+    // This is better because it avoids any network requests to the deeplink
+    // host, which is not needed in this case.
+    return { redirectUrl: link };
   }
 }

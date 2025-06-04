@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import log from 'loglevel';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
   ButtonSize,
@@ -8,7 +10,6 @@ import {
 import { parse } from '../../../shared/lib/deeplinks/parse';
 import { routes } from '../../../shared/lib/deeplinks/routes';
 import { DEEP_LINK_HOST } from '../../../shared/lib/deeplinks/constants';
-import log from 'loglevel';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -25,36 +26,32 @@ import { BaseUrl } from '../../../shared/constants/urls';
 import { Container } from '../../components/component-library/container/container';
 import { ContainerMaxWidth, Label } from '../../components/component-library';
 import { Checkbox } from '../../components/component-library/checkbox/checkbox';
-import { useDispatch } from 'react-redux';
 import { setSkipDeepLinkIntersticial } from '../../store/actions';
+import { getPreferences } from '../../selectors/selectors';
+import { MetaMaskReduxState } from '../../store/store';
 
 const { getExtensionURL } = globalThis.platform;
-
-function handleOnClick(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
-  e.preventDefault();
-  if (window.history.length > 1) {
-    // If there is a history, go back to the previous page
-    // TODO: this has so many ways it won't work and leave the user frustrated. Revisit this idea.
-    window.history.back();
-  } else {
-    // If there is no history, redirect to https://metamask.io/
-    window.location.href = BaseUrl.MetaMask;
-  }
-}
 
 export const DeepLink = () => {
   const location = useLocation();
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  // it'd technically not possible for a natural flow to reach this page
+  // when `skipDeepLinkIntersticial` is true, but if a user manually navigates
+  // to this "interstitial" page we should show their preferences anyway.
+  const skipDeepLinkIntersticial = useSelector(
+    (state: MetaMaskReduxState) =>
+      getPreferences(state).skipDeepLinkIntersticial,
+  );
+  // const history = useHistory();
   const [route, setRoute] = useState<null | {
     href: string;
     title: string;
     signed: boolean;
   }>(null);
   const [error, setError] = useState<string | null>(null);
-  // todo set the default to the state value, juuussttt in case.
-  const [hasChecked, setHasChecked] = useState(false);
+  const [hasChecked, setHasChecked] = useState(skipDeepLinkIntersticial);
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const urlStr = params.get('u');
@@ -63,16 +60,18 @@ export const DeepLink = () => {
       return;
     }
 
-    async function parseUrlStr(urlStr: string) {
-      const fullUrlStr = `https://${DEEP_LINK_HOST}${urlStr}`;
+    async function parseUrlStr(urlPathAndQuery: string) {
+      const fullUrlStr = `https://${DEEP_LINK_HOST}${urlPathAndQuery}`;
       try {
         const parsed = await parse(fullUrlStr);
         if (parsed) {
-          const { url, destination, signed } = parsed;
+          const { normalizedUrl, destination, signed } = parsed;
           const { path, query } = destination;
           const href = getExtensionURL(path, query.toString() ?? null);
           const title =
-            routes.get(url.pathname)!.getTitle(url.searchParams) ?? '';
+            routes
+              .get(normalizedUrl.pathname)
+              ?.getTitle(normalizedUrl.searchParams) ?? '';
           setRoute({ href, title, signed });
         } else {
           setRoute(null);
@@ -88,6 +87,21 @@ export const DeepLink = () => {
     }
     parseUrlStr(urlStr);
   }, [location.search]);
+
+  function cancel(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
+    e.preventDefault();
+    if (window.history.length > 1) {
+      // If there is a history, go back to the previous page
+      // TODO: this has so many ways it won't work and leave the user frustrated. Revisit this idea.
+      window.history.back();
+    } else {
+      // If there is no history, redirect to https://metamask.io/
+      window.location.href = BaseUrl.MetaMask;
+    }
+  }
+  async function confirm() {
+    await dispatch(setSkipDeepLinkIntersticial(hasChecked));
+  }
 
   return (
     <Container maxWidth={ContainerMaxWidth.Lg} textAlign={TextAlign.Center}>
@@ -108,19 +122,22 @@ export const DeepLink = () => {
           <Box className="error">
             <Text>{error}</Text>
           </Box>
-        ) : route ? (
+        ) : (
+          ''
+        )}
+        {route ? (
           <Box padding={4}>
             <Box margin={4}>
               <Text margin={4}>
                 A previous action wants to navigate to a page within the
                 MetaMask extension.
               </Text>
-              {!route.signed ? (
+              {route.signed ? (
+                ''
+              ) : (
                 <Text margin={4}>
                   You should only continue if you trust the source of this link.
                 </Text>
-              ) : (
-                ''
               )}
             </Box>
             <Box
@@ -153,7 +170,7 @@ export const DeepLink = () => {
               <Button
                 size={ButtonSize.Lg}
                 variant={ButtonVariant.Secondary}
-                onClick={handleOnClick}
+                onClick={cancel}
               >
                 {t('cancel')}
               </Button>
@@ -161,9 +178,7 @@ export const DeepLink = () => {
               <Button
                 variant={ButtonVariant.Primary}
                 href={route.href}
-                onClick={() => {
-                  dispatch(setSkipDeepLinkIntersticial(hasChecked));
-                }}
+                onClick={confirm}
                 size={ButtonSize.Lg}
               >
                 {t(route.title) ?? route.title}

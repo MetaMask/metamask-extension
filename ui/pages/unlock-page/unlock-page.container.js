@@ -41,7 +41,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     tryUnlockMetamask,
     ...restDispatchProps
   } = dispatchProps;
-  const { history, onSubmit: ownPropsSubmit, location, ...restOwnProps } = ownProps;
+  const {
+    history,
+    onSubmit: ownPropsSubmit,
+    location,
+    ...restOwnProps
+  } = ownProps;
 
   const onImport = async () => {
     await markPasswordForgotten();

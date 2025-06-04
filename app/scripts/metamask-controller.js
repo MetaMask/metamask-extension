@@ -423,6 +423,10 @@ export const METAMASK_CONTROLLER_EVENTS = {
     'NotificationServicesController:markNotificationsAsRead',
 };
 
+/**
+ * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
+ */
+
 // Types of APIs
 const API_TYPE = {
   EIP1193: 'eip-1193',
@@ -2273,6 +2277,10 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
+  async onRestart(callback) {
+    callback();
+  }
+
   // Provides a method for getting feature flags for the multichain
   // initial rollout, such that we can remotely modify polling interval
   getInfuraFeatureFlags() {
@@ -3315,7 +3323,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * The metamask-state of the various controllers, made available to the UI
    *
-   * @returns {object} status
+   * @returns {MetaMaskReduxState["metamask"]} status
    */
   getState() {
     const { vault } = this.keyringController.state;

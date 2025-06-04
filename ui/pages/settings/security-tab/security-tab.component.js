@@ -102,6 +102,8 @@ export default class SecurityTab extends PureComponent {
     securityAlertsEnabled: PropTypes.bool,
     useExternalServices: PropTypes.bool,
     toggleExternalServices: PropTypes.func,
+    setSkipDeepLinkIntersticial: PropTypes.func.isRequired,
+    skipDeepLinkIntersticial: PropTypes.bool,
     setSecurityAlertsEnabled: PropTypes.func,
     metaMetricsDataDeletionId: PropTypes.string,
     hdEntropyIndex: PropTypes.number,
@@ -235,7 +237,7 @@ export default class SecurityTab extends PureComponent {
         </div>
         <div className="settings-page__content-padded">
           <Box
-            ref={this.settingsRefs[3]}
+            ref={this.settingsRefs[2]}
             className="settings-page__content-row"
             display={Display.Flex}
             flexDirection={FlexDirection.Row}
@@ -279,7 +281,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[3]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -428,7 +430,7 @@ export default class SecurityTab extends PureComponent {
                 href={ZENDESK_URLS.SOLANA_ACCOUNTS}
                 target="_blank"
                 rel="noopener noreferrer"
-                key="cyn-consensys-privacy-link"
+                key="cyn-consensys-privacy-link-solana"
               >
                 {t('chooseYourNetworkDescriptionCallToAction')}
               </a>,
@@ -1101,6 +1103,53 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
+  renderSkipDeeplinkInterstitial() {
+    const { t } = this.context;
+    const { skipDeepLinkIntersticial, setSkipDeepLinkIntersticial } =
+      this.props;
+
+    return (
+      <>
+        <Box
+          ref={this.settingsRefs[3]}
+          className="settings-page__content-row"
+          data-testid="setting-skip-deep-link-interstitial"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={4}
+          id="skip-deep-link-interstitial"
+        >
+          <Box
+            className="settings-page__content-row"
+            gap={4}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+          >
+            <div className="settings-page__content-item">
+              <span>{t('skipDeepLinkIntersticial')}</span>
+              <div className="settings-page__content-description">
+                {t('skipDeepLinkIntersticialDescription')}
+              </div>
+            </div>
+
+            <div
+              className="settings-page__content-item-col"
+              data-testid="useSafeChainsListValidation"
+            >
+              <ToggleButton
+                value={skipDeepLinkIntersticial}
+                onToggle={(value) => setSkipDeepLinkIntersticial(!value)}
+                offLabel={t('off')}
+                onLabel={t('on')}
+              />
+            </div>
+          </Box>
+        </Box>
+      </>
+    );
+  }
+
   renderDataCollectionWarning = () => {
     const { t } = this.context;
 
@@ -1159,6 +1208,14 @@ export default class SecurityTab extends PureComponent {
         </span>
         {this.renderSeedWords()}
         {this.renderSecurityAlertsToggle()}
+        <div>
+          <span className="settings-page__security-tab-sub-header">
+            {this.context.t('deepLinks')}
+          </span>
+        </div>
+        <div className="settings-page__content-padded">
+          {this.renderSkipDeeplinkInterstitial()}
+        </div>
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>

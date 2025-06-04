@@ -3,6 +3,7 @@ import {
   PATH_NAME_MAP,
 } from '../../../../ui/helpers/constants/routes';
 import type { Route } from './route.type';
+
 export default {
   pathname: '/home',
   getTitle: (_: URLSearchParams) =>

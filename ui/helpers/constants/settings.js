@@ -199,12 +199,20 @@ const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#reveal-secretrecovery`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[3]
+  // securityAndPrivacy settingsRefs[2]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('usePhishingDetection'),
     descriptionMessage: (t) => t('usePhishingDetectionDescription'),
     route: `${SECURITY_ROUTE}#phishing-detection`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[3]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('skipDeepLinkIntersticial'),
+    descriptionMessage: (t) => t('skipDeepLinkIntersticialDescription'),
+    route: `${SECURITY_ROUTE}#skip-deep-link-interstitial`,
     icon: 'fa fa-lock',
   },
   // securityAndPrivacy settingsRefs[4]

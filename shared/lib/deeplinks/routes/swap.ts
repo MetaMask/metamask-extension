@@ -4,6 +4,7 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../../../ui/helpers/constants/routes';
 import type { Route } from './route.type';
+
 export default {
   pathname: '/swap',
   getTitle: (_: URLSearchParams) =>

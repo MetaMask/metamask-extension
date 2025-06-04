@@ -1638,6 +1638,9 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
+  "deepLinks": {
+    "message": "Deep Links"
+  },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
   },
@@ -5152,6 +5155,12 @@
   },
   "skipAccountSecurityDetails": {
     "message": "I understand that until I back up my Secret Recovery Phrase, I may lose my accounts and all of their assets."
+  },
+  "skipDeepLinkIntersticial": {
+    "message": "Don't show interstitial screen when opening deep links"
+  },
+  "skipDeepLinkIntersticialDescription": {
+    "message": "Enabling this option will skip the interstitial screen that is shown when opening deep links in MetaMask. A \"deep link\" is a link like https://link.metamask.io/home that will cause MetaMask to open; these links can be obfuscated by others. The interstitial screen is designed to protect you from accidentally opening pages within MetaMask that might display your accounts, tokens, history, balances, settings, or other potentially sensitive information."
   },
   "slideBridgeDescription": {
     "message": "Move across 9 chains, all within your wallet"
