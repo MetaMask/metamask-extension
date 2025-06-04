@@ -9,7 +9,7 @@ import {
   getPreferences,
   getSelectedAccount,
   getTokenSortConfig,
-  isGlobalNetworkSelectorEnabled,
+  isGlobalNetworkSelectorRemoved,
 } from '../../../../selectors';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
@@ -58,7 +58,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
   const enabledNetworks = useSelector(getEnabledNetworks);
 
   const networksToShow = useMemo(() => {
-    return isGlobalNetworkSelectorEnabled ? networkFilter : enabledNetworks;
+    return isGlobalNetworkSelectorRemoved ? enabledNetworks : networkFilter;
   }, [networkFilter, enabledNetworks]);
 
   const sortedFilteredTokens = useMemo(() => {

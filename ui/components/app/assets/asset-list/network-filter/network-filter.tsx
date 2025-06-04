@@ -43,7 +43,7 @@ import {
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import InfoTooltip from '../../../../ui/info-tooltip';
-import { isGlobalNetworkSelectorEnabled } from '../../../../../selectors/selectors';
+import { isGlobalNetworkSelectorRemoved } from '../../../../../selectors/selectors';
 
 type SortControlProps = {
   handleClose: () => void;
@@ -103,11 +103,11 @@ const NetworkFilter = ({
     if (handleFilterNetwork) {
       handleFilterNetwork(chainFilters);
     } else {
-      isGlobalNetworkSelectorEnabled
-        ? dispatch(setTokenNetworkFilter(chainFilters))
-        : dispatch(
+      isGlobalNetworkSelectorRemoved
+        ? dispatch(
             setEnabledNetworks(Object.keys(chainFilters) as CaipChainId[]),
-          );
+          )
+        : dispatch(setTokenNetworkFilter(chainFilters));
     }
 
     // TODO Add metrics
@@ -122,9 +122,9 @@ const NetworkFilter = ({
     return allNetworks[chain].name;
   });
 
-  const networks = isGlobalNetworkSelectorEnabled
-    ? tokenNetworkFilter
-    : enabledNetworks;
+  const networks = isGlobalNetworkSelectorRemoved
+    ? enabledNetworks
+    : tokenNetworkFilter;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const filter = networkFilter || networks;

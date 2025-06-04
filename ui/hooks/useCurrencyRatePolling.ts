@@ -16,7 +16,7 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../ducks/metamask/metamask';
-import { isGlobalNetworkSelectorEnabled } from '../selectors/selectors';
+import { isGlobalNetworkSelectorRemoved } from '../selectors/selectors';
 import usePolling from './usePolling';
 
 const usePollingEnabled = () => {
@@ -36,9 +36,9 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
   const chainIds = useSelector(getChainIdsToPoll);
   const enabledChainIds = useSelector(getEnabledChainIds);
 
-  const pollableChains = isGlobalNetworkSelectorEnabled
-    ? chainIds
-    : enabledChainIds;
+  const pollableChains = isGlobalNetworkSelectorRemoved
+    ? enabledChainIds
+    : chainIds;
 
   useEffect(() => {
     // Use validated currency tickers

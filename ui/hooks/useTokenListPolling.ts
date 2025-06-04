@@ -14,7 +14,7 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../ducks/metamask/metamask';
-import { isGlobalNetworkSelectorEnabled } from '../selectors/selectors';
+import { isGlobalNetworkSelectorRemoved } from '../selectors/selectors';
 import useMultiPolling from './useMultiPolling';
 
 const useTokenListPolling = () => {
@@ -32,9 +32,9 @@ const useTokenListPolling = () => {
     useExternalServices &&
     (useTokenDetection || useTransactionSimulations);
 
-  const pollableChains = isGlobalNetworkSelectorEnabled
-    ? chainIds
-    : enabledChainIds;
+  const pollableChains = isGlobalNetworkSelectorRemoved
+    ? enabledChainIds
+    : chainIds;
 
   useMultiPolling({
     startPolling: tokenListStartPolling,
