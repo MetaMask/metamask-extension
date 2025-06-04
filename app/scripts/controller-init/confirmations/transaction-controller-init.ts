@@ -134,7 +134,7 @@ export const TransactionControllerInit: ControllerInitFunction<
       },
       afterSimulate: new EnforceSimulationHook({
         messenger: initMessenger,
-      }).getHook(),
+      }).getAfterSimulateHook(),
       beforePublish: (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(
           'InstitutionalSnapController:publishHook',
@@ -142,7 +142,9 @@ export const TransactionControllerInit: ControllerInitFunction<
         );
         return response;
       },
-
+      beforeSign: new EnforceSimulationHook({
+        messenger: initMessenger,
+      }).getBeforeSignHook(),
       beforeCheckPendingTransactions: (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(
           'InstitutionalSnapController:beforeCheckPendingTransactionHook',

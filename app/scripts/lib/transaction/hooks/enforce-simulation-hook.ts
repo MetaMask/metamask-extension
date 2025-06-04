@@ -1,5 +1,6 @@
 import {
   AfterSimulateHook,
+  BeforeSignHook,
   TransactionMeta,
   TransactionParams,
 } from '@metamask/transaction-controller';
@@ -18,6 +19,9 @@ import {
   encodeRedeemDelegations,
 } from '../../../../../shared/lib/delegation/delegation';
 
+const MOCK_DELEGATION_SIGNATURE =
+  '0x2261a7810ed3e9cde160895909e138e2f68adb2da86fcf98ea0840701df107721fb369ab9b52550ea98832c09f8185284aca4c94bd345e867a4f4461868dd7751b';
+
 const log = createProjectLogger('enforce-simulation-hook');
 
 export class EnforceSimulationHook {
@@ -31,17 +35,36 @@ export class EnforceSimulationHook {
     this.#messenger = messenger;
   }
 
-  getHook(): AfterSimulateHook {
-    return this.#hook.bind(this);
+  getAfterSimulateHook(): AfterSimulateHook {
+    return this.#hook.bind(this, {});
   }
 
-  async #hook(request: {
-    transactionMeta: TransactionMeta;
-  }): ReturnType<AfterSimulateHook> {
-    const { transactionMeta } = request;
+  getBeforeSignHook(): BeforeSignHook {
+    return this.#hook.bind(this, { isFinal: true });
+  }
 
-    const { chainId, delegationAddress, simulationData, txParams } =
-      transactionMeta;
+  async #hook(
+    options: { isFinal?: boolean },
+    request: {
+      transactionMeta: TransactionMeta;
+    },
+  ) {
+    const { transactionMeta } = request;
+    const { isFinal } = options;
+
+    const {
+      chainId,
+      delegationAddress,
+      networkClientId,
+      simulationData,
+      txParams,
+      txParamsOriginal,
+    } = transactionMeta;
+
+    if (isFinal && !txParamsOriginal) {
+      log('Cannot find original transaction parameters');
+      throw new Error('Original transaction parameters not found');
+    }
 
     const from = txParams.from as Hex;
 
@@ -62,7 +85,9 @@ export class EnforceSimulationHook {
       return {};
     }
 
-    if (txParams.to?.toLowerCase() === delegationManagerAddress.toLowerCase()) {
+    const to = isFinal ? txParamsOriginal?.to : txParams.to;
+
+    if (to?.toLowerCase() === delegationManagerAddress.toLowerCase()) {
       log('Skipping as already a delegation');
       return {};
     }
@@ -75,29 +100,56 @@ export class EnforceSimulationHook {
 
     log('Delegation', delegation);
 
-    const delegationSignature = (await this.#messenger.call(
-      'DelegationController:signDelegation',
-      {
-        chainId,
-        delegation,
-      },
-    )) as Hex;
+    let delegationSignature = MOCK_DELEGATION_SIGNATURE as Hex;
+
+    if (isFinal) {
+      log('Signing delegation');
+
+      delegationSignature = (await this.#messenger.call(
+        'DelegationController:signDelegation',
+        {
+          chainId,
+          delegation,
+        },
+      )) as Hex;
+    }
 
     log('Delegation signature', delegationSignature);
 
     const data = generateCalldata({
-      transaction: txParams,
+      transaction: isFinal ? (txParamsOriginal as TransactionParams) : txParams,
       delegation: { ...delegation, signature: delegationSignature },
     });
 
     log('Data', data);
 
+    let newGas: Hex | undefined;
+
+    if (!isFinal) {
+      const { gas } = await this.#messenger.call(
+        'TransactionController:estimateGas',
+        { ...txParams, data, to: delegationManagerAddress, value: '0x0' },
+        networkClientId,
+        {
+          ignoreDelegationSignatures: true,
+        },
+      );
+
+      log('Estimated gas', gas);
+
+      newGas = gas;
+    }
+
     return {
       skipSimulation: true,
-      updateTransaction: (transaction) => {
+      updateTransaction: (transaction: TransactionMeta) => {
         transaction.txParams.data = data;
         transaction.txParams.to = delegationManagerAddress;
         transaction.txParams.value = '0x0';
+
+        if (newGas) {
+          transaction.txParams.gas = newGas;
+        }
       },
     };
   }
