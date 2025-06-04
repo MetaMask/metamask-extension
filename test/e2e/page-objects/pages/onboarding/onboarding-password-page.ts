@@ -23,7 +23,7 @@ class OnboardingPasswordPage {
 
   private readonly incorrectPasswordWarningMessage = {
     text: "Passwords don't match",
-    testId: 'help-text',
+    testId: 'confirm-password-error',
   };
 
   constructor(driver: Driver) {
