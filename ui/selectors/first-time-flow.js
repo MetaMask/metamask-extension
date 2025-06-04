@@ -39,10 +39,8 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
     return ONBOARDING_IMPORT_WITH_SRP_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
     return ONBOARDING_METAMETRICS;
-  } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+  } else if (isSocialLoginFlow(state)) {
     return ONBOARDING_METAMETRICS;
-  } else if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-    return ONBOARDING_PIN_EXTENSION_ROUTE;
   }
   return DEFAULT_ROUTE;
 }
