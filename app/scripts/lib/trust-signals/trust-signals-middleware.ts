@@ -3,9 +3,9 @@ import { NetworkController } from '@metamask/network-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import type { AppStateController } from '../../controllers/app-state-controller';
+import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
 import { scanAddress } from './security-alerts-api';
 import { SupportedEVMChain } from './types';
-import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
 
 type TransactionParams = {
   to: string;
