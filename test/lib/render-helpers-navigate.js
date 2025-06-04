@@ -40,23 +40,9 @@ I18nProvider.defaultProps = {
   children: undefined,
 };
 
-const createProviderWrapper = (store, pathname = '/') => {
-  const Wrapper = ({ children }) =>
-    store ? (
-      <Provider store={store}>
-        <MemoryRouter initialEntries={[pathname]}>
-          <CompatRouter>
-            <I18nProvider currentLocale="en" current={en} en={en}>
-              <LegacyI18nProvider>
-                <LegacyMetaMetricsProvider>
-                  {children}
-                </LegacyMetaMetricsProvider>
-              </LegacyI18nProvider>
-            </I18nProvider>
-          </CompatRouter>
-        </MemoryRouter>
-      </Provider>
-    ) : (
+function createProviderWrapper(store, pathname = '/') {
+  const Wrapper = ({ children }) => {
+    const container = (
       <MemoryRouter initialEntries={[pathname]}>
         <CompatRouter>
           <I18nProvider currentLocale="en" current={en} en={en}>
@@ -68,11 +54,14 @@ const createProviderWrapper = (store, pathname = '/') => {
       </MemoryRouter>
     );
 
+    return store ? <Provider store={store}>{container}</Provider> : container;
+  };
+
   Wrapper.propTypes = {
     children: PropTypes.node,
   };
   return Wrapper;
-};
+}
 
 export function renderWithProvider(
   component,
