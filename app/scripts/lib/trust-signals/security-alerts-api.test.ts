@@ -1,3 +1,5 @@
+import nock from 'nock';
+import { SECOND } from '../../../../shared/constants/time';
 import { scanAddress } from './security-alerts-api';
 import { SupportedEVMChain, ResultType } from './types';
 
@@ -12,41 +14,28 @@ const RESPONSE_MOCK = {
 const BASE_URL = 'https://api.example.com';
 
 describe('Security Alerts API', () => {
-  const fetchMock = jest.fn();
-
   beforeEach(() => {
-    jest.resetAllMocks();
-
-    global.fetch = fetchMock;
-
-    fetchMock.mockResolvedValue({
-      ok: true,
-      json: async () => RESPONSE_MOCK,
-    });
-
+    nock.cleanAll();
     process.env.SECURITY_ALERTS_API_URL = BASE_URL;
+  });
+
+  afterEach(() => {
+    nock.cleanAll();
   });
 
   describe('scanAddress', () => {
     it('sends POST request with correct parameters', async () => {
+      const scope = nock(BASE_URL)
+        .post('/address/evm/scan', {
+          chain: TEST_CHAIN,
+          address: TEST_ADDRESS,
+        })
+        .reply(200, RESPONSE_MOCK);
+
       const response = await scanAddress(TEST_CHAIN, TEST_ADDRESS);
 
       expect(response).toEqual(RESPONSE_MOCK);
-
-      expect(fetchMock).toHaveBeenCalledTimes(1);
-      expect(fetchMock).toHaveBeenCalledWith(
-        `${BASE_URL}/address/evm/scan`,
-        expect.objectContaining({
-          method: 'POST',
-          body: JSON.stringify({
-            chain: TEST_CHAIN,
-            address: TEST_ADDRESS,
-          }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }),
-      );
+      expect(scope.isDone()).toBe(true);
     });
 
     it('returns malicious result when address is flagged', async () => {
@@ -55,35 +44,33 @@ describe('Security Alerts API', () => {
         label: 'Known scammer',
       };
 
-      fetchMock.mockResolvedValue({
-        ok: true,
-        json: async () => maliciousResponse,
-      });
+      const scope = nock(BASE_URL)
+        .post('/address/evm/scan')
+        .reply(200, maliciousResponse);
 
       const response = await scanAddress(TEST_CHAIN, TEST_ADDRESS);
 
       expect(response).toEqual(maliciousResponse);
+      expect(scope.isDone()).toBe(true);
     });
 
     it('handles different chain types', async () => {
       const polygonChain = SupportedEVMChain.Polygon;
 
+      const scope = nock(BASE_URL)
+        .post('/address/evm/scan', {
+          chain: polygonChain,
+          address: TEST_ADDRESS,
+        })
+        .reply(200, RESPONSE_MOCK);
+
       await scanAddress(polygonChain, TEST_ADDRESS);
 
-      expect(fetchMock).toHaveBeenCalledWith(
-        `${BASE_URL}/address/evm/scan`,
-        expect.objectContaining({
-          body: JSON.stringify({
-            chain: polygonChain,
-            address: TEST_ADDRESS,
-          }),
-        }),
-      );
+      expect(scope.isDone()).toBe(true);
     });
 
     it('throws an error if fetch fails', async () => {
-      const error = new Error('Network error');
-      fetchMock.mockRejectedValue(error);
+      nock(BASE_URL).post('/address/evm/scan').replyWithError('Network error');
 
       await expect(scanAddress(TEST_CHAIN, TEST_ADDRESS)).rejects.toThrow(
         'Network error',
@@ -93,25 +80,21 @@ describe('Security Alerts API', () => {
     it('returns error response for non-OK status', async () => {
       const errorResponse = { error: 'Server error' };
 
-      fetchMock.mockResolvedValue({
-        ok: false,
-        status: 500,
-        json: async () => errorResponse,
-      });
+      nock(BASE_URL).post('/address/evm/scan').reply(500, errorResponse);
 
       const response = await scanAddress(TEST_CHAIN, TEST_ADDRESS);
 
       expect(response).toEqual(errorResponse);
     });
 
-    it('works when SECURITY_ALERTS_API_URL is not set', async () => {
-      delete process.env.SECURITY_ALERTS_API_URL;
+    it('times out after 5 seconds', async () => {
+      nock(BASE_URL)
+        .post('/address/evm/scan')
+        .delay(SECOND * 6)
+        .reply(200, RESPONSE_MOCK);
 
-      await scanAddress(TEST_CHAIN, TEST_ADDRESS);
-
-      expect(fetchMock).toHaveBeenCalledWith(
-        'undefined/address/evm/scan',
-        expect.any(Object),
+      await expect(scanAddress(TEST_CHAIN, TEST_ADDRESS)).rejects.toThrow(
+        'The user aborted a request.',
       );
     });
   });

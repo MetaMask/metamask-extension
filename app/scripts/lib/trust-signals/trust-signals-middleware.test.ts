@@ -170,6 +170,35 @@ describe('TrustSignalsMiddleware', () => {
       expect(next).toHaveBeenCalled();
     });
 
+    it('should handle timeout errors gracefully without blocking the transaction', async () => {
+      const timeoutError = new DOMException(
+        'The user aborted a request.',
+        'AbortError',
+      );
+      scanAddressMock.mockRejectedValue(timeoutError);
+      const { middleware, appStateController } = createMiddleware();
+      appStateController.getAddressSecurityAlertResponse.mockReturnValue(
+        undefined,
+      );
+
+      const req = createMockRequest('eth_sendTransaction', [
+        createTransactionParams(),
+      ]);
+      const res = createMockResponse();
+      const next = jest.fn();
+
+      await middleware(req, res, next);
+
+      expect(scanAddressMock).toHaveBeenCalledWith(
+        SupportedEVMChain.Ethereum,
+        TEST_ADDRESSES.TO,
+      );
+      expect(
+        appStateController.addAddressSecurityAlertResponse,
+      ).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalled();
+    });
+
     it('should map chain IDs to supported EVM chains correctly', async () => {
       scanAddressMock.mockResolvedValue(MOCK_SCAN_RESPONSES.WARNING);
       const { middleware, appStateController } = createMiddleware({
