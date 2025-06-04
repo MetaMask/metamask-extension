@@ -69,11 +69,11 @@ const snapsExecutionEnvJs = fs.readFileSync(snapsExecutionEnvJsPath, 'utf-8');
 
 const blocklistedHosts = [
   'arbitrum-mainnet.infura.io',
-  'goerli.infura.io',
-  'mainnet.infura.io',
-  'sepolia.infura.io',
+  'bsc-dataseed.binance.org',
   'linea-mainnet.infura.io',
   'linea-sepolia.infura.io',
+  'mainnet.infura.io',
+  'sepolia.infura.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,
@@ -283,8 +283,7 @@ async function setupMocking(
       };
     });
 
-  // when we are at chain id 1337, a call is made to chain id 1
-  const targetChainId = chainId === '1337' ? '1' : chainId;
+  const targetChainId = chainId === 1337 ? 1 : chainId;
   await server
     .forGet(`${GAS_API_BASE_URL}/networks/${targetChainId}/gasPrices`)
     .thenCallback(() => {
