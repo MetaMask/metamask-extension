@@ -292,7 +292,7 @@ const AssetPage = ({
         currentPrice={currentPrice}
         currency={currency}
       />
-      <Box marginTop={4}>
+      <Box marginTop={4} paddingLeft={4} paddingRight={4}>
         {type === AssetType.native ? (
           <CoinButtons
             {...{
@@ -440,6 +440,7 @@ const AssetPage = ({
             </Text>
             {type === AssetType.native ? (
               <TransactionList
+                tokenAddress={address}
                 hideNetworkFilter
                 overrideFilterForCurrentChain={true}
               />
