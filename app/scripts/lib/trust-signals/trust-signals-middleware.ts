@@ -58,7 +58,7 @@ export function createTrustSignalsMiddleware(
         appStateController.addAddressSecurityAlertResponse(to, result);
       }
     } catch (error) {
-      console.error('[createTrustSignalsMiddleware] error', error);
+      console.error('[createTrustSignalsMiddleware] error: ', error);
     } finally {
       next();
     }

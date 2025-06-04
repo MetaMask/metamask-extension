@@ -7,12 +7,17 @@ import {
 } from './types';
 
 const TIMEOUT = 5 * SECOND;
+const ENDPOINT_ADDRESS_SCAN = 'address/evm/scan';
 
 export async function scanAddress(
   chain: SupportedEVMChain,
   address: string,
 ): Promise<ScanAddressResponse> {
-  const endpoint = `${process.env.SECURITY_ALERTS_API_URL}/address/evm/scan`;
+  const baseUrl = process.env.SECURITY_ALERTS_API_URL;
+  if (!baseUrl) {
+    throw new Error('SECURITY_ALERTS_API_URL is not set');
+  }
+  const endpoint = `${baseUrl}/${ENDPOINT_ADDRESS_SCAN}`;
   const body: ScanAddressRequest = {
     chain,
     address,
