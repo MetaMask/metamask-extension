@@ -2190,6 +2190,11 @@ describe('#getConnectedSitesList', () => {
           enabledNetworkMap: {
             '0x1': true,
           },
+          preferences: {
+            tokenNetworkFilter: {
+              '0x1': true,
+            },
+          },
           selectedNetworkClientId: 'mainnetNetworkConfigurationId',
           networkConfigurationsByChainId: {
             '0x1': {
