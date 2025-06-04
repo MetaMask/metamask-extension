@@ -16,6 +16,8 @@ import { storeAsStream } from '@metamask/obs-store';
 import { isObject, hasProperty } from '@metamask/utils';
 import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+// Import to set up global `Promise.withResolvers` polyfill
+import '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 
 import {
@@ -76,11 +78,7 @@ import MetamaskController, {
 } from './metamask-controller';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import {
-  deferredPromise,
-  getPlatform,
-  shouldEmitDappViewedEvent,
-} from './lib/util';
+import { getPlatform, shouldEmitDappViewedEvent } from './lib/util';
 import { createOffscreen } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import { generateWalletState } from './fixtures/generate-wallet-state';
@@ -167,35 +165,14 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
-if (!isManifestV3) {
-  /**
-   * `onInstalled` event handler.
-   *
-   * On MV3 builds we must listen for this event in `app-init`, otherwise we found that the listener
-   * is never called.
-   * There is no `app-init` file on MV2 builds, so we add a listener here instead.
-   *
-   * @param {import('webextension-polyfill').Runtime.OnInstalledDetailsType} details - Event details.
-   */
-  const onInstalledListener = (details) => {
-    if (details.reason === 'install') {
-      onInstall();
-      browser.runtime.onInstalled.removeListener(onInstalledListener);
-    }
-  };
-
-  browser.runtime.onInstalled.addListener(onInstalledListener);
-
-  // This condition is for when the `onInstalled` listener in `app-init` was called before
-  // `background.js` was loaded.
-} else if (globalThis.stateHooks.metamaskWasJustInstalled) {
-  onInstall();
-  // Delete just to clean up global namespace
-  delete globalThis.stateHooks.metamaskWasJustInstalled;
-  // This condition is for when `background.js` was loaded before the `onInstalled` listener was
-  // called.
+// In MV3 onInstalled must be installed in the entry file
+if (globalThis.stateHooks.onInstalledListener) {
+  globalThis.stateHooks.onInstalledListener.then(handleOnInstalled);
 } else {
-  globalThis.stateHooks.metamaskTriggerOnInstall = () => onInstall();
+  browser.runtime.onInstalled.addListener(function listener(details) {
+    browser.runtime.onInstalled.removeListener(listener);
+    handleOnInstalled(details);
+  });
 }
 
 /**
@@ -223,7 +200,7 @@ let rejectInitialization;
  * state of application initialization (or re-initialization).
  */
 function setGlobalInitializers() {
-  const deferred = deferredPromise();
+  const deferred = Promise.withResolvers();
   isInitialized = deferred.promise;
   resolveInitialization = deferred.resolve;
   rejectInitialization = deferred.reject;
@@ -1474,6 +1451,21 @@ const addAppInstalledEvent = () => {
     addAppInstalledEvent();
   }, 500);
 };
+
+/**
+ * Handles the onInstalled event.
+ *
+ * @param {chrome.runtime.InstalledDetails} details
+ */
+function handleOnInstalled({ reason }) {
+  switch (reason) {
+    case 'install':
+      onInstall();
+      break;
+    default:
+    // no action
+  }
+}
 
 /**
  * Trigger actions that should happen only upon initial install (e.g. open tab for onboarding).
