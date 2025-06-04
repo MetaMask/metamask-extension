@@ -2849,6 +2849,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.POLYGON_ZKEVM,
     CHAIN_IDS.MOONBEAM,
     CHAIN_IDS.MOONRIVER,
+    CHAIN_IDS.SEI,
   ].includes(chainId);
 }
 
