@@ -35,7 +35,7 @@ const renderComponent = () => {
 };
 
 // note: placeholder test for now (will be expanded as component is finalized)
-describe('SendAllowanceBanner Component', () => {
+describe('SendAllowanceTooltip Component', () => {
   it('should render correctly', () => {
     expect(() => {
       renderComponent();
