@@ -1091,6 +1091,7 @@
         "@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
+        "@metamask/phishing-controller": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
@@ -1151,18 +1152,20 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
+        "@metamask/multichain-network-controller": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/bridge-controller>bignumber.js": true,
         "lodash": true,
-        "reselect": true
+        "reselect": true,
+        "uuid": true
       }
     },
     "@metamask/bridge-status-controller": {
       "globals": {
         "URLSearchParams": true,
+        "console.error": true,
         "console.log": true,
         "setTimeout": true
       },
@@ -1511,6 +1514,7 @@
         "@ethereumjs/tx": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util": true,
         "@metamask/keyring-api": true,
+        "@metamask/keyring-internal-api": true,
         "@metamask/keyring-internal-snap-client": true,
         "@metamask/keyring-api>@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
@@ -1666,7 +1670,15 @@
         "@metamask/keyring-api>@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/keyring-api>bech32": true
+        "bitcoin-address-validation": true
+      }
+    },
+    "@metamask/multichain-transactions-controller>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/keyring-api>@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
       }
     },
     "@metamask/keyring-controller": {
@@ -1687,9 +1699,19 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
+    "@metamask/keyring-internal-api": {
+      "packages": {
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-api>@metamask/keyring-utils": true,
+        "@metamask/superstruct": true
+      }
+    },
     "@metamask/keyring-internal-snap-client": {
       "packages": {
-        "@metamask/keyring-snap-client": true
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-internal-api": true,
+        "@metamask/keyring-snap-client": true,
+        "@metamask/keyring-api>@metamask/keyring-utils": true
       }
     },
     "@metamask/keyring-snap-client": {
@@ -1698,6 +1720,14 @@
         "@metamask/keyring-api>@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/keyring-snap-client>uuid": true
+      }
+    },
+    "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client": {
+      "packages": {
+        "@metamask/multichain-transactions-controller>@metamask/keyring-api": true,
+        "@metamask/keyring-api>@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client>uuid": true
       }
     },
     "@metamask/keyring-api>@metamask/keyring-utils": {
@@ -1768,20 +1798,7 @@
         "@metamask/network-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/multichain-network-controller>@solana/addresses": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/keyring-api": true,
-        "@metamask/network-controller": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses": true,
+        "@metamask/multichain-network-controller>@solana/addresses": true,
         "lodash": true
       }
     },
@@ -1791,8 +1808,8 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/keyring-api": true,
-        "@metamask/keyring-snap-client": true,
+        "@metamask/multichain-transactions-controller>@metamask/keyring-api": true,
+        "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client": true,
         "@metamask/multichain-transactions-controller>@metamask/snaps-utils": true,
         "@metamask/utils": true
       }
@@ -2795,20 +2812,6 @@
       }
     },
     "@metamask/multichain-network-controller>@solana/addresses": {
-      "globals": {
-        "Intl.Collator": true,
-        "TextEncoder": true,
-        "crypto.subtle.digest": true,
-        "crypto.subtle.exportKey": true
-      },
-      "packages": {
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/assertions": true,
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-core": true,
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/codecs-strings": true,
-        "@metamask/multichain-network-controller>@solana/addresses>@solana/errors": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller>@solana/addresses": {
       "globals": {
         "Intl.Collator": true,
         "TextEncoder": true,
@@ -4084,7 +4087,7 @@
         "@ethereumjs/tx": true,
         "@ethersproject/abi": true,
         "eth-lattice-keyring>gridplus-sdk>aes-js": true,
-        "@metamask/keyring-api>bech32": true,
+        "bitcoin-address-validation>bech32": true,
         "eth-lattice-keyring>gridplus-sdk>bignumber.js": true,
         "eth-lattice-keyring>gridplus-sdk>bitwise": true,
         "bn.js": true,
@@ -5774,6 +5777,11 @@
       }
     },
     "@metamask/keyring-snap-client>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client>uuid": {
       "globals": {
         "crypto": true
       }

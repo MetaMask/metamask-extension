@@ -15,6 +15,7 @@ import {
   selectIsQuoteExpired,
   selectBridgeFeatureFlags,
   selectMaxBalanceButtonVisibilityForSrcToken,
+  selectMinimumBalanceForRentExemptionInSOL,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SolAccountType } from '@metamask/keyring-api';
@@ -529,21 +530,36 @@ export const getValidationErrors = createDeepEqualSelector(
   _getValidatedSrcAmount,
   getFromToken,
   getFromAmount,
+  ({ metamask }: BridgeAppState) =>
+    selectMinimumBalanceForRentExemptionInSOL(metamask),
+  getQuoteRequest,
   (
-    { activeQuote, quotesLastFetchedMs, isLoading },
+    { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
     validatedSrcAmount,
     fromToken,
     fromTokenInputValue,
+    minimumBalanceForRentExemptionInSOL,
+    quoteRequest,
   ) => {
+    const srcChainId =
+      quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
+    const minimumBalanceToUse =
+      srcChainId && isSolanaChainId(srcChainId)
+        ? minimumBalanceForRentExemptionInSOL
+        : '0';
+
     return {
       isNoQuotesAvailable: Boolean(
-        !activeQuote && quotesLastFetchedMs && !isLoading,
+        !activeQuote &&
+          quotesLastFetchedMs &&
+          !isLoading &&
+          quotesRefreshCount > 0,
       ),
       // Shown prior to fetching quotes
       isInsufficientGasBalance: (balance?: BigNumber) => {
         if (balance && !activeQuote && validatedSrcAmount && fromToken) {
           return isNativeAddress(fromToken.address)
-            ? balance.eq(validatedSrcAmount)
+            ? balance.sub(minimumBalanceToUse).lte(validatedSrcAmount)
             : balance.lte(0);
         }
         return false;
@@ -555,6 +571,7 @@ export const getValidationErrors = createDeepEqualSelector(
             ? balance
                 .sub(activeQuote.totalMaxNetworkFee.amount)
                 .sub(activeQuote.sentAmount.amount)
+                .sub(minimumBalanceToUse)
                 .lte(0)
             : balance.lte(activeQuote.totalMaxNetworkFee.amount);
         }
@@ -645,3 +662,28 @@ export const getHardwareWalletName = (state: BridgeAppState) => {
       return undefined;
   }
 };
+
+/**
+ * Returns true if Unified UI swaps are enabled for the chain.
+ * Falls back to false when the chain is missing from feature-flags.
+ *
+ * @param _state - Redux state (unused placeholder for reselect signature)
+ * @param chainId - ChainId in either hex (e.g. 0x1) or CAIP format (eip155:1).
+ */
+export const getIsUnifiedUIEnabled = createSelector(
+  [
+    getBridgeFeatureFlags,
+    (_state: BridgeAppState, chainId?: string | number) => chainId,
+  ],
+  (bridgeFeatureFlags, chainId): boolean => {
+    if (chainId === undefined || chainId === null) {
+      return false;
+    }
+
+    const caipChainId = formatChainIdToCaip(chainId);
+
+    return Boolean(
+      bridgeFeatureFlags?.chains?.[caipChainId]?.isUnifiedUIEnabled,
+    );
+  },
+);

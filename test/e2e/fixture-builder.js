@@ -845,20 +845,14 @@ class FixtureBuilder {
     });
   }
 
-  withPreferencesControllerSmartTransactionsOptedIn() {
-    return this.withPreferencesController({
-      preferences: {
-        smartTransactionsOptInStatus: true,
-        tokenNetworkFilter: {},
-      },
-    });
-  }
-
+  /**
+   * @deprecated this method should not be used, as the `smartTransactionsOptInStatus` value is overridden by the migration 135
+   * Use the `toggleStxSetting` flow to disable this setting effectively.
+   */
   withPreferencesControllerSmartTransactionsOptedOut() {
     return this.withPreferencesController({
       preferences: {
         smartTransactionsOptInStatus: false,
-        tokenNetworkFilter: {},
       },
     });
   }
