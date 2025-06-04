@@ -14,7 +14,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
     <p
       class="mm-box mm-text onboarding-metametrics__desc mm-text--body-md mm-text--text-align-left mm-box--color-text-default"
     >
-      We’d like to gather basic usage and diagnostics data to improve MetaMask. Know that we never sell the data you provide here.
+      We'd like to gather basic usage and diagnostics data to improve MetaMask. It will always be:
     </p>
     <div
       class="mm-box mm-box--padding-top-2 mm-box--padding-bottom-2"
@@ -50,7 +50,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
             >
               Private:
             </span>
-             clicks and views on the app are stored, but other details (like your public address) are not.
+             Clicks and views on the app are stored, but other details (like your public address) are not.
              
           </span>
         </div>
@@ -170,7 +170,7 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
     <p
       class="mm-box mm-text onboarding-metametrics__desc mm-text--body-md mm-text--text-align-left mm-box--color-text-default"
     >
-      We’d like to gather basic usage and diagnostics data to improve MetaMask. Know that we never sell the data you provide here.
+      We'd like to gather basic usage and diagnostics data to improve MetaMask. It will always be:
     </p>
     <div
       class="mm-box mm-box--padding-top-2 mm-box--padding-bottom-2"
@@ -206,7 +206,7 @@ exports[`Onboarding Metametrics Component should match snapshot after new policy
             >
               Private:
             </span>
-             clicks and views on the app are stored, but other details (like your public address) are not.
+             Clicks and views on the app are stored, but other details (like your public address) are not.
              
           </span>
         </div>
