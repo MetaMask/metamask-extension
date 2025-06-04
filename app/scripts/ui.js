@@ -18,6 +18,8 @@ import browser from 'webextension-polyfill';
 import { StreamProvider } from '@metamask/providers';
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import log from 'loglevel';
+// Import to set up global `Promise.withResolvers` polyfill
+import '../../shared/lib/promise-with-resolvers';
 import launchMetaMaskUi, {
   updateBackgroundConnection,
   displayStateCorruptionError,
