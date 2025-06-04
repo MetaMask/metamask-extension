@@ -13,7 +13,10 @@ import {
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setAccountLabel } from '../../../store/actions';
-import { Display, FlexDirection } from '../../../helpers/constants/design-system';
+import {
+  Display,
+  FlexDirection,
+} from '../../../helpers/constants/design-system';
 
 type EditAccountNameModalProps = {
   isOpen: boolean;

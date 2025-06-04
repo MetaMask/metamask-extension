@@ -1,22 +1,33 @@
 import React, { useCallback, useContext } from 'react';
+import { parseCaipChainId } from '@metamask/utils';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { Page, Header, Content, Footer } from '../../multichain/pages/page';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ButtonIcon, ButtonIconSize, ButtonSecondary, ButtonSecondarySize, IconName, Text } from '../../component-library';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  ButtonSecondary,
+  ButtonSecondarySize,
+  IconName,
+} from '../../component-library';
 import { ACCOUNT_DETAILS_ROUTE } from '../../../helpers/constants/routes';
-import { BackgroundColor, TextVariant } from '../../../helpers/constants/design-system';
-import { useHistory } from 'react-router-dom';
+import {
+  BackgroundColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import QrCodeView from '../../ui/qr-code-view';
-import { useSelector } from 'react-redux';
 import { AppSliceState } from '../../../ducks/app/app';
 import { getInternalAccountByAddress } from '../../../selectors';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { parseCaipChainId } from '@metamask/utils';
-import { getMultichainAccountUrl, getMultichainBlockExplorerUrl } from '../../../helpers/utils/multichain/blockExplorer';
+import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventName,
+  MetaMetricsEventCategory,
+} from '../../../../shared/constants/metametrics';
 
 export const AddressQRCode = () => {
   const t = useI18nContext();
@@ -52,8 +63,7 @@ export const AddressQRCode = () => {
       },
     });
     openBlockExplorer(addressLink, 'Account Details QR Code Page', trackEvent);
-  }, [history]);
-
+  }, [chainId, trackEvent, addressLink]);
 
   return (
     <Page>
@@ -75,7 +85,7 @@ export const AddressQRCode = () => {
       </Content>
       <Footer>
         <ButtonSecondary
-          onClick={handleClick}
+          onClick={handleNavigation}
           size={ButtonSecondarySize.Lg}
           textProps={{
             variant: TextVariant.bodyMdMedium,

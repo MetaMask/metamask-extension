@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { AppSliceState } from '../../../ducks/app/app';
 import { getInternalAccountByAddress, getUseBlockie } from '../../../selectors';
 import {
@@ -15,10 +17,11 @@ import {
   BackgroundColor,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import { ACCOUNT_DETAILS_QR_CODE_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ACCOUNT_DETAILS_QR_CODE_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../helpers/constants/routes';
 import { IconName } from '../../component-library/icon';
-import { useHistory } from 'react-router-dom';
-import { isEvmAccountType } from '@metamask/keyring-api';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';

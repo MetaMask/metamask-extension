@@ -1,6 +1,12 @@
 import React from 'react';
 import { Box, Text } from '../../component-library';
-import { BackgroundColor, Display, JustifyContent, AlignItems, TextColor } from '../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  Display,
+  JustifyContent,
+  AlignItems,
+  TextColor,
+} from '../../../helpers/constants/design-system';
 
 type AccountDetailsRowProps = {
   label: string;
