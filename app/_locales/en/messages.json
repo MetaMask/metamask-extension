@@ -1883,11 +1883,11 @@
   "editANickname": {
     "message": "Edit nickname"
   },
-  "editAccounts": {
-    "message": "Edit accounts"
-  },
   "editAccountName": {
     "message": "Edit account name"
+  },
+  "editAccounts": {
+    "message": "Edit accounts"
   },
   "editAddressNickname": {
     "message": "Edit address nickname"
