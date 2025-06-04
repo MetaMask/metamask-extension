@@ -144,6 +144,8 @@ import {
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
 
+export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
+
 /** `appState` slice selectors */
 
 export const getConfirmationExchangeRates = (state) => {
@@ -1423,9 +1425,15 @@ export const getTokenNetworkFilter = createDeepEqualSelector(
 export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const chainId = getCurrentChainId(state);
   const enabledNetworks = getEnabledNetworks(state);
+  const tokenNetworkFilter = getTokenNetworkFilter(state);
+
+  const networks = isGlobalNetworkSelectorRemoved
+    ? enabledNetworks
+    : tokenNetworkFilter;
+
   if (
-    Object.keys(enabledNetworks).length === 1 &&
-    Object.keys(enabledNetworks)[0] === chainId
+    Object.keys(networks).length === 1 &&
+    Object.keys(networks)[0] === chainId
   ) {
     return true;
   }
@@ -2712,7 +2720,6 @@ export const getChainIdsToPoll = createDeepEqualSelector(
   },
 );
 
-export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
 export const getEnabledChainIds = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getEnabledNetworks,
