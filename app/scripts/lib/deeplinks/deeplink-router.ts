@@ -3,26 +3,22 @@ import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 import { DEEPLINK_ROUTE } from '../../../../ui/helpers/constants/routes';
 import { parse } from '../../../../shared/lib/deeplinks/parse';
 import { DEEP_LINK_HOST } from '../../../../shared/lib/deeplinks/constants';
+import MetamaskController from '../../metamask-controller';
 
 const { sentry } = global;
 
 export type Options = {
   getExtensionURL(route?: string | null, queryString?: string | null): string;
+  controller: MetamaskController;
 };
 
 export class DeeplinkRouter {
-  private static instance: DeeplinkRouter;
   private getExtensionURL: Options['getExtensionURL'];
+  private controller: MetamaskController;
 
-  private constructor({ getExtensionURL }: Options) {
+  constructor({ getExtensionURL, controller }: Options) {
     this.getExtensionURL = getExtensionURL;
-  }
-
-  public static getInstance(options: Options): DeeplinkRouter {
-    if (!DeeplinkRouter.instance) {
-      DeeplinkRouter.instance = new DeeplinkRouter(options);
-    }
-    return DeeplinkRouter.instance;
+    this.controller = controller;
   }
 
   public async redirectTab(tabId: number, url: string) {
@@ -66,20 +62,34 @@ export class DeeplinkRouter {
   }
 
   public async tryNavigateTo(tabId: number, urlStr: string) {
-    const destination = await parse(urlStr);
-    if (destination === false) {
+    const parsed = await parse(urlStr);
+    if (parsed === false) {
       return {};
     }
-    const search = new URLSearchParams();
-    search.set('u', destination.url.pathname + destination.url.search);
 
-    const interstitial = this.getExtensionURL(
-      // routes.ts seem to require routes have a leading slash, but then the UI
-      // always redirects it to the non-slashed version. so we just use the non-slashed
-      // version from the start
-      DEEPLINK_ROUTE.replace(/^\//, ''),
-      search.toString() || null,
+    let link: string;
+    debugger;
+
+    let skipDeepLinkIntersticial = Boolean(
+      this.controller.getState().preferences?.skipDeepLinkIntersticial,
     );
-    this.redirectTab(tabId, interstitial);
+
+    if (skipDeepLinkIntersticial) {
+      link = this.getExtensionURL(
+        parsed.destination.path,
+        parsed.destination.query.toString(),
+      );
+    } else {
+      const search = new URLSearchParams();
+      search.set('u', parsed.url.pathname + parsed.url.search);
+      link = this.getExtensionURL(
+        // routes.ts seem to require routes have a leading slash, but then the UI
+        // always redirects it to the non-slashed version. so we just use the non-slashed
+        // version from the start
+        DEEPLINK_ROUTE.replace(/^\//, ''),
+        search.toString() || null,
+      );
+    }
+    this.redirectTab(tabId, link);
   }
 }

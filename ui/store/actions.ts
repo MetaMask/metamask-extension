@@ -6553,3 +6553,7 @@ export async function isRelaySupported(chainId: Hex): Promise<boolean> {
     chainId,
   ]);
 }
+
+export function setSkipDeepLinkIntersticial(value: boolean) {
+  return setPreference('skipDeepLinkIntersticial', value, false);
+}

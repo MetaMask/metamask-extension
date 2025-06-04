@@ -138,7 +138,6 @@ const metamaskBlockedPorts = ['trezor-connect'];
 log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 
 const platform = new ExtensionPlatform();
-const deepLinkRouter = DeeplinkRouter.getInstance(platform);
 const notificationManager = new NotificationManager();
 const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 
@@ -623,6 +622,7 @@ async function initialize(backup) {
   }
   await sendReadyMessageToTabs();
 
+  const deepLinkRouter = new DeeplinkRouter({getExtensionURL: platform.getExtensionURL, controller });
   deepLinkRouter.install();
 }
 

@@ -25,6 +25,8 @@ import { BaseUrl } from '../../../shared/constants/urls';
 import { Container } from '../../components/component-library/container/container';
 import { ContainerMaxWidth, Label } from '../../components/component-library';
 import { Checkbox } from '../../components/component-library/checkbox/checkbox';
+import { useDispatch } from 'react-redux';
+import { setSkipDeepLinkIntersticial } from '../../store/actions';
 
 const { getExtensionURL } = globalThis.platform;
 
@@ -43,12 +45,15 @@ function handleOnClick(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
 export const DeepLink = () => {
   const location = useLocation();
   const t = useI18nContext();
+  const dispatch = useDispatch();
+  const history = useHistory();
   const [route, setRoute] = useState<null | {
     href: string;
     title: string;
     signed: boolean;
   }>(null);
   const [error, setError] = useState<string | null>(null);
+  // todo set the default to the state value, juuussttt in case.
   const [hasChecked, setHasChecked] = useState(false);
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -58,7 +63,7 @@ export const DeepLink = () => {
       return;
     }
 
-    async function pp(urlStr: string) {
+    async function parseUrlStr(urlStr: string) {
       const fullUrlStr = `https://${DEEP_LINK_HOST}${urlStr}`;
       try {
         const parsed = await parse(fullUrlStr);
@@ -81,7 +86,7 @@ export const DeepLink = () => {
         setRoute(null);
       }
     }
-    pp(urlStr);
+    parseUrlStr(urlStr);
   }, [location.search]);
 
   return (
@@ -156,6 +161,9 @@ export const DeepLink = () => {
               <Button
                 variant={ButtonVariant.Primary}
                 href={route.href}
+                onClick={() => {
+                  dispatch(setSkipDeepLinkIntersticial(hasChecked));
+                }}
                 size={ButtonSize.Lg}
               >
                 {t(route.title) ?? route.title}
