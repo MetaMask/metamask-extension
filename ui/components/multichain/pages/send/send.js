@@ -40,7 +40,7 @@ import {
 
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import { getRemoteSendAllowance } from '../../../../selectors/remote-mode';
-import { SendAllowanceBanner } from '../../../../pages/remote-mode/components';
+import { SendAllowanceTooltip } from '../../../../pages/remote-mode/components';
 
 import {
   TokenStandard,
@@ -72,6 +72,7 @@ import {
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
+import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -381,7 +382,7 @@ export const SendPage = () => {
     }),
   );
   const isRemoteSendPossible = Boolean(remoteSendAllowance);
-  const showRemoteSendBanner = isRemoteSendPossible && isSendFormShown;
+  const remoteModeSupported = isRemoteModeSupported(selectedAccount);
 
   let tooltipTitle = '';
 
@@ -405,14 +406,16 @@ export const SendPage = () => {
             onClick={onCancel}
           />
         }
+        endAccessory={
+          remoteModeSupported && (
+            <SendAllowanceTooltip allowance={remoteSendAllowance} />
+          )
+        }
       >
         {t('send')}
       </Header>
       <Content>
-        {showRemoteSendBanner && (
-          <SendAllowanceBanner allowance={remoteSendAllowance} />
-        )}
-        <SendPageAccountPicker isRemoteModeEnabled={isRemoteSendPossible} />
+        <SendPageAccountPicker />
         {isSendFormShown && (
           <AssetPickerAmount
             error={error}
