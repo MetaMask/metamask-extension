@@ -5,6 +5,7 @@ import { getProviderConfig } from '../../../../shared/modules/selectors/networks
 import type { AppStateController } from '../../controllers/app-state-controller';
 import { scanAddress } from './security-alerts-api';
 import { SupportedEVMChain } from './types';
+import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
 
 type TransactionParams = {
   to: string;
@@ -34,6 +35,12 @@ function hasValidTransactionParams(req: JsonRpcParams): req is JsonRpcParams & {
   );
 }
 
+// TODO: Remove when we want this enabled in production.
+function isProdEnabled() {
+  const isEnabled = process.env.TRUST_SIGNALS_PROD_ENABLED;
+  return isEnabled?.toString() === 'true';
+}
+
 export function createTrustSignalsMiddleware(
   networkController: NetworkController,
   appStateController: AppStateController,
@@ -44,6 +51,10 @@ export function createTrustSignalsMiddleware(
     next: () => void,
   ) => {
     try {
+      if (!isSecurityAlertsAPIEnabled() || !isProdEnabled()) {
+        return;
+      }
+
       if (isEthSendTransaction(req) && hasValidTransactionParams(req)) {
         const { to } = req.params[0] as TransactionParams;
 
