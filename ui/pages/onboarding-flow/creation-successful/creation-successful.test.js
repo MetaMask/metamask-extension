@@ -72,7 +72,7 @@ describe('Creation Successful Onboarding View', () => {
       customMockStore,
     );
 
-    expect(getByText('Your wallet is ready')).toBeInTheDocument();
+    expect(getByText('Your wallet is ready!')).toBeInTheDocument();
     expect(
       getByText(
         /Remember, if you lose your Secret Recovery Phrase, you lose access to your wallet/u,
@@ -130,9 +130,9 @@ describe('Creation Successful Onboarding View', () => {
     ).toBeInTheDocument();
   });
 
-  it('should redirect to privacy-settings view when "Manage default privacy settings" button is clicked', () => {
+  it('should redirect to privacy-settings view when "Manage default settings" button is clicked', () => {
     const { getByText } = renderWithProvider(<CreationSuccessful />, store);
-    const privacySettingsButton = getByText('Manage default privacy settings');
+    const privacySettingsButton = getByText('Manage default settings');
     fireEvent.click(privacySettingsButton);
     expect(mockHistoryPush).toHaveBeenCalledWith(
       ONBOARDING_PRIVACY_SETTINGS_ROUTE,
