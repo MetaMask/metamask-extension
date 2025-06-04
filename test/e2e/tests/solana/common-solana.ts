@@ -93,8 +93,11 @@ async function readResponseJsonFile(fileName: string): Promise<object> {
     );
     const jsonObject = JSON.parse(fileContents);
     return jsonObject;
-  } catch (error) {
-    throw new Error(`Failed to read or parse JSON file: ${error.message}`);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error(`Failed to read or parse JSON file: ${error.message}`);
+    }
+    throw new Error('Failed to read or parse JSON file');
   }
 }
 
