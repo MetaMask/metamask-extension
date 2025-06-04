@@ -1389,6 +1389,7 @@ export const getTokenSortConfig = createDeepEqualSelector(
  * Returns an object indicating which networks
  * tokens should be shown on in the portfolio view.
  */
+// @deprecated('Use `getEnabledNetworks` instead')
 export const getTokenNetworkFilter = createDeepEqualSelector(
   getCurrentChainId,
   getPreferences,
@@ -1418,12 +1419,13 @@ export const getTokenNetworkFilter = createDeepEqualSelector(
   },
 );
 
+// @deprecated('Use `getEnabledNetworks` instead')
 export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const chainId = getCurrentChainId(state);
-  const tokenNetworkFilter = getTokenNetworkFilter(state);
+  const enabledNetworks = getEnabledNetworks(state);
   if (
-    Object.keys(tokenNetworkFilter).length === 1 &&
-    Object.keys(tokenNetworkFilter)[0] === chainId
+    Object.keys(enabledNetworks).length === 1 &&
+    Object.keys(enabledNetworks)[0] === chainId
   ) {
     return true;
   }
@@ -2668,6 +2670,7 @@ export const getAllEnabledNetworks = createDeepEqualSelector(
  *   - Otherwise, it includes all chains from `networkConfigurations`, excluding
  *     `TEST_CHAINS`, while ensuring the `currentChainId` is included.
  */
+// @deprecated('Use `getEnabledChainIds` instead')
 export const getAllChainsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
@@ -2684,6 +2687,7 @@ export const getAllChainsToPoll = createDeepEqualSelector(
   },
 );
 
+// @deprecated('Use `getEnabledChainIds` instead')
 export const getChainIdsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
@@ -2708,6 +2712,18 @@ export const getChainIdsToPoll = createDeepEqualSelector(
   },
 );
 
+export const isGlobalNetworkSelectorEnabled = process.env.REMOVE_GNS === 'true';
+export const getEnabledChainIds = createDeepEqualSelector(
+  getNetworkConfigurationsByChainId,
+  getEnabledNetworks,
+  (networkConfigurations, enabledNetworks) => {
+    return Object.keys(networkConfigurations).filter(
+      (chainId) => enabledNetworks[chainId],
+    );
+  },
+);
+
+// @deprecated('Use `getEnabledNetworkClientIds` instead')
 export const getNetworkClientIdsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
@@ -2735,6 +2751,25 @@ export const getNetworkClientIdsToPoll = createDeepEqualSelector(
           chainId === currentChainId ||
           FEATURED_NETWORK_CHAIN_IDS.includes(chainId)
         ) {
+          acc.push(
+            network.rpcEndpoints[network.defaultRpcEndpointIndex]
+              .networkClientId,
+          );
+        }
+        return acc;
+      },
+      [],
+    );
+  },
+);
+
+export const getEnabledNetworkClientIds = createDeepEqualSelector(
+  getNetworkConfigurationsByChainId,
+  getEnabledNetworks,
+  (networkConfigurations, enabledNetworks) => {
+    return Object.entries(networkConfigurations).reduce(
+      (acc, [chainId, network]) => {
+        if (enabledNetworks[chainId]) {
           acc.push(
             network.rpcEndpoints[network.defaultRpcEndpointIndex]
               .networkClientId,
