@@ -105,12 +105,10 @@ describe('Remove Network:', function (this: Suite) {
         );
 
         // Avoid a stale element error
-        await driver.delay(regularDelayMs);
+        await driver.waitForSelector('[data-testid="network-display"]');
 
         // Open the network dropdown
         await headerNavbar.clickSwitchNetworkDropDown();
-
-        await driver.delay(regularDelayMs);
 
         // Delete the network
         await selectNetwork.deleteNetwork('eip155:1338');
@@ -196,14 +194,19 @@ describe('Remove Network:', function (this: Suite) {
         );
 
         // Avoid a stale element error
-        await driver.delay(regularDelayMs);
+        await driver.waitForSelector('[data-testid="network-display"]');
 
         // Go to Edit Menu
         await headerNavbar.clickSwitchNetworkDropDown();
+        await driver.waitForSelector(
+          '[data-testid="network-list-item-options-button-eip155:1338"]',
+        );
         await selectNetwork.openNetworkListOptions('eip155:1338');
-        await driver.delay(regularDelayMs);
+        await driver.waitForSelector(
+          '[data-testid="network-list-item-options-edit"]',
+        );
         await selectNetwork.openEditNetworkModal();
-        await driver.delay(regularDelayMs);
+        await driver.waitForSelector('[data-testid="test-add-rpc-drop-down"]');
         await addEditNetworkModal.clickRpcDropDown();
 
         // Assert the endpoint is in the list
@@ -213,7 +216,7 @@ describe('Remove Network:', function (this: Suite) {
         await addEditNetworkModal.removeRPCInEditNetworkModal(2);
 
         // Verify it went away
-        await checkRpcNotPresent(driver);
+        await addEditNetworkModal.check_rpcIsNotDisplayed('127.0.0.1:8546');
 
         // Save the network
         await addEditNetworkModal.saveEditedNetwork();
@@ -227,11 +230,3 @@ describe('Remove Network:', function (this: Suite) {
     );
   });
 });
-
-async function checkRpcNotPresent(driver: Driver): Promise<void> {
-  console.log('Validate the RPC is removed');
-  await driver.assertElementNotPresent({
-    text: '127.0.0.1:8546',
-    tag: 'p',
-  });
-}

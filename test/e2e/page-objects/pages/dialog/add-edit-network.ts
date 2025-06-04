@@ -52,8 +52,24 @@ class AddEditNetworkModal {
   }
 
   async clickRpcDropDown(): Promise<void> {
-    console.log('Clicking the RPC dropdown button in the edit network modal');
+    console.log('Click the RPC dropdown button in the edit network modal');
     await this.driver.clickElement(this.editModalRpcDropDownButton);
+  }
+
+  /**
+   * Check an RPC is not displayed in the RPC list in the edit network modal.
+   *
+   * @param rpcName - The name of the RPC to check.
+   */
+  async check_rpcIsNotDisplayed(rpcName: string): Promise<void> {
+    console.log(
+      `Check that RPC ${rpcName} is not displayed in the edit network modal`,
+    );
+    await this.driver.clickElement(this.editModalRpcDropDownButton);
+    await this.driver.assertElementNotPresent({
+      text: rpcName,
+      tag: 'p',
+    });
   }
 
   /**
