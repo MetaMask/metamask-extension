@@ -3,9 +3,9 @@ const fs = require('fs-extra');
 const watch = require('gulp-watch');
 const glob = require('fast-glob');
 
-const { loadBuildTypesConfig } = require('../lib/build-type');
-
 const { isManifestV3 } = require('../../shared/modules/mv3.utils');
+const { loadBuildTypesConfig } = require('../lib/build-type');
+const { getActiveFeatures } = require('./config');
 const { TASKS } = require('./constants');
 const { createTask, composeSeries } = require('./task');
 const { getPathInsideNodeModules } = require('./utils');
@@ -17,14 +17,12 @@ module.exports = function createStaticAssetTasks({
   browserPlatforms,
   shouldIncludeLockdown = true,
   shouldIncludeSnow = true,
-  buildType,
 }) {
   const copyTargetsProds = {};
   const copyTargetsDevs = {};
 
   const buildConfig = loadBuildTypesConfig();
-
-  const activeFeatures = buildConfig.buildTypes[buildType].features ?? [];
+  const activeFeatures = getActiveFeatures();
 
   browserPlatforms.forEach((browser) => {
     const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
