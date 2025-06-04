@@ -89,7 +89,6 @@ const CoinButtons = ({
   isBuyableChain,
   defaultSwapsToken,
   classPrefix = 'coin',
-  iconButtonClassName = '',
 }: CoinButtonsProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -104,6 +103,7 @@ const CoinButtons = ({
     string
   >;
   const currentChainId = useSelector(getCurrentChainId);
+  const displayNewIconButtons = process.env.REMOVE_GNS;
 
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const handleSendNonEvm = useHandleSendNonEvm();
@@ -154,7 +154,11 @@ const CoinButtons = ({
     const tooltipInfo = conditions.find(({ condition }) => condition);
     if (tooltipInfo?.message) {
       return (
-        <Tooltip title={t(tooltipInfo.message)} position="bottom">
+        <Tooltip
+          title={t(tooltipInfo.message)}
+          position="bottom"
+          wrapperClassName="tooltip-button-wrapper"
+        >
           {contents}
         </Tooltip>
       );
@@ -330,56 +334,73 @@ const CoinButtons = ({
   return (
     <Box
       display={Display.Flex}
-      justifyContent={JustifyContent.spaceEvenly}
+      justifyContent={JustifyContent.spaceBetween}
       width={BlockSize.Full}
+      gap={3}
     >
       {
         <IconButton
           className={`${classPrefix}-overview__button`}
-          iconButtonClassName={iconButtonClassName}
           Icon={
-            <Icon
-              name={IconName.PlusAndMinus}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
-            />
+            displayNewIconButtons ? (
+              <Icon
+                name={IconName.Money}
+                color={IconColor.iconAlternative}
+                size={IconSize.Md}
+              />
+            ) : (
+              <Icon
+                name={IconName.PlusAndMinus}
+                color={IconColor.iconDefault}
+                size={IconSize.Sm}
+              />
+            )
           }
           disabled={!isBuyableChain}
           data-testid={`${classPrefix}-overview-buy`}
           label={t('buyAndSell')}
           onClick={handleBuyAndSellOnClick}
+          width={BlockSize.Full}
           tooltipRender={(contents: React.ReactElement) =>
             generateTooltip('buyButton', contents)
           }
+          round={!displayNewIconButtons}
         />
       }
-
       <IconButton
         className={`${classPrefix}-overview__button`}
-        iconButtonClassName={iconButtonClassName}
         disabled={
           (!isSwapsChain && !isUnifiedUIEnabled) ||
           !isSigningEnabled ||
           !isExternalServicesEnabled
         }
         Icon={
-          <Icon
-            name={IconName.SwapHorizontal}
-            color={IconColor.iconDefault}
-            size={IconSize.Sm}
-          />
+          displayNewIconButtons ? (
+            <Icon
+              name={IconName.SwapHorizontal}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          ) : (
+            <Icon
+              name={IconName.SwapHorizontal}
+              color={IconColor.iconDefault}
+              size={IconSize.Sm}
+            />
+          )
         }
         onClick={handleSwapOnClick}
         label={t('swap')}
         data-testid="token-overview-button-swap"
+        width={BlockSize.Full}
         tooltipRender={(contents: React.ReactElement) =>
           generateTooltip('swapButton', contents)
         }
+        round={!displayNewIconButtons}
       />
-      {
+      {process.env.REMOVE_GNS ? null : (
         <IconButton
           className={`${classPrefix}-overview__button`}
-          iconButtonClassName={iconButtonClassName}
           disabled={
             !isBridgeChain ||
             !isSigningEnabled ||
@@ -387,36 +408,55 @@ const CoinButtons = ({
           }
           data-testid={`${classPrefix}-overview-bridge`}
           Icon={
-            <Icon
-              name={IconName.Bridge}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
-            />
+            displayNewIconButtons ? (
+              <Icon
+                name={IconName.Bridge}
+                color={IconColor.iconAlternative}
+                size={IconSize.Md}
+              />
+            ) : (
+              <Icon
+                name={IconName.Bridge}
+                color={IconColor.iconDefault}
+                size={IconSize.Sm}
+              />
+            )
           }
           label={t('bridge')}
           onClick={() => handleBridgeOnClick(false)}
+          width={BlockSize.Full}
           tooltipRender={(contents: React.ReactElement) =>
             generateTooltip('bridgeButton', contents)
           }
+          round={!displayNewIconButtons}
         />
-      }
+      )}
       <IconButton
         className={`${classPrefix}-overview__button`}
-        iconButtonClassName={iconButtonClassName}
         data-testid={`${classPrefix}-overview-send`}
         Icon={
-          <Icon
-            name={IconName.Arrow2UpRight}
-            color={IconColor.iconDefault}
-            size={IconSize.Sm}
-          />
+          displayNewIconButtons ? (
+            <Icon
+              name={IconName.Send}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          ) : (
+            <Icon
+              name={IconName.Arrow2UpRight}
+              color={IconColor.iconDefault}
+              size={IconSize.Sm}
+            />
+          )
         }
         disabled={!isSigningEnabled || isNonEvmAccountWithoutExternalServices}
         label={t('send')}
         onClick={handleSendOnClick}
+        width={BlockSize.Full}
         tooltipRender={(contents: React.ReactElement) =>
           generateTooltip('sendButton', contents)
         }
+        round={!displayNewIconButtons}
       />
       {
         <>
@@ -428,16 +468,24 @@ const CoinButtons = ({
           )}
           <IconButton
             className={`${classPrefix}-overview__button`}
-            iconButtonClassName={iconButtonClassName}
             data-testid={`${classPrefix}-overview-receive`}
             Icon={
-              <Icon
-                name={IconName.ScanBarcode}
-                color={IconColor.iconDefault}
-                size={IconSize.Sm}
-              />
+              displayNewIconButtons ? (
+                <Icon
+                  name={IconName.QrCode}
+                  color={IconColor.iconAlternative}
+                  size={IconSize.Md}
+                />
+              ) : (
+                <Icon
+                  name={IconName.ScanBarcode}
+                  color={IconColor.iconDefault}
+                  size={IconSize.Sm}
+                />
+              )
             }
             label={t('receive')}
+            width={BlockSize.Full}
             onClick={() => {
               trace({ name: TraceName.ReceiveModal });
               trackEvent({
@@ -451,6 +499,7 @@ const CoinButtons = ({
               });
               setShowReceiveModal(true);
             }}
+            round={!displayNewIconButtons}
           />
         </>
       }
