@@ -4001,7 +4001,7 @@ export async function withSolanaAccountSnap(
         }
         if (mockCalls) {
           mockList.push(
-              await mockSolanaBalanceQuote(mockServer),
+              await mockSolanaBalanceQuote(mockServer, mockZeroBalance),
               await mockGetMinimumBalanceForRentExemption(mockServer),
               await mockMultiCoinPrice(mockServer),
               await mockGetLatestBlockhash(mockServer),

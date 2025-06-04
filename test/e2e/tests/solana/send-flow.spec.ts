@@ -69,7 +69,7 @@ describe('Send flow', function (this: Suite) {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
+        showNativeTokenAsMainBalance: false,
         mockCalls: true,
         mockSendTransaction: true,
         simulateTransaction: true,
@@ -106,7 +106,6 @@ describe('Send flow', function (this: Suite) {
           false,
           'Continue button is enabled when no address',
         );
-        await sendSolanaPage.clickOnSwapCurrencyButton();
         assert.equal(
           await sendSolanaPage.isContinueButtonEnabled(),
           false,
@@ -327,7 +326,6 @@ describe('Send flow', function (this: Suite) {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
         mockCalls: true,
-        mockSendTransaction: false,
         sendFailedTransaction: true,
       },
       async (driver) => {
@@ -379,35 +377,6 @@ describe('Send flow', function (this: Suite) {
           await failedTxPage.isTransactionDetailDisplayed('Network fee'),
           true,
           'Network fee field not displayed and it should',
-        );
-      },
-    );
-  });
-
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('and transaction simulation fails', async function () {
-    this.timeout(120000); // there is a bug open for this big timeout https://consensyssoftware.atlassian.net/browse/SOL-90
-    await withSolanaAccountSnap(
-      {
-        title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: true,
-        mockCalls: true,
-        simulateTransactionFailed: true,
-      },
-      async (driver) => {
-        const homePage = new NonEvmHomepage(driver);
-        await homePage.check_pageIsLoaded('50');
-        await homePage.clickOnSendButton();
-
-        const sendSolanaPage = new SendSolanaPage(driver);
-        await sendSolanaPage.check_pageIsLoaded('50 SOL');
-        await sendSolanaPage.setToAddress(commonSolanaAddress);
-        await sendSolanaPage.setAmount('0.1');
-        await sendSolanaPage.check_TxSimulationFailed();
-        assert.equal(
-          await sendSolanaPage.isContinueButtonEnabled(),
-          false,
-          'Continue button is enabled when transaction simulation fails',
         );
       },
     );
