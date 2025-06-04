@@ -138,7 +138,7 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
         autoFocus
         autoComplete
         placeholder={t('newPasswordPlaceholder')}
-        labelProps={{ marginBottom: 1, children: t('newPassword') }}
+        labelProps={{ marginBottom: 1 }}
         size={FormTextFieldSize.Lg}
         value={password}
         inputProps={{
@@ -148,13 +148,7 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           handlePasswordChange(e.target.value);
         }}
-        helpText={
-          passwordStrengthElement && (
-            <Text as="div" variant={TextVariant.inherit}>
-              {passwordStrengthElement}
-            </Text>
-          )
-        }
+        helpText={passwordStrengthElement && passwordStrengthElement}
         endAccessory={
           <ButtonIcon
             iconName={showPassword ? IconName.EyeSlash : IconName.Eye}
@@ -177,9 +171,12 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
         autoComplete
         marginTop={4}
         placeholder={t('confirmPasswordPlaceholder')}
-        labelProps={{ marginBottom: 1, children: t('confirmPassword') }}
+        labelProps={{ marginBottom: 1 }}
         size={FormTextFieldSize.Lg}
         error={Boolean(confirmPasswordError)}
+        helpTextProps={{
+          'data-testid': 'confirm-password-error',
+        }}
         helpText={confirmPasswordError}
         value={confirmPassword}
         disabled={password.length < PASSWORD_MIN_LENGTH}
