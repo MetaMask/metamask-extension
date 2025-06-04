@@ -89,7 +89,7 @@ import {
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
-import { WriteManager } from './lib/safe-reload';
+import { WriteManager } from './lib/write-manager';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
