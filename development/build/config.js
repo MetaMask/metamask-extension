@@ -3,6 +3,8 @@ const { readFile } = require('fs/promises');
 const assert = require('assert');
 const { AssertionError } = require('assert');
 const ini = require('ini');
+const union = require('lodash/union');
+const difference = require('lodash/difference');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 const { Variables } = require('../lib/variables');
 const { ENVIRONMENT } = require('./constants');
@@ -23,6 +25,40 @@ const VARIABLES_REQUIRED_IN_PRODUCTION = {
   beta: ['INFURA_BETA_PROJECT_ID', 'SEGMENT_BETA_WRITE_KEY', 'SENTRY_DSN'],
   flask: ['INFURA_FLASK_PROJECT_ID', 'SEGMENT_FLASK_WRITE_KEY', 'SENTRY_DSN'],
 };
+
+/** @type {string[] | null} */
+let _cachedActiveFeatures = null;
+
+function setActiveFeatures(buildType, additionalFeatures) {
+  if (_cachedActiveFeatures === null) {
+    const config = loadBuildTypesConfig();
+
+    const unknownFeatures = difference(
+      additionalFeatures,
+      Object.keys(config.features),
+    );
+    if (unknownFeatures.length > 0) {
+      throw new Error(
+        `The following features are not defined in builds.yml: ${unknownFeatures.join(
+          ', ',
+        )}`,
+      );
+    }
+
+    _cachedActiveFeatures = union(
+      additionalFeatures,
+      config.buildTypes[buildType].features ?? [],
+    );
+  }
+  return _cachedActiveFeatures;
+}
+
+function getActiveFeatures() {
+  if (_cachedActiveFeatures === null) {
+    throw new Error('Active features are not set');
+  }
+  return _cachedActiveFeatures;
+}
 
 async function fromIniFile(filepath) {
   let configContents = '';
@@ -76,7 +112,7 @@ function fromBuildsYML(buildType, config) {
   // eslint-disable-next-line no-param-reassign
   buildType = buildType ?? config.default;
   const activeBuild = config.buildTypes[buildType];
-  const activeFeatures = activeBuild.features ?? [];
+  const activeFeatures = getActiveFeatures();
 
   let declarations = [...extractDeclarations(config.env)];
 
@@ -106,13 +142,12 @@ function fromBuildsYML(buildType, config) {
     definitions.set(key, value),
   );
 
-  return { declarations, definitions, activeFeatures, activeBuild };
+  return { declarations, definitions, activeBuild };
 }
 
 /**
- *
- * @param {string?} buildType - The chosen build type to build
- * @param environment
+ * @param {string} buildType - The chosen build type to build
+ * @param {string} environment - The environment to build for
  * @returns Parsed configuration of the build pipeline
  */
 async function getConfig(buildType, environment) {
@@ -121,8 +156,7 @@ async function getConfig(buildType, environment) {
     declarations: ymlDeclarations,
     definitions: ymlDefinitions,
     activeBuild,
-    activeFeatures,
-  } = await fromBuildsYML(buildType, config);
+  } = fromBuildsYML(buildType, config);
 
   const variables = new Variables(ymlDeclarations);
 
@@ -156,12 +190,13 @@ async function getConfig(buildType, environment) {
   return {
     variables,
     activeBuild,
-    activeFeatures,
     buildsYml: config,
   };
 }
 
 module.exports = {
-  getConfig,
   fromIniFile,
+  getConfig,
+  getActiveFeatures,
+  setActiveFeatures,
 };
