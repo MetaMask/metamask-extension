@@ -18,9 +18,14 @@ import browser from 'webextension-polyfill';
 import { StreamProvider } from '@metamask/providers';
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import log from 'loglevel';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import launchMetaMaskUi, { updateBackgroundConnection } from '../../ui';
+// Import to set up global `Promise.withResolvers` polyfill
+import '../../shared/lib/promise-with-resolvers';
+import launchMetaMaskUi, {
+  updateBackgroundConnection,
+  displayStateCorruptionError,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../ui';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
@@ -31,10 +36,7 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import { getErrorHtml } from '../../shared/lib/error-utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
-import {
-  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
-  displayStateCorruptionError,
-} from './lib/state-corruption-errors';
+import { METHOD_DISPLAY_STATE_CORRUPTION_ERROR } from './lib/state-corruption-errors';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -109,6 +111,9 @@ async function start() {
       case METHOD_DISPLAY_STATE_CORRUPTION_ERROR:
         handleDisplayStateCorruptionError(message.data.params);
         break;
+      case 'RELOAD':
+        window.location.reload();
+        break;
       default:
     }
   };
@@ -137,16 +142,26 @@ async function start() {
   }
 
   /**
-   * @typedef {import('./lib/state-corruption-errors').ErrorLike} ErrorLike
+   * @typedef {import('../../shared/constants/errors').ErrorLike} ErrorLike
    */
 
   /**
    * Updates the DOM with the state corruption error UI.
    *
-   * @param {{ error: ErrorLike, currentLocale?: string }} params
+   * @param {{ error: ErrorLike, hasBackup: boolean, currentLocale?: string }} params
    */
-  function handleDisplayStateCorruptionError({ error, currentLocale }) {
-    displayStateCorruptionError(container, error, currentLocale);
+  function handleDisplayStateCorruptionError({
+    error,
+    hasBackup,
+    currentLocale,
+  }) {
+    displayStateCorruptionError(
+      container,
+      extensionPort,
+      error,
+      hasBackup,
+      currentLocale,
+    );
   }
 
   if (isManifestV3) {

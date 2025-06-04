@@ -16,6 +16,7 @@ const mockDailyAllowance: DailyAllowance = {
   name: TOKEN_DETAILS[TokenSymbol.USDC].name,
   type: AssetType.token,
   address: '',
+  decimals: 6,
 };
 
 const renderComponent = (

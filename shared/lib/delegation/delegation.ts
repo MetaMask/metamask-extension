@@ -28,6 +28,11 @@ export const DELEGATION_TYPEHASH =
   '0x88c1d2ecf185adf710588203a5f263f0ff61be0d33da39792cde19ba9aa4331e' as Hex;
 
 /**
+ * The function selector for the redeemDelegations function
+ */
+export const REDEEM_DELEGATIONS_SELECTOR = '0xcef6d209' as Hex;
+
+/**
  * Converts a Delegation to a DelegationStruct.
  * The DelegationStruct is the format used in the Delegation Framework.
  *
