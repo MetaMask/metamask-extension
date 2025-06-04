@@ -76,8 +76,7 @@ export const createCaipStream = (portStream: Duplex): Duplex => {
     }
   };
 
-  /* ---------- 1. Listen for tab / iframe shutdown signals ---------- */
-
+  // 1. Listen for tab/iframe shutdown signals
   // a. Node-style streams emit 'close' and/or 'end'
   portStream.once?.('close', handlePortGone);
   portStream.once?.('end', handlePortGone);
@@ -88,12 +87,10 @@ export const createCaipStream = (portStream: Duplex): Duplex => {
   const rawPort: chrome.runtime.Port | undefined = (portStream as any)?._port;
   rawPort?.onDisconnect?.addListener(handlePortGone);
 
-  /* ---------- 2. Wire up the full duplex pipeline ---------- */
-
+  // 2. Wire up the full duplex pipeline
   pipeline(portStream, caipStream, portStream, (err: Error | null) => {
-    caipStream.substream.destroy(); // full cleanup
+    caipStream.substream.destroy();
 
-    // Ignore the normal premature-close that used to spam the console
     if (err && err.message !== 'Premature close') {
       console.error('MetaMask CAIP stream error:', err);
     }
