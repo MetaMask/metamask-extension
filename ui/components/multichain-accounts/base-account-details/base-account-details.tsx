@@ -72,7 +72,7 @@ export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
       >
         {name}
       </Header>
-      <Content>
+      <Content paddingTop={3}>
         <AvatarAccount
           address={address}
           variant={
@@ -80,8 +80,8 @@ export const BaseAccountDetails = ({ children }: BaseAccountDetailsProps) => {
               ? AvatarAccountVariant.Blockies
               : AvatarAccountVariant.Jazzicon
           }
-          size={AvatarAccountSize.Lg}
-          style={{ margin: '0 auto' }}
+          size={AvatarAccountSize.Xl}
+          style={{ margin: '0 auto', marginBottom: '32px' }}
         />
         <Box className="multichain-account-details__section">
           <AccountDetailsRow
