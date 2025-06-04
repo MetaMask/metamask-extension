@@ -16,7 +16,6 @@ describe('Send flow - SPL Token', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
-        mockSendSPLToken: true,
         mockGetTransactionSuccess: true,
       },
       async (driver) => {
@@ -143,7 +142,6 @@ describe('Send flow - SPL Token', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
-        mockSendSPLToken: true,
         mockGetTransactionFailed: true,
       },
       async (driver) => {

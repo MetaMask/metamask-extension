@@ -26,24 +26,23 @@ describe('Swap on Solana', function () {
 
         await swapPage.clickOnMoreQuotes();
         await swapPage.checkQuote({
-          amount: '0.000005 SOL',
-          totalCost: '0.000005 SOL',
-          receivedAmount: '166.3 USDC',
+          amount: '$2.65',
+          totalCost: '$168.88',
+          receivedAmount: '$166.23',
           estimatedTime: '< 1 min',
           provider: 'Jupiter Via Li Fi',
         });
         await swapPage.checkQuote({
-          amount: '0.000005 SOL',
-          totalCost: '0.000005 SOL',
-          receivedAmount: '167.7 USDC',
+          amount: '$1.19',
+          totalCost: '$168.88',
+          receivedAmount: '$167.70',
           estimatedTime: '< 1 min',
           provider: 'Sol Fi',
         });
 
         await swapPage.closeQuotes();
-
         await swapPage.reviewSolanaQuote({
-          swapToAmount: 166.3,
+          swapToAmount: 167.7,
           swapFrom: 'SOL',
           swapTo: 'USDC',
           swapFromAmount: 0,
@@ -82,7 +81,7 @@ describe('Swap on Solana', function () {
           swapFrom: 'USDC',
         });
         await swapPage.reviewSolanaQuote({
-          swapToAmount: 0.00584,
+          swapToAmount: 0.00589,
           swapFrom: 'USDC',
           swapTo: 'SOL',
           swapFromAmount: 0,

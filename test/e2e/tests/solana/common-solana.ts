@@ -13,16 +13,12 @@ import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-moc
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3\/.*/u;
 const SOLANA_URL_REGEX_DEVNET = /^https:\/\/solana-devnet\.infura\.io\/v3\/.*/u;
-const ETH_SPOT_PRICE_API =
-  /^https:\/\/price\.api\.cx\.metamask\.io\/v[1-9]\/chains\/1\/spot-prices/u;
 const SPOT_PRICE_API =
   /^https:\/\/price\.api\.cx\.metamask\.io\/v[1-9]\/spot-prices/u;
 const SOLANA_EXCHANGE_RATES_PRICE_API =
   /^https:\/\/price\.api\.cx\.metamask\.io\/v[1-9]\/exchange-rates\/fiat/u;
 const SOLANA_STATIC_TOKEN_IMAGE_REGEX_MAINNET =
   /^https:\/\/static\.cx\.metamask\.io\/api\/v2\/tokenIcons\/assets\/solana\/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/u;
-const SOLANA_STATIC_TOKEN_IMAGE_REGEX_DEVNET =
-  /^https:\/\/static\.cx\.metamask\.io\/api\/v2\/tokenIcons\/assets\/solana\/EtWTRABZaYq6iMfeYKouRu166VU2xqa1/u;
 const SOLANA_BITCOIN_MIN_API =
   /^https:\/\/min-api\.cryptocompare\.com\/data\/pricemulti/u;
 export const SOLANA_TOKEN_API =
@@ -226,90 +222,6 @@ export async function mockPriceApiSpotPrice(mockServer: Mockttp) {
   });
 }
 
-export async function mockPriceApiSpotPriceOld(mockServer: Mockttp) {
-  console.log('mockPriceApiSpotPriceOld');
-  const ethMarketResp = await readResponseJsonFile('ethMarketData.json');
-  const ehtMarketResponse = {
-    statusCode: 200,
-    json: ethMarketResp,
-  };
-  const solanaMarketDataResp = await readResponseJsonFile(
-    'solanaMarketData.json',
-  );
-  const solanaMarketDataResponse = {
-    statusCode: 200,
-    json: solanaMarketDataResp,
-  };
-  const solanaSpotPriceResponse = {
-    statusCode: 200,
-    json: {
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-        usd: 167.93676777178396,
-      },
-    },
-  };
-
-  const ethSpotPriceResponse = {
-    statusCode: 200,
-    json: {
-      'eip155:1/slip44:60': {
-        usd: 25373.64,
-      },
-    },
-  };
-  let resp;
-  resp = await mockServer
-    .forGet(SPOT_PRICE_API)
-    .withQuery({
-      assetIds: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-      vsCurrency: 'usd',
-    })
-    .thenCallback(() => {
-      return solanaSpotPriceResponse;
-    });
-
-  if (!resp) {
-    resp = await mockServer
-      .forGet(SPOT_PRICE_API)
-      .withQuery({
-        assetIds: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-        includeMarketData: 'true',
-        vsCurrency: 'usd',
-      })
-      .thenCallback(() => {
-        return solanaMarketDataResponse;
-      });
-  }
-
-  if (!resp) {
-    resp = await mockServer
-      .forGet(ETH_SPOT_PRICE_API)
-      .withQuery({
-        tokenAddresses:
-          '0x0000000000000000000000000000000000000000,0x0000000000000000000000000000000000000000',
-        includeMarketData: 'true',
-        vsCurrency: 'usd',
-      })
-      .thenCallback(() => {
-        return ehtMarketResponse;
-      });
-  }
-
-  if (!resp) {
-    resp = await mockServer
-      .forGet(SPOT_PRICE_API)
-      .withQuery({
-        assetIds: 'eip155%3A1/slip44%3A60',
-        vsCurrency: 'usd',
-      })
-      .thenCallback(() => {
-        return ethSpotPriceResponse;
-      });
-  }
-
-  return resp;
-}
-
 export async function mockPriceApiExchangeRates(mockServer: Mockttp) {
   console.log('mockPriceApiExchangeRates');
   const response = {
@@ -346,17 +258,6 @@ export async function mockStaticMetamaskTokenIconMainnet(mockServer: Mockttp) {
   console.log('mockStaticMetamaskTokenIcon');
   return await mockServer
     .forGet(SOLANA_STATIC_TOKEN_IMAGE_REGEX_MAINNET)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-      };
-    });
-}
-
-export async function mockStaticMetamaskTokenIconDevnet(mockServer: Mockttp) {
-  console.log('mockStaticMetamaskTokenIcon');
-  return await mockServer
-    .forGet(SOLANA_STATIC_TOKEN_IMAGE_REGEX_DEVNET)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -419,90 +320,6 @@ export async function mockTokenApiMainnet(mockServer: Mockttp) {
   return await mockServer.forGet(SOLANA_TOKEN_API).thenCallback(() => {
     return response;
   });
-}
-
-export async function mockTokenApiMainnet2(mockServer: Mockttp) {
-  console.log('mockTokenApi');
-  const response = {
-    statusCode: 200,
-    json: [
-      {
-        decimals: 9,
-        assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-        name: 'Solana',
-        symbol: 'SOL',
-      },
-      {
-        decimals: 9,
-        assetId: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501',
-        name: 'Solana',
-        symbol: 'SOL',
-      },
-    ],
-  };
-  return await mockServer
-    .forGet(SOLANA_TOKEN_API)
-    .withQuery({
-      assetIds:
-        'solana%5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Fslip44%3A501%2Csolana%3AEtWTRABZaYq6iMfeYKouRu166VU2xqa1%2Fslip44%3A501',
-    })
-    .thenCallback(() => {
-      return response;
-    });
-}
-
-export async function mockTokenApiDevnet2(mockServer: Mockttp) {
-  console.log('mockTokenApi');
-  const response = {
-    statusCode: 200,
-    json: [
-      {
-        decimals: 9,
-        assetId: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501',
-        name: 'Solana',
-        symbol: 'SOL',
-      },
-    ],
-  };
-  return await mockServer
-    .forGet(SOLANA_TOKEN_API)
-    .withQuery({
-      assetIds: 'solana%3AEtWTRABZaYq6iMfeYKouRu166VU2xqa1%2Fslip44%3A501',
-    })
-    .thenCallback(() => {
-      return response;
-    });
-}
-
-export async function mockTokenApiDevnet(mockServer: Mockttp) {
-  console.log('mockTokenApi');
-  const response = {
-    statusCode: 200,
-    json: [
-      {
-        decimals: 9,
-        assetId: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501',
-        name: 'Solana',
-        symbol: 'SOL',
-      },
-      {
-        decimals: 6,
-        assetId:
-          'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/token:2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
-        name: 'PUMPKIN',
-        symbol: 'PKIN',
-      },
-    ],
-  };
-  return await mockServer
-    .forGet(SOLANA_TOKEN_API)
-    .withQuery({
-      assetIds:
-        'solana%EtWTRABZaYq6iMfeYKouRu166VU2xqa1%2Fslip44%3A501%2Csolana%EtWTRABZaYq6iMfeYKouRu166VU2xqa1%2Ftoken%3A2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
-    })
-    .thenCallback(() => {
-      return response;
-    });
 }
 
 export async function mockMultiCoinPrice(mockServer: Mockttp) {
@@ -946,7 +763,7 @@ export async function mockGetSignaturesSuccessSwap(mockServer: Mockttp) {
           err: null,
           memo: null,
           signature:
-            '28rWme56aMyaP8oX18unFeZg65iyDEhjLhvMBpxyFgKcn38P37ZRsssSZoHDCCr5xUfwfpqsVSSBoShLitHQLdrr',
+            '2m8z8uPZyoZwQpissDbhSfW5XDTFmpc7cSFithc5e1w8iCwFcvVkxHeaVhgFSdgUPb5cebbKGjuu48JMLPjfEATr',
           slot: 342840492,
         },
       ],
@@ -967,6 +784,26 @@ export async function mockSendSwapSolanaTransaction(mockServer: Mockttp) {
     json: {
       result:
         '28rWme56aMyaP8oX18unFeZg65iyDEhjLhvMBpxyFgKcn38P37ZRsssSZoHDCCr5xUfwfpqsVSSBoShLitHQLdrr',
+      id: '1337',
+      jsonrpc: '2.0',
+    },
+  };
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX_MAINNET)
+    .withJsonBodyIncluding({
+      method: 'sendTransaction',
+    })
+    .thenCallback(() => {
+      return response;
+    });
+}
+
+export async function mockSwapSolToUsdcTransaction(mockServer: Mockttp) {
+  const response = {
+    statusCode: 200,
+    json: {
+      result:
+        '2m8z8uPZyoZwQpissDbhSfW5XDTFmpc7cSFithc5e1w8iCwFcvVkxHeaVhgFSdgUPb5cebbKGjuu48JMLPjfEATr',
       id: '1337',
       jsonrpc: '2.0',
     },
@@ -1351,191 +1188,6 @@ export async function mockGetTokenAccountsByOwner(
     });
 }
 
-export async function mockGetTokenAccountsByOwnerDevnet(mockServer: Mockttp) {
-  return await mockServer
-    .forPost(SOLANA_URL_REGEX_DEVNET)
-    .withJsonBodyIncluding({
-      method: 'getTokenAccountsByOwner',
-    })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          id: '1337',
-          jsonrpc: '2.0',
-          result: {
-            context: {
-              slot: 137568828,
-            },
-            value: [
-              {
-                account: {
-                  data: {
-                    parsed: {
-                      info: {
-                        isNative: false,
-                        mint: '2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
-                        owner: '14BLn1WLBf3coaPj1fZ5ZqJKQArEjJHvw7rvSktGv2b5',
-                        state: 'initialized',
-                        tokenAmount: {
-                          amount: '6000000',
-                          decimals: 6,
-                          uiAmount: 6,
-                          uiAmountString: '6',
-                        },
-                      },
-                      type: 'account',
-                    },
-                    program: 'spl-token',
-                    space: 165,
-                  },
-                  executable: false,
-                  lamports: 2039280,
-                  owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-                  rentEpoch: 18446744073709552000,
-                  space: 165,
-                },
-                pubkey: 'EzG33TbDzHVaWBqgQgHhtQSY6tcAVsWub6hBRepcsDt4',
-              },
-            ],
-          },
-        },
-      };
-    });
-}
-
-export async function mockGetAccountInfoPKIN(mockServer: Mockttp) {
-  console.log('mockGetAccountInfo');
-  const response = {
-    statusCode: 200,
-    json: {
-      id: '1337',
-      jsonrpc: '2.0',
-      result: {
-        context: {
-          apiVersion: '2.0.21',
-          slot: 317161313,
-        },
-        value: {
-          data: {
-            parsed: {
-              info: {
-                decimals: 6,
-                freezeAuthority: null,
-                isInitialized: true,
-                mintAuthority: null,
-                supply: '999943585864185',
-              },
-              type: 'mint',
-            },
-            program: 'spl-token',
-            space: 82,
-          },
-          executable: false,
-          lamports: 37002092583,
-          owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-          rentEpoch: 18446744073709552000,
-          space: 82,
-        },
-      },
-    },
-  };
-  return await mockServer
-    .forPost(SOLANA_URL_REGEX_MAINNET)
-    .withJsonBodyIncluding({
-      method: 'getAccountInfo',
-    })
-    .withBodyIncluding('2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin')
-    .thenCallback(() => {
-      return response;
-    });
-}
-
-export async function mockGetAccountInfoUSDC(mockServer: Mockttp) {
-  console.log('mockGetAccountInfo');
-  const response = {
-    statusCode: 200,
-    json: {
-      id: '1337',
-      jsonrpc: '2.0',
-      result: {
-        context: {
-          apiVersion: '2.0.21',
-          slot: 317161313,
-        },
-        value: {
-          data: {
-            parsed: {
-              info: {
-                decimals: 6,
-                freezeAuthority: null,
-                isInitialized: true,
-                mintAuthority: null,
-                supply: '999943585864185',
-              },
-              type: 'mint',
-            },
-            program: 'spl-token',
-            space: 82,
-          },
-          executable: false,
-          lamports: 37002092583,
-          owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-          rentEpoch: 18446744073709552000,
-          space: 82,
-        },
-      },
-    },
-  };
-  return await mockServer
-    .forPost(SOLANA_URL_REGEX_MAINNET)
-    .withJsonBodyIncluding({
-      method: 'getAccountInfo',
-    })
-    .withBodyIncluding('2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin')
-    .thenCallback(() => {
-      return response;
-    });
-}
-
-export async function mockGetAccountInfoDevnet(mockServer: Mockttp) {
-  console.log('mockGetAccountInfoDevnet');
-  const response = {
-    statusCode: 200,
-    json: {
-      id: '1337',
-      jsonrpc: '2.0',
-      result: {
-        context: {
-          apiVersion: '2.0.21',
-          slot: 317161313,
-        },
-        value: {
-          data: [
-            'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==',
-            'base64',
-          ],
-          executable: false,
-          lamports: 1124837338893,
-          owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-          // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
-          rentEpoch: 18446744073709551615,
-          space: 82,
-        },
-      },
-    },
-  };
-  return await mockServer
-    .forPost(SOLANA_URL_REGEX_DEVNET)
-    .withJsonBodyIncluding({
-      method: 'getAccountInfo',
-    })
-    .withBodyIncluding('So11111111111111111111111111111111111111112')
-    .thenCallback(() => {
-      return response;
-    });
-}
-
 export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
   console.log('mockGetTokenAccountInfo');
   const response = {
@@ -1596,209 +1248,6 @@ export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
     });
 }
 
-export async function mockGetBridgeStatus(mockServer: Mockttp) {
-  const bridgeStatusResponse = {
-    statusCode: 200,
-    json: {
-      status: 'PENDING',
-      bridge: 'relay',
-      srcChain: {
-        chainId: 1151111081099710,
-        txHash:
-          '2fwnBMKmGJ86uagQ9NEAyUfWeCrvTDn5WiZtiB8AFVtf1RiSaNmyfTxBw8Un7G5BRpoXACzvfhohyxCsCXhJWBJp',
-      },
-      destChain: {
-        chainId: 1,
-      },
-    },
-  };
-  return await mockServer
-    .forGet(BRIDGE_TX_STATUS)
-    .withQuery({ chainId: 1 })
-    .thenCallback(() => {
-      return bridgeStatusResponse;
-    });
-}
-
-export async function mockGetEthereumTokenList(mockServer: Mockttp) {
-  console.log('mockGetEthereumTokenList');
-  const ethereumTokenListResponse = {
-    statusCode: 200,
-    json: [
-      {
-        address: '0x0000000000000000000000000000000000000000',
-        chainId: 1,
-        assetId: 'eip155:1/slip44:60',
-        symbol: 'ETH',
-        decimals: 18,
-        name: 'Ethereum',
-        coingeckoId: 'ethereum',
-        aggregators: [],
-        occurrences: 100,
-        iconUrl:
-          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
-        metadata: {
-          honeypotStatus: {},
-          isContractVerified: false,
-          erc20Permit: false,
-          description: {
-            en: 'Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.',
-            ko: '이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.',
-            zh: 'Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。',
-            ja: 'イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。',
-          },
-          createdAt: '2023-10-31T22:41:58.553Z',
-        },
-      },
-      {
-        address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-        chainId: 1,
-        assetId: 'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
-        symbol: 'DAI',
-        decimals: 18,
-        name: 'Dai Stablecoin',
-        coingeckoId: 'dai',
-        aggregators: [
-          'metamask',
-          'aave',
-          'cmc',
-          'coinGecko',
-          'coinMarketCap',
-          'openSwap',
-          'uniswapLabs',
-          'zerion',
-          'oneInch',
-          'liFi',
-          'xSwap',
-          'socket',
-          'rubic',
-          'squid',
-          'rango',
-          'sonarwatch',
-          'sushiSwap',
-          'pmm',
-          'bancor',
-        ],
-        occurrences: 19,
-        iconUrl:
-          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x6b175474e89094c44da98b954eedeac495271d0f.png',
-        metadata: {
-          honeypotStatus: {
-            honeypotIs: false,
-            goPlus: false,
-          },
-          isContractVerified: true,
-          fees: {
-            avgFee: 0,
-            maxFee: 0,
-            minFee: 0,
-          },
-          storage: {
-            balance: 2,
-            approval: 3,
-          },
-          erc20Permit: true,
-          description: {
-            en: 'MakerDAO has launched Multi-collateral DAI (MCD). This token refers to the new DAI that is collaterized by multiple assets.',
-          },
-          createdAt: '2023-10-31T22:41:58.553Z',
-        },
-      },
-      {
-        address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-        chainId: 1,
-        assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        symbol: 'USDC',
-        decimals: 6,
-        name: 'USDC',
-        coingeckoId: 'usd-coin',
-        aggregators: [
-          'metamask',
-          'aave',
-          'coinGecko',
-          'coinMarketCap',
-          'openSwap',
-          'uniswapLabs',
-          'zerion',
-          'oneInch',
-          'liFi',
-          'xSwap',
-          'socket',
-          'rubic',
-          'squid',
-          'rango',
-          'sonarwatch',
-          'sushiSwap',
-          'pmm',
-          'bancor',
-        ],
-        occurrences: 18,
-        iconUrl:
-          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
-        metadata: {
-          honeypotStatus: {
-            honeypotIs: false,
-          },
-          isContractVerified: true,
-          fees: {
-            avgFee: 0,
-            maxFee: 0,
-            minFee: 0,
-          },
-          storage: {
-            balance: 9,
-            approval: 10,
-          },
-          erc20Permit: true,
-          description: {
-            en: 'USDC is a fully collateralized US dollar stablecoin. USDC is the bridge between dollars and trading on cryptocurrency exchanges. The technology behind CENTRE makes it possible to exchange value between people, businesses and financial institutions just like email between mail services and texts between SMS providers. We believe by removing artificial economic borders, we can create a more inclusive global economy.',
-          },
-          createdAt: '2023-10-31T22:41:58.553Z',
-        },
-      },
-    ],
-  };
-  return await mockServer
-    .forGet(BRIDGED_TOKEN_LIST_API)
-    .withQuery({ chainId: 1 })
-    .thenCallback(() => {
-      return ethereumTokenListResponse;
-    });
-}
-
-export async function mockSOLQuote(mockServer: Mockttp) {
-  return await mockServer
-    .forGet(
-      'https://price.api.cx.metamask.io/v3/spot-prices?assetIds=solana%3A5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Fslip44%3A501&vsCurrency=eur',
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-            eur: 147.93676777178396,
-          },
-        },
-      };
-    });
-}
-
-export async function mockETHQuote(mockServer: Mockttp) {
-  return await mockServer
-    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
-    .withQuery({ assetsIds: 'eip155:slip44', vsCurrency: 'usd' })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          'eip155:1/eip155': {
-            eur: 2543.12,
-          },
-        },
-      };
-    });
-}
-
 export async function mockNoQuotesAvailable(mockServer: Mockttp) {
   return await mockServer
     .forGet(BRIDGE_GET_QUOTE_API)
@@ -1835,213 +1284,6 @@ export async function mockQuoteFromSoltoUSDC(mockServer: Mockttp) {
     .thenCallback(async () => {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // just to see fetching quotes
       return quotesResponse;
-    });
-}
-
-export async function mockSOLtoETHQuote(mockServer: Mockttp) {
-  return await mockServer
-    .forGet('https://bridge.api.cx.metamask.io/getQuote')
-    .withQuery({ srcChainId: 1151111081099710, destChainId: 1 })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: [
-          {
-            quote: {
-              bridgeId: 'lifi',
-              requestId:
-                '0x78b1a3b0530e1774c7974e1e33b8e0a802fb840db6ce87b57d92ff2a80259422',
-              aggregator: 'lifi',
-              srcChainId: 1151111081099710,
-              srcTokenAmount: '991250000',
-              srcAsset: {
-                address: '0x0000000000000000000000000000000000000000',
-                chainId: 1151111081099710,
-                assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-                symbol: 'SOL',
-                decimals: 9,
-                name: 'SOL',
-                aggregators: [],
-                occurrences: 100,
-                iconUrl:
-                  'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
-                metadata: {},
-                price: '167.98',
-              },
-              destChainId: 1,
-              destTokenAmount: '65312314677968091',
-              destAsset: {
-                address: '0x0000000000000000000000000000000000000000',
-                chainId: 1,
-                assetId: 'eip155:1/slip44:60',
-                symbol: 'ETH',
-                decimals: 18,
-                name: 'Ethereum',
-                coingeckoId: 'ethereum',
-                aggregators: [],
-                occurrences: 100,
-                iconUrl:
-                  'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
-                metadata: {
-                  honeypotStatus: {},
-                  isContractVerified: false,
-                  erc20Permit: false,
-                  description: {
-                    en: 'Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.',
-                    ko: '이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.',
-                    zh: 'Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。',
-                    ja: 'イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。',
-                  },
-                  createdAt: '2023-10-31T22:41:58.553Z',
-                },
-                price: '2529.90697331',
-              },
-              feeData: {
-                metabridge: {
-                  amount: '8750000',
-                  asset: {
-                    address: '0x0000000000000000000000000000000000000000',
-                    chainId: 1151111081099710,
-                    assetId:
-                      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-                    symbol: 'SOL',
-                    decimals: 9,
-                    name: 'SOL',
-                    aggregators: [],
-                    occurrences: 100,
-                    iconUrl:
-                      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
-                    metadata: {},
-                    price: '167.98',
-                  },
-                },
-              },
-              bridges: ['relay'],
-              steps: [
-                {
-                  action: 'bridge',
-                  srcChainId: 1151111081099710,
-                  destChainId: 1,
-                  protocol: {
-                    name: 'relay',
-                    displayName: 'Relay',
-                    icon: 'https://raw.githubusercontent.com/lifinance/types/main/src/assets/icons/bridges/relay.svg',
-                  },
-                  srcAsset: {
-                    address: '0x0000000000000000000000000000000000000000',
-                    chainId: 1151111081099710,
-                    assetId:
-                      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-                    symbol: 'SOL',
-                    decimals: 9,
-                    name: 'SOL',
-                    aggregators: [],
-                    occurrences: 100,
-                    iconUrl:
-                      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png',
-                    metadata: {},
-                  },
-                  destAsset: {
-                    address: '0x0000000000000000000000000000000000000000',
-                    chainId: 1,
-                    assetId: 'eip155:1/slip44:60',
-                    symbol: 'ETH',
-                    decimals: 18,
-                    name: 'Ethereum',
-                    coingeckoId: 'ethereum',
-                    aggregators: [],
-                    occurrences: 100,
-                    iconUrl:
-                      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
-                    metadata: {
-                      honeypotStatus: {},
-                      isContractVerified: false,
-                      erc20Permit: false,
-                      description: {
-                        en: 'Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.',
-                        ko: '이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.',
-                        zh: 'Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。',
-                        ja: 'イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。',
-                      },
-                      createdAt: '2023-10-31T22:41:58.553Z',
-                    },
-                  },
-                  srcAmount: '982576563',
-                  destAmount: '65312314677968091',
-                },
-              ],
-              priceData: {
-                totalFromAmountUsd: '168.28',
-                totalToAmountUsd: '165.223174933443',
-                priceImpact: '0.018165112114077706',
-              },
-            },
-            trade:
-              'AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQALEVH9iAGdPDRjcH0W9QBgy+nhAejTsfKmkKeSxUeKrnAJgxNfP4JDyXxZvzX/gy5nNbPU6Q8JWs3l2OOBPiEMAi7lSpUjZ0oJ+6tXFY2lex9sn5sRuFLyUgPLi2ojim4owQXoSsB3SBkF6AlB9oyrASH5Fx8F2qs54vrrlOsVPQSRHoxPq4mUSUyPHlwSh0RbKRfWDEPHmqlZFi9dYABZjTI1oGb+rLnywLjLSrIQx6MkqNBhCFbxqY1YmoGZVORW/QMGRm/lIRcy/+ytunLDm+e8jOW7xfcSayxDmzpAAAAAjJclj04kifG7PRApFI4NgwtaE5na/xCEBI572Nvp+FkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbd9uHXZaGT2cvhRs7reawctIXtX1s3kTqM9YV+/wCpxvp6877brTo9ZfNqq8l0MbG75MLS9uDkfKYCA0UvXWEEedVb8jHAbu50xW7OaBUH/bGy3qP0jlECsc2iVrwTj7Q/+if11/ZKdMCbHylYed5LCas238ndUUsyGqezjOXoBUpTWpkpIQZNJOhxYNo4fHw1td28kruB5B+oQEEFRI0oPQ3SgjVP7wrjsOIn03zYnKJm+xfd+PfLfM775OvcVQan1RcYx3TJKFZjmGkdXraLXrijm0ttXHNVWyEAAAAAtvhNVsUp0Qguci0cBfPPlwkpnpbUstD8N4DJzYSE5g9BjBrmJXP4MU5DTy4OueToQ7lKVq84GWVhJkSiDMdOZAsGAAUCwCcJAAYACQMAwQIAAAAAAAcGAAEAFAgJAQEIAgABDAIAAACz7ZA6AAAAAAkBAQERBwYAAgAKCAkBAQsSCQABAgMKCwwLFQAREhMBAgkWJOUXy5d6460qAQAAAD0AZAABs+2QOgAAAACoKeQJAAAAADIAAA0AQjB4NDhmNjFhOWI4MDI2MWE4ODc2NTNhY2ViYmY2MjVhZDViNWI2MzVlODg5ZTExNWJlM2NlYTg3OWRmY2RkNzFiNg4CDxAJABiEs2d2f3YACAIABAwCAAAAAAAAAAAAAAAIAgAFDAIAAACcWIQAAAAAAAHLN5k+1/fJrhWNLzzTFhq67TInOUKHqWe1QVYpxTq0egMLDg0DBw8Q',
-            estimatedProcessingTimeInSeconds: 7,
-          },
-        ],
-      };
-    });
-}
-
-export async function mockGetTokenAccountInfoDevnet(mockServer: Mockttp) {
-  console.log('mockGetTokenAccountInfo');
-  const response = {
-    statusCode: 200,
-    json: {
-      id: '1337',
-      jsonrpc: '2.0',
-      result: {
-        context: {
-          apiVersion: '2.0.21',
-          slot: 317161313,
-        },
-        value: {
-          data: {
-            parsed: {
-              info: {
-                isNative: false,
-                mint: '2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
-                owner: '3xTPAZxmpwd8GrNEKApaTw6VH4jqJ31WFXUvQzgwhR7c',
-                state: 'initialized',
-                tokenAmount: {
-                  amount: '3610951',
-                  decimals: 6,
-                  uiAmount: 3.610951,
-                  uiAmountString: '3.610951',
-                },
-              },
-              type: 'account',
-            },
-            program: 'spl-token',
-            space: 165,
-          },
-          executable: false,
-          lamports: 2039280,
-          owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-          rentEpoch: 18446744073709552000,
-          space: 165,
-        },
-      },
-    },
-  };
-  return await mockServer
-    .forPost(SOLANA_URL_REGEX_DEVNET)
-    .withJsonBodyIncluding({
-      method: 'getAccountInfo',
-    })
-    .withJsonBodyIncluding({
-      params: [
-        '4Dt7hvLAzSXGvxvpqFU7cRdQXXhU3orACV6ujY4KPv9D',
-        {
-          encoding: 'jsonParsed',
-          commitment: 'confirmed',
-        },
-      ],
-    })
-    .thenCallback(() => {
-      return response;
     });
 }
 
@@ -2644,278 +1886,6 @@ export async function mockSecurityAlertSwap(mockServer: Mockttp) {
     });
 }
 
-export async function mockEthCallForBridge(mockServer: Mockttp) {
-  const response = {
-    statusCode: 200,
-    json: {
-      result:
-        '0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000002800000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000038000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000480000000000000000000000000000000000000000000000000000000000000050000000000000000000000000000000000000000000000000000000000000005800000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000068000000000000000000000000000000000000000000000000000000000000007000000000000000000000000000000000000000000000000000000000000000780000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000008800000000000000000000000000000000000000000000000000000000000000900000000000000000000000000000000000000000000000000000000000000098000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000340dd0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000791b8100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000019d5c367b0c9a9b4000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000005ca4643c17f000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000121d6e6a16ddc86cbab0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000001b1c78ea45d5e34800000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000006bd3e60806e3e140000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000b60aa821bcda944707000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000011ea030000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000005b1bd6905d461a100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000005af4f0591724000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000002386f26fc10000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000cfd57c5ca000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000f4240',
-      id: '1337',
-      jsonrpc: '2.0',
-    },
-  };
-  return await mockServer
-    .forPost(SOLANA_URL_REGEX_MAINNET)
-    .withJsonBodyIncluding({
-      method: 'eth_call',
-    })
-    .thenCallback(() => {
-      return response;
-    });
-}
-
-export async function mockGetTransactionBridge(mockServer: Mockttp) {
-  const response = {
-    statusCode: 200,
-    json: {
-      result: {
-        blockTime: 748277595,
-        meta: {
-          computeUnitsConsumed: 119916,
-          err: null,
-          fee: 325504,
-          innerInstructions: [
-            {
-              index: 4,
-              instructions: [],
-            },
-          ],
-          loadedAddresses: {
-            readonly: [
-              '2wT8Yq49kHgDzXuPxZSaeLaH1qbmGXtEyPy64bL7aD3c',
-              '7GmDCbu7bYiWJvFaNUyPNiM8PjvvBcmyBcZY1qSsAGi2',
-              '7oo7u7iXrNCekxWWpfLYCbXyjrYLAco5FM9qSjQeNn7g',
-              '8RVPH46opPd3qLy1n1djntzGMZxnqEzbYs9uoeixdnwk',
-            ],
-            writable: [
-              '53EkU98Vbv2TQPwGG6t2asCynzFjCX5AnvaabbXafaed',
-              'DrRd8gYMJu9XGxLhwTCPdHNLXCKHsxJtMpbn62YqmwQe',
-              'EVGW4q1iFjDmtxtHr3NoPi5iVKAxwEjohsusMrinDxr6',
-              'FGYgFJSxZTGzaLwzUL9YZqK2yUZ8seofCwGq8BPEw4o8',
-              'FwWV8a193zZsYxaRAbYkrM6tmrHMoVY1Xahh2PNFejvF',
-            ],
-          },
-          logMessages: [],
-          postBalances: [
-            1771900585, 41158027011, 4573422054, 2039280, 2039280, 2039280, 1,
-            1141440, 1, 1017918, 0, 391237817122, 1141440, 521498880, 1169280,
-            934087680, 2039280, 7231440, 2312760663063, 1461600, 2039280,
-            1141440, 0, 23942400, 23942400,
-          ],
-          postTokenBalances: [
-            {
-              accountIndex: 3,
-              mint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-              owner: '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
-              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-              uiTokenAmount: {
-                amount: '5202758',
-                decimals: 6,
-                uiAmount: 5.202758,
-                uiAmountString: '5.202758',
-              },
-            },
-            {
-              accountIndex: 4,
-              mint: 'So11111111111111111111111111111111111111112',
-              owner: '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
-              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-              uiTokenAmount: {
-                amount: '0',
-                decimals: 9,
-                uiAmount: null,
-                uiAmountString: '0',
-              },
-            },
-            {
-              accountIndex: 5,
-              mint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-              owner: 'F7p3dFrjRTbtRp8FRF6qHLomXbKRBzpvBLjtQcfcgmNe',
-              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-              uiTokenAmount: {
-                amount: '267687837498',
-                decimals: 6,
-                uiAmount: 267687.837498,
-                uiAmountString: '267687.837498',
-              },
-            },
-            {
-              accountIndex: 16,
-              mint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-              owner: '7GmDCbu7bYiWJvFaNUyPNiM8PjvvBcmyBcZY1qSsAGi2',
-              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-              uiTokenAmount: {
-                amount: '971667118938',
-                decimals: 6,
-                uiAmount: 971667.118938,
-                uiAmountString: '971667.118938',
-              },
-            },
-            {
-              accountIndex: 18,
-              mint: 'So11111111111111111111111111111111111111112',
-              owner: '7GmDCbu7bYiWJvFaNUyPNiM8PjvvBcmyBcZY1qSsAGi2',
-              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-              uiTokenAmount: {
-                amount: '2312758623772',
-                decimals: 9,
-                uiAmount: 2312.758623772,
-                uiAmountString: '2312.758623772',
-              },
-            },
-            {
-              accountIndex: 20,
-              mint: 'FGYgFJSxZTGzaLwzUL9YZqK2yUZ8seofCwGq8BPEw4o8',
-              owner: 'CbYf9QNrkVgNRCMTDiVdvzMqSzXh8AAgnrKAoTfEACdh',
-              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-              uiTokenAmount: {
-                amount: '1134346653338',
-                decimals: 9,
-                uiAmount: 1134.346653338,
-                uiAmountString: '1134.346653338',
-              },
-            },
-          ],
-          preBalances: [
-            1773217338, 41158027011, 4573413382, 2039280, 2039280, 2039280, 1,
-            1141440, 1, 1017918, 0, 391237817122, 1141440, 521498880, 1169280,
-            934087680, 2039280, 7231440, 2312759680486, 1461600, 2039280,
-            1141440, 0, 23942400, 23942400,
-          ],
-          preTokenBalances: [
-            {
-              accountIndex: 3,
-              mint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-              owner: '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
-              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-              uiTokenAmount: {
-                amount: '5202758',
-                decimals: 6,
-                uiAmount: 5.202758,
-                uiAmountString: '5.202758',
-              },
-            },
-            {
-              accountIndex: 4,
-              mint: 'So11111111111111111111111111111111111111112',
-              owner: '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
-              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-              uiTokenAmount: {
-                amount: '0',
-                decimals: 9,
-                uiAmount: null,
-                uiAmountString: '0',
-              },
-            },
-            {
-              accountIndex: 5,
-              mint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-              owner: 'F7p3dFrjRTbtRp8FRF6qHLomXbKRBzpvBLjtQcfcgmNe',
-              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-              uiTokenAmount: {
-                amount: '267687664272',
-                decimals: 6,
-                uiAmount: 267687.664272,
-                uiAmountString: '267687.664272',
-              },
-            },
-            {
-              accountIndex: 16,
-              mint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-              owner: '7GmDCbu7bYiWJvFaNUyPNiM8PjvvBcmyBcZY1qSsAGi2',
-              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-              uiTokenAmount: {
-                amount: '971667292164',
-                decimals: 6,
-                uiAmount: 971667.292164,
-                uiAmountString: '971667.292164',
-              },
-            },
-            {
-              accountIndex: 18,
-              mint: 'So11111111111111111111111111111111111111112',
-              owner: '7GmDCbu7bYiWJvFaNUyPNiM8PjvvBcmyBcZY1qSsAGi2',
-              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-              uiTokenAmount: {
-                amount: '2312757641195',
-                decimals: 9,
-                uiAmount: 2312.757641195,
-                uiAmountString: '2312.757641195',
-              },
-            },
-            {
-              accountIndex: 20,
-              mint: 'FGYgFJSxZTGzaLwzUL9YZqK2yUZ8seofCwGq8BPEw4o8',
-              owner: 'CbYf9QNrkVgNRCMTDiVdvzMqSzXh8AAgnrKAoTfEACdh',
-              programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-              uiTokenAmount: {
-                amount: '1134346653324',
-                decimals: 9,
-                uiAmount: 1134.346653324,
-                uiAmountString: '1134.346653324',
-              },
-            },
-          ],
-          rewards: [],
-          status: {
-            Ok: null,
-          },
-        },
-        slot: 9999942622364,
-        transaction: {
-          message: {
-            accountKeys: [
-              '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
-              '34FKjAdVcTax2DHqV2XnbXa9J3zmyKcFuFKWbcmgxjgm',
-              '4cLUBQKZgCv2AqGXbh8ncGhrDRcicUe3WSDzjgPY2oTA',
-              'F77xG4vz2CJeMxxAmFW8pvPx2c5Uk75pksr6Wwx6HFhV',
-              'Ffqao4nxSvgaR5kvFz1F718WaxSv6LnNfHuGqFEZ8fzL',
-              'Q4UmPB9hKMw3ERqksavS9oEpNo2eWG4ffkWg7wHa9j6',
-              '11111111111111111111111111111111',
-              '3i5JeuZuUxeKtVysUnwQNGerJP2bSMX9fTFfS4Nxe3Br',
-              'ComputeBudget111111111111111111111111111111',
-              'D8cy77BBepLMngZx6ZukaTff5hCt1HrWyKk3Hnd9oitf',
-              'DmFk5PjVhNpcyZD2sDr7Lj9VzoGJn9Ls5MyyHEhLAcmM',
-              'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-              'JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4',
-              'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr',
-              'SysvarC1ock11111111111111111111111111111111',
-              'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-            ],
-            addressTableLookups: [
-              {
-                accountKey: 'UKjUSSbQjkPFkw2i2yggWdTpWmEXZWQLNyHmPRxq4gN',
-                readonlyIndexes: [0, 8, 17, 160],
-                writableIndexes: [16, 12, 11, 13, 14],
-              },
-            ],
-            header: {
-              numReadonlySignedAccounts: 0,
-              numReadonlyUnsignedAccounts: 10,
-              numRequiredSignatures: 1,
-            },
-            instructions: [],
-            recentBlockhash: '7JcLaME3F2ReKRVR8bxGG8eMcZSGSKJeMPp645x1SD2H',
-          },
-          signatures: [
-            '2fwnBMKmGJ86uagQ9NEAyUfWeCrvTDn5WiZtiB8AFVtf1RiSaNmyfTxBw8Un7G5BRpoXACzvfhohyxCsCXhJWBJp',
-          ],
-        },
-        version: 0,
-      },
-      id: '1337',
-      jsonrpc: '2.0',
-    },
-  };
-  return await mockServer
-    .forPost(SOLANA_URL_REGEX_MAINNET)
-    .withJsonBodyIncluding({
-      method: 'getTransaction',
-    })
-    .thenCallback(() => {
-      return response;
-    });
-}
 export async function mockPriceApiSpotPriceSwap(mockServer: Mockttp) {
   return await mockServer.forGet(SPOT_PRICE_API).thenCallback(() => {
     return {
@@ -2935,8 +1905,6 @@ export async function mockPriceApiSpotPriceSwap(mockServer: Mockttp) {
 
 export async function mockBridgeGetTokens(mockServer: Mockttp) {
   return await mockServer.forGet(BRIDGED_TOKEN_LIST_API).thenCallback(() => {
-    console.log('Entra aqui y response es');
-
     return {
       statusCode: 200,
       json: [
@@ -3075,8 +2043,6 @@ export async function withSolanaAccountSnap(
           await mockGetTokenAccountsTokenProgram2022Swaps(mockServer),
         );
         mockList.push(await mockGetMultipleAccounts(mockServer));
-        mockList.push(await mockGetSuccessTransaction(mockServer));
-        mockList.push(await mockGetSuccessSignaturesForAddress(mockServer));
         if (mockGetTransactionSuccess) {
           console.log('mockGetTransactionSuccess');
           mockList.push(await mockSendSolanaTransaction(mockServer));
@@ -3130,7 +2096,7 @@ export async function withSolanaAccountSnap(
           mockList.push(
             ...[
               await mockQuoteFromSoltoUSDC(mockServer),
-              await mockSendSwapSolanaTransaction(mockServer),
+              await mockSwapSolToUsdcTransaction(mockServer),
               await mockGetSOLUSDCTransaction(mockServer),
               await mockSecurityAlertSwap(mockServer),
               await mockGetSignaturesSuccessSwap(mockServer),
