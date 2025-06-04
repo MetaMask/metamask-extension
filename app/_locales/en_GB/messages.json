@@ -3847,7 +3847,7 @@
     "description": "$1 is the type of login used Google, Apple, etc."
   },
   "onboardingCreateWallet": {
-    "message": "Create a new wallet"
+    "message": "Create new wallet"
   },
   "onboardingImportWallet": {
     "message": "I have an existing wallet"
