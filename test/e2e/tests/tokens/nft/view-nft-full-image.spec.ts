@@ -46,6 +46,8 @@ describe('NFT full', function () {
         await homepage.check_expectedBalanceIsDisplayed();
         await homepage.goToNftTab();
         const nftListPage = new NFTListPage(driver);
+
+        await nftListPage.filterNftsByNetworks('Popular networks');
         await nftListPage.check_nftNameIsDisplayed(
           'ENS: Ethereum Name Service',
         );
