@@ -51,14 +51,18 @@ const mockWebAuthenticator: WebAuthenticator = {
 describe('OAuthService', () => {
   beforeEach(() => {
     // mock the fetch call to auth-server
-    jest.spyOn(global, 'fetch').mockResolvedValue({
-      json: jest.fn().mockResolvedValue({
-        verifier_id: MOCK_USER_ID,
-        jwt_tokens: {
-          [OAUTH_AUD]: MOCK_JWT_TOKEN,
-        },
-      }),
-    });
+    jest.spyOn(global, 'fetch').mockImplementation(
+      jest.fn(() => {
+        return Promise.resolve({
+          json: jest.fn().mockResolvedValue({
+            verifier_id: MOCK_USER_ID,
+            jwt_tokens: {
+              [OAUTH_AUD]: MOCK_JWT_TOKEN,
+            },
+          }),
+        });
+      }) as jest.Mock,
+    );
   });
 
   afterEach(() => {
