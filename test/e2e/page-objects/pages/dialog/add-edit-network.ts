@@ -51,6 +51,11 @@ class AddEditNetworkModal {
     console.log('Edit network dialog is loaded');
   }
 
+  async clickRpcDropDown(): Promise<void> {
+    console.log('Clicking the RPC dropdown button in the edit network modal');
+    await this.driver.clickElement(this.editModalRpcDropDownButton);
+  }
+
   /**
    * Fill the currency symbol input field in the add/edit network modal.
    *

@@ -198,31 +198,26 @@ describe('Remove Network:', function (this: Suite) {
         // Avoid a stale element error
         await driver.delay(regularDelayMs);
 
-        // Open the network dropdown
+        // Go to Edit Menu
         await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetwork.openNetworkListOptions('eip155:1338');
         await driver.delay(regularDelayMs);
         await selectNetwork.openEditNetworkModal();
         await driver.delay(regularDelayMs);
-        await addEditNetworkModal.check_pageIsLoaded();
+        await addEditNetworkModal.clickRpcDropDown();
 
         // Assert the endpoint is in the list
-        await driver.findElement({
-          text: '127.0.0.1:8546',
-          tag: 'p',
-        });
+        await addEditNetworkModal.check_rpcIsDisplayed('127.0.0.1:8546');
 
-        // Edit the network and remove an RPC
+        // Remove the RPC endpoint
         await addEditNetworkModal.removeRPCInEditNetworkModal(2);
 
         // Verify it went away
-        await driver.assertElementNotPresent({
-          text: '127.0.0.1:8546',
-          tag: 'p',
-        });
+        await checkRpcNotPresent(driver);
 
         // Save the network
         await addEditNetworkModal.saveEditedNetwork();
+
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         const afterPermittedChains = await getPermittedChains(driver);
@@ -232,3 +227,11 @@ describe('Remove Network:', function (this: Suite) {
     );
   });
 });
+
+async function checkRpcNotPresent(driver: Driver): Promise<void> {
+  console.log('Validate the RPC is removed');
+  await driver.assertElementNotPresent({
+    text: '127.0.0.1:8546',
+    tag: 'p',
+  });
+}
