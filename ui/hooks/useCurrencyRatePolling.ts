@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getChainIdsToPoll,
+  getEnabledChainIds,
   getUseCurrencyRateCheck,
   useSafeChainsListValidationSelector,
 } from '../selectors';
@@ -15,6 +16,7 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../ducks/metamask/metamask';
+import { isGlobalNetworkSelectorEnabled } from '../selectors/selectors';
 import usePolling from './usePolling';
 
 const usePollingEnabled = () => {
@@ -32,6 +34,11 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
   );
   const [nativeCurrencies, setNativeCurrencies] = useState<string[]>([]);
   const chainIds = useSelector(getChainIdsToPoll);
+  const enabledChainIds = useSelector(getEnabledChainIds);
+
+  const pollableChains = isGlobalNetworkSelectorEnabled
+    ? chainIds
+    : enabledChainIds;
 
   useEffect(() => {
     // Use validated currency tickers
@@ -43,7 +50,7 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
             useAPICall: useSafeChainsListValidation && isPollingEnabled,
           });
 
-          if (!chainIds.includes(n.chainId)) {
+          if (!pollableChains.includes(n.chainId)) {
             return null;
           }
 
@@ -64,6 +71,7 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
     chainIds,
     isPollingEnabled,
     networkConfigurations,
+    pollableChains,
     useSafeChainsListValidation,
   ]);
 
