@@ -719,9 +719,6 @@
   "unlock": {
     "message": "בטל נעילה"
   },
-  "unlockMessage": {
-    "message": "הרשת המבוזרת מחכה"
-  },
   "urlErrorMsg": {
     "message": "כתובות URI דורשות את קידומת HTTP/HTTPS המתאימה."
   },

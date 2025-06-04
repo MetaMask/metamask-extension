@@ -707,9 +707,6 @@
   "unlock": {
     "message": "ክፈት"
   },
-  "unlockMessage": {
-    "message": "ያልተማከለ ድር ይጠባበቃል"
-  },
   "urlErrorMsg": {
     "message": "URIs አግባብነት ያለው የ HTTP/HTTPS ቅድመ ቅጥያ ይፈልጋል።"
   },

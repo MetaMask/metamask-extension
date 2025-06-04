@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -33,7 +33,7 @@ describe('SkipSRPBackup', () => {
 
   const store = configureMockStore([thunk])(mockStore);
 
-  it('should render', () => {
+  it('should render', async () => {
     const { getByTestId } = renderWithProvider(
       <SkipSRPBackup onClose={jest.fn()} secureYourWallet={jest.fn()} />,
       store,
@@ -47,6 +47,9 @@ describe('SkipSRPBackup', () => {
     expect(confirmSkip).toBeDisabled();
 
     fireEvent.click(checkbox);
-    expect(confirmSkip).toBeEnabled();
+
+    await waitFor(() => {
+      expect(confirmSkip).toBeEnabled();
+    });
   });
 });

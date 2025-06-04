@@ -704,9 +704,6 @@
   "unlock": {
     "message": "Lås opp"
   },
-  "unlockMessage": {
-    "message": "Det desentraliserte internett venter deg"
-  },
   "urlErrorMsg": {
     "message": "URI-er krever det aktuelle HTTP/HTTPS-prefikset."
   },

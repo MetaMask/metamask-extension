@@ -722,9 +722,6 @@
   "unlock": {
     "message": "Отключване"
   },
-  "unlockMessage": {
-    "message": "Децентрализираната мрежа очаква"
-  },
   "urlErrorMsg": {
     "message": "URI изискват съответния HTTP / HTTPS префикс."
   },

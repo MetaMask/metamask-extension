@@ -710,9 +710,6 @@
   "unlock": {
     "message": "Odkleni"
   },
-  "unlockMessage": {
-    "message": "Decentralizirana spletna denarnica"
-  },
   "urlErrorMsg": {
     "message": "URI zahtevajo ustrezno HTTP/HTTPS predpono."
   },
