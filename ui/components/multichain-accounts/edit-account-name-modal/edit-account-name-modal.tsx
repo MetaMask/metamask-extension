@@ -32,7 +32,7 @@ export const EditAccountNameModal = ({
 }: EditAccountNameModalProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const [accountName, setAccountName] = useState(currentAccountName);
+  const [accountName, setAccountName] = useState('');
 
   const handleSave = () => {
     if (accountName.trim() && accountName !== currentAccountName) {
@@ -56,7 +56,7 @@ export const EditAccountNameModal = ({
               label={t('name')}
               value={accountName}
               onChange={(e) => setAccountName(e.target.value)}
-              placeholder={t('enterAccountName')}
+              placeholder={currentAccountName}
               autoFocus
               helpText={address}
             />
