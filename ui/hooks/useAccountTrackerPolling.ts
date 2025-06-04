@@ -11,7 +11,7 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../ducks/metamask/metamask';
-import { isGlobalNetworkSelectorEnabled } from '../selectors/selectors';
+import { isGlobalNetworkSelectorRemoved } from '../selectors/selectors';
 import useMultiPolling from './useMultiPolling';
 
 const useAccountTrackerPolling = () => {
@@ -21,9 +21,9 @@ const useAccountTrackerPolling = () => {
   const enabledNetworkClientIds = useSelector(getEnabledNetworkClientIds);
   const canStartPolling = completedOnboarding && isUnlocked;
 
-  const pollableNetworkClientIds = isGlobalNetworkSelectorEnabled
-    ? networkClientIdsToPoll
-    : enabledNetworkClientIds;
+  const pollableNetworkClientIds = isGlobalNetworkSelectorRemoved
+    ? enabledNetworkClientIds
+    : networkClientIdsToPoll;
 
   useMultiPolling({
     startPolling: accountTrackerStartPolling,

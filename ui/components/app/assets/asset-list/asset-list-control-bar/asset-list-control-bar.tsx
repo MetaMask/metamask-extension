@@ -61,7 +61,7 @@ import Tooltip from '../../../../ui/tooltip';
 import { getMultichainNetwork } from '../../../../../selectors/multichain';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
-import { isGlobalNetworkSelectorEnabled } from '../../../../../selectors/selectors';
+import { isGlobalNetworkSelectorRemoved } from '../../../../../selectors/selectors';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
@@ -113,9 +113,9 @@ const AssetListControlBar = ({
   }, [tokenNetworkFilter, allNetworks]);
 
   const networksToDisplay = useMemo(() => {
-    return isGlobalNetworkSelectorEnabled
-      ? tokenNetworkFilter
-      : enabledNetworks;
+    return isGlobalNetworkSelectorRemoved
+      ? enabledNetworks
+      : tokenNetworkFilter;
   }, [tokenNetworkFilter, enabledNetworks]);
 
   const shouldShowRefreshButtons = useMemo(

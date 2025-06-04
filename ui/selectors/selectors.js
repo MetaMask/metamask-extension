@@ -2712,7 +2712,7 @@ export const getChainIdsToPoll = createDeepEqualSelector(
   },
 );
 
-export const isGlobalNetworkSelectorEnabled = process.env.REMOVE_GNS === 'true';
+export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS === 'true';
 export const getEnabledChainIds = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getEnabledNetworks,

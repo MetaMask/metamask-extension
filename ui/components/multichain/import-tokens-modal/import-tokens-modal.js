@@ -115,7 +115,7 @@ import { getImageForChainId } from '../../../selectors/multichain';
 import { NetworkListItem } from '../network-list-item';
 import TokenListPlaceholder from '../../app/import-token/token-list/token-list-placeholder';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
-import { isGlobalNetworkSelectorEnabled } from '../../../selectors/selectors';
+import { isGlobalNetworkSelectorRemoved } from '../../../selectors/selectors';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 const ACTION_MODES = {
@@ -159,7 +159,7 @@ export const ImportTokensModal = ({ onClose }) => {
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const enabledNetworks = useSelector(getEnabledNetworks);
   const [networkFilter, setNetworkFilter] = useState(
-    isGlobalNetworkSelectorEnabled ? tokenNetworkFilter : enabledNetworks,
+    isGlobalNetworkSelectorRemoved ? enabledNetworks : tokenNetworkFilter,
   );
 
   // Determine if we should show the search tab
