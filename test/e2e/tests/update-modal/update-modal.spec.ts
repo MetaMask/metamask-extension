@@ -91,11 +91,8 @@ describe('Update modal', function (this: Suite) {
             .forGet('https://metamask.io/updating')
             .thenCallback(() => ({
               statusCode: 200,
-              body: '<title>MetaMask Updating</title>',
+              body: '<title>MetaMask Updating</title><link rel="icon" href="data:image/png;base64,iVBORw0KGgo=">',
             }));
-          await server
-            .forGet('https://metamask.io/favicon.ico')
-            .thenCallback(() => ({ statusCode: 200, body: '' }));
         },
       },
       async ({ driver }) => {
