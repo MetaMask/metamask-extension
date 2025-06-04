@@ -170,7 +170,6 @@ import {
   BridgeStatusAction,
 } from '@metamask/bridge-status-controller';
 
-import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -4752,12 +4751,6 @@ export default class MetamaskController extends EventEmitter {
 
   async _addAccountsWithBalance(keyringId) {
     try {
-      // Disable account syncing while adding accounts to avoid ending up in a race condition
-      await this.userStorageController.setIsBackupAndSyncFeatureEnabled(
-        BACKUPANDSYNC_FEATURES.accountSyncing,
-        false,
-      );
-
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
 
@@ -4865,12 +4858,7 @@ export default class MetamaskController extends EventEmitter {
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
     } finally {
-      // Re-enable account syncing after adding accounts
       await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
-        true,
-      );
-      await this.userStorageController.setIsBackupAndSyncFeatureEnabled(
-        BACKUPANDSYNC_FEATURES.accountSyncing,
         true,
       );
     }
