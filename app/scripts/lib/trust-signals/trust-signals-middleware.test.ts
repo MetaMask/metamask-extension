@@ -6,6 +6,8 @@ import { scanAddress } from './security-alerts-api';
 import { SupportedEVMChain, ResultType } from './types';
 
 jest.mock('./security-alerts-api');
+process.env.TRUST_SIGNALS_PROD_ENABLED = 'true';
+process.env.SECURITY_ALERTS_API_ENABLED = 'true';
 
 // Test constants
 const TEST_ADDRESSES = {
