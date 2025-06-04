@@ -24,6 +24,15 @@
         "chromeos": "Alt+Shift+M",
         "linux": "Alt+Shift+M"
       }
+    },
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+M",
+        "windows": "Alt+Shift+M",
+        "mac": "Alt+Shift+M",
+        "chromeos": "Alt+Shift+M",
+        "linux": "Alt+Shift+M"
+      }
     }
   },
   "content_scripts": [

@@ -1,18 +1,9 @@
-import { StoreEnhancer } from 'redux';
+import { Reducer, StoreEnhancer } from 'redux';
 import { configureStore as baseConfigureStore } from '@reduxjs/toolkit';
 import devtoolsEnhancer from 'remote-redux-devtools';
-import { ApprovalControllerState } from '@metamask/approval-controller';
-import { GasEstimateType, GasFeeEstimates } from '@metamask/gas-fee-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
-import {
-  NftControllerState,
-  TokensControllerState,
-} from '@metamask/assets-controllers';
-import { NotificationServicesControllerState } from '@metamask/notification-services-controller/notification-services';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import rootReducer from '../ducks';
-import { LedgerTransportTypes } from '../../shared/constants/hardware-wallets';
-import type { NetworkStatus } from '../../shared/constants/network';
+import type { AppSliceState } from '../ducks/app/app';
+import type { FlattenedBackgroundStateProxy } from '../../shared/types/background';
 
 /**
  * This interface is temporary and is copied from the message-manager.js file
@@ -35,75 +26,24 @@ export type MessagesIndexedById = {
   [id: string]: TemporaryMessageDataType;
 };
 
-/**
- * This interface is a temporary interface to describe the state tree that is
- * sent from the background. Ideally we can build this using Types in the
- * backend when we compose the stores, then we can import it here and use it.
- *
- * Some of this is duplicated in the metamask redux duck. In *most* cases the
- * state received from the background takes precedence over anything in the
- * metamask reducer.
- */
-type TemporaryBackgroundState = NftControllerState &
-  NotificationServicesControllerState &
-  TokensControllerState & {
-    addressBook: {
-      [chainId: string]: {
-        name: string;
-      }[];
-    };
-    // todo: can this be deleted post network controller v20
-    providerConfig: {
-      chainId: string;
-    };
-    transactions: TransactionMeta[];
-    ledgerTransportType: LedgerTransportTypes;
-    unapprovedDecryptMsgs: MessagesIndexedById;
-    unapprovedPersonalMsgs: MessagesIndexedById;
-    unapprovedTypedMessages: MessagesIndexedById;
-    networksMetadata: {
-      [NetworkClientId: string]: {
-        EIPS: { [eip: string]: boolean };
-        status: NetworkStatus;
-      };
-    };
-    selectedNetworkClientId: string;
-    pendingApprovals: ApprovalControllerState['pendingApprovals'];
-    approvalFlows: ApprovalControllerState['approvalFlows'];
-    knownMethodData?: {
-      [fourBytePrefix: string]: Record<string, unknown>;
-    };
-    gasFeeEstimates: GasFeeEstimates;
-    gasEstimateType: GasEstimateType;
-    internalAccounts: {
-      accounts: {
-        [key: string]: InternalAccount;
-      };
-      selectedAccount: string;
-    };
-    keyrings: { type: string; accounts: string[] }[];
-  };
-
 type RootReducerReturnType = ReturnType<typeof rootReducer>;
 
-export type CombinedBackgroundAndReduxState = RootReducerReturnType & {
+/**
+ * `ReduxState` overrides incorrectly typed properties of `RootReducerReturnType`, and is only intended to be used as an input for `configureStore`.
+ * The `MetaMaskReduxState` type (derived from the returned output of `configureStore`) is to be used consistently as the single source-of-truth and representation of Redux state shape.
+ *
+ * Redux slice reducers that are passed an `AnyAction`-type `action` parameter are inferred to have a return type of `never`.
+ * TODO: Supply exhaustive action types to all Redux slices (specifically `metamask` and `appState`)
+ */
+type ReduxState = {
   activeTab: {
     origin: string;
   };
-  metamask: RootReducerReturnType['metamask'] & TemporaryBackgroundState;
-  appState: RootReducerReturnType['appState'];
-  send: RootReducerReturnType['send'];
-  DNS: RootReducerReturnType['DNS'];
-  history: RootReducerReturnType['history'];
-  confirmAlerts: RootReducerReturnType['confirmAlerts'];
-  confirmTransaction: RootReducerReturnType['confirmTransaction'];
-  swaps: RootReducerReturnType['swaps'];
-  bridge: RootReducerReturnType['bridge'];
-  gas: RootReducerReturnType['gas'];
-  localeMessages: RootReducerReturnType['localeMessages'];
-};
+  metamask: FlattenedBackgroundStateProxy;
+  appState: AppSliceState['appState'];
+} & Omit<RootReducerReturnType, 'activeTab' | 'metamask' | 'appState'>;
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function configureStore(preloadedState: any) {
   const debugModeEnabled = Boolean(process.env.METAMASK_DEBUG);
@@ -122,7 +62,7 @@ export default function configureStore(preloadedState: any) {
   }
 
   return baseConfigureStore({
-    reducer: rootReducer as () => CombinedBackgroundAndReduxState,
+    reducer: rootReducer as unknown as Reducer<ReduxState>,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         /**

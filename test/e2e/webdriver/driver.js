@@ -1,3 +1,4 @@
+const { setTimeout: asyncSetTimeout } = require('node:timers/promises');
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
 const {
@@ -492,9 +493,28 @@ class Driver {
   /**
    * Quits the browser session, closing all windows and tabs.
    *
+   * This was previously implemented as just `await this.driver.quit()`, but on Windows,
+   * that was causing Google Chrome for Testing to not close, and sit open indefinitely
+   * taking CPU load. It is also possible that this was causing some cascading errors on CI.
+   *
    * @returns {Promise} promise resolving after quitting
    */
   async quit() {
+    if (this.browser === 'chrome') {
+      try {
+        const handles = await this.driver.getAllWindowHandles();
+
+        for (const handle of handles) {
+          await this.driver.switchTo().window(handle);
+          await this.driver.close();
+        }
+      } catch (e) {
+        console.info(
+          'Problem encountered closing Chrome windows/tabs, but continuing anyway',
+        );
+      }
+    }
+
     await this.driver.quit();
   }
 
@@ -545,10 +565,19 @@ class Driver {
    * Finds a clickable element on the page using the given locator.
    *
    * @param {string | object} rawLocator - Element locator
-   * @param {number} timeout - Timeout in milliseconds
+   * @param {object} guards
+   * @param {number} [guards.waitAtLeastGuard] - Minimum milliseconds to wait before passing
+   * @param {number} [guards.timeout]  - Timeout in milliseconds
    * @returns {Promise<WebElement>} A promise that resolves to the found clickable element.
    */
-  async findClickableElement(rawLocator, timeout = this.timeout) {
+  async findClickableElement(
+    rawLocator,
+    { waitAtLeastGuard = 0, timeout = this.timeout } = {},
+  ) {
+    assert(timeout > waitAtLeastGuard);
+    if (waitAtLeastGuard > 0) {
+      await this.delay(waitAtLeastGuard);
+    }
     const element = await this.findElement(rawLocator, timeout);
     await Promise.all([
       this.driver.wait(until.elementIsVisible(element), timeout),
@@ -828,24 +857,38 @@ class Driver {
   /**
    * Waits for a condition to be met within a given timeout period.
    *
-   * @param {Function} condition - The condition to wait for. This function should return a boolean indicating whether the condition is met.
+   * @param {() => Promise<boolean>} condition - The condition to wait for. This function must return a boolean indicating whether the condition is met.
    * @param {object} options - Options for the wait.
    * @param {number} options.timeout - The maximum amount of time (in milliseconds) to wait for the condition to be met.
    * @param {number} options.interval - The interval (in milliseconds) between checks for the condition.
    * @returns {Promise<void>} A promise that resolves when the condition is met or the timeout is reached.
    * @throws {Error} Throws an error if the condition is not met within the timeout period.
    */
-  async waitUntil(condition, options) {
-    const { timeout, interval } = options;
-    const endTime = Date.now() + timeout;
+  async waitUntil(condition, { interval, timeout }) {
+    const startTime = Date.now();
+    const endTime = startTime + timeout;
 
-    while (Date.now() < endTime) {
-      if (await condition()) {
-        return true;
+    // Loop indefinitely until condition met or timeout
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const result = await condition();
+      if (result === true) {
+        return; // Condition met
       }
-      await new Promise((resolve) => setTimeout(resolve, interval));
+
+      const currentTime = Date.now();
+      if (currentTime >= endTime) {
+        throw new Error(`Condition not met within ${timeout}ms.`);
+      }
+
+      // Calculate remaining time to ensure we don't overshoot the timeout
+      const remainingTime = endTime - currentTime;
+      const waitTime = Math.min(interval, remainingTime);
+
+      // always yield to the event loop, even for an interval of `0`, to avoid a
+      // macro-task deadlock
+      await asyncSetTimeout(waitTime, null, { ref: false });
     }
-    throw new Error('Condition not met within timeout');
   }
 
   /**
@@ -1323,7 +1366,7 @@ class Driver {
   async verboseReportOnFailure(testTitle, error) {
     console.error(
       `Failure on testcase: '${testTitle}', for more information see the ${
-        process.env.CIRCLECI ? 'artifacts tab in CI' : 'test-artifacts folder'
+        process.env.CI ? 'artifacts tab in CI' : 'test-artifacts folder'
       }\n`,
     );
     console.error(`${error}\n`);

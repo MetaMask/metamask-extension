@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 
 import { useDispatch } from 'react-redux';
-import { QueueType } from '../../../../../../shared/constants/metametrics';
 import {
   Box,
   Button,
@@ -26,7 +25,6 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { rejectAllApprovals } from '../../../../../store/actions';
-import { useQueuedConfirmationsEvent } from '../../../hooks/useQueuedConfirmationEvents';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { useConfirmContext } from '../../../context/confirm';
 
@@ -52,8 +50,6 @@ export const Nav = ({ confirmationId }: NavProps) => {
   const onRejectAll = useCallback(async () => {
     await dispatch(rejectAllApprovals());
   }, [dispatch]);
-
-  useQueuedConfirmationsEvent(QueueType.NavigationHeader);
 
   if (count <= 1) {
     return null;
@@ -112,6 +108,8 @@ export const Nav = ({ confirmationId }: NavProps) => {
         className="confirm_nav__reject_all"
         data-testid="confirm-nav__reject-all"
         fontWeight={FontWeight.Normal}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={onRejectAll}
         paddingLeft={3}
         paddingRight={3}

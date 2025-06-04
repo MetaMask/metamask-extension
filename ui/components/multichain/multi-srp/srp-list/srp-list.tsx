@@ -1,6 +1,5 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { KeyringMetadata, KeyringObject } from '@metamask/keyring-controller';
 import Card from '../../../ui/card';
 import {
   Box,
@@ -18,10 +17,7 @@ import {
   BlockSize,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  getMetaMaskAccounts,
-  getMetaMaskHdKeyrings,
-} from '../../../../selectors/selectors';
+import { getMetaMaskAccounts } from '../../../../selectors/selectors';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -29,9 +25,8 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useHdKeyringsWithSnapAccounts } from '../../../../hooks/multi-srp/useHdKeyringsWithSnapAccounts';
 import { SrpListItem } from './srp-list-item';
-
-type KeyringObjectWithMetadata = KeyringObject & { metadata: KeyringMetadata };
 
 export const SrpList = ({
   onActionComplete,
@@ -42,16 +37,15 @@ export const SrpList = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const hdKeyrings: KeyringObjectWithMetadata[] = useSelector(
-    getMetaMaskHdKeyrings,
-  );
+  const hdKeyringsWithSnapAccounts = useHdKeyringsWithSnapAccounts();
+
   // This selector will return accounts with nonEVM balances as well.
   const accountsWithBalances: Record<string, InternalAccountWithBalance> =
     useSelector(getMetaMaskAccounts);
 
   const showAccountsInitState = useMemo(
-    () => new Array(hdKeyrings.length).fill(hideShowAccounts),
-    [hdKeyrings, hideShowAccounts],
+    () => new Array(hdKeyringsWithSnapAccounts.length).fill(hideShowAccounts),
+    [hdKeyringsWithSnapAccounts, hideShowAccounts],
   );
 
   const [showAccounts, setShowAccounts] = useState<boolean[]>(
@@ -71,14 +65,17 @@ export const SrpList = ({
 
   return (
     <Box className="srp-list__container" padding={4} data-testid="srp-list">
-      {hdKeyrings.map((keyring, index) => (
+      {hdKeyringsWithSnapAccounts.map((keyring, index) => (
         <Card
           key={`srp-${keyring.metadata.id}`}
           data-testid={`hd-keyring-${keyring.metadata.id}`}
           onClick={() => {
             trackEvent({
               category: MetaMetricsEventCategory.Accounts,
-              event: MetaMetricsEventName.SecretRecoveryPhrasePickerSelected,
+              event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
+              properties: {
+                button_type: 'srp_select',
+              },
             });
             onActionComplete(keyring.metadata.id);
           }}
@@ -90,7 +87,6 @@ export const SrpList = ({
             flexDirection={FlexDirection.Row}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.spaceBetween}
-            paddingLeft={4}
           >
             <Box>
               <Text>{t('srpListName', [index + 1])}</Text>
@@ -105,7 +101,10 @@ export const SrpList = ({
                     trackEvent({
                       category: MetaMetricsEventCategory.Accounts,
                       event:
-                        MetaMetricsEventName.SecretRecoveryPhrasePickerDetailsClicked,
+                        MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
+                      properties: {
+                        button_type: 'details',
+                      },
                     });
                     setShowAccounts((prevState) =>
                       prevState.map((value, i) =>

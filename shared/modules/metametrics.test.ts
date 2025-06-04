@@ -35,7 +35,7 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     getTokenStandardAndDetails: jest.fn(),
     getTransaction: jest.fn(),
     provider: provider as Provider,
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     snapAndHardwareMessenger: jest.fn() as any,
     trackEvent: jest.fn(),
@@ -44,6 +44,7 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     getMethodData: jest.fn(),
     getIsConfirmationAdvancedDetailsOpen: jest.fn(),
     getHDEntropyIndex: jest.fn(),
+    getNetworkRpcUrl: jest.fn(),
     ...customProps,
   } as TransactionMetricsRequest;
 };
@@ -102,7 +103,7 @@ describe('getSmartTransactionMetricsProperties', () => {
 
     const result = getSmartTransactionMetricsProperties(
       transactionMetricsRequest,
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transactionMeta as any,
     );
@@ -123,7 +124,7 @@ describe('getSmartTransactionMetricsProperties', () => {
 
     const result = getSmartTransactionMetricsProperties(
       transactionMetricsRequest,
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transactionMeta as any,
     );
@@ -146,7 +147,7 @@ describe('getSmartTransactionMetricsProperties', () => {
 
     const result = getSmartTransactionMetricsProperties(
       transactionMetricsRequest,
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       transactionMeta as any,
     );

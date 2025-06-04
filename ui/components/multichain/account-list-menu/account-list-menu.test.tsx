@@ -4,6 +4,7 @@ import reactRouterDom from 'react-router-dom';
 import {
   BtcAccountType,
   EthAccountType,
+  EthScope,
   KeyringAccountType,
 } from '@metamask/keyring-api';
 import { merge } from 'lodash';
@@ -18,6 +19,7 @@ import messages from '../../../../app/_locales/en/messages.json';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
+  IMPORT_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
 ///: END:ONLY_INCLUDE_IF
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
@@ -31,6 +33,7 @@ const mockGetEnvironmentType = jest.fn();
 const mockNextAccountName = jest.fn().mockReturnValue('Test Account 2');
 const mockBitcoinClientCreateAccount = jest.fn();
 const mockGenerateNewHdKeyring = jest.fn();
+const mockDetectNfts = jest.fn();
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
@@ -41,8 +44,8 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
 jest.mock('../../../store/actions', () => {
   return {
     ...jest.requireActual('../../../store/actions'),
-    getNextAvailableAccountName: () => mockNextAccountName(),
     generateNewHdKeyring: () => mockGenerateNewHdKeyring(),
+    detectNfts: () => mockDetectNfts,
   };
 });
 
@@ -57,6 +60,7 @@ jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
   ),
   useMultichainWalletSnapClient: () => ({
     createAccount: mockBitcoinClientCreateAccount,
+    getNextAvailableAccountName: () => mockNextAccountName(),
     getSnapId: () => 'bitcoin-snap-id',
     getSnapName: () => 'bitcoin-snap-name',
   }),
@@ -77,6 +81,9 @@ const render = (
     ...mockState,
     metamask: {
       ...mockState.metamask,
+      remoteFeatureFlags: {
+        addBitcoinAccount: true,
+      },
       permissionHistory: {
         'https://test.dapp': {
           eth_accounts: {
@@ -112,7 +119,6 @@ const render = (
           },
         },
       },
-      bitcoinSupportEnabled: true,
     },
     activeTab: {
       id: 113,
@@ -157,6 +163,7 @@ describe('AccountListMenu', () => {
     const listItems = document.querySelectorAll(
       '.multichain-account-list-item',
     );
+
     expect(listItems).toHaveLength(6);
 
     const searchBox = document.querySelector('input[type=search]') as Element;
@@ -215,6 +222,7 @@ describe('AccountListMenu', () => {
               },
               options: {},
               methods: ETH_EOA_METHODS,
+              scopes: [EthScope.Eoa],
               type: EthAccountType.Eoa,
             },
           },
@@ -314,6 +322,8 @@ describe('AccountListMenu', () => {
     button.click();
 
     fireEvent.click(getByText('Ethereum account'));
+    const header = document.querySelector('header') as Element;
+    expect(header.innerHTML).toContain('Add Ethereum account');
     const addAccountButton = document.querySelector(
       '[data-testid="submit-add-account-with-name"]',
     );
@@ -546,6 +556,17 @@ describe('AccountListMenu', () => {
     expect(tag.textContent).toBe('mock snap name (Beta)');
   });
 
+  it('detects NFTs when an account is clicked', () => {
+    const { getAllByTestId } = render();
+    const listItems = document.querySelectorAll(
+      '.multichain-account-list-item',
+    );
+    expect(listItems).toHaveLength(6);
+    const button = getAllByTestId('account-item');
+    button[0].click();
+    expect(mockDetectNfts).toHaveBeenCalled();
+  });
+
   it('displays the correct label for named snap accounts', () => {
     render({
       metamask: {
@@ -637,6 +658,7 @@ describe('AccountListMenu', () => {
     const mockBtcAccount = createMockInternalAccount({
       name: 'Bitcoin Account',
       type: BtcAccountType.P2wpkh,
+      keyringType: KeyringTypes.snap,
       address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
     });
     const defaultMockState = {
@@ -698,7 +720,7 @@ describe('AccountListMenu', () => {
       );
       addAccountButton.click();
 
-      expect(getByTestId('import-srp-container')).toBeInTheDocument();
+      expect(historyPushMock).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
     });
 
     it('shows srp list if there are multiple srps when adding a new account', async () => {
@@ -711,10 +733,10 @@ describe('AccountListMenu', () => {
       const secondHdKeyring = {
         accounts: [accountInSecondSrp.address],
         type: KeyringTypes.hd,
-      };
-      const secondHdKeyringMetadata = {
-        id: '01JN2RD391JM4K7Q5T4RP3JXMA',
-        name: '',
+        metadata: {
+          id: '01JN2RD391JM4K7Q5T4RP3JXMA',
+          name: '',
+        },
       };
 
       const { getByTestId } = render({
@@ -727,10 +749,6 @@ describe('AccountListMenu', () => {
             },
           },
           keyrings: [...mockState.metamask.keyrings, secondHdKeyring],
-          keyringsMetadata: [
-            ...mockState.metamask.keyringsMetadata,
-            secondHdKeyringMetadata,
-          ],
           internalAccounts: {
             ...mockState.metamask.internalAccounts,
             accounts: {
@@ -754,5 +772,22 @@ describe('AccountListMenu', () => {
 
       expect(getByTestId('select-srp-container')).toBeInTheDocument();
     });
+  });
+
+  it('should render institutional wallet button if manage institutional wallets is enabled', () => {
+    const { getByText, getByTestId } = render({
+      metamask: {
+        ...mockState.metamask,
+        manageInstitutionalWallets: true,
+      },
+    });
+
+    // Click the action button to enter menu mode
+    const actionButton = getByTestId(
+      'multichain-account-menu-popover-action-button',
+    );
+    actionButton.click();
+
+    expect(getByText('Manage Institutional Wallets')).toBeInTheDocument();
   });
 });

@@ -40,6 +40,8 @@ const expectedResults = [
     isPending: false,
     displayedStatusKey: TransactionStatus.confirmed,
     isSubmitted: false,
+    detailsTitle: 'Send',
+    remoteSignerAddress: null,
   },
   {
     title: 'Send',
@@ -229,15 +231,8 @@ const renderHookWithRouter = (cb, tokenAddress) => {
         accounts: { [MOCK_INTERNAL_ACCOUNT.id]: MOCK_INTERNAL_ACCOUNT },
         selectedAccount: MOCK_INTERNAL_ACCOUNT.id,
       },
-      tokens: [
-        {
-          address: '0xabca64466f257793eaa52fcfff5066894b76a149',
-          symbol: 'ABC',
-          decimals: 18,
-        },
-      ],
       allTokens: {
-        '0x4': {
+        [CHAIN_IDS.MAINNET]: {
           [ADDRESS_MOCK]: [
             {
               address: '0xabca64466f257793eaa52fcfff5066894b76a149',
@@ -248,7 +243,7 @@ const renderHookWithRouter = (cb, tokenAddress) => {
         },
       },
       allDetectedTokens: {
-        '0x4': [
+        [CHAIN_IDS.MAINNET]: [
           {
             [ADDRESS_MOCK]: [
               {
@@ -260,10 +255,10 @@ const renderHookWithRouter = (cb, tokenAddress) => {
           },
         ],
       },
-      tokenListAllChains: {
+      tokensChainsCache: {
         '0x4': {
           data: {
-            [ADDRESS_MOCK]: {
+            '0xabca64466f257793eaa52fcfff5066894b76a149': {
               address: '0xabca64466f257793eaa52fcfff5066894b76a149',
               symbol: 'ABC',
               decimals: 18,

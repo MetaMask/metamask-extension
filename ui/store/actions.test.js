@@ -5,6 +5,7 @@ import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import enLocale from '../../app/_locales/en/messages.json';
@@ -49,12 +50,10 @@ const defaultState = {
             address: '0xFirstAddress',
           },
         ],
-      },
-    ],
-    keyringsMetadata: [
-      {
-        id: mockUlid,
-        name: '',
+        metadata: {
+          id: mockUlid,
+          name: '',
+        },
       },
     ],
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -1135,6 +1134,7 @@ describe('Actions', () => {
                   'eth_signTypedData_v3',
                   'eth_signTypedData_v4',
                 ],
+                scopes: ['eip155:0'],
                 type: 'eip155:eoa',
               },
             },
@@ -1182,6 +1182,7 @@ describe('Actions', () => {
                   'eth_signTypedData_v3',
                   'eth_signTypedData_v4',
                 ],
+                scopes: ['eip155:0'],
                 type: 'eip155:eoa',
               },
             },
@@ -2307,7 +2308,7 @@ describe('Actions', () => {
       const store = mockStore();
 
       await expect(
-        store.dispatch(actions.removeAndIgnoreNft(undefined, '55')),
+        store.dispatch(actions.removeAndIgnoreNft(undefined, '55', 'mainnet')),
       ).rejects.toThrow('MetaMask - Cannot ignore NFT without address');
     });
 
@@ -2315,7 +2316,9 @@ describe('Actions', () => {
       const store = mockStore();
 
       await expect(
-        store.dispatch(actions.removeAndIgnoreNft('Oxtest', undefined)),
+        store.dispatch(
+          actions.removeAndIgnoreNft('Oxtest', undefined, 'mainnet'),
+        ),
       ).rejects.toThrow('MetaMask - Cannot ignore NFT without tokenID');
     });
 
@@ -2327,7 +2330,7 @@ describe('Actions', () => {
       setBackgroundConnection(background);
 
       await expect(
-        store.dispatch(actions.removeAndIgnoreNft('Oxtest', '6')),
+        store.dispatch(actions.removeAndIgnoreNft('Oxtest', '6', 'mainnet')),
       ).rejects.toThrow(error);
     });
   });
@@ -2372,43 +2375,37 @@ describe('Actions', () => {
     });
   });
 
-  describe('#enableProfileSyncing', () => {
+  describe('#setIsBackupAndSyncFeatureEnabled', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls enableProfileSyncing in the background', async () => {
+    it('calls setIsBackupAndSyncFeatureEnabled in the background', async () => {
       const store = mockStore();
 
-      const enableProfileSyncingStub = sinon.stub().callsFake((cb) => cb());
+      const setIsBackupAndSyncFeatureEnabledStub = sinon
+        .stub()
+        .callsFake((_feature, _enabled, cb) => {
+          return cb();
+        });
 
       background.getApi.returns({
-        enableProfileSyncing: enableProfileSyncingStub,
+        setIsBackupAndSyncFeatureEnabled: setIsBackupAndSyncFeatureEnabledStub,
       });
       setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.enableProfileSyncing());
-      expect(enableProfileSyncingStub.calledOnceWith()).toBe(true);
-    });
-  });
-
-  describe('#disableProfileSyncing', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls disableProfileSyncing in the background', async () => {
-      const store = mockStore();
-
-      const disableProfileSyncingStub = sinon.stub().callsFake((cb) => cb());
-
-      background.getApi.returns({
-        disableProfileSyncing: disableProfileSyncingStub,
-      });
-      setBackgroundConnection(background.getApi());
-
-      await store.dispatch(actions.disableProfileSyncing());
-      expect(disableProfileSyncingStub.calledOnceWith()).toBe(true);
+      await store.dispatch(
+        actions.setIsBackupAndSyncFeatureEnabled(
+          BACKUPANDSYNC_FEATURES.main,
+          true,
+        ),
+      );
+      expect(
+        setIsBackupAndSyncFeatureEnabledStub.calledOnceWith(
+          BACKUPANDSYNC_FEATURES.main,
+          true,
+        ),
+      ).toBe(true);
     });
   });
 
@@ -2759,25 +2756,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('showConfirmTurnOffProfileSyncing', () => {
-    it('should dispatch showModal with the correct payload', async () => {
-      const store = mockStore();
-
-      await store.dispatch(actions.showConfirmTurnOffProfileSyncing());
-
-      const expectedActions = [
-        {
-          payload: {
-            name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
-          },
-          type: 'UI_MODAL_OPEN',
-        },
-      ];
-
-      await expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
   describe('#toggleExternalServices', () => {
     it('calls toggleExternalServices', async () => {
       const store = mockStore();
@@ -3054,6 +3032,7 @@ describe('Actions', () => {
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
+        { type: 'SET_SHOW_NEW_SRP_ADDED_TOAST', payload: true },
       ];
 
       await store.dispatch(actions.importMnemonicToVault(mnemonic));
@@ -3092,6 +3071,22 @@ describe('Actions', () => {
       await expect(actions.getTokenStandardAndDetailsByChain()).rejects.toThrow(
         'error',
       );
+    });
+  });
+
+  describe('setManageInstitutionalWallets', () => {
+    it('calls setManageInstitutionalWallets in the background', async () => {
+      const store = mockStore();
+      const setManageInstitutionalWalletsStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+      background.getApi.returns({
+        setManageInstitutionalWallets: setManageInstitutionalWalletsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.setManageInstitutionalWallets(true));
+      expect(setManageInstitutionalWalletsStub.calledOnceWith(true)).toBe(true);
     });
   });
 });

@@ -3,7 +3,7 @@ import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 // Common mixin for primary and secondary display values
 export type TokenDisplayValues = {
   primary: string;
-  secondary: number;
+  secondary: number | null;
   string?: string;
 };
 
@@ -68,3 +68,13 @@ export type ChainAddressMarketData = Record<
 >;
 
 export type SymbolCurrencyRateMapping = Record<string, Record<string, number>>;
+
+export type DeFiProtocolPosition = {
+  chainId: Hex;
+  tokenImage: string;
+  underlyingSymbols: string[];
+  marketValue: string;
+  title: string;
+  protocolId: string;
+  iconGroup: { avatarValue: string; symbol: string }[];
+};

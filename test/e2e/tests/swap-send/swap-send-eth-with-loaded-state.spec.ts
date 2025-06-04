@@ -16,6 +16,38 @@ import { NATIVE_TOKEN_SYMBOL, SwapSendPage } from './swap-send-test-utils';
 async function mockSwapQuotes(mockServer: MockttpServer) {
   return [
     await mockServer
+      .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {},
+      })),
+
+    await mockServer
+      .forGet(
+        'https://accounts.api.cx.metamask.io/v2/accounts/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/balances',
+      )
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          count: 0,
+          balances: [
+            {
+              object: 'token',
+              address: '0x0000000000000000000000000000000000000000',
+              symbol: 'ETH',
+              name: 'Ether',
+              type: 'native',
+              timestamp: '2015-07-30T03:26:13.000Z',
+              decimals: 18,
+              chainId: 1,
+              balance: '20',
+            },
+          ],
+          unprocessedNetworks: [],
+        },
+      })),
+
+    await mockServer
       .forGet('https://swap.api.cx.metamask.io/token/1')
       .thenCallback(() => ({
         statusCode: 200,

@@ -73,7 +73,6 @@ const DEFAULT_TEST_CONTEXT = {
   app: {
     name: 'MetaMask Extension',
     version: VERSION,
-    extensionId: MOCK_EXTENSION_ID,
   },
   page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
   referrer: undefined,
@@ -89,7 +88,6 @@ const DEFAULT_SHARED_PROPERTIES = {
 
 const DEFAULT_EVENT_PROPERTIES = {
   category: 'Unit Test',
-  extensionId: MOCK_EXTENSION_ID,
   ...DEFAULT_SHARED_PROPERTIES,
 };
 
@@ -210,19 +208,13 @@ describe('MetaMetricsController', function () {
   });
 
   describe('createEventFragment', function () {
-    it('should throw an error if the param is missing successEvent or category', async function () {
+    it('should throw an error if the param is missing successEvent', async function () {
       await withController(async ({ controller }) => {
         await expect(() => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-expect-error because we are testing the error case
-          controller.createEventFragment({ event: 'test' });
-        }).toThrow(/Must specify success event and category\./u);
-
-        await expect(() => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-expect-error because we are testing the error case
           controller.createEventFragment({ category: 'test' });
-        }).toThrow(/Must specify success event and category\./u);
+        }).toThrow(/Must specify success event\./u);
       });
     });
 
@@ -791,19 +783,13 @@ describe('MetaMetricsController', function () {
       });
     });
 
-    it('should throw if event or category not provided', async function () {
+    it('should throw if event not provided', async function () {
       await withController(({ controller }) => {
         expect(() => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-expect-error because we are testing the error case
-          controller.trackEvent({ event: 'test' });
-        }).toThrow(/Must specify event and category\./u);
-
-        expect(() => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-expect-error because we are testing the error case
           controller.trackEvent({ category: 'test' });
-        }).toThrow(/Must specify event and category\./u);
+        }).toThrow(/Must specify event\./u);
       });
     });
 
@@ -873,6 +859,7 @@ describe('MetaMetricsController', function () {
   });
 
   describe('Change Signature XXX anonymous event names', function () {
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       ['Signature Requested', 'Signature Requested Anon'],
       ['Signature Rejected', 'Signature Rejected Anon'],
@@ -1413,6 +1400,22 @@ describe('MetaMetricsController', function () {
             },
             selectedAccount: 'mock1',
           },
+          multichainNetworkConfigurationsByChainId: {
+            'bip122:000000000019d6689c085ae165831e93': {
+              chainId: 'bip122:000000000019d6689c085ae165831e93',
+              isEvm: false,
+              name: 'Bitcoin Mainnet',
+              nativeCurrency:
+                'bip122:000000000019d6689c085ae165831e93/slip44:0',
+            },
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+              chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+              isEvm: false,
+              name: 'Solana Mainnet',
+              nativeCurrency:
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            },
+          },
           ledgerTransportType: LedgerTransportTypes.webhid,
           openSeaEnabled: true,
           useNftDetection: false,
@@ -1455,15 +1458,19 @@ describe('MetaMetricsController', function () {
           currentCurrency: 'usd',
           dataCollectionForMarketing: false,
           preferences: { privacyMode: true, tokenNetworkFilter: [] },
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          custodyAccountDetails: {},
-          ///: END:ONLY_INCLUDE_IF
           sessionData: undefined,
           keyrings: [],
         });
 
         expect(traits).toStrictEqual({
           [MetaMetricsUserTrait.AddressBookEntries]: 3,
+          [MetaMetricsUserTrait.ChainIdList]: [
+            'eip155:1',
+            'eip155:5',
+            'eip155:175',
+            'bip122:000000000019d6689c085ae165831e93',
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          ],
           [MetaMetricsUserTrait.InstallDateExt]: '',
           [MetaMetricsUserTrait.LedgerConnectionType]:
             LedgerTransportTypes.webhid,
@@ -1489,11 +1496,6 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
           [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
           [MetaMetricsUserTrait.ProfileId]: undefined,
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
-          [MetaMetricsUserTrait.MmiAccountAddress]: null,
-          [MetaMetricsUserTrait.MmiIsCustodian]: false,
-          ///: END:ONLY_INCLUDE_IF
           ///: BEGIN:ONLY_INCLUDE_IF(petnames)
           [MetaMetricsUserTrait.PetnameAddressCount]: 3,
           ///: END:ONLY_INCLUDE_IF
@@ -1556,11 +1558,9 @@ describe('MetaMetricsController', function () {
           },
           security_providers: ['blockaid'],
           currentCurrency: 'usd',
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          custodyAccountDetails: {},
-          ///: END:ONLY_INCLUDE_IF
           sessionData: undefined,
           keyrings: [],
+          multichainNetworkConfigurationsByChainId: {},
         });
 
         const updatedTraits = controller._buildUserTraitsObject({
@@ -1617,9 +1617,6 @@ describe('MetaMetricsController', function () {
           dataCollectionForMarketing: false,
           preferences: { privacyMode: true, tokenNetworkFilter: [] },
           securityAlertsEnabled: true,
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          custodyAccountDetails: {},
-          ///: END:ONLY_INCLUDE_IF
           sessionData: {
             token: {
               accessToken: '',
@@ -1633,6 +1630,7 @@ describe('MetaMetricsController', function () {
             },
           },
           keyrings: [],
+          multichainNetworkConfigurationsByChainId: {},
         });
 
         expect(updatedTraits).toStrictEqual({
@@ -1698,9 +1696,6 @@ describe('MetaMetricsController', function () {
           securityAlertsEnabled: true,
           security_providers: ['blockaid'],
           currentCurrency: 'usd',
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          custodyAccountDetails: {},
-          ///: END:ONLY_INCLUDE_IF
           sessionData: {
             token: {
               accessToken: '',
@@ -1714,6 +1709,7 @@ describe('MetaMetricsController', function () {
             },
           },
           keyrings: [],
+          multichainNetworkConfigurationsByChainId: {},
         });
 
         const updatedTraits = controller._buildUserTraitsObject({
@@ -1760,9 +1756,6 @@ describe('MetaMetricsController', function () {
           securityAlertsEnabled: true,
           security_providers: ['blockaid'],
           currentCurrency: 'usd',
-          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-          custodyAccountDetails: {},
-          ///: END:ONLY_INCLUDE_IF
           sessionData: {
             token: {
               accessToken: '',
@@ -1776,6 +1769,7 @@ describe('MetaMetricsController', function () {
             },
           },
           keyrings: [],
+          multichainNetworkConfigurationsByChainId: {},
         });
         expect(updatedTraits).toStrictEqual(null);
       });

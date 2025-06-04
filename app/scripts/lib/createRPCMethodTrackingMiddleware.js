@@ -6,6 +6,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
+  MetaMetricsRequestedThrough,
 } from '../../../shared/constants/metametrics';
 import { parseTypedDataMessage } from '../../../shared/modules/transaction.utils';
 
@@ -28,6 +29,7 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { shouldUseRedesignForSignatures } from '../../../shared/lib/confirmation.utils';
+import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
@@ -63,6 +65,7 @@ const RATE_LIMIT_MAP = {
   [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS]: RATE_LIMIT_TYPES.TIMEOUT,
   [MESSAGE_TYPE.WALLET_REQUEST_PERMISSIONS]: RATE_LIMIT_TYPES.TIMEOUT,
+  [MESSAGE_TYPE.WALLET_CREATE_SESSION]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.SEND_METADATA]: RATE_LIMIT_TYPES.BLOCKED,
   [MESSAGE_TYPE.ETH_CHAIN_ID]: RATE_LIMIT_TYPES.BLOCKED,
   [MESSAGE_TYPE.ETH_ACCOUNTS]: RATE_LIMIT_TYPES.BLOCKED,
@@ -128,6 +131,11 @@ const EVENT_NAME_MAP = {
     REJECTED: MetaMetricsEventName.PermissionsRejected,
     REQUESTED: MetaMetricsEventName.PermissionsRequested,
   },
+  [MESSAGE_TYPE.WALLET_CREATE_SESSION]: {
+    APPROVED: MetaMetricsEventName.PermissionsApproved,
+    REJECTED: MetaMetricsEventName.PermissionsRejected,
+    REQUESTED: MetaMetricsEventName.PermissionsRequested,
+  },
   [MESSAGE_TYPE.WALLET_GET_CALLS_STATUS]: {
     REQUESTED: MetaMetricsEventName.Wallet5792Called,
   },
@@ -152,6 +160,7 @@ const TRANSFORM_PARAMS_MAP = {
 
 const CUSTOM_PROPERTIES_MAP = {
   [MESSAGE_TYPE.WALLET_SEND_CALLS]: getWalletSendCallsProperties,
+  [MESSAGE_TYPE.WALLET_CREATE_SESSION]: getWalletCreateSessionProperties,
 };
 
 const rateLimitTimeoutsByMethod = {};
@@ -163,10 +172,16 @@ let globalRateLimitCount = 0;
  * @param {MetaMetricsController} metaMetricsController
  * @param {OriginalRequest} req
  * @param {Partial<MetaMetricsEventFragment>} fragmentPayload
+ * @param {MetaMetricsEventCategory} eventCategory
  */
-function createSignatureFragment(metaMetricsController, req, fragmentPayload) {
+function createSignatureFragment(
+  metaMetricsController,
+  req,
+  fragmentPayload,
+  eventCategory,
+) {
   metaMetricsController.createEventFragment({
-    category: MetaMetricsEventCategory.InpageProvider,
+    category: eventCategory,
 
     initialEvent: MetaMetricsEventName.SignatureRequested,
     successEvent: MetaMetricsEventName.SignatureApproved,
@@ -203,6 +218,13 @@ function finalizeSignatureFragment(
     signatureUniqueId,
     finalizeEventOptions,
   );
+}
+
+function isMultichainRequestMethod(method) {
+  return [
+    MESSAGE_TYPE.WALLET_CREATE_SESSION,
+    MESSAGE_TYPE.WALLET_INVOKE_METHOD,
+  ].includes(method);
 }
 
 /**
@@ -248,13 +270,32 @@ export default function createRPCMethodTrackingMiddleware({
   ) {
     const { origin, method, params } = req;
 
-    const rateLimitType = RATE_LIMIT_MAP[method];
+    const isMultichainRequest = isMultichainRequestMethod(method);
+    // requestedThrough and eventCategory are currently redundant so we will want to
+    // disentangle them in the future
+    const requestedThrough = isMultichainRequest
+      ? MetaMetricsRequestedThrough.MultichainApi
+      : MetaMetricsRequestedThrough.EthereumProvider;
+
+    const eventCategory = isMultichainRequest
+      ? MetaMetricsEventCategory.MultichainApi
+      : MetaMetricsEventCategory.InpageProvider;
+
+    let invokedMethod = method;
+    let multichainApiRequestScope;
+    // if the request is through the multichain api, the method is nested in the params
+    if (method === MESSAGE_TYPE.WALLET_INVOKE_METHOD) {
+      invokedMethod = params?.request?.method;
+      multichainApiRequestScope = params?.scope;
+    }
+
+    const rateLimitType = RATE_LIMIT_MAP[invokedMethod];
 
     let isRateLimited;
     switch (rateLimitType) {
       case RATE_LIMIT_TYPES.TIMEOUT:
         isRateLimited =
-          typeof rateLimitTimeoutsByMethod[method] !== 'undefined';
+          typeof rateLimitTimeoutsByMethod[invokedMethod] !== 'undefined';
         break;
       case RATE_LIMIT_TYPES.NON_RATE_LIMITED:
         isRateLimited = false;
@@ -280,15 +321,26 @@ export default function createRPCMethodTrackingMiddleware({
 
     // Get the event type, each of which has APPROVED, REJECTED and REQUESTED
     // keys for the various events in the flow.
-    const eventType = EVENT_NAME_MAP[method];
+    const eventType = EVENT_NAME_MAP[invokedMethod];
 
-    const eventProperties = {};
+    const eventProperties = {
+      api_source: requestedThrough,
+    };
+
+    if (multichainApiRequestScope) {
+      eventProperties.chain_id_caip = multichainApiRequestScope;
+    }
+
     let sensitiveEventProperties;
+
+    const isPreinstalledSnap = isSnapPreinstalled(origin);
 
     // Boolean variable that reduces code duplication and increases legibility
     const shouldTrackEvent =
       // Don't track if the request came from our own UI or background
       origin !== ORIGIN_METAMASK &&
+      // Don't track requests coming from preinstalled Snaps
+      !isPreinstalledSnap &&
       // Don't track if the rate limit has been hit
       !isRateLimited &&
       // Don't track if the global rate limit has been hit
@@ -306,7 +358,7 @@ export default function createRPCMethodTrackingMiddleware({
         : MetaMetricsEventName.ProviderMethodCalled;
 
       if (event === MetaMetricsEventName.SignatureRequested) {
-        eventProperties.signature_type = method;
+        eventProperties.signature_type = invokedMethod;
         eventProperties.hd_entropy_index = getHDEntropyIndex();
 
         // In personal messages the first param is data while in typed messages second param is data
@@ -341,7 +393,7 @@ export default function createRPCMethodTrackingMiddleware({
 
         if (
           shouldUseRedesignForSignatures({
-            approvalType: MESSAGE_TYPE_TO_APPROVAL_TYPE[method],
+            approvalType: MESSAGE_TYPE_TO_APPROVAL_TYPE[invokedMethod],
           })
         ) {
           eventProperties.ui_customizations = [
@@ -361,7 +413,7 @@ export default function createRPCMethodTrackingMiddleware({
         Object.assign(eventProperties, snapAndHardwareInfo);
 
         try {
-          if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
+          if (invokedMethod === MESSAGE_TYPE.PERSONAL_SIGN) {
             const { isSIWEMessage } = detectSIWE({ data });
             if (isSIWEMessage) {
               eventProperties.ui_customizations = [
@@ -369,7 +421,7 @@ export default function createRPCMethodTrackingMiddleware({
                 MetaMetricsEventUiCustomization.Siwe,
               ];
             }
-          } else if (method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4) {
+          } else if (invokedMethod === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4) {
             const parsedMessageData = parseTypedDataMessage(data);
             sensitiveEventProperties = {};
 
@@ -399,15 +451,15 @@ export default function createRPCMethodTrackingMiddleware({
           console.warn(`createRPCMethodTrackingMiddleware: Errored - ${e}`);
         }
       } else {
-        eventProperties.method = method;
+        eventProperties.method = invokedMethod;
       }
 
-      const transformParams = TRANSFORM_PARAMS_MAP[method];
+      const transformParams = TRANSFORM_PARAMS_MAP[invokedMethod];
       if (transformParams) {
         eventProperties.params = transformParams(params);
       }
 
-      CUSTOM_PROPERTIES_MAP[method]?.(
+      CUSTOM_PROPERTIES_MAP[invokedMethod]?.(
         req,
         undefined,
         STAGE.REQUESTED,
@@ -420,11 +472,16 @@ export default function createRPCMethodTrackingMiddleware({
           sensitiveProperties: sensitiveEventProperties,
         };
 
-        createSignatureFragment(metaMetricsController, req, fragmentPayload);
+        createSignatureFragment(
+          metaMetricsController,
+          req,
+          fragmentPayload,
+          eventCategory,
+        );
       } else {
         metaMetricsController.trackEvent({
           event,
-          category: MetaMetricsEventCategory.InpageProvider,
+          category: eventCategory,
           referrer: {
             url: origin,
           },
@@ -433,8 +490,8 @@ export default function createRPCMethodTrackingMiddleware({
       }
 
       if (rateLimitType === RATE_LIMIT_TYPES.TIMEOUT) {
-        rateLimitTimeoutsByMethod[method] = setTimeout(() => {
-          delete rateLimitTimeoutsByMethod[method];
+        rateLimitTimeoutsByMethod[invokedMethod] = setTimeout(() => {
+          delete rateLimitTimeoutsByMethod[invokedMethod];
         }, rateLimitTimeout);
       }
 
@@ -477,10 +534,10 @@ export default function createRPCMethodTrackingMiddleware({
         return callback();
       }
 
-      CUSTOM_PROPERTIES_MAP[method]?.(req, res, stage, eventProperties);
+      CUSTOM_PROPERTIES_MAP[invokedMethod]?.(req, res, stage, eventProperties);
 
       let blockaidMetricProps = {};
-      if (SIGNING_METHODS.includes(method)) {
+      if (SIGNING_METHODS.includes(invokedMethod)) {
         const securityAlertResponse =
           appStateController.getSignatureSecurityAlertResponse(
             req.securityAlertResponse?.securityAlertId,
@@ -520,7 +577,7 @@ export default function createRPCMethodTrackingMiddleware({
       } else {
         metaMetricsController.trackEvent({
           event,
-          category: MetaMetricsEventCategory.InpageProvider,
+          category: eventCategory,
           referrer: {
             url: origin,
           },
@@ -542,5 +599,29 @@ function getWalletSendCallsProperties(req, _res, stage, eventProperties) {
 
   if (callCount) {
     eventProperties.batch_transaction_count = callCount;
+  }
+}
+
+function getWalletCreateSessionProperties(req, res, stage, eventProperties) {
+  if (stage === STAGE.REQUESTED) {
+    const { params } = req;
+    const requiredScopes = params?.requiredScopes || {};
+    const optionalScopes = params?.optionalScopes || {};
+
+    const scopeSet = new Set();
+
+    for (const key of Object.keys(requiredScopes)) {
+      scopeSet.add(key);
+    }
+
+    for (const key of Object.keys(optionalScopes)) {
+      scopeSet.add(key);
+    }
+
+    eventProperties.chain_id_list = Array.from(scopeSet);
+  } else if (stage === STAGE.APPROVED) {
+    const { result } = res;
+    const scopes = Object.keys(result?.sessionScopes || {});
+    eventProperties.chain_id_list = scopes;
   }
 }

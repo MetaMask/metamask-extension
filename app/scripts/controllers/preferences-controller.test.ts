@@ -152,12 +152,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -203,12 +201,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -260,12 +256,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -301,12 +295,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -511,12 +503,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -571,21 +561,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setBitcoinSupportEnabled', () => {
-    const { controller } = setupController({});
-    it('has the default value as false', () => {
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(false);
-    });
-
-    it('sets the bitcoinSupportEnabled property in state to true and then false', () => {
-      controller.setBitcoinSupportEnabled(true);
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(true);
-
-      controller.setBitcoinSupportEnabled(false);
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(false);
-    });
-  });
-
   describe('globalThis.setPreference', () => {
     it('setFeatureFlags to true', () => {
       const { controller } = setupController({});
@@ -607,6 +582,7 @@ describe('preferences controller', () => {
       expect(controller.state.useAddressBarEnsResolution).toStrictEqual(true);
       expect(controller.state.openSeaEnabled).toStrictEqual(true);
       expect(controller.state.useNftDetection).toStrictEqual(true);
+      expect(controller.state.useSafeChainsListValidation).toStrictEqual(true);
     });
 
     it('useExternalServices to false', () => {
@@ -619,6 +595,7 @@ describe('preferences controller', () => {
       expect(controller.state.useAddressBarEnsResolution).toStrictEqual(false);
       expect(controller.state.openSeaEnabled).toStrictEqual(false);
       expect(controller.state.useNftDetection).toStrictEqual(false);
+      expect(controller.state.useSafeChainsListValidation).toStrictEqual(false);
     });
   });
 
@@ -645,21 +622,6 @@ describe('preferences controller', () => {
       const { controller } = setupController({});
       controller.setWatchEthereumAccountEnabled(true);
       expect(controller.state.watchEthereumAccountEnabled).toStrictEqual(true);
-    });
-  });
-
-  describe('bitcoinTestnetSupportEnabled', () => {
-    it('defaults bitcoinTestnetSupportEnabled to false', () => {
-      const { controller } = setupController({});
-      expect(controller.state.bitcoinTestnetSupportEnabled).toStrictEqual(
-        false,
-      );
-    });
-
-    it('setBitcoinTestnetSupportEnabled to true', () => {
-      const { controller } = setupController({});
-      controller.setBitcoinTestnetSupportEnabled(true);
-      expect(controller.state.bitcoinTestnetSupportEnabled).toStrictEqual(true);
     });
   });
 
@@ -707,7 +669,7 @@ describe('preferences controller', () => {
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
-        shouldShowAggregatedBalancePopover: true,
+        dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
         showConfirmationAdvancedDetails: false,
         showMultiRpcModal: false,
@@ -735,7 +697,7 @@ describe('preferences controller', () => {
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         privacyMode: false,
-        shouldShowAggregatedBalancePopover: true,
+        dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
         showConfirmationAdvancedDetails: true,
         showMultiRpcModal: false,
@@ -836,64 +798,18 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('getDisabledAccountUpgradeChains', () => {
-    it('returns empty array if disabledAccountUpgrades is empty', () => {
+  describe('manageInstitutionalWallets', () => {
+    it('defaults manageInstitutionalWallets to false', () => {
       const { controller } = setupController({});
-      expect(controller.getDisabledAccountUpgradeChains()).toStrictEqual([]);
-    });
-
-    it('returns disabledAccountUpgrades state', () => {
-      const { controller } = setupController({
-        state: {
-          accountUpgradeDisabledChains: [CHAIN_IDS.MAINNET, CHAIN_IDS.GOERLI],
-        },
-      });
-
-      expect(controller.getDisabledAccountUpgradeChains()).toStrictEqual([
-        CHAIN_IDS.MAINNET,
-        CHAIN_IDS.GOERLI,
-      ]);
+      expect(controller.state.manageInstitutionalWallets).toStrictEqual(false);
     });
   });
 
-  describe('disableAccountUpgradeForChain', () => {
-    it('adds chain ID to disabledAccountUpgrades if empty', () => {
+  describe('setManageInstitutionalWallets', () => {
+    it('sets manageInstitutionalWallets to true', () => {
       const { controller } = setupController({});
-
-      controller.disableAccountUpgradeForChain(CHAIN_IDS.GOERLI);
-
-      expect(controller.state.accountUpgradeDisabledChains).toStrictEqual([
-        CHAIN_IDS.GOERLI,
-      ]);
-    });
-
-    it('adds chain ID to disabledAccountUpgrades if not empty', () => {
-      const { controller } = setupController({
-        state: {
-          accountUpgradeDisabledChains: [CHAIN_IDS.MAINNET],
-        },
-      });
-
-      controller.disableAccountUpgradeForChain(CHAIN_IDS.GOERLI);
-
-      expect(controller.state.accountUpgradeDisabledChains).toStrictEqual([
-        CHAIN_IDS.MAINNET,
-        CHAIN_IDS.GOERLI,
-      ]);
-    });
-
-    it('does not add chain ID to disabledAccountUpgrades if duplicate', () => {
-      const { controller } = setupController({
-        state: {
-          accountUpgradeDisabledChains: [CHAIN_IDS.MAINNET],
-        },
-      });
-
-      controller.disableAccountUpgradeForChain(CHAIN_IDS.MAINNET);
-
-      expect(controller.state.accountUpgradeDisabledChains).toStrictEqual([
-        CHAIN_IDS.MAINNET,
-      ]);
+      controller.setManageInstitutionalWallets(true);
+      expect(controller.state.manageInstitutionalWallets).toStrictEqual(true);
     });
   });
 });

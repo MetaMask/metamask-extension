@@ -13,18 +13,13 @@ import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 import { Box } from '../../component-library/box';
-import { Text } from '../../component-library/text';
-import {
-  BannerAlert,
-  BannerAlertSeverity,
-} from '../../component-library/banner-alert';
-import { TextVariant } from '../../../helpers/constants/design-system';
 import { SECOND } from '../../../../shared/constants/time';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import RemoteSignerInformation from '../../../pages/remote-mode/components/remote-signer-information';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -39,7 +34,12 @@ export default class TransactionListItemDetails extends PureComponent {
     onRetry: PropTypes.func,
     showCancel: PropTypes.bool,
     showSpeedUp: PropTypes.bool,
-    showRetry: PropTypes.bool,
+    /**
+     * Disabling the retry button until further notice
+     *
+     * @see {@link https://github.com/MetaMask/metamask-extension/issues/28615}
+     */
+    // showRetry: PropTypes.bool,
     isEarliestNonce: PropTypes.bool,
     primaryCurrency: PropTypes.string,
     transactionGroup: PropTypes.object,
@@ -52,11 +52,11 @@ export default class TransactionListItemDetails extends PureComponent {
     senderNickname: PropTypes.string.isRequired,
     transactionStatus: PropTypes.func,
     isCustomNetwork: PropTypes.bool,
-    showErrorBanner: PropTypes.bool,
     history: PropTypes.object,
     blockExplorerLinkText: PropTypes.object,
     chainId: PropTypes.string,
     networkConfiguration: PropTypes.object,
+    remoteSignerAddress: PropTypes.string,
   };
 
   state = {
@@ -154,7 +154,7 @@ export default class TransactionListItemDetails extends PureComponent {
       transactionGroup,
       primaryCurrency,
       showSpeedUp,
-      showRetry,
+      // showRetry,
       recipientAddress,
       recipientName,
       senderAddress,
@@ -163,9 +163,9 @@ export default class TransactionListItemDetails extends PureComponent {
       title,
       onClose,
       showCancel,
-      showErrorBanner,
       transactionStatus: TransactionStatus,
       blockExplorerLinkText,
+      remoteSignerAddress,
     } = this.props;
     const {
       primaryTransaction: transaction,
@@ -177,17 +177,6 @@ export default class TransactionListItemDetails extends PureComponent {
       <Popover title={title} onClose={onClose}>
         <div className="transaction-list-item-details">
           <div className="transaction-list-item-details__operations">
-            {showErrorBanner && (
-              <BannerAlert severity={BannerAlertSeverity.Warning}>
-                <Text
-                  variant={TextVariant.bodyMd}
-                  as="h6"
-                  data-testid="transaction-list-item-details-banner-error-message"
-                >
-                  {t('transactionFailedBannerMessage')}
-                </Text>
-              </BannerAlert>
-            )}
             <div className="transaction-list-item-details__header-buttons">
               {showSpeedUp && (
                 <Button
@@ -206,7 +195,7 @@ export default class TransactionListItemDetails extends PureComponent {
                   detailsModal
                 />
               )}
-              {showRetry && (
+              {/* {showRetry && (
                 <Tooltip title={t('retryTransaction')}>
                   <Button
                     type="raised"
@@ -214,10 +203,10 @@ export default class TransactionListItemDetails extends PureComponent {
                     className="transaction-list-item-details__header-button"
                     data-testid="rety-button"
                   >
-                    <i className="fa fa-sync" />
+                    <i className="fa fa-sync"></i>
                   </Button>
                 </Tooltip>
-              )}
+              )} */}
             </div>
           </div>
           <div className="transaction-list-item-details__header">
@@ -226,18 +215,22 @@ export default class TransactionListItemDetails extends PureComponent {
               data-testid="transaction-list-item-details-tx-status"
             >
               <div>{t('status')}</div>
-              <TransactionStatus />
+              <div>
+                <TransactionStatus />
+              </div>
             </div>
             <div className="transaction-list-item-details__tx-hash">
-              <Button
-                type="link"
-                onClick={this.handleBlockExplorerClick}
-                disabled={!hash}
-              >
-                {blockExplorerLinkText.firstPart === 'addBlockExplorer'
-                  ? t('addBlockExplorer')
-                  : t('viewOnBlockExplorer')}
-              </Button>
+              <div>
+                <Button
+                  type="link"
+                  onClick={this.handleBlockExplorerClick}
+                  disabled={!hash}
+                >
+                  {blockExplorerLinkText.firstPart === 'addBlockExplorer'
+                    ? t('addBlockExplorer')
+                    : t('viewOnBlockExplorer')}
+                </Button>
+              </div>
               <div>
                 <Tooltip
                   wrapperClassName="transaction-list-item-details__header-button"
@@ -292,6 +285,12 @@ export default class TransactionListItemDetails extends PureComponent {
                 }}
               />
             </div>
+            {remoteSignerAddress && (
+              <RemoteSignerInformation
+                signerAddress={remoteSignerAddress}
+                originalSenderAddress={senderAddress}
+              />
+            )}
             <div className="transaction-list-item-details__cards-container">
               <TransactionBreakdown
                 nonce={transactionGroup.initialTransaction.txParams.nonce}
@@ -303,6 +302,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 primaryCurrency={primaryCurrency}
                 className="transaction-list-item-details__transaction-breakdown"
                 chainId={chainId}
+                gasPaidByAddress={remoteSignerAddress}
               />
               {transactionGroup.initialTransaction.type !==
                 TransactionType.incoming && (

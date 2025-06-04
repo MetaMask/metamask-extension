@@ -8,5 +8,12 @@
         "": ""
       }
     }
+  },
+  "accountsByChainId": {
+    "0x1": {
+      "0xb1F8e55c7f64D203C1400B9D8555d050F94aDF39": {
+        "balance": "0x"
+      }
+    }
   }
 }

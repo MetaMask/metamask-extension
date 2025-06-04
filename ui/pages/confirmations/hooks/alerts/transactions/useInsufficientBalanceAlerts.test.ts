@@ -48,10 +48,12 @@ function buildState({
   balance,
   currentConfirmation,
   transaction,
+  selectedNetworkClientId,
 }: {
   balance?: number;
   currentConfirmation?: Partial<TransactionMeta>;
   transaction?: Partial<TransactionMeta>;
+  selectedNetworkClientId?: string;
 } = {}) {
   const accountAddress = transaction?.txParams?.from as string;
   const mockAccount = createMockInternalAccount({
@@ -71,6 +73,7 @@ function buildState({
 
   return getMockConfirmState({
     metamask: {
+      selectedNetworkClientId: selectedNetworkClientId ?? 'goerli',
       pendingApprovals,
       internalAccounts: {
         accounts:
@@ -88,10 +91,13 @@ function buildState({
   });
 }
 
-function runHook(stateOptions?: Parameters<typeof buildState>[0]) {
+function runHook(
+  stateOptions?: Parameters<typeof buildState>[0],
+  args: Parameters<typeof useInsufficientBalanceAlerts>[0] = {},
+) {
   const state = buildState(stateOptions);
   const response = renderHookWithConfirmContextProvider(
-    useInsufficientBalanceAlerts,
+    () => useInsufficientBalanceAlerts(args),
     state,
   );
 
@@ -182,11 +188,37 @@ describe('useInsufficientBalanceAlerts', () => {
     expect(alerts).toEqual([]);
   });
 
+  it('returns alerts if insufficient balance and gas fee token selected and ignoreGasFeeToken set', () => {
+    const alerts = runHook(
+      {
+        balance: 7,
+        currentConfirmation: TRANSACTION_MOCK,
+        transaction: { ...TRANSACTION_MOCK, selectedGasFeeToken: '0x123' },
+      },
+      {
+        ignoreGasFeeToken: true,
+      },
+    );
+
+    expect(alerts).toEqual(ALERT);
+  });
+
   it('returns alert if account has balance less than gas fee plus value', () => {
     const alerts = runHook({
       balance: 7,
       currentConfirmation: TRANSACTION_MOCK,
       transaction: TRANSACTION_MOCK,
+    });
+
+    expect(alerts).toEqual(ALERT);
+  });
+
+  it('returns correct alert test if selected chain is different from chain in confirmation', () => {
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: TRANSACTION_MOCK,
+      transaction: TRANSACTION_MOCK,
+      selectedNetworkClientId: 'testNetworkConfigurationId',
     });
 
     expect(alerts).toEqual(ALERT);

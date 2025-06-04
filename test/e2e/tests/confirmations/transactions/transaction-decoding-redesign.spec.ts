@@ -177,7 +177,7 @@ async function mocked4BytesResponse(mockServer: MockttpServer) {
     }));
 }
 
-export const SOURCIFY_RESPONSE = {
+const SOURCIFY_RESPONSE = {
   files: [
     {
       name: 'metadata.json',

@@ -1,12 +1,13 @@
 import { Messenger } from '@metamask/base-controller';
 import {
   AccountsControllerAccountAddedEvent,
+  AccountsControllerGetSelectedMultichainAccountAction,
   AccountsControllerListMultichainAccountsAction,
 } from '@metamask/accounts-controller';
 import {
   CurrencyRateStateChange,
   GetCurrencyRateState,
-  MultichainAssetsControllerStateChangeEvent,
+  MultichainAssetsControllerAccountAssetListUpdatedEvent,
   MultichainAssetsControllerGetStateAction,
 } from '@metamask/assets-controllers';
 import {
@@ -19,14 +20,15 @@ type Actions =
   | HandleSnapRequest
   | AccountsControllerListMultichainAccountsAction
   | GetCurrencyRateState
-  | MultichainAssetsControllerGetStateAction;
+  | MultichainAssetsControllerGetStateAction
+  | AccountsControllerGetSelectedMultichainAccountAction;
 
 type Events =
   | KeyringControllerLockEvent
   | KeyringControllerUnlockEvent
   | AccountsControllerAccountAddedEvent
   | CurrencyRateStateChange
-  | MultichainAssetsControllerStateChangeEvent;
+  | MultichainAssetsControllerAccountAssetListUpdatedEvent;
 
 export type MultichainAssetsRatesControllerMessenger = ReturnType<
   typeof getMultichainAssetsRatesControllerMessenger
@@ -49,13 +51,14 @@ export function getMultichainAssetsRatesControllerMessenger(
       'KeyringController:lock',
       'KeyringController:unlock',
       'CurrencyRateController:stateChange',
-      'MultichainAssetsController:stateChange',
+      'MultichainAssetsController:accountAssetListUpdated',
     ],
     allowedActions: [
       'AccountsController:listMultichainAccounts',
       'SnapController:handleRequest',
       'CurrencyRateController:getState',
       'MultichainAssetsController:getState',
+      'AccountsController:getSelectedMultichainAccount',
     ],
   });
 }

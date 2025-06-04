@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Hex } from '@metamask/utils';
+import { CaipAccountId, CaipChainId } from '@metamask/utils';
 import {
   BackgroundColor,
   BorderColor,
@@ -13,7 +13,7 @@ import {
   IconName,
 } from '../../../../component-library';
 import { EditAccountsModal, EditNetworksModal } from '../../..';
-import { MergedInternalAccount } from '../../../../../selectors/selectors.types';
+import { MergedInternalAccountWithCaipAccountId } from '../../../../../selectors/selectors.types';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -27,16 +27,17 @@ import { SiteCellConnectionListItem } from './site-cell-connection-list-item';
 type Network = {
   name: string;
   chainId: string;
+  caipChainId: CaipChainId;
 };
 
 type SiteCellProps = {
   nonTestNetworks: Network[];
   testNetworks: Network[];
-  accounts: MergedInternalAccount[];
-  onSelectAccountAddresses: (addresses: string[]) => void;
-  onSelectChainIds: (chainIds: Hex[]) => void;
-  selectedAccountAddresses: string[];
-  selectedChainIds: string[];
+  accounts: MergedInternalAccountWithCaipAccountId[];
+  onSelectAccountAddresses: (addresses: CaipAccountId[]) => void;
+  onSelectChainIds: (chainIds: CaipChainId[]) => void;
+  selectedAccountAddresses: CaipAccountId[];
+  selectedChainIds: CaipChainId[];
   isConnectFlow?: boolean;
   hideAllToasts?: () => void;
 };
@@ -59,13 +60,13 @@ export const SiteCell: React.FC<SiteCellProps> = ({
   const [showEditAccountsModal, setShowEditAccountsModal] = useState(false);
   const [showEditNetworksModal, setShowEditNetworksModal] = useState(false);
 
-  const selectedAccounts = accounts.filter(({ address }) =>
+  const selectedAccounts = accounts.filter(({ caipAccountId }) =>
     selectedAccountAddresses.some((selectedAccountAddress) =>
-      isEqualCaseInsensitive(selectedAccountAddress, address),
+      isEqualCaseInsensitive(selectedAccountAddress, caipAccountId),
     ),
   );
-  const selectedNetworks = allNetworks.filter(({ chainId }) =>
-    selectedChainIds.includes(chainId),
+  const selectedNetworks = allNetworks.filter(({ caipChainId }) =>
+    selectedChainIds.includes(caipChainId),
   );
 
   const selectedChainIdsLength = selectedChainIds.length;
