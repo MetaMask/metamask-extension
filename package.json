@@ -377,7 +377,6 @@
     "luxon": "^3.2.1",
     "nanoid": "^3.3.8",
     "pify": "^5.0.0",
-    "promise-to-callback": "^1.0.0",
     "prop-types": "^15.6.1",
     "punycode": "^2.1.1",
     "qrcode-generator": "1.4.4",
