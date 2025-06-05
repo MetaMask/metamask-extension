@@ -3725,19 +3725,6 @@
         "react>object-assign": true
       }
     },
-    "debounce-stream": {
-      "packages": {
-        "debounce-stream>debounce": true,
-        "debounce-stream>duplexer": true,
-        "debounce-stream>through": true
-      }
-    },
-    "debounce-stream>debounce": {
-      "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
-      }
-    },
     "nock>debug": {
       "globals": {
         "console": true,
@@ -3825,11 +3812,6 @@
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>es-abstract>gopd": true
-      }
-    },
-    "debounce-stream>duplexer": {
-      "packages": {
-        "stream-browserify": true
       }
     },
     "@metamask/ppom-validator>elliptic": {
@@ -5638,12 +5620,6 @@
         "browserify>browser-resolve": true,
         "@metamask/snaps-controllers>tar-stream>fast-fifo": true,
         "@metamask/snaps-controllers>tar-stream>streamx": true
-      }
-    },
-    "debounce-stream>through": {
-      "packages": {
-        "process": true,
-        "stream-browserify": true
       }
     },
     "browserify>timers-browserify": {
