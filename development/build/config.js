@@ -29,30 +29,51 @@ const VARIABLES_REQUIRED_IN_PRODUCTION = {
 /** @type {string[] | null} */
 let _cachedActiveFeatures = null;
 
+/**
+ * Set the active features for the current build. Should be called once per build, after
+ * parsing the command line arguments. Always use {@link getActiveFeatures} to retrieve
+ * the active features for the current build.
+ *
+ * @param {string} buildType - The current build type. The features of this build type will
+ *  be included in the build.
+ * @param {string[]} additionalFeatures - The additional features to include in the build.
+ * @throws {Error} If any additional features are not defined in builds.yml.
+ * @throws {Error} If active features have already been set.
+ * @returns {string[]} The active features for the current build.
+ */
 function setActiveFeatures(buildType, additionalFeatures) {
-  if (_cachedActiveFeatures === null) {
-    const config = loadBuildTypesConfig();
+  if (_cachedActiveFeatures !== null) {
+    throw new Error('Active features have already been set');
+  }
 
-    const unknownFeatures = difference(
-      additionalFeatures,
-      Object.keys(config.features),
-    );
-    if (unknownFeatures.length > 0) {
-      throw new Error(
-        `The following features are not defined in builds.yml: ${unknownFeatures.join(
-          ', ',
-        )}`,
-      );
-    }
+  const config = loadBuildTypesConfig();
 
-    _cachedActiveFeatures = union(
-      additionalFeatures,
-      config.buildTypes[buildType].features ?? [],
+  const unknownFeatures = difference(
+    additionalFeatures,
+    Object.keys(config.features),
+  );
+  if (unknownFeatures.length > 0) {
+    throw new Error(
+      `The following features are not defined in builds.yml: ${unknownFeatures.join(
+        ', ',
+      )}`,
     );
   }
+
+  _cachedActiveFeatures = union(
+    additionalFeatures,
+    config.buildTypes[buildType].features ?? [],
+  );
   return _cachedActiveFeatures;
 }
 
+/**
+ * Get the active features for the current build. This should *always* be used to
+ * retrieve the active features for the current build.
+ *
+ * @returns {string[]} The active features for the current build.
+ * @throws {Error} If active features have not been set by {@link setActiveFeatures}.
+ */
 function getActiveFeatures() {
   if (_cachedActiveFeatures === null) {
     throw new Error('Active features are not set');
