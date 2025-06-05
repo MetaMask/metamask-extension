@@ -57,9 +57,11 @@ export class WriteManager {
       if (this.abortController.signal.aborted) {
         return Promise.reject(new Error('WriteManager has been stopped'));
       }
-      return await navigator.locks.request(LOCK_NAME, opts, () => {
-        return write(...params);
-      });
+      return await navigator.locks.request(
+        LOCK_NAME,
+        opts,
+        async () => await write(...params),
+      );
     }, frequency);
   }
 
@@ -78,11 +80,6 @@ export class WriteManager {
    * progress at a time.
    */
   abortingPromise: Promise<void> | null = null;
-
-  /**
-   * An AbortController used to cancel a pending safe reload operation.
-   */
-  reloadAbortController: AbortController | null = null;
 
   /**
    * Safely reloads the extension by stopping the WriteManager, waiting for
@@ -105,91 +102,43 @@ export class WriteManager {
     this.stop();
 
     // wait for current operations to finish
-    this.reloadAbortController = new AbortController();
-    this.abortingPromise = navigator.locks.request(
+    this.abortingPromise = await navigator.locks.request(
       LOCK_NAME,
-      { mode: 'exclusive', signal: this.reloadAbortController.signal },
+      { mode: 'exclusive' },
       () => browser.runtime.reload(),
     );
     return await this.abortingPromise;
   }
 
   /**
-   * Stops the current reload operation if one is in progress.
-   * This will cancel the ongoing reload and restart the WriteManager to
-   * accept new writes again.
-   * @returns
+   * Stops the WriteManager, meaning it will no longer accept new write
+   * operations. It will also cancel any ongoing write operations and
+   * prevent any new writes from being accepted.
    */
-  async cancelReload() {
-    if (!this.reloadAbortController) {
-      log.debug('No reload in progress, nothing to cancel');
-      return;
-    }
-    log.debug('Cancelling reload in progress');
-    this.reloadAbortController.abort('Reload cancelled');
-    this.reloadAbortController = null;
-    this.abortingPromise = null;
-    await this.restart(); // restart the WriteManager to accept new writes
-  }
-
   stop() {
     if (this.isStopped()) {
       log.debug('WriteManager is already stopped, no need to stop again');
       return;
     }
-    this._write.cancel();
     // stop accepting new writes
     this.abortController.abort('reloading');
+    this._write.cancel();
   }
-
-  /**
-   * Restarts the WriteManager, allowing it to accept new writes again.
-   * If there is a pending write, it will be added to the debounce queue.
-   * @returns
-   */
-  async restart() {
-    if (!this.isStopped()) {
-      log.debug('WriteManager is already running, no need to start again');
-      return;
-    }
-    // if we are in the middle of a reload, we need to abort it
-    this.reloadAbortController?.abort('WriteManager restarted');
-    this.reloadAbortController = null;
-    this.abortingPromise = null;
-
-    this.abortController = new AbortController();
-    // we need a new debounced function since the old one has a used up
-    // abort controller
-    this._write = this.getDebouncer();
-
-    // if there are pending writes, we need to put them in the debounce queue.
-    if (this.pendingWrite) {
-      log.debug('Executing pending write operation');
-      const pendingWrite = this.pendingWrite;
-      this.pendingWrite = null;
-      await this._write(...pendingWrite);
-    }
-  }
-
-  private pendingWrite: unknown[] | null = null;
 
   /**
    * Writes data to the underlying storage. The data might not be written if
    * another write operation happens after this call but before the
    * debounced function executes.
    *
-   * If the WriteManager is stopped, the data will be stored in a pending
-   * write queue and executed when the WriteManager is started again, unless
-   * another write operation happens in the meantime.
    *
    * Note: this is a fire and forget operation, meaning it doesn't return
    * anything. You will never know when your write operation has been executed.
    *
-   * @param params The data to write.
+   * @param params - The data to write.
    */
   write(...params: unknown[]) {
     if (this.isStopped()) {
-      this.pendingWrite = params;
+      log.warn('WriteManager is stopped, ignoring write operation');
       return;
     }
     // ignore the return value of the debounced function, as it just returns
