@@ -19,7 +19,7 @@ jobs:
 
       - name: Checkout and setup environment
         if: steps.extract_version.outputs.version
-        uses: MetaMask/action-checkout-and-setup@t2
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
