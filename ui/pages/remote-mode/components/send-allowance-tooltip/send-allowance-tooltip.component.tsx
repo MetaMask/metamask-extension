@@ -4,8 +4,6 @@ import { useHistory } from 'react-router-dom';
 import { DailyAllowance } from '../../../../../shared/lib/remote-mode';
 import {
   Box,
-  ButtonIcon,
-  ButtonIconSize,
   Icon,
   IconName,
   IconSize,

@@ -24,7 +24,7 @@ const mockAllowance: DailyAllowance = {
 };
 
 export default {
-  title: 'Components/Vault/RemoteMode/SendAllowanceBanner',
+  title: 'Components/Vault/RemoteMode/SendAllowanceTooltip',
   component: SendAllowanceTooltip,
   decorators: [
     (story) => (
