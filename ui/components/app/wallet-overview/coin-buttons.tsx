@@ -11,20 +11,14 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { ChainId } from '../../../../shared/constants/network';
 
 import { I18nContext } from '../../../contexts/i18n';
-import {
-  PREPARE_SWAP_ROUTE,
-  SEND_ROUTE,
-} from '../../../helpers/constants/routes';
+import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import {
   SwapsEthToken,
-  getCurrentKeyring,
   getUseExternalServices,
   getNetworkConfigurationIdByChainId,
   isNonEvmAccount,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
-import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
-import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -43,10 +37,6 @@ import { Box, Icon, IconName, IconSize } from '../../component-library';
 import IconButton from '../../ui/icon-button';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
-import {
-  getIsUnifiedUIEnabled,
-  type BridgeAppState,
-} from '../../../ducks/bridge/selectors';
 import { ReceiveModal } from '../../multichain/receive-modal';
 import {
   setSwitchedNetworkDetails,
@@ -58,9 +48,6 @@ import {
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-///: END:ONLY_INCLUDE_IF
 import { trace, TraceName } from '../../../../shared/lib/trace';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
@@ -109,8 +96,6 @@ const CoinButtons = ({
   ///: END:ONLY_INCLUDE_IF
 
   const location = useLocation();
-  const keyring = useSelector(getCurrentKeyring);
-  const usingHardwareWallet = isHardwareKeyring(keyring?.type);
 
   // Initially, those events were using a "ETH" as `token_symbol`, so we keep this behavior
   // for EVM, no matter the currently selected native token (e.g. SepoliaETH if you are on Sepolia
@@ -194,10 +179,6 @@ const CoinButtons = ({
 
   const { openBridgeExperience } = useBridging();
 
-  const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
-    getIsUnifiedUIEnabled(state, chainId),
-  );
-  const displayNewIconButtons = isUnifiedUIEnabled;
   const setCorrectChain = useCallback(async () => {
     if (currentChainId !== chainId && multichainChainId !== chainId) {
       try {
@@ -287,49 +268,6 @@ const CoinButtons = ({
     [defaultSwapsToken, location, openBridgeExperience],
   );
 
-  const handleSwapOnClick = useCallback(async () => {
-    if (isUnifiedUIEnabled) {
-      handleBridgeOnClick(true);
-      return;
-    }
-    ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
-    if (multichainChainId === MultichainNetworks.SOLANA) {
-      handleBridgeOnClick(true);
-      return;
-    }
-    ///: END:ONLY_INCLUDE_IF
-
-    await setCorrectChain();
-
-    if (isSwapsChain) {
-      trackEvent({
-        event: MetaMetricsEventName.NavSwapButtonClicked,
-        category: MetaMetricsEventCategory.Swaps,
-        properties: {
-          token_symbol: 'ETH',
-          location: MetaMetricsSwapsEventSource.MainView,
-          text: 'Swap',
-          chain_id: chainId,
-        },
-      });
-      dispatch(setSwapsFromToken(defaultSwapsToken));
-      if (usingHardwareWallet) {
-        if (global.platform.openExtensionInBrowser) {
-          global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
-        }
-      } else {
-        history.push(PREPARE_SWAP_ROUTE);
-      }
-    }
-  }, [
-    setCorrectChain,
-    isSwapsChain,
-    chainId,
-    isUnifiedUIEnabled,
-    usingHardwareWallet,
-    defaultSwapsToken,
-  ]);
-
   return (
     <Box
       display={Display.Flex}
@@ -341,19 +279,11 @@ const CoinButtons = ({
         <IconButton
           className={`${classPrefix}-overview__button`}
           Icon={
-            displayNewIconButtons ? (
-              <Icon
-                name={IconName.Money}
-                color={IconColor.iconAlternative}
-                size={IconSize.Md}
-              />
-            ) : (
-              <Icon
-                name={IconName.PlusAndMinus}
-                color={IconColor.iconDefault}
-                size={IconSize.Sm}
-              />
-            )
+            <Icon
+              name={IconName.Money}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
           }
           disabled={!isBuyableChain}
           data-testid={`${classPrefix}-overview-buy`}
@@ -363,90 +293,40 @@ const CoinButtons = ({
           tooltipRender={(contents: React.ReactElement) =>
             generateTooltip('buyButton', contents)
           }
-          round={!displayNewIconButtons}
         />
       }
+
       <IconButton
         className={`${classPrefix}-overview__button`}
         disabled={
-          (!isSwapsChain && !isUnifiedUIEnabled) ||
+          !isBridgeChain ||
           !isSigningEnabled ||
-          !isExternalServicesEnabled
+          isNonEvmAccountWithoutExternalServices
         }
+        data-testid={`${classPrefix}-overview-bridge`}
         Icon={
-          displayNewIconButtons ? (
-            <Icon
-              name={IconName.SwapHorizontal}
-              color={IconColor.iconAlternative}
-              size={IconSize.Md}
-            />
-          ) : (
-            <Icon
-              name={IconName.SwapHorizontal}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
-            />
-          )
+          <Icon
+            name={IconName.Bridge}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
+          />
         }
-        onClick={handleSwapOnClick}
-        label={t('swap')}
-        data-testid="token-overview-button-swap"
+        label={t('bridge')}
+        onClick={() => handleBridgeOnClick(false)}
         width={BlockSize.Full}
         tooltipRender={(contents: React.ReactElement) =>
-          generateTooltip('swapButton', contents)
+          generateTooltip('bridgeButton', contents)
         }
-        round={!displayNewIconButtons}
       />
-      {isUnifiedUIEnabled ? null : (
-        <IconButton
-          className={`${classPrefix}-overview__button`}
-          disabled={
-            !isBridgeChain ||
-            !isSigningEnabled ||
-            isNonEvmAccountWithoutExternalServices
-          }
-          data-testid={`${classPrefix}-overview-bridge`}
-          Icon={
-            displayNewIconButtons ? (
-              <Icon
-                name={IconName.Bridge}
-                color={IconColor.iconAlternative}
-                size={IconSize.Md}
-              />
-            ) : (
-              <Icon
-                name={IconName.Bridge}
-                color={IconColor.iconDefault}
-                size={IconSize.Sm}
-              />
-            )
-          }
-          label={t('bridge')}
-          onClick={() => handleBridgeOnClick(false)}
-          width={BlockSize.Full}
-          tooltipRender={(contents: React.ReactElement) =>
-            generateTooltip('bridgeButton', contents)
-          }
-          round={!displayNewIconButtons}
-        />
-      )}
       <IconButton
         className={`${classPrefix}-overview__button`}
         data-testid={`${classPrefix}-overview-send`}
         Icon={
-          displayNewIconButtons ? (
-            <Icon
-              name={IconName.Send}
-              color={IconColor.iconAlternative}
-              size={IconSize.Md}
-            />
-          ) : (
-            <Icon
-              name={IconName.Arrow2UpRight}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
-            />
-          )
+          <Icon
+            name={IconName.Send}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
+          />
         }
         disabled={!isSigningEnabled || isNonEvmAccountWithoutExternalServices}
         label={t('send')}
@@ -455,7 +335,6 @@ const CoinButtons = ({
         tooltipRender={(contents: React.ReactElement) =>
           generateTooltip('sendButton', contents)
         }
-        round={!displayNewIconButtons}
       />
       {
         <>
@@ -469,19 +348,11 @@ const CoinButtons = ({
             className={`${classPrefix}-overview__button`}
             data-testid={`${classPrefix}-overview-receive`}
             Icon={
-              displayNewIconButtons ? (
-                <Icon
-                  name={IconName.QrCode}
-                  color={IconColor.iconAlternative}
-                  size={IconSize.Md}
-                />
-              ) : (
-                <Icon
-                  name={IconName.ScanBarcode}
-                  color={IconColor.iconDefault}
-                  size={IconSize.Sm}
-                />
-              )
+              <Icon
+                name={IconName.QrCode}
+                color={IconColor.iconAlternative}
+                size={IconSize.Md}
+              />
             }
             label={t('receive')}
             width={BlockSize.Full}
@@ -498,7 +369,6 @@ const CoinButtons = ({
               });
               setShowReceiveModal(true);
             }}
-            round={!displayNewIconButtons}
           />
         </>
       }
