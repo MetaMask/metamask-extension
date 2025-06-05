@@ -21,10 +21,10 @@ describe('Ledger Hardware', function (this: Suite) {
       },
       async ({ driver, localNodes }) => {
         // Seed the Ledger account with balance
-        await localNodes?.[0]?.setAccountBalance(
+        (await localNodes?.[0]?.setAccountBalance(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
-        );
+        )) ?? console.error('localNodes is undefined or empty');
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.check_expectedBalanceIsDisplayed('1208925.8196');
@@ -51,10 +51,10 @@ describe('Ledger Hardware', function (this: Suite) {
       },
       async ({ driver, localNodes }) => {
         // Seed the Ledger account with balance
-        await localNodes?.[0]?.setAccountBalance(
+        (await localNodes?.[0]?.setAccountBalance(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
-        );
+        )) ?? console.error('localNodes is undefined or empty');
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.check_expectedBalanceIsDisplayed('1208925.8196');
