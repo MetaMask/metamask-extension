@@ -28,11 +28,17 @@ export default function RevealSRPModal({
   const t = useI18nContext();
 
   const [password, setPassword] = useState('');
+  const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
+    useState(false);
 
   const onSubmit = useCallback(
     async (_password) => {
-      const seedPhrase = await getSeedPhrase(_password);
-      setSecretRecoveryPhrase(seedPhrase);
+      try {
+        const seedPhrase = await getSeedPhrase(_password);
+        setSecretRecoveryPhrase(seedPhrase);
+      } catch (error) {
+        setIsIncorrectPasswordError(true);
+      }
     },
     [setSecretRecoveryPhrase],
   );
@@ -55,8 +61,17 @@ export default function RevealSRPModal({
               id="account-details-authenticate"
               label={t('enterYourPassword')}
               placeholder={t('password')}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setIsIncorrectPasswordError(false);
+              }}
               value={password}
+              error={isIncorrectPasswordError}
+              helpText={
+                isIncorrectPasswordError
+                  ? t('unlockPageIncorrectPassword')
+                  : null
+              }
               variant={TextVariant.bodySm}
               type="password"
               labelProps={{ fontWeight: FontWeight.Medium }}
