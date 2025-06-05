@@ -85,7 +85,6 @@ import {
 } from '../../../shared/lib/confirmation.utils';
 import {
   getConnectingLabel,
-  hideAppHeader,
   isConfirmTransactionRoute,
   setTheme,
   showAppHeader,
