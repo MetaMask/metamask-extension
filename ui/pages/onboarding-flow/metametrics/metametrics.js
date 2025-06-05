@@ -21,6 +21,7 @@ import {
 import {
   getDataCollectionForMarketing,
   getFirstTimeFlowType,
+  getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
 } from '../../../selectors';
 
 import {
@@ -29,10 +30,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import {
-  ONBOARDING_COMPLETION_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -46,6 +44,7 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '../../../components/component-library';
+import { submitRequestToBackground } from '../../../store/background-connection';
 
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
@@ -63,7 +62,9 @@ export default function OnboardingMetametrics() {
 
   const trackEvent = useContext(MetaMetricsContext);
 
-  let nextRouteByBrowser = ONBOARDING_COMPLETION_ROUTE;
+  let nextRouteByBrowser = useSelector(
+    getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
+  );
   if (isFirefox && firstTimeFlowType !== FirstTimeFlowType.restore) {
     nextRouteByBrowser = ONBOARDING_WELCOME_ROUTE;
   }
@@ -108,6 +109,9 @@ export default function OnboardingMetametrics() {
           location: 'onboarding_metametrics',
         },
       });
+      // Flush buffered events when user opts in
+      await submitRequestToBackground('trackEventsAfterMetricsOptIn');
+      await submitRequestToBackground('clearEventsAfterMetricsOptIn');
     } finally {
       history.push(nextRouteByBrowser);
     }
@@ -116,6 +120,7 @@ export default function OnboardingMetametrics() {
   const onCancel = async () => {
     await dispatch(setParticipateInMetaMetrics(false));
     await dispatch(setDataCollectionForMarketing(false));
+    await submitRequestToBackground('clearEventsAfterMetricsOptIn');
     history.push(nextRouteByBrowser);
   };
 
