@@ -50,21 +50,15 @@ describe('WriteManager', () => {
   });
 
   it('waits for ongoing writes before reloading', async () => {
-    let resolveWrite: () => void;
-    mockWrite.mockImplementation(
-      () =>
-        new Promise((resolve) => {
-          resolveWrite = resolve;
-        }),
-    );
+    const promise = Promise.withResolvers<void>();
+    mockWrite.mockImplementation(() => promise.promise);
     writeManager.write('data1');
     jest.advanceTimersByTime(frequency);
     await Promise.resolve();
     expect(mockWrite).toHaveBeenCalledWith('data1');
     const reloadPromise = writeManager.safeReload();
     expect(browser.runtime.reload).not.toHaveBeenCalled();
-    // @ts-expect-error
-    resolveWrite();
+    promise.resolve();
     await reloadPromise;
     expect(browser.runtime.reload).toHaveBeenCalled();
   });
