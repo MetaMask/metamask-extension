@@ -6647,10 +6647,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^1.31.2":
-  version: 1.31.2
-  resolution: "@metamask/solana-wallet-snap@npm:1.31.2"
-  checksum: 10/044617de1078147335de1a96593e54da7c9859eeff4742e7324665f52c89b1a58cf4dd6256a9d9ee34085ccf750aec819faa12217446ee33eb644df6dda73055
+"@metamask/solana-wallet-snap@npm:^1.32.0":
+  version: 1.32.0
+  resolution: "@metamask/solana-wallet-snap@npm:1.32.0"
+  checksum: 10/54e3382649cd64a0e9951079431b42bd130ca3f5a1f739e0c978b6ba5066d862dfde84548feaab3a5cd966a25ab92cba290eba7a1a7efcd73b6b7a4deddeda30
   languageName: node
   linkType: hard
 
@@ -30156,12 +30156,21 @@ __metadata:
     "@metamask/selected-network-controller": "npm:^22.1.0"
     "@metamask/signature-controller": "npm:^27.1.0"
     "@metamask/smart-transactions-controller": "npm:^16.3.1"
+<<<<<<< HEAD
     "@metamask/snaps-controllers": "npm:^12.2.0"
     "@metamask/snaps-execution-environments": "npm:^8.1.0"
     "@metamask/snaps-rpc-methods": "npm:^12.3.0"
     "@metamask/snaps-sdk": "npm:^6.24.0"
     "@metamask/snaps-utils": "npm:^9.3.0"
     "@metamask/solana-wallet-snap": "npm:^1.31.2"
+=======
+    "@metamask/snaps-controllers": "npm:^12.3.1"
+    "@metamask/snaps-execution-environments": "npm:^8.2.0"
+    "@metamask/snaps-rpc-methods": "npm:^12.4.0"
+    "@metamask/snaps-sdk": "npm:^7.1.0"
+    "@metamask/snaps-utils": "npm:^9.4.0"
+    "@metamask/solana-wallet-snap": "npm:^1.32.0"
+>>>>>>> 770b7050a6 (chore: cp-12.20.0 bump Solana snap version to 1.32.0 (#33496))
     "@metamask/solana-wallet-standard": "npm:^0.4.1"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
