@@ -76,7 +76,7 @@ export default function CreationSuccessful() {
     if (socialLoginFlow || isWalletReady) {
       return isFromReminderParam
         ? t('yourWalletIsReadyFromReminder')
-        : t('yourWalletIsReadyRemind');
+        : t('yourWalletIsReady');
     }
 
     return t('yourWalletIsReadyRemind');
