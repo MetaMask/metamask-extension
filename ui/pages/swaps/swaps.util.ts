@@ -17,6 +17,7 @@ import {
   OPTIMISM,
   POLYGON,
   ZKSYNC_ERA,
+  SEI,
   SWAPS_API_V2_BASE_URL,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   SWAPS_CLIENT_ID,
@@ -705,6 +706,8 @@ export const getNetworkNameByChainId = (chainId: string): string => {
       return LINEA;
     case CHAIN_IDS.BASE:
       return BASE;
+    case CHAIN_IDS.SEI:
+      return SEI;
     default:
       return '';
   }
