@@ -87,7 +87,6 @@ export const useCarouselManagement = ({
       ...FUND_SLIDE,
       undismissable: hasZeroBalance,
     };
-    defaultSlides.push(BASIC_FUNCTIONALITY_SLIDE);
 
     if (!isSolanaAddress(selectedAccount.address)) {
       defaultSlides.push(SMART_ACCOUNT_UPGRADE_SLIDE);
