@@ -186,7 +186,7 @@ class HomePage {
   async check_disabledButtonTooltip(tooltipText: string): Promise<void> {
     console.log(`Check if disabled button tooltip is displayed on homepage`);
     await this.driver.waitForSelector(
-      `.icon-button--disabled [data-tooltipped][data-original-title="${tooltipText}"]`,
+      `.icon-button-round--disabled [data-tooltipped][data-original-title="${tooltipText}"]`,
     );
   }
 

@@ -1,15 +1,17 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import ChangePassword from './change-password';
-import mockState from '../../../../../test/data/mock-state.json';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import mockState from '../../../../../test/data/mock-state.json';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
+import ChangePassword from './change-password';
 
 const mockHistoryPush = jest.fn();
-const mockChangePassword = jest.fn().mockImplementation((_newPwd: string, _currentPwd: string) => {
-  return Promise.resolve();
-});
+const mockChangePassword = jest
+  .fn()
+  .mockImplementation((_newPwd: string, _currentPwd: string) => {
+    return Promise.resolve();
+  });
 const mockVerifyPassword = jest.fn().mockImplementation((_pwd: string) => {
   return Promise.resolve();
 });
@@ -47,27 +49,41 @@ describe('ChangePassword', () => {
   it('should render correctly', () => {
     const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
 
-    const verifyCurrentPasswordInput = getByTestId('verify-current-password-input');
+    const verifyCurrentPasswordInput = getByTestId(
+      'verify-current-password-input',
+    );
 
     expect(verifyCurrentPasswordInput).toBeInTheDocument();
-    expect(verifyCurrentPasswordInput).toHaveAttribute('placeholder', 'Make sure nobody is looking');
+    expect(verifyCurrentPasswordInput).toHaveAttribute(
+      'placeholder',
+      'Make sure nobody is looking',
+    );
     expect(verifyCurrentPasswordInput).toHaveAttribute('type', 'password');
   });
 
   it('should go to the next step when the current password verification is successful', async () => {
     const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
 
-    const verifyCurrentPasswordInput = getByTestId('verify-current-password-input');
+    const verifyCurrentPasswordInput = getByTestId(
+      'verify-current-password-input',
+    );
 
     expect(verifyCurrentPasswordInput).toBeInTheDocument();
-    expect(verifyCurrentPasswordInput).toHaveAttribute('placeholder', 'Make sure nobody is looking');
+    expect(verifyCurrentPasswordInput).toHaveAttribute(
+      'placeholder',
+      'Make sure nobody is looking',
+    );
     expect(verifyCurrentPasswordInput).toHaveAttribute('type', 'password');
 
-    const verifyCurrentPasswordButton = getByTestId('verify-current-password-button');
+    const verifyCurrentPasswordButton = getByTestId(
+      'verify-current-password-button',
+    );
     expect(verifyCurrentPasswordButton).toBeInTheDocument();
     expect(verifyCurrentPasswordButton).toBeDisabled();
 
-    fireEvent.change(verifyCurrentPasswordInput, { target: { value: mockPassword } });
+    fireEvent.change(verifyCurrentPasswordInput, {
+      target: { value: mockPassword },
+    });
     expect(verifyCurrentPasswordButton).toBeEnabled();
 
     fireEvent.click(verifyCurrentPasswordButton);
@@ -78,22 +94,31 @@ describe('ChangePassword', () => {
 
     const changePasswordButton = getByTestId('change-password-button');
     const changePasswordInput = getByTestId('change-password-input');
-    const changePasswordConfirmInput = getByTestId('change-password-confirm-input');
+    const changePasswordConfirmInput = getByTestId(
+      'change-password-confirm-input',
+    );
 
     expect(changePasswordInput).toBeInTheDocument();
     expect(changePasswordConfirmInput).toBeInTheDocument();
     expect(changePasswordButton).toBeInTheDocument();
     expect(changePasswordButton).toBeDisabled();
 
-    fireEvent.change(changePasswordInput, { target: { value: mockNewPassword } });
-    fireEvent.change(changePasswordConfirmInput, { target: { value: mockNewPassword } });
+    fireEvent.change(changePasswordInput, {
+      target: { value: mockNewPassword },
+    });
+    fireEvent.change(changePasswordConfirmInput, {
+      target: { value: mockNewPassword },
+    });
 
     expect(changePasswordButton).toBeEnabled();
 
     fireEvent.click(changePasswordButton);
 
     await waitFor(() => {
-      expect(mockChangePassword).toHaveBeenCalledWith(mockNewPassword, mockPassword);
+      expect(mockChangePassword).toHaveBeenCalledWith(
+        mockNewPassword,
+        mockPassword,
+      );
       expect(mockHistoryPush).toHaveBeenCalledWith(SECURITY_ROUTE);
     });
   });

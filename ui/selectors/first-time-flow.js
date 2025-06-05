@@ -38,11 +38,9 @@ export function getFirstTimeFlowTypeRouteAfterUnlock(state) {
   } else if (firstTimeFlowType === FirstTimeFlowType.import) {
     return ONBOARDING_IMPORT_WITH_SRP_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
+    return ONBOARDING_SECURE_YOUR_WALLET_ROUTE;
+  } else if (isSocialLoginFlow(state)) {
     return ONBOARDING_METAMETRICS;
-  } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-    return ONBOARDING_METAMETRICS;
-  } else if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-    return ONBOARDING_PIN_EXTENSION_ROUTE;
   }
   return DEFAULT_ROUTE;
 }
