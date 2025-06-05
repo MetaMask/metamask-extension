@@ -32,10 +32,7 @@ describe('Linea Network Discover Button', function (this: Suite) {
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
         await selectNetworkDialog.fillNetworkSearchInput('Linea Mainnet');
-
-        await driver.clickElement(
-          '[data-testid="network-list-item-options-button-eip155:59144"]',
-        );
+        await selectNetworkDialog.openNetworkListOptions('eip155:59144');
 
         // Verify Discover button is visible
         await selectNetworkDialog.check_discoverButtonIsVisible();
