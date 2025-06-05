@@ -89,7 +89,6 @@ import { MultichainAccountListMenu } from '../../components/multichain-accounts/
 import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
 import {
   getConnectingLabel,
-  hideAppHeader,
   isConfirmTransactionRoute,
   setTheme,
   showAppHeader,
