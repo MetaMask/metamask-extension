@@ -95,7 +95,8 @@ export class WriteManager {
     if (this.abortingPromise) {
       // already stopped, no need to reload
       log.debug('WriteManager is already stopped, no need to reload');
-      return this.abortingPromise;
+      await this.abortingPromise;
+      return;
     }
 
     await this._write.flush();
@@ -107,7 +108,7 @@ export class WriteManager {
       { mode: 'exclusive' },
       () => browser.runtime.reload(),
     );
-    return await this.abortingPromise;
+    await this.abortingPromise;
   }
 
   /**

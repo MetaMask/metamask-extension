@@ -129,7 +129,6 @@ describe('MetaMaskController', function () {
       },
       browser: browserPolyfillMock,
       infuraProjectId: 'foo',
-      requestSafeReload: noop,
     });
     initializeMockMiddlewareLog();
 
