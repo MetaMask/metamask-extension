@@ -245,7 +245,7 @@ describe('OperationSafener', () => {
         () => new Promise((resolve) => setTimeout(resolve, 50)),
       );
     const safener = new OperationSafener({
-      op: (p: { test: 123 }) => {},
+      op: mockOp,
     });
 
     // Mock log.warn
