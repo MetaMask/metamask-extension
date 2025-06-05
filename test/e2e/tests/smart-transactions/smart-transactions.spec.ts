@@ -27,7 +27,6 @@ async function withFixturesForSmartTransactions(
     {
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
-        .withPreferencesControllerSmartTransactionsOptedIn()
         .withNetworkControllerOnMainnet()
         .build(),
       title,
