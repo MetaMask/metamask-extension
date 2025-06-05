@@ -527,7 +527,7 @@ describe('SendPage', () => {
         expect(submitButton).toBeDisabled();
       });
 
-      it('there is an insufficient funds error', async () => {
+      it('there is an insufficient funds for gas error', async () => {
         const insufficientFundsState = {
           ...mockSendState,
           send: {
@@ -537,6 +537,31 @@ describe('SendPage', () => {
               '1-tx': {
                 ...mockSendState.send.draftTransactions['1-tx'],
                 gas: {
+                  error: 'insufficientFunds',
+                },
+              },
+            },
+          },
+        };
+
+        const {
+          result: { getByText },
+        } = await render(insufficientFundsState);
+
+        const submitButton = getByText('Continue');
+        expect(submitButton).toBeEnabled();
+      });
+
+      it('there is an insufficient funds error', async () => {
+        const insufficientFundsState = {
+          ...mockSendState,
+          send: {
+            ...mockSendState.send,
+            currentTransactionUUID: '1-tx',
+            draftTransactions: {
+              '1-tx': {
+                ...mockSendState.send.draftTransactions['1-tx'],
+                amount: {
                   error: 'insufficientFunds',
                 },
               },
