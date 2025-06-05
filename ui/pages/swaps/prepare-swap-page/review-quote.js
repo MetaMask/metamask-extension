@@ -1099,6 +1099,7 @@ export default function ReviewQuote({
     }
   };
 
+  // TODO fee calculation for gas-included
   const gasTokenFiatAmount = useMemo(() => {
     if (!isGasIncludedTrade) {
       return undefined;
@@ -1282,6 +1283,7 @@ export default function ReviewQuote({
                   }
                 />
               </Box>
+              {/* TODO: copy to bridge quote cards*/}
               <Box
                 display={DISPLAY.FLEX}
                 justifyContent={JustifyContent.flexEnd}

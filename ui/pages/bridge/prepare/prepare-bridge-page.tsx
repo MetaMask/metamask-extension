@@ -386,6 +386,7 @@ const PrepareBridgePage = () => {
       slippage,
       walletAddress: selectedAccount?.address ?? '',
       destWalletAddress: selectedDestinationAccount?.address,
+      isGasIncluded: smartTransactionsEnabled,
     }),
     [
       fromToken?.address,
@@ -398,6 +399,7 @@ const PrepareBridgePage = () => {
       selectedAccount?.address,
       selectedDestinationAccount?.address,
       providerConfig?.rpcUrl,
+      smartTransactionsEnabled,
     ],
   );
 

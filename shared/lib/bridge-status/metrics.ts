@@ -75,6 +75,6 @@ export const getCommonProperties = (
     usd_quoted_return,
     usd_quoted_gas,
 
-    gas_included: false, // TODO check if trade has gas included
+    gas_included: bridgeHistoryItem.quote.isGasIncluded,
   };
 };

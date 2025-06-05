@@ -74,6 +74,7 @@ import {
   tokenPriceInNativeAsset,
 } from './utils';
 import type { BridgeState } from './types';
+import { getSmartTransactionsEnabled } from '../../../shared/modules/selectors';
 
 export type BridgeAppState = {
   metamask: BridgeAppStateFromController &
@@ -533,6 +534,7 @@ export const getValidationErrors = createDeepEqualSelector(
   ({ metamask }: BridgeAppState) =>
     selectMinimumBalanceForRentExemptionInSOL(metamask),
   getQuoteRequest,
+  getSmartTransactionsEnabled,
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
     validatedSrcAmount,
@@ -540,6 +542,7 @@ export const getValidationErrors = createDeepEqualSelector(
     fromTokenInputValue,
     minimumBalanceForRentExemptionInSOL,
     quoteRequest,
+    smartTransactionsEnabled,
   ) => {
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
@@ -560,13 +563,16 @@ export const getValidationErrors = createDeepEqualSelector(
         if (balance && !activeQuote && validatedSrcAmount && fromToken) {
           return isNativeAddress(fromToken.address)
             ? balance.sub(minimumBalanceToUse).lte(validatedSrcAmount)
-            : balance.lte(0);
+            : balance.lte(0) && !smartTransactionsEnabled;
         }
         return false;
       },
       // Shown after fetching quotes
       isInsufficientGasForQuote: (balance?: BigNumber) => {
         if (balance && activeQuote && fromToken && fromTokenInputValue) {
+          if (activeQuote.isGasIncluded) {
+            return false;
+          }
           return isNativeAddress(fromToken.address)
             ? balance
                 .sub(activeQuote.totalMaxNetworkFee.amount)

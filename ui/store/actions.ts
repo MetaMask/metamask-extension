@@ -5459,6 +5459,7 @@ const createSignedTransactions = async (
   return signedTransactions;
 };
 
+// TODO move bridge to this
 export function signAndSendSmartTransaction({
   unsignedTransaction,
   smartTransactionFees,

@@ -230,7 +230,7 @@ export const MultichainBridgeQuoteCard = () => {
                           price_impact: Number(
                             activeQuote.quote?.priceData?.priceImpact ?? '0',
                           ),
-                          gas_included: false,
+                          gas_included: activeQuote.quote?.isGasIncluded,
                         },
                       ),
                     );
