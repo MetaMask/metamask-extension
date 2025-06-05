@@ -264,6 +264,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Display truncated long token name and price unavailable when no conversion rate is available ([#32996](https://github.com/MetaMask/metamask-extension/pull/32996))
 - Remove duplicated ETH Accounts in the SRP Picker ([#33009](https://github.com/MetaMask/metamask-extension/pull/33009))
 
+
 ## [12.17.3]
 ### Changed
 - Update supported browser versions ([#32520](https://github.com/MetaMask/metamask-extension/pull/32520))
