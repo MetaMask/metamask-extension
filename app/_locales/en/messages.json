@@ -3879,7 +3879,7 @@
     "description": "$1 is the type of login used Google, Apple, etc."
   },
   "onboardingCreateWallet": {
-    "message": "Create new wallet"
+    "message": "Create a new wallet"
   },
   "onboardingImportWallet": {
     "message": "I have an existing wallet"
@@ -4894,7 +4894,7 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
-  "securityChangePasswordChange": {
+  "securityChangePassword": {
     "message": "Change password"
   },
   "securityChangePasswordDescription": {
@@ -7068,6 +7068,9 @@
   },
   "yourWalletIsReady": {
     "message": "Your wallet is ready!"
+  },
+  "yourWalletIsReadyFromReminder": {
+    "message": "Keep your Secret Recovery Phrase safe!"
   },
   "yourWalletIsReadyRemind": {
     "message": "We’ll remind you later"
