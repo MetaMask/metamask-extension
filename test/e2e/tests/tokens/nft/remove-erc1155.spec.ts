@@ -45,7 +45,6 @@ describe('Remove ERC1155 NFT', function () {
         // Open the NFT details page and click to remove NFT
         await new Homepage(driver).goToNftTab();
         const nftListPage = new NftListPage(driver);
-        await nftListPage.filterNftsByNetworks('Popular networks');
         await nftListPage.clickNFTIconOnActivityList();
 
         const nftDetailsPage = new NFTDetailsPage(driver);
