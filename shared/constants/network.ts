@@ -188,6 +188,7 @@ export const CHAIN_IDS = {
   MATCHAIN: '0x2ba',
   FLOW: '0x2eb',
   MONAD_TESTNET: '0x279f',
+  SHIDO: '0x2330',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -261,6 +262,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   SHAPE_SEPOLIA: '0x2b03',
   SHAPE: '0x168',
   XRPLEVM_TESTNET: '0x161c28',
+  SHIDO: '0x2330',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -387,6 +389,7 @@ export const CURRENCY_SYMBOLS = {
   LENS: 'GHO',
   PLUME: 'PLUME',
   FLOW: 'FLOW',
+  SHIDO: 'SHIDO',
 } as const;
 
 // Non-EVM currency symbols
@@ -464,6 +467,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   SHAPE: 'ETH',
   SHAPE_SEPOLIA: 'ETH',
   XRPLEVM_TESTNET: 'XRP',
+  SHIDO: 'SHIDO',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -574,6 +578,7 @@ export const PLUME_NATIVE_TOKEN_IMAGE_URL = './images/plume-native.svg';
 export const MATCHAIN_IMAGE_URL = './images/matchain.svg';
 export const FLOW_IMAGE_URL = './images/flow.svg';
 export const MONAD_TESTNET_IMAGE_URL = './images/monad-testnet-logo.png';
+export const SHIDO_IMAGE_URL = './images/shido.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -712,6 +717,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.MATCHAIN]: MATCHAIN_DISPLAY_NAME,
   [CHAIN_IDS.FLOW]: FLOW_DISPLAY_NAME,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_DISPLAY_NAME,
+  [CHAIN_IDS.SHIDO]: SHIDO_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -850,6 +856,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.FLOW]: CURRENCY_SYMBOLS.FLOW,
   [CHAIN_IDS.MONAD_TESTNET]:
     TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MONAD_TESTNET],
+  [CHAIN_IDS.SHIDO]: CURRENCY_SYMBOLS.SHIDO,
 } as const;
 
 /**
@@ -998,6 +1005,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.MATCHAIN]: MATCHAIN_IMAGE_URL,
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_IMAGE_URL,
+  [CHAIN_IDS.SHIDO]: SHIDO_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1058,6 +1066,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.MATCHAIN]: BNB_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_IMAGE_URL,
+  [CHAIN_IDS.SHIDO]: SHIDO_IMAGE_URL,
 } as const;
 
 /**
