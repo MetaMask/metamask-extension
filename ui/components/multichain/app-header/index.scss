@@ -36,11 +36,8 @@
     }
 
     border-bottom: 1px solid #858b9a33;
-
-
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
 
   &__address-copy-button {

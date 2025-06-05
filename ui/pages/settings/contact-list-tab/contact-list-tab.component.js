@@ -28,7 +28,6 @@ export default class ContactListTab extends Component {
   };
 
   static propTypes = {
-    addressBook: PropTypes.array,
     completeAddressBook: PropTypes.array,
     internalAccounts: PropTypes.array,
     history: PropTypes.object,
