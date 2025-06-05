@@ -19,10 +19,11 @@ jobs:
         shard: [1, 2, 3, 4, 5, 6]
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@alt-enable
+        uses: MetaMask/action-checkout-and-setup@t2
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: 'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension/yarn-4.9.1/yarn.js#sha224.4285002185abb91fe2b781f27fd1e078086c37a7b095f6ea4ee25971'
 
       - name: test:unit:coverage
         run: yarn test:unit:coverage --shard=${{ matrix.shard }}/${{ strategy.job-total }}
@@ -40,10 +41,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@alt-enable
+        uses: MetaMask/action-checkout-and-setup@t2
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: 'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension/yarn-4.9.1/yarn.js#sha224.4285002185abb91fe2b781f27fd1e078086c37a7b095f6ea4ee25971'
 
       - name: test:unit:webpack:coverage
         run: yarn test:unit:webpack:coverage
@@ -61,10 +63,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@alt-enable
+        uses: MetaMask/action-checkout-and-setup@t2
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: 'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension/yarn-4.9.1/yarn.js#sha224.4285002185abb91fe2b781f27fd1e078086c37a7b095f6ea4ee25971'
 
       - name: test:integration:coverage
         run: yarn test:integration:coverage
@@ -89,10 +92,11 @@ jobs:
       stored-coverage: ${{ steps.get-stored-coverage.outputs.STORED_COVERAGE }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@alt-enable
+        uses: MetaMask/action-checkout-and-setup@t2
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: 'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension/yarn-4.9.1/yarn.js#sha224.4285002185abb91fe2b781f27fd1e078086c37a7b095f6ea4ee25971'
 
       - name: Download artifacts
         uses: actions/download-artifact@v4

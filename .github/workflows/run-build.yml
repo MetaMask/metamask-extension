@@ -57,10 +57,11 @@ jobs:
       ENABLE_MV3: ${{ inputs.enable-mv3 }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@alt-enable
+        uses: MetaMask/action-checkout-and-setup@t2
         with:
           is-high-risk-environment: true
           skip-allow-scripts: true
+          yarn-custom-url: 'https://diuv6g5fj9pvx.cloudfront.net/metamask-extension/yarn-4.9.1/yarn.js#sha224.4285002185abb91fe2b781f27fd1e078086c37a7b095f6ea4ee25971'
 
       - name: Run build
         run: ${{ inputs.build-command }}
