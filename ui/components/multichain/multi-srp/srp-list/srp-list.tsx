@@ -68,6 +68,21 @@ export const SrpList = ({
       : t('SrpListShowSingleAccount', [numberOfAccounts]);
   };
 
+  const handleShowHideClick = (event: React.MouseEvent, index: number) => {
+    event.stopPropagation();
+    trackEvent({
+      category: MetaMetricsEventCategory.Accounts,
+      event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
+      properties: {
+        button_type: 'details',
+      },
+    });
+    const showHideStates = hdKeyringsWithSnapAccounts.map((_, i) =>
+      i === index ? !showAccounts[i] : showAccounts[i],
+    );
+    setShowAccounts(showHideStates);
+  };
+
   return (
     <Box
       className="srp-list__container"
@@ -108,22 +123,9 @@ export const SrpList = ({
                   color={TextColor.primaryDefault}
                   className="srp-list__show-accounts"
                   data-testid={`srp-list-show-accounts-${index}`}
-                  onClick={(event: React.MouseEvent) => {
-                    event.stopPropagation();
-                    trackEvent({
-                      category: MetaMetricsEventCategory.Accounts,
-                      event:
-                        MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
-                      properties: {
-                        button_type: 'details',
-                      },
-                    });
-                    setShowAccounts((prevState) =>
-                      prevState.map((value, i) =>
-                        i === index ? !value : value,
-                      ),
-                    );
-                  }}
+                  onClick={(event: React.MouseEvent) =>
+                    handleShowHideClick(event, index)
+                  }
                 >
                   {showHideText(index, keyring.accounts.length)}
                 </Text>

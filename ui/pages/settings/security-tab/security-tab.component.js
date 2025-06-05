@@ -275,7 +275,7 @@ export default class SecurityTab extends PureComponent {
               history.push(SECURITY_PASSWORD_CHANGE_ROUTE);
             }}
           >
-            {t('securityChangePasswordChange')}
+            {t('securityChangePassword')}
           </Button>
         </div>
       </>
