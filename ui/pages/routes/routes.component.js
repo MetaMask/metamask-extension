@@ -87,7 +87,6 @@ import {
 import { MultichainAccountListMenu } from '../../components/multichain-accounts/multichain-account-list-menu';
 import {
   getConnectingLabel,
-  hideAppHeader,
   isConfirmTransactionRoute,
   setTheme,
   showAppHeader,
