@@ -89,7 +89,7 @@ import {
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
-import { WriteManager } from './lib/write-manager';
+import { getRequestSafeReload } from './lib/safe-reload';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
@@ -601,16 +601,8 @@ async function initialize(backup) {
 
   const preinstalledSnaps = await loadPreinstalledSnaps();
 
-  const writeManager = new WriteManager({
-    write: async (...params) => {
-      try {
-        await persistenceManager.set(...params);
-      } catch (error) {
-        log.error('MetaMask - Persistence failed', error);
-      }
-    },
-    frequency: 1000,
-  });
+  const { update, requestSafeReload } =
+    getRequestSafeReload(persistenceManager);
 
   setupController(
     initState,
@@ -620,8 +612,10 @@ async function initialize(backup) {
     initData.meta,
     offscreenPromise,
     preinstalledSnaps,
-    writeManager,
+    requestSafeReload,
   );
+
+  controller.store.on('update', update);
 
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);
@@ -950,7 +944,7 @@ function trackAppOpened(environment) {
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
- * @param {WriteManager} writeManager - A WriteManager instance to handle state persistence.
+ * @param {() => Promise<void>)} requestSafeReload - A function that requests a safe reload of the extension.
  */
 export function setupController(
   initState,
@@ -960,7 +954,7 @@ export function setupController(
   stateMetadata,
   offscreenPromise,
   preinstalledSnaps,
-  writeManager,
+  requestSafeReload,
 ) {
   //
   // MetaMask Controller
@@ -989,7 +983,7 @@ export function setupController(
     featureFlags: {},
     offscreenPromise,
     preinstalledSnaps,
-    requestSafeReload: writeManager.safeReload.bind(writeManager),
+    requestSafeReload,
   });
 
   setupEnsIpfsResolver({
@@ -1001,10 +995,6 @@ export function setupController(
     getUseAddressBarEnsResolution: () =>
       controller.preferencesController.state.useAddressBarEnsResolution,
     provider: controller.provider,
-  });
-
-  controller.store.on('update', (state) => {
-    writeManager.write(state);
   });
 
   setupSentryGetStateGlobal(controller);
