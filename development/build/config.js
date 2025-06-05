@@ -26,8 +26,8 @@ const VARIABLES_REQUIRED_IN_PRODUCTION = {
   flask: ['INFURA_FLASK_PROJECT_ID', 'SEGMENT_FLASK_WRITE_KEY', 'SENTRY_DSN'],
 };
 
-/** @type {readonly string[] | null} */
-let cachedActiveFeatures = null;
+/** @type {readonly string[] | undefined} */
+let cachedActiveFeatures;
 
 /**
  * Set the active features for the current build. Should be called once per build, after
@@ -42,7 +42,7 @@ let cachedActiveFeatures = null;
  * @returns {string[]} The active features for the current build.
  */
 function setActiveFeatures(buildType, additionalFeatures) {
-  if (cachedActiveFeatures !== null) {
+  if (cachedActiveFeatures !== undefined) {
     throw new Error('Active features have already been set');
   }
 
@@ -74,7 +74,7 @@ function setActiveFeatures(buildType, additionalFeatures) {
  * @throws {Error} If active features have not been set by {@link setActiveFeatures}.
  */
 function getActiveFeatures() {
-  if (cachedActiveFeatures === null) {
+  if (cachedActiveFeatures === undefined) {
     throw new Error('Active features are not set');
   }
   return [...cachedActiveFeatures];
