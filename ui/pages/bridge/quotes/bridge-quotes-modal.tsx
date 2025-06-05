@@ -113,7 +113,7 @@ export const BridgeQuotesModal = ({
                         price_impact: Number(
                           recommendedQuote.quote?.priceData?.priceImpact ?? '0',
                         ),
-                        gas_included: false,
+                        gas_included: recommendedQuote.quote?.isGasIncluded,
                         token_symbol_source:
                           fromToken?.symbol ??
                           getNativeAssetForChainId(fromChain.chainId).symbol,
@@ -225,7 +225,7 @@ export const BridgeQuotesModal = ({
                                 }
                               )?.priceData?.priceImpact ?? '0',
                             ),
-                            gas_included: false,
+                            gas_included: quote.quote.isGasIncluded,
                           },
                         ),
                       );

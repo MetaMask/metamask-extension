@@ -1036,6 +1036,7 @@ export const signAndSendSwapsSmartTransaction = ({
         };
       }
       let fees;
+      // TODO submiting gas-included txs
       if (usedQuote.isGasIncludedTrade) {
         fees = getSmartTransactionFees(state);
       } else {

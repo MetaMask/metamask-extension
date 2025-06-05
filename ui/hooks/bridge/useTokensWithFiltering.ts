@@ -102,7 +102,7 @@ export const useTokensWithFiltering = (
             ...requestOptions,
             fetchOptions: { method: 'GET', headers },
             cacheOptions: {
-              cacheRefreshTime: 10 * MINUTE,
+              cacheRefreshTime: 5 * MINUTE,
             },
             functionName: 'fetchBridgeTokens',
           });

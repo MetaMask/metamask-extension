@@ -4979,9 +4979,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^32.0.1":
-  version: 32.0.1
-  resolution: "@metamask/bridge-controller@npm:32.0.1"
+"@metamask/bridge-controller@file:../core-1/packages/bridge-controller::locator=metamask-crx%40workspace%3A.":
+  version: 32.1.1
+  resolution: "@metamask/bridge-controller@file:../core-1/packages/bridge-controller#../core-1/packages/bridge-controller::hash=28af2f&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5006,13 +5006,13 @@ __metadata:
     "@metamask/remote-feature-flag-controller": ^1.6.0
     "@metamask/snaps-controllers": ^12.0.0
     "@metamask/transaction-controller": ^57.0.0
-  checksum: 10/7a1be8202d8f956e5eb55a056de4e6e62576a1ca13714f5938530209066f76b71b7bdb38587ff3925cff4bbe7bfe3dba9e0d2d297bad0398d8866a764f17b3cb
+  checksum: 10/aa39129370a7135ddc2ecccae6da2a76422efb31f630c4317965c3164f95ee22832a636f24b87c61b50b0db210515398632010c7a8416dfa8f397a83d76055a1
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@npm:29.0.0":
-  version: 29.0.0
-  resolution: "@metamask/bridge-status-controller@npm:29.0.0"
+"@metamask/bridge-status-controller@file:../core-1/packages/bridge-status-controller::locator=metamask-crx%40workspace%3A.":
+  version: 29.1.0
+  resolution: "@metamask/bridge-status-controller@file:../core-1/packages/bridge-status-controller#../core-1/packages/bridge-status-controller::hash=88979c&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/controller-utils": "npm:^11.9.0"
@@ -5031,7 +5031,7 @@ __metadata:
     "@metamask/network-controller": ^23.0.0
     "@metamask/snaps-controllers": ^12.0.0
     "@metamask/transaction-controller": ^57.0.0
-  checksum: 10/8ed93f1fb2847d9995b26b3918e4bbfd976b482f8c96b3ec10cf81ba2b5617079be8ec28479e3ce277af60a3b46dcd97fc070d268d7b44ad88c35a081b2878ec
+  checksum: 10/68f352ae8fd234a8ac1d3b7594d206bc1507c2f152a376ca81f343f8fac0517cac1e1a6e4e0435a6e20b3ecf82e8f7f207754eb92494f9e7b5f9436bf19222ce
   languageName: node
   linkType: hard
 
@@ -29756,8 +29756,8 @@ __metadata:
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^0.14.0"
-    "@metamask/bridge-controller": "npm:^32.0.1"
-    "@metamask/bridge-status-controller": "npm:29.0.0"
+    "@metamask/bridge-controller": ../core-1/packages/bridge-controller
+    "@metamask/bridge-status-controller": ../core-1/packages/bridge-status-controller
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^0.6.0"

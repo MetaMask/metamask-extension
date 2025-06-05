@@ -121,7 +121,9 @@ export const BridgeQuoteCard = () => {
                           price_impact: Number(
                             activeQuote.quote?.priceData?.priceImpact ?? '0',
                           ),
-                          gas_included: false,
+                          gas_included: Boolean(
+                            activeQuote.quote.isGasIncluded,
+                          ),
                         },
                       ),
                     );

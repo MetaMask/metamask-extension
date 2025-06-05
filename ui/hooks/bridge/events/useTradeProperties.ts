@@ -14,7 +14,7 @@ export const useTradeProperties = () => {
     : 0;
 
   return {
-    gas_included: false, // TODO check if trade has gas included
+    gas_included: activeQuote?.isGasIncluded,
     quoted_time_minutes,
     provider: formatProviderLabel(activeQuote?.quote),
     usd_amount_source,
