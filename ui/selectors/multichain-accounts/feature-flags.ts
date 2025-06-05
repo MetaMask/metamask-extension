@@ -19,7 +19,7 @@ import {
 const MultichainAccountsFeatureFlag = object({
   enabled: boolean(),
   featureVersion: nullable(string()),
-  minimumVersion: nullable(string()),
+  minimumClientVersion: nullable(string()),
 });
 
 /**
@@ -47,15 +47,15 @@ export const isMultichainAccountsFeatureEnabled = (
   const {
     enabled,
     featureVersion: currentFeatureVersion,
-    minimumVersion,
+    minimumClientVersion,
   } = enableMultichainAccounts;
 
   return (
     enabled &&
     currentFeatureVersion &&
-    minimumVersion &&
+    minimumClientVersion &&
     currentFeatureVersion === featureVersion &&
-    semver.gte(minimumVersion, APP_VERSION)
+    semver.gte(APP_VERSION, minimumClientVersion)
   );
 };
 
@@ -78,7 +78,7 @@ export const getMultichainAccountsRemoteFeatureFlags = (
     return {
       enabled: false,
       featureVersion: null,
-      minimumVersion: null,
+      minimumClientVersion: null,
     };
   }
 
@@ -95,6 +95,7 @@ export const getIsMultichainAccountsState1Enabled = (
   state: RemoteFeatureFlagsState,
 ) => {
   const flags = getMultichainAccountsRemoteFeatureFlags(state);
+
   return (
     isMultichainAccountsFeatureEnabled(flags, FEATURE_VERSION_2) ||
     isMultichainAccountsFeatureEnabled(flags, FEATURE_VERSION_1)
