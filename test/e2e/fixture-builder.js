@@ -1495,6 +1495,141 @@ class FixtureBuilder {
     return this.withNameController({ names: {} });
   }
 
+  withLedgerAccount() {
+    return this.withAccountTracker({
+      accounts: {
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+          address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          balance: '0x15af1d78b58c40000',
+        },
+        '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
+          address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+          balance: '0x100000000000000000000',
+        },
+      },
+      currentBlockGasLimit: '0x1c9c380',
+      accountsByChainId: {
+        '0x539': {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            balance: '0x15af1d78b58c40000',
+          },
+          '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
+            address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+            balance: '0x100000000000000000000',
+          },
+        },
+      },
+      currentBlockGasLimitByChainId: {
+        '0x539': '0x1c9c380',
+      },
+    })
+      .withAccountsController({
+        internalAccounts: {
+          accounts: {
+            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+              address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+              options: {},
+              methods: [
+                'personal_sign',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Account 1',
+                importTime: 1724486724986,
+                lastSelected: 1665507600000,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+            },
+            '221ecb67-0d29-4c04-83b2-dff07c263634': {
+              id: '221ecb67-0d29-4c04-83b2-dff07c263634',
+              address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+              options: {},
+              methods: [
+                'personal_sign',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+              scopes: ['eip155:0'],
+              metadata: {
+                name: 'Ledger 1',
+                importTime: 1724486729079,
+                keyring: {
+                  type: 'Ledger Hardware',
+                },
+                lastSelected: 1724486729083,
+              },
+            },
+          },
+          selectedAccount: '221ecb67-0d29-4c04-83b2-dff07c263634',
+        },
+      })
+      .withKeyringController({
+        vault:
+          '{"data":"4wxyVFahNMysThalp/a2pepWZ6bAOVe1Wcj+4mWDtcG0DTk+XjQ806vjN/LNT/QDgPBdCBPcKnRzR8TWka6pQJPcJVupUMNZPs/NhLWUQPmZjV7ssVJQ1L9v/5dq/7NfqDpD3DHDSEoYjOkxnSrUeE1nnp5kw0noS30gOhKGqCuuvpriAg3Pf7I4DGp5nqq533InbXqYNAoYM2uZNfOz1UoFhtEnZuSiTSi+9Kb8tByLccOk2qkT5QCQ3ZDTCOi/WWD4r8TH32uioPKT/o3Xxx+6gGT27LZccvOuDtt7AFDQUyELTMAkZssrBDKHH+r1mjN6cRxGE0yE2ClIRlbmsSHIB8rqmEC8XBJ8CT87ABuJAlPvIbH3u0SVeLCngznYNB7xONnXcJ5O7sNYE0UL6LHPQ8cuICq2xW2j3J64N1ABJwDL6UN6eC8GAAyQCCx+IWVMIfQGiEGZwJowUTiKF+G2HXdQ8nU9t4v6Ij89mhfOaVsmprC/ZwvSj4PoIExNizHOPPIgFdiYFgAR3ZyaKZ9V+FGKKKQSgyHtsPcvdyaSA5zoUR3Ao13Mwrq0p7HovTE6CwPgR0PcJ2PRn3OkihAgTeXF85u17qi1h140t5y9OjKFlOyBTykCvPXB97FVfpCfDYK2LX760HdDg6o0NCJHcp01lgFU9UNozpPu6TBtIRpsorZEA80OULqMhJAKehiwh3rYgm+l2iy6seRWDiRirmdfUzVYl9+hglvCCWr/KRx5uZ2Iu9YOXq/rv8bd4jQuNsBT1YetLcXqFo/f+OMjB3Mg1OD9wGQ9F5QKSOlC71zV9IBkfRGuHk2tZ01dL3NWh1uBqSD4s4Pi2PFwzgoLf9f2i7yHbfaZrnqsn3V3jfxgXfnizuqbzdc34z1WK+rKc0JeMAfP/C0kDIGyYGKNt2DN6f44bkSOQnP4YUhzfotPtpMiDh7zYL7HUQTq3TDcS7E67jnQOAbsr91Sg+GHXRzqpIDzx+QZrEMvMXTnWu/4/O7M9ov0bADIHqkALGzVcMz/8X8Qvtz+bFuzu5IUWa74KFRg3A4K1WsTMVsGtRVkDL6LiujoBGVvRuNpF7bIjC6tB6vGJzL1oJYQNaSuM6a1y0eCg5IiaormMJgFFWIMuGy6yDNhYQjbDFeJOq1BXAKNiRY/ZFQjoeE38A4MK2SYAO8AM915s0SOUoutc6jXG7zS2Bn1sBrmtk7UUjeYk8all2TONVxgIcRq90a7fjziNHhGiTPcwB+Q2f12Pp6SogEAaMoXX+KmGwx6XA7KpcOMLZ0U42aI8d1PuxLURxp8cg9gTOj1L+D6XbpXURxBVaEJuVAh9UeUAFMIKKH26WDxbzUGVomk+4Ado3FHTvQi7MxtNpuCTmTeM+w8r0J0JqWnEiIe7GHFbx0SNWXzUbCsm0heUj8JuovFogxaNbw4MG9HpfpY3gplvg9I1J0LeLYbRQILj1Qzzw91LCAPdv/ExV0nCQ84Cf+05TTfdavhZ9x8sgJA6qAWXPCFEiuRK8d+9R6MFtNBGLtvAbUOWLlM0RcT/7CZYSlwiZHp13umRlUNEjkmhWpsb/vLGFZ4UbktiF8GPGbBw+tTP7lEeG25d9pn63yA9p86iVgZEzfNImaRspkRR8o6A1iXgPLIj3rCw1O7UewpW+iAWlkZOh5nCX2CyjIQ67Fwjt9y52BxnZmi4DZKCeM7KCEz6GC7ftgCZpnoJPavGXAuIUhJsj9mfDnicgMYs74WhQBoWEGdnjDjCouRUVM169x2eVBAnXgS5qfe1d2j4XuLRUtq048uXrV9UCICqpzIz0m/IuyLKXsxGlzvuAhhqgHZRIe2L2Nlozh2kxr2XPHm5gvZ7gZ3+R24p9vPz1w4KY//hWfAkw4VQonZ4l2lTyOd9wmdFa/O9hYmdQ3N70zvgR3OKOzpyT+e","iv":"izbyl01XA8lb2VMWvkfdbw==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"nk4xdpmMR+1s5BYe4Vnk++XAQwrISI2bCtbMg7V1wUA="}',
+      })
+      .withNameController({
+        names: {
+          ethereumAddress: {
+            '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+              '*': {
+                name: 'Account 1',
+                sourceId: null,
+                proposedNames: {},
+                origin: 'account-identity',
+              },
+            },
+            '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
+              '*': {
+                proposedNames: {},
+                name: 'Ledger 1',
+                sourceId: null,
+                origin: 'account-identity',
+              },
+            },
+          },
+        },
+      })
+      .withPreferencesController({
+        identities: {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            lastSelected: 1665507600000,
+            name: 'Account 1',
+          },
+          '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
+            address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+            lastSelected: 1665507800000,
+            name: 'Ledger 1',
+          },
+        },
+        lostIdentities: {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            name: 'Account 1',
+            lastSelected: 1665507600000,
+          },
+          '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
+            address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+            name: 'Ledger 1',
+            lastSelected: 1665507800000,
+          },
+        },
+        selectedAddress: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+      });
+  }
+
   withTrezorAccount() {
     return this.withAccountTracker({
       accounts: {
