@@ -156,6 +156,8 @@ export class PersistenceManager {
     this.#metadata = metadata;
   }
 
+  #pendingState: void | AbortController = undefined;
+
   /**
    * Sets the state in the local store.
    *
@@ -177,11 +179,22 @@ export class PersistenceManager {
       throw new Error('MetaMask - metadata must be set before calling "set"');
     }
 
-    // TODO: look into abort signals to cancel when we pile up muliple write requests (beyond 2)
+    const abortController = new AbortController();
+
+    // If we already have a write _pending_, abort it so the more up-to-date
+    // write can take precedence. This is to prevent piling up multiple writes
+    // in the lock queue, which is pointless because we only care about the most
+    // recent write. Because we also `debounce` writes before the come in, this
+    // should rarely happen; however, if the state is very large and takes
+    // more than the debounce `wait` time to write, it can happen.
+    this.#pendingState?.abort();
+    this.#pendingState = abortController;
+
     await navigator.locks.request(
       STATE_LOCK,
-      { mode: 'exclusive' },
+      { mode: 'exclusive', signal: abortController.signal },
       async () => {
+        this.#pendingState = undefined;
         try {
           // atomically set all the keys
           await this.#localStore.set({
