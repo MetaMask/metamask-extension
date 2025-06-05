@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill';
-import { OperationSafener } from './write-manager';
+import { OperationSafener } from './operation-safener';
 import { PersistenceManager } from './stores/persistence-manager';
 
 export function getRequestSafeReload(persistenceManager: PersistenceManager) {

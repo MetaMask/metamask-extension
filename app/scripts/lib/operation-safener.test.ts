@@ -1,5 +1,5 @@
 import 'navigator.locks';
-import { OperationSafener } from './write-manager';
+import { OperationSafener } from './operation-safener';
 
 const mockLocksRequest = jest.fn().mockImplementation((_, __, callback) => {
   try {
