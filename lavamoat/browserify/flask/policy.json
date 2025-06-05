@@ -1531,7 +1531,7 @@
         "eth-method-registry>@metamask/ethjs-contract>@metamask/ethjs-util": true,
         "eth-method-registry>@metamask/ethjs-contract>ethjs-abi": true,
         "eth-ens-namehash>js-sha3": true,
-        "promise-to-callback": true
+        "eth-method-registry>@metamask/ethjs-query>promise-to-callback": true
       }
     },
     "eth-method-registry>@metamask/ethjs-contract>@metamask/ethjs-filter": {
@@ -1555,12 +1555,12 @@
       "packages": {
         "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format": true,
         "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-rpc": true,
-        "promise-to-callback": true
+        "eth-method-registry>@metamask/ethjs-query>promise-to-callback": true
       }
     },
     "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-rpc": {
       "packages": {
-        "promise-to-callback": true
+        "eth-method-registry>@metamask/ethjs-query>promise-to-callback": true
       }
     },
     "@metamask/controller-utils>@metamask/ethjs-unit": {
@@ -4737,10 +4737,10 @@
         "process": true
       }
     },
-    "promise-to-callback": {
+    "eth-method-registry>@metamask/ethjs-query>promise-to-callback": {
       "packages": {
-        "promise-to-callback>is-fn": true,
-        "promise-to-callback>set-immediate-shim": true
+        "eth-method-registry>@metamask/ethjs-query>promise-to-callback>is-fn": true,
+        "eth-method-registry>@metamask/ethjs-query>promise-to-callback>set-immediate-shim": true
       }
     },
     "prop-types": {
@@ -5407,7 +5407,7 @@
         "string.prototype.matchall>es-abstract>has-property-descriptors": true
       }
     },
-    "promise-to-callback>set-immediate-shim": {
+    "eth-method-registry>@metamask/ethjs-query>promise-to-callback>set-immediate-shim": {
       "globals": {
         "setTimeout.apply": true
       },
