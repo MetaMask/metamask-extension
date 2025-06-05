@@ -26,8 +26,8 @@ const VARIABLES_REQUIRED_IN_PRODUCTION = {
   flask: ['INFURA_FLASK_PROJECT_ID', 'SEGMENT_FLASK_WRITE_KEY', 'SENTRY_DSN'],
 };
 
-/** @type {string[] | null} */
-let _cachedActiveFeatures = null;
+/** @type {readonly string[] | null} */
+let cachedActiveFeatures = null;
 
 /**
  * Set the active features for the current build. Should be called once per build, after
@@ -42,7 +42,7 @@ let _cachedActiveFeatures = null;
  * @returns {string[]} The active features for the current build.
  */
 function setActiveFeatures(buildType, additionalFeatures) {
-  if (_cachedActiveFeatures !== null) {
+  if (cachedActiveFeatures !== null) {
     throw new Error('Active features have already been set');
   }
 
@@ -60,11 +60,10 @@ function setActiveFeatures(buildType, additionalFeatures) {
     );
   }
 
-  _cachedActiveFeatures = union(
-    additionalFeatures,
-    config.buildTypes[buildType].features ?? [],
+  cachedActiveFeatures = Object.freeze(
+    union(additionalFeatures, config.buildTypes[buildType].features ?? []),
   );
-  return _cachedActiveFeatures;
+  return [...cachedActiveFeatures];
 }
 
 /**
@@ -75,10 +74,10 @@ function setActiveFeatures(buildType, additionalFeatures) {
  * @throws {Error} If active features have not been set by {@link setActiveFeatures}.
  */
 function getActiveFeatures() {
-  if (_cachedActiveFeatures === null) {
+  if (cachedActiveFeatures === null) {
     throw new Error('Active features are not set');
   }
-  return _cachedActiveFeatures;
+  return [...cachedActiveFeatures];
 }
 
 async function fromIniFile(filepath) {
