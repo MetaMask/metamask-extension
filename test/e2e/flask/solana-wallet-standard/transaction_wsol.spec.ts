@@ -15,8 +15,8 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
           title: this.test?.fullTitle(),
-          mockCalls: true,
-          simulateTransaction: false,
+          mockGetTransactionSuccess: true,
+          walletConnect: true,
         },
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
@@ -31,7 +31,6 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           await sendWSolTest.setAmount('0.0001');
           await sendWSolTest.checkMultipleTransaction(true);
           await sendWSolTest.signTransaction();
-
           // Confirm the first signature
           await driver.delay(largeDelayMs);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

@@ -29,6 +29,19 @@ class NonEvmHomepage extends HomePage {
 
   protected readonly bridgeButton = '[data-testid="coin-overview-bridge"]';
 
+  async clickOnBridgeButton(): Promise<void> {
+    await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
+    await this.driver.clickElement(this.bridgeButton);
+  }
+
+  /**
+   * Clicks the swap button on the non-EVM account homepage.
+   */
+  async clickOnSwapButton(): Promise<void> {
+    await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
+    await this.driver.clickElement(this.swapButton);
+  }
+
   /**
    * Clicks the send button on the non-EVM account homepage.
    */
