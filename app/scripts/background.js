@@ -969,10 +969,6 @@ export function setupController(
     infuraProjectId: process.env.INFURA_PROJECT_ID,
     // User confirmation callbacks:
     showUserConfirmation: triggerUi,
-    // hook to trigger a "safe" reload of the extension
-    triggerSafeReload: () => {
-      writeManager.safeReload();
-    },
     // initial state
     initState,
     // initial locale code
