@@ -300,20 +300,6 @@ exports[`ConnectPage should render correctly 1`] = `
                                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                                     >
                                       <img
-                                        alt="Polygon Mainnet logo"
-                                        class="mm-avatar-network__network-image"
-                                        src="./images/pol-token.svg"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div
-                                    class="mm-box mm-box--rounded-full"
-                                    style="margin-left: -8px;"
-                                  >
-                                    <div
-                                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-                                    >
-                                      <img
                                         alt="Binance Smart Chain logo"
                                         class="mm-avatar-network__network-image"
                                         src="./images/bnb.svg"
@@ -327,32 +313,13 @@ exports[`ConnectPage should render correctly 1`] = `
                                     <div
                                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                                     >
-                                      G
-                                    </div>
-                                  </div>
-                                  <div
-                                    class="mm-box mm-box--rounded-full"
-                                    style="margin-left: -8px;"
-                                  >
-                                    <div
-                                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-                                    >
                                       <img
-                                        alt="Custom Mainnet RPC logo"
+                                        alt="Polygon logo"
                                         class="mm-avatar-network__network-image"
-                                        src="./images/eth_logo.svg"
+                                        src="./images/pol-token.svg"
                                       />
                                     </div>
                                   </div>
-                                </div>
-                                <div
-                                  class="mm-box"
-                                >
-                                  <p
-                                    class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-                                  >
-                                    +1
-                                  </p>
                                 </div>
                               </div>
                             </div>
@@ -710,20 +677,6 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                                     >
                                       <img
-                                        alt="Polygon Mainnet logo"
-                                        class="mm-avatar-network__network-image"
-                                        src="./images/pol-token.svg"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div
-                                    class="mm-box mm-box--rounded-full"
-                                    style="margin-left: -8px;"
-                                  >
-                                    <div
-                                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-                                    >
-                                      <img
                                         alt="Binance Smart Chain logo"
                                         class="mm-avatar-network__network-image"
                                         src="./images/bnb.svg"
@@ -737,32 +690,13 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                                     <div
                                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                                     >
-                                      G
-                                    </div>
-                                  </div>
-                                  <div
-                                    class="mm-box mm-box--rounded-full"
-                                    style="margin-left: -8px;"
-                                  >
-                                    <div
-                                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-                                    >
                                       <img
-                                        alt="Custom Mainnet RPC logo"
+                                        alt="Polygon logo"
                                         class="mm-avatar-network__network-image"
-                                        src="./images/eth_logo.svg"
+                                        src="./images/pol-token.svg"
                                       />
                                     </div>
                                   </div>
-                                </div>
-                                <div
-                                  class="mm-box"
-                                >
-                                  <p
-                                    class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-                                  >
-                                    +1
-                                  </p>
                                 </div>
                               </div>
                             </div>

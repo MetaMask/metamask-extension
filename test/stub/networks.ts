@@ -96,7 +96,7 @@ export const mockMultichainNetworkState =
       networksWithTransactionActivity: {
         '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
           namespace: 'eip155',
-          activeChains: ['0x5'],
+          activeChains: ['1', '137'],
         },
       },
     };

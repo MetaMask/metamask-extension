@@ -124,6 +124,7 @@ export const TemplateStory = () => {
                         type: 'HD Key Tree',
                       },
                     },
+                    scopes: ['eip155:0'],
                     options: {},
                     methods: [
                       'personal_sign',

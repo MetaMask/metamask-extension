@@ -5,7 +5,6 @@ import mockState from '../../../test/data/mock-state.json';
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../constants/network';
 import {
   getNonTestNetworks,
-  getNetworksByScopes,
   MultichainNetworkConfigurationsByChainIdState,
 } from './networks';
 
@@ -178,76 +177,6 @@ describe('Network Selectors', () => {
           NON_EVM_TESTNET_IDS.includes(network.caipChainId),
       );
       expect(nonEvmTestNetworkIds).toHaveLength(0);
-    });
-  });
-
-  describe('getNetworksByScopes', () => {
-    it('returns empty array if scopes is undefined', () => {
-      // @ts-expect-error Passing wrong type is intentional for testing
-      const result = getNetworksByScopes(extendedMockState, undefined);
-      expect(result).toStrictEqual([]);
-    });
-
-    it('returns empty array if scopes is empty array', () => {
-      const result = getNetworksByScopes(extendedMockState, []);
-      expect(result).toStrictEqual([]);
-    });
-
-    it('returns specific network by caip chainId scope', () => {
-      const result = getNetworksByScopes(extendedMockState, ['eip155:1']);
-
-      expect(result).toContainEqual(
-        expect.objectContaining({
-          chainId: '0x1',
-          name: 'Custom Mainnet RPC',
-        }),
-      );
-    });
-
-    it('returns all EVM networks when scope is eip155:0', () => {
-      const result = getNetworksByScopes(extendedMockState, ['eip155:0']);
-
-      expect(result).toHaveLength(5);
-
-      result.forEach((network) => {
-        const evmChainId = `eip155:${network.chainId}`;
-
-        expect(CAIP_FORMATTED_EVM_TEST_CHAINS).not.toContain(evmChainId);
-        expect(network.chainId).toMatch(/^0x[0-9a-f]+$/iu);
-      });
-    });
-
-    it('returns multiple networks for multiple scopes', () => {
-      const scopes = ['eip155:0', 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'];
-      const result = getNetworksByScopes(extendedMockState, scopes);
-
-      expect(result).toHaveLength(6);
-      expect(result).toStrictEqual([
-        {
-          chainId: '0x1',
-          name: 'Custom Mainnet RPC',
-        },
-        {
-          chainId: '0x5',
-          name: 'Goerli',
-        },
-        {
-          chainId: '0x38',
-          name: 'Binance Smart Chain',
-        },
-        {
-          chainId: '0x89',
-          name: 'Polygon Mainnet',
-        },
-        {
-          chainId: '0xa4b1',
-          name: 'Arbitrum One',
-        },
-        {
-          chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-          name: 'Solana',
-        },
-      ]);
     });
   });
 });

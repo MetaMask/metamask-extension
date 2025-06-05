@@ -2,6 +2,8 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { merge } from 'lodash';
+import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
+import { KnownCaipNamespace } from '@metamask/utils';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -11,6 +13,7 @@ import {
   SEPOLIA_DISPLAY_NAME,
   CHAIN_IDS,
 } from '../../../../shared/constants/network';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
 import { AccountListItem, AccountListItemMenuTypes } from '.';
@@ -20,6 +23,22 @@ const mockAccount = {
     'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
   ],
   balance: '0x152387ad22c3f0',
+};
+
+const mockBitcoinAccount = {
+  ...mockAccount,
+  id: 'b5893c59-e376-4cc0-93ad-35ddaab574a1',
+  address: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
+  type: BtcAccountType.P2wpkh,
+  scopes: [MultichainNetworks.BITCOIN],
+};
+
+const mockSolanaAccount = {
+  ...mockAccount,
+  id: 'b7893c54-e376-4cc0-93ad-05dd1ab574a4',
+  address: 'B33FvNLyahfDqEZD7erAnr5bXZsw58nmEKiaiAoKmXEr',
+  type: SolAccountType.DataAccount,
+  scopes: [MultichainNetworks.SOLANA, MultichainNetworks.SOLANA_TESTNET],
 };
 
 const mockNonEvmAccount = {
@@ -82,6 +101,8 @@ const render = (props = {}, state = {}) => {
           ...mockState.metamask.internalAccounts.accounts,
           [mockAccount.id]: mockAccount,
           [mockNonEvmAccount.id]: mockNonEvmAccount,
+          [mockBitcoinAccount.id]: mockBitcoinAccount,
+          [mockSolanaAccount.id]: mockSolanaAccount,
         },
         selectedAccount: mockAccount.id,
       },
@@ -90,6 +111,18 @@ const render = (props = {}, state = {}) => {
           'bip122:000000000019d6689c085ae165831e93/slip44:0': {
             amount: '1.00000000',
             unit: 'BTC',
+          },
+        },
+        [mockBitcoinAccount.id]: {
+          'bip122:000000000019d6689c085ae165831e93/slip44:0': {
+            amount: '1.00000000',
+            unit: 'BTC',
+          },
+        },
+        [mockSolanaAccount.id]: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+            amount: '1.00000000',
+            unit: 'SOL',
           },
         },
       },
@@ -355,6 +388,175 @@ describe('AccountListItem', () => {
         );
         expect(firstCurrencyDisplay.lastChild.textContent).toContain('USD');
       });
+    });
+  });
+
+  describe('network activity icons', () => {
+    it('should render correctly for EVM account with network activity', () => {
+      const { container } = render(
+        {
+          account: mockAccount,
+        },
+        {
+          metamask: {
+            networksWithTransactionActivity: {
+              [mockAccount.address]: {
+                activeChains: [1, 137, 10],
+                namespace: KnownCaipNamespace.Eip155,
+              },
+            },
+          },
+        },
+      );
+      expect(container).toMatchSnapshot('evm-account-network-activity');
+    });
+
+    it('renders correct amount of network icons for accounts with transaction activity', () => {
+      const { container } = render(
+        {
+          account: mockAccount,
+        },
+        {
+          metamask: {
+            networksWithTransactionActivity: {
+              [mockAccount.address]: {
+                activeChains: [1, 137, 10],
+                namespace: KnownCaipNamespace.Eip155,
+              },
+            },
+          },
+        },
+      );
+
+      const avatarGroup = container.querySelector(
+        '[data-testid="avatar-group"]',
+      );
+      expect(avatarGroup).toBeInTheDocument();
+
+      const networkIcons = avatarGroup.querySelectorAll('.mm-avatar-network');
+      expect(networkIcons).toHaveLength(3);
+    });
+
+    it('should render correctly for Bitcoin account', () => {
+      const { container } = render(
+        {
+          account: mockBitcoinAccount,
+        },
+        {
+          metamask: {
+            networksWithTransactionActivity: {
+              [mockBitcoinAccount.address]: {
+                activeChains: [],
+                namespace: KnownCaipNamespace.Bip122,
+              },
+            },
+          },
+        },
+      );
+      expect(container).toMatchSnapshot('bitcoin-account-network-activity');
+    });
+
+    it('renders correct image for network avatar for Bitcoin account', () => {
+      const { container } = render(
+        {
+          account: mockBitcoinAccount,
+        },
+        {
+          metamask: {
+            networksWithTransactionActivity: {
+              [mockBitcoinAccount.address]: {
+                activeChains: [],
+                namespace: KnownCaipNamespace.Bip122,
+              },
+            },
+          },
+        },
+      );
+
+      const avatarNetworkAvatar = container.querySelector('.mm-avatar-network');
+      expect(avatarNetworkAvatar).toBeInTheDocument();
+
+      const tokenImage = container.querySelector(
+        '.mm-avatar-network__network-image',
+      );
+      expect(tokenImage).toHaveAttribute('src', './images/bitcoin-logo.svg');
+
+      jest.restoreAllMocks();
+    });
+
+    it('should render correctly for Solana account', () => {
+      const { container } = render(
+        {
+          account: mockSolanaAccount,
+        },
+        {
+          metamask: {
+            networksWithTransactionActivity: {
+              [mockSolanaAccount.address]: {
+                activeChains: [],
+                namespace: KnownCaipNamespace.Solana,
+              },
+            },
+          },
+        },
+      );
+      expect(container).toMatchSnapshot('solana-account-network-activity');
+    });
+
+    it('renders correct image for network avatar for Solana account', () => {
+      const { container } = render(
+        {
+          account: mockSolanaAccount,
+        },
+        {
+          metamask: {
+            networksWithTransactionActivity: {
+              [mockSolanaAccount.address]: {
+                activeChains: [],
+                namespace: KnownCaipNamespace.Solana,
+              },
+            },
+          },
+        },
+      );
+
+      const avatarNetworkAvatar = container.querySelector('.mm-avatar-network');
+      expect(avatarNetworkAvatar).toBeInTheDocument();
+
+      const tokenImage = container.querySelector(
+        '.mm-avatar-network__network-image',
+      );
+      expect(tokenImage).toHaveAttribute('src', './images/solana-logo.svg');
+
+      jest.restoreAllMocks();
+    });
+
+    it('does not render both network icons and token avatar simultaneously', () => {
+      const { container } = render(
+        {
+          account: mockSolanaAccount,
+        },
+        {
+          metamask: {
+            networksWithTransactionActivity: {
+              [mockSolanaAccount.address]: {
+                activeChains: [1, 137], // Adding some chains even though it's Solana
+                namespace: KnownCaipNamespace.Solana,
+              },
+            },
+          },
+        },
+      );
+
+      const avatarToken = container.querySelector(
+        '.multichain-account-list-item__avatar-currency',
+      );
+      const networkIcons = container.querySelector(
+        '[data-testid="avatar-group"]',
+      );
+
+      // Only one of these should be present, not both
+      expect(avatarToken && networkIcons).toBeFalsy();
     });
   });
 });
