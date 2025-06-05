@@ -128,6 +128,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Centralize bridge transaction status logic to properly display failed transactions instead of showing them as pending ([#33153](https://github.com/MetaMask/metamask-extension/pull/33153))
 - Support upgrade on accounts imported from private key with the Simple Key Pair keyring type ([#33170](https://github.com/MetaMask/metamask-extension/pull/33170))
 - Filters native token activity in Assets details page to show only relevant transactions ([#33453](https://github.com/MetaMask/metamask-extension/pull/33453))
+- Disable non EVM networks on locked screen ([#33481](https://github.com/MetaMask/metamask-extension/pull/33481))
 
 ## [12.18.3]
 ### Fixed
