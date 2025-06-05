@@ -2324,6 +2324,7 @@ export async function withSolanaAccountSnap(
     sendFailedTransaction,
     dappPaths,
     withProtocolSnap,
+    withCustomMocks,
   }: {
     title?: string;
     showNativeTokenAsMainBalance?: boolean;
@@ -2338,6 +2339,12 @@ export async function withSolanaAccountSnap(
     sendFailedTransaction?: boolean;
     dappPaths?: string[];
     withProtocolSnap?: boolean;
+    withCustomMocks?: (
+      mockServer: Mockttp,
+    ) =>
+      | Promise<MockedEndpoint[] | MockedEndpoint>
+      | MockedEndpoint[]
+      | MockedEndpoint;
   },
   test: (
     driver: Driver,
@@ -2446,6 +2453,17 @@ export async function withSolanaAccountSnap(
         }
         if (withProtocolSnap) {
           mockList.push(await mockProtocolSnap(mockServer));
+        }
+
+        if (withCustomMocks) {
+          const customMocksResult = await withCustomMocks(mockServer);
+          if (customMocksResult) {
+            if (Array.isArray(customMocksResult)) {
+              mockList.push(...customMocksResult.filter((m) => m));
+            } else {
+              mockList.push(customMocksResult);
+            }
+          }
         }
         return mockList;
       },

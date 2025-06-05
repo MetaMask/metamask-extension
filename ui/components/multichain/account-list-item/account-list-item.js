@@ -71,6 +71,7 @@ import { getAccountLabels } from '../../../helpers/utils/accounts';
 import { getMultichainAggregatedBalance } from '../../../selectors/assets';
 
 import { AccountNetworkIndicator } from '../account-network-indicator';
+import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../../../shared/constants/multichain/assets';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -142,7 +143,9 @@ const AccountListItem = ({
   const multichainBalances = useSelector(getMultichainBalances);
   const accountMultichainBalances = multichainBalances?.[account.id];
   const accountMultichainNativeBalance =
-    accountMultichainBalances?.[`${multichainChainId}/slip44:501`]?.amount;
+    accountMultichainBalances?.[
+      `${MULTICHAIN_NETWORK_TO_ASSET_TYPES[multichainChainId]}`
+    ]?.amount;
   // cross chain agg balance
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,

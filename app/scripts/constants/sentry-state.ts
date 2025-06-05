@@ -97,6 +97,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   BridgeController: {
     assetExchangeRates: false,
+    minimumBalanceForRentExemptionInLamports: false,
     quoteRequest: {
       walletAddress: false,
       srcTokenAddress: true,

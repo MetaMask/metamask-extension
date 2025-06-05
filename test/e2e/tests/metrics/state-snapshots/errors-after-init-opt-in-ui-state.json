@@ -341,6 +341,7 @@
     },
     "quotesInitialLoadTime": null,
     "quotes": {},
+    "minimumBalanceForRentExemptionInLamports": "string",
     "quotesLastFetched": null,
     "quotesLoadingStatus": null,
     "quoteFetchError": null,
