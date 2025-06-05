@@ -21,7 +21,6 @@ import {
 import {
   getDataCollectionForMarketing,
   getFirstTimeFlowType,
-  getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
 } from '../../../selectors';
 
 import {
@@ -30,7 +29,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+} from '../../../helpers/constants/routes';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -60,9 +62,7 @@ export default function OnboardingMetametrics() {
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   const trackEvent = useContext(MetaMetricsContext);
 
-  let nextRouteByBrowser = useSelector(
-    getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
-  );
+  let nextRouteByBrowser = ONBOARDING_COMPLETION_ROUTE;
   if (
     isFirefox &&
     firstTimeFlowType !== FirstTimeFlowType.restore &&

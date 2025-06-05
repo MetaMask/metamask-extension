@@ -76,6 +76,7 @@ const ChangePassword = () => {
 
   const onChangePassword = async () => {
     try {
+      setShowChangePasswordWarning(false);
       setStep(ChangePasswordSteps.ChangePasswordLoading);
       await dispatch(changePassword(newPassword, currentPassword));
 
@@ -85,13 +86,6 @@ const ChangePassword = () => {
       console.error(error);
       setStep(ChangePasswordSteps.VerifyCurrentPassword);
     }
-  };
-
-  const onSubmitChangePasswordForm = () => {
-    if (!newPassword) {
-      return;
-    }
-    setShowChangePasswordWarning(true);
   };
 
   return (
@@ -154,7 +148,7 @@ const ChangePassword = () => {
           height={BlockSize.Full}
           onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
-            onSubmitChangePasswordForm();
+            setShowChangePasswordWarning(true);
           }}
         >
           <Box>
@@ -166,7 +160,7 @@ const ChangePassword = () => {
           </Box>
           <Button
             type="submit"
-            disabled={!newPassword}
+            disabled={!currentPassword || !newPassword}
             data-testid="change-password-button"
             block
           >

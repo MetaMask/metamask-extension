@@ -4,7 +4,7 @@
 ; This variable is required
 INFURA_PROJECT_ID=00000000000
 
-; This variables are required for OAuth Login
+; This variables are required for OAuth Service
 AUTH_CONNECTION_ID=
 GROUPED_AUTH_CONNECTION_ID=
 GOOGLE_CLIENT_ID=

@@ -222,7 +222,7 @@ export default function OnboardingFlow() {
       <OnboardingAppHeader pageState={welcomePageState} />
       <RevealSRPModal
         setSecretRecoveryPhrase={setSecretRecoveryPhrase}
-        onClose={() => history.push(DEFAULT_ROUTE)}
+        onClose={() => history.goBack()}
         isOpen={showPasswordModalToAllowSRPReveal}
       />
       <Box

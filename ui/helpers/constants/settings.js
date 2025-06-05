@@ -201,8 +201,8 @@ const SETTINGS_CONSTANTS = [
   // securityAndPrivacy settingsRefs[2]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('securityChangePasswordChange'),
-    descriptionMessage: (t) => t('securityChangePasswordChange'),
+    sectionMessage: (t) => t('securityChangePassword'),
+    descriptionMessage: (t) => t('securityChangePassword'),
     route: SECURITY_PASSWORD_CHANGE_ROUTE,
     icon: 'fa fa-lock',
   },
