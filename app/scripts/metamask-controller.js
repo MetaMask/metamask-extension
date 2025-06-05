@@ -151,6 +151,7 @@ import {
   walletRevokeSession,
   walletInvokeMethod,
   MultichainApiNotifications,
+  walletCreateSession,
 } from '@metamask/multichain-api-middleware';
 
 import {
@@ -356,7 +357,6 @@ import createTracingMiddleware from './lib/createTracingMiddleware';
 import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddleware';
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
-import { walletCreateSession } from './lib/rpc-method-middleware/handlers/wallet-createSession';
 import {
   rejectAllApprovals,
   rejectOriginApprovals,
