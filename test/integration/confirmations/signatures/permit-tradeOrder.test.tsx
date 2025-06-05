@@ -101,7 +101,7 @@ describe('Permit Trade Order Tests', () => {
       'Request from',
       'metamask.github.io',
       'Interacting with',
-      '0xDef1C...25EfF',
+      '0xDef1...5EfF',
     ];
 
     expect(requestDetailsSection).toBeInTheDocument();

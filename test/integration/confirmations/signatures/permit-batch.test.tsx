@@ -105,7 +105,7 @@ describe('Permit Batch Signature Tests', () => {
       'Spending cap',
       'USDC',
       'Unlimited',
-      '0xb0B86...6EB48',
+      '0xb0B8...EB48',
       'Unlimited',
     ];
 
@@ -120,11 +120,11 @@ describe('Permit Batch Signature Tests', () => {
     );
     const requestDetails = [
       'Spender',
-      '0x3fC91...b7FAD',
+      '0x3fC9...7FAD',
       'Request from',
       'metamask.github.io',
       'Interacting with',
-      '0x00000...78BA3',
+      '0x0000...8BA3',
     ];
     expect(requestDetailsSection).toBeInTheDocument();
     verifyDetails(requestDetailsSection, requestDetails);
@@ -168,7 +168,7 @@ describe('Permit Batch Signature Tests', () => {
         element: messageData1,
         content: [
           'Token',
-          '0xb0B86...6EB48',
+          '0xb0B8...EB48',
           'Amount',
           '2,461,501,637,3...',
           'Expiration',
@@ -184,7 +184,7 @@ describe('Permit Batch Signature Tests', () => {
     });
 
     expect(messageDetailsSection).toHaveTextContent('Spender');
-    expect(messageDetailsSection).toHaveTextContent('0x3fC91...b7FAD');
+    expect(messageDetailsSection).toHaveTextContent('0x3fC9...7FAD');
     expect(messageDetailsSection).toHaveTextContent('SigDeadline');
     expect(messageDetailsSection).toHaveTextContent('06 July 2024, 20:22');
   });

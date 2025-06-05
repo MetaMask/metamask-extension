@@ -218,7 +218,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     );
     expect(simulationSection).toContainElement(spendingCapValue);
     expect(spendingCapValue).toHaveTextContent('3');
-    expect(simulationSection).toHaveTextContent('0x07614...3ad68');
+    expect(simulationSection).toHaveTextContent('0x0761...ad68');
   });
 
   it('displays approve details with correct data', async () => {
@@ -244,7 +244,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
 
     expect(approveDetails).toContainElement(approveDetailsSpender);
     expect(approveDetailsSpender).toHaveTextContent(tEn('spender') as string);
-    expect(approveDetailsSpender).toHaveTextContent('0x9bc5b...AfEF4');
+    expect(approveDetailsSpender).toHaveTextContent('0x9bc5...fEF4');
     const spenderTooltip = await screen.findByTestId(
       'confirmation__approve-spender-tooltip',
     );
@@ -305,7 +305,7 @@ describe('ERC20 increaseAllowance Confirmation', () => {
     expect(approveDetailsRecipient).toHaveTextContent(
       tEn('interactingWith') as string,
     );
-    expect(approveDetailsRecipient).toHaveTextContent('0x07614...3ad68');
+    expect(approveDetailsRecipient).toHaveTextContent('0x0761...ad68');
 
     const approveDetailsRecipientTooltip = await screen.findByTestId(
       'transaction-details-recipient-row-tooltip',

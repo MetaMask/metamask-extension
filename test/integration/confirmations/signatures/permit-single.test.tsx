@@ -117,11 +117,11 @@ describe('Permit Single Signature Tests', () => {
     );
     const requestDetails = [
       'Spender',
-      '0x3fC91...b7FAD',
+      '0x3fC9...7FAD',
       'Request from',
       'metamask.github.io',
       'Interacting with',
-      '0x00000...78BA3',
+      '0x0000...8BA3',
     ];
 
     expect(requestDetailsSection).toBeInTheDocument();
@@ -158,7 +158,7 @@ describe('Permit Single Signature Tests', () => {
     verifyDetails(messageData0, messageData0Details);
 
     expect(messageDetailsSection).toHaveTextContent('Spender');
-    expect(messageDetailsSection).toHaveTextContent('0x3fC91...b7FAD');
+    expect(messageDetailsSection).toHaveTextContent(' 0x3fC9...7FAD');
     expect(messageDetailsSection).toHaveTextContent('SigDeadline');
     expect(messageDetailsSection).toHaveTextContent('06 July 2024, 20:22');
   });

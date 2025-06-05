@@ -222,7 +222,7 @@ describe('ERC721 setApprovalForAll Confirmation', () => {
     );
     expect(simulationSection).toContainElement(spendingCapValue);
     expect(spendingCapValue).toHaveTextContent(tEn('all') as string);
-    expect(simulationSection).toHaveTextContent('0x07614...3ad68');
+    expect(simulationSection).toHaveTextContent('0x0761...ad68');
   });
 
   it('displays approve details with correct data', async () => {
@@ -250,7 +250,7 @@ describe('ERC721 setApprovalForAll Confirmation', () => {
     expect(approveDetailsSpender).toHaveTextContent(
       tEn('permissionFor') as string,
     );
-    expect(approveDetailsSpender).toHaveTextContent('0x9bc5b...AfEF4');
+    expect(approveDetailsSpender).toHaveTextContent('0x9bc5...fEF4');
     const spenderTooltip = await screen.findByTestId(
       'confirmation__approve-spender-tooltip',
     );
@@ -313,7 +313,7 @@ describe('ERC721 setApprovalForAll Confirmation', () => {
     expect(approveDetailsRecipient).toHaveTextContent(
       tEn('interactingWith') as string,
     );
-    expect(approveDetailsRecipient).toHaveTextContent('0x07614...3ad68');
+    expect(approveDetailsRecipient).toHaveTextContent('0x0761...ad68');
 
     const approveDetailsRecipientTooltip = await screen.findByTestId(
       'transaction-details-recipient-row-tooltip',

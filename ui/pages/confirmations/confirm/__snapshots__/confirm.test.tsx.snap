@@ -570,7 +570,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                     <p
                       class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                     >
-                      0x3fC9...7FAD
+                     0x3fC9...7FAD
                     </p>
                   </div>
                 </div>

@@ -101,7 +101,7 @@ exports[`Name renders address with no saved name 1`] = `
       <p
         class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
       >
-        0xC0ffe...54977
+        0xC0ff...4977
       </p>
     </div>
   </div>

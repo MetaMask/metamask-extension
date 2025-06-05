@@ -14,7 +14,7 @@ export default class PermitConfirmation extends Confirmation {
 
   private contractPetNameSelector = {
     css: '.name__value',
-    text: '0xCcCCc...ccccC',
+    text: '0xCcCC...cccC',
   };
 
   private primaryTypeSelector = { text: 'Permit' };

@@ -243,7 +243,7 @@ describe('Permit Confirmation', () => {
       "You're giving the spender permission to spend this many tokens from your account.",
     );
     expect(simulationSection).toHaveTextContent('Spending cap');
-    expect(simulationSection).toHaveTextContent('0xCcCCc...ccccC');
+    expect(simulationSection).toHaveTextContent('0xCcCC...cccC');
     expect(
       await screen.findByTestId('simulation-token-value'),
     ).toHaveTextContent('30');
