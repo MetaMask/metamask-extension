@@ -30156,21 +30156,12 @@ __metadata:
     "@metamask/selected-network-controller": "npm:^22.1.0"
     "@metamask/signature-controller": "npm:^27.1.0"
     "@metamask/smart-transactions-controller": "npm:^16.3.1"
-<<<<<<< HEAD
     "@metamask/snaps-controllers": "npm:^12.2.0"
     "@metamask/snaps-execution-environments": "npm:^8.1.0"
     "@metamask/snaps-rpc-methods": "npm:^12.3.0"
     "@metamask/snaps-sdk": "npm:^6.24.0"
     "@metamask/snaps-utils": "npm:^9.3.0"
-    "@metamask/solana-wallet-snap": "npm:^1.31.2"
-=======
-    "@metamask/snaps-controllers": "npm:^12.3.1"
-    "@metamask/snaps-execution-environments": "npm:^8.2.0"
-    "@metamask/snaps-rpc-methods": "npm:^12.4.0"
-    "@metamask/snaps-sdk": "npm:^7.1.0"
-    "@metamask/snaps-utils": "npm:^9.4.0"
     "@metamask/solana-wallet-snap": "npm:^1.32.0"
->>>>>>> 770b7050a6 (chore: cp-12.20.0 bump Solana snap version to 1.32.0 (#33496))
     "@metamask/solana-wallet-standard": "npm:^0.4.1"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
