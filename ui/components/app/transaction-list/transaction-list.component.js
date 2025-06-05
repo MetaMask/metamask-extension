@@ -17,6 +17,7 @@ import {
   TransactionType as KeyringTransactionType,
 } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
+import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedCompletedTransactionsSelectorAllChains,
@@ -279,7 +280,9 @@ export const filterTransactionsByToken = (
 
   const transactionForToken = (nonEvmTransactions.transactions || []).filter(
     (transaction) => {
-      return transaction.to.some((item) => item.asset.type === tokenAddress);
+      return [...transaction.to, ...transaction.from].some(
+        (item) => item.asset.type === tokenAddress,
+      );
     },
   );
 
@@ -323,9 +326,9 @@ export default function TransactionList({
     getSelectedAccountMultichainTransactions,
   );
 
-  const nonEvmTransactionFilteredByToken = filterTransactionsByToken(
-    nonEvmTransactions,
-    tokenAddress,
+  const nonEvmTransactionFilteredByToken = useMemo(
+    () => filterTransactionsByToken(nonEvmTransactions, tokenAddress),
+    [nonEvmTransactions, tokenAddress],
   );
 
   // Use our custom hook to map Solana bridge transactions with destination chain info
@@ -592,6 +595,9 @@ export default function TransactionList({
   const trackEvent = useContext(MetaMetricsContext);
 
   if (!isEvmAccountType(selectedAccount.type)) {
+    const { namespace } = parseCaipChainId(multichainNetworkConfig.chainId);
+    const isBitcoinNetwork = namespace === KnownCaipNamespace.Bip122;
+
     const addressLink = getMultichainAccountUrl(
       selectedAccount.address,
       multichainNetworkForSelectedAccount,
@@ -665,23 +671,25 @@ export default function TransactionList({
                   ),
                 )}
 
-                <Box className="transaction-list__view-on-block-explorer">
-                  <Button
-                    display={Display.Flex}
-                    variant={ButtonVariant.Primary}
-                    size={ButtonSize.Sm}
-                    endIconName={IconName.Export}
-                    onClick={() =>
-                      openBlockExplorer(
-                        addressLink,
-                        metricsLocation,
-                        trackEvent,
-                      )
-                    }
-                  >
-                    {t('viewOnBlockExplorer')}
-                  </Button>
-                </Box>
+                {!isBitcoinNetwork && (
+                  <Box className="transaction-list__view-on-block-explorer">
+                    <Button
+                      display={Display.Flex}
+                      variant={ButtonVariant.Primary}
+                      size={ButtonSize.Sm}
+                      endIconName={IconName.Export}
+                      onClick={() =>
+                        openBlockExplorer(
+                          addressLink,
+                          metricsLocation,
+                          trackEvent,
+                        )
+                      }
+                    >
+                      {t('viewOnBlockExplorer')}
+                    </Button>
+                  </Box>
+                )}
               </Box>
             ) : (
               <Box className="transaction-list__empty">

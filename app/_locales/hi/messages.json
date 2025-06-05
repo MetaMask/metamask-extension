@@ -2296,18 +2296,11 @@
   "gasLimit": {
     "message": "गैस लिमिट"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "गैस लिमिट, गैस की वह अधिकतम इकाइयाँ हैं, जिन्हें आप खर्च करना चाहते हैं।"
-  },
   "gasLimitRecommended": {
     "message": "सुझाई गई गैस लिमिट $1 है। अगर गैस लिमिट उससे कम है, तो वह फेल हो सकता है।"
   },
   "gasLimitTooLow": {
     "message": "गैस लिमिट कम से कम 21000 होनी चाहिए"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "गैस लिमिट कम से कम $1 होनी चाहिए",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "गैस लिमिट"
@@ -2315,23 +2308,11 @@
   "gasOption": {
     "message": "गैस विकल्प"
   },
-  "gasPrice": {
-    "message": "गैस प्राइस (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "आपका गैस फ़ीस अनावश्यक रूप से अधिक निर्धारित किया गया है। अमाउंट को कम करने पर विचार करें।"
   },
-  "gasPriceExcessiveInput": {
-    "message": "गैस प्राइस अधिक है"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "गैस प्राइस अत्यंत कम है"
-  },
   "gasPriceFetchFailed": {
     "message": "गैस प्राइस अनुमान नेटवर्क गड़बड़ी के कारण नहीं हो पाया है।"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "गैस प्राइस, Ether के उस अमाउंट को बताता है, जो आप गैस की प्रत्येक इकाई के लिए देना चाहते हैं।"
   },
   "gasTimingHoursShort": {
     "message": "$1 घंटे",
@@ -6868,8 +6849,5 @@
   },
   "yourWalletIsReady": {
     "message": "आपका वॉलेट तैयार है"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "जीरो गैस प्राइस में तेज़ी"
   }
 }
