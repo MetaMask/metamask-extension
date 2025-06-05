@@ -41,7 +41,7 @@ class TermsOfUseUpdateModal {
     console.log('Click to confirm acceptance of terms of use update');
     await this.driver.clickElementAndWaitToDisappear(
       this.popoverScrollButton,
-      8000,
+      5000,
     );
     await this.driver.clickElement(this.termsOfUseCheckbox);
     await this.driver.clickElementAndWaitToDisappear(this.acceptButton);
