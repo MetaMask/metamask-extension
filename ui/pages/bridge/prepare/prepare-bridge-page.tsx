@@ -45,7 +45,6 @@ import {
   getWasTxDeclined,
   getFromAmountInCurrency,
   getValidationErrors,
-  isBridgeSolanaEnabled,
   getIsToOrFromSolana,
   getQuoteRefreshRate,
   getHardwareWalletName,
@@ -53,6 +52,7 @@ import {
   getIsUnifiedUIEnabled,
   getIsSwap,
   BridgeAppState,
+  isBridgeSolanaEnabled,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -143,13 +143,15 @@ const PrepareBridgePage = () => {
 
   const t = useI18nContext();
 
-  const isMultichainSwap = useIsMultichainSwap();
   const fromChain = useSelector(getFromChain);
-  const isQuoteRequestSwap = useSelector(getIsSwap);
   const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
     getIsUnifiedUIEnabled(state, fromChain?.chainId),
   );
-  const isSwap = isUnifiedUIEnabled ? isQuoteRequestSwap : isMultichainSwap;
+
+  // Determine if this is a swap based on unified UI setting
+  const isSwap = isUnifiedUIEnabled
+    ? useSelector(getIsSwap) // Use quote request params when unified
+    : useIsMultichainSwap(); // Use URL params for legacy behavior
 
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getTokenList) as TokenListMap;
@@ -246,7 +248,17 @@ const PrepareBridgePage = () => {
     isLoading: isToTokensLoading,
   } = useTokensWithFiltering(
     toChain?.chainId ?? fromChain?.chainId,
-    fromToken,
+    fromChain?.chainId === toChain?.chainId && fromToken && fromChain
+      ? {
+          ...fromToken,
+          // Normalize native token address to empty string, otherwise lowercase for comparison
+          address: isNativeAddress(fromToken.address)
+            ? ''
+            : fromToken.address?.toLowerCase(),
+          // Ensure chainId is in CAIP format for proper comparison
+          chainId: formatChainIdToCaip(fromChain.chainId),
+        }
+      : null,
     selectedDestinationAccount !== null && 'id' in selectedDestinationAccount
       ? selectedDestinationAccount.id
       : undefined,
@@ -722,16 +734,10 @@ const PrepareBridgePage = () => {
               disabled={
                 isSwitchingTemporarilyDisabled ||
                 !isValidQuoteRequest(quoteRequest, false) ||
-                (!isUnifiedUIEnabled && !isSwap && !isNetworkAdded(toChain))
+                (toChain && !isNetworkAdded(toChain))
               }
               onClick={() => {
-                if (
-                  !isUnifiedUIEnabled &&
-                  !isSwap &&
-                  !isNetworkAdded(toChain)
-                ) {
-                  return;
-                }
+                // Track the flip event
                 toChain?.chainId &&
                   fromToken &&
                   toToken &&
@@ -760,39 +766,46 @@ const PrepareBridgePage = () => {
                       },
                     ),
                   );
+
                 setRotateSwitchTokens(!rotateSwitchTokens);
+
                 flippedRequestProperties &&
                   trackCrossChainSwapsEvent({
                     event: MetaMetricsEventName.InputSourceDestinationFlipped,
                     properties: flippedRequestProperties,
                   });
-                const shouldFlipNetworks = isUnifiedUIEnabled
-                  ? fromChain?.chainId !== toChain?.chainId
-                  : !isSwap;
+
+                const shouldFlipNetworks = isUnifiedUIEnabled || !isSwap;
                 if (shouldFlipNetworks) {
-                  // Only flip networks if bridging
-                  const toChainClientId =
-                    toChain?.defaultRpcEndpointIndex !== undefined &&
-                    toChain?.rpcEndpoints &&
-                    isNetworkAdded(toChain)
-                      ? toChain.rpcEndpoints[toChain.defaultRpcEndpointIndex]
-                          .networkClientId
-                      : undefined;
+                  // Handle account switching for Solana
                   if (
                     toChain?.chainId &&
                     formatChainIdToCaip(toChain.chainId) ===
                       MultichainNetworks.SOLANA &&
                     selectedSolanaAccount
                   ) {
-                    // Switch accounts to switch to solana
                     dispatch(setSelectedAccount(selectedSolanaAccount.address));
                   } else {
                     dispatch(setSelectedAccount(selectedEvmAccount.address));
                   }
-                  toChainClientId &&
-                    dispatch(setActiveNetwork(toChainClientId));
-                  fromChain?.chainId &&
+
+                  // Get the network client ID for switching
+                  const toChainClientId =
+                    toChain?.defaultRpcEndpointIndex !== undefined &&
+                    toChain?.rpcEndpoints
+                      ? toChain.rpcEndpoints[toChain.defaultRpcEndpointIndex]
+                      : undefined;
+                  const networkClientId =
+                    toChainClientId && 'networkClientId' in toChainClientId
+                      ? toChainClientId.networkClientId
+                      : toChain?.chainId;
+
+                  if (networkClientId) {
+                    dispatch(setActiveNetwork(networkClientId));
+                  }
+                  if (fromChain?.chainId) {
                     dispatch(setToChainId(fromChain.chainId));
+                  }
                 }
                 dispatch(setFromToken(toToken));
                 dispatch(setToToken(fromToken));
