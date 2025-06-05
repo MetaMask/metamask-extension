@@ -6,7 +6,7 @@ import {
 } from './feature-flags';
 
 jest.mock('../../../package.json', () => ({
-  version: '14.0.0',
+  version: '15.0.0',
 }));
 
 type TestState = RemoteFeatureFlagsState & {
@@ -20,19 +20,19 @@ type TestState = RemoteFeatureFlagsState & {
 const disabledStateMock: MultichainAccountsFeatureFlag = {
   enabled: false,
   featureVersion: null,
-  minimumClientVersion: null,
+  minimumVersion: null,
 };
 
 const state1Mock: MultichainAccountsFeatureFlag = {
   enabled: true,
   featureVersion: '1',
-  minimumClientVersion: '13.0.0',
+  minimumVersion: '13.0.0',
 };
 
 const state2Mock: MultichainAccountsFeatureFlag = {
   enabled: true,
   featureVersion: '2',
-  minimumClientVersion: '14.0.0',
+  minimumVersion: '14.0.0',
 };
 
 const getMockState = (
