@@ -187,6 +187,7 @@ export const CHAIN_IDS = {
   PLUME: '0x18232',
   MATCHAIN: '0x2ba',
   FLOW: '0x2eb',
+  KATANA: '0xb67d2',
   MONAD_TESTNET: '0x279f',
 } as const;
 
@@ -326,6 +327,7 @@ export const LENS_DISPLAY_NAME = 'Lens';
 export const PLUME_DISPLAY_NAME = 'Plume';
 export const MATCHAIN_DISPLAY_NAME = 'Matchain';
 export const FLOW_DISPLAY_NAME = 'Flow EVM Mainnet';
+export const KATANA_DISPLAY_NAME = 'Katana';
 export const MONAD_TESTNET_DISPLAY_NAME = 'Monad Testnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
@@ -387,6 +389,7 @@ export const CURRENCY_SYMBOLS = {
   LENS: 'GHO',
   PLUME: 'PLUME',
   FLOW: 'FLOW',
+  KATANA: 'ETH',
 } as const;
 
 // Non-EVM currency symbols
@@ -573,6 +576,7 @@ export const PLUME_IMAGE_URL = './images/plume.png';
 export const PLUME_NATIVE_TOKEN_IMAGE_URL = './images/plume-native.svg';
 export const MATCHAIN_IMAGE_URL = './images/matchain.svg';
 export const FLOW_IMAGE_URL = './images/flow.svg';
+export const KATANA_IMAGE_URL = './images/katana.svg';
 export const MONAD_TESTNET_IMAGE_URL = './images/monad-testnet-logo.png';
 
 export const INFURA_PROVIDER_TYPES = [
@@ -711,6 +715,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.PLUME]: PLUME_DISPLAY_NAME,
   [CHAIN_IDS.MATCHAIN]: MATCHAIN_DISPLAY_NAME,
   [CHAIN_IDS.FLOW]: FLOW_DISPLAY_NAME,
+  [CHAIN_IDS.KATANA]: KATANA_DISPLAY_NAME,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_DISPLAY_NAME,
 } as const;
 
@@ -848,6 +853,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.PLUME]: CURRENCY_SYMBOLS.PLUME,
   [CHAIN_IDS.MATCHAIN]: CURRENCY_SYMBOLS.BNB,
   [CHAIN_IDS.FLOW]: CURRENCY_SYMBOLS.FLOW,
+  [CHAIN_IDS.KATANA]: CURRENCY_SYMBOLS.KATANA,
   [CHAIN_IDS.MONAD_TESTNET]:
     TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MONAD_TESTNET],
 } as const;
@@ -997,6 +1003,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.PLUME]: PLUME_IMAGE_URL,
   [CHAIN_IDS.MATCHAIN]: MATCHAIN_IMAGE_URL,
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
+  [CHAIN_IDS.KATANA]: KATANA_IMAGE_URL,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_IMAGE_URL,
 } as const;
 
@@ -1057,6 +1064,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.PLUME]: PLUME_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MATCHAIN]: BNB_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
+  [CHAIN_IDS.KATANA]: KATANA_IMAGE_URL,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_IMAGE_URL,
 } as const;
 
