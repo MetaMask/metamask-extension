@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { zeroAddress } from 'ethereumjs-util';
 import {
+  ChainId,
   type QuoteMetadata,
   type QuoteResponse,
   SortOrder,
@@ -922,6 +923,7 @@ describe('Bridge selectors', () => {
           srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotes: [],
           quotesLastFetched: Date.now(),
+          quotesRefreshCount: 1,
         },
       });
       const result = getValidationErrors(state as never);
@@ -951,6 +953,7 @@ describe('Bridge selectors', () => {
           fromChain: { chainId: CHAIN_IDS.MAINNET },
         },
         bridgeStateOverrides: {
+          minimumBalanceForRentExemption: '890880',
           srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
           srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
@@ -962,6 +965,102 @@ describe('Bridge selectors', () => {
       expect(
         result.isInsufficientBalance(new BigNumber(0.00099)),
       ).toStrictEqual(true);
+    });
+
+    it('should return isInsufficientGasBalance=true when balance === minimumBalanceForRentExemption + srcTokenAmount', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toChainId: formatChainIdToCaip('0x1'),
+          fromToken: { decimals: 9, address: zeroAddress() },
+          fromChain: { chainId: formatChainIdToCaip(ChainId.SOLANA) },
+          srcTokenInputValue: '1000000000',
+        },
+        bridgeStateOverrides: {
+          minimumBalanceForRentExemptionInLamports: '1000000000',
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcTokenAmount: '1000000000',
+            srcChainId: ChainId.SOLANA,
+          },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      expect(result.isInsufficientGasBalance(new BigNumber(2))).toStrictEqual(
+        true,
+      );
+    });
+
+    it('should return isInsufficientGasBalance=true when balance < minimumBalanceForRentExemption + srcTokenAmount', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toChainId: formatChainIdToCaip('0x1'),
+          fromToken: { decimals: 9, address: zeroAddress() },
+          fromChain: { chainId: formatChainIdToCaip(ChainId.SOLANA) },
+          srcTokenInputValue: '1000000000',
+        },
+        bridgeStateOverrides: {
+          minimumBalanceForRentExemptionInLamports: '1000000000',
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcTokenAmount: '1000000000',
+            srcChainId: ChainId.SOLANA,
+          },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      expect(result.isInsufficientGasBalance(new BigNumber(1))).toStrictEqual(
+        true,
+      );
+    });
+
+    it('should return isInsufficientGasBalance=false when balance > minimumBalanceForRentExemption + srcTokenAmount', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toChainId: formatChainIdToCaip('0x1'),
+          fromToken: { decimals: 9, address: zeroAddress() },
+          fromChain: { chainId: formatChainIdToCaip(ChainId.SOLANA) },
+          srcTokenInputValue: '1000000000',
+        },
+        bridgeStateOverrides: {
+          minimumBalanceForRentExemptionInLamports: '1000000000',
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcTokenAmount: '1000000000',
+            srcChainId: ChainId.SOLANA,
+          },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      expect(
+        result.isInsufficientGasBalance(new BigNumber(2.0000001)),
+      ).toStrictEqual(false);
+    });
+
+    it('should return isInsufficientGasBalance=false when minimumBalanceForRentExemption is null', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          toChainId: formatChainIdToCaip('0x1'),
+          fromToken: { decimals: 9, address: zeroAddress() },
+          fromChain: { chainId: formatChainIdToCaip(ChainId.SOLANA) },
+          srcTokenInputValue: '1000000000',
+        },
+        bridgeStateOverrides: {
+          minimumBalanceForRentExemptionInLamports: null,
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcTokenAmount: '1000000000',
+            srcChainId: ChainId.SOLANA,
+          },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      expect(
+        result.isInsufficientGasBalance(new BigNumber(1.01)),
+      ).toStrictEqual(false);
     });
 
     it('should return isInsufficientBalance=false when there is no input amount', () => {
