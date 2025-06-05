@@ -1,4 +1,5 @@
 import 'navigator.locks';
+import log from 'loglevel';
 import { OperationSafener } from './operation-safener';
 
 const mockLocksRequest = jest.fn().mockImplementation((_, __, callback) => {
@@ -71,7 +72,7 @@ describe('OperationSafener', () => {
       expect(mockOp).toHaveBeenCalledTimes(1);
 
       // they should be the same promise
-      expect(firstEvacuatePromise == secondEvacuatePromise).toBe(true);
+      expect(firstEvacuatePromise === secondEvacuatePromise).toBe(true);
     });
 
     it('should debounce multiple calls', async () => {
@@ -222,7 +223,7 @@ describe('OperationSafener', () => {
     });
 
     // Mock log.warn
-    const logWarnSpy = jest.spyOn(require('loglevel'), 'warn');
+    const logWarnSpy = jest.spyOn(log, 'warn');
 
     // Start evacuation process
     const evacuatePromise = safener.evacuate();
@@ -244,11 +245,11 @@ describe('OperationSafener', () => {
         () => new Promise((resolve) => setTimeout(resolve, 50)),
       );
     const safener = new OperationSafener({
-      op: mockOp,
+      op: (p: { test: 123 }) => {},
     });
 
     // Mock log.warn
-    const logWarnSpy = jest.spyOn(require('loglevel'), 'warn');
+    const logWarnSpy = jest.spyOn(log, 'warn');
 
     // Start first evacuation
     const firstEvacuatePromise = safener.evacuate();

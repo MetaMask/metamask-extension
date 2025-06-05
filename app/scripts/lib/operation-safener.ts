@@ -3,10 +3,13 @@ import log from 'loglevel';
 
 export type { DebounceSettings } from 'lodash';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyParams = any[];
+
 /**
  * A type representing a generic operation that can be executed.
  */
-export type Op = (...params: any[]) => unknown | Promise<unknown>;
+export type Op = (...params: AnyParams) => unknown | Promise<unknown>;
 
 /**
  * Options for the lock used in the OperationSafener.
@@ -55,6 +58,9 @@ export class OperationSafener<O extends Op = Op> {
    * operations from being queued.
    *
    * @param config - Configuration object for the OperationSafener.
+   * @param config.op
+   * @param config.wait
+   * @param config.options
    * @example
    * ```ts
    * const operationSafener = new OperationSafener({
@@ -93,6 +99,7 @@ export class OperationSafener<O extends Op = Op> {
       return this.#evacuating;
     }
 
+    // eslint-disable-next-line no-async-promise-executor
     this.#evacuating = new Promise(async (resolve) => {
       try {
         // flush will invoke the latest pending op, then return a Promise that

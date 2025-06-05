@@ -38,7 +38,7 @@ let ignoreUnhandled = false;
 process.on('unhandledRejection', (reason, promise) => {
   if (!ignoreUnhandled) {
     console.log(
-      'Unhandled rejection: ..' + process.env.IGNORE_UNHANDLED,
+      `Unhandled rejection: ..${process.env.IGNORE_UNHANDLED}`,
       reason,
     );
     unhandledRejections.set(promise, reason);
@@ -60,6 +60,7 @@ process.on('exit', () => {
     process.exit(1);
   }
 });
+// #region Helpers that allow tests to ignore unhandled rejections that might be intentional.
 process.resetIgnoreUnhandled = () => {
   // default is false
   ignoreUnhandled = false;
@@ -67,6 +68,7 @@ process.resetIgnoreUnhandled = () => {
 process.setIgnoreUnhandled = (ignore) => {
   ignoreUnhandled = ignore;
 };
+// #endregion
 
 log.setDefaultLevel(5);
 global.log = log;
