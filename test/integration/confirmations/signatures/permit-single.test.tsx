@@ -158,7 +158,7 @@ describe('Permit Single Signature Tests', () => {
     verifyDetails(messageData0, messageData0Details);
 
     expect(messageDetailsSection).toHaveTextContent('Spender');
-    expect(messageDetailsSection).toHaveTextContent(' 0x3fC9...7FAD');
+    expect(messageDetailsSection).toHaveTextContent('0x3fC9...7FAD');
     expect(messageDetailsSection).toHaveTextContent('SigDeadline');
     expect(messageDetailsSection).toHaveTextContent('06 July 2024, 20:22');
   });
