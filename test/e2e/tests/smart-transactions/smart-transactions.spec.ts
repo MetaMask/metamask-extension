@@ -35,6 +35,7 @@ async function withFixturesForSmartTransactions(
       title,
       localNodeOptions: {
         hardfork: 'london',
+        chainId: '1',
       },
       testSpecificMock,
       dapp: true,
