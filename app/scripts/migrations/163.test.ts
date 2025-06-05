@@ -3,7 +3,15 @@ import { migrate, version } from './163';
 const oldVersion = 162;
 
 describe(`migration #${version}`, () => {
-  afterEach(() => jest.resetAllMocks());
+  // Set up a global sentry mock before each test.
+  beforeEach(() => {
+    global.sentry = { captureException: jest.fn() };
+  });
+
+  afterEach(() => {
+    // Clean up the global sentry after each test.
+    global.sentry = undefined;
+  });
 
   it('updates the version metadata', async () => {
     const oldStorage = {
@@ -16,534 +24,81 @@ describe(`migration #${version}`, () => {
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('removes permissions for deleted networks from CAIP-25 permissions', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '0x1': { chainId: '0x1', name: 'Ethereum Mainnet' },
-            '0x2105': { chainId: '0x2105', name: 'Base' },
-          },
+  describe(`migration #${version}`, () => {
+    it('does not capture sentry error and returns the original state if TokensController is missing', async () => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          OtherController: {},
         },
-        PermissionController: {
-          subjects: {
-            'https://example.com': {
-              origin: 'https://example.com',
-              permissions: {
-                'endowment:caip25': {
-                  caveats: [
-                    {
-                      type: 'authorizedScopes',
-                      value: {
-                        requiredScopes: {},
-                        optionalScopes: {
-                          'eip155:1': {
-                            accounts: ['eip155:1:0x123'],
-                          },
-                          'eip155:8453': {
-                            accounts: ['eip155:8453:0x123'],
-                          },
-                          'eip155:1337': {
-                            accounts: ['eip155:1337:0x123'],
-                          },
-                          'wallet:eip155': {
-                            accounts: ['wallet:eip155:0x123'],
-                          },
-                        },
-                        isMultichainOrigin: false,
-                        sessionProperties: {},
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-          },
-        },
-      },
-    };
+      };
 
-    const newStorage = await migrate(oldStorage);
+      const newStorage = await migrate(oldStorage);
 
-    expect(newStorage.data).toStrictEqual({
-      NetworkController: {
-        networkConfigurationsByChainId: {
-          '0x1': { chainId: '0x1', name: 'Ethereum Mainnet' },
-          '0x2105': { chainId: '0x2105', name: 'Base' },
-        },
-      },
-      PermissionController: {
-        subjects: {
-          'https://example.com': {
-            origin: 'https://example.com',
-            permissions: {
-              'endowment:caip25': {
-                caveats: [
-                  {
-                    type: 'authorizedScopes',
-                    value: {
-                      requiredScopes: {},
-                      optionalScopes: {
-                        'eip155:1': {
-                          accounts: ['eip155:1:0x123'],
-                        },
-                        'eip155:8453': {
-                          accounts: ['eip155:8453:0x123'],
-                        },
-                        // 'eip155:1337' should be removed as it's not in networkConfigurationsByChainId
-                        'wallet:eip155': {
-                          accounts: ['wallet:eip155:0x123'],
-                        },
-                      },
-                      isMultichainOrigin: false,
-                      sessionProperties: {},
-                    },
-                  },
-                ],
-              },
-            },
-          },
-        },
-      },
+      expect(global.sentry.captureException).not.toHaveBeenCalled();
+      expect(newStorage.data).toStrictEqual(oldStorage.data);
     });
-  });
 
-  it('cleans up requiredScopes as well as optionalScopes', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '0x1': { chainId: '0x1', name: 'Ethereum Mainnet' },
-          },
+    it('Captures sentry error and returns the original state if TokensController exists but is not an object', async () => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          TokensController: 'not an object',
         },
-        PermissionController: {
-          subjects: {
-            'https://example.com': {
-              origin: 'https://example.com',
-              permissions: {
-                'endowment:caip25': {
-                  caveats: [
-                    {
-                      type: 'authorizedScopes',
-                      value: {
-                        requiredScopes: {
-                          'eip155:1': {
-                            accounts: ['eip155:1:0x123'],
-                          },
-                          'eip155:999': {
-                            accounts: ['eip155:999:0x123'],
-                          },
-                        },
-                        optionalScopes: {
-                          'eip155:1': {
-                            accounts: ['eip155:1:0x123'],
-                          },
-                          'eip155:888': {
-                            accounts: ['eip155:888:0x123'],
-                          },
-                        },
-                        isMultichainOrigin: false,
-                        sessionProperties: {},
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-          },
-        },
-      },
-    };
+      };
 
-    const newStorage = await migrate(oldStorage);
+      const newStorage = await migrate(oldStorage);
 
-    expect(newStorage.data).toStrictEqual({
-      NetworkController: {
-        networkConfigurationsByChainId: {
-          '0x1': { chainId: '0x1', name: 'Ethereum Mainnet' },
-        },
-      },
-      PermissionController: {
-        subjects: {
-          'https://example.com': {
-            origin: 'https://example.com',
-            permissions: {
-              'endowment:caip25': {
-                caveats: [
-                  {
-                    type: 'authorizedScopes',
-                    value: {
-                      requiredScopes: {
-                        'eip155:1': {
-                          accounts: ['eip155:1:0x123'],
-                        },
-                        // 'eip155:999' should be removed
-                      },
-                      optionalScopes: {
-                        'eip155:1': {
-                          accounts: ['eip155:1:0x123'],
-                        },
-                        // 'eip155:888' should be removed
-                      },
-                      isMultichainOrigin: false,
-                      sessionProperties: {},
-                    },
-                  },
-                ],
-              },
-            },
-          },
-        },
-      },
+      expect(global.sentry.captureException).toHaveBeenCalledWith(
+        new Error(
+          `Migration ${version}: TokensController is type 'string', expected object.`,
+        ),
+      );
+      expect(newStorage.data).toStrictEqual(oldStorage.data);
     });
-  });
-
-  it('preserves wallet scopes and other non-chain-specific scopes', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '0x1': { chainId: '0x1', name: 'Ethereum Mainnet' },
+    it('does nothing when both TokenListController and TokensController are present', async () => {
+      // since state should have been already migrated in 153
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          TokensController: {
+            someOtherProp: true,
+          },
+          TokenListController: {
+            anotherProp: 'value',
           },
         },
-        PermissionController: {
-          subjects: {
-            'https://example.com': {
-              origin: 'https://example.com',
-              permissions: {
-                'endowment:caip25': {
-                  caveats: [
-                    {
-                      type: 'authorizedScopes',
-                      value: {
-                        requiredScopes: {},
-                        optionalScopes: {
-                          'wallet:eip155': {
-                            accounts: ['wallet:eip155:0x123'],
-                          },
-                          wallet: {
-                            accounts: [],
-                          },
-                          'eip155:1': {
-                            accounts: ['eip155:1:0x123'],
-                          },
-                          'eip155:999': {
-                            accounts: ['eip155:999:0x123'],
-                          },
-                        },
-                        isMultichainOrigin: false,
-                        sessionProperties: {},
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-          },
-        },
-      },
-    };
+      };
 
-    const newStorage = await migrate(oldStorage);
+      const newStorage = await migrate(oldStorage);
 
-    expect(newStorage.data).toStrictEqual({
-      NetworkController: {
-        networkConfigurationsByChainId: {
-          '0x1': { chainId: '0x1', name: 'Ethereum Mainnet' },
-        },
-      },
-      PermissionController: {
-        subjects: {
-          'https://example.com': {
-            origin: 'https://example.com',
-            permissions: {
-              'endowment:caip25': {
-                caveats: [
-                  {
-                    type: 'authorizedScopes',
-                    value: {
-                      requiredScopes: {},
-                      optionalScopes: {
-                        'wallet:eip155': {
-                          accounts: ['wallet:eip155:0x123'],
-                        },
-                        wallet: {
-                          accounts: [],
-                        },
-                        'eip155:1': {
-                          accounts: ['eip155:1:0x123'],
-                        },
-                        // 'eip155:999' should be removed
-                      },
-                      isMultichainOrigin: false,
-                      sessionProperties: {},
-                    },
-                  },
-                ],
-              },
-            },
-          },
-        },
-      },
+      expect(newStorage.data).toStrictEqual(oldStorage.data);
     });
-  });
+    it('removes tokens, detectedTokens, and ignoredTokens from TokensController when user has tokensController state with those properties', async () => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          TokensController: {
+            tokens: [1, 2],
+            detectedTokens: ['a', 'b'],
+            ignoredTokens: { some: 'value' },
+            someOtherProp: true,
+          },
+          OtherController: { key: 'value' },
+        },
+      };
 
-  it('handles multiple subjects with different permissions', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '0x1': { chainId: '0x1', name: 'Ethereum Mainnet' },
-          },
+      const expectedData = {
+        TokensController: {
+          someOtherProp: true,
         },
-        PermissionController: {
-          subjects: {
-            'https://example.com': {
-              origin: 'https://example.com',
-              permissions: {
-                'endowment:caip25': {
-                  caveats: [
-                    {
-                      type: 'authorizedScopes',
-                      value: {
-                        requiredScopes: {},
-                        optionalScopes: {
-                          'eip155:1': {
-                            accounts: ['eip155:1:0x123'],
-                          },
-                          'eip155:999': {
-                            accounts: ['eip155:999:0x123'],
-                          },
-                        },
-                        isMultichainOrigin: false,
-                        sessionProperties: {},
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-            'https://other.com': {
-              origin: 'https://other.com',
-              permissions: {
-                'some-other-permission': {},
-              },
-            },
-            'npm:@metamask/example-snap': {
-              origin: 'npm:@metamask/example-snap',
-              permissions: {
-                'endowment:caip25': {
-                  caveats: [
-                    {
-                      type: 'authorizedScopes',
-                      value: {
-                        requiredScopes: {},
-                        optionalScopes: {
-                          'eip155:1': {
-                            accounts: ['eip155:1:0x456'],
-                          },
-                          'eip155:777': {
-                            accounts: ['eip155:777:0x456'],
-                          },
-                        },
-                        isMultichainOrigin: false,
-                        sessionProperties: {},
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-          },
-        },
-      },
-    };
+        OtherController: { key: 'value' },
+      };
 
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.data).toStrictEqual({
-      NetworkController: {
-        networkConfigurationsByChainId: {
-          '0x1': { chainId: '0x1', name: 'Ethereum Mainnet' },
-        },
-      },
-      PermissionController: {
-        subjects: {
-          'https://example.com': {
-            origin: 'https://example.com',
-            permissions: {
-              'endowment:caip25': {
-                caveats: [
-                  {
-                    type: 'authorizedScopes',
-                    value: {
-                      requiredScopes: {},
-                      optionalScopes: {
-                        'eip155:1': {
-                          accounts: ['eip155:1:0x123'],
-                        },
-                        // 'eip155:999' should be removed
-                      },
-                      isMultichainOrigin: false,
-                      sessionProperties: {},
-                    },
-                  },
-                ],
-              },
-            },
-          },
-          'https://other.com': {
-            origin: 'https://other.com',
-            permissions: {
-              'some-other-permission': {},
-            },
-          },
-          'npm:@metamask/example-snap': {
-            origin: 'npm:@metamask/example-snap',
-            permissions: {
-              'endowment:caip25': {
-                caveats: [
-                  {
-                    type: 'authorizedScopes',
-                    value: {
-                      requiredScopes: {},
-                      optionalScopes: {
-                        'eip155:1': {
-                          accounts: ['eip155:1:0x456'],
-                        },
-                        // 'eip155:777' should be removed
-                      },
-                      isMultichainOrigin: false,
-                      sessionProperties: {},
-                    },
-                  },
-                ],
-              },
-            },
-          },
-        },
-      },
+      const newStorage = await migrate(oldStorage);
+      expect(global.sentry.captureException).not.toHaveBeenCalled();
+      expect(newStorage.meta).toStrictEqual({ version });
+      expect(newStorage.data).toStrictEqual(expectedData);
     });
-  });
-
-  it('returns unchanged state when PermissionController is missing', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {},
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
-  });
-
-  it('returns unchanged state when NetworkController is missing', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        PermissionController: {
-          subjects: {},
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
-  });
-
-  it('returns unchanged state when networkConfigurationsByChainId is missing', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        NetworkController: {},
-        PermissionController: {
-          subjects: {},
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
-  });
-
-  it('handles subjects without permissions gracefully', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '0x1': { chainId: '0x1', name: 'Ethereum Mainnet' },
-          },
-        },
-        PermissionController: {
-          subjects: {
-            'https://example.com': {
-              origin: 'https://example.com',
-              // No permissions property
-            },
-            'https://other.com': {
-              origin: 'https://other.com',
-              permissions: null, // Invalid permissions
-            },
-          },
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
-  });
-
-  it('handles malformed CAIP-25 permissions gracefully', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            '0x1': { chainId: '0x1', name: 'Ethereum Mainnet' },
-          },
-        },
-        PermissionController: {
-          subjects: {
-            'https://example.com': {
-              origin: 'https://example.com',
-              permissions: {
-                'endowment:caip25': {
-                  // Missing caveats
-                },
-              },
-            },
-            'https://other.com': {
-              origin: 'https://other.com',
-              permissions: {
-                'endowment:caip25': {
-                  caveats: [
-                    {
-                      type: 'authorizedScopes',
-                      // Missing value
-                    },
-                  ],
-                },
-              },
-            },
-          },
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 });
