@@ -39,7 +39,8 @@ class TermsOfUseUpdateModal {
 
   async confirmAcceptTermsOfUseUpdate() {
     console.log('Click to confirm acceptance of terms of use update');
-    await this.driver.clickElementAndWaitToDisappear(this.popoverScrollButton);
+    // TODO: sometime the scroll button doesn't appear. This needs to be fixed on the application side
+    await this.driver.clickElementSafe(this.popoverScrollButton);
     await this.driver.clickElement(this.termsOfUseCheckbox);
     await this.driver.clickElementAndWaitToDisappear(this.acceptButton);
   }
