@@ -1003,39 +1003,9 @@ export function setupController(
     provider: controller.provider,
   });
 
-  // setup state persistence
-  // let paused = false;
-  // let abortController;
-  // const writeState = require('lodash').debounce(async (state) => {
-  //   abortController = new AbortController();
-  //   await navigator.locks.request(
-  //     'storage-write',
-  //     { mode: 'exclusive', abortSignal: abortController.signal },
-  //     async () => {
-  //       try {
-  //         await persistenceManager.set(state);
-  //       } catch (error) {
-  //         log.error('MetaMask - Persistence failed', error);
-  //       }
-  //     },
-  //   );
-  // }, 1000);
-
-  controller.store.on('update', async (state) => {
-    return await writeManager.write(state);
+  controller.store.on('update', (state) => {
+    writeManager.write(state);
   });
-
-  // // wait for lock then shutdown
-  // // an actions in background on some controller
-  // controller.requestRestart(() => {
-  //   writeState.cancel();
-  //   paused = true;
-  //   abortController.abort();
-
-  //   navigator.locks.request('storage-write', { mode: 'exclusive' }, () => {
-  //     browser.runtime.reload();
-  //   });
-  // });
 
   setupSentryGetStateGlobal(controller);
 
