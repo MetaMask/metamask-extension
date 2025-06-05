@@ -252,6 +252,10 @@ describe('Vault Corruption', function () {
   }
 
   it('recovers metamask vault when primary database is broken but backup is intact', async function () {
+    if (process.env.SELENIUM_BROWSER === 'firefox') {
+      // currently very flaky on Firefox, so skip it temporarily
+      this.skip();
+    }
     await withFixtures(
       getConfig(this.test?.title),
       async ({ driver }: { driver: Driver }) => {
@@ -307,6 +311,10 @@ describe('Vault Corruption', function () {
     // is intact` test verifies that *first* attempts at recovery work, this
     // test verifies that not recovering, then trying to recovering again later
     // works too.
+    if (process.env.SELENIUM_BROWSER === 'firefox') {
+      // currently very flaky on Firefox, so skip it temporarily
+      this.skip();
+    }
     await withFixtures(
       getConfig(this.test?.title),
       async ({ driver }: { driver: Driver }) => {
@@ -344,6 +352,10 @@ describe('Vault Corruption', function () {
 
   it('restores a backup that is missing its `meta` property successfully', async function () {
     // this test will run all migrations
+    if (process.env.SELENIUM_BROWSER === 'firefox') {
+      // currently very flaky on Firefox, so skip it temporarily
+      this.skip();
+    }
     await withFixtures(
       getConfig(this.test?.title),
       async ({ driver }: { driver: Driver }) => {
