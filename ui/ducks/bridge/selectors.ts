@@ -635,6 +635,22 @@ export const getIsToOrFromSolana = createSelector(
   },
 );
 
+export const getIsSolanaSwap = createSelector(
+  getFromChain,
+  getToChain,
+  (fromChain, toChain) => {
+    if (!fromChain?.chainId || !toChain?.chainId) {
+      return false;
+    }
+
+    const fromChainIsSolana = isSolanaChainId(fromChain.chainId);
+    const toChainIsSolana = isSolanaChainId(toChain.chainId);
+
+    // Return true if BOTH chains are Solana (Solana-to-Solana swap)
+    return fromChainIsSolana && toChainIsSolana;
+  },
+);
+
 export const getHardwareWalletName = (state: BridgeAppState) => {
   const type = getHardwareWalletType(state);
   switch (type) {
