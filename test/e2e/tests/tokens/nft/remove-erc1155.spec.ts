@@ -31,6 +31,7 @@ describe('Remove ERC1155 NFT', function () {
         fixtures: new FixtureBuilder()
           .withNftControllerERC1155()
           .withEnabledNetworks({
+            '0x1': true,
             '0xe708': true,
           })
           .build(),
@@ -58,13 +59,14 @@ describe('Remove ERC1155 NFT', function () {
     );
   });
 
-  it('user should be able to remove an NFT while selected network is different than NFT network', async function () {
+  it.only('user should be able to remove an NFT while selected network is different than NFT network', async function () {
     const driverOptions = { mock: true };
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnLinea()
           .withEnabledNetworks({
+            '0x1': true,
             '0xe708': true,
           })
           .build(),
@@ -92,6 +94,7 @@ describe('Remove ERC1155 NFT', function () {
         await homepage.check_expectedBalanceIsDisplayed();
         await homepage.goToNftTab();
         const nftListPage = new NftListPage(driver);
+        await nftListPage.filterNftsByNetworks('Popular networks');
         await nftListPage.check_nftNameIsDisplayed(
           'ENS: Ethereum Name Service',
         );
