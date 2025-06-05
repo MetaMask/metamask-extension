@@ -1,3 +1,4 @@
+import { BtcAccountType, EthScope } from '@metamask/keyring-api';
 import {
   GOERLI_DISPLAY_NAME,
   LINEA_GOERLI_DISPLAY_NAME,
@@ -10,6 +11,7 @@ import { KeyringType } from '../../../shared/constants/keyring';
 import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
 import mockState from '../../../test/data/mock-state.json';
 import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts/solana-wallet-snap';
+import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts';
 import {
   getAccountLabels,
   getAccountNameErrorMessage,
@@ -125,7 +127,7 @@ describe('Accounts', () => {
         'eth_signTypedData_v3',
         'eth_signTypedData_v4',
       ],
-      type: 'eip155:eoa',
+      type: EthScope.Eoa,
     };
 
     it('should return empty array for null account', () => {
@@ -253,89 +255,125 @@ describe('Accounts', () => {
         ).toStrictEqual([]);
       });
     });
-  });
 
-  describe('SRP label', () => {
-    it('should show SRP label with index when there are multiple HD keyrings', () => {
-      const mockAccountWithHdKeyring = {
-        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        metadata: {
-          keyring: { type: KeyringType.hdKeyTree },
-          snap: {
-            id: SOLANA_WALLET_SNAP_ID,
+    describe('SRP label', () => {
+      it('should show SRP label with index when there are multiple HD keyrings', () => {
+        const mockAccountWithHdKeyring = {
+          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          type: EthScope.Eoa,
+          metadata: {
+            keyring: { type: KeyringType.hdKeyTree },
+            snap: {
+              id: SOLANA_WALLET_SNAP_ID,
+            },
           },
-        },
-      };
+        };
 
-      const multipleHdKeyrings = [
-        {
-          type: KeyringType.hdKeyTree,
-          accounts: ['0x123'],
-        },
-        {
-          type: KeyringType.hdKeyTree,
-          accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
-        },
-      ];
+        const multipleHdKeyrings = [
+          {
+            type: KeyringType.hdKeyTree,
+            accounts: ['0x123'],
+          },
+          {
+            type: KeyringType.hdKeyTree,
+            accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+          },
+        ];
 
-      expect(
-        getAccountLabels(
-          KeyringType.hdKeyTree,
-          mockAccountWithHdKeyring,
-          multipleHdKeyrings,
-        ),
-      ).toStrictEqual([{ label: 'SRP #2', icon: null }]);
+        expect(
+          getAccountLabels(
+            KeyringType.hdKeyTree,
+            mockAccountWithHdKeyring,
+            multipleHdKeyrings,
+          ),
+        ).toStrictEqual([{ label: 'SRP #2', icon: null }]);
+      });
+
+      it('should not show SRP label when there is only one HD keyring', () => {
+        const mockAccountWithHdKeyring = {
+          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          type: EthScope.Eoa,
+          metadata: {
+            keyring: { type: KeyringType.hdKeyTree },
+            snap: {
+              id: SOLANA_WALLET_SNAP_ID,
+            },
+          },
+        };
+
+        const singleHdKeyring = [
+          {
+            type: KeyringType.hdKeyTree,
+            accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+          },
+        ];
+
+        expect(
+          getAccountLabels(
+            KeyringType.hdKeyTree,
+            mockAccountWithHdKeyring,
+            singleHdKeyring,
+          ),
+        ).toStrictEqual([]);
+      });
+
+      it('should show SRP label for snap accounts with entropySource matching HD keyring', () => {
+        const mockSnapAccount = {
+          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          type: EthScope.Eoa,
+          options: {
+            entropySource: 'hdKeyring2',
+          },
+          metadata: {
+            keyring: { type: KeyringType.snap },
+            snap: {
+              id: SOLANA_WALLET_SNAP_ID,
+            },
+          },
+        };
+
+        expect(
+          getAccountLabels(
+            KeyringType.snap,
+            mockSnapAccount,
+            keyringsWithMetadata,
+            'Test Snap',
+          ),
+        ).toStrictEqual([{ label: 'SRP #2', icon: null }]);
+      });
     });
 
-    it('should not show SRP label when there is only one HD keyring', () => {
-      const mockAccountWithHdKeyring = {
-        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        metadata: {
-          keyring: { type: KeyringType.hdKeyTree },
-          snap: {
-            id: SOLANA_WALLET_SNAP_ID,
-          },
-        },
-      };
+    describe('Bitcoin account type label', () => {
+      it.each([
+        [BtcAccountType.P2pkh, 'Legacy'],
+        [BtcAccountType.P2sh, 'SegWit'],
+        [BtcAccountType.P2wpkh, 'Native SegWit'],
+        [BtcAccountType.P2tr, 'Taproot'],
+      ])(
+        'should show Bitcoin account type label: %s',
+        (type, expectedLabel) => {
+          const mockBitcoinAccount = {
+            ...mockAccount,
+            address: 'bc1q4degm5k044n9xv3ds7d8l6hfavydte6wn6sesw',
+            type,
+            metadata: {
+              ...mockAccount.metadata,
+              snap: {
+                ...mockAccount.metadata.snap,
+                id: BITCOIN_WALLET_SNAP_ID,
+              },
+            },
+          };
 
-      const singleHdKeyring = [
-        {
-          type: KeyringType.hdKeyTree,
-          accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+          expect(
+            getAccountLabels(
+              KeyringType.snap,
+              mockBitcoinAccount,
+              keyringsWithMetadata,
+            ),
+          ).toStrictEqual([{ label: expectedLabel, icon: null }]);
         },
-      ];
-
-      expect(
-        getAccountLabels(
-          KeyringType.hdKeyTree,
-          mockAccountWithHdKeyring,
-          singleHdKeyring,
-        ),
-      ).toStrictEqual([]);
-    });
-
-    it('should show SRP label for snap accounts with entropySource matching HD keyring', () => {
-      const mockSnapAccount = {
-        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        options: {
-          entropySource: 'hdKeyring2',
-        },
-        metadata: {
-          keyring: { type: KeyringType.snap },
-          snap: {
-            id: SOLANA_WALLET_SNAP_ID,
-          },
-        },
-      };
-
-      expect(
-        getAccountLabels(
-          KeyringType.snap,
-          mockSnapAccount,
-          keyringsWithMetadata,
-          'Test Snap',
-        ),
-      ).toStrictEqual([{ label: 'SRP #2', icon: null }]);
+      );
     });
   });
 });
