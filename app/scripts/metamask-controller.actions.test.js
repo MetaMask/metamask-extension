@@ -439,15 +439,17 @@ describe('MetaMaskController', function () {
 
   describe('#checkIsSeedlessPasswordOutdated', function () {
     it('should return undefined if firstTimeFlowType is not seedless', async function () {
-      metamaskController.onboardingController.state.firstTimeFlowType =
-        FirstTimeFlowType.create;
+      metamaskController.onboardingController.setFirstTimeFlowType(
+        FirstTimeFlowType.create,
+      );
       const result = await metamaskController.checkIsSeedlessPasswordOutdated();
       expect(result).toBeUndefined();
     });
 
     it('should return false if firstTimeFlowType is seedless and password is not outdated', async function () {
-      metamaskController.onboardingController.state.firstTimeFlowType =
-        FirstTimeFlowType.seedless;
+      metamaskController.onboardingController.setFirstTimeFlowType(
+        FirstTimeFlowType.socialCreate,
+      );
       jest
         .spyOn(
           metamaskController.seedlessOnboardingController,
@@ -462,8 +464,9 @@ describe('MetaMaskController', function () {
     });
 
     it('should return true if firstTimeFlowType is seedless and password is outdated', async function () {
-      metamaskController.onboardingController.state.firstTimeFlowType =
-        FirstTimeFlowType.seedless;
+      metamaskController.onboardingController.setFirstTimeFlowType(
+        FirstTimeFlowType.socialCreate,
+      );
       jest
         .spyOn(
           metamaskController.seedlessOnboardingController,
@@ -485,8 +488,9 @@ describe('MetaMaskController', function () {
     beforeEach(() => {
       // Reset spies for each test
       jest.restoreAllMocks();
-      metamaskController.onboardingController.state.firstTimeFlowType =
-        FirstTimeFlowType.seedless;
+      metamaskController.onboardingController.setFirstTimeFlowType(
+        FirstTimeFlowType.socialCreate,
+      );
 
       jest
         .spyOn(
@@ -542,8 +546,9 @@ describe('MetaMaskController', function () {
     });
 
     it('should throw an error if firstTimeFlowType is not seedless', async function () {
-      metamaskController.onboardingController.state.firstTimeFlowType =
-        FirstTimeFlowType.create; // Not seedless
+      metamaskController.onboardingController.setFirstTimeFlowType(
+        FirstTimeFlowType.create,
+      ); // Not seedless
 
       await expect(
         metamaskController.submitLatestGlobalSeedlessPassword(globalPassword),

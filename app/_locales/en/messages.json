@@ -1059,17 +1059,17 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
   },
+  "changePasswordLoading": {
+    "message": "Changing password..."
+  },
+  "changePasswordLoadingNote": {
+    "message": "This shouldn't take long"
+  },
   "changePasswordWarning": {
     "message": "Warning: Wallets will be locked from all devices"
   },
   "changePasswordWarningDescription": {
     "message": "For safety, this action will lock wallet access on any other device you're currently signed into. To regain access, you'll need to log in again with your new password."
-  },
-  "changePasswordLoading": {
-    "message": "Chaning password..."
-  },
-  "changePasswordLoadingNote": {
-    "message": "This shouldn't take long"
   },
   "chooseYourNetwork": {
     "message": "Choose your network"

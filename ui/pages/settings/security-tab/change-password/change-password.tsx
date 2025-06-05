@@ -88,13 +88,6 @@ const ChangePassword = () => {
     }
   };
 
-  const onSubmitChangePasswordForm = () => {
-    if (!newPassword) {
-      return;
-    }
-    setShowChangePasswordWarning(true);
-  };
-
   return (
     <Box padding={4} className="change-password">
       {step === ChangePasswordSteps.VerifyCurrentPassword && (
@@ -155,7 +148,7 @@ const ChangePassword = () => {
           height={BlockSize.Full}
           onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
-            onSubmitChangePasswordForm();
+            setShowChangePasswordWarning(true);
           }}
         >
           <Box>
@@ -167,7 +160,7 @@ const ChangePassword = () => {
           </Box>
           <Button
             type="submit"
-            disabled={!newPassword}
+            disabled={!currentPassword || !newPassword}
             data-testid="change-password-button"
             block
           >
