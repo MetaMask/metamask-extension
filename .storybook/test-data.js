@@ -45,6 +45,11 @@ const state = {
       },
     },
     orderedNetworkList: [],
+    enabledNetworkMap: {
+      '0x1': true,
+      '0xe708': true,
+      '0x539': true,
+    },
     pinnedAccountList: [],
     hiddenAccountList: [],
     tokensChainsCache: {

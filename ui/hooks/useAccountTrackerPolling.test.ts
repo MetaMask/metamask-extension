@@ -41,6 +41,10 @@ describe('useAccountTrackerPolling', () => {
         isUnlocked: true,
         completedOnboarding: true,
         selectedNetworkClientId: 'selectedNetworkClientId',
+        enabledNetworkMap: {
+          '0x1': true,
+          '0x89': true,
+        },
         networkConfigurationsByChainId: {
           '0x1': {
             chainId: '0x1',

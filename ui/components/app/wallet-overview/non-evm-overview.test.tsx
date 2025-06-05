@@ -205,8 +205,10 @@ describe('NonEvmOverview', () => {
           // The balances won't be available
           preferences: {
             showNativeTokenAsMainBalance: false,
-            tokenNetworkFilter: {},
             privacyMode: false,
+          },
+          enabledNetworkMap: {
+            [MultichainNetworks.BITCOIN]: true,
           },
           currentCurrency: 'usd',
           conversionRates: {

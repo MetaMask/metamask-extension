@@ -88,6 +88,9 @@ const render = (
     metamask: {
       ...mockState.metamask,
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      enabledNetworkMap: {
+        '0x1': true,
+      },
       allDeFiPositions: selectedDeFiPositions,
       currencyRates: {
         ETH: {
