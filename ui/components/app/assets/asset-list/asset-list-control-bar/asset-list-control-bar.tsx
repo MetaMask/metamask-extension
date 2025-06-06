@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useContext, useMemo } from 'react';
+import React, { useEffect, useRef, useState, useContext, useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Hex } from '@metamask/utils';
@@ -55,6 +55,7 @@ import {
   setTokenNetworkFilter,
   showImportNftsModal,
   showImportTokensModal,
+  showModal,
 } from '../../../../../store/actions';
 import Tooltip from '../../../../ui/tooltip';
 import { getMultichainNetwork } from '../../../../../selectors/multichain';
@@ -228,6 +229,10 @@ const AssetListControlBar = ({
     history.push(SECURITY_ROUTE);
   };
 
+  const handleNetworkManager = useCallback(() => {
+    dispatch(showModal({ name: 'NETWORK_MANAGER' }));
+  }, [dispatch]);
+
   const handleNftRefresh = () => {
     if (isMainnet || isLineaMainnet) {
       dispatch(detectNfts(allChainIds));
@@ -258,9 +263,8 @@ const AssetListControlBar = ({
           data-testid="sort-by-networks"
           variant={TextVariant.bodyMdMedium}
           className="asset-list-control-bar__button asset-list-control-bar__network_control"
-          onClick={toggleNetworkFilterPopover}
+          onClick={handleNetworkManager}
           size={ButtonBaseSize.Sm}
-          disabled={isDisabled}
           endIconName={IconName.ArrowDown}
           backgroundColor={
             isNetworkFilterPopoverOpen

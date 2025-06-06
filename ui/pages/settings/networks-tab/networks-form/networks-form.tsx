@@ -83,6 +83,7 @@ export const NetworksForm = ({
   onBlockExplorerAdd,
   toggleNetworkMenuAfterSubmit = true,
   onComplete = () => {},
+  onEdit,
 }: {
   networkFormState: ReturnType<typeof useNetworkFormState>;
   existingNetwork?: UpdateNetworkFields;
@@ -90,6 +91,7 @@ export const NetworksForm = ({
   onBlockExplorerAdd: () => void;
   toggleNetworkMenuAfterSubmit?: boolean;
   onComplete?: () => void;
+  onEdit?: () => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -560,6 +562,7 @@ export const NetworksForm = ({
                         chainId: chainIdHex,
                       }),
                     );
+                    onEdit?.();
                   }
                 }}
               >

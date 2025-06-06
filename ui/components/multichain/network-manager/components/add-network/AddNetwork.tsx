@@ -20,7 +20,11 @@ export const AddNetwork: React.FC<AddNetworkProps> = ({
     <NetworksForm
       toggleNetworkMenuAfterSubmit={false}
       onComplete={() => {
-        history.push('/');
+        console.log(`onComplete pushing to /?tab=custom-networks`);
+        history.push('/?tab=custom-networks');
+      }}
+      onEdit={() => {
+        history.push('/edit');
       }}
       networkFormState={networkFormState}
       existingNetwork={network}

@@ -7,7 +7,7 @@ import { CustomNetworks } from './components/custom-networks';
 import { DefaultNetworks } from './components/default-networks';
 
 // Network tabs component
-export const NetworkTabs = () => {
+export const NetworkTabs = ({ initialTab }: { initialTab: string }) => {
   const dispatch = useDispatch();
   const handleClose = useCallback(() => {
     dispatch(hideModal());
@@ -18,7 +18,7 @@ export const NetworkTabs = () => {
         Networks
       </ModalHeader>
       <Tabs
-        defaultActiveTabKey="networks"
+        defaultActiveTabKey={initialTab}
         onTabClick={() => {
           // Tab click handler - intentionally empty for now
         }}

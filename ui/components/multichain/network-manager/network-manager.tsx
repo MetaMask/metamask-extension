@@ -3,7 +3,7 @@ import {
   UpdateNetworkFields,
 } from '@metamask/network-controller';
 import React, { useCallback, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   MemoryRouter,
   Route,
@@ -18,6 +18,7 @@ import {
   getEditedNetwork,
   getMultichainNetworkConfigurationsByChainId,
 } from '../../../selectors';
+import { hideModal } from '../../../store/actions';
 import {
   Modal,
   ModalContent,
@@ -29,26 +30,24 @@ import AddRpcUrlModal from '../network-list-menu/add-rpc-url-modal/add-rpc-url-m
 import { AddNetwork } from './components/add-network';
 import { NetworkTabs } from './network-tabs';
 
-export type NetworkItemProps = {
-  name: string;
-  src: string;
-  balance?: string;
-  isChecked?: boolean;
-  onCheckboxChange?: () => void;
-  onMoreOptionsClick?: () => void;
-};
-
 // Router content component
 const NetworkManagerRouter = () => {
   const t = useI18nContext();
   const history = useHistory();
   const location = useLocation();
 
+  console.log(`location.search`, location.search);
+  const initialTab = useMemo(() => {
+    return location.search.includes('custom-networks')
+      ? 'custom-networks'
+      : 'networks';
+  }, [location.search]);
+
   const handleNewNetwork = () => {
     history.push('/add');
   };
 
-  const [multichainNetworks, evmNetworks] = useSelector(
+  const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
   const { chainId: editingChainId, editCompleted } =
@@ -66,8 +65,6 @@ const NetworkManagerRouter = () => {
   }, [editingChainId, editCompleted, evmNetworks, location.pathname]);
 
   const networkFormState = useNetworkFormState(editedNetwork);
-
-  console.log(`editedNetwork`, editedNetwork);
 
   const handleAddRPC = useCallback(
     (url: string, name?: string) => {
@@ -155,10 +152,7 @@ const NetworkManagerRouter = () => {
       </Route>
       <Route path="/add">
         <ModalHeader onClose={handleClose} onBack={handleGoHome}>
-          {t('addNetwork')}{' '}
-          {history.location.pathname.includes('add')
-            ? 'Custom Network'
-            : 'Test Network'}
+          {t('addNetwork')}
         </ModalHeader>
         <AddNetwork
           networkFormState={networkFormState}
@@ -176,21 +170,21 @@ const NetworkManagerRouter = () => {
         />
       </Route>
       <Route path="/">
-        <NetworkTabs />
+        <NetworkTabs initialTab={initialTab} />
       </Route>
     </Switch>
   );
 };
 
-export const NetworkManager = ({
-  isOpen,
-  onClose,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-}) => {
+export const NetworkManager = () => {
+  const dispatch = useDispatch();
+
+  const onClose = useCallback(() => {
+    dispatch(hideModal());
+  }, [dispatch]);
+
   return (
-    <Modal isOpen onClose={onClose}>
+    <Modal isOpen onClose={onClose} isClosedOnEscapeKey isClosedOnOutsideClick>
       <ModalContent size={ModalContentSize.Md}>
         <MemoryRouter initialEntries={['/']}>
           <NetworkManagerRouter />
