@@ -2286,18 +2286,11 @@
   "gasLimit": {
     "message": "Gas-Limit"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Das Gas-Limit ist die Höchstmenge an Gas-Einheiten, die Sie auszugeben bereit sind."
-  },
   "gasLimitRecommended": {
     "message": "Empfohlenes Gas-Limit ist $1. Wenn das Gas-Limit weniger beträgt, kann es fehlschlagen."
   },
   "gasLimitTooLow": {
     "message": "Gas-Limit muss mindestens 21000 betragen."
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Gas-Limit muss mindestens $1 betragen.",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "Gas-Limit"
@@ -2305,23 +2298,11 @@
   "gasOption": {
     "message": "Gas-Option"
   },
-  "gasPrice": {
-    "message": "Gas-Preis (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "Ihre Gas-Gebühr ist unnötig hoch. Denken Sie darüber nach, den Betrag zu senken."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Gas-Preis ist übermäßig hoch"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Gas-Preis extrem niedrig"
-  },
   "gasPriceFetchFailed": {
     "message": "Die Gas-Preis-Schätzung ist aufgrund eines Netzwerkfehlers fehlgeschlagen."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Der Gas-Preis gibt die Menge Ether an, die Sie für jede Einheit Gas zu zahlen bereit sind."
   },
   "gasTimingHoursShort": {
     "message": "$1 Stunde",
@@ -6727,8 +6708,5 @@
   },
   "yourWalletIsReady": {
     "message": "Ihre Wallet ist bereit"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Keine Gas-Kosten bei Beschleunigung"
   }
 }
