@@ -16,15 +16,17 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { REMOTE_ROUTE } from '../../../../helpers/constants/routes';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type SendAllowanceBannerProps = {
-  allowance: DailyAllowance | null;
+  hasAllowance: boolean;
 };
 
 export default function SendAllowanceTooltip({
-  allowance,
+  hasAllowance,
 }: SendAllowanceBannerProps) {
   const history = useHistory();
+  const t = useI18nContext();
 
   return (
     <Tooltip
@@ -32,7 +34,7 @@ export default function SendAllowanceTooltip({
       html={
         <Box>
           <Text color={TextColor.textDefault} variant={TextVariant.bodyMd}>
-            Send authorized tokens without plugging in your hardware wallet.
+            {t('sendAllowanceTooltipDescription')}
             <Text
               display={Display.Inline}
               color={TextColor.infoDefault}
@@ -40,7 +42,7 @@ export default function SendAllowanceTooltip({
               onClick={() => history.push(REMOTE_ROUTE)}
               style={{ cursor: 'pointer' }}
             >
-              {allowance ? 'View permissions' : 'Enable'}
+              {hasAllowance ? t('viewPermissions') : t('enableSnap')}
             </Text>
           </Text>
         </Box>
