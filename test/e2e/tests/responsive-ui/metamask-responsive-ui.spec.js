@@ -49,11 +49,6 @@ describe('MetaMask Responsive UI', function () {
           '[data-testid="onboarding-create-with-srp-button"]',
         );
 
-        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-          // metrics
-          await driver.clickElement('[data-testid="metametrics-no-thanks"]');
-        }
-
         // create password
         await driver.fill(
           '[data-testid="create-password-new-input"]',
@@ -103,6 +98,11 @@ describe('MetaMask Responsive UI', function () {
         await driver.clickElementAndWaitToDisappear(
           '[data-testid="confirm-srp-modal-button"]',
         );
+
+        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+          // metrics
+          await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+        }
 
         // complete
         await driver.clickElement('[data-testid="onboarding-complete-done"]');
