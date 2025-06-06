@@ -232,7 +232,7 @@
     "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch",
     "@trezor/connect-web": "~9.4.7",
     "@metamask/controller-utils@npm:^11.7.1-backport": "11.7.1-backport",
-    "@metamask/snaps-rpc-methods@npm:^12.1.0": "patch:@metamask/snaps-rpc-methods@npm%3A12.1.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-12.1.0-052e5af572.patch"
+    "@metamask/snaps-rpc-methods@npm:^12.3.0": "patch:@metamask/snaps-rpc-methods@npm%3A12.3.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-12.3.0-2489f92f4f.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -332,7 +332,7 @@
     "@metamask/smart-transactions-controller": "^16.3.1",
     "@metamask/snaps-controllers": "^12.2.0",
     "@metamask/snaps-execution-environments": "^8.1.0",
-    "@metamask/snaps-rpc-methods": "^12.3.0",
+    "@metamask/snaps-rpc-methods": "patch:@metamask/snaps-rpc-methods@npm%3A12.3.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-12.3.0-2489f92f4f.patch",
     "@metamask/snaps-sdk": "^6.24.0",
     "@metamask/snaps-utils": "^9.3.0",
     "@metamask/solana-wallet-snap": "^1.31.2",
