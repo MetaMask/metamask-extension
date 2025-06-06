@@ -616,6 +616,9 @@ async function initialize(backup) {
   );
 
   controller.store.on('update', update);
+  controller.store.on('error', (error) => {
+    log.error('MetaMask controller.store error:', error);
+  });
 
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);

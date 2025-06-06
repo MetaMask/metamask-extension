@@ -104,16 +104,20 @@ export class OperationSafener<O extends Op = Op> {
       return this.#evacuating;
     }
 
-    // this IIFE is used to ensure that the evacuation process always resolves
-    // successfully, AND in errors from running `this.#bouncer.flush()` are
-    // treated as unhandled rejections so that they can still bubble up to
-    // the process/window's `unhandledRejection` listener, if there is one,
-    // i.e., Sentry.
-    this.#evacuating = (async () => {
-      // flush will invoke the latest pending op, then return a Promise that
-      // resolves to the result of running that `op`.
-      await this.#bouncer.flush();
-    })();
+    // execute the final operation in the queue, if any
+    const finalInvocation = this.#bouncer.flush();
+    if (finalInvocation) {
+      // ensure that `evacuate` always resolves successfully, AND that a
+      // rejection from running `this.#bouncer.flush()` *is* an unhandled
+      // rejection; we want it to bubble up to the process/window's
+      // `unhandledRejection` listener, i.e., Sentry.
+      const { promise, resolve } = Promise.withResolvers<void>();
+      finalInvocation.finally(resolve);
+      this.#evacuating = promise;
+    } else {
+      this.#evacuating = Promise.resolve();
+    }
+
     return this.#evacuating;
   };
 
