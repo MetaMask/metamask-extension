@@ -1,5 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import {
   Box,
   Icon,
@@ -16,7 +17,6 @@ import {
 import { REMOTE_ROUTE } from '../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
-import { useSelector } from 'react-redux';
 
 type SendAllowanceBannerProps = {
   hasAllowance: boolean;
