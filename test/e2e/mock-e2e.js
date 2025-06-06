@@ -43,6 +43,8 @@ const CLIENT_SIDE_DETECTION_BLOCKLIST_PATH =
 const ON_RAMP_CONTENT_PATH = 'test/e2e/mock-response-data/on-ramp-content.json';
 const TOKEN_BLOCKLIST_PATH = 'test/e2e/mock-response-data/token-blocklist.json';
 
+const SNAP_REGISTRY_PATH = 'test/e2e/mock-response-data/snaps/registry.json';
+
 const snapsExecutionEnvBasePath = path.dirname(
   require.resolve('@metamask/snaps-execution-environments/package.json'),
 );
@@ -941,6 +943,32 @@ async function setupMocking(
         statusCode: 200,
         body: snapsExecutionEnvJs,
         headers: { 'Content-Type': 'application/javascript; charset=utf-8' },
+      };
+    });
+
+  // Snaps: Registry
+  const snapRegistry = fs.readFileSync(SNAP_REGISTRY_PATH);
+  await server
+    .forGet('https://acl.execution.metamask.io/latest/registry.json')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: snapRegistry,
+      };
+    });
+
+  // Snaps: Signature
+  await server
+    .forGet('https://acl.execution.metamask.io/latest/signature.json')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          signature:
+            '0x3045022100f94738245a681ba428edd30b743d347b44d55f0dd485e16e8573a67280e4c0f9022072bb059d34a93ce9fafebfafe4d0155bd6dab749cc91a0977dbd5c19e35aa588',
+          curve: 'secp256k1',
+          format: 'DER',
+        },
       };
     });
 
