@@ -121,6 +121,9 @@ export const BridgeInputGroup = ({
       inputRef.current.value = amountFieldProps?.value?.toString() ?? '';
       inputRef.current.focus();
     }
+    return () => {
+      inputRef.current = null;
+    };
   }, [amountFieldProps?.value, isAmountReadOnly, token]);
 
   const isSwap = useIsMultichainSwap();
