@@ -263,6 +263,10 @@ const PrepareBridgePage = () => {
         token_address_destination: toToken?.address ?? '',
       },
     });
+
+    return () => {
+      debouncedUpdateQuoteRequestInController.cancel();
+    };
   }, []);
 
   const millisecondsUntilNextRefresh = useCountdownTimer();
