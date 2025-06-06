@@ -3,6 +3,16 @@ import { Driver } from '../../../webdriver/driver';
 class OnboardingCompletePage {
   private driver: Driver;
 
+  private readonly congratulationsMessage = {
+    text: 'Congratulations!',
+    tag: 'h2',
+  };
+
+  private readonly defaultPrivacySettingsButton = {
+    text: 'Manage default settings',
+    tag: 'button',
+  };
+
   private readonly installCompleteMessage = {
     text: 'Installation is complete!',
     tag: 'h2',
@@ -15,7 +25,7 @@ class OnboardingCompletePage {
     '[data-testid="pin-extension-done"]';
 
   private readonly pinExtensionMessage = {
-    text: 'Pin MetaMask on your browser so it’s accessible and easy to view transaction confirmations.',
+    text: 'Click Chrome extension icon to access it instantly',
     tag: 'p',
   };
 

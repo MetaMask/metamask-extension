@@ -12,7 +12,7 @@ const render = (newState: Partial<MetaMaskReduxState> = {}) => {
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      ...newState.metamask,
+      ...(newState.metamask || {}),
     },
   });
 

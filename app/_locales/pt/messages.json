@@ -6651,7 +6651,7 @@
     "description": "Used in the 'permission_rpc' message."
   },
   "welcomeBack": {
-    "message": "Boas-vindas de volta"
+    "message": "Boas-vindas de volta!"
   },
   "welcomeToMetaMask": {
     "message": "Vamos começar"

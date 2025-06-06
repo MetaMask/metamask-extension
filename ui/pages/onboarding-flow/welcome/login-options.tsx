@@ -27,11 +27,10 @@ import {
   IconColor,
   JustifyContent,
   TextAlign,
-  TextColor,
-  TextTransform,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import Divider from '../../../components/app/divider';
 import { LOGIN_TYPE, LoginType, LoginOptionType, LOGIN_OPTION } from './types';
 
 export const SocialButton = React.forwardRef(
@@ -132,29 +131,7 @@ export default function LoginOptions({
             marginBottom={2}
             onClick={() => onLogin(LOGIN_TYPE.APPLE)}
           />
-          <Box
-            alignItems={AlignItems.center}
-            marginBottom={4}
-            className="options-modal__or"
-          >
-            <Text
-              width={BlockSize.Min}
-              variant={TextVariant.bodyMd}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.textMuted}
-              backgroundColor={BackgroundColor.backgroundDefault}
-              paddingInline={2}
-              marginInline="auto"
-              textTransform={TextTransform.Uppercase}
-              as="div"
-              style={{
-                position: 'relative',
-                zIndex: 1,
-              }}
-            >
-              {t('or')}
-            </Text>
-          </Box>
+          <Divider marginBottom={4} />
           <Button
             data-testid={
               loginOption === LOGIN_OPTION.EXISTING
