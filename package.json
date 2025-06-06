@@ -260,7 +260,7 @@
     "@metamask/bridge-controller": "^32.1.1",
     "@metamask/bridge-status-controller": "29.0.0",
     "@metamask/browser-passworder": "^4.3.0",
-    "@metamask/chain-agnostic-permission": "^0.6.0",
+    "@metamask/chain-agnostic-permission": "^0.7.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^11.9.0",
     "@metamask/delegation-controller": "^0.4.0",
