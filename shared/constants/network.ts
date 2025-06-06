@@ -189,6 +189,7 @@ export const CHAIN_IDS = {
   FLOW: '0x2eb',
   KATANA: '0xb67d2',
   MONAD_TESTNET: '0x279f',
+  PEAQ: '0xd0a',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -262,6 +263,7 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   SHAPE_SEPOLIA: '0x2b03',
   SHAPE: '0x168',
   XRPLEVM_TESTNET: '0x161c28',
+  PEAQ: '0xd0a',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -329,6 +331,7 @@ export const MATCHAIN_DISPLAY_NAME = 'Matchain';
 export const FLOW_DISPLAY_NAME = 'Flow EVM Mainnet';
 export const KATANA_DISPLAY_NAME = 'Katana';
 export const MONAD_TESTNET_DISPLAY_NAME = 'Monad Testnet';
+export const PEAQ_DISPLAY_NAME = 'peaq';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -467,6 +470,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   SHAPE: 'ETH',
   SHAPE_SEPOLIA: 'ETH',
   XRPLEVM_TESTNET: 'XRP',
+  PEAQ: 'PEAQ',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -578,6 +582,7 @@ export const MATCHAIN_IMAGE_URL = './images/matchain.svg';
 export const FLOW_IMAGE_URL = './images/flow.svg';
 export const KATANA_IMAGE_URL = './images/katana.svg';
 export const MONAD_TESTNET_IMAGE_URL = './images/monad-testnet-logo.png';
+export const PEAQ_IMAGE_URL = './images/peaq.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -856,6 +861,8 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.KATANA]: CURRENCY_SYMBOLS.KATANA,
   [CHAIN_IDS.MONAD_TESTNET]:
     TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MONAD_TESTNET],
+  [CHAINLIST_CHAIN_IDS_MAP.PEAQ]:
+    CHAINLIST_CURRENCY_SYMBOLS_MAP.PEAQ,
 } as const;
 
 /**
@@ -1005,6 +1012,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
   [CHAIN_IDS.KATANA]: KATANA_IMAGE_URL,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.PEAQ]: PEAQ_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1066,6 +1074,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
   [CHAIN_IDS.KATANA]: KATANA_IMAGE_URL,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_IMAGE_URL,
+  [CHAIN_IDS.PEAQ]: PEAQ_IMAGE_URL,
 } as const;
 
 /**
