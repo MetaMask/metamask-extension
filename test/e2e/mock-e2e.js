@@ -946,32 +946,6 @@ async function setupMocking(
       };
     });
 
-  // Snaps: Registry
-  const snapRegistry = fs.readFileSync(SNAP_REGISTRY_PATH);
-  await server
-    .forGet('https://acl.execution.metamask.io/latest/registry.json')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        body: snapRegistry,
-      };
-    });
-
-  // Snaps: Signature
-  await server
-    .forGet('https://acl.execution.metamask.io/latest/signature.json')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          signature:
-            '0x3045022100f94738245a681ba428edd30b743d347b44d55f0dd485e16e8573a67280e4c0f9022072bb059d34a93ce9fafebfafe4d0155bd6dab749cc91a0977dbd5c19e35aa588',
-          curve: 'secp256k1',
-          format: 'DER',
-        },
-      };
-    });
-
   // Token Icons
   await server
     .forGet('https://static.cx.metamask.io/api/v1/tokenIcons')

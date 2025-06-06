@@ -1,6 +1,8 @@
 // Please do not add any more items to this list.
 // This list is temporary and the goal is to reduce it to 0, meaning all requests are mocked in our e2e tests.
 const ALLOWLISTED_URLS = [
+  'https://acl.execution.metamask.io/latest/registry.json',
+  'https://acl.execution.metamask.io/latest/signature.json',
   'https://metamask.github.io/eth-ledger-bridge-keyring',
   'https://metamask.github.io/eth-ledger-bridge-keyring/',
   'https://metamask.github.io/eth-ledger-bridge-keyring/bundle.js',
