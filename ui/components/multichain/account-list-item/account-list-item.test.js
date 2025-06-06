@@ -2,6 +2,7 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { merge } from 'lodash';
+import { BtcScope } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -30,6 +31,7 @@ const mockNonEvmAccount = {
   id: 'b7893c59-e376-4cc0-93ad-05ddaab574a6',
   address: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
   type: 'bip122:p2wpkh',
+  scopes: [BtcScope.Mainnet],
 };
 
 const mockSnap = {

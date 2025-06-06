@@ -2286,18 +2286,11 @@
   "gasLimit": {
     "message": "燃料限制"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "燃料限制是指您愿意花费的最大燃料单位量。"
-  },
   "gasLimitRecommended": {
     "message": "建议的燃料限制是$1。如果燃料限制低于此值，则可能会失败。"
   },
   "gasLimitTooLow": {
     "message": "燃料限制至少为21000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "燃料限制至少为 $1",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "燃料限制"
@@ -2305,23 +2298,11 @@
   "gasOption": {
     "message": "燃料选项"
   },
-  "gasPrice": {
-    "message": "Gas 价格（GWEI）"
-  },
   "gasPriceExcessive": {
     "message": "您的燃料费设置得过高。请考虑降低金额。"
   },
-  "gasPriceExcessiveInput": {
-    "message": "燃料价格过高"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "燃料价格极低"
-  },
   "gasPriceFetchFailed": {
     "message": "由于网络错误，燃料价格估算失败。"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "燃料价格指明了您愿意为每单位燃料支付的以太币数量。"
   },
   "gasTimingHoursShort": {
     "message": "$1 小时",
@@ -6754,8 +6735,5 @@
   },
   "yourWalletIsReady": {
     "message": "您的钱包已准备就绪"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "加速时零燃料价格"
   }
 }
