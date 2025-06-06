@@ -985,12 +985,6 @@
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Isulat ito at itabi sa maraming tagong lugar."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Ilagay sa safe-deposit box."
-  },
   "seedPhraseIntroTitle": {
     "message": "I-secure ang iyong wallet"
   },
@@ -1354,9 +1348,6 @@
   },
   "termsOfService": {
     "message": "Mga Tuntunin ng Serbisyo"
-  },
-  "tips": {
-    "message": "Mga Tip"
   },
   "to": {
     "message": "Para kay/sa"
