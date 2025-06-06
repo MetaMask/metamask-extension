@@ -20,7 +20,10 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { setUpdateModalLastDismissedAt } from '../../../store/actions';
+import {
+  requestSafeReload,
+  setUpdateModalLastDismissedAt,
+} from '../../../store/actions';
 
 function UpdateModal() {
   const t = useI18nContext();
@@ -73,7 +76,7 @@ function UpdateModal() {
             } catch (error) {
               console.error(error);
             }
-            browser.runtime.reload();
+            await requestSafeReload();
           }}
           submitButtonProps={{
             children: t('updateToTheLatestVersion'),
