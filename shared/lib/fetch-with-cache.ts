@@ -1,13 +1,14 @@
+import { Json } from '@metamask/utils';
 import { MINUTE, SECOND } from '../constants/time';
 import getFetchWithTimeout from '../modules/fetch-with-timeout';
 import { Cloneable, getStorageItem, setStorageItem } from './storage-helpers';
 
-type CacheEntry = {
-  cachedResponse: Cloneable;
+export type CacheEntry<CachedResponse extends Cloneable = Cloneable> = {
+  cachedResponse: CachedResponse;
   cachedTime: number;
 };
 
-const fetchWithCache = async ({
+const fetchWithCache = async <R extends Json>({
   url,
   fetchOptions = {},
   cacheOptions: { cacheRefreshTime = MINUTE * 6, timeout = SECOND * 30 } = {},
@@ -47,7 +48,8 @@ const fetchWithCache = async ({
   const cached = await getStorageItem<CacheEntry>(cacheKey);
   if (cached) {
     if (currentTime - cached.cachedTime < cacheRefreshTime) {
-      return cached.cachedResponse;
+      // @ts-expect-error typescript's `JSON.parse` type is wrong; it does allow parsing of `Uint8Array` directly
+      return JSON.parse(cached.cachedResponse) as R;
     }
   }
   fetchOptions.headers.set('Content-Type', 'application/json');
@@ -80,7 +82,7 @@ const fetchWithCache = async ({
   setStorageItem(cacheKey, cacheEntry);
 
   // @ts-expect-error typescript's `JSON.parse` type is wrong; it does allow parsing of `Uint8Array` directly
-  return responseBytes ?? JSON.parse(responseBytes);
+  return responseBytes ?? (JSON.parse(responseBytes) as R);
 };
 
 export default fetchWithCache;
