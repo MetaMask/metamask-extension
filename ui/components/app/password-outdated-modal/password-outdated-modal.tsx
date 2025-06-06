@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  AlignItems,
   Display,
   IconColor,
   JustifyContent,
@@ -40,7 +41,7 @@ export default function PasswordOutdatedModal() {
       data-testid=".password-outdated-modal"
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent alignItems={AlignItems.center}>
         <ModalHeader>
           <Box>
             <Box display={Display.Flex} justifyContent={JustifyContent.center}>

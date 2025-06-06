@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
+  AlignItems,
   Display,
   IconColor,
   JustifyContent,
@@ -40,7 +41,7 @@ export default function ChangePasswordWarning({
       data-testid="change-password-warning-modal"
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent alignItems={AlignItems.center}>
         <ModalHeader>
           <Box>
             <Box display={Display.Flex} justifyContent={JustifyContent.center}>
