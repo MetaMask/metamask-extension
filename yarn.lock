@@ -4972,10 +4972,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@file:../snap-bitcoin-wallet/packages/snap::locator=metamask-crx%40workspace%3A.":
+"@metamask/bitcoin-wallet-snap@npm:^0.14.1":
   version: 0.14.1
-  resolution: "@metamask/bitcoin-wallet-snap@file:../snap-bitcoin-wallet/packages/snap#../snap-bitcoin-wallet/packages/snap::hash=206656&locator=metamask-crx%40workspace%3A."
-  checksum: 10/964f831d2c780bdd0a77cfa7c87655011d365f58e7f07c7c8dab373b1fff39fbf28f174a292e6fcb2b6fced26b1606b3ffaf1c9ba5c22b67ec42fa4f883baa12
+  resolution: "@metamask/bitcoin-wallet-snap@npm:0.14.1"
+  checksum: 10/7679ae5d71fae515157543425d0370825eb5c989fc16c7374228f5cf06c28de0a23639a1c46c0c185f2ac8cef3f620dae2cd9817a1d733b8d7fb24136e52d468
   languageName: node
   linkType: hard
 
@@ -29803,7 +29803,7 @@ __metadata:
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A68.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-68.0.0-02447bcea7.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/bitcoin-wallet-snap": "file:../snap-bitcoin-wallet/packages/snap"
+    "@metamask/bitcoin-wallet-snap": "npm:^0.14.1"
     "@metamask/bridge-controller": "npm:^26.0.0"
     "@metamask/bridge-status-controller": "npm:^23.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
