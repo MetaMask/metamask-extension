@@ -338,10 +338,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "우선 요금(일명 \"채굴자 팁\")이란 내 트랜잭션을 우선 거래한 것에 대한 인센티브로 채굴자에게 직접 전달되는 금액입니다."
   },
-  "agreeTermsOfUse": {
-    "message": "MetaMask의 $1에 동의합니다",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "해당 토큰의 온체인 기록에서 의심스러운 에어드롭 활동이 확인되었습니다."
   },
@@ -2296,18 +2292,11 @@
   "gasLimit": {
     "message": "가스 한도"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "가스 한도는 지불할 가스 단위의 최대 금액입니다."
-  },
   "gasLimitRecommended": {
     "message": "권장 가스비 한도는 $1입니다. 가스 한도가 이보다 낮으면 실패할 수 있습니다."
   },
   "gasLimitTooLow": {
     "message": "가스 한도는 21000 이상이어야 합니다."
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "가스 한도는 $1 이상이어야 합니다.",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "가스 한도"
@@ -2315,23 +2304,11 @@
   "gasOption": {
     "message": "가스 옵션"
   },
-  "gasPrice": {
-    "message": "가스 가격(GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "가스비가 불필요하게 높게 설정되었습니다. 가격을 낮추는 것을 고려해 보세요."
   },
-  "gasPriceExcessiveInput": {
-    "message": "가스 가격 초과"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "가스 가격이 너무 낮음"
-  },
   "gasPriceFetchFailed": {
     "message": "네트워크 오류로 인해 가스 가격 견적 추산을 실패했습니다."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "가스 가격은 각 가스 단위에 대해 지불할 Ether 금액을 지정합니다."
   },
   "gasTimingHoursShort": {
     "message": "$1 시간",
@@ -6789,23 +6766,8 @@
   "welcomeBack": {
     "message": "재방문을 환영합니다!"
   },
-  "welcomeExploreDescription": {
-    "message": "암호화폐와 자산을 저장, 전송 및 사용히세요."
-  },
-  "welcomeExploreTitle": {
-    "message": "Explore 분산화 앱"
-  },
-  "welcomeLoginDescription": {
-    "message": "MetaMask를 사용하여 분산화 앱에 로그인하세요. 가입은 필요 없습니다."
-  },
-  "welcomeLoginTitle": {
-    "message": "내 지갑 처음 알아보기"
-  },
   "welcomeToMetaMask": {
     "message": "시작하기"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "수백만 명이 신뢰하는 MetaMask는 모든 사람이 web3의 세계에 접근할 수 있도록 하는 안전한 지갑입니다."
   },
   "whatsThis": {
     "message": "이것은 무엇인가요?"
@@ -6868,8 +6830,5 @@
   },
   "yourWalletIsReady": {
     "message": "지갑이 준비되었습니다"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "가속화 시 가스 가격 0"
   }
 }
