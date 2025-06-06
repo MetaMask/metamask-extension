@@ -26,7 +26,7 @@ import { BaseUrl } from '../../../shared/constants/urls';
 import { Container } from '../../components/component-library/container/container';
 import { ContainerMaxWidth, Label } from '../../components/component-library';
 import { Checkbox } from '../../components/component-library/checkbox/checkbox';
-import { setSkipDeepLinkIntersticial } from '../../store/actions';
+import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../selectors/selectors';
 import { MetaMaskReduxState } from '../../store/store';
 
@@ -37,11 +37,11 @@ export const DeepLink = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   // it'd technically not possible for a natural flow to reach this page
-  // when `skipDeepLinkIntersticial` is true, but if a user manually navigates
+  // when `skipDeepLinkInterstitial` is true, but if a user manually navigates
   // to this "interstitial" page we should show their preferences anyway.
-  const skipDeepLinkIntersticial = useSelector(
+  const skipDeepLinkInterstitial = useSelector(
     (state: MetaMaskReduxState) =>
-      getPreferences(state).skipDeepLinkIntersticial,
+      getPreferences(state).skipDeepLinkInterstitial,
   );
   // const history = useHistory();
   const [route, setRoute] = useState<null | {
@@ -50,7 +50,7 @@ export const DeepLink = () => {
     signed: boolean;
   }>(null);
   const [error, setError] = useState<string | null>(null);
-  const [hasChecked, setHasChecked] = useState(skipDeepLinkIntersticial);
+  const [hasChecked, setHasChecked] = useState(skipDeepLinkInterstitial);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -99,8 +99,11 @@ export const DeepLink = () => {
       window.location.href = BaseUrl.MetaMask;
     }
   }
-  async function confirm() {
-    await dispatch(setSkipDeepLinkIntersticial(hasChecked));
+
+  function onChange() {
+    const newHasChecked = !hasChecked;
+    setHasChecked(newHasChecked);
+    dispatch(setSkipDeepLinkInterstitial(newHasChecked));
   }
 
   return (
@@ -140,26 +143,30 @@ export const DeepLink = () => {
                 </Text>
               )}
             </Box>
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.center}
-              alignItems={AlignItems.center}
-              gap={2}
-              margin={4}
-            >
-              <Checkbox
-                id="dont-remind-me-checkbox"
-                isChecked={hasChecked}
-                onClick={() => setHasChecked((prevValue) => !prevValue)}
-              ></Checkbox>
-              <Label
-                htmlFor="dont-remind-me-checkbox"
-                fontWeight={FontWeight.Normal}
-                variant={TextVariant.bodySm}
+            {route.signed ? (
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.center}
+                alignItems={AlignItems.center}
+                gap={2}
+                margin={4}
               >
-                Don't remind me again
-              </Label>
-            </Box>
+                <Checkbox
+                  id="dont-remind-me-checkbox"
+                  isChecked={hasChecked}
+                  onChange={onChange}
+                ></Checkbox>
+                <Label
+                  htmlFor="dont-remind-me-checkbox"
+                  fontWeight={FontWeight.Normal}
+                  variant={TextVariant.bodySm}
+                >
+                  Don't remind me again
+                </Label>
+              </Box>
+            ) : (
+              ''
+            )}
             <Box
               display={Display.Flex}
               alignItems={AlignItems.center}
@@ -178,7 +185,6 @@ export const DeepLink = () => {
               <Button
                 variant={ButtonVariant.Primary}
                 href={route.href}
-                onClick={confirm}
                 size={ButtonSize.Lg}
               >
                 {t(route.title) ?? route.title}

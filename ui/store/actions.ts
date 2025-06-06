@@ -6560,8 +6560,8 @@ export async function isRelaySupported(chainId: Hex): Promise<boolean> {
  * @param value - Whether to skip the interstitial page when opening a deep link.
  * @returns A promise that resolves when the preference is set.
  */
-export function setSkipDeepLinkIntersticial(value: boolean) {
-  return setPreference('skipDeepLinkIntersticial', value, false);
+export function setSkipDeepLinkInterstitial(value: boolean) {
+  return setPreference('skipDeepLinkInterstitial', value, false);
 }
 
 /**

@@ -210,8 +210,8 @@ const SETTINGS_CONSTANTS = [
   // securityAndPrivacy settingsRefs[3]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('skipDeepLinkIntersticial'),
-    descriptionMessage: (t) => t('skipDeepLinkIntersticialDescription'),
+    sectionMessage: (t) => t('skipDeepLinkInterstitial'),
+    descriptionMessage: (t) => t('skipDeepLinkInterstitialDescription'),
     route: `${SECURITY_ROUTE}#skip-deep-link-interstitial`,
     icon: 'fa fa-lock',
   },

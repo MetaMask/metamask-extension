@@ -102,8 +102,8 @@ export default class SecurityTab extends PureComponent {
     securityAlertsEnabled: PropTypes.bool,
     useExternalServices: PropTypes.bool,
     toggleExternalServices: PropTypes.func,
-    setSkipDeepLinkIntersticial: PropTypes.func.isRequired,
-    skipDeepLinkIntersticial: PropTypes.bool,
+    setSkipDeepLinkInterstitial: PropTypes.func.isRequired,
+    skipDeepLinkInterstitial: PropTypes.bool,
     setSecurityAlertsEnabled: PropTypes.func,
     metaMetricsDataDeletionId: PropTypes.string,
     hdEntropyIndex: PropTypes.number,
@@ -1103,9 +1103,9 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  renderSkipDeeplinkInterstitial() {
+  renderSkipDeepLinkInterstitial() {
     const { t } = this.context;
-    const { skipDeepLinkIntersticial, setSkipDeepLinkIntersticial } =
+    const { skipDeepLinkInterstitial, setSkipDeepLinkInterstitial } =
       this.props;
 
     return (
@@ -1127,9 +1127,9 @@ export default class SecurityTab extends PureComponent {
             justifyContent={JustifyContent.spaceBetween}
           >
             <div className="settings-page__content-item">
-              <span>{t('skipDeepLinkIntersticial')}</span>
+              <span>{t('skipDeepLinkInterstitial')}</span>
               <div className="settings-page__content-description">
-                {t('skipDeepLinkIntersticialDescription')}
+                {t('skipDeepLinkInterstitialDescription')}
               </div>
             </div>
 
@@ -1138,8 +1138,8 @@ export default class SecurityTab extends PureComponent {
               data-testid="useSafeChainsListValidation"
             >
               <ToggleButton
-                value={skipDeepLinkIntersticial}
-                onToggle={(value) => setSkipDeepLinkIntersticial(!value)}
+                value={skipDeepLinkInterstitial}
+                onToggle={(value) => setSkipDeepLinkInterstitial(!value)}
                 offLabel={t('off')}
                 onLabel={t('on')}
               />
@@ -1214,7 +1214,7 @@ export default class SecurityTab extends PureComponent {
           </span>
         </div>
         <div className="settings-page__content-padded">
-          {this.renderSkipDeeplinkInterstitial()}
+          {this.renderSkipDeepLinkInterstitial()}
         </div>
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}

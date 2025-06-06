@@ -20,7 +20,7 @@ import {
   setUseTransactionSimulations,
   setSecurityAlertsEnabled,
   updateDataDeletionTaskStatus,
-  setSkipDeepLinkIntersticial,
+  setSkipDeepLinkInterstitial,
 } from '../../../store/actions';
 import {
   getIsSecurityAlertsEnabled,
@@ -53,7 +53,7 @@ const mapStateToProps = (state) => {
     useExternalNameSources,
   } = metamask;
 
-  const { skipDeepLinkIntersticial } = getPreferences(state);
+  const { skipDeepLinkInterstitial } = getPreferences(state);
 
   const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
@@ -80,7 +80,7 @@ const mapStateToProps = (state) => {
     metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
     hdEntropyIndex: getHDEntropyIndex(state),
     hasMultipleHdKeyrings,
-    skipDeepLinkIntersticial: Boolean(skipDeepLinkIntersticial),
+    skipDeepLinkInterstitial: Boolean(skipDeepLinkInterstitial),
   };
 };
 
@@ -103,8 +103,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setUseSafeChainsListValidation(val)),
     setBasicFunctionalityModalOpen: () =>
       dispatch(openBasicFunctionalityModal()),
-    setSkipDeepLinkIntersticial: (val) =>
-      dispatch(setSkipDeepLinkIntersticial(val)),
+    setSkipDeepLinkInterstitial: (val) =>
+      dispatch(setSkipDeepLinkInterstitial(val)),
     setOpenSeaEnabled: (val) => dispatch(setOpenSeaEnabled(val)),
     setUseNftDetection: (val) => dispatch(setUseNftDetection(val)),
     setUse4ByteResolution: (value) => {

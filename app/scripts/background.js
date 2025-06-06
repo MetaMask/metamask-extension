@@ -89,7 +89,7 @@ import {
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
-import { DeeplinkRouter } from './lib/deeplinks/deeplink-router';
+import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
 import { getRequestSafeReload } from './lib/safe-reload';
 
 /**
@@ -626,7 +626,7 @@ async function initialize(backup) {
   }
   await sendReadyMessageToTabs();
 
-  const deepLinkRouter = new DeeplinkRouter({
+  const deepLinkRouter = new DeepLinkRouter({
     getExtensionURL: platform.getExtensionURL,
     controller,
   });

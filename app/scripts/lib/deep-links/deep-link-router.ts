@@ -2,7 +2,7 @@ import browser from 'webextension-polyfill';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { DEEPLINK_ROUTE } from '../../../../ui/helpers/constants/routes';
+import { DEEP_LINK_ROUTE } from '../../../../ui/helpers/constants/routes';
 import { parse } from '../../../../shared/lib/deeplinks/parse';
 import { DEEP_LINK_HOST } from '../../../../shared/lib/deeplinks/constants';
 import MetamaskController from '../../metamask-controller';
@@ -16,7 +16,7 @@ export type Options = {
 
 const slashRe = /^\//u;
 
-export class DeeplinkRouter {
+export class DeepLinkRouter {
   private getExtensionURL: Options['getExtensionURL'];
 
   private controller: MetamaskController;
@@ -70,6 +70,7 @@ export class DeeplinkRouter {
     urlStr: string,
   ): Promise<browser.WebRequest.BlockingResponse> {
     const parsed = await parse(urlStr);
+    debugger;
     if (parsed === false) {
       // unable to parse, ignore the request
       return {};
@@ -77,11 +78,12 @@ export class DeeplinkRouter {
 
     let link: string;
 
-    const skipDeepLinkIntersticial = Boolean(
-      this.controller.getState().preferences?.skipDeepLinkIntersticial,
+    const skipDeepLinkInterstitial = Boolean(
+      this.controller.getState().preferences?.skipDeepLinkInterstitial,
     );
 
-    if (skipDeepLinkIntersticial) {
+    // only signed links get to skip the interstitial page
+    if (parsed.signed && skipDeepLinkInterstitial) {
       link = this.getExtensionURL(
         parsed.destination.path,
         parsed.destination.query.toString(),
@@ -94,7 +96,7 @@ export class DeeplinkRouter {
         // `routes.ts` seem to require routes have a leading slash, but then the
         // UI always redirects it to the non-slashed version. So we just use the
         // non-slashed version here to skip that redirect step.
-        DEEPLINK_ROUTE.replace(slashRe, ''),
+        DEEP_LINK_ROUTE.replace(slashRe, ''),
         search.toString() || null,
       );
     }
@@ -105,11 +107,12 @@ export class DeeplinkRouter {
       this.redirectTab(tabId, link);
       return {};
     }
-    // In MV2 we can just return the redirect URL, and the browser will
-    // redirect the tab to it for us, without letting the request to even
-    // begin.
-    // This is better because it avoids any network requests to the deeplink
-    // host, which is not needed in this case.
-    return { redirectUrl: link };
+    // In MV2 we can't just return a `redirectUrl`, as the browser blocks the
+    // redirect when requested this way. Instead, we can `cancel` the navigation
+    // request, and then use our `redirectTab` method to complete the redirect.
+    // This is better than the MV3 way because it avoids any network requests
+    // to the deep link host, which aren't necessary so and best to avoid.
+    this.redirectTab(tabId, link);
+    return { cancel: true };
   }
 }

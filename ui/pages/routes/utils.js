@@ -22,7 +22,7 @@ import {
   REVIEW_PERMISSIONS,
   SEND_ROUTE,
   SNAPS_VIEW_ROUTE,
-  DEEPLINK_ROUTE,
+  DEEP_LINK_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -102,7 +102,7 @@ export function hideAppHeader(props) {
 
   const isDeepLinksPage = Boolean(
     matchPath(location.pathname, {
-      path: DEEPLINK_ROUTE,
+      path: DEEP_LINK_ROUTE,
       exact: false,
     }),
   );
