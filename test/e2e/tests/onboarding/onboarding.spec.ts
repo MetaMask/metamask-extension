@@ -25,8 +25,10 @@ import {
   importSRPOnboardingFlow,
   incompleteCreateNewWalletOnboardingFlow,
   onboardingMetricsFlow,
+  socialLoginOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import { MockSeedlessOnboardingUtils } from '../../helpers/social-sync/mocks';
 
 const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
@@ -318,6 +320,30 @@ describe('MetaMask onboarding', function () {
         // Next screen should be Secure your wallet screen
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.check_pageIsLoaded();
+      },
+    );
+  });
+
+  it('Creates a new wallet with social login and completes the onboarding process', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) => {
+          // using this to mock the OAuth Service (Web Authentication flow + Auth server)
+          const mockSeedlessOnboardingUtils = new MockSeedlessOnboardingUtils();
+          return mockSeedlessOnboardingUtils.setup(server, {
+            // userEmail: 'test-user@gmail.com', // provide an email to mock the existing user flow
+          });
+        },
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await socialLoginOnboardingFlow({
+          driver,
+        });
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+        await homePage.check_expectedBalanceIsDisplayed('0');
       },
     );
   });

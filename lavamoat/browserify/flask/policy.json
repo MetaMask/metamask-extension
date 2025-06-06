@@ -3555,6 +3555,11 @@
         "buffer>ieee754": true
       }
     },
+    "jsonwebtoken>jws>jwa>buffer-equal-constant-time": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
     "terser>source-map-support>buffer-from": {
       "packages": {
         "browserify>buffer": true
@@ -3929,6 +3934,11 @@
     "debounce-stream>duplexer": {
       "packages": {
         "stream-browserify": true
+      }
+    },
+    "jsonwebtoken>jws>jwa>ecdsa-sig-formatter": {
+      "packages": {
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "@metamask/ppom-validator>elliptic": {
@@ -4503,6 +4513,23 @@
         "browserify>url": true
       }
     },
+    "jsonwebtoken": {
+      "packages": {
+        "browserify>buffer": true,
+        "crypto-browserify": true,
+        "jsonwebtoken>jws": true,
+        "jsonwebtoken>lodash.includes": true,
+        "jsonwebtoken>lodash.isboolean": true,
+        "jsonwebtoken>lodash.isinteger": true,
+        "jsonwebtoken>lodash.isnumber": true,
+        "jsonwebtoken>lodash.isplainobject": true,
+        "jsonwebtoken>lodash.isstring": true,
+        "jsonwebtoken>lodash.once": true,
+        "mocha>ms": true,
+        "process": true,
+        "semver": true
+      }
+    },
     "@material-ui/core>@material-ui/styles>jss-plugin-camel-case": {
       "packages": {
         "@material-ui/core>@material-ui/styles>jss-plugin-camel-case>hyphenate-style-name": true
@@ -4550,6 +4577,25 @@
         "@babel/runtime": true,
         "@material-ui/core>@material-ui/styles>jss>is-in-browser": true,
         "react-router-dom>tiny-warning": true
+      }
+    },
+    "jsonwebtoken>jws>jwa": {
+      "packages": {
+        "jsonwebtoken>jws>jwa>buffer-equal-constant-time": true,
+        "crypto-browserify": true,
+        "jsonwebtoken>jws>jwa>ecdsa-sig-formatter": true,
+        "koa>content-disposition>safe-buffer": true,
+        "browserify>util": true
+      }
+    },
+    "jsonwebtoken>jws": {
+      "packages": {
+        "browserify>buffer": true,
+        "jsonwebtoken>jws>jwa": true,
+        "process": true,
+        "koa>content-disposition>safe-buffer": true,
+        "stream-browserify": true,
+        "browserify>util": true
       }
     },
     "ethereumjs-util>ethereum-cryptography>keccak": {

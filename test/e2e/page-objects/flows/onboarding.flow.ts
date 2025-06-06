@@ -1,4 +1,5 @@
 import { Browser } from 'selenium-webdriver';
+import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { Driver } from '../../webdriver/driver';
 import OnboardingMetricsPage from '../pages/onboarding/onboarding-metrics-page';
 import OnboardingPasswordPage from '../pages/onboarding/onboarding-password-page';
@@ -12,6 +13,65 @@ import { E2E_SRP } from '../../default-fixture';
 import HomePage from '../pages/home/homepage';
 import LoginPage from '../pages/login-page';
 import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
+
+const goToOnboardingWelcomeLoginPage = async ({
+  driver,
+  participateInMetaMetrics = false,
+  needNavigateToNewPage = true,
+  dataCollectionForMarketing = false,
+}: {
+  driver: Driver;
+  participateInMetaMetrics?: boolean;
+  needNavigateToNewPage?: boolean;
+  dataCollectionForMarketing?: boolean;
+}) => {
+  if (needNavigateToNewPage) {
+    await driver.navigate();
+  }
+
+  if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+    await onboardingMetricsFlow(driver, {
+      participateInMetaMetrics,
+      dataCollectionForMarketing,
+    });
+  }
+
+  const startOnboardingPage = new StartOnboardingPage(driver);
+  await startOnboardingPage.check_bannerPageIsLoaded();
+  await startOnboardingPage.agreeToTermsOfUse();
+  await startOnboardingPage.check_loginPageIsLoaded();
+
+  return startOnboardingPage;
+};
+
+export const socialLoginOnboardingFlow = async ({
+  driver,
+  password = WALLET_PASSWORD,
+  participateInMetaMetrics = false,
+  needNavigateToNewPage = true,
+  dataCollectionForMarketing = false,
+}: {
+  driver: Driver;
+  password?: string;
+  participateInMetaMetrics?: boolean;
+  needNavigateToNewPage?: boolean;
+  dataCollectionForMarketing?: boolean;
+  skipSRPBackup?: boolean;
+  authConnection?: AuthConnection;
+}) => {
+  console.log('Starting the creation of a new wallet onboarding flow');
+  const startOnboardingPage = await goToOnboardingWelcomeLoginPage({
+    driver,
+    participateInMetaMetrics,
+    needNavigateToNewPage,
+    dataCollectionForMarketing,
+  });
+
+  await startOnboardingPage.creteWalletWithSocialLogin();
+  const onboardingPasswordPage = new OnboardingPasswordPage(driver);
+  await onboardingPasswordPage.check_pageIsLoaded();
+  await onboardingPasswordPage.createWalletPassword(password);
+};
 
 /**
  * Create new wallet onboarding flow
@@ -40,21 +100,12 @@ export const createNewWalletOnboardingFlow = async ({
   skipSRPBackup?: boolean;
 }): Promise<void> => {
   console.log('Starting the creation of a new wallet onboarding flow');
-  if (needNavigateToNewPage) {
-    await driver.navigate();
-  }
-
-  if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-    await onboardingMetricsFlow(driver, {
-      participateInMetaMetrics,
-      dataCollectionForMarketing,
-    });
-  }
-
-  const startOnboardingPage = new StartOnboardingPage(driver);
-  await startOnboardingPage.check_bannerPageIsLoaded();
-  await startOnboardingPage.agreeToTermsOfUse();
-  await startOnboardingPage.check_loginPageIsLoaded();
+  const startOnboardingPage = await goToOnboardingWelcomeLoginPage({
+    driver,
+    participateInMetaMetrics,
+    needNavigateToNewPage,
+    dataCollectionForMarketing,
+  });
   await startOnboardingPage.createWalletWithSrp();
 
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
@@ -102,21 +153,12 @@ export const incompleteCreateNewWalletOnboardingFlow = async ({
   dataCollectionForMarketing?: boolean;
 }): Promise<void> => {
   console.log('Starting the creation of a new wallet onboarding flow');
-  if (needNavigateToNewPage) {
-    await driver.navigate();
-  }
-
-  if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-    await onboardingMetricsFlow(driver, {
-      participateInMetaMetrics,
-      dataCollectionForMarketing,
-    });
-  }
-
-  const startOnboardingPage = new StartOnboardingPage(driver);
-  await startOnboardingPage.check_bannerPageIsLoaded();
-  await startOnboardingPage.agreeToTermsOfUse();
-  await startOnboardingPage.check_loginPageIsLoaded();
+  const startOnboardingPage = await goToOnboardingWelcomeLoginPage({
+    driver,
+    participateInMetaMetrics,
+    needNavigateToNewPage,
+    dataCollectionForMarketing,
+  });
   await startOnboardingPage.createWalletWithSrp();
 
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
