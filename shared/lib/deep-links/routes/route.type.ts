@@ -1,5 +1,3 @@
-import type { t } from '../../../../shared/lib/translate';
-
 /**
  * Represents the internal destination.
  */

@@ -1,6 +1,5 @@
 import {
   DEFAULT_ROUTE,
-  PATH_NAME_MAP,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/helpers/constants/routes';
