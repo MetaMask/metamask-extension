@@ -138,6 +138,7 @@ export type ControllerStatePropertiesEnumerated = {
   quotesLoadingStatus: BridgeControllerState['quotesLoadingStatus'];
   quoteFetchError: BridgeControllerState['quoteFetchError'];
   quotesRefreshCount: BridgeControllerState['quotesRefreshCount'];
+  minimumBalanceForRentExemptionInLamports: BridgeControllerState['minimumBalanceForRentExemptionInLamports'];
   assetExchangeRates: BridgeControllerState['assetExchangeRates'];
   txHistory: BridgeStatusControllerState['txHistory'];
   events: CronjobControllerState['events'];
