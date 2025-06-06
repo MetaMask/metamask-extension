@@ -98,8 +98,7 @@ export default class UnlockPage extends Component {
       return;
     }
 
-    this.setState({ error: null });
-    this.setState({ isSubmitting: true });
+    this.setState({ error: null, isSubmitting: true });
 
     try {
       await onSubmit(password);

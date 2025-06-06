@@ -274,7 +274,8 @@ export function restoreSocialBackupAndGetSeedPhrase(
     try {
       // get the first seed phrase from the array, this is the oldest seed phrase
       // and we will use it to create the initial vault
-      const [firstSeedPhrase] = await fetchAllSeedPhrases(password);
+      const [firstSeedPhrase, ...remainingSeedPhrases] =
+        await fetchAllSeedPhrases(password);
       if (!firstSeedPhrase) {
         throw new Error('No seed phrase found');
       }
@@ -290,6 +291,11 @@ export function restoreSocialBackupAndGetSeedPhrase(
         encodedSeedPhrase,
       ]);
 
+      // restore the remaining Mnemonics/SeedPhrases to the vault
+      if (remainingSeedPhrases.length > 0) {
+        await restoreSeedPhrasesToVault(remainingSeedPhrases);
+      }
+
       await forceUpdateMetamaskState(dispatch);
       dispatch(hideLoadingIndication());
 
@@ -303,6 +309,26 @@ export function restoreSocialBackupAndGetSeedPhrase(
   };
 }
 
+export function syncSeedPhrases(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      await submitRequestToBackground('syncSeedPhrases');
+    } catch (error) {
+      console.error('[syncSeedPhrases] error', error);
+      dispatch(displayWarning(error.message));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
 /**
  * Changes the password of the currently unlocked account.
  *
@@ -445,6 +471,22 @@ export function importMnemonicToVault(
         return Promise.reject(err);
       });
   };
+}
+
+/**
+ * Restores/syncs multiple seed phrases from the social login flow to the keyring vault.
+ *
+ * @param seedPhrases - The seed phrases.
+ */
+export async function restoreSeedPhrasesToVault(
+  seedPhrases: Uint8Array[],
+): Promise<void> {
+  try {
+    await submitRequestToBackground('restoreSeedPhrasesToVault', [seedPhrases]);
+  } catch (error) {
+    console.error('[restoreSeedPhrasesToVault] error', error);
+    throw error;
+  }
 }
 
 export function generateNewMnemonicAndAddToVault(): ThunkAction<

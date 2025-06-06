@@ -28,8 +28,6 @@ export class GoogleLoginHandler extends BaseLoginHandler {
 
     const { codeVerifier, challenge } =
       await this.generateCodeVerifierChallenge();
-    console.log('codeVerifier', codeVerifier);
-    console.log('challenge', challenge);
     const nonce = this.generateNonce();
     this.#codeVerifier = codeVerifier;
 
