@@ -78,6 +78,7 @@
   "permissions": [
     "activeTab",
     "alarms",
+    "clipboardRead",
     "clipboardWrite",
     "notifications",
     "scripting",
