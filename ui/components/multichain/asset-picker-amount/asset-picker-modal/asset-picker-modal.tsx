@@ -691,18 +691,17 @@ export function AssetPickerModal({
                   }}
                 />
               </React.Fragment>
-              <AssetPickerModalNftTab
-                key={TabName.NFTS}
-                searchQuery={searchQuery}
-                onClose={onClose}
-                renderSearch={() => (
-                  <Search
-                    isNFTSearch
-                    searchQuery={searchQuery}
-                    onChange={(value) => setSearchQuery(value)}
-                  />
-                )}
-              />
+              <React.Fragment key={TabName.NFTS}>
+                <Search
+                  isNFTSearch
+                  searchQuery={searchQuery}
+                  onChange={(value) => setSearchQuery(value)}
+                />
+                <AssetPickerModalNftTab
+                  searchQuery={searchQuery}
+                  onClose={onClose}
+                />
+              </React.Fragment>
             </AssetPickerModalTabs>
           )}
         </Box>
