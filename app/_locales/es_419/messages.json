@@ -774,15 +774,8 @@
   "gasLimit": {
     "message": "Límite de gas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "El límite de gas es la cantidad máxima de unidades de gas que está dispuesto a gastar."
-  },
   "gasLimitTooLow": {
     "message": "El límite de gas debe ser al menos 21 000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "El límite de gas debe ser al menos $1",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "Límite de gas"
@@ -790,23 +783,11 @@
   "gasOption": {
     "message": "Opción de gas"
   },
-  "gasPrice": {
-    "message": "Precio de gas (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "Su tarifa de gas es demasiado alta. Considere reducir el importe."
   },
-  "gasPriceExcessiveInput": {
-    "message": "El precio del gas es excesivo"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Precio de gas extremadamente bajo"
-  },
   "gasPriceFetchFailed": {
     "message": "Se produjo un error al calcular el precio del gas debido a una falla en la red."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "El precio de gas especifica la cantidad de ethers que está dispuesto a pagar por cada unidad de gas."
   },
   "gasTimingHoursShort": {
     "message": "$1 horas",
@@ -2241,8 +2222,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Su frase secreta de recuperación privada"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "No hay entradas sobre el precio del gas al acelerar la transacción"
   }
 }
