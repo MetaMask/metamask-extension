@@ -338,10 +338,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
-  "agreeTermsOfUse": {
-    "message": "I agree to MetaMask's $1",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "The token's on-chain history reveals prior instances of suspicious airdrop activities."
   },
@@ -2302,18 +2298,11 @@
   "gasLimit": {
     "message": "Gas limit"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Gas limit is the maximum amount of units of gas you are willing to spend."
-  },
   "gasLimitRecommended": {
     "message": "Recommended gas limit is $1. If the gas limit is less than that, it may fail."
   },
   "gasLimitTooLow": {
     "message": "Gas limit must be at least 21000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Gas limit must be at least $1",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "Gas limit"
@@ -2321,23 +2310,11 @@
   "gasOption": {
     "message": "Gas option"
   },
-  "gasPrice": {
-    "message": "Gas price (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "Your gas fee is set unnecessarily high. Consider lowering the amount."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Gas price is excessive"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Gas price extremely low"
-  },
   "gasPriceFetchFailed": {
     "message": "Gas price estimation failed due to network error."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
   },
   "gasTimingHoursShort": {
     "message": "$1 hrs",
@@ -3811,8 +3788,12 @@
   "onboardingAdvancedPrivacyNetworkTitle": {
     "message": "Choose your network"
   },
+  "onboardingContinueWith": {
+    "message": "Continue with $1",
+    "description": "$1 is the type of login used Google, Apple, etc."
+  },
   "onboardingCreateWallet": {
-    "message": "Create new wallet"
+    "message": "Create a new wallet"
   },
   "onboardingImportWallet": {
     "message": "I have an existing wallet"
@@ -3863,6 +3844,13 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
   },
+  "onboardingOptionIcon": {
+    "message": "$1 icon",
+    "description": "$1 is the icon name"
+  },
+  "onboardingOptionTitle": {
+    "message": "Choose an option to continue"
+  },
   "onboardingPinExtensionBillboardAccess": {
     "message": "Full access"
   },
@@ -3899,6 +3887,16 @@
   "onboardingPinExtensionTitle": {
     "message": "Installation is complete!"
   },
+  "onboardingSignInWith": {
+    "message": "Sign in with $1",
+    "description": "$1 is the type of login used Google, Apple, etc"
+  },
+  "onboardingSrpCreate": {
+    "message": "Continue with Secret Recovery Phrase"
+  },
+  "onboardingSrpImport": {
+    "message": "Import using Secret Recovery Phrase"
+  },
   "onekey": {
     "message": "OneKey"
   },
@@ -3921,6 +3919,9 @@
   },
   "options": {
     "message": "Options"
+  },
+  "or": {
+    "message": "Or"
   },
   "origin": {
     "message": "Origin"
@@ -3967,7 +3968,7 @@
     "message": "Password"
   },
   "passwordNotLongEnough": {
-    "message": "Password not long enough"
+    "message": "Password must have at least 8 characters"
   },
   "passwordSetupDetails": {
     "message": "This password will unlock your MetaMask wallet only on this device. MetaMask can not recover this password."
@@ -3981,6 +3982,12 @@
   },
   "passwordTermsWarning": {
     "message": "MetaMask can’t recover this password."
+  },
+  "passwordToggleHide": {
+    "message": "Hide Password"
+  },
+  "passwordToggleShow": {
+    "message": "Show Password"
   },
   "passwordsDontMatch": {
     "message": "Passwords don't match"
@@ -5335,10 +5342,6 @@
     "message": "$1 wants to use $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
   },
-  "snapContent": {
-    "message": "This content is coming from $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
-  },
   "snapDetailWebsite": {
     "message": "Website"
   },
@@ -6124,6 +6127,9 @@
   "swapShowLatestQuotes": {
     "message": "Show latest quotes"
   },
+  "swapSlippageAutoDescription": {
+    "message": "Auto"
+  },
   "swapSlippageHighDescription": {
     "message": "The slippage entered ($1%) is considered very high and may result in a bad rate",
     "description": "$1 is the amount of % for slippage"
@@ -6837,23 +6843,17 @@
   "welcomeBack": {
     "message": "Welcome back"
   },
-  "welcomeExploreDescription": {
-    "message": "Store, send, and spend crypto currencies and assets."
+  "welcomeDescription": {
+    "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
   },
-  "welcomeExploreTitle": {
-    "message": "Explore decentralized apps"
+  "welcomeGetStarted": {
+    "message": "Get started"
   },
-  "welcomeLoginDescription": {
-    "message": "Use your MetaMask to login to decentralized apps - no signup needed."
-  },
-  "welcomeLoginTitle": {
-    "message": "Say hello to your wallet"
+  "welcomeTitle": {
+    "message": "Welcome to MetaMask"
   },
   "welcomeToMetaMask": {
     "message": "Let's get started"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
   },
   "whatsThis": {
     "message": "What's this?"
@@ -6916,8 +6916,5 @@
   },
   "yourWalletIsReady": {
     "message": "Your wallet is ready!"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Zero gas price on speed up"
   }
 }
