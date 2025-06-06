@@ -2289,18 +2289,11 @@
   "gasLimit": {
     "message": "Gaz limiti"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Gaz limiti, harcamak istediğiniz maksimum gaz birimi tutarıdır."
-  },
   "gasLimitRecommended": {
     "message": "Önerilen gaz limiti 1$ kadardır. Gaz limiti bundan daha düşükse başarısız olabilir."
   },
   "gasLimitTooLow": {
     "message": "Gaz limiti en az 21000 olmalıdır"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Gaz limiti en az $1 olmalıdır",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "Gaz limiti"
@@ -2308,23 +2301,11 @@
   "gasOption": {
     "message": "Gaz seçeneği"
   },
-  "gasPrice": {
-    "message": "Gaz fiyatı (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "Gaz ücretiniz gereksiz bir şekilde yüksek. Tutarı azaltmayı göz önünde bulundurun."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Gaz Fiyatı aşırı yüksek"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Gaz fiyatı aşırı düşük"
-  },
   "gasPriceFetchFailed": {
     "message": "Gaz fiyatı tahmini ağ hatası nedeniyle başarısız oldu."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Gaz fiyatı, her bir gaz birimi için ödemek istediğiniz Ether miktarını belirler."
   },
   "gasTimingHoursShort": {
     "message": "$1 sa.",
@@ -6810,8 +6791,5 @@
   },
   "yourWalletIsReady": {
     "message": "Cüzdanınız hazır"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Sıfır gaz fiyatı hızlandırmada"
   }
 }
