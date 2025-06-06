@@ -293,9 +293,6 @@
   "address": {
     "message": "Endereço"
   },
-  "addressCopied": {
-    "message": "Endereço copiado!"
-  },
   "addressMismatch": {
     "message": "Divergência no endereço do site"
   },
@@ -1813,9 +1810,6 @@
   },
   "downloadStateLogs": {
     "message": "Baixar logs de estado"
-  },
-  "dragAndDropBanner": {
-    "message": "Você pode arrastar as redes para reordená-las. "
   },
   "dropped": {
     "message": "Abandonada"
@@ -4278,9 +4272,6 @@
   "popularNetworks": {
     "message": "Redes populares"
   },
-  "portfolio": {
-    "message": "Portfólio"
-  },
   "preparingSwap": {
     "message": "Preparando troca..."
   },
@@ -5657,9 +5648,6 @@
   },
   "statusNotConnected": {
     "message": "Não conectado"
-  },
-  "statusNotConnectedAccount": {
-    "message": "Nenhuma conta conectada"
   },
   "step1LatticeWallet": {
     "message": "Conecte seu Lattice1"

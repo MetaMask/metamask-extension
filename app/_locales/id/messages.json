@@ -293,9 +293,6 @@
   "address": {
     "message": "Alamat"
   },
-  "addressCopied": {
-    "message": "Alamat disalin!"
-  },
   "addressMismatch": {
     "message": "Ketidakcocokan alamat situs"
   },
@@ -1813,9 +1810,6 @@
   },
   "downloadStateLogs": {
     "message": "Unduh log status"
-  },
-  "dragAndDropBanner": {
-    "message": "Anda dapat menyeret jaringan untuk menyusun ulang. "
   },
   "dropped": {
     "message": "Terputus"
@@ -4278,9 +4272,6 @@
   "popularNetworks": {
     "message": "Jaringan populer"
   },
-  "portfolio": {
-    "message": "Portofolio"
-  },
   "preparingSwap": {
     "message": "Mempersiapkan pertukaran..."
   },
@@ -5657,9 +5648,6 @@
   },
   "statusNotConnected": {
     "message": "Tidak terhubung"
-  },
-  "statusNotConnectedAccount": {
-    "message": "Tidak ada akun yang terhubung"
   },
   "step1LatticeWallet": {
     "message": "Hubungkan Lattice1 Anda"

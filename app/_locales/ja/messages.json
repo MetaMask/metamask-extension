@@ -293,9 +293,6 @@
   "address": {
     "message": "アドレス"
   },
-  "addressCopied": {
-    "message": "アドレスがコピーされました！"
-  },
   "addressMismatch": {
     "message": "サイトアドレスの不一致"
   },
@@ -1813,9 +1810,6 @@
   },
   "downloadStateLogs": {
     "message": "ステートログをダウンロード"
-  },
-  "dragAndDropBanner": {
-    "message": "ネットワークをドラッグして並び替えることができます。"
   },
   "dropped": {
     "message": "削除されました"
@@ -4278,9 +4272,6 @@
   "popularNetworks": {
     "message": "人気のネットワーク"
   },
-  "portfolio": {
-    "message": "Portfolio"
-  },
   "preparingSwap": {
     "message": "スワップを準備しています..."
   },
@@ -5657,9 +5648,6 @@
   },
   "statusNotConnected": {
     "message": "未接続"
-  },
-  "statusNotConnectedAccount": {
-    "message": "アカウントが接続されていません"
   },
   "step1LatticeWallet": {
     "message": "Lattice1を接続する"

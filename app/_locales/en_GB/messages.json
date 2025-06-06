@@ -293,9 +293,6 @@
   "address": {
     "message": "Address"
   },
-  "addressCopied": {
-    "message": "Address copied!"
-  },
   "addressMismatch": {
     "message": "Site address mismatch"
   },
@@ -1822,9 +1819,6 @@
   },
   "downloadStateLogs": {
     "message": "Download state logs"
-  },
-  "dragAndDropBanner": {
-    "message": "You can drag networks to reorder them. "
   },
   "dropped": {
     "message": "Dropped"
@@ -4323,9 +4317,6 @@
   "popularNetworks": {
     "message": "Popular networks"
   },
-  "portfolio": {
-    "message": "Portfolio"
-  },
   "preparingSwap": {
     "message": "Preparing swap..."
   },
@@ -5741,9 +5732,6 @@
   },
   "statusNotConnected": {
     "message": "Not connected"
-  },
-  "statusNotConnectedAccount": {
-    "message": "No accounts connected"
   },
   "step1LatticeWallet": {
     "message": "Connect your Lattice1"

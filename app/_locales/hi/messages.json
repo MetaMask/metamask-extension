@@ -293,9 +293,6 @@
   "address": {
     "message": "एड्रेस"
   },
-  "addressCopied": {
-    "message": "एड्रेस कॉपी किया गया!"
-  },
   "addressMismatch": {
     "message": "साइट एड्रेस का मैच न होना"
   },
@@ -1813,9 +1810,6 @@
   },
   "downloadStateLogs": {
     "message": "स्टेट लॉग डाउनलोड करें"
-  },
-  "dragAndDropBanner": {
-    "message": "आप नेटवर्कों को फिर से व्यवस्थित करने के लिए उन्हें खींचकर इधर से उधर ले जा सकते हैं।"
   },
   "dropped": {
     "message": "ड्रॉप किया गया"
@@ -4278,9 +4272,6 @@
   "popularNetworks": {
     "message": "पॉपुलर नेटवर्क्स"
   },
-  "portfolio": {
-    "message": "पोर्टफोलियो"
-  },
   "preparingSwap": {
     "message": "स्वैप की तैयारी कर रहा है..."
   },
@@ -5657,9 +5648,6 @@
   },
   "statusNotConnected": {
     "message": "कनेक्ट नहीं है"
-  },
-  "statusNotConnectedAccount": {
-    "message": "कोई अकाउंट जुड़ा नहीं है"
   },
   "step1LatticeWallet": {
     "message": "अपना Lattice1 कनेक्ट करें"
