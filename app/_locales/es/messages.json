@@ -338,10 +338,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "La tarifa de prioridad (también llamada “propina del minero”) va directamente a los mineros para incentivarlos a priorizar su transacción."
   },
-  "agreeTermsOfUse": {
-    "message": "Acepto los $1 de MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "El historial en cadena del token revela instancias anteriores de actividades sospechosas de airdrop."
   },
@@ -5310,10 +5306,6 @@
     "message": "$1 quiere conectarse a $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
   },
-  "snapContent": {
-    "message": "Este contenido proviene de $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
-  },
   "snapDetailWebsite": {
     "message": "Sitio web"
   },
@@ -6770,23 +6762,8 @@
   "welcomeBack": {
     "message": "Bienvenido de nuevo"
   },
-  "welcomeExploreDescription": {
-    "message": "Almacene, envíe y gaste criptomonedas y activos."
-  },
-  "welcomeExploreTitle": {
-    "message": "Explorar aplicaciones descentralizadas"
-  },
-  "welcomeLoginDescription": {
-    "message": "Use su MetaMask para acceder a aplicaciones descentralizadas, sin necesidad de registrarse."
-  },
-  "welcomeLoginTitle": {
-    "message": "Diga hola a su monedero"
-  },
   "welcomeToMetaMask": {
     "message": "Comencemos"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Con la confianza de millones de usuarios, MetaMask es un monedero seguro que permite que todos puedan acceder al mundo de Web3."
   },
   "whatsThis": {
     "message": "¿Qué es esto?"

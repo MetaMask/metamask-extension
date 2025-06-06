@@ -338,10 +338,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Maks. öncelik ücreti (başka bir deyişle \"madenci bahşişi\") doğrudan madencilere gider ve işleminizin öncelikli olarak gerçekleştirilmesini teşvik eder."
   },
-  "agreeTermsOfUse": {
-    "message": "MetaMask'in $1 bölümünü kabul ediyorum",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "Token'ın zincir içi geçmişi, daha önce şüpheli airdrop faaliyetlerinin olduğu durumları açığa çıkarır."
   },
@@ -5310,10 +5306,6 @@
     "message": "$1 şunu kullanmak istiyor: $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
   },
-  "snapContent": {
-    "message": "Bu içerik $1 kaynaklıdır",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
-  },
   "snapDetailWebsite": {
     "message": "Web Sitesi"
   },
@@ -6770,23 +6762,8 @@
   "welcomeBack": {
     "message": "Tekrar hoş geldiniz"
   },
-  "welcomeExploreDescription": {
-    "message": "Kripto paraları ve varlıkları saklayın, gönderin ve harcayın."
-  },
-  "welcomeExploreTitle": {
-    "message": "Merkezsiz uygulamaları keşfedin"
-  },
-  "welcomeLoginDescription": {
-    "message": "Merkezsiz uygulamalarda oturum açmak için MetaMask'inizi kullanın - kaydolmak gerekmez."
-  },
-  "welcomeLoginTitle": {
-    "message": "Cüzdanınıza merhaba deyin"
-  },
   "welcomeToMetaMask": {
     "message": "Başlayalım"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Milyonların güvendiği MetaMask, web3 dünyasını herkes için erişilebilir kılan güvenli bir cüzdandır."
   },
   "whatsThis": {
     "message": "Bu nedir?"
