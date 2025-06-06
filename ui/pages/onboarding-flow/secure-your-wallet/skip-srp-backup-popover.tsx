@@ -38,6 +38,8 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { getPlatform } from '../../../../app/scripts/lib/util';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { getFirstTimeFlowType } from '../../../selectors';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
 type SkipSRPBackupProps = {
   onClose: () => void;
@@ -52,6 +54,7 @@ export default function SkipSRPBackup({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
+  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
 
@@ -65,12 +68,15 @@ export default function SkipSRPBackup({
       },
     });
 
-    if (getPlatform() === PLATFORM_FIREFOX) {
+    if (
+      getPlatform() === PLATFORM_FIREFOX ||
+      firstTimeFlowType === FirstTimeFlowType.restore
+    ) {
       history.push(ONBOARDING_COMPLETION_ROUTE);
     } else {
       history.push(ONBOARDING_METAMETRICS);
     }
-  }, [dispatch, hdEntropyIndex, history, trackEvent]);
+  }, [dispatch, firstTimeFlowType, hdEntropyIndex, history, trackEvent]);
 
   return (
     <Modal
