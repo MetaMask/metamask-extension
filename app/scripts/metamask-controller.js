@@ -406,6 +406,8 @@ import {
 } from './lib/network-controller/messenger-action-handlers';
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
+import OAuthService from './services/oauth/oauth-service';
+import { webAuthenticatorFactory } from './services/oauth/web-authenticator-factory';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1056,6 +1058,18 @@ export default class MetamaskController extends EventEmitter {
     this.onboardingController = new OnboardingController({
       messenger: onboardingControllerMessenger,
       state: initState.OnboardingController,
+    });
+
+    this.oauthService = new OAuthService({
+      env: {
+        web3AuthNetwork: process.env.WEB3AUTH_NETWORK,
+        authServerUrl: process.env.AUTH_SERVER_URL,
+        googleClientId: process.env.GOOGLE_CLIENT_ID,
+        appleClientId: process.env.APPLE_CLIENT_ID,
+        authConnectionId: process.env.AUTH_CONNECTION_ID,
+        groupedAuthConnectionId: process.env.GROUPED_AUTH_CONNECTION_ID,
+      },
+      webAuthenticator: webAuthenticatorFactory(),
     });
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
