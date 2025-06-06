@@ -1,24 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { AssetType } from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import mockState from '../../../../../test/data/mock-state.json';
-import {
-  DailyAllowance,
-  TOKEN_DETAILS,
-  TokenSymbol,
-} from '../../../../../shared/lib/remote-mode';
 import SendAllowanceTooltip from './send-allowance-tooltip.component';
-
-const mockAllowance: DailyAllowance = {
-  symbol: TokenSymbol.ETH,
-  amount: 100,
-  image: TOKEN_DETAILS[TokenSymbol.ETH].image,
-  name: TOKEN_DETAILS[TokenSymbol.ETH].name,
-  type: AssetType.native,
-  address: '',
-  decimals: 18,
-};
 
 const renderComponent = () => {
   const store = configureMockStore()({
@@ -29,7 +13,7 @@ const renderComponent = () => {
     },
   });
   return renderWithProvider(
-    <SendAllowanceTooltip allowance={mockAllowance} />,
+    <SendAllowanceTooltip hasAllowance={true} />,
     store,
   );
 };
