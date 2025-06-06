@@ -383,6 +383,7 @@ describe('PPOM Utils', () => {
       });
     });
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3,
       MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,

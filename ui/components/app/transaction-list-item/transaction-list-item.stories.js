@@ -3,7 +3,10 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { Provider } from 'react-redux';
 import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
+import configureStore from '../../../store/store';
+import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import TransactionListItem from '.';
 
 /**
@@ -87,6 +90,9 @@ export const SignTypeData = Template.bind({});
 export const SimpleSend = Template.bind({});
 export const Smart = Template.bind({});
 export const Swap = Template.bind({});
+export const BridgeSuccess = Template.bind({});
+export const BridgePending = Template.bind({});
+export const BridgeFailed = Template.bind({});
 export const SwapApproval = Template.bind({});
 export const TokenMethodApprove = Template.bind({});
 export const TokenMethodSafeTransferFrom = Template.bind({});
@@ -153,6 +159,117 @@ Swap.storyName = 'swap';
 Swap.args = {
   'transactionGroup.primaryTransaction': {
     ...MOCK_TRANSACTION_BY_TYPE[TransactionType.swap],
+  },
+};
+
+const configureBridgeStore = (status) =>
+  configureStore(
+    createBridgeMockStore({
+      metamaskStateOverrides: {
+        txHistory: {
+          4243712234858467: {
+            account: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            quote: {
+              srcChainId: 1,
+              srcAsset: {
+                address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                decimals: 18,
+                symbol: 'ETH',
+              },
+              destChainId: 10,
+              destAsset: {},
+            },
+            status: {
+              srcChain: {
+                chainId: 1,
+                txHash:
+                  '0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a',
+              },
+              destChain:
+                status === 'FAILED'
+                  ? undefined
+                  : {
+                      chainId: 59144,
+                    },
+              status,
+            },
+            txMetaId: 4243712234858467,
+          },
+        },
+      },
+    }),
+  );
+
+BridgeSuccess.storyName = 'bridgeSuccess';
+BridgeSuccess.decorators = [
+  (Story) => (
+    <Provider store={configureBridgeStore('COMPLETE')}>
+      <Story />
+    </Provider>
+  ),
+];
+BridgeSuccess.args = {
+  'transactionGroup.primaryTransaction': {
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.bridge],
+  },
+};
+
+BridgePending.storyName = 'bridgePending';
+BridgePending.decorators = [
+  (Story) => (
+    <Provider
+      store={configureStore(
+        createBridgeMockStore({
+          metamaskStateOverrides: {
+            txHistory: {
+              4243712234858467: {
+                account: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                quote: {
+                  srcChainId: 1,
+                  srcAsset: {
+                    address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                    decimals: 18,
+                    symbol: 'ETH',
+                  },
+                  destChainId: 10,
+                  destAsset: {},
+                },
+                status: {
+                  srcChain: {
+                    txHash:
+                      '0xbcb195f393f4468945b4045cd41bcdbc2f19ad75ae92a32cf153a3004e42009a',
+                  },
+                  destChain: {},
+                  status: 'PENDING',
+                },
+                txMetaId: 4243712234858467,
+              },
+            },
+          },
+        }),
+      )}
+    >
+      <Story />
+    </Provider>
+  ),
+];
+BridgePending.args = {
+  'transactionGroup.primaryTransaction': {
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.bridge],
+  },
+};
+
+BridgeFailed.storyName = 'bridgeFailed';
+BridgeFailed.decorators = [
+  (Story) => (
+    <Provider store={configureBridgeStore('FAILED')}>
+      <Story />
+    </Provider>
+  ),
+];
+BridgeFailed.args = {
+  'transactionGroup.primaryTransaction': {
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.bridge],
   },
 };
 

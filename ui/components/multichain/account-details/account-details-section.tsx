@@ -69,23 +69,19 @@ export const AccountDetailsSection = ({
           {t('showPrivateKey')}
         </ButtonSecondary>
       ) : null}
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-        exportSrpFeatureEnabled ? (
-          <ButtonSecondary
-            data-testid="account-details-display-export-srp"
-            block
-            size={ButtonSecondarySize.Lg}
-            variant={TextVariant.bodyMd}
-            onClick={() => {
-              onExportClick('SRP');
-            }}
-          >
-            {t('showSRP')}
-          </ButtonSecondary>
-        ) : null
-        ///: END:ONLY_INCLUDE_IF
-      }
+      {exportSrpFeatureEnabled ? (
+        <ButtonSecondary
+          data-testid="account-details-display-export-srp"
+          block
+          size={ButtonSecondarySize.Lg}
+          variant={TextVariant.bodyMd}
+          onClick={() => {
+            onExportClick('SRP');
+          }}
+        >
+          {t('showSRP')}
+        </ButtonSecondary>
+      ) : null}
     </>
   );
 };

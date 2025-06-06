@@ -1,0 +1,24 @@
+diff --git a/dist/utils/batch.cjs b/dist/utils/batch.cjs
+index a22b250a46958d1baf6e7dc35b22768f1df8ad03..a1260cb446884f5a185a180f5880fa62b4cd3ea8 100644
+--- a/dist/utils/batch.cjs
++++ b/dist/utils/batch.cjs
+@@ -147,6 +147,7 @@ async function addTransactionBatchWith7702(request) {
+                 },
+             ],
+             delegationMock: txParams.authorizationList?.[0]?.address,
++            origin,
+         };
+         log('Security request', securityRequest);
+         validateSecurity(securityRequest, chainId).catch((error) => {
+diff --git a/dist/utils/batch.mjs b/dist/utils/batch.mjs
+index 3b3a2fb60142754598a17a264b06265514167207..9e51b0c13be834868a0b2ff1b59f2bd63f88e607 100644
+--- a/dist/utils/batch.mjs
++++ b/dist/utils/batch.mjs
+@@ -142,6 +142,7 @@ async function addTransactionBatchWith7702(request) {
+                 },
+             ],
+             delegationMock: txParams.authorizationList?.[0]?.address,
++            origin,
+         };
+         log('Security request', securityRequest);
+         validateSecurity(securityRequest, chainId).catch((error) => {

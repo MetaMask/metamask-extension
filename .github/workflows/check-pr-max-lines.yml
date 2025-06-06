@@ -1,0 +1,12 @@
+name: 'Check PR Max Lines'
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  check-pr-max-lines:
+    uses: metamask/github-tools/.github/workflows/pr-line-check.yml@main
+    with:
+      max_lines: 1000
+      ignore_patterns: '(\.lock$)'

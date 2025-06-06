@@ -16,7 +16,7 @@ export enum FormTextFieldSize {
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface FormTextFieldStyleUtilityProps
-  extends Omit<TextFieldStyleUtilityProps, 'size' | 'type'> {
+  extends Omit<TextFieldStyleUtilityProps, 'size'> {
   /*
    * Additional classNames to be added to the FormTextField component
    */

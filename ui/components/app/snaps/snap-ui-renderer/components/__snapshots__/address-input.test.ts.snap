@@ -1,5 +1,99 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`SnapUIAddressInput renders the matched address info in a disabled state 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="mm-box snap-ui-renderer__matched-account-info mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+            style="height: 48px; opacity: 0.5; cursor: not-allowed;"
+          >
+            <div
+              style="display: flex;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(250, 58, 0);"
+              >
+                <svg
+                  height="24"
+                  width="24"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#18CDF2"
+                    height="24"
+                    transform="translate(-0.786295127845455 -2.478213052095374) rotate(328.9 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#035E56"
+                    height="24"
+                    transform="translate(-13.723846281624033 7.94434640381145) rotate(176.2 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F26602"
+                    height="24"
+                    transform="translate(12.500881513667943 -10.653854792247811) rotate(468.9 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+              style="flex: 1; min-width: 0;"
+            >
+              <div
+                class="mm-box mm-box--gap-2 mm-box--flex-direction-column"
+                style="min-width: 0; flex: 1;"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
+                >
+                  Test Account
+                </p>
+                <p
+                  class="mm-box mm-text mm-text--body-xs mm-text--ellipsis mm-box--color-text-default"
+                >
+                  0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc
+                </p>
+              </div>
+            </div>
+            <span
+              class="mm-box snap-ui-renderer__matched-account-info__clear-button mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
+              style="mask-image: url('./images/icons/close.svg'); cursor: not-allowed; flex-shrink: 0;"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
 exports[`SnapUIAddressInput renders with an invalid CAIP Account ID 1`] = `
 <div>
   <div
@@ -27,7 +121,7 @@ exports[`SnapUIAddressInput renders with an invalid CAIP Account ID 1`] = `
               value="https://foobar.baz/foobar"
             />
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
+              class="mm-box snap-ui-renderer__address-input__clear-button mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
               style="mask-image: url('./images/icons/close.svg'); cursor: pointer;"
             />
           </div>
@@ -69,7 +163,7 @@ exports[`SnapUIAddressInput will not render avatar when displayAvatar is false 1
               value="0xabcd5d886577d5081b0c52e242ef29e70be3e7bc"
             />
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
+              class="mm-box snap-ui-renderer__address-input__clear-button mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
               style="mask-image: url('./images/icons/close.svg'); cursor: pointer;"
             />
           </div>
@@ -138,8 +232,8 @@ exports[`SnapUIAddressInput will render a matched address name 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
-            class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
-            style="height: 48px;"
+            class="mm-box snap-ui-renderer__matched-account-info mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+            style="height: 48px; opacity: 1; cursor: auto;"
           >
             <div
               style="display: flex;"
@@ -201,7 +295,7 @@ exports[`SnapUIAddressInput will render a matched address name 1`] = `
               </div>
             </div>
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
+              class="mm-box snap-ui-renderer__matched-account-info__clear-button mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
               style="mask-image: url('./images/icons/close.svg'); cursor: pointer; flex-shrink: 0;"
             />
           </div>
@@ -282,7 +376,7 @@ exports[`SnapUIAddressInput will render avatar when displayAvatar is true 1`] = 
               value="0xabcd5d886577d5081b0c52e242ef29e70be3e7bc"
             />
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
+              class="mm-box snap-ui-renderer__address-input__clear-button mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
               style="mask-image: url('./images/icons/close.svg'); cursor: pointer;"
             />
           </div>

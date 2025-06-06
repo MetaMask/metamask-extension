@@ -12,7 +12,7 @@ describe('Confirm Delete Network', () => {
     removeNetwork: jest.fn().mockResolvedValue(),
     switchEvmNetwork: jest.fn(),
     target: '0x5',
-    currentChainId: '0xe708',
+    chainId: '0xe708',
     ethereumMainnetClientId: '0x1',
   };
 

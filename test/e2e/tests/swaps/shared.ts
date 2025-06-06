@@ -36,7 +36,7 @@ export const buildQuote = async (driver: Driver, options: SwapOptions) => {
       tag: 'h6',
       text: 'Estimated gas fee',
     });
-  };
+  }
 
   await driver.clickElement('[data-testid="prepare-swap-page-swap-to"]');
   await driver.waitForSelector('[id="list-with-search__text-search"]');

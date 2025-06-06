@@ -196,6 +196,7 @@ describe('EncryptionPublicKeyController', () => {
   });
 
   describe('newRequestEncryptionPublicKey', () => {
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([
       ['Ledger', KeyringType.ledger],
       ['Trezor', KeyringType.trezor],

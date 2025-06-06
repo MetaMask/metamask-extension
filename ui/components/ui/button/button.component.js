@@ -39,7 +39,7 @@ const Button = ({
   children,
   icon,
   className,
-  rounded = true,
+  rounded = false,
   ...buttonProps
 }) => {
   const doRounding = rounded && type !== 'link' && type !== 'inline';

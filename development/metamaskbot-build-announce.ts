@@ -141,7 +141,7 @@ async function start(): Promise<void> {
   const storybookUrl = `${HOST_URL}/storybook-build/index.html`;
   const storybookLink = `<a href="${storybookUrl}">Storybook</a>`;
 
-  const tsMigrationDashboardUrl = `${BUILD_LINK_BASE}/ts-migration-dashboard/index.html`;
+  const tsMigrationDashboardUrl = `${HOST_URL}/ts-migration-dashboard/index.html`;
   const tsMigrationDashboardLink = `<a href="${tsMigrationDashboardUrl}">Dashboard</a>`;
 
   // links to bundle browser builds

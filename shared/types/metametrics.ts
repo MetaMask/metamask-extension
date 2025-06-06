@@ -59,13 +59,14 @@ export type TransactionMetricsRequest = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   trackEvent: (payload: any) => void;
-  getIsSmartTransaction: () => boolean;
+  getIsSmartTransaction: (chainId: Hex) => boolean;
   getSmartTransactionByMinedTxHash: (
     txhash: string | undefined,
   ) => SmartTransaction;
   getMethodData: (data: string) => Promise<{ name: string }>;
   getIsConfirmationAdvancedDetailsOpen: () => boolean;
   getHDEntropyIndex: () => number;
+  getNetworkRpcUrl: (chainId: Hex) => string;
 };
 
 export type TransactionEventPayload = {

@@ -54,7 +54,7 @@ Chart.register(
 const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
   normalized: true,
   parsing: false,
-  aspectRatio: 2.9,
+  aspectRatio: 2.6,
   layout: { autoPadding: false, padding: 0 },
   animation: { duration: 0 },
   fill: true,
@@ -65,7 +65,7 @@ const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
     return gradient;
   },
   elements: {
-    line: { borderWidth: 2 },
+    line: { borderWidth: 1.5 },
     point: { pointStyle: false },
   },
   plugins: {
@@ -202,6 +202,11 @@ const AssetChart = ({
       <Box
         data-testid="asset-price-chart"
         marginTop={4}
+        backgroundColor={
+          loading && !prices
+            ? BackgroundColor.backgroundMuted
+            : BackgroundColor.transparent
+        }
         borderRadius={BorderRadius.LG}
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -275,9 +280,9 @@ const AssetChart = ({
           style={prices ? undefined : { visibility: `hidden` }}
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
-          marginTop={4}
-          marginLeft={4}
-          marginRight={4}
+          marginTop={2}
+          marginLeft={3}
+          marginRight={3}
         >
           {timeRanges.map((timeRange) => (
             <ButtonBase
@@ -286,8 +291,10 @@ const AssetChart = ({
                 'time-range-button__selected': timeRange === selectedTimeRange,
               })}
               onClick={() => setSelectedTimeRange(timeRange)}
-              variant={TextVariant.bodySmMedium}
+              variant={TextVariant.bodyXsMedium}
               size={ButtonBaseSize.Sm}
+              paddingLeft={2}
+              paddingRight={2}
               backgroundColor={BackgroundColor.transparent}
               color={TextColor.textAlternative}
             >

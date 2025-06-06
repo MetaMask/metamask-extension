@@ -48,33 +48,30 @@ export const KNOWN_PRIVATE_KEYS = [
 ];
 
 export class FakeKeyringBridge {
-  #publicKeyPayload;
-
-  constructor({ publicKeyPayload }) {
-    this.#publicKeyPayload = publicKeyPayload;
-  }
-
   async init() {
     return Promise.resolve();
-  }
-
-  async getPublicKey() {
-    return this.#publicKeyPayload;
   }
 }
 
 export class FakeTrezorBridge extends FakeKeyringBridge {
+  #trezorPublicKeyPayload;
+
   constructor() {
-    super({
-      publicKeyPayload: {
-        success: true,
-        payload: {
-          publicKey: KNOWN_PUBLIC_KEY,
-          chainCode: CHAIN_CODE,
-          address: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-        },
+    super();
+    // Initialize Trezor's specific payload
+    this.#trezorPublicKeyPayload = {
+      success: true,
+      payload: {
+        publicKey: KNOWN_PUBLIC_KEY,
+        chainCode: CHAIN_CODE,
+        address: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
       },
-    });
+    };
+  }
+
+  // Added specific getPublicKey for Trezor
+  async getPublicKey() {
+    return this.#trezorPublicKeyPayload;
   }
 
   async dispose() {
@@ -134,13 +131,43 @@ export class FakeTrezorBridge extends FakeKeyringBridge {
 }
 
 export class FakeLedgerBridge extends FakeKeyringBridge {
-  constructor() {
-    super({
-      publicKeyPayload: {
-        publicKey: KNOWN_PUBLIC_KEY,
-        chainCode: '0x1',
-      },
-    });
+  /**
+   * Retrieves a public key and address based on the HD path provided in params.
+   * The HD path is expected to be a string, (e.g., "m/44'/60'/X'/0/0" or "44'/60'/X'/0/0"),
+   * where 'X' is the account index.
+   * It extracts the account index from the path (the third component from the end)
+   * and returns the corresponding address from KNOWN_PUBLIC_KEY_ADDRESSES.
+   * If the index is invalid or out of bounds, it defaults to index 0.
+   *
+   * @param {object} params - The parameters object.
+   * @param {string} params.hdPath - The hierarchical derivation path.
+   * @returns {Promise<object>} A promise that resolves to an object containing
+   * the public key, chain code, and derived address.
+   */
+  async getPublicKey(params) {
+    // params.hdPath is expected to be a string like "m/44'/60'/0'/0/0" or "44'/60'/X'/0/0"
+    const { hdPath } = params;
+    const parts = hdPath.split('/');
+    // The account index (e.g., 0, 1, 2) is the third component from the end of the path.
+    // For example, in "44'/60'/1'/0/0", parts[parts.length - 3] would be "1'"
+    const indexComponent = parts[parts.length - 3];
+    const index = parseInt(indexComponent, 10); // Extracts the integer value, e.g., 1 from "1'"
+
+    // Validate the extracted index; default to 0 if it's not a number or out of bounds.
+    const validIndex =
+      !isNaN(index) && index >= 0 && index < KNOWN_PUBLIC_KEY_ADDRESSES.length
+        ? index
+        : 0;
+
+    const { address } = KNOWN_PUBLIC_KEY_ADDRESSES[validIndex];
+
+    // Returns a payload containing the public key, chain code, and the derived address.
+    // Assumes KNOWN_PUBLIC_KEY and CHAIN_CODE are constant for all derived addresses.
+    return {
+      publicKey: KNOWN_PUBLIC_KEY,
+      chainCode: CHAIN_CODE,
+      address,
+    };
   }
 
   async destroy() {
