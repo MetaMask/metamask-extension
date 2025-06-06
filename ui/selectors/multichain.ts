@@ -213,7 +213,7 @@ export function getMultichainNetwork(
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const nonEvmNetworks = getMultichainNetworkProviders(state);
   const nonEvmNetwork = nonEvmNetworks.find((provider) => {
-    return provider.isAddressCompatible(selectedAccount.address);
+    return selectedAccount.scopes.includes(provider.chainId);
   });
 
   if (!nonEvmNetwork) {
@@ -386,7 +386,7 @@ export function getMultichainIsMainnet(
   const mainnet = (
     MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET as Record<string, string>
   )[selectedAccount.type];
-  return providerConfig.chainId === mainnet ?? false;
+  return providerConfig.chainId === mainnet;
 }
 
 export function getMultichainIsTestnet(
@@ -408,6 +408,7 @@ export function getMultichainIsTestnet(
       (
         [
           MultichainNetworks.BITCOIN_TESTNET,
+          MultichainNetworks.BITCOIN_SIGNET,
           MultichainNetworks.SOLANA_DEVNET,
           MultichainNetworks.SOLANA_TESTNET,
         ] as string[]
