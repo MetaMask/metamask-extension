@@ -248,7 +248,6 @@ export function AssetPicker({
         }
         customTokenListGenerator={customTokenListGenerator}
         isTokenListLoading={isTokenListLoading}
-        autoFocus={autoFocus}
       />
 
       {/** If a child prop is passed in, use it as the trigger button instead of the default */}
