@@ -176,7 +176,7 @@ export const useNetworkManagerState = ({
         multichainNetwork === hexChainId,
     );
 
-    return !(isBuiltInNetwork && isFeaturedRpc && isMultichainProviderConfig);
+    return isBuiltInNetwork || isFeaturedRpc || isMultichainProviderConfig;
   }, []);
 
 

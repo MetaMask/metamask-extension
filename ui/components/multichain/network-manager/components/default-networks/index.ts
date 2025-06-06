@@ -1,1 +1,1 @@
-export * from './DefaultNetworks';
+export * from './default-networks';
