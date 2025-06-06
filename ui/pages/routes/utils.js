@@ -71,15 +71,6 @@ function onInitializationUnlockPage(props) {
   );
 }
 
-export function showOnboardingHeader(location) {
-  return Boolean(
-    matchPath(location.pathname, {
-      path: ONBOARDING_ROUTE,
-      exact: false,
-    }),
-  );
-}
-
 export function getConnectingLabel(loadingMessage, props, context) {
   if (loadingMessage) {
     return loadingMessage;
