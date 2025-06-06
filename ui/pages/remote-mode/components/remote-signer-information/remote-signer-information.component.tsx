@@ -1,5 +1,7 @@
 import React from 'react';
-
+import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { Box, Text } from '../../../../components/component-library';
 import {
   AlignItems,
@@ -11,10 +13,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { RecipientWithAddress } from '../../../../components/ui/sender-to-recipient/sender-to-recipient.component';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { REMOTE_ROUTE } from '../../../../helpers/constants/routes';
-import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { setSelectedAccount } from '../../../../store/actions';
 
 export const RemoteSignerInformation = ({

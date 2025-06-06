@@ -80,6 +80,7 @@
     "isUnlocked": true,
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "transactions": "object",
+    "transactionBatches": "object",
     "networkConfigurations": "object",
     "addressBook": "object",
     "useBlockie": false,
@@ -106,21 +107,6 @@
     "dataCollectionForMarketing": "boolean",
     "currencyRates": {
       "ETH": {
-        "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
-      },
-      "SepoliaETH": {
-        "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
-      },
-      "LineaETH": {
-        "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
-      },
-      "MegaETH": {
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
@@ -157,6 +143,7 @@
     "surveyLinkLastClickedOrClosed": "object",
     "switchedNetworkNeverShowMessage": "boolean",
     "slides": "object",
+    "upgradeSplashPageAcknowledgedForAccounts": "object",
     "qrHardware": {},
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
@@ -239,6 +226,7 @@
     "subjectMetadata": "object",
     "announcements": "object",
     "orderedNetworkList": { "0": "object", "1": "object" },
+    "enabledNetworkMap": {},
     "pinnedAccountList": {},
     "hiddenAccountList": {},
     "gasFeeEstimatesByChainId": {},
@@ -308,6 +296,7 @@
     },
     "cacheTimestamp": "number",
     "allDeFiPositions": "object",
+    "allDeFiPositionsCount": "object",
     "accounts": "object",
     "accountsByChainId": "object",
     "unapprovedDecryptMsgs": "object",
@@ -347,16 +336,17 @@
       "swapsStxMaxFeeMultiplier": 2,
       "swapsFeatureFlags": {}
     },
-    "assetExchangeRates": "object",
     "quoteRequest": {
       "srcTokenAddress": "0x0000000000000000000000000000000000000000"
     },
     "quotesInitialLoadTime": null,
     "quotes": {},
+    "minimumBalanceForRentExemptionInLamports": "string",
     "quotesLastFetched": null,
     "quotesLoadingStatus": null,
     "quoteFetchError": null,
     "quotesRefreshCount": 0,
+    "assetExchangeRates": "object",
     "txHistory": "object",
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",

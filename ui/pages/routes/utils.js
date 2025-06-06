@@ -14,6 +14,7 @@ import {
   CONNECT_ROUTE,
   CONNECTIONS,
   CROSS_CHAIN_SWAP_ROUTE,
+  IMPORT_SRP_ROUTE,
   DEFAULT_ROUTE,
   NOTIFICATIONS_ROUTE,
   ONBOARDING_ROUTE,
@@ -66,15 +67,6 @@ function onInitializationUnlockPage(props) {
     matchPath(location.pathname, {
       path: ONBOARDING_UNLOCK_ROUTE,
       exact: true,
-    }),
-  );
-}
-
-export function showOnboardingHeader(location) {
-  return Boolean(
-    matchPath(location.pathname, {
-      path: ONBOARDING_ROUTE,
-      exact: false,
     }),
   );
 }
@@ -227,10 +219,18 @@ export function hideAppHeader(props) {
     }),
   );
 
+  const isImportSrpPage = Boolean(
+    matchPath(location.pathname, {
+      path: IMPORT_SRP_ROUTE,
+      exact: false,
+    }),
+  );
+
   return (
     isHandlingPermissionsRequest ||
     isHandlingAddEthereumChainRequest ||
-    isConfirmTransactionRoute(location.pathname)
+    isConfirmTransactionRoute(location.pathname) ||
+    isImportSrpPage
   );
 }
 

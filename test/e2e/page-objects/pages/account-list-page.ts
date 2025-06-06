@@ -13,7 +13,7 @@ class AccountListPage {
     '[data-testid="account-list-address"]';
 
   private readonly accountListBalance =
-    '[data-testid="second-currency-display"]';
+    '[data-testid="first-currency-display"]';
 
   private readonly accountValueAndSuffix =
     '[data-testid="account-value-and-suffix"]';
@@ -144,7 +144,7 @@ class AccountListPage {
 
   private readonly importSrpModalTitle = {
     text: 'Import Secret Recovery Phrase',
-    tag: 'h4',
+    tag: 'p',
   };
 
   private readonly importSrpInput = '#import-srp__multi-srp__srp-word-0';
@@ -275,10 +275,6 @@ class AccountListPage {
       }
       await this.driver.clickElementAndWaitToDisappear(
         this.addAccountConfirmButton,
-        // Longer timeout than usual, this reduces the flakiness
-        // around Bitcoin account creation (mainly required for
-        // Firefox)
-        5000,
       );
     } else {
       const createButton = await this.driver.findElement(

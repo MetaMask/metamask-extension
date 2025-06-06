@@ -56,6 +56,7 @@ import {
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
   getUSDConversionRate,
+  getSelectedInternalAccount,
 } from '../../../selectors';
 import {
   getSmartTransactionsOptInStatusForMetrics,
@@ -150,12 +151,12 @@ import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils
 import { useAsyncResult } from '../../../hooks/useAsync';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
+import {
+  getRemoteModeDelegationEntries,
+  getRemoteSwapAllowance,
+} from '../../../selectors/remote-mode';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 import SlippageNotificationModal from './slippage-notification-modal';
-
-import { getSelectedInternalAccount } from '../../../selectors';
-import { getRemoteSwapAllowance } from '../../../selectors/remote-mode';
-import { getRemoteModeDelegationEntries } from '../../../selectors/remote-mode';
 
 let intervalId;
 
@@ -435,7 +436,11 @@ export default function ReviewQuote({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const currentChainId = useSelector(getCurrentChainId);
   const delegation = useSelector((state) =>
-    getRemoteModeDelegationEntries(state, selectedAccount.address, currentChainId)
+    getRemoteModeDelegationEntries(
+      state,
+      selectedAccount.address,
+      currentChainId,
+    ),
   );
   const remoteSwapAllowance = useSelector((state) =>
     getRemoteSwapAllowance(state, {
@@ -444,7 +449,6 @@ export default function ReviewQuote({
       chainId: currentChainId,
     }),
   );
-  console.log('remoteSwapAllowance', remoteSwapAllowance);
 
   let { feeInFiat, feeInEth, rawEthFee, feeInUsd, rawNetworkFees } =
     getRenderableNetworkFeesForQuote({
@@ -1217,17 +1221,27 @@ export default function ReviewQuote({
             title={'No remote mode allowance found'}
             description={
               <>
-                To use remote mode for this swap you will need to configure the allowance using your hardware wallet.
+                To use remote mode for this swap you will need to configure the
+                allowance using your hardware wallet.
                 {usedQuote?.signature && (
                   <div style={{ marginTop: 8 }}>
                     <strong>Signature:</strong>
-                    <div style={{ fontFamily: 'monospace', wordBreak: 'break-all' }}>{usedQuote.signature}</div>
+                    <div
+                      style={{
+                        fontFamily: 'monospace',
+                        wordBreak: 'break-all',
+                      }}
+                    >
+                      {usedQuote.signature}
+                    </div>
                   </div>
                 )}
                 {usedQuote?.sigExpiration && (
                   <div style={{ marginTop: 8 }}>
                     <strong>Signature Expiration:</strong>
-                    <div>{new Date(usedQuote.sigExpiration).toLocaleString()}</div>
+                    <div>
+                      {new Date(usedQuote.sigExpiration).toLocaleString()}
+                    </div>
                   </div>
                 )}
               </>
@@ -1243,17 +1257,27 @@ export default function ReviewQuote({
             title={'Remote mode enabled'}
             description={
               <>
-                Remote mode is enabled for this swap, meaning you can swap without connecting your hardware wallet.
+                Remote mode is enabled for this swap, meaning you can swap
+                without connecting your hardware wallet.
                 {usedQuote?.signature && (
                   <div style={{ marginTop: 8 }}>
                     <strong>Signature:</strong>
-                    <div style={{ fontFamily: 'monospace', wordBreak: 'break-all' }}>{usedQuote.signature}</div>
+                    <div
+                      style={{
+                        fontFamily: 'monospace',
+                        wordBreak: 'break-all',
+                      }}
+                    >
+                      {usedQuote.signature}
+                    </div>
                   </div>
                 )}
                 {usedQuote?.sigExpiration && (
                   <div style={{ marginTop: 8 }}>
                     <strong>Signature Expiration:</strong>
-                    <div>{new Date(usedQuote.sigExpiration).toLocaleString()}</div>
+                    <div>
+                      {new Date(usedQuote.sigExpiration).toLocaleString()}
+                    </div>
                   </div>
                 )}
               </>

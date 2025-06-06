@@ -17,24 +17,26 @@ import {
   TransactionType as KeyringTransactionType,
 } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
+import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedCompletedTransactionsSelectorAllChains,
   nonceSortedPendingTransactionsSelector,
   nonceSortedPendingTransactionsSelectorAllChains,
+} from '../../../selectors/transactions';
+import {
   remoteModeNonceSortedCompletedTransactionsSelector,
   remoteModeNonceSortedCompletedTransactionsSelectorAllChains,
   remoteModeNonceSortedPendingTransactionsSelector,
   remoteModeNonceSortedPendingTransactionsSelectorAllChains,
-} from '../../../selectors/transactions';
+  getIsRemoteModeEnabled,
+} from '../../../selectors/remote-mode';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   getCurrentNetwork,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedAccount,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getShouldHideZeroBalanceTokens,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import useSolanaBridgeTransactionMapping from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
@@ -60,8 +62,6 @@ import {
   getSelectedMultichainNetworkConfiguration,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors/multichain/networks';
-
-import { getIsRemoteModeEnabled } from '../../../selectors/remote-mode';
 
 import {
   Box,
@@ -92,14 +92,12 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import {
   RAMPS_CARD_VARIANT_TYPES,
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
@@ -282,7 +280,9 @@ export const filterTransactionsByToken = (
 
   const transactionForToken = (nonEvmTransactions.transactions || []).filter(
     (transaction) => {
-      return transaction.to.some((item) => item.asset.type === tokenAddress);
+      return [...transaction.to, ...transaction.from].some(
+        (item) => item.asset.type === tokenAddress,
+      );
     },
   );
 
@@ -326,9 +326,9 @@ export default function TransactionList({
     getSelectedAccountMultichainTransactions,
   );
 
-  const nonEvmTransactionFilteredByToken = filterTransactionsByToken(
-    nonEvmTransactions,
-    tokenAddress,
+  const nonEvmTransactionFilteredByToken = useMemo(
+    () => filterTransactionsByToken(nonEvmTransactions, tokenAddress),
+    [nonEvmTransactions, tokenAddress],
   );
 
   // Use our custom hook to map Solana bridge transactions with destination chain info
@@ -430,7 +430,6 @@ export default function TransactionList({
   const chainId = useSelector(getCurrentChainId);
   const isEvmNetwork = useSelector(getIsEvmMultichainNetworkSelected);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -441,7 +440,6 @@ export default function TransactionList({
   const balanceIsZero = Number(totalFiatBalance) === 0;
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const showRampsCard = isBuyableChain && balanceIsZero;
-  ///: END:ONLY_INCLUDE_IF
 
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
@@ -597,6 +595,9 @@ export default function TransactionList({
   const trackEvent = useContext(MetaMetricsContext);
 
   if (!isEvmAccountType(selectedAccount.type)) {
+    const { namespace } = parseCaipChainId(multichainNetworkConfig.chainId);
+    const isBitcoinNetwork = namespace === KnownCaipNamespace.Bip122;
+
     const addressLink = getMultichainAccountUrl(
       selectedAccount.address,
       multichainNetworkForSelectedAccount,
@@ -670,23 +671,25 @@ export default function TransactionList({
                   ),
                 )}
 
-                <Box className="transaction-list__view-on-block-explorer">
-                  <Button
-                    display={Display.Flex}
-                    variant={ButtonVariant.Primary}
-                    size={ButtonSize.Sm}
-                    endIconName={IconName.Export}
-                    onClick={() =>
-                      openBlockExplorer(
-                        addressLink,
-                        metricsLocation,
-                        trackEvent,
-                      )
-                    }
-                  >
-                    {t('viewOnBlockExplorer')}
-                  </Button>
-                </Box>
+                {!isBitcoinNetwork && (
+                  <Box className="transaction-list__view-on-block-explorer">
+                    <Button
+                      display={Display.Flex}
+                      variant={ButtonVariant.Primary}
+                      size={ButtonSize.Sm}
+                      endIconName={IconName.Export}
+                      onClick={() =>
+                        openBlockExplorer(
+                          addressLink,
+                          metricsLocation,
+                          trackEvent,
+                        )
+                      }
+                    >
+                      {t('viewOnBlockExplorer')}
+                    </Button>
+                  </Box>
+                )}
               </Box>
             ) : (
               <Box className="transaction-list__empty">
@@ -704,13 +707,9 @@ export default function TransactionList({
 
   return (
     <>
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        showRampsCard ? (
-          <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
-        ) : null
-        ///: END:ONLY_INCLUDE_IF
-      }
+      {showRampsCard ? (
+        <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
+      ) : null}
       <Box className="transaction-list" {...boxProps}>
         {renderFilterButton()}
         {process.env.REMOVE_GNS &&

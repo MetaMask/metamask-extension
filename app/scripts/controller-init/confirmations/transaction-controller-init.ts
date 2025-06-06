@@ -125,7 +125,7 @@ export const TransactionControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
-      afterAdd: ({ transactionMeta }) => {
+      afterAdd: async ({ transactionMeta }) => {
         return updateRemoteModeTransaction({
           transactionMeta,
           state: getFlatState(),
@@ -221,8 +221,6 @@ function getControllers(
     preferencesController: () => request.getController('PreferencesController'),
     smartTransactionsController: () =>
       request.getController('SmartTransactionsController'),
-    transactionUpdateController: () =>
-      request.getController('TransactionUpdateController'),
     institutionalSnapController: () =>
       request.getController('InstitutionalSnapController'),
   };

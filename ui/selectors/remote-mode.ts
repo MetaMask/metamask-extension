@@ -1,18 +1,30 @@
 import { DelegationEntry } from '@metamask/delegation-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { createSelector } from 'reselect';
 import {
-  DailyAllowance,
-  SwapAllowance,
   REMOTE_MODES,
   RemoteModeConfig,
-} from '../pages/remote-mode/remote.types';
-import { Asset } from '../ducks/send';
+  SwapAllowance,
+} from '../../shared/lib/remote-mode';
+import { PENDING_STATUS_HASH } from '../helpers/constants/transactions';
+import { getSelectedInternalAccount } from './accounts';
+import { type DelegationState, listDelegationEntries } from './delegation';
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
 } from './remote-feature-flags';
-import { type DelegationState, listDelegationEntries } from './delegation';
+import {
+  getAllNetworkTransactions,
+  getCurrentNetworkTransactions,
+  groupAndSortTransactionsByNonce,
+  smartTransactionsListSelector,
+  transactionSubSelector,
+  transactionSubSelectorAllChains,
+} from './transactions';
 
 const EIP7702_CONTRACT_ADDRESSES_FLAG = 'confirmations_eip_7702';
 
@@ -131,54 +143,6 @@ export const getRemoteModeConfig = createSelector(
   },
 );
 
-type GetRemoteSendAllowanceParams = {
-  from: Address;
-  chainId: Hex;
-  asset?: Asset;
-};
-
-export const getRemoteSendAllowance = (
-  state: RemoteModeState,
-  params: GetRemoteSendAllowanceParams,
-) => {
-  // Check feature flag
-  if (!getIsRemoteModeEnabled(state)) {
-    return null;
-  }
-
-  const { from, chainId, asset } = params;
-
-  const entry = listDelegationEntries(state, {
-    filter: {
-      from,
-      chainId,
-      tags: [REMOTE_MODES.DAILY_ALLOWANCE],
-    },
-  })[0];
-
-  if (!entry?.meta) {
-    return null;
-  }
-
-  const meta = JSON.parse(entry.meta) as {
-    allowances: DailyAllowance[];
-  };
-
-  if (meta.allowances.length === 0) {
-    return null;
-  }
-
-  const address = asset?.details?.address ?? '';
-
-  const allowance = meta.allowances.find((a) => a.address === address);
-
-  if (!allowance) {
-    return null;
-  }
-
-  return allowance;
-};
-
 type GetRemoteSwapParams = {
   fromTokenSymbol: string;
   toTokenSymbol: string;
@@ -190,7 +154,6 @@ export const getRemoteSwapAllowance = (
   params: GetRemoteSwapParams,
 ) => {
   // Check feature flag
-  console.log('getIsRemoteModeEnabled', getIsRemoteModeEnabled(state));
 
   if (!getIsRemoteModeEnabled(state)) {
     return null;
@@ -226,8 +189,6 @@ export const getRemoteSwapAllowance = (
       (a) => a.from === fromTokenSymbol && a.to === toTokenSymbol,
     );
 
-    console.log('allowance', allowance);
-
     if (allowance) {
       return allowance;
     }
@@ -235,3 +196,145 @@ export const getRemoteSwapAllowance = (
 
   return null;
 };
+
+export const remoteModeSelectedAddressTxListSelectorAllChain = createSelector(
+  getSelectedInternalAccount,
+  getAllNetworkTransactions,
+  smartTransactionsListSelector,
+  (selectedInternalAccount, transactions = [], smTransactions = []) => {
+    // TODO: Also check if selectedInternalAccount is hardware wallet
+    return transactions
+      .filter(({ txParamsOriginal }: TransactionMeta) =>
+        txParamsOriginal
+          ? txParamsOriginal.from === selectedInternalAccount.address
+          : false,
+      )
+      .filter(({ type }: TransactionMeta) => type !== TransactionType.incoming)
+      .concat(smTransactions);
+  },
+);
+
+// Returns transactions where the selected account is the original sender
+export const remoteModeSelectedAddressTxListSelector = createSelector(
+  getSelectedInternalAccount,
+  getCurrentNetworkTransactions,
+  smartTransactionsListSelector,
+  (selectedInternalAccount, transactions = [], smTransactions = []) => {
+    // TODO: Also check if selectedInternalAccount is hardware wallet
+    return transactions
+      .filter(({ txParamsOriginal }: TransactionMeta) =>
+        txParamsOriginal
+          ? txParamsOriginal.from === selectedInternalAccount.address
+          : false,
+      )
+      .filter(({ type }: TransactionMeta) => type !== TransactionType.incoming)
+      .concat(smTransactions);
+  },
+);
+
+export const remoteModeTransactionsSelectorAllChains = createSelector(
+  transactionSubSelectorAllChains,
+  remoteModeSelectedAddressTxListSelectorAllChain,
+  (subSelectorTxList = [], selectedAddressTxList = []) => {
+    const txsToRender = selectedAddressTxList.concat(subSelectorTxList);
+
+    return [...txsToRender].sort((a, b) => b.time - a.time);
+  },
+);
+
+export const remoteModeTransactionsSelector = createSelector(
+  transactionSubSelector,
+  remoteModeSelectedAddressTxListSelector,
+  (subSelectorTxList = [], selectedAddressTxList = []) => {
+    const txsToRender = selectedAddressTxList.concat(subSelectorTxList);
+
+    return [...txsToRender].sort((a, b) => b.time - a.time);
+  },
+);
+
+/**
+ * @name remoteModeNonceSortedTransactionsSelectorAllChains
+ * @description Returns an array of transactionGroups sorted by nonce in ascending order.
+ * @returns {transactionGroup[]}
+ */
+export const remoteModeNonceSortedTransactionsSelectorAllChains =
+  createSelector(remoteModeTransactionsSelectorAllChains, (transactions = []) =>
+    groupAndSortTransactionsByNonce(transactions),
+  );
+
+/**
+ * @name remoteModeNonceSortedTransactionsSelector
+ * @description Returns an array of transactionGroups sorted by nonce in ascending order.
+ * @returns {transactionGroup[]}
+ */
+export const remoteModeNonceSortedTransactionsSelector = createSelector(
+  remoteModeTransactionsSelector,
+  (transactions = []) => groupAndSortTransactionsByNonce(transactions),
+);
+
+/**
+ * @name remoteModeNonceSortedPendingTransactionsSelector
+ * @description Returns an array of transactionGroups where transactions are still pending sorted by
+ * nonce in descending order.
+ * @returns {transactionGroup[]}
+ */
+export const remoteModeNonceSortedPendingTransactionsSelector = createSelector(
+  remoteModeNonceSortedTransactionsSelector,
+  (transactions = []) =>
+    transactions.filter(
+      ({ primaryTransaction }) =>
+        primaryTransaction.status in PENDING_STATUS_HASH,
+    ),
+);
+
+/**
+ * @name remoteModeNonceSortedPendingTransactionsSelectorAllChains
+ * @description Returns an array of transactionGroups where transactions are still pending sorted by
+ * nonce in descending order for all chains.
+ * @returns {transactionGroup[]}
+ */
+export const remoteModeNonceSortedPendingTransactionsSelectorAllChains =
+  createSelector(
+    remoteModeNonceSortedTransactionsSelectorAllChains,
+    (transactions = []) =>
+      transactions.filter(
+        ({ primaryTransaction }) =>
+          primaryTransaction.status in PENDING_STATUS_HASH,
+      ),
+  );
+
+/**
+ * @name remoteModeNonceSortedCompletedTransactionsSelectorAllChains
+ * @description Returns an array of transactionGroups where transactions are confirmed sorted by
+ * nonce in descending order for all chains.
+ * @returns {transactionGroup[]}
+ */
+export const remoteModeNonceSortedCompletedTransactionsSelectorAllChains =
+  createSelector(
+    remoteModeNonceSortedTransactionsSelectorAllChains,
+    (transactions = []) =>
+      transactions
+        .filter(
+          ({ primaryTransaction }) =>
+            !(primaryTransaction.status in PENDING_STATUS_HASH),
+        )
+        .reverse(),
+  );
+
+/**
+ * @name remoteModeNonceSortedCompletedTransactionsSelector
+ * @description Returns an array of transactionGroups where transactions are confirmed sorted by
+ * nonce in descending order.
+ * @returns {transactionGroup[]}
+ */
+export const remoteModeNonceSortedCompletedTransactionsSelector =
+  createSelector(
+    remoteModeNonceSortedTransactionsSelector,
+    (transactions = []) =>
+      transactions
+        .filter(
+          ({ primaryTransaction }) =>
+            !(primaryTransaction.status in PENDING_STATUS_HASH),
+        )
+        .reverse(),
+  );

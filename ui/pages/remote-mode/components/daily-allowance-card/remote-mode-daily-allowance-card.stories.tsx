@@ -4,7 +4,10 @@ import { MemoryRouter } from 'react-router-dom';
 import configureStore from '../../../../store/store';
 import RemoteModeDailyAllowanceCard from './remote-mode-daily-allowance-card.component';
 import testData from '../../../../../.storybook/test-data';
-import { TOKEN_DETAILS, TokenSymbol } from '../../remote.types';
+import {
+  TOKEN_DETAILS,
+  TokenSymbol,
+} from '../../../../../shared/lib/remote-mode';
 import { AssetType } from '@metamask/bridge-controller';
 
 const store = configureStore(testData);
@@ -16,6 +19,7 @@ const mockDailyAllowance = {
   name: TOKEN_DETAILS[TokenSymbol.ETH].name,
   type: AssetType.native,
   address: '',
+  decimals: 18,
 };
 
 export default {
@@ -46,6 +50,7 @@ export const DifferentTokens = () => (
       type: AssetType.native,
       address: '',
       amount: 5,
+      decimals: 18,
     }}
     onRemove={() => {}}
   />
@@ -60,6 +65,7 @@ export const LargeAmount = () => (
       type: AssetType.native,
       address: '',
       amount: 1000000,
+      decimals: 18,
     }}
     onRemove={() => {}}
   />

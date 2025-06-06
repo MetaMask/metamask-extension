@@ -290,6 +290,22 @@ class FixtureBuilder {
     return this;
   }
 
+  withNetworkControllerOnBnb() {
+    return this.withNetworkController({
+      networkConfigurations: {
+        networkConfigurationId: {
+          chainId: CHAIN_IDS.BSC,
+          nickname: 'Binance Chain',
+          rpcPrefs: {},
+          rpcUrl: 'https://bsc-dataseed.binance.org',
+          ticker: 'BNB',
+          networkConfigurationId: 'networkConfigurationId',
+          id: 'networkConfigurationId',
+        },
+      },
+    });
+  }
+
   withNetworkControllerOnMainnet() {
     return this.withNetworkController({ selectedNetworkClientId: 'mainnet' });
   }
@@ -845,20 +861,14 @@ class FixtureBuilder {
     });
   }
 
-  withPreferencesControllerSmartTransactionsOptedIn() {
-    return this.withPreferencesController({
-      preferences: {
-        smartTransactionsOptInStatus: true,
-        tokenNetworkFilter: {},
-      },
-    });
-  }
-
+  /**
+   * @deprecated this method should not be used, as the `smartTransactionsOptInStatus` value is overridden by the migration 135
+   * Use the `toggleStxSetting` flow to disable this setting effectively.
+   */
   withPreferencesControllerSmartTransactionsOptedOut() {
     return this.withPreferencesController({
       preferences: {
         smartTransactionsOptInStatus: false,
-        tokenNetworkFilter: {},
       },
     });
   }

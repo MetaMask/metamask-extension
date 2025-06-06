@@ -9,7 +9,6 @@ import {
 import { PPOMController } from '@metamask/ppom-validator';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { TransactionController } from '@metamask/transaction-controller';
-import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 import { AccountsController } from '@metamask/accounts-controller';
 import {
   AssetsContractController,
@@ -80,10 +79,6 @@ export type Controller =
   | SnapInterfaceController
   | SnapInsightsController
   | TransactionController
-  | (TransactionUpdateController & {
-      name: 'TransactionUpdateController';
-      state: Record<string, unknown>;
-    })
   | InstitutionalSnapController
   | UserStorageController
   | TokenRatesController
@@ -99,6 +94,7 @@ export type ControllerFlatState = AccountsController['state'] &
   AuthenticationController['state'] &
   CronjobController['state'] &
   DeFiPositionsController['state'] &
+  DelegationController['state'] &
   GasFeeController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
@@ -125,5 +121,4 @@ export type ControllerFlatState = AccountsController['state'] &
   TokenRatesController['state'] &
   NftController['state'] &
   NftDetectionController['state'] &
-  RemoteFeatureFlagController['state'] &
-  DelegationController['state'];
+  RemoteFeatureFlagController['state'];
