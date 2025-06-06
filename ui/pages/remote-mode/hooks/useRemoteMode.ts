@@ -1,4 +1,6 @@
 import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { encode } from '@metamask/abi-utils';
+
 import {
   TransactionMeta,
   TransactionType,
@@ -35,6 +37,7 @@ import {
 import { useConfirmationNavigation } from '../../confirmations/hooks/useConfirmationNavigation';
 import { multiTokenPeriodBuilder } from '../../../../shared/lib/delegation/caveatBuilder/multiTokenPeriod';
 import { DAY_IN_SECONDS } from '../remote.constants';
+import { argsEqualityCheckBuilder } from '../../../../shared/lib/delegation/caveatBuilder/argsEqualityBuilder';
 
 export const useRemoteMode = ({ account }: { account: Hex }) => {
   const { network7702List } = useEIP7702Networks(account);
@@ -155,6 +158,20 @@ export const useRemoteMode = ({ account }: { account: Hex }) => {
           multiTokenPeriodBuilder(
             getDeleGatorEnvironment(hexToNumber(chainId)),
             tokenPeriodConfigs,
+          ),
+        );
+      }
+
+      if (mode === REMOTE_MODES.SWAP) {
+        // If you need it as bytes32 instead
+        const encodedString = encode(
+          ['string'],
+          ['Token-Whitelist-Not-Enforced'],
+        );
+        caveats.push(
+          argsEqualityCheckBuilder(
+            getDeleGatorEnvironment(hexToNumber(chainId)),
+            encodedString,
           ),
         );
       }

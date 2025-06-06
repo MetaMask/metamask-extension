@@ -291,7 +291,7 @@ export const updateRemoteModeTransaction = async ({
             signature,
           },
           [delegation],
-          true,
+          false,
         ],
       ) as Hex;
 

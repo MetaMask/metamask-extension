@@ -249,7 +249,6 @@ export default function ReviewQuote({
   const approveTxParams = useSelector(getApproveTxParams, isEqual);
   const topQuote = useSelector(getTopQuote, isEqual);
   const usedQuote = useSelector(getUsedQuote, isEqual);
-  console.log('usedQuote', usedQuote);
   const tradeValue = usedQuote?.trade?.value ?? '0x0';
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const chainId = useSelector(getCurrentChainId);

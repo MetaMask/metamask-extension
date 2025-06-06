@@ -433,6 +433,7 @@ export default function Swap() {
               exact
               render={() => {
                 if (swapsErrorKey) {
+                  console.log('swapsErrorKey', tradeTxData);
                   return (
                     <AwaitingSwap
                       swapComplete={false}
