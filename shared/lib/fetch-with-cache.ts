@@ -1,6 +1,11 @@
 import { MINUTE, SECOND } from '../constants/time';
 import getFetchWithTimeout from '../modules/fetch-with-timeout';
-import { getStorageItem, setStorageItem } from './storage-helpers';
+import { Cloneable, getStorageItem, setStorageItem } from './storage-helpers';
+
+type CacheEntry = {
+  cachedResponse: Cloneable;
+  cachedTime: number;
+};
 
 const fetchWithCache = async ({
   url,
@@ -39,9 +44,11 @@ const fetchWithCache = async ({
 
   const currentTime = Date.now();
   const cacheKey = `cachedFetch:${url}`;
-  const { cachedResponse, cachedTime } = (await getStorageItem(cacheKey)) || {};
-  if (cachedResponse && currentTime - cachedTime < cacheRefreshTime) {
-    return cachedResponse;
+  const cached = await getStorageItem<CacheEntry>(cacheKey);
+  if (cached) {
+    if (currentTime - cached.cachedTime < cacheRefreshTime) {
+      return cached.cachedResponse;
+    }
   }
   fetchOptions.headers.set('Content-Type', 'application/json');
   const fetchWithTimeout = getFetchWithTimeout(timeout);
@@ -56,21 +63,24 @@ const fetchWithCache = async ({
     const message = `Fetch with cache failed within function ${functionName} with status'${response.status}': '${response.statusText}'`;
     if (allowStale) {
       console.debug(`${message}. Returning cached result`);
-      return cachedResponse;
+      return cached?.cachedResponse;
     }
     throw new Error(
       `Fetch with cache failed within function ${functionName} with status'${response.status}': '${response.statusText}'`,
     );
   }
-  const responseJson =
-    response.status === 204 ? undefined : await response.json();
-  const cacheEntry = {
-    cachedResponse: responseJson,
+  const responseBytes =
+    response.status === 204 ? undefined : await response.bytes();
+  const cacheEntry: CacheEntry = {
+    cachedResponse: responseBytes,
     cachedTime: currentTime,
   };
 
-  await setStorageItem(cacheKey, cacheEntry);
-  return responseJson;
+  // fire and forget, no need to wait for the cache to be written
+  setStorageItem(cacheKey, cacheEntry);
+
+  // @ts-expect-error typescript's `JSON.parse` type is wrong; it does allow parsing of `Uint8Array` directly
+  return responseBytes ?? JSON.parse(responseBytes);
 };
 
 export default fetchWithCache;
