@@ -1,8 +1,8 @@
 import browser from 'webextension-polyfill';
+import log from 'loglevel';
 import { OperationSafener } from './operation-safener';
 import { PersistenceManager } from './stores/persistence-manager';
 import { MetaMaskStateType } from './stores/base-store';
-import log from 'loglevel';
 
 /**
  * Creates a request-safe reload mechanism for the given persistence manager.
