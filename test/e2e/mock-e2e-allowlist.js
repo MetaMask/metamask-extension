@@ -1,6 +1,7 @@
 // Please do not add any more items to this list.
 // This list is temporary and the goal is to reduce it to 0, meaning all requests are mocked in our e2e tests.
 const ALLOWLISTED_URLS = [
+  // Snaps
   'https://acl.execution.metamask.io/latest/registry.json',
   'https://acl.execution.metamask.io/latest/signature.json',
   'https://metamask.github.io/eth-ledger-bridge-keyring',
@@ -28,12 +29,10 @@ const ALLOWLISTED_URLS = [
   'https://metamask.github.io/snap-simple-keyring/1.1.2/page-data/index/page-data.json',
   'https://metamask.github.io/snap-simple-keyring/1.1.2/webpack-runtime-35853b86ee7228936852.js',
   'https://metamask.github.io/snaps/test-snaps/2.12.0/',
-  'https://metamask.github.io/snaps/test-snaps/2.12.0/assets/apple-touch-icon-1024x1024.png',
   'https://metamask.github.io/snaps/test-snaps/2.12.0/main.js',
   'https://metamask.github.io/snaps/test-snaps/2.12.0/test-data.json',
   'https://metamask.github.io/snaps/test-snaps/2.20.1',
-  'https://raw.githubusercontent.com/MetaMask/eth-phishing-detect/master/src/config.json',
-  'https://staking.api.cx.metamask.io/v1/pooled-staking/eligibility?addresses=',
+  // Swaps
   'https://swap.api.cx.metamask.io/networks/1',
   'https://swap.api.cx.metamask.io/networks/1/trades?destinationToken=0x6b175474e89094c44da98b954eedeac495271d0f&sourceToken=0x0000000000000000000000000000000000000000&sourceAmount=1000000000000000&slippage=2&timeout=10000&walletAddress=0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
   'https://swap.api.cx.metamask.io/networks/1/trades?destinationToken=0x6b175474e89094c44da98b954eedeac495271d0f&sourceToken=0x0000000000000000000000000000000000000000&sourceAmount=2000000000000000000&slippage=2&timeout=10000&walletAddress=0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
@@ -41,6 +40,7 @@ const ALLOWLISTED_URLS = [
   'https://swap.api.cx.metamask.io/networks/1/trades?destinationToken=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&sourceToken=0x0000000000000000000000000000000000000000&sourceAmount=1000000000000000&slippage=2&timeout=10000&walletAddress=0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
   'https://swap.api.cx.metamask.io/networks/1/trades?destinationToken=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&sourceToken=0x0000000000000000000000000000000000000000&sourceAmount=50000000000000000000&slippage=2&timeout=10000&walletAddress=0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
   'https://swap.metaswap.codefi.network/networks/1/topAssets',
+  // Assets
   'https://tokens.api.cx.metamask.io/v3/assets?assetIds=solana%3A5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Fslip44%3A501',
   'https://tokens.api.cx.metamask.io/v3/assets?assetIds=solana%3A5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Fslip44%3A501%2Csolana%3A5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Ftoken%3A2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
   'https://tokens.api.cx.metamask.io/v3/assets?assetIds=solana%3AEtWTRABZaYq6iMfeYKouRu166VU2xqa1%2Fslip44%3A501',
