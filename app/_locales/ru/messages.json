@@ -338,10 +338,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Плата за приоритет (также известная как «чаевые» майнеру) направляется непосредственно майнерам, чтобы они уделили приоритетное внимание вашей транзакции."
   },
-  "agreeTermsOfUse": {
-    "message": "Я соглашаюсь с $1 MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "В истории токена в блокчейне уже были случаи подозрительных аирдропов."
   },
@@ -2296,18 +2292,11 @@
   "gasLimit": {
     "message": "Лимит газа"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Лимит газа — это максимальное количество единиц газа, которое вы готовы потратить."
-  },
   "gasLimitRecommended": {
     "message": "Рекомендуемый лимит газа — $1. Если лимит газа меньше этого, он может оказаться неэффективным."
   },
   "gasLimitTooLow": {
     "message": "Лимит газа должен быть не менее 21 000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Лимит газа должен быть не менее $1",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "Лимит газа"
@@ -2315,23 +2304,11 @@
   "gasOption": {
     "message": "Настройка газа"
   },
-  "gasPrice": {
-    "message": "Цена газа (Гвей)"
-  },
   "gasPriceExcessive": {
     "message": "Установлена неоправданно высокая плата за газ. Рекомендуем снизить ее."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Цена газа очень высокая"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Цена газа очень низкая"
-  },
   "gasPriceFetchFailed": {
     "message": "Не удалось определить примерную цену газа из-за ошибки сети."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Цена газа — это количество Ether, которое вы готовы платить за каждую единицу газа."
   },
   "gasTimingHoursShort": {
     "message": "$1 ч",
@@ -6789,23 +6766,8 @@
   "welcomeBack": {
     "message": "С возвращением!"
   },
-  "welcomeExploreDescription": {
-    "message": "Храните, отправляйте и тратьте криптовалюту и активы."
-  },
-  "welcomeExploreTitle": {
-    "message": "Ознакомьтесь с децентрализованными приложениями"
-  },
-  "welcomeLoginDescription": {
-    "message": "Используйте кошелек MetaMask для входа в децентрализованные приложения — регистрация не потребуется."
-  },
-  "welcomeLoginTitle": {
-    "message": "Поприветствуйте свой кошелек"
-  },
   "welcomeToMetaMask": {
     "message": "Давайте приступим к делу"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "MetaMask, которому доверяют миллионы, — это безопасный кошелек, предоставляющий всем доступ к миру web3."
   },
   "whatsThis": {
     "message": "Что это?"
@@ -6868,8 +6830,5 @@
   },
   "yourWalletIsReady": {
     "message": "Ваш кошелек готов"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Нулевая цена газа при ускорении"
   }
 }
