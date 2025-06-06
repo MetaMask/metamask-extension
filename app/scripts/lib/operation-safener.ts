@@ -39,6 +39,9 @@ export class OperationSafener<O extends Op = Op> {
    */
   #bouncer: DebouncedFunc<(...params: Parameters<O>) => Promise<ReturnType<O>>>;
 
+  /**
+   * Tracks whether the OperationSafener is currently evacuating.
+   */
   #evacuating: Promise<void> | null = null;
 
   /**
@@ -83,7 +86,9 @@ export class OperationSafener<O extends Op = Op> {
   constructor({ op, wait, options }: Config<O>) {
     const opts: LockOptions = { mode: 'exclusive' };
     const func = (...params: Parameters<O>) =>
-      navigator.locks.request('lock', opts, () => op(...params));
+      navigator.locks.request('operation-safener-lock', opts, () =>
+        op(...params),
+      );
     this.#bouncer = debounce(func, wait, options);
   }
 
@@ -99,16 +104,16 @@ export class OperationSafener<O extends Op = Op> {
       return this.#evacuating;
     }
 
-    // eslint-disable-next-line no-async-promise-executor
-    this.#evacuating = new Promise(async (resolve) => {
-      try {
-        // flush will invoke the latest pending op, then return a Promise that
-        // resolves to the result of running that `op`.
-        await this.#bouncer.flush();
-      } finally {
-        resolve();
-      }
-    });
+    // this IIFE is used to ensure that the evacuation process always resolves
+    // successfully, AND in errors from running `this.#bouncer.flush()` are
+    // treated as unhandled rejections so that they can still bubble up to
+    // the process/window's `unhandledRejection` listener, if there is one,
+    // i.e., Sentry.
+    this.#evacuating = (async () => {
+      // flush will invoke the latest pending op, then return a Promise that
+      // resolves to the result of running that `op`.
+      await this.#bouncer.flush();
+    })();
     return this.#evacuating;
   };
 
@@ -129,8 +134,8 @@ export class OperationSafener<O extends Op = Op> {
       return false;
     }
 
-    // fire and forget, return values for debounced functions are complicated
-    // and not useful for our use case
+    // fire and forget; the return value for a `debounce`d function is the
+    // _previous_ invocation's return value, not the current one.
     this.#bouncer(...params);
     return true;
   };
