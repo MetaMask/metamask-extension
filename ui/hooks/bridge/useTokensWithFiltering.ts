@@ -37,6 +37,57 @@ import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import type { BridgeToken } from '../../ducks/bridge/types';
 
+// This transforms the token object from the bridge-api into the format expected by the AssetPicker
+const buildTokenData = (
+  chainId: ChainId | Hex | CaipChainId,
+  token?: BridgeAsset | TokenListToken,
+):
+  | AssetWithDisplayData<NativeAsset>
+  | AssetWithDisplayData<ERC20Asset>
+  | undefined => {
+  if (!chainId || !token) {
+    return undefined;
+  }
+  // Only tokens on the active chain are processed here here
+  const sharedFields = {
+    ...token,
+    chainId: isSolanaChainId(chainId)
+      ? formatChainIdToCaip(chainId)
+      : formatChainIdToHex(chainId),
+    assetId:
+      'assetId' in token
+        ? token.assetId
+        : toAssetId(token.address, formatChainIdToCaip(chainId)),
+  };
+
+  if (isNativeAddress(token.address)) {
+    return {
+      ...sharedFields,
+      type: AssetType.native,
+      address: '', // Return empty string to match useMultichainBalances output
+      image:
+        CHAIN_ID_TOKEN_IMAGE_MAP[
+          sharedFields.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+        ] ??
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        (token.iconUrl || ('icon' in token ? token.icon : '') || ''),
+      // Only unimported native assets are processed here so hardcode balance to 0
+      balance: '0',
+      string: '0',
+    };
+  }
+
+  return {
+    ...sharedFields,
+    type: AssetType.token,
+    image: token.iconUrl ?? ('icon' in token ? token.icon : '') ?? '',
+    // Only tokens with 0 balance are processed here so hardcode empty string
+    balance: '',
+    string: undefined,
+  };
+};
+
 type FilterPredicate = (
   symbol: string,
   address?: string,
@@ -256,56 +307,5 @@ export const useTokensWithFiltering = (
   return {
     filteredTokenListGenerator,
     isLoading: isTokenListLoading || isTopTokenListLoading,
-  };
-};
-
-// This transforms the token object from the bridge-api into the format expected by the AssetPicker
-const buildTokenData = (
-  chainId: ChainId | Hex | CaipChainId,
-  token?: BridgeAsset | TokenListToken,
-):
-  | AssetWithDisplayData<NativeAsset>
-  | AssetWithDisplayData<ERC20Asset>
-  | undefined => {
-  if (!chainId || !token) {
-    return undefined;
-  }
-  // Only tokens on the active chain are processed here here
-  const sharedFields = {
-    ...token,
-    chainId: isSolanaChainId(chainId)
-      ? formatChainIdToCaip(chainId)
-      : formatChainIdToHex(chainId),
-    assetId:
-      'assetId' in token
-        ? token.assetId
-        : toAssetId(token.address, formatChainIdToCaip(chainId)),
-  };
-
-  if (isNativeAddress(token.address)) {
-    return {
-      ...sharedFields,
-      type: AssetType.native,
-      address: '', // Return empty string to match useMultichainBalances output
-      image:
-        CHAIN_ID_TOKEN_IMAGE_MAP[
-          sharedFields.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-        ] ??
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        (token.iconUrl || ('icon' in token ? token.icon : '') || ''),
-      // Only unimported native assets are processed here so hardcode balance to 0
-      balance: '0',
-      string: '0',
-    };
-  }
-
-  return {
-    ...sharedFields,
-    type: AssetType.token,
-    image: token.iconUrl ?? ('icon' in token ? token.icon : '') ?? '',
-    // Only tokens with 0 balance are processed here so hardcode empty string
-    balance: '',
-    string: undefined,
   };
 };
