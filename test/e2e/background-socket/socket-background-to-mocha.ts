@@ -9,13 +9,57 @@ import { MessageType, WindowProperties } from './types';
  * We had hoped it would be able to call chrome.tabs.highlight(), but Selenium doesn't see the tab change.
  */
 class SocketBackgroundToMocha {
-  private client: WebSocket;
+  private client: WebSocket | null = null;
+
+  // Reconnection properties
+  private reconnectAttempts: number = 0;
+  private maxReconnectAttempts: number = 5;
+  private reconnectDelay: number = 1000;
+  private reconnectTimer: NodeJS.Timeout | null = null;
+  private intentionalDisconnect: boolean = false;
 
   constructor() {
+    this.connect();
+  }
+
+  // Stop the WebSocket connection and clean up resources
+  stop() {
+    // Mark this as an intentional disconnect to prevent automatic reconnection
+    this.intentionalDisconnect = true;
+
+    // Clear any reconnection timer
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = null;
+    }
+
+    // Close the WebSocket connection
+    if (this.client) {
+      this.client.onclose = null; // Prevent triggering reconnect
+      this.client.close();
+      this.client = null;
+    }
+
+    log.debug('SocketBackgroundToMocha stopped');
+  }
+
+  // Connect to the WebSocket server
+  private connect() {
+    if (this.client) {
+      // Clean up existing connection if it exists
+      this.client.onopen = null;
+      this.client.onmessage = null;
+      this.client.onclose = null;
+      this.client.onerror = null;
+    }
+
     this.client = new WebSocket('ws://localhost:8111');
 
-    this.client.onopen = () =>
+    this.client.onopen = () => {
       log.debug('SocketBackgroundToMocha WebSocket connection opened');
+      // Reset reconnection parameters on successful connection
+      this.resetReconnection();
+    };
 
     this.client.onmessage = (ev: MessageEvent) => {
       let message: MessageType;
@@ -33,11 +77,21 @@ class SocketBackgroundToMocha {
       this.receivedMessage(message);
     };
 
-    this.client.onclose = () =>
+    this.client.onclose = () => {
       log.debug('SocketBackgroundToMocha WebSocket connection closed');
+      this.handleReconnect();
+    };
 
-    this.client.onerror = (error) =>
+    this.client.onerror = (error) => {
       log.error('SocketBackgroundToMocha WebSocket error:', error);
+
+      // If we encounter an error and we're not already trying to reconnect,
+      // initiate a reconnection attempt
+      if (!this.reconnectTimer && !this.intentionalDisconnect) {
+        log.debug('WebSocket error detected, attempting to reconnect...');
+        this.handleReconnect();
+      }
+    };
   }
 
   /**
@@ -114,7 +168,39 @@ class SocketBackgroundToMocha {
 
   // Send a message to the Mocha/Selenium test
   send(message: MessageType) {
-    this.client.send(JSON.stringify(message));
+    if (!this.client || this.client.readyState !== WebSocket.OPEN) {
+      log.warn(
+        'No connection to ServerMochaToBackground, message not sent:',
+        message,
+      );
+
+      // If we're not actively attempting to reconnect and there's no intentional disconnect,
+      // trigger a reconnection attempt
+      if (
+        !this.reconnectTimer &&
+        !this.intentionalDisconnect &&
+        this.reconnectAttempts < this.maxReconnectAttempts
+      ) {
+        log.debug('Attempting to reconnect before sending message...');
+        this.handleReconnect();
+      }
+
+      throw new Error('No connection to ServerMochaToBackground');
+    }
+
+    try {
+      this.client.send(JSON.stringify(message));
+    } catch (error) {
+      log.error('Error sending message:', error);
+
+      // If the connection is broken, try to reconnect
+      if (!this.reconnectTimer && !this.intentionalDisconnect) {
+        log.debug('Connection error detected, attempting to reconnect...');
+        this.handleReconnect();
+      }
+
+      throw error;
+    }
   }
 
   // Handle messages received from the Mocha/Selenium test
@@ -132,6 +218,57 @@ class SocketBackgroundToMocha {
     ) {
       this.waitUntilWindowWithProperty(message.property, message.value);
     }
+  }
+
+  // Reset reconnection parameters after successful connection
+  private resetReconnection() {
+    if (this.reconnectAttempts > 0) {
+      log.debug(
+        `SocketBackgroundToMocha: Connection re-established after ${this.reconnectAttempts} attempt(s)`,
+      );
+    }
+
+    this.reconnectAttempts = 0;
+    this.intentionalDisconnect = false;
+
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = null;
+    }
+  }
+
+  // Handle reconnection logic
+  private handleReconnect() {
+    if (
+      this.intentionalDisconnect ||
+      this.reconnectAttempts >= this.maxReconnectAttempts
+    ) {
+      if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+        log.warn(
+          `SocketBackgroundToMocha: Maximum reconnection attempts (${this.maxReconnectAttempts}) reached. Giving up.`,
+        );
+      }
+      return;
+    }
+
+    // Clear any existing timer
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = null;
+    }
+
+    this.reconnectAttempts++;
+
+    // Calculate exponential backoff delay (1s, 2s, 4s, 8s, 16s)
+    const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1);
+
+    log.debug(
+      `Reconnecting to ServerMochaToBackground: attempt ${this.reconnectAttempts} (delay: ${delay}ms)`,
+    );
+
+    this.reconnectTimer = setTimeout(() => {
+      this.connect();
+    }, delay);
   }
 }
 
