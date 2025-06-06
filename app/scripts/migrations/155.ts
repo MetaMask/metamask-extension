@@ -32,9 +32,6 @@ function transformState(
   state: Record<string, unknown>,
 ): Record<string, unknown> {
   if (!hasProperty(state, 'BridgeStatusController')) {
-    global.sentry?.captureException?.(
-      new Error(`Migration ${version}: BridgeStatusController not found.`),
-    );
     return state;
   }
 
