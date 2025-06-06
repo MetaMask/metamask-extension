@@ -165,10 +165,20 @@ export function AssetPickerModal({
     [],
   );
 
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Cleanup abort controller and debounce on unmount
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+      abortControllerRef.current = null;
+      debouncedSetSearchQuery.cancel();
+    };
+  }, []);
+
   useEffect(() => {
     debouncedSetSearchQuery(searchQuery);
   }, [searchQuery, debouncedSetSearchQuery]);
-  const abortControllerRef = useRef<AbortController | null>(null);
 
   const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
   const memoizedSwapsBlockedTokens = useMemo(() => {
