@@ -107,21 +107,26 @@ describe('Bridge selectors', () => {
 
   describe('getAllBridgeableNetworks', () => {
     it('returns list of ALLOWED_BRIDGE_CHAIN_IDS networks', () => {
+      // Filter Rootstock from FEATURED_RPCS
+      const featuredRPCsWithoutRSK = FEATURED_RPCS.filter(
+        (rpc) => rpc.chainId !== CHAIN_IDS.RSK
+      );
+
       const state = createBridgeMockStore({
         metamaskStateOverrides: {
-          ...mockNetworkState(...FEATURED_RPCS),
+          ...mockNetworkState(...featuredRPCsWithoutRSK),
         },
       });
       const result = getAllBridgeableNetworks(state as never);
 
       expect(result).toHaveLength(9);
       expect(result[0]).toStrictEqual(
-        expect.objectContaining({ chainId: FEATURED_RPCS[0].chainId }),
+        expect.objectContaining({ chainId: featuredRPCsWithoutRSK[0].chainId }),
       );
       expect(result[1]).toStrictEqual(
-        expect.objectContaining({ chainId: FEATURED_RPCS[1].chainId }),
+        expect.objectContaining({ chainId: featuredRPCsWithoutRSK[1].chainId }),
       );
-      FEATURED_RPCS.forEach((rpcDefinition, idx) => {
+      featuredRPCsWithoutRSK.forEach((rpcDefinition, idx) => {
         expect(result[idx]).toStrictEqual(
           expect.objectContaining({
             ...rpcDefinition,

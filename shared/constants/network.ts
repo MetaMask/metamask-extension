@@ -191,6 +191,7 @@ export const CHAIN_IDS = {
   MONAD_TESTNET: '0x279f',
   SOPHON: '0xc3b8',
   SOPHON_TESTNET: '0x1fa72e78',
+  RSK: '0x1e',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -335,6 +336,7 @@ export const KATANA_DISPLAY_NAME = 'Katana';
 export const MONAD_TESTNET_DISPLAY_NAME = 'Monad Testnet';
 export const SOPHON_DISPLAY_NAME = 'Sophon';
 export const SOPHON_TESTNET_DISPLAY_NAME = 'Sophon Testnet';
+export const RSK_DISPLAY_NAME = 'Rootstock Mainnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -397,6 +399,7 @@ export const CURRENCY_SYMBOLS = {
   FLOW: 'FLOW',
   KATANA: 'ETH',
   SOPHON: 'SOPH',
+  RBTC: 'RBTC',
 } as const;
 
 // Non-EVM currency symbols
@@ -475,6 +478,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   SHAPE_SEPOLIA: 'ETH',
   XRPLEVM_TESTNET: 'XRP',
   SOPHON: 'SOPH',
+  RSK: 'RBTC',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -588,6 +592,7 @@ export const KATANA_IMAGE_URL = './images/katana.svg';
 export const MONAD_TESTNET_IMAGE_URL = './images/monad-testnet-logo.png';
 export const SOPHON_IMAGE_URL = './images/sophon.svg';
 export const SOPHON_TESTNET_IMAGE_URL = './images/sophon-testnet.svg';
+export const RSK_IMAGE_URL = './images/rsk.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -729,6 +734,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.SOPHON]: SOPHON_DISPLAY_NAME,
   [CHAIN_IDS.SOPHON_TESTNET]: SOPHON_TESTNET_DISPLAY_NAME,
+  [CHAIN_IDS.RSK]: RSK_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -1021,6 +1027,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_IMAGE_URL,
   [CHAIN_IDS.SOPHON]: SOPHON_IMAGE_URL,
   [CHAIN_IDS.SOPHON_TESTNET]: SOPHON_TESTNET_IMAGE_URL,
+  [CHAIN_IDS.RSK]: RSK_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1346,6 +1353,21 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     ],
     defaultRpcEndpointIndex: 0,
     blockExplorerUrls: ['https://basescan.org'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
+    chainId: CHAIN_IDS.RSK,
+    name: RSK_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.RBTC,
+    rpcEndpoints: [
+      {
+        url: `https://public-node.rsk.co`,
+        failoverUrls: [],
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://explorer.rsk.co'],
     defaultBlockExplorerUrlIndex: 0,
   },
 ];
