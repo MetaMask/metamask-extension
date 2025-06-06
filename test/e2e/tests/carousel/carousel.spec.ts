@@ -75,7 +75,7 @@ describe('Carousel component e2e tests', function () {
     );
   });
 
-  it.only('should handle slide dismissal', async function () {
+  it('should handle slide dismissal', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
