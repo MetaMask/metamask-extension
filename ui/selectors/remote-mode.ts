@@ -2,16 +2,30 @@ import { DelegationEntry } from '@metamask/delegation-controller';
 import type { Hex } from '@metamask/utils';
 import { createSelector } from 'reselect';
 import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import {
   DailyAllowance,
   REMOTE_MODES,
   RemoteModeConfig,
 } from '../../shared/lib/remote-mode';
 import { Asset } from '../ducks/send';
+import { PENDING_STATUS_HASH } from '../helpers/constants/transactions';
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
 } from './remote-feature-flags';
 import { type DelegationState, listDelegationEntries } from './delegation';
+import {
+  transactionSubSelectorAllChains,
+  transactionSubSelector,
+  getCurrentNetworkTransactions,
+  smartTransactionsListSelector,
+  groupAndSortTransactionsByNonce,
+  getAllNetworkTransactions,
+} from './transactions';
+import { getSelectedInternalAccount } from './accounts';
 
 const EIP7702_CONTRACT_ADDRESSES_FLAG = 'confirmations_eip_7702';
 
@@ -177,3 +191,144 @@ export const getRemoteSendAllowance = (
 
   return allowance;
 };
+export const remoteModeSelectedAddressTxListSelectorAllChain = createSelector(
+  getSelectedInternalAccount,
+  getAllNetworkTransactions,
+  smartTransactionsListSelector,
+  (selectedInternalAccount, transactions = [], smTransactions = []) => {
+    // TODO: Also check if selectedInternalAccount is hardware wallet
+    return transactions
+      .filter(({ txParamsOriginal }: TransactionMeta) =>
+        txParamsOriginal
+          ? txParamsOriginal.from === selectedInternalAccount.address
+          : false,
+      )
+      .filter(({ type }: TransactionMeta) => type !== TransactionType.incoming)
+      .concat(smTransactions);
+  },
+);
+
+// Returns transactions where the selected account is the original sender
+export const remoteModeSelectedAddressTxListSelector = createSelector(
+  getSelectedInternalAccount,
+  getCurrentNetworkTransactions,
+  smartTransactionsListSelector,
+  (selectedInternalAccount, transactions = [], smTransactions = []) => {
+    // TODO: Also check if selectedInternalAccount is hardware wallet
+    return transactions
+      .filter(({ txParamsOriginal }: TransactionMeta) =>
+        txParamsOriginal
+          ? txParamsOriginal.from === selectedInternalAccount.address
+          : false,
+      )
+      .filter(({ type }: TransactionMeta) => type !== TransactionType.incoming)
+      .concat(smTransactions);
+  },
+);
+
+export const remoteModeTransactionsSelectorAllChains = createSelector(
+  transactionSubSelectorAllChains,
+  remoteModeSelectedAddressTxListSelectorAllChain,
+  (subSelectorTxList = [], selectedAddressTxList = []) => {
+    const txsToRender = selectedAddressTxList.concat(subSelectorTxList);
+
+    return [...txsToRender].sort((a, b) => b.time - a.time);
+  },
+);
+
+export const remoteModeTransactionsSelector = createSelector(
+  transactionSubSelector,
+  remoteModeSelectedAddressTxListSelector,
+  (subSelectorTxList = [], selectedAddressTxList = []) => {
+    const txsToRender = selectedAddressTxList.concat(subSelectorTxList);
+
+    return [...txsToRender].sort((a, b) => b.time - a.time);
+  },
+);
+
+/**
+ * @name remoteModeNonceSortedTransactionsSelectorAllChains
+ * @description Returns an array of transactionGroups sorted by nonce in ascending order.
+ * @returns {transactionGroup[]}
+ */
+export const remoteModeNonceSortedTransactionsSelectorAllChains =
+  createSelector(remoteModeTransactionsSelectorAllChains, (transactions = []) =>
+    groupAndSortTransactionsByNonce(transactions),
+  );
+
+/**
+ * @name remoteModeNonceSortedTransactionsSelector
+ * @description Returns an array of transactionGroups sorted by nonce in ascending order.
+ * @returns {transactionGroup[]}
+ */
+export const remoteModeNonceSortedTransactionsSelector = createSelector(
+  remoteModeTransactionsSelector,
+  (transactions = []) => groupAndSortTransactionsByNonce(transactions),
+);
+
+/**
+ * @name remoteModeNonceSortedPendingTransactionsSelector
+ * @description Returns an array of transactionGroups where transactions are still pending sorted by
+ * nonce in descending order.
+ * @returns {transactionGroup[]}
+ */
+export const remoteModeNonceSortedPendingTransactionsSelector = createSelector(
+  remoteModeNonceSortedTransactionsSelector,
+  (transactions = []) =>
+    transactions.filter(
+      ({ primaryTransaction }) =>
+        primaryTransaction.status in PENDING_STATUS_HASH,
+    ),
+);
+
+/**
+ * @name remoteModeNonceSortedPendingTransactionsSelectorAllChains
+ * @description Returns an array of transactionGroups where transactions are still pending sorted by
+ * nonce in descending order for all chains.
+ * @returns {transactionGroup[]}
+ */
+export const remoteModeNonceSortedPendingTransactionsSelectorAllChains =
+  createSelector(
+    remoteModeNonceSortedTransactionsSelectorAllChains,
+    (transactions = []) =>
+      transactions.filter(
+        ({ primaryTransaction }) =>
+          primaryTransaction.status in PENDING_STATUS_HASH,
+      ),
+  );
+
+/**
+ * @name remoteModeNonceSortedCompletedTransactionsSelectorAllChains
+ * @description Returns an array of transactionGroups where transactions are confirmed sorted by
+ * nonce in descending order for all chains.
+ * @returns {transactionGroup[]}
+ */
+export const remoteModeNonceSortedCompletedTransactionsSelectorAllChains =
+  createSelector(
+    remoteModeNonceSortedTransactionsSelectorAllChains,
+    (transactions = []) =>
+      transactions
+        .filter(
+          ({ primaryTransaction }) =>
+            !(primaryTransaction.status in PENDING_STATUS_HASH),
+        )
+        .reverse(),
+  );
+
+/**
+ * @name remoteModeNonceSortedCompletedTransactionsSelector
+ * @description Returns an array of transactionGroups where transactions are confirmed sorted by
+ * nonce in descending order.
+ * @returns {transactionGroup[]}
+ */
+export const remoteModeNonceSortedCompletedTransactionsSelector =
+  createSelector(
+    remoteModeNonceSortedTransactionsSelector,
+    (transactions = []) =>
+      transactions
+        .filter(
+          ({ primaryTransaction }) =>
+            !(primaryTransaction.status in PENDING_STATUS_HASH),
+        )
+        .reverse(),
+  );
