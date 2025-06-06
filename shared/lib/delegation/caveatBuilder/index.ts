@@ -7,7 +7,15 @@ import {
 import { allowedMethods, allowedMethodsBuilder } from './allowedMethodsBuilder';
 import { allowedTargets, allowedTargetsBuilder } from './allowedTargetsBuilder';
 import { CaveatBuilder, CaveatBuilderConfig } from './caveatBuilder';
+import {
+  erc20BalanceChange,
+  erc20BalanceChangeBuilder,
+} from './erc20BalanceChangeBuilder';
 import { limitedCalls, limitedCallsBuilder } from './limitedCallsBuilder';
+import {
+  nativeBalanceChange,
+  nativeBalanceChangeBuilder,
+} from './nativeBalanceChangeBuilder';
 import { redeemer, redeemerBuilder } from './redeemerBuilder';
 
 export { resolveCaveats } from './caveatBuilder';
@@ -22,7 +30,9 @@ export const createCaveatBuilder = (
     .extend(allowedMethods, allowedMethodsBuilder)
     .extend(allowedTargets, allowedTargetsBuilder)
     .extend(allowedCalldata, allowedCalldataBuilder)
+    .extend(erc20BalanceChange, erc20BalanceChangeBuilder)
     .extend(limitedCalls, limitedCallsBuilder)
+    .extend(nativeBalanceChange, nativeBalanceChangeBuilder)
     .extend(redeemer, redeemerBuilder);
   return caveatBuilder;
 };
