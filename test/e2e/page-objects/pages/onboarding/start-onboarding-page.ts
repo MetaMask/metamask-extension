@@ -30,6 +30,12 @@ class StartOnboardingPage {
   private readonly importWalletButton =
     '[data-testid="onboarding-import-wallet"]';
 
+  private readonly onboardingGoogleButton =
+    '[data-testid="onboarding-google-button"]';
+
+  private readonly onboardingAppleButton =
+    '[data-testid="onboarding-apple-button"]';
+
   private readonly onboardingCreateWithSrpButton =
     '[data-testid="onboarding-create-with-srp-button"]';
 
@@ -81,6 +87,12 @@ class StartOnboardingPage {
       throw e;
     }
     console.log('Get started page is loaded');
+  }
+
+  async creteWalletWithSocialLogin(): Promise<void> {
+    await this.driver.clickElement(this.createWalletButton);
+    await this.driver.waitForSelector(this.onboardingGoogleButton);
+    await this.driver.clickElement(this.onboardingGoogleButton);
   }
 
   async createWalletWithSrp(): Promise<void> {
