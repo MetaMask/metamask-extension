@@ -31,6 +31,8 @@ import {
   IconName,
   Box,
   Text,
+  BannerAlert,
+  BannerAlertSeverity,
 } from '../../../components/component-library';
 import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
@@ -48,6 +50,7 @@ import {
 import {
   ADD_POPULAR_CUSTOM_NETWORK,
   REVEAL_SRP_LIST_ROUTE,
+  SECURITY_PASSWORD_CHANGE_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getNumberOfSettingRoutesInTab,
@@ -104,6 +107,9 @@ export default class SecurityTab extends PureComponent {
     setSecurityAlertsEnabled: PropTypes.func,
     metaMetricsDataDeletionId: PropTypes.string,
     hdEntropyIndex: PropTypes.number,
+    socialLoginEnabled: PropTypes.bool,
+    socialLoginType: PropTypes.string,
+    seedPhraseBackedUp: PropTypes.bool,
   };
 
   state = {
@@ -161,7 +167,33 @@ export default class SecurityTab extends PureComponent {
 
   renderSeedWords() {
     const { t } = this.context;
-    const { history } = this.props;
+    const { history, seedPhraseBackedUp, socialLoginEnabled, socialLoginType } =
+      this.props;
+
+    const getBannerDescription = () => {
+      if (socialLoginEnabled) {
+        return t('securityLoginWithSocial', [socialLoginType]);
+      }
+      return seedPhraseBackedUp
+        ? t('securityLoginWithSrpBackedUp')
+        : t('securityLoginWithSrpNotBackedUp');
+    };
+
+    const getBannerSeverity = () => {
+      if (socialLoginEnabled) {
+        return BannerAlertSeverity.Success;
+      }
+      return seedPhraseBackedUp
+        ? BannerAlertSeverity.Success
+        : BannerAlertSeverity.Danger;
+    };
+
+    const getButtonText = () => {
+      if (socialLoginEnabled) {
+        return t('securitySrpWalletRecovery');
+      }
+      return t('revealSecretRecoveryPhrase');
+    };
 
     return (
       <>
@@ -169,13 +201,25 @@ export default class SecurityTab extends PureComponent {
           ref={this.settingsRefs[1]}
           className="settings-page__security-tab-sub-header"
         >
-          {t('secretRecoveryPhrase')}
+          {t('securitySrpTitle')}
         </div>
         <div className="settings-page__content-padded">
+          <div className="settings-page__content-description">
+            {t('securitySrpDescription')}
+          </div>
+          <BannerAlert
+            description={getBannerDescription()}
+            paddingTop={2}
+            paddingBottom={2}
+            marginTop={4}
+            marginBottom={4}
+            severity={getBannerSeverity()}
+          />
           <Button
             data-testid="reveal-seed-words"
             type="danger"
             size={ButtonSize.Lg}
+            block
             onClick={(event) => {
               event.preventDefault();
               this.context.trackEvent({
@@ -200,7 +244,38 @@ export default class SecurityTab extends PureComponent {
               });
             }}
           >
-            {t('revealSeedWords')}
+            {getButtonText()}
+          </Button>
+        </div>
+      </>
+    );
+  }
+
+  renderChangePassword() {
+    const { t } = this.context;
+    const { history } = this.props;
+
+    return (
+      <>
+        <div
+          ref={this.settingsRefs[2]}
+          className="settings-page__security-tab-sub-header"
+        >
+          {t('securityChangePasswordTitle')}
+        </div>
+        <div className="settings-page__content-padded">
+          <div className="settings-page__content-description">
+            {t('securityChangePasswordDescription')}
+          </div>
+          <Button
+            width={BlockSize.Full}
+            marginTop={4}
+            block
+            onClick={() => {
+              history.push(SECURITY_PASSWORD_CHANGE_ROUTE);
+            }}
+          >
+            {t('securityChangePassword')}
           </Button>
         </div>
       </>
@@ -1143,6 +1218,7 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('security')}
         </span>
         {this.renderSeedWords()}
+        {this.renderChangePassword()}
         {this.renderSecurityAlertsToggle()}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}

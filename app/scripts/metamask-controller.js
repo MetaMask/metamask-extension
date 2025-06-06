@@ -253,8 +253,8 @@ import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 ///: END:ONLY_INCLUDE_IF
-import { updateCurrentLocale } from '../../shared/lib/translate';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
+import { updateCurrentLocale } from '../../shared/lib/translate';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -3526,6 +3526,7 @@ export default class MetamaskController extends EventEmitter {
       resetOAuthLoginState: this.resetOAuthLoginState.bind(this),
       createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
       fetchAllSeedPhrases: this.fetchAllSeedPhrases.bind(this),
+      changePassword: this.changePassword.bind(this),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
@@ -4737,6 +4738,33 @@ export default class MetamaskController extends EventEmitter {
       keyringId,
       this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
     );
+  }
+
+  /**
+   * Changes the password of the current wallet.
+   *
+   * If the wallet is created with social login, the password is changed for the seedless onboarding flow and sync across the devices too.
+   *
+   * @param {string} newPassword - The new password.
+   * @param {string} oldPassword - The old password.
+   * @returns {Promise<void>}
+   */
+  async changePassword(newPassword, oldPassword) {
+    const { firstTimeFlowType } = this.onboardingController.state;
+
+    if (
+      firstTimeFlowType === FirstTimeFlowType.socialCreate ||
+      firstTimeFlowType === FirstTimeFlowType.socialImport
+    ) {
+      // change password for the social login flow
+      await this.seedlessOnboardingController.changePassword(
+        newPassword,
+        oldPassword,
+      );
+    }
+
+    // also update the vault password for keyring controller
+    await this.keyringController.changePassword(newPassword);
   }
 
   //=============================================================================

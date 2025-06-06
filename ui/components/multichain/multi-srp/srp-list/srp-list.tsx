@@ -16,6 +16,7 @@ import {
   AlignItems,
   BlockSize,
   TextVariant,
+  IconColor,
 } from '../../../../helpers/constants/design-system';
 import { getMetaMaskAccounts } from '../../../../selectors/selectors';
 import { InternalAccountWithBalance } from '../../../../selectors/selectors.types';
@@ -31,9 +32,13 @@ import { SrpListItem } from './srp-list-item';
 export const SrpList = ({
   onActionComplete,
   hideShowAccounts,
+  isSettingsPage = false,
+  seedPhraseBackedUp,
 }: {
-  onActionComplete: (id: string) => void;
+  onActionComplete: (id: string, triggerBackup?: boolean) => void;
+  isSettingsPage?: boolean;
   hideShowAccounts?: boolean;
+  seedPhraseBackedUp?: boolean;
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -64,7 +69,11 @@ export const SrpList = ({
   };
 
   return (
-    <Box className="srp-list__container" padding={4} data-testid="srp-list">
+    <Box
+      className="srp-list__container"
+      padding={isSettingsPage ? 0 : 4}
+      data-testid="srp-list"
+    >
       {hdKeyringsWithSnapAccounts.map((keyring, index) => (
         <Card
           key={`srp-${keyring.metadata.id}`}
@@ -77,7 +86,8 @@ export const SrpList = ({
                 button_type: 'srp_select',
               },
             });
-            onActionComplete(keyring.metadata.id);
+            const triggerBackup = !seedPhraseBackedUp && index === 0;
+            onActionComplete(keyring.metadata.id, triggerBackup);
           }}
           className="select-srp__container"
           marginBottom={3}
@@ -89,7 +99,9 @@ export const SrpList = ({
             justifyContent={JustifyContent.spaceBetween}
           >
             <Box>
-              <Text>{t('srpListName', [index + 1])}</Text>
+              <Text variant={TextVariant.bodyMdMedium}>
+                {t('srpListName', [index + 1])}
+              </Text>
               {!hideShowAccounts && (
                 <Text
                   variant={TextVariant.bodySm}
@@ -117,7 +129,31 @@ export const SrpList = ({
                 </Text>
               )}
             </Box>
-            <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
+            <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
+              {isSettingsPage && (
+                <Text
+                  variant={TextVariant.bodyMdMedium}
+                  color={
+                    !seedPhraseBackedUp && index === 0
+                      ? TextColor.errorDefault
+                      : TextColor.textAlternative
+                  }
+                >
+                  {!seedPhraseBackedUp && index === 0
+                    ? t('srpListStateNotBackedUp')
+                    : t('srpListStateBackedUp')}
+                </Text>
+              )}
+              <Icon
+                name={IconName.ArrowRight}
+                size={IconSize.Sm}
+                color={
+                  !seedPhraseBackedUp && index === 0 && isSettingsPage
+                    ? IconColor.errorDefault
+                    : IconColor.iconAlternative
+                }
+              />
+            </Box>
           </Box>
           {showAccounts[index] && (
             <Box>

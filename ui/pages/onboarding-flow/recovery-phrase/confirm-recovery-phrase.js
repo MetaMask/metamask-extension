@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -69,11 +69,16 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const { search } = useLocation();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const splitSecretRecoveryPhrase = useMemo(
     () => (secretRecoveryPhrase ? secretRecoveryPhrase.split(' ') : []),
     [secretRecoveryPhrase],
   );
+  const searchParams = new URLSearchParams(search);
+  const isFromReminderParam = searchParams.get('isFromReminder')
+    ? '/?isFromReminder=true'
+    : '';
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [matching, setMatching] = useState(false);
@@ -119,10 +124,13 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       },
     });
 
-    getPlatform() === PLATFORM_FIREFOX
-      ? history.push(ONBOARDING_COMPLETION_ROUTE)
-      : history.push(ONBOARDING_METAMETRICS);
-  }, [dispatch, hdEntropyIndex, history, trackEvent]);
+    const nextRoute =
+      getPlatform() === PLATFORM_FIREFOX || isFromReminderParam
+        ? ONBOARDING_COMPLETION_ROUTE
+        : ONBOARDING_METAMETRICS;
+
+    history.push(`${nextRoute}${isFromReminderParam}`);
+  }, [dispatch, hdEntropyIndex, history, trackEvent, isFromReminderParam]);
 
   return (
     <Box
