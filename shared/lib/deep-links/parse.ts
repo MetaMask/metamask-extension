@@ -16,7 +16,7 @@ export async function parse(urlStr: string) {
     return false;
   }
 
-  const route = routes.get(url.pathname);
+  const route = routes.get(url.pathname.toLowerCase());
   if (!route) {
     log.debug('No handler found for the pathname:', url.pathname);
     return false;

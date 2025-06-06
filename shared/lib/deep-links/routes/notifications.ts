@@ -1,18 +1,18 @@
 import {
-  DEFAULT_ROUTE,
+  NOTIFICATIONS_ROUTE,
   PATH_NAME_MAP,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/helpers/constants/routes';
-import type { Route } from './route.type';
+import { Route } from './route.type';
 
-export default {
+export default new Route({
   pathname: '/home',
   getTitle: (_: URLSearchParams) =>
-    `Open the ${PATH_NAME_MAP.get(DEFAULT_ROUTE)} Page`,
+    `Open the ${PATH_NAME_MAP.get(NOTIFICATIONS_ROUTE)}`,
   // wow. this is the worst lint rule we have. i hate it so much.
   // eslint-disable-next-line func-name-matching
-  handler: function handleHome(_: URLSearchParams) {
-    return { path: DEFAULT_ROUTE, query: new URLSearchParams() };
+  handler: function handleNotifications(_: URLSearchParams) {
+    return { path: NOTIFICATIONS_ROUTE, query: new URLSearchParams() };
   },
-} as Route;
+});

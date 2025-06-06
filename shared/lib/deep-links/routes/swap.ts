@@ -5,19 +5,35 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/helpers/constants/routes';
-import type { Route } from './route.type';
+import { Route } from './route.type';
 
-export default {
+export default new Route({
   pathname: '/swap',
   getTitle: (_: URLSearchParams) =>
     `Open the ${PATH_NAME_MAP.get(PREPARE_SWAP_ROUTE)}`,
   // wow. this is the worst lint rule we have. i hate it so much.
   // eslint-disable-next-line func-name-matching
-  handler: function handleSwap(_: URLSearchParams) {
-    // TODO: handle params
+  handler: function handleSwap(params: URLSearchParams) {
+    const query = new URLSearchParams();
+
+    const from = params.get('from');
+    const to = params.get('to');
+    const amount = params.get('amount');
+
+    // add the params to the query if they exist
+    if (from) {
+      query.set('from', from);
+    }
+    if (to) {
+      query.set('to', to);
+    }
+    if (amount) {
+      query.set('amount', amount);
+    }
+
     return {
       path: `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
-      query: new URLSearchParams(),
+      query,
     };
   },
-} as Route;
+});

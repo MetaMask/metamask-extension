@@ -7,9 +7,9 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '../../components/component-library/button';
-import { parse } from '../../../shared/lib/deeplinks/parse';
-import { routes } from '../../../shared/lib/deeplinks/routes';
-import { DEEP_LINK_HOST } from '../../../shared/lib/deeplinks/constants';
+import { parse } from '../../../shared/lib/deep-links/parse';
+import { routes } from '../../../shared/lib/deep-links/routes';
+import { DEEP_LINK_HOST } from '../../../shared/lib/deep-links/constants';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   AlignItems,

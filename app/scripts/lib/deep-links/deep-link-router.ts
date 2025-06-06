@@ -3,8 +3,8 @@ import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { DEEP_LINK_ROUTE } from '../../../../ui/helpers/constants/routes';
-import { parse } from '../../../../shared/lib/deeplinks/parse';
-import { DEEP_LINK_HOST } from '../../../../shared/lib/deeplinks/constants';
+import { parse } from '../../../../shared/lib/deep-links/parse';
+import { DEEP_LINK_HOST } from '../../../../shared/lib/deep-links/constants';
 import MetamaskController from '../../metamask-controller';
 
 const { sentry } = global;
@@ -70,7 +70,6 @@ export class DeepLinkRouter {
     urlStr: string,
   ): Promise<browser.WebRequest.BlockingResponse> {
     const parsed = await parse(urlStr);
-    debugger;
     if (parsed === false) {
       // unable to parse, ignore the request
       return {};
