@@ -1,16 +1,19 @@
 import {
   AfterSimulateHook,
   BeforeSignHook,
+  SimulationData,
   TransactionMeta,
   TransactionParams,
 } from '@metamask/transaction-controller';
 import { Hex, createProjectLogger, hexToNumber } from '@metamask/utils';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import {
+  DeleGatorEnvironment,
   Delegation,
   ExecutionMode,
   ExecutionStruct,
   SINGLE_DEFAULT_MODE,
+  createCaveatBuilder,
   createDelegation,
   getDeleGatorEnvironment,
 } from '../../../../../shared/lib/delegation';
@@ -96,6 +99,8 @@ export class EnforceSimulationHook {
 
     const delegation = generateDelegation({
       accountAddress: from,
+      environment: delegationEnvironment,
+      simulationData,
     });
 
     log('Delegation', delegation);
@@ -157,13 +162,21 @@ export class EnforceSimulationHook {
 
 function generateDelegation({
   accountAddress,
+  environment,
+  simulationData,
 }: {
   accountAddress: Hex;
+  environment: DeleGatorEnvironment;
+  simulationData: SimulationData;
 }): UnsignedDelegation {
+  const caveats = generateCaveats(accountAddress, environment, simulationData);
+
+  log('Caveats', caveats);
+
   const delegation = createDelegation({
     from: accountAddress,
     to: accountAddress,
-    caveats: [],
+    caveats,
   });
 
   return delegation;
@@ -194,4 +207,58 @@ export function generateCalldata({
     modes,
     executions,
   });
+}
+
+function generateCaveats(
+  recipient: Hex,
+  environment: DeleGatorEnvironment,
+  simulationData: SimulationData,
+) {
+  const caveatBuilder = createCaveatBuilder(environment);
+  const { nativeBalanceChange, tokenBalanceChanges = [] } = simulationData;
+
+  if (nativeBalanceChange) {
+    const { difference, isDecrease: enforceDecrease } = nativeBalanceChange;
+    const delta = BigInt(difference);
+
+    log('Caveat - Native Balance Change', {
+      enforceDecrease,
+      recipient,
+      delta,
+    });
+
+    caveatBuilder.addCaveat(
+      'nativeBalanceChange',
+      enforceDecrease,
+      recipient,
+      delta,
+    );
+  }
+
+  for (const tokenChange of tokenBalanceChanges) {
+    const {
+      difference,
+      isDecrease: enforceDecrease,
+      address: token,
+    } = tokenChange;
+
+    const delta = BigInt(difference);
+
+    log('Caveat - Token Balance Change', {
+      enforceDecrease,
+      token,
+      recipient,
+      delta,
+    });
+
+    caveatBuilder.addCaveat(
+      'erc20BalanceChange',
+      enforceDecrease,
+      token,
+      recipient,
+      delta,
+    );
+  }
+
+  return caveatBuilder.build();
 }
