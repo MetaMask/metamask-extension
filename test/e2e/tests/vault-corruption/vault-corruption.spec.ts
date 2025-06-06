@@ -35,8 +35,8 @@ describe('Vault Corruption', function () {
    * database corruption scripts.
    */
   const reloadAndCallbackScript = `
-    browser.runtime.reload();
     callback();
+    browser.runtime.reload();
   `;
 
   /**
@@ -60,7 +60,9 @@ describe('Vault Corruption', function () {
       const request = globalThis.indexedDB.open('metamask-backup', 1);
       request.onupgradeneeded = () => {
         const db = request.result;
-        db.createObjectStore('store', { keyPath: 'id' });
+        if (!db.objectStoreNames.contains('store')) {
+          db.createObjectStore('store', { keyPath: 'id' });
+        }
       };
       request.onsuccess = () => {
         const db = request.result;
@@ -69,6 +71,7 @@ describe('Vault Corruption', function () {
         // remove the ${backupKeyToDelete} data from the backup database
         store.delete(${JSON.stringify(backupKeyToDelete)});
         transaction.oncomplete = () => {
+          db.close();
           ${reloadAndCallbackScript}
         };
       };`);
@@ -81,6 +84,9 @@ describe('Vault Corruption', function () {
    */
   function getConfig(title?: string) {
     return {
+      driverOptions: {
+        openDevToolsForTabs: true,
+      },
       title,
       ignoredConsoleErrors: [
         // expected error caused by breaking the database:
@@ -130,6 +136,42 @@ describe('Vault Corruption', function () {
     );
   }
 
+  async function debug(driver: Driver) {
+    return await driver.executeAsyncScript(`
+      // callback is injected by Selenium
+      const callback = arguments[arguments.length - 1];
+
+      const browser = globalThis.browser ?? globalThis.chrome;
+
+      // get the current storage
+      browser.storage.local.get([ 'data', 'meta' ], ({ data, meta }) => {
+        // get the current indexedDB state
+        const request = globalThis.indexedDB.open('metamask-backup', 1);
+        request.onupgradeneeded = () => {
+          const db = request.result;
+          if (!db.objectStoreNames.contains('store')) {
+            db.createObjectStore('store', { keyPath: 'id' });
+          }
+        };
+        request.onsuccess = () => {
+          const db = request.result;
+          const transaction = db.transaction('store', 'readonly');
+          const store = transaction.objectStore('store');
+          const getRequest = store.getAll();
+          getRequest.onerror = () => {
+            db.close();
+            callback({ error: getRequest.error });
+          };
+          getRequest.onsuccess = () => {
+            db.close();
+            const backup = getRequest.result || [];
+            callback({ data, meta, backup });
+          };
+        };
+      });
+    `);
+  }
+
   /**
    * Breaks the databases and then begins recovery. Only returns once the
    * background page has reloaded and the UI is available again.
@@ -156,6 +198,19 @@ describe('Vault Corruption', function () {
     const firstAddress = await getFirstAddress(driver, headerNavbar);
     await headerNavbar.lockMetaMask();
 
+    console.log('before delay:');
+    console.log(await debug(driver));
+
+    // hack alert! :-(
+    // we need to wait for the background to persist the vault to the database
+    // and backup. it currently happens at a max rate of once per second, but
+    // due to the current behavior of `debounce` in our state persistence
+    // pipeline it can take longer, so i'm using a 2 second delay here.
+    await driver.delay(2000);
+
+    console.log('after delay:');
+    console.log(await debug(driver));
+
     // use the home page to destroy the vault
     await driver.executeAsyncScript(script);
 
@@ -168,6 +223,9 @@ describe('Vault Corruption', function () {
 
     // wait for the background page to reload
     await waitForVaultRestorePage(driver);
+
+    console.log('after restart:');
+    console.log(await debug(driver));
 
     return firstAddress;
   }
