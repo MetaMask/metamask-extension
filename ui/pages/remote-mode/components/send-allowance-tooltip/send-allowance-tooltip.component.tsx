@@ -15,6 +15,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { REMOTE_ROUTE } from '../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getIsRemoteModeEnabled } from '../../../../selectors/remote-mode';
+import { useSelector } from 'react-redux';
 
 type SendAllowanceBannerProps = {
   hasAllowance: boolean;
@@ -25,6 +27,11 @@ export default function SendAllowanceTooltip({
 }: SendAllowanceBannerProps) {
   const history = useHistory();
   const t = useI18nContext();
+  const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
+
+  if (!isRemoteModeEnabled) {
+    return null;
+  }
 
   return (
     <Tooltip
