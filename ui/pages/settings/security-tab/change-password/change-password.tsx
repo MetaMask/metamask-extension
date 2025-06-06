@@ -27,6 +27,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { changePassword, verifyPassword } from '../../../../store/actions';
 import PasswordForm from '../../../../components/app/password-form/password-form';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
+import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
   VerifyCurrentPassword: 1,
@@ -46,6 +47,8 @@ const ChangePassword = () => {
     useState(false);
 
   const [newPassword, setNewPassword] = useState('');
+  const [showChangePasswordWarning, setShowChangePasswordWarning] =
+    useState(false);
 
   const renderMascot = () => {
     if (isFlask()) {
@@ -73,12 +76,9 @@ const ChangePassword = () => {
     }
   };
 
-  const handleSubmitNewPassword = async () => {
-    if (!newPassword) {
-      return;
-    }
-
+  const onChangePassword = async () => {
     try {
+      setShowChangePasswordWarning(false);
       setStep(ChangePasswordSteps.ChangePasswordLoading);
       await dispatch(changePassword(newPassword, currentPassword));
 
@@ -152,7 +152,7 @@ const ChangePassword = () => {
           height={BlockSize.Full}
           onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
-            handleSubmitNewPassword();
+            setShowChangePasswordWarning(true);
           }}
         >
           <Box>
@@ -164,7 +164,7 @@ const ChangePassword = () => {
           </Box>
           <Button
             type="submit"
-            disabled={!newPassword}
+            disabled={!currentPassword || !newPassword}
             data-testid="change-password-button"
             block
           >
@@ -189,6 +189,14 @@ const ChangePassword = () => {
             {t('changePasswordLoadingNote')}
           </Text>
         </Box>
+      )}
+      {showChangePasswordWarning && (
+        <ChangePasswordWarning
+          onConfirm={() => {
+            onChangePassword();
+          }}
+          onCancel={() => setShowChangePasswordWarning(false)}
+        />
       )}
     </Box>
   );

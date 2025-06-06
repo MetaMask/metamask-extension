@@ -1060,10 +1060,16 @@
     "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
   },
   "changePasswordLoading": {
-    "message": "Chaning password..."
+    "message": "Changing password..."
   },
   "changePasswordLoadingNote": {
     "message": "This shouldn't take long"
+  },
+  "changePasswordWarning": {
+    "message": "Are you sure?"
+  },
+  "changePasswordWarningDescription": {
+    "message": "Changing your password here will lock MetaMask on other devices you’re using. You’ll need to log in again with your new password."
   },
   "chooseYourNetwork": {
     "message": "Choose your network"
@@ -4032,6 +4038,12 @@
   },
   "password": {
     "message": "Password"
+  },
+  "passwordChangedRecently": {
+    "message": "Your password changed"
+  },
+  "passwordChangedRecentlyDescription": {
+    "message": "Enter your new password to stay logged into MetaMask."
   },
   "passwordNotLongEnough": {
     "message": "Password must have at least 8 characters"

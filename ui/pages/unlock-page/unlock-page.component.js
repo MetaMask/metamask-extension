@@ -54,6 +54,10 @@ export default class UnlockPage extends Component {
      */
     isUnlocked: PropTypes.bool,
     /**
+     * Whether the seedless password is outdated
+     */
+    isSeedlessPasswordOutdated: PropTypes.bool,
+    /**
      * onClick handler for "Forgot password?" button
      */
     onRestore: PropTypes.func,
@@ -80,10 +84,27 @@ export default class UnlockPage extends Component {
   animationEventEmitter = new EventEmitter();
 
   UNSAFE_componentWillMount() {
-    const { isUnlocked, history } = this.props;
+    const { isUnlocked, history, isSeedlessPasswordOutdated } = this.props;
 
     if (isUnlocked) {
       history.push(DEFAULT_ROUTE);
+      return;
+    }
+
+    if (isSeedlessPasswordOutdated) {
+      // first error if seedless password is outdated
+      const { t } = this.context;
+      this.setState({ error: t('passwordChangedRecently') });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (
+      !prevProps.isSeedlessPasswordOutdated &&
+      prevProps.isSeedlessPasswordOutdated !==
+        this.props.isSeedlessPasswordOutdated
+    ) {
+      this.setState({ error: this.context.t('passwordChangedRecently') });
     }
   }
 
