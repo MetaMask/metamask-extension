@@ -83,6 +83,7 @@ import {
   isCorrectDeveloperTransactionType,
   isCorrectSignatureApprovalType,
 } from '../../../shared/lib/confirmation.utils';
+import { MultichainAccountListMenu } from '../../components/multichain-accounts/multichain-account-list-menu';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -204,6 +205,7 @@ export default class Routes extends Component {
     oldestPendingApproval: PropTypes.object,
     pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
     transactionsMetadata: PropTypes.object.isRequired,
+    isMultichainAccountsState1Enabled: PropTypes.bool.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
@@ -505,6 +507,15 @@ export default class Routes extends Component {
       !isCorrectTransactionType;
     ///: END:ONLY_INCLUDE_IF
 
+    const accountListMenu = this.props.isMultichainAccountsState1Enabled ? (
+      <MultichainAccountListMenu
+        onClose={toggleAccountMenu}
+        privacyMode={privacyMode}
+      />
+    ) : (
+      <AccountListMenu onClose={toggleAccountMenu} privacyMode={privacyMode} />
+    );
+
     return (
       <div
         className={classnames('app', {
@@ -526,12 +537,7 @@ export default class Routes extends Component {
           ? showAppHeader(this.props) && <AppHeader location={location} />
           : !hideAppHeader(this.props) && <AppHeader location={location} />}
         {isConfirmTransactionRoute(this.pathname) && <MultichainMetaFoxLogo />}
-        {isAccountMenuOpen ? (
-          <AccountListMenu
-            onClose={toggleAccountMenu}
-            privacyMode={privacyMode}
-          />
-        ) : null}
+        {isAccountMenuOpen ? accountListMenu : null}
         {isNetworkMenuOpen ? (
           <NetworkListMenu onClose={networkMenuClose} />
         ) : null}

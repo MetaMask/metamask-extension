@@ -3,7 +3,10 @@ import type {
   AccountWalletId,
 } from '@metamask/account-tree-controller';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
-import { getMetaMaskAccountsOrdered } from '../selectors';
+import {
+  getMetaMaskAccountsOrdered,
+  // getOrderedConnectedAccountsForActiveTab,
+} from '../selectors';
 import { InternalAccountWithBalance } from '../selectors.types';
 import {
   AccountTreeState,
@@ -33,9 +36,11 @@ export const getAccountTree = (
 export const getWalletsWithAccounts = createDeepEqualSelector(
   getMetaMaskAccountsOrdered,
   getAccountTree,
+  // getOrderedConnectedAccountsForActiveTab,
   (
     internalAccounts: InternalAccountWithBalance[],
     accountTree: AccountTreeState,
+    // connectedAccounts: string[],
   ): ConsolidatedWallets => {
     const accountsById = internalAccounts.reduce(
       (accounts: Record<string, InternalAccountWithBalance>, account) => {
@@ -60,6 +65,21 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
             (accountsWithMetadata, accountId) => {
               const accountWithMetadata = accountsById[accountId];
               accountsWithMetadata.push(accountWithMetadata);
+
+              // Add connection data if applicable
+              // connectedAccounts.forEach((connection) => {
+              //   // Find if the connection exists in accounts
+              //   const matchingAccount = accounts.find(
+              //     (account) => account.id === connection.id,
+              //   );
+              //
+              //   // If a matching account is found and the connection has metadata, add the connections property to true and lastSelected timestamp from metadata
+              //   if (matchingAccount && connection.metadata) {
+              //     matchingAccount.connections = true;
+              //     matchingAccount.lastSelected = connection.metadata.lastSelected;
+              //   }
+              // });
+
               return accountsWithMetadata;
             },
             [] as InternalAccountWithBalance[],
@@ -74,6 +94,8 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
           };
         });
 
+        console.log('[][][][][][][][][][][][][][][][][]');
+        console.log(consolidatedWallets);
         return consolidatedWallets;
       },
       {} as ConsolidatedWallets,
