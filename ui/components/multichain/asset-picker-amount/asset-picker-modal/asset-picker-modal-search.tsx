@@ -20,7 +20,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
  * @param props.isNFTSearch - Indicates if the search is for NFTs.
  * @param props.props - Additional props for the containing Box component.
  * @param props.placeholder - A custom placeholder for the search input.
- * @param props.autoFocus
  * @returns The rendered search component.
  */
 export const Search = ({

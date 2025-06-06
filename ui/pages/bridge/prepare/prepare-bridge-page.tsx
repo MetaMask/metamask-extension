@@ -250,25 +250,6 @@ const PrepareBridgePage = () => {
   const { flippedRequestProperties } = useRequestProperties();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
-  // When entering the page for the first time emit an event for the page viewed
-  useEffect(() => {
-    trackCrossChainSwapsEvent({
-      event: MetaMetricsEventName.ActionPageViewed,
-      properties: {
-        chain_id_source: formatChainIdToCaip(fromChain?.chainId ?? ''),
-        token_symbol_source: fromToken?.symbol ?? '',
-        token_address_source: fromToken?.address ?? '',
-        chain_id_destination: formatChainIdToCaip(toChain?.chainId ?? ''),
-        token_symbol_destination: toToken?.symbol ?? '',
-        token_address_destination: toToken?.address ?? '',
-      },
-    });
-
-    return () => {
-      debouncedUpdateQuoteRequestInController.cancel();
-    };
-  }, []);
-
   const millisecondsUntilNextRefresh = useCountdownTimer();
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
@@ -414,6 +395,25 @@ const PrepareBridgePage = () => {
     },
     300,
   );
+
+  // When entering the page for the first time emit an event for the page viewed
+  useEffect(() => {
+    trackCrossChainSwapsEvent({
+      event: MetaMetricsEventName.ActionPageViewed,
+      properties: {
+        chain_id_source: formatChainIdToCaip(fromChain?.chainId ?? ''),
+        token_symbol_source: fromToken?.symbol ?? '',
+        token_address_source: fromToken?.address ?? '',
+        chain_id_destination: formatChainIdToCaip(toChain?.chainId ?? ''),
+        token_symbol_destination: toToken?.symbol ?? '',
+        token_address_destination: toToken?.address ?? '',
+      },
+    });
+
+    return () => {
+      debouncedUpdateQuoteRequestInController.cancel();
+    };
+  }, []);
 
   useEffect(() => {
     dispatch(setSelectedQuote(null));
