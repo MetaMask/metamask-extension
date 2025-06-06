@@ -43,8 +43,6 @@ const CLIENT_SIDE_DETECTION_BLOCKLIST_PATH =
 const ON_RAMP_CONTENT_PATH = 'test/e2e/mock-response-data/on-ramp-content.json';
 const TOKEN_BLOCKLIST_PATH = 'test/e2e/mock-response-data/token-blocklist.json';
 
-const SNAP_REGISTRY_PATH = 'test/e2e/mock-response-data/snaps/registry.json';
-
 const snapsExecutionEnvBasePath = path.dirname(
   require.resolve('@metamask/snaps-execution-environments/package.json'),
 );
