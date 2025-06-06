@@ -482,33 +482,14 @@
   "gasLimit": {
     "message": "Gas 上限"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Gas 上限代表願意為交易手續費所付出的最高總價"
-  },
   "gasLimitTooLow": {
     "message": "Gas 上限至少為 21000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Gas 上限至少為 $1",
-    "description": "$1 is the custom gas limit, in decimal."
-  },
-  "gasPrice": {
-    "message": "Gas 價格 (GWEI)"
   },
   "gasPriceExcessive": {
     "message": "您的 gas 費用設定得太高了。考慮降低一些。"
   },
-  "gasPriceExcessiveInput": {
-    "message": "Gas 價格極高"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Gas 價格極低"
-  },
   "gasPriceFetchFailed": {
     "message": "由於網路錯誤，gas 價格估計失敗。"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Gas 價格代表願意為交易手續費付出的單位價格，價格越高交易處理速度越快。"
   },
   "gasUsed": {
     "message": "Gas 用量"
@@ -1315,8 +1296,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "您的助憶詞"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "加速的 Gas 價格為 0"
   }
 }

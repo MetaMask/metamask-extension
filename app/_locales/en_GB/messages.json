@@ -2298,18 +2298,11 @@
   "gasLimit": {
     "message": "Gas limit"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Gas limit is the maximum amount of units of gas you are willing to spend."
-  },
   "gasLimitRecommended": {
     "message": "Recommended gas limit is $1. If the gas limit is less than that, it may fail."
   },
   "gasLimitTooLow": {
     "message": "Gas limit must be at least 21000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Gas limit must be at least $1",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "Gas limit"
@@ -2317,23 +2310,11 @@
   "gasOption": {
     "message": "Gas option"
   },
-  "gasPrice": {
-    "message": "Gas price (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "Your gas fee is set unnecessarily high. Consider lowering the amount."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Gas price is excessive"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Gas price extremely low"
-  },
   "gasPriceFetchFailed": {
     "message": "Gas price estimation failed due to network error."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
   },
   "gasTimingHoursShort": {
     "message": "$1 hrs",
@@ -3812,7 +3793,7 @@
     "description": "$1 is the type of login used Google, Apple, etc."
   },
   "onboardingCreateWallet": {
-    "message": "Create new wallet"
+    "message": "Create a new wallet"
   },
   "onboardingImportWallet": {
     "message": "I have an existing wallet"
@@ -6169,6 +6150,9 @@
   "swapShowLatestQuotes": {
     "message": "Show latest quotes"
   },
+  "swapSlippageAutoDescription": {
+    "message": "Auto"
+  },
   "swapSlippageHighDescription": {
     "message": "The slippage entered ($1%) is considered very high and may result in a bad rate",
     "description": "$1 is the amount of % for slippage"
@@ -6955,8 +6939,5 @@
   },
   "yourWalletIsReady": {
     "message": "Your wallet is ready!"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Zero gas price on speed up"
   }
 }
