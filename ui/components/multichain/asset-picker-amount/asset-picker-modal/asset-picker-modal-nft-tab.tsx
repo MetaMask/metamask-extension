@@ -114,7 +114,6 @@ export function AssetPickerModalNftTab({
       updateSendAsset({
         type: AssetType.NFT,
         details: nftWithSimplifiedImage,
-        skipComputeEstimatedGasLimit: false,
       }),
     );
     history.push(SEND_ROUTE);
