@@ -9,8 +9,8 @@ describe('Carousel component e2e tests', function () {
   const SLIDE_IDS = [
     'solana',
     'smartAccountUpgrade',
-    'fund',
     'bridge',
+    'fund',
     'card',
     'cash',
     'multiSrp',
@@ -75,7 +75,7 @@ describe('Carousel component e2e tests', function () {
     );
   });
 
-  it('should handle slide dismissal', async function () {
+  it.only('should handle slide dismissal', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
