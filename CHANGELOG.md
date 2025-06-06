@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Integrate delegation-controller and delegation-toolkit ([#31669](https://github.com/MetaMask/metamask-extension/pull/31669))
 - Use chainId when checking if it's a smart transaction ([#32201](https://github.com/MetaMask/metamask-extension/pull/32201))
 - Bring DeFi positions to extension and integrate Metamask's DeFi API ([#31751](https://github.com/MetaMask/metamask-extension/pull/31751))
-
+- Pass origin param to Blockaid ([#33496](https://github.com/MetaMask/metamask-extension/pull/33496))
 
 ### Changed
 - Unify confirmation page styles and responsive behavior ([#31454](https://github.com/MetaMask/metamask-extension/pull/31454))
