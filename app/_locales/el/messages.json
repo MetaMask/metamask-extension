@@ -286,9 +286,6 @@
   "address": {
     "message": "Διεύθυνση"
   },
-  "addressCopied": {
-    "message": "Η διεύθυνση αντιγράφηκε!"
-  },
   "addressMismatch": {
     "message": "Αναντιστοιχία διεύθυνσης ιστότοπου"
   },
@@ -1803,9 +1800,6 @@
   },
   "downloadStateLogs": {
     "message": "Λήψη Αρχείων Καταγραφής Κατάστασης"
-  },
-  "dragAndDropBanner": {
-    "message": "Μπορείτε να σύρετε τα δίκτυα για να τα επαναδιατάξετε. "
   },
   "dropped": {
     "message": "Απορρίφθηκε"
@@ -4225,9 +4219,6 @@
   "popularNetworks": {
     "message": "Δημοφιλή δίκτυα"
   },
-  "portfolio": {
-    "message": "Χαρτοφυλάκιο"
-  },
   "preparingSwap": {
     "message": "Προετοιμασία ανταλλαγής..."
   },
@@ -5532,9 +5523,6 @@
   },
   "statusNotConnected": {
     "message": "Δεν έχει συνδεθεί"
-  },
-  "statusNotConnectedAccount": {
-    "message": "Δεν υπάρχουν συνδεδεμένοι λογαριασμοί"
   },
   "step1LatticeWallet": {
     "message": "Συνδέστε το Lattice1 σας"
