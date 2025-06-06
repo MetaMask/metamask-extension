@@ -42,7 +42,7 @@ export default function SendAllowanceTooltip({
               onClick={() => history.push(REMOTE_ROUTE)}
               style={{ cursor: 'pointer' }}
             >
-              {hasAllowance ? t('viewPermissions') : t('enableSnap')}
+              {hasAllowance ? t('viewPermissions') : t('enable')}
             </Text>
           </Text>
         </Box>

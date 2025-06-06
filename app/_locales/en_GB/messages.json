@@ -1998,6 +1998,9 @@
   "editSpendingCapSpecialCharError": {
     "message": "Enter numbers only"
   },
+  "enable": {
+    "message": "Enable"
+  },
   "enableAutoDetect": {
     "message": " Enable autodetect"
   },
@@ -4924,6 +4927,9 @@
   "send": {
     "message": "Send"
   },
+  "sendAllowanceTooltipDescription": {
+    "message": "Send authorized tokens without plugging in your hardware wallet."
+  },
   "sendBugReport": {
     "message": "Send us a bug report."
   },
@@ -6753,6 +6759,9 @@
   },
   "viewOnOpensea": {
     "message": "View on Opensea"
+  },
+  "viewPermissions": {
+    "message": "View permissions"
   },
   "viewSolanaAccount": {
     "message": "View Solana account"
