@@ -337,3 +337,15 @@ export declare global {
   }
 }
 // #endregion
+
+// #region used in jest tests to ignore unhandled rejections
+declare global {
+  namespace NodeJS {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+    interface Process {
+      setIgnoreUnhandled: (ignore: boolean) => void;
+      resetIgnoreUnhandled: () => void;
+    }
+  }
+}
+// #endregion

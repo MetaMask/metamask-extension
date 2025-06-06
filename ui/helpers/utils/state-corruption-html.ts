@@ -1,25 +1,16 @@
+import type browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { escape as lodashEscape } from 'lodash';
-import type browser from 'webextension-polyfill';
 import {
   SUPPORT_LINK,
   VAULT_RECOVERY_LINK,
 } from '../../../shared/lib/ui-utils';
 import { getErrorHtmlBase } from '../../../shared/lib/error-utils';
+import type { ErrorLike } from '../../../shared/constants/errors';
 import { switchDirectionForPreferredLocale } from '../../../shared/lib/switch-direction';
 import getFirstPreferredLangCode from '../../../shared/lib/get-first-preferred-lang-code';
+import { METHOD_REPAIR_DATABASE } from '../../../shared/constants/state-corruption';
 import { t, updateCurrentLocale } from '../../../shared/lib/translate';
-
-export type ErrorLike = {
-  message: string;
-  name: string;
-  stack?: string;
-};
-
-export const METHOD_REPAIR_DATABASE = 'repairDatabase';
-
-export const METHOD_DISPLAY_STATE_CORRUPTION_ERROR =
-  'displayStateCorruptionError';
 
 export async function getStateCorruptionErrorHtml(
   vaultRecoveryLink: string,
