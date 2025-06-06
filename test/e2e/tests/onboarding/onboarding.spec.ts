@@ -28,6 +28,7 @@ import {
   socialLoginOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import { MockSeedlessOnboardingUtils } from '../../helpers/social-sync/mocks';
 
 const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
@@ -323,30 +324,17 @@ describe('MetaMask onboarding', function () {
     );
   });
 
-  // eslint-disable-next-line mocha/no-exclusive-tests
-  it.only('Creates a new wallet with social login and completes the onboarding process', async function () {
+  it('Creates a new wallet with social login and completes the onboarding process', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
-          // TODO: create a proper mock class to mock OAuth and TOPRF requests
-          return server
-            .forPost(
-              'https://api-develop-torus-byoa.web3auth.io/api/v1/oauth/token',
-            )
-            .always()
-            .thenCallback(() => ({
-              statusCode: 200,
-              json: {
-                access_token: 'mock-access-token',
-                jwt_tokens: {
-                  metamask:
-                    'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3R1c2VyQGdtYWlsLmNvbSIsImlhdCI6MTc0OTE3ODg5NSwiYXVkIjoibWV0YW1hc2siLCJpc3MiOiJtZXRhbWFzayIsInN1YiI6InRlc3R1c2VyQGdtYWlsLmNvbSJ9.bm9ZgrJHAOg-7GKgWpaZNw4M7ba9NVuuKVPk6hAOqpbC1OQNunTGA3gslzcSJfTj_g1HXf_d9yLNQkXw5D9Vag',
-                },
-                expires_in: 3600,
-              },
-            }));
+          // using this to mock the OAuth Service (Web Authentication flow + Auth server)
+          const mockSeedlessOnboardingUtils = new MockSeedlessOnboardingUtils();
+          return mockSeedlessOnboardingUtils.setup(server, {
+            // userEmail: 'test-user@gmail.com', // provide an email to mock the existing user flow
+          });
         },
       },
       async ({ driver }: { driver: Driver }) => {

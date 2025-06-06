@@ -126,7 +126,7 @@ export default class OAuthService {
     return {
       authConnectionId,
       groupedAuthConnectionId,
-      userId: userInfo.sub,
+      userId: userInfo.sub || userInfo.email,
       idTokens: [idToken],
       authConnection: loginHandler.authConnection,
       socialLoginEmail: userInfo.email,
