@@ -24,7 +24,14 @@ describe('Welcome Page', () => {
   const mockStore = configureMockStore()(mockState);
 
   it('should render', () => {
-    const { getByText } = renderWithProvider(<Welcome />, mockStore);
+    const { getByText } = renderWithProvider(
+      <Welcome
+        setPageState={() => {
+          // no-op
+        }}
+      />,
+      mockStore,
+    );
 
     expect(getByText('Welcome to MetaMask')).toBeInTheDocument();
 
@@ -33,7 +40,11 @@ describe('Welcome Page', () => {
 
   it('should show the terms of use popup when the user clicks the "Get started" button', () => {
     const { getByText, getByTestId } = renderWithProvider(
-      <Welcome />,
+      <Welcome
+        setPageState={() => {
+          // no-op
+        }}
+      />,
       mockStore,
     );
 

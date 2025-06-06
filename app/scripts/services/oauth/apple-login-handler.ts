@@ -32,7 +32,7 @@ export class AppleLoginHandler extends BaseLoginHandler {
    *
    * @returns The URL to initiate the OAuth login.
    */
-  getAuthUrl(): Promise<string> {
+  async getAuthUrl(): Promise<string> {
     const authUrl = new URL(this.OAUTH_SERVER_URL);
 
     const nonce = this.generateNonce();
