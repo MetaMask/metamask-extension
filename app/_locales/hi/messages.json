@@ -338,10 +338,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "प्रायोरिटी फ़ीस (उर्फ \"माइनर टिप\") सीधे माइनरों के पास जाती है और उन्हें आपके ट्रांसेक्शन को प्राथमिकता देने के लिए प्रोत्साहित करती है।"
   },
-  "agreeTermsOfUse": {
-    "message": "मैं MetaMask के $1 से सहमत हूं",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "टोकन के ऑन-चेन इतिहास से संदिग्ध एयरड्रॉप गतिविधियों के पूर्व उदाहरणों का पता चलता है।"
   },
@@ -2296,18 +2292,11 @@
   "gasLimit": {
     "message": "गैस लिमिट"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "गैस लिमिट, गैस की वह अधिकतम इकाइयाँ हैं, जिन्हें आप खर्च करना चाहते हैं।"
-  },
   "gasLimitRecommended": {
     "message": "सुझाई गई गैस लिमिट $1 है। अगर गैस लिमिट उससे कम है, तो वह फेल हो सकता है।"
   },
   "gasLimitTooLow": {
     "message": "गैस लिमिट कम से कम 21000 होनी चाहिए"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "गैस लिमिट कम से कम $1 होनी चाहिए",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "गैस लिमिट"
@@ -2315,23 +2304,11 @@
   "gasOption": {
     "message": "गैस विकल्प"
   },
-  "gasPrice": {
-    "message": "गैस प्राइस (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "आपका गैस फ़ीस अनावश्यक रूप से अधिक निर्धारित किया गया है। अमाउंट को कम करने पर विचार करें।"
   },
-  "gasPriceExcessiveInput": {
-    "message": "गैस प्राइस अधिक है"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "गैस प्राइस अत्यंत कम है"
-  },
   "gasPriceFetchFailed": {
     "message": "गैस प्राइस अनुमान नेटवर्क गड़बड़ी के कारण नहीं हो पाया है।"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "गैस प्राइस, Ether के उस अमाउंट को बताता है, जो आप गैस की प्रत्येक इकाई के लिए देना चाहते हैं।"
   },
   "gasTimingHoursShort": {
     "message": "$1 घंटे",
@@ -5329,10 +5306,6 @@
     "message": "$1 $2 का उपयोग करना चाहता है",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
   },
-  "snapContent": {
-    "message": "यह कंटेंट $1 से आ रही है",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
-  },
   "snapDetailWebsite": {
     "message": "वेबसाइट"
   },
@@ -6789,23 +6762,8 @@
   "welcomeBack": {
     "message": "वापसी पर स्वागत है"
   },
-  "welcomeExploreDescription": {
-    "message": "क्रिप्टो करेंसी और एसेट्स को स्टोर करें, भेजें और खर्च करें।"
-  },
-  "welcomeExploreTitle": {
-    "message": "विकेन्द्रीकृत ऐप को एक्सप्लोर करें"
-  },
-  "welcomeLoginDescription": {
-    "message": "विकेंद्रीकृत ऐप में लॉगिन करने के लिए अपने MetaMask का इस्तेमाल करें - किसी साइनअप की जरूरत नहीं है।"
-  },
-  "welcomeLoginTitle": {
-    "message": "अपने वॉलेट को हैलो कहें"
-  },
   "welcomeToMetaMask": {
     "message": "चलिए शुरु करते हैं"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "लाखों लोगों का भरोसेमंद, MetaMask एक सुरक्षित वॉलेट है जो वेब3 की दुनिया को सबके लिए सुलभ बनाता है।"
   },
   "whatsThis": {
     "message": "यह क्या है?"
@@ -6868,8 +6826,5 @@
   },
   "yourWalletIsReady": {
     "message": "आपका वॉलेट तैयार है"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "जीरो गैस प्राइस में तेज़ी"
   }
 }

@@ -100,9 +100,6 @@
   "gasLimitTooLow": {
     "message": "२१००० - गैस की सीमा कम से कम 21000 होनी चाहिए"
   },
-  "gasPrice": {
-    "message": "गैस मूल्य (जीडब्ल्यूईआई),(GWEI)"
-  },
   "here": {
     "message": "यहां",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"

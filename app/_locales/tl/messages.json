@@ -338,10 +338,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Ang bayad sa priyoridad (kilala rin bilang “tip ng minero”) ay direktang napupunta sa mga minero at ginagawang insentibo ang mga ito upang unahin ang iyong mga transaksyon."
   },
-  "agreeTermsOfUse": {
-    "message": "Sumasang-ayon ako sa $1 ng MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "Isinasaad ng on-chain history ng token na may mga dati nang kahina-hinalang aktibidad ng airdrop."
   },
@@ -2296,18 +2292,11 @@
   "gasLimit": {
     "message": "Limitasyon ng gas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Ang limitasyon ng gas ay ang pinakamataas na halaga ng mga yunit ng gas na handa mong gastusin."
-  },
   "gasLimitRecommended": {
     "message": "Ang inirerekomendang limitasyon ng gas ay $1. Kung mas mababa dito ang limitasyon ng gas, maaaring mabigo."
   },
   "gasLimitTooLow": {
     "message": "Ang limitasyon ng gas ay dapat na hindi bababa sa 21000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Ang limitasyon ng gas ay dapat na hindi bababa sa $1",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "Limitasyon ng gas"
@@ -2315,23 +2304,11 @@
   "gasOption": {
     "message": "Opsyon ng gas"
   },
-  "gasPrice": {
-    "message": "Presyo ng gas (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "Masyadong mataas ang iyong itinakdang bayad sa gas. Pag-isipang ibaba ang halaga."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Masyadong mataas presyo ng gas"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Masyadong mababa ang presyo ng gas"
-  },
   "gasPriceFetchFailed": {
     "message": "Ang pagtantya ng presyo ng gas ay nabigo dahil sa network error."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Tinutukoy ng presyo ng gas ang halaga ng Ether na handa mong bayaran para sa bawat unit ng gas."
   },
   "gasTimingHoursShort": {
     "message": "$1 oras",
@@ -5329,10 +5306,6 @@
     "message": "Si $1 ay gustong gumamit ng $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
   },
-  "snapContent": {
-    "message": "Ang nilalamang ito ay nagmumula sa $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
-  },
   "snapDetailWebsite": {
     "message": "Website"
   },
@@ -6789,23 +6762,8 @@
   "welcomeBack": {
     "message": "Maligayang pagbabalik"
   },
-  "welcomeExploreDescription": {
-    "message": "Mag-imbak, magpadala, at gumastos ng mga cryptocurrency at asset."
-  },
-  "welcomeExploreTitle": {
-    "message": "Magsaliksik sa mga decentralized app"
-  },
-  "welcomeLoginDescription": {
-    "message": "Gamitin ang iyong MetaMask para mag-log in sa mga decentralized app, hindi na kailangang mag-sign up."
-  },
-  "welcomeLoginTitle": {
-    "message": "Mag-hello sa iyong wallet"
-  },
   "welcomeToMetaMask": {
     "message": "Magsimula na tayo"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Ang MetaMask na pinagkakatiwalaan ng milyun-milyon ay isang ligtas na wallet na ginagawang accessible ang mundo ng web3 para sa lahat."
   },
   "whatsThis": {
     "message": "Ano ito?"
@@ -6868,8 +6826,5 @@
   },
   "yourWalletIsReady": {
     "message": "Handa na ang iyong wallet"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Walang presyo ng gas sa pagpapabilis"
   }
 }
