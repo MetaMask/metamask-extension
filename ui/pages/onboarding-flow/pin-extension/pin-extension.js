@@ -40,6 +40,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { flushBufferedTraces } from '../../../../shared/lib/trace';
 
 export default function OnboardingPinExtension() {
   const t = useI18nContext();
@@ -68,6 +69,7 @@ export default function OnboardingPinExtension() {
         new_wallet: firstTimeFlowType === FirstTimeFlowType.create,
       },
     });
+    await flushBufferedTraces();
     history.push(DEFAULT_ROUTE);
   };
 

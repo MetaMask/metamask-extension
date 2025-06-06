@@ -44,6 +44,7 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '../../../components/component-library';
+import { discardBufferedTraces } from '../../../../shared/lib/trace';
 import { submitRequestToBackground } from '../../../store/background-connection';
 
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -122,6 +123,7 @@ export default function OnboardingMetametrics() {
   const onCancel = async () => {
     await dispatch(setParticipateInMetaMetrics(false));
     await dispatch(setDataCollectionForMarketing(false));
+    discardBufferedTraces();
     await submitRequestToBackground('clearEventsAfterMetricsOptIn');
     history.push(nextRouteByBrowser);
   };

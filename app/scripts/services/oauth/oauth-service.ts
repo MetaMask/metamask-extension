@@ -1,4 +1,10 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import {
+  bufferedTrace,
+  TraceName,
+  TraceOperation,
+  bufferedEndTrace,
+} from '../../../../shared/lib/trace';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import type {
@@ -41,9 +47,17 @@ export default class OAuthService {
 
     const authUrl = await loginHandler.getAuthUrl();
 
-    // launch the web auth flow to get the Authorization Code from the social login provider
-    const redirectUrlFromOAuth = await new Promise<string>(
-      (resolve, reject) => {
+    let providerLoginSuccess = false;
+    let redirectUrlFromOAuth = null;
+
+    bufferedTrace({
+      name: TraceName.OnboardingOAuthProviderLogin,
+      op: TraceOperation.OnboardingSecurityOp,
+    });
+
+    try {
+      // launch the web auth flow to get the Authorization Code from the social login provider
+      redirectUrlFromOAuth = await new Promise<string>((resolve, reject) => {
         // since promise returns aren't supported until MV3, we need to use a callback function to support MV2
         this.#webAuthenticator.launchWebAuthFlow(
           {
@@ -66,20 +80,31 @@ export default class OAuthService {
             }
           },
         );
-      },
-    );
+      });
+      providerLoginSuccess = true;
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+
+      bufferedTrace({
+        name: TraceName.OnboardingOAuthProviderLoginError,
+        op: TraceOperation.OnboardingError,
+        tags: { errorMessage },
+      });
+      bufferedEndTrace({ name: TraceName.OnboardingOAuthProviderLoginError });
+    } finally {
+      bufferedEndTrace({
+        name: TraceName.OnboardingOAuthProviderLogin,
+        data: { success: providerLoginSuccess },
+      });
+    }
 
     if (!redirectUrlFromOAuth) {
       console.error('[identity auth] redirectUrl is null');
       throw new Error('No redirect URL found');
     }
 
-    // handle the OAuth response from the social login provider and get the Jwt Token in exchange
-    const loginResult = await this.#handleOAuthResponse(
-      loginHandler,
-      redirectUrlFromOAuth,
-    );
-    return loginResult;
+    return this.#handleOAuthResponse(loginHandler, redirectUrlFromOAuth);
   }
 
   /**
@@ -97,12 +122,47 @@ export default class OAuthService {
     loginHandler: BaseLoginHandler,
     redirectUrl: string,
   ): Promise<OAuthLoginResult> {
-    const authCode = this.#getRedirectUrlAuthCode(redirectUrl);
-    if (!authCode) {
-      throw new Error('No auth code found');
+    let getAuthTokensSuccess = false;
+    let oauthLoginResult: OAuthLoginResult | null = null;
+
+    try {
+      bufferedTrace({
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+        op: TraceOperation.OnboardingSecurityOp,
+      });
+
+      const authCode = this.#getRedirectUrlAuthCode(redirectUrl);
+      if (!authCode) {
+        throw new Error('No auth code found');
+      }
+      oauthLoginResult = await this.#getAuthIdToken(loginHandler, authCode);
+      getAuthTokensSuccess = true;
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+
+      bufferedTrace({
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokensError,
+        op: TraceOperation.OnboardingError,
+        tags: { errorMessage },
+      });
+      bufferedEndTrace({
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokensError,
+      });
+
+      throw error;
+    } finally {
+      bufferedEndTrace({
+        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
+        data: { success: getAuthTokensSuccess },
+      });
     }
-    const res = await this.#getAuthIdToken(loginHandler, authCode);
-    return res;
+
+    if (!oauthLoginResult) {
+      throw new Error('Failed to get OAuth login result');
+    }
+
+    return oauthLoginResult;
   }
 
   /**

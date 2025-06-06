@@ -34,11 +34,18 @@ import {
 } from '../../../shared/constants/metametrics';
 import { isFlask, isBeta } from '../../helpers/utils/build-types';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
+import {
+  TraceName,
+  TraceOperation,
+  bufferedTrace,
+  bufferedEndTrace,
+} from '../../../shared/lib/trace';
+import { withSentryTrace } from '../../contexts/sentry-trace';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
 
-export default class UnlockPage extends Component {
+class UnlockPage extends Component {
   static contextTypes = {
     trackEvent: PropTypes.func,
     t: PropTypes.func,
@@ -69,6 +76,10 @@ export default class UnlockPage extends Component {
      * Force update metamask data state
      */
     forceUpdateMetamaskState: PropTypes.func,
+    /**
+     * Sentry trace context ref for onboarding journey tracing
+     */
+    onboardingParentContext: PropTypes.object,
   };
 
   state = {
@@ -83,6 +94,8 @@ export default class UnlockPage extends Component {
 
   animationEventEmitter = new EventEmitter();
 
+  passwordLoginAttemptTraceCtx = null;
+
   UNSAFE_componentWillMount() {
     const { isUnlocked, history, isSeedlessPasswordOutdated } = this.props;
 
@@ -96,6 +109,14 @@ export default class UnlockPage extends Component {
       const { t } = this.context;
       this.setState({ error: t('passwordChangedRecently') });
     }
+  }
+
+  componentDidMount() {
+    this.passwordLoginAttemptTraceCtx = bufferedTrace({
+      name: TraceName.OnboardingPasswordLoginAttempt,
+      op: TraceOperation.OnboardingUserJourney,
+      parentContext: this.props.onboardingParentContext.current,
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -135,6 +156,12 @@ export default class UnlockPage extends Component {
           isNewVisit: true,
         },
       );
+      if (this.passwordLoginAttemptTraceCtx) {
+        bufferedEndTrace({ name: TraceName.OnboardingPasswordLoginAttempt });
+        this.passwordLoginAttemptTraceCtx = null;
+      }
+      bufferedEndTrace({ name: TraceName.OnboardingExistingSocialLogin });
+      bufferedEndTrace({ name: TraceName.OnboardingJourneyOverall });
     } catch (error) {
       await this.handleLoginError(error);
     } finally {
@@ -148,6 +175,17 @@ export default class UnlockPage extends Component {
     const { message, data } = error;
     let finalErrorMessage = message;
     let errorReason;
+
+    // Check if we are in the onboarding flow
+    if (this.props.onboardingParentContext.current) {
+      bufferedTrace({
+        name: TraceName.OnboardingPasswordLoginError,
+        op: TraceOperation.OnboardingError,
+        tags: { errorMessage: message },
+        parentContext: this.props.onboardingParentContext.current,
+      });
+      bufferedEndTrace({ name: TraceName.OnboardingPasswordLoginError });
+    }
 
     switch (message) {
       case 'Incorrect password':
@@ -420,3 +458,5 @@ export default class UnlockPage extends Component {
     );
   }
 }
+
+export default withSentryTrace(UnlockPage);

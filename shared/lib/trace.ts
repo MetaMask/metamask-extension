@@ -1,9 +1,12 @@
 import * as Sentry from '@sentry/browser';
-import { MeasurementUnit, StartSpanOptions } from '@sentry/types';
+import { MeasurementUnit, Span, StartSpanOptions } from '@sentry/types';
 import { createModuleLogger } from '@metamask/utils';
 // TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { log as sentryLogger } from '../../app/scripts/lib/setupSentry';
+import {
+  log as sentryLogger,
+  getMetaMetricsEnabled,
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../app/scripts/lib/setupSentry';
 
 /**
  * The supported trace names.
@@ -43,6 +46,42 @@ export enum TraceName {
   SwapViewLoaded = 'Swap View Loaded',
   Transaction = 'Transaction',
   UIStartup = 'UI Startup',
+  OnboardingNewSocialAccountExists = 'Onboarding - New Social Account Exists',
+  OnboardingNewSocialCreateWallet = 'Onboarding - New Social Create Wallet',
+  OnboardingNewSrpCreateWallet = 'Onboarding - New SRP Create Wallet',
+  OnboardingExistingSocialLogin = 'Onboarding - Existing Social Login',
+  OnboardingExistingSocialAccountNotFound = 'Onboarding - Existing Social Account Not Found',
+  OnboardingExistingSrpImport = 'Onboarding - Existing SRP Import',
+  OnboardingJourneyOverall = 'Onboarding - Overall Journey',
+  OnboardingSocialLoginAttempt = 'Onboarding - Social Login Attempt',
+  OnboardingPasswordSetupAttempt = 'Onboarding - Password Setup Attempt',
+  OnboardingPasswordLoginAttempt = 'Onboarding - Password Login Attempt',
+  OnboardingResetPassword = 'Onboarding - Reset Password',
+  OnboardingCreateKeyAndBackupSrp = 'Onboarding - Create Key and Backup SRP',
+  OnboardingAddSrp = 'Onboarding - Add SRP',
+  OnboardingFetchSrps = 'Onboarding - Fetch SRPs',
+  OnboardingOAuthProviderLogin = 'Onboarding - OAuth Provider Login',
+  OnboardingOAuthBYOAServerGetAuthTokens = 'Onboarding - OAuth BYOA Server Get Auth Tokens',
+  OnboardingOAuthSeedlessAuthenticate = 'Onboarding - OAuth Seedless Authenticate',
+  OnboardingSocialLoginError = 'Onboarding - Social Login Error',
+  OnboardingPasswordSetupError = 'Onboarding - Password Setup Error',
+  OnboardingPasswordLoginError = 'Onboarding - Password Login Error',
+  OnboardingResetPasswordError = 'Onboarding - Reset Password Error',
+  OnboardingCreateKeyAndBackupSrpError = 'Onboarding - Create Key and Backup SRP Error',
+  OnboardingAddSrpError = 'Onboarding - Add SRP Error',
+  OnboardingFetchSrpsError = 'Onboarding - Fetch SRPs Error',
+  OnboardingOAuthProviderLoginError = 'Onboarding - OAuth Provider Login Error',
+  OnboardingOAuthBYOAServerGetAuthTokensError = 'Onboarding - OAuth BYOA Server Get Auth Tokens Error',
+  OnboardingOAuthSeedlessAuthenticateError = 'Onboarding - OAuth Seedless Authenticate Error',
+}
+
+/**
+ * The operation names to use for the trace.
+ */
+export enum TraceOperation {
+  OnboardingUserJourney = 'onboarding.user_journey',
+  OnboardingSecurityOp = 'onboarding.security_operation',
+  OnboardingError = 'onboarding.error',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');
@@ -53,6 +92,9 @@ const OP_DEFAULT = 'custom';
 const tracesByKey: Map<string, PendingTrace> = new Map();
 const durationsByName: { [name: string]: number } = {};
 
+let consentCache: boolean | null = null;
+const preConsentCallBuffer: PreConsentCallBuffer[] = [];
+
 if (process.env.IN_TEST && globalThis.stateHooks) {
   globalThis.stateHooks.getCustomTraces = () => durationsByName;
 }
@@ -61,6 +103,7 @@ type PendingTrace = {
   end: (timestamp?: number) => void;
   request: TraceRequest;
   startTime: number;
+  span?: Span | null;
 };
 
 /**
@@ -108,6 +151,11 @@ export type TraceRequest = {
    * Custom tags to associate with the trace.
    */
   tags?: Record<string, number | string | boolean>;
+
+  /**
+   * Custom operation name to associate with the trace.
+   */
+  op?: string;
 };
 
 /**
@@ -129,6 +177,22 @@ export type EndTraceRequest = {
    * Override the end time of the trace.
    */
   timestamp?: number;
+
+  /**
+   * Custom data to associate with the trace when ending it.
+   * These will be set as attributes on the span.
+   */
+  data?: Record<string, number | string | boolean>;
+};
+
+type PreConsentCallBuffer<T = TraceRequest | EndTraceRequest> = {
+  type: 'start' | 'end';
+  request: T;
+  parentTraceName?: string; // Track parent trace name for reconnecting during flush
+};
+
+type SentrySpanWithName = Span & {
+  _name?: string;
 };
 
 export function trace<T>(request: TraceRequest, fn: TraceCallback<T>): T;
@@ -162,7 +226,7 @@ export function trace<T>(
  *
  * @param request - The data necessary to identify and end the pending trace.
  */
-export function endTrace(request: EndTraceRequest) {
+export function endTrace(request: EndTraceRequest): void {
   const { name, timestamp } = request;
   const id = getTraceId(request);
   const key = getTraceKey(request);
@@ -173,6 +237,13 @@ export function endTrace(request: EndTraceRequest) {
     return;
   }
 
+  if (request.data && pendingTrace.span) {
+    const span = pendingTrace.span as Span;
+    for (const [attrKey, attrValue] of Object.entries(request.data)) {
+      span.setAttribute(attrKey, attrValue);
+    }
+  }
+
   pendingTrace.end(timestamp);
 
   tracesByKey.delete(key);
@@ -181,6 +252,121 @@ export function endTrace(request: EndTraceRequest) {
   const endTime = timestamp ?? getPerformanceTimestamp();
 
   logTrace(pendingRequest, startTime, endTime);
+}
+
+/**
+ * Buffered version of trace. Handles consent and buffering logic before calling trace.
+ *
+ * @param request - The data associated with the trace, such as the name and tags.
+ * @param fn - The optional callback to record the duration of.
+ * @returns The context of the trace, or the result of the callback if provided.
+ */
+export function bufferedTrace<T>(
+  request: TraceRequest,
+  fn?: TraceCallback<T>,
+): T | TraceContext {
+  // If consent is not cached or not given, buffer the trace start
+  if (consentCache !== true) {
+    if (consentCache === null) {
+      updateIsConsentGivenForSentry();
+    }
+    // Extract parent trace name if parentContext exists
+    let parentTraceName: string | undefined;
+    if (request.parentContext && typeof request.parentContext === 'object') {
+      const parentSpan = request.parentContext as SentrySpanWithName;
+      parentTraceName = parentSpan._name;
+    }
+    preConsentCallBuffer.push({
+      type: 'start',
+      request: {
+        ...request,
+        parentContext: undefined, // Remove original parentContext to avoid invalid references
+        // Use `Date.now()` as `performance.timeOrigin` is only valid for measuring durations within
+        // the same session; it won't produce valid event times for Sentry if buffered and flushed later
+        startTime: request.startTime ?? Date.now(),
+      },
+      parentTraceName, // Store the parent trace name for later reconnection
+    });
+  }
+  if (fn) {
+    return trace(request, fn);
+  }
+  return trace(request);
+}
+
+/**
+ * Buffered version of endTrace. Handles consent and buffering logic before calling endTrace.
+ *
+ * @param request - The data associated with the trace, such as the name and tags.
+ */
+export function bufferedEndTrace(request: EndTraceRequest): void {
+  // If consent is not cached or not given, buffer the trace end
+  if (consentCache !== true) {
+    if (consentCache === null) {
+      updateIsConsentGivenForSentry();
+    }
+    preConsentCallBuffer.push({
+      type: 'end',
+      request: {
+        ...request,
+        // Use `Date.now()` as `performance.timeOrigin` is only valid for measuring durations within
+        // the same session; it won't produce valid event times for Sentry if buffered and flushed later
+        timestamp: request.timestamp ?? Date.now(),
+      },
+    });
+  }
+  endTrace(request);
+}
+
+/**
+ * Flushes buffered traces to Sentry if consent is currently granted.
+ * If consent is not granted, the buffer is cleared.
+ */
+export async function flushBufferedTraces(): Promise<void> {
+  const canFlush = await updateIsConsentGivenForSentry();
+  if (!canFlush) {
+    log('Consent not given, cannot flush buffered traces.');
+    preConsentCallBuffer.length = 0;
+    return;
+  }
+
+  log('Flushing buffered traces. Count:', preConsentCallBuffer.length);
+  const bufferToProcess = [...preConsentCallBuffer];
+  preConsentCallBuffer.length = 0;
+
+  const activeSpans = new Map<string, Span>();
+
+  for (const call of bufferToProcess) {
+    if (call.type === 'start') {
+      const traceName = call.request.name as string;
+
+      // Get parent if applicable
+      let parentSpan: Span | undefined;
+      if (call.parentTraceName) {
+        parentSpan = activeSpans.get(call.parentTraceName);
+      }
+
+      const span = trace({
+        ...call.request,
+        parentContext: parentSpan,
+      }) as unknown as Span;
+
+      if (span) {
+        activeSpans.set(traceName, span);
+      }
+    } else if (call.type === 'end') {
+      endTrace(call.request);
+      activeSpans.delete(call.request.name as string);
+    }
+  }
+  log('Finished flushing buffered traces');
+}
+
+/**
+ * Discards all traces currently in the pre-consent buffer.
+ */
+export function discardBufferedTraces(): void {
+  preConsentCallBuffer.length = 0;
 }
 
 function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
@@ -228,7 +414,7 @@ function startTrace(request: TraceRequest): TraceContext {
       initSpan(span, request);
     }
 
-    const pendingTrace = { end, request, startTime };
+    const pendingTrace = { end, request, startTime, span };
     const key = getTraceKey(request);
     tracesByKey.set(key, pendingTrace);
 
@@ -246,13 +432,13 @@ function startSpan<T>(
   request: TraceRequest,
   callback: (spanOptions: StartSpanOptions) => T,
 ) {
-  const { data: attributes, name, parentContext, startTime } = request;
+  const { data: attributes, name, parentContext, startTime, op } = request;
   const parentSpan = (parentContext ?? null) as Sentry.Span | null;
 
   const spanOptions: StartSpanOptions = {
     attributes,
     name,
-    op: OP_DEFAULT,
+    op: op ?? OP_DEFAULT,
     parentSpan,
     startTime,
   };
@@ -279,11 +465,11 @@ function logTrace(
   log('Finished trace', name, duration, { request, error });
 }
 
-function getTraceId(request: TraceRequest) {
+function getTraceId(request: TraceRequest | EndTraceRequest) {
   return request.id ?? ID_DEFAULT;
 }
 
-function getTraceKey(request: TraceRequest) {
+function getTraceKey(request: TraceRequest | EndTraceRequest) {
   const { name } = request;
   const id = getTraceId(request);
 
@@ -410,4 +596,12 @@ function sentrySetMeasurement(
   }
 
   actual(key, value, unit);
+}
+
+/**
+ * Updates the consentCache by calling getMetaMetricsEnabled.
+ */
+async function updateIsConsentGivenForSentry(): Promise<boolean> {
+  consentCache = await getMetaMetricsEnabled();
+  return consentCache;
 }
