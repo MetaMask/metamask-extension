@@ -182,11 +182,13 @@ export class PersistenceManager {
     const abortController = new AbortController();
 
     // If we already have a write _pending_, abort it so the more up-to-date
-    // write can take precedence. This is to prevent piling up multiple writes
+    // write can take its place. This is to prevent piling up multiple writes
     // in the lock queue, which is pointless because we only care about the most
-    // recent write. Because we also `debounce` writes before the come in, this
-    // should rarely happen; however, if the state is very large and takes
-    // more than the debounce `wait` time to write, it can happen.
+    // recent write. This should rarely happen, as elsewhere we make use of
+    // `debounce` for all `set` requests in order to slow them to once per
+    // 1000ms; however, if the state is very large it *can* take more than the
+    // `debounce`'s `wait` time to write, resulting in a pile up right here.
+    // This prevents that pile up from happening.
     this.#pendingState?.abort();
     this.#pendingState = abortController;
 
