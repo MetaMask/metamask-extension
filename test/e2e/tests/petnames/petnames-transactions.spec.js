@@ -4,6 +4,7 @@ const {
   withFixtures,
   unlockWallet,
   openActionMenuAndStartSendFlow,
+  logInWithBalanceValidation,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -91,7 +92,7 @@ describe('Petnames - Transactions', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver);
 
         await createWalletSendTransaction(driver, ADDRESS_MOCK);
         await expectName(driver, ABBREVIATED_ADDRESS_MOCK, false);
