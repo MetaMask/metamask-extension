@@ -80,11 +80,14 @@ export function showOnboardingHeader(location) {
   );
 }
 
-export function getConnectingLabel(loadingMessage, props, context) {
+export function getConnectingLabel(
+  loadingMessage,
+  { providerType, providerId },
+  context,
+) {
   if (loadingMessage) {
     return loadingMessage;
   }
-  const { providerType, providerId } = props;
   const { t } = context;
 
   switch (providerType) {
