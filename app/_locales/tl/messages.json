@@ -2289,18 +2289,11 @@
   "gasLimit": {
     "message": "Limitasyon ng gas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Ang limitasyon ng gas ay ang pinakamataas na halaga ng mga yunit ng gas na handa mong gastusin."
-  },
   "gasLimitRecommended": {
     "message": "Ang inirerekomendang limitasyon ng gas ay $1. Kung mas mababa dito ang limitasyon ng gas, maaaring mabigo."
   },
   "gasLimitTooLow": {
     "message": "Ang limitasyon ng gas ay dapat na hindi bababa sa 21000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Ang limitasyon ng gas ay dapat na hindi bababa sa $1",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "Limitasyon ng gas"
@@ -2308,23 +2301,11 @@
   "gasOption": {
     "message": "Opsyon ng gas"
   },
-  "gasPrice": {
-    "message": "Presyo ng gas (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "Masyadong mataas ang iyong itinakdang bayad sa gas. Pag-isipang ibaba ang halaga."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Masyadong mataas presyo ng gas"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Masyadong mababa ang presyo ng gas"
-  },
   "gasPriceFetchFailed": {
     "message": "Ang pagtantya ng presyo ng gas ay nabigo dahil sa network error."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Tinutukoy ng presyo ng gas ang halaga ng Ether na handa mong bayaran para sa bawat unit ng gas."
   },
   "gasTimingHoursShort": {
     "message": "$1 oras",
@@ -6804,8 +6785,5 @@
   },
   "yourWalletIsReady": {
     "message": "Handa na ang iyong wallet"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Walang presyo ng gas sa pagpapabilis"
   }
 }

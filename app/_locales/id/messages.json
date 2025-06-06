@@ -2289,18 +2289,11 @@
   "gasLimit": {
     "message": "Batas gas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Batas gas adalah jumlah unit gas maksimum yang ingin Anda gunakan."
-  },
   "gasLimitRecommended": {
     "message": "Batas gas yang disarankan adalah $1. Jika batas gas kurang dari itu, maka berpotensi gagal."
   },
   "gasLimitTooLow": {
     "message": "Batas gas minimum adalah 21000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Batas gas minimum adalah $1",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "Batas gas"
@@ -2308,23 +2301,11 @@
   "gasOption": {
     "message": "Opsi gas"
   },
-  "gasPrice": {
-    "message": "Biaya gas (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "Biaya gas Anda diatur terlalu tinggi. Pertimbangkan untuk menurunkan jumlahnya."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Biaya gas terlalu tinggi"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Biaya gas sangat rendah"
-  },
   "gasPriceFetchFailed": {
     "message": "Estimasi biaya gas gagal karena terjadi kesalahan pada jaringan."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Biaya gas menentukan jumlah Ether yang ingin Anda bayarkan untuk masing-masing unit gas."
   },
   "gasTimingHoursShort": {
     "message": "$1 jam",
@@ -6804,8 +6785,5 @@
   },
   "yourWalletIsReady": {
     "message": "Dompet Anda sudah siap"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Biaya gas nol pada percepatan"
   }
 }
