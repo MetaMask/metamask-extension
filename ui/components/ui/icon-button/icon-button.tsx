@@ -31,25 +31,10 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
       label,
       className = '',
       tooltipRender,
-      round = true,
       ...props
     },
     ref,
   ) => {
-    if (round) {
-      return (
-        <IconButtonRound
-          onClick={onClick}
-          Icon={Icon as object}
-          disabled={disabled}
-          label={label}
-          tooltipRender={tooltipRender}
-          ref={ref}
-          {...props}
-        />
-      );
-    }
-
     const buttonContent = (
       <ButtonBase
         className={classNames('icon-button', className)}
