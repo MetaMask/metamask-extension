@@ -2,6 +2,10 @@
   .multichain-account-list-item {
     padding: 0;
 
+    &:hover {
+      background-color: var(--transparent) !important;
+    }
+
     & > div:first-child {
       align-items: center;
       margin-right: 0;
@@ -12,6 +16,10 @@
 .snap-ui-renderer__account-selector-item {
   .multichain-account-list-item {
     padding: 0;
+
+    &:hover {
+      background-color: var(--transparent) !important;
+    }
 
     & > div:first-child {
       align-items: center;
