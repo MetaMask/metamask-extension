@@ -2286,18 +2286,11 @@
   "gasLimit": {
     "message": "ガスリミット"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "ガスリミットは使用するガスの最大単位数です。"
-  },
   "gasLimitRecommended": {
     "message": "推奨されるガスリミットは$1です。ガスリミットがこれ未満の場合、失敗する可能性があります。"
   },
   "gasLimitTooLow": {
     "message": "ガスリミットは21000以上にする必要があります"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "ガスリミットは$1以上にする必要があります",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "ガスリミット"
@@ -2305,23 +2298,11 @@
   "gasOption": {
     "message": "ガスのオプション"
   },
-  "gasPrice": {
-    "message": "ガス価格 (gwei)"
-  },
   "gasPriceExcessive": {
     "message": "ガス代が不要に高く設定されています。金額を下げることを検討してください。"
   },
-  "gasPriceExcessiveInput": {
-    "message": "ガス価格が高すぎます"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "ガス価格が非常に低く設定されています"
-  },
   "gasPriceFetchFailed": {
     "message": "ネットワークエラーのため、ガス価格の見積もりに失敗しました。"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "ガス価格は、ガス1単位ごとに支払うイーサの額を指定します。"
   },
   "gasTimingHoursShort": {
     "message": "$1時間",
@@ -6777,8 +6758,5 @@
   },
   "yourWalletIsReady": {
     "message": "ウォレットの準備ができました"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "高速化用のガス価格がゼロです"
   }
 }
