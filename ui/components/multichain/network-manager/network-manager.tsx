@@ -36,7 +36,6 @@ const NetworkManagerRouter = () => {
   const history = useHistory();
   const location = useLocation();
 
-  console.log(`location.search`, location.search);
   const initialTab = useMemo(() => {
     return location.search.includes('custom-networks')
       ? 'custom-networks'

@@ -12,6 +12,7 @@ import {
   addPermittedChain,
   detectNfts,
   setActiveNetwork,
+  setEnabledNetworks,
   setNetworkClientIdForDomain,
   setNextNonce,
   setTokenNetworkFilter,
@@ -49,6 +50,7 @@ export const useNetworkChangeHandlers = () => {
     currentChainId,
     permittedChainIds,
     permittedAccountAddresses,
+    enabledNetworks,
     allChainIds,
   } = useNetworkManagerState();
 
@@ -61,13 +63,40 @@ export const useNetworkChangeHandlers = () => {
   const [actionMode, setActionMode] = useState(ACTION_MODE.LIST);
 
   const handleEvmNetworkChange = useCallback(
-    (chainId: CaipChainId, networkClientId?: string) => {
+    (
+      chainId: CaipChainId,
+      {
+        overrideEnabledNetworks = false,
+      }: { overrideEnabledNetworks?: boolean } = {},
+    ) => {
       const hexChainId = convertCaipToHexChainId(chainId);
       const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
-      const finalNetworkClientId =
-        networkClientId ?? defaultRpcEndpoint.networkClientId;
+      const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
       dispatch(setActiveNetwork(finalNetworkClientId));
+
+      const enabledNetworkKeys = Object.keys(enabledNetworks);
+
+      if (overrideEnabledNetworks) {
+        dispatch(setEnabledNetworks([hexChainId] as CaipChainId[]));
+      } else {
+        if (!enabledNetworkKeys.includes(hexChainId)) {
+          dispatch(
+            setEnabledNetworks([
+              ...enabledNetworkKeys,
+              hexChainId,
+            ] as CaipChainId[]),
+          );
+        } else {
+          const filteredEnabledNetworks = enabledNetworkKeys.filter(
+            (key) => key !== hexChainId,
+          );
+          dispatch(
+            setEnabledNetworks(filteredEnabledNetworks as CaipChainId[]),
+          );
+        }
+      }
+
       dispatch(updateCustomNonce(''));
       dispatch(setNextNonce(''));
       dispatch(detectNfts(allChainIds));
@@ -117,13 +146,32 @@ export const useNetworkChangeHandlers = () => {
   );
 
   const handleNonEvmNetworkChange = useCallback(
-    async (chainId: CaipChainId) => {
-      if (hasAnyAccountsInNetwork(chainId)) {
-        dispatch(setActiveNetwork(chainId));
-        return;
+    async (
+      chainId: CaipChainId,
+      {
+        overrideEnabledNetworks = false,
+      }: { overrideEnabledNetworks?: boolean } = {},
+    ) => {
+      if (overrideEnabledNetworks) {
+        dispatch(setEnabledNetworks([chainId] as CaipChainId[]));
+      } else {
+        const enabledNetworkKeys = Object.keys(enabledNetworks);
+        if (!enabledNetworkKeys.includes(chainId)) {
+          dispatch(
+            setEnabledNetworks([
+              ...enabledNetworkKeys,
+              chainId,
+            ] as CaipChainId[]),
+          );
+        } else {
+          const filteredEnabledNetworks = enabledNetworkKeys.filter(
+            (key) => key !== chainId,
+          );
+          dispatch(
+            setEnabledNetworks(filteredEnabledNetworks as CaipChainId[]),
+          );
+        }
       }
-
-      setSelectedNonEvmNetwork(chainId);
       setActionMode(ACTION_MODE.ADD_NON_EVM_ACCOUNT);
     },
     [hasAnyAccountsInNetwork, dispatch],
@@ -143,15 +191,20 @@ export const useNetworkChangeHandlers = () => {
   );
 
   const handleNetworkChange = useCallback(
-    async (chainId: CaipChainId) => {
+    async (
+      chainId: CaipChainId,
+      {
+        overrideEnabledNetworks = false,
+      }: { overrideEnabledNetworks?: boolean } = {},
+    ) => {
       const currentChain =
         getMultichainNetworkConfigurationOrThrow(currentChainId);
       const chain = getMultichainNetworkConfigurationOrThrow(chainId);
 
       if (chain.isEvm) {
-        handleEvmNetworkChange(chainId);
+        handleEvmNetworkChange(chainId, { overrideEnabledNetworks });
       } else {
-        await handleNonEvmNetworkChange(chainId);
+        await handleNonEvmNetworkChange(chainId, { overrideEnabledNetworks });
       }
 
       const chainIdToTrack = chain.isEvm

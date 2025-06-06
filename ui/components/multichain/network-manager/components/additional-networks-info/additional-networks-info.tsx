@@ -66,7 +66,7 @@ export const AdditionalNetworksInfo = memo(() => {
         {/* Container for the "Additional Networks" text and info icon */}
         <Box display={Display.InlineFlex} ref={setBoxRef}>
           {/* Label text - uses translation key "additionalNetworks" */}
-          <Text color={TextColor.textAlternative} variant={TextVariant.bodyMd}>
+          <Text color={TextColor.textAlternative} variant={TextVariant.bodyMdMedium}>
             {t('additionalNetworks')}
           </Text>
 

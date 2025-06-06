@@ -1,17 +1,14 @@
-import { ApprovalType, BUILT_IN_NETWORKS } from '@metamask/controller-utils';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
-  NON_EVM_TESTNET_IDS,
-  type MultichainNetworkConfiguration,
+  type MultichainNetworkConfiguration
 } from '@metamask/multichain-network-controller';
-import { type Hex } from '@metamask/utils';
-import React, { useEffect, useMemo, useState } from 'react';
+import { CaipChainId } from '@metamask/utils';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import { MetaMetricsNetworkEventSource } from '../../../../../../shared/constants/metametrics';
-import { MultichainNetworks } from '../../../../../../shared/constants/multichain/networks';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  FEATURED_RPCS,
-  TEST_CHAINS,
+  FEATURED_RPCS
 } from '../../../../../../shared/constants/network';
 import {
   convertCaipToHexChainId,
@@ -29,13 +26,18 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { hideModal, requestUserApproval } from '../../../../../store/actions';
+import {
+  hideModal,
+  requestUserApproval,
+  setEnabledNetworks,
+} from '../../../../../store/actions';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
   ButtonIcon,
   ButtonIconSize,
+  ButtonLink,
   Checkbox,
   IconName,
   Text,
@@ -52,54 +54,37 @@ export const DefaultNetworks = () => {
     t,
     dispatch,
     orderedNetworksList,
-    multichainNetworks,
     evmNetworks,
-    editingChainId,
-    editCompleted,
-    canSelectNetwork,
-  } = useNetworkManagerState();
-
+    nonTestNetworks,
+    enabledNetworks,
+    isNetworkInDefaultNetworkTab,
+  } = useNetworkManagerState({ skipNetworkFiltering: true });
   // Use the shared callbacks hook
-  const { getItemCallbacks, hasMultiRpcOptions, isNetworkEnabled } =
-    useNetworkItemCallbacks();
+  const { getItemCallbacks, hasMultiRpcOptions } = useNetworkItemCallbacks();
 
   // Use the shared network change handlers hook
   const { handleNetworkChange } = useNetworkChangeHandlers();
 
-  const [nonTestNetworks, testNetworks] = useMemo(
-    () =>
-      Object.entries(multichainNetworks).reduce(
-        ([nonTestnetsList, testnetsList], [id, network]) => {
-          let chainId = id;
-          let isTest = false;
-
-          if (network.isEvm) {
-            // We keep using raw chain ID for EVM.
-            chainId = convertCaipToHexChainId(network.chainId);
-            isTest = TEST_CHAINS.includes(chainId as Hex);
-          } else {
-            isTest = NON_EVM_TESTNET_IDS.includes(network.chainId);
-          }
-          (isTest ? testnetsList : nonTestnetsList)[chainId] = network;
-          return [nonTestnetsList, testnetsList];
-        },
-        [
-          {} as Record<string, MultichainNetworkConfiguration>,
-          {} as Record<string, MultichainNetworkConfiguration>,
-        ],
-      ),
-    [multichainNetworks],
-  );
-
-  // The network currently being edited, or undefined
-  // if the user is not currently editing a network.
-  //
-  // The memoized value is EVM specific, therefore we
-  // provide the evmNetworks object as a dependency.
-
   const [orderedNetworks, setOrderedNetworks] = useState(
     sortNetworks(nonTestNetworks, orderedNetworksList),
   );
+
+  const allNetworksSelected = useMemo(() => {
+    return Object.keys(enabledNetworks).length === orderedNetworks.length;
+  }, [enabledNetworks, orderedNetworks]);
+
+  const selectAllDefaultNetworks = useCallback(() => {
+    const shouldSelect = orderedNetworks.map((network) =>
+      network.isEvm
+        ? convertCaipToHexChainId(network.chainId)
+        : network.chainId,
+    );
+    dispatch(setEnabledNetworks(shouldSelect as CaipChainId[]));
+  }, [dispatch, orderedNetworks]);
+
+  const deselectAllDefaultNetworks = useCallback(() => {
+    dispatch(setEnabledNetworks([] as CaipChainId[]));
+  }, [dispatch]);
 
   useEffect(
     () =>
@@ -125,33 +110,19 @@ export const DefaultNetworks = () => {
       ? convertCaipToHexChainId(networkChainId)
       : networkChainId;
 
-    // Only show networks if they are built-in networks or featured RPCs
-    const isBuiltInNetwork = Object.values(BUILT_IN_NETWORKS).some(
-      (builtInNetwork) => builtInNetwork.chainId === hexChainId,
-    );
-
-    const isFeaturedRpc = FEATURED_RPCS.some(
-      (featuredRpc) => featuredRpc.chainId === hexChainId,
-    );
-
-    const isMultichainProviderConfig = Object.values(MultichainNetworks).some(
-      (multichainNetwork) =>
-        multichainNetwork === networkChainId ||
-        multichainNetwork === hexChainId,
-    );
-
-    if (!isBuiltInNetwork && !isFeaturedRpc && !isMultichainProviderConfig) {
+    if (!isNetworkInDefaultNetworkTab(network)) {
       return null;
     }
 
     const { onDelete, onEdit, onDiscoverClick, onRpcConfigEdit } =
-      getItemCallbacks(network); // Pass true for includeModalCallbacks
+      getItemCallbacks(network);
     const iconSrc = getNetworkIcon(network);
+    const isEnabled = Object.keys(enabledNetworks).includes(hexChainId);
 
     return (
       <NetworkListItem
         startAccessory={
-          <Checkbox label="" onChange={() => {}} isChecked={true} />
+          <Checkbox label="" onChange={() => {}} isChecked={isEnabled} />
         }
         key={network.chainId}
         chainId={network.chainId}
@@ -165,17 +136,12 @@ export const DefaultNetworks = () => {
             : undefined
         }
         onClick={async () => {
-          if (canSelectNetwork) {
-            await handleNetworkChange(network.chainId);
-          }
+          await handleNetworkChange(network.chainId);
         }}
         onDeleteClick={onDelete}
         onEditClick={onEdit}
         onDiscoverClick={onDiscoverClick}
-        // selected={isCurrentNetwork}
         onRpcEndpointClick={onRpcConfigEdit}
-        disabled={!isNetworkEnabled(network)}
-        notSelectable={!canSelectNetwork}
       />
     );
   };
@@ -261,15 +227,30 @@ export const DefaultNetworks = () => {
   return (
     <>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.flexStart}
+          padding={4}
+          paddingBottom={2}
+        >
+          {allNetworksSelected ? (
+            <ButtonLink onClick={deselectAllDefaultNetworks}>
+              {t('deselectAll')}
+            </ButtonLink>
+          ) : (
+            <ButtonLink onClick={selectAllDefaultNetworks}>
+              {t('selectAll')}
+            </ButtonLink>
+          )}
+        </Box>
         {orderedNetworks.map((network) =>
           generateMultichainNetworkListItem(network),
         )}
         <AdditionalNetworksInfo />
         {featuredNetworksNotYetEnabled.map((network) =>
           generateAdditionalNetworkListItem(network),
-        ) || null}
+        )}
       </Box>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column}></Box>
     </>
   );
 };

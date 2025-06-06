@@ -1,15 +1,10 @@
-import { BUILT_IN_NETWORKS } from '@metamask/controller-utils';
 import {
-  NON_EVM_TESTNET_IDS,
-  type MultichainNetworkConfiguration,
+  type MultichainNetworkConfiguration
 } from '@metamask/multichain-network-controller';
 import { type Hex } from '@metamask/utils';
-import React, { useEffect, useMemo, useState } from 'react';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { MultichainNetworks } from '../../../../../../shared/constants/multichain/networks';
+import React, { useEffect, useState } from 'react';
 import {
-  FEATURED_RPCS,
-  TEST_CHAINS,
+  TEST_CHAINS
 } from '../../../../../../shared/constants/network';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import {
@@ -19,25 +14,21 @@ import {
   sortNetworks,
 } from '../../../../../../shared/modules/network.utils';
 import {
-  AlignItems,
   Display,
   FlexDirection,
-  JustifyContent,
-  TextAlign,
   TextColor,
-  TextVariant,
+  TextVariant
 } from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   AvatarNetworkSize,
   Box,
   Button,
-  ButtonLink,
-  ButtonLinkSize,
   ButtonSize,
   ButtonVariant,
   IconName,
   IconSize,
-  Text,
+  Text
 } from '../../../../component-library';
 import { NetworkListItem } from '../../../network-list-item';
 import { useNetworkChangeHandlers } from '../../hooks/useNetworkChangeHandlers';
@@ -50,10 +41,10 @@ export const CustomNetworks = () => {
   const {
     history,
     orderedNetworksList,
-    multichainNetworks,
     evmNetworks,
     currentChainId,
-    canSelectNetwork,
+    nonTestNetworks,
+    testNetworks,
   } = useNetworkManagerState();
 
   const { getItemCallbacks, hasMultiRpcOptions, isNetworkEnabled } =
@@ -64,66 +55,11 @@ export const CustomNetworks = () => {
     endTrace({ name: TraceName.NetworkList });
   }, []);
 
-  const [nonTestNetworks, testNetworks] = useMemo(
-    () =>
-      Object.entries(multichainNetworks).reduce(
-        ([nonTestnetsList, testnetsList], [id, network]) => {
-          let chainId = id;
-          let isTest = false;
-
-          if (network.isEvm) {
-            // We keep using raw chain ID for EVM.
-            chainId = convertCaipToHexChainId(network.chainId);
-            isTest = TEST_CHAINS.includes(chainId as Hex);
-          } else {
-            isTest = NON_EVM_TESTNET_IDS.includes(network.chainId);
-          }
-
-          // Pre-filter to only include networks that are NOT in built-in networks or featured RPCs
-          const hexChainId = network.isEvm
-            ? convertCaipToHexChainId(network.chainId)
-            : network.chainId;
-
-          // Check if the network is NOT a built-in network or featured RPC
-          const isBuiltInNetwork = Object.values(BUILT_IN_NETWORKS).some(
-            (builtInNetwork) => builtInNetwork.chainId === hexChainId,
-          );
-          const isFeaturedRpc = FEATURED_RPCS.some(
-            (featuredRpc) => featuredRpc.chainId === hexChainId,
-          );
-
-          const isMultichainProviderConfig = Object.values(
-            MultichainNetworks,
-          ).some(
-            (multichainNetwork) =>
-              multichainNetwork === network.chainId ||
-              (network.isEvm
-                ? convertCaipToHexChainId(network.chainId)
-                : network.chainId) === multichainNetwork,
-          );
-
-          const shouldInclude =
-            !isBuiltInNetwork && !isFeaturedRpc && !isMultichainProviderConfig;
-
-          if (shouldInclude || isTest) {
-            (isTest ? testnetsList : nonTestnetsList)[chainId] = network;
-          }
-
-          return [nonTestnetsList, testnetsList];
-        },
-        [
-          {} as Record<string, MultichainNetworkConfiguration>,
-          {} as Record<string, MultichainNetworkConfiguration>,
-        ],
-      ),
-    [multichainNetworks],
-  );
-
   const [orderedNetworks, setOrderedNetworks] = useState(
     sortNetworks(nonTestNetworks, orderedNetworksList),
   );
 
-  const [orderedTestNetworks, setOrderedTestNetworks] = useState(
+  const [orderedTestNetworks, ] = useState(
     sortNetworks(testNetworks, orderedNetworksList),
   );
 
@@ -159,9 +95,9 @@ export const CustomNetworks = () => {
             : undefined
         }
         onClick={async () => {
-          if (canSelectNetwork) {
-            await handleNetworkChange(network.chainId);
-          }
+          await handleNetworkChange(network.chainId, {
+            overrideEnabledNetworks: true,
+          });
         }}
         onDeleteClick={isTestNetwork ? undefined : onDelete}
         onEditClick={isTestNetwork ? undefined : onEdit}
@@ -175,28 +111,19 @@ export const CustomNetworks = () => {
   return (
     <>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-        <Text
-          variant={TextVariant.bodyMdMedium}
-          color={TextColor.textAlternative}
-          padding={4}
-        >
-          {t('customNetworks')}
-        </Text>
-        {orderedNetworks.length > 0 ? (
-          orderedNetworks.map((network) =>
-            generateMultichainNetworkListItem(network),
-          )
-        ) : (
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textAlternative}
-            padding={10}
-            textAlign={TextAlign.Center}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
-          >
-            {t('noCustomNetworks')}
-          </Text>
+        {orderedNetworks?.length > 0 && (
+          <>
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textAlternative}
+              padding={4}
+            >
+              {t('customNetworks')}
+            </Text>
+            {orderedNetworks.map((network) =>
+              generateMultichainNetworkListItem(network),
+            )}
+          </>
         )}
         <Text
           variant={TextVariant.bodyMdMedium}
