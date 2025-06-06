@@ -38,6 +38,8 @@ import {
   updateSendAsset,
 } from '../../../../ducks/send';
 
+import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
+import { getRemoteSendAllowance } from '../../../../selectors/remote-mode';
 import { SendAllowanceTooltip } from '../../../../pages/remote-mode/components';
 
 import {
@@ -71,7 +73,6 @@ import { TextVariant } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
-import { useRemoteMode } from '../../../../pages/remote-mode/hooks/useRemoteMode';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -372,10 +373,15 @@ export const SendPage = () => {
 
   // Remote Mode
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const { remoteModeConfig } = useRemoteMode({
-    account: selectedAccount.address,
-  });
-  const hasAllowance = Boolean(remoteModeConfig.dailyAllowance);
+  const currentChainId = useSelector(getCurrentChainId);
+  const remoteSendAllowance = useSelector((state) =>
+    getRemoteSendAllowance(state, {
+      from: selectedAccount.address,
+      chainId: currentChainId,
+      asset: transactionAsset,
+    }),
+  );
+  const hasAllowance = Boolean(remoteSendAllowance);
   const remoteModeSupported = isRemoteModeSupported(selectedAccount);
 
   let tooltipTitle = '';
