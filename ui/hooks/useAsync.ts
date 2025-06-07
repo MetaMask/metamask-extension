@@ -90,15 +90,15 @@ export function useAsyncCallback<T>(
     if (!isMounted.current) {
       return;
     }
-    setResult(RESULT_PENDING);
+    setResult(() => RESULT_PENDING);
     try {
       const value = await asyncFn();
       if (isMounted.current) {
-        setResult(createSuccessResult(value));
+        setResult(() => createSuccessResult(value));
       }
     } catch (error) {
       if (isMounted.current) {
-        setResult(createErrorResult(error as Error));
+        setResult(() => createErrorResult(error as Error));
       }
     }
   }, deps);
