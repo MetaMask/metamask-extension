@@ -46,13 +46,15 @@ import {
   getWasTxDeclined,
   getFromAmountInCurrency,
   getValidationErrors,
-  isBridgeSolanaEnabled,
   getIsToOrFromSolana,
   getIsSolanaSwap,
   getQuoteRefreshRate,
   getHardwareWalletName,
   getIsQuoteExpired,
+  getIsUnifiedUIEnabled,
+  getIsSwap,
   BridgeAppState,
+  isBridgeSolanaEnabled,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -143,7 +145,15 @@ const PrepareBridgePage = () => {
 
   const t = useI18nContext();
 
-  const isSwap = useIsMultichainSwap();
+  const fromChain = useSelector(getFromChain);
+  const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
+    getIsUnifiedUIEnabled(state, fromChain?.chainId),
+  );
+
+  // Determine if this is a swap based on unified UI setting
+  const isSwap = isUnifiedUIEnabled
+    ? useSelector(getIsSwap) // Use quote request params when unified
+    : useIsMultichainSwap(); // Use URL params for legacy behavior
 
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getTokenList) as TokenListMap;
@@ -152,7 +162,6 @@ const PrepareBridgePage = () => {
 
   const fromChains = useSelector(getFromChains);
   const toChains = useSelector(getToChains);
-  const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
 
   const isFromTokensLoading = useMemo(() => {
@@ -241,7 +250,17 @@ const PrepareBridgePage = () => {
     isLoading: isToTokensLoading,
   } = useTokensWithFiltering(
     toChain?.chainId ?? fromChain?.chainId,
-    fromToken,
+    fromChain?.chainId === toChain?.chainId && fromToken && fromChain
+      ? {
+          ...fromToken,
+          // Normalize native token address to empty string, otherwise lowercase for comparison
+          address: isNativeAddress(fromToken.address)
+            ? ''
+            : fromToken.address?.toLowerCase(),
+          // Ensure chainId is in CAIP format for proper comparison
+          chainId: formatChainIdToCaip(fromChain.chainId),
+        }
+      : null,
     selectedDestinationAccount !== null && 'id' in selectedDestinationAccount
       ? selectedDestinationAccount.id
       : undefined,
@@ -582,11 +601,25 @@ const PrepareBridgePage = () => {
     useState<BridgeToken | null>(null);
   const [toastTriggerCounter, setToastTriggerCounter] = useState(0);
 
+  const getFromInputHeader = () => {
+    if (isUnifiedUIEnabled) {
+      return t('yourNetworks');
+    }
+    return isSwap ? t('swapSwapFrom') : t('bridgeFrom');
+  };
+
+  const getToInputHeader = () => {
+    if (isUnifiedUIEnabled) {
+      return t('swapSelectToken');
+    }
+    return isSwap ? t('swapSwapTo') : t('bridgeTo');
+  };
+
   return (
     <>
       <Column className="prepare-bridge-page" gap={8}>
         <BridgeInputGroup
-          header={isSwap ? t('swapSwapFrom') : t('bridgeFrom')}
+          header={getFromInputHeader()}
           token={fromToken}
           onAmountChange={(e) => {
             dispatch(setFromTokenInputValue(e));
@@ -609,7 +642,7 @@ const PrepareBridgePage = () => {
           }}
           networkProps={{
             network: fromChain,
-            networks: isSwap ? undefined : fromChains,
+            networks: isSwap && !isUnifiedUIEnabled ? undefined : fromChains,
             onNetworkChange: (networkConfig) => {
               networkConfig?.chainId &&
                 networkConfig.chainId !== fromChain?.chainId &&
@@ -644,7 +677,7 @@ const PrepareBridgePage = () => {
             },
             header: t('yourNetworks'),
           }}
-          isMultiselectEnabled={!isSwap}
+          isMultiselectEnabled={isUnifiedUIEnabled || !isSwap}
           onMaxButtonClick={(value: string) => {
             dispatch(setFromTokenInputValue(value));
           }}
@@ -714,12 +747,10 @@ const PrepareBridgePage = () => {
               disabled={
                 isSwitchingTemporarilyDisabled ||
                 !isValidQuoteRequest(quoteRequest, false) ||
-                (!isSwap && !isNetworkAdded(toChain))
+                (toChain && !isNetworkAdded(toChain))
               }
               onClick={() => {
-                if (!isSwap && !isNetworkAdded(toChain)) {
-                  return;
-                }
+                // Track the flip event
                 toChain?.chainId &&
                   fromToken &&
                   toToken &&
@@ -748,36 +779,46 @@ const PrepareBridgePage = () => {
                       },
                     ),
                   );
+
                 setRotateSwitchTokens(!rotateSwitchTokens);
+
                 flippedRequestProperties &&
                   trackCrossChainSwapsEvent({
                     event: MetaMetricsEventName.InputSourceDestinationFlipped,
                     properties: flippedRequestProperties,
                   });
-                if (!isSwap) {
-                  // Only flip networks if bridging
-                  const toChainClientId =
-                    toChain?.defaultRpcEndpointIndex !== undefined &&
-                    toChain?.rpcEndpoints &&
-                    isNetworkAdded(toChain)
-                      ? toChain.rpcEndpoints[toChain.defaultRpcEndpointIndex]
-                          .networkClientId
-                      : undefined;
+
+                const shouldFlipNetworks = isUnifiedUIEnabled || !isSwap;
+                if (shouldFlipNetworks) {
+                  // Handle account switching for Solana
                   if (
                     toChain?.chainId &&
                     formatChainIdToCaip(toChain.chainId) ===
                       MultichainNetworks.SOLANA &&
                     selectedSolanaAccount
                   ) {
-                    // Switch accounts to switch to solana
                     dispatch(setSelectedAccount(selectedSolanaAccount.address));
                   } else {
                     dispatch(setSelectedAccount(selectedEvmAccount.address));
                   }
-                  toChainClientId &&
-                    dispatch(setActiveNetwork(toChainClientId));
-                  fromChain?.chainId &&
+
+                  // Get the network client ID for switching
+                  const toChainClientId =
+                    toChain?.defaultRpcEndpointIndex !== undefined &&
+                    toChain?.rpcEndpoints
+                      ? toChain.rpcEndpoints[toChain.defaultRpcEndpointIndex]
+                      : undefined;
+                  const networkClientId =
+                    toChainClientId && 'networkClientId' in toChainClientId
+                      ? toChainClientId.networkClientId
+                      : toChain?.chainId;
+
+                  if (networkClientId) {
+                    dispatch(setActiveNetwork(networkClientId));
+                  }
+                  if (fromChain?.chainId) {
                     dispatch(setToChainId(fromChain.chainId));
+                  }
                 }
                 dispatch(setFromToken(toToken));
                 dispatch(setToToken(fromToken));
@@ -786,7 +827,7 @@ const PrepareBridgePage = () => {
           </Box>
 
           <BridgeInputGroup
-            header={t('swapSelectToken')}
+            header={getToInputHeader()}
             token={toToken}
             onAssetChange={(token) => {
               const bridgeToken = {
@@ -801,7 +842,7 @@ const PrepareBridgePage = () => {
               dispatch(setToToken(bridgeToken));
             }}
             networkProps={
-              isSwap
+              isSwap && !isUnifiedUIEnabled
                 ? undefined
                 : {
                     network: toChain,
@@ -818,9 +859,10 @@ const PrepareBridgePage = () => {
                       );
                       dispatch(setToToken(destNativeAsset));
                     },
-                    header: isSwap ? t('swapSwapTo') : t('bridgeTo'),
-                    shouldDisableNetwork: ({ chainId }) =>
-                      chainId === fromChain?.chainId,
+                    header: getToInputHeader(),
+                    shouldDisableNetwork: isUnifiedUIEnabled
+                      ? undefined
+                      : ({ chainId }) => chainId === fromChain?.chainId,
                   }
             }
             customTokenListGenerator={
