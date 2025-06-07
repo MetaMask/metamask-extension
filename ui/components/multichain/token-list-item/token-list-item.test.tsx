@@ -73,7 +73,9 @@ const mockGetSafeChains = useSafeChains;
 
 describe('TokenListItem', () => {
   beforeAll(() => {
+    // @ts-expect-error mocking platform
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
+    // @ts-expect-error mocking platform
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     (mockGetIntlLocale as unknown as jest.Mock).mockReturnValue('en-US');
   });

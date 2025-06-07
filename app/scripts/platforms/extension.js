@@ -80,6 +80,12 @@ export default class ExtensionPlatform {
     return extensionURL;
   }
 
+  /**
+   *
+   * @param {string | null} route
+   * @param {string | null} queryString
+   * @param {boolean} [keepWindowOpen] - defaults to false
+   */
   openExtensionInBrowser(
     route = null,
     queryString = null,
