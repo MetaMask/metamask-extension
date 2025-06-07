@@ -36,6 +36,13 @@ describe('Bridge tests', function (this: Suite) {
           '24.9',
         );
 
+        const getHeapSize = async () =>
+          (await driver.executeScript(
+            'return window.performance.memory.usedJSHeapSize/1024/1024',
+          )) as number;
+
+        const heapSizeBefore = await getHeapSize();
+
         // Switch to Linea Mainnet to set it as the selected network
         // in the network-controller
         await switchToNetworkFlow(driver, 'Linea Mainnet');
@@ -66,6 +73,12 @@ describe('Bridge tests', function (this: Suite) {
           '22.9',
         );
 
+        const heapSizeAfter1 = await getHeapSize();
+        console.log('heapSizeBefore', heapSizeBefore);
+        console.log('heapSizeAfter1', heapSizeAfter1);
+
+        expect(heapSizeAfter1 - heapSizeBefore).toBeLessThanOrEqual(1000);
+
         // Switch to Arbitrum One to set it as the selected network
         // in the network-controller
         await searchAndSwitchToNetworkFlow(driver, 'Arbitrum One');
@@ -83,6 +96,10 @@ describe('Bridge tests', function (this: Suite) {
           6,
           '22.9',
         );
+
+        const heapSizeAfter2 = await getHeapSize();
+        console.log('heapSizeAfter2', heapSizeAfter2);
+        expect(heapSizeAfter2 - heapSizeBefore).toBeLessThanOrEqual(1000);
       },
     );
   });

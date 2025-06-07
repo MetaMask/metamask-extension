@@ -20,6 +20,7 @@ import {
   isNativeAddress,
   UnifiedSwapBridgeEventName,
   BRIDGE_DEFAULT_SLIPPAGE,
+  formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import {
   setFromToken,
@@ -146,8 +147,10 @@ const PrepareBridgePage = () => {
   const isSwap = useIsMultichainSwap();
 
   const fromToken = useSelector(getFromToken);
-  const fromTokens = useSelector(getTokenList) as TokenListMap;
-
+  // const fromTokens = useSelector(getTokenList) as TokenListMap;
+  const tokensByChain = useSelector(
+    (state: BridgeAppState) => state.metamask.tokensChainsCache,
+  );
   const toToken = useSelector(getToToken);
 
   const fromChains = useSelector(getFromChains);
@@ -155,13 +158,21 @@ const PrepareBridgePage = () => {
   const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
 
-  const isFromTokensLoading = useMemo(() => {
-    // This is an EVM token list. Solana tokens should not trigger loading state.
-    if (fromChain && isSolanaChainId(fromChain.chainId)) {
-      return false;
+  const fromTokensCached = useMemo(() => {
+    if (!fromChain) {
+      return undefined;
     }
-    return Object.keys(fromTokens).length === 0;
-  }, [fromTokens, fromChain]);
+    // This is an EVM token list. Solana tokens should not trigger loading state.
+    if (isSolanaChainId(fromChain.chainId)) {
+      return undefined;
+    }
+    const hexChainId = formatChainIdToHex(fromChain.chainId);
+    return tokensByChain[hexChainId];
+  }, [fromChain?.chainId, tokensByChain]);
+
+  const fromTokens = useMemo(() => {
+    return fromTokensCached?.data as TokenListMap | undefined;
+  }, [fromTokensCached]);
 
   const fromAmount = useSelector(getFromAmount);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
@@ -440,7 +451,10 @@ const PrepareBridgePage = () => {
   const history = useHistory();
 
   useEffect(() => {
-    if (!fromChain?.chainId || isFromTokensLoading) {
+    if (!fromChain?.chainId) {
+      return;
+    }
+    if (!isSolanaChainId(fromChain.chainId) && !fromTokens) {
       return;
     }
 
@@ -489,7 +503,10 @@ const PrepareBridgePage = () => {
         return;
       }
 
-      const matchedToken = fromTokens[tokenAddressFromUrl.toLowerCase()];
+      const matchedToken =
+        fromTokens?.[
+          tokenAddressFromUrl.toLowerCase() as keyof typeof fromTokens
+        ];
 
       switch (tokenAddressFromUrl) {
         case fromToken?.address:
@@ -501,12 +518,13 @@ const PrepareBridgePage = () => {
           ? toChecksumAddress(matchedToken.address)
           : undefined: {
           // If there is a match, set it as the fromToken
-          dispatch(
-            setFromToken({
-              ...matchedToken,
-              chainId: fromChain.chainId,
-            }),
-          );
+          matchedToken &&
+            dispatch(
+              setFromToken({
+                ...matchedToken,
+                chainId: fromChain.chainId,
+              }),
+            );
           removeTokenFromUrl();
           break;
         }
@@ -518,7 +536,7 @@ const PrepareBridgePage = () => {
     };
 
     handleToken();
-  }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
+  }, [fromChain, fromToken, fromTokens, search, fromTokensCached]);
 
   // Set slippage based on swap type
   const slippageInitializedRef = useRef(false);
@@ -653,7 +671,10 @@ const PrepareBridgePage = () => {
             // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             value: fromAmount || undefined,
           }}
-          isTokenListLoading={isFromTokensLoading}
+          isTokenListLoading={
+            // TODO probably broke something
+            fromChain && !isSolanaChainId(fromChain.chainId) && !fromTokens
+          }
           dataTestId="bridge-source-button"
           onBlockExplorerClick={(token) => {
             setBlockExplorerToken(token);

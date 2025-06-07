@@ -191,7 +191,7 @@ export function AssetPickerModal({
 
   useEffect(() => {
     setSearchQuery('');
-  }, [selectedNetwork?.chainId]);
+  }, []);
 
   const nativeCurrencyImage = useMultichainSelector(getMultichainCurrencyImage);
   const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
