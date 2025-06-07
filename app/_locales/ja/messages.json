@@ -368,6 +368,9 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "ガスオプションを更新"
   },
+  "alertContentMultipleApprovals": {
+    "message": "このトランザクションに必要ないにもかかわらず、他者にトークンの引き出しを許可しようとしています。"
+  },
   "alertDisableTooltip": {
     "message": "これは「設定」>「アラート」で変更できます"
   },
@@ -430,6 +433,9 @@
   },
   "alertReasonInsufficientBalance": {
     "message": "資金不足"
+  },
+  "alertReasonMultipleApprovals": {
+    "message": "不要なアクセス許可"
   },
   "alertReasonNetworkBusy": {
     "message": "ネットワークが混雑中"
@@ -2990,9 +2996,6 @@
     "message": "誰にも見られていないことを確認してください",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageDefaultSettings": {
-    "message": "デフォルトのプライバシー設定の管理"
-  },
   "manageInstitutionalWallets": {
     "message": "Institutionalウォレットの管理"
   },
@@ -3397,9 +3400,6 @@
   "newNftAddedMessage": {
     "message": "NFTが追加されました！"
   },
-  "newPassword": {
-    "message": "新しいパスワード (最低8文字)"
-  },
   "newPrivacyPolicyActionButton": {
     "message": "続きを表示"
   },
@@ -3776,14 +3776,8 @@
   "onboardingCreateWallet": {
     "message": "新規ウォレットを作成"
   },
-  "onboardingImportWallet": {
-    "message": "既存のウォレットをインポート"
-  },
   "onboardingMetametricsAgree": {
     "message": "同意します"
-  },
-  "onboardingMetametricsDescription": {
-    "message": "MetaMaskの改善を目的に、基本的な使用状況および診断データを収集したいと思います。ここで提供されるデータが販売されることはありません。"
   },
   "onboardingMetametricsDescription2": {
     "message": "指標を収集する際、常に次の条件が適用されます..."
@@ -3794,10 +3788,6 @@
   },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "プライバシー ポリシー"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 アプリのクリックやビューは保存されますが、その他の詳細 (ユーザーのパブリックアドレスなど) は保存されません。",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
   },
   "onboardingMetametricsNeverCollectEmphasis": {
     "message": "非公開:"
@@ -3840,15 +3830,6 @@
   "onboardingPinExtensionChrome": {
     "message": "ブラウザの拡張機能アイコンをクリックします"
   },
-  "onboardingPinExtensionDescription": {
-    "message": "MetaMaskをブラウザにピン留めすることで、アクセスしやすくなり、トランザクションの承認を簡単に表示できるようになります。"
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "拡張機能をクリックしてMetaMaskを開き、ワンクリックでウォレットにアクセスできます。"
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "ブラウザの拡張機能アイコンをクリックすると、すぐにアクセスできます"
-  },
   "onboardingPinExtensionLabel": {
     "message": "MetaMaskをピン留めする"
   },
@@ -3857,9 +3838,6 @@
   },
   "onboardingPinExtensionStep2": {
     "message": "2"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "MetaMaskのインストールが完了しました！"
   },
   "onekey": {
     "message": "OneKey"
@@ -3928,18 +3906,12 @@
   "password": {
     "message": "パスワード"
   },
-  "passwordNotLongEnough": {
-    "message": "パスワードの長さが足りません"
-  },
   "passwordStrength": {
     "message": "パスワードの強度: $1",
     "description": "Return password strength to the user when user wants to create password."
   },
   "passwordStrengthDescription": {
     "message": "強力なパスワードは、デバイスが盗まれたり侵入されたりした場合に、ウォレットのセキュリティを高めます。"
-  },
-  "passwordTermsWarning": {
-    "message": "私はMetaMaskがこのパスワードを復元できないことを理解しています。$1"
   },
   "passwordsDontMatch": {
     "message": "パスワードが一致しません"
@@ -5109,9 +5081,6 @@
   "skipAccountSecurity": {
     "message": "アカウントのセキュリティをスキップしますか？"
   },
-  "skipAccountSecurityDetails": {
-    "message": "私は、シークレットリカバリーフレーズをバックアップするまで、アカウントとそのアセットのすべてを失う可能性があることを理解しています。"
-  },
   "slideBridgeDescription": {
     "message": "9つのチェーン間での移動がすべてウォレット内で"
   },
@@ -5639,6 +5608,45 @@
   },
   "startEarning": {
     "message": "収益化を開始"
+  },
+  "stateCorruptionAreYouSure": {
+    "message": "続行してよろしいですか？"
+  },
+  "stateCorruptionCopyAndRestoreBeforeRecovery": {
+    "message": "$1に従ってヴォールトを復元することを決断する前に、ステートファイルの手動でのコピーおよび復元を試すことができます。",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "$1に従ってMetaMaskをリセットすることを決断する前に、ステートファイルの手動でのコピーおよび復元を試すことができます。",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionDetectedNoBackup": {
+    "message": "ヴォールトを自動的に復元することができません。"
+  },
+  "stateCorruptionDetectedWithBackup": {
+    "message": "ヴォールトは自動バックアップから復元することができます。自動リカバリーでは現在の設定が削除され、ヴォールトのみが復元されます。"
+  },
+  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
+    "message": "内部エラー: データベースにアクセスできません"
+  },
+  "stateCorruptionResetMetaMaskState": {
+    "message": "MetaMaskのステートのリセット"
+  },
+  "stateCorruptionResettingDatabase": {
+    "message": "データベースをリセットしています…"
+  },
+  "stateCorruptionRestoreAccountsFromBackup": {
+    "message": "アカウントの復元"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "データベースを復元しています…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "これらの手順",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "シークレットリカバリーフレーズの復元方法"
   },
   "stateLogError": {
     "message": "ステートログの取得中にエラーが発生しました。"
@@ -6213,14 +6221,8 @@
   "termsOfService": {
     "message": "サービス規約"
   },
-  "termsOfUseAgreeText": {
-    "message": " MetaMaskおよびそのすべての機能の利用に適用される利用規約に同意します。"
-  },
   "termsOfUseFooterText": {
     "message": "スクロールしてすべてのセクションをお読みください"
-  },
-  "termsOfUseTitle": {
-    "message": "利用規約が更新されました"
   },
   "testNetworks": {
     "message": "テストネットワーク"
@@ -6511,7 +6513,7 @@
     "message": "未承認"
   },
   "unexpectedBehavior": {
-    "message": "これは想定外の動作であるため、アカウントが適切に復元された場合も、バグとして報告する必要があります。下のリンクを使用して、MetaMaskにバグの報告を送信してください。"
+    "message": "これは予期せぬ動作なので、アカウントが復元されたとしても、バグとして報告すべきです。"
   },
   "units": {
     "message": "単位"
@@ -6811,8 +6813,5 @@
   },
   "yourTransactionJustConfirmed": {
     "message": "ブロックチェーン上で確定しているため、トランザクションをキャンセルできませんでした。"
-  },
-  "yourWalletIsReady": {
-    "message": "ウォレットの準備ができました"
   }
 }

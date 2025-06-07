@@ -368,6 +368,9 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Mettre à jour les options de gaz"
   },
+  "alertContentMultipleApprovals": {
+    "message": "Vous autorisez quelqu’un d’autre à retirer des jetons de votre compte, même si cela n’est pas nécessaire pour cette transaction."
+  },
   "alertDisableTooltip": {
     "message": "Vous pouvez modifier ceci dans « Paramètres > Alertes »"
   },
@@ -430,6 +433,9 @@
   },
   "alertReasonInsufficientBalance": {
     "message": "Fonds insuffisants"
+  },
+  "alertReasonMultipleApprovals": {
+    "message": "Autorisation injustifiée"
   },
   "alertReasonNetworkBusy": {
     "message": "Le réseau est occupé"
@@ -2991,7 +2997,7 @@
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "manageDefaultSettings": {
-    "message": "Gérer les paramètres de confidentialité par défaut"
+    "message": "Gérer les paramètres par défaut"
   },
   "manageInstitutionalWallets": {
     "message": "Gérer les portefeuilles Institutional"
@@ -3398,7 +3404,7 @@
     "message": "Le NFT a été ajouté avec succès !"
   },
   "newPassword": {
-    "message": "Nouveau mot de passe (min 8 caractères)"
+    "message": "Nouveau mot de passe"
   },
   "newPrivacyPolicyActionButton": {
     "message": "En savoir plus"
@@ -3777,13 +3783,13 @@
     "message": "Créer un nouveau portefeuille"
   },
   "onboardingImportWallet": {
-    "message": "Importer un portefeuille existant"
+    "message": "J’ai déjà un portefeuille"
   },
   "onboardingMetametricsAgree": {
     "message": "J’accepte"
   },
   "onboardingMetametricsDescription": {
-    "message": "Nous aimerions recueillir des données d’utilisation et de diagnostic de base afin d’améliorer MetaMask. Sachez que nous ne vendons jamais les données que vous nous fournissez ici."
+    "message": "Nous aimerions recueillir des données d’utilisation et de diagnostic de base afin d’améliorer MetaMask. Ce sera toujours :"
   },
   "onboardingMetametricsDescription2": {
     "message": "Lorsque nous recueillons des données, elles sont toujours…"
@@ -3796,7 +3802,7 @@
     "message": "Politique de confidentialité"
   },
   "onboardingMetametricsNeverCollect": {
-    "message": "$1 les clics et les contenus visualisés sur l’application sont enregistrés, mais d’autres renseignements (comme votre adresse publique) ne le sont pas.",
+    "message": "$1 Les clics et les contenus visualisés sur l’application sont enregistrés, mais d’autres renseignements (comme votre adresse publique) ne le sont pas.",
     "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
   },
   "onboardingMetametricsNeverCollectEmphasis": {
@@ -3841,13 +3847,13 @@
     "message": "Cliquez sur l’icône d’extension du navigateur"
   },
   "onboardingPinExtensionDescription": {
-    "message": "Épinglez MetaMask dans votre navigateur pour qu’il soit accessible et qu’il soit facile de voir les confirmations de transaction."
+    "message": "Épinglez MetaMask à votre navigateur pour que vous puissiez y accéder facilement et voir les confirmations de transaction."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "Vous pouvez ouvrir MetaMask en cliquant sur l’extension pour accéder à votre portefeuille en un seul clic."
+    "message": "Accédez à votre portefeuille MetaMask en un clic en cliquant sur l’extension."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Cliquez sur l’icône d’extension du navigateur pour y accéder instantanément"
+    "message": "Cliquez sur l’icône de l’extension Chrome pour y accéder instantanément"
   },
   "onboardingPinExtensionLabel": {
     "message": "Épingler MetaMask"
@@ -3859,7 +3865,7 @@
     "message": "2"
   },
   "onboardingPinExtensionTitle": {
-    "message": "Votre installation de MetaMask est terminée !"
+    "message": "L’installation est terminée !"
   },
   "onekey": {
     "message": "OneKey"
@@ -3928,9 +3934,6 @@
   "password": {
     "message": "Mot de passe"
   },
-  "passwordNotLongEnough": {
-    "message": "Mot de passe trop court"
-  },
   "passwordStrength": {
     "message": "Robustesse du mot de passe : $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -3939,7 +3942,7 @@
     "message": "Un mot de passe robuste peut améliorer la sécurité de votre portefeuille en cas de vol ou de compromission de votre appareil."
   },
   "passwordTermsWarning": {
-    "message": "Je comprends que MetaMask ne peut pas me récupérer ce mot de passe. $1"
+    "message": "MetaMask ne peut pas récupérer ce mot de passe."
   },
   "passwordsDontMatch": {
     "message": "Les mots de passe ne correspondent pas"
@@ -5110,7 +5113,7 @@
     "message": "Sauter le réglage des paramètres de sécurité du compte ?"
   },
   "skipAccountSecurityDetails": {
-    "message": "Je suis conscient(e) que tant que je n’aurai pas sauvegardé ma phrase secrète de récupération, je risque de perdre mes comptes et tous leurs actifs."
+    "message": "Si vous perdez cette phrase secrète de récupération, vous ne pourrez plus accéder à ce portefeuille."
   },
   "slideBridgeDescription": {
     "message": "Faites le tour des 9 chaînes, depuis votre portefeuille"
@@ -5640,6 +5643,45 @@
   "startEarning": {
     "message": "Commencer à générer des revenus"
   },
+  "stateCorruptionAreYouSure": {
+    "message": "Voulez-vous vraiment continuer ?"
+  },
+  "stateCorruptionCopyAndRestoreBeforeRecovery": {
+    "message": "Vous pouvez essayer de copier et de restaurer votre fichier d’état manuellement avant de restaurer votre coffre-fort en suivant $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "Vous pouvez essayer de copier et de restaurer votre fichier d’état manuellement avant de réinitialiser MetaMask en suivant $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionDetectedNoBackup": {
+    "message": "Votre coffre-fort ne peut pas être restauré automatiquement."
+  },
+  "stateCorruptionDetectedWithBackup": {
+    "message": "Votre coffre-fort peut être restauré à partir d’une sauvegarde automatique. La restauration automatique supprimera vos paramètres et préférences actuels et ne restaurera que votre coffre-fort."
+  },
+  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
+    "message": "Erreur interne : impossible d’accéder à la base de données"
+  },
+  "stateCorruptionResetMetaMaskState": {
+    "message": "Réinitialiser l’état de MetaMask"
+  },
+  "stateCorruptionResettingDatabase": {
+    "message": "Réinitialisation de la base de données…"
+  },
+  "stateCorruptionRestoreAccountsFromBackup": {
+    "message": "Restaurer les comptes"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "Restauration de la base de données…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "ces instructions ",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "Comment récupérer votre phrase secrète de récupération ?"
+  },
   "stateLogError": {
     "message": "Erreur lors du chargement des journaux d’état."
   },
@@ -6040,6 +6082,9 @@
   "swapShowLatestQuotes": {
     "message": "Afficher les dernières cotations"
   },
+  "swapSlippageAutoDescription": {
+    "message": "Automatique"
+  },
   "swapSlippageHighDescription": {
     "message": "L’effet de glissement saisi ($1 %) est considéré comme très élevé et peut donner lieu à un taux de change désavantageux",
     "description": "$1 is the amount of % for slippage"
@@ -6213,14 +6258,17 @@
   "termsOfService": {
     "message": "Conditions de service"
   },
+  "termsOfUseAgree": {
+    "message": "J’accepte"
+  },
   "termsOfUseAgreeText": {
-    "message": " J’accepte les conditions d’utilisation de MetaMask et de ses fonctionnalités"
+    "message": "J’accepte les conditions d’utilisation de MetaMask et de ses fonctionnalités"
   },
   "termsOfUseFooterText": {
     "message": "Faites défiler pour lire toutes les sections"
   },
   "termsOfUseTitle": {
-    "message": "Nos conditions d’utilisation ont été mises à jour"
+    "message": "Consultez nos conditions d’utilisation"
   },
   "testNetworks": {
     "message": "Réseaux de test"
@@ -6511,7 +6559,7 @@
     "message": "Non autorisé"
   },
   "unexpectedBehavior": {
-    "message": "Ce comportement est inattendu et doit être signalé comme un bogue, même si vos comptes sont restaurés correctement. Utilisez le lien ci-dessous pour envoyer un signalement de bogue à MetaMask."
+    "message": "Ce comportement est inattendu et doit être signalé comme un bogue, même si vos comptes ont été restaurés."
   },
   "units": {
     "message": "unités"
@@ -6813,6 +6861,6 @@
     "message": "Nous n'avons pas pu annuler votre transaction avant qu'elle ne soit confirmée sur la blockchain."
   },
   "yourWalletIsReady": {
-    "message": "Votre portefeuille est prêt"
+    "message": "Votre portefeuille est prêt à être utilisé !"
   }
 }
