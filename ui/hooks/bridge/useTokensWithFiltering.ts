@@ -108,19 +108,19 @@ function* createFilteredTokenListGenerator({
 }: FilteredTokenListGeneratorParams): Generator<
   AssetWithDisplayData<NativeAsset | ERC20Asset>
 > {
-  // TODO add tis condition back
-  const shouldAddToken = (
-    symbol: string,
-    address?: string,
-    tokenChainId?: string,
-  ) =>
-    tokenToExclude && tokenChainId
-      ? !(
-          tokenToExclude.symbol === symbol &&
-          tokenToExclude.address === address &&
-          tokenToExclude.chainId === formatChainIdToCaip(tokenChainId)
-        )
-      : true;
+  // TODO add this condition back
+  // const shouldAddToken = (
+  //   symbol: string,
+  //   address?: string,
+  //   tokenChainId?: string,
+  // ) =>
+  //   tokenToExclude && tokenChainId
+  //     ? !(
+  //         tokenToExclude.symbol === symbol &&
+  //         tokenToExclude.address === address &&
+  //         tokenToExclude.chainId === formatChainIdToCaip(tokenChainId)
+  //       )
+  //     : true;
 
   if (
     !chainId ||
