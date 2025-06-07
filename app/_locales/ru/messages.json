@@ -659,9 +659,6 @@
   "basic": {
     "message": "Базовый"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Включить базовый функционал"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Базовый функционал отключен"
   },
@@ -1443,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "Создать новый счет"
-  },
-  "createNewWallet": {
-    "message": "Создать новый кошелек"
   },
   "createPassword": {
     "message": "Создать пароль"
@@ -2547,9 +2541,6 @@
   },
   "importAccountMsg": {
     "message": "Импортированные счета не будут связаны с вашей секретной фразой для восстановления MetaMask. Узнайте больше об импортированных счетах"
-  },
-  "importMyWallet": {
-    "message": "Импорт моего кошелька"
   },
   "importNFT": {
     "message": "Импорт NFT"
@@ -3939,9 +3930,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Пароль недостаточно длинный"
-  },
-  "passwordSetupDetails": {
-    "message": "Этот пароль разблокирует ваш кошелек MetaMask только на этом устройстве. MetaMask не может восстановить этот пароль."
   },
   "passwordStrength": {
     "message": "Надежность пароля: $1",

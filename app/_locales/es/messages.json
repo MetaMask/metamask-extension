@@ -659,9 +659,6 @@
   "basic": {
     "message": "Básico"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Activar la funcionalidad básica"
-  },
   "basicConfigurationBannerTitle": {
     "message": "La funcionalidad básica está desactivada"
   },
@@ -1443,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "Crear una nueva cuenta"
-  },
-  "createNewWallet": {
-    "message": "Crear un monedero nuevo"
   },
   "createPassword": {
     "message": "Crear contraseña"
@@ -2547,9 +2541,6 @@
   },
   "importAccountMsg": {
     "message": "Las cuentas importadas no se asociarán con su frase secreta de recuperación de MetaMask. Obtenga más información sobre las cuentas importadas"
-  },
-  "importMyWallet": {
-    "message": "Importar mi monedero"
   },
   "importNFT": {
     "message": "Agregar NFT"
@@ -3939,9 +3930,6 @@
   },
   "passwordNotLongEnough": {
     "message": "La contraseña no es suficientemente larga"
-  },
-  "passwordSetupDetails": {
-    "message": "Esta contraseña desbloqueará su monedero MetaMask solo en este dispositivo. MetaMask no puede recuperar esta contraseña."
   },
   "passwordStrength": {
     "message": "Solidez de la contraseña: $1",
