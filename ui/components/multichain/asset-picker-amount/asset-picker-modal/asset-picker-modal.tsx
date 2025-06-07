@@ -183,7 +183,14 @@ export function AssetPickerModal({
     return new Set<string>(swapsBlockedTokens);
   }, [swapsBlockedTokens]);
 
-  const handleAssetChange = useCallback(onAssetChange, [onAssetChange]);
+  const handleAssetChange = useCallback(
+    (newAsset) => {
+      onAssetChange(newAsset);
+      debouncedSetSearchQuery.cancel();
+      abortControllerRef.current?.abort();
+    },
+    [onAssetChange],
+  );
 
   const currentChainId = useSelector(getMultichainCurrentChainId);
   const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
@@ -553,6 +560,8 @@ export function AssetPickerModal({
       isOpen={isOpen}
       onClose={() => {
         setSearchQuery('');
+        debouncedSetSearchQuery.cancel();
+        abortControllerRef.current?.abort();
         onClose();
       }}
       data-testid="asset-picker-modal"
@@ -561,8 +570,10 @@ export function AssetPickerModal({
       <ModalContent modalDialogProps={{ padding: 0 }}>
         <ModalHeader
           onClose={() => {
-            setSearchQuery('');
+            debouncedSetSearchQuery.cancel();
+            abortControllerRef.current?.abort();
             onClose();
+            // setSearchQuery('');
           }}
           onBack={asset ? undefined : onBack}
         >
