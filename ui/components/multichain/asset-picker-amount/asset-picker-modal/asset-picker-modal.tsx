@@ -86,6 +86,7 @@ import AssetList from './AssetList';
 import { Search } from './asset-picker-modal-search';
 import { AssetPickerModalNetwork } from './asset-picker-modal-network';
 import { SolanaAccountCreationPrompt } from './solana-account-creation-prompt';
+import { generateTokenList } from './utils';
 
 type AssetPickerModalProps = {
   header: JSX.Element | string | null;
@@ -106,16 +107,9 @@ type AssetPickerModalProps = {
   sendingAsset?: { image: string; symbol: string } | undefined;
   onNetworkPickerClick?: () => void;
   /**
-   * Generator function that returns a list of tokens filtered by a predicate and sorted
-   * by a custom order.
+   * Generator function that returns a list of tokens sorted by a custom order.
    */
-  customTokenListGenerator?: (
-    filterPredicate: (
-      symbol: string,
-      address?: null | string,
-      chainId?: string,
-    ) => boolean,
-  ) => Generator<
+  customTokenListGenerator?: Generator<
     AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
   >;
   isTokenListLoading?: boolean;
@@ -285,135 +279,6 @@ export function AssetPickerModal({
     [sendingAsset?.symbol, memoizedSwapsBlockedTokens],
   );
 
-  /**
-   * Generates a list of tokens sorted in this order
-   * - native tokens with balance
-   * - tokens with highest to lowest balance in selected currency
-   * - selected network's native token
-   * - matches URL token parameter
-   * - matches search query
-   * - detected tokens (without balance)
-   * - popularity
-   * - all other tokens
-   * - blocked tokens
-   */
-  const tokenListGenerator = useCallback(
-    function* (
-      shouldAddToken: (
-        symbol: string,
-        address?: null | string,
-        tokenChainId?: string,
-      ) => boolean,
-    ): Generator<
-      | AssetWithDisplayData<NativeAsset>
-      | ((Token | TokenListToken) & {
-          chainId: string;
-          balance?: string;
-          string?: string;
-        })
-    > {
-      const blockedTokens = [];
-
-      // Yield multichain tokens with balances
-      for (const token of multichainTokensWithBalance) {
-        if (shouldAddToken(token.symbol, token.address, token.chainId)) {
-          yield token.isNative
-            ? {
-                ...token,
-                image:
-                  CHAIN_ID_TOKEN_IMAGE_MAP[
-                    token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-                  ],
-                type: AssetType.native,
-              }
-            : {
-                ...token,
-                // The Send flow requires the balance to be in Hex
-                balance: Numeric.from(token.balance ?? '0', 10)
-                  .shiftedBy(-1 * token.decimals)
-                  .toPrefixedHexString(),
-              };
-        }
-      }
-
-      // Yield the native token for the selected chain
-      const nativeToken: AssetWithDisplayData<NativeAsset> = {
-        address: '',
-        symbol: nativeCurrency,
-        decimals: 18,
-        image: nativeCurrencyImage,
-        balance: balanceValue,
-        string: undefined,
-        chainId: selectedNetwork.chainId,
-        type: AssetType.native,
-      };
-
-      if (
-        isEvm &&
-        shouldAddToken(
-          nativeToken.symbol,
-          nativeToken.address,
-          nativeToken.chainId,
-        )
-      ) {
-        yield nativeToken;
-      }
-
-      for (const token of allDetectedTokens) {
-        if (shouldAddToken(token.symbol, token.address, currentChainId)) {
-          yield { ...token, chainId: currentChainId };
-        }
-      }
-
-      // Return early when SOLANA is selected since blocked and top tokens are not available
-      // All available solana tokens are in the multichainTokensWithBalance results
-      if (selectedNetwork?.chainId === MultichainNetworks.SOLANA) {
-        return;
-      }
-
-      // For EVM tokens only
-      // topTokens are sorted by popularity
-      for (const topToken of topTokens ?? []) {
-        const token: TokenListToken =
-          evmTokenMetadataByAddress?.[topToken.address];
-        if (
-          token &&
-          shouldAddToken(token.symbol, token.address, currentChainId)
-        ) {
-          if (getIsDisabled(token)) {
-            blockedTokens.push(token);
-            continue;
-          } else {
-            yield { ...token, chainId: currentChainId };
-          }
-        }
-      }
-
-      for (const token of Object.values(evmTokenMetadataByAddress)) {
-        if (shouldAddToken(token.symbol, token.address, currentChainId)) {
-          yield { ...token, chainId: currentChainId };
-        }
-      }
-
-      for (const token of blockedTokens) {
-        yield { ...token, chainId: currentChainId };
-      }
-    },
-    [
-      nativeCurrency,
-      nativeCurrencyImage,
-      balanceValue,
-      currentChainId,
-      isEvm,
-      selectedNetwork?.chainId,
-      multichainTokensWithBalance,
-      allDetectedTokens,
-      topTokens,
-      evmTokenMetadataByAddress,
-      getIsDisabled,
-    ],
-  );
-
   const filteredTokenList = useMemo(() => {
     const filteredTokens: (
       | AssetWithDisplayData<ERC20Asset>
@@ -425,43 +290,58 @@ export function AssetPickerModal({
       `${address?.toLowerCase() ?? zeroAddress()}:${
         tokenChainId ?? currentChainId
       }`;
-
-    // Default filter predicate for whether a token should be included in displayed list
-    const shouldAddToken = (
-      symbol: string,
-      address?: string | null,
-      tokenChainId?: string,
-    ) => {
-      const trimmedSearchQuery = debouncedSearchQuery.trim().toLowerCase();
-      const isMatchedBySearchQuery = Boolean(
-        !trimmedSearchQuery ||
-          symbol?.toLowerCase().indexOf(trimmedSearchQuery) !== -1 ||
-          address?.toLowerCase().indexOf(trimmedSearchQuery) !== -1,
-      );
-      const isTokenInSelectedChain = isMultiselectEnabled
-        ? tokenChainId && selectedChainIds?.indexOf(tokenChainId) !== -1
-        : selectedNetwork?.chainId === tokenChainId;
-
-      return Boolean(
-        isTokenInSelectedChain &&
-          isMatchedBySearchQuery &&
-          !filteredTokensAddresses.has(getTokenKey(address, tokenChainId)),
-      );
-    };
-
-    // If filteredTokensGenerator is passed in, use it to generate the filtered tokens
+    // If customTokenListGenerator is passed in, use it to generate the filtered tokens
     // Otherwise use the default tokenGenerator
-    const tokenGenerator = (customTokenListGenerator ?? tokenListGenerator)(
-      shouldAddToken,
-    );
+    const tokenGenerator = customTokenListGenerator
+      ? customTokenListGenerator
+      : generateTokenList({
+          multichainTokensWithBalance,
+          nativeCurrency,
+          nativeCurrencyImage,
+          balanceValue,
+          currentChainId,
+          isEvm,
+          selectedNetwork,
+          allDetectedTokens,
+          topTokens,
+          evmTokenMetadataByAddress,
+        });
 
     for (const token of tokenGenerator) {
+      // Check whether token should be visible in the list
       if (action === 'send' && token.balance === undefined) {
+        continue;
+      }
+
+      const { symbol, address, chainId } = token;
+      const tokenChainId = chainId ?? selectedNetwork?.chainId;
+      const trimmedSearchQuery = debouncedSearchQuery.trim().toLowerCase();
+
+      if (filteredTokensAddresses.has(getTokenKey(address, tokenChainId))) {
+        continue;
+      }
+      if (
+        !Boolean(
+          !trimmedSearchQuery ||
+            symbol?.toLowerCase().indexOf(trimmedSearchQuery) !== -1 ||
+            address?.toLowerCase().indexOf(trimmedSearchQuery) !== -1,
+        )
+      ) {
+        continue;
+      }
+      if (
+        isMultiselectEnabled
+          ? tokenChainId &&
+            selectedChainIds &&
+            selectedChainIds.indexOf(tokenChainId) === -1
+          : selectedNetwork?.chainId !== tokenChainId
+      ) {
         continue;
       }
 
       filteredTokensAddresses.add(getTokenKey(token.address, token.chainId));
 
+      // Build token data
       const tokenWithBalanceData =
         !customTokenListGenerator && isStrictHexString(token.address)
           ? getRenderableTokenData(
@@ -503,7 +383,6 @@ export function AssetPickerModal({
     selectedChainIds,
     selectedNetwork?.chainId,
     customTokenListGenerator,
-    tokenListGenerator,
     action,
     evmTokenMetadataByAddress,
     tokenConversionRates,
@@ -553,6 +432,8 @@ export function AssetPickerModal({
       isOpen={isOpen}
       onClose={() => {
         setSearchQuery('');
+        debouncedSetSearchQuery.cancel();
+        abortControllerRef.current?.abort();
         onClose();
       }}
       data-testid="asset-picker-modal"
@@ -561,7 +442,7 @@ export function AssetPickerModal({
       <ModalContent modalDialogProps={{ padding: 0 }}>
         <ModalHeader
           onClose={() => {
-            setSearchQuery('');
+            // setSearchQuery('');
             onClose();
           }}
           onBack={asset ? undefined : onBack}

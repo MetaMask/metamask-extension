@@ -88,11 +88,116 @@ const buildTokenData = (
   };
 };
 
-type FilterPredicate = (
-  symbol: string,
-  address?: string,
-  tokenChainId?: string,
-) => boolean;
+type FilteredTokenListGeneratorParams = {
+  chainId?: ChainId | Hex | CaipChainId;
+  multichainTokensWithBalance: any[]; // Using any[] to match the actual return type from useMultichainBalances
+  topTokens?: { address: string }[];
+  tokenList?: Record<string, BridgeAsset> | TokenListMap;
+  tokenToExclude?: null | Pick<BridgeToken, 'symbol' | 'address' | 'chainId'>;
+};
+
+/**
+ * Creates a generator that yields tokens in a filtered and sorted order
+ */
+function* createFilteredTokenListGenerator({
+  chainId,
+  multichainTokensWithBalance,
+  topTokens,
+  tokenList,
+  tokenToExclude,
+}: FilteredTokenListGeneratorParams): Generator<
+  AssetWithDisplayData<NativeAsset | ERC20Asset>
+> {
+  // TODO add tis condition back
+  const shouldAddToken = (
+    symbol: string,
+    address?: string,
+    tokenChainId?: string,
+  ) =>
+    tokenToExclude && tokenChainId
+      ? !(
+          tokenToExclude.symbol === symbol &&
+          tokenToExclude.address === address &&
+          tokenToExclude.chainId === formatChainIdToCaip(tokenChainId)
+        )
+      : true;
+
+  if (
+    !chainId ||
+    !topTokens ||
+    !tokenList ||
+    Object.keys(tokenList).length === 0
+  ) {
+    return;
+  }
+
+  // Yield multichain tokens with balances and are not blocked
+  for (const token of multichainTokensWithBalance) {
+    if (isNativeAddress(token.address) || token.type === AssetType.native) {
+      yield {
+        symbol: token.symbol,
+        chainId: token.chainId,
+        tokenFiatAmount: token.tokenFiatAmount,
+        decimals: token.decimals,
+        address: '',
+        type: AssetType.native,
+        balance: token.balance ?? '0',
+        string: token.string ?? undefined,
+        image:
+          CHAIN_ID_TOKEN_IMAGE_MAP[
+            token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+          ] ??
+          MULTICHAIN_TOKEN_IMAGE_MAP[
+            token.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
+          ] ??
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+          (getNativeAssetForChainId(token.chainId)?.icon ||
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+            getNativeAssetForChainId(token.chainId)?.iconUrl ||
+            getAssetImageUrl(
+              token.address || '',
+              formatChainIdToCaip(token.chainId),
+            )),
+      };
+    } else {
+      const tokenAddress = token.address || '';
+      yield {
+        ...token,
+        symbol: token.symbol,
+        chainId: token.chainId,
+        tokenFiatAmount: token.tokenFiatAmount,
+        decimals: token.decimals,
+        address: tokenAddress,
+        type: AssetType.token,
+        balance: token.balance ?? '',
+        string: token.string ?? undefined,
+        image:
+          (token.image || tokenList?.[tokenAddress.toLowerCase()]?.iconUrl) ??
+          getAssetImageUrl(tokenAddress, formatChainIdToCaip(token.chainId)) ??
+          '',
+      };
+    }
+  }
+
+  // Yield topTokens from selected chain
+  for (const token_ of topTokens) {
+    const matchedToken = tokenList?.[token_.address];
+    const token = buildTokenData(chainId, matchedToken);
+    if (token) {
+      yield token;
+    }
+  }
+
+  // Yield other tokens from selected chain
+  for (const token_ of Object.values(tokenList)) {
+    const token = buildTokenData(chainId, token_);
+    if (token && token.symbol.indexOf('$') === -1) {
+      yield token;
+    }
+  }
+}
 
 /**
  * Returns a token list generator that filters and sorts tokens in this order
@@ -181,131 +286,14 @@ export const useTokensWithFiltering = (
     return [];
   }, [chainId, topAssetsFromFeatureFlags]);
 
-  // shouldAddToken is a filter condition passed in from the AssetPicker that determines whether a token should be included
-  const filteredTokenListGenerator = useCallback(
-    (filterCondition: FilterPredicate) =>
-      (function* (): Generator<
-        AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
-      > {
-        const shouldAddToken = (
-          symbol: string,
-          address?: string,
-          tokenChainId?: string,
-        ) =>
-          filterCondition(symbol, address, tokenChainId) &&
-          (tokenToExclude && tokenChainId
-            ? !(
-                tokenToExclude.symbol === symbol &&
-                tokenToExclude.address === address &&
-                tokenToExclude.chainId === formatChainIdToCaip(tokenChainId)
-              )
-            : true);
-
-        if (
-          !chainId ||
-          !topTokens ||
-          !tokenList ||
-          Object.keys(tokenList).length === 0
-        ) {
-          return;
-        }
-
-        // Yield multichain tokens with balances and are not blocked
-        for (const token of multichainTokensWithBalance) {
-          if (
-            shouldAddToken(
-              token.symbol,
-              token.address ?? undefined,
-              token.chainId,
-            )
-          ) {
-            if (isNativeAddress(token.address) || token.isNative) {
-              yield {
-                symbol: token.symbol,
-                chainId: token.chainId,
-                tokenFiatAmount: token.tokenFiatAmount,
-                decimals: token.decimals,
-                address: '',
-                type: AssetType.native,
-                balance: token.balance ?? '0',
-                string: token.string ?? undefined,
-                image:
-                  CHAIN_ID_TOKEN_IMAGE_MAP[
-                    token.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-                  ] ??
-                  MULTICHAIN_TOKEN_IMAGE_MAP[
-                    token.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
-                  ] ??
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                  (getNativeAssetForChainId(token.chainId)?.icon ||
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                    getNativeAssetForChainId(token.chainId)?.iconUrl ||
-                    getAssetImageUrl(
-                      token.address,
-                      formatChainIdToCaip(token.chainId),
-                    )),
-              };
-            } else {
-              yield {
-                ...token,
-                symbol: token.symbol,
-                chainId: token.chainId,
-                tokenFiatAmount: token.tokenFiatAmount,
-                decimals: token.decimals,
-                address: token.address,
-                type: AssetType.token,
-                balance: token.balance ?? '',
-                string: token.string ?? undefined,
-                image:
-                  (token.image ||
-                    tokenList?.[token.address.toLowerCase()]?.iconUrl) ??
-                  getAssetImageUrl(
-                    token.address,
-                    formatChainIdToCaip(token.chainId),
-                  ) ??
-                  '',
-              };
-            }
-          }
-        }
-
-        // Yield topTokens from selected chain
-        for (const token_ of topTokens) {
-          const matchedToken = tokenList?.[token_.address];
-          const token = buildTokenData(chainId, matchedToken);
-          if (
-            token &&
-            shouldAddToken(token.symbol, token.address ?? undefined, chainId)
-          ) {
-            yield token;
-          }
-        }
-
-        // Yield other tokens from selected chain
-        for (const token_ of Object.values(tokenList)) {
-          const token = buildTokenData(chainId, token_);
-          if (
-            token &&
-            token.symbol.indexOf('$') === -1 &&
-            shouldAddToken(token.symbol, token.address ?? undefined, chainId)
-          ) {
-            yield token;
-          }
-        }
-      })(),
-    [
-      buildTokenData,
-      multichainTokensWithBalance,
-      topTokens,
+  return {
+    filteredTokenListGenerator: createFilteredTokenListGenerator({
       chainId,
+      multichainTokensWithBalance: multichainTokensWithBalance as any[],
+      topTokens,
       tokenList,
       tokenToExclude,
-    ],
-  );
-  return {
-    filteredTokenListGenerator,
+    }),
     isLoading: isTokenListLoading || isTopTokenListLoading,
   };
 };
