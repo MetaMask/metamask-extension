@@ -35,6 +35,7 @@ describe('Vault Corruption', function () {
    * database corruption scripts.
    */
   const reloadAndCallbackScript = `
+    // TODO: should this be a safe reload via the WriteManager?
     browser.runtime.reload();
     callback();
   `;

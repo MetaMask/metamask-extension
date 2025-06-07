@@ -338,10 +338,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
-  "agreeTermsOfUse": {
-    "message": "I agree to MetaMask's $1",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "The token's on-chain history reveals prior instances of suspicious airdrop activities."
   },
@@ -668,9 +664,6 @@
   },
   "basic": {
     "message": "Basic"
-  },
-  "basicConfigurationBannerCTA": {
-    "message": "Turn on basic functionality"
   },
   "basicConfigurationBannerTitle": {
     "message": "Basic functionality is off"
@@ -1188,6 +1181,9 @@
   "confirmPassword": {
     "message": "Confirm password"
   },
+  "confirmPasswordPlaceholder": {
+    "message": "Re-enter your password"
+  },
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
@@ -1453,9 +1449,6 @@
   },
   "createNewAccountHeader": {
     "message": "Create a new account"
-  },
-  "createNewWallet": {
-    "message": "Create a new wallet"
   },
   "createPassword": {
     "message": "Create password"
@@ -2003,6 +1996,9 @@
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
+  },
+  "enableIt": {
+    "message": " Enable it"
   },
   "enableSnap": {
     "message": "Enable"
@@ -2557,9 +2553,6 @@
   },
   "importAccountMsg": {
     "message": "Imported accounts won’t be associated with your MetaMask Secret Recovery Phrase. Learn more about imported accounts"
-  },
-  "importMyWallet": {
-    "message": "Import my wallet"
   },
   "importNFT": {
     "message": "Import NFT"
@@ -3419,6 +3412,9 @@
   "newPassword": {
     "message": "New password"
   },
+  "newPasswordPlaceholder": {
+    "message": "Enter a strong password"
+  },
   "newPrivacyPolicyActionButton": {
     "message": "Read more"
   },
@@ -3792,8 +3788,12 @@
   "onboardingAdvancedPrivacyNetworkTitle": {
     "message": "Choose your network"
   },
+  "onboardingContinueWith": {
+    "message": "Continue with $1",
+    "description": "$1 is the type of login used Google, Apple, etc."
+  },
   "onboardingCreateWallet": {
-    "message": "Create new wallet"
+    "message": "Create a new wallet"
   },
   "onboardingImportWallet": {
     "message": "I have an existing wallet"
@@ -3844,6 +3844,13 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
   },
+  "onboardingOptionIcon": {
+    "message": "$1 icon",
+    "description": "$1 is the icon name"
+  },
+  "onboardingOptionTitle": {
+    "message": "Choose an option to continue"
+  },
   "onboardingPinExtensionBillboardAccess": {
     "message": "Full access"
   },
@@ -3880,6 +3887,16 @@
   "onboardingPinExtensionTitle": {
     "message": "Installation is complete!"
   },
+  "onboardingSignInWith": {
+    "message": "Sign in with $1",
+    "description": "$1 is the type of login used Google, Apple, etc"
+  },
+  "onboardingSrpCreate": {
+    "message": "Continue with Secret Recovery Phrase"
+  },
+  "onboardingSrpImport": {
+    "message": "Import using Secret Recovery Phrase"
+  },
   "onekey": {
     "message": "OneKey"
   },
@@ -3902,6 +3919,9 @@
   },
   "options": {
     "message": "Options"
+  },
+  "or": {
+    "message": "Or"
   },
   "origin": {
     "message": "Origin"
@@ -3948,10 +3968,7 @@
     "message": "Password"
   },
   "passwordNotLongEnough": {
-    "message": "Password not long enough"
-  },
-  "passwordSetupDetails": {
-    "message": "This password will unlock your MetaMask wallet only on this device. MetaMask can not recover this password."
+    "message": "Password must have at least 8 characters"
   },
   "passwordStrength": {
     "message": "Password strength: $1",
@@ -3962,6 +3979,12 @@
   },
   "passwordTermsWarning": {
     "message": "MetaMask can’t recover this password."
+  },
+  "passwordToggleHide": {
+    "message": "Hide Password"
+  },
+  "passwordToggleShow": {
+    "message": "Show Password"
   },
   "passwordsDontMatch": {
     "message": "Passwords don't match"
@@ -5316,10 +5339,6 @@
     "message": "$1 wants to use $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
   },
-  "snapContent": {
-    "message": "This content is coming from $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
-  },
   "snapDetailWebsite": {
     "message": "Website"
   },
@@ -5753,6 +5772,10 @@
   "step2LedgerWalletMsg": {
     "message": "Plug your Ledger directly into your computer, then  unlock it and open the Ethereum app.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
+  "stepOf": {
+    "message": "Step $1 of $2",
+    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Still getting this message?"
@@ -6821,23 +6844,17 @@
   "welcomeBack": {
     "message": "Welcome back"
   },
-  "welcomeExploreDescription": {
-    "message": "Store, send, and spend crypto currencies and assets."
+  "welcomeDescription": {
+    "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
   },
-  "welcomeExploreTitle": {
-    "message": "Explore decentralized apps"
+  "welcomeGetStarted": {
+    "message": "Get started"
   },
-  "welcomeLoginDescription": {
-    "message": "Use your MetaMask to login to decentralized apps - no signup needed."
-  },
-  "welcomeLoginTitle": {
-    "message": "Say hello to your wallet"
+  "welcomeTitle": {
+    "message": "Welcome to MetaMask"
   },
   "welcomeToMetaMask": {
     "message": "Let's get started"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
   },
   "whatsThis": {
     "message": "What's this?"

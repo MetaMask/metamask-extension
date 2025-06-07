@@ -5132,7 +5132,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^7.0.0, @metamask/design-tokens@npm:^7.1.0":
+"@metamask/design-tokens@npm:^7.1.0":
   version: 7.1.0
   resolution: "@metamask/design-tokens@npm:7.1.0"
   checksum: 10/a4f1379bdf5f6b99c9a228ce4f5bb07ace4ed5abc61384e7f04cf5bdf943b32dd13ec9676a88f6b6c7314cdba6e2967b9fd99707a64a645865f21f8d8a2566d9
@@ -13755,6 +13755,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/zxcvbn@npm:^4.4.5":
+  version: 4.4.5
+  resolution: "@types/zxcvbn@npm:4.4.5"
+  checksum: 10/279b0d43e21b8de48a9ef98b5753e343673fdb6cfdd2679e2afbb292410d610a0f01d7c1cb1dad1acbd0d35ee01e8a8dbe21cb034a2e2f3458492cf5fd3b44c3
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/eslint-plugin@npm:^7.10.0":
   version: 7.11.0
   resolution: "@typescript-eslint/eslint-plugin@npm:7.11.0"
@@ -19264,24 +19271,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debounce-stream@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "debounce-stream@npm:2.0.0"
-  dependencies:
-    debounce: "npm:^1.0.0"
-    duplexer: "npm:^0.1.1"
-    through: "npm:^2.3.6"
-  checksum: 10/d580d127adebcf296229dffd4123d61bda90c12f023f8661100932e4ef3228b5f23daec6e04bdcc6727dd026289650184784e4989808f6a198db3cc735b44dde
-  languageName: node
-  linkType: hard
-
-"debounce@npm:^1.0.0":
-  version: 1.1.0
-  resolution: "debounce@npm:1.1.0"
-  checksum: 10/5aa47e7beb2164a06c9d1f386c718845624d386470a5460a3faebd7f2e1fe66edd950068d2960724b8cbc171ebe935c7f14aca5281964c96a4580b185c56c716
-  languageName: node
-  linkType: hard
-
 "debug-fabulous@npm:^1.0.0":
   version: 1.1.0
   resolution: "debug-fabulous@npm:1.1.0"
@@ -20427,7 +20416,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"duplexer@npm:^0.1.1, duplexer@npm:^0.1.2, duplexer@npm:~0.1.1":
+"duplexer@npm:^0.1.2, duplexer@npm:~0.1.1":
   version: 0.1.2
   resolution: "duplexer@npm:0.1.2"
   checksum: 10/62ba61a830c56801db28ff6305c7d289b6dc9f859054e8c982abd8ee0b0a14d2e9a8e7d086ffee12e868d43e2bbe8a964be55ddbd8c8957714c87373c7a4f9b0
@@ -29784,7 +29773,7 @@ __metadata:
     "@metamask/controller-utils": "npm:^11.9.0"
     "@metamask/delegation-controller": "npm:^0.4.0"
     "@metamask/delegation-deployments": "npm:^0.11.0"
-    "@metamask/design-tokens": "npm:^7.0.0"
+    "@metamask/design-tokens": "npm:^7.1.0"
     "@metamask/ens-controller": "npm:^15.0.2"
     "@metamask/ens-resolver-snap": "npm:^0.1.2"
     "@metamask/eslint-config": "npm:^9.0.0"
@@ -29946,6 +29935,7 @@ __metadata:
     "@types/xml2js": "npm:^0"
     "@types/yargs": "npm:^17.0.32"
     "@types/yargs-parser": "npm:^21.0.3"
+    "@types/zxcvbn": "npm:^4.4.5"
     "@typescript-eslint/eslint-plugin": "npm:^7.10.0"
     "@typescript-eslint/parser": "npm:^7.10.0"
     "@viem/anvil": "npm:^0.0.10"
@@ -29984,7 +29974,6 @@ __metadata:
     css-to-xpath: "npm:^0.1.0"
     csstype: "npm:^3.0.11"
     currency-formatter: "npm:^1.4.2"
-    debounce-stream: "npm:^2.0.0"
     deep-freeze-strict: "npm:1.1.1"
     del: "npm:^6.1.1"
     depcheck: "npm:^1.4.3"
@@ -30086,7 +30075,6 @@ __metadata:
     prettier-eslint: "npm:^15.0.1"
     prettier-plugin-sort-json: "npm:^1.0.0"
     process: "npm:^0.11.10"
-    promise-to-callback: "npm:^1.0.0"
     prop-types: "npm:^15.6.1"
     pumpify: "npm:^2.0.1"
     punycode: "npm:^2.1.1"
@@ -38918,7 +38906,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"through@npm:2, through@npm:>=2.2.7 <3, through@npm:^2.3.6, through@npm:~2.3, through@npm:~2.3.1":
+"through@npm:2, through@npm:>=2.2.7 <3, through@npm:~2.3, through@npm:~2.3.1":
   version: 2.3.8
   resolution: "through@npm:2.3.8"
   checksum: 10/5da78346f70139a7d213b65a0106f3c398d6bc5301f9248b5275f420abc2c4b1e77c2abc72d218dedc28c41efb2e7c312cb76a7730d04f9c2d37d247da3f4198

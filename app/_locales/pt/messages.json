@@ -338,10 +338,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "A taxa de prioridade (ou seja, \"gorjeta do minerador\") vai diretamente para os mineradores e os incentiva a priorizar a sua transação."
   },
-  "agreeTermsOfUse": {
-    "message": "Concordo com os $1 da MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "O histórico do token na rede revela ocorrências anteriores de atividades de airdrop suspeitas."
   },
@@ -662,9 +658,6 @@
   },
   "basic": {
     "message": "Básico"
-  },
-  "basicConfigurationBannerCTA": {
-    "message": "Ativar funcionalidade básica"
   },
   "basicConfigurationBannerTitle": {
     "message": "A funcionalidade básica está desativada"
@@ -1447,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "Crie uma conta"
-  },
-  "createNewWallet": {
-    "message": "Criar uma nova carteira"
   },
   "createPassword": {
     "message": "Criar senha"
@@ -2551,9 +2541,6 @@
   },
   "importAccountMsg": {
     "message": "Contas importadas não serão associadas à sua Frase de Recuperação Secreta na MetaMask. Saiba mais sobre contas importadas"
-  },
-  "importMyWallet": {
-    "message": "Importar minha carteira"
   },
   "importNFT": {
     "message": "Importar NFT"
@@ -3944,9 +3931,6 @@
   "passwordNotLongEnough": {
     "message": "A senha não é longa o suficiente"
   },
-  "passwordSetupDetails": {
-    "message": "Essa senha desbloqueará sua carteira MetaMask apenas neste dispositivo. A MetaMask não é capaz de recuperar essa senha."
-  },
   "passwordStrength": {
     "message": "Segurança da senha: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -5309,10 +5293,6 @@
   "snapConnectionWarning": {
     "message": "$1 quer usar $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "Esse conteúdo vem de $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "Site"
@@ -6770,23 +6750,8 @@
   "welcomeBack": {
     "message": "Boas-vindas de volta"
   },
-  "welcomeExploreDescription": {
-    "message": "Armazene, envie e gaste criptomoedas e criptoativos."
-  },
-  "welcomeExploreTitle": {
-    "message": "Explore aplicativos descentralizados"
-  },
-  "welcomeLoginDescription": {
-    "message": "Use a sua MetaMask para fazer login em aplicativos descentralizados, sem necessidade de cadastro."
-  },
-  "welcomeLoginTitle": {
-    "message": "Diga olá à sua carteira"
-  },
   "welcomeToMetaMask": {
     "message": "Vamos começar"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Com a confiança de milhões de usuários, a MetaMask é uma carteira segura que torna o mundo da Web3 acessível a todos."
   },
   "whatsThis": {
     "message": "O que é isso?"

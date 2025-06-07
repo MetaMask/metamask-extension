@@ -99,6 +99,9 @@ describe('Onboarding Flow', () => {
           },
         ],
       },
+      localeMessages: {
+        currentLocale: 'en',
+      },
     };
 
     const completedOnboardingStore = configureMockStore()(
@@ -127,17 +130,20 @@ describe('Onboarding Flow', () => {
     });
 
     it('should call createNewVaultAndGetSeedPhrase when creating a new wallet password', async () => {
-      const { queryByTestId } = renderWithProvider(
+      const { queryByTestId, queryByText } = renderWithProvider(
         <OnboardingFlow />,
         store,
         ONBOARDING_CREATE_PASSWORD_ROUTE,
       );
 
+      const createPasswordText = queryByText('Create password');
+      expect(createPasswordText).toBeInTheDocument();
+
       const password = 'a-new-password';
       const checkTerms = queryByTestId('create-password-terms');
-      const createPassword = queryByTestId('create-password-new');
-      const confirmPassword = queryByTestId('create-password-confirm');
-      const createPasswordWallet = queryByTestId('create-password-wallet');
+      const createPassword = queryByTestId('create-password-new-input');
+      const confirmPassword = queryByTestId('create-password-confirm-input');
+      const createPasswordWallet = queryByTestId('create-password-submit');
 
       fireEvent.click(checkTerms);
       fireEvent.change(createPassword, { target: { value: password } });
@@ -252,7 +258,7 @@ describe('Onboarding Flow', () => {
       ONBOARDING_WELCOME_ROUTE,
     );
 
-    const onboardingWelcome = queryByTestId('onboarding-welcome');
+    const onboardingWelcome = queryByTestId('onboarding-welcome-banner-title');
     expect(onboardingWelcome).toBeInTheDocument();
   });
 

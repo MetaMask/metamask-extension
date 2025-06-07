@@ -338,10 +338,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "우선 요금(일명 \"채굴자 팁\")이란 내 트랜잭션을 우선 거래한 것에 대한 인센티브로 채굴자에게 직접 전달되는 금액입니다."
   },
-  "agreeTermsOfUse": {
-    "message": "MetaMask의 $1에 동의합니다",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "해당 토큰의 온체인 기록에서 의심스러운 에어드롭 활동이 확인되었습니다."
   },
@@ -662,9 +658,6 @@
   },
   "basic": {
     "message": "기본"
-  },
-  "basicConfigurationBannerCTA": {
-    "message": "기본 기능 켜기"
   },
   "basicConfigurationBannerTitle": {
     "message": "기본 기능이 꺼져 있습니다."
@@ -1447,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "새 계정 만들기"
-  },
-  "createNewWallet": {
-    "message": "새 지갑 생성"
   },
   "createPassword": {
     "message": "비밀번호 생성"
@@ -2551,9 +2541,6 @@
   },
   "importAccountMsg": {
     "message": "가져온 계정은 MetaMask 계정 비밀복구구문과 연결하지 못합니다. 가져온 계정에 대해 자세히 알아보기"
-  },
-  "importMyWallet": {
-    "message": "내 지갑 가져오기"
   },
   "importNFT": {
     "message": "NFT 가져오기"
@@ -3944,9 +3931,6 @@
   "passwordNotLongEnough": {
     "message": "비밀번호가 짧습니다."
   },
-  "passwordSetupDetails": {
-    "message": "이 비밀번호는 이 장치에서만 MetaMask 지갑의 잠금을 해제합니다. MetaMask는 이 비밀번호를 복구할 수 없습니다."
-  },
   "passwordStrength": {
     "message": "비밀번호 강도: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -5309,10 +5293,6 @@
   "snapConnectionWarning": {
     "message": "$1에서 $2 사용을 원합니다.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "콘텐츠 출처: $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "웹사이트"
@@ -6770,23 +6750,8 @@
   "welcomeBack": {
     "message": "재방문을 환영합니다!"
   },
-  "welcomeExploreDescription": {
-    "message": "암호화폐와 자산을 저장, 전송 및 사용히세요."
-  },
-  "welcomeExploreTitle": {
-    "message": "Explore 분산화 앱"
-  },
-  "welcomeLoginDescription": {
-    "message": "MetaMask를 사용하여 분산화 앱에 로그인하세요. 가입은 필요 없습니다."
-  },
-  "welcomeLoginTitle": {
-    "message": "내 지갑 처음 알아보기"
-  },
   "welcomeToMetaMask": {
     "message": "시작하기"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "수백만 명이 신뢰하는 MetaMask는 모든 사람이 web3의 세계에 접근할 수 있도록 하는 안전한 지갑입니다."
   },
   "whatsThis": {
     "message": "이것은 무엇인가요?"
