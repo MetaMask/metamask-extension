@@ -114,7 +114,7 @@ exports[`PermitSimulation renders component correctly 1`] = `
                 <p
                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                 >
-                  0xCcCCc...ccccC
+                  0xCcCC...cccC
                 </p>
               </div>
             </div>
@@ -232,7 +232,7 @@ exports[`PermitSimulation renders correctly for NFT permit 1`] = `
                 <p
                   class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                 >
-                  0xC3644...1FE88
+                  0xC364...FE88
                 </p>
               </div>
             </div>

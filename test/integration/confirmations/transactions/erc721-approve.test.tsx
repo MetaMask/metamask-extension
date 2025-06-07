@@ -220,7 +220,7 @@ describe('ERC721 Approve Confirmation', () => {
     );
     expect(simulationSection).toContainElement(spendingCapValue);
     expect(spendingCapValue).toHaveTextContent('1');
-    expect(simulationSection).toHaveTextContent('0x07614...3ad68');
+    expect(simulationSection).toHaveTextContent('0x0761...ad68');
   });
 
   it('displays approve details with correct data', async () => {
@@ -247,7 +247,7 @@ describe('ERC721 Approve Confirmation', () => {
 
     expect(approveDetails).toContainElement(approveDetailsSpender);
     expect(approveDetailsSpender).toHaveTextContent(tEn('spender') as string);
-    expect(approveDetailsSpender).toHaveTextContent('0x2e0D7...5d09B');
+    expect(approveDetailsSpender).toHaveTextContent('0x2e0D...d09B');
     const spenderTooltip = await screen.findByTestId(
       'confirmation__approve-spender-tooltip',
     );
@@ -309,7 +309,7 @@ describe('ERC721 Approve Confirmation', () => {
     expect(approveDetailsRecipient).toHaveTextContent(
       tEn('interactingWith') as string,
     );
-    expect(approveDetailsRecipient).toHaveTextContent('0x07614...3ad68');
+    expect(approveDetailsRecipient).toHaveTextContent('0x0761...ad68');
 
     const approveDetailsRecipientTooltip = await screen.findByTestId(
       'transaction-details-recipient-row-tooltip',
@@ -363,7 +363,7 @@ describe('ERC721 Approve Confirmation', () => {
     );
     expect(dataSection).toContainElement(approveDataParams1);
     expect(approveDataParams1).toHaveTextContent('Param #1');
-    expect(approveDataParams1).toHaveTextContent('0x2e0D7...5d09B');
+    expect(approveDataParams1).toHaveTextContent('0x2e0D...d09B');
 
     const approveDataParams2 = await screen.findByTestId(
       'advanced-details-data-param-1',

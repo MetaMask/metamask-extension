@@ -84,7 +84,7 @@ describe('NestedTransaction', () => {
       nestedTransactions: [BATCH_TRANSACTION_PARAMS_MOCK],
     });
 
-    expect(getByText('0x12345...67890')).toBeInTheDocument();
+    expect(getByText('0x1234...7890')).toBeInTheDocument();
   });
 
   it('renders transaction data', () => {

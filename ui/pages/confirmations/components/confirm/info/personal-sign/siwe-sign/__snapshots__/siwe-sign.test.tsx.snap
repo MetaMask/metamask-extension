@@ -138,7 +138,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request 1`] = `
               <p
                 class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
               >
-                0x935e7...05477
+                0x935e...5477
               </p>
             </div>
           </div>
@@ -427,7 +427,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
               <p
                 class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
               >
-                0x935E7...05477
+                0x935E...5477
               </p>
             </div>
           </div>

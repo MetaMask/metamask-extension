@@ -16,17 +16,17 @@ export default class SignTypedData extends Confirmation {
 
   private signTypedDataMessage = { text: 'Hi, Alice!' };
 
-  private contract = { css: '.name__value', text: '0xCcCCc...ccccC' };
+  private contract = { css: '.name__value', text: '0xCcCC...cccC' };
 
   private primaryType = { text: 'Mail' };
 
   private fromName = { text: 'Cow' };
 
-  private fromAddress = { css: '.name__value', text: '0xCD2a3...DD826' };
+  private fromAddress = { css: '.name__value', text: '0xCD2a...D826' };
 
   private toName = { text: 'Bob' };
 
-  private toAddress = { css: '.name__value', text: '0xbBbBB...bBBbB' };
+  private toAddress = { css: '.name__value', text: '0xbBbB...BBbB' };
 
   private contents = { text: 'Hello, Bob!' };
 

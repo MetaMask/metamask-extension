@@ -227,10 +227,10 @@ describe('ERC721 setApprovalForAll - Revoke Confirmation', () => {
     ).toBeInTheDocument();
 
     expect(
-      withinSimulationSection.getByText('0x9bc5b...AfEF4'),
+      withinSimulationSection.getByText('0x9bc5...fEF4'),
     ).toBeInTheDocument();
     expect(
-      withinSimulationSection.getByText('0x07614...3ad68'),
+      withinSimulationSection.getByText('0x0761...ad68'),
     ).toBeInTheDocument();
 
     const spendingCapValue = await screen.queryByTestId(
