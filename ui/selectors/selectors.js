@@ -144,6 +144,10 @@ import {
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
 
+/**
+ * @typedef {import('../store/store').MetaMaskReduxState} MetaMaskReduxState
+ */
+
 /** `appState` slice selectors */
 
 export const getConfirmationExchangeRates = (state) => {

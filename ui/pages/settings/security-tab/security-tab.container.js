@@ -20,11 +20,13 @@ import {
   setUseTransactionSimulations,
   setSecurityAlertsEnabled,
   updateDataDeletionTaskStatus,
+  setSkipDeepLinkInterstitial,
 } from '../../../store/actions';
 import {
   getIsSecurityAlertsEnabled,
   getMetaMetricsDataDeletionId,
   getHDEntropyIndex,
+  getPreferences,
 } from '../../../selectors/selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
@@ -51,6 +53,8 @@ const mapStateToProps = (state) => {
     useExternalNameSources,
   } = metamask;
 
+  const { skipDeepLinkInterstitial } = getPreferences(state);
+
   const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
   const hasMultipleHdKeyrings = getMetaMaskHdKeyrings(state).length > 1;
@@ -76,6 +80,7 @@ const mapStateToProps = (state) => {
     metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
     hdEntropyIndex: getHDEntropyIndex(state),
     hasMultipleHdKeyrings,
+    skipDeepLinkInterstitial: Boolean(skipDeepLinkInterstitial),
   };
 };
 
@@ -98,6 +103,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setUseSafeChainsListValidation(val)),
     setBasicFunctionalityModalOpen: () =>
       dispatch(openBasicFunctionalityModal()),
+    setSkipDeepLinkInterstitial: (val) =>
+      dispatch(setSkipDeepLinkInterstitial(val)),
     setOpenSeaEnabled: (val) => dispatch(setOpenSeaEnabled(val)),
     setUseNftDetection: (val) => dispatch(setUseNftDetection(val)),
     setUse4ByteResolution: (value) => {
