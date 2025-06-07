@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { isStrictHexString } from '@metamask/utils';
 import {
-  formatChainIdToCaip,
   UnifiedSwapBridgeEventName,
   type SwapsTokenObject,
 } from '@metamask/bridge-controller';
@@ -31,13 +30,11 @@ import {
 import { getPortfolioUrl } from '../../helpers/utils/portfolio';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { trace, TraceName } from '../../../shared/lib/trace';
-import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
 
 const useBridging = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
@@ -62,19 +59,6 @@ const useBridging = () => {
         trace({
           name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
           startTime: Date.now(),
-        });
-        trackCrossChainSwapsEvent({
-          event: MetaMetricsEventName.ActionButtonClicked,
-          category: MetaMetricsEventCategory.Navigation,
-          properties: {
-            location:
-              location === 'Home'
-                ? MetaMetricsSwapsEventSource.MainView
-                : MetaMetricsSwapsEventSource.TokenView,
-            chain_id_source: formatChainIdToCaip(providerConfig.chainId),
-            token_symbol_source: token.symbol,
-            token_address_source: token.address,
-          },
         });
         trackEvent({
           event: isSwap
@@ -143,7 +127,6 @@ const useBridging = () => {
       history,
       metaMetricsId,
       trackEvent,
-      trackCrossChainSwapsEvent,
       isMetaMetricsEnabled,
       isMarketingEnabled,
       providerConfig,
