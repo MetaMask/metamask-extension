@@ -236,7 +236,7 @@ export const CoinOverview = ({
           data-testid="portfolio-link"
           textProps={{ variant: TextVariant.bodyMdMedium }}
         >
-          {process.env.REMOVE_GNS ? t('discover') : t('portfolio')}
+          {t('discover')}
         </ButtonLink>
       );
       return null;

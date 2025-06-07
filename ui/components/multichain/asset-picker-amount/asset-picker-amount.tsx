@@ -111,7 +111,7 @@ export const AssetPickerAmount = ({
 
   const ipfsGateway = useSelector(getIpfsGateway);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const showNetworkPickerinModal = process.env.REMOVE_GNS && showNetworkPicker;
+  const showNetworkPickerinModal = showNetworkPicker;
   const currentNetwork = useSelector(getCurrentNetwork);
   useEffect(() => {
     // if this input is immutable – avoids double fire

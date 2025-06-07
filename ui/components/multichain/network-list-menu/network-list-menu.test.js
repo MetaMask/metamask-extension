@@ -404,14 +404,6 @@ describe('NetworkListMenu', () => {
   });
 
   describe('NetworkListMenu with REMOVE_GNS enabled', () => {
-    beforeEach(() => {
-      process.env.REMOVE_GNS = '1';
-    });
-
-    afterEach(() => {
-      delete process.env.REMOVE_GNS;
-    });
-
     it('should not switch networks when clicking network items', () => {
       const { getByText } = render({ selectedTabOriginInDomainsState: false });
       fireEvent.click(getByText(MAINNET_DISPLAY_NAME));

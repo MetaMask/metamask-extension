@@ -35,7 +35,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountCreationOnNetworkChange } from '../../../hooks/accounts/useAccountCreationOnNetworkChange';
 import { NetworkListItem } from '../network-list-item';
 import {
-  hideNetworkBanner,
   setActiveNetwork,
   setShowTestNetworks,
   showModal,
@@ -58,8 +57,6 @@ import {
 import { MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME } from '../../../../shared/constants/multichain/networks';
 import {
   getShowTestNetworks,
-  getOnboardedInThisUISession,
-  getShowNetworkBanner,
   getOriginOfCurrentTab,
   getEditedNetwork,
   getOrderedNetworksList,
@@ -77,9 +74,6 @@ import {
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
   Display,
   FlexDirection,
   JustifyContent,
@@ -94,7 +88,6 @@ import {
   Modal,
   ModalOverlay,
   Text,
-  BannerBase,
   IconName,
   ModalContent,
   ModalHeader,
@@ -164,8 +157,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     getIsAccessedFromDappConnectedSitePopover,
   );
   const completedOnboarding = useSelector(getCompletedOnboarding);
-  const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
-  const showNetworkBanner = useSelector(getShowNetworkBanner);
   // This selector provides the indication if the "Discover" button
   // is enabled based on the remote feature flag.
   const isNetworkDiscoverButtonEnabled = useSelector(
@@ -193,11 +184,9 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
 
   const allChainIds = useSelector(getAllChainsToPoll);
   const canSelectNetwork: boolean =
-    !process.env.REMOVE_GNS ||
-    (Boolean(process.env.REMOVE_GNS) &&
-      Boolean(selectedTabOrigin) &&
-      Boolean(domains[selectedTabOrigin]) &&
-      isAccessedFromDappConnectedSitePopover);
+    Boolean(selectedTabOrigin) &&
+    Boolean(domains[selectedTabOrigin]) &&
+    isAccessedFromDappConnectedSitePopover;
 
   useEffect(() => {
     endTrace({ name: TraceName.NetworkList });
@@ -583,37 +572,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
               setSearchQuery={setSearchQuery}
               setFocusSearch={setFocusSearch}
             />
-            {!process.env.REMOVE_GNS &&
-              completedOnboarding &&
-              !onboardedInThisUISession &&
-              showNetworkBanner &&
-              !searchQuery && (
-                <BannerBase
-                  marginLeft={4}
-                  marginRight={4}
-                  borderRadius={BorderRadius.LG}
-                  padding={4}
-                  marginTop={2}
-                  gap={4}
-                  backgroundColor={BackgroundColor.backgroundMuted}
-                  startAccessory={
-                    <Box
-                      display={Display.Flex}
-                      alignItems={AlignItems.center}
-                      justifyContent={JustifyContent.center}
-                    >
-                      <img
-                        src="./images/dragging-animation.svg"
-                        alt="drag-and-drop"
-                      />
-                    </Box>
-                  }
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                  onClose={() => hideNetworkBanner()}
-                  description={t('dragAndDropBanner')}
-                />
-              )}
             <Box>
               {searchedEnabledNetworks.length > 0 && (
                 <Box
@@ -794,9 +752,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
 
   let title;
   if (actionMode === ACTION_MODE.LIST) {
-    title = process.env.REMOVE_GNS
-      ? t('manageNetworksMenuHeading')
-      : t('networkMenuHeading');
+    title = t('manageNetworksMenuHeading');
   } else if (actionMode === ACTION_MODE.ADD_EDIT && !editedNetwork) {
     title = t('addACustomNetwork');
   } else if (actionMode === ACTION_MODE.ADD_RPC) {
