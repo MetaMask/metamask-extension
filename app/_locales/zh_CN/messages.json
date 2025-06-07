@@ -659,9 +659,6 @@
   "basic": {
     "message": "基本"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "开启基本功能"
-  },
   "basicConfigurationBannerTitle": {
     "message": "基本功能已关闭"
   },
@@ -1443,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "创建新账户"
-  },
-  "createNewWallet": {
-    "message": "创建新钱包"
   },
   "createPassword": {
     "message": "创建密码"
@@ -2547,9 +2541,6 @@
   },
   "importAccountMsg": {
     "message": "导入的账户将不会与最初创建的 MetaMask 账户私钥助记词相关联。了解更多有关导入账户的信息"
-  },
-  "importMyWallet": {
-    "message": "导入我的钱包"
   },
   "importNFT": {
     "message": "导入 NFT"
@@ -3940,9 +3931,6 @@
   "passwordNotLongEnough": {
     "message": "密码长度不足"
   },
-  "passwordSetupDetails": {
-    "message": "此密码只会在此设备上解锁您的 MetaMask 钱包。MetaMask 无法恢复此密码。"
-  },
   "passwordStrength": {
     "message": "密码强度：$1",
     "description": "Return password strength to the user when user wants to create password."
@@ -5305,10 +5293,6 @@
   "snapConnectionWarning": {
     "message": "$1想连接$2。",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "此内容来自$1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "网站"

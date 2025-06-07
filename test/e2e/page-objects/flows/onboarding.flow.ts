@@ -219,7 +219,7 @@ export const importSRPOnboardingFlow = async ({
 
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.check_pageIsLoaded();
-  await onboardingPasswordPage.createImportedWalletPassword(password);
+  await onboardingPasswordPage.createWalletPassword(password);
 };
 
 /**

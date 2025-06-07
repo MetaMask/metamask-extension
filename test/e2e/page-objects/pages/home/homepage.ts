@@ -28,7 +28,7 @@ class HomePage {
 
   private readonly basicFunctionalityOffWarningMessage = {
     text: 'Basic functionality is off',
-    css: '.mm-banner-alert',
+    css: '.mm-banner-base',
   };
 
   protected readonly bridgeButton: string =

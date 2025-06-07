@@ -659,9 +659,6 @@
   "basic": {
     "message": "Базовый"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Включить базовый функционал"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Базовый функционал отключен"
   },
@@ -1443,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "Создать новый счет"
-  },
-  "createNewWallet": {
-    "message": "Создать новый кошелек"
   },
   "createPassword": {
     "message": "Создать пароль"
@@ -2547,9 +2541,6 @@
   },
   "importAccountMsg": {
     "message": "Импортированные счета не будут связаны с вашей секретной фразой для восстановления MetaMask. Узнайте больше об импортированных счетах"
-  },
-  "importMyWallet": {
-    "message": "Импорт моего кошелька"
   },
   "importNFT": {
     "message": "Импорт NFT"
@@ -3940,9 +3931,6 @@
   "passwordNotLongEnough": {
     "message": "Пароль недостаточно длинный"
   },
-  "passwordSetupDetails": {
-    "message": "Этот пароль разблокирует ваш кошелек MetaMask только на этом устройстве. MetaMask не может восстановить этот пароль."
-  },
   "passwordStrength": {
     "message": "Надежность пароля: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -5305,10 +5293,6 @@
   "snapConnectionWarning": {
     "message": "$1 хочет использовать $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "Этот контент поступает от $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "Веб-сайт"

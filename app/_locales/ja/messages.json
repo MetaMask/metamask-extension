@@ -659,9 +659,6 @@
   "basic": {
     "message": "基本"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "基本機能をオンにする"
-  },
   "basicConfigurationBannerTitle": {
     "message": "基本機能はオフになっています"
   },
@@ -1443,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "新しいアカウントの作成"
-  },
-  "createNewWallet": {
-    "message": "新規ウォレットを作成"
   },
   "createPassword": {
     "message": "パスワードを作成"
@@ -2547,9 +2541,6 @@
   },
   "importAccountMsg": {
     "message": "インポートされたアカウントは、MetaMaskアカウントのシークレットリカバリーフレーズと関連付けられません。インポートされたアカウントの詳細を表示"
-  },
-  "importMyWallet": {
-    "message": "ウォレットをインポート"
   },
   "importNFT": {
     "message": "NFTをインポート"
@@ -3940,9 +3931,6 @@
   "passwordNotLongEnough": {
     "message": "パスワードの長さが足りません"
   },
-  "passwordSetupDetails": {
-    "message": "このパスワードは、このデバイスでのみMetaMaskウォレットのロックを解除します。MetaMaskはこのパスワードを復元できません。"
-  },
   "passwordStrength": {
     "message": "パスワードの強度: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -5305,10 +5293,6 @@
   "snapConnectionWarning": {
     "message": "$1が$2の使用を求めています",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "このコンテンツは$1からのものです",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "Webサイト"

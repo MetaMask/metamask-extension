@@ -8,11 +8,9 @@
 // It must be run first in case an error is thrown later during initialization.
 import './lib/setup-initial-state-hooks';
 
-import { finished, pipeline } from 'readable-stream';
-import debounce from 'debounce-stream';
+import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
-import { storeAsStream } from '@metamask/obs-store';
 import { isObject, hasProperty } from '@metamask/utils';
 import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
@@ -69,7 +67,6 @@ import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
-import createStreamSink from './lib/createStreamSink';
 import NotificationManager, {
   NOTIFICATION_MANAGER_EVENTS,
 } from './lib/notification-manager';
@@ -92,6 +89,7 @@ import {
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
+import { getRequestSafeReload } from './lib/safe-reload';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
@@ -603,6 +601,9 @@ async function initialize(backup) {
 
   const preinstalledSnaps = await loadPreinstalledSnaps();
 
+  const { update, requestSafeReload } =
+    getRequestSafeReload(persistenceManager);
+
   setupController(
     initState,
     initLangCode,
@@ -611,7 +612,10 @@ async function initialize(backup) {
     initData.meta,
     offscreenPromise,
     preinstalledSnaps,
+    requestSafeReload,
   );
+
+  controller.store.on('update', update);
 
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);
@@ -940,6 +944,7 @@ function trackAppOpened(environment) {
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
+ * @param {() => Promise<void>)} requestSafeReload - A function that requests a safe reload of the extension.
  */
 export function setupController(
   initState,
@@ -949,6 +954,7 @@ export function setupController(
   stateMetadata,
   offscreenPromise,
   preinstalledSnaps,
+  requestSafeReload,
 ) {
   //
   // MetaMask Controller
@@ -977,6 +983,7 @@ export function setupController(
     featureFlags: {},
     offscreenPromise,
     preinstalledSnaps,
+    requestSafeReload,
   });
 
   setupEnsIpfsResolver({
@@ -989,18 +996,6 @@ export function setupController(
       controller.preferencesController.state.useAddressBarEnsResolution,
     provider: controller.provider,
   });
-
-  // setup state persistence
-  pipeline(
-    storeAsStream(controller.store),
-    debounce(1000),
-    createStreamSink(async (state) => {
-      await persistenceManager.set(state);
-    }),
-    (error) => {
-      log.error('MetaMask - Persistence pipeline failed', error);
-    },
-  );
 
   setupSentryGetStateGlobal(controller);
 

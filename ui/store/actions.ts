@@ -6553,3 +6553,15 @@ export async function isRelaySupported(chainId: Hex): Promise<boolean> {
     chainId,
   ]);
 }
+
+/**
+ * Asks the UI to reload the browser extension safely.
+ *
+ * Much better than `browser.runtime.reload()`, as safeReload will wait for all
+ * writes to finish!
+ *
+ * @returns
+ */
+export async function requestSafeReload() {
+  return await submitRequestToBackground('requestSafeReload');
+}

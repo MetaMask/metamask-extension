@@ -659,9 +659,6 @@
   "basic": {
     "message": "Général"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Activer la fonctionnalité de base"
-  },
   "basicConfigurationBannerTitle": {
     "message": "La fonctionnalité de base est désactivée"
   },
@@ -1443,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "Créer un nouveau compte"
-  },
-  "createNewWallet": {
-    "message": "Créer un nouveau portefeuille"
   },
   "createPassword": {
     "message": "Créer un mot de passe"
@@ -2547,9 +2541,6 @@
   },
   "importAccountMsg": {
     "message": "Les comptes importés ne seront pas associés à la phrase secrète de récupération que vous avez créée au départ dans MetaMask. En savoir plus sur les comptes importés"
-  },
-  "importMyWallet": {
-    "message": "Importer mon portefeuille"
   },
   "importNFT": {
     "message": "Importer le NFT"
@@ -3940,9 +3931,6 @@
   "passwordNotLongEnough": {
     "message": "Mot de passe trop court"
   },
-  "passwordSetupDetails": {
-    "message": "Ce mot de passe permet de déverrouiller votre portefeuille MetaMask uniquement sur cet appareil. MetaMask ne peut pas récupérer ce mot de passe."
-  },
   "passwordStrength": {
     "message": "Robustesse du mot de passe : $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -5305,10 +5293,6 @@
   "snapConnectionWarning": {
     "message": "$1 veut utiliser $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "Ce contenu provient de $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "Site web"

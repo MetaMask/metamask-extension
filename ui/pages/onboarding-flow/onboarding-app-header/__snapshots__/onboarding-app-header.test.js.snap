@@ -3,10 +3,10 @@
 exports[`OnboardingAppHeader should match snapshot 1`] = `
 <div>
   <div
-    class="onboarding-app-header"
+    class="mm-box onboarding-app-header mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
   >
     <div
-      class="onboarding-app-header__contents"
+      class="mm-box onboarding-app-header__contents mm-box--display-flex mm-box--justify-content-space-between mm-box--width-full"
     >
       <button
         class="mm-box onboarding-app-header__logo-container mm-box--background-color-transparent"
@@ -32,10 +32,11 @@ exports[`OnboardingAppHeader should match snapshot 1`] = `
         />
       </button>
       <div
-        class="dropdown"
+        class="dropdown onboarding-app-header__dropdown"
       >
         <select
           class="dropdown__select"
+          data-testid="select-locale"
         >
           <option
             value="en"
