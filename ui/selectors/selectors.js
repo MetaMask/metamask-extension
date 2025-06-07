@@ -1049,6 +1049,7 @@ export function getAddressBook(state) {
   if (!state.metamask.addressBook[chainId]) {
     return [];
   }
+  console.log(Object.values(state.metamask.addressBook[chainId]));
   return Object.values(state.metamask.addressBook[chainId]);
 }
 
@@ -1057,6 +1058,7 @@ export function getCompleteAddressBook(state) {
   const addressWithChainId = Object.fromEntries(
     Object.entries(addresses).filter(([key]) => key !== '*'),
   );
+  console.log(Object.values(addressWithChainId));
   return Object.values(addressWithChainId);
 }
 
