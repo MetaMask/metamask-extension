@@ -6,7 +6,7 @@ The following pages document the ongoing refactoring efforts of confirmation pag
 
 2. [Confirmation Pages Routing](./confirmation-pages-routing/README.md)
 
-3. [Confirmation Page Structure](./confirmation-page=structure/README.md)
+3. [Confirmation Page Structure](./confirmation-page-structure/README.md)
 
 4. [Confirmation State Management](./confirmation-state-management/README.md)
 
