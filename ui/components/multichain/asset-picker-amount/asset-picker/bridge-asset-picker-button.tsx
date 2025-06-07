@@ -8,6 +8,8 @@ import {
   AvatarNetworkSize,
   AvatarToken,
   BadgeWrapper,
+  Button,
+  ButtonSize,
   IconName,
   SelectButton,
   Text,
@@ -18,26 +20,35 @@ import {
   BorderColor,
   BorderRadius,
   Display,
+  FontWeight,
   OverflowWrap,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { AssetPicker } from '../../../../components/multichain/asset-picker-amount/asset-picker';
 import { getNftImage } from '../../../../helpers/utils/nfts';
+import { ERC20Asset, NativeAsset } from '../asset-picker-modal/types';
+
+// TODO isAmountReadonly needed?
 
 export const BridgeAssetPickerButton = ({
   asset,
-  networkProps,
+  networkName,
   networkImageSrc,
+  action,
+  onClick,
   ...props
 }: {
   networkImageSrc?: string;
-} & SelectButtonProps<'div'> &
-  Pick<React.ComponentProps<typeof AssetPicker>, 'asset' | 'networkProps'>) => {
+  action?: 'bridge' | 'swap';
+  asset?: NativeAsset | ERC20Asset;
+  networkName?: string;
+  onClick: () => void;
+} & SelectButtonProps<'div'>) => {
   const t = useI18nContext();
 
-  return (
+  return asset ? (
     <SelectButton
+      onClick={onClick}
       borderRadius={BorderRadius.pill}
       backgroundColor={BackgroundColor.backgroundDefault}
       borderColor={BorderColor.borderMuted}
@@ -71,7 +82,7 @@ export const BridgeAssetPickerButton = ({
             badge={
               asset ? (
                 <AvatarNetwork
-                  name={networkProps?.network?.name ?? ''}
+                  name={networkName ?? ''}
                   src={networkImageSrc}
                   size={AvatarNetworkSize.Xs}
                 />
@@ -92,5 +103,16 @@ export const BridgeAssetPickerButton = ({
       }
       {...props}
     />
+  ) : (
+    <Button
+      onClick={onClick}
+      size={ButtonSize.Lg}
+      paddingLeft={6}
+      paddingRight={6}
+      fontWeight={FontWeight.Normal}
+      style={{ whiteSpace: 'nowrap' }}
+    >
+      {action === 'swap' ? t('swapSwapTo') : t('bridgeTo')}
+    </Button>
   );
 };

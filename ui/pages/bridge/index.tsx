@@ -82,7 +82,7 @@ const CrossChainSwap = () => {
   // Needed for fetching exchange rates for tokens that have not been imported
   useBridgeExchangeRates();
   // Emits events related to quote-fetching
-  useQuoteFetchEvents();
+  // useQuoteFetchEvents();
 
   const redirectToDefaultRoute = async () => {
     history.push({
@@ -97,7 +97,7 @@ const CrossChainSwap = () => {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
   return (
-    <Page className="bridge__container">
+    <Page className="bridge__container" data-testid="bridge-page">
       <Header
         textProps={{ variant: TextVariant.headingSm }}
         startAccessory={
