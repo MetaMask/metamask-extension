@@ -445,11 +445,11 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     (network: MultichainNetworkConfiguration): boolean => {
       return (
         network.isEvm ||
-        completedOnboarding ||
+        (isUnlocked && completedOnboarding) ||
         hasAnyAccountsInNetwork(network.chainId)
       );
     },
-    [hasAnyAccountsInNetwork, completedOnboarding],
+    [isUnlocked, completedOnboarding, hasAnyAccountsInNetwork],
   );
 
   const getItemCallbacks = useCallback(

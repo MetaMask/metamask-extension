@@ -20,7 +20,6 @@ import {
   ImportTokensModal,
 } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
-import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
 
 import {
   ASSET_ROUTE,
@@ -88,7 +87,6 @@ import {
   getConnectingLabel,
   isConfirmTransactionRoute,
   setTheme,
-  showOnboardingHeader,
   showAppHeader,
 } from './utils';
 
@@ -525,7 +523,6 @@ export default class Routes extends Component {
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
         {showAppHeader(this.props) && <AppHeader location={location} />}
         {isConfirmTransactionRoute(this.pathname) && <MultichainMetaFoxLogo />}
-        {showOnboardingHeader(location) && <OnboardingAppHeader />}
         {isAccountMenuOpen ? (
           <AccountListMenu
             onClose={toggleAccountMenu}
