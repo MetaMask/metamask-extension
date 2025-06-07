@@ -407,17 +407,17 @@ const PrepareBridgePage = () => {
 
   // When entering the page for the first time emit an event for the page viewed
   useEffect(() => {
-    trackCrossChainSwapsEvent({
-      event: MetaMetricsEventName.ActionPageViewed,
-      properties: {
-        chain_id_source: formatChainIdToCaip(fromChain?.chainId ?? ''),
-        token_symbol_source: fromToken?.symbol ?? '',
-        token_address_source: fromToken?.address ?? '',
-        chain_id_destination: formatChainIdToCaip(toChain?.chainId ?? ''),
-        token_symbol_destination: toToken?.symbol ?? '',
-        token_address_destination: toToken?.address ?? '',
-      },
-    });
+    // trackCrossChainSwapsEvent({
+    //   event: MetaMetricsEventName.ActionPageViewed,
+    //   properties: {
+    //     chain_id_source: formatChainIdToCaip(fromChain?.chainId ?? ''),
+    //     token_symbol_source: fromToken?.symbol ?? '',
+    //     token_address_source: fromToken?.address ?? '',
+    //     chain_id_destination: formatChainIdToCaip(toChain?.chainId ?? ''),
+    //     token_symbol_destination: toToken?.symbol ?? '',
+    //     token_address_destination: toToken?.address ?? '',
+    //   },
+    // });
 
     return () => {
       debouncedUpdateQuoteRequestInController.cancel();
@@ -434,18 +434,6 @@ const PrepareBridgePage = () => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quoteParams]);
-
-  const trackInputEvent = useCallback(
-    (
-      properties: CrossChainSwapsEventProperties[MetaMetricsEventName.InputChanged],
-    ) => {
-      trackCrossChainSwapsEvent({
-        event: MetaMetricsEventName.InputChanged,
-        properties,
-      });
-    },
-    [],
-  );
 
   const { search } = useLocation();
   const history = useHistory();
@@ -805,11 +793,6 @@ const PrepareBridgePage = () => {
                 ...token,
                 address: token.address ?? zeroAddress(),
               };
-              bridgeToken.address &&
-                trackInputEvent({
-                  input: 'token_destination',
-                  value: bridgeToken.address,
-                });
               dispatch(setToToken(bridgeToken));
             }}
             networkProps={

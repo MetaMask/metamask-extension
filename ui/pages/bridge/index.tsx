@@ -82,7 +82,7 @@ const CrossChainSwap = () => {
   // Needed for fetching exchange rates for tokens that have not been imported
   useBridgeExchangeRates();
   // Emits events related to quote-fetching
-  useQuoteFetchEvents();
+  // useQuoteFetchEvents();
 
   const redirectToDefaultRoute = async () => {
     history.push({
