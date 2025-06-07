@@ -223,7 +223,7 @@ exports[`Security Tab should match snapshot 1`] = `
             <div
               class="settings-page__content-description"
             >
-              Enabling this option will skip the interstitial screen that is shown when opening deep links in MetaMask. A "deep link" is a link like https://link.metamask.io/home that will cause MetaMask to open; these links can be obfuscated by others. The interstitial screen is designed to protect you from accidentally opening pages within MetaMask that might display your accounts, tokens, history, balances, settings, or other potentially sensitive information.
+              Enabling this option will skip the interstitial screen that is shown when opening deep links in MetaMask. A "deep link" is a link like https://link.metamask.io/home that will cause MetaMask to open; these links can be obfuscated by others. The interstitial screen is designed to protect you from accidentally opening pages within MetaMask that might display your accounts, tokens, history, balances, settings, or other potentially sensitive information. This setting only applies to links signed by MetaMask.
             </div>
           </div>
           <div
