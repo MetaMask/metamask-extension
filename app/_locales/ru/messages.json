@@ -368,6 +368,9 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Обновить параметры газа"
   },
+  "alertContentMultipleApprovals": {
+    "message": "Вы даете кому-то другому разрешение на списание ваших токенов, даже если это не является необходимым для данной транзакции."
+  },
   "alertDisableTooltip": {
     "message": "Это можно изменить в разделе «Настройки» > «Оповещения»"
   },
@@ -430,6 +433,9 @@
   },
   "alertReasonInsufficientBalance": {
     "message": "Недостаточно средств"
+  },
+  "alertReasonMultipleApprovals": {
+    "message": "Ненужное разрешение"
   },
   "alertReasonNetworkBusy": {
     "message": "Сеть занята"
@@ -2991,7 +2997,7 @@
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "manageDefaultSettings": {
-    "message": "Управление настройками конфиденциальности по умолчанию"
+    "message": "Управление настройками по умолчанию"
   },
   "manageInstitutionalWallets": {
     "message": "Управление институциональными кошельками"
@@ -3398,7 +3404,7 @@
     "message": "NFT успешно добавлен!"
   },
   "newPassword": {
-    "message": "Новый пароль (мин. 8 знаков)"
+    "message": "Новый пароль"
   },
   "newPrivacyPolicyActionButton": {
     "message": "Подробнее"
@@ -3777,13 +3783,13 @@
     "message": "Создать новый кошелек"
   },
   "onboardingImportWallet": {
-    "message": "Импорт существующего кошелька"
+    "message": "У меня есть существующий кошелек"
   },
   "onboardingMetametricsAgree": {
     "message": "Я согласен(-на)"
   },
   "onboardingMetametricsDescription": {
-    "message": "Мы хотели бы собрать базовые данные об использовании и диагностике для улучшения MetaMask. Помните, что мы никогда не продаем данные, которые вы здесь предоставляете."
+    "message": "Мы хотели бы собрать основные данные об использовании и диагностике для улучшения MetaMask. Это всегда будет:"
   },
   "onboardingMetametricsDescription2": {
     "message": "Когда мы собираем показатели, они всегда будут..."
@@ -3796,7 +3802,7 @@
     "message": "Политикой конфиденциальности"
   },
   "onboardingMetametricsNeverCollect": {
-    "message": "$1 клики и просмотры в приложении сохраняются, но другие данные (например, ваш публичный адрес) — нет.",
+    "message": "$1 Клики и просмотры в приложении сохраняются, но другие данные (например, ваш публичный адрес) — нет.",
     "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
   },
   "onboardingMetametricsNeverCollectEmphasis": {
@@ -3844,10 +3850,10 @@
     "message": "Закрепите расширение MetaMask в браузере для его постоянной доступности и легкого просмотра подтверждений транзакций."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "Вы можете открыть MetaMask, нажав на расширение, и получить доступ к своему кошельку одним щелчком мыши."
+    "message": "Получите доступ к своему кошельку MetaMask в 1 клик, нажав на расширение."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Нажмите на значок расширения браузера для мгновенного перехода к нему"
+    "message": "Нажмите на значок расширения Chrome для мгновенного перехода к нему"
   },
   "onboardingPinExtensionLabel": {
     "message": "Закрепить MetaMask"
@@ -3859,7 +3865,7 @@
     "message": "2"
   },
   "onboardingPinExtensionTitle": {
-    "message": "Установка MetaMask завершена!"
+    "message": "Установка завершена!"
   },
   "onekey": {
     "message": "OneKey"
@@ -3928,9 +3934,6 @@
   "password": {
     "message": "Пароль"
   },
-  "passwordNotLongEnough": {
-    "message": "Пароль недостаточно длинный"
-  },
   "passwordStrength": {
     "message": "Надежность пароля: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -3939,7 +3942,7 @@
     "message": "Надежный пароль может повысить безопасность вашего кошелька в случае кражи или взлома вашего устройства."
   },
   "passwordTermsWarning": {
-    "message": "Я понимаю, что MetaMask не может восстановить этот пароль для меня. $1"
+    "message": "MetaMask не может восстановить этот пароль."
   },
   "passwordsDontMatch": {
     "message": "Пароли не совпадают"
@@ -5110,7 +5113,7 @@
     "message": "Пропустить безопасность счета?"
   },
   "skipAccountSecurityDetails": {
-    "message": "Я понимаю, что, если я не создам резервную копию своей секретной фразы для восстановления, я могу потерять доступ ко всем своим счетам и всем средствам на них."
+    "message": "Если вы потеряете эту секретную фразу для восстановления, вы не сможете получить доступ к этому кошельку."
   },
   "slideBridgeDescription": {
     "message": "Перемещайтесь по 9 блокчейнам, все из которых находятся в Вашем кошельке"
@@ -5640,6 +5643,45 @@
   "startEarning": {
     "message": "Начните зарабатывать"
   },
+  "stateCorruptionAreYouSure": {
+    "message": "Уверены, что хотите продолжить?"
+  },
+  "stateCorruptionCopyAndRestoreBeforeRecovery": {
+    "message": "Прежде чем вы решите восстановить свое хранилище, вы можете попробовать скопировать и восстановить файл состояния вручную, следуя $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "Прежде чем вы решите сбросить MetaMask, вы можете попробовать скопировать и восстановить файл состояния вручную, следуя $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionDetectedNoBackup": {
+    "message": "Ваше хранилище нельзя восстановить автоматически."
+  },
+  "stateCorruptionDetectedWithBackup": {
+    "message": "Ваше хранилище можно восстановить из автоматизированной резервной копии. Автоматическое восстановление удалит ваши текущие настройки и предпочтения и восстановит только ваше хранилище."
+  },
+  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
+    "message": "Внутренняя ошибка: невозможно получить доступ к базе данных"
+  },
+  "stateCorruptionResetMetaMaskState": {
+    "message": "Сброс состояния MetaMask"
+  },
+  "stateCorruptionResettingDatabase": {
+    "message": "Сброс базы данных…"
+  },
+  "stateCorruptionRestoreAccountsFromBackup": {
+    "message": "Восстановить счета"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "Восстановление базы данных…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "этим инструкциям",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "Как восстановить вашу секретную фразу для восстановления"
+  },
   "stateLogError": {
     "message": "Ошибка при получении журналов состояния."
   },
@@ -6040,6 +6082,9 @@
   "swapShowLatestQuotes": {
     "message": "Показать последние котировки"
   },
+  "swapSlippageAutoDescription": {
+    "message": "Авто"
+  },
   "swapSlippageHighDescription": {
     "message": "Введенное проскальзывание ($1%) считается очень высоким и может привести к использованию плохого курса",
     "description": "$1 is the amount of % for slippage"
@@ -6213,14 +6258,17 @@
   "termsOfService": {
     "message": "Условия обслуживания"
   },
+  "termsOfUseAgree": {
+    "message": "Согласиться"
+  },
   "termsOfUseAgreeText": {
-    "message": " Я согласен(-на) с Условиями использования, которые применяются к использованию мною MetaMask и всех его функций"
+    "message": "Я согласен(-на) с Условиями использования, которые применяются к использованию мною MetaMask и всех его функций"
   },
   "termsOfUseFooterText": {
     "message": "Прокрутите, чтобы прочитать все разделы"
   },
   "termsOfUseTitle": {
-    "message": "Наши Условия использования обновлены"
+    "message": "Ознакомьтесь с нашими Условиями использования"
   },
   "testNetworks": {
     "message": "Протестировать сети"
@@ -6511,7 +6559,7 @@
     "message": "Не одобрен"
   },
   "unexpectedBehavior": {
-    "message": "Такое поведение является неожиданным, и о нем следует сообщить как об ошибке, даже если ваши счета восстановлены должным образом. Используйте ссылку ниже, чтобы отправить в MetaMask отчет об ошибке."
+    "message": "Такое поведение является неожиданным, и о нем следует сообщить как об ошибке, даже если ваши счета восстановлены."
   },
   "units": {
     "message": "единицы"
@@ -6813,6 +6861,6 @@
     "message": "Нам не удалось отменить вашу транзакцию до ее подтверждения в блокчейне."
   },
   "yourWalletIsReady": {
-    "message": "Ваш кошелек готов"
+    "message": "Ваш кошелек готов!"
   }
 }

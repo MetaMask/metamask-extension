@@ -368,6 +368,9 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "गैस के विकल्प को अपडेट करें"
   },
+  "alertContentMultipleApprovals": {
+    "message": "आप किसी अन्य व्यक्ति को अपने टोकन निकालने की अनुमति दे रहे हैं, भले ही यह इस ट्रांसेक्शन के लिए आवश्यक न हो।"
+  },
   "alertDisableTooltip": {
     "message": "इसे \"सेटिंग > अलर्ट\" में बदला जा सकता है"
   },
@@ -430,6 +433,9 @@
   },
   "alertReasonInsufficientBalance": {
     "message": "अपर्याप्त फंड"
+  },
+  "alertReasonMultipleApprovals": {
+    "message": "अनावश्यक अनुमति"
   },
   "alertReasonNetworkBusy": {
     "message": "नेटवर्क व्यस्त है"
@@ -2990,9 +2996,6 @@
     "message": "पक्का करें कि इसे कोई भी नहीं देख रहा है",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageDefaultSettings": {
-    "message": "डिफॉल्ट गोपनीयता सेटिंग्स मैनेज करें"
-  },
   "manageInstitutionalWallets": {
     "message": "इंस्टीट्यूशनल वॉलेट प्रबंधित करें"
   },
@@ -3397,9 +3400,6 @@
   "newNftAddedMessage": {
     "message": "NFT सफलतापूर्वक जोड़ा गया!"
   },
-  "newPassword": {
-    "message": "नया पासवर्ड (कम-से-कम 8 करैक्टर)"
-  },
   "newPrivacyPolicyActionButton": {
     "message": "और पढ़ें"
   },
@@ -3776,14 +3776,8 @@
   "onboardingCreateWallet": {
     "message": "एक नया वॉलेट बनाएं"
   },
-  "onboardingImportWallet": {
-    "message": "मौजूदा वॉलेट इम्पोर्ट करें"
-  },
   "onboardingMetametricsAgree": {
     "message": "मैं सहमत हूं"
-  },
-  "onboardingMetametricsDescription": {
-    "message": "हम MetaMask को बेहतर बनाने के लिए बुनियादी यूसेज और डाएगोनोस्टिक्स डेटा कलेक्ट करना चाहेंगे। जान लें कि हम आपके द्वारा यहां उपलब्ध कराया गया डेटा कभी नहीं बेचते हैं।"
   },
   "onboardingMetametricsDescription2": {
     "message": "जब हम मेट्रिक्स इकट्ठा करते हैं, तो यह हमेशा... रहेगा"
@@ -3794,10 +3788,6 @@
   },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "गोपनीयता नीति"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "ऐप पर $1 क्लिक और व्यूज़ स्टोर किए जाते हैं, लेकिन अन्य विवरण (जैसे आपका पब्लिक एड्रेस) स्टोर नहीं होते।",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
   },
   "onboardingMetametricsNeverCollectEmphasis": {
     "message": "निजी:"
@@ -3840,15 +3830,6 @@
   "onboardingPinExtensionChrome": {
     "message": "ब्राउज़र एक्सटेंशन आइकन पर क्लिक करें"
   },
-  "onboardingPinExtensionDescription": {
-    "message": "अपने ब्राउज़र पर MetaMask को पिन करें ताकि यह सुलभ हो और ट्रांसेक्शन के कन्फर्मेशन को देखना आसान हो सके।"
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "आप एक्सटेंशन पर क्लिक करके MetaMask खोल सकते हैं और 1 क्लिक से अपने वॉलेट तक पहुंच सकते हैं।"
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "ब्राउज़र एक्सटेंशन आइकन पर क्लिक करें ताकि इस तक तुरंत पहुंच सकें"
-  },
   "onboardingPinExtensionLabel": {
     "message": "MetaMask को पिन करें"
   },
@@ -3857,9 +3838,6 @@
   },
   "onboardingPinExtensionStep2": {
     "message": "2"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "आपका MetaMask इंस्टॉल पूरा हो गया है!"
   },
   "onekey": {
     "message": "OneKey"
@@ -3928,18 +3906,12 @@
   "password": {
     "message": "पासवर्ड"
   },
-  "passwordNotLongEnough": {
-    "message": "पासवर्ड की लंबाई पर्याप्त नहीं है"
-  },
   "passwordStrength": {
     "message": "पासवर्ड की मजबूती: $1",
     "description": "Return password strength to the user when user wants to create password."
   },
   "passwordStrengthDescription": {
     "message": "अगर आपका डिवाइस चोरी हो गया हो या उसके साथ छेड़छाड़ की गई है, तब एक मजबूत पासवर्ड आपके वॉलेट की सुरक्षा को बेहतर बना सकता है।"
-  },
-  "passwordTermsWarning": {
-    "message": "मैं समझता हूं कि MetaMask मेरे लिए यह पासवर्ड फिर से प्राप्त नहीं कर सकता। $1"
   },
   "passwordsDontMatch": {
     "message": "पासवर्ड मेल नहीं खाता"
@@ -5109,9 +5081,6 @@
   "skipAccountSecurity": {
     "message": "अकाउंट सुरक्षा छोड़ें?"
   },
-  "skipAccountSecurityDetails": {
-    "message": "मैं समझता हूं कि जब तक मैं अपने सीक्रेट रिकवरी फ्रेज का बैकअप नहीं लेता, मैं अपने अकाउंट और उनकी सभी संपत्ति खो सकता हूं।"
-  },
   "slideBridgeDescription": {
     "message": "अपने वॉलेट के भीतर, सभी 9 चेंस में एक-दूसरे में मूव करें"
   },
@@ -5639,6 +5608,45 @@
   },
   "startEarning": {
     "message": "कमाना शुरू करें"
+  },
+  "stateCorruptionAreYouSure": {
+    "message": "क्या आप वाकई आगे बढ़ना चाहते हैं?"
+  },
+  "stateCorruptionCopyAndRestoreBeforeRecovery": {
+    "message": "आप $1 को फॉलो करके अपनी वॉल्ट को रिस्टोर करने से पहले, मैन्युअली अपना स्टेट फ़ाइल कॉपी और रिस्टोर कर सकते हैं।",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "आप $1 को फॉलो करके अपने MetaMask को रीसेट करने से पहले, मैन्युअली अपना स्टेट फ़ाइल कॉपी और रिस्टोर कर सकते हैं।",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionDetectedNoBackup": {
+    "message": "आपकी वॉल्ट स्वचालित रूप से रिकवर नहीं की जा सकती।"
+  },
+  "stateCorruptionDetectedWithBackup": {
+    "message": "आपका वॉल्ट स्वचालित बैकअप से रिकवर किया जा सकता है। स्वचालित रिकवरी आपकी वर्तमान सेटिंग्स और प्राथमिकताओं को हटा देगी, और केवल आपके वॉल्ट को रिस्टोर करेगी।"
+  },
+  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
+    "message": "आंतरिक गड़बड़ी (एरर): डेटाबेस को ऐक्सेस नहीं किया जा सकता"
+  },
+  "stateCorruptionResetMetaMaskState": {
+    "message": "MetaMask स्टेट रीसेट करें"
+  },
+  "stateCorruptionResettingDatabase": {
+    "message": "डेटाबेस रीसेट किया जा रहा है…"
+  },
+  "stateCorruptionRestoreAccountsFromBackup": {
+    "message": "एकाउंट्स रिस्टोर करें"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "डेटाबेस रिस्टोर किया जा रहा है…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "इन निर्देशों",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "अपना सीक्रेट रिकवरी फ्रेज़ कैसे रिकवर करें"
   },
   "stateLogError": {
     "message": "स्टेट लॉग को पुनर्प्राप्त करने में गड़बड़ी।"
@@ -6213,14 +6221,8 @@
   "termsOfService": {
     "message": "सेवा की शर्तें"
   },
-  "termsOfUseAgreeText": {
-    "message": " मैं इस्तेमाल की शर्तों से सहमत हूं, जो MetaMask और इसकी सभी फीचर्स के मेरे इस्तेमाल पर लागू होती हैं"
-  },
   "termsOfUseFooterText": {
     "message": "सभी वर्गों को पढ़ने के लिए कृपया स्क्रॉल करें"
-  },
-  "termsOfUseTitle": {
-    "message": "हमारी इस्तेमाल की शर्तों को अपडेट कर दिया गया है"
   },
   "testNetworks": {
     "message": "टेस्ट नेटवर्क्स"
@@ -6511,7 +6513,7 @@
     "message": "रिजेक्ट"
   },
   "unexpectedBehavior": {
-    "message": "यह व्यवहार अप्रत्याशित है और इसे बग के रूप में रिपोर्ट किया जाना चाहिए, भले ही आपके एकाउंट्स ठीक से रिस्टोर हो गए हों। MetaMask को बग रिपोर्ट भेजने के लिए नीचे दिए गए लिंक का उपयोग करें।"
+    "message": "यह व्यवहार अप्रत्याशित है और इसे बग के रूप में रिपोर्ट किया जाना चाहिए, भले ही आपके एकाउंट्स रिस्टोर कर दिए गए हों।"
   },
   "units": {
     "message": "इकाइयां"
@@ -6811,8 +6813,5 @@
   },
   "yourTransactionJustConfirmed": {
     "message": "हम आपके ट्रांसेक्शन को रद्द नहीं कर सके क्योंकि ब्लॉकचेन पर यह पहले ही कन्फर्म हो चुका है।"
-  },
-  "yourWalletIsReady": {
-    "message": "आपका वॉलेट तैयार है"
   }
 }

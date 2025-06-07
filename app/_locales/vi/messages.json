@@ -368,6 +368,9 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Cập nhật tùy chọn phí gas"
   },
+  "alertContentMultipleApprovals": {
+    "message": "Bạn đang cấp cho người khác quyền rút token của bạn, mặc dù điều đó không cần thiết cho giao dịch này."
+  },
   "alertDisableTooltip": {
     "message": "Bạn có thể thay đổi trong phần \"Cài đặt > Cảnh báo\""
   },
@@ -430,6 +433,9 @@
   },
   "alertReasonInsufficientBalance": {
     "message": "Không đủ tiền"
+  },
+  "alertReasonMultipleApprovals": {
+    "message": "Quyền không cần thiết"
   },
   "alertReasonNetworkBusy": {
     "message": "Mạng đang bận"
@@ -2991,7 +2997,7 @@
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "manageDefaultSettings": {
-    "message": "Quản lý chế độ cài đặt quyền riêng tư mặc định"
+    "message": "Quản lý cài đặt mặc định"
   },
   "manageInstitutionalWallets": {
     "message": "Quản lý Ví tổ chức"
@@ -3398,7 +3404,7 @@
     "message": "NFT đã được thêm thành công!"
   },
   "newPassword": {
-    "message": "Mật khẩu mới (tối thiểu 8 ký tự)"
+    "message": "Mật khẩu mới"
   },
   "newPrivacyPolicyActionButton": {
     "message": "Đọc thêm"
@@ -3777,13 +3783,13 @@
     "message": "Tạo ví mới"
   },
   "onboardingImportWallet": {
-    "message": "Nhập ví có sẵn"
+    "message": "Tôi đã có ví"
   },
   "onboardingMetametricsAgree": {
     "message": "Tôi đồng ý"
   },
   "onboardingMetametricsDescription": {
-    "message": "Chúng tôi muốn thu thập dữ liệu sử dụng và chẩn đoán cơ bản để cải tiến MetaMask. Xin lưu ý, chúng tôi không bao giờ bán dữ liệu mà bạn cung cấp ở đây."
+    "message": "Chúng tôi muốn thu thập dữ liệu sử dụng và chẩn đoán cơ bản để cải thiện MetaMask. Hoạt động thu thập này sẽ luôn:"
   },
   "onboardingMetametricsDescription2": {
     "message": "Khi thu thập số liệu, chúng tôi sẽ luôn cam kết điều này..."
@@ -3796,7 +3802,7 @@
     "message": "Chính sách quyền riêng tư"
   },
   "onboardingMetametricsNeverCollect": {
-    "message": "$1 chỉ lưu trữ các lượt nhấn và lượt xem trên ứng dụng, các thông tin khác (chẳng hạn như địa chỉ công khai của bạn) sẽ không được lưu trữ.",
+    "message": "$1 Chỉ lưu trữ các lượt nhấp và lượt xem trên ứng dụng, các thông tin khác (chẳng hạn như địa chỉ công khai của bạn) sẽ không được lưu trữ.",
     "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
   },
   "onboardingMetametricsNeverCollectEmphasis": {
@@ -3841,13 +3847,13 @@
     "message": "Nhấp vào biểu tượng tiện ích trên trình duyệt"
   },
   "onboardingPinExtensionDescription": {
-    "message": "Ghim MetaMask trên trình duyệt để bạn có thể truy cập và dễ dàng xem các xác nhận giao dịch."
+    "message": "Ghim MetaMask trên trình duyệt của bạn để dễ dàng truy cập và xem xác nhận giao dịch."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "Bạn có thể mở MetaMask bằng cách nhấp vào tiện ích và truy cập ví của mình chỉ với 1 cú nhấp chuột."
+    "message": "Truy cập ví MetaMask của bạn chỉ với 1 lần nhấp bằng cách nhấp vào tiện ích mở rộng."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Nhấp vào biểu tượng tiện ích trên trình duyệt để truy cập tức thì"
+    "message": "Nhấp vào biểu tượng tiện ích mở rộng Chrome để truy cập tức thì"
   },
   "onboardingPinExtensionLabel": {
     "message": "Ghim MetaMask"
@@ -3859,7 +3865,7 @@
     "message": "2"
   },
   "onboardingPinExtensionTitle": {
-    "message": "Quá trình cài đặt MetaMask đã hoàn tất!"
+    "message": "Cài đặt hoàn tất!"
   },
   "onekey": {
     "message": "OneKey"
@@ -3928,9 +3934,6 @@
   "password": {
     "message": "Mật khẩu"
   },
-  "passwordNotLongEnough": {
-    "message": "Mật khẩu không đủ dài"
-  },
   "passwordStrength": {
     "message": "Độ mạnh của mật khẩu: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -3939,7 +3942,7 @@
     "message": "Một mật khẩu mạnh có thể giúp tăng cường bảo mật cho ví nếu thiết bị của bạn bị đánh cắp hoặc xâm phạm."
   },
   "passwordTermsWarning": {
-    "message": "Tôi hiểu rằng MetaMask không thể khôi phục mật khẩu này cho tôi. $1"
+    "message": "MetaMask không thể khôi phục mật khẩu này."
   },
   "passwordsDontMatch": {
     "message": "Mật khẩu không khớp"
@@ -5110,7 +5113,7 @@
     "message": "Bỏ qua bảo mật tài khoản?"
   },
   "skipAccountSecurityDetails": {
-    "message": "Tôi hiểu rằng nếu chưa sao lưu Cụm từ khôi phục bí mật của mình, tôi có thể bị mất tài khoản và toàn bộ tài sản bên trong."
+    "message": "Nếu bạn làm mất Cụm từ khôi phục bí mật này, bạn sẽ không thể truy cập ví này."
   },
   "slideBridgeDescription": {
     "message": "Di chuyển qua 9 chuỗi, tất cả trong ví của bạn"
@@ -5640,6 +5643,45 @@
   "startEarning": {
     "message": "Bắt đầu kiếm tiền"
   },
+  "stateCorruptionAreYouSure": {
+    "message": "Bạn có chắc chắn muốn tiếp tục không?"
+  },
+  "stateCorruptionCopyAndRestoreBeforeRecovery": {
+    "message": "Bạn có thể thử sao chép và khôi phục tệp trạng thái của mình theo cách thủ công trước khi quyết định khôi phục két an toàn bằng cách làm theo $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "Bạn có thể thử sao chép và khôi phục tệp trạng thái của mình theo cách thủ công trước khi quyết định đặt lại MetaMask bằng cách làm theo $1.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionDetectedNoBackup": {
+    "message": "Không thể tự động khôi phục két an toàn."
+  },
+  "stateCorruptionDetectedWithBackup": {
+    "message": "Két an toàn có thể được khôi phục từ bản sao lưu tự động. Việc khôi phục tự động sẽ xóa chế độ cài đặt và tùy chọn hiện tại của bạn và chỉ khôi phục két an toàn."
+  },
+  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
+    "message": "Lỗi nội bộ: Không thể truy cập cơ sở dữ liệu"
+  },
+  "stateCorruptionResetMetaMaskState": {
+    "message": "Đặt lại trạng thái MetaMask"
+  },
+  "stateCorruptionResettingDatabase": {
+    "message": "Đang đặt lại cơ sở dữ liệu…"
+  },
+  "stateCorruptionRestoreAccountsFromBackup": {
+    "message": "Khôi phục tài khoản"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "Đang khôi phục cơ sở dữ liệu…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "các hướng dẫn này",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "Cách khôi phục Cụm từ khôi phục bí mật của bạn"
+  },
   "stateLogError": {
     "message": "Lỗi khi truy xuất nhật ký trạng thái."
   },
@@ -6040,6 +6082,9 @@
   "swapShowLatestQuotes": {
     "message": "Hiển thị báo giá mới nhất"
   },
+  "swapSlippageAutoDescription": {
+    "message": "Tự động"
+  },
   "swapSlippageHighDescription": {
     "message": "Mức trượt giá đã nhập ($1%) được xem là quá cao và có thể dẫn đến tỷ giá không sinh lời",
     "description": "$1 is the amount of % for slippage"
@@ -6213,14 +6258,17 @@
   "termsOfService": {
     "message": "Điều khoản dịch vụ"
   },
+  "termsOfUseAgree": {
+    "message": "Đồng ý"
+  },
   "termsOfUseAgreeText": {
-    "message": " Tôi đồng ý với Điều khoản sử dụng được áp dụng cho việc tôi sử dụng MetaMask và tất cả các tính năng của MetaMask"
+    "message": "Tôi đồng ý với Điều khoản sử dụng được áp dụng cho việc tôi sử dụng MetaMask và tất cả các tính năng của nó"
   },
   "termsOfUseFooterText": {
     "message": "Vui lòng cuộn để đọc tất cả các phần"
   },
   "termsOfUseTitle": {
-    "message": "Điều khoản sử dụng của chúng tôi đã được cập nhật"
+    "message": "Xem lại Điều khoản sử dụng của chúng tôi"
   },
   "testNetworks": {
     "message": "Mạng thử nghiệm"
@@ -6511,7 +6559,7 @@
     "message": "Chưa chấp thuận"
   },
   "unexpectedBehavior": {
-    "message": "Đây là hành vi bất thường và cần được báo cáo như một lỗi, ngay cả khi tài khoản của bạn đã được khôi phục đúng cách. Sử dụng liên kết bên dưới để gửi báo cáo lỗi cho MetaMask."
+    "message": "Đây là hành vi bất thường và cần được báo cáo như một lỗi, ngay cả khi tài khoản của bạn đã được khôi phục."
   },
   "units": {
     "message": "đơn vị"
@@ -6813,6 +6861,6 @@
     "message": "Chúng tôi không thể hủy giao dịch của bạn trước khi nó được xác nhận trên chuỗi khối."
   },
   "yourWalletIsReady": {
-    "message": "Ví của bạn đã sẵn sàng"
+    "message": "Ví của bạn đã sẵn sàng!"
   }
 }

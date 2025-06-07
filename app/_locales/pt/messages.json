@@ -2990,9 +2990,6 @@
     "message": "Certifique-se de que ninguém está olhando",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageDefaultSettings": {
-    "message": "Gerenciar configurações de privacidade padrão"
-  },
   "manageInstitutionalWallets": {
     "message": "Gerenciar carteiras institucionais"
   },
@@ -3397,9 +3394,6 @@
   "newNftAddedMessage": {
     "message": "O NFT foi adicionado com sucesso!"
   },
-  "newPassword": {
-    "message": "Nova senha (no mínimo 8 caracteres)"
-  },
   "newPrivacyPolicyActionButton": {
     "message": "Saiba mais"
   },
@@ -3776,14 +3770,8 @@
   "onboardingCreateWallet": {
     "message": "Criar uma nova carteira"
   },
-  "onboardingImportWallet": {
-    "message": "Importar uma carteira existente"
-  },
   "onboardingMetametricsAgree": {
     "message": "Concordo"
-  },
-  "onboardingMetametricsDescription": {
-    "message": "Gostaríamos de coletar dados básicos de uso para melhorar a MetaMask. Saiba que nunca vendemos os dados que você fornece aqui."
   },
   "onboardingMetametricsDescription2": {
     "message": "Quando coletamos as métricas, elas sempre são..."
@@ -3794,10 +3782,6 @@
   },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Política de Privacidade"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 cliques e visualizações no app são armazenados, mas outros detalhes (como seu endereço público) não são.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
   },
   "onboardingMetametricsNeverCollectEmphasis": {
     "message": "Privadas:"
@@ -3840,15 +3824,6 @@
   "onboardingPinExtensionChrome": {
     "message": "Clique no ícone da extensão do navegador"
   },
-  "onboardingPinExtensionDescription": {
-    "message": "Fixe a MetaMask no seu navegador de modo que seja acessível e fácil de visualizar as confirmações das transações."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "Você pode abrir a MetaMask clicando na extensão e acessando a sua carteira com apenas um clique."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "Clique no ícone da extensão do navegador para acessá-la instantaneamente"
-  },
   "onboardingPinExtensionLabel": {
     "message": "Fixar a MetaMask"
   },
@@ -3857,9 +3832,6 @@
   },
   "onboardingPinExtensionStep2": {
     "message": "2"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "Sua instalação da MetaMask está concluída!"
   },
   "onekey": {
     "message": "OneKey"
@@ -3928,18 +3900,12 @@
   "password": {
     "message": "Senha"
   },
-  "passwordNotLongEnough": {
-    "message": "A senha não é longa o suficiente"
-  },
   "passwordStrength": {
     "message": "Segurança da senha: $1",
     "description": "Return password strength to the user when user wants to create password."
   },
   "passwordStrengthDescription": {
     "message": "Uma senha forte pode aumentar a segurança da sua carteira caso seu dispositivo seja roubado ou comprometido."
-  },
-  "passwordTermsWarning": {
-    "message": "Compreendo que a MetaMask não é capaz de recuperar essa senha para mim. $1"
   },
   "passwordsDontMatch": {
     "message": "As senhas não coincidem"
@@ -5109,9 +5075,6 @@
   "skipAccountSecurity": {
     "message": "Pular a segurança da conta?"
   },
-  "skipAccountSecurityDetails": {
-    "message": "Compreendo que, até fazer o backup da minha Frase de Recuperação Secreta, poderei perder minhas contas e todos os ativos contidos nela."
-  },
   "slideBridgeDescription": {
     "message": "Transite por 9 cadeias, tudo dentro da sua carteira"
   },
@@ -6213,14 +6176,8 @@
   "termsOfService": {
     "message": "Termos de Serviço"
   },
-  "termsOfUseAgreeText": {
-    "message": " Eu concordo com os Termos de Uso, que se aplicam ao meu uso da MetaMask e de todos os seus recursos"
-  },
   "termsOfUseFooterText": {
     "message": "Favor rolar para ler todas as seções"
-  },
-  "termsOfUseTitle": {
-    "message": "Nossos Termos de Uso foram atualizados"
   },
   "testNetworks": {
     "message": "Redes de teste"
@@ -6509,9 +6466,6 @@
   },
   "unapproved": {
     "message": "Não aprovado"
-  },
-  "unexpectedBehavior": {
-    "message": "Este comportamento é inesperado e deve ser relatado como um bug, mesmo que suas contas sejam restauradas corretamente. Use o link abaixo para enviar um relatório de bug para a MetaMask."
   },
   "units": {
     "message": "unidades"
@@ -6811,8 +6765,5 @@
   },
   "yourTransactionJustConfirmed": {
     "message": "Não pudemos cancelar sua transação antes de ser confirmada na blockchain."
-  },
-  "yourWalletIsReady": {
-    "message": "Sua carteira está pronta"
   }
 }

@@ -368,6 +368,9 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "Gaz seçeneklerini güncelle"
   },
+  "alertContentMultipleApprovals": {
+    "message": "Bu işlem için gerekli olmamasına rağmen başkasına token'larınızı çekme izni veriyorsunuz."
+  },
   "alertDisableTooltip": {
     "message": "\"Ayarlar > Uyarılar\" kısmında değiştirilebilir"
   },
@@ -430,6 +433,9 @@
   },
   "alertReasonInsufficientBalance": {
     "message": "Para yetersiz"
+  },
+  "alertReasonMultipleApprovals": {
+    "message": "Gereksiz izin"
   },
   "alertReasonNetworkBusy": {
     "message": "Ağ meşgul"
@@ -2990,9 +2996,6 @@
     "message": "Hiç kimsenin bakmadığından emin olun",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageDefaultSettings": {
-    "message": "Varsayılan gizlilik ayarlarını yönet"
-  },
   "manageInstitutionalWallets": {
     "message": "Institutional Cüzdanlarını Yönet"
   },
@@ -3397,9 +3400,6 @@
   "newNftAddedMessage": {
     "message": "NFT başarılı bir şekilde eklendi!"
   },
-  "newPassword": {
-    "message": "Yeni Şifre (min 8 karakter)"
-  },
   "newPrivacyPolicyActionButton": {
     "message": "Daha fazlasını oku"
   },
@@ -3776,14 +3776,8 @@
   "onboardingCreateWallet": {
     "message": "Yeni bir cüzdan oluştur"
   },
-  "onboardingImportWallet": {
-    "message": "Mevcut bir cüzdanı içe aktar"
-  },
   "onboardingMetametricsAgree": {
     "message": "Kabul ediyorum"
-  },
-  "onboardingMetametricsDescription": {
-    "message": "MetaMask'i iyileştirmek için temel kullanım ve tanılama verilerini toplamak istiyoruz. Burada sunduğunuz verileri asla satmadığımızı bilmenizi isteriz."
   },
   "onboardingMetametricsDescription2": {
     "message": "Ölçümleri toplarken bu her zaman aşağıdaki gibi olacaktır..."
@@ -3794,10 +3788,6 @@
   },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Gizlilik Politikası"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 uygulama üzerindeki tıklamalar ve görüntülemeler depolanır ancak diğer bilgiler (genel adresiniz gibi) depolanmaz.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
   },
   "onboardingMetametricsNeverCollectEmphasis": {
     "message": "Özel:"
@@ -3840,15 +3830,6 @@
   "onboardingPinExtensionChrome": {
     "message": "Tarayıcı uzantısı simgesine tıklayın"
   },
-  "onboardingPinExtensionDescription": {
-    "message": "İşlem onaylarını erişilebilir ve kolay görüntülenebilir hale getirmek için MetaMask'i tarayıcınıza sabitleyin."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "Uzantıya tıklayarak MetaMask'i açabilir ve 1 tık ile cüzdanınıza erişim sağlayabilirsiniz."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "Hemen erişim sağlamak için tarayıcı uzantısı simgesine tıklayın"
-  },
   "onboardingPinExtensionLabel": {
     "message": "MetaMask'i sabitle"
   },
@@ -3857,9 +3838,6 @@
   },
   "onboardingPinExtensionStep2": {
     "message": "2"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "MetaMask kurulumunuz tamamlandı!"
   },
   "onekey": {
     "message": "OneKey"
@@ -3928,18 +3906,12 @@
   "password": {
     "message": "Şifre"
   },
-  "passwordNotLongEnough": {
-    "message": "Şifre yeterince uzun değil"
-  },
   "passwordStrength": {
     "message": "Şifre güvenlik düzeyi: $1",
     "description": "Return password strength to the user when user wants to create password."
   },
   "passwordStrengthDescription": {
     "message": "Güçlü bir şifre, cihazının çalınması veya güvenliğinin ihlal edilmesi durumunda cüzdanının güvenliğini artırabilir."
-  },
-  "passwordTermsWarning": {
-    "message": "MetaMask'in benim için bu şifreyi kurtaramayacağını anlıyorum. $1"
   },
   "passwordsDontMatch": {
     "message": "Şifreler uyumlu değil"
@@ -5109,9 +5081,6 @@
   "skipAccountSecurity": {
     "message": "Hesap güvenliğini atla?"
   },
-  "skipAccountSecurityDetails": {
-    "message": "Gizli Kurtarma İfademi yedekleyene kadar hesaplarımı ve tüm varlıkları kaybedebileceğimi anlıyorum."
-  },
   "slideBridgeDescription": {
     "message": "Tamamı cüzdanınız dahilinde olmak üzere 9 zincirde ilerleyin"
   },
@@ -5639,6 +5608,45 @@
   },
   "startEarning": {
     "message": "Kazanmaya başla"
+  },
+  "stateCorruptionAreYouSure": {
+    "message": "İlerlemek istediğinizden emin misiniz?"
+  },
+  "stateCorruptionCopyAndRestoreBeforeRecovery": {
+    "message": "$1 izleyerek kasanızı geri yüklemeye karar vermeden önce durum dosyanızı manuel olarak kopyalayıp geri yüklemeye çalışabilirsiniz.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "$1 izleyerek MetaMask'i sıfırlamaya karar vermeden önce durum dosyanızı manuel olarak kopyalayıp geri yüklemeye çalışabilirsiniz.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionDetectedNoBackup": {
+    "message": "Kasanız otomatik olarak kurtarılamaz."
+  },
+  "stateCorruptionDetectedWithBackup": {
+    "message": "Kasanız otomatik bir yedeklemeden kurtarılabilir. Otomatik kurtarma, mevcut ayar ve tercihlerinizi silerek yalnızca kasanızı geri yükleyecektir."
+  },
+  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
+    "message": "Dahili Hata: Veri tabanına erişim sağlanamıyor"
+  },
+  "stateCorruptionResetMetaMaskState": {
+    "message": "MetaMask Durumunu Sıfırla"
+  },
+  "stateCorruptionResettingDatabase": {
+    "message": "Veri tabanı sıfırlanıyor…"
+  },
+  "stateCorruptionRestoreAccountsFromBackup": {
+    "message": "Hesapları Geri Yükle"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "Veri tabanı geri yükleniyor…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "bu talimatları",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "Gizli Kurtarma İfadeniz nasıl kurtarılır"
   },
   "stateLogError": {
     "message": "Durum günlükleri alınırken hata."
@@ -6213,14 +6221,8 @@
   "termsOfService": {
     "message": "Hizmet şartları"
   },
-  "termsOfUseAgreeText": {
-    "message": " MetaMask ve tüm özelliklerini kullanımım için geçerli olan Kullanım Şartları bölümünü kabul ediyorum"
-  },
   "termsOfUseFooterText": {
     "message": "Tüm bölümleri okumak için lütfen kaydırın"
-  },
-  "termsOfUseTitle": {
-    "message": "Kullanım Şartları bölümümüz güncellendi"
   },
   "testNetworks": {
     "message": "Test ağları"
@@ -6511,7 +6513,7 @@
     "message": "Onaylanmadı"
   },
   "unexpectedBehavior": {
-    "message": "Bu davranış beklenmeyen bir davranıştı ve hesaplarınız düzgün bir şekilde geri yüklenmiş olsa bile hata olarak bildirilmelidir. Aşağıdaki bağlantıyı kullanarak MetaMask'e hata raporu gönderin."
+    "message": "Bu davranış beklenmedik bir durumdur ve hesaplarınız geri yüklense bile hata olarak bildirilmelidir."
   },
   "units": {
     "message": "birim"
@@ -6811,8 +6813,5 @@
   },
   "yourTransactionJustConfirmed": {
     "message": "Blok zinciri üzerinde onaylanmadan işleminizi iptal edemedik."
-  },
-  "yourWalletIsReady": {
-    "message": "Cüzdanınız hazır"
   }
 }

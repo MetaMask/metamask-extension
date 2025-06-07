@@ -368,6 +368,9 @@
   "alertActionUpdateGasFeeLevel": {
     "message": "가스 옵션 업데이트"
   },
+  "alertContentMultipleApprovals": {
+    "message": "이 트랜잭션에 필요하지 않음에도 불구하고 다른 사람이 토큰을 인출할 수 있도록 승인하고 있습니다."
+  },
   "alertDisableTooltip": {
     "message": "\"설정 > 경고\"에서 변경할 수 있습니다"
   },
@@ -430,6 +433,9 @@
   },
   "alertReasonInsufficientBalance": {
     "message": "자금 부족"
+  },
+  "alertReasonMultipleApprovals": {
+    "message": "불필요한 승인"
   },
   "alertReasonNetworkBusy": {
     "message": "네트워크 혼잡"
@@ -2990,9 +2996,6 @@
     "message": "다른 사람이 이 화면을 보고 있지는 않은지 확인하세요.",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageDefaultSettings": {
-    "message": "기본 개인정보 보호 설정 관리"
-  },
   "manageInstitutionalWallets": {
     "message": "Institutional 지갑 관리"
   },
@@ -3397,9 +3400,6 @@
   "newNftAddedMessage": {
     "message": "NFT를 성공적으로 추가했습니다!"
   },
-  "newPassword": {
-    "message": "새 비밀번호(8자 이상)"
-  },
   "newPrivacyPolicyActionButton": {
     "message": "자세히 보기"
   },
@@ -3776,14 +3776,8 @@
   "onboardingCreateWallet": {
     "message": "새 지갑 생성"
   },
-  "onboardingImportWallet": {
-    "message": "기존 지갑 가져오기"
-  },
   "onboardingMetametricsAgree": {
     "message": "동의함"
-  },
-  "onboardingMetametricsDescription": {
-    "message": "MetaMask를 개선하기 위해 기본적인 사용 및 진단 데이터를 수집하고자 합니다. MetaMask는 제공받은 데이터를 절대 판매하지 않습니다."
   },
   "onboardingMetametricsDescription2": {
     "message": "메트릭을 수집할 때는 항상..."
@@ -3794,10 +3788,6 @@
   },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "개인정보 처리방침"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 앱의 클릭 수와 조회수는 저장되지만, 공개 주소와 같은 기타 세부 정보는 저장되지 않습니다.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
   },
   "onboardingMetametricsNeverCollectEmphasis": {
     "message": "개인 정보:"
@@ -3840,15 +3830,6 @@
   "onboardingPinExtensionChrome": {
     "message": "브라우저 확장 아이콘 클릭"
   },
-  "onboardingPinExtensionDescription": {
-    "message": "쉽게 액세스하여 트랜잭션을 컨펌할 있도록 브라우저에 MetaMask를 고정해 놓으세요."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "확장을 클릭하여 MetaMask를 열면 클릭 한 번으로 지갑에 액세스할 수 있습니다."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "브라우저 확장 아이콘을 클릭하여 즉시 액세스하세요."
-  },
   "onboardingPinExtensionLabel": {
     "message": "MetaMask 고정"
   },
@@ -3857,9 +3838,6 @@
   },
   "onboardingPinExtensionStep2": {
     "message": "2"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "MetaMask 설치가 완료되었습니다!"
   },
   "onekey": {
     "message": "OneKey"
@@ -3928,18 +3906,12 @@
   "password": {
     "message": "비밀번호"
   },
-  "passwordNotLongEnough": {
-    "message": "비밀번호가 짧습니다."
-  },
   "passwordStrength": {
     "message": "비밀번호 강도: $1",
     "description": "Return password strength to the user when user wants to create password."
   },
   "passwordStrengthDescription": {
     "message": "장치가 도난되거나 해킹되는 경우에 대비해 강력한 암호를 설정하면 지갑의 보안을 향상시킬 수 있습니다."
-  },
-  "passwordTermsWarning": {
-    "message": "MetaMask가 이 비밀번호를 복구할 수 없음을 이해합니다. $1"
   },
   "passwordsDontMatch": {
     "message": "비밀번호가 일치하지 않습니다."
@@ -5109,9 +5081,6 @@
   "skipAccountSecurity": {
     "message": "계정 보안을 건너뛸까요?"
   },
-  "skipAccountSecurityDetails": {
-    "message": "본인은 본인의 비밀복구구문을 백업하지 않는 한 본인의 계정과 모든 자산을 잃을 수 있다는 사실을 이해합니다."
-  },
   "slideBridgeDescription": {
     "message": "지갑 내에서 9개 체인 간 이동"
   },
@@ -5639,6 +5608,45 @@
   },
   "startEarning": {
     "message": "수익 창출 시작"
+  },
+  "stateCorruptionAreYouSure": {
+    "message": "계속 진행하시겠습니까?"
+  },
+  "stateCorruptionCopyAndRestoreBeforeRecovery": {
+    "message": "$1에 따라 볼트를 복원하기로 결정하기 전에 상태 파일을 수동으로 복사하여 복원해 볼 수 있습니다.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionCopyAndRestoreBeforeReset": {
+    "message": "$1에 따라 MetaMask를 초기화하기 전에 상태 파일을 수동으로 복사하여 복원해 볼 수 있습니다.",
+    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
+  },
+  "stateCorruptionDetectedNoBackup": {
+    "message": "볼트를 자동으로 복구할 수 없습니다."
+  },
+  "stateCorruptionDetectedWithBackup": {
+    "message": "자동 백업으로 볼트를 복구할 수 있습니다. 자동 복구는 현재 설정과 기본 설정을 삭제하고 볼트만 복원합니다."
+  },
+  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
+    "message": "내부 오류: 데이터베이스에 접근할 수 없습니다"
+  },
+  "stateCorruptionResetMetaMaskState": {
+    "message": "MetaMask 상태 초기화"
+  },
+  "stateCorruptionResettingDatabase": {
+    "message": "데이터베이스 초기화 중…"
+  },
+  "stateCorruptionRestoreAccountsFromBackup": {
+    "message": "계정 복원"
+  },
+  "stateCorruptionRestoringDatabase": {
+    "message": "데이터베이스 복원 중…"
+  },
+  "stateCorruptionTheseInstructions": {
+    "message": "이 지침",
+    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
+  },
+  "stateCorruptionTheseInstructionsLinkTitle": {
+    "message": "비밀복구구문 복구 방법"
   },
   "stateLogError": {
     "message": "상태 로그를 가져오는 도중 오류가 발생했습니다."
@@ -6213,14 +6221,8 @@
   "termsOfService": {
     "message": "서비스 약관"
   },
-  "termsOfUseAgreeText": {
-    "message": " 본인은 MetaMask의 사용 및 관련 모든 기능에 적용되는 이용약관에 동의합니다"
-  },
   "termsOfUseFooterText": {
     "message": "스크롤하여 모든 섹션의 내용을 확인하세요"
-  },
-  "termsOfUseTitle": {
-    "message": "이용약관이 개정되었습니다"
   },
   "testNetworks": {
     "message": "테스트 네트워크"
@@ -6511,7 +6513,7 @@
     "message": "승인되지 않음"
   },
   "unexpectedBehavior": {
-    "message": "이 동작은 예상치 못한 것으로, 계정이 정상적으로 복구되었더라도 버그로 신고해야 합니다. 아래 링크를 통해 MetaMask에 버그를 신고해 주세요."
+    "message": "이 동작은 예상치 못한 것이며 계정이 복원되더라도 버그로 신고해야 합니다."
   },
   "units": {
     "message": "단위"
@@ -6811,8 +6813,5 @@
   },
   "yourTransactionJustConfirmed": {
     "message": "블록체인에서 거래가 확인되기 전에는 거래를 취소할 수 없습니다."
-  },
-  "yourWalletIsReady": {
-    "message": "지갑이 준비되었습니다"
   }
 }
