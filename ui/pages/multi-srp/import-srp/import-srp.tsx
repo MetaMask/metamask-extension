@@ -372,7 +372,7 @@ export const ImportSrp = () => {
               description={srpError}
               actionButtonLabel={t('clear')}
               actionButtonOnClick={() => {
-                onSrpChange(Array(defaultNumberOfWords).fill(''));
+                onSrpChange(Array(numberOfWords).fill(''));
                 setSrpError('');
               }}
               data-testid="bannerAlert"
