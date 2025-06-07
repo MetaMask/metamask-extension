@@ -11,8 +11,6 @@ import {
   TextField,
   TextFieldType,
   ButtonLink,
-  Button,
-  ButtonSize,
 } from '../../../components/component-library';
 import { AssetPicker } from '../../../components/multichain/asset-picker-amount/asset-picker';
 import { TabName } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
@@ -44,7 +42,6 @@ import {
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { getMultichainCurrentChainId } from '../../../selectors/multichain';
-import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
 const sanitizeAmountInput = (textToSanitize: string) => {
   // Remove characters that are not numbers or decimal points if rendering a controlled or pasted value
@@ -70,14 +67,13 @@ export const BridgeInputGroup = ({
   onMaxButtonClick,
   isMultiselectEnabled,
   onBlockExplorerClick,
-  buttonProps,
+  dataTestId,
   balanceAmount,
 }: {
   balanceAmount?: BigNumber;
   amountInFiat?: string;
   onAmountChange?: (value: string) => void;
   token: BridgeToken | null;
-  buttonProps: { testId: string };
   amountFieldProps: Pick<
     React.ComponentProps<typeof TextField>,
     'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
@@ -92,6 +88,7 @@ export const BridgeInputGroup = ({
   | 'onAssetChange'
   | 'isTokenListLoading'
   | 'isMultiselectEnabled'
+  | 'dataTestId'
 >) => {
   const t = useI18nContext();
 
@@ -114,7 +111,7 @@ export const BridgeInputGroup = ({
   const isAmountReadOnly =
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    amountFieldProps?.readOnly || amountFieldProps?.disabled;
+    amountFieldProps?.readOnly;
 
   useEffect(() => {
     if (!isAmountReadOnly && inputRef.current) {
@@ -235,35 +232,13 @@ export const BridgeInputGroup = ({
           visibleTabs={[TabName.TOKENS]}
           asset={(token as never) ?? undefined}
           onAssetChange={onAssetChange}
+          dataTestId={dataTestId}
           networkProps={networkProps}
           customTokenListGenerator={customTokenListGenerator}
           isTokenListLoading={isTokenListLoading}
           isMultiselectEnabled={isMultiselectEnabled}
-        >
-          {(onClickHandler, networkImageSrc) =>
-            isAmountReadOnly && !token ? (
-              <Button
-                data-testid={buttonProps.testId}
-                onClick={onClickHandler}
-                size={ButtonSize.Lg}
-                paddingLeft={6}
-                paddingRight={6}
-                fontWeight={FontWeight.Normal}
-                style={{ whiteSpace: 'nowrap' }}
-              >
-                {isSwap ? t('swapSwapTo') : t('bridgeTo')}
-              </Button>
-            ) : (
-              <BridgeAssetPickerButton
-                onClick={onClickHandler}
-                networkImageSrc={networkImageSrc}
-                asset={(token as never) ?? undefined}
-                networkProps={networkProps}
-                data-testid={buttonProps.testId}
-              />
-            )
-          }
-        </AssetPicker>
+          action={isSwap ? 'swap' : 'bridge'}
+        />
       </Row>
 
       <Row justifyContent={JustifyContent.spaceBetween}>
