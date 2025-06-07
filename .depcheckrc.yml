@@ -42,8 +42,6 @@ ignores:
   - 'wait-on'
   - 'tsx' # used in .devcontainer
   - 'prettier-eslint' # used by the Prettier ESLint VSCode extension
-  - 'tar' # used by foundryup.ts
-  - 'minipass' # used by foundryup.ts
   - 'tweetnacl' # used by solana-wallet-standard
   - 'bs58' # used by solana-wallet-standard
   # storybook
