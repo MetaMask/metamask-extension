@@ -33,6 +33,7 @@ import TransactionAlreadyConfirmed from './transaction-already-confirmed';
 
 // Metamask Notifications
 import TurnOnMetamaskNotifications from './turn-on-metamask-notifications/turn-on-metamask-notifications';
+import { NetworkManager } from '../../multichain/network-manager';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -278,6 +279,16 @@ const MODALS = {
     },
     contentStyle: {
       borderRadius: '8px',
+    },
+  },
+
+  NETWORK_MANAGER: {
+    contents: <NetworkManager />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
     },
   },
 

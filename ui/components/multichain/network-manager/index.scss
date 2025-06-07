@@ -1,0 +1,24 @@
+@use "design-system";
+
+
+.network-manager__tab-list {
+  display: flex;
+  width: 100%;
+
+  li {
+    flex: 1;
+    text-align: center;
+
+    button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
+
+.network-manager__networks-button-icon{
+  width: 24px;
+  justify-content: center;
+  display: flex
+}
