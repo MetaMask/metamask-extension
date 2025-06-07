@@ -46,6 +46,7 @@ const initialStore = () => ({
     isBackupAndSyncEnabled: true,
     participateInMetaMetrics: false,
     isBackupAndSyncUpdateLoading: false,
+    keyrings: [],
   },
   appState: {
     externalServicesOnboardingToggleState: true,

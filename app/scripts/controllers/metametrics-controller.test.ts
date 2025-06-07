@@ -1458,7 +1458,7 @@ describe('MetaMetricsController', function () {
           currentCurrency: 'usd',
           dataCollectionForMarketing: false,
           preferences: { privacyMode: true, tokenNetworkFilter: [] },
-          sessionData: undefined,
+          srpSessionData: undefined,
           keyrings: [],
         });
 
@@ -1558,7 +1558,7 @@ describe('MetaMetricsController', function () {
           },
           security_providers: ['blockaid'],
           currentCurrency: 'usd',
-          sessionData: undefined,
+          srpSessionData: undefined,
           keyrings: [],
           multichainNetworkConfigurationsByChainId: {},
         });
@@ -1617,16 +1617,18 @@ describe('MetaMetricsController', function () {
           dataCollectionForMarketing: false,
           preferences: { privacyMode: true, tokenNetworkFilter: [] },
           securityAlertsEnabled: true,
-          sessionData: {
-            token: {
-              accessToken: '',
-              expiresIn: 0,
-              obtainedAt: 0,
-            },
-            profile: {
-              identifierId: 'identifierId',
-              profileId: 'profileId',
-              metaMetricsId: 'testid',
+          srpSessionData: {
+            entropySourceId1: {
+              token: {
+                accessToken: '',
+                expiresIn: 0,
+                obtainedAt: 0,
+              },
+              profile: {
+                identifierId: 'identifierId',
+                profileId: 'profileId',
+                metaMetricsId: 'testid',
+              },
             },
           },
           keyrings: [],
@@ -1696,16 +1698,18 @@ describe('MetaMetricsController', function () {
           securityAlertsEnabled: true,
           security_providers: ['blockaid'],
           currentCurrency: 'usd',
-          sessionData: {
-            token: {
-              accessToken: '',
-              expiresIn: 0,
-              obtainedAt: 0,
-            },
-            profile: {
-              identifierId: 'identifierId',
-              profileId: 'profileId',
-              metaMetricsId: 'testid',
+          srpSessionData: {
+            entropySourceId1: {
+              token: {
+                accessToken: '',
+                expiresIn: 0,
+                obtainedAt: 0,
+              },
+              profile: {
+                identifierId: 'identifierId',
+                profileId: 'profileId',
+                metaMetricsId: 'testid',
+              },
             },
           },
           keyrings: [],
@@ -1756,16 +1760,18 @@ describe('MetaMetricsController', function () {
           securityAlertsEnabled: true,
           security_providers: ['blockaid'],
           currentCurrency: 'usd',
-          sessionData: {
-            token: {
-              accessToken: '',
-              expiresIn: 0,
-              obtainedAt: 0,
-            },
-            profile: {
-              identifierId: 'identifierId',
-              profileId: 'profileId',
-              metaMetricsId: 'testid',
+          srpSessionData: {
+            entropySourceId1: {
+              token: {
+                accessToken: '',
+                expiresIn: 0,
+                obtainedAt: 0,
+              },
+              profile: {
+                identifierId: 'identifierId',
+                profileId: 'profileId',
+                metaMetricsId: 'testid',
+              },
             },
           },
           keyrings: [],

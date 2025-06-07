@@ -81,7 +81,7 @@ export type ControllerStatePropertiesEnumerated = {
   web3ShimUsageOrigins?: AlertControllerState['web3ShimUsageOrigins'];
   announcements: AnnouncementControllerState['announcements'];
   isSignedIn: AuthenticationController.AuthenticationControllerState['isSignedIn'];
-  sessionData?: AuthenticationController.AuthenticationControllerState['sessionData'];
+  srpSessionData?: AuthenticationController.AuthenticationControllerState['srpSessionData'];
   pinnedAccountList: AccountOrderControllerState['pinnedAccountList'];
   hiddenAccountList: AccountOrderControllerState['hiddenAccountList'];
   currentAppVersion: AppMetadataControllerState['currentAppVersion'];

@@ -27,13 +27,9 @@ import {
   getMockDeleteFCMRegistrationTokenResponse,
 } from '@metamask/notification-services-controller/push-services/mocks';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import {
-  getMockAuthNonceResponse,
-  getMockAuthLoginResponse,
-  getMockAuthAccessTokenResponse,
-} from '@metamask/profile-sync-controller/auth/mocks';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
+import { mockIdentityServices } from '../identity/mocks';
 
 type MockResponse = {
   url: string | RegExp;
@@ -101,16 +97,13 @@ export async function mockNotificationServices(
   server: Mockttp,
   userStorageMockttpControllerInstance: UserStorageMockttpController = new UserStorageMockttpController(),
 ) {
-  // Storage
+  // Storage and Auth
+  await mockIdentityServices(server, userStorageMockttpControllerInstance);
+
   userStorageMockttpControllerInstance.setupPath(
     USER_STORAGE_FEATURE_NAMES.notifications,
     server,
   );
-
-  // Auth
-  mockAPICall(server, getMockAuthNonceResponse());
-  mockAPICall(server, getMockAuthLoginResponse());
-  mockAPICall(server, getMockAuthAccessTokenResponse());
 
   // Notifications
   mockAPICall(server, mockFeatureAnnouncementResponse, (r) =>

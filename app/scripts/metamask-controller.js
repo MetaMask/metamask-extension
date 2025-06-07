@@ -4649,6 +4649,7 @@ export default class MetamaskController extends EventEmitter {
       return newAccountAddress;
     } finally {
       releaseLock();
+      await this.userStorageController.syncInternalAccountsWithUserStorage();
     }
   }
 

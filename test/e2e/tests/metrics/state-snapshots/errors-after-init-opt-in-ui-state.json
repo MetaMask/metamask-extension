@@ -359,7 +359,8 @@
     "submitHistory": "object",
     "delegations": "object",
     "encryptionKey": "string",
-    "encryptionSalt": "string"
+    "encryptionSalt": "string",
+    "srpSessionData": "object"
   },
   "ramps": "object",
   "send": "object",

@@ -1,7 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { mockIdentityServices } from '../identity/mocks';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 import { accountsToMockForAccountsSync as unencryptedMockAccounts } from '../identity/account-syncing/mock-data';
 import { Driver } from '../../webdriver/driver';
@@ -88,7 +87,6 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
                 server,
                 userStorageMockttpController,
               ),
-              await mockIdentityServices(server, userStorageMockttpController),
             ];
           },
         },
