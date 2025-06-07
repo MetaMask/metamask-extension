@@ -224,7 +224,7 @@ export const AppHeaderUnlockedContent = ({
       >
         <Box display={Display.Flex} gap={4}>
           {showConnectedStatus && (
-            <Box ref={menuRef}>
+            <Box ref={menuRef} data-testid="connection-menu">
               <ConnectedStatusIndicator
                 onClick={() => handleConnectionsRoute()}
               />
