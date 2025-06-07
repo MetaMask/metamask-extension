@@ -36,6 +36,7 @@ import type {
   ThrottledOrigins,
   ThrottledOrigin,
 } from '../../../shared/types/origin-throttling';
+import { ScanAddressResponse } from '../lib/trust-signals/types';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -74,6 +75,7 @@ export type AppStateControllerState = {
   nftsDropdownState: Json;
   surveyLinkLastClickedOrClosed: number | null;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
+  addressSecurityAlertResponses: Record<string, ScanAddressResponse>;
   // States used for displaying the changed network toast
   switchedNetworkDetails: Record<string, string> | null;
   switchedNetworkNeverShowMessage: boolean;
@@ -155,6 +157,7 @@ type AppStateControllerInitState = Partial<
     | 'qrHardware'
     | 'nftsDropdownState'
     | 'signatureSecurityAlertResponses'
+    | 'addressSecurityAlertResponses'
     | 'switchedNetworkDetails'
     | 'currentExtensionPopupId'
   >
@@ -206,6 +209,7 @@ function getInitialStateOverrides() {
     qrHardware: {},
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
+    addressSecurityAlertResponses: {},
     switchedNetworkDetails: null,
     currentExtensionPopupId: 0,
   };
@@ -321,6 +325,10 @@ const controllerMetadata = {
     anonymous: true,
   },
   signatureSecurityAlertResponses: {
+    persist: false,
+    anonymous: true,
+  },
+  addressSecurityAlertResponses: {
     persist: false,
     anonymous: true,
   },
@@ -968,6 +976,22 @@ export class AppStateController extends BaseController<
         ] = securityAlertResponse;
       });
     }
+  }
+
+  getAddressSecurityAlertResponse(
+    address: string,
+  ): ScanAddressResponse | undefined {
+    return this.state.addressSecurityAlertResponses[address.toLowerCase()];
+  }
+
+  addAddressSecurityAlertResponse(
+    address: string,
+    addressSecurityAlertResponse: ScanAddressResponse,
+  ): void {
+    this.update((state) => {
+      state.addressSecurityAlertResponses[address.toLowerCase()] =
+        addressSecurityAlertResponse;
+    });
   }
 
   /**
