@@ -935,13 +935,11 @@ export const ImportTokensModal = ({ onClose }) => {
                           }
                           error={
                             customAddressError ||
-                            mainnetTokenWarning ||
                             nftAddressError
                           }
                           textFieldProps={{
                             className:
                               customAddressError ||
-                              mainnetTokenWarning ||
                               nftAddressError
                                 ? 'import-tokens-modal__custom-token-form__text-outline-error'
                                 : 'import-tokens-modal__custom-token-form__text-outline-success',
