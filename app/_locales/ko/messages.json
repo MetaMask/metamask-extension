@@ -1444,9 +1444,6 @@
   "createNewAccountHeader": {
     "message": "새 계정 만들기"
   },
-  "createNewWallet": {
-    "message": "새 지갑 생성"
-  },
   "createPassword": {
     "message": "비밀번호 생성"
   },
@@ -2547,9 +2544,6 @@
   },
   "importAccountMsg": {
     "message": "가져온 계정은 MetaMask 계정 비밀복구구문과 연결하지 못합니다. 가져온 계정에 대해 자세히 알아보기"
-  },
-  "importMyWallet": {
-    "message": "내 지갑 가져오기"
   },
   "importNFT": {
     "message": "NFT 가져오기"
@@ -3939,9 +3933,6 @@
   },
   "passwordNotLongEnough": {
     "message": "비밀번호가 짧습니다."
-  },
-  "passwordSetupDetails": {
-    "message": "이 비밀번호는 이 장치에서만 MetaMask 지갑의 잠금을 해제합니다. MetaMask는 이 비밀번호를 복구할 수 없습니다."
   },
   "passwordStrength": {
     "message": "비밀번호 강도: $1",
