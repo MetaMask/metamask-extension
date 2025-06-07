@@ -74,7 +74,6 @@ export type AssetPickerProps = {
   isDisabled?: boolean;
   action?: 'send' | 'receive';
   isMultiselectEnabled?: boolean;
-  autoFocus?: boolean;
   networkProps?: Pick<
     React.ComponentProps<typeof AssetPickerModalNetwork>,
     | 'network'
@@ -107,7 +106,6 @@ export function AssetPicker({
   customTokenListGenerator,
   isTokenListLoading = false,
   isMultiselectEnabled = false,
-  autoFocus = true,
 }: AssetPickerProps) {
   const t = useI18nContext();
 
@@ -248,7 +246,6 @@ export function AssetPicker({
         }
         customTokenListGenerator={customTokenListGenerator}
         isTokenListLoading={isTokenListLoading}
-        autoFocus={autoFocus}
       />
 
       {/** If a child prop is passed in, use it as the trigger button instead of the default */}

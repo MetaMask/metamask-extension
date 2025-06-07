@@ -119,7 +119,6 @@ type AssetPickerModalProps = {
     AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
   >;
   isTokenListLoading?: boolean;
-  autoFocus: boolean;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModalTabs>,
   'visibleTabs' | 'defaultActiveTabKey'
@@ -147,7 +146,6 @@ export function AssetPickerModal({
   isTokenListLoading = false,
   isMultiselectEnabled,
   selectedChainIds,
-  autoFocus,
   ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
@@ -158,11 +156,27 @@ export function AssetPickerModal({
 
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
-  const debouncedSetSearchQuery = debounce(setDebouncedSearchQuery, 200);
+  const debouncedSetSearchQuery = useCallback(
+    debounce((value) => {
+      setDebouncedSearchQuery(value);
+    }, 200),
+    [],
+  );
+
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Cleanup abort controller and debounce on unmount
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+      abortControllerRef.current = null;
+      debouncedSetSearchQuery.cancel();
+    };
+  }, []);
+
   useEffect(() => {
     debouncedSetSearchQuery(searchQuery);
   }, [searchQuery, debouncedSetSearchQuery]);
-  const abortControllerRef = useRef<AbortController | null>(null);
 
   const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
   const memoizedSwapsBlockedTokens = useMemo(() => {
@@ -656,7 +670,6 @@ export function AssetPickerModal({
                     abortControllerRef.current?.abort();
                     setSearchQuery(value);
                   }}
-                  autoFocus={autoFocus}
                 />
                 <AssetList
                   network={network}
@@ -678,18 +691,17 @@ export function AssetPickerModal({
                   }}
                 />
               </React.Fragment>
-              <AssetPickerModalNftTab
-                key={TabName.NFTS}
-                searchQuery={searchQuery}
-                onClose={onClose}
-                renderSearch={() => (
-                  <Search
-                    isNFTSearch
-                    searchQuery={searchQuery}
-                    onChange={(value) => setSearchQuery(value)}
-                  />
-                )}
-              />
+              <React.Fragment key={TabName.NFTS}>
+                <Search
+                  isNFTSearch
+                  searchQuery={searchQuery}
+                  onChange={(value) => setSearchQuery(value)}
+                />
+                <AssetPickerModalNftTab
+                  searchQuery={searchQuery}
+                  onClose={onClose}
+                />
+              </React.Fragment>
             </AssetPickerModalTabs>
           )}
         </Box>

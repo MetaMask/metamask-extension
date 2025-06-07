@@ -20,7 +20,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
  * @param props.isNFTSearch - Indicates if the search is for NFTs.
  * @param props.props - Additional props for the containing Box component.
  * @param props.placeholder - A custom placeholder for the search input.
- * @param props.autoFocus
  * @returns The rendered search component.
  */
 export const Search = ({
@@ -29,14 +28,12 @@ export const Search = ({
   isNFTSearch = false,
   props,
   placeholder,
-  autoFocus = true,
 }: {
   searchQuery: string;
   onChange: (value: string) => void;
   isNFTSearch?: boolean;
   props?: React.ComponentProps<typeof Box>;
   placeholder?: JSX.Element | string | null;
-  autoFocus?: boolean;
 }) => {
   const t = useI18nContext();
 
@@ -57,7 +54,7 @@ export const Search = ({
         value={searchQuery}
         onChange={(e) => onChange(e.target.value)}
         error={false}
-        autoFocus={autoFocus}
+        autoFocus
         autoComplete={false}
         width={BlockSize.Full}
         clearButtonOnClick={() => onChange('')}
