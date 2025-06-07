@@ -11,8 +11,6 @@ import {
   TextField,
   TextFieldType,
   ButtonLink,
-  Button,
-  ButtonSize,
 } from '../../../components/component-library';
 import { AssetPicker } from '../../../components/multichain/asset-picker-amount/asset-picker';
 import { TabName } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
@@ -44,7 +42,6 @@ import {
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { getMultichainCurrentChainId } from '../../../selectors/multichain';
-import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
 const sanitizeAmountInput = (textToSanitize: string) => {
   // Remove characters that are not numbers or decimal points if rendering a controlled or pasted value
@@ -70,14 +67,12 @@ export const BridgeInputGroup = ({
   onMaxButtonClick,
   isMultiselectEnabled,
   onBlockExplorerClick,
-  buttonProps,
   balanceAmount,
 }: {
   balanceAmount?: BigNumber;
   amountInFiat?: string;
   onAmountChange?: (value: string) => void;
   token: BridgeToken | null;
-  buttonProps: { testId: string };
   amountFieldProps: Pick<
     React.ComponentProps<typeof TextField>,
     'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
@@ -92,6 +87,7 @@ export const BridgeInputGroup = ({
   | 'onAssetChange'
   | 'isTokenListLoading'
   | 'isMultiselectEnabled'
+  | 'dataTestId'
 >) => {
   const t = useI18nContext();
 
@@ -114,58 +110,24 @@ export const BridgeInputGroup = ({
   const isAmountReadOnly =
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    amountFieldProps?.readOnly || amountFieldProps?.disabled;
+    // amountFieldProps?.readOnly ||
+    amountFieldProps?.disabled;
 
   useEffect(() => {
-    if (!isAmountReadOnly && inputRef.current) {
+    // if (!isAmountReadOnly && inputRef.current) {
+    if (inputRef.current && !amountFieldProps?.disabled) {
       inputRef.current.value = amountFieldProps?.value?.toString() ?? '';
       inputRef.current.focus();
     }
+  }, [amountFieldProps?.value, amountFieldProps?.disabled, token]);
+
+  useEffect(() => {
     return () => {
       inputRef.current = null;
     };
-  }, [amountFieldProps?.value, isAmountReadOnly, token]);
+  }, []);
 
   const isSwap = useIsMultichainSwap();
-
-  const handleAddressClick = () => {
-    if (token && selectedChainId) {
-      const caipChainId = formatChainIdToCaip(selectedChainId);
-      const isSolana = caipChainId === MultichainNetworks.SOLANA;
-
-      let blockExplorerUrl = '';
-      if (isSolana) {
-        const blockExplorerUrls =
-          MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[caipChainId];
-        if (blockExplorerUrls) {
-          blockExplorerUrl = formatBlockExplorerAddressUrl(
-            blockExplorerUrls,
-            token.address,
-          );
-        }
-      } else {
-        const explorerUrl =
-          networkProps?.network?.blockExplorerUrls?.[
-            networkProps?.network?.defaultBlockExplorerUrlIndex ?? 0
-          ];
-        if (explorerUrl) {
-          blockExplorerUrl = getAccountLink(
-            token.address,
-            selectedChainId,
-            {
-              blockExplorerUrl: explorerUrl,
-            },
-            undefined,
-          );
-        }
-      }
-
-      if (blockExplorerUrl) {
-        handleCopy(blockExplorerUrl);
-        onBlockExplorerClick?.(token);
-      }
-    }
-  };
 
   return (
     <Column paddingInline={6} gap={1}>
@@ -234,36 +196,18 @@ export const BridgeInputGroup = ({
           header={header}
           visibleTabs={[TabName.TOKENS]}
           asset={(token as never) ?? undefined}
-          onAssetChange={onAssetChange}
+          onAssetChange={(asset) => {
+            onAssetChange(asset);
+            // if (!isAmountReadOnly) {
+            //   inputRef.current?.focus();
+            // }
+          }}
           networkProps={networkProps}
           customTokenListGenerator={customTokenListGenerator}
           isTokenListLoading={isTokenListLoading}
           isMultiselectEnabled={isMultiselectEnabled}
-        >
-          {(onClickHandler, networkImageSrc) =>
-            isAmountReadOnly && !token ? (
-              <Button
-                data-testid={buttonProps.testId}
-                onClick={onClickHandler}
-                size={ButtonSize.Lg}
-                paddingLeft={6}
-                paddingRight={6}
-                fontWeight={FontWeight.Normal}
-                style={{ whiteSpace: 'nowrap' }}
-              >
-                {isSwap ? t('swapSwapTo') : t('bridgeTo')}
-              </Button>
-            ) : (
-              <BridgeAssetPickerButton
-                onClick={onClickHandler}
-                networkImageSrc={networkImageSrc}
-                asset={(token as never) ?? undefined}
-                networkProps={networkProps}
-                data-testid={buttonProps.testId}
-              />
-            )
-          }
-        </AssetPicker>
+          action={isSwap ? 'swap' : 'bridge'}
+        />
       </Row>
 
       <Row justifyContent={JustifyContent.spaceBetween}>
@@ -296,7 +240,44 @@ export const BridgeInputGroup = ({
           }
           onClick={() => {
             if (isAmountReadOnly && token && selectedChainId) {
-              handleAddressClick();
+              () => {
+                const caipChainId = formatChainIdToCaip(selectedChainId);
+                const isSolana = caipChainId === MultichainNetworks.SOLANA;
+
+                let blockExplorerUrl = '';
+                if (isSolana) {
+                  const blockExplorerUrls =
+                    MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+                      caipChainId
+                    ];
+                  if (blockExplorerUrls) {
+                    blockExplorerUrl = formatBlockExplorerAddressUrl(
+                      blockExplorerUrls,
+                      token.address,
+                    );
+                  }
+                } else {
+                  const explorerUrl =
+                    networkProps?.network?.blockExplorerUrls?.[
+                      networkProps?.network?.defaultBlockExplorerUrlIndex ?? 0
+                    ];
+                  if (explorerUrl) {
+                    blockExplorerUrl = getAccountLink(
+                      token.address,
+                      selectedChainId,
+                      {
+                        blockExplorerUrl: explorerUrl,
+                      },
+                      undefined,
+                    );
+                  }
+                }
+
+                if (blockExplorerUrl) {
+                  handleCopy(blockExplorerUrl);
+                  onBlockExplorerClick?.(token);
+                }
+              };
             } else if (token && selectedChainId) {
               handleCopy(token.address);
             }

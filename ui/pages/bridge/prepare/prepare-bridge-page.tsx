@@ -256,7 +256,10 @@ const PrepareBridgePage = () => {
 
   // Resets the banner visibility when the estimated return is low
   const [isLowReturnBannerOpen, setIsLowReturnBannerOpen] = useState(true);
-  useEffect(() => setIsLowReturnBannerOpen(true), [quotesRefreshCount]);
+  useEffect(
+    () => setIsLowReturnBannerOpen(true),
+    [isEstimatedReturnLow, activeQuote],
+  );
 
   // Resets the banner visibility when new alerts found
   const [isTokenAlertBannerOpen, setIsTokenAlertBannerOpen] = useState(true);
@@ -331,12 +334,7 @@ const PrepareBridgePage = () => {
         block: 'start',
       });
     }
-  }, [
-    isEstimatedReturnLow,
-    nativeAssetBalance,
-    isInsufficientGasForQuote,
-    isLowReturnBannerOpen,
-  ]);
+  }, [isEstimatedReturnLow, nativeAssetBalance, isInsufficientGasForQuote]);
 
   const isToOrFromSolana = useSelector(getIsToOrFromSolana);
   const isSolanaSwap = useSelector(getIsSolanaSwap);
@@ -605,22 +603,11 @@ const PrepareBridgePage = () => {
             if (token.address === toToken?.address) {
               dispatch(setToToken(null));
             }
-            bridgeToken.address &&
-              trackInputEvent({
-                input: 'token_source',
-                value: bridgeToken.address,
-              });
           }}
           networkProps={{
             network: fromChain,
             networks: isSwap ? undefined : fromChains,
             onNetworkChange: (networkConfig) => {
-              networkConfig?.chainId &&
-                networkConfig.chainId !== fromChain?.chainId &&
-                trackInputEvent({
-                  input: 'chain_source',
-                  value: networkConfig.chainId,
-                });
               if (
                 networkConfig?.chainId &&
                 networkConfig.chainId === toChain?.chainId
@@ -667,7 +654,7 @@ const PrepareBridgePage = () => {
             value: fromAmount || undefined,
           }}
           isTokenListLoading={isFromTokensLoading}
-          buttonProps={{ testId: 'bridge-source-button' }}
+          dataTestId="bridge-source-button"
           onBlockExplorerClick={(token) => {
             setBlockExplorerToken(token);
             setShowBlockExplorerToast(true);
@@ -753,11 +740,11 @@ const PrepareBridgePage = () => {
                     ),
                   );
                 setRotateSwitchTokens(!rotateSwitchTokens);
-                flippedRequestProperties &&
-                  trackCrossChainSwapsEvent({
-                    event: MetaMetricsEventName.InputSourceDestinationFlipped,
-                    properties: flippedRequestProperties,
-                  });
+                // flippedRequestProperties &&
+                //   trackCrossChainSwapsEvent({
+                //     event: MetaMetricsEventName.InputSourceDestinationFlipped,
+                //     properties: flippedRequestProperties,
+                //   });
                 if (!isSwap) {
                   // Only flip networks if bridging
                   const toChainClientId =
@@ -811,11 +798,6 @@ const PrepareBridgePage = () => {
                     network: toChain,
                     networks: toChains,
                     onNetworkChange: (networkConfig) => {
-                      networkConfig.chainId !== toChain?.chainId &&
-                        trackInputEvent({
-                          input: 'chain_destination',
-                          value: networkConfig.chainId,
-                        });
                       dispatch(setToChainId(networkConfig.chainId));
                       const destNativeAsset = getNativeAssetForChainId(
                         networkConfig.chainId,
@@ -850,7 +832,7 @@ const PrepareBridgePage = () => {
                 : 'amount-input',
             }}
             isTokenListLoading={isToTokensLoading}
-            buttonProps={{ testId: 'bridge-destination-button' }}
+            dataTestId="bridge-destination-button"
             onBlockExplorerClick={(token) => {
               setBlockExplorerToken(token);
               setShowBlockExplorerToast(true);
@@ -1062,7 +1044,7 @@ const PrepareBridgePage = () => {
             !isInsufficientBalance(srcTokenBalance) &&
             isInsufficientGasForQuote(nativeAssetBalance) && (
               <BannerAlert
-                ref={isEstimatedReturnLowRef}
+                ref={insufficientBalanceBannerRef}
                 marginInline={4}
                 marginBottom={3}
                 title={t('bridgeValidationInsufficientGasTitle', [ticker])}
@@ -1077,7 +1059,7 @@ const PrepareBridgePage = () => {
             )}
           {isEstimatedReturnLow && isLowReturnBannerOpen && activeQuote && (
             <BannerAlert
-              ref={insufficientBalanceBannerRef}
+              ref={isEstimatedReturnLowRef}
               marginInline={4}
               marginBottom={3}
               title={t('lowEstimatedReturnTooltipTitle')}
