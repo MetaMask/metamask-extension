@@ -659,9 +659,6 @@
   "basic": {
     "message": "Dasar"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Aktifkan fungsionalitas dasar"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Fungsionalitas dasar tidak aktif"
   },

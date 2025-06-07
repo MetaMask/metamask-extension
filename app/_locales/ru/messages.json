@@ -659,9 +659,6 @@
   "basic": {
     "message": "Базовый"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Включить базовый функционал"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Базовый функционал отключен"
   },
