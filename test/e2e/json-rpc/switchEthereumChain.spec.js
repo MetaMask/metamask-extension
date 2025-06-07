@@ -179,6 +179,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
         // Switch to Dapp Two
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
+
         // Initiate send transaction on Dapp two
         await driver.clickElement('#sendButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -201,7 +202,8 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
-        await switchToNotificationWindow(driver, 4);
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.findClickableElements({
           text: 'Confirm',
           tag: 'button',
@@ -213,9 +215,11 @@ describe('Switch Ethereum Chain for two dapps', function () {
         // Delay here after notification for second notification popup for switchEthereumChain
         await driver.delay(1000);
 
-        // Switch and confirm to queued notification for switchEthereumChain
-        await switchToNotificationWindow(driver, 4);
+        await driver.switchToWindowWithUrl(DAPP_URL);
+        await driver.waitForSelector({ css: '#chainId', text: '0x1' });
 
+        // Switch and confirm to queued notification for switchEthereumChain
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.findClickableElements({
           text: 'Confirm',
           tag: 'button',
