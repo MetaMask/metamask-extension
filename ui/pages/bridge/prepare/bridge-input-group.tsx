@@ -114,14 +114,17 @@ export const BridgeInputGroup = ({
     amountFieldProps?.readOnly;
 
   useEffect(() => {
-    if (!isAmountReadOnly && inputRef.current) {
+    if (!amountFieldProps?.disabled && inputRef.current) {
       inputRef.current.value = amountFieldProps?.value?.toString() ?? '';
       inputRef.current.focus();
     }
+  }, [amountFieldProps?.value, amountFieldProps?.disabled, token]);
+
+  useEffect(() => {
     return () => {
       inputRef.current = null;
     };
-  }, [amountFieldProps?.value, isAmountReadOnly, token]);
+  }, []);
 
   const isSwap = useIsMultichainSwap();
 
