@@ -1135,7 +1135,7 @@ export default class SecurityTab extends PureComponent {
 
             <div
               className="settings-page__content-item-col"
-              data-testid="useSafeChainsListValidation"
+              data-testid="skipDeepLinkInterstitial"
             >
               <ToggleButton
                 value={skipDeepLinkInterstitial}
