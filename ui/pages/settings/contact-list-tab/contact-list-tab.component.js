@@ -61,8 +61,8 @@ export default class ContactListTab extends Component {
     const { completeAddressBook, internalAccounts, history, selectedAddress } =
       this.props;
 
-    const updatedAddressBook = completeAddressBook.flatMap((add) =>
-      Object.values(add),
+    const updatedAddressBook = Object.entries(completeAddressBook).map(
+      ([_, value]) => value,
     );
 
     const contacts = updatedAddressBook.filter(({ name }) => Boolean(name));
