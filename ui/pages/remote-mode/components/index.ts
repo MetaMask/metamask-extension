@@ -6,3 +6,4 @@ export { default as StepIndicator } from './step-indicator/step-indicator.compon
 export { default as RemoteModeTransaction } from './remote-mode-transaction';
 export { default as RemoteModeStatus } from './remote-mode-status';
 export { default as SendAllowanceBanner } from './send-allowance-banner';
+export { default as SendAllowanceTooltip } from './send-allowance-tooltip';

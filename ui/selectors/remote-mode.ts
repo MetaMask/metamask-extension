@@ -5,8 +5,10 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { AssetType } from '@metamask/bridge-controller';
 import {
   DailyAllowance,
+  NATIVE_ADDRESS,
   REMOTE_MODES,
   RemoteModeConfig,
 } from '../../shared/lib/remote-mode';
@@ -181,7 +183,8 @@ export const getRemoteSendAllowance = (
     return null;
   }
 
-  const address = asset?.details?.address ?? '';
+  const address =
+    asset?.type === AssetType.native ? NATIVE_ADDRESS : asset?.details?.address;
 
   const allowance = meta.allowances.find((a) => a.address === address);
 
