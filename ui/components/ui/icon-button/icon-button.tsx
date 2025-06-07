@@ -11,7 +11,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip/tooltip';
-import IconButtonRound from './icon-button-round';
 
 export type IconButtonProps = ButtonBaseProps<'button'> & {
   onClick: () => void;
