@@ -1369,13 +1369,6 @@ export function getIsNonStandardEthChain(state) {
   return !(getIsMainnet(state) || getIsTestnet(state) || process.env.IN_TEST);
 }
 
-/**
- * Returns the preferences object from the metamask state.
- *
- * @param {object} state
- * @param {MetaMaskReduxState["metamask"]} state.metamask - The metamask state object.
- * @returns {MetaMaskReduxState["metamask"]["preferences"]}
- */
 export function getPreferences({ metamask }) {
   return metamask.preferences ?? {};
 }
