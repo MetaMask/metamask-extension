@@ -38,7 +38,7 @@ export function withTransactionEnvelopeTypeFixtures(
   return withFixtures(
     {
       dapp: true,
-      driverOptions: { timeOut: 20000 },
+      driverOptions: { timeOut: 10000 },
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
         .withMetaMetricsController({
