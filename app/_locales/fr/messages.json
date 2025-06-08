@@ -659,9 +659,6 @@
   "basic": {
     "message": "Général"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Activer la fonctionnalité de base"
-  },
   "basicConfigurationBannerTitle": {
     "message": "La fonctionnalité de base est désactivée"
   },

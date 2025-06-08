@@ -223,4 +223,35 @@ describe('PersistenceManager', () => {
       expect(manager.mostRecentRetrievedState).toBeNull();
     });
   });
+
+  describe('Locks', () => {
+    it('should acquire a lock when setting state', async () => {
+      manager.setMetadata({ version: 10 });
+
+      manager.open = jest.fn().mockResolvedValue(undefined);
+
+      const { request } = navigator.locks;
+      const mockCallback = jest.fn();
+      const mockLocksRequest = jest
+        .fn()
+        .mockImplementation((name, options, _) => {
+          return request.call(navigator.locks, name, options, mockCallback);
+        });
+      navigator.locks.request = mockLocksRequest;
+
+      // should be saved
+      const one = manager.set({ appState: { test: 1 } });
+      // should be tossed
+      const two = manager.set({ appState: { test: 2 } });
+      // should be saved
+      const three = manager.set({ appState: { test: 3 } });
+
+      await Promise.race([one, two, three]);
+
+      // lock should be requested 3 times
+      expect(mockLocksRequest).toHaveBeenCalledTimes(3);
+      // but the mockCallback should only be called twice!
+      expect(mockCallback).toHaveBeenCalledTimes(2);
+    });
+  });
 });
