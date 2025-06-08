@@ -135,7 +135,7 @@ export function MetaMetricsProvider({ children }) {
       // in the event that we are dealing with the initial load of the
       // homepage
       const { path, params } = match;
-      const name = PATH_NAME_MAP[path];
+      const name = PATH_NAME_MAP.get(path);
       trackMetaMetricsPage(
         {
           name,
