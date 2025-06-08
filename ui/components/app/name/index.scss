@@ -11,6 +11,12 @@
     cursor: pointer;
   }
 
+  &__trust-signal-icon {
+    // Trust signal icon that replaces the main icon
+    width: 16px;
+    height: 16px;
+  }
+
   &__missing {
     background-color: var(--color-background-alternative);
 
@@ -32,6 +38,39 @@
 
     .name__name {
       color: var(--color-text-default);
+    }
+  }
+
+  // Trust signal states
+  &__verified {
+    background-color: var(--color-success-muted);
+
+    .name__name {
+      color: var(--color-success-default);
+    }
+  }
+
+  &__warning {
+    background-color: var(--color-warning-muted);
+
+    .name__name {
+      color: var(--color-warning-default);
+    }
+  }
+
+  &__malicious {
+    background-color: var(--color-error-muted);
+
+    .name__name {
+      color: var(--color-error-default);
+    }
+  }
+
+  &__unknown {
+    background-color: var(--color-background-alternative);
+
+    .name__name {
+      color: var(--color-text-alternative);
     }
   }
 

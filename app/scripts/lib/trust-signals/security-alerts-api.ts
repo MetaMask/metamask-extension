@@ -1,6 +1,7 @@
 import { SECOND } from '../../../../shared/constants/time';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import {
+  ResultType,
   ScanAddressRequest,
   ScanAddressResponse,
   SupportedEVMChain,
@@ -31,5 +32,8 @@ export async function scanAddress(
     body: JSON.stringify(body),
   });
   const data = await response.json();
+  data.label = 'Uniswap';
+  data.result_type = ResultType.Trusted;
+  console.log('data', data);
   return data;
 }

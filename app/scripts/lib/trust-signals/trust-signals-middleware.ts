@@ -37,8 +37,9 @@ function hasValidTransactionParams(req: JsonRpcParams): req is JsonRpcParams & {
 
 // TODO: Remove when we want this enabled in production.
 function isProdEnabled() {
-  const isEnabled = process.env.TRUST_SIGNALS_PROD_ENABLED;
-  return isEnabled?.toString() === 'true';
+  // const isEnabled = process.env.TRUST_SIGNALS_PROD_ENABLED;
+  // Temporarily enabled for testing
+  return true; // isEnabled?.toString() === 'true';
 }
 
 export function createTrustSignalsMiddleware(
