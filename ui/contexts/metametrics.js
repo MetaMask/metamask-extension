@@ -54,7 +54,7 @@ export const MetaMetricsContext = createContext(() => {
   );
 });
 
-const PATHS_TO_CHECK = Object.keys(PATH_NAME_MAP);
+const PATHS_TO_CHECK = PATH_NAME_MAP.keys();
 
 export function MetaMetricsProvider({ children }) {
   const location = useLocation();
