@@ -659,9 +659,6 @@
   "basic": {
     "message": "Básico"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Ativar funcionalidade básica"
-  },
   "basicConfigurationBannerTitle": {
     "message": "A funcionalidade básica está desativada"
   },
@@ -5266,10 +5263,6 @@
   "snapConnectionWarning": {
     "message": "$1 quer usar $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "Esse conteúdo vem de $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "Site"

@@ -111,7 +111,6 @@ export default function SecureYourWallet() {
           <img
             className="secure-your-wallet__srp-design-image"
             src="./images/srp-lock-design.png"
-            alt={t('srpDesignImageAlt')}
           />
         </Box>
         <Box>

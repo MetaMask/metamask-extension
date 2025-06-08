@@ -665,9 +665,6 @@
   "basic": {
     "message": "Basic"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Turn on basic functionality"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Basic functionality is off"
   },
@@ -1999,6 +1996,9 @@
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
+  },
+  "enableIt": {
+    "message": " Enable it"
   },
   "enableSnap": {
     "message": "Enable"
@@ -5328,10 +5328,6 @@
     "message": "$1 wants to use $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
   },
-  "snapContent": {
-    "message": "This content is coming from $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
-  },
   "snapDetailWebsite": {
     "message": "Website"
   },
@@ -5566,9 +5562,6 @@
   },
   "spendingCaps": {
     "message": "Spending caps"
-  },
-  "srpDesignImageAlt": {
-    "message": "SRP vault image"
   },
   "srpDetailsDescription": {
     "message": "A Secret Recovery Phrase, also called a seed phrase or mnemonic, is a set of words that lets you access and control your crypto wallet. To move your wallet to MetaMask, you need this phrase."
