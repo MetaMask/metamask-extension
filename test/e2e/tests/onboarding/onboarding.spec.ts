@@ -22,10 +22,11 @@ import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.fl
 import {
   completeCreateNewWalletOnboardingFlow,
   completeImportSRPOnboardingFlow,
+  createNewWalletWithSocialLoginOnboardingFlow,
   importSRPOnboardingFlow,
   incompleteCreateNewWalletOnboardingFlow,
   onboardingMetricsFlow,
-  socialLoginOnboardingFlow,
+  rehydrateWalletWithSocialLoginOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
 import { MockSeedlessOnboardingUtils } from '../../helpers/social-sync/mocks';
@@ -324,27 +325,92 @@ describe('MetaMask onboarding', function () {
     );
   });
 
-  it('Creates a new wallet with social login and completes the onboarding process', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => {
-          // using this to mock the OAuth Service (Web Authentication flow + Auth server)
-          const mockSeedlessOnboardingUtils = new MockSeedlessOnboardingUtils();
-          return mockSeedlessOnboardingUtils.setup(server, {
-            // userEmail: 'test-user@gmail.com', // provide an email to mock the existing user flow
-          });
+  const testDataCreateNewWalletWithSocialLogin = [
+    {
+      testName:
+        'Creates a new wallet with Google login and completes the onboarding process',
+      useGoogleAccount: true,
+    },
+    {
+      testName:
+        'Creates a new wallet with Apple login and completes the onboarding process',
+      useGoogleAccount: false,
+    },
+  ];
+
+  testDataCreateNewWalletWithSocialLogin.forEach((testCase) => {
+    it(testCase.testName, async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (server: Mockttp) => {
+            // using this to mock the OAuth Service (Web Authentication flow + Auth server)
+            const mockSeedlessOnboardingUtils =
+              new MockSeedlessOnboardingUtils();
+            return mockSeedlessOnboardingUtils.setup(server, {});
+          },
         },
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await socialLoginOnboardingFlow({
-          driver,
-        });
-        const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_expectedBalanceIsDisplayed('0');
-      },
-    );
+        async ({ driver }: { driver: Driver }) => {
+          await createNewWalletWithSocialLoginOnboardingFlow({
+            driver,
+            useGoogleAccount: testCase.useGoogleAccount,
+          });
+
+          const onboardingCompletePage = new OnboardingCompletePage(driver);
+          await onboardingCompletePage.check_pageIsLoaded();
+          await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
+          await onboardingCompletePage.completeOnboarding();
+
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedBalanceIsDisplayed('0');
+        },
+      );
+    });
+  });
+
+  const testDataRehydrateWalletWithSocialLogin = [
+    {
+      testName:
+        'Rehydrates a wallet with Google login and completes the onboarding process',
+      useGoogleAccount: true,
+    },
+    {
+      testName:
+        'Rehydrates a wallet with Apple login and completes the onboarding process',
+      useGoogleAccount: false,
+    },
+  ];
+
+  testDataRehydrateWalletWithSocialLogin.forEach((testCase) => {
+    it(testCase.testName, async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder({ onboarding: true }).build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (server: Mockttp) => {
+            // using this to mock the OAuth Service (Web Authentication flow + Auth server)
+            const mockSeedlessOnboardingUtils =
+              new MockSeedlessOnboardingUtils();
+            return mockSeedlessOnboardingUtils.setup(server, {
+              userEmail: 'seedless-onboarding-test@metamask.io',
+            });
+          },
+        },
+        async ({ driver }: { driver: Driver }) => {
+          await rehydrateWalletWithSocialLoginOnboardingFlow({
+            driver,
+          });
+
+          const onboardingCompletePage = new OnboardingCompletePage(driver);
+          await onboardingCompletePage.completeOnboardingPinExtensionOnly();
+
+          const homePage = new HomePage(driver);
+          await homePage.check_pageIsLoaded();
+          await homePage.check_expectedBalanceIsDisplayed('0');
+        },
+      );
+    });
   });
 });

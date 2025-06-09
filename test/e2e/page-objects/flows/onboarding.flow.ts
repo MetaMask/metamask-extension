@@ -1,5 +1,4 @@
 import { Browser } from 'selenium-webdriver';
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { Driver } from '../../webdriver/driver';
 import OnboardingMetricsPage from '../pages/onboarding/onboarding-metrics-page';
 import OnboardingPasswordPage from '../pages/onboarding/onboarding-password-page';
@@ -44,22 +43,36 @@ const goToOnboardingWelcomeLoginPage = async ({
   return startOnboardingPage;
 };
 
-export const socialLoginOnboardingFlow = async ({
+/**
+ * Create new wallet with social login onboarding flow
+ *
+ * @param options - The options object.
+ * @param options.useGoogleAccount - Whether to use Google login. Defaults to true.
+ * @param options.driver - The WebDriver instance.
+ * @param options.password - The password to create. Defaults to WALLET_PASSWORD.
+ * @param options.participateInMetaMetrics - Whether to participate in MetaMetrics. Defaults to false.
+ * @param options.needNavigateToNewPage - Indicates whether to navigate to a new page before starting the onboarding flow. Defaults to true.
+ * @param options.dataCollectionForMarketing - Whether to opt in to data collection for marketing. Defaults to false.
+ */
+
+export const createNewWalletWithSocialLoginOnboardingFlow = async ({
   driver,
   password = WALLET_PASSWORD,
+  useGoogleAccount = true,
   participateInMetaMetrics = false,
   needNavigateToNewPage = true,
   dataCollectionForMarketing = false,
 }: {
   driver: Driver;
   password?: string;
+  useGoogleAccount?: boolean;
   participateInMetaMetrics?: boolean;
   needNavigateToNewPage?: boolean;
   dataCollectionForMarketing?: boolean;
-  skipSRPBackup?: boolean;
-  authConnection?: AuthConnection;
 }) => {
-  console.log('Starting the creation of a new wallet onboarding flow');
+  console.log(
+    'Starting the creation of a new wallet with social login onboarding flow',
+  );
   const startOnboardingPage = await goToOnboardingWelcomeLoginPage({
     driver,
     participateInMetaMetrics,
@@ -67,10 +80,66 @@ export const socialLoginOnboardingFlow = async ({
     dataCollectionForMarketing,
   });
 
-  await startOnboardingPage.creteWalletWithSocialLogin();
+  await startOnboardingPage.createWalletWithSocialLogin(useGoogleAccount);
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.check_pageIsLoaded();
+
   await onboardingPasswordPage.createWalletPassword(password);
+
+  if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+    await onboardingMetricsFlow(driver, {
+      participateInMetaMetrics: true,
+      dataCollectionForMarketing: true,
+    });
+  }
+};
+
+/**
+ * Rehydrate wallet with social login onboarding flow
+ *
+ * @param options - The options object.
+ * @param options.useGoogleAccount - Whether to use Google login. Defaults to true.
+ * @param options.driver - The WebDriver instance.
+ * @param options.password - The password to create. Defaults to WALLET_PASSWORD.
+ * @param options.participateInMetaMetrics - Whether to participate in MetaMetrics. Defaults to false.
+ * @param options.needNavigateToNewPage - Indicates whether to navigate to a new page before starting the onboarding flow. Defaults to true.
+ * @param options.dataCollectionForMarketing - Whether to opt in to data collection for marketing. Defaults to false.
+ */
+
+export const rehydrateWalletWithSocialLoginOnboardingFlow = async ({
+  driver,
+  password = WALLET_PASSWORD,
+  participateInMetaMetrics = false,
+  needNavigateToNewPage = true,
+  dataCollectionForMarketing = false,
+}: {
+  driver: Driver;
+  newWallet?: boolean;
+  password?: string;
+  participateInMetaMetrics?: boolean;
+  needNavigateToNewPage?: boolean;
+  dataCollectionForMarketing?: boolean;
+}) => {
+  console.log('Starting the rehydration of a wallet onboarding flow');
+  const startOnboardingPage = await goToOnboardingWelcomeLoginPage({
+    driver,
+    participateInMetaMetrics,
+    needNavigateToNewPage,
+    dataCollectionForMarketing,
+  });
+
+  await startOnboardingPage.importWalletWithSocialLogin();
+
+  const loginPage = new LoginPage(driver);
+  await loginPage.check_pageIsLoaded();
+  await loginPage.loginToHomepage(password);
+
+  if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+    await onboardingMetricsFlow(driver, {
+      participateInMetaMetrics: true,
+      dataCollectionForMarketing: true,
+    });
+  }
 };
 
 /**

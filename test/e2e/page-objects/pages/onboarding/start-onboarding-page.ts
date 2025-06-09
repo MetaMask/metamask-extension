@@ -89,10 +89,26 @@ class StartOnboardingPage {
     console.log('Get started page is loaded');
   }
 
-  async creteWalletWithSocialLogin(): Promise<void> {
+  async createWalletWithSocialLogin(useGoogleAccount = true): Promise<void> {
     await this.driver.clickElement(this.createWalletButton);
-    await this.driver.waitForSelector(this.onboardingGoogleButton);
-    await this.driver.clickElement(this.onboardingGoogleButton);
+    if (useGoogleAccount) {
+      await this.driver.waitForSelector(this.onboardingGoogleButton);
+      await this.driver.clickElement(this.onboardingGoogleButton);
+    } else {
+      await this.driver.waitForSelector(this.onboardingAppleButton);
+      await this.driver.clickElement(this.onboardingAppleButton);
+    }
+  }
+
+  async importWalletWithSocialLogin(useGoogleAccount = true): Promise<void> {
+    await this.driver.clickElement(this.importWalletButton);
+    if (useGoogleAccount) {
+      await this.driver.waitForSelector(this.onboardingGoogleButton);
+      await this.driver.clickElement(this.onboardingGoogleButton);
+    } else {
+      await this.driver.waitForSelector(this.onboardingAppleButton);
+      await this.driver.clickElement(this.onboardingAppleButton);
+    }
   }
 
   async createWalletWithSrp(): Promise<void> {
