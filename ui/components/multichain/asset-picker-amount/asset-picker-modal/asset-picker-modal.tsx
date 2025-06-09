@@ -119,6 +119,7 @@ type AssetPickerModalProps = {
     AssetWithDisplayData<NativeAsset> | AssetWithDisplayData<ERC20Asset>
   >;
   isTokenListLoading?: boolean;
+  autoFocus: boolean;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModalTabs>,
   'visibleTabs' | 'defaultActiveTabKey'
@@ -146,6 +147,7 @@ export function AssetPickerModal({
   isTokenListLoading = false,
   isMultiselectEnabled,
   selectedChainIds,
+  autoFocus,
   ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
@@ -677,6 +679,7 @@ export function AssetPickerModal({
                     debouncedSetSearchQuery.cancel();
                     setSearchQuery(value);
                   }}
+                  autoFocus={autoFocus}
                 />
                 <AssetList
                   network={network}

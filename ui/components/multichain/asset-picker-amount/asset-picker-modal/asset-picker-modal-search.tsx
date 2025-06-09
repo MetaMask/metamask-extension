@@ -28,12 +28,14 @@ export const Search = ({
   isNFTSearch = false,
   props,
   placeholder,
+  autoFocus = true,
 }: {
   searchQuery: string;
   onChange: (value: string) => void;
   isNFTSearch?: boolean;
   props?: React.ComponentProps<typeof Box>;
   placeholder?: JSX.Element | string | null;
+  autoFocus?: boolean;
 }) => {
   const t = useI18nContext();
 
@@ -54,7 +56,7 @@ export const Search = ({
         value={searchQuery}
         onChange={(e) => onChange(e.target.value)}
         error={false}
-        autoFocus
+        autoFocus={autoFocus}
         autoComplete={false}
         width={BlockSize.Full}
         clearButtonOnClick={() => onChange('')}
