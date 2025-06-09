@@ -424,18 +424,6 @@ const PrepareBridgePage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quoteParams]);
 
-  const trackInputEvent = useCallback(
-    (
-      properties: CrossChainSwapsEventProperties[MetaMetricsEventName.InputChanged],
-    ) => {
-      trackCrossChainSwapsEvent({
-        event: MetaMetricsEventName.InputChanged,
-        properties,
-      });
-    },
-    [],
-  );
-
   const { search } = useLocation();
   const history = useHistory();
 
@@ -779,11 +767,6 @@ const PrepareBridgePage = () => {
                 ...token,
                 address: token.address ?? zeroAddress(),
               };
-              bridgeToken.address &&
-                trackInputEvent({
-                  input: 'token_destination',
-                  value: bridgeToken.address,
-                });
               dispatch(setToToken(bridgeToken));
             }}
             networkProps={
