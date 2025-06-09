@@ -4781,6 +4781,14 @@ export function setTermsOfUseLastAgreed(lastAgreed: number) {
   };
 }
 
+export async function setUpdateModalLastDismissedAt(
+  updateModalLastDismissedAt: number,
+) {
+  await submitRequestToBackground('setUpdateModalLastDismissedAt', [
+    updateModalLastDismissedAt,
+  ]);
+}
+
 export function setLastViewedUserSurvey(id: number) {
   return async () => {
     await submitRequestToBackground('setLastViewedUserSurvey', [id]);
