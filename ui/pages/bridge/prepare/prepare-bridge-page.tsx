@@ -594,11 +594,22 @@ const PrepareBridgePage = () => {
             if (token.address === toToken?.address) {
               dispatch(setToToken(null));
             }
+            bridgeToken.address &&
+              trackInputEvent({
+                input: 'token_source',
+                value: bridgeToken.address,
+              });
           }}
           networkProps={{
             network: fromChain,
             networks: isSwap ? undefined : fromChains,
             onNetworkChange: (networkConfig) => {
+              networkConfig?.chainId &&
+                networkConfig.chainId !== fromChain?.chainId &&
+                trackInputEvent({
+                  input: 'chain_source',
+                  value: networkConfig.chainId,
+                });
               if (
                 networkConfig?.chainId &&
                 networkConfig.chainId === toChain?.chainId
@@ -731,6 +742,11 @@ const PrepareBridgePage = () => {
                     ),
                   );
                 setRotateSwitchTokens(!rotateSwitchTokens);
+                flippedRequestProperties &&
+                  trackCrossChainSwapsEvent({
+                    event: MetaMetricsEventName.InputSourceDestinationFlipped,
+                    properties: flippedRequestProperties,
+                  });
                 if (!isSwap) {
                   // Only flip networks if bridging
                   const toChainClientId =
@@ -784,6 +800,11 @@ const PrepareBridgePage = () => {
                     network: toChain,
                     networks: toChains,
                     onNetworkChange: (networkConfig) => {
+                      networkConfig.chainId !== toChain?.chainId &&
+                        trackInputEvent({
+                          input: 'chain_destination',
+                          value: networkConfig.chainId,
+                        });
                       dispatch(setToChainId(networkConfig.chainId));
                       const destNativeAsset = getNativeAssetForChainId(
                         networkConfig.chainId,
