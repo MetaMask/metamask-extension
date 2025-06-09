@@ -133,12 +133,13 @@ export const useTokensWithFiltering = (
       return undefined;
     }
     const hexChainId = formatChainIdToHex(chainId);
-    return cachedTokens[hexChainId]?.data;
+    return hexChainId ? cachedTokens[hexChainId]?.data : undefined;
   }, [chainId, cachedTokens]);
+  const isTokenListCached = Boolean(cachedTokenList);
 
   const { value: fetchedTokenList, pending: isTokenListLoading } =
     useAsyncResult<Record<string, BridgeAsset> | TokenListMap>(async () => {
-      if (cachedTokenList || !chainId) {
+      if (isTokenListCached || !chainId) {
         return {};
       }
       // Otherwise fetch new token data
@@ -159,7 +160,7 @@ export const useTokensWithFiltering = (
         },
         BRIDGE_API_BASE_URL,
       );
-    }, [cachedTokenList]);
+    }, [chainId, isTokenListCached]);
 
   const tokenList = useMemo(() => {
     return cachedTokenList ?? fetchedTokenList;
@@ -296,7 +297,6 @@ export const useTokensWithFiltering = (
         }
       })(),
     [
-      buildTokenData,
       multichainTokensWithBalance,
       topTokens,
       chainId,
