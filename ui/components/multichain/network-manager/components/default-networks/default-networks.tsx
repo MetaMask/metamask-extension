@@ -197,7 +197,12 @@ const DefaultNetworks = memo(() => {
         </Box>
       );
     });
-  }, [featuredNetworksNotYetEnabled, handleAdditionalNetworkClick, t]);
+  }, [
+    featuredNetworksNotYetEnabled,
+    enabledNetworks,
+    handleAdditionalNetworkClick,
+    t,
+  ]);
 
   return (
     <>

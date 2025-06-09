@@ -1,4 +1,11 @@
-import React, { useEffect, useRef, useState, useContext, useMemo, useCallback } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useContext,
+  useMemo,
+  useCallback,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Hex } from '@metamask/utils';
@@ -273,7 +280,12 @@ const AssetListControlBar = ({
           data-testid="sort-by-networks"
           variant={TextVariant.bodyMdMedium}
           className="asset-list-control-bar__button asset-list-control-bar__network_control"
-          onClick={handleNetworkManager}
+          onClick={
+            isGlobalNetworkSelectorRemoved
+              ? handleNetworkManager
+              : toggleNetworkFilterPopover
+          }
+          disabled={isGlobalNetworkSelectorRemoved ? isDisabled : false}
           size={ButtonBaseSize.Sm}
           endIconName={IconName.ArrowDown}
           backgroundColor={
@@ -288,6 +300,8 @@ const AssetListControlBar = ({
           {isTokenNetworkFilterEqualCurrentNetwork ||
           !currentMultichainNetwork.isEvmNetwork
             ? currentMultichainNetwork?.nickname ?? t('currentNetwork')
+            : isGlobalNetworkSelectorRemoved
+            ? t('enabledNetworks')
             : t('popularNetworks')}
         </ButtonBase>
 
