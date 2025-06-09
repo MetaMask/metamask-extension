@@ -12,8 +12,13 @@ import { Hex } from '@metamask/utils';
 jest.mock('../../../pages/confirmations/hooks/useEIP7702Account');
 jest.mock('../../../pages/confirmations/hooks/useBatchAuthorizationRequests');
 
-const mockUseEIP7702Account = useEIP7702Account as jest.MockedFunction<typeof useEIP7702Account>;
-const mockUseBatchAuthorizationRequests = useBatchAuthorizationRequests as jest.MockedFunction<typeof useBatchAuthorizationRequests>;
+const mockUseEIP7702Account = useEIP7702Account as jest.MockedFunction<
+  typeof useEIP7702Account
+>;
+const mockUseBatchAuthorizationRequests =
+  useBatchAuthorizationRequests as jest.MockedFunction<
+    typeof useBatchAuthorizationRequests
+  >;
 
 const mockDowngradeAccount = jest.fn();
 const mockUpgradeAccount = jest.fn();
@@ -40,10 +45,12 @@ const mockUnsupportedNetworkConfig: EIP7702NetworkConfiguration = {
 
 const mockAddress = '0x742d35Cc6634C0532925a3b8D4E8f3c9B26e6e6e' as Hex;
 
-const render = (props: {
-  networkConfig?: EIP7702NetworkConfiguration;
-  address?: Hex;
-} = {}) => {
+const render = (
+  props: {
+    networkConfig?: EIP7702NetworkConfiguration;
+    address?: Hex;
+  } = {},
+) => {
   const store = configureStore({});
   const defaultProps = {
     networkConfig: mockNetworkConfig,
@@ -52,7 +59,7 @@ const render = (props: {
   };
   return renderWithProvider(
     <SmartContractAccountToggle {...defaultProps} />,
-    store
+    store,
   );
 };
 
@@ -95,7 +102,9 @@ describe('SmartContractAccountToggle', () => {
       });
 
       const toggle = screen.getByRole('checkbox');
-      expect(toggle.closest('.toggle-button')).toHaveClass('toggle-button--off');
+      expect(toggle.closest('.toggle-button')).toHaveClass(
+        'toggle-button--off',
+      );
       expect(container).toMatchSnapshot();
     });
 
@@ -134,7 +143,7 @@ describe('SmartContractAccountToggle', () => {
       await waitFor(() => {
         expect(mockUpgradeAccount).toHaveBeenCalledWith(
           mockAddress,
-          mockUnsupportedNetworkConfig.upgradeContractAddress
+          mockUnsupportedNetworkConfig.upgradeContractAddress,
         );
       });
       expect(mockDowngradeAccount).not.toHaveBeenCalled();
@@ -169,7 +178,9 @@ describe('SmartContractAccountToggle', () => {
       const { container } = render();
 
       const toggle = screen.getByRole('checkbox');
-      expect(toggle.closest('.toggle-button')).toHaveClass('toggle-button--disabled');
+      expect(toggle.closest('.toggle-button')).toHaveClass(
+        'toggle-button--disabled',
+      );
       expect(container).toMatchSnapshot();
     });
 
@@ -181,7 +192,9 @@ describe('SmartContractAccountToggle', () => {
       render();
 
       const toggle = screen.getByRole('checkbox');
-      expect(toggle.closest('.toggle-button')).not.toHaveClass('toggle-button--disabled');
+      expect(toggle.closest('.toggle-button')).not.toHaveClass(
+        'toggle-button--disabled',
+      );
     });
 
     it('prevents actions when disabled', () => {
@@ -214,11 +227,13 @@ describe('SmartContractAccountToggle', () => {
         <SmartContractAccountToggle
           networkConfig={mockUnsupportedNetworkConfig} // isSupported: false
           address={mockAddress}
-        />
+        />,
       );
 
       toggle = screen.getByRole('checkbox');
-      expect(toggle.closest('.toggle-button')).toHaveClass('toggle-button--off');
+      expect(toggle.closest('.toggle-button')).toHaveClass(
+        'toggle-button--off',
+      );
     });
   });
 });

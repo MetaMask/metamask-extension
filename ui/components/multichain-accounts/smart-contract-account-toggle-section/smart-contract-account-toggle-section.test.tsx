@@ -2,7 +2,10 @@ import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
-import { useEIP7702Networks, EIP7702NetworkConfiguration } from '../../../pages/confirmations/hooks/useEIP7702Networks';
+import {
+  useEIP7702Networks,
+  EIP7702NetworkConfiguration,
+} from '../../../pages/confirmations/hooks/useEIP7702Networks';
 import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702Account';
 import { useBatchAuthorizationRequests } from '../../../pages/confirmations/hooks/useBatchAuthorizationRequests';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -20,9 +23,16 @@ global.platform = {
   openTab: mockOpenTab,
 } as any;
 
-const mockUseEIP7702Networks = useEIP7702Networks as jest.MockedFunction<typeof useEIP7702Networks>;
-const mockUseEIP7702Account = useEIP7702Account as jest.MockedFunction<typeof useEIP7702Account>;
-const mockUseBatchAuthorizationRequests = useBatchAuthorizationRequests as jest.MockedFunction<typeof useBatchAuthorizationRequests>;
+const mockUseEIP7702Networks = useEIP7702Networks as jest.MockedFunction<
+  typeof useEIP7702Networks
+>;
+const mockUseEIP7702Account = useEIP7702Account as jest.MockedFunction<
+  typeof useEIP7702Account
+>;
+const mockUseBatchAuthorizationRequests =
+  useBatchAuthorizationRequests as jest.MockedFunction<
+    typeof useBatchAuthorizationRequests
+  >;
 
 // Mock functions for the toggle hooks
 const mockDowngradeAccount = jest.fn();
@@ -95,8 +105,14 @@ describe('SmartContractAccountToggleSection', () => {
       const { container } = render();
 
       expect(screen.getByTestId('network-loader')).toBeInTheDocument();
-      expect(screen.getByText('Enable smart contract account')).toBeInTheDocument();
-      expect(screen.getByText('You can enable smart account features on supported networks.')).toBeInTheDocument();
+      expect(
+        screen.getByText('Enable smart contract account'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          'You can enable smart account features on supported networks.',
+        ),
+      ).toBeInTheDocument();
       expect(container).toMatchSnapshot();
     });
 
@@ -150,7 +166,9 @@ describe('SmartContractAccountToggleSection', () => {
       fireEvent.click(toggleCheckboxes[0]);
 
       await waitFor(() => {
-        expect(mockDowngradeAccount).toHaveBeenCalledWith('0x742d35Cc6634C0532925a3b8D4E8f3c9B26e6e6e');
+        expect(mockDowngradeAccount).toHaveBeenCalledWith(
+          '0x742d35Cc6634C0532925a3b8D4E8f3c9B26e6e6e',
+        );
       });
     });
   });
@@ -191,8 +209,10 @@ describe('SmartContractAccountToggleSection', () => {
 
       const toggleCheckboxes = screen.getAllByRole('checkbox');
 
-      toggleCheckboxes.forEach(checkbox => {
-        expect(checkbox.closest('.toggle-button')).toHaveClass('toggle-button--disabled');
+      toggleCheckboxes.forEach((checkbox) => {
+        expect(checkbox.closest('.toggle-button')).toHaveClass(
+          'toggle-button--disabled',
+        );
       });
       expect(container).toMatchSnapshot();
     });

@@ -65,10 +65,7 @@ export const SmartContractAccountToggleSection = () => {
       style={{ borderRadius: '8px' }}
     >
       <Box>
-        <Text
-          variant={TextVariant.bodyMdMedium}
-          marginBottom={2}
-        >
+        <Text variant={TextVariant.bodyMdMedium} marginBottom={2}>
           {t('enableSmartContractAccount')}
         </Text>
         <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
