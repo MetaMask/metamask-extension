@@ -2071,16 +2071,16 @@ export default class MetamaskController extends EventEmitter {
           getDismissSmartAccountSuggestionEnabled: () =>
             this.preferencesController.state.preferences
               .dismissSmartAccountSuggestionEnabled,
+          getIsSmartTransaction: (chainId) =>
+            getIsSmartTransaction(this._getMetaMaskState(), chainId),
+          getSupportedNetworks: () =>
+            this.networkController.state.networkConfigurationsByChainId,
           isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
             this.txController,
           ),
+          isRelaySupported,
           isSimulationEnabled: () =>
             this.preferencesController.state.useTransactionSimulations,
-          getIsSmartTransaction: (chainId) =>
-            getIsSmartTransaction(this._getMetaMaskState(), chainId),
-          isRelaySupported,
-          getSupportedNetworks: () =>
-            this.networkController.state.networkConfigurationsByChainId,
         },
         this.controllerMessenger,
       ),

@@ -165,11 +165,11 @@ export function getCallsStatus(
 export async function getCapabilities(
   hooks: {
     getDismissSmartAccountSuggestionEnabled: () => boolean;
-    isAtomicBatchSupported: TransactionController['isAtomicBatchSupported'];
-    isSimulationEnabled: () => boolean;
     getIsSmartTransaction: (chainId: Hex) => boolean;
-    isRelaySupported: (chainId: Hex) => Promise<boolean>;
     getSupportedNetworks: () => NetworkConfiguration[];
+    isAtomicBatchSupported: TransactionController['isAtomicBatchSupported'];
+    isRelaySupported: (chainId: Hex) => Promise<boolean>;
+    isSimulationEnabled: () => boolean;
   },
   messenger: EIP5792Messenger,
   address: Hex,
@@ -177,11 +177,11 @@ export async function getCapabilities(
 ) {
   const {
     getDismissSmartAccountSuggestionEnabled,
-    isAtomicBatchSupported,
-    isSimulationEnabled,
     getIsSmartTransaction,
-    isRelaySupported,
     getSupportedNetworks,
+    isAtomicBatchSupported,
+    isRelaySupported,
+    isSimulationEnabled,
   } = hooks;
 
   let chainIdsNormalized = chainIds?.map(
@@ -210,66 +210,63 @@ export async function getCapabilities(
     isRelaySupported: relaySupportedChains[index],
   }));
 
-  return chainIdsNormalized.reduce<GetCapabilitiesResult>(
-    (acc, chainId, index) => {
-      const chainBatchSupport = (batchSupport.find(
-        ({ chainId: batchChainId }) => batchChainId === chainId,
-      ) ?? {}) as IsAtomicBatchSupportedResultEntry & {
-        isRelaySupported: boolean;
-      };
+  return chainIdsNormalized.reduce<GetCapabilitiesResult>((acc, chainId) => {
+    const chainBatchSupport = (batchSupport.find(
+      ({ chainId: batchChainId }) => batchChainId === chainId,
+    ) ?? {}) as IsAtomicBatchSupportedResultEntry & {
+      isRelaySupported: boolean;
+    };
 
-      const {
-        delegationAddress,
-        isSupported = false,
-        upgradeContractAddress,
-        isRelaySupported,
-      } = chainBatchSupport;
+    const {
+      delegationAddress,
+      isSupported = false,
+      upgradeContractAddress,
+      isRelaySupported,
+    } = chainBatchSupport;
 
-      const isUpgradeDisabled = getDismissSmartAccountSuggestionEnabled();
-      let isSupportedAccount = false;
+    const isUpgradeDisabled = getDismissSmartAccountSuggestionEnabled();
+    let isSupportedAccount = false;
 
-      try {
-        const keyringType = getAccountKeyringType(address, messenger);
-        isSupportedAccount = SUPPORTED_KEYRING_TYPES.includes(keyringType);
-      } catch (error) {
-        // Intentionally empty
-      }
+    try {
+      const keyringType = getAccountKeyringType(address, messenger);
+      isSupportedAccount = SUPPORTED_KEYRING_TYPES.includes(keyringType);
+    } catch (error) {
+      // Intentionally empty
+    }
 
-      const canUpgrade =
-        !isUpgradeDisabled &&
-        upgradeContractAddress &&
-        !delegationAddress &&
-        isSupportedAccount;
+    const canUpgrade =
+      !isUpgradeDisabled &&
+      upgradeContractAddress &&
+      !delegationAddress &&
+      isSupportedAccount;
 
-      const isSmartTransaction = getIsSmartTransaction(chainId);
+    const isSmartTransaction = getIsSmartTransaction(chainId);
 
-      acc[chainId as Hex] = {
-        alternateGasFees: {
-          supported:
-            simulationEnabled &&
-            (isSmartTransaction || (isSupported && isRelaySupported)),
-        },
-      };
+    acc[chainId as Hex] = {
+      alternateGasFees: {
+        supported:
+          simulationEnabled &&
+          (isSmartTransaction || (isSupported && isRelaySupported)),
+      },
+    };
 
-      if (!isSupported && !canUpgrade) {
-        return acc;
-      }
-
-      const status = isSupported
-        ? AtomicCapabilityStatus.Supported
-        : AtomicCapabilityStatus.Ready;
-
-      acc[chainId as Hex] = {
-        atomic: {
-          status,
-        },
-        ...acc[chainId as Hex],
-      };
-
+    if (!isSupported && !canUpgrade) {
       return acc;
-    },
-    {},
-  );
+    }
+
+    const status = isSupported
+      ? AtomicCapabilityStatus.Supported
+      : AtomicCapabilityStatus.Ready;
+
+    acc[chainId as Hex] = {
+      atomic: {
+        status,
+      },
+      ...acc[chainId as Hex],
+    };
+
+    return acc;
+  }, {});
 }
 
 function validateSendCalls(
