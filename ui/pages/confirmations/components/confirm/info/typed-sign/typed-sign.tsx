@@ -26,13 +26,10 @@ import { NetworkRow } from '../shared/network-row/network-row';
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 import { TypedSignV4Simulation } from './typed-sign-v4-simulation';
 
-const TypedSignInfo: React.FC = () => {
-  const t = useI18nContext();
+const useTokenContract = () => {
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
-  const isSimulationSupported = useTypesSignSimulationEnabledInfo();
-
   if (!currentConfirmation?.msgParams) {
-    return null;
+    return {};
   }
 
   const {
@@ -43,7 +40,21 @@ const TypedSignInfo: React.FC = () => {
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const isOrder = isOrderSignatureRequest(currentConfirmation);
   const tokenContract = isPermit || isOrder ? verifyingContract : undefined;
+
+  return { tokenContract, verifyingContract, spender, isPermit };
+};
+
+const TypedSignInfo: React.FC = () => {
+  const t = useI18nContext();
+  const isSimulationSupported = useTypesSignSimulationEnabledInfo();
+  const { tokenContract, verifyingContract, spender, isPermit } =
+    useTokenContract();
   const { decimalsNumber } = useGetTokenStandardAndDetails(tokenContract);
+
+  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
+  if (!currentConfirmation?.msgParams) {
+    return null;
+  }
 
   const chainId = currentConfirmation.chainId as string;
 
