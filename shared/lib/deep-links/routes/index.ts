@@ -14,6 +14,16 @@ export const routes = new Map<Route['pathname'], Route>();
  * @param route - The route to add.
  */
 function addRoute(route: Route) {
+  if (process.env.DEBUG) {
+    // just making sure all added route `pathname`'s are unique; but not in
+    // DEBUG builds, since its too late to change the routes in prod.
+    if (routes.has(route.pathname)) {
+      throw new Error(
+        `Route with pathname "${route.pathname}" already exists.`,
+      );
+    }
+  }
+
   routes.set(route.pathname, route);
 }
 

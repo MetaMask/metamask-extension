@@ -7,7 +7,7 @@ import {
 import { Route } from './route.type';
 
 export default new Route({
-  pathname: '/home',
+  pathname: '/notifications',
   getTitle: (_: URLSearchParams) =>
     `Open the ${PATH_NAME_MAP.get(NOTIFICATIONS_ROUTE)}`,
   // wow. this is the worst lint rule we have. i hate it so much.
