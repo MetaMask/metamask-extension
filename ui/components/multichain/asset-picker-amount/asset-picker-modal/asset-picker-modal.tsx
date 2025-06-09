@@ -91,7 +91,7 @@ type AssetPickerModalProps = {
   header: JSX.Element | string | null;
   isOpen: boolean;
   onClose: () => void;
-  action?: 'send' | 'receive' | 'bridge' | 'swap';
+  action?: 'send' | 'receive';
   asset?:
     | ERC20Asset
     | NativeAsset
