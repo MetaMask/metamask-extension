@@ -184,8 +184,8 @@ async function getAlternateGasFeesCapability(
       .map((chainId) => isRelaySupported(chainId)),
   );
 
-  const updatedBatchSupport = batchSupport.map((batchSupport, index) => ({
-    ...batchSupport,
+  const updatedBatchSupport = batchSupport.map((support, index) => ({
+    ...support,
     relaySupportedForChain: relaySupportedChains[index],
   }));
 
