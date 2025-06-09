@@ -4,8 +4,11 @@ export default class DeepLink {
   protected readonly driver: Driver;
 
   private readonly routeBox = '[data-testid="deep-link-route"]';
+
   private readonly errorBox = '[data-testid="deep-link-error"]';
+
   private readonly continueButton = '[data-testid="deep-link-continue-button"]';
+
   private readonly cancelButton = '[data-testid="deep-link-cancel-button"]';
 
   constructor(driver: Driver) {
