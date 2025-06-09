@@ -11,7 +11,7 @@ import { withSolanaAccountSnap } from '../../../tests/solana/common-solana';
 describe('Multichain API - Non EVM', function () {
   const SOLANA_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
   describe('Calling `wallet_invokeMethod`', function () {
-    describe("`signIn` method", function () {
+    describe('signIn method', function () {
       it('Should match selected method to the expected confirmation UI', async function () {
         await withSolanaAccountSnap(
           {
@@ -68,7 +68,7 @@ describe('Multichain API - Non EVM', function () {
       });
     });
 
-    describe("`signAndSendTransaction` method", function () {
+    describe('signAndSendTransaction method', function () {
       it('Should match selected method to the expected confirmation UI', async function () {
         await withSolanaAccountSnap(
           {
@@ -115,7 +115,8 @@ describe('Multichain API - Non EVM', function () {
             });
 
             const confirmButton = await driver.waitForSelector({
-              testId: 'confirm-sign-and-send-transaction-confirm-snap-footer-button',
+              testId:
+                'confirm-sign-and-send-transaction-confirm-snap-footer-button',
               text: 'Confirm',
             });
 
@@ -128,7 +129,9 @@ describe('Multichain API - Non EVM', function () {
             );
 
             const resultWebElement = await driver.findElement(
-              `#invoke-method-${escapeColon(SOLANA_SCOPE)}-${invokeMethod}-result-0`,
+              `#invoke-method-${escapeColon(
+                SOLANA_SCOPE,
+              )}-${invokeMethod}-result-0`,
             );
             const parsedTransactionResult = JSON.parse(
               await resultWebElement.getText(),
