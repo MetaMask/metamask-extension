@@ -22,7 +22,8 @@ import {
   JustifyContent,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import { t } from '../../../../../shared/lib/translate';
+// eslint-disable-next-line import/no-restricted-paths
+import { t } from '../../../../../app/scripts/translate';
 import { DestinationAccount } from '../types';
 import { useExternalAccountResolution } from '../../hooks/useExternalAccountResolution';
 import DestinationSelectedAccountListItem from './destination-selected-account-list-item';

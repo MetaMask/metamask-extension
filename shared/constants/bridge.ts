@@ -79,7 +79,6 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   [MultichainNetworks.BITCOIN]: 'Bitcoin',
   [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
-  [MultichainNetworks.BITCOIN_SIGNET]: 'Bitcoin Mutinynet',
   ///: END:ONLY_INCLUDE_IF
 };
 

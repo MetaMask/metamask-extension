@@ -1,3 +1,4 @@
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { WINDOW_TITLES } from '../../../helpers';
@@ -6,7 +7,7 @@ import {
   mockSignatureApproved,
   mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
-  withSignatureFixtures,
+  withTransactionEnvelopeTypeFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import TestDapp from '../../../page-objects/pages/test-dapp';
@@ -28,8 +29,9 @@ import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/met
 
 describe('Confirmation Signature - Personal Sign', function (this: Suite) {
   it('initiates and confirms', async function () {
-    await withSignatureFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         localNodes,
@@ -70,8 +72,9 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
   });
 
   it('initiates and rejects', async function () {
-    await withSignatureFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,

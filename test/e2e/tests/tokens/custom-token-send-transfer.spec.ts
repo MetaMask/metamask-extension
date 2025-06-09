@@ -5,7 +5,6 @@ import {
   openDapp,
   WINDOW_TITLES,
   unlockWallet,
-  logInWithBalanceValidation,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
@@ -36,7 +35,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           testSpecificMock: mocks,
         },
         async ({ driver }) => {
-          await logInWithBalanceValidation(driver);
+          await unlockWallet(driver);
 
           const homePage = new HomePage(driver);
           const assetListPage = new AssetListPage(driver);

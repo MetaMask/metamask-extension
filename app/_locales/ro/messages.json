@@ -257,8 +257,20 @@
   "gasLimit": {
     "message": "Limită gas"
   },
+  "gasLimitInfoTooltipContent": {
+    "message": "Limita gaz este numărul maxim de unități de gaz pe care sunteți dispus(ă) să le cheltuiți."
+  },
   "gasLimitTooLow": {
     "message": "Limita de gaz trebuie să fie de cel puțin 21.000"
+  },
+  "gasPrice": {
+    "message": "Preț gas (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Prețul gaz este foarte scăzut"
+  },
+  "gasPriceInfoTooltipContent": {
+    "message": "Prețul în gas indică suma Ether pe care doriți să o plătiți pentru fiecare unitate gas."
   },
   "gasUsed": {
     "message": "Suma gaz folosită"
@@ -724,5 +736,8 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Expresia dvs. seed privată"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Preț gas zero la accelerare"
   }
 }

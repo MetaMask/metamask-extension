@@ -1,10 +1,11 @@
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { WINDOW_TITLES } from '../../../helpers';
 import {
   mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
-  withSignatureFixtures,
+  withTransactionEnvelopeTypeFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
@@ -24,8 +25,9 @@ import {
 } from './signature-helpers';
 describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite) {
   it('displays alert for domain binding and confirms', async function () {
-    await withSignatureFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({ driver }: TestSuiteArguments) => {
         await initializePages(driver);
         const confirmation = new Confirmation(driver);
@@ -51,8 +53,9 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
   });
 
   it('initiates and rejects from confirmation screen', async function () {
-    await withSignatureFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
@@ -96,8 +99,9 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
   });
 
   it('initiates and rejects from alert friction modal', async function () {
-    await withSignatureFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,

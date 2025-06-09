@@ -47,10 +47,9 @@ describe('App Installed Events', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await driver.navigate();
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_bannerPageIsLoaded();
-        await startOnboardingPage.agreeToTermsOfUse();
-        await startOnboardingPage.check_loginPageIsLoaded();
-        await startOnboardingPage.createWalletWithSrp();
+        await startOnboardingPage.check_pageIsLoaded();
+        await startOnboardingPage.checkTermsCheckbox();
+        await startOnboardingPage.clickCreateWalletButton();
 
         const onboardingMetricsPage = new OnboardingMetricsPage(driver);
         await onboardingMetricsPage.check_pageIsLoaded();
@@ -82,10 +81,9 @@ describe('App Installed Events', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await driver.navigate();
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_bannerPageIsLoaded();
-        await startOnboardingPage.agreeToTermsOfUse();
-        await startOnboardingPage.check_loginPageIsLoaded();
-        await startOnboardingPage.createWalletWithSrp();
+        await startOnboardingPage.check_pageIsLoaded();
+        await startOnboardingPage.checkTermsCheckbox();
+        await startOnboardingPage.clickCreateWalletButton();
 
         const onboardingMetricsPage = new OnboardingMetricsPage(driver);
         await onboardingMetricsPage.check_pageIsLoaded();

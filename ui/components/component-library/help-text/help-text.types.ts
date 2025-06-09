@@ -27,10 +27,6 @@ export interface HelpTextStyleUtilityProps extends TextStyleUtilityProps {
    * Additional classNames to be added to the HelpText component
    */
   className?: string;
-  /**
-   * Data test id
-   */
-  'data-testid'?: string;
 }
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

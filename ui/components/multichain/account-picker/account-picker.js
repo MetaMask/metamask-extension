@@ -6,7 +6,6 @@ import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils
 import {
   AvatarAccount,
   AvatarAccountVariant,
-  Box,
   ButtonBase,
   ButtonBaseSize,
   IconName,
@@ -17,7 +16,6 @@ import {
   BackgroundColor,
   BorderRadius,
   Display,
-  FlexDirection,
   IconColor,
   Size,
   TextColor,
@@ -43,85 +41,69 @@ export const AccountPicker = ({
   const shortenedAddress = shortenAddress(toChecksumHexAddress(address));
 
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
+    <ButtonBase
+      className={classnames('multichain-account-picker', className)}
+      data-testid="account-menu-icon"
+      onClick={() => {
+        trace({ name: TraceName.AccountList });
+        onClick();
+      }}
+      backgroundColor={BackgroundColor.transparent}
+      borderRadius={BorderRadius.LG}
+      ellipsis
+      textProps={{
+        display: Display.Flex,
+        alignItems: AlignItems.center,
+        gap: 2,
+        ...textProps,
+      }}
+      size={showAddress ? ButtonBaseSize.Lg : ButtonBaseSize.Sm}
+      disabled={disabled}
+      endIconName={IconName.ArrowDown}
+      endIconProps={{
+        color: IconColor.iconDefault,
+        size: Size.SM,
+      }}
+      {...props}
+      gap={1}
     >
-      <ButtonBase
-        className={classnames('multichain-account-picker', className)}
-        data-testid="account-menu-icon"
-        onClick={() => {
-          trace({ name: TraceName.AccountList });
-          onClick();
-        }}
-        backgroundColor={BackgroundColor.transparent}
-        borderRadius={BorderRadius.LG}
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+        <AvatarAccount
+          variant={
+            useBlockie
+              ? AvatarAccountVariant.Blockies
+              : AvatarAccountVariant.Jazzicon
+          }
+          address={address}
+          size={showAddress ? Size.MD : Size.XS}
+          borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
+        />
+        ///: END:ONLY_INCLUDE_IF
+      }
+
+      <Text
+        as="span"
         ellipsis
-        textProps={{
-          display: Display.Flex,
-          alignItems: AlignItems.center,
-          gap: 2,
-          ...textProps,
-        }}
-        size={showAddress ? ButtonBaseSize.Lg : ButtonBaseSize.Sm}
-        disabled={disabled}
-        endIconName={IconName.ArrowDown}
-        endIconProps={{
-          color: IconColor.iconDefault,
-          size: Size.SM,
-        }}
-        {...props}
-        gap={1}
+        {...labelProps}
+        className={classnames(
+          'multichain-account-picker__label',
+          labelProps.className ?? '',
+        )}
       >
-        <Box
-          display={Display.Flex}
-          flexDirection={
-            process.env.REMOVE_GNS ? FlexDirection.Column : FlexDirection.Row
-          }
-          alignItems={AlignItems.center}
-          gap={process.env.REMOVE_GNS ? 0 : 2}
-        >
-          {
-            process.env.REMOVE_GNS ? null : (
-              ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-              <AvatarAccount
-                variant={
-                  useBlockie
-                    ? AvatarAccountVariant.Blockies
-                    : AvatarAccountVariant.Jazzicon
-                }
-                address={address}
-                size={showAddress ? Size.MD : Size.XS}
-                borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
-              />
-            )
-            ///: END:ONLY_INCLUDE_IF
-          }
+        {name}
+        {showAddress ? (
           <Text
-            as="span"
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodySm}
             ellipsis
-            {...labelProps}
-            className={classnames(
-              'multichain-account-picker__label',
-              labelProps.className ?? '',
-            )}
+            {...addressProps}
           >
-            {name}
-            {showAddress ? (
-              <Text
-                color={TextColor.textAlternative}
-                variant={TextVariant.bodySm}
-                ellipsis
-                {...addressProps}
-              >
-                {shortenedAddress}
-              </Text>
-            ) : null}
+            {shortenedAddress}
           </Text>
-        </Box>
-      </ButtonBase>
-    </Box>
+        ) : null}
+      </Text>
+    </ButtonBase>
   );
 };
 

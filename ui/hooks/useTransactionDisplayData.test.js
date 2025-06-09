@@ -40,8 +40,6 @@ const expectedResults = [
     isPending: false,
     displayedStatusKey: TransactionStatus.confirmed,
     isSubmitted: false,
-    detailsTitle: 'Send',
-    remoteSignerAddress: null,
   },
   {
     title: 'Send',

@@ -2308,7 +2308,7 @@ describe('Actions', () => {
       const store = mockStore();
 
       await expect(
-        store.dispatch(actions.removeAndIgnoreNft(undefined, '55', 'mainnet')),
+        store.dispatch(actions.removeAndIgnoreNft(undefined, '55')),
       ).rejects.toThrow('MetaMask - Cannot ignore NFT without address');
     });
 
@@ -2316,9 +2316,7 @@ describe('Actions', () => {
       const store = mockStore();
 
       await expect(
-        store.dispatch(
-          actions.removeAndIgnoreNft('Oxtest', undefined, 'mainnet'),
-        ),
+        store.dispatch(actions.removeAndIgnoreNft('Oxtest', undefined)),
       ).rejects.toThrow('MetaMask - Cannot ignore NFT without tokenID');
     });
 
@@ -2330,7 +2328,7 @@ describe('Actions', () => {
       setBackgroundConnection(background);
 
       await expect(
-        store.dispatch(actions.removeAndIgnoreNft('Oxtest', '6', 'mainnet')),
+        store.dispatch(actions.removeAndIgnoreNft('Oxtest', '6')),
       ).rejects.toThrow(error);
     });
   });

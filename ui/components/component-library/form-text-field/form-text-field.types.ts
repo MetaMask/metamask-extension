@@ -36,7 +36,7 @@ export interface FormTextFieldStyleUtilityProps
   /*
    * props to be passed to the HelpText component
    */
-  helpTextProps?: Partial<HelpTextProps<'div'>>;
+  helpTextProps?: HelpTextProps<'div'>;
 }
 
 // TODO: Convert to a `type` in a future major version.
@@ -51,7 +51,7 @@ export interface FormTextFieldWithLabelProps
   /*
    * props to be passed to the Label component
    */
-  labelProps?: Partial<LabelProps<'label'>>;
+  labelProps?: LabelProps<'label'>;
   id: string; // id is required when label is provided
 }
 

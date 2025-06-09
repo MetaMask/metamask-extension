@@ -32,9 +32,6 @@ export enum TraceName {
   Signature = 'Signature',
   Transaction = 'Transaction',
   UIStartup = 'UI Startup',
-  RevealSeed = 'Reveal Seed',
-  ImportSrp = 'Import Srp',
-  AddAccount = 'Add Account',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');

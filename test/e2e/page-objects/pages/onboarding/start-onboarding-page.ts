@@ -3,96 +3,49 @@ import { Driver } from '../../../webdriver/driver';
 class StartOnboardingPage {
   private driver: Driver;
 
-  private readonly welcomeMessage = {
-    text: 'Welcome to MetaMask',
-    tag: 'h2',
-  };
-
-  private readonly getStartedButton =
-    '[data-testid="onboarding-get-started-button"]';
-
-  private readonly termsOfUseCheckbox = '[data-testid="terms-of-use-checkbox"]';
-
-  private readonly termsOfUseScrollButton =
-    '[data-testid="terms-of-use-scroll-button"]';
-
-  private readonly termsOfUseAgreeButton =
-    '[data-testid="terms-of-use-agree-button"]';
-
-  private readonly logInMessage = {
-    text: `Let's get started`,
-    tag: 'h2',
-  };
-
   private readonly createWalletButton =
     '[data-testid="onboarding-create-wallet"]';
 
   private readonly importWalletButton =
     '[data-testid="onboarding-import-wallet"]';
 
-  private readonly onboardingCreateWithSrpButton =
-    '[data-testid="onboarding-create-with-srp-button"]';
+  private readonly startMessage = {
+    text: "Let's get started",
+    tag: 'h2',
+  };
 
-  private readonly onboardingImportWithSrpButton =
-    '[data-testid="onboarding-import-with-srp-button"]';
+  private readonly termsCheckbox = '[data-testid="onboarding-terms-checkbox"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async check_bannerPageIsLoaded(): Promise<void> {
+  async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.welcomeMessage,
-        this.getStartedButton,
+        this.startMessage,
+        this.termsCheckbox,
       ]);
     } catch (e) {
       console.log(
-        'Timeout while waiting for welcome page banner to be loaded',
+        'Timeout while waiting for start onboarding page to be loaded',
         e,
       );
       throw e;
     }
-    console.log('Welcome page banner is loaded');
+    console.log('Start onboarding page is loaded');
   }
 
-  async agreeToTermsOfUse(): Promise<void> {
-    await this.driver.clickElement(this.getStartedButton);
-    await this.driver.waitForSelector(this.termsOfUseScrollButton);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.termsOfUseScrollButton,
-    );
-    await this.driver.waitForSelector(this.termsOfUseCheckbox);
-    await this.driver.clickElement(this.termsOfUseCheckbox);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.termsOfUseAgreeButton,
-    );
+  async checkTermsCheckbox(): Promise<void> {
+    await this.driver.clickElement(this.termsCheckbox);
   }
 
-  async check_loginPageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForMultipleSelectors([
-        this.logInMessage,
-        this.createWalletButton,
-        this.importWalletButton,
-      ]);
-    } catch (e) {
-      console.log('Timeout while waiting for get started page to be loaded', e);
-      throw e;
-    }
-    console.log('Get started page is loaded');
+  async clickCreateWalletButton(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(this.createWalletButton);
   }
 
-  async createWalletWithSrp(): Promise<void> {
-    await this.driver.clickElement(this.createWalletButton);
-    await this.driver.waitForSelector(this.onboardingCreateWithSrpButton);
-    await this.driver.clickElement(this.onboardingCreateWithSrpButton);
-  }
-
-  async importWallet(): Promise<void> {
-    await this.driver.clickElement(this.importWalletButton);
-    await this.driver.waitForSelector(this.onboardingImportWithSrpButton);
-    await this.driver.clickElement(this.onboardingImportWithSrpButton);
+  async clickImportWalletButton(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(this.importWalletButton);
   }
 }
 

@@ -5,7 +5,6 @@ import {
   TransactionStatus,
 } from '@metamask/transaction-controller';
 import { useHistory } from 'react-router-dom';
-import { StatusTypes } from '@metamask/bridge-controller';
 import { selectBridgeHistoryForAccount } from '../../ducks/bridge-status/selectors';
 import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
 
@@ -41,12 +40,10 @@ export function useBridgeTxHistoryData({
 
   // By complete, this means BOTH source and dest tx are confirmed
   const isBridgeComplete = bridgeHistoryItem
-    ? Boolean(bridgeHistoryItem?.status.srcChain.txHash) &&
-      bridgeHistoryItem.status.status === StatusTypes.COMPLETE
-    : null;
-
-  const isBridgeFailed = bridgeHistoryItem
-    ? bridgeHistoryItem?.status.status === StatusTypes.FAILED
+    ? Boolean(
+        bridgeHistoryItem?.status.srcChain.txHash &&
+          bridgeHistoryItem.status.destChain?.txHash,
+      )
     : null;
 
   const showBridgeTxDetails = FINAL_NON_CONFIRMED_STATUSES.includes(
@@ -63,7 +60,6 @@ export function useBridgeTxHistoryData({
   return {
     bridgeTxHistoryItem: bridgeHistoryItem,
     isBridgeComplete,
-    isBridgeFailed,
     showBridgeTxDetails,
   };
 }

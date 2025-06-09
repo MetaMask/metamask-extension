@@ -137,7 +137,6 @@ export const FIELD_ELEMENT_TYPES = [
   'Checkbox',
   'Selector',
   'AssetSelector',
-  'AccountSelector',
 ];
 
 /**

@@ -8,14 +8,13 @@ import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getURLHostName } from '../../../ui/helpers/utils/util';
-import { t } from '../../../shared/lib/translate';
+import { t } from '../translate';
 
 export default class ExtensionPlatform {
   //
   // Public
   //
   reload() {
-    // TODO: should this be a safe reload via the `WriteManager`?
     browser.runtime.reload();
   }
 

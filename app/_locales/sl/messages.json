@@ -254,8 +254,20 @@
   "from": {
     "message": "Od"
   },
+  "gasLimitInfoTooltipContent": {
+    "message": "Omejitev plina je največja količina enot plina, ki ste jo pripravljeni porabiti."
+  },
   "gasLimitTooLow": {
     "message": "Gas limit mora biti vsaj 21000"
+  },
+  "gasPrice": {
+    "message": "Gas price (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Gas Price zelo nizkek"
+  },
+  "gasPriceInfoTooltipContent": {
+    "message": "Cena plina določa količino etra, ki ste ga pripravljeni plačati za vsako enoto plina."
   },
   "gasUsed": {
     "message": "Uporabljen gas"
@@ -727,5 +739,8 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Vaš zasebni seed phrase"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Ničelni gas price na pospešitvi"
   }
 }

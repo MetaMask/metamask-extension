@@ -26,7 +26,7 @@ console.log('I am Groot.');
       ? source.replace(`${fencedSource}\n`, '')
       : source;
 
-    const { promise, resolve } = Promise.withResolvers<CallbackArgs>();
+    let resolveCallback: (value: CallbackArgs) => void;
     const mockContext = {
       getOptions: () => {
         return {
@@ -37,10 +37,13 @@ console.log('I am Groot.');
         };
       },
       resourcePath: '<resource-path>',
-      callback: (...args: CallbackArgs) => resolve(args),
+      callback: (...args: CallbackArgs) => resolveCallback(args),
     } as unknown as LoaderContext<CodeFenceLoaderOptions>;
+    const deferredPromise = new Promise<CallbackArgs>((resolve) => {
+      resolveCallback = resolve;
+    });
     mockContext.callback = mockContext.callback.bind(mockContext);
-    return { context: mockContext, source, expected, deferredPromise: promise };
+    return { context: mockContext, source, expected, deferredPromise };
   }
 
   [false, true].forEach((omitFeature) => {

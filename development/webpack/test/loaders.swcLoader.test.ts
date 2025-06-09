@@ -22,7 +22,7 @@ describe('swcLoader', () => {
     // swc doesn't use node's fs module, so we can't mock
     const resourcePath = 'test.ts';
 
-    const { promise, resolve } = Promise.withResolvers<CallbackArgs>();
+    let resolveCallback: (value: CallbackArgs) => void;
     const mockContext = {
       mode: 'production',
       sourceMap: true,
@@ -32,12 +32,15 @@ describe('swcLoader', () => {
       resourcePath,
       async: () => {
         return (...args: CallbackArgs) => {
-          resolve(args);
+          resolveCallback(args);
         };
       },
     } as unknown as LoaderContext<SwcLoaderOptions>;
+    const deferredPromise = new Promise<CallbackArgs>((resolve) => {
+      resolveCallback = resolve;
+    });
     mockContext.async = mockContext.async.bind(mockContext);
-    return { context: mockContext, source, expected, deferredPromise: promise };
+    return { context: mockContext, source, expected, deferredPromise };
   }
 
   it('should transform code', async () => {

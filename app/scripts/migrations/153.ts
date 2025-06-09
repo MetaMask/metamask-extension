@@ -32,7 +32,9 @@ function transformState(
   state: Record<string, unknown>,
 ): Record<string, unknown> {
   if (!hasProperty(state, 'TokensController')) {
-    console.warn(`newState.TokensController is not present`);
+    global.sentry?.captureException?.(
+      new Error(`Migration ${version}: TokensController not found.`),
+    );
     return state;
   }
 
@@ -46,12 +48,6 @@ function transformState(
     );
     return state;
   }
-
-  if (!hasProperty(state, 'TokenListController')) {
-    console.warn(`newState.TokenListController is not present`);
-    return state;
-  }
-
   const tokenListControllerState = state.TokenListController;
 
   if (!isObject(tokenListControllerState)) {

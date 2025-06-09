@@ -82,14 +82,4 @@ export default class ReadOnlyNetworkStore extends BaseStore {
     }
     this.#state = data;
   }
-
-  /**
-   * Resets data to its initial state.
-   */
-  async reset(): Promise<void> {
-    this.#initialized = false;
-    this.#state = null;
-    this.#initializing = this.#init();
-    await this.#initializing;
-  }
 }

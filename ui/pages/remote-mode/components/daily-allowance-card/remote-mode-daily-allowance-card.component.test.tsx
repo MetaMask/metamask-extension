@@ -1,22 +1,12 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { AssetType } from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
-import {
-  DailyAllowance,
-  TOKEN_DETAILS,
-  TokenSymbol,
-} from '../../../../../shared/lib/remote-mode';
+import { DailyAllowance, DailyAllowanceTokenTypes } from '../../remote.types';
 import RemoteModeDailyAllowanceCard from './remote-mode-daily-allowance-card.component';
 
 const mockDailyAllowance: DailyAllowance = {
-  symbol: TokenSymbol.USDC,
+  tokenType: DailyAllowanceTokenTypes.ETH,
   amount: 100,
-  image: TOKEN_DETAILS[TokenSymbol.USDC].image,
-  name: TOKEN_DETAILS[TokenSymbol.USDC].name,
-  type: AssetType.token,
-  address: '',
-  decimals: 6,
 };
 
 const renderComponent = (

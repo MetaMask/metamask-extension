@@ -111,10 +111,9 @@ describe('MetaMask onboarding', function () {
           'test test test test test test test test test test test test';
         await driver.navigate();
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_bannerPageIsLoaded();
-        await startOnboardingPage.agreeToTermsOfUse();
-        await startOnboardingPage.check_loginPageIsLoaded();
-        await startOnboardingPage.importWallet();
+        await startOnboardingPage.check_pageIsLoaded();
+        await startOnboardingPage.checkTermsCheckbox();
+        await startOnboardingPage.clickImportWalletButton();
 
         const onboardingMetricsPage = new OnboardingMetricsPage(driver);
         await onboardingMetricsPage.check_pageIsLoaded();
@@ -140,10 +139,9 @@ describe('MetaMask onboarding', function () {
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_bannerPageIsLoaded();
-        await startOnboardingPage.agreeToTermsOfUse();
-        await startOnboardingPage.check_loginPageIsLoaded();
-        await startOnboardingPage.importWallet();
+        await startOnboardingPage.check_pageIsLoaded();
+        await startOnboardingPage.checkTermsCheckbox();
+        await startOnboardingPage.clickImportWalletButton();
 
         const onboardingMetricsPage = new OnboardingMetricsPage(driver);
         await onboardingMetricsPage.check_pageIsLoaded();
@@ -166,10 +164,9 @@ describe('MetaMask onboarding', function () {
         const wrongTestPassword = 'test test test test';
         await driver.navigate();
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_bannerPageIsLoaded();
-        await startOnboardingPage.agreeToTermsOfUse();
-        await startOnboardingPage.check_loginPageIsLoaded();
-        await startOnboardingPage.createWalletWithSrp();
+        await startOnboardingPage.check_pageIsLoaded();
+        await startOnboardingPage.checkTermsCheckbox();
+        await startOnboardingPage.clickCreateWalletButton();
 
         const onboardingMetricsPage = new OnboardingMetricsPage(driver);
         await onboardingMetricsPage.check_pageIsLoaded();

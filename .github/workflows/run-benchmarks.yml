@@ -21,7 +21,7 @@ jobs:
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
       HEADLESS: true
-      ARTIFACT_NAME: build-test-${{ matrix.buildType }}
+      ARTIFACT_NAME: prep-build-test-${{ matrix.buildType }}-${{ matrix.browser }}
       OUTPUT_NAME: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.testType }}.json
     steps:
       - name: Checkout and setup environment
@@ -30,14 +30,12 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
 
-      # not installed by checkout-and-setup when cache is restored
-      - name: Install anvil
-        run: yarn foundryup
-
-      - name: Download artifact '${{ env.ARTIFACT_NAME }}'
+      - name: Download artifact ${{ env.ARTIFACT_NAME }}
         uses: actions/download-artifact@v4
         with:
-          name: ${{ env.ARTIFACT_NAME }}
+          path: ./dist/
+          pattern: ${{ env.ARTIFACT_NAME }}
+          merge-multiple: true
 
       - name: Run the benchmark
         # Choose a benchmark command from env.COMMANDS

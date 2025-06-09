@@ -1213,7 +1213,7 @@
       },
       "packages": {
         "browserify>JSONStream>jsonparse": true,
-        "browserify>JSONStream>through": true
+        "debounce-stream>through": true
       }
     },
     "@lavamoat/lavapack>readable-stream>abort-controller": {
@@ -2427,7 +2427,7 @@
         "unzipper>duplexer2>readable-stream": true
       }
     },
-    "gulp-livereload>event-stream>duplexer": {
+    "debounce-stream>duplexer": {
       "builtin": {
         "stream": true
       }
@@ -2928,13 +2928,13 @@
         "setImmediate": true
       },
       "packages": {
-        "gulp-livereload>event-stream>duplexer": true,
+        "debounce-stream>duplexer": true,
         "gulp-livereload>event-stream>from": true,
         "gulp-livereload>event-stream>map-stream": true,
         "gulp-livereload>event-stream>pause-stream": true,
         "gulp-livereload>event-stream>split": true,
         "gulp-livereload>event-stream>stream-combiner": true,
-        "browserify>JSONStream>through": true
+        "debounce-stream>through": true
       }
     },
     "@lavamoat/lavapack>readable-stream>abort-controller>event-target-shim": {
@@ -5036,7 +5036,7 @@
     },
     "gulp-livereload>event-stream>pause-stream": {
       "packages": {
-        "browserify>JSONStream>through": true
+        "debounce-stream>through": true
       }
     },
     "postcss>picocolors": {
@@ -7914,7 +7914,7 @@
         "string_decoder.StringDecoder": true
       },
       "packages": {
-        "browserify>JSONStream>through": true
+        "debounce-stream>through": true
       }
     },
     "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>class-utils>static-extend": {
@@ -7934,7 +7934,7 @@
     },
     "gulp-livereload>event-stream>stream-combiner": {
       "packages": {
-        "gulp-livereload>event-stream>duplexer": true
+        "debounce-stream>duplexer": true
       }
     },
     "gulp>glob-watcher>async-done>stream-exhaust": {
@@ -8600,7 +8600,7 @@
         "watchify>xtend": true
       }
     },
-    "browserify>JSONStream>through": {
+    "debounce-stream>through": {
       "builtin": {
         "stream": true
       },

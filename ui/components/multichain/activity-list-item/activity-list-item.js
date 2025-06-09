@@ -14,7 +14,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, Text, Icon, IconName, IconSize } from '../../component-library';
+import { Box, Text } from '../../component-library';
 
 export const ActivityListItem = ({
   topContent,
@@ -27,7 +27,6 @@ export const ActivityListItem = ({
   onClick,
   className,
   'data-testid': dataTestId,
-  isRemoteModeItem,
 }) => {
   const primaryClassName = classnames('activity-list-item', className, {
     'activity-list-item--single-content-row': !(subtitle || children),
@@ -80,28 +79,15 @@ export const ActivityListItem = ({
             className="activity-list-item__detail-container"
             minWidth="0"
           >
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              alignItems={AlignItems.center}
+            <Text
+              ellipsis
+              textAlign={TextAlign.Left}
+              variant={TextVariant.bodyLgMedium}
+              fontWeight={FontWeight.Medium}
+              data-testid="activity-list-item-action"
             >
-              <Text
-                ellipsis
-                textAlign={TextAlign.Left}
-                variant={TextVariant.bodyLgMedium}
-                fontWeight={FontWeight.Medium}
-                data-testid="activity-list-item-action"
-              >
-                {title}
-              </Text>
-              {isRemoteModeItem && (
-                <Icon
-                  name={IconName.RemoteMode}
-                  size={IconSize.Md}
-                  color={TextColor.textAlternative}
-                />
-              )}
-            </Box>
+              {title}
+            </Text>
             {subtitle && (
               <Text
                 as="div"
@@ -184,8 +170,4 @@ ActivityListItem.propTypes = {
    * Test ID for this component
    */
   'data-testid': PropTypes.string,
-  /**
-   * Whether the item is a remote mode item
-   */
-  isRemoteModeItem: PropTypes.bool,
 };

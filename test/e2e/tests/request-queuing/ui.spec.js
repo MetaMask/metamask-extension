@@ -2,6 +2,7 @@ const { strict: assert } = require('assert');
 const { Browser } = require('selenium-webdriver');
 const { toEvmCaipChainId } = require('@metamask/multichain-network-controller');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
+const { isManifestV3 } = require('../../../../shared/modules/mv3.utils');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -115,10 +116,17 @@ async function switchToDialogPopoverValidateDetailsRedesign(
 }
 
 async function rejectTransactionRedesign(driver) {
-  await driver.clickElementAndWaitForWindowToClose({
-    tag: 'button',
-    text: 'Cancel',
-  });
+  if (isManifestV3) {
+    await driver.clickElement({
+      tag: 'button',
+      text: 'Cancel',
+    });
+  } else {
+    await driver.clickElementAndWaitForWindowToClose({
+      tag: 'button',
+      text: 'Cancel',
+    });
+  }
 }
 
 async function confirmTransaction(driver) {

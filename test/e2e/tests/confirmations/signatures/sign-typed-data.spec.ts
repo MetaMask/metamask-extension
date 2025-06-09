@@ -1,3 +1,4 @@
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { WINDOW_TITLES } from '../../../helpers';
@@ -5,7 +6,7 @@ import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApproved,
   mockSignatureRejected,
-  withSignatureFixtures,
+  withTransactionEnvelopeTypeFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import SignTypedData from '../../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
@@ -27,8 +28,9 @@ import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/met
 
 describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
   it('initiates and confirms', async function () {
-    await withSignatureFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         localNodes,
@@ -71,8 +73,9 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
   });
 
   it('initiates and rejects', async function () {
-    await withSignatureFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,

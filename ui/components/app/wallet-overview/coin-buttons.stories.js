@@ -24,6 +24,7 @@ export default {
       string: '0.0031',
     },
     classPrefix: 'coin',
+    iconButtonClassName: '',
   },
   component: CoinButtons,
   parameters: {

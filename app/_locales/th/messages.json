@@ -133,6 +133,9 @@
   "gasLimitTooLow": {
     "message": "วงเงินแก็สต้องอย่างน้อย 21000"
   },
+  "gasPrice": {
+    "message": "ราคาแก๊ส (GWEI)"
+  },
   "general": {
     "message": "ทั่วไป"
   },

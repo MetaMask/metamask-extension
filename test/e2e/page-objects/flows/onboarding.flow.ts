@@ -8,9 +8,6 @@ import OnboardingCompletePage from '../pages/onboarding/onboarding-complete-page
 import OnboardingPrivacySettingsPage from '../pages/onboarding/onboarding-privacy-settings-page';
 import { WALLET_PASSWORD } from '../../helpers';
 import { E2E_SRP } from '../../default-fixture';
-import HomePage from '../pages/home/homepage';
-import LoginPage from '../pages/login-page';
-import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
 
 /**
  * Create new wallet onboarding flow
@@ -21,7 +18,6 @@ import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
  * @param [options.participateInMetaMetrics] - Whether to participate in MetaMetrics. Defaults to false.
  * @param [options.needNavigateToNewPage] - Indicates whether to navigate to a new page before starting the onboarding flow. Defaults to true.
  * @param [options.dataCollectionForMarketing] - Whether to opt in to data collection for marketing. Defaults to false.
- * @param [options.skipSRPBackup] - Whether to skip the SRP backup step. Defaults to false.
  */
 export const createNewWalletOnboardingFlow = async ({
   driver,
@@ -29,24 +25,21 @@ export const createNewWalletOnboardingFlow = async ({
   participateInMetaMetrics = false,
   needNavigateToNewPage = true,
   dataCollectionForMarketing = false,
-  skipSRPBackup = false,
 }: {
   driver: Driver;
   password?: string;
   participateInMetaMetrics?: boolean;
   needNavigateToNewPage?: boolean;
   dataCollectionForMarketing?: boolean;
-  skipSRPBackup?: boolean;
 }): Promise<void> => {
   console.log('Starting the creation of a new wallet onboarding flow');
   if (needNavigateToNewPage) {
     await driver.navigate();
   }
   const startOnboardingPage = new StartOnboardingPage(driver);
-  await startOnboardingPage.check_bannerPageIsLoaded();
-  await startOnboardingPage.agreeToTermsOfUse();
-  await startOnboardingPage.check_loginPageIsLoaded();
-  await startOnboardingPage.createWalletWithSrp();
+  await startOnboardingPage.check_pageIsLoaded();
+  await startOnboardingPage.checkTermsCheckbox();
+  await startOnboardingPage.clickCreateWalletButton();
 
   const onboardingMetricsPage = new OnboardingMetricsPage(driver);
   await onboardingMetricsPage.check_pageIsLoaded();
@@ -65,11 +58,7 @@ export const createNewWalletOnboardingFlow = async ({
 
   const secureWalletPage = new SecureWalletPage(driver);
   await secureWalletPage.check_pageIsLoaded();
-  if (skipSRPBackup) {
-    await secureWalletPage.skipSRPBackup();
-  } else {
-    await secureWalletPage.revealAndConfirmSRP();
-  }
+  await secureWalletPage.revealAndConfirmSRP();
 };
 
 /**
@@ -100,10 +89,9 @@ export const incompleteCreateNewWalletOnboardingFlow = async ({
     await driver.navigate();
   }
   const startOnboardingPage = new StartOnboardingPage(driver);
-  await startOnboardingPage.check_bannerPageIsLoaded();
-  await startOnboardingPage.agreeToTermsOfUse();
-  await startOnboardingPage.check_loginPageIsLoaded();
-  await startOnboardingPage.createWalletWithSrp();
+  await startOnboardingPage.check_pageIsLoaded();
+  await startOnboardingPage.checkTermsCheckbox();
+  await startOnboardingPage.clickCreateWalletButton();
 
   const onboardingMetricsPage = new OnboardingMetricsPage(driver);
   await onboardingMetricsPage.check_pageIsLoaded();
@@ -156,10 +144,9 @@ export const importSRPOnboardingFlow = async ({
   await driver.navigate();
 
   const startOnboardingPage = new StartOnboardingPage(driver);
-  await startOnboardingPage.check_bannerPageIsLoaded();
-  await startOnboardingPage.agreeToTermsOfUse();
-  await startOnboardingPage.check_loginPageIsLoaded();
-  await startOnboardingPage.importWallet();
+  await startOnboardingPage.check_pageIsLoaded();
+  await startOnboardingPage.checkTermsCheckbox();
+  await startOnboardingPage.clickImportWalletButton();
 
   const onboardingMetricsPage = new OnboardingMetricsPage(driver);
   await onboardingMetricsPage.check_pageIsLoaded();
@@ -183,7 +170,7 @@ export const importSRPOnboardingFlow = async ({
 
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.check_pageIsLoaded();
-  await onboardingPasswordPage.createWalletPassword(password);
+  await onboardingPasswordPage.createImportedWalletPassword(password);
 };
 
 /**
@@ -195,7 +182,6 @@ export const importSRPOnboardingFlow = async ({
  * @param [options.participateInMetaMetrics] - Whether to participate in MetaMetrics. Defaults to false.
  * @param [options.needNavigateToNewPage] - Indicates whether to navigate to a new page before starting the onboarding flow. Defaults to true.
  * @param [options.dataCollectionForMarketing] - Whether to opt in to data collection for marketing. Defaults to false.
- * @param [options.skipSRPBackup] - Whether to skip the SRP backup step. Defaults to false.
  */
 export const completeCreateNewWalletOnboardingFlow = async ({
   driver,
@@ -203,14 +189,12 @@ export const completeCreateNewWalletOnboardingFlow = async ({
   participateInMetaMetrics = false,
   needNavigateToNewPage = true,
   dataCollectionForMarketing = false,
-  skipSRPBackup = false,
 }: {
   driver: Driver;
   password?: string;
   participateInMetaMetrics?: boolean;
   needNavigateToNewPage?: boolean;
   dataCollectionForMarketing?: boolean;
-  skipSRPBackup?: boolean;
 }): Promise<void> => {
   console.log('start to complete create new wallet onboarding flow ');
   await createNewWalletOnboardingFlow({
@@ -219,13 +203,10 @@ export const completeCreateNewWalletOnboardingFlow = async ({
     participateInMetaMetrics,
     needNavigateToNewPage,
     dataCollectionForMarketing,
-    skipSRPBackup,
   });
   const onboardingCompletePage = new OnboardingCompletePage(driver);
   await onboardingCompletePage.check_pageIsLoaded();
-  if (!skipSRPBackup) {
-    await onboardingCompletePage.check_congratulationsMessageIsDisplayed();
-  }
+  await onboardingCompletePage.check_congratulationsMessageIsDisplayed();
   await onboardingCompletePage.completeOnboarding();
 };
 
@@ -317,49 +298,4 @@ export const completeCreateNewWalletOnboardingFlowWithCustomSettings = async ({
   await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
   await onboardingCompletePage.check_pageIsLoaded();
   await onboardingCompletePage.completeOnboarding();
-};
-
-/**
- * Complete recovery onboarding flow
- *
- * @param options - The options object.
- * @param options.driver - The WebDriver instance.
- * @param options.password - The password to use. Defaults to WALLET_PASSWORD.
- */
-export const completeVaultRecoveryOnboardingFlow = async ({
-  driver,
-  password = WALLET_PASSWORD,
-}: {
-  driver: Driver;
-  password?: string;
-}): Promise<void> => {
-  // after a vault recovery the Login page is displayed before the normal
-  // onboarding flow.
-  const loginPage = new LoginPage(driver);
-  await loginPage.check_pageIsLoaded();
-  await loginPage.loginToHomepage(password);
-
-  // complete metrics onboarding flow
-  await onboardingMetricsFlow(driver, {
-    participateInMetaMetrics: false,
-    dataCollectionForMarketing: false,
-  });
-
-  const secureWalletPage = new SecureWalletPage(driver);
-  await secureWalletPage.check_pageIsLoaded();
-  await secureWalletPage.skipSRPBackup();
-
-  // finish up onboarding screens
-  const onboardingCompletePage = new OnboardingCompletePage(driver);
-  await onboardingCompletePage.check_pageIsLoaded();
-  await onboardingCompletePage.completeOnboarding();
-
-  const homePage = new HomePage(driver);
-  homePage.check_pageIsLoaded();
-
-  // Because our state was reset, and the flow skips the welcome screen, we now
-  // need to accept the terms of use again
-  const updateTermsOfUseModal = new TermsOfUseUpdateModal(driver);
-  await updateTermsOfUseModal.check_pageIsLoaded();
-  await updateTermsOfUseModal.confirmAcceptTermsOfUseUpdate();
 };

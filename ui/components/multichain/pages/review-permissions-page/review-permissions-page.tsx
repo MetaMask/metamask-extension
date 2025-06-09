@@ -26,11 +26,13 @@ import {
   getUpdatedAndSortedAccountsWithCaipAccountId,
 } from '../../../../selectors';
 import {
+  addPermittedAccounts,
+  addPermittedChains,
   hidePermittedNetworkToast,
   removePermissionsFor,
+  removePermittedAccount,
+  removePermittedChain,
   requestAccountsAndChainPermissionsWithId,
-  setPermittedAccounts,
-  setPermittedChains,
 } from '../../../../store/actions';
 import {
   AvatarFavicon,
@@ -58,7 +60,6 @@ import {
   MergedInternalAccountWithCaipAccountId,
 } from '../../../../selectors/selectors.types';
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
-import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { SiteCell } from './site-cell/site-cell';
 
 export const ReviewPermissions = () => {
@@ -153,7 +154,13 @@ export const ReviewPermissions = () => {
       return;
     }
 
-    dispatch(setPermittedChains(activeTabOrigin, chainIds));
+    dispatch(addPermittedChains(activeTabOrigin, chainIds));
+
+    connectedChainIds.forEach((chainId: string) => {
+      if (!chainIds.includes(chainId)) {
+        dispatch(removePermittedChain(activeTabOrigin, chainId));
+      }
+    });
 
     setShowNetworkToast(true);
   };
@@ -190,7 +197,50 @@ export const ReviewPermissions = () => {
       return;
     }
 
-    dispatch(setPermittedAccounts(activeTabOrigin, caipAccountIds));
+    const parsedCaipAccountIds = caipAccountIds.map((caipAccountId) => {
+      return parseCaipAccountId(caipAccountId);
+    });
+
+    const addresses = parsedCaipAccountIds.map(({ address }) => address);
+
+    // TODO: we should refactor addPermittedAccounts to accept CaipAccountIds
+    dispatch(addPermittedAccounts(activeTabOrigin, addresses));
+
+    connectedAccountAddresses.forEach((connectedAddress: string) => {
+      // TODO: seems like similar logic to selector logic in ui/index.js
+      // See if we can DRY this
+      const parsedConnectedAddress = parseCaipAccountId(
+        connectedAddress as CaipAccountId,
+      );
+
+      const includesCaipAccountId = parsedCaipAccountIds.some(
+        (parsedAddress) => {
+          if (
+            parsedConnectedAddress.chain.namespace !==
+              parsedAddress.chain.namespace ||
+            parsedConnectedAddress.address !== parsedAddress.address
+          ) {
+            return false;
+          }
+
+          return (
+            parsedAddress.chain.reference === '0' ||
+            parsedAddress.chain.reference ===
+              parsedConnectedAddress.chain.reference
+          );
+        },
+      );
+
+      if (!includesCaipAccountId) {
+        // TODO: we should refactor removePermittedAccount to accept CaipAccountIds
+        dispatch(
+          removePermittedAccount(
+            activeTabOrigin,
+            parsedConnectedAddress.address,
+          ),
+        );
+      }
+    });
 
     setShowAccountToast(true);
   };
@@ -217,8 +267,6 @@ export const ReviewPermissions = () => {
               testNetworks={testNetworks}
               accounts={allAccounts}
               onSelectAccountAddresses={handleSelectAccountAddresses}
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onSelectChainIds={handleSelectChainIds}
               selectedAccountAddresses={connectedAccountAddresses}
               selectedChainIds={connectedChainIds}
@@ -233,10 +281,8 @@ export const ReviewPermissions = () => {
               hostname={activeTabOrigin}
               onClose={() => setShowDisconnectAllModal(false)}
               onClick={() => {
-                trace({ name: TraceName.DisconnectAllModal });
                 disconnectAllPermissions();
                 setShowDisconnectAllModal(false);
-                endTrace({ name: TraceName.DisconnectAllModal });
               }}
             />
           ) : null}
@@ -300,8 +346,6 @@ export const ReviewPermissions = () => {
                     size={ButtonPrimarySize.Lg}
                     block
                     data-test-id="no-connections-button"
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={requestAccountsAndChainPermissions}
                   >
                     {t('connectAccounts')}

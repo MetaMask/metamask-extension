@@ -1,3 +1,4 @@
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { WINDOW_TITLES } from '../../../helpers';
@@ -6,7 +7,7 @@ import {
   mockSignatureApprovedWithDecoding,
   mockSignatureRejectedWithDecoding,
   scrollAndConfirmAndAssertConfirm,
-  withSignatureFixtures,
+  withTransactionEnvelopeTypeFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import PermitConfirmation from '../../../page-objects/pages/confirmations/redesign/permit-confirmation';
@@ -28,8 +29,9 @@ import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/met
 
 describe('Confirmation Signature - NFT Permit', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
-    await withSignatureFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         localNodes,
@@ -83,8 +85,9 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
   });
 
   it('initiates and rejects and emits the correct events', async function () {
-    await withSignatureFixtures(
+    await withTransactionEnvelopeTypeFixtures(
       this.test?.fullTitle(),
+      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,

@@ -17,7 +17,7 @@ function mapDispatchToProps(dispatch) {
   return {
     hideModal: () => dispatch(hideModal()),
     createAccount: async (newAccountName) => {
-      const { address: newAccountAddress } = await dispatch(addNewAccount());
+      const newAccountAddress = await dispatch(addNewAccount());
       if (newAccountName) {
         dispatch(setAccountLabel(newAccountAddress, newAccountName));
       }

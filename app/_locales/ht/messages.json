@@ -169,6 +169,9 @@
   "gasLimitTooLow": {
     "message": "Limit gaz dwe omwen 21000"
   },
+  "gasPrice": {
+    "message": "Pri gaz (GWEI)"
+  },
   "gasUsed": {
     "message": "Gaz yo Itilize"
   },

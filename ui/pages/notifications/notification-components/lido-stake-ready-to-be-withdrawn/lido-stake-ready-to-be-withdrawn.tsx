@@ -14,7 +14,9 @@ import {
   NotificationDetailBlockExplorerButton,
   NotificationDetailAddress,
 } from '../../../../components/multichain';
-import { t } from '../../../../../shared/lib/translate';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { t } from '../../../../../app/scripts/translate';
 import {
   createTextItems,
   formatAmount,

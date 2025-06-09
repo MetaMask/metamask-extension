@@ -17,20 +17,12 @@ import {
   TransactionType as KeyringTransactionType,
 } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
-import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedCompletedTransactionsSelectorAllChains,
   nonceSortedPendingTransactionsSelector,
   nonceSortedPendingTransactionsSelectorAllChains,
 } from '../../../selectors/transactions';
-import {
-  remoteModeNonceSortedCompletedTransactionsSelector,
-  remoteModeNonceSortedCompletedTransactionsSelectorAllChains,
-  remoteModeNonceSortedPendingTransactionsSelector,
-  remoteModeNonceSortedPendingTransactionsSelectorAllChains,
-  getIsRemoteModeEnabled,
-} from '../../../selectors/remote-mode';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   getCurrentNetwork,
@@ -276,9 +268,7 @@ export const filterTransactionsByToken = (
 
   const transactionForToken = (nonEvmTransactions.transactions || []).filter(
     (transaction) => {
-      return [...transaction.to, ...transaction.from].some(
-        (item) => item.asset.type === tokenAddress,
-      );
+      return transaction.to.some((item) => item.asset.type === tokenAddress);
     },
   );
 
@@ -321,9 +311,9 @@ export default function TransactionList({
     getSelectedAccountMultichainTransactions,
   );
 
-  const nonEvmTransactionFilteredByToken = useMemo(
-    () => filterTransactionsByToken(nonEvmTransactions, tokenAddress),
-    [nonEvmTransactions, tokenAddress],
+  const nonEvmTransactionFilteredByToken = filterTransactionsByToken(
+    nonEvmTransactions,
+    tokenAddress,
   );
 
   // Use our custom hook to map Solana bridge transactions with destination chain info
@@ -372,52 +362,6 @@ export default function TransactionList({
     unfilteredCompletedTransactionsCurrentChain,
   ]);
 
-  const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
-
-  const unfilteredRemoteModePendingTransactionsCurrentChain = useSelector(
-    remoteModeNonceSortedPendingTransactionsSelector,
-  );
-
-  const unfilteredRemoteModePendingTransactionsAllChains = useSelector(
-    remoteModeNonceSortedPendingTransactionsSelectorAllChains,
-  );
-
-  const unfilteredRemoteModePendingTransactions = useMemo(() => {
-    if (!isRemoteModeEnabled) {
-      return [];
-    }
-    return isTokenNetworkFilterEqualCurrentNetwork
-      ? unfilteredRemoteModePendingTransactionsCurrentChain
-      : unfilteredRemoteModePendingTransactionsAllChains;
-  }, [
-    isRemoteModeEnabled,
-    isTokenNetworkFilterEqualCurrentNetwork,
-    unfilteredRemoteModePendingTransactionsAllChains,
-    unfilteredRemoteModePendingTransactionsCurrentChain,
-  ]);
-
-  const unfilteredRemoteModeCompletedTransactionsAllChains = useSelector(
-    remoteModeNonceSortedCompletedTransactionsSelectorAllChains,
-  );
-
-  const unfilteredRemoteModeCompletedTransactionsCurrentChain = useSelector(
-    remoteModeNonceSortedCompletedTransactionsSelector,
-  );
-
-  const unfilteredRemoteModeCompletedTransactions = useMemo(() => {
-    if (!isRemoteModeEnabled) {
-      return [];
-    }
-    return isTokenNetworkFilterEqualCurrentNetwork
-      ? unfilteredRemoteModeCompletedTransactionsCurrentChain
-      : unfilteredRemoteModeCompletedTransactionsAllChains;
-  }, [
-    isTokenNetworkFilterEqualCurrentNetwork,
-    unfilteredRemoteModeCompletedTransactionsAllChains,
-    unfilteredRemoteModeCompletedTransactionsCurrentChain,
-    isRemoteModeEnabled,
-  ]);
-
   const chainId = useSelector(getCurrentChainId);
   const isEvmNetwork = useSelector(getIsEvmMultichainNetworkSelected);
 
@@ -460,20 +404,16 @@ export default function TransactionList({
     () =>
       groupEvmTransactionsByDate(
         getFilteredTransactionGroups(
-          [
-            ...unfilteredPendingTransactions,
-            ...unfilteredRemoteModePendingTransactions,
-          ],
+          unfilteredPendingTransactions,
           hideTokenTransactions,
           tokenAddress,
           chainId,
         ),
       ),
     [
-      unfilteredPendingTransactions,
-      unfilteredRemoteModePendingTransactions,
       hideTokenTransactions,
       tokenAddress,
+      unfilteredPendingTransactions,
       chainId,
     ],
   );
@@ -482,20 +422,12 @@ export default function TransactionList({
     () =>
       groupEvmTransactionsByDate(
         getFilteredTransactionGroupsAllChains(
-          [
-            ...unfilteredCompletedTransactions,
-            ...unfilteredRemoteModeCompletedTransactions,
-          ],
+          unfilteredCompletedTransactions,
           hideTokenTransactions,
           tokenAddress,
         ),
       ),
-    [
-      hideTokenTransactions,
-      tokenAddress,
-      unfilteredCompletedTransactions,
-      unfilteredRemoteModeCompletedTransactions,
-    ],
+    [hideTokenTransactions, tokenAddress, unfilteredCompletedTransactions],
   );
 
   const viewMore = useCallback(
@@ -588,9 +520,6 @@ export default function TransactionList({
   const trackEvent = useContext(MetaMetricsContext);
 
   if (!isEvmAccountType(selectedAccount.type)) {
-    const { namespace } = parseCaipChainId(multichainNetworkConfig.chainId);
-    const isBitcoinNetwork = namespace === KnownCaipNamespace.Bip122;
-
     const addressLink = getMultichainAccountUrl(
       selectedAccount.address,
       multichainNetworkForSelectedAccount,
@@ -660,25 +589,23 @@ export default function TransactionList({
                   </Fragment>
                 ))}
 
-                {!isBitcoinNetwork && (
-                  <Box className="transaction-list__view-on-block-explorer">
-                    <Button
-                      display={Display.Flex}
-                      variant={ButtonVariant.Primary}
-                      size={ButtonSize.Sm}
-                      endIconName={IconName.Export}
-                      onClick={() =>
-                        openBlockExplorer(
-                          addressLink,
-                          metricsLocation,
-                          trackEvent,
-                        )
-                      }
-                    >
-                      {t('viewOnBlockExplorer')}
-                    </Button>
-                  </Box>
-                )}
+                <Box className="transaction-list__view-on-block-explorer">
+                  <Button
+                    display={Display.Flex}
+                    variant={ButtonVariant.Primary}
+                    size={ButtonSize.Sm}
+                    endIconName={IconName.Export}
+                    onClick={() =>
+                      openBlockExplorer(
+                        addressLink,
+                        metricsLocation,
+                        trackEvent,
+                      )
+                    }
+                  >
+                    {t('viewOnBlockExplorer')}
+                  </Button>
+                </Box>
               </Box>
             ) : (
               <Box className="transaction-list__empty">

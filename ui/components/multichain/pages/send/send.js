@@ -324,20 +324,18 @@ export const SendPage = () => {
   const isSmartTransactionPending = smartTransactions?.find(
     ({ status }) => status === SmartTransactionStatus.pending,
   );
-  const isGasTooLow = sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR;
 
-  const isInsufficientFundsError =
-    sendErrors.amount === INSUFFICIENT_FUNDS_ERROR;
+  const isGasTooLow =
+    sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR &&
+    sendErrors.amount !== INSUFFICIENT_FUNDS_ERROR;
 
   const isHexDataInvalid = sendErrors.hexData === INVALID_HEX_DATA_ERROR;
 
-  const submitDisabled = Boolean(
-    isInsufficientFundsError ||
-      (isInvalidSendForm && !isGasTooLow) ||
-      requireContractAddressAcknowledgement ||
-      (isSwapAndSend && isSmartTransactionPending) ||
-      isHexDataInvalid,
-  );
+  const submitDisabled =
+    (isInvalidSendForm && !isGasTooLow) ||
+    requireContractAddressAcknowledgement ||
+    (isSwapAndSend && isSmartTransactionPending) ||
+    isHexDataInvalid;
 
   const isSendFormShown =
     draftTransactionExists &&

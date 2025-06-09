@@ -4,7 +4,6 @@
     "hiddenAccountList": {}
   },
   "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
-  "AccountTreeController": { "accountTree": "object" },
   "AccountsController": {
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
   },
@@ -48,14 +47,9 @@
     "switchedNetworkNeverShowMessage": "boolean",
     "slides": "object",
     "throttledOrigins": "object",
-    "upgradeSplashPageAcknowledgedForAccounts": "object",
-    "isUpdateAvailable": false,
-    "updateModalLastDismissedAt": null,
-    "lastUpdatedAt": null,
     "qrHardware": {},
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
-    "addressSecurityAlertResponses": "object",
     "switchedNetworkDetails": null,
     "currentExtensionPopupId": "number",
     "termsOfUseLastAgreed": "number",
@@ -68,6 +62,26 @@
   },
   "AuthenticationController": { "isSignedIn": "boolean" },
   "BridgeController": {
+    "bridgeFeatureFlags": {
+      "extensionConfig": {
+        "maxRefreshCount": "number",
+        "refreshRate": "number",
+        "support": "boolean",
+        "chains": {
+          "eip155:1": "object",
+          "eip155:10": "object",
+          "eip155:56": "object",
+          "eip155:137": "object",
+          "eip155:324": "object",
+          "eip155:8453": "object",
+          "eip155:42161": "object",
+          "eip155:43114": "object",
+          "eip155:59144": "object",
+          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": "object"
+        }
+      },
+      "mobileConfig": "object"
+    },
     "quoteRequest": {
       "srcTokenAddress": "0x0000000000000000000000000000000000000000"
     },
@@ -76,11 +90,9 @@
     "quotesLastFetched": null,
     "quotesLoadingStatus": null,
     "quoteFetchError": null,
-    "quotesRefreshCount": 0,
-    "assetExchangeRates": "object",
-    "minimumBalanceForRentExemptionInLamports": "string"
+    "quotesRefreshCount": 0
   },
-  "BridgeStatusController": { "txHistory": "object" },
+  "BridgeStatusController": { "bridgeStatusState": { "txHistory": "object" } },
   "CronjobController": { "jobs": "object", "events": "object" },
   "CurrencyController": {
     "currentCurrency": "usd",
@@ -90,19 +102,27 @@
         "conversionRate": 1700,
         "usdConversionRate": 1700
       },
-      "MON": {
+      "SepoliaETH": {
         "conversionDate": "number",
-        "conversionRate": 0.2,
-        "usdConversionRate": 0.2
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
+      },
+      "LineaETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
+      },
+      "MegaETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
       }
     }
   },
-  "DeFiPositionsController": "object",
   "DecryptMessageController": {
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0
   },
-  "DelegationController": "object",
   "EncryptionPublicKeyController": {
     "unapprovedEncryptionPublicKeyMsgs": "object",
     "unapprovedEncryptionPublicKeyMsgCount": 0
@@ -122,6 +142,7 @@
   "KeyringController": {
     "isUnlocked": true,
     "keyrings": "object",
+    "keyringsMetadata": "object",
     "vault": "string",
     "encryptionKey": "string",
     "encryptionSalt": "string"
@@ -141,15 +162,6 @@
     "metaMetricsDataDeletionId": null,
     "metaMetricsDataDeletionTimestamp": 0
   },
-  "MultichainAssetsController": {
-    "accountsAssets": "object",
-    "assetsMetadata": "object"
-  },
-  "MultichainAssetsRatesController": {
-    "conversionRates": "object",
-    "historicalPrices": "object"
-  },
-  "MultichainBalancesController": { "balances": "object" },
   "MultichainNetworkController": "object",
   "MultichainRatesController": {
     "fiatCurrency": "usd",
@@ -159,21 +171,19 @@
     },
     "cryptocurrencies": ["btc", "sol"]
   },
-  "MultichainTransactionsController": "object",
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
     "selectedNetworkClientId": "string",
     "networksMetadata": {
       "networkConfigurationId": {
-        "EIPS": { "1559": true },
+        "EIPS": { "1559": false },
         "status": "available"
       }
     },
     "networkConfigurationsByChainId": "object"
   },
   "NetworkOrderController": {
-    "orderedNetworkList": { "0": "object", "1": "object" },
-    "enabledNetworkMap": {}
+    "orderedNetworkList": { "0": "object", "1": "object" }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -225,6 +235,8 @@
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
     "watchEthereumAccountEnabled": "boolean",
+    "bitcoinSupportEnabled": "boolean",
+    "bitcoinTestnetSupportEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},
@@ -259,7 +271,8 @@
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
     "showIncomingTransactions": "object",
-    "manageInstitutionalWallets": "boolean"
+    "manageInstitutionalWallets": "boolean",
+    "disabledUpgradeAccountsByChain": "object"
   },
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {
@@ -343,14 +356,13 @@
   "TxController": {
     "methodData": "object",
     "transactions": "object",
-    "transactionBatches": "object",
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object"
   },
   "UserOperationController": { "userOperations": "object" },
   "UserStorageController": {
-    "isBackupAndSyncEnabled": false,
-    "isBackupAndSyncUpdateLoading": "boolean",
+    "isProfileSyncingEnabled": null,
+    "isProfileSyncingUpdateLoading": "boolean",
     "isAccountSyncingEnabled": true,
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
     "isAccountSyncingReadyToBeDispatched": "boolean",

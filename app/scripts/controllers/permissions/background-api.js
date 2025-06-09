@@ -6,14 +6,16 @@ import {
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-  setNonSCACaipAccountIdsInCaip25CaveatValue,
-  getCaipAccountIdsFromCaip25CaveatValue,
-  isInternalAccountInPermittedAccountIds,
-  getAllScopesFromCaip25CaveatValue,
-  setChainIdsInCaip25CaveatValue,
+  setPermittedChainIds,
+  setPermittedAccounts,
 } from '@metamask/chain-agnostic-permission';
 import { isSnapId } from '@metamask/snaps-utils';
 import { parseCaipAccountId, parseCaipChainId } from '@metamask/utils';
+import {
+  getCaipAccountIdsFromCaip25CaveatValue,
+  isInternalAccountInPermittedAccountIds,
+} from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
+import { getAllScopesFromCaip25CaveatValue } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
 import { getNetworkConfigurationsByCaipChainId } from '../../../../shared/modules/selectors/networks';
 
 export function getPermissionBackgroundApiMethods({
@@ -43,26 +45,36 @@ export function getPermissionBackgroundApiMethods({
     return caip25Caveat;
   };
 
-  const setPermittedAccounts = (origin, caipAccountIds) => {
+  // To add more than one account when already connected to the dapp
+  const addMoreAccounts = (origin, addresses) => {
     const caip25Caveat = getCaip25Caveat(origin);
     if (!caip25Caveat) {
       throw new Error(
-        `Cannot set account permissions "${caipAccountIds.join(
-          ', ',
-        )}" for origin "${origin}": no permission currently exists for this origin.`,
+        `Cannot add account permissions for origin "${origin}": no permission currently exists for this origin.`,
       );
     }
 
-    if (caipAccountIds.length === 0) {
-      permissionController.revokePermission(
-        origin,
-        Caip25EndowmentPermissionName,
-      );
-      return;
-    }
+    const internalAccounts = addresses.map((address) => {
+      return accountsController.getAccountByAddress(address);
+    });
+
+    // Only the first scope in the scopes array is needed because
+    // setPermittedAccounts currently sets accounts on all matching
+    // namespaces, not just the exact CaipChainId.
+    const caipAccountIds = internalAccounts.map((internalAccount) => {
+      return `${internalAccount.scopes[0]}:${internalAccount.address}`;
+    });
+
+    const existingPermittedAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
+      caip25Caveat.value,
+    );
 
     const existingPermittedChainIds = getAllScopesFromCaip25CaveatValue(
       caip25Caveat.value,
+    );
+
+    const updatedAccountIds = Array.from(
+      new Set([...existingPermittedAccountIds, ...caipAccountIds]),
     );
 
     let updatedPermittedChainIds = [...existingPermittedChainIds];
@@ -78,7 +90,7 @@ export function getPermissionBackgroundApiMethods({
       }),
     );
 
-    caipAccountIds.forEach((caipAccountAddress) => {
+    updatedAccountIds.forEach((caipAccountAddress) => {
       const {
         chain: { namespace: accountNamespace },
       } = parseCaipAccountId(caipAccountAddress);
@@ -111,16 +123,15 @@ export function getPermissionBackgroundApiMethods({
       }
     });
 
-    const updatedCaveatValueWithChainIds = setChainIdsInCaip25CaveatValue(
+    const updatedCaveatValueWithChainIds = setPermittedChainIds(
       caip25Caveat.value,
       updatedPermittedChainIds,
     );
 
-    const updatedCaveatValueWithAccountIds =
-      setNonSCACaipAccountIdsInCaip25CaveatValue(
-        updatedCaveatValueWithChainIds,
-        caipAccountIds,
-      );
+    const updatedCaveatValueWithAccountIds = setPermittedAccounts(
+      updatedCaveatValueWithChainIds,
+      updatedAccountIds,
+    );
 
     permissionController.updateCaveat(
       origin,
@@ -128,75 +139,6 @@ export function getPermissionBackgroundApiMethods({
       Caip25CaveatType,
       updatedCaveatValueWithAccountIds,
     );
-  };
-
-  const setPermittedChains = (origin, chainIds) => {
-    const caip25Caveat = getCaip25Caveat(origin);
-    if (!caip25Caveat) {
-      throw new Error(
-        `Cannot set permission for chainIds "${chainIds.join(
-          ', ',
-        )}": No permissions exist for origin "${origin}".`,
-      );
-    }
-
-    if (chainIds.length === 0 && !isSnapId(origin)) {
-      permissionController.revokePermission(
-        origin,
-        Caip25EndowmentPermissionName,
-      );
-    } else {
-      const updatedCaveatValueWithChainIds = setChainIdsInCaip25CaveatValue(
-        caip25Caveat.value,
-        chainIds,
-      );
-
-      const existingPermittedAccountIds =
-        getCaipAccountIdsFromCaip25CaveatValue(caip25Caveat.value);
-
-      const updatedCaveatValueWithAccountIds =
-        setNonSCACaipAccountIdsInCaip25CaveatValue(
-          updatedCaveatValueWithChainIds,
-          existingPermittedAccountIds,
-        );
-
-      permissionController.updateCaveat(
-        origin,
-        Caip25EndowmentPermissionName,
-        Caip25CaveatType,
-        updatedCaveatValueWithAccountIds,
-      );
-    }
-  };
-
-  const addMoreAccounts = (origin, addresses) => {
-    const caip25Caveat = getCaip25Caveat(origin);
-    if (!caip25Caveat) {
-      throw new Error(
-        `Cannot add account permissions for origin "${origin}": no permission currently exists for this origin.`,
-      );
-    }
-
-    const internalAccounts = addresses.map((address) => {
-      return accountsController.getAccountByAddress(address);
-    });
-
-    // Only the first scope in the scopes array is needed because
-    // setPermittedAccounts currently sets accounts on all matching
-    // namespaces, not just the exact CaipChainId.
-    const caipAccountIds = internalAccounts.map((internalAccount) => {
-      return `${internalAccount.scopes[0]}:${internalAccount.address}`;
-    });
-
-    const existingPermittedAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
-      caip25Caveat.value,
-    );
-
-    const updatedAccountIds = Array.from(
-      new Set([...existingPermittedAccountIds, ...caipAccountIds]),
-    );
-
-    setPermittedAccounts(origin, updatedAccountIds);
   };
 
   const addMoreChains = (origin, chainIds) => {
@@ -207,15 +149,34 @@ export function getPermissionBackgroundApiMethods({
       );
     }
 
-    const existingPermittedChainIds = getAllScopesFromCaip25CaveatValue(
+    const updatedChainIds = Array.from(
+      new Set([
+        ...getAllScopesFromCaip25CaveatValue(caip25Caveat.value),
+        ...chainIds,
+      ]),
+    );
+
+    const caveatValueWithChainIds = setPermittedChainIds(
+      caip25Caveat.value,
+      updatedChainIds,
+    );
+
+    const permittedAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
       caip25Caveat.value,
     );
 
-    const updatedChainIds = Array.from(
-      new Set([...existingPermittedChainIds, ...chainIds]),
+    // ensure that the list of permitted accounts is set for the newly added scopes
+    const caveatValueWithAccountsSynced = setPermittedAccounts(
+      caveatValueWithChainIds,
+      permittedAccountIds,
     );
 
-    setPermittedChains(origin, updatedChainIds);
+    permissionController.updateCaveat(
+      origin,
+      Caip25EndowmentPermissionName,
+      Caip25CaveatType,
+      caveatValueWithAccountsSynced,
+    );
   };
 
   const requestAccountsAndChainPermissions = async (origin, id) => {
@@ -260,11 +221,11 @@ export function getPermissionBackgroundApiMethods({
   };
 
   return {
-    addPermittedAccount: (origin, address) =>
-      addMoreAccounts(origin, [address]),
+    addPermittedAccount: (origin, account) =>
+      addMoreAccounts(origin, [account]),
 
-    addPermittedAccounts: (origin, addresses) =>
-      addMoreAccounts(origin, addresses),
+    addPermittedAccounts: (origin, accounts) =>
+      addMoreAccounts(origin, accounts),
 
     removePermittedAccount: (origin, address) => {
       const caip25Caveat = getCaip25Caveat(origin);
@@ -288,14 +249,28 @@ export function getPermissionBackgroundApiMethods({
         },
       );
 
-      if (existingAccountIds.length === remainingAccountIds.length) {
+      if (remainingAccountIds.length === existingAccountIds.length) {
         return;
       }
 
-      setPermittedAccounts(origin, remainingAccountIds);
+      if (remainingAccountIds.length === 0) {
+        permissionController.revokePermission(
+          origin,
+          Caip25EndowmentPermissionName,
+        );
+      } else {
+        const updatedCaveatValue = setPermittedAccounts(
+          caip25Caveat.value,
+          remainingAccountIds,
+        );
+        permissionController.updateCaveat(
+          origin,
+          Caip25EndowmentPermissionName,
+          Caip25CaveatType,
+          updatedCaveatValue,
+        );
+      }
     },
-
-    setPermittedAccounts,
 
     addPermittedChain: (origin, chainId) => addMoreChains(origin, [chainId]),
 
@@ -317,14 +292,28 @@ export function getPermissionBackgroundApiMethods({
         (existingChainId) => existingChainId !== chainId,
       );
 
-      if (existingChainIds.length === remainingChainIds.length) {
+      if (remainingChainIds.length === existingChainIds.length) {
         return;
       }
 
-      setPermittedChains(origin, remainingChainIds);
+      if (remainingChainIds.length === 0 && !isSnapId(origin)) {
+        permissionController.revokePermission(
+          origin,
+          Caip25EndowmentPermissionName,
+        );
+      } else {
+        const updatedCaveatValue = setPermittedChainIds(
+          caip25Caveat.value,
+          remainingChainIds,
+        );
+        permissionController.updateCaveat(
+          origin,
+          Caip25EndowmentPermissionName,
+          Caip25CaveatType,
+          updatedCaveatValue,
+        );
+      }
     },
-
-    setPermittedChains,
 
     requestAccountsAndChainPermissionsWithId: (origin) => {
       const id = nanoid();

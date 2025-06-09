@@ -58,7 +58,6 @@ const mockNonEvmBalanceUsd = '1.00';
 const mockNonEvmAccount = {
   address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
   id: '542490c8-d178-433b-9f31-f680b11f45a5',
-  scopes: [BtcScope.Mainnet],
   metadata: {
     name: 'Bitcoin Account',
     keyring: {

@@ -6,7 +6,7 @@ exports[`AssetPage should render a native asset 1`] = `
     class="mm-box asset__content mm-box--margin-top-4 mm-box--margin-right-auto mm-box--margin-left-auto"
   >
     <div
-      class="mm-box mm-box--padding-top-1 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box mm-box--padding-right-4 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
     >
       <div
         class="mm-box mm-box--display-flex"
@@ -20,183 +20,112 @@ exports[`AssetPage should render a native asset 1`] = `
             style="mask-image: url('./images/icons/arrow-left.svg');"
           />
         </button>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          data-testid="asset-name"
+        >
+          TEST
+        </p>
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-left-4"
-    >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
-        data-testid="asset-name"
-      >
-        TEST
-      </p>
-    </div>
-    <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--rounded-lg"
+      class="mm-box mm-box--margin-top-4"
     >
       <div
-        class="mm-box mm-box--margin-right-4 mm-box--margin-left-4"
-      >
-        <h1
-          class="mm-box mm-text mm-text--display-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--color-text-default mm-box--rounded-lg"
-          data-testid="asset-hovered-price"
-          style="opacity: 0.2;"
-        >
-          $123.00
-        </h1>
-        <div
-          class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-lg"
-          style="width: 33%;"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
-          >
-             
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-transparent mm-box--rounded-lg"
-        data-testid="asset-price-chart"
-      >
-        <div
-          class="mm-box asset-chart__empty-or-loading-state-container"
-          data-testid="asset-chart-loading"
-        >
-          <div
-            class="mm-box mm-skeleton asset-chart__skeleton mm-box--background-color-icon-alternative mm-box--rounded-lg"
-          />
-        </div>
-        <div
-          class="mm-box mm-box--margin-top-2 mm-box--margin-right-3 mm-box--margin-left-3 mm-box--display-flex mm-box--justify-content-space-between"
-        >
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button time-range-button__selected mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
-          >
-            1D
-          </button>
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
-          >
-            1W
-          </button>
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
-          >
-            1M
-          </button>
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
-          >
-            3M
-          </button>
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
-          >
-            1Y
-          </button>
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
-          >
-            All
-          </button>
-        </div>
-      </div>
-    </div>
-    <div
-      class="mm-box mm-box--margin-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--gap-3 mm-box--justify-content-space-between mm-box--width-full"
+        class="mm-box mm-box--display-flex mm-box--justify-content-space-evenly mm-box--width-full"
       >
         <button
-          class="icon-button-round"
+          class="icon-button coin-overview__button"
           data-testid="coin-overview-buy"
         >
           <div
-            class="icon-button-round__circle"
+            class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/plus-and-minus.svg');"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/plus-minus.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button-round_label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
-            Buy/Sell
+            Buy & Sell
           </p>
         </button>
         <button
-          class="icon-button-round icon-button-round--disabled"
+          class="icon-button coin-overview__button icon-button--disabled"
           data-testid="token-overview-button-swap"
           disabled=""
         >
           <div
-            class="icon-button-round__circle"
+            class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/swap-horizontal.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button-round_label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
             Swap
           </p>
         </button>
         <button
-          class="icon-button-round"
+          class="icon-button coin-overview__button"
           data-testid="coin-overview-bridge"
         >
           <div
-            class="icon-button-round__circle"
+            class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/bridge.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button-round_label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
             Bridge
           </p>
         </button>
         <button
-          class="icon-button-round"
+          class="icon-button coin-overview__button"
           data-testid="coin-overview-send"
         >
           <div
-            class="icon-button-round__circle"
+            class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button-round_label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
             Send
           </p>
         </button>
         <button
-          class="icon-button-round"
+          class="icon-button coin-overview__button"
           data-testid="coin-overview-receive"
         >
           <div
-            class="icon-button-round__circle"
+            class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/scan-barcode.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button-round_label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
             Receive
           </p>
@@ -204,13 +133,13 @@ exports[`AssetPage should render a native asset 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-top-3 mm-box--display-flex mm-box--flex-direction-column"
+      class="mm-box mm-box--padding-top-5 mm-box--display-flex mm-box--flex-direction-column"
     >
-      <h4
-        class="mm-box mm-text mm-text--heading-sm mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-left-4 mm-box--color-text-default"
+      <h3
+        class="mm-box mm-text mm-text--heading-md mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--color-text-default"
       >
         Your balance
-      </h4>
+      </h3>
       <div
         class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
       >
@@ -253,15 +182,10 @@ exports[`AssetPage should render a native asset 1`] = `
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
-              <div
-                class="mm-box mm-box--display-flex"
+              <p
+                class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-                  data-testid="multichain-token-list-item-token-name"
-                >
-                  TEST
-                </p>
+                TEST
                 <button
                   class="mm-box mm-box--padding-inline-0 mm-box--padding-inline-start-1 mm-box--padding-inline-end-1 mm-box--gap-1 mm-box--background-color-transparent"
                   data-testid="staking-entrypoint-0x1"
@@ -275,27 +199,24 @@ exports[`AssetPage should render a native asset 1`] = `
                   <span
                     class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--padding-inline-start-1 mm-box--padding-inline-end-1 mm-box--color-primary-default"
                   >
-                    Earn
+                    Stake
                   </span>
                   <span
-                    class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-primary-default"
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-default"
                     style="mask-image: url('./images/icons/stake.svg');"
                   />
                 </button>
-              </div>
+              </p>
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-end mm-box--color-text-default"
                 data-testid="multichain-token-list-item-secondary-value"
-                style="white-space: nowrap; padding-inline-start: 8px;"
-              >
-                $0.00
-              </p>
+              />
             </div>
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
+                class="mm-box mm-box--display-flex"
               >
                 <p
                   class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
@@ -315,20 +236,16 @@ exports[`AssetPage should render a native asset 1`] = `
         </a>
       </div>
       <div
-        class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
-        style="height: 1px; border-bottom-width: 0;"
-      />
-      <div
-        class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+        class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-7 mm-box--flex-direction-column"
       >
         <div
           class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column"
         >
-          <h4
-            class="mm-box mm-text mm-text--heading-sm mm-box--padding-bottom-2 mm-box--color-text-default"
+          <h3
+            class="mm-box mm-text mm-text--heading-md mm-box--padding-bottom-4 mm-box--color-text-default"
           >
             Token details
-          </h4>
+          </h3>
           <div
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
           >
@@ -338,26 +255,22 @@ exports[`AssetPage should render a native asset 1`] = `
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
               >
-                Network
+                Network:
               </p>
               <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--color-text-default"
+                data-testid="asset-network"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default"
-                  data-testid="asset-network"
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                 >
-                  <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-                  >
-                    <img
-                      alt="static-logo"
-                      class="mm-avatar-network__network-image"
-                      src="./images/eth_logo.svg"
-                    />
-                  </div>
-                  Ethereum Mainnet
-                </p>
+                  <img
+                    alt="static-logo"
+                    class="mm-avatar-network__network-image"
+                    src="./images/eth_logo.svg"
+                  />
+                </div>
+                Ethereum Mainnet
               </p>
             </div>
             <div
@@ -368,33 +281,25 @@ exports[`AssetPage should render a native asset 1`] = `
               >
                 Spending caps
               </p>
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+              <a
+                class="mm-box mm-text mm-button-base asset-page__spending-caps mm-text--body-md-medium mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=cf8dace4-9439-4bd4-b3a8-88c821c8fcb3&tab=spending-caps"
+                rel="noopener noreferrer"
+                target="_blank"
               >
-                <a
-                  class="mm-box mm-text mm-button-base asset-page__spending-caps mm-text--body-md-medium mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                  href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=cf8dace4-9439-4bd4-b3a8-88c821c8fcb3&tab=spending-caps"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  Edit in Portfolio
-                </a>
-              </p>
+                Edit in Portfolio
+              </a>
             </div>
           </div>
         </div>
         <div
-          class="mm-box mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
-          style="height: 1px; border-bottom-width: 0;"
-        />
-        <div
-          class="mm-box mm-box--margin-bottom-4"
+          class="mm-box mm-box--margin-bottom-8"
         >
-          <h4
-            class="mm-box mm-text mm-text--heading-sm mm-box--padding-inline-4 mm-box--color-text-default"
+          <h3
+            class="mm-box mm-text mm-text--heading-md mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default"
           >
             Your activity
-          </h4>
+          </h3>
           <div
             class="mm-box ramps-card ramps-card-activity mm-box--margin-2 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--rounded-lg"
           >
@@ -423,7 +328,7 @@ exports[`AssetPage should render a native asset 1`] = `
               Adding tokens unlocks more ways to use web3.
             </p>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
+              class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-pill"
             >
               Token marketplace
             </button>
@@ -452,7 +357,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
     class="mm-box asset__content mm-box--margin-top-4 mm-box--margin-right-auto mm-box--margin-left-auto"
   >
     <div
-      class="mm-box mm-box--padding-top-1 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box mm-box--padding-right-4 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
     >
       <div
         class="mm-box mm-box--display-flex"
@@ -466,166 +371,91 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             style="mask-image: url('./images/icons/arrow-left.svg');"
           />
         </button>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          data-testid="asset-name"
+        >
+          TEST
+        </p>
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-left-4"
-    >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
-        data-testid="asset-name"
-      >
-        TEST
-      </p>
-    </div>
-    <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--rounded-lg"
+      class="mm-box mm-box--margin-top-4"
     >
       <div
-        class="mm-box mm-box--margin-right-4 mm-box--margin-left-4"
-      >
-        <div
-          class="mm-box mm-skeleton mm-box--margin-bottom-1 mm-box--background-color-icon-alternative mm-box--rounded-lg"
-          style="width: 25%;"
-        >
-          <h1
-            class="mm-box mm-text mm-text--display-md mm-box--color-text-default"
-          >
-             
-          </h1>
-        </div>
-        <div
-          class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-lg"
-          style="width: 33%;"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
-          >
-             
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-transparent mm-box--rounded-lg"
-        data-testid="asset-price-chart"
-      >
-        <div
-          class="mm-box asset-chart__empty-or-loading-state-container"
-          data-testid="asset-chart-loading"
-        >
-          <div
-            class="mm-box mm-skeleton asset-chart__skeleton mm-box--background-color-icon-alternative mm-box--rounded-lg"
-          />
-        </div>
-        <div
-          class="mm-box mm-box--margin-top-2 mm-box--margin-right-3 mm-box--margin-left-3 mm-box--display-flex mm-box--justify-content-space-between"
-        >
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button time-range-button__selected mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
-          >
-            1D
-          </button>
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
-          >
-            1W
-          </button>
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
-          >
-            1M
-          </button>
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
-          >
-            3M
-          </button>
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
-          >
-            1Y
-          </button>
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
-          >
-            All
-          </button>
-        </div>
-      </div>
-    </div>
-    <div
-      class="mm-box mm-box--margin-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--gap-3 mm-box--justify-content-space-evenly"
+        class="mm-box mm-box--display-flex mm-box--justify-content-space-evenly"
       >
         <button
-          class="icon-button-round"
+          class="icon-button token-overview__button"
           data-testid="token-overview-buy"
         >
           <div
-            class="icon-button-round__circle"
+            class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/plus-and-minus.svg');"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/plus-minus.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button-round_label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
-            Buy/Sell
+            Buy & Sell
           </p>
         </button>
         <button
-          class="icon-button-round"
+          class="icon-button token-overview__button"
           data-testid="eth-overview-send"
         >
           <div
-            class="icon-button-round__circle"
+            class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button-round_label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
             Send
           </p>
         </button>
         <button
-          class="icon-button-round"
+          class="icon-button token-overview__button"
         >
           <div
-            class="icon-button-round__circle"
+            class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/swap-horizontal.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button-round_label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
             Swap
           </p>
         </button>
         <button
-          class="icon-button-round"
+          class="icon-button token-overview__button"
           data-testid="token-overview-bridge"
         >
           <div
-            class="icon-button-round__circle"
+            class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/bridge.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button-round_label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
             Bridge
           </p>
@@ -633,13 +463,13 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-top-3 mm-box--display-flex mm-box--flex-direction-column"
+      class="mm-box mm-box--padding-top-5 mm-box--display-flex mm-box--flex-direction-column"
     >
-      <h4
-        class="mm-box mm-text mm-text--heading-sm mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-left-4 mm-box--color-text-default"
+      <h3
+        class="mm-box mm-text mm-text--heading-md mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--color-text-default"
       >
         Your balance
-      </h4>
+      </h3>
       <div
         class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
       >
@@ -678,20 +508,14 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
-              <div
-                class="mm-box mm-box--display-flex"
+              <p
+                class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-                  data-testid="multichain-token-list-item-token-name"
-                >
-                  TEST
-                </p>
-              </div>
+                TEST
+              </p>
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
                 data-testid="multichain-token-list-item-secondary-value"
-                style="white-space: nowrap; padding-inline-start: 8px;"
               >
                 $0.00
               </p>
@@ -700,7 +524,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
+                class="mm-box mm-box--display-flex"
               >
                 <p
                   class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
@@ -720,20 +544,16 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         </a>
       </div>
       <div
-        class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
-        style="height: 1px; border-bottom-width: 0;"
-      />
-      <div
-        class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+        class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-7 mm-box--flex-direction-column"
       >
         <div
           class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column"
         >
-          <h4
-            class="mm-box mm-text mm-text--heading-sm mm-box--padding-bottom-2 mm-box--color-text-default"
+          <h3
+            class="mm-box mm-text mm-text--heading-md mm-box--padding-bottom-4 mm-box--color-text-default"
           >
             Token details
-          </h4>
+          </h3>
           <div
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
           >
@@ -743,26 +563,22 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
               >
-                Network
+                Network:
               </p>
               <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--color-text-default"
+                data-testid="asset-network"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default"
-                  data-testid="asset-network"
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                 >
-                  <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-                  >
-                    <img
-                      alt="static-logo"
-                      class="mm-avatar-network__network-image"
-                      src="./images/eth_logo.svg"
-                    />
-                  </div>
-                  Ethereum Mainnet
-                </p>
+                  <img
+                    alt="static-logo"
+                    class="mm-avatar-network__network-image"
+                    src="./images/eth_logo.svg"
+                  />
+                </div>
+                Ethereum Mainnet
               </p>
             </div>
             <div
@@ -776,39 +592,35 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 >
                   Contract address
                 </p>
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
-                >
-                  <div>
-                    <div
-                      aria-describedby="static-tooltip-id"
-                      class=""
-                      data-original-title="Copy to clipboard"
-                      data-tooltipped=""
-                      style="display: inline;"
-                      tabindex="0"
+                <div>
+                  <div
+                    aria-describedby="static-tooltip-id"
+                    class=""
+                    data-original-title="Copy to clipboard"
+                    data-tooltipped=""
+                    style="display: inline;"
+                    tabindex="0"
+                  >
+                    <button
+                      class="mm-box mm-text mm-button-base mm-button-base--size-sm multichain-address-copy-button mm-text--body-sm mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-primary-muted mm-box--rounded-pill"
+                      data-testid="address-copy-button-text"
                     >
-                      <button
-                        class="mm-box mm-text mm-button-base mm-button-base--size-sm multichain-address-copy-button mm-text--body-sm mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-primary-muted mm-box--rounded-pill"
-                        data-testid="address-copy-button-text"
+                      <span
+                        class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
                       >
-                        <span
-                          class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+                        <div
+                          class="mm-box mm-box--display-flex"
                         >
-                          <div
-                            class="mm-box mm-box--display-flex"
-                          >
-                            0x30937...C4936
-                          </div>
-                        </span>
-                        <span
-                          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
-                          style="mask-image: url('./images/icons/copy.svg');"
-                        />
-                      </button>
-                    </div>
+                          0x30937...C4936
+                        </div>
+                      </span>
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
+                        style="mask-image: url('./images/icons/copy.svg');"
+                      />
+                    </button>
                   </div>
-                </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
@@ -822,13 +634,9 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                     Token decimal
                   </p>
                   <p
-                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+                    class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
-                    >
-                      18
-                    </p>
+                    18
                   </p>
                 </div>
               </div>
@@ -841,33 +649,25 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               >
                 Spending caps
               </p>
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+              <a
+                class="mm-box mm-text mm-button-base asset-page__spending-caps mm-text--body-md-medium mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=cf8dace4-9439-4bd4-b3a8-88c821c8fcb3&tab=spending-caps"
+                rel="noopener noreferrer"
+                target="_blank"
               >
-                <a
-                  class="mm-box mm-text mm-button-base asset-page__spending-caps mm-text--body-md-medium mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                  href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=cf8dace4-9439-4bd4-b3a8-88c821c8fcb3&tab=spending-caps"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  Edit in Portfolio
-                </a>
-              </p>
+                Edit in Portfolio
+              </a>
             </div>
           </div>
         </div>
         <div
-          class="mm-box mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
-          style="height: 1px; border-bottom-width: 0;"
-        />
-        <div
-          class="mm-box mm-box--margin-bottom-4"
+          class="mm-box mm-box--margin-bottom-8"
         >
-          <h4
-            class="mm-box mm-text mm-text--heading-sm mm-box--padding-inline-4 mm-box--color-text-default"
+          <h3
+            class="mm-box mm-text mm-text--heading-md mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default"
           >
             Your activity
-          </h4>
+          </h3>
           <div
             class="mm-box ramps-card ramps-card-activity mm-box--margin-2 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--rounded-lg"
           >
@@ -896,7 +696,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               Adding tokens unlocks more ways to use web3.
             </p>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
+              class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-pill"
             >
               Token marketplace
             </button>
@@ -925,7 +725,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
     class="mm-box asset__content mm-box--margin-top-4 mm-box--margin-right-auto mm-box--margin-left-auto"
   >
     <div
-      class="mm-box mm-box--padding-top-1 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box mm-box--padding-right-4 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
     >
       <div
         class="mm-box mm-box--display-flex"
@@ -939,84 +739,134 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             style="mask-image: url('./images/icons/arrow-left.svg');"
           />
         </button>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          data-testid="asset-name"
+        >
+          TEST
+        </p>
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-left-4"
-    >
-      <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
-        data-testid="asset-name"
-      >
-        TEST
-      </p>
-    </div>
-    <div
-      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--rounded-lg"
+      class="mm-box mm-box--rounded-lg"
     >
       <div
         class="mm-box mm-box--margin-right-4 mm-box--margin-left-4"
       >
         <h1
-          class="mm-box mm-text mm-text--display-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--color-text-default mm-box--rounded-lg"
+          class="mm-box mm-text mm-text--display-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg"
           data-testid="asset-hovered-price"
-          style="opacity: 0.2;"
+          style="width: 100px;"
         >
           $15,129.00
         </h1>
         <div
-          class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-lg"
-          style="width: 33%;"
+          class="mm-box"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+          <div
+            class="mm-box"
+            style="opacity: 1;"
           >
-             
-          </p>
+            <svg
+              class="chart-up"
+              fill="none"
+              height="12"
+              viewBox="0 0 12 12"
+              width="12"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M9.75 3.8125L6.25 7.4875L4.91667 5.3875L2.25 8.1875"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M8.08398 3.8125H9.75065V5.5625"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--margin-right-1 mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-success-default"
+            >
+              $15,128.00
+               
+              (
+              +
+              1512800.00
+              %)
+            </p>
+            <p
+              class="mm-box mm-text mm-text--body-md-medium mm-box--display-inline-block mm-box--color-text-alternative"
+            >
+              Jun 9, 8:10 PM
+            </p>
+          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--margin-top-4 mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-box--margin-top-4 mm-box--background-color-transparent mm-box--rounded-lg"
         data-testid="asset-price-chart"
       >
         <div
-          class="mm-box asset-chart__empty-or-loading-state-container"
-          data-testid="asset-chart-loading"
+          class="mm-box"
+          style="opacity: 1;"
         >
           <div
-            class="mm-box mm-skeleton asset-chart__skeleton mm-box--background-color-icon-alternative mm-box--rounded-lg"
+            class="mm-box"
+            style="padding-right: 100%; direction: rtl;"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-center mm-box--margin-right-4 mm-box--margin-left-4 mm-box--color-text-alternative"
+            >
+              $1.00
+            </p>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-end"
           />
+          <div
+            class="mm-box"
+            style="padding-right: 100%; direction: rtl;"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-center mm-box--margin-right-4 mm-box--margin-left-4 mm-box--color-text-alternative"
+            >
+              $1.00
+            </p>
+          </div>
         </div>
         <div
-          class="mm-box mm-box--margin-top-2 mm-box--margin-right-3 mm-box--margin-left-3 mm-box--display-flex mm-box--justify-content-space-between"
+          class="mm-box mm-box--margin-top-4 mm-box--margin-right-4 mm-box--margin-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+          style=""
         >
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button time-range-button__selected mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button time-range-button__selected mm-text--body-sm-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
           >
             1D
           </button>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-sm-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
           >
             1W
           </button>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-sm-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
           >
             1M
           </button>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-sm-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
           >
             3M
           </button>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-sm-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
           >
             1Y
           </button>
           <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-xs-medium mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-xl"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm time-range-button mm-text--body-sm-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-transparent mm-box--rounded-pill"
           >
             All
           </button>
@@ -1024,78 +874,82 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-box--margin-top-4 mm-box--padding-right-4 mm-box--padding-left-4"
+      class="mm-box mm-box--margin-top-4"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-3 mm-box--justify-content-space-evenly"
+        class="mm-box mm-box--display-flex mm-box--justify-content-space-evenly"
       >
         <button
-          class="icon-button-round"
+          class="icon-button token-overview__button"
           data-testid="token-overview-buy"
         >
           <div
-            class="icon-button-round__circle"
+            class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/plus-and-minus.svg');"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
+              style="mask-image: url('./images/icons/plus-minus.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button-round_label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
-            Buy/Sell
+            Buy & Sell
           </p>
         </button>
         <button
-          class="icon-button-round"
+          class="icon-button token-overview__button"
           data-testid="eth-overview-send"
         >
           <div
-            class="icon-button-round__circle"
+            class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button-round_label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
             Send
           </p>
         </button>
         <button
-          class="icon-button-round"
+          class="icon-button token-overview__button"
         >
           <div
-            class="icon-button-round__circle"
+            class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/swap-horizontal.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button-round_label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
             Swap
           </p>
         </button>
         <button
-          class="icon-button-round"
+          class="icon-button token-overview__button"
           data-testid="token-overview-bridge"
         >
           <div
-            class="icon-button-round__circle"
+            class="icon-button__circle"
+            data-theme="light"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
               style="mask-image: url('./images/icons/bridge.svg');"
             />
           </div>
           <p
-            class="mm-box mm-text icon-button-round_label mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text icon-button__label mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
             Bridge
           </p>
@@ -1103,13 +957,13 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
       </div>
     </div>
     <div
-      class="mm-box mm-box--padding-top-3 mm-box--display-flex mm-box--flex-direction-column"
+      class="mm-box mm-box--padding-top-5 mm-box--display-flex mm-box--flex-direction-column"
     >
-      <h4
-        class="mm-box mm-text mm-text--heading-sm mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-left-4 mm-box--color-text-default"
+      <h3
+        class="mm-box mm-text mm-text--heading-md mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--color-text-default"
       >
         Your balance
-      </h4>
+      </h3>
       <div
         class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
       >
@@ -1148,20 +1002,14 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             <div
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
-              <div
-                class="mm-box mm-box--display-flex"
+              <p
+                class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-                  data-testid="multichain-token-list-item-token-name"
-                >
-                  TEST
-                </p>
-              </div>
+                TEST
+              </p>
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
                 data-testid="multichain-token-list-item-secondary-value"
-                style="white-space: nowrap; padding-inline-start: 8px;"
               >
                 $0.00
               </p>
@@ -1170,7 +1018,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
+                class="mm-box mm-box--display-flex"
               >
                 <p
                   class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
@@ -1190,20 +1038,16 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         </a>
       </div>
       <div
-        class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
-        style="height: 1px; border-bottom-width: 0;"
-      />
-      <div
-        class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+        class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-7 mm-box--flex-direction-column"
       >
         <div
           class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column"
         >
-          <h4
-            class="mm-box mm-text mm-text--heading-sm mm-box--padding-bottom-2 mm-box--color-text-default"
+          <h3
+            class="mm-box mm-text mm-text--heading-md mm-box--padding-bottom-4 mm-box--color-text-default"
           >
             Token details
-          </h4>
+          </h3>
           <div
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
           >
@@ -1213,26 +1057,22 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
               >
-                Network
+                Network:
               </p>
               <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--color-text-default"
+                data-testid="asset-network"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default"
-                  data-testid="asset-network"
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                 >
-                  <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-                  >
-                    <img
-                      alt="static-logo"
-                      class="mm-avatar-network__network-image"
-                      src="./images/eth_logo.svg"
-                    />
-                  </div>
-                  Ethereum Mainnet
-                </p>
+                  <img
+                    alt="static-logo"
+                    class="mm-avatar-network__network-image"
+                    src="./images/eth_logo.svg"
+                  />
+                </div>
+                Ethereum Mainnet
               </p>
             </div>
             <div
@@ -1246,39 +1086,35 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 >
                   Contract address
                 </p>
-                <p
-                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
-                >
-                  <div>
-                    <div
-                      aria-describedby="static-tooltip-id"
-                      class=""
-                      data-original-title="Copy to clipboard"
-                      data-tooltipped=""
-                      style="display: inline;"
-                      tabindex="0"
+                <div>
+                  <div
+                    aria-describedby="static-tooltip-id"
+                    class=""
+                    data-original-title="Copy to clipboard"
+                    data-tooltipped=""
+                    style="display: inline;"
+                    tabindex="0"
+                  >
+                    <button
+                      class="mm-box mm-text mm-button-base mm-button-base--size-sm multichain-address-copy-button mm-text--body-sm mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-primary-muted mm-box--rounded-pill"
+                      data-testid="address-copy-button-text"
                     >
-                      <button
-                        class="mm-box mm-text mm-button-base mm-button-base--size-sm multichain-address-copy-button mm-text--body-sm mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-primary-muted mm-box--rounded-pill"
-                        data-testid="address-copy-button-text"
+                      <span
+                        class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
                       >
-                        <span
-                          class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+                        <div
+                          class="mm-box mm-box--display-flex"
                         >
-                          <div
-                            class="mm-box mm-box--display-flex"
-                          >
-                            0xe4246...85f55
-                          </div>
-                        </span>
-                        <span
-                          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
-                          style="mask-image: url('./images/icons/copy.svg');"
-                        />
-                      </button>
-                    </div>
+                          0xe4246...85f55
+                        </div>
+                      </span>
+                      <span
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
+                        style="mask-image: url('./images/icons/copy.svg');"
+                      />
+                    </button>
                   </div>
-                </p>
+                </div>
               </div>
               <div
                 class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
@@ -1292,13 +1128,9 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                     Token decimal
                   </p>
                   <p
-                    class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+                    class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
-                    >
-                      18
-                    </p>
+                    18
                   </p>
                 </div>
               </div>
@@ -1311,35 +1143,27 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               >
                 Spending caps
               </p>
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+              <a
+                class="mm-box mm-text mm-button-base asset-page__spending-caps mm-text--body-md-medium mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=cf8dace4-9439-4bd4-b3a8-88c821c8fcb3&tab=spending-caps"
+                rel="noopener noreferrer"
+                target="_blank"
               >
-                <a
-                  class="mm-box mm-text mm-button-base asset-page__spending-caps mm-text--body-md-medium mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                  href="https://portfolio.test/?metamaskEntry=asset_page&metametricsId=&metricsEnabled=false&marketingEnabled=false&accountAddress=cf8dace4-9439-4bd4-b3a8-88c821c8fcb3&tab=spending-caps"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  Edit in Portfolio
-                </a>
-              </p>
+                Edit in Portfolio
+              </a>
             </div>
           </div>
         </div>
         <div
-          class="mm-box"
+          class="mm-box mm-box--padding-right-4 mm-box--padding-left-4"
         >
-          <div
-            class="mm-box mm-box--margin-bottom-2 mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
-            style="height: 1px; border-bottom-width: 0;"
-          />
-          <h4
-            class="mm-box mm-text mm-text--heading-sm mm-box--padding-top-2 mm-box--padding-bottom-2 mm-box--padding-inline-4 mm-box--color-text-default"
+          <h3
+            class="mm-box mm-text mm-text--heading-md mm-box--padding-bottom-4 mm-box--color-text-default"
           >
             Market details
-          </h4>
+          </h3>
           <div
-            class="mm-box mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
@@ -1350,7 +1174,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 Market cap
               </p>
               <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
                 data-testid="asset-market-cap"
               >
                 56088.00
@@ -1359,17 +1183,13 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--margin-inline-4 mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
-          style="height: 1px; border-bottom-width: 0;"
-        />
-        <div
-          class="mm-box mm-box--margin-bottom-4"
+          class="mm-box mm-box--margin-bottom-8"
         >
-          <h4
-            class="mm-box mm-text mm-text--heading-sm mm-box--padding-inline-4 mm-box--color-text-default"
+          <h3
+            class="mm-box mm-text mm-text--heading-md mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default"
           >
             Your activity
-          </h4>
+          </h3>
           <div
             class="mm-box ramps-card ramps-card-activity mm-box--margin-2 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--rounded-lg"
           >
@@ -1398,7 +1218,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               Adding tokens unlocks more ways to use web3.
             </p>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
+              class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-pill"
             >
               Token marketplace
             </button>

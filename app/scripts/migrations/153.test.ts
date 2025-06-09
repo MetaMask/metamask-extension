@@ -58,7 +58,7 @@ describe(`migration #${version}`, () => {
       expect(newStorage.data).toStrictEqual(expectedData);
     });
 
-    it('logs a warn and returns the original state if TokensController is missing', async () => {
+    it('logs an error and returns the original state if TokensController is missing', async () => {
       const oldStorage = {
         meta: { version: oldVersion },
         data: {
@@ -68,22 +68,9 @@ describe(`migration #${version}`, () => {
 
       const newStorage = await migrate(oldStorage);
 
-      expect(global.sentry.captureException).not.toHaveBeenCalled();
-      expect(newStorage.data).toStrictEqual(oldStorage.data);
-    });
-
-    it('logs a warn and returns the original state if TokenListController is missing', async () => {
-      const oldStorage = {
-        meta: { version: oldVersion },
-        data: {
-          OtherController: {},
-          TokensController: {},
-        },
-      };
-
-      const newStorage = await migrate(oldStorage);
-
-      expect(global.sentry.captureException).not.toHaveBeenCalled();
+      expect(global.sentry.captureException).toHaveBeenCalledWith(
+        new Error(`Migration ${version}: TokensController not found.`),
+      );
       expect(newStorage.data).toStrictEqual(oldStorage.data);
     });
 

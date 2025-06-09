@@ -20,6 +20,7 @@ import {
   ImportTokensModal,
 } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
+import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
 
 import {
   ASSET_ROUTE,
@@ -50,8 +51,6 @@ import {
   REMOTE_ROUTE,
   REMOTE_ROUTE_SETUP_SWAPS,
   REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
-  IMPORT_SRP_ROUTE,
-  DEFI_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -88,7 +87,7 @@ import {
   hideAppHeader,
   isConfirmTransactionRoute,
   setTheme,
-  showAppHeader,
+  showOnboardingHeader,
 } from './utils';
 
 // Begin Lazy Routes
@@ -98,7 +97,6 @@ const OnboardingFlow = mmLazy(() =>
 const Lock = mmLazy(() => import('../lock'));
 const UnlockPage = mmLazy(() => import('../unlock-page'));
 const RestoreVaultPage = mmLazy(() => import('../keychains/restore-vault'));
-const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp'));
 const RevealSeedConfirmation = mmLazy(() => import('../keychains/reveal-seed'));
 const Settings = mmLazy(() => import('../settings'));
 const NotificationsSettings = mmLazy(() => import('../notifications-settings'));
@@ -126,7 +124,6 @@ const NftFullImage = mmLazy(() =>
   import('../../components/app/assets/nfts/nft-details/nft-full-image'),
 );
 const Asset = mmLazy(() => import('../asset'));
-const DeFiPage = mmLazy(() => import('../defi'));
 const PermissionsPage = mmLazy(() =>
   import('../../components/multichain/pages/permissions-page/permissions-page'),
 );
@@ -306,7 +303,6 @@ export default class Routes extends Component {
             path={`${REVEAL_SEED_ROUTE}/:keyringId?`}
             component={RevealSeedConfirmation}
           />
-          <Authenticated path={IMPORT_SRP_ROUTE} component={ImportSrpPage} />
           <Authenticated path={SETTINGS_ROUTE} component={Settings} />
           <Authenticated
             path={NOTIFICATIONS_SETTINGS_ROUTE}
@@ -369,10 +365,6 @@ export default class Routes extends Component {
             component={Asset}
           />
           <Authenticated path={`${ASSET_ROUTE}/:chainId`} component={Asset} />
-          <Authenticated
-            path={`${DEFI_ROUTE}/:chainId/:protocolId`}
-            component={DeFiPage}
-          />
           <Authenticated
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
@@ -522,10 +514,9 @@ export default class Routes extends Component {
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
-        {process.env.REMOVE_GNS
-          ? showAppHeader(this.props) && <AppHeader location={location} />
-          : !hideAppHeader(this.props) && <AppHeader location={location} />}
+        {!hideAppHeader(this.props) && <AppHeader location={location} />}
         {isConfirmTransactionRoute(this.pathname) && <MultichainMetaFoxLogo />}
+        {showOnboardingHeader(location) && <OnboardingAppHeader />}
         {isAccountMenuOpen ? (
           <AccountListMenu
             onClose={toggleAccountMenu}

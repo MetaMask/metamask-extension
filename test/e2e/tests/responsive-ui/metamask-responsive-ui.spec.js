@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-const { Browser } = require('selenium-webdriver');
 const {
   TEST_SEED_PHRASE_TWO,
   locateAccountBalanceDOM,
@@ -22,49 +21,26 @@ describe('MetaMask Responsive UI', function () {
       async ({ driver }) => {
         await driver.navigate();
 
-        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-          // metrics
-          await driver.clickElement('[data-testid="metametrics-no-thanks"]');
-        }
+        // agree to terms of use
+        await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
 
         // welcome
-        await driver.clickElement(
-          '[data-testid="onboarding-get-started-button"]',
-        );
-
-        // show terms of use
-        await driver.clickElementAndWaitToDisappear(
-          '[data-testid="terms-of-use-scroll-button"]',
-        );
-        await driver.clickElement('[data-testid="terms-of-use-checkbox"]');
-        // agree to terms of use
-        await driver.clickElementAndWaitToDisappear(
-          '[data-testid="terms-of-use-agree-button"]',
-        );
-
-        // get started
         await driver.clickElement('[data-testid="onboarding-create-wallet"]');
-        // create with srp
-        await driver.clickElementAndWaitToDisappear(
-          '[data-testid="onboarding-create-with-srp-button"]',
-        );
 
-        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-          // metrics
-          await driver.clickElement('[data-testid="metametrics-no-thanks"]');
-        }
+        // metrics
+        await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
         // create password
         await driver.fill(
-          '[data-testid="create-password-new-input"]',
+          '[data-testid="create-password-new"]',
           'correct horse battery staple',
         );
         await driver.fill(
-          '[data-testid="create-password-confirm-input"]',
+          '[data-testid="create-password-confirm"]',
           'correct horse battery staple',
         );
         await driver.clickElement('[data-testid="create-password-terms"]');
-        await driver.clickElement('[data-testid="create-password-submit"]');
+        await driver.clickElement('[data-testid="create-password-wallet"]');
 
         // secure wallet
         await driver.clickElement('[data-testid="secure-wallet-recommended"]');

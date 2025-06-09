@@ -267,6 +267,7 @@ async function verifyEnglishLocale() {
     'appName',
     'appNameBeta',
     'appNameFlask',
+    'appNameMmi',
     'appDescription',
     'rejected',
     'signed',

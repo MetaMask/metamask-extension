@@ -28,7 +28,7 @@ class HomePage {
 
   private readonly basicFunctionalityOffWarningMessage = {
     text: 'Basic functionality is off',
-    css: '.mm-banner-base',
+    css: '.mm-banner-alert',
   };
 
   protected readonly bridgeButton: string =
@@ -182,7 +182,7 @@ class HomePage {
   async check_disabledButtonTooltip(tooltipText: string): Promise<void> {
     console.log(`Check if disabled button tooltip is displayed on homepage`);
     await this.driver.waitForSelector(
-      `.icon-button-round--disabled [data-tooltipped][data-original-title="${tooltipText}"]`,
+      `.icon-button--disabled [data-tooltipped][data-original-title="${tooltipText}"]`,
     );
   }
 

@@ -13,7 +13,7 @@ class AccountListPage {
     '[data-testid="account-list-address"]';
 
   private readonly accountListBalance =
-    '[data-testid="first-currency-display"]';
+    '[data-testid="second-currency-display"]';
 
   private readonly accountValueAndSuffix =
     '[data-testid="account-value-and-suffix"]';
@@ -275,6 +275,10 @@ class AccountListPage {
       }
       await this.driver.clickElementAndWaitToDisappear(
         this.addAccountConfirmButton,
+        // Longer timeout than usual, this reduces the flakiness
+        // around Bitcoin account creation (mainly required for
+        // Firefox)
+        5000,
       );
     } else {
       const createButton = await this.driver.findElement(

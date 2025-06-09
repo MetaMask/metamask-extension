@@ -254,8 +254,20 @@
   "gasLimit": {
     "message": "Datakraftsgrense "
   },
+  "gasLimitInfoTooltipContent": {
+    "message": "Datakraftgrense er det maksimale antall datakraft du er vilig til å benytte. "
+  },
   "gasLimitTooLow": {
     "message": "Datakraftsgrense må være minst 21000"
+  },
+  "gasPrice": {
+    "message": "Bensinpris (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Datakraftspris ekstremt lav "
+  },
+  "gasPriceInfoTooltipContent": {
+    "message": "Datakraftpris angir mengden Ether du er villig til å betale for hver datakraftenhet."
   },
   "gasUsed": {
     "message": "Brukt datakraft "
@@ -718,5 +730,8 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Din private frøfrase"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Null bensinpris for fremskynding"
   }
 }

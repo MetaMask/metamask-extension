@@ -257,6 +257,7 @@ describe('Sign Typed Data Signature Request', function () {
     });
   });
 });
+
 async function verifyAndAssertRedesignedSignTypedData(driver, expectedMessage) {
   await driver.findElement({
     css: 'h2',

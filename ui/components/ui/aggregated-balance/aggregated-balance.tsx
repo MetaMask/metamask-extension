@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { MULTICHAIN_NETWORK_DECIMAL_PLACES } from '@metamask/multichain-network-controller';
 import {
   AlignItems,
   Display,
@@ -72,8 +71,7 @@ export const AggregatedBalance = ({
     locale,
     {
       minimumFractionDigits: 0,
-      maximumFractionDigits:
-        MULTICHAIN_NETWORK_DECIMAL_PLACES[currentNetwork.chainId] || 5,
+      maximumFractionDigits: 5,
     },
   );
 

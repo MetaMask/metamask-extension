@@ -44,19 +44,20 @@ function getPercentageChange(from: number, to: number): number {
  * @returns True if the artifact exists, false if it doesn't
  */
 async function artifactExists(url: string): Promise<boolean> {
-  const response = await fetch(url, { method: 'HEAD' });
+  // Using a regular GET request here rather than HEAD because for some reason CircleCI always
+  // returns 404 for HEAD requests.
+  const response = await fetch(url);
   return response.ok;
 }
 
 async function start(): Promise<void> {
   const {
     PR_COMMENT_TOKEN,
-    OWNER,
-    REPOSITORY,
-    RUN_ID,
     PR_NUMBER,
     HEAD_COMMIT_HASH,
     MERGE_BASE_COMMIT_HASH,
+    CIRCLE_BUILD_NUM,
+    CIRCLE_WORKFLOW_JOB_ID,
     HOST_URL,
   } = process.env as Record<string, string>;
 
@@ -66,6 +67,7 @@ async function start(): Promise<void> {
   }
 
   const SHORT_SHA1 = HEAD_COMMIT_HASH.slice(0, 7);
+  const BUILD_LINK_BASE = `https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0`;
 
   type BuildType = {
     chrome?: string;
@@ -75,24 +77,23 @@ async function start(): Promise<void> {
   // links to extension builds
   const buildMap: Record<string, BuildType> = {
     builds: {
-      chrome: `${HOST_URL}/build-dist-browserify/builds/metamask-chrome-${VERSION}.zip`,
-      firefox: `${HOST_URL}/build-dist-mv2-browserify/builds/metamask-firefox-${VERSION}.zip`,
+      chrome: `${BUILD_LINK_BASE}/builds/metamask-chrome-${VERSION}.zip`,
+      firefox: `${BUILD_LINK_BASE}/builds-mv2/metamask-firefox-${VERSION}.zip`,
     },
     'builds (beta)': {
-      chrome: `${HOST_URL}/build-beta-browserify/builds/metamask-beta-chrome-${VERSION}-beta.0.zip`,
-      firefox: `${HOST_URL}/build-beta-mv2-browserify/builds/metamask-beta-firefox-${VERSION}-beta.0.zip`,
+      chrome: `${HOST_URL}/builds-beta/metamask-beta-chrome-${VERSION}-beta.0.zip`,
     },
     'builds (flask)': {
-      chrome: `${HOST_URL}/build-flask-browserify/builds/metamask-flask-chrome-${VERSION}-flask.0.zip`,
-      firefox: `${HOST_URL}/build-flask-mv2-browserify/builds/metamask-flask-firefox-${VERSION}-flask.0.zip`,
+      chrome: `${BUILD_LINK_BASE}/builds-flask/metamask-flask-chrome-${VERSION}-flask.0.zip`,
+      firefox: `${BUILD_LINK_BASE}/builds-flask-mv2/metamask-flask-firefox-${VERSION}-flask.0.zip`,
     },
     'builds (test)': {
-      chrome: `${HOST_URL}/build-test-browserify/builds/metamask-chrome-${VERSION}.zip`,
-      firefox: `${HOST_URL}/build-test-mv2-browserify/builds/metamask-firefox-${VERSION}.zip`,
+      chrome: `${BUILD_LINK_BASE}/builds-test/metamask-chrome-${VERSION}.zip`,
+      firefox: `${BUILD_LINK_BASE}/builds-test-mv2/metamask-firefox-${VERSION}.zip`,
     },
     'builds (test-flask)': {
-      chrome: `${HOST_URL}/build-test-flask-browserify/builds/metamask-flask-chrome-${VERSION}-flask.0.zip`,
-      firefox: `${HOST_URL}/build-test-flask-mv2-browserify/builds/metamask-flask-firefox-${VERSION}-flask.0.zip`,
+      chrome: `${BUILD_LINK_BASE}/builds-test-flask/metamask-flask-chrome-${VERSION}-flask.0.zip`,
+      firefox: `${BUILD_LINK_BASE}/builds-test-flask-mv2/metamask-flask-firefox-${VERSION}-flask.0.zip`,
     },
   };
 
@@ -105,6 +106,7 @@ async function start(): Promise<void> {
 
   // links to bundle browser builds
   const bundles: Record<string, string[]> = {};
+  const sourceMapRoot = '/build-artifacts/source-map-explorer/';
   const fileRoots = [
     'background',
     'common',
@@ -116,14 +118,14 @@ async function start(): Promise<void> {
   for (const fileRoot of fileRoots) {
     bundles[fileRoot] = [];
     let fileIndex = 0;
-    let url = `${HOST_URL}/source-map-explorer/${fileRoot}-${fileIndex}.html`;
+    let url = `${BUILD_LINK_BASE}${sourceMapRoot}${fileRoot}-${fileIndex}.html`;
     console.log(`Verifying ${url}`);
     while (await artifactExists(url)) {
       const link = `<a href="${url}">${fileIndex}</a>`;
       bundles[fileRoot].push(link);
 
       fileIndex += 1;
-      url = `${HOST_URL}/source-map-explorer/${fileRoot}-${fileIndex}.html`;
+      url = `${BUILD_LINK_BASE}${sourceMapRoot}${fileRoot}-${fileIndex}.html`;
       console.log(`Verifying ${url}`);
     }
     console.log(`Not found: ${url}`);
@@ -142,7 +144,8 @@ async function start(): Promise<void> {
   const tsMigrationDashboardUrl = `${BUILD_LINK_BASE}/ts-migration-dashboard/index.html`;
   const tsMigrationDashboardLink = `<a href="${tsMigrationDashboardUrl}">Dashboard</a>`;
 
-  const depVizUrl = `${HOST_URL}/lavamoat-viz/index.html`;
+  // links to bundle browser builds
+  const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
 
   const bundleSizeStatsUrl = `${HOST_URL}/bundle-size/bundle_size.json`;
@@ -151,7 +154,8 @@ async function start(): Promise<void> {
   const userActionsStatsUrl = `${HOST_URL}/benchmarks/benchmark-chrome-browserify-userActions.json`;
   const userActionsStatsLink = `<a href="${userActionsStatsUrl}">User Actions Stats</a>`;
 
-  const allArtifactsUrl = `https://github.com/${OWNER}/${REPOSITORY}/actions/runs/${RUN_ID}#artifacts`;
+  // link to artifacts
+  const allArtifactsUrl = `https://app.circleci.com/pipelines/github/MetaMask/metamask-extension/jobs/${CIRCLE_BUILD_NUM}/artifacts/`;
 
   const contentRows = [
     ...buildContentRows,
@@ -160,7 +164,7 @@ async function start(): Promise<void> {
     `user-actions-benchmark: ${userActionsStatsLink}`,
     `storybook: ${storybookLink}`,
     `typescript migration: ${tsMigrationDashboardLink}`,
-    `<a href="${allArtifactsUrl}">all artifacts</a>`,
+    `<a href="${allArtifactsUrl}">all CircleCI artifacts</a>`,
     `<details>
        <summary>bundle viz:</summary>
        ${bundleMarkup}

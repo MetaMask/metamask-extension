@@ -5,7 +5,6 @@ node_modules/**/*
 /app/images/animations/**/*.json
 /app/vendor/**
 /builds/**/*
-/changed-files/**/*
 /coverage/**/*
 /development/chromereload.js
 /development/ts-migration-dashboard/filesToConvert.json

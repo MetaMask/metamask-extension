@@ -1,7 +1,9 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { t } from '../../../../../shared/lib/translate';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { t } from '../../../../../app/scripts/translate';
 
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import {

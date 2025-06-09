@@ -4,6 +4,7 @@ import {
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
+import { deferredPromise } from '../../util';
 import * as Util from '../../util';
 import { flushPromises } from '../../../../../test/lib/timer-helpers';
 import requestEthereumAccounts from './request-accounts';
@@ -105,7 +106,7 @@ describe('requestEthereumAccountsHandler', () => {
     it('blocks subsequent requests if there is currently a request waiting for the wallet to be unlocked', async () => {
       const { handler, getUnlockPromise, getAccounts, end, response } =
         createMockedHandler();
-      const { promise, resolve } = Promise.withResolvers<void>();
+      const { promise, resolve } = deferredPromise();
       getUnlockPromise.mockReturnValue(promise);
       getAccounts.mockReturnValue(['0xdead', '0xbeef']);
 
@@ -126,7 +127,7 @@ describe('requestEthereumAccountsHandler', () => {
         ),
       );
       expect(end).toHaveBeenCalledTimes(1);
-      resolve();
+      resolve?.();
     });
   });
 

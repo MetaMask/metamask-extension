@@ -52,7 +52,6 @@ import { useTokenData } from './useTokenData';
 import { useSwappedTokenValue } from './useSwappedTokenValue';
 import { useCurrentAsset } from './useCurrentAsset';
 import useBridgeChainInfo from './bridge/useBridgeChainInfo';
-import { useRemoteModeTransaction } from './useRemoteModeTransaction';
 
 /**
  *  There are seven types of transaction entries that are currently differentiated in the design:
@@ -128,13 +127,12 @@ export function useTransactionDisplayData(transactionGroup) {
     bridgeHistoryItem,
     srcTxMeta: transactionGroup.initialTransaction,
   });
-
   const destChainName = NETWORK_TO_SHORT_NETWORK_NAME_MAP[destNetwork?.chainId];
 
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group
-  const { type, txParamsOriginal } = initialTransaction;
-  const { from, to } = initialTransaction.txParams || {};
+  const { type } = initialTransaction;
+  const { from: senderAddress, to } = initialTransaction.txParams || {};
 
   // for smart contract interactions, methodData can be used to derive the name of the action being taken
   const methodData =
@@ -150,24 +148,10 @@ export function useTransactionDisplayData(transactionGroup) {
   const primaryValue = primaryTransaction.txParams?.value;
   const date = formatDateWithYearContext(initialTransaction.time);
 
-  const { isRemoteModeActivity } = useRemoteModeTransaction({
-    transaction: initialTransaction,
-  });
-
   let prefix = '-';
   let subtitle;
   let subtitleContainsOrigin = false;
   let recipientAddress = to;
-  let senderAddress = from;
-  let transactionData = initialTransaction?.txParams?.data;
-  let remoteSignerAddress = null;
-
-  if (isRemoteModeActivity) {
-    recipientAddress = txParamsOriginal?.to;
-    senderAddress = txParamsOriginal?.from;
-    remoteSignerAddress = initialTransaction?.txParams?.from;
-    transactionData = txParamsOriginal?.data;
-  }
 
   // This value is used to determine whether we should look inside txParams.data
   // to pull out and render token related information
@@ -205,9 +189,9 @@ export function useTransactionDisplayData(transactionGroup) {
     async function getAndSetAssetDetails() {
       if (isTokenCategory && !token) {
         const assetDetails = await getAssetDetails(
-          recipientAddress,
+          to,
           senderAddress,
-          transactionData,
+          initialTransaction?.txParams?.data,
           knownNfts,
         );
         if (mounted.current === true) {
@@ -221,11 +205,11 @@ export function useTransactionDisplayData(transactionGroup) {
     token,
     recipientAddress,
     senderAddress,
+    initialTransaction?.txParams?.data,
     knownNfts,
+    to,
     mounted,
-    transactionData,
   ]);
-
   if (currentAssetDetails) {
     token = {
       address: currentAssetDetails.toAddress,
@@ -234,7 +218,10 @@ export function useTransactionDisplayData(transactionGroup) {
     };
   }
 
-  const tokenData = useTokenData(transactionData, isTokenCategory);
+  const tokenData = useTokenData(
+    initialTransaction?.txParams?.data,
+    isTokenCategory,
+  );
 
   // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
   // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
@@ -251,7 +238,7 @@ export function useTransactionDisplayData(transactionGroup) {
     );
 
   const tokenDisplayValue = useTokenDisplayValue(
-    transactionData,
+    primaryTransaction?.txParams?.data,
     token,
     isTokenCategory,
   );
@@ -435,8 +422,6 @@ export function useTransactionDisplayData(transactionGroup) {
     );
   }
 
-  const detailsTitle = isRemoteModeActivity ? `Remote ${title}` : title;
-
   const primaryCurrencyPreferences = useUserPreferencedCurrency(
     PRIMARY,
     {},
@@ -485,7 +470,5 @@ export function useTransactionDisplayData(transactionGroup) {
     displayedStatusKey,
     isPending,
     isSubmitted,
-    detailsTitle,
-    remoteSignerAddress,
   };
 }

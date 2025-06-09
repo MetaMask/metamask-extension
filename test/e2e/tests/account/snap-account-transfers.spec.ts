@@ -1,10 +1,5 @@
 import { Suite } from 'mocha';
-import {
-  veryLargeDelayMs,
-  PRIVATE_KEY_TWO,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../helpers';
+import { PRIVATE_KEY_TWO, WINDOW_TITLES, withFixtures } from '../../helpers';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/account-list-page';
@@ -52,9 +47,8 @@ describe('Snap Account Transfers', function (this: Suite) {
         await accountList.check_pageIsLoaded();
 
         // check the balance of the 2 accounts are updated
-        await driver.delay(veryLargeDelayMs);
-        await accountList.check_accountBalanceDisplayed('$44,200');
-        await accountList.check_accountBalanceDisplayed('$40,799');
+        await accountList.check_accountBalanceDisplayed('26');
+        await accountList.check_accountBalanceDisplayed('24');
       },
     );
   });
@@ -94,9 +88,8 @@ describe('Snap Account Transfers', function (this: Suite) {
         await accountList.check_pageIsLoaded();
 
         // check the balance of the 2 accounts are updated
-        await driver.delay(veryLargeDelayMs);
-        await accountList.check_accountBalanceDisplayed('$44,200');
-        await accountList.check_accountBalanceDisplayed('$40,799');
+        await accountList.check_accountBalanceDisplayed('26');
+        await accountList.check_accountBalanceDisplayed('24');
       },
     );
   });

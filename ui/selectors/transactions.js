@@ -395,7 +395,7 @@ const mergeNonNonceTransactionGroups = (
   });
 };
 
-export const groupAndSortTransactionsByNonce = (transactions) => {
+const groupAndSortTransactionsByNonce = (transactions) => {
   const unapprovedTransactionGroups = [];
   const incomingTransactionGroups = [];
   const orderedNonces = [];

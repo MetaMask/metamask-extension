@@ -257,8 +257,20 @@
   "gasLimit": {
     "message": "Limit gazu"
   },
+  "gasLimitInfoTooltipContent": {
+    "message": "Limit gazu to maksymalna ilość jednostek gazu, którą jesteś skłonny użyć w transakcji."
+  },
   "gasLimitTooLow": {
     "message": "Limit gazu musi wynosić co najmniej 21000"
+  },
+  "gasPrice": {
+    "message": "Cena gazu (GWEI)"
+  },
+  "gasPriceExtremelyLow": {
+    "message": "Bardzo niska cena gazu"
+  },
+  "gasPriceInfoTooltipContent": {
+    "message": "Cena gazu to ilość kryptowaluty Ether, którą jesteś gotów zapłacić za każdą jednostkę gazu."
   },
   "gasUsed": {
     "message": "Użyty gaz"
@@ -727,5 +739,8 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Twoja prywatna fraza seed"
+  },
+  "zeroGasPriceOnSpeedUpError": {
+    "message": "Przyspieszenie z zerową ceną gazu"
   }
 }

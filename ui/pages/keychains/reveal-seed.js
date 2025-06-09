@@ -40,7 +40,6 @@ import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { requestRevealSeedWords } from '../../store/actions';
 import { getHDEntropyIndex } from '../../selectors/selectors';
-import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN';
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';
@@ -99,9 +98,6 @@ export default function RevealSeedPage() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    trace({
-      name: TraceName.RevealSeed,
-    });
     setSeedWords(null);
     setCompletedLongPress(false);
     setError(null);
@@ -130,11 +126,6 @@ export default function RevealSeedPage() {
           },
         });
         setError(getErrorMessage(e));
-      })
-      .finally(() => {
-        endTrace({
-          name: TraceName.RevealSeed,
-        });
       });
   };
 

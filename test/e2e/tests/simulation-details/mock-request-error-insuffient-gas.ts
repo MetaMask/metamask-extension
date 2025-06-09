@@ -12,6 +12,7 @@ export const INSUFFICIENT_GAS_TRANSACTION_MOCK = {
 
 export const INSUFFICIENT_GAS_REQUEST_MOCK: MockRequestResponse = {
   request: {
+    id: '0',
     jsonrpc: '2.0',
     method: 'infura_simulateTransactions',
     params: [
