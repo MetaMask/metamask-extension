@@ -41,6 +41,10 @@ const CHAIN_ID_NETWORKS_PATH =
 const CLIENT_SIDE_DETECTION_BLOCKLIST_PATH =
   'test/e2e/mock-response-data/client-side-detection-blocklist.json';
 const ON_RAMP_CONTENT_PATH = 'test/e2e/mock-response-data/on-ramp-content.json';
+const TEST_DAPP_STYLES_1_PATH =
+  'test/e2e/mock-response-data/test-dapp-styles-1.txt';
+const TEST_DAPP_STYLES_2_PATH =
+  'test/e2e/mock-response-data/test-dapp-styles-2.txt';
 const TOKEN_BLOCKLIST_PATH = 'test/e2e/mock-response-data/token-blocklist.json';
 
 const snapsExecutionEnvBasePath = path.dirname(
@@ -69,13 +73,13 @@ const snapsExecutionEnvJs = fs.readFileSync(snapsExecutionEnvJsPath, 'utf-8');
 
 const blocklistedHosts = [
   'arbitrum-mainnet.infura.io',
-  'goerli.infura.io',
-  'mainnet.infura.io',
-  'sepolia.infura.io',
+  'bsc-dataseed.binance.org',
   'linea-mainnet.infura.io',
   'linea-sepolia.infura.io',
   'testnet-rpc.monad.xyz',
   'carrot.megaeth.com',
+  'mainnet.infura.io',
+  'sepolia.infura.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,
@@ -285,8 +289,9 @@ async function setupMocking(
       };
     });
 
+  const targetChainId = chainId === 1337 ? 1 : chainId;
   await server
-    .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/gasPrices`)
+    .forGet(`${GAS_API_BASE_URL}/networks/${targetChainId}/gasPrices`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -942,6 +947,31 @@ async function setupMocking(
         statusCode: 200,
         body: snapsExecutionEnvJs,
         headers: { 'Content-Type': 'application/javascript; charset=utf-8' },
+      };
+    });
+
+  // Test Dapp Styles
+  const TEST_DAPP_STYLES_1 = fs.readFileSync(TEST_DAPP_STYLES_1_PATH);
+  const TEST_DAPP_STYLES_2 = fs.readFileSync(TEST_DAPP_STYLES_2_PATH);
+  await server
+    .forGet(
+      'https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.14.1/css/mdb.min.css',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: TEST_DAPP_STYLES_1,
+      };
+    });
+
+  await server
+    .forGet(
+      'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: TEST_DAPP_STYLES_2,
       };
     });
 

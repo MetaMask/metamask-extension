@@ -338,10 +338,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "优先费用（又称“矿工费”）直接向矿工支付，激励他们优先处理您的交易。"
   },
-  "agreeTermsOfUse": {
-    "message": "我同意MetaMask的$1",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "该代币的链上历史记录显示，此前存在可疑的空投活动实例。"
   },
@@ -662,9 +658,6 @@
   },
   "basic": {
     "message": "基本"
-  },
-  "basicConfigurationBannerCTA": {
-    "message": "开启基本功能"
   },
   "basicConfigurationBannerTitle": {
     "message": "基本功能已关闭"
@@ -1447,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "创建新账户"
-  },
-  "createNewWallet": {
-    "message": "创建新钱包"
   },
   "createPassword": {
     "message": "创建密码"
@@ -2296,18 +2286,11 @@
   "gasLimit": {
     "message": "燃料限制"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "燃料限制是指您愿意花费的最大燃料单位量。"
-  },
   "gasLimitRecommended": {
     "message": "建议的燃料限制是$1。如果燃料限制低于此值，则可能会失败。"
   },
   "gasLimitTooLow": {
     "message": "燃料限制至少为21000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "燃料限制至少为 $1",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "燃料限制"
@@ -2315,23 +2298,11 @@
   "gasOption": {
     "message": "燃料选项"
   },
-  "gasPrice": {
-    "message": "Gas 价格（GWEI）"
-  },
   "gasPriceExcessive": {
     "message": "您的燃料费设置得过高。请考虑降低金额。"
   },
-  "gasPriceExcessiveInput": {
-    "message": "燃料价格过高"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "燃料价格极低"
-  },
   "gasPriceFetchFailed": {
     "message": "由于网络错误，燃料价格估算失败。"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "燃料价格指明了您愿意为每单位燃料支付的以太币数量。"
   },
   "gasTimingHoursShort": {
     "message": "$1 小时",
@@ -2570,9 +2541,6 @@
   },
   "importAccountMsg": {
     "message": "导入的账户将不会与最初创建的 MetaMask 账户私钥助记词相关联。了解更多有关导入账户的信息"
-  },
-  "importMyWallet": {
-    "message": "导入我的钱包"
   },
   "importNFT": {
     "message": "导入 NFT"
@@ -3963,9 +3931,6 @@
   "passwordNotLongEnough": {
     "message": "密码长度不足"
   },
-  "passwordSetupDetails": {
-    "message": "此密码只会在此设备上解锁您的 MetaMask 钱包。MetaMask 无法恢复此密码。"
-  },
   "passwordStrength": {
     "message": "密码强度：$1",
     "description": "Return password strength to the user when user wants to create password."
@@ -5328,10 +5293,6 @@
   "snapConnectionWarning": {
     "message": "$1想连接$2。",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "此内容来自$1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "网站"
@@ -6789,23 +6750,8 @@
   "welcomeBack": {
     "message": "欢迎回来"
   },
-  "welcomeExploreDescription": {
-    "message": "存储、发送和使用加密货币和资产。"
-  },
-  "welcomeExploreTitle": {
-    "message": "探索去中心化应用"
-  },
-  "welcomeLoginDescription": {
-    "message": "使用您的 MetaMask 登录去中心化应用 - 无需注册。"
-  },
-  "welcomeLoginTitle": {
-    "message": "迎接您的钱包"
-  },
   "welcomeToMetaMask": {
     "message": "让我们开始吧"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "MetaMask 深受数百万人信任，是一款可以让所有人进入 web3 世界的安全钱包。"
   },
   "whatsThis": {
     "message": "这是什么？"
@@ -6868,8 +6814,5 @@
   },
   "yourWalletIsReady": {
     "message": "您的钱包已准备就绪"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "加速时零燃料价格"
   }
 }
