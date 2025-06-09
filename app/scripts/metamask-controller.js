@@ -3712,6 +3712,14 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setOutdatedBrowserWarningLastShown.bind(
           appStateController,
         ),
+      setIsUpdateAvailable:
+        appStateController.setIsUpdateAvailable.bind(appStateController),
+      setUpdateModalLastDismissedAt:
+        appStateController.setUpdateModalLastDismissedAt.bind(
+          appStateController,
+        ),
+      setLastUpdatedAt:
+        appStateController.setLastUpdatedAt.bind(appStateController),
       setShowTestnetMessageInDropdown:
         appStateController.setShowTestnetMessageInDropdown.bind(
           appStateController,
