@@ -94,6 +94,7 @@ const AccountListItem = ({
   shouldScrollToWhenSelected = true,
   showConnectedStatus = true,
   privacyMode = false,
+  showSrpPill = true,
 }) => {
   const t = useI18nContext();
 
@@ -200,6 +201,10 @@ const AccountListItem = ({
       (!isEvmNetwork && shouldShowFiat);
 
     return isAggregatedFiatOverviewBalance;
+  };
+
+  const isSrpPill = (label) => {
+    return Boolean(label && label.startsWith('SRP'));
   };
 
   return (
@@ -366,20 +371,22 @@ const AccountListItem = ({
         </Box>
         {accountLabels.length > 0 ? (
           <Box flexDirection={FlexDirection.Row}>
-            {accountLabels.map(({ label, icon }) => {
-              return (
-                <Tag
-                  data-testid={`account-list-item-tag-${account.id}-${label}`}
-                  key={label}
-                  label={label}
-                  labelProps={{
-                    variant: TextVariant.bodyXs,
-                    color: Color.textAlternative,
-                  }}
-                  startIconName={icon}
-                />
-              );
-            })}
+            {accountLabels
+              .filter(({ label }) => !(isSrpPill(label) && !showSrpPill))
+              .map(({ label, icon }) => {
+                return (
+                  <Tag
+                    data-testid={`account-list-item-tag-${account.id}-${label}`}
+                    key={label}
+                    label={label}
+                    labelProps={{
+                      variant: TextVariant.bodyXs,
+                      color: Color.textAlternative,
+                    }}
+                    startIconName={icon}
+                  />
+                );
+              })}
           </Box>
         ) : null}
       </Box>
@@ -525,6 +532,10 @@ AccountListItem.propTypes = {
    * Determines if the connected status should be shown
    */
   showConnectedStatus: PropTypes.bool,
+  /**
+   * Determines if SRP pill should be shown
+   */
+  showSrpPill: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';
