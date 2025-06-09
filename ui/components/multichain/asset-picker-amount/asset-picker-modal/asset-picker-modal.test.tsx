@@ -429,6 +429,7 @@ describe('AssetPickerModal token filtering', () => {
     header: 'Select Token',
     isOpen: true,
     onClose: jest.fn(),
+    autoFocus: true,
     onAssetChange: onAssetChangeMock,
     network: {
       chainId: '0xa',
