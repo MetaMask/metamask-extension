@@ -1,6 +1,7 @@
 // PATH_NAME_MAP is used to pull a convenient name for analytics tracking events. The key must
 // be react-router ready path, and can include params such as :id for popup windows
 export const PATH_NAME_MAP = new Map<string, string>();
+export const PATH_NAME_KEYS = Array.from(PATH_NAME_MAP.keys());
 
 export const DEFAULT_ROUTE = '/';
 PATH_NAME_MAP.set(DEFAULT_ROUTE, 'Home');

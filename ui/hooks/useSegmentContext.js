@@ -1,9 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
-import { PATH_NAME_MAP } from '../helpers/constants/routes';
+import { PATH_NAME_MAP, PATH_NAME_KEYS } from '../helpers/constants/routes';
 import { txDataSelector } from '../selectors';
-
-const PATHS_TO_CHECK = PATH_NAME_MAP.keys();
 
 /**
  * Returns the current page if it matches our route map, as well as the origin
@@ -18,7 +16,7 @@ const PATHS_TO_CHECK = PATH_NAME_MAP.keys();
  */
 export function useSegmentContext() {
   const match = useRouteMatch({
-    path: PATHS_TO_CHECK,
+    path: PATH_NAME_KEYS,
     exact: true,
     strict: true,
   });
