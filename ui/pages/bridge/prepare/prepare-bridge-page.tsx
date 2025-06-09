@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
@@ -82,7 +88,10 @@ import {
   formatTokenAmount,
   isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
 } from '../utils/quote';
-import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
+import {
+  CrossChainSwapsEventProperties,
+  useCrossChainSwapsEventTracker,
+} from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import { Footer } from '../../../components/multichain/pages/page';
@@ -127,6 +136,7 @@ import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
+import { useRequestProperties } from '../../../hooks/bridge/events/useRequestProperties';
 
 const PrepareBridgePage = () => {
   const dispatch = useDispatch();
@@ -237,6 +247,7 @@ const PrepareBridgePage = () => {
       : undefined,
   );
 
+  const { flippedRequestProperties } = useRequestProperties();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
   const millisecondsUntilNextRefresh = useCountdownTimer();
