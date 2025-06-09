@@ -6532,10 +6532,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/test-dapp-multichain@npm:^0.10.0":
-  version: 0.10.0
-  resolution: "@metamask/test-dapp-multichain@npm:0.10.0"
-  checksum: 10/9840f9dbbfe289de159dc9d950aea923a4154980e5e31fd68a67bc21437f23c35d85ce8a4fc36e7f51234353a5d2ec83af04e56ad95ded93f624ee63050e55bb
+"@metamask/test-dapp-multichain@npm:^0.16.0":
+  version: 0.16.0
+  resolution: "@metamask/test-dapp-multichain@npm:0.16.0"
+  checksum: 10/da2909ec65adae684abb518c9c581839915aa26ce7844913512e7c5c8610eb79d55b98807eff26b506319bd26358b758724d47610a12b68d524597a6d7149925
   languageName: node
   linkType: hard
 
@@ -29829,7 +29829,7 @@ __metadata:
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
-    "@metamask/test-dapp-multichain": "npm:^0.10.0"
+    "@metamask/test-dapp-multichain": "npm:^0.16.0"
     "@metamask/test-dapp-solana": "npm:^0.1.0"
     "@metamask/transaction-controller": "npm:^57.0.0"
     "@metamask/user-operation-controller": "npm:^36.0.0"
