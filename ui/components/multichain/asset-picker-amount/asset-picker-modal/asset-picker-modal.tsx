@@ -186,8 +186,7 @@ export function AssetPickerModal({
   const handleAssetChange = useCallback(
     (newAsset) => {
       onAssetChange(newAsset);
-      debouncedSetSearchQuery.cancel();
-      abortControllerRef.current?.abort();
+      setSearchQuery('');
     },
     [onAssetChange],
   );
@@ -573,7 +572,7 @@ export function AssetPickerModal({
             debouncedSetSearchQuery.cancel();
             abortControllerRef.current?.abort();
             onClose();
-            // setSearchQuery('');
+            setSearchQuery('');
           }}
           onBack={asset ? undefined : onBack}
         >
@@ -679,15 +678,13 @@ export function AssetPickerModal({
                   onChange={(value) => {
                     // Cancel previous asset metadata fetch
                     abortControllerRef.current?.abort();
+                    debouncedSetSearchQuery.cancel();
                     setSearchQuery(value);
                   }}
                 />
                 <AssetList
                   network={network}
-                  handleAssetChange={(selectedAsset) => {
-                    setSearchQuery('');
-                    handleAssetChange(selectedAsset);
-                  }}
+                  handleAssetChange={handleAssetChange}
                   asset={asset?.type === AssetType.NFT ? undefined : asset}
                   tokenList={displayedTokens}
                   isTokenDisabled={getIsDisabled}
