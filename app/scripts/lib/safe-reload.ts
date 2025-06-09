@@ -16,7 +16,10 @@ export function getRequestSafeReload(persistenceManager: PersistenceManager) {
       try {
         await persistenceManager.set(state);
       } catch (error) {
+        // unlikely to have an error here, as `persistenceManager.set` handles
+        // nearly all error cases internally already.
         log.error('MetaMask - Persistence failed', error);
+        sentry?.captureException(error);
       }
     },
     wait: 1000,

@@ -618,6 +618,7 @@ async function initialize(backup) {
   controller.store.on('update', update);
   controller.store.on('error', (error) => {
     log.error('MetaMask controller.store error:', error);
+    sentry?.captureException(error);
   });
 
   // `setupController` sets up the `controller` object, so we can use it now:
