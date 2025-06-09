@@ -389,11 +389,11 @@ const PrepareBridgePage = () => {
     ],
   );
 
-  const debouncedUpdateQuoteRequestInController = debounce(
-    (...args: Parameters<typeof updateQuoteRequestParams>) => {
+  const debouncedUpdateQuoteRequestInController = useCallback(
+    debounce((...args: Parameters<typeof updateQuoteRequestParams>) => {
       dispatch(updateQuoteRequestParams(...args));
-    },
-    300,
+    }, 300),
+    [dispatch],
   );
 
   // When entering the page for the first time emit an event for the page viewed
