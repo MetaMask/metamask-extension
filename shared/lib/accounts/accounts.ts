@@ -196,29 +196,34 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
 
   async discoverAccounts(
     entropySource: string,
-    scope: CaipChainId,
+    scopes: CaipChainId[],
   ): Promise<KeyringAccount[]> {
     const accounts: KeyringAccount[] = [];
 
     for (let index = 0; ; index++) {
-      const discovered = await this.#client.discoverAccounts(
-        [scope],
+      const discoveredAccounts = await this.#client.discoverAccounts(
+        scopes,
         entropySource,
         index,
       );
 
       // We stop discovering accounts if none got discovered for that index.
-      if (discovered.length === 0) {
+      if (discoveredAccounts.length === 0) {
         break;
       }
 
       // NOTE: We are doing this sequentially mainly to avoid race-conditions with the
       // account naming logic.
-      for (const { derivationPath } of discovered) {
+      for (const discoveredAccount of discoveredAccounts) {
         try {
           const options: CreateAccountSnapOptions = {
-            scope,
-            derivationPath,
+            // FIXME: Bitcoin and Solana implement `createAccount` differently.
+            // Bitcoin - can only receive one `scope` in `createAccount`
+            // Solana - does not care about the `scope` or `scopes` parameters
+            // To make sure discovery works for both we take the first scope in the array of the discovered account.
+            // This way Snaps that don't have multiple scopes per address (like Bitcoin) can just return more than one item.
+            scope: discoveredAccount.scopes[0],
+            derivationPath: discoveredAccount.derivationPath,
             entropySource,
             synchronize: true,
           };

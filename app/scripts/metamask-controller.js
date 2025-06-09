@@ -4825,16 +4825,17 @@ export default class MetamaskController extends EventEmitter {
       const btcClient = await this._getMultichainWalletSnapClient(
         BITCOIN_WALLET_SNAP_ID,
       );
-      const btcScope = BtcScope.Mainnet;
+      const btcScopes = [BtcScope.Mainnet];
       const btcAccounts = await btcClient.discoverAccounts(
         entropySource,
-        btcScope,
+        btcScopes,
       );
 
       // If none accounts got discovered, we still create the first (default) one.
+      // Also worth noting that in Bitcoin we only have one scope per account
       if (btcAccounts.length === 0) {
         await this._addSnapAccount(entropySource, btcClient, {
-          scope: btcScope,
+          scope: BtcScope.Mainnet,
           synchronize: true,
         });
       }
@@ -4844,16 +4845,20 @@ export default class MetamaskController extends EventEmitter {
       const solanaClient = await this._getMultichainWalletSnapClient(
         SOLANA_WALLET_SNAP_ID,
       );
-      const solScope = SolScope.Mainnet;
+      const areSolanaTestnetsEnabled =
+        this.preferencesController.state.preferences.showTestNetworks;
+      const solScopes = areSolanaTestnetsEnabled
+        ? [SolScope.Mainnet, SolScope.Devnet]
+        : [SolScope.Mainnet];
       const solanaAccounts = await solanaClient.discoverAccounts(
         entropySource,
-        solScope,
+        solScopes,
       );
 
       // If none accounts got discovered, we still create the first (default) one.
       if (solanaAccounts.length === 0) {
         await this._addSnapAccount(entropySource, solanaClient, {
-          scope: solScope,
+          scope: SolScope.Mainnet,
         });
       }
       ///: END:ONLY_INCLUDE_IF
