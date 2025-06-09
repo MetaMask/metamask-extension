@@ -35,10 +35,24 @@ export type NameProps = {
    * Such as the chain ID if the `type` is an Ethereum address.
    */
   variation: string;
+
+  /**
+   * Whether to show trust signals (verified, warning, malicious icons).
+   * Should only be true for "Interacting with" scenarios:
+   * - Transaction 'to' addresses
+   * - Signature 'verifyingContract' fields
+   */
+  showTrustSignals?: boolean;
 };
 
 const Name = memo(
-  ({ value, type, preferContractSymbol = false, variation }: NameProps) => {
+  ({
+    value,
+    type,
+    preferContractSymbol = false,
+    variation,
+    showTrustSignals = false,
+  }: NameProps) => {
     const [modalOpen, setModalOpen] = useState(false);
     const trackEvent = useContext(MetaMetricsContext);
 
@@ -86,6 +100,7 @@ const Name = memo(
           preferContractSymbol={preferContractSymbol}
           variation={variation}
           handleClick={handleClick}
+          showTrustSignals={showTrustSignals}
         />
       </Box>
     );

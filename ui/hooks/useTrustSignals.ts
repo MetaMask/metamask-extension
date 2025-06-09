@@ -19,15 +19,15 @@ export type TrustSignalData = {
 
 const RESULT_TYPE_TO_STATE_MAP: Record<ResultType, TrustSignalState> = {
   [ResultType.Trusted]: TrustSignalState.Verified,
-  [ResultType.Benign]: TrustSignalState.Verified,
+  [ResultType.Benign]: TrustSignalState.Unknown,
   [ResultType.Warning]: TrustSignalState.Warning,
   [ResultType.Malicious]: TrustSignalState.Malicious,
   [ResultType.ErrorResult]: TrustSignalState.Unknown,
 };
 
 const STATE_TO_ICON_MAP: Record<TrustSignalState, IconName> = {
-  [TrustSignalState.Verified]: IconName.Verified,
-  [TrustSignalState.Warning]: IconName.Warning,
+  [TrustSignalState.Verified]: IconName.VerifiedFilled,
+  [TrustSignalState.Warning]: IconName.UserCircle,
   [TrustSignalState.Malicious]: IconName.Danger,
   [TrustSignalState.Unknown]: IconName.Question,
 };

@@ -32,8 +32,9 @@ export async function scanAddress(
     body: JSON.stringify(body),
   });
   const data = await response.json();
-  data.label = 'Uniswap';
-  data.result_type = ResultType.Trusted;
+  // data.label = 'Uniswap';
+  // data.result_type = ResultType.Warning;
+  data.result_type = ResultType.Benign;
   console.log('data', data);
   return data;
 }

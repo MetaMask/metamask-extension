@@ -43,10 +43,10 @@
 
   // Trust signal states
   &__verified {
-    background-color: var(--color-success-muted);
+    background-color: var(--color-info-muted);
 
     .name__name {
-      color: var(--color-success-default);
+      color: var(--color-info-default);
     }
   }
 

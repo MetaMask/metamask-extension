@@ -18,6 +18,7 @@ export type NameDisplayProps = {
   type: NameType;
   variation: string;
   handleClick?: () => void;
+  showTrustSignals?: boolean;
 };
 
 function doesHaveDisplayName(name: string | null): name is string {
@@ -27,7 +28,7 @@ function doesHaveDisplayName(name: string | null): name is string {
 const getTrustSignalIconColor = (state: TrustSignalState | null) => {
   switch (state) {
     case TrustSignalState.Verified:
-      return IconColor.successDefault;
+      return IconColor.infoDefault;
     case TrustSignalState.Warning:
       return IconColor.warningDefault;
     case TrustSignalState.Malicious:
@@ -45,6 +46,7 @@ const NameDisplay = memo(
     preferContractSymbol,
     variation,
     handleClick,
+    showTrustSignals = false,
   }: NameDisplayProps) => {
     const { name, hasPetname, image } = useDisplayName({
       value,
@@ -56,8 +58,25 @@ const NameDisplay = memo(
     const trustSignals = useTrustSignals(value, type);
 
     const hasDisplayName = doesHaveDisplayName(name);
-    const displayText = trustSignals.label || name;
-    const shouldShowTrustSignals = trustSignals.state !== null;
+    const shouldShowTrustSignals =
+      showTrustSignals && trustSignals.state !== null;
+
+    // If trust signals are present, use the label if available, otherwise show address
+    // If no trust signals, use normal display logic
+    const getDisplayContent = () => {
+      if (shouldShowTrustSignals) {
+        if (trustSignals.label) {
+          return <ShortenedName name={trustSignals.label} />;
+        }
+        return <FormattedName value={value} type={type} />;
+      }
+
+      if (hasDisplayName) {
+        return <ShortenedName name={name} />;
+      }
+
+      return <FormattedName value={value} type={type} />;
+    };
 
     return (
       <div
@@ -75,7 +94,21 @@ const NameDisplay = memo(
         onClick={handleClick}
       >
         {(() => {
+          // Saved names (petnames) should always show Identicon regardless of trust signals
+          if (hasPetname) {
+            return <Identicon address={value} diameter={16} image={image} />;
+          }
+
+          // Trust signals for unsaved addresses
           if (shouldShowTrustSignals && trustSignals.iconName) {
+            // For warning and unknown states, use Identicon instead of trust signal icon
+            if (
+              trustSignals.state === TrustSignalState.Warning ||
+              trustSignals.state === TrustSignalState.Unknown
+            ) {
+              return <Identicon address={value} diameter={16} image={image} />;
+            }
+            // For verified and malicious, show the trust signal icon
             return (
               <Icon
                 name={trustSignals.iconName}
@@ -85,9 +118,13 @@ const NameDisplay = memo(
               />
             );
           }
+
+          // Regular unsaved but recognized addresses
           if (hasDisplayName) {
             return <Identicon address={value} diameter={16} image={image} />;
           }
+
+          // Unknown addresses
           return (
             <Icon
               name={IconName.Question}
@@ -96,11 +133,7 @@ const NameDisplay = memo(
             />
           );
         })()}
-        {hasDisplayName || shouldShowTrustSignals ? (
-          <ShortenedName name={displayText || name || ''} />
-        ) : (
-          <FormattedName value={value} type={type} />
-        )}
+        {getDisplayContent()}
       </div>
     );
   },
