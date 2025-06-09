@@ -12,14 +12,14 @@ type StateOverrides = {
   isSignedIn?: boolean;
   useExternalServices?: boolean;
   participateInMetaMetrics?: boolean;
-  isBackupAndSyncEnabled?: boolean;
+  isProfileSyncingEnabled?: boolean;
 };
 
 const initialState: StateOverrides = {
   isSignedIn: true,
   useExternalServices: true,
   participateInMetaMetrics: true,
-  isBackupAndSyncEnabled: true,
+  isProfileSyncingEnabled: true,
 };
 
 const arrangeMocks = (stateOverrides: StateOverrides = {}) => {

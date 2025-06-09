@@ -11,11 +11,7 @@ import {
   NormalizedScopesObject,
   getSupportedScopeObjects,
   Caip25CaveatValue,
-  setNonSCACaipAccountIdsInCaip25CaveatValue,
-  getAllScopesFromScopesObjects,
-  getCaipAccountIdsFromScopesObjects,
-  isKnownSessionPropertyValue,
-  isNamespaceInScopesObject,
+  setPermittedAccounts,
 } from '@metamask/chain-agnostic-permission';
 import {
   invalidParams,
@@ -48,6 +44,12 @@ import { shouldEmitDappViewedEvent } from '../../../util';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 import { GrantedPermissions } from '../types';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
+import { getAllScopesFromScopesObjects } from '../../../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
+import { getCaipAccountIdsFromScopesObjects } from '../../../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
+import {
+  isKnownSessionPropertyValue,
+  isNamespaceInScopesObject,
+} from '../../../../../../shared/lib/multichain/chain-agnostic-permission-utils/misc-utils';
 
 /**
  * Handler for the `wallet_createSession` RPC method which is responsible
@@ -230,7 +232,7 @@ async function walletCreateSessionHandler(
     };
 
     const requestedCaip25CaveatValueWithSupportedAccounts =
-      setNonSCACaipAccountIdsInCaip25CaveatValue(
+      setPermittedAccounts(
         requestedCaip25CaveatValue,
         supportedRequestedAccountAddresses,
       );
@@ -297,24 +299,24 @@ async function walletCreateSessionHandler(
 
       const approvedEthAccounts = getEthAccounts(approvedCaip25CaveatValue);
 
-      hooks.sendMetrics(
-        {
-          event: MetaMetricsEventName.DappViewed,
-          category: MetaMetricsEventCategory.InpageProvider,
-          referrer: {
-            url: origin,
-          },
-          properties: {
-            is_first_visit: isFirstVisit,
-            number_of_accounts: Object.keys(hooks.metamaskState.accounts)
-              .length,
-            number_of_accounts_connected: approvedEthAccounts.length,
-          },
+      hooks.sendMetrics({
+        event: MetaMetricsEventName.DappViewed,
+        category: MetaMetricsEventCategory.InpageProvider,
+        referrer: {
+          url: origin,
         },
-        {
-          excludeMetaMetricsId: true,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_first_visit: isFirstVisit,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          number_of_accounts: Object.keys(hooks.metamaskState.accounts).length,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          number_of_accounts_connected: approvedEthAccounts.length,
         },
-      );
+      });
     }
 
     res.result = {

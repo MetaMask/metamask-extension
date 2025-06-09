@@ -46,7 +46,6 @@ import {
   FormTextFieldSize,
   HelpText,
   HelpTextSeverity,
-  Tag,
   Text,
 } from '../../../../components/component-library';
 import {
@@ -68,11 +67,7 @@ import {
   DropdownEditor,
   DropdownEditorStyle,
 } from '../../../../components/multichain/dropdown-editor/dropdown-editor';
-import {
-  getIsRpcFailoverEnabled,
-  getTokenNetworkFilter,
-} from '../../../../selectors';
-import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
+import { getTokenNetworkFilter } from '../../../../selectors';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 
@@ -92,7 +87,6 @@ export const NetworksForm = ({
   const trackEvent = useContext(MetaMetricsContext);
   const scrollableRef = useRef<HTMLDivElement>(null);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
-  const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
 
   const {
     name,
@@ -106,11 +100,6 @@ export const NetworksForm = ({
     blockExplorers,
     setBlockExplorers,
   } = networkFormState;
-
-  const defaultRpcEndpoint =
-    rpcUrls.defaultRpcEndpointIndex === undefined
-      ? undefined
-      : rpcUrls.rpcEndpoints[rpcUrls.defaultRpcEndpointIndex];
 
   const { safeChains } = useSafeChains();
 
@@ -441,16 +430,8 @@ export const NetworksForm = ({
                 variant={TextVariant.bodyMd}
                 paddingTop={3}
                 paddingBottom={3}
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                gap={1}
               >
                 {stripProtocol(stripKeyFromInfuraUrl(item.url))}
-                {isRpcFailoverEnabled &&
-                item.failoverUrls &&
-                item.failoverUrls.length > 0 ? (
-                  <Tag label={t('failover')} display={Display.Inline} />
-                ) : null}
               </Text>
             )
           }
@@ -488,29 +469,6 @@ export const NetworksForm = ({
             </HelpText>
           </Box>
         )}
-
-        {isRpcFailoverEnabled &&
-        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
-        defaultRpcEndpoint &&
-        defaultRpcEndpoint.failoverUrls &&
-        defaultRpcEndpoint.failoverUrls.length > 0 ? (
-          <FormTextField
-            id="failoverRpcUrl"
-            size={FormTextFieldSize.Lg}
-            paddingTop={4}
-            label={t('failoverRpcUrl')}
-            labelProps={{
-              children: undefined,
-              variant: TextVariant.bodyMdMedium,
-            }}
-            textFieldProps={{
-              borderRadius: BorderRadius.LG,
-            }}
-            value={onlyKeepHost(defaultRpcEndpoint.failoverUrls[0])}
-            disabled={true}
-          />
-        ) : null}
-
         <FormTextField
           id="chainId"
           size={FormTextFieldSize.Lg}
@@ -697,8 +655,6 @@ export const NetworksForm = ({
             !rpcUrls?.rpcEndpoints?.length ||
             Object.values(errors).some((e) => e)
           }
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={onSubmit}
           size={ButtonPrimarySize.Lg}
           width={BlockSize.Full}

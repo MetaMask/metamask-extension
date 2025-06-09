@@ -10,7 +10,6 @@ import { ASSET_ROUTE } from '../../../../helpers/constants/routes';
 import { getNfts } from '../../../../ducks/metamask/metamask';
 import { ignoreTokens, showImportNftsModal } from '../../../../store/actions';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { getSelectedNetworkClientId } from '../../../../../shared/modules/selectors/networks';
 
 const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
   const history = useHistory();
@@ -20,7 +19,6 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
   const tokenAddedAsNFT = allNfts.find(({ address }) =>
     isEqualCaseInsensitive(address, tokenAddress),
   );
-  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   return (
     <Modal
@@ -30,7 +28,6 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
             ignoreTokens({
               tokensToIgnore: tokenAddress,
               dontShowLoadingIndicator: true,
-              networkClientId,
             }),
           );
           const { tokenId } = tokenAddedAsNFT;

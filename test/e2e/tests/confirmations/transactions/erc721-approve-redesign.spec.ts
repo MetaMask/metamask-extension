@@ -9,7 +9,10 @@ import {
   toggleAdvancedDetails,
 } from './shared';
 
-const { withFixtures } = require('../../../helpers');
+const {
+  defaultGanacheOptionsForType2Transactions,
+  withFixtures,
+} = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
@@ -24,9 +27,6 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: {
-            hardfork: 'muirGlacier',
-          },
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
@@ -52,6 +52,7 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),

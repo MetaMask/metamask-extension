@@ -6,7 +6,6 @@ import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { Driver } from '../../../webdriver/driver';
-import { Anvil } from '../../../seeder/anvil';
 
 describe('View NFT details', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -19,14 +18,8 @@ describe('View NFT details', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        localNodes,
-      }: {
-        driver: Driver;
-        localNodes: Anvil[];
-      }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
 
         // Click to open the NFT details page and check title
         await new Homepage(driver).goToNftTab();

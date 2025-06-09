@@ -1,11 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { TokenListMap } from '@metamask/assets-controllers';
-import {
-  AddNetworkFields,
-  NetworkConfiguration,
-} from '@metamask/network-controller';
-import { CaipChainId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, Text } from '../../component-library';
 import {
@@ -19,7 +14,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  getCurrentNetwork,
   getIpfsGateway,
   getNativeCurrencyImage,
   getSelectedInternalAccount,
@@ -40,12 +34,7 @@ import {
 import { NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR } from '../../../pages/confirmations/send/send.constants';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useGetAssetImageUrl from '../../../hooks/useGetAssetImageUrl';
-import {
-  getCurrentChainId,
-  getNetworkConfigurationsByChainId,
-} from '../../../../shared/modules/selectors/networks';
-import { setActiveNetworkWithError } from '../../../store/actions';
-import { setToChainId } from '../../../ducks/bridge/actions';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -62,9 +51,7 @@ type AssetPickerAmountProps = OverridingUnion<
     amount: Amount;
     isAmountLoading?: boolean;
     action?: 'send' | 'receive';
-    disableMaxButton?: boolean;
     error?: string;
-    showNetworkPicker?: boolean;
     /**
      * Callback for when the amount changes; disables the input when undefined
      */
@@ -75,11 +62,6 @@ type AssetPickerAmountProps = OverridingUnion<
   }
 >;
 
-type NetworkOption =
-  | NetworkConfiguration
-  | AddNetworkFields
-  | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
-
 // A component that combines an asset picker with an input for the amount to send.
 export const AssetPickerAmount = ({
   asset,
@@ -87,14 +69,12 @@ export const AssetPickerAmount = ({
   onAmountChange,
   action,
   isAmountLoading,
-  disableMaxButton = false,
-  showNetworkPicker,
   error: passedError,
   ...assetPickerProps
 }: AssetPickerAmountProps) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const t = useI18nContext();
-  const dispatch = useDispatch();
+
   const { swapQuotesError, sendAsset, receiveAsset } = useSelector(
     getCurrentDraftTransaction,
   );
@@ -110,9 +90,7 @@ export const AssetPickerAmount = ({
   const tokenList = useSelector(getTokenList) as TokenListMap;
 
   const ipfsGateway = useSelector(getIpfsGateway);
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const showNetworkPickerinModal = process.env.REMOVE_GNS && showNetworkPicker;
-  const currentNetwork = useSelector(getCurrentNetwork);
+
   useEffect(() => {
     // if this input is immutable – avoids double fire
     if (isDisabled) {
@@ -244,29 +222,6 @@ export const AssetPickerAmount = ({
         <AssetPicker
           action={action}
           asset={standardizedAsset}
-          networkProps={
-            showNetworkPickerinModal
-              ? {
-                  network: currentNetwork as unknown as NetworkOption,
-                  networks: Object.values(allNetworks) as NetworkOption[],
-                  onNetworkChange: (networkConfig) => {
-                    const rpcEndpoint =
-                      networkConfig.rpcEndpoints[
-                        networkConfig.defaultRpcEndpointIndex
-                      ];
-                    dispatch(setToChainId(networkConfig.chainId));
-                    dispatch(
-                      setActiveNetworkWithError(
-                        'networkClientId' in rpcEndpoint
-                          ? rpcEndpoint.networkClientId
-                          : networkConfig.chainId,
-                      ),
-                    );
-                  },
-                  header: t('yourNetworks'),
-                }
-              : undefined
-          }
           {...assetPickerProps}
         />
         <SwappableCurrencyInput
@@ -290,10 +245,9 @@ export const AssetPickerAmount = ({
           </Text>
         )}
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        {onAmountChange &&
-          isNativeSendPossible &&
-          !isSwapAndSendFromNative &&
-          !disableMaxButton && <MaxClearButton asset={asset} />}
+        {onAmountChange && isNativeSendPossible && !isSwapAndSendFromNative && (
+          <MaxClearButton asset={asset} />
+        )}
       </Box>
     </Box>
   );

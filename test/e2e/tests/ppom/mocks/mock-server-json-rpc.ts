@@ -1,12 +1,5 @@
-import { MockttpServer, CompletedRequest } from 'mockttp';
+import { MockttpServer } from 'mockttp';
 import { mockJsonRpcResult } from './json-rpc-result';
-
-type JsonRpcRequestPayload = {
-  jsonrpc: string;
-  method: string;
-  params?: unknown[] | Record<string, unknown>;
-  id?: number | string;
-};
 
 type RequestConfig = [
   method: string,
@@ -15,13 +8,13 @@ type RequestConfig = [
     methodResultVariant?: string;
     /** optional params value for JSON request used in withJsonBodyIncluding() */
 
-    params?: unknown[] | Record<string, unknown>;
+    params?: any;
     /** optional result value returned in JSON response */
 
-    result?: unknown;
+    result?: any;
     /** optional result value returned in JSON response */
 
-    error?: unknown;
+    error?: any;
   },
 ];
 
@@ -73,15 +66,12 @@ export async function mockServerJsonRpc(
       .always()
       .withJsonBodyIncluding(params ? { method, params } : { method })
 
-      .thenCallback(async (req: CompletedRequest) => {
-        const jsonBody = (await req.body.getJson()) as
-          | JsonRpcRequestPayload
-          | undefined;
+      .thenCallback(async (req: any) => {
         return {
           statusCode: 200,
           json: {
             jsonrpc: '2.0',
-            id: jsonBody?.id,
+            id: (await req.body.getJson()).id,
             result,
           },
         };

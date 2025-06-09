@@ -248,7 +248,6 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
         ignoreTokens({
           tokensToIgnore: deSelectedTokensAddresses,
           dontShowLoadingIndicator: true,
-          networkClientId,
         }),
       );
 

@@ -12,8 +12,14 @@ import AdvancedSettings from '../../page-objects/pages/settings/advanced-setting
 import HomePage from '../../page-objects/pages/home/homepage';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { NATIVE_TOKEN_SYMBOL, SwapSendPage } from './swap-send-test-utils';
+import fs from 'fs';
 
 async function mockSwapQuotes(mockServer: MockttpServer) {
+  const BRIDGE_GET_ALL_FEATURE_FLAGS_PATH =
+    'test/e2e/mock-response-data/bridge-get-all-feature-flags.json';
+  const BRIDGE_GET_ALL_FEATURE_FLAGS = fs.readFileSync(
+    BRIDGE_GET_ALL_FEATURE_FLAGS_PATH,
+  );
   return [
     await mockServer
       .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
@@ -21,6 +27,15 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
         statusCode: 200,
         json: {},
       })),
+
+    await mockServer
+      .forGet('https://bridge.dev-api.cx.metamask.io/getAllFeatureFlags')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: JSON.parse(BRIDGE_GET_ALL_FEATURE_FLAGS.toString()),
+        };
+      }),
 
     await mockServer
       .forGet(

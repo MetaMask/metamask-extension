@@ -903,7 +903,7 @@ export const ImportTokensModal = ({ onClose }) => {
                         <FormTextField
                           paddingLeft={4}
                           paddingRight={4}
-                          size={Size.LG}
+                          paddingTop={6}
                           label={t('tokenContractAddress')}
                           value={customAddress}
                           onChange={(e) => {
@@ -941,7 +941,6 @@ export const ImportTokensModal = ({ onClose }) => {
                               paddingLeft={4}
                               paddingRight={4}
                               paddingTop={4}
-                              size={Size.LG}
                               label={<>{t('tokenSymbol')}</>}
                               value={customSymbol}
                               onChange={(e) =>
@@ -963,7 +962,6 @@ export const ImportTokensModal = ({ onClose }) => {
                               paddingLeft={4}
                               paddingRight={4}
                               paddingTop={4}
-                              size={Size.LG}
                               label={t('decimal')}
                               type="number"
                               value={customDecimals}

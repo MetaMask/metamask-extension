@@ -1,16 +1,11 @@
 import React, { FC } from 'react';
 import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
-import { isSolanaChainId } from '@metamask/bridge-controller';
+import { Hex } from '@metamask/utils';
 import configureStore from '../../../store/store';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import useRamps, { RampsMetaMaskEntry } from './useRamps';
-
-jest.mock('@metamask/bridge-controller', () => ({
-  ...jest.requireActual('@metamask/bridge-controller'),
-  isSolanaChainId: jest.fn(),
-}));
 
 const mockedMetametricsId = '0xtestMetaMetricsId';
 
@@ -26,6 +21,7 @@ const wrapper: FC = ({ children }) => (
 );
 
 describe('useRamps', () => {
+  // mock the openTab function to test if it is called with the correct URL when opening the Pdapp
   beforeAll(() => {
     Object.defineProperty(global, 'platform', {
       value: {
@@ -34,48 +30,22 @@ describe('useRamps', () => {
     });
   });
 
-  it('should pass the numeric version of the chain ID', () => {
-    const testCases = [
-      { mockChainId: '0x1', numericChainId: '1' },
-      { mockChainId: '0x38', numericChainId: '56' },
-    ];
-
-    testCases.forEach(({ mockChainId, numericChainId }) => {
-      mockStoreState = {
-        ...mockStoreState,
-        metamask: {
-          ...mockStoreState.metamask,
-          // @ts-expect-error ignore the 0xString interface check
-          ...mockNetworkState({ chainId: mockChainId }),
-        },
-      };
-
-      const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=ext_buy_sell_button&chainId=${numericChainId}&metametricsId=${mockedMetametricsId}&metricsEnabled=false`;
-
-      const { result } = renderHook(() => useRamps(), { wrapper });
-
-      // @ts-expect-error ignore the 0xString interface check
-      const buyURI = result.current.getBuyURI(mockChainId);
-      expect(buyURI).toBe(mockBuyURI);
-    });
-  });
-
   it('should default the metamask entry param when opening the buy crypto URL', () => {
     const metaMaskEntry = 'ext_buy_sell_button';
-    const mockChainId = '1';
+    const mockChainId = '0x1';
 
     mockStoreState = {
       ...mockStoreState,
       metamask: {
         ...mockStoreState.metamask,
-        ...mockNetworkState({ chainId: '0x1' }),
+        ...mockNetworkState({ chainId: mockChainId }),
       },
     };
 
     const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=${metaMaskEntry}&chainId=${mockChainId}&metametricsId=${mockedMetametricsId}&metricsEnabled=false`;
     const openTabSpy = jest.spyOn(global.platform, 'openTab');
 
-    const { result } = renderHook(() => useRamps(), { wrapper });
+    const { result } = renderHook(() => useRamps(), { wrapper }); // default metamask entry
 
     result.current.openBuyCryptoInPdapp();
     expect(openTabSpy).toHaveBeenCalledWith({
@@ -85,13 +55,13 @@ describe('useRamps', () => {
 
   it('should use the correct metamask entry param when opening the buy crypto URL', () => {
     const metaMaskEntry = 'ext_buy_banner_tokens';
-    const mockChainId = '1';
+    const mockChainId = '0x1';
 
     mockStoreState = {
       ...mockStoreState,
       metamask: {
         ...mockStoreState.metamask,
-        ...mockNetworkState({ chainId: '0x1' }),
+        ...mockNetworkState({ chainId: mockChainId }),
       },
     };
 
@@ -109,6 +79,28 @@ describe('useRamps', () => {
     });
   });
 
+  it.each(['0x1', '0x38', '0xa'] as Hex[])(
+    'should open the buy crypto URL with the currently connected chain ID',
+    (mockChainId: Hex) => {
+      mockStoreState = {
+        ...mockStoreState,
+        metamask: {
+          ...mockStoreState.metamask,
+          ...mockNetworkState({ chainId: mockChainId }),
+        },
+      };
+
+      const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=ext_buy_sell_button&chainId=${mockChainId}&metametricsId=${mockedMetametricsId}&metricsEnabled=false`;
+      const openTabSpy = jest.spyOn(global.platform, 'openTab');
+      const { result } = renderHook(() => useRamps(), { wrapper });
+
+      result.current.openBuyCryptoInPdapp();
+
+      expect(openTabSpy).toHaveBeenCalledWith({
+        url: mockBuyURI,
+      });
+    },
+  );
   it('should return the default URL when an invalid URL is provided', () => {
     jest.resetModules();
 
@@ -122,24 +114,5 @@ describe('useRamps', () => {
 
     process.env.PORTFOLIO_URL = originalPortfolioUrl;
     jest.resetModules();
-  });
-
-  it('should handle Solana chain IDs correctly', () => {
-    const metaMaskEntry = 'ext_buy_sell_button';
-    const solanaChainId = 'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ';
-    (isSolanaChainId as jest.Mock).mockReturnValueOnce(true);
-    mockStoreState = {
-      ...mockStoreState,
-      metamask: {
-        ...mockStoreState.metamask,
-        // @ts-expect-error ignore the 0xString interface check
-        ...mockNetworkState({ chainId: solanaChainId }),
-      },
-    };
-    const encodedChainId = encodeURIComponent(solanaChainId);
-    const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=${metaMaskEntry}&chainId=${encodedChainId}&metametricsId=${mockedMetametricsId}&metricsEnabled=false`;
-    const { result } = renderHook(() => useRamps(), { wrapper });
-    const buyURI = result.current.getBuyURI(solanaChainId);
-    expect(buyURI).toBe(mockBuyURI);
   });
 });

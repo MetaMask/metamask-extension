@@ -9,6 +9,11 @@ jest.mock('webextension-polyfill', () => {
   };
 });
 
+jest.mock('../../app/scripts/constants/snaps', () => ({
+  __esModule: true,
+  default: [],
+}));
+
 const UNRESOLVED = Symbol('timedOut');
 
 // Store this in case it gets stubbed later

@@ -11,8 +11,8 @@ import { TokenDisplayInfo, TokenWithFiatAmount } from '../types';
 import {
   getImageForChainId,
   getMultichainIsEvm,
+  getMultichainShouldShowFiat,
   isChainIdMainnet,
-  makeGetMultichainShouldShowFiatByChainId,
 } from '../../../../selectors/multichain';
 import { formatWithThreshold } from '../util/formatWithThreshold';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
@@ -21,22 +21,20 @@ import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 
 type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;
-  fixCurrencyToUSD?: boolean;
 };
 
 export const useTokenDisplayInfo = ({
   token,
-  fixCurrencyToUSD,
 }: UseTokenDisplayInfoProps): TokenDisplayInfo => {
   const isEvm = useSelector(getMultichainIsEvm);
-  const tokenList = useSelector(getTokenList) || {};
+  const tokenList = useSelector(getTokenList);
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const currentCurrency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
   const tokenChainImage = getImageForChainId(token.chainId);
   const selectedAccount = useSelector(getSelectedAccount);
   const showFiat = useMultichainSelector(
-    makeGetMultichainShouldShowFiatByChainId(token.chainId),
+    getMultichainShouldShowFiat,
     selectedAccount,
   );
 
@@ -61,7 +59,7 @@ export const useTokenDisplayInfo = ({
           locale,
           {
             style: 'currency',
-            currency: fixCurrencyToUSD ? 'USD' : currentCurrency.toUpperCase(),
+            currency: currentCurrency.toUpperCase(),
           },
         )
       : undefined;
@@ -79,8 +77,7 @@ export const useTokenDisplayInfo = ({
   const isEvmMainnet =
     token.chainId && isEvm ? isChainIdMainnet(token.chainId) : false;
 
-  const isStakeable =
-    token.isStakeable || (isEvmMainnet && isEvm && token.isNative);
+  const isStakeable = isEvmMainnet && isEvm && token.isNative;
 
   if (isEvm) {
     const tokenData = Object.values(tokenList).find(
@@ -122,7 +119,7 @@ export const useTokenDisplayInfo = ({
     title: token.title,
     tokenImage: token.image,
     primary: formattedPrimary,
-    secondary: showFiat ? token.secondary : null,
+    secondary: token.secondary,
     isStakeable: false,
     tokenChainImage: token.image as string,
   };

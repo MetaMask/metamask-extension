@@ -2,11 +2,7 @@ import { EventEmitter } from 'events';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Text } from '../../components/component-library';
-import {
-  FontWeight,
-  TextVariant,
-  TextColor,
-} from '../../helpers/constants/design-system';
+import { TextVariant, TextColor } from '../../helpers/constants/design-system';
 import Button from '../../components/ui/button';
 import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
@@ -135,9 +131,10 @@ export default class UnlockPage extends Component {
       backgroundColor: 'var(--color-primary-default)',
       color: 'var(--color-primary-inverse)',
       marginTop: '20px',
-      height: '56px',
-      fontWeight: '500',
+      height: '60px',
+      fontWeight: '400',
       boxShadow: 'none',
+      borderRadius: '100px',
     };
 
     return (
@@ -196,10 +193,8 @@ export default class UnlockPage extends Component {
           <Text
             data-testid="unlock-page-title"
             as="h1"
-            variant={TextVariant.displayMd}
-            fontWeight={FontWeight.Medium}
+            variant={TextVariant.headingLg}
             marginTop={1}
-            marginBottom={1}
             color={TextColor.textDefault}
           >
             {t('welcomeBack')}

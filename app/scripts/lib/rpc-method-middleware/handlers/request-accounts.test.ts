@@ -187,23 +187,24 @@ describe('requestEthereumAccountsHandler', () => {
       MockUtil.shouldEmitDappViewedEvent.mockReturnValue(true);
 
       await handler(baseRequest);
-      expect(sendMetrics).toHaveBeenCalledWith(
-        {
-          category: 'inpage_provider',
-          event: 'Dapp Viewed',
-          properties: {
-            is_first_visit: true,
-            number_of_accounts: 3,
-            number_of_accounts_connected: 2,
-          },
-          referrer: {
-            url: 'http://test.com',
-          },
+      expect(sendMetrics).toHaveBeenCalledWith({
+        category: 'inpage_provider',
+        event: 'Dapp Viewed',
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_first_visit: true,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          number_of_accounts: 3,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          number_of_accounts_connected: 2,
         },
-        {
-          excludeMetaMetricsId: true,
+        referrer: {
+          url: 'http://test.com',
         },
-      );
+      });
     });
 
     it('does not emit the dapp viewed metrics event when shouldEmitDappViewedEvent returns false', async () => {

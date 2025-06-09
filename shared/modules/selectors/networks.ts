@@ -1,7 +1,4 @@
-import {
-  type MultichainNetworkConfiguration as InternalMultichainNetworkConfiguration,
-  NON_EVM_TESTNET_IDS,
-} from '@metamask/multichain-network-controller';
+import { type MultichainNetworkConfiguration as InternalMultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import {
   RpcEndpointType,
   type NetworkState as InternalNetworkState,
@@ -9,7 +6,6 @@ import {
 } from '@metamask/network-controller';
 import { createSelector } from 'reselect';
 import { AccountsControllerState } from '@metamask/accounts-controller';
-import type { CaipChainId } from '@metamask/utils';
 import { NetworkStatus } from '../../constants/network';
 import { hexToDecimal } from '../conversion.utils';
 import { createDeepEqualSelector } from './util';
@@ -79,7 +75,7 @@ export const getNetworkConfigurationsByCaipChainId = ({
   internalAccounts,
 }: {
   multichainNetworkConfigurationsByChainId: Record<
-    CaipChainId,
+    string,
     InternalMultichainNetworkConfiguration
   >;
   networkConfigurationsByChainId: Record<string, InternalNetworkConfiguration>;
@@ -142,53 +138,9 @@ export const getAllNetworkConfigurationsByCaipChainId = createSelector(
     multichainNetworkConfigurationsByChainId,
     internalAccounts,
   ) => {
-    // We have this logic here to filter out non EVM test networks
-    // to properly handle this we should use the selector from
-    // multichain/networks.ts in the UI side
-    const { nonEvmNetworks, nonEvmTestNetworks } = Object.keys(
-      multichainNetworkConfigurationsByChainId,
-    ).reduce(
-      (
-        result: {
-          nonEvmNetworks: Record<
-            CaipChainId,
-            InternalMultichainNetworkConfiguration
-          >;
-          nonEvmTestNetworks: Record<
-            CaipChainId,
-            InternalMultichainNetworkConfiguration
-          >;
-        },
-        key: string,
-      ) => {
-        const caipKey = key as CaipChainId;
-        if (NON_EVM_TESTNET_IDS.includes(caipKey)) {
-          result.nonEvmTestNetworks[caipKey] =
-            multichainNetworkConfigurationsByChainId[caipKey];
-        } else {
-          result.nonEvmNetworks[caipKey] =
-            multichainNetworkConfigurationsByChainId[caipKey];
-        }
-        return result;
-      },
-      {
-        nonEvmNetworks: {} as Record<
-          CaipChainId,
-          InternalMultichainNetworkConfiguration
-        >,
-        nonEvmTestNetworks: {} as Record<
-          CaipChainId,
-          InternalMultichainNetworkConfiguration
-        >,
-      },
-    );
-
     return getNetworkConfigurationsByCaipChainId({
-      multichainNetworkConfigurationsByChainId: {
-        ...nonEvmNetworks,
-        ...nonEvmTestNetworks,
-      },
       networkConfigurationsByChainId,
+      multichainNetworkConfigurationsByChainId,
       internalAccounts,
     });
   },

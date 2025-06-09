@@ -411,8 +411,6 @@ describe('Multichain API', function () {
            * Then we make sure to deselect the existing session scopes, and create session with new scopes
            */
           OLD_SCOPES.forEach(
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             async (scope) =>
               await driver.clickElement(`input[name="${scope}"]`),
           );

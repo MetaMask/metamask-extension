@@ -10,8 +10,6 @@ const renderComponent = () => {
     metamask: {
       ...mockState.metamask,
       isRemoteModeEnabled: true,
-      delegations: {},
-      selectedNetworkClientId: 'sepolia',
     },
   });
   return renderWithProvider(<RemoteModeSetupSwaps />, store);

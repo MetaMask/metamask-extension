@@ -235,7 +235,7 @@ function extractRegressionStageFromBugReportIssueBody(
       return RegressionStage.DevelopmentMain;
     case 'During release testing':
       return RegressionStage.Testing;
-    case 'In public beta':
+    case 'In beta':
       return RegressionStage.Beta;
     case 'In production (default)':
       return RegressionStage.Production;

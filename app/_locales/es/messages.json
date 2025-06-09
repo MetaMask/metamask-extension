@@ -170,6 +170,9 @@
   "addBitcoinAccountLabel": {
     "message": "Cuenta de Bitcoin (Beta)"
   },
+  "addBitcoinTestnetAccountLabel": {
+    "message": "Cuenta de Bitcoin (Testnet)"
+  },
   "addBlockExplorer": {
     "message": "Agregar un explorador de bloque"
   },
@@ -659,6 +662,22 @@
     "message": "mm",
     "description": "Shortened form of 'billion'"
   },
+  "bitcoinSupportSectionTitle": {
+    "message": "Bitcoin"
+  },
+  "bitcoinSupportToggleDescription": {
+    "message": "Activar esta función le dará la opción de añadir una cuenta de Bitcoin a su extensión MetaMask derivada de su frase secreta de recuperación existente. Esta es una característica Beta experimental, por lo que debe utilizarla bajo su propio riesgo. Para darnos su opinión sobre esta nueva experiencia Bitcoin, llene este $1.",
+    "description": "$1 is the link to a product feedback form"
+  },
+  "bitcoinSupportToggleTitle": {
+    "message": "Activar \"Añadir una nueva cuenta Bitcoin (Beta)\""
+  },
+  "bitcoinTestnetSupportToggleDescription": {
+    "message": "La activación de esta función le dará la opción de añadir una cuenta de Bitcoin para la red de prueba."
+  },
+  "bitcoinTestnetSupportToggleTitle": {
+    "message": "Activar \"Añadir una nueva cuenta Bitcoin (Testnet)\""
+  },
   "blockExplorerAccountAction": {
     "message": "Cuenta",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -936,7 +955,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "Usamos Infura como nuestro proveedor de llamada a procedimiento remoto (RPC) para ofrecer el acceso más confiable y privado posible a los datos de Ethereum. Puede elegir su propio RPC, pero recuerde que cualquier RPC recibirá su dirección IP y su monedero de Ethereum para realizar transacciones. Lea nuestra $1 para obtener más información sobre cómo Infura maneja los datos.",
-    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
+    "description": "$1 is a link to the privacy policy"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Debe usar MetaMask en Google Chrome para poder conectarse a su monedero físico."
@@ -1005,6 +1024,9 @@
   },
   "confirm": {
     "message": "Confirmar"
+  },
+  "confirmAccountType": {
+    "message": "Tipo"
   },
   "confirmAccountTypeSmartContract": {
     "message": "Cuenta inteligente"
@@ -1319,6 +1341,10 @@
   },
   "creatorAddress": {
     "message": "Dirección del creador"
+  },
+  "crossChainAggregatedBalancePopover": {
+    "message": "Esto refleja el valor de todos los tokens que posee en todas las redes. Si prefiere ver este valor en ETH u otras monedas, vaya a $1.",
+    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "Intercambie entre redes con MetaMask Portfolio"
@@ -2688,6 +2714,9 @@
   "ledgerLocked": {
     "message": "No se pudo establecer la conexión con el dispositivo Ledger. Asegúrese de que el dispositivo está desbloqueado y que la aplicación de Ethereum está abierta."
   },
+  "ledgerMultipleDevicesUnsupportedErrorMessage": {
+    "message": "No se pueden conectar varios dispositivos Ledger simultáneamente. Para conectar un nuevo dispositivo Ledger, primero deberá desconectar el anterior."
+  },
   "ledgerTimeout": {
     "message": "Ledger Live tardó mucho en responder o se excedió el tiempo de espera de la conexión. Asegúrese de que la aplicación de Ledger Live está abierta y que su dispositivo está desbloqueado."
   },
@@ -3422,6 +3451,10 @@
     "message": "¡La transacción $1 fallida! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
   },
+  "notificationTransactionFailedMessageMMI": {
+    "message": "¡Transacción fallida! $1",
+    "description": "Content of the browser notification that appears when a transaction fails in MMI"
+  },
   "notificationTransactionFailedTitle": {
     "message": "Transacción fallida",
     "description": "Title of the browser notification that appears when a transaction fails"
@@ -3634,6 +3667,22 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "¡Su instalación de MetaMask ha finalizado!"
+  },
+  "oneDayAbbreviation": {
+    "message": "1 d",
+    "description": "Shortened form of '1 day'"
+  },
+  "oneMonthAbbreviation": {
+    "message": "1 m",
+    "description": "Shortened form of '1 month'"
+  },
+  "oneWeekAbbreviation": {
+    "message": "1 s",
+    "description": "Shortened form of '1 week'"
+  },
+  "oneYearAbbreviation": {
+    "message": "1 a",
+    "description": "Shortened form of '1 year'"
   },
   "onlyConnectTrust": {
     "message": "Conéctese solo con sitios de confianza. $1",
@@ -4038,7 +4087,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "Algunas de estas redes dependen de terceros. Las conexiones pueden ser menos confiables o permitir que terceros realicen un seguimiento de la actividad. $1",
-    "description": "Learn more link"
+    "description": "$1 is Learn more link"
   },
   "popularNetworks": {
     "message": "Redes populares"
@@ -4104,6 +4153,18 @@
   },
   "productAnnouncements": {
     "message": "Anuncios de productos"
+  },
+  "profileSync": {
+    "message": "Sincronización del perfil"
+  },
+  "profileSyncConfirmation": {
+    "message": "Si desactiva la sincronización del perfil, no podrá recibir notificaciones."
+  },
+  "profileSyncDescription": {
+    "message": "Crea un perfil que MetaMask utiliza para sincronizar algunas configuraciones entre sus dispositivos. Esto es necesario para recibir notificaciones. $1."
+  },
+  "profileSyncPrivacyLink": {
+    "message": "Obtenga información sobre cómo protegemos su privacidad"
   },
   "proposedApprovalLimit": {
     "message": "Límite de aprobación propuesto"
@@ -5917,6 +5978,10 @@
     "message": "Aviso de software de terceros",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
+  "threeMonthsAbbreviation": {
+    "message": "3 m",
+    "description": "Shortened form of '3 months'"
+  },
   "time": {
     "message": "Tiempo"
   },
@@ -6465,6 +6530,9 @@
   },
   "yourBalance": {
     "message": "Su saldo"
+  },
+  "yourBalanceIsAggregated": {
+    "message": "Su saldo es un acumulado"
   },
   "yourNFTmayBeAtRisk": {
     "message": "Sus NFT podrían estar en riesgo"

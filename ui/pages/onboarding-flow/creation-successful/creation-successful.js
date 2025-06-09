@@ -34,7 +34,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 export default function CreationSuccessful() {
@@ -49,7 +49,7 @@ export default function CreationSuccessful() {
   const learnHowToKeepWordsSafe =
     'https://community.metamask.io/t/what-is-a-secret-recovery-phrase-and-how-to-keep-your-crypto-wallet-secure/3440';
 
-  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
+  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
 
   return (
     <Box
@@ -201,7 +201,7 @@ export default function CreationSuccessful() {
               event: MetaMetricsEventName.OnboardingWalletCreationComplete,
               properties: {
                 method: firstTimeFlowType,
-                is_profile_syncing_enabled: isBackupAndSyncEnabled,
+                is_profile_syncing_enabled: isProfileSyncingEnabled,
                 hd_entropy_index: hdEntropyIndex,
               },
             });

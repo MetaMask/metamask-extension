@@ -86,7 +86,7 @@ export function MultichainTransactionDetailsModal({
   } = useMultichainTransactionDisplay(transaction, networkConfig);
 
   const getStatusColor = (txStatus: string) => {
-    switch (txStatus?.toLowerCase()) {
+    switch (txStatus.toLowerCase()) {
       case TransactionStatus.Confirmed:
         return TextColor.successDefault;
       case TransactionStatus.Unconfirmed:
@@ -122,8 +122,6 @@ export function MultichainTransactionDetailsModal({
               name={IconName.Export}
               size={IconSize.Sm}
               color={IconColor.primaryDefault}
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onClick={() =>
                 navigator.clipboard.writeText(
                   getAddressUrl(address as string, chain),
@@ -214,25 +212,17 @@ export function MultichainTransactionDetailsModal({
             gap={4}
           >
             {/* Status */}
-            {status && (
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text
-                  variant={TextVariant.bodyMd}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {t('status')}
-                </Text>
-                <Text
-                  variant={TextVariant.bodyMd}
-                  color={getStatusColor(status)}
-                >
-                  {capitalize(t(statusKey))}
-                </Text>
-              </Box>
-            )}
+            <Box
+              display={Display.Flex}
+              justifyContent={JustifyContent.spaceBetween}
+            >
+              <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+                {t('status')}
+              </Text>
+              <Text variant={TextVariant.bodyMd} color={getStatusColor(status)}>
+                {capitalize(t(statusKey))}
+              </Text>
+            </Box>
 
             {/* Transaction ID */}
             <Box
@@ -263,8 +253,6 @@ export function MultichainTransactionDetailsModal({
                     name={IconName.Export}
                     size={IconSize.Sm}
                     color={IconColor.primaryDefault}
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={() =>
                       navigator.clipboard.writeText(
                         getTransactionUrl(id, chain),

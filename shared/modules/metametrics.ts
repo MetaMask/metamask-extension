@@ -20,9 +20,7 @@ export const getSmartTransactionMetricsProperties = (
   transactionMetricsRequest: TransactionMetricsRequest,
   transactionMeta: TransactionMeta,
 ) => {
-  const isSmartTransaction = transactionMetricsRequest.getIsSmartTransaction(
-    transactionMeta.chainId,
-  );
+  const isSmartTransaction = transactionMetricsRequest.getIsSmartTransaction();
   const properties = {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention

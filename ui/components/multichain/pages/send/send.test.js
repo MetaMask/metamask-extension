@@ -1,7 +1,7 @@
 import React from 'react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
-import { EthAccountType, EthScope } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { act } from '@testing-library/react';
 import {
   renderWithProvider,
@@ -140,7 +140,6 @@ const baseStore = {
           },
           options: {},
           methods: ETH_EOA_METHODS,
-          scopes: [EthScope.Eoa],
           type: EthAccountType.Eoa,
         },
       },
@@ -150,10 +149,6 @@ const baseStore = {
       {
         type: KeyringType.hdKeyTree,
         accounts: ['0x0'],
-        metadata: {
-          id: 'test-keyring-id',
-          name: '',
-        },
       },
     ],
     ...mockNetworkState({

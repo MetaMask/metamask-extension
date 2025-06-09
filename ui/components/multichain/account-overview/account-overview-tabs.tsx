@@ -1,25 +1,46 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { endTrace, trace } from '../../../../shared/lib/trace';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { ASSET_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+  SUPPORT_LINK,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../../shared/lib/ui-utils';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import NftsTab from '../../app/assets/nfts/nfts-tab';
+import AssetList from '../../app/assets/asset-list';
+import TransactionList from '../../app/transaction-list';
+import { Tabs, Tab } from '../../ui/tabs';
+///: BEGIN:ONLY_INCLUDE_IF(build-main)
+import {
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+  Display,
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+  JustifyContent,
+} from '../../../helpers/constants/design-system';
+///: END:ONLY_INCLUDE_IF
+import {
+  Box,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+  ButtonLink,
+  ButtonLinkSize,
+  IconName,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../component-library';
+
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
 } from '../../../../shared/constants/app-state';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { endTrace, trace } from '../../../../shared/lib/trace';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getAllChainsToPoll } from '../../../selectors';
 import { detectNfts } from '../../../store/actions';
-import AssetList from '../../app/assets/asset-list';
-import DeFiTab from '../../app/assets/defi-list/defi-tab';
-import { useAssetListTokenDetection } from '../../app/assets/hooks';
-import NftsTab from '../../app/assets/nfts/nfts-tab';
-import TransactionList from '../../app/transaction-list';
-import { Box } from '../../component-library';
-import { Tab, Tabs } from '../../ui/tabs';
+import { getAllChainsToPoll } from '../../../selectors';
 import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
@@ -27,25 +48,24 @@ export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showTokensLinks?: boolean;
   showNfts: boolean;
   showActivity: boolean;
-  showDefi?: boolean;
 };
 
 export const AccountOverviewTabs = ({
   onTabClick,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+  onSupportLinkClick,
+  ///: END:ONLY_INCLUDE_IF
   defaultHomeActiveTabName,
   showTokens,
   showTokensLinks,
   showNfts,
   showActivity,
-  showDefi,
 }: AccountOverviewTabsProps) => {
   const history = useHistory();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const allChainIds = useSelector(getAllChainsToPoll);
-
-  useAssetListTokenDetection();
 
   const tabProps = useMemo(
     () => ({
@@ -72,23 +92,31 @@ export const AccountOverviewTabs = ({
           ],
         });
       }
-      trace({
-        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
-      });
+      trace({ name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName] });
     },
     [onTabClick],
   );
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+  const NeedHelpButtonLink = React.memo((props: Record<string, unknown>) => (
+    <ButtonLink
+      size={ButtonLinkSize.Md}
+      startIconName={IconName.MessageQuestion}
+      data-testid="need-help-link"
+      href={SUPPORT_LINK}
+      display={Display.Flex}
+      onClick={onSupportLinkClick}
+      externalLink
+      {...props}
+    >
+      {t('needHelpLinkText')}
+    </ButtonLink>
+  ));
+  ///: END:ONLY_INCLUDE_IF
+
   const onClickAsset = useCallback(
     (chainId: string, asset: string) =>
       history.push(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
-    [history],
-  );
-  const onClickDeFi = useCallback(
-    (chainId: string, protocolId: string) =>
-      history.push(
-        `${DEFI_ROUTE}/${chainId}/${encodeURIComponent(protocolId)}`,
-      ),
     [history],
   );
 
@@ -106,26 +134,20 @@ export const AccountOverviewTabs = ({
             data-testid="account-overview__asset-tab"
             {...tabProps}
           >
-            <Box marginTop={2} marginBottom={2}>
+            <Box marginTop={2}>
               <AssetList
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
               />
-            </Box>
-          </Tab>
-        )}
-        {showDefi && (
-          <Tab
-            name={t('defi')}
-            tabKey="defi"
-            data-testid="account-overview__defi-tab"
-            {...tabProps}
-          >
-            <Box marginTop={2}>
-              <DeFiTab
-                showTokensLinks={showTokensLinks ?? true}
-                onClickAsset={onClickDeFi}
-              />
+              {
+                ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+                <NeedHelpButtonLink
+                  justifyContent={JustifyContent.flexStart}
+                  paddingLeft={4}
+                  marginBottom={4}
+                ></NeedHelpButtonLink>
+                ///: END:ONLY_INCLUDE_IF
+              }
             </Box>
           </Tab>
         )}
@@ -138,6 +160,15 @@ export const AccountOverviewTabs = ({
             {...tabProps}
           >
             <NftsTab />
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+              <NeedHelpButtonLink
+                justifyContent={JustifyContent.flexStart}
+                paddingLeft={4}
+                marginBottom={4}
+              ></NeedHelpButtonLink>
+              ///: END:ONLY_INCLUDE_IF
+            }
           </Tab>
         )}
 
@@ -149,6 +180,15 @@ export const AccountOverviewTabs = ({
             {...tabProps}
           >
             <TransactionList boxProps={{ paddingTop: 3 }} />
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+              <NeedHelpButtonLink
+                justifyContent={JustifyContent.center}
+                marginBottom={4}
+                marginTop={4}
+              ></NeedHelpButtonLink>
+              ///: END:ONLY_INCLUDE_IF
+            }
           </Tab>
         )}
       </Tabs>

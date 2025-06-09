@@ -26,6 +26,7 @@ describe('Send ETH', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test.fullTitle(),
+          localNodeOptions: 'anvil',
         },
         async ({ driver, localNodes }) => {
           await logInWithBalanceValidation(driver, localNodes[0]);
@@ -102,6 +103,7 @@ describe('Send ETH', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test.fullTitle(),
+          localNodeOptions: 'anvil',
         },
         async ({ driver }) => {
           await unlockWallet(driver);
@@ -155,6 +157,14 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
+          localNodeOptions: [
+            {
+              type: 'anvil',
+              options: {
+                hardfork: 'london',
+              },
+            },
+          ],
           smartContract,
           title: this.test.fullTitle(),
         },
@@ -210,6 +220,7 @@ describe('Send ETH', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test.fullTitle(),
+          localNodeOptions: 'anvil',
         },
         async ({ driver }) => {
           await unlockWallet(driver);
@@ -247,9 +258,7 @@ describe('Send ETH', function () {
               .withPreferencesController(PREFERENCES_STATE_MOCK)
               .build(),
             title: this.test.fullTitle(),
-            localNodeOptions: {
-              hardfork: 'muirGlacier',
-            },
+            localNodeOptions: 'anvil',
           },
           async ({ driver }) => {
             await unlockWallet(driver);
@@ -323,6 +332,14 @@ describe('Send ETH', function () {
               .withPermissionControllerConnectedToTestDapp()
               .withPreferencesController(PREFERENCES_STATE_MOCK)
               .build(),
+            localNodeOptions: [
+              {
+                type: 'anvil',
+                options: {
+                  hardfork: 'london',
+                },
+              },
+            ],
             title: this.test.fullTitle(),
           },
           async ({ driver }) => {
@@ -365,7 +382,7 @@ describe('Send ETH', function () {
 
             await driver.findElement({
               css: '[data-testid="native-currency"]',
-              text: '$76.59',
+              text: '$76.57',
             });
 
             await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -429,6 +446,7 @@ describe('Send ETH', function () {
               .withPreferencesControllerPetnamesDisabled()
               .build(),
             title: this.test.fullTitle(),
+            localNodeOptions: 'anvil',
           },
           async ({ driver }) => {
             await unlockWallet(driver);

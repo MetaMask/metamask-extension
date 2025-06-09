@@ -2,24 +2,9 @@ export const REMOTE_MODE_SLIDE = {
   id: 'remoteMode',
   title: 'slideRemoteModeTitle',
   description: 'slideRemoteModeDescription',
-  image: './images/slide-cold-storage.svg',
+  // TODO: Update image once we have a remote mode icon
+  image: './images/slide-fund-icon.svg',
   href: '/home.html#remote',
-};
-
-///: BEGIN:ONLY_INCLUDE_IF(solana)
-export const SOLANA_SLIDE = {
-  id: 'solana',
-  title: 'slideSolanaTitle',
-  description: 'slideSolanaDescription',
-  image: './images/slide-solana-icon.svg',
-};
-///: END:ONLY_INCLUDE_IF
-
-export const SMART_ACCOUNT_UPGRADE_SLIDE = {
-  id: 'smartAccountUpgrade',
-  title: 'slideSmartAccountUpgradeTitle',
-  description: 'slideSmartAccountUpgradeDescription',
-  image: './images/smart-account-upgrade.png',
 };
 
 export const SWEEPSTAKES_SLIDE = {
@@ -38,12 +23,14 @@ export const FUND_SLIDE = {
   href: 'https://portfolio.metamask.io/buy/build-quote',
 };
 
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 export const BRIDGE_SLIDE = {
   id: 'bridge',
   title: 'slideBridgeTitle',
   description: 'slideBridgeDescription',
   image: './images/slide-bridge-icon.svg',
 };
+///: END:ONLY_INCLUDE_IF
 
 export const CARD_SLIDE = {
   id: 'card',
@@ -66,14 +53,6 @@ export const MULTI_SRP_SLIDE = {
   title: 'slideMultiSrpTitle',
   description: 'slideMultiSrpDescription',
   image: './images/slide-multi-srp-icon.svg',
-  href: '/home.html#import-srp',
-};
-
-export const BACKUPANDSYNC_SLIDE = {
-  id: 'backupAndSync',
-  title: 'backupAndSyncSlideTitle',
-  description: 'backupAndSyncSlideDescription',
-  image: './images/slide-backup-and-sync-icon.png',
 };
 
 export const ZERO_BALANCE = '0x0';

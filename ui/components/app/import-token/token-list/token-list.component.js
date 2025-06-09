@@ -74,7 +74,7 @@ export default class TokenList extends Component {
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
           >
-            {Array(Math.min(12, results.length))
+            {Array(12)
               .fill(undefined)
               .map((_, i) => {
                 const { symbol, name, address, chainId } = results[i] || {};
@@ -124,7 +124,7 @@ export default class TokenList extends Component {
                           isChecked={
                             selectedTokens[address] || tokenAlreadyAdded
                           }
-                          marginRight={4}
+                          marginRight={2}
                           onClick={onClick}
                         />
 
@@ -144,7 +144,6 @@ export default class TokenList extends Component {
                                       ]
                                 }
                                 backgroundColor={testNetworkBackgroundColor}
-                                borderWidth={2}
                                 className="token-list__token_component__network-badge"
                               />
                             }

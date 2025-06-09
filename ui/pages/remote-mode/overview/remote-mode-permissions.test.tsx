@@ -19,8 +19,6 @@ const renderComponent = (props: RemoteModePermissionsProps = defaultProps) => {
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      delegations: {},
-      selectedNetworkClientId: 'sepolia',
     },
   });
   return renderWithProvider(<RemoteModePermissions {...props} />, store);

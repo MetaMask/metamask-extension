@@ -1,11 +1,6 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  generateCaip25Caveat,
-  getAllNamespacesFromCaip25CaveatValue,
-  getAllScopesFromCaip25CaveatValue,
-  getCaipAccountIdsFromCaip25CaveatValue,
-} from '@metamask/chain-agnostic-permission';
+import { generateCaip25Caveat } from '@metamask/chain-agnostic-permission';
 import {
   CaipAccountId,
   CaipChainId,
@@ -25,6 +20,7 @@ import {
   Box,
   Button,
   ButtonLink,
+  ButtonLinkSize,
   ButtonSize,
   ButtonVariant,
   Text,
@@ -60,6 +56,7 @@ import {
   isIpAddress,
   transformOriginToTitle,
 } from '../../../helpers/utils/util';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -69,6 +66,11 @@ import {
   EvmAndMultichainNetworkConfigurationsWithCaipChainId,
   MergedInternalAccountWithCaipAccountId,
 } from '../../../selectors/selectors.types';
+import {
+  getAllNonWalletNamespacesFromCaip25CaveatValue,
+  getAllScopesFromCaip25CaveatValue,
+} from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
+import { getCaipAccountIdsFromCaip25CaveatValue } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { CreateSolanaAccountModal } from '../../../components/multichain/create-solana-account-modal/create-solana-account-modal';
 import {
@@ -82,7 +84,6 @@ export type ConnectPageRequest = {
   origin: string;
   permissions?: PermissionsRequest;
   metadata?: {
-    isEip1193Request?: boolean;
     promptToCreateSolanaAccount?: boolean;
   };
 };
@@ -123,8 +124,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     requestedCaip25CaveatValue,
   );
 
-  const { promptToCreateSolanaAccount, isEip1193Request } =
-    request.metadata ?? {};
+  const promptToCreateSolanaAccount =
+    request.metadata?.promptToCreateSolanaAccount;
 
   const networkConfigurationsByCaipChainId = useSelector(
     getAllNetworkConfigurationsByCaipChainId,
@@ -176,21 +177,11 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       network.caipChainId === currentlySelectedNetworkChainId,
   );
 
-  let defaultSelectedNetworkList = selectedTestNetwork
+  const defaultSelectedNetworkList = selectedTestNetwork
     ? [...nonTestNetworkConfigurations, selectedTestNetwork].map(
         ({ caipChainId }) => caipChainId,
       )
     : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
-
-  // Only EVM networks should be selected if this request comes from the EIP-1193 API
-  if (isEip1193Request) {
-    defaultSelectedNetworkList = defaultSelectedNetworkList.filter(
-      (caipChainId) => {
-        const { namespace } = parseCaipChainId(caipChainId);
-        return namespace === KnownCaipNamespace.Eip155;
-      },
-    );
-  }
 
   const defaultSelectedChainIds =
     supportedRequestedCaipChainIds.length > 0
@@ -205,11 +196,8 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     getUpdatedAndSortedAccountsWithCaipAccountId,
   ) as MergedInternalAccountWithCaipAccountId[];
 
-  const requestedNamespaces = getAllNamespacesFromCaip25CaveatValue(
+  const requestedNamespaces = getAllNonWalletNamespacesFromCaip25CaveatValue(
     requestedCaip25CaveatValue,
-  );
-  const requestedNamespacesWithoutWallet = requestedNamespaces.filter(
-    (namespace) => namespace !== KnownCaipNamespace.Wallet,
   );
 
   // all accounts that match the requested namespaces
@@ -218,7 +206,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       const {
         chain: { namespace },
       } = parseCaipAccountId(account.caipAccountId);
-      return requestedNamespacesWithoutWallet.includes(namespace);
+      return requestedNamespaces.includes(namespace);
     },
   );
 
@@ -245,7 +233,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   );
 
   const defaultAccounts = getDefaultAccounts(
-    requestedNamespacesWithoutWallet,
+    requestedNamespaces,
     supportedRequestedAccounts,
     supportedAccountsForRequestedNamespaces,
   );
@@ -375,31 +363,31 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
     <Page
       data-testid="connect-page"
       className="main-container connect-page"
-      backgroundColor={BackgroundColor.backgroundDefault}
+      backgroundColor={BackgroundColor.backgroundAlternative}
     >
-      <Header paddingTop={8} paddingBottom={0}>
+      <Header paddingBottom={0}>
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.center}
-          marginBottom={8}
+          marginBottom={2}
         >
           {targetSubjectMetadata.iconUrl ? (
             <>
               <Box
                 style={{
-                  filter: 'blur(16px) brightness(1.1)',
+                  filter: 'blur(20px) brightness(1.2)',
                   position: 'absolute',
                 }}
               >
                 <AvatarFavicon
-                  backgroundColor={BackgroundColor.backgroundMuted}
+                  backgroundColor={BackgroundColor.backgroundAlternative}
                   size={AvatarFaviconSize.Xl}
                   src={targetSubjectMetadata.iconUrl}
                   name={title}
                 />
               </Box>
               <AvatarFavicon
-                backgroundColor={BackgroundColor.backgroundMuted}
+                backgroundColor={BackgroundColor.backgroundAlternative}
                 size={AvatarFaviconSize.Lg}
                 src={targetSubjectMetadata.iconUrl}
                 name={title}
@@ -414,19 +402,30 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               justifyContent={JustifyContent.center}
               color={TextColor.textAlternative}
               style={{ borderWidth: '0px' }}
-              backgroundColor={BackgroundColor.backgroundMuted}
+              backgroundColor={BackgroundColor.backgroundAlternativeSoft}
             >
               {isIpAddress(title) ? '?' : getAvatarFallbackLetter(title)}
             </AvatarBase>
           )}
         </Box>
-        <Text variant={TextVariant.headingLg} marginBottom={1}>
+        <Text variant={TextVariant.headingLg} marginTop={2} marginBottom={2}>
           {title}
         </Text>
         <Box display={Display.Flex} justifyContent={JustifyContent.center}>
-          <Text color={TextColor.textAlternative}>
-            {t('connectionDescription')}
-          </Text>
+          <Text>{t('connectionDescription')}</Text>
+          <ButtonLink
+            paddingLeft={1}
+            key="permission-connect-footer-learn-more-link"
+            size={ButtonLinkSize.Inherit}
+            target="_blank"
+            onClick={() => {
+              global.platform.openTab({
+                url: ZENDESK_URLS.USER_GUIDE_DAPPS,
+              });
+            }}
+          >
+            {t('learnMoreUpperCase')}
+          </ButtonLink>
         </Box>
       </Header>
       <Content
@@ -461,7 +460,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               >
                 {selectedAccounts.map((account) => (
                   <AccountListItem
-                    showConnectedStatus={false}
                     account={account}
                     key={account.caipAccountId}
                     selected={false}

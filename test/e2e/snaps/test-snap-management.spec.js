@@ -1,8 +1,5 @@
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-const {
-  mockNotificationSnap,
-} = require('../mock-response-data/snaps/snap-binary-mocks');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Management', function () {
@@ -10,7 +7,6 @@ describe('Test Snap Management', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockNotificationSnap,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

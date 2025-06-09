@@ -73,9 +73,7 @@ class ConfirmSolanaTxPage {
 
   async isSendButtonEnabled(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(this.sendButton, {
-        timeout: 1000,
-      });
+      await this.driver.findClickableElement(this.sendButton, 1000);
     } catch (e) {
       console.log('Send button not enabled', e);
       return false;

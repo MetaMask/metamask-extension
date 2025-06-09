@@ -94,14 +94,7 @@ function rejectApproval({
 
     default:
       log('Rejecting pending approval', { id, origin, type });
-      approvalController.reject(
-        id,
-        providerErrors.userRejectedRequest({
-          data: {
-            cause: 'rejectAllApprovals',
-          },
-        }),
-      );
+      approvalController.reject(id, providerErrors.userRejectedRequest());
       break;
   }
 }

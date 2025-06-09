@@ -2,10 +2,9 @@ import fs from 'node:fs';
 import { describe, it, after, mock } from 'node:test';
 import assert from 'node:assert';
 import { resolve } from 'node:path';
-import { version } from '../../../package.json';
-import { loadBuildTypesConfig } from '../../lib/build-type';
 import * as config from '../utils/config';
 import { parseArgv } from '../utils/cli';
+import { version } from '../../../package.json';
 
 describe('./utils/config.ts', () => {
   // variables logic is complex, and is "owned" mostly by the other build
@@ -30,7 +29,7 @@ ${Object.entries(env)
     after(() => mock.restoreAll());
 
     it('should return valid build variables for the default build', () => {
-      const buildTypes = loadBuildTypesConfig();
+      const buildTypes = config.getBuildTypes();
       const { args } = parseArgv([], buildTypes);
       const { variables, safeVariables } = config.getVariables(
         args,
@@ -50,7 +49,7 @@ ${Object.entries(env)
     });
 
     it('should prefer .metamaskrc variables over others', () => {
-      const buildTypes = loadBuildTypesConfig();
+      const buildTypes = config.getBuildTypes();
       const { args } = parseArgv([], buildTypes);
       const defaultVars = config.getVariables(args, buildTypes);
 
@@ -72,7 +71,7 @@ ${Object.entries(env)
         // required by the `beta` build type
         SEGMENT_BETA_WRITE_KEY: '.',
       });
-      const buildTypes = loadBuildTypesConfig();
+      const buildTypes = config.getBuildTypes();
       const { args } = parseArgv(
         ['--type', 'beta', '--test', '--env', 'production'],
         buildTypes,
@@ -88,7 +87,7 @@ ${Object.entries(env)
     });
 
     it("should handle true/false/null/'' in rc", () => {
-      const buildTypes = loadBuildTypesConfig();
+      const buildTypes = config.getBuildTypes();
       const { args } = parseArgv([], buildTypes);
 
       mockRc({

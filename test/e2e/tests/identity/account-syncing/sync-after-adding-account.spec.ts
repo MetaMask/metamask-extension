@@ -70,6 +70,8 @@ describe('Account syncing - Add Account', function () {
         },
         async ({ driver }) => {
           await completeOnboardFlowIdentity(driver);
+          const homePage = new HomePage(driver);
+          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -79,7 +81,6 @@ describe('Account syncing - Add Account', function () {
           await accountListPage.check_pageIsLoaded();
           await accountListPage.check_numberOfAvailableAccounts(
             mockedAccountSyncResponse.length,
-            ACCOUNT_TYPE.Ethereum,
           );
           await accountListPage.check_accountDisplayedInAccountList(
             unencryptedAccounts[0].n,
@@ -123,6 +124,8 @@ describe('Account syncing - Add Account', function () {
         },
         async ({ driver }) => {
           await completeOnboardFlowIdentity(driver);
+          const homePage = new HomePage(driver);
+          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -137,7 +140,6 @@ describe('Account syncing - Add Account', function () {
 
           await accountListPage.check_numberOfAvailableAccounts(
             accountSyncResponse?.length as number,
-            ACCOUNT_TYPE.Ethereum,
           );
           await accountListPage.check_accountDisplayedInAccountList(
             unencryptedAccounts[0].n,
@@ -178,6 +180,8 @@ describe('Account syncing - Add Account', function () {
         },
         async ({ driver }) => {
           await completeOnboardFlowIdentity(driver);
+          const homePage = new HomePage(driver);
+          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -187,7 +191,6 @@ describe('Account syncing - Add Account', function () {
           await accountListPage.check_pageIsLoaded();
           await accountListPage.check_numberOfAvailableAccounts(
             mockedAccountSyncResponse.length,
-            ACCOUNT_TYPE.Ethereum,
           );
           await accountListPage.check_accountDisplayedInAccountList(
             unencryptedAccounts[0].n,
@@ -245,7 +248,6 @@ describe('Account syncing - Add Account', function () {
 
           await accountListPage.check_numberOfAvailableAccounts(
             accountSyncResponse?.length as number,
-            ACCOUNT_TYPE.Ethereum,
           );
           await accountListPage.check_accountDisplayedInAccountList(
             unencryptedAccounts[0].n,

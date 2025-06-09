@@ -1,6 +1,5 @@
 /* eslint-disable-next-line */
-import { TextEncoder, TextDecoder } from 'node:util';
-import 'fake-indexeddb/auto';
+import { TextEncoder, TextDecoder } from 'util';
 import nock from 'nock';
 import log from 'loglevel';
 import { JSDOM } from 'jsdom';
@@ -22,6 +21,8 @@ global.chrome = {
     },
   },
 };
+
+global.indexedDB = {};
 
 nock.disableNetConnect();
 nock.enableNetConnect('localhost');

@@ -2,10 +2,9 @@ import React, { useCallback, useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { EthAccountType } from '@metamask/keyring-api';
 import { getSelectedInternalAccount } from '../../../../../selectors';
-import { Box, Label } from '../../../../component-library';
+import { Label } from '../../../../component-library';
 import { AccountPicker } from '../../../account-picker';
 import {
-  AlignItems,
   BlockSize,
   BorderColor,
   Display,
@@ -15,18 +14,11 @@ import {
 import { I18nContext } from '../../../../../contexts/i18n';
 import { AccountListMenu } from '../../..';
 import { SEND_STAGES, getSendStage } from '../../../../../ducks/send';
-import { RemoteModeStatus } from '../../../../../pages/remote-mode/components';
 import { SendPageRow } from './send-page-row';
 
 const AccountListItemProps = { showOptions: false };
 
-type SendPageAccountPickerProps = {
-  isRemoteModeEnabled?: boolean;
-};
-
-export const SendPageAccountPicker = ({
-  isRemoteModeEnabled = false,
-}: SendPageAccountPickerProps) => {
+export const SendPageAccountPicker = () => {
   const t = useContext(I18nContext);
   const internalAccount = useSelector(getSelectedInternalAccount);
 
@@ -40,14 +32,7 @@ export const SendPageAccountPicker = ({
 
   return (
     <SendPageRow>
-      <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.spaceBetween}
-      >
-        <Label paddingBottom={2}>{t('from')}</Label>
-        {isRemoteModeEnabled && <RemoteModeStatus enabled />}
-      </Box>
+      <Label paddingBottom={2}>{t('from')}</Label>
       <AccountPicker
         className="multichain-send-page__account-picker"
         address={internalAccount.address}

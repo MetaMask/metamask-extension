@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import {
   BackgroundColor,
@@ -14,22 +14,14 @@ import {
   SensitiveText,
   SensitiveTextLength,
 } from '../../../../component-library';
-import { getUseCurrencyRateCheck } from '../../../../../selectors';
+import { getCurrencyRates } from '../../../../../selectors';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 import { TokenFiatDisplayInfo } from '../../types';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
-import { getProviderConfig } from '../../../../../../shared/modules/selectors/networks';
 
 type TokenCellSecondaryDisplayProps = {
   token: TokenFiatDisplayInfo;
   handleScamWarningModal: (arg: boolean) => void;
   privacyMode: boolean;
-};
-
-const secondaryDisplayStyle: CSSProperties = {
-  whiteSpace: 'nowrap',
-  paddingInlineStart: 8,
 };
 
 export const TokenCellSecondaryDisplay = React.memo(
@@ -38,27 +30,12 @@ export const TokenCellSecondaryDisplay = React.memo(
     handleScamWarningModal,
     privacyMode,
   }: TokenCellSecondaryDisplayProps) => {
-    const t = useI18nContext();
     const isEvm = useSelector(getMultichainIsEvm);
-    const { type, rpcUrl } = useSelector(getProviderConfig);
+    const currencyRates = useSelector(getCurrencyRates);
 
-    const isOriginalNativeToken = useIsOriginalNativeTokenSymbol(
-      token.chainId,
-      token.symbol,
-      type,
-      rpcUrl,
-    );
+    const isOriginalTokenSymbol = token.symbol && currencyRates[token.symbol];
 
-    const showScamWarning = token.isNative && !isOriginalNativeToken && isEvm;
-
-    const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-
-    const getSecondaryDisplayText = () => {
-      if (!useCurrencyRateCheck) {
-        return '';
-      }
-      return token.secondary || t('noConversionRateAvailable');
-    };
+    const showScamWarning = token.isNative && !isOriginalTokenSymbol && isEvm;
 
     // show scam warning
     if (showScamWarning) {
@@ -82,16 +59,15 @@ export const TokenCellSecondaryDisplay = React.memo(
     // secondary display text
     return (
       <SensitiveText
-        fontWeight={token.secondary ? FontWeight.Medium : FontWeight.Normal}
-        variant={token.secondary ? TextVariant.bodyMd : TextVariant.bodySm}
+        fontWeight={FontWeight.Medium}
+        variant={TextVariant.bodyMd}
         textAlign={TextAlign.End}
         data-testid="multichain-token-list-item-secondary-value"
         ellipsis={token.isStakeable}
         isHidden={privacyMode}
         length={SensitiveTextLength.Medium}
-        style={secondaryDisplayStyle}
       >
-        {getSecondaryDisplayText()}
+        {token.secondary}
       </SensitiveText>
     );
   },

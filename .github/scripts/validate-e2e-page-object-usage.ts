@@ -1,6 +1,7 @@
 import * as core from '@actions/core';
 import fs from 'fs';
 import { filterE2eChangedFiles } from '../../test/e2e/changedFilesUtil';
+import { readFileContent } from './shared/circle-artifacts';
 
 async function verifyE2ePageObjectsUsage(
   changeType: 'MODIFIED' | 'ADDED' | 'BOTH',

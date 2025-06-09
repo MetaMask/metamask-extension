@@ -92,13 +92,7 @@ describe('TransactionListItemDetails Component', () => {
     });
   });
 
-  /**
-   * Disabling the retry button until further notice
-   *
-   * @see {@link https://github.com/MetaMask/metamask-extension/issues/28615}
-   */
-  // eslint-disable-next-line jest/no-disabled-tests
-  describe.skip('Retry button', () => {
+  describe('Retry button', () => {
     it('should render retry button with showRetry prop', async () => {
       const { queryByTestId } = await render({ showRetry: true });
 

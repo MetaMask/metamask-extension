@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import { isRemoteModeSupported } from '../../../helpers/utils/remote-mode';
 import { getSelectedInternalAccount } from '../../../selectors';
 import { getIsRemoteModeEnabled } from '../../../selectors/remote-mode';
+import { isRemoteModeSupported } from '../../../helpers/utils/remote-mode';
 
 import {
   BannerAlert,
@@ -12,29 +12,27 @@ import {
   Box,
   Button,
   ButtonIcon,
-  ButtonIconSize,
   ButtonSize,
+  ButtonIconSize,
   IconName,
   Text,
 } from '../../../components/component-library';
 import {
+  TextVariant,
+  FontWeight,
+} from '../../../helpers/constants/design-system';
+import {
   Content,
   Header,
   Page,
-  Footer,
 } from '../../../components/multichain/pages/page';
-import {
-  FontWeight,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 
 import {
   DEFAULT_ROUTE,
-  REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
   REMOTE_ROUTE_SETUP_SWAPS,
+  REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
 } from '../../../helpers/constants/routes';
 
-import { useRemoteMode } from '../hooks/useRemoteMode';
 import RemoteModeOverview from '../introducing/remote-mode-introducing.component';
 import RemoteModeSetup from '../setup/setup-swaps/remote-mode-setup-swaps.component';
 import RemoteModePermissions from './remote-mode-permissions.component';
@@ -56,16 +54,15 @@ export default function RemoteModeIntroducing() {
   const [currentScreen, setCurrentScreen] = useState<RemoteScreen>(
     RemoteScreen.OVERVIEW,
   );
-  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(true);
-
-  const history = useHistory();
+  const [isHardwareAccount, setIsHardwareAccount] = useState<boolean>(false);
 
   const selectedHardwareAccount = useSelector(getSelectedInternalAccount);
+  const history = useHistory();
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
 
-  const { remoteModeConfig } = useRemoteMode({
-    account: selectedHardwareAccount?.address as `0x${string}`,
-  });
+  useEffect(() => {
+    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
+  }, [selectedHardwareAccount]);
 
   useEffect(() => {
     if (!isRemoteModeEnabled) {
@@ -73,35 +70,21 @@ export default function RemoteModeIntroducing() {
     }
   }, [isRemoteModeEnabled, history]);
 
-  useEffect(() => {
-    if (remoteModeConfig) {
-      setCurrentScreen(RemoteScreen.PERMISSIONS);
-    }
-  }, [remoteModeConfig]);
-
-  useEffect(() => {
-    setIsHardwareAccount(isRemoteModeSupported(selectedHardwareAccount));
-  }, [selectedHardwareAccount]);
-
   const renderScreen = () => {
     switch (currentScreen) {
       case RemoteScreen.OVERVIEW:
         return (
-          <>
-            <Content padding={6}>
-              <RemoteModeOverview />
-            </Content>
-            <Footer>
-              <Button
-                style={{ width: '100%' }}
-                onClick={() => setCurrentScreen(RemoteScreen.PERMISSIONS)}
-                size={ButtonSize.Lg}
-                disabled={!isHardwareAccount}
-              >
-                Get Remote Mode
-              </Button>
-            </Footer>
-          </>
+          <Content padding={6}>
+            <RemoteModeOverview />
+            <Button
+              style={{ width: '100%' }}
+              onClick={() => setCurrentScreen(RemoteScreen.PERMISSIONS)}
+              size={ButtonSize.Lg}
+              disabled={!isHardwareAccount}
+            >
+              Get Remote Mode
+            </Button>
+          </Content>
         );
 
       case RemoteScreen.PERMISSIONS:

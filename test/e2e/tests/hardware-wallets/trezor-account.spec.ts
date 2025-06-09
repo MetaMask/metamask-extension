@@ -6,7 +6,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import ConnectHardwareWalletPage from '../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SelectHardwareWalletAccountPage from '../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
+import SelectTrezorAccountPage from '../../page-objects/pages/hardware-wallet/select-trezor-account-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Trezor Hardware', function () {
@@ -31,13 +31,11 @@ describe('Trezor Hardware', function () {
         await connectHardwareWalletPage.check_pageIsLoaded();
         await connectHardwareWalletPage.openConnectTrezorPage();
 
-        const selectTrezorAccountPage = new SelectHardwareWalletAccountPage(
-          driver,
-        );
+        const selectTrezorAccountPage = new SelectTrezorAccountPage(driver);
         await selectTrezorAccountPage.check_pageIsLoaded();
 
         // Check that the first page of accounts is correct
-        await selectTrezorAccountPage.check_accountNumber();
+        await selectTrezorAccountPage.check_trezorAccountNumber();
         for (const { address } of KNOWN_PUBLIC_KEY_ADDRESSES.slice(0, 4)) {
           const shortenedAddress = `${address.slice(0, 4)}...${address.slice(
             -4,
@@ -82,13 +80,11 @@ describe('Trezor Hardware', function () {
         await connectHardwareWalletPage.openConnectTrezorPage();
 
         // Unlock 5 Trezor accounts
-        const selectTrezorAccountPage = new SelectHardwareWalletAccountPage(
-          driver,
-        );
+        const selectTrezorAccountPage = new SelectTrezorAccountPage(driver);
         await selectTrezorAccountPage.check_pageIsLoaded();
-        await selectTrezorAccountPage.check_accountNumber();
+        await selectTrezorAccountPage.check_trezorAccountNumber();
         for (let i = 1; i <= 5; i++) {
-          await selectTrezorAccountPage.selectAccount(i);
+          await selectTrezorAccountPage.selectTrezorAccount(i);
         }
         await selectTrezorAccountPage.clickUnlockButton();
 

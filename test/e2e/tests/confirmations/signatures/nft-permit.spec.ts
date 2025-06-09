@@ -12,7 +12,6 @@ import {
 import { TestSuiteArguments } from '../transactions/shared';
 import PermitConfirmation from '../../../page-objects/pages/confirmations/redesign/permit-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
   assertPastedAddress,
@@ -26,6 +25,7 @@ import {
   SignatureType,
   triggerSignature,
 } from './signature-helpers';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 
 describe('Confirmation Signature - NFT Permit', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {

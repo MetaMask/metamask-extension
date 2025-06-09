@@ -1,7 +1,8 @@
 const MOCK_BLOCK_NUMBER = '0x1';
 
 export type mockJsonRpcResultType = {
-  [methodName: string]: { [arbitraryVariantName: string]: unknown };
+
+  [methodName: string]: { [arbitraryVariantName: string]: any };
 };
 
 export const mockJsonRpcResult: mockJsonRpcResultType = {

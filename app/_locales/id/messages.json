@@ -170,6 +170,9 @@
   "addBitcoinAccountLabel": {
     "message": "Akun Bitcoin (Beta)"
   },
+  "addBitcoinTestnetAccountLabel": {
+    "message": "Akun Bitcoin (Testnet)"
+  },
   "addBlockExplorer": {
     "message": "Tambahkan block explorer"
   },
@@ -659,6 +662,22 @@
     "message": "M",
     "description": "Shortened form of 'billion'"
   },
+  "bitcoinSupportSectionTitle": {
+    "message": "Bitcoin"
+  },
+  "bitcoinSupportToggleDescription": {
+    "message": "Mengaktifkan fitur ini akan memberi Anda opsi untuk menambahkan Akun Bitcoin ke Ekstensi MetaMask yang berasal dari Frasa Pemulihan Rahasia yang ada. Ini merupakan fitur Beta eksperimental, jadi Anda harus menggunakannya dengan risiko yang ditanggung sendiri. Untuk memberikan masukan seputar pengalaman Bitcoin baru ini, isi $1 ini.",
+    "description": "$1 is the link to a product feedback form"
+  },
+  "bitcoinSupportToggleTitle": {
+    "message": "Aktifkan \"Tambahkan akun Bitcoin baru (Beta)\""
+  },
+  "bitcoinTestnetSupportToggleDescription": {
+    "message": "Mengaktifkan fitur ini akan memberi Anda opsi untuk menambahkan Akun Bitcoin bagi jaringan uji."
+  },
+  "bitcoinTestnetSupportToggleTitle": {
+    "message": "Aktifkan \"Tambahkan akun Bitcoin baru (Testnet)\""
+  },
   "blockExplorerAccountAction": {
     "message": "Akun",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -936,7 +955,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "Kami menggunakan Infura sebagai penyedia pemanggilan prosedur jarak jauh (RPC) kami untuk menawarkan akses paling andal dan pribadi ke data Ethereum. Anda dapat memilih RPC Anda sendiri, tetapi ingatlah bahwa setiap RPC akan menerima alamat IP dan dompet Ethereum Anda untuk melakukan transaksi. Baca $1 kami untuk mempelajari lebih lanjut seputar cara Infura menangani data.",
-    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
+    "description": "$1 is a link to the privacy policy"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Anda perlu menggunakan MetaMask di Google Chrome untuk terhubung ke Dompet Perangkat Keras Anda."
@@ -1005,6 +1024,9 @@
   },
   "confirm": {
     "message": "Konfirmasikan"
+  },
+  "confirmAccountType": {
+    "message": "Jenis"
   },
   "confirmAccountTypeSmartContract": {
     "message": "Akun cerdas"
@@ -1319,6 +1341,10 @@
   },
   "creatorAddress": {
     "message": "Alamat pembuat"
+  },
+  "crossChainAggregatedBalancePopover": {
+    "message": "Ini mencerminkan nilai seluruh token yang Anda miliki di semua jaringan. Jika Anda lebih suka melihat nilai ini dalam ETH atau mata uang lainnya, pilih $1.",
+    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "Bertukar antar jaringan dengan Portfolio MetaMask"
@@ -2688,6 +2714,9 @@
   "ledgerLocked": {
     "message": "Tidak dapat terhubung ke perangkat Ledger. Pastikan perangkat Anda tidak terkunci dan aplikasi Ethereum terbuka."
   },
+  "ledgerMultipleDevicesUnsupportedErrorMessage": {
+    "message": "Beberapa perangkat Ledger tidak dapat dihubungkan pada saat bersamaan. Untuk menghubungkan perangkat Ledger yang baru, Anda harus memutus koneksi perangkat sebelumnya terlebih dahulu."
+  },
   "ledgerTimeout": {
     "message": "Respons Ledger Live terlalu lama atau waktu koneksi habis. Pastikan aplikasi Ledger Live terbuka dan perangkat Anda tidak terkunci."
   },
@@ -3422,6 +3451,10 @@
     "message": "Transaksi $1 gagal! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
   },
+  "notificationTransactionFailedMessageMMI": {
+    "message": "Transaksi gagal! $1",
+    "description": "Content of the browser notification that appears when a transaction fails in MMI"
+  },
   "notificationTransactionFailedTitle": {
     "message": "Transaksi gagal",
     "description": "Title of the browser notification that appears when a transaction fails"
@@ -3634,6 +3667,22 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "Pemasangan MetaMask Anda selesai!"
+  },
+  "oneDayAbbreviation": {
+    "message": "1H",
+    "description": "Shortened form of '1 day'"
+  },
+  "oneMonthAbbreviation": {
+    "message": "1B",
+    "description": "Shortened form of '1 month'"
+  },
+  "oneWeekAbbreviation": {
+    "message": "1M",
+    "description": "Shortened form of '1 week'"
+  },
+  "oneYearAbbreviation": {
+    "message": "1T",
+    "description": "Shortened form of '1 year'"
   },
   "onlyConnectTrust": {
     "message": "Hanya hubungkan ke situs yang Anda percayai. $1",
@@ -4038,7 +4087,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "Beberapa jaringan ini mengandalkan pihak ketiga. Koneksi ini kurang dapat diandalkan atau memungkinkan pihak ketiga melacak aktivitas. $1",
-    "description": "Learn more link"
+    "description": "$1 is Learn more link"
   },
   "popularNetworks": {
     "message": "Jaringan populer"
@@ -4104,6 +4153,18 @@
   },
   "productAnnouncements": {
     "message": "Pengumuman produk"
+  },
+  "profileSync": {
+    "message": "Sinkronisasi Profil"
+  },
+  "profileSyncConfirmation": {
+    "message": "Jika sinkronisasi profil dinonaktifkan, Anda tidak dapat menerima notifikasi."
+  },
+  "profileSyncDescription": {
+    "message": "Membuat profil yang digunakan MetaMask untuk menyinkronkan beberapa pengaturan di antara perangkat Anda. Ini diperlukan untuk mendapatkan notifikasi. $1."
+  },
+  "profileSyncPrivacyLink": {
+    "message": "Pelajari cara kami melindungi privasi Anda"
   },
   "proposedApprovalLimit": {
     "message": "Batas persetujuan yang diajukan"
@@ -5917,6 +5978,10 @@
     "message": "Pemberitahuan perangkat lunak pihak ketiga",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
+  "threeMonthsAbbreviation": {
+    "message": "3B",
+    "description": "Shortened form of '3 months'"
+  },
   "time": {
     "message": "Waktu"
   },
@@ -6465,6 +6530,9 @@
   },
   "yourBalance": {
     "message": "Saldo Anda"
+  },
+  "yourBalanceIsAggregated": {
+    "message": "Saldo Anda diagregasi"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT Anda mungkin berisiko"

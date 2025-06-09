@@ -33,8 +33,10 @@ export const CreateEthAccount = ({
       onActionComplete={onActionComplete}
       onCreateAccount={onCreateAccount}
       getNextAvailableAccountName={getNextAvailableAccountName}
+      ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
       onSelectSrp={onSelectSrp}
       selectedKeyringId={selectedKeyringId}
+      ///: END:ONLY_INCLUDE_IF(multi-srp)
     ></CreateAccount>
   );
 };
@@ -44,6 +46,7 @@ CreateEthAccount.propTypes = {
    * Executes when the Create button is clicked
    */
   onActionComplete: PropTypes.func.isRequired,
+  ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
   /**
    * Callback to select the SRP
    */
@@ -52,4 +55,5 @@ CreateEthAccount.propTypes = {
    * Currently selected HD keyring
    */
   selectedKeyringId: PropTypes.string,
+  ///: END:ONLY_INCLUDE_IF(multi-srp)
 };

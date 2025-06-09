@@ -62,6 +62,10 @@ jest.mock('react-redux', () => {
   };
 });
 
+jest.mock('../../ducks/bridge/actions', () => ({
+  setBridgeFeatureFlags: () => jest.fn(),
+}));
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
@@ -307,21 +311,6 @@ describe('toast display', () => {
             },
           },
         },
-      },
-      conversionRates: {
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
-          conversionTime: 1745405595549,
-          currency: 'swift:0/iso4217:USD',
-          expirationTime: 1745409195549,
-          rate: '151.36',
-        },
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
-          {
-            conversionTime: 1745405595549,
-            currency: 'swift:0/iso4217:USD',
-            expirationTime: 1745409195549,
-            rate: '1.00',
-          },
       },
     },
     activeTab: {

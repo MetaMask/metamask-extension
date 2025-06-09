@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
-import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
@@ -20,6 +19,7 @@ import {
   getSelectedInternalAccount,
 } from '../../../selectors';
 import { ConnectedSiteMenu } from '../../multichain';
+import { isInternalAccountInPermittedAccountIds } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 
 export default function ConnectedStatusIndicator({ onClick, disabled }) {
   const t = useI18nContext();
@@ -35,7 +35,6 @@ export default function ConnectedStatusIndicator({ onClick, disabled }) {
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
 
   const currentTabIsConnectedToSelectedAddress =
-    selectedAccount &&
     isInternalAccountInPermittedAccountIds(selectedAccount, permittedAccounts);
 
   let status;

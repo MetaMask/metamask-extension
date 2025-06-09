@@ -64,7 +64,6 @@ const renderModal = (
   const store = mockStore(state);
 
   return {
-    // @ts-expect-error TODO: Remove once `NewAccountModal` is converted to TypeScript.
     render: renderWithProvider(<NewAccountModal />, store),
     store,
   };

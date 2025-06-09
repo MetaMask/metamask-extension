@@ -37,7 +37,7 @@ const NftOptions = ({
       <ButtonIcon
         iconName={IconName.MoreVertical}
         data-testid="nft-options__button"
-        onClick={() => setNftOptionsOpen(!nftOptionsOpen)}
+        onClick={() => setNftOptionsOpen(true)}
         color={IconColor.iconDefault}
         size={ButtonIconSize.Sm}
         ariaLabel={t('nftOptions')}

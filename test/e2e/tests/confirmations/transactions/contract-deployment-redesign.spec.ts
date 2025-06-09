@@ -8,7 +8,10 @@ import {
   TestSuiteArguments,
 } from './shared';
 
-const { withFixtures } = require('../../../helpers');
+const {
+  defaultGanacheOptionsForType2Transactions,
+  withFixtures,
+} = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
 
 describe('Confirmation Redesign Contract Deployment Component', function () {
@@ -20,9 +23,6 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: {
-            hardfork: 'muirGlacier',
-          },
           title: this.test?.fullTitle(),
         },
         async ({ driver }: TestSuiteArguments) => {
@@ -49,6 +49,7 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           title: this.test?.fullTitle(),
         },
         async ({ driver }: TestSuiteArguments) => {

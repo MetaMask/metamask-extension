@@ -3,7 +3,10 @@ import { JsonRpcError, serializeError } from '@metamask/rpc-errors';
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { rejectPendingApproval } from '../../../store/actions';
+import {
+  disableAccountUpgrade,
+  rejectPendingApproval,
+} from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
 import { EIP5792ErrorCode } from '../../../../shared/constants/transaction';
 
@@ -24,6 +27,8 @@ export function useSmartAccountActions() {
     );
 
     const serializedError = serializeError(error);
+
+    await disableAccountUpgrade(chainId as string, from);
 
     dispatch(rejectPendingApproval(confirmationId, serializedError));
   }, [dispatch, confirmationId, chainId, from]);

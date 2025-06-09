@@ -197,7 +197,7 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
           {
             src: getPathInsideNodeModules(
               '@metamask/snaps-execution-environments',
-              'dist/webpack/iframe/index.html',
+              'dist/browserify/iframe/index.html',
             ),
             dest: `snaps/index.html`,
             pattern: '',
@@ -205,7 +205,7 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
           {
             src: getPathInsideNodeModules(
               '@metamask/snaps-execution-environments',
-              'dist/webpack/iframe/bundle.js',
+              'dist/browserify/iframe/bundle.js',
             ),
             dest: `snaps/bundle.js`,
             pattern: '',

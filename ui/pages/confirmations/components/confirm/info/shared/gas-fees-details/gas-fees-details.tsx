@@ -88,7 +88,7 @@ export const GasFeesDetails = ({
           />
         </>
       )}
-      {supportsEIP1559 && !transactionMeta.selectedGasFeeToken && (
+      {supportsEIP1559 && (
         <ConfirmInfoAlertRow
           alertKey={RowAlertKey.Speed}
           data-testid="gas-fee-details-speed"

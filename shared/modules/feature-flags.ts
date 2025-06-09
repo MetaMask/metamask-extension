@@ -9,7 +9,6 @@ enum NetworkName {
   Arbitrum = 'arbitrum',
   ZkSyncEra = 'zksync',
   Linea = 'linea',
-  Base = 'base',
 }
 
 /**
@@ -36,8 +35,6 @@ export const getNetworkNameByChainId = (chainId: string): string => {
       return NetworkName.ZkSyncEra;
     case CHAIN_IDS.LINEA_MAINNET:
       return NetworkName.Linea;
-    case CHAIN_IDS.BASE:
-      return NetworkName.Base;
     default:
       return '';
   }

@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { isSolanaChainId } from '@metamask/bridge-controller';
-import { CaipChainId, Hex, hexToNumber } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import { ChainId } from '../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
@@ -36,14 +35,7 @@ const useRamps = (
       try {
         const params = new URLSearchParams();
         params.set('metamaskEntry', metamaskEntry);
-
-        let numericChainId = '';
-        if (isSolanaChainId(_chainId)) {
-          numericChainId = _chainId;
-        } else {
-          numericChainId = hexToNumber(_chainId).toString();
-        }
-        params.set('chainId', numericChainId);
+        params.set('chainId', _chainId);
         if (metaMetricsId) {
           params.set('metametricsId', metaMetricsId);
         }
@@ -51,6 +43,9 @@ const useRamps = (
         if (isMarketingEnabled) {
           params.set('marketingEnabled', String(isMarketingEnabled));
         }
+
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         const url = new URL(process.env.PORTFOLIO_URL || '');
         url.pathname = 'buy';
         url.search = params.toString();
@@ -59,17 +54,19 @@ const useRamps = (
         return 'https://portfolio.metamask.io/buy';
       }
     },
-    [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, metamaskEntry],
+    [metaMetricsId],
   );
 
   const openBuyCryptoInPdapp = useCallback(
     (_chainId?: ChainId | CaipChainId) => {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       const buyUrl = getBuyURI(_chainId || chainId);
       global.platform.openTab({
         url: buyUrl,
       });
     },
-    [chainId, getBuyURI],
+    [chainId],
   );
 
   return { openBuyCryptoInPdapp, getBuyURI };

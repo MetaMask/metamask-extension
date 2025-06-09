@@ -1,6 +1,4 @@
-// PersistenceManager.test.ts
-// node is missing the navigator.locks API so we polyfill it for the tests
-import 'navigator.locks';
+// PersistanceManager.test.ts
 import { captureException } from '@sentry/browser';
 import log from 'loglevel';
 

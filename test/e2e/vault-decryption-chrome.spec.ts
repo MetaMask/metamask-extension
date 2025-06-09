@@ -167,9 +167,7 @@ describe('Vault Decryptor Page', function () {
         await driver.waitUntilXWindowHandles(2);
 
         // we cannot use the customized driver functions as there is no socket for window communications in prod builds
-        await driver.switchToWindowByTitleWithoutSocket(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
+        await driver.switchToWindowByTitleWithoutSocket(WINDOW_TITLES.ExtensionInFullScreenView);
 
         // switch to MetaMask window and create a new vault through onboarding flow
         await completeCreateNewWalletOnboardingFlowWithCustomSettings({
@@ -227,9 +225,7 @@ describe('Vault Decryptor Page', function () {
         await driver.waitUntilXWindowHandles(2);
 
         // we cannot use the customized driver functions as there is no socket for window communications in prod builds
-        await driver.switchToWindowByTitleWithoutSocket(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
+        await driver.switchToWindowByTitleWithoutSocket(WINDOW_TITLES.ExtensionInFullScreenView);
 
         // switch to MetaMask window and create a new vault through onboarding flow
         await completeCreateNewWalletOnboardingFlowWithCustomSettings({

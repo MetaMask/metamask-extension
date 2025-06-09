@@ -68,12 +68,6 @@ export async function retrievePullRequest(
   return pullRequest;
 }
 
-export type PullRequestFile = {
-  filename: string;
-  additions: number;
-  deletions: number;
-}
-
 /**
  * Retrieves files changed in a specific pull request
  * @param octokit GitHub API client
@@ -87,16 +81,12 @@ export async function retrievePullRequestFiles(
   repoOwner: string,
   repoName: string,
   prNumber: number,
-): Promise<PullRequestFile[]> {
+): Promise<string[]> {
   const response = await octokit.rest.pulls.listFiles({
     owner: repoOwner,
     repo: repoName,
     pull_number: prNumber,
   });
 
-  return response.data.map((file) => ({
-    filename: file.filename,
-    additions: file.additions || 0,
-    deletions: file.deletions || 0,
-  }));
+  return response.data.map((file) => file.filename);
 }

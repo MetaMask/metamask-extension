@@ -11,7 +11,6 @@ import {
 import { TestSuiteArguments } from '../transactions/shared';
 import SignTypedData from '../../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
@@ -25,6 +24,7 @@ import {
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 
 describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
   it('initiates and confirms', async function () {

@@ -170,7 +170,7 @@ jobs:
 
   failure-comment:
     name: Comment about the attributions update failure
-    if: ${{ !cancelled() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    if: ${{ always() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     runs-on: ubuntu-latest
     needs:
       - is-fork-pull-request

@@ -1,5 +1,5 @@
-import { StatusTypes } from '@metamask/bridge-controller';
 import type { CaipChainId } from '@metamask/utils';
+import type { StatusTypes } from '../../../../shared/types/bridge-status';
 
 export enum ActionType {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

@@ -5,8 +5,6 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { add0x } from '@metamask/utils';
-import { useMemo } from 'react';
-
 import { useConfirmContext } from '../../../../context/confirm';
 import { useAsyncResult } from '../../../../../../hooks/useAsync';
 import { getTokenStandardAndDetails } from '../../../../../../store/actions';
@@ -42,20 +40,18 @@ export function useBatchApproveBalanceChanges() {
       },
     });
 
-  const finalBalanceChanges = useMemo(
-    () =>
-      (balanceChanges ?? []).map<ApprovalBalanceChange>((change, index) => {
-        const simulation = simulationBalanceChanges?.[index];
+  const finalBalanceChanges = (balanceChanges ?? []).map<ApprovalBalanceChange>(
+    (change, index) => {
+      const simulation = simulationBalanceChanges?.[index];
 
-        return {
-          ...change,
-          isApproval: true,
-          isAllApproval: simulation?.isAll ?? false,
-          isUnlimitedApproval: simulation?.isUnlimited ?? false,
-          nestedTransactionIndex: simulation?.nestedTransactionIndex ?? -1,
-        };
-      }),
-    [balanceChanges, simulationBalanceChanges],
+      return {
+        ...change,
+        isApproval: true,
+        isAllApproval: simulation?.isAll ?? false,
+        isUnlimitedApproval: simulation?.isUnlimited ?? false,
+        nestedTransactionIndex: simulation?.nestedTransactionIndex ?? -1,
+      };
+    },
   );
 
   const pending = pendingSimulationChanges || pendingBalanceChanges;
@@ -70,7 +66,7 @@ function useBatchApproveSimulationBalanceChanges({
 }) {
   return useAsyncResult(
     async () => buildSimulationTokenBalanceChanges({ nestedTransactions }),
-    [JSON.stringify(nestedTransactions)],
+    [nestedTransactions],
   );
 }
 
@@ -93,20 +89,7 @@ async function buildSimulationTokenBalanceChanges({
       continue;
     }
 
-    const parseResult = parseApprovalTransactionData(data);
-
-    if (!parseResult) {
-      continue;
-    }
-
-    const {
-      amountOrTokenId,
-      isApproveAll: isAll,
-      tokenAddress: token,
-    } = parseResult;
-
-    const tokenAddress = token ?? to;
-    const tokenData = await getTokenStandardAndDetails(tokenAddress);
+    const tokenData = await getTokenStandardAndDetails(to);
 
     if (!tokenData?.standard) {
       continue;
@@ -116,6 +99,14 @@ async function buildSimulationTokenBalanceChanges({
       tokenData?.standard?.toLowerCase() as SimulationTokenStandard;
 
     const isNFT = standard !== SimulationTokenStandard.erc20;
+
+    const parseResult = parseApprovalTransactionData(data);
+
+    if (!parseResult) {
+      continue;
+    }
+
+    const { amountOrTokenId, isApproveAll: isAll } = parseResult;
     const amountOrTokenIdHex = add0x(amountOrTokenId?.toString(16) ?? '0x0');
 
     const difference =
@@ -124,14 +115,10 @@ async function buildSimulationTokenBalanceChanges({
     const tokenId = isNFT && amountOrTokenId ? amountOrTokenIdHex : undefined;
 
     const isUnlimited =
-      !isNFT &&
-      isSpendingCapUnlimited(
-        amountOrTokenId?.toNumber() ?? 0,
-        Number(tokenData?.decimals ?? 0),
-      );
+      !isNFT && isSpendingCapUnlimited(amountOrTokenId?.toNumber() ?? 0);
 
     const balanceChange: ApprovalSimulationBalanceChange = {
-      address: tokenAddress,
+      address: to,
       difference,
       id: tokenId,
       isAll: isAll ?? false,

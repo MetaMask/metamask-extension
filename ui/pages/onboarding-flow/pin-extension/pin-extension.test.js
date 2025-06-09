@@ -37,7 +37,7 @@ describe('Creation Successful Onboarding View', () => {
   const arrangeMocks = (
     stateOverrides = {
       metamask: {
-        isBackupAndSyncEnabled: false,
+        isProfileSyncingEnabled: false,
         participateInMetaMetrics: true,
         isSignedIn: false,
         useExternalServices: true,

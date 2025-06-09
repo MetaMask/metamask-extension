@@ -58,6 +58,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   getIsBitcoinSupportEnabled,
+  getIsBitcoinTestnetSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
@@ -81,10 +82,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import {
-  CONNECT_HARDWARE_ROUTE,
-  IMPORT_SRP_ROUTE,
-} from '../../../helpers/constants/routes';
+import { CONNECT_HARDWARE_ROUTE } from '../../../helpers/constants/routes';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -96,6 +94,12 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+import {
+  hasCreatedBtcMainnetAccount,
+  hasCreatedBtcTestnetAccount,
+} from '../../../selectors/accounts';
 ///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -122,6 +126,7 @@ import { CreateEthAccount } from '../create-eth-account';
 import { CreateSnapAccount } from '../create-snap-account';
 ///: END:ONLY_INCLUDE_IF
 import { ImportAccount } from '../import-account';
+import { ImportSrp } from '../multi-srp/import-srp';
 import { SrpList } from '../multi-srp/srp-list';
 import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
 import { HiddenAccountList } from './hidden-account-list';
@@ -190,20 +195,22 @@ export const getActionTitle = (
 ) => {
   switch (actionMode) {
     case ACTION_MODES.ADD:
-      return t('addAccountFromNetwork', [t('networkNameEthereum')]);
+      return t('addAccountFromNetwork', ['Ethereum']);
     case ACTION_MODES.MENU:
       return t('addAccount');
     ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     case ACTION_MODES.ADD_WATCH_ONLY:
-      return t('addAccountFromNetwork', [t('networkNameEthereum')]);
+      return t('addAccountFromNetwork', ['Ethereum']);
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
     case ACTION_MODES.ADD_BITCOIN:
-      return t('addAccountFromNetwork', [t('networkNameBitcoin')]);
+      return t('addAccountFromNetwork', ['Bitcoin']);
+    case ACTION_MODES.ADD_BITCOIN_TESTNET:
+      return t('addAccountFromNetwork', ['Bitcoin Testnet']);
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(solana)
     case ACTION_MODES.ADD_SOLANA:
-      return t('addAccountFromNetwork', [t('networkNameSolana')]);
+      return t('addAccountFromNetwork', ['Solana']);
     ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.IMPORT:
       return t('importPrivateKey');
@@ -293,10 +300,18 @@ export const AccountListMenu = ({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.AccountAddSelected,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: MetaMetricsEventAccountType.Snap,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_id: ACCOUNT_WATCHER_SNAP_ID,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_name: ACCOUNT_WATCHER_NAME,
         location: 'Main Menu',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: hdEntropyIndex,
       },
     });
@@ -309,6 +324,15 @@ export const AccountListMenu = ({
   const bitcoinSupportEnabled = useSelector(getIsBitcoinSupportEnabled);
   const bitcoinWalletSnapClient = useMultichainWalletSnapClient(
     WalletClientType.Bitcoin,
+  );
+  const bitcoinTestnetSupportEnabled = useSelector(
+    getIsBitcoinTestnetSupportEnabled,
+  );
+  const isBtcMainnetAccountAlreadyCreated = useSelector(
+    hasCreatedBtcMainnetAccount,
+  );
+  const isBtcTestnetAccountAlreadyCreated = useSelector(
+    hasCreatedBtcTestnetAccount,
   );
   ///: END:ONLY_INCLUDE_IF
 
@@ -330,12 +354,19 @@ export const AccountListMenu = ({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.AccountAddSelected,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: MetaMetricsEventAccountType.Snap,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_id: client.getSnapId(),
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_name: client.getSnapName(),
         location: 'Main Menu',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: hdEntropyIndex,
-        chain_id_caip: _options.scope,
       },
     });
 
@@ -394,6 +425,8 @@ export const AccountListMenu = ({
         event: MetaMetricsEventName.NavAccountSwitched,
         properties: {
           location: 'Main Menu',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: hdEntropyIndex,
         },
       });
@@ -485,9 +518,6 @@ export const AccountListMenu = ({
     trackEvent({
       category: MetaMetricsEventCategory.Accounts,
       event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
-      properties: {
-        button_type: 'picker',
-      },
     });
     setPreviousActionMode(actionMode);
     setActionMode(ACTION_MODES.SELECT_SRP);
@@ -549,6 +579,17 @@ export const AccountListMenu = ({
             <ImportAccount onActionComplete={onActionComplete} />
           </Box>
         ) : null}
+        {actionMode === ACTION_MODES.IMPORT_SRP && (
+          <Box
+            paddingLeft={4}
+            paddingRight={4}
+            paddingBottom={4}
+            paddingTop={0}
+            style={{ overflowY: 'scroll' }}
+          >
+            <ImportSrp onActionComplete={onActionComplete} />
+          </Box>
+        )}
         {actionMode === ACTION_MODES.SELECT_SRP && (
           <SrpList
             onActionComplete={(keyringId: string) => {
@@ -578,8 +619,12 @@ export const AccountListMenu = ({
                     category: MetaMetricsEventCategory.Navigation,
                     event: MetaMetricsEventName.AccountAddSelected,
                     properties: {
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       account_type: MetaMetricsEventAccountType.Default,
                       location: 'Main Menu',
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       hd_entropy_index: hdEntropyIndex,
                     },
                   });
@@ -598,8 +643,6 @@ export const AccountListMenu = ({
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
                     startIconProps={{ size: IconSize.Md }}
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={async () => {
                       await handleMultichainSnapAccountCreation(
                         solanaWalletSnapClient,
@@ -609,6 +652,23 @@ export const AccountListMenu = ({
                         },
                         ACTION_MODES.ADD_SOLANA,
                       );
+
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.AccountAddSelected,
+                        properties: {
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          account_type: MetaMetricsEventAccountType.Default,
+                          location: 'Main Menu',
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          hd_entropy_index: hdEntropyIndex,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          chain_id_caip: MultichainNetworks.SOLANA,
+                        },
+                      });
                     }}
                     data-testid="multichain-account-menu-popover-add-solana-account"
                   >
@@ -623,11 +683,10 @@ export const AccountListMenu = ({
               bitcoinSupportEnabled && (
                 <Box marginTop={4}>
                   <ButtonLink
+                    disabled={isBtcMainnetAccountAlreadyCreated}
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Add}
                     startIconProps={{ size: IconSize.Md }}
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={async () => {
                       return await handleMultichainSnapAccountCreation(
                         bitcoinWalletSnapClient,
@@ -645,7 +704,32 @@ export const AccountListMenu = ({
               )
               ///: END:ONLY_INCLUDE_IF
             }
-
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+              bitcoinTestnetSupportEnabled ? (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    disabled={isBtcTestnetAccountAlreadyCreated}
+                    size={ButtonLinkSize.Sm}
+                    startIconName={IconName.Add}
+                    startIconProps={{ size: IconSize.Md }}
+                    onClick={async () => {
+                      return await handleMultichainSnapAccountCreation(
+                        bitcoinWalletSnapClient,
+                        {
+                          scope: MultichainNetworks.BITCOIN_TESTNET,
+                        },
+                        ACTION_MODES.ADD_BITCOIN_TESTNET,
+                      );
+                    }}
+                    data-testid="multichain-account-menu-popover-add-btc-account-testnet"
+                  >
+                    {t('addBitcoinTestnetAccountLabel')}
+                  </ButtonLink>
+                </Box>
+              ) : null
+              ///: END:ONLY_INCLUDE_IF
+            }
             <Text
               variant={TextVariant.bodySmMedium}
               marginTop={4}
@@ -666,14 +750,7 @@ export const AccountListMenu = ({
                       event:
                         MetaMetricsEventName.ImportSecretRecoveryPhraseClicked,
                     });
-                    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-                      global.platform.openExtensionInBrowser?.(
-                        IMPORT_SRP_ROUTE,
-                      );
-                    } else {
-                      history.push(IMPORT_SRP_ROUTE);
-                    }
-                    onClose();
+                    setActionMode(ACTION_MODES.IMPORT_SRP);
                   }}
                   data-testid="multichain-account-menu-popover-import-srp"
                 >
@@ -693,8 +770,12 @@ export const AccountListMenu = ({
                     category: MetaMetricsEventCategory.Navigation,
                     event: MetaMetricsEventName.AccountAddSelected,
                     properties: {
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       account_type: MetaMetricsEventAccountType.Imported,
                       location: 'Main Menu',
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       hd_entropy_index: hdEntropyIndex,
                     },
                   });
@@ -723,8 +804,12 @@ export const AccountListMenu = ({
                     category: MetaMetricsEventCategory.Navigation,
                     event: MetaMetricsEventName.AccountAddSelected,
                     properties: {
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       account_type: MetaMetricsEventAccountType.Hardware,
                       location: 'Main Menu',
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       hd_entropy_index: hdEntropyIndex,
                     },
                   });
@@ -754,8 +839,12 @@ export const AccountListMenu = ({
                         category: MetaMetricsEventCategory.Navigation,
                         event: MetaMetricsEventName.AccountAddSelected,
                         properties: {
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           account_type: MetaMetricsEventAccountType.Snap,
                           location: 'Main Menu',
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           hd_entropy_index: hdEntropyIndex,
                         },
                       });
@@ -779,8 +868,6 @@ export const AccountListMenu = ({
                     size={ButtonLinkSize.Sm}
                     startIconName={IconName.Eye}
                     startIconProps={{ size: IconSize.Md }}
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={handleAddWatchAccount}
                     data-testid="multichain-account-menu-popover-add-watch-only-account"
                   >

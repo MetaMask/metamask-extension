@@ -1,11 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { BigNumber } from 'bignumber.js';
 import {
   formatChainIdToCaip,
   isNativeAddress,
 } from '@metamask/bridge-controller';
+import type { BridgeToken } from '@metamask/bridge-controller';
 import { getAccountLink } from '@metamask/etherscan-link';
-import { type BigNumber } from 'bignumber.js';
 import {
   Text,
   TextField,
@@ -28,6 +29,7 @@ import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
+import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import {
   getBridgeQuotes,
   getValidationErrors,
@@ -42,8 +44,6 @@ import {
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
-import type { BridgeToken } from '../../../ducks/bridge/types';
-import { getMultichainCurrentChainId } from '../../../selectors/multichain';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
 const sanitizeAmountInput = (textToSanitize: string) => {
@@ -71,10 +71,8 @@ export const BridgeInputGroup = ({
   isMultiselectEnabled,
   onBlockExplorerClick,
   buttonProps,
-  balanceAmount,
 }: {
-  balanceAmount?: BigNumber;
-  amountInFiat?: string;
+  amountInFiat?: BigNumber;
   onAmountChange?: (value: string) => void;
   token: BridgeToken | null;
   buttonProps: { testId: string };
@@ -101,8 +99,8 @@ export const BridgeInputGroup = ({
   const currency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
 
-  const currentChainId = useSelector(getMultichainCurrentChainId);
-  const selectedChainId = networkProps?.network?.chainId ?? currentChainId;
+  const selectedChainId = networkProps?.network?.chainId;
+  const balanceAmount = useLatestBalance(token);
 
   const [, handleCopy] = useCopyToClipboard(MINUTE) as [
     boolean,
@@ -316,7 +314,7 @@ export const BridgeInputGroup = ({
                   skipCharacterInEnd: false,
                 }))}
           {!isAmountReadOnly && balanceAmount
-            ? formatTokenAmount(locale, balanceAmount.toString(), token?.symbol)
+            ? formatTokenAmount(locale, balanceAmount, token?.symbol)
             : undefined}
           {onMaxButtonClick &&
             token &&

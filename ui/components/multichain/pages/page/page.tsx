@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { useLocation } from 'react-router-dom';
 import { Box } from '../../../component-library';
 import {
   BackgroundColor,
@@ -12,7 +11,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 
 import type { StyleUtilityProps } from '../../../component-library/box';
-import { hideAppHeader } from '../../../../pages/routes/utils';
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -28,13 +26,6 @@ interface PageProps extends StyleUtilityProps {
 }
 
 export const Page = ({ children, className = '', ...props }: PageProps) => {
-  const location = useLocation();
-  const hasAppHeader = location?.pathname ? !hideAppHeader({ location }) : true;
-
-  const classNames = classnames('multichain-page', {
-    'multichain-page--has-app-header': hasAppHeader,
-  });
-
   return (
     <Box
       width={BlockSize.Full}
@@ -42,8 +33,8 @@ export const Page = ({ children, className = '', ...props }: PageProps) => {
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.center}
-      backgroundColor={BackgroundColor.backgroundDefault}
-      className={classNames}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      className="multichain-page"
       data-testid="multichain-page"
     >
       <Box

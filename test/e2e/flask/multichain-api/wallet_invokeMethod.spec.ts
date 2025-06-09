@@ -44,10 +44,8 @@ describe('Multichain API', function () {
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(GANACHE_SCOPES, ACCOUNTS);
             await addAccountInWalletAndAuthorize(driver);
-            await driver.clickElementAndWaitForWindowToClose({
-              text: 'Connect',
-              tag: 'button',
-            });
+            await driver.clickElement({ text: 'Connect', tag: 'button' });
+            await driver.delay(largeDelayMs);
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
@@ -73,10 +71,17 @@ describe('Multichain API', function () {
                 `[data-testid="invoke-method-${scope}-btn"]`,
               );
 
-              await driver.waitForSelector({
-                css: `[id="invoke-method-${scope}-${invokeMethod}-result-0"]`,
-                text: `"${EXPECTED_RESULTS[scope]}"`,
-              });
+              const resultElement = await driver.findElement(
+                `#invoke-method-${escapeColon(scope)}-${invokeMethod}-result-0`,
+              );
+
+              const result = await resultElement.getText();
+
+              assert.strictEqual(
+                result,
+                `"${EXPECTED_RESULTS[scope]}"`,
+                `${scope} method ${invokeMethod} expected "${EXPECTED_RESULTS[scope]}", got ${result} instead`,
+              );
             }
           },
         );
@@ -103,11 +108,9 @@ describe('Multichain API', function () {
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(GANACHE_SCOPES, ACCOUNTS);
             await addAccountInWalletAndAuthorize(driver);
-            await driver.clickElementAndWaitForWindowToClose({
-              text: 'Connect',
-              tag: 'button',
-            });
+            await driver.clickElement({ text: 'Connect', tag: 'button' });
 
+            await driver.delay(largeDelayMs);
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
@@ -132,13 +135,18 @@ describe('Multichain API', function () {
               await driver.delay(largeDelayMs);
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+              const accountWebElement = await driver.findElement(
+                '[data-testid="sender-address"]',
+              );
+              const accountText = await accountWebElement.getText();
               const expectedAccount =
                 i === INDEX_FOR_ALTERNATE_ACCOUNT ? 'Account 2' : 'Account 1';
 
-              await driver.waitForSelector({
-                tesId: 'sender-address',
-                text: expectedAccount,
-              });
+              assert.strictEqual(
+                accountText,
+                expectedAccount,
+                `Should have ${expectedAccount} selected, got ${accountText}`,
+              );
 
               await driver.clickElement({
                 text: 'Confirm',
@@ -166,10 +174,9 @@ describe('Multichain API', function () {
             await testDapp.connectExternallyConnectable(extensionId);
             await testDapp.initCreateSessionScopes(GANACHE_SCOPES, ACCOUNTS);
             await addAccountInWalletAndAuthorize(driver);
-            await driver.clickElementAndWaitForWindowToClose({
-              text: 'Connect',
-              tag: 'button',
-            });
+            await driver.clickElement({ text: 'Connect', tag: 'button' });
+
+            await driver.delay(largeDelayMs);
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );

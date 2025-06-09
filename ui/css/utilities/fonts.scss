@@ -66,16 +66,16 @@ $font-path: './fonts';
 }
 
 @font-face {
-  font-family: 'MMSans';
+  font-family: 'MM Sans';
   src: url('#{$font-path}/MMSans/MM_Sans-Variable.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
 }
 
-// MMSans Vairable Font - supports: 400, 500, 600, 700, 800, 900
+// MM Sans Vairable Font - supports: 400, 500, 600, 700, 800, 900
 
 @font-face {
-  font-family: 'MMSans';
+  font-family: 'MM Sans';
   src: url('#{$font-path}/MMSans/MM_Sans-Variable.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;

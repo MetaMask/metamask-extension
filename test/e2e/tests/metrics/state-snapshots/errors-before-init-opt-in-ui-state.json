@@ -1,6 +1,10 @@
 {
   "data": {
     "AuthenticationController": { "isSignedIn": "boolean" },
+    "UserStorageController": {
+      "isProfileSyncingEnabled": true,
+      "isAccountSyncingEnabled": true
+    },
     "NotificationServicesController": {
       "subscriptionAccountsSeen": "object",
       "isFeatureAnnouncementsEnabled": "boolean",
@@ -44,7 +48,19 @@
       "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true
     },
-    "BridgeController": {},
+    "BridgeController": {
+      "bridgeFeatureFlags": {
+        "mobileConfig": "object",
+        "extensionConfig": {
+          "support": "boolean",
+          "chains": {
+            "eip155:1": "object",
+            "eip155:10": "object",
+            "eip155:59144": "object"
+          }
+        }
+      }
+    },
     "CurrencyController": {
       "currentCurrency": "usd",
       "currencyRates": {
@@ -52,11 +68,6 @@
           "conversionDate": "number",
           "conversionRate": 1700,
           "usdConversionRate": 1700
-        },
-        "MON": {
-          "conversionDate": "number",
-          "conversionRate": 0.2,
-          "usdConversionRate": 0.2
         }
       }
     },

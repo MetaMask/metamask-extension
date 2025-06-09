@@ -4,10 +4,7 @@ import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import { getUseExternalServices } from '../../selectors';
 import RampAPI from '../../helpers/ramps/rampApi/rampAPI';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
-import {
-  getMultichainIsBitcoin,
-  getMultichainIsSolana,
-} from '../../selectors/multichain';
+import { getMultichainIsBitcoin } from '../../selectors/multichain';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { defaultBuyableChains } from './constants';
 import { AggregatorNetwork } from './types';
@@ -88,49 +85,23 @@ export const getIsBitcoinBuyable = createSelector(
       ),
 );
 
-export const getIsSolanaBuyable = createSelector(
-  [getBuyableChains],
-  (buyableChains) => {
-    return buyableChains
-      .filter(Boolean)
-      .some(
-        (network: AggregatorNetwork) =>
-          network.chainId === MultichainNetworks.SOLANA && network.active,
-      );
-  },
-);
-
 export const getIsNativeTokenBuyable = createSelector(
   [
     getCurrentChainId,
     getBuyableChains,
     getIsBitcoinBuyable,
     getMultichainIsBitcoin,
-    getIsSolanaBuyable,
-    getMultichainIsSolana,
   ],
-  (
-    currentChainId,
-    buyableChains,
-    isBtcBuyable,
-    isBtc,
-    isSolanaBuyable,
-    isSolana,
-  ) => {
+  (currentChainId, buyableChains, isBtcBuyable, isBtc) => {
     try {
-      if (isBtc) {
-        return isBtcBuyable;
-      }
-      if (isSolana) {
-        return isSolanaBuyable;
-      }
-
       return buyableChains
         .filter(Boolean)
-        .some(
-          (network: AggregatorNetwork) =>
-            String(network.chainId) === hexToDecimal(currentChainId),
-        );
+        .some((network: AggregatorNetwork) => {
+          if (isBtc) {
+            return isBtcBuyable;
+          }
+          return String(network.chainId) === hexToDecimal(currentChainId);
+        });
     } catch (e) {
       return false;
     }

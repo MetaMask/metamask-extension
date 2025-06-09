@@ -18,9 +18,6 @@ describe('eth_call', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        localNodeOptions: {
-          hardfork: 'muirGlacier',
-        },
         smartContract,
         title: this.test?.fullTitle(),
       },

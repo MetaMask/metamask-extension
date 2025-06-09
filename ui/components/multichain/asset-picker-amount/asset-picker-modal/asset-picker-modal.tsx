@@ -31,7 +31,6 @@ import {
   TextAlign,
   Display,
   AlignItems,
-  JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Toast, ToastContainer } from '../../toast';
@@ -423,11 +422,11 @@ export function AssetPickerModal({
       const trimmedSearchQuery = debouncedSearchQuery.trim().toLowerCase();
       const isMatchedBySearchQuery = Boolean(
         !trimmedSearchQuery ||
-          symbol?.toLowerCase().indexOf(trimmedSearchQuery) !== -1 ||
-          address?.toLowerCase().indexOf(trimmedSearchQuery) !== -1,
+          symbol?.toLowerCase().includes(trimmedSearchQuery) ||
+          address?.toLowerCase().includes(trimmedSearchQuery),
       );
       const isTokenInSelectedChain = isMultiselectEnabled
-        ? tokenChainId && selectedChainIds?.indexOf(tokenChainId) !== -1
+        ? tokenChainId && selectedChainIds?.includes(tokenChainId)
         : selectedNetwork?.chainId === tokenChainId;
 
       return Boolean(
@@ -539,21 +538,12 @@ export function AssetPickerModal({
     <Modal
       className="asset-picker-modal"
       isOpen={isOpen}
-      onClose={() => {
-        setSearchQuery('');
-        onClose();
-      }}
+      onClose={onClose}
       data-testid="asset-picker-modal"
     >
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
-        <ModalHeader
-          onClose={() => {
-            setSearchQuery('');
-            onClose();
-          }}
-          onBack={asset ? undefined : onBack}
-        >
+        <ModalHeader onClose={onClose} onBack={asset ? undefined : onBack}>
           <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
             {header}
           </Text>
@@ -611,11 +601,7 @@ export function AssetPickerModal({
           </Box>
         )}
         {onNetworkPickerClick && (
-          <Box
-            className="network-picker"
-            display={Display.Flex}
-            justifyContent={JustifyContent.center}
-          >
+          <Box className="network-picker">
             <PickerNetwork
               label={getNetworkPickerLabel()}
               src={
@@ -661,10 +647,7 @@ export function AssetPickerModal({
                 />
                 <AssetList
                   network={network}
-                  handleAssetChange={(selectedAsset) => {
-                    setSearchQuery('');
-                    handleAssetChange(selectedAsset);
-                  }}
+                  handleAssetChange={handleAssetChange}
                   asset={asset?.type === AssetType.NFT ? undefined : asset}
                   tokenList={displayedTokens}
                   isTokenDisabled={getIsDisabled}

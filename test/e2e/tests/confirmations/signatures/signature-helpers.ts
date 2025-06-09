@@ -16,11 +16,6 @@ import {
 } from '../../../../../shared/constants/security-provider';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
-type EventPayload = {
-  event: string;
-  properties: Record<string, unknown>;
-};
-
 export const WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 export const WALLET_ETH_BALANCE = '25';
 export enum SignatureType {
@@ -69,7 +64,7 @@ type SignatureEventProperty = {
   ui_customizations?: string[];
   location?: string;
   hd_entropy_index?: number;
-  api_source?: string;
+  requested_through?: string;
 };
 
 const signatureAnonProperties = {
@@ -98,7 +93,6 @@ export async function initializePages(driver: Driver) {
  * @param decodingChangeTypes
  * @param decodingResponse
  * @param decodingDescription
- * @param requestedThrough
  */
 function getSignatureEventProperty(
   signatureType: string,
@@ -124,7 +118,7 @@ function getSignatureEventProperty(
     security_alert_source: securityAlertSource,
     ui_customizations: uiCustomizations,
     hd_entropy_index: 0,
-    api_source: requestedThrough,
+    requested_through: requestedThrough,
   };
 
   if (primaryType !== '') {
@@ -141,7 +135,8 @@ function getSignatureEventProperty(
 }
 
 function assertSignatureRequestedMetrics(
-  events: EventPayload[],
+
+  events: any[],
   signatureEventProperty: SignatureEventProperty,
   withAnonEvents = false,
 ) {
@@ -280,13 +275,12 @@ export async function assertAccountDetailsMetrics(
 }
 
 function assertEventPropertiesMatch(
-  events: EventPayload[],
+
+  events: any[],
   eventName: string,
   expectedProperties: object,
 ) {
   const event = events.find((e) => e.event === eventName);
-
-  assert(event, `${eventName} event not found`);
 
   const actualProperties = { ...event.properties };
   const expectedProps = { ...expectedProperties };
@@ -295,6 +289,7 @@ function assertEventPropertiesMatch(
 
   compareSecurityAlertProperties(actualProperties, expectedProps, eventName);
 
+  assert(event, `${eventName} event not found`);
   assert.deepStrictEqual(
     actualProperties,
     expectedProps,

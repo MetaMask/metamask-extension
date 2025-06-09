@@ -312,7 +312,6 @@ export function overrideAccountsFromMockState<
     newKeyrings.push({
       type: keyring.type,
       accounts: newAccountsForKeyring,
-      metadata: keyring.metadata,
     });
   }
 

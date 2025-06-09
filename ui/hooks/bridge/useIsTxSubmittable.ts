@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
-import { type BigNumber } from 'bignumber.js';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { useMemo } from 'react';
 import {
   getBridgeQuotes,
   getFromAmount,
@@ -11,11 +12,9 @@ import {
 import { getMultichainCurrentChainId } from '../../selectors/multichain';
 import { useMultichainSelector } from '../useMultichainSelector';
 import { useIsMultichainSwap } from '../../pages/bridge/hooks/useIsMultichainSwap';
+import useLatestBalance from './useLatestBalance';
 
-export const useIsTxSubmittable = (
-  nativeAssetBalance?: BigNumber,
-  srcTokenBalance?: BigNumber,
-) => {
+export const useIsTxSubmittable = () => {
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const fromChainId = useMultichainSelector(getMultichainCurrentChainId);
@@ -30,6 +29,13 @@ export const useIsTxSubmittable = (
     isInsufficientGasForQuote,
   } = useSelector(getValidationErrors);
 
+  const balanceAmount = useLatestBalance(fromToken);
+  const nativeAsset = useMemo(
+    () => getNativeAssetForChainId(fromChainId),
+    [fromChainId],
+  );
+  const nativeAssetBalance = useLatestBalance(nativeAsset);
+
   return Boolean(
     fromToken &&
       toToken &&
@@ -37,7 +43,7 @@ export const useIsTxSubmittable = (
       (isSwap || toChain) &&
       fromAmount &&
       activeQuote &&
-      !isInsufficientBalance(srcTokenBalance) &&
+      !isInsufficientBalance(balanceAmount) &&
       !isInsufficientGasBalance(nativeAssetBalance) &&
       !isInsufficientGasForQuote(nativeAssetBalance),
   );

@@ -10,7 +10,10 @@ import {
   toggleAdvancedDetails,
 } from './shared';
 
-const { withFixtures } = require('../../../helpers');
+const {
+  defaultGanacheOptionsForType2Transactions,
+  withFixtures,
+} = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
@@ -25,9 +28,6 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: {
-            hardfork: 'muirGlacier',
-          },
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
@@ -53,6 +53,7 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
+          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
@@ -79,9 +80,7 @@ async function mocks(server: MockttpServer) {
 
 async function importTST(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await driver.clickElement(
-    '[data-testid="asset-list-control-bar-action-button"]',
-  );
+  await driver.clickElement('[data-testid="import-token-button"]');
   await driver.clickElement('[data-testid="importTokens"]');
 
   await driver.waitForSelector({

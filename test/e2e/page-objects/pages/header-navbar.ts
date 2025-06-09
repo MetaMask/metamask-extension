@@ -69,17 +69,11 @@ class HeaderNavbar {
     await this.driver.waitForSelector('.multichain-account-menu-popover__list');
   }
 
-  async openAccountDetailsModalDetailsTab(): Promise<void> {
-    console.log('Open account details modal');
-    await this.openThreeDotMenu();
-    await this.driver.clickElement(this.openAccountDetailsButton);
-    await this.driver.clickElementSafe(this.accountDetailsTab);
-  }
-
   async openAccountDetailsModal(): Promise<void> {
     console.log('Open account details modal');
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.openAccountDetailsButton);
+    await this.driver.clickElementSafe(this.accountDetailsTab);
   }
 
   async openThreeDotMenu(): Promise<void> {

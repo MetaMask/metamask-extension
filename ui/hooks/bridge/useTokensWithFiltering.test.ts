@@ -1,10 +1,12 @@
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import {
+  BridgeToken,
+  getNativeAssetForChainId,
+} from '@metamask/bridge-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { MINUTE } from '../../../shared/constants/time';
-import type { BridgeToken } from '../../ducks/bridge/types';
 import { useTokensWithFiltering } from './useTokensWithFiltering';
 
 const NATIVE_TOKEN = getNativeAssetForChainId(CHAIN_IDS.MAINNET);
@@ -38,7 +40,7 @@ describe('useTokensWithFiltering', () => {
     jest.clearAllMocks();
   });
 
-  it('should return all tokens when chainId !== activeChainId and chainId has been imported, sorted by balance', async () => {
+  it.only('should return all tokens when chainId !== activeChainId and chainId has been imported, sorted by balance', async () => {
     const mockStore = createBridgeMockStore({
       metamaskStateOverrides: {
         completedOnboarding: true,

@@ -1,14 +1,55 @@
+import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import FixtureBuilder from '../../fixture-builder';
-import { withFixtures } from '../../helpers';
+import {
+  regularDelayMs,
+  tinyDelayMs,
+  unlockWallet,
+  withFixtures,
+} from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { Mockttp } from '../../mock-e2e';
-import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
-import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/home/homepage';
-import SelectNetwork from '../../page-objects/pages/dialog/select-network';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+
+const selectors = {
+  accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
+  informationSymbol: '[data-testid="info-tooltip"]',
+  settingsOption: { text: 'Settings', tag: 'div' },
+  networkOption: { text: 'Networks', tag: 'div' },
+  generalOption: { text: 'General', tag: 'div' },
+  generalTabHeader: { text: 'General', tag: 'h4' },
+  ethereumNetwork: { text: 'Ethereum Mainnet', tag: 'div' },
+  newUpdateNetwork: { text: 'Update Network', tag: 'div' },
+  deleteButton: { text: 'Delete', tag: 'button' },
+  cancelButton: { text: 'Cancel', tag: 'button' },
+  saveButton: { text: 'Save', tag: 'button' },
+  updatedNetworkDropDown: { tag: 'p', text: 'Update Network' },
+  errorMessageInvalidUrl: {
+    text: 'URLs require the appropriate HTTP/HTTPS prefix.',
+  },
+  networkNameInputField: '[data-testid="network-form-network-name"]',
+  networkNameInputFieldSetToEthereumMainnet: {
+    xpath:
+      "//input[@data-testid = 'network-form-network-name'][@value = 'Ethereum Mainnet']",
+  },
+  rpcUrlInputField: '[data-testid="network-form-rpc-url"]',
+  chainIdInputField: '[data-testid="network-form-chain-id"]',
+  errorContainer: '.settings-tab__error',
+};
+
+const inputData = {
+  networkName: 'Update Network',
+  rpcUrl: 'test',
+  chainId_part1: '0x53',
+  chainId_part2: '9',
+};
+
+async function navigateToEditNetwork(driver: Driver) {
+  await driver.clickElement('.mm-picker-network');
+  await driver.clickElement(
+    '[data-testid="network-list-item-options-button-eip155:1337"]',
+  );
+  await driver.clickElement('[data-testid="network-list-item-options-edit"]');
+}
 
 describe('Update Network:', function (this: Suite) {
   it('update network details and validate the ui elements', async function () {
@@ -17,56 +58,76 @@ describe('Update Network:', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
-      async ({ driver }: { driver: Driver }) => {
-        const inputData = {
-          networkName: 'Update Network',
-          rpcUrl: 'test',
-        };
-        await loginWithBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
 
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.openNetworkListOptions('eip155:1337');
-        await selectNetworkDialog.openEditNetworkModal();
+      async ({ driver }: { driver: Driver }) => {
+        await unlockWallet(driver);
+        await navigateToEditNetwork(driver);
 
         // Verify chain id is not editable when updating a network
-        const editNetworkModal = new AddEditNetworkModal(driver);
-        await editNetworkModal.check_pageIsLoaded();
-        await editNetworkModal.check_chainIdInputFieldIsEnabled(false);
+        const chainIdInput = await driver.findElement(
+          selectors.chainIdInputField,
+        );
+        assert.equal(
+          await chainIdInput.isEnabled(),
+          false,
+          'chain id input should be disabled',
+        );
 
-        // Update the network name and save the changes
-        await editNetworkModal.fillNetworkNameInputField(inputData.networkName);
-        await editNetworkModal.saveEditedNetwork();
-
-        // Verify the new network name is visible
-        const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_editNetworkMessageIsDisplayed(
+        // Update the network name
+        await driver.fill(
+          selectors.networkNameInputField,
           inputData.networkName,
         );
-        await homePage.closeUseNetworkNotificationModal();
-        await headerNavbar.check_currentSelectedNetwork(inputData.networkName);
+
+        // Save, and verify the new network name is visible
+        await driver.clickElement(selectors.saveButton);
+        const updatedNetworkNamePresent = await driver.isElementPresent(
+          selectors.updatedNetworkDropDown,
+        );
+        assert.equal(
+          updatedNetworkNamePresent,
+          true,
+          'Network name is not updated',
+        );
 
         // Start another edit
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.openNetworkListOptions('eip155:1337');
-        await selectNetworkDialog.openEditNetworkModal();
-        await editNetworkModal.check_pageIsLoaded();
+        await navigateToEditNetwork(driver);
 
         // Edit the RPC URL to something invalid
-        await editNetworkModal.openAddRpcUrlModal();
-        const addNetworkRpcUrlModal = new AddNetworkRpcUrlModal(driver);
-        await addNetworkRpcUrlModal.check_pageIsLoaded();
-        await addNetworkRpcUrlModal.fillAddRpcUrlInput(inputData.rpcUrl);
+        const rpcUrlInputDropDown = await driver.waitForSelector(
+          '[data-testid="test-add-rpc-drop-down"]',
+        );
+        await rpcUrlInputDropDown.click();
+        await driver.delay(tinyDelayMs);
+        await driver.clickElement({
+          text: 'Add RPC URL',
+          tag: 'button',
+        });
+        const rpcUrlInput = await driver.waitForSelector(
+          '[data-testid="rpc-url-input-test"]',
+        );
+        await rpcUrlInput.sendKeys(inputData.rpcUrl);
 
         // Validate the error message that appears for the invalid url format
-        await addNetworkRpcUrlModal.check_errorMessageInvalidUrlIsDisplayed();
+        const errorMessage = await driver.isElementPresent(
+          selectors.errorMessageInvalidUrl,
+        );
+        assert.equal(
+          errorMessage,
+          true,
+          'Error message for the invalid url did not appear',
+        );
 
         // Validate the Save button is disabled for the invalid url format
-        await addNetworkRpcUrlModal.check_addRpcUrlButtonIsEnabled(false);
+        const addUrlButton = await driver.findElement({
+          text: 'Add URL',
+          tag: 'button',
+        });
+        assert.equal(
+          await addUrlButton.isEnabled(),
+          false,
+          'Add url button should not be enabled',
+        );
       },
     );
   });
@@ -134,44 +195,72 @@ describe('Update Network:', function (this: Suite) {
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },
+
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
+        await unlockWallet(driver);
+
+        // Avoid a stale element error
+        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="network-display"]');
 
         // Go to Edit Menu
-        await selectNetworkDialog.openNetworkListOptions('eip155:42161');
-        await selectNetworkDialog.openEditNetworkModal();
-        const editNetworkModal = new AddEditNetworkModal(driver);
-        await editNetworkModal.check_pageIsLoaded();
-
-        // Remove the RPC
-        await editNetworkModal.removeRPCInEditNetworkModal(2);
-        await editNetworkModal.check_rpcIsDisplayed(
-          'responsive-rpc.test',
-          false,
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-button-eip155:42161"]',
         );
-        await editNetworkModal.saveEditedNetwork();
-        const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await headerNavbar.check_currentSelectedNetwork('Arbitrum One');
-        await homePage.check_editNetworkMessageIsDisplayed('Arbitrum One');
-        await homePage.closeUseNetworkNotificationModal();
 
-        // Re-open the network menu and go back to edit the network
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.openNetworkListOptions('eip155:42161');
-        await selectNetworkDialog.openEditNetworkModal();
-        await editNetworkModal.check_pageIsLoaded();
-
-        // Verify the rpc endpoint is removed
-        await editNetworkModal.check_rpcIsDisplayed(
-          'responsive-rpc.test',
-          false,
+        await driver.delay(regularDelayMs);
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-edit"]',
         );
+
+        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="test-add-rpc-drop-down"]');
+        await driver.delay(regularDelayMs);
+
+        // Assert the endpoint is in the list
+        await driver.findElement({
+          text: 'responsive-rpc.test',
+          tag: 'p',
+        });
+
+        // Delete it
+        await driver.clickElement('[data-testid="delete-item-1"]');
+
+        // Verify it went away
+        await driver.assertElementNotPresent({
+          text: 'responsive-rpc.test',
+          tag: 'p',
+        });
+
+        // Save the network
+        await driver.clickElement(selectors.saveButton);
+
+        //  Re-open the network menu
+        await driver.delay(regularDelayMs);
+        // We need to use clickElementSafe + assertElementNotPresent as sometimes the network dialog doesn't appear, as per this issue (#27870)
+        // TODO: change the 2 actions for clickElementAndWaitToDisappear, once the issue is fixed
+        await driver.clickElementSafe({ text: 'Got it', tag: 'h6' });
+        await driver.assertElementNotPresent({
+          tag: 'h6',
+          text: 'Got it',
+        });
+        await driver.clickElement('[data-testid="network-display"]');
+
+        // Go back to edit the network
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-button-eip155:42161"]',
+        );
+        await driver.delay(regularDelayMs);
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-edit"]',
+        );
+
+        // Verify the rpc endpoint is still deleted
+        await driver.clickElement('[data-testid="test-add-rpc-drop-down"]');
+        await driver.assertElementNotPresent({
+          text: 'responsive-rpc.test',
+          tag: 'p',
+        });
       },
     );
   });
@@ -223,47 +312,79 @@ describe('Update Network:', function (this: Suite) {
       },
 
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
-        const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
+        await unlockWallet(driver);
 
-        // Go to Edit Menu
-        await selectNetworkDialog.openNetworkListOptions('eip155:42161');
-        await selectNetworkDialog.openEditNetworkModal();
-        const editNetworkModal = new AddEditNetworkModal(driver);
-        await editNetworkModal.check_pageIsLoaded();
+        // Avoid a stale element error
+        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="network-display"]');
 
-        // Add a new rpc url and verify it appears in the dropdown
-        await editNetworkModal.openAddRpcUrlModal();
-        const addNetworkRpcUrlModal = new AddNetworkRpcUrlModal(driver);
-        await addNetworkRpcUrlModal.check_pageIsLoaded();
-        await addNetworkRpcUrlModal.fillAddRpcUrlInput(
-          'https://responsive-rpc.test',
+        // Go to edit the network
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-button-eip155:42161"]',
         );
-        await addNetworkRpcUrlModal.fillAddRpcNameInput('testName');
-        await addNetworkRpcUrlModal.check_addRpcUrlButtonIsEnabled();
-        await addNetworkRpcUrlModal.saveAddRpcUrl();
-        await editNetworkModal.check_rpcIsDisplayed('responsive-rpc.test');
+        await driver.delay(regularDelayMs);
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-edit"]',
+        );
+
+        // Add a new rpc url
+        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="test-add-rpc-drop-down"]');
+        await driver.delay(regularDelayMs);
+        await driver.clickElement({
+          text: 'Add RPC URL',
+          tag: 'button',
+        });
+        const rpcUrlInput = await driver.waitForSelector(
+          '[data-testid="rpc-url-input-test"]',
+        );
+        await rpcUrlInput.clear();
+        await rpcUrlInput.sendKeys('https://responsive-rpc.test');
+
+        const rpcNameInput = await driver.waitForSelector(
+          '[data-testid="rpc-name-input-test"]',
+        );
+        await rpcNameInput.sendKeys('testName');
+        await driver.clickElement({
+          text: 'Add URL',
+          tag: 'button',
+        });
+        await driver.delay(regularDelayMs);
+
+        // Verify it appears in the dropdown
+        await driver.findElement({
+          text: 'responsive-rpc.test',
+          tag: 'p',
+        });
 
         // Save the network
-        await editNetworkModal.saveEditedNetwork();
-        const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await headerNavbar.check_currentSelectedNetwork('Arbitrum One');
-        await homePage.check_editNetworkMessageIsDisplayed('Arbitrum One');
-        await homePage.closeUseNetworkNotificationModal();
+        await driver.clickElement(selectors.saveButton);
 
-        // Re-open the network menu and go back to edit the network
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.openNetworkListOptions('eip155:42161');
-        await selectNetworkDialog.openEditNetworkModal();
-        await editNetworkModal.check_pageIsLoaded();
+        //  Re-open the network menu
+        await driver.delay(regularDelayMs);
+        // We need to use clickElementSafe + assertElementNotPresent as sometimes the network dialog doesn't appear, as per this issue (#27870)
+        // TODO: change the 2 actions for clickElementAndWaitToDisappear, once the issue is fixed
+        await driver.clickElementSafe({ text: 'Got it', tag: 'h6' });
+        await driver.assertElementNotPresent({
+          tag: 'h6',
+          text: 'Got it',
+        });
+        await driver.clickElement('[data-testid="network-display"]');
+
+        // Go back to edit the network
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-button-eip155:42161"]',
+        );
+        await driver.delay(regularDelayMs);
+        await driver.clickElement(
+          '[data-testid="network-list-item-options-edit"]',
+        );
 
         // Verify the new endpoint is still there
-        await editNetworkModal.check_rpcIsDisplayed('responsive-rpc.test');
+        await driver.findElement({
+          text: 'responsive-rpc.test',
+          tag: 'p',
+        });
       },
     );
   });

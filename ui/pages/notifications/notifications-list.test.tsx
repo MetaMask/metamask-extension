@@ -18,7 +18,7 @@ const store = mockStore({
   metamask: {
     isMetamaskNotificationsEnabled: true,
     isFeatureAnnouncementsEnabled: true,
-    isBackupAndSyncEnabled: true,
+    isProfileSyncingEnabled: true,
     metamaskNotifications: [],
     internalAccounts: {
       accounts: [

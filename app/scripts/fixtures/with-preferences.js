@@ -33,6 +33,6 @@ export const FIXTURES_PREFERENCES = {
   useTransactionSimulations: true,
   enableMV3TimestampSave: true,
   useExternalServices: true,
-  isBackupAndSyncEnabled: true,
+  isProfileSyncingEnabled: true,
   isAccountSyncingEnabled: true,
 };

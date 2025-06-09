@@ -13,7 +13,6 @@ import {
   CONTACT_LIST_ROUTE,
   EXPERIMENTAL_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
-  BACKUPANDSYNC_ROUTE,
 } from './routes';
 
 /**
@@ -161,20 +160,6 @@ const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#override-content-security-policy-header`,
     icon: 'fas fa-sliders-h',
     hidden: getPlatform() !== PLATFORM_FIREFOX,
-  },
-  {
-    tabMessage: (t) => t('backupAndSync'),
-    sectionMessage: (t) => t('backupAndSyncEnable'),
-    descriptionMessage: (t) => t('backupAndSyncEnable'),
-    route: `${BACKUPANDSYNC_ROUTE}#backup-and-sync-toggle`,
-    iconName: IconName.SecurityTime,
-  },
-  {
-    tabMessage: (t) => t('backupAndSync'),
-    sectionMessage: (t) => t('backupAndSyncFeatureAccounts'),
-    descriptionMessage: (t) => t('backupAndSyncFeatureAccounts'),
-    route: `${BACKUPANDSYNC_ROUTE}#backup-and-sync-features-toggles-account-syncing`,
-    iconName: IconName.SecurityTime,
   },
   {
     tabMessage: (t) => t('contacts'),
@@ -343,6 +328,14 @@ const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('deleteMetaMetricsData'),
     descriptionMessage: (t) => t('deleteMetaMetricsDataDescription'),
     route: `${SECURITY_ROUTE}#delete-metametrics-data`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[21]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('profileSync'),
+    descriptionMessage: (t) => t('profileSyncDescription'),
+    route: `${SECURITY_ROUTE}#profile-sync`,
     icon: 'fa fa-lock',
   },
   {
@@ -519,6 +512,15 @@ const SETTINGS_CONSTANTS = [
     route: `${DEVELOPER_OPTIONS_ROUTE}#service-worker-keep-alive`,
     icon: IconName.CodeCircle,
   },
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('bitcoinSupportToggleTitle'),
+    descriptionMessage: (t) => t('bitcoinSupportToggleDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#bitcoin-support`,
+    icon: 'fas fa-flask',
+  },
+  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   {
     tabMessage: (t) => t('experimental'),

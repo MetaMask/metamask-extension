@@ -137,9 +137,7 @@ describe('SwapsBannerAlert', () => {
     );
     expect(getByText('No quotes available')).toBeInTheDocument();
     expect(
-      getByText(
-        "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option.",
-      ),
+      getByText('Reduce the size of your trade or use a different token.'),
     ).toBeInTheDocument();
     expect(getByText('Learn more about Swaps')).toBeInTheDocument();
   });

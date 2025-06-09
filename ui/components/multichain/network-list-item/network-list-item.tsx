@@ -58,7 +58,6 @@ export const NetworkListItem = ({
   showEndAccessory = true,
   disabled = false,
   variant,
-  notSelectable = false,
 }: {
   name: string;
   iconSrc?: string;
@@ -77,7 +76,6 @@ export const NetworkListItem = ({
   showEndAccessory?: boolean;
   disabled?: boolean;
   variant?: TextVariant;
-  notSelectable?: boolean;
 }) => {
   const t = useI18nContext();
   const networkRef = useRef<HTMLInputElement>(null);
@@ -145,7 +143,6 @@ export const NetworkListItem = ({
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
         'multichain-network-list-item--disabled': disabled,
-        'multichain-network-list-item--not-selectable': notSelectable,
       })}
       display={Display.Flex}
       alignItems={AlignItems.center}

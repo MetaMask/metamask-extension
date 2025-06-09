@@ -48,6 +48,13 @@ export default {
     className: { control: 'text' },
     onClick: { action: 'clicked' },
   },
+  args: {
+    disabled: false,
+    large: false,
+    submit: false,
+    className: '',
+    rounded: true,
+  },
 };
 
 export const DefaultStory = (args) => (

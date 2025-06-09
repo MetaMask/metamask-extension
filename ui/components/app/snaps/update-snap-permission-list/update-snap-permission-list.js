@@ -10,7 +10,6 @@ import {
 } from '../../../../selectors';
 import SnapPermissionAdapter from '../snap-permission-adapter';
 import {
-  BlockSize,
   Display,
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
@@ -113,7 +112,7 @@ export default function UpdateSnapPermissionList({
   };
 
   return (
-    <Box width={BlockSize.Full}>
+    <Box>
       <SnapPermissionAdapter
         permissions={newWeightedPermissions}
         snapId={snapId}

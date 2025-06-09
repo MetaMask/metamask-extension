@@ -22,7 +22,6 @@ describe('Editing Confirm Transaction', function () {
           .withPreferencesController(PREFERENCES_STATE_MOCK)
           .withConversionRateDisabled()
           .build(),
-        localNodeOptions: { hardfork: 'muirGlacier' },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -107,6 +106,7 @@ describe('Editing Confirm Transaction', function () {
           .withConversionRateDisabled()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
+        localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

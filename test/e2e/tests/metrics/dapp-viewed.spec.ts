@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import { Browser } from 'selenium-webdriver';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
@@ -64,12 +63,6 @@ async function mockPermissionApprovedEndpoint(mockServer: Mockttp) {
 }
 
 describe('Dapp viewed Event', function () {
-  before(function () {
-    // currently we are not emitting dapp viewed events on Firefox
-    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-      this.skip();
-    }
-  });
   const validFakeMetricsId = 'fake-metrics-fd20';
   it('is not sent when metametrics ID is not valid', async function () {
     async function mockSegment(mockServer: Mockttp) {

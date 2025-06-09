@@ -16,12 +16,7 @@ export const useNetworkFormState = (existingNetwork?: UpdateNetworkFields) => {
   const [ticker, setTicker] = useState<string>('');
 
   const [rpcUrls, setRpcUrls] = useState<{
-    rpcEndpoints: {
-      name?: string;
-      url: string;
-      failoverUrls?: string[];
-      type: RpcEndpointType;
-    }[];
+    rpcEndpoints: { name?: string; url: string; type: RpcEndpointType }[];
     defaultRpcEndpointIndex?: number;
   }>({
     rpcEndpoints: [],

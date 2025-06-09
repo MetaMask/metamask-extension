@@ -65,11 +65,6 @@ describe('AssetPage', () => {
     },
     metamask: {
       ...mockMultichainNetworkState(),
-      remoteFeatureFlags: {
-        bridgeConfig: {
-          support: true,
-        },
-      },
       tokenList: {},
       tokenBalances: {
         [selectedAccountAddress]: {
@@ -146,6 +141,7 @@ describe('AssetPage', () => {
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     setBackgroundConnection({
       getTokenSymbol: jest.fn(),
+      setBridgeFeatureFlags: jest.fn(),
     } as never);
   });
 
@@ -310,7 +306,7 @@ describe('AssetPage', () => {
     });
   });
 
-  it('should disable Bridge button if chain id is not supported', async () => {
+  it('should not show the Bridge button if chain id is not supported', async () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
@@ -322,7 +318,7 @@ describe('AssetPage', () => {
       }),
     );
     const bridgeButton = queryByTestId('token-overview-bridge');
-    expect(bridgeButton).toBeDisabled();
+    expect(bridgeButton).not.toBeInTheDocument();
   });
 
   it('should render the network name', async () => {
@@ -375,10 +371,10 @@ describe('AssetPage', () => {
       }),
     );
 
-    // Verify we show the loading state
+    // Verify no chart is rendered
     await waitFor(() => {
-      const chart = queryByTestId('asset-chart-loading');
-      expect(chart).toBeInTheDocument();
+      const chart = queryByTestId('asset-price-chart');
+      expect(chart).toBeNull();
     });
 
     const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
@@ -425,7 +421,7 @@ describe('AssetPage', () => {
     // Verify chart is rendered
     await waitFor(() => {
       const chart = queryByTestId('asset-price-chart');
-      expect(chart).toBeInTheDocument();
+      expect(chart).toHaveClass('mm-box--background-color-transparent');
     });
 
     // Verify market data is rendered

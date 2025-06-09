@@ -71,7 +71,6 @@ const mockState = {
     isEvmSelected: false,
     remoteFeatureFlags: {
       addSolanaAccount: true,
-      addBitcoinAccount: true,
     },
   },
 };

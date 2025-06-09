@@ -86,7 +86,6 @@ export function NotificationsListItem({
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       width={BlockSize.Full}
-      data-testid={`notification-list-item-${notification.id}`}
     >
       <ncs.item notification={notification} onClick={handleNotificationClick} />
     </Box>

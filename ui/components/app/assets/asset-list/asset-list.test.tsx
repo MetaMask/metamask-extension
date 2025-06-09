@@ -174,9 +174,7 @@ describe('AssetList', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
-      expect(
-        screen.getByTestId('asset-list-control-bar-action-button'),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId('import-token-button')).toBeInTheDocument();
     });
   });
 });

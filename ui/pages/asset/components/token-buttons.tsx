@@ -9,21 +9,28 @@ import { isEqual } from 'lodash';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   SEND_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   PREPARE_SWAP_ROUTE,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import { startNewDraftTransaction } from '../../../ducks/send';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
+///: END:ONLY_INCLUDE_IF
 import {
   getIsSwapsChain,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getIsBridgeChain,
   getCurrentKeyring,
+  ///: END:ONLY_INCLUDE_IF
   getNetworkConfigurationIdByChainId,
   getSelectedInternalAccount,
-  getSelectedMultichainNetworkConfiguration,
 } from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useBridging from '../../../hooks/bridge/useBridging';
+///: END:ONLY_INCLUDE_IF
 
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import {
@@ -50,9 +57,14 @@ import {
   IconName,
   IconSize,
 } from '../../../components/component-library';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
+///: END:ONLY_INCLUDE_IF
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
+import {
+  getMultichainIsEvm,
+  getMultichainNetwork,
+} from '../../../selectors/multichain';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hooks/useHandleSendNonEvm';
@@ -63,7 +75,7 @@ import { MultichainNetworks } from '../../../../shared/constants/multichain/netw
 ///: END:ONLY_INCLUDE_IF
 
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import { Asset } from '../types/asset';
+import type { Asset } from './asset-page';
 
 const TokenButtons = ({
   token,
@@ -74,16 +86,17 @@ const TokenButtons = ({
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const keyring = useSelector(getCurrentKeyring);
   // @ts-expect-error keyring type is wrong maybe?
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
+  ///: END:ONLY_INCLUDE_IF
   const isEvm = useMultichainSelector(getMultichainIsEvm);
 
   const account = useSelector(getSelectedInternalAccount, isEqual);
 
-  const { chainId: multichainChainId } = useSelector(
-    getSelectedMultichainNetworkConfiguration,
-  );
+  const { chainId: multichainChainId } =
+    useMultichainSelector(getMultichainNetwork);
 
   const currentChainId = useSelector(getCurrentChainId);
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
@@ -93,12 +106,12 @@ const TokenButtons = ({
   const isSwapsChain = useSelector((state) =>
     getIsSwapsChain(state, isEvm ? currentChainId : multichainChainId),
   );
-  const isBridgeChain = useSelector((state) =>
-    getIsBridgeChain(state, isEvm ? currentChainId : multichainChainId),
-  );
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const { openBuyCryptoInPdapp } = useRamps();
   const { openBridgeExperience } = useBridging();
+  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const handleSendNonEvm = useHandleSendNonEvm(token.address as CaipAssetType);
@@ -241,6 +254,7 @@ const TokenButtons = ({
 
     await setCorrectChain();
 
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     trackEvent({
       event: MetaMetricsEventName.NavSwapButtonClicked,
       category: MetaMetricsEventCategory.Swaps,
@@ -273,6 +287,7 @@ const TokenButtons = ({
     } else {
       history.push(PREPARE_SWAP_ROUTE);
     }
+    ///: END:ONLY_INCLUDE_IF
   }, [
     currentChainId,
     trackEvent,
@@ -287,23 +302,27 @@ const TokenButtons = ({
 
   return (
     <Box display={Display.Flex} justifyContent={JustifyContent.spaceEvenly}>
-      <IconButton
-        className="token-overview__button"
-        Icon={
-          <Icon
-            name={IconName.PlusAndMinus}
-            color={IconColor.iconDefault}
-            size={IconSize.Sm}
-          />
-        }
-        label={t('buyAndSell')}
-        data-testid="token-overview-buy"
-        onClick={handleBuyAndSellOnClick}
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        disabled={token.isERC721 || !isBuyableChain}
-        tooltipRender={null}
-      />
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+        <IconButton
+          className="token-overview__button"
+          Icon={
+            <Icon
+              name={IconName.PlusMinus}
+              color={IconColor.primaryInverse}
+              size={IconSize.Sm}
+            />
+          }
+          label={t('buyAndSell')}
+          data-testid="token-overview-buy"
+          onClick={handleBuyAndSellOnClick}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+          disabled={token.isERC721 || !isBuyableChain}
+          tooltipRender={null}
+        />
+        ///: END:ONLY_INCLUDE_IF
+      }
 
       <IconButton
         className="token-overview__button"
@@ -311,7 +330,7 @@ const TokenButtons = ({
         Icon={
           <Icon
             name={IconName.Arrow2UpRight}
-            color={IconColor.iconDefault}
+            color={IconColor.primaryInverse}
             size={IconSize.Sm}
           />
         }
@@ -320,37 +339,42 @@ const TokenButtons = ({
         disabled={token.isERC721}
         tooltipRender={null}
       />
+      {isSwapsChain && (
+        <IconButton
+          className="token-overview__button"
+          Icon={
+            <Icon
+              name={IconName.SwapHorizontal}
+              color={IconColor.primaryInverse}
+              size={IconSize.Sm}
+            />
+          }
+          onClick={handleSwapOnClick}
+          label={t('swap')}
+          tooltipRender={null}
+        />
+      )}
 
-      <IconButton
-        className="token-overview__button"
-        Icon={
-          <Icon
-            name={IconName.SwapHorizontal}
-            color={IconColor.iconDefault}
-            size={IconSize.Sm}
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+        isBridgeChain && (
+          <IconButton
+            className="token-overview__button"
+            data-testid="token-overview-bridge"
+            Icon={
+              <Icon
+                name={IconName.Bridge}
+                color={IconColor.primaryInverse}
+                size={IconSize.Sm}
+              />
+            }
+            label={t('bridge')}
+            onClick={() => handleBridgeOnClick(false)}
+            tooltipRender={null}
           />
-        }
-        onClick={handleSwapOnClick}
-        label={t('swap')}
-        tooltipRender={null}
-        disabled={!isSwapsChain}
-      />
-
-      <IconButton
-        className="token-overview__button"
-        data-testid="token-overview-bridge"
-        Icon={
-          <Icon
-            name={IconName.Bridge}
-            color={IconColor.iconDefault}
-            size={IconSize.Sm}
-          />
-        }
-        label={t('bridge')}
-        onClick={() => handleBridgeOnClick(false)}
-        tooltipRender={null}
-        disabled={!isBridgeChain}
-      />
+        )
+        ///: END:ONLY_INCLUDE_IF
+      }
     </Box>
   );
 };

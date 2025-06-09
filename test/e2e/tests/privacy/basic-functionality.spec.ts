@@ -14,14 +14,8 @@ import {
 } from '../../page-objects/flows/onboarding.flow';
 import { mockEmptyPrices } from '../tokens/utils/mocks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import {
-  UserStorageMockttpController,
-  UserStorageResponseData,
-} from '../../helpers/identity/user-storage/userStorageMockttpController';
-import {
-  accountsToMockForAccountsSync,
-  getAccountsSyncMockResponse,
-} from '../identity/account-syncing/mock-data';
+import { UserStorageMockttpController, UserStorageResponseData } from '../../helpers/identity/user-storage/userStorageMockttpController';
+import { accountsToMockForAccountsSync, getAccountsSyncMockResponse } from '../identity/account-syncing/mock-data';
 import { mockIdentityServices } from '../identity/mocks';
 
 async function mockApis(
@@ -96,21 +90,19 @@ describe('MetaMask onboarding', function () {
       mockedAccountSyncResponse,
       userStorageMockttpController,
     };
-  };
+  }
 
   it('should prevent network requests to basic functionality endpoints when the basic functionality toggle is off', async function () {
-    const { mockedAccountSyncResponse, userStorageMockttpController } =
-      await arrange();
+    const {
+      mockedAccountSyncResponse,
+      userStorageMockttpController,
+    } = await arrange();
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) =>
-          mockApis(
-            server,
-            userStorageMockttpController,
-            mockedAccountSyncResponse,
-          ),
+        testSpecificMock: (server: Mockttp) => mockApis(server, userStorageMockttpController, mockedAccountSyncResponse),
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await importSRPOnboardingFlow({ driver });
@@ -149,18 +141,16 @@ describe('MetaMask onboarding', function () {
   });
 
   it('should not prevent network requests to basic functionality endpoints when the basic functionality toggle is on', async function () {
-    const { mockedAccountSyncResponse, userStorageMockttpController } =
-      await arrange();
+    const {
+      mockedAccountSyncResponse,
+      userStorageMockttpController,
+    } = await arrange();
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) =>
-          mockApis(
-            server,
-            userStorageMockttpController,
-            mockedAccountSyncResponse,
-          ),
+        testSpecificMock: (server: Mockttp) => mockApis(server, userStorageMockttpController, mockedAccountSyncResponse),
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeImportSRPOnboardingFlow({ driver });

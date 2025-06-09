@@ -48,7 +48,6 @@ const SnapAccountRedirectContent = ({
           data-testid="snap-account-redirect-content-title"
           textAlign={TextAlign.Center}
           variant={TextVariant.headingLg}
-          paddingBottom={2}
         >
           {t('snapAccountRedirectFinishSigningTitle')}
         </Text>

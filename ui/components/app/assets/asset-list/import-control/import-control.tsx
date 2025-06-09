@@ -28,7 +28,7 @@ const AssetListControlBar = ({
   return (
     <ButtonBase
       className="asset-list-control-bar__button"
-      data-testid="asset-list-control-bar-action-button"
+      data-testid="import-token-button"
       disabled={!shouldShowTokensLinks}
       size={ButtonBaseSize.Sm}
       startIconName={IconName.MoreVertical}

@@ -88,7 +88,7 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
         display={Display.InlineFlex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
-        borderRadius={BorderRadius.XL}
+        borderRadius={BorderRadius.pill}
         {...(tagProps as TextProps<C>)}
       >
         {startIconName && (

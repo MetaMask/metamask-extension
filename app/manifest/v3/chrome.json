@@ -4,8 +4,8 @@
     "sandbox": "sandbox allow-scripts; script-src 'self' 'unsafe-inline' 'unsafe-eval'; object-src 'none'; default-src 'none'; connect-src *; font-src 'self';"
   },
   "externally_connectable": {
-    "matches": ["http://*/*", "https://*/*"],
+    "matches": ["https://metamask.io/*"],
     "ids": ["*"]
   },
-  "minimum_chrome_version": "109"
+  "minimum_chrome_version": "89"
 }

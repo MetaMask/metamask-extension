@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { RpcEndpointType } from '@metamask/network-controller';
 import NetworkListItem from './network-list-item';
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/extend-expect';
 
 const mockStore = configureMockStore([thunk]);
 

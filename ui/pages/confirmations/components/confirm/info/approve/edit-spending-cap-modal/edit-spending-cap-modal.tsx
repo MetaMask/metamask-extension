@@ -28,12 +28,10 @@ import {
   estimateGas,
   updateEditableParams,
 } from '../../../../../../../store/actions';
+import { getCustomTxParamsData } from '../../../../../confirm-approve/confirm-approve.util';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
-import { ConfirmLoader } from '../../shared/confirm-loader/confirm-loader';
-import { parseApprovalTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
-import { updateApprovalAmount } from '../../../../../../../../shared/lib/transactions/approvals';
 
 export function countDecimalDigits(numberString: string) {
   return numberString.split('.')[1]?.length || 0;
@@ -61,16 +59,13 @@ export const EditSpendingCapModal = ({
 
   const currentTo = transactionMeta.txParams.to;
   const currentFrom = transactionMeta.txParams.from;
-  const currentData = transactionMeta.txParams.data as Hex;
+  const currentData = transactionMeta.txParams.data;
 
   const transactionTo = to ?? currentTo;
   const transactionData = data ?? currentData;
 
-  const { tokenAddress } =
-    parseApprovalTransactionData(transactionData ?? '0x') ?? {};
-
   const { userBalance, tokenSymbol, decimals } = useAssetDetails(
-    tokenAddress ?? transactionTo,
+    transactionTo,
     currentFrom,
     transactionData,
     transactionMeta.chainId,
@@ -94,8 +89,10 @@ export const EditSpendingCapModal = ({
     [currentFrom, transactionData, transactionMeta, transactionTo],
   );
 
-  const { formattedSpendingCap, pending, spendingCap } =
-    useApproveTokenSimulation(finalTransactionMeta, decimals);
+  const { formattedSpendingCap, spendingCap } = useApproveTokenSimulation(
+    finalTransactionMeta,
+    decimals,
+  );
 
   const [customSpendingCapInputValue, setCustomSpendingCapInputValue] =
     useState(spendingCap);
@@ -120,11 +117,15 @@ export const EditSpendingCapModal = ({
   const handleSubmit = useCallback(async () => {
     setIsModalSaving(true);
 
-    const customTxParamsData = updateApprovalAmount(
-      transactionData,
-      (customSpendingCapInputValue || '0').replace('#', ''),
-      Number(decimals || 0),
-    );
+    const customTxParamsData = getCustomTxParamsData(
+      finalTransactionMeta?.txParams?.data,
+      {
+        customPermissionAmount: customSpendingCapInputValue || '0',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        decimals: decimals || '0',
+      },
+    ) as Hex;
 
     if (onSubmit) {
       onSubmit(customTxParamsData);
@@ -155,7 +156,6 @@ export const EditSpendingCapModal = ({
     onSubmit,
     setIsOpenEditSpendingCapModal,
     spendingCap,
-    transactionData,
     transactionMeta.id,
   ]);
 
@@ -193,61 +193,53 @@ export const EditSpendingCapModal = ({
           >
             {t('editSpendingCapDesc')}
           </Text>
-          {pending ? (
-            <ConfirmLoader />
-          ) : (
-            <>
-              <TextField
-                type={TextFieldType.Number}
-                value={customSpendingCapInputValue}
-                onChange={(event) =>
-                  setCustomSpendingCapInputValue(event.target.value)
-                }
-                placeholder={`${formattedSpendingCap} ${tokenSymbol}`}
-                style={{ width: '100%' }}
-                inputProps={{ 'data-testid': 'custom-spending-cap-input' }}
-              />
-              {showDecimalError && (
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={TextColor.errorDefault}
-                  paddingTop={1}
-                >
-                  {t('editSpendingCapError', [decimals])}
-                </Text>
-              )}
-              {showSpecialCharacterError && (
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={TextColor.errorDefault}
-                  paddingTop={1}
-                >
-                  {t('editSpendingCapSpecialCharError')}
-                </Text>
-              )}
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-                paddingTop={1}
-              >
-                {t('editSpendingCapAccountBalance', [
-                  accountBalance,
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                  tokenSymbol || '',
-                ])}
-              </Text>
-            </>
+          <TextField
+            type={TextFieldType.Number}
+            value={customSpendingCapInputValue}
+            onChange={(event) =>
+              setCustomSpendingCapInputValue(event.target.value)
+            }
+            placeholder={`${formattedSpendingCap} ${tokenSymbol}`}
+            style={{ width: '100%' }}
+            inputProps={{ 'data-testid': 'custom-spending-cap-input' }}
+          />
+          {showDecimalError && (
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.errorDefault}
+              paddingTop={1}
+            >
+              {t('editSpendingCapError', [decimals])}
+            </Text>
           )}
+          {showSpecialCharacterError && (
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.errorDefault}
+              paddingTop={1}
+            >
+              {t('editSpendingCapSpecialCharError')}
+            </Text>
+          )}
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+            paddingTop={1}
+          >
+            {t('editSpendingCapAccountBalance', [
+              accountBalance,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+              tokenSymbol || '',
+            ])}
+          </Text>
         </ModalBody>
         <ModalFooter
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onSubmit={handleSubmit}
           onCancel={handleCancel}
           submitButtonProps={{
             children: t('save'),
-            loading: pending || isModalSaving,
+            loading: isModalSaving,
             disabled:
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
               // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing

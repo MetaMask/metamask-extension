@@ -37,8 +37,6 @@ import {
   KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerLockEvent,
 } from '@metamask/keyring-controller';
-import { SelectedNetworkControllerGetNetworkClientIdForDomainAction } from '@metamask/selected-network-controller';
-import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
 import { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
 
 type Actions =
@@ -66,9 +64,7 @@ type Actions =
   | Update
   | ResolveVersion
   | CreateInterface
-  | GetInterface
-  | SelectedNetworkControllerGetNetworkClientIdForDomainAction
-  | NetworkControllerGetNetworkClientByIdAction;
+  | GetInterface;
 
 type Events =
   | ErrorMessageEvent
@@ -118,14 +114,12 @@ export function getSnapControllerMessenger(
       'ExecutionService:terminateSnap',
       'ExecutionService:terminateAllSnaps',
       'ExecutionService:handleRpcRequest',
-      'NetworkController:getNetworkClientById',
-      'SelectedNetworkController:getNetworkClientIdForDomain',
       'SnapsRegistry:get',
       'SnapsRegistry:getMetadata',
       'SnapsRegistry:update',
       'SnapsRegistry:resolveVersion',
-      'SnapInterfaceController:createInterface',
-      'SnapInterfaceController:getInterface',
+      `SnapInterfaceController:createInterface`,
+      `SnapInterfaceController:getInterface`,
     ],
   });
 }

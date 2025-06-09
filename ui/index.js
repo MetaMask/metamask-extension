@@ -5,7 +5,6 @@ import { clone } from 'lodash';
 import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
-import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -17,10 +16,11 @@ import { maskObject } from '../shared/modules/object.utils';
 import { SENTRY_UI_STATE } from '../app/scripts/constants/sentry-state';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
 import { COPY_OPTIONS } from '../shared/constants/copy';
-import { switchDirection } from '../shared/lib/switch-direction';
+import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
+import { isInternalAccountInPermittedAccountIds } from '../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -136,7 +136,6 @@ export async function setupInitialStore(
     const selectedAccount = getSelectedInternalAccount(draftInitialState);
 
     const currentTabIsConnectedToSelectedAddress =
-      selectedAccount &&
       isInternalAccountInPermittedAccountIds(
         selectedAccount,
         permittedAccountsForCurrentTab,

@@ -170,6 +170,9 @@
   "addBitcoinAccountLabel": {
     "message": "比特币账户（测试版）"
   },
+  "addBitcoinTestnetAccountLabel": {
+    "message": "比特币账户（测试网）"
+  },
   "addBlockExplorer": {
     "message": "添加区块浏览器"
   },
@@ -659,6 +662,22 @@
     "message": "十亿",
     "description": "Shortened form of 'billion'"
   },
+  "bitcoinSupportSectionTitle": {
+    "message": "比特币"
+  },
+  "bitcoinSupportToggleDescription": {
+    "message": "启用此功能后，您可以选择将比特币账户添加到衍生自现有私钥助记词的 MetaMask Extension 中。这是一个实验性的测试版功能，因此您应自行承担使用风险。为了向我们提供有关此新比特币体验的反馈，请填写此 $1。",
+    "description": "$1 is the link to a product feedback form"
+  },
+  "bitcoinSupportToggleTitle": {
+    "message": "启用“添加新的比特币账户（测试版）”"
+  },
+  "bitcoinTestnetSupportToggleDescription": {
+    "message": "启用此功能后，您可以选择为测试网络添加比特币账户。"
+  },
+  "bitcoinTestnetSupportToggleTitle": {
+    "message": "启用“添加新的比特币账户（测试网）”"
+  },
   "blockExplorerAccountAction": {
     "message": "账户",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -936,7 +955,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "我们使用 Infura 作为我们的远程过程调用（RPC）提供商，以提供最可靠和最私密的以太坊数据访问。您可以选择自己的 RPC，但请谨记，任何 RPC 都可以接收您的 IP 地址和以太坊钱包以进行交易。请阅读我们的 $1，进一步了解 Infura 如何处理数据。",
-    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
+    "description": "$1 is a link to the privacy policy"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "您需要在 Google Chrome 上使用 MetaMask 以连接到您的硬件钱包。"
@@ -1005,6 +1024,9 @@
   },
   "confirm": {
     "message": "确认"
+  },
+  "confirmAccountType": {
+    "message": "类型"
   },
   "confirmAccountTypeSmartContract": {
     "message": "智能账户"
@@ -1319,6 +1341,10 @@
   },
   "creatorAddress": {
     "message": "创建者地址"
+  },
+  "crossChainAggregatedBalancePopover": {
+    "message": "这反映了您在所有网络上拥有的所有代币的价值。如果您更愿意看到以 ETH 或其他货币反映代币价值，请转到 $1。",
+    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "使用 MetaMask Portfolio 跨网络兑换"
@@ -2688,6 +2714,9 @@
   "ledgerLocked": {
     "message": "无法连接到 Ledger 设备。请确保您的设备已解锁并打开 Etherum 应用程序。"
   },
+  "ledgerMultipleDevicesUnsupportedErrorMessage": {
+    "message": "无法同时连接多个 Ledger 设备。如需连接新的 Ledger 设备，需先断开原有设备。"
+  },
   "ledgerTimeout": {
     "message": "Ledger Live 响应时间过长或连接超时。请确保 Ledger Live 应用程序已打开且您的设备已解锁。"
   },
@@ -3422,6 +3451,10 @@
     "message": "交易 $1 失败！$2",
     "description": "Content of the browser notification that appears when a transaction fails"
   },
+  "notificationTransactionFailedMessageMMI": {
+    "message": "交易失败！ $1",
+    "description": "Content of the browser notification that appears when a transaction fails in MMI"
+  },
   "notificationTransactionFailedTitle": {
     "message": "失败交易",
     "description": "Title of the browser notification that appears when a transaction fails"
@@ -3634,6 +3667,22 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "您的 MetaMask 安装完成！"
+  },
+  "oneDayAbbreviation": {
+    "message": "1 天",
+    "description": "Shortened form of '1 day'"
+  },
+  "oneMonthAbbreviation": {
+    "message": "1 个月",
+    "description": "Shortened form of '1 month'"
+  },
+  "oneWeekAbbreviation": {
+    "message": "1 周",
+    "description": "Shortened form of '1 week'"
+  },
+  "oneYearAbbreviation": {
+    "message": "1 年",
+    "description": "Shortened form of '1 year'"
   },
   "onlyConnectTrust": {
     "message": "仅连接您信任的网站。$1",
@@ -4038,7 +4087,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "这些网络中的其中一些依赖于第三方。此连接可能不太可靠，或使第三方可进行活动跟踪。$1",
-    "description": "Learn more link"
+    "description": "$1 is Learn more link"
   },
   "popularNetworks": {
     "message": "热门网络"
@@ -4104,6 +4153,18 @@
   },
   "productAnnouncements": {
     "message": "产品公告"
+  },
+  "profileSync": {
+    "message": "配置文件同步"
+  },
+  "profileSyncConfirmation": {
+    "message": "如果您关闭配置文件同步，您将无法收到通知。"
+  },
+  "profileSyncDescription": {
+    "message": "创建配置文件，MetaMask 用以在您的不同设备之间同步某些设置。这是获取通知的必需条件。$1。"
+  },
+  "profileSyncPrivacyLink": {
+    "message": "了解我们如何保护您的隐私"
   },
   "proposedApprovalLimit": {
     "message": "拟议的审批上限"
@@ -5917,6 +5978,10 @@
     "message": "第三方软件通告",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
+  "threeMonthsAbbreviation": {
+    "message": "3 个月",
+    "description": "Shortened form of '3 months'"
+  },
   "time": {
     "message": "时间"
   },
@@ -6465,6 +6530,9 @@
   },
   "yourBalance": {
     "message": "您的余额"
+  },
+  "yourBalanceIsAggregated": {
+    "message": "您的余额已汇总"
   },
   "yourNFTmayBeAtRisk": {
     "message": "您的 NFT 可能面临风险"

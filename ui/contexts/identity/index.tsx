@@ -12,7 +12,7 @@ export const MetamaskIdentityProvider: React.FC = ({ children }) => {
   const { autoSignOut, shouldAutoSignOut } = useAutoSignOut();
 
   /**
-   * Backup and sync effects
+   * Profile syncing effects
    */
   useEffect(() => {
     if (shouldDispatchAccountSyncing) {

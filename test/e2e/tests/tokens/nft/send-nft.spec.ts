@@ -11,7 +11,6 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import { Driver } from '../../../webdriver/driver';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import { switchToNetworkFlow } from '../../../page-objects/flows/network.flow';
-import { Anvil } from '../../../seeder/anvil';
 
 describe('Send NFTs', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -24,14 +23,8 @@ describe('Send NFTs', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        localNodes,
-      }: {
-        driver: Driver;
-        localNodes: Anvil[];
-      }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         const nftListPage = new NftListPage(driver);
 
         await new HeaderNavbar(driver).check_currentSelectedNetwork(
@@ -63,14 +56,8 @@ describe('Send NFTs', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        localNodes,
-      }: {
-        driver: Driver;
-        localNodes: Anvil[];
-      }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(driver);
         const nftListPage = new NftListPage(driver);
 
         await new HeaderNavbar(driver).check_currentSelectedNetwork(

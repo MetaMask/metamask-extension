@@ -1,4 +1,5 @@
 import React from 'react';
+import { IconName } from '@metamask/snaps-sdk/jsx';
 import {
   AlignItems,
   Display,
@@ -12,7 +13,6 @@ import {
   ButtonIcon,
   ButtonIconSize,
   Text,
-  IconName,
 } from '../../../../components/component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AssetPill } from './asset-pill';

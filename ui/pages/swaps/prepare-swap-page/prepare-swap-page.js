@@ -59,10 +59,7 @@ import {
   getLatestAddedTokenTo,
   getUsedQuote,
 } from '../../../ducks/swaps/swaps';
-import {
-  getCurrentChainId,
-  getSelectedNetworkClientId,
-} from '../../../../shared/modules/selectors/networks';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   getSwapsDefaultToken,
   getTokenExchangeRates,
@@ -213,7 +210,6 @@ export default function PrepareSwapPage({
   const swapsErrorKey = useSelector(getSwapsErrorKey);
   const aggregatorMetadata = useSelector(getAggregatorMetadata, shallowEqual);
   const { defaultToToken } = useSwapDefaultToToken();
-  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   const transactionSettingsOpened = useSelector(
     getTransactionSettingsOpened,
@@ -491,14 +487,13 @@ export default function PrepareSwapPage({
           ignoreTokens({
             tokensToIgnore: toAddress,
             dontShowLoadingIndicator: true,
-            networkClientId,
           }),
         );
       }
       dispatch(setSwapToToken(token));
       setVerificationClicked(false);
     },
-    [dispatch, latestAddedTokenTo, toAddress, networkClientId],
+    [dispatch, latestAddedTokenTo, toAddress],
   );
 
   const tokensWithBalancesFromToken = tokensWithBalances.find((token) =>

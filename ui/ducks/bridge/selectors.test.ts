@@ -262,6 +262,28 @@ describe('Bridge selectors', () => {
   });
 
   describe('getIsBridgeTx', () => {
+    it('returns false if bridge is not enabled', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          extensionConfig: {
+            support: false,
+            chains: {
+              '0x1': { isActiveSrc: true, isActiveDest: false },
+              '0x38': { isActiveSrc: false, isActiveDest: true },
+            },
+          },
+        },
+        bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0x38') },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: '0x1' }),
+        },
+      });
+
+      const result = getIsBridgeTx(state as never);
+
+      expect(result).toBe(false);
+    });
+
     it('returns false if toChainId is null', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
@@ -304,7 +326,29 @@ describe('Bridge selectors', () => {
       expect(result).toBe(false);
     });
 
-    it('returns true if fromChain and toChainId have different chainIds', () => {
+    it('returns false if useExternalServices is not enabled', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          extensionConfig: {
+            support: true,
+            chains: {
+              '0x1': { isActiveSrc: true, isActiveDest: false },
+              '0x38': { isActiveSrc: false, isActiveDest: true },
+            },
+          },
+        },
+        bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0x38') },
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: '0x1' }),
+        },
+      });
+
+      const result = getIsBridgeTx(state as never);
+
+      expect(result).toBe(false);
+    });
+
+    it('returns true if bridge is enabled and fromChain and toChainId have different chainIds', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           extensionConfig: {
@@ -453,13 +497,7 @@ describe('Bridge selectors', () => {
           toTokenExchangeRate: 0.99,
         },
         bridgeStateOverrides: {
-          quoteRequest: {
-            insufficientBal: false,
-            srcChainId: 10,
-            srcTokenAddress: zeroAddress(),
-            destChainId: '0x89',
-            destTokenAddress: zeroAddress(),
-          },
+          quoteRequest: { insufficientBal: false },
           quotes: mockErc20Erc20Quotes,
           quotesFetchStatus: 1,
           quotesRefreshCount: 5,
@@ -491,41 +529,41 @@ describe('Bridge selectors', () => {
 
       const recommendedQuoteMetadata = {
         adjustedReturn: {
-          usd: '13.84343712858974048',
-          valueInCurrency: '13.84343712858974048',
+          valueInCurrency: expect.any(Object),
+          usd: expect.any(Object),
         },
         cost: {
-          valueInCurrency: '0.15656287141025952',
-          usd: '0.15656287141025952',
+          valueInCurrency: new BigNumber('0.15656287141025952'),
+          usd: new BigNumber('0.15656287141025952'),
         },
         sentAmount: {
-          valueInCurrency: '14',
-          amount: '14',
-          usd: '14',
+          valueInCurrency: new BigNumber('14'),
+          amount: new BigNumber('14'),
+          usd: new BigNumber('14'),
         },
-        swapRate: '0.99887714285714285714',
+        swapRate: new BigNumber('0.998877142857142857142857142857142857'),
         toTokenAmount: {
-          valueInCurrency: '13.8444372',
-          usd: '13.8444372',
-          amount: '13.98428',
+          valueInCurrency: new BigNumber('13.8444372'),
+          usd: new BigNumber('13.8444372'),
+          amount: new BigNumber('13.98428'),
         },
         gasFee: {
-          amount: '7.141025952e-8',
-          amountMax: '9.933761952e-8',
-          usd: '7.141025952e-8',
-          usdMax: '9.933761952e-8',
-          valueInCurrency: '7.141025952e-8',
-          valueInCurrencyMax: '9.933761952e-8',
+          amount: new BigNumber('7.141025952e-8'),
+          amountMax: new BigNumber('9.933761952e-8'),
+          usd: new BigNumber('7.141025952e-8'),
+          usdMax: new BigNumber('9.933761952e-8'),
+          valueInCurrency: new BigNumber('7.141025952e-8'),
+          valueInCurrencyMax: new BigNumber('9.933761952e-8'),
         },
         totalMaxNetworkFee: {
-          amount: '0.00100009933761952',
-          valueInCurrency: '0.00100009933761952',
-          usd: '0.00100009933761952',
+          amount: new BigNumber('0.00100009933761952'),
+          valueInCurrency: new BigNumber('0.00100009933761952'),
+          usd: new BigNumber('0.00100009933761952'),
         },
         totalNetworkFee: {
-          valueInCurrency: '0.00100007141025952',
-          amount: '0.00100007141025952',
-          usd: '0.00100007141025952',
+          valueInCurrency: new BigNumber('0.00100007141025952'),
+          amount: new BigNumber('0.00100007141025952'),
+          usd: new BigNumber('0.00100007141025952'),
         },
       };
 
@@ -568,13 +606,7 @@ describe('Bridge selectors', () => {
           fromTokenExchangeRate: 1,
         },
         bridgeStateOverrides: {
-          quoteRequest: {
-            insufficientBal: false,
-            srcChainId: 10,
-            srcTokenAddress: zeroAddress(),
-            destChainId: '0x89',
-            destTokenAddress: zeroAddress(),
-          },
+          quoteRequest: { insufficientBal: false },
           quotes: mockErc20Erc20Quotes,
           quotesFetchStatus: 1,
           quotesRefreshCount: 2,
@@ -596,10 +628,10 @@ describe('Bridge selectors', () => {
           },
           marketData: {},
           ...mockNetworkState(
-            { chainId: CHAIN_IDS.OPTIMISM },
             { chainId: CHAIN_IDS.MAINNET },
             { chainId: CHAIN_IDS.LINEA_MAINNET },
             { chainId: CHAIN_IDS.POLYGON },
+            { chainId: CHAIN_IDS.OPTIMISM },
           ),
         },
       });
@@ -607,52 +639,52 @@ describe('Bridge selectors', () => {
 
       const recommendedQuoteMetadata = {
         adjustedReturn: {
-          valueInCurrency: '13.843437128589739081572',
-          usd: '39.080515131939180597564',
+          valueInCurrency: new BigNumber('13.843437128589739081572'),
+          usd: new BigNumber('39.080515131939180597564'),
         },
         cost: {
-          valueInCurrency: '0.156562871410260918428',
-          usd: '240.919484868060819402436',
+          valueInCurrency: new BigNumber('0.156562871410260918428'),
+          usd: new BigNumber('240.919484868060819402436'),
         },
         sentAmount: {
-          valueInCurrency: '14',
-          amount: '14',
-          usd: '280',
+          valueInCurrency: new BigNumber('14'),
+          amount: new BigNumber('14'),
+          usd: new BigNumber('280'),
         },
-        swapRate: '0.99887714285714285714',
+        swapRate: new BigNumber('0.998877142857142857142857142857142857'),
         toTokenAmount: {
-          valueInCurrency: '13.844437199999998601572',
-          amount: '13.98428',
-          usd: '39.100516560144370997564',
+          valueInCurrency: new BigNumber('13.844437199999998601572'),
+          amount: new BigNumber('13.98428'),
+          usd: new BigNumber('39.100516560144370997564'),
         },
         gasFee: {
-          amount: '7.141025952e-8',
-          amountMax: '9.933761952e-8',
-          valueInCurrency: '7.141025952e-8',
-          valueInCurrencyMax: '9.933761952e-8',
-          usd: '0.0000014282051904',
-          usdMax: '0.0000019867523904',
+          amount: new BigNumber('7.141025952e-8'),
+          amountMax: new BigNumber('9.933761952e-8'),
+          valueInCurrency: new BigNumber('7.141025952e-8'),
+          valueInCurrencyMax: new BigNumber('9.933761952e-8'),
+          usd: new BigNumber('0.0000014282051904'),
+          usdMax: new BigNumber('0.0000019867523904'),
         },
         totalNetworkFee: {
-          valueInCurrency: '0.00100007141025952',
-          amount: '0.00100007141025952',
-          usd: '0.0200014282051904',
+          valueInCurrency: new BigNumber('0.00100007141025952'),
+          amount: new BigNumber('0.00100007141025952'),
+          usd: new BigNumber('0.0200014282051904'),
         },
         totalMaxNetworkFee: {
-          valueInCurrency: '0.00100009933761952',
-          amount: '0.00100009933761952',
-          usd: '0.0200019867523904',
+          valueInCurrency: new BigNumber('0.00100009933761952'),
+          amount: new BigNumber('0.00100009933761952'),
+          usd: new BigNumber('0.0200019867523904'),
         },
       };
       expect(result.sortedQuotes).toHaveLength(2);
       const EXPECTED_SORTED_COSTS = [
         {
-          valueInCurrency: '0.156562871410260918428',
-          usd: '240.919484868060819402436',
+          valueInCurrency: new BigNumber('0.156562871410260918428'),
+          usd: new BigNumber('240.919484868060819402436'),
         },
         {
-          valueInCurrency: '0.33900008283534602',
-          usd: '241.43473816584484486',
+          valueInCurrency: new BigNumber('0.33900008283534602'),
+          usd: new BigNumber('241.43473816584484486'),
         },
       ];
       result.sortedQuotes.forEach(
@@ -698,13 +730,7 @@ describe('Bridge selectors', () => {
           toTokenExchangeRate: 0.99,
         },
         bridgeStateOverrides: {
-          quoteRequest: {
-            insufficientBal: true,
-            srcChainId: 10,
-            srcTokenAddress: zeroAddress(),
-            destChainId: '0x89',
-            destTokenAddress: zeroAddress(),
-          },
+          quoteRequest: { insufficientBal: true },
           quotes: mockErc20Erc20Quotes,
           quotesFetchStatus: 1,
           quotesRefreshCount: 1,
@@ -726,10 +752,10 @@ describe('Bridge selectors', () => {
           },
           marketData: {},
           ...mockNetworkState(
-            { chainId: CHAIN_IDS.OPTIMISM },
             { chainId: CHAIN_IDS.MAINNET },
             { chainId: CHAIN_IDS.LINEA_MAINNET },
             { chainId: CHAIN_IDS.POLYGON },
+            { chainId: CHAIN_IDS.OPTIMISM },
           ),
         },
       });
@@ -737,52 +763,52 @@ describe('Bridge selectors', () => {
 
       const recommendedQuoteMetadata = {
         adjustedReturn: {
-          valueInCurrency: '13.84343712858974048',
-          usd: '13.8244357717948096',
+          valueInCurrency: new BigNumber('13.84343712858974048'),
+          usd: new BigNumber('13.8244357717948096'),
         },
         cost: {
-          valueInCurrency: '0.15656287141025952',
-          usd: '266.1755642282051904',
+          valueInCurrency: new BigNumber('0.15656287141025952'),
+          usd: new BigNumber('266.1755642282051904'),
         },
         sentAmount: {
-          valueInCurrency: '14',
-          amount: '14',
-          usd: '280',
+          valueInCurrency: new BigNumber('14'),
+          amount: new BigNumber('14'),
+          usd: new BigNumber('280'),
         },
-        swapRate: '0.99887714285714285714',
+        swapRate: new BigNumber('0.998877142857142857142857142857142857'),
         toTokenAmount: {
-          valueInCurrency: '13.8444372',
-          amount: '13.98428',
-          usd: '13.8444372',
+          valueInCurrency: new BigNumber('13.8444372'),
+          amount: new BigNumber('13.98428'),
+          usd: new BigNumber('13.8444372'),
         },
         gasFee: {
-          amount: '7.141025952e-8',
-          amountMax: '9.933761952e-8',
-          valueInCurrency: '7.141025952e-8',
-          valueInCurrencyMax: '9.933761952e-8',
-          usd: '0.0000014282051904',
-          usdMax: '0.0000019867523904',
+          amount: new BigNumber('7.141025952e-8'),
+          amountMax: new BigNumber('9.933761952e-8'),
+          valueInCurrency: new BigNumber('7.141025952e-8'),
+          valueInCurrencyMax: new BigNumber('9.933761952e-8'),
+          usd: new BigNumber('0.0000014282051904'),
+          usdMax: new BigNumber('0.0000019867523904'),
         },
         totalNetworkFee: {
-          valueInCurrency: '0.00100007141025952',
-          amount: '0.00100007141025952',
-          usd: '0.0200014282051904',
+          valueInCurrency: new BigNumber('0.00100007141025952'),
+          amount: new BigNumber('0.00100007141025952'),
+          usd: new BigNumber('0.0200014282051904'),
         },
         totalMaxNetworkFee: {
-          valueInCurrency: '0.00100009933761952',
-          amount: '0.00100009933761952',
-          usd: '0.0200019867523904',
+          valueInCurrency: new BigNumber('0.00100009933761952'),
+          amount: new BigNumber('0.00100009933761952'),
+          usd: new BigNumber('0.0200019867523904'),
         },
       };
       expect(result.sortedQuotes).toHaveLength(2);
       const EXPECTED_SORTED_COSTS = [
         {
-          valueInCurrency: '0.15656287141025952',
-          usd: '266.1755642282051904',
+          valueInCurrency: new BigNumber('0.15656287141025952'),
+          usd: new BigNumber('266.1755642282051904'),
         },
         {
-          valueInCurrency: '0.33900008283534464',
-          usd: '266.3580016567068928',
+          valueInCurrency: new BigNumber('0.33900008283534464'),
+          usd: new BigNumber('266.3580016567068928'),
         },
       ];
       result.sortedQuotes.forEach(
@@ -813,19 +839,17 @@ describe('Bridge selectors', () => {
 
   describe('getBridgeQuotes', () => {
     it('should return empty values when quotes are not present', () => {
-      const state = createBridgeMockStore({
-        bridgeStateOverrides: { quotes: [] },
-      });
+      const state = createBridgeMockStore();
 
       const result = getBridgeQuotes(state as never);
 
       expect(result).toStrictEqual({
-        activeQuote: null,
+        activeQuote: undefined,
         isLoading: false,
-        isQuoteGoingToRefresh: true,
+        isQuoteGoingToRefresh: false,
         quotesLastFetchedMs: null,
         quotesRefreshCount: 0,
-        recommendedQuote: null,
+        recommendedQuote: undefined,
         quotesInitialLoadTimeMs: null,
         sortedQuotes: [],
         quoteFetchError: null,
@@ -1140,11 +1164,13 @@ describe('Bridge selectors', () => {
 
       expect(
         getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
-      ).toStrictEqual('0.00100012486628784');
+      ).toStrictEqual(new BigNumber('0.00100012486628784'));
       expect(
         getBridgeQuotes(state as never).activeQuote?.sentAmount.amount,
-      ).toStrictEqual('0.01');
-      expect(result.isInsufficientGasForQuote(new BigNumber(0.001))).toBe(true);
+      ).toStrictEqual(new BigNumber('0.01'));
+      expect(
+        result.isInsufficientGasForQuote(new BigNumber(0.001)),
+      ).toStrictEqual(true);
     });
 
     it('should return isInsufficientGasForQuote=false when balance is greater than max network fees in quote', () => {
@@ -1165,13 +1191,13 @@ describe('Bridge selectors', () => {
 
       expect(
         getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
-      ).toStrictEqual('0.00100012486628784');
+      ).toStrictEqual(new BigNumber('0.00100012486628784'));
       expect(
         getBridgeQuotes(state as never).activeQuote?.totalMaxNetworkFee.amount,
-      ).toStrictEqual('0.00100017369940784');
+      ).toStrictEqual(new BigNumber('0.00100017369940784'));
       expect(
         getBridgeQuotes(state as never).activeQuote?.sentAmount.amount,
-      ).toStrictEqual('0.01');
+      ).toStrictEqual(new BigNumber('0.01'));
       expect(
         result.isInsufficientGasForQuote(new BigNumber('1')),
       ).toStrictEqual(false);
@@ -1198,12 +1224,6 @@ describe('Bridge selectors', () => {
         },
         bridgeStateOverrides: {
           quotes: mockBridgeQuotesNativeErc20,
-          quoteRequest: {
-            srcChainId: 10,
-            srcTokenAddress: zeroAddress(),
-            destChainId: '0x89',
-            destTokenAddress: zeroAddress(),
-          },
         },
         metamaskStateOverrides: {
           currencyRates: {
@@ -1217,10 +1237,10 @@ describe('Bridge selectors', () => {
           },
           marketData: {},
           ...mockNetworkState(
-            { chainId: CHAIN_IDS.OPTIMISM },
             { chainId: CHAIN_IDS.MAINNET },
             { chainId: CHAIN_IDS.LINEA_MAINNET },
             { chainId: CHAIN_IDS.POLYGON },
+            { chainId: CHAIN_IDS.OPTIMISM },
           ),
         },
       });
@@ -1228,16 +1248,16 @@ describe('Bridge selectors', () => {
 
       expect(
         getBridgeQuotes(state as never).activeQuote?.sentAmount.valueInCurrency,
-      ).toBe('25.2425');
+      ).toStrictEqual(new BigNumber('25.2425'));
       expect(
         getBridgeQuotes(state as never).activeQuote?.totalNetworkFee
           .valueInCurrency,
-      ).toBe('2.52456519372708012');
+      ).toStrictEqual(new BigNumber('2.52456519372708012'));
       expect(
         getBridgeQuotes(state as never).activeQuote?.adjustedReturn
           .valueInCurrency,
-      ).toBe('12.38316502627291988');
-      expect(result.isEstimatedReturnLow).toBe(true);
+      ).toStrictEqual(new BigNumber('12.38316502627291988'));
+      expect(result.isEstimatedReturnLow).toStrictEqual(true);
     });
 
     it('should return isEstimatedReturnLow=false when return value is more than 65% of sent funds', () => {
@@ -1252,7 +1272,7 @@ describe('Bridge selectors', () => {
           },
         },
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip(10),
+          toChainId: formatChainIdToCaip('0x89'),
           fromToken: { address: zeroAddress(), symbol: 'ETH' },
           toToken: { address: zeroAddress(), symbol: 'TEST' },
           fromTokenExchangeRate: 2524.25,
@@ -1260,12 +1280,6 @@ describe('Bridge selectors', () => {
           fromTokenInputValue: 1,
         },
         bridgeStateOverrides: {
-          quoteRequest: {
-            srcChainId: 10,
-            srcTokenAddress: zeroAddress(),
-            destChainId: '0x89',
-            destTokenAddress: zeroAddress(),
-          },
           quotes: mockBridgeQuotesNativeErc20,
         },
         metamaskStateOverrides: {
@@ -1281,10 +1295,10 @@ describe('Bridge selectors', () => {
           },
           marketData: {},
           ...mockNetworkState(
-            { chainId: CHAIN_IDS.OPTIMISM },
             { chainId: CHAIN_IDS.MAINNET },
             { chainId: CHAIN_IDS.LINEA_MAINNET },
             { chainId: CHAIN_IDS.POLYGON },
+            { chainId: CHAIN_IDS.OPTIMISM },
           ),
         },
       });
@@ -1292,16 +1306,16 @@ describe('Bridge selectors', () => {
 
       expect(
         getBridgeQuotes(state as never).activeQuote?.sentAmount.valueInCurrency,
-      ).toBe('25.2425');
+      ).toStrictEqual(new BigNumber('25.2425'));
       expect(
         getBridgeQuotes(state as never).activeQuote?.totalNetworkFee
           .valueInCurrency,
-      ).toBe('2.52456519372708012');
+      ).toStrictEqual(new BigNumber('2.52456519372708012'));
       expect(
         getBridgeQuotes(state as never).activeQuote?.adjustedReturn
           .valueInCurrency,
-      ).toBe('20.69239170627291988');
-      expect(result.isEstimatedReturnLow).toBe(false);
+      ).toStrictEqual(new BigNumber('20.69239170627291988'));
+      expect(result.isEstimatedReturnLow).toStrictEqual(false);
     });
 
     it('should return isEstimatedReturnLow=false if there are no quotes', () => {
@@ -1323,7 +1337,9 @@ describe('Bridge selectors', () => {
       });
       const result = getValidationErrors(state as never);
 
-      expect(getBridgeQuotes(state as never).activeQuote).toStrictEqual(null);
+      expect(getBridgeQuotes(state as never).activeQuote).toStrictEqual(
+        undefined,
+      );
       expect(result.isEstimatedReturnLow).toStrictEqual(false);
     });
   });

@@ -79,29 +79,13 @@ export function PendingApproval({ children, requestData, state, type }) {
     <Provider store={configureStore(mockState)}>
       <Box
         style={{
-          display: 'flex',
-          flexDirection: 'column',
           height: '592px',
           width: '360px',
+          border: '1px solid lightgrey',
           margin: '0 auto',
         }}
       >
-        <Box
-          style={{
-            display: 'flex',
-            height: '100%',
-            flexDirection: 'column',
-          }}
-        >
-          <Box
-            style={{
-              flex: '1 1 auto',
-              display: 'flex',
-            }}
-          >
-            {children}
-          </Box>
-        </Box>
+        {children}
       </Box>
     </Provider>
   );

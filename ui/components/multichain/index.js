@@ -52,4 +52,4 @@ export { ReceiveModal } from './receive-modal';
 export { EditNetworksModal } from './edit-networks-modal';
 export { EditAccountsModal } from './edit-accounts-modal';
 export { Carousel } from './carousel';
-export { SelectSrp, SrpList } from './multi-srp';
+export { ImportSrp, SelectSrp, SrpList } from './multi-srp';

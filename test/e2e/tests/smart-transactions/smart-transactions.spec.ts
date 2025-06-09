@@ -81,7 +81,6 @@ describe('Smart Transactions', function () {
         await buildQuote(driver, {
           amount: 2,
           swapTo: 'DAI',
-          mainnet: true,
         });
 
         await reviewQuote(driver, {

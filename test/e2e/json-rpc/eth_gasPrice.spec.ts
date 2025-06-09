@@ -12,9 +12,6 @@ describe('eth_gasPrice', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        localNodeOptions: {
-          hardfork: 'muirGlacier',
-        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

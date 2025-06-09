@@ -83,9 +83,11 @@ export type AppStateControllerState = {
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   termsOfUseLastAgreed?: number;
   snapsInstallPrivacyWarningShown?: boolean;
+  interactiveReplacementToken?: { url: string; oldRefreshToken: string };
+  noteToTraderMessage?: string;
+  custodianDeepLink?: { fromAddress: string; custodyId: string };
   slides: CarouselSlide[];
   throttledOrigins: ThrottledOrigins;
-  upgradeSplashPageAcknowledgedForAccounts: string[];
 };
 
 const controllerName = 'AppStateController';
@@ -201,7 +203,6 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   switchedNetworkNeverShowMessage: false,
   slides: [],
   throttledOrigins: {},
-  upgradeSplashPageAcknowledgedForAccounts: [],
   ...getInitialStateOverrides(),
 });
 
@@ -354,15 +355,23 @@ const controllerMetadata = {
     persist: true,
     anonymous: true,
   },
+  interactiveReplacementToken: {
+    persist: true,
+    anonymous: true,
+  },
+  noteToTraderMessage: {
+    persist: true,
+    anonymous: true,
+  },
+  custodianDeepLink: {
+    persist: true,
+    anonymous: true,
+  },
   slides: {
     persist: true,
     anonymous: true,
   },
   throttledOrigins: {
-    persist: false,
-    anonymous: true,
-  },
-  upgradeSplashPageAcknowledgedForAccounts: {
     persist: false,
     anonymous: true,
   },
@@ -656,21 +665,6 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Add account to list of accounts for which user has acknowledged
-   * smart account upgrade splash page.
-   *
-   * @param account
-   */
-  setSplashPageAcknowledgedForAccount(account: string): void {
-    this.update((state) => {
-      state.upgradeSplashPageAcknowledgedForAccounts = [
-        ...state.upgradeSplashPageAcknowledgedForAccounts,
-        account.toLowerCase(),
-      ];
-    });
-  }
-
-  /**
    * Sets the inactive timeout for the app
    *
    * @param timeoutMinutes - The inactive timeout in minutes.
@@ -957,6 +951,56 @@ export class AppStateController extends BaseController<
       state.nftsDropdownState = nftsDropdownState;
     });
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  /**
+   * Set the interactive replacement token with a url and the old refresh token
+   *
+   * @param opts
+   * @param opts.url
+   * @param opts.oldRefreshToken
+   */
+  showInteractiveReplacementTokenBanner({
+    url,
+    oldRefreshToken,
+  }: {
+    url: string;
+    oldRefreshToken: string;
+  }): void {
+    this.update((state) => {
+      state.interactiveReplacementToken = {
+        url,
+        oldRefreshToken,
+      };
+    });
+  }
+
+  /**
+   * Set the setCustodianDeepLink with the fromAddress and custodyId
+   *
+   * @param opts
+   * @param opts.fromAddress
+   * @param opts.custodyId
+   */
+  setCustodianDeepLink({
+    fromAddress,
+    custodyId,
+  }: {
+    fromAddress: string;
+    custodyId: string;
+  }): void {
+    this.update((state) => {
+      state.custodianDeepLink = { fromAddress, custodyId };
+    });
+  }
+
+  setNoteToTraderMessage(message: string): void {
+    this.update((state) => {
+      state.noteToTraderMessage = message;
+    });
+  }
+
+  ///: END:ONLY_INCLUDE_IF
 
   getSignatureSecurityAlertResponse(
     securityAlertId: string,

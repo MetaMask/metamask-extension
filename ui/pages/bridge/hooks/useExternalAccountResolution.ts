@@ -1,9 +1,9 @@
 import { useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 // eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../../../app/scripts/lib/multichain/address';
-import type { ExternalAccount } from '../prepare/types';
+import { ExternalAccount } from '../prepare/types';
 import {
   getDomainResolutions,
   lookupDomainName,

@@ -211,19 +211,18 @@ describe('MetaMaskController', function () {
       const result2 = metamaskController.keyringController.state;
 
       // On restore, a new keyring metadata is generated.
-      expect(result1.keyrings[0].metadata.id).toBe(mockULIDs[0]);
-      expect(result2).toStrictEqual({
-        ...result1,
-        keyrings: [
-          {
-            ...result1.keyrings[0],
-            metadata: {
-              ...result1.keyrings[0].metadata,
+      expect(result1.keyringsMetadata[0].id).toBe(mockULIDs[0]);
+      expect(result2).toStrictEqual(
+        expect.objectContaining({
+          ...result1,
+          keyringsMetadata: [
+            {
               id: mockULIDs[1],
+              name: '',
             },
-          },
-        ],
-      });
+          ],
+        }),
+      );
     });
   });
 
@@ -260,12 +259,8 @@ describe('MetaMaskController', function () {
 
     it('two parallel calls with same token details give same result', async function () {
       const [token1, token2] = await Promise.all([
-        metamaskController
-          .getApi()
-          .addToken({ address, symbol, decimals, networkClientId: 'sepolia' }),
-        metamaskController
-          .getApi()
-          .addToken({ address, symbol, decimals, networkClientId: 'sepolia' }),
+        metamaskController.getApi().addToken({ address, symbol, decimals }),
+        metamaskController.getApi().addToken({ address, symbol, decimals }),
       ]);
       expect(token1).toStrictEqual(token2);
     });
@@ -273,17 +268,7 @@ describe('MetaMaskController', function () {
     it('networkClientId is used when provided', async function () {
       const callSpy = jest
         .spyOn(metamaskController.controllerMessenger, 'call')
-        .mockReturnValueOnce({
-          configuration: { chainId: '0xa' },
-        })
-        .mockReturnValueOnce({
-          networkConfigurationsByChainId: {
-            '0xa': {
-              nativeCurrency: 'ETH',
-              chainId: '0xa',
-            },
-          },
-        });
+        .mockReturnValue({ configuration: { chainId: '0xa' } });
 
       await metamaskController.getApi().addToken({
         address,

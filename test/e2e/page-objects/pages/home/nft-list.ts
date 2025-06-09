@@ -6,20 +6,11 @@ class NftListPage {
   private readonly confirmImportNftButton =
     '[data-testid="import-nfts-modal-import-button"]';
 
-  private readonly importNftNetworkDropdown =
-    '[data-testid="test-import-tokens-drop-down-custom-import"]';
-
-  private readonly importNftNetworkName =
-    '[data-testid="select-network-item-0x539"]';
-
   private readonly importNftAddressInput = '#address';
 
-  private readonly importNftButton = '[data-testid="import-nfts__button"]';
+  private readonly importNftButton = '[data-testid="import-nft-button"]';
 
-  private readonly actionBarButton =
-    '[data-testid="asset-list-control-bar-action-button"]';
-
-  private readonly importNftModalTitle = { text: 'Import NFT', tag: 'h4' };
+  private readonly importNftModalTitle = { text: 'Import NFT', tag: 'header' };
 
   private readonly importNftTokenIdInput = '#token-id';
 
@@ -40,27 +31,8 @@ class NftListPage {
     tag: 'h6',
   };
 
-  private readonly nftFilterByNetworks = '[data-testid="sort-by-networks"]';
-
-  private readonly nftFilterByPopularNetworks =
-    '[data-testid="network-filter-all"]';
-
-  private readonly nftFilterByCurrentNetwork =
-    '[data-testid="network-filter-current"]';
-
   constructor(driver: Driver) {
     this.driver = driver;
-  }
-
-  async check_pageIsLoaded(): Promise<void> {
-    try {
-      await this.driver.clickElement(this.actionBarButton);
-      await this.driver.waitForSelector(this.importNftButton);
-    } catch (e) {
-      console.log('Timeout while waiting for NFT list page to be loaded', e);
-      throw e;
-    }
-    console.log('NFT list page is loaded');
   }
 
   async clickNFTIconOnActivityList() {
@@ -79,11 +51,8 @@ class NftListPage {
     id: string,
     expectedErrorMessage?: string,
   ) {
-    await this.driver.clickElement(this.actionBarButton);
     await this.driver.clickElement(this.importNftButton);
     await this.driver.waitForSelector(this.importNftModalTitle);
-    await this.driver.clickElement(this.importNftNetworkDropdown);
-    await this.driver.clickElement(this.importNftNetworkName);
     await this.driver.fill(this.importNftAddressInput, nftContractAddress);
     await this.driver.fill(this.importNftTokenIdInput, id);
     if (expectedErrorMessage) {
@@ -136,37 +105,6 @@ class NftListPage {
       'Check that success removed NFT message is displayed on homepage',
     );
     await this.driver.waitForSelector(this.successRemoveNftMessage);
-  }
-
-  async check_numberOfNftsDisplayed(
-    expectedNumberOfNfts: number,
-  ): Promise<void> {
-    console.log(
-      `Check that ${expectedNumberOfNfts} NFTs are displayed in NFT tab on homepage`,
-    );
-    await this.driver.wait(async () => {
-      const nftIconOnActivityList = await this.driver.findElements(
-        this.nftIconOnActivityList,
-      );
-      return nftIconOnActivityList.length === expectedNumberOfNfts;
-    }, 10000);
-
-    console.log(`${expectedNumberOfNfts} NFTs found in NFT list on homepage`);
-  }
-
-  async filterNftsByNetworks(networkName: string): Promise<void> {
-    await this.driver.clickElement(this.nftFilterByNetworks);
-    if (networkName === 'Popular networks') {
-      await this.driver.waitForSelector(this.nftFilterByPopularNetworks);
-      await this.driver.clickElement(this.nftFilterByPopularNetworks);
-    } else if (networkName === 'Current network') {
-      await this.driver.waitForSelector(this.nftFilterByCurrentNetwork);
-      await this.driver.clickElement(this.nftFilterByCurrentNetwork);
-    } else {
-      throw new Error(
-        `Invalid network name selected for filtering NFTs: ${networkName}`,
-      );
-    }
   }
 }
 

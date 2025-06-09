@@ -10,8 +10,7 @@ import {
 
 type ArrangeMocksMetamaskStateOverrides = {
   isSignedIn?: boolean;
-  isBackupAndSyncEnabled?: boolean;
-  isAccountSyncingEnabled?: boolean;
+  isProfileSyncingEnabled?: boolean;
   isUnlocked?: boolean;
   useExternalServices?: boolean;
   completedOnboarding?: boolean;
@@ -20,8 +19,7 @@ type ArrangeMocksMetamaskStateOverrides = {
 
 const initialMetamaskState: ArrangeMocksMetamaskStateOverrides = {
   isSignedIn: true,
-  isBackupAndSyncEnabled: true,
-  isAccountSyncingEnabled: true,
+  isProfileSyncingEnabled: true,
   isUnlocked: true,
   useExternalServices: true,
   completedOnboarding: true,
@@ -45,8 +43,7 @@ describe('useShouldDispatchAccountSyncing()', () => {
   const testCases = (() => {
     const properties = [
       'isSignedIn',
-      'isBackupAndSyncEnabled',
-      'isAccountSyncingEnabled',
+      'isProfileSyncingEnabled',
       'isUnlocked',
       'useExternalServices',
       'completedOnboarding',
@@ -54,8 +51,7 @@ describe('useShouldDispatchAccountSyncing()', () => {
     ] as const;
     const baseState = {
       isSignedIn: true,
-      isBackupAndSyncEnabled: true,
-      isAccountSyncingEnabled: true,
+      isProfileSyncingEnabled: true,
       isUnlocked: true,
       useExternalServices: true,
       completedOnboarding: true,

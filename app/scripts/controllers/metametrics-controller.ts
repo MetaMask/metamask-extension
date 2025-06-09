@@ -157,6 +157,8 @@ export type MetaMaskState = {
   theme: string;
   participateInMetaMetrics: boolean;
   dataCollectionForMarketing: boolean;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   ShowNativeTokenAsMainBalance: boolean;
   useNftDetection: PreferencesControllerState['useNftDetection'];
   openSeaEnabled: PreferencesControllerState['openSeaEnabled'];
@@ -164,6 +166,8 @@ export type MetaMaskState = {
   useTokenDetection: PreferencesControllerState['useTokenDetection'];
   tokenSortConfig: PreferencesControllerState['preferences']['tokenSortConfig'];
   names: NameControllerState['names'];
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   security_providers: string[];
   addressBook: AddressBookControllerState['addressBook'];
   currentCurrency: string;
@@ -172,6 +176,13 @@ export type MetaMaskState = {
     tokenNetworkFilter: string[];
   };
   sessionData: AuthenticationControllerState['sessionData'];
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  custodyAccountDetails: {
+    [address: string]: {
+      custodianName: string;
+    };
+  };
+  ///: END:ONLY_INCLUDE_IF
   keyrings: { type: string; accounts: string[] }[];
   multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
 };
@@ -352,6 +363,10 @@ export default class MetaMetricsController extends BaseController<
 
   #environment: MetaMetricsControllerOptions['environment'];
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  #selectedAddress: PreferencesControllerState['selectedAddress'];
+  ///: END:ONLY_INCLUDE_IF
+
   #segment: MetaMetricsControllerOptions['segment'];
 
   /**
@@ -401,6 +416,10 @@ export default class MetaMetricsController extends BaseController<
       environment === 'production' ? version : `${version}-${environment}`;
     this.#extension = extension;
     this.#environment = environment;
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    this.#selectedAddress = preferencesControllerState.selectedAddress;
+    ///: END:ONLY_INCLUDE_IF
 
     const abandonedFragments = omitBy(state.fragments, 'persist');
 
@@ -531,11 +550,13 @@ export default class MetaMetricsController extends BaseController<
   createEventFragment(
     options: Omit<MetaMetricsEventFragment, 'id'>,
   ): MetaMetricsEventFragment {
-    if (!options.successEvent) {
+    if (!options.successEvent || !options.category) {
       throw new Error(
-        `Must specify success event. Success event was: ${
+        `Must specify success event and category. Success event was: ${
           options.event
-        }. Payload keys were: ${Object.keys(options)}. ${
+        }. Category was: ${options.category}. Payload keys were: ${Object.keys(
+          options,
+        )}. ${
           typeof options.properties === 'object'
             ? `Payload property keys were: ${Object.keys(options.properties)}`
             : ''
@@ -881,7 +902,11 @@ export default class MetaMetricsController extends BaseController<
         properties: {
           params,
           locale: this.locale,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: this.chainId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: environmentType,
         },
         context: this.#buildContext(referrer, page),
@@ -977,11 +1002,13 @@ export default class MetaMetricsController extends BaseController<
    */
   #validatePayload(payload: MetaMetricsEventPayload): void {
     // event and category are required fields for all payloads
-    if (!payload.event) {
+    if (!payload.event || !payload.category) {
       throw new Error(
-        `Must specify event. Event was: ${
+        `Must specify event and category. Event was: ${
           payload.event
-        }. Payload keys were: ${Object.keys(payload)}. ${
+        }. Category was: ${payload.category}. Payload keys were: ${Object.keys(
+          payload,
+        )}. ${
           typeof payload.properties === 'object'
             ? `Payload property keys were: ${Object.keys(payload.properties)}`
             : ''
@@ -1053,10 +1080,23 @@ export default class MetaMetricsController extends BaseController<
     referrer: MetaMetricsContext['referrer'],
     page: MetaMetricsContext['page'] = METAMETRICS_BACKGROUND_PAGE_OBJECT,
   ): MetaMetricsContext {
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    const mmiProps: {
+      extensionId?: string;
+    } = {};
+
+    if (this.#extension?.runtime?.id) {
+      mmiProps.extensionId = this.#extension.runtime.id;
+    }
+    ///: END:ONLY_INCLUDE_IF
+
     return {
       app: {
         name: 'MetaMask Extension',
         version: this.version,
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+        ...mmiProps,
+        ///: END:ONLY_INCLUDE_IF
       },
       userAgent: window.navigator.userAgent,
       page,
@@ -1088,22 +1128,20 @@ export default class MetaMetricsController extends BaseController<
       environmentType = ENVIRONMENT_TYPE_BACKGROUND,
     } = rawPayload;
 
-    let chainId;
-    if (
-      properties &&
-      'chain_id_caip' in properties &&
-      typeof properties.chain_id_caip === 'string'
-    ) {
-      chainId = null;
-    } else if (
-      properties &&
-      'chain_id' in properties &&
-      typeof properties.chain_id === 'string'
-    ) {
-      chainId = properties.chain_id;
-    } else {
-      chainId = this.chainId;
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    const mmiProps: {
+      extensionId?: string;
+      accountAddress?: string;
+    } = {};
+
+    if (this.#extension?.runtime?.id) {
+      mmiProps.extensionId = this.#extension.runtime.id;
     }
+
+    if (this.#selectedAddress) {
+      mmiProps.accountAddress = this.#selectedAddress;
+    }
+    ///: END:ONLY_INCLUDE_IF
 
     return {
       event,
@@ -1121,8 +1159,20 @@ export default class MetaMetricsController extends BaseController<
         currency,
         category,
         locale: this.locale,
-        chain_id: chainId,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id:
+          properties &&
+          'chain_id' in properties &&
+          typeof properties.chain_id === 'string'
+            ? properties.chain_id
+            : this.chainId,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         environment_type: environmentType,
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+        ...mmiProps,
+        ///: END:ONLY_INCLUDE_IF
       },
       context: this.#buildContext(referrer, page),
     };
@@ -1138,6 +1188,13 @@ export default class MetaMetricsController extends BaseController<
   _buildUserTraitsObject(
     metamaskState: MetaMaskState,
   ): Partial<MetaMetricsUserTraits> | null {
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    const mmiAccountAddress =
+      metamaskState.custodyAccountDetails &&
+      Object.keys(metamaskState.custodyAccountDetails).length
+        ? Object.keys(metamaskState.custodyAccountDetails)[0]
+        : null;
+    ///: END:ONLY_INCLUDE_IF
     const { traits } = this.state;
 
     const currentTraits = {
@@ -1189,6 +1246,11 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]:
         metamaskState.ShowNativeTokenAsMainBalance,
       [MetaMetricsUserTrait.CurrentCurrency]: metamaskState.currentCurrency,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      [MetaMetricsUserTrait.MmiExtensionId]: this.#extension?.runtime?.id,
+      [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress ?? null,
+      [MetaMetricsUserTrait.MmiIsCustodian]: Boolean(mmiAccountAddress),
+      ///: END:ONLY_INCLUDE_IF
       [MetaMetricsUserTrait.SecurityProviders]:
         metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
       [MetaMetricsUserTrait.PetnameAddressCount]:

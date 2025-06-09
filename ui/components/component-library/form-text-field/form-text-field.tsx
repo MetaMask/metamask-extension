@@ -6,11 +6,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box, PolymorphicRef } from '../box';
 import type { BoxProps } from '../box';
-import {
-  TextFieldProps,
-  TextFieldSize,
-  TextFieldType,
-} from '../text-field/text-field.types';
+import { TextFieldProps, TextFieldSize } from '../text-field/text-field.types';
 import { Label } from '../label';
 import { TextField } from '../text-field';
 import { HelpText, HelpTextSeverity } from '../help-text';
@@ -45,7 +41,6 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
       onBlur,
       onChange,
       onFocus,
-      onKeyPress,
       placeholder,
       readOnly,
       required,
@@ -53,7 +48,7 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
       size = FormTextFieldSize.Md,
       textFieldProps,
       truncate,
-      type = TextFieldType.Text,
+      type = 'text',
       value,
       ...props
     }: FormTextFieldProps<C>,

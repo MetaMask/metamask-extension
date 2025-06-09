@@ -1,7 +1,5 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-// eslint-disable-next-line import/no-named-as-default
-import DOMPurify from 'dompurify';
 import { isOfTypeNodeGuard } from '../node-guard';
 import {
   NotificationComponentType,
@@ -29,8 +27,6 @@ import {
   ExtensionLinkButton,
   ExternalLinkButton,
 } from './annonucement-footer-buttons';
-
-const purify = DOMPurify(window);
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -99,9 +95,10 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
             <Text
               variant={TextVariant.bodyMd}
               as="div"
-              // TODO - we can replace the raw HTML string injection with react components
               dangerouslySetInnerHTML={{
-                __html: purify.sanitize(notification.data.longDescription),
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                __html: notification.data.longDescription,
               }}
             />
           </Box>

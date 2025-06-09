@@ -55,9 +55,6 @@ export type SmartTransactionsMetaMaskState = {
   };
 };
 
-export type SmartTransactionsState = SmartTransactionsMetaMaskState &
-  NetworkState;
-
 /**
  * Returns the user's explicit opt-in status for the smart transactions feature.
  * This should only be used for reading the user's internal opt-in status, and
@@ -173,7 +170,7 @@ const getIsAllowedRpcUrlForSmartTransactions = (
 };
 
 export const getSmartTransactionsEnabled = (
-  state: SmartTransactionsState,
+  state: SmartTransactionsMetaMaskState & NetworkState,
   chainId?: string,
 ): boolean => {
   const supportedAccount = accountSupportsSmartTx(state);
@@ -194,7 +191,7 @@ export const getSmartTransactionsEnabled = (
 };
 
 export const getIsSmartTransaction = (
-  state: SmartTransactionsState,
+  state: SmartTransactionsMetaMaskState & NetworkState,
   chainId?: string,
 ): boolean => {
   const smartTransactionsPreferenceEnabled =

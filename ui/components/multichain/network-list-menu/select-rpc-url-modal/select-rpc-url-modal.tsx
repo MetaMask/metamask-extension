@@ -27,7 +27,7 @@ export const SelectRpcUrlModal = ({
   onNetworkChange,
 }: {
   networkConfiguration: NetworkConfiguration;
-  onNetworkChange: (chainId: CaipChainId, networkClientId: string) => void;
+  onNetworkChange: (chainId: CaipChainId) => void;
 }) => {
   const dispatch = useDispatch();
 
@@ -74,10 +74,7 @@ export const SelectRpcUrlModal = ({
             };
             dispatch(updateNetwork(network));
             dispatch(setEditedNetwork());
-            onNetworkChange(
-              toEvmCaipChainId(network.chainId),
-              rpcEndpoint.networkClientId,
-            );
+            onNetworkChange(toEvmCaipChainId(network.chainId));
           }}
           className={classnames('select-rpc-url__item', {
             'select-rpc-url__item--selected':

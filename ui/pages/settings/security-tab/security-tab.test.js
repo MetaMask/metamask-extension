@@ -1,5 +1,5 @@
 import { fireEvent, queryByRole, screen } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -184,10 +184,13 @@ describe('Security Tab', () => {
           {
             type: 'HD Key Tree',
             accounts: ['0x'],
-            metadata: {
-              id: '01JM1XSBQ78YXY1NNT003HT74V',
-              name: '',
-            },
+          },
+        ],
+        keyringsMetadata: [
+          ...mockState.metamask.keyringsMetadata,
+          {
+            id: '01JM1XSBQ78YXY1NNT003HT74V',
+            name: '',
           },
         ],
       },

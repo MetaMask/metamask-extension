@@ -151,7 +151,7 @@ describe('Notifications Toggle', () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedState,
-          isBackupAndSyncEnabled: false,
+          isProfileSyncingEnabled: false,
           isNotificationServicesEnabled: true,
           isFeatureAnnouncementsEnabled: false,
           isMetamaskNotificationsFeatureSeen: true,

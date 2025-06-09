@@ -17,7 +17,7 @@ import TokenTransferTransactionConfirmation from '../../page-objects/pages/confi
 
 const recipientAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
-describe('Transfer custom tokens', function () {
+describe('Transfer custom tokens @no-mmi', function () {
   const smartContract = SMART_CONTRACTS.HST;
   const symbol = 'TST';
   const valueWithSymbol = (value: string) => `${value} ${symbol}`;
@@ -30,7 +30,6 @@ describe('Transfer custom tokens', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
-          localNodeOptions: { hardfork: 'muirGlacier' },
           smartContract,
           title: this.test?.fullTitle(),
           testSpecificMock: mocks,
@@ -88,7 +87,6 @@ describe('Transfer custom tokens', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withTokensControllerERC20()
             .build(),
-          localNodeOptions: { hardfork: 'muirGlacier' },
           smartContract,
           title: this.test?.fullTitle(),
           testSpecificMock: mocks,

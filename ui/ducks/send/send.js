@@ -1609,11 +1609,8 @@ const slice = createSlice({
           draftTransaction.recipient.error = null;
           draftTransaction.recipient.warning = null;
         } else {
-          const {
-            tokens,
-            tokenAddressList = [],
-            isProbablyAnAssetContract,
-          } = action.payload;
+          const { tokens, tokenAddressList, isProbablyAnAssetContract } =
+            action.payload;
 
           if (
             isBurnAddress(state.recipientInput) ||

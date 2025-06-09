@@ -11,7 +11,6 @@ import { createDeepEqualSelector } from '../../../shared/modules/selectors/util'
 import { getMultichainAggregatedBalance } from '../assets';
 import { isMultichainWalletSnap } from '../../../shared/lib/accounts/snaps';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 
 type AccountsByChainId = {
   [chainId: string]: {
@@ -110,8 +109,6 @@ export const getSnapAccountsByKeyringId = createDeepEqualSelector(
   (accounts, keyringId) => {
     return accounts.filter(
       (account: InternalAccount) =>
-        account.metadata.snap &&
-        isSnapPreinstalled(account.metadata.snap.id as SnapId) &&
         account.options?.entropySource === keyringId,
     );
   },

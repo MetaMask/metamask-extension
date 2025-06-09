@@ -3,7 +3,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/extend-expect';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { domainInitialState } from '../../../../ducks/domains';
@@ -81,7 +81,7 @@ describe('AddContact component', () => {
     expect(saveButton).toBeDisabled();
   });
 
-  it('should enable submit button when input is valid', async () => {
+  it('should enable submit button when input is valid', () => {
     const testStore = {
       DNS: domainInitialState,
       metamask: state.metamask,
@@ -101,9 +101,8 @@ describe('AddContact component', () => {
       target: { value: '0x1234Bf0BBa69C63E2657cF94693cC4A907085678' },
     });
 
-    await waitFor(() => {
-      expect(getByText('Save')).not.toBeDisabled();
-    });
+    const saveButton = getByText('Save');
+    expect(saveButton).not.toBeDisabled();
   });
 
   it('should disable submit button when input is not a valid address', () => {

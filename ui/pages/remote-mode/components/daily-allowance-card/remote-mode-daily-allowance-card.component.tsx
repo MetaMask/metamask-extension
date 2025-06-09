@@ -6,7 +6,6 @@ import {
   ButtonVariant,
   Text,
 } from '../../../../components/component-library';
-import Card from '../../../../components/ui/card';
 import {
   FontWeight,
   TextVariant,
@@ -16,13 +15,11 @@ import {
   FlexDirection,
   BlockSize,
   TextColor,
+  BorderColor,
   BorderRadius,
   AlignItems,
 } from '../../../../helpers/constants/design-system';
-import {
-  DailyAllowance,
-  TOKEN_DETAILS,
-} from '../../../../../shared/lib/remote-mode';
+import { DailyAllowance } from '../../remote.types';
 
 /**
  * A card component that displays and manages a single daily allowance entry in remote mode.
@@ -40,19 +37,23 @@ export default function RemoteModeDailyAllowanceCard({
   onRemove,
 }: {
   dailyAllowance: DailyAllowance;
-  onRemove?: () => void;
+  onRemove: () => void;
 }) {
   const handleRemoveToken = useCallback(() => {
-    onRemove?.();
+    onRemove();
   }, [onRemove]);
 
   return (
-    <Card
-      width={BlockSize.Full}
-      marginTop={4}
-      backgroundColor={BackgroundColor.backgroundPressed}
-    >
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
+    <Box width={BlockSize.Full} marginTop={4}>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={4}
+        padding={4}
+        backgroundColor={BackgroundColor.backgroundMuted}
+        borderRadius={BorderRadius.LG}
+        borderColor={BorderColor.borderDefault}
+      >
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
@@ -60,19 +61,13 @@ export default function RemoteModeDailyAllowanceCard({
           borderRadius={BorderRadius.MD}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-            <img
-              src={TOKEN_DETAILS[dailyAllowance.symbol].image}
-              style={{ width: '24px', height: '24px', borderRadius: '50%' }}
-            />
             <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-              {dailyAllowance.symbol}
+              {dailyAllowance.tokenType}
             </Text>
           </Box>
-          {onRemove && (
-            <Button variant={ButtonVariant.Link} onClick={handleRemoveToken}>
-              Remove
-            </Button>
-          )}
+          <Button variant={ButtonVariant.Link} onClick={handleRemoveToken}>
+            Remove
+          </Button>
         </Box>
         <Box
           display={Display.Flex}
@@ -81,20 +76,10 @@ export default function RemoteModeDailyAllowanceCard({
         >
           <Text variant={TextVariant.bodyMd}>Daily limit</Text>
           <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {dailyAllowance.amount} {dailyAllowance.symbol}
-          </Text>
-        </Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          gap={2}
-        >
-          <Text variant={TextVariant.bodyMd}>Available on</Text>
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            MetaMask Extension
+            {dailyAllowance.amount}
           </Text>
         </Box>
       </Box>
-    </Card>
+    </Box>
   );
 }

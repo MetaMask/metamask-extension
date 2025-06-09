@@ -3,7 +3,6 @@ import {
   type MultichainNetworkConfiguration as InternalMultichainNetworkConfiguration,
   toEvmCaipChainId,
   toMultichainNetworkConfiguration,
-  ActiveNetworksByAddress,
 } from '@metamask/multichain-network-controller';
 import { type NetworkConfiguration as InternalNetworkConfiguration } from '@metamask/network-controller';
 import { BtcScope, SolScope } from '@metamask/keyring-api';
@@ -20,7 +19,6 @@ import { createDeepEqualSelector } from '../../../shared/modules/selectors/util'
 import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
-  getIsSolanaTestnetSupportEnabled,
 } from '../selectors';
 import { getInternalAccounts } from '../accounts';
 
@@ -41,12 +39,6 @@ export type IsEvmSelectedState = {
   metamask: Pick<InternalMultichainNetworkState, 'isEvmSelected'>;
 };
 
-export type NetworksWithTransactionActivityByAccountsState = {
-  metamask: {
-    networksWithTransactionActivity: ActiveNetworksByAddress;
-  };
-};
-
 /**
  * This type takes into account the state
  * of the multichain-network-controller and
@@ -57,10 +49,13 @@ export type MultichainNetworkConfigState =
     SelectedNetworkChainIdState &
     IsEvmSelectedState &
     SelectedNetworkClientIdState &
-    ProviderConfigState &
-    NetworksWithTransactionActivityByAccountsState;
+    ProviderConfigState;
 
 // Selectors
+
+export const getNonEvmMultichainNetworkConfigurationsByChainId = (
+  state: MultichainNetworkConfigurationsByChainIdState,
+) => state.metamask.multichainNetworkConfigurationsByChainId;
 
 export const getIsNonEvmNetworksEnabled = createDeepEqualSelector(
   getIsBitcoinSupportEnabled,
@@ -78,11 +73,7 @@ export const getIsNonEvmNetworksEnabled = createDeepEqualSelector(
     // they're used we can't guarantee that the scopes will be set
     // during the keyring migration execution.
     for (const { scopes } of internalAccounts) {
-      if (
-        scopes?.includes(
-          BtcScope.Mainnet || BtcScope.Testnet || BtcScope.Signet,
-        )
-      ) {
+      if (scopes?.includes(BtcScope.Mainnet)) {
         bitcoinEnabled = true;
       }
       if (scopes?.includes(SolScope.Mainnet)) {
@@ -97,17 +88,24 @@ export const getIsNonEvmNetworksEnabled = createDeepEqualSelector(
   },
 );
 
-export const getNonEvmMultichainNetworkConfigurationsByChainId =
+export const getMultichainNetworkConfigurationsByChainId =
   createDeepEqualSelector(
-    (state: MultichainNetworkConfigurationsByChainIdState) =>
-      state.metamask.multichainNetworkConfigurationsByChainId,
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     getIsNonEvmNetworksEnabled,
-    (state) => getIsSolanaTestnetSupportEnabled(state),
+    getNonEvmMultichainNetworkConfigurationsByChainId,
+    ///: END:ONLY_INCLUDE_IF
+    getNetworkConfigurationsByChainId,
     (
-      multichainNetworkConfigurationsByChainId,
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       isNonEvmNetworksEnabled,
-      isSolanaTestnetSupportEnabled,
-    ): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
+      nonEvmNetworkConfigurationsByChainId,
+      ///: END:ONLY_INCLUDE_IF
+      networkConfigurationsByChainId,
+    ): [
+      Record<CaipChainId, InternalMultichainNetworkConfiguration>,
+      Record<Hex, InternalNetworkConfiguration>,
+    ] => {
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
       const filteredNonEvmNetworkConfigurationsByChainId: Record<
         CaipChainId,
         InternalMultichainNetworkConfiguration
@@ -118,45 +116,24 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
       const { bitcoinEnabled, solanaEnabled } = isNonEvmNetworksEnabled;
       if (bitcoinEnabled) {
         filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet] =
-          multichainNetworkConfigurationsByChainId[BtcScope.Mainnet];
+          nonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet];
         filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Testnet] =
-          multichainNetworkConfigurationsByChainId[BtcScope.Testnet];
+          nonEvmNetworkConfigurationsByChainId[BtcScope.Testnet];
         filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Signet] =
-          multichainNetworkConfigurationsByChainId[BtcScope.Signet];
+          nonEvmNetworkConfigurationsByChainId[BtcScope.Signet];
       }
 
       if (solanaEnabled) {
         filteredNonEvmNetworkConfigurationsByChainId[SolScope.Mainnet] =
-          multichainNetworkConfigurationsByChainId[SolScope.Mainnet];
-      }
-
-      if (solanaEnabled && isSolanaTestnetSupportEnabled) {
+          nonEvmNetworkConfigurationsByChainId[SolScope.Mainnet];
         // TODO: Uncomment this when we want to support testnet
         // filteredNonEvmNetworkConfigurationsByChainId[SolScope.Testnet] =
-        //   multichainNetworkConfigurationsByChainId[SolScope.Testnet];
+        //   nonEvmNetworkConfigurationsByChainId[SolScope.Testnet];
         filteredNonEvmNetworkConfigurationsByChainId[SolScope.Devnet] =
-          multichainNetworkConfigurationsByChainId[SolScope.Devnet];
+          nonEvmNetworkConfigurationsByChainId[SolScope.Devnet];
       }
-
-      return filteredNonEvmNetworkConfigurationsByChainId;
-    },
-  );
-
-export const getMultichainNetworkConfigurationsByChainId =
-  createDeepEqualSelector(
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    getNonEvmMultichainNetworkConfigurationsByChainId,
-    ///: END:ONLY_INCLUDE_IF
-    getNetworkConfigurationsByChainId,
-    (
-      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-      nonEvmNetworkConfigurationsByChainId,
       ///: END:ONLY_INCLUDE_IF
-      networkConfigurationsByChainId,
-    ): [
-      Record<CaipChainId, InternalMultichainNetworkConfiguration>,
-      Record<Hex, InternalNetworkConfiguration>,
-    ] => {
+
       // There's a fallback for EVM network names/nicknames, in case the network
       // does not have a name/nickname the fallback is the first rpc endpoint url.
       // TODO: Update toMultichainNetworkConfigurationsByChainId to handle this case.
@@ -175,7 +152,7 @@ export const getMultichainNetworkConfigurationsByChainId =
 
       const networks = {
         ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-        ...nonEvmNetworkConfigurationsByChainId,
+        ...filteredNonEvmNetworkConfigurationsByChainId,
         ///: END:ONLY_INCLUDE_IF
         ...evmNetworks,
       };
@@ -207,11 +184,3 @@ export const getSelectedMultichainNetworkConfiguration = (
     getMultichainNetworkConfigurationsByChainId(state);
   return networkConfigurationsByChainId[chainId];
 };
-
-export const getNetworksWithActivity = (state: MultichainNetworkConfigState) =>
-  state.metamask.networksWithTransactionActivity;
-
-export const getNetworksWithTransactionActivity = createDeepEqualSelector(
-  getNetworksWithActivity,
-  (networksWithActivity) => networksWithActivity,
-);

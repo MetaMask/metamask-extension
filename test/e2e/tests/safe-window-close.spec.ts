@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { withFixtures } from '../helpers';
+import { withFixtures, unlockWallet, WINDOW_TITLES } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { Driver, PAGES } from '../webdriver/driver';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
@@ -29,11 +29,13 @@ describe('Notification window closing', function () {
         );
 
         // confirm connect account
-        await testDapp.confirmConnectAccountModal();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.clickElementAndWaitForWindowToClose(
+          '[data-testid="confirm-btn"]',
+        );
       },
     );
   });
-
   it('does not close the window when running in a tab', async function () {
     await withFixtures(
       {
@@ -42,7 +44,7 @@ describe('Notification window closing', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await unlockWallet(driver);
 
         // Ensure the window does not close
         // 1. Get the current window handle

@@ -170,6 +170,9 @@
   "addBitcoinAccountLabel": {
     "message": "ビットコインアカウント (ベータ)"
   },
+  "addBitcoinTestnetAccountLabel": {
+    "message": "ビットコインアカウント (テストネット)"
+  },
   "addBlockExplorer": {
     "message": "ブロックエクスプローラーを追加"
   },
@@ -659,6 +662,22 @@
     "message": "B",
     "description": "Shortened form of 'billion'"
   },
+  "bitcoinSupportSectionTitle": {
+    "message": "ビットコイン"
+  },
+  "bitcoinSupportToggleDescription": {
+    "message": "この機能をオンにすると、既存のシークレットリカバリーフレーズで取得したビットコインアカウントをMetaMask拡張機能に追加できるようになります。これは試験運用中のベータ機能であるため、自己責任でご使用ください。新しいビットコインエクスペリエンスのフィードバックをご提供いただくには、こちらの$1に入力してください。",
+    "description": "$1 is the link to a product feedback form"
+  },
+  "bitcoinSupportToggleTitle": {
+    "message": "「新しいビットコインアカウントの追加 (ベータ)」を有効にする"
+  },
+  "bitcoinTestnetSupportToggleDescription": {
+    "message": "この機能をオンにすると、テストネットワーク用にビットコインアカウントを追加できるようになります。"
+  },
+  "bitcoinTestnetSupportToggleTitle": {
+    "message": "「新しいビットコインアカウントの追加 (テストネット)」を有効にする"
+  },
   "blockExplorerAccountAction": {
     "message": "アカウント",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -936,7 +955,7 @@
   },
   "chooseYourNetworkDescription": {
     "message": "当社では、遠隔手続き呼び出し (RPC) プロバイダーにInfuraを使用して、イーサリアムデータにできるだけ信頼性の高いプライベートな形でアクセスできるようにしています。独自のRPCをお選びいただくこともできますが、どのRPCもトランザクションを実行するために、ユーザーのIPアドレスとイーサリアムウォレットを取得する点にご注意ください。Infuraによるデータの取扱いに関する詳細は、$1をご覧ください。",
-    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
+    "description": "$1 is a link to the privacy policy"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "ハードウェアウォレットに接続するには、MetaMaskをGoogle Chromeで使用する必要があります。"
@@ -1005,6 +1024,9 @@
   },
   "confirm": {
     "message": "確認"
+  },
+  "confirmAccountType": {
+    "message": "タイプ"
   },
   "confirmAccountTypeSmartContract": {
     "message": "スマートアカウント"
@@ -1319,6 +1341,10 @@
   },
   "creatorAddress": {
     "message": "クリエイターのアドレス"
+  },
+  "crossChainAggregatedBalancePopover": {
+    "message": "これにはすべてのネットワークで所有している全トークンの価値が反映されています。この値をETHまたはその他の通貨で表示する場合は、$1に移動します。",
+    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "MetaMask Portfolioでネットワーク間でスワップ"
@@ -2688,6 +2714,9 @@
   "ledgerLocked": {
     "message": "Ledgerデバイスに接続できません。デバイスのロックが解除され、イーサリアムアプリが開かれていることを確認してください。"
   },
+  "ledgerMultipleDevicesUnsupportedErrorMessage": {
+    "message": "複数のLedgerデバイスを同時に接続することはできません。新しいLedgerデバイスを接続するには、はじめに以前のデバイスの接続を解除する必要があります。"
+  },
   "ledgerTimeout": {
     "message": "Ledger Liveが応答に時間がかかりすぎているか、接続がタイムアウトしました。Ledger Liveのアプリが開かれていて、デバイスのロックが解除されていることを確認してください。"
   },
@@ -3422,6 +3451,10 @@
     "message": "トランザクション $1 に失敗しました！$2",
     "description": "Content of the browser notification that appears when a transaction fails"
   },
+  "notificationTransactionFailedMessageMMI": {
+    "message": "トランザクションに失敗しました！$1",
+    "description": "Content of the browser notification that appears when a transaction fails in MMI"
+  },
   "notificationTransactionFailedTitle": {
     "message": "トランザクション失敗",
     "description": "Title of the browser notification that appears when a transaction fails"
@@ -3634,6 +3667,22 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "MetaMaskのインストールが完了しました！"
+  },
+  "oneDayAbbreviation": {
+    "message": "1日",
+    "description": "Shortened form of '1 day'"
+  },
+  "oneMonthAbbreviation": {
+    "message": "1か月",
+    "description": "Shortened form of '1 month'"
+  },
+  "oneWeekAbbreviation": {
+    "message": "1週間",
+    "description": "Shortened form of '1 week'"
+  },
+  "oneYearAbbreviation": {
+    "message": "1年",
+    "description": "Shortened form of '1 year'"
   },
   "onlyConnectTrust": {
     "message": "信頼するサイトにのみ接続してください。$1",
@@ -4038,7 +4087,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "これらのネットワークの一部はサードパーティに依存しているため、接続の信頼性が低かったり、サードパーティによるアクティビティの追跡が可能になったりする可能性があります。$1",
-    "description": "Learn more link"
+    "description": "$1 is Learn more link"
   },
   "popularNetworks": {
     "message": "人気のネットワーク"
@@ -4104,6 +4153,18 @@
   },
   "productAnnouncements": {
     "message": "製品に関するお知らせ"
+  },
+  "profileSync": {
+    "message": "プロファイルの同期"
+  },
+  "profileSyncConfirmation": {
+    "message": "プロファイルの同期をオフにすると、通知を受け取ることができなくなります。"
+  },
+  "profileSyncDescription": {
+    "message": "MetaMaskが一部の設定をデバイス間で同期するために使用するプロファイルを作成します。これは通知の受取に必要です。$1。"
+  },
+  "profileSyncPrivacyLink": {
+    "message": "当社がどのようにユーザーのプライバシーを保護するのか、ご覧ください"
   },
   "proposedApprovalLimit": {
     "message": "提案された承認限度額"
@@ -5917,6 +5978,10 @@
     "message": "サードパーティソフトウェアに関する通知",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
+  "threeMonthsAbbreviation": {
+    "message": "3か月",
+    "description": "Shortened form of '3 months'"
+  },
   "time": {
     "message": "時間"
   },
@@ -6465,6 +6530,9 @@
   },
   "yourBalance": {
     "message": "残高"
+  },
+  "yourBalanceIsAggregated": {
+    "message": "残高は集計されます"
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFTが危険にさらされている可能性があります"

@@ -2,26 +2,28 @@
 
 .token-list {
   &__empty-list {
-    height: 237.5px;
-    display: flex;
-    align-items: center;
+    height: 214.5px;
 
     @include design-system.screen-sm-max {
-      height: 237.5px;
+      height: 207.5px;
     }
   }
 
   &__tokens-container {
     overflow: auto;
-    max-height: 237.5px;
+    max-height: 214.5px;
 
     @include design-system.screen-sm-max {
-      max-height: 237.5px;
+      max-height: 207.5px;
     }
   }
 
   &__token_component {
     cursor: pointer;
+
+    &__network-badge {
+      box-sizing: content-box; // Prevents border effecting size of badge image
+    }
 
     &--disabled {
       opacity: 0.4;

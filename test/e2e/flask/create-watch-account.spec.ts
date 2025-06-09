@@ -191,7 +191,7 @@ describe('Account-watcher snap', function (this: Suite) {
           // open account details modal in header navbar
           const headerNavbar = new HeaderNavbar(driver);
           await headerNavbar.check_accountLabel(DEFAULT_WATCHED_ACCOUNT_NAME);
-          await headerNavbar.openAccountDetailsModalDetailsTab();
+          await headerNavbar.openAccountDetailsModal();
 
           // check 'Show private key' button should not be displayed
           const accountDetailsModal = new AccountDetailsModal(driver);

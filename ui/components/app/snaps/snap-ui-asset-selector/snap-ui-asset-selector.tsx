@@ -48,7 +48,6 @@ const SnapUIAssetSelectorOption: FunctionComponent<SnapUIAsset> = ({
   networkIcon,
 }) => (
   <Box
-    className="snap-ui-renderer__asset-selector-option"
     display={Display.Flex}
     alignItems={AlignItems.center}
     width={BlockSize.Full}

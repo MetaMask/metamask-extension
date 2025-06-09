@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
@@ -7,13 +7,16 @@ import {
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import DetectedToken from '../../detected-token/detected-token';
-import { usePrimaryCurrencyProperties } from '../hooks';
+import {
+  useAssetListTokenDetection,
+  usePrimaryCurrencyProperties,
+} from '../hooks';
 import TokenList from '../token-list';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 import AssetListControlBar from './asset-list-control-bar';
 import AssetListFundingModals from './asset-list-funding-modals';
 
-export type AssetListProps = {
+type AssetListProps = {
   onClickAsset: (chainId: string, address: string) => void;
   showTokensLinks?: boolean;
 };
@@ -46,7 +49,8 @@ const TokenListContainer = React.memo(
 );
 
 const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
-  const [showDetectedTokens, setShowDetectedTokens] = useState(false);
+  const { showDetectedTokens, setShowDetectedTokens } =
+    useAssetListTokenDetection();
   const isEvm = useSelector(getMultichainIsEvm);
   // NOTE: Since we can parametrize it now, we keep the original behavior
   // for EVM assets

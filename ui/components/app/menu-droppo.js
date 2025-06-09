@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
-import { CSSTransition } from 'react-transition-group';
+import ReactCSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 export default class MenuDroppoComponent extends Component {
   static propTypes = {
@@ -107,14 +107,14 @@ export default class MenuDroppoComponent extends Component {
         `}
         </style>
         {useCssTransition ? (
-          <CSSTransition
+          <ReactCSSTransitionGroup
             className="css-transition-group"
             transitionName="menu-droppo"
             transitionEnterTimeout={parseInt(speed, 10)}
             transitionLeaveTimeout={parseInt(speed, 10)}
           >
             {this.renderPrimary()}
-          </CSSTransition>
+          </ReactCSSTransitionGroup>
         ) : (
           this.renderPrimary()
         )}

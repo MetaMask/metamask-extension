@@ -49,10 +49,6 @@ import {
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
-import {
-  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
-  KNOWN_STATE_CORRUPTION_ERRORS,
-} from './lib/state-corruption-errors';
 import { PersistenceManager } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
 import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
@@ -98,20 +94,17 @@ const BADGE_MAX_COUNT = 9;
 
 // Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
+const migrator = new Migrator({
+  migrations,
+  defaultVersion: process.env.WITH_STATE
+    ? FIXTURE_STATE_METADATA_VERSION
+    : null,
+});
 
 const localStore = inTest ? new ReadOnlyNetworkStore() : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
 global.stateHooks.getMostRecentPersistedState = () =>
   persistenceManager.mostRecentRetrievedState;
-
-/**
- * A helper function to log the current state of the vault. Useful for debugging
- * purposes, to, in the case of database corruption, an possible way for an end
- * user to recover their vault. Hopefully this is never needed.
- */
-global.logEncryptedVault = () => {
-  persistenceManager.logEncryptedVault();
-};
 
 const { sentry } = global;
 let firstTimeState = { ...rawFirstTimeState };
@@ -342,28 +335,19 @@ function maybeDetectPhishing(theController) {
         blockedUrl = details.initiator;
       }
 
-      if (!isFirefox) {
-        theController.metaMetricsController.trackEvent(
-          {
-            // should we differentiate between background redirection and content script redirection?
-            event: MetaMetricsEventName.PhishingPageDisplayed,
-            category: MetaMetricsEventCategory.Phishing,
-            properties: {
-              url: blockedUrl,
-              referrer: {
-                url: blockedUrl,
-              },
-              reason: blockReason,
-              requestDomain: blockedRequestResponse.result
-                ? hostname
-                : undefined,
-            },
+      theController.metaMetricsController.trackEvent({
+        // should we differentiate between background redirection and content script redirection?
+        event: MetaMetricsEventName.PhishingPageDisplayed,
+        category: MetaMetricsEventCategory.Phishing,
+        properties: {
+          url: blockedUrl,
+          referrer: {
+            url: blockedUrl,
           },
-          {
-            excludeMetaMetricsId: true,
-          },
-        );
-      }
+          reason: blockReason,
+          requestDomain: blockedRequestResponse.result ? hostname : undefined,
+        },
+      });
       const querystring = new URLSearchParams({ hostname, href });
       const redirectUrl = new URL(phishingPageHref);
       redirectUrl.hash = querystring.toString();
@@ -436,47 +420,15 @@ let connectCaipMultichain;
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
-  try {
-    await isInitialized;
+  await isInitialized;
 
-    // This is set in `setupController`, which is called as part of initialization
-    connectWindowPostMessage(...args);
-  } catch (error) {
-    sentry?.captureException(error);
-
-    // if have a STATE_CORRUPTION_ERROR tell the user about it and offer to
-    // restore from a backup, if we have one.
-    if (KNOWN_STATE_CORRUPTION_ERRORS.has(error.message)) {
-      const _state = await localStore.get().catch((_) => null);
-
-      const port = args[0];
-      try {
-        // send the `error` TO THE ui
-        port.postMessage({
-          data: {
-            method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
-            params: {
-              error: {
-                message: error.message,
-                name: error.name,
-                stack: error.stack,
-              },
-              currentLocale: _state?.data?.PreferencesController?.currentLocale,
-            },
-          },
-        });
-      } catch (e) {
-        // an exception can occur here if the Window has since disconnected from
-        // the background, this is expected if the UI is closed while we are
-        // still initializing the background (during `await isInitialized;`)
-        log.error('MetaMask - Failed to send state corruption error', e);
-      }
-    }
-  }
+  // This is set in `setupController`, which is called as part of initialization
+  connectWindowPostMessage(...args);
 });
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
+
   // This is set in `setupController`, which is called as part of initialization
   connectExternallyConnectable(...args);
 });
@@ -542,89 +494,87 @@ function saveTimestamp() {
  * @returns {Promise} Setup complete.
  */
 async function initialize() {
-  const offscreenPromise = isManifestV3 ? createOffscreen() : null;
+  try {
+    const offscreenPromise = isManifestV3 ? createOffscreen() : null;
 
-  const initData = await loadStateFromPersistence();
+    const initData = await loadStateFromPersistence();
 
-  const initState = initData.data;
-  const initLangCode = await getFirstPreferredLangCode();
+    const initState = initData.data;
+    const initLangCode = await getFirstPreferredLangCode();
 
-  let isFirstMetaMaskControllerSetup;
+    let isFirstMetaMaskControllerSetup;
 
-  // We only want to start this if we are running a test build, not for the release build.
-  // `navigator.webdriver` is true if Selenium, Puppeteer, or Playwright are running.
-  // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
-  // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
-  if (process.env.IN_TEST && window.navigator?.webdriver) {
-    getSocketBackgroundToMocha();
-  }
-
-  if (isManifestV3) {
-    // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
-    // miliseconds. This keeps the service worker alive.
-    if (initState.PreferencesController?.enableMV3TimestampSave !== false) {
-      const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
-
-      saveTimestamp();
-      setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
+    // We only want to start this if we are running a test build, not for the release build.
+    // `navigator.webdriver` is true if Selenium, Puppeteer, or Playwright are running.
+    // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
+    // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
+    if (process.env.IN_TEST && window.navigator?.webdriver) {
+      getSocketBackgroundToMocha();
     }
 
-    const sessionData = await browser.storage.session.get([
-      'isFirstMetaMaskControllerSetup',
-    ]);
+    if (isManifestV3) {
+      // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
+      // miliseconds. This keeps the service worker alive.
+      if (initState.PreferencesController?.enableMV3TimestampSave !== false) {
+        const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
 
-    isFirstMetaMaskControllerSetup =
-      sessionData?.isFirstMetaMaskControllerSetup === undefined;
-    await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
-  }
-
-  const overrides = inTest
-    ? {
-        keyrings: {
-          trezorBridge: FakeTrezorBridge,
-          ledgerBridge: FakeLedgerBridge,
-        },
+        saveTimestamp();
+        setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
       }
-    : {};
 
-  const preinstalledSnaps = await loadPreinstalledSnaps();
+      const sessionData = await browser.storage.session.get([
+        'isFirstMetaMaskControllerSetup',
+      ]);
 
-  setupController(
-    initState,
-    initLangCode,
-    overrides,
-    isFirstMetaMaskControllerSetup,
-    initData.meta,
-    offscreenPromise,
-    preinstalledSnaps,
-  );
+      isFirstMetaMaskControllerSetup =
+        sessionData?.isFirstMetaMaskControllerSetup === undefined;
+      await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
+    }
 
-  // `setupController` sets up the `controller` object, so we can use it now:
-  maybeDetectPhishing(controller);
+    const overrides = inTest
+      ? {
+          keyrings: {
+            trezorBridge: FakeTrezorBridge,
+            ledgerBridge: FakeLedgerBridge,
+          },
+        }
+      : {};
 
-  if (!isManifestV3) {
-    await loadPhishingWarningPage();
+    const preinstalledSnaps = await loadPreinstalledSnaps();
+
+    setupController(
+      initState,
+      initLangCode,
+      overrides,
+      isFirstMetaMaskControllerSetup,
+      initData.meta,
+      offscreenPromise,
+      preinstalledSnaps,
+    );
+
+    // `setupController` sets up the `controller` object, so we can use it now:
+    maybeDetectPhishing(controller);
+
+    if (!isManifestV3) {
+      await loadPhishingWarningPage();
+    }
+    await sendReadyMessageToTabs();
+    log.info('MetaMask initialization complete.');
+
+    resolveInitialization();
+  } catch (error) {
+    rejectInitialization(error);
   }
-  await sendReadyMessageToTabs();
 }
 
 /**
  * Loads the preinstalled snaps from urls and returns them as an array.
  * It fails if any Snap fails to load in the expected time range.
- * Supports .json.gz files using gzip decompression.
  */
 async function loadPreinstalledSnaps() {
   const fetchWithTimeout = getFetchWithTimeout();
   const promises = PREINSTALLED_SNAPS_URLS.map(async (url) => {
     const response = await fetchWithTimeout(url);
-
-    // If the Snap is compressed, decompress it
-    if (url.pathname.endsWith('.json.gz')) {
-      const ds = new DecompressionStream('gzip');
-      const decompressedStream = response.body.pipeThrough(ds);
-      return await new Response(decompressedStream).json();
-    }
-
     return await response.json();
   });
 
@@ -703,9 +653,12 @@ async function loadPhishingWarningPage() {
  * Loads any stored data, prioritizing the latest storage strategy.
  * Migrates that data schema in case it was last loaded on an older version.
  *
- * @returns {Promise<{data: MetaMaskState meta: {version: number}}>} Last data emitted from previous instance of MetaMask.
+ * @returns {Promise<MetaMaskState>} Last data emitted from previous instance of MetaMask.
  */
 export async function loadStateFromPersistence() {
+  // migrations
+  migrator.on('error', console.warn);
+
   if (process.env.WITH_STATE) {
     const stateOverrides = await generateWalletState();
     firstTimeState = { ...firstTimeState, ...stateOverrides };
@@ -713,18 +666,12 @@ export async function loadStateFromPersistence() {
 
   // read from disk
   // first from preferred, async API:
-  let preMigrationVersionedData = await persistenceManager.get();
-
-  const migrator = new Migrator({
-    migrations,
-    defaultVersion: process.env.WITH_STATE
-      ? FIXTURE_STATE_METADATA_VERSION
-      : null,
-  });
+  const preMigrationVersionedData =
+    (await persistenceManager.get()) ||
+    migrator.generateInitialState(firstTimeState);
 
   // report migration errors to sentry
   migrator.on('error', (err) => {
-    console.warn(err);
     // get vault structure without secrets
     const vaultStructure = getObjStructure(preMigrationVersionedData);
     sentry.captureException(err, {
@@ -732,10 +679,6 @@ export async function loadStateFromPersistence() {
       extra: { vaultStructure },
     });
   });
-
-  if (!preMigrationVersionedData?.data && !preMigrationVersionedData?.meta) {
-    preMigrationVersionedData = migrator.generateInitialState(firstTimeState);
-  }
 
   // migrate data
   const versionedData = await migrator.migrateData(preMigrationVersionedData);
@@ -759,7 +702,7 @@ export async function loadStateFromPersistence() {
   persistenceManager.setMetadata(versionedData.meta);
 
   // write to disk
-  await persistenceManager.set(versionedData.data);
+  persistenceManager.set(versionedData.data);
 
   // return just the data
   return versionedData;
@@ -788,23 +731,18 @@ function emitDappViewedMetricEvent(origin) {
   );
   const numberOfTotalAccounts = Object.keys(preferencesState.identities).length;
 
-  controller.metaMetricsController.trackEvent(
-    {
-      event: MetaMetricsEventName.DappViewed,
-      category: MetaMetricsEventCategory.InpageProvider,
-      referrer: {
-        url: origin,
-      },
-      properties: {
-        is_first_visit: false,
-        number_of_accounts: numberOfTotalAccounts,
-        number_of_accounts_connected: numberOfConnectedAccounts,
-      },
+  controller.metaMetricsController.trackEvent({
+    event: MetaMetricsEventName.DappViewed,
+    category: MetaMetricsEventCategory.InpageProvider,
+    referrer: {
+      url: origin,
     },
-    {
-      excludeMetaMetricsId: true,
+    properties: {
+      is_first_visit: false,
+      number_of_accounts: numberOfTotalAccounts,
+      number_of_accounts_connected: numberOfConnectedAccounts,
     },
-  );
+  });
 }
 
 /**
@@ -928,6 +866,7 @@ export function setupController(
     getOpenMetamaskTabsIds: () => {
       return openMetamaskTabsIDs;
     },
+    persistenceManager,
     overrides,
     isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
@@ -1101,7 +1040,7 @@ export function setupController(
 
       connectEip1193(portStream, remotePort.sender);
 
-      if (isFirefox) {
+      if (process.env.MULTICHAIN_API && isFirefox) {
         const mux = setupMultiplex(portStream);
         mux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
 
@@ -1118,7 +1057,7 @@ export function setupController(
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
 
     const isDappConnecting = remotePort.sender.tab?.id;
-    if (isDappConnecting) {
+    if (isDappConnecting && process.env.MULTICHAIN_API) {
       if (metamaskBlockedPorts.includes(remotePort.name)) {
         return;
       }
@@ -1140,6 +1079,10 @@ export function setupController(
   };
 
   connectCaipMultichain = (connectionStream, sender) => {
+    if (!process.env.MULTICHAIN_API) {
+      return;
+    }
+
     controller.setupUntrustedCommunicationCaip({
       connectionStream,
       sender,
@@ -1461,12 +1404,8 @@ async function initBackground() {
       }
     }
     persistenceManager.cleanUpMostRecentRetrievedState();
-
-    log.info('MetaMask initialization complete.');
-    resolveInitialization();
   } catch (error) {
     log.error(error);
-    rejectInitialization(error);
   }
 }
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {

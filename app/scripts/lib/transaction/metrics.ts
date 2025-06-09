@@ -8,6 +8,7 @@ import {
 } from '@metamask/transaction-controller';
 import { Json, add0x } from '@metamask/utils';
 import { Hex } from 'viem';
+import { errorCodes } from '@metamask/rpc-errors';
 import {
   MESSAGE_TYPE,
   ORIGIN_METAMASK,
@@ -23,7 +24,6 @@ import {
   MetaMetricsEventTransactionEstimateType,
 } from '../../../../shared/constants/metametrics';
 import {
-  EIP5792ErrorCode,
   TokenStandard,
   TransactionApprovalAmountType,
   TransactionMetaMetricsEvent,
@@ -60,22 +60,8 @@ import { getSnapAndHardwareInfoForMetrics } from '../snap-keyring/metrics';
 import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
 import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
-import { extractRpcDomain } from '../util';
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
-
-const CONTRACT_INTERACTION_TYPES = [
-  TransactionType.contractInteraction,
-  TransactionType.tokenMethodApprove,
-  TransactionType.tokenMethodIncreaseAllowance,
-  TransactionType.tokenMethodSafeTransferFrom,
-  TransactionType.tokenMethodSetApprovalForAll,
-  TransactionType.tokenMethodTransfer,
-  TransactionType.tokenMethodTransferFrom,
-  TransactionType.swap,
-  TransactionType.swapAndSend,
-  TransactionType.swapApproval,
-];
 
 /**
  * This function is called when a transaction is added to the controller.
@@ -451,6 +437,32 @@ export const handlePostTransactionBalanceUpdate = async (
     }
   }
 };
+
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+/**
+ * This function is called when a transaction metadata updated in the MMI controller.
+ *
+ * @param transactionMetricsRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param transactionEventPayload - The event payload
+ * @param transactionEventPayload.transactionMeta - The transaction meta object
+ * @param eventName - The event name
+ */
+export const handleMMITransactionUpdate = async (
+  transactionMetricsRequest: TransactionMetricsRequest,
+  transactionEventPayload: TransactionEventPayload,
+  eventName: TransactionMetaMetricsEvent,
+) => {
+  if (!transactionEventPayload.transactionMeta) {
+    return;
+  }
+
+  await createUpdateFinalizeTransactionEventFragment({
+    eventName,
+    transactionEventPayload,
+    transactionMetricsRequest,
+  });
+};
+///: END:ONLY_INCLUDE_IF
 
 function calculateTransactionsCost(
   transactionMeta: TransactionMeta,
@@ -868,7 +880,19 @@ async function buildEventFragmentProperties({
   }
 
   const contractInteractionTypes =
-    type && CONTRACT_INTERACTION_TYPES.includes(type);
+    type &&
+    [
+      TransactionType.contractInteraction,
+      TransactionType.tokenMethodApprove,
+      TransactionType.tokenMethodIncreaseAllowance,
+      TransactionType.tokenMethodSafeTransferFrom,
+      TransactionType.tokenMethodSetApprovalForAll,
+      TransactionType.tokenMethodTransfer,
+      TransactionType.tokenMethodTransferFrom,
+      TransactionType.swap,
+      TransactionType.swapAndSend,
+      TransactionType.swapApproval,
+    ].includes(type);
 
   const contractMethodNames = {
     APPROVE: 'Approve',
@@ -1144,19 +1168,6 @@ async function buildEventFragmentProperties({
     transactionMetricsRequest.getAccountBalance,
   );
 
-  // Only calculate and add domain to properties for "Transaction Submitted" and "Transaction Finalized" events
-  if (
-    status === TransactionStatus.submitted ||
-    status === TransactionStatus.confirmed
-  ) {
-    // Get RPC URL from provider
-    const rpcUrl = transactionMetricsRequest.getNetworkRpcUrl(
-      transactionMeta.chainId,
-    );
-    const domain = extractRpcDomain(rpcUrl);
-    properties.rpc_domain = domain;
-  }
-
   return { properties, sensitiveProperties };
 }
 
@@ -1287,8 +1298,7 @@ async function addBatchProperties(
     sensitiveProperties.transaction_contract_address = nestedTransactions
       ?.filter(
         (tx) =>
-          CONTRACT_INTERACTION_TYPES.includes(tx.type as TransactionType) &&
-          tx.to?.length,
+          tx.type === TransactionType.contractInteraction && tx.to?.length,
       )
       .map((tx) => tx.to as string);
   }
@@ -1298,7 +1308,7 @@ async function addBatchProperties(
 
     properties.eip7702_upgrade_rejection =
       // @ts-expect-error Code has string type in controller
-      isUpgrade && error.code === EIP5792ErrorCode.RejectedUpgrade;
+      isUpgrade && error.code === errorCodes.rpc.methodNotSupported;
   }
 
   properties.eip7702_upgrade_transaction = isUpgrade;
@@ -1344,11 +1354,7 @@ async function getNestedMethodNames(
   getMethodData: (data: string) => Promise<{ name?: string } | undefined>,
 ): Promise<string[]> {
   const allData = transactions
-    .filter(
-      (tx) =>
-        CONTRACT_INTERACTION_TYPES.includes(tx.type as TransactionType) &&
-        tx.data,
-    )
+    .filter((tx) => tx.type === TransactionType.contractInteraction && tx.data)
     .map((tx) => tx.data as Hex);
 
   const results = await Promise.all(allData.map((data) => getMethodData(data)));

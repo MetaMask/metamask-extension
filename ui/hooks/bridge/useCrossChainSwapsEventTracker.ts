@@ -16,10 +16,9 @@ import {
 } from './events/types';
 
 export type CrossChainSwapsEventProperties = {
-  [MetaMetricsEventName.ActionButtonClicked]: RequestParams & {
+  [MetaMetricsEventName.ActionOpened]: RequestParams & {
     location: MetaMetricsSwapsEventSource;
   };
-  [MetaMetricsEventName.ActionPageViewed]: RequestParams;
   [MetaMetricsEventName.ActionCompleted]: RequestParams &
     RequestMetadata &
     TradeData &

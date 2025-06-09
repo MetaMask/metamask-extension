@@ -1,8 +1,7 @@
 import { RpcEndpointType } from '@metamask/network-controller';
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { infuraProjectId } from '../../../../shared/constants/network';
-import { Box, Tag, Text } from '../../component-library';
+import { Box, Text } from '../../component-library';
 import {
   Display,
   FlexDirection,
@@ -12,10 +11,7 @@ import {
   TextVariant,
   BackgroundColor,
   BlockSize,
-  AlignItems,
 } from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getIsRpcFailoverEnabled } from '../../../selectors';
 
 export const stripKeyFromInfuraUrl = (endpoint: string) => {
   let modifiedEndpoint = endpoint;
@@ -42,13 +38,9 @@ const RpcListItem = ({
   rpcEndpoint: {
     name?: string;
     url: string;
-    failoverUrls?: string[];
     type: RpcEndpointType;
   };
 }) => {
-  const t = useI18nContext();
-  const isRpcFailoverEnabled = useSelector(getIsRpcFailoverEnabled);
-
   const { url, type } = rpcEndpoint;
   const name = type === RpcEndpointType.Infura ? 'Infura' : rpcEndpoint.name;
 
@@ -79,18 +71,10 @@ const RpcListItem = ({
           variant={name ? TextVariant.bodyMdMedium : TextVariant.bodySm}
           backgroundColor={BackgroundColor.transparent}
           ellipsis
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          gap={1}
         >
           {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
           {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
           {name || displayEndpoint(url)}
-          {isRpcFailoverEnabled &&
-          rpcEndpoint.failoverUrls &&
-          rpcEndpoint.failoverUrls.length > 0 ? (
-            <Tag label={t('failover')} display={Display.Inline} />
-          ) : null}
         </Text>
       </Box>
       {name && (

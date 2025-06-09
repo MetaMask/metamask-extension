@@ -4,7 +4,6 @@ import reactRouterDom from 'react-router-dom';
 import {
   BtcAccountType,
   EthAccountType,
-  EthScope,
   KeyringAccountType,
 } from '@metamask/keyring-api';
 import { merge } from 'lodash';
@@ -19,7 +18,6 @@ import messages from '../../../../app/_locales/en/messages.json';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
-  IMPORT_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
 ///: END:ONLY_INCLUDE_IF
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
@@ -44,6 +42,7 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
 jest.mock('../../../store/actions', () => {
   return {
     ...jest.requireActual('../../../store/actions'),
+    getNextAvailableAccountName: () => mockNextAccountName(),
     generateNewHdKeyring: () => mockGenerateNewHdKeyring(),
     detectNfts: () => mockDetectNfts,
   };
@@ -60,7 +59,6 @@ jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
   ),
   useMultichainWalletSnapClient: () => ({
     createAccount: mockBitcoinClientCreateAccount,
-    getNextAvailableAccountName: () => mockNextAccountName(),
     getSnapId: () => 'bitcoin-snap-id',
     getSnapName: () => 'bitcoin-snap-name',
   }),
@@ -81,9 +79,6 @@ const render = (
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      remoteFeatureFlags: {
-        addBitcoinAccount: true,
-      },
       permissionHistory: {
         'https://test.dapp': {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -121,6 +116,7 @@ const render = (
           },
         },
       },
+      bitcoinSupportEnabled: true,
     },
     activeTab: {
       id: 113,
@@ -224,7 +220,6 @@ describe('AccountListMenu', () => {
               },
               options: {},
               methods: ETH_EOA_METHODS,
-              scopes: [EthScope.Eoa],
               type: EthAccountType.Eoa,
             },
           },
@@ -666,7 +661,6 @@ describe('AccountListMenu', () => {
     const mockBtcAccount = createMockInternalAccount({
       name: 'Bitcoin Account',
       type: BtcAccountType.P2wpkh,
-      keyringType: KeyringTypes.snap,
       address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
     });
     const defaultMockState = {
@@ -728,7 +722,7 @@ describe('AccountListMenu', () => {
       );
       addAccountButton.click();
 
-      expect(historyPushMock).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
+      expect(getByTestId('import-srp-container')).toBeInTheDocument();
     });
 
     it('shows srp list if there are multiple srps when adding a new account', async () => {
@@ -741,10 +735,10 @@ describe('AccountListMenu', () => {
       const secondHdKeyring = {
         accounts: [accountInSecondSrp.address],
         type: KeyringTypes.hd,
-        metadata: {
-          id: '01JN2RD391JM4K7Q5T4RP3JXMA',
-          name: '',
-        },
+      };
+      const secondHdKeyringMetadata = {
+        id: '01JN2RD391JM4K7Q5T4RP3JXMA',
+        name: '',
       };
 
       const { getByTestId } = render({
@@ -757,6 +751,10 @@ describe('AccountListMenu', () => {
             },
           },
           keyrings: [...mockState.metamask.keyrings, secondHdKeyring],
+          keyringsMetadata: [
+            ...mockState.metamask.keyringsMetadata,
+            secondHdKeyringMetadata,
+          ],
           internalAccounts: {
             ...mockState.metamask.internalAccounts,
             accounts: {

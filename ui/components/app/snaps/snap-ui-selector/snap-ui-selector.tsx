@@ -67,7 +67,6 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
   return (
     <ButtonBase
       className="snap-ui-renderer__selector-item"
-      data-testid="snap-ui-renderer__selector-item"
       backgroundColor={
         selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
       }
@@ -167,9 +166,6 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
-        style={{
-          overflow: 'hidden',
-        }}
         className={classnames({
           'snap-ui-renderer__field': label !== undefined,
         })}

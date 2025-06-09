@@ -13,7 +13,6 @@ import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 describe('Snap Account Contract interaction', function (this: Suite) {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
@@ -28,7 +27,6 @@ describe('Snap Account Contract interaction', function (this: Suite) {
           hardfork: 'london',
         },
         smartContract,
-        testSpecificMock: mockSimpleKeyringSnap,
         title: this.test?.fullTitle(),
       },
       async ({

@@ -47,11 +47,10 @@ export const SiteCellConnectionListItem = ({
       paddingBottom={paddingBottomValue}
     >
       <AvatarIcon
-        marginTop={1}
         iconName={iconName}
         size={AvatarIconSize.Md}
         color={IconColor.iconAlternative}
-        backgroundColor={BackgroundColor.backgroundMuted}
+        backgroundColor={BackgroundColor.backgroundAlternative}
       />
       <Box
         display={Display.Flex}

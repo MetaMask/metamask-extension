@@ -6,12 +6,7 @@ import {
   type QuoteMetadata,
   type QuoteResponse,
   SortOrder,
-  UnifiedSwapBridgeEventName,
-  formatEtaInMinutes,
-  formatProviderLabel,
-  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { BigNumber } from 'bignumber.js';
 import {
   ButtonLink,
   IconSize,
@@ -28,19 +23,16 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  setSelectedQuote,
-  setSortOrder,
-  trackUnifiedSwapBridgeEvent,
-} from '../../../ducks/bridge/actions';
+  formatEtaInMinutes,
+  formatCurrencyAmount,
+  formatTokenAmount,
+} from '../utils/quote';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { setSelectedQuote, setSortOrder } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
   getBridgeSortOrder,
-  getFromChain,
-  getFromToken,
-  getToToken,
 } from '../../../ducks/bridge/selectors';
 import { Column, Row } from '../layout';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
@@ -53,7 +45,6 @@ import { useTradeProperties } from '../../../hooks/bridge/events/useTradePropert
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -62,10 +53,6 @@ export const BridgeQuotesModal = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const isStxEnabled = useSelector(getSmartTransactionsEnabled);
-  const fromToken = useSelector(getFromToken);
-  const toToken = useSelector(getToToken);
-  const fromChain = useSelector(getFromChain);
   const { sortedQuotes, activeQuote, recommendedQuote } =
     useSelector(getBridgeQuotes);
   const sortOrder = useSelector(getBridgeSortOrder);
@@ -103,28 +90,6 @@ export const BridgeQuotesModal = ({
             <ButtonLink
               key={label}
               onClick={() => {
-                fromChain &&
-                  recommendedQuote &&
-                  dispatch(
-                    trackUnifiedSwapBridgeEvent(
-                      UnifiedSwapBridgeEventName.AllQuotesSorted,
-                      {
-                        sort_order: sortOrder,
-                        price_impact: Number(
-                          recommendedQuote.quote?.priceData?.priceImpact ?? '0',
-                        ),
-                        gas_included: false,
-                        token_symbol_source:
-                          fromToken?.symbol ??
-                          getNativeAssetForChainId(fromChain.chainId).symbol,
-                        token_symbol_destination: toToken?.symbol ?? null,
-                        stx_enabled: isStxEnabled,
-                        best_quote_provider: formatProviderLabel(
-                          recommendedQuote.quote,
-                        ),
-                      },
-                    ),
-                  );
                 quoteRequestProperties &&
                   requestMetadataProperties &&
                   quoteListProperties &&
@@ -205,32 +170,6 @@ export const BridgeQuotesModal = ({
                     isQuoteActive ? BackgroundColor.primaryMuted : undefined
                   }
                   onClick={() => {
-                    quote &&
-                      dispatch(
-                        trackUnifiedSwapBridgeEvent(
-                          UnifiedSwapBridgeEventName.QuoteSelected,
-                          {
-                            is_best_quote: isRecommendedQuote,
-                            best_quote_provider: formatProviderLabel(
-                              quote?.quote,
-                            ),
-                            usd_quoted_gas: Number(quote.gasFee.usd),
-                            quoted_time_minutes:
-                              quote.estimatedProcessingTimeInSeconds / 60,
-                            usd_quoted_return: Number(quote.toTokenAmount.usd),
-                            provider: formatProviderLabel(quote.quote),
-                            price_impact: Number(
-                              // TODO remove this once we bump to the latest version of the bridge controller
-                              (
-                                quote.quote as unknown as {
-                                  priceData: { priceImpact: string };
-                                }
-                              )?.priceData?.priceImpact ?? '0',
-                            ),
-                            gas_included: false,
-                          },
-                        ),
-                      );
                     dispatch(setSelectedQuote(quote));
                     // Emit QuoteSelected event after dispatching setSelectedQuote
                     quoteRequestProperties &&
@@ -272,18 +211,18 @@ export const BridgeQuotesModal = ({
                   <Column>
                     <Text variant={TextVariant.bodyMd}>
                       {cost.valueInCurrency &&
-                        formatCurrencyAmount(cost.valueInCurrency, currency, 2)}
+                        formatCurrencyAmount(cost.valueInCurrency, currency, 0)}
                     </Text>
                     {[
                       totalNetworkFee?.valueInCurrency &&
                       sentAmount?.valueInCurrency
                         ? t('quotedTotalCost', [
                             formatCurrencyAmount(
-                              new BigNumber(totalNetworkFee.valueInCurrency)
-                                .plus(sentAmount.valueInCurrency)
-                                .toString(),
+                              totalNetworkFee.valueInCurrency.plus(
+                                sentAmount.valueInCurrency,
+                              ),
                               currency,
-                              2,
+                              0,
                             ),
                           ])
                         : t('quotedTotalCost', [
@@ -297,7 +236,7 @@ export const BridgeQuotesModal = ({
                         formatCurrencyAmount(
                           toTokenAmount.valueInCurrency,
                           currency,
-                          2,
+                          0,
                         ) ??
                           formatTokenAmount(
                             locale,

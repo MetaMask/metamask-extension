@@ -6,10 +6,6 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { completeSnapInstallSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
-import {
-  mockDialogSnap,
-  mockErrorSnap,
-} from '../mock-response-data/snaps/snap-binary-mocks';
 
 const { strict: assert } = require('assert');
 const { withFixtures, getEventPayloads } = require('../helpers');
@@ -44,12 +40,8 @@ async function mockedSnapInstall(mockServer: Mockttp) {
 
 describe('Test Snap installed', function () {
   it('metrics are sent correctly and error snap validation', async function () {
-    async function mockSegmentAndSnaps(mockServer: Mockttp) {
-      return [
-        await mockedSnapInstall(mockServer),
-        await mockErrorSnap(mockServer),
-        await mockDialogSnap(mockServer),
-      ];
+    async function mockSegment(mockServer: Mockttp) {
+      return [await mockedSnapInstall(mockServer)];
     }
 
     await withFixtures(
@@ -62,7 +54,7 @@ describe('Test Snap installed', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSegmentAndSnaps,
+        testSpecificMock: mockSegment,
       },
       async ({
         driver,
@@ -72,7 +64,11 @@ describe('Test Snap installed', function () {
 
         // Open a new tab and navigate to test snaps page and click dialog snap
         const testSnaps = new TestSnaps(driver);
-        await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton');
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'connectDialogsButton',
+          false,
+        );
 
         // Check installation success
         await testSnaps.check_installationComplete(

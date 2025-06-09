@@ -9,7 +9,7 @@ type ArrangeMocksMetamaskStateOverrides = {
   useExternalServices: boolean;
   isSignedIn: boolean;
   completedOnboarding: boolean;
-  isBackupAndSyncEnabled: boolean;
+  isProfileSyncingEnabled: boolean;
   participateInMetaMetrics: boolean;
   isNotificationServicesEnabled: boolean;
 };
@@ -39,7 +39,7 @@ const prerequisitesStateKeys = [
 ];
 
 const authDependentFeaturesStateKeys = [
-  'isBackupAndSyncEnabled',
+  'isProfileSyncingEnabled',
   'participateInMetaMetrics',
   'isNotificationServicesEnabled',
 ];
@@ -94,7 +94,7 @@ describe('useAutoSignIn', () => {
   it('should initialize correctly', () => {
     const state = arrangeMockState({
       isUnlocked: false,
-      isBackupAndSyncEnabled: false,
+      isProfileSyncingEnabled: false,
       isSignedIn: false,
       completedOnboarding: false,
       participateInMetaMetrics: false,

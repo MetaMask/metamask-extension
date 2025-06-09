@@ -401,12 +401,12 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.bridgeApproval) {
     title = t('bridgeApproval');
     category = TransactionGroupCategory.approval;
-    title = t('bridgeApproval', [bridgeTokenDisplayData.sourceTokenSymbol]);
+    title = t('bridgeApproval', [primaryTransaction.sourceTokenSymbol]);
     subtitle = origin;
     subtitleContainsOrigin = true;
-    primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
+    primarySuffix = primaryTransaction.sourceTokenSymbol;
   } else if (type === TransactionType.bridge) {
-    title = destChainName ? t('bridgeToChain', [destChainName]) : t('bridge');
+    title = t('bridgeToChain', [destChainName || '']);
     category = bridgeTokenDisplayData.category;
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
     primaryDisplayValue = formatAmount(
@@ -464,8 +464,7 @@ export function useTransactionDisplayData(transactionGroup) {
     secondaryCurrency:
       (isTokenCategory && !tokenFiatAmount) ||
       ([TransactionType.swap, TransactionType.swapAndSend].includes(type) &&
-        !swapTokenFiatAmount) ||
-      (type === TransactionType.bridge && !secondaryDisplayValue)
+        !swapTokenFiatAmount)
         ? undefined
         : secondaryCurrency,
     displayedStatusKey,

@@ -1,8 +1,10 @@
 import { Hex } from '@metamask/utils';
-import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { calcHexGasTotal } from '../../../../shared/lib/transaction-breakdown-utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import { MetricsBackgroundState } from '../../../../shared/types/bridge-status';
+import {
+  MetricsBackgroundState,
+  BridgeHistoryItem,
+} from '../../../../shared/types/bridge-status';
 import {
   exchangeRateFromMarketData,
   getTokenExchangeRate,

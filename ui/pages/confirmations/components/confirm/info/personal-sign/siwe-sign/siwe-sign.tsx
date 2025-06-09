@@ -12,10 +12,7 @@ import {
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
 import { Box, Text } from '../../../../../../../components/component-library';
-import {
-  BlockSize,
-  TextColor,
-} from '../../../../../../../helpers/constants/design-system';
+import { TextColor } from '../../../../../../../helpers/constants/design-system';
 import { useConfirmContext } from '../../../../../context/confirm';
 
 const SIWESignInfo: React.FC = () => {
@@ -50,8 +47,11 @@ const SIWESignInfo: React.FC = () => {
       copyEnabled
       copyText={JSON.stringify(siweMessage)}
     >
-      <Box width={BlockSize.Full} className="siwe-sign__message-rows">
-        <Text color={TextColor.inherit} style={{ whiteSpace: 'pre-wrap' }}>
+      <Box style={{ marginLeft: -8, marginRight: -8 }}>
+        <Text
+          color={TextColor.inherit}
+          style={{ whiteSpace: 'pre-wrap', marginLeft: 8, marginRight: 8 }}
+        >
           {statement ?? ''}
         </Text>
         <ConfirmInfoRow label={t('siweURI')}>

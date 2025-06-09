@@ -4,11 +4,7 @@ import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { TextFieldSearch } from '../../../component-library/text-field-search/deprecated';
-import {
-  BlockSize,
-  BorderRadius,
-  Size,
-} from '../../../../helpers/constants/design-system';
+import { BlockSize, Size } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getCurrentNetwork } from '../../../../selectors';
 
@@ -94,12 +90,9 @@ export default function TokenSearch({
       autoFocus
       autoComplete={false}
       width={BlockSize.Full}
-      size={Size.LG}
-      paddingRight={2}
-      borderRadius={BorderRadius.LG}
       clearButtonOnClick={clear}
       clearButtonProps={{
-        size: Size.SM,
+        size: Size.LG,
       }}
     />
   );

@@ -19,16 +19,11 @@ import {
   SendCalls,
   SendCallsResult,
 } from '@metamask/eth-json-rpc-middleware';
-import {
-  AccountsControllerGetSelectedAccountAction,
-  AccountsControllerGetStateAction,
-} from '@metamask/accounts-controller';
-import { KeyringTypes } from '@metamask/keyring-controller';
+import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { generateSecurityAlertId } from '../ppom/ppom-util';
 import { EIP5792ErrorCode } from '../../../../shared/constants/transaction';
 
 type Actions =
-  | AccountsControllerGetStateAction
   | AccountsControllerGetSelectedAccountAction
   | NetworkControllerGetNetworkClientByIdAction
   | TransactionControllerGetStateAction;
@@ -42,11 +37,11 @@ export enum AtomicCapabilityStatus {
 }
 
 const VERSION = '2.0.0';
-const SUPPORTED_KEYRING_TYPES = [KeyringTypes.hd, KeyringTypes.simple];
 
 export async function processSendCalls(
   hooks: {
     addTransactionBatch: TransactionController['addTransactionBatch'];
+    getDisabledUpgradeAccountsByChain: () => Record<Hex, Hex[]>;
     getDismissSmartAccountSuggestionEnabled: () => boolean;
     isAtomicBatchSupported: TransactionController['isAtomicBatchSupported'];
     validateSecurity: (
@@ -61,6 +56,7 @@ export async function processSendCalls(
 ): Promise<SendCallsResult> {
   const {
     addTransactionBatch,
+    getDisabledUpgradeAccountsByChain,
     getDismissSmartAccountSuggestionEnabled,
     isAtomicBatchSupported,
     validateSecurity: validateSecurityHook,
@@ -79,6 +75,8 @@ export async function processSendCalls(
     paramFrom ??
     (messenger.call('AccountsController:getSelectedAccount').address as Hex);
 
+  const disabledUpgradeAccountsByChain = getDisabledUpgradeAccountsByChain();
+
   const dismissSmartAccountSuggestionEnabled =
     getDismissSmartAccountSuggestionEnabled();
 
@@ -88,14 +86,14 @@ export async function processSendCalls(
   });
 
   const chainBatchSupport = batchSupport?.[0];
-  const keyringType = getAccountKeyringType(from, messenger);
 
   validateSendCalls(
     params,
+    from,
     dappChainId,
+    disabledUpgradeAccountsByChain,
     dismissSmartAccountSuggestionEnabled,
     chainBatchSupport,
-    keyringType,
   );
 
   const securityAlertId = generateSecurityAlertId();
@@ -161,15 +159,20 @@ export function getCallsStatus(
 
 export async function getCapabilities(
   hooks: {
+    getDisabledUpgradeAccountsByChain: () => Record<Hex, Hex[]>;
     getDismissSmartAccountSuggestionEnabled: () => boolean;
     isAtomicBatchSupported: TransactionController['isAtomicBatchSupported'];
   },
-  messenger: EIP5792Messenger,
   address: Hex,
   chainIds: Hex[] | undefined,
 ) {
-  const { getDismissSmartAccountSuggestionEnabled, isAtomicBatchSupported } =
-    hooks;
+  const {
+    getDisabledUpgradeAccountsByChain,
+    getDismissSmartAccountSuggestionEnabled,
+    isAtomicBatchSupported,
+  } = hooks;
+
+  const addressNormalized = address.toLowerCase() as Hex;
 
   const chainIdsNormalized = chainIds?.map(
     (chainId) => chainId.toLowerCase() as Hex,
@@ -187,21 +190,13 @@ export async function getCapabilities(
       const { delegationAddress, isSupported, upgradeContractAddress } =
         chainBatchSupport;
 
-      const isUpgradeDisabled = getDismissSmartAccountSuggestionEnabled();
-      let isSupportedAccount = false;
-
-      try {
-        const keyringType = getAccountKeyringType(address, messenger);
-        isSupportedAccount = SUPPORTED_KEYRING_TYPES.includes(keyringType);
-      } catch (error) {
-        // Intentionally empty
-      }
+      const isUpgradeDisabled =
+        getDisabledUpgradeAccountsByChain()?.[chainId]?.includes(
+          addressNormalized,
+        ) || getDismissSmartAccountSuggestionEnabled();
 
       const canUpgrade =
-        !isUpgradeDisabled &&
-        upgradeContractAddress &&
-        !delegationAddress &&
-        isSupportedAccount;
+        !isUpgradeDisabled && upgradeContractAddress && !delegationAddress;
 
       if (!isSupported && !canUpgrade) {
         return acc;
@@ -225,18 +220,22 @@ export async function getCapabilities(
 
 function validateSendCalls(
   sendCalls: SendCalls,
+  from: Hex,
   dappChainId: Hex,
+  disabledUpgradeAccountsByChain: Record<Hex, Hex[]>,
   dismissSmartAccountSuggestionEnabled: boolean,
   chainBatchSupport: IsAtomicBatchSupportedResultEntry | undefined,
-  keyringType: KeyringTypes,
 ) {
   validateSendCallsVersion(sendCalls);
   validateSendCallsChainId(sendCalls, dappChainId, chainBatchSupport);
   validateCapabilities(sendCalls);
-  validateUpgrade(
+
+  validateUserDisabled(
+    from,
+    disabledUpgradeAccountsByChain,
+    dappChainId,
     dismissSmartAccountSuggestionEnabled,
     chainBatchSupport,
-    keyringType,
   );
 }
 
@@ -302,26 +301,26 @@ function validateCapabilities(sendCalls: SendCalls) {
   }
 }
 
-function validateUpgrade(
+function validateUserDisabled(
+  from: Hex,
+  disabledUpgradeAccountsByChain: Record<Hex, Hex[]>,
+  dappChainId: Hex,
   dismissSmartAccountSuggestionEnabled: boolean,
   chainBatchSupport: IsAtomicBatchSupportedResultEntry | undefined,
-  keyringType: KeyringTypes,
 ) {
+  const addressLowerCase = from.toLowerCase() as Hex;
+
   if (chainBatchSupport?.delegationAddress) {
     return;
   }
 
-  if (dismissSmartAccountSuggestionEnabled) {
-    throw new JsonRpcError(
-      EIP5792ErrorCode.RejectedUpgrade,
-      'EIP-7702 upgrade disabled by the user',
-    );
-  }
+  const isDisabled =
+    disabledUpgradeAccountsByChain[dappChainId]?.includes(addressLowerCase);
 
-  if (!SUPPORTED_KEYRING_TYPES.includes(keyringType)) {
+  if (isDisabled || dismissSmartAccountSuggestionEnabled) {
     throw new JsonRpcError(
       EIP5792ErrorCode.RejectedUpgrade,
-      'EIP-7702 upgrade not supported on account',
+      `EIP-7702 upgrade rejected for this chain and account - Chain ID: ${dappChainId}, Account: ${from}`,
     );
   }
 }
@@ -344,28 +343,4 @@ function getStatusCode(transactionMeta: TransactionMeta) {
   }
 
   return GetCallsStatusCode.PENDING;
-}
-
-function getAccountKeyringType(
-  accountAddress: Hex,
-  messenger: EIP5792Messenger,
-): KeyringTypes {
-  const { accounts } = messenger.call(
-    'AccountsController:getState',
-  ).internalAccounts;
-
-  const account = Object.values(accounts).find(
-    (acc) => acc.address.toLowerCase() === accountAddress.toLowerCase(),
-  );
-
-  const keyringType = account?.metadata?.keyring?.type;
-
-  if (!keyringType) {
-    throw new JsonRpcError(
-      EIP5792ErrorCode.RejectedUpgrade,
-      'EIP-7702 upgrade not supported as account type is unknown',
-    );
-  }
-
-  return keyringType as KeyringTypes;
 }

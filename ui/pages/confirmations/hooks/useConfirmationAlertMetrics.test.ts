@@ -123,11 +123,16 @@ describe('useConfirmationAlertMetrics', () => {
     );
   });
 
+  type Action =
+    | 'trackAlertRender'
+    | 'trackInlineAlertClicked'
+    | 'trackAlertActionClicked';
+
   const testCases = [
     {
       description: 'updates metrics properties when trackAlertRender is called',
       alertKey: AlertsName.GasFeeLow,
-      action: 'trackAlertRender',
+      action: 'trackAlertRender' as Action,
       expectedProperties: {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -141,7 +146,7 @@ describe('useConfirmationAlertMetrics', () => {
       description:
         'updates metrics properties when trackInlineAlertClicked is called',
       alertKey: AlertsName.GasFeeLow,
-      action: 'trackInlineAlertClicked',
+      action: 'trackInlineAlertClicked' as Action,
       expectedProperties: {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -152,7 +157,7 @@ describe('useConfirmationAlertMetrics', () => {
       description:
         'updates metrics properties when trackAlertActionClicked is called',
       alertKey: AlertsName.GasFeeLow,
-      action: 'trackAlertActionClicked',
+      action: 'trackAlertActionClicked' as Action,
       expectedProperties: {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -163,7 +168,7 @@ describe('useConfirmationAlertMetrics', () => {
       description:
         'updates metrics properties when receives alertKey as a valid UUID',
       alertKey: UUID_ALERT_KEY_MOCK,
-      action: 'trackAlertRender',
+      action: 'trackAlertRender' as Action,
       expectedProperties: {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -175,7 +180,6 @@ describe('useConfirmationAlertMetrics', () => {
     },
   ];
 
-  // @ts-expect-error This is missing from the Mocha type definitions
   it.each(testCases)(
     '$description',
     ({
@@ -185,10 +189,7 @@ describe('useConfirmationAlertMetrics', () => {
     }: {
       description: string;
       alertKey: string;
-      action:
-        | 'trackAlertRender'
-        | 'trackInlineAlertClicked'
-        | 'trackAlertActionClicked';
+      action: Action;
       expectedProperties: Record<string, unknown>;
     }) => {
       const finalExpectedProperties = {

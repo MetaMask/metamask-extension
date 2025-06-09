@@ -1,7 +1,6 @@
-import React, { ReactElement, useCallback, useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useSelector } from 'react-redux';
 
 import { ORIGIN_METAMASK } from '../../../../../../../shared/constants/app';
 import ZENDESK_URLS from '../../../../../../helpers/constants/zendesk-url';
@@ -26,10 +25,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
-import { setSplashPageAcknowledgedForAccount } from '../../../../../../store/actions';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import Name from '../../../../../../components/app/name';
-import { getUpgradeSplashPageAcknowledgedForAccounts } from '../../../../selectors';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useSmartAccountActions } from '../../../../hooks/useSmartAccountActions';
 
@@ -74,24 +71,11 @@ export function SmartAccountUpdate() {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { handleRejectUpgrade } = useSmartAccountActions();
-  const splashPageAcknowledgedForAccountList: string[] = useSelector(
-    getUpgradeSplashPageAcknowledgedForAccounts,
-  );
 
   const { chainId, txParams, origin } = currentConfirmation ?? {};
   const { from } = txParams;
 
-  const acknowledgeSmartAccountUpgrade = useCallback(() => {
-    setSplashPageAcknowledgedForAccount(from);
-    setAcknowledged(true);
-  }, [from, setAcknowledged]);
-
-  if (
-    !currentConfirmation ||
-    acknowledged ||
-    origin === ORIGIN_METAMASK ||
-    splashPageAcknowledgedForAccountList.includes(from.toLowerCase())
-  ) {
+  if (!currentConfirmation || acknowledged || origin === ORIGIN_METAMASK) {
     return null;
   }
 
@@ -147,7 +131,7 @@ export function SmartAccountUpdate() {
         />
         <ListItem
           imgSrc="./images/sparkle.svg"
-          title={t('smartAccountSameAccount')}
+          title={t('smartAccountPayToken')}
           description={
             <>
               <Text
@@ -170,8 +154,6 @@ export function SmartAccountUpdate() {
         <Button
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={handleRejectUpgrade}
           width={BlockSize.Full}
         >
@@ -180,7 +162,7 @@ export function SmartAccountUpdate() {
         <Button
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
-          onClick={acknowledgeSmartAccountUpgrade}
+          onClick={() => setAcknowledged(true)}
           width={BlockSize.Full}
         >
           {t('smartAccountAccept')}

@@ -21,10 +21,7 @@ class TestDappSendEthWithPrivateKey {
         this.sendEthWithPrivateKeyButton,
       ]);
     } catch (e) {
-      console.log(
-        'Timeout while waiting for Test Dapp send eth with private key page to be loaded',
-        e,
-      );
+      console.log('Timeout while waiting for Test Dapp send eth with private key page to be loaded', e);
       throw e;
     }
     console.log('Test Dapp send eth with private key page is loaded');
@@ -58,7 +55,10 @@ class TestDappSendEthWithPrivateKey {
     console.log('Paste address and send eth with private key on test dapp');
     await this.driver.pasteFromClipboardIntoField(this.addressInput);
     await this.driver.clickElement(this.sendEthWithPrivateKeyButton);
-    await this.driver.waitForSelector(this.successMessage, { timeout: 15000 });
+    await this.driver.waitForSelector(
+      this.successMessage,
+      { timeout: 15000 },
+    );
   }
 }
 

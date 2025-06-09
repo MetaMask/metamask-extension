@@ -1,23 +1,13 @@
 import { Messenger } from '@metamask/base-controller';
-import {
-  AccountsControllerListMultichainAccountsAction,
-  AccountsControllerSelectedAccountChangeEvent,
-} from '@metamask/accounts-controller';
+import { AccountsControllerSelectedAccountChangeEvent } from '@metamask/accounts-controller';
 import {
   type NetworkControllerSetActiveNetworkAction,
   type NetworkControllerGetStateAction,
-  type NetworkControllerRemoveNetworkAction,
-  type NetworkControllerGetSelectedChainIdAction,
-  type NetworkControllerFindNetworkClientIdByChainIdAction,
 } from '@metamask/network-controller';
 
 type Actions =
-  | NetworkControllerGetStateAction
   | NetworkControllerSetActiveNetworkAction
-  | NetworkControllerRemoveNetworkAction
-  | NetworkControllerGetSelectedChainIdAction
-  | NetworkControllerFindNetworkClientIdByChainIdAction
-  | AccountsControllerListMultichainAccountsAction;
+  | NetworkControllerGetStateAction;
 
 type Events = AccountsControllerSelectedAccountChangeEvent;
 
@@ -40,10 +30,6 @@ export function getMultichainNetworkControllerMessenger(
     allowedActions: [
       'NetworkController:setActiveNetwork',
       'NetworkController:getState',
-      'NetworkController:removeNetwork',
-      'NetworkController:findNetworkClientIdByChainId',
-      'NetworkController:getSelectedChainId',
-      'AccountsController:listMultichainAccounts',
     ],
     allowedEvents: ['AccountsController:selectedAccountChange'],
   });

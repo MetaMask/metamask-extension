@@ -26,7 +26,7 @@ setBackgroundConnection({
   getNetworkConfigurationByNetworkClientId: jest
     .fn()
     .mockResolvedValue({ chainId: '0x1' }),
-  trackUnifiedSwapBridgeEvent: jest.fn(),
+  setBridgeFeatureFlags: jest.fn(),
   selectSrcNetwork: jest.fn(),
   resetState: () => mockResetBridgeState(),
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
@@ -71,25 +71,15 @@ describe('Bridge', () => {
   });
 
   it('renders the component with initial props', async () => {
-    const bridgeMockStore = createBridgeMockStore({
+    const swapsMockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
-          support: true,
-          refreshRate: 5000,
-          maxRefreshCount: 5,
-          chains: {
-            '1': {
-              isActiveSrc: true,
-              isActiveDest: false,
-            },
-          },
-        },
+        extensionConfig: { support: true },
       },
       metamaskStateOverrides: {
         useExternalServices: true,
       },
     });
-    const store = configureMockStore(middleware)(bridgeMockStore);
+    const store = configureMockStore(middleware)(swapsMockStore);
 
     const { container, getByText } = renderWithProvider(
       <MemoryRouter

@@ -511,23 +511,24 @@ describe('wallet_createSession', () => {
     const { handler, sendMetrics } = createMockedHandler();
     await handler(baseRequest);
 
-    expect(sendMetrics).toHaveBeenCalledWith(
-      {
-        category: 'inpage_provider',
-        event: 'Dapp Viewed',
-        properties: {
-          is_first_visit: true,
-          number_of_accounts: 3,
-          number_of_accounts_connected: 4,
-        },
-        referrer: {
-          url: 'http://test.com',
-        },
+    expect(sendMetrics).toHaveBeenCalledWith({
+      category: 'inpage_provider',
+      event: 'Dapp Viewed',
+      properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        is_first_visit: true,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        number_of_accounts: 3,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        number_of_accounts_connected: 4,
       },
-      {
-        excludeMetaMetricsId: true,
+      referrer: {
+        url: 'http://test.com',
       },
-    );
+    });
   });
 
   it('returns the known sessionProperties and approved session scopes', async () => {

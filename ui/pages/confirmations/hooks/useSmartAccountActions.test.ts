@@ -1,5 +1,8 @@
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
-import { rejectPendingApproval } from '../../../store/actions';
+import {
+  disableAccountUpgrade,
+  rejectPendingApproval,
+} from '../../../store/actions';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { upgradeAccountConfirmation } from '../../../../test/data/confirmations/batch-transaction';
@@ -7,6 +10,7 @@ import { Confirmation } from '../types/confirm';
 import { useSmartAccountActions } from './useSmartAccountActions';
 
 jest.mock('../../../store/actions', () => ({
+  disableAccountUpgrade: jest.fn(),
   rejectPendingApproval: jest.fn().mockReturnValue({}),
   setAccountDetailsAddress: jest.fn(),
 }));
@@ -33,6 +37,7 @@ describe('useSmartAccountActions', () => {
         state,
       );
       result.current.handleRejectUpgrade();
+      expect(disableAccountUpgrade).toHaveBeenCalledTimes(1);
       await flushPromises();
       expect(rejectPendingApproval).toHaveBeenCalledTimes(1);
       expect(mockDispatch).toHaveBeenCalledTimes(2);

@@ -17,11 +17,7 @@ import { useConfirmContext } from '../context/confirm';
 export function useSmartTransactionFeatureFlags() {
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const {
-    id: transactionId,
-    txParams,
-    networkClientId,
-  } = currentConfirmation ?? {};
+  const { id: transactionId, txParams } = currentConfirmation ?? {};
   const isTransaction = Boolean(txParams);
 
   const smartTransactionsPreferenceEnabled = useSelector(
@@ -42,10 +38,7 @@ export function useSmartTransactionFeatureFlags() {
       return;
     }
 
-    Promise.all([
-      fetchSwapsFeatureFlags(),
-      fetchSmartTransactionsLiveness({ networkClientId })(),
-    ])
+    Promise.all([fetchSwapsFeatureFlags(), fetchSmartTransactionsLiveness()()])
       .then(([swapsFeatureFlags]) => {
         dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
         dispatch(
@@ -62,6 +55,5 @@ export function useSmartTransactionFeatureFlags() {
     transactionId,
     smartTransactionsPreferenceEnabled,
     currentChainSupportsSmartTransactions,
-    networkClientId,
   ]);
 }

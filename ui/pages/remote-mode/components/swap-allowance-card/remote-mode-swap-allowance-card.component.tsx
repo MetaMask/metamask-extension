@@ -6,7 +6,6 @@ import {
   ButtonVariant,
   Text,
 } from '../../../../components/component-library';
-import Card from '../../../../components/ui/card';
 import {
   FontWeight,
   TextVariant,
@@ -16,17 +15,11 @@ import {
   FlexDirection,
   BlockSize,
   TextColor,
+  BorderColor,
   BorderRadius,
   AlignItems,
 } from '../../../../helpers/constants/design-system';
-
-import {
-  SwapAllowance,
-  TokenInfo,
-  TOKEN_DETAILS,
-} from '../../../../../shared/lib/remote-mode';
-import { getChainNamesForDisplayByIds } from '../../../../helpers/utils/remote-mode';
-import { SUPPORTED_CHAINS_IDS } from '../../remote.constants';
+import { SwapAllowance, TokenInfo, TOKEN_DETAILS } from '../../remote.types';
 
 /**
  * RemoteModeSwapAllowanceCard displays a card showing swap allowance details
@@ -45,23 +38,27 @@ export default function RemoteModeSwapAllowanceCard({
   onRemove,
 }: {
   swapAllowance: SwapAllowance;
-  onRemove?: () => void;
+  onRemove: () => void;
 }) {
   const [selectedToken] = useState<TokenInfo>(
     TOKEN_DETAILS[swapAllowance.from],
   );
 
   const handleRemoveToken = useCallback(() => {
-    onRemove?.();
+    onRemove();
   }, [onRemove]);
 
   return (
-    <Card
-      width={BlockSize.Full}
-      marginTop={4}
-      backgroundColor={BackgroundColor.backgroundPressed}
-    >
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
+    <Box width={BlockSize.Full} marginTop={4}>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={4}
+        padding={4}
+        backgroundColor={BackgroundColor.backgroundMuted}
+        borderRadius={BorderRadius.LG}
+        borderColor={BorderColor.borderDefault}
+      >
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
@@ -70,7 +67,7 @@ export default function RemoteModeSwapAllowanceCard({
         >
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
             <img
-              src={selectedToken.image}
+              src={selectedToken.iconUrl}
               alt={selectedToken.name}
               style={{ width: '24px', height: '24px', borderRadius: '50%' }}
             />
@@ -78,11 +75,9 @@ export default function RemoteModeSwapAllowanceCard({
               {selectedToken.symbol}
             </Text>
           </Box>
-          {onRemove && (
-            <Button variant={ButtonVariant.Link} onClick={handleRemoveToken}>
-              Remove
-            </Button>
-          )}
+          <Button variant={ButtonVariant.Link} onClick={handleRemoveToken}>
+            Remove
+          </Button>
         </Box>
         <Box
           display={Display.Flex}
@@ -101,30 +96,10 @@ export default function RemoteModeSwapAllowanceCard({
         >
           <Text variant={TextVariant.bodyMd}>Daily limit</Text>
           <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {swapAllowance.amount} {selectedToken.symbol}
-          </Text>
-        </Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          gap={2}
-        >
-          <Text variant={TextVariant.bodyMd}>Networks</Text>
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {getChainNamesForDisplayByIds(SUPPORTED_CHAINS_IDS)}
-          </Text>
-        </Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          gap={2}
-        >
-          <Text variant={TextVariant.bodyMd}>Available on</Text>
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            MetaMask Extension
+            {swapAllowance.amount}
           </Text>
         </Box>
       </Box>
-    </Card>
+    </Box>
   );
 }

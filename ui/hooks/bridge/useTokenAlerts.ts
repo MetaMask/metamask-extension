@@ -1,8 +1,5 @@
 import { useSelector } from 'react-redux';
-import {
-  formatAddressToCaipReference,
-  isNativeAddress,
-} from '@metamask/bridge-controller';
+import { formatAddressToCaipReference } from '@metamask/bridge-controller';
 import {
   getFromToken,
   getFromChain,
@@ -13,7 +10,7 @@ import {
   convertChainIdToBlockAidChainName,
   fetchTokenAlert,
 } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
-import type { TokenAlertWithLabelIds } from '../../../shared/types/security-alerts-api';
+import { TokenAlertWithLabelIds } from '../../../shared/types/security-alerts-api';
 import { AllowedBridgeChainIds } from '../../../shared/constants/bridge';
 import { useAsyncResult } from '../useAsync';
 
@@ -25,13 +22,7 @@ export const useTokenAlerts = () => {
 
   const { value: tokenAlert } =
     useAsyncResult<TokenAlertWithLabelIds | null>(async () => {
-      if (
-        fromToken &&
-        fromChain &&
-        toToken &&
-        toChain &&
-        !isNativeAddress(toToken.address)
-      ) {
+      if (fromToken && fromChain && toToken && toChain) {
         const chainName = convertChainIdToBlockAidChainName(
           toChain?.chainId as AllowedBridgeChainIds,
         );

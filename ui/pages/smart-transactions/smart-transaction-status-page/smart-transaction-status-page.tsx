@@ -339,6 +339,8 @@ export const SmartTransactionStatusPage = ({
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
+        paddingLeft={4}
+        paddingRight={4}
         width={BlockSize.Full}
         style={{ flexGrow: 1 }}
       >
@@ -346,6 +348,8 @@ export const SmartTransactionStatusPage = ({
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.center}
+          paddingLeft={6}
+          paddingRight={6}
           width={BlockSize.Full}
         >
           <SmartTransactionStatusAnimation

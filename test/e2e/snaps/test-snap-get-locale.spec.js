@@ -1,9 +1,5 @@
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-const {
-  mockLocalizationSnap,
-} = require('../mock-response-data/snaps/snap-binary-mocks');
-
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Get Locale', function () {
@@ -11,7 +7,6 @@ describe('Test Snap Get Locale', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockLocalizationSnap,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

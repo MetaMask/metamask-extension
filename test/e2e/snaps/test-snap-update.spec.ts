@@ -1,4 +1,3 @@
-import { Mockttp } from 'mockttp';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import { Driver } from '../webdriver/driver';
@@ -6,24 +5,12 @@ import { withFixtures, WINDOW_TITLES } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
-import {
-  mockWebpackPluginOldSnap,
-  mockWebpackPluginSnap,
-} from '../mock-response-data/snaps/snap-binary-mocks';
-
-async function mockSnapExamples(mockServer: Mockttp) {
-  return [
-    await mockWebpackPluginOldSnap(mockServer),
-    await mockWebpackPluginSnap(mockServer),
-  ];
-}
 
 describe('Test Snap update', function () {
   it('can install an old and then updated version', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSnapExamples,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -45,7 +32,8 @@ describe('Test Snap update', function () {
         await driver.waitForSelector({ text: 'Update request' });
         await snapInstall.check_pageIsLoaded();
         await snapInstall.updateScrollAndClickConfirmButton();
-        await snapInstall.clickOkButton();
+        await snapInstall.waitForNextButton();
+        await snapInstall.clickNextButton();
 
         // Switch to test snap page and validate the version text
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);

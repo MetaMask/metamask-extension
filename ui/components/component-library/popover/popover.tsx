@@ -109,11 +109,9 @@ export const Popover: PopoverComponent = React.forwardRef(
     };
 
     useEffect(() => {
-      document.addEventListener('keydown', handleEscKey, { capture: true });
+      document.addEventListener('keydown', handleEscKey);
       if (isOpen) {
-        document.addEventListener('click', handleClickOutside, {
-          capture: true,
-        });
+        document.addEventListener('click', handleClickOutside);
       } else {
         document.removeEventListener('click', handleClickOutside);
       }

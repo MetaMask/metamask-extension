@@ -97,6 +97,10 @@ export const AppHeader = ({ location }) => {
     });
   }, [chainId, dispatch, trackEvent]);
 
+  // This is required to ensure send and confirmation screens
+  // look as desired
+  const headerBottomMargin = !popupStatus && disableNetworkPicker ? 4 : 0;
+
   const unlockedStyling = {
     alignItems: AlignItems.center,
     width: BlockSize.Full,
@@ -120,7 +124,11 @@ export const AppHeader = ({ location }) => {
   return (
     <>
       {isUnlocked && !popupStatus ? <MultichainMetaFoxLogo /> : null}
-      <AppHeaderContainer isUnlocked={isUnlocked} popupStatus={popupStatus}>
+      <AppHeaderContainer
+        isUnlocked={isUnlocked}
+        popupStatus={popupStatus}
+        headerBottomMargin={headerBottomMargin}
+      >
         <>
           <Box
             className={classnames(

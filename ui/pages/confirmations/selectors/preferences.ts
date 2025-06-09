@@ -12,7 +12,3 @@ export const selectUseTransactionSimulations = (state: RootState) =>
 export function selectConfirmationAdvancedDetailsOpen(state: RootState) {
   return Boolean(getPreferences(state).showConfirmationAdvancedDetails);
 }
-
-export function getDismissSmartAccountSuggestionEnabled(state: RootState) {
-  return Boolean(getPreferences(state).dismissSmartAccountSuggestionEnabled);
-}
