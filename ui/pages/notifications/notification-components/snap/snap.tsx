@@ -31,7 +31,8 @@ import { SnapFooterButton } from './snap-footer-button';
 
 export const components: NotificationComponent<SnapNotification> = {
   guardFn: isOfTypeNodeGuard([TRIGGER_TYPES.SNAP]),
-  item: ({ notification, onClick }) => {
+  // eslint-disable-next-line func-name-matching
+  item: function Item({ notification, onClick }) {
     const history = useHistory();
     const snapsMetadata = useSelector(getSnapsMetadata);
     const snapsNameGetter = getSnapName(snapsMetadata);
