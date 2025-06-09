@@ -924,7 +924,9 @@ function setupBundlerDefaults(
           extensions,
         },
       ],
-      // We are transpelling the firebase package to be compatible with the lavaMoat restrictions
+      // Transpile dependencies that are either:
+      // - Not supported by browserify (e.g. ESM-only packages)
+      // - Reliant on language features not yet supported by our minimum browser version targets
       [
         babelify,
         {
