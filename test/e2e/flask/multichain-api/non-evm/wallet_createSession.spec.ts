@@ -6,6 +6,7 @@ import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../testHelpers';
 import { withSolanaAccountSnap } from '../../../tests/solana/common-solana';
 
 describe('Multichain API - Non EVM', function () {
+  const SOLANA_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
   describe("Call `wallet_createSession` with both EVM and Solana scopes that match the user's enabled networks", function () {
     it('should only select the specified scopes requested by the user', async function () {
       await withSolanaAccountSnap(
@@ -16,7 +17,7 @@ describe('Multichain API - Non EVM', function () {
         async (driver, _, extensionId) => {
           const requestScopesToNetworkMap = {
             'eip155:1': 'Ethereum Mainnet',
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'Solana',
+            [SOLANA_SCOPE]: 'Solana',
           };
 
           const requestScopes = Object.keys(requestScopesToNetworkMap);
@@ -80,9 +81,7 @@ describe('Multichain API - Non EVM', function () {
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
           await testDapp.connectExternallyConnectable(extensionId);
-          await testDapp.initCreateSessionScopes(
-            ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']
-          );
+          await testDapp.initCreateSessionScopes([SOLANA_SCOPE]);
 
           const editButtons = await driver.findElements('[data-testid="edit"]');
           await editButtons[0].click();

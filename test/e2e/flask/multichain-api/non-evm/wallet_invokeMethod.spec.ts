@@ -9,9 +9,9 @@ import {
 import { withSolanaAccountSnap } from '../../../tests/solana/common-solana';
 
 describe('Multichain API - Non EVM', function () {
-  const NON_EVM_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+  const SOLANA_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
   describe('Calling `wallet_invokeMethod`', function () {
-    describe('`signIn` method', function () {
+    describe("`signIn` method", function () {
       it('Should match selected method to the expected confirmation UI', async function () {
         await withSolanaAccountSnap(
           {
@@ -22,7 +22,7 @@ describe('Multichain API - Non EVM', function () {
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
             await testDapp.connectExternallyConnectable(extensionId);
-            await testDapp.initCreateSessionScopes([NON_EVM_SCOPE]);
+            await testDapp.initCreateSessionScopes([SOLANA_SCOPE]);
             await driver.clickElementAndWaitForWindowToClose({
               text: 'Connect',
               tag: 'button',
@@ -34,13 +34,13 @@ describe('Multichain API - Non EVM', function () {
 
             const invokeMethod = 'signIn';
             await driver.clickElementSafe(
-              `[data-testid="${NON_EVM_SCOPE}-${invokeMethod}-option"]`,
+              `[data-testid="${SOLANA_SCOPE}-${invokeMethod}-option"]`,
             );
 
             await driver.delay(largeDelayMs);
 
             await driver.clickElementSafe(
-              `[data-testid="invoke-method-${NON_EVM_SCOPE}-btn"]`,
+              `[data-testid="invoke-method-${SOLANA_SCOPE}-btn"]`,
             );
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -59,16 +59,16 @@ describe('Multichain API - Non EVM', function () {
 
             const confirmButton = await driver.waitForSelector({
               testId: 'confirm-sign-in-confirm-snap-footer-button',
-              text: 'Confirm'
+              text: 'Confirm',
             });
 
             await confirmButton.click();
-          }
+          },
         );
       });
     });
 
-    describe('`signAndSendTransaction` method', function () {
+    describe("`signAndSendTransaction` method", function () {
       it('Should match selected method to the expected confirmation UI', async function () {
         await withSolanaAccountSnap(
           {
@@ -79,7 +79,7 @@ describe('Multichain API - Non EVM', function () {
             const testDapp = new TestDappMultichain(driver);
             await testDapp.openTestDappPage();
             await testDapp.connectExternallyConnectable(extensionId);
-            await testDapp.initCreateSessionScopes([NON_EVM_SCOPE]);
+            await testDapp.initCreateSessionScopes([SOLANA_SCOPE]);
             await driver.clickElementAndWaitForWindowToClose({
               text: 'Connect',
               tag: 'button',
@@ -91,13 +91,13 @@ describe('Multichain API - Non EVM', function () {
 
             const invokeMethod = 'signAndSendTransaction';
             await driver.clickElementSafe(
-              `[data-testid="${NON_EVM_SCOPE}-${invokeMethod}-option"]`,
+              `[data-testid="${SOLANA_SCOPE}-${invokeMethod}-option"]`,
             );
 
             await driver.delay(largeDelayMs);
 
             await driver.clickElementSafe(
-              `[data-testid="invoke-method-${NON_EVM_SCOPE}-btn"]`,
+              `[data-testid="invoke-method-${SOLANA_SCOPE}-btn"]`,
             );
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -116,7 +116,7 @@ describe('Multichain API - Non EVM', function () {
 
             const confirmButton = await driver.waitForSelector({
               testId: 'confirm-sign-and-send-transaction-confirm-snap-footer-button',
-              text: 'Confirm'
+              text: 'Confirm',
             });
 
             await driver.delay(largeDelayMs);
@@ -128,7 +128,7 @@ describe('Multichain API - Non EVM', function () {
             );
 
             const resultWebElement = await driver.findElement(
-              `#invoke-method-${escapeColon(NON_EVM_SCOPE)}-${invokeMethod}-result-0`,
+              `#invoke-method-${escapeColon(SOLANA_SCOPE)}-${invokeMethod}-result-0`,
             );
             const parsedTransactionResult = JSON.parse(
               await resultWebElement.getText(),
@@ -141,13 +141,13 @@ describe('Multichain API - Non EVM', function () {
             );
 
             assert.strictEqual(
-              parsedTransactionResult['signature'],
+              parsedTransactionResult.signature,
               '4L78wZXotGUoiJfDoHFKo1CYRqKogqvLrsQRQ2EsMtZ3454Ty1gtMMgQMN8F4XtnYKfHT3bjCJAqhuJz5eMWLs7R',
               'transaction result signature should be defined',
             );
-          }
+          },
         );
-      })
+      });
     });
   });
 });
