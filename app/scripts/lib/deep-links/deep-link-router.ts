@@ -48,6 +48,8 @@ export class DeepLinkRouter {
   };
 
   public install() {
+    console.log(DEEP_LINK_HOST, 'DeepLinkRouter install');
+
     browser.webRequest.onBeforeRequest.addListener(
       this.handleBeforeRequest,
       {

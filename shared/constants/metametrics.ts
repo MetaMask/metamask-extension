@@ -649,6 +649,8 @@ export enum MetaMetricsEventName {
   DecryptionApproved = 'Decryption Approved',
   DecryptionRejected = 'Decryption Rejected',
   DecryptionRequested = 'Decryption Requested',
+  DeepLinkInterstitialViewed = 'Interstitial Viewed',
+  DeepLinkInterstitialDismissed = 'Interstitial Dismissed',
   DisablingNotifications = 'Notifications Disabled',
   EmptyBuyBannerDisplayed = 'Empty Buy Banner Displayed',
   EmptyBuyBannerClosed = 'Empty Buy Banner Closed',
@@ -906,6 +908,7 @@ export enum MetaMetricsEventCategory {
   /* eslint-disable-next-line @typescript-eslint/no-shadow */
   Error = 'Error',
   DeFi = 'DeFi',
+  DeepLink = 'Deep Link',
   Footer = 'Footer',
   Home = 'Home',
   InpageProvider = 'inpage_provider',

@@ -10,7 +10,7 @@ export const getPaths = memoize((): string[] => {
 
 export const DEFAULT_ROUTE = '/';
 PATH_NAME_MAP.set(DEFAULT_ROUTE, 'Home');
-PATH_NAME_MAP.set('', 'Home'); // alias
+PATH_NAME_MAP.set('', 'Home'); // "" is an alias for the Home route
 
 export const UNLOCK_ROUTE = '/unlock';
 PATH_NAME_MAP.set(UNLOCK_ROUTE, 'Unlock Page');

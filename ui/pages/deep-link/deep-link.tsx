@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,7 +7,10 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '../../components/component-library/button';
-import { parse } from '../../../shared/lib/deep-links/parse';
+import {
+  parse,
+  type ParsedDeepLink,
+} from '../../../shared/lib/deep-links/parse';
 import { routes } from '../../../shared/lib/deep-links/routes';
 import { DEEP_LINK_HOST } from '../../../shared/lib/deep-links/constants';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -29,10 +32,16 @@ import { Checkbox } from '../../components/component-library/checkbox/checkbox';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../selectors/selectors';
 import { MetaMaskReduxState } from '../../store/store';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 
 const { getExtensionURL } = globalThis.platform;
 
 export const DeepLink = () => {
+  const trackEvent = useContext(MetaMetricsContext);
   const location = useLocation();
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -45,6 +54,7 @@ export const DeepLink = () => {
   );
   // const history = useHistory();
   const [route, setRoute] = useState<null | {
+    parsed: ParsedDeepLink;
     href: string;
     title: string;
     signed: boolean;
@@ -72,12 +82,25 @@ export const DeepLink = () => {
             routes
               .get(normalizedUrl.pathname)
               ?.getTitle(normalizedUrl.searchParams) ?? '';
-          setRoute({ href, title, signed });
+
+          setRoute({ parsed, href, title, signed });
+
+          trackEvent({
+            category: MetaMetricsEventCategory.DeepLink,
+            event: MetaMetricsEventName.DeepLinkInterstitialViewed,
+            properties: {
+              route: normalizedUrl.pathname,
+              signed,
+            },
+            sensitiveProperties: Object.fromEntries(
+              normalizedUrl.searchParams.entries(),
+            ),
+          });
         } else {
-          setRoute(null);
           setError(
             'Provided URL is not a valid MetaMask deeplink or is malformed.',
           );
+          setRoute(null);
         }
       } catch (e) {
         log.error('Error parsing deeplink:', e);
@@ -88,8 +111,22 @@ export const DeepLink = () => {
     parseUrlStr(urlStr);
   }, [location.search]);
 
-  function cancel(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
+  async function onIntersticialDismissed(
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) {
     e.preventDefault();
+
+    if (route) {
+      trackEvent({
+        category: MetaMetricsEventCategory.DeepLink,
+        event: MetaMetricsEventName.DeepLinkInterstitialDismissed,
+        properties: {
+          route: route.parsed.normalizedUrl.pathname,
+          signed: route.signed,
+        },
+      });
+    }
+
     if (window.history.length > 1) {
       // If there is a history, go back to the previous page
       // TODO: this has so many ways it won't work and leave the user frustrated. Revisit this idea.
@@ -100,7 +137,7 @@ export const DeepLink = () => {
     }
   }
 
-  function onChange() {
+  function onRemindMeStateChanged() {
     const newHasChecked = !hasChecked;
     setHasChecked(newHasChecked);
     dispatch(setSkipDeepLinkInterstitial(newHasChecked));
@@ -154,7 +191,7 @@ export const DeepLink = () => {
                 <Checkbox
                   id="dont-remind-me-checkbox"
                   isChecked={hasChecked}
-                  onChange={onChange}
+                  onChange={onRemindMeStateChanged}
                 ></Checkbox>
                 <Label
                   htmlFor="dont-remind-me-checkbox"
@@ -177,7 +214,7 @@ export const DeepLink = () => {
               <Button
                 size={ButtonSize.Lg}
                 variant={ButtonVariant.Secondary}
-                onClick={cancel}
+                onClick={onIntersticialDismissed}
               >
                 {t('cancel')}
               </Button>

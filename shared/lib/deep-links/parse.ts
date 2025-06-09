@@ -4,7 +4,13 @@ import { routes } from './routes';
 import { Destination } from './routes/route.type';
 import { INVALID, MISSING, VALID, verify } from './verify';
 
-export async function parse(urlStr: string) {
+export type ParsedDeepLink = {
+  normalizedUrl: URL;
+  destination: Destination;
+  signed: boolean;
+};
+
+export async function parse(urlStr: string): Promise<ParsedDeepLink | false> {
   if (urlStr.length > DEEP_LINK_MAX_LENGTH) {
     log.debug('Url is too long, skipping deep link handling');
     return false;
