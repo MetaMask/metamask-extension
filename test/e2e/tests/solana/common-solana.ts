@@ -1193,7 +1193,7 @@ export async function mockGetTokenAccountsByOwner(
 
 export async function mockGetTokenAccountsByOwnerDevnet(mockServer: Mockttp) {
   return await mockServer
-    .forPost(SOLANA_URL_REGEX_DEVNET)
+    .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({
       method: 'getTokenAccountsByOwner',
     })
@@ -1299,6 +1299,44 @@ export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
         },
       ],
     })
+    .thenCallback(() => {
+      return response;
+    });
+}
+
+export async function mockGetAccountInfoDevnet(mockServer: Mockttp) {
+  console.log('mockGetAccountInfoDevnet');
+  const response = {
+    statusCode: 200,
+    json: {
+      id: '1337',
+      jsonrpc: '2.0',
+      result: {
+        context: {
+          apiVersion: '2.0.21',
+          slot: 317161313,
+        },
+        value: {
+          data: [
+            'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==',
+            'base64',
+          ],
+          executable: false,
+          lamports: 1124837338893,
+          owner: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+          // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
+          rentEpoch: 18446744073709551615,
+          space: 82,
+        },
+      },
+    },
+  };
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX_DEVNET)
+    .withJsonBodyIncluding({
+      method: 'getAccountInfo',
+    })
+    .withBodyIncluding('So11111111111111111111111111111111111111112')
     .thenCallback(() => {
       return response;
     });
@@ -1574,6 +1612,7 @@ export async function withSolanaAccountSnap(
         mockList.push(await simulateSolanaTransaction(mockServer));
         if (walletConnect) {
           mockList.push(await mockGetTokenAccountsByOwnerDevnet(mockServer));
+          mockList.push(await mockGetAccountInfoDevnet(mockServer));
         } else {
           mockList.push(
             await mockGetTokenAccountsTokenProgramSwaps(mockServer),
@@ -1612,6 +1651,7 @@ export async function withSolanaAccountSnap(
           await mockTokenApiMainnetTest(mockServer),
           await mockAccountsApi(mockServer),
           await mockGetMultipleAccounts(mockServer),
+          await mockGetAccountInfoDevnet(mockServer),
         );
 
         if (mockSwapWithNoQuotes) {
