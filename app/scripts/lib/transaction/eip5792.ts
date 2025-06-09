@@ -1,9 +1,11 @@
 import {
   NetworkConfiguration,
   NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
 import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import {
+  IsAtomicBatchSupportedResult,
   IsAtomicBatchSupportedResultEntry,
   Log,
   TransactionController,
@@ -27,14 +29,18 @@ import {
   AccountsControllerGetStateAction,
 } from '@metamask/accounts-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { generateSecurityAlertId } from '../ppom/ppom-util';
+
 import { EIP5792ErrorCode } from '../../../../shared/constants/transaction';
+import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import { generateSecurityAlertId } from '../ppom/ppom-util';
 
 type Actions =
   | AccountsControllerGetStateAction
   | AccountsControllerGetSelectedAccountAction
   | NetworkControllerGetNetworkClientByIdAction
-  | TransactionControllerGetStateAction;
+  | TransactionControllerGetStateAction
+  | PreferencesControllerGetStateAction
+  | NetworkControllerGetStateAction;
 
 export type EIP5792Messenger = Messenger<Actions, never>;
 
@@ -162,42 +168,16 @@ export function getCallsStatus(
   };
 }
 
-export async function getCapabilities(
-  hooks: {
-    getDismissSmartAccountSuggestionEnabled: () => boolean;
-    getIsSmartTransaction: (chainId: Hex) => boolean;
-    getSupportedNetworks: () => NetworkConfiguration[];
-    isAtomicBatchSupported: TransactionController['isAtomicBatchSupported'];
-    isRelaySupported: (chainId: Hex) => Promise<boolean>;
-    isSimulationEnabled: () => boolean;
-  },
+async function getAlternateGasFeesCapability(
+  chainIds: Hex[],
+  batchSupport: IsAtomicBatchSupportedResult,
+  getIsSmartTransaction: (chainId: Hex) => boolean,
+  isRelaySupported: (chainId: Hex) => Promise<boolean>,
   messenger: EIP5792Messenger,
-  address: Hex,
-  chainIds: Hex[] | undefined,
 ) {
-  const {
-    getDismissSmartAccountSuggestionEnabled,
-    getIsSmartTransaction,
-    getSupportedNetworks,
-    isAtomicBatchSupported,
-    isRelaySupported,
-    isSimulationEnabled,
-  } = hooks;
-
-  let chainIdsNormalized = chainIds?.map(
-    (chainId) => chainId.toLowerCase() as Hex,
-  );
-
-  if (!chainIdsNormalized?.length) {
-    chainIdsNormalized = Object.keys(getSupportedNetworks()) as Hex[];
-  }
-
-  const simulationEnabled = isSimulationEnabled();
-
-  let batchSupport = await isAtomicBatchSupported({
-    address,
-    chainIds: chainIdsNormalized,
-  });
+  const simulationEnabled = messenger.call(
+    'PreferencesController:getState',
+  ).useTransactionSimulations;
 
   const relaySupportedChains = await Promise.all(
     batchSupport
@@ -210,6 +190,75 @@ export async function getCapabilities(
     isRelaySupported: relaySupportedChains[index],
   }));
 
+  return chainIds.reduce<GetCapabilitiesResult>((acc, chainId) => {
+    const chainBatchSupport = (batchSupport.find(
+      ({ chainId: batchChainId }) => batchChainId === chainId,
+    ) ?? {}) as IsAtomicBatchSupportedResultEntry & {
+      isRelaySupported: boolean;
+    };
+
+    const { isSupported = false, isRelaySupported } = chainBatchSupport;
+
+    const isSmartTransaction = getIsSmartTransaction(chainId);
+
+    const alternateGasFees =
+      simulationEnabled &&
+      (isSmartTransaction || (isSupported && isRelaySupported));
+
+    if (alternateGasFees) {
+      acc[chainId as Hex] = {
+        alternateGasFees: {
+          supported: true,
+        },
+      };
+    }
+
+    return acc;
+  }, {});
+}
+
+export async function getCapabilities(
+  hooks: {
+    getDismissSmartAccountSuggestionEnabled: () => boolean;
+    getIsSmartTransaction: (chainId: Hex) => boolean;
+    isAtomicBatchSupported: TransactionController['isAtomicBatchSupported'];
+    isRelaySupported: (chainId: Hex) => Promise<boolean>;
+  },
+  messenger: EIP5792Messenger,
+  address: Hex,
+  chainIds: Hex[] | undefined,
+) {
+  const {
+    getDismissSmartAccountSuggestionEnabled,
+    getIsSmartTransaction,
+    isAtomicBatchSupported,
+    isRelaySupported,
+  } = hooks;
+
+  let chainIdsNormalized = chainIds?.map(
+    (chainId) => chainId.toLowerCase() as Hex,
+  );
+
+  if (!chainIdsNormalized?.length) {
+    const networkConfigurations = messenger.call(
+      'NetworkController:getState',
+    ).networkConfigurationsByChainId;
+    chainIdsNormalized = Object.keys(networkConfigurations) as Hex[];
+  }
+
+  const batchSupport = await isAtomicBatchSupported({
+    address,
+    chainIds: chainIdsNormalized,
+  });
+
+  const alternateGasFeesAcc = await getAlternateGasFeesCapability(
+    chainIdsNormalized,
+    batchSupport,
+    getIsSmartTransaction,
+    isRelaySupported,
+    messenger,
+  );
+
   return chainIdsNormalized.reduce<GetCapabilitiesResult>((acc, chainId) => {
     const chainBatchSupport = (batchSupport.find(
       ({ chainId: batchChainId }) => batchChainId === chainId,
@@ -217,12 +266,8 @@ export async function getCapabilities(
       isRelaySupported: boolean;
     };
 
-    const {
-      delegationAddress,
-      isSupported = false,
-      upgradeContractAddress,
-      isRelaySupported,
-    } = chainBatchSupport;
+    const { delegationAddress, isSupported, upgradeContractAddress } =
+      chainBatchSupport;
 
     const isUpgradeDisabled = getDismissSmartAccountSuggestionEnabled();
     let isSupportedAccount = false;
@@ -240,16 +285,6 @@ export async function getCapabilities(
       !delegationAddress &&
       isSupportedAccount;
 
-    const isSmartTransaction = getIsSmartTransaction(chainId);
-
-    acc[chainId as Hex] = {
-      alternateGasFees: {
-        supported:
-          simulationEnabled &&
-          (isSmartTransaction || (isSupported && isRelaySupported)),
-      },
-    };
-
     if (!isSupported && !canUpgrade) {
       return acc;
     }
@@ -258,15 +293,16 @@ export async function getCapabilities(
       ? AtomicCapabilityStatus.Supported
       : AtomicCapabilityStatus.Ready;
 
-    acc[chainId as Hex] = {
-      atomic: {
-        status,
-      },
-      ...acc[chainId as Hex],
+    if (acc[chainId as Hex] === undefined) {
+      acc[chainId as Hex] = {};
+    }
+
+    acc[chainId as Hex].atomic = {
+      status,
     };
 
     return acc;
-  }, {});
+  }, alternateGasFeesAcc);
 }
 
 function validateSendCalls(
