@@ -27,8 +27,6 @@ class DecryptMessageConfirmation {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -64,8 +62,6 @@ class DecryptMessageConfirmation {
    *
    * @param balanceValue - The balance value to check.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_accountBalance(balanceValue: string): Promise<void> {
     console.log(
       'Check account balance on decrypt message confirmation screen: ',
@@ -82,8 +78,6 @@ class DecryptMessageConfirmation {
    *
    * @param message - The decrypted message to check.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_decryptedMessage(message: string): Promise<void> {
     console.log('Check decrypted message on decrypt message confirmation page');
     await this.driver.waitForSelector({

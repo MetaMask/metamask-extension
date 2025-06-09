@@ -30,8 +30,6 @@ const noSlides: CarouselSlide[] = [];
 type ContentfulBannerResponse = {
   items: ContentfulBanner[];
   includes?: {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     Asset?: (ContentfulSysField & {
       fields?: { file?: { url?: string } };
     })[];

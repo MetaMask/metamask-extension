@@ -13,8 +13,6 @@ class NonEvmHomepage extends HomePage {
   protected readonly balanceDiv =
     '[data-testid="coin-overview__primary-currency"]';
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(amount: string = ''): Promise<void> {
     await super.check_pageIsLoaded();
     await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
@@ -45,8 +43,6 @@ class NonEvmHomepage extends HomePage {
    * @param balance
    * @param token
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_getBalance(
     balance: string,
     token: string = 'SOL',
@@ -80,8 +76,6 @@ class NonEvmHomepage extends HomePage {
   /**
    * Checks if the receive button is enabled on a non-evm account homepage.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_isReceiveButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.waitForSelector(this.receiveButton, { timeout: 5000 });
@@ -96,8 +90,6 @@ class NonEvmHomepage extends HomePage {
   /**
    * Checks if the buy/sell button is enabled on a non-evm account homepage.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_ifBuySellButtonIsClickable(): Promise<boolean> {
     try {
       await this.driver.waitForSelector(this.buySellButton, { timeout: 5000 });

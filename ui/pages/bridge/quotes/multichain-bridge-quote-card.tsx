@@ -222,24 +222,14 @@ export const MultichainBridgeQuoteCard = () => {
                       trackUnifiedSwapBridgeEvent(
                         UnifiedSwapBridgeEventName.AllQuotesOpened,
                         {
-                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           stx_enabled: isStxEnabled,
-                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           token_symbol_source:
                             fromToken?.symbol ??
                             getNativeAssetForChainId(fromChain.chainId).symbol,
-                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           token_symbol_destination: toToken?.symbol ?? null,
-                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           price_impact: Number(
                             activeQuote.quote?.priceData?.priceImpact ?? '0',
                           ),
-                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                          // eslint-disable-next-line @typescript-eslint/naming-convention
                           gas_included: false,
                         },
                       ),

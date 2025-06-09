@@ -41,8 +41,6 @@ class OnboardingCompletePage {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -85,14 +83,10 @@ class OnboardingCompletePage {
     );
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_congratulationsMessageIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.congratulationsMessage);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_walletReadyMessageIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.walletReadyMessage);
   }

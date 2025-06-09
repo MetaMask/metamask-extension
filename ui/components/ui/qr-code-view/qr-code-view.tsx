@@ -34,15 +34,11 @@ function mapStateToProps(state: Pick<MetaMaskReduxState, 'appState'>) {
 }
 const PREFIX_LEN = 6;
 const SUFFIX_LEN = 5;
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function QrCodeView({
   Qr,
   warning,
   accountName,
 }: {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   Qr: { message?: string; data: string };
   warning: string | null | undefined;
   accountName?: string;
@@ -90,8 +86,6 @@ function QrCodeView({
           data-testid="qr-code-image"
           className="qr-code__image"
           dangerouslySetInnerHTML={{
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             __html: qrImage.createTableTag(5, 16),
           }}
         />

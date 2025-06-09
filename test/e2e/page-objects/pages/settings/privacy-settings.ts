@@ -122,8 +122,6 @@ class PrivacySettings {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.privacySettingsPageTitle);
@@ -278,8 +276,6 @@ class PrivacySettings {
    * Checks if the delete MetaMetrics data button is enabled on privacy settings page.
    *
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_deleteMetaMetricsDataButtonEnabled(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.deleteMetaMetricsDataButton, {
@@ -294,16 +290,12 @@ class PrivacySettings {
     return true;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_displayedSrpCanBeCopied(): Promise<void> {
     console.log('Check displayed SRP on privacy settings page can be copied');
     await this.driver.clickElement(this.copySrpButton);
     await this.driver.waitForSelector(this.copiedSrpExclamation);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_srpQrCodeIsDisplayed(): Promise<void> {
     console.log('Check SRP QR code is displayed on privacy settings page');
     await clickNestedButton(this.driver, 'QR');
@@ -315,8 +307,6 @@ class PrivacySettings {
    *
    * @param expectedSrpText - The expected SRP text.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_srpTextIsDisplayed(expectedSrpText: string): Promise<void> {
     console.log('Check SRP text is displayed on privacy settings page');
     await this.driver.waitForSelector({

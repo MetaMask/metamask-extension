@@ -76,11 +76,7 @@ export function onRpcEndpointUnavailable({
       category: MetaMetricsEventCategory.Network,
       event: MetaMetricsEventName.RpcServiceUnavailable,
       properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id_caip: `eip155:${hexToNumber(chainId)}`,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         rpc_endpoint_url: onlyKeepHost(endpointUrl),
       },
     });
@@ -142,11 +138,7 @@ export function onRpcEndpointDegraded({
       category: MetaMetricsEventCategory.Network,
       event: MetaMetricsEventName.RpcServiceDegraded,
       properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id_caip: `eip155:${hexToNumber(chainId)}`,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         rpc_endpoint_url: onlyKeepHost(endpointUrl),
       },
     });

@@ -160,8 +160,6 @@ export async function mockPermitDecoding(mockServer: Mockttp) {
 export async function mockedSourcifyTokenSend(mockServer: Mockttp) {
   return await mockServer
     .forGet('https://www.4byte.directory/api/v1/signatures/')
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     .withQuery({ hex_signature: '0xa9059cbb' })
     .always()
     .thenCallback(() => ({
@@ -172,18 +170,10 @@ export async function mockedSourcifyTokenSend(mockServer: Mockttp) {
         previous: null,
         results: [
           {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             bytes_signature: '©\u0005»',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             created_at: '2016-07-09T03:58:28.234977Z',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             hex_signature: '0xa9059cbb',
             id: 145,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             text_signature: 'transfer(address,uint256)',
           },
         ],
@@ -201,8 +191,6 @@ export async function mockEip7702FeatureFlag(mockServer: Mockttp) {
           statusCode: 200,
           json: [
             {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               confirmations_eip_7702: {
                 contracts: {
                   '0xaa36a7': [

@@ -20,8 +20,6 @@ class GetEncryptionKeyConfirmation {
     this.driver = driver;
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
@@ -52,8 +50,6 @@ class GetEncryptionKeyConfirmation {
    *
    * @param balanceValue - The balance value to check.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_accountBalance(balanceValue: string): Promise<void> {
     console.log(
       'Check account balance on get encryption key confirmation screen: ',

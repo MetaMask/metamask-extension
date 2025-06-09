@@ -33,8 +33,6 @@ class GeneralSettings {
   /**
    * Check if the General Settings page is loaded
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.check_noLoadingOverlaySpinner();
@@ -75,8 +73,6 @@ class GeneralSettings {
   /**
    * Verify that both Jazzicon and Blockies options are visible
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_identiconOptionsAreDisplayed(): Promise<void> {
     console.log(
       'Checking if identicon options are displayed on general settings page',
@@ -90,8 +86,6 @@ class GeneralSettings {
    *
    * @param identicon - The type of identicon to check ('jazzicon' or 'blockies')
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_identiconIsActive(
     identicon: 'jazzicon' | 'blockies',
   ): Promise<void> {
@@ -104,8 +98,6 @@ class GeneralSettings {
     await this.driver.waitForSelector(activeSelector);
   }
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   async check_noLoadingOverlaySpinner(): Promise<void> {
     await this.driver.assertElementNotPresent(this.loadingOverlaySpinner);
   }

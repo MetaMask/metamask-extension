@@ -38,8 +38,6 @@ export type GasFeeTokenListItemProps = {
   warning?: string;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function GasFeeTokenListItem({
   isSelected,
   onClick,
@@ -77,8 +75,6 @@ export function GasFeeTokenListItem({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function ListItem({
   image,
   leftPrimary,
@@ -165,8 +161,6 @@ function ListItem({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function WarningIndicator({ text }: { text: string }) {
   return (
     <Box
@@ -190,8 +184,6 @@ function WarningIndicator({ text }: { text: string }) {
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function SelectedIndicator() {
   return (
     <Box
