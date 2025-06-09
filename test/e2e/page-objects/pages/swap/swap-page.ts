@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
 export type SwapSolanaOptions = {
@@ -10,8 +11,8 @@ export type SwapSolanaOptions = {
 export type SwapSolanaReviewOptions = {
   swapFrom: string;
   swapTo: string;
-  swapToAmount: number;
-  swapFromAmount?: number;
+  swapToAmount: string;
+  swapFromAmount?: string;
   skipCounter?: boolean;
 };
 
@@ -56,6 +57,8 @@ class SwapPage {
   private readonly fromAmount = '[data-testid="from-amount"]';
 
   private readonly transactionHeader = '[data-testid="awaiting-swap-header"]';
+
+  private readonly submitSwapButton = '[data-testid="bridge-cta-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -179,6 +182,15 @@ class SwapPage {
   }
 
   async reviewSolanaQuote(options: SwapSolanaReviewOptions) {
+    await this.driver.waitForSelector(this.submitSwapButton);
+    const fromAmount = await this.driver.findElement(
+      '[data-testid="from-amount"]',
+    );
+    const fromAmountText = await fromAmount.getAttribute('value');
+    assert.equal(fromAmountText, options.swapFromAmount);
+    const toAmount = await this.driver.findElement('[data-testid="to-amount"]');
+    const toAmountText = await toAmount.getAttribute('value');
+    assert.equal(toAmountText, options.swapToAmount);
     await this.driver.waitForSelector({
       text: `1 ${options.swapFrom} = ${options.swapToAmount} ${options.swapTo}`,
       tag: 'p',
@@ -192,7 +204,7 @@ class SwapPage {
       tag: 'button',
     });
 
-    await this.driver.clickElement('[data-testid="bridge-cta-button"]');
+    await this.driver.clickElement(this.submitSwapButton);
   }
 }
 

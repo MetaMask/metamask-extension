@@ -19,7 +19,7 @@ describe('Swap on Solana', function () {
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         await swapPage.createSolanaSwap({
-          amount: 0.001,
+          amount: 1,
           swapTo: 'USDC',
           swapFrom: 'SOL',
         });
@@ -42,10 +42,10 @@ describe('Swap on Solana', function () {
 
         await swapPage.closeQuotes();
         await swapPage.reviewSolanaQuote({
-          swapToAmount: 167.7,
+          swapToAmount: '167.7',
           swapFrom: 'SOL',
           swapTo: 'USDC',
-          swapFromAmount: 0,
+          swapFromAmount: '1',
         });
 
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
@@ -81,10 +81,10 @@ describe('Swap on Solana', function () {
           swapFrom: 'USDC',
         });
         await swapPage.reviewSolanaQuote({
-          swapToAmount: 0.00589,
+          swapToAmount: '0.00589',
           swapFrom: 'USDC',
           swapTo: 'SOL',
-          swapFromAmount: 0,
+          swapFromAmount: '1',
         });
 
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);

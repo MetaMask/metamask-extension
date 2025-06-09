@@ -231,6 +231,7 @@ class ActivityListPage {
     expectedAmount: string = '-1 ETH',
     expectedNumber: number = 1,
   ): Promise<void> {
+    await this.driver.waitForSelector(this.transactionAmountsInActivity);
     const transactionAmounts = await this.driver.findElements(
       this.transactionAmountsInActivity,
     );
