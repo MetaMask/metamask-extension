@@ -659,9 +659,6 @@
   "basic": {
     "message": "Panimula"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "I-on ang batayang kapakinabangan"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Naka-off ang batayang kapakinabangan"
   },
@@ -1443,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "Gumawa ng bagong account"
-  },
-  "createNewWallet": {
-    "message": "Gumawa ng bagong wallet"
   },
   "createPassword": {
     "message": "Gumawa ng password"
@@ -2547,9 +2541,6 @@
   },
   "importAccountMsg": {
     "message": "Ang mga na-import na account ay hindi mauugnay sa iyong Lihim na Parirala sa Pagbawi ng MetaMask. Matuto pa tungkol sa mga na-import na account"
-  },
-  "importMyWallet": {
-    "message": "I-import ang Wallet Ko"
   },
   "importNFT": {
     "message": "Mag-import ng NFT"
@@ -3939,9 +3930,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Hindi sapat ang haba ng password"
-  },
-  "passwordSetupDetails": {
-    "message": "Ang password na ito ay magbubukas lamang ng iyong MetaMask wallet sa device na ito. Hindi matatakpan ng MetaMask ang password na ito."
   },
   "passwordStrength": {
     "message": "Tibay ng password: $1",

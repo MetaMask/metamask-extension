@@ -63,19 +63,7 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
     [t],
   );
 
-  const [passwordStrengthElement, setPasswordStrengthElement] = useState(() => {
-    const passwordStrengthLabel = getPasswordStrengthLabel(true, 0);
-    return (
-      <Text
-        variant={TextVariant.inherit}
-        as="span"
-        key={0}
-        data-testid={passwordStrengthLabel.dataTestId}
-      >
-        {passwordStrengthLabel.text}
-      </Text>
-    );
-  });
+  const [passwordStrengthElement, setPasswordStrengthElement] = useState(null);
 
   const handlePasswordChange = useCallback(
     (passwordInput: string) => {
@@ -165,8 +153,9 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
           <ButtonIcon
             iconName={showPassword ? IconName.EyeSlash : IconName.Eye}
             data-testid="show-password"
+            type="button"
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-              e.preventDefault();
+              e.stopPropagation();
               setShowPassword(!showPassword);
             }}
             ariaLabel={
@@ -185,6 +174,9 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
         labelProps={{ marginBottom: 1 }}
         size={FormTextFieldSize.Lg}
         error={Boolean(confirmPasswordError)}
+        helpTextProps={{
+          'data-testid': 'confirm-password-error',
+        }}
         helpText={confirmPasswordError}
         value={confirmPassword}
         disabled={password.length < PASSWORD_MIN_LENGTH}
@@ -199,8 +191,9 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
           <ButtonIcon
             iconName={showConfirmPassword ? IconName.EyeSlash : IconName.Eye}
             data-testid="show-confirm-password"
+            type="button"
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-              e.preventDefault();
+              e.stopPropagation();
               setShowConfirmPassword(!showConfirmPassword);
             }}
             ariaLabel={
