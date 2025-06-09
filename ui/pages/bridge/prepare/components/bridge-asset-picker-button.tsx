@@ -2,7 +2,7 @@ import React from 'react';
 import {
   SelectButtonProps,
   SelectButtonSize,
-} from '../../../component-library/select-button/select-button.types';
+} from '../../../../components/component-library/select-button/select-button.types';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -11,7 +11,7 @@ import {
   IconName,
   SelectButton,
   Text,
-} from '../../../component-library';
+} from '../../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
