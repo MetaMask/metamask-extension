@@ -1,10 +1,7 @@
 import { SECOND } from '../../../../shared/constants/time';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import {
-<<<<<<< HEAD
   ResultType,
-=======
->>>>>>> 879d233ec133b46a2ccdd21a510175c282ca0087
   ScanAddressRequest,
   ScanAddressResponse,
   SupportedEVMChain,
