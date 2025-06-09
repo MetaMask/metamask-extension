@@ -6,16 +6,16 @@ import {
   unlockWallet,
   WINDOW_TITLES,
   withFixtures,
-} from '../../helpers';
-import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
-import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
+} from '../../../helpers';
+import { Driver } from '../../../webdriver/driver';
+import FixtureBuilder from '../../../fixture-builder';
+import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import {
   addAccountInWalletAndAuthorize,
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
   updateNetworkCheckboxes,
-} from './testHelpers';
+} from '../testHelpers';
 
 describe('Call `wallet_createSession`, then update the accounts and/or scopes in the permissions page of the wallet for that dapp', function () {
   const INITIAL_SCOPES = ['eip155:1337', 'eip155:1338'];

@@ -12,7 +12,7 @@ import {
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
-export const acccount1 = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
+export const account1 = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
 export const account1Short = '4tE7...Uxer';
 export const account2Short = 'ExTE...GNtt';
 

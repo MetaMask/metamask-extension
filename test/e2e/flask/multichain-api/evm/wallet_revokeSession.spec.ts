@@ -7,15 +7,15 @@ import {
   unlockWallet,
   WINDOW_TITLES,
   withFixtures,
-} from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
+} from '../../../helpers';
+import FixtureBuilder from '../../../fixture-builder';
+import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   addAccountInWalletAndAuthorize,
   sendMultichainApiRequest,
   type FixtureCallbackArgs,
-} from './testHelpers';
+} from '../testHelpers';
 
 describe('Initializing a session w/ several scopes and accounts, then calling `wallet_revokeSession`', function () {
   const GANACHE_SCOPES = ['eip155:1337', 'eip155:1338', 'eip155:1000'];

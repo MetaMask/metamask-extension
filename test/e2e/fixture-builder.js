@@ -7,7 +7,10 @@ const { toHex } = require('@metamask/controller-utils');
 const {
   ETHERSCAN_SUPPORTED_CHAIN_IDS,
 } = require('@metamask/preferences-controller');
-const { mockNetworkStateOld } = require('../stub/networks');
+const {
+  mockNetworkStateOld,
+  mockMultichainNetworkState,
+} = require('../stub/networks');
 
 const { CHAIN_IDS } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
@@ -39,6 +42,9 @@ function onboardingFixture() {
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,
         trezorModel: null,
+      },
+      MultichainNetworkController: {
+        ...mockMultichainNetworkState(),
       },
       NetworkController: {
         ...mockNetworkStateOld({
@@ -287,6 +293,11 @@ class FixtureBuilder {
     this.fixture.data.NetworkController.providerConfig = {
       id: this.fixture.data.NetworkController.selectedNetworkClientId,
     };
+    return this;
+  }
+
+  withMultichainNetworkController(data) {
+    merge(this.fixture.data.MultichainNetworkController, data);
     return this;
   }
 
@@ -1511,6 +1522,26 @@ class FixtureBuilder {
     return this.withNameController({ names: {} });
   }
 
+  withSolanaAccount() {
+    return this.withAccountsController({
+      internalAccounts: {
+        accounts: {
+          '5132883f-598e-482c-a02b-84eeaa352f5b': {
+            id: '5132883f-598e-482c-a02b-84eeaa352f5b',
+            address: '8A4AptCThfbuknsbteHgGKXczfJpfjuVA9SLTSGaaLGC',
+            type: 'solana:data-account',
+            metadata: {
+              snap: {
+                id: 'npm:@metamask/solana-wallet-snap',
+              },
+            },
+          },
+        },
+        selectedAccount: '5132883f-598e-482c-a02b-84eeaa352f5b',
+      },
+    });
+  }
+
   withLedgerAccount() {
     return this.withKeyringController({
       vault:
@@ -1677,6 +1708,10 @@ class FixtureBuilder {
     return this.withTransactionController({
       transactions,
     });
+  }
+
+  withSolanaNetworkConfig() {
+    return this.withMultichainNetworkController({});
   }
 
   withPopularNetworks() {
