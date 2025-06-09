@@ -4,7 +4,7 @@ import { Driver } from '../../../webdriver/driver';
 export type SwapSolanaOptions = {
   amount: number;
   swapFrom: string;
-  swapTo?: string;
+  swapTo: string;
   swapToContractAddress?: string;
 };
 
@@ -12,7 +12,7 @@ export type SwapSolanaReviewOptions = {
   swapFrom: string;
   swapTo: string;
   swapToAmount: string;
-  swapFromAmount?: string;
+  swapFromAmount: string;
   skipCounter?: boolean;
 };
 
