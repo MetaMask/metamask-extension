@@ -74,6 +74,7 @@ export type AssetPickerProps = {
   isDisabled?: boolean;
   action?: 'send' | 'receive';
   isMultiselectEnabled?: boolean;
+  autoFocus?: boolean;
   networkProps?: Pick<
     React.ComponentProps<typeof AssetPickerModalNetwork>,
     | 'network'
@@ -106,6 +107,7 @@ export function AssetPicker({
   customTokenListGenerator,
   isTokenListLoading = false,
   isMultiselectEnabled = false,
+  autoFocus = true,
 }: AssetPickerProps) {
   const t = useI18nContext();
 
