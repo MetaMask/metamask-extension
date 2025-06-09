@@ -559,8 +559,6 @@ export function AssetPickerModal({
       isOpen={isOpen}
       onClose={() => {
         setSearchQuery('');
-        debouncedSetSearchQuery.cancel();
-        abortControllerRef.current?.abort();
         onClose();
       }}
       data-testid="asset-picker-modal"
@@ -569,10 +567,8 @@ export function AssetPickerModal({
       <ModalContent modalDialogProps={{ padding: 0 }}>
         <ModalHeader
           onClose={() => {
-            debouncedSetSearchQuery.cancel();
-            abortControllerRef.current?.abort();
-            onClose();
             setSearchQuery('');
+            onClose();
           }}
           onBack={asset ? undefined : onBack}
         >
