@@ -49,7 +49,6 @@ describe('Swap on Solana', function () {
         });
 
         const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
-        console.log('confirmSolanaPage', confirmSolanaPage);
 
         await confirmSolanaPage.clickOnConfirm();
 
