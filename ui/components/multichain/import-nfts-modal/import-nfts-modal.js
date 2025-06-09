@@ -66,6 +66,7 @@ export const ImportNftsModal = ({ onClose }) => {
   const nftsDropdownState = useSelector(getNftsDropdownState);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const chainId = useSelector(getCurrentChainId);
+  const networkClientId = useSelector(getSelectedNetworkClientId);
   const {
     tokenAddress: initialTokenAddress,
     tokenId: initialTokenId,

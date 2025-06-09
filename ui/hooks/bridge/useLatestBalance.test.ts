@@ -1,6 +1,7 @@
 import { zeroAddress } from 'ethereumjs-util';
 import * as bridgeController from '@metamask/bridge-controller';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import { SolScope } from '@metamask/keyring-api';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
@@ -116,6 +117,7 @@ describe('useLatestBalance', () => {
               id: 'test-account-id',
               type: 'solana',
               address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
+              scopes: [SolScope.Mainnet],
             },
           },
         },

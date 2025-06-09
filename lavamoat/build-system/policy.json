@@ -1213,7 +1213,7 @@
       },
       "packages": {
         "browserify>JSONStream>jsonparse": true,
-        "debounce-stream>through": true
+        "browserify>JSONStream>through": true
       }
     },
     "@lavamoat/lavapack>readable-stream>abort-controller": {
@@ -2427,7 +2427,7 @@
         "unzipper>duplexer2>readable-stream": true
       }
     },
-    "debounce-stream>duplexer": {
+    "gulp-livereload>event-stream>duplexer": {
       "builtin": {
         "stream": true
       }
@@ -2928,13 +2928,13 @@
         "setImmediate": true
       },
       "packages": {
-        "debounce-stream>duplexer": true,
+        "gulp-livereload>event-stream>duplexer": true,
         "gulp-livereload>event-stream>from": true,
         "gulp-livereload>event-stream>map-stream": true,
         "gulp-livereload>event-stream>pause-stream": true,
         "gulp-livereload>event-stream>split": true,
         "gulp-livereload>event-stream>stream-combiner": true,
-        "debounce-stream>through": true
+        "browserify>JSONStream>through": true
       }
     },
     "@lavamoat/lavapack>readable-stream>abort-controller>event-target-shim": {
@@ -5036,7 +5036,7 @@
     },
     "gulp-livereload>event-stream>pause-stream": {
       "packages": {
-        "debounce-stream>through": true
+        "browserify>JSONStream>through": true
       }
     },
     "postcss>picocolors": {
@@ -7914,7 +7914,7 @@
         "string_decoder.StringDecoder": true
       },
       "packages": {
-        "debounce-stream>through": true
+        "browserify>JSONStream>through": true
       }
     },
     "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>class-utils>static-extend": {
@@ -7934,7 +7934,7 @@
     },
     "gulp-livereload>event-stream>stream-combiner": {
       "packages": {
-        "debounce-stream>duplexer": true
+        "gulp-livereload>event-stream>duplexer": true
       }
     },
     "gulp>glob-watcher>async-done>stream-exhaust": {
@@ -8600,7 +8600,7 @@
         "watchify>xtend": true
       }
     },
-    "debounce-stream>through": {
+    "browserify>JSONStream>through": {
       "builtin": {
         "stream": true
       },

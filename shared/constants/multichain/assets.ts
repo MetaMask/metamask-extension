@@ -3,6 +3,8 @@ import { MultichainNetworks } from './networks';
 
 export const MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 = {
   BTC: `${MultichainNetworks.BITCOIN}/slip44:0`,
+  tBTC: `${MultichainNetworks.BITCOIN_TESTNET}/slip44:0`,
+  sBTC: `${MultichainNetworks.BITCOIN_SIGNET}/slip44:0`,
   SOL: `${MultichainNetworks.SOLANA}/slip44:501`,
 } as const;
 
@@ -11,6 +13,7 @@ export enum MultichainNativeAssets {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   BITCOIN_TESTNET = `${MultichainNetworks.BITCOIN_TESTNET}/slip44:0`,
+  BITCOIN_SIGNET = `${MultichainNetworks.BITCOIN_SIGNET}/slip44:0`,
 
   SOLANA = `${MultichainNetworks.SOLANA}/slip44:501`,
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -36,4 +39,5 @@ export const MULTICHAIN_NETWORK_TO_ASSET_TYPES: Record<
   [MultichainNetworks.BITCOIN_TESTNET]: [
     MultichainNativeAssets.BITCOIN_TESTNET,
   ],
+  [MultichainNetworks.BITCOIN_SIGNET]: [MultichainNativeAssets.BITCOIN_SIGNET],
 } as const;

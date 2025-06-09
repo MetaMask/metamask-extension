@@ -30,8 +30,7 @@ describe('Carousel component e2e tests', function () {
 
         for (let i = 0; i < slideIds.length; i++) {
           if (i > 0) {
-            const dots = await driver.findElements('.dot');
-            await dots[i].click();
+            await driver.clickElement(`[aria-label="slide item ${i}"]`);
             await driver.waitForSelector(
               `[data-testid="slide-${slideIds[i]}"]`,
             );

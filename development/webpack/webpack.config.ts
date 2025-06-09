@@ -109,7 +109,6 @@ const plugins: WebpackPluginInstance[] = [
     integrity: 'auto',
     test: /\.html$/u, // default is eta/html, we only want html
     data: {
-      isMMI: args.type === 'mmi',
       isTest: args.test,
       shouldIncludeSnow: args.snow,
     },

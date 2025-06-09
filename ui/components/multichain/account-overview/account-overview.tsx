@@ -5,8 +5,6 @@ import {
   EthAccountType,
   SolAccountType,
 } from '@metamask/keyring-api';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { BannerAlert, BannerAlertSeverity } from '../../component-library';
 import { getSelectedInternalAccount } from '../../../selectors';
 import { AccountOverviewEth } from './account-overview-eth';
 import { AccountOverviewUnknown } from './account-overview-unknown';
@@ -20,10 +18,7 @@ export type AccountOverviewProps = AccountOverviewCommonProps & {
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function AccountOverview(props: AccountOverviewProps) {
-  const t = useI18nContext();
   const account = useSelector(getSelectedInternalAccount);
-
-  const { useExternalServices, setBasicFunctionalityModalOpen } = props;
 
   const renderAccountOverviewOption = () => {
     switch (account.type) {
@@ -38,21 +33,5 @@ export function AccountOverview(props: AccountOverviewProps) {
     }
   };
 
-  return (
-    <>
-      {!useExternalServices && (
-        <BannerAlert
-          margin={4}
-          marginBottom={0}
-          severity={BannerAlertSeverity.Danger}
-          actionButtonLabel={t('basicConfigurationBannerCTA')}
-          actionButtonOnClick={() => {
-            setBasicFunctionalityModalOpen();
-          }}
-          title={t('basicConfigurationBannerTitle')}
-        />
-      )}
-      {renderAccountOverviewOption()}
-    </>
-  );
+  return <>{renderAccountOverviewOption()}</>;
 }

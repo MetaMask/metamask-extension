@@ -1,3 +1,4 @@
+import { regularDelayMs } from '../../../helpers';
 import HomePage from './homepage';
 
 class NonEvmHomepage extends HomePage {
@@ -14,15 +15,15 @@ class NonEvmHomepage extends HomePage {
 
   async check_pageIsLoaded(amount: string = ''): Promise<void> {
     await super.check_pageIsLoaded();
+    await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
     if (amount) {
-      try {
+      await this.driver.wait(async () => {
         await this.driver.waitForSelector({
           text: `${amount}`,
           tag: 'span',
         });
-      } catch (e) {
-        console.log('Error in check_pageIsLoaded', e);
-      }
+        return true;
+      }, 60000);
     }
   }
 
@@ -32,7 +33,7 @@ class NonEvmHomepage extends HomePage {
    * Clicks the send button on the non-EVM account homepage.
    */
   async clickOnSendButton(): Promise<void> {
-    await this.driver.waitForControllersLoaded();
+    await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
     await this.driver.clickElement(this.sendButton);
   }
 
@@ -50,6 +51,7 @@ class NonEvmHomepage extends HomePage {
       text: balance,
       tag: 'span',
     });
+
     await this.driver.waitForSelector({
       text: token,
       tag: 'span',

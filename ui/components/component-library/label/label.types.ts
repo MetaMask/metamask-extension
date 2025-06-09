@@ -16,6 +16,10 @@ export interface LabelStyleUtilityProps extends TextStyleUtilityProps {
    * The content of the Label component
    */
   children: string | React.ReactNode;
+  /**
+   * Data test id
+   */
+  'data-testid'?: string;
 }
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
