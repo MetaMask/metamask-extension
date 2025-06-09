@@ -659,9 +659,6 @@
   "basic": {
     "message": "Grundlegend"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Grundfunktionalität einschalten"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Grundfunktionalität ist ausgeschaltet"
   },
@@ -1443,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "Neues Konto erstellen"
-  },
-  "createNewWallet": {
-    "message": "Eine neue Wallet erstellen"
   },
   "createPassword": {
     "message": "Passwort erstellen"
@@ -2547,9 +2541,6 @@
   },
   "importAccountMsg": {
     "message": "Importierte Konten werden nicht mit der geheimen Wiederherstellungsphrase von MetaMask verknüpft. Erfahren Sie mehr über importierte Konten."
-  },
-  "importMyWallet": {
-    "message": "Meine Wallet importieren"
   },
   "importNFT": {
     "message": "NFT importieren"
@@ -3940,9 +3931,6 @@
   "passwordNotLongEnough": {
     "message": "Passwort nicht lang genug"
   },
-  "passwordSetupDetails": {
-    "message": "Dieses Passwort wird Ihre MetaMask-Wallet nur auf diesem Gerät entsperren. MetaMask kann dieses Passwort nicht wiederherstellen."
-  },
   "passwordStrength": {
     "message": "Passwortstärke: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -5305,10 +5293,6 @@
   "snapConnectionWarning": {
     "message": "$1 möchte $2 verwenden",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "Diese Inhalte stammen von $1.",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "Webseite"

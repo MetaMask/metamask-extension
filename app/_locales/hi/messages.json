@@ -659,9 +659,6 @@
   "basic": {
     "message": "बेसिक"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "बेसिक फंक्शनलिटी को चालू करें"
-  },
   "basicConfigurationBannerTitle": {
     "message": "बेसिक फंक्शनलिटी बंद है"
   },
@@ -1443,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "एक नया अकाउंट बनाएं"
-  },
-  "createNewWallet": {
-    "message": "एक नया वॉलेट बनाएं"
   },
   "createPassword": {
     "message": "पासवर्ड बनाएं"
@@ -2547,9 +2541,6 @@
   },
   "importAccountMsg": {
     "message": "इम्पोर्ट किए एकाउंट्स आपके MetaMask सीक्रेट रिकवरी फ्रेज़ से जुड़े नहीं होंगे। इम्पोर्ट किए एकाउंट्स के बारे में अधिक जानें"
-  },
-  "importMyWallet": {
-    "message": "मेरा वॉलेट इम्पोर्ट करें"
   },
   "importNFT": {
     "message": "NFT इंपोर्ट करें"
@@ -3940,9 +3931,6 @@
   "passwordNotLongEnough": {
     "message": "पासवर्ड की लंबाई पर्याप्त नहीं है"
   },
-  "passwordSetupDetails": {
-    "message": "यह पासवर्ड आपके MetaMask वॉलेट को केवल इसी डिवाइस पर अनलॉक करेगा। MetaMask इस पासवर्ड को फिर से प्राप्त नहीं कर सकता है।"
-  },
   "passwordStrength": {
     "message": "पासवर्ड की मजबूती: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -5305,10 +5293,6 @@
   "snapConnectionWarning": {
     "message": "$1 $2 का उपयोग करना चाहता है",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "यह कंटेंट $1 से आ रही है",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "वेबसाइट"

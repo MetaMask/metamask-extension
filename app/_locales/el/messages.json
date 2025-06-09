@@ -659,9 +659,6 @@
   "basic": {
     "message": "Βασικά"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Ενεργοποίηση βασικών λειτουργιών"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Οι βασικές λειτουργίες είναι απενεργοποιημένες"
   },
@@ -1443,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "Δημιουργία νέου λογαριασμού"
-  },
-  "createNewWallet": {
-    "message": "Δημιουργία νέου πορτοφολιού"
   },
   "createPassword": {
     "message": "Δημιουργία κωδικού πρόσβασης"
@@ -2547,9 +2541,6 @@
   },
   "importAccountMsg": {
     "message": "Οι λογαριασμοί που έχουν εισαχθεί δεν θα συσχετίζονται με τη Μυστική Φράση Ανάκτησης στο MetaTask. Μάθετε περισσότερα για τους λογαριασμούς που έχουν εισαχθεί"
-  },
-  "importMyWallet": {
-    "message": "Εισαγωγή του πορτοφολιού μου"
   },
   "importNFT": {
     "message": "Εισαγωγή NFT"
@@ -3940,9 +3931,6 @@
   "passwordNotLongEnough": {
     "message": "Ο κωδικός πρόσβασης δεν είναι αρκετά μεγάλος"
   },
-  "passwordSetupDetails": {
-    "message": "Αυτός ο κωδικός πρόσβασης θα ξεκλειδώσει το πορτοφόλι σας στο MetaMask μόνο σε αυτή τη συσκευή. Το MetaMask δεν μπορεί να ανακτήσει αυτόν τον κωδικό πρόσβασης."
-  },
   "passwordStrength": {
     "message": "Ισχύς κωδικού πρόσβασης: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -5305,10 +5293,6 @@
   "snapConnectionWarning": {
     "message": "Το $1 θέλει να χρησιμοποιήσει $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "Αυτό το περιεχόμενο προέρχεται από το $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "Ιστότοπος"

@@ -659,9 +659,6 @@
   "basic": {
     "message": "Panimula"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "I-on ang batayang kapakinabangan"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Naka-off ang batayang kapakinabangan"
   },
@@ -1443,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "Gumawa ng bagong account"
-  },
-  "createNewWallet": {
-    "message": "Gumawa ng bagong wallet"
   },
   "createPassword": {
     "message": "Gumawa ng password"
@@ -2547,9 +2541,6 @@
   },
   "importAccountMsg": {
     "message": "Ang mga na-import na account ay hindi mauugnay sa iyong Lihim na Parirala sa Pagbawi ng MetaMask. Matuto pa tungkol sa mga na-import na account"
-  },
-  "importMyWallet": {
-    "message": "I-import ang Wallet Ko"
   },
   "importNFT": {
     "message": "Mag-import ng NFT"
@@ -3940,9 +3931,6 @@
   "passwordNotLongEnough": {
     "message": "Hindi sapat ang haba ng password"
   },
-  "passwordSetupDetails": {
-    "message": "Ang password na ito ay magbubukas lamang ng iyong MetaMask wallet sa device na ito. Hindi matatakpan ng MetaMask ang password na ito."
-  },
   "passwordStrength": {
     "message": "Tibay ng password: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -5305,10 +5293,6 @@
   "snapConnectionWarning": {
     "message": "Si $1 ay gustong gumamit ng $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "Ang nilalamang ito ay nagmumula sa $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "Website"

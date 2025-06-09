@@ -659,9 +659,6 @@
   "basic": {
     "message": "Temel"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Temel işlevselliği aç"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Temel işlevsellik kapalı"
   },
@@ -1443,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "Yeni bir hesap oluştur"
-  },
-  "createNewWallet": {
-    "message": "Yeni bir cüzdan oluştur"
   },
   "createPassword": {
     "message": "Şifre Oluştur"
@@ -2547,9 +2541,6 @@
   },
   "importAccountMsg": {
     "message": "İçe aktarılan hesaplar ilk olarak oluşturduğunuz MetaMask hesabı Gizli Kurtarma ifadenizle ilişkilendirilmez. İçe aktarılan hesaplar hakkında daha fazla bilgi edinin"
-  },
-  "importMyWallet": {
-    "message": "Cüzdanımı içe aktar"
   },
   "importNFT": {
     "message": "NFT'yi İçe Aktar"
@@ -3940,9 +3931,6 @@
   "passwordNotLongEnough": {
     "message": "Şifre yeterince uzun değil"
   },
-  "passwordSetupDetails": {
-    "message": "Bu şifre MetaMask cüzdanınızın kilidini sadece bu cihazda açacaktır. MetaMask bu şifreyi kurtaramaz."
-  },
   "passwordStrength": {
     "message": "Şifre güvenlik düzeyi: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -5305,10 +5293,6 @@
   "snapConnectionWarning": {
     "message": "$1 şunu kullanmak istiyor: $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "Bu içerik $1 kaynaklıdır",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "Web Sitesi"
