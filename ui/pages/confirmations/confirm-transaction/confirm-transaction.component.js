@@ -26,7 +26,7 @@ import { usePrevious } from '../../../hooks/usePrevious';
 import {
   unconfirmedTransactionsHashSelector,
   unconfirmedTransactionsListSelector,
-  use4ByteResolutionSelector,
+  getUse4ByteResolution,
 } from '../../../selectors';
 import {
   endBackgroundTrace,
@@ -71,7 +71,7 @@ const ConfirmTransaction = () => {
     unconfirmedTxsSorted,
   ]);
   const [transaction, setTransaction] = useState(getTransaction);
-  const use4ByteResolution = useSelector(use4ByteResolutionSelector);
+  const use4ByteResolution = useSelector(getUse4ByteResolution);
   const { currentConfirmation } = useCurrentConfirmation();
 
   useEffect(() => {

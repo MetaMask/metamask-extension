@@ -1501,7 +1501,7 @@ export function cancelSwapsSmartTransaction(uuid) {
   };
 }
 
-export const getIsEstimatedReturnLow = ({ usedQuote, rawNetworkFees }) => {
+export const useIsEstimatedReturnLow = ({ usedQuote, rawNetworkFees }) => {
   const sourceTokenAmount = calcTokenAmount(
     usedQuote?.sourceAmount,
     usedQuote?.sourceTokenInfo?.decimals,
