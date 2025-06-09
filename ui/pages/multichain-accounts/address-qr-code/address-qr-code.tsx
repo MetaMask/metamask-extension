@@ -2,7 +2,7 @@ import React, { useCallback, useContext } from 'react';
 import { parseCaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Page, Header, Content, Footer } from '../../multichain/pages/page';
+import { Page, Header, Content, Footer } from '../../../components/multichain/pages/page';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ButtonIcon,
@@ -10,19 +10,19 @@ import {
   ButtonSecondary,
   ButtonSecondarySize,
   IconName,
-} from '../../component-library';
+} from '../../../components/component-library';
 import { ACCOUNT_DETAILS_ROUTE } from '../../../helpers/constants/routes';
 import {
   BackgroundColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import QrCodeView from '../../ui/qr-code-view';
+import QrCodeView from '../../../components/ui/qr-code-view';
 import { AppSliceState } from '../../../ducks/app/app';
 import { getInternalAccountByAddress } from '../../../selectors';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
-import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
+import { openBlockExplorer } from '../../../components/multichain/menu-items/view-explorer-menu-item';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventName,
@@ -52,16 +52,18 @@ export const AddressQRCode = () => {
 
   const chainId = parseCaipChainId(multichainNetwork.chainId).reference;
 
+  const metricsLocation = 'Account Details QR Code Page';
+
   const handleNavigation = useCallback(() => {
     trackEvent({
       event: MetaMetricsEventName.BlockExplorerLinkClicked,
       category: MetaMetricsEventCategory.Accounts,
       properties: {
-        location: 'Account Details QR Code Page',
+        location: metricsLocation,
         chain_id: chainId,
       },
     });
-    openBlockExplorer(addressLink, 'Account Details QR Code Page', trackEvent);
+    openBlockExplorer(addressLink, metricsLocation, trackEvent);
   }, [chainId, trackEvent, addressLink]);
 
   return (
