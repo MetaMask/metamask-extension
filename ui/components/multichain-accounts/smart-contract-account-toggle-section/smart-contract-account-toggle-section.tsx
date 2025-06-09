@@ -7,7 +7,6 @@ import {
   BlockSize,
   TextVariant,
   TextColor,
-  FlexDirection,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -68,7 +67,7 @@ export const SmartContractAccountToggleSection = () => {
       <Box>
         <Text
           variant={TextVariant.bodyMdMedium}
-          style={{ marginBottom: '10px' }}
+          marginBottom={2}
         >
           {t('enableSmartContractAccount')}
         </Text>

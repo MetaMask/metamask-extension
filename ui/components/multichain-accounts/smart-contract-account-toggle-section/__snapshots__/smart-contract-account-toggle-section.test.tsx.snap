@@ -10,8 +10,7 @@ exports[`SmartContractAccountToggleSection Disabled State Handling disables all 
       class="mm-box"
     >
       <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
-        style="margin-bottom: 10px;"
+        class="mm-box mm-text mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--color-text-default"
       >
         Enable smart contract account
       </p>
@@ -152,8 +151,7 @@ exports[`SmartContractAccountToggleSection Learn More Button opens Zendesk artic
       class="mm-box"
     >
       <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
-        style="margin-bottom: 10px;"
+        class="mm-box mm-text mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--color-text-default"
       >
         Enable smart contract account
       </p>
@@ -193,8 +191,7 @@ exports[`SmartContractAccountToggleSection Loading State shows loading spinner w
       class="mm-box"
     >
       <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
-        style="margin-bottom: 10px;"
+        class="mm-box mm-text mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--color-text-default"
       >
         Enable smart contract account
       </p>
@@ -275,8 +272,7 @@ exports[`SmartContractAccountToggleSection Network Integration displays toggle f
       class="mm-box"
     >
       <p
-        class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
-        style="margin-bottom: 10px;"
+        class="mm-box mm-text mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--color-text-default"
       >
         Enable smart contract account
       </p>
