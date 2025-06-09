@@ -186,23 +186,23 @@ async function getAlternateGasFeesCapability(
 
   const updatedBatchSupport = batchSupport.map((batchSupport, index) => ({
     ...batchSupport,
-    isRelaySupported: relaySupportedChains[index],
+    relaySupportedForChain: relaySupportedChains[index],
   }));
 
   return chainIds.reduce<GetCapabilitiesResult>((acc, chainId) => {
     const chainBatchSupport = (updatedBatchSupport.find(
       ({ chainId: batchChainId }) => batchChainId === chainId,
     ) ?? {}) as IsAtomicBatchSupportedResultEntry & {
-      isRelaySupported: boolean;
+      relaySupportedForChain: boolean;
     };
 
-    const { isSupported = false, isRelaySupported } = chainBatchSupport;
+    const { isSupported = false, relaySupportedForChain } = chainBatchSupport;
 
     const isSmartTransaction = getIsSmartTransaction(chainId);
 
     const alternateGasFees =
       simulationEnabled &&
-      (isSmartTransaction || (isSupported && isRelaySupported));
+      (isSmartTransaction || (isSupported && relaySupportedForChain));
 
     if (alternateGasFees) {
       acc[chainId as Hex] = {
