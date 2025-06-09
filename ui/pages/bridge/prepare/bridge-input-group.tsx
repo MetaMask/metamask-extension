@@ -117,11 +117,11 @@ export const BridgeInputGroup = ({
     amountFieldProps?.readOnly || amountFieldProps?.disabled;
 
   useEffect(() => {
-    if (!amountFieldProps?.disabled && inputRef.current) {
+    if (!isAmountReadOnly && inputRef.current) {
       inputRef.current.value = amountFieldProps?.value?.toString() ?? '';
       inputRef.current.focus();
     }
-  }, [amountFieldProps?.value, amountFieldProps?.disabled, token]);
+  }, [amountFieldProps?.value, isAmountReadOnly, token]);
 
   useEffect(() => {
     return () => {
