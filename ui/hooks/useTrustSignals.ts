@@ -47,8 +47,7 @@ export function useTrustSignals(
     getAddressSecurityAlertResponse(state, value),
   );
 
-  // Only show trust signals for Ethereum addresses
-  if (type !== NameType.ETHEREUM_ADDRESS || !securityAlertResponse) {
+  if (!securityAlertResponse) {
     return { state: null };
   }
 
