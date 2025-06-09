@@ -1,7 +1,6 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { SnapId } from '@metamask/snaps-sdk';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { KeyringObject } from '@metamask/keyring-controller';
 import {
   getSelectedAccountTokensAcrossChains,
   getCrossChainMetaMaskCachedBalances,
@@ -26,10 +25,10 @@ type TokensByChainId = {
   }[];
 };
 
-const isPrimaryHdAndFirstPartySnapAccount = createDeepEqualSelector(
+const isPrimaryHdOrFirstPartySnapAccount = createDeepEqualSelector(
   (_state, account) => account,
   getMetaMaskHdKeyrings,
-  (account, hdKeyrings: KeyringObject[]) => {
+  (account, hdKeyrings) => {
     const [primaryKeyring] = hdKeyrings;
 
     // There are no keyrings during onboarding.
@@ -45,11 +44,7 @@ const isPrimaryHdAndFirstPartySnapAccount = createDeepEqualSelector(
       return true;
     }
 
-    if (
-      account.metadata.snap &&
-      isMultichainWalletSnap(account.metadata.snap.id as SnapId) &&
-      account.options?.entropySource === primaryKeyring.metadata.id
-    ) {
+    if (isMultichainWalletSnap(account.metadata.snap?.id as SnapId)) {
       return true;
     }
 
@@ -63,7 +58,7 @@ export const getShouldShowSeedPhraseReminder = createDeepEqualSelector(
   getSelectedAccountTokensAcrossChains,
   getCrossChainMetaMaskCachedBalances,
   (state, account) => getMultichainAggregatedBalance(state, account),
-  (state, account) => isPrimaryHdAndFirstPartySnapAccount(state, account),
+  (state, account) => isPrimaryHdOrFirstPartySnapAccount(state, account),
   (
     state,
     account: InternalAccount,
