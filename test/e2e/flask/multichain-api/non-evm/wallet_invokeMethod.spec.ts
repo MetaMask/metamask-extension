@@ -17,6 +17,7 @@ describe('Multichain API - Non EVM', function () {
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
+            mockSendTransaction: true,
           },
           async (driver, _, extensionId) => {
             const testDapp = new TestDappMultichain(driver);
@@ -74,6 +75,7 @@ describe('Multichain API - Non EVM', function () {
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
+            mockSendTransaction: true,
           },
           async (driver, _, extensionId) => {
             const testDapp = new TestDappMultichain(driver);
@@ -145,7 +147,7 @@ describe('Multichain API - Non EVM', function () {
 
             assert.strictEqual(
               parsedTransactionResult.signature,
-              '4L78wZXotGUoiJfDoHFKo1CYRqKogqvLrsQRQ2EsMtZ3454Ty1gtMMgQMN8F4XtnYKfHT3bjCJAqhuJz5eMWLs7R',
+              'TE42WbnNvycJGiEVxVV7gjZ3wnCHvZAWFcA2b8rnvp2SZQoQQwirTbTfNBiZWHnzzkg38AayUob29w7eFD3SVGj',
               'transaction result signature should be defined',
             );
           },
