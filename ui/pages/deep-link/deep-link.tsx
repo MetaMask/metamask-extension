@@ -52,7 +52,7 @@ export const DeepLink = () => {
     (state: MetaMaskReduxState) =>
       getPreferences(state).skipDeepLinkInterstitial,
   );
-  // const history = useHistory();
+
   const [route, setRoute] = useState<null | {
     parsed: ParsedDeepLink;
     href: string;

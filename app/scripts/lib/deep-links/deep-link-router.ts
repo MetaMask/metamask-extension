@@ -1,4 +1,5 @@
 import browser from 'webextension-polyfill';
+import log from 'loglevel';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -6,7 +7,6 @@ import { DEEP_LINK_ROUTE } from '../../../../ui/helpers/constants/routes';
 import { parse } from '../../../../shared/lib/deep-links/parse';
 import { DEEP_LINK_HOST } from '../../../../shared/lib/deep-links/constants';
 import MetamaskController from '../../metamask-controller';
-import log from 'loglevel';
 
 const { sentry } = global;
 
