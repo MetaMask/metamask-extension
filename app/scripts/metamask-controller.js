@@ -2074,6 +2074,13 @@ export default class MetamaskController extends EventEmitter {
           isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
             this.txController,
           ),
+          isSimulationEnabled: () =>
+            this.preferencesController.state.useTransactionSimulations,
+          getIsSmartTransaction: (chainId) =>
+            getIsSmartTransaction(this._getMetaMaskState(), chainId),
+          isRelaySupported,
+          getSupportedNetworks: () =>
+            this.networkController.state.networkConfigurationsByChainId,
         },
         this.controllerMessenger,
       ),

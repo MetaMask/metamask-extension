@@ -1,4 +1,7 @@
-import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
+import {
+  NetworkConfiguration,
+  NetworkControllerGetNetworkClientByIdAction,
+} from '@metamask/network-controller';
 import { JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import {
   IsAtomicBatchSupportedResultEntry,
@@ -163,29 +166,64 @@ export async function getCapabilities(
   hooks: {
     getDismissSmartAccountSuggestionEnabled: () => boolean;
     isAtomicBatchSupported: TransactionController['isAtomicBatchSupported'];
+    isSimulationEnabled: () => boolean;
+    getIsSmartTransaction: (chainId: Hex) => boolean;
+    isRelaySupported: (chainId: Hex) => Promise<boolean>;
+    getSupportedNetworks: () => NetworkConfiguration[];
   },
   messenger: EIP5792Messenger,
   address: Hex,
   chainIds: Hex[] | undefined,
 ) {
-  const { getDismissSmartAccountSuggestionEnabled, isAtomicBatchSupported } =
-    hooks;
+  const {
+    getDismissSmartAccountSuggestionEnabled,
+    isAtomicBatchSupported,
+    isSimulationEnabled,
+    getIsSmartTransaction,
+    isRelaySupported,
+    getSupportedNetworks,
+  } = hooks;
 
-  const chainIdsNormalized = chainIds?.map(
+  let chainIdsNormalized = chainIds?.map(
     (chainId) => chainId.toLowerCase() as Hex,
   );
 
-  const batchSupport = await isAtomicBatchSupported({
+  if (!chainIdsNormalized?.length) {
+    chainIdsNormalized = Object.keys(getSupportedNetworks()) as Hex[];
+  }
+
+  const simulationEnabled = isSimulationEnabled();
+
+  let batchSupport = await isAtomicBatchSupported({
     address,
     chainIds: chainIdsNormalized,
   });
 
-  return batchSupport.reduce<GetCapabilitiesResult>(
-    (acc, chainBatchSupport) => {
-      const { chainId } = chainBatchSupport;
+  const relaySupportedChains = await Promise.all(
+    batchSupport
+      .map(({ chainId }) => chainId)
+      .map((chainId) => isRelaySupported(chainId)),
+  );
 
-      const { delegationAddress, isSupported, upgradeContractAddress } =
-        chainBatchSupport;
+  batchSupport = batchSupport.map((batchSupport, index) => ({
+    ...batchSupport,
+    isRelaySupported: relaySupportedChains[index],
+  }));
+
+  return chainIdsNormalized.reduce<GetCapabilitiesResult>(
+    (acc, chainId, index) => {
+      const chainBatchSupport = (batchSupport.find(
+        ({ chainId: batchChainId }) => batchChainId === chainId,
+      ) ?? {}) as IsAtomicBatchSupportedResultEntry & {
+        isRelaySupported: boolean;
+      };
+
+      const {
+        delegationAddress,
+        isSupported = false,
+        upgradeContractAddress,
+        isRelaySupported,
+      } = chainBatchSupport;
 
       const isUpgradeDisabled = getDismissSmartAccountSuggestionEnabled();
       let isSupportedAccount = false;
@@ -203,6 +241,16 @@ export async function getCapabilities(
         !delegationAddress &&
         isSupportedAccount;
 
+      const isSmartTransaction = getIsSmartTransaction(chainId);
+
+      acc[chainId as Hex] = {
+        alternateGasFees: {
+          supported:
+            simulationEnabled &&
+            (isSmartTransaction || (isSupported && isRelaySupported)),
+        },
+      };
+
       if (!isSupported && !canUpgrade) {
         return acc;
       }
@@ -215,6 +263,7 @@ export async function getCapabilities(
         atomic: {
           status,
         },
+        ...acc[chainId as Hex],
       };
 
       return acc;
