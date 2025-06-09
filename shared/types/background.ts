@@ -119,6 +119,7 @@ export type ControllerStatePropertiesEnumerated = {
   nftsDropdownState: AppStateControllerState['nftsDropdownState'];
   surveyLinkLastClickedOrClosed: AppStateControllerState['surveyLinkLastClickedOrClosed'];
   signatureSecurityAlertResponses: AppStateControllerState['signatureSecurityAlertResponses'];
+  addressSecurityAlertResponses: AppStateControllerState['addressSecurityAlertResponses'];
   switchedNetworkDetails: AppStateControllerState['switchedNetworkDetails'];
   switchedNetworkNeverShowMessage: AppStateControllerState['switchedNetworkNeverShowMessage'];
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];

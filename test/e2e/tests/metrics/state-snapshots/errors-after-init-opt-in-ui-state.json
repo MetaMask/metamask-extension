@@ -147,6 +147,7 @@
     "qrHardware": {},
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
+    "addressSecurityAlertResponses": "object",
     "switchedNetworkDetails": null,
     "currentExtensionPopupId": "number",
     "termsOfUseLastAgreed": "number",
