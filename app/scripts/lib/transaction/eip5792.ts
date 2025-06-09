@@ -1,5 +1,4 @@
 import {
-  NetworkConfiguration,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
