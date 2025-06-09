@@ -1,8 +1,7 @@
 const path = require('path');
-const { version: reactVersion } = require('react/package.json');
 
 const ReactCompilerConfig = {
-  target: reactVersion,
+  target: '17',
   sources: (filename) => {
     return filename.indexOf('ui/') !== -1;
   },
