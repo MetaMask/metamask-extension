@@ -18,7 +18,7 @@ import { omit } from 'lodash';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../app/scripts/lib/util';
-import { PATH_NAME_MAP, PATH_NAME_KEYS } from '../helpers/constants/routes';
+import { PATH_NAME_MAP, getPaths } from '../helpers/constants/routes';
 import { MetaMetricsContextProp } from '../../shared/constants/metametrics';
 import { useSegmentContext } from '../hooks/useSegmentContext';
 
@@ -106,7 +106,7 @@ export function MetaMetricsProvider({ children }) {
   useEffect(() => {
     const environmentType = getEnvironmentType();
     const match = matchPath(location.pathname, {
-      path: PATH_NAME_KEYS,
+      path: getPaths(),
       exact: true,
       strict: true,
     });
