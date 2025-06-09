@@ -1,5 +1,3 @@
-import { SignatureRequest } from '@metamask/signature-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { SecurityAlertSource } from '../../../../shared/constants/security-provider';
 
 export type SecurityAlertResponse = {
@@ -19,4 +17,4 @@ export type UpdateSecurityAlertResponse = (
   method: string,
   securityAlertId: string,
   securityAlertResponse: SecurityAlertResponse,
-) => Promise<TransactionMeta | SignatureRequest>;
+) => Promise<void>;

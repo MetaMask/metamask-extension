@@ -1,22 +1,13 @@
 import { PPOMController } from '@metamask/ppom-validator';
 import {
   TransactionController,
-  TransactionControllerUnapprovedTransactionAddedEvent,
-  TransactionMeta,
   TransactionParams,
   normalizeTransactionParams,
 } from '@metamask/transaction-controller';
-import { Hex, JsonRpcRequest, createProjectLogger } from '@metamask/utils';
+import { Hex, JsonRpcRequest } from '@metamask/utils';
 import { v4 as uuid } from 'uuid';
 import { PPOM } from '@blockaid/ppom_release';
-import {
-  SignatureController,
-  SignatureControllerState,
-  SignatureRequest,
-  SignatureStateChange,
-} from '@metamask/signature-controller';
-import { Messenger } from '@metamask/base-controller';
-import { cloneDeep } from 'lodash';
+import { SignatureController } from '@metamask/signature-controller';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -27,7 +18,6 @@ import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { AppStateController } from '../../controllers/app-state-controller';
 import { sanitizeMessageRecursively } from '../../../../shared/modules/typed-signature';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SecurityAlertResponse, UpdateSecurityAlertResponse } from './types';
 import {
   isSecurityAlertsAPIEnabled,
@@ -35,9 +25,11 @@ import {
   validateWithSecurityAlertsAPI,
 } from './security-alerts-api';
 
-const log = createProjectLogger('ppom-util');
-
 const { sentry } = global;
+
+const METHOD_SEND_TRANSACTION = 'eth_sendTransaction';
+export const METHOD_SIGN_TYPED_DATA_V3 = 'eth_signTypedData_v3';
+export const METHOD_SIGN_TYPED_DATA_V4 = 'eth_signTypedData_v4';
 
 const SECURITY_ALERT_RESPONSE_ERROR = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -46,15 +38,10 @@ const SECURITY_ALERT_RESPONSE_ERROR = {
   reason: BlockaidReason.errored,
 };
 
-type PPOMRequest = JsonRpcRequest & {
-  delegationMock?: Hex;
-  origin?: string;
+type PPOMRequest = Omit<JsonRpcRequest, 'method' | 'params'> & {
+  method: typeof METHOD_SEND_TRANSACTION;
+  params: [TransactionParams];
 };
-
-export type PPOMMessenger = Messenger<
-  never,
-  SignatureStateChange | TransactionControllerUnapprovedTransactionAddedEvent
->;
 
 export async function validateRequestWithPPOM({
   ppomController,
@@ -64,21 +51,19 @@ export async function validateRequestWithPPOM({
   updateSecurityAlertResponse: updateSecurityResponse,
 }: {
   ppomController: PPOMController;
-  request: PPOMRequest;
+  request: JsonRpcRequest;
   securityAlertId: string;
   chainId: Hex;
   updateSecurityAlertResponse: UpdateSecurityAlertResponse;
 }) {
   try {
-    const controllerObject = await updateSecurityResponse(
+    await updateSecurityResponse(
       request.method,
       securityAlertId,
       LOADING_SECURITY_ALERT_RESPONSE,
     );
 
-    const normalizedRequest = normalizePPOMRequest(request, controllerObject);
-
-    log('Normalized request', normalizedRequest);
+    const normalizedRequest = normalizePPOMRequest(request);
 
     const ppomResponse = isSecurityAlertsAPIEnabled()
       ? await validateWithAPI(ppomController, chainId, normalizedRequest)
@@ -87,11 +72,8 @@ export async function validateRequestWithPPOM({
           normalizedRequest,
           chainId,
         );
-
     await updateSecurityResponse(request.method, securityAlertId, ppomResponse);
   } catch (error: unknown) {
-    log('Error', error);
-
     await updateSecurityResponse(
       request.method,
       securityAlertId,
@@ -106,7 +88,6 @@ export function generateSecurityAlertId(): string {
 
 export async function updateSecurityAlertResponse({
   appStateController,
-  messenger,
   method,
   securityAlertId,
   securityAlertResponse,
@@ -114,42 +95,32 @@ export async function updateSecurityAlertResponse({
   transactionController,
 }: {
   appStateController: AppStateController;
-  messenger: PPOMMessenger;
   method: string;
   securityAlertId: string;
   securityAlertResponse: SecurityAlertResponse;
   signatureController: SignatureController;
   transactionController: TransactionController;
-}): Promise<TransactionMeta | SignatureRequest> {
+}) {
   const isSignatureRequest = SIGNING_METHODS.includes(method);
 
-  if (isSignatureRequest) {
-    const signatureRequest = await waitForSignatureRequest(
-      signatureController,
-      securityAlertId,
-      messenger,
-    );
+  const confirmation = await findConfirmationBySecurityAlertId(
+    securityAlertId,
+    method,
+    signatureController,
+    transactionController,
+  );
 
+  if (isSignatureRequest) {
     appStateController.addSignatureSecurityAlertResponse({
       ...securityAlertResponse,
       securityAlertId,
     });
-
-    return signatureRequest;
+  } else {
+    transactionController.updateSecurityAlertResponse(confirmation.id, {
+      ...securityAlertResponse,
+      securityAlertId,
+    } as SecurityAlertResponse);
   }
-
-  const transactionMeta = await waitForTransactionMetadata(
-    transactionController,
-    securityAlertId,
-    messenger,
-  );
-
-  transactionController.updateSecurityAlertResponse(transactionMeta.id, {
-    ...securityAlertResponse,
-    securityAlertId,
-  } as SecurityAlertResponse);
-
-  return transactionMeta;
 }
 
 export function handlePPOMError(
@@ -173,57 +144,18 @@ export function handlePPOMError(
 }
 
 function normalizePPOMRequest(
-  request: PPOMRequest,
-  controllerObject: TransactionMeta | SignatureRequest,
-): PPOMRequest {
-  let normalizedRequest = cloneDeep(request);
-
-  normalizedRequest = normalizeSignatureRequest(normalizedRequest);
-
-  normalizedRequest = normalizeTransactionRequest(
-    normalizedRequest,
-    controllerObject as TransactionMeta,
-  );
-
-  const { delegationMock, id, jsonrpc, method, origin, params } =
-    normalizedRequest;
-
-  return {
-    delegationMock,
-    id,
-    jsonrpc,
-    method,
-    origin,
-    params,
-  };
-}
-
-function normalizeTransactionRequest(
-  request: PPOMRequest,
-  transactionMeta: TransactionMeta,
-): PPOMRequest {
-  if (request.method !== MESSAGE_TYPE.ETH_SEND_TRANSACTION) {
-    return request;
+  request: PPOMRequest | JsonRpcRequest,
+): PPOMRequest | JsonRpcRequest {
+  if (
+    !((req): req is PPOMRequest => req.method === METHOD_SEND_TRANSACTION)(
+      request,
+    )
+  ) {
+    return sanitizeRequest(request);
   }
 
-  if (!Array.isArray(request.params) || !request.params[0]) {
-    return request;
-  }
-
-  const txParams = request.params[0] as TransactionParams;
-
-  txParams.gas = transactionMeta.txParams.gas;
-  txParams.gasPrice =
-    transactionMeta.txParams.maxFeePerGas ?? transactionMeta.txParams.gasPrice;
-
-  delete txParams.gasLimit;
-  delete txParams.maxFeePerGas;
-  delete txParams.maxPriorityFeePerGas;
-  delete txParams.type;
-
-  const normalizedParams = normalizeTransactionParams(txParams);
-
-  log('Normalized transaction params', normalizedParams);
+  const transactionParams = request.params[0];
+  const normalizedParams = normalizeTransactionParams(transactionParams);
 
   return {
     ...request,
@@ -231,37 +163,36 @@ function normalizeTransactionRequest(
   };
 }
 
-function normalizeSignatureRequest(request: PPOMRequest): PPOMRequest {
+function sanitizeRequest(request: JsonRpcRequest): JsonRpcRequest {
   // This is a temporary fix to prevent a PPOM bypass
   if (
-    request.method !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3 &&
-    request.method !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4
+    request.method === METHOD_SIGN_TYPED_DATA_V4 ||
+    request.method === METHOD_SIGN_TYPED_DATA_V3
   ) {
-    return request;
+    if (Array.isArray(request.params) && request.params[1]) {
+      const typedDataMessage = parseTypedDataMessage(
+        request.params[1].toString(),
+      );
+
+      const sanitizedMessageRecursively = sanitizeMessageRecursively(
+        typedDataMessage.message,
+        typedDataMessage.types,
+        typedDataMessage.primaryType,
+      );
+
+      return {
+        ...request,
+        params: [
+          request.params[0],
+          JSON.stringify({
+            ...typedDataMessage,
+            message: sanitizedMessageRecursively,
+          }),
+        ],
+      };
+    }
   }
-
-  if (!Array.isArray(request.params) || !request.params[1]) {
-    return request;
-  }
-
-  const typedDataMessage = parseTypedDataMessage(request.params[1].toString());
-
-  const sanitizedMessageRecursively = sanitizeMessageRecursively(
-    typedDataMessage.message,
-    typedDataMessage.types,
-    typedDataMessage.primaryType,
-  );
-
-  return {
-    ...request,
-    params: [
-      request.params[0],
-      JSON.stringify({
-        ...typedDataMessage,
-        message: sanitizedMessageRecursively,
-      }),
-    ],
-  };
+  return request;
 }
 
 function getErrorMessage(error: unknown) {
@@ -280,9 +211,44 @@ function getErrorData(error: unknown) {
   return JSON.stringify(error);
 }
 
+async function findConfirmationBySecurityAlertId(
+  securityAlertId: string,
+  method: string,
+  signatureController: SignatureController,
+  transactionController: TransactionController,
+) {
+  const isSignatureRequest = SIGNING_METHODS.includes(method);
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    let confirmation;
+
+    if (isSignatureRequest) {
+      confirmation = Object.values(signatureController.messages).find(
+        (message) =>
+          message.securityAlertResponse?.securityAlertId === securityAlertId,
+      );
+    } else {
+      confirmation = transactionController.state.transactions.find(
+        (meta) =>
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (meta.securityAlertResponse as any)?.securityAlertId ===
+          securityAlertId,
+      );
+    }
+
+    if (confirmation) {
+      return confirmation;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+}
+
 async function validateWithController(
   ppomController: PPOMController,
-  request: SecurityAlertsAPIRequest | PPOMRequest,
+  request: SecurityAlertsAPIRequest | JsonRpcRequest,
   chainId: string,
 ): Promise<SecurityAlertResponse> {
   try {
@@ -307,7 +273,7 @@ async function validateWithController(
 async function validateWithAPI(
   ppomController: PPOMController,
   chainId: string,
-  request: SecurityAlertsAPIRequest | PPOMRequest,
+  request: SecurityAlertsAPIRequest | JsonRpcRequest,
 ): Promise<SecurityAlertResponse> {
   try {
     const response = await validateWithSecurityAlertsAPI(chainId, request);
@@ -320,84 +286,4 @@ async function validateWithAPI(
     handlePPOMError(error, `Error validating request with security alerts API`);
     return await validateWithController(ppomController, request, chainId);
   }
-}
-
-async function waitForTransactionMetadata(
-  transactionController: TransactionController,
-  securityAlertId: string,
-  messenger: PPOMMessenger,
-): Promise<TransactionMeta> {
-  const transactionFilter = (meta: TransactionMeta) =>
-    meta.securityAlertResponse?.securityAlertId === securityAlertId;
-
-  return new Promise((resolve) => {
-    const transactionMeta =
-      transactionController.state.transactions.find(transactionFilter);
-
-    if (transactionMeta) {
-      resolve(transactionMeta);
-      return;
-    }
-
-    const callback = (event: TransactionMeta) => {
-      if (!transactionFilter(event)) {
-        return;
-      }
-
-      log('Found transaction metadata', event);
-
-      messenger.unsubscribe(
-        'TransactionController:unapprovedTransactionAdded',
-        callback,
-      );
-
-      resolve(event);
-    };
-
-    log('Waiting for transaction metadata', securityAlertId);
-
-    messenger.subscribe(
-      'TransactionController:unapprovedTransactionAdded',
-      callback,
-    );
-  });
-}
-
-async function waitForSignatureRequest(
-  signatureController: SignatureController,
-  securityAlertId: string,
-  messenger: PPOMMessenger,
-): Promise<SignatureRequest> {
-  const signatureFilter = (state: SignatureControllerState) =>
-    Object.values(state.signatureRequests).find(
-      (request) =>
-        request.securityAlertResponse?.securityAlertId === securityAlertId,
-    );
-
-  return new Promise((resolve) => {
-    const signatureRequest = signatureFilter(signatureController.state);
-
-    if (signatureRequest) {
-      resolve(signatureRequest);
-      return;
-    }
-
-    const callback = (state: SignatureControllerState) => {
-      const request = signatureFilter(state);
-
-      if (!request) {
-        return;
-      }
-
-      log('Found signature request', request);
-
-      messenger.unsubscribe('SignatureController:stateChange', callback);
-
-      resolve(request);
-    };
-
-    log('Waiting for signature request', securityAlertId);
-
-    messenger.subscribe('SignatureController:stateChange', callback);
-  });
 }

@@ -28,9 +28,11 @@ import {
   formatAmount,
   formatAmountMaxPrecision,
 } from '../../../../../simulation-details/formatAmount';
-import { DAI_CONTRACT_ADDRESS } from '../../../shared/constants';
+import {
+  DAI_CONTRACT_ADDRESS,
+  TOKEN_VALUE_UNLIMITED_THRESHOLD,
+} from '../../../shared/constants';
 import { getAmountColors } from '../../../utils';
-import { isSpendingCapUnlimited } from '../../../approve/hooks/use-approve-token-simulation';
 
 type PermitSimulationValueDisplayParams = {
   /** ID of the associated chain. */
@@ -116,10 +118,8 @@ const PermitSimulationValueDisplay: React.FC<
 
       const tokenAmount = calcTokenAmount(value, tokenDecimals);
 
-      const showUnlimitedDueToPermitValue = isSpendingCapUnlimited(
-        value,
-        tokenDecimals,
-      );
+      const showUnlimitedDueToPermitValue =
+        Number(value) > TOKEN_VALUE_UNLIMITED_THRESHOLD;
 
       return {
         tokenValue: formatAmount('en-US', tokenAmount),

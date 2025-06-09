@@ -69,37 +69,6 @@ describe('BalanceChangeList', () => {
         {},
       );
     });
-
-    it('does not render TotalFiatDisplay when there is an unlimited approval in balance changes', () => {
-      const balanceChangesWithUnlimitedApproval = [
-        { asset: { address: '0x123' }, fiatAmount: 100 },
-        {
-          asset: { address: '0x456' },
-          fiatAmount: 200,
-          isUnlimitedApproval: true,
-        },
-      ] as unknown as BalanceChange[];
-
-      render(
-        <BalanceChangeList
-          heading={HEADING_MOCK}
-          balanceChanges={balanceChangesWithUnlimitedApproval}
-        />,
-      );
-
-      expect(TotalFiatDisplay).not.toHaveBeenCalled();
-
-      expect(BalanceChangeRow).toHaveBeenCalledTimes(
-        balanceChangesWithUnlimitedApproval.length,
-      );
-      expect(BalanceChangeRow).toHaveBeenCalledWith(
-        expect.objectContaining({
-          balanceChange: expect.objectContaining({ isUnlimitedApproval: true }),
-          showFiat: false,
-        }),
-        {},
-      );
-    });
   });
 
   describe('single balance change', () => {
@@ -138,28 +107,6 @@ describe('BalanceChangeList', () => {
       );
 
       expect(TotalFiatDisplay).not.toHaveBeenCalled();
-    });
-
-    it('does not show fiat when balance change has unlimited approval', () => {
-      const balanceChangeWithUnlimitedApproval = [
-        { asset: { address: '0x123' }, isUnlimitedApproval: true },
-      ] as unknown as BalanceChange[];
-
-      render(
-        <BalanceChangeList
-          heading={HEADING_MOCK}
-          balanceChanges={balanceChangeWithUnlimitedApproval}
-        />,
-      );
-
-      expect(BalanceChangeRow).toHaveBeenCalledWith(
-        expect.objectContaining({
-          label: HEADING_MOCK,
-          balanceChange: expect.objectContaining({ isUnlimitedApproval: true }),
-          showFiat: false,
-        }),
-        {},
-      );
     });
   });
 });
