@@ -4,6 +4,8 @@ import { OperationSafener } from './operation-safener';
 import { PersistenceManager } from './stores/persistence-manager';
 import { MetaMaskStateType } from './stores/base-store';
 
+const { sentry } = global;
+
 /**
  * Creates a request-safe reload mechanism for the given persistence manager.
  *
