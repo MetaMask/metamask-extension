@@ -49,11 +49,13 @@ export type PreviouslyOwnedCollections = {
 type AssetPickerModalNftTabProps = {
   searchQuery: string;
   onClose: () => void;
+  renderSearch: () => void;
 };
 
 export function AssetPickerModalNftTab({
   searchQuery,
   onClose,
+  renderSearch,
 }: AssetPickerModalNftTabProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -132,6 +134,7 @@ export function AssetPickerModalNftTab({
 
   return (
     <Box className="modal-tab__main-view">
+      {renderSearch()}
       {hasAnyNfts ? (
         <>
           <Box>
