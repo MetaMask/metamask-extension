@@ -3,6 +3,10 @@ import FixtureBuilder from '../../fixture-builder';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import TokenList from '../../page-objects/pages/token-list';
+import ConfirmAlertModal from '../../page-objects/pages/dialog/confirm-alert';
+import { WALLET_ADDRESS } from '../confirmations/signatures/signature-helpers';
 import { Driver } from '../../webdriver/driver';
 
 // Network configuration type
@@ -29,23 +33,16 @@ const networkConfigs: NetworkConfig[] = [
   },
 ];
 
-// Helper function to verify network display
-const verifyNetworkDisplay = async (driver: Driver, networkName: string) => {
-  await driver.waitForSelector({
-    css: 'p',
-    text: networkName,
-  });
-};
-
 // Helper function to perform Dapp action and verify
 const performDappActionAndVerify = async (
   driver: Driver,
   action: () => Promise<void>,
-  verify: (driver: Driver) => Promise<void>,
+  networkName: string,
 ) => {
   await action();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await verify(driver);
+  const confirmAlertModal = new ConfirmAlertModal(driver);
+  await confirmAlertModal.verifyNetworkDisplay(networkName);
 };
 
 // Generate test cases for each network
@@ -63,25 +60,18 @@ networkConfigs.forEach((config) => {
         },
         async ({ driver }: { driver: Driver }) => {
           await loginWithBalanceValidation(driver);
+
+          const headerNavbar = new HeaderNavbar(driver);
+          const tokenList = new TokenList(driver);
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
 
           // Verify network is selected
-          await driver.waitForSelector({
-            css: 'p',
-            text: config.name,
-          });
+          await headerNavbar.check_currentSelectedNetwork(config.name);
 
           // Verify token is displayed
-          await driver.waitForSelector({
-            css: 'span',
-            text: config.tokenSymbol,
-          });
-          await driver.waitForSelector({
-            css: '[data-testid="multichain-token-list-item-token-name"]',
-            text: config.tokenSymbol,
-          });
+          await tokenList.check_tokenName(config.tokenSymbol);
 
           // Open the test dapp and verify balance
           const testDapp = new TestDapp(driver);
@@ -90,50 +80,48 @@ networkConfigs.forEach((config) => {
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
           // Verify dapp can access the account
-          await testDapp.check_getAccountsResult(
-            '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-          );
+          await testDapp.check_getAccountsResult(WALLET_ADDRESS.toLowerCase());
 
           // Test various Dapp functionalities
           await performDappActionAndVerify(
             driver,
             () => testDapp.clickSimpleSendButton(),
-            (d) => verifyNetworkDisplay(d, config.name),
+            config.name,
           );
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
           await performDappActionAndVerify(
             driver,
             () => testDapp.findAndClickCreateToken(),
-            (d) => verifyNetworkDisplay(d, config.name),
+            config.name,
           );
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
           await performDappActionAndVerify(
             driver,
             () => testDapp.clickERC721DeployButton(),
-            (d) => verifyNetworkDisplay(d, config.name),
+            config.name,
           );
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
           await performDappActionAndVerify(
             driver,
             () => testDapp.clickPersonalSign(),
-            (d) => verifyNetworkDisplay(d, config.name),
+            config.name,
           );
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
           await performDappActionAndVerify(
             driver,
             () => testDapp.clickSignTypedData(),
-            (d) => verifyNetworkDisplay(d, config.name),
+            config.name,
           );
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
           await performDappActionAndVerify(
             driver,
             () => testDapp.clickSignTypedDatav4(),
-            (d) => verifyNetworkDisplay(d, config.name),
+            config.name,
           );
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         },
