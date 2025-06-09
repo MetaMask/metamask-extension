@@ -159,14 +159,14 @@ export const DeepLink = () => {
           )}
         </Box>
         {error ? (
-          <Box className="error" test-id="deep-link-error">
+          <Box className="error" data-testid="deep-link-error">
             <Text>{error}</Text>
           </Box>
         ) : (
           ''
         )}
         {route ? (
-          <Box padding={4} test-id="deep-link-route">
+          <Box padding={4} data-testid="deep-link-route">
             <Box margin={4}>
               <Text margin={4}>
                 A previous action wants to navigate to a page within the
@@ -190,7 +190,7 @@ export const DeepLink = () => {
               >
                 <Checkbox
                   id="dont-remind-me-checkbox"
-                  data-testid="deep-link-interstitial-checkbox"
+                  data-testid="deep-link-checkbox"
                   isChecked={hasChecked}
                   onChange={onRemindMeStateChanged}
                 ></Checkbox>
@@ -216,7 +216,7 @@ export const DeepLink = () => {
                 size={ButtonSize.Lg}
                 variant={ButtonVariant.Secondary}
                 onClick={onIntersticialDismissed}
-                data-testid="deep-link-interstitial-cancel-button"
+                data-testid="deep-link-cancel-button"
               >
                 {t('cancel')}
               </Button>
@@ -225,9 +225,9 @@ export const DeepLink = () => {
                 variant={ButtonVariant.Primary}
                 href={route.href}
                 size={ButtonSize.Lg}
-                data-testid="deep-link-interstitial-continue-button"
+                data-testid="deep-link-continue-button"
               >
-                {t(route.title) ?? route.title}
+                {route.title}
               </Button>
             </Box>
           </Box>

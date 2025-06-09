@@ -998,6 +998,19 @@ async function setupMocking(
       };
     });
 
+  // Deep Links
+  await server
+    .forGet(/^https?:\/\/link\.metamask\.io\/.*$/u)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: 'https://metamask.io',
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+        },
+      };
+    });
+
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested
    * during the current test suite.
