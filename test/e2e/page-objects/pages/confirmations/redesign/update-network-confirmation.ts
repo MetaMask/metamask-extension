@@ -42,7 +42,6 @@ class UpdateNetworkConfirmation {
 
   /**
    * Checks if the approve button is enabled on update network confirmation page.
-   *
    */
   async check_isApproveButtonEnabled(): Promise<boolean> {
     try {

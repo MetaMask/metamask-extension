@@ -51,7 +51,6 @@ class AddNetworkConfirmation {
 
   /**
    * Checks if the approve button is enabled on add network confirmation page.
-   *
    */
   async check_isApproveButtonEnabled(): Promise<boolean> {
     try {
