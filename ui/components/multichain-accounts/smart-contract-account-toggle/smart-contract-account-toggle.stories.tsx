@@ -2,6 +2,7 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Provider } from 'react-redux';
 import { SmartContractAccountToggle } from './smart-contract-account-toggle';
+import { SmartContractAccountToggleStory } from './smart-contract-account-toggle-story';
 import { EIP7702NetworkConfiguration } from '../../../pages/confirmations/hooks/useEIP7702Networks';
 import { Hex } from '@metamask/utils';
 import configureStore from '../../../store/store';
@@ -80,7 +81,8 @@ const meta: Meta<typeof SmartContractAccountToggle> = {
   parameters: {
     docs: {
       description: {
-        component: 'A toggle switch component for enabling/disabling smart contract account functionality on EIP-7702 compatible networks.',
+        component:
+          'A toggle switch component for enabling/disabling smart contract account functionality on EIP-7702 compatible networks.',
       },
     },
   },
@@ -113,6 +115,12 @@ export default meta;
 type Story = StoryObj<typeof SmartContractAccountToggle>;
 
 export const Default: Story = {
+  render: (args) => (
+    <SmartContractAccountToggleStory
+      networkConfig={args.networkConfig}
+      address={args.address}
+    />
+  ),
   args: {
     networkConfig: mockNetworkConfig,
     address: mockAddress,
@@ -120,7 +128,29 @@ export const Default: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Default state with smart contract account functionality disabled.',
+        story:
+          'Interactive version with working toggle functionality. Check the console for toggle actions.',
+      },
+    },
+  },
+};
+
+export const Disabled: Story = {
+  render: (args) => (
+    <SmartContractAccountToggleStory
+      networkConfig={args.networkConfig}
+      address={args.address}
+      disabled={true}
+    />
+  ),
+  args: {
+    networkConfig: mockNetworkConfig,
+    address: mockAddress,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Disabled state - toggle cannot be interacted with.',
       },
     },
   },
