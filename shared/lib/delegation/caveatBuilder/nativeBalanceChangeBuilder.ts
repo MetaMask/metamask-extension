@@ -20,12 +20,15 @@ export function nativeBalanceChangeBuilder(
     throw new Error('Invalid recipient: must be a valid address');
   }
 
-  if (amount < 0) {
+  if (typeof amount !== 'bigint' || amount < 0) {
     throw new Error('Invalid amount: must be a non-negative number');
   }
 
   const terms = bytesToHex(
-    encodePacked(['bool', 'address', 'uint256'], [enforceDecrease, recipient, amount]),
+    encodePacked(
+      ['bool', 'address', 'uint256'],
+      [enforceDecrease, recipient, amount],
+    ),
   );
 
   const {
