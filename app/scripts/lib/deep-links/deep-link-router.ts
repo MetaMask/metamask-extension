@@ -6,12 +6,13 @@ import { DEEP_LINK_ROUTE } from '../../../../ui/helpers/constants/routes';
 import { parse } from '../../../../shared/lib/deep-links/parse';
 import { DEEP_LINK_HOST } from '../../../../shared/lib/deep-links/constants';
 import MetamaskController from '../../metamask-controller';
+import log from 'loglevel';
 
 const { sentry } = global;
 
 export type Options = {
   getExtensionURL(route?: string | null, queryString?: string | null): string;
-  controller: MetamaskController;
+  getState: MetamaskController['getState'];
 };
 
 const slashRe = /^\//u;
@@ -19,19 +20,20 @@ const slashRe = /^\//u;
 export class DeepLinkRouter {
   private getExtensionURL: Options['getExtensionURL'];
 
-  private controller: MetamaskController;
+  private getState: Options['getState'];
 
-  constructor({ getExtensionURL, controller }: Options) {
+  constructor({ getExtensionURL, getState }: Options) {
     this.getExtensionURL = getExtensionURL;
-    this.controller = controller;
+    this.getState = getState;
   }
 
-  public async redirectTab(tabId: number, url: string) {
+  private async redirectTab(tabId: number, url: string) {
     try {
       return await browser.tabs.update(tabId, {
         url,
       });
     } catch (error) {
+      log.error('Error redirecting tab:', error);
       return sentry?.captureException(error);
     }
   }
@@ -48,8 +50,6 @@ export class DeepLinkRouter {
   };
 
   public install() {
-    console.log(DEEP_LINK_HOST, 'DeepLinkRouter install');
-
     browser.webRequest.onBeforeRequest.addListener(
       this.handleBeforeRequest,
       {
@@ -67,7 +67,7 @@ export class DeepLinkRouter {
     browser.webRequest.onBeforeRequest.removeListener(this.handleBeforeRequest);
   }
 
-  public async tryNavigateTo(
+  private async tryNavigateTo(
     tabId: number,
     urlStr: string,
   ): Promise<browser.WebRequest.BlockingResponse> {
@@ -80,7 +80,7 @@ export class DeepLinkRouter {
     let link: string;
 
     const skipDeepLinkInterstitial = Boolean(
-      this.controller.getState().preferences?.skipDeepLinkInterstitial,
+      this.getState().preferences?.skipDeepLinkInterstitial,
     );
 
     // only signed links get to skip the interstitial page
@@ -98,7 +98,7 @@ export class DeepLinkRouter {
         // UI always redirects it to the non-slashed version. So we just use the
         // non-slashed version here to skip that redirect step.
         DEEP_LINK_ROUTE.replace(slashRe, ''),
-        search.toString() || null,
+        search.toString(),
       );
     }
 

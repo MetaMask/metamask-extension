@@ -628,7 +628,7 @@ async function initialize(backup) {
 
   const deepLinkRouter = new DeepLinkRouter({
     getExtensionURL: platform.getExtensionURL,
-    controller,
+    getState: controller.getState.bind(controller),
   });
   deepLinkRouter.install();
 }
