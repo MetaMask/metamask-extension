@@ -676,7 +676,6 @@ export function AssetPickerModal({
                   onChange={(value) => {
                     // Cancel previous asset metadata fetch
                     abortControllerRef.current?.abort();
-                    debouncedSetSearchQuery.cancel();
                     setSearchQuery(value);
                   }}
                   autoFocus={autoFocus}
