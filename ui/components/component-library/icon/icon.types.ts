@@ -35,6 +35,7 @@ export enum IconName {
   Add = 'add',
   Ai = 'ai',
   AlternateEmail = 'alternate-email',
+  Apple = 'apple',
   Apps = 'apps',
   Arrow2Down = 'arrow-2-down',
   Arrow2Left = 'arrow-2-left',

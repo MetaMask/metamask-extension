@@ -8,14 +8,14 @@
 // It must be run first in case an error is thrown later during initialization.
 import './lib/setup-initial-state-hooks';
 
-import { finished, pipeline } from 'readable-stream';
-import debounce from 'debounce-stream';
+import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
-import { storeAsStream } from '@metamask/obs-store';
 import { isObject, hasProperty } from '@metamask/utils';
 import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+// Import to set up global `Promise.withResolvers` polyfill
+import '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 
 import {
@@ -67,7 +67,6 @@ import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
-import createStreamSink from './lib/createStreamSink';
 import NotificationManager, {
   NOTIFICATION_MANAGER_EVENTS,
 } from './lib/notification-manager';
@@ -76,11 +75,7 @@ import MetamaskController, {
 } from './metamask-controller';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import {
-  deferredPromise,
-  getPlatform,
-  shouldEmitDappViewedEvent,
-} from './lib/util';
+import { getPlatform, shouldEmitDappViewedEvent } from './lib/util';
 import { createOffscreen } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import { generateWalletState } from './fixtures/generate-wallet-state';
@@ -94,6 +89,7 @@ import {
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
+import { getRequestSafeReload } from './lib/safe-reload';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
@@ -167,35 +163,14 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
-if (!isManifestV3) {
-  /**
-   * `onInstalled` event handler.
-   *
-   * On MV3 builds we must listen for this event in `app-init`, otherwise we found that the listener
-   * is never called.
-   * There is no `app-init` file on MV2 builds, so we add a listener here instead.
-   *
-   * @param {import('webextension-polyfill').Runtime.OnInstalledDetailsType} details - Event details.
-   */
-  const onInstalledListener = (details) => {
-    if (details.reason === 'install') {
-      onInstall();
-      browser.runtime.onInstalled.removeListener(onInstalledListener);
-    }
-  };
-
-  browser.runtime.onInstalled.addListener(onInstalledListener);
-
-  // This condition is for when the `onInstalled` listener in `app-init` was called before
-  // `background.js` was loaded.
-} else if (globalThis.stateHooks.metamaskWasJustInstalled) {
-  onInstall();
-  // Delete just to clean up global namespace
-  delete globalThis.stateHooks.metamaskWasJustInstalled;
-  // This condition is for when `background.js` was loaded before the `onInstalled` listener was
-  // called.
+// In MV3 onInstalled must be installed in the entry file
+if (globalThis.stateHooks.onInstalledListener) {
+  globalThis.stateHooks.onInstalledListener.then(handleOnInstalled);
 } else {
-  globalThis.stateHooks.metamaskTriggerOnInstall = () => onInstall();
+  browser.runtime.onInstalled.addListener(function listener(details) {
+    browser.runtime.onInstalled.removeListener(listener);
+    handleOnInstalled(details);
+  });
 }
 
 /**
@@ -223,7 +198,7 @@ let rejectInitialization;
  * state of application initialization (or re-initialization).
  */
 function setGlobalInitializers() {
-  const deferred = deferredPromise();
+  const deferred = Promise.withResolvers();
   isInitialized = deferred.promise;
   resolveInitialization = deferred.resolve;
   rejectInitialization = deferred.reject;
@@ -626,6 +601,9 @@ async function initialize(backup) {
 
   const preinstalledSnaps = await loadPreinstalledSnaps();
 
+  const { update, requestSafeReload } =
+    getRequestSafeReload(persistenceManager);
+
   setupController(
     initState,
     initLangCode,
@@ -634,7 +612,10 @@ async function initialize(backup) {
     initData.meta,
     offscreenPromise,
     preinstalledSnaps,
+    requestSafeReload,
   );
+
+  controller.store.on('update', update);
 
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);
@@ -963,6 +944,7 @@ function trackAppOpened(environment) {
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
+ * @param {() => Promise<void>)} requestSafeReload - A function that requests a safe reload of the extension.
  */
 export function setupController(
   initState,
@@ -972,6 +954,7 @@ export function setupController(
   stateMetadata,
   offscreenPromise,
   preinstalledSnaps,
+  requestSafeReload,
 ) {
   //
   // MetaMask Controller
@@ -1000,6 +983,7 @@ export function setupController(
     featureFlags: {},
     offscreenPromise,
     preinstalledSnaps,
+    requestSafeReload,
   });
 
   setupEnsIpfsResolver({
@@ -1012,18 +996,6 @@ export function setupController(
       controller.preferencesController.state.useAddressBarEnsResolution,
     provider: controller.provider,
   });
-
-  // setup state persistence
-  pipeline(
-    storeAsStream(controller.store),
-    debounce(1000),
-    createStreamSink(async (state) => {
-      await persistenceManager.set(state);
-    }),
-    (error) => {
-      log.error('MetaMask - Persistence pipeline failed', error);
-    },
-  );
 
   setupSentryGetStateGlobal(controller);
 
@@ -1474,6 +1446,21 @@ const addAppInstalledEvent = () => {
     addAppInstalledEvent();
   }, 500);
 };
+
+/**
+ * Handles the onInstalled event.
+ *
+ * @param {chrome.runtime.InstalledDetails} details
+ */
+function handleOnInstalled({ reason }) {
+  switch (reason) {
+    case 'install':
+      onInstall();
+      break;
+    default:
+    // no action
+  }
+}
 
 /**
  * Trigger actions that should happen only upon initial install (e.g. open tab for onboarding).
