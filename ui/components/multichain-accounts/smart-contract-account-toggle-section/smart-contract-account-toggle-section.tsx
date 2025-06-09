@@ -1,6 +1,15 @@
 import React from 'react';
 import { Box, ButtonLink, ButtonLinkSize, Text } from '../../component-library';
-import { AlignItems,Display, JustifyContent,  BlockSize, TextVariant } from '../../../helpers/constants/design-system';
+import {
+  AlignItems,
+  Display,
+  JustifyContent,
+  BlockSize,
+  TextVariant,
+  TextColor,
+  FlexDirection,
+  BackgroundColor,
+} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useSelector } from 'react-redux';
@@ -20,47 +29,73 @@ export const SmartContractAccountToggleSection = () => {
   const NetworkList = () => {
     return (
       <>
-        {pending ? (<Box
-          paddingTop={12}
-          paddingBottom={12}
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
-          data-testid="network-loader"
-        >
-          <Preloader size={18} />
-        </Box>) : (
+        {pending ? (
+          <Box
+            paddingTop={12}
+            paddingBottom={12}
+            display={Display.Flex}
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.center}
+            data-testid="network-loader"
+          >
+            <Preloader size={24} />
+          </Box>
+        ) : (
           <Box>
             {network7702List.map((network) => (
-              <SmartContractAccountToggle key={network.chainIdHex} networkConfig={network} address={address as Hex} />
+              <SmartContractAccountToggle
+                key={network.chainIdHex}
+                networkConfig={network}
+                address={address as Hex}
+              />
             ))}
           </Box>
         )}
       </>
-    )
-  }
+    );
+  };
 
   return (
-    <Box width={BlockSize.Full}>
+    <Box
+      width={BlockSize.Full}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      paddingTop={3}
+      paddingBottom={3}
+      paddingLeft={4}
+      paddingRight={4}
+      style={{ borderRadius: '8px' }}
+    >
       <Box>
-        <Text variant={TextVariant.bodyMdMedium}>{t('enableSmartContractAccount')}</Text>
-        <Text variant={TextVariant.bodySm}>{t('enableSmartContractAccountDescription')}</Text>
-        <ButtonLink
-          onClick={() => {
-            global.platform.openTab({
-              url: ZENDESK_URLS.ACCOUNT_UPGRADE,
-            });
-          }}
-          size={ButtonLinkSize.Sm}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Text
+          variant={TextVariant.bodyMdMedium}
+          style={{ marginBottom: '10px' }}
         >
-          {t('learnMoreUpperCase')}
-        </ButtonLink>
+          {t('enableSmartContractAccount')}
+        </Text>
+        <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
+          {t('enableSmartContractAccountDescription')}{' '}
+          <ButtonLink
+            onClick={() => {
+              global.platform.openTab({
+                url: ZENDESK_URLS.ACCOUNT_UPGRADE,
+              });
+            }}
+            size={ButtonLinkSize.Sm}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              fontSize: '14px',
+              lineHeight: '20px',
+              verticalAlign: 'baseline',
+            }}
+          >
+            {t('learnMoreUpperCase')}
+          </ButtonLink>
+        </Text>
       </Box>
       <Box>
         <NetworkList />
       </Box>
     </Box>
-  )
+  );
 };
