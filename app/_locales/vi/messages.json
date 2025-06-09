@@ -659,9 +659,6 @@
   "basic": {
     "message": "Cơ bản"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Bật chức năng cơ bản"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Chức năng cơ bản đã tắt"
   },
@@ -1443,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "Tạo tài khoản mới"
-  },
-  "createNewWallet": {
-    "message": "Tạo ví mới"
   },
   "createPassword": {
     "message": "Tạo mật khẩu"
@@ -2547,9 +2541,6 @@
   },
   "importAccountMsg": {
     "message": "Tài khoản đã nhập sẽ không được liên kết với Cụm từ khôi phục bí mật MetaMask của bạn. Tìm hiểu thêm về tài khoản đã nhập"
-  },
-  "importMyWallet": {
-    "message": "Nhập ví của tôi"
   },
   "importNFT": {
     "message": "Nhập NFT"
@@ -3939,9 +3930,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Mật khẩu không đủ dài"
-  },
-  "passwordSetupDetails": {
-    "message": "Mật khẩu này sẽ chỉ mở khóa ví MetaMask của bạn trên thiết bị này. MetaMask không thể khôi phục mật khẩu này."
   },
   "passwordStrength": {
     "message": "Độ mạnh của mật khẩu: $1",

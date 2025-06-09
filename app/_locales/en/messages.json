@@ -665,9 +665,6 @@
   "basic": {
     "message": "Basic"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Turn on basic functionality"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Basic functionality is off"
   },
@@ -1184,6 +1181,9 @@
   "confirmPassword": {
     "message": "Confirm password"
   },
+  "confirmPasswordPlaceholder": {
+    "message": "Re-enter your password"
+  },
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
@@ -1449,9 +1449,6 @@
   },
   "createNewAccountHeader": {
     "message": "Create a new account"
-  },
-  "createNewWallet": {
-    "message": "Create a new wallet"
   },
   "createPassword": {
     "message": "Create password"
@@ -1999,6 +1996,9 @@
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
+  },
+  "enableIt": {
+    "message": " Enable it"
   },
   "enableSnap": {
     "message": "Enable"
@@ -2553,9 +2553,6 @@
   },
   "importAccountMsg": {
     "message": "Imported accounts won’t be associated with your MetaMask Secret Recovery Phrase. Learn more about imported accounts"
-  },
-  "importMyWallet": {
-    "message": "Import my wallet"
   },
   "importNFT": {
     "message": "Import NFT"
@@ -3415,6 +3412,9 @@
   "newPassword": {
     "message": "New password"
   },
+  "newPasswordPlaceholder": {
+    "message": "Enter a strong password"
+  },
   "newPrivacyPolicyActionButton": {
     "message": "Read more"
   },
@@ -3969,9 +3969,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Password must have at least 8 characters"
-  },
-  "passwordSetupDetails": {
-    "message": "This password will unlock your MetaMask wallet only on this device. MetaMask can not recover this password."
   },
   "passwordStrength": {
     "message": "Password strength: $1",
@@ -5577,6 +5574,24 @@
   "spendingCaps": {
     "message": "Spending caps"
   },
+  "srpDetailsDescription": {
+    "message": "A Secret Recovery Phrase, also called a seed phrase or mnemonic, is a set of words that lets you access and control your crypto wallet. To move your wallet to MetaMask, you need this phrase."
+  },
+  "srpDetailsOwnsAccessListItemOne": {
+    "message": "Take all your money"
+  },
+  "srpDetailsOwnsAccessListItemThree": {
+    "message": "Change your login information"
+  },
+  "srpDetailsOwnsAccessListItemTwo": {
+    "message": "Confirm transactions"
+  },
+  "srpDetailsOwnsAccessListTitle": {
+    "message": "Anyone with your Secret Recovery Phrase can:"
+  },
+  "srpDetailsTitle": {
+    "message": "What’s a Secret Recovery Phrase?"
+  },
   "srpInputNumberOfWords": {
     "message": "I have a $1-word phrase",
     "description": "This is the text for each option in the dropdown where a user selects how many words their secret recovery phrase has during import. The $1 is the number of words (either 12, 15, 18, 21, or 24)."
@@ -5775,6 +5790,10 @@
   "step2LedgerWalletMsg": {
     "message": "Plug your Ledger directly into your computer, then  unlock it and open the Ethereum app.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
+  },
+  "stepOf": {
+    "message": "Step $1 of $2",
+    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Still getting this message?"
