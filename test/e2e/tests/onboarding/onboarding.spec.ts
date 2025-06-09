@@ -1,5 +1,6 @@
 import { Browser } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
+import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import {
   convertToHexValue,
   TEST_SEED_PHRASE,
@@ -30,6 +31,7 @@ import {
 } from '../../page-objects/flows/onboarding.flow';
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
 import { MockSeedlessOnboardingUtils } from '../../helpers/social-sync/mocks';
+import { MOCK_APPLE_ACCOUNT, MOCK_GOOGLE_ACCOUNT } from '../../constants';
 
 const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
@@ -325,92 +327,117 @@ describe('MetaMask onboarding', function () {
     );
   });
 
-  const testDataCreateNewWalletWithSocialLogin = [
-    {
-      testName:
-        'Creates a new wallet with Google login and completes the onboarding process',
-      useGoogleAccount: true,
-    },
-    {
-      testName:
-        'Creates a new wallet with Apple login and completes the onboarding process',
-      useGoogleAccount: false,
-    },
-  ];
-
-  testDataCreateNewWalletWithSocialLogin.forEach((testCase) => {
-    it(testCase.testName, async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            // using this to mock the OAuth Service (Web Authentication flow + Auth server)
-            const mockSeedlessOnboardingUtils =
-              new MockSeedlessOnboardingUtils();
-            return mockSeedlessOnboardingUtils.setup(server, {});
-          },
+  it('Creates a new wallet with Google login and completes the onboarding process', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) => {
+          // using this to mock the OAuth Service (Web Authentication flow + Auth server)
+          const mockSeedlessOnboardingUtils = new MockSeedlessOnboardingUtils();
+          return mockSeedlessOnboardingUtils.setup(server);
         },
-        async ({ driver }: { driver: Driver }) => {
-          await createNewWalletWithSocialLoginOnboardingFlow({
-            driver,
-            useGoogleAccount: testCase.useGoogleAccount,
-          });
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await createNewWalletWithSocialLoginOnboardingFlow({
+          driver,
+        });
 
-          const onboardingCompletePage = new OnboardingCompletePage(driver);
-          await onboardingCompletePage.check_pageIsLoaded();
-          await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
-          await onboardingCompletePage.completeOnboarding();
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
+        await onboardingCompletePage.completeOnboarding();
 
-          const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed('0');
-        },
-      );
-    });
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+        await homePage.check_expectedBalanceIsDisplayed('0');
+      },
+    );
   });
 
-  const testDataRehydrateWalletWithSocialLogin = [
-    {
-      testName:
-        'Rehydrates a wallet with Google login and completes the onboarding process',
-      useGoogleAccount: true,
-    },
-    {
-      testName:
-        'Rehydrates a wallet with Apple login and completes the onboarding process',
-      useGoogleAccount: false,
-    },
-  ];
-
-  testDataRehydrateWalletWithSocialLogin.forEach((testCase) => {
-    it(testCase.testName, async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            // using this to mock the OAuth Service (Web Authentication flow + Auth server)
-            const mockSeedlessOnboardingUtils =
-              new MockSeedlessOnboardingUtils();
-            return mockSeedlessOnboardingUtils.setup(server, {
-              userEmail: 'seedless-onboarding-test@metamask.io',
-            });
-          },
+  it('Creates a new wallet with Apple login and completes the onboarding process', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) => {
+          // using this to mock the OAuth Service (Web Authentication flow + Auth server)
+          const mockSeedlessOnboardingUtils = new MockSeedlessOnboardingUtils();
+          return mockSeedlessOnboardingUtils.setup(server);
         },
-        async ({ driver }: { driver: Driver }) => {
-          await rehydrateWalletWithSocialLoginOnboardingFlow({
-            driver,
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await createNewWalletWithSocialLoginOnboardingFlow({
+          driver,
+          authConnection: AuthConnection.Apple,
+        });
+
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
+        await onboardingCompletePage.completeOnboarding();
+
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+        await homePage.check_expectedBalanceIsDisplayed('0');
+      },
+    );
+  });
+
+  it('Imports a wallet with Google login and completes the onboarding process', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) => {
+          // using this to mock the OAuth Service (Web Authentication flow + Auth server)
+          const mockSeedlessOnboardingUtils = new MockSeedlessOnboardingUtils();
+          return mockSeedlessOnboardingUtils.setup(server, {
+            userEmail: MOCK_GOOGLE_ACCOUNT,
           });
-
-          const onboardingCompletePage = new OnboardingCompletePage(driver);
-          await onboardingCompletePage.completeOnboardingPinExtensionOnly();
-
-          const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedBalanceIsDisplayed('0');
         },
-      );
-    });
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await rehydrateWalletWithSocialLoginOnboardingFlow({
+          driver,
+        });
+
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.completeOnboardingPinExtensionOnly();
+
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+        await homePage.check_expectedBalanceIsDisplayed('0');
+      },
+    );
+  });
+
+  it('Imports a wallet with Apple login and completes the onboarding process', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) => {
+          // using this to mock the OAuth Service (Web Authentication flow + Auth server)
+          const mockSeedlessOnboardingUtils = new MockSeedlessOnboardingUtils();
+          return mockSeedlessOnboardingUtils.setup(server, {
+            userEmail: MOCK_APPLE_ACCOUNT,
+          });
+        },
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await rehydrateWalletWithSocialLoginOnboardingFlow({
+          driver,
+          authConnection: AuthConnection.Apple,
+        });
+
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.completeOnboardingPinExtensionOnly();
+
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+        await homePage.check_expectedBalanceIsDisplayed('0');
+      },
+    );
   });
 });

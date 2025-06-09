@@ -1,3 +1,4 @@
+import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { Driver } from '../../../webdriver/driver';
 
 class StartOnboardingPage {
@@ -89,26 +90,32 @@ class StartOnboardingPage {
     console.log('Get started page is loaded');
   }
 
-  async createWalletWithSocialLogin(useGoogleAccount = true): Promise<void> {
+  async createWalletWithSocialLogin(
+    authConnection = AuthConnection.Google,
+  ): Promise<void> {
     await this.driver.clickElement(this.createWalletButton);
-    if (useGoogleAccount) {
-      await this.driver.waitForSelector(this.onboardingGoogleButton);
-      await this.driver.clickElement(this.onboardingGoogleButton);
-    } else {
-      await this.driver.waitForSelector(this.onboardingAppleButton);
-      await this.driver.clickElement(this.onboardingAppleButton);
-    }
+
+    const socialLoginButton =
+      authConnection === AuthConnection.Google
+        ? this.onboardingGoogleButton
+        : this.onboardingAppleButton;
+
+    await this.driver.waitForSelector(socialLoginButton);
+    await this.driver.clickElement(socialLoginButton);
   }
 
-  async importWalletWithSocialLogin(useGoogleAccount = true): Promise<void> {
+  async importWalletWithSocialLogin(
+    authConnection = AuthConnection.Google,
+  ): Promise<void> {
     await this.driver.clickElement(this.importWalletButton);
-    if (useGoogleAccount) {
-      await this.driver.waitForSelector(this.onboardingGoogleButton);
-      await this.driver.clickElement(this.onboardingGoogleButton);
-    } else {
-      await this.driver.waitForSelector(this.onboardingAppleButton);
-      await this.driver.clickElement(this.onboardingAppleButton);
-    }
+
+    const socialLoginButton =
+      authConnection === AuthConnection.Google
+        ? this.onboardingGoogleButton
+        : this.onboardingAppleButton;
+
+    await this.driver.waitForSelector(socialLoginButton);
+    await this.driver.clickElement(socialLoginButton);
   }
 
   async createWalletWithSrp(): Promise<void> {
