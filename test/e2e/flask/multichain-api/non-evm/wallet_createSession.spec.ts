@@ -66,8 +66,8 @@ describe('Multichain API - Non EVM', function () {
           }
         },
       );
-    })
-  })
+    });
+  });
 
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with Solana scope, without any accounts requested', function () {
     it('should automatically select the current active Solana account', async function () {
@@ -80,7 +80,9 @@ describe('Multichain API - Non EVM', function () {
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
           await testDapp.connectExternallyConnectable(extensionId);
-          await testDapp.initCreateSessionScopes(['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']);
+          await testDapp.initCreateSessionScopes(
+            ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']
+          );
 
           const editButtons = await driver.findElements('[data-testid="edit"]');
           await editButtons[0].click();

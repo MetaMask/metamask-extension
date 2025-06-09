@@ -1,9 +1,6 @@
 import { strict as assert } from 'assert';
 import { isObject } from 'lodash';
-import {
-  largeDelayMs,
-  WINDOW_TITLES,
-} from '../../../helpers';
+import { largeDelayMs, WINDOW_TITLES } from '../../../helpers';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
@@ -12,7 +9,7 @@ import {
 import { withSolanaAccountSnap } from '../../../tests/solana/common-solana';
 
 describe('Multichain API - Non EVM', function () {
-  const NON_EVM_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'
+  const NON_EVM_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
   describe('Calling `wallet_invokeMethod`', function () {
     describe('`signIn` method', function () {
       it('Should match selected method to the expected confirmation UI', async function () {
@@ -92,7 +89,6 @@ describe('Multichain API - Non EVM', function () {
               WINDOW_TITLES.MultichainTestDApp,
             );
 
-
             const invokeMethod = 'signAndSendTransaction';
             await driver.clickElementSafe(
               `[data-testid="${NON_EVM_SCOPE}-${invokeMethod}-option"]`,
@@ -138,18 +134,17 @@ describe('Multichain API - Non EVM', function () {
               await resultWebElement.getText(),
             );
 
-            assert.strictEqual(isObject(parsedTransactionResult), true, 'transaction result object should exist')
             assert.strictEqual(
               isObject(parsedTransactionResult),
               true,
-              `transaction result object should exist`,
-            )
+              'transaction result object should exist',
+            );
 
             assert.strictEqual(
               parsedTransactionResult['signature'],
               '4L78wZXotGUoiJfDoHFKo1CYRqKogqvLrsQRQ2EsMtZ3454Ty1gtMMgQMN8F4XtnYKfHT3bjCJAqhuJz5eMWLs7R',
               'transaction result signature should be defined',
-            )
+            );
           }
         );
       })
