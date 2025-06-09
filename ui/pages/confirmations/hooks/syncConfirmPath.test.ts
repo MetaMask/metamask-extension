@@ -2,7 +2,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import mockState from '../../../../test/data/mock-state.json';
 import { unapprovedPersonalSignMsg } from '../../../../test/data/confirmations/personal_sign';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
-import syncConfirmPath from './syncConfirmPath';
+import useSyncConfirmPath from './syncConfirmPath';
 
 const mockHistoryReplace = jest.fn();
 
@@ -24,10 +24,10 @@ const STATE_MOCK = {
   },
 };
 
-describe('syncConfirmPath', () => {
+describe('useSyncConfirmPath', () => {
   it('should execute correctly', () => {
     const result = renderHookWithConfirmContextProvider(
-      () => syncConfirmPath(unapprovedPersonalSignMsg),
+      () => useSyncConfirmPath(unapprovedPersonalSignMsg),
       STATE_MOCK,
     );
     expect(result).toBeDefined();
@@ -36,7 +36,7 @@ describe('syncConfirmPath', () => {
   it('should replace history route', () => {
     mockHistoryReplace.mockClear();
     renderHookWithConfirmContextProvider(
-      () => syncConfirmPath(unapprovedPersonalSignMsg),
+      () => useSyncConfirmPath(unapprovedPersonalSignMsg),
       STATE_MOCK,
     );
     expect(mockHistoryReplace).toHaveBeenCalled();
