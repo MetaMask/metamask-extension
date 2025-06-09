@@ -6,6 +6,7 @@ import {
   TransactionParams,
 } from '@metamask/transaction-controller';
 import { Hex, createProjectLogger, hexToNumber } from '@metamask/utils';
+import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import {
   DeleGatorEnvironment,
@@ -59,21 +60,21 @@ export class EnforceSimulationHook {
       chainId,
       delegationAddress,
       networkClientId,
+      origin,
       simulationData,
       txParams,
       txParamsOriginal,
     } = transactionMeta;
 
-    if (isFinal && !txParamsOriginal) {
-      log('Cannot find original transaction parameters');
-      throw new Error('Original transaction parameters not found');
-    }
-
     const from = txParams.from as Hex;
-
     const chainIdDecimal = hexToNumber(chainId);
     const delegationEnvironment = getDeleGatorEnvironment(chainIdDecimal);
     const delegationManagerAddress = delegationEnvironment.DelegationManager;
+
+    if (!origin || origin === ORIGIN_METAMASK) {
+      log('Skipping as internal transaction');
+      return {};
+    }
 
     if (!delegationAddress) {
       log('Skipping as not upgraded account');
@@ -88,11 +89,9 @@ export class EnforceSimulationHook {
       return {};
     }
 
-    const to = isFinal ? txParamsOriginal?.to : txParams.to;
-
-    if (to?.toLowerCase() === delegationManagerAddress.toLowerCase()) {
-      log('Skipping as already a delegation');
-      return {};
+    if (isFinal && !txParamsOriginal) {
+      log('Cannot find original transaction parameters');
+      throw new Error('Original transaction parameters not found');
     }
 
     log('Starting', delegationAddress);
