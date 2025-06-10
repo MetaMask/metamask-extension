@@ -112,6 +112,7 @@ export default function LoginOptions({
                 ? t('onboardingSignInWith', ['Google'])
                 : t('onboardingContinueWith', ['Google'])
             }
+            data-testid="onboarding-google-button"
             marginBottom={4}
             onClick={() => onLogin(LOGIN_TYPE.GOOGLE)}
           />
@@ -128,6 +129,7 @@ export default function LoginOptions({
                 ? t('onboardingSignInWith', ['Apple'])
                 : t('onboardingContinueWith', ['Apple'])
             }
+            data-testid="onboarding-apple-button"
             marginBottom={2}
             onClick={() => onLogin(LOGIN_TYPE.APPLE)}
           />

@@ -91,7 +91,11 @@ describe('Notifications List', () => {
 
     await act(async () => {
       await integrationTestRender({
-        preloadedState: mockedState,
+        preloadedState: {
+          ...mockedState,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
+        },
         backgroundConnection: backgroundConnectionMocked,
       });
     });

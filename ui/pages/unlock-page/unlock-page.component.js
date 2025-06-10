@@ -73,6 +73,7 @@ export default class UnlockPage extends Component {
     showResetPasswordModal: false,
     isLocked: false,
     isSubmitting: false,
+    unlockDelayPeriod: 0,
   };
 
   failed_attempts = 0;
@@ -126,6 +127,7 @@ export default class UnlockPage extends Component {
     this.failed_attempts += 1;
     const { message, data } = error;
     let finalErrorMessage = message;
+    let finalUnlockDelayPeriod = 0;
     let errorReason;
 
     switch (message) {
@@ -137,14 +139,9 @@ export default class UnlockPage extends Component {
       case SeedlessOnboardingControllerErrorMessage.TooManyLoginAttempts:
         this.setState({ isLocked: true });
 
-        finalErrorMessage = t('unlockPageTooManyFailedAttempts', [
-          <FormattedCounter
-            key="unlockPageTooManyFailedAttempts"
-            remainingTime={data.remainingTime}
-            unlock={() => this.setState({ isLocked: false, error: '' })}
-          />,
-        ]);
+        finalErrorMessage = t('unlockPageTooManyFailedAttempts');
         errorReason = 'too_many_login_attempts';
+        finalUnlockDelayPeriod = data.remainingTime;
         break;
       default:
         finalErrorMessage = message;
@@ -162,7 +159,10 @@ export default class UnlockPage extends Component {
         },
       });
     }
-    this.setState({ error: finalErrorMessage });
+    this.setState({
+      error: finalErrorMessage,
+      unlockDelayPeriod: finalUnlockDelayPeriod,
+    });
   };
 
   handleInputChange(event) {
@@ -199,7 +199,7 @@ export default class UnlockPage extends Component {
   };
 
   renderHelpText = () => {
-    const { error } = this.state;
+    const { error, unlockDelayPeriod } = this.state;
 
     if (!error) {
       return null;
@@ -218,6 +218,18 @@ export default class UnlockPage extends Component {
             color={TextColor.errorDefault}
           >
             {error}
+            {unlockDelayPeriod > 0 && (
+              <FormattedCounter
+                startFrom={unlockDelayPeriod}
+                onCountdownEnd={() =>
+                  this.setState({
+                    isLocked: false,
+                    error: null,
+                    unlockDelayPeriod: 0,
+                  })
+                }
+              />
+            )}
           </Text>
         )}
       </Box>

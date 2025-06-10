@@ -1,4 +1,5 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { BaseLoginHandler } from './base-login-handler';
 import { AuthTokenResponse, LoginHandlerOptions, OAuthUserInfo } from './types';
 
@@ -36,17 +37,19 @@ export class AppleLoginHandler extends BaseLoginHandler {
     const authUrl = new URL(this.OAUTH_SERVER_URL);
 
     const nonce = this.generateNonce();
+    const redirectUri = this.#getRedirectUri();
 
     authUrl.searchParams.set('client_id', this.options.oAuthClientId);
     authUrl.searchParams.set('response_type', 'code');
-    authUrl.searchParams.set('redirect_uri', this.serverRedirectUri);
+    authUrl.searchParams.set('redirect_uri', redirectUri);
     authUrl.searchParams.set('response_mode', 'form_post');
     authUrl.searchParams.set('nonce', nonce);
     authUrl.searchParams.set('prompt', this.prompt);
     authUrl.searchParams.set(
       'state',
       JSON.stringify({
-        client_redirect_back_uri: this.options.redirectUri,
+        client_redirect_back_uri:
+          this.options.webAuthenticator.getRedirectURL(),
         nonce,
       }),
     );
@@ -75,10 +78,11 @@ export class AppleLoginHandler extends BaseLoginHandler {
    */
   generateAuthTokenRequestData(code: string): string {
     const { web3AuthNetwork } = this.options;
+    const redirectUri = this.#getRedirectUri();
     const requestData = {
       code,
       client_id: this.options.oAuthClientId,
-      redirect_uri: this.serverRedirectUri,
+      redirect_uri: redirectUri,
       login_provider: this.authConnection,
       network: web3AuthNetwork,
     };
@@ -99,5 +103,17 @@ export class AppleLoginHandler extends BaseLoginHandler {
       email: payload.email,
       sub: payload.sub,
     };
+  }
+
+  /**
+   * Get the redirect URI for the OAuth login.
+   *
+   * @returns The redirect URI for the OAuth login.
+   */
+  #getRedirectUri() {
+    const platform = this.options.webAuthenticator.getPlatform();
+    return platform === PLATFORM_FIREFOX
+      ? this.options.webAuthenticator.getRedirectURL()
+      : this.serverRedirectUri;
   }
 }
