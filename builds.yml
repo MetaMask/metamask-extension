@@ -349,3 +349,6 @@ env:
 
   # Address of enforcer used for gasless EIP-7702 transactions
   - GASLESS_7702_ENFORCER_ADDRESS: '0x00e0251aaA263dfE3B3541B758A82D1CBA1c3B6D'
+
+  # Enforce simulation balance changes by converting external transactions to delegations.
+  - ENABLE_ENFORCED_SIMULATIONS: false

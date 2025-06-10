@@ -66,10 +66,10 @@ export class EnforceSimulationHook {
       txParamsOriginal,
     } = transactionMeta;
 
-    const from = txParams.from as Hex;
-    const chainIdDecimal = hexToNumber(chainId);
-    const delegationEnvironment = getDeleGatorEnvironment(chainIdDecimal);
-    const delegationManagerAddress = delegationEnvironment.DelegationManager;
+    if (!process.env.ENABLE_ENFORCED_SIMULATIONS) {
+      log('Skipping as enforced simulations are disabled');
+      return {};
+    }
 
     if (!origin || origin === ORIGIN_METAMASK) {
       log('Skipping as internal transaction');
@@ -93,6 +93,11 @@ export class EnforceSimulationHook {
       log('Cannot find original transaction parameters');
       throw new Error('Original transaction parameters not found');
     }
+
+    const from = txParams.from as Hex;
+    const chainIdDecimal = hexToNumber(chainId);
+    const delegationEnvironment = getDeleGatorEnvironment(chainIdDecimal);
+    const delegationManagerAddress = delegationEnvironment.DelegationManager;
 
     log('Starting', delegationAddress);
 

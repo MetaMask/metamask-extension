@@ -60,6 +60,8 @@ describe('EnforceSimulationHook', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
+    process.env.ENABLE_ENFORCED_SIMULATIONS = 'true';
+
     const baseMessenger = new Messenger<
       | DelegationControllerSignDelegationAction
       | TransactionControllerEstimateGasAction,
@@ -246,6 +248,21 @@ describe('EnforceSimulationHook', () => {
             ...TRANSACTION_META_MOCK,
             origin: ORIGIN_METAMASK,
           },
+        })) ?? {};
+
+      expect(updateTransaction).toBeUndefined();
+    });
+
+    it('env is disabled', async () => {
+      process.env.ENABLE_ENFORCED_SIMULATIONS = 'false';
+
+      const hook = new EnforceSimulationHook({
+        messenger,
+      }).getAfterSimulateHook();
+
+      const { updateTransaction } =
+        (await hook({
+          transactionMeta: TRANSACTION_META_MOCK,
         })) ?? {};
 
       expect(updateTransaction).toBeUndefined();
