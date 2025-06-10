@@ -40,7 +40,7 @@ jobs:
           is-high-risk-environment: false
           cache-node-modules: true
           skip-allow-scripts: true
-          yarn-custom-url: 'https://github.com/Qbandev/github-tools/releases/download/v4.9.1/yarn-4.9.1.js'
+          yarn-custom-url: 'https://github.com/MetaMask/github-tools/releases/download/v4.9.1/yarn-4.9.1.js'
 
   lint-workflows:
     name: Lint workflows
@@ -62,6 +62,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: 'https://github.com/MetaMask/github-tools/releases/download/v4.9.1/yarn-4.9.1.js'
 
       - name: Check circular dependencies
         run: yarn circular-deps:check
@@ -200,6 +201,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: 'https://github.com/MetaMask/github-tools/releases/download/v4.9.1/yarn-4.9.1.js'
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -305,6 +307,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: 'https://github.com/MetaMask/github-tools/releases/download/v4.9.1/yarn-4.9.1.js'
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
