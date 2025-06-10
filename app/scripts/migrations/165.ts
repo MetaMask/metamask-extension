@@ -44,8 +44,8 @@ function transformState(state: VersionedData['data']) {
 }
 
 /**
- * This migration updates UserStorageController's state to replace the
- * profile syncing state keys with the backup and sync ones.
+ * This migration updates PreferencesController's state to remove the
+ * bitcoin support enabled.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
