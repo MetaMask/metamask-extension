@@ -1,3 +1,16 @@
+import { getManifestFlags } from '../manifestFlags';
+import { canonicalize } from './canonicalize';
+
+function base64ToArrayBuffer(base64: string) {
+  const binaryString = atob(base64);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
+
 function base64StringToBytes(unpaddedBase64: string) {
   let standardB64 = unpaddedBase64.replace(/-/gu, '+').replace(/_/gu, '/');
   // Add padding if needed
@@ -13,17 +26,6 @@ function base64StringToBytes(unpaddedBase64: string) {
   return Uint8Array.from(binaryString, (c) => c.charCodeAt(0));
 }
 
-function canonicalize(url: URL): string {
-  // delete params so we don't edit the original URL
-  const params = new URLSearchParams(url.searchParams);
-  params.delete('sig');
-  params.sort();
-  const queryString = params.toString();
-  const fullUrl =
-    url.origin + url.pathname + (queryString ? `?${queryString}` : '');
-  return fullUrl;
-}
-
 export const MISSING = 'MISSING' as const;
 export const VALID = 'VALID' as const;
 export const INVALID = 'INVALID' as const;
@@ -33,22 +35,25 @@ async function lazyGetTools() {
   if (tools) {
     return tools;
   }
-  const curve = 'P-256' as NamedCurve;
   const algorithm = { name: 'ECDSA', hash: 'SHA-256' } as EcdsaParams;
-  const keyUsage = ['verify'] as KeyUsage[];
+
+  let pubKey = base64ToArrayBuffer(process.env.DEEP_LINK_PUBLIC_KEY as string);
+  if (process.env.IN_TEST) {
+    const testKey = getManifestFlags().testing?.deepLinkPublicKey;
+    if (testKey) {
+      console.log(
+        'IN_TEST: Using deep link public key found key at `getManifestFlags().testing?.deepLinkPublicKey`',
+      );
+      pubKey = base64ToArrayBuffer(testKey);
+    }
+  }
+
   const key = await crypto.subtle.importKey(
-    'jwk',
-    {
-      crv: curve,
-      ext: true,
-      key_ops: keyUsage,
-      kty: 'EC',
-      x: 'Bhp73TQ0keNmZWmdPlT7U3dbqbvZRdywIe5RpVFwIuk',
-      y: '4BFtBenx-ZjECrt6YUNRk4isSBTAFMn_21vDiFgI7h8',
-    },
-    { name: algorithm.name, namedCurve: curve },
+    'spki',
+    pubKey,
+    { name: algorithm.name, namedCurve: 'P-256' },
     false, // extractable
-    keyUsage,
+    ['verify'],
   );
 
   tools = {

@@ -1,7 +1,11 @@
+import assert from 'assert';
+import { By } from 'selenium-webdriver';
 import { Driver } from '../../webdriver/driver';
 
 export default class DeepLink {
   protected readonly driver: Driver;
+
+  private readonly checkbox: string = '[data-testid="deep-link-checkbox"]';
 
   private readonly routeBox = '[data-testid="deep-link-route"]';
 
@@ -11,16 +15,27 @@ export default class DeepLink {
 
   private readonly cancelButton = '[data-testid="deep-link-cancel-button"]';
 
+  private readonly loadingIndicator = '[data-testid="loading-indicator"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async check_deepLinkPageIsLoaded(): Promise<void> {
+  async check_pageIsLoaded(): Promise<void> {
     try {
       await Promise.race([
         this.driver.waitForSelector(this.routeBox),
         this.driver.waitForSelector(this.errorBox),
       ]);
+      // loading indicator should not be present when the page is loaded
+      const element = await this.driver.driver.findElements(
+        By.css(this.loadingIndicator),
+      );
+      assert.equal(
+        element.length,
+        0,
+        'Loading indicator should not be present',
+      );
     } catch (e) {
       console.log('Timeout while waiting for Deep Link page to be loaded', e);
       throw e;
@@ -30,7 +45,7 @@ export default class DeepLink {
 
   async clickContinueButton() {
     try {
-      await this.driver.clickElement(this.continueButton);
+      await this.driver.clickElementAndWaitToDisappear(this.continueButton);
     } catch (e) {
       console.log('Error clicking continue button on Deep Link page', e);
       throw e;
@@ -39,7 +54,7 @@ export default class DeepLink {
 
   async clickCancelButton() {
     try {
-      await this.driver.clickElement(this.cancelButton);
+      await this.driver.clickElementAndWaitToDisappear(this.cancelButton);
     } catch (e) {
       console.log('Error clicking cancel button on Deep Link page', e);
       throw e;
@@ -48,9 +63,7 @@ export default class DeepLink {
 
   async clickSkipDeepLinkInterstitialCheckBox() {
     try {
-      await this.driver.clickElement(
-        '[data-testid="deep-link-interstitial-checkbox"]',
-      );
+      await this.driver.clickElement(this.checkbox);
     } catch (e) {
       console.log(
         'Error clicking skip deep link interstitial checkbox on Deep Link page',
@@ -58,5 +71,48 @@ export default class DeepLink {
       );
       throw e;
     }
+  }
+
+  async hasSkipDeepLinkInterstitialCheckBox(): Promise<boolean> {
+    const skipCheckbox = await this.driver.driver.findElements(
+      By.css(this.checkbox),
+    );
+    return skipCheckbox.length > 0;
+  }
+
+  async getSkipDeepLinkInterstitialCheckBoxState(): Promise<boolean> {
+    const skipCheckbox = await this.driver.findElement(
+      '#dont-remind-me-checkbox',
+    );
+    return await skipCheckbox.isSelected();
+  }
+
+  async setSkipDeepLinkInterstitialCheckBox(skip: boolean): Promise<void> {
+    const isChecked = await this.getSkipDeepLinkInterstitialCheckBoxState();
+    if (skip) {
+      if (!isChecked) {
+        await this.clickSkipDeepLinkInterstitialCheckBox();
+      }
+    } else if (isChecked) {
+      await this.clickSkipDeepLinkInterstitialCheckBox();
+    }
+  }
+
+  async getErrorText(): Promise<string> {
+    const errorBox = await this.driver.driver.findElement(
+      By.css(this.errorBox),
+    );
+    assert.strictEqual(await errorBox.isDisplayed(), true);
+    const errorText = await errorBox.getText();
+    return errorText;
+  }
+
+  async getRouteText(): Promise<string> {
+    const routeBox = await this.driver.driver.findElement(
+      By.css(this.routeBox),
+    );
+    assert.strictEqual(await routeBox.isDisplayed(), true);
+    const routeText = await routeBox.getText();
+    return routeText;
   }
 }

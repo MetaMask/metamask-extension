@@ -90,6 +90,7 @@ const emptyHtmlPage = () => `<!DOCTYPE html>
 <head>
     <meta charset="utf-8">
     <title>E2E Test Page</title>
+    <link rel="icon" href="data:image/png;base64,iVBORw0KGgo=">
   </head>
   <body data-testid="empty-page-body">
     Empty page by MetaMask
@@ -998,19 +999,6 @@ async function setupMocking(
       };
     });
 
-  // Deep Links
-  await server
-    .forGet(/^https?:\/\/link\.metamask\.io\/.*$/u)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        body: 'https://metamask.io',
-        headers: {
-          'Content-Type': 'text/plain; charset=utf-8',
-        },
-      };
-    });
-
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested
    * during the current test suite.
@@ -1058,6 +1046,7 @@ async function setupMocking(
    * operation. See the browserAPIRequestDomains regex above.
    */
   server.on('request-initiated', (request) => {
+    console.log(request.url, request.headers.host);
     const privateHosts = matchPrivateHosts(request);
     if (privateHosts.size) {
       for (const privateHost of privateHosts) {

@@ -115,6 +115,7 @@ function onboardingFixture() {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
         },
+        skipDeepLinkInterstitial: false,
       },
       SelectedNetworkController: {
         domains: {},

@@ -1631,6 +1631,36 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
+  "deepLink_ContinueWarning": {
+    "message": "You should only continue if you trust the source of this link."
+  },
+  "deepLink_DontRemindMeAgain": {
+    "message": "Don't Remind me Again"
+  },
+  "deepLink_Error404": {
+    "message": "The requested page was not found."
+  },
+  "deepLink_ErrorMissingUrl": {
+    "message": "No url to navigate to was provided."
+  },
+  "deepLink_ErrorOther": {
+    "message": "An error occurred while processing the deep link. "
+  },
+  "deepLink_ErrorParsingUrl": {
+    "message": "Provided URL is not a valid MetaMask deep link or is malformed."
+  },
+  "deepLink_OpenTheHomePage": {
+    "message": "Open the Home Page"
+  },
+  "deepLink_OpenTheNotifications": {
+    "message": "Open the Notifications Page"
+  },
+  "deepLink_OpenTheSwapsPage": {
+    "message": "Open the Swaps Page"
+  },
+  "deepLink_YouAreAboutToOpen": {
+    "message": "A previous action wants to navigate to a page within the MetaMask extension."
+  },
   "deepLinks": {
     "message": "Deep Links"
   },

@@ -55,7 +55,7 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
 
   // Set up IntersectionObserver to detect when bottom is reached
   useEffect(() => {
-    const observer = new IntersectionObserver(
+    const observer = new window.IntersectionObserver(
       (entries) => {
         console.log(
           'IntersectionObserver triggered:',

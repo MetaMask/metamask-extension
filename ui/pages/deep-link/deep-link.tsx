@@ -33,17 +33,68 @@ import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../selectors/selectors';
 import { MetaMaskReduxState } from '../../store/store';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../contexts/metametrics';
+  MetaMetricsContext,
+  type UITrackEventMethod,
+} from '../../contexts/metametrics';
+import { trackDismissed, trackView } from './metrics';
+
+type TranslateFunction = (key: string, substitutions?: string[]) => string;
+
+type Route = {
+  parsed: ParsedDeepLink;
+  href: string;
+  title: string;
+  signed: boolean;
+};
 
 const { getExtensionURL } = globalThis.platform;
+
+/**
+ * Updates the state based on the URL path and query. This function parses the
+ * URL, retrieves the route, and sets the route and error state accordingly.
+ *
+ * @param urlPathAndQuery - The URL path and query string to parse. (relative to its origin, i.e., /home?utm_source=foo)
+ * @param setRoute - The function to call to set the route state.
+ * @param setError - The function to call to set the error state.
+ * @param trackEvent - The function to call to track events.
+ * @param t - The translation function.
+ */
+async function updateStateFromUrl(
+  urlPathAndQuery: string,
+  setRoute: React.Dispatch<React.SetStateAction<Route | null>>,
+  setError: React.Dispatch<React.SetStateAction<string | null>>,
+  trackEvent: UITrackEventMethod,
+  t: TranslateFunction,
+) {
+  const fullUrlStr = `https://${DEEP_LINK_HOST}${urlPathAndQuery}`;
+  try {
+    const parsed = await parse(fullUrlStr);
+    if (parsed) {
+      const { normalizedUrl, destination, signed } = parsed;
+      const { path, query } = destination;
+      const href = getExtensionURL(path, query.toString() ?? null);
+      const route = routes.get(normalizedUrl.pathname);
+      if (route) {
+        const title = route.getTitle(normalizedUrl.searchParams);
+
+        setRoute({ parsed, href, title, signed });
+        trackView(trackEvent, { url: normalizedUrl, signed });
+      }
+    } else {
+      setError(t('deepLink_ErrorParsingUrl'));
+      setRoute(null);
+    }
+  } catch (e) {
+    log.error('Error parsing deep link:', e);
+    setError(t('deepLink_ErrorOther'));
+    setRoute(null);
+  }
+}
 
 export const DeepLink = () => {
   const trackEvent = useContext(MetaMetricsContext);
   const location = useLocation();
-  const t = useI18nContext();
+  const t = useI18nContext() as TranslateFunction;
   const dispatch = useDispatch();
   // it'd technically not possible for a natural flow to reach this page
   // when `skipDeepLinkInterstitial` is true, but if a user manually navigates
@@ -53,62 +104,25 @@ export const DeepLink = () => {
       getPreferences(state).skipDeepLinkInterstitial,
   );
 
-  const [route, setRoute] = useState<null | {
-    parsed: ParsedDeepLink;
-    href: string;
-    title: string;
-    signed: boolean;
-  }>(null);
+  const [route, setRoute] = useState<null | Route>(null);
   const [error, setError] = useState<string | null>(null);
   const [hasChecked, setHasChecked] = useState(skipDeepLinkInterstitial);
+  const isLoading = !route && !error;
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const urlStr = params.get('u');
     if (!urlStr) {
-      setError('No url to navigate to was provided.');
+      const errorCode = params.get('errorCode');
+      if (errorCode === '404') {
+        setError(t('deepLink_Error404'));
+      } else {
+        setError(t('deepLink_ErrorMissingUrl'));
+      }
       return;
     }
 
-    async function parseUrlStr(urlPathAndQuery: string) {
-      const fullUrlStr = `https://${DEEP_LINK_HOST}${urlPathAndQuery}`;
-      try {
-        const parsed = await parse(fullUrlStr);
-        if (parsed) {
-          const { normalizedUrl, destination, signed } = parsed;
-          const { path, query } = destination;
-          const href = getExtensionURL(path, query.toString() ?? null);
-          const title =
-            routes
-              .get(normalizedUrl.pathname)
-              ?.getTitle(normalizedUrl.searchParams) ?? '';
-
-          setRoute({ parsed, href, title, signed });
-
-          trackEvent({
-            category: MetaMetricsEventCategory.DeepLink,
-            event: MetaMetricsEventName.DeepLinkInterstitialViewed,
-            properties: {
-              route: normalizedUrl.pathname,
-              signed,
-            },
-            sensitiveProperties: Object.fromEntries(
-              normalizedUrl.searchParams.entries(),
-            ),
-          });
-        } else {
-          setError(
-            'Provided URL is not a valid MetaMask deeplink or is malformed.',
-          );
-          setRoute(null);
-        }
-      } catch (e) {
-        log.error('Error parsing deeplink:', e);
-        setError('An error occurred while processing the deeplink.');
-        setRoute(null);
-      }
-    }
-    parseUrlStr(urlStr);
+    updateStateFromUrl(urlStr, setRoute, setError, trackEvent, t);
   }, [location.search]);
 
   async function onIntersticialDismissed(
@@ -117,13 +131,9 @@ export const DeepLink = () => {
     e.preventDefault();
 
     if (route) {
-      trackEvent({
-        category: MetaMetricsEventCategory.DeepLink,
-        event: MetaMetricsEventName.DeepLinkInterstitialDismissed,
-        properties: {
-          route: route.parsed.normalizedUrl.pathname,
-          signed: route.signed,
-        },
+      await trackDismissed(trackEvent, {
+        url: route.parsed.normalizedUrl,
+        signed: route.signed,
       });
     }
 
@@ -148,36 +158,28 @@ export const DeepLink = () => {
       <>
         <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
           <img className="loading-logo" src="./images/logo/metamask-fox.svg" />
-          {route ? (
-            ''
-          ) : (
+          {isLoading && (
             <img
+              data-testid="loading-indicator"
               className="loading-spinner"
               src="./images/spinner.gif"
               alt=""
             />
           )}
         </Box>
-        {error ? (
-          <Box className="error" data-testid="deep-link-error">
+        {error && (
+          <Box padding={4} className="error" data-testid="deep-link-error">
             <Text>{error}</Text>
           </Box>
-        ) : (
-          ''
         )}
-        {route ? (
+        {route && (
           <Box padding={4} data-testid="deep-link-route">
             <Box margin={4}>
-              <Text margin={4}>
-                A previous action wants to navigate to a page within the
-                MetaMask extension.
-              </Text>
+              <Text margin={4}>{t('deepLink_YouAreAboutToOpen')}</Text>
               {route.signed ? (
                 ''
               ) : (
-                <Text margin={4}>
-                  You should only continue if you trust the source of this link.
-                </Text>
+                <Text margin={4}>{t('deepLink_ContinueWarning')}</Text>
               )}
             </Box>
             {route.signed ? (
@@ -199,40 +201,41 @@ export const DeepLink = () => {
                   fontWeight={FontWeight.Normal}
                   variant={TextVariant.bodySm}
                 >
-                  Don't remind me again
+                  {t('deepLink_DontRemindMeAgain')}
                 </Label>
               </Box>
             ) : (
               ''
             )}
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
-              gap={4}
-              padding={4}
-            >
-              <Button
-                size={ButtonSize.Lg}
-                variant={ButtonVariant.Secondary}
-                onClick={onIntersticialDismissed}
-                data-testid="deep-link-cancel-button"
-              >
-                {t('cancel')}
-              </Button>
-
-              <Button
-                variant={ButtonVariant.Primary}
-                href={route.href}
-                size={ButtonSize.Lg}
-                data-testid="deep-link-continue-button"
-              >
-                {route.title}
-              </Button>
-            </Box>
           </Box>
-        ) : (
-          ''
+        )}
+
+        {!isLoading && (
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+            gap={4}
+            padding={4}
+          >
+            <Button
+              size={ButtonSize.Lg}
+              variant={ButtonVariant.Secondary}
+              onClick={onIntersticialDismissed}
+              data-testid="deep-link-cancel-button"
+            >
+              {t('cancel')}
+            </Button>
+
+            <Button
+              variant={ButtonVariant.Primary}
+              href={route?.href ?? getExtensionURL('/')}
+              size={ButtonSize.Lg}
+              data-testid="deep-link-continue-button"
+            >
+              {t(route?.title || 'deepLink_OpenTheHomePage')}
+            </Button>
+          </Box>
         )}
       </>
     </Container>

@@ -5,8 +5,17 @@ import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 // eslint-disable-next-line import/no-restricted-paths
 import { DEEP_LINK_ROUTE } from '../../../../ui/helpers/constants/routes';
 import { parse } from '../../../../shared/lib/deep-links/parse';
-import { DEEP_LINK_HOST } from '../../../../shared/lib/deep-links/constants';
+import {
+  DEEP_LINK_HOST,
+  DEEP_LINK_MAX_LENGTH,
+} from '../../../../shared/lib/deep-links/constants';
 import MetamaskController from '../../metamask-controller';
+
+// `routes.ts` seem to require routes have a leading slash, but then the
+// UI always redirects it to the non-slashed version. So we just use the
+// non-slashed version here to skip that redirect step.
+const slashRe = /^\//u;
+const TRIMMED_DEEP_LINK_ROUTE = DEEP_LINK_ROUTE.replace(slashRe, '');
 
 const { sentry } = global;
 
@@ -14,8 +23,6 @@ export type Options = {
   getExtensionURL(route?: string | null, queryString?: string | null): string;
   getState: MetamaskController['getState'];
 };
-
-const slashRe = /^\//u;
 
 export class DeepLinkRouter {
   private getExtensionURL: Options['getExtensionURL'];
@@ -71,34 +78,40 @@ export class DeepLinkRouter {
     tabId: number,
     urlStr: string,
   ): Promise<browser.WebRequest.BlockingResponse> {
-    const parsed = await parse(urlStr);
-    if (parsed === false) {
-      // unable to parse, ignore the request
+    if (urlStr.length > DEEP_LINK_MAX_LENGTH) {
+      log.debug('Url is too long, skipping deep link handling');
       return {};
     }
 
+    const parsed = await parse(urlStr);
     let link: string;
-
-    const skipDeepLinkInterstitial = Boolean(
-      this.getState().preferences?.skipDeepLinkInterstitial,
-    );
-
-    // only signed links get to skip the interstitial page
-    if (parsed.signed && skipDeepLinkInterstitial) {
-      link = this.getExtensionURL(
-        parsed.destination.path,
-        parsed.destination.query.toString(),
+    if (parsed) {
+      const skipDeepLinkInterstitial = Boolean(
+        this.getState().preferences?.skipDeepLinkInterstitial,
       );
+
+      // only signed links get to skip the interstitial page
+      if (parsed.signed && skipDeepLinkInterstitial) {
+        link = this.getExtensionURL(
+          parsed.destination.path,
+          parsed.destination.query.toString(),
+        );
+      } else {
+        const search = new URLSearchParams({
+          u: parsed.normalizedUrl.pathname + parsed.normalizedUrl.search,
+        });
+        link = this.getExtensionURL(TRIMMED_DEEP_LINK_ROUTE, search.toString());
+      }
     } else {
-      const search = new URLSearchParams({
-        u: parsed.normalizedUrl.pathname + parsed.normalizedUrl.search,
-      });
+      // unable to parse, show error page
       link = this.getExtensionURL(
         // `routes.ts` seem to require routes have a leading slash, but then the
         // UI always redirects it to the non-slashed version. So we just use the
         // non-slashed version here to skip that redirect step.
-        DEEP_LINK_ROUTE.replace(slashRe, ''),
-        search.toString(),
+        TRIMMED_DEEP_LINK_ROUTE.replace(slashRe, ''),
+        new URLSearchParams({
+          errorCode: '404',
+        }).toString(),
       );
     }
 
@@ -108,6 +121,7 @@ export class DeepLinkRouter {
       this.redirectTab(tabId, link);
       return {};
     }
+
     // In MV2 we can't just return a `redirectUrl`, as the browser blocks the
     // redirect when requested this way. Instead, we can `cancel` the navigation
     // request, and then use our `redirectTab` method to complete the redirect.
