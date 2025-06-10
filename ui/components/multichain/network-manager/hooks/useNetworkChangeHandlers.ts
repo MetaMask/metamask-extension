@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { type CaipChainId, type Hex } from '@metamask/utils';
+import { type CaipChainId } from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -17,7 +17,6 @@ import {
   setNextNonce,
   setTokenNetworkFilter,
   showPermittedNetworkToast,
-  toggleNetworkMenu,
   updateCustomNonce,
 } from '../../../../store/actions';
 import { useNetworkManagerState } from './useNetworkManagerState';

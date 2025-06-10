@@ -82,7 +82,7 @@ export const NetworksForm = ({
   onRpcAdd,
   onBlockExplorerAdd,
   toggleNetworkMenuAfterSubmit = true,
-  onComplete = () => {},
+  onComplete,
   onEdit,
 }: {
   networkFormState: ReturnType<typeof useNetworkFormState>;
@@ -334,7 +334,7 @@ export const NetworksForm = ({
       console.error(e);
     } finally {
       toggleNetworkMenuAfterSubmit && dispatch(toggleNetworkMenu());
-      onComplete();
+      onComplete?.();
     }
   };
 

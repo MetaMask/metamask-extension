@@ -1,9 +1,6 @@
 import { useCallback } from 'react';
 import * as URI from 'uri-js';
-import {
-  RpcEndpointType,
-  type UpdateNetworkFields,
-} from '@metamask/network-controller';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { useNetworkFormState } from '../../../../pages/settings/networks-tab/networks-form/networks-form-state';
 
 type UseNewRPCProps = {

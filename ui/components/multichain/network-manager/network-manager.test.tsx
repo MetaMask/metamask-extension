@@ -5,15 +5,9 @@ import configureStore from '../../../store/store';
 import { NetworkManager } from './network-manager';
 
 describe('NetworkManager Component', () => {
-  const renderNetworkManager = (props = {}) => {
-    const defaultProps = {
-      isOpen: true,
-      onClose: jest.fn(),
-      ...props,
-    };
-
+  const renderNetworkManager = () => {
     const store = configureStore({});
-    return renderWithProvider(<NetworkManager {...defaultProps} />, store);
+    return renderWithProvider(<NetworkManager />, store);
   };
 
   it('renders correctly when open', () => {
@@ -37,7 +31,7 @@ describe('NetworkManager Component', () => {
 
   it('calls onClose when close button is clicked', () => {
     const onClose = jest.fn();
-    renderNetworkManager({ onClose });
+    renderNetworkManager();
 
     // Find and click the close button
     const closeButton = screen.getByRole('button', { name: /close/i });
@@ -66,7 +60,7 @@ describe('NetworkManager Component', () => {
   });
 
   it('is not rendered when isOpen is false', () => {
-    renderNetworkManager({ isOpen: false });
+    renderNetworkManager();
 
     // Modal should not render when isOpen is false
     expect(screen.queryByText('Networks')).not.toBeInTheDocument();

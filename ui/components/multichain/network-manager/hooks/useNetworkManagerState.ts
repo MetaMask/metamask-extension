@@ -154,32 +154,33 @@ export const useNetworkManagerState = ({
     [multichainNetworks],
   );
 
-  const isNetworkInDefaultNetworkTab = useCallback((network: MultichainNetworkConfiguration) => {
-    const networkChainId = network.chainId; // eip155:59144
-    // Convert CAIP format to hex format for comparison
-    const hexChainId = network.isEvm
-      ? convertCaipToHexChainId(networkChainId)
-      : networkChainId;
+  const isNetworkInDefaultNetworkTab = useCallback(
+    (network: MultichainNetworkConfiguration) => {
+      const networkChainId = network.chainId; // eip155:59144
+      // Convert CAIP format to hex format for comparison
+      const hexChainId = network.isEvm
+        ? convertCaipToHexChainId(networkChainId)
+        : networkChainId;
 
-    // Only show networks if they are built-in networks or featured RPCs
-    const isBuiltInNetwork = Object.values(BUILT_IN_NETWORKS).some(
-      (builtInNetwork) => builtInNetwork.chainId === hexChainId,
-    );
+      // Only show networks if they are built-in networks or featured RPCs
+      const isBuiltInNetwork = Object.values(BUILT_IN_NETWORKS).some(
+        (builtInNetwork) => builtInNetwork.chainId === hexChainId,
+      );
 
-    const isFeaturedRpc = FEATURED_RPCS.some(
-      (featuredRpc) => featuredRpc.chainId === hexChainId,
-    );
+      const isFeaturedRpc = FEATURED_RPCS.some(
+        (featuredRpc) => featuredRpc.chainId === hexChainId,
+      );
 
-    const isMultichainProviderConfig = Object.values(MultichainNetworks).some(
-      (multichainNetwork) =>
-        multichainNetwork === networkChainId ||
-        multichainNetwork === hexChainId,
-    );
+      const isMultichainProviderConfig = Object.values(MultichainNetworks).some(
+        (multichainNetwork) =>
+          multichainNetwork === networkChainId ||
+          multichainNetwork === hexChainId,
+      );
 
-    return isBuiltInNetwork || isFeaturedRpc || isMultichainProviderConfig;
-  }, []);
-
-
+      return isBuiltInNetwork || isFeaturedRpc || isMultichainProviderConfig;
+    },
+    [],
+  );
 
   return {
     t,
