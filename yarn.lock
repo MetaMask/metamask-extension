@@ -5803,10 +5803,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-api-client@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@metamask/multichain-api-client@npm:0.6.0"
-  checksum: 10/f51a99f0f38596b4c60ce389f7f2ab8cee336524fc661667f1255ce9513b0928444587065c4c7b0d3b36de75a956f17daecd7406a3a21c015619843e5a7b649c
+"@metamask/multichain-api-client@npm:^0.6.2":
+  version: 0.6.2
+  resolution: "@metamask/multichain-api-client@npm:0.6.2"
+  checksum: 10/7b870f6ce095bac63b5159f5918f956d0194cacb8cbce243583ed52227a52df7e7bc58ef418f60902800f4c30bc56e37b5434831bc30edee6336735f21895f2e
   languageName: node
   linkType: hard
 
@@ -29797,7 +29797,7 @@ __metadata:
     "@metamask/message-manager": "npm:^12.0.1"
     "@metamask/message-signing-snap": "npm:1.1.2"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-api-client": "npm:^0.6.0"
+    "@metamask/multichain-api-client": "npm:^0.6.2"
     "@metamask/multichain-api-middleware": "npm:0.4.0"
     "@metamask/multichain-network-controller": "npm:^0.8.0"
     "@metamask/multichain-transactions-controller": "npm:^0.9.0"
