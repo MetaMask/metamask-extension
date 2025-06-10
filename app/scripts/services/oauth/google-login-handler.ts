@@ -29,6 +29,7 @@ export class GoogleLoginHandler extends BaseLoginHandler {
     const { codeVerifier, challenge } =
       await this.generateCodeVerifierChallenge();
     const nonce = this.generateNonce();
+    const redirectUri = this.options.webAuthenticator.getRedirectURL();
     this.#codeVerifier = codeVerifier;
 
     authUrl.searchParams.set('client_id', this.options.oAuthClientId);
@@ -45,7 +46,7 @@ export class GoogleLoginHandler extends BaseLoginHandler {
         nonce,
       }),
     );
-    authUrl.searchParams.set('redirect_uri', this.options.redirectUri);
+    authUrl.searchParams.set('redirect_uri', redirectUri);
     authUrl.searchParams.set('nonce', nonce);
     authUrl.searchParams.set('prompt', this.prompt);
 
@@ -71,7 +72,9 @@ export class GoogleLoginHandler extends BaseLoginHandler {
    * @returns The request data for the Web3Auth Authentication Server.
    */
   generateAuthTokenRequestData(code: string): string {
-    const { redirectUri, web3AuthNetwork } = this.options;
+    const { web3AuthNetwork } = this.options;
+    const redirectUri = this.options.webAuthenticator.getRedirectURL();
+
     const requestData = {
       code,
       client_id: this.options.oAuthClientId,

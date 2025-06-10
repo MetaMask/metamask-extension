@@ -121,6 +121,11 @@ const ALLOWLISTED_HOSTS = [
   'start.metamask.io',
   'token.api.cx.metamask.io',
   'widget.intercom.io',
+  'node-1.dev-node.web3auth.io',
+  'node-2.dev-node.web3auth.io',
+  'node-3.dev-node.web3auth.io',
+  'node-4.dev-node.web3auth.io',
+  'node-5.dev-node.web3auth.io',
 ];
 
 module.exports = { ALLOWLISTED_HOSTS, ALLOWLISTED_URLS };
