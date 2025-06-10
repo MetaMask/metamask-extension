@@ -205,6 +205,7 @@ async function defineAndRunBuildTasks() {
     browserVersionMap,
     buildType,
     entryTask,
+    shouldIncludeOcapKernel,
     shouldIncludeSnow,
   });
 
