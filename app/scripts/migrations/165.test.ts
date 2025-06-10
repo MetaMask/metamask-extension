@@ -33,10 +33,12 @@ describe(`migration #${version}`, () => {
       data: {},
     };
 
+    const mockWarn = jest.spyOn(console, 'warn').mockImplementation(jest.fn());
+
     const newStorage = await migrate(oldStorage);
 
-    expect(global.sentry.captureException).toHaveBeenCalledWith(
-      new Error(`Migration ${version}: NetworkController not found.`),
+    expect(mockWarn).toHaveBeenCalledWith(
+      `Migration ${version}: NetworkController not found.`,
     );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });

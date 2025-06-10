@@ -34,9 +34,7 @@ function transformState(
   state: Record<string, unknown>,
 ): Record<string, unknown> {
   if (!hasProperty(state, 'NetworkController')) {
-    global.sentry?.captureException?.(
-      new Error(`Migration ${version}: NetworkController not found.`),
-    );
+    console.warn(`Migration ${version}: NetworkController not found.`);
     return state;
   }
 
