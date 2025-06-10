@@ -1345,6 +1345,8 @@ export default class MetamaskController extends EventEmitter {
           this.postOnboardingInitialization();
           this.triggerNetworkrequests();
 
+          this.preferencesController.setPreference('useSmartAccount', true);
+
           // execute once the token detection on the post-onboarding
           await this.tokenDetectionController.detectTokens({
             selectedAddress: address,
@@ -3752,10 +3754,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       updateSlides: appStateController.updateSlides.bind(appStateController),
       removeSlide: appStateController.removeSlide.bind(appStateController),
-      setSplashPageAcknowledgedForAccount:
-        appStateController.setSplashPageAcknowledgedForAccount.bind(
-          appStateController,
-        ),
 
       // EnsController
       tryReverseResolveAddress:

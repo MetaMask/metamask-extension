@@ -60,6 +60,8 @@ export default class AdvancedTab extends PureComponent {
     setManageInstitutionalWallets: PropTypes.func.isRequired,
     dismissSmartAccountSuggestionEnabled: PropTypes.bool.isRequired,
     setDismissSmartAccountSuggestionEnabled: PropTypes.func.isRequired,
+    useSmartAccount: PropTypes.bool.isRequired,
+    setUseSmartAccount: PropTypes.func.isRequired,
   };
 
   state = {
@@ -202,6 +204,43 @@ export default class AdvancedTab extends PureComponent {
               {t('clearActivityButton')}
             </Button>
           </div>
+        </div>
+      </Box>
+    );
+  }
+
+  renderToggleUseSmartAccount() {
+    const { t } = this.context;
+    const { useSmartAccount, setUseSmartAccount } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[2]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-use-smart-account"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span> {t('useSmartAccountTitle')}</span>
+          <div className="settings-page__content-description">
+            {t('useSmartAccountDescription')}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={useSmartAccount}
+            onToggle={(oldValue) => {
+              const newValue = !oldValue;
+              setUseSmartAccount(newValue);
+            }}
+            offLabel={t('off')}
+            onLabel={t('on')}
+            dataTestId="settings-page-use-smart-account"
+          />
         </div>
       </Box>
     );
@@ -635,6 +674,7 @@ export default class AdvancedTab extends PureComponent {
         ) : null}
         {this.renderStateLogs()}
         {this.renderResetAccount()}
+        {this.renderToggleUseSmartAccount()}
         {this.renderToggleDismissSmartAccountSuggestion()}
         {this.renderToggleStxOptIn()}
         {this.renderHexDataOptIn()}
