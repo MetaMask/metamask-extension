@@ -60,15 +60,21 @@ class NonEvmHomepage extends HomePage {
     balance: string,
     token: string = 'SOL',
   ): Promise<void> {
-    await this.driver.waitForSelector({
-      text: balance,
-      tag: 'span',
-    });
+    await this.driver.waitForSelector(
+      {
+        text: balance,
+        tag: 'span',
+      },
+      { timeout: 30000 },
+    );
 
-    await this.driver.waitForSelector({
-      text: token,
-      tag: 'span',
-    });
+    await this.driver.waitForSelector(
+      {
+        text: token,
+        tag: 'span',
+      },
+      { timeout: 30000 },
+    );
   }
 
   /**
