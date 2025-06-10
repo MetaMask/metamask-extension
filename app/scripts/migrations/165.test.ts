@@ -71,7 +71,7 @@ describe(`migration #${version}`, () => {
       const expectedData = {
         UserStorageController: {
           isBackupAndSyncEnabled: true,
-            isAccountSyncingEnabled: true,
+          isAccountSyncingEnabled: true,
         },
       };
 
