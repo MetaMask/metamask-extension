@@ -34,9 +34,6 @@ class HomePage {
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
 
-  protected readonly nonEvmBridgeButton: string =
-    '[data-testid="coin-overview-bridge"]';
-
   private readonly closeUseNetworkNotificationModalButton = {
     text: 'Got it',
     tag: 'h6',
@@ -149,10 +146,8 @@ class HomePage {
     await this.driver.clickElement(this.sendButton);
   }
 
-  async startBridgeFlow(isSolana: boolean = false): Promise<void> {
-    isSolana
-      ? await this.driver.clickElement(this.nonEvmBridgeButton)
-      : await this.driver.clickElement(this.bridgeButton);
+  async startBridgeFlow(): Promise<void> {
+    await this.driver.clickElement(this.bridgeButton);
   }
 
   async togglePrivacyBalance(): Promise<void> {

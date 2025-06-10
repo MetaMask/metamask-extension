@@ -33,7 +33,6 @@ class NonEvmHomepage extends HomePage {
    * Clicks the bridge button on the non-EVM account homepage.
    */
   async clickOnBridgeButton(): Promise<void> {
-    await this.driver.waitForSelector(this.bridgeButton);
     await this.driver.clickElement(this.bridgeButton);
   }
 
@@ -41,7 +40,6 @@ class NonEvmHomepage extends HomePage {
    * Clicks the swap button on the non-EVM account homepage.
    */
   async clickOnSwapButton(): Promise<void> {
-    await this.driver.waitForSelector(this.swapButton);
     await this.driver.clickElement(this.swapButton);
   }
 
@@ -49,7 +47,6 @@ class NonEvmHomepage extends HomePage {
    * Clicks the send button on the non-EVM account homepage.
    */
   async clickOnSendButton(): Promise<void> {
-    await this.driver.waitForSelector(this.sendButton);
     await this.driver.clickElement(this.sendButton);
   }
 

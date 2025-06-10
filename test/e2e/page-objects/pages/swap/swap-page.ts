@@ -33,32 +33,54 @@ export type SwapQuote = {
 class SwapPage {
   private readonly driver: Driver;
 
-  private readonly swapAmount =
-    '[data-testid="prepare-swap-page-from-token-amount"]';
+  private readonly bridgeSourceButton = '[data-testid="bridge-source-button"]';
 
-  private readonly destinationTokenButton =
-    '[data-testid="prepare-swap-page-swap-to"]';
-
-  private readonly swapButton = {
-    tag: 'button',
-    text: 'Swap',
-  };
+  private readonly bridgeDestinationButton =
+    '[data-testid="bridge-destination-button"]';
 
   private readonly closeButton = {
     tag: 'button',
     text: 'Close',
   };
 
-  private readonly bridgeSourceButton = '[data-testid="bridge-source-button"]';
+  private readonly closeQuotesButton = 'header button';
 
-  private readonly bridgeDestinationButton =
-    '[data-testid="bridge-destination-button"]';
+  private readonly destinationTokenButton =
+    '[data-testid="prepare-swap-page-swap-to"]';
 
-  private readonly fromAmount = '[data-testid="from-amount"]';
+  private readonly fromToText =
+    '[data-testid="multichain-token-list-button"] p';
 
-  private readonly transactionHeader = '[data-testid="awaiting-swap-header"]';
+  private readonly moreQuotesButton = {
+    tag: 'button',
+    text: 'More quotes',
+  };
+
+  private readonly noQuotesAvailableMessage = {
+    text: "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option",
+    tag: 'p',
+  };
+
+  private readonly rateMessage = {
+    text: `Rate includes 0.875% fee`,
+    tag: 'p',
+  };
+
+  private readonly reviewToAmount = '[data-testid="to-amount"]';
+
+  private readonly reviewFromAmount = '[data-testid="from-amount"]';
 
   private readonly submitSwapButton = '[data-testid="bridge-cta-button"]';
+
+  private readonly swapAmount =
+    '[data-testid="prepare-swap-page-from-token-amount"]';
+
+  private readonly swapButton = {
+    tag: 'button',
+    text: 'Swap',
+  };
+
+  private readonly transactionHeader = '[data-testid="awaiting-swap-header"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -81,10 +103,7 @@ class SwapPage {
   }
 
   async clickOnMoreQuotes(): Promise<void> {
-    await this.driver.clickElement({
-      text: `More quotes`,
-      tag: 'button',
-    });
+    await this.driver.clickElement(this.moreQuotesButton);
   }
 
   async checkQuote(quote: SwapQuote): Promise<void> {
@@ -107,7 +126,7 @@ class SwapPage {
   }
 
   async closeQuotes(): Promise<void> {
-    await this.driver.clickElement('header button');
+    await this.driver.clickElementAndWaitToDisappear(this.closeQuotesButton);
   }
 
   async enterSwapAmount(amount: string): Promise<void> {
@@ -155,56 +174,43 @@ class SwapPage {
   }
 
   async checkNoQuotesAvailable(): Promise<void> {
-    await this.driver.waitForSelector({
-      text: `This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option`,
-      tag: 'p',
-    });
+    await this.driver.waitForSelector(this.noQuotesAvailableMessage);
   }
 
   async createSolanaSwap(options: SwapSolanaOptions) {
-    await this.driver.clickElement(this.bridgeSourceButton, 3);
-    await this.driver.delay(2000);
-
+    await this.driver.clickElement(this.bridgeSourceButton);
     await this.driver.clickElement({
       text: options.swapFrom,
-      css: '[data-testid="multichain-token-list-button"] p',
+      css: this.fromToText,
     });
 
-    await this.driver.clickElement(this.bridgeDestinationButton, 3);
+    await this.driver.clickElement(this.bridgeDestinationButton);
 
     await this.driver.clickElement({
       text: options.swapTo,
-      css: '[data-testid="multichain-token-list-button"] p',
+      css: this.fromToText,
     });
 
-    await this.driver.waitForSelector(this.fromAmount);
-    await this.driver.fill(this.fromAmount, options.amount.toString());
+    await this.driver.waitForSelector(this.reviewFromAmount);
+    await this.driver.fill(this.reviewFromAmount, options.amount.toString());
   }
 
   async reviewSolanaQuote(options: SwapSolanaReviewOptions) {
     await this.driver.waitForSelector(this.submitSwapButton);
-    const fromAmount = await this.driver.findElement(
-      '[data-testid="from-amount"]',
-    );
+    const fromAmount = await this.driver.findElement(this.reviewFromAmount);
     const fromAmountText = await fromAmount.getAttribute('value');
     assert.equal(fromAmountText, options.swapFromAmount);
-    const toAmount = await this.driver.findElement('[data-testid="to-amount"]');
+    const toAmount = await this.driver.findElement(this.reviewToAmount);
     const toAmountText = await toAmount.getAttribute('value');
     assert.equal(toAmountText, options.swapToAmount);
     await this.driver.waitForSelector({
       text: `1 ${options.swapFrom} = ${options.swapToAmount} ${options.swapTo}`,
       tag: 'p',
     });
-    await this.driver.waitForSelector({
-      text: `Rate includes 0.875% fee`,
-      tag: 'p',
-    });
-    await this.driver.waitForSelector({
-      text: `More quotes`,
-      tag: 'button',
-    });
+    await this.driver.waitForSelector(this.rateMessage);
+    await this.driver.waitForSelector(this.moreQuotesButton);
 
-    await this.driver.clickElement(this.submitSwapButton);
+    await this.driver.clickElementAndWaitToDisappear(this.submitSwapButton);
   }
 }
 

@@ -80,9 +80,7 @@ class ConfirmSolanaTxPage {
    * Clicks the confirm button on the Solana transaction confirmation page
    */
   async clickOnConfirm(): Promise<void> {
-    await this.driver.waitForSelector(this.confirmButton);
-    await this.driver.clickElement(this.confirmButton, 3);
-    await this.driver.waitForControllersLoaded();
+    await this.driver.clickElement(this.confirmButton);
   }
 
   async isSendButtonEnabled(): Promise<boolean> {
