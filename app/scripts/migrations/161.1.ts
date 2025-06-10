@@ -1,13 +1,12 @@
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
-import { PreferencesControllerState } from '../controllers/preferences-controller';
 
 export type VersionedData = {
   meta: {
     version: number;
   };
   data: {
-    PreferencesController?: Partial<PreferencesControllerState> & {
+    PreferencesController?: {
       // These properties are not in the PreferencesControllerState type anymore
       bitcoinSupportEnabled?: boolean;
       bitcoinTestnetSupportEnabled?: boolean;
@@ -15,7 +14,7 @@ export type VersionedData = {
   };
 };
 
-export const version = 165;
+export const version = 161.1;
 
 function transformState(state: VersionedData['data']) {
   if (
