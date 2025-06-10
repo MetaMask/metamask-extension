@@ -18,6 +18,7 @@ describe('Ethereum Chain Utils', () => {
       setActiveNetwork: jest.fn(),
       getCaveat: jest.fn(),
       requestPermittedChainsPermissionIncrementalForOrigin: jest.fn(),
+      setEnabledNetworks: jest.fn(),
       setTokenNetworkFilter: jest.fn(),
       setEnabledNetworks: jest.fn(),
       rejectApprovalRequestsForOrigin: jest.fn(),

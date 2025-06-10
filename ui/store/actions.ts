@@ -4459,7 +4459,7 @@ export function updateAccountsList(
  * to be enabled. All other networks will be implicitly disabled.
  */
 export function setEnabledNetworks(
-  chainIds: CaipChainId[],
+  chainIds: string[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     await submitRequestToBackground('setEnabledNetworks', [chainIds]);
