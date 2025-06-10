@@ -2,7 +2,9 @@ name: Check Attributions
 
 on:
   push:
-    branches: Version-v*
+    branches:
+      - Version-v*
+      - release/v*
 
 jobs:
   check-attributions:
