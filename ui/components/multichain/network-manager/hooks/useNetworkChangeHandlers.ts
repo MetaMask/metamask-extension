@@ -78,22 +78,18 @@ export const useNetworkChangeHandlers = () => {
 
       if (overrideEnabledNetworks) {
         dispatch(setEnabledNetworks([hexChainId] as CaipChainId[]));
+      } else if (enabledNetworkKeys.includes(hexChainId)) {
+        const filteredEnabledNetworks = enabledNetworkKeys.filter(
+          (key) => key !== hexChainId,
+        );
+        dispatch(setEnabledNetworks(filteredEnabledNetworks as CaipChainId[]));
       } else {
-        if (!enabledNetworkKeys.includes(hexChainId)) {
-          dispatch(
-            setEnabledNetworks([
-              ...enabledNetworkKeys,
-              hexChainId,
-            ] as CaipChainId[]),
-          );
-        } else {
-          const filteredEnabledNetworks = enabledNetworkKeys.filter(
-            (key) => key !== hexChainId,
-          );
-          dispatch(
-            setEnabledNetworks(filteredEnabledNetworks as CaipChainId[]),
-          );
-        }
+        dispatch(
+          setEnabledNetworks([
+            ...enabledNetworkKeys,
+            hexChainId,
+          ] as CaipChainId[]),
+        );
       }
 
       dispatch(updateCustomNonce(''));
@@ -151,25 +147,19 @@ export const useNetworkChangeHandlers = () => {
         overrideEnabledNetworks = false,
       }: { overrideEnabledNetworks?: boolean } = {},
     ) => {
+      const enabledNetworkKeys = Object.keys(enabledNetworks);
+
       if (overrideEnabledNetworks) {
         dispatch(setEnabledNetworks([chainId] as CaipChainId[]));
+      } else if (enabledNetworkKeys.includes(chainId)) {
+        const filteredEnabledNetworks = enabledNetworkKeys.filter(
+          (key: string) => key !== chainId,
+        );
+        dispatch(setEnabledNetworks(filteredEnabledNetworks as CaipChainId[]));
       } else {
-        const enabledNetworkKeys = Object.keys(enabledNetworks);
-        if (!enabledNetworkKeys.includes(chainId)) {
-          dispatch(
-            setEnabledNetworks([
-              ...enabledNetworkKeys,
-              chainId,
-            ] as CaipChainId[]),
-          );
-        } else {
-          const filteredEnabledNetworks = enabledNetworkKeys.filter(
-            (key) => key !== chainId,
-          );
-          dispatch(
-            setEnabledNetworks(filteredEnabledNetworks as CaipChainId[]),
-          );
-        }
+        dispatch(
+          setEnabledNetworks([...enabledNetworkKeys, chainId] as CaipChainId[]),
+        );
       }
       setActionMode(ACTION_MODE.ADD_NON_EVM_ACCOUNT);
     },

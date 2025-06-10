@@ -34,7 +34,7 @@ describe('NetworkManager Component', () => {
     renderNetworkManager();
 
     // Find and click the close button
-    const closeButton = screen.getByRole('button', { name: /close/i });
+    const closeButton = screen.getByRole('button', { name: /close/iu });
     fireEvent.click(closeButton);
 
     expect(onClose).toHaveBeenCalledTimes(1);

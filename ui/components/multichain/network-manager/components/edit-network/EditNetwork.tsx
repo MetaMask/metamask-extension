@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -13,7 +14,6 @@ import {
   JustifyContent,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { useHistory, useParams } from 'react-router-dom';
 
 export const EditNetwork: React.FC = () => {
   const history = useHistory();
