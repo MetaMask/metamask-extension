@@ -39,6 +39,8 @@ describe('Send STX', function () {
         await accountListPage.check_pageIsLoaded();
 
         await accountListPage.openAccountOptionsMenu();
+        // We use this secret key here to import a test account with a balance
+        // for the stx tests. It is imported via .env file locally.
         await accountListPage.addNewImportedAccount(
           process.env.TEST_STX_PRIVATE_KEY || '',
         );
