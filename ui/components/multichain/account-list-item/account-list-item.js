@@ -102,21 +102,26 @@ const AccountListItem = ({
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
-
   const snapMetadata = useSelector(getSnapsMetadata);
   const keyrings = useSelector(getMetaMaskKeyrings);
-  const accountLabels = useMemo(
-    () =>
-      getAccountLabels(
-        account.metadata.keyring.type,
-        account,
-        keyrings,
-        account.metadata.keyring.type === KeyringType.snap
-          ? getSnapName(snapMetadata)(account.metadata?.snap?.id)
-          : null,
-      ),
-    [account, keyrings, snapMetadata],
-  );
+
+  const isSrpPill = (label) => {
+    return Boolean(label?.startsWith('SRP'));
+  };
+
+  const accountLabels = useMemo(() => {
+    const labels = getAccountLabels(
+      account.metadata.keyring.type,
+      account,
+      keyrings,
+      account.metadata.keyring.type === KeyringType.snap
+        ? getSnapName(snapMetadata)(account.metadata?.snap?.id)
+        : null,
+    );
+    return showSrpPill
+      ? labels
+      : labels.filter(({ label }) => !isSrpPill(label));
+  }, [account, keyrings, snapMetadata, showSrpPill]);
 
   const useBlockie = useSelector(getUseBlockie);
   const { isEvmNetwork, chainId: multichainChainId } = useMultichainSelector(
@@ -201,10 +206,6 @@ const AccountListItem = ({
       (!isEvmNetwork && shouldShowFiat);
 
     return isAggregatedFiatOverviewBalance;
-  };
-
-  const isSrpPill = (label) => {
-    return Boolean(label?.startsWith('SRP'));
   };
 
   return (
@@ -371,22 +372,20 @@ const AccountListItem = ({
         </Box>
         {accountLabels.length > 0 ? (
           <Box flexDirection={FlexDirection.Row}>
-            {accountLabels
-              .filter(({ label }) => !(isSrpPill(label) && !showSrpPill))
-              .map(({ label, icon }) => {
-                return (
-                  <Tag
-                    data-testid={`account-list-item-tag-${account.id}-${label}`}
-                    key={label}
-                    label={label}
-                    labelProps={{
-                      variant: TextVariant.bodyXs,
-                      color: Color.textAlternative,
-                    }}
-                    startIconName={icon}
-                  />
-                );
-              })}
+            {accountLabels.map(({ label, icon }) => {
+              return (
+                <Tag
+                  data-testid={`account-list-item-tag-${account.id}-${label}`}
+                  key={label}
+                  label={label}
+                  labelProps={{
+                    variant: TextVariant.bodyXs,
+                    color: Color.textAlternative,
+                  }}
+                  startIconName={icon}
+                />
+              );
+            })}
           </Box>
         ) : null}
       </Box>
