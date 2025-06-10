@@ -1,15 +1,15 @@
 version: 2.1
 
+workflows:
+  placeholder_workflow:
+    jobs:
+      - all-tests-pass
+
 jobs:
-  placeholder:
+  all-tests-pass:
     docker:
       - image: cimg/node:22.15-browsers
     steps:
       - run:
-          name: Placeholder Job
+          name: All Tests Passed
           command: echo "This is a temporary placeholder job, to be removed once Circle Ci is not used in RC and master."
-
-workflows:
-  placeholder_workflow:
-    jobs:
-      - placeholder
