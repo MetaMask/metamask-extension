@@ -14,13 +14,13 @@ import {
   BridgeClientId,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
+import { handleFetch } from '@metamask/controller-utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
 import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../helpers/utils/util';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
-import { handleFetch } from '@metamask/controller-utils';
 
 type GasFeeEstimate = {
   suggestedMaxPriorityFeePerGas: string;
