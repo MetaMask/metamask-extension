@@ -659,9 +659,6 @@
   "basic": {
     "message": "기본"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "기본 기능 켜기"
-  },
   "basicConfigurationBannerTitle": {
     "message": "기본 기능이 꺼져 있습니다."
   },
@@ -5214,10 +5211,6 @@
   "snapConnectionWarning": {
     "message": "$1에서 $2 사용을 원합니다.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "콘텐츠 출처: $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "웹사이트"

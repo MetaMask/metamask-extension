@@ -659,9 +659,6 @@
   "basic": {
     "message": "Βασικά"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Ενεργοποίηση βασικών λειτουργιών"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Οι βασικές λειτουργίες είναι απενεργοποιημένες"
   },
@@ -5214,10 +5211,6 @@
   "snapConnectionWarning": {
     "message": "Το $1 θέλει να χρησιμοποιήσει $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "Αυτό το περιεχόμενο προέρχεται από το $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "Ιστότοπος"
