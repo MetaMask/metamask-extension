@@ -338,10 +338,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "A taxa de prioridade (ou seja, \"gorjeta do minerador\") vai diretamente para os mineradores e os incentiva a priorizar a sua transação."
   },
-  "agreeTermsOfUse": {
-    "message": "Concordo com os $1 da MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "O histórico do token na rede revela ocorrências anteriores de atividades de airdrop suspeitas."
   },
@@ -662,9 +658,6 @@
   },
   "basic": {
     "message": "Básico"
-  },
-  "basicConfigurationBannerCTA": {
-    "message": "Ativar funcionalidade básica"
   },
   "basicConfigurationBannerTitle": {
     "message": "A funcionalidade básica está desativada"
@@ -1257,9 +1250,6 @@
   "confusingEnsDomain": {
     "message": "Detectamos um caractere ambíguo no nome ENS. Verifique o nome ENS para evitar um possível golpe."
   },
-  "congratulations": {
-    "message": "Parabéns!"
-  },
   "connect": {
     "message": "Conectar"
   },
@@ -1447,9 +1437,6 @@
   },
   "createNewAccountHeader": {
     "message": "Crie uma conta"
-  },
-  "createNewWallet": {
-    "message": "Criar uma nova carteira"
   },
   "createPassword": {
     "message": "Criar senha"
@@ -2296,18 +2283,11 @@
   "gasLimit": {
     "message": "Limite de gás"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "O limite de gás é o valor máximo das unidades de gás que você está disposto a gastar."
-  },
   "gasLimitRecommended": {
     "message": "O limite de gás recomendado é de $1. Um limite de gás inferior pode resultar em falha."
   },
   "gasLimitTooLow": {
     "message": "O limite de gás deve ser de pelo menos 21000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "O limite de gás deve ser de pelo menos $1",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "Limite de gás"
@@ -2315,23 +2295,11 @@
   "gasOption": {
     "message": "Opção de gás"
   },
-  "gasPrice": {
-    "message": "Preço do gás (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "Sua taxa de gás está desnecessariamente alta. Considere reduzir o valor."
   },
-  "gasPriceExcessiveInput": {
-    "message": "O preço do gás está excessivo"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "O preço do gás está extremamente baixo"
-  },
   "gasPriceFetchFailed": {
     "message": "Ocorreu uma falha na estimativa do preço do gás devido a um erro na rede."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "O preço do gás especifica o valor de Ether que você está disposto a pagar para cada unidade de gás."
   },
   "gasTimingHoursShort": {
     "message": "$1 h",
@@ -2365,9 +2333,6 @@
   },
   "genericExplorerView": {
     "message": "Ver conta na $1"
-  },
-  "goBack": {
-    "message": "Voltar"
   },
   "goToSite": {
     "message": "Ir ao site"
@@ -2533,10 +2498,6 @@
   "id": {
     "message": "ID"
   },
-  "ifYouGetLockedOut": {
-    "message": "Se você ficar impedido de entrar no app ou se usar um novo dispositivo, perderá seus fundos. Certifique-se de fazer backup da sua Frase de Recuperação Secreta em $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "Ignorar tudo"
   },
@@ -2570,9 +2531,6 @@
   },
   "importAccountMsg": {
     "message": "Contas importadas não serão associadas à sua Frase de Recuperação Secreta na MetaMask. Saiba mais sobre contas importadas"
-  },
-  "importMyWallet": {
-    "message": "Importar minha carteira"
   },
   "importNFT": {
     "message": "Importar NFT"
@@ -2793,10 +2751,6 @@
   "jsonFile": {
     "message": "Arquivo JSON",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Guarde um lembrete da sua Frase de Recuperação Secreta em algum lugar seguro. Se você a perder, ninguém poderá ajudar a recuperá-la. Pior ainda, você nunca mais poderá acessar sua carteira. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Nome da conta"
@@ -3817,9 +3771,6 @@
   "onboardingMetametricsDescription": {
     "message": "Gostaríamos de coletar dados básicos de uso para melhorar a MetaMask. Saiba que nunca vendemos os dados que você fornece aqui."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Quando coletamos as métricas, elas sempre são..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Informaremos a você se decidirmos usar esses dados para outras finalidades. Você pode analisar nossa $1 para obter mais informações. Lembre-se: você pode acessar as configurações e revogar a permissão a qualquer momento.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3847,9 +3798,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opcionais:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Saiba como protegemos sua privacidade durante a coleta de dados de utilização relacionados ao seu perfil."
   },
   "onboardingMetametricsTitle": {
     "message": "Ajude-nos a melhorar a MetaMask"
@@ -3962,9 +3910,6 @@
   },
   "passwordNotLongEnough": {
     "message": "A senha não é longa o suficiente"
-  },
-  "passwordSetupDetails": {
-    "message": "Essa senha desbloqueará sua carteira MetaMask apenas neste dispositivo. A MetaMask não é capaz de recuperar essa senha."
   },
   "passwordStrength": {
     "message": "Segurança da senha: $1",
@@ -4546,12 +4491,6 @@
   "rejected": {
     "message": "Recusada"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Lembre-se, se você perder sua Frase de Recuperação Secreta, perderá acesso à sua carteira. $1 manter esse conjunto de palavras em segurança, para que possa acessar seus fundos a qualquer momento."
-  },
-  "reminderSet": {
-    "message": "Lembrete definido!"
-  },
   "remove": {
     "message": "Remover"
   },
@@ -4805,9 +4744,6 @@
   "securityMessageLinkForNetworks": {
     "message": "golpes de rede e riscos de segurança"
   },
-  "securityPrivacyPath": {
-    "message": "Configurações > Segurança e Privacidade."
-  },
   "securityProviderPoweredBy": {
     "message": "Com tecnologia da $1",
     "description": "The security provider that is providing data"
@@ -4825,35 +4761,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Confirmar Frase de Recuperação Secreta"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Lembre-me mais tarde (não recomendado)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Proteger minha carteira (recomendado)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Anote e guarde em vários locais secretos"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Guarde em um cofre de banco"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "A sua Frase de Recuperação Secreta é uma frase de 12 palavras que é a “chave-mestra” para a sua carteira e seus fundos"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Caso alguém lhe peça a sua frase de recuperação, essa pessoa provavelmente está tentando dar um golpe em você e roubar os fundos da sua carteira"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Jamais compartilhe a sua Frase de Recuperação Secreta, nem mesmo com a MetaMask!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "O que é uma Frase de Recuperação Secreta?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Devo compartilhar minha Frase de Recuperação Secreta?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Como salvo minha Frase de Recuperação Secreta?"
   },
   "seedPhraseIntroTitle": {
     "message": "Proteja sua carteira"
@@ -4980,9 +4892,6 @@
   },
   "settings": {
     "message": "Configurações"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "As configurações são otimizadas para facilidade de uso e segurança. Altere-as quando quiser."
   },
   "settingsSearchMatchingNotFound": {
     "message": "Nenhum resultado correspondente encontrado."
@@ -5137,9 +5046,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "Pular"
   },
   "skipAccountSecurity": {
     "message": "Pular a segurança da conta?"
@@ -5328,10 +5234,6 @@
   "snapConnectionWarning": {
     "message": "$1 quer usar $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "Esse conteúdo vem de $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "Site"
@@ -6740,10 +6642,6 @@
   "walletConnectionGuide": {
     "message": "nosso guia de conexão com a carteira de hardware"
   },
-  "walletProtectedAndReadyToUse": {
-    "message": "Sua carteira está protegida e pronta para ser usada. Você pode encontrar sua Frase de Recuperação Secreta em $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "wantToAddThisNetwork": {
     "message": "Desejar adicionar esta rede?"
   },
@@ -6789,23 +6687,8 @@
   "welcomeBack": {
     "message": "Boas-vindas de volta"
   },
-  "welcomeExploreDescription": {
-    "message": "Armazene, envie e gaste criptomoedas e criptoativos."
-  },
-  "welcomeExploreTitle": {
-    "message": "Explore aplicativos descentralizados"
-  },
-  "welcomeLoginDescription": {
-    "message": "Use a sua MetaMask para fazer login em aplicativos descentralizados, sem necessidade de cadastro."
-  },
-  "welcomeLoginTitle": {
-    "message": "Diga olá à sua carteira"
-  },
   "welcomeToMetaMask": {
     "message": "Vamos começar"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Com a confiança de milhões de usuários, a MetaMask é uma carteira segura que torna o mundo da Web3 acessível a todos."
   },
   "whatsThis": {
     "message": "O que é isso?"
@@ -6868,8 +6751,5 @@
   },
   "yourWalletIsReady": {
     "message": "Sua carteira está pronta"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "O preço do gás está zerado na aceleração"
   }
 }

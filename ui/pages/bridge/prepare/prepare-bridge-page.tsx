@@ -19,6 +19,7 @@ import {
   getNativeAssetForChainId,
   isNativeAddress,
   UnifiedSwapBridgeEventName,
+  BRIDGE_DEFAULT_SLIPPAGE,
 } from '@metamask/bridge-controller';
 import {
   setFromToken,
@@ -46,6 +47,7 @@ import {
   getFromAmountInCurrency,
   getValidationErrors,
   getIsToOrFromSolana,
+  getIsSolanaSwap,
   getQuoteRefreshRate,
   getHardwareWalletName,
   getIsQuoteExpired,
@@ -267,21 +269,6 @@ const PrepareBridgePage = () => {
   const { flippedRequestProperties } = useRequestProperties();
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
-  // When entering the page for the first time emit an event for the page viewed
-  useEffect(() => {
-    trackCrossChainSwapsEvent({
-      event: MetaMetricsEventName.ActionPageViewed,
-      properties: {
-        chain_id_source: formatChainIdToCaip(fromChain?.chainId ?? ''),
-        token_symbol_source: fromToken?.symbol ?? '',
-        token_address_source: fromToken?.address ?? '',
-        chain_id_destination: formatChainIdToCaip(toChain?.chainId ?? ''),
-        token_symbol_destination: toToken?.symbol ?? '',
-        token_address_destination: toToken?.address ?? '',
-      },
-    });
-  }, []);
-
   const millisecondsUntilNextRefresh = useCountdownTimer();
 
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
@@ -371,6 +358,7 @@ const PrepareBridgePage = () => {
   ]);
 
   const isToOrFromSolana = useSelector(getIsToOrFromSolana);
+  const isSolanaSwap = useSelector(getIsSolanaSwap);
 
   const isDestinationSolana = useMemo(() => {
     if (!toChain?.chainId) {
@@ -420,12 +408,31 @@ const PrepareBridgePage = () => {
     ],
   );
 
-  const debouncedUpdateQuoteRequestInController = debounce(
-    (...args: Parameters<typeof updateQuoteRequestParams>) => {
+  const debouncedUpdateQuoteRequestInController = useCallback(
+    debounce((...args: Parameters<typeof updateQuoteRequestParams>) => {
       dispatch(updateQuoteRequestParams(...args));
-    },
-    300,
+    }, 300),
+    [dispatch],
   );
+
+  // When entering the page for the first time emit an event for the page viewed
+  useEffect(() => {
+    trackCrossChainSwapsEvent({
+      event: MetaMetricsEventName.ActionPageViewed,
+      properties: {
+        chain_id_source: formatChainIdToCaip(fromChain?.chainId ?? ''),
+        token_symbol_source: fromToken?.symbol ?? '',
+        token_address_source: fromToken?.address ?? '',
+        chain_id_destination: formatChainIdToCaip(toChain?.chainId ?? ''),
+        token_symbol_destination: toToken?.symbol ?? '',
+        token_address_destination: toToken?.address ?? '',
+      },
+    });
+
+    return () => {
+      debouncedUpdateQuoteRequestInController.cancel();
+    };
+  }, []);
 
   useEffect(() => {
     dispatch(setSelectedQuote(null));
@@ -534,20 +541,30 @@ const PrepareBridgePage = () => {
     handleToken();
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
-  // Set the default destination token and slippage for swaps
+  // Set slippage based on swap type
+  const slippageInitializedRef = useRef(false);
+  useEffect(() => {
+    if (isSwap && fromChain && toChain && !slippageInitializedRef.current) {
+      slippageInitializedRef.current = true;
+      // For Solana swaps, use undefined (AUTO), otherwise use default 0.5%
+      const targetSlippage = isSolanaSwap ? undefined : BRIDGE_DEFAULT_SLIPPAGE;
+      dispatch(setSlippage(targetSlippage));
+    }
+  }, [isSwap, isSolanaSwap, fromChain, toChain, dispatch]);
+
+  // Set the default destination token for swaps
   useEffect(() => {
     endTrace({
       name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
       timestamp: Date.now(),
     });
-    if (isSwap) {
-      dispatch(setSlippage(undefined));
-      if (fromChain && !toToken) {
-        dispatch(setToChainId(fromChain.chainId));
-        dispatch(setToToken(SOLANA_USDC_ASSET));
-      }
+
+    // Set default destination token for swaps
+    if (isSwap && fromChain && !toToken) {
+      dispatch(setToChainId(fromChain.chainId));
+      dispatch(setToToken(SOLANA_USDC_ASSET));
     }
-  }, []);
+  }, [isSwap, dispatch, fromChain, toToken]);
 
   // Edge-case fix: if user lands with USDC selected for both sides on Solana,
   // switch destination to SOL (native asset).
