@@ -2337,9 +2337,6 @@
   "genericExplorerView": {
     "message": "Ver cuenta en $1"
   },
-  "goBack": {
-    "message": "Volver"
-  },
   "goToSite": {
     "message": "Ir al sitio"
   },
@@ -4790,35 +4787,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Confirmar frase secreta de recuperación"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Recordarme más tarde (no recomendado)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Proteger mi monedero (recomendado)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Escríbala y guárdela en varios lugares secretos"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Guárdela en una caja de seguridad"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Su frase secreta de recuperación es una frase de 12 palabras que es la “clave maestra” de su monedero y sus fondos"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Si alguien le pide su frase de recuperación, es posible que tenga intenciones de estafarlo."
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Nunca comparta su frase secreta de recuperación, ni siquiera con MetaMask."
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "¿Qué es una frase secreta de recuperación?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "¿Debería compartir mi frase secreta de recuperación?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "¿Cómo guardo mi frase secreta de recuperación?"
   },
   "seedPhraseIntroTitle": {
     "message": "Proteger su cartera"
@@ -5102,9 +5075,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "Omitir"
   },
   "skipAccountSecurity": {
     "message": "¿Omitir la seguridad de la cuenta?"

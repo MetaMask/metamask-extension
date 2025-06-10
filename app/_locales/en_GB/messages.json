@@ -2352,9 +2352,6 @@
   "getTheNewestFeatures": {
     "message": "Get the newest features"
   },
-  "goBack": {
-    "message": "Go back"
-  },
   "goToSite": {
     "message": "Go to site"
   },
@@ -4796,6 +4793,19 @@
   "secureWallet": {
     "message": "Secure wallet"
   },
+  "secureWalletGetStartedButton": {
+    "message": "Get started"
+  },
+  "secureWalletRemindLaterButton": {
+    "message": "Remind me later"
+  },
+  "secureWalletWalletRecover": {
+    "message": "It’s the only way to recover your wallet if you get locked out of the app or get a new device."
+  },
+  "secureWalletWalletSaveSrp": {
+    "message": "Don’t risk losing your funds. Protect your wallet by saving your $1 in a place you trust.",
+    "description": "The $1 is the button text 'Secret Recovery Phrase'"
+  },
   "security": {
     "message": "Security"
   },
@@ -4838,35 +4848,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Confirm Secret Recovery Phrase"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Remind me later (not recommended)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Secure my wallet (recommended)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Write down and store in multiple secret places"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Store in a safe deposit box"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Your Secret Recovery Phrase is a 12-word phrase that is the “master key” to your wallet and your funds"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "If someone asks for your recovery phrase they are likely trying to scam you and steal your wallet funds."
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Never, ever share your Secret Recovery Phrase, not even with MetaMask!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "What is a Secret Recovery Phrase?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Should I share my Secret Recovery Phrase?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "How do I save my Secret Recovery Phrase?"
   },
   "seedPhraseIntroTitle": {
     "message": "Secure your wallet"
@@ -5151,14 +5137,17 @@
   "siweURI": {
     "message": "URL"
   },
-  "skip": {
-    "message": "Skip"
-  },
   "skipAccountSecurity": {
     "message": "Skip account security?"
   },
   "skipAccountSecurityDetails": {
     "message": "If you lose this Secret Recovery Phrase, you won’t be able to access this wallet."
+  },
+  "skipAccountSecuritySecureNow": {
+    "message": "Secure now"
+  },
+  "skipAccountSecuritySkip": {
+    "message": "Skip"
   },
   "slideBridgeDescription": {
     "message": "Move across 9 chains, all within your wallet"
