@@ -28,13 +28,13 @@ import {
   getMultichainSelectedAccountCachedBalance,
 } from '../../../../selectors/multichain';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
-import AssetComponent from './Asset';
-import { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
 import {
   type SafeChain,
   useSafeChains,
 } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+import AssetComponent from './Asset';
+import { AssetWithDisplayData, ERC20Asset, NFT, NativeAsset } from './types';
 
 type AssetListProps = {
   handleAssetChange: (
