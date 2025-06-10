@@ -3523,9 +3523,6 @@
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
   },
-  "noCustomNetworks": {
-    "message": "No custom networks added yet."
-  },
   "noDeFiPositions": {
     "message": "No positions yet"
   },
@@ -6325,7 +6322,7 @@
     "message": "Review our Terms of Use"
   },
   "testNetworks": {
-    "message": "Testnets"
+    "message": "Test networks"
   },
   "testnets": {
     "message": "Testnets"

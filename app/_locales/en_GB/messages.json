@@ -1535,6 +1535,9 @@
     "message": "Use $1 to customize the gas price. This can be confusing if you aren’t familiar. Interact at your own risk.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold font-weight"
   },
+  "customNetworks": {
+    "message": "Custom Networks"
+  },
   "customSlippage": {
     "message": "Custom"
   },
@@ -1713,6 +1716,9 @@
   "descriptionFromSnap": {
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
+  },
+  "deselectAll": {
+    "message": "Deselect all"
   },
   "destinationAccountPickerNoEligible": {
     "message": "No eligible accounts found"
@@ -1961,6 +1967,9 @@
   },
   "editInPortfolio": {
     "message": "Edit in Portfolio"
+  },
+  "editNetwork": {
+    "message": "Edit network"
   },
   "editNetworkLink": {
     "message": "edit the original network"
