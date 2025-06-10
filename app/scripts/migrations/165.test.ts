@@ -1,7 +1,7 @@
 import { NetworkState } from '@metamask/network-controller';
-import { getBaseNetworkConfiguration, migrate, version } from './163';
+import { getBaseNetworkConfiguration, migrate, version } from './165';
 
-const oldVersion = 162;
+const oldVersion = 163;
 
 describe(`migration #${version}`, () => {
   beforeEach(() => {
@@ -109,7 +109,7 @@ describe(`migration #${version}`, () => {
       data: {
         NetworkController: {
           networkConfigurationsByChainId: {
-            ['0x2105']: customBaseConfig,
+            '0x2105': customBaseConfig,
           },
         },
       },
@@ -134,8 +134,8 @@ describe(`migration #${version}`, () => {
         NetworkController: {
           networkConfigurationsByChainId: {
             // Some network configurations, but not Base
-            ['0x1']: { chainId: '0x1' },
-            ['0x1337']: { chainId: '0x1337' },
+            '0x1': { chainId: '0x1' },
+            '0x1337': { chainId: '0x1337' },
           },
         },
       },
