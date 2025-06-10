@@ -40,6 +40,7 @@ jobs:
           is-high-risk-environment: false
           cache-node-modules: true
           skip-allow-scripts: true
+          yarn-custom-url: 'https://github.com/Qbandev/github-tools/releases/download/v4.9.1/yarn-4.9.1.js'
 
   lint-workflows:
     name: Lint workflows
