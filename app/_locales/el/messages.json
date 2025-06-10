@@ -659,9 +659,6 @@
   "basic": {
     "message": "Βασικά"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Ενεργοποίηση βασικών λειτουργιών"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Οι βασικές λειτουργίες είναι απενεργοποιημένες"
   },
@@ -1443,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "Δημιουργία νέου λογαριασμού"
-  },
-  "createNewWallet": {
-    "message": "Δημιουργία νέου πορτοφολιού"
   },
   "createPassword": {
     "message": "Δημιουργία κωδικού πρόσβασης"
@@ -2343,9 +2337,6 @@
   "genericExplorerView": {
     "message": "Προβολή λογαριασμού σε $1"
   },
-  "goBack": {
-    "message": "Πηγαίνετε πίσω"
-  },
   "goToSite": {
     "message": "Μετάβαση στον ιστότοπο"
   },
@@ -2547,9 +2538,6 @@
   },
   "importAccountMsg": {
     "message": "Οι λογαριασμοί που έχουν εισαχθεί δεν θα συσχετίζονται με τη Μυστική Φράση Ανάκτησης στο MetaTask. Μάθετε περισσότερα για τους λογαριασμούς που έχουν εισαχθεί"
-  },
-  "importMyWallet": {
-    "message": "Εισαγωγή του πορτοφολιού μου"
   },
   "importNFT": {
     "message": "Εισαγωγή NFT"
@@ -3940,9 +3928,6 @@
   "passwordNotLongEnough": {
     "message": "Ο κωδικός πρόσβασης δεν είναι αρκετά μεγάλος"
   },
-  "passwordSetupDetails": {
-    "message": "Αυτός ο κωδικός πρόσβασης θα ξεκλειδώσει το πορτοφόλι σας στο MetaMask μόνο σε αυτή τη συσκευή. Το MetaMask δεν μπορεί να ανακτήσει αυτόν τον κωδικό πρόσβασης."
-  },
   "passwordStrength": {
     "message": "Ισχύς κωδικού πρόσβασης: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -4802,35 +4787,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Επιβεβαίωση της Μυστικής Φράσης Ανάκτησης"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Υπενθυμίστε μου αργότερα (δεν συνιστάται)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Προστατέψτε το πορτοφόλι μου (συνιστάται)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Γράψτε και αποθηκεύστε σε πολλά μυστικά μέρη"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Αποθήκευση σε θυρίδα ασφαλείας"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Η Μυστική σας Φράση Ανάκτησης είναι μια φράση 12 λέξεων που είναι το «κύριο κλειδί» για το πορτοφόλι και τα χρήματά σας"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Αν κάποιος σας ζητήσει τη φράση ανάκτησής σας, είναι πιθανό να προσπαθεί να σας εξαπατήσει και να κλέψει τα χρήματα του πορτοφολιού σας."
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Ποτέ, μα ποτέ μην μοιραστείτε τη Μυστική σας Φράση Ανάκτησης, ούτε καν με το MetaMask!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Τι είναι η Μυστική Φράση Ανάκτησης;"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Θα πρέπει να μοιραστώ τη Μυστική μου Φράση Ανάκτησης;"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Πώς μπορώ να αποθηκεύσω τη Μυστική μου Φράση Ανάκτησης;"
   },
   "seedPhraseIntroTitle": {
     "message": "Προστατεύστε το πορτοφόλι σας"
@@ -5114,9 +5075,6 @@
   },
   "siweURI": {
     "message": "Διεύθυνση URL"
-  },
-  "skip": {
-    "message": "Παράλειψη"
   },
   "skipAccountSecurity": {
     "message": "Παράλειψη ασφάλειας λογαριασμού;"
