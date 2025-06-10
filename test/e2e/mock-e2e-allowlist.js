@@ -40,10 +40,6 @@ const ALLOWLISTED_URLS = [
   'https://swap.api.cx.metamask.io/networks/1/trades?destinationToken=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&sourceToken=0x0000000000000000000000000000000000000000&sourceAmount=1000000000000000&slippage=2&timeout=10000&walletAddress=0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
   'https://swap.api.cx.metamask.io/networks/1/trades?destinationToken=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&sourceToken=0x0000000000000000000000000000000000000000&sourceAmount=50000000000000000000&slippage=2&timeout=10000&walletAddress=0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
   'https://swap.metaswap.codefi.network/networks/1/topAssets',
-  // Assets
-  'https://tokens.api.cx.metamask.io/v3/assets?assetIds=solana%3A5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Fslip44%3A501',
-  'https://tokens.api.cx.metamask.io/v3/assets?assetIds=solana%3A5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Fslip44%3A501%2Csolana%3A5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Ftoken%3A2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin',
-  'https://tokens.api.cx.metamask.io/v3/assets?assetIds=solana%3AEtWTRABZaYq6iMfeYKouRu166VU2xqa1%2Fslip44%3A501',
 ];
 
 const ALLOWLISTED_HOSTS = [
@@ -52,7 +48,6 @@ const ALLOWLISTED_HOSTS = [
   'solana-devnet.infura.io',
   'solana-mainnet.infura.io',
   'snaps.metamask.io',
-  'start.metamask.io',
   'token.api.cx.metamask.io',
 ];
 
