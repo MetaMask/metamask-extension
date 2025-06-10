@@ -44,9 +44,13 @@ export interface AvatarFaviconStyleUtilityProps
   className?: string;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type AvatarFaviconProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, AvatarFaviconStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type AvatarFaviconComponent = <C extends React.ElementType = 'span'>(
   props: AvatarFaviconProps<C>,
 ) => React.ReactElement | null;

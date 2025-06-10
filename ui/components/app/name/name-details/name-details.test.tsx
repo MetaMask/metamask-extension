@@ -495,8 +495,14 @@ describe('NameDetails', () => {
         event: MetaMetricsEventName.PetnameModalOpened,
         category: MetaMetricsEventCategory.Petnames,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           has_petname: true,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           petname_category: NameType.ETHEREUM_ADDRESS,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
         },
       });
@@ -567,8 +573,14 @@ describe('NameDetails', () => {
         event: MetaMetricsEventName.PetnameCreated,
         category: MetaMetricsEventCategory.Petnames,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           petname_category: NameType.ETHEREUM_ADDRESS,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           petname_source: SOURCE_ID_MOCK,
         },
       });
@@ -658,9 +670,17 @@ describe('NameDetails', () => {
         event: MetaMetricsEventName.PetnameUpdated,
         category: MetaMetricsEventCategory.Petnames,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           petname_category: NameType.ETHEREUM_ADDRESS,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           petname_source: SOURCE_ID_2_MOCK,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           petname_previous_source: SOURCE_ID_MOCK,
         },
       });
@@ -750,8 +770,14 @@ describe('NameDetails', () => {
         event: MetaMetricsEventName.PetnameDeleted,
         category: MetaMetricsEventCategory.Petnames,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           petname_category: NameType.ETHEREUM_ADDRESS,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           suggested_names_sources: [SOURCE_ID_MOCK, SOURCE_ID_2_MOCK],
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           petname_previous_source: SOURCE_ID_MOCK,
         },
       });

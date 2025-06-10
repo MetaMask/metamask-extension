@@ -3,6 +3,8 @@
 // this, you should also remove the types polyfill for it in types/global.d.ts
 // and app/scripts/app-init.js
 if (typeof Promise.withResolvers === 'undefined') {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   Promise.withResolvers = function withResolvers<T>() {
     let resolve!: (value: T | PromiseLike<T>) => void;
     let reject!: (reason?: unknown) => void;
