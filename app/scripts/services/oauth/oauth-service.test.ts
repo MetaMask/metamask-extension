@@ -5,6 +5,7 @@ import {
 import { OAuthLoginEnv, WebAuthenticator } from './types';
 import OAuthService from './oauth-service';
 import { createLoginHandler } from './create-login-handler';
+import { PLATFORM_CHROME } from '../../../../shared/constants/app';
 
 const DEFAULT_GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
 const DEFAULT_APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID as string;
@@ -40,12 +41,14 @@ const generateCodeVerifierAndChallengeSpy = jest.fn().mockResolvedValue({
   challenge: 'mocked-code-verifier-challenge',
 });
 const generateNonceSpy = jest.fn().mockReturnValue(MOCK_NONCE);
+const getPlatformSpy = jest.fn().mockReturnValue(PLATFORM_CHROME);
 
 const mockWebAuthenticator: WebAuthenticator = {
   getRedirectURL: getRedirectUrlSpy,
   launchWebAuthFlow: launchWebAuthFlowSpy,
   generateCodeVerifierAndChallenge: generateCodeVerifierAndChallengeSpy,
   generateNonce: generateNonceSpy,
+  getPlatform: getPlatformSpy,
 };
 
 describe('OAuthService', () => {
@@ -79,7 +82,6 @@ describe('OAuthService', () => {
 
     const googleLoginHandler = createLoginHandler(
       AuthConnection.Google,
-      mockWebAuthenticator.getRedirectURL(),
       getOAuthLoginEnvs(),
       mockWebAuthenticator,
     );
@@ -103,7 +105,6 @@ describe('OAuthService', () => {
 
     const appleLoginHandler = createLoginHandler(
       AuthConnection.Apple,
-      mockWebAuthenticator.getRedirectURL(),
       getOAuthLoginEnvs(),
       mockWebAuthenticator,
     );
