@@ -4,7 +4,7 @@ import { largeDelayMs, WINDOW_TITLES } from '../../../helpers';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
-  escapeColon,
+  replaceColon,
 } from '../testHelpers';
 import { withSolanaAccountSnap } from '../../../tests/solana/common-solana';
 
@@ -17,7 +17,6 @@ describe('Multichain API - Non EVM', function () {
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            mockSendTransaction: true,
           },
           async (driver, _, extensionId) => {
             const testDapp = new TestDappMultichain(driver);
@@ -35,13 +34,13 @@ describe('Multichain API - Non EVM', function () {
 
             const invokeMethod = 'signIn';
             await driver.clickElementSafe(
-              `[data-testid="${SOLANA_SCOPE}-${invokeMethod}-option"]`,
+              `[data-testid="${replaceColon(SOLANA_SCOPE)}-${invokeMethod}-option"]`,
             );
 
             await driver.delay(largeDelayMs);
 
             await driver.clickElementSafe(
-              `[data-testid="invoke-method-${SOLANA_SCOPE}-btn"]`,
+              `[data-testid="invoke-method-${replaceColon(SOLANA_SCOPE)}-btn"]`,
             );
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -75,7 +74,7 @@ describe('Multichain API - Non EVM', function () {
           {
             ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            mockSendTransaction: true,
+            mockGetTransactionSuccess: true,
           },
           async (driver, _, extensionId) => {
             const testDapp = new TestDappMultichain(driver);
@@ -93,13 +92,13 @@ describe('Multichain API - Non EVM', function () {
 
             const invokeMethod = 'signAndSendTransaction';
             await driver.clickElementSafe(
-              `[data-testid="${SOLANA_SCOPE}-${invokeMethod}-option"]`,
+              `[data-testid="${replaceColon(SOLANA_SCOPE)}-${invokeMethod}-option"]`,
             );
 
             await driver.delay(largeDelayMs);
 
             await driver.clickElementSafe(
-              `[data-testid="invoke-method-${SOLANA_SCOPE}-btn"]`,
+              `[data-testid="invoke-method-${replaceColon(SOLANA_SCOPE)}-btn"]`,
             );
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -131,7 +130,7 @@ describe('Multichain API - Non EVM', function () {
             );
 
             const resultWebElement = await driver.findElement(
-              `#invoke-method-${escapeColon(
+              `#invoke-method-${replaceColon(
                 SOLANA_SCOPE,
               )}-${invokeMethod}-result-0`,
             );
