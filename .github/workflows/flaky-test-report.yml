@@ -25,6 +25,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: 'https://github.com/MetaMask/github-tools/releases/download/v4.9.1/yarn-4.9.1.js'
 
       - name: Create flaky test report
         run: yarn tsx .github/scripts/create-flaky-test-report.ts

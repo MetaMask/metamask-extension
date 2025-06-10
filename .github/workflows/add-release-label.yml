@@ -18,6 +18,7 @@ jobs:
           is-high-risk-environment: false
           fetch-depth: 0 # This is needed to checkout all branches
           skip-allow-scripts: true
+          yarn-custom-url: 'https://github.com/MetaMask/github-tools/releases/download/v4.9.1/yarn-4.9.1.js'
 
       - name: Get the next semver version
         id: get-next-semver-version
