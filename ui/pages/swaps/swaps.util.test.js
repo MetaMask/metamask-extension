@@ -39,6 +39,8 @@ import {
   AGGREGATOR_METADATA,
   TOP_ASSETS,
 } from './swaps-util-test-constants';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import { ChainId } from '@metamask/bridge-controller';
 
 jest.mock('../../../shared/lib/storage-helpers', () => ({
   getStorageItem: jest.fn(),
@@ -121,6 +123,14 @@ describe('Swaps Util', () => {
     it('should fetch top assets on prod', async () => {
       const result = await fetchTopAssetsList(CHAIN_IDS.MAINNET);
       expect(result).toStrictEqual(TOP_ASSETS);
+    });
+
+    it.only('should not fetch top assets for solana', async () => {
+      expect(await fetchTopAssetsList(MultichainNetworks.SOLANA)).toStrictEqual(
+        [],
+      );
+      expect(await fetchTopAssetsList(ChainId.SOLANA)).toStrictEqual([]);
+      expect(await fetchTopAssetsList('0x416EDEF1601BE')).toStrictEqual([]);
     });
   });
 
