@@ -1,28 +1,40 @@
 .mm-button-primary {
+  transition: transform 100ms ease-out;
+
   &:hover:not(&--disabled) {
     color: var(--color-primary-inverse);
-    box-shadow:
-      var(--shadow-size-sm)
-      var(--color-shadow-primary);
+    background-color: var(--color-icon-default);
+    opacity: 0.8;
+    transition: background-color 200ms ease;
   }
 
-  &:active {
+  &:active:not(&--disabled) {
     color: var(--color-primary-inverse);
-    background-color: var(--color-primary-alternative);
+    background-color: var(--color-icon-default);
+    transform: scale(0.98);
+  }
+
+  &:focus-visible {
+    outline: 1.5px solid var(--color-icon-default);
+    outline-offset: 2px;
   }
 
   // Danger type
   &--type-danger:not(&--disabled) {
     &:hover {
       color: var(--color-error-inverse);
-      box-shadow:
-        var(--shadow-size-sm)
-        var(--color-shadow-error);
+      background-color: var(--color-error-default);
+      opacity: 0.8;
+      transition: background-color 200ms ease;
     }
 
     &:active {
       color: var(--color-error-inverse);
-      background-color: var(--color-error-alternative);
+    }
+
+    &:focus-visible {
+      outline: 1.5px solid var(--color-error-default);
+      outline-offset: 2px;
     }
   }
 
@@ -33,7 +45,7 @@
     }
 
     &:active {
-      background-color: var(--color-primary-default);
+      background-color: var(--color-icon-default);
     }
   }
   // Disabled danger
