@@ -204,7 +204,7 @@ const AccountListItem = ({
   };
 
   const isSrpPill = (label) => {
-    return Boolean(label && label.startsWith('SRP'));
+    return Boolean(label?.startsWith('SRP'));
   };
 
   return (
