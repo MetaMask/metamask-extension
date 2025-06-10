@@ -31,7 +31,7 @@ export async function migrate(
 function transformState(
   state: Record<string, unknown>,
 ): Record<string, unknown> {
-  // If property TokensController is not present, only log a warning and return the original state.
+  // If property UserStorageController is not present, only log a warning and return the original state.
   if (!hasProperty(state, 'UserStorageController')) {
     console.warn(`newState.UserStorageController is not present`);
     return state;
@@ -39,7 +39,7 @@ function transformState(
 
   const userStorageControllerState = state.UserStorageController;
 
-  // If property tokensControllerState is there but not an object, capture a sentry error and return state
+  // If property userStorageControllerState is there but not an object, capture a sentry error and return state
   if (!isObject(userStorageControllerState)) {
     global.sentry?.captureException?.(
       new Error(
