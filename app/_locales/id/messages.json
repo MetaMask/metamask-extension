@@ -659,9 +659,6 @@
   "basic": {
     "message": "Dasar"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Aktifkan fungsionalitas dasar"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Fungsionalitas dasar tidak aktif"
   },
@@ -1443,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "Buat akun baru"
-  },
-  "createNewWallet": {
-    "message": "Buat dompet baru"
   },
   "createPassword": {
     "message": "Buat kata sandi"
@@ -2343,9 +2337,6 @@
   "genericExplorerView": {
     "message": "Lihat akun di $1"
   },
-  "goBack": {
-    "message": "Kembali"
-  },
   "goToSite": {
     "message": "Buka situs"
   },
@@ -2547,9 +2538,6 @@
   },
   "importAccountMsg": {
     "message": "Akun yang diimpor tidak akan ditautkan dengan Frasa Pemulihan Rahasia MetaMask Anda. Pelajari selengkapnya tentang akun yang diimpor"
-  },
-  "importMyWallet": {
-    "message": "Impor dompet saya"
   },
   "importNFT": {
     "message": "Impor NFT"
@@ -3940,9 +3928,6 @@
   "passwordNotLongEnough": {
     "message": "Kata sandi kurang panjang"
   },
-  "passwordSetupDetails": {
-    "message": "Kata sandi ini akan membuka dompet MetaMask Anda hanya pada perangkat ini. MetaMask tidak dapat memulihkan kata sandi ini."
-  },
   "passwordStrength": {
     "message": "Kekuatan kata sandi: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -4802,35 +4787,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Konfirmasikan Frasa Pemulihan Rahasia"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Ingatkan saya nanti (tidak direkomendasikan)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Amankan dompet saya (direkomendasikan)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Tulis dan simpan di beberapa tempat rahasia"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Simpan di kotak deposit yang aman"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Frasa Pemulihan Rahasia Anda adalah “kunci master” ke dompet dan dana Anda"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Jika seseorang menanyakan frasa pemulihan Anda, kemungkinan mereka akan mencoba menipu dan mencuri dana di dompet Anda"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Jangan pernah membagikan Frasa Pemulihan Rahasia Anda bahkan kepada MetaMask sekali pun!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Apa itu Frasa Pemulihan Rahasia?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Haruskah saya membagikan Frasa Pemulihan Rahasia saya?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Bagaimana cara menyimpan Frasa Pemulihan Rahasia saya?"
   },
   "seedPhraseIntroTitle": {
     "message": "Amankan dompet Anda"
@@ -5114,9 +5075,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "Lewati"
   },
   "skipAccountSecurity": {
     "message": "Lewati keamanan akun?"

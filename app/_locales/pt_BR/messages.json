@@ -407,9 +407,6 @@
   "create": {
     "message": "Criar"
   },
-  "createNewWallet": {
-    "message": "Criar uma nova carteira"
-  },
   "createPassword": {
     "message": "Criar senha"
   },
@@ -807,9 +804,6 @@
   "general": {
     "message": "Geral"
   },
-  "goBack": {
-    "message": "Voltar"
-  },
   "goerli": {
     "message": "Rede de testes Goerli"
   },
@@ -873,9 +867,6 @@
   },
   "importAccountMsg": {
     "message": "As contas importadas não estarão associadas à Frase de Recuperação Secreta da conta da MetaMask criada originalmente. Saiba mais sobre as contas importadas"
-  },
-  "importMyWallet": {
-    "message": "Importar minha carteira"
   },
   "importTokenQuestion": {
     "message": "Importar token?"
@@ -1315,9 +1306,6 @@
   "passwordNotLongEnough": {
     "message": "A senha não é longa o suficiente"
   },
-  "passwordSetupDetails": {
-    "message": "Essa senha desbloqueará sua carteira MetaMask apenas neste dispositivo. A MetaMask não é capaz de recuperar essa senha."
-  },
   "passwordTermsWarning": {
     "message": "Compreendo que a MetaMask não é capaz de recuperar essa senha para mim. $1"
   },
@@ -1506,35 +1494,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Confirmar Frase de Recuperação Secreta"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Lembre-me mais tarde (não recomendado)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Proteger minha carteira (recomendado)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Anote e guarde em vários locais secretos."
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Guarde em um cofre de banco."
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "A sua Frase de Recuperação Secreta é uma frase de 12 palavras que é a “chave-mestra” para a sua carteira e seus fundos"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Caso alguém lhe peça a sua frase de recuperação, essa pessoa provavelmente está tentando dar um golpe em você e roubar os fundos da sua carteira"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Jamais compartilhe a sua Frase de Recuperação Secreta, nem mesmo com a MetaMask!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "O que é uma Frase de Recuperação Secreta?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Devo compartilhar minha Frase de Recuperação Secreta?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Como salvo minha Frase de Recuperação Secreta?"
   },
   "seedPhraseIntroTitle": {
     "message": "Proteja sua carteira"
@@ -1627,9 +1591,6 @@
   },
   "simulationErrorMessageV2": {
     "message": "Não conseguimos estimar o preço do gás. Pode haver um erro no contrato, e essa transação poderá falhar."
-  },
-  "skip": {
-    "message": "Ignorar"
   },
   "skipAccountSecurity": {
     "message": "Ignorar a segurança da conta?"

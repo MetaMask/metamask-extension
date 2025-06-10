@@ -659,9 +659,6 @@
   "basic": {
     "message": "Panimula"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "I-on ang batayang kapakinabangan"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Naka-off ang batayang kapakinabangan"
   },
@@ -1443,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "Gumawa ng bagong account"
-  },
-  "createNewWallet": {
-    "message": "Gumawa ng bagong wallet"
   },
   "createPassword": {
     "message": "Gumawa ng password"
@@ -2343,9 +2337,6 @@
   "genericExplorerView": {
     "message": "Tingnan ang account sa $1"
   },
-  "goBack": {
-    "message": "Bumalik"
-  },
   "goToSite": {
     "message": "Magpunta sa site"
   },
@@ -2547,9 +2538,6 @@
   },
   "importAccountMsg": {
     "message": "Ang mga na-import na account ay hindi mauugnay sa iyong Lihim na Parirala sa Pagbawi ng MetaMask. Matuto pa tungkol sa mga na-import na account"
-  },
-  "importMyWallet": {
-    "message": "I-import ang Wallet Ko"
   },
   "importNFT": {
     "message": "Mag-import ng NFT"
@@ -3940,9 +3928,6 @@
   "passwordNotLongEnough": {
     "message": "Hindi sapat ang haba ng password"
   },
-  "passwordSetupDetails": {
-    "message": "Ang password na ito ay magbubukas lamang ng iyong MetaMask wallet sa device na ito. Hindi matatakpan ng MetaMask ang password na ito."
-  },
   "passwordStrength": {
     "message": "Tibay ng password: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -4802,35 +4787,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Kumpirmahin ang Lihim na Parirala sa Pagbawi"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Ipaalala sa amin sa ibang pagkakataon (hindi inirerekomenda)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "I-secure ang aking wallet (inirerekomenda)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Isulat at itago sa iba't ibang sikretong lugar"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Itago sa safe deposit box"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Ang iyong Lihim na Parirala sa Pagbawi ay isang 12 salitang parirala na \"master key\" sa iyong wallet at sa iyong pondo"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Kung may humingi ng iyong parirala sa pagbawi, malamang na sinusubukan ka nilang lokohin at nakawan ng mga pondo sa iyong wallet."
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Huwag kailanman ibahagi ang iyong Lihim na Parirala sa Pagbawi, kahit sa MetaMask!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Ano ang Lihim na Parirala sa Pagbawi?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Maaari ko bang ibahagi ang aking Lihim na Parirala sa Pagbawi?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Paano ko masi-save ang aking Lihim na Parirala sa Pagbawi?"
   },
   "seedPhraseIntroTitle": {
     "message": "I-secure ang wallet mo"
@@ -5114,9 +5075,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "Laktawan"
   },
   "skipAccountSecurity": {
     "message": "Laktawan ang Account Security?"
