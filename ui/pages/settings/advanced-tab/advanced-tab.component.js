@@ -5,7 +5,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
-import { SMART_ACCOUNT_LEARN_MORE_URL, SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
+import {
+  SMART_ACCOUNT_LEARN_MORE_URL,
+  SMART_TRANSACTIONS_LEARN_MORE_URL,
+} from '../../../../shared/constants/smartTransactions';
 import {
   Box,
   ButtonLink,
@@ -271,7 +274,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[2]}
+        ref={this.settingsRefs[3]}
         className="settings-page__content-row"
         data-testid="advanced-setting-dismiss-smart-account-suggestion-enabled"
         display={Display.Flex}
@@ -325,7 +328,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[2]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         data-testid="advanced-setting-enable-smart-transactions"
         display={Display.Flex}
@@ -362,7 +365,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[3]}
+        ref={this.settingsRefs[5]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -396,7 +399,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[4]}
+        ref={this.settingsRefs[6]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
