@@ -61,14 +61,8 @@ export const BridgeCTAButton = ({
 
   const {
     isNoQuotesAvailable,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     isInsufficientBalance: isInsufficientBalance_,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     isInsufficientGasBalance: isInsufficientGasBalance_,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     isInsufficientGasForQuote: isInsufficientGasForQuote_,
   } = useSelector(getValidationErrors);
 

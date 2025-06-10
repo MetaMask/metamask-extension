@@ -5,64 +5,98 @@
 // startup.
 @use "react-responsive-carousel/lib/styles/carousel";
 
-.onboarding-welcome {
-  .control-dots .dot {
-    background: var(--color-icon-muted);
-    box-shadow: none;
-
-    &.selected {
-      background: var(--color-icon-default);
-    }
+.welcome-banner {
+  &__wrapper {
+    max-width: 1280px;
+    margin: 125px auto 0;
   }
 
-  .slide {
-    min-height: 400px;
+  &__title {
+    font-family: var(--font-family-hero);
+    color: var(--color-accent03-dark);
+    font-size: 6.5rem;
+    line-height: 7.125rem;
+    word-wrap: break-word;
   }
 
-  /* next and previous arrow colors */
-  .carousel.carousel-slider .control-arrow {
-    opacity: 1;
-    color: var(--color-icon-default);
-
-    @include design-system.screen-sm-min {
-      padding: 40px;
-    }
+  &__description {
+    color: var(--color-accent03-dark);
+    max-width: 548px;
   }
 
-  .carousel .control-next.control-arrow::before {
-    border-left-color: var(--color-icon-default);
+  // SRP_OVERRIDE: bg always white
+  &__button {
+    background-color: var(--brand-colors-white);
+    width: 240px;
+    color: var(--brand-colors-black);
+  }
+}
+
+.welcome-login {
+  height: calc(100% - 16px);
+  max-height: 728px;
+  width: 446px;
+  background-color: var(--color-accent02-light);
+  border-radius: 24px;
+  box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+
+  &__content {
+    flex: 1;
   }
 
-  .carousel .control-prev.control-arrow::before {
-    border-right-color: var(--color-icon-default);
-  }
-
-  .carousel.carousel-slider .control-arrow:hover {
-    background: none;
+  &__title {
+    font-family: var(--font-family-accent);
+    font-size: 40px;
+    color: var(--color-accent02-dark);
+    line-height: 1em;
   }
 
   &__mascot {
-    width: 250px;
-    height: 250px;
-    margin: 20px auto;
-  }
-
-  &__image {
-    text-align: center;
-    margin: 20px auto;
-  }
-
-  &__buttons {
-    max-width: 300px;
-    margin: 40px auto 0 auto;
-
-    li {
-      margin-bottom: 24px;
+    &--image {
+      margin-bottom: 60px;
     }
   }
 
-  &__terms-checkbox {
-    margin: 0;
-    align-self: flex-start;
+  &__create-button {
+    background-color: var(--brand-colors-black);
+    color: var(--brand-colors-white);
+  }
+
+  &__import-button {
+    border: 1px solid var(--brand-colors-black);
+    color: var(--brand-colors-black);
+  }
+}
+
+.options-modal {
+  &__social-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  &__or {
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-border-muted);
+    }
+  }
+
+  &__plain-button {
+    height: 48px;
+
+    &:hover {
+      background-color: var(--color-background-hover);
+    }
+
+    &:active {
+      background-color: var(--color-background-pressed);
+    }
   }
 }

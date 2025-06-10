@@ -47,8 +47,6 @@ export const EditAccountAddAccountForm: React.FC<
       category: MetaMetricsEventCategory.Accounts,
       event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
       properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         button_type: 'picker',
       },
     });
@@ -116,12 +114,14 @@ export const EditAccountAddAccountForm: React.FC<
                   clientType={clientType}
                   chainId={chainId}
                   setNewlyCreatedAccountAsSelected={true}
+                  redirectToOverview={false}
                 />
               ) : (
                 <CreateEthAccount
                   onActionComplete={onActionComplete}
                   selectedKeyringId={selectedKeyringId}
                   onSelectSrp={onSelectSrp}
+                  redirectToOverview={false}
                 />
               )}
             </>

@@ -31,8 +31,6 @@ type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function TokenList({ onTokenClick }: TokenListProps) {
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
   const chainIdsToPoll = useSelector(getChainIdsToPoll);
@@ -100,11 +98,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
       event: MetaMetricsEventName.TokenDetailsOpened,
       properties: {
         location: 'Home',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol: token.symbol ?? 'unknown',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: token.chainId,
       },
     });

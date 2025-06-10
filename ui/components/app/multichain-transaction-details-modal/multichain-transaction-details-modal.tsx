@@ -61,8 +61,6 @@ export type MultichainTransactionDetailsModalProps = {
   networkConfig: MultichainProviderConfig;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function MultichainTransactionDetailsModal({
   transaction,
   onClose,
@@ -328,12 +326,8 @@ export function MultichainTransactionDetailsModal({
                 event: MetaMetricsEventName.ExternalLinkClicked,
                 category: MetaMetricsEventCategory.Navigation,
                 properties: {
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   link_type: MetaMetricsEventLinkType.AccountTracker,
                   location: 'Transaction Details',
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   url_domain: getURLHostName(getTransactionUrl(id, chain)),
                 },
               });

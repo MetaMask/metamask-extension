@@ -13,8 +13,6 @@ describe('Security alerts utils', () => {
     it('should correctly add title Id and Description Id', async () => {
       const mockTokenAlert = {
         type: TokenFeatureType.MALICIOUS,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         feature_id: 'UNSTABLE_TOKEN_PRICE',
         description: 'This token is Malicious',
       } as TokenFeature;
@@ -28,8 +26,6 @@ describe('Security alerts utils', () => {
     it('should correctly return title Id and Description Id null if not available', async () => {
       const mockTokenAlert = {
         type: TokenFeatureType.BENIGN,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         feature_id: 'BENIGN_TYPE',
         description: 'This token is Benign',
       } as TokenFeature;

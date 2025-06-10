@@ -42,6 +42,7 @@ import ShowHideToggle from '../../../components/ui/show-hide-toggle';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { getMetaMaskHdKeyrings } from '../../../selectors';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 
 const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
@@ -411,6 +412,7 @@ export const ImportSrp = () => {
             disabled={!isValidSrp || hasEmptyWordsOrIncorrectLength}
             loading={loading}
             onClick={async () => {
+              trace({ name: TraceName.ImportSrp });
               try {
                 setLoading(true);
                 await importWallet();
@@ -420,8 +422,6 @@ export const ImportSrp = () => {
                   event:
                     MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
                   properties: {
-                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                    // eslint-disable-next-line @typescript-eslint/naming-convention
                     hd_entropy_index: newHdEntropyIndex,
                   },
                 });
@@ -433,6 +433,7 @@ export const ImportSrp = () => {
                 );
               } finally {
                 setLoading(false);
+                endTrace({ name: TraceName.ImportSrp });
               }
             }}
           >

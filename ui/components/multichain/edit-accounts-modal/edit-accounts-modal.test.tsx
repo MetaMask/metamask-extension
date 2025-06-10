@@ -1,8 +1,9 @@
 import React from 'react';
 import { CaipAccountId } from '@metamask/utils';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { SolScope } from '@metamask/keyring-api';
+import { SolAccountType, SolScope } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
@@ -37,7 +38,14 @@ const goToAddNewAccount = (
   }
 };
 
-const mockCreateAccount = jest.fn();
+const mockNewAccount = createMockInternalAccount({
+  name: 'Solana Account 1',
+  address: '3wqBoWo34h34tovyEwy5WLmELH88spdMThjGtevnmKu1',
+  keyringType: KeyringTypes.snap,
+  type: SolAccountType.DataAccount,
+});
+
+const mockCreateAccount = jest.fn().mockResolvedValue(mockNewAccount);
 
 jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
   ...jest.requireActual(
@@ -60,6 +68,11 @@ jest.mock('../../../store/actions.ts', () => ({
   setAccountLabel: jest.fn(),
 }));
 
+const getCaipAccountId = (account: InternalAccount): CaipAccountId => {
+  const [scope] = account.scopes;
+  return `${scope}:${account.address}`;
+};
+
 const render = (
   props: {
     onSubmit: (addresses: string[]) => void;
@@ -77,8 +90,6 @@ const render = (
       ...state,
       permissionHistory: {
         'https://test.dapp': {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_accounts: {
             accounts: {
               '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1709225290848,
@@ -255,5 +266,34 @@ describe('EditAccountsModal', () => {
 
       expect(getByTestId('srp-list')).toBeInTheDocument();
     });
+  });
+
+  it('selects the new CAIP account ID of the account when it is created', async () => {
+    const caipAccountIdOfOriginalAccount = getCaipAccountId(
+      mockState.metamask.internalAccounts.accounts[
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+      ] as InternalAccount,
+    );
+    const expectedNewCaipAccountId = getCaipAccountId(mockNewAccount);
+    const mockOnSubmit = jest.fn();
+    const { getByTestId } = render({
+      onSubmit: mockOnSubmit,
+      onClose: jest.fn(),
+    });
+    goToAddNewAccount(getByTestId, 'solana');
+
+    await waitFor(() =>
+      expect(getByTestId('account-name-input')).toBeInTheDocument(),
+    );
+
+    const addAccountButton = getByTestId('submit-add-account-with-name');
+    fireEvent.click(addAccountButton);
+
+    await waitFor(() =>
+      expect(mockOnSubmit).toHaveBeenCalledWith([
+        caipAccountIdOfOriginalAccount,
+        expectedNewCaipAccountId,
+      ]),
+    );
   });
 });

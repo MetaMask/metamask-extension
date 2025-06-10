@@ -15,8 +15,6 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 // A button that updates the send amount to max balance or 0.
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function MaxClearButton({ asset }: { asset: Asset }) {
   const t = useI18nContext();
   const maxModeOn = useSelector(getSendMaxModeState);
@@ -31,8 +29,6 @@ export default function MaxClearButton({ asset }: { asset: Asset }) {
       properties: {
         ...sendAnalytics,
         action: 'Edit Screen',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         legacy_event: true,
       },
     });

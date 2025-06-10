@@ -30,6 +30,7 @@ import {
   useCarouselManagement,
   BACKUPANDSYNC_SLIDE,
   SMART_ACCOUNT_UPGRADE_SLIDE,
+  BASIC_FUNCTIONALITY_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
   ///: END:ONLY_INCLUDE_IF
@@ -38,6 +39,7 @@ import {
 import { CreateSolanaAccountModal } from '../create-solana-account-modal';
 import { getLastSelectedSolanaAccount } from '../../../selectors/multichain';
 ///: END:ONLY_INCLUDE_IF
+import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -79,6 +81,10 @@ export const AccountOverviewLayout = ({
       );
     }
 
+    if (id === BASIC_FUNCTIONALITY_SLIDE.id) {
+      dispatch(openBasicFunctionalityModal());
+    }
+
     if (id === BACKUPANDSYNC_SLIDE.id) {
       dispatch(showModal({ name: TURN_ON_BACKUP_AND_SYNC_MODAL_NAME }));
     }
@@ -101,8 +107,6 @@ export const AccountOverviewLayout = ({
       event: MetaMetricsEventName.BannerSelect,
       category: MetaMetricsEventCategory.Banner,
       properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         banner_name: id,
       },
     });
@@ -126,8 +130,6 @@ export const AccountOverviewLayout = ({
             event: MetaMetricsEventName.BannerDisplay,
             category: MetaMetricsEventCategory.Banner,
             properties: {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
               banner_name: slide.id,
             },
           });

@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import { Hex } from '@metamask/utils';
+import { AssetType } from '@metamask/bridge-controller';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -55,6 +56,7 @@ import {
   REMOTE_MODES,
   TOKEN_DETAILS,
   TokenInfo,
+  NATIVE_ADDRESS,
 } from '../../../../../shared/lib/remote-mode';
 
 import { isRemoteModeSupported } from '../../../../helpers/utils/remote-mode';
@@ -83,8 +85,6 @@ const DAILY_ETH_LIMIT = 10;
  *
  * @returns The rendered component
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RemoteModeSetupDailyAllowance() {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -190,11 +190,15 @@ export default function RemoteModeSetupDailyAllowance() {
 
     const newAllowance: DailyAllowance = {
       amount: parseFloat(dailyLimit),
-      address: selectedAsset.address,
+      address:
+        selectedAsset.type === AssetType.native
+          ? NATIVE_ADDRESS
+          : selectedAsset.address,
       image: TOKEN_DETAILS[selectedAsset.symbol].image,
       name: selectedAsset.name,
       symbol: selectedAsset.symbol,
       type: selectedAsset.type,
+      decimals: selectedAsset.decimals,
     };
 
     setDailyAllowance((prevAllowances) => {

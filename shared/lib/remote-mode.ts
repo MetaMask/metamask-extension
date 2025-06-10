@@ -2,8 +2,6 @@ import { AssetType } from '@metamask/bridge-controller';
 import { Delegation } from './delegation';
 
 export enum TokenSymbol {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   SEPOLIA_ETH = 'SepoliaETH',
   ETH = 'ETH',
   USDC = 'USDC',
@@ -19,14 +17,11 @@ export type TokenInfo = {
   image: string;
   address: string;
   type: AssetType;
+  decimals: number;
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export enum REMOTE_MODES {
   SWAP = 'swap',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   DAILY_ALLOWANCE = 'daily-allowance',
 }
 
@@ -38,6 +33,8 @@ export type DailyAllowanceMetadata = {
   allowances: DailyAllowance[];
 };
 
+export const NATIVE_ADDRESS = '0x0000000000000000000000000000000000000000';
+
 export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
   [TokenSymbol.SEPOLIA_ETH]: {
     symbol: TokenSymbol.SEPOLIA_ETH,
@@ -45,6 +42,7 @@ export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
     image: './images/eth_logo.png',
     address: '',
     type: AssetType.native,
+    decimals: 18,
   },
   [TokenSymbol.ETH]: {
     symbol: TokenSymbol.ETH,
@@ -52,6 +50,7 @@ export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
     image: './images/eth_logo.png',
     address: '',
     type: AssetType.native,
+    decimals: 18,
   },
   [TokenSymbol.USDC]: {
     symbol: TokenSymbol.USDC,
@@ -59,6 +58,7 @@ export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
     image: './images/icon-usdc.png',
     address: '',
     type: AssetType.token,
+    decimals: 6,
   },
   [TokenSymbol.WETH]: {
     symbol: TokenSymbol.WETH,
@@ -66,6 +66,7 @@ export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
     image: './images/eth_logo.png',
     address: '',
     type: AssetType.token,
+    decimals: 18,
   },
   [TokenSymbol.WBTC]: {
     symbol: TokenSymbol.WBTC,
@@ -73,6 +74,7 @@ export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
     image: './images/icon-btc.png',
     address: '',
     type: AssetType.token,
+    decimals: 8,
   },
   [TokenSymbol.BNB]: {
     symbol: TokenSymbol.BNB,
@@ -80,6 +82,7 @@ export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
     image: './images/icon-bnb.png',
     address: '',
     type: AssetType.token,
+    decimals: 18,
   },
   // note: added for testing (finalized list tbd)
   [TokenSymbol.EURC]: {
@@ -88,6 +91,7 @@ export const TOKEN_DETAILS: Record<TokenSymbol, TokenInfo> = {
     image: './images/eth_logo.png',
     address: '',
     type: AssetType.token,
+    decimals: 18,
   },
 };
 

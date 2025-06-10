@@ -1,7 +1,7 @@
 import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
-import { BtcAccountType } from '@metamask/keyring-api';
+import { BtcAccountType, BtcScope } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import mockState from '../../test/data/mock-state.json';
 import configureStore from '../store/store';
@@ -40,6 +40,7 @@ const mockNonEvmAccount = {
   id: 'b7893c59-e376-4cc0-93ad-05ddaab574a6',
   address: 'bc1qn3stuu6g37rpxk3jfxr4h4zmj68g0lwxx5eker',
   type: BtcAccountType.P2wpkh,
+  scopes: [BtcScope.Mainnet],
 };
 
 const renderUseMultichainAccountTotalFiatBalance = (

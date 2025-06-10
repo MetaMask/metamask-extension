@@ -16,8 +16,6 @@ import {
   FlexDirection,
 } from '../../../helpers/constants/design-system';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RemoteModeIntroducing() {
   return (
     <Box>

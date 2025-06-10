@@ -187,7 +187,10 @@ export const CHAIN_IDS = {
   PLUME: '0x18232',
   MATCHAIN: '0x2ba',
   FLOW: '0x2eb',
+  KATANA: '0xb67d2',
   MONAD_TESTNET: '0x279f',
+  SOPHON: '0xc3b8',
+  SOPHON_TESTNET: '0x1fa72e78',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -261,6 +264,8 @@ export const CHAINLIST_CHAIN_IDS_MAP = {
   SHAPE_SEPOLIA: '0x2b03',
   SHAPE: '0x168',
   XRPLEVM_TESTNET: '0x161c28',
+  SOPHON: '0xc3b8',
+  SOPHON_TESTNET: '0x1fa72e78',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -326,7 +331,10 @@ export const LENS_DISPLAY_NAME = 'Lens';
 export const PLUME_DISPLAY_NAME = 'Plume';
 export const MATCHAIN_DISPLAY_NAME = 'Matchain';
 export const FLOW_DISPLAY_NAME = 'Flow EVM Mainnet';
+export const KATANA_DISPLAY_NAME = 'Katana';
 export const MONAD_TESTNET_DISPLAY_NAME = 'Monad Testnet';
+export const SOPHON_DISPLAY_NAME = 'Sophon';
+export const SOPHON_TESTNET_DISPLAY_NAME = 'Sophon Testnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -387,6 +395,8 @@ export const CURRENCY_SYMBOLS = {
   LENS: 'GHO',
   PLUME: 'PLUME',
   FLOW: 'FLOW',
+  KATANA: 'ETH',
+  SOPHON: 'SOPH',
 } as const;
 
 // Non-EVM currency symbols
@@ -464,6 +474,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   SHAPE: 'ETH',
   SHAPE_SEPOLIA: 'ETH',
   XRPLEVM_TESTNET: 'XRP',
+  SOPHON: 'SOPH',
 } as const;
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
@@ -562,6 +573,9 @@ export const SHAPE_IMAGE_URL = './images/shape.svg';
 export const UNICHAIN_IMAGE_URL = './images/unichain.svg';
 export const MEGAETH_TESTNET_IMAGE_URL = './images/MegaETH-logo-testnet.png';
 export const SOLANA_IMAGE_URL = './images/solana-logo.svg';
+export const BITCOIN_IMAGE_URL = './images/bitcoin-logo.svg';
+export const BITCOIN_TESTNET_IMAGE_URL = './images/bitcoin-testnet-logo.svg';
+export const BITCOIN_SIGNET_IMAGE_URL = './images/bitcoin-signet-logo.png';
 export const XRPLEVM_TESTNET_IMAGE_URL = './images/xrplevm-testnet.svg';
 export const XRP_TOKEN_IMAGE_URL = './images/xrp-logo.svg';
 export const LENS_IMAGE_URL = './images/lens.png';
@@ -570,7 +584,10 @@ export const PLUME_IMAGE_URL = './images/plume.png';
 export const PLUME_NATIVE_TOKEN_IMAGE_URL = './images/plume-native.svg';
 export const MATCHAIN_IMAGE_URL = './images/matchain.svg';
 export const FLOW_IMAGE_URL = './images/flow.svg';
+export const KATANA_IMAGE_URL = './images/katana.svg';
 export const MONAD_TESTNET_IMAGE_URL = './images/monad-testnet-logo.png';
+export const SOPHON_IMAGE_URL = './images/sophon.svg';
+export const SOPHON_TESTNET_IMAGE_URL = './images/sophon-testnet.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -596,8 +613,6 @@ export const MAINNET_CHAINS = [
   { chainId: CHAIN_IDS.LINEA_MAINNET, rpcUrl: LINEA_MAINNET_RPC_URL },
 ];
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const typedCapitalize = <K extends string>(k: K): Capitalize<K> =>
   capitalize(k) as Capitalize<typeof k>;
 
@@ -710,7 +725,10 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.PLUME]: PLUME_DISPLAY_NAME,
   [CHAIN_IDS.MATCHAIN]: MATCHAIN_DISPLAY_NAME,
   [CHAIN_IDS.FLOW]: FLOW_DISPLAY_NAME,
+  [CHAIN_IDS.KATANA]: KATANA_DISPLAY_NAME,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_DISPLAY_NAME,
+  [CHAIN_IDS.SOPHON]: SOPHON_DISPLAY_NAME,
+  [CHAIN_IDS.SOPHON_TESTNET]: SOPHON_TESTNET_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -847,8 +865,11 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.PLUME]: CURRENCY_SYMBOLS.PLUME,
   [CHAIN_IDS.MATCHAIN]: CURRENCY_SYMBOLS.BNB,
   [CHAIN_IDS.FLOW]: CURRENCY_SYMBOLS.FLOW,
+  [CHAIN_IDS.KATANA]: CURRENCY_SYMBOLS.KATANA,
   [CHAIN_IDS.MONAD_TESTNET]:
     TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MONAD_TESTNET],
+  [CHAIN_IDS.SOPHON]: CURRENCY_SYMBOLS.SOPHON,
+  [CHAIN_IDS.SOPHON_TESTNET]: CURRENCY_SYMBOLS.SOPHON,
 } as const;
 
 /**
@@ -988,12 +1009,18 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: UNICHAIN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: UNICHAIN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
+  [MultichainNetworks.BITCOIN]: BITCOIN_IMAGE_URL,
+  [MultichainNetworks.BITCOIN_TESTNET]: BITCOIN_TESTNET_IMAGE_URL,
+  [MultichainNetworks.BITCOIN_SIGNET]: BITCOIN_SIGNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.XRPLEVM_TESTNET]: XRPLEVM_TESTNET_IMAGE_URL,
   [CHAIN_IDS.LENS]: LENS_IMAGE_URL,
   [CHAIN_IDS.PLUME]: PLUME_IMAGE_URL,
   [CHAIN_IDS.MATCHAIN]: MATCHAIN_IMAGE_URL,
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
+  [CHAIN_IDS.KATANA]: KATANA_IMAGE_URL,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_IMAGE_URL,
+  [CHAIN_IDS.SOPHON]: SOPHON_IMAGE_URL,
+  [CHAIN_IDS.SOPHON_TESTNET]: SOPHON_TESTNET_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1053,7 +1080,10 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.PLUME]: PLUME_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MATCHAIN]: BNB_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FLOW]: FLOW_IMAGE_URL,
+  [CHAIN_IDS.KATANA]: KATANA_IMAGE_URL,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_IMAGE_URL,
+  [CHAIN_IDS.SOPHON]: SOPHON_IMAGE_URL,
+  [CHAIN_IDS.SOPHON_TESTNET]: SOPHON_TESTNET_IMAGE_URL,
 } as const;
 
 /**

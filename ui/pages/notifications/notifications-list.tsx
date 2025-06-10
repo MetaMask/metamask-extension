@@ -26,8 +26,6 @@ export type NotificationsListProps = {
 };
 
 // NOTE - Tab filters could change once we support more notifications.
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export const enum TAB_KEYS {
   // Shows all notifications
   ALL = 'notifications-all-tab',
@@ -39,8 +37,6 @@ export const enum TAB_KEYS {
   WEB3 = 'notifications-other-tab',
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function LoadingContent() {
   return (
     <Box
@@ -57,8 +53,6 @@ function LoadingContent() {
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function EmptyContent() {
   const t = useI18nContext();
   return (
@@ -69,8 +63,6 @@ function EmptyContent() {
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function ErrorContent() {
   const t = useI18nContext();
   return (
@@ -81,15 +73,11 @@ function ErrorContent() {
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function NotificationItem(props: { notification: Notification }) {
   const { notification } = props;
   return <NotificationsListItem notification={notification} />;
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function NotificationsListStates({
   activeTab,
   notifications,
@@ -128,8 +116,6 @@ function NotificationsListStates({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NotificationsList(props: NotificationsListProps) {
   return (
     <Box

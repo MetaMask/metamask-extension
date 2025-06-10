@@ -89,7 +89,6 @@ const CoinButtons = ({
   isBuyableChain,
   defaultSwapsToken,
   classPrefix = 'coin',
-  iconButtonClassName = '',
 }: CoinButtonsProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -104,6 +103,7 @@ const CoinButtons = ({
     string
   >;
   const currentChainId = useSelector(getCurrentChainId);
+  const displayNewIconButtons = process.env.REMOVE_GNS;
 
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const handleSendNonEvm = useHandleSendNonEvm();
@@ -154,7 +154,11 @@ const CoinButtons = ({
     const tooltipInfo = conditions.find(({ condition }) => condition);
     if (tooltipInfo?.message) {
       return (
-        <Tooltip title={t(tooltipInfo.message)} position="bottom">
+        <Tooltip
+          title={t(tooltipInfo.message)}
+          position="bottom"
+          wrapperClassName="tooltip-button-wrapper"
+        >
           {contents}
         </Tooltip>
       );
@@ -172,16 +176,12 @@ const CoinButtons = ({
 
   const getSnapAccountMetaMetricsPropertiesIfAny = (
     internalAccount: InternalAccount,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
   ): { snap_id?: string } => {
     // Some accounts might be Snap accounts, in this case we add some extra properties
     // to the metrics:
     const snapId = internalAccount.metadata.snap?.id;
     if (snapId) {
       return {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_id: snapId,
       };
     }
@@ -224,16 +224,10 @@ const CoinButtons = ({
         event: MetaMetricsEventName.NavSendButtonClicked,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: account.type,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol: nativeToken,
           location: 'Home',
           text: 'Send',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: chainId,
           ...getSnapAccountMetaMetricsPropertiesIfAny(account),
         },
@@ -268,16 +262,10 @@ const CoinButtons = ({
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: account.type,
         location: 'Home',
         text: 'Buy',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: chainId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol: defaultSwapsToken,
         ...getSnapAccountMetaMetricsPropertiesIfAny(account),
       },
@@ -319,13 +307,9 @@ const CoinButtons = ({
         event: MetaMetricsEventName.NavSwapButtonClicked,
         category: MetaMetricsEventCategory.Swaps,
         properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol: 'ETH',
           location: MetaMetricsSwapsEventSource.MainView,
           text: 'Swap',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: chainId,
         },
       });
@@ -350,56 +334,73 @@ const CoinButtons = ({
   return (
     <Box
       display={Display.Flex}
-      justifyContent={JustifyContent.spaceEvenly}
+      justifyContent={JustifyContent.spaceBetween}
       width={BlockSize.Full}
+      gap={3}
     >
       {
         <IconButton
           className={`${classPrefix}-overview__button`}
-          iconButtonClassName={iconButtonClassName}
           Icon={
-            <Icon
-              name={IconName.PlusAndMinus}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
-            />
+            displayNewIconButtons ? (
+              <Icon
+                name={IconName.Money}
+                color={IconColor.iconAlternative}
+                size={IconSize.Md}
+              />
+            ) : (
+              <Icon
+                name={IconName.PlusAndMinus}
+                color={IconColor.iconDefault}
+                size={IconSize.Sm}
+              />
+            )
           }
           disabled={!isBuyableChain}
           data-testid={`${classPrefix}-overview-buy`}
           label={t('buyAndSell')}
           onClick={handleBuyAndSellOnClick}
+          width={BlockSize.Full}
           tooltipRender={(contents: React.ReactElement) =>
             generateTooltip('buyButton', contents)
           }
+          round={!displayNewIconButtons}
         />
       }
-
       <IconButton
         className={`${classPrefix}-overview__button`}
-        iconButtonClassName={iconButtonClassName}
         disabled={
           (!isSwapsChain && !isUnifiedUIEnabled) ||
           !isSigningEnabled ||
           !isExternalServicesEnabled
         }
         Icon={
-          <Icon
-            name={IconName.SwapHorizontal}
-            color={IconColor.iconDefault}
-            size={IconSize.Sm}
-          />
+          displayNewIconButtons ? (
+            <Icon
+              name={IconName.SwapHorizontal}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          ) : (
+            <Icon
+              name={IconName.SwapHorizontal}
+              color={IconColor.iconDefault}
+              size={IconSize.Sm}
+            />
+          )
         }
         onClick={handleSwapOnClick}
         label={t('swap')}
         data-testid="token-overview-button-swap"
+        width={BlockSize.Full}
         tooltipRender={(contents: React.ReactElement) =>
           generateTooltip('swapButton', contents)
         }
+        round={!displayNewIconButtons}
       />
-      {
+      {process.env.REMOVE_GNS ? null : (
         <IconButton
           className={`${classPrefix}-overview__button`}
-          iconButtonClassName={iconButtonClassName}
           disabled={
             !isBridgeChain ||
             !isSigningEnabled ||
@@ -407,36 +408,55 @@ const CoinButtons = ({
           }
           data-testid={`${classPrefix}-overview-bridge`}
           Icon={
-            <Icon
-              name={IconName.Bridge}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
-            />
+            displayNewIconButtons ? (
+              <Icon
+                name={IconName.Bridge}
+                color={IconColor.iconAlternative}
+                size={IconSize.Md}
+              />
+            ) : (
+              <Icon
+                name={IconName.Bridge}
+                color={IconColor.iconDefault}
+                size={IconSize.Sm}
+              />
+            )
           }
           label={t('bridge')}
           onClick={() => handleBridgeOnClick(false)}
+          width={BlockSize.Full}
           tooltipRender={(contents: React.ReactElement) =>
             generateTooltip('bridgeButton', contents)
           }
+          round={!displayNewIconButtons}
         />
-      }
+      )}
       <IconButton
         className={`${classPrefix}-overview__button`}
-        iconButtonClassName={iconButtonClassName}
         data-testid={`${classPrefix}-overview-send`}
         Icon={
-          <Icon
-            name={IconName.Arrow2UpRight}
-            color={IconColor.iconDefault}
-            size={IconSize.Sm}
-          />
+          displayNewIconButtons ? (
+            <Icon
+              name={IconName.Send}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          ) : (
+            <Icon
+              name={IconName.Arrow2UpRight}
+              color={IconColor.iconDefault}
+              size={IconSize.Sm}
+            />
+          )
         }
         disabled={!isSigningEnabled || isNonEvmAccountWithoutExternalServices}
         label={t('send')}
         onClick={handleSendOnClick}
+        width={BlockSize.Full}
         tooltipRender={(contents: React.ReactElement) =>
           generateTooltip('sendButton', contents)
         }
+        round={!displayNewIconButtons}
       />
       {
         <>
@@ -448,16 +468,24 @@ const CoinButtons = ({
           )}
           <IconButton
             className={`${classPrefix}-overview__button`}
-            iconButtonClassName={iconButtonClassName}
             data-testid={`${classPrefix}-overview-receive`}
             Icon={
-              <Icon
-                name={IconName.ScanBarcode}
-                color={IconColor.iconDefault}
-                size={IconSize.Sm}
-              />
+              displayNewIconButtons ? (
+                <Icon
+                  name={IconName.QrCode}
+                  color={IconColor.iconAlternative}
+                  size={IconSize.Md}
+                />
+              ) : (
+                <Icon
+                  name={IconName.ScanBarcode}
+                  color={IconColor.iconDefault}
+                  size={IconSize.Sm}
+                />
+              )
             }
             label={t('receive')}
+            width={BlockSize.Full}
             onClick={() => {
               trace({ name: TraceName.ReceiveModal });
               trackEvent({
@@ -466,13 +494,12 @@ const CoinButtons = ({
                 properties: {
                   text: 'Receive',
                   location: trackingLocation,
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   chain_id: chainId,
                 },
               });
               setShowReceiveModal(true);
             }}
+            round={!displayNewIconButtons}
           />
         </>
       }

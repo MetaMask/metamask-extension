@@ -114,13 +114,12 @@ export type ControllerStatePropertiesEnumerated = {
   isRampCardClosed: AppStateControllerState['isRampCardClosed'];
   newPrivacyPolicyToastClickedOrClosed: AppStateControllerState['newPrivacyPolicyToastClickedOrClosed'];
   newPrivacyPolicyToastShownDate: AppStateControllerState['newPrivacyPolicyToastShownDate'];
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: AppStateControllerState['hadAdvancedGasFeesSetPriorToMigration92_3'];
   qrHardware: AppStateControllerState['qrHardware'];
   nftsDropdownState: AppStateControllerState['nftsDropdownState'];
   surveyLinkLastClickedOrClosed: AppStateControllerState['surveyLinkLastClickedOrClosed'];
   signatureSecurityAlertResponses: AppStateControllerState['signatureSecurityAlertResponses'];
+  addressSecurityAlertResponses: AppStateControllerState['addressSecurityAlertResponses'];
   switchedNetworkDetails: AppStateControllerState['switchedNetworkDetails'];
   switchedNetworkNeverShowMessage: AppStateControllerState['switchedNetworkNeverShowMessage'];
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
@@ -129,6 +128,9 @@ export type ControllerStatePropertiesEnumerated = {
   snapsInstallPrivacyWarningShown?: AppStateControllerState['snapsInstallPrivacyWarningShown'];
   slides: AppStateControllerState['slides'];
   upgradeSplashPageAcknowledgedForAccounts: AppStateControllerState['upgradeSplashPageAcknowledgedForAccounts'];
+  isUpdateAvailable: AppStateControllerState['isUpdateAvailable'];
+  updateModalLastDismissedAt: AppStateControllerState['updateModalLastDismissedAt'];
+  lastUpdatedAt: AppStateControllerState['lastUpdatedAt'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];
   quoteRequest: BridgeControllerState['quoteRequest'];
   quotes: BridgeControllerState['quotes'];
@@ -137,6 +139,7 @@ export type ControllerStatePropertiesEnumerated = {
   quotesLoadingStatus: BridgeControllerState['quotesLoadingStatus'];
   quoteFetchError: BridgeControllerState['quoteFetchError'];
   quotesRefreshCount: BridgeControllerState['quotesRefreshCount'];
+  minimumBalanceForRentExemptionInLamports: BridgeControllerState['minimumBalanceForRentExemptionInLamports'];
   assetExchangeRates: BridgeControllerState['assetExchangeRates'];
   txHistory: BridgeStatusControllerState['txHistory'];
   events: CronjobControllerState['events'];
@@ -188,6 +191,7 @@ export type ControllerStatePropertiesEnumerated = {
   networksMetadata: NetworkState['networksMetadata'];
   selectedNetworkClientId: NetworkState['selectedNetworkClientId'];
   orderedNetworkList: NetworkOrderControllerState['orderedNetworkList'];
+  enabledNetworkMap: NetworkOrderControllerState['enabledNetworkMap'];
   allNftContracts: NftControllerState['allNftContracts'];
   allNfts: NftControllerState['allNfts'];
   ignoredNfts: NftControllerState['ignoredNfts'];
@@ -285,6 +289,7 @@ export type ControllerStatePropertiesEnumerated = {
   lastFetchedBlockNumbers: TransactionControllerState['lastFetchedBlockNumbers'];
   methodData: TransactionControllerState['methodData'];
   transactions: TransactionControllerState['transactions'];
+  transactionBatches: TransactionControllerState['transactionBatches'];
   submitHistory: TransactionControllerState['submitHistory'];
   userOperations: UserOperationControllerState['userOperations'];
   isBackupAndSyncEnabled: UserStorageController.UserStorageControllerState['isBackupAndSyncEnabled'];
@@ -354,8 +359,6 @@ type ControllerStateTypesMerged = AccountsControllerState &
   UserOperationControllerState &
   UserStorageController.UserStorageControllerState;
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export type IsEquivalent<A, B> = [A, B] extends [B, A] ? true : false;
 
 /**
