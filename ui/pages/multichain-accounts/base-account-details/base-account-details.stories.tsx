@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { EthAccountType, SolAccountType } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import configureStore from '../../../store/store';
-import { Box } from '../../component-library';
+import { Box } from '../../../components/component-library';
 import { BaseAccountDetails } from './base-account-details';
 
 // Mock Ethereum Account

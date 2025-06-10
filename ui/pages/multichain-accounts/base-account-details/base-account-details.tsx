@@ -11,8 +11,8 @@ import {
   Box,
   ButtonIcon,
   ButtonIconSize,
-} from '../../component-library';
-import { Content, Header, Page } from '../../multichain/pages/page';
+} from '../../../components/component-library';
+import { Content, Header, Page } from '../../../components/multichain/pages/page';
 import {
   BackgroundColor,
   IconColor,
@@ -21,12 +21,12 @@ import {
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import { IconName } from '../../component-library/icon';
+import { IconName } from '../../../components/component-library/icon';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { AccountDetailsRow } from '../account-details-row';
-import { EditAccountNameModal } from '../edit-account-name-modal';
+import { AccountDetailsRow } from '../../../components/multichain-accounts/account-details-row';
+import { EditAccountNameModal } from '../../../components/multichain-accounts/edit-account-name-modal';
 
 type BaseAccountDetailsProps = {
   children?: React.ReactNode | React.ReactNode[];
