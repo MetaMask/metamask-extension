@@ -15,7 +15,7 @@ import {
   setSmartTransactionsPreferenceEnabled,
   showModal,
   setManageInstitutionalWallets,
-  setUseSmartAccount,
+  setSmartAccountOptIn,
 } from '../../../store/actions';
 import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
 import {
@@ -40,7 +40,7 @@ export const mapStateToProps = (state) => {
     showExtensionInFullSizeView,
     autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT,
     dismissSmartAccountSuggestionEnabled,
-    useSmartAccount,
+    smartAccountOptIn,
   } = getPreferences(state);
 
   return {
@@ -54,7 +54,7 @@ export const mapStateToProps = (state) => {
     dismissSeedBackUpReminder,
     manageInstitutionalWallets,
     dismissSmartAccountSuggestionEnabled,
-    useSmartAccount,
+    smartAccountOptIn,
   };
 };
 
@@ -92,8 +92,8 @@ export const mapDispatchToProps = (dispatch) => {
     setDismissSmartAccountSuggestionEnabled: (value) => {
       return dispatch(setDismissSmartAccountSuggestionEnabled(value));
     },
-    setUseSmartAccount: (value) => {
-      return dispatch(setUseSmartAccount(value));
+    setSmartAccountOptIn: (value) => {
+      return dispatch(setSmartAccountOptIn(value));
     },
   };
 };

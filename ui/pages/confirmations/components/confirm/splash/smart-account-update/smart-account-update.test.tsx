@@ -11,7 +11,7 @@ import { Confirmation } from '../../../../types/confirm';
 import {
   rejectPendingApproval,
   setSplashPageAcknowledgedForAccount,
-  setUseSmartAccount,
+  setSmartAccountOptIn,
 } from '../../../../../../store/actions';
 import { SmartAccountUpdate } from './smart-account-update';
 
@@ -19,7 +19,7 @@ jest.mock('../../../../../../store/actions', () => ({
   setAccountDetailsAddress: jest.fn(),
   rejectPendingApproval: jest.fn().mockReturnValue({}),
   setSplashPageAcknowledgedForAccount: jest.fn(),
-  setUseSmartAccount: jest.fn(),
+  setSmartAccountOptIn: jest.fn(),
 }));
 
 const mockDispatch = jest.fn();
@@ -67,7 +67,7 @@ describe('Splash', () => {
 
     expect(container.firstChild).toBeNull();
     expect(setSplashPageAcknowledgedForAccount).toHaveBeenCalledTimes(1);
-    expect(setUseSmartAccount).toHaveBeenCalledTimes(1);
+    expect(setSmartAccountOptIn).toHaveBeenCalledTimes(1);
   });
 
   it('reject confirmation if user does not accept', async () => {
@@ -105,7 +105,7 @@ describe('Splash', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('does not render if useSmartAccount is true for user and its not hardware wallet account', () => {
+  it('does not render if smartAccountOptIn is true for user and its not hardware wallet account', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
         {
@@ -115,7 +115,7 @@ describe('Splash', () => {
         {
           metamask: {
             preferences: {
-              useSmartAccount: true
+              smartAccountOptIn: true,
             },
             internalAccounts: {
               accounts: {
@@ -127,8 +127,8 @@ describe('Splash', () => {
                     },
                   },
                 },
-              }
-            }
+              },
+            },
           },
         },
       ),

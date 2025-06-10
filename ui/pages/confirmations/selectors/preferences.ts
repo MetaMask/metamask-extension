@@ -18,5 +18,5 @@ export function getDismissSmartAccountSuggestionEnabled(state: RootState) {
 }
 
 export function getUseSmartAccount(state: RootState) {
-  return Boolean(getPreferences(state).useSmartAccount);
+  return Boolean(getPreferences(state).smartAccountOptIn);
 }

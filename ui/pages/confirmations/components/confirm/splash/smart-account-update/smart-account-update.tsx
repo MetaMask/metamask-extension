@@ -38,7 +38,7 @@ import {
 import { getUseSmartAccount } from '../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useSmartAccountActions } from '../../../../hooks/useSmartAccountActions';
-import { setUseSmartAccount } from '../../../../../../store/actions';
+import { setSmartAccountOptIn } from '../../../../../../store/actions';
 
 const ListItem = ({
   imgSrc,
@@ -83,7 +83,7 @@ export function SmartAccountUpdate() {
   const splashPageAcknowledgedForAccountList: string[] = useSelector(
     getUpgradeSplashPageAcknowledgedForAccounts,
   );
-  const useSmartAccount = useSelector(getUseSmartAccount);
+  const smartAccountOptIn = useSelector(getUseSmartAccount);
   const { chainId, txParams, origin } = currentConfirmation ?? {};
   const { from } = txParams;
   const account = useSelector((state: AccountsState) =>
@@ -94,7 +94,7 @@ export function SmartAccountUpdate() {
   const acknowledgeSmartAccountUpgrade = useCallback(() => {
     setSplashPageAcknowledgedForAccount(from);
     setAcknowledged(true);
-    dispatch(setUseSmartAccount(true))
+    dispatch(setSmartAccountOptIn(true));
   }, [from, setAcknowledged]);
 
   if (
@@ -102,7 +102,7 @@ export function SmartAccountUpdate() {
     acknowledged ||
     origin === ORIGIN_METAMASK ||
     splashPageAcknowledgedForAccountList.includes(from.toLowerCase()) ||
-    (useSmartAccount && keyringType === KeyringTypes.hd)
+    (smartAccountOptIn && keyringType === KeyringTypes.hd)
   ) {
     return null;
   }

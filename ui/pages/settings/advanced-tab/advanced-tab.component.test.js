@@ -26,7 +26,7 @@ jest.mock('../../../store/actions.ts', () => {
     setManageInstitutionalWallets: () => mockSetManageInstitutionalWallets,
     setDismissSmartAccountSuggestionEnabled: () =>
       mockSetDismissSmartAccountSuggestionEnabled,
-    setUseSmartAccount: () => mockSetUseSmartAccount,
+    setSmartAccountOptIn: () => mockSetUseSmartAccount,
   };
 });
 
@@ -154,13 +154,15 @@ describe('AdvancedTab Component', () => {
   describe('renderToggleUseSmartAccount', () => {
     it('should render the toggle button for smart account opt-in', () => {
       const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
-      const toggleButton = queryByTestId('advanced-setting-use-smart-account');
+      const toggleButton = queryByTestId(
+        'advanced-setting-smart-account-optin',
+      );
       expect(toggleButton).toBeInTheDocument();
     });
 
-    it('should call setUseSmartAccount when the toggle button is clicked', () => {
+    it('should call setSmartAccountOptIn when the toggle button is clicked', () => {
       const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
-      const toggleButton = queryByTestId('settings-page-use-smart-account');
+      const toggleButton = queryByTestId('settings-page-smart-account-optin');
       fireEvent.click(toggleButton);
       expect(mockSetUseSmartAccount).toHaveBeenCalled();
     });

@@ -1345,7 +1345,7 @@ export default class MetamaskController extends EventEmitter {
           this.postOnboardingInitialization();
           this.triggerNetworkrequests();
 
-          this.preferencesController.setPreference('useSmartAccount', true);
+          this.preferencesController.setPreference('smartAccountOptIn', true);
 
           // execute once the token detection on the post-onboarding
           await this.tokenDetectionController.detectTokens({

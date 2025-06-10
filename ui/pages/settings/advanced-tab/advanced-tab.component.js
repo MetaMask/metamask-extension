@@ -63,8 +63,8 @@ export default class AdvancedTab extends PureComponent {
     setManageInstitutionalWallets: PropTypes.func.isRequired,
     dismissSmartAccountSuggestionEnabled: PropTypes.bool.isRequired,
     setDismissSmartAccountSuggestionEnabled: PropTypes.func.isRequired,
-    useSmartAccount: PropTypes.bool.isRequired,
-    setUseSmartAccount: PropTypes.func.isRequired,
+    smartAccountOptIn: PropTypes.bool.isRequired,
+    setSmartAccountOptIn: PropTypes.func.isRequired,
   };
 
   state = {
@@ -212,9 +212,9 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderToggleUseSmartAccount() {
+  renderToggleSmartAccountOptIn() {
     const { t } = this.context;
-    const { useSmartAccount, setUseSmartAccount } = this.props;
+    const { smartAccountOptIn, setSmartAccountOptIn } = this.props;
 
     const learMoreLink = (
       <ButtonLink
@@ -236,7 +236,7 @@ export default class AdvancedTab extends PureComponent {
       <Box
         ref={this.settingsRefs[2]}
         className="settings-page__content-row"
-        data-testid="advanced-setting-use-smart-account"
+        data-testid="advanced-setting-smart-account-optin"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
@@ -251,14 +251,14 @@ export default class AdvancedTab extends PureComponent {
 
         <div className="settings-page__content-item-col">
           <ToggleButton
-            value={useSmartAccount}
+            value={smartAccountOptIn}
             onToggle={(oldValue) => {
               const newValue = !oldValue;
-              setUseSmartAccount(newValue);
+              setSmartAccountOptIn(newValue);
             }}
             offLabel={t('off')}
             onLabel={t('on')}
-            dataTestId="settings-page-use-smart-account"
+            dataTestId="settings-page-smart-account-optin"
           />
         </div>
       </Box>
@@ -693,7 +693,7 @@ export default class AdvancedTab extends PureComponent {
         ) : null}
         {this.renderStateLogs()}
         {this.renderResetAccount()}
-        {this.renderToggleUseSmartAccount()}
+        {this.renderToggleSmartAccountOptIn()}
         {this.renderToggleDismissSmartAccountSuggestion()}
         {this.renderToggleStxOptIn()}
         {this.renderHexDataOptIn()}

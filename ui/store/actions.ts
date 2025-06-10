@@ -3507,7 +3507,7 @@ export function setDismissSmartAccountSuggestionEnabled(
   };
 }
 
-export function setUseSmartAccount(
+export function setSmartAccountOptIn(
   value: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
@@ -3522,7 +3522,7 @@ export function setUseSmartAccount(
         prev_use_smart_account: prevUseSmartAccount,
       },
     });
-    await dispatch(setPreference('useSmartAccount', value));
+    await dispatch(setPreference('smartAccountOptIn', value));
     await forceUpdateMetamaskState(dispatch);
   };
 }
