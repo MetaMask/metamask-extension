@@ -38,7 +38,7 @@ class SelectNetwork {
     '[data-testid="network-redesign-modal-search-input"]';
 
   private readonly selectNetworkMessage = {
-    text: 'Select a network',
+    text: 'Manage networks',
     tag: 'h4',
   };
 

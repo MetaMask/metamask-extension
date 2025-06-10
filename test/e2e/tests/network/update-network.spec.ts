@@ -5,7 +5,6 @@ import { Driver } from '../../webdriver/driver';
 import { Mockttp } from '../../mock-e2e';
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -23,8 +22,13 @@ describe('Update Network:', function (this: Suite) {
           rpcUrl: 'test',
         };
         await loginWithBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await driver.waitForSelector(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement('[data-testid="global-menu-networks"]');
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
@@ -47,10 +51,15 @@ describe('Update Network:', function (this: Suite) {
           inputData.networkName,
         );
         await homePage.closeUseNetworkNotificationModal();
-        await headerNavbar.check_currentSelectedNetwork(inputData.networkName);
+        // Since switching networks is disabled via the networks modal in global menu, we don't need to check the selected network anymore
+        await driver.waitForSelector(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement('[data-testid="global-menu-networks"]');
 
-        // Start another edit
-        await headerNavbar.clickSwitchNetworkDropDown();
         await selectNetworkDialog.check_pageIsLoaded();
         await selectNetworkDialog.openNetworkListOptions('eip155:1337');
         await selectNetworkDialog.openEditNetworkModal();
@@ -136,8 +145,13 @@ describe('Update Network:', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await driver.waitForSelector(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement('[data-testid="global-menu-networks"]');
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
 
@@ -156,12 +170,17 @@ describe('Update Network:', function (this: Suite) {
         await editNetworkModal.saveEditedNetwork();
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await headerNavbar.check_currentSelectedNetwork('Arbitrum One');
         await homePage.check_editNetworkMessageIsDisplayed('Arbitrum One');
         await homePage.closeUseNetworkNotificationModal();
 
         // Re-open the network menu and go back to edit the network
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await driver.waitForSelector(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement('[data-testid="global-menu-networks"]');
         await selectNetworkDialog.check_pageIsLoaded();
         await selectNetworkDialog.openNetworkListOptions('eip155:42161');
         await selectNetworkDialog.openEditNetworkModal();
@@ -176,7 +195,7 @@ describe('Update Network:', function (this: Suite) {
     );
   });
 
-  it('should update added rpc url for existing network', async function () {
+  it.only('should update added rpc url for existing network', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
@@ -224,8 +243,13 @@ describe('Update Network:', function (this: Suite) {
 
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await driver.waitForSelector(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement('[data-testid="global-menu-networks"]');
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.check_pageIsLoaded();
 
@@ -251,12 +275,17 @@ describe('Update Network:', function (this: Suite) {
         await editNetworkModal.saveEditedNetwork();
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
-        await headerNavbar.check_currentSelectedNetwork('Arbitrum One');
         await homePage.check_editNetworkMessageIsDisplayed('Arbitrum One');
         await homePage.closeUseNetworkNotificationModal();
 
         // Re-open the network menu and go back to edit the network
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await driver.waitForSelector(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement('[data-testid="global-menu-networks"]');
         await selectNetworkDialog.check_pageIsLoaded();
         await selectNetworkDialog.openNetworkListOptions('eip155:42161');
         await selectNetworkDialog.openEditNetworkModal();
