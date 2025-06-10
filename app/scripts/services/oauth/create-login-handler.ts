@@ -9,13 +9,11 @@ import type {
 
 export function createLoginHandler(
   authConnection: AuthConnection,
-  redirectUri: string,
   env: OAuthLoginEnv,
   webAuthenticator: WebAuthenticator,
 ) {
   const commonHandlerOptions: Omit<LoginHandlerOptions, 'oAuthClientId'> = {
     web3AuthNetwork: env.web3AuthNetwork,
-    redirectUri,
     authServerUrl: env.authServerUrl,
     webAuthenticator,
   };
