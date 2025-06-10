@@ -1,8 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { mockIdentityServices } from '../identity/mocks';
-import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 import { accountsToMockForAccountsSync as unencryptedMockAccounts } from '../identity/account-syncing/mock-data';
 import { Driver } from '../../webdriver/driver';
 import {
@@ -14,6 +12,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { completeOnboardFlowIdentity } from '../identity/flows';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { ACCOUNT_TYPE } from '../../constants';
+import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 import { mockNotificationServices } from './mocks';
 
 describe('Enable Notifications - Without Accounts Syncing', function () {
@@ -41,8 +40,8 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
      * → Second account: disabled (persisted from Part 1)
      */
     it('syncs notification settings on next onboarding after enabling for the first time', async function () {
-      const userStorageMockttpController = new UserStorageMockttpController();
-
+      // server that persists trigger settings.
+      const triggerServer = new MockttpNotificationTriggerServer();
       await withFixtures(
         {
           fixtures: new FixtureBuilder({ onboarding: true })
@@ -50,10 +49,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (server: Mockttp) => {
-            await mockNotificationServices(
-              server,
-              userStorageMockttpController,
-            );
+            await mockNotificationServices(server, triggerServer);
           },
         },
         async ({ driver }) => {
@@ -83,13 +79,7 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (server: Mockttp) => {
-            return [
-              await mockNotificationServices(
-                server,
-                userStorageMockttpController,
-              ),
-              await mockIdentityServices(server, userStorageMockttpController),
-            ];
+            return [await mockNotificationServices(server, triggerServer)];
           },
         },
         async ({ driver }) => {
