@@ -1452,13 +1452,11 @@ const addAppInstalledEvent = () => {
  *
  * @param {chrome.runtime.InstalledDetails} details
  */
-function handleOnInstalled({ reason }) {
-  switch (reason) {
-    case 'install':
-      onInstall();
-      break;
-    default:
-    // no action
+function handleOnInstalled(details) {
+  if (details.reason === 'install') {
+    onInstall();
+  } else if (details.reason === 'update') {
+    onUpdate();
   }
 }
 
@@ -1472,6 +1470,26 @@ function onInstall() {
     platform.openExtensionInBrowser();
   }
 }
+
+/**
+ * Trigger actions that should happen only upon update installation
+ */
+async function onUpdate() {
+  await isInitialized;
+  log.debug('Update installation detected');
+  controller.appStateController.setLastUpdatedAt(Date.now());
+}
+
+/**
+ * Trigger actions that should happen only when an update is available
+ */
+async function onUpdateAvailable() {
+  await isInitialized;
+  log.debug('An update is available');
+  controller.appStateController.setIsUpdateAvailable(true);
+}
+
+browser.runtime.onUpdateAvailable.addListener(onUpdateAvailable);
 
 function onNavigateToTab() {
   browser.tabs.onActivated.addListener((onActivatedTab) => {

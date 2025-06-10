@@ -2337,9 +2337,6 @@
   "genericExplorerView": {
     "message": "$1でアカウントを表示"
   },
-  "goBack": {
-    "message": "戻る"
-  },
   "goToSite": {
     "message": "サイトに移動"
   },
@@ -4790,35 +4787,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "シークレットリカバリーフレーズの確認"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "後で通知 (非推奨)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "ウォレットの安全を確保 (推奨)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "書き留めて、複数の秘密の場所に保管してください"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "金庫に保管する"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "シークレットリカバリーフレーズは12単語のフレーズで、ウォレットと資金への「マスターキー」となります。"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "誰かにリカバリーフレーズを尋ねられたら、ウォレットの資金を盗もうとする詐欺の可能性が高いです。"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "シークレットリカバリ フレーズはMetaMaskを含め、決して誰とも共有しないでください！"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "シークレットリカバリーフレーズとは何ですか？"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "シークレットリカバリーフレーズは共有すべきですか？"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "シークレットリカバリーフレーズはどのように保管すべきですか？"
   },
   "seedPhraseIntroTitle": {
     "message": "ウォレットの保護"
@@ -5102,9 +5075,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "スキップ"
   },
   "skipAccountSecurity": {
     "message": "アカウントのセキュリティをスキップしますか？"

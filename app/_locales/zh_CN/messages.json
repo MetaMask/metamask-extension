@@ -2337,9 +2337,6 @@
   "genericExplorerView": {
     "message": "在$1查看账户"
   },
-  "goBack": {
-    "message": "返回"
-  },
   "goToSite": {
     "message": "转到网站"
   },
@@ -4790,35 +4787,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "确认私钥助记词"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "稍后提醒我（不推荐）"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "保护我的钱包（推荐）"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "写下并存储在多个秘密位置"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "安全存放在保险箱内"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "您的账户私钥助记词是由12个单词组成的短语，它是您的钱包和资金的“主私钥”"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "如果有人要求您的恢复短语，他们可能会试图欺诈您并偷窃您的钱包资金"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "切勿分享您的账户私钥助记词，包括也不能与 MetaMask 分享！"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "什么是账户私钥助记词？"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "我是否应该分享我的账户私钥助记词？"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "如何保存我的账户私钥助记词？"
   },
   "seedPhraseIntroTitle": {
     "message": "保护您的钱包安全"
@@ -5102,9 +5075,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "跳过"
   },
   "skipAccountSecurity": {
     "message": "跳过账户安全？"

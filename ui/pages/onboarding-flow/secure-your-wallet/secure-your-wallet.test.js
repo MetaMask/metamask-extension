@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import reactRouterDom from 'react-router-dom';
@@ -59,7 +59,7 @@ describe('Secure Your Wallet Onboarding View', () => {
       <SecureYourWallet />,
       store,
     );
-    const remindMeLaterButton = getByText('Remind me later (not recommended)');
+    const remindMeLaterButton = getByText('Remind me later');
     expect(queryAllByText('Skip account security?')).toHaveLength(0);
     fireEvent.click(remindMeLaterButton);
     expect(queryAllByText('Skip account security?')).toHaveLength(1);
@@ -74,17 +74,19 @@ describe('Secure Your Wallet Onboarding View', () => {
       <SecureYourWallet />,
       store,
     );
-    const remindMeLaterButton = getByText('Remind me later (not recommended)');
+    const remindMeLaterButton = getByText('Remind me later');
     fireEvent.click(remindMeLaterButton);
     const skipButton = getByText('Skip');
     fireEvent.click(skipButton);
     expect(pushMock).toHaveBeenCalledTimes(0);
-    const checkbox = getByTestId('skip-srp-backup-popover-checkbox');
+    const checkbox = getByTestId('skip-srp-backup-checkbox');
     fireEvent.click(checkbox);
-    const confirmSkip = getByTestId('skip-srp-backup');
-    await fireEvent.click(confirmSkip);
-    expect(setSeedPhraseBackedUpSpy).toHaveBeenCalledTimes(1);
-    expect(pushMock).toHaveBeenCalledTimes(1);
-    expect(pushMock).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
+    const confirmSkip = getByTestId('skip-srp-backup-button');
+    fireEvent.click(confirmSkip);
+
+    await waitFor(() => {
+      expect(setSeedPhraseBackedUpSpy).toHaveBeenCalledWith(false);
+      expect(pushMock).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
+    });
   });
 });
