@@ -1250,9 +1250,6 @@
   "confusingEnsDomain": {
     "message": "ENS adında karıştırılabilir bir karakter tespit ettik. Olası bir dolandırıcılığı önlemek için ENS adını kontrol edin."
   },
-  "congratulations": {
-    "message": "Tebrikler!"
-  },
   "connect": {
     "message": "Bağla"
   },
@@ -2501,10 +2498,6 @@
   "id": {
     "message": "Kimlik"
   },
-  "ifYouGetLockedOut": {
-    "message": "Uygulamaya giriş yapamazsanız veya yeni bir cihaz edinirseniz paranızı kaybedersiniz. Gizli Kurtarma İfadenizi şurada yedeklediğinizden emin olun: $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "Tümünü yoksay"
   },
@@ -2758,10 +2751,6 @@
   "jsonFile": {
     "message": "JSON Dosyası",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Gizli Kurtarma İfadenizin hatırlatıcısını güvenli bir yerde tutun. Güvenli kurtarma ifadenizi kaybederseniz hiç kimse geri almanıza yardımcı olamaz. Daha da kötüsü, cüzdanınıza bir daha asla erişemezsiniz. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Hesap adı"
@@ -4502,12 +4491,6 @@
   "rejected": {
     "message": "Reddedildi"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Unutmayın, Gizli Kurtarma İfadenizi kaybederseniz cüzdanınıza erişiminizi kaybedersiniz. Paranıza her zaman erişebilmeniz için bu sözcük dizisini saklamak amacıyla şunu yapın: $1."
-  },
-  "reminderSet": {
-    "message": "Hatırlatıcı ayarlandı!"
-  },
   "remove": {
     "message": "Kaldır"
   },
@@ -4761,9 +4744,6 @@
   "securityMessageLinkForNetworks": {
     "message": "ağ dolandırıcılıkları ve güvenlik riskleri"
   },
-  "securityPrivacyPath": {
-    "message": "Ayarlar > Güvenlik ve Gizlilik."
-  },
   "securityProviderPoweredBy": {
     "message": "$1 hizmetidir",
     "description": "The security provider that is providing data"
@@ -4912,9 +4892,6 @@
   },
   "settings": {
     "message": "Ayarlar"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "Ayarlar, kullanım kolaylığı ve güvenlik için optimize edildi. Bunları dilediğiniz zaman değiştirin."
   },
   "settingsSearchMatchingNotFound": {
     "message": "Eşleşen sonuç bulunamadı."
@@ -6664,10 +6641,6 @@
   },
   "walletConnectionGuide": {
     "message": "donanım cüzdanı bağlantı kılavuzumuz"
-  },
-  "walletProtectedAndReadyToUse": {
-    "message": "Cüzdanınız korunuyor ve kullanıma hazır. Gizli Kurtarma İfadenizi $1 bölümünde bulabilirsiniz ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "Bu ağı eklemek istiyor musunuz?"

@@ -68,7 +68,7 @@ describe('MetaMask onboarding', function () {
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.check_pageIsLoaded();
-        await onboardingCompletePage.check_congratulationsMessageIsDisplayed();
+        await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
         await onboardingCompletePage.completeOnboarding();
 
         const homePage = new HomePage(driver);

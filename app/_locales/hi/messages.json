@@ -1250,9 +1250,6 @@
   "confusingEnsDomain": {
     "message": "हमने ENS नाम में एक कंफ्यूज़ करने वाले करैक्टर का पता लगाया है। संभावित धोखाधड़ी से बचने के लिए ENS नाम की जाँच करें।"
   },
-  "congratulations": {
-    "message": "बधाइयां!"
-  },
   "connect": {
     "message": "कनेक्ट करें"
   },
@@ -2501,10 +2498,6 @@
   "id": {
     "message": "ID"
   },
-  "ifYouGetLockedOut": {
-    "message": "यदि आप ऐप से बाहर हो जाते हैं या कोई नया डिवाइस प्राप्त करते हैं, तो आप अपना फंड खो देंगे। $1 में अपना सीक्रेट रिकवरी फ्रेज़ का बैकअप लेना सुनिश्चित करें ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "सभी को अनदेखा करें"
   },
@@ -2758,10 +2751,6 @@
   "jsonFile": {
     "message": "JSON फाइल",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "अपने सीक्रेट रिकवरी फ्रेज़ का रिमाइंडर कहीं सुरक्षित रखें। यदि आप इसे खो देते हैं, तो इसे वापस पाने में कोई आपकी मदद नहीं कर सकता। इससे भी बुरी बात यह है कि आप कभी भी अपने वॉलेट तक पहुंच नहीं पाएंगे। $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "अकाउंट का नाम"
@@ -4502,12 +4491,6 @@
   "rejected": {
     "message": "रिजेक्ट"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "याद रखें, यदि आप अपना सीक्रेट रिकवरी फ्रेज़ खो देते हैं, तो आप अपने वॉलेट तक पहुंच खो देते हैं। शब्दों के इस सेट को सुरक्षित रखने के लिए $1 ताकि आप हमेशा अपने फंड तक पहुंच सकें।"
-  },
-  "reminderSet": {
-    "message": "रिमाइंडर सेट किया गया!"
-  },
   "remove": {
     "message": "हटाएं"
   },
@@ -4761,9 +4744,6 @@
   "securityMessageLinkForNetworks": {
     "message": "नेटवर्क संबंधी स्कैम और सुरक्षा जोखिम"
   },
-  "securityPrivacyPath": {
-    "message": "सेटिंग्स > सुरक्षा और गोपनीयता।"
-  },
   "securityProviderPoweredBy": {
     "message": "$1 द्वारा पावर्ड",
     "description": "The security provider that is providing data"
@@ -4912,9 +4892,6 @@
   },
   "settings": {
     "message": "सेटिंग"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "उपयोग में आसानी और सुरक्षा के लिए सेटिंग्स को अनुकूलित किया गया है। इन्हें किसी भी समय बदलें।"
   },
   "settingsSearchMatchingNotFound": {
     "message": "कोई मेल खाने वाला परिणाम नहीं मिला।"
@@ -6664,10 +6641,6 @@
   },
   "walletConnectionGuide": {
     "message": "हमारी hardware wallet कनेक्शन गाइड"
-  },
-  "walletProtectedAndReadyToUse": {
-    "message": "आपका वॉलेट सुरक्षित है और उपयोग के लिए तैयार है। आप अपना सीक्रेट रिकवरी फ्रेज़ $1 में पा सकते हैं ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "इस नेटवर्क को जोड़ना चाहते हैं?"
