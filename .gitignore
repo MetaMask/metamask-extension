@@ -91,3 +91,6 @@ html-report-multichain/
 
 # UI Integration tests
 test/integration/config/assets
+
+
+.env

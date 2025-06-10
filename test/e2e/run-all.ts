@@ -99,6 +99,10 @@ async function main(): Promise<void> {
             description: `run multi injected provider e2e tests`,
             type: 'boolean',
           })
+          .option('stx-e2e', {
+            description: `run STX specific e2e tests`,
+            type: 'boolean',
+          })
           .option('build-type', {
             description: `Sets the build-type to test for. This may filter out tests.`,
             type: 'string',
@@ -134,6 +138,7 @@ async function main(): Promise<void> {
     updateSnapshot,
     updatePrivacySnapshot,
     multiProvider,
+    stxE2e,
   } = argv as {
     browser?: 'chrome' | 'firefox';
     debug?: boolean;
@@ -143,6 +148,7 @@ async function main(): Promise<void> {
     updateSnapshot?: boolean;
     updatePrivacySnapshot?: boolean;
     multiProvider?: boolean;
+    stxE2e?: boolean;
   };
 
   let testPaths: string[];
@@ -178,6 +184,9 @@ async function main(): Promise<void> {
     );
 
     const testDir = path.join(__dirname, 'multi-injected-provider');
+    testPaths = await getTestPathsForTestDir(testDir);
+  } else if (stxE2e) {
+    const testDir = path.join(__dirname, 'stx-e2e');
     testPaths = await getTestPathsForTestDir(testDir);
   } else {
     const testDir = path.join(__dirname, 'tests');

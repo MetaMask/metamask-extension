@@ -126,6 +126,8 @@ async function withFixtures(options, testSuite) {
     ethConversionInUsd,
     monConversionInUsd,
     manifestFlags,
+    disableMocking = false,
+    disablePrivacySnapshotValidation = false,
   } = options;
 
   // Normalize localNodeOptions
@@ -255,15 +257,24 @@ async function withFixtures(options, testSuite) {
         });
       }
     }
-    const { mockedEndpoint, getPrivacyReport } = await setupMocking(
-      mockServer,
-      testSpecificMock,
-      {
+
+    let mockedEndpoint, getPrivacyReport;
+    if (disableMocking) {
+      // Cuando el mocking está deshabilitado, configuramos pass-through básico
+      await mockServer.forAnyRequest().thenPassThrough();
+      mockedEndpoint = undefined;
+      getPrivacyReport = () => [];
+    } else {
+      // Cuando el mocking está habilitado, usamos setupMocking
+      const mockingResult = await setupMocking(mockServer, testSpecificMock, {
         chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
         ethConversionInUsd,
         monConversionInUsd,
-      },
-    );
+      });
+      mockedEndpoint = mockingResult.mockedEndpoint;
+      getPrivacyReport = mockingResult.getPrivacyReport;
+    }
+
     if ((await detectPort(8000)) !== 8000) {
       throw new Error(
         'Failed to set up mock server, something else may be running on port 8000.',
@@ -324,38 +335,40 @@ async function withFixtures(options, testSuite) {
     // suite execution. If so, fail the test unless the
     // --update-privacy-snapshot was specified. In that case, update the
     // snapshot file.
-    const privacySnapshotRaw = readFileSync('./privacy-snapshot.json');
-    const privacySnapshot = JSON.parse(privacySnapshotRaw);
-    const privacyReport = getPrivacyReport();
+    if (!disablePrivacySnapshotValidation) {
+      const privacySnapshotRaw = readFileSync('./privacy-snapshot.json');
+      const privacySnapshot = JSON.parse(privacySnapshotRaw);
+      const privacyReport = getPrivacyReport();
 
-    // We must add to our privacyReport all of the known hosts that are
-    // included in the privacySnapshot. If no new hosts were requested during
-    // this test suite execution, then the mergedReport and the privacySnapshot
-    // should be identical.
-    const mergedReport = [
-      ...new Set([...privacyReport, ...privacySnapshot]),
-    ].sort();
+      // We must add to our privacyReport all of the known hosts that are
+      // included in the privacySnapshot. If no new hosts were requested during
+      // this test suite execution, then the mergedReport and the privacySnapshot
+      // should be identical.
+      const mergedReport = [
+        ...new Set([...privacyReport, ...privacySnapshot]),
+      ].sort();
 
-    // To determine if a new host was requested, we use the lodash difference
-    // method to generate an array of the items included in the first argument
-    // but not in the second
-    const newHosts = difference(mergedReport, privacySnapshot);
+      // To determine if a new host was requested, we use the lodash difference
+      // method to generate an array of the items included in the first argument
+      // but not in the second
+      const newHosts = difference(mergedReport, privacySnapshot);
 
-    if (newHosts.length > 0) {
-      if (process.env.UPDATE_PRIVACY_SNAPSHOT === 'true') {
-        writeFileSync(
-          './privacy-snapshot.json',
-          JSON.stringify(mergedReport, null, 2),
-        );
-      } else {
-        throw new Error(
-          `A new host not contained in the privacy-snapshot received a network
-           request during test execution. Please update the privacy-snapshot
-           file by passing the --update-privacy-snapshot option to the test
-           command or add the new hosts to the snapshot manually.
+      if (newHosts.length > 0) {
+        if (process.env.UPDATE_PRIVACY_SNAPSHOT === 'true') {
+          writeFileSync(
+            './privacy-snapshot.json',
+            JSON.stringify(mergedReport, null, 2),
+          );
+        } else {
+          throw new Error(
+            `A new host not contained in the privacy-snapshot received a network
+             request during test execution. Please update the privacy-snapshot
+             file by passing the --update-privacy-snapshot option to the test
+             command or add the new hosts to the snapshot manually.
 
-           New hosts found: ${newHosts}.`,
-        );
+             New hosts found: ${newHosts}.`,
+          );
+        }
       }
     }
 
