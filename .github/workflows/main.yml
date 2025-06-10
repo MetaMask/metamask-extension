@@ -38,6 +38,23 @@ permissions:
   contents: read
 
 jobs:
+  first:
+    name: First job
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - run: printenv
+
+      - name: Debugging with tmate
+        uses: ./.github/actions/actions-tmate
+
   get-requirements:
     name: Get workflow and job requirements
     permissions:
