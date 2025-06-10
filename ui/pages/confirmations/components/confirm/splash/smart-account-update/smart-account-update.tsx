@@ -27,18 +27,20 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
-import { setSplashPageAcknowledgedForAccount } from '../../../../../../store/actions';
+import {
+  setSmartAccountOptIn,
+  setSplashPageAcknowledgedForAccount,
+} from '../../../../../../store/actions';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import Name from '../../../../../../components/app/name';
-import { getUpgradeSplashPageAcknowledgedForAccounts } from '../../../../selectors';
 import {
   AccountsState,
   getMemoizedInternalAccountByAddress,
 } from '../../../../../../selectors';
+import { getUpgradeSplashPageAcknowledgedForAccounts } from '../../../../selectors';
 import { getUseSmartAccount } from '../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useSmartAccountActions } from '../../../../hooks/useSmartAccountActions';
-import { setSmartAccountOptIn } from '../../../../../../store/actions';
 
 const ListItem = ({
   imgSrc,
