@@ -19435,7 +19435,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/keyring-controller
-22.0.1 <https://github.com/MetaMask/core>
+22.0.2 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
@@ -29633,7 +29633,7 @@ limitations under the License.
 
 ******************************
 
-@swc/core-linux-x64-gnu
+@swc/core-darwin-arm64
 1.4.11 <https://github.com/swc-project/swc>
 license: Apache-2.0 AND MIT
 authors: 강동윤 <kdy1997.dev@gmail.com>
