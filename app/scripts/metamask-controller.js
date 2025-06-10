@@ -407,6 +407,7 @@ import {
 } from './lib/network-controller/messenger-action-handlers';
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
+import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1889,6 +1890,7 @@ export default class MetamaskController extends EventEmitter {
         NotificationServicesPushControllerInit,
       DeFiPositionsController: DeFiPositionsControllerInit,
       DelegationController: DelegationControllerInit,
+      AccountTreeController: AccountTreeControllerInit,
     };
 
     const {
@@ -1940,6 +1942,7 @@ export default class MetamaskController extends EventEmitter {
     this.notificationServicesPushController =
       controllersByName.NotificationServicesPushController;
     this.deFiPositionsController = controllersByName.DeFiPositionsController;
+    this.accountWalletController = controllersByName.AccountTreeController;
 
     this.notificationServicesController.init();
 
@@ -3709,6 +3712,14 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setOutdatedBrowserWarningLastShown.bind(
           appStateController,
         ),
+      setIsUpdateAvailable:
+        appStateController.setIsUpdateAvailable.bind(appStateController),
+      setUpdateModalLastDismissedAt:
+        appStateController.setUpdateModalLastDismissedAt.bind(
+          appStateController,
+        ),
+      setLastUpdatedAt:
+        appStateController.setLastUpdatedAt.bind(appStateController),
       setShowTestnetMessageInDropdown:
         appStateController.setShowTestnetMessageInDropdown.bind(
           appStateController,
@@ -4985,6 +4996,8 @@ export default class MetamaskController extends EventEmitter {
     }
 
     await this.accountsController.updateAccounts();
+    // Force account-tree refresh after all accounts have been updated.
+    this.accountWalletController.init();
 
     // This must be set as soon as possible to communicate to the
     // keyring's iframe and have the setting initialized properly
