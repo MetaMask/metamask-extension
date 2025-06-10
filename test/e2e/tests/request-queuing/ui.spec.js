@@ -128,11 +128,6 @@ async function confirmTransaction(driver) {
   await driver.clickElement({ tag: 'button', text: 'Confirm' });
 }
 
-async function switchToNetworkByName(driver, networkName) {
-  await driver.clickElement('.mm-picker-network');
-  await driver.clickElement(`[data-testid="${networkName}"]`);
-}
-
 async function openPopupWithActiveTabOrigin(driver, origin) {
   await driver.openNewPage(
     `${driver.extensionUrl}/${PAGES.POPUP}.html?activeTabOrigin=${origin}`,
@@ -636,7 +631,7 @@ describe('Request-queue UI changes', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await driver.waitForSelector({
-          css: '[data-testid="network-display"]',
+          css: '[data-testid="sort-by-networks"]',
           text: 'Ethereum Mainnet',
         });
 
@@ -704,7 +699,7 @@ describe('Request-queue UI changes', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await driver.findElement({
-          css: '[data-testid="network-display"]',
+          css: '[data-testid="sort-by-networks"]',
           text: 'Ethereum Mainnet',
         });
 
