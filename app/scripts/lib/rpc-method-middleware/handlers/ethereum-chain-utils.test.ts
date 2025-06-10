@@ -11,6 +11,7 @@ describe('Ethereum Chain Utils', () => {
   const createMockedSwitchChain = (mks = {}) => {
     const end = jest.fn();
     const mocks = {
+      ...mks,
       origin: 'www.test.com',
       isAddFlow: false,
       isSwitchFlow: false,
@@ -25,7 +26,6 @@ describe('Ethereum Chain Utils', () => {
       hasApprovalRequestsForOrigin: jest.fn(),
       toNetworkConfiguration: {},
       fromNetworkConfiguration: {},
-      ...mks,
     };
     const response: { result?: true } = {};
     const switchChain = (chainId: Hex, networkClientId: string) =>
