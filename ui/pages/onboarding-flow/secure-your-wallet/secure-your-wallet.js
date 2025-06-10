@@ -122,6 +122,13 @@ export default function SecureYourWallet() {
                   key="secureWalletWalletSaveSrp"
                   size={ButtonLinkSize.Inherit}
                   onClick={() => {
+                    trackEvent({
+                      category: MetaMetricsEventCategory.Onboarding,
+                      event: MetaMetricsEventName.SrpDefinitionClicked,
+                      properties: {
+                        location: 'secure_your_wallet',
+                      },
+                    });
                     setShowSrpDetailsModal(true);
                   }}
                 >

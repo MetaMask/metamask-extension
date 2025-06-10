@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useContext, useEffect } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
@@ -40,14 +40,26 @@ import {
   TraceOperation,
 } from '../../../../shared/lib/trace';
 import { useSentryTrace } from '../../../contexts/sentry-trace';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsEventAccountType,
+} from '../../../../shared/constants/metametrics';
 
 export default function AccountExist() {
   const history = useHistory();
+  const location = useLocation();
   const dispatch = useDispatch();
   const t = useI18nContext();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
   const { onboardingParentContext } = useSentryTrace();
+  const trackEvent = useContext(MetaMetricsContext);
+
+  // Get socialConnectionType from query parameters
+  const urlParams = new URLSearchParams(location.search);
+  const socialConnectionType = urlParams.get('socialConnectionType') || '';
 
   const onBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -63,6 +75,13 @@ export default function AccountExist() {
       parentContext: onboardingParentContext.current,
     });
     dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletImportStarted,
+      properties: {
+        account_type: `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`,
+      },
+    });
     history.push(ONBOARDING_UNLOCK_ROUTE);
   };
 

@@ -139,7 +139,16 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
             iconName={IconName.Info}
             size={ButtonIconSize.Sm}
             color={IconColor.iconAlternative}
-            onClick={() => setShowSrpDetailsModal(true)}
+            onClick={() => {
+              trackEvent({
+                category: MetaMetricsEventCategory.Onboarding,
+                event: MetaMetricsEventName.SrpDefinitionClicked,
+                properties: {
+                  location: 'import_srp',
+                },
+              });
+              setShowSrpDetailsModal(true);
+            }}
             ariaLabel="info"
           />
         </Box>

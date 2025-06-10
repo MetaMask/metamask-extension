@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -26,6 +26,11 @@ import Spinner from '../../../../components/ui/spinner';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { changePassword, verifyPassword } from '../../../../store/actions';
 import PasswordForm from '../../../../components/app/password-form/password-form';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
 import ChangePasswordWarning from './change-password-warning';
 
@@ -39,6 +44,7 @@ const ChangePassword = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
+  const trackEvent = useContext(MetaMetricsContext);
   const [eventEmitter] = useState(new EventEmitter());
   const [step, setStep] = useState(ChangePasswordSteps.VerifyCurrentPassword);
 
@@ -81,6 +87,15 @@ const ChangePassword = () => {
       setShowChangePasswordWarning(false);
       setStep(ChangePasswordSteps.ChangePasswordLoading);
       await dispatch(changePassword(newPassword, currentPassword));
+
+      // Track password changed event
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasswordChanged,
+        properties: {
+          biometrics_enabled: false,
+        },
+      });
 
       // upon successful password change, go back to the settings page
       history.push(SECURITY_ROUTE);

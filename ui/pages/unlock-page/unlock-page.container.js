@@ -16,6 +16,7 @@ import {
   forceUpdateMetamaskState,
 } from '../../store/actions';
 import { getIsSeedlessPasswordOutdated } from '../../ducks/metamask/metamask';
+import { isSocialLoginFlow } from '../../selectors';
 import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
@@ -24,10 +25,13 @@ const mapStateToProps = (state) => {
   } = state;
 
   const isSeedlessPasswordOutdated = getIsSeedlessPasswordOutdated(state);
+  const socialLoginFlow = isSocialLoginFlow(state);
+
   return {
     isUnlocked,
     firstTimeFlow,
     isSeedlessPasswordOutdated,
+    socialLoginFlow,
   };
 };
 

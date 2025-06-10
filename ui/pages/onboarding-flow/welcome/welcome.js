@@ -20,6 +20,7 @@ import LoadingScreen from '../../../components/ui/loading-screen';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsEventAccountType,
 } from '../../../../shared/constants/metametrics';
 import {
   bufferedTrace,
@@ -77,9 +78,9 @@ export default function OnboardingWelcome({
     dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletCreationStarted,
+      event: MetaMetricsEventName.WalletSetupStarted,
       properties: {
-        account_type: 'metamask',
+        account_type: MetaMetricsEventAccountType.Default,
       },
     });
     bufferedTrace({
@@ -96,9 +97,9 @@ export default function OnboardingWelcome({
     await dispatch(setFirstTimeFlowType(FirstTimeFlowType.import));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletImportStarted,
+      event: MetaMetricsEventName.WalletImportStarted,
       properties: {
-        account_type: 'imported',
+        account_type: MetaMetricsEventAccountType.Imported,
       },
     });
     bufferedTrace({
@@ -152,13 +153,31 @@ export default function OnboardingWelcome({
       setNewAccountCreationInProgress(true);
       dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
 
+      // Track wallet setup started for social login users
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.WalletRehydrationSelected,
+        properties: {
+          account_type: `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`,
+        },
+      });
+
       try {
         const isNewUser = await handleSocialLogin(socialConnectionType);
+
+        // Track wallet setup completed for social login users
         trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.OnboardingWalletCreationStarted,
+          event: MetaMetricsEventName.SocialLoginCompleted,
           properties: {
-            account_type: 'metamask',
+            account_type: `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`,
+          },
+        });
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.WalletSetupStarted,
+          properties: {
+            account_type: `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`,
           },
         });
         if (isNewUser) {
@@ -169,7 +188,9 @@ export default function OnboardingWelcome({
           });
           history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
         } else {
-          history.push(ONBOARDING_ACCOUNT_EXIST);
+          history.push(
+            `${ONBOARDING_ACCOUNT_EXIST}?socialConnectionType=${socialConnectionType}`,
+          );
         }
       } catch (error) {
         handleSocialLoginError(error, socialConnectionType);
@@ -192,19 +213,38 @@ export default function OnboardingWelcome({
       setIsLoggingIn(true);
       dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
 
+      // Track wallet login selected for existing social login users
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.WalletRehydrationSelected,
+        properties: {
+          account_type: `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`,
+        },
+      });
+
       try {
         const isNewUser = await handleSocialLogin(socialConnectionType);
 
+        // Track wallet login completed for existing social login users
         trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.OnboardingWalletCreationStarted,
+          event: MetaMetricsEventName.SocialLoginCompleted,
           properties: {
-            account_type: 'metamask',
+            account_type: `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`,
+          },
+        });
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.WalletImportStarted,
+          properties: {
+            account_type: `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`,
           },
         });
 
         if (isNewUser) {
-          history.push(ONBOARDING_ACCOUNT_NOT_FOUND);
+          history.push(
+            `${ONBOARDING_ACCOUNT_NOT_FOUND}?socialConnectionType=${socialConnectionType}`,
+          );
         } else {
           bufferedTrace({
             name: TraceName.OnboardingExistingSocialLogin,

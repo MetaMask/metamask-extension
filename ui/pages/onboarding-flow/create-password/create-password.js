@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import zxcvbn from 'zxcvbn';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   JustifyContent,
@@ -25,11 +26,13 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   isSocialLoginFlow,
+  getSocialLoginType,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsEventAccountType,
 } from '../../../../shared/constants/metametrics';
 import {
   Box,
@@ -56,6 +59,7 @@ import {
   bufferedEndTrace,
 } from '../../../../shared/lib/trace';
 import { useSentryTrace } from '../../../contexts/sentry-trace';
+import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 
 export default function CreatePassword({
   createNewAccount,
@@ -71,6 +75,7 @@ export default function CreatePassword({
   const dispatch = useDispatch();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const socialLoginFlow = useSelector(isSocialLoginFlow);
+  const socialLoginType = useSelector(getSocialLoginType);
   const trackEvent = useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
 
@@ -145,6 +150,41 @@ export default function CreatePassword({
     console.error(error);
   };
 
+  const handleLearnMoreClick = (event) => {
+    event.stopPropagation();
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.ExternalLinkClicked,
+      properties: {
+        text: 'Learn More',
+        location: 'create_password',
+        url: ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE,
+      },
+    });
+  };
+
+  // Helper function to determine account type for analytics
+  const getAccountType = (baseType, includesSocialLogin = false) => {
+    if (includesSocialLogin && socialLoginType) {
+      const socialProvider = String(socialLoginType).toLowerCase();
+      return `${baseType}_${socialProvider}`;
+    }
+    return baseType;
+  };
+
+  const getPasswordStrengthCategory = (passwordValue) => {
+    const isTooShort = passwordValue.length < PASSWORD_MIN_LENGTH;
+    const { score } = zxcvbn(passwordValue);
+
+    if (isTooShort || score < 3) {
+      return 'weak';
+    }
+    if (score === 3) {
+      return 'average';
+    }
+    return 'strong';
+  };
+
   const handleCreate = async (event) => {
     event?.preventDefault();
 
@@ -152,34 +192,66 @@ export default function CreatePassword({
       return;
     }
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletCreationAttempted,
-    });
-
     // If secretRecoveryPhrase is defined we are in import wallet flow
     if (
       secretRecoveryPhrase &&
       firstTimeFlowType === FirstTimeFlowType.import
     ) {
       try {
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.WalletImportAttempted,
+        });
         await importWithRecoveryPhrase(password, secretRecoveryPhrase);
 
         bufferedEndTrace({ name: TraceName.OnboardingExistingSrpImport });
         bufferedEndTrace({ name: TraceName.OnboardingJourneyOverall });
 
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.WalletImported,
+          properties: {
+            biometrics_enabled: false,
+          },
+        });
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.WalletSetupCompleted,
+          properties: {
+            wallet_setup_type: 'import',
+            new_wallet: false,
+            account_type: getAccountType(
+              MetaMetricsEventAccountType.Imported,
+              Boolean(socialLoginType),
+            ),
+          },
+        });
         if (isFirefox) {
           history.push(ONBOARDING_COMPLETION_ROUTE);
         } else {
           history.push(ONBOARDING_METAMETRICS);
         }
       } catch (error) {
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.WalletSetupFailure,
+        });
         handlePasswordSetupError(error);
         throw error;
       }
     } else {
       // Otherwise we are in create new wallet flow
       try {
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.WalletCreationAttempted,
+          properties: {
+            account_type: getAccountType(
+              MetaMetricsEventAccountType.Default,
+              socialLoginFlow && Boolean(socialLoginType),
+            ),
+          },
+        });
         if (createNewAccount) {
           setNewAccountCreationInProgress(true);
           await createNewAccount(password);
@@ -197,7 +269,31 @@ export default function CreatePassword({
         } else {
           history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
         }
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.WalletCreated,
+          properties: {
+            biometrics_enabled: false,
+            password_strength: getPasswordStrengthCategory(password),
+          },
+        });
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.WalletSetupCompleted,
+          properties: {
+            wallet_setup_type: 'new',
+            new_wallet: true,
+            account_type: getAccountType(
+              MetaMetricsEventAccountType.Default,
+              socialLoginFlow && Boolean(socialLoginType),
+            ),
+          },
+        });
       } catch (error) {
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.WalletSetupFailure,
+        });
         handlePasswordSetupError(error);
         throw error;
       }
@@ -206,7 +302,7 @@ export default function CreatePassword({
 
   const createPasswordLink = (
     <a
-      onClick={(e) => e.stopPropagation()}
+      onClick={handleLearnMoreClick}
       key="create-password__link-text"
       href={ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}
       target="_blank"

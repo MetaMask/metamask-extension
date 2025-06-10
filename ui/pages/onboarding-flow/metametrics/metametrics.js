@@ -25,7 +25,6 @@ import {
 } from '../../../selectors';
 
 import {
-  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -76,28 +75,8 @@ export default function OnboardingMetametrics() {
     if (dataCollectionForMarketing === null) {
       await dispatch(setDataCollectionForMarketing(false));
     }
-    const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
+    await dispatch(setParticipateInMetaMetrics(true));
     try {
-      if (firstTimeFlowType) {
-        trackEvent(
-          {
-            category: MetaMetricsEventCategory.Onboarding,
-            event: MetaMetricsEventName.WalletSetupStarted,
-            properties: {
-              account_type:
-                firstTimeFlowType === FirstTimeFlowType.create
-                  ? MetaMetricsEventAccountType.Default
-                  : MetaMetricsEventAccountType.Imported,
-            },
-          },
-          {
-            isOptIn: true,
-            metaMetricsId,
-            flushImmediately: true,
-          },
-        );
-      }
-
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.AppInstalled,
@@ -123,6 +102,7 @@ export default function OnboardingMetametrics() {
   const onCancel = async () => {
     await dispatch(setParticipateInMetaMetrics(false));
     await dispatch(setDataCollectionForMarketing(false));
+    await submitRequestToBackground('clearEventsAfterMetricsOptIn');
     discardBufferedTraces();
     await submitRequestToBackground('clearEventsAfterMetricsOptIn');
     history.push(nextRouteByBrowser);

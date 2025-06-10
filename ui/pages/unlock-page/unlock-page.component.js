@@ -80,6 +80,10 @@ class UnlockPage extends Component {
      * Sentry trace context ref for onboarding journey tracing
      */
     onboardingParentContext: PropTypes.object,
+    /**
+     * Whether this is a social login flow
+     */
+    socialLoginFlow: PropTypes.bool,
   };
 
   state = {
@@ -133,8 +137,8 @@ class UnlockPage extends Component {
     event.preventDefault();
     event.stopPropagation();
 
+    const { onSubmit, socialLoginFlow } = this.props;
     const { password, isSubmitting } = this.state;
-    const { onSubmit } = this.props;
 
     if (password === '' || isSubmitting) {
       return;
@@ -142,8 +146,34 @@ class UnlockPage extends Component {
 
     this.setState({ error: null, isSubmitting: true });
 
+    // Track wallet rehydration attempted for social login users
+    if (socialLoginFlow) {
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.RehydrationPasswordAttempted,
+        properties: {
+          account_type: 'social',
+          biometrics: false,
+        },
+      });
+    }
+
     try {
       await onSubmit(password);
+
+      // Track wallet rehydration completed for social login users
+      if (socialLoginFlow) {
+        this.context.trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.RehydrationPasswordCompleted,
+          properties: {
+            account_type: 'social',
+            biometrics: false,
+            failed_attempts: this.failed_attempts,
+          },
+        });
+      }
+
       this.context.trackEvent(
         {
           category: MetaMetricsEventCategory.Navigation,
@@ -171,10 +201,23 @@ class UnlockPage extends Component {
 
   handleLoginError = async (error) => {
     const { t } = this.context;
+    const { socialLoginFlow } = this.props;
     this.failed_attempts += 1;
     const { message, data } = error;
     let finalErrorMessage = message;
     let errorReason;
+
+    // Track wallet rehydration failed for social login users
+    if (socialLoginFlow) {
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.RehydrationPasswordFailed,
+        properties: {
+          account_type: 'social',
+          failed_attempts: this.failed_attempts,
+        },
+      });
+    }
 
     // Check if we are in the onboarding flow
     if (this.props.onboardingParentContext.current) {
@@ -284,6 +327,16 @@ class UnlockPage extends Component {
   };
 
   onForgotPassword = () => {
+    const { socialLoginFlow } = this.props;
+
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.ForgotPassword,
+      properties: {
+        account_type: socialLoginFlow ? 'social' : 'metamask',
+      },
+    });
+
     this.setState({ showResetPasswordModal: true });
   };
 
@@ -310,7 +363,19 @@ class UnlockPage extends Component {
         {showResetPasswordModal && (
           <ResetPasswordModal
             onClose={() => this.setState({ showResetPasswordModal: false })}
-            onRestore={() => this.props.onRestore()}
+            onRestore={() => {
+              const { socialLoginFlow } = this.props;
+
+              this.context.trackEvent({
+                category: MetaMetricsEventCategory.Onboarding,
+                event: MetaMetricsEventName.ResetWallet,
+                properties: {
+                  account_type: socialLoginFlow ? 'social' : 'metamask',
+                },
+              });
+
+              this.props.onRestore();
+            }}
           />
         )}
         <Box

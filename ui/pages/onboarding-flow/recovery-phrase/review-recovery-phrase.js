@@ -101,6 +101,13 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
                 key="seedPhraseReviewDetails"
                 size={ButtonLinkSize.Inherit}
                 onClick={() => {
+                  trackEvent({
+                    category: MetaMetricsEventCategory.Onboarding,
+                    event: MetaMetricsEventName.SrpDefinitionClicked,
+                    properties: {
+                      location: 'review_recovery_phrase',
+                    },
+                  });
                   setShowSrpDetailsModal(true);
                 }}
               >
