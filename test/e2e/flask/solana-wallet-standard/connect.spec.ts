@@ -20,6 +20,7 @@ describe('Solana Wallet Standard - e2e tests', function () {
   describe('Solana Wallet Standard - Connect & disconnect', function () {
     // eslint-disable-next-line mocha/no-skipped-tests
     it.skip('Should connect', async function () {
+      // a
       await withSolanaAccountSnap(
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
