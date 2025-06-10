@@ -8,8 +8,6 @@ import {
   getNetworkFees,
   getNetworkDetailsByChainId,
 } from '../../../helpers/utils/notification.util';
-import { decimalToHex } from '../../../../shared/modules/conversion.utils';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -97,8 +95,7 @@ export const NotificationDetailNetworkFee: FC<
   const [networkFeesError, setNetworkFeesError] = useState<boolean>(false);
 
   const getNativeCurrency = (n: OnChainRawNotificationsWithNetworkFields) => {
-    const chainId = decimalToHex(n.chain_id);
-    return getNetworkDetailsByChainId(`0x${chainId}` as keyof typeof CHAIN_IDS);
+    return getNetworkDetailsByChainId(n.chain_id);
   };
 
   const nativeCurrency = getNativeCurrency(notification);

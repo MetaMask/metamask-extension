@@ -335,6 +335,7 @@ export const KATANA_DISPLAY_NAME = 'Katana';
 export const MONAD_TESTNET_DISPLAY_NAME = 'Monad Testnet';
 export const SOPHON_DISPLAY_NAME = 'Sophon';
 export const SOPHON_TESTNET_DISPLAY_NAME = 'Sophon Testnet';
+export const SEI_DISPLAY_NAME = 'Sei Network';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -397,6 +398,7 @@ export const CURRENCY_SYMBOLS = {
   FLOW: 'FLOW',
   KATANA: 'ETH',
   SOPHON: 'SOPH',
+  SEI: 'SEI',
 } as const;
 
 // Non-EVM currency symbols
@@ -729,6 +731,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.SOPHON]: SOPHON_DISPLAY_NAME,
   [CHAIN_IDS.SOPHON_TESTNET]: SOPHON_TESTNET_DISPLAY_NAME,
+  [CHAIN_IDS.SEI]: SEI_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -870,6 +873,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MONAD_TESTNET],
   [CHAIN_IDS.SOPHON]: CURRENCY_SYMBOLS.SOPHON,
   [CHAIN_IDS.SOPHON_TESTNET]: CURRENCY_SYMBOLS.SOPHON,
+  [CHAIN_IDS.SEI]: CURRENCY_SYMBOLS.SEI,
 } as const;
 
 /**

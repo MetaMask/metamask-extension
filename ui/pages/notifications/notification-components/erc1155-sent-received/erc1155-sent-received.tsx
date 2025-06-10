@@ -1,17 +1,12 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { t } from '../../../../../shared/lib/translate';
-
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import {
   NotificationComponentType,
   type NotificationComponent,
 } from '../types/notifications/notifications';
-
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
-
 import {
   createTextItems,
   formatIsoDateString,
@@ -121,9 +116,8 @@ export const components: NotificationComponent<ERC1155Notification> = {
     body: {
       type: NotificationComponentType.OnChainBody,
       Image: ({ notification }) => {
-        const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo, nativeCurrencyName } =
-          getNetworkDetailsByChainId(`0x${chainId}` as keyof typeof CHAIN_IDS);
+          getNetworkDetailsByChainId(notification.chain_id);
         return (
           <NotificationDetailNft
             networkSrc={nativeCurrencyLogo}
@@ -172,9 +166,8 @@ export const components: NotificationComponent<ERC1155Notification> = {
         />
       ),
       Asset: ({ notification }) => {
-        const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-          `0x${chainId}` as keyof typeof CHAIN_IDS,
+          notification.chain_id,
         );
         return (
           <NotificationDetailCollection
@@ -192,9 +185,8 @@ export const components: NotificationComponent<ERC1155Notification> = {
         );
       },
       Network: ({ notification }) => {
-        const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo, nativeCurrencyName } =
-          getNetworkDetailsByChainId(`0x${chainId}` as keyof typeof CHAIN_IDS);
+          getNetworkDetailsByChainId(notification.chain_id);
 
         return (
           <NotificationDetailAsset

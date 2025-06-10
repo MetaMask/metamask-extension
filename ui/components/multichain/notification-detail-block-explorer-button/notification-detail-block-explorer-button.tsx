@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { toHex } from '@metamask/controller-utils';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ButtonVariant } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getNetworkDetailsByChainId } from '../../../helpers/utils/notification.util';
@@ -31,9 +30,7 @@ export const NotificationDetailBlockExplorerButton = ({
   const trackEvent = useContext(MetaMetricsContext);
 
   const chainIdHex = toHex(chainId);
-  const { blockExplorerConfig } = getNetworkDetailsByChainId(
-    chainIdHex as keyof typeof CHAIN_IDS,
-  );
+  const { blockExplorerConfig } = getNetworkDetailsByChainId(chainId);
 
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const networkConfiguration = networkConfigurations[chainIdHex];
