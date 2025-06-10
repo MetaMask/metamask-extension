@@ -1,12 +1,12 @@
 import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { Hex } from '@metamask/utils';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702Account';
 import { useBatchAuthorizationRequests } from '../../../pages/confirmations/hooks/useBatchAuthorizationRequests';
-import { SmartContractAccountToggle } from './smart-contract-account-toggle';
 import { EIP7702NetworkConfiguration } from '../../../pages/confirmations/hooks/useEIP7702Networks';
-import { Hex } from '@metamask/utils';
+import { SmartContractAccountToggle } from './smart-contract-account-toggle';
 
 // Mock the hooks
 jest.mock('../../../pages/confirmations/hooks/useEIP7702Account');

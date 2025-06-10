@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { Hex } from '@metamask/utils';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import {
@@ -10,7 +11,6 @@ import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702
 import { useBatchAuthorizationRequests } from '../../../pages/confirmations/hooks/useBatchAuthorizationRequests';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { SmartContractAccountToggleSection } from './smart-contract-account-toggle-section';
-import { Hex } from '@metamask/utils';
 
 // Mock the hooks
 jest.mock('../../../pages/confirmations/hooks/useEIP7702Networks');
@@ -21,7 +21,8 @@ jest.mock('../../../pages/confirmations/hooks/useBatchAuthorizationRequests');
 const mockOpenTab = jest.fn();
 global.platform = {
   openTab: mockOpenTab,
-} as any;
+  closeCurrentWindow: jest.fn(),
+} as { openTab: jest.Mock; closeCurrentWindow: jest.Mock };
 
 const mockUseEIP7702Networks = useEIP7702Networks as jest.MockedFunction<
   typeof useEIP7702Networks

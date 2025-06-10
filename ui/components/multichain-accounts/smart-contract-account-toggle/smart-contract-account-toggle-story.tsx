@@ -27,7 +27,9 @@ export const SmartContractAccountToggleStory = ({
   const [isProcessing, setIsProcessing] = useState(false);
 
   const onSwitch = useCallback(async () => {
-    if (disabled) return;
+    if (disabled) {
+      return;
+    }
 
     setIsProcessing(true);
 

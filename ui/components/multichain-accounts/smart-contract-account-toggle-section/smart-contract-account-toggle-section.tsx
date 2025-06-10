@@ -1,4 +1,6 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import { Box, ButtonLink, ButtonLinkSize, Text } from '../../component-library';
 import {
   AlignItems,
@@ -11,11 +13,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { useSelector } from 'react-redux';
 import { AppSliceState } from '../../../ducks/app/app';
 import { useEIP7702Networks } from '../../../pages/confirmations/hooks/useEIP7702Networks';
 import { SmartContractAccountToggle } from '../smart-contract-account-toggle';
-import { Hex } from '@metamask/utils';
 import Preloader from '../../ui/icon/preloader';
 
 export const SmartContractAccountToggleSection = () => {

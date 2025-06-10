@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Hex } from '@metamask/utils';
 import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702Account';
 import { useBatchAuthorizationRequests } from '../../../pages/confirmations/hooks/useBatchAuthorizationRequests';
 import ToggleButton from '../../ui/toggle-button';
@@ -10,7 +11,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { EIP7702NetworkConfiguration } from '../../../pages/confirmations/hooks/useEIP7702Networks';
-import { Hex } from '@metamask/utils';
 
 export const SmartContractAccountToggle = ({
   networkConfig,
