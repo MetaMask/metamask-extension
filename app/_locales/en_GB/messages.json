@@ -2000,6 +2000,12 @@
   "enableIt": {
     "message": " Enable it"
   },
+  "enableSmartContractAccount": {
+    "message": "Enable smart contract account"
+  },
+  "enableSmartContractAccountDescription": {
+    "message": "You can enable smart account features on supported networks."
+  },
   "enableSnap": {
     "message": "Enable"
   },
