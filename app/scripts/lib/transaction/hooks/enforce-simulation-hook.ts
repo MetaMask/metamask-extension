@@ -2,6 +2,7 @@ import {
   AfterSimulateHook,
   BeforeSignHook,
   SimulationData,
+  TransactionContainerType,
   TransactionMeta,
   TransactionParams,
 } from '@metamask/transaction-controller';
@@ -58,6 +59,7 @@ export class EnforceSimulationHook {
 
     const {
       chainId,
+      containerTypes,
       delegationAddress,
       networkClientId,
       origin,
@@ -68,6 +70,13 @@ export class EnforceSimulationHook {
 
     if (!process.env.ENABLE_ENFORCED_SIMULATIONS) {
       log('Skipping as enforced simulations are disabled');
+      return {};
+    }
+
+    if (
+      containerTypes?.includes(TransactionContainerType.EnforcedSimulations)
+    ) {
+      log('Skipping as simulation already enforced');
       return {};
     }
 
@@ -155,6 +164,11 @@ export class EnforceSimulationHook {
         transaction.txParams.data = data;
         transaction.txParams.to = delegationManagerAddress;
         transaction.txParams.value = '0x0';
+
+        transaction.containerTypes = [
+          ...(transaction.containerTypes ?? []),
+          TransactionContainerType.EnforcedSimulations,
+        ];
 
         if (newGas) {
           transaction.txParams.gas = newGas;

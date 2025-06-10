@@ -1,5 +1,6 @@
 import {
   SimulationTokenStandard,
+  TransactionContainerType,
   TransactionControllerEstimateGasAction,
   TransactionMeta,
   TransactionStatus,
@@ -60,7 +61,7 @@ describe('EnforceSimulationHook', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
-    process.env.ENABLE_ENFORCED_SIMULATIONS = 'true';
+    process.env.ENABLE_ENFORCED_SIMULATIONS = true as never;
 
     const baseMessenger = new Messenger<
       | DelegationControllerSignDelegationAction
@@ -147,6 +148,24 @@ describe('EnforceSimulationHook', () => {
     updateTransaction?.(newTransaction);
 
     expect(newTransaction.txParams.value).toBe('0x0');
+  });
+
+  it('adds container type to transaction', async () => {
+    const hook = new EnforceSimulationHook({
+      messenger,
+    }).getAfterSimulateHook();
+
+    const { updateTransaction } =
+      (await hook({
+        transactionMeta: TRANSACTION_META_MOCK,
+      })) ?? {};
+
+    const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+    updateTransaction?.(newTransaction);
+
+    expect(newTransaction.containerTypes).toStrictEqual([
+      TransactionContainerType.EnforcedSimulations,
+    ]);
   });
 
   it('includes native balance change caveat if native balance changed', async () => {
@@ -253,16 +272,17 @@ describe('EnforceSimulationHook', () => {
       expect(updateTransaction).toBeUndefined();
     });
 
-    it('env is disabled', async () => {
-      process.env.ENABLE_ENFORCED_SIMULATIONS = 'false';
-
+    it('container types include enforced simulations', async () => {
       const hook = new EnforceSimulationHook({
         messenger,
       }).getAfterSimulateHook();
 
       const { updateTransaction } =
         (await hook({
-          transactionMeta: TRANSACTION_META_MOCK,
+          transactionMeta: {
+            ...TRANSACTION_META_MOCK,
+            containerTypes: [TransactionContainerType.EnforcedSimulations],
+          },
         })) ?? {};
 
       expect(updateTransaction).toBeUndefined();
