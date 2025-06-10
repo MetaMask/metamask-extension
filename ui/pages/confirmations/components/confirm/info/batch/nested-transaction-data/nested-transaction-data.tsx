@@ -13,8 +13,8 @@ import {
   ConfirmInfoRow,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
-import { useNestedTransactionLabels } from '../../hooks/useNestedTransactionLabels';
 import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
+import { useNestedTransactionLabels } from '../../hooks/useNestedTransactionLabels';
 
 export function NestedTransactionData() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
