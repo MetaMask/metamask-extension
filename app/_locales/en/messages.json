@@ -3831,11 +3831,11 @@
   "onboardingOptionTitle": {
     "message": "Choose an option to continue"
   },
-  "onboardingPinExtensionAltAccess": {
-    "message": "Access extension"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Launch extension"
+  },
+  "onboardingPinExtensionAltPin": {
+    "message": "Pin extension"
   },
   "onboardingPinExtensionDescription": {
     "message": "Pin MetaMask on your browser so it’s accessible and easy to view transaction confirmations."
