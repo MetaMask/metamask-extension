@@ -1,4 +1,5 @@
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { mockWebAuthenticator } from '../../../../test/e2e/helpers/social-sync/mocks';
 import { getPlatform } from '../../lib/util';
 import { WebAuthenticator } from './types';
 import { base64urlencode } from './utils';
@@ -29,6 +30,10 @@ function generateNonce(): string {
 }
 
 export function webAuthenticatorFactory(): WebAuthenticator {
+  // for the e2e tests, we will use the mockWebAuthenticator
+  if (process.env.IN_TEST) {
+    return mockWebAuthenticator();
+  }
   const isFirefox = getPlatform() === PLATFORM_FIREFOX;
   const identityAPI = isFirefox
     ? globalThis.browser.identity // use browser.identity for Firefox
@@ -39,5 +44,6 @@ export function webAuthenticatorFactory(): WebAuthenticator {
     generateCodeVerifierAndChallenge,
     generateNonce,
     getRedirectURL: identityAPI.getRedirectURL,
+    getPlatform,
   };
 }

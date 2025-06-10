@@ -78,6 +78,13 @@ class OnboardingCompletePage {
     );
   }
 
+  async completeOnboardingPinExtensionOnly(): Promise<void> {
+    console.log('Complete onboarding with pin extension step only');
+    await this.driver.clickElementAndWaitToDisappear(
+      this.pinExtensionDoneButton,
+    );
+  }
+
   async navigateToDefaultPrivacySettings(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(
       this.manageDefaultSettingsButton,

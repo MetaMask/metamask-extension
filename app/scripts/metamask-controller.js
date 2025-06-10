@@ -1066,15 +1066,20 @@ export default class MetamaskController extends EventEmitter {
       state: initState.OnboardingController,
     });
 
+    const oauthSvcEnvs = {
+      web3AuthNetwork: process.env.WEB3AUTH_NETWORK,
+      authServerUrl: process.env.AUTH_SERVER_URL,
+      googleClientId: process.env.GOOGLE_CLIENT_ID,
+      appleClientId: process.env.APPLE_CLIENT_ID,
+      authConnectionId: process.env.AUTH_CONNECTION_ID,
+      groupedAuthConnectionId: process.env.GROUPED_AUTH_CONNECTION_ID,
+    };
+    if (process.env.IN_TEST) {
+      oauthSvcEnvs.authConnectionId = 'torus-test-health';
+      oauthSvcEnvs.groupedAuthConnectionId = 'torus-test-health-aggregate';
+    }
     this.oauthService = new OAuthService({
-      env: {
-        web3AuthNetwork: process.env.WEB3AUTH_NETWORK,
-        authServerUrl: process.env.AUTH_SERVER_URL,
-        googleClientId: process.env.GOOGLE_CLIENT_ID,
-        appleClientId: process.env.APPLE_CLIENT_ID,
-        authConnectionId: process.env.AUTH_CONNECTION_ID,
-        groupedAuthConnectionId: process.env.GROUPED_AUTH_CONNECTION_ID,
-      },
+      env: oauthSvcEnvs,
       webAuthenticator: webAuthenticatorFactory(),
     });
 
