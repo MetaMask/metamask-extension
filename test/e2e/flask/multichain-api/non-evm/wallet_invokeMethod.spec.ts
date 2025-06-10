@@ -34,7 +34,9 @@ describe('Multichain API - Non EVM', function () {
 
             const invokeMethod = 'signIn';
             await driver.clickElementSafe(
-              `[data-testid="${replaceColon(SOLANA_SCOPE)}-${invokeMethod}-option"]`,
+              `[data-testid="${replaceColon(
+                SOLANA_SCOPE,
+              )}-${invokeMethod}-option"]`,
             );
 
             await driver.delay(largeDelayMs);
@@ -92,7 +94,9 @@ describe('Multichain API - Non EVM', function () {
 
             const invokeMethod = 'signAndSendTransaction';
             await driver.clickElementSafe(
-              `[data-testid="${replaceColon(SOLANA_SCOPE)}-${invokeMethod}-option"]`,
+              `[data-testid="${replaceColon(
+                SOLANA_SCOPE,
+              )}-${invokeMethod}-option"]`,
             );
 
             await driver.delay(largeDelayMs);
