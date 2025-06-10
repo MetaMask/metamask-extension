@@ -13,14 +13,9 @@ import {
 } from '../../../component-library';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../../store/actions';
-import {
-  SafeChain,
-  useSafeChains,
-} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
-import { TokenWithFiatAmount } from '../types';
+import { type TokenWithFiatAmount } from '../types';
 import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
 import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
 import {
@@ -36,6 +31,7 @@ export type TokenCellProps = {
   disableHover?: boolean;
   onClick?: () => void;
   fixCurrencyToUSD?: boolean;
+  nativeCurrencySymbol?: string;
 };
 
 export default function TokenCell({
@@ -44,22 +40,13 @@ export default function TokenCell({
   onClick,
   disableHover = false,
   fixCurrencyToUSD = false,
+  nativeCurrencySymbol,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const history = useHistory();
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
-  const { safeChains } = useSafeChains();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
-
-  const decimalChainId = isEvm && parseInt(hexToDecimal(token.chainId), 10);
-
-  const safeChainDetails: SafeChain | undefined = safeChains?.find((chain) => {
-    if (typeof decimalChainId === 'number') {
-      return chain.chainId === decimalChainId.toString();
-    }
-    return undefined;
-  });
 
   const tokenDisplayInfo = useTokenDisplayInfo({
     token,
@@ -114,7 +101,7 @@ export default function TokenCell({
             <ModalBody marginTop={4} marginBottom={4}>
               {t('nativeTokenScamWarningDescription', [
                 token.symbol,
-                safeChainDetails?.nativeCurrency?.symbol ||
+                nativeCurrencySymbol ||
                   t('nativeTokenScamWarningDescriptionExpectedTokenFallback'),
               ])}
             </ModalBody>

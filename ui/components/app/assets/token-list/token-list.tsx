@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import { type Hex, isStrictHexString } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import {
   getChainIdsToPoll,
@@ -12,7 +12,7 @@ import {
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
 import { useNetworkFilter } from '../hooks';
-import { TokenWithFiatAmount } from '../types';
+import { type TokenWithFiatAmount } from '../types';
 import { filterAssets } from '../util/filter';
 import { sortAssets } from '../util/sort';
 import useMultiChainAssets from '../hooks/useMultichainAssets';
@@ -25,7 +25,9 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useSafeChains } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -104,6 +106,8 @@ function TokenList({ onTokenClick }: TokenListProps) {
     });
   };
 
+  const { safeChains } = useSafeChains();
+
   return (
     <>
       {sortedFilteredTokens.map((token: TokenWithFiatAmount) => (
@@ -112,6 +116,17 @@ function TokenList({ onTokenClick }: TokenListProps) {
           token={token}
           privacyMode={privacyMode}
           onClick={handleTokenClick(token)}
+          nativeCurrencySymbol={
+            safeChains?.find((chain) => {
+              const decimalChainId =
+                isStrictHexString(token.chainId) &&
+                parseInt(hexToDecimal(token.chainId), 10);
+              if (typeof decimalChainId === 'number') {
+                return chain.chainId === decimalChainId.toString();
+              }
+              return undefined;
+            })?.nativeCurrency?.symbol
+          }
         />
       ))}
     </>
