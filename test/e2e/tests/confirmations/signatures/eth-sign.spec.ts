@@ -13,7 +13,6 @@ describe('Eth sign', function (this: Suite) {
         await openDapp(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.clickEthSignButton();
-        await driver.delay(1000);
         await testDapp.verifyEthSignErrorMessage();
       },
     );
