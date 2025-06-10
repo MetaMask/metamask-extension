@@ -8,12 +8,16 @@ import { getMockConfirmStateForTransaction } from '../../../../../../../test/dat
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { upgradeAccountConfirmation } from '../../../../../../../test/data/confirmations/batch-transaction';
 import { Confirmation } from '../../../../types/confirm';
-import { rejectPendingApproval } from '../../../../../../store/actions';
+import {
+  rejectPendingApproval,
+  setSplashPageAcknowledgedForAccount,
+} from '../../../../../../store/actions';
 import { SmartAccountUpdate } from './smart-account-update';
 
 jest.mock('../../../../../../store/actions', () => ({
   setAccountDetailsAddress: jest.fn(),
   rejectPendingApproval: jest.fn().mockReturnValue({}),
+  setSplashPageAcknowledgedForAccount: jest.fn(),
 }));
 
 const mockDispatch = jest.fn();
@@ -60,6 +64,7 @@ describe('Splash', () => {
     );
 
     expect(container.firstChild).toBeNull();
+    expect(setSplashPageAcknowledgedForAccount).toHaveBeenCalledTimes(1);
   });
 
   it('reject confirmation if user does not accept', async () => {
@@ -99,10 +104,19 @@ describe('Splash', () => {
 
   it('does not render is splash page is acknowledged for account', () => {
     const mockStore = configureMockStore([])(
-      getMockConfirmStateForTransaction({
-        ...upgradeAccountConfirmation,
-        origin: 'metamask',
-      } as Confirmation),
+      getMockConfirmStateForTransaction(
+        {
+          ...upgradeAccountConfirmation,
+          origin: 'metamask',
+        } as Confirmation,
+        {
+          metamask: {
+            upgradeSplashPageAcknowledgedForAccounts: [
+              (upgradeAccountConfirmation as TransactionMeta).txParams.from,
+            ],
+          },
+        },
+      ),
     );
     const { container } = renderWithConfirmContextProvider(
       <SmartAccountUpdate />,

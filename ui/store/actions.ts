@@ -1035,6 +1035,15 @@ export function removeSlide(
   };
 }
 
+export function setSplashPageAcknowledgedForAccount(account: string): void {
+  try {
+    submitRequestToBackground('setSplashPageAcknowledgedForAccount', [account]);
+  } catch (error) {
+    logErrorWithMessage(error);
+    throw error;
+  }
+}
+
 // TODO: Not a thunk, but rather a wrapper around a background call
 export function updateTransactionGasFees(
   txId: string,

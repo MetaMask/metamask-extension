@@ -5,7 +5,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
-import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
+import { SMART_ACCOUNT_LEARN_MORE_URL, SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
 import {
   Box,
   ButtonLink,
@@ -213,6 +213,22 @@ export default class AdvancedTab extends PureComponent {
     const { t } = this.context;
     const { useSmartAccount, setUseSmartAccount } = this.props;
 
+    const learMoreLink = (
+      <ButtonLink
+        size={ButtonLinkSize.Inherit}
+        textProps={{
+          variant: TextVariant.bodyMd,
+          alignItems: AlignItems.flexStart,
+        }}
+        as="a"
+        href={SMART_ACCOUNT_LEARN_MORE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {t('learnMoreUpperCase')}
+      </ButtonLink>
+    );
+
     return (
       <Box
         ref={this.settingsRefs[2]}
@@ -226,7 +242,7 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <span> {t('useSmartAccountTitle')}</span>
           <div className="settings-page__content-description">
-            {t('useSmartAccountDescription')}
+            {`${t('useSmartAccountDescription')} ${learMoreLink}`}
           </div>
         </div>
 

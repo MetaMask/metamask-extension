@@ -127,6 +127,7 @@ export type ControllerStatePropertiesEnumerated = {
   termsOfUseLastAgreed?: AppStateControllerState['termsOfUseLastAgreed'];
   snapsInstallPrivacyWarningShown?: AppStateControllerState['snapsInstallPrivacyWarningShown'];
   slides: AppStateControllerState['slides'];
+  upgradeSplashPageAcknowledgedForAccounts: AppStateControllerState['upgradeSplashPageAcknowledgedForAccounts'];
   isUpdateAvailable: AppStateControllerState['isUpdateAvailable'];
   updateModalLastDismissedAt: AppStateControllerState['updateModalLastDismissedAt'];
   lastUpdatedAt: AppStateControllerState['lastUpdatedAt'];

@@ -27,8 +27,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
+import { setSplashPageAcknowledgedForAccount } from '../../../../../../store/actions';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import Name from '../../../../../../components/app/name';
+import { getUpgradeSplashPageAcknowledgedForAccounts } from '../../../../selectors';
 import {
   AccountsState,
   getMemoizedInternalAccountByAddress,
@@ -78,6 +80,9 @@ export function SmartAccountUpdate() {
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { handleRejectUpgrade } = useSmartAccountActions();
+  const splashPageAcknowledgedForAccountList: string[] = useSelector(
+    getUpgradeSplashPageAcknowledgedForAccounts,
+  );
   const useSmartAccount = useSelector(getUseSmartAccount);
   const { chainId, txParams, origin } = currentConfirmation ?? {};
   const { from } = txParams;
@@ -87,14 +92,16 @@ export function SmartAccountUpdate() {
   const keyringType = account?.metadata?.keyring?.type;
 
   const acknowledgeSmartAccountUpgrade = useCallback(() => {
+    setSplashPageAcknowledgedForAccount(from);
     setAcknowledged(true);
-    dispatch(setUseSmartAccount(true));
+    dispatch(setUseSmartAccount(true))
   }, [from, setAcknowledged]);
 
   if (
     !currentConfirmation ||
     acknowledged ||
     origin === ORIGIN_METAMASK ||
+    splashPageAcknowledgedForAccountList.includes(from.toLowerCase()) ||
     (useSmartAccount && keyringType === KeyringTypes.hd)
   ) {
     return null;
