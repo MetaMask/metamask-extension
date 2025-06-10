@@ -116,6 +116,8 @@ class TestDapp {
   private personalSignSigUtilResultSelector =
     '#personalSignVerifySigUtilResult';
 
+  private readonly provider = '#provider';
+
   private readonly revokePermissionButton = '#revokeAccountsPermission';
 
   private readonly sign721PermitButton = '#sign721Permit';
@@ -430,6 +432,22 @@ class TestDapp {
       throw e;
     }
     console.log('Test Dapp page is loaded');
+  }
+
+  /**
+   * Verify the number of providers displayed in the test dapp.
+   *
+   * @param expectedNumber - The expected number of providers to be displayed. Defaults to 1.
+   */
+  async check_providerNumber(expectedNumber: number = 1): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} providers to be displayed in test dapp`,
+    );
+    await this.driver.wait(async () => {
+      const providers = await this.driver.findElements(this.provider);
+      return providers.length === expectedNumber;
+    }, 10000);
+    console.log(`${expectedNumber} providers found in test dapp`);
   }
 
   /**
