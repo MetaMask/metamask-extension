@@ -84,6 +84,7 @@ import {
   ERC721,
   BlockExplorerUrl,
   ChainId,
+  handleFetch,
 } from '@metamask/controller-utils';
 
 import { AccountsController } from '@metamask/accounts-controller';
@@ -1588,12 +1589,23 @@ export default class MetamaskController extends EventEmitter {
       clientId: BridgeClientId.EXTENSION,
       // TODO: Remove once TransactionController exports this action type
       getLayer1GasFee: (...args) => this.txController.getLayer1GasFee(...args),
-      fetchFn: async (url, { headers, signal, ...requestOptions }) =>
-        await fetchWithCache({
-          url,
-          fetchOptions: { method: 'GET', headers, signal },
+      fetchFn: async (
+        url,
+        { cacheOptions, functionName, ...requestOptions },
+      ) => {
+        if (functionName === 'fetchBridgeTokens') {
+          return await fetchWithCache({
+            url,
+            fetchOptions: { method: 'GET', ...requestOptions },
+            cacheOptions,
+            functionName,
+          });
+        }
+        return await handleFetch(url, {
+          method: 'GET',
           ...requestOptions,
-        }),
+        });
+      },
       trackMetaMetricsFn: (event, properties) => {
         const actionId = (Date.now() + Math.random()).toString();
         const trackEvent = this.metaMetricsController.trackEvent.bind(
@@ -1639,13 +1651,12 @@ export default class MetamaskController extends EventEmitter {
     this.bridgeStatusController = new BridgeStatusController({
       messenger: bridgeStatusControllerMessenger,
       state: initState.BridgeStatusController,
-      fetchFn: async (url, { headers, signal, ...requestOptions }) =>
-        await fetchWithCache({
-          url,
-          fetchOptions: { method: 'GET', headers, signal },
+      fetchFn: async (url, requestOptions) => {
+        return await handleFetch(url, {
+          method: 'GET',
           ...requestOptions,
-          cacheOptions: { cacheRefreshTime: 0 },
-        }),
+        });
+      },
       addTransactionFn: (...args) => this.txController.addTransaction(...args),
       estimateGasFeeFn: (...args) => this.txController.estimateGasFee(...args),
       addUserOperationFromTransactionFn: (...args) =>
