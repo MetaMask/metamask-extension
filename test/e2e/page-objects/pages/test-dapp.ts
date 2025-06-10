@@ -58,6 +58,8 @@ class TestDapp {
 
   private readonly encryptMessageInput = '#encryptMessageInput';
 
+  private readonly erc1155DeployButton = '#deployERC1155Button';
+
   private readonly erc1155MintButton = '#batchMintButton';
 
   private readonly erc1155RevokeSetApprovalForAllButton =
@@ -666,6 +668,10 @@ class TestDapp {
 
   async clickApproveTokensWithoutGas() {
     await this.driver.clickElement(this.approveTokensButtonWithoutGas);
+  }
+
+  async clickERC1155DeployButton() {
+    await this.driver.clickElement(this.erc1155DeployButton);
   }
 
   async clickERC1155MintButton() {

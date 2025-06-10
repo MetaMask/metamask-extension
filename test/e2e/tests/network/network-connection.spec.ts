@@ -120,10 +120,30 @@ networkConfigs.forEach((config) => {
 
           await performDappActionAndVerify(
             driver,
+            () => testDapp.clickSignTypedDatav3(),
+            config.name,
+          );
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+          await performDappActionAndVerify(
+            driver,
             () => testDapp.clickSignTypedDatav4(),
             config.name,
           );
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+          await performDappActionAndVerify(
+            driver,
+            () => testDapp.clickPermit(),
+            config.name,
+          );
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+          await performDappActionAndVerify(
+            driver,
+            () => testDapp.clickERC1155DeployButton(),
+            config.name,
+          );
         },
       );
     });
