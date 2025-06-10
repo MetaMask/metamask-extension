@@ -1,5 +1,6 @@
 import { sign } from 'jsonwebtoken';
 import { CompletedRequest, Mockttp } from 'mockttp';
+import { getPlatform } from '../../../../app/scripts/lib/util';
 
 const MOCK_JWT_PRIVATE_KEY = `-----BEGIN PRIVATE KEY-----\nMEECAQAwEwYHKoZIzj0CAQYIKoZIzj0DAQcEJzAlAgEBBCCD7oLrcKae+jVZPGx52Cb/lKhdKxpXjl9eGNa1MlY57A==\n-----END PRIVATE KEY-----`;
 
@@ -154,10 +155,10 @@ export function mockWebAuthenticator() {
     generateNonce: () => nonce,
     launchWebAuthFlow: (
       _options: Record<string, unknown>,
-      callback: (url: string) => void,
+      callback?: (url: string) => void,
     ) => {
       return Promise.resolve(
-        callback(
+        callback?.(
           `https://mock-redirect-url.com?nonce=${nonce}&state=${state}&code=mock-code`,
         ),
       );
@@ -168,5 +169,6 @@ export function mockWebAuthenticator() {
         challenge: 'mock-challenge',
       }),
     getRedirectURL: () => 'https://mock-redirect-url.com',
+    getPlatform,
   };
 }
