@@ -123,6 +123,12 @@ export const BridgeInputGroup = ({
     }
   }, [amountFieldProps?.value, isAmountReadOnly, token]);
 
+  useEffect(() => {
+    return () => {
+      inputRef.current = null;
+    };
+  }, []);
+
   const isSwap = useIsMultichainSwap();
 
   const handleAddressClick = () => {
