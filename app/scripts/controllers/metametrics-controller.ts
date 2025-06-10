@@ -10,8 +10,7 @@ import {
 } from 'lodash';
 import { bufferToHex, keccak } from 'ethereumjs-util';
 import { v4 as uuidv4 } from 'uuid';
-import { NameControllerState, NameType } from '@metamask/name-controller';
-import { AccountsControllerState } from '@metamask/accounts-controller';
+import { NameType } from '@metamask/name-controller';
 import {
   getErrorMessage,
   Hex,
@@ -23,14 +22,9 @@ import {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
   NetworkControllerNetworkDidChangeEvent,
-  NetworkState,
 } from '@metamask/network-controller';
 import { Browser } from 'webextension-polyfill';
-import {
-  Nft,
-  NftControllerState,
-  TokensControllerState,
-} from '@metamask/assets-controllers';
+import { Nft } from '@metamask/assets-controllers';
 import { captureException as sentryCaptureException } from '@sentry/browser';
 import {
   BaseController,
@@ -38,7 +32,6 @@ import {
   ControllerStateChangeEvent,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
-import { AddressBookControllerState } from '@metamask/address-book-controller';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
@@ -65,7 +58,6 @@ import {
   AnonymousTransactionMetaMetricsEvent,
   TransactionMetaMetricsEvent,
 } from '../../../shared/constants/transaction';
-import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import Analytics from '../lib/segment/analytics';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
@@ -144,39 +136,6 @@ const exceptionsToFilter: Record<string, boolean> = {
  * Must correspond to the name of a method in {@link Analytics}.
  */
 type SegmentEventType = 'identify' | 'track' | 'page';
-
-// TODO: Complete MetaMaskState by adding the full state definition and relocate it after the background is converted to TypeScript.
-export type MetaMaskState = {
-  ledgerTransportType: LedgerTransportTypes;
-  networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'];
-  internalAccounts: AccountsControllerState['internalAccounts'];
-  allNfts: NftControllerState['allNfts'];
-  allTokens: TokensControllerState['allTokens'];
-  theme: string;
-  participateInMetaMetrics: boolean;
-  dataCollectionForMarketing: boolean;
-  ShowNativeTokenAsMainBalance: boolean;
-  useNftDetection: PreferencesControllerState['useNftDetection'];
-  openSeaEnabled: PreferencesControllerState['openSeaEnabled'];
-  securityAlertsEnabled: PreferencesControllerState['securityAlertsEnabled'];
-  useTokenDetection: PreferencesControllerState['useTokenDetection'];
-  tokenSortConfig: PreferencesControllerState['preferences']['tokenSortConfig'];
-  names: NameControllerState['names'];
-  security_providers: string[];
-  addressBook: AddressBookControllerState['addressBook'];
-  currentCurrency: string;
-  preferences: {
-    privacyMode: PreferencesControllerState['preferences']['privacyMode'];
-    tokenNetworkFilter: string[];
-  };
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  custodyAccountDetails: {
-    [address: string]: {
-      custodianName: string;
-    };
-  };
-  ///: END:ONLY_INCLUDE_IF
-};
 
 /**
  * {@link MetaMetricsController}'s metadata.
@@ -585,6 +544,7 @@ export default class MetaMetricsController extends BaseController<
       : {};
 
     this.update((state) => {
+      // @ts-expect-error TODO: Fix `Type instantiation is excessively deep and possibly infinite.ts(2589)`
       state.fragments[id] = merge({}, additionalFragmentProps, fragment);
     });
 
@@ -1174,69 +1134,81 @@ export default class MetaMetricsController extends BaseController<
   ): Partial<MetaMetricsUserTraits> | null {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     const mmiAccountAddress =
-      metamaskState.custodyAccountDetails &&
-      Object.keys(metamaskState.custodyAccountDetails).length
-        ? Object.keys(metamaskState.custodyAccountDetails)[0]
+      metamaskState.CustodyController.custodyAccountDetails &&
+      Object.keys(metamaskState.CustodyController.custodyAccountDetails).length
+        ? Object.keys(metamaskState.CustodyController.custodyAccountDetails)[0]
         : null;
     ///: END:ONLY_INCLUDE_IF
     const { traits, previousUserTraits } = this.state;
 
     const currentTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
-        Object.values(metamaskState.addressBook).map(size),
+        Object.values(metamaskState.AddressBookController.addressBook).map(
+          size,
+        ),
       ),
       [MetaMetricsUserTrait.InstallDateExt]:
         traits[MetaMetricsUserTrait.InstallDateExt] || '',
       [MetaMetricsUserTrait.LedgerConnectionType]:
-        metamaskState.ledgerTransportType,
+        metamaskState.PreferencesController.ledgerTransportType,
       [MetaMetricsUserTrait.NetworksAdded]: Object.values(
-        metamaskState.networkConfigurationsByChainId,
+        metamaskState.NetworkController.networkConfigurationsByChainId,
       ).map((networkConfiguration) => networkConfiguration.chainId),
       [MetaMetricsUserTrait.NetworksWithoutTicker]: Object.values(
-        metamaskState.networkConfigurationsByChainId,
+        metamaskState.NetworkController.networkConfigurationsByChainId,
       )
         .filter(({ nativeCurrency }) => !nativeCurrency)
         .map(({ chainId }) => chainId),
       [MetaMetricsUserTrait.NftAutodetectionEnabled]:
-        metamaskState.useNftDetection,
+        metamaskState.PreferencesController.useNftDetection,
       [MetaMetricsUserTrait.NumberOfAccounts]: Object.values(
-        metamaskState.internalAccounts.accounts,
+        metamaskState.AccountsController.internalAccounts.accounts,
       ).length,
       [MetaMetricsUserTrait.NumberOfNftCollections]:
-        this.#getAllUniqueNFTAddressesLength(metamaskState.allNfts),
+        this.#getAllUniqueNFTAddressesLength(
+          metamaskState.NftController.allNfts,
+        ),
       [MetaMetricsUserTrait.NumberOfNfts]: this.#getAllNFTsFlattened(
-        metamaskState.allNfts,
+        metamaskState.NftController.allNfts,
       ).length,
       [MetaMetricsUserTrait.NumberOfTokens]: this.#getNumberOfTokens(
-        metamaskState.allTokens,
+        metamaskState.TokensController.allTokens,
       ),
-      [MetaMetricsUserTrait.OpenSeaApiEnabled]: metamaskState.openSeaEnabled,
+      [MetaMetricsUserTrait.OpenSeaApiEnabled]:
+        metamaskState.PreferencesController.openSeaEnabled,
       [MetaMetricsUserTrait.ThreeBoxEnabled]: false, // deprecated, hard-coded as false
-      [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
+      [MetaMetricsUserTrait.Theme]:
+        metamaskState.PreferencesController.theme || 'default',
       [MetaMetricsUserTrait.TokenDetectionEnabled]:
-        metamaskState.useTokenDetection,
+        metamaskState.PreferencesController.useTokenDetection,
       [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]:
-        metamaskState.ShowNativeTokenAsMainBalance,
-      [MetaMetricsUserTrait.CurrentCurrency]: metamaskState.currentCurrency,
+        metamaskState.PreferencesController.preferences
+          .showNativeTokenAsMainBalance,
+      [MetaMetricsUserTrait.CurrentCurrency]:
+        metamaskState.CurrencyController.currentCurrency,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       [MetaMetricsUserTrait.MmiExtensionId]: this.#extension?.runtime?.id,
       [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress ?? null,
       [MetaMetricsUserTrait.MmiIsCustodian]: Boolean(mmiAccountAddress),
       ///: END:ONLY_INCLUDE_IF
-      [MetaMetricsUserTrait.SecurityProviders]:
-        metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
+      [MetaMetricsUserTrait.SecurityProviders]: metamaskState
+        .PreferencesController.securityAlertsEnabled
+        ? ['blockaid']
+        : [],
       [MetaMetricsUserTrait.PetnameAddressCount]:
         this.#getPetnameAddressCount(metamaskState),
       [MetaMetricsUserTrait.IsMetricsOptedIn]:
-        metamaskState.participateInMetaMetrics,
+        metamaskState.MetaMetricsController.participateInMetaMetrics,
       [MetaMetricsUserTrait.HasMarketingConsent]:
-        metamaskState.dataCollectionForMarketing,
+        metamaskState.MetaMetricsController.dataCollectionForMarketing,
       [MetaMetricsUserTrait.TokenSortPreference]:
-        metamaskState.tokenSortConfig?.key || '',
+        metamaskState.PreferencesController.preferences.tokenSortConfig?.key ||
+        '',
       [MetaMetricsUserTrait.PrivacyModeEnabled]:
-        metamaskState.preferences.privacyMode,
+        metamaskState.PreferencesController.preferences.privacyMode,
       [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
-        metamaskState.preferences.tokenNetworkFilter || {},
+        metamaskState.PreferencesController.preferences.tokenNetworkFilter ||
+          {},
       ),
     };
 
