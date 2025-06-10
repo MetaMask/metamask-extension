@@ -268,6 +268,19 @@ const AssetListControlBar = ({
     );
   }, [currentMultichainNetwork, isTestNetwork]);
 
+  const networkButtonText = useMemo(() => {
+    if (
+      isTokenNetworkFilterEqualCurrentNetwork ||
+      !currentMultichainNetwork.isEvmNetwork
+    ) {
+      return currentMultichainNetwork?.nickname ?? t('currentNetwork');
+    }
+    if (isGlobalNetworkSelectorRemoved) {
+      return t('enabledNetworks');
+    }
+    return t('popularNetworks');
+  }, [isTokenNetworkFilterEqualCurrentNetwork, currentMultichainNetwork, t]);
+
   return (
     <Box
       className="asset-list-control-bar"
@@ -297,12 +310,7 @@ const AssetListControlBar = ({
           marginRight={isFullScreen ? 2 : null}
           ellipsis
         >
-          {isTokenNetworkFilterEqualCurrentNetwork ||
-          !currentMultichainNetwork.isEvmNetwork
-            ? currentMultichainNetwork?.nickname ?? t('currentNetwork')
-            : isGlobalNetworkSelectorRemoved
-            ? t('enabledNetworks')
-            : t('popularNetworks')}
+          {networkButtonText}
         </ButtonBase>
 
         <Box

@@ -1,11 +1,7 @@
-import {
-  type MultichainNetworkConfiguration
-} from '@metamask/multichain-network-controller';
+import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type Hex } from '@metamask/utils';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  TEST_CHAINS
-} from '../../../../../../shared/constants/network';
+import React, { useCallback, useEffect, useMemo } from 'react';
+import { TEST_CHAINS } from '../../../../../../shared/constants/network';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import {
   convertCaipToHexChainId,
@@ -17,7 +13,7 @@ import {
   Display,
   FlexDirection,
   TextColor,
-  TextVariant
+  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
@@ -28,7 +24,7 @@ import {
   ButtonVariant,
   IconName,
   IconSize,
-  Text
+  Text,
 } from '../../../../component-library';
 import { NetworkListItem } from '../../../network-list-item';
 import { useNetworkChangeHandlers } from '../../hooks/useNetworkChangeHandlers';

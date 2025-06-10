@@ -9,6 +9,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import * as actions from '../../../store/actions';
 
+import { NetworkManager } from '../../multichain/network-manager';
 import {
   CONFIRM_TURN_ON_BACKUP_AND_SYNC_MODAL_NAME,
   ConfirmTurnOnBackupAndSyncModal,
@@ -33,7 +34,6 @@ import TransactionAlreadyConfirmed from './transaction-already-confirmed';
 
 // Metamask Notifications
 import TurnOnMetamaskNotifications from './turn-on-metamask-notifications/turn-on-metamask-notifications';
-import { NetworkManager } from '../../multichain/network-manager';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
