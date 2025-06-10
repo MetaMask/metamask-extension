@@ -2337,9 +2337,6 @@
   "genericExplorerView": {
     "message": "$1에서 계정 보기"
   },
-  "goBack": {
-    "message": "뒤로 가기"
-  },
   "goToSite": {
     "message": "사이트로 이동"
   },
@@ -4790,35 +4787,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "비밀복구구문 확인"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "나중에 알림(권장하지 않음)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "내 지갑 보호(권장)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "적어서 여러 비밀 장소에 보관하세요"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "안전 금고에 보관하세요"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "복구 구문은 지갑과 자금의 '마스터 키'입니다."
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "복구 구문을 요청하는 사람은 사기를 치려는 것입니다."
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "절대로, 누구와도, 심지어 MetaMask와도 비밀복구구문을 공유하면 안 됩니다!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "'비밀복구구문'이란 무엇인가요?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "비밀복구구문을 공유해야 하나요?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "비밀복구구문은 어떻게 저장하나요?"
   },
   "seedPhraseIntroTitle": {
     "message": "지갑 보호하기"
@@ -5102,9 +5075,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "건너뛰기"
   },
   "skipAccountSecurity": {
     "message": "계정 보안을 건너뛸까요?"
