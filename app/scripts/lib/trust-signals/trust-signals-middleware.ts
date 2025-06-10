@@ -56,7 +56,7 @@ async function handleEthSendTransaction(
     return;
   }
 
-  const { to } = req.params[0] as { to: string };
+  const { to } = req.params[0];
   await scanAddressAndAddToCache(to, appStateController, networkController);
 }
 
