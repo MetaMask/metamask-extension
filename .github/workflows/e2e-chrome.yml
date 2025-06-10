@@ -190,6 +190,11 @@ jobs:
 
   test-e2e-chrome-stx:
     uses: ./.github/workflows/run-e2e.yml
+    strategy:
+      fail-fast: ${{ github.event_name == 'merge_group' }}
+      matrix:
+        index:
+          [0]
     if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request' }}
     with:
       test-suite-name: test-e2e-chrome-browserify-stx
@@ -199,6 +204,7 @@ jobs:
     secrets:
       DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
       DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      TEST_STX_PRIVATE_KEY: ${{ secrets.TEST_STX_PRIVATE_KEY }}
 
   test-e2e-chrome-report:
     needs:
