@@ -44,5 +44,6 @@ export function webAuthenticatorFactory(): WebAuthenticator {
     generateCodeVerifierAndChallenge,
     generateNonce,
     getRedirectURL: identityAPI.getRedirectURL,
+    getPlatform,
   };
 }
