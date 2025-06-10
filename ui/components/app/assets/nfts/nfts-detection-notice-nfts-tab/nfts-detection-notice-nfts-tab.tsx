@@ -13,8 +13,6 @@ import {
 import { BannerAlert } from '../../../../component-library';
 import { setShowNftDetectionEnablementToast } from '../../../toast-master/utils';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NFTsDetectionNoticeNFTsTab() {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -37,11 +35,7 @@ export default function NFTsDetectionNoticeNFTsTab() {
         dispatch(detectNfts(allChainIds));
       }}
     >
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        t('newNFTDetectedInNFTsTabMessage')
-        ///: END:ONLY_INCLUDE_IF
-      }
+      {t('newNFTDetectedInNFTsTabMessage')}
     </BannerAlert>
   );
 }

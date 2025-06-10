@@ -9,7 +9,7 @@ import {
   getUseExternalServices,
 } from '../../../selectors';
 import { selectIsSignedIn } from '../../../selectors/identity/authentication';
-import { selectIsProfileSyncingEnabled } from '../../../selectors/identity/profile-syncing';
+import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
 import { useSignIn } from './useSignIn';
 
@@ -44,7 +44,7 @@ export function useAutoSignIn(): {
   );
 
   // Auth dependent features
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const isParticipateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const isNotificationServicesEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
@@ -52,11 +52,11 @@ export function useAutoSignIn(): {
 
   const isAtLeastOneAuthDependentFeatureEnabled = useMemo(
     () =>
-      isProfileSyncingEnabled ||
+      isBackupAndSyncEnabled ||
       isParticipateInMetaMetrics ||
       isNotificationServicesEnabled,
     [
-      isProfileSyncingEnabled,
+      isBackupAndSyncEnabled,
       isParticipateInMetaMetrics,
       isNotificationServicesEnabled,
     ],

@@ -6,6 +6,7 @@ import {
   ButtonVariant,
   Text,
 } from '../../../../components/component-library';
+import Card from '../../../../components/ui/card';
 import {
   FontWeight,
   TextVariant,
@@ -15,11 +16,17 @@ import {
   FlexDirection,
   BlockSize,
   TextColor,
-  BorderColor,
   BorderRadius,
   AlignItems,
 } from '../../../../helpers/constants/design-system';
-import { SwapAllowance, TokenInfo, TOKEN_DETAILS } from '../../remote.types';
+
+import {
+  SwapAllowance,
+  TokenInfo,
+  TOKEN_DETAILS,
+} from '../../../../../shared/lib/remote-mode';
+import { getChainNamesForDisplayByIds } from '../../../../helpers/utils/remote-mode';
+import { SUPPORTED_CHAINS_IDS } from '../../remote.constants';
 
 /**
  * RemoteModeSwapAllowanceCard displays a card showing swap allowance details
@@ -31,34 +38,28 @@ import { SwapAllowance, TokenInfo, TOKEN_DETAILS } from '../../remote.types';
  * @param props.onRemove - Callback function triggered when the remove button is clicked
  * @returns A card component displaying swap allowance info
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RemoteModeSwapAllowanceCard({
   swapAllowance,
   onRemove,
 }: {
   swapAllowance: SwapAllowance;
-  onRemove: () => void;
+  onRemove?: () => void;
 }) {
   const [selectedToken] = useState<TokenInfo>(
     TOKEN_DETAILS[swapAllowance.from],
   );
 
   const handleRemoveToken = useCallback(() => {
-    onRemove();
+    onRemove?.();
   }, [onRemove]);
 
   return (
-    <Box width={BlockSize.Full} marginTop={4}>
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        gap={4}
-        padding={4}
-        backgroundColor={BackgroundColor.backgroundMuted}
-        borderRadius={BorderRadius.LG}
-        borderColor={BorderColor.borderDefault}
-      >
+    <Card
+      width={BlockSize.Full}
+      marginTop={4}
+      backgroundColor={BackgroundColor.backgroundPressed}
+    >
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
@@ -67,7 +68,7 @@ export default function RemoteModeSwapAllowanceCard({
         >
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
             <img
-              src={selectedToken.iconUrl}
+              src={selectedToken.image}
               alt={selectedToken.name}
               style={{ width: '24px', height: '24px', borderRadius: '50%' }}
             />
@@ -75,9 +76,11 @@ export default function RemoteModeSwapAllowanceCard({
               {selectedToken.symbol}
             </Text>
           </Box>
-          <Button variant={ButtonVariant.Link} onClick={handleRemoveToken}>
-            Remove
-          </Button>
+          {onRemove && (
+            <Button variant={ButtonVariant.Link} onClick={handleRemoveToken}>
+              Remove
+            </Button>
+          )}
         </Box>
         <Box
           display={Display.Flex}
@@ -96,10 +99,30 @@ export default function RemoteModeSwapAllowanceCard({
         >
           <Text variant={TextVariant.bodyMd}>Daily limit</Text>
           <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {swapAllowance.amount}
+            {swapAllowance.amount} {selectedToken.symbol}
+          </Text>
+        </Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          gap={2}
+        >
+          <Text variant={TextVariant.bodyMd}>Networks</Text>
+          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+            {getChainNamesForDisplayByIds(SUPPORTED_CHAINS_IDS)}
+          </Text>
+        </Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          gap={2}
+        >
+          <Text variant={TextVariant.bodyMd}>Available on</Text>
+          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+            MetaMask Extension
           </Text>
         </Box>
       </Box>
-    </Box>
+    </Card>
   );
 }

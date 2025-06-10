@@ -78,14 +78,8 @@ export const NotificationsSettingsPerAccount = ({
       category: MetaMetricsEventCategory.NotificationSettings,
       event: MetaMetricsEventName.NotificationsSettingsUpdated,
       properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         settings_type: 'account_notifications',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         old_value: isEnabled,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         new_value: !isEnabled,
       },
     });
@@ -99,6 +93,8 @@ export const NotificationsSettingsPerAccount = ({
     <>
       <NotificationsSettingsBox
         value={isEnabled ?? false}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onToggle={handleToggleAccountNotifications}
         key={address}
         disabled={disabledSwitch}

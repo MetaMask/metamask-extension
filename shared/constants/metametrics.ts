@@ -91,7 +91,7 @@ export type MetaMetricsEventPayload = {
   /**
    * The category to associate the event to.
    */
-  category: string;
+  category?: string;
   /**
    * The action ID to deduplicate event requests from the UI.
    */
@@ -205,7 +205,7 @@ export type MetaMetricsEventFragment = {
   /**
    * The event category to use for both the success and failure events.
    */
-  category: string;
+  category?: string;
   /**
    * Should this fragment be persisted in state and progressed after the
    * extension is locked and unlocked.
@@ -302,15 +302,9 @@ export type SegmentEventPayload = {
    */
   properties: {
     params?: Record<string, string>;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     legacy_event?: boolean;
     locale: string;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    chain_id: string;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+    chain_id: string | null;
     environment_type?: string;
     revenue?: number;
     value?: number;
@@ -389,82 +383,58 @@ export type MetaMetricsUserTraits = {
   /**
    * The number of entries in the user's address book.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   address_book_entries?: number;
   /**
    * The type of ledger connection set by user preference.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   ledger_connection_type?: LedgerTransportTypes;
   /**
    * An array consisting of chain IDs that represent the networks added by the
    * user.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   networks_added?: string[];
   /**
    * An array consisting of chain IDs that represent the networks added by the
    * user that do not have a ticker.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   networks_without_ticker?: string[];
   /**
    * Does the user have the Autodetect NFTs feature enabled?
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   nft_autodetection_enabled?: boolean;
   /**
    * A number representing the number of identities (accounts) added to the
    * user's wallet.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   number_of_accounts?: number;
   /**
    * A number representing the amount of NFT collections from which the user
    * possesses NFTs.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   number_of_nft_collections?: number;
   /**
    * A number representing the amount of all NFTs the user possesses across all
    * networks and accounts.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   number_of_nfts?: number;
   /**
    * The total number of token contracts the user has across all networks and
    * accounts.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   number_of_tokens?: number;
   /**
    * The number of HD Entropies the user has.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   number_of_hd_entropies?: number;
   /**
    * Does the user have the OpenSea API enabled?
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   opensea_api_enabled?: boolean;
   /**
    * Does the user have 3Box sync enabled?
    *
    * @deprecated
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   three_box_enabled?: boolean;
   /**
    * Which theme the user has selected.
@@ -473,88 +443,46 @@ export type MetaMetricsUserTraits = {
   /**
    * Does the user have token detection enabled?
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   token_detection_enabled?: boolean;
   /**
    * Does the user have a selected currency in the settings
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   current_currency?: string;
   /**
    * Does the user have show native token as main balance enabled.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   show_native_token_as_main_balance?: boolean;
   /**
    * Does the user have native currency enabled?
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   use_native_as_primary_currency?: boolean;
   /**
    * Does the user opt in for metrics
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   is_metrics_opted_in?: boolean;
   /**
    * Does the user accepted marketing consent
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   has_marketing_consent?: boolean;
   /**
    * The date the extension was installed.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   install_date_ext?: string;
   /**
    * Whether the security provider feature has been enabled.
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   security_providers?: string[];
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  /**
-   * The address of the MMI account in question
-   */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  mmi_account_address?: string | null;
-  /**
-   * What is the MMI extension ID
-   */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  mmi_extension_id?: string;
-  /**
-   * Is the user using a custodian account
-   */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  mmi_is_custodian?: boolean;
-  ///: END:ONLY_INCLUDE_IF
   /**
    * Does the user change the token sort order on the asset list
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   token_sort_preference?: string;
   /**
    * The number of petname addresses
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   petname_addresses_count?: number;
   /**
    * The profile ID of the user if they have been signed in
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   profile_id?: string;
 };
 
@@ -637,20 +565,6 @@ export enum MetaMetricsUserTrait {
    * Identified when the security provider feature is enabled.
    */
   SecurityProviders = 'security_providers',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  /**
-   * Identified when we get the current account in question
-   */
-  MmiAccountAddress = 'mmi_account_address',
-  /**
-   * Identified when we the user has the extension
-   */
-  MmiExtensionId = 'mmi_extension_id',
-  /**
-   * Identified when the user connects a custodian
-   */
-  MmiIsCustodian = 'mmi_is_custodian',
-  ///: END:ONLY_INCLUDE_IF
   PetnameAddressCount = 'petname_addresses_count',
   /**
    * Identified when the user selects a currency from settings
@@ -729,8 +643,7 @@ export enum MetaMetricsEventName {
   BannerSelect = 'Banner Select',
   BannerNavigated = 'Banner Navigated',
   BridgeLinkClicked = 'Bridge Link Clicked',
-  BitcoinSupportToggled = 'Bitcoin Support Toggled',
-  BitcoinTestnetSupportToggled = 'Bitcoin Testnet Support Toggled',
+  SwapLinkClicked = 'Swap Link Clicked',
   CurrentCurrency = 'Current Currency',
   DappViewed = 'Dapp Viewed',
   DecryptionApproved = 'Decryption Approved',
@@ -751,6 +664,7 @@ export enum MetaMetricsEventName {
   ErrorOccured = 'Error occured',
   ExternalLinkClicked = 'External Link Clicked',
   ImportSecretRecoveryPhraseClicked = 'Import Secret Recovery Phrase Clicked',
+  ImportSecretRecoveryPhraseCompleted = 'Import Secret Recovery Phrase Completed',
   KeyExportSelected = 'Key Export Selected',
   KeyExportRequested = 'Key Export Requested',
   KeyExportFailed = 'Key Export Failed',
@@ -815,9 +729,9 @@ export enum MetaMetricsEventName {
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
   QuoteError = 'Quote Error',
+  RpcServiceDegraded = 'RPC Service Degraded',
+  RpcServiceUnavailable = 'RPC Service Unavailable',
   SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
-  SecretRecoveryPhrasePickerDetailsClicked = 'Secret Recovery Phrase Details Clicked',
-  SecretRecoveryPhrasePickerSelected = 'Secret Recovery Phrase Picker Selected',
   SettingsUpdated = 'Settings Updated',
   SignatureApproved = 'Signature Approved',
   SignatureFailed = 'Signature Failed',
@@ -867,23 +781,6 @@ export enum MetaMetricsEventName {
   // BEGIN:ONLY_INCLUDE_IF(build-flask)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   // END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  DeeplinkClicked = 'Deeplink Clicked',
-  ConnectCustodialAccountClicked = 'Connect Custodial Account Clicked',
-  MMIPortfolioButtonClicked = 'MMI Portfolio Button Clicked',
-  PortfolioDashboardModalButtonClicked = 'Portfolio Dashboard Modal Button Clicked',
-  PortfolioDashboardModalOpened = 'Portfolio Dashboard Modal Opened',
-  StakeButtonClicked = 'Stake Button Clicked',
-  InteractiveReplacementTokenButtonClicked = 'Interactive Replacement Token Button Clicked',
-  RefreshTokenListClicked = 'Refresh Token List Clicked',
-  SignatureDeeplinkDisplayed = 'Signature Deeplink Displayed',
-  InstitutionalFeatureConnected = 'Institutional Feature Connected',
-  CustodianSelected = 'Custodian Selected',
-  CustodianConnected = 'Custodian Connected',
-  CustodianConnectionCanceled = 'Custodian Connection Canceled',
-  CustodianConnectionFailed = 'Custodian Connection Failed',
-  CustodialAccountsConnected = 'Custodial Accounts Connected',
-  ///: END:ONLY_INCLUDE_IF
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
   AccountRemoved = 'Account Removed',
@@ -894,6 +791,8 @@ export enum MetaMetricsEventName {
   TokenDetailsOpened = 'Token Details Opened',
   NftScreenOpened = 'NFT Screen Opened',
   NftDetailsOpened = 'NFT Details Opened',
+  DeFiScreenOpened = 'DeFi Screen Opened',
+  DeFiDetailsOpened = 'DeFi Details Opened',
   ActivityScreenOpened = 'Activity Screen Opened',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
@@ -953,31 +852,18 @@ export enum MetaMetricsEventName {
   PushNotificationReceived = 'Push Notification Received',
   PushNotificationClicked = 'Push Notification Clicked',
   // Send
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   sendAssetSelected = 'Send Asset Selected',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   sendFlowExited = 'Send Flow Exited',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   sendRecipientSelected = 'Send Recipient Selected',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   sendSwapQuoteError = 'Send Swap Quote Error',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   sendSwapQuoteRequested = 'Send Swap Quote Requested',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   sendSwapQuoteReceived = 'Send Swap Quote Received',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   sendTokenModalOpened = 'Send Token Modal Opened',
   // Cross Chain Swaps
   ActionCompleted = 'Action Completed',
   ActionFailed = 'Action Failed',
-  ActionOpened = 'Action Opened',
+  ActionButtonClicked = 'Action Button Clicked',
+  ActionPageViewed = 'Action Page Viewed',
   ActionSubmitted = 'Action Submitted',
   AllQuotesOpened = 'All Quotes Opened',
   AllQuotesSorted = 'All Quotes Sorted',
@@ -1001,7 +887,6 @@ export enum MetaMetricsEventAccountType {
 
 export enum QueueType {
   NavigationHeader = 'navigation_header',
-  QueueController = 'queue_controller',
 }
 
 export enum MetaMetricsEventAccountImportType {
@@ -1020,6 +905,7 @@ export enum MetaMetricsEventCategory {
   // The TypeScript ESLint rule is incorrectly marking this line.
   /* eslint-disable-next-line @typescript-eslint/no-shadow */
   Error = 'Error',
+  DeFi = 'DeFi',
   Footer = 'Footer',
   Home = 'Home',
   InpageProvider = 'inpage_provider',
@@ -1036,7 +922,7 @@ export enum MetaMetricsEventCategory {
   // eslint-disable-next-line @typescript-eslint/no-shadow
   Permissions = 'Permissions',
   Phishing = 'Phishing',
-  ProfileSyncing = 'Profile Syncing',
+  BackupAndSync = 'Backup And Sync',
   PushNotifications = 'Notifications',
   Retention = 'Retention',
   Send = 'Send',
@@ -1048,9 +934,6 @@ export enum MetaMetricsEventCategory {
   Transactions = 'Transactions',
   Wallet = 'Wallet',
   Confirmations = 'Confirmations',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  MMI = 'Institutional',
-  ///: END:ONLY_INCLUDE_IF
   CrossChainSwaps = 'Cross Chain Swaps',
 }
 

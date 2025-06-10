@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { Browser } from 'selenium-webdriver';
 import { Driver } from '../../webdriver/driver';
 
 class HeaderNavbar {
@@ -69,16 +70,29 @@ class HeaderNavbar {
     await this.driver.waitForSelector('.multichain-account-menu-popover__list');
   }
 
-  async openAccountDetailsModal(): Promise<void> {
+  async openAccountDetailsModalDetailsTab(): Promise<void> {
     console.log('Open account details modal');
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.openAccountDetailsButton);
     await this.driver.clickElementSafe(this.accountDetailsTab);
   }
 
+  async openAccountDetailsModal(): Promise<void> {
+    console.log('Open account details modal');
+    await this.openThreeDotMenu();
+    await this.driver.clickElement(this.openAccountDetailsButton);
+  }
+
   async openThreeDotMenu(): Promise<void> {
     console.log('Open account options menu');
-    await this.driver.clickElement(this.threeDotMenuButton);
+    await this.driver.waitForSelector(this.threeDotMenuButton, {
+      state: 'enabled',
+    });
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
+    } else {
+      this.driver.clickElement(this.threeDotMenuButton);
+    }
   }
 
   async openPermissionsPage(): Promise<void> {

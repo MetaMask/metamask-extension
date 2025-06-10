@@ -28,7 +28,7 @@ declare class Platform {
 
   closeCurrentWindow: () => void;
 
-  openExtensionInBrowser?: (_1, _1?, condition?: boolean) => void;
+  openExtensionInBrowser?: (_1?, _1?, condition?: boolean) => void;
 }
 
 declare class MessageSender {
@@ -67,8 +67,6 @@ type ResponseType =
  * input values so that the correct type can be inferred in the callback
  * method
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 type sendMessage = {
   (
     extensionId: string,
@@ -83,8 +81,6 @@ type sendMessage = {
     options?: Record<string, unknown>,
     callback?: (response: Record<string, unknown>) => void,
   ): void;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   <T extends EthereumSignTypedDataTypes>(
     message: {
       target: OffscreenCommunicationTarget.trezorOffscreen;
@@ -271,15 +267,12 @@ type StateHooks = {
   throwTestBackgroundError?: (msg?: string) => Promise<void>;
   throwTestError?: (msg?: string) => void;
   /**
-   * This is set in `app-init.js` to communicate that MetaMask was just installed, and is read in
-   * `background.js`.
+   * This is set in `app-init.js` to communicate why MetaMask installed or
+   * updated. It is handled in `background.js`.
    */
-  metamaskWasJustInstalled?: boolean;
-  /**
-   * This is set in `background.js` so that `app-init.js` can trigger "on install" actions when
-   * the `onInstalled` listener is called.
-   */
-  metamaskTriggerOnInstall?: () => void;
+  onInstalledListener?: Promise<{
+    reason: chrome.runtime.InstalledDetails;
+  }>;
 };
 
 export declare global {
@@ -295,8 +288,7 @@ export declare global {
 
   namespace jest {
     // The interface is being used for declaration merging, which is an acceptable exception to this rule.
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/naming-convention
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
     interface Matchers<R> {
       toBeFulfilled(): Promise<R>;
       toNeverResolve(): Promise<R>;
@@ -306,9 +298,53 @@ export declare global {
   /**
    * Unions T with U; U's properties will override T's properties
    */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   type OverridingUnion<T, U> = Omit<T, keyof U> & U;
 
   function setPreference(key: keyof Preferences, value: boolean);
 }
+
+// #region Promise.withResolvers polyfill
+
+// this polyfill can be removed once our TS libs include withResolvers.
+// at time of writing we use TypeScript Version 5.4.5, which includes it in
+// esnext
+
+export declare global {
+  type PromiseWithResolvers<T> = {
+    promise: Promise<T>;
+    resolve: (value: T | PromiseLike<T>) => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    reject: (reason?: any) => void;
+  };
+
+  // we're extending the PromiseConstructor interface, to we have to use
+  // `interface` (`type` won't work)
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  interface PromiseConstructor {
+    /**
+     * Creates a new Promise and returns it in an object, along with its resolve and reject functions.
+     *
+     * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/withResolvers
+     *
+     * @returns An object with the properties `promise`, `resolve`, and `reject`.
+     *
+     * ```ts
+     * const { promise, resolve, reject } = Promise.withResolvers<T>();
+     * ```
+     */
+    withResolvers<T>(): PromiseWithResolvers<T>;
+  }
+}
+// #endregion
+
+// #region used in jest tests to ignore unhandled rejections
+declare global {
+  namespace NodeJS {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+    interface Process {
+      setIgnoreUnhandled: (ignore: boolean) => void;
+      resetIgnoreUnhandled: () => void;
+    }
+  }
+}
+// #endregion

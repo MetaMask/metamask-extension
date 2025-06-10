@@ -34,11 +34,25 @@ const ADDRESS_MOCK = '0x1234';
 const UPGRADE_CONTRACT_ADDRESS_MOCK = '0x5678';
 const CODE_MOCK = '0xabcd';
 const TRANSACTION_ID_MOCK = '1234-5678';
+const SEPOLIA_CHAINID = '0xaa36a7';
 
 function runHook({ onRedirect }: { onRedirect?: () => void } = {}) {
   const { result } = renderHookWithProvider(
-    () => useEIP7702Account({ onRedirect }),
-    {},
+    () => useEIP7702Account({ onRedirect, chainId: SEPOLIA_CHAINID }),
+    {
+      metamask: {
+        networkConfigurationsByChainId: {
+          [SEPOLIA_CHAINID]: {
+            defaultRpcEndpointIndex: 0,
+            rpcEndpoints: [
+              {
+                networkClientId: 'sepolia',
+              },
+            ],
+          },
+        },
+      },
+    },
   );
   return result.current;
 }
@@ -74,10 +88,11 @@ describe('useEIP7702Account', () => {
       expect(result).toBe(true);
     });
 
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([undefined, '', '0x'])(
       'returns false if code is %s',
-      async (code) => {
-        getCodeMock.mockResolvedValue(code as string);
+      async (code: string) => {
+        getCodeMock.mockResolvedValue(code);
         const result = await runHook().isUpgraded(ADDRESS_MOCK);
         expect(result).toBe(false);
       },
@@ -102,6 +117,7 @@ describe('useEIP7702Account', () => {
           type: TransactionEnvelopeType.setCode,
         },
         {
+          networkClientId: 'sepolia',
           type: TransactionType.revokeDelegation,
         },
       );
@@ -173,7 +189,7 @@ describe('useEIP7702Account', () => {
           type: TransactionEnvelopeType.setCode,
         },
         {
-          networkClientId: undefined,
+          networkClientId: 'sepolia',
           type: TransactionType.batch,
         },
       );

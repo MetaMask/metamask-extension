@@ -8,7 +8,7 @@ import {
   getNativeAssetForChainId,
   isSolanaChainId,
 } from '@metamask/bridge-controller';
-import type { BridgeHistoryItem } from '../../../shared/types/bridge-status';
+import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../shared/constants/common';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 

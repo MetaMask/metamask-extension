@@ -11,9 +11,7 @@ const render = (
   {
     Qr,
     warning,
-  }: // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  { Qr: { message: string; data: string }; warning: null | string } = {
+  }: { Qr: { message: string; data: string }; warning: null | string } = {
     Qr: { data: mockEthAddress, message: '' },
     warning: '',
   },
@@ -23,6 +21,7 @@ const render = (
       ...mockState.metamask,
     },
   });
+  // @ts-expect-error TODO: Remove once `react-redux` is upgraded to v8 and `connect` type is fixed.
   return renderWithProvider(<QRCodeView Qr={Qr} warning={warning} />, store);
 };
 
@@ -37,6 +36,7 @@ describe('QRCodeView', () => {
     expect(qrCodeImage).toBeInTheDocument();
   });
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     {
       test: 'lowercased ETH address to checksummed',

@@ -7,6 +7,7 @@
 import type { Options as YargsOptions } from 'yargs';
 import yargs from 'yargs/yargs';
 import parser from 'yargs-parser';
+import type { BuildTypesConfig } from '../../lib/build-type';
 import {
   Browsers,
   type Manifest,
@@ -14,7 +15,6 @@ import {
   uniqueSort,
   toOrange,
 } from './helpers';
-import { type BuildConfig } from './config';
 
 const ENV_PREFIX = 'BUNDLE';
 const addFeat = 'addFeature' as const;
@@ -91,7 +91,7 @@ export type Features = ReturnType<typeof parseArgv>['features'];
  */
 export function parseArgv(
   argv: string[],
-  { buildTypes, features }: BuildConfig,
+  { buildTypes, features }: BuildTypesConfig,
 ) {
   const allBuildTypeNames = Object.keys(buildTypes);
   const allFeatureNames = Object.keys(features);
@@ -131,8 +131,6 @@ export function parseArgv(
  * @param options
  * @param name
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
   const cli = yargs()
     // Ensure unrecognized commands/options are reported as errors.
@@ -271,8 +269,6 @@ function getOptions(
       group: toOrange('Build options:'),
       type: 'string',
     },
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     manifest_version: {
       alias: 'v',
       array: false,
@@ -296,7 +292,7 @@ function getOptions(
       array: false,
       choices: ['none', ...buildTypes],
       default: 'main' as const,
-      description: 'Configure features for the build (main, beta, etc)',
+      description: 'Select the build type (main, beta, etc)',
       group: toOrange('Build options:'),
       type: 'string',
     },
@@ -306,7 +302,7 @@ function getOptions(
       choices: allFeatures,
       coerce: uniqueSort,
       default: [] as typeof allFeatures,
-      description: 'Add features not be included in the selected build `type`',
+      description: 'Add features to be included in the selected build `type`',
       group: toOrange('Build options:'),
       type: 'string',
     },
@@ -316,7 +312,7 @@ function getOptions(
       choices: allFeatures,
       coerce: uniqueSort,
       default: [] as typeof allFeatures,
-      description: 'Omit features included in the selected build `type`',
+      description: 'Omit features from the selected build `type`',
       group: toOrange('Build options:'),
       type: 'string',
     },
@@ -352,7 +348,7 @@ function getOptions(
     dryRun: {
       array: false,
       default: false,
-      description: 'Outputs the config without building',
+      description: 'Output the config without building',
       group: toOrange('Options:'),
       type: 'boolean',
     },

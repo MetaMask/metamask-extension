@@ -225,11 +225,7 @@ describe('Contract Deployment Confirmation', () => {
           properties: {
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.Transaction,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             transaction_type: TransactionType.deployContract,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: 0,
           },
         }),
@@ -332,6 +328,8 @@ describe('Contract Deployment Confirmation', () => {
 
   it('sets the preference showConfirmationAdvancedDetails to true when advanced details button is clicked', async () => {
     mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       createMockImplementation({ setPreference: {} }),
     );
 
@@ -371,6 +369,8 @@ describe('Contract Deployment Confirmation', () => {
 
   it('displays the advanced transaction details section', async () => {
     mockedBackgroundConnection.callBackgroundMethod.mockImplementation(
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       createMockImplementation({ setPreference: {} }),
     );
 

@@ -6,8 +6,6 @@ const PREFERENCES_CONTROLLER_MOCK = {
   usePhishDetect: true,
   dismissSeedBackUpReminder: false,
   disabledRpcMethodPreferences: {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     eth_sign: false,
   },
   useMultiAccountBalanceChecker: true,
@@ -108,8 +106,6 @@ describe('migration #92.3', () => {
         advancedGasFee: {},
       },
       AppStateController: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         hadAdvancedGasFeesSetPriorToMigration92_3: false,
       },
     });
@@ -142,8 +138,6 @@ describe('migration #92.3', () => {
         advancedGasFee: {},
       },
       AppStateController: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         hadAdvancedGasFeesSetPriorToMigration92_3: true,
       },
     });
@@ -183,8 +177,6 @@ describe('migration #92.3', () => {
         },
       },
       AppStateController: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         hadAdvancedGasFeesSetPriorToMigration92_3: false,
       },
     });

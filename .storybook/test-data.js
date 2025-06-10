@@ -31,9 +31,13 @@ const state = {
     url: 'https://metamask.github.io/test-dapp/',
   },
   metamask: {
-    bridgeStatusState: {
-      txHistory: {},
+    remoteFeatureFlags: {
+      bridgeConfig: {
+        support: true,
+        minimumVersion: '0.0.0',
+      },
     },
+    txHistory: {},
     announcements: {
       22: {
         id: 22,
@@ -461,6 +465,7 @@ const state = {
         ],
       },
     ],
+    transactionBatches: {},
     addressBook: {
       undefined: {
         0: {
@@ -1244,6 +1249,14 @@ const state = {
         status: 'unapproved',
         type: 'eth_getEncryptionPublicKey',
         origin: 'https://metamask.github.io',
+        txParams: {
+          from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+          to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
+          value: '0x0',
+          data: '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
+          gas: '0xcb28',
+          gasPrice: '0x77359400',
+        },
       },
     },
     unapprovedEncryptionPublicKeyMsgCount: 0,
@@ -1256,20 +1269,18 @@ const state = {
           '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
           '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
         ],
+        metadata: {
+          id: '01JN08SYECPZHFHB3K0J1NHJ4H',
+          name: '',
+        },
       },
       {
         type: KeyringType.ledger,
         accounts: ['0x9d0ba4ddac06032527b140912ec808ab9451b788'],
-      },
-    ],
-    keyringsMetadata: [
-      {
-        id: '01JN08SYECPZHFHB3K0J1NHJ4H',
-        name: '',
-      },
-      {
-        id: '01JN08T38HEXPYQX2HKP1FCRMZ',
-        name: '',
+        metadata: {
+          id: '01JN08T38HEXPYQX2HKP1FCRMZ',
+          name: '',
+        },
       },
     ],
     ...mockNetworkState(

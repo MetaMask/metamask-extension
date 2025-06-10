@@ -119,8 +119,6 @@ export const EditGasFeesRow = ({
   );
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function TokenValue({ roundedValue }: { roundedValue: string }) {
   return (
     <Text color={TextColor.textDefault} data-testid="first-gas-field">
@@ -129,8 +127,6 @@ function TokenValue({ roundedValue }: { roundedValue: string }) {
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function FiatValue({
   color,
   fullValue,

@@ -27,12 +27,12 @@ async function withFixturesForSmartTransactions(
     {
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
-        .withPreferencesControllerSmartTransactionsOptedIn()
         .withNetworkControllerOnMainnet()
         .build(),
       title,
       localNodeOptions: {
         hardfork: 'london',
+        chainId: '1',
       },
       testSpecificMock,
       dapp: true,
@@ -81,6 +81,7 @@ describe('Smart Transactions', function () {
         await buildQuote(driver, {
           amount: 2,
           swapTo: 'DAI',
+          mainnet: true,
         });
 
         await reviewQuote(driver, {

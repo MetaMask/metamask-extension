@@ -6,6 +6,8 @@ import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import { Nft } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import {
+  BlockSize,
+  BorderColor,
   TextColor,
   IconColor,
   TextVariant,
@@ -93,8 +95,6 @@ import { renderShortTokenId } from './utils';
 
 const MAX_TOKEN_ID_LENGTH = 15;
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NftDetailsComponent({
   nft,
   nftChainId,
@@ -131,10 +131,10 @@ export function NftDetailsComponent({
 
   const nftNetworkConfigs = useSelector(getNetworkConfigurationsByChainId);
   const nftChainNetwork = nftNetworkConfigs[nftChainId as Hex];
+  const { defaultRpcEndpointIndex } = nftChainNetwork;
+  const { networkClientId: nftNetworkClientId } =
+    nftChainNetwork.rpcEndpoints[defaultRpcEndpointIndex];
   const nftChainImage = getImageForChainId(nftChainId as string);
-  const nftNetworkClientId =
-    nftChainNetwork?.rpcEndpoints?.[nftChainNetwork?.defaultRpcEndpointIndex]
-      .networkClientId;
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
     string,
     string
@@ -222,8 +222,6 @@ export function NftDetailsComponent({
       event: MetaMetricsEventName.NftDetailsOpened,
       category: MetaMetricsEventCategory.Tokens,
       properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: chainId,
       },
     });
@@ -245,18 +243,10 @@ export function NftDetailsComponent({
         event: MetaMetricsEventName.NFTRemoved,
         category: 'Wallet',
         properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_contract_address: address,
           tokenId: tokenId.toString(),
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_type: AssetType.NFT,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_standard: standard,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: currentNetwork,
           isSuccessful: isSuccessfulEvent,
         },
@@ -268,9 +258,9 @@ export function NftDetailsComponent({
   const prevNft = usePrevious(nft);
   useEffect(() => {
     if (!isEqual(prevNft, nft)) {
-      checkAndUpdateSingleNftOwnershipStatus(nft);
+      checkAndUpdateSingleNftOwnershipStatus(nft, nftNetworkClientId);
     }
-  }, [nft, prevNft]);
+  }, [nft, nftNetworkClientId, prevNft]);
 
   const getOpenSeaLink = () => {
     switch (currentNetwork) {
@@ -416,6 +406,8 @@ export function NftDetailsComponent({
               }
               return global.platform.openTab({ url: openSeaLink });
             }}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onRemove={onRemove}
           />
         </Box>
@@ -444,7 +436,7 @@ export function NftDetailsComponent({
           {name || collection?.name ? (
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <Text
-                variant={TextVariant.headingMd}
+                variant={TextVariant.headingSm}
                 fontWeight={FontWeight.Medium}
                 color={TextColor.textDefault}
                 fontStyle={FontStyle.Normal}
@@ -485,8 +477,8 @@ export function NftDetailsComponent({
                     variant: TextVariant.bodyMdMedium,
                   }}
                   frameTextTitleStyle={{
-                    fontSize: '10px',
-                    lineHeight: '16px',
+                    fontSize: '12px',
+                    lineHeight: '20px',
                   }}
                   value={
                     lastSale?.price?.amount?.usd &&
@@ -510,7 +502,7 @@ export function NftDetailsComponent({
                         : TextAlign.Center,
                   }}
                   frameTextValueStyle={{
-                    fontSize: hasLastSalePrice ? '16px' : '10px',
+                    fontSize: hasLastSalePrice ? '16px' : '12px',
                     lineHeight: hasLastSalePrice ? '24px' : '16px',
                   }}
                   icon={
@@ -539,8 +531,8 @@ export function NftDetailsComponent({
                     variant: TextVariant.bodyMdMedium,
                   }}
                   frameTextTitleStyle={{
-                    fontSize: '10px',
-                    lineHeight: '16px',
+                    fontSize: '12px',
+                    lineHeight: '20px',
                   }}
                   value={
                     collection?.floorAsk?.price?.amount?.usd &&
@@ -564,7 +556,7 @@ export function NftDetailsComponent({
                         : TextAlign.Center,
                   }}
                   frameTextValueStyle={{
-                    fontSize: hasFloorAskPrice ? '16px' : '10px',
+                    fontSize: hasFloorAskPrice ? '16px' : '12px',
                     lineHeight: hasFloorAskPrice ? '24px' : '16px',
                   }}
                   icon={
@@ -597,8 +589,8 @@ export function NftDetailsComponent({
                   variant: TextVariant.bodyMdMedium,
                 }}
                 frameTextTitleStyle={{
-                  fontSize: '10px',
-                  lineHeight: '16px',
+                  fontSize: '12px',
+                  lineHeight: '20px',
                 }}
                 value={`#${rarityRank}`}
                 frameTextValueProps={{
@@ -622,8 +614,8 @@ export function NftDetailsComponent({
                   variant: TextVariant.bodyMdMedium,
                 }}
                 frameTextTitleStyle={{
-                  fontSize: '10px',
-                  lineHeight: '16px',
+                  fontSize: '12px',
+                  lineHeight: '20px',
                 }}
                 buttonAddressValue={
                   <button
@@ -735,18 +727,30 @@ export function NftDetailsComponent({
             }
           />
           {hasPriceSection ? (
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-              marginTop={6}
-            >
-              <Text
-                color={TextColor.textDefault}
-                variant={TextVariant.headingMd}
+            <>
+              <Box
+                marginTop={4}
+                borderColor={BorderColor.borderMuted}
+                width={BlockSize.Full}
+                style={{
+                  height: '1px',
+                  borderBottomWidth: 0,
+                  borderBottomStyle: 'solid',
+                }}
+              />
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+                marginTop={4}
               >
-                {t('price')}
-              </Text>
-            </Box>
+                <Text
+                  color={TextColor.textDefault}
+                  variant={TextVariant.headingSm}
+                >
+                  {t('price')}
+                </Text>
+              </Box>
+            </>
           ) : null}
           <NftDetailInformationRow
             title={t('lastSold')}
@@ -793,18 +797,30 @@ export function NftDetailsComponent({
             }
           />
           {hasCollectionSection ? (
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-              marginTop={6}
-            >
-              <Text
-                color={TextColor.textDefault}
-                variant={TextVariant.headingMd}
+            <>
+              <Box
+                marginTop={4}
+                borderColor={BorderColor.borderMuted}
+                width={BlockSize.Full}
+                style={{
+                  height: '1px',
+                  borderBottomWidth: 0,
+                  borderBottomStyle: 'solid',
+                }}
+              />
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+                marginTop={4}
               >
-                {t('notificationItemCollection')}
-              </Text>
-            </Box>
+                <Text
+                  color={TextColor.textDefault}
+                  variant={TextVariant.headingSm}
+                >
+                  {t('notificationItemCollection')}
+                </Text>
+              </Box>
+            </>
           ) : null}
           <NftDetailInformationRow
             title={t('collectionName')}
@@ -859,21 +875,33 @@ export function NftDetailsComponent({
             }
           />
           {hasAttributesSection ? (
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-              marginTop={6}
-            >
-              <Text
-                color={TextColor.textDefault}
-                variant={TextVariant.headingMd}
+            <>
+              <Box
+                marginTop={4}
+                borderColor={BorderColor.borderMuted}
+                width={BlockSize.Full}
+                style={{
+                  height: '1px',
+                  borderBottomWidth: 0,
+                  borderBottomStyle: 'solid',
+                }}
+              />
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+                marginTop={4}
               >
-                {t('attributes')}
-              </Text>
-            </Box>
+                <Text
+                  color={TextColor.textDefault}
+                  variant={TextVariant.headingSm}
+                >
+                  {t('attributes')}
+                </Text>
+              </Box>
+            </>
           ) : null}
           <Box
-            marginTop={4}
+            marginTop={2}
             display={Display.Flex}
             gap={2}
             flexWrap={FlexWrap.Wrap}
@@ -891,26 +919,25 @@ export function NftDetailsComponent({
                     variant: TextVariant.bodyMdMedium,
                   }}
                   frameTextTitleStyle={{
-                    fontSize: '14px',
-                    lineHeight: '22px',
+                    fontSize: '16px',
+                    lineHeight: '24px',
                   }}
                   value={value}
                   frameTextValueProps={{
                     color: TextColor.textDefault,
-                    variant: TextVariant.bodyMd,
+                    variant: TextVariant.bodyMdMedium,
                   }}
                   frameTextValueStyle={{
-                    fontSize: '14px',
+                    fontSize: '16px',
                   }}
                 />
               );
             })}
           </Box>
-          <Box marginTop={4}>
+          <Box>
             <Text
               color={TextColor.textAlternative}
-              variant={TextVariant.bodySm}
-              as="h6"
+              variant={TextVariant.bodyXs}
             >
               {t('nftDisclaimer')}
             </Text>
@@ -920,6 +947,8 @@ export function NftDetailsComponent({
       {isCurrentlyOwned === true ? (
         <Footer className="nft-details__content">
           <ButtonPrimary
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={onSend}
             disabled={sendDisabled}
             size={ButtonPrimarySize.Lg}
@@ -937,8 +966,6 @@ export function NftDetailsComponent({
   );
 }
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function NftDetails({ nft }: { nft: Nft }) {
   const { chainId } = useParams();
 

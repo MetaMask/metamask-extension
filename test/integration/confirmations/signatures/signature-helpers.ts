@@ -138,8 +138,6 @@ export const getMetamaskStateWithMaliciousPermit = (accountAddress: string) => {
       ...state.unapprovedTypedMessages[pendingPermitId],
       securityAlertResponse: {
         block: 7596565,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         result_type: 'Malicious',
         reason: 'permit_farming',
         description:
@@ -160,8 +158,6 @@ export const getMetamaskStateWithMaliciousPermit = (accountAddress: string) => {
     signatureSecurityAlertResponses: {
       'ba944b14-aa65-45b5-ae92-f305cdba64c1': {
         block: 7596565,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         result_type: 'Malicious',
         reason: 'permit_farming',
         description:

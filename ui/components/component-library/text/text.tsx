@@ -30,13 +30,12 @@ const getTextElementDefault = (variant: TextVariant) => {
 };
 
 export const Text: TextComponent = React.forwardRef(
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'p'>(
     {
       variant = TextVariant.bodyMd,
       fontWeight,
       fontStyle,
+      fontFamily,
       textTransform,
       textAlign,
       textDirection,
@@ -58,6 +57,7 @@ export const Text: TextComponent = React.forwardRef(
       {
         [`mm-text--font-weight-${fontWeight}`]: Boolean(fontWeight),
         [`mm-text--font-style-${fontStyle}`]: Boolean(fontStyle),
+        [`mm-text--font-family-${fontFamily}`]: Boolean(fontFamily),
         [`mm-text--ellipsis`]: Boolean(ellipsis),
         [`mm-text--text-transform-${textTransform}`]: Boolean(textTransform),
         [`mm-text--text-align-${textAlign}`]: Boolean(textAlign),

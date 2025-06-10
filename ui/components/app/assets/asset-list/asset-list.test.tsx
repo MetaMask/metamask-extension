@@ -88,8 +88,6 @@ jest.mock('react-redux', () => {
 });
 
 jest.mock('../../../../hooks/useMultiPolling', () => ({
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
 }));
@@ -174,7 +172,9 @@ describe('AssetList', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();
-      expect(screen.getByTestId('import-token-button')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('asset-list-control-bar-action-button'),
+      ).toBeInTheDocument();
     });
   });
 });

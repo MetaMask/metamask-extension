@@ -23,15 +23,30 @@ import {
 } from '../../hooks/useGasFeeToken';
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
+import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function SelectedGasFeeToken() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { chainId, gasFeeTokens } = currentConfirmation;
-  const isGaslessSupported = useIsGaslessSupported();
-  const hasGasFeeTokens = isGaslessSupported && Boolean(gasFeeTokens?.length);
+
+  const { isSupported: isGaslessSupported, isSmartTransaction } =
+    useIsGaslessSupported();
+
+  const hasInsufficientNative = Boolean(
+    useInsufficientBalanceAlerts({ ignoreGasFeeToken: true }).length,
+  );
+
+  const hasOnlyFutureNativeToken =
+    gasFeeTokens?.length === 1 &&
+    gasFeeTokens[0].tokenAddress === NATIVE_TOKEN_ADDRESS;
+
+  const supportsFutureNative = hasInsufficientNative && isSmartTransaction;
+
+  const hasGasFeeTokens =
+    isGaslessSupported &&
+    Boolean(gasFeeTokens?.length) &&
+    (!hasOnlyFutureNativeToken || supportsFutureNative);
 
   const networkConfiguration = useSelector(getNetworkConfigurationsByChainId)?.[
     chainId
@@ -61,10 +76,11 @@ export function SelectedGasFeeToken() {
         borderRadius={BorderRadius.pill}
         display={Display.InlineFlex}
         alignItems={AlignItems.center}
-        paddingInline={2}
+        paddingInlineStart={1}
         gap={1}
         style={{
           cursor: hasGasFeeTokens ? 'pointer' : 'default',
+          paddingInlineEnd: '6px',
         }}
       >
         <GasFeeTokenIcon

@@ -66,11 +66,7 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
       properties: {
         location: RampsMetaMaskEntry?.TokensBanner,
         text: 'Transfer crypto',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: chainId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol: symbol,
       },
     });
@@ -101,11 +97,7 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
       properties: {
         location: RampsMetaMaskEntry?.TokensBanner,
         text: 'Buy crypto',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: chainId,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol: symbol,
       },
     });

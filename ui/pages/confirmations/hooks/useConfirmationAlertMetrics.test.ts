@@ -61,32 +61,16 @@ const STATE_MOCK = getMockConfirmStateForTransaction(
 );
 
 const EXPECTED_PROPERTIES_BASE = {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_action_clicked: [],
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_key_clicked: [],
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_resolved: [],
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_resolved_count: 0,
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_triggered: [
     ALERT_NAME_METRICS_MOCK,
     ALERTS_NAME_METRICS[AlertsName.Blockaid],
   ],
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_triggered_count: 2,
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_visualized: [],
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_visualized_count: 0,
 };
 
@@ -123,22 +107,13 @@ describe('useConfirmationAlertMetrics', () => {
     );
   });
 
-  type Action =
-    | 'trackAlertRender'
-    | 'trackInlineAlertClicked'
-    | 'trackAlertActionClicked';
-
   const testCases = [
     {
       description: 'updates metrics properties when trackAlertRender is called',
       alertKey: AlertsName.GasFeeLow,
-      action: 'trackAlertRender' as Action,
+      action: 'trackAlertRender',
       expectedProperties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         alert_visualized: [ALERT_NAME_METRICS_MOCK],
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         alert_visualized_count: 1,
       },
     },
@@ -146,10 +121,8 @@ describe('useConfirmationAlertMetrics', () => {
       description:
         'updates metrics properties when trackInlineAlertClicked is called',
       alertKey: AlertsName.GasFeeLow,
-      action: 'trackInlineAlertClicked' as Action,
+      action: 'trackInlineAlertClicked',
       expectedProperties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         alert_key_clicked: [ALERT_NAME_METRICS_MOCK],
       },
     },
@@ -157,10 +130,8 @@ describe('useConfirmationAlertMetrics', () => {
       description:
         'updates metrics properties when trackAlertActionClicked is called',
       alertKey: AlertsName.GasFeeLow,
-      action: 'trackAlertActionClicked' as Action,
+      action: 'trackAlertActionClicked',
       expectedProperties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         alert_action_clicked: [ALERT_NAME_METRICS_MOCK],
       },
     },
@@ -168,18 +139,15 @@ describe('useConfirmationAlertMetrics', () => {
       description:
         'updates metrics properties when receives alertKey as a valid UUID',
       alertKey: UUID_ALERT_KEY_MOCK,
-      action: 'trackAlertRender' as Action,
+      action: 'trackAlertRender',
       expectedProperties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         alert_visualized: [ALERTS_NAME_METRICS[AlertsName.Blockaid]],
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         alert_visualized_count: 1,
       },
     },
   ];
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each(testCases)(
     '$description',
     ({
@@ -189,7 +157,10 @@ describe('useConfirmationAlertMetrics', () => {
     }: {
       description: string;
       alertKey: string;
-      action: Action;
+      action:
+        | 'trackAlertRender'
+        | 'trackInlineAlertClicked'
+        | 'trackAlertActionClicked';
       expectedProperties: Record<string, unknown>;
     }) => {
       const finalExpectedProperties = {

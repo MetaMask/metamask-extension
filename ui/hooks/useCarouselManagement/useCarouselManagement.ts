@@ -1,23 +1,39 @@
-import { useEffect } from 'react';
+import { isEqual } from 'lodash';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateSlides } from '../../store/actions';
-import { getSelectedAccountCachedBalance, getSlides } from '../../selectors';
+
+import log from 'loglevel';
+import { BigNumber } from 'bignumber.js';
+import { isSolanaAddress } from '../../../shared/lib/multichain/accounts';
 import type { CarouselSlide } from '../../../shared/constants/app-state';
+import { updateSlides } from '../../store/actions';
+import {
+  getRemoteFeatureFlags,
+  getSelectedAccountCachedBalance,
+  getSelectedInternalAccount,
+  getSlides,
+  getUseExternalServices,
+} from '../../selectors';
 import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
 import {
   FUND_SLIDE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   BRIDGE_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
   CARD_SLIDE,
   CASH_SLIDE,
   REMOTE_MODE_SLIDE,
-  SWEEPSTAKES_SLIDE,
+  SMART_ACCOUNT_UPGRADE_SLIDE,
   SWEEPSTAKES_START,
   SWEEPSTAKES_END,
   ZERO_BALANCE,
   MULTI_SRP_SLIDE,
+  BACKUPANDSYNC_SLIDE,
+  SWEEPSTAKES_SLIDE,
+  BASIC_FUNCTIONALITY_SLIDE,
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  SOLANA_SLIDE,
+  ///: END:ONLY_INCLUDE_IF
 } from './constants';
+import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
 type UseSlideManagementProps = {
   testDate?: string; // Only used in unit/e2e tests to simulate dates for sweepstakes campaign
@@ -27,16 +43,37 @@ export function getSweepstakesCampaignActive(currentDate: Date) {
   return currentDate >= SWEEPSTAKES_START && currentDate <= SWEEPSTAKES_END;
 }
 
+export function isActive(
+  slide: { startDate?: string; endDate?: string },
+  now = new Date(),
+): boolean {
+  const start = slide.startDate ? new Date(slide.startDate) : null;
+  const end = slide.endDate ? new Date(slide.endDate) : null;
+
+  if (start && now < start) {
+    return false;
+  }
+  if (end && now > end) {
+    return false;
+  }
+  return true;
+}
+
 export const useCarouselManagement = ({
   testDate,
 }: UseSlideManagementProps = {}) => {
   const inTest = Boolean(process.env.IN_TEST);
   const dispatch = useDispatch();
-  const slides = useSelector(getSlides);
+  const slides: CarouselSlide[] = useSelector(getSlides);
+  const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
   const totalBalance = useSelector(getSelectedAccountCachedBalance);
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
-
-  const hasZeroBalance = totalBalance === ZERO_BALANCE;
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const useExternalServices = useSelector(getUseExternalServices);
+  const prevSlidesRef = useRef<CarouselSlide[]>();
+  const hasZeroBalance = new BigNumber(totalBalance ?? ZERO_BALANCE).eq(
+    ZERO_BALANCE,
+  );
 
   useEffect(() => {
     const defaultSlides: CarouselSlide[] = [];
@@ -51,13 +88,20 @@ export const useCarouselManagement = ({
       undismissable: hasZeroBalance,
     };
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    if (!isSolanaAddress(selectedAccount.address)) {
+      defaultSlides.push(SMART_ACCOUNT_UPGRADE_SLIDE);
+    }
     defaultSlides.push(BRIDGE_SLIDE);
-    ///: END:ONLY_INCLUDE_IF
     defaultSlides.push(CARD_SLIDE);
     defaultSlides.push(CASH_SLIDE);
     defaultSlides.push(MULTI_SRP_SLIDE);
-
+    defaultSlides.push(BACKUPANDSYNC_SLIDE);
+    if (!useExternalServices) {
+      defaultSlides.push(BASIC_FUNCTIONALITY_SLIDE);
+    }
+    ///: BEGIN:ONLY_INCLUDE_IF(solana)
+    defaultSlides.push(SOLANA_SLIDE);
+    ///: END:ONLY_INCLUDE_IF
     defaultSlides.splice(hasZeroBalance ? 0 : 2, 0, fundSlide);
 
     if (isRemoteModeEnabled) {
@@ -90,9 +134,70 @@ export const useCarouselManagement = ({
 
       defaultSlides.push(dismissedSweepstakesSlide);
     }
+    // Handle Contentful Data
+    const maybeFetchContentful = async () => {
+      const contentfulEnabled =
+        remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
 
-    dispatch(updateSlides(defaultSlides));
-  }, [dispatch, hasZeroBalance, isRemoteModeEnabled, slides, testDate, inTest]);
+      if (contentfulEnabled) {
+        try {
+          const { prioritySlides, regularSlides } =
+            await fetchCarouselSlidesFromContentful();
+          const normalizeContentfulSlides = (slidesToCheck: CarouselSlide[]) =>
+            slidesToCheck
+              .map((slide) => {
+                const existing = slides.find(
+                  (s: CarouselSlide) => s.id === slide.id,
+                );
+                return {
+                  ...slide,
+                  dismissed: existing?.dismissed ?? false,
+                  undismissable:
+                    slide.undismissable || existing?.undismissable || false,
+                };
+              })
+              .filter((slide) =>
+                isActive(slide, testDate ? new Date(testDate) : new Date()),
+              );
+          const activePrioritySlides =
+            normalizeContentfulSlides(prioritySlides);
+          const activeRegularSlides = normalizeContentfulSlides(regularSlides);
+
+          const mergedSlides = [
+            ...activePrioritySlides,
+            ...defaultSlides,
+            ...activeRegularSlides,
+          ];
+
+          if (!isEqual(prevSlidesRef.current, mergedSlides)) {
+            dispatch(updateSlides(mergedSlides));
+            prevSlidesRef.current = mergedSlides;
+          }
+        } catch (err) {
+          log.warn('Failed to fetch Contentful slides:', err);
+          if (!isEqual(prevSlidesRef.current, defaultSlides)) {
+            dispatch(updateSlides(defaultSlides));
+            prevSlidesRef.current = defaultSlides;
+          }
+        }
+      } else if (!isEqual(prevSlidesRef.current, defaultSlides)) {
+        dispatch(updateSlides(defaultSlides));
+        prevSlidesRef.current = defaultSlides;
+      }
+    };
+
+    maybeFetchContentful();
+  }, [
+    dispatch,
+    hasZeroBalance,
+    isRemoteModeEnabled,
+    remoteFeatureFlags,
+    testDate,
+    inTest,
+    slides,
+    selectedAccount.address,
+    useExternalServices,
+  ]);
 
   return { slides };
 };

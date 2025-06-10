@@ -78,8 +78,6 @@ const render = (
       ...state,
       permissionHistory: {
         mockTestDappUrl: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_accounts: {
             accounts: {
               '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1709225290848,
@@ -167,12 +165,7 @@ describe('ConnectPage', () => {
 
   it('should render subtitle correctly', () => {
     const { getByText } = render();
-    expect(getByText('Connect this website with MetaMask.')).toBeDefined();
-  });
-
-  it('should render learn more link correctly', () => {
-    const { getByText } = render();
-    expect(getByText('Learn more')).toBeDefined();
+    expect(getByText('Connect this website with MetaMask')).toBeDefined();
   });
 
   it('should render accounts tab correctly', () => {

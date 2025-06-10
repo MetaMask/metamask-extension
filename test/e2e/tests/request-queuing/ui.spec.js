@@ -2,7 +2,6 @@ const { strict: assert } = require('assert');
 const { Browser } = require('selenium-webdriver');
 const { toEvmCaipChainId } = require('@metamask/multichain-network-controller');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
-const { isManifestV3 } = require('../../../../shared/modules/mv3.utils');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -116,17 +115,10 @@ async function switchToDialogPopoverValidateDetailsRedesign(
 }
 
 async function rejectTransactionRedesign(driver) {
-  if (isManifestV3) {
-    await driver.clickElement({
-      tag: 'button',
-      text: 'Cancel',
-    });
-  } else {
-    await driver.clickElementAndWaitForWindowToClose({
-      tag: 'button',
-      text: 'Cancel',
-    });
-  }
+  await driver.clickElementAndWaitForWindowToClose({
+    tag: 'button',
+    text: 'Cancel',
+  });
 }
 
 async function confirmTransaction(driver) {
@@ -696,7 +688,7 @@ describe('Request-queue UI changes', function () {
             },
           },
         ],
-        // This test intentionally quits Ganache while the extension is using it, causing
+        // This test intentionally quits the local node server while the extension is using it, causing
         // PollingBlockTracker errors and others. These are expected.
         ignoredConsoleErrors: ['ignore-all'],
         dappOptions: { numberOfDapps: 2 },
@@ -720,7 +712,7 @@ describe('Request-queue UI changes', function () {
           text: 'Ethereum Mainnet',
         });
 
-        // Kill ganache servers
+        // Kill local node servers
         await localNodes[0].quit();
         await localNodes[1].quit();
 

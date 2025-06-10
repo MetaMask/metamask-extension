@@ -9,8 +9,6 @@ import {
 } from './useAsync';
 
 // Helper to create a controlled promise for testing timing scenarios
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const createControlledPromise = <T>() => {
   let resolve!: (value: T) => void;
   let reject!: (error: Error) => void;
@@ -22,8 +20,6 @@ const createControlledPromise = <T>() => {
 };
 
 // Test helpers
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const successState = <T>(value: T) =>
   expect.objectContaining({
     status: 'success',

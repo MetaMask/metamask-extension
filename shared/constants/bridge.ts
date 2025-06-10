@@ -79,13 +79,15 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   [MultichainNetworks.BITCOIN]: 'Bitcoin',
   [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
+  [MultichainNetworks.BITCOIN_SIGNET]: 'Bitcoin Mutinynet',
   ///: END:ONLY_INCLUDE_IF
 };
 
 export const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
 
 export const SOLANA_USDC_ASSET = {
-  address:
+  address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  assetId:
     'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
   symbol: 'USDC',
   decimals: 6,

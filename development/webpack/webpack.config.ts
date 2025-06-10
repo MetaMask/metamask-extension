@@ -19,6 +19,7 @@ import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
+import { loadBuildTypesConfig } from '../lib/build-type';
 import { SelfInjectPlugin } from './utils/plugins/SelfInjectPlugin';
 import {
   type Manifest,
@@ -31,11 +32,11 @@ import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
-import { getBuildTypes, getVariables } from './utils/config';
+import { getVariables } from './utils/config';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 
-const buildTypes = getBuildTypes();
+const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
 if (args.dryRun) {
   console.error(getDryRunMessage(args, features));
@@ -109,7 +110,6 @@ const plugins: WebpackPluginInstance[] = [
     integrity: 'auto',
     test: /\.html$/u, // default is eta/html, we only want html
     data: {
-      isMMI: args.type === 'mmi',
       isTest: args.test,
       shouldIncludeSnow: args.snow,
     },
@@ -123,11 +123,7 @@ const plugins: WebpackPluginInstance[] = [
     ],
   }),
   new ManifestPlugin({
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     web_accessible_resources: webAccessibleResources,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     manifest_version: MANIFEST_VERSION,
     description: commitHash
       ? `${args.env} build from git id: ${commitHash.substring(0, 8)}`
@@ -264,9 +260,9 @@ const config = {
     rules: [
       // json
       { test: /\.json$/u, type: 'json' },
-      // treats JSON files loaded via `new URL('./file.json', import.meta.url)` as assets.
+      // treats JSON and compressed JSON files loaded via `new URL('./file.json(?:\.gz)', import.meta.url)` as assets.
       {
-        test: /\.json$/u,
+        test: /\.json(?:\.gz)?$/u,
         dependency: 'url',
         type: 'asset/resource',
       },
@@ -356,11 +352,7 @@ const config = {
   node: {
     // eventually we should avoid any code that uses node globals `__dirname`
     // and `__filename``. But for now, just warn about their use.
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     __dirname: 'warn-mock',
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     __filename: 'warn-mock',
     // Hopefully in the the future we won't need to polyfill node `global`, as
     // a browser version, `globalThis`, already exists and we should use it

@@ -18,8 +18,6 @@ export type SecurityAlertResponse = {
   block?: number;
   reason: string;
   features?: string[];
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: string;
   providerRequestsCount?: Record<string, number>;
   securityAlertId?: string;
@@ -51,5 +49,6 @@ export type ConfirmMetamaskState = {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
     approvalFlows: ApprovalControllerState['approvalFlows'];
     signatureSecurityAlertResponses?: Record<string, SecurityAlertResponse>;
+    upgradeSplashPageAcknowledgedForAccounts?: string[];
   };
 };
