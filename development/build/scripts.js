@@ -936,6 +936,7 @@ function setupBundlerDefaults(
             './**/node_modules/marked',
             './**/node_modules/@solana',
             './**/node_modules/axios',
+            './**/node_modules/@metamask/snaps-*',
           ],
           global: true,
         },
