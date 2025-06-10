@@ -42,4 +42,3 @@ export function webAuthenticatorFactory(): WebAuthenticator {
     getPlatform,
   };
 }
-

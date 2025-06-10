@@ -2,10 +2,10 @@ import {
   AuthConnection,
   Web3AuthNetwork,
 } from '@metamask/seedless-onboarding-controller';
+import { PLATFORM_CHROME } from '../../../../shared/constants/app';
 import { OAuthLoginEnv, WebAuthenticator } from './types';
 import OAuthService from './oauth-service';
 import { createLoginHandler } from './create-login-handler';
-import { PLATFORM_CHROME } from '../../../../shared/constants/app';
 
 const DEFAULT_GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
 const DEFAULT_APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID as string;
