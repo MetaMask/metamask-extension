@@ -226,7 +226,9 @@
     "subjectMetadata": "object",
     "announcements": "object",
     "orderedNetworkList": { "0": "object", "1": "object" },
-    "enabledNetworkMap": {},
+    "enabledNetworkMap": {
+      "0x539": "boolean"
+    },
     "pinnedAccountList": {},
     "hiddenAccountList": {},
     "gasFeeEstimatesByChainId": {},
