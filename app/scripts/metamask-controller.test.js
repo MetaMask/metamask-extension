@@ -60,7 +60,6 @@ import {
   RestrictedEthMethods,
 } from '../../shared/constants/permissions';
 import * as NetworkConstantsModule from '../../shared/constants/network';
-import { deferredPromise } from './lib/util';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import MetaMaskController from './metamask-controller';
 import { PermissionNames } from './controllers/permissions';

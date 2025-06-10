@@ -10,7 +10,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 164;
+export const version = 165;
 
 /**
  * This migration adds Base network to the `NetworkController` as it is enabled by default.
