@@ -1,9 +1,9 @@
-import { NetworkController } from "@metamask/network-controller";
-import { CHAIN_IDS } from "../../../../shared/constants/network";
-import { getProviderConfig } from "../../../../shared/modules/selectors/networks";
-import { SupportedEVMChain } from "./types";
-import { MESSAGE_TYPE } from "../../../../shared/constants/app";
-import { JsonRpcRequest } from "@metamask/utils";
+import { NetworkController } from '@metamask/network-controller';
+import { JsonRpcRequest } from '@metamask/utils';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { SupportedEVMChain } from './types';
 
 // TODO: Remove when we want this enabled in production.
 export function isProdEnabled() {
@@ -15,12 +15,17 @@ export function isEthSendTransaction(req: JsonRpcRequest): boolean {
   return req.method === MESSAGE_TYPE.ETH_SEND_TRANSACTION;
 }
 
-export function hasValidTransactionParams(req: JsonRpcRequest): req is JsonRpcRequest & {
-  params: [{
-    to: string;
-    chainId: string;
-    [key: string]: unknown;
-  }, ...unknown[]];
+export function hasValidTransactionParams(
+  req: JsonRpcRequest,
+): req is JsonRpcRequest & {
+  params: [
+    {
+      to: string;
+      chainId: string;
+      [key: string]: unknown;
+    },
+    ...unknown[],
+  ];
 } {
   if (!('params' in req) || !req.params) {
     return false;
@@ -37,7 +42,6 @@ export function hasValidTransactionParams(req: JsonRpcRequest): req is JsonRpcRe
   );
 }
 
-
 export function isEthSignTypedData(req: JsonRpcRequest): boolean {
   return (
     req.method === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA ||
@@ -47,7 +51,9 @@ export function isEthSignTypedData(req: JsonRpcRequest): boolean {
   );
 }
 
-export function hasValidTypedDataParams(req: JsonRpcRequest): req is JsonRpcRequest & {
+export function hasValidTypedDataParams(
+  req: JsonRpcRequest,
+): req is JsonRpcRequest & {
   params: [unknown, string | object];
 } {
   if (!('params' in req) || !req.params) {
@@ -61,7 +67,9 @@ export function hasValidTypedDataParams(req: JsonRpcRequest): req is JsonRpcRequ
   return req.params[1] !== undefined && req.params[1] !== null;
 }
 
-export function getChainId(networkController: NetworkController): SupportedEVMChain {
+export function getChainId(
+  networkController: NetworkController,
+): SupportedEVMChain {
   const chainId = getProviderConfig({
     metamask: networkController.state,
   })?.chainId;

@@ -1,5 +1,4 @@
 import { JsonRpcRequest } from '@metamask/utils';
-import { NetworkController } from '@metamask/network-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import * as networksModule from '../../../../shared/modules/selectors/networks';
@@ -104,7 +103,7 @@ describe('trust-signals-util', () => {
     it('should return false when params is not an array', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
-        params: null as any,
+        params: null as any, // eslint-disable-line @typescript-eslint/no-explicit-any
         id: 1,
         jsonrpc: '2.0',
       };
@@ -243,7 +242,7 @@ describe('trust-signals-util', () => {
     it('should return false when params is not an array', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-        params: null as any,
+        params: null as any, // eslint-disable-line @typescript-eslint/no-explicit-any
         id: 1,
         jsonrpc: '2.0',
       };
@@ -263,7 +262,7 @@ describe('trust-signals-util', () => {
     it('should return false when second param is undefined', () => {
       const req: JsonRpcRequest = {
         method: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-        params: ['0xaddress', undefined as any],
+        params: ['0xaddress', undefined as any], // eslint-disable-line @typescript-eslint/no-explicit-any
         id: 1,
         jsonrpc: '2.0',
       };
@@ -282,7 +281,9 @@ describe('trust-signals-util', () => {
   });
 
   describe('getChainId', () => {
-    const mockedGetProviderConfig = jest.mocked(networksModule.getProviderConfig);
+    const mockedGetProviderConfig = jest.mocked(
+      networksModule.getProviderConfig,
+    );
 
     beforeEach(() => {
       jest.clearAllMocks();
@@ -295,9 +296,11 @@ describe('trust-signals-util', () => {
 
       mockedGetProviderConfig.mockReturnValue({
         chainId: CHAIN_IDS.MAINNET,
-      } as any);
+      } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
-      expect(getChainId(mockNetworkController)).toBe(SupportedEVMChain.Ethereum);
+      expect(getChainId(mockNetworkController)).toBe(
+        SupportedEVMChain.Ethereum,
+      );
     });
 
     it('should return Polygon for polygon chain ID', () => {
@@ -307,7 +310,7 @@ describe('trust-signals-util', () => {
 
       mockedGetProviderConfig.mockReturnValue({
         chainId: CHAIN_IDS.POLYGON,
-      } as any);
+      } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
       expect(getChainId(mockNetworkController)).toBe(SupportedEVMChain.Polygon);
     });
@@ -319,7 +322,10 @@ describe('trust-signals-util', () => {
         { chainId: CHAIN_IDS.BASE, expected: SupportedEVMChain.Base },
         { chainId: CHAIN_IDS.BSC, expected: SupportedEVMChain.Bsc },
         { chainId: CHAIN_IDS.OPTIMISM, expected: SupportedEVMChain.Optimism },
-        { chainId: CHAIN_IDS.SEPOLIA, expected: SupportedEVMChain.EthereumSepolia },
+        {
+          chainId: CHAIN_IDS.SEPOLIA,
+          expected: SupportedEVMChain.EthereumSepolia,
+        },
       ];
 
       testCases.forEach(({ chainId, expected }) => {
@@ -329,7 +335,7 @@ describe('trust-signals-util', () => {
 
         mockedGetProviderConfig.mockReturnValue({
           chainId,
-        } as any);
+        } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
         expect(getChainId(mockNetworkController)).toBe(expected);
       });
@@ -342,9 +348,11 @@ describe('trust-signals-util', () => {
 
       mockedGetProviderConfig.mockReturnValue({
         chainId: '0X1', // Uppercase
-      } as any);
+      } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
-      expect(getChainId(mockNetworkController)).toBe(SupportedEVMChain.Ethereum);
+      expect(getChainId(mockNetworkController)).toBe(
+        SupportedEVMChain.Ethereum,
+      );
     });
 
     it('should throw error when chain ID is not found', () => {
@@ -352,9 +360,11 @@ describe('trust-signals-util', () => {
         state: { providerConfig: {} },
       } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
-      mockedGetProviderConfig.mockReturnValue({} as any);
+      mockedGetProviderConfig.mockReturnValue({} as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
-      expect(() => getChainId(mockNetworkController)).toThrow('Chain ID not found');
+      expect(() => getChainId(mockNetworkController)).toThrow(
+        'Chain ID not found',
+      );
     });
 
     it('should throw error when provider config is undefined', () => {
@@ -362,9 +372,11 @@ describe('trust-signals-util', () => {
         state: { providerConfig: {} },
       } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
-      mockedGetProviderConfig.mockReturnValue(undefined as any);
+      mockedGetProviderConfig.mockReturnValue(undefined as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
-      expect(() => getChainId(mockNetworkController)).toThrow('Chain ID not found');
+      expect(() => getChainId(mockNetworkController)).toThrow(
+        'Chain ID not found',
+      );
     });
 
     it('should handle custom chain IDs', () => {
@@ -384,7 +396,7 @@ describe('trust-signals-util', () => {
 
         mockedGetProviderConfig.mockReturnValue({
           chainId,
-        } as any);
+        } as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
         expect(getChainId(mockNetworkController)).toBe(expected);
       });
