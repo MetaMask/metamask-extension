@@ -1,4 +1,5 @@
 import nock from 'nock';
+import { ChainId } from '@metamask/bridge-controller';
 import { MOCKS } from '../../../test/jest';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
@@ -18,6 +19,7 @@ import {
   LINEA,
   BASE,
 } from '../../../shared/constants/swaps';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
   fetchTokens,
   fetchAggregatorMetadata,
@@ -39,8 +41,6 @@ import {
   AGGREGATOR_METADATA,
   TOP_ASSETS,
 } from './swaps-util-test-constants';
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
-import { ChainId } from '@metamask/bridge-controller';
 
 jest.mock('../../../shared/lib/storage-helpers', () => ({
   getStorageItem: jest.fn(),
@@ -125,7 +125,7 @@ describe('Swaps Util', () => {
       expect(result).toStrictEqual(TOP_ASSETS);
     });
 
-    it.only('should not fetch top assets for solana', async () => {
+    it('should not fetch top assets for solana', async () => {
       expect(await fetchTopAssetsList(MultichainNetworks.SOLANA)).toStrictEqual(
         [],
       );
