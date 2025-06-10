@@ -338,10 +338,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Ang bayad sa priyoridad (kilala rin bilang “tip ng minero”) ay direktang napupunta sa mga minero at ginagawang insentibo ang mga ito upang unahin ang iyong mga transaksyon."
   },
-  "agreeTermsOfUse": {
-    "message": "Sumasang-ayon ako sa $1 ng MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "Isinasaad ng on-chain history ng token na may mga dati nang kahina-hinalang aktibidad ng airdrop."
   },
@@ -662,9 +658,6 @@
   },
   "basic": {
     "message": "Panimula"
-  },
-  "basicConfigurationBannerCTA": {
-    "message": "I-on ang batayang kapakinabangan"
   },
   "basicConfigurationBannerTitle": {
     "message": "Naka-off ang batayang kapakinabangan"
@@ -1447,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "Gumawa ng bagong account"
-  },
-  "createNewWallet": {
-    "message": "Gumawa ng bagong wallet"
   },
   "createPassword": {
     "message": "Gumawa ng password"
@@ -2296,18 +2286,11 @@
   "gasLimit": {
     "message": "Limitasyon ng gas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Ang limitasyon ng gas ay ang pinakamataas na halaga ng mga yunit ng gas na handa mong gastusin."
-  },
   "gasLimitRecommended": {
     "message": "Ang inirerekomendang limitasyon ng gas ay $1. Kung mas mababa dito ang limitasyon ng gas, maaaring mabigo."
   },
   "gasLimitTooLow": {
     "message": "Ang limitasyon ng gas ay dapat na hindi bababa sa 21000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Ang limitasyon ng gas ay dapat na hindi bababa sa $1",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "Limitasyon ng gas"
@@ -2315,23 +2298,11 @@
   "gasOption": {
     "message": "Opsyon ng gas"
   },
-  "gasPrice": {
-    "message": "Presyo ng gas (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "Masyadong mataas ang iyong itinakdang bayad sa gas. Pag-isipang ibaba ang halaga."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Masyadong mataas presyo ng gas"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Masyadong mababa ang presyo ng gas"
-  },
   "gasPriceFetchFailed": {
     "message": "Ang pagtantya ng presyo ng gas ay nabigo dahil sa network error."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Tinutukoy ng presyo ng gas ang halaga ng Ether na handa mong bayaran para sa bawat unit ng gas."
   },
   "gasTimingHoursShort": {
     "message": "$1 oras",
@@ -2365,9 +2336,6 @@
   },
   "genericExplorerView": {
     "message": "Tingnan ang account sa $1"
-  },
-  "goBack": {
-    "message": "Bumalik"
   },
   "goToSite": {
     "message": "Magpunta sa site"
@@ -2570,9 +2538,6 @@
   },
   "importAccountMsg": {
     "message": "Ang mga na-import na account ay hindi mauugnay sa iyong Lihim na Parirala sa Pagbawi ng MetaMask. Matuto pa tungkol sa mga na-import na account"
-  },
-  "importMyWallet": {
-    "message": "I-import ang Wallet Ko"
   },
   "importNFT": {
     "message": "Mag-import ng NFT"
@@ -3963,9 +3928,6 @@
   "passwordNotLongEnough": {
     "message": "Hindi sapat ang haba ng password"
   },
-  "passwordSetupDetails": {
-    "message": "Ang password na ito ay magbubukas lamang ng iyong MetaMask wallet sa device na ito. Hindi matatakpan ng MetaMask ang password na ito."
-  },
   "passwordStrength": {
     "message": "Tibay ng password: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -4825,35 +4787,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Kumpirmahin ang Lihim na Parirala sa Pagbawi"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Ipaalala sa amin sa ibang pagkakataon (hindi inirerekomenda)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "I-secure ang aking wallet (inirerekomenda)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Isulat at itago sa iba't ibang sikretong lugar"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Itago sa safe deposit box"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Ang iyong Lihim na Parirala sa Pagbawi ay isang 12 salitang parirala na \"master key\" sa iyong wallet at sa iyong pondo"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Kung may humingi ng iyong parirala sa pagbawi, malamang na sinusubukan ka nilang lokohin at nakawan ng mga pondo sa iyong wallet."
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Huwag kailanman ibahagi ang iyong Lihim na Parirala sa Pagbawi, kahit sa MetaMask!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Ano ang Lihim na Parirala sa Pagbawi?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Maaari ko bang ibahagi ang aking Lihim na Parirala sa Pagbawi?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Paano ko masi-save ang aking Lihim na Parirala sa Pagbawi?"
   },
   "seedPhraseIntroTitle": {
     "message": "I-secure ang wallet mo"
@@ -5138,9 +5076,6 @@
   "siweURI": {
     "message": "URL"
   },
-  "skip": {
-    "message": "Laktawan"
-  },
   "skipAccountSecurity": {
     "message": "Laktawan ang Account Security?"
   },
@@ -5328,10 +5263,6 @@
   "snapConnectionWarning": {
     "message": "Si $1 ay gustong gumamit ng $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "Ang nilalamang ito ay nagmumula sa $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "Website"
@@ -6789,23 +6720,8 @@
   "welcomeBack": {
     "message": "Maligayang pagbabalik"
   },
-  "welcomeExploreDescription": {
-    "message": "Mag-imbak, magpadala, at gumastos ng mga cryptocurrency at asset."
-  },
-  "welcomeExploreTitle": {
-    "message": "Magsaliksik sa mga decentralized app"
-  },
-  "welcomeLoginDescription": {
-    "message": "Gamitin ang iyong MetaMask para mag-log in sa mga decentralized app, hindi na kailangang mag-sign up."
-  },
-  "welcomeLoginTitle": {
-    "message": "Mag-hello sa iyong wallet"
-  },
   "welcomeToMetaMask": {
     "message": "Magsimula na tayo"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Ang MetaMask na pinagkakatiwalaan ng milyun-milyon ay isang ligtas na wallet na ginagawang accessible ang mundo ng web3 para sa lahat."
   },
   "whatsThis": {
     "message": "Ano ito?"
@@ -6868,8 +6784,5 @@
   },
   "yourWalletIsReady": {
     "message": "Handa na ang iyong wallet"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Walang presyo ng gas sa pagpapabilis"
   }
 }

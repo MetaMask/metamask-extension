@@ -338,10 +338,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "우선 요금(일명 \"채굴자 팁\")이란 내 트랜잭션을 우선 거래한 것에 대한 인센티브로 채굴자에게 직접 전달되는 금액입니다."
   },
-  "agreeTermsOfUse": {
-    "message": "MetaMask의 $1에 동의합니다",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "해당 토큰의 온체인 기록에서 의심스러운 에어드롭 활동이 확인되었습니다."
   },
@@ -662,9 +658,6 @@
   },
   "basic": {
     "message": "기본"
-  },
-  "basicConfigurationBannerCTA": {
-    "message": "기본 기능 켜기"
   },
   "basicConfigurationBannerTitle": {
     "message": "기본 기능이 꺼져 있습니다."
@@ -1447,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "새 계정 만들기"
-  },
-  "createNewWallet": {
-    "message": "새 지갑 생성"
   },
   "createPassword": {
     "message": "비밀번호 생성"
@@ -2296,18 +2286,11 @@
   "gasLimit": {
     "message": "가스 한도"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "가스 한도는 지불할 가스 단위의 최대 금액입니다."
-  },
   "gasLimitRecommended": {
     "message": "권장 가스비 한도는 $1입니다. 가스 한도가 이보다 낮으면 실패할 수 있습니다."
   },
   "gasLimitTooLow": {
     "message": "가스 한도는 21000 이상이어야 합니다."
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "가스 한도는 $1 이상이어야 합니다.",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "가스 한도"
@@ -2315,23 +2298,11 @@
   "gasOption": {
     "message": "가스 옵션"
   },
-  "gasPrice": {
-    "message": "가스 가격(GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "가스비가 불필요하게 높게 설정되었습니다. 가격을 낮추는 것을 고려해 보세요."
   },
-  "gasPriceExcessiveInput": {
-    "message": "가스 가격 초과"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "가스 가격이 너무 낮음"
-  },
   "gasPriceFetchFailed": {
     "message": "네트워크 오류로 인해 가스 가격 견적 추산을 실패했습니다."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "가스 가격은 각 가스 단위에 대해 지불할 Ether 금액을 지정합니다."
   },
   "gasTimingHoursShort": {
     "message": "$1 시간",
@@ -2365,9 +2336,6 @@
   },
   "genericExplorerView": {
     "message": "$1에서 계정 보기"
-  },
-  "goBack": {
-    "message": "뒤로 가기"
   },
   "goToSite": {
     "message": "사이트로 이동"
@@ -2570,9 +2538,6 @@
   },
   "importAccountMsg": {
     "message": "가져온 계정은 MetaMask 계정 비밀복구구문과 연결하지 못합니다. 가져온 계정에 대해 자세히 알아보기"
-  },
-  "importMyWallet": {
-    "message": "내 지갑 가져오기"
   },
   "importNFT": {
     "message": "NFT 가져오기"
@@ -3963,9 +3928,6 @@
   "passwordNotLongEnough": {
     "message": "비밀번호가 짧습니다."
   },
-  "passwordSetupDetails": {
-    "message": "이 비밀번호는 이 장치에서만 MetaMask 지갑의 잠금을 해제합니다. MetaMask는 이 비밀번호를 복구할 수 없습니다."
-  },
   "passwordStrength": {
     "message": "비밀번호 강도: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -4825,35 +4787,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "비밀복구구문 확인"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "나중에 알림(권장하지 않음)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "내 지갑 보호(권장)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "적어서 여러 비밀 장소에 보관하세요"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "안전 금고에 보관하세요"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "복구 구문은 지갑과 자금의 '마스터 키'입니다."
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "복구 구문을 요청하는 사람은 사기를 치려는 것입니다."
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "절대로, 누구와도, 심지어 MetaMask와도 비밀복구구문을 공유하면 안 됩니다!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "'비밀복구구문'이란 무엇인가요?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "비밀복구구문을 공유해야 하나요?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "비밀복구구문은 어떻게 저장하나요?"
   },
   "seedPhraseIntroTitle": {
     "message": "지갑 보호하기"
@@ -5138,9 +5076,6 @@
   "siweURI": {
     "message": "URL"
   },
-  "skip": {
-    "message": "건너뛰기"
-  },
   "skipAccountSecurity": {
     "message": "계정 보안을 건너뛸까요?"
   },
@@ -5328,10 +5263,6 @@
   "snapConnectionWarning": {
     "message": "$1에서 $2 사용을 원합니다.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "콘텐츠 출처: $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "웹사이트"
@@ -6789,23 +6720,8 @@
   "welcomeBack": {
     "message": "재방문을 환영합니다!"
   },
-  "welcomeExploreDescription": {
-    "message": "암호화폐와 자산을 저장, 전송 및 사용히세요."
-  },
-  "welcomeExploreTitle": {
-    "message": "Explore 분산화 앱"
-  },
-  "welcomeLoginDescription": {
-    "message": "MetaMask를 사용하여 분산화 앱에 로그인하세요. 가입은 필요 없습니다."
-  },
-  "welcomeLoginTitle": {
-    "message": "내 지갑 처음 알아보기"
-  },
   "welcomeToMetaMask": {
     "message": "시작하기"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "수백만 명이 신뢰하는 MetaMask는 모든 사람이 web3의 세계에 접근할 수 있도록 하는 안전한 지갑입니다."
   },
   "whatsThis": {
     "message": "이것은 무엇인가요?"
@@ -6868,8 +6784,5 @@
   },
   "yourWalletIsReady": {
     "message": "지갑이 준비되었습니다"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "가속화 시 가스 가격 0"
   }
 }
