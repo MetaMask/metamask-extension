@@ -2349,6 +2349,9 @@
   "genericExplorerView": {
     "message": "View account on $1"
   },
+  "getTheNewestFeatures": {
+    "message": "Get the newest features"
+  },
   "goBack": {
     "message": "Go back"
   },
@@ -6676,6 +6679,9 @@
   "updateEthereumChainConfirmationDescription": {
     "message": "This site is requesting to update your default network URL. You can edit defaults and network information any time."
   },
+  "updateInformation": {
+    "message": "We've made your wallet safer, smoother, and added some new features. Update now to stay protected and use our latest improvements."
+  },
   "updateNetworkConfirmationTitle": {
     "message": "Update $1",
     "description": "$1 represents network name"
@@ -6685,6 +6691,9 @@
   },
   "updateRequest": {
     "message": "Update request"
+  },
+  "updateToTheLatestVersion": {
+    "message": "Update to the latest version"
   },
   "updatedRpcForNetworks": {
     "message": "Network RPCs Updated"
