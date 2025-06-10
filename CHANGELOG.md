@@ -131,6 +131,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Disable non EVM networks on locked screen ([#33481](https://github.com/MetaMask/metamask-extension/pull/33481))
 - Fix performance and memory leak issues in the bridge amount input field and asset picker components ([#33507](https://github.com/MetaMask/metamask-extension/pull/33507))
 - Fix an issue where legacy users retained stale state data, causing missing metadata for existing keys due to removing deprecated Bitcoin experimental settings from user preferences([#33554](https://github.com/MetaMask/metamask-extension/pull/33554))
+- Fix error when adding a new Lattice account ([#33513](https://github.com/MetaMask/metamask-extension/pull/33513))
 
 ## [12.18.3]
 ### Fixed
