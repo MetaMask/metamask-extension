@@ -366,9 +366,9 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     }
 
     if (Object.keys(enabledNetworks).length === 1) {
-      dispatch(setEnabledNetworks([hexChainId] as CaipChainId[]));
+      dispatch(setEnabledNetworks([hexChainId]));
     } else {
-      dispatch(setEnabledNetworks(Object.keys(evmNetworks) as CaipChainId[]));
+      dispatch(setEnabledNetworks(Object.keys(evmNetworks)));
     }
 
     // If presently on a dapp, communicate a change to
