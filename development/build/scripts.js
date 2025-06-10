@@ -947,6 +947,8 @@ function setupBundlerDefaults(
             // Ocap Kernel
             './**/node_modules/@endo',
             './**/node_modules/@agoric',
+            // Snaps
+            './**/node_modules/@metamask/snaps-*',
           ],
           global: true,
         },
