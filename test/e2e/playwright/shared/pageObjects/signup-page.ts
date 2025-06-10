@@ -71,7 +71,7 @@ export class SignUpPage {
     this.agreeTandCCheck = page.getByTestId('onboarding-terms-checkbox');
     this.agreePasswordTermsCheck = page.getByTestId('create-password-terms');
     this.secureWalletBtn = page.getByTestId('secure-wallet-later');
-    this.skipBackupBtn = page.getByTestId('skip-srp-backup-popover-checkbox');
+    this.skipBackupBtn = page.getByTestId('skip-srp-backup-checkbox');
     this.skipSrpBackupBtn = page.getByTestId('skip-srp-backup');
     this.importBtn = page.getByTestId('create-password-import');
     this.doneBtn = page.getByTestId('pin-extension-done');

@@ -88,7 +88,6 @@ describe('Check balance', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: false,
-        mockCalls: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
@@ -101,7 +100,6 @@ describe('Check balance', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
-        mockCalls: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
