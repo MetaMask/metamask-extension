@@ -9,8 +9,12 @@ import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/
 import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
 import { RecipientRow } from '../../shared/transaction-details/transaction-details';
 import { TransactionData } from '../../shared/transaction-data/transaction-data';
-import { ConfirmInfoRowText } from '../../../../../../../components/app/confirm/info/row';
+import {
+  ConfirmInfoRow,
+  ConfirmInfoRowText,
+} from '../../../../../../../components/app/confirm/info/row';
 import { useNestedTransactionLabels } from '../../hooks/useNestedTransactionLabels';
+import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
 
 export function NestedTransactionData() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -40,7 +44,7 @@ function NestedTransaction({
   index: number;
   nestedTransaction: BatchTransactionParams;
 }) {
-  const { data, to } = nestedTransaction;
+  const { data, to, value } = nestedTransaction;
 
   const label = useNestedTransactionLabels({
     nestedTransactions: [nestedTransaction],
@@ -54,6 +58,11 @@ function NestedTransaction({
         content={
           <>
             {to && <RecipientRow recipient={to} />}
+            {value && (
+              <ConfirmInfoRow label="Amount">
+                <ConfirmInfoRowCurrency value={value} />
+              </ConfirmInfoRow>
+            )}
             {data && to && <TransactionData data={data} to={to} noPadding />}
           </>
         }
