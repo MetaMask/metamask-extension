@@ -25,6 +25,8 @@ import {
   setUpdateModalLastDismissedAt,
 } from '../../../store/actions';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function UpdateModal() {
   const t = useI18nContext();
 

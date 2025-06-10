@@ -17,14 +17,20 @@ const TEST_ADDRESSES = {
 
 const MOCK_SCAN_RESPONSES = {
   BENIGN: {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: ResultType.Benign,
     label: 'Good guy',
   },
   WARNING: {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: ResultType.Warning,
     label: 'Suspicious guy',
   },
   CACHED: {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     result_type: ResultType.Benign,
     label: 'Bad guy',
   },

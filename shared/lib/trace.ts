@@ -74,6 +74,8 @@ export type TraceContext = unknown;
 /**
  * A callback function that can be traced.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type TraceCallback<T> = (context?: TraceContext) => T;
 
 /**
@@ -134,6 +136,8 @@ export type EndTraceRequest = {
   timestamp?: number;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function trace<T>(request: TraceRequest, fn: TraceCallback<T>): T;
 
 export function trace(request: TraceRequest): TraceContext;
@@ -148,6 +152,8 @@ export function trace(request: TraceRequest): TraceContext;
  * @param fn - The optional callback to record the duration of.
  * @returns The context of the trace, or the result of the callback if provided.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function trace<T>(
   request: TraceRequest,
   fn?: TraceCallback<T>,
@@ -186,6 +192,8 @@ export function endTrace(request: EndTraceRequest) {
   logTrace(pendingRequest, startTime, endTime);
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
   const { name } = request;
 
@@ -245,6 +253,8 @@ function startTrace(request: TraceRequest): TraceContext {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function startSpan<T>(
   request: TraceRequest,
   callback: (spanOptions: StartSpanOptions) => T,
@@ -331,6 +341,8 @@ function initSpan(_span: Sentry.Span, request: TraceRequest) {
   }
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function tryCatchMaybePromise<T>(
   tryFn: () => T,
   catchFn: (error: unknown) => void,
@@ -360,6 +372,8 @@ function tryCatchMaybePromise<T>(
   return undefined;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function sentryStartSpan<T>(
   spanOptions: StartSpanOptions,
   callback: (span: Sentry.Span | null) => T,
@@ -373,6 +387,8 @@ function sentryStartSpan<T>(
   return actual(spanOptions, callback);
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function sentryStartSpanManual<T>(
   spanOptions: StartSpanOptions,
   callback: (span: Sentry.Span | null) => T,
@@ -386,6 +402,8 @@ function sentryStartSpanManual<T>(
   return actual(spanOptions, callback);
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function sentryWithIsolationScope<T>(callback: (scope: Sentry.Scope) => T): T {
   const actual = globalThis.sentry?.withIsolationScope;
 
