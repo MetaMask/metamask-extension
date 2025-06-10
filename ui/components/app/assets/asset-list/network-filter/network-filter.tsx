@@ -104,9 +104,7 @@ const NetworkFilter = ({
       handleFilterNetwork(chainFilters);
     } else {
       isGlobalNetworkSelectorRemoved
-        ? dispatch(
-            setEnabledNetworks(Object.keys(chainFilters) as CaipChainId[]),
-          )
+        ? dispatch(setEnabledNetworks(Object.keys(chainFilters)))
         : dispatch(setTokenNetworkFilter(chainFilters));
     }
 
