@@ -9,12 +9,12 @@ class OnboardingCompletePage {
   };
 
   private readonly defaultPrivacySettingsButton = {
-    text: 'Manage default privacy settings',
+    text: 'Manage default settings',
     tag: 'button',
   };
 
   private readonly installCompleteMessage = {
-    text: 'Your MetaMask install is complete!',
+    text: 'Installation is complete!',
     tag: 'h2',
   };
 
@@ -25,7 +25,7 @@ class OnboardingCompletePage {
     '[data-testid="pin-extension-done"]';
 
   private readonly pinExtensionMessage = {
-    text: 'Click browser extension icon to access it instantly',
+    text: 'Click Chrome extension icon to access it instantly',
     tag: 'p',
   };
 

@@ -25,6 +25,10 @@ class SelectNetwork {
     testId: 'network-list-item-options-delete',
   };
 
+  private readonly discoverButton = {
+    testId: 'network-list-item-options-discover',
+  };
+
   private readonly editNetworkButton =
     '[data-testid="network-list-item-options-edit"]';
 
@@ -191,6 +195,16 @@ class SelectNetwork {
       text: rpcName,
       tag: 'button',
     });
+  }
+
+  async clickDiscoverButton(): Promise<void> {
+    console.log('Click Discover button in network options');
+    await this.driver.clickElement(this.discoverButton);
+  }
+
+  async check_discoverButtonIsVisible(): Promise<void> {
+    console.log('Check Discover button is visible in network options');
+    await this.driver.waitForSelector(this.discoverButton);
   }
 }
 

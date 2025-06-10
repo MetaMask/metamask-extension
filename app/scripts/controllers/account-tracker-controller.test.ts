@@ -98,14 +98,8 @@ async function withController<ReturnValue>(
   } = rest;
   const { provider } = createTestProviderTools({
     scaffold: {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_getBalance: UPDATE_BALANCE,
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_call: ETHERS_CONTRACT_BALANCES_ETH_CALL_RETURN,
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_getBlockByNumber: { gasLimit: GAS_LIMIT },
     },
     networkId: currentNetworkId,
@@ -128,14 +122,8 @@ async function withController<ReturnValue>(
 
   const { provider: providerFromHook } = createTestProviderTools({
     scaffold: {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_getBalance: UPDATE_BALANCE_HOOK,
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_call: ETHERS_CONTRACT_BALANCES_ETH_CALL_RETURN,
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       eth_getBlockByNumber: { gasLimit: GAS_LIMIT_HOOK },
     },
     networkId: 'selectedNetworkId',
@@ -520,14 +508,8 @@ describe('AccountTrackerController', () => {
       });
       const providerFromHook = createTestProviderTools({
         scaffold: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_getBalance: UPDATE_BALANCE_HOOK,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_call: ETHERS_CONTRACT_BALANCES_ETH_CALL_RETURN,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_getBlockByNumber: { gasLimit: GAS_LIMIT_HOOK },
         },
         networkId: '0x1',
