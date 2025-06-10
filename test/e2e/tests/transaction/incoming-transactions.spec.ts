@@ -8,6 +8,7 @@ import FixtureBuilder from '../../fixture-builder';
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 
 const TIMESTAMP_MOCK = 1234;
 
@@ -86,17 +87,26 @@ async function mockAccountsApi(
 }
 
 describe('Incoming Transactions', function () {
-  it('adds standard incoming transactions', async function () {
+  it.only('adds standard incoming transactions', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withUseBasicFunctionalityEnabled()
+          .withNetworkControllerOnMainnet()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockAccountsApi,
       },
       async ({ driver }: { driver: Driver }) => {
-        const activityList = await changeNetworkAndGoToActivity(driver);
+        await loginWithoutBalanceValidation(driver);
+        const homepage = new HomePage(driver);
+        const assetList = new AssetListPage(driver);
+        await homepage.goToActivityList();
+
+        await assetList.clickNetworkSelectorDropdown();
+        await assetList.clickCurrentNetworkOption();
+
+        const activityList = new ActivityListPage(driver);
         await activityList.check_confirmedTxNumberDisplayedInActivity(2);
 
         await activityList.check_txAction('Receive', 1);

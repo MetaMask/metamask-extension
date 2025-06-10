@@ -47,6 +47,11 @@ class SelectNetwork {
     tag: 'h4',
   };
 
+  private readonly yourNetworksMessage = {
+    text: 'Your networks',
+    tag: 'h4',
+  };
+
   private readonly toggleButton = '.toggle-button > div';
 
   constructor(driver: Driver) {
@@ -59,6 +64,19 @@ class SelectNetwork {
         this.selectNetworkMessage,
         this.searchInput,
       ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for select network dialog to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Select network dialog is loaded');
+  }
+
+  async check_yourNetworksDialogIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.yourNetworksMessage);
     } catch (e) {
       console.log(
         'Timeout while waiting for select network dialog to be loaded',
