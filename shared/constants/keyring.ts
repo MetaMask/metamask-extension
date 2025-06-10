@@ -1,4 +1,5 @@
 import { KeyringTypes } from '@metamask/keyring-controller';
+
 import { HardwareKeyringType } from './hardware-wallets';
 
 /**
