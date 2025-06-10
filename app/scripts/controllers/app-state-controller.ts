@@ -371,7 +371,7 @@ const controllerMetadata = {
     anonymous: true,
   },
   upgradeSplashPageAcknowledgedForAccounts: {
-    persist: false,
+    persist: true,
     anonymous: true,
   },
   isUpdateAvailable: {
