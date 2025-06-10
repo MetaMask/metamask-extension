@@ -243,7 +243,7 @@ const PrepareBridgePage = () => {
   const { tokenAlert } = useTokenAlerts();
   const srcTokenBalance = useLatestBalance(fromToken);
   const { selectedDestinationAccount, setSelectedDestinationAccount } =
-    useDestinationAccount(isSwap);
+    useDestinationAccount();
 
   const {
     filteredTokenListGenerator: toTokenListGenerator,
