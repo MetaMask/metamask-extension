@@ -1011,6 +1011,16 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/account-tree-controller": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/keyring-controller": true,
+        "@metamask/snaps-utils": true
+      }
+    },
     "@metamask/accounts-controller": {
       "packages": {
         "@metamask/base-controller": true,

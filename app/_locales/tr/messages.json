@@ -2337,9 +2337,6 @@
   "genericExplorerView": {
     "message": "Hesabı $1 üzerinde görüntüleyin"
   },
-  "goBack": {
-    "message": "Geri git"
-  },
   "goToSite": {
     "message": "Siteye git"
   },
@@ -3785,9 +3782,6 @@
   "onboardingMetametricsDescription": {
     "message": "MetaMask'i iyileştirmek için temel kullanım ve tanılama verilerini toplamak istiyoruz. Burada sunduğunuz verileri asla satmadığımızı bilmenizi isteriz."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Ölçümleri toplarken bu her zaman aşağıdaki gibi olacaktır..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Bu verileri başka amaçlar için kullanmaya karar vermemiz durumunda sizi bilgilendireceğiz. Daha fazla bilgi için $1 bölümümüzü inceleyebilirsiniz. Unutmayın, dilediğiniz zaman ayarlar kısmına giderek vazgeçebilirsiniz.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3815,9 +3809,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "İsteğe bağlı:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Profiliniz için kullanım verilerini toplarken gizliliğinizi nasıl koruduğumuzu öğrenin."
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMask'i iyileştirmemize yardımcı olun"
@@ -4790,35 +4781,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Gizli Kurtarma İfadesini Onayla"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Daha sonra hatırlat (önerilmez)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Cüzdanımı koru (önerilir)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Birden fazla gizli yerde not ederek saklayın"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Bir kasada saklayın"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Gizli Kurtarma İfadesi, cüzdanınız ve paralarınız için \"ana anahtar\" niteliği taşıyan bir 12 kelimelik ifadedir"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Birileri sizden kurtarma ifadenizi istiyorsa büyük olasılıkla sizi dolandırmaya ve cüzdanınızdaki paraları çalmaya çalışıyordur"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Gizli Kurtarma İfadenizi MetaMask de dahil olmak üzere asla paylaşmayın!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Gizli Kurtarma İfadesi nedir?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Gizli Kurtarma İfademi paylaşmalı mıyım?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Gizli Kurtarma İfademi nasıl kaydederim?"
   },
   "seedPhraseIntroTitle": {
     "message": "Cüzdanınızı koruyun"
@@ -5102,9 +5069,6 @@
   },
   "siweURI": {
     "message": "URL adresi"
-  },
-  "skip": {
-    "message": "Atla"
   },
   "skipAccountSecurity": {
     "message": "Hesap güvenliğini atla?"

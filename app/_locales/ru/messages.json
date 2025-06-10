@@ -2337,9 +2337,6 @@
   "genericExplorerView": {
     "message": "Посмотреть счет на $1"
   },
-  "goBack": {
-    "message": "Назад"
-  },
   "goToSite": {
     "message": "Перейти на сайт"
   },
@@ -3785,9 +3782,6 @@
   "onboardingMetametricsDescription": {
     "message": "Мы хотели бы собрать базовые данные об использовании и диагностике для улучшения MetaMask. Помните, что мы никогда не продаем данные, которые вы здесь предоставляете."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Когда мы собираем показатели, они всегда будут..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Мы сообщим вам, если решим использовать эти данные для других целей. Вы можете ознакомиться с нашей $1 для получения дополнительной информации. Помните, что вы можете перейти в настройки и отказаться в любой момент.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3815,9 +3809,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Необязательными:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Узнайте, как мы защищаем вашу конфиденциальность при сборе данных об использовании вашего профиля."
   },
   "onboardingMetametricsTitle": {
     "message": "Помогите нам улучшить MetaMask"
@@ -4790,35 +4781,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Подтвердите секретную фразу для восстановления"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Напомнить позже (не рекомендуется)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Защитить мой кошелек (рекомендуется)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Запишите и храните в нескольких секретных местах."
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Храните в банковской ячейке."
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Ваша секретная фраза для восстановления — это фраза из 12 слов, которая является «главным ключом» от вашего кошелька и ваших средств."
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Если кто-то просит вас сообщить фразу для восстановления, этот человек, скорее всего, пытается вас обмануть и похитить деньги из вашего кошелька."
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Никогда не сообщайте секретную фразу для восстановления никому, даже сотрудникам MetaMask!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Что такое секретная фраза для восстановления?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Можно ли сообщать кому-либо свою секретную фразу для восстановления?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Как хранить мою секретную фразу для восстановления?"
   },
   "seedPhraseIntroTitle": {
     "message": "Защитите свой кошелек"
@@ -5102,9 +5069,6 @@
   },
   "siweURI": {
     "message": "URL-адрес"
-  },
-  "skip": {
-    "message": "Пропустить"
   },
   "skipAccountSecurity": {
     "message": "Пропустить безопасность счета?"

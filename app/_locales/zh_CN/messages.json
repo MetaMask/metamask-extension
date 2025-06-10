@@ -2337,9 +2337,6 @@
   "genericExplorerView": {
     "message": "在$1查看账户"
   },
-  "goBack": {
-    "message": "返回"
-  },
   "goToSite": {
     "message": "转到网站"
   },
@@ -3785,9 +3782,6 @@
   "onboardingMetametricsDescription": {
     "message": "我们希望收集基本的使用和诊断数据，以改进 MetaMask。请注意，我们绝不会出卖您在此处提供的数据。"
   },
-  "onboardingMetametricsDescription2": {
-    "message": "当我们收集指标时，总是..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "如果我们决定将这些数据用于其他目的，我们会通知您。您可以查看我们的 $1 以了解更多信息。请记住，您可以随时转到设置并选择退出。",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3815,9 +3809,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "可选："
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "了解我们如何在收集您的个人资料使用数据的同时保护您的隐私。"
   },
   "onboardingMetametricsTitle": {
     "message": "请帮助我们改进 MetaMask"
@@ -4790,35 +4781,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "确认私钥助记词"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "稍后提醒我（不推荐）"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "保护我的钱包（推荐）"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "写下并存储在多个秘密位置"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "安全存放在保险箱内"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "您的账户私钥助记词是由12个单词组成的短语，它是您的钱包和资金的“主私钥”"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "如果有人要求您的恢复短语，他们可能会试图欺诈您并偷窃您的钱包资金"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "切勿分享您的账户私钥助记词，包括也不能与 MetaMask 分享！"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "什么是账户私钥助记词？"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "我是否应该分享我的账户私钥助记词？"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "如何保存我的账户私钥助记词？"
   },
   "seedPhraseIntroTitle": {
     "message": "保护您的钱包安全"
@@ -5102,9 +5069,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "跳过"
   },
   "skipAccountSecurity": {
     "message": "跳过账户安全？"

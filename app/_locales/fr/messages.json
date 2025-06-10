@@ -2337,9 +2337,6 @@
   "genericExplorerView": {
     "message": "Voir le compte sur $1"
   },
-  "goBack": {
-    "message": "Retour"
-  },
   "goToSite": {
     "message": "Accéder au site"
   },
@@ -3785,9 +3782,6 @@
   "onboardingMetametricsDescription": {
     "message": "Nous aimerions recueillir des données d’utilisation et de diagnostic de base afin d’améliorer MetaMask. Sachez que nous ne vendons jamais les données que vous nous fournissez ici."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Lorsque nous recueillons des données, elles sont toujours…"
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Nous vous informerons si nous décidons d’utiliser ces données à d’autres fins. Pour plus d’informations, vous pouvez consulter notre $1. N’oubliez pas que vous pouvez aller dans les paramètres et vous désinscrire à tout moment.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3815,9 +3809,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Facultatif :"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Découvrez comment nous protégeons votre vie privée lors de la collecte de données d’utilisation pour votre profil."
   },
   "onboardingMetametricsTitle": {
     "message": "Aidez-nous à améliorer MetaMask"
@@ -4790,35 +4781,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Confirmer la phrase secrète de récupération"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Me le rappeler plus tard (non recommandé)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Sécuriser mon portefeuille (recommandé)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Notez-la et conservez-la dans plusieurs endroits secrets."
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Conservez-la dans un coffre-fort"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Votre phrase secrète de récupération est une formule de 12 mots qui constitue la « clé maîtresse » de votre portefeuille et de vos fonds"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Si quelqu’un vous demande votre phrase de récupération, il est probable qu’il essaie de vous arnaquer pour dérober les fonds de votre portefeuille"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Ne partagez jamais, au grand jamais, votre phrase secrète de récupération, pas même avec MetaMask !"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Qu’est-ce qu’une phrase secrète de récupération ?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Dois-je partager ma phrase secrète de récupération ?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Comment puis-je sauvegarder ma phrase secrète de récupération ?"
   },
   "seedPhraseIntroTitle": {
     "message": "Sécuriser votre portefeuille"
@@ -5102,9 +5069,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "Ignorer"
   },
   "skipAccountSecurity": {
     "message": "Sauter le réglage des paramètres de sécurité du compte ?"

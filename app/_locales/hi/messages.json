@@ -2337,9 +2337,6 @@
   "genericExplorerView": {
     "message": "$1 पर अकाउंट देखें"
   },
-  "goBack": {
-    "message": "वापस जाएं"
-  },
   "goToSite": {
     "message": "साइट पर जाएं"
   },
@@ -3785,9 +3782,6 @@
   "onboardingMetametricsDescription": {
     "message": "हम MetaMask को बेहतर बनाने के लिए बुनियादी यूसेज और डाएगोनोस्टिक्स डेटा कलेक्ट करना चाहेंगे। जान लें कि हम आपके द्वारा यहां उपलब्ध कराया गया डेटा कभी नहीं बेचते हैं।"
   },
-  "onboardingMetametricsDescription2": {
-    "message": "जब हम मेट्रिक्स इकट्ठा करते हैं, तो यह हमेशा... रहेगा"
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "यदि हम इस डेटा का उपयोग अन्य उद्देश्यों के लिए करने का निर्णय लेते हैं तो हम आपको बताएंगे। अधिक जानकारी के लिए आप हमारे $1 की समीक्षा कर सकते हैं। याद रखें, आप किसी भी समय सेटिंग्स में जाकर ऑप्ट आउट कर सकते हैं।",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3815,9 +3809,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "वैकल्पिक:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "जानें कि आपके प्रोफ़ाइल के लिए यूसेज डेटा एकत्र करते समय हम आपकी गोपनीयता की सुरक्षा कैसे करते हैं।"
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMask को बेहतर बनाने में हमारी मदद करें"
@@ -4790,35 +4781,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "सीक्रेट रिकवरी फ्रेज की कन्फर्म करें"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "मुझे बाद में याद दिलाएं (अनुशंसित नहीं)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "मेरा वॉलेट सुरक्षित करें (अनुशंसित)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "लिखें और कई गुप्त स्थानों में स्टोर करें"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "सेफ डिपॉजिट बॉक्स में स्टोर करें"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "आपका सीक्रेट रिकवरी फ्रेज 12- शब्दों का फ्रेज है जो आपके वॉलेट और धन के लिए “मास्टर कुंजी” है।"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "यदि कोई व्यक्ति आपका रिकवरी फ्रेज मांगता है, तो संभावना है कि वे आपको धोखा देने की कोशिश कर रहे हैं।"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "कभी भी अपना सीक्रेट रिकवरी फ्रेज शेयर न करें, MetaMask के साथ भी नहीं!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "सीक्रेट रिकवरी फ्रेज क्या है?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "क्या मुझे अपना सीक्रेट रिकवरी फ्रेज शेयर करना चाहिए?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "मैं अपना सीक्रेट रिकवरी फ्रेज कैसे सहेजूं?"
   },
   "seedPhraseIntroTitle": {
     "message": "अपने वॉलेट को सुरक्षित करें"
@@ -5102,9 +5069,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "छोड़ें"
   },
   "skipAccountSecurity": {
     "message": "अकाउंट सुरक्षा छोड़ें?"
