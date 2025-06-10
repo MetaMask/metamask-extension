@@ -12,6 +12,8 @@ on:
         required: true
       DOCKER_HUB_TOKEN:
         required: true
+      TEST_STX_PRIVATE_KEY:
+        required: false
 
 jobs:
   test-e2e-chrome-browserify:
