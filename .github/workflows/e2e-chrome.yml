@@ -188,17 +188,17 @@ jobs:
         run: |
           gh pr comment "${PR_NUMBER}" --repo "${OWNER}/${REPOSITORY}" --body ":x: ${JOB_NAME} failed. View the html report [here](${HOST_URL}/${HTML_REPORT_PATH}/index.html)."
 
-  # test-e2e-chrome-stx:
-  #   uses: ./.github/workflows/run-e2e.yml
-  #   if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request' }}
-  #   with:
-  #     test-suite-name: test-e2e-chrome-browserify-stx
-  #     build-artifact: prep-build-test-browserify-chrome
-  #     build-command: yarn build:test
-  #     test-command: yarn test:e2e:chrome:stx
-  #   secrets:
-  #     DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-  #     DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+  test-e2e-chrome-stx:
+    uses: ./.github/workflows/run-e2e.yml
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request' }}
+    with:
+      test-suite-name: test-e2e-chrome-browserify-stx
+      build-artifact: prep-build-test-browserify-chrome
+      build-command: yarn build:test
+      test-command: yarn test:e2e:chrome:stx
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-chrome-report:
     needs:
