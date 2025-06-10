@@ -226,8 +226,8 @@
     "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
     "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch",
     "@trezor/connect-web": "~9.4.7",
-    "@metamask/network-controller@npm:^23.3.0": "patch:@metamask/network-controller@npm%3A23.5.1#~/.yarn/patches/@metamask-network-controller-npm-23.5.1-42017cc4f5.patch",
-    "@metamask/network-controller@npm:^23.1.0": "patch:@metamask/network-controller@npm%3A23.5.1#~/.yarn/patches/@metamask-network-controller-npm-23.5.1-42017cc4f5.patch"
+    "@metamask/network-controller@npm:^23.3.0": "patch:@metamask/network-controller@npm%3A23.6.0#~/.yarn/patches/@metamask-network-controller-npm-23.6.0-9e4332461a.patch",
+    "@metamask/network-controller@npm:^23.1.0": "patch:@metamask/network-controller@npm%3A23.6.0#~/.yarn/patches/@metamask-network-controller-npm-23.6.0-9e4332461a.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -263,7 +263,7 @@
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/chain-agnostic-permission": "^0.6.0",
     "@metamask/contract-metadata": "^2.5.0",
-    "@metamask/controller-utils": "npm:@metamask-previews/controller-utils@11.9.0-preview-f7d7af35",
+    "@metamask/controller-utils": "^11.10.0",
     "@metamask/delegation-controller": "^0.4.0",
     "@metamask/delegation-deployments": "^0.11.0",
     "@metamask/design-tokens": "^7.1.0",
@@ -297,7 +297,7 @@
     "@metamask/multichain-network-controller": "^0.8.0",
     "@metamask/multichain-transactions-controller": "^0.9.0",
     "@metamask/name-controller": "^8.0.3",
-    "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A23.5.1#~/.yarn/patches/@metamask-network-controller-npm-23.5.1-42017cc4f5.patch",
+    "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A23.6.0#~/.yarn/patches/@metamask-network-controller-npm-23.6.0-9e4332461a.patch",
     "@metamask/notification-services-controller": "^9.0.0",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",
