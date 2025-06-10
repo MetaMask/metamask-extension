@@ -29633,7 +29633,7 @@ limitations under the License.
 
 ******************************
 
-@swc/core-darwin-arm64
+@swc/core-linux-x64-gnu
 1.4.11 <https://github.com/swc-project/swc>
 license: Apache-2.0 AND MIT
 authors: 강동윤 <kdy1997.dev@gmail.com>
