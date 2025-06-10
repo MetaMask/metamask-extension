@@ -338,10 +338,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "प्रायोरिटी फ़ीस (उर्फ \"माइनर टिप\") सीधे माइनरों के पास जाती है और उन्हें आपके ट्रांसेक्शन को प्राथमिकता देने के लिए प्रोत्साहित करती है।"
   },
-  "agreeTermsOfUse": {
-    "message": "मैं MetaMask के $1 से सहमत हूं",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "टोकन के ऑन-चेन इतिहास से संदिग्ध एयरड्रॉप गतिविधियों के पूर्व उदाहरणों का पता चलता है।"
   },
@@ -662,9 +658,6 @@
   },
   "basic": {
     "message": "बेसिक"
-  },
-  "basicConfigurationBannerCTA": {
-    "message": "बेसिक फंक्शनलिटी को चालू करें"
   },
   "basicConfigurationBannerTitle": {
     "message": "बेसिक फंक्शनलिटी बंद है"
@@ -1447,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "एक नया अकाउंट बनाएं"
-  },
-  "createNewWallet": {
-    "message": "एक नया वॉलेट बनाएं"
   },
   "createPassword": {
     "message": "पासवर्ड बनाएं"
@@ -2296,18 +2286,11 @@
   "gasLimit": {
     "message": "गैस लिमिट"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "गैस लिमिट, गैस की वह अधिकतम इकाइयाँ हैं, जिन्हें आप खर्च करना चाहते हैं।"
-  },
   "gasLimitRecommended": {
     "message": "सुझाई गई गैस लिमिट $1 है। अगर गैस लिमिट उससे कम है, तो वह फेल हो सकता है।"
   },
   "gasLimitTooLow": {
     "message": "गैस लिमिट कम से कम 21000 होनी चाहिए"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "गैस लिमिट कम से कम $1 होनी चाहिए",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "गैस लिमिट"
@@ -2315,23 +2298,11 @@
   "gasOption": {
     "message": "गैस विकल्प"
   },
-  "gasPrice": {
-    "message": "गैस प्राइस (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "आपका गैस फ़ीस अनावश्यक रूप से अधिक निर्धारित किया गया है। अमाउंट को कम करने पर विचार करें।"
   },
-  "gasPriceExcessiveInput": {
-    "message": "गैस प्राइस अधिक है"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "गैस प्राइस अत्यंत कम है"
-  },
   "gasPriceFetchFailed": {
     "message": "गैस प्राइस अनुमान नेटवर्क गड़बड़ी के कारण नहीं हो पाया है।"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "गैस प्राइस, Ether के उस अमाउंट को बताता है, जो आप गैस की प्रत्येक इकाई के लिए देना चाहते हैं।"
   },
   "gasTimingHoursShort": {
     "message": "$1 घंटे",
@@ -2365,9 +2336,6 @@
   },
   "genericExplorerView": {
     "message": "$1 पर अकाउंट देखें"
-  },
-  "goBack": {
-    "message": "वापस जाएं"
   },
   "goToSite": {
     "message": "साइट पर जाएं"
@@ -2570,9 +2538,6 @@
   },
   "importAccountMsg": {
     "message": "इम्पोर्ट किए एकाउंट्स आपके MetaMask सीक्रेट रिकवरी फ्रेज़ से जुड़े नहीं होंगे। इम्पोर्ट किए एकाउंट्स के बारे में अधिक जानें"
-  },
-  "importMyWallet": {
-    "message": "मेरा वॉलेट इम्पोर्ट करें"
   },
   "importNFT": {
     "message": "NFT इंपोर्ट करें"
@@ -3963,9 +3928,6 @@
   "passwordNotLongEnough": {
     "message": "पासवर्ड की लंबाई पर्याप्त नहीं है"
   },
-  "passwordSetupDetails": {
-    "message": "यह पासवर्ड आपके MetaMask वॉलेट को केवल इसी डिवाइस पर अनलॉक करेगा। MetaMask इस पासवर्ड को फिर से प्राप्त नहीं कर सकता है।"
-  },
   "passwordStrength": {
     "message": "पासवर्ड की मजबूती: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -4825,35 +4787,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "सीक्रेट रिकवरी फ्रेज की कन्फर्म करें"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "मुझे बाद में याद दिलाएं (अनुशंसित नहीं)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "मेरा वॉलेट सुरक्षित करें (अनुशंसित)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "लिखें और कई गुप्त स्थानों में स्टोर करें"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "सेफ डिपॉजिट बॉक्स में स्टोर करें"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "आपका सीक्रेट रिकवरी फ्रेज 12- शब्दों का फ्रेज है जो आपके वॉलेट और धन के लिए “मास्टर कुंजी” है।"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "यदि कोई व्यक्ति आपका रिकवरी फ्रेज मांगता है, तो संभावना है कि वे आपको धोखा देने की कोशिश कर रहे हैं।"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "कभी भी अपना सीक्रेट रिकवरी फ्रेज शेयर न करें, MetaMask के साथ भी नहीं!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "सीक्रेट रिकवरी फ्रेज क्या है?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "क्या मुझे अपना सीक्रेट रिकवरी फ्रेज शेयर करना चाहिए?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "मैं अपना सीक्रेट रिकवरी फ्रेज कैसे सहेजूं?"
   },
   "seedPhraseIntroTitle": {
     "message": "अपने वॉलेट को सुरक्षित करें"
@@ -5138,9 +5076,6 @@
   "siweURI": {
     "message": "URL"
   },
-  "skip": {
-    "message": "छोड़ें"
-  },
   "skipAccountSecurity": {
     "message": "अकाउंट सुरक्षा छोड़ें?"
   },
@@ -5328,10 +5263,6 @@
   "snapConnectionWarning": {
     "message": "$1 $2 का उपयोग करना चाहता है",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "यह कंटेंट $1 से आ रही है",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "वेबसाइट"
@@ -6789,23 +6720,8 @@
   "welcomeBack": {
     "message": "वापसी पर स्वागत है"
   },
-  "welcomeExploreDescription": {
-    "message": "क्रिप्टो करेंसी और एसेट्स को स्टोर करें, भेजें और खर्च करें।"
-  },
-  "welcomeExploreTitle": {
-    "message": "विकेन्द्रीकृत ऐप को एक्सप्लोर करें"
-  },
-  "welcomeLoginDescription": {
-    "message": "विकेंद्रीकृत ऐप में लॉगिन करने के लिए अपने MetaMask का इस्तेमाल करें - किसी साइनअप की जरूरत नहीं है।"
-  },
-  "welcomeLoginTitle": {
-    "message": "अपने वॉलेट को हैलो कहें"
-  },
   "welcomeToMetaMask": {
     "message": "चलिए शुरु करते हैं"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "लाखों लोगों का भरोसेमंद, MetaMask एक सुरक्षित वॉलेट है जो वेब3 की दुनिया को सबके लिए सुलभ बनाता है।"
   },
   "whatsThis": {
     "message": "यह क्या है?"
@@ -6868,8 +6784,5 @@
   },
   "yourWalletIsReady": {
     "message": "आपका वॉलेट तैयार है"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "जीरो गैस प्राइस में तेज़ी"
   }
 }

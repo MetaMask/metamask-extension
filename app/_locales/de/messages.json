@@ -338,10 +338,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Prioritätsgebühr (alias „Miner Tip“) geht direkt an Miner und veranlasst sie, Ihre Transaktion zu priorisieren."
   },
-  "agreeTermsOfUse": {
-    "message": "Ich stimme MetaMasks $1 zu",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "Der On-Chain-Verlauf des Tokens zeigt frühere Fälle von verdächtigen Airdrop-Aktivitäten."
   },
@@ -662,9 +658,6 @@
   },
   "basic": {
     "message": "Grundlegend"
-  },
-  "basicConfigurationBannerCTA": {
-    "message": "Grundfunktionalität einschalten"
   },
   "basicConfigurationBannerTitle": {
     "message": "Grundfunktionalität ist ausgeschaltet"
@@ -1447,9 +1440,6 @@
   },
   "createNewAccountHeader": {
     "message": "Neues Konto erstellen"
-  },
-  "createNewWallet": {
-    "message": "Eine neue Wallet erstellen"
   },
   "createPassword": {
     "message": "Passwort erstellen"
@@ -2296,18 +2286,11 @@
   "gasLimit": {
     "message": "Gas-Limit"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Das Gas-Limit ist die Höchstmenge an Gas-Einheiten, die Sie auszugeben bereit sind."
-  },
   "gasLimitRecommended": {
     "message": "Empfohlenes Gas-Limit ist $1. Wenn das Gas-Limit weniger beträgt, kann es fehlschlagen."
   },
   "gasLimitTooLow": {
     "message": "Gas-Limit muss mindestens 21000 betragen."
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Gas-Limit muss mindestens $1 betragen.",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "Gas-Limit"
@@ -2315,23 +2298,11 @@
   "gasOption": {
     "message": "Gas-Option"
   },
-  "gasPrice": {
-    "message": "Gas-Preis (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "Ihre Gas-Gebühr ist unnötig hoch. Denken Sie darüber nach, den Betrag zu senken."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Gas-Preis ist übermäßig hoch"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Gas-Preis extrem niedrig"
-  },
   "gasPriceFetchFailed": {
     "message": "Die Gas-Preis-Schätzung ist aufgrund eines Netzwerkfehlers fehlgeschlagen."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Der Gas-Preis gibt die Menge Ether an, die Sie für jede Einheit Gas zu zahlen bereit sind."
   },
   "gasTimingHoursShort": {
     "message": "$1 Stunde",
@@ -2365,9 +2336,6 @@
   },
   "genericExplorerView": {
     "message": "Konto auf $1 ansehen"
-  },
-  "goBack": {
-    "message": "Zurück"
   },
   "goToSite": {
     "message": "Zur Seite gehen"
@@ -2570,9 +2538,6 @@
   },
   "importAccountMsg": {
     "message": "Importierte Konten werden nicht mit der geheimen Wiederherstellungsphrase von MetaMask verknüpft. Erfahren Sie mehr über importierte Konten."
-  },
-  "importMyWallet": {
-    "message": "Meine Wallet importieren"
   },
   "importNFT": {
     "message": "NFT importieren"
@@ -3963,9 +3928,6 @@
   "passwordNotLongEnough": {
     "message": "Passwort nicht lang genug"
   },
-  "passwordSetupDetails": {
-    "message": "Dieses Passwort wird Ihre MetaMask-Wallet nur auf diesem Gerät entsperren. MetaMask kann dieses Passwort nicht wiederherstellen."
-  },
   "passwordStrength": {
     "message": "Passwortstärke: $1",
     "description": "Return password strength to the user when user wants to create password."
@@ -4825,35 +4787,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Geheime Wiederherstellungsphrase bestätigen"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Später erinnern (nicht empfohlen)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Meine Wallet sichern (empfohlen)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Aufschreiben und an mehreren geheimen Orten aufbewahren"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "In einem Schließfach aufbewahren"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Ihre geheime Wiederherstellungsphrase ist eine 12-Wort-Phrase, die der „Master-Schlüssel“ Ihrer Wallet und Ihres Geldes ist."
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Wenn jemand nach Ihrer Wiederherstellungsphrase fragt, versucht er wahrscheinlich, Sie zu betrügen und Ihr Wallet-Geld zu stehlen."
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Geben Sie niemals Ihre geheime Wiederherstellungsphrase weiter, nicht einmal an MetaMask!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Was ist eine geheime Wiederherstellungsphrase?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Soll ich meine geheime Wiederherstellungsprase weitergeben?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Wie kann ich meine geheime Wiederherstellungsprase speichern?"
   },
   "seedPhraseIntroTitle": {
     "message": "Sichern Sie Ihre Wallet"
@@ -5138,9 +5076,6 @@
   "siweURI": {
     "message": "URL"
   },
-  "skip": {
-    "message": "Überspringen"
-  },
   "skipAccountSecurity": {
     "message": "Kontosicherheit überspringen?"
   },
@@ -5328,10 +5263,6 @@
   "snapConnectionWarning": {
     "message": "$1 möchte $2 verwenden",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "Diese Inhalte stammen von $1.",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "Webseite"
@@ -6789,23 +6720,8 @@
   "welcomeBack": {
     "message": "Willkommen zurück"
   },
-  "welcomeExploreDescription": {
-    "message": "Speichern, versenden und ausgeben von Kryptowährungen und Assets."
-  },
-  "welcomeExploreTitle": {
-    "message": "Erkunden dezentraler Apps"
-  },
-  "welcomeLoginDescription": {
-    "message": "Verwenden Sie MetaMask, um sich bei dezentralen Apps anzumelden – keine Anmeldung erforderlich."
-  },
-  "welcomeLoginTitle": {
-    "message": "Sagen Sie Hallo zu Ihrer Wallet"
-  },
   "welcomeToMetaMask": {
     "message": "Los geht's"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "MetaMask ist eine sichere Wallet, welche die Welt von web3 für alle zugänglich macht und die das Vertrauen von Millionen genießt."
   },
   "whatsThis": {
     "message": "Was ist das?"
@@ -6868,8 +6784,5 @@
   },
   "yourWalletIsReady": {
     "message": "Ihre Wallet ist bereit"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Keine Gas-Kosten bei Beschleunigung"
   }
 }
