@@ -659,9 +659,6 @@
   "basic": {
     "message": "基本"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "基本機能をオンにする"
-  },
   "basicConfigurationBannerTitle": {
     "message": "基本機能はオフになっています"
   },
@@ -5190,10 +5187,6 @@
   "snapConnectionWarning": {
     "message": "$1が$2の使用を求めています",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "このコンテンツは$1からのものです",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "Webサイト"

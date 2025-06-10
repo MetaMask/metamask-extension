@@ -665,9 +665,6 @@
   "basic": {
     "message": "Basic"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Turn on basic functionality"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Basic functionality is off"
   },
@@ -2015,6 +2012,9 @@
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
+  "enableIt": {
+    "message": " Enable it"
+  },
   "enableSnap": {
     "message": "Enable"
   },
@@ -2363,6 +2363,9 @@
   },
   "genericExplorerView": {
     "message": "View account on $1"
+  },
+  "getTheNewestFeatures": {
+    "message": "Get the newest features"
   },
   "goToSite": {
     "message": "Go to site"
@@ -3846,6 +3849,12 @@
   "onboardingOptionTitle": {
     "message": "Choose an option to continue"
   },
+  "onboardingPinExtensionAltLaunch": {
+    "message": "Launch extension"
+  },
+  "onboardingPinExtensionAltPin": {
+    "message": "Pin extension"
+  },
   "onboardingPinExtensionDescription": {
     "message": "Pin MetaMask on your browser so it’s accessible and easy to view transaction confirmations."
   },
@@ -5280,10 +5289,6 @@
     "message": "$1 wants to use $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
   },
-  "snapContent": {
-    "message": "This content is coming from $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
-  },
   "snapDetailWebsite": {
     "message": "Website"
   },
@@ -6627,6 +6632,9 @@
   "updateEthereumChainConfirmationDescription": {
     "message": "This site is requesting to update your default network URL. You can edit defaults and network information any time."
   },
+  "updateInformation": {
+    "message": "We've made your wallet safer, smoother, and added some new features. Update now to stay protected and use our latest improvements."
+  },
   "updateNetworkConfirmationTitle": {
     "message": "Update $1",
     "description": "$1 represents network name"
@@ -6636,6 +6644,9 @@
   },
   "updateRequest": {
     "message": "Update request"
+  },
+  "updateToTheLatestVersion": {
+    "message": "Update to the latest version"
   },
   "updatedRpcForNetworks": {
     "message": "Network RPCs Updated"
