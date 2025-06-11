@@ -32,10 +32,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   AuthenticationController: {
     isSignedIn: false,
-    sessionData: {
-      token: false,
-      profile: true,
-    },
+    srpSessionData: false,
   },
   NetworkOrderController: {
     orderedNetworkList: [],

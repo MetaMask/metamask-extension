@@ -66,7 +66,10 @@
     "pendingApprovalCount": "number",
     "approvalFlows": "object"
   },
-  "AuthenticationController": { "isSignedIn": "boolean" },
+  "AuthenticationController": {
+    "isSignedIn": "boolean",
+    "srpSessionData": "object"
+  },
   "BridgeController": {
     "quoteRequest": {
       "srcTokenAddress": "0x0000000000000000000000000000000000000000"
