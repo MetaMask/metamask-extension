@@ -1,8 +1,8 @@
 import { act } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import copyToClipboard from 'copy-to-clipboard';
-import { useCopyToClipboard } from './useCopyToClipboard';
 import { COPY_OPTIONS } from '../../shared/constants/copy';
+import { useCopyToClipboard } from './useCopyToClipboard';
 
 // Mock dependencies
 jest.mock('copy-to-clipboard');
