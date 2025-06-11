@@ -68,7 +68,6 @@
   "app/scripts/lib/createOriginMiddleware.js",
   "app/scripts/lib/createRPCMethodTrackingMiddleware.js",
   "app/scripts/lib/createRPCMethodTrackingMiddleware.test.js",
-  "app/scripts/lib/createStreamSink.js",
   "app/scripts/lib/createTabIdMiddleware.js",
   "app/scripts/lib/ens-ipfs/contracts/registry.js",
   "app/scripts/lib/ens-ipfs/contracts/resolver.js",

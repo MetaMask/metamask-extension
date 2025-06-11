@@ -63,9 +63,10 @@ describe('App Installed Events', function () {
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_pageIsLoaded();
-        await startOnboardingPage.checkTermsCheckbox();
-        await startOnboardingPage.clickCreateWalletButton();
+        await startOnboardingPage.check_bannerPageIsLoaded();
+        await startOnboardingPage.agreeToTermsOfUse();
+        await startOnboardingPage.check_loginPageIsLoaded();
+        await startOnboardingPage.createWalletWithSrp();
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
@@ -106,9 +107,10 @@ describe('App Installed Events', function () {
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_pageIsLoaded();
-        await startOnboardingPage.checkTermsCheckbox();
-        await startOnboardingPage.clickCreateWalletButton();
+        await startOnboardingPage.check_bannerPageIsLoaded();
+        await startOnboardingPage.agreeToTermsOfUse();
+        await startOnboardingPage.check_loginPageIsLoaded();
+        await startOnboardingPage.createWalletWithSrp();
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);

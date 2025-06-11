@@ -22,6 +22,7 @@ const initialStore = () => ({
     isContactSyncingEnabled: false,
     participateInMetaMetrics: false,
     isBackupAndSyncUpdateLoading: false,
+    keyrings: [],
   },
 });
 

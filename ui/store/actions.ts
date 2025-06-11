@@ -4781,6 +4781,14 @@ export function setTermsOfUseLastAgreed(lastAgreed: number) {
   };
 }
 
+export async function setUpdateModalLastDismissedAt(
+  updateModalLastDismissedAt: number,
+) {
+  await submitRequestToBackground('setUpdateModalLastDismissedAt', [
+    updateModalLastDismissedAt,
+  ]);
+}
+
 export function setLastViewedUserSurvey(id: number) {
   return async () => {
     await submitRequestToBackground('setLastViewedUserSurvey', [id]);
@@ -6579,4 +6587,16 @@ export async function isRelaySupported(chainId: Hex): Promise<boolean> {
   return await submitRequestToBackground<boolean>('isRelaySupported', [
     chainId,
   ]);
+}
+
+/**
+ * Asks the UI to reload the browser extension safely.
+ *
+ * Much better than `browser.runtime.reload()`, as safeReload will wait for all
+ * writes to finish!
+ *
+ * @returns
+ */
+export async function requestSafeReload() {
+  return await submitRequestToBackground('requestSafeReload');
 }

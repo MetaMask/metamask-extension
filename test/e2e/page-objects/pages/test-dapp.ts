@@ -107,6 +107,13 @@ class TestDapp {
 
   private maliciousERC20TransferButton = '#maliciousERC20TransferButton';
 
+  private readonly ethSignButton = '#ethSign';
+
+  private readonly ethSignErrorMessage = {
+    css: '#ethSign',
+    text: 'Error: The method "eth_sign" does not exist / is not available.',
+  };
+
   private readonly personalSignButton = '#personalSign';
 
   private readonly personalSignResult = '#personalSignVerifyECRecoverResult';
@@ -115,6 +122,8 @@ class TestDapp {
 
   private personalSignSigUtilResultSelector =
     '#personalSignVerifySigUtilResult';
+
+  private readonly provider = '#provider';
 
   private readonly revokePermissionButton = '#revokeAccountsPermission';
 
@@ -433,6 +442,22 @@ class TestDapp {
   }
 
   /**
+   * Verify the number of providers displayed in the test dapp.
+   *
+   * @param expectedNumber - The expected number of providers to be displayed. Defaults to 1.
+   */
+  async check_providerNumber(expectedNumber: number = 1): Promise<void> {
+    console.log(
+      `Wait for ${expectedNumber} providers to be displayed in test dapp`,
+    );
+    await this.driver.wait(async () => {
+      const providers = await this.driver.findElements(this.provider);
+      return providers.length === expectedNumber;
+    }, 10000);
+    console.log(`${expectedNumber} providers found in test dapp`);
+  }
+
+  /**
    * Verify the successful personal sign signature.
    *
    * @param publicKey - The public key to verify the signature with.
@@ -631,6 +656,10 @@ class TestDapp {
     });
   }
 
+  async check_ethSignErrorMessage(): Promise<void> {
+    await this.driver.waitForSelector(this.ethSignErrorMessage);
+  }
+
   async assertEip747ContractAddressInputValue(expectedValue: string) {
     const formFieldEl = await this.driver.findElement(
       this.eip747ContractAddressInput,
@@ -716,6 +745,10 @@ class TestDapp {
 
   async clickPermit() {
     await this.driver.clickElement(this.signPermitButton);
+  }
+
+  async clickEthSignButton() {
+    await this.driver.clickElement(this.ethSignButton);
   }
 
   async clickPersonalSign() {
