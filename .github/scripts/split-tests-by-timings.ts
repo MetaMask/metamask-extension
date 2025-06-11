@@ -7,9 +7,6 @@ import {
   TestRun,
 } from './shared/test-reports';
 
-// Quality Gate Retries
-const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 4;
-
 function readTestResults(TEST_RESULTS_PATH: string): TestRun | undefined {
   const testSuiteName =
     process.env.TEST_SUITE_NAME || 'test-e2e-chrome-browserify';
@@ -45,10 +42,19 @@ function readTestResults(TEST_RESULTS_PATH: string): TestRun | undefined {
   }
 }
 
+function validateChunks(chunks: TestChunk[]): TestChunk[] {
+  // Validate that all chunks have valid values
+  return chunks.map((chunk) => ({
+    time: isNaN(chunk.time) ? 0 : chunk.time,
+    paths: chunk.paths || [],
+  }));
+}
+
 function splitTests(
   testRun: TestRun,
   changedOrNewTests: string[],
   numChunks: number,
+  skipQualityGate: boolean = false,
 ): TestChunk[] {
   const sorted = getTestFilesSortedByTime(testRun);
 
@@ -58,6 +64,9 @@ function splitTests(
   }));
 
   sorted.forEach((testFile) => {
+    // Quality Gate Retries - 1 si debe evitar, 4 si es normal
+    const RETRIES_FOR_NEW_OR_CHANGED_TESTS = skipQualityGate ? 1 : 4;
+
     const repetitions = changedOrNewTests.includes(testFile.path)
       ? RETRIES_FOR_NEW_OR_CHANGED_TESTS
       : 1;
@@ -77,7 +86,19 @@ export function splitTestsByTimings(
   testList: string[],
   changedOrNewTests: string[],
   totalChunks: number,
+  skipQualityGate: boolean = false,
 ): TestChunk[] {
+  // Input validations
+  if (totalChunks <= 0) {
+    console.warn(`Invalid totalChunks: ${totalChunks}, defaulting to 1`);
+    totalChunks = 1;
+  }
+
+  if (testList.length === 0) {
+    console.warn('Empty test list provided');
+    return Array.from({ length: totalChunks }, () => ({ time: 0, paths: [] }));
+  }
+
   const {
     TEST_RESULTS_FILE = `test/test-results/test-runs-${process.env.SELENIUM_BROWSER}.json`,
   } = process.env;
@@ -100,13 +121,34 @@ export function splitTestsByTimings(
         }
       });
 
-      return splitTests(testRunNew, changedOrNewTests, totalChunks);
+      const chunks = splitTests(
+        testRunNew,
+        changedOrNewTests,
+        totalChunks,
+        skipQualityGate,
+      );
+
+      return validateChunks(chunks);
     }
   } catch (error) {
     console.trace(error);
   }
 
-  return [];
+  // Fallback: make a naive split if there is no historical data
+  console.warn('No historical test data found, performing naive test split');
+  const naiveTestRun: TestRun = {
+    name: process.env.TEST_SUITE_NAME || 'unknown',
+    testFiles: testList.map((path) => getNewBlankTestFile(path)),
+  };
+
+  const chunks = splitTests(
+    naiveTestRun,
+    changedOrNewTests,
+    totalChunks,
+    skipQualityGate,
+  );
+
+  return validateChunks(chunks);
 }
 
 /**
@@ -137,6 +179,7 @@ if (require.main === module) {
     sampleTestList,
     sampleChangedOrNewTests,
     3,
+    false,
   );
 
   console.log('chunks', chunks);

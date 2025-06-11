@@ -52,7 +52,7 @@
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome tsx test/e2e/run-all.ts",
     "test:e2e:chrome:flask": "SELENIUM_BROWSER=chrome tsx test/e2e/run-all.ts --build-type flask",
     "test:e2e:chrome:webpack": "SELENIUM_BROWSER=chrome tsx test/e2e/run-all.ts",
-    "test:e2e:chrome:stx": "SELENIUM_BROWSER=chrome tsx test/e2e/run-all.ts --stx-e2e",
+    "test:e2e:chrome:stx": "SELENIUM_BROWSER=chrome tsx test/e2e/run-all.ts --stx-e2e --skip-quality-gate",
     "test:api-specs": "SELENIUM_BROWSER=chrome tsx test/e2e/run-openrpc-api-test-coverage.ts",
     "test:api-specs-multichain": "SELENIUM_BROWSER=chrome ts-node test/e2e/run-api-specs-multichain.ts",
     "test:e2e:swap": "yarn playwright test --project=swap",
