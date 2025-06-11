@@ -2142,7 +2142,7 @@
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "@metamask/name-controller>async-mutex": true,
         "@metamask/snaps-controllers>concat-stream": true,
-        "@metamask/snaps-utils>cron-parser": true,
+        "cron-parser": true,
         "eslint>fast-deep-equal": true,
         "@metamask/snaps-controllers>get-npm-tarball-url": true,
         "immer": true,
@@ -2220,7 +2220,7 @@
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "chalk": true,
-        "@metamask/snaps-utils>cron-parser": true,
+        "cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "@metamask/snaps-utils>fast-xml-parser": true,
         "luxon": true,
@@ -2255,7 +2255,7 @@
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "chalk": true,
-        "@metamask/snaps-utils>cron-parser": true,
+        "cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "@metamask/snaps-utils>fast-xml-parser": true,
         "luxon": true,
@@ -2290,7 +2290,7 @@
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "chalk": true,
-        "@metamask/snaps-utils>cron-parser": true,
+        "cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "@metamask/snaps-utils>fast-xml-parser": true,
         "luxon": true,
@@ -2326,7 +2326,7 @@
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "chalk": true,
-        "@metamask/snaps-utils>cron-parser": true,
+        "cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "@metamask/snaps-utils>fast-xml-parser": true,
         "@metamask/snaps-utils>marked": true,
@@ -3663,7 +3663,7 @@
         "addons-linter>sha.js": true
       }
     },
-    "@metamask/snaps-utils>cron-parser": {
+    "cron-parser": {
       "packages": {
         "browserify>browser-resolve": true,
         "luxon": true
