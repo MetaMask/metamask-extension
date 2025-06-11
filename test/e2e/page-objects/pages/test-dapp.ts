@@ -107,6 +107,13 @@ class TestDapp {
 
   private maliciousERC20TransferButton = '#maliciousERC20TransferButton';
 
+  private readonly ethSignButton = '#ethSign';
+
+  private readonly ethSignErrorMessage = {
+    css: '#ethSign',
+    text: 'Error: The method "eth_sign" does not exist / is not available.',
+  };
+
   private readonly personalSignButton = '#personalSign';
 
   private readonly personalSignResult = '#personalSignVerifyECRecoverResult';
@@ -649,6 +656,10 @@ class TestDapp {
     });
   }
 
+  async check_ethSignErrorMessage(): Promise<void> {
+    await this.driver.waitForSelector(this.ethSignErrorMessage);
+  }
+
   async assertEip747ContractAddressInputValue(expectedValue: string) {
     const formFieldEl = await this.driver.findElement(
       this.eip747ContractAddressInput,
@@ -734,6 +745,10 @@ class TestDapp {
 
   async clickPermit() {
     await this.driver.clickElement(this.signPermitButton);
+  }
+
+  async clickEthSignButton() {
+    await this.driver.clickElement(this.ethSignButton);
   }
 
   async clickPersonalSign() {
