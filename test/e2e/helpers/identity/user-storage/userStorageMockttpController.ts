@@ -19,6 +19,11 @@ export const pathRegexps = {
     `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.notifications}`,
     'u',
   ),
+  // addressBook is not available in SDK's USER_STORAGE_FEATURE_NAMES yet
+  'addressBook': new RegExp(
+    `${baseUrl}/addressBook`,
+    'u',
+  ),
 };
 
 export type UserStorageResponseData = {

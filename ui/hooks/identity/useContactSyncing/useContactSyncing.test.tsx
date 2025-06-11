@@ -32,6 +32,7 @@ const arrangeMockState = (
     metamask: {
       ...initialMetamaskState,
       ...metamaskStateOverrides,
+      keyrings: [],
     },
   };
 
