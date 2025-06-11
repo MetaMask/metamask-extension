@@ -7,7 +7,7 @@ import {
   isPlainObject,
 } from '@metamask/utils';
 import { SnapId } from '@metamask/snaps-sdk';
-import { DateTime, Duration } from 'luxon';
+import { DateTime } from 'luxon';
 import { parseExpression } from 'cron-parser';
 import {
   PermissionControllerState,
