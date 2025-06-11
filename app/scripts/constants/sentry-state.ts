@@ -123,6 +123,9 @@ export const SENTRY_BACKGROUND_STATE = {
   BridgeStatusController: {
     txHistory: false,
   },
+  CronjobController: {
+    events: false,
+  },
   CurrencyController: {
     currentCurrency: true,
     currencyRates: true,
