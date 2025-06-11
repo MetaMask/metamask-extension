@@ -1036,6 +1036,7 @@
     "@metamask/address-book-controller": {
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/address-book-controller>@metamask/controller-utils": true
       }
     },

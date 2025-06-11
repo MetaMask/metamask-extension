@@ -50,6 +50,18 @@ export async function mockIdentityServices(
       server,
     );
   }
+
+  // Address Book (Contact Syncing) - using string literal since SDK might not export this
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      'addressBook' as any,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      'addressBook' as any,
+      server,
+    );
+  }
 }
 
 export const MOCK_SRP_E2E_IDENTIFIER_BASE_KEY = 'MOCK_SRP_IDENTIFIER';

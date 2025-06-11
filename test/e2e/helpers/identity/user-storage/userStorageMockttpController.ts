@@ -1,4 +1,4 @@
-import EventEmitter from 'events';
+import { EventEmitter } from 'events';
 import { CompletedRequest, Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { MOCK_SRP_E2E_IDENTIFIER_BASE_KEY } from '../../../tests/identity/mocks';
@@ -19,9 +19,8 @@ export const pathRegexps = {
     `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.notifications}`,
     'u',
   ),
-  // addressBook is not available in SDK's USER_STORAGE_FEATURE_NAMES yet
-  'addressBook': new RegExp(
-    `${baseUrl}/addressBook`,
+  [USER_STORAGE_FEATURE_NAMES.addressBook]: new RegExp(
+    `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.addressBook}`,
     'u',
   ),
 };

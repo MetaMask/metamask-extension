@@ -41,3 +41,47 @@ export const completeNewWalletFlowIdentity = async (driver: Driver) => {
   await header.check_pageIsLoaded();
   return { homePage, header };
 };
+
+// Contact syncing specific flows (independent of account syncing)
+export const completeOnboardFlowContactSyncing = async (
+  driver: Driver,
+  seedPhrase?: string,
+) => {
+  await completeImportSRPOnboardingFlow({
+    driver,
+    seedPhrase: seedPhrase ?? IDENTITY_TEAM_SEED_PHRASE,
+    password: IDENTITY_TEAM_PASSWORD,
+  });
+
+  const homePage = new HomePage(driver);
+  await homePage.check_pageIsLoaded();
+
+  const headerNavbar = new HeaderNavbar(driver);
+  await headerNavbar.check_pageIsLoaded();
+
+  return {
+    homePage,
+    headerNavbar,
+  };
+};
+
+export const completeNewWalletFlowContactSyncing = async (driver: Driver) => {
+  await completeCreateNewWalletOnboardingFlow({
+    driver,
+    password: IDENTITY_TEAM_PASSWORD,
+  });
+
+  const homePage = new HomePage(driver);
+  await homePage.check_pageIsLoaded();
+
+  const header = new HeaderNavbar(driver);
+  await header.check_pageIsLoaded();
+
+  // Contact syncing flows don't depend on account syncing
+  // Just wait for basic functionality to be ready
+
+  return {
+    homePage,
+    header,
+  };
+};
