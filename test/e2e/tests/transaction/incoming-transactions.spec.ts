@@ -5,7 +5,7 @@ import { Driver } from '../../webdriver/driver';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFlow, switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
@@ -104,7 +104,7 @@ describe('Incoming Transactions', function () {
         await homepage.goToActivityList();
 
         await assetList.clickNetworkSelectorDropdown();
-        await assetList.clickCurrentNetworkOption();
+        await assetList.clickCurrentNetworkOptionOnActivityList();
 
         const activityList = new ActivityListPage(driver);
         await activityList.check_confirmedTxNumberDisplayedInActivity(2);
@@ -202,7 +202,7 @@ describe('Incoming Transactions', function () {
 
 async function changeNetworkAndGoToActivity(driver: Driver) {
   await loginWithoutBalanceValidation(driver);
-  await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+  await switchToNetworkFromSendFlow(driver, 'Ethereum');
 
   const homepage = new HomePage(driver);
   await homepage.goToActivityList();
