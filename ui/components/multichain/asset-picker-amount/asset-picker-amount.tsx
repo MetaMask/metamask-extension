@@ -62,6 +62,7 @@ type AssetPickerAmountProps = OverridingUnion<
     amount: Amount;
     isAmountLoading?: boolean;
     action?: 'send' | 'receive';
+    disableMaxButton?: boolean;
     error?: string;
     showNetworkPicker?: boolean;
     /**
@@ -86,6 +87,7 @@ export const AssetPickerAmount = ({
   onAmountChange,
   action,
   isAmountLoading,
+  disableMaxButton = false,
   showNetworkPicker,
   error: passedError,
   ...assetPickerProps
@@ -129,7 +131,7 @@ export const AssetPickerAmount = ({
 
     // disable max mode and replace with "0"
     onAmountChange('0x0');
-  }, [isNativeSendPossible]);
+  }, [isDisabled, isMaxMode, isNativeSendPossible, onAmountChange]);
 
   const [isFocused, setIsFocused] = useState(false);
   const [isNFTInputChanged, setIsTokenInputChanged] = useState(false);
@@ -166,7 +168,7 @@ export const AssetPickerAmount = ({
     if (!asset) {
       throw new Error('No asset is drafted for sending');
     }
-  }, [selectedAccount]);
+  }, [asset, selectedAccount]);
 
   let borderColor = BorderColor.borderMuted;
 
@@ -288,9 +290,10 @@ export const AssetPickerAmount = ({
           </Text>
         )}
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        {onAmountChange && isNativeSendPossible && !isSwapAndSendFromNative && (
-          <MaxClearButton asset={asset} />
-        )}
+        {onAmountChange &&
+          isNativeSendPossible &&
+          !isSwapAndSendFromNative &&
+          !disableMaxButton && <MaxClearButton asset={asset} />}
       </Box>
     </Box>
   );

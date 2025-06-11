@@ -47,6 +47,12 @@ class PrivacySettings {
     tag: 'h4',
   };
 
+  private readonly ensDomainResolutionToggle =
+    '[data-testid="ipfs-gateway-resolution-container"] .toggle-button';
+
+  private readonly ipfsGatewayToggle =
+    '[data-testid="ipfsToggle"] .toggle-button';
+
   private readonly privacySettingsPageTitle = {
     text: 'Security & privacy',
     tag: 'h4',
@@ -59,6 +65,9 @@ class PrivacySettings {
     text: tEn('holdToRevealSRP'),
     tag: 'span',
   };
+
+  private readonly networkDetailsCheckToggle =
+    '[data-testid="useSafeChainsListValidation"] .toggle-button';
 
   private readonly revealSrpButton = '[data-testid="reveal-seed-words"]';
 
@@ -254,6 +263,21 @@ class PrivacySettings {
   async toggleAutodetectNft(): Promise<void> {
     console.log('Toggle autodetect NFT on privacy settings page');
     await this.driver.clickElement(this.autodetectNftToggleButton);
+  }
+
+  async toggleEnsDomainResolution(): Promise<void> {
+    console.log('Toggle ENS domain resolution on privacy settings page');
+    await this.driver.clickElement(this.ensDomainResolutionToggle);
+  }
+
+  async toggleIpfsGateway(): Promise<void> {
+    console.log('Toggle IPFS gateway on privacy settings page');
+    await this.driver.clickElement(this.ipfsGatewayToggle);
+  }
+
+  async toggleNetworkDetailsCheck(): Promise<void> {
+    console.log('Toggle network details check on privacy settings page');
+    await this.driver.clickElement(this.networkDetailsCheckToggle);
   }
 
   /**

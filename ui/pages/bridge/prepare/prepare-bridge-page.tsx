@@ -16,11 +16,10 @@ import {
   isSolanaChainId,
   isValidQuoteRequest,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-  type GenericQuoteRequest,
   getNativeAssetForChainId,
   isNativeAddress,
-  type BridgeController,
   UnifiedSwapBridgeEventName,
+  BRIDGE_DEFAULT_SLIPPAGE,
 } from '@metamask/bridge-controller';
 import {
   setFromToken,
@@ -49,6 +48,7 @@ import {
   getValidationErrors,
   isBridgeSolanaEnabled,
   getIsToOrFromSolana,
+  getIsSolanaSwap,
   getQuoteRefreshRate,
   getHardwareWalletName,
   getIsQuoteExpired,
@@ -133,6 +133,7 @@ import {
   toAssetId,
 } from '../../../../shared/lib/asset-utils';
 import { getSmartTransactionsEnabled } from '../../../../shared/modules/selectors';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { BridgeInputGroup } from './bridge-input-group';
 import { BridgeCTAButton } from './bridge-cta-button';
 import { DestinationAccountPicker } from './components/destination-account-picker';
@@ -175,6 +176,7 @@ const PrepareBridgePage = () => {
     isLoading,
     activeQuote: activeQuote_,
     isQuoteGoingToRefresh,
+    quotesRefreshCount,
   } = useSelector(getBridgeQuotes);
   const refreshRate = useSelector(getQuoteRefreshRate);
 
@@ -208,8 +210,7 @@ const PrepareBridgePage = () => {
     : selectedMultichainAccount;
 
   const keyring = useSelector(getCurrentKeyring);
-  // @ts-expect-error keyring type is wrong maybe?
-  const isUsingHardwareWallet = isHardwareKeyring(keyring.type);
+  const isUsingHardwareWallet = isHardwareKeyring(keyring?.type);
   const hardwareWalletName = useSelector(getHardwareWalletName);
   const isTxSubmittable = useIsTxSubmittable();
   const locale = useSelector(getIntlLocale);
@@ -221,7 +222,6 @@ const PrepareBridgePage = () => {
     isInsufficientGasForQuote,
     isInsufficientBalance,
   } = useSelector(getValidationErrors);
-  const { quotesRefreshCount } = useSelector(getBridgeQuotes);
   const { openBuyCryptoInPdapp } = useRamps();
 
   const nativeAsset = useMemo(
@@ -316,6 +316,8 @@ const PrepareBridgePage = () => {
   const insufficientBalanceBannerRef = useRef<HTMLDivElement>(null);
   const isEstimatedReturnLowRef = useRef<HTMLDivElement>(null);
   const tokenAlertBannerRef = useRef<HTMLDivElement>(null);
+  const fromAssetsPageFixAppliedRef = useRef<boolean>(false);
+
   useEffect(() => {
     if (isInsufficientGasForQuote(nativeAssetBalance)) {
       insufficientBalanceBannerRef.current?.scrollIntoView({
@@ -337,6 +339,7 @@ const PrepareBridgePage = () => {
   ]);
 
   const isToOrFromSolana = useSelector(getIsToOrFromSolana);
+  const isSolanaSwap = useSelector(getIsSolanaSwap);
 
   const isDestinationSolana = useMemo(() => {
     if (!toChain?.chainId) {
@@ -387,17 +390,30 @@ const PrepareBridgePage = () => {
   );
 
   const debouncedUpdateQuoteRequestInController = useCallback(
-    debounce(
-      (
-        p: Partial<GenericQuoteRequest>,
-        c: Parameters<BridgeController['updateBridgeQuoteRequestParams']>[1],
-      ) => {
-        dispatch(updateQuoteRequestParams(p, c));
-      },
-      300,
-    ),
-    [],
+    debounce((...args: Parameters<typeof updateQuoteRequestParams>) => {
+      dispatch(updateQuoteRequestParams(...args));
+    }, 300),
+    [dispatch],
   );
+
+  // When entering the page for the first time emit an event for the page viewed
+  useEffect(() => {
+    trackCrossChainSwapsEvent({
+      event: MetaMetricsEventName.ActionPageViewed,
+      properties: {
+        chain_id_source: formatChainIdToCaip(fromChain?.chainId ?? ''),
+        token_symbol_source: fromToken?.symbol ?? '',
+        token_address_source: fromToken?.address ?? '',
+        chain_id_destination: formatChainIdToCaip(toChain?.chainId ?? ''),
+        token_symbol_destination: toToken?.symbol ?? '',
+        token_address_destination: toToken?.address ?? '',
+      },
+    });
+
+    return () => {
+      debouncedUpdateQuoteRequestInController.cancel();
+    };
+  }, []);
 
   useEffect(() => {
     dispatch(setSelectedQuote(null));
@@ -407,7 +423,8 @@ const PrepareBridgePage = () => {
       token_symbol_destination: toToken?.symbol ?? '',
       security_warnings: [],
     });
-  }, [quoteParams, debouncedUpdateQuoteRequestInController]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quoteParams]);
 
   const trackInputEvent = useCallback(
     (
@@ -505,16 +522,56 @@ const PrepareBridgePage = () => {
     handleToken();
   }, [fromChain, fromToken, fromTokens, search, isFromTokensLoading]);
 
-  // Set the default destination token and slippage for swaps
+  // Set slippage based on swap type
+  const slippageInitializedRef = useRef(false);
   useEffect(() => {
-    if (isSwap) {
-      dispatch(setSlippage(undefined));
-      if (fromChain && !toToken) {
-        dispatch(setToChainId(fromChain.chainId));
-        dispatch(setToToken(SOLANA_USDC_ASSET));
-      }
+    if (isSwap && fromChain && toChain && !slippageInitializedRef.current) {
+      slippageInitializedRef.current = true;
+      // For Solana swaps, use undefined (AUTO), otherwise use default 0.5%
+      const targetSlippage = isSolanaSwap ? undefined : BRIDGE_DEFAULT_SLIPPAGE;
+      dispatch(setSlippage(targetSlippage));
     }
-  }, []);
+  }, [isSwap, isSolanaSwap, fromChain, toChain, dispatch]);
+
+  // Set the default destination token for swaps
+  useEffect(() => {
+    endTrace({
+      name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
+      timestamp: Date.now(),
+    });
+
+    // Set default destination token for swaps
+    if (isSwap && fromChain && !toToken) {
+      dispatch(setToChainId(fromChain.chainId));
+      dispatch(setToToken(SOLANA_USDC_ASSET));
+    }
+  }, [isSwap, dispatch, fromChain, toToken]);
+
+  // Edge-case fix: if user lands with USDC selected for both sides on Solana,
+  // switch destination to SOL (native asset).
+  useEffect(() => {
+    if (
+      !isSwap ||
+      !fromChain ||
+      !isSolanaChainId(fromChain.chainId) ||
+      !fromToken?.address ||
+      !toToken?.address ||
+      fromAssetsPageFixAppliedRef.current // Prevent multiple applications of the fix as it's only needed initially.
+    ) {
+      return;
+    }
+
+    const isBothUsdc =
+      fromToken.address.toLowerCase() ===
+        SOLANA_USDC_ASSET.address.toLowerCase() &&
+      toToken.address.toLowerCase() === SOLANA_USDC_ASSET.address.toLowerCase();
+
+    if (isBothUsdc) {
+      const solNativeAsset = getNativeAssetForChainId(fromChain.chainId);
+      dispatch(setToToken(solNativeAsset));
+      fromAssetsPageFixAppliedRef.current = true;
+    }
+  }, [isSwap, fromChain?.chainId, fromToken?.address, toToken?.address]);
 
   const occurrences = Number(
     toToken?.occurrences ?? toToken?.aggregators?.length ?? 0,
@@ -595,7 +652,13 @@ const PrepareBridgePage = () => {
           onMaxButtonClick={(value: string) => {
             dispatch(setFromTokenInputValue(value));
           }}
-          amountInFiat={fromAmountInCurrency.valueInCurrency.toString()}
+          // Hides fiat amount string before a token quantity is entered.
+          amountInFiat={
+            fromAmountInCurrency.valueInCurrency.gt(0)
+              ? fromAmountInCurrency.valueInCurrency.toString()
+              : undefined
+          }
+          balanceAmount={srcTokenBalance}
           amountFieldProps={{
             testId: 'from-amount',
             autoFocus: true,
@@ -865,6 +928,8 @@ const PrepareBridgePage = () => {
                 ))}
               <Footer padding={0} flexDirection={FlexDirection.Column} gap={2}>
                 <BridgeCTAButton
+                  nativeAssetBalance={nativeAssetBalance}
+                  srcTokenBalance={srcTokenBalance}
                   onFetchNewQuotes={() => {
                     debouncedUpdateQuoteRequestInController(quoteParams, {
                       stx_enabled: smartTransactionsEnabled,

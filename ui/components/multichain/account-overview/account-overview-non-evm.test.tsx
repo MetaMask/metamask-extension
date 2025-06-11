@@ -1,7 +1,7 @@
 import React from 'react';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
@@ -73,7 +73,7 @@ describe('AccountOverviewBtc', () => {
     const { queryByTestId } = render();
 
     expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
-    const button = queryByTestId('import-token-button');
+    const button = queryByTestId('asset-list-control-bar-action-button');
     expect(button).toBeInTheDocument(); // Verify the button is present
     expect(button).toBeDisabled(); // Verify the button is disabled
     // TODO: This one might be required, but we do not really handle tokens for BTC yet...
