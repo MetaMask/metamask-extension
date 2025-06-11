@@ -2,8 +2,8 @@ import { Suite } from 'mocha';
 import { unlockWallet, withFixtures } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
-  switchToNetworkFlow,
-  searchAndSwitchToNetworkFlow,
+  searchAndSwitchToNetworkFromGlobalMenuFlow,
+  switchToNetworkFromSendFlow,
 } from '../../page-objects/flows/network.flow';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
 import { bridgeTransaction, getBridgeL2Fixtures } from './bridge-test-utils';
@@ -19,7 +19,10 @@ describe('Bridge tests', function (this: Suite) {
         await homePage.check_expectedBalanceIsDisplayed();
 
         // Add Arbitrum One and make it the current network
-        await searchAndSwitchToNetworkFlow(driver, 'Arbitrum One');
+        await searchAndSwitchToNetworkFromGlobalMenuFlow(
+          driver,
+          'Arbitrum One',
+        );
 
         await bridgeTransaction(
           driver,
@@ -48,7 +51,7 @@ describe('Bridge tests', function (this: Suite) {
         );
 
         // Switch to Ethereum to set it as the current network
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
 
         await bridgeTransaction(
           driver,
@@ -64,7 +67,7 @@ describe('Bridge tests', function (this: Suite) {
         );
 
         // Switch to Arbitrum One to set it as the current network
-        await switchToNetworkFlow(driver, 'Arbitrum One');
+        await switchToNetworkFromSendFlow(driver, 'Arbitrum One');
 
         await bridgeTransaction(
           driver,

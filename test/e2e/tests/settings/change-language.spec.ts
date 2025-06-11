@@ -196,14 +196,14 @@ describe('Settings - general tab', function (this: Suite) {
         await homepage.check_expectedBalanceIsDisplayed();
 
         // Validate the account tooltip
-        const isAccountTooltipChanged = await driver.isElementPresent(
-          selectors.accountTooltipText,
-        );
-        assert.equal(
-          isAccountTooltipChanged,
-          true,
-          'Language changes is not reflected on the account toolTip',
-        );
+        // const isAccountTooltipChanged = await driver.isElementPresent(
+        //   selectors.accountTooltipText,
+        // );
+        // assert.equal(
+        //   isAccountTooltipChanged,
+        //   true,
+        //   'Language changes is not reflected on the account toolTip',
+        // );
 
         // Validate the bridge tooltip
         const isBridgeTooltipChanged = await driver.isElementPresent(

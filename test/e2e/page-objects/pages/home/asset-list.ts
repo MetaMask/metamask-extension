@@ -120,13 +120,31 @@ class AssetListPage {
     this.driver = driver;
   }
 
+  async clickNetworkSelectorDropdown(): Promise<void> {
+    console.log(`Clicking on the network selector dropdown`);
+    await this.driver.clickElement(this.sortByPopoverToggle);
+  }
+
+  async clickCurrentNetworkOptionOnActivityList(): Promise<void> {
+    console.log(`Clicking on the current network option`);
+    await this.driver.clickElement(this.currentNetworkOption);
+    await this.driver.waitUntil(
+      async () => {
+        const toggle = await this.driver.findElement(this.sortByPopoverToggle);
+        const label = await toggle.getText();
+        return label !== 'Popular networks';
+      },
+      { timeout: 5000, interval: 100 },
+    );
+  }
+
   async clickCurrentNetworkOption(): Promise<void> {
     console.log(`Clicking on the current network option`);
     await this.driver.clickElement(this.currentNetworkOption);
     await this.driver.waitUntil(
       async () => {
         const label = await this.getNetworksFilterLabel();
-        return label !== 'All networks';
+        return label !== 'Popular networks';
       },
       { timeout: 5000, interval: 100 },
     );

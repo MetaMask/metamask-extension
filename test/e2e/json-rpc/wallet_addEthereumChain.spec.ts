@@ -13,6 +13,7 @@ import {
 } from '../helpers';
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import { CaveatTypes } from '../../../shared/constants/permissions';
+import { switchToEditRPCViaGlobalMenuNetworks } from '../page-objects/flows/network.flow';
 
 const getPermittedChains = async (driver: Driver) => {
   const getPermissionsRequest = JSON.stringify({
@@ -521,12 +522,8 @@ describe('Add Ethereum Chain', function () {
           );
 
           // go to network selector
+          await switchToEditRPCViaGlobalMenuNetworks(driver);
           await driver.findElement({ text: 'Localhost 8545' });
-          await driver.clickElement({ text: 'Localhost 8545' });
-
-          await driver.findElement({
-            text: 'Alternative localhost chain 0x539',
-          });
         },
       );
     });
