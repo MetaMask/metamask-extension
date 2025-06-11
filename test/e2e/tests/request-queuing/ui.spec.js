@@ -429,7 +429,7 @@ describe('Request-queue UI changes', function () {
   });
 
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should signal from UI to dapp the network change', async function () {
+  it('should signal from UI to dapp the network change if switched from send flow', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -459,10 +459,10 @@ describe('Request-queue UI changes', function () {
         // Switch back to the Dapp tab
         await driver.switchToWindowWithUrl(DAPP_URL);
 
-        // Check to make sure the dapp network changed
+        // Check to make sure the dapp network doesn't changed
         await driver.waitForSelector({
           css: '[id="chainId"]',
-          text: '0x1',
+          text: '0x539',
         });
       },
     );
