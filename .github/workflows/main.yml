@@ -6,6 +6,7 @@ on:
       - main
       - master
       - Version-v*
+      - fix/*
       - trigger-ci*
   pull_request:
     types:
