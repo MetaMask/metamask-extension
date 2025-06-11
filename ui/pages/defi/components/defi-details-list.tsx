@@ -2,9 +2,7 @@ import React, { useMemo } from 'react';
 
 import { GroupedDeFiPositions } from '@metamask/assets-controllers';
 import { useSelector } from 'react-redux';
-import { isStrictHexString } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import {
   TextColor,
   TextVariant,
@@ -14,10 +12,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import TokenCell from '../../../components/app/assets/token-cell';
 import { getPreferences } from '../../../selectors';
 import { TokenWithFiatAmount } from '../../../components/app/assets/types';
-import {
-  type SafeChain,
-  useSafeChains,
-} from '../../settings/networks-tab/networks-form/use-safe-chains';
 
 export const PositionTypeLabels = {
   supply: 'supplied',
@@ -55,20 +49,6 @@ const DefiDetailsList = React.memo(
     const t = useI18nContext();
 
     const { privacyMode } = useSelector(getPreferences);
-    const { safeChains } = useSafeChains();
-    const safeChainDetails: SafeChain | undefined = useMemo(
-      () =>
-        safeChains?.find((chain) => {
-          const decimalChainId =
-            isStrictHexString(chainId) && parseInt(hexToDecimal(chainId), 10);
-          if (typeof decimalChainId === 'number') {
-            return chain.chainId === decimalChainId.toString();
-          }
-          return undefined;
-        }),
-      [safeChains, chainId],
-    );
-    const nativeCurrencySymbol = safeChainDetails?.nativeCurrency?.symbol;
 
     const groupedTokens = useMemo(() => {
       return tokens.map((tokenGroup) => {
