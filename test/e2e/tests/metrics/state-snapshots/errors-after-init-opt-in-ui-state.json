@@ -262,7 +262,6 @@
     },
     "cryptocurrencies": ["btc", "sol"],
     "snaps": "object",
-    "jobs": "object",
     "events": "object",
     "database": null,
     "lastUpdated": null,
