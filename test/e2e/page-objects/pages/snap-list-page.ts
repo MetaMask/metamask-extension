@@ -30,6 +30,22 @@ class SnapListPage {
     text: 'Remove Snap',
   };
 
+  private readonly updateSnapButton = {
+    css: '.mm-button-link',
+    text: 'Update',
+    tag: 'button',
+  };
+
+  private readonly webpackPluginSnap = {
+    text: 'Webpack Plugin Example Snap',
+    tag: 'p',
+  };
+
+  private readonly descriptionWebpack = {
+    text: 'Description from Webpack Plugin Example Snap',
+    tag: 'p',
+  };
+
   // this selector needs to be combined with snap name to be unique.
   private readonly snapListItem = '.snap-list-item';
 
@@ -95,6 +111,23 @@ class SnapListPage {
   async check_homePageTitle(): Promise<void> {
     console.log('Checking title of snap list page');
     await this.driver.waitForSelector(this.homePageTitle);
+  }
+
+  async clickWebpackPluginSnap(): Promise<void> {
+    console.log('Clicking webpack plugin snap');
+    await this.driver.clickElement(this.webpackPluginSnap);
+  }
+
+  async clickUpdateSnapButton(): Promise<void> {
+    console.log('Clicking update snap button');
+    await this.driver.clickElement(this.updateSnapButton);
+  }
+
+  async check_updateLinkIsNotDisplayed(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.updateSnapButton, {
+      // make sure the Snap page has loaded
+      findElementGuard: this.descriptionWebpack,
+    });
   }
 }
 

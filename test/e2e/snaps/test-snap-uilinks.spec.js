@@ -1,9 +1,11 @@
-const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
+const { withFixtures, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const {
   mockDialogSnap,
 } = require('../mock-response-data/snaps/snap-binary-mocks');
-const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
+import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import { TestSnaps } from '../page-objects/pages/test-snaps';
 
 describe('Test Snap UI Links', function () {
   it('test link in confirmation snap_dialog type', async function () {
@@ -15,69 +17,20 @@ describe('Test Snap UI Links', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithoutBalanceValidation(driver);
+        const testSnaps = new TestSnaps(driver);
+        await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton',{ withExtraScreen: true });
 
-        // navigate to test snaps page
-        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
 
-        // wait for page to load
-        await driver.waitForSelector({
-          text: 'Installed Snaps',
-          tag: 'h2',
-        });
-
-        // scroll to dialogs snap
-        const dialogButton = await driver.findElement('#connectdialogs');
-        await driver.scrollToElement(dialogButton);
-
-        // added delay for firefox (deflake)
-        await driver.delayFirefox(1000);
-
-        // wait for and click connect
-        await driver.waitForSelector('#connectdialogs');
-        await driver.clickElement('#connectdialogs');
-
-        // switch to metamask extension
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        // wait for and click connect
-        await driver.waitForSelector({
-          text: 'Connect',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Connect',
-          tag: 'button',
-        });
-
-        // wait for and click confirm
-        await driver.waitForSelector({ text: 'Confirm' });
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-        });
-
-        // wait for and click ok and wait for window to close
-        await driver.waitForSelector({ text: 'OK' });
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'OK',
-          tag: 'button',
-        });
-
-        // switch to test snaps tab
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
-        await driver.waitForSelector({
-          css: '#connectdialogs',
-          text: 'Reconnect to Dialogs Snap',
-        });
+        await testSnaps.check_installationComplete(
+          'connectdialogs',
+          'Reconnect to Dialogs Snap',
+        );
 
-        // click conf button
-        await driver.clickElement('#sendConfirmationButton');
+        await testSnaps.clickElement('confirmationButton');
 
-        // delay added for rendering (deflake)
-        await driver.delay(500);
 
         // switch to dialog popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
