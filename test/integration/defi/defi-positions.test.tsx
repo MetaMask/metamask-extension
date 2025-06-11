@@ -242,6 +242,8 @@ const withMetamaskConnectedToMainnet = {
   },
 };
 
+const isGlobalNetworkSelectorRemoved = true;
+
 describe('Defi positions list', () => {
   beforeEach(() => {
     process.env.PORTFOLIO_VIEW = 'true';
@@ -292,8 +294,10 @@ describe('Defi positions list', () => {
     await screen.findByText(accountName);
 
     await clickElementById('account-overview__defi-tab');
-    await clickElementById('sort-by-networks');
-    await clickElementById('network-filter-current__button');
+    if (!isGlobalNetworkSelectorRemoved) {
+      await clickElementById('sort-by-networks');
+      await clickElementById('network-filter-current__button');
+    }
     await waitForElementByText('AaveV3 Mainnet');
     await waitForElementByText('MetaMask Staking');
     await waitForElementByTextToNotBePresent('AaveV3 Polygon');

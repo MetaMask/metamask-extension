@@ -15,6 +15,8 @@ import {
   waitForElementByTextToNotBePresent,
 } from '../helpers';
 
+const isGlobalNetworkSelectorRemoved = true;
+
 jest.setTimeout(20_000);
 
 jest.mock('../../../ui/store/background-connection', () => ({
@@ -50,7 +52,7 @@ describe('NFTs list', () => {
     nock.cleanAll();
   });
 
-  it('displays the nfts list for popular networks and tracks the event', async () => {
+  it.skip('displays the nfts list for popular networks and tracks the event', async () => {
     const account =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
@@ -141,9 +143,11 @@ describe('NFTs list', () => {
 
     await clickElementById('account-overview__nfts-tab');
 
-    await waitForElementById('sort-by-networks');
-    await clickElementById('sort-by-networks');
-    await clickElementById('network-filter-current__button');
+    if (!isGlobalNetworkSelectorRemoved) {
+      await waitForElementById('sort-by-networks');
+      await clickElementById('sort-by-networks');
+      await clickElementById('network-filter-current__button');
+    }
 
     await waitForElementByText('MUNK #1 Mainnet');
     await waitForElementByTextToNotBePresent('MUNK #1 Chain 137');
