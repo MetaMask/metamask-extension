@@ -1640,7 +1640,7 @@
     },
     "@metamask/multichain-transactions-controller>@metamask/keyring-api": {
       "packages": {
-        "@metamask/keyring-api>@metamask/keyring-utils": true,
+        "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "bitcoin-address-validation": true
@@ -1667,7 +1667,7 @@
     "@metamask/keyring-internal-api": {
       "packages": {
         "@metamask/keyring-api": true,
-        "@metamask/keyring-api>@metamask/keyring-utils": true,
+        "@metamask/keyring-utils": true,
         "@metamask/superstruct": true
       }
     },
@@ -1676,7 +1676,7 @@
         "@metamask/keyring-api": true,
         "@metamask/keyring-internal-api": true,
         "@metamask/keyring-snap-client": true,
-        "@metamask/keyring-api>@metamask/keyring-utils": true
+        "@metamask/keyring-utils": true
       }
     },
     "@metamask/keyring-snap-client": {
@@ -1690,12 +1690,12 @@
     "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client": {
       "packages": {
         "@metamask/multichain-transactions-controller>@metamask/keyring-api": true,
-        "@metamask/keyring-api>@metamask/keyring-utils": true,
+        "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client>uuid": true
       }
     },
-    "@metamask/keyring-api>@metamask/keyring-utils": {
+    "@metamask/keyring-utils": {
       "globals": {
         "URL": true
       },
@@ -1775,8 +1775,7 @@
         "@metamask/base-controller": true,
         "@metamask/multichain-transactions-controller>@metamask/keyring-api": true,
         "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client": true,
-        "@metamask/multichain-transactions-controller>@metamask/snaps-utils": true,
-        "@metamask/utils": true
+        "@metamask/snaps-utils": true
       }
     },
     "@metamask/name-controller": {
