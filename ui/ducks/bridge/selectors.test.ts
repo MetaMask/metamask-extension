@@ -9,7 +9,6 @@ import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { SolScope } from '@metamask/keyring-api';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
@@ -1594,14 +1593,14 @@ describe('Bridge selectors', () => {
               'account-1': {
                 address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
                 type: 'solana:data-account',
-                scopes: [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet],
-                methods: [SolMethod.SendAndConfirmTransaction],
+                scopes: [SolScope.Mainnet],
               },
             },
           },
           marketData: {},
           currencyRates: {},
           ...mockMultichainNetworkState(),
+          selectedMultichainNetworkChainId: MultichainNetworks.SOLANA,
           conversionRates: {
             [getNativeAssetForChainId(MultichainNetworks.SOLANA)?.assetId]: {
               rate: 1.5,
