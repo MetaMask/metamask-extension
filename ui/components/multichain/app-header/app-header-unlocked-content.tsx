@@ -101,7 +101,9 @@ export const AppHeaderUnlockedContent = ({
 
   // Passing non-evm address to checksum function will throw an error
   const normalizedCurrentAddress = normalizeSafeAddress(currentAddress);
-  const [copied, handleCopy, resetCopyState] = useCopyToClipboard(MINUTE);
+  const [copied, handleCopy, resetCopyState] = useCopyToClipboard(MINUTE, {
+    expireClipboard: false,
+  });
 
   // Reset copy state when a switching accounts
   useEffect(() => {
