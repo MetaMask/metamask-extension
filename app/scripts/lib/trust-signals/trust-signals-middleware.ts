@@ -111,7 +111,7 @@ function mapChainIdToSupportedEVMChain(chainId: string): SupportedEVMChain {
     '0x1e0': SupportedEVMChain.Worldchain,
     '0x79a': SupportedEVMChain.SoneiumMinato,
     '0x7e4': SupportedEVMChain.Ronin,
-    [CHAIN_IDS.APE_MAINNET]: SupportedEVMChain.Apec,
+    [CHAIN_IDS.APECHAIN_MAINNET]: SupportedEVMChain.ApeChain,
     '0x849ea': SupportedEVMChain.ZeroNetwork,
     [CHAIN_IDS.BERACHAIN]: SupportedEVMChain.Berachain,
     '0x138c5': SupportedEVMChain.BerachainBartio,
