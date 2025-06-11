@@ -1259,9 +1259,6 @@
   "confusingEnsDomain": {
     "message": "We have detected a confusable character in the ENS name. Check the ENS name to avoid a potential scam."
   },
-  "congratulations": {
-    "message": "Congratulations!"
-  },
   "connect": {
     "message": "Connect"
   },
@@ -2352,9 +2349,6 @@
   "getTheNewestFeatures": {
     "message": "Get the newest features"
   },
-  "goBack": {
-    "message": "Go back"
-  },
   "goToSite": {
     "message": "Go to site"
   },
@@ -2518,10 +2512,6 @@
   },
   "id": {
     "message": "ID"
-  },
-  "ifYouGetLockedOut": {
-    "message": "If you get locked out of the app or get a new device, you will lose your funds. Be sure to back up your Secret Recovery Phrase in $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "ignoreAll": {
     "message": "Ignore all"
@@ -2776,10 +2766,6 @@
   "jsonFile": {
     "message": "JSON File",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Keep a reminder of your Secret Recovery Phrase somewhere safe. If you lose it, no one can help you get it back. Even worse, you won’t be able access to your wallet ever again. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Account name"
@@ -3807,11 +3793,8 @@
   "onboardingMetametricsDescription": {
     "message": "We'd like to gather basic usage and diagnostics data to improve MetaMask. It will always be:"
   },
-  "onboardingMetametricsDescription2": {
-    "message": "When we gather metrics, it will always be..."
-  },
   "onboardingMetametricsInfuraTerms": {
-    "message": "We’ll let you know if we decide to use this data for other purposes. You can review our $1 for more information. Remember, you can go to settings and opt out at any time.",
+    "message": "We’ll let you know if we plan to use this data for other purposes. You can review our $1 any time (we never sell the data you provide here).",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
   "onboardingMetametricsInfuraTermsPolicy": {
@@ -3825,21 +3808,18 @@
     "message": "Private:"
   },
   "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 we temporarily use your IP address to detect a general location (like your country or region), but it's never stored.",
+    "message": "$1 We temporarily use your IP address to detect a general location (like your country or region), but it's never stored.",
     "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
   },
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "General:"
   },
   "onboardingMetametricsNeverSellData": {
-    "message": "$1 you decide if you want to share or delete your usage data via settings any time.",
+    "message": "$1 You decide if you want to share or delete your usage data via settings any time.",
     "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Optional:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Learn how we protect your privacy while collecting usage data for your profile."
   },
   "onboardingMetametricsTitle": {
     "message": "Help us improve MetaMask"
@@ -3876,7 +3856,7 @@
     "message": "Access your MetaMask wallet with 1 click by clicking on the extension."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Click Chrome extension icon to access it instantly"
+    "message": "Click browser extension icon to access it instantly"
   },
   "onboardingPinExtensionLabel": {
     "message": "Pin MetaMask"
@@ -4559,12 +4539,6 @@
   "rejected": {
     "message": "Rejected"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Remember, if you lose your Secret Recovery Phrase, you lose access to your wallet. $1 to keep this set of words safe so you can always access your funds."
-  },
-  "reminderSet": {
-    "message": "Reminder set!"
-  },
   "remove": {
     "message": "Remove"
   },
@@ -4796,6 +4770,19 @@
   "secureWallet": {
     "message": "Secure wallet"
   },
+  "secureWalletGetStartedButton": {
+    "message": "Get started"
+  },
+  "secureWalletRemindLaterButton": {
+    "message": "Remind me later"
+  },
+  "secureWalletWalletRecover": {
+    "message": "It’s the only way to recover your wallet if you get locked out of the app or get a new device."
+  },
+  "secureWalletWalletSaveSrp": {
+    "message": "Don’t risk losing your funds. Protect your wallet by saving your $1 in a place you trust.",
+    "description": "The $1 is the button text 'Secret Recovery Phrase'"
+  },
   "security": {
     "message": "Security"
   },
@@ -4818,9 +4805,6 @@
   "securityMessageLinkForNetworks": {
     "message": "network scams and security risks"
   },
-  "securityPrivacyPath": {
-    "message": "Settings > Security & Privacy."
-  },
   "securityProviderPoweredBy": {
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
@@ -4838,35 +4822,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Confirm Secret Recovery Phrase"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Remind me later (not recommended)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Secure my wallet (recommended)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Write down and store in multiple secret places"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Store in a safe deposit box"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Your Secret Recovery Phrase is a 12-word phrase that is the “master key” to your wallet and your funds"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "If someone asks for your recovery phrase they are likely trying to scam you and steal your wallet funds."
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Never, ever share your Secret Recovery Phrase, not even with MetaMask!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "What is a Secret Recovery Phrase?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Should I share my Secret Recovery Phrase?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "How do I save my Secret Recovery Phrase?"
   },
   "seedPhraseIntroTitle": {
     "message": "Secure your wallet"
@@ -4993,9 +4953,6 @@
   },
   "settings": {
     "message": "Settings"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "Settings are optimised for ease of use and security. Change these any time."
   },
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
@@ -5151,14 +5108,17 @@
   "siweURI": {
     "message": "URL"
   },
-  "skip": {
-    "message": "Skip"
-  },
   "skipAccountSecurity": {
     "message": "Skip account security?"
   },
   "skipAccountSecurityDetails": {
     "message": "If you lose this Secret Recovery Phrase, you won’t be able to access this wallet."
+  },
+  "skipAccountSecuritySecureNow": {
+    "message": "Secure now"
+  },
+  "skipAccountSecuritySkip": {
+    "message": "Skip"
   },
   "slideBridgeDescription": {
     "message": "Move across 9 chains, all within your wallet"
@@ -5576,6 +5536,9 @@
   },
   "spendingCaps": {
     "message": "Spending caps"
+  },
+  "srpDesignImageAlt": {
+    "message": "SRP vault image"
   },
   "srpDetailsDescription": {
     "message": "A Secret Recovery Phrase, also called a seed phrase or mnemonic, is a set of words that lets you access and control your crypto wallet. To move your wallet to MetaMask, you need this phrase."
@@ -6822,9 +6785,18 @@
   "walletConnectionGuide": {
     "message": "our hardware wallet connection guide"
   },
-  "walletProtectedAndReadyToUse": {
-    "message": "Your wallet is protected and ready to use. You can find your Secret Recovery Phrase in $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
+  "walletReadyLearn": {
+    "message": "$1 you can keep this phrase safe so you never lose access to your money.",
+    "description": "$1 is the link to Learn how"
+  },
+  "walletReadyLearnRemind": {
+    "message": "You can back up your wallets or see your Secret Recovery Phrase in Settings > Security & Password."
+  },
+  "walletReadyLoseSrp": {
+    "message": "If you lose your Secret Recovery Phrase, you won’t be able to use your wallet."
+  },
+  "walletReadyLoseSrpRemind": {
+    "message": "If you don’t back up your Secret Recovery Phrase, you’ll lose access to your funds if you get locked out of the app or get a new device."
   },
   "wantToAddThisNetwork": {
     "message": "Want to add this network?"
@@ -6944,5 +6916,8 @@
   },
   "yourWalletIsReady": {
     "message": "Your wallet is ready!"
+  },
+  "yourWalletIsReadyRemind": {
+    "message": "We’ll remind you later"
   }
 }
