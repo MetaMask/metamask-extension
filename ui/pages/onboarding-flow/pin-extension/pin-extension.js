@@ -99,7 +99,7 @@ export default function OnboardingPinExtension() {
               disabled={!hasPrev}
               title={label}
               onClick={onClickHandler}
-              ariaLabel="prev"
+              ariaLabel={t('prev')}
             />
           )}
           renderArrowNext={(onClickHandler, hasNext, label) => (
@@ -114,7 +114,7 @@ export default function OnboardingPinExtension() {
               disabled={!hasNext}
               title={label}
               onClick={onClickHandler}
-              ariaLabel="next"
+              ariaLabel={t('next')}
               data-testid="pin-extension-next"
             />
           )}
@@ -129,7 +129,7 @@ export default function OnboardingPinExtension() {
             <img
               src="/images/onboarding-extension-pin.svg"
               className="onboarding-pin-extension__image-pin"
-              alt=""
+              alt={t('onboardingPinExtensionAltPin')}
             />
           </Box>
           <Box
@@ -141,7 +141,7 @@ export default function OnboardingPinExtension() {
             <img
               src="/images/onboarding-extension-launch.svg"
               className="onboarding-pin-extension__image-launch"
-              alt=""
+              alt={t('onboardingPinExtensionAltLaunch')}
             />
           </Box>
         </Carousel>
