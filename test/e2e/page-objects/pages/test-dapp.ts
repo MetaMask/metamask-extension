@@ -58,6 +58,8 @@ class TestDapp {
 
   private readonly encryptMessageInput = '#encryptMessageInput';
 
+  private readonly erc1155DeployButton = '#deployERC1155Button';
+
   private readonly erc1155MintButton = '#batchMintButton';
 
   private readonly erc1155RevokeSetApprovalForAllButton =
@@ -77,6 +79,8 @@ class TestDapp {
   private readonly erc20TokenTransferButton = '#transferTokens';
 
   private readonly erc20WatchAssetButton = '#watchAssets';
+
+  private readonly erc721DeployButton = '#deployNFTsButton';
 
   private readonly erc721MintButton = '#mintButton';
 
@@ -695,6 +699,10 @@ class TestDapp {
     await this.driver.clickElement(this.approveTokensButtonWithoutGas);
   }
 
+  async clickERC1155DeployButton() {
+    await this.driver.clickElement(this.erc1155DeployButton);
+  }
+
   async clickERC1155MintButton() {
     await this.driver.clickElement(this.erc1155MintButton);
   }
@@ -717,6 +725,10 @@ class TestDapp {
 
   async clickERC20WatchAssetButton() {
     await this.driver.clickElement(this.erc20WatchAssetButton);
+  }
+
+  async clickERC721DeployButton() {
+    await this.driver.clickElement(this.erc721DeployButton);
   }
 
   async clickERC721MintButton() {

@@ -76,6 +76,8 @@ const blocklistedHosts = [
   'bsc-dataseed.binance.org',
   'linea-mainnet.infura.io',
   'linea-sepolia.infura.io',
+  'testnet-rpc.monad.xyz',
+  'carrot.megaeth.com',
   'mainnet.infura.io',
   'sepolia.infura.io',
 ];
