@@ -212,7 +212,7 @@ const MessageBody = forwardRef(
     const onDecryptMessage = async (event) => {
       event.stopPropagation(event);
 
-      const params = messageData.msgParams;
+      const params = { ...messageData.msgParams };
       params.metamaskId = messageData.id;
 
       const result = await dispatch(decryptMsgInline(params));
@@ -349,7 +349,7 @@ const Footer = ({
 
   const onSubmitClick = async (event) => {
     event.stopPropagation(event);
-    const params = messageData.msgParams;
+    const params = { ...messageData.msgParams };
     params.metamaskId = messageData.id;
 
     await dispatch(decryptMsg(params));

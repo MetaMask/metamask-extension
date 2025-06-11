@@ -58,11 +58,20 @@ export default function DeprecatedNetworks() {
         setIsClosed(true);
 
         const networkConfiguration = networkConfigurations[chainId];
-        networkConfiguration.rpcEndpoints[
-          networkConfiguration.defaultRpcEndpointIndex
-        ].url = 'https://mainnet.aurora.dev';
-
-        await dispatch(updateNetwork(networkConfiguration));
+        await dispatch(
+          updateNetwork({
+            ...networkConfiguration,
+            rpcEndpoints: {
+              ...networkConfiguration.rpcEndpoints,
+              [networkConfiguration.defaultRpcEndpointIndex]: {
+                ...networkConfiguration.rpcEndpoints[
+                  networkConfiguration.defaultRpcEndpointIndex
+                ],
+                url: 'https://mainnet.aurora.dev',
+              },
+            },
+          }),
+        );
       },
     };
   }
