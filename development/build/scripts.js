@@ -32,7 +32,7 @@ const { streamFlatMap } = require('../stream-flat-map');
 const { isManifestV3 } = require('../../shared/modules/mv3.utils');
 const { setEnvironmentVariables } = require('./set-environment-variables');
 const { BUILD_TARGETS } = require('./constants');
-const { getConfig } = require('./config');
+const { getConfig, getActiveFeatures } = require('./config');
 const {
   isDevBuild,
   isTestBuild,
@@ -535,7 +535,7 @@ function createFactoredBuild({
 
     const environment = getEnvironment({ buildTarget });
     const config = await getConfig(buildType, environment);
-    const { variables, activeBuild } = config;
+    const { variables } = config;
     setEnvironmentVariables({
       isDevBuild: reloadOnChange,
       isTestBuild: isTestBuild(buildTarget),
@@ -549,7 +549,7 @@ function createFactoredBuild({
       version,
     });
     const features = {
-      active: new Set(activeBuild.features ?? []),
+      active: new Set(getActiveFeatures()),
       all: new Set(Object.keys(config.buildsYml.features)),
     };
     setupBundlerDefaults(buildConfiguration, {
@@ -826,7 +826,7 @@ function createNormalBundle({
 
     const environment = getEnvironment({ buildTarget });
     const config = await getConfig(buildType, environment);
-    const { activeBuild, variables } = config;
+    const { variables } = config;
     setEnvironmentVariables({
       buildName: getBuildName({
         environment,
@@ -844,7 +844,7 @@ function createNormalBundle({
     );
 
     const features = {
-      active: new Set(activeBuild.features ?? []),
+      active: new Set(getActiveFeatures()),
       all: new Set(Object.keys(config.buildsYml.features)),
     };
     setupBundlerDefaults(buildConfiguration, {
@@ -924,7 +924,9 @@ function setupBundlerDefaults(
           extensions,
         },
       ],
-      // We are transpelling the firebase package to be compatible with the lavaMoat restrictions
+      // Transpile dependencies that are either:
+      // - Not supported by browserify (e.g. ESM-only packages)
+      // - Reliant on language features not yet supported by our minimum browser version targets
       [
         babelify,
         {

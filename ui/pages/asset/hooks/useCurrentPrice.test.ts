@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AssetType } from '@metamask/bridge-controller';
-import { SolMethod, SolScope } from '@metamask/keyring-api';
+import { EthScope, SolMethod, SolScope } from '@metamask/keyring-api';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import { Asset } from '../types/asset';
 import { useCurrentPrice } from './useCurrentPrice';
@@ -44,6 +44,7 @@ describe('useCurrentPrice', () => {
             id: '81b1ead4-334c-4921-9adf-282fde539752',
             address: '0x458036e7bc0612e9b207640dc07ca7711346aae5',
             type: 'eip155:eoa',
+            scopes: [EthScope.Eoa],
           },
           '5132883f-598e-482c-a02b-84eeaa352f5b': {
             id: '5132883f-598e-482c-a02b-84eeaa352f5b',

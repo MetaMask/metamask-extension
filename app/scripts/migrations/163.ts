@@ -1,5 +1,5 @@
-import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
+import { hasProperty, isObject } from '@metamask/utils';
 
 type VersionedData = {
   meta: { version: number };
@@ -8,111 +8,61 @@ type VersionedData = {
 
 export const version = 163;
 
-const SOLANA_MAINNET_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
-
-type TransactionStateEntry = {
-  transactions: unknown[];
-  next: string | null;
-  lastUpdated: number;
-};
-
-type LegacyTransactionsState = {
-  [accountId: string]: TransactionStateEntry;
-};
-
-type NewTransactionsState = {
-  [accountId: string]: {
-    [chainId: string]: TransactionStateEntry;
-  };
-};
-
 /**
- * This migration transforms the MultichainTransactionsController state structure
- * to support per-chain transaction storage. It moves transactions from directly
- * under the account to be nested under the chainId (Solana in this case).
+ * This migration removes the `tokens`, `detectedTokens`, and `ignoredTokens` properties from the TokensController state for users who do not have tokenListController state.
  *
- * @param originalVersionedData - Versioned MetaMask extension state, exactly
- * what we persist to disk.
- * @returns Updated versioned MetaMask extension state.
+ * If the TokensController is not found or is not an object, the migration logs an error,
+ * but otherwise leaves the state unchanged.
+ *
+ * @param originalVersionedData - The versioned extension state.
+ * @returns The updated versioned extension state without the tokens property.
  */
 export async function migrate(
   originalVersionedData: VersionedData,
 ): Promise<VersionedData> {
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
-  transformState(versionedData.data);
+
+  versionedData.data = transformState(versionedData.data);
+
   return versionedData;
 }
 
 function transformState(
   state: Record<string, unknown>,
 ): Record<string, unknown> {
-  if (
-    !hasProperty(state, 'MultichainTransactionsController') ||
-    !isObject(state.MultichainTransactionsController)
-  ) {
+  // If property TokensController is not present, only log a warning and return the original state.
+  if (!hasProperty(state, 'TokensController')) {
+    console.warn(`newState.TokensController is not present`);
+    return state;
+  }
+
+  const tokensControllerState = state.TokensController;
+
+  // If property tokensControllerState is there but not an object, capture a sentry error and return state
+  if (!isObject(tokensControllerState)) {
     global.sentry?.captureException?.(
       new Error(
-        `Invalid MultichainTransactionsController state: ${typeof state.MultichainTransactionsController}`,
+        `Migration ${version}: TokensController is type '${typeof tokensControllerState}', expected object.`,
       ),
     );
     return state;
   }
 
-  const transactionsController = state.MultichainTransactionsController;
-
-  if (
-    !hasProperty(transactionsController, 'nonEvmTransactions') ||
-    !isObject(transactionsController.nonEvmTransactions)
-  ) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Invalid nonEvmTransactions state: ${typeof transactionsController.nonEvmTransactions}`,
-      ),
-    );
-    return state;
+  if (hasProperty(tokensControllerState, 'tokens')) {
+    // Remove the tokens property from the TokensController state.
+    delete tokensControllerState.tokens;
   }
 
-  const { nonEvmTransactions } = transactionsController;
-  const newNonEvmTransactions: NewTransactionsState = {};
-
-  // Migrate each account's transactions to the new nested structure
-  for (const [accountId, accountTransactions] of Object.entries(
-    nonEvmTransactions as LegacyTransactionsState,
-  )) {
-    // If the account already has the new structure, meaning the accountTransactions
-    // doesn't have a direct transactions property, instead it has a chainId as a key,
-    // so we can skip it and continue to the next account
-    if (
-      isObject(accountTransactions) &&
-      !Array.isArray(accountTransactions.transactions)
-    ) {
-      // This state is only used for Solana's transactions (at that time), we assume it's already well-shaped
-      // and don't run any validation on the object itself (hence the `as unknown`).
-      newNonEvmTransactions[accountId] =
-        accountTransactions as unknown as NewTransactionsState[string];
-      continue;
-    }
-
-    // Creates the new structure for this account
-    // Since we know the transactions are from Solana, we use the Solana chainId
-    // 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' is Solana mainnet (the only supported so far)
-    newNonEvmTransactions[accountId] = {
-      [SOLANA_MAINNET_ADDRESS]: {
-        transactions: Array.isArray(accountTransactions.transactions)
-          ? accountTransactions.transactions
-          : [],
-        next: accountTransactions.next || null,
-        lastUpdated:
-          typeof accountTransactions.lastUpdated === 'number'
-            ? accountTransactions.lastUpdated
-            : Date.now(),
-      },
-    };
+  if (hasProperty(tokensControllerState, 'detectedTokens')) {
+    // Remove the detectedTokens property from the TokensController state.
+    delete tokensControllerState.detectedTokens;
   }
 
-  // Update the state with the new structure
-  transactionsController.nonEvmTransactions = newNonEvmTransactions;
+  if (hasProperty(tokensControllerState, 'ignoredTokens')) {
+    // Remove the ignoredTokens property from the TokensController state.
+    delete tokensControllerState.ignoredTokens;
+  }
 
   return state;
 }

@@ -2715,12 +2715,14 @@ export function updateSendAsset(
           asset.error = INVALID_ASSET_TYPE;
           throw new Error(INVALID_ASSET_TYPE);
         } else {
+          const selectedNetworkClientId = getSelectedNetworkClientId(state);
           let isCurrentOwner = true;
           try {
             isCurrentOwner = await isNftOwner(
               sendingAddress,
               details.address,
               details.tokenId,
+              selectedNetworkClientId,
             );
           } catch (err) {
             const message = getErrorMessage(err);

@@ -1,143 +1,104 @@
 import { migrate, version } from './163';
 
-const SOLANA_MAINNET_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+const oldVersion = 162;
 
 describe(`migration #${version}`, () => {
+  // Set up a global sentry mock before each test.
+  beforeEach(() => {
+    global.sentry = { captureException: jest.fn() };
+  });
+
+  afterEach(() => {
+    // Clean up the global sentry after each test.
+    global.sentry = undefined;
+  });
+
   it('updates the version metadata', async () => {
     const oldStorage = {
-      meta: { version: version - 1 },
+      meta: { version: oldVersion },
       data: {},
     };
+
     const newStorage = await migrate(oldStorage);
+
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('does nothing if MultichainTransactionsController is missing', async () => {
-    const oldStorage = {
-      meta: { version: version - 1 },
-      data: {},
-    };
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual({});
-  });
-
-  it('does nothing if MultichainTransactionsController is not an object', async () => {
-    const oldStorage = {
-      meta: { version: version - 1 },
-      data: {
-        MultichainTransactionsController: 'not an object',
-      },
-    };
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
-  });
-
-  it('does nothing if nonEvmTransactions is not an object', async () => {
-    const oldStorage = {
-      meta: { version: version - 1 },
-      data: {
-        MultichainTransactionsController: {
-          nonEvmTransactions: 'not an object',
+  describe(`migration #${version}`, () => {
+    it('does not capture sentry error and returns the original state if TokensController is missing', async () => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          OtherController: {},
         },
-      },
-    };
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
-  });
+      };
 
-  it('migrates transactions to the new structure with chainId nesting', async () => {
-    const mockTransaction = { id: '123', type: 'send' };
-    const oldStorage = {
-      meta: { version: version - 1 },
-      data: {
-        MultichainTransactionsController: {
-          nonEvmTransactions: {
-            'account 1': {
-              transactions: [mockTransaction],
-              next: null,
-              lastUpdated: 1234567890,
-            },
-            'account 2': {
-              transactions: [],
-              next: null,
-              lastUpdated: 9876543210,
-            },
+      const newStorage = await migrate(oldStorage);
+
+      expect(global.sentry.captureException).not.toHaveBeenCalled();
+      expect(newStorage.data).toStrictEqual(oldStorage.data);
+    });
+
+    it('Captures sentry error and returns the original state if TokensController exists but is not an object', async () => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          TokensController: 'not an object',
+        },
+      };
+
+      const newStorage = await migrate(oldStorage);
+
+      expect(global.sentry.captureException).toHaveBeenCalledWith(
+        new Error(
+          `Migration ${version}: TokensController is type 'string', expected object.`,
+        ),
+      );
+      expect(newStorage.data).toStrictEqual(oldStorage.data);
+    });
+    it('does nothing when both TokenListController and TokensController are present', async () => {
+      // since state should have been already migrated in 153
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          TokensController: {
+            someOtherProp: true,
+          },
+          TokenListController: {
+            anotherProp: 'value',
           },
         },
-      },
-    };
+      };
 
-    const expectedData = {
-      MultichainTransactionsController: {
-        nonEvmTransactions: {
-          'account 1': {
-            [SOLANA_MAINNET_ADDRESS]: {
-              transactions: [mockTransaction],
-              next: null,
-              lastUpdated: 1234567890,
-            },
+      const newStorage = await migrate(oldStorage);
+
+      expect(newStorage.data).toStrictEqual(oldStorage.data);
+    });
+    it('removes tokens, detectedTokens, and ignoredTokens from TokensController when user has tokensController state with those properties', async () => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          TokensController: {
+            tokens: [1, 2],
+            detectedTokens: ['a', 'b'],
+            ignoredTokens: { some: 'value' },
+            someOtherProp: true,
           },
-          'account 2': {
-            [SOLANA_MAINNET_ADDRESS]: {
-              transactions: [],
-              next: null,
-              lastUpdated: 9876543210,
-            },
-          },
+          OtherController: { key: 'value' },
         },
-      },
-    };
+      };
 
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual(expectedData);
-  });
-
-  it('skips accounts that already have the new structure', async () => {
-    const mockTransaction = { id: '123', type: 'send' };
-    const oldStorage = {
-      meta: { version: version - 1 },
-      data: {
-        MultichainTransactionsController: {
-          nonEvmTransactions: {
-            'account 1': {
-              transactions: [mockTransaction],
-              next: null,
-              lastUpdated: 1234567890,
-            },
-            'account 2': {
-              [SOLANA_MAINNET_ADDRESS]: {
-                transactions: [],
-                next: null,
-                lastUpdated: 9876543210,
-              },
-            },
-          },
+      const expectedData = {
+        TokensController: {
+          someOtherProp: true,
         },
-      },
-    };
+        OtherController: { key: 'value' },
+      };
 
-    const expectedData = {
-      MultichainTransactionsController: {
-        nonEvmTransactions: {
-          'account 1': {
-            [SOLANA_MAINNET_ADDRESS]: {
-              transactions: [mockTransaction],
-              next: null,
-              lastUpdated: 1234567890,
-            },
-          },
-          'account 2': {
-            [SOLANA_MAINNET_ADDRESS]: {
-              transactions: [],
-              next: null,
-              lastUpdated: 9876543210,
-            },
-          },
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual(expectedData);
+      const newStorage = await migrate(oldStorage);
+      expect(global.sentry.captureException).not.toHaveBeenCalled();
+      expect(newStorage.meta).toStrictEqual({ version });
+      expect(newStorage.data).toStrictEqual(expectedData);
+    });
   });
 });

@@ -8,7 +8,10 @@ import { NetworkType } from '@metamask/controller-utils';
 import { isEvmAccountType, Transaction } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { isScopeEqualToAny } from '@metamask/keyring-utils';
-import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
+import {
+  MultichainTransactionsControllerState,
+  TransactionStateEntry,
+} from '@metamask/multichain-transactions-controller';
 import {
   NetworkConfiguration,
   RpcEndpointType,
@@ -239,11 +242,9 @@ export function getMultichainNetwork(
   }
 
   // If still no network found, we try to find a network that is address compatible
-  // TODO: This runtime logic is not supported by the `MultichainNetworkController`, we should remove this and rely
-  // only on the network configs provided by this controller.
   if (!nonEvmNetwork) {
     nonEvmNetwork = nonEvmNetworks.find((provider) => {
-      return provider.isAddressCompatible(selectedAccount.address);
+      return selectedAccount.scopes.includes(provider.chainId);
     });
   }
 
@@ -484,14 +485,15 @@ export function getSelectedAccountMultichainTransactions(
     return undefined;
   }
 
-  const transactions = state.metamask.nonEvmTransactions[selectedAccount.id];
+  const transactions = state.metamask.nonEvmTransactions[selectedAccount.id] as
+    | { [chain: CaipChainId]: TransactionStateEntry }
+    | undefined;
 
   // We need to get the provider config for the selected account to get the correct chainId
   const providerConfig = getMultichainProviderConfig(state, selectedAccount);
   const currentChainId = providerConfig.chainId as MultichainNetworks;
 
-  // And then return the transactions for the current chain
-  return transactions?.[currentChainId];
+  return transactions?.[currentChainId as CaipChainId];
 }
 
 export const getMultichainCoinRates = (state: MultichainState) => {

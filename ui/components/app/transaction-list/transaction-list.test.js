@@ -352,6 +352,13 @@ describe('TransactionList', () => {
 
   describe('keepOnlyNonEvmTransactionsForToken', () => {
     const transactionWithSolAndToken = {
+      from: [
+        {
+          asset: {
+            type: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          },
+        },
+      ],
       to: [
         {
           asset: {
@@ -366,6 +373,13 @@ describe('TransactionList', () => {
       ],
     };
     const transactionWithOnlySol = {
+      from: [
+        {
+          asset: {
+            type: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          },
+        },
+      ],
       to: [
         {
           asset: {
@@ -375,6 +389,13 @@ describe('TransactionList', () => {
       ],
     };
     const transactionWithOnlyToken = {
+      from: [
+        {
+          asset: {
+            type: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+          },
+        },
+      ],
       to: [
         {
           asset: {
