@@ -169,7 +169,10 @@ import {
   BRIDGE_STATUS_CONTROLLER_NAME,
   BridgeStatusAction,
 } from '@metamask/bridge-status-controller';
-import { RecoveryError } from '@metamask/seedless-onboarding-controller';
+import {
+  RecoveryError,
+  SeedlessOnboardingControllerErrorMessage,
+} from '@metamask/seedless-onboarding-controller';
 
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
@@ -3542,8 +3545,7 @@ export default class MetamaskController extends EventEmitter {
       syncSeedPhrases: this.syncSeedPhrases.bind(this),
       checkIsSeedlessPasswordOutdated:
         this.checkIsSeedlessPasswordOutdated.bind(this),
-      submitLatestGlobalSeedlessPassword:
-        this.submitLatestGlobalSeedlessPassword.bind(this),
+      syncPasswordAndUnlockWallet: this.syncPasswordAndUnlockWallet.bind(this),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
@@ -4652,7 +4654,6 @@ export default class MetamaskController extends EventEmitter {
       const oAuthLoginResult = await this.oauthService.startOAuthLogin(
         provider,
       );
-      console.log('oAuthLoginResult', oAuthLoginResult);
 
       const { isNewUser } =
         await this.seedlessOnboardingController.authenticate(oAuthLoginResult);
@@ -4786,27 +4787,47 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Sync latest global seedless password.
-   * Swap current device password with latest global password.
+   * Sync latest global seedless password and override the current device password with latest global password.
+   * Unlock the vault with the latest global password.
    *
-   * @param {string} globalPassword - latest global seedless password
+   * @param {string} password - latest global seedless password
    */
-  async submitLatestGlobalSeedlessPassword(globalPassword) {
+  async syncPasswordAndUnlockWallet(password) {
     const isSocialLoginFlow = this.onboardingController.isSocialLoginFlowType();
+    // check if the password is outdated
+    const isPasswordOutdated =
+      await this.seedlessOnboardingController.checkIsPasswordOutdated({
+        skipCache: true,
+      });
 
-    if (!isSocialLoginFlow) {
-      // this is only available for seedless onboarding flow
-      throw new Error(
-        'This method is only available for seedless onboarding flow',
-      );
+    // if the flow is not social login or the password is not outdated,
+    // we will proceed with the normal flow and use the password to unlock the vault
+    if (!isSocialLoginFlow || !isPasswordOutdated) {
+      await this.submitPassword(password);
+      return;
     }
 
     const releaseLock = await this.syncSeedlessGlobalPasswordMutex.acquire();
     try {
+      // verify the password validity first, to check if user is using the correct password
+      await this.keyringController.verifyPassword(password);
+      // if user is able to unlock the vault with the old password,
+      // throw an OutdatedPassword error to let the user to enter the updated password.
+      throw new Error(
+        SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
+      );
+    } catch (e) {
+      if (
+        e.message === SeedlessOnboardingControllerErrorMessage.OutdatedPassword
+      ) {
+        // if the password is outdated, we should throw an error and let the user to enter the updated password.
+        throw e;
+      }
+
       // recover the current device password
       const { password: currentDevicePassword } =
         await this.seedlessOnboardingController.recoverCurrentDevicePassword({
-          globalPassword,
+          globalPassword: password,
         });
 
       // use current device password to unlock the keyringController vault
@@ -4816,11 +4837,11 @@ export default class MetamaskController extends EventEmitter {
         // update seedlessOnboardingController to use latest global password
         await this.seedlessOnboardingController.syncLatestGlobalPassword({
           oldPassword: currentDevicePassword,
-          globalPassword,
+          globalPassword: password,
         });
 
         // update vault password to global password
-        await this.keyringController.changePassword(globalPassword);
+        await this.keyringController.changePassword(password);
 
         // check password outdated again skip cache to reset the cache after successful syncing
         await this.seedlessOnboardingController.checkIsPasswordOutdated({

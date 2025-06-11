@@ -54,10 +54,6 @@ export default class UnlockPage extends Component {
      */
     isUnlocked: PropTypes.bool,
     /**
-     * Whether the seedless password is outdated
-     */
-    isSeedlessPasswordOutdated: PropTypes.bool,
-    /**
      * onClick handler for "Forgot password?" button
      */
     onRestore: PropTypes.func,
@@ -85,27 +81,10 @@ export default class UnlockPage extends Component {
   animationEventEmitter = new EventEmitter();
 
   UNSAFE_componentWillMount() {
-    const { isUnlocked, history, isSeedlessPasswordOutdated } = this.props;
+    const { isUnlocked, history } = this.props;
 
     if (isUnlocked) {
       history.push(DEFAULT_ROUTE);
-      return;
-    }
-
-    if (isSeedlessPasswordOutdated) {
-      // first error if seedless password is outdated
-      const { t } = this.context;
-      this.setState({ error: t('passwordChangedRecently') });
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (
-      !prevProps.isSeedlessPasswordOutdated &&
-      prevProps.isSeedlessPasswordOutdated !==
-        this.props.isSeedlessPasswordOutdated
-    ) {
-      this.setState({ error: this.context.t('passwordChangedRecently') });
     }
   }
 
@@ -163,6 +142,10 @@ export default class UnlockPage extends Component {
         finalErrorMessage = t('unlockPageTooManyFailedAttempts');
         errorReason = 'too_many_login_attempts';
         finalUnlockDelayPeriod = data.remainingTime;
+        break;
+      case SeedlessOnboardingControllerErrorMessage.OutdatedPassword:
+        finalErrorMessage = t('passwordChangedRecently');
+        errorReason = 'outdated_password';
         break;
       default:
         finalErrorMessage = message;

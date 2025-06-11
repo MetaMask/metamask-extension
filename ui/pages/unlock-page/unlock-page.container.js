@@ -11,11 +11,9 @@ import {
 } from '../../helpers/constants/routes';
 import {
   tryUnlockMetamask,
-  tryUnlockMetamaskWithGlobalSeedlessPassword,
   markPasswordForgotten,
   forceUpdateMetamaskState,
 } from '../../store/actions';
-import { getIsSeedlessPasswordOutdated } from '../../ducks/metamask/metamask';
 import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
@@ -23,19 +21,15 @@ const mapStateToProps = (state) => {
     metamask: { isUnlocked, firstTimeFlow },
   } = state;
 
-  const isSeedlessPasswordOutdated = getIsSeedlessPasswordOutdated(state);
   return {
     isUnlocked,
     firstTimeFlow,
-    isSeedlessPasswordOutdated,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     tryUnlockMetamask: (password) => dispatch(tryUnlockMetamask(password)),
-    tryUnlockMetamaskWithGlobalSeedlessPassword: (globalPassword) =>
-      dispatch(tryUnlockMetamaskWithGlobalSeedlessPassword(globalPassword)),
     markPasswordForgotten: () => dispatch(markPasswordForgotten()),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
   };
@@ -45,8 +39,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
     markPasswordForgotten: propsMarkPasswordForgotten,
     tryUnlockMetamask: propsTryUnlockMetamask,
-    tryUnlockMetamaskWithGlobalSeedlessPassword:
-      propsTryUnlockMetamaskWithGlobalSeedlessPassword,
     ...restDispatchProps
   } = dispatchProps;
   const { history, onSubmit: ownPropsSubmit, ...restOwnProps } = ownProps;
@@ -62,13 +54,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   };
 
   const onSubmit = async (password) => {
-    const { isSeedlessPasswordOutdated } = stateProps;
-    if (isSeedlessPasswordOutdated) {
-      // use global seedless password to unlock the vault if seedless password is outdated
-      await propsTryUnlockMetamaskWithGlobalSeedlessPassword(password);
-    } else {
-      await propsTryUnlockMetamask(password);
-    }
+    await propsTryUnlockMetamask(password);
 
     history.push(DEFAULT_ROUTE);
   };
