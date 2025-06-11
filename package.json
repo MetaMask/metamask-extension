@@ -227,7 +227,8 @@
     "@keystonehq/metamask-airgapped-keyring": "patch:@keystonehq/metamask-airgapped-keyring@npm%3A0.15.2#~/.yarn/patches/@keystonehq-metamask-airgapped-keyring-npm-0.15.2-94dd4b40d7.patch",
     "@trezor/connect-web": "~9.4.7",
     "@metamask/network-controller@npm:^23.3.0": "patch:@metamask/network-controller@npm%3A23.5.1#~/.yarn/patches/@metamask-network-controller-npm-23.5.1-42017cc4f5.patch",
-    "@metamask/network-controller@npm:^23.1.0": "patch:@metamask/network-controller@npm%3A23.5.1#~/.yarn/patches/@metamask-network-controller-npm-23.5.1-42017cc4f5.patch"
+    "@metamask/network-controller@npm:^23.1.0": "patch:@metamask/network-controller@npm%3A23.5.1#~/.yarn/patches/@metamask-network-controller-npm-23.5.1-42017cc4f5.patch",
+    "@metamask/eth-ledger-bridge-keyring@^11.0.3": "npm:@metamask-previews/eth-ledger-bridge-keyring@11.0.3-87ad186"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",

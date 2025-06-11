@@ -3,6 +3,7 @@ import {
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
 } from '@metamask/eth-ledger-bridge-keyring';
+import { TransportStatusError } from '@ledgerhq/errors';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
@@ -147,9 +148,24 @@ export class LedgerOffscreenBridge
           if (response?.success) {
             resolve(response.payload || response.success);
           } else {
-            reject(
-              new Error(response?.payload?.error || 'Unknown Ledger error'),
-            );
+            // need to process the payload to get the error
+            // and then reject with the error
+            const error: SerializedLedgerError = response?.payload?.error;
+
+            if (error.statusCode > 0 && error.statusText) {
+              // this is TransportStatusError, convert the SerializedLedgerError to a TransportStatusError
+              // TransportStatusError will regenerate the error message based on the statusCode
+              const transportStatusError = new TransportStatusError(
+                error.statusCode,
+              );
+              reject(transportStatusError);
+            } else {
+              // Regenerate the error based on the SerializedLedgerError
+              const newError = new Error(error.message, {
+                cause: error,
+              });
+              reject(newError);
+            }
           }
         },
       );
