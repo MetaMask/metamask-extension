@@ -15,12 +15,19 @@ export const useSafeNativeCurrencySymbol = (
   const { safeChains } = useSafeChains();
   const safeChainsRef = useRef(safeChains);
 
+  // Use a ref to the current safeChains value bc the object changes on every render
   useEffect(() => {
     safeChainsRef.current = safeChains;
   }, [safeChains]);
 
+  useEffect(() => {
+    return () => {
+      safeChainsRef.current = undefined;
+    };
+  }, []);
+
   return useMemo(() => {
-    if (!safeChainsRef || !chainId) {
+    if (!safeChainsRef.current || !chainId) {
       return undefined;
     }
 
@@ -31,8 +38,9 @@ export const useSafeNativeCurrencySymbol = (
       return undefined;
     }
 
-    return safeChainsRef.current?.find(
+    return safeChainsRef.current.find(
       (chain) => chain.chainId === decimalChainId.toString(),
     )?.nativeCurrency?.symbol;
-  }, [safeChainsRef, chainId]);
+    // Only update value when chainId changes
+  }, [chainId]);
 };
