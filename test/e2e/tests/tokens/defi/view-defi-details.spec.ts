@@ -11,6 +11,8 @@ import { mockDeFiPositionFeatureFlag } from '../../confirmations/helpers';
 
 import { switchToNetworkFlow } from '../../../page-objects/flows/network.flow';
 
+const isGlobalNetworkSelectorRemoved = true;
+
 describe('View DeFi details', function () {
   it('user should be able to view Aave Positions details', async function () {
     await withFixtures(
@@ -40,6 +42,9 @@ describe('View DeFi details', function () {
         await defiTab.defiTabCells.check_tokenName('Aave V2');
         await defiTab.defiTabCells.check_tokenMarketValue('$0.33');
 
+        if (!isGlobalNetworkSelectorRemoved) {
+          await defiTab.openNetworksFilterAndClickPopularNetworks();
+        }
         await defiTab.defiTabCells.check_tokenName('UniswapV3');
         await defiTab.defiTabCells.check_tokenMarketValue('$8.48');
         await defiTab.defiTabCells.check_tokenName('UniswapV2');
