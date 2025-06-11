@@ -15,14 +15,11 @@ async function mockSnapsWebsite(mockServer) {
         statusCode: 200,
         body: emptyHtmlPage(),
       };
-    })
+    });
 }
 
 async function mockSnapBinaryAndWebsite(mockServer) {
-  return [
-    await mockDialogSnap(mockServer),
-    await mockSnapsWebsite(mockServer),
-  ]
+  return [await mockDialogSnap(mockServer), await mockSnapsWebsite(mockServer)]
 }
 
 describe('Test Snap UI Links', function () {

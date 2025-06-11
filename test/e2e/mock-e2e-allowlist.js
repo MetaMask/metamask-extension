@@ -10,17 +10,15 @@ const ALLOWLISTED_URLS = [
   'https://metamask.github.io/ledger-iframe-bridge/8.0.3/',
   'https://metamask.github.io/ledger-iframe-bridge/8.0.3/assets/index-j_SGnqki.js',
   'https://metamask.github.io/ledger-iframe-bridge/8.0.3/assets/vendor-BlXVsT1S.js',
-  'https://metamask.github.io/snap-account-abstraction-keyring/0.4.1/',
-  'https://metamask.github.io/snap-account-abstraction-keyring/0.4.1/72585f70-0b8c9d47690d7fe2ac87.js',
-  'https://metamask.github.io/snap-account-abstraction-keyring/0.4.1/app-acf97414441c8da8c710.js',
-  'https://metamask.github.io/snap-account-abstraction-keyring/0.4.1/component---src-pages-index-tsx-5cfb3411e9d4665335b8.js',
-  'https://metamask.github.io/snap-account-abstraction-keyring/0.4.1/f36c6662-e3e593644ccdf91e0df1.js',
-  'https://metamask.github.io/snap-account-abstraction-keyring/0.4.1/framework-7f36badc7ddb1e3597e8.js',
-  'https://metamask.github.io/snap-account-abstraction-keyring/0.4.1/page-data/500.html/page-data.json',
-  'https://metamask.github.io/snap-account-abstraction-keyring/0.4.1/page-data/app-data.json',
-  'https://metamask.github.io/snap-account-abstraction-keyring/0.4.1/page-data/index/page-data.json',
-  'https://metamask.github.io/snap-account-abstraction-keyring/0.4.1/webpack-runtime-aa57915fb3e4eb554525.js',
   'https://metamask.github.io/snap-account-abstraction-keyring/0.5.0/',
+  'https://metamask.github.io/snap-account-abstraction-keyring/0.5.0/72585f70-0b8c9d47690d7fe2ac87.js',
+  'https://metamask.github.io/snap-account-abstraction-keyring/0.5.0/app-27784e6248e8644fa873.js',
+  'https://metamask.github.io/snap-account-abstraction-keyring/0.5.0/component---src-pages-index-tsx-65d9e73b6aea71652319.js',
+  'https://metamask.github.io/snap-account-abstraction-keyring/0.5.0/f36c6662-e3e593644ccdf91e0df1.js',
+  'https://metamask.github.io/snap-account-abstraction-keyring/0.5.0/framework-7f36badc7ddb1e3597e8.js',
+  'https://metamask.github.io/snap-account-abstraction-keyring/0.5.0/page-data/app-data.json',
+  'https://metamask.github.io/snap-account-abstraction-keyring/0.5.0/page-data/index/page-data.json',
+  'https://metamask.github.io/snap-account-abstraction-keyring/0.5.0/webpack-runtime-eb27ff9e27bd689ff465.js',
   'https://metamask.github.io/snap-simple-keyring/1.1.6/',
   'https://metamask.github.io/snap-simple-keyring/1.1.6/72585f70-b0685205a809efe121dc.js',
   'https://metamask.github.io/snap-simple-keyring/1.1.6/f36c6662-7e78236bba23a76b6101.js',
@@ -44,6 +42,7 @@ const ALLOWLISTED_URLS = [
   'https://swap.metaswap.codefi.network/networks/1/topAssets',
   // Vault Decryptor
   'https://metamask.github.io/vault-decryptor',
+  'https://metamask.github.io/vault-decryptor/',
 ];
 
 const ALLOWLISTED_HOSTS = [
