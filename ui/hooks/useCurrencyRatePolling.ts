@@ -4,7 +4,7 @@ import {
   getChainIdsToPoll,
   getEnabledChainIds,
   getUseCurrencyRateCheck,
-  useSafeChainsListValidationSelector,
+  getUseSafeChainsListValidation,
 } from '../selectors';
 import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
 import { getOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
@@ -30,7 +30,7 @@ const usePollingEnabled = () => {
 const useNativeCurrencies = (isPollingEnabled: boolean) => {
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const useSafeChainsListValidation = useSelector(
-    useSafeChainsListValidationSelector,
+    getUseSafeChainsListValidation,
   );
   const [nativeCurrencies, setNativeCurrencies] = useState<string[]>([]);
   const chainIds = useSelector(getChainIdsToPoll);

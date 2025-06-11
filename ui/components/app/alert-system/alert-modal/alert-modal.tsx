@@ -235,14 +235,12 @@ export function AcknowledgeCheckboxBase({
   isConfirmed: boolean;
   label?: string;
 }) {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const t = useI18nContext();
+  const severityStyle = getSeverityStyle(selectedAlert.severity);
+
   if (selectedAlert.isBlocking || selectedAlert.severity !== Severity.Danger) {
     return null;
   }
-
-  const t = useI18nContext();
-  const severityStyle = getSeverityStyle(selectedAlert.severity);
   return (
     <Box
       display={Display.Flex}

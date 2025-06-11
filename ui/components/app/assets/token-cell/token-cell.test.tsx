@@ -12,7 +12,7 @@ import {
   getPreferences,
   getCurrencyRates,
   getUseCurrencyRateCheck,
-  useSafeChainsListValidationSelector,
+  getUseSafeChainsListValidation,
 } from '../../../../selectors';
 import {
   getMultichainCurrentChainId,
@@ -184,7 +184,7 @@ describe('Token Cell', () => {
     if (selector === getUseCurrencyRateCheck) {
       return true;
     }
-    if (selector === useSafeChainsListValidationSelector) {
+    if (selector === getUseSafeChainsListValidation) {
       return true;
     }
     return undefined;
