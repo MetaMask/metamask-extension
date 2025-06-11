@@ -146,7 +146,6 @@ const DefiDetailsList = React.memo(
                         privacyMode={privacyMode}
                         onClick={undefined}
                         fixCurrencyToUSD
-                        nativeCurrencySymbol={nativeCurrencySymbol}
                       />
                     ))}
                   </Box>
