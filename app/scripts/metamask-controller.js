@@ -410,6 +410,7 @@ import {
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
+import { ErrorReportingService } from '@metamask/error-reporting-service';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -556,8 +557,24 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
+    const errorReportingServiceMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'ErrorReportingService',
+        allowedActions: [],
+        allowedEvents: [],
+      });
+    // Initializing the ErrorReportingService populates the
+    // ErrorReportingServiceMessenger.
+    // eslint-disable-next-line no-new
+    new ErrorReportingService({
+      messenger: errorReportingServiceMessenger,
+      captureException,
+    });
+
     const networkControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NetworkController',
+      allowedEvents: [],
+      allowedActions: ['ErrorReportingService:captureException'],
     });
 
     let initialNetworkControllerState = initState.NetworkController;
@@ -649,7 +666,10 @@ export default class MetamaskController extends EventEmitter {
 
     this.networkController = new NetworkController({
       messenger: networkControllerMessenger,
-      state: initialNetworkControllerState,
+      state: {
+        ...initialNetworkControllerState,
+        selectedNetworkClientId: 'adsflasdfasdf',
+      },
       infuraProjectId: opts.infuraProjectId,
       getBlockTrackerOptions: () => {
         return process.env.IN_TEST
@@ -695,6 +715,10 @@ export default class MetamaskController extends EventEmitter {
       },
       additionalDefaultNetworks,
     });
+    console.log(
+      'selectedNetworkClientId',
+      this.networkController.state.selectedNetworkClientId,
+    );
     networkControllerMessenger.subscribe(
       'NetworkController:rpcEndpointUnavailable',
       async ({ chainId, endpointUrl, error }) => {
