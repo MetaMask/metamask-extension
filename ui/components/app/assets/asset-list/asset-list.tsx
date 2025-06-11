@@ -16,14 +16,10 @@ import AssetListFundingModals from './asset-list-funding-modals';
 export type AssetListProps = {
   onClickAsset: (chainId: string, address: string) => void;
   showTokensLinks?: boolean;
-  getNativeCurrencySymbol: (chainId: string) => string | undefined;
 };
 
 const TokenListContainer = React.memo(
-  ({
-    onClickAsset,
-    getNativeCurrencySymbol,
-  }: Pick<AssetListProps, 'onClickAsset' | 'getNativeCurrencySymbol'>) => {
+  ({ onClickAsset }: Pick<AssetListProps, 'onClickAsset'>) => {
     const trackEvent = useContext(MetaMetricsContext);
     const { primaryCurrencyProperties } = usePrimaryCurrencyProperties();
 
@@ -43,20 +39,11 @@ const TokenListContainer = React.memo(
       [],
     );
 
-    return (
-      <TokenList
-        onTokenClick={onTokenClick}
-        getNativeCurrencySymbol={getNativeCurrencySymbol}
-      />
-    );
+    return <TokenList onTokenClick={onTokenClick} />;
   },
 );
 
-const AssetList = ({
-  onClickAsset,
-  showTokensLinks,
-  getNativeCurrencySymbol,
-}: AssetListProps) => {
+const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const isEvm = useSelector(getMultichainIsEvm);
   // NOTE: Since we can parametrize it now, we keep the original behavior
@@ -66,10 +53,7 @@ const AssetList = ({
   return (
     <>
       <AssetListControlBar showTokensLinks={shouldShowTokensLinks} />
-      <TokenListContainer
-        onClickAsset={onClickAsset}
-        getNativeCurrencySymbol={getNativeCurrencySymbol}
-      />
+      <TokenListContainer onClickAsset={onClickAsset} />
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
       )}

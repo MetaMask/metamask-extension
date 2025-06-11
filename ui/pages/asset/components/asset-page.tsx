@@ -70,10 +70,6 @@ import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { Asset } from '../types/asset';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { getMultichainNativeAssetType } from '../../../selectors/assets';
-import {
-  type SafeChain,
-  useSafeChains,
-} from '../../settings/networks-tab/networks-form/use-safe-chains';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 import { AssetMarketDetails } from './asset-market-details';
@@ -256,21 +252,6 @@ const AssetPage = ({
       }
     : (mutichainTokenWithFiatAmount as TokenWithFiatAmount);
 
-  const { safeChains } = useSafeChains();
-  const safeChainDetails: SafeChain | undefined = useMemo(
-    () =>
-      safeChains?.find((chain) => {
-        const decimalChainId =
-          isStrictHexString(chainId) && parseInt(hexToDecimal(chainId), 10);
-        if (typeof decimalChainId === 'number') {
-          return chain.chainId === decimalChainId.toString();
-        }
-        return undefined;
-      }),
-    [safeChains, chainId],
-  );
-  const nativeCurrencySymbol = safeChainDetails?.nativeCurrency?.symbol;
-
   return (
     <Box
       marginLeft="auto"
@@ -352,7 +333,6 @@ const AssetPage = ({
             key={`${symbol}-${address}`}
             token={tokenWithFiatAmount}
             disableHover={true}
-            nativeCurrencySymbol={nativeCurrencySymbol}
           />
         )}
         <Box

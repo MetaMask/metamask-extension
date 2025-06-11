@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  useEffect,
-} from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -27,12 +21,6 @@ import TransactionList from '../../app/transaction-list';
 import { Box } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
 import { AccountOverviewCommonProps } from './common';
-import { isStrictHexString } from '@metamask/utils';
-import {
-  type SafeChain,
-  useSafeChains,
-} from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showTokens: boolean;
@@ -40,20 +28,6 @@ export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showNfts: boolean;
   showActivity: boolean;
   showDefi?: boolean;
-};
-
-const getNativeCurrencySymbol = (
-  safeChains: SafeChain[] | undefined,
-  chainId: string,
-) => {
-  return safeChains?.find((chain) => {
-    const decimalChainId =
-      isStrictHexString(chainId) && parseInt(hexToDecimal(chainId), 10);
-    if (typeof decimalChainId === 'number') {
-      return chain.chainId === decimalChainId.toString();
-    }
-    return undefined;
-  })?.nativeCurrency?.symbol;
 };
 
 export const AccountOverviewTabs = ({
@@ -118,21 +92,6 @@ export const AccountOverviewTabs = ({
     [history],
   );
 
-  const { safeChains } = useSafeChains();
-  // Use a ref to store the current safeChains value bc it changes on every render
-  const safeChainsRef = useRef(safeChains);
-
-  // Update the ref when safeChains changes
-  useEffect(() => {
-    safeChainsRef.current = safeChains;
-  }, [safeChains]);
-
-  const handleGetNativeCurrencySymbol = useCallback(
-    (chainId: string) =>
-      getNativeCurrencySymbol(safeChainsRef.current, chainId),
-    [],
-  );
-
   return (
     <Box style={{ flexGrow: '1' }}>
       <Tabs
@@ -151,7 +110,6 @@ export const AccountOverviewTabs = ({
               <AssetList
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
-                getNativeCurrencySymbol={handleGetNativeCurrencySymbol}
               />
             </Box>
           </Tab>

@@ -29,10 +29,9 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
-  getNativeCurrencySymbol: (chainId: string) => string | undefined;
 };
 
-function TokenList({ onTokenClick, getNativeCurrencySymbol }: TokenListProps) {
+function TokenList({ onTokenClick }: TokenListProps) {
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
   const chainIdsToPoll = useSelector(getChainIdsToPoll);
   const newTokensImported = useSelector(getNewTokensImported);
@@ -113,7 +112,6 @@ function TokenList({ onTokenClick, getNativeCurrencySymbol }: TokenListProps) {
           token={token}
           privacyMode={privacyMode}
           onClick={handleTokenClick(token)}
-          nativeCurrencySymbol={getNativeCurrencySymbol(token.chainId)}
         />
       ))}
     </>
