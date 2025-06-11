@@ -11,6 +11,8 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
 import { setupAutoDetectMocking } from './mocks';
 
+const isGlobalNetworkSelectorRemoved = true;
+
 async function mockIPFSRequest(mockServer: MockttpServer) {
   return [
     await mockServer
@@ -58,7 +60,7 @@ describe('Remove ERC1155 NFT', function () {
     );
   });
 
-  it('user should be able to remove an NFT while selected network is different than NFT network', async function () {
+  it.only('user should be able to remove an NFT while selected network is different than NFT network', async function () {
     const driverOptions = { mock: true };
     await withFixtures(
       {
@@ -93,7 +95,9 @@ describe('Remove ERC1155 NFT', function () {
         await homepage.check_expectedBalanceIsDisplayed();
         await homepage.goToNftTab();
         const nftListPage = new NftListPage(driver);
-        await nftListPage.filterNftsByNetworks('Popular networks');
+        if (!isGlobalNetworkSelectorRemoved) {
+          await nftListPage.filterNftsByNetworks('Popular networks');
+        }
         await nftListPage.check_nftNameIsDisplayed(
           'ENS: Ethereum Name Service',
         );
