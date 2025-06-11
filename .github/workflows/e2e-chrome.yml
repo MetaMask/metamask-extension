@@ -195,8 +195,7 @@ jobs:
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix:
-        index:
-          [0]
+        index: [0]
     if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request' }}
     with:
       test-suite-name: test-e2e-chrome-browserify-stx
