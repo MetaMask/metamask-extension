@@ -13,10 +13,7 @@ import {
   PermissionControllerState,
   PermissionConstraint,
 } from '@metamask/permission-controller';
-import {
-  isSnapId,
-  SnapCaveatType,
-} from '@metamask/snaps-utils';
+import { isSnapId, SnapCaveatType } from '@metamask/snaps-utils';
 import { SnapEndowments } from '@metamask/snaps-rpc-methods';
 
 /**
