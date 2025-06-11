@@ -43,6 +43,7 @@ const ALLOWLISTED_URLS = [
   // Vault Decryptor
   'https://metamask.github.io/vault-decryptor',
   'https://metamask.github.io/vault-decryptor/',
+  'https://metamask.github.io/vault-decryptor/bundle.js',
 ];
 
 const ALLOWLISTED_HOSTS = [

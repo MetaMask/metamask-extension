@@ -19,7 +19,7 @@ async function mockSnapsWebsite(mockServer) {
 }
 
 async function mockSnapBinaryAndWebsite(mockServer) {
-  return [await mockDialogSnap(mockServer), await mockSnapsWebsite(mockServer)]
+  return [await mockDialogSnap(mockServer), await mockSnapsWebsite(mockServer)];
 }
 
 describe('Test Snap UI Links', function () {
