@@ -30,6 +30,7 @@ const ALLOWLISTED_URLS = [
   'https://metamask.github.io/snap-simple-keyring/1.1.6/page-data/index/page-data.json',
   'https://metamask.github.io/snap-simple-keyring/1.1.6/webpack-runtime-f26b9ef4aabef2136bf7.js',
   'https://metamask.github.io/snaps/test-snaps/2.23.1',
+  'https://metamask.github.io/snaps/test-snaps/2.23.1/',
   'https://metamask.github.io/snaps/test-snaps/2.23.1/main.js',
   'https://metamask.github.io/snaps/test-snaps/2.23.1/test-data.json',
   'https://metamask-sdk.api.cx.metamask.io/evt',
