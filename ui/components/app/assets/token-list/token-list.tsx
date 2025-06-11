@@ -26,12 +26,14 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
+  safeChains?: SafeChain[];
 };
 
-function TokenList({ onTokenClick }: TokenListProps) {
+function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
   const chainIdsToPoll = useSelector(getChainIdsToPoll);
   const newTokensImported = useSelector(getNewTokensImported);
@@ -112,6 +114,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
           token={token}
           privacyMode={privacyMode}
           onClick={handleTokenClick(token)}
+          safeChains={safeChains}
         />
       ))}
     </>

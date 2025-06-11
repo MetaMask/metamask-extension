@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { isStrictHexString } from '@metamask/utils';
 
 import { useSafeChainsListValidationSelector } from '../../../../selectors';
 import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
 import { CHAIN_SPEC_URL } from '../../../../../shared/constants/network';
 import { DAY } from '../../../../../shared/constants/time';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 
 export type SafeChain = {
   chainId: string;
@@ -18,10 +20,8 @@ export const useSafeChains = () => {
     useSafeChainsListValidationSelector,
   );
 
-  const [safeChains, setSafeChains] = useState<{
-    safeChains?: SafeChain[];
-    error?: Error;
-  }>({ safeChains: [] });
+  const [safeChainsList, setSafeChainsList] = useState<SafeChain[]>([]);
+  const [fetchError, setError] = useState<Error | undefined>(undefined);
 
   useEffect(() => {
     if (useSafeChainsListValidation) {
@@ -32,15 +32,35 @@ export const useSafeChains = () => {
         cacheOptions: { cacheRefreshTime: DAY },
       })
         .then((response) => {
-          setSafeChains({ safeChains: response });
+          setSafeChainsList(response);
+          setError(undefined);
         })
         .catch((error) => {
-          setSafeChains({ error });
+          setError(error);
         });
     }
   }, [useSafeChainsListValidation]);
 
-  return safeChains;
+  return { safeChains: safeChainsList, error: fetchError };
+};
+
+export const getSafeNativeCurrencySymbol = (
+  safeChains?: SafeChain[],
+  chainId?: string,
+) => {
+  if (!safeChains || !chainId) {
+    return undefined;
+  }
+
+  const decimalChainId =
+    isStrictHexString(chainId) && parseInt(hexToDecimal(chainId), 10);
+
+  if (typeof decimalChainId !== 'number') {
+    return undefined;
+  }
+
+  return safeChains.find((chain) => chain.chainId === decimalChainId.toString())
+    ?.nativeCurrency?.symbol;
 };
 
 export const rpcIdentifierUtility = (

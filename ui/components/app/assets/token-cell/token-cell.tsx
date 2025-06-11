@@ -13,7 +13,10 @@ import {
 } from '../../../component-library';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useSafeNativeCurrencySymbol } from '../../../../hooks/useSafeNativeCurrencySymbol';
+import {
+  getSafeNativeCurrencySymbol,
+  type SafeChain,
+} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../../store/actions';
 import { type TokenWithFiatAmount } from '../types';
@@ -32,6 +35,7 @@ export type TokenCellProps = {
   disableHover?: boolean;
   onClick?: () => void;
   fixCurrencyToUSD?: boolean;
+  safeChains?: SafeChain[];
 };
 
 export default function TokenCell({
@@ -40,12 +44,16 @@ export default function TokenCell({
   onClick,
   disableHover = false,
   fixCurrencyToUSD = false,
+  safeChains,
 }: TokenCellProps) {
   const dispatch = useDispatch();
   const history = useHistory();
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
-  const nativeCurrencySymbol = useSafeNativeCurrencySymbol(token.chainId);
+  const nativeCurrencySymbol = useMemo(
+    () => getSafeNativeCurrencySymbol(safeChains, token.chainId),
+    [safeChains, token.chainId],
+  );
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
 
   const tokenDisplayInfo = useTokenDisplayInfo({

@@ -66,6 +66,7 @@ import {
 } from '../../../selectors/multichain';
 import { type TokenWithFiatAmount } from '../../../components/app/assets/types';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
 import { Asset } from '../types/asset';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { getMultichainNativeAssetType } from '../../../selectors/assets';
@@ -251,6 +252,8 @@ const AssetPage = ({
       }
     : (mutichainTokenWithFiatAmount as TokenWithFiatAmount);
 
+  const { safeChains } = useSafeChains();
+
   return (
     <Box
       marginLeft="auto"
@@ -332,6 +335,7 @@ const AssetPage = ({
             key={`${symbol}-${address}`}
             token={tokenWithFiatAmount}
             disableHover={true}
+            safeChains={safeChains}
           />
         )}
         <Box
