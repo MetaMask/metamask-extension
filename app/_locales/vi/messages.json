@@ -338,10 +338,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Phí ưu tiên (hay còn được gọi là \"tiền thưởng cho thợ đào\") được chuyển trực tiếp cho các thợ đào và khuyến khích họ ưu tiên giao dịch của bạn."
   },
-  "agreeTermsOfUse": {
-    "message": "Tôi đồng ý với $1 của MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "Lịch sử trên chuỗi của token cho thấy trước đây đã từng có hoạt động tặng thưởng đáng ngờ."
   },
@@ -662,9 +658,6 @@
   },
   "basic": {
     "message": "Cơ bản"
-  },
-  "basicConfigurationBannerCTA": {
-    "message": "Bật chức năng cơ bản"
   },
   "basicConfigurationBannerTitle": {
     "message": "Chức năng cơ bản đã tắt"
@@ -1257,9 +1250,6 @@
   "confusingEnsDomain": {
     "message": "Chúng tôi đã phát hiện thấy một ký tự có thể gây nhầm lẫn trong tên ENS. Hãy kiểm tra tên ENS để tránh nguy cơ bị lừa đảo."
   },
-  "congratulations": {
-    "message": "Chúc mừng!"
-  },
   "connect": {
     "message": "Kết nối"
   },
@@ -1447,9 +1437,6 @@
   },
   "createNewAccountHeader": {
     "message": "Tạo tài khoản mới"
-  },
-  "createNewWallet": {
-    "message": "Tạo ví mới"
   },
   "createPassword": {
     "message": "Tạo mật khẩu"
@@ -2296,18 +2283,11 @@
   "gasLimit": {
     "message": "Hạn mức phí gas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Hạn mức phí gas là số lượng đơn vị gas tối đa mà bạn sẵn sàng chi tiêu."
-  },
   "gasLimitRecommended": {
     "message": "Hạn mức phí gas được đề xuất là $1. Có thể thất bại nếu hạn mức phí gas thấp hơn."
   },
   "gasLimitTooLow": {
     "message": "Hạn mức phí gas ít nhất phải là 21000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Hạn mức phí gas ít nhất phải là $1",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "Hạn mức phí gas"
@@ -2315,23 +2295,11 @@
   "gasOption": {
     "message": "Tùy chọn phí gas"
   },
-  "gasPrice": {
-    "message": "Giá gas (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "Bạn đã đặt phí gas cao một cách không cần thiết. Hãy cân nhắc giảm mức phí này."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Giá gas quá cao"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Giá gas cực kỳ thấp"
-  },
   "gasPriceFetchFailed": {
     "message": "Không ước tính được giá gas do lỗi mạng."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Giá gas xác định khoản Ether mà bạn sẵn sàng thanh toán cho mỗi đơn vị gas."
   },
   "gasTimingHoursShort": {
     "message": "$1 giờ",
@@ -2365,9 +2333,6 @@
   },
   "genericExplorerView": {
     "message": "Xem tài khoản trên $1"
-  },
-  "goBack": {
-    "message": "Quay Lại"
   },
   "goToSite": {
     "message": "Đến trang web"
@@ -2533,10 +2498,6 @@
   "id": {
     "message": "ID"
   },
-  "ifYouGetLockedOut": {
-    "message": "Nếu bạn bị khóa ứng dụng hoặc sử dụng thiết bị mới, bạn sẽ mất tiền. Nhớ sao lưu Cụm từ khôi phục bí mật của bạn trong $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "Bỏ qua tất cả"
   },
@@ -2570,9 +2531,6 @@
   },
   "importAccountMsg": {
     "message": "Tài khoản đã nhập sẽ không được liên kết với Cụm từ khôi phục bí mật MetaMask của bạn. Tìm hiểu thêm về tài khoản đã nhập"
-  },
-  "importMyWallet": {
-    "message": "Nhập ví của tôi"
   },
   "importNFT": {
     "message": "Nhập NFT"
@@ -2793,10 +2751,6 @@
   "jsonFile": {
     "message": "Tập tin JSON",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Cất giữ lời nhắc về Cụm từ khôi phục bí mật ở một nơi an toàn. Nếu bạn làm mất, không ai có thể giúp bạn lấy lại. Tệ hơn nữa, bạn sẽ không bao giờ truy cập được vào ví của bạn nữa. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Tên tài khoản"
@@ -3817,9 +3771,6 @@
   "onboardingMetametricsDescription": {
     "message": "Chúng tôi muốn thu thập dữ liệu sử dụng và chẩn đoán cơ bản để cải tiến MetaMask. Xin lưu ý, chúng tôi không bao giờ bán dữ liệu mà bạn cung cấp ở đây."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Khi thu thập số liệu, chúng tôi sẽ luôn cam kết điều này..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Chúng tôi sẽ thông báo cho bạn nếu chúng tôi quyết định sử dụng dữ liệu này cho các mục đích khác. Bạn có thể xem lại $1 của chúng tôi để biết thêm thông tin. Lưu ý, bạn có thể truy cập cài đặt và chọn không tham gia bất kỳ lúc nào.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3847,9 +3798,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Không bắt buộc:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn khi thu thập dữ liệu sử dụng cho hồ sơ của bạn."
   },
   "onboardingMetametricsTitle": {
     "message": "Giúp chúng tôi cải thiện MetaMask"
@@ -3962,9 +3910,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Mật khẩu không đủ dài"
-  },
-  "passwordSetupDetails": {
-    "message": "Mật khẩu này sẽ chỉ mở khóa ví MetaMask của bạn trên thiết bị này. MetaMask không thể khôi phục mật khẩu này."
   },
   "passwordStrength": {
     "message": "Độ mạnh của mật khẩu: $1",
@@ -4546,12 +4491,6 @@
   "rejected": {
     "message": "Đã từ chối"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Hãy nhớ rằng, nếu bạn làm mất Cụm từ khôi phục bí mật, bạn sẽ mất quyền truy cập vào ví. $1 để cất giữ cụm từ này ở nơi an toàn, nhờ đó bạn luôn có thể truy cập vào tiền của bạn."
-  },
-  "reminderSet": {
-    "message": "Đã thiết lập lời nhắc!"
-  },
   "remove": {
     "message": "Xóa"
   },
@@ -4805,9 +4744,6 @@
   "securityMessageLinkForNetworks": {
     "message": "lừa đảo mạng và rủi ro bảo mật"
   },
-  "securityPrivacyPath": {
-    "message": "Cài đặt > Bảo mật & Quyền riêng tư."
-  },
   "securityProviderPoweredBy": {
     "message": "Được cung cấp bởi $1",
     "description": "The security provider that is providing data"
@@ -4825,35 +4761,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Xác nhận Cụm từ khôi phục bí mật"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Nhắc tôi sau (không khuyến khích)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Bảo mật ví của tôi (khuyến khích)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Viết ra và cất ở nhiều nơi bí mật"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Cất trong hộp ký gửi an toàn"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Cụm từ khôi phục bí mật gồm 12 từ là “chìa khóa chính” để truy cập ví và số tiền của bạn"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Nếu ai đó hỏi bạn cụm từ khôi phục bí mật, thì họ đang cố gắng lừa đảo và đánh cắp tiền trong ví của bạn"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Đừng bao giờ cho ai biết cụm từ khôi phục bí mật, kể cả MetaMask!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Cụm từ khôi phục bí mật là gì?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Tôi có nên cho ai biết cụm từ khôi phục bí mật của mình không?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Tôi lưu Cụm từ khôi phục bí mật của mình bằng cách nào?"
   },
   "seedPhraseIntroTitle": {
     "message": "Bảo mật cho ví của bạn"
@@ -4980,9 +4892,6 @@
   },
   "settings": {
     "message": "Cài đặt"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "Chế độ cài đặt được tối ưu hóa để đảm bảo an toàn và dễ sử dụng. Thay đổi các chế độ cài đặt này bất cứ lúc nào."
   },
   "settingsSearchMatchingNotFound": {
     "message": "Không tìm thấy kết quả trùng khớp."
@@ -5137,9 +5046,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "Bỏ qua"
   },
   "skipAccountSecurity": {
     "message": "Bỏ qua bảo mật tài khoản?"
@@ -5328,10 +5234,6 @@
   "snapConnectionWarning": {
     "message": "$1 muốn sử dụng $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "Nội dung này đến từ $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "Trang web"
@@ -6740,10 +6642,6 @@
   "walletConnectionGuide": {
     "message": "hướng dẫn của chúng tôi về cách kết nối ví cứng"
   },
-  "walletProtectedAndReadyToUse": {
-    "message": "Ví của bạn đã được bảo vệ và sẵn sàng để sử dụng. Bạn có thể xem Cụm từ khôi phục bí mật trong $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "wantToAddThisNetwork": {
     "message": "Bạn muốn thêm mạng này?"
   },
@@ -6789,23 +6687,8 @@
   "welcomeBack": {
     "message": "Chào mừng bạn trở lại"
   },
-  "welcomeExploreDescription": {
-    "message": "Lưu trữ, gửi và chi tiêu tiền mã hóa và tài sản."
-  },
-  "welcomeExploreTitle": {
-    "message": "Khám phá các ứng dụng phi tập trung"
-  },
-  "welcomeLoginDescription": {
-    "message": "Sử dụng MetaMask của bạn để đăng nhập vào các ứng dụng phi tập trung - không cần đăng ký."
-  },
-  "welcomeLoginTitle": {
-    "message": "Gửi lời chào đến ví của bạn"
-  },
   "welcomeToMetaMask": {
     "message": "Bắt đầu nào"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "Được hàng triệu người tin dùng, MetaMask là một ví an toàn cho phép mọi người có thể truy cập vào thế giới web3."
   },
   "whatsThis": {
     "message": "Đây là gì?"
@@ -6868,8 +6751,5 @@
   },
   "yourWalletIsReady": {
     "message": "Ví của bạn đã sẵn sàng"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Giá gas bằng 0 khi tăng tốc"
   }
 }

@@ -338,10 +338,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Les frais de priorité (aussi appelés « pourboire du mineur ») vont directement aux mineurs et les incitent à accorder la priorité à votre transaction."
   },
-  "agreeTermsOfUse": {
-    "message": "J’accepte les $1 de MetaMask",
-    "description": "$1 is the `terms` link"
-  },
   "airDropPatternDescription": {
     "message": "L’historique du jeton sur la chaîne révèle des cas antérieurs d’activités d’airdrop suspectes."
   },
@@ -662,9 +658,6 @@
   },
   "basic": {
     "message": "Général"
-  },
-  "basicConfigurationBannerCTA": {
-    "message": "Activer la fonctionnalité de base"
   },
   "basicConfigurationBannerTitle": {
     "message": "La fonctionnalité de base est désactivée"
@@ -1257,9 +1250,6 @@
   "confusingEnsDomain": {
     "message": "Nous avons détecté un caractère pouvant prêter à confusion dans le nom de l’ENS. Vérifiez le nom de l’ENS pour éviter toute fraude potentielle."
   },
-  "congratulations": {
-    "message": "Félicitations !"
-  },
   "connect": {
     "message": "Connecter"
   },
@@ -1447,9 +1437,6 @@
   },
   "createNewAccountHeader": {
     "message": "Créer un nouveau compte"
-  },
-  "createNewWallet": {
-    "message": "Créer un nouveau portefeuille"
   },
   "createPassword": {
     "message": "Créer un mot de passe"
@@ -2296,18 +2283,11 @@
   "gasLimit": {
     "message": "Montant maximal des frais de transaction"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "La limite de carburant est la quantité maximale d’unités d’essence que vous consentez à dépenser."
-  },
   "gasLimitRecommended": {
     "message": "La limite recommandée de gas est de $1. Si la limite de gas est inférieure à cette valeur, l’opération peut échouer."
   },
   "gasLimitTooLow": {
     "message": "La limite de carburant doit être d’au moins 21000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "La limite de carburant doit être d’au moins $1",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "Limite de carburant"
@@ -2315,23 +2295,11 @@
   "gasOption": {
     "message": "Option de carburant"
   },
-  "gasPrice": {
-    "message": "Prix du gaz (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "Vos frais de carburant sont inutilement élevés. Songez à les réduire."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Le prix du gaz est excessif"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Le prix du gaz est extrêmement bas"
-  },
   "gasPriceFetchFailed": {
     "message": "L’estimation du prix du carburant a échoué en raison d’une erreur de réseau."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Le prix du carburant indique la quantité d’Ether que vous acceptez de payer pour chaque unité de carburant."
   },
   "gasTimingHoursShort": {
     "message": "$1 h",
@@ -2365,9 +2333,6 @@
   },
   "genericExplorerView": {
     "message": "Voir le compte sur $1"
-  },
-  "goBack": {
-    "message": "Retour"
   },
   "goToSite": {
     "message": "Accéder au site"
@@ -2533,10 +2498,6 @@
   "id": {
     "message": "ID"
   },
-  "ifYouGetLockedOut": {
-    "message": "Si vous ne pouvez plus accéder à votre compte ou si vous changez d’appareil, vous perdrez vos fonds. Veillez à sauvegarder votre phrase secrète de récupération dans $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "Ignorer tout"
   },
@@ -2570,9 +2531,6 @@
   },
   "importAccountMsg": {
     "message": "Les comptes importés ne seront pas associés à la phrase secrète de récupération que vous avez créée au départ dans MetaMask. En savoir plus sur les comptes importés"
-  },
-  "importMyWallet": {
-    "message": "Importer mon portefeuille"
   },
   "importNFT": {
     "message": "Importer le NFT"
@@ -2793,10 +2751,6 @@
   "jsonFile": {
     "message": "Fichier JSON",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Conservez votre phrase secrète de récupération dans un endroit sûr. Si vous la perdez, personne ne pourra vous aider à la récupérer. Pire encore, vous ne pourrez plus jamais accéder à votre portefeuille. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Nom du compte"
@@ -3817,9 +3771,6 @@
   "onboardingMetametricsDescription": {
     "message": "Nous aimerions recueillir des données d’utilisation et de diagnostic de base afin d’améliorer MetaMask. Sachez que nous ne vendons jamais les données que vous nous fournissez ici."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Lorsque nous recueillons des données, elles sont toujours…"
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Nous vous informerons si nous décidons d’utiliser ces données à d’autres fins. Pour plus d’informations, vous pouvez consulter notre $1. N’oubliez pas que vous pouvez aller dans les paramètres et vous désinscrire à tout moment.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3847,9 +3798,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Facultatif :"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Découvrez comment nous protégeons votre vie privée lors de la collecte de données d’utilisation pour votre profil."
   },
   "onboardingMetametricsTitle": {
     "message": "Aidez-nous à améliorer MetaMask"
@@ -3962,9 +3910,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Mot de passe trop court"
-  },
-  "passwordSetupDetails": {
-    "message": "Ce mot de passe permet de déverrouiller votre portefeuille MetaMask uniquement sur cet appareil. MetaMask ne peut pas récupérer ce mot de passe."
   },
   "passwordStrength": {
     "message": "Robustesse du mot de passe : $1",
@@ -4546,12 +4491,6 @@
   "rejected": {
     "message": "Rejeté"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "N’oubliez pas que si vous perdez votre phrase secrète de récupération, vous perdez l’accès à votre portefeuille. $1 pour sécuriser cet ensemble de mots et éviter de perdre l’accès à vos fonds."
-  },
-  "reminderSet": {
-    "message": "Rappel défini !"
-  },
   "remove": {
     "message": "Supprimer"
   },
@@ -4805,9 +4744,6 @@
   "securityMessageLinkForNetworks": {
     "message": "arnaques et risques de piratage informatique"
   },
-  "securityPrivacyPath": {
-    "message": "Paramètres > Sécurité et confidentialité."
-  },
   "securityProviderPoweredBy": {
     "message": "Service fourni par $1",
     "description": "The security provider that is providing data"
@@ -4825,35 +4761,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Confirmer la phrase secrète de récupération"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Me le rappeler plus tard (non recommandé)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Sécuriser mon portefeuille (recommandé)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Notez-la et conservez-la dans plusieurs endroits secrets."
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Conservez-la dans un coffre-fort"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Votre phrase secrète de récupération est une formule de 12 mots qui constitue la « clé maîtresse » de votre portefeuille et de vos fonds"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Si quelqu’un vous demande votre phrase de récupération, il est probable qu’il essaie de vous arnaquer pour dérober les fonds de votre portefeuille"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Ne partagez jamais, au grand jamais, votre phrase secrète de récupération, pas même avec MetaMask !"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Qu’est-ce qu’une phrase secrète de récupération ?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Dois-je partager ma phrase secrète de récupération ?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Comment puis-je sauvegarder ma phrase secrète de récupération ?"
   },
   "seedPhraseIntroTitle": {
     "message": "Sécuriser votre portefeuille"
@@ -4980,9 +4892,6 @@
   },
   "settings": {
     "message": "Paramètres"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "Les paramètres sont optimisés pour sécuriser l’application et faciliter son utilisation. Vous pouvez modifier les paramètres à tout moment."
   },
   "settingsSearchMatchingNotFound": {
     "message": "Aucun résultat correspondant trouvé."
@@ -5137,9 +5046,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "Ignorer"
   },
   "skipAccountSecurity": {
     "message": "Sauter le réglage des paramètres de sécurité du compte ?"
@@ -5328,10 +5234,6 @@
   "snapConnectionWarning": {
     "message": "$1 veut utiliser $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "Ce contenu provient de $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "Site web"
@@ -6740,10 +6642,6 @@
   "walletConnectionGuide": {
     "message": "notre guide de connexion des portefeuilles matériels"
   },
-  "walletProtectedAndReadyToUse": {
-    "message": "Votre portefeuille est protégé et prêt à être utilisé. Vous trouverez votre phrase secrète de récupération dans $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "wantToAddThisNetwork": {
     "message": "Voulez-vous ajouter ce réseau ?"
   },
@@ -6789,23 +6687,8 @@
   "welcomeBack": {
     "message": "Nous sommes heureux de vous revoir"
   },
-  "welcomeExploreDescription": {
-    "message": "Stockez, envoyez et dépensez des crypto-monnaies et des crypto-actifs."
-  },
-  "welcomeExploreTitle": {
-    "message": "Explorer des applications décentralisées"
-  },
-  "welcomeLoginDescription": {
-    "message": "Utilisez votre MetaMask pour vous connecter à des applications décentralisées. Nul besoin de vous inscrire !"
-  },
-  "welcomeLoginTitle": {
-    "message": "Dites bonjour à votre portefeuille"
-  },
   "welcomeToMetaMask": {
     "message": "C’est parti !"
-  },
-  "welcomeToMetaMaskIntro": {
-    "message": "MetaMask est un portefeuille sécurisé utilisé par des millions de personnes qui rend l’univers du web3 accessible à toutes et à tous."
   },
   "whatsThis": {
     "message": "Qu’est-ce que c’est ?"
@@ -6868,8 +6751,5 @@
   },
   "yourWalletIsReady": {
     "message": "Votre portefeuille est prêt"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Prix de carburant zéro sur l’accélération"
   }
 }
