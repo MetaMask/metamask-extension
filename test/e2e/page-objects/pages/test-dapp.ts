@@ -58,6 +58,8 @@ class TestDapp {
 
   private readonly encryptMessageInput = '#encryptMessageInput';
 
+  private readonly erc1155DeployButton = '#deployERC1155Button';
+
   private readonly erc1155MintButton = '#batchMintButton';
 
   private readonly erc1155RevokeSetApprovalForAllButton =
@@ -77,6 +79,8 @@ class TestDapp {
   private readonly erc20TokenTransferButton = '#transferTokens';
 
   private readonly erc20WatchAssetButton = '#watchAssets';
+
+  private readonly erc721DeployButton = '#deployNFTsButton';
 
   private readonly erc721MintButton = '#mintButton';
 
@@ -106,6 +110,13 @@ class TestDapp {
   private readonly mmlogo = '#mm-logo';
 
   private maliciousERC20TransferButton = '#maliciousERC20TransferButton';
+
+  private readonly ethSignButton = '#ethSign';
+
+  private readonly ethSignErrorMessage = {
+    css: '#ethSign',
+    text: 'Error: The method "eth_sign" does not exist / is not available.',
+  };
 
   private readonly personalSignButton = '#personalSign';
 
@@ -649,6 +660,10 @@ class TestDapp {
     });
   }
 
+  async check_ethSignErrorMessage(): Promise<void> {
+    await this.driver.waitForSelector(this.ethSignErrorMessage);
+  }
+
   async assertEip747ContractAddressInputValue(expectedValue: string) {
     const formFieldEl = await this.driver.findElement(
       this.eip747ContractAddressInput,
@@ -684,6 +699,10 @@ class TestDapp {
     await this.driver.clickElement(this.approveTokensButtonWithoutGas);
   }
 
+  async clickERC1155DeployButton() {
+    await this.driver.clickElement(this.erc1155DeployButton);
+  }
+
   async clickERC1155MintButton() {
     await this.driver.clickElement(this.erc1155MintButton);
   }
@@ -706,6 +725,10 @@ class TestDapp {
 
   async clickERC20WatchAssetButton() {
     await this.driver.clickElement(this.erc20WatchAssetButton);
+  }
+
+  async clickERC721DeployButton() {
+    await this.driver.clickElement(this.erc721DeployButton);
   }
 
   async clickERC721MintButton() {
@@ -734,6 +757,10 @@ class TestDapp {
 
   async clickPermit() {
     await this.driver.clickElement(this.signPermitButton);
+  }
+
+  async clickEthSignButton() {
+    await this.driver.clickElement(this.ethSignButton);
   }
 
   async clickPersonalSign() {

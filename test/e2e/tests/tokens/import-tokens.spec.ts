@@ -4,6 +4,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { withFixtures, unlockWallet } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Mockttp } from '../../mock-e2e';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 describe('Import flow', function () {
   async function mockPriceFetch(mockServer: Mockttp) {
@@ -38,6 +39,10 @@ describe('Import flow', function () {
       {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            [CHAIN_IDS.MAINNET]: true,
+            [CHAIN_IDS.LINEA_MAINNET]: true,
+          })
           .withTokensController({
             tokenList: [
               {
@@ -109,6 +114,11 @@ describe('Import flow', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withNetworkControllerOnPolygon()
+          .withEnabledNetworks({
+            [CHAIN_IDS.MAINNET]: true,
+            [CHAIN_IDS.POLYGON]: true,
+            [CHAIN_IDS.LINEA_MAINNET]: true,
+          })
           .withTokensController({
             tokenList: [],
             tokensChainsCache: {
@@ -176,6 +186,11 @@ describe('Import flow', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withNetworkControllerOnPolygon()
+          .withEnabledNetworks({
+            [CHAIN_IDS.MAINNET]: true,
+            [CHAIN_IDS.POLYGON]: true,
+            [CHAIN_IDS.LINEA_MAINNET]: true,
+          })
           .withTokensController({
             tokenList: [],
             tokensChainsCache: {

@@ -176,7 +176,9 @@
   },
   "NetworkOrderController": {
     "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
-    "enabledNetworkMap": {}
+    "enabledNetworkMap": {
+      "0x539": "boolean"
+    }
   },
   "NftController": {
     "allNftContracts": "object",
