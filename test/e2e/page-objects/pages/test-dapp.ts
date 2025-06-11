@@ -109,6 +109,11 @@ class TestDapp {
 
   private readonly ethSignButton = '#ethSign';
 
+  private readonly ethSignErrorMessage = {
+    css: '#ethSign',
+    text: 'Error: The method "eth_sign" does not exist / is not available.',
+  };
+
   private readonly personalSignButton = '#personalSign';
 
   private readonly personalSignResult = '#personalSignVerifyECRecoverResult';
@@ -633,12 +638,8 @@ class TestDapp {
     });
   }
 
-  async check_ethSignErrorMessage() {
-    const ethSignButton = await this.driver.findElement(this.ethSignButton);
-    const expectedMessage =
-      'ERROR: THE METHOD "ETH_SIGN" DOES NOT EXIST / IS NOT AVAILABLE.';
-    const actualText = await ethSignButton.getText();
-    assert.equal(actualText, expectedMessage);
+  async check_ethSignErrorMessage(): Promise<void> {
+    await this.driver.waitForSelector(this.ethSignErrorMessage);
   }
 
   async assertEip747ContractAddressInputValue(expectedValue: string) {
