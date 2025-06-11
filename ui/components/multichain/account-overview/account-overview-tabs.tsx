@@ -13,6 +13,7 @@ import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAllChainsToPoll } from '../../../selectors';
 import { detectNfts } from '../../../store/actions';
+import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import { useAssetListTokenDetection } from '../../app/assets/hooks';
@@ -92,6 +93,8 @@ export const AccountOverviewTabs = ({
     [history],
   );
 
+  const { safeChains } = useSafeChains();
+
   return (
     <Box style={{ flexGrow: '1' }}>
       <Tabs
@@ -110,6 +113,7 @@ export const AccountOverviewTabs = ({
               <AssetList
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
+                safeChains={safeChains}
               />
             </Box>
           </Tab>
@@ -125,6 +129,7 @@ export const AccountOverviewTabs = ({
               <DeFiTab
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickDeFi}
+                safeChains={safeChains}
               />
             </Box>
           </Tab>
