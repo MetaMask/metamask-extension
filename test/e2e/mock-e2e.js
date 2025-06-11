@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 
 const {
-  ACCOUNTS_DEV_API_BASE_URL,
   ACCOUNTS_PROD_API_BASE_URL,
 } = require('../../shared/constants/accounts');
 const {
@@ -11,10 +10,7 @@ const {
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
 const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
-const {
-  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-  MOCK_META_METRICS_ID,
-} = require('./constants');
+const { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 
 const { ALLOWLISTED_HOSTS, ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
@@ -418,67 +414,18 @@ async function setupMocking(
 
   // Surveys
   await server
-    .forGet(new RegExp(`${ACCOUNTS_PROD_API_BASE_URL}/v1/users/[^/]+/surveys`, 'u'))
+    .forGet(
+      new RegExp(`${ACCOUNTS_PROD_API_BASE_URL}/v1/users/[^/]+/surveys`, 'u'),
+    )
     .thenCallback(() => {
       return {
         statusCode: 200,
         json: {
           userId: '0x123',
-          surveys: {
-            url: 'https://example.com',
-            description: `Test survey 1`,
-            cta: 'Take survey',
-            id: 1,
-          },
-        }
-      }
+          surveys: {},
+        },
+      };
     });
-
-  [
-    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-id/surveys`,
-    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-fd20/surveys`,
-    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/test-metrics-id/surveys`,
-    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/invalid-metrics-id/surveys`,
-    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-id/surveys`,
-    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-fd20/surveys`,
-    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/test-metrics-id/surveys`,
-    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/invalid-metrics-id/surveys`,
-  ].forEach(
-    async (url) =>
-      await server.forGet(url).thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            userId: '0x123',
-            surveys: {},
-          },
-        };
-      }),
-  );
-
-  let surveyCallCount = 0;
-  [
-    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/${MOCK_META_METRICS_ID}/surveys`,
-    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/${MOCK_META_METRICS_ID}/surveys`,
-  ].forEach(
-    async (url) =>
-      await server.forGet(url).thenCallback(() => {
-        const surveyId = surveyCallCount > 2 ? 2 : surveyCallCount;
-        surveyCallCount += 1;
-        return {
-          statusCode: 200,
-          json: {
-            userId: '0x123',
-            surveys: {
-              url: 'https://example.com',
-              description: `Test survey ${surveyId}`,
-              cta: 'Take survey',
-              id: surveyId,
-            },
-          },
-        };
-      }),
-  );
 
   await server
     .forGet(`https://token.api.cx.metamask.io/tokens/${chainId}`)

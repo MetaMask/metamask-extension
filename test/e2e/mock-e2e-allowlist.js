@@ -46,8 +46,6 @@ const ALLOWLISTED_URLS = [
   'https://metamask.github.io/vault-decryptor/bundle.js',
 ];
 
-const ALLOWLISTED_HOSTS = [
-  'token.api.cx.metamask.io',
-];
+const ALLOWLISTED_HOSTS = ['token.api.cx.metamask.io'];
 
 module.exports = { ALLOWLISTED_HOSTS, ALLOWLISTED_URLS };
