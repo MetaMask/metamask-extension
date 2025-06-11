@@ -2,7 +2,8 @@
 module.exports = {
   content: [
     './ui/**/*.{js,jsx,ts,tsx}',
-    './node_modules/@metamask/design-system-react/**/*.{cjs,mjs}',
+    './node_modules/@metamask-previews/design-system-react/**/*.{js,jsx,ts,tsx,cjs,mjs}',
+    './node_modules/@metamask-previews/design-system-react/**/*.{cjs,mjs}',
   ],
   presets: [
     // eslint-disable-next-line node/global-require

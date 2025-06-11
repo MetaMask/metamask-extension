@@ -1,4 +1,12 @@
-export function getCaretCoordinates(element, position) {
+type CaretCoordinates = {
+  top: number;
+  left: number;
+};
+
+export function getCaretCoordinates(
+  element: HTMLInputElement,
+  position: number,
+): CaretCoordinates {
   const div = document.createElement('div');
   div.id = 'password-mirror-div';
   document.body.appendChild(div);
@@ -8,7 +16,7 @@ export function getCaretCoordinates(element, position) {
   span.textContent = '•';
   div.appendChild(span);
 
-  const coordinates = {
+  const coordinates: CaretCoordinates = {
     top: span.offsetTop + parseInt(computed.borderTopWidth, 10),
     left: span.offsetLeft + parseInt(computed.borderLeftWidth, 10),
   };
