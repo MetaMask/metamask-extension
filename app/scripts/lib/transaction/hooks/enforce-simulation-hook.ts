@@ -290,7 +290,7 @@ function generateCaveats(
           enforceDecrease,
           token,
           recipient,
-          tokenId,
+          delta,
         );
         break;
 

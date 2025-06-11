@@ -256,10 +256,6 @@ describe('EnforceSimulationHook', () => {
         ).toLowerCase(),
       ),
     );
-
-    expect(newTransaction.txParams.data).toStrictEqual(
-      expect.stringContaining(remove0x(TOKEN_ID_MOCK).toLowerCase()),
-    );
   });
 
   it('includes erc1155 token balance change caveat', async () => {

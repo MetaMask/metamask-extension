@@ -11,7 +11,7 @@ export function erc721BalanceChangeBuilder(
   enforceDecrease: boolean,
   token: Hex,
   recipient: Hex,
-  tokenId: bigint,
+  amount: bigint,
 ): Caveat {
   if (typeof enforceDecrease !== 'boolean') {
     throw new Error('Invalid enforceDecrease: must be a boolean');
@@ -25,14 +25,14 @@ export function erc721BalanceChangeBuilder(
     throw new Error('Invalid recipient: must be a valid address');
   }
 
-  if (typeof tokenId !== 'bigint' || tokenId < 0) {
-    throw new Error('Invalid tokenId: must be a non-negative number');
+  if (typeof amount !== 'bigint' || amount < 0) {
+    throw new Error('Invalid amount: must be a non-negative number');
   }
 
   const terms = bytesToHex(
     encodePacked(
       ['bool', 'address', 'address', 'uint256'],
-      [enforceDecrease, token, recipient, tokenId],
+      [enforceDecrease, token, recipient, amount],
     ),
   );
 
