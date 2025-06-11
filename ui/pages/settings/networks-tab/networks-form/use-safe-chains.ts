@@ -20,8 +20,10 @@ export const useSafeChains = () => {
     useSafeChainsListValidationSelector,
   );
 
-  const [safeChainsList, setSafeChainsList] = useState<SafeChain[]>([]);
-  const [fetchError, setError] = useState<Error | undefined>(undefined);
+  const [safeChains, setSafeChains] = useState<{
+    safeChains?: SafeChain[];
+    error?: Error;
+  }>({ safeChains: [] });
 
   useEffect(() => {
     if (useSafeChainsListValidation) {
@@ -32,16 +34,15 @@ export const useSafeChains = () => {
         cacheOptions: { cacheRefreshTime: DAY },
       })
         .then((response) => {
-          setSafeChainsList(response);
-          setError(undefined);
+          setSafeChains({ safeChains: response });
         })
         .catch((error) => {
-          setError(error);
+          setSafeChains({ error });
         });
     }
   }, [useSafeChainsListValidation]);
 
-  return { safeChains: safeChainsList, error: fetchError };
+  return safeChains;
 };
 
 export const getSafeNativeCurrencySymbol = (
