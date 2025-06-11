@@ -3805,21 +3805,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "हम इस डेटा का उपयोग यह जानने के लिए करेंगे कि आप हमारे मार्केटिंग कम्यूनिकेशन्स के साथ कैसे इंटरैक्ट करते हैं। हम प्रासंगिक समाचार (जैसे प्रॉडक्ट फीचर्स) साझा कर सकते हैं।"
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "पूरी एक्सेस"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "ये एक्सटेंशन जानकारी देख और बदल सकते हैं"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "इस साइट पर।"
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "एक्सटेंशन"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "ब्राउज़र एक्सटेंशन आइकन पर क्लिक करें"
-  },
   "onboardingPinExtensionDescription": {
     "message": "अपने ब्राउज़र पर MetaMask को पिन करें ताकि यह सुलभ हो और ट्रांसेक्शन के कन्फर्मेशन को देखना आसान हो सके।"
   },
@@ -3827,16 +3812,8 @@
     "message": "आप एक्सटेंशन पर क्लिक करके MetaMask खोल सकते हैं और 1 क्लिक से अपने वॉलेट तक पहुंच सकते हैं।"
   },
   "onboardingPinExtensionDescription3": {
-    "message": "ब्राउज़र एक्सटेंशन आइकन पर क्लिक करें ताकि इस तक तुरंत पहुंच सकें"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "MetaMask को पिन करें"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "ब्राउज़र एक्सटेंशन आइकन पर क्लिक करें ताकि इस तक तुरंत पहुंच सकें",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "आपका MetaMask इंस्टॉल पूरा हो गया है!"
