@@ -6077,16 +6077,14 @@ export function createOnChainTriggers(): ThunkAction<
  * @param accounts - An array of account identifiers for which on-chain triggers should be deleted.
  * @returns A thunk action that, when dispatched, attempts to delete on-chain triggers for the specified accounts.
  */
-export function deleteOnChainTriggersByAccount(
+export function disableAccounts(
   accounts: string[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async () => {
     try {
-      await submitRequestToBackground('deleteOnChainTriggersByAccount', [
-        accounts,
-      ]);
+      await submitRequestToBackground('disableAccounts', [accounts]);
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -6104,16 +6102,14 @@ export function deleteOnChainTriggersByAccount(
  * @param accounts - An array of account identifiers for which on-chain triggers should be updated.
  * @returns A thunk action that, when dispatched, attempts to update on-chain triggers for the specified accounts.
  */
-export function updateOnChainTriggersByAccount(
+export function enableAccounts(
   accounts: string[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async () => {
     try {
-      await submitRequestToBackground('updateOnChainTriggersByAccount', [
-        accounts,
-      ]);
+      await submitRequestToBackground('enableAccounts', [accounts]);
     } catch (error) {
       logErrorWithMessage(error);
       throw error;

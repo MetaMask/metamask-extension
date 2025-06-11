@@ -1,6 +1,5 @@
 import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import {
   NotificationComponentType,
@@ -31,7 +30,6 @@ import {
   BadgeWrapperPosition,
   IconName,
 } from '../../../../components/component-library';
-import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -130,9 +128,8 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
           />
         ),
         Asset: ({ notification }) => {
-          const chainId = decimalToHex(notification.chain_id);
           const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-            `0x${chainId}` as keyof typeof CHAIN_IDS,
+            notification.chain_id,
           );
           return (
             <NotificationDetailAsset
@@ -159,9 +156,8 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
           );
         },
         AssetReceived: ({ notification }) => {
-          const chainId = decimalToHex(notification.chain_id);
           const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-            `0x${chainId}` as keyof typeof CHAIN_IDS,
+            notification.chain_id,
           );
           return (
             <NotificationDetailAsset
