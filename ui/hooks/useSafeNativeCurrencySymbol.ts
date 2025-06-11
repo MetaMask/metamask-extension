@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { isStrictHexString } from '@metamask/utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { useSafeChains } from '../pages/settings/networks-tab/networks-form/use-safe-chains';
@@ -26,21 +26,18 @@ export const useSafeNativeCurrencySymbol = (
     };
   }, []);
 
-  return useMemo(() => {
-    if (!safeChainsRef.current || !chainId) {
-      return undefined;
-    }
+  if (!safeChainsRef.current || !chainId) {
+    return undefined;
+  }
 
-    const decimalChainId =
-      isStrictHexString(chainId) && parseInt(hexToDecimal(chainId), 10);
+  const decimalChainId =
+    isStrictHexString(chainId) && parseInt(hexToDecimal(chainId), 10);
 
-    if (typeof decimalChainId !== 'number') {
-      return undefined;
-    }
+  if (typeof decimalChainId !== 'number') {
+    return undefined;
+  }
 
-    return safeChainsRef.current.find(
-      (chain) => chain.chainId === decimalChainId.toString(),
-    )?.nativeCurrency?.symbol;
-    // Only update value when chainId changes
-  }, [chainId]);
+  return safeChainsRef.current.find(
+    (chain) => chain.chainId === decimalChainId.toString(),
+  )?.nativeCurrency?.symbol;
 };
