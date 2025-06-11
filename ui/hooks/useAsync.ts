@@ -74,6 +74,9 @@ export function useAsyncCallback<T>(
   asyncFn: () => Promise<T>,
   deps: DependencyList = [],
 ): [() => Promise<void>, AsyncResult<T>] {
+  'use no memo';
+
+  const asyncFnRef = useRef<typeof asyncFn | null>(asyncFn);
   const [result, setResult] = useState<AsyncResult<T>>(RESULT_IDLE);
 
   // Track component mount state
@@ -82,17 +85,18 @@ export function useAsyncCallback<T>(
   // Update ref when component unmounts
   useEffect(() => {
     return () => {
+      asyncFnRef.current = null;
       isMounted.current = false;
     };
   }, []);
 
   const execute = useCallback(async () => {
-    if (!isMounted.current) {
+    if (!isMounted.current || !asyncFnRef.current) {
       return;
     }
     setResult(RESULT_PENDING);
     try {
-      const value = await asyncFn();
+      const value = await asyncFnRef.current();
       if (isMounted.current) {
         setResult(createSuccessResult(value));
       }
@@ -101,6 +105,7 @@ export function useAsyncCallback<T>(
         setResult(createErrorResult(error as Error));
       }
     }
+    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
   }, deps);
 
   return [execute, result];
@@ -118,6 +123,8 @@ export function useAsyncResult<T>(
   asyncFn: () => Promise<T>,
   deps: DependencyList = [],
 ): AsyncResultNoIdle<T> {
+  'use no memo';
+
   const [execute, result] = useAsyncCallback(asyncFn, deps);
 
   useEffect(() => {
@@ -142,6 +149,8 @@ export function useAsyncResultOrThrow<T>(
   asyncFn: () => Promise<T>,
   deps: DependencyList = [],
 ): AsyncResultNoError<T> {
+  'use no memo';
+
   const result = useAsyncResult(asyncFn, deps);
 
   if (result.status === 'error') {
