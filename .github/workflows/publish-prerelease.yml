@@ -21,7 +21,7 @@ jobs:
       PR_NUMBER: ${{ github.event.pull_request.number }}
       BASE_COMMIT_HASH: ${{ github.event.pull_request.base.sha }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
-      MERGE_BASE_COMMIT_HASH: '' # placeholder so that we have autocomplete
+      MERGE_BASE_COMMIT_HASH: '' # placeholder so that we have autocomplete and logs
       CLOUDFRONT_REPO_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}
       HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
     steps:
