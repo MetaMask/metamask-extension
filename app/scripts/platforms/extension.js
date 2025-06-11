@@ -15,6 +15,7 @@ export default class ExtensionPlatform {
   // Public
   //
   reload() {
+    // TODO: should this be a safe reload via the `WriteManager`?
     browser.runtime.reload();
   }
 

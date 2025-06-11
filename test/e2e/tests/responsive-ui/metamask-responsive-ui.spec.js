@@ -35,6 +35,7 @@ describe('MetaMask Responsive UI', function () {
         // show terms of use
         await driver.clickElementAndWaitToDisappear(
           '[data-testid="terms-of-use-scroll-button"]',
+          5000,
         );
         await driver.clickElement('[data-testid="terms-of-use-checkbox"]');
         // agree to terms of use
