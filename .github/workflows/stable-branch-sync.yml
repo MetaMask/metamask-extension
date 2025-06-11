@@ -5,13 +5,10 @@ permissions:
   contents: write
   issues: write
 
-
-
 on:
   push:
     branches:
-        - stable
-
+      - stable
 
 jobs:
   get-next-version:
@@ -20,20 +17,20 @@ jobs:
     outputs:
       next-version: ${{ env.NEXT_SEMVER_VERSION }}
     steps:
-        - name: Checkout
-          uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-        - name: Configure Git
-          run: |
-            git config --global user.name "github-actions[bot]"
-            git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-        - name: Get the next semver version
-          id: get-next-semver-version
-          env:
-            FORCE_NEXT_SEMVER_VERSION: ${{ vars.FORCE_NEXT_SEMVER_VERSION }}
-          run: ./get-next-semver-version.sh "$FORCE_NEXT_SEMVER_VERSION"
-          working-directory: '.github/scripts'
+      - name: Get the next semver version
+        id: get-next-semver-version
+        env:
+          FORCE_NEXT_SEMVER_VERSION: ${{ vars.FORCE_NEXT_SEMVER_VERSION }}
+        run: ./get-next-semver-version.sh "$FORCE_NEXT_SEMVER_VERSION"
+        working-directory: '.github/scripts'
 
   run-stable-sync:
     name: Run Stable branch sync
