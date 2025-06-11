@@ -214,7 +214,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: 'https://github.com/MetaMask/github-tools/releases/download/v4.9.1/yarn-4.9.1.js'
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Download test results
         uses: actions/download-artifact@v4

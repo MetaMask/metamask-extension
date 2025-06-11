@@ -42,7 +42,7 @@ jobs:
           is-high-risk-environment: true
           skip-allow-scripts: true
           fetch-depth: 0
-          yarn-custom-url: 'https://github.com/MetaMask/github-tools/releases/download/v4.9.1/yarn-4.9.1.js'
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
