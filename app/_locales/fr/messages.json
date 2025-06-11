@@ -1250,9 +1250,6 @@
   "confusingEnsDomain": {
     "message": "Nous avons détecté un caractère pouvant prêter à confusion dans le nom de l’ENS. Vérifiez le nom de l’ENS pour éviter toute fraude potentielle."
   },
-  "congratulations": {
-    "message": "Félicitations !"
-  },
   "connect": {
     "message": "Connecter"
   },
@@ -2501,10 +2498,6 @@
   "id": {
     "message": "ID"
   },
-  "ifYouGetLockedOut": {
-    "message": "Si vous ne pouvez plus accéder à votre compte ou si vous changez d’appareil, vous perdrez vos fonds. Veillez à sauvegarder votre phrase secrète de récupération dans $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "Ignorer tout"
   },
@@ -2758,10 +2751,6 @@
   "jsonFile": {
     "message": "Fichier JSON",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Conservez votre phrase secrète de récupération dans un endroit sûr. Si vous la perdez, personne ne pourra vous aider à la récupérer. Pire encore, vous ne pourrez plus jamais accéder à votre portefeuille. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Nom du compte"
@@ -3782,9 +3771,6 @@
   "onboardingMetametricsDescription": {
     "message": "Nous aimerions recueillir des données d’utilisation et de diagnostic de base afin d’améliorer MetaMask. Sachez que nous ne vendons jamais les données que vous nous fournissez ici."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Lorsque nous recueillons des données, elles sont toujours…"
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Nous vous informerons si nous décidons d’utiliser ces données à d’autres fins. Pour plus d’informations, vous pouvez consulter notre $1. N’oubliez pas que vous pouvez aller dans les paramètres et vous désinscrire à tout moment.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3812,9 +3798,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Facultatif :"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Découvrez comment nous protégeons votre vie privée lors de la collecte de données d’utilisation pour votre profil."
   },
   "onboardingMetametricsTitle": {
     "message": "Aidez-nous à améliorer MetaMask"
@@ -4508,12 +4491,6 @@
   "rejected": {
     "message": "Rejeté"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "N’oubliez pas que si vous perdez votre phrase secrète de récupération, vous perdez l’accès à votre portefeuille. $1 pour sécuriser cet ensemble de mots et éviter de perdre l’accès à vos fonds."
-  },
-  "reminderSet": {
-    "message": "Rappel défini !"
-  },
   "remove": {
     "message": "Supprimer"
   },
@@ -4767,9 +4744,6 @@
   "securityMessageLinkForNetworks": {
     "message": "arnaques et risques de piratage informatique"
   },
-  "securityPrivacyPath": {
-    "message": "Paramètres > Sécurité et confidentialité."
-  },
   "securityProviderPoweredBy": {
     "message": "Service fourni par $1",
     "description": "The security provider that is providing data"
@@ -4918,9 +4892,6 @@
   },
   "settings": {
     "message": "Paramètres"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "Les paramètres sont optimisés pour sécuriser l’application et faciliter son utilisation. Vous pouvez modifier les paramètres à tout moment."
   },
   "settingsSearchMatchingNotFound": {
     "message": "Aucun résultat correspondant trouvé."
@@ -6670,10 +6641,6 @@
   },
   "walletConnectionGuide": {
     "message": "notre guide de connexion des portefeuilles matériels"
-  },
-  "walletProtectedAndReadyToUse": {
-    "message": "Votre portefeuille est protégé et prêt à être utilisé. Vous trouverez votre phrase secrète de récupération dans $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "Voulez-vous ajouter ce réseau ?"

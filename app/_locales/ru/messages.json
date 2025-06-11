@@ -1250,9 +1250,6 @@
   "confusingEnsDomain": {
     "message": "В имени ENS обнаружен непонятный символ. Проверьте это имя, что исключить возможное мошенничество."
   },
-  "congratulations": {
-    "message": "Поздравляем!"
-  },
   "connect": {
     "message": "Подключиться"
   },
@@ -2501,10 +2498,6 @@
   "id": {
     "message": "ID"
   },
-  "ifYouGetLockedOut": {
-    "message": "Если вы не сможете войти в приложение или приобретете новое устройство, вы потеряете свои средства. Обязательно сохраните резервную копию секретной фразы для восстановления в $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "Игнорировать все"
   },
@@ -2758,10 +2751,6 @@
   "jsonFile": {
     "message": "JSON-файл",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Сохраните напоминание о своей секретной фразе для восстановления в безопасном месте. Если вы потеряете ее, никто не сможет помочь вам вернуть ее. Хуже того, вы больше никогда не сможете получить доступ к своему кошельку. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Название счета"
@@ -3782,9 +3771,6 @@
   "onboardingMetametricsDescription": {
     "message": "Мы хотели бы собрать базовые данные об использовании и диагностике для улучшения MetaMask. Помните, что мы никогда не продаем данные, которые вы здесь предоставляете."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Когда мы собираем показатели, они всегда будут..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Мы сообщим вам, если решим использовать эти данные для других целей. Вы можете ознакомиться с нашей $1 для получения дополнительной информации. Помните, что вы можете перейти в настройки и отказаться в любой момент.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3812,9 +3798,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Необязательными:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Узнайте, как мы защищаем вашу конфиденциальность при сборе данных об использовании вашего профиля."
   },
   "onboardingMetametricsTitle": {
     "message": "Помогите нам улучшить MetaMask"
@@ -4508,12 +4491,6 @@
   "rejected": {
     "message": "Отклонено"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Помните: если вы потеряете секретную фразу для восстановления, вы утратите доступ к своему кошельку. $1, чтобы сохранить этот набор слов в безопасности и всегда иметь возможность доступа к своим средствам."
-  },
-  "reminderSet": {
-    "message": "Напоминание установлено!"
-  },
   "remove": {
     "message": "Удалить"
   },
@@ -4767,9 +4744,6 @@
   "securityMessageLinkForNetworks": {
     "message": "мошенничества с сетью и угроз безопасности"
   },
-  "securityPrivacyPath": {
-    "message": "«Настройки» > «Безопасность и конфиденциальность»."
-  },
   "securityProviderPoweredBy": {
     "message": "На основе $1",
     "description": "The security provider that is providing data"
@@ -4918,9 +4892,6 @@
   },
   "settings": {
     "message": "Настройки"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "Настройки оптимизированы для простоты использования и безопасности. Изменяйте их в любое время."
   },
   "settingsSearchMatchingNotFound": {
     "message": "Совпадений не найдено."
@@ -6670,10 +6641,6 @@
   },
   "walletConnectionGuide": {
     "message": "наше руководство по подключению аппаратного кошелька"
-  },
-  "walletProtectedAndReadyToUse": {
-    "message": "Ваш кошелек защищен и готов к использованию. Вы можете найти свою секретную фразу для восстановления в $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "Хотите добавить эту сеть?"

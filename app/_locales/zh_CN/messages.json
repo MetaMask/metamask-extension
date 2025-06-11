@@ -1250,9 +1250,6 @@
   "confusingEnsDomain": {
     "message": "我们在 ENS 名称中检测到一个可令人混淆的字符。检查 ENS 名称以避免潜在的欺诈。"
   },
-  "congratulations": {
-    "message": "恭喜！"
-  },
   "connect": {
     "message": "连接"
   },
@@ -2501,10 +2498,6 @@
   "id": {
     "message": "ID"
   },
-  "ifYouGetLockedOut": {
-    "message": "如果应用程序锁定导致无法登录或使用新设备，则会失去资金。请务必在 $1 备份您的私钥助记词 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "忽略所有"
   },
@@ -2758,10 +2751,6 @@
   "jsonFile": {
     "message": "JSON 文件",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "将您的私钥助记词提醒存放在安全的地方。如果遗失，没有人能帮您找回。更糟糕的是，您将无法再访问您的钱包。$1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "账户名称"
@@ -3782,9 +3771,6 @@
   "onboardingMetametricsDescription": {
     "message": "我们希望收集基本的使用和诊断数据，以改进 MetaMask。请注意，我们绝不会出卖您在此处提供的数据。"
   },
-  "onboardingMetametricsDescription2": {
-    "message": "当我们收集指标时，总是..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "如果我们决定将这些数据用于其他目的，我们会通知您。您可以查看我们的 $1 以了解更多信息。请记住，您可以随时转到设置并选择退出。",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3812,9 +3798,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "可选："
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "了解我们如何在收集您的个人资料使用数据的同时保护您的隐私。"
   },
   "onboardingMetametricsTitle": {
     "message": "请帮助我们改进 MetaMask"
@@ -4508,12 +4491,6 @@
   "rejected": {
     "message": "已拒绝"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "请记住，如果私钥助记词遗失，您将无法访问您的钱包。$1 以保护这组助记词的安全，这样您可以随时访问您的资金。"
-  },
-  "reminderSet": {
-    "message": "提醒设置完毕！"
-  },
   "remove": {
     "message": "删除"
   },
@@ -4767,9 +4744,6 @@
   "securityMessageLinkForNetworks": {
     "message": "网络欺诈和安全风险"
   },
-  "securityPrivacyPath": {
-    "message": "设置 > 安全与隐私。"
-  },
   "securityProviderPoweredBy": {
     "message": "由 $1 提供支持",
     "description": "The security provider that is providing data"
@@ -4918,9 +4892,6 @@
   },
   "settings": {
     "message": "设置"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "设置经过优化，更具易用性和安全性。可随时对此进行更改。"
   },
   "settingsSearchMatchingNotFound": {
     "message": "没有找到匹配的结果."
@@ -6670,10 +6641,6 @@
   },
   "walletConnectionGuide": {
     "message": "我们的硬件钱包连接指南"
-  },
-  "walletProtectedAndReadyToUse": {
-    "message": "您的钱包受到保护，可随时使用。您可在 $1 找到私钥助记词 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "想要添加此网络吗？"
