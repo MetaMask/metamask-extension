@@ -88,6 +88,9 @@ describe('AssetPickerModalNftTab', () => {
         ...mockState.metamask,
         ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         allNfts: mockNfts,
+        enabledNetworkMap: {
+          [CHAIN_IDS.MAINNET]: true,
+        },
       },
     });
     const { getByText, getAllByTestId } = renderWithProvider(
@@ -110,6 +113,9 @@ describe('AssetPickerModalNftTab', () => {
         ...mockState.metamask,
         ...mockNetworkState({ chainId: CHAIN_IDS.LINEA_MAINNET }),
         allNfts: mockNfts,
+        enabledNetworkMap: {
+          [CHAIN_IDS.LINEA_MAINNET]: true,
+        },
       },
     });
 
