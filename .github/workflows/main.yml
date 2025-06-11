@@ -34,7 +34,7 @@ permissions:
 jobs:
   # Cancel PR checks for RCs, as CI is already running on push
   stop-rc-pr-checks:
-    if: ${{ startsWith(github.head_ref, 'Version-v') }}
+    if: ${{ startsWith(github.head_ref, 'fix/') }}
     runs-on: ubuntu-latest
     steps:
       - name: Cancel workflow run
