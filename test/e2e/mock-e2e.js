@@ -416,6 +416,24 @@ async function setupMocking(
       };
     });
 
+  // Surveys
+  await server
+    .forGet(new RegExp(`${ACCOUNTS_PROD_API_BASE_URL}/v1/users/[^/]+/surveys`, 'u'))
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          userId: '0x123',
+          surveys: {
+            url: 'https://example.com',
+            description: `Test survey 1`,
+            cta: 'Take survey',
+            id: 1,
+          },
+        }
+      }
+    });
+
   [
     `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-id/surveys`,
     `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-fd20/surveys`,
