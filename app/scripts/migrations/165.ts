@@ -113,26 +113,9 @@ type CronjobCaveatValue = {
 };
 
 /**
- * Get a duration with a minimum of 1 second. This function assumes the provided
- * duration is valid.
- *
- * @param duration - The duration to validate.
- * @returns The validated duration.
- */
-// TODO: Export this function from the `@metamask/snaps-controllers` package?
-function getDuration(duration: Duration): Duration<true> {
-  if (duration.as('seconds') < 1) {
-    return Duration.fromObject({ seconds: 1 });
-  }
-
-  return duration;
-}
-
-/**
  * Get the next execution date from a schedule, which should be either:
  *
  * - An ISO 8601 date string, or
- * - An ISO 8601 duration string, or
  * - A cron expression.
  *
  * @param schedule - The schedule of the event.
@@ -153,13 +136,6 @@ export function getExecutionDate(schedule: string) {
     return roundedDate.toISO({
       suppressMilliseconds: true,
     });
-  }
-
-  const duration = Duration.fromISO(schedule);
-  if (duration.isValid) {
-    // This ensures the duration is at least 1 second.
-    const validatedDuration = getDuration(duration);
-    return DateTime.now().toUTC().plus(validatedDuration).toISO();
   }
 
   try {
