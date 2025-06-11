@@ -428,6 +428,7 @@ describe('Request-queue UI changes', function () {
     );
   });
 
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should signal from UI to dapp the network change', async function () {
     await withFixtures(
       {

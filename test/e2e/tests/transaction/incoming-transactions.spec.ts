@@ -87,7 +87,7 @@ async function mockAccountsApi(
 }
 
 describe('Incoming Transactions', function () {
-  it.only('adds standard incoming transactions', async function () {
+  it('adds standard incoming transactions', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()

@@ -1,4 +1,6 @@
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
+const {
+  switchToNetworkFromSendFlow,
+} = require('../../page-objects/flows/network.flow');
 
 const FixtureBuilder = require('../../fixture-builder');
 const {
