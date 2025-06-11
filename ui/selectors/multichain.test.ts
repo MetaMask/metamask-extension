@@ -90,7 +90,6 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
       },
       nonEvmTransactions: {
         [MOCK_ACCOUNT_BIP122_P2WPKH.id]: {
-          // @ts-expect-error TODO: Check why TS is complaining about this
           [BtcScope.Mainnet]: {
             transactions: [],
             next: null,
