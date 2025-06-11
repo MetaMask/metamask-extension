@@ -313,7 +313,7 @@ export const MOONRIVER_DISPLAY_NAME = 'Moonriver';
 export const SCROLL_DISPLAY_NAME = 'Scroll';
 export const SCROLL_SEPOLIA_DISPLAY_NAME = 'Scroll Sepolia';
 export const OP_BNB_DISPLAY_NAME = 'opBNB';
-export const BERACHAIN_DISPLAY_NAME = 'Berachain Artio';
+export const BERACHAIN_DISPLAY_NAME = 'Berachain';
 export const METACHAIN_ONE_DISPLAY_NAME = 'Metachain One Mainnet';
 export const MEGAETH_TESTNET_DISPLAY_NAME = 'Mega Testnet';
 export const LISK_DISPLAY_NAME = 'Lisk';
@@ -397,6 +397,7 @@ export const CURRENCY_SYMBOLS = {
   FLOW: 'FLOW',
   KATANA: 'ETH',
   SOPHON: 'SOPH',
+  BERACHAIN: 'BERA',
 } as const;
 
 // Non-EVM currency symbols
@@ -588,6 +589,8 @@ export const KATANA_IMAGE_URL = './images/katana.svg';
 export const MONAD_TESTNET_IMAGE_URL = './images/monad-testnet-logo.png';
 export const SOPHON_IMAGE_URL = './images/sophon.svg';
 export const SOPHON_TESTNET_IMAGE_URL = './images/sophon-testnet.svg';
+export const BERACHAIN_IMAGE_URL = './images/berachain.svg';
+export const BERACHAIN_NATIVE_TOKEN_IMAGE_URL = './images/berachain-native.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -870,6 +873,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MONAD_TESTNET],
   [CHAIN_IDS.SOPHON]: CURRENCY_SYMBOLS.SOPHON,
   [CHAIN_IDS.SOPHON_TESTNET]: CURRENCY_SYMBOLS.SOPHON,
+  [CHAIN_IDS.BERACHAIN]: CURRENCY_SYMBOLS.BERACHAIN,
 } as const;
 
 /**
@@ -1021,6 +1025,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_IMAGE_URL,
   [CHAIN_IDS.SOPHON]: SOPHON_IMAGE_URL,
   [CHAIN_IDS.SOPHON_TESTNET]: SOPHON_TESTNET_IMAGE_URL,
+  [CHAIN_IDS.BERACHAIN]: BERACHAIN_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1084,6 +1089,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_IMAGE_URL,
   [CHAIN_IDS.SOPHON]: SOPHON_IMAGE_URL,
   [CHAIN_IDS.SOPHON_TESTNET]: SOPHON_TESTNET_IMAGE_URL,
+  [CHAIN_IDS.BERACHAIN]: BERACHAIN_NATIVE_TOKEN_IMAGE_URL,
 } as const;
 
 /**
