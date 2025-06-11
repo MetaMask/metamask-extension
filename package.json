@@ -331,7 +331,7 @@
     "@metamask/solana-wallet-snap": "^1.32.0",
     "@metamask/solana-wallet-standard": "^0.5.0",
     "@metamask/streams": "^0.2.0",
-    "@metamask/transaction-controller": "^57.0.0",
+    "@metamask/transaction-controller": "^57.1.0",
     "@metamask/user-operation-controller": "^36.0.0",
     "@metamask/utils": "^11.1.0",
     "@ngraveio/bc-ur": "^1.1.13",
