@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import log from 'loglevel';
 import { URDecoder } from '@ngraveio/bc-ur';
 import PropTypes from 'prop-types';
@@ -30,7 +30,7 @@ const BaseReader = ({
   const [urDecoder, setURDecoder] = useState(new URDecoder());
   const [progress, setProgress] = useState(0);
 
-  let permissionChecker = null;
+  const permissionCheckerRef = useRef(null);
   const mounted = useRef(false);
 
   const reset = () => {
@@ -40,7 +40,45 @@ const BaseReader = ({
     setProgress(0);
   };
 
-  const checkEnvironment = async () => {
+  const checkPermissions = useCallback(async () => {
+    try {
+      const { permissions } = await WebcamUtils.checkStatus();
+      if (permissions) {
+        // Let the video stream load first...
+        await new Promise((resolve) => setTimeout(resolve, SECOND * 2));
+        if (!mounted.current) {
+          return;
+        }
+        setReady(READY_STATE.READY);
+      } else if (mounted.current) {
+        // Keep checking for permissions
+        permissionCheckerRef.current = setTimeout(checkPermissions, SECOND);
+        setReady(READY_STATE.NEED_TO_ALLOW_ACCESS);
+      }
+    } catch (e) {
+      if (mounted.current) {
+        setError(e);
+      }
+    }
+  }, []);
+
+  const initCamera = useCallback(() => {
+    try {
+      checkPermissions();
+    } catch (e) {
+      if (!mounted.current) {
+        return;
+      }
+      if (e.name === 'NotAllowedError') {
+        log.info(`Permission denied: '${e}'`);
+        setReady(READY_STATE.NEED_TO_ALLOW_ACCESS);
+      } else {
+        setError(e);
+      }
+    }
+  }, [checkPermissions]);
+
+  const checkEnvironment = useCallback(async () => {
     try {
       const { environmentReady } = await WebcamUtils.checkStatus();
       if (
@@ -60,29 +98,7 @@ const BaseReader = ({
     // initial attempt is required to trigger permission prompt
     // eslint-disable-next-line no-use-before-define
     return initCamera();
-  };
-
-  const checkPermissions = async () => {
-    try {
-      const { permissions } = await WebcamUtils.checkStatus();
-      if (permissions) {
-        // Let the video stream load first...
-        await new Promise((resolve) => setTimeout(resolve, SECOND * 2));
-        if (!mounted.current) {
-          return;
-        }
-        setReady(READY_STATE.READY);
-      } else if (mounted.current) {
-        // Keep checking for permissions
-        permissionChecker = setTimeout(checkPermissions, SECOND);
-        setReady(READY_STATE.NEED_TO_ALLOW_ACCESS);
-      }
-    } catch (e) {
-      if (mounted.current) {
-        setError(e);
-      }
-    }
-  };
+  }, [initCamera]);
 
   const handleScan = (data) => {
     try {
@@ -105,30 +121,15 @@ const BaseReader = ({
     }
   };
 
-  const initCamera = () => {
-    try {
-      checkPermissions();
-    } catch (e) {
-      if (!mounted.current) {
-        return;
-      }
-      if (e.name === 'NotAllowedError') {
-        log.info(`Permission denied: '${e}'`);
-        setReady(READY_STATE.NEED_TO_ALLOW_ACCESS);
-      } else {
-        setError(e);
-      }
-    }
-  };
-
   useEffect(() => {
     mounted.current = true;
     checkEnvironment();
     return () => {
       mounted.current = false;
-      clearTimeout(permissionChecker);
+      clearTimeout(permissionCheckerRef.current);
+      permissionCheckerRef.current = null;
     };
-  }, []);
+  }, [checkEnvironment]);
 
   useEffect(() => {
     if (ready === READY_STATE.READY) {
@@ -136,10 +137,10 @@ const BaseReader = ({
     } else if (ready === READY_STATE.NEED_TO_ALLOW_ACCESS) {
       checkPermissions();
     }
-  }, [ready]);
+  }, [ready, checkPermissions, initCamera]);
 
   const tryAgain = () => {
-    clearTimeout(permissionChecker);
+    clearTimeout(permissionCheckerRef.current);
     reset();
     checkEnvironment();
   };

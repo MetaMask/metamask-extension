@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 type UsePollingOptions<PollingInput> = {
   callback?: (pollingToken: string) => (pollingToken: string) => void;
@@ -13,7 +13,8 @@ const usePolling = <PollingInput>(
 ) => {
   const pollTokenRef = useRef<null | string>(null);
   const cleanupRef = useRef<null | ((pollingToken: string) => void)>(null);
-  let isMounted = false;
+  const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
     if (usePollingOptions.enabled === false) {
       return () => {
@@ -21,7 +22,7 @@ const usePolling = <PollingInput>(
       };
     }
 
-    isMounted = true;
+    setIsMounted(true);
 
     const cleanup = () => {
       if (pollTokenRef.current) {
@@ -45,12 +46,14 @@ const usePolling = <PollingInput>(
 
     // Return a cleanup function to stop polling when the component unmounts
     return () => {
-      isMounted = false;
+      setIsMounted(false);
       cleanup();
     };
   }, [
-    usePollingOptions.input && JSON.stringify(usePollingOptions.input),
+    usePollingOptions,
+    usePollingOptions.input,
     usePollingOptions.enabled,
+    isMounted,
   ]);
 };
 
