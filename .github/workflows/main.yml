@@ -6,7 +6,6 @@ on:
       - main
       - master
       - Version-v*
-      - fix/*
       - trigger-ci*
   pull_request:
     types:
@@ -14,7 +13,7 @@ on:
       - reopened
       - synchronize
     branches-ignore:
-      - main
+      - master
   merge_group:
 
 concurrency:
