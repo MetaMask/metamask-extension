@@ -39,7 +39,10 @@ const getTestPathsForTestDir = async (testDir: string): Promise<string[]> => {
 };
 
 // For running E2Es in parallel in GitHub Actions
-function runningOnGitHubActions(fullTestList: string[]) {
+function runningOnGitHubActions(
+  fullTestList: string[],
+  skipQualityGate: boolean = false,
+) {
   let changedOrNewTests: string[] = [];
 
   if (!shouldE2eQualityGateBeSkipped()) {
@@ -62,7 +65,16 @@ function runningOnGitHubActions(fullTestList: string[]) {
     fullTestList,
     changedOrNewTests,
     matrixTotal,
+    skipQualityGate,
   );
+
+  // Check that the chunk exists for the current index
+  if (!chunks[matrixIndex]) {
+    console.error(`No chunk found for matrix index ${matrixIndex}`);
+    console.error(`Available chunks: ${chunks.length}`);
+    console.error(`Matrix total: ${matrixTotal}`);
+    process.exit(1);
+  }
 
   console.log(
     `Expected chunk run time: ${formatTime(chunks[matrixIndex].time)}`,
@@ -103,6 +115,10 @@ async function main(): Promise<void> {
             description: `run STX specific e2e tests`,
             type: 'boolean',
           })
+          .option('skip-quality-gate', {
+            description: `Skip quality gate retries for new/changed tests (run only once instead of 4 times)`,
+            type: 'boolean',
+          })
           .option('build-type', {
             description: `Sets the build-type to test for. This may filter out tests.`,
             type: 'string',
@@ -139,6 +155,7 @@ async function main(): Promise<void> {
     updatePrivacySnapshot,
     multiProvider,
     stxE2e,
+    skipQualityGate,
   } = argv as {
     browser?: 'chrome' | 'firefox';
     debug?: boolean;
@@ -149,6 +166,7 @@ async function main(): Promise<void> {
     updatePrivacySnapshot?: boolean;
     multiProvider?: boolean;
     stxE2e?: boolean;
+    skipQualityGate?: boolean;
   };
 
   let testPaths: string[];
@@ -225,6 +243,7 @@ async function main(): Promise<void> {
   if (process.env.GITHUB_ACTION) {
     ({ myTestList, changedOrNewTests } = await runningOnGitHubActions(
       testPaths,
+      skipQualityGate || false,
     ));
   } else {
     myTestList = testPaths;
