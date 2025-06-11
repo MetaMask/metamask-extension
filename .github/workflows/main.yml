@@ -13,6 +13,8 @@ on:
       - opened
       - reopened
       - synchronize
+    branches-ignore:
+      - main
   merge_group:
 
 concurrency:
@@ -29,27 +31,9 @@ env:
 
 permissions:
   contents: write # required for releases
-  actions: write # required for cancelling workflow runs
   id-token: write # required for s3 uploads
 
 jobs:
-  # Cancel PR checks for RCs, as CI is already running on push
-  stop-rc-pr-checks:
-    if: ${{ startsWith(github.head_ref, 'fix/') }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cancel workflow run
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.actions.cancelWorkflowRun({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              run_id: context.runId
-            });
-
-      - run: echo "Waiting for job to be cancelled"; sleep inf
-
   prep-deps:
     runs-on: ubuntu-latest
     steps:
@@ -347,7 +331,6 @@ jobs:
 
   publish-prerelease:
     name: Publish prerelease
-    if: ${{ github.event_name == 'pull_request' }}
     needs:
       - build-dist-browserify
       - build-dist-mv2-browserify

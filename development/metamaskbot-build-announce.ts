@@ -369,7 +369,7 @@ async function start(): Promise<void> {
   }
 
   const JSON_PAYLOAD = JSON.stringify({ body: commentBody });
-  const POST_COMMENT_URI = `https://api.github.com/repos/metamask/metamask-extension/issues/${PR_NUMBER}/comments`;
+  const POST_COMMENT_URI = `https://api.github.com/repos/${OWNER}/${REPOSITORY}/issues/${PR_NUMBER}/comments`;
   console.log(`Announcement:\n${commentBody}`);
 
   if (PR_COMMENT_TOKEN) {
