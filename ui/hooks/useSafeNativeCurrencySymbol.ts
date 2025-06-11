@@ -5,6 +5,7 @@ import { useSafeChains } from '../pages/settings/networks-tab/networks-form/use-
 
 /**
  * Custom hook to get the native currency symbol for a given chain ID
+ *
  * @param chainId - The chain ID to get the native currency symbol for
  * @returns The native currency symbol or undefined if not found
  */
@@ -12,7 +13,6 @@ export const useSafeNativeCurrencySymbol = (
   chainId: string,
 ): string | undefined => {
   const { safeChains } = useSafeChains();
-
   const safeChainsRef = useRef(safeChains);
 
   useEffect(() => {

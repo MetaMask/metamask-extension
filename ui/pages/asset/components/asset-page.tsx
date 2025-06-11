@@ -3,7 +3,6 @@ import { EthMethod, SolMethod } from '@metamask/keyring-api';
 import {
   type CaipAssetType,
   type Hex,
-  isStrictHexString,
   parseCaipAssetType,
 } from '@metamask/utils';
 import { isEqual } from 'lodash';
