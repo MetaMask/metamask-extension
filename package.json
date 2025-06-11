@@ -359,6 +359,7 @@
     "classnames": "^2.2.6",
     "cockatiel": "^3.1.2",
     "copy-to-clipboard": "^3.3.3",
+    "cron-parser": "^4.5.0",
     "currency-formatter": "^1.4.2",
     "deep-freeze-strict": "1.1.1",
     "dompurify": "patch:dompurify@npm%3A3.2.5#~/.yarn/patches/dompurify-npm-3.2.5-d9af707abe.patch",
