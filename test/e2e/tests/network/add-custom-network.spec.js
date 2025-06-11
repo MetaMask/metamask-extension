@@ -443,7 +443,7 @@ describe('Custom network', function () {
           // Avoid a stale element error
           await driver.delay(regularDelayMs);
 
-          await driver.clickElement('[data-testid="network-display"]');
+          await switchToEditRPCViaGlobalMenuNetworks(driver);
 
           await driver.clickElement({
             tag: 'button',
@@ -474,11 +474,6 @@ describe('Custom network', function () {
           );
 
           await driver.clickElement({ tag: 'button', text: 'Approve' });
-
-          // verify network switched
-          await driver.waitForSelector(
-            'button[data-testid="network-display"][aria-label="Network Menu Arbitrum One"]',
-          );
         },
       );
     });
@@ -517,7 +512,7 @@ describe('Custom network', function () {
           await unlockWallet(driver);
           // Avoid a stale element error
           await driver.delay(regularDelayMs);
-          await driver.clickElement('[data-testid="network-display"]');
+          await switchToEditRPCViaGlobalMenuNetworks(driver);
           // ===========================================================>
 
           // Go to Edit Menu
@@ -537,7 +532,7 @@ describe('Custom network', function () {
             text: 'Delete',
           });
 
-          await driver.clickElement('[data-testid="network-display"]');
+          await switchToEditRPCViaGlobalMenuNetworks(driver);
 
           // check if arbitrum is on the list of popular network
           const popularNetworkArbitrum = await driver.findElement(
@@ -649,7 +644,7 @@ describe('Custom network', function () {
 
         async ({ driver }) => {
           await unlockWallet(driver);
-          await driver.clickElement('[data-testid="network-display"]');
+          await switchToEditRPCViaGlobalMenuNetworks(driver);
           await driver.clickElement({
             text: 'Add a custom network',
             tag: 'button',
@@ -761,7 +756,7 @@ describe('Custom network', function () {
         async ({ driver }) => {
           await unlockWallet(driver);
 
-          await driver.clickElement('[data-testid="network-display"]');
+          await switchToEditRPCViaGlobalMenuNetworks(driver);
           await driver.clickElement({
             text: 'Add a custom network',
             tag: 'button',
@@ -860,7 +855,7 @@ describe('Custom network', function () {
         async ({ driver }) => {
           await unlockWallet(driver);
 
-          await driver.clickElement('[data-testid="network-display"]');
+          await switchToEditRPCViaGlobalMenuNetworks(driver);
           await driver.clickElement({
             text: 'Add a custom network',
             tag: 'button',
@@ -963,15 +958,16 @@ async function checkThatSafeChainsListValidationToggleIsOn(driver) {
   );
 
   // return to the home screen
+  await driver.clickElement(
+    '.settings-page__header__title-container__close-button',
+  );
   const appHeaderSelector = '[data-testid="app-header-logo"]';
   await driver.waitForSelector(appHeaderSelector);
   await driver.clickElement(appHeaderSelector);
 }
 
 async function failCandidateNetworkValidation(driver) {
-  const networkMenuSelector = '[data-testid="network-display"]';
-  await driver.waitForSelector(networkMenuSelector);
-  await driver.clickElement(networkMenuSelector);
+  await switchToEditRPCViaGlobalMenuNetworks(driver);
 
   await driver.clickElement({ text: 'Add a custom network', tag: 'button' });
 
@@ -1108,15 +1104,16 @@ async function toggleOffSafeChainsListValidation(driver) {
   driver.delay(regularDelayMs);
 
   // return to the home screen
+  await driver.clickElement(
+    '.settings-page__header__title-container__close-button',
+  );
   const appHeaderSelector = '[data-testid="app-header-logo"]';
   await driver.waitForSelector(appHeaderSelector);
   await driver.clickElement(appHeaderSelector);
 }
 
 async function candidateNetworkIsNotValidated(driver) {
-  const networkMenuSelector = '[data-testid="network-display"]';
-  await driver.waitForSelector(networkMenuSelector);
-  await driver.clickElement(networkMenuSelector);
+  await switchToEditRPCViaGlobalMenuNetworks(driver);
 
   await driver.clickElement({ text: 'Add a custom network', tag: 'button' });
 
@@ -1191,4 +1188,11 @@ async function candidateNetworkIsNotValidated(driver) {
   };
   const saveButtonEl = await driver.findElement(saveButtonRawLocator);
   assert.equal(await saveButtonEl.isEnabled(), true);
+}
+
+// added it here since unable to import from object model
+async function switchToEditRPCViaGlobalMenuNetworks(driver) {
+  await driver.waitForSelector('[data-testid="account-options-menu-button"]');
+  await driver.clickElement('[data-testid="account-options-menu-button"]');
+  await driver.clickElement('[data-testid="global-menu-networks"]');
 }
