@@ -1,11 +1,10 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
-import { NetworkManager } from './network-manager';
-import { hideModal } from '../../../store/actions';
-import { RpcEndpointType } from '@metamask/network-controller';
 import mockState from '../../../../test/data/mock-state.json';
+import { NetworkManager } from './network-manager';
 
 // Mock the store actions
 jest.mock('../../../store/actions', () => ({
