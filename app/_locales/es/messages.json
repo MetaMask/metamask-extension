@@ -659,9 +659,6 @@
   "basic": {
     "message": "Básico"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Activar la funcionalidad básica"
-  },
   "basicConfigurationBannerTitle": {
     "message": "La funcionalidad básica está desactivada"
   },
@@ -1253,9 +1250,6 @@
   "confusingEnsDomain": {
     "message": "Se detectó un carácter que puede confundirse con otro similar en el nombre de ENS. Verifique el nombre de ENS para evitar una posible estafa."
   },
-  "congratulations": {
-    "message": "¡Felicidades!"
-  },
   "connect": {
     "message": "Conectar"
   },
@@ -1443,9 +1437,6 @@
   },
   "createNewAccountHeader": {
     "message": "Crear una nueva cuenta"
-  },
-  "createNewWallet": {
-    "message": "Crear un monedero nuevo"
   },
   "createPassword": {
     "message": "Crear contraseña"
@@ -2343,9 +2334,6 @@
   "genericExplorerView": {
     "message": "Ver cuenta en $1"
   },
-  "goBack": {
-    "message": "Volver"
-  },
   "goToSite": {
     "message": "Ir al sitio"
   },
@@ -2510,10 +2498,6 @@
   "id": {
     "message": "ID"
   },
-  "ifYouGetLockedOut": {
-    "message": "Si se le bloquea el acceso a la aplicación o adquiere un nuevo dispositivo, perderá sus fondos. Asegúrese de hacer una copia de seguridad de su frase secreta de recuperación en $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "Ignorar todo"
   },
@@ -2547,9 +2531,6 @@
   },
   "importAccountMsg": {
     "message": "Las cuentas importadas no se asociarán con su frase secreta de recuperación de MetaMask. Obtenga más información sobre las cuentas importadas"
-  },
-  "importMyWallet": {
-    "message": "Importar mi monedero"
   },
   "importNFT": {
     "message": "Agregar NFT"
@@ -2770,10 +2751,6 @@
   "jsonFile": {
     "message": "Archivo JSON",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Guarde un recordatorio de su frase secreta de recuperación en algún lugar seguro. Si la pierde, nadie podrá ayudarlo a recuperarla. Y lo que es peor, no podrá volver a acceder a su monedero. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Nombre de la cuenta"
@@ -3794,9 +3771,6 @@
   "onboardingMetametricsDescription": {
     "message": "Nos gustaría recopilar datos básicos de uso y diagnóstico para mejorar MetaMask. Tenga presente que nunca venderemos los datos que nos proporcione aquí."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Al recopilar métricas, siempre será..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Le informaremos si decidimos usar estos datos para otros fines. Puede consultar $1 para obtener más información. Recuerde que puede acceder a la configuración y excluirse en cualquier momento.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3824,9 +3798,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opcionales:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Descubra cómo protegemos su privacidad al recopilar datos de uso para su perfil."
   },
   "onboardingMetametricsTitle": {
     "message": "Ayúdenos a mejorar MetaMask"
@@ -3939,9 +3910,6 @@
   },
   "passwordNotLongEnough": {
     "message": "La contraseña no es suficientemente larga"
-  },
-  "passwordSetupDetails": {
-    "message": "Esta contraseña desbloqueará su monedero MetaMask solo en este dispositivo. MetaMask no puede recuperar esta contraseña."
   },
   "passwordStrength": {
     "message": "Solidez de la contraseña: $1",
@@ -4523,12 +4491,6 @@
   "rejected": {
     "message": "Rechazado"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Recuerde que si pierde su frase secreta de recuperación, perderá el acceso a su monedero. $1 para mantener seguro este conjunto de palabras y poder acceder siempre a sus fondos."
-  },
-  "reminderSet": {
-    "message": "¡Recordatorio creado!"
-  },
   "remove": {
     "message": "Quitar"
   },
@@ -4782,9 +4744,6 @@
   "securityMessageLinkForNetworks": {
     "message": "estafas en la red y riesgos de seguridad"
   },
-  "securityPrivacyPath": {
-    "message": "Configuración > Seguridad y privacidad."
-  },
   "securityProviderPoweredBy": {
     "message": "Impulsado por $1",
     "description": "The security provider that is providing data"
@@ -4802,35 +4761,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Confirmar frase secreta de recuperación"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Recordarme más tarde (no recomendado)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Proteger mi monedero (recomendado)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Escríbala y guárdela en varios lugares secretos"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Guárdela en una caja de seguridad"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Su frase secreta de recuperación es una frase de 12 palabras que es la “clave maestra” de su monedero y sus fondos"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Si alguien le pide su frase de recuperación, es posible que tenga intenciones de estafarlo."
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Nunca comparta su frase secreta de recuperación, ni siquiera con MetaMask."
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "¿Qué es una frase secreta de recuperación?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "¿Debería compartir mi frase secreta de recuperación?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "¿Cómo guardo mi frase secreta de recuperación?"
   },
   "seedPhraseIntroTitle": {
     "message": "Proteger su cartera"
@@ -4957,9 +4892,6 @@
   },
   "settings": {
     "message": "Configuración"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "La configuración está optimizada para facilitar su uso y garantizar la seguridad. Cámbiela en cualquier momento."
   },
   "settingsSearchMatchingNotFound": {
     "message": "No se encontraron resultados coincidentes."
@@ -5114,9 +5046,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "Omitir"
   },
   "skipAccountSecurity": {
     "message": "¿Omitir la seguridad de la cuenta?"
@@ -5305,10 +5234,6 @@
   "snapConnectionWarning": {
     "message": "$1 quiere conectarse a $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "Este contenido proviene de $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "Sitio web"
@@ -6716,10 +6641,6 @@
   },
   "walletConnectionGuide": {
     "message": "nuestra guía de conexión del monedero físico"
-  },
-  "walletProtectedAndReadyToUse": {
-    "message": "Su monedero está protegido y listo para usar. Puede encontrar su frase secreta de recuperación en $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "¿Desea añadir esta red?"

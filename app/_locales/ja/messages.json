@@ -659,9 +659,6 @@
   "basic": {
     "message": "基本"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "基本機能をオンにする"
-  },
   "basicConfigurationBannerTitle": {
     "message": "基本機能はオフになっています"
   },
@@ -1253,9 +1250,6 @@
   "confusingEnsDomain": {
     "message": "ENS名に混乱しやすい文字が発見されました。詐欺を防ぐためにENS名を確認して下さい。"
   },
-  "congratulations": {
-    "message": "おめでとうございます！"
-  },
   "connect": {
     "message": "接続"
   },
@@ -1443,9 +1437,6 @@
   },
   "createNewAccountHeader": {
     "message": "新しいアカウントの作成"
-  },
-  "createNewWallet": {
-    "message": "新規ウォレットを作成"
   },
   "createPassword": {
     "message": "パスワードを作成"
@@ -2343,9 +2334,6 @@
   "genericExplorerView": {
     "message": "$1でアカウントを表示"
   },
-  "goBack": {
-    "message": "戻る"
-  },
   "goToSite": {
     "message": "サイトに移動"
   },
@@ -2510,10 +2498,6 @@
   "id": {
     "message": "ID"
   },
-  "ifYouGetLockedOut": {
-    "message": "アプリからロックアウトされてしまったり、新しいデバイスを入手した場合、資金が失われます。シークレットリカバリーフレーズは必ず$1にバックアップしてください ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "すべて無視"
   },
@@ -2547,9 +2531,6 @@
   },
   "importAccountMsg": {
     "message": "インポートされたアカウントは、MetaMaskアカウントのシークレットリカバリーフレーズと関連付けられません。インポートされたアカウントの詳細を表示"
-  },
-  "importMyWallet": {
-    "message": "ウォレットをインポート"
   },
   "importNFT": {
     "message": "NFTをインポート"
@@ -2770,10 +2751,6 @@
   "jsonFile": {
     "message": "JSONファイル",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "シークレットリカバリーフレーズは忘れないように安全な場所に保管してください。なくしてしまうと、誰にも取り戻すことはできません。さらに、ウォレットに二度とアクセスできなくなります。$1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "アカウント名"
@@ -3794,9 +3771,6 @@
   "onboardingMetametricsDescription": {
     "message": "MetaMaskの改善を目的に、基本的な使用状況および診断データを収集したいと思います。ここで提供されるデータが販売されることはありません。"
   },
-  "onboardingMetametricsDescription2": {
-    "message": "指標を収集する際、常に次の条件が適用されます..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "このデータを他の目的に使用する際は、お知らせします。詳細は当社の$1をご覧ください。設定でいつでもオプトアウトできます。",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3824,9 +3798,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "任意:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "当社がプロファイル用に使用状況データを収集しつつ、どのようにユーザーのプライバシーを守るのかご覧ください。"
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMaskの改善にご協力ください"
@@ -3939,9 +3910,6 @@
   },
   "passwordNotLongEnough": {
     "message": "パスワードの長さが足りません"
-  },
-  "passwordSetupDetails": {
-    "message": "このパスワードは、このデバイスでのみMetaMaskウォレットのロックを解除します。MetaMaskはこのパスワードを復元できません。"
   },
   "passwordStrength": {
     "message": "パスワードの強度: $1",
@@ -4523,12 +4491,6 @@
   "rejected": {
     "message": "拒否されました"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "シークレットリカバリーフレーズをなくしてしまうと、ウォレットにアクセスできなくなります。この単語のセットを安全に保管し、いつでも資金にアクセスできるように、$1してください。"
-  },
-  "reminderSet": {
-    "message": "リマインダーが設定されました！"
-  },
   "remove": {
     "message": "削除"
   },
@@ -4782,9 +4744,6 @@
   "securityMessageLinkForNetworks": {
     "message": "ネットワーク詐欺とセキュリティのリスク"
   },
-  "securityPrivacyPath": {
-    "message": "「設定」>「セキュリティとプライバシー」で確認できます。"
-  },
   "securityProviderPoweredBy": {
     "message": "データソース: $1",
     "description": "The security provider that is providing data"
@@ -4802,35 +4761,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "シークレットリカバリーフレーズの確認"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "後で通知 (非推奨)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "ウォレットの安全を確保 (推奨)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "書き留めて、複数の秘密の場所に保管してください"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "金庫に保管する"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "シークレットリカバリーフレーズは12単語のフレーズで、ウォレットと資金への「マスターキー」となります。"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "誰かにリカバリーフレーズを尋ねられたら、ウォレットの資金を盗もうとする詐欺の可能性が高いです。"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "シークレットリカバリ フレーズはMetaMaskを含め、決して誰とも共有しないでください！"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "シークレットリカバリーフレーズとは何ですか？"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "シークレットリカバリーフレーズは共有すべきですか？"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "シークレットリカバリーフレーズはどのように保管すべきですか？"
   },
   "seedPhraseIntroTitle": {
     "message": "ウォレットの保護"
@@ -4957,9 +4892,6 @@
   },
   "settings": {
     "message": "設定"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "設定は使いやすさとセキュリティを確保するために最適化されています。これらはいつでも変更できます。"
   },
   "settingsSearchMatchingNotFound": {
     "message": "一致する結果が見つかりませんでした。"
@@ -5114,9 +5046,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "スキップ"
   },
   "skipAccountSecurity": {
     "message": "アカウントのセキュリティをスキップしますか？"
@@ -5305,10 +5234,6 @@
   "snapConnectionWarning": {
     "message": "$1が$2の使用を求めています",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "このコンテンツは$1からのものです",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "Webサイト"
@@ -6716,10 +6641,6 @@
   },
   "walletConnectionGuide": {
     "message": "弊社のハードウェアウォレット接続ガイド"
-  },
-  "walletProtectedAndReadyToUse": {
-    "message": "ウォレットが保護され、使用する準備ができました。シークレットリカバリーフレーズは、$1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "このネットワークを追加しますか？"

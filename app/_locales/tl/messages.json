@@ -659,9 +659,6 @@
   "basic": {
     "message": "Panimula"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "I-on ang batayang kapakinabangan"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Naka-off ang batayang kapakinabangan"
   },
@@ -1253,9 +1250,6 @@
   "confusingEnsDomain": {
     "message": "May na-detect kami na nakakalitong character sa pangalan ng ENS. Suriin ang pangalan ng ENS para maiwasan ang potensyal na panloloko."
   },
-  "congratulations": {
-    "message": "Congratulations!"
-  },
   "connect": {
     "message": "Kumonekta"
   },
@@ -1443,9 +1437,6 @@
   },
   "createNewAccountHeader": {
     "message": "Gumawa ng bagong account"
-  },
-  "createNewWallet": {
-    "message": "Gumawa ng bagong wallet"
   },
   "createPassword": {
     "message": "Gumawa ng password"
@@ -2343,9 +2334,6 @@
   "genericExplorerView": {
     "message": "Tingnan ang account sa $1"
   },
-  "goBack": {
-    "message": "Bumalik"
-  },
   "goToSite": {
     "message": "Magpunta sa site"
   },
@@ -2510,10 +2498,6 @@
   "id": {
     "message": "Id"
   },
-  "ifYouGetLockedOut": {
-    "message": "Kung ikaw ay na-lock out sa app o kumuha ng bagong device, mawawala ang iyong mga pondo. Siguraduhing i-back up ang iyong Lihim na Parirala sa Pagbawi sa $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "Huwag pansinin ang lahat"
   },
@@ -2547,9 +2531,6 @@
   },
   "importAccountMsg": {
     "message": "Ang mga na-import na account ay hindi mauugnay sa iyong Lihim na Parirala sa Pagbawi ng MetaMask. Matuto pa tungkol sa mga na-import na account"
-  },
-  "importMyWallet": {
-    "message": "I-import ang Wallet Ko"
   },
   "importNFT": {
     "message": "Mag-import ng NFT"
@@ -2770,10 +2751,6 @@
   "jsonFile": {
     "message": "File na JSON",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Gumawa ng paalala sa iyong Lihim na Parirala sa Pagbawi sa isang ligtas na lugar. Kung mawala mo ito, walang makakatulong sa iyo na mabawi ito. Ang mas masama pa, hindi mo na maaaring ma-access ang iyong wallet kahit kailan. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Pangalan ng Account"
@@ -3794,9 +3771,6 @@
   "onboardingMetametricsDescription": {
     "message": "Nais naming mangalap ng data para sa batayang paggamit upang mapahusay ang MetaMask. Dapat mong malaman na hindi namin ibebenta ang data na iyong ibibigay rito."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Kapag kami ay nangangalap ng metrics, ito ay palaging..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Ipapaalam namin sa iyo kung magdesisyon kaming gamitin ang data na ito para sa ibang layunin. Maaari mong suriin ang aming $1 para sa karagdagang impormasyon. Tandaan, maaari kang magpunta sa mga setting at mag-opt out anumang oras.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3824,9 +3798,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Opsyonal:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Matuto kung paano namin pinoprotektahan ang iyong pagkapribado habang kinokolekta ang data sa paggamit para sa iyong profile."
   },
   "onboardingMetametricsTitle": {
     "message": "Tulungan kaming mapahusay ang MetaMask"
@@ -3939,9 +3910,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Hindi sapat ang haba ng password"
-  },
-  "passwordSetupDetails": {
-    "message": "Ang password na ito ay magbubukas lamang ng iyong MetaMask wallet sa device na ito. Hindi matatakpan ng MetaMask ang password na ito."
   },
   "passwordStrength": {
     "message": "Tibay ng password: $1",
@@ -4523,12 +4491,6 @@
   "rejected": {
     "message": "Tinanggihan"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Tandaan, kapag nawala mo ang iyong Lihim na Parirala sa Pagbawi, mawawala ang access mo sa iyong wallet. $1 upang mapanatiling ligtas ang pangkat ng mga salitang ito nang sa gayon lagi kang may access sa mga pondo mo."
-  },
-  "reminderSet": {
-    "message": "Naitakda ang Paalala!"
-  },
   "remove": {
     "message": "Alisin"
   },
@@ -4782,9 +4744,6 @@
   "securityMessageLinkForNetworks": {
     "message": "mga panloloko sa network at panganib sa seguridad"
   },
-  "securityPrivacyPath": {
-    "message": "Mga Setting > Seguridad at Pagkapribado."
-  },
   "securityProviderPoweredBy": {
     "message": "Pinapagana ng $1",
     "description": "The security provider that is providing data"
@@ -4802,35 +4761,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Kumpirmahin ang Lihim na Parirala sa Pagbawi"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Ipaalala sa amin sa ibang pagkakataon (hindi inirerekomenda)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "I-secure ang aking wallet (inirerekomenda)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Isulat at itago sa iba't ibang sikretong lugar"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Itago sa safe deposit box"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Ang iyong Lihim na Parirala sa Pagbawi ay isang 12 salitang parirala na \"master key\" sa iyong wallet at sa iyong pondo"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Kung may humingi ng iyong parirala sa pagbawi, malamang na sinusubukan ka nilang lokohin at nakawan ng mga pondo sa iyong wallet."
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Huwag kailanman ibahagi ang iyong Lihim na Parirala sa Pagbawi, kahit sa MetaMask!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Ano ang Lihim na Parirala sa Pagbawi?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Maaari ko bang ibahagi ang aking Lihim na Parirala sa Pagbawi?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Paano ko masi-save ang aking Lihim na Parirala sa Pagbawi?"
   },
   "seedPhraseIntroTitle": {
     "message": "I-secure ang wallet mo"
@@ -4957,9 +4892,6 @@
   },
   "settings": {
     "message": "Mga Setting"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "Ang mga setting ay nakaayos para sa dali ng paggamit at seguridad.\nBaguhin ang mga ito anumang oras."
   },
   "settingsSearchMatchingNotFound": {
     "message": "Walang nakitang katugmang resulta."
@@ -5114,9 +5046,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skip": {
-    "message": "Laktawan"
   },
   "skipAccountSecurity": {
     "message": "Laktawan ang Account Security?"
@@ -5305,10 +5234,6 @@
   "snapConnectionWarning": {
     "message": "Si $1 ay gustong gumamit ng $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "Ang nilalamang ito ay nagmumula sa $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "Website"
@@ -6716,10 +6641,6 @@
   },
   "walletConnectionGuide": {
     "message": "ang aming gabay sa pagkonekta ng wallet na hardware"
-  },
-  "walletProtectedAndReadyToUse": {
-    "message": "Ang iyong wallet ay protektado at handa ng gamitin. Matatagpuan mo ang iyong Lihim na Parirala sa Pagbawi sa $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "Gusto mo bang idagdag ang network na ito?"
