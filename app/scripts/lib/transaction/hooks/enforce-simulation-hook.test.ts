@@ -17,6 +17,7 @@ import { DelegationControllerSignDelegationAction } from '@metamask/delegation-c
 const ESTIMATE_GAS_MOCK = '0x123' as Hex;
 const TOKEN_MOCK = '0x4567890abcdef1234567890abcdef1234567890a' as Hex;
 const DELEGATION_SIGNATURE_MOCK = '0x456aaabbbcccdddeee123' as Hex;
+const TOKEN_ID_MOCK = '0xabcdef345712ad' as Hex;
 
 const BALANCE_CHANGE_MOCK = {
   difference: '0x1' as Hex,
@@ -168,7 +169,7 @@ describe('EnforceSimulationHook', () => {
     ]);
   });
 
-  it('includes native balance change caveat if native balance changed', async () => {
+  it('includes native balance change caveat', async () => {
     const hook = new EnforceSimulationHook({
       messenger,
     }).getAfterSimulateHook();
@@ -190,7 +191,7 @@ describe('EnforceSimulationHook', () => {
     );
   });
 
-  it('includes erc20 token balance change caveat if erc20 token balance changed', async () => {
+  it('includes erc20 token balance change caveat', async () => {
     const hook = new EnforceSimulationHook({
       messenger,
     }).getAfterSimulateHook();
@@ -220,6 +221,82 @@ describe('EnforceSimulationHook', () => {
           DELEGATOR_CONTRACTS['1.3.0']['1'].ERC20BalanceChangeEnforcer,
         ).toLowerCase(),
       ),
+    );
+  });
+
+  it('includes erc721 token balance change caveat', async () => {
+    const hook = new EnforceSimulationHook({
+      messenger,
+    }).getAfterSimulateHook();
+
+    const { updateTransaction } =
+      (await hook({
+        transactionMeta: {
+          ...TRANSACTION_META_MOCK,
+          simulationData: {
+            tokenBalanceChanges: [
+              {
+                ...BALANCE_CHANGE_MOCK,
+                address: TOKEN_MOCK,
+                id: TOKEN_ID_MOCK,
+                standard: SimulationTokenStandard.erc721,
+              },
+            ],
+          },
+        },
+      })) ?? {};
+
+    const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+    updateTransaction?.(newTransaction);
+
+    expect(newTransaction.txParams.data).toStrictEqual(
+      expect.stringContaining(
+        remove0x(
+          DELEGATOR_CONTRACTS['1.3.0']['1'].ERC721BalanceChangeEnforcer,
+        ).toLowerCase(),
+      ),
+    );
+
+    expect(newTransaction.txParams.data).toStrictEqual(
+      expect.stringContaining(remove0x(TOKEN_ID_MOCK).toLowerCase()),
+    );
+  });
+
+  it('includes erc1155 token balance change caveat', async () => {
+    const hook = new EnforceSimulationHook({
+      messenger,
+    }).getAfterSimulateHook();
+
+    const { updateTransaction } =
+      (await hook({
+        transactionMeta: {
+          ...TRANSACTION_META_MOCK,
+          simulationData: {
+            tokenBalanceChanges: [
+              {
+                ...BALANCE_CHANGE_MOCK,
+                address: TOKEN_MOCK,
+                id: TOKEN_ID_MOCK,
+                standard: SimulationTokenStandard.erc1155,
+              },
+            ],
+          },
+        },
+      })) ?? {};
+
+    const newTransaction = cloneDeep(TRANSACTION_META_MOCK);
+    updateTransaction?.(newTransaction);
+
+    expect(newTransaction.txParams.data).toStrictEqual(
+      expect.stringContaining(
+        remove0x(
+          DELEGATOR_CONTRACTS['1.3.0']['1'].ERC1155BalanceChangeEnforcer,
+        ).toLowerCase(),
+      ),
+    );
+
+    expect(newTransaction.txParams.data).toStrictEqual(
+      expect.stringContaining(remove0x(TOKEN_ID_MOCK).toLowerCase()),
     );
   });
 

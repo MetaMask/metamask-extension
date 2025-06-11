@@ -2,6 +2,7 @@ import {
   AfterSimulateHook,
   BeforeSignHook,
   SimulationData,
+  SimulationTokenStandard,
   TransactionContainerType,
   TransactionMeta,
   TransactionParams,
@@ -258,9 +259,12 @@ function generateCaveats(
       difference,
       isDecrease: enforceDecrease,
       address: token,
+      standard,
+      id: tokenIdHex,
     } = tokenChange;
 
     const delta = BigInt(difference);
+    const tokenId = tokenIdHex ? BigInt(tokenIdHex) : 0n;
 
     log('Caveat - Token Balance Change', {
       enforceDecrease,
@@ -269,13 +273,42 @@ function generateCaveats(
       delta,
     });
 
-    caveatBuilder.addCaveat(
-      'erc20BalanceChange',
-      enforceDecrease,
-      token,
-      recipient,
-      delta,
-    );
+    switch (standard) {
+      case SimulationTokenStandard.erc20:
+        caveatBuilder.addCaveat(
+          'erc20BalanceChange',
+          enforceDecrease,
+          token,
+          recipient,
+          delta,
+        );
+        break;
+
+      case SimulationTokenStandard.erc721:
+        caveatBuilder.addCaveat(
+          'erc721BalanceChange',
+          enforceDecrease,
+          token,
+          recipient,
+          tokenId,
+        );
+        break;
+
+      case SimulationTokenStandard.erc1155:
+        caveatBuilder.addCaveat(
+          'erc1155BalanceChange',
+          enforceDecrease,
+          token,
+          recipient,
+          tokenId,
+          delta,
+        );
+        break;
+
+      default:
+        log('Unsupported token standard', standard);
+        break;
+    }
   }
 
   return caveatBuilder.build();
