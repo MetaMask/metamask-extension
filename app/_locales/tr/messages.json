@@ -652,9 +652,6 @@
   "basic": {
     "message": "Temel"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Temel işlevselliği aç"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Temel işlevsellik kapalı"
   },
@@ -2279,18 +2276,11 @@
   "gasLimit": {
     "message": "Gaz limiti"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Gaz limiti, harcamak istediğiniz maksimum gaz birimi tutarıdır."
-  },
   "gasLimitRecommended": {
     "message": "Önerilen gaz limiti 1$ kadardır. Gaz limiti bundan daha düşükse başarısız olabilir."
   },
   "gasLimitTooLow": {
     "message": "Gaz limiti en az 21000 olmalıdır"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Gaz limiti en az $1 olmalıdır",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "Gaz limiti"
@@ -2298,23 +2288,11 @@
   "gasOption": {
     "message": "Gaz seçeneği"
   },
-  "gasPrice": {
-    "message": "Gaz fiyatı (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "Gaz ücretiniz gereksiz bir şekilde yüksek. Tutarı azaltmayı göz önünde bulundurun."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Gaz Fiyatı aşırı yüksek"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Gaz fiyatı aşırı düşük"
-  },
   "gasPriceFetchFailed": {
     "message": "Gaz fiyatı tahmini ağ hatası nedeniyle başarısız oldu."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Gaz fiyatı, her bir gaz birimi için ödemek istediğiniz Ether miktarını belirler."
   },
   "gasTimingHoursShort": {
     "message": "$1 sa.",
@@ -5203,10 +5181,6 @@
     "message": "$1 şunu kullanmak istiyor: $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
   },
-  "snapContent": {
-    "message": "Bu içerik $1 kaynaklıdır",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
-  },
   "snapDetailWebsite": {
     "message": "Web Sitesi"
   },
@@ -6720,8 +6694,5 @@
   },
   "yourWalletIsReady": {
     "message": "Cüzdanınız hazır"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Sıfır gaz fiyatı hızlandırmada"
   }
 }

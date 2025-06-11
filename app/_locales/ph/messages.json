@@ -489,33 +489,14 @@
   "gasLimit": {
     "message": "Limitasyon sa Gas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Ang limitasyon sa gas ay ang maximum na halaga ng mga unit ng gas na handa mong gastusin."
-  },
   "gasLimitTooLow": {
     "message": "Ang limitasyon sa gas ay dapat na hindi bababa sa 21000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Ang limitasyon sa gas ay dapat na hindi bababa sa $1",
-    "description": "$1 is the custom gas limit, in decimal."
-  },
-  "gasPrice": {
-    "message": "Presyo ng Gas (GWEI)"
   },
   "gasPriceExcessive": {
     "message": "Hindi makatuwirang naitakda nang mataas ang iyong bayarin sa gas. Subukang babaan ang halaga."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Labis-labis ang Presyo ng Gas"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Sobrang Baba ng Presyo ng Gas"
-  },
   "gasPriceFetchFailed": {
     "message": "Hindi nagtagumpay ang pagtatantya ng presyo ng gas dahil sa error sa network."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Tinutukoy ng presyo ng gas ang halaga ng Ether na handa mong bayaran para sa bawat unit ng gas."
   },
   "gasUsed": {
     "message": "Nagamit na Gas"
@@ -1512,8 +1493,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Ang iyong Secret Recovery Phrase"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Walang presyo ng gas sa pagpapabilis"
   }
 }

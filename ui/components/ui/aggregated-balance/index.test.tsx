@@ -23,6 +23,7 @@ const mockNonEvmBalance = '1';
 const mockNonEvmAccount = {
   address: 'DtMUkCoeyzs35B6EpQQxPyyog6TRwXxV1W1Acp8nWBNa',
   id: '542490c8-d178-433b-9f31-f680b11f45a5',
+  scopes: [SolScope.Mainnet],
   metadata: {
     name: 'Solana Account',
     keyring: {
