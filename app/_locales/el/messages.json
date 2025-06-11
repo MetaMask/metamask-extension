@@ -1250,9 +1250,6 @@
   "confusingEnsDomain": {
     "message": "Εντοπίσαμε έναν παράξενο χαρακτήρα στο όνομα ENS. Ελέγξτε το όνομα ENS για να αποφύγετε μια πιθανή απάτη."
   },
-  "congratulations": {
-    "message": "Συγχαρητήρια!"
-  },
   "connect": {
     "message": "Σύνδεση"
   },
@@ -2337,9 +2334,6 @@
   "genericExplorerView": {
     "message": "Προβολή λογαριασμού σε $1"
   },
-  "goBack": {
-    "message": "Πηγαίνετε πίσω"
-  },
   "goToSite": {
     "message": "Μετάβαση στον ιστότοπο"
   },
@@ -2503,10 +2497,6 @@
   },
   "id": {
     "message": "Αναγνωριστικό"
-  },
-  "ifYouGetLockedOut": {
-    "message": "Εάν δεν μπορείτε να χρησιμοποιήσετε την εφαρμογή ή αποκτήσατε νέα συσκευή, θα χάσετε τα κεφάλαιά σας. Βεβαιωθείτε ότι έχετε δημιουργήσει αντίγραφα ασφαλείας της Μυστικής σας Φράσης Ανάκτησης στο $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "ignoreAll": {
     "message": "Αγνόηση όλων"
@@ -2761,10 +2751,6 @@
   "jsonFile": {
     "message": "Αρχείο JSON",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Κρατήστε μια υπενθύμιση της Μυστικής σας Φράσης Ανάκτησης σε ασφαλές μέρος. Εάν την χάσετε, κανείς δεν μπορεί να σας βοηθήσει να την επαναφέρετε. Ακόμα χειρότερα, δεν θα έχετε ποτέ ξανά πρόσβαση στο πορτοφόλι σας. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Όνομα λογαριασμού"
@@ -3785,9 +3771,6 @@
   "onboardingMetametricsDescription": {
     "message": "Θέλουμε να συλλέξουμε βασικά δεδομένα χρήσης και διάγνωσης για να βελτιώσουμε το MetaMask. Λάβετε υπόψη ότι δεν πουλάμε ποτέ τα δεδομένα που μας παρέχετε εδώ."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Όταν συγκεντρώνουμε μετρήσεις, θα είναι πάντα..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Θα σας ενημερώσουμε εάν αποφασίσουμε να χρησιμοποιήσουμε αυτά τα δεδομένα για άλλους σκοπούς. Για περισσότερες πληροφορίες, μπορείτε να ανατρέξετε στην $1. Να θυμάστε ότι μπορείτε να μεταβείτε στις ρυθμίσεις και να εξαιρεθείτε ανά πάσα στιγμή.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3815,9 +3798,6 @@
   },
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Προαιρετικές:"
-  },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Μάθετε πώς προστατεύουμε το απόρρητό σας ενώ συλλέγουμε δεδομένα χρήσης για το προφίλ σας."
   },
   "onboardingMetametricsTitle": {
     "message": "Βοηθήστε μας να βελτιώσουμε το MetaMask"
@@ -4511,12 +4491,6 @@
   "rejected": {
     "message": "Απορρίφθηκε"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Να θυμάστε, αν χάσετε τη Μυστική Φράση Ανάκτησης, δεν θα έχετε πρόσβαση στο πορτοφόλι σας. $1 για να κρατήσετε αυτό το σύνολο λέξεων ασφαλές, ώστε να έχετε πάντα πρόσβαση στα κεφάλαιά σας."
-  },
-  "reminderSet": {
-    "message": "Ορισμός υπενθύμισης!"
-  },
   "remove": {
     "message": "Κατάργηση"
   },
@@ -4770,9 +4744,6 @@
   "securityMessageLinkForNetworks": {
     "message": "διαδικτυακές απάτες και κίνδυνοι ασφαλείας"
   },
-  "securityPrivacyPath": {
-    "message": "Ρυθμίσεις > Ασφάλεια & Απόρρητο."
-  },
   "securityProviderPoweredBy": {
     "message": "Με την υποστήριξη του $1",
     "description": "The security provider that is providing data"
@@ -4790,35 +4761,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Επιβεβαίωση της Μυστικής Φράσης Ανάκτησης"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Υπενθυμίστε μου αργότερα (δεν συνιστάται)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Προστατέψτε το πορτοφόλι μου (συνιστάται)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Γράψτε και αποθηκεύστε σε πολλά μυστικά μέρη"
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Αποθήκευση σε θυρίδα ασφαλείας"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Η Μυστική σας Φράση Ανάκτησης είναι μια φράση 12 λέξεων που είναι το «κύριο κλειδί» για το πορτοφόλι και τα χρήματά σας"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Αν κάποιος σας ζητήσει τη φράση ανάκτησής σας, είναι πιθανό να προσπαθεί να σας εξαπατήσει και να κλέψει τα χρήματα του πορτοφολιού σας."
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Ποτέ, μα ποτέ μην μοιραστείτε τη Μυστική σας Φράση Ανάκτησης, ούτε καν με το MetaMask!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Τι είναι η Μυστική Φράση Ανάκτησης;"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Θα πρέπει να μοιραστώ τη Μυστική μου Φράση Ανάκτησης;"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Πώς μπορώ να αποθηκεύσω τη Μυστική μου Φράση Ανάκτησης;"
   },
   "seedPhraseIntroTitle": {
     "message": "Προστατεύστε το πορτοφόλι σας"
@@ -4945,9 +4892,6 @@
   },
   "settings": {
     "message": "Ρυθμίσεις"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "Οι ρυθμίσεις έχουν βελτιστοποιηθεί για ευκολία χρήσης και ασφάλεια. Μπορείτε να τις αλλάξετε ανά πάσα στιγμή."
   },
   "settingsSearchMatchingNotFound": {
     "message": "Δε βρέθηκαν αποτελέσματα που να ταιριάζουν."
@@ -5102,9 +5046,6 @@
   },
   "siweURI": {
     "message": "Διεύθυνση URL"
-  },
-  "skip": {
-    "message": "Παράλειψη"
   },
   "skipAccountSecurity": {
     "message": "Παράλειψη ασφάλειας λογαριασμού;"
@@ -6700,10 +6641,6 @@
   },
   "walletConnectionGuide": {
     "message": "ο οδηγός μας σύνδεσης πορτοφολιού υλικού"
-  },
-  "walletProtectedAndReadyToUse": {
-    "message": "Το πορτοφόλι σας είναι προστατευμένο και έτοιμο προς χρήση. Μπορείτε να βρείτε τη Μυστική σας Φράση Ανάκτησης στο $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "Θέλετε να προσθέσετε αυτό το δίκτυο;"
