@@ -169,6 +169,13 @@ const NetworkManagerRouter = () => {
         />
       </Route>
       <Route path="/">
+        <ModalHeader
+          onClose={handleClose}
+          onBack={handleClose}
+          data-testid="network-manager-modal-close-button"
+        >
+          Networks
+        </ModalHeader>
         <NetworkTabs initialTab={initialTab} />
       </Route>
     </Switch>

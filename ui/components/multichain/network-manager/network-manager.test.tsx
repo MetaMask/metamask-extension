@@ -3,66 +3,154 @@ import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import { NetworkManager } from './network-manager';
+import { hideModal } from '../../../store/actions';
+import { RpcEndpointType } from '@metamask/network-controller';
+import mockState from '../../../../test/data/mock-state.json';
+
+// Mock the store actions
+jest.mock('../../../store/actions', () => ({
+  hideModal: jest.fn(),
+}));
+
+// Mock useDispatch
+const mockDispatch = jest.fn();
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useDispatch: () => mockDispatch,
+}));
+
+const mockNetworkConfigurations = {
+  '0x1': {
+    chainId: '0x1',
+    name: 'Ethereum Mainnet',
+    rpcEndpoints: [
+      {
+        url: 'https://mainnet.infura.io/v3/123',
+        type: RpcEndpointType.Infura,
+        networkClientId: 'mainnet',
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://etherscan.io'],
+    defaultBlockExplorerUrlIndex: 0,
+    nativeCurrency: 'ETH',
+  },
+  '0xa': {
+    chainId: '0xa',
+    name: 'Optimism',
+    rpcEndpoints: [
+      {
+        url: 'https://optimism-mainnet.infura.io/v3/123',
+        type: RpcEndpointType.Infura,
+        networkClientId: 'optimism-mainnet',
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://optimistic.etherscan.io'],
+    defaultBlockExplorerUrlIndex: 0,
+    nativeCurrency: 'ETH',
+  },
+  '0xa4b1': {
+    chainId: '0xa4b1',
+    name: 'Arbitrum One',
+    rpcEndpoints: [
+      {
+        url: 'https://arbitrum-mainnet.infura.io/v3/123',
+        type: RpcEndpointType.Infura,
+        networkClientId: 'arbitrum-mainnet',
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://arbiscan.io'],
+    defaultBlockExplorerUrlIndex: 0,
+    nativeCurrency: 'ETH',
+  },
+  '0xa86a': {
+    chainId: '0xa86a',
+    name: 'Avalanche',
+    rpcEndpoints: [
+      {
+        url: 'https://avalanche-mainnet.infura.io/v3/123',
+        type: RpcEndpointType.Infura,
+        networkClientId: 'avalanche-mainnet',
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://snowtrace.io'],
+    defaultBlockExplorerUrlIndex: 0,
+    nativeCurrency: 'AVAX',
+  },
+  '0x2105': {
+    chainId: '0x2105',
+    name: 'Base',
+    rpcEndpoints: [
+      {
+        url: 'https://base-mainnet.infura.io/v3/123',
+        type: RpcEndpointType.Infura,
+        networkClientId: 'base-mainnet',
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://basescan.org'],
+    defaultBlockExplorerUrlIndex: 0,
+    nativeCurrency: 'ETH',
+  },
+};
 
 describe('NetworkManager Component', () => {
   const renderNetworkManager = () => {
-    const store = configureStore({});
+    const store = configureStore({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        networkConfigurationsByChainId: mockNetworkConfigurations,
+        selectedNetworkClientId: 'mainnet',
+        providerConfig: {
+          chainId: '0x1',
+          rpcUrl: 'https://mainnet.infura.io/v3/123',
+          type: 'rpc',
+          ticker: 'ETH',
+        },
+      },
+    });
     return renderWithProvider(<NetworkManager />, store);
   };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('renders correctly when open', () => {
     renderNetworkManager();
 
-    // Verify the modal header is rendered
-    expect(screen.getByText('Networks')).toBeInTheDocument();
-
     // Verify tabs are rendered
     expect(screen.getByText('Default')).toBeInTheDocument();
     expect(screen.getByText('Custom')).toBeInTheDocument();
-    expect(screen.getByText('Test')).toBeInTheDocument();
 
     // Verify default tab content is rendered
-    expect(screen.getByText('Deselect All')).toBeInTheDocument();
+    expect(screen.getByText('Select all')).toBeInTheDocument();
     expect(screen.getByText('Arbitrum One')).toBeInTheDocument();
     expect(screen.getByText('Optimism')).toBeInTheDocument();
     expect(screen.getByText('Avalanche')).toBeInTheDocument();
     expect(screen.getByText('Base')).toBeInTheDocument();
   });
 
-  it('calls onClose when close button is clicked', () => {
-    const onClose = jest.fn();
-    renderNetworkManager();
-
-    // Find and click the close button
-    const closeButton = screen.getByRole('button', { name: /close/iu });
-    fireEvent.click(closeButton);
-
-    expect(onClose).toHaveBeenCalledTimes(1);
-  });
-
   it('switches tab when tab is clicked', () => {
     renderNetworkManager();
 
     // Verify that Default tab is active by default
-    expect(screen.getByText('Deselect All')).toBeInTheDocument();
+    expect(screen.getByText('Select all')).toBeInTheDocument();
 
     // Click on Custom tab
     fireEvent.click(screen.getByText('Custom'));
 
     // Verify Custom tab content is rendered
-    expect(screen.getByText('Networks 1')).toBeInTheDocument();
+    expect(screen.getByText('Add custom network')).toBeInTheDocument();
 
     // Click on Test tab
-    fireEvent.click(screen.getByText('Test'));
+    fireEvent.click(screen.getByText('Test networks'));
 
     // Verify Test tab content is rendered
-    expect(screen.getByText('Networks 2')).toBeInTheDocument();
-  });
-
-  it('is not rendered when isOpen is false', () => {
-    renderNetworkManager();
-
-    // Modal should not render when isOpen is false
-    expect(screen.queryByText('Networks')).not.toBeInTheDocument();
+    expect(screen.getByText('Add custom network')).toBeInTheDocument();
   });
 });

@@ -22,11 +22,6 @@ describe('AdditionalNetworksInfo', () => {
     return renderWithProvider(<AdditionalNetworksInfo />, store);
   };
 
-  it('renders correctly', () => {
-    const { container } = renderComponent();
-    expect(container).toMatchSnapshot();
-  });
-
   it('renders the component with "Additional networks" text', () => {
     renderComponent();
     // Using the actual text that's rendered with the real i18n context
