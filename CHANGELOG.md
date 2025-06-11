@@ -7,7 +7,59 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [12.21.0]
+### Added
+- chore: add Logo for Sophon chain ([#33506](https://github.com/MetaMask/metamask-extension/pull/33506))
+- feat: add Katana network logo ([#33008](https://github.com/MetaMask/metamask-extension/pull/33008))
+- feat: detect updates and prompt restart ([#33381](https://github.com/MetaMask/metamask-extension/pull/33381))
+- feat: added basic functionality banner ([#33095](https://github.com/MetaMask/metamask-extension/pull/33095))
+- feat: add support for remote mode on activity list ([#33157](https://github.com/MetaMask/metamask-extension/pull/33157))
+- feat: prompt for automated vault recovery from internal vault backup if corruption is detected ([#32006](https://github.com/MetaMask/metamask-extension/pull/32006))
+- feat: Adding AdditionalNetworkInfo component ([#33150](https://github.com/MetaMask/metamask-extension/pull/33150))
+- feat: discover bitcoin accounts ([#33124](https://github.com/MetaMask/metamask-extension/pull/33124))
+- feat: bitcoin integration improvements ([#33402](https://github.com/MetaMask/metamask-extension/pull/33402))
+- feat: add multiTokenPeriod caveat to daily allowance ([#33155](https://github.com/MetaMask/metamask-extension/pull/33155))
+- feat: Add `enabledNetworkMap` state to `NetworkOrderController` ([#33114](https://github.com/MetaMask/metamask-extension/pull/33114))
+- feat: use afterAdd hook to update remote mode send transaction ([#33115](https://github.com/MetaMask/metamask-extension/pull/33115))
 
+### Changed
+- fix: update op logo ([#33399](https://github.com/MetaMask/metamask-extension/pull/33399))
+- chore: update minimum browser versions to Chrome 113 and Firefox 115 ([#32529](https://github.com/MetaMask/metamask-extension/pull/32529))
+- chore: update genesys network logo ([#33468](https://github.com/MetaMask/metamask-extension/pull/33468))
+- feat: updated Account selector in header ([#32404](https://github.com/MetaMask/metamask-extension/pull/32404))
+- feat: prioritize Contentful slides plus bug fix ([#33271](https://github.com/MetaMask/metamask-extension/pull/33271))
+- feat: Add UI UX updates to account list item ([#33158](https://github.com/MetaMask/metamask-extension/pull/33158))
+
+### Removed
+- chore: Remove MMI build ([#33205](https://github.com/MetaMask/metamask-extension/pull/33205))
+- chore: Remove MMI build flags ([#33084](https://github.com/MetaMask/metamask-extension/pull/33084))
+- fix: Stop injecting the MMI Snap into the bundle ([#33052](https://github.com/MetaMask/metamask-extension/pull/33052))
+
+### Fixed
+- feat: add migration 164 to remove permissions for deleted networks ([#33484](https://github.com/MetaMask/metamask-extension/pull/33484))
+- fix: Fix race condition in send flow validation for token balance check ([#33172](https://github.com/MetaMask/metamask-extension/pull/33172))
+- fix: set max Solana bridge amount based on minimum balance for rent exemption v2 ([#33353](https://github.com/MetaMask/metamask-extension/pull/33353))
+- fix: Add updates to multichain accounts feature flags ([#33495](https://github.com/MetaMask/metamask-extension/pull/33495))
+- fix: adds 'auto' button for solana dynamic slippage ([#33254](https://github.com/MetaMask/metamask-extension/pull/33254))
+- fix: gracefully end sub-stream on port disconnect to prevent Premature close error ([#33470](https://github.com/MetaMask/metamask-extension/pull/33470))
+- fix: infinite loader when opening account modal ([#33472](https://github.com/MetaMask/metamask-extension/pull/33472))
+- fix: cleanup tokensController state for users with no tokenListContro… ([#33439](https://github.com/MetaMask/metamask-extension/pull/33439))
+- fix: potentially broken Multichain API eth subscription and missing wallet_sessionChanged events on Permission stateChange ([#33332](https://github.com/MetaMask/metamask-extension/pull/33332))
+- fix: ensure token autofill is only attempted when data is available ([#33248](https://github.com/MetaMask/metamask-extension/pull/33248))
+- fix: Fix max value refresher on L2 networks ([#33171](https://github.com/MetaMask/metamask-extension/pull/33171))
+- fix: carousel slide improved validation for zero balance ([#33243](https://github.com/MetaMask/metamask-extension/pull/33243))
+- fix: support wallet_sendCalls with origin throttling multiple request alert ([#33241](https://github.com/MetaMask/metamask-extension/pull/33241))
+- fix(useMultichainWalletSnapClient): stop calling `listAccountTransactions` twice on account creation ([#33117](https://github.com/MetaMask/metamask-extension/pull/33117))
+- fix: hides fiat amount string until token is entered ([#33242](https://github.com/MetaMask/metamask-extension/pull/33242))
+- fix: fixes edge case of swapping from USDC on solana via asset page ([#33097](https://github.com/MetaMask/metamask-extension/pull/33097))
+- fix: dapp receiving two accountsChanged and wallet_sessionChanged events when adding and removing accounts/chainIds in the same edit action ([#33082](https://github.com/MetaMask/metamask-extension/pull/33082))
+- fix: provide fallback symbols for missing solana images ([#33206](https://github.com/MetaMask/metamask-extension/pull/33206))
+- fix: dapp connection - select newly added account after creation. ([#32664](https://github.com/MetaMask/metamask-extension/pull/32664))
+- fix: Hide total in simulation when unlimited approval is requested ([#33168](https://github.com/MetaMask/metamask-extension/pull/33168))
+- fix: unlimited values in permit signature requests ([#33194](https://github.com/MetaMask/metamask-extension/pull/33194))
+- fix: hide backup SRP reminder for first party snaps created from imported srp ([#33047](https://github.com/MetaMask/metamask-extension/pull/33047))
+- fix: Make send flow transaction type to be defined by `TransactionController` ([#33013](https://github.com/MetaMask/metamask-extension/pull/33013))
+- fix: Polish Connection background and fix design nits ([#33100](https://github.com/MetaMask/metamask-extension/pull/33100))
+- fix: price chart loading styles ([#33139](https://github.com/MetaMask/metamask-extension/pull/33139))
 
 ## [12.20.0]
 ### Added
@@ -88,12 +140,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add banner for ledger multiple device message ([#31905](https://github.com/MetaMask/metamask-extension/pull/31905))
 - Update popover styling ([#31747](https://github.com/MetaMask/metamask-extension/pull/31747))
 - Update styles in import tokens ([#31953](https://github.com/MetaMask/metamask-extension/pull/31953))
-- Update styles in Defi tab ([#33134](https://github.com/MetaMask/metamask-extension/pull/33134))
+- Update styles in DeFi tab ([#33134](https://github.com/MetaMask/metamask-extension/pull/33134))
 - Update accounts deps to enable KeyringRequest.origin support ([#33393](https://github.com/MetaMask/metamask-extension/pull/33393))
 
 ### Fixed
 - Set network back to mainnet default RPC when `selectedNetworkClientId` is invalid at startup ([#31517](https://github.com/MetaMask/metamask-extension/pull/31517))
-- Prevent the Contentful hook from raising havok when the proper environment variables aren't set ([#33119](https://github.com/MetaMask/metamask-extension/pull/33119))
+- Prevent the Contentful hook from raising havoc when the proper environment variables aren't set ([#33119](https://github.com/MetaMask/metamask-extension/pull/33119))
 - Fix token conversion rate calculations when users modify network ticker symbols ([#31944](https://github.com/MetaMask/metamask-extension/pull/31944))
 - Set default paying with erc20 when there's insufficient ETH ([#33092](https://github.com/MetaMask/metamask-extension/pull/33092))
 - Fix style for toast for "NFT successfully removed" (https://github.com/MetaMask/metamask-extension/pull/32020))
@@ -104,7 +156,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove aggregated balance popover and unused keys ([#32524](https://github.com/MetaMask/metamask-extension/pull/32524))
 - Create default Solana account only if none got discovered ([#32868](https://github.com/MetaMask/metamask-extension/pull/32868))
 - Display activity only for the selected network in native token details ([#33017](https://github.com/MetaMask/metamask-extension/pull/33017))
-- Update `ShowMore` height when colapsed after the font change ([#32972](https://github.com/MetaMask/metamask-extension/pull/32972))
+- Update `ShowMore` height when collapsed after the font change ([#32972](https://github.com/MetaMask/metamask-extension/pull/32972))
 - Disable selecting Solana network during onboarding ([#32813](https://github.com/MetaMask/metamask-extension/pull/32813))
 - Optimize historical price fetching for non-EVM chains to eliminate redundant API calls ([#32865](https://github.com/MetaMask/metamask-extension/pull/32865))
 - Adjust the background style of the fox logo in account overview ([#32525](https://github.com/MetaMask/metamask-extension/pull/32525))
@@ -209,7 +261,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update carousel styling and images ([#31687](https://github.com/MetaMask/metamask-extension/pull/31687))
 - Updated styles for connections menu ([#31112](https://github.com/MetaMask/metamask-extension/pull/31112))
 - Adds tooltip to truncated NFT Grid titles ([#31625](https://github.com/MetaMask/metamask-extension/pull/31625))
-- Increase padding bewtween Key-Value rows and divider in Confirmations ([#31431](https://github.com/MetaMask/metamask-extension/pull/31431))
+- Increase padding between Key-Value rows and divider in Confirmations ([#31431](https://github.com/MetaMask/metamask-extension/pull/31431))
 - Do not display Solana Testnet nor Solana Devnet in the network list ([#32678](https://github.com/MetaMask/metamask-extension/pull/32678))
 - Update the app description for the upcoming release ([#32970](https://github.com/MetaMask/metamask-extension/pull/32970))
 - Skip collecting metrics on RPC calls made by preinstalled Snaps ([#32977](https://github.com/MetaMask/metamask-extension/pull/32977))
@@ -239,7 +291,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove gas speed indicator when an alternate token is used to pay for gas ([#32167](https://github.com/MetaMask/metamask-extension/pull/32167))
 - Display correct aggregated balance including non-EVM accounts when EVM network is selected ([#32145](https://github.com/MetaMask/metamask-extension/pull/32145))
 - Show connection toast when switching to a Solana account that is not connected to the current dapp ([#32107](https://github.com/MetaMask/metamask-extension/pull/32107))
-- Retry failed transaction will not show unvailable emoji ([#31537](https://github.com/MetaMask/metamask-extension/pull/31537))
+- Retry failed transaction will not show unavailable emoji ([#31537](https://github.com/MetaMask/metamask-extension/pull/31537))
 - Reveal first party snap accounts in srp account list. ([#31833](https://github.com/MetaMask/metamask-extension/pull/31833))
 - Add missing padding in Retry (Cancel/Speed up) popover ([#31904](https://github.com/MetaMask/metamask-extension/pull/31904))
 - Enable keyboard shortcut(Alt+Shift+M) on Chrome ([#31844](https://github.com/MetaMask/metamask-extension/pull/31844))
@@ -6383,7 +6435,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.20.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.21.0...HEAD
+[12.21.0]: https://github.com/MetaMask/metamask-extension/compare/v12.20.0...v12.21.0
 [12.20.0]: https://github.com/MetaMask/metamask-extension/compare/v12.18.3...v12.20.0
 [12.18.3]: https://github.com/MetaMask/metamask-extension/compare/v12.18.2...v12.18.3
 [12.18.2]: https://github.com/MetaMask/metamask-extension/compare/v12.18.1...v12.18.2
