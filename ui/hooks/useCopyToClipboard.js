@@ -14,7 +14,7 @@ const DEFAULT_DELAY = MINUTE;
 
 /**
  * @param delay - delay in ms
- * @returns {[boolean, (text: string) => void]}
+ * @returns {[boolean, (text: string) => void, () => void]}
  */
 export function useCopyToClipboard(delay = DEFAULT_DELAY) {
   const [copied, setCopied] = useState(false);
@@ -36,5 +36,9 @@ export function useCopyToClipboard(delay = DEFAULT_DELAY) {
     [startTimeout],
   );
 
-  return [copied, handleCopy];
+  const resetState = useCallback(() => {
+    setCopied(false);
+  }, []);
+
+  return [copied, handleCopy, resetState];
 }
