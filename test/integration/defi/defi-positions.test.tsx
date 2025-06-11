@@ -49,6 +49,8 @@ const accountName = account.metadata.name;
 
 const withMetamaskConnectedToMainnet = {
   ...mockMetaMaskState,
+  participateInMetaMetrics: true,
+  dataCollectionForMarketing: false,
   selectedNetworkClientId: 'testNetworkConfigurationId',
   preferences: {
     ...mockMetaMaskState.preferences,

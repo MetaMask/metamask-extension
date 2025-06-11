@@ -61,10 +61,6 @@ class UnlockPage extends Component {
      */
     isUnlocked: PropTypes.bool,
     /**
-     * Whether the seedless password is outdated
-     */
-    isSeedlessPasswordOutdated: PropTypes.bool,
-    /**
      * onClick handler for "Forgot password?" button
      */
     onRestore: PropTypes.func,
@@ -88,6 +84,7 @@ class UnlockPage extends Component {
     showResetPasswordModal: false,
     isLocked: false,
     isSubmitting: false,
+    unlockDelayPeriod: 0,
   };
 
   failed_attempts = 0;
@@ -97,17 +94,10 @@ class UnlockPage extends Component {
   passwordLoginAttemptTraceCtx = null;
 
   UNSAFE_componentWillMount() {
-    const { isUnlocked, history, isSeedlessPasswordOutdated } = this.props;
+    const { isUnlocked, history } = this.props;
 
     if (isUnlocked) {
       history.push(DEFAULT_ROUTE);
-      return;
-    }
-
-    if (isSeedlessPasswordOutdated) {
-      // first error if seedless password is outdated
-      const { t } = this.context;
-      this.setState({ error: t('passwordChangedRecently') });
     }
   }
 
@@ -117,16 +107,6 @@ class UnlockPage extends Component {
       op: TraceOperation.OnboardingUserJourney,
       parentContext: this.props.onboardingParentContext.current,
     });
-  }
-
-  componentDidUpdate(prevProps) {
-    if (
-      !prevProps.isSeedlessPasswordOutdated &&
-      prevProps.isSeedlessPasswordOutdated !==
-        this.props.isSeedlessPasswordOutdated
-    ) {
-      this.setState({ error: this.context.t('passwordChangedRecently') });
-    }
   }
 
   handleSubmit = async (event) => {
@@ -174,6 +154,7 @@ class UnlockPage extends Component {
     this.failed_attempts += 1;
     const { message, data } = error;
     let finalErrorMessage = message;
+    let finalUnlockDelayPeriod = 0;
     let errorReason;
 
     // Check if we are in the onboarding flow
@@ -196,14 +177,13 @@ class UnlockPage extends Component {
       case SeedlessOnboardingControllerErrorMessage.TooManyLoginAttempts:
         this.setState({ isLocked: true });
 
-        finalErrorMessage = t('unlockPageTooManyFailedAttempts', [
-          <FormattedCounter
-            key="unlockPageTooManyFailedAttempts"
-            remainingTime={data.remainingTime}
-            unlock={() => this.setState({ isLocked: false, error: '' })}
-          />,
-        ]);
+        finalErrorMessage = t('unlockPageTooManyFailedAttempts');
         errorReason = 'too_many_login_attempts';
+        finalUnlockDelayPeriod = data.remainingTime;
+        break;
+      case SeedlessOnboardingControllerErrorMessage.OutdatedPassword:
+        finalErrorMessage = t('passwordChangedRecently');
+        errorReason = 'outdated_password';
         break;
       default:
         finalErrorMessage = message;
@@ -221,7 +201,10 @@ class UnlockPage extends Component {
         },
       });
     }
-    this.setState({ error: finalErrorMessage });
+    this.setState({
+      error: finalErrorMessage,
+      unlockDelayPeriod: finalUnlockDelayPeriod,
+    });
   };
 
   handleInputChange(event) {
@@ -258,7 +241,7 @@ class UnlockPage extends Component {
   };
 
   renderHelpText = () => {
-    const { error } = this.state;
+    const { error, unlockDelayPeriod } = this.state;
 
     if (!error) {
       return null;
@@ -277,6 +260,18 @@ class UnlockPage extends Component {
             color={TextColor.errorDefault}
           >
             {error}
+            {unlockDelayPeriod > 0 && (
+              <FormattedCounter
+                startFrom={unlockDelayPeriod}
+                onCountdownEnd={() =>
+                  this.setState({
+                    isLocked: false,
+                    error: null,
+                    unlockDelayPeriod: 0,
+                  })
+                }
+              />
+            )}
           </Text>
         )}
       </Box>

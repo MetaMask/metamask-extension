@@ -366,45 +366,12 @@ export function tryUnlockMetamask(
   return (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     dispatch(unlockInProgress());
-    log.debug(`background.submitPassword`);
-
-    return new Promise<void>((resolve, reject) => {
-      callBackgroundMethod('submitPassword', [password], (error) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-
-        resolve();
-      });
-    })
-      .then(() => {
-        dispatch(unlockSucceeded());
-        return forceUpdateMetamaskState(dispatch);
-      })
-      .then(() => {
-        dispatch(hideLoadingIndication());
-      })
-      .catch((err) => {
-        dispatch(unlockFailed(getErrorMessage(err)));
-        dispatch(hideLoadingIndication());
-        return Promise.reject(err);
-      });
-  };
-}
-
-export function tryUnlockMetamaskWithGlobalSeedlessPassword(
-  globalPassword: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    dispatch(unlockInProgress());
-    log.debug(`background.submitLatestGlobalSeedlessPassword`);
+    log.debug(`background.syncPasswordAndUnlockWallet`);
 
     return new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
-        'submitLatestGlobalSeedlessPassword',
-        [globalPassword],
+        'syncPasswordAndUnlockWallet',
+        [password],
         (error) => {
           if (error) {
             reject(error);
