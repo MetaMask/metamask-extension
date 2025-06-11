@@ -556,9 +556,7 @@
           "groups": {
             "01JKAF3PJ247KAM6C03G5Q0NP8:default": {
               "id": "01JKAF3PJ247KAM6C03G5Q0NP8:default",
-              "accounts": [
-                "784225f4-d30b-4e77-a900-c8bbce735b88"
-              ],
+              "accounts": ["784225f4-d30b-4e77-a900-c8bbce735b88"],
               "metadata": {
                 "name": "Default"
               }
@@ -573,9 +571,7 @@
           "groups": {
             "local:hardware:ledger:default": {
               "id": "local:hardware:ledger:default",
-              "accounts": [
-                "15e69915-2a1a-4019-93b3-916e11fd432f"
-              ],
+              "accounts": ["15e69915-2a1a-4019-93b3-916e11fd432f"],
               "metadata": {
                 "name": "Default"
               }
@@ -590,9 +586,7 @@
           "groups": {
             "local:custody:test:default": {
               "id": "local:custody:test:default",
-              "accounts": [
-                "694225f4-d30b-4e77-a900-c8bbce735b42"
-              ],
+              "accounts": ["694225f4-d30b-4e77-a900-c8bbce735b42"],
               "metadata": {
                 "name": "Default"
               }
@@ -607,9 +601,7 @@
           "groups": {
             "local:snap-id:default": {
               "id": "local:snap-id:default",
-              "accounts": [
-                "c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3"
-              ],
+              "accounts": ["c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3"],
               "metadata": {
                 "name": "Default"
               }
