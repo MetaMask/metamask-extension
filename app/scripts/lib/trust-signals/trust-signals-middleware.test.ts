@@ -470,6 +470,69 @@ describe('TrustSignalsMiddleware', () => {
     });
   });
 
+  describe('eth_accounts', () => {
+    it('should scan URL when mainFrameOrigin is present', async () => {
+      const { middleware, phishingController } = createMiddleware();
+      const mainFrameOrigin = 'https://example.com';
+      const req = {
+        ...createMockRequest(MESSAGE_TYPE.ETH_ACCOUNTS),
+        mainFrameOrigin,
+      };
+      const res = createMockResponse();
+      const next = jest.fn();
+
+      phishingController.scanUrl.mockResolvedValue({
+        result_type: 'benign',
+        label: 'Safe site',
+      });
+
+      await middleware(req, res, next);
+
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(mainFrameOrigin);
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('should not scan URL when mainFrameOrigin is not present', async () => {
+      const { middleware, phishingController } = createMiddleware();
+      const req = createMockRequest(MESSAGE_TYPE.ETH_ACCOUNTS);
+      const res = createMockResponse();
+      const next = jest.fn();
+
+      await middleware(req, res, next);
+
+      expect(phishingController.scanUrl).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('should handle phishing scan errors gracefully', async () => {
+      const { middleware, phishingController } = createMiddleware();
+      const mainFrameOrigin = 'https://malicious.com';
+      const req = {
+        ...createMockRequest(MESSAGE_TYPE.ETH_ACCOUNTS),
+        mainFrameOrigin,
+      };
+      const res = createMockResponse();
+      const next = jest.fn();
+
+      const error = new Error('Phishing scan failed');
+      phishingController.scanUrl.mockRejectedValue(error);
+
+      consoleErrorSpy.mockClear();
+
+      await middleware(req, res, next);
+
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(phishingController.scanUrl).toHaveBeenCalledWith(mainFrameOrigin);
+      expect(next).toHaveBeenCalled();
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[createTrustSignalsMiddleware] error:',
+        error,
+      );
+    });
+  });
+
   describe('non-transaction methods', () => {
     it('should ignore non-transaction RPC methods', async () => {
       const { middleware, appStateController } = createMiddleware();
