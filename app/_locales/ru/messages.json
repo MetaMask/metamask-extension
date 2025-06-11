@@ -652,9 +652,6 @@
   "basic": {
     "message": "Базовый"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Включить базовый функционал"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Базовый функционал отключен"
   },
@@ -2279,18 +2276,11 @@
   "gasLimit": {
     "message": "Лимит газа"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Лимит газа — это максимальное количество единиц газа, которое вы готовы потратить."
-  },
   "gasLimitRecommended": {
     "message": "Рекомендуемый лимит газа — $1. Если лимит газа меньше этого, он может оказаться неэффективным."
   },
   "gasLimitTooLow": {
     "message": "Лимит газа должен быть не менее 21 000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Лимит газа должен быть не менее $1",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "Лимит газа"
@@ -2298,23 +2288,11 @@
   "gasOption": {
     "message": "Настройка газа"
   },
-  "gasPrice": {
-    "message": "Цена газа (Гвей)"
-  },
   "gasPriceExcessive": {
     "message": "Установлена неоправданно высокая плата за газ. Рекомендуем снизить ее."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Цена газа очень высокая"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Цена газа очень низкая"
-  },
   "gasPriceFetchFailed": {
     "message": "Не удалось определить примерную цену газа из-за ошибки сети."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Цена газа — это количество Ether, которое вы готовы платить за каждую единицу газа."
   },
   "gasTimingHoursShort": {
     "message": "$1 ч",
@@ -5203,10 +5181,6 @@
     "message": "$1 хочет использовать $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
   },
-  "snapContent": {
-    "message": "Этот контент поступает от $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
-  },
   "snapDetailWebsite": {
     "message": "Веб-сайт"
   },
@@ -6720,8 +6694,5 @@
   },
   "yourWalletIsReady": {
     "message": "Ваш кошелек готов"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Нулевая цена газа при ускорении"
   }
 }

@@ -652,9 +652,6 @@
   "basic": {
     "message": "Cơ bản"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Bật chức năng cơ bản"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Chức năng cơ bản đã tắt"
   },
@@ -2279,18 +2276,11 @@
   "gasLimit": {
     "message": "Hạn mức phí gas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Hạn mức phí gas là số lượng đơn vị gas tối đa mà bạn sẵn sàng chi tiêu."
-  },
   "gasLimitRecommended": {
     "message": "Hạn mức phí gas được đề xuất là $1. Có thể thất bại nếu hạn mức phí gas thấp hơn."
   },
   "gasLimitTooLow": {
     "message": "Hạn mức phí gas ít nhất phải là 21000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Hạn mức phí gas ít nhất phải là $1",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "Hạn mức phí gas"
@@ -2298,23 +2288,11 @@
   "gasOption": {
     "message": "Tùy chọn phí gas"
   },
-  "gasPrice": {
-    "message": "Giá gas (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "Bạn đã đặt phí gas cao một cách không cần thiết. Hãy cân nhắc giảm mức phí này."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Giá gas quá cao"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Giá gas cực kỳ thấp"
-  },
   "gasPriceFetchFailed": {
     "message": "Không ước tính được giá gas do lỗi mạng."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Giá gas xác định khoản Ether mà bạn sẵn sàng thanh toán cho mỗi đơn vị gas."
   },
   "gasTimingHoursShort": {
     "message": "$1 giờ",
@@ -5203,10 +5181,6 @@
     "message": "$1 muốn sử dụng $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
   },
-  "snapContent": {
-    "message": "Nội dung này đến từ $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
-  },
   "snapDetailWebsite": {
     "message": "Trang web"
   },
@@ -6720,8 +6694,5 @@
   },
   "yourWalletIsReady": {
     "message": "Ví của bạn đã sẵn sàng"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Giá gas bằng 0 khi tăng tốc"
   }
 }
