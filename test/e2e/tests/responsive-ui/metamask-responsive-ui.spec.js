@@ -38,6 +38,13 @@ describe('MetaMask Responsive UI', function () {
         );
         await driver.clickElement('[data-testid="terms-of-use-checkbox"]');
         // agree to terms of use
+        await driver.waitForSelector(
+          '[data-testid="terms-of-use-agree-button"]',
+          {
+            state: 'enabled',
+          },
+        );
+
         await driver.clickElementAndWaitToDisappear(
           '[data-testid="terms-of-use-agree-button"]',
         );

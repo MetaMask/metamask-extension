@@ -57,10 +57,6 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
   useEffect(() => {
     const observer = new window.IntersectionObserver(
       (entries) => {
-        console.log(
-          'IntersectionObserver triggered:',
-          entries[0].isIntersecting,
-        );
         if (entries[0].isIntersecting) {
           setShouldShowScrollButton(false);
           if (!isScrolledToBottom) {
@@ -74,7 +70,7 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
         // The scrollable container
         root: scrollContainerRef.current,
         // Trigger when sentinel is visible
-        threshold: 1,
+        threshold: 0.5,
       },
     );
 
@@ -1205,7 +1201,7 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
               “Third-Party Content” means Content made available to you by any
               third party on the Site or in conjunction with the Offerings.
             </Text>
-            <Text ref={bottomRef} variant={TextVariant.bodySm} marginBottom={4}>
+            <Text variant={TextVariant.bodySm} marginBottom={4}>
               “Your Content” means content that you or any End User transfers to
               us, storage or hosting by the Offerings in connection with account
               and any computational results that you or any End User derive from
@@ -1213,6 +1209,7 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
               however any information submitted to a blockchain protocol for
               processing.&nbsp;
             </Text>
+            <div ref={bottomRef} style={{ height: '1px' }} />
           </Box>
           {shouldShowScrollButton && (
             <Box className="terms-of-use-popup__scroll-button-container">
