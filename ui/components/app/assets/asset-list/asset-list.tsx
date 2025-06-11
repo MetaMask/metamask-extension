@@ -4,12 +4,12 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { trace, TraceName } from '../../../../../shared/lib/trace';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
 import DetectedToken from '../../detected-token/detected-token';
 import { usePrimaryCurrencyProperties } from '../hooks';
 import TokenList from '../token-list';
-import { trace, TraceName } from '../../../../../shared/lib/trace';
 import AssetListControlBar from './asset-list-control-bar';
 import AssetListFundingModals from './asset-list-funding-modals';
 
