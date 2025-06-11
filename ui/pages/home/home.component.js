@@ -125,7 +125,6 @@ export default class Home extends PureComponent {
     isNotification: PropTypes.bool.isRequired,
     // This prop is used in the `shouldCloseNotificationPopup` function
 
-    totalUnapprovedCount: PropTypes.number.isRequired,
     defaultHomeActiveTabName: PropTypes.string,
     participateInMetaMetrics: PropTypes.bool.isRequired,
     onTabClick: PropTypes.func.isRequired,
@@ -152,7 +151,6 @@ export default class Home extends PureComponent {
     editedNetwork: PropTypes.object,
     // This prop is used in the `shouldCloseNotificationPopup` function
 
-    isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
     newNftAddedMessage: PropTypes.string,
     setNewNftAddedMessage: PropTypes.func.isRequired,
     removeNftMessage: PropTypes.string,

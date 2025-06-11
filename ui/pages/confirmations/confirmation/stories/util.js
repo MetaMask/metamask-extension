@@ -67,6 +67,7 @@ const STORE_MOCK = {
   },
 };
 
+// eslint-disable-next-line react/prop-types
 export function PendingApproval({ children, requestData, state, type }) {
   const mockState = {
     ...STORE_MOCK,
