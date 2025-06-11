@@ -40,8 +40,6 @@ describe('View DeFi details', function () {
         await defiTab.defiTabCells.check_tokenName('Aave V2');
         await defiTab.defiTabCells.check_tokenMarketValue('$0.33');
 
-        // switch popular networks and check linea positions present
-        await defiTab.openNetworksFilterAndClickPopularNetworks();
         await defiTab.defiTabCells.check_tokenName('UniswapV3');
         await defiTab.defiTabCells.check_tokenMarketValue('$8.48');
         await defiTab.defiTabCells.check_tokenName('UniswapV2');

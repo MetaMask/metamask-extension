@@ -41,14 +41,6 @@ class DeFiTab {
 
   readonly defiTabCells: DeFiToken;
 
-  private readonly allNetworksOption =
-    '[data-testid="network-filter-all__button"]';
-
-  private readonly networksToggle = '[data-testid="sort-by-networks"]';
-
-  private readonly popularNetworks =
-    '[data-testid="network-filter-all__button"]';
-
   private readonly stakeLink = '[data-testid="defi-tab-start-earning-link"]';
 
   private readonly groupIcon = '[data-testid="avatar-group"]';
@@ -60,21 +52,6 @@ class DeFiTab {
   constructor(driver: Driver) {
     this.driver = driver;
     this.defiTabCells = new DeFiToken(driver);
-  }
-
-  async openNetworksFilterAndClickPopularNetworks(): Promise<void> {
-    console.log(`Opening the network filter and click popular networks`);
-    await this.driver.clickElement(this.networksToggle);
-    await this.driver.waitUntil(
-      async () => {
-        return Boolean(await this.driver.findElement(this.allNetworksOption));
-      },
-      {
-        timeout: 5000,
-        interval: 100,
-      },
-    );
-    await this.driver.clickElement(this.popularNetworks);
   }
 
   async clickIntoAaveV3DetailsPage() {
