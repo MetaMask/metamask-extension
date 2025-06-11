@@ -7,7 +7,7 @@ on:
       - master
       - stable
       - Version-v*
-      - release/v*
+      - release/*
       - trigger-ci*
   pull_request:
     types:

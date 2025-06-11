@@ -13,12 +13,12 @@ on:
         description: 'Previous release version tag. eg: v7.7.0'
         required: true
       release-branch-naming:
-        description: 'The workflow to use, the current (Version-vX.Y.Z) or the new (release/vX.Y.Z)'
+        description: 'The workflow to use, the current (Version-vX.Y.Z) or the new (release/X.Y.Z)'
         type: choice
         required: true
         options:
           - Version-vX.Y.Z
-          - release/vX.Y.Z
+          - release/X.Y.Z
 jobs:
   create-release-pr-old:
     name: Create Release Pull Request (Version-vX.Y.Z)
@@ -39,8 +39,8 @@ jobs:
       pull-requests: write
 
   create-release-pr:
-    name: Create Release Pull Request using Github Tools release/vX.Y.Z
-    if: ${{ inputs.release-branch-naming == 'release/vX.Y.Z' }}
+    name: Create Release Pull Request using Github Tools release/X.Y.Z
+    if: ${{ inputs.release-branch-naming == 'release/X.Y.Z' }}
     uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@437da63a94cf63e9a5d5fb16f44754ec5cf392eb
     with:
       platform: extension
