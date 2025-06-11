@@ -191,6 +191,7 @@ export const CHAIN_IDS = {
   MONAD_TESTNET: '0x279f',
   SOPHON: '0xc3b8',
   SOPHON_TESTNET: '0x1fa72e78',
+  EDUCHAIN: '0xa3c3',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -335,6 +336,7 @@ export const KATANA_DISPLAY_NAME = 'Katana';
 export const MONAD_TESTNET_DISPLAY_NAME = 'Monad Testnet';
 export const SOPHON_DISPLAY_NAME = 'Sophon';
 export const SOPHON_TESTNET_DISPLAY_NAME = 'Sophon Testnet';
+export const EDUCHAIN_DISPLAY_NAME = 'EDU Chain';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -398,6 +400,7 @@ export const CURRENCY_SYMBOLS = {
   KATANA: 'ETH',
   SOPHON: 'SOPH',
   BERACHAIN: 'BERA',
+  EDUCHAIN: 'EDU',
 } as const;
 
 // Non-EVM currency symbols
@@ -591,6 +594,7 @@ export const SOPHON_IMAGE_URL = './images/sophon.svg';
 export const SOPHON_TESTNET_IMAGE_URL = './images/sophon-testnet.svg';
 export const BERACHAIN_IMAGE_URL = './images/berachain.svg';
 export const BERACHAIN_NATIVE_TOKEN_IMAGE_URL = './images/berachain-native.svg';
+export const EDUCHAIN_IMAGE_URL = './images/educhain.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -732,6 +736,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.SOPHON]: SOPHON_DISPLAY_NAME,
   [CHAIN_IDS.SOPHON_TESTNET]: SOPHON_TESTNET_DISPLAY_NAME,
+  [CHAIN_IDS.EDUCHAIN]: EDUCHAIN_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -874,6 +879,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.SOPHON]: CURRENCY_SYMBOLS.SOPHON,
   [CHAIN_IDS.SOPHON_TESTNET]: CURRENCY_SYMBOLS.SOPHON,
   [CHAIN_IDS.BERACHAIN]: CURRENCY_SYMBOLS.BERACHAIN,
+  [CHAIN_IDS.EDUCHAIN]: CURRENCY_SYMBOLS.EDUCHAIN,
 } as const;
 
 /**
@@ -1026,6 +1032,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.SOPHON]: SOPHON_IMAGE_URL,
   [CHAIN_IDS.SOPHON_TESTNET]: SOPHON_TESTNET_IMAGE_URL,
   [CHAIN_IDS.BERACHAIN]: BERACHAIN_IMAGE_URL,
+  [CHAIN_IDS.EDUCHAIN]: EDUCHAIN_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1090,6 +1097,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.SOPHON]: SOPHON_IMAGE_URL,
   [CHAIN_IDS.SOPHON_TESTNET]: SOPHON_TESTNET_IMAGE_URL,
   [CHAIN_IDS.BERACHAIN]: BERACHAIN_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.EDUCHAIN]: EDUCHAIN_IMAGE_URL,
 } as const;
 
 /**
