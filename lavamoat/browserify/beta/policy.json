@@ -1036,7 +1036,7 @@
     "@metamask/address-book-controller": {
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true
+        "@metamask/address-book-controller>@metamask/controller-utils": true
       }
     },
     "@metamask/announcement-controller": {
@@ -1204,6 +1204,25 @@
       }
     },
     "@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true
+      }
+    },
+    "@metamask/address-book-controller>@metamask/controller-utils": {
       "globals": {
         "URL": true,
         "console.error": true,
@@ -1974,6 +1993,7 @@
         "URLSearchParams": true,
         "addEventListener": true,
         "console.error": true,
+        "console.warn": true,
         "dispatchEvent": true,
         "fetch": true,
         "removeEventListener": true,
