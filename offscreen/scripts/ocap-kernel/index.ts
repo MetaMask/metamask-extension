@@ -1,4 +1,3 @@
-// import { delay, isJsonRpcCall } from '@metamask/kernel-utils';
 import type { JsonRpcCall } from '@metamask/kernel-utils';
 import {
   makeIframeVatWorker,
@@ -18,7 +17,8 @@ import { isJsonRpcResponse } from '@metamask/utils';
 const logger = new Logger('offscreen');
 
 /**
- * Main function to initialize the offscreen document.
+ * Main function to run the kernel. Under normal operation the returned promise
+ * never settles.
  */
 export async function runKernel(): Promise<void> {
   // TODO: Connect to background script, probably by setting up an entirely new
