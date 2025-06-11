@@ -1,5 +1,5 @@
 import { Suite } from 'mocha';
-import { openDapp, unlockWallet } from '../../../helpers';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { withSignatureFixtures } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import TestDapp from '../../../page-objects/pages/test-dapp';
@@ -9,11 +9,12 @@ describe('Eth sign', function (this: Suite) {
     await withSignatureFixtures(
       this.test?.fullTitle(),
       async ({ driver }: TestSuiteArguments) => {
-        await unlockWallet(driver);
-        await openDapp(driver);
+        await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
         await testDapp.clickEthSignButton();
-        await testDapp.verifyEthSignErrorMessage();
+        await testDapp.check_ethSignErrorMessage();
       },
     );
   });

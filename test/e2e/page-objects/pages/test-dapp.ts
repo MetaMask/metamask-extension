@@ -633,7 +633,7 @@ class TestDapp {
     });
   }
 
-  async verifyEthSignErrorMessage() {
+  async check_ethSignErrorMessage() {
     const ethSignButton = await this.driver.findElement(this.ethSignButton);
     const expectedMessage =
       'ERROR: THE METHOD "ETH_SIGN" DOES NOT EXIST / IS NOT AVAILABLE.';
