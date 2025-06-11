@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { type Hex, isStrictHexString } from '@metamask/utils';
+import { type Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import {
   getChainIdsToPoll,
@@ -25,15 +25,14 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { useSafeChains } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
+  getNativeCurrencySymbol: (chainId: string) => string | undefined;
 };
 
-function TokenList({ onTokenClick }: TokenListProps) {
+function TokenList({ onTokenClick, getNativeCurrencySymbol }: TokenListProps) {
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
   const chainIdsToPoll = useSelector(getChainIdsToPoll);
   const newTokensImported = useSelector(getNewTokensImported);
@@ -106,8 +105,6 @@ function TokenList({ onTokenClick }: TokenListProps) {
     });
   };
 
-  const { safeChains } = useSafeChains();
-
   return (
     <>
       {sortedFilteredTokens.map((token: TokenWithFiatAmount) => (
@@ -116,17 +113,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
           token={token}
           privacyMode={privacyMode}
           onClick={handleTokenClick(token)}
-          nativeCurrencySymbol={
-            safeChains?.find((chain) => {
-              const decimalChainId =
-                isStrictHexString(token.chainId) &&
-                parseInt(hexToDecimal(token.chainId), 10);
-              if (typeof decimalChainId === 'number') {
-                return chain.chainId === decimalChainId.toString();
-              }
-              return undefined;
-            })?.nativeCurrency?.symbol
-          }
+          nativeCurrencySymbol={getNativeCurrencySymbol(token.chainId)}
         />
       ))}
     </>
