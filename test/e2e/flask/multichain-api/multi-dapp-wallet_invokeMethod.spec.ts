@@ -70,18 +70,18 @@ describe('Multichain API', function () {
             await unlockWallet(driver);
             const testDapp = new TestDappMultichain(driver);
 
-            for (const dapp of DAPP_URLS) {
-              await testDapp.openTestDappPage({ url: dapp });
+            for (const url of DAPP_URLS) {
+              await testDapp.openTestDappPage({ url });
               await testDapp.connectExternallyConnectable(extensionId);
             }
 
             const TEST_METHODS = {
               [DAPP_URLS[0]]: 'eth_chainId',
-              [DAPP_URLS[1]]: 'eth_gasPrice',
+              [DAPP_URLS[1]]: 'eth_getBalance',
             };
             const EXPECTED_RESULTS = {
               [DAPP_URLS[0]]: '0x539',
-              [DAPP_URLS[1]]: '0x77359400',
+              [DAPP_URLS[1]]: '0x15af1d78b58c40000',
             };
 
             for (const dapp of DAPP_URLS) {
@@ -133,16 +133,20 @@ describe('Multichain API', function () {
             await unlockWallet(driver);
             const testDapp = new TestDappMultichain(driver);
 
-            for (const dapp of DAPP_URLS) {
-              await testDapp.openTestDappPage({ url: dapp });
+            for (const url of DAPP_URLS) {
+              await testDapp.openTestDappPage({ url });
               await testDapp.connectExternallyConnectable(extensionId);
-              await testDapp.initCreateSessionScopes([SCOPE], CAIP_ACCOUNT_IDS);
+              await testDapp.initCreateSessionScopes(
+                [SCOPE],
+                CAIP_ACCOUNT_IDS,
+                url,
+              );
               await addAccountInWalletAndAuthorize(driver);
               await driver.clickElement({ text: 'Connect', tag: 'button' });
             }
 
-            for (const [i, dapp] of DAPP_URLS.entries()) {
-              await driver.switchToWindowWithUrl(dapp);
+            for (const [i, url] of DAPP_URLS.entries()) {
+              await driver.switchToWindowWithUrl(url);
               await driver.delay(veryLargeDelayMs);
               await driver.clickElementSafe(
                 `[data-testid="${replaceColon(
@@ -152,15 +156,28 @@ describe('Multichain API', function () {
 
               i === INDEX_FOR_ALTERNATE_ACCOUNT &&
                 (await driver.clickElementSafe(
-                  `[data-testid="${replaceColon(SCOPE)}:${ACCOUNT_2}-option"]`,
+                  `[data-testid="${replaceColon(SCOPE)}-${ACCOUNT_2}-option"]`,
                 ));
+
+              await driver.delay(veryLargeDelayMs);
 
               await driver.clickElementSafe(
                 `[data-testid="invoke-method-${replaceColon(SCOPE)}-btn"]`,
               );
+
+              // FIXME: [ffmcgee] the first click is not registering when doing it on the new window... so we click again... this is not good though.
+              if (i === 1) {
+                await driver.clickElementSafe(
+                  `[data-testid="invoke-method-${replaceColon(SCOPE)}-btn"]`,
+                );
+              }
             }
 
-            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+            await driver.switchToWindowWithTitle(
+              WINDOW_TITLES.ExtensionInFullScreenView,
+            );
+            await driver.refresh();
+            await driver.delay(veryLargeDelayMs);
 
             for (const [i, dapp] of DAPP_URLS.entries()) {
               const accountWebElement = await driver.findElement(

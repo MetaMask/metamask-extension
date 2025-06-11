@@ -110,12 +110,20 @@ class TestDappMultichain {
    *
    * @param scopes - scopes to create session for.
    * @param accounts - The account addresses to create session for.
+   * @param url - The url to focus on. If undefined, defaults to the first Multichain Test Dapp open in browser.
    */
   async initCreateSessionScopes(
     scopes: string[],
     accounts: string[] = [],
+    url?: string,
   ): Promise<void> {
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
+    if (url) {
+      await this.driver.switchToWindowWithUrl(url);
+    } else {
+      await this.driver.switchToWindowWithTitle(
+        WINDOW_TITLES.MultichainTestDApp,
+      );
+    }
     for (const [i, scope] of scopes.entries()) {
       const scopeInput = await this.driver.waitForSelector(
         this.customScopeInput(i),
