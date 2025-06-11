@@ -44,7 +44,10 @@ class TermsOfUseUpdateModal {
       5000,
     );
     await this.driver.clickElement(this.termsOfUseCheckbox);
-    await this.driver.clickElementAndWaitToDisappear(this.acceptButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.acceptButton,
+      5000,
+    );
   }
 }
 
