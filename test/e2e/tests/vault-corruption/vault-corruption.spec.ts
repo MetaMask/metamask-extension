@@ -129,10 +129,7 @@ describe('Vault Corruption', function () {
       // reload and check title as quickly a possible, forever
       { interval: 0, timeout: Infinity },
     );
-    await driver.assertElementNotPresent(
-      '.loading-logo',
-      { timeout: 10000 },
-    );
+    await driver.assertElementNotPresent('.loading-logo', { timeout: 10000 });
   }
 
   /**
