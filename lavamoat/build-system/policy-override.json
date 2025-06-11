@@ -577,6 +577,11 @@
         "process.stderr": true,
         "process.stdout": true
       }
+    },
+    "babel-plugin-react-compiler": {
+      "builtin": {
+        "path": true
+      }
     }
   }
 }
