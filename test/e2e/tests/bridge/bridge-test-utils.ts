@@ -525,9 +525,13 @@ export const getBridgeFixtures = (
     })
     .withTokenListController({
       tokensChainsCache: {
-        // make this a token on arbitrum one
         '0xa4b1': {
           data: {
+            '0xaf88d065e77c8cC2239327C5EDb3A432268e5831': {
+              name: 'USD Coin',
+              symbol: 'USDC',
+              address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+            },
             '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1': {
               name: 'Dai Stablecoin',
               symbol: 'DAI',
