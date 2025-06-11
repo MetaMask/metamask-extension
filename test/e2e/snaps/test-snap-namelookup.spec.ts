@@ -1,5 +1,4 @@
 import { Driver } from '../webdriver/driver';
-import { switchToNetworkFlow } from '../page-objects/flows/network.flow';
 import HomePage from '../page-objects/pages/home/homepage';
 import SendTokenPage from '../page-objects/pages/send/send-token-page';
 import FixtureBuilder from '../fixture-builder';
@@ -31,7 +30,7 @@ describe('Name lookup', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         // Navigate to the extension home page and validate the recipient address in the send flow
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+        await searchAndSwitchToNetworkFromGlobalMenuFlow(driver, 'Ethereum');
         await homePage.startSendFlow();
         await sendTokenPage.check_pageIsLoaded();
         await sendTokenPage.fillRecipient('metamask.domain');

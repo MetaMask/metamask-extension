@@ -130,6 +130,7 @@ describe('Create BTC Account', function (this: Suite) {
       await privacySettings.completeRevealSrpQuiz();
       await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
       const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
+      await driver.clickElement({ tag: 'button', text: 'Close' });
 
       // lock metamask and reset wallet by clicking forgot password button
       await headerNavbar.lockMetaMask();
