@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import { type Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import {
   getChainIdsToPoll,
@@ -12,7 +12,7 @@ import {
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
 import { useNetworkFilter } from '../hooks';
-import { TokenWithFiatAmount } from '../types';
+import { type TokenWithFiatAmount } from '../types';
 import { filterAssets } from '../util/filter';
 import { sortAssets } from '../util/sort';
 import useMultiChainAssets from '../hooks/useMultichainAssets';
@@ -26,12 +26,14 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
+  safeChains?: SafeChain[];
 };
 
-function TokenList({ onTokenClick }: TokenListProps) {
+function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
   const chainIdsToPoll = useSelector(getChainIdsToPoll);
   const newTokensImported = useSelector(getNewTokensImported);
@@ -112,6 +114,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
           token={token}
           privacyMode={privacyMode}
           onClick={handleTokenClick(token)}
+          safeChains={safeChains}
         />
       ))}
     </>
