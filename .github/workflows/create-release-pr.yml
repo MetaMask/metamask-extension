@@ -23,13 +23,13 @@ jobs:
   create-release-pr-old:
     name: Create Release Pull Request (Version-vX.Y.Z)
     if: ${{ inputs.release-branch-naming == 'Version-vX.Y.Z' }}
-    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@d1ba843333b920fc9b0e1823fd519b7a64d07f5f
+    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@437da63a94cf63e9a5d5fb16f44754ec5cf392eb
     with:
       platform: extension
       base-branch: ${{ inputs.base-branch }}
       semver-version: ${{ inputs.semver-version }}
       previous-version-tag: ${{ inputs.previous-version-tag }}
-      github-tools-version: d1ba843333b920fc9b0e1823fd519b7a64d07f5f
+      github-tools-version: d1ba843333b920fc9b0e1823fd519b7a64d07f5f # Version-vX.Y.Z workflows compatibility
     secrets:
       # This token needs write permissions to metamask-extension & read permissions to metamask-planning
       github-token: ${{ secrets.PR_TOKEN }}
@@ -41,13 +41,13 @@ jobs:
   create-release-pr:
     name: Create Release Pull Request using Github Tools release/vX.Y.Z
     if: ${{ inputs.release-branch-naming == 'release/vX.Y.Z' }}
-    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@ale/unify-create-release-mobile-extension # Update this!!
+    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@437da63a94cf63e9a5d5fb16f44754ec5cf392eb
     with:
       platform: extension
       base-branch: ${{ inputs.base-branch }}
       semver-version: ${{ inputs.semver-version }}
       previous-version-tag: ${{ inputs.previous-version-tag }}
-      github-tools-version: ale/unify-create-release-mobile-extension
+      github-tools-version: 437da63a94cf63e9a5d5fb16f44754ec5cf392eb
     secrets:
       # This token needs write permissions to metamask-extension & read permissions to metamask-planning
       github-token: ${{ secrets.PR_TOKEN }}
