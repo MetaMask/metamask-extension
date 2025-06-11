@@ -150,10 +150,12 @@ const PrepareBridgePage = () => {
     getIsUnifiedUIEnabled(state, fromChain?.chainId),
   );
 
-  // Determine if this is a swap based on unified UI setting
-  const isSwap = isUnifiedUIEnabled
-    ? useSelector(getIsSwap) // Use quote request params when unified
-    : useIsMultichainSwap(); // Use URL params for legacy behavior
+  // Check the two types of swaps
+  const isSwapFromQuote = useSelector(getIsSwap);
+  const isSwapFromUrl = useIsMultichainSwap();
+
+  // Use the appropriate value based on unified UI setting
+  const isSwap = isUnifiedUIEnabled ? isSwapFromQuote : isSwapFromUrl;
 
   const fromToken = useSelector(getFromToken);
   const fromTokens = useSelector(getTokenList) as TokenListMap;
@@ -243,7 +245,7 @@ const PrepareBridgePage = () => {
   const { tokenAlert } = useTokenAlerts();
   const srcTokenBalance = useLatestBalance(fromToken);
   const { selectedDestinationAccount, setSelectedDestinationAccount } =
-    useDestinationAccount();
+    useDestinationAccount(isSwap);
 
   const {
     filteredTokenListGenerator: toTokenListGenerator,

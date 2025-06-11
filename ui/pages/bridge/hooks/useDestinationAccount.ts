@@ -5,11 +5,11 @@ import {
   getSelectedEvmInternalAccount,
   getSelectedInternalAccount,
 } from '../../../selectors';
-import { getToChain, getFromChain } from '../../../ducks/bridge/selectors';
+import { getToChain } from '../../../ducks/bridge/selectors';
 import { getLastSelectedSolanaAccount } from '../../../selectors/multichain';
 import type { DestinationAccount } from '../prepare/types';
 
-export const useDestinationAccount = () => {
+export const useDestinationAccount = (isSwap: boolean) => {
   const [selectedDestinationAccount, setSelectedDestinationAccount] =
     useState<DestinationAccount | null>(null);
 
@@ -17,7 +17,6 @@ export const useDestinationAccount = () => {
   const selectedSolanaAccount = useSelector(getLastSelectedSolanaAccount);
   const currentlySelectedAccount = useSelector(getSelectedInternalAccount);
 
-  const fromChain = useSelector(getFromChain);
   const toChain = useSelector(getToChain);
   const isDestinationSolana = toChain && isSolanaChainId(toChain.chainId);
 
@@ -29,9 +28,8 @@ export const useDestinationAccount = () => {
       return;
     }
 
-    // Check if it's a swap (same chain)
-    const isSwap = fromChain?.chainId === toChain?.chainId;
-
+    // Use isSwap parameter to determine behavior
+    // This preserves legacy behavior when unified UI is disabled
     if (isSwap) {
       // For swaps, always use the currently selected account
       setSelectedDestinationAccount(currentlySelectedAccount);
@@ -46,8 +44,8 @@ export const useDestinationAccount = () => {
     selectedSolanaAccount,
     selectedEvmAccount,
     toChain,
-    fromChain,
     currentlySelectedAccount,
+    isSwap,
   ]);
 
   return { selectedDestinationAccount, setSelectedDestinationAccount };
