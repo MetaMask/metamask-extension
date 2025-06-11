@@ -1,4 +1,5 @@
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
 
 /**
  * With this list we can detect if a transaction is still in progress.
@@ -206,3 +207,6 @@ export enum EIP5792ErrorCode {
   UnknownBundleId = 5730,
   RejectedUpgrade = 5750,
 }
+
+export const NATIVE_TOKEN_ADDRESS = '0x0'.padEnd(42, '0') as Hex;
+
