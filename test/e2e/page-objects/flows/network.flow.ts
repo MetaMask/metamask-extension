@@ -88,3 +88,9 @@ export const switchToNetworkFromSendFlow = async (
 
   await headerNavbar.check_pageIsLoaded();
 };
+
+export const switchToEditRPCViaGlobalMenuNetworks = async (driver: Driver) => {
+  await driver.waitForSelector('[data-testid="account-options-menu-button"]');
+  await driver.clickElement('[data-testid="account-options-menu-button"]');
+  await driver.clickElement('[data-testid="global-menu-networks"]');
+};
