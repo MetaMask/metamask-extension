@@ -34,7 +34,7 @@ jobs:
           yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Find the associated PR
-        if: ${{ !env.PR_NUMBER || !env.BASE_COMMIT_HASH || !env.HEAD_COMMIT_HASH }}
+        if: ${{ startsWith(env.BRANCH, 'fix/') && (!env.PR_NUMBER || !env.BASE_COMMIT_HASH || !env.HEAD_COMMIT_HASH) }}
         uses: actions/github-script@v7
         with:
           script: |
@@ -42,18 +42,19 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               head: `${context.repo.owner}:${process.env.BRANCH}`
+              base: 'main',
             });
             if (prs.data.length > 0) {
               core.exportVariable("PR_NUMBER", prs.data[0].number);
               core.exportVariable("BASE_COMMIT_HASH", prs.data[0].base.sha);
               core.exportVariable("HEAD_COMMIT_HASH", prs.data[0].head.sha);
+              core.info(`The pull request number is '${process.env.PR_NUMBER}', the base commit hash is '${process.env.BASE_COMMIT_HASH}', and the head commit hash is '${process.env.HEAD_COMMIT_HASH}'`);
             } else {
               core.info(`No pull request detected for branch '${process.env.BRANCH}'`);
             }
 
       - name: Get merge base commit hash
         if: ${{ env.BASE_COMMIT_HASH && env.HEAD_COMMIT_HASH }}
-        id: get-merge-base-commit-hash
         run: |
           merge_base_commit_hash="$(git merge-base "${BASE_COMMIT_HASH}" "${HEAD_COMMIT_HASH}")"
           echo "MERGE_BASE_COMMIT_HASH=${merge_base_commit_hash}" >> "${GITHUB_ENV}"
