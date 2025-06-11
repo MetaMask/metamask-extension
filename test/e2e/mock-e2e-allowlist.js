@@ -44,7 +44,6 @@ const ALLOWLISTED_URLS = [
 
 const ALLOWLISTED_HOSTS = [
   'accounts.api.cx.metamask.io',
-  'snaps.metamask.io',
   'token.api.cx.metamask.io',
 ];
 
