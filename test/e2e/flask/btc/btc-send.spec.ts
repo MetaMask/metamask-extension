@@ -71,7 +71,7 @@ describe('BTC Account - Send', function (this: Suite) {
         (DEFAULT_BTC_BALANCE - expectedFee).toString(),
       );
       await bitcoinReviewTxPage.check_totalAmountIsDisplayed(
-        (DEFAULT_BTC_BALANCE).toString(),
+        DEFAULT_BTC_BALANCE.toString(),
       );
       await bitcoinReviewTxPage.clickSendButton();
 

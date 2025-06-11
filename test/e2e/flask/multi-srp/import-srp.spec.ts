@@ -87,7 +87,6 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
 
         await accountListPage.openImportSrpModal();
 
-        throw new Error('Not implemented');
         const firstSrpInputSelector = '#import-srp__multi-srp__srp-word-0';
         await driver.waitForSelector(firstSrpInputSelector);
 
