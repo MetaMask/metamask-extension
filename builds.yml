@@ -355,4 +355,4 @@ env:
   # Public key used to verify deep link signatures
   # TODO: replace with production public key
   ###
-  - DEEP_LINK_PUBLIC_KEY: MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEBhp73TQ0keNmZWmdPlT7U3dbqbvZRdywIe5RpVFwIungEW0F6fH5mMQKu3phQ1GTiKxIFMAUyf/bW8OIWAjuHw==
+  - DEEP_LINK_PUBLIC_KEY: MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEnFiE3X/J5n5OJJSlLK95kSByhfLrSJmRxjEtBaP3TD9EF56m4TUPeivZJ3OOwVwdT6Xaus1vjplb/jAJcItJpg==
