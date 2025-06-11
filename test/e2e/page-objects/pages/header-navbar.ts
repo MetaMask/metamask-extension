@@ -39,8 +39,16 @@ class HeaderNavbar {
   private readonly firstTimeTurnOnNotificationsButton =
     '[data-testid="turn-on-notifications-button"]';
 
+  private readonly globalNetworksMenu = '[data-testid="global-menu-networks"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async openGlobalNetworksMenu(): Promise<void> {
+    console.log('Open global menu');
+    await this.driver.clickElement(this.threeDotMenuButton);
+    await this.driver.clickElement(this.globalNetworksMenu);
   }
 
   async check_pageIsLoaded(): Promise<void> {

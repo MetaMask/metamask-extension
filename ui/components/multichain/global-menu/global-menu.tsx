@@ -280,6 +280,7 @@ export const GlobalMenu = ({
         </MenuItem>
       )}
       <MenuItem
+        data-testid="global-menu-networks"
         iconName={IconName.Hierarchy}
         onClick={() => {
           dispatch(toggleNetworkMenu());
