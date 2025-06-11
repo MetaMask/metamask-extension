@@ -1,5 +1,6 @@
 import { Hex, JsonRpcResponse, Json, JsonRpcRequest } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { createTrustSignalsMiddleware } from './trust-signals-middleware';
 import { scanAddressAndAddToCache } from './security-alerts-api';
@@ -76,21 +77,33 @@ const createMiddleware = (
     getAddressSecurityAlertResponse: jest.fn(),
   };
 
+  const phishingController = {
+    scanUrl: jest.fn(),
+  };
+
   return {
     middleware: createTrustSignalsMiddleware(
       networkController,
       appStateController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+      phishingController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
     ),
     appStateController,
     networkController,
+    phishingController,
   };
 };
 
 describe('TrustSignalsMiddleware', () => {
   const scanAddressMockAndAddToCache = jest.mocked(scanAddressAndAddToCache);
+  let consoleErrorSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.resetAllMocks();
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
   });
 
   describe('eth_sendTransaction', () => {
@@ -169,6 +182,10 @@ describe('TrustSignalsMiddleware', () => {
         networkController,
       );
       expect(next).toHaveBeenCalled();
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        '[createTrustSignalsMiddleware] error: ',
+        error,
+      );
     });
 
     it('should handle timeout errors gracefully without blocking the transaction', async () => {
