@@ -3,6 +3,8 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { hexStripZeros } from '@ethersproject/bytes';
 import _ from 'lodash';
 import { Hex } from '@metamask/utils';
+
+import { APPROVAL_METHOD_NAMES } from '../../../../../../../../shared/constants/transaction';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import {
@@ -31,8 +33,7 @@ import { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transac
 import { useConfirmContext } from '../../../../../context/confirm';
 import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 import { renderShortTokenId } from '../../../../../../../components/app/assets/nfts/nft-details/utils';
-import { APPROVAL_METHOD_NAMES } from '../../../../../../../../shared/constants/transaction';
-import { BatchedApprovalFunction } from './batched-approval-function';
+import { BatchedApprovalFunction } from '../batched-approval-function/batched-approval-function';
 
 export const TransactionData = ({
   data,
@@ -82,6 +83,7 @@ export const TransactionData = ({
   const { data: decodeData, source } = value;
   const isExpandable = decodeData.length > 1;
   const { chainId } = currentConfirmation;
+
   return (
     <Container transactionData={transactionData} noPadding={noPadding}>
       <>
@@ -236,10 +238,9 @@ function ParamValue({
   if (name === 'path' && source === DecodedTransactionDataSource.Uniswap) {
     return <UniswapPath pathPools={value} chainId={chainId} />;
   }
+  // if its a long string value truncate it
 
   let valueString = value.toString();
-
-  // if its a long string value truncate it
   if (valueString.length > 15 && !valueString.startsWith('0x')) {
     valueString = renderShortTokenId(valueString, 5);
   }
@@ -248,7 +249,7 @@ function ParamValue({
     valueString = hexStripZeros(valueString);
   }
 
-  return <ConfirmInfoRowText text={valueString ?? ''} />;
+  return <ConfirmInfoRowText text={valueString} />;
 }
 
 function ParamRow({

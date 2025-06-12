@@ -483,9 +483,6 @@
   "amount": {
     "message": "Amount"
   },
-  "value": {
-    "message": "Value"
-  },
   "amountReceived": {
     "message": "Amount Received"
   },
@@ -6741,6 +6738,9 @@
   },
   "userOpContractDeployError": {
     "message": "Contract deployment from a smart contract account is not supported"
+  },
+  "value": {
+    "message": "Value"
   },
   "version": {
     "message": "Version"

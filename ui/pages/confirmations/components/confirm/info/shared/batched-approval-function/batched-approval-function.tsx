@@ -123,7 +123,7 @@ export function BatchedApprovalFunction({
             chainId={chainId}
           />
         </ConfirmInfoRow>
-        <ConfirmInfoRow label={t('value')}>
+        <ConfirmInfoRow label={t('amount')}>
           <ConfirmInfoRowText text={value.amount} />
         </ConfirmInfoRow>
       </Box>
