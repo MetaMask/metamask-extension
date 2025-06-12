@@ -4812,10 +4812,11 @@ export default class MetamaskController extends EventEmitter {
   async syncPasswordAndUnlockWallet(password) {
     const isSocialLoginFlow = this.onboardingController.isSocialLoginFlowType();
     // check if the password is outdated
-    const isPasswordOutdated =
-      await this.seedlessOnboardingController.checkIsPasswordOutdated({
-        skipCache: true,
-      });
+    const isPasswordOutdated = isSocialLoginFlow
+      ? await this.seedlessOnboardingController.checkIsPasswordOutdated({
+          skipCache: true,
+        })
+      : false;
 
     // if the flow is not social login or the password is not outdated,
     // we will proceed with the normal flow and use the password to unlock the vault
