@@ -1,13 +1,19 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ApprovalType } from '@metamask/controller-utils';
 import { UpdateNetworkFields } from '@metamask/network-controller';
 import { ORIGIN_METAMASK } from '../../../../../shared/constants/app';
 import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
-import { hideModal, requestUserApproval } from '../../../../store/actions';
+import {
+  hideModal,
+  requestUserApproval,
+  setEnabledNetworks,
+} from '../../../../store/actions';
+import { getEnabledNetworks } from '../../../../selectors';
 
 export const useAdditionalNetworkHandlers = () => {
+  const enabledNetworks = useSelector(getEnabledNetworks);
   const dispatch = useDispatch();
 
   // Memoize the additional network click handler
@@ -43,8 +49,12 @@ export const useAdditionalNetworkHandlers = () => {
           },
         }),
       );
+      const enabledNetworksArray = Object.keys(enabledNetworks);
+      await dispatch(
+        setEnabledNetworks([...enabledNetworksArray, network.chainId]),
+      );
     },
-    [dispatch],
+    [dispatch, enabledNetworks],
   );
 
   return {
