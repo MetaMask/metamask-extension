@@ -109,7 +109,7 @@ export default function CreatePassword({
       firstTimeFlowType === FirstTimeFlowType.import
     ) {
       await importWithRecoveryPhrase(password, secretRecoveryPhrase);
-      // getPlatform() === PLATFORM_FIREFOX
+      // getBrowserName() === PLATFORM_FIREFOX
       //   ? history.push(ONBOARDING_COMPLETION_ROUTE)
       //   : history.push(ONBOARDING_METAMETRICS);
       // SOCIAL: change to metametrics when social login is available
@@ -173,7 +173,7 @@ export default function CreatePassword({
             data-testid="create-password-back-button"
             type="button"
             onClick={() => history.goBack()}
-            ariaLabel="back"
+            ariaLabel={t('back')}
           />
         </Box>
         <Box
@@ -208,11 +208,11 @@ export default function CreatePassword({
               setTermsChecked(!termsChecked);
             }}
             label={
-              <Text variant={TextVariant.bodySm} marginLeft={1}>
+              <>
                 {t('passwordTermsWarning')}
                 &nbsp;
                 {createPasswordLink}
-              </Text>
+              </>
             }
           />
         </Box>

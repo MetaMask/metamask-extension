@@ -15,6 +15,11 @@ class ConfirmSolanaTxPage {
     tag: 'span',
   };
 
+  private readonly confirmButton = {
+    text: 'Confirm',
+    tag: 'span',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -69,6 +74,14 @@ class ConfirmSolanaTxPage {
       },
       { timeout: 10000 },
     );
+  }
+
+  /**
+   * Clicks the confirm button on the Solana transaction confirmation page
+   */
+  async clickOnConfirm(): Promise<void> {
+    await this.driver.waitForSelector(this.confirmButton);
+    await this.driver.clickElement(this.confirmButton, 3);
   }
 
   async isSendButtonEnabled(): Promise<boolean> {

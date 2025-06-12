@@ -42,6 +42,7 @@ jobs:
           is-high-risk-environment: true
           skip-allow-scripts: true
           fetch-depth: 0
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
