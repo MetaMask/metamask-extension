@@ -3796,7 +3796,7 @@
     "description": "$1 is the type of login used Google, Apple, etc."
   },
   "onboardingCreateWallet": {
-    "message": "Create a new wallet"
+    "message": "Create new wallet"
   },
   "onboardingImportWallet": {
     "message": "I have an existing wallet"
@@ -3971,7 +3971,7 @@
     "message": "Password"
   },
   "passwordNotLongEnough": {
-    "message": "Password must have at least 8 characters"
+    "message": "Password not long enough"
   },
   "passwordSetupDetails": {
     "message": "This password will unlock your MetaMask wallet only on this device. MetaMask can not recover this password."
@@ -3985,12 +3985,6 @@
   },
   "passwordTermsWarning": {
     "message": "MetaMask can’t recover this password."
-  },
-  "passwordToggleHide": {
-    "message": "Hide Password"
-  },
-  "passwordToggleShow": {
-    "message": "Show Password"
   },
   "passwordsDontMatch": {
     "message": "Passwords don't match"

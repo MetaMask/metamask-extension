@@ -180,7 +180,7 @@ export default function OnboardingFlow() {
           welcomePageState === WelcomePageState.Login,
       })}
     >
-      <OnboardingAppHeader pageState={welcomePageState} />
+      <OnboardingAppHeader />
       <RevealSRPModal
         setSecretRecoveryPhrase={setSecretRecoveryPhrase}
         onClose={() => history.push(DEFAULT_ROUTE)}
