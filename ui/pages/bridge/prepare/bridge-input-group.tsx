@@ -71,14 +71,14 @@ export const BridgeInputGroup = ({
   onMaxButtonClick,
   isMultiselectEnabled,
   onBlockExplorerClick,
-  buttonProps,
+  dataTestId,
   balanceAmount,
 }: {
   balanceAmount?: BigNumber;
   amountInFiat?: string;
   onAmountChange?: (value: string) => void;
   token: BridgeToken | null;
-  buttonProps: { testId: string };
+  dataTestId: string;
   amountFieldProps: Pick<
     React.ComponentProps<typeof TextField>,
     'testId' | 'autoFocus' | 'value' | 'readOnly' | 'disabled' | 'className'
@@ -235,6 +235,7 @@ export const BridgeInputGroup = ({
         <AssetPicker
           header={header}
           action={action}
+          dataTestId={dataTestId}
           visibleTabs={[TabName.TOKENS]}
           asset={(token as never) ?? undefined}
           onAssetChange={onAssetChange}

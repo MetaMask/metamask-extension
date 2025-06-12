@@ -668,7 +668,7 @@ const PrepareBridgePage = () => {
             value: fromAmount || undefined,
           }}
           isTokenListLoading={isFromTokensLoading}
-          buttonProps={{ testId: 'bridge-source-button' }}
+          dataTestId="bridge-source"
           onBlockExplorerClick={(token) => {
             setBlockExplorerToken(token);
             setShowBlockExplorerToast(true);
@@ -852,7 +852,7 @@ const PrepareBridgePage = () => {
                 : 'amount-input',
             }}
             isTokenListLoading={isToTokensLoading}
-            buttonProps={{ testId: 'bridge-destination-button' }}
+            dataTestId="bridge-destination"
             onBlockExplorerClick={(token) => {
               setBlockExplorerToken(token);
               setShowBlockExplorerToast(true);

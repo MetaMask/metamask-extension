@@ -82,6 +82,7 @@ export type AssetPickerProps = {
     | 'shouldDisableNetwork'
     | 'header'
   >;
+  dataTestId?: string;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModal>,
   | 'visibleTabs'
@@ -108,6 +109,7 @@ export function AssetPicker({
   isTokenListLoading = false,
   isMultiselectEnabled = false,
   autoFocus = true,
+  dataTestId = 'asset-picker',
 }: AssetPickerProps) {
   const t = useI18nContext();
 
@@ -256,7 +258,7 @@ export function AssetPicker({
       {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
       {children?.(handleButtonClick, networkImageSrc) || (
         <ButtonBase
-          data-testid="asset-picker-button"
+          data-testid={`${dataTestId}-button`}
           className="asset-picker"
           disabled={isDisabled}
           display={Display.Flex}
