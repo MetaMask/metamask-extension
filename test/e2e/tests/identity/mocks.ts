@@ -50,15 +50,13 @@ export async function mockIdentityServices(
       server,
     );
   }
-
-  // Address Book (Contact Syncing) - using string literal since SDK might not export this
   if (
     !userStorageMockttpControllerInstance?.paths.get(
-      'addressBook' as any,
+      USER_STORAGE_FEATURE_NAMES.addressBook,
     )
   ) {
     userStorageMockttpControllerInstance.setupPath(
-      'addressBook' as any,
+      USER_STORAGE_FEATURE_NAMES.addressBook,
       server,
     );
   }

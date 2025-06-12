@@ -21,9 +21,8 @@ class BackupAndSyncSettings {
       await this.driver.waitForMultipleSelectors([
         this.accountSyncToggle,
         this.backupAndSyncToggle,
+        this.contactSyncToggle,
       ]);
-      // Also wait for contact sync toggle to be available
-      await this.driver.waitForSelector(this.contactSyncToggle);
     } catch (e) {
       console.log(
         'Timeout while waiting for Backup And Sync Settings page to be loaded',

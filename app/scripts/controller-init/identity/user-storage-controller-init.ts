@@ -69,16 +69,22 @@ export const UserStorageControllerInit: ControllerInitFunction<
       },
       contactSyncing: {
         onContactUpdated: (profileId) => {
-          console.log(
-            'MetaMetrics:: Contact sync: contact updated for profileId:',
-            profileId,
-          );
+          trackEvent({
+            category: MetaMetricsEventCategory.BackupAndSync,
+            event: MetaMetricsEventName.ContactSyncUpdated,
+            properties: {
+              profile_id: profileId,
+            },
+          });
         },
         onContactDeleted: (profileId) => {
-          console.log(
-            'MetaMetrics:: Contact sync: contact deleted for profileId:',
-            profileId,
-          );
+          trackEvent({
+            category: MetaMetricsEventCategory.BackupAndSync,
+            event: MetaMetricsEventName.ContactSyncDeleted,
+            properties: {
+              profile_id: profileId,
+            },
+          });
         },
         onContactSyncErroneousSituation: (
           profileId,
@@ -89,12 +95,14 @@ export const UserStorageControllerInit: ControllerInitFunction<
             new Error(`Contact sync - ${situationMessage}`),
             sentryContext,
           );
-          console.log(
-            'MetaMetrics:: Contact sync: error for profileId:',
-            profileId,
-            'situationMessage:',
-            situationMessage,
-          );
+          trackEvent({
+            category: MetaMetricsEventCategory.BackupAndSync,
+            event: MetaMetricsEventName.ContactSyncErroneousSituation,
+            properties: {
+              profile_id: profileId,
+              situation_message: situationMessage,
+            },
+          });
         },
       },
     },
