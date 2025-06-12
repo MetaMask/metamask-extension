@@ -51,6 +51,18 @@ async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
         },
       };
     }),
+    await mockServer
+      .forGet('https://accounts.api.cx.metamask.io/v2/accounts/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/balances')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            count: 0,
+            balances: [],
+            unprocessedNetworks: [],
+          }
+        }
+      })
   ];
 }
 
