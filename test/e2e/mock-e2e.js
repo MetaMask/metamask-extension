@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 
 const {
   ACCOUNTS_DEV_API_BASE_URL,
@@ -10,7 +11,10 @@ const {
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
 const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
-const { MOCK_META_METRICS_ID } = require('./constants');
+const {
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  MOCK_META_METRICS_ID,
+} = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 
 const { ALLOWLISTED_HOSTS, ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
@@ -37,15 +41,45 @@ const CHAIN_ID_NETWORKS_PATH =
 const CLIENT_SIDE_DETECTION_BLOCKLIST_PATH =
   'test/e2e/mock-response-data/client-side-detection-blocklist.json';
 const ON_RAMP_CONTENT_PATH = 'test/e2e/mock-response-data/on-ramp-content.json';
+const TEST_DAPP_STYLES_1_PATH =
+  'test/e2e/mock-response-data/test-dapp-styles-1.txt';
+const TEST_DAPP_STYLES_2_PATH =
+  'test/e2e/mock-response-data/test-dapp-styles-2.txt';
 const TOKEN_BLOCKLIST_PATH = 'test/e2e/mock-response-data/token-blocklist.json';
+
+const snapsExecutionEnvBasePath = path.dirname(
+  require.resolve('@metamask/snaps-execution-environments/package.json'),
+);
+const snapsExecutionEnvHtmlPath = path.join(
+  snapsExecutionEnvBasePath,
+  'dist',
+  'webpack',
+  'iframe',
+  'index.html',
+);
+const snapsExecutionEnvHtml = fs.readFileSync(
+  snapsExecutionEnvHtmlPath,
+  'utf-8',
+);
+
+const snapsExecutionEnvJsPath = path.join(
+  snapsExecutionEnvBasePath,
+  'dist',
+  'webpack',
+  'iframe',
+  'bundle.js',
+);
+const snapsExecutionEnvJs = fs.readFileSync(snapsExecutionEnvJsPath, 'utf-8');
 
 const blocklistedHosts = [
   'arbitrum-mainnet.infura.io',
-  'goerli.infura.io',
-  'mainnet.infura.io',
-  'sepolia.infura.io',
+  'bsc-dataseed.binance.org',
   'linea-mainnet.infura.io',
   'linea-sepolia.infura.io',
+  'testnet-rpc.monad.xyz',
+  'carrot.megaeth.com',
+  'mainnet.infura.io',
+  'sepolia.infura.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,
@@ -255,8 +289,9 @@ async function setupMocking(
       };
     });
 
+  const targetChainId = chainId === 1337 ? 1 : chainId;
   await server
-    .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/gasPrices`)
+    .forGet(`${GAS_API_BASE_URL}/networks/${targetChainId}/gasPrices`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -850,7 +885,7 @@ async function setupMocking(
       };
     });
 
-  // Client Side Detecition: Request Blocklist
+  // Client Side Detection: Request Blocklist
   const CLIENT_SIDE_DETECTION_BLOCKLIST = fs.readFileSync(
     CLIENT_SIDE_DETECTION_BLOCKLIST_PATH,
   );
@@ -862,6 +897,21 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: JSON.parse(CLIENT_SIDE_DETECTION_BLOCKLIST),
+      };
+    });
+
+  // Nft API: tokens
+  await server
+    .forGet(
+      `https://nft.api.cx.metamask.io/users/${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}/tokens`,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          tokens: [],
+          continuation: null,
+        },
       };
     });
 
@@ -878,12 +928,75 @@ async function setupMocking(
       };
     });
 
+  // Snaps: Execution environment html
+  await server
+    .forGet(/^https:\/\/execution\.metamask\.io\/iframe\/[^/]+\/index\.html$/u)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: snapsExecutionEnvHtml,
+        headers: { 'Content-Type': 'text/html; charset=utf-8' },
+      };
+    });
+
+  // Snaps: Execution environment js
+  await server
+    .forGet(/^https:\/\/execution\.metamask\.io\/iframe\/[^/]+\/bundle\.js$/u)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: snapsExecutionEnvJs,
+        headers: { 'Content-Type': 'application/javascript; charset=utf-8' },
+      };
+    });
+
+  // Test Dapp Styles
+  const TEST_DAPP_STYLES_1 = fs.readFileSync(TEST_DAPP_STYLES_1_PATH);
+  const TEST_DAPP_STYLES_2 = fs.readFileSync(TEST_DAPP_STYLES_2_PATH);
+  await server
+    .forGet(
+      'https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.14.1/css/mdb.min.css',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: TEST_DAPP_STYLES_1,
+      };
+    });
+
+  await server
+    .forGet(
+      'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: TEST_DAPP_STYLES_2,
+      };
+    });
+
   // Token Icons
   await server
     .forGet('https://static.cx.metamask.io/api/v1/tokenIcons')
     .thenCallback(() => {
       return {
         statusCode: 200,
+      };
+    });
+
+  // Dynamic Banner Content
+  await server
+    .forGet(/^https:\/\/(cdn|preview)\.contentful\.com\/.*$/u)
+    .withQuery({
+      content_type: 'promotionalBanner',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          items: [],
+          includes: { Asset: [] },
+        },
       };
     });
 

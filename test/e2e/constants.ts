@@ -9,6 +9,9 @@ export const LOCAL_NODE_PRIVATE_KEY =
 export const DEFAULT_FIXTURE_ACCOUNT =
   '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 
+export const DEFAULT_FIXTURE_ACCOUNT_LOWERCASE =
+  DEFAULT_FIXTURE_ACCOUNT.toLowerCase();
+
 export const DEFAULT_FIXTURE_ACCOUNT_SHORTENED = '0x5CfE73b602...474086a7e1';
 
 /* Address of the 4337 entrypoint smart contract. */
@@ -52,7 +55,7 @@ export const DAPP_ONE_URL = `http://${DAPP_ONE_ADDRESS}`;
 export const DEFAULT_BTC_ADDRESS = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';
 
 /* Default BTC Account name */
-export const DEFAULT_ACCOUNT_NAME = 'Bitcoin Native SegWit';
+export const DEFAULT_ACCOUNT_NAME = 'Bitcoin Account 1';
 
 /* Default (mocked) BTC balance used by the Bitcoin RPC provider */
 export const DEFAULT_BTC_BALANCE = 1; // BTC

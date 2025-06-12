@@ -1,6 +1,10 @@
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { EthMethod, SolMethod } from '@metamask/keyring-api';
-import { CaipAssetType, Hex, parseCaipAssetType } from '@metamask/utils';
+import {
+  type CaipAssetType,
+  type Hex,
+  parseCaipAssetType,
+} from '@metamask/utils';
 import { isEqual } from 'lodash';
 import React, { ReactNode, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -34,6 +38,7 @@ import {
   JustifyContent,
   TextColor,
   TextVariant,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
@@ -59,8 +64,9 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
-import { TokenWithFiatAmount } from '../../../components/app/assets/types';
+import { type TokenWithFiatAmount } from '../../../components/app/assets/types';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
 import { Asset } from '../types/asset';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { getMultichainNativeAssetType } from '../../../selectors/assets';
@@ -137,22 +143,38 @@ const AssetPage = ({
         default:
           return false;
       }
-    });
+    }) ?? {
+    // TODO: remve the fallback case where the mutichainTokenWithFiatAmount is undefined
+    // Root cause: There is a race condition where when switching from a non-EVM network
+    // to an EVM network, the mutichainTokenWithFiatAmount is undefined
+    // This is a workaround to avoid the error
+    // Look into the isEvm selector
+    // We might be switching network before account.
+    address: '',
+    chainId: '',
+    symbol: '',
+    title: '',
+    image: '',
+    tokenFiatAmount: 0,
+    string: '',
+    decimals: 0,
+    aggregators: [],
+    isNative: false,
+    primary: '',
+    secondary: 0,
+  };
 
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const metaMetricsId = useSelector(getMetaMetricsId);
 
-  const address = (() => {
-    if (type === AssetType.token) {
-      return isEvm ? toChecksumHexAddress(asset.address) : asset.address;
-    }
-    return isEvm ? getNativeTokenAddress(chainId) : nativeAssetType;
-  })();
-
-  if (!address) {
-    throw new Error('Could not determine address for asset');
-  }
+  const address =
+    (() => {
+      if (type === AssetType.token) {
+        return isEvm ? toChecksumHexAddress(asset.address) : asset.address;
+      }
+      return isEvm ? getNativeTokenAddress(chainId) : nativeAssetType;
+    })() ?? '';
 
   const shouldShowContractAddress = type === AssetType.token;
   const contractAddress = (() => {
@@ -230,9 +252,7 @@ const AssetPage = ({
       }
     : (mutichainTokenWithFiatAmount as TokenWithFiatAmount);
 
-  if (!tokenWithFiatAmount) {
-    throw new Error('Token with fiat amount not found');
-  }
+  const { safeChains } = useSafeChains();
 
   return (
     <Box
@@ -245,9 +265,10 @@ const AssetPage = ({
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
+        paddingTop={1}
+        paddingBottom={3}
         paddingLeft={2}
         paddingRight={4}
-        paddingBottom={1}
       >
         <Box display={Display.Flex}>
           <ButtonIcon
@@ -258,13 +279,19 @@ const AssetPage = ({
             iconName={IconName.ArrowLeft}
             onClick={() => history.push(DEFAULT_ROUTE)}
           />
-          <Text data-testid="asset-name" color={TextColor.textAlternative}>
-            {name && symbol && name !== symbol
-              ? `${name} (${symbol})`
-              : name ?? symbol}
-          </Text>
         </Box>
         {optionsButton}
+      </Box>
+      <Box paddingLeft={4}>
+        <Text
+          data-testid="asset-name"
+          variant={TextVariant.bodyMdMedium}
+          color={TextColor.textAlternative}
+        >
+          {name && symbol && name !== symbol
+            ? `${name} (${symbol})`
+            : name ?? symbol}
+        </Text>
       </Box>
       <AssetChart
         chainId={chainId}
@@ -272,7 +299,7 @@ const AssetPage = ({
         currentPrice={currentPrice}
         currency={currency}
       />
-      <Box marginTop={4}>
+      <Box marginTop={4} paddingLeft={4} paddingRight={4}>
         {type === AssetType.native ? (
           <CoinButtons
             {...{
@@ -293,9 +320,14 @@ const AssetPage = ({
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
-        paddingTop={5}
+        paddingTop={3}
       >
-        <Text variant={TextVariant.headingMd} paddingBottom={2} paddingLeft={4}>
+        <Text
+          variant={TextVariant.headingSm}
+          paddingBottom={1}
+          paddingTop={1}
+          paddingLeft={4}
+        >
           {t('yourBalance')}
         </Text>
         {[AssetType.token, AssetType.native].includes(type) && (
@@ -303,13 +335,21 @@ const AssetPage = ({
             key={`${symbol}-${address}`}
             token={tokenWithFiatAmount}
             disableHover={true}
+            safeChains={safeChains}
           />
         )}
         <Box
           marginTop={2}
+          marginBottom={2}
+          borderColor={BorderColor.borderMuted}
+          marginInline={4}
+          style={{ height: '1px', borderBottomWidth: 0 }}
+        ></Box>
+        <Box
+          marginTop={2}
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
-          gap={7}
+          gap={4}
         >
           {[AssetType.token, AssetType.native].includes(type) && (
             <Box
@@ -318,7 +358,7 @@ const AssetPage = ({
               paddingLeft={4}
               paddingRight={4}
             >
-              <Text variant={TextVariant.headingMd} paddingBottom={4}>
+              <Text variant={TextVariant.headingSm} paddingBottom={2}>
                 {t('tokenDetails')}
               </Text>
               <Box
@@ -329,15 +369,16 @@ const AssetPage = ({
                 {renderRow(
                   t('network'),
                   <Text
+                    variant={TextVariant.bodyMdMedium}
                     display={Display.Flex}
                     alignItems={AlignItems.center}
-                    gap={1}
+                    gap={2}
                     data-testid="asset-network"
                   >
                     <AvatarNetwork
                       src={tokenChainImage}
                       name={networkName}
-                      size={AvatarNetworkSize.Sm}
+                      size={AvatarNetworkSize.Xs}
                     />
                     {networkName}
                   </Text>,
@@ -356,17 +397,19 @@ const AssetPage = ({
                       {asset.decimals !== undefined &&
                         renderRow(
                           t('tokenDecimal'),
-                          <Text>{asset.decimals}</Text>,
+                          <Text variant={TextVariant.bodyMdMedium}>
+                            {asset.decimals}
+                          </Text>,
                         )}
                       {asset.aggregators && asset.aggregators.length > 0 && (
                         <Box>
                           <Text
-                            color={TextColor.textAlternative}
                             variant={TextVariant.bodyMdMedium}
+                            color={TextColor.textAlternative}
                           >
                             {t('tokenList')}
                           </Text>
-                          <Text>
+                          <Text variant={TextVariant.bodyMdMedium}>
                             {asset.aggregators
                               .map((agg) =>
                                 agg.replace(/^metamask$/iu, 'MetaMask'),
@@ -394,16 +437,21 @@ const AssetPage = ({
             </Box>
           )}
           <AssetMarketDetails asset={asset} address={address} />
-          <Box marginBottom={8}>
-            <Text
-              paddingLeft={4}
-              paddingRight={4}
-              variant={TextVariant.headingMd}
-            >
+          <Box
+            borderColor={BorderColor.borderMuted}
+            marginInline={4}
+            style={{ height: '1px', borderBottomWidth: 0 }}
+          ></Box>
+          <Box marginBottom={4}>
+            <Text paddingInline={4} variant={TextVariant.headingSm}>
               {t('yourActivity')}
             </Text>
             {type === AssetType.native ? (
-              <TransactionList hideNetworkFilter />
+              <TransactionList
+                tokenAddress={address}
+                hideNetworkFilter
+                overrideFilterForCurrentChain={true}
+              />
             ) : (
               <TransactionList tokenAddress={address} hideNetworkFilter />
             )}
@@ -423,7 +471,7 @@ function renderRow(leftColumn: string, rightColumn: ReactNode) {
       >
         {leftColumn}
       </Text>
-      {rightColumn}
+      <Text variant={TextVariant.bodyMdMedium}>{rightColumn}</Text>
     </Box>
   );
 }

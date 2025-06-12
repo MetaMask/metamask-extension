@@ -70,8 +70,6 @@ describe('Account syncing - Add Account', function () {
         },
         async ({ driver }) => {
           await completeOnboardFlowIdentity(driver);
-          const homePage = new HomePage(driver);
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -107,7 +105,7 @@ describe('Account syncing - Add Account', function () {
 
           // Wait for the account AND account name to be synced
           await waitUntilSyncedAccountsNumberEquals(3);
-          await waitUntilEventsEmittedNumberEquals(2);
+          await waitUntilEventsEmittedNumberEquals(1);
         },
       );
 
@@ -125,8 +123,6 @@ describe('Account syncing - Add Account', function () {
         },
         async ({ driver }) => {
           await completeOnboardFlowIdentity(driver);
-          const homePage = new HomePage(driver);
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -182,8 +178,6 @@ describe('Account syncing - Add Account', function () {
         },
         async ({ driver }) => {
           await completeOnboardFlowIdentity(driver);
-          const homePage = new HomePage(driver);
-          await homePage.check_hasAccountSyncingSyncedAtLeastOnce();
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();

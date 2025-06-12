@@ -1,6 +1,6 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import { BtcAccountType, BtcMethod } from '@metamask/keyring-api';
+import { BtcAccountType, BtcMethod, BtcScope } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -111,6 +111,7 @@ describe('AccountList', () => {
           options: {},
           methods: [BtcMethod.SendBitcoin],
           type: BtcAccountType.P2wpkh,
+          scopes: [BtcScope.Mainnet],
           address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
         },
       ],

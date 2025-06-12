@@ -21,6 +21,9 @@ import {
   Caip25EndowmentPermissionName,
   getEthAccounts,
   getPermittedEthChainIds,
+  getAllScopesFromPermission,
+  getCaipAccountIdsFromCaip25CaveatValue,
+  getCaip25CaveatFromPermission,
 } from '@metamask/chain-agnostic-permission';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { selectBridgeFeatureFlags } from '@metamask/bridge-controller';
@@ -69,6 +72,7 @@ import {
   FEATURED_NETWORK_CHAIN_IDS,
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   NETWORK_TO_NAME_MAP,
+  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -124,9 +128,6 @@ import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multic
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
-import { getAllScopesFromPermission } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-chainids';
-import { getCaipAccountIdsFromCaip25CaveatValue } from '../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
-import { getCaip25CaveatFromPermission } from '../../shared/lib/multichain/chain-agnostic-permission-utils/misc-utils';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import {
   getAllUnapprovedTransactions,
@@ -142,6 +143,8 @@ import {
 } from './multichain';
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
+
+export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
 /** `appState` slice selectors */
 
@@ -302,7 +305,7 @@ export function getCurrentKeyring(state) {
     return null;
   }
 
-  return internalAccount.metadata.keyring;
+  return internalAccount.metadata?.keyring;
 }
 
 /**
@@ -595,21 +598,13 @@ export function getNumberOfTokens(state) {
 }
 
 export function getMetaMaskKeyrings(state) {
-  return state.metamask.keyrings.map((keyring, index) => ({
-    ...keyring,
-    metadata: state.metamask.keyringsMetadata?.[index] ?? {},
-  }));
+  return state.metamask.keyrings;
 }
 
-export const getMetaMaskHdKeyrings = createSelector(
-  getMetaMaskKeyrings,
-  (keyrings) => {
-    return keyrings.filter((keyring) => keyring.type === KeyringTypes.hd);
-  },
-);
-
-export function getMetaMaskKeyringsMetadata(state) {
-  return state.metamask.keyringsMetadata;
+export function getMetaMaskHdKeyrings(state) {
+  return state.metamask.keyrings.filter(
+    (keyring) => keyring.type === KeyringTypes.hd,
+  );
 }
 
 export function getHDEntropyIndex(state) {
@@ -626,9 +621,8 @@ export function getHDEntropyIndex(state) {
     const account = getSelectedInternalAccount(state);
     if (account) {
       const { entropySource } = account.options;
-      const keyringsMetadata = getMetaMaskKeyringsMetadata(state);
-      hdEntropyIndex = keyringsMetadata.findIndex(
-        (metadata) => metadata.id === entropySource,
+      hdEntropyIndex = keyrings.findIndex(
+        ({ metadata }) => metadata.id === entropySource,
       );
     }
   }
@@ -1397,6 +1391,7 @@ export const getTokenSortConfig = createDeepEqualSelector(
  * Returns an object indicating which networks
  * tokens should be shown on in the portfolio view.
  */
+// @deprecated('Use `getEnabledNetworks` instead')
 export const getTokenNetworkFilter = createDeepEqualSelector(
   getCurrentChainId,
   getPreferences,
@@ -1426,12 +1421,19 @@ export const getTokenNetworkFilter = createDeepEqualSelector(
   },
 );
 
+// @deprecated('Use `getEnabledNetworks` instead')
 export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const chainId = getCurrentChainId(state);
+  const enabledNetworks = getEnabledNetworks(state);
   const tokenNetworkFilter = getTokenNetworkFilter(state);
+
+  const networks = isGlobalNetworkSelectorRemoved
+    ? enabledNetworks
+    : tokenNetworkFilter;
+
   if (
-    Object.keys(tokenNetworkFilter).length === 1 &&
-    Object.keys(tokenNetworkFilter)[0] === chainId
+    Object.keys(networks).length === 1 &&
+    Object.keys(networks)[0] === chainId
   ) {
     return true;
   }
@@ -1464,11 +1466,24 @@ export function getTestNetworkBackgroundColor(state) {
   }
 }
 
-export function getShouldShowFiat(state) {
-  const currentChainId = getCurrentChainId(state);
+export function getShouldShowFiat(state, chainId) {
+  let currentChainId;
+  let conversionRate;
+  if (chainId) {
+    currentChainId = chainId;
+    // Try known constants before user defined ticker
+    const ticker =
+      CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId] ??
+      CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION[chainId] ??
+      selectNetworkConfigurationByChainId(state, chainId)?.nativeCurrency;
+    conversionRate = getCurrencyRates(state)?.[ticker]?.conversionRate;
+  } else {
+    currentChainId = getCurrentChainId(state);
+    conversionRate = getConversionRate(state);
+  }
+
   const isTestnet = TEST_NETWORK_IDS.includes(currentChainId);
   const { showFiatInTestnets } = getPreferences(state);
-  const conversionRate = getConversionRate(state);
   const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
   const isConvertibleToFiat = Boolean(useCurrencyRateCheck && conversionRate);
 
@@ -2103,11 +2118,6 @@ export const getConnectedSitesList = createDeepEqualSelector(
   },
 );
 
-export function getShouldShowAggregatedBalancePopover(state) {
-  const { shouldShowAggregatedBalancePopover } = getPreferences(state);
-  return shouldShowAggregatedBalancePopover;
-}
-
 export const getMemoizedCurrentChainId = createDeepEqualSelector(
   getCurrentChainId,
   (chainId) => chainId,
@@ -2336,6 +2346,10 @@ export function getSortedAnnouncementsToShow(state) {
  */
 export function getOrderedNetworksList(state) {
   return state.metamask.orderedNetworkList;
+}
+
+export function getEnabledNetworks(state) {
+  return state.metamask.enabledNetworkMap;
 }
 
 export function getPinnedAccountsList(state) {
@@ -2664,6 +2678,7 @@ export const getAllEnabledNetworks = createDeepEqualSelector(
  *   - Otherwise, it includes all chains from `networkConfigurations`, excluding
  *     `TEST_CHAINS`, while ensuring the `currentChainId` is included.
  */
+// @deprecated('Use `getEnabledChainIds` instead')
 export const getAllChainsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
@@ -2680,6 +2695,7 @@ export const getAllChainsToPoll = createDeepEqualSelector(
   },
 );
 
+// @deprecated('Use `getEnabledChainIds` instead')
 export const getChainIdsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
@@ -2704,6 +2720,17 @@ export const getChainIdsToPoll = createDeepEqualSelector(
   },
 );
 
+export const getEnabledChainIds = createDeepEqualSelector(
+  getNetworkConfigurationsByChainId,
+  getEnabledNetworks,
+  (networkConfigurations, enabledNetworks) => {
+    return Object.keys(networkConfigurations).filter(
+      (chainId) => enabledNetworks[chainId],
+    );
+  },
+);
+
+// @deprecated('Use `getEnabledNetworkClientIds` instead')
 export const getNetworkClientIdsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
@@ -2731,6 +2758,25 @@ export const getNetworkClientIdsToPoll = createDeepEqualSelector(
           chainId === currentChainId ||
           FEATURED_NETWORK_CHAIN_IDS.includes(chainId)
         ) {
+          acc.push(
+            network.rpcEndpoints[network.defaultRpcEndpointIndex]
+              .networkClientId,
+          );
+        }
+        return acc;
+      },
+      [],
+    );
+  },
+);
+
+export const getEnabledNetworkClientIds = createDeepEqualSelector(
+  getNetworkConfigurationsByChainId,
+  getEnabledNetworks,
+  (networkConfigurations, enabledNetworks) => {
+    return Object.entries(networkConfigurations).reduce(
+      (acc, [chainId, network]) => {
+        if (enabledNetworks[chainId]) {
           acc.push(
             network.rpcEndpoints[network.defaultRpcEndpointIndex]
               .networkClientId,
@@ -2961,6 +3007,17 @@ export function getIsAddSnapAccountEnabled(state) {
 }
 ///: END:ONLY_INCLUDE_IF
 
+/**
+ * Get the state of the `solanaTestnetsEnabled` remote feature flag.
+ *
+ * @param {*} state
+ * @returns The state of the `solanaTestnetsEnabled` remote feature flag.
+ */
+export function getIsSolanaTestnetSupportEnabled(state) {
+  const { solanaTestnetsEnabled } = getRemoteFeatureFlags(state);
+  return Boolean(solanaTestnetsEnabled);
+}
+
 export function getIsWatchEthereumAccountEnabled(state) {
   return state.metamask.watchEthereumAccountEnabled;
 }
@@ -2972,24 +3029,8 @@ export function getIsWatchEthereumAccountEnabled(state) {
  * @returns The state of the `bitcoinSupportEnabled` flag.
  */
 export function getIsBitcoinSupportEnabled(state) {
-  // NOTE: We use this trick to avoid using code fence.
-  // If this flag is not in `state.metamask` it will be set
-  // as `undefined`, and the `Boolean(...)` will be evaluated
-  // to `false`.
-  const { bitcoinSupportEnabled } = state.metamask;
-  return Boolean(bitcoinSupportEnabled);
-}
-
-/**
- * Get the state of the `bitcoinTestnetSupportEnabled` flag.
- *
- * @param {*} state
- * @returns The state of the `bitcoinTestnetSupportEnabled` flag.
- */
-export function getIsBitcoinTestnetSupportEnabled(state) {
-  // See `getIsBitcoinSupportEnabled` for details.
-  const { bitcoinTestnetSupportEnabled } = state.metamask;
-  return Boolean(bitcoinTestnetSupportEnabled);
+  const { addBitcoinAccount } = getRemoteFeatureFlags(state);
+  return Boolean(addBitcoinAccount);
 }
 
 /**
@@ -3839,3 +3880,44 @@ export function getRequestType(state, id) {
 }
 
 // #endregion permissions selectors
+
+/**
+ * Determines whether the update modal should be shown.
+ *
+ * @param {import('../../ui/store/store').MetaMaskReduxState} state - The MetaMask state.
+ * @returns {boolean} True if the update modal should be shown, false otherwise.
+ */
+export function getShowUpdateModal(state) {
+  const {
+    metamask: { isUpdateAvailable, updateModalLastDismissedAt, lastUpdatedAt },
+  } = state;
+  const remoteFeatureFlags = getRemoteFeatureFlags(state);
+
+  const extensionCurrentVersion = semver.valid(
+    semver.coerce(global.platform?.getVersion()),
+  );
+  const extensionMinimumVersion = semver.valid(
+    semver.coerce(remoteFeatureFlags.extensionMinimumVersion),
+  );
+  const isExtensionOutdated =
+    extensionCurrentVersion && extensionMinimumVersion
+      ? semver.lt(extensionCurrentVersion, extensionMinimumVersion)
+      : false;
+
+  const currentTime = Date.now();
+  const updateModalCooldown = 24 * 60 * 60 * 1000; // 24 hours
+  const enoughTimePassedSinceLastDismissal = updateModalLastDismissedAt
+    ? currentTime - updateModalLastDismissedAt > updateModalCooldown
+    : true;
+  const enoughTimePassedSinceLastUpdate = lastUpdatedAt
+    ? currentTime - lastUpdatedAt > updateModalCooldown
+    : true;
+
+  const showUpdateModal =
+    isExtensionOutdated &&
+    isUpdateAvailable &&
+    enoughTimePassedSinceLastDismissal &&
+    enoughTimePassedSinceLastUpdate;
+
+  return showUpdateModal;
+}

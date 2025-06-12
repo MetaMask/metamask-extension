@@ -113,6 +113,10 @@ describe('EthOverview', () => {
         showNativeTokenAsMainBalance: true,
         tokenNetworkFilter: {},
       },
+      enabledNetworkMap: {
+        [CHAIN_IDS.MAINNET]: true,
+        [CHAIN_IDS.SEPOLIA]: true,
+      },
       useExternalServices: true,
       useCurrencyRateCheck: true,
       currentCurrency: 'usd',
@@ -149,7 +153,6 @@ describe('EthOverview', () => {
       multichainNetworkConfigurationsByChainId:
         AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
       selectedMultichainNetworkChainId: BtcScope.Mainnet,
-      bitcoinSupportEnabled: true,
     },
     ramps: {
       buyableChains: defaultBuyableChains,
@@ -334,6 +337,12 @@ describe('EthOverview', () => {
         'data-original-title',
         'Unavailable on this network',
       );
+    });
+
+    it('should always show the Receive button', () => {
+      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+      const receiveButton = queryByTestId(ETH_OVERVIEW_RECEIVE);
+      expect(receiveButton).toBeInTheDocument();
     });
 
     it('should always show the Portfolio button', () => {

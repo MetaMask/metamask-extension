@@ -1,3 +1,4 @@
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { withFixtures } from '../../../helpers';
 
 import FixtureBuilder from '../../../fixture-builder';
@@ -8,7 +9,6 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import { Driver } from '../../../webdriver/driver';
 import { mockDeFiPositionFeatureFlag } from '../../confirmations/helpers';
 
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import { switchToNetworkFlow } from '../../../page-objects/flows/network.flow';
 
 describe('View DeFi details', function () {
@@ -16,7 +16,12 @@ describe('View DeFi details', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withEnabledNetworks({
+            [CHAIN_IDS.MAINNET]: true,
+            [CHAIN_IDS.LINEA_MAINNET]: true,
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockDeFiPositionFeatureFlag,
       },
@@ -25,31 +30,22 @@ describe('View DeFi details', function () {
 
         await new Homepage(driver).goToDeFiTab();
 
-        // Validate the default network is Localhost 8545
-        await new HeaderNavbar(driver).check_currentSelectedNetwork(
-          'Localhost 8545',
-        );
-
         const defiTab = new DeFiTab(driver);
-
-        // Empty state
-        await defiTab.check_tokenName('Start earning');
-        await defiTab.waitForStakeLink();
 
         // check ethereum positions present
         await switchToNetworkFlow(driver, 'Ethereum Mainnet');
         await defiTab.check_groupIconIsDisplayed();
-        await defiTab.check_tokenName('Aave V3');
-        await defiTab.check_tokenMarketValue('$14.74');
-        await defiTab.check_tokenName('Aave V2');
-        await defiTab.check_tokenMarketValue('$0.33');
+        await defiTab.defiTabCells.check_tokenName('Aave V3');
+        await defiTab.defiTabCells.check_tokenMarketValue('$14.74');
+        await defiTab.defiTabCells.check_tokenName('Aave V2');
+        await defiTab.defiTabCells.check_tokenMarketValue('$0.33');
 
         // switch popular networks and check linea positions present
         await defiTab.openNetworksFilterAndClickPopularNetworks();
-        await defiTab.check_tokenName('UniswapV3');
-        await defiTab.check_tokenMarketValue('$8.48');
-        await defiTab.check_tokenName('UniswapV2');
-        await defiTab.check_tokenMarketValue('$4.24');
+        await defiTab.defiTabCells.check_tokenName('UniswapV3');
+        await defiTab.defiTabCells.check_tokenMarketValue('$8.48');
+        await defiTab.defiTabCells.check_tokenName('UniswapV2');
+        await defiTab.defiTabCells.check_tokenMarketValue('$4.24');
 
         // click detils page for AaveV3
         await defiTab.clickIntoAaveV3DetailsPage();

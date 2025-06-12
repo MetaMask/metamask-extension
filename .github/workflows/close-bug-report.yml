@@ -17,6 +17,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Close release bug report issue
         env:

@@ -1,8 +1,6 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex*/
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../app/scripts/lib/util';
 import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
+import { getBrowserName } from '../../../shared/modules/browser-runtime.utils';
 import { IconName } from '../../components/component-library';
 import {
   ADVANCED_ROUTE,
@@ -160,7 +158,7 @@ const SETTINGS_CONSTANTS = [
       t('overrideContentSecurityPolicyHeaderDescription'),
     route: `${ADVANCED_ROUTE}#override-content-security-policy-header`,
     icon: 'fas fa-sliders-h',
-    hidden: getPlatform() !== PLATFORM_FIREFOX,
+    hidden: getBrowserName() !== PLATFORM_FIREFOX,
   },
   {
     tabMessage: (t) => t('backupAndSync'),
@@ -519,15 +517,6 @@ const SETTINGS_CONSTANTS = [
     route: `${DEVELOPER_OPTIONS_ROUTE}#service-worker-keep-alive`,
     icon: IconName.CodeCircle,
   },
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('bitcoinSupportToggleTitle'),
-    descriptionMessage: (t) => t('bitcoinSupportToggleDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#bitcoin-support`,
-    icon: 'fas fa-flask',
-  },
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   {
     tabMessage: (t) => t('experimental'),

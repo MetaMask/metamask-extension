@@ -60,6 +60,7 @@ const mockNonEvmBalanceUsd = '1.00';
 const mockNonEvmAccount = {
   address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
   id: '542490c8-d178-433b-9f31-f680b11f45a5',
+  scopes: [BtcScope.Mainnet],
   metadata: {
     name: 'Bitcoin Account',
     keyring: {
@@ -103,6 +104,7 @@ const mockBuyableChainsEvmOnly = defaultBuyableChains.filter(
 const mockMetamaskStore = {
   ...mockState.metamask,
   remoteFeatureFlags: {
+    addBitcoinAccount: true,
     bridgeConfig: {
       support: true,
     },
@@ -146,7 +148,6 @@ const mockMetamaskStore = {
     AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
   selectedMultichainNetworkChainId: BtcScope.Mainnet,
   isEvmSelected: false,
-  bitcoinSupportEnabled: true,
 };
 const mockRampsStore = {
   buyableChains: mockBuyableChainsEvmOnly,
@@ -204,8 +205,10 @@ describe('NonEvmOverview', () => {
           // The balances won't be available
           preferences: {
             showNativeTokenAsMainBalance: false,
-            tokenNetworkFilter: {},
             privacyMode: false,
+          },
+          enabledNetworkMap: {
+            [MultichainNetworks.BITCOIN]: true,
           },
           currentCurrency: 'usd',
           conversionRates: {

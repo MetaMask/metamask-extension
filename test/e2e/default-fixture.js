@@ -90,6 +90,9 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             networkRpcUrl: 'http://localhost:8545',
           },
         ],
+        enabledNetworkMap: {
+          [inputChainId]: true,
+        },
       },
       AccountOrderController: {
         pinnedAccountList: [],
@@ -124,6 +127,11 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             conversionDate: 1665507600.0,
             conversionRate: 1700.0,
             usdConversionRate: 1700.0,
+          },
+          MON: {
+            conversionDate: 1665507600.0,
+            conversionRate: 0.2,
+            usdConversionRate: 0.2,
           },
         },
       },

@@ -81,7 +81,7 @@ export type ControllerStatePropertiesEnumerated = {
   web3ShimUsageOrigins?: AlertControllerState['web3ShimUsageOrigins'];
   announcements: AnnouncementControllerState['announcements'];
   isSignedIn: AuthenticationController.AuthenticationControllerState['isSignedIn'];
-  sessionData?: AuthenticationController.AuthenticationControllerState['sessionData'];
+  srpSessionData?: AuthenticationController.AuthenticationControllerState['srpSessionData'];
   pinnedAccountList: AccountOrderControllerState['pinnedAccountList'];
   hiddenAccountList: AccountOrderControllerState['hiddenAccountList'];
   currentAppVersion: AppMetadataControllerState['currentAppVersion'];
@@ -119,16 +119,18 @@ export type ControllerStatePropertiesEnumerated = {
   nftsDropdownState: AppStateControllerState['nftsDropdownState'];
   surveyLinkLastClickedOrClosed: AppStateControllerState['surveyLinkLastClickedOrClosed'];
   signatureSecurityAlertResponses: AppStateControllerState['signatureSecurityAlertResponses'];
+  addressSecurityAlertResponses: AppStateControllerState['addressSecurityAlertResponses'];
   switchedNetworkDetails: AppStateControllerState['switchedNetworkDetails'];
   switchedNetworkNeverShowMessage: AppStateControllerState['switchedNetworkNeverShowMessage'];
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
   lastInteractedConfirmationInfo?: AppStateControllerState['lastInteractedConfirmationInfo'];
   termsOfUseLastAgreed?: AppStateControllerState['termsOfUseLastAgreed'];
   snapsInstallPrivacyWarningShown?: AppStateControllerState['snapsInstallPrivacyWarningShown'];
-  interactiveReplacementToken?: AppStateControllerState['interactiveReplacementToken'];
-  noteToTraderMessage?: AppStateControllerState['noteToTraderMessage'];
-  custodianDeepLink?: AppStateControllerState['custodianDeepLink'];
   slides: AppStateControllerState['slides'];
+  upgradeSplashPageAcknowledgedForAccounts: AppStateControllerState['upgradeSplashPageAcknowledgedForAccounts'];
+  isUpdateAvailable: AppStateControllerState['isUpdateAvailable'];
+  updateModalLastDismissedAt: AppStateControllerState['updateModalLastDismissedAt'];
+  lastUpdatedAt: AppStateControllerState['lastUpdatedAt'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];
   quoteRequest: BridgeControllerState['quoteRequest'];
   quotes: BridgeControllerState['quotes'];
@@ -137,10 +139,10 @@ export type ControllerStatePropertiesEnumerated = {
   quotesLoadingStatus: BridgeControllerState['quotesLoadingStatus'];
   quoteFetchError: BridgeControllerState['quoteFetchError'];
   quotesRefreshCount: BridgeControllerState['quotesRefreshCount'];
+  minimumBalanceForRentExemptionInLamports: BridgeControllerState['minimumBalanceForRentExemptionInLamports'];
   assetExchangeRates: BridgeControllerState['assetExchangeRates'];
   txHistory: BridgeStatusControllerState['txHistory'];
   events: CronjobControllerState['events'];
-  jobs: CronjobControllerState['jobs'];
   currentCurrency: CurrencyRateState['currentCurrency'];
   currencyRates: CurrencyRateState['currencyRates'];
   unapprovedDecryptMsgs: DecryptMessageControllerState['unapprovedDecryptMsgs'];
@@ -157,7 +159,6 @@ export type ControllerStatePropertiesEnumerated = {
   isUnlocked: KeyringControllerState['isUnlocked'];
   vault?: KeyringControllerState['vault'];
   keyrings: KeyringControllerState['keyrings'];
-  keyringsMetadata: KeyringControllerState['keyringsMetadata'];
   encryptionKey?: KeyringControllerState['encryptionKey'];
   encryptionSalt?: KeyringControllerState['encryptionSalt'];
   logs: LoggingControllerState['logs'];
@@ -189,6 +190,7 @@ export type ControllerStatePropertiesEnumerated = {
   networksMetadata: NetworkState['networksMetadata'];
   selectedNetworkClientId: NetworkState['selectedNetworkClientId'];
   orderedNetworkList: NetworkOrderControllerState['orderedNetworkList'];
+  enabledNetworkMap: NetworkOrderControllerState['enabledNetworkMap'];
   allNftContracts: NftControllerState['allNftContracts'];
   allNfts: NftControllerState['allNfts'];
   ignoredNfts: NftControllerState['ignoredNfts'];
@@ -238,10 +240,6 @@ export type ControllerStatePropertiesEnumerated = {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: PreferencesControllerState['watchEthereumAccountEnabled'];
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  bitcoinSupportEnabled: PreferencesControllerState['bitcoinSupportEnabled'];
-  bitcoinTestnetSupportEnabled: PreferencesControllerState['bitcoinTestnetSupportEnabled'];
-  ///: END:ONLY_INCLUDE_IF
   addSnapAccountEnabled?: PreferencesControllerState['addSnapAccountEnabled'];
   advancedGasFee: PreferencesControllerState['advancedGasFee'];
   knownMethodData: PreferencesControllerState['knownMethodData'];
@@ -290,6 +288,7 @@ export type ControllerStatePropertiesEnumerated = {
   lastFetchedBlockNumbers: TransactionControllerState['lastFetchedBlockNumbers'];
   methodData: TransactionControllerState['methodData'];
   transactions: TransactionControllerState['transactions'];
+  transactionBatches: TransactionControllerState['transactionBatches'];
   submitHistory: TransactionControllerState['submitHistory'];
   userOperations: UserOperationControllerState['userOperations'];
   isBackupAndSyncEnabled: UserStorageController.UserStorageControllerState['isBackupAndSyncEnabled'];

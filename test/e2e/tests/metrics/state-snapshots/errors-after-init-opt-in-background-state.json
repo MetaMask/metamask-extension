@@ -4,6 +4,7 @@
     "hiddenAccountList": {}
   },
   "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
+  "AccountTreeController": { "accountTree": "object" },
   "AccountsController": {
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
   },
@@ -47,9 +48,14 @@
     "switchedNetworkNeverShowMessage": "boolean",
     "slides": "object",
     "throttledOrigins": "object",
+    "upgradeSplashPageAcknowledgedForAccounts": "object",
+    "isUpdateAvailable": false,
+    "updateModalLastDismissedAt": null,
+    "lastUpdatedAt": null,
     "qrHardware": {},
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
+    "addressSecurityAlertResponses": "object",
     "switchedNetworkDetails": null,
     "currentExtensionPopupId": "number",
     "termsOfUseLastAgreed": "number",
@@ -60,9 +66,11 @@
     "pendingApprovalCount": "number",
     "approvalFlows": "object"
   },
-  "AuthenticationController": { "isSignedIn": "boolean" },
+  "AuthenticationController": {
+    "isSignedIn": "boolean",
+    "srpSessionData": "object"
+  },
   "BridgeController": {
-    "assetExchangeRates": "object",
     "quoteRequest": {
       "srcTokenAddress": "0x0000000000000000000000000000000000000000"
     },
@@ -71,10 +79,12 @@
     "quotesLastFetched": null,
     "quotesLoadingStatus": null,
     "quoteFetchError": null,
-    "quotesRefreshCount": 0
+    "quotesRefreshCount": 0,
+    "assetExchangeRates": "object",
+    "minimumBalanceForRentExemptionInLamports": "string"
   },
   "BridgeStatusController": { "txHistory": "object" },
-  "CronjobController": { "jobs": "object", "events": "object" },
+  "CronjobController": { "events": "object" },
   "CurrencyController": {
     "currentCurrency": "usd",
     "currencyRates": {
@@ -83,20 +93,10 @@
         "conversionRate": 1700,
         "usdConversionRate": 1700
       },
-      "SepoliaETH": {
+      "MON": {
         "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
-      },
-      "LineaETH": {
-        "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
-      },
-      "MegaETH": {
-        "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
+        "conversionRate": 0.2,
+        "usdConversionRate": 0.2
       }
     }
   },
@@ -125,7 +125,6 @@
   "KeyringController": {
     "isUnlocked": true,
     "keyrings": "object",
-    "keyringsMetadata": "object",
     "vault": "string",
     "encryptionKey": "string",
     "encryptionSalt": "string"
@@ -176,7 +175,10 @@
     "networkConfigurationsByChainId": "object"
   },
   "NetworkOrderController": {
-    "orderedNetworkList": { "0": "object", "1": "object" }
+    "orderedNetworkList": { "0": "object", "1": "object" },
+    "enabledNetworkMap": {
+      "0x539": "boolean"
+    }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -228,8 +230,6 @@
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
     "watchEthereumAccountEnabled": "boolean",
-    "bitcoinSupportEnabled": "boolean",
-    "bitcoinTestnetSupportEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},
@@ -348,6 +348,7 @@
   "TxController": {
     "methodData": "object",
     "transactions": "object",
+    "transactionBatches": "object",
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object"
   },
