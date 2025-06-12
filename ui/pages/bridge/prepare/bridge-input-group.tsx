@@ -104,10 +104,7 @@ export const BridgeInputGroup = ({
   const currentChainId = useSelector(getMultichainCurrentChainId);
   const selectedChainId = networkProps?.network?.chainId ?? currentChainId;
 
-  const [, handleCopy] = useCopyToClipboard(MINUTE) as [
-    boolean,
-    (text: string) => void,
-  ];
+  const [, handleCopy] = useCopyToClipboard(MINUTE);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -122,6 +119,12 @@ export const BridgeInputGroup = ({
       inputRef.current.focus();
     }
   }, [amountFieldProps?.value, isAmountReadOnly, token]);
+
+  useEffect(() => {
+    return () => {
+      inputRef.current = null;
+    };
+  }, []);
 
   const isSwap = useIsMultichainSwap();
 

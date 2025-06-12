@@ -4459,7 +4459,7 @@ export function updateAccountsList(
  * to be enabled. All other networks will be implicitly disabled.
  */
 export function setEnabledNetworks(
-  chainIds: CaipChainId[],
+  chainIds: string[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     await submitRequestToBackground('setEnabledNetworks', [chainIds]);
@@ -4779,6 +4779,14 @@ export function setTermsOfUseLastAgreed(lastAgreed: number) {
   return async () => {
     await submitRequestToBackground('setTermsOfUseLastAgreed', [lastAgreed]);
   };
+}
+
+export async function setUpdateModalLastDismissedAt(
+  updateModalLastDismissedAt: number,
+) {
+  await submitRequestToBackground('setUpdateModalLastDismissedAt', [
+    updateModalLastDismissedAt,
+  ]);
 }
 
 export function setLastViewedUserSurvey(id: number) {
@@ -6194,6 +6202,62 @@ export function syncInternalAccountsWithUserStorage(): ThunkAction<
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
+    }
+  };
+}
+
+/**
+ * "Locks" account syncing by setting the necessary flags in UserStorageController.
+ * This is used to temporarily prevent account syncing from listening to accounts being changed, and the downward sync to happen.
+ *
+ * @returns
+ */
+export function lockAccountSyncing(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground(
+        'setIsAccountSyncingReadyToBeDispatched',
+        [false],
+      );
+      await submitRequestToBackground('setHasAccountSyncingSyncedAtLeastOnce', [
+        false,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * "Unlocks" account syncing by setting the necessary flags in UserStorageController.
+ * This is used to resume account syncing after it has been locked.
+ * This will trigger a downward sync if this is called after a lockAccountSyncing call.
+ *
+ * @returns
+ */
+export function unlockAccountSyncing(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground('setHasAccountSyncingSyncedAtLeastOnce', [
+        true,
+      ]);
+      return await submitRequestToBackground(
+        'setIsAccountSyncingReadyToBeDispatched',
+        [true],
+      );
+    } catch (error) {
+      return getErrorMessage(error);
     }
   };
 }

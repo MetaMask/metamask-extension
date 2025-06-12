@@ -4,6 +4,7 @@
     "hiddenAccountList": {}
   },
   "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
+  "AccountTreeController": { "accountTree": "object" },
   "AccountsController": {
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
   },
@@ -48,6 +49,9 @@
     "slides": "object",
     "throttledOrigins": "object",
     "upgradeSplashPageAcknowledgedForAccounts": "object",
+    "isUpdateAvailable": false,
+    "updateModalLastDismissedAt": null,
+    "lastUpdatedAt": null,
     "qrHardware": {},
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
@@ -62,7 +66,10 @@
     "pendingApprovalCount": "number",
     "approvalFlows": "object"
   },
-  "AuthenticationController": { "isSignedIn": "boolean" },
+  "AuthenticationController": {
+    "isSignedIn": "boolean",
+    "srpSessionData": "object"
+  },
   "BridgeController": {
     "quoteRequest": {
       "srcTokenAddress": "0x0000000000000000000000000000000000000000"
@@ -77,7 +84,7 @@
     "minimumBalanceForRentExemptionInLamports": "string"
   },
   "BridgeStatusController": { "txHistory": "object" },
-  "CronjobController": { "jobs": "object", "events": "object" },
+  "CronjobController": { "events": "object" },
   "CurrencyController": {
     "currentCurrency": "usd",
     "currencyRates": {
@@ -169,7 +176,9 @@
   },
   "NetworkOrderController": {
     "orderedNetworkList": { "0": "object", "1": "object" },
-    "enabledNetworkMap": {}
+    "enabledNetworkMap": {
+      "0x539": "boolean"
+    }
   },
   "NftController": {
     "allNftContracts": "object",
