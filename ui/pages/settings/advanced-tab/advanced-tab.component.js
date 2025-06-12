@@ -245,7 +245,8 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <span> {t('useSmartAccountTitle')}</span>
           <div className="settings-page__content-description">
-            {`${t('useSmartAccountDescription')} `}{learMoreLink}
+            {`${t('useSmartAccountDescription')} `}
+            {learMoreLink}
           </div>
         </div>
 
