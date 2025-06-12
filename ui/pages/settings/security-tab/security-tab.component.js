@@ -1213,9 +1213,6 @@ export default class SecurityTab extends PureComponent {
             {this.context.t('deepLinks')}
           </span>
         </div>
-        <div className="settings-page__content-padded">
-          {this.renderSkipDeepLinkInterstitial()}
-        </div>
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>
@@ -1227,6 +1224,9 @@ export default class SecurityTab extends PureComponent {
         </div>
         <div className="settings-page__content-padded">
           {this.renderPhishingDetectionToggle()}
+        </div>
+        <div className="settings-page__content-padded">
+          {this.renderSkipDeepLinkInterstitial()}
         </div>
 
         <div>
