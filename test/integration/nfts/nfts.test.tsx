@@ -125,6 +125,9 @@ describe('NFTs list', () => {
           '0x1': true,
         },
       },
+      enabledNetworkMap: {
+        '0x1': true,
+      },
     };
 
     const accountName = account.metadata.name;

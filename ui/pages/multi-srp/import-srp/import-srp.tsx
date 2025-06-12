@@ -42,6 +42,7 @@ import ShowHideToggle from '../../../components/ui/show-hide-toggle';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { getMetaMaskHdKeyrings, isSocialLoginFlow } from '../../../selectors';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import PasswordOutdatedModal from '../../../components/app/password-outdated-modal';
 
@@ -440,6 +441,7 @@ export const ImportSrp = () => {
             disabled={!isValidSrp || hasEmptyWordsOrIncorrectLength}
             loading={loading}
             onClick={async () => {
+              trace({ name: TraceName.ImportSrp });
               try {
                 setLoading(true);
                 await importWallet();
@@ -451,6 +453,7 @@ export const ImportSrp = () => {
                 );
               } finally {
                 setLoading(false);
+                endTrace({ name: TraceName.ImportSrp });
               }
             }}
           >

@@ -130,7 +130,6 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
           display={Display.Flex}
           alignItems={AlignItems.center}
           marginBottom={4}
-          gap={2}
         >
           <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
             {t('typeYourSRP')}
