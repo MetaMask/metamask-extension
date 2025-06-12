@@ -571,6 +571,7 @@ export default class MetamaskController extends EventEmitter {
         additionalDefaultNetworks,
       );
 
+      /** @type {import('@metamask/network-controller').NetworkState['networkConfigurationsByChainId']} */
       const networks =
         initialNetworkControllerState.networkConfigurationsByChainId;
 
@@ -591,6 +592,8 @@ export default class MetamaskController extends EventEmitter {
         getFailoverUrlsForInfuraNetwork('ethereum-mainnet');
       networks[CHAIN_IDS.LINEA_MAINNET].rpcEndpoints[0].failoverUrls =
         getFailoverUrlsForInfuraNetwork('linea-mainnet');
+      networks[CHAIN_IDS.BASE].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('base-mainnet');
 
       let network;
       if (process.env.IN_TEST) {
@@ -605,6 +608,7 @@ export default class MetamaskController extends EventEmitter {
               networkClientId: 'networkConfigurationId',
               url: 'http://localhost:8545',
               type: 'custom',
+              failoverUrls: [],
             },
           ],
         };
