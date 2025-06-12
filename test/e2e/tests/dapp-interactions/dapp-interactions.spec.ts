@@ -12,6 +12,7 @@ import Homepage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Dapp interactions', function () {
   it('should trigger the add chain confirmation despite MetaMask being locked', async function () {
@@ -98,6 +99,48 @@ describe('Dapp interactions', function () {
         await permissionListPage.check_pageIsLoaded();
         await permissionListPage.check_connectedToSite(DAPP_HOST_ADDRESS);
         await permissionListPage.check_connectedToSite(DAPP_ONE_ADDRESS);
+      },
+    );
+  });
+
+  it('should lock the wallet while connected to a dapp, prompt for unlock successfully unlock', async function () {
+    // Check if the browser is Firefox and skip the test if true
+    // Due to this issue - https://github.com/MetaMask/metamask-extension/issues/32071
+    if (process.env.SELENIUM_BROWSER === 'firefox') {
+      this.skip();
+    }
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        await loginWithoutBalanceValidation(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+
+        // Lock the wallet
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        const homepage = new Homepage(driver);
+        await homepage.headerNavbar.lockMetaMask();
+
+        // Attempt interaction with DApp
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDapp.findAndClickCreateToken();
+        await testDapp.clickConnectAccountButton();
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const loginPage = new LoginPage(driver);
+        await loginPage.check_pageIsLoaded();
+        console.log('Prompted to unlock the wallet');
+        await loginPage.loginToHomepage('123456');
+        await loginPage.check_incorrectPasswordMessageIsDisplayed();
+        await loginPage.loginToHomepage();
       },
     );
   });

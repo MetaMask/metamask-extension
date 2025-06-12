@@ -71,6 +71,9 @@
     "gasEstimateType": "fee-market",
     "showBetaHeader": false,
     "upgradeSplashPageAcknowledgedForAccounts": [],
+    "isUpdateAvailable": false,
+    "updateModalLastDismissedAt": null,
+    "lastUpdatedAt": null,
     "gasFeeEstimatesByChainId": {
       "0x5": {
         "gasEstimateType": "fee-market",

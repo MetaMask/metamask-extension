@@ -652,9 +652,6 @@
   "basic": {
     "message": "Général"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Activer la fonctionnalité de base"
-  },
   "basicConfigurationBannerTitle": {
     "message": "La fonctionnalité de base est désactivée"
   },
@@ -2279,18 +2276,11 @@
   "gasLimit": {
     "message": "Montant maximal des frais de transaction"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "La limite de carburant est la quantité maximale d’unités d’essence que vous consentez à dépenser."
-  },
   "gasLimitRecommended": {
     "message": "La limite recommandée de gas est de $1. Si la limite de gas est inférieure à cette valeur, l’opération peut échouer."
   },
   "gasLimitTooLow": {
     "message": "La limite de carburant doit être d’au moins 21000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "La limite de carburant doit être d’au moins $1",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "Limite de carburant"
@@ -2298,23 +2288,11 @@
   "gasOption": {
     "message": "Option de carburant"
   },
-  "gasPrice": {
-    "message": "Prix du gaz (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "Vos frais de carburant sont inutilement élevés. Songez à les réduire."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Le prix du gaz est excessif"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Le prix du gaz est extrêmement bas"
-  },
   "gasPriceFetchFailed": {
     "message": "L’estimation du prix du carburant a échoué en raison d’une erreur de réseau."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Le prix du carburant indique la quantité d’Ether que vous acceptez de payer pour chaque unité de carburant."
   },
   "gasTimingHoursShort": {
     "message": "$1 h",
@@ -5203,10 +5181,6 @@
     "message": "$1 veut utiliser $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
   },
-  "snapContent": {
-    "message": "Ce contenu provient de $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
-  },
   "snapDetailWebsite": {
     "message": "Site web"
   },
@@ -6717,8 +6691,5 @@
   },
   "yourWalletIsReady": {
     "message": "Votre portefeuille est prêt"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Prix de carburant zéro sur l’accélération"
   }
 }
