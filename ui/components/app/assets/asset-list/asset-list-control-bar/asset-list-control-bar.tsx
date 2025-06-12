@@ -298,7 +298,7 @@ const AssetListControlBar = ({
               ? handleNetworkManager
               : toggleNetworkFilterPopover
           }
-          disabled={isGlobalNetworkSelectorRemoved ? isDisabled : false}
+          disabled={isGlobalNetworkSelectorRemoved ? false : isDisabled}
           size={ButtonBaseSize.Sm}
           endIconName={IconName.ArrowDown}
           backgroundColor={
