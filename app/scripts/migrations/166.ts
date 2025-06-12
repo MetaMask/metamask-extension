@@ -1,5 +1,9 @@
 import { cloneDeep } from 'lodash';
 import { hasProperty, isObject } from '@metamask/utils';
+import {
+  CHAIN_IDS,
+  getFailoverUrlsForInfuraNetwork,
+} from '../../../shared/constants/network';
 
 type VersionedData = {
   meta: { version: number };
@@ -9,13 +13,11 @@ type VersionedData = {
 export const version = 166;
 
 /**
- * This migration sets `isBackupAndSyncEnabled` and `isAccountSyncingEnabled` to true for all users.
- *
- * If the UserStorageController is not found or is not an object, the migration logs an error,
- * but otherwise leaves the state unchanged.
+ * This migration adds Base network to the `NetworkController` as it is enabled by default.
+ * - It modifies the `NetworkController.state.networkConfigurationsByChainId` to include Base network.
  *
  * @param originalVersionedData - The versioned extension state.
- * @returns The updated versioned extension state without the tokens property.
+ * @returns The updated versioned extension state with base network added
  */
 export async function migrate(
   originalVersionedData: VersionedData,
@@ -31,33 +33,65 @@ export async function migrate(
 function transformState(
   state: Record<string, unknown>,
 ): Record<string, unknown> {
-  // If property UserStorageController is not present, only log a warning and return the original state.
-  if (!hasProperty(state, 'UserStorageController')) {
-    console.warn(`newState.UserStorageController is not present`);
+  if (!hasProperty(state, 'NetworkController')) {
+    console.warn(`Migration ${version}: NetworkController not found.`);
     return state;
   }
 
-  const userStorageControllerState = state.UserStorageController;
-
-  // If property userStorageControllerState is there but not an object, capture a sentry error and return state
-  if (!isObject(userStorageControllerState)) {
+  const networkState = state.NetworkController;
+  if (!isObject(networkState)) {
     global.sentry?.captureException?.(
       new Error(
-        `Migration ${version}: UserStorageController is type '${typeof userStorageControllerState}', expected object.`,
+        `Migration ${version}: NetworkController is not an object: ${typeof networkState}`,
       ),
     );
     return state;
   }
 
-  if (hasProperty(userStorageControllerState, 'isBackupAndSyncEnabled')) {
-    // Set isBackupAndSyncEnabled to true for all users.
-    userStorageControllerState.isBackupAndSyncEnabled = true;
+  if (!hasProperty(networkState, 'networkConfigurationsByChainId')) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: NetworkController missing property networkConfigurationsByChainId.`,
+      ),
+    );
+    return state;
   }
 
-  if (hasProperty(userStorageControllerState, 'isAccountSyncingEnabled')) {
-    // Set isAccountSyncingEnabled to true for all users.
-    userStorageControllerState.isAccountSyncingEnabled = true;
+  if (!isObject(networkState.networkConfigurationsByChainId)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: NetworkController.networkConfigurationsByChainId is not an object: ${typeof networkState.networkConfigurationsByChainId}.`,
+      ),
+    );
+    return state;
   }
+
+  // User already has base network added
+  if (networkState.networkConfigurationsByChainId[CHAIN_IDS.BASE]) {
+    return state;
+  }
+
+  networkState.networkConfigurationsByChainId[CHAIN_IDS.BASE] =
+    getBaseNetworkConfiguration();
 
   return state;
+}
+
+// Exported for testing purposes
+export function getBaseNetworkConfiguration() {
+  return {
+    blockExplorerUrls: [],
+    chainId: '0x2105' as const, // toHex(8453) Base Network
+    defaultRpcEndpointIndex: 0,
+    name: 'Base Mainnet',
+    nativeCurrency: 'ETH',
+    rpcEndpoints: [
+      {
+        failoverUrls: getFailoverUrlsForInfuraNetwork('base-mainnet'),
+        networkClientId: 'base-mainnet',
+        type: 'infura',
+        url: 'https://base-mainnet.infura.io/v3/{infuraProjectId}',
+      },
+    ],
+  };
 }
