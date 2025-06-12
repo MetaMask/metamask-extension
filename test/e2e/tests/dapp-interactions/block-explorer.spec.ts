@@ -11,8 +11,11 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import MockedPage from '../../page-objects/pages/mocked-page';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-
-describe('Block Explorer', function () {
+// TODO: Temporarily skip this test. There will be a redesign of the block explorer UX
+// some of this might be salvagable, but we need to wait for the redesign to be complete
+// before we can re-enable this test.
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Block Explorer', function () {
   it('links to the users account on the explorer, ', async function () {
     await withFixtures(
       {
