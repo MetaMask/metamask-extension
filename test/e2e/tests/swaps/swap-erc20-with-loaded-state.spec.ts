@@ -297,6 +297,7 @@ describe('Swap', function () {
           await swapPage.selectDestinationToken(testCase.destinationToken);
 
           await swapPage.dismissManualTokenWarning();
+          await driver.delay(1500);
           await swapPage.submitSwap();
 
           await homePage.check_expectedTokenBalanceIsDisplayed(
