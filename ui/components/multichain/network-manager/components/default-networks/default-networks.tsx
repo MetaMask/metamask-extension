@@ -81,12 +81,12 @@ const DefaultNetworks = memo(() => {
 
   // Use useCallback for stable function references
   const selectAllDefaultNetworks = useCallback(() => {
-    const shouldSelect = orderedNetworks.map((network) =>
-      network.isEvm
-        ? convertCaipToHexChainId(network.chainId)
-        : network.chainId,
-    );
-    dispatch(setEnabledNetworks(shouldSelect as CaipChainId[]));
+    const evmChainIds = orderedNetworks
+      .filter((network) => network.isEvm)
+      .map(
+        (network) => convertCaipToHexChainId(network.chainId) as CaipChainId,
+      );
+    dispatch(setEnabledNetworks(evmChainIds));
   }, [dispatch, orderedNetworks]);
 
   const deselectAllDefaultNetworks = useCallback(() => {
