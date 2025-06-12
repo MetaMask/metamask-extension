@@ -3805,21 +3805,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Chúng tôi sẽ sử dụng dữ liệu này để tìm hiểu cách bạn tương tác với các thông tin tiếp thị. Chúng tôi có thể chia sẻ tin tức liên quan (chẳng hạn như tính năng sản phẩm)."
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Toàn quyền truy cập"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Các tiện ích này có thể xem và thay đổi thông tin"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "trên trang web này."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Tiện ích"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Nhấp vào biểu tượng tiện ích trên trình duyệt"
-  },
   "onboardingPinExtensionDescription": {
     "message": "Ghim MetaMask trên trình duyệt để bạn có thể truy cập và dễ dàng xem các xác nhận giao dịch."
   },
@@ -3827,16 +3812,8 @@
     "message": "Bạn có thể mở MetaMask bằng cách nhấp vào tiện ích và truy cập ví của mình chỉ với 1 cú nhấp chuột."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Nhấp vào biểu tượng tiện ích trên trình duyệt để truy cập tức thì"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "Ghim MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Nhấp vào biểu tượng tiện ích trên trình duyệt để truy cập tức thì",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Quá trình cài đặt MetaMask đã hoàn tất!"

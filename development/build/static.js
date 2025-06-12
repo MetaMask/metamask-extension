@@ -17,6 +17,7 @@ module.exports = function createStaticAssetTasks({
   browserPlatforms,
   shouldIncludeLockdown = true,
   shouldIncludeSnow = true,
+  shouldIncludeOcapKernel = false,
 }) {
   const copyTargetsProds = {};
   const copyTargetsDevs = {};
@@ -28,6 +29,7 @@ module.exports = function createStaticAssetTasks({
     const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
       shouldIncludeLockdown,
       shouldIncludeSnow,
+      shouldIncludeOcapKernel,
     );
     copyTargetsProds[browser] = copyTargetsProd;
     copyTargetsDevs[browser] = copyTargetsDev;
@@ -106,7 +108,11 @@ module.exports = function createStaticAssetTasks({
   }
 };
 
-function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
+function getCopyTargets(
+  shouldIncludeLockdown,
+  shouldIncludeSnow,
+  shouldIncludeOcapKernel,
+) {
   const allCopyTargets = [
     {
       src: `./app/_locales/`,
@@ -207,6 +213,25 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
             ),
             dest: `snaps/bundle.js`,
             pattern: '',
+          },
+        ]
+      : []),
+    ...(shouldIncludeOcapKernel
+      ? [
+          {
+            src: getPathInsideNodeModules(
+              '@metamask/kernel-shims',
+              'dist/eventual-send.js',
+            ),
+            dest: `scripts/eventual-send-install.js`,
+          },
+          {
+            src: getPathInsideNodeModules(
+              '@metamask/kernel-browser-runtime',
+              'dist/static/',
+            ),
+            pattern: '*',
+            dest: 'ocap-kernel/',
           },
         ]
       : []),
