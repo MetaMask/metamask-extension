@@ -1,13 +1,15 @@
 const {
   ACCOUNTS_PROD_API_BASE_URL,
 } = require('../../../../shared/constants/accounts');
+const { MOCK_META_METRICS_ID } = require('../../constants');
 const { withFixtures, unlockWallet } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
-const { MOCK_META_METRICS_ID } = require('../../constants');
 
 async function mockSurveys(mockServer) {
   await mockServer
-    .forGet(`${ACCOUNTS_PROD_API_BASE_URL}/v1/users/${MOCK_META_METRICS_ID}/surveys`)
+    .forGet(
+      `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/${MOCK_META_METRICS_ID}/surveys`,
+    )
     .twice()
     .thenCallback(() => {
       return {
@@ -24,7 +26,9 @@ async function mockSurveys(mockServer) {
       };
     });
   await mockServer
-    .forGet(`${ACCOUNTS_PROD_API_BASE_URL}/v1/users/${MOCK_META_METRICS_ID}/surveys`)
+    .forGet(
+      `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/${MOCK_META_METRICS_ID}/surveys`,
+    )
     .once()
     .thenCallback(() => {
       return {

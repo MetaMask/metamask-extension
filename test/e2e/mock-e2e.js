@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { escapeRegExp } = require('lodash');
 
 const {
   ACCOUNTS_PROD_API_BASE_URL,
@@ -415,7 +416,10 @@ async function setupMocking(
   // Surveys
   await server
     .forGet(
-      new RegExp(`${ACCOUNTS_PROD_API_BASE_URL.replace(/\\/g, '\\\\').replace(/\./g, '\\.')}/v1/users/[^/]+/surveys`, 'u'),
+      new RegExp(
+        `${escapeRegExp(ACCOUNTS_PROD_API_BASE_URL)}/v1/users/[^/]+/surveys`,
+        'u',
+      ),
     )
     .thenCallback(() => {
       return {
