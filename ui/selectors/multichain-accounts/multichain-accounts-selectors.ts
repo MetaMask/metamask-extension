@@ -4,7 +4,7 @@ import type {
   AccountWallet,
 } from '@metamask/account-tree-controller';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
-import { getMetaMaskAccountsOrdered } from '../selectors';
+import { getMetaMaskAccounts } from '../selectors';
 import { InternalAccountWithBalance } from '../selectors.types';
 import {
   AccountTreeState,
@@ -33,20 +33,12 @@ export const getAccountTree = (
  * @returns Consolidated wallet collection with accounts metadata.
  */
 export const getWalletsWithAccounts = createDeepEqualSelector(
-  getMetaMaskAccountsOrdered,
+  getMetaMaskAccounts,
   getAccountTree,
   (
-    internalAccounts: InternalAccountWithBalance[],
+    accountsById: Record<string, InternalAccountWithBalance>,
     accountTree: AccountTreeState,
   ): ConsolidatedWallets => {
-    const accountsById = internalAccounts.reduce(
-      (accounts: Record<string, InternalAccountWithBalance>, account) => {
-        accounts[account.id] = account;
-        return accounts;
-      },
-      {},
-    );
-
     const { wallets } = accountTree;
 
     return Object.entries(wallets).reduce(

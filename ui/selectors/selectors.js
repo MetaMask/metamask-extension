@@ -908,6 +908,22 @@ export const getMetaMaskAccountsOrdered = createDeepEqualSelector(
   },
 );
 
+/**
+ * Get accounts (InternalAccount with balance and other data) as a map of accounts, indexed by
+ * their ID.
+ *
+ * @returns {Record<string, InternalAccountWithBalance>} An object of internal accounts indexed by their ID.
+ */
+export const getMetaMaskAccountsById = createDeepEqualSelector(
+  getMetaMaskAccounts,
+  (accounts) => {
+    return Object.values(accounts).reduce((accountsById, account) => {
+      accountsById[account.id] = account;
+      return accountsById;
+    }, {});
+  },
+);
+
 export const getMetaMaskAccountsConnected = createSelector(
   getMetaMaskAccountsOrdered,
   (connectedAccounts) =>
