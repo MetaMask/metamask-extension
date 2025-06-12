@@ -2300,10 +2300,6 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  async onRestart(callback) {
-    callback();
-  }
-
   // Provides a method for getting feature flags for the multichain
   // initial rollout, such that we can remotely modify polling interval
   getInfuraFeatureFlags() {
