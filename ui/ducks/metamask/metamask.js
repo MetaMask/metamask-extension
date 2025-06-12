@@ -250,7 +250,8 @@ export const getNfts = (state) => {
   return allNfts?.[selectedAddress]?.[chainId] ?? [];
 };
 
-export const getAllNfts = (state) => {
+export const
+getAllNfts = (state) => {
   const {
     metamask: { allNfts },
   } = state;
