@@ -11,8 +11,6 @@ import {
   TextField,
   TextFieldType,
   ButtonLink,
-  Button,
-  ButtonSize,
 } from '../../../components/component-library';
 import { AssetPicker } from '../../../components/multichain/asset-picker-amount/asset-picker';
 import { TabName } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
@@ -36,7 +34,6 @@ import { shortenString } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import {
   MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP,
   MultichainNetworks,
@@ -44,7 +41,6 @@ import {
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { getMultichainCurrentChainId } from '../../../selectors/multichain';
-import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
 const sanitizeAmountInput = (textToSanitize: string) => {
   // Remove characters that are not numbers or decimal points if rendering a controlled or pasted value
@@ -127,8 +123,6 @@ export const BridgeInputGroup = ({
       inputRef.current = null;
     };
   }, []);
-
-  const isSwap = useIsMultichainSwap();
 
   const handleAddressClick = () => {
     if (token && selectedChainId) {
@@ -243,31 +237,7 @@ export const BridgeInputGroup = ({
           customTokenListGenerator={customTokenListGenerator}
           isTokenListLoading={isTokenListLoading}
           isMultiselectEnabled={isMultiselectEnabled}
-        >
-          {(onClickHandler, networkImageSrc) =>
-            isAmountReadOnly && !token ? (
-              <Button
-                data-testid={buttonProps.testId}
-                onClick={onClickHandler}
-                size={ButtonSize.Lg}
-                paddingLeft={6}
-                paddingRight={6}
-                fontWeight={FontWeight.Normal}
-                style={{ whiteSpace: 'nowrap' }}
-              >
-                {isSwap ? t('swapSwapTo') : t('bridgeTo')}
-              </Button>
-            ) : (
-              <BridgeAssetPickerButton
-                onClick={onClickHandler}
-                networkImageSrc={networkImageSrc}
-                asset={(token as never) ?? undefined}
-                networkProps={networkProps}
-                data-testid={buttonProps.testId}
-              />
-            )
-          }
-        </AssetPicker>
+        />
       </Row>
 
       <Row justifyContent={JustifyContent.spaceBetween}>
