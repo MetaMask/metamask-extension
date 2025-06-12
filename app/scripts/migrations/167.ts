@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 166;
+export const version = 167;
 
 /**
  * This migration sets `isBackupAndSyncEnabled` and `isAccountSyncingEnabled` to true for all users.
