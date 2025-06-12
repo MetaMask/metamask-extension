@@ -1,11 +1,13 @@
 import { strict as assert } from 'assert';
 import { JsonRpcRequest } from '@metamask/utils';
 import { MockedEndpoint } from 'mockttp';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
 import { veryLargeDelayMs, withFixtures } from '../../helpers';
 import { Mockttp } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { ACCOUNTS_PROD_API_BASE_URL } from '../../../../shared/constants/accounts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
@@ -52,6 +54,20 @@ async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
         },
       };
     }),
+    await mockServer
+      .forGet(
+        `${ACCOUNTS_PROD_API_BASE_URL}/v2/accounts/${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}/balances`,
+      )
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            count: 0,
+            balances: [],
+            unprocessedNetworks: [],
+          },
+        };
+      }),
   ];
 }
 
