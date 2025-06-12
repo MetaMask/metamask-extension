@@ -4188,6 +4188,14 @@ export default class MetamaskController extends EventEmitter {
         userStorageController.syncInternalAccountsWithUserStorage.bind(
           userStorageController,
         ),
+      setHasAccountSyncingSyncedAtLeastOnce:
+        userStorageController.setHasAccountSyncingSyncedAtLeastOnce.bind(
+          userStorageController,
+        ),
+      setIsAccountSyncingReadyToBeDispatched:
+        userStorageController.setIsAccountSyncingReadyToBeDispatched.bind(
+          userStorageController,
+        ),
       deleteAccountSyncingDataFromUserStorage:
         userStorageController.performDeleteStorageAllFeatureEntries.bind(
           userStorageController,
@@ -4663,7 +4671,6 @@ export default class MetamaskController extends EventEmitter {
       return newAccountAddress;
     } finally {
       releaseLock();
-      await this.userStorageController.syncInternalAccountsWithUserStorage();
     }
   }
 
