@@ -74,7 +74,6 @@ import {
   getManageInstitutionalWallets,
   getHDEntropyIndex,
   getAllChainsToPoll,
-  getUseExternalServices,
 } from '../../../selectors';
 import {
   detectNfts,
@@ -129,7 +128,7 @@ import { CreateAccountSnapOptions } from '../../../../shared/lib/accounts';
 import { ImportAccount } from '../import-account';
 import { SrpList } from '../multi-srp/srp-list';
 import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
-import { getNetworksWithTransactionActivity } from '../../../selectors/multichain/networks';
+import { getNetworksWithActivity } from '../../../selectors/multichain/networks';
 import { HiddenAccountList } from './hidden-account-list';
 
 // TODO: Should we use an enum for this instead?
@@ -263,9 +262,7 @@ export const AccountListMenu = ({
     getConnectedSubjectsForAllAddresses,
   ) as AccountConnections;
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
-  const networksWithTransactionActivity = useSelector(
-    getNetworksWithTransactionActivity,
-  );
+  const networksWithTransactionActivity = useSelector(getNetworksWithActivity);
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -276,7 +273,7 @@ export const AccountListMenu = ({
   );
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
-  const useExternalServices = useSelector(getUseExternalServices);
+
   const filteredUpdatedAccountList = useMemo(
     () =>
       updatedAccountsList.filter((account) =>
@@ -509,19 +506,13 @@ export const AccountListMenu = ({
 
   useEffect(() => {
     if (
-      (filteredAccounts.length > 0 &&
-        useExternalServices &&
-        networksWithTransactionActivity === null) ||
-      networksWithTransactionActivity === undefined
+      filteredAccounts.length > 0 &&
+      (!networksWithTransactionActivity ||
+        Object.keys(networksWithTransactionActivity).length === 0)
     ) {
       dispatch(getNetworksWithTransactionActivityByAccounts());
     }
-  }, [
-    dispatch,
-    filteredAccounts.length,
-    useExternalServices,
-    networksWithTransactionActivity,
-  ]);
+  }, [dispatch, filteredAccounts.length, networksWithTransactionActivity]);
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -920,3 +911,15 @@ AccountListMenu.propTypes = {
    */
   allowedAccountTypes: PropTypes.array,
 };
+
+// @account-list-menu.tsx
+
+// Does this solution look good. So it will fetch if:
+// - There are accounts
+// - `networksWithTransactionActivity` returns as undefined
+// - `networksWithTransactionActivity` returns as a empty object
+
+// While it does fetch in other places:
+// - import new account@import-srp.tsx
+// - import SRP @import-srp.tsx
+// - Sending a new transactions

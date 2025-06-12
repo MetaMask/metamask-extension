@@ -16,7 +16,7 @@ exports[`AccountListItem network activity icons should render correctly for Bitc
       >
         <div>
           <div
-            aria-describedby="tippy-tooltip-30"
+            aria-describedby="tippy-tooltip-34"
             class=""
             data-original-title="Not connected"
             data-tooltipped=""
@@ -192,7 +192,7 @@ exports[`AccountListItem network activity icons should render correctly for Bitc
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-31"
+                aria-describedby="tippy-tooltip-35"
                 class=""
                 data-original-title="This can be changed in "Settings > Alerts""
                 data-tooltipped=""
@@ -227,6 +227,30 @@ exports[`AccountListItem network activity icons should render correctly for Bitc
           </div>
         </div>
       </div>
+      <div
+        class="mm-box mm-box--flex-direction-row"
+      >
+        <div
+          class="mm-box mm-tag mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+          data-testid="account-list-item-tag-b5893c59-e376-4cc0-93ad-35ddaab574a1-SRP #0"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative"
+          >
+            SRP #0
+          </p>
+        </div>
+        <div
+          class="mm-box mm-tag mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+          data-testid="account-list-item-tag-b5893c59-e376-4cc0-93ad-35ddaab574a1-Native SegWit"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative"
+          >
+            Native SegWit
+          </p>
+        </div>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
@@ -251,7 +275,7 @@ exports[`AccountListItem network activity icons should render correctly for EVM 
       >
         <div>
           <div
-            aria-describedby="tippy-tooltip-26"
+            aria-describedby="tippy-tooltip-30"
             class=""
             data-original-title="Not connected"
             data-tooltipped=""
@@ -427,7 +451,7 @@ exports[`AccountListItem network activity icons should render correctly for EVM 
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-27"
+                aria-describedby="tippy-tooltip-31"
                 class=""
                 data-original-title="This can be changed in "Settings > Alerts""
                 data-tooltipped=""
@@ -490,6 +514,20 @@ exports[`AccountListItem network activity icons should render correctly for EVM 
           </div>
         </div>
       </div>
+      <div
+        class="mm-box mm-box--flex-direction-row"
+      >
+        <div
+          class="mm-box mm-tag mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+          data-testid="account-list-item-tag-cf8dace4-9439-4bd4-b3a8-88c821c8fcb3-SRP #1"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative"
+          >
+            SRP #1
+          </p>
+        </div>
+      </div>
     </div>
     <div
       class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
@@ -514,7 +552,7 @@ exports[`AccountListItem network activity icons should render correctly for Sola
       >
         <div>
           <div
-            aria-describedby="tippy-tooltip-34"
+            aria-describedby="tippy-tooltip-38"
             class=""
             data-original-title="Not connected"
             data-tooltipped=""
@@ -690,7 +728,7 @@ exports[`AccountListItem network activity icons should render correctly for Sola
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-35"
+                aria-describedby="tippy-tooltip-39"
                 class=""
                 data-original-title="This can be changed in "Settings > Alerts""
                 data-tooltipped=""
@@ -723,6 +761,20 @@ exports[`AccountListItem network activity icons should render correctly for Sola
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--flex-direction-row"
+      >
+        <div
+          class="mm-box mm-tag mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+          data-testid="account-list-item-tag-b7893c54-e376-4cc0-93ad-05dd1ab574a4-SRP #0"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative"
+          >
+            SRP #0
+          </p>
         </div>
       </div>
     </div>
@@ -938,7 +990,22 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--align-items-center"
-                  />
+                  >
+                    <div
+                      class="mm-box mm-box--rounded-full"
+                      style="margin-left: 0px;"
+                    >
+                      <div
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                      >
+                        <img
+                          alt="Bitcoin logo"
+                          class="mm-avatar-network__network-image"
+                          src="./images/bitcoin-logo.svg"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

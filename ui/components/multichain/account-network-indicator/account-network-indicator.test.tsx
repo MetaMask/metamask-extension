@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import { EthScope } from '@metamask/keyring-api';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
@@ -13,9 +14,9 @@ const firstAccountKey =
 const baseAccount =
   mockState.metamask.internalAccounts.accounts[firstAccountKey];
 
-const mockAccount: MergedInternalAccount = {
+const mockEvmAccount: MergedInternalAccount = {
   ...baseAccount,
-  scopes: ['eip155:0', 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+  scopes: [EthScope.Eoa],
   type: 'eip155:eoa',
   balance: '0x0',
   pinned: false,
@@ -26,7 +27,7 @@ const mockAccount: MergedInternalAccount = {
   label: null,
 };
 
-const render = (account = mockAccount) => {
+const render = (account = mockEvmAccount) => {
   return renderWithProvider(
     <AccountNetworkIndicator account={account} />,
     configureStore(mockState),

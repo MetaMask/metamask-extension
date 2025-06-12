@@ -486,4 +486,145 @@ describe('AccountListItem', () => {
       expect(container.querySelector('.mm-tag')).not.toBeInTheDocument();
     });
   });
+
+  describe('network activity icons', () => {
+    it('should render correctly for EVM account with network activity', () => {
+      const { container } = render(
+        {
+          account: mockAccount,
+        },
+        {
+          metamask: {
+            networksWithTransactionActivity: {
+              [mockAccount.address]: {
+                activeChains: [1, 137, 10],
+                namespace: KnownCaipNamespace.Eip155,
+              },
+            },
+          },
+        },
+      );
+      expect(container).toMatchSnapshot('evm-account-network-activity');
+    });
+
+    it('renders correct amount of network icons for accounts with transaction activity', () => {
+      const { container } = render(
+        {
+          account: mockAccount,
+        },
+        {
+          metamask: {
+            networksWithTransactionActivity: {
+              [mockAccount.address]: {
+                activeChains: [1, 137, 10],
+                namespace: KnownCaipNamespace.Eip155,
+              },
+            },
+          },
+        },
+      );
+
+      const avatarGroup = container.querySelector(
+        '[data-testid="avatar-group"]',
+      );
+      expect(avatarGroup).toBeInTheDocument();
+
+      const networkIcons = avatarGroup.querySelectorAll('.mm-avatar-network');
+      expect(networkIcons).toHaveLength(3);
+    });
+
+    it('should render correctly for Bitcoin account', () => {
+      const { container } = render(
+        {
+          account: mockBitcoinAccount,
+        },
+        {
+          metamask: {
+            networksWithTransactionActivity: {
+              [mockBitcoinAccount.address]: {
+                activeChains: [],
+                namespace: KnownCaipNamespace.Bip122,
+              },
+            },
+          },
+        },
+      );
+      expect(container).toMatchSnapshot('bitcoin-account-network-activity');
+    });
+
+    it('renders correct image for network avatar for Bitcoin account', () => {
+      const { container } = render(
+        {
+          account: mockBitcoinAccount,
+        },
+        {
+          metamask: {
+            networksWithTransactionActivity: {
+              [mockBitcoinAccount.address]: {
+                activeChains: [],
+                namespace: KnownCaipNamespace.Bip122,
+              },
+            },
+          },
+        },
+      );
+
+      const avatarNetworkAvatar = container.querySelector('.mm-avatar-network');
+      expect(avatarNetworkAvatar).toBeInTheDocument();
+
+      const tokenImage = container.querySelector(
+        '.mm-avatar-network__network-image',
+      );
+      expect(tokenImage).toHaveAttribute('src', './images/bitcoin-logo.svg');
+
+      jest.restoreAllMocks();
+    });
+
+    it('should render correctly for Solana account', () => {
+      const { container } = render(
+        {
+          account: mockSolanaAccount,
+        },
+        {
+          metamask: {
+            networksWithTransactionActivity: {
+              [mockSolanaAccount.address]: {
+                activeChains: [],
+                namespace: KnownCaipNamespace.Solana,
+              },
+            },
+          },
+        },
+      );
+      expect(container).toMatchSnapshot('solana-account-network-activity');
+    });
+
+    it('renders correct image for network avatar for Solana account', () => {
+      const { container } = render(
+        {
+          account: mockSolanaAccount,
+        },
+        {
+          metamask: {
+            networksWithTransactionActivity: {
+              [mockSolanaAccount.address]: {
+                activeChains: [],
+                namespace: KnownCaipNamespace.Solana,
+              },
+            },
+          },
+        },
+      );
+
+      const avatarNetworkAvatar = container.querySelector('.mm-avatar-network');
+      expect(avatarNetworkAvatar).toBeInTheDocument();
+
+      const tokenImage = container.querySelector(
+        '.mm-avatar-network__network-image',
+      );
+      expect(tokenImage).toHaveAttribute('src', './images/solana-logo.svg');
+
+      jest.restoreAllMocks();
+    });
+  });
 });
