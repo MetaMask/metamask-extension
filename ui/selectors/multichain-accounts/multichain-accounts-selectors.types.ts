@@ -27,13 +27,13 @@ export type MultichainAccountsState = {
   };
 };
 
-type ConsolidatedAccountGroup = {
+export type ConsolidatedAccountGroup = {
   id: AccountGroupId;
   metadata: AccountGroupMetadata;
   accounts: InternalAccountWithBalance[];
 };
 
-type ConsolidatedAccountWallet = {
+export type ConsolidatedAccountWallet = {
   id: AccountWalletId;
   metadata: AccountWalletMetadata;
   groups: {
