@@ -22,12 +22,8 @@ import {
 } from '../../../../shared/constants/metametrics';
 import WelcomeLogin from './welcome-login';
 import WelcomeBanner from './welcome-banner';
-import { LOGIN_OPTION, LOGIN_TYPE } from './types';
-
-const WelcomePageState = {
-  Banner: 'Banner',
-  Login: 'Login',
-};
+import { LOGIN_OPTION, LOGIN_TYPE, WelcomePageState } from './types';
+import LoginErrorModal from './login-error-modal';
 
 export default function OnboardingWelcome({
   pageState = WelcomePageState.Banner,
@@ -41,6 +37,7 @@ export default function OnboardingWelcome({
     useState(false);
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [loginError, setLoginError] = useState(null);
 
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
@@ -187,6 +184,12 @@ export default function OnboardingWelcome({
         <WelcomeLogin onLogin={handleLogin} />
       )}
       {isLoggingIn && <LoadingScreen />}
+      {loginError !== null && (
+        <LoginErrorModal
+          onClose={() => setLoginError(null)}
+          loginError={loginError}
+        />
+      )}
     </>
   );
 }
