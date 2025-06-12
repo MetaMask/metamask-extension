@@ -8,7 +8,8 @@ permissions:
 on:
   push:
     branches:
-      - stable
+      #- stable
+      - master
 
 jobs:
   get-next-version:
@@ -24,18 +25,18 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
       - name: Get the next semver version
         id: get-next-semver-version
         env:
           FORCE_NEXT_SEMVER_VERSION: ${{ vars.FORCE_NEXT_SEMVER_VERSION }}
-        run: ./get-next-semver-version.sh "$FORCE_NEXT_SEMVER_VERSION"
+          BRANCH_NAMING_CONVENTION: ${{ vars.BRANCH_NAMING_CONVENTION || 'Version-vX.Y.Z' }}
+        run: ./get-next-semver-version.sh "$FORCE_NEXT_SEMVER_VERSION" "$BRANCH_NAMING_CONVENTION"
         working-directory: '.github/scripts'
 
   run-stable-sync:
     name: Run Stable branch sync
     needs: get-next-version
-    uses: metamask/github-tools/.github/workflows/stable-sync.yml@ale/infra-2532-master-sync-pr
+    uses: metamask/github-tools/.github/workflows/stable-sync.yml@ale/improve-stable-sync-pipeline-process
     secrets: inherit
     with:
       semver-version: ${{ needs.get-next-version.outputs.next-version }}
