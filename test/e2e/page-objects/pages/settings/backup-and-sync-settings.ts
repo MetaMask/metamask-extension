@@ -9,6 +9,9 @@ class BackupAndSyncSettings {
   private readonly backupAndSyncToggle =
     '[data-testid="backup-and-sync-toggle-container"]';
 
+  private readonly contactSyncToggle =
+    '[data-testid="contact-syncing-toggle-container"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -19,6 +22,8 @@ class BackupAndSyncSettings {
         this.accountSyncToggle,
         this.backupAndSyncToggle,
       ]);
+      // Also wait for contact sync toggle to be available
+      await this.driver.waitForSelector(this.contactSyncToggle);
     } catch (e) {
       console.log(
         'Timeout while waiting for Backup And Sync Settings page to be loaded',
@@ -37,6 +42,11 @@ class BackupAndSyncSettings {
   async toggleBackupAndSync(): Promise<void> {
     console.log('Toggling backup and sync setting');
     await this.driver.clickElement(this.backupAndSyncToggle);
+  }
+
+  async toggleContactSync(): Promise<void> {
+    console.log('Toggling contact sync setting');
+    await this.driver.clickElement(this.contactSyncToggle);
   }
 }
 

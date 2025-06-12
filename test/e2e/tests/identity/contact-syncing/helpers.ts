@@ -2,6 +2,7 @@ import { Driver } from '../../../webdriver/driver';
 import { getCleanAppState } from '../../../helpers';
 import {
   UserStorageMockttpController,
+  UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 
 export type UserStorageContact = {
@@ -118,9 +119,35 @@ export function arrangeContactSyncingTestUtils(
     return contacts;
   };
 
+  const BASE_TIMEOUT = 30000;
+  const BASE_INTERVAL = 1000;
+
+  const prepareEventsEmittedCounter = (
+    event: UserStorageMockttpControllerEvents,
+  ) => {
+    let counter = 0;
+    userStorageMockttpController.eventEmitter.on(event, () => {
+      counter += 1;
+    });
+
+    const waitUntilEventsEmittedNumberEquals = async (
+      expectedNumber: number,
+    ) => {
+      console.log(
+        `Waiting for user storage event ${event} to be emitted ${expectedNumber} times`,
+      );
+      await driver.waitUntil(async () => counter >= expectedNumber, {
+        timeout: BASE_TIMEOUT,
+        interval: BASE_INTERVAL,
+      });
+    };
+    return { waitUntilEventsEmittedNumberEquals };
+  };
+
   return {
     waitUntilSyncedContactsNumberEquals,
     waitUntilContactSyncingCompleted,
     getCurrentContacts,
+    prepareEventsEmittedCounter,
   };
 }
