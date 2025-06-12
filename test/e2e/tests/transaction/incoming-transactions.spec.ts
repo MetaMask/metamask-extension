@@ -5,9 +5,10 @@ import { Driver } from '../../webdriver/driver';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 
 const TIMESTAMP_MOCK = 1234;
 
@@ -91,12 +92,21 @@ describe('Incoming Transactions', function () {
       {
         fixtures: new FixtureBuilder()
           .withUseBasicFunctionalityEnabled()
+          .withNetworkControllerOnMainnet()
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockAccountsApi,
       },
       async ({ driver }: { driver: Driver }) => {
-        const activityList = await changeNetworkAndGoToActivity(driver);
+        await loginWithoutBalanceValidation(driver);
+        const homepage = new HomePage(driver);
+        const assetList = new AssetListPage(driver);
+        await homepage.goToActivityList();
+
+        await assetList.clickNetworkSelectorDropdown();
+        await assetList.clickCurrentNetworkOptionOnActivityList();
+
+        const activityList = new ActivityListPage(driver);
         await activityList.check_confirmedTxNumberDisplayedInActivity(2);
 
         await activityList.check_txAction('Receive', 1);
@@ -192,7 +202,7 @@ describe('Incoming Transactions', function () {
 
 async function changeNetworkAndGoToActivity(driver: Driver) {
   await loginWithoutBalanceValidation(driver);
-  await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+  await switchToNetworkFromSendFlow(driver, 'Ethereum');
 
   const homepage = new HomePage(driver);
   await homepage.goToActivityList();

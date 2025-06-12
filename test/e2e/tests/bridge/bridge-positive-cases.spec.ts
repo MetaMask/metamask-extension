@@ -2,8 +2,8 @@ import { Suite } from 'mocha';
 import { unlockWallet, withFixtures } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
-  switchToNetworkFlow,
-  searchAndSwitchToNetworkFlow,
+  switchToNetworkFromSendFlow,
+  searchAndSwitchToNetworkFromGlobalMenuFlow,
 } from '../../page-objects/flows/network.flow';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
 import { bridgeTransaction, getBridgeFixtures } from './bridge-test-utils';
@@ -38,7 +38,7 @@ describe('Bridge tests', function (this: Suite) {
 
         // Switch to Linea Mainnet to set it as the selected network
         // in the network-controller
-        await switchToNetworkFlow(driver, 'Linea Mainnet');
+        await switchToNetworkFromSendFlow(driver, 'Linea');
 
         await bridgeTransaction(
           driver,
@@ -68,7 +68,13 @@ describe('Bridge tests', function (this: Suite) {
 
         // Switch to Arbitrum One to set it as the selected network
         // in the network-controller
-        await searchAndSwitchToNetworkFlow(driver, 'Arbitrum One');
+        await homePage.check_pageIsLoaded();
+        await homePage.goToTokensTab();
+        await searchAndSwitchToNetworkFromGlobalMenuFlow(
+          driver,
+          'Arbitrum One',
+        );
+        await homePage.goToActivityList();
 
         await bridgeTransaction(
           driver,

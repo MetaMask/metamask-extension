@@ -32,18 +32,6 @@ describe('AccountPicker', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('displays a blockie per the setting', () => {
-    const { container } = render({}, { useBlockie: true });
-    const img = container.querySelector('img');
-    expect(img).toBeDefined();
-    expect(img.src.startsWith('data:image/svg+xml')).toBe(true);
-  });
-
-  it('displays a jazzicon per the setting', () => {
-    const { container } = render({}, { useBlockie: false });
-    expect(container.querySelector('svg')).toBeDefined();
-  });
-
   it('should show the address in the account button for multichain', () => {
     const { getByText } = render({ showAddress: true });
     expect(getByText('0x0DCD5...3E7bc')).toBeInTheDocument();

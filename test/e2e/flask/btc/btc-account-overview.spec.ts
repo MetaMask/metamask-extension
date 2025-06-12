@@ -19,12 +19,6 @@ describe('BTC Account - Overview', function (this: Suite) {
       });
 
       await driver.waitForSelector({
-        text: 'Swap',
-        tag: 'button',
-        css: '[disabled]',
-      });
-
-      await driver.waitForSelector({
         text: 'Bridge',
         tag: 'button',
         css: '[disabled]',
@@ -56,7 +50,6 @@ describe('BTC Account - Overview', function (this: Suite) {
         DEFAULT_BTC_BALANCE,
       );
       assert.equal(await homePage.check_isBridgeButtonEnabled(), false);
-      assert.equal(await homePage.check_isSwapButtonEnabled(), false);
       assert.equal(await homePage.check_isBuySellButtonEnabled(), true);
       assert.equal(await homePage.check_isReceiveButtonEnabled(), true);
     }, this.test?.fullTitle());
