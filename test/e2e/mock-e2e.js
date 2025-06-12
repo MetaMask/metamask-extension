@@ -415,7 +415,7 @@ async function setupMocking(
   // Surveys
   await server
     .forGet(
-      new RegExp(`${ACCOUNTS_PROD_API_BASE_URL.replace(/\./g, '\\.')}/v1/users/[^/]+/surveys`, 'u'),
+      new RegExp(`${ACCOUNTS_PROD_API_BASE_URL.replace(/\\/g, '\\\\').replace(/\./g, '\\.')}/v1/users/[^/]+/surveys`, 'u'),
     )
     .thenCallback(() => {
       return {
