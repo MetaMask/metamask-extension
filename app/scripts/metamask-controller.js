@@ -4677,6 +4677,7 @@ export default class MetamaskController extends EventEmitter {
       return newAccountAddress;
     } finally {
       releaseLock();
+      await this.userStorageController.syncInternalAccountsWithUserStorage();
     }
   }
 
@@ -6814,6 +6815,9 @@ export default class MetamaskController extends EventEmitter {
               [chainId]: true,
             });
           }
+        },
+        setEnabledNetworks: (chainIds) => {
+          this.networkOrderController.setEnabledNetworks(chainIds);
         },
         getCurrentChainIdForDomain: (domain) => {
           const networkClientId =
