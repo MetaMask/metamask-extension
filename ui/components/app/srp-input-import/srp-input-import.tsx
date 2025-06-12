@@ -312,7 +312,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
               borderColor={BorderColor.transparent}
               backgroundColor={BackgroundColor.transparent}
               width={BlockSize.Full}
-              placeholder={`${t('onboardingSrpInputPlaceholder')} 👀`}
+              placeholder={t('onboardingSrpInputPlaceholder')}
               rows={7}
               resize={TextareaResize.None}
               value={firstWord}

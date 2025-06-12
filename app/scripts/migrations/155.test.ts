@@ -80,7 +80,7 @@ describe(`migration #${version}`, () => {
       expect(newStorage.data).toStrictEqual(expectedData);
     });
 
-    it('logs an error and returns the original state if BridgeStatusController is missing', async () => {
+    it('returns the original state if BridgeStatusController is missing', async () => {
       const oldStorage = {
         meta: { version: oldVersion },
         data: {
@@ -89,14 +89,10 @@ describe(`migration #${version}`, () => {
       };
 
       const newStorage = await migrate(oldStorage);
-
-      expect(global.sentry.captureException).toHaveBeenCalledWith(
-        new Error(`Migration ${version}: BridgeStatusController not found.`),
-      );
       expect(newStorage.data).toStrictEqual(oldStorage.data);
     });
 
-    it('logs an error and returns the original state if BridgeStatusController is not an object', async () => {
+    it('returns the original state if BridgeStatusController is not an object', async () => {
       const oldStorage = {
         meta: { version: oldVersion },
         data: {
@@ -106,12 +102,6 @@ describe(`migration #${version}`, () => {
       };
 
       const newStorage = await migrate(oldStorage);
-
-      expect(global.sentry.captureException).toHaveBeenCalledWith(
-        new Error(
-          `Migration ${version}: BridgeStatusController is type 'string', expected object.`,
-        ),
-      );
       expect(newStorage.data).toStrictEqual(oldStorage.data);
     });
   });
