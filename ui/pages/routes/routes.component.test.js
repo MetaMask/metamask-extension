@@ -159,7 +159,9 @@ describe('Routes Component', () => {
               order: 'dsc',
               sortCallback: 'stringNumeric',
             },
-            tokenNetworkFilter: {},
+            },
+            enabledNetworkMap: {
+              [CHAIN_IDS.MAINNET]: true,
           },
           tokenBalances: {
             '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x176270e2b862e4ed3',
