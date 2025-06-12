@@ -2,6 +2,7 @@ import React from 'react';
 import {
   AlignItems,
   BlockSize,
+  BorderColor,
   Display,
   FlexDirection,
   JustifyContent,
@@ -57,6 +58,10 @@ export default function DownloadMobileAppModal({
             paddingInline={0}
             paddingTop={3}
             paddingBottom={3}
+            borderColor={BorderColor.borderMuted}
+            style={{
+              borderRadius: '16px',
+            }}
           >
             <img
               src="images/download-mobile-app-qr-code.png"
