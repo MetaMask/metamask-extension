@@ -221,7 +221,7 @@ export default function CreatePassword({
             color={TextColor.textAlternative}
             as="h2"
           >
-            {firstTimeFlowType === socialLoginFlow
+            {socialLoginFlow
               ? t('createPasswordDetailsSocial')
               : t('createPasswordDetails')}
           </Text>
