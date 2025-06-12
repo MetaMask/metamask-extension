@@ -67,7 +67,7 @@ const getBatchedApprovalDisplayValue = async (
   const tokenAmount = new BigNumber(amountOrTokenId, 10)
     .shift(
       tokenData.decimals
-        ? parseInt(tokenData.decimals) * -1
+        ? parseInt(tokenData.decimals, 10) * -1
         : ERC20_DEFAULT_DECIMALS,
     )
     .toString();
