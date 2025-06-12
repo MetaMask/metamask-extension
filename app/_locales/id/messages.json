@@ -3805,21 +3805,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Kami akan menggunakan data ini untuk mempelajari cara Anda berinteraksi dengan komunikasi pemasaran. Kami mungkin akan membagikan berita yang relevan (seperti fitur produk)."
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Akses penuh"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Ekstensi ini dapat melihat dan mengubah informasi"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "di situs ini."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Ekstensi"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Klik ikon ekstensi browser"
-  },
   "onboardingPinExtensionDescription": {
     "message": "Sematkan MetaMask pada browser Anda agar dapat diakses dan memudahkan dalam melihat konfirmasi transaksi."
   },
@@ -3827,16 +3812,8 @@
     "message": "Anda dapat membuka MetaMask dengan mengeklik ekstensi dan mengakses dompet Anda dalam 1 klik."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Klik ikon ekstensi browser untuk mengaksesnya secara langsung"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "Sematkan MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Klik ikon ekstensi browser untuk mengaksesnya secara langsung",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Pemasangan MetaMask Anda selesai!"
