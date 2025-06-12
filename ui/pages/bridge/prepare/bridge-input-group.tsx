@@ -65,6 +65,7 @@ export const BridgeInputGroup = ({
   networkProps,
   isTokenListLoading,
   customTokenListGenerator,
+  action,
   amountFieldProps,
   amountInFiat,
   onMaxButtonClick,
@@ -92,6 +93,7 @@ export const BridgeInputGroup = ({
   | 'onAssetChange'
   | 'isTokenListLoading'
   | 'isMultiselectEnabled'
+  | 'action'
 >) => {
   const t = useI18nContext();
 
@@ -232,6 +234,7 @@ export const BridgeInputGroup = ({
         />
         <AssetPicker
           header={header}
+          action={action}
           visibleTabs={[TabName.TOKENS]}
           asset={(token as never) ?? undefined}
           onAssetChange={onAssetChange}

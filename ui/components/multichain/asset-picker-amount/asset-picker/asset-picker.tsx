@@ -72,7 +72,6 @@ export type AssetPickerProps = {
   ) => void;
   onClick?: () => void;
   isDisabled?: boolean;
-  action?: 'send' | 'receive';
   isMultiselectEnabled?: boolean;
   autoFocus?: boolean;
   networkProps?: Pick<
@@ -88,6 +87,7 @@ export type AssetPickerProps = {
   | 'visibleTabs'
   | 'header'
   | 'sendingAsset'
+  | 'action'
   | 'customTokenListGenerator'
   | 'isTokenListLoading'
 >;

@@ -590,6 +590,7 @@ const PrepareBridgePage = () => {
     <>
       <Column className="prepare-bridge-page" gap={8}>
         <BridgeInputGroup
+          action={isSwap ? 'swap' : 'bridge'}
           header={isSwap ? t('swapSwapFrom') : t('bridgeFrom')}
           token={fromToken}
           onAmountChange={(e) => {
@@ -790,6 +791,7 @@ const PrepareBridgePage = () => {
           </Box>
 
           <BridgeInputGroup
+            action={isSwap ? 'swap' : 'bridge'}
             header={t('swapSelectToken')}
             token={toToken}
             onAssetChange={(token) => {
