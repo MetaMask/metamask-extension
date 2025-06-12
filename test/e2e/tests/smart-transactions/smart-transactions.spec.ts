@@ -28,6 +28,9 @@ async function withFixturesForSmartTransactions(
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
         .withNetworkControllerOnMainnet()
+        .withEnabledNetworks({
+          '0x1': true,
+        })
         .build(),
       title,
       localNodeOptions: {
