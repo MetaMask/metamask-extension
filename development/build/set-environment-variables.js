@@ -60,6 +60,7 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
     TEST_GAS_FEE_FLOWS:
       isDevBuild && variables.getMaybe('TEST_GAS_FEE_FLOWS') === true,
     DEEP_LINK_HOST: variables.getMaybe('DEEP_LINK_HOST'),
+    DEEP_LINK_PUBLIC_KEY: variables.getMaybe('DEEP_LINK_PUBLIC_KEY'),
   });
 };
 
