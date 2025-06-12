@@ -178,8 +178,14 @@ describe('NFTs list', () => {
 
     await clickElementById('account-overview__nfts-tab');
 
-    await waitFor(() => {
-      expect(screen.getByTestId('sort-by-networks')).toBeDisabled();
-    });
+    if (isGlobalNetworkSelectorRemoved) {
+      await waitFor(() => {
+        expect(screen.getByTestId('sort-by-networks')).toBeEnabled();
+      });
+    } else {
+      await waitFor(() => {
+        expect(screen.getByTestId('sort-by-networks')).toBeDisabled();
+      });
+    }
   });
 });
