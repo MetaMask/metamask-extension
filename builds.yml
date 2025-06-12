@@ -145,6 +145,9 @@ features:
       - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
   solana-swaps:
   multichain:
+  ocap-kernel:
+    assets:
+      - ./{app,offscreen,shared,ui}/**/ocap-kernel/**
 
 # Env variables that are required for all types of builds
 #
@@ -298,6 +301,8 @@ env:
   - SECURITY_ALERTS_API_ENABLED: 'true'
   # URL of security alerts API used to validate dApp requests
   - SECURITY_ALERTS_API_URL: 'https://security-alerts.api.cx.metamask.io'
+  # Temporary mechanism to enable trust signals middleware in production
+  - TRUST_SIGNALS_PROD_ENABLED: 'false'
 
   # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''

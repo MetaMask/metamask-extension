@@ -62,6 +62,13 @@ const withMetamaskConnectedToMainnet = {
       '0xe708': true,
     },
   },
+  enabledNetworkMap: {
+    '0x1': true,
+    '0x89': true,
+    '0xaa36a7': true,
+    '0xe705': true,
+    '0xe708': true,
+  },
   remoteFeatureFlags: {
     assetsDefiPositionsEnabled: true,
   },
@@ -272,6 +279,9 @@ describe('Defi positions list', () => {
         tokenNetworkFilter: {
           '0x1': true,
         },
+      },
+      enabledNetworkMap: {
+        '0x1': true,
       },
     };
     await act(async () => {

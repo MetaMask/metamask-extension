@@ -678,9 +678,6 @@
   "basic": {
     "message": "Basic"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Turn on basic functionality"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Basic functionality is off"
   },
@@ -1209,9 +1206,6 @@
   "confirmPassword": {
     "message": "Confirm password"
   },
-  "confirmPasswordPlaceholder": {
-    "message": "Re-enter your password"
-  },
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
@@ -1494,7 +1488,16 @@
     "message": "Create a new account"
   },
   "createPassword": {
+    "message": "MetaMask password"
+  },
+  "createPasswordCreate": {
     "message": "Create password"
+  },
+  "createPasswordDetails": {
+    "message": "Unlocks MetaMask on this device only."
+  },
+  "createPasswordDetailsSocial": {
+    "message": "Use this for wallet recovery on all devices."
   },
   "createSnapAccountDescription": {
     "message": "$1 wants to add a new account to MetaMask."
@@ -2040,6 +2043,9 @@
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
+  "enableIt": {
+    "message": " Enable it"
+  },
   "enableSnap": {
     "message": "Enable"
   },
@@ -2105,6 +2111,9 @@
   },
   "enterPasswordContinue": {
     "message": "Enter password to continue"
+  },
+  "enterPasswordCurrent": {
+    "message": "Enter your current password"
   },
   "enterRpcUrl": {
     "message": "Enter RPC URL"
@@ -2319,24 +2328,18 @@
     "message": "Forgot your password?"
   },
   "forgotPasswordSocialDescription": {
-    "message": "Already logged in on mobile? Reset your password from there."
-  },
-  "forgotPasswordSocialSocialReset": {
-    "message": "Not logged in on mobile? $1 with your Secret Recovery Phrase.",
-    "description": "$1 is the button text 'Reset wallet'"
+    "message": "MetaMask can’t recover your password for you."
   },
   "forgotPasswordSocialStep1": {
-    "message": "Open MetaMask mobile app and go to $1",
-    "description": "$1 is bold Settings > Security and passwords."
+    "message": "If you’re logged into MetaMask on a device with $1 (like Face ID), you can reset your password there.",
+    "description": "$1 is bold biometrics turned on"
   },
-  "forgotPasswordSocialStep1Settings": {
-    "message": "Settings > Security and passwords."
+  "forgotPasswordSocialStep1Biometrics": {
+    "message": "biometrics turned on"
   },
   "forgotPasswordSocialStep2": {
-    "message": "Select “Change password” and update your password using biometrics (like Face ID)."
-  },
-  "forgotPasswordSocialStep3": {
-    "message": "Login with your new password on any device."
+    "message": "If you have your $1, you can reset your current wallet and reimport using $1.",
+    "description": "$1 is bold Secret Recovery Phrase"
   },
   "form": {
     "message": "form"
@@ -2373,18 +2376,11 @@
   "gasLimit": {
     "message": "Gas limit"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Gas limit is the maximum amount of units of gas you are willing to spend."
-  },
   "gasLimitRecommended": {
     "message": "Recommended gas limit is $1. If the gas limit is less than that, it may fail."
   },
   "gasLimitTooLow": {
     "message": "Gas limit must be at least 21000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Gas limit must be at least $1",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "Gas limit"
@@ -2392,23 +2388,11 @@
   "gasOption": {
     "message": "Gas option"
   },
-  "gasPrice": {
-    "message": "Gas price (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "Your gas fee is set unnecessarily high. Consider lowering the amount."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Gas price is excessive"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Gas price extremely low"
-  },
   "gasPriceFetchFailed": {
     "message": "Gas price estimation failed due to network error."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
   },
   "gasTimingHoursShort": {
     "message": "$1 hrs",
@@ -2442,6 +2426,9 @@
   },
   "genericExplorerView": {
     "message": "View account on $1"
+  },
+  "getTheNewestFeatures": {
+    "message": "Get the newest features"
   },
   "goToSite": {
     "message": "Go to site"
@@ -3498,8 +3485,8 @@
   "newPassword": {
     "message": "New password"
   },
-  "newPasswordPlaceholder": {
-    "message": "Enter a strong password"
+  "newPasswordCreate": {
+    "message": "Create new password"
   },
   "newPrivacyPolicyActionButton": {
     "message": "Read more"
@@ -3931,6 +3918,12 @@
   "onboardingOptionTitle": {
     "message": "Choose an option to continue"
   },
+  "onboardingPinExtensionAltLaunch": {
+    "message": "Launch extension"
+  },
+  "onboardingPinExtensionAltPin": {
+    "message": "Pin extension"
+  },
   "onboardingPinExtensionDescription": {
     "message": "Pin MetaMask on your browser so it’s accessible and easy to view transaction confirmations."
   },
@@ -3964,7 +3957,7 @@
     "message": "Hide all"
   },
   "onboardingSrpInputPlaceholder": {
-    "message": "Add a space between each word and make sure no one is watching"
+    "message": "Add a space between each word and make sure no one is watching."
   },
   "onboardingSrpInputShowAll": {
     "message": "Show all"
@@ -4056,7 +4049,7 @@
     "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
   },
   "passwordTermsWarning": {
-    "message": "MetaMask can’t recover this password."
+    "message": "If I forget this password, I’ll lose access to my wallet permanently. MetaMask can’t reset it for me."
   },
   "passwordToggleHide": {
     "message": "Hide Password"
@@ -4903,6 +4896,12 @@
   "securityChangePasswordTitle": {
     "message": "Password"
   },
+  "securityChangePasswordToastSuccess": {
+    "message": "New password saved"
+  },
+  "securityChangePasswordToastError": {
+    "message": "Password couldn’t be changed. Please try again."
+  },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
   },
@@ -5429,10 +5428,6 @@
   "snapConnectionWarning": {
     "message": "$1 wants to use $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapContent": {
-    "message": "This content is coming from $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapDetailWebsite": {
     "message": "Website"
@@ -6253,6 +6248,9 @@
   "swapShowLatestQuotes": {
     "message": "Show latest quotes"
   },
+  "swapSlippageAutoDescription": {
+    "message": "Auto"
+  },
   "swapSlippageHighDescription": {
     "message": "The slippage entered ($1%) is considered very high and may result in a bad rate",
     "description": "$1 is the amount of % for slippage"
@@ -6789,6 +6787,9 @@
   "updateEthereumChainConfirmationDescription": {
     "message": "This site is requesting to update your default network URL. You can edit defaults and network information any time."
   },
+  "updateInformation": {
+    "message": "We've made your wallet safer, smoother, and added some new features. Update now to stay protected and use our latest improvements."
+  },
   "updateNetworkConfirmationTitle": {
     "message": "Update $1",
     "description": "$1 represents network name"
@@ -6798,6 +6799,9 @@
   },
   "updateRequest": {
     "message": "Update request"
+  },
+  "updateToTheLatestVersion": {
+    "message": "Update to the latest version"
   },
   "updatedRpcForNetworks": {
     "message": "Network RPCs Updated"
@@ -7073,8 +7077,5 @@
   },
   "yourWalletIsReadyRemind": {
     "message": "We’ll remind you later"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Zero gas price on speed up"
   }
 }

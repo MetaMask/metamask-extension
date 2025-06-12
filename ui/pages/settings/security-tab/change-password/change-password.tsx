@@ -28,6 +28,8 @@ import { changePassword, verifyPassword } from '../../../../store/actions';
 import PasswordForm from '../../../../components/app/password-form/password-form';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
 import ChangePasswordWarning from './change-password-warning';
+import { setShowPasswordChangeToast } from '../../../../components/app/toast-master/utils';
+import { PasswordChangeToastType } from '../../../../../shared/constants/app-state';
 
 const ChangePasswordSteps = {
   VerifyCurrentPassword: 1,
@@ -84,9 +86,11 @@ const ChangePassword = () => {
 
       // upon successful password change, go back to the settings page
       history.push(SECURITY_ROUTE);
+      dispatch(setShowPasswordChangeToast(PasswordChangeToastType.Success));
     } catch (error) {
       console.error(error);
       setStep(ChangePasswordSteps.VerifyCurrentPassword);
+      dispatch(setShowPasswordChangeToast(PasswordChangeToastType.Errored));
     }
   };
 
@@ -107,13 +111,11 @@ const ChangePassword = () => {
         >
           <FormTextField
             id="current-password"
-            label={t('enterPasswordContinue')}
-            placeholder={t('makeSureNoOneWatching')}
+            label={t('enterPasswordCurrent')}
             textFieldProps={{ type: TextFieldType.Password }}
             size={FormTextFieldSize.Lg}
             labelProps={{
               marginBottom: 1,
-              children: t('enterPasswordContinue'),
             }}
             inputProps={{
               autoFocus: true,
@@ -137,7 +139,7 @@ const ChangePassword = () => {
             disabled={isIncorrectPasswordError || !currentPassword}
             data-testid="verify-current-password-button"
           >
-            {t('save')}
+            {t('continue')}
           </Button>
         </Box>
       )}

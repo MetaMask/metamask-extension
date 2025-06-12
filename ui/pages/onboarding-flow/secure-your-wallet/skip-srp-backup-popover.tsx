@@ -118,11 +118,7 @@ export default function SkipSRPBackup({
             onChange={() => {
               setChecked(!checked);
             }}
-            label={
-              <Text variant={TextVariant.bodySmMedium}>
-                {t('skipAccountSecurityDetails')}
-              </Text>
-            }
+            label={t('skipAccountSecurityDetails')}
           />
           <Box display={Display.Flex} marginTop={6} gap={4}>
             <Button

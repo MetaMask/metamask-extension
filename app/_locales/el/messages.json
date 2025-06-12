@@ -652,9 +652,6 @@
   "basic": {
     "message": "Βασικά"
   },
-  "basicConfigurationBannerCTA": {
-    "message": "Ενεργοποίηση βασικών λειτουργιών"
-  },
   "basicConfigurationBannerTitle": {
     "message": "Οι βασικές λειτουργίες είναι απενεργοποιημένες"
   },
@@ -2279,18 +2276,11 @@
   "gasLimit": {
     "message": "Όριο τέλους συναλλαγής"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Το όριο τέλους συναλλαγής είναι το μέγιστο ποσό μονάδων τέλους συναλλαγής που είστε διατεθειμένοι να δαπανήσετε."
-  },
   "gasLimitRecommended": {
     "message": "Το συνιστώμενο όριο τέλους συναλλαγής είναι $1. Εάν το όριο τέλους συναλλαγής είναι μικρότερο από αυτό, η συναλλαγή ενδέχεται να αποτύχει."
   },
   "gasLimitTooLow": {
     "message": "Το όριο τέλους συναλλαγής πρέπει να είναι τουλάχιστον 21000"
-  },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Το όριο τέλους συναλλαγής πρέπει να είναι τουλάχιστον $1",
-    "description": "$1 is the custom gas limit, in decimal."
   },
   "gasLimitV2": {
     "message": "Όριο τέλους συναλλαγής"
@@ -2298,23 +2288,11 @@
   "gasOption": {
     "message": "Επιλογή τέλους συναλλαγής"
   },
-  "gasPrice": {
-    "message": "Τιμή τέλους συναλλαγής (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "Το ποσό του τέλους συναλλαγής σας έχει οριστεί αδικαιολόγητα υψηλό. Εξετάστε το ενδεχόμενο μείωσης του ποσού."
   },
-  "gasPriceExcessiveInput": {
-    "message": "Η τιμή του τέλους συναλλαγής είναι υπερβολική"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Η τιμή του τέλους συναλλαγής είναι εξαιρετικά χαμηλή"
-  },
   "gasPriceFetchFailed": {
     "message": "Η εκτίμηση της τιμής του τέλους συναλλαγής απέτυχε λόγω σφάλματος δικτύου."
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Η τιμή του τέλους συναλλαγής καθορίζει το ποσό των Ether που είστε διατεθειμένοι να πληρώσετε για κάθε μονάδα τέλους συναλλαγής."
   },
   "gasTimingHoursShort": {
     "message": "$1 ώρες",
@@ -5203,10 +5181,6 @@
     "message": "Το $1 θέλει να χρησιμοποιήσει $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
   },
-  "snapContent": {
-    "message": "Αυτό το περιεχόμενο προέρχεται από το $1",
-    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
-  },
   "snapDetailWebsite": {
     "message": "Ιστότοπος"
   },
@@ -6717,8 +6691,5 @@
   },
   "yourWalletIsReady": {
     "message": "Το πορτοφόλι σας είναι έτοιμο"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Μηδενική τιμή συναλλαγών για επίσπευση"
   }
 }
