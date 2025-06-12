@@ -80,7 +80,15 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         <div
           class="settings-page__content-description"
         >
-          Keep this on to automatically switch accounts created within MetaMask to smart accounts whenever relevant features are available, such as faster transactions, lower network fees and payment flexibility on payment for those. [object Object]
+          Keep this on to automatically switch accounts created within MetaMask to smart accounts whenever relevant features are available, such as faster transactions, lower network fees and payment flexibility on payment for those. 
+          <a
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            href="https://support.metamask.io/configure/accounts/what-is-a-smart-account/#what-are-metamask-smart-accounts"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Learn more
+          </a>
         </div>
       </div>
       <div
