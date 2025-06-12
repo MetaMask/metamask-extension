@@ -19,6 +19,7 @@ import {
   showPermittedNetworkToast,
   updateCustomNonce,
 } from '../../../../store/actions';
+import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../../shared/constants/network';
 import { useNetworkManagerState } from './useNetworkManagerState';
 
 export enum ACTION_MODE {
@@ -62,30 +63,30 @@ export const useNetworkChangeHandlers = () => {
   const [actionMode, setActionMode] = useState(ACTION_MODE.LIST);
 
   const handleEvmNetworkChange = useCallback(
-    (
-      chainId: CaipChainId,
-      {
-        overrideEnabledNetworks = false,
-      }: { overrideEnabledNetworks?: boolean } = {},
-    ) => {
+    (chainId: CaipChainId) => {
       const hexChainId = convertCaipToHexChainId(chainId);
       const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
       const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
       dispatch(setActiveNetwork(finalNetworkClientId));
 
-      const enabledNetworkKeys = Object.keys(enabledNetworks).filter((key) =>
-        isHexString(key),
-      );
+      const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
 
-      if (overrideEnabledNetworks) {
-        dispatch(setEnabledNetworks([hexChainId] as CaipChainId[]));
+      const enabledNetworkKeys = Object.keys(enabledNetworks)
+        // filter out non evm chains
+        .filter((key) => isHexString(key));
+
+      if (!isPopularNetwork) {
+        // if custom network is enabled, select the new network and disable the custom network
+        dispatch(setEnabledNetworks([hexChainId]));
       } else if (enabledNetworkKeys.includes(hexChainId)) {
+        // deselect if selected
         const filteredEnabledNetworks = enabledNetworkKeys.filter(
           (key) => key !== hexChainId,
         );
         dispatch(setEnabledNetworks(filteredEnabledNetworks as CaipChainId[]));
       } else {
+        // multiselect default networks
         dispatch(
           setEnabledNetworks([
             ...enabledNetworkKeys,
@@ -144,12 +145,7 @@ export const useNetworkChangeHandlers = () => {
   );
 
   const handleNonEvmNetworkChange = useCallback(
-    async (
-      chainId: CaipChainId,
-      {
-        overrideEnabledNetworks = false,
-      }: { overrideEnabledNetworks?: boolean } = {},
-    ) => {
+    async (chainId: CaipChainId) => {
       const enabledNetworkKeys = Object.keys(enabledNetworks);
 
       if (enabledNetworkKeys.includes(chainId)) {
@@ -161,9 +157,7 @@ export const useNetworkChangeHandlers = () => {
           return;
         }
 
-        if (overrideEnabledNetworks) {
-          dispatch(setEnabledNetworks([chainId] as CaipChainId[]));
-        } else if (enabledNetworkKeys.includes(chainId)) {
+        if (enabledNetworkKeys.includes(chainId)) {
           const filteredEnabledNetworks = enabledNetworkKeys.filter(
             (key: string) => key !== chainId,
           );
@@ -198,20 +192,15 @@ export const useNetworkChangeHandlers = () => {
   );
 
   const handleNetworkChange = useCallback(
-    async (
-      chainId: CaipChainId,
-      {
-        overrideEnabledNetworks = false,
-      }: { overrideEnabledNetworks?: boolean } = {},
-    ) => {
+    async (chainId: CaipChainId) => {
       const currentChain =
         getMultichainNetworkConfigurationOrThrow(currentChainId);
       const chain = getMultichainNetworkConfigurationOrThrow(chainId);
 
       if (chain.isEvm) {
-        handleEvmNetworkChange(chainId, { overrideEnabledNetworks });
+        handleEvmNetworkChange(chainId);
       } else {
-        await handleNonEvmNetworkChange(chainId, { overrideEnabledNetworks });
+        await handleNonEvmNetworkChange(chainId);
       }
 
       const chainIdToTrack = chain.isEvm

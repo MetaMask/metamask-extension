@@ -8,13 +8,29 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constan
 import {
   hideModal,
   requestUserApproval,
+  setActiveNetwork,
   setEnabledNetworks,
 } from '../../../../store/actions';
 import { getEnabledNetworks } from '../../../../selectors';
+import { useAccountCreationOnNetworkChange } from '../../../../hooks/accounts/useAccountCreationOnNetworkChange';
+import { CaipChainId } from '@metamask/utils';
 
 export const useAdditionalNetworkHandlers = () => {
   const enabledNetworks = useSelector(getEnabledNetworks);
   const dispatch = useDispatch();
+  const { hasAnyAccountsInNetwork } = useAccountCreationOnNetworkChange();
+
+  const handleNonEvmNetworkChange = useCallback(
+    async (chainId: CaipChainId) => {
+      if (hasAnyAccountsInNetwork(chainId)) {
+        dispatch(setActiveNetwork(chainId));
+        return;
+      }
+      // Note: The setSelectedNonEvmNetwork state setter was removed in a previous change
+      // so we don't need to include it in the dependencies
+    },
+    [dispatch, hasAnyAccountsInNetwork],
+  );
 
   // Memoize the additional network click handler
   const handleAdditionalNetworkClick = useCallback(

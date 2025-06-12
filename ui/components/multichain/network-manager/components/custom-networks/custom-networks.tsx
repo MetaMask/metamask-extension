@@ -62,9 +62,7 @@ export const CustomNetworks = React.memo(() => {
   // Memoize the network click handler
   const handleNetworkClick = useCallback(
     async (chainId: MultichainNetworkConfiguration['chainId']) => {
-      await handleNetworkChange(chainId, {
-        overrideEnabledNetworks: true,
-      });
+      await handleNetworkChange(chainId);
     },
     [handleNetworkChange],
   );
