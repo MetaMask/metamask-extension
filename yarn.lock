@@ -5323,6 +5323,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/error-reporting-service@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/error-reporting-service@npm:1.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.1"
+  checksum: 10/e5685be7ca7525cf160b16fcdd85effedccc01b87e1ce8cfdc66daa0474ef019d516fea12461f61e7901590c6fbd673af6ec87a490b9fef9023ff0c768c2db9f
+  languageName: node
+  linkType: hard
+
 "@metamask/eslint-config-jest@npm:^9.0.0":
   version: 9.0.0
   resolution: "@metamask/eslint-config-jest@npm:9.0.0"
@@ -30115,6 +30124,7 @@ __metadata:
     "@metamask/design-tokens": "npm:^7.0.0"
     "@metamask/ens-controller": "npm:^15.0.2"
     "@metamask/ens-resolver-snap": "npm:^0.1.2"
+    "@metamask/error-reporting-service": "npm:^1.0.0"
     "@metamask/eslint-config": "npm:^9.0.0"
     "@metamask/eslint-config-jest": "npm:^9.0.0"
     "@metamask/eslint-config-mocha": "npm:^9.0.0"

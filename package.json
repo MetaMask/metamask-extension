@@ -282,6 +282,7 @@
     "@metamask/design-tokens": "^7.0.0",
     "@metamask/ens-controller": "^15.0.2",
     "@metamask/ens-resolver-snap": "^0.1.2",
+    "@metamask/error-reporting-service": "^1.0.0",
     "@metamask/eth-json-rpc-filters": "^9.0.0",
     "@metamask/eth-json-rpc-middleware": "^17.0.0",
     "@metamask/eth-ledger-bridge-keyring": "^11.0.3",
