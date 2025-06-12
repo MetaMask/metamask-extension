@@ -90,6 +90,9 @@ app/scripts/lib/snap-keyring                        @MetaMask/accounts-engineers
 # Slack handle: @multichain-accounts-devs | Slack channel: #metamask-bip44-team
 **/multichain-accounts/**                           @MetaMask/accounts-engineers
 
+# Co-owned by accounts and wallet-ux
+ui/components/multichain/              @MetaMask/accounts-engineers @MetaMask/wallet-ux
+
 # Swaps-Bridge team to own code for the swaps folder
 ui/pages/swaps                                        @MetaMask/swaps-engineers
 app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
@@ -111,11 +114,12 @@ app/scripts/constants/snaps.ts       @MetaMask/snaps-devs
 ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/snaps-devs
 
 # Wallet UX
-ui/components/multichain              @MetaMask/wallet-ux
 ui/components/app/whats-new-popup     @MetaMask/wallet-ux
 ui/css                                @MetaMask/wallet-ux
 ui/pages/home                         @MetaMask/wallet-ux
-ui/pages/onboarding-flow              @MetaMask/wallet-ux
+
+# Web3Auth / Onboarding
+ui/pages/onboarding-flow              @MetaMask/web3auth
 
 # Confirmations team to own code for confirmations on UI.
 app/scripts/controller-init/confirmations                         @MetaMask/confirmations

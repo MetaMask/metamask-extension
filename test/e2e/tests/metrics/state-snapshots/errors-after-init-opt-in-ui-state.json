@@ -228,8 +228,10 @@
     "permissionActivityLog": "object",
     "subjectMetadata": "object",
     "announcements": "object",
-    "orderedNetworkList": { "0": "object", "1": "object" },
-    "enabledNetworkMap": {},
+    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
+    "enabledNetworkMap": {
+      "0x539": "boolean"
+    },
     "pinnedAccountList": {},
     "hiddenAccountList": {},
     "gasFeeEstimatesByChainId": {},
@@ -262,7 +264,6 @@
     },
     "cryptocurrencies": ["btc", "sol"],
     "snaps": "object",
-    "jobs": "object",
     "events": "object",
     "database": null,
     "lastUpdated": null,
@@ -364,7 +365,8 @@
     "delegations": "object",
     "accountTree": "object",
     "encryptionKey": "string",
-    "encryptionSalt": "string"
+    "encryptionSalt": "string",
+    "srpSessionData": "object"
   },
   "ramps": "object",
   "send": "object",
