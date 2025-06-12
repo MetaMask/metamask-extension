@@ -46,6 +46,10 @@ import {
   getDelegationControllerInitMessenger,
   getDelegationControllerMessenger,
 } from './delegation/delegation-controller-messenger';
+import {
+  getAccountTreeControllerMessenger,
+  getAccountTreeControllerInitMessenger,
+} from './accounts';
 import { getSeedlessOnboardingControllerMessenger } from './seedless-onboarding';
 
 export const CONTROLLER_MESSENGERS = {
@@ -152,5 +156,9 @@ export const CONTROLLER_MESSENGERS = {
   AssetsContractController: {
     getMessenger: getAssetsContractControllerMessenger,
     getInitMessenger: noop,
+  },
+  AccountTreeController: {
+    getMessenger: getAccountTreeControllerMessenger,
+    getInitMessenger: getAccountTreeControllerInitMessenger,
   },
 } as const;

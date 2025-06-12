@@ -109,7 +109,9 @@ async function bridgeUserActions(): Promise<{
   let loadAssetPicker: number = 0;
   let searchToken: number = 0;
 
-  const fixtureBuilder = new FixtureBuilder().withNetworkControllerOnMainnet();
+  const fixtureBuilder = new FixtureBuilder()
+    .withNetworkControllerOnMainnet()
+    .withEnabledNetworks({ '0x1': true });
 
   await withFixtures(
     {

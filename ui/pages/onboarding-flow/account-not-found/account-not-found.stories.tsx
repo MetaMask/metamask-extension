@@ -7,7 +7,7 @@ export default {
 
 export const DefaultStory = () => {
   return (
-    <div style={{ maxHeight: '2000px' }}>
+    <div style={{ maxWidth: '460px', margin: 'auto' }}>
       <AccountNotFound />
     </div>
   );

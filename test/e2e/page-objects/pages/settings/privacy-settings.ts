@@ -66,6 +66,9 @@ class PrivacySettings {
     tag: 'span',
   };
 
+  private readonly networkDetailsCheckToggle =
+    '[data-testid="useSafeChainsListValidation"] .toggle-button';
+
   private readonly revealSrpButton = '[data-testid="reveal-seed-words"]';
 
   private readonly revealSrpNextButton = {
@@ -266,6 +269,11 @@ class PrivacySettings {
   async toggleIpfsGateway(): Promise<void> {
     console.log('Toggle IPFS gateway on privacy settings page');
     await this.driver.clickElement(this.ipfsGatewayToggle);
+  }
+
+  async toggleNetworkDetailsCheck(): Promise<void> {
+    console.log('Toggle network details check on privacy settings page');
+    await this.driver.clickElement(this.networkDetailsCheckToggle);
   }
 
   /**
