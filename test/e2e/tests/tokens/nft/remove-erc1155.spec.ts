@@ -60,7 +60,7 @@ describe('Remove ERC1155 NFT', function () {
     );
   });
 
-  it.only('user should be able to remove an NFT while selected network is different than NFT network', async function () {
+  it('user should be able to remove an NFT while selected network is different than NFT network', async function () {
     const driverOptions = { mock: true };
     await withFixtures(
       {
