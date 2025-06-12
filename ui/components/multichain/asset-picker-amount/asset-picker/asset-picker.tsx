@@ -250,7 +250,7 @@ export function AssetPicker({
         <BridgeAssetPickerButton
           onClick={handleButtonClick}
           asset={asset}
-          networkProps={networkProps}
+          network={networkProps?.network}
           data-testid={`${dataTestId}-button`}
           action={action}
         />

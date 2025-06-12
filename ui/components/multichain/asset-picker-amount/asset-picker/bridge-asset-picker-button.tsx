@@ -28,18 +28,18 @@ import {
   SelectButton,
   Text,
 } from '../../../component-library';
-import { AssetPicker } from '.';
+import { type AssetPickerModal } from '../asset-picker-modal';
 
 export const BridgeAssetPickerButton = ({
   asset,
-  networkProps,
+  network,
   action,
   onClick,
   ...props
 }: { onClick: () => void } & SelectButtonProps<'div'> &
   Pick<
-    React.ComponentProps<typeof AssetPicker>,
-    'asset' | 'networkProps' | 'action'
+    React.ComponentProps<typeof AssetPickerModal>,
+    'asset' | 'network' | 'action'
   >) => {
   const t = useI18nContext();
 
@@ -78,10 +78,10 @@ export const BridgeAssetPickerButton = ({
             badge={
               asset ? (
                 <AvatarNetwork
-                  name={networkProps?.network?.name ?? ''}
+                  name={network?.name ?? ''}
                   src={
-                    networkProps?.network?.chainId
-                      ? getImageForChainId(networkProps?.network?.chainId)
+                    network?.chainId
+                      ? getImageForChainId(network?.chainId)
                       : undefined
                   }
                   size={AvatarNetworkSize.Xs}
