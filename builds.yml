@@ -145,6 +145,9 @@ features:
       - ./{app,shared,ui}/**/multi-srp/(?!.*srp-list)/**
   solana-swaps:
   multichain:
+  ocap-kernel:
+    assets:
+      - ./{app,offscreen,shared,ui}/**/ocap-kernel/**
 
 # Env variables that are required for all types of builds
 #
