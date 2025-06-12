@@ -65,7 +65,7 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
+import { AccountDetailsMenuItem } from '../menu-items';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -228,11 +228,6 @@ export const GlobalMenu = ({
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
             address={account.address}
-          />
-          <ViewExplorerMenuItem
-            metricsLocation={METRICS_LOCATION}
-            closeMenu={closeMenu}
-            account={account}
           />
         </>
       )}
