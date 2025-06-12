@@ -7,8 +7,8 @@ import { createMemoryHistory } from 'history';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import UnlockPage from '.';
 
-const mockTryUnlockMetamask = jest.fn((password) => {
-  return async (dispatch) => {
+const mockTryUnlockMetamask = jest.fn(() => {
+  return async () => {
     return Promise.resolve();
   };
 });
