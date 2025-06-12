@@ -40,9 +40,11 @@ const mockDowngradeAccount = jest.fn();
 const mockUpgradeAccount = jest.fn();
 const mockIsUpgraded = jest.fn();
 
+const mockAddress = '0x742d35Cc6634C0532925a3b8D4E8f3c9B26e6e6e';
+
 const mockState = {
   appState: {
-    accountDetailsAddress: '0x742d35Cc6634C0532925a3b8D4E8f3c9B26e6e6e',
+    accountDetailsAddress: mockAddress,
   },
 };
 
@@ -167,9 +169,7 @@ describe('SmartContractAccountToggleSection', () => {
       fireEvent.click(toggleCheckboxes[0]);
 
       await waitFor(() => {
-        expect(mockDowngradeAccount).toHaveBeenCalledWith(
-          '0x742d35Cc6634C0532925a3b8D4E8f3c9B26e6e6e',
-        );
+        expect(mockDowngradeAccount).toHaveBeenCalledWith(mockAddress);
       });
     });
   });

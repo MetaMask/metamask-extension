@@ -71,7 +71,10 @@ export const SmartContractAccountToggle = ({
       <ToggleButton
         value={addressSupportSmartAccount}
         onToggle={onSwitch}
-        disabled={hasPendingRequests}
+        disabled={
+          hasPendingRequests ||
+          (!addressSupportSmartAccount && !upgradeContractAddress)
+        }
       />
     </Box>
   );
