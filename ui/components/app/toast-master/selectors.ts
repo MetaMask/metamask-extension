@@ -13,13 +13,16 @@ import {
   isSolanaAccount,
 } from '../../../selectors';
 import { MetaMaskReduxState } from '../../../store/store';
+import { PasswordChangeToastType } from '../../../../shared/constants/app-state';
 import { getIsPrivacyToastRecent } from './utils';
 
 type State = {
   appState: Partial<
     Pick<
       MetaMaskReduxState['appState'],
-      'showNftDetectionEnablementToast' | 'showNewSrpAddedToast'
+      | 'showNftDetectionEnablementToast'
+      | 'showNewSrpAddedToast'
+      | 'showPasswordChangeToast'
     >
   >;
   metamask: Partial<
@@ -134,4 +137,16 @@ export function selectSwitchedNetworkNeverShowMessage(
  */
 export function selectNewSrpAdded(state: Pick<State, 'appState'>): boolean {
   return Boolean(state.appState.showNewSrpAddedToast);
+}
+
+/**
+ * Retrieves user preference to see the "Password Change Error" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectPasswordChangeToast(
+  state: Pick<State, 'appState'>,
+): PasswordChangeToastType | null {
+  return state.appState.showPasswordChangeToast || null;
 }

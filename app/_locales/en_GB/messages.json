@@ -2106,6 +2106,9 @@
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
+  "enterPasswordCurrent": {
+    "message": "Enter your current password"
+  },
   "enterRpcUrl": {
     "message": "Enter RPC URL"
   },
@@ -2319,24 +2322,18 @@
     "message": "Forgot your password?"
   },
   "forgotPasswordSocialDescription": {
-    "message": "Already logged in on mobile? Reset your password from there."
-  },
-  "forgotPasswordSocialSocialReset": {
-    "message": "Not logged in on mobile? $1 with your Secret Recovery Phrase.",
-    "description": "$1 is the button text 'Reset wallet'"
+    "message": "MetaMask can’t recover your password for you."
   },
   "forgotPasswordSocialStep1": {
-    "message": "Open MetaMask mobile app and go to $1",
-    "description": "$1 is bold Settings > Security and passwords."
+    "message": "If you’re logged into MetaMask on a device with $1 (like Face ID), you can reset your password there.",
+    "description": "$1 is bold biometrics turned on"
   },
-  "forgotPasswordSocialStep1Settings": {
-    "message": "Settings > Security and passwords."
+  "forgotPasswordSocialStep1Biometrics": {
+    "message": "biometrics turned on"
   },
   "forgotPasswordSocialStep2": {
-    "message": "Select “Change password” and update your password using biometrics (like Face ID)."
-  },
-  "forgotPasswordSocialStep3": {
-    "message": "Login with your new password on any device."
+    "message": "If you have your $1, you can reset your current wallet and reimport using $1.",
+    "description": "$1 is bold Secret Recovery Phrase"
   },
   "form": {
     "message": "form"
@@ -4902,6 +4899,12 @@
   },
   "securityChangePasswordTitle": {
     "message": "Password"
+  },
+  "securityChangePasswordToastSuccess": {
+    "message": "New password saved"
+  },
+  "securityChangePasswordToastError": {
+    "message": "Password couldn’t be changed. Please try again."
   },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
