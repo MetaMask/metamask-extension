@@ -1250,9 +1250,6 @@
   "confusingEnsDomain": {
     "message": "В имени ENS обнаружен непонятный символ. Проверьте это имя, что исключить возможное мошенничество."
   },
-  "congratulations": {
-    "message": "Поздравляем!"
-  },
   "connect": {
     "message": "Подключиться"
   },
@@ -2337,9 +2334,6 @@
   "genericExplorerView": {
     "message": "Посмотреть счет на $1"
   },
-  "goBack": {
-    "message": "Назад"
-  },
   "goToSite": {
     "message": "Перейти на сайт"
   },
@@ -2503,10 +2497,6 @@
   },
   "id": {
     "message": "ID"
-  },
-  "ifYouGetLockedOut": {
-    "message": "Если вы не сможете войти в приложение или приобретете новое устройство, вы потеряете свои средства. Обязательно сохраните резервную копию секретной фразы для восстановления в $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "ignoreAll": {
     "message": "Игнорировать все"
@@ -2761,10 +2751,6 @@
   "jsonFile": {
     "message": "JSON-файл",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Сохраните напоминание о своей секретной фразе для восстановления в безопасном месте. Если вы потеряете ее, никто не сможет помочь вам вернуть ее. Хуже того, вы больше никогда не сможете получить доступ к своему кошельку. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Название счета"
@@ -3785,9 +3771,6 @@
   "onboardingMetametricsDescription": {
     "message": "Мы хотели бы собрать базовые данные об использовании и диагностике для улучшения MetaMask. Помните, что мы никогда не продаем данные, которые вы здесь предоставляете."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Когда мы собираем показатели, они всегда будут..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Мы сообщим вам, если решим использовать эти данные для других целей. Вы можете ознакомиться с нашей $1 для получения дополнительной информации. Помните, что вы можете перейти в настройки и отказаться в любой момент.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3816,29 +3799,11 @@
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Необязательными:"
   },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Узнайте, как мы защищаем вашу конфиденциальность при сборе данных об использовании вашего профиля."
-  },
   "onboardingMetametricsTitle": {
     "message": "Помогите нам улучшить MetaMask"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Мы будем использовать эти данные, чтобы узнать, как вы взаимодействуете с нашими маркетинговыми сообщениями. Мы можем отправлять соответствующие новости (например, об особенностях продукта)."
-  },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Полный доступ"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Эти расширения могут просматривать и изменять информацию"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "на этом сайте."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Расширения"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Нажмите на значок расширения браузера"
   },
   "onboardingPinExtensionDescription": {
     "message": "Закрепите расширение MetaMask в браузере для его постоянной доступности и легкого просмотра подтверждений транзакций."
@@ -3847,16 +3812,8 @@
     "message": "Вы можете открыть MetaMask, нажав на расширение, и получить доступ к своему кошельку одним щелчком мыши."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Нажмите на значок расширения браузера для мгновенного перехода к нему"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "Закрепить MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Нажмите на значок расширения браузера для мгновенного перехода к нему",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Установка MetaMask завершена!"
@@ -4511,12 +4468,6 @@
   "rejected": {
     "message": "Отклонено"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Помните: если вы потеряете секретную фразу для восстановления, вы утратите доступ к своему кошельку. $1, чтобы сохранить этот набор слов в безопасности и всегда иметь возможность доступа к своим средствам."
-  },
-  "reminderSet": {
-    "message": "Напоминание установлено!"
-  },
   "remove": {
     "message": "Удалить"
   },
@@ -4770,9 +4721,6 @@
   "securityMessageLinkForNetworks": {
     "message": "мошенничества с сетью и угроз безопасности"
   },
-  "securityPrivacyPath": {
-    "message": "«Настройки» > «Безопасность и конфиденциальность»."
-  },
   "securityProviderPoweredBy": {
     "message": "На основе $1",
     "description": "The security provider that is providing data"
@@ -4790,35 +4738,11 @@
   "seedPhraseEnterMissingWords": {
     "message": "Подтвердите секретную фразу для восстановления"
   },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Напомнить позже (не рекомендуется)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Защитить мой кошелек (рекомендуется)"
-  },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Запишите и храните в нескольких секретных местах."
   },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Храните в банковской ячейке."
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Ваша секретная фраза для восстановления — это фраза из 12 слов, которая является «главным ключом» от вашего кошелька и ваших средств."
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Если кто-то просит вас сообщить фразу для восстановления, этот человек, скорее всего, пытается вас обмануть и похитить деньги из вашего кошелька."
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Никогда не сообщайте секретную фразу для восстановления никому, даже сотрудникам MetaMask!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "Что такое секретная фраза для восстановления?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "Можно ли сообщать кому-либо свою секретную фразу для восстановления?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Как хранить мою секретную фразу для восстановления?"
   },
   "seedPhraseIntroTitle": {
     "message": "Защитите свой кошелек"
@@ -4945,9 +4869,6 @@
   },
   "settings": {
     "message": "Настройки"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "Настройки оптимизированы для простоты использования и безопасности. Изменяйте их в любое время."
   },
   "settingsSearchMatchingNotFound": {
     "message": "Совпадений не найдено."
@@ -5102,9 +5023,6 @@
   },
   "siweURI": {
     "message": "URL-адрес"
-  },
-  "skip": {
-    "message": "Пропустить"
   },
   "skipAccountSecurity": {
     "message": "Пропустить безопасность счета?"
@@ -6700,10 +6618,6 @@
   },
   "walletConnectionGuide": {
     "message": "наше руководство по подключению аппаратного кошелька"
-  },
-  "walletProtectedAndReadyToUse": {
-    "message": "Ваш кошелек защищен и готов к использованию. Вы можете найти свою секретную фразу для восстановления в $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "Хотите добавить эту сеть?"

@@ -1,0 +1,23 @@
+{
+  "0x0000000000000000000000000000000000000000": {
+    "id": "ethereum",
+    "price": 2547.92,
+    "marketCap": 307530853041,
+    "allTimeHigh": 4878.26,
+    "allTimeLow": 0.432979,
+    "totalVolume": 23288959944,
+    "high1d": 2600,
+    "low1d": 2460.59,
+    "circulatingSupply": 120727123.8805214,
+    "dilutedMarketCap": 307531339803,
+    "marketCapPercentChange1d": 1.36787,
+    "priceChange1d": 33.5,
+    "pricePercentChange1h": 0.8627663682513834,
+    "pricePercentChange1d": 1.3324861525535276,
+    "pricePercentChange7d": -1.995156058030328,
+    "pricePercentChange14d": 38.956197665952054,
+    "pricePercentChange30d": 55.86452523348427,
+    "pricePercentChange200d": 1.8744275469950988,
+    "pricePercentChange1y": -31.41115838150723
+  }
+}
