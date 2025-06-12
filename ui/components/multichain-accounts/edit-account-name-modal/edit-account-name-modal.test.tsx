@@ -1,8 +1,7 @@
 import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
-import configureStore from '../../../store/store';
-import { MetaMaskReduxDispatch } from '../../../store/store';
+import configureStore, { MetaMaskReduxDispatch } from '../../../store/store';
 import { EditAccountNameModal } from './edit-account-name-modal';
 
 // Mock the setAccountLabel action
@@ -11,7 +10,7 @@ jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   setAccountLabel: (address: string, label: string) => {
     // Return a thunk function like the real action does
-    return (dispatch: MetaMaskReduxDispatch) => {
+    return (_dispatch: MetaMaskReduxDispatch) => {
       mockSetAccountLabel(address, label);
       // Return a resolved promise to simulate the async behavior
       return Promise.resolve(address);
