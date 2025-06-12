@@ -1,8 +1,9 @@
 import { useSelector } from 'react-redux';
 import { NameType } from '@metamask/name-controller';
-import { ResultType } from '../../app/scripts/lib/trust-signals/types';
 import { getAddressSecurityAlertResponse } from '../selectors/selectors';
 import { IconName } from '../components/component-library';
+// eslint-disable-next-line import/no-restricted-paths
+import { ResultType } from '../../app/scripts/lib/trust-signals/types';
 
 export enum TrustSignalState {
   Verified = 'verified',
@@ -36,13 +37,9 @@ const STATE_TO_ICON_MAP: Record<TrustSignalState, IconName> = {
  * Hook to get trust signal data for an address
  *
  * @param value - The address value
- * @param type - The NameType
  * @returns Trust signal data including state, label, and icon
  */
-export function useTrustSignals(
-  value: string,
-  type: NameType,
-): TrustSignalData {
+export function useTrustSignals(value: string): TrustSignalData {
   const securityAlertResponse = useSelector((state) =>
     getAddressSecurityAlertResponse(state, value),
   );
@@ -53,6 +50,13 @@ export function useTrustSignals(
 
   const state = RESULT_TYPE_TO_STATE_MAP[securityAlertResponse.result_type];
   const iconName = STATE_TO_ICON_MAP[state];
+
+  console.log('useTrustSignals Debug:', {
+    address: value,
+    securityAlertResponse,
+    state,
+    iconName,
+  });
 
   return {
     state,

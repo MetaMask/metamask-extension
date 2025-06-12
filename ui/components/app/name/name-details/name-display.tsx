@@ -55,7 +55,7 @@ const NameDisplay = memo(
       variation,
     });
 
-    const trustSignals = useTrustSignals(value, type);
+    const trustSignals = useTrustSignals(value);
 
     const hasDisplayName = doesHaveDisplayName(name);
     const shouldShowTrustSignals =
@@ -86,10 +86,18 @@ const NameDisplay = memo(
           name__saved: hasPetname,
           name__recognized_unsaved: !hasPetname && hasDisplayName,
           name__missing: !hasDisplayName,
-          name__verified: trustSignals.state === TrustSignalState.Verified,
-          name__warning: trustSignals.state === TrustSignalState.Warning,
-          name__malicious: trustSignals.state === TrustSignalState.Malicious,
-          name__unknown: trustSignals.state === TrustSignalState.Unknown,
+          name__verified:
+            shouldShowTrustSignals &&
+            trustSignals.state === TrustSignalState.Verified,
+          name__warning:
+            shouldShowTrustSignals &&
+            trustSignals.state === TrustSignalState.Warning,
+          name__malicious:
+            shouldShowTrustSignals &&
+            trustSignals.state === TrustSignalState.Malicious,
+          name__unknown:
+            shouldShowTrustSignals &&
+            trustSignals.state === TrustSignalState.Unknown,
         })}
         onClick={handleClick}
       >

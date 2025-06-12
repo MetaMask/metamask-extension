@@ -302,7 +302,7 @@ env:
   # URL of security alerts API used to validate dApp requests
   - SECURITY_ALERTS_API_URL: 'https://security-alerts.api.cx.metamask.io'
   # Temporary mechanism to enable trust signals middleware in production
-  - TRUST_SIGNALS_PROD_ENABLED: 'false'
+  - TRUST_SIGNALS_PROD_ENABLED: 'true'
 
   # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''
