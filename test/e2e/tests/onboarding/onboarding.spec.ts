@@ -7,6 +7,7 @@ import {
   WALLET_PASSWORD,
   withFixtures,
   unlockWallet,
+  NEW_WALLET_PASSWORD,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
@@ -32,6 +33,10 @@ import {
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
 import { MockSeedlessOnboardingUtils } from '../../helpers/social-sync/mocks';
 import { MOCK_APPLE_ACCOUNT, MOCK_GOOGLE_ACCOUNT } from '../../constants';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import ChangePasswordPage from '../../page-objects/pages/settings/change-password-page';
 
 const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
@@ -435,6 +440,52 @@ describe('MetaMask onboarding', function () {
         await onboardingCompletePage.completeOnboardingPinExtensionOnly();
 
         const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+        await homePage.check_expectedBalanceIsDisplayed('0');
+      },
+    );
+  });
+
+  it('Change password functionality for wallet created by SRP flow', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await completeCreateNewWalletOnboardingFlow({
+          driver,
+        });
+
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openSettingsPage();
+
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.check_pageIsLoaded();
+        await settingsPage.goToPrivacySettings();
+
+        const privacySettingsPage = new PrivacySettings(driver);
+        await privacySettingsPage.check_pageIsLoaded();
+        await privacySettingsPage.openChangePassword();
+
+        const changePasswordPage = new ChangePasswordPage(driver);
+        await changePasswordPage.check_pageIsLoaded();
+        await changePasswordPage.confirmCurrentPassword(WALLET_PASSWORD);
+        await changePasswordPage.changePassword(NEW_WALLET_PASSWORD);
+        // await changePasswordPage.check_passwordChangedWarning();
+        // await changePasswordPage.confirmChangePasswordWarning();
+
+        // await privacySettingsPage.check_passwordChangeSuccessToastIsDisplayed();
+
+        await headerNavbar.lockMetaMask();
+        await unlockWallet(driver, {
+          navigate: true,
+          waitLoginSuccess: true,
+          password: NEW_WALLET_PASSWORD,
+        });
         await homePage.check_pageIsLoaded();
         await homePage.check_expectedBalanceIsDisplayed('0');
       },
