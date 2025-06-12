@@ -172,6 +172,7 @@ import {
   BridgeStatusAction,
 } from '@metamask/bridge-status-controller';
 
+import { ErrorReportingService } from '@metamask/error-reporting-service';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -410,7 +411,6 @@ import {
 import { getIsQuicknodeEndpointUrl } from './lib/network-controller/utils';
 import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { AccountTreeControllerInit } from './controller-init/accounts/account-tree-controller-init';
-import { ErrorReportingService } from '@metamask/error-reporting-service';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
