@@ -12,7 +12,11 @@ import {
   ButtonIcon,
   ButtonIconSize,
 } from '../../../components/component-library';
-import { Content, Header, Page } from '../../../components/multichain/pages/page';
+import {
+  Content,
+  Header,
+  Page,
+} from '../../../components/multichain/pages/page';
 import {
   BackgroundColor,
   IconColor,

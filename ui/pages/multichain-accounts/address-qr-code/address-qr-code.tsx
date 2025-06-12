@@ -2,7 +2,12 @@ import React, { useCallback, useContext } from 'react';
 import { parseCaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Page, Header, Content, Footer } from '../../../components/multichain/pages/page';
+import {
+  Page,
+  Header,
+  Content,
+  Footer,
+} from '../../../components/multichain/pages/page';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ButtonIcon,

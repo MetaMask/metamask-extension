@@ -32,10 +32,7 @@ describe('AccountDetailsRow', () => {
       );
 
       render(
-        <AccountDetailsRow
-          {...defaultProps}
-          endAccessory={endAccessory}
-        />
+        <AccountDetailsRow {...defaultProps} endAccessory={endAccessory} />,
       );
 
       expect(screen.getByText('Test Label')).toBeInTheDocument();
@@ -71,7 +68,7 @@ describe('AccountDetailsRow', () => {
           label="Account Name"
           value="My Account"
           endAccessory={editButton}
-        />
+        />,
       );
 
       expect(screen.getByTestId('edit-button')).toBeInTheDocument();
@@ -94,7 +91,7 @@ describe('AccountDetailsRow', () => {
           label="Address"
           value="0x1234...5678"
           endAccessory={arrowButton}
-        />
+        />,
       );
 
       expect(screen.getByTestId('arrow-button')).toBeInTheDocument();

@@ -10,9 +10,12 @@ import * as blockExplorerUtils from '../../../components/multichain/menu-items/v
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 // Mock the block explorer utility
-jest.mock('../../../components/multichain/menu-items/view-explorer-menu-item', () => ({
-  openBlockExplorer: jest.fn(),
-}));
+jest.mock(
+  '../../../components/multichain/menu-items/view-explorer-menu-item',
+  () => ({
+    openBlockExplorer: jest.fn(),
+  }),
+);
 
 // Mock the multichain block explorer helper
 jest.mock('../../../helpers/utils/multichain/blockExplorer', () => ({
@@ -35,7 +38,10 @@ jest.mock('react-router-dom', () => ({
 
 const mockStore = configureStore([thunk]);
 const mockTrackEvent = jest.fn();
-const mockOpenBlockExplorer = blockExplorerUtils.openBlockExplorer as jest.MockedFunction<typeof blockExplorerUtils.openBlockExplorer>;
+const mockOpenBlockExplorer =
+  blockExplorerUtils.openBlockExplorer as jest.MockedFunction<
+    typeof blockExplorerUtils.openBlockExplorer
+  >;
 
 const mockAccount = {
   id: 'account-1',
@@ -92,7 +98,7 @@ const renderComponent = (state = mockState) => {
           <AddressQRCode />
         </MetaMetricsContext.Provider>
       </MemoryRouter>
-    </Provider>
+    </Provider>,
   );
 };
 
@@ -101,12 +107,18 @@ describe('AddressQRCode', () => {
     jest.clearAllMocks();
 
     // Mock the multichain selector
-    const { useMultichainSelector } = require('../../../hooks/useMultichainSelector');
+    const {
+      useMultichainSelector,
+    } = require('../../../hooks/useMultichainSelector');
     useMultichainSelector.mockReturnValue(mockMultichainNetwork);
 
     // Mock the block explorer URL helper
-    const { getMultichainAccountUrl } = require('../../../helpers/utils/multichain/blockExplorer');
-    getMultichainAccountUrl.mockReturnValue('https://etherscan.io/address/0x1234567890abcdef1234567890abcdef12345678');
+    const {
+      getMultichainAccountUrl,
+    } = require('../../../helpers/utils/multichain/blockExplorer');
+    getMultichainAccountUrl.mockReturnValue(
+      'https://etherscan.io/address/0x1234567890abcdef1234567890abcdef12345678',
+    );
   });
 
   describe('Component Rendering', () => {
@@ -146,7 +158,7 @@ describe('AddressQRCode', () => {
         expect(mockOpenBlockExplorer).toHaveBeenCalledWith(
           'https://etherscan.io/address/0x1234567890abcdef1234567890abcdef12345678',
           'Account Details QR Code Page',
-          mockTrackEvent
+          mockTrackEvent,
         );
       });
     });
