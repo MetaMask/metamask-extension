@@ -115,7 +115,7 @@ export default function SecureYourWallet() {
           />
         </Box>
         <Box>
-          <Text variant={TextVariant.bodyMd} marginBottom={6}>
+          <Text variant={TextVariant.bodyMd} marginBottom={6} as="div">
             {t('secureWalletWalletSaveSrp', [
               [
                 <ButtonLink

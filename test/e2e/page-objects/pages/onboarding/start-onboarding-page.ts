@@ -68,6 +68,7 @@ class StartOnboardingPage {
     await this.driver.waitForSelector(this.termsOfUseScrollButton);
     await this.driver.clickElementAndWaitToDisappear(
       this.termsOfUseScrollButton,
+      5000,
     );
     await this.driver.waitForSelector(this.termsOfUseCheckbox);
     await this.driver.clickElement(this.termsOfUseCheckbox);

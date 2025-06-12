@@ -41,6 +41,7 @@ import { Controller as NotificationServicesPushController } from '@metamask/noti
 import { DelegationController } from '@metamask/delegation-controller';
 
 import { RemoteFeatureFlagController } from '@metamask/remote-feature-flag-controller';
+import { AccountTreeController } from '@metamask/account-tree-controller';
 import { SeedlessOnboardingController } from '@metamask/seedless-onboarding-controller';
 import { EncryptionKey } from '@metamask/browser-passworder';
 import OnboardingController from '../controllers/onboarding';
@@ -87,13 +88,15 @@ export type Controller =
   | TokenRatesController
   | NftController
   | NftDetectionController
-  | AssetsContractController;
+  | AssetsContractController
+  | AccountTreeController;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
  * e.g. `{ transactions: [] }`.
  */
 export type ControllerFlatState = AccountsController['state'] &
+  AccountTreeController['state'] &
   AuthenticationController['state'] &
   CronjobController['state'] &
   DeFiPositionsController['state'] &
