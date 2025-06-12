@@ -16,6 +16,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Validate lavamoat ${{ matrix.build-type }} policy
         run: yarn lavamoat:webapp:auto:ci --build-types=${{ matrix.build-type }}
