@@ -206,18 +206,6 @@ describe('AccountListItem', () => {
     expect(onClick).toHaveBeenCalled();
   });
 
-  it('clicking the three-dot menu opens up options', () => {
-    const onClick = jest.fn();
-    render({ onClick, menuType: AccountListItemMenuTypes.Account });
-    const item = document.querySelector(
-      '[data-testid="account-list-item-menu-button"]',
-    );
-    fireEvent.click(item);
-    expect(
-      document.querySelector('[data-testid="account-list-menu-open-explorer"]'),
-    ).toBeInTheDocument();
-  });
-
   it('does not render a tag for a null label', () => {
     const { container } = render({
       account: {

@@ -33,7 +33,7 @@ import {
 } from '../../../store/actions';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
-import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
+import { AccountDetailsMenuItem } from '../menu-items';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 const METRICS_LOCATION = 'Account Options';
@@ -165,12 +165,6 @@ export const AccountListItemMenu = ({
             closeMenu={closeMenu}
             address={account.address}
             textProps={{ variant: TextVariant.bodySm }}
-          />
-          <ViewExplorerMenuItem
-            metricsLocation={METRICS_LOCATION}
-            closeMenu={closeMenu}
-            textProps={{ variant: TextVariant.bodySm }}
-            account={account}
           />
           {isHidden ? null : (
             <MenuItem
