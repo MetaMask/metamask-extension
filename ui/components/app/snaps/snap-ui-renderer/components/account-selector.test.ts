@@ -160,7 +160,6 @@ describe('SnapUIAccountSelector', () => {
       Box({
         children: Field({
           label: 'Account Selector',
-          // @ts-expect-error - The Field type does not expect the AccountSelector component.
           children: AccountSelector({
             name: 'account-selector',
           }),
@@ -185,7 +184,6 @@ describe('SnapUIAccountSelector', () => {
       Box({
         children: Field({
           label: 'Account Selector',
-          // @ts-expect-error - The Field type does not expect the AccountSelector component.
           children: AccountSelector({
             name: 'account-selector',
           }),

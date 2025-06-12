@@ -4188,6 +4188,14 @@ export default class MetamaskController extends EventEmitter {
         userStorageController.syncInternalAccountsWithUserStorage.bind(
           userStorageController,
         ),
+      setHasAccountSyncingSyncedAtLeastOnce:
+        userStorageController.setHasAccountSyncingSyncedAtLeastOnce.bind(
+          userStorageController,
+        ),
+      setIsAccountSyncingReadyToBeDispatched:
+        userStorageController.setIsAccountSyncingReadyToBeDispatched.bind(
+          userStorageController,
+        ),
       deleteAccountSyncingDataFromUserStorage:
         userStorageController.performDeleteStorageAllFeatureEntries.bind(
           userStorageController,
@@ -4663,7 +4671,6 @@ export default class MetamaskController extends EventEmitter {
       return newAccountAddress;
     } finally {
       releaseLock();
-      await this.userStorageController.syncInternalAccountsWithUserStorage();
     }
   }
 
@@ -6969,18 +6976,18 @@ export default class MetamaskController extends EventEmitter {
           origin,
         ),
         scheduleBackgroundEvent: (event) =>
-          this.controllerMessenger.call(
-            'CronjobController:scheduleBackgroundEvent',
-            { ...event, snapId: origin },
-          ),
+          this.controllerMessenger.call('CronjobController:schedule', {
+            ...event,
+            snapId: origin,
+          }),
         cancelBackgroundEvent: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'CronjobController:cancelBackgroundEvent',
+          'CronjobController:cancel',
           origin,
         ),
         getBackgroundEvents: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'CronjobController:getBackgroundEvents',
+          'CronjobController:get',
           origin,
         ),
         getNetworkConfigurationByChainId: this.controllerMessenger.call.bind(
