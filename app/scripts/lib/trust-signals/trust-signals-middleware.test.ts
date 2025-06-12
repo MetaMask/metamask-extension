@@ -1,9 +1,9 @@
-import { Hex, JsonRpcParams, JsonRpcResponse, Json } from '@metamask/utils';
+import { Hex, JsonRpcResponse, Json, JsonRpcRequest } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { createTrustSignalsMiddleware } from './trust-signals-middleware';
-import { scanAddress } from './security-alerts-api';
-import { SupportedEVMChain, ResultType } from './types';
+import { scanAddressAndAddToCache } from './security-alerts-api';
+import { ResultType } from './types';
 
 jest.mock('./security-alerts-api');
 process.env.TRUST_SIGNALS_PROD_ENABLED = 'true';
@@ -33,7 +33,7 @@ const MOCK_SCAN_RESPONSES = {
 const createMockRequest = (
   method: string,
   params: Json[] = [],
-): JsonRpcParams => ({
+): JsonRpcRequest => ({
   method,
   params,
   id: 1,
@@ -87,7 +87,7 @@ const createMiddleware = (
 };
 
 describe('TrustSignalsMiddleware', () => {
-  const scanAddressMock = jest.mocked(scanAddress);
+  const scanAddressMockAndAddToCache = jest.mocked(scanAddressAndAddToCache);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -95,8 +95,11 @@ describe('TrustSignalsMiddleware', () => {
 
   describe('eth_sendTransaction', () => {
     it('should scan a new address and cache the security alert response', async () => {
-      scanAddressMock.mockResolvedValue(MOCK_SCAN_RESPONSES.BENIGN);
-      const { middleware, appStateController } = createMiddleware();
+      scanAddressMockAndAddToCache.mockResolvedValue(
+        MOCK_SCAN_RESPONSES.BENIGN,
+      );
+      const { middleware, appStateController, networkController } =
+        createMiddleware();
       appStateController.getAddressSecurityAlertResponse.mockReturnValue(
         undefined,
       );
@@ -109,21 +112,20 @@ describe('TrustSignalsMiddleware', () => {
 
       await middleware(req, res, next);
 
-      expect(
-        appStateController.getAddressSecurityAlertResponse,
-      ).toHaveBeenCalledWith(TEST_ADDRESSES.TO);
-      expect(scanAddressMock).toHaveBeenCalledWith(
-        SupportedEVMChain.Ethereum,
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
+        appStateController,
+        networkController,
       );
-      expect(
-        appStateController.addAddressSecurityAlertResponse,
-      ).toHaveBeenCalledWith(TEST_ADDRESSES.TO, MOCK_SCAN_RESPONSES.BENIGN);
       expect(next).toHaveBeenCalled();
     });
 
     it('should skip scanning when address has cached security alert response', async () => {
-      const { middleware, appStateController } = createMiddleware();
+      scanAddressMockAndAddToCache.mockResolvedValue(
+        MOCK_SCAN_RESPONSES.CACHED,
+      );
+      const { middleware, appStateController, networkController } =
+        createMiddleware();
       appStateController.getAddressSecurityAlertResponse.mockReturnValue(
         MOCK_SCAN_RESPONSES.CACHED,
       );
@@ -136,20 +138,19 @@ describe('TrustSignalsMiddleware', () => {
 
       await middleware(req, res, next);
 
-      expect(
-        appStateController.getAddressSecurityAlertResponse,
-      ).toHaveBeenCalledWith(TEST_ADDRESSES.TO);
-      expect(scanAddressMock).not.toHaveBeenCalled();
-      expect(
-        appStateController.addAddressSecurityAlertResponse,
-      ).not.toHaveBeenCalled();
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+        TEST_ADDRESSES.TO,
+        appStateController,
+        networkController,
+      );
       expect(next).toHaveBeenCalled();
     });
 
     it('should handle scan errors gracefully without blocking the transaction', async () => {
       const error = new Error('Network error');
-      scanAddressMock.mockRejectedValue(error);
-      const { middleware, appStateController } = createMiddleware();
+      scanAddressMockAndAddToCache.mockRejectedValue(error);
+      const { middleware, appStateController, networkController } =
+        createMiddleware();
       appStateController.getAddressSecurityAlertResponse.mockReturnValue(
         undefined,
       );
@@ -162,13 +163,11 @@ describe('TrustSignalsMiddleware', () => {
 
       await middleware(req, res, next);
 
-      expect(scanAddressMock).toHaveBeenCalledWith(
-        SupportedEVMChain.Ethereum,
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
+        appStateController,
+        networkController,
       );
-      expect(
-        appStateController.addAddressSecurityAlertResponse,
-      ).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
     });
 
@@ -177,8 +176,9 @@ describe('TrustSignalsMiddleware', () => {
         'The user aborted a request.',
         'AbortError',
       );
-      scanAddressMock.mockRejectedValue(timeoutError);
-      const { middleware, appStateController } = createMiddleware();
+      scanAddressMockAndAddToCache.mockRejectedValue(timeoutError);
+      const { middleware, appStateController, networkController } =
+        createMiddleware();
       appStateController.getAddressSecurityAlertResponse.mockReturnValue(
         undefined,
       );
@@ -191,21 +191,22 @@ describe('TrustSignalsMiddleware', () => {
 
       await middleware(req, res, next);
 
-      expect(scanAddressMock).toHaveBeenCalledWith(
-        SupportedEVMChain.Ethereum,
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
+        appStateController,
+        networkController,
       );
-      expect(
-        appStateController.addAddressSecurityAlertResponse,
-      ).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
     });
 
     it('should map chain IDs to supported EVM chains correctly', async () => {
-      scanAddressMock.mockResolvedValue(MOCK_SCAN_RESPONSES.WARNING);
-      const { middleware, appStateController } = createMiddleware({
-        chainId: CHAIN_IDS.POLYGON,
-      });
+      scanAddressMockAndAddToCache.mockResolvedValue(
+        MOCK_SCAN_RESPONSES.WARNING,
+      );
+      const { middleware, appStateController, networkController } =
+        createMiddleware({
+          chainId: CHAIN_IDS.POLYGON,
+        });
       appStateController.getAddressSecurityAlertResponse.mockReturnValue(
         undefined,
       );
@@ -218,13 +219,11 @@ describe('TrustSignalsMiddleware', () => {
 
       await middleware(req, res, next);
 
-      expect(scanAddressMock).toHaveBeenCalledWith(
-        SupportedEVMChain.Polygon,
+      expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
         TEST_ADDRESSES.TO,
+        appStateController,
+        networkController,
       );
-      expect(
-        appStateController.addAddressSecurityAlertResponse,
-      ).toHaveBeenCalledWith(TEST_ADDRESSES.TO, MOCK_SCAN_RESPONSES.WARNING);
     });
 
     describe('edge cases', () => {
@@ -246,7 +245,7 @@ describe('TrustSignalsMiddleware', () => {
         expect(
           appStateController.getAddressSecurityAlertResponse,
         ).not.toHaveBeenCalled();
-        expect(scanAddressMock).not.toHaveBeenCalled();
+        expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
       });
 
@@ -258,7 +257,7 @@ describe('TrustSignalsMiddleware', () => {
 
         await middleware(req, res, next);
 
-        expect(scanAddressMock).not.toHaveBeenCalled();
+        expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
       });
 
@@ -270,14 +269,17 @@ describe('TrustSignalsMiddleware', () => {
 
         await middleware(req, res, next);
 
-        expect(scanAddressMock).not.toHaveBeenCalled();
+        expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
       });
 
       it('should handle missing chain ID gracefully', async () => {
-        const { middleware, appStateController } = createMiddleware({
-          chainId: null,
-        });
+        const error = new Error('Chain ID not found');
+        scanAddressMockAndAddToCache.mockRejectedValue(error);
+        const { middleware, appStateController, networkController } =
+          createMiddleware({
+            chainId: null,
+          });
         appStateController.getAddressSecurityAlertResponse.mockReturnValue(
           undefined,
         );
@@ -290,7 +292,11 @@ describe('TrustSignalsMiddleware', () => {
 
         await middleware(req, res, next);
 
-        expect(scanAddressMock).not.toHaveBeenCalled();
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+          TEST_ADDRESSES.TO,
+          appStateController,
+          networkController,
+        );
         expect(next).toHaveBeenCalled();
       });
     });
@@ -308,7 +314,7 @@ describe('TrustSignalsMiddleware', () => {
       expect(
         appStateController.getAddressSecurityAlertResponse,
       ).not.toHaveBeenCalled();
-      expect(scanAddressMock).not.toHaveBeenCalled();
+      expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalled();
     });
   });
