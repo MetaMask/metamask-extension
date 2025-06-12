@@ -1441,6 +1441,9 @@
   "createNewAccountHeader": {
     "message": "创建新账户"
   },
+  "createNewWallet": {
+    "message": "创建新钱包"
+  },
   "createPassword": {
     "message": "创建密码"
   },
@@ -2541,6 +2544,9 @@
   },
   "importAccountMsg": {
     "message": "导入的账户将不会与最初创建的 MetaMask 账户私钥助记词相关联。了解更多有关导入账户的信息"
+  },
+  "importMyWallet": {
+    "message": "导入我的钱包"
   },
   "importNFT": {
     "message": "导入 NFT"
@@ -3930,6 +3936,9 @@
   },
   "passwordNotLongEnough": {
     "message": "密码长度不足"
+  },
+  "passwordSetupDetails": {
+    "message": "此密码只会在此设备上解锁您的 MetaMask 钱包。MetaMask 无法恢复此密码。"
   },
   "passwordStrength": {
     "message": "密码强度：$1",

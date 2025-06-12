@@ -1441,6 +1441,9 @@
   "createNewAccountHeader": {
     "message": "Buat akun baru"
   },
+  "createNewWallet": {
+    "message": "Buat dompet baru"
+  },
   "createPassword": {
     "message": "Buat kata sandi"
   },
@@ -2541,6 +2544,9 @@
   },
   "importAccountMsg": {
     "message": "Akun yang diimpor tidak akan ditautkan dengan Frasa Pemulihan Rahasia MetaMask Anda. Pelajari selengkapnya tentang akun yang diimpor"
+  },
+  "importMyWallet": {
+    "message": "Impor dompet saya"
   },
   "importNFT": {
     "message": "Impor NFT"
@@ -3930,6 +3936,9 @@
   },
   "passwordNotLongEnough": {
     "message": "Kata sandi kurang panjang"
+  },
+  "passwordSetupDetails": {
+    "message": "Kata sandi ini akan membuka dompet MetaMask Anda hanya pada perangkat ini. MetaMask tidak dapat memulihkan kata sandi ini."
   },
   "passwordStrength": {
     "message": "Kekuatan kata sandi: $1",

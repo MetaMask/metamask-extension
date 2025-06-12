@@ -56,15 +56,15 @@ describe('MetaMask Responsive UI', function () {
 
         // create password
         await driver.fill(
-          '[data-testid="create-password-new-input"]',
+          '[data-testid="create-password-new"]',
           'correct horse battery staple',
         );
         await driver.fill(
-          '[data-testid="create-password-confirm-input"]',
+          '[data-testid="create-password-confirm"]',
           'correct horse battery staple',
         );
         await driver.clickElement('[data-testid="create-password-terms"]');
-        await driver.clickElement('[data-testid="create-password-submit"]');
+        await driver.clickElement('[data-testid="create-password-wallet"]');
 
         // secure wallet
         await driver.clickElement('[data-testid="secure-wallet-recommended"]');

@@ -36,7 +36,7 @@ export interface FormTextFieldStyleUtilityProps
   /*
    * props to be passed to the HelpText component
    */
-  helpTextProps?: Partial<HelpTextProps<'div'>>;
+  helpTextProps?: HelpTextProps<'div'>;
 }
 
 // TODO: Convert to a `type` in a future major version.

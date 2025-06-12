@@ -1441,6 +1441,9 @@
   "createNewAccountHeader": {
     "message": "Créer un nouveau compte"
   },
+  "createNewWallet": {
+    "message": "Créer un nouveau portefeuille"
+  },
   "createPassword": {
     "message": "Créer un mot de passe"
   },
@@ -2541,6 +2544,9 @@
   },
   "importAccountMsg": {
     "message": "Les comptes importés ne seront pas associés à la phrase secrète de récupération que vous avez créée au départ dans MetaMask. En savoir plus sur les comptes importés"
+  },
+  "importMyWallet": {
+    "message": "Importer mon portefeuille"
   },
   "importNFT": {
     "message": "Importer le NFT"
@@ -3930,6 +3936,9 @@
   },
   "passwordNotLongEnough": {
     "message": "Mot de passe trop court"
+  },
+  "passwordSetupDetails": {
+    "message": "Ce mot de passe permet de déverrouiller votre portefeuille MetaMask uniquement sur cet appareil. MetaMask ne peut pas récupérer ce mot de passe."
   },
   "passwordStrength": {
     "message": "Robustesse du mot de passe : $1",
