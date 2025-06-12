@@ -399,6 +399,11 @@ const PasswordChangeToast = () => {
   return (
     showPasswordChangeToast !== null && (
       <Toast
+        data-testid={
+          showPasswordChangeToast === PasswordChangeToastType.Success
+            ? 'password-change-toast-success'
+            : 'password-change-toast-error'
+        }
         className={classnames({
           'toasts-container--password-change-toast--error':
             showPasswordChangeToast === PasswordChangeToastType.Errored,
