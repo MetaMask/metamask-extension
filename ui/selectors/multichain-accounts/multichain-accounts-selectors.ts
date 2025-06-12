@@ -1,7 +1,6 @@
 import type {
   AccountGroupId,
   AccountWalletId,
-  AccountWallet,
 } from '@metamask/account-tree-controller';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getMetaMaskAccounts } from '../selectors';

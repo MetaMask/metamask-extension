@@ -42,9 +42,7 @@ describe('Multichain Accounts Selectors', () => {
         '01JKAF3PJ247KAM6C03G5Q0NP8': {
           groups: {
             '01JKAF3PJ247KAM6C03G5Q0NP8:default': {
-              accounts: [
-                accounts['784225f4-d30b-4e77-a900-c8bbce735b88'],
-              ],
+              accounts: [accounts['784225f4-d30b-4e77-a900-c8bbce735b88']],
               id: '01JKAF3PJ247KAM6C03G5Q0NP8:default',
               metadata: {
                 name: 'Default',
@@ -59,9 +57,7 @@ describe('Multichain Accounts Selectors', () => {
         'local:custody:test': {
           groups: {
             'local:custody:test:default': {
-              accounts: [
-                accounts['694225f4-d30b-4e77-a900-c8bbce735b42'],
-              ],
+              accounts: [accounts['694225f4-d30b-4e77-a900-c8bbce735b42']],
               id: 'local:custody:test:default',
               metadata: {
                 name: 'Default',
@@ -76,9 +72,7 @@ describe('Multichain Accounts Selectors', () => {
         'local:hardware:ledger': {
           groups: {
             'local:hardware:ledger:default': {
-              accounts: [
-                accounts['15e69915-2a1a-4019-93b3-916e11fd432f'],
-              ],
+              accounts: [accounts['15e69915-2a1a-4019-93b3-916e11fd432f']],
               id: 'local:hardware:ledger:default',
               metadata: {
                 name: 'Default',
@@ -93,9 +87,7 @@ describe('Multichain Accounts Selectors', () => {
         'local:snap-id': {
           groups: {
             'local:snap-id:default': {
-              accounts: [
-                accounts['c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3'],
-              ],
+              accounts: [accounts['c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3']],
               id: 'local:snap-id:default',
               metadata: {
                 name: 'Default',
