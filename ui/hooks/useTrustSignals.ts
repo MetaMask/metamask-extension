@@ -27,7 +27,7 @@ const RESULT_TYPE_TO_STATE_MAP: Record<ResultType, TrustSignalState> = {
 
 const STATE_TO_ICON_MAP: Record<TrustSignalState, IconName> = {
   [TrustSignalState.Verified]: IconName.VerifiedFilled,
-  [TrustSignalState.Warning]: IconName.UserCircle,
+  [TrustSignalState.Warning]: IconName.Warning,
   [TrustSignalState.Malicious]: IconName.Danger,
   [TrustSignalState.Unknown]: IconName.Question,
 };
