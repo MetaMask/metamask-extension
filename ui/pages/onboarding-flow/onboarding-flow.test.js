@@ -99,9 +99,6 @@ describe('Onboarding Flow', () => {
           },
         ],
       },
-      localeMessages: {
-        currentLocale: 'en',
-      },
     };
 
     const completedOnboardingStore = configureMockStore()(
@@ -255,7 +252,7 @@ describe('Onboarding Flow', () => {
       ONBOARDING_WELCOME_ROUTE,
     );
 
-    const onboardingWelcome = queryByTestId('onboarding-welcome-banner-title');
+    const onboardingWelcome = queryByTestId('onboarding-welcome');
     expect(onboardingWelcome).toBeInTheDocument();
   });
 

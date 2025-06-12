@@ -128,10 +128,9 @@ describe('MetaMask onboarding', function () {
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_bannerPageIsLoaded();
-        await startOnboardingPage.agreeToTermsOfUse();
-        await startOnboardingPage.check_loginPageIsLoaded();
-        await startOnboardingPage.importWallet();
+        await startOnboardingPage.check_pageIsLoaded();
+        await startOnboardingPage.checkTermsCheckbox();
+        await startOnboardingPage.clickImportWalletButton();
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
@@ -166,10 +165,9 @@ describe('MetaMask onboarding', function () {
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_bannerPageIsLoaded();
-        await startOnboardingPage.agreeToTermsOfUse();
-        await startOnboardingPage.check_loginPageIsLoaded();
-        await startOnboardingPage.importWallet();
+        await startOnboardingPage.check_pageIsLoaded();
+        await startOnboardingPage.checkTermsCheckbox();
+        await startOnboardingPage.clickImportWalletButton();
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
@@ -201,10 +199,9 @@ describe('MetaMask onboarding', function () {
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_bannerPageIsLoaded();
-        await startOnboardingPage.agreeToTermsOfUse();
-        await startOnboardingPage.check_loginPageIsLoaded();
-        await startOnboardingPage.createWalletWithSrp();
+        await startOnboardingPage.check_pageIsLoaded();
+        await startOnboardingPage.checkTermsCheckbox();
+        await startOnboardingPage.clickCreateWalletButton();
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);

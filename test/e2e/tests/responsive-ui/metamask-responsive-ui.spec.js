@@ -27,27 +27,11 @@ describe('MetaMask Responsive UI', function () {
           await driver.clickElement('[data-testid="metametrics-no-thanks"]');
         }
 
-        // welcome
-        await driver.clickElement(
-          '[data-testid="onboarding-get-started-button"]',
-        );
-
-        // show terms of use
-        await driver.clickElementAndWaitToDisappear(
-          '[data-testid="terms-of-use-scroll-button"]',
-        );
-        await driver.clickElement('[data-testid="terms-of-use-checkbox"]');
         // agree to terms of use
-        await driver.clickElementAndWaitToDisappear(
-          '[data-testid="terms-of-use-agree-button"]',
-        );
+        await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
 
-        // get started
+        // welcome
         await driver.clickElement('[data-testid="onboarding-create-wallet"]');
-        // create with srp
-        await driver.clickElementAndWaitToDisappear(
-          '[data-testid="onboarding-create-with-srp-button"]',
-        );
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           // metrics
