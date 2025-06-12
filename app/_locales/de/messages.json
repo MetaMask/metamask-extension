@@ -1250,9 +1250,6 @@
   "confusingEnsDomain": {
     "message": "Wir haben ein missverständliches Zeichen im ENS-Namen entdeckt. Prüfen Sie den ENS-Namen, um möglichen Betrug zu vermeiden."
   },
-  "congratulations": {
-    "message": "Glückwunsch!"
-  },
   "connect": {
     "message": "Verbinden"
   },
@@ -2501,10 +2498,6 @@
   "id": {
     "message": "ID"
   },
-  "ifYouGetLockedOut": {
-    "message": "Wenn Sie aus der App ausgesperrt werden oder ein neues Gerät erhalten, verlieren Sie Ihre Gelder. Sichern Sie unbedingt Ihre geheime Wiederherstellungsphrase in $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "Alle ignorieren"
   },
@@ -2758,10 +2751,6 @@
   "jsonFile": {
     "message": "JSON Datei",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Bewahren Sie eine Erinnerung an Ihre geheime Wiederherstellungsphrase an einem sicheren Ort auf. Wenn Sie sie verlieren, kann Ihnen niemand helfen, sie wiederzubekommen. Schlimmer noch, Sie werden nie wieder Zugang zu Ihrer Wallet haben. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Kontoname"
@@ -3816,21 +3805,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Wir verwenden diese Daten, um zu erfahren, wie Sie mit unserer Marketingkommunikation umgehen. Wir können relevante Neuigkeiten (wie Produktmerkmale) teilen."
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Voller Zugriff"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Diese Erweiterungen können Informationen sehen und ändern."
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "auf dieser Seite."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Erweiterungen"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Klicken Sie auf das Symbol der Browser-Erweiterung."
-  },
   "onboardingPinExtensionDescription": {
     "message": "Heften Sie MetaMask in Ihrem Browser ab, damit Sie auf die Transaktionsbestätigungen zugreifen und sie leicht einsehen können."
   },
@@ -3838,16 +3812,8 @@
     "message": "Sie können MetaMask öffnen, indem Sie auf die Erweiterung klicken, und mit nur einem Klick auf Ihre Wallet zugreifen."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Klicken Sie auf das Symbol der Browser-Erweiterung, um sofort darauf zuzugreifen."
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "MetaMask anheften"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Klicken Sie auf das Symbol der Browser-Erweiterung, um sofort darauf zuzugreifen.",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Ihre MetaMask Installation ist abgeschlossen!"
@@ -4502,12 +4468,6 @@
   "rejected": {
     "message": "Abgelehnt"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Denken Sie daran: Sollten Sie Ihre geheime Wiederherstellungsphrase verlieren, verlieren Sie auch den Zugriff auf Ihr Wallet. $1, um diese Wörter sicher zu verwahren, damit Sie jederzeit auf Ihr Geld zugreifen können."
-  },
-  "reminderSet": {
-    "message": "Erinnerung eingestellt!"
-  },
   "remove": {
     "message": "Entfernen"
   },
@@ -4761,9 +4721,6 @@
   "securityMessageLinkForNetworks": {
     "message": "Netzwerk-Betrügereien und Sicherheitsrisiken"
   },
-  "securityPrivacyPath": {
-    "message": "Einstellungen > Sicherheit und Datenschutz."
-  },
   "securityProviderPoweredBy": {
     "message": "Unterstützt durch $1",
     "description": "The security provider that is providing data"
@@ -4912,9 +4869,6 @@
   },
   "settings": {
     "message": "Einstellungen"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "Die Einstellungen sind für Benutzerfreundlichkeit und Sicherheit optimiert. Sie können diese jederzeit ändern."
   },
   "settingsSearchMatchingNotFound": {
     "message": "Keine passenden Ergebnisse gefunden."
@@ -6664,10 +6618,6 @@
   },
   "walletConnectionGuide": {
     "message": "unsere Hardware-Wallet-Verbindungsanleitung"
-  },
-  "walletProtectedAndReadyToUse": {
-    "message": "Ihr Wallet ist geschützt und einsatzbereit. Sie finden Ihre geheime Wiederherstellungsphrase unter $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "Möchten Sie dieses Netzwerk hinzufügen?"

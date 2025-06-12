@@ -395,173 +395,95 @@ describe('AccountListItem', () => {
       });
     });
   });
-
-  describe('network activity icons', () => {
-    it('should render correctly for EVM account with network activity', () => {
+  describe('SRP Pills', () => {
+    it('renders the SRP pill for account when multi SRP are present in state', () => {
       const { container } = render(
         {
-          account: mockAccount,
+          account: {
+            ...mockAccount,
+            metadata: {
+              ...mockAccount.metadata,
+              snap: {
+                id: mockSnap.id,
+              },
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            balance: '0x0',
+          },
         },
         {
           metamask: {
-            networksWithTransactionActivity: {
-              [mockAccount.address]: {
-                activeChains: [1, 137, 10],
-                namespace: KnownCaipNamespace.Eip155,
+            keyrings: [
+              {
+                type: 'HD Key Tree',
+                accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                metadata: {
+                  id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+                  name: '',
+                },
               },
-            },
+              {
+                type: 'HD Key Tree',
+                accounts: ['0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b'],
+                metadata: {
+                  id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+                  name: '',
+                },
+              },
+            ],
           },
         },
       );
-      expect(container).toMatchSnapshot('evm-account-network-activity');
+
+      const tag = container.querySelector('.mm-tag');
+      expect(tag.textContent).toBe('SRP #1');
     });
 
-    it('renders correct amount of network icons for accounts with transaction activity', () => {
+    it('does not render the SRP pill when explicitly disabled', () => {
       const { container } = render(
         {
-          account: mockAccount,
+          showSrpPill: false,
+          account: {
+            ...mockAccount,
+            metadata: {
+              ...mockAccount.metadata,
+              snap: {
+                id: mockSnap.id,
+              },
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            balance: '0x0',
+          },
         },
         {
           metamask: {
-            networksWithTransactionActivity: {
-              [mockAccount.address]: {
-                activeChains: [1, 137, 10],
-                namespace: KnownCaipNamespace.Eip155,
+            keyrings: [
+              {
+                type: 'HD Key Tree',
+                accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+                metadata: {
+                  id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+                  name: '',
+                },
               },
-            },
+              {
+                type: 'HD Key Tree',
+                accounts: ['0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b'],
+                metadata: {
+                  id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+                  name: '',
+                },
+              },
+            ],
           },
         },
       );
 
-      const avatarGroup = container.querySelector(
-        '[data-testid="avatar-group"]',
-      );
-      expect(avatarGroup).toBeInTheDocument();
-
-      const networkIcons = avatarGroup.querySelectorAll('.mm-avatar-network');
-      expect(networkIcons).toHaveLength(3);
-    });
-
-    it('should render correctly for Bitcoin account', () => {
-      const { container } = render(
-        {
-          account: mockBitcoinAccount,
-        },
-        {
-          metamask: {
-            networksWithTransactionActivity: {
-              [mockBitcoinAccount.address]: {
-                activeChains: [],
-                namespace: KnownCaipNamespace.Bip122,
-              },
-            },
-          },
-        },
-      );
-      expect(container).toMatchSnapshot('bitcoin-account-network-activity');
-    });
-
-    it('renders correct image for network avatar for Bitcoin account', () => {
-      const { container } = render(
-        {
-          account: mockBitcoinAccount,
-        },
-        {
-          metamask: {
-            networksWithTransactionActivity: {
-              [mockBitcoinAccount.address]: {
-                activeChains: [],
-                namespace: KnownCaipNamespace.Bip122,
-              },
-            },
-          },
-        },
-      );
-
-      const avatarNetworkAvatar = container.querySelector('.mm-avatar-network');
-      expect(avatarNetworkAvatar).toBeInTheDocument();
-
-      const tokenImage = container.querySelector(
-        '.mm-avatar-network__network-image',
-      );
-      expect(tokenImage).toHaveAttribute('src', './images/bitcoin-logo.svg');
-
-      jest.restoreAllMocks();
-    });
-
-    it('should render correctly for Solana account', () => {
-      const { container } = render(
-        {
-          account: mockSolanaAccount,
-        },
-        {
-          metamask: {
-            networksWithTransactionActivity: {
-              [mockSolanaAccount.address]: {
-                activeChains: [],
-                namespace: KnownCaipNamespace.Solana,
-              },
-            },
-          },
-        },
-      );
-      expect(container).toMatchSnapshot('solana-account-network-activity');
-    });
-
-    it('renders correct image for network avatar for Solana account', () => {
-      const { container } = render(
-        {
-          account: mockSolanaAccount,
-        },
-        {
-          metamask: {
-            networksWithTransactionActivity: {
-              [mockSolanaAccount.address]: {
-                activeChains: [],
-                namespace: KnownCaipNamespace.Solana,
-              },
-            },
-          },
-        },
-      );
-
-      const avatarNetworkAvatar = container.querySelector('.mm-avatar-network');
-      expect(avatarNetworkAvatar).toBeInTheDocument();
-
-      const tokenImage = container.querySelector(
-        '.mm-avatar-network__network-image',
-      );
-      expect(tokenImage).toHaveAttribute('src', './images/solana-logo.svg');
-
-      jest.restoreAllMocks();
-    });
-
-    it('does not render both network icons and token avatar simultaneously', () => {
-      const { container } = render(
-        {
-          account: mockSolanaAccount,
-        },
-        {
-          metamask: {
-            networksWithTransactionActivity: {
-              [mockSolanaAccount.address]: {
-                activeChains: [1, 137], // Adding some chains even though it's Solana
-                namespace: KnownCaipNamespace.Solana,
-              },
-            },
-          },
-        },
-      );
-
-      const avatarToken = container.querySelector(
-        '.multichain-account-list-item__avatar-currency',
-      );
-      const networkIcons = container.querySelector(
-        '[data-testid="avatar-group"]',
-      );
-
-      // Only one of these should be present, not both
-      expect(avatarToken && networkIcons).toBeFalsy();
+      expect(container.querySelector('.mm-tag')).not.toBeInTheDocument();
     });
   });
 });

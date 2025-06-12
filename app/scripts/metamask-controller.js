@@ -84,6 +84,7 @@ import {
   ERC721,
   BlockExplorerUrl,
   ChainId,
+  handleFetch,
 } from '@metamask/controller-utils';
 
 import { AccountsController } from '@metamask/accounts-controller';
@@ -151,6 +152,7 @@ import {
   walletRevokeSession,
   walletInvokeMethod,
   MultichainApiNotifications,
+  walletCreateSession,
 } from '@metamask/multichain-api-middleware';
 
 import {
@@ -163,6 +165,7 @@ import {
   setEthAccounts,
   getPermittedAccountsForScopes,
   KnownSessionProperties,
+  getAllScopesFromCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import {
   BridgeStatusController,
@@ -210,6 +213,7 @@ import {
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsRequestedThrough,
 } from '../../shared/constants/metametrics';
 import { LOG_EVENT } from '../../shared/constants/logs';
 
@@ -357,7 +361,6 @@ import createTracingMiddleware from './lib/createTracingMiddleware';
 import createOriginThrottlingMiddleware from './lib/createOriginThrottlingMiddleware';
 import { PatchStore } from './lib/PatchStore';
 import { sanitizeUIState } from './lib/state-utils';
-import { walletCreateSession } from './lib/rpc-method-middleware/handlers/wallet-createSession';
 import {
   rejectAllApprovals,
   rejectOriginApprovals,
@@ -569,6 +572,7 @@ export default class MetamaskController extends EventEmitter {
         additionalDefaultNetworks,
       );
 
+      /** @type {import('@metamask/network-controller').NetworkState['networkConfigurationsByChainId']} */
       const networks =
         initialNetworkControllerState.networkConfigurationsByChainId;
 
@@ -589,6 +593,8 @@ export default class MetamaskController extends EventEmitter {
         getFailoverUrlsForInfuraNetwork('ethereum-mainnet');
       networks[CHAIN_IDS.LINEA_MAINNET].rpcEndpoints[0].failoverUrls =
         getFailoverUrlsForInfuraNetwork('linea-mainnet');
+      networks[CHAIN_IDS.BASE].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('base-mainnet');
 
       let network;
       if (process.env.IN_TEST) {
@@ -603,6 +609,7 @@ export default class MetamaskController extends EventEmitter {
               networkClientId: 'networkConfigurationId',
               url: 'http://localhost:8545',
               type: 'custom',
+              failoverUrls: [],
             },
           ],
         };
@@ -1588,12 +1595,23 @@ export default class MetamaskController extends EventEmitter {
       clientId: BridgeClientId.EXTENSION,
       // TODO: Remove once TransactionController exports this action type
       getLayer1GasFee: (...args) => this.txController.getLayer1GasFee(...args),
-      fetchFn: async (url, { headers, signal, ...requestOptions }) =>
-        await fetchWithCache({
-          url,
-          fetchOptions: { method: 'GET', headers, signal },
+      fetchFn: async (
+        url,
+        { cacheOptions, functionName, ...requestOptions },
+      ) => {
+        if (functionName === 'fetchBridgeTokens') {
+          return await fetchWithCache({
+            url,
+            fetchOptions: { method: 'GET', ...requestOptions },
+            cacheOptions,
+            functionName,
+          });
+        }
+        return await handleFetch(url, {
+          method: 'GET',
           ...requestOptions,
-        }),
+        });
+      },
       trackMetaMetricsFn: (event, properties) => {
         const actionId = (Date.now() + Math.random()).toString();
         const trackEvent = this.metaMetricsController.trackEvent.bind(
@@ -1639,13 +1657,12 @@ export default class MetamaskController extends EventEmitter {
     this.bridgeStatusController = new BridgeStatusController({
       messenger: bridgeStatusControllerMessenger,
       state: initState.BridgeStatusController,
-      fetchFn: async (url, { headers, signal, ...requestOptions }) =>
-        await fetchWithCache({
-          url,
-          fetchOptions: { method: 'GET', headers, signal },
+      fetchFn: async (url, requestOptions) => {
+        return await handleFetch(url, {
+          method: 'GET',
           ...requestOptions,
-          cacheOptions: { cacheRefreshTime: 0 },
-        }),
+        });
+      },
       addTransactionFn: (...args) => this.txController.addTransaction(...args),
       estimateGasFeeFn: (...args) => this.txController.estimateGasFee(...args),
       addUserOperationFromTransactionFn: (...args) =>
@@ -4184,6 +4201,14 @@ export default class MetamaskController extends EventEmitter {
         ),
       syncInternalAccountsWithUserStorage:
         userStorageController.syncInternalAccountsWithUserStorage.bind(
+          userStorageController,
+        ),
+      setHasAccountSyncingSyncedAtLeastOnce:
+        userStorageController.setHasAccountSyncingSyncedAtLeastOnce.bind(
+          userStorageController,
+        ),
+      setIsAccountSyncingReadyToBeDispatched:
+        userStorageController.setIsAccountSyncingReadyToBeDispatched.bind(
           userStorageController,
         ),
       deleteAccountSyncingDataFromUserStorage:
@@ -6799,6 +6824,9 @@ export default class MetamaskController extends EventEmitter {
             });
           }
         },
+        setEnabledNetworks: (chainIds) => {
+          this.networkOrderController.setEnabledNetworks(chainIds);
+        },
         getCurrentChainIdForDomain: (domain) => {
           const networkClientId =
             this.selectedNetworkController.getNetworkClientIdForDomain(domain);
@@ -6962,18 +6990,18 @@ export default class MetamaskController extends EventEmitter {
           origin,
         ),
         scheduleBackgroundEvent: (event) =>
-          this.controllerMessenger.call(
-            'CronjobController:scheduleBackgroundEvent',
-            { ...event, snapId: origin },
-          ),
+          this.controllerMessenger.call('CronjobController:schedule', {
+            ...event,
+            snapId: origin,
+          }),
         cancelBackgroundEvent: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'CronjobController:cancelBackgroundEvent',
+          'CronjobController:cancel',
           origin,
         ),
         getBackgroundEvents: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'CronjobController:getBackgroundEvents',
+          'CronjobController:get',
           origin,
         ),
         getNetworkConfigurationByChainId: this.controllerMessenger.call.bind(
@@ -7083,10 +7111,6 @@ export default class MetamaskController extends EventEmitter {
             requestedPermissions,
             options,
           ),
-        sendMetrics: this.metaMetricsController.trackEvent.bind(
-          this.metaMetricsController,
-        ),
-        metamaskState: this.getState(),
         getCaveatForOrigin: this.permissionController.getCaveat.bind(
           this.permissionController,
           origin,
@@ -7112,6 +7136,17 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'MultichainRouter:getSupportedAccounts',
         ),
+        trackSessionCreatedEvent: (approvedCaip25CaveatValue) =>
+          this.metaMetricsController.trackEvent({
+            event: MetaMetricsEventName.PermissionsRequested,
+            properties: {
+              api_source: MetaMetricsRequestedThrough.MultichainApi,
+              method: MESSAGE_TYPE.WALLET_CREATE_SESSION,
+              chain_id_list: getAllScopesFromCaip25CaveatValue(
+                approvedCaip25CaveatValue,
+              ),
+            },
+          }),
       }),
     );
 

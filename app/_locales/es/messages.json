@@ -1250,9 +1250,6 @@
   "confusingEnsDomain": {
     "message": "Se detectó un carácter que puede confundirse con otro similar en el nombre de ENS. Verifique el nombre de ENS para evitar una posible estafa."
   },
-  "congratulations": {
-    "message": "¡Felicidades!"
-  },
   "connect": {
     "message": "Conectar"
   },
@@ -2501,10 +2498,6 @@
   "id": {
     "message": "ID"
   },
-  "ifYouGetLockedOut": {
-    "message": "Si se le bloquea el acceso a la aplicación o adquiere un nuevo dispositivo, perderá sus fondos. Asegúrese de hacer una copia de seguridad de su frase secreta de recuperación en $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "Ignorar todo"
   },
@@ -2758,10 +2751,6 @@
   "jsonFile": {
     "message": "Archivo JSON",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Guarde un recordatorio de su frase secreta de recuperación en algún lugar seguro. Si la pierde, nadie podrá ayudarlo a recuperarla. Y lo que es peor, no podrá volver a acceder a su monedero. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Nombre de la cuenta"
@@ -3816,21 +3805,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Utilizaremos estos datos para saber cómo interactúa con nuestras comunicaciones de marketing. Es posible que compartamos noticias relevantes (como características del producto)."
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Acceso completo"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Estas extensiones pueden ver y cambiar la información"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "en este sitio."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Extensiones"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Haga clic en el icono de la extensión del navegador"
-  },
   "onboardingPinExtensionDescription": {
     "message": "Ancle MetaMask en su navegador para que sea accesible y las confirmaciones de las transacciones se vean fácilmente."
   },
@@ -3838,16 +3812,8 @@
     "message": "Para abrir MetaMask haga clic en la extensión y acceda a su monedero con 1 clic."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Haga clic en el icono de la extensión del navegador para tener acceso instantáneo"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "Ancle MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Haga clic en el icono de la extensión del navegador para tener acceso instantáneo",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "¡Su instalación de MetaMask ha finalizado!"
@@ -4502,12 +4468,6 @@
   "rejected": {
     "message": "Rechazado"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Recuerde que si pierde su frase secreta de recuperación, perderá el acceso a su monedero. $1 para mantener seguro este conjunto de palabras y poder acceder siempre a sus fondos."
-  },
-  "reminderSet": {
-    "message": "¡Recordatorio creado!"
-  },
   "remove": {
     "message": "Quitar"
   },
@@ -4761,9 +4721,6 @@
   "securityMessageLinkForNetworks": {
     "message": "estafas en la red y riesgos de seguridad"
   },
-  "securityPrivacyPath": {
-    "message": "Configuración > Seguridad y privacidad."
-  },
   "securityProviderPoweredBy": {
     "message": "Impulsado por $1",
     "description": "The security provider that is providing data"
@@ -4912,9 +4869,6 @@
   },
   "settings": {
     "message": "Configuración"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "La configuración está optimizada para facilitar su uso y garantizar la seguridad. Cámbiela en cualquier momento."
   },
   "settingsSearchMatchingNotFound": {
     "message": "No se encontraron resultados coincidentes."
@@ -6664,10 +6618,6 @@
   },
   "walletConnectionGuide": {
     "message": "nuestra guía de conexión del monedero físico"
-  },
-  "walletProtectedAndReadyToUse": {
-    "message": "Su monedero está protegido y listo para usar. Puede encontrar su frase secreta de recuperación en $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "¿Desea añadir esta red?"

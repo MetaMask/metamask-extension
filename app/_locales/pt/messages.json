@@ -1250,9 +1250,6 @@
   "confusingEnsDomain": {
     "message": "Detectamos um caractere ambíguo no nome ENS. Verifique o nome ENS para evitar um possível golpe."
   },
-  "congratulations": {
-    "message": "Parabéns!"
-  },
   "connect": {
     "message": "Conectar"
   },
@@ -2501,10 +2498,6 @@
   "id": {
     "message": "ID"
   },
-  "ifYouGetLockedOut": {
-    "message": "Se você ficar impedido de entrar no app ou se usar um novo dispositivo, perderá seus fundos. Certifique-se de fazer backup da sua Frase de Recuperação Secreta em $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
-  },
   "ignoreAll": {
     "message": "Ignorar tudo"
   },
@@ -2758,10 +2751,6 @@
   "jsonFile": {
     "message": "Arquivo JSON",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Guarde um lembrete da sua Frase de Recuperação Secreta em algum lugar seguro. Se você a perder, ninguém poderá ajudar a recuperá-la. Pior ainda, você nunca mais poderá acessar sua carteira. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Nome da conta"
@@ -3816,21 +3805,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Usaremos esses dados para saber como você interage com nossas comunicações de marketing. Podemos compartilhar novidades relevantes (como recursos de produtos)."
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Acesso total"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Essas extensões podem ver e alterar informações"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "neste site."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Extensões"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Clique no ícone da extensão do navegador"
-  },
   "onboardingPinExtensionDescription": {
     "message": "Fixe a MetaMask no seu navegador de modo que seja acessível e fácil de visualizar as confirmações das transações."
   },
@@ -3838,16 +3812,8 @@
     "message": "Você pode abrir a MetaMask clicando na extensão e acessando a sua carteira com apenas um clique."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Clique no ícone da extensão do navegador para acessá-la instantaneamente"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "Fixar a MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Clique no ícone da extensão do navegador para acessá-la instantaneamente",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Sua instalação da MetaMask está concluída!"
@@ -4502,12 +4468,6 @@
   "rejected": {
     "message": "Recusada"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Lembre-se, se você perder sua Frase de Recuperação Secreta, perderá acesso à sua carteira. $1 manter esse conjunto de palavras em segurança, para que possa acessar seus fundos a qualquer momento."
-  },
-  "reminderSet": {
-    "message": "Lembrete definido!"
-  },
   "remove": {
     "message": "Remover"
   },
@@ -4761,9 +4721,6 @@
   "securityMessageLinkForNetworks": {
     "message": "golpes de rede e riscos de segurança"
   },
-  "securityPrivacyPath": {
-    "message": "Configurações > Segurança e Privacidade."
-  },
   "securityProviderPoweredBy": {
     "message": "Com tecnologia da $1",
     "description": "The security provider that is providing data"
@@ -4912,9 +4869,6 @@
   },
   "settings": {
     "message": "Configurações"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "As configurações são otimizadas para facilidade de uso e segurança. Altere-as quando quiser."
   },
   "settingsSearchMatchingNotFound": {
     "message": "Nenhum resultado correspondente encontrado."
@@ -6664,10 +6618,6 @@
   },
   "walletConnectionGuide": {
     "message": "nosso guia de conexão com a carteira de hardware"
-  },
-  "walletProtectedAndReadyToUse": {
-    "message": "Sua carteira está protegida e pronta para ser usada. Você pode encontrar sua Frase de Recuperação Secreta em $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "Desejar adicionar esta rede?"
