@@ -81,7 +81,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
 import {
-  setActiveNetwork,
   setActiveNetworkWithError,
   setSelectedAccount,
 } from '../../../store/actions';
@@ -560,7 +559,7 @@ const PrepareBridgePage = () => {
       name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
       timestamp: Date.now(),
     });
-  }, [isSwap]);
+  }, []);
 
   // Set the default destination token for swaps (only when unified UI is disabled)
   useEffect(() => {
@@ -823,7 +822,7 @@ const PrepareBridgePage = () => {
                       : toChain?.chainId;
 
                   if (networkClientId) {
-                    dispatch(setActiveNetwork(networkClientId));
+                    dispatch(setActiveNetworkWithError(networkClientId));
                   }
                   if (fromChain?.chainId) {
                     dispatch(setToChainId(fromChain.chainId));
@@ -875,9 +874,10 @@ const PrepareBridgePage = () => {
                   }
             }
             customTokenListGenerator={
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-              toChain || isSwap ? toTokenListGenerator : undefined
+              toChain &&
+              (isSwapFromUrl || toChain.chainId !== fromChain?.chainId)
+                ? toTokenListGenerator
+                : undefined
             }
             amountInFiat={
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
