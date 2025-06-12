@@ -4,7 +4,6 @@ import { Redirect, Route, useLocation } from 'react-router-dom';
 import { UNLOCK_ROUTE, ONBOARDING_ROUTE } from '../../constants/routes';
 
 const OnboardingRoute = { pathname: ONBOARDING_ROUTE };
-const UnlockRoute = { pathname: UNLOCK_ROUTE };
 
 export default function Authenticated(props) {
   const { isUnlocked, completedOnboarding } = props;
