@@ -4659,7 +4659,7 @@ export function updateAccountsList(
  * to be enabled. All other networks will be implicitly disabled.
  */
 export function setEnabledNetworks(
-  chainIds: CaipChainId[],
+  chainIds: string[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     await submitRequestToBackground('setEnabledNetworks', [chainIds]);
@@ -4979,6 +4979,14 @@ export function setTermsOfUseLastAgreed(lastAgreed: number) {
   return async () => {
     await submitRequestToBackground('setTermsOfUseLastAgreed', [lastAgreed]);
   };
+}
+
+export async function setUpdateModalLastDismissedAt(
+  updateModalLastDismissedAt: number,
+) {
+  await submitRequestToBackground('setUpdateModalLastDismissedAt', [
+    updateModalLastDismissedAt,
+  ]);
 }
 
 export function setLastViewedUserSurvey(id: number) {
@@ -6752,4 +6760,16 @@ export async function isRelaySupported(chainId: Hex): Promise<boolean> {
   return await submitRequestToBackground<boolean>('isRelaySupported', [
     chainId,
   ]);
+}
+
+/**
+ * Asks the UI to reload the browser extension safely.
+ *
+ * Much better than `browser.runtime.reload()`, as safeReload will wait for all
+ * writes to finish!
+ *
+ * @returns
+ */
+export async function requestSafeReload() {
+  return await submitRequestToBackground('requestSafeReload');
 }
