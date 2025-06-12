@@ -7,6 +7,7 @@ import { veryLargeDelayMs, withFixtures } from '../../helpers';
 import { Mockttp } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { ACCOUNTS_PROD_API_BASE_URL } from '../../../../shared/constants/accounts';
 
 async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
   const blockNumber = { value: 0 };
@@ -54,7 +55,7 @@ async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
     }),
     await mockServer
       .forGet(
-        `https://accounts.api.cx.metamask.io/v2/accounts/${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}/balances`,
+        `${ACCOUNTS_PROD_API_BASE_URL}/v2/accounts/${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}/balances`,
       )
       .thenCallback(() => {
         return {
