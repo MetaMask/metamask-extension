@@ -483,6 +483,9 @@
   "amount": {
     "message": "Amount"
   },
+  "value": {
+    "message": "Value"
+  },
   "amountReceived": {
     "message": "Amount Received"
   },

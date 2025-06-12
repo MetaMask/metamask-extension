@@ -31,12 +31,20 @@ import { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transac
 import { useConfirmContext } from '../../../../../context/confirm';
 import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 import { renderShortTokenId } from '../../../../../../../components/app/assets/nfts/nft-details/utils';
+import { APPROVAL_METHOD_NAMES } from '../../../../../../../../shared/constants/transaction';
+import { BatchedApprovalFunction } from './batched-approval-function';
 
 export const TransactionData = ({
   data,
   noPadding,
   to,
-}: { data?: Hex; noPadding?: boolean; to?: Hex } = {}) => {
+  nestedTransactionIndex,
+}: {
+  data?: Hex;
+  noPadding?: boolean;
+  to?: Hex;
+  nestedTransactionIndex?: number;
+} = {}) => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { nestedTransactions, txParams } = currentConfirmation ?? {};
   const { data: currentData, to: currentTo } = txParams ?? {};
@@ -74,21 +82,34 @@ export const TransactionData = ({
   const { data: decodeData, source } = value;
   const isExpandable = decodeData.length > 1;
   const { chainId } = currentConfirmation;
-
   return (
     <Container transactionData={transactionData} noPadding={noPadding}>
       <>
-        {decodeData.map((method, index) => (
-          <React.Fragment key={index}>
-            <FunctionContainer
-              method={method}
-              source={source}
-              isExpandable={isExpandable}
-              chainId={chainId}
-            />
-            {index < decodeData.length - 1 && <ConfirmInfoRowDivider />}
-          </React.Fragment>
-        ))}
+        {decodeData.map((method, index) => {
+          const isBatchedApproval =
+            nestedTransactionIndex !== undefined &&
+            nestedTransactionIndex >= 0 &&
+            APPROVAL_METHOD_NAMES.includes(method.name);
+          if (isBatchedApproval) {
+            return (
+              <BatchedApprovalFunction
+                method={method}
+                nestedTransactionIndex={nestedTransactionIndex}
+              />
+            );
+          }
+          return (
+            <React.Fragment key={index}>
+              <FunctionContainer
+                method={method}
+                source={source}
+                isExpandable={isExpandable}
+                chainId={chainId}
+              />
+              {index < decodeData.length - 1 && <ConfirmInfoRowDivider />}
+            </React.Fragment>
+          );
+        })}
       </>
     </Container>
   );
@@ -215,8 +236,10 @@ function ParamValue({
   if (name === 'path' && source === DecodedTransactionDataSource.Uniswap) {
     return <UniswapPath pathPools={value} chainId={chainId} />;
   }
-  // if its a long string value truncate it
+
   let valueString = value.toString();
+
+  // if its a long string value truncate it
   if (valueString.length > 15 && !valueString.startsWith('0x')) {
     valueString = renderShortTokenId(valueString, 5);
   }
@@ -225,7 +248,7 @@ function ParamValue({
     valueString = hexStripZeros(valueString);
   }
 
-  return <ConfirmInfoRowText text={valueString} />;
+  return <ConfirmInfoRowText text={valueString ?? ''} />;
 }
 
 function ParamRow({

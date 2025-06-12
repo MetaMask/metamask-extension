@@ -206,3 +206,9 @@ export enum EIP5792ErrorCode {
   UnknownBundleId = 5730,
   RejectedUpgrade = 5750,
 }
+
+export const APPROVAL_METHOD_NAMES = [
+  'approve',
+  'increaseAllowance',
+  'setApprovalForAll',
+];
