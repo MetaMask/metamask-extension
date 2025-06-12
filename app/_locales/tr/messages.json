@@ -3805,21 +3805,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Bu verileri, pazarlama iletişimlerimizle nasıl etkileşimde bulunduğunuzu öğrenmek için kullanacağız. İlgili haberleri (ürün özellikleri gibi) paylaşabiliriz."
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Tam erişim"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Bu uzantılar, bu sitedeki bilgileri görebilir"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "ve değiştirebilir."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Uzantılar"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Tarayıcı uzantısı simgesine tıklayın"
-  },
   "onboardingPinExtensionDescription": {
     "message": "İşlem onaylarını erişilebilir ve kolay görüntülenebilir hale getirmek için MetaMask'i tarayıcınıza sabitleyin."
   },
@@ -3827,16 +3812,8 @@
     "message": "Uzantıya tıklayarak MetaMask'i açabilir ve 1 tık ile cüzdanınıza erişim sağlayabilirsiniz."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Hemen erişim sağlamak için tarayıcı uzantısı simgesine tıklayın"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "MetaMask'i sabitle"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Hemen erişim sağlamak için tarayıcı uzantısı simgesine tıklayın",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "MetaMask kurulumunuz tamamlandı!"

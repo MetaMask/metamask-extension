@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom-v5-compat';
 import { Hex } from '@metamask/utils';
 import {
   getAllChainsToPoll,
+  getEnabledNetworks,
   getIsLineaMainnet,
   getIsMainnet,
   getIsTokenNetworkFilterEqualCurrentNetwork,
@@ -60,6 +61,7 @@ import Tooltip from '../../../../ui/tooltip';
 import { getMultichainNetwork } from '../../../../../selectors/multichain';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
+import { isGlobalNetworkSelectorRemoved } from '../../../../../selectors/selectors';
 
 type AssetListControlBarProps = {
   showTokensLinks?: boolean;
@@ -89,6 +91,7 @@ const AssetListControlBar = ({
 
   const { collections } = useNftsCollections();
 
+  const enabledNetworks = useSelector(getEnabledNetworks);
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
@@ -108,6 +111,12 @@ const AssetListControlBar = ({
       return endpoint?.networkClientId ? [endpoint.networkClientId] : [];
     });
   }, [tokenNetworkFilter, allNetworks]);
+
+  const networksToDisplay = useMemo(() => {
+    return isGlobalNetworkSelectorRemoved
+      ? enabledNetworks
+      : tokenNetworkFilter;
+  }, [tokenNetworkFilter, enabledNetworks]);
 
   const shouldShowRefreshButtons = useMemo(
     () =>
@@ -145,7 +154,7 @@ const AssetListControlBar = ({
   // We need to set the default filter for all users to be all included networks, rather than defaulting to empty object
   // This effect is to unblock and derisk in the short-term
   useEffect(() => {
-    if (Object.keys(tokenNetworkFilter).length === 0) {
+    if (Object.keys(networksToDisplay).length === 0) {
       dispatch(setTokenNetworkFilter(allOpts));
     } else {
       dispatch(
@@ -155,20 +164,6 @@ const AssetListControlBar = ({
       );
     }
   }, []);
-
-  // When a network gets added/removed we want to make sure that we switch to the filtered list of the current network
-  // We only want to do this if the "Current Network" filter is selected
-  useEffect(() => {
-    if (Object.keys(tokenNetworkFilter).length === 1) {
-      dispatch(
-        setTokenNetworkFilter({
-          [currentMultichainNetwork.network.chainId]: true,
-        }),
-      );
-    } else {
-      dispatch(setTokenNetworkFilter(allOpts));
-    }
-  }, [Object.keys(allNetworks).length]);
 
   const windowType = getEnvironmentType();
   const isFullScreen =

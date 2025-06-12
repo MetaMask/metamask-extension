@@ -229,7 +229,9 @@
     "subjectMetadata": "object",
     "announcements": "object",
     "orderedNetworkList": { "0": "object", "1": "object" },
-    "enabledNetworkMap": {},
+    "enabledNetworkMap": {
+      "0x539": "boolean"
+    },
     "pinnedAccountList": {},
     "hiddenAccountList": {},
     "gasFeeEstimatesByChainId": {},
@@ -262,7 +264,6 @@
     },
     "cryptocurrencies": ["btc", "sol"],
     "snaps": "object",
-    "jobs": "object",
     "events": "object",
     "database": null,
     "lastUpdated": null,

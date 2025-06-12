@@ -146,6 +146,7 @@ export const createSwapsMockStore = () => {
         tokenNetworkFilter: {},
         showMultiRpcModal: false,
       },
+      enabledNetworkMap: {},
       transactions: [
         {
           id: 6571648590592143,
