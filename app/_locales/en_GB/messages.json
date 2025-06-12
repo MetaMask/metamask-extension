@@ -1060,7 +1060,7 @@
     "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
   },
   "changePasswordLoading": {
-    "message": "Chaning password..."
+    "message": "Changing password..."
   },
   "changePasswordLoadingNote": {
     "message": "This shouldn't take long"
@@ -2099,6 +2099,9 @@
   },
   "enterPasswordContinue": {
     "message": "Enter password to continue"
+  },
+  "enterPasswordCurrent": {
+    "message": "Enter your current password"
   },
   "enterRpcUrl": {
     "message": "Enter RPC URL"
@@ -4890,6 +4893,12 @@
   },
   "securityChangePasswordTitle": {
     "message": "Password"
+  },
+  "securityChangePasswordToastSuccess": {
+    "message": "New password saved"
+  },
+  "securityChangePasswordToastError": {
+    "message": "Password couldn’t be changed. Please try again."
   },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"

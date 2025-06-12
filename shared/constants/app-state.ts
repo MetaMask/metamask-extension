@@ -33,3 +33,8 @@ export type CarouselSlide = {
   startDate?: string;
   endDate?: string;
 };
+
+export enum PasswordChangeToastType {
+  Success = 'success',
+  Errored = 'errored',
+}
