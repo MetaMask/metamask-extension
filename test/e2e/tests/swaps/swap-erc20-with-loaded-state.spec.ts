@@ -212,7 +212,6 @@ describe('Swap', function () {
       sourceAmount: '10',
       expectedWethBalance: '40',
       expectedEthBalance: '34.99991',
-      dismissWarning: false,
     },
     {
       name: 'should swap ETH to WETH',
@@ -221,7 +220,6 @@ describe('Swap', function () {
       sourceAmount: '10',
       expectedWethBalance: '60',
       expectedEthBalance: '14.99992',
-      dismissWarning: true,
     },
   ];
 
@@ -298,11 +296,7 @@ describe('Swap', function () {
           await swapPage.enterSwapAmount(testCase.sourceAmount);
           await swapPage.selectDestinationToken(testCase.destinationToken);
 
-          // https://github.com/MetaMask/metamask-extension/issues/31426
-          if (testCase.dismissWarning) {
-            await swapPage.dismissManualTokenWarning();
-          }
-          await driver.delay(1500);
+          await swapPage.dismissManualTokenWarning();
           await swapPage.submitSwap();
 
           await homePage.check_expectedTokenBalanceIsDisplayed(
