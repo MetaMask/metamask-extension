@@ -265,6 +265,12 @@ describe('Account Tracker API polling', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .withEnabledNetworks({
+            '0x5': true,
+            '0x38': true,
+            '0x1': true,
+            '0xe708': true,
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
