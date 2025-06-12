@@ -9,6 +9,8 @@ ignores:
   - '@babel/runtime'
   - '@fortawesome/fontawesome-free'
   - 'punycode'
+  # injected via build system
+  - '@metamask/kernel-shims'
 
   #
   # dev deps

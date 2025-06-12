@@ -51,6 +51,11 @@ function onboardingFixture() {
         }),
         providerConfig: { id: 'networkConfigurationId' },
       },
+      NetworkOrderController: {
+        enabledNetworkMap: {
+          '0x539': true,
+        },
+      },
       NotificationServicesController: {},
       PreferencesController: {
         advancedGasFee: {},
@@ -186,6 +191,14 @@ class FixtureBuilder {
 
   withNetworkOrderController(data) {
     merge(this.fixture.data.NetworkOrderController, data);
+    return this;
+  }
+
+  withEnabledNetworks(data) {
+    merge(this.fixture.data.NetworkOrderController, {
+      networkOrder: this.fixture.data.NetworkOrderController?.networkOrder,
+      enabledNetworkMap: data,
+    });
     return this;
   }
 
