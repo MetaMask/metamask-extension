@@ -554,19 +554,22 @@ const PrepareBridgePage = () => {
     }
   }, [isSwap, isSolanaSwap, fromChain, toChain, dispatch]);
 
-  // Set the default destination token for swaps
+  // Trace swap/bridge view loaded
   useEffect(() => {
     endTrace({
       name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
       timestamp: Date.now(),
     });
+  }, [isSwap]);
 
-    // Set default destination token for swaps
-    if (isSwap && fromChain && !toToken) {
+  // Set the default destination token for swaps (only when unified UI is disabled)
+  useEffect(() => {
+    // Only set default token when unified UI is disabled (preserve existing behavior)
+    if (!isUnifiedUIEnabled && isSwap && fromChain && !toToken) {
       dispatch(setToChainId(fromChain.chainId));
       dispatch(setToToken(SOLANA_USDC_ASSET));
     }
-  }, [isSwap, dispatch, fromChain, toToken]);
+  }, [isSwap, dispatch, fromChain, toToken, isUnifiedUIEnabled]);
 
   // Edge-case fix: if user lands with USDC selected for both sides on Solana,
   // switch destination to SOL (native asset).
