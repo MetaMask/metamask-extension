@@ -23,11 +23,9 @@ import { Confirmation } from '../../../../../types/confirm';
 import * as useDecodedTransactionDataModule from '../../hooks/useDecodedTransactionData';
 import {
   DecodedTransactionDataMethod,
-  DecodedTransactionDataResponse,
   DecodedTransactionDataSource,
 } from '../../../../../../../../shared/types/transaction-decode';
 import { TransactionData } from './transaction-data';
-import { AsyncResult } from '../../../../../../../hooks/useAsync';
 
 const DATA_MOCK = '0x123456';
 const DATA_2_MOCK = '0xabcdef';

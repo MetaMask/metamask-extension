@@ -1,5 +1,5 @@
-import BigNumber from 'bignumber.js';
 import React from 'react';
+import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
@@ -14,10 +14,10 @@ import {
 import { getTokenStandardAndDetails } from '../../../../../../../store/actions';
 import { useAsyncResult } from '../../../../../../../hooks/useAsync';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { Box } from '../../../../../../../components/component-library';
 import { ERC20_DEFAULT_DECIMALS } from '../../../../../utils/token';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { isSpendingCapUnlimited } from '../../approve/hooks/use-approve-token-simulation';
-import { Box } from '../../../../../../../components/component-library';
 
 export type TranslateFunction = (arg: string) => string;
 
@@ -92,11 +92,7 @@ export function BatchedApprovalFunction({
   const nestedTransaction =
     currentConfirmation?.nestedTransactions?.[nestedTransactionIndex];
 
-  if (!currentConfirmation || !nestedTransaction) {
-    return null;
-  }
-
-  const { data, to } = nestedTransaction;
+  const { data, to } = nestedTransaction ?? {};
 
   const { value, pending } = useAsyncResult(
     () => getBatchedApprovalDisplayValue(t as TranslateFunction, data, to),
