@@ -1,56 +1,132 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { getTokenList } from '../../../../selectors';
-import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
-import { TokenListItem } from '../../../multichain';
-import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { useIsOriginalTokenSymbol } from '../../../../hooks/useIsOriginalTokenSymbol';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
+import React, { useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { useTokenDisplayInfo } from '../hooks';
+import {
+  ButtonSecondary,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+} from '../../../component-library';
+import { getMultichainIsEvm } from '../../../../selectors/multichain';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  getSafeNativeCurrencySymbol,
+  type SafeChain,
+} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
+import { setEditedNetwork } from '../../../../store/actions';
+import { type TokenWithFiatAmount } from '../types';
+import GenericAssetCellLayout from '../asset-list/cells/generic-asset-cell-layout';
+import { AssetCellBadge } from '../asset-list/cells/asset-cell-badge';
+import {
+  TokenCellTitle,
+  TokenCellPercentChange,
+  TokenCellPrimaryDisplay,
+  TokenCellSecondaryDisplay,
+} from './cells';
 
-type TokenCellProps = {
-  address: string;
-  symbol: string;
-  string?: string;
-  image: string;
-  onClick?: (arg: string) => void;
+export type TokenCellProps = {
+  token: TokenWithFiatAmount;
+  privacyMode?: boolean;
+  disableHover?: boolean;
+  onClick?: () => void;
+  fixCurrencyToUSD?: boolean;
+  safeChains?: SafeChain[];
 };
 
 export default function TokenCell({
-  address,
-  image,
-  symbol,
-  string,
+  token,
+  privacyMode = false,
   onClick,
+  disableHover = false,
+  fixCurrencyToUSD = false,
+  safeChains,
 }: TokenCellProps) {
-  const tokenList = useSelector(getTokenList);
-  const tokenData = Object.values(tokenList).find(
-    (token) =>
-      isEqualCaseInsensitive(token.symbol, symbol) &&
-      isEqualCaseInsensitive(token.address, address),
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const t = useI18nContext();
+  const isEvm = useSelector(getMultichainIsEvm);
+  const nativeCurrencySymbol = useMemo(
+    () => getSafeNativeCurrencySymbol(safeChains, token.chainId),
+    [safeChains, token.chainId],
   );
-  const title = tokenData?.name || symbol;
-  const tokenImage = tokenData?.iconUrl || image;
-  const formattedFiat = useTokenFiatAmount(address, string, symbol, {}, false);
-  const locale = useSelector(getIntlLocale);
-  const primary = new Intl.NumberFormat(locale, {
-    minimumSignificantDigits: 1,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-  }).format(string.toString());
+  const [showScamWarningModal, setShowScamWarningModal] = useState(false);
 
-  const isOriginalTokenSymbol = useIsOriginalTokenSymbol(address, symbol);
+  const tokenDisplayInfo = useTokenDisplayInfo({
+    token,
+    fixCurrencyToUSD,
+  });
+
+  const displayToken = useMemo(
+    () => ({
+      ...token,
+      ...tokenDisplayInfo,
+    }),
+    [token, tokenDisplayInfo],
+  );
+
+  const handleScamWarningModal = (arg: boolean) => {
+    setShowScamWarningModal(arg);
+  };
+
+  if (!token.chainId) {
+    return null;
+  }
 
   return (
-    <TokenListItem
-      onClick={onClick ? () => onClick(address) : undefined}
-      tokenSymbol={symbol}
-      tokenImage={tokenImage}
-      primary={`${primary || 0}`}
-      secondary={isOriginalTokenSymbol ? formattedFiat : null}
-      title={title}
-      isOriginalTokenSymbol={isOriginalTokenSymbol}
-      address={address}
-      showPercentage
-    />
+    <>
+      <GenericAssetCellLayout
+        onClick={showScamWarningModal ? undefined : onClick}
+        disableHover={disableHover}
+        badge={<AssetCellBadge {...displayToken} />}
+        headerLeftDisplay={<TokenCellTitle token={displayToken} />}
+        headerRightDisplay={
+          <TokenCellSecondaryDisplay
+            token={displayToken}
+            handleScamWarningModal={handleScamWarningModal}
+            privacyMode={privacyMode}
+          />
+        }
+        footerLeftDisplay={<TokenCellPercentChange token={displayToken} />}
+        footerRightDisplay={
+          <TokenCellPrimaryDisplay
+            token={displayToken}
+            privacyMode={privacyMode}
+          />
+        }
+      />
+      {isEvm && showScamWarningModal && (
+        <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader onClose={() => setShowScamWarningModal(false)}>
+              {t('nativeTokenScamWarningTitle')}
+            </ModalHeader>
+            <ModalBody marginTop={4} marginBottom={4}>
+              {t('nativeTokenScamWarningDescription', [
+                token.symbol,
+                nativeCurrencySymbol ||
+                  t('nativeTokenScamWarningDescriptionExpectedTokenFallback'),
+              ])}
+            </ModalBody>
+            <ModalFooter>
+              <ButtonSecondary
+                onClick={() => {
+                  dispatch(setEditedNetwork({ chainId: token.chainId }));
+                  history.push(NETWORKS_ROUTE);
+                }}
+                block
+              >
+                {t('nativeTokenScamWarningConversion')}
+              </ButtonSecondary>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      )}
+    </>
   );
 }

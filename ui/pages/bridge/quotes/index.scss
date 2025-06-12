@@ -1,0 +1,8 @@
+@use "design-system";
+
+.quotes-modal {
+  .mm-modal-content__dialog {
+    display: flex;
+    height: 100%;
+  }
+}

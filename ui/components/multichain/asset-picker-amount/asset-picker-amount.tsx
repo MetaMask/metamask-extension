@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { TokenListMap } from '@metamask/assets-controllers';
+import {
+  AddNetworkFields,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
+import { CaipChainId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, Text } from '../../component-library';
 import {
@@ -14,6 +19,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
+  getCurrentNetwork,
   getIpfsGateway,
   getNativeCurrencyImage,
   getSelectedInternalAccount,
@@ -34,6 +40,12 @@ import {
 import { NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR } from '../../../pages/confirmations/send/send.constants';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useGetAssetImageUrl from '../../../hooks/useGetAssetImageUrl';
+import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../shared/modules/selectors/networks';
+import { setActiveNetworkWithError } from '../../../store/actions';
+import { setToChainId } from '../../../ducks/bridge/actions';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -49,7 +61,10 @@ type AssetPickerAmountProps = OverridingUnion<
     asset: Asset;
     amount: Amount;
     isAmountLoading?: boolean;
+    action?: 'send' | 'receive';
+    disableMaxButton?: boolean;
     error?: string;
+    showNetworkPicker?: boolean;
     /**
      * Callback for when the amount changes; disables the input when undefined
      */
@@ -60,18 +75,26 @@ type AssetPickerAmountProps = OverridingUnion<
   }
 >;
 
+type NetworkOption =
+  | NetworkConfiguration
+  | AddNetworkFields
+  | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
+
 // A component that combines an asset picker with an input for the amount to send.
 export const AssetPickerAmount = ({
   asset,
   amount,
   onAmountChange,
+  action,
   isAmountLoading,
+  disableMaxButton = false,
+  showNetworkPicker,
   error: passedError,
   ...assetPickerProps
 }: AssetPickerAmountProps) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const t = useI18nContext();
-
+  const dispatch = useDispatch();
   const { swapQuotesError, sendAsset, receiveAsset } = useSelector(
     getCurrentDraftTransaction,
   );
@@ -81,12 +104,15 @@ export const AssetPickerAmount = ({
   const isMaxMode = useSelector(getSendMaxModeState);
   const isNativeSendPossible = useSelector(getIsNativeSendPossible);
 
+  const currentChainId = useSelector(getCurrentChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
   const tokenList = useSelector(getTokenList) as TokenListMap;
 
   const ipfsGateway = useSelector(getIpfsGateway);
-
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const showNetworkPickerinModal = process.env.REMOVE_GNS && showNetworkPicker;
+  const currentNetwork = useSelector(getCurrentNetwork);
   useEffect(() => {
     // if this input is immutable – avoids double fire
     if (isDisabled) {
@@ -105,12 +131,12 @@ export const AssetPickerAmount = ({
 
     // disable max mode and replace with "0"
     onAmountChange('0x0');
-  }, [isNativeSendPossible]);
+  }, [isDisabled, isMaxMode, isNativeSendPossible, onAmountChange]);
 
   const [isFocused, setIsFocused] = useState(false);
   const [isNFTInputChanged, setIsTokenInputChanged] = useState(false);
   const nftImageURL = useGetAssetImageUrl(
-    asset?.details?.image ?? null,
+    asset?.details?.image ?? undefined,
     ipfsGateway,
   );
 
@@ -142,7 +168,7 @@ export const AssetPickerAmount = ({
     if (!asset) {
       throw new Error('No asset is drafted for sending');
     }
-  }, [selectedAccount]);
+  }, [asset, selectedAccount]);
 
   let borderColor = BorderColor.borderMuted;
 
@@ -167,6 +193,7 @@ export const AssetPickerAmount = ({
       type: asset.type,
       image: nativeCurrencyImageUrl,
       symbol: nativeCurrencySymbol as string,
+      chainId: currentChainId,
     };
   } else if (asset?.type === AssetType.token && asset?.details?.symbol) {
     standardizedAsset = {
@@ -178,6 +205,7 @@ export const AssetPickerAmount = ({
           tokenList[asset.details.address.toLowerCase()]?.iconUrl),
       symbol: asset.details.symbol,
       address: asset.details.address,
+      chainId: currentChainId,
     };
   } else if (
     asset?.type === AssetType.NFT &&
@@ -188,7 +216,10 @@ export const AssetPickerAmount = ({
       type: asset.type as AssetType.NFT,
       tokenId: asset.details.tokenId,
       image: asset.details.image,
-      symbol: asset.details.symbol,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      symbol: (asset.details.symbol || asset.details.name) ?? undefined,
+      address: asset.details.address,
     };
   }
 
@@ -210,7 +241,34 @@ export const AssetPickerAmount = ({
         paddingTop={asset.details?.standard === TokenStandard.ERC721 ? 4 : 1}
         paddingBottom={asset.details?.standard === TokenStandard.ERC721 ? 4 : 1}
       >
-        <AssetPicker asset={standardizedAsset} {...assetPickerProps} />
+        <AssetPicker
+          action={action}
+          asset={standardizedAsset}
+          networkProps={
+            showNetworkPickerinModal
+              ? {
+                  network: currentNetwork as unknown as NetworkOption,
+                  networks: Object.values(allNetworks) as NetworkOption[],
+                  onNetworkChange: (networkConfig) => {
+                    const rpcEndpoint =
+                      networkConfig.rpcEndpoints[
+                        networkConfig.defaultRpcEndpointIndex
+                      ];
+                    dispatch(setToChainId(networkConfig.chainId));
+                    dispatch(
+                      setActiveNetworkWithError(
+                        'networkClientId' in rpcEndpoint
+                          ? rpcEndpoint.networkClientId
+                          : networkConfig.chainId,
+                      ),
+                    );
+                  },
+                  header: t('yourNetworks'),
+                }
+              : undefined
+          }
+          {...assetPickerProps}
+        />
         <SwappableCurrencyInput
           onAmountChange={onAmountChange ? handleChange : undefined}
           assetType={asset.type}
@@ -222,6 +280,8 @@ export const AssetPickerAmount = ({
       <Box display={Display.Flex}>
         {/* Only show balance if mutable */}
         {onAmountChange && (
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
           <AssetBalance asset={asset} error={passedError || error} />
         )}
         {isSwapsErrorShown && (
@@ -230,9 +290,10 @@ export const AssetPickerAmount = ({
           </Text>
         )}
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        {onAmountChange && isNativeSendPossible && !isSwapAndSendFromNative && (
-          <MaxClearButton asset={asset} />
-        )}
+        {onAmountChange &&
+          isNativeSendPossible &&
+          !isSwapAndSendFromNative &&
+          !disableMaxButton && <MaxClearButton asset={asset} />}
       </Box>
     </Box>
   );

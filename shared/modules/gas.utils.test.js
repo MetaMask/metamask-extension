@@ -48,7 +48,7 @@ describe('gas utils', () => {
                 const gasLimitHex = addHexPrefix(gasLimit.toString(16));
                 const result = new Numeric(
                   getMinimumGasTotalInHexWei({
-                    gasLimit: gasLimitHex,
+                    gasLimitNoBuffer: gasLimitHex,
                     maxFeePerGas: addHexPrefix(maxFeePerGas.toString(16)),
                     maxPriorityFeePerGas: addHexPrefix(
                       maxPriorityFeePerGas.toString(16),
@@ -117,7 +117,7 @@ describe('gas utils', () => {
               expect(
                 new Numeric(
                   getMinimumGasTotalInHexWei({
-                    gasLimit: gasLimitHex,
+                    gasLimitNoBuffer: gasLimitHex,
                     gasPrice: addHexPrefix(gasPrice.toString(16)),
                   }),
                   16,

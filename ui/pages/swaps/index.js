@@ -14,18 +14,21 @@ import {
   Redirect,
 } from 'react-router-dom';
 import { shuffle, isEqual } from 'lodash';
-import classnames from 'classnames';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { I18nContext } from '../../contexts/i18n';
 
 import {
   getSelectedAccount,
-  getCurrentChainId,
   getIsSwapsChain,
   isHardwareWallet,
   getHardwareWalletType,
   getTokenList,
+  getHDEntropyIndex,
 } from '../../selectors/selectors';
+import {
+  getCurrentChainId,
+  getSelectedNetworkClientId,
+} from '../../../shared/modules/selectors/networks';
 import {
   getQuotes,
   clearSwapsState,
@@ -40,25 +43,20 @@ import {
   prepareToLeaveSwaps,
   fetchSwapsLivenessAndFeatureFlags,
   getReviewSwapClickedTimestamp,
-  getPendingSmartTransactions,
   getCurrentSmartTransactionsEnabled,
   getCurrentSmartTransactionsError,
-  navigateBackToBuildQuote,
-  getSwapRedesignEnabled,
   setTransactionSettingsOpened,
   getLatestAddedTokenTo,
 } from '../../ducks/swaps/swaps';
 import { getCurrentNetworkTransactions } from '../../selectors';
 import {
-  getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
 } from '../../../shared/modules/selectors';
 import {
   AWAITING_SIGNATURES_ROUTE,
   AWAITING_SWAP_ROUTE,
   SMART_TRANSACTION_STATUS_ROUTE,
-  BUILD_QUOTE_ROUTE,
-  VIEW_QUOTE_ROUTE,
   LOADING_QUOTES_ROUTE,
   SWAPS_ERROR_ROUTE,
   DEFAULT_ROUTE,
@@ -83,7 +81,10 @@ import {
 
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import { Icon, IconName, IconSize } from '../../components/component-library';
@@ -99,16 +100,15 @@ import AwaitingSignatures from './awaiting-signatures';
 import SmartTransactionStatus from './smart-transaction-status';
 import AwaitingSwap from './awaiting-swap';
 import LoadingQuote from './loading-swaps-quotes';
-import BuildQuote from './build-quote';
 import PrepareSwapPage from './prepare-swap-page/prepare-swap-page';
 import NotificationPage from './notification-page/notification-page';
-import ViewQuote from './view-quote';
 
 export default function Swap() {
   const t = useContext(I18nContext);
   const history = useHistory();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   const { pathname } = useLocation();
   const isAwaitingSwapRoute = pathname === AWAITING_SWAP_ROUTE;
@@ -117,7 +117,6 @@ export default function Swap() {
   const isLoadingQuotesRoute = pathname === LOADING_QUOTES_ROUTE;
   const isSmartTransactionStatusRoute =
     pathname === SMART_TRANSACTION_STATUS_ROUTE;
-  const isViewQuoteRoute = pathname === VIEW_QUOTE_ROUTE;
   const isPrepareSwapRoute = pathname === PREPARE_SWAP_ROUTE;
 
   const [currentStxErrorTracked, setCurrentStxErrorTracked] = useState(false);
@@ -140,19 +139,18 @@ export default function Swap() {
   const tokenList = useSelector(getTokenList, isEqual);
   const shuffledTokensList = shuffle(Object.values(tokenList));
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
-  const pendingSmartTransactions = useSelector(getPendingSmartTransactions);
   const reviewSwapClicked = Boolean(reviewSwapClickedTimestamp);
   const smartTransactionsOptInStatus = useSelector(
-    getSmartTransactionsOptInStatus,
+    getSmartTransactionsOptInStatusForMetrics,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
   );
-  const swapRedesignEnabled = useSelector(getSwapRedesignEnabled);
   const currentSmartTransactionsError = useSelector(
     getCurrentSmartTransactionsError,
   );
+  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   useEffect(() => {
     const leaveSwaps = async () => {
@@ -208,6 +206,7 @@ export default function Swap() {
           ignoreTokens({
             tokensToIgnore: latestAddedTokenTo,
             dontShowLoadingIndicator: true,
+            networkClientId,
           }),
         );
       }
@@ -219,6 +218,7 @@ export default function Swap() {
     destinationTokenInfo,
     fetchParams,
     isAwaitingSwapRoute,
+    networkClientId,
   ]);
   useEffect(() => {
     return () => {
@@ -232,7 +232,7 @@ export default function Swap() {
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const trackExitedSwapsEvent = () => {
     trackEvent({
-      event: 'Exited Swaps',
+      event: MetaMetricsEventName.ExitedSwaps,
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         token_from: fetchParams?.sourceTokenInfo?.symbol,
@@ -247,6 +247,9 @@ export default function Swap() {
         stx_enabled: smartTransactionsEnabled,
         current_stx_enabled: currentSmartTransactionsEnabled,
         stx_user_opt_in: smartTransactionsOptInStatus,
+      },
+      properties: {
+        hd_entropy_index: hdEntropyIndex,
       },
     });
   };
@@ -358,167 +361,72 @@ export default function Swap() {
     <div className="swaps">
       <div className="swaps__container">
         <div className="swaps__header">
-          {!swapRedesignEnabled && (
-            <div
-              className="swaps__header-edit"
-              onClick={async () => {
-                await dispatch(navigateBackToBuildQuote(history));
-              }}
-            >
-              {isViewQuoteRoute && t('edit')}
-            </div>
-          )}
-          {swapRedesignEnabled && (
-            <Box
-              display={DISPLAY.FLEX}
-              justifyContent={JustifyContent.center}
-              marginLeft={4}
-              width={FRACTIONS.ONE_TWELFTH}
-              tabIndex="0"
-              onKeyUp={(e) => {
-                if (e.key === 'Enter') {
-                  redirectToDefaultRoute();
-                }
-              }}
-            >
-              {!isAwaitingSwapRoute &&
-                !isAwaitingSignaturesRoute &&
-                !isSmartTransactionStatusRoute && (
-                  <Icon
-                    name={IconName.Arrow2Left}
-                    size={IconSize.Lg}
-                    color={IconColor.iconAlternative}
-                    onClick={redirectToDefaultRoute}
-                    style={{ cursor: 'pointer' }}
-                    title={t('cancel')}
-                  />
-                )}
-            </Box>
-          )}
-          <div className="swaps__title">{t('swap')}</div>
-          {!swapRedesignEnabled && (
-            <div
-              className="swaps__header-cancel"
-              onClick={async () => {
-                clearTemporaryTokenRef.current();
-                dispatch(clearSwapsState());
-                await dispatch(resetBackgroundSwapsState());
-                history.push(DEFAULT_ROUTE);
-              }}
-            >
-              {!isAwaitingSwapRoute &&
-                !isAwaitingSignaturesRoute &&
-                !isSmartTransactionStatusRoute &&
-                t('cancel')}
-            </div>
-          )}
-          {swapRedesignEnabled && (
-            <Box
-              display={DISPLAY.FLEX}
-              justifyContent={JustifyContent.center}
-              marginRight={4}
-              width={FRACTIONS.ONE_TWELFTH}
-              tabIndex="0"
-              onKeyUp={(e) => {
-                if (e.key === 'Enter') {
-                  dispatch(setTransactionSettingsOpened(true));
-                }
-              }}
-            >
-              {isPrepareSwapRoute && (
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JustifyContent.center}
+            marginLeft={4}
+            width={FRACTIONS.ONE_TWELFTH}
+            tabIndex="0"
+            onKeyUp={(e) => {
+              if (e.key === 'Enter') {
+                redirectToDefaultRoute();
+              }
+            }}
+          >
+            {!isAwaitingSwapRoute &&
+              !isAwaitingSignaturesRoute &&
+              !isSmartTransactionStatusRoute && (
                 <Icon
-                  name={IconName.Setting}
+                  name={IconName.Arrow2Left}
                   size={IconSize.Lg}
                   color={IconColor.iconAlternative}
-                  onClick={() => {
-                    dispatch(setTransactionSettingsOpened(true));
-                  }}
+                  onClick={redirectToDefaultRoute}
                   style={{ cursor: 'pointer' }}
-                  title={t('transactionSettings')}
+                  title={t('cancel')}
                 />
               )}
-            </Box>
-          )}
+          </Box>
+          <div className="swaps__title">{t('swap')}</div>
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JustifyContent.center}
+            marginRight={4}
+            width={FRACTIONS.ONE_TWELFTH}
+            tabIndex="0"
+            onKeyUp={(e) => {
+              if (e.key === 'Enter') {
+                dispatch(setTransactionSettingsOpened(true));
+              }
+            }}
+          >
+            {isPrepareSwapRoute && (
+              <Icon
+                name={IconName.Setting}
+                size={IconSize.Lg}
+                color={IconColor.iconAlternative}
+                onClick={() => {
+                  dispatch(setTransactionSettingsOpened(true));
+                }}
+                style={{ cursor: 'pointer' }}
+                title={t('transactionSettings')}
+              />
+            )}
+          </Box>
         </div>
-        <div
-          className={classnames('swaps__content', {
-            'swaps__content--redesign-enabled': swapRedesignEnabled,
-          })}
-        >
+        <div className="swaps__content">
           <Switch>
-            <FeatureToggledRoute
-              redirectRoute={SWAPS_MAINTENANCE_ROUTE}
-              flag={swapsEnabled}
-              path={BUILD_QUOTE_ROUTE}
-              exact
-              render={() => {
-                if (swapRedesignEnabled) {
-                  return <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />;
-                }
-                if (tradeTxData && !conversionError) {
-                  return <Redirect to={{ pathname: AWAITING_SWAP_ROUTE }} />;
-                } else if (tradeTxData && routeState) {
-                  return <Redirect to={{ pathname: SWAPS_ERROR_ROUTE }} />;
-                } else if (routeState === 'loading' && aggregatorMetadata) {
-                  return <Redirect to={{ pathname: LOADING_QUOTES_ROUTE }} />;
-                }
-
-                return (
-                  <BuildQuote
-                    ethBalance={ethBalance}
-                    selectedAccountAddress={selectedAccountAddress}
-                    shuffledTokensList={shuffledTokensList}
-                  />
-                );
-              }}
-            />
             <FeatureToggledRoute
               redirectRoute={SWAPS_MAINTENANCE_ROUTE}
               flag={swapsEnabled}
               path={PREPARE_SWAP_ROUTE}
               exact
-              render={() => {
-                if (!swapRedesignEnabled) {
-                  return <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />;
-                }
-
-                return (
-                  <PrepareSwapPage
-                    ethBalance={ethBalance}
-                    selectedAccountAddress={selectedAccountAddress}
-                    shuffledTokensList={shuffledTokensList}
-                  />
-                );
-              }}
-            />
-            <FeatureToggledRoute
-              redirectRoute={SWAPS_MAINTENANCE_ROUTE}
-              flag={swapsEnabled}
-              path={VIEW_QUOTE_ROUTE}
-              exact
-              render={() => {
-                if (
-                  pendingSmartTransactions.length > 0 &&
-                  routeState === 'smartTransactionStatus'
-                ) {
-                  return (
-                    <Redirect
-                      to={{ pathname: SMART_TRANSACTION_STATUS_ROUTE }}
-                    />
-                  );
-                }
-                if (swapRedesignEnabled) {
-                  return <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />;
-                }
-                if (Object.values(quotes).length) {
-                  return (
-                    <ViewQuote numberOfQuotes={Object.values(quotes).length} />
-                  );
-                } else if (fetchParams) {
-                  return <Redirect to={{ pathname: SWAPS_ERROR_ROUTE }} />;
-                }
-                return <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />;
-              }}
+              render={() => (
+                <PrepareSwapPage
+                  ethBalance={ethBalance}
+                  selectedAccountAddress={selectedAccountAddress}
+                  shuffledTokensList={shuffledTokensList}
+                />
+              )}
             />
             <Route
               path={SWAPS_ERROR_ROUTE}
@@ -535,7 +443,7 @@ export default function Swap() {
                     />
                   );
                 }
-                return <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />;
+                return <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />;
               }}
             />
             <Route
@@ -568,13 +476,13 @@ export default function Swap() {
                         dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR));
                         history.push(SWAPS_ERROR_ROUTE);
                       } else {
-                        history.push(VIEW_QUOTE_ROUTE);
+                        history.push(PREPARE_SWAP_ROUTE);
                       }
                     }}
                     aggregatorMetadata={aggregatorMetadata}
                   />
                 ) : (
-                  <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />
+                  <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />
                 );
               }}
             />
@@ -585,7 +493,7 @@ export default function Swap() {
                 return swapsEnabled === false ? (
                   <AwaitingSwap errorKey={OFFLINE_FOR_MAINTENANCE} />
                 ) : (
-                  <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />
+                  <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />
                 );
               }}
             />

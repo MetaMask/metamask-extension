@@ -9,27 +9,31 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { getCurrentChainId } from '../../../../selectors';
+import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../shared/modules/selectors/networks';
 
 function mapStateToProps(state) {
   return {
     chainId: getCurrentChainId(state),
     token: state.appState.modal.modalState.props.token,
     history: state.appState.modal.modalState.props.history,
+    networkConfigurationsByChainId: getNetworkConfigurationsByChainId(state),
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     hideModal: () => dispatch(actions.hideModal()),
-    hideToken: (address) => {
-      dispatch(
+    hideToken: async (address, networkClientId) => {
+      await dispatch(
         actions.ignoreTokens({
           tokensToIgnore: address,
+          networkClientId,
         }),
-      ).then(() => {
-        dispatch(actions.hideModal());
-      });
+      );
+      dispatch(actions.hideModal());
     },
   };
 }
@@ -44,10 +48,12 @@ class HideTokenConfirmationModal extends Component {
     hideToken: PropTypes.func.isRequired,
     hideModal: PropTypes.func.isRequired,
     chainId: PropTypes.string.isRequired,
+    networkConfigurationsByChainId: PropTypes.object.isRequired,
     token: PropTypes.shape({
       symbol: PropTypes.string,
       address: PropTypes.string,
       image: PropTypes.string,
+      chainId: PropTypes.string,
     }),
     history: PropTypes.object,
   };
@@ -55,8 +61,21 @@ class HideTokenConfirmationModal extends Component {
   state = {};
 
   render() {
-    const { chainId, token, hideToken, hideModal, history } = this.props;
-    const { symbol, address, image } = token;
+    const {
+      chainId,
+      token,
+      hideToken,
+      hideModal,
+      history,
+      networkConfigurationsByChainId,
+    } = this.props;
+    const { symbol, address, image, chainId: tokenChainId } = token;
+    const chainIdToUse = tokenChainId || chainId;
+
+    const chainConfig = networkConfigurationsByChainId[chainIdToUse];
+    const { defaultRpcEndpointIndex } = chainConfig;
+    const { networkClientId: networkInstanceId } =
+      chainConfig.rpcEndpoints[defaultRpcEndpointIndex];
 
     return (
       <div className="hide-token-confirmation__container">
@@ -96,7 +115,7 @@ class HideTokenConfirmationModal extends Component {
                   token_symbol: symbol,
                 },
               });
-              hideToken(address);
+              hideToken(address, networkInstanceId);
               history.push(DEFAULT_ROUTE);
             }}
           >

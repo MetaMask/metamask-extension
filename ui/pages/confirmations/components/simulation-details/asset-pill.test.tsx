@@ -1,6 +1,7 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { NameType } from '@metamask/name-controller';
+import { Hex } from '@metamask/utils';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import Name from '../../../../components/app/name';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
@@ -8,8 +9,9 @@ import configureStore from '../../../../store/store';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { AvatarNetwork } from '../../../../components/component-library/avatar-network';
 import { mockNetworkState } from '../../../../../test/stub/networks';
+import mockState from '../../../../../test/data/mock-state.json';
 import { AssetPill } from './asset-pill';
-import { NATIVE_ASSET_IDENTIFIER, TokenAssetIdentifier } from './types';
+import { NativeAssetIdentifier, TokenAssetIdentifier } from './types';
 
 jest.mock('../../../../components/component-library/avatar-network', () => ({
   AvatarNetworkSize: { Sm: 'Sm' },
@@ -20,6 +22,8 @@ jest.mock('../../../../components/app/name', () => ({
   __esModule: true,
   default: jest.fn(() => null),
 }));
+
+const CHAIN_ID_MOCK = '0x1';
 
 describe('AssetPill', () => {
   beforeEach(() => {
@@ -56,14 +60,16 @@ describe('AssetPill', () => {
       }) => {
         const store = configureStore({
           metamask: {
-            ...mockNetworkState({ chainId }),
+            ...mockNetworkState({ chainId: chainId as Hex }),
           },
         });
 
-        renderWithProvider(
-          <AssetPill asset={NATIVE_ASSET_IDENTIFIER} />,
-          store,
-        );
+        const asset: NativeAssetIdentifier = {
+          chainId: chainId as Hex,
+          standard: TokenStandard.none,
+        };
+
+        renderWithProvider(<AssetPill asset={asset} />, store);
 
         expect(screen.getByText(expected.ticker)).toBeInTheDocument();
 
@@ -80,11 +86,12 @@ describe('AssetPill', () => {
 
   it('renders Name component with correct props when asset standard is not none', () => {
     const asset: TokenAssetIdentifier = {
+      chainId: CHAIN_ID_MOCK,
       standard: TokenStandard.ERC20,
       address: '0x1234567890123456789012345678901234567890',
     };
 
-    render(<AssetPill asset={asset} />);
+    renderWithProvider(<AssetPill asset={asset} />, configureStore(mockState));
 
     expect(Name).toHaveBeenCalledWith(
       expect.objectContaining({

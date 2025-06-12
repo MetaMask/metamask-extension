@@ -1,4 +1,5 @@
-import { EthAccountType, InternalAccount } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   TransactionController,
   TransactionMeta,
@@ -16,10 +17,12 @@ import { PPOMController } from '@metamask/ppom-validator';
 import {
   generateSecurityAlertId,
   handlePPOMError,
-  isChainSupported,
   validateRequestWithPPOM,
 } from '../ppom/ppom-util';
-import { SecurityAlertResponse } from '../ppom/types';
+import {
+  SecurityAlertResponse,
+  UpdateSecurityAlertResponse,
+} from '../ppom/types';
 import {
   LOADING_SECURITY_ALERT_RESPONSE,
   SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES,
@@ -38,17 +41,13 @@ type BaseAddTransactionRequest = {
   selectedAccount: InternalAccount;
   transactionParams: TransactionParams;
   transactionController: TransactionController;
-  updateSecurityAlertResponse: (
-    method: string,
-    securityAlertId: string,
-    securityAlertResponse: SecurityAlertResponse,
-  ) => void;
+  updateSecurityAlertResponse: UpdateSecurityAlertResponse;
   userOperationController: UserOperationController;
   internalAccounts: InternalAccount[];
 };
 
 type FinalAddTransactionRequest = BaseAddTransactionRequest & {
-  transactionOptions: AddTransactionOptions;
+  transactionOptions: Partial<AddTransactionOptions>;
 };
 
 export type AddTransactionRequest = FinalAddTransactionRequest & {
@@ -56,7 +55,7 @@ export type AddTransactionRequest = FinalAddTransactionRequest & {
 };
 
 export type AddDappTransactionRequest = BaseAddTransactionRequest & {
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dappRequest: Record<string, any>;
 };
@@ -68,7 +67,7 @@ export async function addDappTransaction(
   const { id: actionId, method, origin } = dappRequest;
   const { securityAlertResponse, traceContext } = dappRequest;
 
-  const transactionOptions: AddTransactionOptions = {
+  const transactionOptions: Partial<AddTransactionOptions> = {
     actionId,
     method,
     origin,
@@ -145,10 +144,11 @@ async function addTransactionWithController(
     transactionParams,
     networkClientId,
   } = request;
+
   const { result, transactionMeta } =
     await transactionController.addTransaction(transactionParams, {
       ...transactionOptions,
-      ...(process.env.TRANSACTION_MULTICHAIN ? { networkClientId } : {}),
+      networkClientId,
     });
 
   return {
@@ -169,7 +169,8 @@ async function addUserOperationWithController(
   } = request;
 
   const { maxFeePerGas, maxPriorityFeePerGas } = transactionParams;
-  // TODO: Replace `any` with type
+
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { origin, requireApproval, type } = transactionOptions as any;
 
@@ -208,7 +209,7 @@ async function addUserOperationWithController(
   };
 }
 
-function getTransactionById(
+export function getTransactionById(
   transactionId: string,
   transactionController: TransactionController,
 ) {
@@ -239,18 +240,12 @@ async function validateSecurity(request: AddTransactionRequest) {
 
   const { type } = transactionOptions;
 
-  const isCurrentChainSupported = await isChainSupported(chainId);
-
   const typeIsExcludedFromPPOM =
     SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES.includes(
       type as TransactionType,
     );
 
-  if (
-    !securityAlertsEnabled ||
-    !isCurrentChainSupported ||
-    typeIsExcludedFromPPOM
-  ) {
+  if (!securityAlertsEnabled || typeIsExcludedFromPPOM) {
     return;
   }
 
@@ -290,21 +285,16 @@ async function validateSecurity(request: AddTransactionRequest) {
       request: ppomRequest,
       securityAlertId,
       chainId,
-    }).then((securityAlertResponse) => {
-      updateSecurityAlertResponse(
-        ppomRequest.method,
-        securityAlertId,
-        securityAlertResponse,
-      );
+      updateSecurityAlertResponse,
     });
 
-    const loadingSecurityAlertResponse: SecurityAlertResponse = {
+    const securityAlertResponseLoading: SecurityAlertResponse = {
       ...LOADING_SECURITY_ALERT_RESPONSE,
       securityAlertId,
     };
 
     request.transactionOptions.securityAlertResponse =
-      loadingSecurityAlertResponse;
+      securityAlertResponseLoading;
   } catch (error) {
     handlePPOMError(error, 'Error validating JSON RPC using PPOM: ');
   }

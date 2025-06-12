@@ -18,14 +18,20 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
 import ConfirmEncryptionPublicKey from './confirm-encryption-public-key.component';
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
   const {
     metamask: { subjectMetadata = {} },
   } = state;
 
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
 
-  const txData = unconfirmedTransactions[0];
+  const {
+    match: {
+      params: { id: approvalId },
+    },
+  } = ownProps;
+
+  const txData = unconfirmedTransactions.find((tx) => tx.id === approvalId);
 
   const fromAccount = getTargetAccountWithSendEtherInfo(
     state,

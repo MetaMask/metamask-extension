@@ -248,26 +248,11 @@
   "from": {
     "message": "Od"
   },
-  "functionType": {
-    "message": "Typ funkcie"
-  },
   "gasLimit": {
     "message": "Limit paliva"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Limit GAS je maximálne množstvo jednotiek GAS, ktoré ste ochotní minúť."
-  },
   "gasLimitTooLow": {
     "message": "Limit paliva musí být alespoň 21000"
-  },
-  "gasPrice": {
-    "message": "Cena paliva (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Cena za GAS je mimoriadne nízka"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Cena za GAS určuje množstvo Ether, ktoré ste ochotní zaplatiť za každú jednotku GAS."
   },
   "gasUsed": {
     "message": "GAS použitý"
@@ -302,9 +287,6 @@
   },
   "history": {
     "message": "História"
-  },
-  "importAccount": {
-    "message": "Import účtu"
   },
   "importAccountMsg": {
     "message": "Importované účty nebudou spojeny s vaší původní MetaMaskovou klíčovou frází. Zjistěte více o importovaných účtech "
@@ -368,9 +350,6 @@
   "loading": {
     "message": "Načítám..."
   },
-  "loadingTokens": {
-    "message": "Načítám tokeny..."
-  },
   "lock": {
     "message": "Odhlásit"
   },
@@ -421,9 +400,6 @@
   "noConversionRateAvailable": {
     "message": "Nie je k dispozícii žiadna sadzba konverzie"
   },
-  "noTransactions": {
-    "message": "Žádné transakce"
-  },
   "noWebcamFound": {
     "message": "Webová kamera vášho počítača sa nenašla. Skúste znova."
   },
@@ -444,9 +420,6 @@
   },
   "origin": {
     "message": "Pôvod"
-  },
-  "parameters": {
-    "message": "Parametre"
   },
   "participateInMetaMetrics": {
     "message": "Zúčastnite sa na MetaMetrics"
@@ -516,9 +489,6 @@
   "removeAccountDescription": {
     "message": "Tento účet bude odstránený z vašej peňaženky. Skôr ako budete pokračovať, skontrolujte, či máte pre tento importovaný účet pôvodnú seed frázu alebo súkromný kľúč. Z rozbaľovacieho menu účtu môžete znova importovať alebo vytvoriť účty."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "žiadosti čakajúce na potvrdenie"
-  },
   "required": {
     "message": "Povinné"
   },
@@ -585,9 +555,6 @@
   },
   "showHexDataDescription": {
     "message": "Vyberte toto, ak chcete, aby sa na obrazovke odosielania zobrazilo hex dátové pole"
-  },
-  "sigRequest": {
-    "message": "Požadavek podpisu"
   },
   "sign": {
     "message": "Podepsat"
@@ -679,9 +646,6 @@
   "transactionErrored": {
     "message": "Pri transakcii sa vyskytla chyba."
   },
-  "transactionFee": {
-    "message": "Poplatok za transakciu"
-  },
   "transactionResubmitted": {
     "message": "Transakcia znovu odoslaná s poplatkom za GAS zvýšeným na $1 na $2"
   },
@@ -708,9 +672,6 @@
   },
   "unknown": {
     "message": "Neznámé"
-  },
-  "unknownNetwork": {
-    "message": "Neznámá soukromá síť"
   },
   "unknownQrCode": {
     "message": "Chyba: Kód QR sa nepodarilo identifikovať"
@@ -742,13 +703,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "Ak chcete používať túto funkciu, musíte povoliť prístup k fotoaparátu."
   },
-  "youSign": {
-    "message": "Podepisujete"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Vaša súkromná seed fráza"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Nulová cena za GAS pri zrýchlení"
   }
 }

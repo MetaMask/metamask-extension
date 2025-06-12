@@ -3,8 +3,8 @@ import * as Sentry from '@sentry/browser';
 import { logger } from '@sentry/utils';
 import browser from 'webextension-polyfill';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
-import { getManifestFlags } from './manifestFlags';
 import { filterEvents } from './sentry-filter-events';
 
 const projectLogger = createProjectLogger('sentry');
@@ -25,7 +25,6 @@ const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT;
 const RELEASE = process.env.METAMASK_VERSION;
 const SENTRY_DSN = process.env.SENTRY_DSN;
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
-const SENTRY_DSN_MMI = process.env.SENTRY_MMI_DSN;
 /* eslint-enable prefer-destructuring */
 
 // This is a fake DSN that can be used to test Sentry without sending data to the real Sentry server.
@@ -86,7 +85,12 @@ function getClientOptions() {
     integrations: [
       Sentry.dedupeIntegration(),
       Sentry.extraErrorDataIntegration(),
-      Sentry.browserTracingIntegration(),
+      Sentry.browserTracingIntegration({
+        shouldCreateSpanForRequest: (url) => {
+          // Do not create spans for outgoing requests to a 'sentry.io' domain.
+          return !url.match(/^https?:\/\/([\w\d.@-]+\.)?sentry\.io(\/|$)/u);
+        },
+      }),
       filterEvents({ getMetaMetricsEnabled, log }),
     ],
     release: RELEASE,
@@ -122,10 +126,10 @@ function getTracesSampleRate(sentryTarget) {
   }
 
   if (flags.circleci) {
-    // Report very frequently on develop branch, and never on other branches
+    // Report very frequently on main branch, and never on other branches
     // (Unless you use a `flags = {"sentry": {"tracesSampleRate": x.xx}}` override)
-    if (flags.circleci.branch === 'develop') {
-      return 0.03;
+    if (flags.circleci.branch === 'main') {
+      return 0.015;
     }
     return 0;
   }
@@ -134,7 +138,7 @@ function getTracesSampleRate(sentryTarget) {
     return 1.0;
   }
 
-  return 0.02;
+  return 0.0075;
 }
 
 /**
@@ -238,18 +242,14 @@ function getSentryEnvironment() {
 
 function getSentryTarget() {
   if (
-    !getManifestFlags().sentry?.forceEnable ||
-    (process.env.IN_TEST && !SENTRY_DSN_DEV)
+    process.env.IN_TEST &&
+    (!SENTRY_DSN_DEV || !getManifestFlags().sentry?.forceEnable)
   ) {
     return SENTRY_DSN_FAKE;
   }
 
   if (METAMASK_ENVIRONMENT !== 'production') {
     return SENTRY_DSN_DEV;
-  }
-
-  if (METAMASK_BUILD_TYPE === 'mmi') {
-    return SENTRY_DSN_MMI;
   }
 
   if (!SENTRY_DSN) {
@@ -270,10 +270,7 @@ function getSentryTarget() {
 async function getMetaMetricsEnabled() {
   const flags = getManifestFlags();
 
-  if (
-    METAMASK_BUILD_TYPE === 'mmi' ||
-    (flags.circleci && flags.sentry.forceEnable)
-  ) {
+  if (flags.circleci && flags.sentry.forceEnable) {
     return true;
   }
 
@@ -424,12 +421,17 @@ export function rewriteReport(report) {
     if (!report.extra) {
       report.extra = {};
     }
-
-    report.extra.appState = appState;
-    if (browser.runtime && browser.runtime.id) {
-      report.extra.extensionId = browser.runtime.id;
+    if (!report.tags) {
+      report.tags = {};
     }
-    report.extra.installType = installType;
+
+    Object.assign(report.extra, {
+      appState,
+      installType,
+      extensionId: browser.runtime?.id,
+    });
+
+    report.tags.installType = installType;
   } catch (err) {
     log('Error rewriting report', err);
   }

@@ -1,7 +1,21 @@
 .multichain-network-list-menu-content-wrapper {
   &__dialog {
-    height: 100vh;
-    max-height: 100%;
+    // Needed to ensure the drag and drop works. All other modals use a slide up animation with transform: translateY(0)
+    // https://github.com/MetaMask/metamask-extension/issues/30436
+    transform: unset;
+
+    // Custom animation for network menu modal that doesn't use transform: translateY(0) to ensure the drag and drop works
+    animation: network-menu-fade 400ms cubic-bezier(0.3, 0.8, 0.3, 1) forwards;
+  }
+}
+
+@keyframes network-menu-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
   }
 }
 

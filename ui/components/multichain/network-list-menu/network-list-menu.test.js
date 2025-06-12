@@ -13,19 +13,30 @@ import {
   BNB_DISPLAY_NAME,
   LINEA_SEPOLIA_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { NetworkListMenu } from '.';
 
 const mockSetShowTestNetworks = jest.fn();
 const mockToggleNetworkMenu = jest.fn();
 const mockSetNetworkClientIdForDomain = jest.fn();
 const mockSetActiveNetwork = jest.fn();
+const mockUpdateCustomNonce = jest.fn();
+const mockSetNextNonce = jest.fn();
+const mockSetTokenNetworkFilter = jest.fn();
+const mockSetEnabledNetworks = jest.fn();
+const mockDetectNfts = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => mockSetShowTestNetworks,
   setActiveNetwork: () => mockSetActiveNetwork,
   toggleNetworkMenu: () => mockToggleNetworkMenu,
+  updateCustomNonce: () => mockUpdateCustomNonce,
+  setNextNonce: () => mockSetNextNonce,
   setNetworkClientIdForDomain: (network, id) =>
     mockSetNetworkClientIdForDomain(network, id),
+  setTokenNetworkFilter: () => mockSetTokenNetworkFilter,
+  setEnabledNetworks: () => mockSetEnabledNetworks,
+  detectNfts: () => mockDetectNfts,
 }));
 
 const MOCK_ORIGIN = 'https://portfolio.metamask.io';
@@ -37,12 +48,15 @@ const render = ({
   origin = MOCK_ORIGIN,
   selectedTabOriginInDomainsState = true,
   isAddingNewNetwork = false,
+  isAccessedFromDappConnectedSitePopover = false,
   editedNetwork = undefined,
+  neNetworkDiscoverButton = { '0x531': true, '0xe708': true },
 } = {}) => {
   const state = {
     appState: {
       isAddingNewNetwork,
       editedNetwork,
+      isAccessedFromDappConnectedSitePopover,
     },
     metamask: {
       ...mockState.metamask,
@@ -130,12 +144,18 @@ const render = ({
       selectedNetworkClientId: NETWORK_TYPES.MAINNET,
       preferences: {
         showTestNetworks,
+        tokenNetworkFilter: {
+          [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.LINEA_MAINNET]: true,
+        },
       },
-      useRequestQueue: true,
       domains: {
         ...(selectedTabOriginInDomainsState
           ? { [origin]: selectedNetworkClientId }
           : {}),
+      },
+      remoteFeatureFlags: {
+        neNetworkDiscoverButton,
       },
     },
     activeTab: {
@@ -166,7 +186,7 @@ describe('NetworkListMenu', () => {
 
   it('should match snapshot when editing a network', async () => {
     const { baseElement } = render({
-      editedNetwork: { chainId: '0x1' },
+      editedNetwork: { chainId: 'eip155:1' },
     });
     expect(baseElement).toMatchSnapshot();
   });
@@ -206,6 +226,9 @@ describe('NetworkListMenu', () => {
     fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
     expect(mockToggleNetworkMenu).toHaveBeenCalled();
     expect(mockSetActiveNetwork).toHaveBeenCalled();
+    expect(mockUpdateCustomNonce).toHaveBeenCalled();
+    expect(mockSetNextNonce).toHaveBeenCalled();
+    expect(mockDetectNfts).toHaveBeenCalled();
   });
 
   it('shows the correct selected network when networks share the same chain ID', () => {
@@ -247,7 +270,7 @@ describe('NetworkListMenu', () => {
     expect(queryByText('Add a custom network')).toBeEnabled();
   });
 
-  it('enables the "AAdd a custom network" button when MetaMask is true', () => {
+  it('enables the "Add a custom network" button when MetaMask is true', () => {
     const { queryByText } = render({ isUnlocked: true });
     expect(queryByText('Add a custom network')).toBeEnabled();
   });
@@ -257,6 +280,64 @@ describe('NetworkListMenu', () => {
     expect(
       document.querySelectorAll('multichain-network-list-item__delete'),
     ).toHaveLength(0);
+  });
+
+  it('enables the "Discover" for Linea Mainnet button when the Feature Flag `neNetworkDiscoverButton` is true for Linea and the network is supported', () => {
+    const { queryByTestId } = render({
+      neNetworkDiscoverButton: {
+        '0xe708': true,
+      },
+    });
+
+    const menuButton = queryByTestId(
+      `network-list-item-options-button-eip155:${hexToDecimal(
+        CHAIN_IDS.LINEA_MAINNET,
+      )}`,
+    );
+    fireEvent.click(menuButton);
+
+    expect(
+      queryByTestId('network-list-item-options-discover'),
+    ).toBeInTheDocument();
+  });
+
+  it('disables the "Discover" button when the Feature Flag `neNetworkDiscoverButton` is false for Linea even if the network is supported', () => {
+    const { queryByTestId } = render({
+      neNetworkDiscoverButton: {
+        '0x531': true,
+        '0xe708': false,
+      },
+    });
+
+    const menuButton = queryByTestId(
+      `network-list-item-options-button-eip155:${hexToDecimal(
+        CHAIN_IDS.LINEA_MAINNET,
+      )}`,
+    );
+    fireEvent.click(menuButton);
+
+    expect(
+      queryByTestId('network-list-item-options-discover'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('disables the "Discover" button when the network is not in the list of `CHAIN_ID_PROFOLIO_LANDING_PAGE_URL_MAP`', () => {
+    const { queryByTestId } = render({
+      neNetworkDiscoverButton: {
+        '0x1': true,
+      },
+    });
+
+    const menuButton = queryByTestId(
+      `network-list-item-options-button-eip155:${hexToDecimal(
+        CHAIN_IDS.MAINNET,
+      )}`,
+    );
+    fireEvent.click(menuButton);
+
+    expect(
+      queryByTestId('network-list-item-options-discover'),
+    ).not.toBeInTheDocument();
   });
 
   describe('selectedTabOrigin is connected to wallet', () => {
@@ -321,6 +402,73 @@ describe('NetworkListMenu', () => {
       // "Linea Sepolia" should be visible, but "Sepolia" should not
       expect(queryByText('Linea Sepolia')).toBeInTheDocument();
       expect(queryByText('Sepolia')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('NetworkListMenu with REMOVE_GNS enabled', () => {
+    beforeEach(() => {
+      process.env.REMOVE_GNS = '1';
+    });
+
+    afterEach(() => {
+      delete process.env.REMOVE_GNS;
+    });
+
+    it('should not switch networks when clicking network items', () => {
+      const { getByText } = render({ selectedTabOriginInDomainsState: false });
+      fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
+
+      expect(mockToggleNetworkMenu).not.toHaveBeenCalled();
+      expect(mockSetActiveNetwork).not.toHaveBeenCalled();
+      expect(mockUpdateCustomNonce).not.toHaveBeenCalled();
+      expect(mockSetNextNonce).not.toHaveBeenCalled();
+      expect(mockDetectNfts).not.toHaveBeenCalled();
+    });
+
+    it('should not show any networks as selected', () => {
+      render({ selectedTabOriginInDomainsState: false });
+      const selectedNodes = document.querySelectorAll(
+        '.multichain-network-list-item--selected',
+      );
+      expect(selectedNodes).toHaveLength(0);
+    });
+
+    it('should still allow searching networks even when switching is disabled', () => {
+      const { getByPlaceholderText, queryByText } = render();
+
+      const searchBox = getByPlaceholderText('Search');
+      fireEvent.focus(searchBox);
+      fireEvent.change(searchBox, { target: { value: 'Main' } });
+
+      // Search should still work
+      expect(queryByText(MAINNET_DISPLAY_NAME)).toBeInTheDocument();
+      expect(queryByText('Chain 5')).not.toBeInTheDocument();
+    });
+
+    it('should not fire network switch when isAccessedFromDappConnectedSitePopover is false', () => {
+      const { getByText } = render({
+        isAccessedFromDappConnectedSitePopover: false,
+      });
+      fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
+
+      expect(mockToggleNetworkMenu).not.toHaveBeenCalled();
+      expect(mockSetActiveNetwork).not.toHaveBeenCalled();
+      expect(mockUpdateCustomNonce).not.toHaveBeenCalled();
+      expect(mockSetNextNonce).not.toHaveBeenCalled();
+      expect(mockDetectNfts).not.toHaveBeenCalled();
+    });
+
+    it('should fire network switch when isAccessedFromDappConnectedSitePopover is true', () => {
+      const { getByText } = render({
+        isAccessedFromDappConnectedSitePopover: true,
+      });
+      fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
+
+      expect(mockToggleNetworkMenu).toHaveBeenCalled();
+      expect(mockSetActiveNetwork).toHaveBeenCalled();
+      expect(mockUpdateCustomNonce).toHaveBeenCalled();
+      expect(mockSetNextNonce).toHaveBeenCalled();
+      expect(mockDetectNfts).toHaveBeenCalled();
     });
   });
 });

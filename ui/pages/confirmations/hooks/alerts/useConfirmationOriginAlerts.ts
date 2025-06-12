@@ -20,7 +20,7 @@ const useConfirmationOriginAlerts = (): Alert[] => {
     : (currentConfirmation as TransactionMeta)?.origin;
 
   const originUndefinedOrValid =
-    origin === undefined || isValidASCIIURL(origin);
+    origin === undefined || origin === 'metamask' || isValidASCIIURL(origin);
 
   return useMemo<Alert[]>((): Alert[] => {
     if (originUndefinedOrValid) {

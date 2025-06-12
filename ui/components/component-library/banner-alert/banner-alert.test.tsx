@@ -3,8 +3,8 @@ import { render } from '@testing-library/react';
 import React from 'react';
 
 import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
-
-import { BannerAlert, BannerAlertSeverity } from '.';
+import { BannerAlert } from './banner-alert';
+import { BannerAlertSeverity } from './banner-alert.types';
 
 describe('BannerAlert', () => {
   it('should render BannerAlert element correctly', () => {

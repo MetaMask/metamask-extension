@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ButtonGroup Component should match snapshot 1`] = `
+exports[`ButtonGroup Component should match snapshot with default variant 1`] = `
 <div>
   <div
     class="someClassName"
@@ -24,6 +24,39 @@ exports[`ButtonGroup Component should match snapshot 1`] = `
       aria-checked="false"
       class="button-group__button"
       data-testid="button-group__button2"
+    />
+  </div>
+</div>
+`;
+
+exports[`ButtonGroup Component should match snapshot with radiogroup variant 1`] = `
+<div>
+  <div
+    class="someClassName radio-button-group"
+    role="radiogroup"
+    style="color: red;"
+  >
+    <button
+      aria-checked="false"
+      class="radio-button-group__button"
+      data-testid="button-group__button0"
+      role="radio"
+    >
+      <div
+        class="mockClass"
+      />
+    </button>
+    <button
+      aria-checked="true"
+      class="radio-button-group__button button-group__button--active radio-button-group__button--active"
+      data-testid="button-group__button1"
+      role="radio"
+    />
+    <button
+      aria-checked="false"
+      class="radio-button-group__button"
+      data-testid="button-group__button2"
+      role="radio"
     />
   </div>
 </div>

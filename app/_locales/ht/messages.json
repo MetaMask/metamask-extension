@@ -163,17 +163,11 @@
   "from": {
     "message": "Soti nan"
   },
-  "functionType": {
-    "message": "Kalite Fonksyon"
-  },
   "gasLimit": {
     "message": "Limit gaz"
   },
   "gasLimitTooLow": {
     "message": "Limit gaz dwe omwen 21000"
-  },
-  "gasPrice": {
-    "message": "Pri gaz (GWEI)"
   },
   "gasUsed": {
     "message": "Gaz yo Itilize"
@@ -206,9 +200,6 @@
   "import": {
     "message": "Pòte",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Pòte Kont"
   },
   "importAccountMsg": {
     "message": " Kont pòte pa pral asosye avèk orijinal ou te kreye nan kont MetaMask seed fraz. Aprann plis sou kont enpòte "
@@ -260,9 +251,6 @@
   "loading": {
     "message": "Telechaje..."
   },
-  "loadingTokens": {
-    "message": "Telechaje Tokens..."
-  },
   "lock": {
     "message": "Dekonekte"
   },
@@ -313,9 +301,6 @@
   "noConversionRateAvailable": {
     "message": "Pa gen okenn Konvèsyon Disponib"
   },
-  "noTransactions": {
-    "message": "Pa gen tranzaksyon"
-  },
   "noWebcamFound": {
     "message": "Nou pakay jwenn webcam òdinatè ou. Tanpri eseye ankò."
   },
@@ -327,9 +312,6 @@
   },
   "origin": {
     "message": "Orijin"
-  },
-  "parameters": {
-    "message": "Paramèt"
   },
   "password": {
     "message": "Modpas"
@@ -448,9 +430,6 @@
   "showHexDataDescription": {
     "message": "Pran sa pouw ka montre chan entèfas hex data a"
   },
-  "sigRequest": {
-    "message": "Demann Siyati"
-  },
   "sign": {
     "message": "Siyen"
   },
@@ -526,9 +505,6 @@
   "unknown": {
     "message": "Enkoni"
   },
-  "unknownNetwork": {
-    "message": "Rezo Prive Enkoni"
-  },
   "unknownQrCode": {
     "message": "Erè: Nou pa t kapab idantifye QR kòd sa"
   },
@@ -552,9 +528,6 @@
   },
   "youNeedToAllowCameraAccess": {
     "message": "Ou bezwen bay kamera aksè pou sèvi ak fonksyon sa."
-  },
-  "youSign": {
-    "message": "Ou ap siyen kounya"
   },
   "yourPrivateSeedPhrase": {
     "message": "Seed fraz prive ou a"

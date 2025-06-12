@@ -1,9 +1,13 @@
 import React from 'react';
+import testData from '../../../../.storybook/test-data';
 import CoinButtons from './coin-buttons';
+
+const { accounts, selectedAccount } = testData.metamask.internalAccounts;
 
 export default {
   title: 'Components/App/WalletOverview/CoinButtons',
   args: {
+    account: accounts[selectedAccount],
     chainId: '1',
     trackingLocation: 'home',
     isSwapsChain: true,
@@ -20,7 +24,6 @@ export default {
       string: '0.0031',
     },
     classPrefix: 'coin',
-    iconButtonClassName: '',
   },
   component: CoinButtons,
   parameters: {

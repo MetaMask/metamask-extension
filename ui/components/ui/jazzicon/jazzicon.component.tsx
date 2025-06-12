@@ -4,7 +4,7 @@ import { KnownCaipNamespace, stringToBytes } from '@metamask/utils';
 import iconFactoryGenerator, {
   IconFactory,
 } from '../../../helpers/utils/icon-factory';
-import { getCaipNamespaceFromAddress } from '../../../../shared/lib/multichain';
+import { getCaipNamespaceFromAddress } from '../../../../shared/lib/multichain/accounts';
 
 /**
  * Generates a seed for Jazzicon based on the provided address.

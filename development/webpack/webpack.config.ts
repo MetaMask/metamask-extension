@@ -17,7 +17,9 @@ import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
+import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
+import { loadBuildTypesConfig } from '../lib/build-type';
 import { SelfInjectPlugin } from './utils/plugins/SelfInjectPlugin';
 import {
   type Manifest,
@@ -30,11 +32,11 @@ import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
-import { getBuildTypes, getVariables } from './utils/config';
+import { getVariables } from './utils/config';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 
-const buildTypes = getBuildTypes();
+const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
 if (args.dryRun) {
   console.error(getDryRunMessage(args, features));
@@ -108,10 +110,17 @@ const plugins: WebpackPluginInstance[] = [
     integrity: 'auto',
     test: /\.html$/u, // default is eta/html, we only want html
     data: {
-      isMMI: args.type === 'mmi',
       isTest: args.test,
       shouldIncludeSnow: args.snow,
     },
+    preload: [
+      {
+        attributes: { as: 'font', crossorigin: true },
+        // preload our own fonts, as other fonts use fallback formats we don't
+        // want to preload
+        test: /fonts\/\.(?:woff2)$/u,
+      },
+    ],
   }),
   new ManifestPlugin({
     web_accessible_resources: webAccessibleResources,
@@ -122,7 +131,11 @@ const plugins: WebpackPluginInstance[] = [
     version: version.version,
     versionName: version.versionName,
     browsers: args.browser,
-    transform: transformManifest(args),
+    transform: transformManifest(
+      args,
+      isDevelopment,
+      variables.get('MANIFEST_OVERRIDES') as string | undefined,
+    ),
     zip: args.zip,
     ...(args.zip
       ? {
@@ -247,6 +260,12 @@ const config = {
     rules: [
       // json
       { test: /\.json$/u, type: 'json' },
+      // treats JSON and compressed JSON files loaded via `new URL('./file.json(?:\.gz)', import.meta.url)` as assets.
+      {
+        test: /\.json(?:\.gz)?$/u,
+        dependency: 'url',
+        type: 'asset/resource',
+      },
       // own typescript, and own typescript with jsx
       {
         test: /\.(?:ts|mts|tsx)$/u,
@@ -282,6 +301,7 @@ const config = {
                 plugins: [
                   autoprefixer({ overrideBrowserslist: browsersListQuery }),
                   rtlCss({ processEnv: false }),
+                  discardFonts(['woff2']), // keep woff2 fonts
                 ],
               },
             },
@@ -323,7 +343,7 @@ const config = {
       },
       // images, fonts, wasm, etc.
       {
-        test: /\.(?:png|jpe?g|ico|webp|svg|gif|ttf|eot|woff2?|wasm)$/u,
+        test: /\.(?:png|jpe?g|ico|webp|svg|gif|woff2|wasm)$/u,
         type: 'asset/resource',
         generator: { filename: 'assets/[name].[contenthash][ext]' },
       },

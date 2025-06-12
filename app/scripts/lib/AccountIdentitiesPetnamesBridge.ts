@@ -4,7 +4,7 @@ import {
   NameType,
   NameOrigin,
 } from '@metamask/name-controller';
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   AccountsControllerChangeEvent,
   AccountsControllerListAccountsAction,

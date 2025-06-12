@@ -1,50 +1,82 @@
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-  switchToNotificationWindow,
-  WINDOW_TITLES,
-} = require('../helpers');
+const { emptyHtmlPage } = require('../mock-e2e');
+
+const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const {
+  mockDialogSnap,
+} = require('../mock-response-data/snaps/snap-binary-mocks');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
+
+async function mockSnapsWebsite(mockServer) {
+  return await mockServer
+    .forGet('https://snaps.metamask.io/')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: emptyHtmlPage(),
+      };
+    });
+}
+
+async function mockSnapBinaryAndWebsite(mockServer) {
+  return [await mockDialogSnap(mockServer), await mockSnapsWebsite(mockServer)];
+}
 
 describe('Test Snap UI Links', function () {
   it('test link in confirmation snap_dialog type', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
+        testSpecificMock: mockSnapBinaryAndWebsite,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // navigate to test snaps page and connect to dialog snap
+        // navigate to test snaps page
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
+
+        // scroll to dialogs snap
         const dialogButton = await driver.findElement('#connectdialogs');
         await driver.scrollToElement(dialogButton);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#connectdialogs');
         await driver.clickElement('#connectdialogs');
 
-        // switch to metamask extension and click connect
-        await switchToNotificationWindow(driver);
+        // switch to metamask extension
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
+        // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
-
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for and click ok and wait for window to close
         await driver.waitForSelector({ text: 'OK' });
-
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'OK',
           tag: 'button',
         });
@@ -60,10 +92,14 @@ describe('Test Snap UI Links', function () {
 
         // click conf button
         await driver.clickElement('#sendConfirmationButton');
+
+        // delay added for rendering (deflake)
         await driver.delay(500);
 
         // switch to dialog popup
-        await switchToNotificationWindow(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // delay added for rendering (deflake)
         await driver.delay(500);
 
         // wait for link to appear and click it
@@ -93,16 +129,16 @@ describe('Test Snap UI Links', function () {
         });
 
         // switch to new tab
-        await driver.switchToWindowWithTitle('MetaMask Snaps Directory');
+        await driver.switchToWindowWithTitle('E2E Test Page');
 
         // check that the correct page has been opened
         await driver.waitForSelector({
-          text: 'Most Popular',
-          tag: 'h2',
+          testId: 'empty-page-body',
+          text: 'Empty page by MetaMask',
         });
 
         // switch back to metamask window
-        await switchToNotificationWindow(driver, 4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // wait for and click approve button
         await driver.waitForSelector({

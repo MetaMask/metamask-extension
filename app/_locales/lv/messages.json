@@ -254,26 +254,11 @@
   "from": {
     "message": "No"
   },
-  "functionType": {
-    "message": "Funkcijas veids"
-  },
   "gasLimit": {
     "message": "Gas robežvērtība"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Gas robežvērtība ir maksimālais Gas vienību skaits, ko vēlaties tērēt."
-  },
   "gasLimitTooLow": {
     "message": "Minimālajai Gas robežvērtībai jābūt vismaz 21000"
-  },
-  "gasPrice": {
-    "message": "Gas cena (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Ārkārtīgi zema Gas cena"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Gas cena norāda Ether summu, ko vēlaties maksāt par katru Gas vienību."
   },
   "gasUsed": {
     "message": "Izlietotie Gas"
@@ -315,9 +300,6 @@
   "import": {
     "message": "Importēt",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "Importēt kontu"
   },
   "importAccountMsg": {
     "message": "Importētie konti netiks piesaistīti sākotnēji izveidotā MetaMask konta atkopšanas frāzei. Uzziniet vairāk par importētajiem kontiem"
@@ -381,9 +363,6 @@
   "loading": {
     "message": "Notiek ielāde..."
   },
-  "loadingTokens": {
-    "message": "Ielādē marķierus..."
-  },
   "localhost": {
     "message": "Resursdators 8545"
   },
@@ -446,9 +425,6 @@
   "noConversionRateAvailable": {
     "message": "Konversijas kurss nav pieejams"
   },
-  "noTransactions": {
-    "message": "Jums nav neviena darījuma."
-  },
   "noWebcamFound": {
     "message": "Jūsu datora tīmekļa kamera netika atrasta. Lūdzu, mēģiniet vēlreiz."
   },
@@ -472,9 +448,6 @@
   },
   "origin": {
     "message": "Avots"
-  },
-  "parameters": {
-    "message": "Parametri"
   },
   "participateInMetaMetrics": {
     "message": "Piedalieties MetaMetrics"
@@ -544,9 +517,6 @@
   "removeAccountDescription": {
     "message": "Šis darījums tiks dzēsts no jūsu maka. Pirms turpiniet, lūdzu, pārliecinieties, ka jums ir šī importētā konta oriģinālā sēklas frāze vai privātā atslēga. Jūs varat importēt vai izveidot kontus vēlreiz, izmantojot konta nolaižamo izvēlni."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "pieprasījumi, kas gaida apstiprinājumu"
-  },
   "required": {
     "message": "Nepieciešams"
   },
@@ -613,9 +583,6 @@
   },
   "showHexDataDescription": {
     "message": "Atlasiet šo, lai atvērtu hex datus sūtīšanas ekrānā"
-  },
-  "sigRequest": {
-    "message": "Paraksta pieprasījums"
   },
   "sign": {
     "message": "Parakstīt"
@@ -713,9 +680,6 @@
   "transactionErrored": {
     "message": "Darījumā radusies kļūda."
   },
-  "transactionFee": {
-    "message": "Darījuma nodeva"
-  },
   "transactionResubmitted": {
     "message": "Darījums atkārtoti iesniegts ar maksu par Gas, palielinātu līdz $1 pie $2"
   },
@@ -742,9 +706,6 @@
   },
   "unknown": {
     "message": "Nezināma"
-  },
-  "unknownNetwork": {
-    "message": "Nezināms privātais tīkls"
   },
   "unknownQrCode": {
     "message": "Kļūda: šo QR kodu neizdevās identificēt"
@@ -776,13 +737,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "Lai lietotu šo funkciju, jādod piekļuve kamerai."
   },
-  "youSign": {
-    "message": "Jūs parakstāt"
-  },
   "yourPrivateSeedPhrase": {
     "message": "Jūsu privātā atkopšanas frāze"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Gas nulles cena pie paātrinājuma"
   }
 }

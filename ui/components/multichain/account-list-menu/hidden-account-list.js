@@ -19,10 +19,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getConnectedSubjectsForAllAddresses,
   getHiddenAccountsList,
-  getInternalAccounts,
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
   getSelectedAccount,
+  getHDEntropyIndex,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -34,22 +34,22 @@ import {
   IconSize,
   Text,
 } from '../../component-library';
-import { AccountListItem } from '../account-list-item';
-import { AccountListItemMenuTypes } from '..';
-import { mergeAccounts } from './account-list-menu';
+import {
+  AccountListItem,
+  AccountListItemMenuTypes,
+} from '../account-list-item';
 
 export const HiddenAccountList = ({ onClose }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const dispatch = useDispatch();
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const internalAccounts = useSelector(getInternalAccounts);
-  const mergedAccounts = mergeAccounts(accounts, internalAccounts);
   const selectedAccount = useSelector(getSelectedAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
-  const filteredHiddenAccounts = mergedAccounts.filter((account) =>
+  const filteredHiddenAccounts = accounts.filter((account) =>
     hiddenAddresses.includes(account.address),
   );
   const [showListItem, setShowListItem] = useState(false);
@@ -121,6 +121,7 @@ export const HiddenAccountList = ({ onClose }) => {
                       event: MetaMetricsEventName.NavAccountSwitched,
                       properties: {
                         location: 'Main Menu',
+                        hd_entropy_index: hdEntropyIndex,
                       },
                     });
                     dispatch(setSelectedAccount(account.address));

@@ -69,6 +69,7 @@ export function useGasEstimates({
   // gas fees.
   let gasSettings = {
     gasLimit: decimalToHex(gasLimit),
+    gasLimitNoBuffer: transaction?.gasLimitNoBuffer,
   };
   if (supportsEIP1559) {
     gasSettings = {

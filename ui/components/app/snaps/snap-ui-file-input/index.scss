@@ -2,6 +2,7 @@
   &__file-input {
     &__drop-zone {
       background-color: var(--color-background-alternative);
+      cursor: pointer;
 
       .mm-icon,
       .mm-text {

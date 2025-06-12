@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import { parseCaipChainId } from '@metamask/utils';
-import { InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   getMultichainAccountUrl,
   getMultichainBlockExplorerUrl,
@@ -101,7 +101,6 @@ export const ViewExplorerMenuItem = ({
   const LABEL = t('viewOnExplorer');
 
   return (
-    // @ts-expect-error - TODO: Fix MenuItem props types
     <MenuItem
       onClick={() => {
         blockExplorerLinkText.firstPart === 'addBlockExplorer'

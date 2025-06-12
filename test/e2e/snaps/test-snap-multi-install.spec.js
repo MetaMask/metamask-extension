@@ -1,19 +1,22 @@
-const {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-  WINDOW_TITLES,
-} = require('../helpers');
+const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const {
+  mockBip32Snap,
+  mockBip44Snap,
+} = require('../mock-response-data/snaps/snap-binary-mocks');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
+
+async function mockSnapBinaries(mockServer) {
+  return [await mockBip32Snap(mockServer), await mockBip44Snap(mockServer)];
+}
 
 describe('Test Snap Multi Install', function () {
   it('test multi install snaps', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
+        testSpecificMock: mockSnapBinaries,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -21,20 +24,42 @@ describe('Test Snap Multi Install', function () {
 
         // navigate to test snaps page and multi-install snaps
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
+
+        // scroll to multi-install snap
         const dialogButton = await driver.findElement('#multi-install-connect');
         await driver.scrollToElement(dialogButton);
-        await driver.delay(1000);
+
+        // added delay for firefox (deflake)
+        await driver.delayFirefox(1000);
+
+        // wait for and click connect
+        await driver.waitForSelector('#multi-install-connect');
         await driver.clickElement('#multi-install-connect');
 
-        // switch to metamask extension and click connect
+        // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        // wait for and click connect
+        await driver.waitForSelector({
+          text: 'Connect',
+          tag: 'button',
+        });
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
         // wait and scroll if necessary
+        await driver.waitForSelector({
+          tag: 'h3',
+          text: 'Add to MetaMask',
+        });
         await driver.clickElementSafe(
           '[data-testid="snap-install-scroll"]',
           3000,
@@ -57,7 +82,7 @@ describe('Test Snap Multi Install', function () {
           '[data-testid="snap-install-warning-modal-confirm"]',
         );
 
-        // wait for anc click OK
+        // wait for and click OK
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElement({
           text: 'OK',
@@ -90,7 +115,7 @@ describe('Test Snap Multi Install', function () {
           '[data-testid="snap-install-warning-modal-confirm"]',
         );
 
-        // wait for anc click OK
+        // wait for and click OK
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElement({
           text: 'OK',

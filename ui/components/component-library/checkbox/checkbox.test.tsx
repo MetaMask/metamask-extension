@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { BorderColor } from '../../../helpers/constants/design-system';
-import { IconName } from '..';
-import { Checkbox } from '.';
+import { IconName } from '../icon';
+import { Checkbox } from './checkbox';
 
 describe('Checkbox', () => {
   it('should render the Checkbox without crashing', () => {

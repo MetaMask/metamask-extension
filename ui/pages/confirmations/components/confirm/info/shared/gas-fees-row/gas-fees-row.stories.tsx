@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 
 import mockState from '../../../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../../../store/store';
+import { ConfirmContextProvider } from '../../../../../context/confirm';
 import { GasFeesRow } from './gas-fees-row';
 
 function getStore() {
@@ -32,12 +33,15 @@ const Story = {
 export default Story;
 
 export const DefaultStory = () => (
-  <GasFeesRow
-    label="Some kind of fee"
-    tooltipText="Tooltip text"
-    fiatFee="$1"
-    nativeFee="0.0001 ETH"
-  />
+  <ConfirmContextProvider>
+    <GasFeesRow
+      label="Some kind of fee"
+      tooltipText="Tooltip text"
+      fiatFee="$1"
+      fiatFeeWith18SignificantDigits="0.001234"
+      nativeFee="0.0001 ETH"
+    />
+  </ConfirmContextProvider>
 );
 
 DefaultStory.storyName = 'Default';

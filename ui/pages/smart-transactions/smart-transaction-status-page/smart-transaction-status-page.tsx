@@ -26,7 +26,8 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentChainId, getFullTxData } from '../../../selectors';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getFullTxData } from '../../../selectors';
 import { BaseUrl } from '../../../../shared/constants/urls';
 import { hideLoadingIndication } from '../../../store/actions';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
@@ -338,8 +339,6 @@ export const SmartTransactionStatusPage = ({
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
-        paddingLeft={4}
-        paddingRight={4}
         width={BlockSize.Full}
         style={{ flexGrow: 1 }}
       >
@@ -347,8 +346,6 @@ export const SmartTransactionStatusPage = ({
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.center}
-          paddingLeft={6}
-          paddingRight={6}
           width={BlockSize.Full}
         >
           <SmartTransactionStatusAnimation
@@ -366,10 +363,7 @@ export const SmartTransactionStatusPage = ({
         </Box>
         {canShowSimulationDetails && (
           <Box width={BlockSize.Full}>
-            <SimulationDetails
-              simulationData={fullTxData.simulationData}
-              transactionId={fullTxData.id}
-            />
+            <SimulationDetails transaction={fullTxData} />
           </Box>
         )}
       </Box>

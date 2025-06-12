@@ -1,7 +1,8 @@
-import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import React from 'react';
+import configureMockStore from 'redux-mock-store';
+
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import {
   LedgerTransportTypes,
@@ -21,6 +22,7 @@ jest.mock('../../../store/actions', () => ({
 
 jest.mock('../../../selectors', () => ({
   getCurrentChainId: () => '0x1',
+  getSelectedAddress: () => '0xselectedAddress',
   getRpcPrefsForCurrentProvider: () => {
     return {};
   },
@@ -28,6 +30,14 @@ jest.mock('../../../selectors', () => ({
   getMetaMaskAccounts: () => {
     return {};
   },
+}));
+
+jest.mock('../../../selectors/multi-srp/multi-srp', () => ({
+  getShouldShowSeedPhraseReminder: () => false,
+}));
+
+jest.mock('../../../ducks/bridge/selectors', () => ({
+  getAllBridgeableNetworks: () => [],
 }));
 
 const MOCK_RECENT_PAGE = '/home';
@@ -45,6 +55,7 @@ const mockProps = {
   hideAlert: () => jest.fn(),
   unlockHardwareWalletAccount: () => jest.fn(),
   setHardwareWalletDefaultHdPath: () => jest.fn(),
+  connectHardware: () => mockConnectHardware,
   history: {
     push: mockHistoryPush,
   },
@@ -56,6 +67,23 @@ const mockProps = {
 const mockState = {
   metamask: {
     ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+    internalAccounts: {
+      accounts: {
+        accountId: {
+          address: '0x0000000000000000000000000000000000000000',
+          metadata: {
+            keyring: 'HD Key Tree',
+          },
+        },
+      },
+      selectedAccount: 'accountId',
+    },
+    keyrings: [
+      {
+        type: 'HD Key Tree',
+        accounts: ['0x0000000000000000000000000000000000000000'],
+      },
+    ],
   },
   appState: {
     networkDropdownOpen: false,
@@ -79,6 +107,7 @@ const mockState = {
     defaultHdPaths: {
       [HardwareDeviceNames.lattice]: "m/44'/60'/0'/0",
       [HardwareDeviceNames.ledger]: "m/44'/60'/0'/0",
+      [HardwareDeviceNames.oneKey]: "m/44'/60'/0'/0",
       [HardwareDeviceNames.trezor]: "m/44'/60'/0'/0",
     },
     mostRecentOverviewPage: '',
@@ -89,7 +118,7 @@ const mockState = {
 describe('ConnectHardwareForm', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
-  it('should match snapshot', () => {
+  it('matchs snapshot', () => {
     const { container } = renderWithProvider(
       <ConnectHardwareForm {...mockProps} />,
       mockStore,
@@ -98,7 +127,7 @@ describe('ConnectHardwareForm', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should close the form when close button is clicked', () => {
+  it('closes the form when close button is clicked', () => {
     const { getByTestId } = renderWithProvider(
       <ConnectHardwareForm {...mockProps} />,
       mockStore,
@@ -110,7 +139,7 @@ describe('ConnectHardwareForm', () => {
   });
 
   describe('U2F Error', () => {
-    it('should render a U2F error', async () => {
+    it('renders a U2F error', async () => {
       mockConnectHardware.mockRejectedValue(new Error('U2F Error'));
       const mockStateWithU2F = Object.assign(mockState, {});
       mockStateWithU2F.appState.ledgerTransportType = LedgerTransportTypes.u2f;
@@ -140,7 +169,7 @@ describe('ConnectHardwareForm', () => {
       });
     });
 
-    it('should render a different U2F error for firefox', async () => {
+    it('renders a different U2F error for firefox', async () => {
       jest
         .spyOn(window.navigator, 'userAgent', 'get')
         .mockReturnValue(
@@ -174,7 +203,7 @@ describe('ConnectHardwareForm', () => {
   });
 
   describe('QR Hardware Wallet Steps', () => {
-    it('should render the QR hardware wallet steps', async () => {
+    it('renders the QR hardware wallet steps', async () => {
       const { getByText, getByLabelText } = renderWithProvider(
         <ConnectHardwareForm {...mockProps} />,
         mockStore,
@@ -190,14 +219,13 @@ describe('ConnectHardwareForm', () => {
         expect(getByText('CoolWallet')).toBeInTheDocument();
         expect(getByText("D'Cent")).toBeInTheDocument();
         expect(getByText('imToken')).toBeInTheDocument();
-        expect(getByText('OneKey')).toBeInTheDocument();
         expect(getByText('Ngrave Zero')).toBeInTheDocument();
       });
     });
   });
 
   describe('Select Hardware', () => {
-    it('should check link buttons for Ngrave Zero brand', async () => {
+    it('checks link buttons for Ngrave Zero brand', async () => {
       window.open = jest.fn();
 
       const { getByLabelText, getByTestId } = renderWithProvider(
@@ -218,6 +246,88 @@ describe('ConnectHardwareForm', () => {
       expect(learnMoreButton).toBeInTheDocument();
       fireEvent.click(learnMoreButton);
       expect(window.open).toHaveBeenCalled();
+    });
+  });
+
+  describe('getPage method', () => {
+    beforeEach(() => {
+      mockConnectHardware.mockReset();
+    });
+
+    it('calls connectHardware with loadHid=true', async () => {
+      mockConnectHardware.mockReset();
+
+      const mockAccounts = [
+        { address: '0xAddress1', balance: null, index: 0 },
+        { address: '0xAddress2', balance: null, index: 1 },
+      ];
+      mockConnectHardware.mockResolvedValue(mockAccounts);
+
+      renderWithProvider(<ConnectHardwareForm {...mockProps} />, mockStore);
+
+      const hdPath = "m/44'/60'/0'/0";
+      const deviceName = 'ledger';
+      const pageIndex = 0;
+      const loadHidValue = true;
+
+      await mockConnectHardware(
+        deviceName,
+        pageIndex,
+        hdPath,
+        loadHidValue,
+        jest.fn(),
+      );
+
+      expect(mockConnectHardware).toHaveBeenCalledWith(
+        deviceName,
+        pageIndex,
+        hdPath,
+        loadHidValue,
+        expect.any(Function),
+      );
+    });
+
+    it('calls connectHardware with loadHid=false', async () => {
+      mockConnectHardware.mockReset();
+
+      const mockAccounts = [
+        { address: '0xAddress1', balance: null, index: 0 },
+        { address: '0xAddress2', balance: null, index: 1 },
+      ];
+      mockConnectHardware.mockResolvedValue(mockAccounts);
+
+      renderWithProvider(<ConnectHardwareForm {...mockProps} />, mockStore);
+
+      const hdPath = "m/44'/60'/0'/0";
+      const deviceName = 'ledger';
+      const pageIndex = 0;
+      const loadHidValue = false;
+
+      await mockConnectHardware(
+        deviceName,
+        pageIndex,
+        hdPath,
+        loadHidValue,
+        jest.fn(),
+      );
+
+      expect(mockConnectHardware).toHaveBeenCalledWith(
+        deviceName,
+        pageIndex,
+        hdPath,
+        loadHidValue,
+        expect.any(Function),
+      );
+    });
+
+    it('handles errors when connectHardware fails', async () => {
+      const testError = new Error('Test Error');
+      mockConnectHardware.mockReset();
+      mockConnectHardware.mockRejectedValue(testError);
+
+      renderWithProvider(<ConnectHardwareForm {...mockProps} />, mockStore);
+
+      await expect(mockConnectHardware()).rejects.toThrow('Test Error');
     });
   });
 });

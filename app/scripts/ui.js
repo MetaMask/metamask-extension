@@ -1,7 +1,11 @@
 // Disabled to allow setting up initial state hooks first
 
+// This import sets up safe intrinsics required for LavaDome to function securely.
+// It must be run before any less trusted code so that no such code can undermine it.
+import '@lavamoat/lavadome-react';
+
 // This import sets up global functions required for Sentry to function.
-// It must be run first in case an error is thrown later during initialization.
+// It must be run as soon as possible in case an error is thrown later during initialization.
 import './lib/setup-initial-state-hooks';
 import '../../development/wdyr';
 
@@ -11,13 +15,17 @@ import 'react-devtools';
 import PortStream from 'extension-port-stream';
 import browser from 'webextension-polyfill';
 
-import Eth from '@metamask/ethjs';
-import EthQuery from '@metamask/eth-query';
-import StreamProvider from 'web3-stream-provider';
+import { StreamProvider } from '@metamask/providers';
+import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import log from 'loglevel';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import launchMetaMaskUi, { updateBackgroundConnection } from '../../ui';
+// Import to set up global `Promise.withResolvers` polyfill
+import '../../shared/lib/promise-with-resolvers';
+import launchMetaMaskUi, {
+  updateBackgroundConnection,
+  displayStateCorruptionError,
+  // TODO: Remove restricted import
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../ui';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
@@ -28,6 +36,7 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import { getErrorHtml } from '../../shared/lib/error-utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
+import { METHOD_DISPLAY_STATE_CORRUPTION_ERROR } from '../../shared/constants/state-corruption';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -87,7 +96,7 @@ async function start() {
 
   /*
    * In case of MV3 the issue of blank screen was very frequent, it is caused by UI initialising before background is ready to send state.
-   * Code below ensures that UI is rendered only after "CONNECTION_READY" or "startUISync"
+   * Code below ensures that UI is rendered only after "startUISync"
    * messages are received thus the background is ready, and ensures that streams and
    * phishing warning page load only after the "startUISync" message is received.
    * In case the UI is already rendered, only update the streams.
@@ -95,16 +104,27 @@ async function start() {
   const messageListener = async (message) => {
     const method = message?.data?.method;
 
-    if (method !== METHOD_START_UI_SYNC) {
-      return;
+    switch (method) {
+      case METHOD_START_UI_SYNC:
+        await handleStartUISync();
+        break;
+      case METHOD_DISPLAY_STATE_CORRUPTION_ERROR:
+        handleDisplayStateCorruptionError(message.data.params);
+        break;
+      case 'RELOAD':
+        window.location.reload();
+        break;
+      default:
     }
+  };
 
+  async function handleStartUISync() {
     endTrace({ name: TraceName.BackgroundConnect });
 
     if (isManifestV3 && isUIInitialised) {
       // Currently when service worker is revived we create new streams
       // in later version we might try to improve it by reviving same streams.
-      updateUiStreams();
+      updateUiStreams(connectionStream);
     } else {
       await initializeUiWithTab(
         activeTab,
@@ -119,7 +139,30 @@ async function start() {
     } else {
       extensionPort.onMessage.removeListener(messageListener);
     }
-  };
+  }
+
+  /**
+   * @typedef {import('../../shared/constants/errors').ErrorLike} ErrorLike
+   */
+
+  /**
+   * Updates the DOM with the state corruption error UI.
+   *
+   * @param {{ error: ErrorLike, hasBackup: boolean, currentLocale?: string }} params
+   */
+  function handleDisplayStateCorruptionError({
+    error,
+    hasBackup,
+    currentLocale,
+  }) {
+    displayStateCorruptionError(
+      container,
+      extensionPort,
+      error,
+      hasBackup,
+      currentLocale,
+    );
+  }
 
   if (isManifestV3) {
     // resetExtensionStreamAndListeners takes care to remove listeners from closed streams
@@ -357,13 +400,14 @@ function connectToAccountManager(connectionStream) {
  * @param {PortDuplexStream} connectionStream - PortStream instance establishing a background connection
  */
 function setupWeb3Connection(connectionStream) {
-  const providerStream = new StreamProvider();
-  providerStream.pipe(connectionStream).pipe(providerStream);
+  const providerStream = new StreamProvider(connectionStream, {
+    rpcMiddleware: [createIdRemapMiddleware()],
+  });
   connectionStream.on('error', console.error.bind(console));
   providerStream.on('error', console.error.bind(console));
-  global.ethereumProvider = providerStream;
-  global.ethQuery = new EthQuery(providerStream);
-  global.eth = new Eth(providerStream);
+  providerStream.initialize().then(() => {
+    global.ethereumProvider = providerStream;
+  });
 }
 
 /**

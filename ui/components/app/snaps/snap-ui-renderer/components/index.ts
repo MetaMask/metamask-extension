@@ -26,8 +26,15 @@ import { container } from './container';
 import { selector } from './selector';
 import { icon } from './icon';
 import { section } from './section';
+import { avatar } from './avatar';
+import { banner } from './banner';
+import { skeleton } from './skeleton';
+import { addressInput } from './address-input';
+import { assetSelector } from './asset-selector';
+import { accountSelector } from './account-selector';
 
 export const COMPONENT_MAPPING = {
+  AssetSelector: assetSelector,
   Box: box,
   Heading: heading,
   Text: text,
@@ -38,6 +45,8 @@ export const COMPONENT_MAPPING = {
   Copyable: copyable,
   Row: row,
   Address: address,
+  AddressInput: addressInput,
+  Avatar: avatar,
   Button: button,
   FileInput: fileInput,
   Form: form,
@@ -56,4 +65,9 @@ export const COMPONENT_MAPPING = {
   Container: container,
   Selector: selector,
   Section: section,
+  Banner: banner,
+  Skeleton: skeleton,
+  AccountSelector: accountSelector,
 };
+
+export type COMPONENT_MAPPING = typeof COMPONENT_MAPPING;

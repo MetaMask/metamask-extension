@@ -1,7 +1,10 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
+import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/jest';
 import PermissionConnectHeader from './permission-connect-header';
+
+const STORE_MOCK = configureMockStore()({ metamask: { pendingApprovals: {} } });
 
 describe('Permission Connect Header', () => {
   const mockOriginData = {
@@ -17,6 +20,7 @@ describe('Permission Connect Header', () => {
         origin={mockOriginData.origin}
         iconUrl={mockOriginData.iconUrl}
       />,
+      STORE_MOCK,
     );
 
     expect(screen.getByText(expectedTitle)).toBeInTheDocument();
@@ -33,6 +37,7 @@ describe('Permission Connect Header', () => {
         origin={mockOriginData.origin}
         iconUrl={undefined}
       />,
+      STORE_MOCK,
     );
 
     expect(screen.getByText(expectedTitle)).toBeInTheDocument();

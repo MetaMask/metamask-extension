@@ -5,11 +5,15 @@ import {
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
-import { ButtonLink, ButtonPrimary, IconName, Box, ButtonLinkSize } from '..';
 
 import README from './README.mdx';
 
-import { BannerAlert, BannerAlertSeverity } from '.';
+import { BannerAlert } from './banner-alert';
+import { BannerAlertSeverity } from './banner-alert.types';
+import { Box } from '../box';
+import { ButtonLink, ButtonLinkSize } from '../button-link';
+import { IconName } from '../icon';
+import { ButtonPrimary } from '../button-primary';
 
 export default {
   title: 'Components/ComponentLibrary/BannerAlert',

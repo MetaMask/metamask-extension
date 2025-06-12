@@ -1,4 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -38,7 +41,26 @@ export const WalletInitiatedHeader = () => {
   const handleBackButtonClick = useCallback(async () => {
     const { id } = currentConfirmation;
 
-    await dispatch(editExistingTransaction(AssetType.token, id.toString()));
+    const isNativeSend =
+      currentConfirmation.type === TransactionType.simpleSend;
+    const isERC20TokenSend =
+      currentConfirmation.type === TransactionType.tokenMethodTransfer;
+    const isNFTTokenSend =
+      currentConfirmation.type === TransactionType.tokenMethodTransferFrom ||
+      currentConfirmation.type === TransactionType.tokenMethodSafeTransferFrom;
+
+    let assetType: AssetType;
+    if (isNativeSend) {
+      assetType = AssetType.native;
+    } else if (isERC20TokenSend) {
+      assetType = AssetType.token;
+    } else if (isNFTTokenSend) {
+      assetType = AssetType.NFT;
+    } else {
+      assetType = AssetType.unknown;
+    }
+
+    await dispatch(editExistingTransaction(assetType, id.toString()));
     dispatch(clearConfirmTransaction());
     dispatch(showSendTokenPage());
 
@@ -59,6 +81,8 @@ export const WalletInitiatedHeader = () => {
         iconName={IconName.ArrowLeft}
         ariaLabel={t('back')}
         size={ButtonIconSize.Md}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={handleBackButtonClick}
         data-testid="wallet-initiated-header-back-button"
         color={IconColor.iconDefault}

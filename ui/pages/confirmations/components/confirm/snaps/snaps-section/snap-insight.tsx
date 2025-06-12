@@ -7,6 +7,7 @@ import {
   TextColor,
   TextVariant,
   FontWeight,
+  BackgroundColor,
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { getSnapMetadata } from '../../../../../../selectors';
@@ -16,16 +17,17 @@ export type SnapInsightProps = {
   snapId: string;
   interfaceId: string;
   loading: boolean;
+  isExpanded?: boolean | undefined;
 };
 
 export const SnapInsight: React.FunctionComponent<SnapInsightProps> = ({
   snapId,
   interfaceId,
   loading,
+  isExpanded,
 }) => {
   const t = useI18nContext();
   const { name: snapName } = useSelector((state) =>
-    /* @ts-expect-error wrong type on selector. */
     getSnapMetadata(state, snapId),
   );
 
@@ -57,6 +59,7 @@ export const SnapInsight: React.FunctionComponent<SnapInsightProps> = ({
     <Delineator
       headerComponent={headerComponent}
       isLoading={loading}
+      isExpanded={isExpanded}
       contentBoxProps={
         loading
           ? undefined
@@ -72,7 +75,7 @@ export const SnapInsight: React.FunctionComponent<SnapInsightProps> = ({
         snapId={snapId}
         interfaceId={interfaceId}
         isLoading={loading}
-        useDelineator={false}
+        contentBackgroundColor={BackgroundColor.backgroundDefault}
       />
     </Delineator>
   );

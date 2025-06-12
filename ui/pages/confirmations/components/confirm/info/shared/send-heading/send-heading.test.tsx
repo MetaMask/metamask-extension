@@ -5,6 +5,12 @@ import { getMockTokenTransferConfirmState } from '../../../../../../../../test/d
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import SendHeading from './send-heading';
 
+jest.mock('../../../../../hooks/useAssetDetails', () => ({
+  useAssetDetails: jest.fn(() => ({
+    decimals: 18,
+  })),
+}));
+
 describe('<SendHeading />', () => {
   const middleware = [thunk];
   const state = getMockTokenTransferConfirmState({});

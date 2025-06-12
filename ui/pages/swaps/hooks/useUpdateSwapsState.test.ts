@@ -13,9 +13,9 @@ import {
   setTopAssets,
 } from '../../../ducks/swaps/swaps';
 import { setSwapsTokens } from '../../../store/actions';
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
   checkNetworkAndAccountSupports1559,
-  getCurrentChainId,
   getIsSwapsChain,
   getUseExternalServices,
 } from '../../../selectors';
@@ -96,7 +96,7 @@ describe('useUpdateSwapsState', () => {
     );
 
     expect(mockDispatch).toHaveBeenCalledWith(
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setSwapsTokens(['token1', 'token2'] as any),
     );
@@ -134,7 +134,7 @@ describe('useUpdateSwapsState', () => {
     );
 
     expect(mockDispatch).toHaveBeenCalledWith(
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setSwapsTokens(['token1', 'token2'] as any),
     );

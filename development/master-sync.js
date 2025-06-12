@@ -51,8 +51,8 @@ async function runGitCommands() {
     console.log('Executed: git reset --hard origin/master');
 
     try {
-      await exec('git merge origin/develop');
-      console.log('Executed: git merge origin/develop');
+      await exec('git merge origin/main');
+      console.log('Executed: git merge origin/main');
     } catch (error) {
       // Handle the error but continue script execution
       if (
@@ -70,11 +70,11 @@ async function runGitCommands() {
     }
 
     await exec('git add .');
-    await exec('git restore --source origin/develop .');
-    console.log('Executed: it restore --source origin/develop .');
+    await exec('git restore --source origin/main .');
+    console.log('Executed: it restore --source origin/main .');
 
-    await exec('git checkout origin/develop -- .');
-    console.log('Executed: git checkout origin/develop -- .');
+    await exec('git checkout origin/main -- .');
+    console.log('Executed: git checkout origin/main -- .');
 
     await exec('git checkout origin/master -- CHANGELOG.md');
     console.log('Executed: git checkout origin/master -- CHANGELOG.md');
@@ -91,7 +91,7 @@ async function runGitCommands() {
     await exec('git add .');
     console.log('Executed: git add .');
 
-    await exec('git commit -m "Merge origin/develop into master-sync"');
+    await exec('git commit -m "Merge origin/main into master-sync"');
     console.log('Executed: git commit');
 
     console.log('Your local master-sync branch is now ready to become a PR.');

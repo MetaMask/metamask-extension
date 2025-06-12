@@ -13,13 +13,14 @@ import * as allLocales from './locales';
 import { I18nProvider, LegacyI18nProvider } from './i18n';
 import MetaMetricsProviderStorybook from './metametrics';
 import testData from './test-data.js';
-import { Router } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
+import { MemoryRouter } from 'react-router-dom';
+import { CompatRouter } from 'react-router-dom-v5-compat';
 import { setBackgroundConnection } from '../ui/store/background-connection';
 import { metamaskStorybookTheme } from './metamask-storybook-theme';
 import { DocsContainer } from '@storybook/addon-docs';
 import { themes } from '@storybook/theming';
 import { AlertMetricsProvider } from '../ui/components/app/alert-system/contexts/alertMetricsContext';
+import './index.css';
 
 // eslint-disable-next-line
 /* @ts-expect-error: Avoids error from window property not existing */
@@ -107,7 +108,6 @@ export const getNewState = (state, props) => {
 };
 
 export const store = configureStore(testData);
-const history = createBrowserHistory();
 const proxiedBackground = new Proxy(
   {},
   {
@@ -147,25 +147,27 @@ const metamaskDecorator = (story, context) => {
 
   return (
     <Provider store={store}>
-      <Router history={history}>
-        <MetaMetricsProviderStorybook>
-          <AlertMetricsProvider
-            metrics={{
-              trackAlertActionClicked: () => undefined,
-              trackAlertRender: () => undefined,
-              trackInlineAlertClicked: () => undefined,
-            }}
-          >
-            <I18nProvider
-              currentLocale={currentLocale}
-              current={current}
-              en={allLocales.en}
+      <MemoryRouter>
+        <CompatRouter>
+          <MetaMetricsProviderStorybook>
+            <AlertMetricsProvider
+              metrics={{
+                trackAlertActionClicked: () => undefined,
+                trackAlertRender: () => undefined,
+                trackInlineAlertClicked: () => undefined,
+              }}
             >
-              <LegacyI18nProvider>{story()}</LegacyI18nProvider>
-            </I18nProvider>
-          </AlertMetricsProvider>
-        </MetaMetricsProviderStorybook>
-      </Router>
+              <I18nProvider
+                currentLocale={currentLocale}
+                current={current}
+                en={allLocales.en}
+              >
+                <LegacyI18nProvider>{story()}</LegacyI18nProvider>
+              </I18nProvider>
+            </AlertMetricsProvider>
+          </MetaMetricsProviderStorybook>
+        </CompatRouter>
+      </MemoryRouter>
     </Provider>
   );
 };
@@ -184,7 +186,6 @@ const withColorScheme = (Story, context) => {
       <div
         {...props}
         style={{
-          display: 'flex',
           padding: '1rem',
           backgroundColor: 'var(--color-background-default)',
           color: 'var(--color-text-default)',

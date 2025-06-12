@@ -7,14 +7,30 @@ import type { SelfInjectPluginOptions, Source, Compiler } from './types';
 export { type SelfInjectPluginOptions } from './types';
 
 /**
+ * Generates a runtime URL expression for a given path.
+ *
+ * This function constructs a URL string using the `runtime.getURL` method
+ * from either the `globalThis.browser` or `chrome` object, depending on
+ * which one is available in the global scope.
+ *
+ * @param path - The path of the runtime URL.
+ * @returns The constructed runtime URL string.
+ */
+const getRuntimeURLExpression = (path: string) =>
+  `(globalThis.browser||chrome).runtime.getURL(${JSON.stringify(path)})`;
+
+/**
  * Default options for the SelfInjectPlugin.
  */
 const defaultOptions = {
   // The default `sourceUrlExpression` is configured for browser extensions.
   // It generates the absolute url of the given file as an extension url.
   // e.g., `chrome-extension://<extension-id>/scripts/inpage.js`
-  sourceUrlExpression: (filename: string) =>
-    `(globalThis.browser||chrome).runtime.getURL(${JSON.stringify(filename)})`,
+  sourceUrlExpression: getRuntimeURLExpression,
+  // The default `nonceExpression` is configured for browser extensions.
+  // It generates the absolute url of a path as an extension url in base64.
+  // e.g., `Y2hyb21lLWV4dGVuc2lvbjovLzxleHRlbnNpb24taWQ+Lw==`
+  nonceExpression: (path: string) => `btoa(${getRuntimeURLExpression(path)})`,
 } satisfies SelfInjectPluginOptions;
 
 /**
@@ -142,6 +158,7 @@ export class SelfInjectPlugin {
       `\`\\n//# sourceURL=\${${this.options.sourceUrlExpression(file)}};\``,
     );
     newSource.add(`;`);
+    newSource.add(`s.nonce=${this.options.nonceExpression('/')};`);
     // add and immediately remove the script to avoid modifying the DOM.
     newSource.add(`d.documentElement.appendChild(s).remove()`);
     newSource.add(`}`);

@@ -1,9 +1,6 @@
 const fs = require('fs');
+const path = require('path');
 
-const {
-  BRIDGE_DEV_API_BASE_URL,
-  BRIDGE_PROD_API_BASE_URL,
-} = require('../../shared/constants/bridge');
 const {
   ACCOUNTS_DEV_API_BASE_URL,
   ACCOUNTS_PROD_API_BASE_URL,
@@ -13,9 +10,14 @@ const {
   SWAPS_API_V2_BASE_URL,
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
+const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
 const {
-  DEFAULT_FEATURE_FLAGS_RESPONSE: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
-} = require('./tests/bridge/constants');
+  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+  MOCK_META_METRICS_ID,
+} = require('./constants');
+const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
+
+const { ALLOWLISTED_HOSTS, ALLOWLISTED_URLS } = require('./mock-e2e-allowlist');
 
 const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
 const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
@@ -30,13 +32,52 @@ const CDN_STALE_DIFF_RES_HEADERS_PATH =
 const CDN_STALE_RES_HEADERS_PATH =
   'test/e2e/mock-cdn/cdn-stale-res-headers.json';
 
+const ACCOUNTS_API_TOKENS_PATH =
+  'test/e2e/mock-response-data/accounts-api-tokens.json';
 const AGGREGATOR_METADATA_PATH =
   'test/e2e/mock-response-data/aggregator-metadata.json';
+const CHAIN_ID_NETWORKS_PATH =
+  'test/e2e/mock-response-data/chain-id-network-chains.json';
+const CLIENT_SIDE_DETECTION_BLOCKLIST_PATH =
+  'test/e2e/mock-response-data/client-side-detection-blocklist.json';
+const ON_RAMP_CONTENT_PATH = 'test/e2e/mock-response-data/on-ramp-content.json';
+const TEST_DAPP_STYLES_1_PATH =
+  'test/e2e/mock-response-data/test-dapp-styles-1.txt';
+const TEST_DAPP_STYLES_2_PATH =
+  'test/e2e/mock-response-data/test-dapp-styles-2.txt';
 const TOKEN_BLOCKLIST_PATH = 'test/e2e/mock-response-data/token-blocklist.json';
 
-const blacklistedHosts = [
+const snapsExecutionEnvBasePath = path.dirname(
+  require.resolve('@metamask/snaps-execution-environments/package.json'),
+);
+const snapsExecutionEnvHtmlPath = path.join(
+  snapsExecutionEnvBasePath,
+  'dist',
+  'webpack',
+  'iframe',
+  'index.html',
+);
+const snapsExecutionEnvHtml = fs.readFileSync(
+  snapsExecutionEnvHtmlPath,
+  'utf-8',
+);
+
+const snapsExecutionEnvJsPath = path.join(
+  snapsExecutionEnvBasePath,
+  'dist',
+  'webpack',
+  'iframe',
+  'bundle.js',
+);
+const snapsExecutionEnvJs = fs.readFileSync(snapsExecutionEnvJsPath, 'utf-8');
+
+const blocklistedHosts = [
   'arbitrum-mainnet.infura.io',
-  'goerli.infura.io',
+  'bsc-dataseed.binance.org',
+  'linea-mainnet.infura.io',
+  'linea-sepolia.infura.io',
+  'testnet-rpc.monad.xyz',
+  'carrot.megaeth.com',
   'mainnet.infura.io',
   'sepolia.infura.io',
 ];
@@ -44,6 +85,7 @@ const {
   mockEmptyStalelistAndHotlist,
 } = require('./tests/phishing-controller/mocks');
 const { mockNotificationServices } = require('./tests/notifications/mocks');
+const { mockIdentityServices } = require('./tests/identity/mocks');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
 <html lang="en">
@@ -65,6 +107,23 @@ const emptyHtmlPage = () => `<!DOCTYPE html>
  */
 const browserAPIRequestDomains =
   /^.*\.(googleapis\.com|google\.com|mozilla\.net|mozilla\.com|mozilla\.org|gvt1\.com)$/iu;
+
+/**
+ * Some third-party providers might use random URLs that we don't want to track
+ * in the privacy report "in clear". We identify those private hosts with a
+ * `pattern` regexp and replace the original host by a more generic one (`host`).
+ * For example, "my-secret-host.provider.com" could be denoted as "*.provider.com" in
+ * the privacy report. This would prevent disclosing the "my-secret-host" subdomain
+ * in this case.
+ */
+const privateHostMatchers = [
+  // { pattern: RegExp, host: string }
+  { pattern: /^.*\.btc.*\.quiknode\.pro$/iu, host: '*.btc*.quiknode.pro' },
+  {
+    pattern: /^.*-solana.*-.*\.mainnet\.rpcpool\.com/iu,
+    host: '*solana*.mainnet.rpcpool.com',
+  },
+];
 
 /**
  * @typedef {import('mockttp').Mockttp} Mockttp
@@ -90,23 +149,34 @@ const browserAPIRequestDomains =
 async function setupMocking(
   server,
   testSpecificMock,
-  { chainId, ethConversionInUsd = '1700' },
+  { chainId, ethConversionInUsd = 1700 },
 ) {
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
-    beforeRequest: (req) => {
-      const { host } = req.headers;
-      if (blacklistedHosts.includes(host)) {
+    beforeRequest: ({ headers: { host }, url }) => {
+      if (blocklistedHosts.includes(host)) {
         return {
           url: 'http://localhost:8545',
         };
+      } else if (
+        ALLOWLISTED_URLS.includes(url) ||
+        ALLOWLISTED_HOSTS.includes(host)
+      ) {
+        // If the URL or the host is in the allowlist, we pass the request as it is, to the live server.
+        console.log('Request going to a live server ============', url);
+        return {};
       }
-      return {};
+      console.log('Request redirected to the catch all mock ============', url);
+      return {
+        // If the URL or the host is not in the allowlsit nor blocklisted, we return a 200.
+        response: {
+          statusCode: 200,
+        },
+      };
     },
   });
 
   const mockedEndpoint = await testSpecificMock(server);
-
   // Mocks below this line can be overridden by test-specific mocks
 
   // Account link
@@ -137,6 +207,23 @@ async function setupMocking(
       body: emptyHtmlPage(),
     };
   });
+
+  await server
+    .forPost(
+      `${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x${chainId.toString(16)}`,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          block: 20733513,
+          result_type: 'Benign',
+          reason: '',
+          description: '',
+          features: [],
+        },
+      };
+    });
 
   await server
     .forPost(
@@ -202,8 +289,9 @@ async function setupMocking(
       };
     });
 
+  const targetChainId = chainId === 1337 ? 1 : chainId;
   await server
-    .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/gasPrices`)
+    .forGet(`${GAS_API_BASE_URL}/networks/${targetChainId}/gasPrices`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -267,55 +355,66 @@ async function setupMocking(
       };
     });
 
+  // This endpoint returns metadata for "transaction simulation" supported networks.
+  await server.forGet(`${TX_SENTINEL_URL}/networks`).thenJson(200, {
+    1: {
+      name: 'Mainnet',
+      group: 'ethereum',
+      chainID: 1,
+      nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+      network: 'ethereum-mainnet',
+      explorer: 'https://etherscan.io',
+      confirmations: true,
+      smartTransactions: true,
+      hidden: false,
+    },
+  });
+  await server.forGet(`${TX_SENTINEL_URL}/network`).thenJson(200, {
+    name: 'Mainnet',
+    group: 'ethereum',
+    chainID: 1,
+    nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+    network: 'ethereum-mainnet',
+    explorer: 'https://etherscan.io',
+    confirmations: true,
+    smartTransactions: true,
+    hidden: false,
+  });
+
   await server
     .forGet(`${SWAPS_API_V2_BASE_URL}/featureFlags`)
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: [
-          {
-            ethereum: {
-              fallbackToV1: false,
-              mobileActive: true,
-              extensionActive: true,
-            },
-            bsc: {
-              fallbackToV1: false,
-              mobileActive: true,
-              extensionActive: true,
-            },
-            polygon: {
-              fallbackToV1: false,
-              mobileActive: true,
-              extensionActive: true,
-            },
-            avalanche: {
-              fallbackToV1: false,
-              mobileActive: true,
-              extensionActive: true,
-            },
-            smartTransactions: {
-              mobileActive: false,
-              extensionActive: false,
-            },
-            updated_at: '2022-03-17T15:54:00.360Z',
+        json: {
+          ethereum: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
           },
-        ],
+          bsc: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
+          },
+          polygon: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
+          },
+          avalanche: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
+          },
+          smartTransactions: {
+            mobileActive: false,
+            extensionActive: true,
+          },
+          updated_at: '2022-03-17T15:54:00.360Z',
+        },
       };
     });
-
-  [
-    `${BRIDGE_DEV_API_BASE_URL}/getAllFeatureFlags`,
-    `${BRIDGE_PROD_API_BASE_URL}/getAllFeatureFlags`,
-  ].forEach(
-    async (url) =>
-      await server.forGet(url).thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: BRIDGE_DEFAULT_FEATURE_FLAGS_RESPONSE,
-        };
-      }),
-  );
 
   [
     `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-id/surveys`,
@@ -341,8 +440,8 @@ async function setupMocking(
 
   let surveyCallCount = 0;
   [
-    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/fake-metrics-id-power-user/surveys`,
-    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/fake-metrics-id-power-user/surveys`,
+    `${ACCOUNTS_DEV_API_BASE_URL}/v1/users/${MOCK_META_METRICS_ID}/surveys`,
+    `${ACCOUNTS_PROD_API_BASE_URL}/v1/users/${MOCK_META_METRICS_ID}/surveys`,
   ].forEach(
     async (url) =>
       await server.forGet(url).thenCallback(() => {
@@ -470,7 +569,7 @@ async function setupMocking(
             decimals: 18,
             name: 'Dai Stablecoin',
             iconUrl:
-              'https://crypto.com/price/coin-data/icon/DAI/color_icon.png',
+              'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x6b175474e89094c44da98b954eedeac495271d0f.png',
             type: 'erc20',
             aggregators: [
               'aave',
@@ -497,7 +596,7 @@ async function setupMocking(
             decimals: 6,
             name: 'USD Coin',
             iconUrl:
-              'https://crypto.com/price/coin-data/icon/USDC/color_icon.png',
+              'https://static.cx.metamask.io/api/v1/tokenIcons/1/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
             type: 'erc20',
             aggregators: [
               'aave',
@@ -577,13 +676,15 @@ async function setupMocking(
   });
 
   await server
-    .forGet('https://min-api.cryptocompare.com/data/price')
-    .withQuery({ fsym: 'ETH', tsyms: 'USD' })
+    .forGet('https://min-api.cryptocompare.com/data/pricemulti')
+    .withQuery({ fsyms: 'ETH', tsyms: 'usd' })
     .thenCallback(() => {
       return {
         statusCode: 200,
         json: {
-          USD: ethConversionInUsd,
+          ETH: {
+            USD: ethConversionInUsd,
+          },
         },
       };
     });
@@ -689,11 +790,215 @@ async function setupMocking(
   // Notification APIs
   await mockNotificationServices(server);
 
+  // Identity APIs
+  await mockIdentityServices(server);
+
   await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
     return {
       statusCode: 404,
     };
   });
+
+  // remote feature flags
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: [
+          { feature1: true },
+          { feature2: false },
+          {
+            feature3: [
+              {
+                value: 'valueA',
+                name: 'groupA',
+                scope: { type: 'threshold', value: 0.3 },
+              },
+              {
+                value: 'valueB',
+                name: 'groupB',
+                scope: { type: 'threshold', value: 0.5 },
+              },
+              {
+                scope: { type: 'threshold', value: 1 },
+                value: 'valueC',
+                name: 'groupC',
+              },
+            ],
+          },
+        ],
+      };
+    });
+
+  // On Ramp Content
+  const ON_RAMP_CONTENT = fs.readFileSync(ON_RAMP_CONTENT_PATH);
+  await server
+    .forGet('https://on-ramp-content.api.cx.metamask.io/regions/networks')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(ON_RAMP_CONTENT),
+      };
+    });
+
+  // Chains Metadata
+  const CHAIN_ID_NETWORKS = fs.readFileSync(CHAIN_ID_NETWORKS_PATH);
+  await server
+    .forGet('https://chainid.network/chains.json')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(CHAIN_ID_NETWORKS),
+      };
+    });
+
+  // Accounts API: supported networks
+  await server
+    .forGet('https://accounts.api.cx.metamask.io/v1/supportedNetworks')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          fullSupport: [1, 137, 56, 59144, 8453, 10, 42161, 534352],
+          partialSupport: {
+            balances: [42220, 43114],
+          },
+        },
+      };
+    });
+
+  // Accounts API: tokens
+  const ACCOUNTS_API_TOKENS = fs.readFileSync(ACCOUNTS_API_TOKENS_PATH);
+  await server
+    .forGet('https://account.api.cx.metamask.io/networks')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(ACCOUNTS_API_TOKENS),
+      };
+    });
+
+  // Client Side Detection: Request Blocklist
+  const CLIENT_SIDE_DETECTION_BLOCKLIST = fs.readFileSync(
+    CLIENT_SIDE_DETECTION_BLOCKLIST_PATH,
+  );
+  await server
+    .forGet(
+      'https://client-side-detection.api.cx.metamask.io/v1/request-blocklist',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(CLIENT_SIDE_DETECTION_BLOCKLIST),
+      };
+    });
+
+  // Nft API: tokens
+  await server
+    .forGet(
+      `https://nft.api.cx.metamask.io/users/${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}/tokens`,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          tokens: [],
+          continuation: null,
+        },
+      };
+    });
+
+  // On Ramp: Eligibility MetaMask Card
+  await server
+    .forGet('https://on-ramp.api.cx.metamask.io/eligibility/mm-card')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: true,
+        headers: {
+          'Content-Type': 'text/html; charset=utf-8',
+        },
+      };
+    });
+
+  // Snaps: Execution environment html
+  await server
+    .forGet(/^https:\/\/execution\.metamask\.io\/iframe\/[^/]+\/index\.html$/u)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: snapsExecutionEnvHtml,
+        headers: { 'Content-Type': 'text/html; charset=utf-8' },
+      };
+    });
+
+  // Snaps: Execution environment js
+  await server
+    .forGet(/^https:\/\/execution\.metamask\.io\/iframe\/[^/]+\/bundle\.js$/u)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: snapsExecutionEnvJs,
+        headers: { 'Content-Type': 'application/javascript; charset=utf-8' },
+      };
+    });
+
+  // Test Dapp Styles
+  const TEST_DAPP_STYLES_1 = fs.readFileSync(TEST_DAPP_STYLES_1_PATH);
+  const TEST_DAPP_STYLES_2 = fs.readFileSync(TEST_DAPP_STYLES_2_PATH);
+  await server
+    .forGet(
+      'https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.14.1/css/mdb.min.css',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: TEST_DAPP_STYLES_1,
+      };
+    });
+
+  await server
+    .forGet(
+      'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: TEST_DAPP_STYLES_2,
+      };
+    });
+
+  // Token Icons
+  await server
+    .forGet('https://static.cx.metamask.io/api/v1/tokenIcons')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+      };
+    });
+
+  // Dynamic Banner Content
+  await server
+    .forGet(/^https:\/\/(cdn|preview)\.contentful\.com\/.*$/u)
+    .withQuery({
+      content_type: 'promotionalBanner',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          items: [],
+          includes: { Asset: [] },
+        },
+      };
+    });
 
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested
@@ -715,6 +1020,25 @@ async function setupMocking(
     request.headers.referer === 'https://portfolio.metamask.io/';
 
   /**
+   * Tests a request against private domains and returns a set of generic hostnames that
+   * match.
+   *
+   * @param request
+   * @returns A set of matched results.
+   */
+  const matchPrivateHosts = (request) => {
+    const privateHosts = new Set();
+
+    for (const { pattern, host: privateHost } of privateHostMatchers) {
+      if (request.headers.host.match(pattern)) {
+        privateHosts.add(privateHost);
+      }
+    }
+
+    return privateHosts;
+  };
+
+  /**
    * Listen for requests and add the hostname to the privacy report if it did
    * not previously exist. This is used to track which hosts are requested
    * during the current test suite and used to ask for extra scrutiny when new
@@ -723,6 +1047,16 @@ async function setupMocking(
    * operation. See the browserAPIRequestDomains regex above.
    */
   server.on('request-initiated', (request) => {
+    const privateHosts = matchPrivateHosts(request);
+    if (privateHosts.size) {
+      for (const privateHost of privateHosts) {
+        privacyReport.add(privateHost);
+      }
+      // At this point, we know the request at least one private doamin, so we just stops here to avoid
+      // using the request any further.
+      return;
+    }
+
     if (
       request.headers.host.match(browserAPIRequestDomains) === null &&
       !portfolioRequestsMatcher(request)

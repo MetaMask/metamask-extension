@@ -1,77 +1,51 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useMemo, useState } from 'react';
+import { BigNumber } from 'bignumber.js';
+import { useSelector } from 'react-redux';
 import { calcTokenAmount } from '../../../../../../../shared/lib/transactions-controller-utils';
-import { toChecksumHexAddress } from '../../../../../../../shared/modules/hexstring-utils';
-import { Numeric } from '../../../../../../../shared/modules/Numeric';
 import useTokenExchangeRate from '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
+import { getIntlLocale } from '../../../../../../ducks/locale/locale';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
-import { useTokenTracker } from '../../../../../../hooks/useTokenTracker';
-import { SelectedToken } from '../shared/selected-token';
+import { useAssetDetails } from '../../../../hooks/useAssetDetails';
+import { formatAmount } from '../../../simulation-details/formatAmount';
+import { useTokenTransactionData } from './useTokenTransactionData';
 
-export const useTokenValues = (
-  transactionMeta: TransactionMeta,
-  selectedToken: SelectedToken,
-) => {
-  const [tokensWithBalances, setTokensWithBalances] = useState<
-    { balance: string; address: string; decimals: number; string: string }[]
-  >([]);
+export const useTokenValues = (transactionMeta: TransactionMeta) => {
+  const locale = useSelector(getIntlLocale);
+  const parsedTransactionData = useTokenTransactionData();
+  const exchangeRate = useTokenExchangeRate(transactionMeta?.txParams?.to);
+  const fiatFormatter = useFiatFormatter();
 
-  const fetchTokenBalances = async () => {
-    const result: {
-      tokensWithBalances: {
-        balance: string;
-        address: string;
-        decimals: number;
-        string: string;
-      }[];
-    } = await useTokenTracker({
-      tokens: [selectedToken],
-      address: undefined,
-    });
+  const { decimals } = useAssetDetails(
+    transactionMeta.txParams.to,
+    transactionMeta.txParams.from,
+    transactionMeta.txParams.data,
+    transactionMeta.chainId,
+  );
 
-    setTokensWithBalances(result.tokensWithBalances);
-  };
+  const value = parsedTransactionData?.args?._value as BigNumber | undefined;
 
-  fetchTokenBalances();
-
-  const [exchangeRate, setExchangeRate] = useState<Numeric | undefined>();
-  const fetchExchangeRate = async () => {
-    const result = await useTokenExchangeRate(transactionMeta?.txParams?.to);
-
-    setExchangeRate(result);
-  };
-
-  fetchExchangeRate();
-
-  const tokenBalance = useMemo(() => {
-    const tokenWithBalance = tokensWithBalances.find(
-      (token: {
-        balance: string;
-        address: string;
-        decimals: number;
-        string: string;
-      }) =>
-        toChecksumHexAddress(token.address) ===
-        toChecksumHexAddress(transactionMeta?.txParams?.to as string),
-    );
-
-    if (!tokenWithBalance) {
-      return undefined;
-    }
-
-    return calcTokenAmount(tokenWithBalance.balance, tokenWithBalance.decimals);
-  }, [tokensWithBalances]);
+  const decodedTransferValue =
+    decimals !== undefined && value
+      ? calcTokenAmount(value, Number(decimals)).toFixed()
+      : '0';
 
   const fiatValue =
-    exchangeRate && tokenBalance && exchangeRate.times(tokenBalance).toNumber();
-
-  const fiatFormatter = useFiatFormatter();
+    exchangeRate &&
+    decodedTransferValue &&
+    exchangeRate.times(decodedTransferValue, 10).toNumber();
 
   const fiatDisplayValue =
     fiatValue && fiatFormatter(fiatValue, { shorten: true });
 
+  const displayTransferValue = formatAmount(
+    locale,
+    new BigNumber(decodedTransferValue),
+  );
+
   return {
+    decodedTransferValue,
+    displayTransferValue,
     fiatDisplayValue,
-    tokenBalance: tokenBalance && String(tokenBalance.toNumber()),
+    fiatValue,
   };
 };

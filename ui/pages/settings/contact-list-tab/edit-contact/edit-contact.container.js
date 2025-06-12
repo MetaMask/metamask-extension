@@ -2,10 +2,15 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import {
+  getAddressBook,
   getAddressBookEntry,
   getInternalAccountByAddress,
+  getInternalAccounts,
 } from '../../../../selectors';
-import { getProviderConfig } from '../../../../ducks/metamask/metamask';
+import {
+  getNetworkConfigurationsByChainId,
+  getProviderConfig,
+} from '../../../../../shared/modules/selectors/networks';
 import {
   CONTACT_VIEW_ROUTE,
   CONTACT_LIST_ROUTE,
@@ -13,6 +18,7 @@ import {
 import {
   addToAddressBook,
   removeFromAddressBook,
+  toggleNetworkMenu,
 } from '../../../../store/actions';
 import EditContact from './edit-contact.component';
 
@@ -26,17 +32,22 @@ const mapStateToProps = (state, ownProps) => {
     : ownProps.match.params.id;
 
   const contact = getAddressBookEntry(state, address);
+  const networkConfigurations = getNetworkConfigurationsByChainId(state);
   const { memo } = contact || {};
   const name =
     contact?.name || getInternalAccountByAddress(state, address)?.metadata.name;
 
   const { chainId } = getProviderConfig(state);
+  const contactChainId = contact?.chainId || chainId;
 
   return {
     address: contact ? address : null,
-    chainId,
+    addressBook: getAddressBook(state),
+    internalAccounts: getInternalAccounts(state),
+    contactChainId,
     name,
     memo,
+    networkConfigurations,
     viewRoute: CONTACT_VIEW_ROUTE,
     listRoute: CONTACT_LIST_ROUTE,
   };
@@ -44,10 +55,11 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addToAddressBook: (recipient, nickname, memo) =>
-      dispatch(addToAddressBook(recipient, nickname, memo)),
+    addToAddressBook: (recipient, nickname, memo, customChainId) =>
+      dispatch(addToAddressBook(recipient, nickname, memo, customChainId)),
     removeFromAddressBook: (chainId, addressToRemove) =>
       dispatch(removeFromAddressBook(chainId, addressToRemove)),
+    toggleNetworkMenu: () => dispatch(toggleNetworkMenu()),
   };
 };
 

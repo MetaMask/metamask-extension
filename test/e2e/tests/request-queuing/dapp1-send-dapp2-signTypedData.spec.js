@@ -6,44 +6,45 @@ const {
   DAPP_URL,
   DAPP_ONE_URL,
   regularDelayMs,
-  defaultGanacheOptions,
-  tempToggleSettingRedesignedConfirmations,
   WINDOW_TITLES,
+  largeDelayMs,
 } = require('../../helpers');
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
-  it('should queue signTypedData tx after eth_sendTransaction confirmation and signTypedData confirmation should target the correct network after eth_sendTransaction is confirmed @no-mmi', async function () {
+  it('should queue signTypedData tx after eth_sendTransaction confirmation and signTypedData confirmation should target the correct network after eth_sendTransaction is confirmed', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerTripleGanache()
-          .withPreferencesControllerUseRequestQueueEnabled()
+          .withNetworkControllerTripleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-            {
+          },
+          {
+            type: 'anvil',
+            options: {
               port: 7777,
               chainId: 1000,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-        await tempToggleSettingRedesignedConfirmations(driver);
 
         // Open and connect Dapp One
         await openDapp(driver, undefined, DAPP_URL);
@@ -90,7 +91,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
 
-        await driver.findElement({
+        await driver.waitForSelector({
           css: '[id="chainId"]',
           text: '0x53a',
         });
@@ -111,7 +112,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
-        await driver.findElement({
+        await driver.waitForSelector({
           css: '[id="chainId"]',
           text: '0x3e8',
         });
@@ -121,7 +122,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // eth_sendTransaction request
         await driver.clickElement('#sendButton');
-        await driver.waitUntilXWindowHandles(3);
+        await driver.waitUntilXWindowHandles(4);
 
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
 
@@ -129,24 +130,28 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await driver.clickElement('#signTypedData');
 
         await driver.waitUntilXWindowHandles(4);
+        await driver.delay(regularDelayMs);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the send confirmation.
-        await driver.findElement({
-          css: '[data-testid="network-display"]',
+        await driver.waitForSelector({
+          css: 'p',
           text: 'Localhost 7777',
         });
 
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
+        await driver.delay(largeDelayMs);
         await driver.waitUntilXWindowHandles(4);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // Check correct network on the signTypedData confirmation.
-        await driver.findElement({
-          css: '[data-testid="signature-request-network-display"]',
+        await driver.waitForSelector({
+          css: 'p',
           text: 'Localhost 8546',
         });
+
+        await driver.clickElement({ text: 'Cancel', tag: 'button' });
       },
     );
   });

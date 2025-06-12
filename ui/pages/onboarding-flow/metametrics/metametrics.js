@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+
 import {
   Display,
   FlexDirection,
@@ -10,6 +11,7 @@ import {
   TextColor,
   IconColor,
   BlockSize,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -17,7 +19,6 @@ import {
   setDataCollectionForMarketing,
 } from '../../../store/actions';
 import {
-  getParticipateInMetaMetrics,
   getDataCollectionForMarketing,
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
@@ -28,6 +29,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -43,6 +46,9 @@ import {
 } from '../../../components/component-library';
 
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+
+const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
@@ -50,63 +56,67 @@ export default function OnboardingMetametrics() {
   const history = useHistory();
 
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn);
+
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
-  const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
 
   const trackEvent = useContext(MetaMetricsContext);
+
+  let nextRouteByBrowser = nextRoute;
+  if (isFirefox && firstTimeFlowType !== FirstTimeFlowType.restore) {
+    nextRouteByBrowser = ONBOARDING_WELCOME_ROUTE;
+  }
 
   const onConfirm = async () => {
     if (dataCollectionForMarketing === null) {
       await dispatch(setDataCollectionForMarketing(false));
     }
-
     const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
     try {
-      trackEvent(
-        {
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.WalletSetupStarted,
-          properties: {
-            account_type:
-              firstTimeFlowType === FirstTimeFlowType.create
-                ? MetaMetricsEventAccountType.Default
-                : MetaMetricsEventAccountType.Imported,
+      if (firstTimeFlowType) {
+        trackEvent(
+          {
+            category: MetaMetricsEventCategory.Onboarding,
+            event: MetaMetricsEventName.WalletSetupStarted,
+            properties: {
+              account_type:
+                firstTimeFlowType === FirstTimeFlowType.create
+                  ? MetaMetricsEventAccountType.Default
+                  : MetaMetricsEventAccountType.Imported,
+            },
           },
-        },
-        {
-          isOptIn: true,
-          metaMetricsId,
-          flushImmediately: true,
-        },
-      );
-
-      if (participateInMetaMetrics) {
-        trackEvent({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.AppInstalled,
-        });
-
-        trackEvent({
-          category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-          properties: {
-            is_metrics_opted_in: true,
-            has_marketing_consent: Boolean(dataCollectionForMarketing),
-            location: 'onboarding_metametrics',
+          {
+            isOptIn: true,
+            metaMetricsId,
+            flushImmediately: true,
           },
-        });
+        );
       }
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.AppInstalled,
+      });
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+        properties: {
+          is_metrics_opted_in: true,
+          has_marketing_consent: Boolean(dataCollectionForMarketing),
+          location: 'onboarding_metametrics',
+        },
+      });
     } finally {
-      history.push(nextRoute);
+      history.push(nextRouteByBrowser);
     }
   };
 
   const onCancel = async () => {
     await dispatch(setParticipateInMetaMetrics(false));
     await dispatch(setDataCollectionForMarketing(false));
-    history.push(nextRoute);
+    history.push(nextRouteByBrowser);
   };
 
   return (
@@ -116,106 +126,125 @@ export default function OnboardingMetametrics() {
     >
       <Text
         variant={TextVariant.headingLg}
-        textAlign={TextAlign.Center}
+        textAlign={TextAlign.Left}
         fontWeight={FontWeight.Bold}
+        marginBottom={4}
       >
         {t('onboardingMetametricsTitle')}
       </Text>
       <Text className="onboarding-metametrics__desc" textAlign={TextAlign.Left}>
         {t('onboardingMetametricsDescription')}
       </Text>
-      <Box paddingTop={2} paddingBottom={2}>
-        <Text
-          color={TextColor.primaryDefault}
-          as="a"
-          href="https://support.metamask.io/privacy-and-security/profile-privacy#how-is-the-profile-created"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {t('onboardingMetametricsPrivacyDescription')}
-        </Text>
-      </Box>
-      <Text className="onboarding-metametrics__desc" textAlign={TextAlign.Left}>
-        {t('onboardingMetametricsDescription2')}
-      </Text>
       <ul>
         <li>
-          <Box>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            paddingBottom={4}
+          >
             <Icon
               marginInlineEnd={2}
               name={IconName.Check}
               size={IconSize.Sm}
               color={IconColor.successDefault}
             />
-            {t('onboardingMetametricsNeverCollect', [
-              <Text
-                variant={TextVariant.inherit}
-                key="never"
-                fontWeight={FontWeight.Bold}
-                marginTop={0}
-              >
-                {t('onboardingMetametricsNeverCollectEmphasis')}
-              </Text>,
-            ])}
+            <Text color={TextColor.textAlternative}>
+              {t('onboardingMetametricsNeverCollect', [
+                <Text
+                  variant={TextVariant.inherit}
+                  key="never"
+                  fontWeight={FontWeight.Bold}
+                  color={TextColor.textDefault}
+                  marginTop={0}
+                >
+                  {t('onboardingMetametricsNeverCollectEmphasis')}
+                </Text>,
+              ])}
+            </Text>
           </Box>
         </li>
         <li>
-          <Box>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            paddingBottom={4}
+          >
             <Icon
               marginInlineEnd={2}
               name={IconName.Check}
               size={IconSize.Sm}
               color={IconColor.successDefault}
             />
-            {t('onboardingMetametricsNeverCollectIP', [
-              <Text
-                variant={TextVariant.inherit}
-                key="never-collect"
-                fontWeight={FontWeight.Bold}
-              >
-                {t('onboardingMetametricsNeverCollectIPEmphasis')}
-              </Text>,
-            ])}
+            <Text color={TextColor.textAlternative}>
+              {t('onboardingMetametricsNeverCollectIP', [
+                <Text
+                  variant={TextVariant.inherit}
+                  key="never-collect"
+                  fontWeight={FontWeight.Bold}
+                  color={TextColor.textDefault}
+                >
+                  {t('onboardingMetametricsNeverCollectIPEmphasis')}
+                </Text>,
+              ])}
+            </Text>
           </Box>
         </li>
         <li>
-          <Box>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            paddingBottom={4}
+          >
             <Icon
               marginInlineEnd={2}
               name={IconName.Check}
               size={IconSize.Sm}
               color={IconColor.successDefault}
             />
-            {t('onboardingMetametricsNeverSellData', [
-              <Text
-                variant={TextVariant.inherit}
-                key="never-sell"
-                fontWeight={FontWeight.Bold}
-              >
-                {t('onboardingMetametricsNeverSellDataEmphasis')}
-              </Text>,
-            ])}
-          </Box>{' '}
+            <Text color={TextColor.textAlternative}>
+              {t('onboardingMetametricsNeverSellData', [
+                <Text
+                  variant={TextVariant.inherit}
+                  key="never-sell"
+                  fontWeight={FontWeight.Bold}
+                  color={TextColor.textDefault}
+                >
+                  {t('onboardingMetametricsNeverSellDataEmphasis')}
+                </Text>,
+              ])}
+            </Text>
+          </Box>
         </li>
       </ul>
       <Checkbox
         id="metametrics-opt-in"
+        data-testid="metametrics-data-collection-checkbox"
         isChecked={dataCollectionForMarketing}
         onClick={() =>
           dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))
         }
-        label={t('onboardingMetametricsUseDataCheckbox')}
+        label={
+          <Text variant={TextVariant.bodySm} fontWeight={FontWeight.Medium}>
+            {t('onboardingMetametricsUseDataCheckbox')}
+          </Text>
+        }
         paddingBottom={3}
+        alignItems={AlignItems.flexStart}
       />
       <Text
         color={TextColor.textAlternative}
         textAlign={TextAlign.Left}
         variant={TextVariant.bodySm}
+        paddingTop={4}
         className="onboarding-metametrics__terms"
       >
         {t('onboardingMetametricsInfuraTerms', [
           <a
-            href="https://metamask.io/privacy.html"
+            href={
+              isFirefox
+                ? 'https://addons.mozilla.org/en-CA/firefox/addon/ether-metamask/privacy/'
+                : 'https://metamask.io/privacy.html'
+            }
             target="_blank"
             rel="noopener noreferrer"
             key="privacy-link"
@@ -230,12 +259,15 @@ export default function OnboardingMetametrics() {
         flexDirection={FlexDirection.Row}
         width={BlockSize.Full}
         className="onboarding-metametrics__buttons"
+        marginTop={6}
+        marginBottom={4}
         gap={4}
       >
         <Button
           data-testid="metametrics-no-thanks"
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
+          width={BlockSize.Full}
           onClick={onCancel}
         >
           {t('noThanks')}
@@ -243,6 +275,7 @@ export default function OnboardingMetametrics() {
         <Button
           data-testid="metametrics-i-agree"
           size={ButtonSize.Lg}
+          width={BlockSize.Full}
           onClick={onConfirm}
         >
           {t('onboardingMetametricsAgree')}

@@ -64,7 +64,11 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
   const [timeLeft, setTimeLeft] = useState<number | undefined>(undefined);
 
   const { formattedEthGasFee, formattedFiatGasFee } = useEthFeeData(
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     (bestQuote?.gasParams.maxGas || 0) +
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       Number(hexToDecimal(bestQuote?.approvalNeeded?.gas || '0x0')),
   );
 
@@ -87,7 +91,7 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
     if (bestQuote) {
       trackEvent(
         {
-          event: MetaMetricsEventName.sendSwapQuoteFetched,
+          event: MetaMetricsEventName.sendSwapQuoteReceived,
           category: MetaMetricsEventCategory.Send,
           properties: {
             is_first_fetch: isQuoteJustLoaded,
@@ -117,6 +121,33 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
     // eslint-disable-next-line consistent-return
     return () => clearTimeout(timeout);
   }, [timeLeft]);
+
+  // use to track when a quote is requested and received
+  useEffect(() => {
+    if (isSwapQuoteLoading) {
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendSwapQuoteRequested,
+          category: MetaMetricsEventCategory.Send,
+          sensitiveProperties: {
+            ...sendAnalytics,
+          },
+        },
+        { excludeMetaMetricsId: false },
+      );
+    } else if (bestQuote) {
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendSwapQuoteReceived,
+          category: MetaMetricsEventCategory.Send,
+          sensitiveProperties: {
+            ...sendAnalytics,
+          },
+        },
+        { excludeMetaMetricsId: false },
+      );
+    }
+  }, [isSwapQuoteLoading]);
 
   const infoText = useMemo(() => {
     if (isSwapQuoteLoading) {

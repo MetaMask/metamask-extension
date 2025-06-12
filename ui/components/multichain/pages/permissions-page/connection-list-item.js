@@ -25,13 +25,13 @@ import {
 } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { SnapIcon } from '../../../app/snaps/snap-icon';
-import { getPermittedChainsForSelectedTab } from '../../../../selectors';
+import { getAllPermittedChainsForSelectedTab } from '../../../../selectors';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
   const isSnap = connection.subjectType === SubjectType.Snap;
-  const connectedNetworks = useSelector((state) =>
-    getPermittedChainsForSelectedTab(state, connection.origin),
+  const permittedChains = useSelector((state) =>
+    getAllPermittedChainsForSelectedTab(state, connection.origin),
   );
 
   return (
@@ -88,9 +88,8 @@ export const ConnectionListItem = ({ connection, onClick }) => {
               color={TextColor.textAlternative}
               variant={TextVariant.bodyMd}
             >
-              {connection.addresses.length} {t('accountsSmallCase')}&nbsp;
-              •&nbsp;
-              {connectedNetworks.length} {t('networksSmallCase')}
+              {connection.addresses.length} {t('accountsSmallCase')} •&nbsp;
+              {permittedChains.length} {t('networksSmallCase')}
             </Text>
           </Box>
         )}

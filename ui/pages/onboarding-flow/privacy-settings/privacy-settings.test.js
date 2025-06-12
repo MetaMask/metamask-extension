@@ -32,17 +32,6 @@ describe('Privacy Settings Onboarding View', () => {
         { chainId: CHAIN_IDS.SEPOLIA },
         { chainId: CHAIN_IDS.LINEA_SEPOLIA },
       ),
-      preferences: {
-        petnamesEnabled: true,
-      },
-      incomingTransactionsPreferences: {
-        [CHAIN_IDS.MAINNET]: true,
-        [CHAIN_IDS.LINEA_MAINNET]: false,
-        [CHAIN_IDS.SEPOLIA]: false,
-        [CHAIN_IDS.LINEA_GOERLI]: true,
-        [CHAIN_IDS.LINEA_SEPOLIA]: true,
-      },
-      usePhishDetect: true,
       use4ByteResolution: true,
       useTokenDetection: false,
       useCurrencyRateCheck: true,
@@ -59,7 +48,6 @@ describe('Privacy Settings Onboarding View', () => {
 
   const store = configureMockStore([thunk])(mockStore);
   const setFeatureFlagStub = jest.fn();
-  const setUsePhishDetectStub = jest.fn();
   const setUse4ByteResolutionStub = jest.fn();
   const setUseTokenDetectionStub = jest.fn();
   const setUseCurrencyRateCheckStub = jest.fn();
@@ -69,17 +57,13 @@ describe('Privacy Settings Onboarding View', () => {
     .mockImplementation(() => Promise.resolve());
   const setUseMultiAccountBalanceCheckerStub = jest.fn();
   const setUseAddressBarEnsResolutionStub = jest.fn();
-  const setIncomingTransactionsPreferencesStub = jest.fn();
   const onboardingToggleBasicFunctionalityOnStub = jest.fn();
   const toggleExternalServicesStub = jest.fn();
   const setUseTransactionSimulationsStub = jest.fn();
   const setPreferenceStub = jest.fn();
-  const enableProfileSyncingStub = jest.fn();
-  const disableProfileSyncingStub = jest.fn();
 
   setBackgroundConnection({
     setFeatureFlag: setFeatureFlagStub,
-    setUsePhishDetect: setUsePhishDetectStub,
     setUse4ByteResolution: setUse4ByteResolutionStub,
     setUseTokenDetection: setUseTokenDetectionStub,
     setUseCurrencyRateCheck: setUseCurrencyRateCheckStub,
@@ -87,14 +71,11 @@ describe('Privacy Settings Onboarding View', () => {
     completeOnboarding: completeOnboardingStub,
     setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
     setUseAddressBarEnsResolution: setUseAddressBarEnsResolutionStub,
-    setIncomingTransactionsPreferences: setIncomingTransactionsPreferencesStub,
     toggleExternalServices: toggleExternalServicesStub,
     onboardingToggleBasicFunctionalityOn:
       onboardingToggleBasicFunctionalityOnStub,
     setUseTransactionSimulations: setUseTransactionSimulationsStub,
     setPreference: setPreferenceStub,
-    enableProfileSyncing: enableProfileSyncingStub,
-    disableProfileSyncing: disableProfileSyncingStub,
   });
 
   it('should update the default settings from each category', () => {
@@ -104,13 +85,11 @@ describe('Privacy Settings Onboarding View', () => {
     );
     // All settings are initialized toggled to be same as default
     expect(toggleExternalServicesStub).toHaveBeenCalledTimes(0);
-    expect(setUsePhishDetectStub).toHaveBeenCalledTimes(0);
     expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(0);
     expect(setUseTokenDetectionStub).toHaveBeenCalledTimes(0);
     expect(setUseMultiAccountBalanceCheckerStub).toHaveBeenCalledTimes(0);
     expect(setUseCurrencyRateCheckStub).toHaveBeenCalledTimes(0);
     expect(setUseAddressBarEnsResolutionStub).toHaveBeenCalledTimes(0);
-    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(0);
     expect(setUseTransactionSimulationsStub).toHaveBeenCalledTimes(0);
     expect(setPreferenceStub).toHaveBeenCalledTimes(0);
 
@@ -133,14 +112,9 @@ describe('Privacy Settings Onboarding View', () => {
     fireEvent.click(toggles[0]); // setUseTokenDetectionStub
     fireEvent.click(toggles[1]); // setUseTransactionSimulationsStub
 
-    fireEvent.click(toggles[2]); // setIncomingTransactionsPreferencesStub
-    fireEvent.click(toggles[3]); // setIncomingTransactionsPreferencesStub (2)
-    fireEvent.click(toggles[4]); // setIncomingTransactionsPreferencesStub (3)
-    fireEvent.click(toggles[5]); // setIncomingTransactionsPreferencesStub (4)
-
-    fireEvent.click(toggles[6]); // setUseCurrencyRateCheckStub
-    fireEvent.click(toggles[7]); // setUseAddressBarEnsResolutionStub
-    fireEvent.click(toggles[8]); // setUseMultiAccountBalanceCheckerStub
+    fireEvent.click(toggles[2]); // setUseCurrencyRateCheckStub
+    fireEvent.click(toggles[3]); // setUseAddressBarEnsResolutionStub
+    fireEvent.click(toggles[4]); // setUseMultiAccountBalanceCheckerStub
 
     // Default Settings - Security category
     const itemCategorySecurity = queryByTestId('category-item-Security');
@@ -148,9 +122,8 @@ describe('Privacy Settings Onboarding View', () => {
 
     toggles = container.querySelectorAll('input[type=checkbox]');
 
-    fireEvent.click(toggles[0]); // setUsePhishDetectStub
-    fireEvent.click(toggles[1]); // setUse4ByteResolutionStub
-    fireEvent.click(toggles[2]); // setPreferenceStub
+    fireEvent.click(toggles[0]); // setUse4ByteResolutionStub
+    fireEvent.click(toggles[1]); // setPreferenceStub
 
     fireEvent.click(backButton);
 
@@ -159,13 +132,6 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUseTransactionSimulationsStub).toHaveBeenCalledTimes(1);
     expect(setUseTransactionSimulationsStub.mock.calls[0][0]).toStrictEqual(
       false,
-    );
-
-    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(4);
-    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledWith(
-      CHAIN_IDS.MAINNET,
-      false,
-      expect.anything(),
     );
 
     expect(setUseCurrencyRateCheckStub).toHaveBeenCalledTimes(1);
@@ -179,15 +145,8 @@ describe('Privacy Settings Onboarding View', () => {
       false,
     );
 
-    expect(setUsePhishDetectStub).toHaveBeenCalledTimes(1);
-    expect(setUsePhishDetectStub.mock.calls[0][0]).toStrictEqual(false);
     expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(1);
     expect(setUse4ByteResolutionStub.mock.calls[0][0]).toStrictEqual(false);
-    expect(setPreferenceStub).toHaveBeenCalledTimes(1);
-    expect(setPreferenceStub.mock.calls[0][0]).toStrictEqual(
-      'petnamesEnabled',
-      false,
-    );
   });
 
   describe('IPFS', () => {

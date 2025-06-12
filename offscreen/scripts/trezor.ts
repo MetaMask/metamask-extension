@@ -18,7 +18,8 @@ export default function init() {
       msg: {
         target: string;
         action: TrezorAction;
-        // TODO: Replace `any` with type
+
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         params: any;
       },
@@ -40,7 +41,10 @@ export default function init() {
               chrome.runtime.sendMessage({
                 target: OffscreenCommunicationTarget.extension,
                 event: OffscreenCommunicationEvents.trezorDeviceConnect,
-                payload: event.payload.features.model,
+                payload: {
+                  model: event.payload.features.model,
+                  minorVersion: event.payload.features.minor_version,
+                },
               });
             }
           });

@@ -36,14 +36,31 @@ const mockAssets: MockAsset[] = [
 // Define the sorting tests
 describe('sortAssets function - nested value handling with dates and numeric sorting', () => {
   test('sorts by name in ascending order', () => {
-    const sortedById = sortAssets(mockAssets, {
+    const sortedByName = sortAssets(mockAssets, {
       key: 'name',
       sortCallback: 'alphaNumeric',
       order: 'asc',
     });
 
-    expect(sortedById[0].name).toBe('Asset A');
-    expect(sortedById[sortedById.length - 1].name).toBe('Asset Z');
+    expect(sortedByName[0].name).toBe('Asset A');
+    expect(sortedByName[sortedByName.length - 1].name).toBe('Asset Z');
+  });
+
+  test('should handle null values in alphanumeric sorting gracefully', () => {
+    const badAsset = {
+      name: null,
+      balance: '400',
+      createdAt: new Date('2021-07-20'),
+      profile: { id: '2', info: { category: 'bronze' } },
+    };
+    const sortedByName = sortAssets([...mockAssets, badAsset], {
+      key: 'name',
+      sortCallback: 'alphaNumeric',
+      order: 'asc',
+    });
+
+    expect(sortedByName[0].name).toBe(null);
+    expect(sortedByName[sortedByName.length - 1].name).toBe('Asset Z');
   });
 
   test('sorts by balance in ascending order (stringNumeric)', () => {

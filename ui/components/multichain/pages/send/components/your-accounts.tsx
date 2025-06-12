@@ -1,13 +1,9 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  EthAccountType,
-  InternalAccount,
-  KeyringAccountType,
-} from '@metamask/keyring-api';
+import { EthAccountType, KeyringAccountType } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   getUpdatedAndSortedAccounts,
-  getInternalAccounts,
   getSelectedInternalAccount,
 } from '../../../../../selectors';
 import { AccountListItem } from '../../..';
@@ -16,14 +12,13 @@ import {
   updateRecipient,
   updateRecipientUserInput,
 } from '../../../../../ducks/send';
-import { mergeAccounts } from '../../../account-list-menu/account-list-menu';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
 import { MergedInternalAccount } from '../../../../../selectors/selectors.types';
-import { SendPageRow } from '.';
+import { SendPageRow } from './send-page-row';
 
 type SendPageYourAccountsProps = {
   allowedAccountTypes?: KeyringAccountType[];
@@ -39,49 +34,54 @@ export const SendPageYourAccounts = ({
 
   // Your Accounts
   const accounts = useSelector(getUpdatedAndSortedAccounts);
-  const internalAccounts = useSelector(getInternalAccounts);
-  const mergedAccounts: MergedInternalAccount[] = useMemo(() => {
-    return mergeAccounts(accounts, internalAccounts).filter(
-      (account: InternalAccount) => allowedAccountTypes.includes(account.type),
+  const filteredAccounts = useMemo(() => {
+    return accounts.filter((account: InternalAccount) =>
+      allowedAccountTypes.includes(account.type),
     );
-  }, [accounts, internalAccounts]);
+  }, [accounts]);
   const selectedAccount = useSelector(getSelectedInternalAccount);
+
+  const onClick = useCallback(
+    (account: MergedInternalAccount) => {
+      dispatch(
+        addHistoryEntry(
+          `sendFlow - User clicked recipient from my accounts. address: ${account.address}, nickname ${account.metadata.name}`,
+        ),
+      );
+      trackEvent(
+        {
+          event: MetaMetricsEventName.sendRecipientSelected,
+          category: MetaMetricsEventCategory.Send,
+          properties: {
+            location: 'my accounts',
+            inputType: 'click',
+          },
+        },
+        { excludeMetaMetricsId: false },
+      );
+      dispatch(
+        updateRecipient({
+          address: account.address,
+          nickname: account.metadata.name,
+        }),
+      );
+      dispatch(updateRecipientUserInput(account.address));
+    },
+    [dispatch, trackEvent],
+  );
 
   return (
     <SendPageRow>
-      {/* TODO: Replace `any` with type */}
+      {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973 */}
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-      {mergedAccounts.map((account: any) => (
+      {filteredAccounts.map((account: any) => (
         <AccountListItem
           account={account}
           selected={selectedAccount.address === account.address}
           key={account.address}
           isPinned={Boolean(account.pinned)}
-          onClick={() => {
-            dispatch(
-              addHistoryEntry(
-                `sendFlow - User clicked recipient from my accounts. address: ${account.address}, nickname ${account.name}`,
-              ),
-            );
-            trackEvent(
-              {
-                event: MetaMetricsEventName.sendRecipientSelected,
-                category: MetaMetricsEventCategory.Send,
-                properties: {
-                  location: 'my accounts',
-                  inputType: 'click',
-                },
-              },
-              { excludeMetaMetricsId: false },
-            );
-            dispatch(
-              updateRecipient({
-                address: account.address,
-                nickname: account.name,
-              }),
-            );
-            dispatch(updateRecipientUserInput(account.address));
-          }}
+          shouldScrollToWhenSelected={false}
+          onClick={onClick}
         />
       ))}
     </SendPageRow>

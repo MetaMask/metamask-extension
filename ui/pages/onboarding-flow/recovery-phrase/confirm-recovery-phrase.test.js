@@ -1,4 +1,4 @@
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, act } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -20,7 +20,21 @@ describe('Confirm Recovery Phrase Component', () => {
   };
 
   const mockState = {
-    metamask: {},
+    metamask: {
+      internalAccounts: {
+        accounts: {
+          accountId: {
+            address: '0x0000000000000000000000000000000000000000',
+          },
+        },
+      },
+      keyrings: [
+        {
+          type: 'HD Key Tree',
+          accounts: ['0x0000000000000000000000000000000000000000'],
+        },
+      ],
+    },
   };
 
   const mockStore = configureMockStore([thunk])(mockState);
@@ -141,14 +155,16 @@ describe('Confirm Recovery Phrase Component', () => {
       'recovery-phrase-confirm',
     );
 
-    await waitFor(() => {
+    expect(confirmRecoveryPhraseButton).toBeDisabled();
+
+    act(() => {
       clock.advanceTimersByTime(500); // Wait for debounce
-
-      expect(confirmRecoveryPhraseButton).not.toBeDisabled();
-
-      fireEvent.click(confirmRecoveryPhraseButton);
-
-      expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
     });
+
+    expect(confirmRecoveryPhraseButton).not.toBeDisabled();
+
+    fireEvent.click(confirmRecoveryPhraseButton);
+
+    expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
   });
 });

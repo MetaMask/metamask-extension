@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import classnames from 'classnames';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import {
   BorderColor,
@@ -21,6 +22,7 @@ export type SnapUICheckboxProps = {
   label?: string;
   error?: string;
   form?: string;
+  disabled?: boolean;
 };
 
 export const SnapUICheckbox: FunctionComponent<SnapUICheckboxProps> = ({
@@ -30,6 +32,7 @@ export const SnapUICheckbox: FunctionComponent<SnapUICheckboxProps> = ({
   label,
   error,
   form,
+  disabled,
   ...props
 }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
@@ -51,7 +54,9 @@ export const SnapUICheckbox: FunctionComponent<SnapUICheckboxProps> = ({
 
   return (
     <Box
-      className="snap-ui-renderer__checkbox"
+      className={classnames('snap-ui-renderer__checkbox', {
+        'snap-ui-renderer__field': label !== undefined,
+      })}
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
     >
@@ -62,6 +67,7 @@ export const SnapUICheckbox: FunctionComponent<SnapUICheckboxProps> = ({
           value={value}
           onLabel={label}
           offLabel={label}
+          disabled={disabled}
           {...props}
         />
       ) : (
@@ -72,6 +78,7 @@ export const SnapUICheckbox: FunctionComponent<SnapUICheckboxProps> = ({
           inputProps={{
             borderColor: BorderColor.borderMuted,
           }}
+          isDisabled={disabled}
           {...props}
         />
       )}

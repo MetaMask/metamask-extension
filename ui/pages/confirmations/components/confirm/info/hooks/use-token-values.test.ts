@@ -1,120 +1,76 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { genUnapprovedTokenTransferConfirmation } from '../../../../../../../test/data/confirmations/token-transfer';
-import mockState from '../../../../../../../test/data/mock-state.json';
-import { renderHookWithProvider } from '../../../../../../../test/lib/render-helpers';
-// import useTokenExchangeRate from '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
+import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import useTokenExchangeRate from '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
-import { useTokenTracker } from '../../../../../../hooks/useTokenTracker';
+import { useAssetDetails } from '../../../../hooks/useAssetDetails';
+import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
+import { genUnapprovedTokenTransferConfirmation } from '../../../../../../../test/data/confirmations/token-transfer';
 import { useTokenValues } from './use-token-values';
+
+jest.mock('../../../../hooks/useAssetDetails', () => ({
+  ...jest.requireActual('../../../../hooks/useAssetDetails'),
+  useAssetDetails: jest.fn(),
+}));
 
 jest.mock(
   '../../../../../../components/app/currency-input/hooks/useTokenExchangeRate',
-  () => jest.fn(),
 );
 
-jest.mock('../../../../../../hooks/useTokenTracker', () => ({
-  ...jest.requireActual('../../../../../../hooks/useTokenTracker'),
-  useTokenTracker: jest.fn(),
-}));
-
 describe('useTokenValues', () => {
+  const useAssetDetailsMock = jest.mocked(useAssetDetails);
   const useTokenExchangeRateMock = jest.mocked(useTokenExchangeRate);
-  const useTokenTrackerMock = jest.mocked(useTokenTracker);
 
-  const TEST_SELECTED_TOKEN = {
-    address: 'address',
-    decimals: 18,
-    symbol: 'symbol',
-    iconUrl: 'iconUrl',
-    image: 'image',
-  };
-
-  it('returns native and fiat balances', async () => {
-    (useTokenTrackerMock as jest.Mock).mockResolvedValue({
-      tokensWithBalances: [
-        {
-          address: '0x076146c765189d51be3160a2140cf80bfc73ad68',
-          balance: '1000000000000000000',
-          decimals: 18,
-        },
-      ],
-    });
-
-    (useTokenExchangeRateMock as jest.Mock).mockResolvedValue(
-      new Numeric(1, 10),
-    );
-
-    const transactionMeta = genUnapprovedTokenTransferConfirmation(
-      {},
-    ) as TransactionMeta;
-
-    const { result, waitForNextUpdate } = renderHookWithProvider(
-      () => useTokenValues(transactionMeta, TEST_SELECTED_TOKEN),
-      mockState,
-    );
-
-    await waitForNextUpdate();
-
-    expect(result.current).toEqual({
-      fiatDisplayValue: '$1.00',
-      tokenBalance: '1',
-    });
+  beforeEach(() => {
+    jest.resetAllMocks();
   });
 
-  it('returns undefined native and fiat balances if no token with balances is returned', async () => {
-    (useTokenTrackerMock as jest.Mock).mockResolvedValue({
-      tokensWithBalances: [],
-    });
+  it('returns native and fiat balances', async () => {
+    (useAssetDetailsMock as jest.Mock).mockImplementation(() => ({
+      decimals: '4',
+    }));
 
-    (useTokenExchangeRateMock as jest.Mock).mockResolvedValue(
-      new Numeric(1, 10),
+    useTokenExchangeRateMock.mockReturnValue(new Numeric(0.91, 10));
+
+    const transactionMeta = genUnapprovedTokenTransferConfirmation({
+      amountHex:
+        '0000000000000000000000000000000000000000000000000000000000011170',
+    }) as TransactionMeta;
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useTokenValues(transactionMeta),
+      getMockConfirmStateForTransaction(transactionMeta),
     );
-
-    const transactionMeta = genUnapprovedTokenTransferConfirmation(
-      {},
-    ) as TransactionMeta;
-
-    const { result, waitForNextUpdate } = renderHookWithProvider(
-      () => useTokenValues(transactionMeta, TEST_SELECTED_TOKEN),
-      mockState,
-    );
-
-    await waitForNextUpdate();
 
     expect(result.current).toEqual({
-      fiatDisplayValue: undefined,
-      tokenBalance: undefined,
+      decodedTransferValue: '7',
+      displayTransferValue: '7',
+      fiatDisplayValue: '$6.37',
+      fiatValue: 6.37,
     });
   });
 
   it('returns undefined fiat balance if no token rate is returned', async () => {
-    (useTokenTrackerMock as jest.Mock).mockResolvedValue({
-      tokensWithBalances: [
-        {
-          address: '0x076146c765189d51be3160a2140cf80bfc73ad68',
-          balance: '1000000000000000000',
-          decimals: 18,
-        },
-      ],
-    });
+    (useAssetDetailsMock as jest.Mock).mockImplementation(() => ({
+      decimals: '4',
+    }));
 
-    (useTokenExchangeRateMock as jest.Mock).mockResolvedValue(null);
+    useTokenExchangeRateMock.mockReturnValue(undefined);
 
-    const transactionMeta = genUnapprovedTokenTransferConfirmation(
-      {},
-    ) as TransactionMeta;
+    const transactionMeta = genUnapprovedTokenTransferConfirmation({
+      amountHex:
+        '0000000000000000000000000000000000000000000000000000000000011170',
+    }) as TransactionMeta;
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(
-      () => useTokenValues(transactionMeta, TEST_SELECTED_TOKEN),
-      mockState,
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useTokenValues(transactionMeta),
+      getMockConfirmStateForTransaction(transactionMeta),
     );
 
-    await waitForNextUpdate();
-
     expect(result.current).toEqual({
-      fiatDisplayValue: null,
-      tokenBalance: '1',
+      decodedTransferValue: '7',
+      displayTransferValue: '7',
+      fiatDisplayValue: undefined,
+      fiatValue: undefined,
     });
   });
 });

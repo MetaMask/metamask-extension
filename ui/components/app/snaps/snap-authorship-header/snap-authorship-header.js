@@ -39,7 +39,7 @@ const SnapAuthorshipHeader = ({
   const t = useI18nContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { name: snapName } = useSelector((state) =>
+  const { name: snapName, hidden } = useSelector((state) =>
     getSnapMetadata(state, snapId),
   );
 
@@ -105,7 +105,7 @@ const SnapAuthorshipHeader = ({
           </Text>
         </Box>
       </Box>
-      {showInfo && (
+      {showInfo && !hidden && (
         <Box marginLeft="auto">
           <AvatarIcon
             className="snaps-authorship-header__button"

@@ -9,6 +9,7 @@ export const useEIP1559TxFees = (
   maxPriorityFeePerGas: string;
 } => {
   const hexMaxFeePerGas = transactionMeta?.txParams?.maxFeePerGas;
+
   const hexMaxPriorityFeePerGas =
     transactionMeta?.txParams?.maxPriorityFeePerGas;
 

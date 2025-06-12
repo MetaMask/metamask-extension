@@ -1,7 +1,7 @@
 import { addHexPrefix, toChecksumAddress } from 'ethereumjs-util';
-import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
+import { getErrorMessage } from '../../../shared/modules/error';
 import { GAS_LIMITS, MIN_GAS_LIMIT_HEX } from '../../../shared/constants/gas';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
@@ -17,10 +17,10 @@ import {
   generateERC1155TransferData,
   getAssetTransferData,
 } from '../../pages/confirmations/send/send.utils';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import {
   checkNetworkAndAccountSupports1559,
   getConfirmationExchangeRates,
-  getCurrentChainId,
   getGasPriceInHexWei,
   getTokenExchangeRates,
 } from '../../selectors';
@@ -89,12 +89,12 @@ export async function estimateGasLimitForSend({
     paramsForGasEstimate.to = sendToken.address;
   } else {
     if (!data) {
-      // eth.getCode will return the compiled smart contract code at the
+      // eth_getCode will return the compiled smart contract code at the
       // address. If this returns 0x, 0x0 or a nullish value then the address
       // is an externally owned account (NOT a contract account). For these
       // types of transactions the gasLimit will always be 21,000 or 0x5208
       const { isContractAddress } = to
-        ? await readAddressAsContract(global.eth, to)
+        ? await readAddressAsContract(global.ethereumProvider, to)
         : {};
       if (!isContractAddress && !isNonStandardEthChain) {
         return GAS_LIMITS.SIMPLE;
@@ -103,7 +103,7 @@ export async function estimateGasLimitForSend({
       }
     }
 
-    paramsForGasEstimate.data = data;
+    paramsForGasEstimate.data = data || '0x';
 
     if (to) {
       paramsForGasEstimate.to = to;
@@ -157,13 +157,14 @@ export async function estimateGasLimitForSend({
     );
     return addHexPrefix(estimateWithBuffer);
   } catch (error) {
+    const errorMessage = getErrorMessage(error);
     const simulationFailed =
-      error.message.includes('Transaction execution error.') ||
-      error.message.includes(
+      errorMessage.includes('Transaction execution error.') ||
+      errorMessage.includes(
         'gas required exceeds allowance or always failing transaction',
       ) ||
       (CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[chainId] &&
-        error.message.includes('gas required exceeds allowance'));
+        errorMessage.includes('gas required exceeds allowance'));
     if (simulationFailed) {
       const estimateWithBuffer = addGasBuffer(
         paramsForGasEstimate?.gas ?? gasLimit,
@@ -401,19 +402,6 @@ export function getRoundedGasPrice(gasPriceEstimate) {
     .toString();
   const gasPriceAsNumber = Number(gasPriceInDecGwei);
   return getGasPriceInHexWei(gasPriceAsNumber);
-}
-
-export async function getERC20Balance(token, accountAddress) {
-  const contract = global.eth.contract(abi).at(token.address);
-  const usersToken = (await contract.balanceOf(accountAddress)) ?? null;
-  if (!usersToken) {
-    return '0x0';
-  }
-  const amount = calcTokenAmount(
-    usersToken.balance.toString(),
-    token.decimals,
-  ).toString(16);
-  return addHexPrefix(amount);
 }
 
 /**

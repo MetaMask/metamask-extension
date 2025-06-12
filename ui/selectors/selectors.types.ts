@@ -1,6 +1,12 @@
-import type { InternalAccount } from '@metamask/keyring-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { SubjectMetadata } from '@metamask/permission-controller';
-import { KeyringType } from '../hooks/metamask-notifications/useProfileSyncing';
+import { CaipAccountId, CaipChainId } from '@metamask/utils';
+
+type KeyringType = {
+  type: string;
+};
 
 export type InternalAccountWithBalance = InternalAccount & {
   balance: string;
@@ -20,10 +26,21 @@ export type MergedInternalAccount =
     label: string | null;
   };
 
+export type MergedInternalAccountWithCaipAccountId = MergedInternalAccount & {
+  caipAccountId: CaipAccountId;
+};
+
 export type AccountConnections = {
   [address: string]: {
     origin: string;
     iconUrl?: string;
     metadata: SubjectMetadata;
   }[];
+};
+
+export type EvmAndMultichainNetworkConfigurationsWithCaipChainId = (
+  | NetworkConfiguration
+  | MultichainNetworkConfiguration
+) & {
+  caipChainId: CaipChainId;
 };

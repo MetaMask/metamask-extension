@@ -4,6 +4,11 @@
     font-size: 14px !important;
   }
 
+  &__duplicate-contact-warning-icon {
+    margin-left: auto;
+    align-self: center;
+  }
+
   &:hover,
   &:focus-within {
     background: var(--color-background-default-hover);

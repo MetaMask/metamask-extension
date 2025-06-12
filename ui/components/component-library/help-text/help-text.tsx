@@ -7,8 +7,11 @@ import {
 import { Text } from '../text';
 import type { PolymorphicRef } from '../box';
 import type { TextProps } from '../text';
-import type { HelpTextProps, HelpTextComponent } from './help-text.types';
-import { HelpTextSeverity } from '.';
+import {
+  type HelpTextProps,
+  type HelpTextComponent,
+  HelpTextSeverity,
+} from './help-text.types';
 
 export const HelpText: HelpTextComponent = forwardRef(
   <C extends React.ElementType = 'p'>(

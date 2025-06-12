@@ -23,7 +23,7 @@ export type SelfInjectPluginOptions = {
    * will be injected into matched file to provide a sourceURL for the self
    * injected script.
    *
-   * Defaults to `(filename: string) => (globalThis.browser||globalThis.chrome).runtime.getURL("${filename}")`
+   * Defaults to `(filename: string) => (globalThis.browser||chrome).runtime.getURL("${filename}")`
    *
    * @example Custom
    * ```js
@@ -39,11 +39,22 @@ export type SelfInjectPluginOptions = {
    *
    * ```js
    * {
-   *   sourceUrlExpression: (filename) => `(globalThis.browser||globalThis.chrome).runtime.getURL("${filename}")`
+   *   sourceUrlExpression: (filename) => `(globalThis.browser||chrome).runtime.getURL("${filename}")`
    * }
    * ```
    * @param filename - the chunk's relative filename as it will exist in the output directory
    * @returns
    */
   sourceUrlExpression?: (filename: string) => string;
+  /**
+   * A function that returns a JavaScript expression escaped as a string which
+   * will be injected into matched file to set a nonce for the self
+   * injected script.
+   *
+   * Defaults to `(path: string) => btoa((globalThis.browser||chrome).runtime.getURL("${path}"))`
+   *
+   * @param path - the path to be encoded as a nonce
+   * @returns
+   */
+  nonceExpression?: (path: string) => string;
 };

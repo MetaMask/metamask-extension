@@ -22,6 +22,6 @@ const Story = {
 
 export default Story;
 
-export const DefaultStory = () => <AdvancedDetails />;
+export const DefaultStory = () => <AdvancedDetails overrideVisibility />;
 
 DefaultStory.storyName = 'Default';

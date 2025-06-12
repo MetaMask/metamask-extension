@@ -3,20 +3,19 @@ import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { DAPP_URL } from '../../../constants';
 import { unlockWallet, WINDOW_TITLES } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
-import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/set-approval-for-all-transaction-confirmation';
+import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/set-approval-for-all-transaction-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import GanacheContractAddressRegistry from '../../../seeder/ganache-contract-address-registry';
+import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
-import { withRedesignConfirmationFixtures } from '../helpers';
-import { mocked4BytesSetApprovalForAll } from './erc721-revoke-set-approval-for-all-redesign';
-import { TestSuiteArguments } from './shared';
+import { withTransactionEnvelopeTypeFixtures } from '../helpers';
+import { TestSuiteArguments, mocked4BytesSetApprovalForAll } from './shared';
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign ERC1155 Revoke setApprovalForAll', function () {
-  describe('Submit an revoke transaction @no-mmi', function () {
+  describe('Submit an revoke transaction', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
-      await withRedesignConfirmationFixtures(
+      await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.legacy,
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
@@ -28,7 +27,7 @@ describe('Confirmation Redesign ERC1155 Revoke setApprovalForAll', function () {
     });
 
     it('Sends a type 2 transaction (EIP1559)', async function () {
-      await withRedesignConfirmationFixtures(
+      await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),
         TransactionEnvelopeType.feeMarket,
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
@@ -47,17 +46,17 @@ async function mocks(server: Mockttp) {
 
 async function createTransactionAndAssertDetails(
   driver: Driver,
-  contractRegistry?: GanacheContractAddressRegistry,
+  contractRegistry?: ContractAddressRegistry,
 ) {
   await unlockWallet(driver);
 
   const contractAddress = await (
-    contractRegistry as GanacheContractAddressRegistry
+    contractRegistry as ContractAddressRegistry
   ).getContractAddress(SMART_CONTRACTS.NFTS);
 
   const testDapp = new TestDapp(driver);
 
-  await testDapp.open({ contractAddress, url: DAPP_URL });
+  await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
 
   await testDapp.clickERC1155RevokeSetApprovalForAllButton();
 

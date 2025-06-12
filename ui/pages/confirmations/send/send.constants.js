@@ -5,7 +5,7 @@ import { EtherDenomination } from '../../../../shared/constants/common';
 const MIN_GAS_PRICE_DEC = '0';
 const MIN_GAS_PRICE_HEX = parseInt(MIN_GAS_PRICE_DEC, 10).toString(16);
 const MIN_GAS_LIMIT_DEC = new Numeric('21000', 10);
-const MAX_GAS_LIMIT_DEC = '7920027';
+const MAX_GAS_LIMIT_DEC = '30000000';
 
 const HIGH_FEE_WARNING_MULTIPLIER = 1.5;
 const MIN_GAS_PRICE_GWEI = new Numeric(
@@ -40,6 +40,7 @@ const ENS_UNKNOWN_ERROR = 'ensUnknownError';
 const NO_RESOLUTION_FOR_DOMAIN = 'noDomainResolution';
 const SWAPS_NO_QUOTES = 'swapQuotesNotAvailableErrorTitle';
 const SWAPS_QUOTES_ERROR = 'swapFetchingQuotesErrorTitle';
+const INVALID_HEX_DATA_ERROR = 'invalidHexDataError';
 
 const RECIPIENT_TYPES = {
   SMART_CONTRACT: 'SMART_CONTRACT',
@@ -73,4 +74,5 @@ export {
   RECIPIENT_TYPES,
   SWAPS_NO_QUOTES,
   SWAPS_QUOTES_ERROR,
+  INVALID_HEX_DATA_ERROR,
 };

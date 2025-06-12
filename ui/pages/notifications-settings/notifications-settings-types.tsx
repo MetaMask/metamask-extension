@@ -98,9 +98,12 @@ export function NotificationsSettingsTypes({
         {/* Product announcements */}
         <NotificationsSettingsBox
           value={featureAnnouncementsEnabled}
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onToggle={onToggleFeatureAnnouncements}
           error={errorFeatureAnnouncements}
           disabled={disabled}
+          dataTestId="product-announcements"
         >
           <NotificationsSettingsType
             icon={IconName.Star}

@@ -25,7 +25,7 @@ export default function ContractTokenValues({
   address,
   tokenName,
   chainId,
-  rpcPrefs,
+  blockExplorerUrl,
 }) {
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard();
@@ -69,7 +69,7 @@ export default function ContractTokenValues({
               address,
               chainId,
               {
-                blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+                blockExplorerUrl: blockExplorerUrl ?? null,
               },
               null,
             );
@@ -98,7 +98,7 @@ ContractTokenValues.propTypes = {
    */
   chainId: PropTypes.string,
   /**
-   * RPC prefs
+   * URL for the block explorer
    */
-  rpcPrefs: PropTypes.object,
+  blockExplorerUrl: PropTypes.string,
 };

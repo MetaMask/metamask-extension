@@ -1,8 +1,12 @@
 import { configureStore, Store } from '@reduxjs/toolkit';
 import RampAPI from '../../helpers/ramps/rampApi/rampAPI';
-import { getCurrentChainId, getUseExternalServices } from '../../selectors';
+import { getUseExternalServices } from '../../selectors';
+import { getCurrentChainId } from '../../../shared/modules/selectors/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { getMultichainIsBitcoin } from '../../selectors/multichain';
+import {
+  getMultichainIsBitcoin,
+  getMultichainIsSolana,
+} from '../../selectors/multichain';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import rampsReducer, {
   fetchBuyableChains,
@@ -15,9 +19,14 @@ import { defaultBuyableChains } from './constants';
 jest.mock('../../helpers/ramps/rampApi/rampAPI');
 const mockedRampAPI = RampAPI as jest.Mocked<typeof RampAPI>;
 
+jest.mock('../../../shared/modules/selectors/networks', () => ({
+  getCurrentChainId: jest.fn(),
+  getNetworkConfigurationsByChainId: jest.fn(),
+  getSelectedNetworkClientId: jest.fn(),
+}));
+
 jest.mock('../../selectors', () => ({
   ...jest.requireActual('../../selectors'),
-  getCurrentChainId: jest.fn(),
   getUseExternalServices: jest.fn(),
   getNames: jest.fn(),
 }));
@@ -25,6 +34,7 @@ jest.mock('../../selectors', () => ({
 jest.mock('../../selectors/multichain', () => ({
   ...jest.requireActual('../../selectors/multichain'),
   getMultichainIsBitcoin: jest.fn(),
+  getMultichainIsSolana: jest.fn(),
 }));
 
 describe('rampsSlice', () => {
@@ -34,6 +44,7 @@ describe('rampsSlice', () => {
     store = configureStore({
       reducer: {
         ramps: rampsReducer,
+        metamask: (state = { completedOnboarding: true }) => state,
       },
     });
     mockedRampAPI.getNetworks.mockReset();
@@ -180,6 +191,7 @@ describe('rampsSlice', () => {
   describe('getIsNativeTokenBuyable', () => {
     const getCurrentChainIdMock = jest.mocked(getCurrentChainId);
     const getMultichainIsBitcoinMock = jest.mocked(getMultichainIsBitcoin);
+    const getMultichainIsSolanaMock = jest.mocked(getMultichainIsSolana);
 
     afterEach(() => {
       jest.restoreAllMocks();
@@ -188,6 +200,7 @@ describe('rampsSlice', () => {
     it('should return true when current chain is buyable', () => {
       getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.MAINNET);
       getMultichainIsBitcoinMock.mockReturnValue(false);
+      getMultichainIsSolanaMock.mockReturnValue(false);
       const state = store.getState();
       expect(getIsNativeTokenBuyable(state)).toEqual(true);
     });
@@ -195,6 +208,7 @@ describe('rampsSlice', () => {
     it('should return false when current chain is not buyable', () => {
       getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.GOERLI);
       getMultichainIsBitcoinMock.mockReturnValue(false);
+      getMultichainIsSolanaMock.mockReturnValue(false);
       const mockBuyableChains = [{ chainId: CHAIN_IDS.MAINNET, active: true }];
       store.dispatch({
         type: 'ramps/setBuyableChains',
@@ -205,7 +219,7 @@ describe('rampsSlice', () => {
     });
 
     it('should return true when Bitcoin is buyable and current chain is Bitcoin', () => {
-      getCurrentChainIdMock.mockReturnValue(MultichainNetworks.BITCOIN);
+      getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.MAINNET);
       getMultichainIsBitcoinMock.mockReturnValue(true);
       const mockBuyableChains = [
         { chainId: MultichainNetworks.BITCOIN, active: true },
@@ -219,10 +233,40 @@ describe('rampsSlice', () => {
     });
 
     it('should return false when Bitcoin is not buyable and current chain is Bitcoin', () => {
-      getCurrentChainIdMock.mockReturnValue(MultichainNetworks.BITCOIN);
+      getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.MAINNET);
       getMultichainIsBitcoinMock.mockReturnValue(true);
       const mockBuyableChains = [
         { chainId: MultichainNetworks.BITCOIN, active: false },
+      ];
+      store.dispatch({
+        type: 'ramps/setBuyableChains',
+        payload: mockBuyableChains,
+      });
+      const state = store.getState();
+      expect(getIsNativeTokenBuyable(state)).toBe(false);
+    });
+
+    it('should return true when Solana is buyable and current chain is Solana', () => {
+      getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.MAINNET);
+      getMultichainIsBitcoinMock.mockReturnValue(false);
+      getMultichainIsSolanaMock.mockReturnValue(true);
+      const mockBuyableChains = [
+        { chainId: MultichainNetworks.SOLANA, active: true },
+      ];
+      store.dispatch({
+        type: 'ramps/setBuyableChains',
+        payload: mockBuyableChains,
+      });
+      const state = store.getState();
+      expect(getIsNativeTokenBuyable(state)).toBe(true);
+    });
+
+    it('should return false when Solana is not buyable and current chain is Solana', () => {
+      getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.MAINNET);
+      getMultichainIsBitcoinMock.mockReturnValue(false);
+      getMultichainIsSolanaMock.mockReturnValue(true);
+      const mockBuyableChains = [
+        { chainId: MultichainNetworks.SOLANA, active: false },
       ];
       store.dispatch({
         type: 'ramps/setBuyableChains',

@@ -2,9 +2,9 @@ import React, { useContext, useEffect, useState, useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { uniqBy, isEqual } from 'lodash';
+import { uniqBy, isEqual, isEmpty } from 'lodash';
 import { useHistory } from 'react-router-dom';
-import { getTokenTrackerLink } from '@metamask/etherscan-link';
+import { getAccountLink, getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -14,7 +14,11 @@ import {
 } from '../../../hooks/useTokensToSearch';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { I18nContext } from '../../../contexts/i18n';
-import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
+import {
+  getTokens,
+  getConversionRate,
+  getCurrentCurrency,
+} from '../../../ducks/metamask/metamask';
 import Box from '../../../components/ui/box';
 import {
   DISPLAY,
@@ -25,6 +29,7 @@ import {
   TextVariant,
   BLOCK_SIZES,
   FontWeight,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 import {
   fetchQuotesAndSetQuoteState,
@@ -55,50 +60,51 @@ import {
   getUsedQuote,
 } from '../../../ducks/swaps/swaps';
 import {
+  getCurrentChainId,
+  getSelectedNetworkClientId,
+} from '../../../../shared/modules/selectors/networks';
+import {
   getSwapsDefaultToken,
   getTokenExchangeRates,
-  getCurrentCurrency,
-  getCurrentChainId,
   getRpcPrefsForCurrentProvider,
   getTokenList,
   isHardwareWallet,
   getHardwareWalletType,
   getIsBridgeChain,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
-  getDataCollectionForMarketing,
+  getIsBridgeEnabled,
 } from '../../../selectors';
 import {
-  getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getSmartTransactionsPreferenceEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
 } from '../../../../shared/modules/selectors';
 import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../../../../shared/modules/conversion.utils';
 import { getURLHostName } from '../../../helpers/utils/util';
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
-import {
-  isSwapsDefaultTokenAddress,
-  isSwapsDefaultTokenSymbol,
-} from '../../../../shared/modules/swaps.utils';
+import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
   TokenBucketPriority,
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
   QUOTES_EXPIRED_ERROR,
   MAX_ALLOWED_SLIPPAGE,
+  SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
 } from '../../../../shared/constants/swaps';
+import {
+  CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
+  CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP,
+} from '../../../../shared/constants/common';
 import {
   resetSwapsPostFetchState,
   ignoreTokens,
@@ -131,6 +137,7 @@ import {
   Text,
   TextField,
   TextFieldSize,
+  BannerAlertSeverity,
 } from '../../../components/component-library';
 import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
@@ -141,6 +148,10 @@ import SwapsBannerAlert from '../swaps-banner-alert/swaps-banner-alert';
 import SwapsFooter from '../swaps-footer';
 import SelectedToken from '../selected-token/selected-token';
 import ListWithSearch from '../list-with-search/list-with-search';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import useBridging from '../../../hooks/bridge/useBridging';
+import useSwapDefaultToToken from '../../../hooks/swap/useSwapDefaultToToken';
+import { SmartTransactionsBannerAlert } from '../../confirmations/components/smart-transactions-banner-alert';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
 
@@ -155,6 +166,7 @@ export default function PrepareSwapPage({
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
+  const { openBridgeExperience } = useBridging();
 
   const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] =
     useState(undefined);
@@ -173,7 +185,10 @@ export default function PrepareSwapPage({
   const [quoteCount, updateQuoteCount] = useState(0);
   const [prefetchingQuotes, setPrefetchingQuotes] = useState(false);
   const [rotateSwitchTokens, setRotateSwitchTokens] = useState(false);
+  const [isLowReturnBannerOpen, setIsLowReturnBannerOpen] = useState(true);
+  const [isEstimatedReturnLow, setIsEstimatedReturnLow] = useState(false);
 
+  const isBridgeSupported = useSelector(getIsBridgeEnabled);
   const isFeatureFlagLoaded = useSelector(getIsFeatureFlagLoaded);
   const balanceError = useSelector(getBalanceError);
   const fetchParams = useSelector(getFetchParams, isEqual);
@@ -197,6 +212,9 @@ export default function PrepareSwapPage({
   const areQuotesPresent = numberOfQuotes > 0 && usedQuote;
   const swapsErrorKey = useSelector(getSwapsErrorKey);
   const aggregatorMetadata = useSelector(getAggregatorMetadata, shallowEqual);
+  const { defaultToToken } = useSwapDefaultToToken();
+  const networkClientId = useSelector(getSelectedNetworkClientId);
+
   const transactionSettingsOpened = useSelector(
     getTransactionSettingsOpened,
     shallowEqual,
@@ -205,29 +223,27 @@ export default function PrepareSwapPage({
     ? Object.keys(aggregatorMetadata).length
     : 0;
   const isBridgeChain = useSelector(getIsBridgeChain);
-  const metaMetricsId = useSelector(getMetaMetricsId);
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const smartTransactionsOptInStatus = useSelector(
-    getSmartTransactionsOptInStatus,
+    getSmartTransactionsOptInStatusForMetrics,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
   );
   const isSmartTransaction =
-    currentSmartTransactionsEnabled && smartTransactionsOptInStatus;
+    useSelector(getSmartTransactionsPreferenceEnabled) &&
+    currentSmartTransactionsEnabled;
   const currentCurrency = useSelector(getCurrentCurrency);
   const fetchingQuotes = useSelector(getFetchingQuotes);
   const loadingComplete = !fetchingQuotes && areQuotesPresent;
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
-  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
-  const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
-    sourceTokenInfo?.symbol,
+  const fetchParamsFromToken = isSwapsDefaultTokenAddress(
+    sourceTokenInfo?.address,
     chainId,
   )
     ? defaultSwapsToken
@@ -239,7 +255,8 @@ export default function PrepareSwapPage({
   // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
   // the balance of the token can appear in the from token selection dropdown
   const fromTokenArray =
-    !isSwapsDefaultTokenSymbol(fromToken?.symbol, chainId) && fromToken?.balance
+    !isSwapsDefaultTokenAddress(fromToken?.address, chainId) &&
+    fromToken?.balance
       ? [fromToken]
       : [];
   const usersTokens = uniqBy(
@@ -308,7 +325,10 @@ export default function PrepareSwapPage({
     { showFiat: true },
     true,
   );
-  const swapFromFiatValue = isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId)
+  const swapFromFiatValue = isSwapsDefaultTokenAddress(
+    fromTokenAddress,
+    chainId,
+  )
     ? swapFromEthFiatValue
     : swapFromTokenFiatValue;
 
@@ -350,6 +370,8 @@ export default function PrepareSwapPage({
       ) {
         dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR));
       }
+      // Resets the banner visibility when the estimated return is low
+      setIsLowReturnBannerOpen(true);
     };
 
     // The below logic simulates a sequential loading of the aggregator quotes, even though we are fetching them all with a single call.
@@ -387,6 +409,11 @@ export default function PrepareSwapPage({
     numberOfAggregators,
     prefetchingQuotes,
   ]);
+
+  useEffect(() => {
+    // Reopens the low return banner if a new quote is selected
+    setIsLowReturnBannerOpen(true);
+  }, [usedQuote]);
 
   const onFromSelect = (token) => {
     if (
@@ -433,19 +460,27 @@ export default function PrepareSwapPage({
     onInputChange(fromTokenInputValue, token.string, token.decimals);
   };
 
-  const blockExplorerTokenLink = getTokenTrackerLink(
-    selectedToToken.address,
-    chainId,
-    null, // no networkId
-    null, // no holderAddress
-    {
-      blockExplorerUrl:
-        SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
-    },
-  );
+  const blockExplorerTokenLink =
+    chainId === CHAIN_IDS.ZKSYNC_ERA
+      ? // Use getAccountLink because zksync explorer uses a /address URL scheme instead of /token
+        getAccountLink(selectedToToken.address, chainId, {
+          blockExplorerUrl:
+            CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
+        })
+      : getTokenTrackerLink(
+          selectedToToken.address,
+          chainId,
+          null, // no networkId
+          null, // no holderAddress
+          {
+            blockExplorerUrl:
+              CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
+          },
+        );
 
   const blockExplorerLabel = rpcPrefs.blockExplorerUrl
-    ? getURLHostName(blockExplorerTokenLink)
+    ? CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP[chainId] ??
+      t('etherscan')
     : t('etherscan');
 
   const { address: toAddress } = toToken || {};
@@ -456,13 +491,14 @@ export default function PrepareSwapPage({
           ignoreTokens({
             tokensToIgnore: toAddress,
             dontShowLoadingIndicator: true,
+            networkClientId,
           }),
         );
       }
       dispatch(setSwapToToken(token));
       setVerificationClicked(false);
     },
-    [dispatch, latestAddedTokenTo, toAddress],
+    [dispatch, latestAddedTokenTo, toAddress, networkClientId],
   );
 
   const tokensWithBalancesFromToken = tokensWithBalances.find((token) =>
@@ -726,6 +762,14 @@ export default function PrepareSwapPage({
     }
   }, [showQuotesLoadingAnimation]);
 
+  // Set the default destination token for the swap
+  useEffect(() => {
+    if (fromToken?.address && !selectedToToken?.address && defaultToToken) {
+      dispatch(setSwapToToken(defaultToToken));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fromToken?.address]);
+
   const onOpenImportTokenModalClick = (item) => {
     setTokenForImport(item);
     setIsImportTokenModalOpen(true);
@@ -777,6 +821,24 @@ export default function PrepareSwapPage({
       'prepare-swap-page__receive-amount',
     );
   }
+
+  const toTokenBalance =
+    usedQuote?.destinationAmount &&
+    calcTokenAmount(
+      usedQuote?.destinationAmount || '0',
+      selectedToToken.decimals || 18,
+    );
+
+  const swapToTokenFiatValue = useTokenFiatAmount(
+    selectedToToken.address,
+    toTokenBalance || 0,
+    selectedToToken.symbol,
+    {
+      showFiat: true,
+    },
+    true,
+  );
+
   if (fromTokenInputValue) {
     fromTokenAmountClassName = getClassNameForCharLength(
       fromTokenInputValue,
@@ -784,17 +846,22 @@ export default function PrepareSwapPage({
     );
   }
 
-  const isNonDefaultToken = !isSwapsDefaultTokenSymbol(
-    fromTokenSymbol,
+  const isNonDefaultFromToken = !isSwapsDefaultTokenAddress(
+    fromTokenAddress,
     chainId,
   );
   const hasPositiveFromTokenBalance = rawFromTokenBalance > 0;
   const isTokenEligibleForMaxBalance =
-    isSmartTransaction || (!isSmartTransaction && isNonDefaultToken);
+    isSmartTransaction || (!isSmartTransaction && isNonDefaultFromToken);
   const showMaxBalanceLink =
     fromTokenSymbol &&
     isTokenEligibleForMaxBalance &&
     hasPositiveFromTokenBalance;
+
+  const isNonDefaultToToken = !isSwapsDefaultTokenAddress(
+    selectedToToken.address,
+    chainId,
+  );
 
   return (
     <div className="prepare-swap-page">
@@ -802,6 +869,9 @@ export default function PrepareSwapPage({
         {tokenForImport && isImportTokenModalOpen && (
           <ImportToken isOpen {...importTokenProps} />
         )}
+        <Box>
+          <SmartTransactionsBannerAlert marginType="onlyTop" />
+        </Box>
         <Modal
           onClose={onSwapToClose}
           isOpen={isSwapToOpen}
@@ -876,6 +946,7 @@ export default function PrepareSwapPage({
             display={DISPLAY.FLEX}
             justifyContent={JustifyContent.spaceBetween}
             alignItems={AlignItems.center}
+            gap={4}
           >
             <SelectedToken
               onClick={onSwapFromOpen}
@@ -1021,11 +1092,40 @@ export default function PrepareSwapPage({
             <div className="prepare-swap-page__balance-message">
               {selectedToToken?.string && yourTokenToBalance}
             </div>
+            {receiveToAmountFormatted && swapToTokenFiatValue && (
+              <Box
+                display={DISPLAY.FLEX}
+                justifyContent={JustifyContent.flexEnd}
+                alignItems={AlignItems.flexEnd}
+              >
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
+                  {swapToTokenFiatValue}
+                </Text>
+              </Box>
+            )}
+          </Box>
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.stretch}
+          >
+            <div className="prepare-swap-page__balance-message">
+              {selectedToToken &&
+                !isEmpty(selectedToToken) &&
+                isNonDefaultToToken &&
+                t('swapTokenVerifiedSources', [
+                  occurrences,
+                  <BlockExplorerLink key="block-explorer-link" />,
+                ])}
+            </div>
           </Box>
         </div>
         {showCrossChainSwapsLink && (
           <ButtonLink
-            endIconName={IconName.Export}
+            endIconName={isBridgeSupported ? undefined : IconName.Export}
             endIconProps={{
               size: IconSize.Xs,
             }}
@@ -1033,33 +1133,14 @@ export default function PrepareSwapPage({
             marginTop={2}
             fontWeight={FontWeight.Normal}
             onClick={() => {
-              const portfolioUrl = getPortfolioUrl(
-                'bridge',
-                'ext_bridge_prepare_swap_link',
-                metaMetricsId,
-                isMetaMetricsEnabled,
-                isMarketingEnabled,
-              );
-
-              global.platform.openTab({
-                url: `${portfolioUrl}&token=${fromTokenAddress}`,
-              });
-
-              trackEvent({
-                category: MetaMetricsEventCategory.Swaps,
-                event: MetaMetricsEventName.BridgeLinkClicked,
-                properties: {
-                  location: 'Swaps',
-                  text: 'Swap across networks with MetaMask Portfolio',
-                  chain_id: chainId,
-                  token_symbol: fromTokenSymbol,
-                },
-              });
+              openBridgeExperience('Swaps', selectedFromToken);
             }}
             target="_blank"
             data-testid="prepare-swap-page-cross-chain-swaps-link"
           >
-            {t('crossChainSwapsLink')}
+            {isBridgeSupported
+              ? t('crossChainSwapsLinkNative')
+              : t('crossChainSwapsLink')}
           </ButtonLink>
         )}
         {!showReviewQuote && toTokenIsNotDefault && occurrences < 2 && (
@@ -1112,6 +1193,18 @@ export default function PrepareSwapPage({
             </BannerAlert>
           </Box>
         )}
+        {isEstimatedReturnLow && isLowReturnBannerOpen && (
+          <BannerAlert
+            marginTop={3}
+            title={t('lowEstimatedReturnTooltipTitle')}
+            severity={BannerAlertSeverity.Warning}
+            description={t('lowEstimatedReturnTooltipMessage', [
+              SWAPS_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE * 100,
+            ])}
+            textAlign={TextAlign.Left}
+            onClose={() => setIsLowReturnBannerOpen(false)}
+          />
+        )}
         {swapsErrorKey && (
           <Box display={DISPLAY.FLEX} marginTop={2}>
             <SwapsBannerAlert
@@ -1131,6 +1224,8 @@ export default function PrepareSwapPage({
             onModalClose={() => {
               dispatch(setTransactionSettingsOpened(false));
             }}
+            sourceTokenSymbol={fromToken?.symbol}
+            destinationTokenSymbol={toToken?.symbol}
           />
         )}
         {showQuotesLoadingAnimation && (
@@ -1140,7 +1235,10 @@ export default function PrepareSwapPage({
           />
         )}
         {showReviewQuote && (
-          <ReviewQuote setReceiveToAmount={setReceiveToAmount} />
+          <ReviewQuote
+            setReceiveToAmount={setReceiveToAmount}
+            setIsEstimatedReturnLow={setIsEstimatedReturnLow}
+          />
         )}
       </div>
       {!areQuotesPresent && (

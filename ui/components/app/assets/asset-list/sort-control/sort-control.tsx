@@ -1,12 +1,14 @@
-import React, { ReactNode, useContext } from 'react';
+import React, { ReactNode, useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { Box, Text } from '../../../../component-library';
 import { SortOrder, SortingCallbacksT } from '../../util/sort';
 import {
+  AlignItems,
   BackgroundColor,
+  BlockSize,
   BorderRadius,
-  TextColor,
+  Display,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { setTokenSortConfig } from '../../../../../store/actions';
@@ -16,7 +18,8 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../../../shared/constants/metametrics';
-import { getCurrentCurrency, getPreferences } from '../../../../../selectors';
+import { getTokenSortConfig } from '../../../../../selectors';
+import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
 
@@ -24,7 +27,7 @@ import { getCurrencySymbol } from '../../../../../helpers/utils/common.util';
 // inspired from ui/components/multichain/network-list-item
 // should probably be broken out into component library
 type SelectableListItemProps = {
-  isSelected: boolean;
+  isSelected?: boolean;
   onClick?: React.MouseEventHandler<HTMLSpanElement>;
   testId?: string;
   children: ReactNode;
@@ -38,17 +41,21 @@ export const SelectableListItem = ({
 }: SelectableListItemProps) => {
   return (
     <Box className="selectable-list-item-wrapper" data-testid={testId}>
-      <Box
+      <Text
         data-testid={`${testId}__button`}
         className={classnames('selectable-list-item', {
-          'selectable-list-item--selected': isSelected,
+          'selectable-list-item--selected': Boolean(isSelected),
         })}
         onClick={onClick}
+        variant={TextVariant.bodyMd}
+        as="button"
+        width={BlockSize.Full}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        display={Display.Flex}
+        alignItems={AlignItems.center}
       >
-        <Text variant={TextVariant.bodyMdMedium} color={TextColor.textDefault}>
-          {children}
-        </Text>
-      </Box>
+        {children}
+      </Text>
       {isSelected && (
         <Box
           className="selectable-list-item__selected-indicator"
@@ -67,37 +74,43 @@ type SortControlProps = {
 const SortControl = ({ handleClose }: SortControlProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const { tokenSortConfig } = useSelector(getPreferences);
+  const tokenSortConfig = useSelector(getTokenSortConfig);
   const currentCurrency = useSelector(getCurrentCurrency);
 
   const dispatch = useDispatch();
 
-  const handleSort = (
-    key: string,
-    sortCallback: keyof SortingCallbacksT,
-    order: SortOrder,
-  ) => {
-    dispatch(
-      setTokenSortConfig({
-        key,
-        sortCallback,
-        order,
-      }),
-    );
-    trackEvent({
-      category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.TokenSortPreference,
-      properties: {
-        [MetaMetricsUserTrait.TokenSortPreference]: key,
-      },
-    });
-    handleClose();
-  };
+  const handleSort = useCallback(
+    (key: string, sortCallback: keyof SortingCallbacksT, order: SortOrder) => {
+      dispatch(
+        setTokenSortConfig({
+          key,
+          sortCallback,
+          order,
+        }),
+      );
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.TokenSortPreference,
+        properties: {
+          [MetaMetricsUserTrait.TokenSortPreference]: key,
+        },
+      });
+      handleClose();
+    },
+    [dispatch, handleClose, trackEvent],
+  );
+
   return (
     <>
       <SelectableListItem
-        isSelected={tokenSortConfig?.key === 'symbol'}
-        onClick={() => handleSort('symbol', 'alphaNumeric', 'asc')}
+        isSelected={
+          // TODO: consolidate name and title fields in token to avoid this switch
+          tokenSortConfig?.key === 'name' || tokenSortConfig?.key === 'title'
+        }
+        onClick={() =>
+          // TODO: consolidate name and title fields in token to avoid this switch
+          handleSort('title', 'alphaNumeric', 'asc')
+        }
         testId="sortByAlphabetically"
       >
         {t('sortByAlphabetically')}

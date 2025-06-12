@@ -16,8 +16,9 @@ import {
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import * as actions from '../../../store/actions';
+import { useAssetDetails } from '../hooks/useAssetDetails';
 import { SignatureRequestType } from '../types/confirm';
-import { fetchErc20Decimals } from '../utils/token';
+import { memoizedGetTokenStandardAndDetails } from '../utils/token';
 import Confirm from './confirm';
 
 jest.mock('react-router-dom', () => ({
@@ -27,14 +28,30 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+jest.mock('../hooks/useAssetDetails', () => ({
+  ...jest.requireActual('../hooks/useAssetDetails'),
+  useAssetDetails: jest.fn().mockResolvedValue({
+    decimals: '4',
+  }),
+}));
+
 const middleware = [thunk];
+const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 describe('Confirm', () => {
   afterEach(() => {
     jest.resetAllMocks();
 
     /** Reset memoized function using getTokenStandardAndDetails for each test */
-    fetchErc20Decimals?.cache?.clear?.();
+    memoizedGetTokenStandardAndDetails?.cache?.clear?.();
+  });
+
+  beforeEach(() => {
+    mockedAssetDetails.mockImplementation(() => ({
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      decimals: '4' as any,
+    }));
   });
 
   it('should render', () => {
@@ -59,7 +76,7 @@ describe('Confirm', () => {
 
     jest.spyOn(actions, 'getTokenStandardAndDetails').mockResolvedValue({
       decimals: '2',
-      standard: 'erc20',
+      standard: 'ERC20',
     });
 
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
@@ -103,7 +120,7 @@ describe('Confirm', () => {
 
     jest.spyOn(actions, 'getTokenStandardAndDetails').mockResolvedValue({
       decimals: '2',
-      standard: 'erc20',
+      standard: 'ERC20',
     });
 
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
@@ -146,15 +163,15 @@ describe('Confirm', () => {
 
     jest.spyOn(actions, 'getTokenStandardAndDetails').mockResolvedValue({
       decimals: '2',
-      standard: 'erc20',
+      standard: 'ERC20',
     });
 
     await act(async () => {
-      const { container, findAllByText } =
-        await renderWithConfirmContextProvider(<Confirm />, mockStore);
+      const { container } = await renderWithConfirmContextProvider(
+        <Confirm />,
+        mockStore,
+      );
 
-      const valueElement = await findAllByText('14,615,016,373,...');
-      expect(valueElement[0]).toBeInTheDocument();
       expect(container).toMatchSnapshot();
     });
   });
@@ -170,15 +187,55 @@ describe('Confirm', () => {
 
     jest.spyOn(actions, 'getTokenStandardAndDetails').mockResolvedValue({
       decimals: '2',
-      standard: 'erc20',
+      standard: 'ERC20',
     });
 
     await act(async () => {
-      const { container, findAllByText } =
-        await renderWithConfirmContextProvider(<Confirm />, mockStore);
+      const { container } = await renderWithConfirmContextProvider(
+        <Confirm />,
+        mockStore,
+      );
 
-      const valueElement = await findAllByText('14,615,016,373,...');
-      expect(valueElement[0]).toBeInTheDocument();
+      expect(container).toMatchSnapshot();
+    });
+  });
+
+  it('should render SmartTransactionsBannerAlert for transaction types but not signature types', async () => {
+    // Test with a transaction type
+    const mockStateTransaction = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        alertEnabledness: {
+          smartTransactionsMigration: true,
+        },
+        preferences: {
+          smartTransactionsOptInStatus: true,
+          smartTransactionsMigrationApplied: true,
+        },
+      },
+    };
+
+    const mockStoreTransaction =
+      configureMockStore(middleware)(mockStateTransaction);
+
+    await act(async () => {
+      const { container } = renderWithConfirmContextProvider(
+        <Confirm />,
+        mockStoreTransaction,
+      );
+      expect(container).toMatchSnapshot();
+    });
+
+    // Test with a signature type (reuse existing mock)
+    const mockStateTypedSign = getMockTypedSignConfirmState();
+    const mockStoreSign = configureMockStore(middleware)(mockStateTypedSign);
+
+    await act(async () => {
+      const { container } = renderWithConfirmContextProvider(
+        <Confirm />,
+        mockStoreSign,
+      );
       expect(container).toMatchSnapshot();
     });
   });

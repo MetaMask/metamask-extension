@@ -24,4 +24,9 @@
     top: 4px;
     left: 4px;
   }
+
+  .currency-display-component__text,
+  .currency-display-component__suffix {
+    color: var(--color-text-alternative);
+  }
 }

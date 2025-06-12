@@ -254,26 +254,11 @@
   "from": {
     "message": "מאת"
   },
-  "functionType": {
-    "message": "סוג פונקציה"
-  },
   "gasLimit": {
     "message": "הגבלת דלק"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "הגבלת דלק היא המספר המרבי של יחידות דלק שהנך מוכנ/ה להוציא."
-  },
   "gasLimitTooLow": {
     "message": "הגבלת הדלק חייבת להיות לפחות 21000"
-  },
-  "gasPrice": {
-    "message": "מחיר גז (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "מחיר הדלק נמוך במיוחד"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "מחיר הדלק מציין את כמות האת'ר שהנך מוכנ/ה לשלם עבור כל יחידת דלק."
   },
   "gasUsed": {
     "message": "דלק שנעשה בו שימוש"
@@ -315,9 +300,6 @@
   "import": {
     "message": "ייבוא",
     "description": "Button to import an account from a selected file"
-  },
-  "importAccount": {
-    "message": "יבא חשבון"
   },
   "importAccountMsg": {
     "message": "חשבונות מיובאים לא ישויכו לצירוף הגרעין (seed) שנוצר במקור עבור חשבון ה-MetaMask שלך. למד/י עוד על חשבונות מיובאים"
@@ -381,9 +363,6 @@
   "loading": {
     "message": "טוען..."
   },
-  "loadingTokens": {
-    "message": "טוען טוקנים..."
-  },
   "lock": {
     "message": "התנתקות"
   },
@@ -443,9 +422,6 @@
   "noConversionRateAvailable": {
     "message": "אין שער המרה זמין"
   },
-  "noTransactions": {
-    "message": "אין לך עסקאות"
-  },
   "noWebcamFound": {
     "message": "מצלמת הרשת של מחשבך לא נמצאה. נא לנסות שוב."
   },
@@ -469,9 +445,6 @@
   },
   "origin": {
     "message": "מקור"
-  },
-  "parameters": {
-    "message": "פרמטרים"
   },
   "participateInMetaMetrics": {
     "message": "קח/י חלק ב- MetaMetrics"
@@ -541,9 +514,6 @@
   "removeAccountDescription": {
     "message": "חשבון זה יוסר מארנקך. יש לוודא שיש לך את ה-seed phrase המקורי או המפתח האישי לחשבון מיובא זה לפני שתמשיך/י. באפשרותך ליבוא או לפתוח חשבונות שוב מהתפריט הנפתח של החשבון."
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "בקשות הממתינות לאישור"
-  },
   "required": {
     "message": "נדרש"
   },
@@ -610,9 +580,6 @@
   },
   "showHexDataDescription": {
     "message": "בחר/י בזה כדי להציג את שדה הנתונים ההקסדצימאלים על מסך השליחה"
-  },
-  "sigRequest": {
-    "message": "בקשת חתימה"
   },
   "sign": {
     "message": "חתימה"
@@ -710,9 +677,6 @@
   "transactionErrored": {
     "message": "העסקה נתקלה בשגיאה."
   },
-  "transactionFee": {
-    "message": "עמלת עסקה"
-  },
   "transactionResubmitted": {
     "message": "העסקה הוגשה מחדש עם עמלת דלק שעלתה ל-$1 ב-$2"
   },
@@ -739,9 +703,6 @@
   },
   "unknown": {
     "message": "לא ידוע"
-  },
-  "unknownNetwork": {
-    "message": "רשת פרטית לא ידועה"
   },
   "unknownQrCode": {
     "message": "שגיאה: לא הצלחנו לזהות את קוד ה- QR הזה"
@@ -773,13 +734,7 @@
   "youNeedToAllowCameraAccess": {
     "message": "עליך לאפשר גישה למצלמה כדי להשתמש בתכונה זו."
   },
-  "youSign": {
-    "message": "הנך חותמ/ת"
-  },
   "yourPrivateSeedPhrase": {
     "message": "ה-seed phrase הפרטי שלך"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "מחיר גז אפס על האצה"
   }
 }

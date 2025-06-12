@@ -2,10 +2,6 @@ import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 
-export const NATIVE_ASSET_IDENTIFIER: NativeAssetIdentifier = {
-  standard: TokenStandard.none,
-};
-
 /**
  * Describes an amount of fiat.
  */
@@ -17,6 +13,7 @@ export type FiatAmount = FiatAmountAvailable | typeof FIAT_UNAVAILABLE;
  * Identifies the native asset of a chain.
  */
 export type NativeAssetIdentifier = {
+  chainId: Hex;
   standard: TokenStandard.none;
   address?: undefined;
   tokenId?: undefined;
@@ -26,6 +23,7 @@ export type NativeAssetIdentifier = {
  * Uniquely identifies a token asset on a chain.
  */
 export type TokenAssetIdentifier = {
+  chainId: Hex;
   standard: Exclude<TokenStandard, TokenStandard.none>;
   address: Hex;
   tokenId?: Hex;
@@ -60,4 +58,16 @@ export type BalanceChange = Readonly<{
    * The amount of fiat currency that corresponds to the asset amount.
    */
   fiatAmount: FiatAmount;
+
+  /** Whether the balance change is a token approval. */
+  isApproval?: boolean;
+
+  /** Whether the balance change is an approval for all tokens. */
+  isAllApproval?: boolean;
+
+  /** Whether the balance change is an unlimited token approval. */
+  isUnlimitedApproval?: boolean;
+
+  /** Callback to support editing the value. */
+  onEdit?: () => void;
 }>;

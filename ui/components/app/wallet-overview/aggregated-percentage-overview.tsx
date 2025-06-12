@@ -1,14 +1,16 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-
-import { zeroAddress, toChecksumAddress } from 'ethereumjs-util';
+import { toChecksumAddress } from 'ethereumjs-util';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
-  getCurrentCurrency,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokensMarketData,
+  getPreferences,
+  getSelectedInternalAccount,
 } from '../../../selectors';
-
+import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -19,8 +21,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, Text } from '../../component-library';
+import { Box, SensitiveText } from '../../component-library';
 import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
+import { getHistoricalMultichainAggregatedBalance } from '../../../selectors/assets';
+import { formatWithThreshold } from '../assets/util/formatWithThreshold';
 
 // core already has this exported type but its not yet available in this version
 // todo remove this and use core type once available
@@ -34,7 +38,9 @@ export const AggregatedPercentageOverview = () => {
     useSelector(getTokensMarketData);
   const locale = useSelector(getIntlLocale);
   const fiatCurrency = useSelector(getCurrentCurrency);
+  const { privacyMode } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
+  const currentChainId = useSelector(getCurrentChainId);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -61,14 +67,15 @@ export const AggregatedPercentageOverview = () => {
       }
       // native token
       const nativePricePercentChange1d =
-        tokensMarketData?.[zeroAddress()]?.pricePercentChange1d;
+        tokensMarketData?.[getNativeTokenAddress(currentChainId)]
+          ?.pricePercentChange1d;
       const nativeFiat1dAgo = getCalculatedTokenAmount1dAgo(
         item.fiatBalance,
         nativePricePercentChange1d,
       );
       return total1dAgo + Number(nativeFiat1dAgo);
     }, 0); // Initial total1dAgo is 0
-  }, [orderedTokenList, tokensMarketData]); // Dependencies: recalculate if orderedTokenList or tokensMarketData changes
+  }, [orderedTokenList, tokensMarketData, currentChainId]); // Dependencies: recalculate if orderedTokenList or tokensMarketData changes
 
   const totalBalance: number = Number(totalFiatBalance);
   const totalBalance1dAgo = totalFiat1dAgo;
@@ -108,36 +115,123 @@ export const AggregatedPercentageOverview = () => {
     }
   }
 
-  let color = TextColor.textDefault;
+  let color = TextColor.textAlternative;
 
-  if (isValidAmount(amountChange)) {
+  if (!privacyMode && isValidAmount(amountChange)) {
     if ((amountChange as number) === 0) {
-      color = TextColor.textDefault;
+      color = TextColor.textAlternative;
     } else if ((amountChange as number) > 0) {
       color = TextColor.successDefault;
     } else {
       color = TextColor.errorDefault;
     }
+  } else {
+    color = TextColor.textAlternative;
   }
+
   return (
     <Box display={Display.Flex}>
-      <Text
+      <SensitiveText
         variant={TextVariant.bodyMdMedium}
         color={color}
         data-testid="aggregated-value-change"
         style={{ whiteSpace: 'pre' }}
+        isHidden={privacyMode}
         ellipsis
+        length="10"
       >
         {formattedAmountChange}
-      </Text>
-      <Text
+      </SensitiveText>
+      <SensitiveText
         variant={TextVariant.bodyMdMedium}
         color={color}
         data-testid="aggregated-percentage-change"
+        isHidden={privacyMode}
         ellipsis
+        length="10"
       >
         {formattedPercentChange}
-      </Text>
+      </SensitiveText>
+    </Box>
+  );
+};
+
+export const AggregatedMultichainPercentageOverview = ({
+  privacyMode = false,
+}: {
+  privacyMode?: boolean;
+}) => {
+  const locale = useSelector(getIntlLocale);
+  const currentCurrency = useSelector(getCurrentCurrency);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const historicalAggregatedBalances = useSelector((state) =>
+    getHistoricalMultichainAggregatedBalance(state, selectedAccount),
+  );
+
+  let color = TextColor.textAlternative;
+
+  const singleDayPercentChange = historicalAggregatedBalances.P1D.percentChange;
+  const singleDayAmountChange = historicalAggregatedBalances.P1D.amountChange;
+  const signPrefix = singleDayPercentChange >= 0 ? '+' : '-';
+
+  if (!privacyMode && isValidAmount(singleDayPercentChange)) {
+    if ((singleDayPercentChange as number) === 0) {
+      color = TextColor.textAlternative;
+    } else if ((singleDayPercentChange as number) > 0) {
+      color = TextColor.successDefault;
+    } else {
+      color = TextColor.errorDefault;
+    }
+  } else {
+    color = TextColor.textAlternative;
+  }
+
+  const localizedAmountChange = formatWithThreshold(
+    Math.abs(singleDayAmountChange),
+    0.01,
+    locale,
+    {
+      style: 'currency',
+      currency: currentCurrency,
+    },
+  );
+
+  const localizedPercentChange = formatWithThreshold(
+    Math.abs(singleDayPercentChange) / 100,
+    0.0001,
+    locale,
+    {
+      style: 'percent',
+      maximumFractionDigits: 2,
+      minimumFractionDigits: 2,
+    },
+  );
+
+  return (
+    <Box display={Display.Flex}>
+      <SensitiveText
+        variant={TextVariant.bodyMdMedium}
+        color={color}
+        data-testid="aggregated-value-change"
+        style={{ whiteSpace: 'pre' }}
+        isHidden={privacyMode}
+        ellipsis
+        length="10"
+      >
+        {signPrefix}
+        {localizedAmountChange}{' '}
+      </SensitiveText>
+      <SensitiveText
+        variant={TextVariant.bodyMdMedium}
+        color={color}
+        data-testid="aggregated-percentage-change"
+        isHidden={privacyMode}
+        ellipsis
+        length="10"
+      >
+        ({signPrefix}
+        {localizedPercentChange})
+      </SensitiveText>
     </Box>
   );
 };

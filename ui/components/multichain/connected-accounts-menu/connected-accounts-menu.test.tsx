@@ -81,20 +81,28 @@ const renderComponent = (props = {}, stateChanges = {}) => {
       subjects: {
         'https://remix.ethereum.org': {
           permissions: {
-            eth_accounts: {
+            'endowment:caip25': {
               caveats: [
                 {
-                  type: 'restrictReturnedAccounts',
-                  value: [
-                    '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-                    '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-                  ],
+                  type: 'authorizedScopes',
+                  value: {
+                    requiredScopes: {},
+                    optionalScopes: {
+                      'eip155:1': {
+                        accounts: [
+                          'eip155:1:0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+                          'eip155:1:0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+                        ],
+                      },
+                    },
+                    isMultichainOrigin: false,
+                  },
                 },
               ],
               date: 1586359844177,
               id: '3aa65a8b-3bcb-4944-941b-1baa5fe0ed8b',
               invoker: 'https://remix.ethereum.org',
-              parentCapability: 'eth_accounts',
+              parentCapability: 'endowment:caip25',
             },
           },
         },

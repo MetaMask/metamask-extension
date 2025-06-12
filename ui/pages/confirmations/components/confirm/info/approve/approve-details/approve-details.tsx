@@ -10,8 +10,7 @@ import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
-import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
-import { Container } from '../../shared/transaction-data/transaction-data';
+import { SigningInWithRow } from '../../shared/sign-in-with-row/sign-in-with-row';
 import {
   MethodDataRow,
   OriginRow,
@@ -19,6 +18,8 @@ import {
 } from '../../shared/transaction-details/transaction-details';
 import { getIsRevokeSetApprovalForAll } from '../../utils';
 import { useIsNFT } from '../hooks/use-is-nft';
+import { useTokenTransactionData } from '../../hooks/useTokenTransactionData';
+import { NetworkRow } from '../../shared/network-row/network-row';
 
 const Spender = ({
   isSetApprovalForAll = false,
@@ -31,22 +32,20 @@ const Spender = ({
     useConfirmContext<TransactionMeta>();
 
   const { isNFT } = useIsNFT(transactionMeta);
+  const parsedTransactionData = useTokenTransactionData();
 
-  const decodedResponse = useDecodedTransactionData();
-
-  const { value, pending } = decodedResponse;
-
-  if (pending) {
-    return <Container isLoading />;
-  }
-
-  if (!value) {
+  if (!parsedTransactionData) {
     return null;
   }
 
-  const spender = value.data[0].params[0].value;
+  const spender =
+    parsedTransactionData.args?._spender ?? // ERC-20 - approve
+    parsedTransactionData.args?._operator ?? // ERC-721 - setApprovalForAll
+    parsedTransactionData.args?.spender; //  Fiat Token V2 - increaseAllowance
 
-  if (getIsRevokeSetApprovalForAll(value)) {
+  const { chainId } = transactionMeta;
+
+  if (getIsRevokeSetApprovalForAll(parsedTransactionData)) {
     return null;
   }
 
@@ -59,7 +58,7 @@ const Spender = ({
         )}
         data-testid="confirmation__approve-spender"
       >
-        <ConfirmInfoRowAddress address={spender} />
+        <ConfirmInfoRowAddress address={spender} chainId={chainId} />
       </ConfirmInfoRow>
 
       <ConfirmInfoRowDivider />
@@ -79,7 +78,9 @@ export const ApproveDetails = ({
   return (
     <ConfirmInfoSection data-testid="confirmation__approve-details">
       <Spender isSetApprovalForAll={isSetApprovalForAll} />
+      <NetworkRow isShownWithAlertsOnly />
       <OriginRow />
+      <SigningInWithRow />
       {showAdvancedDetails && (
         <>
           <RecipientRow />

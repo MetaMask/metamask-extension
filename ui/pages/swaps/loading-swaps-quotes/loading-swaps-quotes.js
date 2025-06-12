@@ -6,7 +6,7 @@ import { shuffle } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 import {
-  navigateBackToBuildQuote,
+  navigateBackToPrepareSwap,
   getFetchParams,
   getQuotesFetchStartTime,
   getCurrentSmartTransactionsEnabled,
@@ -14,10 +14,11 @@ import {
 import {
   isHardwareWallet,
   getHardwareWalletType,
+  getHDEntropyIndex,
 } from '../../../selectors/selectors';
 import {
-  getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getSmartTransactionsOptInStatusForMetrics,
 } from '../../../../shared/modules/selectors';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -33,6 +34,7 @@ import {
   JustifyContent,
   TextTransform,
 } from '../../../helpers/constants/design-system';
+import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 import BackgroundAnimation from './background-animation';
 
 export default function LoadingSwapsQuotes({
@@ -43,6 +45,7 @@ export default function LoadingSwapsQuotes({
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const history = useHistory();
   const animationEventEmitter = useRef(new EventEmitter());
 
@@ -51,7 +54,7 @@ export default function LoadingSwapsQuotes({
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const smartTransactionsOptInStatus = useSelector(
-    getSmartTransactionsOptInStatus,
+    getSmartTransactionsOptInStatusForMetrics,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const currentSmartTransactionsEnabled = useSelector(
@@ -74,6 +77,9 @@ export default function LoadingSwapsQuotes({
       current_stx_enabled: currentSmartTransactionsEnabled,
       stx_user_opt_in: smartTransactionsOptInStatus,
     },
+    properties: {
+      hd_entropy_index: hdEntropyIndex,
+    },
   };
 
   const [aggregatorNames] = useState(() =>
@@ -85,6 +91,27 @@ export default function LoadingSwapsQuotes({
 
   const [quoteCount, updateQuoteCount] = useState(0);
   const [midPointTarget, setMidpointTarget] = useState(null);
+
+  const renderMascot = () => {
+    if (isFlask()) {
+      return (
+        <img src="./images/logo/metamask-fox.svg" width="90" height="90" />
+      );
+    }
+    if (isBeta()) {
+      return (
+        <img src="./images/logo/metamask-fox.svg" width="90" height="90" />
+      );
+    }
+    return (
+      <Mascot
+        animationEventEmitter={animationEventEmitter.current}
+        width="90"
+        height="90"
+        lookAtTarget={midPointTarget}
+      />
+    );
+  };
 
   useEffect(() => {
     let timeoutLength;
@@ -170,12 +197,7 @@ export default function LoadingSwapsQuotes({
             className="loading-swaps-quotes__mascot-container"
             ref={mascotContainer}
           >
-            <Mascot
-              animationEventEmitter={animationEventEmitter.current}
-              width="90"
-              height="90"
-              lookAtTarget={midPointTarget}
-            />
+            {renderMascot()}
           </div>
         </div>
       </div>
@@ -183,7 +205,7 @@ export default function LoadingSwapsQuotes({
         submitText={t('back')}
         onSubmit={async () => {
           trackEvent(quotesRequestCancelledEventConfig);
-          await dispatch(navigateBackToBuildQuote(history));
+          await dispatch(navigateBackToPrepareSwap(history));
         }}
         hideCancel
       />

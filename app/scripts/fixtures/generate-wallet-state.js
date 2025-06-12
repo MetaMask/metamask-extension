@@ -1,4 +1,4 @@
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { KeyringController } from '@metamask/keyring-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { UI_NOTIFICATIONS } from '../../../shared/notifications';
@@ -55,8 +55,8 @@ export async function generateWalletState() {
  * @returns {Promise<{vault: object, account: string}>} The generated vault and account.
  */
 async function generateVaultAndAccount(encodedSeedPhrase, password) {
-  const controllerMessenger = new ControllerMessenger();
-  const keyringControllerMessenger = controllerMessenger.getRestricted({
+  const messenger = new Messenger();
+  const keyringControllerMessenger = messenger.getRestricted({
     name: 'KeyringController',
   });
   const krCtrl = new KeyringController({

@@ -7,12 +7,14 @@ export default function RecipientGroup({ items, onSelect }) {
     return null;
   }
 
-  return items.map(({ address, name }) => (
+  return items.map(({ address, name, isDuplicate, chainId }) => (
     <AddressListItem
       address={address}
       label={name}
       onClick={() => onSelect(address, name)}
       key={address}
+      chainId={chainId}
+      isDuplicate={isDuplicate}
     />
   ));
 }
