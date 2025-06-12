@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import configureStore from '../../../store/store';
+import { MetaMaskReduxDispatch } from '../../../store/store';
 import { EditAccountNameModal } from './edit-account-name-modal';
 
 // Mock the setAccountLabel action
@@ -10,7 +11,7 @@ jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions'),
   setAccountLabel: (address: string, label: string) => {
     // Return a thunk function like the real action does
-    return (dispatch: any) => {
+    return (dispatch: MetaMaskReduxDispatch) => {
       mockSetAccountLabel(address, label);
       // Return a resolved promise to simulate the async behavior
       return Promise.resolve(address);
@@ -81,7 +82,9 @@ describe('EditAccountNameModal', () => {
     it('should display the account address as help text', () => {
       renderComponent();
 
-      expect(screen.getByText('0x1234567890abcdef1234567890abcdef12345678')).toBeInTheDocument();
+      expect(
+        screen.getByText('0x1234567890abcdef1234567890abcdef12345678'),
+      ).toBeInTheDocument();
     });
   });
 
@@ -121,7 +124,7 @@ describe('EditAccountNameModal', () => {
       await waitFor(() => {
         expect(mockSetAccountLabel).toHaveBeenCalledWith(
           '0x1234567890abcdef1234567890abcdef12345678',
-          'New Account Name'
+          'New Account Name',
         );
       });
     });
