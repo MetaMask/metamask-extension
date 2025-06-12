@@ -6,16 +6,17 @@ import type {
   AccountWallet,
 } from '@metamask/account-tree-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { AccountId } from '@metamask/accounts-controller';
 import { InternalAccountWithBalance } from '../selectors.types';
 
 export type AccountTreeState = {
   wallets: {
-    [walletId: string]: AccountWallet;
+    [walletId: AccountWalletId]: AccountWallet;
   };
 };
 
 export type InternalAccountsState = {
-  accounts: Record<string, InternalAccount>;
+  accounts: Record<AccountId, InternalAccount>;
   selectedAccount: string;
 };
 
@@ -36,10 +37,10 @@ type ConsolidatedAccountWallet = {
   id: AccountWalletId;
   metadata: AccountWalletMetadata;
   groups: {
-    [groupId: string]: ConsolidatedAccountGroup;
+    [groupId: AccountGroupId]: ConsolidatedAccountGroup;
   };
 };
 
 export type ConsolidatedWallets = {
-  [walletId: string]: ConsolidatedAccountWallet;
+  [walletId: AccountWalletId]: ConsolidatedAccountWallet;
 };
