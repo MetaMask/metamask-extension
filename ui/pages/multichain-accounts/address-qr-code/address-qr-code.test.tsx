@@ -5,38 +5,32 @@ import { MemoryRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { ACCOUNT_DETAILS_ROUTE } from '../../../helpers/constants/routes';
+import { openBlockExplorer } from '../../../components/multichain/menu-items/view-explorer-menu-item';
+import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { AddressQRCode } from './address-qr-code';
-
-// Create mock functions that we can reference later
-const mockUseMultichainSelector = jest.fn();
-const mockGetMultichainAccountUrl = jest.fn();
-const mockOpenBlockExplorer = jest.fn();
-const mockHistoryPush = jest.fn();
-const mockTrackEvent = jest.fn();
-
-const mockBlockExplorerUrl =
-  'https://etherscan.io/address/0x1234567890abcdef1234567890abcdef12345678';
 
 // Mock the block explorer utility
 jest.mock(
   '../../../components/multichain/menu-items/view-explorer-menu-item',
   () => ({
-    openBlockExplorer: mockOpenBlockExplorer,
+    openBlockExplorer: jest.fn(),
   }),
 );
 
 // Mock the multichain block explorer helper
 jest.mock('../../../helpers/utils/multichain/blockExplorer', () => ({
-  getMultichainAccountUrl: mockGetMultichainAccountUrl,
+  getMultichainAccountUrl: jest.fn(),
 }));
 
 // Mock the useMultichainSelector hook
 jest.mock('../../../hooks/useMultichainSelector', () => ({
-  useMultichainSelector: mockUseMultichainSelector,
+  useMultichainSelector: jest.fn(),
 }));
 
 // Mock React Router
+const mockHistoryPush = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
@@ -44,7 +38,34 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+// Mock i18n
+jest.mock('../../../hooks/useI18nContext', () => ({
+  useI18nContext: () => (key: string) => {
+    const translations: Record<string, string> = {
+      address: '[address]',
+      viewOnExplorer: 'View on explorer',
+    };
+    return translations[key] || key;
+  },
+}));
+
 const mockStore = configureStore([thunk]);
+const mockTrackEvent = jest.fn();
+
+// Cast the imported functions to mocked versions
+const mockUseMultichainSelector = useMultichainSelector as jest.MockedFunction<
+  typeof useMultichainSelector
+>;
+const mockGetMultichainAccountUrl =
+  getMultichainAccountUrl as jest.MockedFunction<
+    typeof getMultichainAccountUrl
+  >;
+const mockOpenBlockExplorer = openBlockExplorer as jest.MockedFunction<
+  typeof openBlockExplorer
+>;
+
+const mockBlockExplorerUrl =
+  'https://etherscan.io/address/0x1234567890abcdef1234567890abcdef12345678';
 
 const mockAccount = {
   id: 'account-1',
@@ -126,7 +147,9 @@ describe('AddressQRCode', () => {
     it('should render view on explorer button', () => {
       renderComponent();
 
-      const explorerButton = screen.getByRole('button', { name: /explorer/u });
+      const explorerButton = screen.getByRole('button', {
+        name: 'View on explorer',
+      });
       expect(explorerButton).toBeInTheDocument();
     });
   });
@@ -146,7 +169,9 @@ describe('AddressQRCode', () => {
     it('should open block explorer when view on explorer button is clicked', async () => {
       renderComponent();
 
-      const explorerButton = screen.getByRole('button', { name: /explorer/u });
+      const explorerButton = screen.getByRole('button', {
+        name: 'View on explorer',
+      });
       fireEvent.click(explorerButton);
 
       await waitFor(() => {
