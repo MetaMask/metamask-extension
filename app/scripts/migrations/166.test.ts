@@ -1,7 +1,7 @@
 import { NetworkState } from '@metamask/network-controller';
-import { getBaseNetworkConfiguration, migrate, version } from './165';
+import { getBaseNetworkConfiguration, migrate, version } from './166';
 
-const oldVersion = 164;
+const oldVersion = 165;
 
 describe(`migration #${version}`, () => {
   beforeEach(() => {
