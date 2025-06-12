@@ -15,6 +15,7 @@ describe('Multichain Accounts Selectors', () => {
       expect(result).toStrictEqual(mockState.metamask.accountTree);
     });
   });
+
   describe('getWalletsWithAccounts', () => {
     it('returns wallets with accounts and their metadata', () => {
       const result = getWalletsWithAccounts(mockState);
