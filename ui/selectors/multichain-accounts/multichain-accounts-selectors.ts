@@ -49,7 +49,7 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
 
     return Object.entries(wallets).reduce(
       (consolidatedWallets: ConsolidatedWallets, [walletId, wallet]) => {
-        consolidatedWallets[walletId] = {
+        consolidatedWallets[walletId as AccountWalletId] = {
           id: walletId as AccountWalletId,
           metadata: wallet.metadata,
           groups: {},
@@ -65,7 +65,9 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
             [] as InternalAccountWithBalance[],
           );
 
-          consolidatedWallets[walletId].groups[groupId] = {
+          consolidatedWallets[walletId as AccountWalletId].groups[
+            groupId as AccountGroupId
+          ] = {
             id: groupId as AccountGroupId,
             metadata: group.metadata,
             accounts: accountsFromGroup,
