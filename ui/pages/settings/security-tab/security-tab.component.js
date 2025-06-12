@@ -268,6 +268,7 @@ export default class SecurityTab extends PureComponent {
             {t('securityChangePasswordDescription')}
           </div>
           <Button
+            data-testid="change-password-button"
             width={BlockSize.Full}
             size={ButtonSize.Lg}
             marginTop={4}
@@ -489,7 +490,7 @@ export default class SecurityTab extends PureComponent {
                 href={ZENDESK_URLS.SOLANA_ACCOUNTS}
                 target="_blank"
                 rel="noopener noreferrer"
-                key="cyn-consensys-privacy-link"
+                key="solana-accounts-link"
               >
                 {t('chooseYourNetworkDescriptionCallToAction')}
               </a>,
@@ -750,7 +751,7 @@ export default class SecurityTab extends PureComponent {
                 href={AUTO_DETECT_TOKEN_LEARN_MORE_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
-                key="cyn-consensys-privacy-link"
+                key="auto-detect-tokens-learn-more-link"
               >
                 {startCase(t('learnMore'))}
               </a>,
