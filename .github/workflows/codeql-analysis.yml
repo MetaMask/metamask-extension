@@ -20,6 +20,10 @@ on:
   schedule:
     - cron: '28 12 * * 0'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/master')) }}
+
 jobs:
   analyze:
     name: Analyze

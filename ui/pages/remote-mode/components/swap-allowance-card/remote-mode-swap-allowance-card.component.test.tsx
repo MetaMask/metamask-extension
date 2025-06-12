@@ -1,12 +1,15 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
-import { SwapAllowance, TokenSymbol, ToTokenOption } from '../../remote.types';
+import {
+  SwapAllowance,
+  TokenSymbol,
+} from '../../../../../shared/lib/remote-mode';
 import RemoteModeSwapAllowanceCard from './remote-mode-swap-allowance-card.component';
 
 const mockSwapAllowance: SwapAllowance = {
   from: TokenSymbol.USDC,
-  to: ToTokenOption.Any,
+  to: TokenSymbol.WETH,
   amount: 100,
 };
 

@@ -1,6 +1,24 @@
 @use "design-system";
 
 .icon-button {
+  height: auto;
+
+  &:hover:not([disabled]) {
+    background-color: var(--color-background-muted-hover);
+    transition: background 200ms ease;
+  }
+
+  &:hover:not([disabled]) {
+    background-color: var(--color-background-muted-pressed);
+  }
+
+  &__label {
+    // Needed for the truncation
+    max-width: 60px;
+  }
+}
+
+.icon-button-round {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -12,7 +30,6 @@
 
   font-size: 12px;
   cursor: pointer;
-  color: var(--color-primary-default);
 
   &__circle {
     display: flex;
@@ -20,11 +37,16 @@
     align-items: center;
     height: 36px;
     width: 36px;
-    background: var(--color-primary-default);
+    background: var(--color-background-muted);
     border-radius: 99px;
     margin-top: 6px;
     margin-bottom: 4px;
     margin-inline: auto;
+
+    &:hover {
+      background: var(--color-background-muted-hover);
+      transition: background 200ms ease;
+    }
   }
 
   &--disabled {

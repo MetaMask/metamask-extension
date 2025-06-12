@@ -54,7 +54,9 @@ async function withFixturesForSimulationDetails(
     inputChainId?: string;
     mockRequests: (mockServer: MockttpServer) => Promise<void>;
   },
-  runTestWithFixtures: (args: Pick<Fixtures, 'driver' | 'mockServer'>) => Promise<void>,
+  runTestWithFixtures: (
+    args: Pick<Fixtures, 'driver' | 'mockServer'>,
+  ) => Promise<void>,
 ) {
   await withFixtures(
     {
@@ -170,8 +172,14 @@ describe('Simulation Details', function () {
 
   it('renders buy ERC1155 transaction', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
-      await mockRequest(mockServer, BUY_ERC1155_REQUEST_1_MOCK);
-      await mockRequest(mockServer, BUY_ERC1155_REQUEST_2_MOCK);
+      await mockRequest(
+        mockServer,
+        BUY_ERC1155_REQUEST_1_MOCK as MockRequestResponse,
+      );
+      await mockRequest(
+        mockServer,
+        BUY_ERC1155_REQUEST_2_MOCK as MockRequestResponse,
+      );
     };
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },

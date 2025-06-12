@@ -45,8 +45,37 @@ export const DEFAULT_USE_HISTORICAL_PRICES_METADATA: HistoricalPrices['metadata'
     yMax: -Infinity,
   };
 
+type UseHistoricalPricesParams = {
+  chainId: Hex | CaipChainId;
+  address: string;
+  currency: string;
+  timeRange: string;
+};
+
 /**
- * Fetches the historical prices for a given asset and over a given duration.
+ * Derives some metadata from the prices.
+ *
+ * @param prices - The prices to derive the metadata from.
+ * @returns The metadata derived from the prices.
+ */
+const deriveMetadata = (prices: Point[]) => {
+  const xMin = Math.min(...prices.map((p) => p.x));
+  const xMax = Math.max(...prices.map((p) => p.x));
+  const yMin = Math.min(...prices.map((p) => p.y));
+  const yMax = Math.max(...prices.map((p) => p.y));
+
+  const minPricePoint =
+    prices.find((p) => p.y === yMin) ??
+    DEFAULT_USE_HISTORICAL_PRICES_METADATA.minPricePoint;
+  const maxPricePoint =
+    prices.find((p) => p.y === yMax) ??
+    DEFAULT_USE_HISTORICAL_PRICES_METADATA.maxPricePoint;
+
+  return { minPricePoint, maxPricePoint, xMin, xMax, yMin, yMax };
+};
+
+/**
+ * Internal hook that fetches the historical prices for EVM chains. Returns default values otherwise.
  *
  * @param param0 - The parameters for the useHistoricalPrices hook.
  * @param param0.chainId - The chain ID of the asset.
@@ -55,20 +84,79 @@ export const DEFAULT_USE_HISTORICAL_PRICES_METADATA: HistoricalPrices['metadata'
  * @param param0.timeRange - The chart time range, as an ISO 8601 duration string ("P1D", "P1M", "P1Y", "P3YT45S", ...)
  * @returns The historical prices for the given asset and time range.
  */
-export const useHistoricalPrices = ({
+const useHistoricalPricesEvm = ({
   chainId,
   address,
   currency,
   timeRange,
-}: {
-  chainId: Hex | CaipChainId;
-  address: string;
-  currency: string;
-  timeRange: string;
-}) => {
+}: UseHistoricalPricesParams) => {
   const isEvm = useSelector(getMultichainIsEvm);
   const showFiat: boolean = useSelector(getShouldShowFiat);
 
+  const [loading, setLoading] = useState<boolean>(false);
+  const [prices, setPrices] = useState<Point[]>([]);
+  const [metadata, setMetadata] = useState<HistoricalPrices['metadata']>(
+    DEFAULT_USE_HISTORICAL_PRICES_METADATA,
+  );
+
+  // Fetch the prices, and set them locally as a result of the fetch
+  useEffect(() => {
+    if (!isEvm) {
+      return;
+    }
+
+    const chainSupported = showFiat && chainSupportsPricing(chainId as Hex);
+    if (!chainSupported) {
+      return;
+    }
+    setLoading(true);
+    const timePeriod = fromIso8601DurationToPriceApiTimePeriod(timeRange);
+    fetchWithCache({
+      url: `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timePeriod}`,
+      cacheOptions: { cacheRefreshTime: 5 * MINUTE },
+      functionName: 'GetAssetHistoricalPrices',
+      fetchOptions: { headers: { 'X-Client-Id': 'extension' } },
+    })
+      .catch(() => ({}))
+      .then((resp?: { prices?: number[][] }) => {
+        const pricesToSet =
+          resp?.prices?.map((p) => ({ x: p?.[0], y: p?.[1] })) ?? [];
+        setPrices(pricesToSet);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [isEvm, chainId, address, currency, timeRange, showFiat]);
+
+  // Compute the metadata
+  useEffect(() => {
+    if (!isEvm) {
+      return;
+    }
+    const metadataToSet = deriveMetadata(prices);
+    setMetadata(metadataToSet);
+  }, [isEvm, prices]);
+
+  return { loading, data: { prices, metadata } };
+};
+
+/**
+ * Internal hook that fetches the historical prices for non-EVM chains. Returns default values otherwise.
+ *
+ * @param param0 - The parameters for the useHistoricalPrices hook.
+ * @param param0.chainId - The chain ID of the asset.
+ * @param param0.address - The address of the asset.
+ * @param param0.currency - The currency of the asset.
+ * @param param0.timeRange - The chart time range, as an ISO 8601 duration string ("P1D", "P1M", "P1Y", "P3YT45S", ...)
+ * @returns The historical prices for the given asset and time range.
+ */
+const useHistoricalPricesNonEvm = ({
+  chainId,
+  address,
+  currency,
+  timeRange,
+}: UseHistoricalPricesParams) => {
+  const isEvm = useSelector(getMultichainIsEvm);
   const [loading, setLoading] = useState<boolean>(false);
   const [prices, setPrices] = useState<Point[]>([]);
   const [metadata, setMetadata] = useState<HistoricalPrices['metadata']>(
@@ -80,40 +168,13 @@ export const useHistoricalPrices = ({
   const dispatch = useDispatch();
 
   /**
-   * Trigger a fetch of prices
-   *
-   * On EVM, we set setPrices directly as a result of the fetch.
-   *
-   * On non-EVM, we dispatch an action to fetch the prices and update the redux state.
+   * Fetch the prices by dispatching an action and then updating the redux state.
    * So we follow up with an other effect that will respond on the redux state update and set the prices locally in this hook.
    */
   useEffect(() => {
     if (isEvm) {
-      const chainSupported = showFiat && chainSupportsPricing(chainId as Hex);
-      if (!chainSupported) {
-        return () => {
-          // No cleanup needed
-        };
-      }
-      setLoading(true);
-      const timePeriod = fromIso8601DurationToPriceApiTimePeriod(timeRange);
-      fetchWithCache({
-        url: `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timePeriod}`,
-        cacheOptions: { cacheRefreshTime: 5 * MINUTE },
-        functionName: 'GetAssetHistoricalPrices',
-        fetchOptions: { headers: { 'X-Client-Id': 'extension' } },
-      })
-        .catch(() => ({}))
-        .then((resp?: { prices?: number[][] }) => {
-          const pricesToSet =
-            resp?.prices?.map((p) => ({ x: p?.[0], y: p?.[1] })) ?? [];
-          setPrices(pricesToSet);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
       return () => {
-        // No cleanup needed
+        // No clean up needed
       };
     }
 
@@ -135,20 +196,13 @@ export const useHistoricalPrices = ({
     };
 
     fetchPrices();
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     const intervalId = setInterval(fetchPrices, 60000); // Refresh every minute
     return () => clearInterval(intervalId); // Cleanup on unmount
-  }, [
-    chainId,
-    address,
-    currency,
-    timeRange,
-    isEvm,
-    historicalPricesNonEvm,
-    showFiat,
-    dispatch,
-  ]);
+  }, [isEvm, chainId, address, dispatch]);
 
-  // On non-EVM, retrieve the prices from the state
+  // Retrieve the prices from the state
   useEffect(() => {
     if (isEvm) {
       return;
@@ -166,20 +220,53 @@ export const useHistoricalPrices = ({
 
   // Compute the metadata
   useEffect(() => {
-    const xMin = Math.min(...prices.map((p) => p.x));
-    const xMax = Math.max(...prices.map((p) => p.x));
-    const yMin = Math.min(...prices.map((p) => p.y));
-    const yMax = Math.max(...prices.map((p) => p.y));
+    if (isEvm) {
+      return;
+    }
 
-    const minPricePoint =
-      prices.find((p) => p.y === yMin) ??
-      DEFAULT_USE_HISTORICAL_PRICES_METADATA.minPricePoint;
-    const maxPricePoint =
-      prices.find((p) => p.y === yMax) ??
-      DEFAULT_USE_HISTORICAL_PRICES_METADATA.maxPricePoint;
-
-    setMetadata({ minPricePoint, maxPricePoint, xMin, xMax, yMin, yMax });
-  }, [prices]);
+    const metadataToSet = deriveMetadata(prices);
+    setMetadata(metadataToSet);
+  }, [isEvm, prices]);
 
   return { loading, data: { prices, metadata } };
+};
+
+/**
+ * Exposed hook that fetches the historical prices for a given asset and over a given duration.
+ * Uses the correct internal hook based on the chain type.
+ *
+ * @param param0 - The parameters for the useHistoricalPrices hook.
+ * @param param0.chainId - The chain ID of the asset.
+ * @param param0.address - The address of the asset.
+ * @param param0.currency - The currency of the asset.
+ * @param param0.timeRange - The chart time range, as an ISO 8601 duration string ("P1D", "P1M", "P1Y", "P3YT45S", ...)
+ * @returns The historical prices for the given asset and time range.
+ */
+export const useHistoricalPrices = ({
+  chainId,
+  address,
+  currency,
+  timeRange,
+}: UseHistoricalPricesParams) => {
+  const isEvm = useSelector(getMultichainIsEvm);
+
+  const historicalPricesEvm = useHistoricalPricesEvm({
+    chainId,
+    address,
+    currency,
+    timeRange,
+  });
+
+  const historicalPricesNonEvm = useHistoricalPricesNonEvm({
+    chainId,
+    address,
+    currency,
+    timeRange,
+  });
+
+  if (isEvm) {
+    return historicalPricesEvm;
+  }
+
+  return historicalPricesNonEvm;
 };

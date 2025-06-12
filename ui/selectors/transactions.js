@@ -395,7 +395,7 @@ const mergeNonNonceTransactionGroups = (
   });
 };
 
-const groupAndSortTransactionsByNonce = (transactions) => {
+export const groupAndSortTransactionsByNonce = (transactions) => {
   const unapprovedTransactionGroups = [];
   const incomingTransactionGroups = [];
   const orderedNonces = [];
@@ -413,13 +413,8 @@ const groupAndSortTransactionsByNonce = (transactions) => {
     // Don't group transactions by nonce if:
     // 1. Tx nonce is undefined
     // 2. Tx is incoming (deposit)
-    // 3. Tx is custodial (mmi specific)
-    let shouldNotBeGrouped =
+    const shouldNotBeGrouped =
       typeof nonce === 'undefined' || type === TransactionType.incoming;
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    shouldNotBeGrouped = shouldNotBeGrouped || Boolean(transaction.custodyId);
-    ///: END:ONLY_INCLUDE_IF
 
     if (shouldNotBeGrouped) {
       const transactionGroup = {

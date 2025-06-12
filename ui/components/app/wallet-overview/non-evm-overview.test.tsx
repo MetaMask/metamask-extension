@@ -10,7 +10,6 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { defaultBuyableChains } from '../../../ducks/ramps/constants';
-import { setBackgroundConnection } from '../../../store/background-connection';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -61,6 +60,7 @@ const mockNonEvmBalanceUsd = '1.00';
 const mockNonEvmAccount = {
   address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
   id: '542490c8-d178-433b-9f31-f680b11f45a5',
+  scopes: [BtcScope.Mainnet],
   metadata: {
     name: 'Bitcoin Account',
     keyring: {
@@ -103,6 +103,12 @@ const mockBuyableChainsEvmOnly = defaultBuyableChains.filter(
 
 const mockMetamaskStore = {
   ...mockState.metamask,
+  remoteFeatureFlags: {
+    addBitcoinAccount: true,
+    bridgeConfig: {
+      support: true,
+    },
+  },
   useExternalServices: true,
   accountsAssets: {
     [mockNonEvmAccount.id]: [MultichainNativeAssets.BITCOIN],
@@ -142,7 +148,6 @@ const mockMetamaskStore = {
     AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
   selectedMultichainNetworkChainId: BtcScope.Mainnet,
   isEvmSelected: false,
-  bitcoinSupportEnabled: true,
 };
 const mockRampsStore = {
   buyableChains: mockBuyableChainsEvmOnly,
@@ -161,7 +166,6 @@ function getStore(state?: Record<string, unknown>) {
 
 describe('NonEvmOverview', () => {
   beforeEach(() => {
-    setBackgroundConnection({ setBridgeFeatureFlags: jest.fn() } as never);
     // Clear previous mock implementations
     (useMultiPolling as jest.Mock).mockClear();
 

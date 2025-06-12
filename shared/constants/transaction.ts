@@ -18,18 +18,6 @@ export const SIGNING_METHODS = Object.freeze([
   'personal_sign',
 ]);
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-/**
- * Status for finalized transactions.
- */
-export const FINALIZED_TRANSACTION_STATUSES = [
-  TransactionStatus.rejected,
-  TransactionStatus.failed,
-  TransactionStatus.dropped,
-  TransactionStatus.confirmed,
-];
-///: END:ONLY_INCLUDE_IF
-
 /**
  * Transaction Group Status is a MetaMask construct to track the status of groups
  * of transactions.

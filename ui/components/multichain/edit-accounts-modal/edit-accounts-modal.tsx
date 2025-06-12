@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { CaipAccountId } from '@metamask/utils';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Modal,
@@ -113,6 +114,27 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   const defaultSet = new Set(defaultSelectedAccountAddresses);
   const selectedSet = new Set(selectedAccountAddresses);
 
+  const handleAddAccount = useCallback(
+    async (completed: boolean, newAccount?: InternalAccount) => {
+      if (completed && newAccount) {
+        const [scope] = newAccount.scopes;
+        if (!scope) {
+          // Should never happen since `scopes` is declared as a non-empty array on the
+          // account type.
+          throw new Error('Account has no scope');
+        }
+        // NOTE: For now we only rely on 1 single CAIP-10. The CAIP namespace is
+        // used under the hood and we assume all account's scope use the same
+        // namespace.
+        // TODO: Maybe use multiple CAIP-10 for each scopes instead?
+        const newAccountCaipAccountId: CaipAccountId = `${scope}:${newAccount.address}`;
+        onSubmit([...selectedAccountAddresses, newAccountCaipAccountId]);
+        onClose();
+      }
+    },
+    [selectedAccountAddresses, onSubmit, onClose],
+  );
+
   return (
     <Modal
       isOpen
@@ -160,6 +182,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
                   account={account}
                   key={account.caipAccountId}
                   isPinned={Boolean(account.pinned)}
+                  showConnectedStatus={false}
                   startAccessory={
                     <Checkbox
                       isChecked={selectedAccountAddresses.some(
@@ -261,9 +284,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
         <EditAccountAddAccountForm
           onBack={() => setModalStage(EditAccountModalStage.AddNewAccount)}
           onClose={() => setModalStage(EditAccountModalStage.AccountList)}
-          onActionComplete={async () => {
-            setModalStage(EditAccountModalStage.AccountList);
-          }}
+          onActionComplete={handleAddAccount}
           accountType={accountType}
         />
       )}

@@ -46,6 +46,9 @@ export const EditAccountAddAccountForm: React.FC<
     trackEvent({
       category: MetaMetricsEventCategory.Accounts,
       event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
+      properties: {
+        button_type: 'picker',
+      },
     });
     setShowSrpSelection((previous) => !previous);
   }, []);
@@ -111,12 +114,14 @@ export const EditAccountAddAccountForm: React.FC<
                   clientType={clientType}
                   chainId={chainId}
                   setNewlyCreatedAccountAsSelected={true}
+                  redirectToOverview={false}
                 />
               ) : (
                 <CreateEthAccount
                   onActionComplete={onActionComplete}
                   selectedKeyringId={selectedKeyringId}
                   onSelectSrp={onSelectSrp}
+                  redirectToOverview={false}
                 />
               )}
             </>

@@ -5,10 +5,7 @@ import createEvmMethodsToNonEvmAccountReqFilterMiddleware, {
 } from './createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 
 describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
-  const getMockRequest = (
-    method: string,
-    params: Record<string, Json>[] | undefined,
-  ) => ({
+  const getMockRequest = (method: string, params: Record<string, Json>) => ({
     jsonrpc: jsonrpc2,
     id: 1,
     method,
@@ -16,6 +13,7 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
   });
   const getMockResponse = () => ({ jsonrpc: jsonrpc2, id: 'foo' });
 
+  // @ts-expect-error This function is missing from the Mocha type definitions
   it.each([
     // EVM requests
     {
@@ -287,8 +285,8 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
     }: {
       accountType: EthAccountType | BtcAccountType;
       method: string;
-      params: Record<string, Json>[] | undefined;
-      calledNext: boolean;
+      params: Record<string, Json>;
+      calledNext: number;
     }) => {
       const filterFn = createEvmMethodsToNonEvmAccountReqFilterMiddleware({
         messenger: {

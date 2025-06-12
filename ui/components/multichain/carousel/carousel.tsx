@@ -19,10 +19,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
-import { getSelectedAccount } from '../../../selectors';
+import { getSelectedAccount, getUseExternalServices } from '../../../selectors';
 ///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  BASIC_FUNCTIONALITY_SLIDE,
   getSweepstakesCampaignActive,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
@@ -51,6 +52,7 @@ export const Carousel = React.forwardRef(
     const [selectedIndex, setSelectedIndex] = useState(0);
     const t = useI18nContext();
     const trackEvent = useContext(MetaMetricsContext);
+    const useExternalServices = useSelector(getUseExternalServices);
 
     ///: BEGIN:ONLY_INCLUDE_IF(solana)
     const selectedAccount = useSelector(getSelectedAccount);
@@ -66,10 +68,20 @@ export const Carousel = React.forwardRef(
           return false;
         }
         ///: END:ONLY_INCLUDE_IF
-
+        if (slide.id === BASIC_FUNCTIONALITY_SLIDE.id && useExternalServices) {
+          return false;
+        }
         return !slide.dismissed || slide.undismissable;
       })
       .sort((a, b) => {
+        if (!useExternalServices) {
+          if (a.id === BASIC_FUNCTIONALITY_SLIDE.id) {
+            return -1;
+          }
+          if (b.id === BASIC_FUNCTIONALITY_SLIDE.id) {
+            return 1;
+          }
+        }
         ///: BEGIN:ONLY_INCLUDE_IF(solana)
         // prioritize Solana slide
         if (a.id === SOLANA_SLIDE.id) {
@@ -83,7 +95,6 @@ export const Carousel = React.forwardRef(
         const isSweepstakesActive = getSweepstakesCampaignActive(
           new Date(new Date().toISOString()),
         );
-
         if (isSweepstakesActive) {
           if (a.id === 'sweepStake') {
             return -1;
@@ -229,62 +240,68 @@ export const Carousel = React.forwardRef(
           emulateTouch
           centerMode
         >
-          {visibleSlides.map((slide, index) => (
-            <BannerBase
-              data-testid={`slide-${slide.id}`}
-              onClick={() => {
-                if (index !== selectedIndex) {
-                  return;
+          {visibleSlides.map((slide, index) => {
+            const isContentfulContent = slide.id.startsWith('contentful-');
+            return (
+              <BannerBase
+                data-testid={`slide-${slide.id}`}
+                onClick={() => {
+                  if (index !== selectedIndex) {
+                    return;
+                  }
+                  if (slide.href) {
+                    global.platform.openTab({ url: slide.href });
+                  }
+                  onClick?.(slide.id);
+                }}
+                key={slide.id}
+                className="mm-carousel-slide"
+                startAccessory={
+                  <img
+                    className="mm-carousel-slide__accessory"
+                    src={slide.image}
+                    alt={slide.title}
+                  />
                 }
-                if (slide.href) {
-                  global.platform.openTab({ url: slide.href });
+                textAlign={TextAlign.Left}
+                alignItems={AlignItems.center}
+                title={isContentfulContent ? slide.title : t(slide.title)}
+                description={
+                  isContentfulContent ? slide.description : t(slide.description)
                 }
-                onClick?.(slide.id);
-              }}
-              key={slide.id}
-              className="mm-carousel-slide"
-              startAccessory={
-                <img
-                  className="mm-carousel-slide__accessory"
-                  src={slide.image}
-                />
-              }
-              textAlign={TextAlign.Left}
-              alignItems={AlignItems.center}
-              title={t(slide.title)}
-              description={t(slide.description)}
-              titleProps={{
-                variant: TextVariant.bodySmMedium,
-                fontWeight: FontWeight.Medium,
-                marginLeft: 1,
-              }}
-              descriptionProps={{
-                variant: TextVariant.bodyXs,
-                fontWeight: FontWeight.Normal,
-                color: TextColor.textAlternative,
-                marginLeft: 1,
-              }}
-              onClose={
-                Boolean(handleClose) && !slide.undismissable
-                  ? (e: React.MouseEvent<HTMLElement>) =>
-                      handleClose(e, slide.id)
-                  : undefined
-              }
-              closeButtonProps={{
-                className: 'mm-carousel-slide__close-button',
-              }}
-              style={{
-                height: BANNER_STYLES.HEIGHT,
-                margin: getSlideMargin(index, visibleSlides.length),
-                width: getSlideWidth(index, visibleSlides.length),
-                position: 'relative',
-              }}
-              padding={0}
-              paddingLeft={3}
-              paddingRight={3}
-              borderRadius={BorderRadius.XL}
-            />
-          ))}
+                titleProps={{
+                  variant: TextVariant.bodySmMedium,
+                  fontWeight: FontWeight.Medium,
+                  marginLeft: 1,
+                }}
+                descriptionProps={{
+                  variant: TextVariant.bodyXs,
+                  fontWeight: FontWeight.Normal,
+                  color: TextColor.textAlternative,
+                  marginLeft: 1,
+                }}
+                onClose={
+                  Boolean(handleClose) && !slide.undismissable
+                    ? (e: React.MouseEvent<HTMLElement>) =>
+                        handleClose(e, slide.id)
+                    : undefined
+                }
+                closeButtonProps={{
+                  className: 'mm-carousel-slide__close-button',
+                }}
+                style={{
+                  height: BANNER_STYLES.HEIGHT,
+                  margin: getSlideMargin(index, visibleSlides.length),
+                  width: getSlideWidth(index, visibleSlides.length),
+                  position: 'relative',
+                }}
+                padding={0}
+                paddingLeft={3}
+                paddingRight={3}
+                borderRadius={BorderRadius.XL}
+              />
+            );
+          })}
         </ResponsiveCarousel>
       </Box>
     );

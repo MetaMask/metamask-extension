@@ -28,9 +28,12 @@ function buildFixtures(title: string, chainId: number = 1337) {
 }
 
 describe('Multichain Asset List', function (this: Suite) {
-  if (!process.env.PORTFOLIO_VIEW) {
-    return;
-  }
+  // Apply to all tests in this suite
+  before(function () {
+    if (!process.env.PORTFOLIO_VIEW) {
+      this.skip();
+    }
+  });
 
   it('persists the preferred asset list preference when changing networks', async function () {
     await withFixtures(

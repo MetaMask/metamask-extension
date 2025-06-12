@@ -48,6 +48,7 @@ const SnapUIAssetSelectorOption: FunctionComponent<SnapUIAsset> = ({
   networkIcon,
 }) => (
   <Box
+    className="snap-ui-renderer__asset-selector-option"
     display={Display.Flex}
     alignItems={AlignItems.center}
     width={BlockSize.Full}
@@ -65,7 +66,7 @@ const SnapUIAssetSelectorOption: FunctionComponent<SnapUIAsset> = ({
           />
         }
       >
-        <AvatarToken src={icon} />
+        <AvatarToken src={icon} name={symbol} />
       </BadgeWrapper>
     </Box>
     <Box

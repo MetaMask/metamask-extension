@@ -109,7 +109,7 @@ describe('DeleteMetaMetricsDataButton', () => {
     );
   });
 
-  // if user does not opt in to participate in metrics or for profile sync, metametricsId will not be created.
+  // if user does not opt in to participate in metrics or for backup and sync, metametricsId will not be created.
   it('should disable the data deletion button when there is metametrics id not available', async () => {
     useSelectorMock.mockImplementation((selector) => {
       if (selector === getParticipateInMetaMetrics) {

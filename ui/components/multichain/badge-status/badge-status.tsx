@@ -30,34 +30,38 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
   badgeBorderColor = BorderColor.borderMuted,
   address,
   isConnectedAndNotActive = false,
+  showConnectedStatus = true,
   text,
   ...props
 }): JSX.Element => {
   const useBlockie = useSelector(getUseBlockie);
-
   const tooltipContents = useMemo(() => {
+    let positionObj;
+    if (showConnectedStatus) {
+      positionObj = isConnectedAndNotActive
+        ? { bottom: 2, right: 5 }
+        : { bottom: -1, right: 2 };
+    }
+
     return (
       <BadgeWrapper
-        positionObj={
-          isConnectedAndNotActive
-            ? { bottom: 2, right: 5 }
-            : { bottom: -1, right: 2 }
-        }
+        positionObj={positionObj}
         badge={
-          <Box
-            className={classNames('multichain-badge-status__badge', {
-              'multichain-badge-status__badge-not-connected':
-                isConnectedAndNotActive,
-            })}
-            backgroundColor={badgeBackgroundColor}
-            borderRadius={BorderRadius.full}
-            borderColor={badgeBorderColor}
-            borderWidth={2}
-          />
+          showConnectedStatus && (
+            <Box
+              className={classNames('multichain-badge-status__badge', {
+                'multichain-badge-status__badge-not-connected':
+                  isConnectedAndNotActive,
+              })}
+              backgroundColor={badgeBackgroundColor}
+              borderRadius={BorderRadius.full}
+              borderColor={badgeBorderColor}
+              borderWidth={2}
+            />
+          )
         }
       >
         {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           <AvatarAccount
             borderColor={BorderColor.transparent}
             size={AvatarAccountSize.Md}
@@ -69,7 +73,6 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
             }
             marginInlineEnd={2}
           />
-          ///: END:ONLY_INCLUDE_IF
         }
       </BadgeWrapper>
     );
@@ -79,6 +82,7 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
     badgeBorderColor,
     isConnectedAndNotActive,
     useBlockie,
+    showConnectedStatus,
   ]);
 
   return (
@@ -92,14 +96,18 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
       backgroundColor={BackgroundColor.transparent}
       {...(props as BoxProps<'div'>)}
     >
-      <Tooltip
-        style={TooltipStyle}
-        title={text}
-        data-testid="multichain-badge-status__tooltip"
-        position="bottom"
-      >
-        {tooltipContents}
-      </Tooltip>
+      {showConnectedStatus ? (
+        <Tooltip
+          style={TooltipStyle}
+          title={text}
+          data-testid="multichain-badge-status__tooltip"
+          position="bottom"
+        >
+          {tooltipContents}
+        </Tooltip>
+      ) : (
+        tooltipContents
+      )}
     </Box>
   );
 };

@@ -301,6 +301,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({ error }) => {
             variant={ButtonVariant.Secondary}
             block
             data-testid="error-page-try-again-button"
+            // TODO: should this be a safe reload via the `WriteManager`?
             onClick={() => browser.runtime.reload()}
           >
             {t('errorPageTryAgain')}

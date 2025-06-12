@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
-import { tinyDelayMs, veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
   confirmApproveTransaction,
@@ -10,10 +10,7 @@ import {
   toggleAdvancedDetails,
 } from './shared';
 
-const {
-  defaultGanacheOptionsForType2Transactions,
-  withFixtures,
-} = require('../../../helpers');
+const { withFixtures } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
@@ -28,6 +25,9 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
+          localNodeOptions: {
+            hardfork: 'muirGlacier',
+          },
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
@@ -53,7 +53,6 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
@@ -80,7 +79,9 @@ async function mocks(server: MockttpServer) {
 
 async function importTST(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await driver.clickElement('[data-testid="import-token-button"]');
+  await driver.clickElement(
+    '[data-testid="asset-list-control-bar-action-button"]',
+  );
   await driver.clickElement('[data-testid="importTokens"]');
 
   await driver.waitForSelector({
@@ -102,10 +103,7 @@ async function importTST(driver: Driver) {
     '[data-testid="import-tokens-modal-custom-address"]',
     '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
   );
-
-  await driver.delay(tinyDelayMs);
-
-  await driver.clickElement({
+  await driver.clickElementAndWaitToDisappear({
     css: '[data-testid="import-tokens-button-next"]',
     text: 'Next',
   });
@@ -122,7 +120,6 @@ async function createERC20ApproveTransaction(driver: Driver) {
 }
 
 async function assertApproveDetails(driver: Driver) {
-  await driver.delay(veryLargeDelayMs);
   await driver.waitUntilXWindowHandles(3);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 

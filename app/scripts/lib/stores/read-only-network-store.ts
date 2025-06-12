@@ -1,7 +1,7 @@
 import log from 'loglevel';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
-import {
-  type MetaMaskStateType,
+import type {
+  MetaMaskStateType,
   BaseStore,
   MetaMaskStorageStructure,
 } from './base-store';
@@ -15,7 +15,7 @@ const FIXTURE_SERVER_URL = `http://${FIXTURE_SERVER_HOST}:${FIXTURE_SERVER_PORT}
 /**
  * A read-only network-based storage wrapper
  */
-export default class ReadOnlyNetworkStore extends BaseStore {
+export default class ReadOnlyNetworkStore implements BaseStore {
   #initialized: boolean = false;
 
   #initializing?: Promise<void>;
@@ -23,7 +23,6 @@ export default class ReadOnlyNetworkStore extends BaseStore {
   #state: MetaMaskStateType | null = null;
 
   constructor() {
-    super();
     this.#initializing = this.#init();
   }
 
@@ -73,7 +72,7 @@ export default class ReadOnlyNetworkStore extends BaseStore {
    *
    * @param data - The data to set
    */
-  async set(data: MetaMaskStorageStructure): Promise<void> {
+  async set(data: Required<MetaMaskStorageStructure>): Promise<void> {
     if (!data) {
       throw new Error('MetaMask - updated state is missing');
     }
@@ -81,5 +80,15 @@ export default class ReadOnlyNetworkStore extends BaseStore {
       await this.#initializing;
     }
     this.#state = data;
+  }
+
+  /**
+   * Resets data to its initial state.
+   */
+  async reset(): Promise<void> {
+    this.#initialized = false;
+    this.#state = null;
+    this.#initializing = this.#init();
+    await this.#initializing;
   }
 }

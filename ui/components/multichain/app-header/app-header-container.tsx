@@ -1,23 +1,20 @@
 import React from 'react';
-import classnames from 'classnames';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
   Display,
 } from '../../../helpers/constants/design-system';
-import { Box, BoxProps } from '../../component-library';
+import { Box } from '../../component-library';
 
 type AppHeaderContainerProps = {
   isUnlocked: boolean;
   popupStatus: boolean;
-  headerBottomMargin: BoxProps<typeof Box>['marginBottom'];
 };
 
 export const AppHeaderContainer = ({
   isUnlocked,
   popupStatus,
-  headerBottomMargin,
   children,
 }: React.PropsWithChildren<AppHeaderContainerProps>) => {
   const backgroundColor =
@@ -28,10 +25,7 @@ export const AppHeaderContainer = ({
   return (
     <Box
       display={Display.Flex}
-      className={classnames('multichain-app-header', {
-        'multichain-app-header-shadow': !isUnlocked || popupStatus,
-      })}
-      marginBottom={headerBottomMargin}
+      className="multichain-app-header"
       alignItems={AlignItems.center}
       width={BlockSize.Full}
       backgroundColor={backgroundColor}

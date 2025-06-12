@@ -4,7 +4,6 @@ import {
   isSolanaChainId,
   formatChainIdToCaip,
   isNativeAddress,
-  type BridgeToken,
 } from '@metamask/bridge-controller';
 import type {
   NetworkConfiguration,
@@ -13,6 +12,7 @@ import type {
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
+import type { BridgeToken } from '../../../ducks/bridge/types';
 
 export const formatTokenAmount = (
   locale: string,

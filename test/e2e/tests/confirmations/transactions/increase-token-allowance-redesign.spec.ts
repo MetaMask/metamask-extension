@@ -1,9 +1,5 @@
 import FixtureBuilder from '../../../fixture-builder';
-import {
-  defaultGanacheOptionsForType2Transactions,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../../helpers';
+import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
@@ -79,6 +75,9 @@ function generateFixtureOptionsForLegacyTx(mochaContext: Mocha.Context) {
     fixtures: new FixtureBuilder()
       .withPermissionControllerConnectedToTestDapp()
       .build(),
+    localNodeOptions: {
+      hardfork: 'muirGlacier',
+    },
     smartContract: SMART_CONTRACTS.HST,
     testSpecificMock: mocks,
     title: mochaContext.test?.fullTitle(),
@@ -91,7 +90,6 @@ function generateFixtureOptionsForEIP1559Tx(mochaContext: Mocha.Context) {
     fixtures: new FixtureBuilder()
       .withPermissionControllerConnectedToTestDapp()
       .build(),
-    localNodeOptions: defaultGanacheOptionsForType2Transactions,
     smartContract: SMART_CONTRACTS.HST,
     testSpecificMock: mocks,
     title: mochaContext.test?.fullTitle(),

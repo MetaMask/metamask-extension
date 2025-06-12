@@ -204,6 +204,7 @@ describe(`migration #${version}`, () => {
     },
   ];
 
+  // @ts-expect-error 'each' function is not recognized by TypeScript types
   it.each(invalidState)(
     'captures error when state is invalid due to: $label',
     async ({

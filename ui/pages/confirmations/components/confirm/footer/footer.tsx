@@ -169,7 +169,9 @@ const Footer = () => {
 
   const hardwareWalletRequiresConnection = useSelector((state) => {
     if (from) {
-      return doesAddressRequireLedgerHidConnection(state, from);
+      const inE2e =
+        process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';
+      return inE2e ? false : doesAddressRequireLedgerHidConnection(state, from);
     }
     return false;
   });

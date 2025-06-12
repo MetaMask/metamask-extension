@@ -7,7 +7,7 @@ import {
 import {
   CurrencyRateStateChange,
   GetCurrencyRateState,
-  MultichainAssetsControllerStateChangeEvent,
+  MultichainAssetsControllerAccountAssetListUpdatedEvent,
   MultichainAssetsControllerGetStateAction,
 } from '@metamask/assets-controllers';
 import {
@@ -28,7 +28,7 @@ type Events =
   | KeyringControllerUnlockEvent
   | AccountsControllerAccountAddedEvent
   | CurrencyRateStateChange
-  | MultichainAssetsControllerStateChangeEvent;
+  | MultichainAssetsControllerAccountAssetListUpdatedEvent;
 
 export type MultichainAssetsRatesControllerMessenger = ReturnType<
   typeof getMultichainAssetsRatesControllerMessenger
@@ -51,7 +51,7 @@ export function getMultichainAssetsRatesControllerMessenger(
       'KeyringController:lock',
       'KeyringController:unlock',
       'CurrencyRateController:stateChange',
-      'MultichainAssetsController:stateChange',
+      'MultichainAssetsController:accountAssetListUpdated',
     ],
     allowedActions: [
       'AccountsController:listMultichainAccounts',

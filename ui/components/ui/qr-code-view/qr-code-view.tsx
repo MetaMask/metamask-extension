@@ -39,7 +39,7 @@ function QrCodeView({
   warning,
   accountName,
 }: {
-  Qr: { message: string; data: string };
+  Qr: { message?: string; data: string };
   warning: string | null | undefined;
   accountName?: string;
 }) {
@@ -156,7 +156,6 @@ QrCodeView.propTypes = {
     ]),
     data: PropTypes.string.isRequired,
   }).isRequired,
-  accountName: PropTypes.string,
 };
 
 export default connect(mapStateToProps)(QrCodeView);

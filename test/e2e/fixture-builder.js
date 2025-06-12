@@ -273,7 +273,7 @@ class FixtureBuilder {
   withKeyringControllerMultiSRP() {
     return this.withKeyringController({
       vault:
-        '{"data":"fHXWxkfihdnrrZG/0om91N7PFyRNmLBJKymqIzQKgPJnCFYCmNKTknYc68W8s6w4L2d6YHfCmNQb84fWubLA1tHufJWwSReppt0KfIzNtCkR/voSbs3qfIdP+Oxr024eVoeyCKn8q3Lyadf0jFZa3AwhIFSuZhIIL/lMaeBNYQqjFJNj6/ihgBDRvIg8JANHkEh0k23rGKwqHXU3RCA/MoGrvf4enB90ondLLQG4f5ZHF9DiEKSSJjK0RECBiki8wLFKk4xwHQVNdygfeRzEIKPk96j3J5SZaMWs+JBQpDVX4I1Pab+E9oceBhBxJ0o4t7kK/DoFe/OLh1PIfwa1U0cysepmULv7c2cAjC300aQgk2b1f1dc3KsKFHNnXM39O5kBgrCESnGFbcvA1va3kuZbPlPUB4IlFZM9PWddlbEJmgsZml5HBzojHJ19RDkqsM0B0+vihPTmPezAmGhrq/3Lm3W4ytLdf/MChL1KciBpqgP/dRWj8oaBaaYu+OatlOfr4YUNwpSZmqYvHXUpfLKX2wmRw8Xu2py+FOMWe+vwDwBx+oCm9pSYIWvGjY0yFGgEzII/KkSrIgMywEjplLVEVYDHRyL7Sx/X+IIiLUqS7aF/TEZxz/Z0cLl6jH3yKQcz2Vsshl4DVBeTgp9rtgY1OnPN5nPLrijL1E6WRkmi8uhIIbDmbpiUT65mBYAQpt5ta2AAZvu5UiR1mZ94GLtxBH4CnjW2o9DU21cEFANbDmjEoCsJIpBwPFUElmFsicbBFTIJENc1H6DU79I/uyn8gqBSLvt0zDiteik4Lb+DMXlJsOA4Y+VNaGBvLRn9sH+d5Reke7j6skxwGB4d2B9lwW1AXeCYGzVUi227dZ2qM+B0M4lwzFe3Unk3ZoDT91Bgnu1Bl2ISrBpH1j9Jm5CM0upZp+QSd0kgEHx4dPjBiCB6hEDctB9sB+jSJWhu7HaftCcC/aowoIYO1kcf/TgCfx7Jvr/6fvoRGA3zFBFJmQKe0Vf6xvd59hVTwLxwu+xzREZfXgCmCaOOtMZHK/4uktdyKtm50QgKGkuXkpTSLfvjIg3QyaQYwod7RXY+NsL9D9IMJGurSGAnBR9zw8GGldIU4GUjhJg=","iv":"uQo8dVdJSgxn6R87e/lqlg==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":900000}},"salt":"mpCG/oBqVHaiR3eB4NUvUXfiiUbJ8bVFn5PbhBxcbTY="}',
+        '{"data":"tM9QywcUa46iRvWsfvOL9mJqOrRLoVZoDuqTwxEt1Jz4qCpVIx8I/+7wMQuHBhe+DLBMSB7DzWeBpkCngTSE/mt6ygXWd96aKPH00PCW7uq/Z+8gdHQ3+ZGVCkTIDvLwOzG2gywrOfWRzRRcFwV545EV2iC6Q47A6KcgK/YokBeT4uVJ+oC309490eYn6/LkC+e+DNzJOlESs0LOynMJPMP0Wc53AvEuVlmYA2QLUKa+X6Eo1FEm91lg7znnNGTH7d7PVzDjElTQAUcQmiCvLfJU3cCmnVubarG/eOPWyL41u1z2IFMuf2QKoJNG7garFS+z4THtqWuR/NiYbNCJ70G6V2P0+9ntIWMk4qs4cBY4Pl3MPsyXBVhVoL+sLmuguY6iPijQVcPtd8G1HjTWOXNAVYSrdXjd4YHJuBBqgrjsqkkCHknilv6BiyHFH+pURP7zuPley9hiru5szuaKKU4NtpawQe0STQO5X35fI2xrH603etO9lhlK9lU+eFA+6jO0EynA1+HDIWT8iqX0gaOF6aPR/K1EKzbveP+EQbj7vIpOQs2+EJ4F4LYkExKczpvacgci84sLWGeT1e/aP1/dsVjuApUo0mtJaUtbljSvWoGuh6y8orTt6voyvHvbA+atPX+jla0/rWwy1lJ8o6PoXnyBMsgS+DSSamqXeMRKPI4S6GWiAMxLmvJvOEiC/uYRLrCzE0RxjIP9W6f2K+0VhAXJjPBp/t32NeHiwBfVeitdPwZUmMfhqzE0gvXyAd6cfzEnlyICfS8/DQkn74GDbdd1MdikdETCutDpiGEshacQT/scy0Z6n/5vuKkAGgrW66m39Ewqz6H2Rida5zgx1esrwZFy+8H57M2fa9KPa3ddye6J5Cd00JiqK/HiT20Uzt4h725iLNdkDrDT/mLlIGwbcSsSZxpTCYjtAAcN5JtWZNIp6xPOT889Tg9u3hHNy3g3VhVbYevtfTnVSgFFi+9B1JZ1OhL4NZC8bjyeNJ1pOUyLRZiRhgQ8aJPv5QytwDth+pJBvQslQ5UlrbhHRyd0RC0YrcyQ3WbapuDlJtdkkDuQg0OvevX+3F/Z/84uWvJ9qWBPkbOcn+ydULRDDouBmwsHqyY=","iv":"CR5flTdOsO77up6hbd8qQA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"VY02O4NjlOhOKZI0/WPievKNVo2vOcg237YR5MrUW+c="}',
     });
   }
 
@@ -290,6 +290,22 @@ class FixtureBuilder {
     return this;
   }
 
+  withNetworkControllerOnBnb() {
+    return this.withNetworkController({
+      networkConfigurations: {
+        networkConfigurationId: {
+          chainId: CHAIN_IDS.BSC,
+          nickname: 'Binance Chain',
+          rpcPrefs: {},
+          rpcUrl: 'https://bsc-dataseed.binance.org',
+          ticker: 'BNB',
+          networkConfigurationId: 'networkConfigurationId',
+          id: 'networkConfigurationId',
+        },
+      },
+    });
+  }
+
   withNetworkControllerOnMainnet() {
     return this.withNetworkController({ selectedNetworkClientId: 'mainnet' });
   }
@@ -297,6 +313,22 @@ class FixtureBuilder {
   withNetworkControllerOnLinea() {
     return this.withNetworkController({
       selectedNetworkClientId: 'linea-mainnet',
+    });
+  }
+
+  withNetworkControllerOnLineaLocahost() {
+    return this.withNetworkController({
+      networkConfigurations: {
+        networkConfigurationId: {
+          chainId: CHAIN_IDS.LINEA_MAINNET,
+          nickname: 'Localhost 8545',
+          rpcPrefs: {},
+          rpcUrl: 'http://localhost:8545',
+          ticker: 'ETH',
+          networkConfigurationId: 'networkConfigurationId',
+          id: 'networkConfigurationId',
+        },
+      },
     });
   }
 
@@ -364,6 +396,16 @@ class FixtureBuilder {
       this.fixture.data.NftController
         ? this.fixture.data.NftController
         : (this.fixture.data.NftController = {}),
+      data,
+    );
+    return this;
+  }
+
+  withDeFiPositionsController(data) {
+    merge(
+      this.fixture.data.DeFiPositionsController
+        ? this.fixture.data.DeFiPositionsController
+        : (this.fixture.data.DeFiPositionsController = {}),
       data,
     );
     return this;
@@ -462,14 +504,7 @@ class FixtureBuilder {
   }
 
   withBridgeControllerDefaultState() {
-    this.fixture.data.BridgeController = {
-      bridgeFeatureFlags: {
-        extensionConfig: {
-          support: false,
-          chains: {},
-        },
-      },
-    };
+    this.fixture.data.BridgeController = {};
     return this;
   }
 
@@ -826,20 +861,14 @@ class FixtureBuilder {
     });
   }
 
-  withPreferencesControllerSmartTransactionsOptedIn() {
-    return this.withPreferencesController({
-      preferences: {
-        smartTransactionsOptInStatus: true,
-        tokenNetworkFilter: {},
-      },
-    });
-  }
-
+  /**
+   * @deprecated this method should not be used, as the `smartTransactionsOptInStatus` value is overridden by the migration 135
+   * Use the `toggleStxSetting` flow to disable this setting effectively.
+   */
   withPreferencesControllerSmartTransactionsOptedOut() {
     return this.withPreferencesController({
       preferences: {
         smartTransactionsOptInStatus: false,
-        tokenNetworkFilter: {},
       },
     });
   }
@@ -1480,6 +1509,27 @@ class FixtureBuilder {
 
   withNoNames() {
     return this.withNameController({ names: {} });
+  }
+
+  withLedgerAccount() {
+    return this.withKeyringController({
+      vault:
+        '{"data":"kCehIbrW5j8AKVLEdUUaidsTomloRQLmLnEIYUA+HHMCJTJ9/dX+B692ExnrgWlZK4PySLTVoofQZjgQcKVMHi+mO5wnPV3p4sKKpv/w1zh0AIx5h25zDln5DbyHWjJtUKISOvKyLvZ02I0oqFvVGF6Wae/TNLelUleYwjP02h39//Fkgy8hukDNMmscBlX/Vx3iNwyie9X7FXKXMHrHcMhSjRJaZxri48SOWbchx31hfZuv8oP2l1yJkrWv82JjkiZYoQcbGkBRis06GnfFU62cKyqh9ZrIRHb6yj8g7SjRF5mMe7czA3QdJQjUMHJLq9IV2To+WOiOsKd+CVrjvNR9A1fWrRlAvQENDWO9FxaBuuBsNF2mm9KHqowSXD+/TUP1fiftyTnxs9mzojKReX8fPP0qjlIE7Sv71OfKvD1+7zW1udWmgoO+RcCFj3tQ5wXc6/MAYB2N2vfSHB9k+AgUYvajtaf0cb4gdm3KDPhriv1sDkOenaKbZLGLnsbfMWAbTQPrwCDdhiOvHBUfCVrV1ac0FlUIERdNkxDMwbd9BllyscPsif9VNuZCUzzeboTk0LTm1FszgFD8UxlvCfxB9Z5pZgk5ublhAkWZGZuckfVTEPofcELNx8VVf2Un8Yju8QzX7XGwNTTg/v5jLx52NrGWHvWIRUHRjnLK6hOVL26yRbds4e6FK4vsi1Hxi85HiiB1J2RX3gBfl14R2/1nCpLZePnEUaH6TgGPzsbzlJsSsCktGvMZaLdD","iv":"utoVJtRyaiuYF9PnhgZD8w==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"PwqqENo0YiZXcRrMzg+ujLG2VtyTNkKBCvFMsnzFefk="}',
+    }).withPreferencesController({
+      identities: {
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+          address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          lastSelected: 1665507600000,
+          name: 'Account 1',
+        },
+        '0xf68464152d7289d7ea9a2bec2e0035c45188223c': {
+          address: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+          lastSelected: 1665507800000,
+          name: 'Ledger 1',
+        },
+      },
+      selectedAddress: '0xf68464152d7289d7ea9a2bec2e0035c45188223c',
+    });
   }
 
   withTrezorAccount() {
