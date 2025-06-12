@@ -112,7 +112,6 @@ const ChangePassword = () => {
           <FormTextField
             id="current-password"
             label={t('enterPasswordCurrent')}
-            placeholder={t('makeSureNoOneWatching')}
             textFieldProps={{ type: TextFieldType.Password }}
             size={FormTextFieldSize.Lg}
             labelProps={{
