@@ -278,11 +278,7 @@ export const useTokensWithFiltering = (
         // Yield topTokens from selected chain
         for (const token_ of topTokens) {
           const matchedToken =
-            tokenList?.[
-              isSolanaChainId(chainId)
-                ? token_.address
-                : token_.address.toLowerCase()
-            ];
+            tokenList?.[token_.address] ?? tokenList?.[token_.address.toLowerCase()];
           const token = buildTokenData(chainId, matchedToken);
           if (
             token &&
