@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   AlignItems,
   IconColor,
@@ -23,6 +23,11 @@ import {
   ButtonLink,
 } from '../../../components/component-library';
 import { LOGIN_ERROR, LoginErrorType } from './types';
+import { MetaMetricsContextProp } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { SUPPORT_LINK } from '../../../helpers/constants/common';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 type LoginErrorModalProps = {
   onClose: () => void;
@@ -34,6 +39,7 @@ export default function LoginErrorModal({
   loginError,
 }: LoginErrorModalProps) {
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const getTitle = () => {
     if (loginError === LOGIN_ERROR.UNABLE_TO_CONNECT) {
@@ -57,6 +63,24 @@ export default function LoginErrorModal({
         key="loginErrorGenericDescription"
         size={ButtonLinkSize.Inherit}
         externalLink
+        href={SUPPORT_LINK}
+        onClick={() => {
+          trackEvent(
+            {
+              category: MetaMetricsEventCategory.Onboarding,
+              event: MetaMetricsEventName.SupportLinkClicked,
+              properties: {
+                url: SUPPORT_LINK,
+                location: 'Welcome page',
+              },
+            },
+            {
+              contextPropsIntoEventProperties: [
+                MetaMetricsContextProp.PageTitle,
+              ],
+            },
+          );
+        }}
       >
         {t('loginErrorGenericSupport')}
       </ButtonLink>,
