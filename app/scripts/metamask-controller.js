@@ -176,6 +176,7 @@ import {
   BridgeStatusAction,
 } from '@metamask/bridge-status-controller';
 
+import { ErrorReportingService } from '@metamask/error-reporting-service';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
@@ -573,8 +574,25 @@ export default class MetamaskController extends EventEmitter {
     });
     ///: END:ONLY_INCLUDE_IF
 
+    const errorReportingServiceMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'ErrorReportingService',
+        allowedActions: [],
+        allowedEvents: [],
+      });
+    // Initializing the ErrorReportingService registers the action handler for
+    // `ErrorReportingService:captureException`, which NetworkController uses
+    // internally.
+    // eslint-disable-next-line no-new
+    new ErrorReportingService({
+      messenger: errorReportingServiceMessenger,
+      captureException,
+    });
+
     const networkControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NetworkController',
+      allowedEvents: [],
+      allowedActions: ['ErrorReportingService:captureException'],
     });
 
     let initialNetworkControllerState = initState.NetworkController;
