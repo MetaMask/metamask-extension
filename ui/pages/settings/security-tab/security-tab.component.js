@@ -1208,11 +1208,6 @@ export default class SecurityTab extends PureComponent {
         </span>
         {this.renderSeedWords()}
         {this.renderSecurityAlertsToggle()}
-        <div>
-          <span className="settings-page__security-tab-sub-header">
-            {this.context.t('deepLinks')}
-          </span>
-        </div>
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>
