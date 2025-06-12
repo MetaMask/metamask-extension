@@ -1,12 +1,14 @@
 import type {
   AccountGroupId,
   AccountWalletId,
+  AccountWallet,
 } from '@metamask/account-tree-controller';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getMetaMaskAccountsOrdered } from '../selectors';
 import { InternalAccountWithBalance } from '../selectors.types';
 import {
   AccountTreeState,
+  ConsolidatedAccountWallet,
   ConsolidatedWallets,
   MultichainAccountsState,
 } from './multichain-accounts-selectors.types';
@@ -49,7 +51,7 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
 
     return Object.entries(wallets).reduce(
       (consolidatedWallets: ConsolidatedWallets, [walletId, wallet]) => {
-        consolidatedWallets[walletId as AccountWalletId] = {
+        const consolidatedWallet: ConsolidatedAccountWallet = {
           id: walletId as AccountWalletId,
           metadata: wallet.metadata,
           groups: {},
@@ -65,14 +67,14 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
             [] as InternalAccountWithBalance[],
           );
 
-          consolidatedWallets[walletId as AccountWalletId].groups[
-            groupId as AccountGroupId
-          ] = {
+          consolidatedWallet.groups[groupId as AccountGroupId] = {
             id: groupId as AccountGroupId,
             metadata: group.metadata,
             accounts: accountsFromGroup,
           };
         });
+
+        consolidatedWallets[consolidatedWallet.id] = consolidatedWallet;
 
         return consolidatedWallets;
       },
