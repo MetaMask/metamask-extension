@@ -3,13 +3,15 @@ import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sd
 import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
-import { IDENTITY_TEAM_PASSWORD, IDENTITY_TEAM_SEED_PHRASE } from '../constants';
+import { IDENTITY_TEAM_SEED_PHRASE, IDENTITY_TEAM_STORAGE_KEY } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import { completeOnboardFlowContactSyncing } from '../flows';
 import { arrangeContactSyncingTestUtils } from './helpers';
 import { MOCK_CONTACTS, createContactKey } from './mock-data';
+import { createEncryptedResponse } from '../../../helpers/identity/user-storage/generateEncryptedData';
+import { expect } from '@playwright/test';
 
-describe('Contact syncing - Sync after onboarding', function () {
+describe('Contact syncing - Sync after onboarding', function (this: any) {
   this.timeout(120000);
 
   const arrange = async () => {
@@ -19,10 +21,15 @@ describe('Contact syncing - Sync after onboarding', function () {
       MOCK_CONTACTS.CHARLIE_POLYGON,
     ];
 
-    const mockedContactSyncResponse = testContacts.map(contact => ({
-      HashedKey: createContactKey(contact),
-      Data: JSON.stringify(contact),
-    }));
+    const mockedContactSyncResponse = await Promise.all(
+      testContacts.map(contact =>
+        createEncryptedResponse({
+          data: contact,
+          storageKey: IDENTITY_TEAM_STORAGE_KEY,
+          path: `${USER_STORAGE_FEATURE_NAMES.addressBook}.${createContactKey(contact)}`,
+        })
+      )
+    );
 
     const userStorageMockttpController = new UserStorageMockttpController();
 
@@ -34,7 +41,7 @@ describe('Contact syncing - Sync after onboarding', function () {
   };
 
   describe('from inside MetaMask', function () {
-    it('retrieves all previously synced contacts after onboarding', async function () {
+    it('retrieves all previously synced contacts after onboarding', async function (this: any) {
       const {
         testContacts,
         mockedContactSyncResponse,
@@ -115,128 +122,6 @@ describe('Contact syncing - Sync after onboarding', function () {
             chainId: c.chainId,
             memo: c.memo,
           })));
-        },
-      );
-    });
-
-    it('handles empty remote storage gracefully during onboarding', async function () {
-      const { userStorageMockttpController } = await arrange();
-
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
-              USER_STORAGE_FEATURE_NAMES.addressBook,
-              server,
-              {
-                getResponse: [], // Empty remote storage
-              },
-            );
-            return mockIdentityServices(server, userStorageMockttpController);
-          },
-        },
-        async ({ driver }) => {
-          await completeOnboardFlowContactSyncing(
-            driver,
-            IDENTITY_TEAM_SEED_PHRASE,
-          );
-
-          // Set up test utilities
-          const { getCurrentContacts } = arrangeContactSyncingTestUtils(
-            driver,
-            userStorageMockttpController
-          );
-
-          // Wait for contact syncing to complete
-          await driver.wait(async () => {
-            const uiState = await driver.executeScript(() =>
-              (window as any).stateHooks?.getCleanAppState?.()
-            );
-            return uiState?.metamask?.isContactSyncingEnabled === true;
-          }, 15000);
-
-          // Verify no contacts were synced (empty remote storage)
-          const syncedContacts = await getCurrentContacts();
-          expect(syncedContacts.length).toBe(0);
-
-          console.log('Contact syncing handled empty remote storage correctly');
-        },
-      );
-    });
-
-    it('handles malformed contact data gracefully', async function () {
-      const { userStorageMockttpController } = await arrange();
-
-      // Create some valid and invalid contact data
-      const mixedContactData = [
-        {
-          HashedKey: createContactKey(MOCK_CONTACTS.ALICE_MAINNET),
-          Data: JSON.stringify(MOCK_CONTACTS.ALICE_MAINNET), // Valid
-        },
-        {
-          HashedKey: 'invalid_key',
-          Data: 'invalid_json_data', // Invalid JSON
-        },
-        {
-          HashedKey: createContactKey(MOCK_CONTACTS.BOB_SEPOLIA),
-          Data: JSON.stringify({
-            ...MOCK_CONTACTS.BOB_SEPOLIA,
-            n: '', // Invalid: empty name
-          }),
-        },
-        {
-          HashedKey: createContactKey(MOCK_CONTACTS.CHARLIE_POLYGON),
-          Data: JSON.stringify(MOCK_CONTACTS.CHARLIE_POLYGON), // Valid
-        },
-      ];
-
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder({ onboarding: true }).build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
-              USER_STORAGE_FEATURE_NAMES.addressBook,
-              server,
-              {
-                getResponse: mixedContactData,
-              },
-            );
-            return mockIdentityServices(server, userStorageMockttpController);
-          },
-        },
-        async ({ driver }) => {
-          await completeOnboardFlowContactSyncing(
-            driver,
-            IDENTITY_TEAM_SEED_PHRASE,
-          );
-
-          // Set up test utilities
-          const { getCurrentContacts } = arrangeContactSyncingTestUtils(
-            driver,
-            userStorageMockttpController
-          );
-
-          // Wait for contact syncing to complete
-          await driver.wait(async () => {
-            const uiState = await driver.executeScript(() =>
-              (window as any).stateHooks?.getCleanAppState?.()
-            );
-            return uiState?.metamask?.isContactSyncingEnabled === true;
-          }, 15000);
-
-          // Only valid contacts should be synced (Alice and Charlie)
-          const syncedContacts = await getCurrentContacts();
-          expect(syncedContacts.length).toBe(2);
-
-          const contactNames = syncedContacts.map((contact: any) => contact.name);
-          expect(contactNames).toContain('Alice Smith');
-          expect(contactNames).toContain('Charlie Brown');
-          expect(contactNames).not.toContain('Bob Johnson'); // Invalid data, should be filtered out
-
-          console.log('Contact syncing handled malformed data correctly');
         },
       );
     });

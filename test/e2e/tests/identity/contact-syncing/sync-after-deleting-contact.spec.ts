@@ -12,7 +12,7 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
 
-describe('Contact syncing - Delete Contact', function () {
+describe('Contact syncing - Delete Contact', function (this: any) {
   this.timeout(200000); // Increase timeout for flaky tests
 
   const arrange = async () => {
@@ -24,7 +24,7 @@ describe('Contact syncing - Delete Contact', function () {
   };
 
   describe('from inside MetaMask', function () {
-    it('syncs contact deletion to cloud', async function () {
+    it('syncs contact deletion to cloud', async function (this: any) {
       const { userStorageMockttpController } = await arrange();
 
       const contactToDelete = MOCK_CONTACTS.ALICE_MAINNET;
@@ -100,7 +100,7 @@ describe('Contact syncing - Delete Contact', function () {
       );
     });
 
-    it('syncs deletion of single contact', async function () {
+    it('syncs deletion of single contact', async function (this: any) {
       const { userStorageMockttpController } = await arrange();
 
       const singleContact = MOCK_CONTACTS.BOB_SEPOLIA;
