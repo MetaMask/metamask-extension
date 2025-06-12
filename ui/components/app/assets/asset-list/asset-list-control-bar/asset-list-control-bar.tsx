@@ -270,14 +270,33 @@ const AssetListControlBar = ({
 
   const networkButtonText = useMemo(() => {
     if (
-      isTokenNetworkFilterEqualCurrentNetwork ||
-      !currentMultichainNetwork.isEvmNetwork
+      isGlobalNetworkSelectorRemoved &&
+      Object.keys(enabledNetworks).length === 1
+    ) {
+      return allNetworks[Object.keys(enabledNetworks)[0] as `0x${string}`]
+        ?.name;
+    }
+    if (
+      isGlobalNetworkSelectorRemoved &&
+      Object.keys(enabledNetworks).length > 1
+    ) {
+      return t('enabledNetworks');
+    }
+    if (
+      isGlobalNetworkSelectorRemoved &&
+      Object.keys(enabledNetworks).length === 0
+    ) {
+      return t('noNetworksSelected');
+    }
+    if (
+      (!isGlobalNetworkSelectorRemoved &&
+        isTokenNetworkFilterEqualCurrentNetwork) ||
+      (!isGlobalNetworkSelectorRemoved &&
+        !currentMultichainNetwork.isEvmNetwork)
     ) {
       return currentMultichainNetwork?.nickname ?? t('currentNetwork');
     }
-    if (isGlobalNetworkSelectorRemoved) {
-      return t('enabledNetworks');
-    }
+
     return t('popularNetworks');
   }, [isTokenNetworkFilterEqualCurrentNetwork, currentMultichainNetwork, t]);
 
