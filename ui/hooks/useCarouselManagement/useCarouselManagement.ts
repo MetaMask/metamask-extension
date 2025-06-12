@@ -29,6 +29,7 @@ import {
   SWEEPSTAKES_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
+  DOWNLOAD_MOBILE_APP_SLIDE,
   ///: END:ONLY_INCLUDE_IF
 } from './constants';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
@@ -86,6 +87,8 @@ export const useCarouselManagement = ({
       undismissable: hasZeroBalance,
     };
 
+    // TODO: Check when to show this slide
+    defaultSlides.push(DOWNLOAD_MOBILE_APP_SLIDE);
     if (!isSolanaAddress(selectedAccount.address)) {
       defaultSlides.push(SMART_ACCOUNT_UPGRADE_SLIDE);
     }
