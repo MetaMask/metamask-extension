@@ -6999,9 +6999,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/test-dapp-solana@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "@metamask/test-dapp-solana@npm:0.1.0"
+"@metamask/test-dapp-solana@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "@metamask/test-dapp-solana@npm:0.3.1"
   dependencies:
     "@solana/spl-token": "npm:^0.4.13"
     "@solana/wallet-adapter-base": "npm:^0.9.23"
@@ -7015,7 +7015,7 @@ __metadata:
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     vite-plugin-node-polyfills: "npm:^0.22.0"
-  checksum: 10/48977117a178c85901d7289161e14fba0d80f5267be660a27dcf44e9ae2e703b32efa93ae7b4ceea0d71515d7dc4c228c980454c6350af97187445013853f8f6
+  checksum: 10/17b584563ceeffa5393365a2e28e9b5b19739f07eb54ac4db132ea467ffb52b75442dec4825a50df1662061db31e1cabda1075f2bd13bdd051a6d1be1b9be535
   languageName: node
   linkType: hard
 
@@ -30353,7 +30353,7 @@ __metadata:
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
     "@metamask/test-dapp-multichain": "npm:^0.17.0"
-    "@metamask/test-dapp-solana": "npm:^0.1.0"
+    "@metamask/test-dapp-solana": "npm:^0.3.1"
     "@metamask/transaction-controller": "npm:^57.0.0"
     "@metamask/user-operation-controller": "npm:^36.0.0"
     "@metamask/utils": "npm:^11.1.0"
