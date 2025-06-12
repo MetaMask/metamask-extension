@@ -1,6 +1,20 @@
 import { canonicalize } from '../../../../shared/lib/deep-links/canonicalize';
 
 /**
+ * Generates an ECDSA key pair for signing deep links for testing purposes.
+ */
+export async function generateECDSAKeyPair() {
+  return await crypto.subtle.generateKey(
+    {
+      name: 'ECDSA',
+      namedCurve: 'P-256',
+    },
+    true,
+    ['sign', 'verify'],
+  );
+}
+
+/**
  * Signs a URL using the ECDSA key pair. Same implementation as in the server
  * side signing application.
  *
@@ -28,9 +42,16 @@ export async function signDeepLink(key: CryptoKey, url: string) {
  * @param bytes - The ArrayBuffer to convert.
  * @returns A Base64 encoded string representation of the input bytes.
  */
-export function bytesToB64(bytes: ArrayBuffer): string {
-  return btoa(String.fromCharCode(...new Uint8Array(bytes)));
-}
+export const bytesToB64 = Object.hasOwn(Uint8Array.prototype, 'toBase64')
+  ? (bytes: ArrayBuffer) =>
+      // modern browsers support Uint8Array.toBase64
+      (
+        new Uint8Array(bytes) as Uint8Array & { toBase64: () => string }
+      ).toBase64()
+  : function bytesToB64(bytes: ArrayBuffer): string {
+      // old browsers
+      return btoa(String.fromCharCode(...new Uint8Array(bytes)));
+    };
 /**
  * Converts an ArrayBuffer to an un-padded URL-safe Base64 string.
  *

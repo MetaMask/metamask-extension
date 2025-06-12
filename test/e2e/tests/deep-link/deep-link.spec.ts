@@ -8,28 +8,23 @@ import SwapPage from '../../page-objects/pages/swap/swap-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { emptyHtmlPage } from '../../mock-e2e';
 import FixtureBuilder from '../../fixture-builder';
-import { bytesToB64, cartesianProduct, signDeepLink } from './helpers';
+import {
+  bytesToB64,
+  cartesianProduct,
+  signDeepLink,
+  generateECDSAKeyPair,
+} from './helpers';
 
 const TEST_PAGE = 'https://doesntexist.test/';
 
 describe('Deep Link', function () {
-  async function generateECDSAKeyPair() {
-    return await crypto.subtle.generateKey(
-      {
-        name: 'ECDSA',
-        namedCurve: 'P-256',
-      },
-      true,
-      ['sign', 'verify'],
-    );
-  }
-
   let keyPair: CryptoKeyPair;
   let deepLinkPublicKey: string;
+
   beforeEach(async function () {
     keyPair = await generateECDSAKeyPair();
     deepLinkPublicKey = bytesToB64(
-      await crypto.subtle.exportKey('spki', keyPair.publicKey),
+      await crypto.subtle.exportKey('raw', keyPair.publicKey),
     );
   });
 
@@ -81,7 +76,8 @@ describe('Deep Link', function () {
       },
     };
   }
-  const matrix = cartesianProduct(
+
+  const scenarios = cartesianProduct(
     ['locked', 'unlocked'] as const,
     ['signed', 'unsigned'] as const,
     ['/home', '/swap', '/INVALID'] as const,
@@ -90,7 +86,7 @@ describe('Deep Link', function () {
     return { locked, signed, route, action };
   });
 
-  matrix.forEach(({ locked, signed, route, action }) => {
+  scenarios.forEach(({ locked, signed, route, action }) => {
     it(`handles ${locked} and ${signed} ${route} deeplink with ${action} action`, async function () {
       await withFixtures(
         await getConfig(this.test?.fullTitle()),
@@ -131,8 +127,8 @@ describe('Deep Link', function () {
           const deepLink = new DeepLink(driver);
           await deepLink.check_pageIsLoaded();
 
-          // we should render the checkbox when the link is "signed", unless it's
-          // this INVALID route
+          // we should render the checkbox when the link is "signed", unless
+          // it's an "INVALID" route
           const shouldRenderCheckbox = isSigned && !isInvalidRoute;
           const hasCheckbox =
             await deepLink.hasSkipDeepLinkInterstitialCheckBox();
@@ -182,10 +178,16 @@ describe('Deep Link', function () {
     });
   });
 
-  it('handles the skipDeepLinkInterstitial flag', async function () {
+  it('handles the skipDeepLinkInterstitial flag correctly', async function () {
     await withFixtures(
       await getConfig(this.test?.fullTitle()),
       async ({ driver }: { driver: Driver }) => {
+        // This `skipDeepLinkInterstitial` test:
+        // 1. checks the the option only applies for signed and verified links,
+        // 2. the checkbox state is preserved,
+        // 3. works as expected,
+        // 4. and that it does not apply to unsigned links.
+
         await driver.navigate();
         const loginPage = new LoginPage(driver);
         await loginPage.check_pageIsLoaded();
