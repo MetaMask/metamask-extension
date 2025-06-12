@@ -1048,7 +1048,6 @@ async function setupMocking(
    * operation. See the browserAPIRequestDomains regex above.
    */
   server.on('request-initiated', (request) => {
-    console.log(request.url, request.headers.host);
     const privateHosts = matchPrivateHosts(request);
     if (privateHosts.size) {
       for (const privateHost of privateHosts) {
