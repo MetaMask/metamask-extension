@@ -13,6 +13,8 @@ import * as actions from '../../../store/actions';
 import { ImportSrp } from './import-srp';
 
 const mockClearClipboard = jest.fn();
+const mockLockAccountSyncing = jest.fn();
+const mockUnlockAccountSyncing = jest.fn();
 
 jest.mock('../../../helpers/utils/util', () => ({
   clearClipboard: () => mockClearClipboard(),
@@ -28,6 +30,10 @@ jest.mock('../../../store/actions', () => ({
   showAlert: jest.fn().mockReturnValue({ type: 'ALERT_OPEN' }),
   hideAlert: jest.fn().mockReturnValue({ type: 'ALERT_CLOSE' }),
   hideWarning: jest.fn().mockReturnValue({ type: 'HIDE_WARNING' }),
+  lockAccountSyncing: jest.fn().mockReturnValue(() => mockLockAccountSyncing()),
+  unlockAccountSyncing: jest
+    .fn()
+    .mockReturnValue(() => mockUnlockAccountSyncing()),
 }));
 
 const pasteSrpIntoFirstInput = (render: RenderResult, srp: string) => {
@@ -158,6 +164,22 @@ describe('ImportSrp', () => {
       expect(dispatchedActions).toContainEqual({
         type: 'HIDE_WARNING',
       });
+    });
+  });
+
+  it('locks and unlocks account syncing during import', async () => {
+    const render = renderWithProvider(<ImportSrp />, store);
+    const { getByText } = render;
+    const importButton = getByText('Import wallet');
+    expect(importButton).not.toBeEnabled();
+    pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
+    fireEvent.click(importButton);
+    await waitFor(() => {
+      expect(mockLockAccountSyncing).toHaveBeenCalled();
+      expect(actions.importMnemonicToVault).toHaveBeenCalledWith(
+        VALID_SECRET_RECOVERY_PHRASE,
+      );
+      expect(mockUnlockAccountSyncing).toHaveBeenCalled();
     });
   });
 
