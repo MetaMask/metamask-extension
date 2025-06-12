@@ -45,6 +45,7 @@ describe('TermsOfUsePopup', () => {
     render();
     const button = document.querySelector(
       "[data-testid='terms-of-use-scroll-button']",
+      5000,
     );
 
     fireEvent.click(button);
