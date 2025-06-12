@@ -17,6 +17,7 @@ jobs:
           is-high-risk-environment: true
           skip-allow-scripts: true
           fetch-depth: 0 # This is needed to get merge base to calculate bundle size diff
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Get merge base commit hash
         id: get-merge-base
