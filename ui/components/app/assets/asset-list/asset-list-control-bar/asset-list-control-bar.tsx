@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import { Hex } from '@metamask/utils';
+import { Hex, isHexString } from '@metamask/utils';
 import {
   getAllChainsToPoll,
   getEnabledNetworks,
@@ -273,9 +273,13 @@ const AssetListControlBar = ({
       isGlobalNetworkSelectorRemoved &&
       Object.keys(enabledNetworks).length === 1
     ) {
-      return allNetworks[Object.keys(enabledNetworks)[0] as `0x${string}`]
-        ?.name;
+      const isHexChainId = isHexString(Object.keys(enabledNetworks)[0]);
+      return isHexChainId
+        ? allNetworks[Object.keys(enabledNetworks)[0] as `0x${string}`]?.name ??
+            t('currentNetwork')
+        : currentMultichainNetwork.network.nickname ?? t('currentNetwork');
     }
+
     if (
       isGlobalNetworkSelectorRemoved &&
       Object.keys(enabledNetworks).length > 1
