@@ -42,7 +42,9 @@ describe('Edit Networks Permissions', function () {
         await sitePermissionPage.editPermissionsForNetwork([
           'Ethereum Mainnet',
         ]);
-        await sitePermissionPage.check_connectedNetworksNumber(2);
+
+        // Default Chains Connected: Ethereum, Linea, Base
+        await sitePermissionPage.check_connectedNetworksNumber(3);
       },
     );
   });

@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import browser from 'webextension-polyfill';
 
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
@@ -101,10 +101,16 @@ export const AppHeaderUnlockedContent = ({
 
   // Passing non-evm address to checksum function will throw an error
   const normalizedCurrentAddress = normalizeSafeAddress(currentAddress);
-  const [copied, handleCopy] = useCopyToClipboard(MINUTE) as [
-    boolean,
-    (text: string) => void,
-  ];
+  const [copied, handleCopy, resetCopyState] = useCopyToClipboard(MINUTE, {
+    expireClipboard: false,
+  });
+
+  // Reset copy state when a switching accounts
+  useEffect(() => {
+    if (normalizedCurrentAddress) {
+      resetCopyState();
+    }
+  }, [normalizedCurrentAddress, resetCopyState]);
 
   const showConnectedStatus =
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
@@ -227,6 +233,8 @@ export const AppHeaderUnlockedContent = ({
       t,
       trackEvent,
       useBlockie,
+      CopyButton,
+      copied,
     ],
   );
 
