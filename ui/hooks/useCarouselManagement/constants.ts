@@ -76,6 +76,13 @@ export const BACKUPANDSYNC_SLIDE = {
   image: './images/slide-backup-and-sync-icon.png',
 };
 
+export const DOWNLOAD_MOBILE_APP_SLIDE = {
+  id: 'downloadMobileApp',
+  title: 'slideDownloadMobileAppTitle',
+  description: 'slideDownloadMobileAppDescription',
+  image: './images/slide-metamask-icon.png',
+};
+
 export const ZERO_BALANCE = '0x0';
 
 export const SWEEPSTAKES_START = new Date('2025-04-09T00:00:00Z');

@@ -32,12 +32,14 @@ import {
   SMART_ACCOUNT_UPGRADE_SLIDE,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   SOLANA_SLIDE,
+  DOWNLOAD_MOBILE_APP_SLIDE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../hooks/useCarouselManagement';
 ///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { CreateSolanaAccountModal } from '../create-solana-account-modal';
 import { getLastSelectedSolanaAccount } from '../../../selectors/multichain';
 ///: END:ONLY_INCLUDE_IF
+import DownloadMobileAppModal from '../../app/download-mobile-modal/download-mobile-modal';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -65,6 +67,9 @@ export const AccountOverviewLayout = ({
   ///: END:ONLY_INCLUDE_IF
 
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
+
+  const [showDownloadMobileAppModal, setShowDownloadMobileAppModal] =
+    useState(false);
 
   const { slides } = useCarouselManagement();
 
@@ -95,6 +100,10 @@ export const AccountOverviewLayout = ({
 
     if (id === SMART_ACCOUNT_UPGRADE_SLIDE.id) {
       dispatch(setAccountDetailsAddress(selectedAccount.address));
+    }
+
+    if (id === DOWNLOAD_MOBILE_APP_SLIDE.id) {
+      setShowDownloadMobileAppModal(true);
     }
 
     trackEvent({
@@ -154,6 +163,11 @@ export const AccountOverviewLayout = ({
         )
         ///: END:ONLY_INCLUDE_IF
       }
+      {showDownloadMobileAppModal && (
+        <DownloadMobileAppModal
+          onClose={() => setShowDownloadMobileAppModal(false)}
+        />
+      )}
     </>
   );
 };
