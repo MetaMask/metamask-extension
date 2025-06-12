@@ -4,11 +4,11 @@ class TermsOfUseUpdateModal {
   private driver: Driver;
 
   private readonly acceptButton = {
-    testId: 'terms-of-use-agree-button',
+    testId: 'terms-of-use-accept-button',
   };
 
   private readonly popoverScrollButton = {
-    testId: 'terms-of-use-scroll-button',
+    testId: 'popover-scroll-button',
   };
 
   private readonly termsOfUseCheckbox = {
@@ -16,8 +16,8 @@ class TermsOfUseUpdateModal {
   };
 
   private readonly termsOfUseModalTitle = {
-    text: 'Review our Terms of Use',
-    tag: 'h3',
+    text: 'Our Terms of Use have updated',
+    tag: 'h2',
   };
 
   constructor(driver: Driver) {
