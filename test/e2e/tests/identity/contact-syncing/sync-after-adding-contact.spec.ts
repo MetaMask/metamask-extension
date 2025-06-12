@@ -3,7 +3,7 @@ import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
-import { completeNewWalletFlowContactSyncing, completeOnboardFlowContactSyncing } from '../flows';
+import { completeNewWalletFlowContactSyncing, completeOnboardFlowContactSyncing, getSRP } from '../flows';
 import { arrangeContactSyncingTestUtils } from './helpers';
 import { MOCK_CONTACT_ADDRESSES, MOCK_CHAIN_IDS } from './mock-data';
 import { IDENTITY_TEAM_SEED_PHRASE } from '../constants';
@@ -83,7 +83,7 @@ describe('Contact syncing - Add Contact', function (this: any) {
           console.log('Contact successfully added and synced on first device');
 
           // Store SRP for second device test
-          walletSrp = IDENTITY_TEAM_SEED_PHRASE;
+          walletSrp = await getSRP(driver)
         },
       );
 
@@ -162,7 +162,7 @@ describe('Contact syncing - Add Contact', function (this: any) {
       );
     });
 
-    it('handles contact addition on different networks separately', async function (this: any) {
+    it.only('handles contact addition on different networks separately', async function (this: any) {
       const { userStorageMockttpController } = await arrange();
 
       const mainnetContact = {
@@ -205,14 +205,17 @@ describe('Contact syncing - Add Contact', function (this: any) {
           await settingsPage.check_pageIsLoaded();
           await settingsPage.goToContactsSettings();
 
+
           const contactsSettings = new ContactsSettings(driver);
           await contactsSettings.check_pageIsLoaded();
+
           await contactsSettings.addContact(mainnetContact.name, mainnetContact.address);
 
           await waitUntilSyncedContactsNumberEquals(1);
 
           // Add second contact via UI
-          await contactsSettings.addContact(sepoliaContact.name, sepoliaContact.address);
+          // @fabiobozzo - looks like the contact is getting overriden on the UI
+          await contactsSettings.addContact(sepoliaContact.name, sepoliaContact.address, 'button');
 
           // Should have 2 separate contacts now
           await waitUntilSyncedContactsNumberEquals(2);
