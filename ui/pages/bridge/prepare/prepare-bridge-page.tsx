@@ -252,15 +252,25 @@ const PrepareBridgePage = () => {
   } = useTokensWithFiltering(
     toChain?.chainId ?? fromChain?.chainId,
     fromChain?.chainId === toChain?.chainId && fromToken && fromChain
-      ? {
-          ...fromToken,
-          // Normalize native token address to empty string, otherwise lowercase for comparison
-          address: isNativeAddress(fromToken.address)
-            ? ''
-            : fromToken.address?.toLowerCase(),
-          // Ensure chainId is in CAIP format for proper comparison
-          chainId: formatChainIdToCaip(fromChain.chainId),
-        }
+      ? (() => {
+          // Determine the address format based on chain type
+          // We need to make evm tokens lowercase for comparison as sometimes they are checksummed
+          let address = '';
+          if (isNativeAddress(fromToken.address)) {
+            address = '';
+          } else if (isSolanaChainId(fromChain.chainId)) {
+            address = fromToken.address || '';
+          } else {
+            address = fromToken.address?.toLowerCase() || '';
+          }
+
+          return {
+            ...fromToken,
+            address,
+            // Ensure chainId is in CAIP format for proper comparison
+            chainId: formatChainIdToCaip(fromChain.chainId),
+          };
+        })()
       : null,
     selectedDestinationAccount !== null && 'id' in selectedDestinationAccount
       ? selectedDestinationAccount.id
