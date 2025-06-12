@@ -251,20 +251,8 @@
   "gasLimit": {
     "message": "Limit paliva"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Limit GAS je maximálne množstvo jednotiek GAS, ktoré ste ochotní minúť."
-  },
   "gasLimitTooLow": {
     "message": "Limit paliva musí být alespoň 21000"
-  },
-  "gasPrice": {
-    "message": "Cena paliva (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Cena za GAS je mimoriadne nízka"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Cena za GAS určuje množstvo Ether, ktoré ste ochotní zaplatiť za každú jednotku GAS."
   },
   "gasUsed": {
     "message": "GAS použitý"
@@ -711,8 +699,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Vaša súkromná seed fráza"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Nulová cena za GAS pri zrýchlení"
   }
 }

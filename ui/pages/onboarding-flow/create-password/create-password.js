@@ -185,7 +185,7 @@ export default function CreatePassword({
             data-testid="create-password-back-button"
             type="button"
             onClick={() => history.goBack()}
-            ariaLabel="back"
+            ariaLabel={t('back')}
           />
         </Box>
         <Box

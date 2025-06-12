@@ -14,6 +14,8 @@ class LoginPage {
 
   private resetPasswordModalButton: string;
 
+  private incorrectPasswordMessage: { css: string; text: string };
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.passwordInput = '[data-testid="unlock-password"]';
@@ -26,6 +28,11 @@ class LoginPage {
 
     this.resetPasswordModalButton =
       '[data-testid="reset-password-modal-button"]';
+
+    this.incorrectPasswordMessage = {
+      css: '.MuiFormHelperText-root.Mui-error.MuiFormHelperText-filled',
+      text: 'Incorrect password',
+    };
   }
 
   async check_pageIsLoaded(): Promise<void> {
@@ -51,6 +58,16 @@ class LoginPage {
     console.log(`On login page, Login to homepage `);
     await this.driver.fill(this.passwordInput, password);
     await this.driver.clickElement(this.unlockButton);
+  }
+
+  async check_incorrectPasswordMessageIsDisplayed(): Promise<void> {
+    console.log('Checking if incorrect password message is displayed');
+    const isDisplayed = await this.driver.waitForSelector(
+      this.incorrectPasswordMessage,
+    );
+    if (!isDisplayed) {
+      throw new Error('Incorrect password message is not displayed');
+    }
   }
 
   async gotoResetPasswordPage(): Promise<void> {
