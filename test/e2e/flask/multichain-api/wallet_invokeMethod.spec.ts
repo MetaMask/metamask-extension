@@ -308,7 +308,7 @@ describe('Multichain API', function () {
             );
 
             const resultWebElement = await driver.findElement(
-              `#invoke-method-${escapeColon(scope)}-${method}-result-0`,
+              `#invoke-method-${replaceColon(scope)}-${method}-result-0`,
             );
 
             const text = await resultWebElement.getText();
@@ -388,7 +388,7 @@ describe('Multichain API', function () {
             );
 
             const resultWebElement = await driver.findElement(
-              `#invoke-method-${escapeColon(scope)}-${method}-result-0`,
+              `#invoke-method-${replaceColon(scope)}-${method}-result-0`,
             );
 
             const result = await resultWebElement
@@ -471,7 +471,7 @@ describe('Multichain API', function () {
             );
 
             const resultWebElement = await driver.findElement(
-              `#invoke-method-${escapeColon(scope)}-${method}-result-0`,
+              `#invoke-method-${replaceColon(scope)}-${method}-result-0`,
             );
 
             const sendCallsResult = await resultWebElement
