@@ -123,6 +123,12 @@ PATH_NAME_MAP.set(
 export const NEW_ACCOUNT_ROUTE = '/new-account';
 PATH_NAME_MAP.set(NEW_ACCOUNT_ROUTE, 'New Account Page');
 
+export const ACCOUNT_DETAILS_ROUTE = '/account-details';
+PATH_NAME_MAP[ACCOUNT_DETAILS_ROUTE] = 'Account Details Page';
+
+export const ACCOUNT_DETAILS_QR_CODE_ROUTE = '/account-details/qr-code';
+PATH_NAME_MAP[ACCOUNT_DETAILS_QR_CODE_ROUTE] = 'Account Details QR Code Page';
+
 export const CONFIRM_ADD_SUGGESTED_NFT_ROUTE = '/confirm-add-suggested-nft';
 PATH_NAME_MAP.set(
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
