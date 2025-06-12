@@ -2,14 +2,13 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
-  AvatarBase,
-  AvatarBaseSize,
   Box,
   Button,
-  ButtonLink,
-  ButtonLinkSize,
   ButtonSize,
   ButtonVariant,
+  Icon,
+  IconName,
+  IconSize,
   Modal,
   ModalContent,
   ModalHeader,
@@ -18,16 +17,15 @@ import {
 } from '../../components/component-library';
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
   Display,
   FlexDirection,
+  FontWeight,
+  IconColor,
   JustifyContent,
-  TextColor,
   TextVariant,
 } from '../../helpers/constants/design-system';
 import { isSocialLoginFlow } from '../../selectors';
-import Divider from '../../components/app/divider';
 
 export default function ResetPasswordModal({
   onClose,
@@ -53,65 +51,48 @@ export default function ResetPasswordModal({
           gap={4}
         >
           <Box display={Display.Flex} gap={4} as="li">
-            <AvatarBase
-              size={AvatarBaseSize.Sm}
-              backgroundColor={BackgroundColor.infoMuted}
-              color={TextColor.infoDefault}
-            >
-              1
-            </AvatarBase>
+            <Icon
+              name={IconName.FaceId}
+              size={IconSize.Md}
+              color={IconColor.iconMuted}
+              style={{
+                marginTop: '2px',
+              }}
+            />
             <Text variant={TextVariant.bodyMd}>
               {t('forgotPasswordSocialStep1', [
                 <Text
-                  variant={TextVariant.bodyMdBold}
-                  key="reset-password-step-1-settings"
+                  variant={TextVariant.inherit}
+                  fontWeight={FontWeight.Bold}
+                  key="reset-password-step-1-biometrics"
                 >
-                  {t('forgotPasswordSocialStep1Settings')}
+                  {t('forgotPasswordSocialStep1Biometrics')}
                 </Text>,
               ])}
             </Text>
           </Box>
           <Box display={Display.Flex} gap={4} as="li">
-            <AvatarBase
-              size={AvatarBaseSize.Sm}
-              backgroundColor={BackgroundColor.infoMuted}
-              color={TextColor.infoDefault}
-            >
-              2
-            </AvatarBase>
+            <Icon
+              name={IconName.SecurityKey}
+              size={IconSize.Md}
+              color={IconColor.iconMuted}
+              style={{
+                marginTop: '2px',
+              }}
+            />
             <Text variant={TextVariant.bodyMd}>
-              {t('forgotPasswordSocialStep2')}
-            </Text>
-          </Box>
-          <Box display={Display.Flex} gap={4} as="li">
-            <AvatarBase
-              size={AvatarBaseSize.Sm}
-              backgroundColor={BackgroundColor.infoMuted}
-              color={TextColor.infoDefault}
-            >
-              3
-            </AvatarBase>
-            <Text variant={TextVariant.bodyMd}>
-              {t('forgotPasswordSocialStep3')}
+              {t('forgotPasswordSocialStep2', [
+                <Text
+                  variant={TextVariant.inherit}
+                  fontWeight={FontWeight.Bold}
+                  key="reset-password-step-2-srp"
+                >
+                  {t('secretRecoveryPhrase')}
+                </Text>,
+              ])}
             </Text>
           </Box>
         </Box>
-        <Divider marginTop={2} marginBottom={4} />
-        <Text>
-          {t('forgotPasswordSocialSocialReset', [
-            [
-              <ButtonLink
-                key="forgotPasswordSocialSocialReset"
-                size={ButtonLinkSize.Inherit}
-                onClick={() => {
-                  onRestore();
-                }}
-              >
-                {t('resetWallet')}
-              </ButtonLink>,
-            ],
-          ])}
-        </Text>
       </Box>
     );
   };
@@ -139,19 +120,9 @@ export default function ResetPasswordModal({
         <Text variant={TextVariant.bodyMd} marginBottom={4}>
           {t('forgotPasswordModalDescription1')}
         </Text>
-        <Text variant={TextVariant.bodyMd} marginBottom={6}>
+        <Text variant={TextVariant.bodyMd}>
           {t('forgotPasswordModalDescription2')}
         </Text>
-        <Button
-          data-testid="reset-password-modal-button"
-          variant={ButtonVariant.Primary}
-          onClick={onRestore}
-          size={ButtonSize.Lg}
-          block
-          danger
-        >
-          {t('forgotPasswordModalButton')}
-        </Button>
       </Box>
     );
   };
@@ -169,6 +140,18 @@ export default function ResetPasswordModal({
           {t('forgotPasswordModalTitle')}
         </ModalHeader>
         {isSocialLoginEnabled ? socialLoginContent() : srpLoginContent()}
+        <Box paddingInline={4} marginTop={6}>
+          <Button
+            data-testid="reset-password-modal-button"
+            variant={ButtonVariant.Primary}
+            onClick={onRestore}
+            size={ButtonSize.Lg}
+            block
+            danger
+          >
+            {t('forgotPasswordModalButton')}
+          </Button>
+        </Box>
       </ModalContent>
     </Modal>
   );
