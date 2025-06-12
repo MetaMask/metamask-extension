@@ -23,6 +23,7 @@ const mockSetActiveNetwork = jest.fn();
 const mockUpdateCustomNonce = jest.fn();
 const mockSetNextNonce = jest.fn();
 const mockSetTokenNetworkFilter = jest.fn();
+const mockSetEnabledNetworks = jest.fn();
 const mockDetectNfts = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => ({
@@ -34,6 +35,7 @@ jest.mock('../../../store/actions.ts', () => ({
   setNetworkClientIdForDomain: (network, id) =>
     mockSetNetworkClientIdForDomain(network, id),
   setTokenNetworkFilter: () => mockSetTokenNetworkFilter,
+  setEnabledNetworks: () => mockSetEnabledNetworks,
   detectNfts: () => mockDetectNfts,
 }));
 
