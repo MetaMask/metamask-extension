@@ -18,7 +18,12 @@
 
 
 .network-manager__networks-button-icon {
-  width: 24px;
   justify-content: center;
   display: flex;
+}
+
+.network-manager__additional-network-item {
+  .mm-button-icon {
+    --button-icon-size: 20px;
+  }
 }

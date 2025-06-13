@@ -12,6 +12,7 @@ import {
 } from '../../../../../../shared/modules/network.utils';
 import {
   AlignItems,
+  BlockSize,
   BorderRadius,
   Display,
   FlexDirection,
@@ -163,37 +164,38 @@ const DefaultNetworks = memo(() => {
         <Box
           display={Display.Flex}
           alignItems={AlignItems.center}
-          justifyContent={JustifyContent.spaceBetween}
+          justifyContent={JustifyContent.flexStart}
+          width={BlockSize.Full}
           onClick={() => handleAdditionalNetworkClick(network)}
+          paddingLeft={4}
+          paddingRight={4}
           paddingTop={4}
           paddingBottom={4}
+          gap={4}
           data-testid="additional-network-item"
+          className="network-manager__additional-network-item"
           key={network.chainId}
         >
-          <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
-            <Box className="additional-network-item__button-icon">
-              <ButtonIcon
-                size={ButtonIconSize.Lg}
-                color={IconColor.iconAlternative}
-                iconName={IconName.Add}
-                padding={0}
-                margin={0}
-                ariaLabel={t('addNetwork')}
-              />
-            </Box>
-            <AvatarNetwork
-              name={network.name}
-              size={AvatarNetworkSize.Md}
-              src={networkImageUrl}
-              borderRadius={BorderRadius.LG}
-            />
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.textDefault}
-            >
-              {network.name}
-            </Text>
-          </Box>
+          <ButtonIcon
+            size={ButtonIconSize.Md}
+            color={IconColor.iconAlternative}
+            iconName={IconName.Add}
+            padding={0}
+            margin={0}
+            ariaLabel={t('addNetwork')}
+          />
+          <AvatarNetwork
+            name={network.name}
+            size={AvatarNetworkSize.Md}
+            src={networkImageUrl}
+            borderRadius={BorderRadius.LG}
+          />
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            color={TextColor.textDefault}
+          >
+            {network.name}
+          </Text>
         </Box>
       );
     });
@@ -210,8 +212,8 @@ const DefaultNetworks = memo(() => {
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.flexStart}
-          padding={4}
-          paddingBottom={2}
+          paddingTop={4}
+          paddingLeft={4}
         >
           {allNetworksSelected ? (
             <ButtonLink onClick={deselectAllDefaultNetworks}>
