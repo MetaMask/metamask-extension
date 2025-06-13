@@ -150,19 +150,20 @@ export const CustomNetworks = React.memo(() => {
         <Text
           variant={TextVariant.bodyMdMedium}
           color={TextColor.textAlternative}
-          padding={4}
-          marginTop={4}
+          paddingLeft={4}
+          paddingRight={4}
+          paddingTop={4}
         >
-          {t('testNetworks')}
+          {t('testnets')}
         </Text>
         {renderedTestNetworks}
       </Box>
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
-        paddingTop={4}
         paddingLeft={4}
         paddingRight={4}
+        paddingTop={4}
       >
         <Button
           variant={ButtonVariant.Secondary}
