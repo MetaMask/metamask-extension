@@ -5,7 +5,7 @@ import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { MultichainAccountsTree } from './index';
 
 export default {
-  title: 'Components/Multichain/MultichainAccounts/MultichainAccountsTree',
+  title: 'Components/MultichainAccounts/MultichainAccountsTree',
   component: MultichainAccountsTree,
   parameters: {
     docs: {
