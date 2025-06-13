@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
 import {
   Text,
   FormTextField,
@@ -35,6 +36,7 @@ import { isFlask, isBeta } from '../../helpers/utils/build-types';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
+import FormattedCounter from './formatted-counter';
 
 export default class UnlockPage extends Component {
   static contextTypes = {
@@ -70,9 +72,9 @@ export default class UnlockPage extends Component {
     error: null,
     showResetPasswordModal: false,
     isLocked: false,
+    isSubmitting: false,
+    unlockDelayPeriod: 0,
   };
-
-  submitting = false;
 
   failed_attempts = 0;
 
@@ -90,15 +92,15 @@ export default class UnlockPage extends Component {
     event.preventDefault();
     event.stopPropagation();
 
-    const { password } = this.state;
-    const { onSubmit, forceUpdateMetamaskState } = this.props;
+    const { password, isSubmitting } = this.state;
+    const { onSubmit } = this.props;
 
-    if (password === '' || this.submitting) {
+    if (password === '' || isSubmitting) {
       return;
     }
 
     this.setState({ error: null });
-    this.submitting = true;
+    this.setState({ isSubmitting: true });
 
     try {
       await onSubmit(password);
@@ -115,24 +117,53 @@ export default class UnlockPage extends Component {
         },
       );
     } catch (error) {
-      this.failed_attempts += 1;
-      const errorMessage = error instanceof Error ? error.message : error;
-
-      if (errorMessage === 'Incorrect password') {
-        await forceUpdateMetamaskState();
-        this.context.trackEvent({
-          category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.AppUnlockedFailed,
-          properties: {
-            reason: 'incorrect_password',
-            failed_attempts: this.failed_attempts,
-          },
-        });
-      }
-
-      this.setState({ error: errorMessage });
-      this.submitting = false;
+      await this.handleLoginError(error);
+    } finally {
+      this.setState({ isSubmitting: false });
     }
+  };
+
+  handleLoginError = async (error) => {
+    const { t } = this.context;
+    this.failed_attempts += 1;
+    const { message, data } = error;
+    let finalErrorMessage = message;
+    let finalUnlockDelayPeriod = 0;
+    let errorReason;
+
+    switch (message) {
+      case 'Incorrect password':
+      case SeedlessOnboardingControllerErrorMessage.IncorrectPassword:
+        finalErrorMessage = t('unlockPageIncorrectPassword');
+        errorReason = 'incorrect_password';
+        break;
+      case SeedlessOnboardingControllerErrorMessage.TooManyLoginAttempts:
+        this.setState({ isLocked: true });
+
+        finalErrorMessage = t('unlockPageTooManyFailedAttempts');
+        errorReason = 'too_many_login_attempts';
+        finalUnlockDelayPeriod = data.remainingTime;
+        break;
+      default:
+        finalErrorMessage = message;
+        break;
+    }
+
+    if (errorReason) {
+      await this.props.forceUpdateMetamaskState();
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.AppUnlockedFailed,
+        properties: {
+          reason: errorReason,
+          failed_attempts: this.failed_attempts,
+        },
+      });
+    }
+    this.setState({
+      error: finalErrorMessage,
+      unlockDelayPeriod: finalUnlockDelayPeriod,
+    });
   };
 
   handleInputChange(event) {
@@ -169,7 +200,7 @@ export default class UnlockPage extends Component {
   };
 
   renderHelpText = () => {
-    const { error } = this.state;
+    const { error, unlockDelayPeriod } = this.state;
 
     if (!error) {
       return null;
@@ -188,6 +219,18 @@ export default class UnlockPage extends Component {
             color={TextColor.errorDefault}
           >
             {error}
+            {unlockDelayPeriod > 0 && (
+              <FormattedCounter
+                startFrom={unlockDelayPeriod}
+                onCountdownEnd={() =>
+                  this.setState({
+                    isLocked: false,
+                    error: null,
+                    unlockDelayPeriod: 0,
+                  })
+                }
+              />
+            )}
           </Text>
         )}
       </Box>
@@ -199,7 +242,8 @@ export default class UnlockPage extends Component {
   };
 
   render() {
-    const { password, error, isLocked, showResetPasswordModal } = this.state;
+    const { password, error, isLocked, showResetPasswordModal, isSubmitting } =
+      this.state;
     const { t } = this.context;
 
     const needHelpText = t('needHelpLinkText');
@@ -268,6 +312,7 @@ export default class UnlockPage extends Component {
               {t('welcomeBack')}
             </Text>
             <FormTextField
+              value={password}
               id="password"
               label={
                 <Box
@@ -314,12 +359,13 @@ export default class UnlockPage extends Component {
               gap={4}
             >
               <Button
+                loading={isSubmitting}
                 variant={ButtonVariant.Primary}
                 size={ButtonSize.Lg}
                 block
                 type="submit"
                 data-testid="unlock-submit"
-                disabled={!password || isLocked}
+                disabled={!password || isLocked || isSubmitting}
               >
                 {this.context.t('unlock')}
               </Button>

@@ -4,7 +4,7 @@ import { BaseLoginHandler } from './base-login-handler';
 import { AuthTokenResponse, LoginHandlerOptions, OAuthUserInfo } from './types';
 
 export class AppleLoginHandler extends BaseLoginHandler {
-  public readonly OAUTH_SERVER_URL = 'https://appleid.apple.com/auth/authorize';
+  public OAUTH_SERVER_URL = 'https://appleid.apple.com/auth/authorize';
 
   readonly #scope = ['name', 'email'];
 
@@ -17,6 +17,13 @@ export class AppleLoginHandler extends BaseLoginHandler {
       this.serverRedirectUri = options.serverRedirectUri;
     } else {
       this.serverRedirectUri = `${options.authServerUrl}/api/v1/oauth/callback`;
+    }
+
+    // if the platform is Firefox, use BFF to redirect to apple oauth server
+    // since firefox mv 2 doesn't allow redirect url different from current extension url
+    const platform = options.webAuthenticator.getPlatform();
+    if (platform === PLATFORM_FIREFOX) {
+      this.OAUTH_SERVER_URL = `${options.authServerUrl}/api/v1/oauth/initiate`;
     }
   }
 
@@ -78,11 +85,10 @@ export class AppleLoginHandler extends BaseLoginHandler {
    */
   generateAuthTokenRequestData(code: string): string {
     const { web3AuthNetwork } = this.options;
-    const redirectUri = this.#getRedirectUri();
     const requestData = {
       code,
       client_id: this.options.oAuthClientId,
-      redirect_uri: redirectUri,
+      redirect_uri: this.serverRedirectUri, // redirect uri should be server redirect uri since we use server callback for oauth code init
       login_provider: this.authConnection,
       network: web3AuthNetwork,
     };

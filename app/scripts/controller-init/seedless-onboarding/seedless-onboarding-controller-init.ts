@@ -14,11 +14,7 @@ export const SeedlessOnboardingControllerInit: ControllerInitFunction<
   const { controllerMessenger, persistedState } = request;
 
   const encryptor = encryptorFactory(600_000);
-
   const network = process.env.WEB3AUTH_NETWORK as Web3AuthNetwork;
-  if (!process.env.IN_TEST && !network) {
-    throw new Error('WEB3AUTH_NETWORK is not set in the environment');
-  }
 
   const controller = new SeedlessOnboardingController({
     messenger: controllerMessenger,
