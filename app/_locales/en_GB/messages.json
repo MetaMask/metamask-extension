@@ -3531,6 +3531,9 @@
   "noNetworksFound": {
     "message": "No networks found for the given search query"
   },
+  "noNetworksSelected": {
+    "message": "No networks selected"
+  },
   "noOptionsAvailableMessage": {
     "message": "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option."
   },
