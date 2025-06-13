@@ -3,6 +3,11 @@ import { StoryFn, Meta } from '@storybook/react';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { MultichainAccountsTree } from './index';
+import type {
+  AccountGroupId,
+  AccountWalletId,
+} from '@metamask/account-tree-controller';
+import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/multichain-accounts-selectors.types';
 
 export default {
   title: 'Components/MultichainAccounts/MultichainAccountsTree',
@@ -20,13 +25,25 @@ export default {
   },
 } as Meta<typeof MultichainAccountsTree>;
 
-const mockWalletAccountCollection = {
-  'wallet-1': {
+const walletOneId: AccountWalletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
+const walletOneGroupId: AccountGroupId =
+  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ:default';
+const walletTwoId: AccountWalletId = 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8';
+const walletTwoGroupId: AccountGroupId =
+  'entropy:01JKAF3PJ247KAM6C03G5Q0NP8:default';
+
+const mockWallets: ConsolidatedWallets = {
+  [walletOneId]: {
+    id: walletOneId,
     metadata: {
       name: 'Wallet 1',
     },
     groups: {
-      'group-1': {
+      [walletOneGroupId]: {
+        id: walletOneGroupId,
+        metadata: {
+          name: 'Default',
+        },
         accounts: [
           {
             address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -36,6 +53,7 @@ const mockWalletAccountCollection = {
               keyring: {
                 type: 'HD Key Tree',
               },
+              importTime: 0,
             },
             options: {},
             methods: ETH_EOA_METHODS,
@@ -51,6 +69,7 @@ const mockWalletAccountCollection = {
               keyring: {
                 type: 'HD Key Tree',
               },
+              importTime: 0,
             },
             options: {},
             methods: ETH_EOA_METHODS,
@@ -62,12 +81,17 @@ const mockWalletAccountCollection = {
       },
     },
   },
-  'wallet-2': {
+  [walletTwoId]: {
+    id: walletTwoId,
     metadata: {
       name: 'Wallet 2',
     },
     groups: {
-      'group-2': {
+      [walletTwoGroupId]: {
+        id: walletTwoGroupId,
+        metadata: {
+          name: 'Default',
+        },
         accounts: [
           {
             address: '0xabcdef0123456789abcdef0123456789abcdef01',
@@ -77,6 +101,7 @@ const mockWalletAccountCollection = {
               keyring: {
                 type: 'HD Key Tree',
               },
+              importTime: 0,
             },
             options: {},
             methods: ETH_EOA_METHODS,
@@ -88,7 +113,7 @@ const mockWalletAccountCollection = {
       },
     },
   },
-};
+} as const;
 
 const mockConnectedSites = {
   '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': [
@@ -109,7 +134,7 @@ const Template: StoryFn<typeof MultichainAccountsTree> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  wallets: mockWalletAccountCollection,
+  wallets: mockWallets,
   allowedAccountTypes: [EthAccountType.Eoa, EthAccountType.Erc4337],
   connectedSites: mockConnectedSites,
   currentTabOrigin: 'https://test.dapp',

@@ -1,20 +1,37 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
+import type {
+  AccountGroupId,
+  AccountWalletId,
+} from '@metamask/account-tree-controller';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/multichain-accounts-selectors.types';
 import { MultichainAccountsTreeProps } from './multichain-accounts-tree';
 import { MultichainAccountsTree } from '.';
 
-const mockWalletAccountCollection = {
-  'wallet-1': {
+const walletOneId: AccountWalletId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
+const walletOneGroupId: AccountGroupId =
+  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ:default';
+const walletTwoId: AccountWalletId = 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8';
+const walletTwoGroupId: AccountGroupId =
+  'entropy:01JKAF3PJ247KAM6C03G5Q0NP8:default';
+
+const mockWallets: ConsolidatedWallets = {
+  [walletOneId]: {
+    id: walletOneId,
     metadata: {
       name: 'Wallet 1',
     },
     groups: {
-      'group-1': {
+      [walletOneGroupId]: {
+        id: walletOneGroupId,
+        metadata: {
+          name: 'Default',
+        },
         accounts: [
           {
             address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -24,6 +41,7 @@ const mockWalletAccountCollection = {
               keyring: {
                 type: 'HD Key Tree',
               },
+              importTime: 0,
             },
             options: {},
             methods: ETH_EOA_METHODS,
@@ -39,6 +57,7 @@ const mockWalletAccountCollection = {
               keyring: {
                 type: 'HD Key Tree',
               },
+              importTime: 0,
             },
             options: {},
             methods: ETH_EOA_METHODS,
@@ -50,12 +69,17 @@ const mockWalletAccountCollection = {
       },
     },
   },
-  'wallet-2': {
+  [walletTwoId]: {
+    id: walletTwoId,
     metadata: {
       name: 'Wallet 2',
     },
     groups: {
-      'group-2': {
+      [walletTwoGroupId]: {
+        id: walletTwoGroupId,
+        metadata: {
+          name: 'Default',
+        },
         accounts: [
           {
             address: '0xabcdef0123456789abcdef0123456789abcdef01',
@@ -65,6 +89,7 @@ const mockWalletAccountCollection = {
               keyring: {
                 type: 'HD Key Tree',
               },
+              importTime: 0,
             },
             options: {},
             methods: ETH_EOA_METHODS,
@@ -76,7 +101,7 @@ const mockWalletAccountCollection = {
       },
     },
   },
-};
+} as const;
 
 const mockConnectedSites = {
   '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': [
@@ -92,32 +117,13 @@ describe('MultichainAccountsTree', () => {
   const mockOnAccountListItemItemClicked = jest.fn();
 
   const defaultProps: MultichainAccountsTreeProps = {
-    wallets: mockWalletAccountCollection,
+    wallets: mockWallets,
     allowedAccountTypes: [EthAccountType.Eoa, EthAccountType.Erc4337],
     connectedSites: mockConnectedSites,
     currentTabOrigin: 'https://test.dapp',
     privacyMode: false,
-    selectedAccount: {
-      address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      type: 'eip155:eoa',
-      id: '',
-      options: {
-        entropySource: 'entropy-source',
-        derivationPath: "m/44'/60'/0'/0/0",
-      },
-      metadata: {
-        name: '',
-        importTime: 0,
-        keyring: {
-          type: '',
-        },
-        nameLastUpdatedAt: undefined,
-        snap: undefined,
-        lastSelected: 1749132453300,
-      },
-      scopes: [],
-      methods: [],
-    },
+    selectedAccount:
+      mockWallets[walletOneId].groups[walletOneGroupId].accounts[0],
     onClose: mockOnClose,
     onAccountListItemItemClicked: mockOnAccountListItemItemClicked,
   };
