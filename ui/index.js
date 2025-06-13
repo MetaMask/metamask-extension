@@ -5,6 +5,7 @@ import { clone } from 'lodash';
 import React from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
+import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -16,7 +17,7 @@ import { maskObject } from '../shared/modules/object.utils';
 import { SENTRY_UI_STATE } from '../app/scripts/constants/sentry-state';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
 import { COPY_OPTIONS } from '../shared/constants/copy';
-import switchDirection from '../shared/lib/switch-direction';
+import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
 import { getCurrentChainId } from '../shared/modules/selectors/networks';
@@ -24,11 +25,11 @@ import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
   getOriginOfCurrentTab,
-  getPermittedAccountsForCurrentTab,
   getSelectedInternalAccount,
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
   getSwitchedNetworkDetails,
+  getAllPermittedAccountsForCurrentTab,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -39,6 +40,8 @@ import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
+
+export { displayStateCorruptionError } from './helpers/utils/state-corruption-html';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
@@ -130,9 +133,17 @@ export async function setupInitialStore(
   if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
     const { origin } = draftInitialState.activeTab;
     const permittedAccountsForCurrentTab =
-      getPermittedAccountsForCurrentTab(draftInitialState);
-    const selectedAddress =
-      getSelectedInternalAccount(draftInitialState)?.address ?? '';
+      getAllPermittedAccountsForCurrentTab(draftInitialState);
+
+    const selectedAccount = getSelectedInternalAccount(draftInitialState);
+
+    const currentTabIsConnectedToSelectedAddress =
+      selectedAccount &&
+      isInternalAccountInPermittedAccountIds(
+        selectedAccount,
+        permittedAccountsForCurrentTab,
+      );
+
     const unconnectedAccountAlertShownOrigins =
       getUnconnectedAccountAlertShown(draftInitialState);
     const unconnectedAccountAlertIsEnabled =
@@ -143,7 +154,7 @@ export async function setupInitialStore(
       unconnectedAccountAlertIsEnabled &&
       !unconnectedAccountAlertShownOrigins[origin] &&
       permittedAccountsForCurrentTab.length > 0 &&
-      !permittedAccountsForCurrentTab.includes(selectedAddress)
+      !currentTabIsConnectedToSelectedAddress
     ) {
       draftInitialState[AlertTypes.unconnectedAccount] = {
         state: ALERT_STATE.OPEN,

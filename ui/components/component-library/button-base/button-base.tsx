@@ -45,6 +45,8 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
     }: ButtonBaseProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const tag = href ? 'a' : as || 'button';
     const tagProps = href && tag === 'a' ? { href, ...props } : props;
 
@@ -68,8 +70,14 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
           {
             [`mm-button-base--size-${size}`]:
               Object.values(ButtonBaseSize).includes(size),
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             'mm-button-base--loading': loading || false,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             'mm-button-base--disabled': disabled || false,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
             'mm-button-base--block': block || false,
             'mm-button-base--ellipsis': ellipsis,
           },
@@ -78,7 +86,7 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
         display={Display.InlineFlex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
-        borderRadius={BorderRadius.pill}
+        borderRadius={BorderRadius.XL}
         {...(tagProps as TextProps<C>)}
       >
         {startIconName && (

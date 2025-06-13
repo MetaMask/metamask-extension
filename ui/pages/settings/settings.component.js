@@ -22,6 +22,8 @@ import {
   DEFAULT_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   SNAP_SETTINGS_ROUTE,
+  REVEAL_SRP_LIST_ROUTE,
+  BACKUPANDSYNC_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -57,6 +59,8 @@ import DeveloperOptionsTab from './developer-options-tab';
 import ExperimentalTab from './experimental-tab';
 import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
+import { RevealSrpList } from './security-tab/reveal-srp-list';
+import BackupAndSyncTab from './backup-and-sync-tab';
 
 class SettingsPage extends PureComponent {
   static propTypes = {
@@ -129,9 +133,12 @@ class SettingsPage extends PureComponent {
 
     return (
       <div
-        className={classnames('main-container settings-page', {
-          'settings-page--selected': currentPath !== SETTINGS_ROUTE,
-        })}
+        className={classnames(
+          'main-container main-container--has-shadow settings-page',
+          {
+            'settings-page--selected': currentPath !== SETTINGS_ROUTE,
+          },
+        )}
       >
         <Box
           className="settings-page__header"
@@ -334,6 +341,11 @@ class SettingsPage extends PureComponent {
         key: ADVANCED_ROUTE,
       },
       {
+        content: t('backupAndSync'),
+        icon: <Icon name={IconName.SecurityTime} />,
+        key: BACKUPANDSYNC_ROUTE,
+      },
+      {
         content: t('contacts'),
         icon: <Icon name={IconName.Book} />,
         key: CONTACT_LIST_ROUTE,
@@ -415,6 +427,7 @@ class SettingsPage extends PureComponent {
           component={SnapSettingsRenderer}
         />
         <Route exact path={ADVANCED_ROUTE} component={AdvancedTab} />
+        <Route exact path={BACKUPANDSYNC_ROUTE} component={BackupAndSyncTab} />
         <Route
           exact
           path={ADD_NETWORK_ROUTE}
@@ -461,6 +474,7 @@ class SettingsPage extends PureComponent {
           path={`${CONTACT_VIEW_ROUTE}/:id`}
           component={ContactListTab}
         />
+        <Route exact path={REVEAL_SRP_LIST_ROUTE} component={RevealSrpList} />
         <Route
           render={(routeProps) => (
             <SettingsTab

@@ -14,6 +14,7 @@ const REDESIGN_USER_TRANSACTION_TYPES = [
   TransactionType.batch,
   TransactionType.contractInteraction,
   TransactionType.deployContract,
+  TransactionType.revokeDelegation,
   TransactionType.tokenMethodApprove,
   TransactionType.tokenMethodIncreaseAllowance,
   TransactionType.tokenMethodSetApprovalForAll,

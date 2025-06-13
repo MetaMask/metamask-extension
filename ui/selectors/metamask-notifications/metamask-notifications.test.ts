@@ -5,6 +5,7 @@ import {
   getMetamaskNotificationsReadList,
   getMetamaskNotificationsUnreadCount,
   selectIsFeatureAnnouncementsEnabled,
+  getValidNotificationAccounts,
 } from './metamask-notifications';
 
 type Notification = NotificationServicesController.Types.INotification;
@@ -18,13 +19,13 @@ const mockNotifications: Notification[] = [
 describe('Metamask Notifications Selectors', () => {
   const mockState = {
     metamask: {
-      subscriptionAccountsSeen: [],
+      subscriptionAccountsSeen: [] as string[],
       isMetamaskNotificationsFeatureSeen: true,
       isNotificationServicesEnabled: true,
       isFeatureAnnouncementsEnabled: true,
       metamaskNotificationsList: mockNotifications,
       metamaskNotificationsReadList: [],
-      isProfileSyncingUpdateLoading: false,
+      isBackupAndSyncUpdateLoading: false,
       isFetchingMetamaskNotifications: false,
       isUpdatingMetamaskNotifications: false,
       isUpdatingMetamaskNotificationsAccount: [],
@@ -59,5 +60,11 @@ describe('Metamask Notifications Selectors', () => {
 
   it('should select the isFeatureAnnouncementsEnabled state', () => {
     expect(selectIsFeatureAnnouncementsEnabled(mockState)).toBe(true);
+  });
+
+  it('should select the valid accounts that can enable notifications', () => {
+    const state = { ...mockState };
+    state.metamask.subscriptionAccountsSeen = ['0x1111'];
+    expect(getValidNotificationAccounts(state)).toStrictEqual(['0x1111']);
   });
 });

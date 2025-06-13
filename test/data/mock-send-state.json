@@ -139,6 +139,7 @@
       "showTestNetworks": true,
       "tokenNetworkFilter": {}
     },
+    "enabledNetworkMap": {},
     "seedPhraseBackedUp": null,
     "ensResolutionsByAddress": {},
     "isAccountMenuOpen": false,
@@ -262,29 +263,27 @@
         "accounts": [
           "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
           "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b"
-        ]
+        ],
+        "metadata": {
+          "id": "01JKAF3DSGM3AB87EM9N0K41AJ",
+          "name": ""
+        }
       },
       {
         "type": "Ledger Hardware",
-        "accounts": ["0xc42edfcc21ed14dda456aa0756c153f7985d8813"]
+        "accounts": ["0xc42edfcc21ed14dda456aa0756c153f7985d8813"],
+        "metadata": {
+          "id": "01JKAF3KP7VPAG0YXEDTDRB6ZV",
+          "name": ""
+        }
       },
       {
         "type": "Simple Key Pair",
-        "accounts": ["0xeb9e64b93097bc15f01f13eae97015c57ab64823"]
-      }
-    ],
-    "keyringsMetadata": [
-      {
-        "id": "01JKAF3DSGM3AB87EM9N0K41AJ",
-        "name": ""
-      },
-      {
-        "id": "01JKAF3KP7VPAG0YXEDTDRB6ZV",
-        "name": ""
-      },
-      {
-        "id": "01JKAF3PJ247KAM6C03G5Q0NP8",
-        "name": ""
+        "accounts": ["0xeb9e64b93097bc15f01f13eae97015c57ab64823"],
+        "metadata": {
+          "id": "01JKAF3PJ247KAM6C03G5Q0NP8",
+          "name": ""
+        }
       }
     ],
     "identities": {
@@ -308,15 +307,25 @@
     "multichainNetworkConfigurationsByChainId": {
       "bip122:000000000019d6689c085ae165831e93": {
         "chainId": "bip122:000000000019d6689c085ae165831e93",
-        "name": "Bitcoin Mainnet",
+        "name": "Bitcoin",
         "nativeCurrency": "bip122:000000000019d6689c085ae165831e93/slip44:0",
         "isEvm": false
       },
       "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
         "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
-        "name": "Solana Mainnet",
+        "name": "Solana",
         "nativeCurrency": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
         "isEvm": false
+      }
+    },
+    "networksWithTransactionActivity": {
+      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+        "namespace": "eip155",
+        "activeChain": ["0x5"]
+      },
+      "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
+        "namespace": "solana",
+        "activeChain": []
       }
     },
     "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
@@ -384,6 +393,27 @@
         "decimals": "18"
       }
     ],
+    "allTokens": {
+      "0x5": {
+        "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": [
+          {
+            "address": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
+            "symbol": "TEST",
+            "decimals": "0"
+          },
+          {
+            "address": "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5",
+            "decimals": "8",
+            "symbol": "TEST2"
+          },
+          {
+            "address": "0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4",
+            "symbol": "META",
+            "decimals": "18"
+          }
+        ]
+      }
+    },
     "marketData": {
       "0x1": {
         "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d": {
@@ -487,6 +517,57 @@
         "occurrences": 12
       }
     },
+    "tokensChainsCache": {
+      "0x5": {
+        "data": {
+          "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": {
+            "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+            "symbol": "WBTC",
+            "decimals": 8,
+            "name": "Wrapped Bitcoin",
+            "iconUrl": "https://s3.amazonaws.com/airswap-token-images/WBTC.png",
+            "aggregators": [
+              "airswapLight",
+              "bancor",
+              "cmc",
+              "coinGecko",
+              "kleros",
+              "oneInch",
+              "paraswap",
+              "pmm",
+              "totle",
+              "zapper",
+              "zerion",
+              "zeroEx"
+            ],
+            "occurrences": 12
+          },
+          "0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e": {
+            "address": "0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e",
+            "symbol": "YFI",
+            "decimals": 18,
+            "name": "yearn.finance",
+            "iconUrl": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e/logo.png",
+            "aggregators": [
+              "airswapLight",
+              "bancor",
+              "cmc",
+              "coinGecko",
+              "kleros",
+              "oneInch",
+              "paraswap",
+              "pmm",
+              "totle",
+              "zapper",
+              "zerion",
+              "zeroEx"
+            ],
+            "occurrences": 12
+          }
+        }
+      }
+    },
+
     "transactions": [
       {
         "id": 8393540981007587,

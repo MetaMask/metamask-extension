@@ -11,8 +11,8 @@ import {
 export default function createMetamaskMiddleware({
   version,
   getAccounts,
+  getCallsStatus,
   getCapabilities,
-  getTransactionReceiptsByBatchId,
   processTransaction,
   processTypedMessage,
   processTypedMessageV3,
@@ -31,8 +31,8 @@ export default function createMetamaskMiddleware({
     }),
     createWalletMiddleware({
       getAccounts,
+      getCallsStatus,
       getCapabilities,
-      getTransactionReceiptsByBatchId,
       processTransaction,
       processTypedMessage,
       processTypedMessageV3,

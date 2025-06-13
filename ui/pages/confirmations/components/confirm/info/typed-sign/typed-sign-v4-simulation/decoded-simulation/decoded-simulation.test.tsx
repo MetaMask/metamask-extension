@@ -7,7 +7,10 @@ import {
 
 import { getMockTypedSignConfirmStateForRequest } from '../../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../../test/lib/confirmations/render-helpers';
-import { permitSignatureMsg } from '../../../../../../../../../test/data/confirmations/typed_sign';
+import {
+  permitSignatureMsg,
+  signatureMsgPermitRevokeDAI,
+} from '../../../../../../../../../test/data/confirmations/typed_sign';
 import PermitSimulation, {
   getStateChangeType,
   getStateChangeToolip,
@@ -98,6 +101,26 @@ const nftBidding: DecodingDataStateChanges = [
   },
 ];
 
+const stateChangesApproveDAI: DecodingDataStateChanges = [
+  {
+    assetType: 'ERC20',
+    changeType: DecodingDataChangeType.Approve,
+    address: '0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad',
+    amount: '1461501637330902918203684832716283019655932542975',
+    contractAddress: '0x6b175474e89094c44da98b954eedeac495271d0f',
+  },
+];
+
+const stateChangesRevokeDAI: DecodingDataStateChanges = [
+  {
+    assetType: 'ERC20',
+    changeType: DecodingDataChangeType.Revoke,
+    address: '0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad',
+    amount: '0',
+    contractAddress: '0x6b175474e89094c44da98b954eedeac495271d0f',
+  },
+];
+
 describe('DecodedSimulation', () => {
   it('renders component correctly', async () => {
     const state = getMockTypedSignConfirmStateForRequest({
@@ -128,7 +151,7 @@ describe('DecodedSimulation', () => {
     expect(await findByText('12,345')).toBeInTheDocument();
   });
 
-  it('renders component correctly for a very large amount', async () => {
+  it('renders "Unlimited" UI for very large values', async () => {
     const state = getMockTypedSignConfirmStateForRequest({
       ...permitSignatureMsg,
       decodingLoading: false,
@@ -144,6 +167,44 @@ describe('DecodedSimulation', () => {
     expect(await findByText('Estimated changes')).toBeInTheDocument();
     expect(await findByText('Spending cap')).toBeInTheDocument();
     expect(await findByText('Unlimited')).toBeInTheDocument();
+  });
+
+  it('renders "Unlimited" for backwards compatibility approve DAI', () => {
+    const state = getMockTypedSignConfirmStateForRequest({
+      ...permitSignatureMsg,
+      decodingLoading: false,
+      decodingData: {
+        stateChanges: stateChangesApproveDAI,
+      },
+    });
+    const mockStore = configureMockStore([])(state);
+
+    const { queryByText } = renderWithConfirmContextProvider(
+      <PermitSimulation />,
+      mockStore,
+    );
+
+    expect(queryByText('Spending cap')).toBeTruthy();
+    expect(queryByText('Unlimited')).toBeTruthy();
+  });
+
+  it('renders backwards compatibility revoke DAI', () => {
+    const state = getMockTypedSignConfirmStateForRequest({
+      ...signatureMsgPermitRevokeDAI,
+      decodingLoading: false,
+      decodingData: {
+        stateChanges: stateChangesRevokeDAI,
+      },
+    });
+    const mockStore = configureMockStore([])(state);
+
+    const { queryByText } = renderWithConfirmContextProvider(
+      <PermitSimulation />,
+      mockStore,
+    );
+
+    expect(queryByText('Revoke')).toBeTruthy();
+    expect(queryByText('Unlimited')).toBeNull();
   });
 
   it('render correctly for ERC712 token', async () => {

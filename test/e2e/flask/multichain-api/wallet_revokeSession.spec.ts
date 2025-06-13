@@ -13,18 +13,19 @@ import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   addAccountInWalletAndAuthorize,
+  sendMultichainApiRequest,
   type FixtureCallbackArgs,
 } from './testHelpers';
 
 describe('Initializing a session w/ several scopes and accounts, then calling `wallet_revokeSession`', function () {
   const GANACHE_SCOPES = ['eip155:1337', 'eip155:1338', 'eip155:1000'];
-  const ACCOUNTS = [ACCOUNT_1, ACCOUNT_2];
+  const CAIP_ACCOUNT_IDS = [`eip155:0:${ACCOUNT_1}`, `eip155:0:${ACCOUNT_2}`];
   it('Should return empty object from `wallet_getSession` call', async function () {
     await withFixtures(
       {
         title: this.test?.fullTitle(),
         fixtures: new FixtureBuilder()
-          .withNetworkControllerTripleGanache()
+          .withNetworkControllerTripleNode()
           .build(),
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
       },
@@ -34,7 +35,10 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();
         await testDapp.connectExternallyConnectable(extensionId);
-        await testDapp.initCreateSessionScopes(GANACHE_SCOPES, ACCOUNTS);
+        await testDapp.initCreateSessionScopes(
+          GANACHE_SCOPES,
+          CAIP_ACCOUNT_IDS,
+        );
         await addAccountInWalletAndAuthorize(driver);
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.delay(largeDelayMs);
@@ -49,10 +53,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
           'Should have non-empty session scopes value before calling `wallet_revokeSession`',
         );
 
-        await driver.clickElement({
-          text: 'wallet_revokeSession',
-          tag: 'span',
-        });
+        await testDapp.revokeSession();
 
         const parsedResult = await testDapp.getSession();
         const resultSessionScopes = parsedResult.sessionScopes;
@@ -70,7 +71,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
       {
         title: this.test?.fullTitle(),
         fixtures: new FixtureBuilder()
-          .withNetworkControllerTripleGanache()
+          .withNetworkControllerTripleNode()
           .build(),
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
       },
@@ -87,22 +88,21 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         await testDapp.openTestDappPage();
         await testDapp.connectExternallyConnectable(extensionId);
 
-        await testDapp.initCreateSessionScopes(GANACHE_SCOPES, ACCOUNTS);
+        await testDapp.initCreateSessionScopes(
+          GANACHE_SCOPES,
+          CAIP_ACCOUNT_IDS,
+        );
         await addAccountInWalletAndAuthorize(driver);
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.delay(largeDelayMs);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
 
-        await driver.clickElement({
-          text: 'wallet_revokeSession',
-          tag: 'span',
-        });
+        await testDapp.revokeSession();
+        await driver.delay(largeDelayMs);
 
         for (const scope of GANACHE_SCOPES) {
-          const id = 1999133338649204;
-          const data = JSON.stringify({
-            id,
-            jsonrpc: '2.0',
+          const request = {
+            jsonrpc: '2.0' as const,
             method: 'wallet_invokeMethod',
             params: {
               scope,
@@ -111,46 +111,25 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
                 params: [ACCOUNT_1, 'latest'],
               },
             },
-          });
-
-          const script = `
-            const port = chrome.runtime.connect('${extensionId}');
-            const data = ${data};
-            const result = new Promise((resolve) => {
-              port.onMessage.addListener((msg) => {
-                if (msg.type !== 'caip-x') {
-                  return;
-                }
-                if (msg.data?.id !== ${id}) {
-                  return;
-                }
-
-                if (msg.data.id || msg.data.error) {
-                  resolve(msg)
-                }
-              })
-            })
-            port.postMessage({ type: 'caip-x', data });
-            return result;`;
+          };
 
           /**
            * We call `executeScript` to attempt JSON rpc call directly through the injected provider object since when session is revoked,
-           * webapp does not provide UI to make call.
+           * webapp does not provide UI to make `wallet_invokeMethod` calls when no session is active.
            */
-          const actualError = await driver
-            .executeScript(script)
-            .then((res) => res.data?.error);
+          const result = await sendMultichainApiRequest({
+            driver,
+            extensionId,
+            request,
+          });
 
           /**
            * We make sure it's the expected error by comparing expected error code and message (we ignore `stack` property)
            */
           assert.deepEqual(
+            pick(result.error, ['code', 'message']),
             expectedError,
-            pick(
-              actualError,
-              ['code', 'message'],
-              `calling wallet_invokeMethod should throw an error for scope ${scope}`,
-            ),
+            `calling wallet_invokeMethod should throw an error for scope ${scope}`,
           );
         }
       },

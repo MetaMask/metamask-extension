@@ -105,7 +105,7 @@ export const mapToTemplate = (params: MapToTemplateParams): UIComponent => {
   const elementKey = key ?? generateKey(params.map, params.element);
   const mapped = params.componentMap[
     type as Exclude<JSXElement['type'], 'Option' | 'Radio' | 'SelectorOption'>
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ](params as any);
   return { ...mapped, key: elementKey } as UIComponent;
@@ -130,11 +130,14 @@ export const mapTextToTemplate = (
  */
 export const FIELD_ELEMENT_TYPES = [
   'FileInput',
+  'AddressInput',
   'Input',
   'Dropdown',
   'RadioGroup',
   'Checkbox',
   'Selector',
+  'AssetSelector',
+  'AccountSelector',
 ];
 
 /**

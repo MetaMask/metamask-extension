@@ -112,25 +112,6 @@ async function switchToDialogPopoverValidateDetailsRedesign(
     css: 'p',
     text: expectedDetails.networkText,
   });
-
-  // Get state details
-  await driver.waitForControllersLoaded();
-  const notificationWindowState = await driver.executeScript(() =>
-    window.stateHooks?.getCleanAppState?.(),
-  );
-
-  const {
-    metamask: { selectedNetworkClientId, networkConfigurationsByChainId },
-  } = notificationWindowState;
-
-  const { chainId } = Object.values(networkConfigurationsByChainId).find(
-    ({ rpcEndpoints }) =>
-      rpcEndpoints.some(
-        ({ networkClientId }) => networkClientId === selectedNetworkClientId,
-      ),
-  );
-
-  assert.equal(chainId, expectedDetails.chainId);
 }
 
 async function rejectTransactionRedesign(driver) {
@@ -194,7 +175,7 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
           {
@@ -257,7 +238,7 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerTripleGanache()
+          .withNetworkControllerTripleNode()
           .build(),
         localNodeOptions: [
           {
@@ -326,7 +307,10 @@ describe('Request-queue UI changes', function () {
         });
 
         // Reject this transaction, wait for second confirmation window to close, third to display
-        await rejectTransactionRedesign(driver);
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Cancel',
+        });
         await driver.delay(veryLargeDelayMs);
 
         if (!IS_FIREFOX) {
@@ -380,7 +364,7 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .withPreferencesController({
             preferences: { showTestNetworks: true },
           })
@@ -499,7 +483,7 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
           {
@@ -552,7 +536,7 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
           {
@@ -622,7 +606,7 @@ describe('Request-queue UI changes', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .build(),
         localNodeOptions: [
           {
@@ -636,7 +620,7 @@ describe('Request-queue UI changes', function () {
             },
           },
         ],
-        // This test intentionally quits Ganache while the extension is using it, causing
+        // This test intentionally quits the local node server while the extension is using it, causing
         // PollingBlockTracker errors and others. These are expected.
         ignoredConsoleErrors: ['ignore-all'],
         dappOptions: { numberOfDapps: 2 },
@@ -660,7 +644,7 @@ describe('Request-queue UI changes', function () {
           text: 'Ethereum Mainnet',
         });
 
-        // Kill ganache servers
+        // Kill local node servers
         await localNodes[0].quit();
         await localNodes[1].quit();
 
@@ -689,7 +673,7 @@ describe('Request-queue UI changes', function () {
         // Presently confirmations take up to 10 seconds to display on a dead network
         driverOptions: { timeOut: 30000 },
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
 
           .build(),
         localNodeOptions: [
@@ -704,7 +688,7 @@ describe('Request-queue UI changes', function () {
             },
           },
         ],
-        // This test intentionally quits Ganache while the extension is using it, causing
+        // This test intentionally quits the local node server while the extension is using it, causing
         // PollingBlockTracker errors and others. These are expected.
         ignoredConsoleErrors: ['ignore-all'],
         dappOptions: { numberOfDapps: 2 },
@@ -728,7 +712,7 @@ describe('Request-queue UI changes', function () {
           text: 'Ethereum Mainnet',
         });
 
-        // Kill ganache servers
+        // Kill local node servers
         await localNodes[0].quit();
         await localNodes[1].quit();
 

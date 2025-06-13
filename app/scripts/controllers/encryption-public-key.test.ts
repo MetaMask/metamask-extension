@@ -94,19 +94,23 @@ describe('EncryptionPublicKeyController', () => {
     );
 
     encryptionPublicKeyController = new EncryptionPublicKeyController({
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       messenger: messengerMock as any,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getEncryptionPublicKey: getEncryptionPublicKeyMock as any,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getAccountKeyringType: getAccountKeyringTypeMock as any,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getState: getStateMock as any,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       metricsEvent: metricsEventMock as any,
       managerMessenger: managerMessengerMock,
@@ -129,7 +133,8 @@ describe('EncryptionPublicKeyController', () => {
       encryptionPublicKeyController.update(() => ({
         unapprovedEncryptionPublicKeyMsgs: {
           [messageIdMock]: messageMock,
-          // TODO: Replace `any` with type
+
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
         unapprovedEncryptionPublicKeyMsgCount: 1,
@@ -151,14 +156,14 @@ describe('EncryptionPublicKeyController', () => {
         [messageIdMock2]: messageMock,
       };
       encryptionPublicKeyManagerMock.getUnapprovedMessages.mockReturnValueOnce(
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         messages as any,
       );
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       encryptionPublicKeyController.update(() => ({
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         unapprovedEncryptionPublicKeyMsgs: messages as any,
       }));

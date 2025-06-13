@@ -16,7 +16,7 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
+          .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
         localNodeOptions: [

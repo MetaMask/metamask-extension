@@ -13,7 +13,7 @@ import TransactionConfirmation from '../../page-objects/pages/confirmations/rede
 import HomePage from '../../page-objects/pages/home/homepage';
 import { mockSmartTransactionRequests } from './mocks';
 
-export async function withFixturesForSmartTransactions(
+async function withFixturesForSmartTransactions(
   {
     title,
     testSpecificMock,
@@ -21,27 +21,33 @@ export async function withFixturesForSmartTransactions(
     title?: string;
     testSpecificMock: (mockServer: MockttpServer) => Promise<void>;
   },
-  test: (args: { driver: Driver }) => Promise<void>,
+  runTestWithFixtures: (args: { driver: Driver }) => Promise<void>,
 ) {
   await withFixtures(
     {
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
-        .withPreferencesControllerSmartTransactionsOptedIn()
         .withNetworkControllerOnMainnet()
+        .withEnabledNetworks({
+          '0x1': true,
+        })
         .build(),
       title,
+      localNodeOptions: {
+        hardfork: 'london',
+        chainId: '1',
+      },
       testSpecificMock,
       dapp: true,
     },
     async ({ driver }) => {
       await unlockWallet(driver);
-      await test({ driver });
+      await runTestWithFixtures({ driver });
     },
   );
 }
 
-export const waitForTransactionToComplete = async (
+const waitForTransactionToComplete = async (
   driver: Driver,
   options: { tokenName: string },
 ) => {
@@ -78,6 +84,7 @@ describe('Smart Transactions', function () {
         await buildQuote(driver, {
           amount: 2,
           swapTo: 'DAI',
+          mainnet: true,
         });
 
         await reviewQuote(driver, {

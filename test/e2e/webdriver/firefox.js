@@ -75,7 +75,7 @@ class FirefoxDriver {
       console.warn(
         '*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons',
       );
-      options.headless();
+      options.addArguments('-headless');
     }
     const builder = new Builder()
       .forBrowser('firefox')

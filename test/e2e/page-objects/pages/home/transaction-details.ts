@@ -1,10 +1,11 @@
+import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
 class TransactionDetailsPage {
   private readonly driver: Driver;
 
-  private readonly solanaExplorerUrl = 'https://explorer.solana.com';
+  private readonly solanaExplorerUrl = 'https://solscan.io';
 
   private readonly transactionFromToLink = (accountAddress: string) => {
     return {
@@ -37,22 +38,24 @@ class TransactionDetailsPage {
   }
 
   async check_transactionAmount(amount: string): Promise<void> {
-    await this.driver.waitForSelector({
-      text: amount,
-      tag: 'p',
-    });
+    const transactionAmount = await this.driver.findElement(
+      By.css('[data-testid="transaction-list-item-primary-currency"]'),
+    );
+    const transactionAmountText = await transactionAmount.getText();
+    assert.equal(transactionAmountText, amount);
   }
 
   async check_transactionNetworkFee(networkFee: string): Promise<void> {
-    await this.driver.waitForSelector({
-      text: networkFee,
-      tag: 'p',
-    });
+    const transactionAmount = await this.driver.findElement(
+      By.css('[data-testid="transaction-base-fee"]'),
+    );
+    const transactionAmountText = await transactionAmount.getText();
+    assert.equal(transactionAmountText, networkFee);
   }
 
   async check_transactionFromToLink(fromToAddress: string): Promise<void> {
     await this.driver.waitForSelector(
-      By.css(`a[href='${this.solanaExplorerUrl}/address/${fromToAddress}']`),
+      By.css(`a[href='${this.solanaExplorerUrl}/account/${fromToAddress}']`),
     );
   }
 

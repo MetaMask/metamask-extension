@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -33,6 +34,7 @@ import {
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 
 const METRICS_LOCATION = 'Account Options';
 
@@ -48,6 +50,7 @@ export const AccountListItemMenu = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const dispatch = useDispatch();
 
   const chainId = useSelector(getCurrentChainId);
@@ -217,6 +220,8 @@ export const AccountListItemMenu = ({
                     account_hardware_type: deviceName,
                     chain_id: chainId,
                     account_type: accountType,
+                    hd_entropy_index: hdEntropyIndex,
+                    caip_chain_id: formatChainIdToCaip(chainId),
                   },
                 });
                 onClose();

@@ -31,9 +31,10 @@ describe('Token List Sorting', function () {
         const assetListPage = new AssetListPage(driver);
 
         await homePage.check_pageIsLoaded();
-        await assetListPage.importCustomToken(
+        await assetListPage.importCustomTokenByChain(
           customTokenAddress,
           customTokenSymbol,
+          CHAIN_IDS.MAINNET,
         );
 
         await assetListPage.check_tokenExistsInList('Ethereum');

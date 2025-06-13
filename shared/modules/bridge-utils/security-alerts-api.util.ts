@@ -46,7 +46,11 @@ function getSecurityApiScanTokenRequestBody(
  */
 function getFirstTokenAlert(features: TokenFeature[]): TokenFeature | null {
   return (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     features.find((feature) => feature.type === TokenFeatureType.MALICIOUS) ||
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     features.find((feature) => feature.type === TokenFeatureType.WARNING) ||
     null
   );
@@ -142,6 +146,7 @@ export const CHAIN_ID_TO_SECURITY_API_NAME: Record<
   [MultichainNetworks.SOLANA]: 'solana',
   [MultichainNetworks.BITCOIN]: 'bitcoin',
   [MultichainNetworks.BITCOIN_TESTNET]: null, // not supported
+  [MultichainNetworks.BITCOIN_SIGNET]: null, // not supported
   [MultichainNetworks.SOLANA_DEVNET]: null, // not supported
   [MultichainNetworks.SOLANA_TESTNET]: null, // not supported
 };

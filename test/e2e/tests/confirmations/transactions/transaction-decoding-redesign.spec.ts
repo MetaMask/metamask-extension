@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import {
   createDappTransaction,
   DAPP_URL,
@@ -123,6 +124,9 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            [CHAIN_IDS.MAINNET]: true,
+          })
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         testSpecificMock: mockInfura,
@@ -177,7 +181,7 @@ async function mocked4BytesResponse(mockServer: MockttpServer) {
     }));
 }
 
-export const SOURCIFY_RESPONSE = {
+const SOURCIFY_RESPONSE = {
   files: [
     {
       name: 'metadata.json',
@@ -190,7 +194,9 @@ export const SOURCIFY_RESPONSE = {
 
 async function mockedSourcifyResponse(mockServer: MockttpServer) {
   return await mockServer
-    .forGet('https://sourcify.dev/server/files/any/1337/0x')
+    .forGet(
+      'https://sourcify.dev/server/files/any/1337/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947',
+    )
     .always()
     .thenCallback(() => ({
       statusCode: 200,

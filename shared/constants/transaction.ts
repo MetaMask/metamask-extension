@@ -18,18 +18,6 @@ export const SIGNING_METHODS = Object.freeze([
   'personal_sign',
 ]);
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-/**
- * Status for finalized transactions.
- */
-export const FINALIZED_TRANSACTION_STATUSES = [
-  TransactionStatus.rejected,
-  TransactionStatus.failed,
-  TransactionStatus.dropped,
-  TransactionStatus.confirmed,
-];
-///: END:ONLY_INCLUDE_IF
-
 /**
  * Transaction Group Status is a MetaMask construct to track the status of groups
  * of transactions.
@@ -118,6 +106,10 @@ export enum TransactionGroupCategory {
    * where the final token is sent to another chain.
    */
   bridge = 'bridge',
+  /**
+   * Transaction group representing a redeposit (a send to ourselves), mainly used for consolidation.
+   */
+  redeposit = 'redeposit',
 }
 
 /**
@@ -206,3 +198,11 @@ export enum TokenStandard {
  */
 export const TX_SENTINEL_URL =
   'https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io';
+
+// To be moved to @metamask/rpc-errors in future.
+export enum EIP5792ErrorCode {
+  UnsupportedNonOptionalCapability = 5700,
+  UnsupportedChainId = 5710,
+  UnknownBundleId = 5730,
+  RejectedUpgrade = 5750,
+}

@@ -1,5 +1,6 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { Interface } from '@ethersproject/abi';
 import {
   CHAIN_ID,
   CONTRACT_INTERACTION_SENDER_ADDRESS,
@@ -8,6 +9,15 @@ import {
 
 export const INCREASE_ALLOWANCE_TRANSACTION_DATA =
   '0x395093510000000000000000000000002e0d7e8c45221fca00d74a3609a0f7097035d09b0000000000000000000000000000000000000000000000000000000000000123';
+
+export function buildSetApproveForAllTransactionData(
+  address: string,
+  approved: boolean,
+): Hex {
+  return new Interface([
+    'function setApprovalForAll(address operator, bool approved)',
+  ]).encodeFunctionData('setApprovalForAll', [address, approved]) as Hex;
+}
 
 export const genUnapprovedSetApprovalForAllConfirmation = ({
   address = CONTRACT_INTERACTION_SENDER_ADDRESS,
