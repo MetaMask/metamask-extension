@@ -94,12 +94,20 @@ export function useAsyncCallback<T>(
   // Track component mount state
   const isMounted = useRef(true);
   const [isInit, setIsInit] = useState(true);
+
+  // Use refs to internally maintain stable references for `asyncFn`, `deps`,
+  // which will otherwise be updated on every re-render even if no reactive values have changed.
   const asyncFnRef = useRef<typeof asyncFn | null>(asyncFn);
   const prevDepsRef = useRef<DependencyList>([]);
 
   const isDepsChanged =
     isInit || isDependencyListChanged(deps, prevDepsRef.current);
 
+  // Use ref instead of `useCallback`, which means the function reference
+  // does not needs to be re-created on every deps change.
+  // Its only external reactive variable is `asyncFn`,
+  // which is now being supplied internally via useRef,
+  // and will be up-to-date when `executeRef.current` is called (on deps change).
   const executeRef = useRef(async () => {
     if (!isMounted.current || !asyncFnRef.current) {
       return;
@@ -134,9 +142,16 @@ export function useAsyncCallback<T>(
       prevDepsRef.current = deps;
       asyncFnRef.current = asyncFn;
     }
+    // `asyncFn`, `deps` omitted because their references update on every re-render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDepsChanged]);
+
   return useMemo(
     () => [executeRef.current, result, isDepsChanged],
+    // Exclude `result` from dependency array.
+    // This ensures that the memoized output array is used
+    // if the `result` object reference has changed, but its contents have not.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [result.status, result.value, result.error, isDepsChanged],
   );
 }
