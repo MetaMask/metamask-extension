@@ -2,11 +2,13 @@ import { strict as assert } from 'assert';
 import { JsonRpcRequest } from '@metamask/utils';
 import { MockedEndpoint } from 'mockttp';
 import { expect } from '@playwright/test';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
-import { defaultGanacheOptions, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { Mockttp } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { ACCOUNTS_PROD_API_BASE_URL } from '../../../../shared/constants/accounts';
 
 const infuraMainnetUrl =
   'https://mainnet.infura.io/v3/00000000000000000000000000000000';
@@ -232,6 +234,20 @@ async function mockInfura(mockServer: Mockttp): Promise<MockedEndpoint[]> {
           result: '0x15af1d78b58c40000',
         },
       })),
+    await mockServer
+      .forGet(
+        `${ACCOUNTS_PROD_API_BASE_URL}/v2/accounts/${DEFAULT_FIXTURE_ACCOUNT_LOWERCASE}/balances`,
+      )
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            count: 0,
+            balances: [],
+            unprocessedNetworks: [],
+          },
+        };
+      }),
   ];
 }
 const DELAY_UNTIL_NEXT_POLL = 20000;
@@ -265,8 +281,13 @@ describe('Account Tracker API polling', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .withEnabledNetworks({
+            '0x5': true,
+            '0x38': true,
+            '0x1': true,
+            '0xe708': true,
+          })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
@@ -316,9 +337,7 @@ describe('Account Tracker API polling', function () {
       },
     );
   });
-});
 
-describe('Token Detection', function () {
   async function mockAccountApiForPortfolioView(mockServer: Mockttp) {
     return [
       await mockServer
@@ -350,7 +369,7 @@ describe('Token Detection', function () {
         })),
     ];
   }
-  it('should make calls to account api as expected', async function () {
+  it('should make token detection calls to account api as expected', async function () {
     if (process.env.PORTFOLIO_VIEW) {
       await withFixtures(
         {
@@ -358,7 +377,6 @@ describe('Token Detection', function () {
             .withNetworkControllerOnMainnet()
             .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
             .build(),
-          ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
           testSpecificMock: mockAccountApiForPortfolioView,
         },

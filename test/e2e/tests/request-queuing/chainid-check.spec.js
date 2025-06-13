@@ -7,33 +7,32 @@ const {
   DAPP_URL,
   regularDelayMs,
   WINDOW_TITLES,
-  defaultGanacheOptions,
-  switchToNotificationWindow,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
 describe('Request Queueing chainId proxy sync', function () {
-  it('should preserve per dapp network selections after connecting and switching without refresh calls @no-mmi', async function () {
+  it('should preserve per dapp network selections after connecting and switching without refresh calls', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withNetworkControllerDoubleGanache()
-
+          .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          concurrent: [
-            {
+        localNodeOptions: [
+          {
+            type: 'anvil',
+          },
+          {
+            type: 'anvil',
+            options: {
               port,
               chainId,
-              ganacheOptions2: defaultGanacheOptions,
             },
-          ],
-        },
+          },
+        ],
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -81,14 +80,11 @@ describe('Request Queueing chainId proxy sync', function () {
         assert.equal(chainIdBeforeConnectAfterManualSwitch, '0x1');
 
         // Connect to dapp
-        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
         await driver.clickElement('#connectButton');
 
-        await driver.delay(regularDelayMs);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await switchToNotificationWindow(driver);
-
-        await driver.clickElement({
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Connect',
           tag: 'button',
         });
@@ -112,13 +108,11 @@ describe('Request Queueing chainId proxy sync', function () {
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
 
-        await switchToNotificationWindow(driver);
-        await driver.findClickableElements({
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.clickElementAndWaitForWindowToClose({
           text: 'Confirm',
           tag: 'button',
         });
-
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 

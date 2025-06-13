@@ -24,12 +24,13 @@ async function mockTokenPriceApi(
   ];
 }
 
-describe('MetaMask onboarding @no-mmi', function () {
+describe('MetaMask onboarding', function () {
   it("doesn't make any token price API requests before create new wallet onboarding is completed", async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({ '0x1': true })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTokenPriceApi,
@@ -85,6 +86,7 @@ describe('MetaMask onboarding @no-mmi', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({ '0x1': true })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTokenPriceApi,

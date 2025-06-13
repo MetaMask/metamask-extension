@@ -21,7 +21,7 @@ export type ConfirmInfoAlertRowProps = ConfirmInfoRowProps & {
   isShownWithAlertsOnly?: boolean;
 };
 
-function getAlertTextColors(
+export function getAlertTextColors(
   variant?: ConfirmInfoRowVariant | Severity,
 ): TextColor {
   switch (variant) {
@@ -32,8 +32,6 @@ function getAlertTextColors(
     case Severity.Warning:
       return TextColor.warningDefault;
     case ConfirmInfoRowVariant.Default:
-    case Severity.Info:
-      return TextColor.infoDefault;
     default:
       return TextColor.textDefault;
   }

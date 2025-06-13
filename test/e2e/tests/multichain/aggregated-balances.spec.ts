@@ -1,9 +1,8 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import { withFixtures, defaultGanacheOptions } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { Ganache } from '../../seeder/ganache';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -22,30 +21,23 @@ const NETWORK_NAME_SEPOLIA = 'Sepolia';
 const SEPOLIA_NATIVE_TOKEN = 'SepoliaETH';
 
 describe('Multichain Aggregated Balances', function (this: Suite) {
-  if (!process.env.PORTFOLIO_VIEW) {
-    return;
-  }
-
   it('shows correct aggregated balance when "Current Network" is selected', async function () {
+    if (!process.env.PORTFOLIO_VIEW) {
+      this.skip();
+    }
+
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withTokensControllerERC20()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract: SMART_CONTRACTS.HST,
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        ganacheServer,
-      }: {
-        driver: Driver;
-        ganacheServer?: Ganache;
-      }) => {
+      async ({ driver }: { driver: Driver }) => {
         // Step 1: Log in and set up page objects
-        await loginWithBalanceValidation(driver, ganacheServer);
+        await loginWithBalanceValidation(driver);
 
         const homepage = new HomePage(driver);
         const headerNavbar = new HeaderNavbar(driver);
@@ -76,7 +68,6 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         await accountListPage.closeAccountModal();
 
         // Step 5: Verify balance in send flow
-        await homepage.closePopover();
         await homepage.startSendFlow();
         await sendTokenPage.checkAccountValueAndSuffix(
           EXPECTED_MAINNET_BALANCE_USD,

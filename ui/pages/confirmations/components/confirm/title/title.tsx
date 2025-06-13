@@ -23,15 +23,30 @@ import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 import { useTokenTransactionData } from '../info/hooks/useTokenTransactionData';
 import { getIsRevokeSetApprovalForAll } from '../info/utils';
 import { getIsRevokeDAIPermit } from '../utils';
+import { useSignatureEventFragment } from '../../../hooks/useSignatureEventFragment';
+import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
+import { NestedTransactionTag } from '../../transactions/nested-transaction-tag';
+import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const { generalAlerts } = useAlerts(ownerId);
+  const { updateSignatureEventFragment } = useSignatureEventFragment();
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   if (generalAlerts.length === 0) {
     return null;
   }
 
+  const onClickSupportLink = () => {
+    const properties = {
+      properties: {
+        external_link_clicked: 'security_alert_support_link',
+      },
+    };
+    updateSignatureEventFragment(properties);
+    updateTransactionEventFragment(properties, ownerId);
+  };
   return (
     <Box marginTop={3}>
       {generalAlerts.map((alert) => (
@@ -45,6 +60,7 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
             details={alert.alertDetails}
             reportUrl={alert.reportUrl}
             children={alert.content}
+            onClickSupportLink={onClickSupportLink}
           />
         </Box>
       ))}
@@ -65,6 +81,7 @@ const getTitle = (
   pending?: boolean,
   primaryType?: keyof typeof TypedSignSignaturePrimaryTypes,
   tokenStandard?: string,
+  isUpgradeOnly?: boolean,
 ) => {
   if (pending) {
     return '';
@@ -73,6 +90,11 @@ const getTitle = (
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
       return t('confirmTitleTransaction');
+    case TransactionType.batch:
+      if (isUpgradeOnly) {
+        return t('confirmTitleAccountTypeSwitch');
+      }
+      return t('confirmTitleTransaction');
     case TransactionType.deployContract:
       return t('confirmTitleDeployContract');
     case TransactionType.personalSign:
@@ -80,17 +102,19 @@ const getTitle = (
         return t('confirmTitleSIWESignature');
       }
       return t('confirmTitleSignature');
+    case TransactionType.revokeDelegation:
+      return t('confirmTitleAccountTypeSwitch');
     case TransactionType.signTypedData:
       if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
-        if (tokenStandard === TokenStandard.ERC721) {
-          return t('setApprovalForAllRedesignedTitle');
-        }
-
         const isRevokeDAIPermit = getIsRevokeDAIPermit(
           confirmation as SignatureRequestType,
         );
-        if (isRevokeDAIPermit) {
+        if (isRevokeDAIPermit || customSpendingCap === '0') {
           return t('confirmTitleRevokeApproveTransaction');
+        }
+
+        if (tokenStandard === TokenStandard.ERC721) {
+          return t('setApprovalForAllRedesignedTitle');
         }
 
         return t('confirmTitlePermitTokens');
@@ -125,6 +149,7 @@ const getDescription = (
   pending?: boolean,
   primaryType?: keyof typeof TypedSignSignaturePrimaryTypes,
   tokenStandard?: string,
+  isUpgradeOnly?: boolean,
 ) => {
   if (pending) {
     return '';
@@ -133,6 +158,11 @@ const getDescription = (
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
       return '';
+    case TransactionType.batch:
+      if (isUpgradeOnly) {
+        return t('confirmTitleDescDelegationUpgrade');
+      }
+      return '';
     case TransactionType.deployContract:
       return t('confirmTitleDescDeployContract');
     case TransactionType.personalSign:
@@ -140,6 +170,8 @@ const getDescription = (
         return t('confirmTitleDescSIWESignature');
       }
       return t('confirmTitleDescSign');
+    case TransactionType.revokeDelegation:
+      return t('confirmTitleDescDelegationRevoke');
     case TransactionType.signTypedData:
       if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
         if (tokenStandard === TokenStandard.ERC721) {
@@ -149,7 +181,7 @@ const getDescription = (
         const isRevokeDAIPermit = getIsRevokeDAIPermit(
           confirmation as SignatureRequestType,
         );
-        if (isRevokeDAIPermit) {
+        if (isRevokeDAIPermit || customSpendingCap === '0') {
           return '';
         }
 
@@ -180,6 +212,7 @@ const getDescription = (
 const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
+  const { isUpgradeOnly } = useIsUpgradeTransaction();
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
@@ -208,6 +241,7 @@ const ConfirmTitle: React.FC = memo(() => {
         spendingCapPending,
         primaryType,
         tokenStandard,
+        isUpgradeOnly,
       ),
     [
       currentConfirmation,
@@ -216,7 +250,9 @@ const ConfirmTitle: React.FC = memo(() => {
       isRevokeSetApprovalForAll,
       spendingCapPending,
       primaryType,
+      t,
       tokenStandard,
+      isUpgradeOnly,
     ],
   );
 
@@ -231,6 +267,7 @@ const ConfirmTitle: React.FC = memo(() => {
         spendingCapPending,
         primaryType,
         tokenStandard,
+        isUpgradeOnly,
       ),
     [
       currentConfirmation,
@@ -239,7 +276,9 @@ const ConfirmTitle: React.FC = memo(() => {
       isRevokeSetApprovalForAll,
       spendingCapPending,
       primaryType,
+      t,
       tokenStandard,
+      isUpgradeOnly,
     ],
   );
 
@@ -254,12 +293,13 @@ const ConfirmTitle: React.FC = memo(() => {
         <Text
           variant={TextVariant.headingLg}
           paddingTop={4}
-          paddingBottom={4}
+          paddingBottom={2}
           textAlign={TextAlign.Center}
         >
           {title}
         </Text>
       )}
+      <NestedTransactionTag />
       {description !== '' && (
         <Text
           paddingBottom={4}

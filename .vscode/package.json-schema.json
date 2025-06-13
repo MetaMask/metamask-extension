@@ -18,6 +18,10 @@
               "type": "string",
               "description": "Deletes webpack's build cache. Useful to force a rebuild (webpack not detecting changes, node_modules have changed, etc)."
             },
+            "foundryup": {
+              "type": "string",
+              "description": "Installs foundry's Anvil. Run `yarn foundryup --help` for advanced usage."
+            },
             "postinstall": {
               "type": "string",
               "description": "Runs automatically after running `yarn` (`yarn install`) in order to prime the webpack dev build."

@@ -1,3 +1,4 @@
+const { setTimeout: asyncSetTimeout } = require('node:timers/promises');
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
 const {
@@ -10,7 +11,7 @@ const {
 } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
-const { debounce } = require('lodash');
+const lodash = require('lodash');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
 const { isManifestV3 } = require('../../../shared/modules/mv3.utils');
 const { WindowHandles } = require('../background-socket/window-handles');
@@ -22,8 +23,6 @@ const PAGES = {
   OFFSCREEN: 'offscreen',
   POPUP: 'popup',
 };
-
-const artifactDir = (title) => `./test-artifacts/${this.browser}/${title}`;
 
 /**
  * Temporary workaround to patch selenium's element handle API with methods
@@ -494,9 +493,28 @@ class Driver {
   /**
    * Quits the browser session, closing all windows and tabs.
    *
+   * This was previously implemented as just `await this.driver.quit()`, but on Windows,
+   * that was causing Google Chrome for Testing to not close, and sit open indefinitely
+   * taking CPU load. It is also possible that this was causing some cascading errors on CI.
+   *
    * @returns {Promise} promise resolving after quitting
    */
   async quit() {
+    if (this.browser === 'chrome') {
+      try {
+        const handles = await this.driver.getAllWindowHandles();
+
+        for (const handle of handles) {
+          await this.driver.switchTo().window(handle);
+          await this.driver.close();
+        }
+      } catch (e) {
+        console.info(
+          'Problem encountered closing Chrome windows/tabs, but continuing anyway',
+        );
+      }
+    }
+
     await this.driver.quit();
   }
 
@@ -547,10 +565,19 @@ class Driver {
    * Finds a clickable element on the page using the given locator.
    *
    * @param {string | object} rawLocator - Element locator
-   * @param {number} timeout - Timeout in milliseconds
+   * @param {object} guards
+   * @param {number} [guards.waitAtLeastGuard] - Minimum milliseconds to wait before passing
+   * @param {number} [guards.timeout]  - Timeout in milliseconds
    * @returns {Promise<WebElement>} A promise that resolves to the found clickable element.
    */
-  async findClickableElement(rawLocator, timeout = this.timeout) {
+  async findClickableElement(
+    rawLocator,
+    { waitAtLeastGuard = 0, timeout = this.timeout } = {},
+  ) {
+    assert(timeout > waitAtLeastGuard);
+    if (waitAtLeastGuard > 0) {
+      await this.delay(waitAtLeastGuard);
+    }
     const element = await this.findElement(rawLocator, timeout);
     await Promise.all([
       this.driver.wait(until.elementIsVisible(element), timeout),
@@ -669,13 +696,24 @@ class Driver {
     throw new Error('Element did not stop moving within the timeout period');
   }
 
-  /** @param {string} title - The title of the window or tab the screenshot is being taken in */
-  async takeScreenshot(title) {
-    const filepathBase = `${artifactDir(title)}/test-screenshot`;
-    await fs.mkdir(artifactDir(title), { recursive: true });
+  /**
+   * @param {string} testTitle - The title of the test
+   */
+  #getArtifactDir(testTitle) {
+    return `./test-artifacts/${this.browser}/${sanitizeTestTitle(testTitle)}`;
+  }
+
+  /**
+   * @param {string} testTitle - The title of the test
+   * @param {string} screenshotTitle - The title of the screenshot
+   * @returns {Promise<void>} Promise that resolves when the screenshot is taken
+   */
+  async takeScreenshot(testTitle, screenshotTitle) {
+    const artifactDir = this.#getArtifactDir(testTitle);
+    await fs.mkdir(artifactDir, { recursive: true });
 
     const screenshot = await this.driver.takeScreenshot();
-    await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
+    await fs.writeFile(`${artifactDir}/${screenshotTitle}.png`, screenshot, {
       encoding: 'base64',
     });
   }
@@ -704,15 +742,18 @@ class Driver {
    * @param rawLocator - Element locator
    * @param timeout - The maximum time in ms to wait for the element
    */
-  async clickElementSafe(rawLocator, timeout = 1000) {
+  async clickElementSafe(rawLocator, timeout = 2000) {
     try {
       const locator = this.buildLocator(rawLocator);
-
       const elements = await this.driver.wait(
         until.elementsLocated(locator),
         timeout,
       );
 
+      await Promise.all([
+        this.driver.wait(until.elementIsVisible(elements[0]), timeout),
+        this.driver.wait(until.elementIsEnabled(elements[0]), timeout),
+      ]);
       await elements[0].click();
     } catch (e) {
       console.log(`Element ${rawLocator} not found (${e})`);
@@ -771,6 +812,16 @@ class Driver {
   }
 
   /**
+   * Move the mouse to the given element to test hover behaviour.
+   *
+   * @param element - Previously located element
+   * @returns {Promise<void>} promise resolving after mouse move completed
+   */
+  async hoverElement(element) {
+    await this.driver.actions().move({ origin: element, x: 1, y: 1 }).perform();
+  }
+
+  /**
    * Scrolls the page until the given web element is in view.
    *
    * @param {string | object} element - Element locator
@@ -784,26 +835,60 @@ class Driver {
   }
 
   /**
+   * Finds the element, scrolls the page until the element is in view, and clicks it.
+   *
+   * @param {string | object} rawLocator - Element locator
+   * @returns {Promise<void>} Promise resolving after scrolling and clicking
+   */
+  async findScrollToAndClickElement(rawLocator) {
+    try {
+      const element = await this.findElement(rawLocator);
+      await this.scrollToElement(element);
+      await this.clickElement(rawLocator);
+    } catch (error) {
+      console.error(
+        `Error finding, scrolling to, or clicking element with selector: ${rawLocator}`,
+        error,
+      );
+      throw error;
+    }
+  }
+
+  /**
    * Waits for a condition to be met within a given timeout period.
    *
-   * @param {Function} condition - The condition to wait for. This function should return a boolean indicating whether the condition is met.
+   * @param {() => Promise<boolean>} condition - The condition to wait for. This function must return a boolean indicating whether the condition is met.
    * @param {object} options - Options for the wait.
    * @param {number} options.timeout - The maximum amount of time (in milliseconds) to wait for the condition to be met.
    * @param {number} options.interval - The interval (in milliseconds) between checks for the condition.
    * @returns {Promise<void>} A promise that resolves when the condition is met or the timeout is reached.
    * @throws {Error} Throws an error if the condition is not met within the timeout period.
    */
-  async waitUntil(condition, options) {
-    const { timeout, interval } = options;
-    const endTime = Date.now() + timeout;
+  async waitUntil(condition, { interval, timeout }) {
+    const startTime = Date.now();
+    const endTime = startTime + timeout;
 
-    while (Date.now() < endTime) {
-      if (await condition()) {
-        return true;
+    // Loop indefinitely until condition met or timeout
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const result = await condition();
+      if (result === true) {
+        return; // Condition met
       }
-      await new Promise((resolve) => setTimeout(resolve, interval));
+
+      const currentTime = Date.now();
+      if (currentTime >= endTime) {
+        throw new Error(`Condition not met within ${timeout}ms.`);
+      }
+
+      // Calculate remaining time to ensure we don't overshoot the timeout
+      const remainingTime = endTime - currentTime;
+      const waitTime = Math.min(interval, remainingTime);
+
+      // always yield to the event loop, even for an interval of `0`, to avoid a
+      // macro-task deadlock
+      await asyncSetTimeout(waitTime, null, { ref: false });
     }
-    throw new Error('Condition not met within timeout');
   }
 
   /**
@@ -1143,12 +1228,25 @@ class Driver {
    *
    * @param {object} options - Parameters for the function.
    * @param {string} options.url - URL to wait for.
-   * @param {int} options.timeout - optional timeout period, defaults to this.timeout.
+   * @param {number} options.timeout - optional timeout period, defaults to this.timeout.
    * @returns {Promise<void>} Promise that resolves once the URL matches.
    * @throws {Error} Throws an error if the URL does not match within the timeout period.
    */
   async waitForUrl({ url, timeout = this.timeout }) {
     return await this.driver.wait(until.urlIs(url), timeout);
+  }
+
+  /**
+   * Waits until the current URL includes the specified substring.
+   *
+   * @param {object} options - Parameters for the function.
+   * @param {string} options.url - Substring to wait for in the URL.
+   * @param {number} [options.timeout]  - optional timeout period, defaults to `this.timeout`.
+   * @returns {Promise<void>} Promise that resolves once the URL includes the substring.
+   * @throws {Error} Throws an error if the URL does not include the substring within the timeout period.
+   */
+  async waitForUrlContaining({ url, timeout = this.timeout }) {
+    await this.driver.wait(until.urlContains(url), timeout);
   }
 
   /**
@@ -1171,7 +1269,28 @@ class Driver {
     await this.driver.close();
   }
 
-  // Close Alert Popup
+  /**
+   * Get the text of the alert popup that is currently open in the browser
+   * session.
+   *
+   * @param text - The text of the alert popup.
+   * @param options - Options for the function.
+   * @param options.timeout - The maximum time to wait for the alert to be
+   * present.
+   * @returns {Promise<string>} The text of the alert popup.
+   */
+  async waitForAlert(text, { timeout = this.timeout } = {}) {
+    await this.driver.wait(until.alertIsPresent(), timeout);
+    const alert = await this.driver.switchTo().alert();
+    const alertText = await alert.getText();
+
+    if (text && alertText !== text) {
+      throw new Error(
+        `Expected alert text to be "${text}", but got "${alertText}".`,
+      );
+    }
+  }
+
   /**
    * Close the alert popup that is currently open in the browser session.
    *
@@ -1202,49 +1321,96 @@ class Driver {
     }
   }
 
+  /**
+   * Switches to a window by its title without using the background socket.
+   * To be used in specs that run against production builds.
+   *
+   * @param {string} title - The target window title to switch to
+   * @returns {Promise<void>}
+   * @throws {Error} Will throw an error if the target window is not found
+   */
+  async switchToWindowByTitleWithoutSocket(title) {
+    const windowHandles = await this.driver.getAllWindowHandles();
+    let targetWindowFound = false;
+
+    // Iterate through each window handle
+    for (const handle of windowHandles) {
+      await this.driver.switchTo().window(handle);
+      let currentTitle = await this.driver.getTitle();
+
+      // Wait 25 x 200ms = 5 seconds for the title to match the target title
+      for (let i = 0; i < 25; i++) {
+        if (currentTitle === title) {
+          targetWindowFound = true;
+          console.log(`Switched to ${title} window`);
+          break;
+        }
+        await this.driver.sleep(200);
+        currentTitle = await this.driver.getTitle();
+      }
+
+      // If the target window is found, break out of the outer loop
+      if (targetWindowFound) {
+        break;
+      }
+    }
+
+    // If target window is not found, throw an error
+    if (!targetWindowFound) {
+      throw new Error(`${title} window not found`);
+    }
+  }
+
   // Error handling
 
-  async verboseReportOnFailure(title, error) {
+  async verboseReportOnFailure(testTitle, error) {
     console.error(
-      `Failure on testcase: '${title}', for more information see the ${
-        process.env.CIRCLECI ? 'artifacts tab in CI' : 'test-artifacts folder'
+      `Failure on testcase: '${testTitle}', for more information see the ${
+        process.env.CI ? 'artifacts tab in CI' : 'test-artifacts folder'
       }\n`,
     );
     console.error(`${error}\n`);
 
-    const filepathBase = `${artifactDir(title)}/test-failure`;
-    await fs.mkdir(artifactDir(title), { recursive: true });
+    const filepathBase = `${this.#getArtifactDir(testTitle)}/test-failure`;
+    await fs.mkdir(this.#getArtifactDir(testTitle), { recursive: true });
+
+    const windowHandles = await this.driver.getAllWindowHandles();
     // On occasion there may be a bug in the offscreen document which does
     // not render visibly to the user and therefore no screenshot can be
     // taken. In this case we skip the screenshot and log the error.
     try {
       // If there's more than one tab open, we want to iterate through all of them and take a screenshot with a unique name
-      const windowHandles = await this.driver.getAllWindowHandles();
       for (const handle of windowHandles) {
         await this.driver.switchTo().window(handle);
         const windowTitle = await this.driver.getTitle();
         if (windowTitle !== 'MetaMask Offscreen Page') {
-          const screenshot = await this.driver.takeScreenshot();
-          await fs.writeFile(
-            `${filepathBase}-screenshot-${
-              windowHandles.indexOf(handle) + 1
-            }.png`,
-            screenshot,
-            {
-              encoding: 'base64',
-            },
-          );
+          const screenshotTitle = `test-failure-screenshot-${
+            windowHandles.indexOf(handle) + 1
+          }`;
+          await this.takeScreenshot(testTitle, screenshotTitle);
         }
       }
     } catch (e) {
       console.error('Failed to take screenshot', e);
     }
-    const htmlSource = await this.driver.getPageSource();
-    await fs.writeFile(`${filepathBase}-dom.html`, htmlSource);
+
+    try {
+      for (const handle of windowHandles) {
+        const windowNumber = windowHandles.indexOf(handle) + 1;
+        await this.driver.switchTo().window(handle);
+
+        const htmlSource = await this.driver.getPageSource();
+        await fs.writeFile(
+          `${filepathBase}-dom-${windowNumber}.html`,
+          htmlSource,
+        );
+      }
+    } catch (e) {
+      console.error('Failed to capture DOM snapshot', e);
+    }
 
     // We want to take a state snapshot of the app if possible, this is useful for debugging
     try {
-      const windowHandles = await this.driver.getAllWindowHandles();
       for (const handle of windowHandles) {
         await this.driver.switchTo().window(handle);
         const uiState = await this.driver.executeScript(
@@ -1306,7 +1472,7 @@ class Driver {
     const cdpConnection = await this.driver.createCDPConnection('page');
 
     // Flush the event processing stack 50ms after the last event is added
-    const debounceEventProcessingStack = debounce(
+    const debounceEventProcessingStack = lodash.debounce(
       this.#flushEventProcessingStack.bind(this),
       50,
     );
@@ -1430,6 +1596,20 @@ function collectMetrics() {
     ...results,
     ...window.stateHooks.getCustomTraces(),
   };
+}
+
+/**
+ * @param {string} testTitle - The title of the test
+ */
+function sanitizeTestTitle(testTitle) {
+  return testTitle
+    .toLowerCase()
+    .replace(/[<>:"/\\|?*\r\n]/gu, '') // Remove invalid characters
+    .trim()
+    .replace(/\s+/gu, '-') // Replace whitespace with dashes
+    .replace(/[^a-z0-9-]+/gu, '-') // Replace non-alphanumerics (excluding dash) with dash
+    .replace(/--+/gu, '-') // Collapse multiple dashes
+    .replace(/^-+|-+$/gu, ''); // Trim leading/trailing dashes
 }
 
 module.exports = { Driver, PAGES };

@@ -3,7 +3,6 @@ const FixtureBuilder = require('../../fixture-builder');
 
 const {
   WINDOW_TITLES,
-  defaultGanacheOptions,
   openDapp,
   unlockWallet,
   withFixtures,
@@ -161,7 +160,7 @@ async function mockInfuraWithFailedResponses(mockServer) {
  *
  * @see {@link https://wobbly-nutmeg-8a5.notion.site/MM-E2E-Testing-1e51b617f79240a49cd3271565c6e12d}
  */
-describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
+describe('Confirmation Security Alert - Blockaid', function () {
   /**
    * todo: fix test
    *
@@ -179,7 +178,6 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
             securityAlertsEnabled: true,
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfura,
         title: this.test.fullTitle(),
       },
@@ -242,7 +240,6 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
             securityAlertsEnabled: true,
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfuraWithMaliciousResponses,
         title: this.test.fullTitle(),
       },
@@ -301,7 +298,6 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
             securityAlertsEnabled: true,
           })
           .build(),
-        defaultGanacheOptions,
         testSpecificMock: mockInfuraWithFailedResponses,
         title: this.test.fullTitle(),
       },

@@ -17,9 +17,9 @@ export const useQuoteProperties = () => {
 
   return {
     can_submit,
-    best_quote_provider: formatProviderLabel(recommendedQuote),
+    best_quote_provider: formatProviderLabel(recommendedQuote?.quote),
     quotes_count: sortedQuotes.length,
-    quotes_list: sortedQuotes.map(formatProviderLabel),
+    quotes_list: sortedQuotes.map((quote) => formatProviderLabel(quote.quote)),
     initial_load_time_all_quotes,
   };
 };

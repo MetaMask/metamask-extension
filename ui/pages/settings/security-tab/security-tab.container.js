@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
-  setIncomingTransactionsPreferences,
   setIpfsGateway,
   setIsIpfsGatewayEnabled,
   setParticipateInMetaMetrics,
@@ -25,19 +24,17 @@ import {
 import {
   getIsSecurityAlertsEnabled,
   getMetaMetricsDataDeletionId,
-  getPetnamesEnabled,
+  getHDEntropyIndex,
 } from '../../../selectors/selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
+import { getMetaMaskHdKeyrings } from '../../../selectors';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
   const { metamask } = state;
 
-  const petnamesEnabled = getPetnamesEnabled(state);
-
   const {
-    incomingTransactionsPreferences,
     participateInMetaMetrics,
     dataCollectionForMarketing,
     usePhishDetect,
@@ -56,8 +53,9 @@ const mapStateToProps = (state) => {
 
   const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
+  const hasMultipleHdKeyrings = getMetaMaskHdKeyrings(state).length > 1;
+
   return {
-    incomingTransactionsPreferences,
     networkConfigurations,
     participateInMetaMetrics,
     dataCollectionForMarketing,
@@ -73,17 +71,16 @@ const mapStateToProps = (state) => {
     use4ByteResolution,
     useExternalNameSources,
     useExternalServices,
-    petnamesEnabled,
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
     useTransactionSimulations: metamask.useTransactionSimulations,
     metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
+    hdEntropyIndex: getHDEntropyIndex(state),
+    hasMultipleHdKeyrings,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setIncomingTransactionsPreferences: (chainId, value) =>
-      dispatch(setIncomingTransactionsPreferences(chainId, value)),
     setParticipateInMetaMetrics: (val) =>
       dispatch(setParticipateInMetaMetrics(val)),
     setDataCollectionForMarketing: (val) =>

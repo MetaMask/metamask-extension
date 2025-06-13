@@ -1,11 +1,17 @@
-import { useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import log from 'loglevel';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../../../ducks/metamask/metamask';
-import { performSignIn } from '../../../store/actions';
+import {
+  getMetaMaskKeyrings,
+  getParticipateInMetaMetrics,
+  getUseExternalServices,
+} from '../../../selectors';
+import { selectIsSignedIn } from '../../../selectors/identity/authentication';
+import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
+import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
 import { useSignIn } from './useSignIn';
 
 /**
@@ -13,36 +19,80 @@ import { useSignIn } from './useSignIn';
  *
  * @returns An object containing:
  * - `autoSignIn`: A function to automatically sign in the user if necessary.
- * - `shouldAutoSignIn`: A function to determine if the user should be automatically signed in.
+ * - `shouldAutoSignIn`: A boolean indicating whether the user should be automatically signed in.
  */
 export function useAutoSignIn(): {
   autoSignIn: () => Promise<void>;
-  shouldAutoSignIn: () => boolean;
+  shouldAutoSignIn: boolean;
 } {
-  const dispatch = useDispatch();
+  const [hasNewKeyrings, setHasNewKeyrings] = useState(false);
+  const { signIn } = useSignIn();
 
-  const isUnlocked: boolean | undefined = useSelector(getIsUnlocked);
-  const completedOnboarding: boolean | undefined = useSelector(
-    getCompletedOnboarding,
+  // Base prerequisites
+  const isUnlocked = Boolean(useSelector(getIsUnlocked));
+  const isBasicFunctionalityEnabled = Boolean(
+    useSelector(getUseExternalServices),
+  );
+  const completedOnboarding = Boolean(useSelector(getCompletedOnboarding));
+  const isSignedIn = useSelector(selectIsSignedIn);
+
+  const keyrings = useSelector(getMetaMaskKeyrings);
+  const previousKeyringsLength = useRef(keyrings.length);
+
+  useEffect(() => {
+    if (keyrings.length !== previousKeyringsLength.current) {
+      previousKeyringsLength.current = keyrings.length;
+      setHasNewKeyrings(true);
+    }
+  }, [keyrings.length]);
+
+  const areBasePrerequisitesMet = useMemo(
+    () =>
+      (!isSignedIn || hasNewKeyrings) &&
+      isUnlocked &&
+      isBasicFunctionalityEnabled &&
+      completedOnboarding,
+    [
+      isSignedIn,
+      isUnlocked,
+      isBasicFunctionalityEnabled,
+      completedOnboarding,
+      hasNewKeyrings,
+    ],
   );
 
-  const { shouldSignIn } = useSignIn();
+  // Auth dependent features
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
+  const isParticipateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
+  const isNotificationServicesEnabled = useSelector(
+    selectIsMetamaskNotificationsEnabled,
+  );
 
-  const shouldAutoSignIn = useCallback(() => {
-    return Boolean(shouldSignIn() && isUnlocked && completedOnboarding);
-  }, [shouldSignIn, isUnlocked, completedOnboarding]);
+  const isAtLeastOneAuthDependentFeatureEnabled = useMemo(
+    () =>
+      isBackupAndSyncEnabled ||
+      isParticipateInMetaMetrics ||
+      isNotificationServicesEnabled,
+    [
+      isBackupAndSyncEnabled,
+      isParticipateInMetaMetrics,
+      isNotificationServicesEnabled,
+    ],
+  );
+
+  const shouldAutoSignIn = useMemo(() => {
+    return areBasePrerequisitesMet && isAtLeastOneAuthDependentFeatureEnabled;
+  }, [areBasePrerequisitesMet, isAtLeastOneAuthDependentFeatureEnabled]);
 
   const autoSignIn = useCallback(async () => {
-    if (shouldAutoSignIn()) {
-      try {
-        await dispatch(performSignIn());
-      } catch (e) {
-        const errorMessage =
-          e instanceof Error ? e.message : JSON.stringify(e ?? '');
-        log.error(errorMessage);
+    if (shouldAutoSignIn) {
+      if (hasNewKeyrings) {
+        await signIn(true);
+        setHasNewKeyrings(false);
       }
+      await signIn();
     }
-  }, [dispatch, shouldAutoSignIn]);
+  }, [shouldAutoSignIn, signIn, hasNewKeyrings]);
 
   return {
     autoSignIn,

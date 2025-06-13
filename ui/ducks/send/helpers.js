@@ -103,7 +103,7 @@ export async function estimateGasLimitForSend({
       }
     }
 
-    paramsForGasEstimate.data = data;
+    paramsForGasEstimate.data = data || '0x';
 
     if (to) {
       paramsForGasEstimate.to = to;

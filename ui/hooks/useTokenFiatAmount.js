@@ -28,6 +28,7 @@ import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
  * @param {boolean} hideCurrencySymbol - Indicates whether the returned formatted amount should include the trailing currency symbol
  * @returns {string} The formatted token amount in the user's chosen fiat currency
  * @param {string} [chainId] - The chain id
+ * @param {boolean} formatted - Whether the return value should be formatted or not
  */
 export function useTokenFiatAmount(
   tokenAddress,
@@ -36,6 +37,7 @@ export function useTokenFiatAmount(
   overrides = {},
   hideCurrencySymbol,
   chainId = null,
+  formatted = true,
 ) {
   const allMarketData = useSelector(getMarketData);
 
@@ -91,7 +93,7 @@ export function useTokenFiatAmount(
         currentCurrency,
         tokenAmount,
         tokenSymbol,
-        true,
+        formatted,
         hideCurrencySymbol,
       ),
     [

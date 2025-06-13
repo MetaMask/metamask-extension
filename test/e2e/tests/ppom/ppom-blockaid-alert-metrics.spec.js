@@ -2,7 +2,6 @@ const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   WINDOW_TITLES,
-  defaultGanacheOptions,
   openDapp,
   unlockWallet,
   withFixtures,
@@ -10,6 +9,7 @@ const {
   switchToNotificationWindow,
 } = require('../../helpers');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
+const { MOCK_META_METRICS_ID } = require('./constants');
 
 const selectedAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
 const selectedAddressWithoutPrefix = '5cfe73b6021e818b776b421b1c4db2474086a7e1';
@@ -252,7 +252,7 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
   ];
 }
 
-describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
+describe('Confirmation Security Alert - Blockaid', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should capture metrics when security alerts is shown', async function () {
     await withFixtures(
@@ -265,11 +265,10 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
             securityAlertsEnabled: true,
           })
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockInfuraWithMaliciousResponses,
       },
@@ -320,7 +319,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
             ppom_debug_traceCall_count: 3,
             ppom_eth_call_count: 1,
           },
-          userId: 'fake-metrics-id',
+          userId: MOCK_META_METRICS_ID,
           type: 'track',
         };
 
@@ -354,7 +353,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
             ppom_eth_call_count: 1,
             ppom_debug_traceCall_count: 1,
           },
-          userId: 'fake-metrics-id',
+          userId: MOCK_META_METRICS_ID,
           type: 'track',
         };
 

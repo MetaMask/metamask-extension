@@ -1,14 +1,12 @@
-
 # Manual test scenario for the 'Network details check' toggle
 
 Below is a summary of the validations included:
 
-* Validate that the 'Network details check' toggle is present in the Security & Privacy settings and is ON by default.
-* Validate that the toggle can be turned on and off.
-* Validate that when the toggle is turned on, MetaMask checks the network details against the information provided by chainid.network when attempting to connect to a blockchain network.
+- Validate that the 'Network details check' toggle is present in the Security & Privacy settings and is ON by default.
+- Validate that the toggle can be turned on and off.
+- Validate that when the toggle is turned on, MetaMask checks the network details against the information provided by chainid.network when attempting to connect to a blockchain network.
 
 ```markdown
-
 # Security & Privacy Settings: Verify "Network details check" Toggle Functionality
 
 # Feature: Toggle "Network details check" in Security & Privacy Settings
@@ -49,5 +47,4 @@ And the "Network details check" toggle is set to OFF
 When I attempt to check network details from the Neworks tab
 And I change the currency symbol
 Then a message appears below indicating that verification is unavailable
-
 ```

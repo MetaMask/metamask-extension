@@ -1,12 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { zeroAddress } from 'ethereumjs-util';
 import { useHistory } from 'react-router-dom';
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { createProjectLogger, Hex } from '@metamask/utils';
-import type {
-  QuoteMetadata,
-  QuoteResponse,
-} from '../../../../shared/types/bridge';
+import { createProjectLogger } from '@metamask/utils';
+import { isSolanaChainId } from '@metamask/bridge-controller';
+import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import { captureException } from '@sentry/browser';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
@@ -14,18 +11,28 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { setDefaultHomeActiveTabName } from '../../../store/actions';
-import { startPollingForBridgeTxStatus } from '../../../ducks/bridge-status/actions';
-import { isHardwareWallet } from '../../../selectors';
-import { getQuoteRequest } from '../../../ducks/bridge/selectors';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { submitBridgeTx } from '../../../ducks/bridge-status/actions';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
-import useAddToken from './useAddToken';
-import useHandleApprovalTx from './useHandleApprovalTx';
-import useHandleBridgeTx from './useHandleBridgeTx';
+import {
+  getSmartTransactionsEnabled,
+  isHardwareWallet,
+} from '../../../../shared/modules/selectors';
+import useSnapConfirmation from './useSnapConfirmation';
+
+const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
+const APPROVAL_TX_ERROR = 'Approve transaction failed';
 
 const debugLog = createProjectLogger('bridge');
-const LINEA_DELAY_MS = 5000;
+
+export const isAllowanceResetError = (error: unknown): boolean => {
+  const errorMessage = (error as Error).message ?? '';
+  return errorMessage.includes(ALLOWANCE_RESET_ERROR);
+};
+
+export const isApprovalTxError = (error: unknown): boolean => {
+  const errorMessage = (error as Error).message ?? '';
+  return errorMessage.includes(APPROVAL_TX_ERROR);
+};
 
 const isHardwareWalletUserRejection = (error: unknown): boolean => {
   const errorMessage = (error as Error).message?.toLowerCase() ?? '';
@@ -50,13 +57,12 @@ const isHardwareWalletUserRejection = (error: unknown): boolean => {
 export default function useSubmitBridgeTransaction() {
   const history = useHistory();
   const dispatch = useDispatch();
-  const srcChainId = useSelector(getCurrentChainId);
-  const { addSourceToken, addDestToken } = useAddToken();
-  const { handleApprovalTx } = useHandleApprovalTx();
-  const { handleBridgeTx } = useHandleBridgeTx();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
-  const { slippage } = useSelector(getQuoteRequest);
 
+  // This redirects to the confirmation page if an unapproved snap confirmation exists
+  useSnapConfirmation();
+
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
   ) => {
@@ -64,55 +70,23 @@ export default function useSubmitBridgeTransaction() {
       history.push(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
     }
 
-    // Execute transaction(s)
-    let approvalTxMeta: TransactionMeta | undefined;
-    try {
-      if (quoteResponse?.approval) {
-        // This will never be an STX
-        approvalTxMeta = await handleApprovalTx({
-          approval: quoteResponse.approval,
-          quoteResponse,
-        });
-      }
-    } catch (e) {
-      debugLog('Approve transaction failed', e);
-      if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
-        dispatch(setWasTxDeclined(true));
-        history.push(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
-      } else {
-        await dispatch(setDefaultHomeActiveTabName('activity'));
-        history.push(DEFAULT_ROUTE);
-      }
+    if (isSolanaChainId(quoteResponse.quote.srcChainId)) {
+      // Move to activity tab before submitting a transaction
+      // This is a temporary solution to avoid the transaction not being shown in the activity tab
+      // We should find a better solution in the future
+      await dispatch(setDefaultHomeActiveTabName('activity'));
+      await dispatch(submitBridgeTx(quoteResponse, false));
+      // The useSnapConfirmation hook redirects to the confirmation page right after
+      // submitting the tx so everything below is unnecessary and we can return early
       return;
     }
 
-    if (
-      (
-        [
-          CHAIN_IDS.LINEA_MAINNET,
-          CHAIN_IDS.LINEA_GOERLI,
-          CHAIN_IDS.LINEA_SEPOLIA,
-        ] as Hex[]
-      ).includes(srcChainId) &&
-      quoteResponse?.approval
-    ) {
-      debugLog(
-        'Delaying submitting bridge tx to make Linea confirmation more likely',
-      );
-      const waitPromise = new Promise((resolve) =>
-        setTimeout(resolve, LINEA_DELAY_MS),
-      );
-      await waitPromise;
-    }
-
-    let bridgeTxMeta: TransactionMeta | undefined;
+    // Execute transaction(s)
     try {
-      bridgeTxMeta = await handleBridgeTx({
-        quoteResponse,
-        approvalTxId: approvalTxMeta?.id,
-      });
+      await dispatch(submitBridgeTx(quoteResponse, smartTransactionsEnabled));
     } catch (e) {
       debugLog('Bridge transaction failed', e);
+      captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
         history.push(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
@@ -122,46 +96,12 @@ export default function useSubmitBridgeTransaction() {
       }
       return;
     }
-
-    // Get bridge tx status
-    const statusRequest = {
-      bridgeId: quoteResponse.quote.bridgeId,
-      srcTxHash: bridgeTxMeta.hash, // This might be undefined for STX
-      bridge: quoteResponse.quote.bridges[0],
-      srcChainId: quoteResponse.quote.srcChainId,
-      destChainId: quoteResponse.quote.destChainId,
-      quote: quoteResponse.quote,
-      refuel: Boolean(quoteResponse.quote.refuel),
-    };
-    dispatch(
-      startPollingForBridgeTxStatus({
-        bridgeTxMeta,
-        statusRequest,
-        quoteResponse: {
-          ...quoteResponse,
-          sentAmount: {
-            amount: quoteResponse.sentAmount.amount.toString(),
-            valueInCurrency: quoteResponse.sentAmount.valueInCurrency
-              ? quoteResponse.sentAmount.valueInCurrency.toString()
-              : null,
-          },
-        },
-        slippagePercentage: slippage ?? 0,
-        startTime: bridgeTxMeta.time,
-      }),
-    );
-
-    // Add tokens if not the native gas token
-    if (quoteResponse.quote.srcAsset.address !== zeroAddress()) {
-      addSourceToken(quoteResponse);
-    }
-    if (quoteResponse.quote.destAsset.address !== zeroAddress()) {
-      await addDestToken(quoteResponse);
-    }
-
     // Route user to activity tab on Home page
     await dispatch(setDefaultHomeActiveTabName('activity'));
-    history.push(DEFAULT_ROUTE);
+    history.push({
+      pathname: DEFAULT_ROUTE,
+      state: { stayOnHomePage: true },
+    });
   };
 
   return {

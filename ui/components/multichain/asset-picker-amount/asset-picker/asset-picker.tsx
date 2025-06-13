@@ -24,15 +24,9 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
-import {
-  getCurrentChainId,
-  getNetworkConfigurationsByChainId,
-} from '../../../../../shared/modules/selectors/networks';
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-///: END:ONLY_INCLUDE_IF
 import { ellipsify } from '../../../../pages/confirmations/send/send.utils';
 import {
   AssetWithDisplayData,
@@ -43,11 +37,18 @@ import {
 import { TabName } from '../asset-picker-modal/asset-picker-modal-tabs';
 import { AssetPickerModalNetwork } from '../asset-picker-modal/asset-picker-modal-network';
 import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   GOERLI_DISPLAY_NAME,
   SEPOLIA_DISPLAY_NAME,
 } from '../../../../../shared/constants/network';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
+import {
+  getMultichainCurrentChainId,
+  getMultichainCurrentNetwork,
+  getImageForChainId,
+  getMultichainNetworkConfigurationsByChainId,
+} from '../../../../selectors/multichain';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import { getNftImage } from '../../../../helpers/utils/nfts';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
@@ -108,9 +109,7 @@ export function AssetPicker({
   isMultiselectEnabled = false,
   autoFocus = true,
 }: AssetPickerProps) {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const t = useI18nContext();
-  ///: END:ONLY_INCLUDE_IF
 
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
 
@@ -127,12 +126,15 @@ export function AssetPicker({
       : symbol;
 
   // Badge details
-  const currentChainId = useSelector(getCurrentChainId);
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const currentNetwork = allNetworks[currentChainId];
-  const selectedNetwork =
-    networkProps?.network ??
-    (currentNetwork?.chainId && allNetworks[currentNetwork.chainId]);
+  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
+  const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
+  // These 2 have similar data but different types
+  const currentNetworkConfiguration =
+    allNetworks[currentChainId as keyof typeof allNetworks];
+  const currentNetworkProviderConfig = useMultichainSelector(
+    getMultichainCurrentNetwork,
+  );
+  const selectedNetwork = networkProps?.network ?? currentNetworkConfiguration;
 
   const allNetworksToUse = networkProps?.networks ?? Object.values(allNetworks);
   const { balanceByChainId } = useMultichainBalances();
@@ -154,20 +156,16 @@ export function AssetPicker({
   }, [networkProps?.network?.chainId]);
 
   const handleAssetPickerTitle = (): string | undefined => {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     if (isDisabled) {
       return t('swapTokenNotAvailable');
     }
-    ///: END:ONLY_INCLUDE_IF
 
     return undefined;
   };
 
-  const networkImageSrc =
-    selectedNetwork?.chainId &&
-    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-      selectedNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-    ];
+  const networkImageSrc = selectedNetwork?.chainId
+    ? getImageForChainId(selectedNetwork.chainId)
+    : undefined;
 
   const handleButtonClick = () => {
     if (networkProps && !networkProps.network) {
@@ -194,7 +192,7 @@ export function AssetPicker({
             // If there is only 1 selected network switch to that network to populate tokens
             if (
               chainIds.length === 1 &&
-              chainIds[0] !== currentNetwork?.chainId
+              chainIds[0] !== currentNetworkProviderConfig?.chainId
             ) {
               if (networkProps?.onNetworkChange) {
                 networkProps.onNetworkChange(
@@ -238,7 +236,7 @@ export function AssetPicker({
         networks={networkProps?.networks}
         selectedChainIds={selectedChainIds}
         onNetworkPickerClick={
-          networkProps
+          networkProps?.networks
             ? () => {
                 setShowAssetPickerModal(false);
                 setIsSelectingNetwork(true);
@@ -254,6 +252,8 @@ export function AssetPicker({
       />
 
       {/** If a child prop is passed in, use it as the trigger button instead of the default */}
+      {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880 */}
+      {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
       {children?.(handleButtonClick, networkImageSrc) || (
         <ButtonBase
           data-testid="asset-picker-button"
@@ -284,6 +284,7 @@ export function AssetPicker({
                     size={AvatarNetworkSize.Xs}
                     name={selectedNetwork?.name ?? ''}
                     src={networkImageSrc}
+                    borderWidth={2}
                     backgroundColor={
                       Object.entries({
                         [GOERLI_DISPLAY_NAME]: BackgroundColor.goerli,
@@ -304,7 +305,7 @@ export function AssetPicker({
               >
                 <AvatarToken
                   borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
-                  src={primaryTokenImage ?? undefined}
+                  src={getNftImage(primaryTokenImage) ?? undefined}
                   size={AvatarTokenSize.Md}
                   name={symbol}
                   {...(isNFT && {

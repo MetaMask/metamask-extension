@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
+import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
@@ -14,16 +15,16 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  getAllPermittedAccountsForCurrentTab,
   getPermissionsForActiveTab,
   getSelectedInternalAccount,
-  getPermittedAccountsForCurrentTab,
 } from '../../../selectors';
 import { ConnectedSiteMenu } from '../../multichain';
 
 export default function ConnectedStatusIndicator({ onClick, disabled }) {
   const t = useI18nContext();
 
-  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
 
   const permissionsForActiveTab = useSelector(getPermissionsForActiveTab);
 
@@ -31,10 +32,11 @@ export default function ConnectedStatusIndicator({ onClick, disabled }) {
     .map((permission) => permission.key)
     .includes(WALLET_SNAP_PERMISSION_KEY);
 
-  const permittedAccounts = useSelector(getPermittedAccountsForCurrentTab);
-  const currentTabIsConnectedToSelectedAddress = permittedAccounts.find(
-    (account) => account === selectedAddress,
-  );
+  const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
+
+  const currentTabIsConnectedToSelectedAddress =
+    selectedAccount &&
+    isInternalAccountInPermittedAccountIds(selectedAccount, permittedAccounts);
 
   let status;
   if (currentTabIsConnectedToSelectedAddress) {

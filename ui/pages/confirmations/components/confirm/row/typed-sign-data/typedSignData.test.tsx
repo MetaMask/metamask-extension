@@ -35,7 +35,7 @@ describe('ConfirmInfoRowTypedSignData', () => {
   });
 
   it('should not render data whose type is not defined', () => {
-    // TODO: Replace `any` with type
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockRawMessageV4 = { ...rawMessageV4 } as any;
 

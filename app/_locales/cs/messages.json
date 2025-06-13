@@ -118,9 +118,6 @@
   "gasLimitTooLow": {
     "message": "Limit paliva musí být alespoň 21000"
   },
-  "gasPrice": {
-    "message": "Cena paliva (GWEI)"
-  },
   "here": {
     "message": "zde",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -130,9 +127,6 @@
   },
   "hideTokenPrompt": {
     "message": "Skrýt token?"
-  },
-  "importAccount": {
-    "message": "Import účtu"
   },
   "importAccountMsg": {
     "message": "Importované účty nebudou spojeny s vaší původní MetaMaskovou klíčovou frází. Zjistěte více o importovaných účtech "
@@ -273,9 +267,6 @@
   "settings": {
     "message": "Nastavení"
   },
-  "sigRequest": {
-    "message": "Požadavek podpisu"
-  },
   "sign": {
     "message": "Podepsat"
   },
@@ -327,9 +318,6 @@
   "unknown": {
     "message": "Neznámé"
   },
-  "unknownNetwork": {
-    "message": "Neznámá soukromá síť"
-  },
   "unlock": {
     "message": "Přihlásit"
   },
@@ -341,8 +329,5 @@
   },
   "visitWebSite": {
     "message": "Navštivte naši stránku"
-  },
-  "youSign": {
-    "message": "Podepisujete"
   }
 }

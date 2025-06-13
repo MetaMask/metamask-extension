@@ -10,6 +10,10 @@ jest.mock('../../../selectors', () => ({
   getTokenList: jest.fn(),
 }));
 
+jest.mock('../../../selectors/multi-srp/multi-srp', () => ({
+  getShouldShowSeedPhraseReminder: () => false,
+}));
+
 jest.mock('../../../selectors/nft', () => ({
   ...jest.requireActual('../../../selectors/nft'),
   getNftContractsByAddressOnCurrentChain: jest.fn(),

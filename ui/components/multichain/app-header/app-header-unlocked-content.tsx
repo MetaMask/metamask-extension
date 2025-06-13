@@ -1,7 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import browser from 'webextension-polyfill';
 
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -18,6 +18,9 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarAccountVariant,
   Box,
   ButtonBase,
   ButtonBaseSize,
@@ -42,6 +45,7 @@ import {
   getSelectedInternalAccount,
   getTestNetworkBackgroundColor,
   getOriginOfCurrentTab,
+  getUseBlockie,
 } from '../../../selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -56,22 +60,20 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
-import { MultichainNetwork } from '../../../selectors/multichain';
+import { getNetworkIcon } from '../../../../shared/modules/network.utils';
+import { TraceName, trace } from '../../../../shared/lib/trace';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;
-  isEvmNetwork: boolean;
-  currentNetwork: MultichainNetwork;
+  currentNetwork: MultichainNetworkConfiguration;
   networkOpenCallback: () => void;
   disableNetworkPicker: boolean;
   disableAccountPicker: boolean;
   menuRef: React.RefObject<HTMLButtonElement>;
-  internalAccount: InternalAccount;
 };
 
 export const AppHeaderUnlockedContent = ({
   popupStatus,
-  isEvmNetwork,
   currentNetwork,
   networkOpenCallback,
   disableNetworkPicker,
@@ -84,7 +86,9 @@ export const AppHeaderUnlockedContent = ({
   const dispatch = useDispatch();
   const origin = useSelector(getOriginOfCurrentTab);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
+  const useBlockie = useSelector(getUseBlockie);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+  const networkIconSrc = getNetworkIcon(currentNetwork);
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
@@ -97,10 +101,16 @@ export const AppHeaderUnlockedContent = ({
 
   // Passing non-evm address to checksum function will throw an error
   const normalizedCurrentAddress = normalizeSafeAddress(currentAddress);
-  const [copied, handleCopy] = useCopyToClipboard(MINUTE) as [
-    boolean,
-    (text: string) => void,
-  ];
+  const [copied, handleCopy, resetCopyState] = useCopyToClipboard(MINUTE, {
+    expireClipboard: false,
+  });
+
+  // Reset copy state when a switching accounts
+  useEffect(() => {
+    if (normalizedCurrentAddress) {
+      resetCopyState();
+    }
+  }, [normalizedCurrentAddress, resetCopyState]);
 
   const showConnectedStatus =
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
@@ -122,123 +132,183 @@ export const AppHeaderUnlockedContent = ({
     history.push(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
   };
 
+  const CopyButton = useMemo(
+    () => (
+      <ButtonBase
+        className="multichain-app-header__address-copy-button"
+        onClick={() => handleCopy(normalizedCurrentAddress)}
+        size={ButtonBaseSize.Sm}
+        backgroundColor={BackgroundColor.transparent}
+        borderRadius={BorderRadius.LG}
+        endIconName={copied ? IconName.CopySuccess : IconName.Copy}
+        endIconProps={{
+          color: IconColor.iconAlternative,
+          size: IconSize.Sm,
+        }}
+        paddingLeft={0}
+        paddingRight={0}
+        ellipsis
+        textProps={{
+          display: Display.Flex,
+          gap: 2,
+          variant: TextVariant.bodyMdMedium,
+        }}
+        style={{ height: 'auto' }} // ButtonBase doesn't have auto size
+        data-testid="app-header-copy-button"
+      >
+        <Text
+          color={TextColor.textAlternative}
+          variant={TextVariant.bodySmMedium}
+          ellipsis
+          as="span"
+        >
+          {shortenedAddress}
+        </Text>
+      </ButtonBase>
+    ),
+    [copied, handleCopy, normalizedCurrentAddress, shortenedAddress],
+  );
+
+  const AppContent = useMemo(
+    () => (
+      <>
+        {process.env.REMOVE_GNS ? (
+          <AvatarAccount
+            variant={
+              useBlockie
+                ? AvatarAccountVariant.Blockies
+                : AvatarAccountVariant.Jazzicon
+            }
+            address={internalAccount.address}
+            size={AvatarAccountSize.Md}
+          />
+        ) : null}
+        {internalAccount && (
+          <Text
+            as="div"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            alignItems={
+              process.env.REMOVE_GNS ? AlignItems.flexStart : AlignItems.center
+            }
+            ellipsis
+          >
+            <AccountPicker
+              address={internalAccount.address}
+              name={internalAccount.metadata.name}
+              onClick={() => {
+                dispatch(toggleAccountMenu());
+
+                trackEvent({
+                  event: MetaMetricsEventName.NavAccountMenuOpened,
+                  category: MetaMetricsEventCategory.Navigation,
+                  properties: {
+                    location: 'Home',
+                  },
+                });
+              }}
+              disabled={disableAccountPicker}
+              labelProps={{ fontWeight: FontWeight.Bold }}
+              paddingLeft={0}
+              paddingRight={0}
+            />
+            {process.env.REMOVE_GNS ? (
+              <>{CopyButton}</>
+            ) : (
+              <Tooltip
+                position="left"
+                title={copied ? t('addressCopied') : t('copyToClipboard')}
+              >
+                {CopyButton}
+              </Tooltip>
+            )}
+          </Text>
+        )}
+      </>
+    ),
+    [
+      disableAccountPicker,
+      dispatch,
+      internalAccount,
+      t,
+      trackEvent,
+      useBlockie,
+      CopyButton,
+      copied,
+    ],
+  );
+
   return (
     <>
-      {popupStatus ? (
-        <Box className="multichain-app-header__contents__container">
-          <Tooltip title={currentNetwork?.nickname} position="right">
-            <PickerNetwork
-              avatarNetworkProps={{
-                backgroundColor: testNetworkBackgroundColor,
-                role: 'img',
-                name: currentNetwork?.nickname ?? '',
-              }}
-              className="multichain-app-header__contents--avatar-network"
-              ref={menuRef}
-              as="button"
-              src={currentNetwork?.network?.rpcPrefs?.imageUrl ?? ''}
-              label={currentNetwork?.nickname ?? ''}
-              aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
-              labelProps={{
-                display: Display.None,
-              }}
-              onClick={(e: React.MouseEvent<HTMLElement>) => {
-                e.stopPropagation();
-                e.preventDefault();
-                networkOpenCallback();
-              }}
-              display={[Display.Flex, Display.None]} // show on popover hide on desktop
-              disabled={disableNetworkPicker}
-            />
-          </Tooltip>
+      {process.env.REMOVE_GNS ? null : (
+        <>
+          {popupStatus ? (
+            <Box className="multichain-app-header__contents__container">
+              <Tooltip title={currentNetwork.name} position="right">
+                <PickerNetwork
+                  avatarNetworkProps={{
+                    backgroundColor: testNetworkBackgroundColor,
+                    role: 'img',
+                    name: currentNetwork.name,
+                  }}
+                  className="multichain-app-header__contents--avatar-network"
+                  ref={menuRef}
+                  as="button"
+                  src={networkIconSrc}
+                  label={currentNetwork.name}
+                  aria-label={`${t('networkMenu')} ${currentNetwork.name}`}
+                  labelProps={{
+                    display: Display.None,
+                  }}
+                  onClick={(e: React.MouseEvent<HTMLElement>) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    trace({ name: TraceName.NetworkList });
+                    networkOpenCallback();
+                  }}
+                  display={[Display.Flex, Display.None]} // show on popover hide on desktop
+                  disabled={disableNetworkPicker}
+                />
+              </Tooltip>
+            </Box>
+          ) : (
+            <div>
+              <PickerNetwork
+                avatarNetworkProps={{
+                  backgroundColor: testNetworkBackgroundColor,
+                  role: 'img',
+                  name: currentNetwork.name,
+                }}
+                margin={2}
+                aria-label={`${t('networkMenu')} ${currentNetwork.name}`}
+                label={currentNetwork.name}
+                src={networkIconSrc}
+                onClick={(e: React.MouseEvent<HTMLElement>) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  trace({ name: TraceName.NetworkList });
+                  networkOpenCallback();
+                }}
+                display={[Display.None, Display.Flex]} // show on desktop hide on popover
+                className="multichain-app-header__contents__network-picker"
+                disabled={disableNetworkPicker}
+                data-testid="network-display"
+              />
+            </div>
+          )}
+        </>
+      )}
+      {process.env.REMOVE_GNS ? (
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          alignItems={AlignItems.center}
+          gap={2}
+        >
+          {AppContent}
         </Box>
       ) : (
-        <div>
-          <PickerNetwork
-            avatarNetworkProps={{
-              backgroundColor: testNetworkBackgroundColor,
-              role: 'img',
-              name: currentNetwork?.nickname ?? '',
-            }}
-            margin={2}
-            aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
-            label={currentNetwork?.nickname ?? ''}
-            src={currentNetwork?.network?.rpcPrefs?.imageUrl}
-            onClick={(e: React.MouseEvent<HTMLElement>) => {
-              e.stopPropagation();
-              e.preventDefault();
-              networkOpenCallback();
-            }}
-            display={[Display.None, Display.Flex]} // show on desktop hide on popover
-            className="multichain-app-header__contents__network-picker"
-            disabled={disableNetworkPicker}
-            data-testid="network-display"
-          />
-        </div>
-      )}
-
-      {internalAccount && (
-        <Text
-          as="div"
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.center}
-          ellipsis
-        >
-          <AccountPicker
-            address={internalAccount.address}
-            name={internalAccount.metadata.name}
-            onClick={() => {
-              dispatch(toggleAccountMenu());
-
-              trackEvent({
-                event: MetaMetricsEventName.NavAccountMenuOpened,
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  location: 'Home',
-                },
-              });
-            }}
-            disabled={disableAccountPicker}
-            labelProps={{ fontWeight: FontWeight.Bold }}
-            paddingLeft={2}
-            paddingRight={2}
-          />
-          <Tooltip
-            position="left"
-            title={copied ? t('addressCopied') : t('copyToClipboard')}
-          >
-            <ButtonBase
-              className="multichain-app-header__address-copy-button"
-              onClick={() => handleCopy(normalizedCurrentAddress)}
-              size={ButtonBaseSize.Sm}
-              backgroundColor={BackgroundColor.transparent}
-              borderRadius={BorderRadius.LG}
-              endIconName={copied ? IconName.CopySuccess : IconName.Copy}
-              endIconProps={{
-                color: IconColor.iconAlternative,
-                size: IconSize.Sm,
-              }}
-              ellipsis
-              textProps={{
-                display: Display.Flex,
-                alignItems: AlignItems.center,
-                gap: 2,
-              }}
-              style={{ height: 'auto' }} // ButtonBase doesn't have auto size
-              data-testid="app-header-copy-button"
-            >
-              <Text
-                color={TextColor.textAlternative}
-                variant={TextVariant.bodySm}
-                ellipsis
-                as="span"
-              >
-                {shortenedAddress}
-              </Text>
-            </ButtonBase>
-          </Tooltip>
-        </Text>
+        <>{AppContent}</>
       )}
       <Box
         display={Display.Flex}
@@ -250,13 +320,7 @@ export const AppHeaderUnlockedContent = ({
           {showConnectedStatus && (
             <Box ref={menuRef}>
               <ConnectedStatusIndicator
-                onClick={() => {
-                  if (!isEvmNetwork) {
-                    return;
-                  }
-                  handleConnectionsRoute();
-                }}
-                disabled={!isEvmNetwork}
+                onClick={() => handleConnectionsRoute()}
               />
             </Box>
           )}{' '}
@@ -275,7 +339,7 @@ export const AppHeaderUnlockedContent = ({
               </Box>
             )}
             <ButtonIcon
-              iconName={IconName.MoreVertical}
+              iconName={IconName.Menu}
               data-testid="account-options-menu-button"
               ariaLabel={t('accountOptions')}
               onClick={() => {

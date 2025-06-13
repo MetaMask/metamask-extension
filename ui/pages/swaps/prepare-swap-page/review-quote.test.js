@@ -34,6 +34,7 @@ const middleware = [thunk];
 const createProps = (customProps = {}) => {
   return {
     setReceiveToAmount: jest.fn(),
+    setIsEstimatedReturnLow: jest.fn(),
     ...customProps,
   };
 };
@@ -141,6 +142,62 @@ describe('ReviewQuote', () => {
     // $6.82 gas fee is calculated based on params set in the the beginning of the test.
     expect(getByText('$6.82')).toBeInTheDocument();
     expect(getByText('Swap')).toBeInTheDocument();
+  });
+
+  it('should call setIsEstimatedReturnLow(true) when return value is less than 65% of sent funds', async () => {
+    const setReceiveToAmountMock = jest.fn();
+    const setIsEstimatedReturnLowMock = jest.fn();
+    const props = {
+      setReceiveToAmount: setReceiveToAmountMock,
+      setIsEstimatedReturnLow: setIsEstimatedReturnLowMock,
+    };
+
+    const state = createSwapsMockStore();
+
+    // Set up market data for price calculations
+    state.metamask.marketData = {
+      [CHAIN_IDS.MAINNET]: {
+        '0x6B175474E89094C44Da98b954EedeAC495271d0F': {
+          // DAI
+          price: 100,
+          decimal: 18,
+        },
+        '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': {
+          // USDC
+          price: 60,
+          decimal: 6,
+        },
+      },
+    };
+
+    // Set up the quotes with amounts that will result in less than 65% return
+    state.metamask.swapsState.quotes = {
+      TEST_AGG_2: {
+        sourceAmount: '1000000000000000000', // 1 DAI (18 decimals)
+        destinationAmount: '1000000', // 1 USDC (6 decimals)
+        trade: {
+          value: '0x0',
+        },
+        sourceTokenInfo: {
+          symbol: 'DAI',
+          decimals: 18,
+          address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        },
+        destinationTokenInfo: {
+          symbol: 'USDC',
+          decimals: 6,
+          address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        },
+      },
+    };
+
+    const store = configureMockStore(middleware)(state);
+
+    await act(async () => {
+      renderWithProvider(<ReviewQuote {...props} />, store);
+    });
+
+    expect(setIsEstimatedReturnLowMock).toHaveBeenCalledWith(true);
   });
 
   describe('uses gas fee estimates from transaction controller if 1559 and smart disabled', () => {

@@ -1,14 +1,12 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import {
-  getNetworkConfigurationIdByChainId,
-  getTokenList,
-} from '../../../../selectors';
+import { getTokenList } from '../../../../selectors';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { TokenListItem } from '../../token-list-item';
 import { AssetType } from '../../../../../shared/constants/transaction';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../../selectors/multichain';
 import Asset from './Asset';
 
 jest.mock('react-redux', () => ({
@@ -54,7 +52,7 @@ describe('Asset', () => {
         return mockState.getTokenList;
       } else if (selector === getIntlLocale) {
         return mockState.getIntlLocale;
-      } else if (selector === getNetworkConfigurationIdByChainId) {
+      } else if (selector === getMultichainNetworkConfigurationsByChainId) {
         return {
           '0x1': { networkName: 'Ethereum', iconUrl: 'network-icon-url' },
         };
@@ -83,13 +81,15 @@ describe('Asset', () => {
     expect(getByText('TokenListItem')).toBeInTheDocument();
     expect(TokenListItem).toHaveBeenCalledWith(
       expect.objectContaining({
-        tokenSymbol: 'WETH',
-        tokenImage: 'token-icon-url',
+        chainId: '0x1',
+        isPrimaryTokenSymbolHidden: true,
         primary: '$10.10',
         secondary: '10 WETH',
-        title: 'Token',
+        title: 'WETH',
+        tokenChainImage: './images/eth_logo.svg',
+        tokenImage: 'token-icon-url',
+        tokenSymbol: 'WETH',
         tooltipText: 'tooltip',
-        isPrimaryTokenSymbolHidden: true,
       }),
       {},
     );

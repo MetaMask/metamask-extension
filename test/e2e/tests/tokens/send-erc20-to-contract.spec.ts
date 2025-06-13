@@ -1,8 +1,4 @@
-import {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-} from '../../helpers';
+import { withFixtures, unlockWallet } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import FixtureBuilder from '../../fixture-builder';
 
@@ -19,7 +15,6 @@ describe('Send ERC20 token to contract address', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
-        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test?.fullTitle(),
       },

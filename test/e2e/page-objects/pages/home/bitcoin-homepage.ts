@@ -28,13 +28,19 @@ class BitcoinHomepage extends HomePage {
     console.log('Bitcoin homepage is loaded');
   }
 
+  async startSendFlow(): Promise<void> {
+    await this.driver.clickElement(this.sendButton);
+  }
+
   /**
    * Checks if the bridge button is enabled on bitcoin account homepage.
    *
    */
   async check_isBridgeButtonEnabled(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(this.bridgeButton, 1000);
+      await this.driver.findClickableElement(this.bridgeButton, {
+        timeout: 1000,
+      });
     } catch (e) {
       console.log('Bridge button not enabled', e);
       return false;
@@ -48,7 +54,9 @@ class BitcoinHomepage extends HomePage {
    */
   async check_isBuySellButtonEnabled(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(this.buySellButton, 1000);
+      await this.driver.findClickableElement(this.buySellButton, {
+        timeout: 1000,
+      });
     } catch (e) {
       console.log('Buy/Sell button not enabled', e);
       return false;
@@ -79,7 +87,9 @@ class BitcoinHomepage extends HomePage {
    */
   async check_isReceiveButtonEnabled(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(this.receiveButton, 1000);
+      await this.driver.findClickableElement(this.receiveButton, {
+        timeout: 1000,
+      });
     } catch (e) {
       console.log('Receive button not enabled', e);
       return false;
@@ -93,7 +103,9 @@ class BitcoinHomepage extends HomePage {
    */
   async check_isSwapButtonEnabled(): Promise<boolean> {
     try {
-      await this.driver.findClickableElement(this.swapButton, 1000);
+      await this.driver.findClickableElement(this.swapButton, {
+        timeout: 1000,
+      });
     } catch (e) {
       console.log('Swap button not enabled', e);
       return false;

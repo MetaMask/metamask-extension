@@ -1,0 +1,130 @@
+diff --git a/dist/cjs/util.js b/dist/cjs/util.js
+index d60cf924ee8144ee49dd07e8e910d87a2c4bfb6a..ea5494530c05f4c831e301b88fef7855c89f2885 100644
+--- a/dist/cjs/util.js
++++ b/dist/cjs/util.js
+@@ -119,14 +119,11 @@ class AuthorizationLists {
+                 }
+                 const chainId = (0, util_1.hexToBytes)(item.chainId);
+                 const addressBytes = (0, util_1.hexToBytes)(item.address);
+-                const nonceList = [];
+-                for (let j = 0; j < item.nonce.length; j++) {
+-                    nonceList.push((0, util_1.hexToBytes)(item.nonce[j]));
+-                }
++                const nonce = (0, util_1.hexToBytes)(item.nonce);
+                 const yParity = (0, util_1.hexToBytes)(item.yParity);
+                 const r = (0, util_1.hexToBytes)(item.r);
+                 const s = (0, util_1.hexToBytes)(item.s);
+-                newAuthorizationList.push([chainId, addressBytes, nonceList, yParity, r, s]);
++                newAuthorizationList.push([chainId, addressBytes, nonce, yParity, r, s]);
+             }
+             bufferAuthorizationList = newAuthorizationList;
+         }
+@@ -138,18 +135,14 @@ class AuthorizationLists {
+                 const data = bufferAuthorizationList[i];
+                 const chainId = (0, util_1.bytesToHex)(data[0]);
+                 const address = (0, util_1.bytesToHex)(data[1]);
+-                const nonces = data[2];
+-                const nonceList = [];
+-                for (let j = 0; j < nonces.length; j++) {
+-                    nonceList.push((0, util_1.bytesToHex)(nonces[j]));
+-                }
++                const nonce = (0, util_1.bytesToHex)(data[2]);
+                 const yParity = (0, util_1.bytesToHex)(data[3]);
+                 const r = (0, util_1.bytesToHex)(data[4]);
+                 const s = (0, util_1.bytesToHex)(data[5]);
+                 const jsonItem = {
+                     chainId,
+                     address,
+-                    nonce: nonceList,
++                    nonce,
+                     yParity,
+                     r,
+                     s,
+@@ -167,20 +160,14 @@ class AuthorizationLists {
+         for (let key = 0; key < authorizationList.length; key++) {
+             const authorizationListItem = authorizationList[key];
+             const address = authorizationListItem[1];
+-            const nonceList = authorizationListItem[2];
++            const nonce = authorizationListItem[2];
+             const yParity = authorizationListItem[3];
+             const r = authorizationListItem[4];
+             const s = authorizationListItem[5];
+-            (0, util_1.validateNoLeadingZeroes)({ yParity, r, s });
++            (0, util_1.validateNoLeadingZeroes)({ yParity, r, s, nonce });
+             if (address.length !== 20) {
+                 throw new Error('Invalid EIP-7702 transaction: address length should be 20 bytes');
+             }
+-            if (nonceList.length > 1) {
+-                throw new Error('Invalid EIP-7702 transaction: nonce list should consist of at most 1 item');
+-            }
+-            else if (nonceList.length === 1) {
+-                (0, util_1.validateNoLeadingZeroes)({ nonce: nonceList[0] });
+-            }
+         }
+     }
+     static getDataFeeEIP7702(authorityList, common) {
+diff --git a/dist/esm/util.js b/dist/esm/util.js
+index 36fa7e9917f72b042efc753ba5d1c9cd0d5572db..de454fa2f09a98b2a8716e173d1cd1f87101a490 100644
+--- a/dist/esm/util.js
++++ b/dist/esm/util.js
+@@ -114,14 +114,11 @@ export class AuthorizationLists {
+                 }
+                 const chainId = hexToBytes(item.chainId);
+                 const addressBytes = hexToBytes(item.address);
+-                const nonceList = [];
+-                for (let j = 0; j < item.nonce.length; j++) {
+-                    nonceList.push(hexToBytes(item.nonce[j]));
+-                }
++                const nonce = hexToBytes(item.nonce);
+                 const yParity = hexToBytes(item.yParity);
+                 const r = hexToBytes(item.r);
+                 const s = hexToBytes(item.s);
+-                newAuthorizationList.push([chainId, addressBytes, nonceList, yParity, r, s]);
++                newAuthorizationList.push([chainId, addressBytes, nonce, yParity, r, s]);
+             }
+             bufferAuthorizationList = newAuthorizationList;
+         }
+@@ -133,18 +130,14 @@ export class AuthorizationLists {
+                 const data = bufferAuthorizationList[i];
+                 const chainId = bytesToHex(data[0]);
+                 const address = bytesToHex(data[1]);
+-                const nonces = data[2];
+-                const nonceList = [];
+-                for (let j = 0; j < nonces.length; j++) {
+-                    nonceList.push(bytesToHex(nonces[j]));
+-                }
++                const nonce = bytesToHex(data[2]);
+                 const yParity = bytesToHex(data[3]);
+                 const r = bytesToHex(data[4]);
+                 const s = bytesToHex(data[5]);
+                 const jsonItem = {
+                     chainId,
+                     address,
+-                    nonce: nonceList,
++                    nonce,
+                     yParity,
+                     r,
+                     s,
+@@ -162,20 +155,14 @@ export class AuthorizationLists {
+         for (let key = 0; key < authorizationList.length; key++) {
+             const authorizationListItem = authorizationList[key];
+             const address = authorizationListItem[1];
+-            const nonceList = authorizationListItem[2];
++            const nonce = authorizationListItem[2];
+             const yParity = authorizationListItem[3];
+             const r = authorizationListItem[4];
+             const s = authorizationListItem[5];
+-            validateNoLeadingZeroes({ yParity, r, s });
++            validateNoLeadingZeroes({ yParity, r, s, nonce });
+             if (address.length !== 20) {
+                 throw new Error('Invalid EIP-7702 transaction: address length should be 20 bytes');
+             }
+-            if (nonceList.length > 1) {
+-                throw new Error('Invalid EIP-7702 transaction: nonce list should consist of at most 1 item');
+-            }
+-            else if (nonceList.length === 1) {
+-                validateNoLeadingZeroes({ nonce: nonceList[0] });
+-            }
+         }
+     }
+     static getDataFeeEIP7702(authorityList, common) {

@@ -11,6 +11,7 @@ export const fileInput: UIComponentFactory<FileInputElement> = ({
     name: element.props.name,
     accept: element.props.accept,
     compact: element.props.compact,
+    disabled: element.props.disabled,
     form,
   },
 });

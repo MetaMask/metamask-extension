@@ -8,6 +8,8 @@ import { renderWithProvider } from '../../../../../test/jest/rendering';
 import configureStore from '../../../../store/store';
 import { AlertTypes } from '../../../../../shared/constants/alerts';
 import { setAlertEnabledness } from '../../../../store/actions';
+import { mockNetworkState } from '../../../../../test/stub/networks';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { SmartTransactionsBannerAlert } from './smart-transactions-banner-alert';
 
 type TestConfirmContextValue = {
@@ -56,10 +58,41 @@ describe('SmartTransactionsBannerAlert', () => {
         smartTransactionsOptInStatus: true,
         smartTransactionsMigrationApplied: true,
       },
+      featureFlags: {
+        smartTransactionsEnabled: true,
+      },
+      smartTransactionsFeatureFlags: {
+        enabled: true,
+      },
+      swapsState: {
+        swapsFeatureFlags: {
+          ethereum: {
+            extensionActive: true,
+            mobileActive: false,
+            smartTransactions: {
+              expectedDeadline: 45,
+              maxDeadline: 150,
+              extensionReturnTxHashAsap: false,
+            },
+          },
+          smartTransactions: {
+            extensionActive: true,
+            mobileActive: false,
+          },
+        },
+      },
+      smartTransactionsState: {
+        liveness: true,
+      },
+      ...mockNetworkState({
+        id: 'network-configuration-id-1',
+        chainId: CHAIN_IDS.MAINNET,
+        rpcUrl: 'https://mainnet.infura.io/v3/',
+      }),
     },
   };
 
-  it('renders banner when alert is enabled, STX is opted in, and migration is applied', () => {
+  it('renders banner when all conditions are met', () => {
     const store = configureStore(mockState);
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
@@ -79,13 +112,11 @@ describe('SmartTransactionsBannerAlert', () => {
 
   it('does not render when alert is disabled', () => {
     const disabledState = {
+      ...mockState,
       metamask: {
+        ...mockState.metamask,
         alertEnabledness: {
           [AlertTypes.smartTransactionsMigration]: false,
-        },
-        preferences: {
-          smartTransactionsOptInStatus: true,
-          smartTransactionsMigrationApplied: true,
         },
       },
     };
@@ -99,17 +130,77 @@ describe('SmartTransactionsBannerAlert', () => {
 
   it('does not render when migration has not been applied', () => {
     const noMigrationState = {
+      ...mockState,
       metamask: {
-        alertEnabledness: {
-          [AlertTypes.smartTransactionsMigration]: true,
-        },
+        ...mockState.metamask,
         preferences: {
-          smartTransactionsOptInStatus: true,
+          ...mockState.metamask.preferences,
           smartTransactionsMigrationApplied: false,
         },
       },
     };
     const store = configureStore(noMigrationState);
+    renderWithProvider(<SmartTransactionsBannerAlert />, store);
+
+    expect(
+      screen.queryByTestId('smart-transactions-banner-alert'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not render when chain does not support smart transactions', () => {
+    const unsupportedChainState = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        ...mockNetworkState({
+          id: 'network-configuration-id-2',
+          chainId: CHAIN_IDS.POLYGON,
+          rpcUrl: 'https://polygon-rpc.com',
+        }),
+      },
+    };
+    const store = configureStore(unsupportedChainState);
+    renderWithProvider(<SmartTransactionsBannerAlert />, store);
+
+    expect(
+      screen.queryByTestId('smart-transactions-banner-alert'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not render when smart transactions preference is disabled', () => {
+    const disabledPreferenceState = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          ...mockState.metamask.preferences,
+          smartTransactionsOptInStatus: false, // Add this
+        },
+        featureFlags: {
+          smartTransactionsEnabled: false,
+        },
+        smartTransactionsFeatureFlags: {
+          enabled: false,
+        },
+        swapsState: {
+          swapsFeatureFlags: {
+            ethereum: {
+              extensionActive: false,
+              smartTransactions: {
+                expectedDeadline: 45,
+                maxDeadline: 150,
+                extensionReturnTxHashAsap: false,
+              },
+            },
+            smartTransactions: {
+              extensionActive: false,
+              mobileActive: false,
+            },
+          },
+        },
+      },
+    };
+    const store = configureStore(disabledPreferenceState);
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
     expect(
@@ -224,7 +315,6 @@ describe('SmartTransactionsBannerAlert', () => {
 
   it('handles being outside of ConfirmContext correctly', () => {
     const store = configureStore(mockState);
-
     renderWithProvider(<SmartTransactionsBannerAlert />, store);
 
     expect(
@@ -235,12 +325,10 @@ describe('SmartTransactionsBannerAlert', () => {
   it('automatically dismisses banner when Smart Transactions is manually disabled', () => {
     const store = configureStore({
       metamask: {
-        alertEnabledness: {
-          [AlertTypes.smartTransactionsMigration]: true,
-        },
+        ...mockState.metamask,
         preferences: {
+          ...mockState.metamask.preferences,
           smartTransactionsOptInStatus: false,
-          smartTransactionsMigrationApplied: true,
         },
       },
     });

@@ -8,13 +8,12 @@ import TestDapp from '../../../page-objects/pages/test-dapp';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { withTransactionEnvelopeTypeFixtures } from '../helpers';
-import { mocked4BytesSetApprovalForAll } from './erc721-revoke-set-approval-for-all-redesign';
-import { TestSuiteArguments } from './shared';
+import { TestSuiteArguments, mocked4BytesSetApprovalForAll } from './shared';
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign ERC1155 Revoke setApprovalForAll', function () {
-  describe('Submit an revoke transaction @no-mmi', function () {
+  describe('Submit an revoke transaction', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withTransactionEnvelopeTypeFixtures(
         this.test?.fullTitle(),

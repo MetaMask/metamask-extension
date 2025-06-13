@@ -72,7 +72,7 @@ describe('Block Explorer Tests', () => {
 
     it('returns the correct account URL for Binance Smart Chain', () => {
       const address = 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq';
-      const expectedUrl = `https://blockstream.info/address/${address}`;
+      const expectedUrl = `https://mempool.space/address/${address}`;
 
       const result = getMultichainAccountUrl(address, mockNonEvmNetwork);
 

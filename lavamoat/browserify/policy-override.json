@@ -163,6 +163,11 @@
       "packages": {
         "immer": true
       }
+    },
+    "@metamask/keyring-controller>ulid": {
+      "globals": {
+        "crypto": true
+      }
     }
   }
 }

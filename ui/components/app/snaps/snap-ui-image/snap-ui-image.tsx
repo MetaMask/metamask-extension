@@ -5,6 +5,7 @@ export type SnapUIImageProps = {
   style?: React.CSSProperties;
   width?: string;
   height?: string;
+  borderRadius?: string;
 };
 
 export const SnapUIImage = ({
@@ -12,6 +13,7 @@ export const SnapUIImage = ({
   width,
   height,
   style,
+  borderRadius,
 }: SnapUIImageProps) => {
   const src = `data:image/svg+xml;utf8,${encodeURIComponent(value)}`;
 
@@ -22,7 +24,7 @@ export const SnapUIImage = ({
       src={src}
       width={width}
       height={height}
-      style={style}
+      style={{ ...style, borderRadius }}
     />
   );
 };

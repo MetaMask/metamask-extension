@@ -7,14 +7,14 @@ import {
   backupUserData,
   setAutoLockTimeLimit,
   setDismissSeedBackUpReminder,
-  setOverrideContentSecurityPolicyHeader,
+  setDismissSmartAccountSuggestionEnabled,
   setFeatureFlag,
   setShowExtensionInFullSizeView,
   setShowFiatConversionOnTestnetsPreference,
   setShowTestNetworks,
   setSmartTransactionsPreferenceEnabled,
-  setUseNonceField,
   showModal,
+  setManageInstitutionalWallets,
 } from '../../../store/actions';
 import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
 import {
@@ -30,15 +30,15 @@ export const mapStateToProps = (state) => {
   } = state;
   const {
     featureFlags: { sendHexData } = {},
-    useNonceField,
     dismissSeedBackUpReminder,
-    overrideContentSecurityPolicyHeader,
+    manageInstitutionalWallets,
   } = metamask;
   const {
     showFiatInTestnets,
     showTestNetworks,
     showExtensionInFullSizeView,
     autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT,
+    dismissSmartAccountSuggestionEnabled,
   } = getPreferences(state);
 
   return {
@@ -49,9 +49,9 @@ export const mapStateToProps = (state) => {
     showExtensionInFullSizeView,
     smartTransactionsEnabled: getSmartTransactionsPreferenceEnabled(state),
     autoLockTimeLimit,
-    useNonceField,
     dismissSeedBackUpReminder,
-    overrideContentSecurityPolicyHeader,
+    manageInstitutionalWallets,
+    dismissSmartAccountSuggestionEnabled,
   };
 };
 
@@ -65,7 +65,6 @@ export const mapDispatchToProps = (dispatch) => {
     hideErrorInSettings: () => dispatch(hideErrorInSettings()),
     showResetAccountConfirmationModal: () =>
       dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
-    setUseNonceField: (value) => dispatch(setUseNonceField(value)),
     setShowFiatConversionOnTestnetsPreference: (value) => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value));
     },
@@ -84,8 +83,11 @@ export const mapDispatchToProps = (dispatch) => {
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));
     },
-    setOverrideContentSecurityPolicyHeader: (value) => {
-      return dispatch(setOverrideContentSecurityPolicyHeader(value));
+    setManageInstitutionalWallets: (value) => {
+      return dispatch(setManageInstitutionalWallets(value));
+    },
+    setDismissSmartAccountSuggestionEnabled: (value) => {
+      return dispatch(setDismissSmartAccountSuggestionEnabled(value));
     },
   };
 };

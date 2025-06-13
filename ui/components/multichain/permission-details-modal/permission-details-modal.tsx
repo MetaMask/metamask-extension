@@ -101,7 +101,7 @@ export const PermissionDetailsModal = ({
               description={permission.description}
               weight={permission.weight}
               avatarIcon={permission.leftIcon}
-              // TODO: Replace `any` with type
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               dateApproved={(permission?.permissionValue as any).date}
               key={`${permission.permissionName}-${index}`}

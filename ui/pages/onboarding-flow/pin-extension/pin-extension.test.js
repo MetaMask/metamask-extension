@@ -7,14 +7,12 @@ import { renderWithProvider } from '../../../../test/jest';
 import {
   setCompletedOnboarding,
   toggleExternalServices,
-  performSignIn,
 } from '../../../store/actions';
 import PinExtension from './pin-extension';
 
 jest.mock('../../../store/actions', () => ({
   toggleExternalServices: jest.fn(),
   setCompletedOnboarding: jest.fn(),
-  performSignIn: jest.fn(),
 }));
 
 const mockPromises = [];
@@ -39,8 +37,10 @@ describe('Creation Successful Onboarding View', () => {
   const arrangeMocks = (
     stateOverrides = {
       metamask: {
-        isProfileSyncingEnabled: false,
+        isBackupAndSyncEnabled: false,
         participateInMetaMetrics: true,
+        isSignedIn: false,
+        useExternalServices: true,
       },
       appState: {
         externalServicesOnboardingToggleState: true,
@@ -62,7 +62,6 @@ describe('Creation Successful Onboarding View', () => {
 
     toggleExternalServices.mockClear();
     setCompletedOnboarding.mockClear();
-    performSignIn.mockClear();
 
     const pushMock = jest.fn();
     jest
@@ -74,66 +73,17 @@ describe('Creation Successful Onboarding View', () => {
   };
 
   describe('When the "Done" button is clicked', () => {
-    it('should call completeOnboarding in the background when Done" button is clicked', async () => {
+    it('should call toggleExternalServices, setCompletedOnboarding and signIn when the "Done" button is clicked', async () => {
       const store = arrangeMocks();
 
       const { getByText } = renderWithProvider(<PinExtension />, store);
-      const nextButton = getByText('Next');
-      fireEvent.click(nextButton);
-      const gotItButton = getByText('Done');
-      fireEvent.click(gotItButton);
+      const doneButton = getByText('Done');
+
+      fireEvent.click(doneButton);
+
       await Promise.all(mockPromises);
       expect(toggleExternalServices).toHaveBeenCalledTimes(1);
       expect(setCompletedOnboarding).toHaveBeenCalledTimes(1);
-    });
-
-    it.each`
-      isProfileSyncingEnabled | participateInMetaMetrics
-      ${true}                 | ${true}
-      ${true}                 | ${false}
-      ${false}                | ${true}
-    `(
-      'should call performSignIn when isProfileSyncingEnabled is $isProfileSyncingEnabled and participateInMetaMetrics is $participateInMetaMetrics',
-      async ({
-        isProfileSyncingEnabled,
-        participateInMetaMetrics,
-        externalServicesOnboardingToggleState,
-      }) => {
-        const store = arrangeMocks({
-          metamask: {
-            isProfileSyncingEnabled,
-            participateInMetaMetrics,
-          },
-          appState: {
-            externalServicesOnboardingToggleState,
-          },
-        });
-
-        const { getByText } = renderWithProvider(<PinExtension />, store);
-        const nextButton = getByText('Next');
-        fireEvent.click(nextButton);
-        const gotItButton = getByText('Done');
-        fireEvent.click(gotItButton);
-        await Promise.all(mockPromises);
-        expect(performSignIn).toHaveBeenCalledTimes(1);
-      },
-    );
-
-    it('should not call performSignIn when both isProfileSyncingEnabled and participateInMetaMetrics are false', async () => {
-      const store = arrangeMocks({
-        metamask: {
-          isProfileSyncingEnabled: false,
-          participateInMetaMetrics: false,
-        },
-      });
-
-      const { getByText } = renderWithProvider(<PinExtension />, store);
-      const nextButton = getByText('Next');
-      fireEvent.click(nextButton);
-      const gotItButton = getByText('Done');
-      fireEvent.click(gotItButton);
-      await Promise.all(mockPromises);
-      expect(performSignIn).not.toHaveBeenCalled();
     });
   });
 });

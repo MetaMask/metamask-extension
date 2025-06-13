@@ -3,8 +3,8 @@ const {
   switchToNotificationWindow,
   withFixtures,
   unlockWallet,
-  defaultGanacheOptions,
   openActionMenuAndStartSendFlow,
+  logInWithBalanceValidation,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -44,7 +44,6 @@ describe('Petnames - Transactions', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -90,11 +89,10 @@ describe('Petnames - Transactions', function () {
           })
           .withNoNames()
           .build(),
-        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await logInWithBalanceValidation(driver);
 
         await createWalletSendTransaction(driver, ADDRESS_MOCK);
         await expectName(driver, ABBREVIATED_ADDRESS_MOCK, false);

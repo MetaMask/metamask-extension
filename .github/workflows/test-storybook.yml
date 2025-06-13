@@ -1,0 +1,22 @@
+name: Test storybook
+
+on:
+  workflow_call:
+
+jobs:
+  test-storybook:
+    name: Test storybook
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
+
+      - name: Install Playwright browsers
+        run: yarn exec playwright install chromium
+
+      - name: Test Storybook
+        run: yarn test-storybook:ci

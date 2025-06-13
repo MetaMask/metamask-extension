@@ -8,10 +8,8 @@ import {
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
 
-import { Box, Input } from '..';
-
-import { BoxProps, PolymorphicRef } from '../box';
-import { InputProps } from '../input';
+import { Box, BoxProps, PolymorphicRef } from '../box';
+import { Input, InputProps } from '../input';
 import {
   TextFieldComponent,
   TextFieldProps,
@@ -120,7 +118,7 @@ export const TextField: TextFieldComponent = React.forwardRef(
         backgroundColor={BackgroundColor.backgroundDefault}
         alignItems={AlignItems.center}
         borderWidth={1}
-        borderRadius={BorderRadius.SM}
+        borderRadius={BorderRadius.LG}
         paddingLeft={startAccessory ? 4 : 0}
         paddingRight={endAccessory ? 4 : 0}
         onClick={handleClick}

@@ -1,5 +1,5 @@
 import { EthAccountType } from '@metamask/keyring-api';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { sha256FromString } from 'ethereumjs-util';
 import { v4 as uuid } from 'uuid';
 import { cloneDeep } from 'lodash';
@@ -10,11 +10,15 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-type Identity = {
+export type Identity = {
   name: string;
   address: string;
   lastSelected?: number;
 };
+
+// The `InternalAccount` has been updated with `@metamask/keyring-api@13.0.0`, so we
+// omit the new field to re-use the original type for that migration.
+export type InternalAccountV1 = Omit<InternalAccount, 'scopes'>;
 
 export const version = 105;
 
@@ -47,20 +51,20 @@ function migrateData(state: Record<string, unknown>): void {
 }
 
 function findInternalAccountByAddress(
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   state: Record<string, any>,
   address: string,
-): InternalAccount | undefined {
-  return Object.values<InternalAccount>(
+): InternalAccountV1 | undefined {
+  return Object.values<InternalAccountV1>(
     state.AccountsController.internalAccounts.accounts,
   ).find(
-    (account: InternalAccount) =>
+    (account: InternalAccountV1) =>
       account.address.toLowerCase() === address.toLowerCase(),
   );
 }
 
-// TODO: Replace `any` with type
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function createDefaultAccountsController(state: Record<string, any>) {
   state.AccountsController = {
@@ -72,7 +76,7 @@ function createDefaultAccountsController(state: Record<string, any>) {
 }
 
 function createInternalAccountsForAccountsController(
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   state: Record<string, any>,
 ) {
@@ -84,7 +88,7 @@ function createInternalAccountsForAccountsController(
     return;
   }
 
-  const accounts: Record<string, InternalAccount> = {};
+  const accounts: Record<string, InternalAccountV1> = {};
 
   Object.values(identities).forEach((identity) => {
     const expectedId = uuid({
@@ -115,7 +119,7 @@ function createInternalAccountsForAccountsController(
 }
 
 function getFirstAddress(
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   state: Record<string, any>,
 ) {
@@ -126,7 +130,7 @@ function getFirstAddress(
 }
 
 function createSelectedAccountForAccountsController(
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   state: Record<string, any>,
 ) {

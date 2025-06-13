@@ -16,11 +16,7 @@ export const AccountOverviewNonEvm = ({
       showActivity={true}
       {...props}
     >
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask,build-mmi)
-        <NonEvmOverview />
-        ///: END:ONLY_INCLUDE_IF
-      }
+      <NonEvmOverview />
     </AccountOverviewLayout>
   );
 };

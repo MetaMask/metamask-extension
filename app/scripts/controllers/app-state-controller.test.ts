@@ -1,4 +1,4 @@
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import type {
   AcceptRequest,
   AddApprovalRequest,
@@ -17,6 +17,7 @@ import type {
   AppStateControllerActions,
   AppStateControllerEvents,
   AppStateControllerOptions,
+  AppStateControllerState,
 } from './app-state-controller';
 import type {
   PreferencesControllerState,
@@ -370,6 +371,7 @@ describe('AppStateController', () => {
           id: '123',
           chainId: '0x1',
           timestamp: new Date().getTime(),
+          origin: 'https://example.com',
         };
 
         controller.setLastInteractedConfirmationInfo(
@@ -395,46 +397,6 @@ describe('AppStateController', () => {
         expect(controller.state.snapsInstallPrivacyWarningShown).toStrictEqual(
           true,
         );
-      });
-    });
-  });
-
-  describe('institutional', () => {
-    it('set the interactive replacement token with a url and the old refresh token', async () => {
-      await withController(({ controller }) => {
-        const mockParams = {
-          url: 'https://example.com',
-          oldRefreshToken: 'old',
-        };
-
-        controller.showInteractiveReplacementTokenBanner(mockParams);
-
-        expect(controller.state.interactiveReplacementToken).toStrictEqual(
-          mockParams,
-        );
-      });
-    });
-
-    it('set the setCustodianDeepLink with the fromAddress and custodyId', async () => {
-      await withController(({ controller }) => {
-        const mockParams = {
-          fromAddress: '0x',
-          custodyId: 'custodyId',
-        };
-
-        controller.setCustodianDeepLink(mockParams);
-
-        expect(controller.state.custodianDeepLink).toStrictEqual(mockParams);
-      });
-    });
-
-    it('set the setNoteToTraderMessage with a message', async () => {
-      await withController(({ controller }) => {
-        const mockParams = 'some message';
-
-        controller.setNoteToTraderMessage(mockParams);
-
-        expect(controller.state.noteToTraderMessage).toStrictEqual(mockParams);
       });
     });
   });
@@ -478,6 +440,16 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setRampCardClosed', () => {
+    it('set isRampCardClosed to true', async () => {
+      await withController(({ controller }) => {
+        controller.setRampCardClosed();
+
+        expect(controller.state.isRampCardClosed).toStrictEqual(true);
+      });
+    });
+  });
+
   describe('setNewPrivacyPolicyToastClickedOrClosed', () => {
     it('set the newPrivacyPolicyToastClickedOrClosed to true', async () => {
       await withController(({ controller }) => {
@@ -500,6 +472,75 @@ describe('AppStateController', () => {
         expect(controller.state.newPrivacyPolicyToastShownDate).toStrictEqual(
           mockParams,
         );
+      });
+    });
+  });
+
+  describe('isUpdateAvailable', () => {
+    it('defaults to false', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.isUpdateAvailable).toStrictEqual(false);
+      });
+    });
+  });
+
+  describe('setIsUpdateAvailable', () => {
+    it('sets isUpdateAvailable', async () => {
+      await withController(({ controller }) => {
+        controller.setIsUpdateAvailable(true);
+        expect(controller.state.isUpdateAvailable).toStrictEqual(true);
+      });
+    });
+  });
+
+  describe('updateModalLastDismissedAt', () => {
+    it('defaults to null', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.updateModalLastDismissedAt).toStrictEqual(null);
+      });
+    });
+  });
+
+  describe('setUpdateModalLastDismissedAt', () => {
+    it('sets updateModalLastDismissedAt', async () => {
+      await withController(({ controller }) => {
+        const mockParams = Date.now();
+        controller.setUpdateModalLastDismissedAt(mockParams);
+        expect(controller.state.updateModalLastDismissedAt).toStrictEqual(
+          mockParams,
+        );
+      });
+    });
+  });
+
+  describe('lastUpdatedAt', () => {
+    it('defaults to null', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.lastUpdatedAt).toStrictEqual(null);
+      });
+    });
+  });
+
+  describe('setLastUpdatedAt', () => {
+    it('sets lastUpdatedAt', async () => {
+      await withController(({ controller }) => {
+        const mockParams = Date.now();
+        controller.setLastUpdatedAt(mockParams);
+        expect(controller.state.lastUpdatedAt).toStrictEqual(mockParams);
+      });
+    });
+  });
+
+  describe('setSplashPageAcknowledgedForAccount', () => {
+    it('adds the account to upgradeSplashPageAcknowledgedForAccounts', async () => {
+      await withController(({ controller }) => {
+        const mockAccount = '0x123';
+
+        controller.setSplashPageAcknowledgedForAccount(mockAccount);
+
+        expect(
+          controller.state.upgradeSplashPageAcknowledgedForAccounts,
+        ).toStrictEqual([mockAccount]);
       });
     });
   });
@@ -553,11 +594,42 @@ describe('AppStateController', () => {
       });
     });
   });
+
+  describe('throttledOrigins', () => {
+    describe('updateThrottledOriginState', () => {
+      it('should update the throttledOriginState for a given origin', async () => {
+        await withController(({ controller }) => {
+          controller.updateThrottledOriginState('example.com', {
+            rejections: 1,
+            lastRejection: Date.now(),
+          });
+          expect(
+            controller.state.throttledOrigins['example.com'],
+          ).toStrictEqual({ rejections: 1, lastRejection: expect.any(Number) });
+        });
+      });
+    });
+
+    describe('getThrottledOriginState', () => {
+      it('should return the throttledOriginState for a given origin', async () => {
+        await withController(({ controller }) => {
+          controller.updateThrottledOriginState('example.com', {
+            rejections: 1,
+            lastRejection: Date.now(),
+          });
+          expect(
+            controller.getThrottledOriginState('example.com'),
+          ).toStrictEqual({ rejections: 1, lastRejection: expect.any(Number) });
+        });
+      });
+    });
+  });
 });
 
 type WithControllerOptions = {
   options?: Partial<AppStateControllerOptions>;
   addRequestMock?: jest.Mock;
+  state?: Partial<AppStateControllerState>;
 };
 
 type WithControllerCallback<ReturnValue> = ({
@@ -565,7 +637,7 @@ type WithControllerCallback<ReturnValue> = ({
   controllerMessenger,
 }: {
   controller: AppStateController;
-  controllerMessenger: ControllerMessenger<
+  controllerMessenger: Messenger<
     | AppStateControllerActions
     | AddApprovalRequest
     | AcceptRequest
@@ -584,9 +656,9 @@ async function withController<ReturnValue>(
   ...args: WithControllerArgs<ReturnValue>
 ): Promise<ReturnValue> {
   const [{ ...rest }, fn] = args.length === 2 ? args : [{}, args[0]];
-  const { addRequestMock, options = {} } = rest;
+  const { addRequestMock, state, options = {} } = rest;
 
-  const controllerMessenger = new ControllerMessenger<
+  const controllerMessenger = new Messenger<
     | AppStateControllerActions
     | AddApprovalRequest
     | AcceptRequest
@@ -617,6 +689,8 @@ async function withController<ReturnValue>(
   );
   controllerMessenger.registerActionHandler(
     'ApprovalController:addRequest',
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     addRequestMock || jest.fn().mockResolvedValue(undefined),
   );
 
@@ -627,6 +701,7 @@ async function withController<ReturnValue>(
       onInactiveTimeout: jest.fn(),
       messenger: appStateMessenger,
       extension: extensionMock,
+      state,
       ...options,
     }),
     controllerMessenger,

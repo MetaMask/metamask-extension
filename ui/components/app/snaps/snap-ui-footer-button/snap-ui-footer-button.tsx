@@ -4,6 +4,7 @@ import {
   ButtonVariant,
   UserInputEventType,
 } from '@metamask/snaps-sdk';
+import type { ButtonProps as SnapButtonProps } from '@metamask/snaps-sdk/jsx';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import {
@@ -26,6 +27,7 @@ import { getHideSnapBranding } from '../../../../selectors';
 type SnapUIFooterButtonProps = {
   name?: string;
   variant?: ButtonVariant;
+  snapVariant?: SnapButtonProps['variant'];
   isSnapAction?: boolean;
   onCancel?: () => void;
 };
@@ -41,6 +43,7 @@ export const SnapUIFooterButton: FunctionComponent<
   isSnapAction = false,
   type,
   variant = ButtonVariant.Primary,
+  snapVariant,
   form,
   ...props
 }) => {
@@ -87,7 +90,9 @@ export const SnapUIFooterButton: FunctionComponent<
         alignItems: AlignItems.center,
         flexDirection: FlexDirection.Row,
       }}
+      data-testid={`${name}-snap-footer-button`}
       data-theme={null}
+      danger={snapVariant === 'destructive'}
     >
       {isSnapAction && !hideSnapBranding && !loading && (
         <SnapIcon snapId={snapId} avatarSize={IconSize.Sm} marginRight={2} />

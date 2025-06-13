@@ -1,10 +1,17 @@
-name: "MetaMask Security Code Scanner"
+name: MetaMask Security Code Scanner
 
 on:
   push:
-    branches: [ 'main' ]
+    branches:
+      - main
   pull_request:
-    branches: [ 'main' ]
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/master')) }}
 
 jobs:
   run-security-scan:
@@ -30,7 +37,6 @@ jobs:
             '**/*.stories.tsx'
             development/chromereload.js
             node_modules
-          rules_excluded:
-            example
+          rules_excluded: example
           project_metrics_token: ${{secrets.SECURITY_SCAN_METRICS_TOKEN}}
           slack_webhook: ${{ secrets.APPSEC_BOT_SLACK_WEBHOOK }}

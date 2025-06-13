@@ -1,163 +1,82 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { Driver } from '../../webdriver/driver';
-import { DEFAULT_BTC_ACCOUNT, DEFAULT_BTC_BALANCE } from '../../constants';
-import {
-  getTransactionRequest,
-  SendFlowPlaceHolders,
-  withBtcAccountSnap,
-} from './common-btc';
-
-export async function startSendFlow(driver: Driver, recipient?: string) {
-  // Wait a bit so the MultichainRatesController is able to fetch BTC -> USD rates.
-  await driver.delay(1000);
-
-  // Start the send flow.
-  const sendButton = await driver.waitForSelector({
-    text: 'Send',
-    tag: 'button',
-    css: '[data-testid="coin-overview-send"]',
-  });
-  // FIXME: Firefox test is flaky without this delay. The send flow doesn't start properly.
-  if (driver.browser === 'firefox') {
-    await driver.delay(1000);
-  }
-  await sendButton.click();
-
-  // See the review button is disabled by default.
-  await driver.waitForSelector({
-    text: 'Review',
-    tag: 'button',
-    css: '[disabled]',
-  });
-
-  if (recipient) {
-    // Set the recipient address (if any).
-    await driver.pasteIntoField(
-      `input[placeholder="${SendFlowPlaceHolders.RECIPIENT}"]`,
-      recipient,
-    );
-  }
-}
+import { DEFAULT_BTC_BALANCE, DEFAULT_BTC_FEE_RATE } from '../../constants';
+import BitcoinSendPage from '../../page-objects/pages/send/bitcoin-send-page';
+import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
+import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
+import { withBtcAccountSnap } from './common-btc';
 
 describe('BTC Account - Send', function (this: Suite) {
-  it('can send complete the send flow', async function () {
-    await withBtcAccountSnap(
-      { title: this.test?.fullTitle() },
-      async (driver, mockServer) => {
-        await startSendFlow(driver, DEFAULT_BTC_ACCOUNT);
+  const recipientAddress = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
 
-        // TODO: Remove delay here. There is a race condition if the amount and address are set too fast.
-        await driver.delay(1000);
+  it('can complete the send flow', async function () {
+    const sendAmount = '0.5';
+    const expectedFee = '281';
+    const expectedTotal = '0.50000281';
 
-        // Set the amount to send.
-        const mockAmountToSend = '0.5';
-        await driver.pasteIntoField(
-          `input[placeholder="${SendFlowPlaceHolders.AMOUNT}"]`,
-          mockAmountToSend,
-        );
+    await withBtcAccountSnap(async (driver) => {
+      const homePage = new BitcoinHomepage(driver);
+      await homePage.check_pageIsLoaded();
+      await homePage.check_isExpectedBitcoinBalanceDisplayed(
+        DEFAULT_BTC_BALANCE,
+      );
+      await homePage.startSendFlow();
 
-        // From here, the "summary panel" should have some information about the fees and total.
-        await driver.waitForSelector({
-          text: 'Total',
-          tag: 'p',
-        });
+      const bitcoinSendPage = new BitcoinSendPage(driver);
+      await bitcoinSendPage.check_pageIsLoaded();
+      await bitcoinSendPage.fillRecipientAddress(recipientAddress);
+      await bitcoinSendPage.fillAmount(sendAmount);
+      await bitcoinSendPage.clickReviewButton();
 
-        // The review button will become available.
-        const snapReviewButton = await driver.findClickableElement({
-          text: 'Review',
-          tag: 'button',
-          css: '.snap-ui-renderer__footer-button',
-        });
-        assert.equal(await snapReviewButton.isEnabled(), true);
-        await snapReviewButton.click();
+      // ------------------------------------------------------------------------------
+      // From here, we have moved to the confirmation screen (second part of the flow).
 
-        // TODO: There isn't any check for the fees and total amount. This requires calculating the vbytes used in a transaction dynamically.
-        // We already have unit tests for these calculations on the Snap.
+      const bitcoinReviewTxPage = new BitcoinReviewTxPage(driver);
+      await bitcoinReviewTxPage.check_pageIsLoaded();
+      await bitcoinReviewTxPage.check_sendAmountIsDisplayed(sendAmount);
+      await bitcoinReviewTxPage.check_networkFeeIsDisplayed(expectedFee);
+      await bitcoinReviewTxPage.check_feeRateIsDisplayed(
+        Math.floor(DEFAULT_BTC_FEE_RATE).toString(),
+      );
+      await bitcoinReviewTxPage.check_totalAmountIsDisplayed(expectedTotal);
+      await bitcoinReviewTxPage.clickSendButton();
 
-        // ------------------------------------------------------------------------------
-        // From here, we have moved to the confirmation screen (second part of the flow).
-
-        // We should be able to send the transaction right away.
-        const snapSendButton = await driver.waitForSelector({
-          text: 'Send',
-          tag: 'button',
-          css: '.snap-ui-renderer__footer-button',
-        });
-        assert.equal(await snapSendButton.isEnabled(), true);
-        await snapSendButton.click();
-
-        // Check that we are selecting the "Activity tab" right after the send.
-        await driver.waitForSelector({
-          tag: 'div',
-          text: 'Bitcoin activity is not supported',
-        });
-
-        const transaction = await getTransactionRequest(mockServer);
-        assert(transaction !== undefined);
-      },
-    );
+      // TODO: Test that the transaction appears in the activity tab once activity tab is implemented for Bitcoin
+      await homePage.check_pageIsLoaded();
+    }, this.test?.fullTitle());
   });
 
   it('can send the max amount', async function () {
-    await withBtcAccountSnap(
-      { title: this.test?.fullTitle() },
-      async (driver, mockServer) => {
-        await startSendFlow(driver, DEFAULT_BTC_ACCOUNT);
+    const expectedFee = 0.00000219;
 
-        // TODO: Remove delay here. There is a race condition if the amount and address are set too fast.
-        await driver.delay(1000);
+    await withBtcAccountSnap(async (driver) => {
+      const homePage = new BitcoinHomepage(driver);
+      await homePage.check_pageIsLoaded();
+      await homePage.check_isExpectedBitcoinBalanceDisplayed(
+        DEFAULT_BTC_BALANCE,
+      );
+      await homePage.startSendFlow();
 
-        // Use the max spendable amount of that account.
-        await driver.clickElement({
-          text: 'Max',
-          tag: 'button',
-        });
+      const bitcoinSendPage = new BitcoinSendPage(driver);
+      await bitcoinSendPage.check_pageIsLoaded();
+      await bitcoinSendPage.fillRecipientAddress(recipientAddress);
+      await bitcoinSendPage.selectMaxAmount();
+      await bitcoinSendPage.clickReviewButton();
 
-        // From here, the "summary panel" should have some information about the fees and total.
-        await driver.waitForSelector({
-          text: 'Total',
-          tag: 'p',
-        });
+      // ------------------------------------------------------------------------------
+      // From here, we have moved to the confirmation screen (second part of the flow).
 
-        await driver.waitForSelector({
-          text: `${DEFAULT_BTC_BALANCE} BTC`,
-          tag: 'p',
-        });
+      const bitcoinReviewTxPage = new BitcoinReviewTxPage(driver);
+      await bitcoinReviewTxPage.check_pageIsLoaded();
+      await bitcoinReviewTxPage.check_sendAmountIsDisplayed(
+        (DEFAULT_BTC_BALANCE - expectedFee).toString(),
+      );
+      await bitcoinReviewTxPage.check_totalAmountIsDisplayed(
+        DEFAULT_BTC_BALANCE.toString(),
+      );
+      await bitcoinReviewTxPage.clickSendButton();
 
-        // The review button will become available.
-        const snapReviewButton = await driver.findClickableElement({
-          text: 'Review',
-          tag: 'button',
-          css: '.snap-ui-renderer__footer-button',
-        });
-        assert.equal(await snapReviewButton.isEnabled(), true);
-        await snapReviewButton.click();
-
-        // TODO: There isn't any check for the fees and total amount. This requires calculating the vbytes used in a transaction dynamically.
-        // We already have unit tests for these calculations on the snap.
-
-        // ------------------------------------------------------------------------------
-        // From here, we have moved to the confirmation screen (second part of the flow).
-
-        // We should be able to send the transaction right away.
-        const snapSendButton = await driver.waitForSelector({
-          text: 'Send',
-          tag: 'button',
-          css: '.snap-ui-renderer__footer-button',
-        });
-        assert.equal(await snapSendButton.isEnabled(), true);
-        await snapSendButton.click();
-
-        // Check that we are selecting the "Activity tab" right after the send.
-        await driver.waitForSelector({
-          tag: 'div',
-          text: 'Bitcoin activity is not supported',
-        });
-
-        const transaction = await getTransactionRequest(mockServer);
-        assert(transaction !== undefined);
-      },
-    );
+      // TODO: Test that the transaction appears in the activity tab once activity tab is implemented for Bitcoin
+      await homePage.check_pageIsLoaded();
+    }, this.test?.fullTitle());
   });
 });

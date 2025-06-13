@@ -12,15 +12,10 @@ Portal page for user to auth the access of their account
 
 ## Props
 
-{/*
-ArgsTable doesn't work with SectionShape
-<ArgsTable of={MetaMaskTranslation} />
-*/}
-
 | Name                       | Description                                                                |
 | -------------------------- | -------------------------------------------------------------------------- |
 | `history`                  | History router for redirect after action `object`                          |
 | `isUnlocked`               | If isUnlocked is true will redirect to most recent route in history `bool` |
-| `onRestore`                | onClick handler for "Forgot password?" link `func`      |
+| `onRestore`                | onClick handler for "Forgot password?" link `func`                         |
 | `onSubmit`                 | onSumbit handler when form is submitted `func`                             |
 | `forceUpdateMetamaskState` | Force update metamask data state `func`                                    |

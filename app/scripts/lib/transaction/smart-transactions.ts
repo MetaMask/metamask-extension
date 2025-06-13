@@ -13,18 +13,21 @@ import {
   TransactionMeta,
   TransactionParams,
   TransactionType,
+  type PublishBatchHookTransaction,
 } from '@metamask/transaction-controller';
 import log from 'loglevel';
-import { RestrictedControllerMessenger } from '@metamask/base-controller';
+import { RestrictedMessenger } from '@metamask/base-controller';
 import {
   AddApprovalRequest,
   UpdateRequestState,
   StartFlow,
   EndFlow,
+  AcceptRequest,
 } from '@metamask/approval-controller';
 
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import { CANCEL_GAS_LIMIT_DEC } from '../../../../shared/constants/smartTransactions';
+import { isLegacyTransaction } from '../../../../shared/modules/transaction.utils';
 import {
   SMART_TRANSACTION_CONFIRMATION_TYPES,
   ORIGIN_METAMASK,
@@ -36,11 +39,11 @@ export type AllowedActions =
   | AddApprovalRequest
   | UpdateRequestState
   | StartFlow
+  | AcceptRequest
   | EndFlow;
-
 export type AllowedEvents = SmartTransactionsControllerSmartTransactionEvent;
 
-export type SmartTransactionHookMessenger = RestrictedControllerMessenger<
+export type SmartTransactionHookMessenger = RestrictedMessenger<
   typeof namespace,
   AllowedActions,
   AllowedEvents,
@@ -66,9 +69,13 @@ export type SubmitSmartTransactionRequest = {
   isSmartTransaction: boolean;
   controllerMessenger: SmartTransactionHookMessenger;
   featureFlags: FeatureFlags;
+  transactions?: PublishBatchHookTransaction[];
 };
 
 class SmartTransactionHook {
+  // Static property to store the approval flow ID across instances
+  static #sharedApprovalFlowId = '';
+
   #approvalFlowEnded: boolean;
 
   #approvalFlowId: string;
@@ -99,6 +106,8 @@ class SmartTransactionHook {
 
   #signedTransactionInHex?: string;
 
+  #transactions?: PublishBatchHookTransaction[];
+
   #txParams: TransactionParams;
 
   #shouldShowStatusPage: boolean;
@@ -112,10 +121,11 @@ class SmartTransactionHook {
       isSmartTransaction,
       controllerMessenger,
       featureFlags,
+      transactions,
     } = request;
     this.#approvalFlowId = '';
     this.#approvalFlowEnded = false;
-    this.#transactionMeta = transactionMeta;
+    this.#transactionMeta = transactionMeta as TransactionMeta;
     this.#signedTransactionInHex = signedTransactionInHex;
     this.#smartTransactionsController = smartTransactionsController;
     this.#transactionController = transactionController;
@@ -125,13 +135,16 @@ class SmartTransactionHook {
     this.#isDapp = transactionMeta.origin !== ORIGIN_METAMASK;
     this.#chainId = transactionMeta.chainId;
     this.#txParams = transactionMeta.txParams;
-    this.#shouldShowStatusPage =
-      transactionMeta.type !== TransactionType.bridge;
+    this.#transactions = transactions;
+    this.#shouldShowStatusPage = Boolean(
+      transactionMeta.type !== TransactionType.bridge ||
+        (this.#transactions && this.#transactions.length > 0),
+    );
   }
 
   async submit() {
     const isUnsupportedTransactionTypeForSmartTransaction = this
-      .#transactionMeta?.type
+      .#transactionMeta.type
       ? [
           TransactionType.swapAndSend,
           TransactionType.swapApproval,
@@ -143,22 +156,21 @@ class SmartTransactionHook {
     const useRegularTransactionSubmit = { transactionHash: undefined };
     if (
       !this.#isSmartTransaction ||
-      isUnsupportedTransactionTypeForSmartTransaction
+      isUnsupportedTransactionTypeForSmartTransaction ||
+      isLegacyTransaction(this.#transactionMeta)
     ) {
       return useRegularTransactionSubmit;
     }
 
     if (this.#shouldShowStatusPage) {
-      const { id: approvalFlowId } = await this.#controllerMessenger.call(
-        'ApprovalController:startFlow',
-      );
-      this.#approvalFlowId = approvalFlowId;
+      await this.#startApprovalFlow();
     }
     let getFeesResponse;
     try {
       getFeesResponse = await this.#smartTransactionsController.getFees(
         { ...this.#txParams, chainId: this.#chainId },
         undefined,
+        { networkClientId: this.#transactionMeta.networkClientId },
       );
     } catch (error) {
       log.error(
@@ -172,21 +184,17 @@ class SmartTransactionHook {
       const submitTransactionResponse = await this.#signAndSubmitTransactions({
         getFeesResponse,
       });
+
       const uuid = submitTransactionResponse?.uuid;
       if (!uuid) {
         throw new Error('No smart transaction UUID');
       }
+
+      await this.#processApprovalIfNeeded(uuid);
+
       const extensionReturnTxHashAsap =
         this.#featureFlags?.smartTransactions?.extensionReturnTxHashAsap;
 
-      if (this.#shouldShowStatusPage) {
-        this.#addApprovalRequest({
-          uuid,
-        });
-        this.#addListenerToUpdateStatusPage({
-          uuid,
-        });
-      }
       let transactionHash: string | undefined | null;
       if (extensionReturnTxHashAsap && submitTransactionResponse?.txHash) {
         transactionHash = submitTransactionResponse.txHash;
@@ -195,6 +203,7 @@ class SmartTransactionHook {
           uuid,
         });
       }
+
       if (transactionHash === null) {
         throw new Error(
           'Transaction does not have a transaction hash, there was a problem',
@@ -208,14 +217,128 @@ class SmartTransactionHook {
     }
   }
 
+  async submitBatch() {
+    // No fallback to regular transaction submission
+    if (!this.#isSmartTransaction) {
+      throw new Error(
+        'submitBatch: Smart Transaction is required for batch submissions',
+      );
+    }
+
+    if (this.#shouldShowStatusPage) {
+      await this.#startApprovalFlow();
+    }
+
+    try {
+      const submitTransactionResponse = await this.#signAndSubmitTransactions();
+      const uuid = submitTransactionResponse?.uuid;
+
+      if (!uuid) {
+        throw new Error('submitBatch: No smart transaction UUID');
+      }
+
+      await this.#processApprovalIfNeeded(uuid);
+
+      const transactionHash = await this.#waitForTransactionHash({
+        uuid,
+      });
+
+      if (transactionHash === null) {
+        throw new Error(
+          'submitBatch: Transaction does not have a transaction hash, there was a problem',
+        );
+      }
+
+      let submitBatchResponse;
+      if (submitTransactionResponse?.txHashes) {
+        submitBatchResponse = {
+          results: submitTransactionResponse.txHashes.map((txHash: string) => ({
+            transactionHash: txHash,
+          })),
+        };
+      } else {
+        submitBatchResponse = {
+          results: [],
+        };
+      }
+
+      return submitBatchResponse;
+    } catch (error) {
+      log.error(
+        'submitBatch: Error in smart transaction publish batch hook',
+        error,
+      );
+      this.#onApproveOrReject();
+      throw error;
+    }
+  }
+
+  async #endApprovalFlow(flowId: string): Promise<void> {
+    try {
+      await this.#controllerMessenger.call('ApprovalController:endFlow', {
+        id: flowId,
+      });
+    } catch (error) {
+      // If the flow is already ended, we can ignore the error.
+    }
+  }
+
+  async #endExistingApprovalFlow(approvalFlowId: string): Promise<void> {
+    try {
+      // End the existing flow
+      await this.#endApprovalFlow(approvalFlowId);
+
+      // Accept the request to close the UI
+      await this.#controllerMessenger.call(
+        'ApprovalController:acceptRequest',
+        approvalFlowId,
+      );
+
+      SmartTransactionHook.#sharedApprovalFlowId = '';
+    } catch (error) {
+      log.error('Error ending existing approval flow', error);
+    }
+  }
+
+  async #startApprovalFlow() {
+    if (SmartTransactionHook.#sharedApprovalFlowId) {
+      await this.#endExistingApprovalFlow(
+        SmartTransactionHook.#sharedApprovalFlowId,
+      );
+    }
+
+    // Create a new approval flow
+    const { id: approvalFlowId } = await this.#controllerMessenger.call(
+      'ApprovalController:startFlow',
+    );
+
+    // Store the flow ID both in the instance and in the static property
+    this.#approvalFlowId = approvalFlowId;
+    SmartTransactionHook.#sharedApprovalFlowId = approvalFlowId;
+  }
+
+  async #processApprovalIfNeeded(uuid: string) {
+    if (this.#shouldShowStatusPage) {
+      this.#addApprovalRequest({
+        uuid,
+      });
+      this.#addListenerToUpdateStatusPage({
+        uuid,
+      });
+    }
+  }
+
   #onApproveOrReject() {
     if (!this.#shouldShowStatusPage || this.#approvalFlowEnded) {
       return;
     }
     this.#approvalFlowEnded = true;
-    this.#controllerMessenger.call('ApprovalController:endFlow', {
-      id: this.#approvalFlowId,
-    });
+    this.#endApprovalFlow(this.#approvalFlowId);
+
+    // Clear the shared approval flow ID when we end the flow
+    if (SmartTransactionHook.#sharedApprovalFlowId === this.#approvalFlowId) {
+      SmartTransactionHook.#sharedApprovalFlowId = '';
+    }
   }
 
   #addApprovalRequest({ uuid }: { uuid: string }) {
@@ -265,6 +388,8 @@ class SmartTransactionHook {
   async #addListenerToUpdateStatusPage({ uuid }: { uuid: string }) {
     this.#controllerMessenger.subscribe(
       'SmartTransactionsController:smartTransaction',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async (smartTransaction: SmartTransaction) => {
         if (smartTransaction.uuid === uuid) {
           const { status } = smartTransaction;
@@ -285,6 +410,8 @@ class SmartTransactionHook {
     return new Promise((resolve) => {
       this.#controllerMessenger.subscribe(
         'SmartTransactionsController:smartTransaction',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         async (smartTransaction: SmartTransaction) => {
           if (smartTransaction.uuid === uuid) {
             const { status, statusMetadata } = smartTransaction;
@@ -310,28 +437,44 @@ class SmartTransactionHook {
   async #signAndSubmitTransactions({
     getFeesResponse,
   }: {
-    getFeesResponse: Fees;
-  }) {
-    let signedTransactions;
-    if (this.#signedTransactionInHex) {
+    getFeesResponse?: Fees;
+  } = {}) {
+    let signedTransactions: string[] = [];
+
+    if (
+      this.#transactions &&
+      Array.isArray(this.#transactions) &&
+      this.#transactions.length > 0
+    ) {
+      // Batch transaction mode - extract signed transactions from this.#transactions[].signedTx
+      signedTransactions = this.#transactions
+        .filter((tx) => tx?.signedTx)
+        .map((tx) => tx.signedTx);
+    } else if (this.#signedTransactionInHex) {
+      // Single transaction mode with pre-signed transaction
       signedTransactions = [this.#signedTransactionInHex];
-    } else {
+    } else if (getFeesResponse) {
+      // Single transaction mode requiring signing
       signedTransactions = await this.#createSignedTransactions(
         getFeesResponse.tradeTxFees?.fees ?? [],
         false,
       );
     }
+
     return await this.#smartTransactionsController.submitSignedTransactions({
       signedTransactions,
       signedCanceledTransactions: [],
       txParams: this.#txParams,
-      // TODO: Replace `any` with type - version mismatch between smart-transactions-controller and transaction-controller breaking type safety
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      transactionMeta: this.#transactionMeta as any,
+      transactionMeta: this.#transactionMeta,
+      networkClientId: this.#transactionMeta.networkClientId,
     });
   }
 
   #applyFeeToTransaction(fee: Fee, isCancel: boolean): TransactionParams {
+    if (!this.#txParams) {
+      throw new Error('Transaction params are required');
+    }
+
     const unsignedTransaction = {
       ...this.#txParams,
       maxFeePerGas: `0x${decimalToHex(fee.maxFeePerGas)}`,
@@ -339,11 +482,13 @@ class SmartTransactionHook {
       gas: isCancel
         ? `0x${decimalToHex(CANCEL_GAS_LIMIT_DEC)}` // It has to be 21000 for cancel transactions, otherwise the API would reject it.
         : this.#txParams.gas,
-    };
+    } as TransactionParams;
+
     if (isCancel) {
       unsignedTransaction.to = unsignedTransaction.from;
       unsignedTransaction.data = '0x';
     }
+
     return unsignedTransaction;
   }
 
@@ -351,15 +496,23 @@ class SmartTransactionHook {
     fees: Fee[],
     isCancel: boolean,
   ): Promise<string[]> {
+    if (!this.#txParams || !this.#chainId) {
+      throw new Error('Transaction params and chainId are required');
+    }
+
     const unsignedTransactions = fees.map((fee) => {
       return this.#applyFeeToTransaction(fee, isCancel);
     });
+
     const transactionsWithChainId = unsignedTransactions.map((tx) => ({
       ...tx,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       chainId: tx.chainId || this.#chainId,
     }));
+
     return (await this.#transactionController.approveTransactionsWithSameNonce(
-      transactionsWithChainId,
+      transactionsWithChainId as (TransactionParams & { chainId: Hex })[],
       { hasNonce: true },
     )) as string[];
   }
@@ -370,4 +523,11 @@ export const submitSmartTransactionHook = (
 ) => {
   const smartTransactionHook = new SmartTransactionHook(request);
   return smartTransactionHook.submit();
+};
+
+export const submitBatchSmartTransactionHook = (
+  request: SubmitSmartTransactionRequest,
+) => {
+  const smartTransactionHook = new SmartTransactionHook(request);
+  return smartTransactionHook.submitBatch();
 };

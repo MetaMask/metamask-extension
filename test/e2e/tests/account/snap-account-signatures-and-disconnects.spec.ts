@@ -2,9 +2,7 @@ import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
@@ -13,13 +11,15 @@ import {
   signTypedDataV3WithSnapAccount,
   signTypedDataV4WithSnapAccount,
 } from '../../page-objects/flows/sign.flow';
+import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
-describe('Snap Account Signatures and Disconnects @no-mmi', function (this: Suite) {
+describe('Snap Account Signatures and Disconnects', function (this: Suite) {
   it('can connect to the Test Dapp, then #signTypedDataV3, disconnect then connect, then #signTypedDataV4 (async flow approve)', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockSimpleKeyringSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -34,16 +34,6 @@ describe('Snap Account Signatures and Disconnects @no-mmi', function (this: Suit
         );
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_accountLabel('SSK Account');
-
-        // Navigate to experimental settings and disable redesigned signature.
-        await headerNavbar.openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
-        await settingsPage.goToExperimentalSettings();
-
-        const experimentalSettings = new ExperimentalSettings(driver);
-        await experimentalSettings.check_pageIsLoaded();
-        await experimentalSettings.toggleRedesignedSignature();
 
         // Open the Test Dapp and connect
         const testDapp = new TestDapp(driver);
