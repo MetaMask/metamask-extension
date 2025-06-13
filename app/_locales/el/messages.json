@@ -68,13 +68,6 @@
     "message": "Έχω διαβάσει και συμφωνώ με το $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Αποκτήστε πρόσβαση στο πορτοφόλι σας με τη Μυστική σας Φράση Ανάκτησης"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "Το MetaMask δεν μπορεί να ανακτήσει τον κωδικό σας. Θα χρησιμοποιήσουμε τη Μυστική σας Φράση Ανάκτησης για να επιβεβαιώσουμε την κυριότητά σας, να ανακτήσουμε το πορτοφόλι σας και να ορίσουμε ένα νέο κωδικό. Πρώτα, εισάγετε τη Μυστική Φράση σας Ανάκτησης που σας δόθηκε όταν δημιουργήσατε το πορτοφόλι σας. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Πρόσβαση στην κάμερά σας..."
   },
@@ -1250,9 +1243,6 @@
   "confusingEnsDomain": {
     "message": "Εντοπίσαμε έναν παράξενο χαρακτήρα στο όνομα ENS. Ελέγξτε το όνομα ENS για να αποφύγετε μια πιθανή απάτη."
   },
-  "congratulations": {
-    "message": "Συγχαρητήρια!"
-  },
   "connect": {
     "message": "Σύνδεση"
   },
@@ -2402,9 +2392,6 @@
   "hideAdvancedDetails": {
     "message": "Απόκρυψη λεπτομερειών για προχωρημένους"
   },
-  "hideSeedPhrase": {
-    "message": "Απόκρυψη φράσης ανάκτησης"
-  },
   "hideSentitiveInfo": {
     "message": "Απόκρυψη ευαίσθητων πληροφοριών"
   },
@@ -2500,10 +2487,6 @@
   },
   "id": {
     "message": "Αναγνωριστικό"
-  },
-  "ifYouGetLockedOut": {
-    "message": "Εάν δεν μπορείτε να χρησιμοποιήσετε την εφαρμογή ή αποκτήσατε νέα συσκευή, θα χάσετε τα κεφάλαιά σας. Βεβαιωθείτε ότι έχετε δημιουργήσει αντίγραφα ασφαλείας της Μυστικής σας Φράσης Ανάκτησης στο $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "ignoreAll": {
     "message": "Αγνόηση όλων"
@@ -2758,10 +2741,6 @@
   "jsonFile": {
     "message": "Αρχείο JSON",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Κρατήστε μια υπενθύμιση της Μυστικής σας Φράσης Ανάκτησης σε ασφαλές μέρος. Εάν την χάσετε, κανείς δεν μπορεί να σας βοηθήσει να την επαναφέρετε. Ακόμα χειρότερα, δεν θα έχετε ποτέ ξανά πρόσβαση στο πορτοφόλι σας. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Όνομα λογαριασμού"
@@ -3782,9 +3761,6 @@
   "onboardingMetametricsDescription": {
     "message": "Θέλουμε να συλλέξουμε βασικά δεδομένα χρήσης και διάγνωσης για να βελτιώσουμε το MetaMask. Λάβετε υπόψη ότι δεν πουλάμε ποτέ τα δεδομένα που μας παρέχετε εδώ."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Όταν συγκεντρώνουμε μετρήσεις, θα είναι πάντα..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Θα σας ενημερώσουμε εάν αποφασίσουμε να χρησιμοποιήσουμε αυτά τα δεδομένα για άλλους σκοπούς. Για περισσότερες πληροφορίες, μπορείτε να ανατρέξετε στην $1. Να θυμάστε ότι μπορείτε να μεταβείτε στις ρυθμίσεις και να εξαιρεθείτε ανά πάσα στιγμή.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3813,29 +3789,11 @@
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Προαιρετικές:"
   },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Μάθετε πώς προστατεύουμε το απόρρητό σας ενώ συλλέγουμε δεδομένα χρήσης για το προφίλ σας."
-  },
   "onboardingMetametricsTitle": {
     "message": "Βοηθήστε μας να βελτιώσουμε το MetaMask"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Θα χρησιμοποιήσουμε αυτά τα δεδομένα για να μάθουμε πώς αλληλεπιδράτε με τις επικοινωνίες μάρκετινγκ. Ενδέχεται να κοινοποιήσουμε σχετικές πληροφορίες (όπως χαρακτηριστικά προϊόντων)."
-  },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Πλήρης πρόσβαση"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Αυτές οι επεκτάσεις μπορούν να βλέπουν και να αλλάζουν τις πληροφορίες"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "σε αυτόν τον ιστότοπο."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Επεκτάσεις"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Κάντε κλικ στο εικονίδιο της επέκτασης του προγράμματος περιήγησης"
   },
   "onboardingPinExtensionDescription": {
     "message": "Προσκολλήστε το MetaMask στο πρόγραμμα περιήγησής σας, ώστε να είναι προσβάσιμο και εύκολο να δείτε τις επιβεβαιώσεις συναλλαγών."
@@ -3844,16 +3802,8 @@
     "message": "Μπορείτε να ανοίξετε το MetaMask κάνοντας κλικ στην επέκταση και να αποκτήσετε πρόσβαση στο πορτοφόλι σας με 1 κλικ."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Κάντε κλικ στο εικονίδιο της επέκτασης του προγράμματος περιήγησης για άμεση πρόσβαση"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "Καρφίτσωμα του MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Κάντε κλικ στο εικονίδιο της επέκτασης του προγράμματος περιήγησης για άμεση πρόσβαση",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Η εγκατάσταση του MetaMask ολοκληρώθηκε!"
@@ -4508,12 +4458,6 @@
   "rejected": {
     "message": "Απορρίφθηκε"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Να θυμάστε, αν χάσετε τη Μυστική Φράση Ανάκτησης, δεν θα έχετε πρόσβαση στο πορτοφόλι σας. $1 για να κρατήσετε αυτό το σύνολο λέξεων ασφαλές, ώστε να έχετε πάντα πρόσβαση στα κεφάλαιά σας."
-  },
-  "reminderSet": {
-    "message": "Ορισμός υπενθύμισης!"
-  },
   "remove": {
     "message": "Κατάργηση"
   },
@@ -4668,9 +4612,6 @@
   "revealSensitiveContent": {
     "message": "Αποκάλυψη ευαίσθητου περιεχομένου"
   },
-  "revealTheSeedPhrase": {
-    "message": "Αποκάλυψη φράσης ανάκτησης"
-  },
   "review": {
     "message": "Επανέλεγχος"
   },
@@ -4767,9 +4708,6 @@
   "securityMessageLinkForNetworks": {
     "message": "διαδικτυακές απάτες και κίνδυνοι ασφαλείας"
   },
-  "securityPrivacyPath": {
-    "message": "Ρυθμίσεις > Ασφάλεια & Απόρρητο."
-  },
   "securityProviderPoweredBy": {
     "message": "Με την υποστήριξη του $1",
     "description": "The security provider that is providing data"
@@ -4781,29 +4719,11 @@
   "seeDetails": {
     "message": "Δείτε λεπτομέρειες"
   },
-  "seedPhraseConfirm": {
-    "message": "Επιβεβαίωση της Μυστικής Φράσης Ανάκτησης"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Επιβεβαίωση της Μυστικής Φράσης Ανάκτησης"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Γράψτε και αποθηκεύστε σε πολλά μυστικά μέρη"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Αποθήκευση σε θυρίδα ασφαλείας"
-  },
   "seedPhraseIntroTitle": {
     "message": "Προστατεύστε το πορτοφόλι σας"
   },
   "seedPhraseReq": {
     "message": "Οι Μυστικές Φράσεις Ανάκτησης περέχουν 12, 15, 18, 21 ή 24 λέξεις"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Γράψτε αυτή τη Μυστική Φράση Ανάκτησης 12 λέξεων και αποθηκεύστε την σε ένα μέρος που εμπιστεύεστε και στο οποίο μόνο εσείς έχετε πρόσβαση."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Γράψτε τη Μυστική Φράση Ανάκτησης σας"
   },
   "select": {
     "message": "Επιλέξτε"
@@ -4918,9 +4838,6 @@
   },
   "settings": {
     "message": "Ρυθμίσεις"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "Οι ρυθμίσεις έχουν βελτιστοποιηθεί για ευκολία χρήσης και ασφάλεια. Μπορείτε να τις αλλάξετε ανά πάσα στιγμή."
   },
   "settingsSearchMatchingNotFound": {
     "message": "Δε βρέθηκαν αποτελέσματα που να ταιριάζουν."
@@ -6211,9 +6128,6 @@
   "time": {
     "message": "Ώρα"
   },
-  "tips": {
-    "message": "Συμβουλές"
-  },
   "tipsForUsingAWallet": {
     "message": "Συμβουλές για τη χρήση πορτοφολιού"
   },
@@ -6670,10 +6584,6 @@
   },
   "walletConnectionGuide": {
     "message": "ο οδηγός μας σύνδεσης πορτοφολιού υλικού"
-  },
-  "walletProtectedAndReadyToUse": {
-    "message": "Το πορτοφόλι σας είναι προστατευμένο και έτοιμο προς χρήση. Μπορείτε να βρείτε τη Μυστική σας Φράση Ανάκτησης στο $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "Θέλετε να προσθέσετε αυτό το δίκτυο;"

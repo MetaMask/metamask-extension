@@ -68,13 +68,6 @@
     "message": "J’ai lu et j’accepte les $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Accédez à votre portefeuille en utilisant votre phrase secrète de récupération"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask ne peut pas récupérer votre mot de passe. Nous utiliserons votre phrase secrète de récupération pour vérifier votre identité, restaurer votre portefeuille et définir un nouveau mot de passe. Veuillez tout d’abord saisir la phrase secrète de récupération qui vous a été fournie lorsque vous avez créé votre portefeuille. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Accès à votre appareil photo..."
   },
@@ -1250,9 +1243,6 @@
   "confusingEnsDomain": {
     "message": "Nous avons détecté un caractère pouvant prêter à confusion dans le nom de l’ENS. Vérifiez le nom de l’ENS pour éviter toute fraude potentielle."
   },
-  "congratulations": {
-    "message": "Félicitations !"
-  },
   "connect": {
     "message": "Connecter"
   },
@@ -2402,9 +2392,6 @@
   "hideAdvancedDetails": {
     "message": "Masquer les détails avancés"
   },
-  "hideSeedPhrase": {
-    "message": "Masquer la phrase mnémonique"
-  },
   "hideSentitiveInfo": {
     "message": "Masquer les informations sensibles"
   },
@@ -2500,10 +2487,6 @@
   },
   "id": {
     "message": "ID"
-  },
-  "ifYouGetLockedOut": {
-    "message": "Si vous ne pouvez plus accéder à votre compte ou si vous changez d’appareil, vous perdrez vos fonds. Veillez à sauvegarder votre phrase secrète de récupération dans $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "ignoreAll": {
     "message": "Ignorer tout"
@@ -2758,10 +2741,6 @@
   "jsonFile": {
     "message": "Fichier JSON",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Conservez votre phrase secrète de récupération dans un endroit sûr. Si vous la perdez, personne ne pourra vous aider à la récupérer. Pire encore, vous ne pourrez plus jamais accéder à votre portefeuille. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Nom du compte"
@@ -3782,9 +3761,6 @@
   "onboardingMetametricsDescription": {
     "message": "Nous aimerions recueillir des données d’utilisation et de diagnostic de base afin d’améliorer MetaMask. Sachez que nous ne vendons jamais les données que vous nous fournissez ici."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Lorsque nous recueillons des données, elles sont toujours…"
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Nous vous informerons si nous décidons d’utiliser ces données à d’autres fins. Pour plus d’informations, vous pouvez consulter notre $1. N’oubliez pas que vous pouvez aller dans les paramètres et vous désinscrire à tout moment.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3813,29 +3789,11 @@
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Facultatif :"
   },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Découvrez comment nous protégeons votre vie privée lors de la collecte de données d’utilisation pour votre profil."
-  },
   "onboardingMetametricsTitle": {
     "message": "Aidez-nous à améliorer MetaMask"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Nous utiliserons ces données pour savoir comment vous interagissez avec nos communications commerciales et pour partager avec vous des informations pertinentes (comme les caractéristiques des produits)."
-  },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Accès complet"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Ces extensions peuvent voir et modifier les informations"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "sur ce site."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Extensions"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Cliquez sur l’icône d’extension du navigateur"
   },
   "onboardingPinExtensionDescription": {
     "message": "Épinglez MetaMask dans votre navigateur pour qu’il soit accessible et qu’il soit facile de voir les confirmations de transaction."
@@ -3844,16 +3802,8 @@
     "message": "Vous pouvez ouvrir MetaMask en cliquant sur l’extension pour accéder à votre portefeuille en un seul clic."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Cliquez sur l’icône d’extension du navigateur pour y accéder instantanément"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "Épingler MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Cliquez sur l’icône d’extension du navigateur pour y accéder instantanément",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Votre installation de MetaMask est terminée !"
@@ -4508,12 +4458,6 @@
   "rejected": {
     "message": "Rejeté"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "N’oubliez pas que si vous perdez votre phrase secrète de récupération, vous perdez l’accès à votre portefeuille. $1 pour sécuriser cet ensemble de mots et éviter de perdre l’accès à vos fonds."
-  },
-  "reminderSet": {
-    "message": "Rappel défini !"
-  },
   "remove": {
     "message": "Supprimer"
   },
@@ -4668,9 +4612,6 @@
   "revealSensitiveContent": {
     "message": "Révéler les contenus sensibles"
   },
-  "revealTheSeedPhrase": {
-    "message": "Révéler la phrase mnémonique"
-  },
   "review": {
     "message": "Examiner"
   },
@@ -4767,9 +4708,6 @@
   "securityMessageLinkForNetworks": {
     "message": "arnaques et risques de piratage informatique"
   },
-  "securityPrivacyPath": {
-    "message": "Paramètres > Sécurité et confidentialité."
-  },
   "securityProviderPoweredBy": {
     "message": "Service fourni par $1",
     "description": "The security provider that is providing data"
@@ -4781,29 +4719,11 @@
   "seeDetails": {
     "message": "Voir les détails"
   },
-  "seedPhraseConfirm": {
-    "message": "Confirmer la phrase secrète de récupération"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Confirmer la phrase secrète de récupération"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Notez-la et conservez-la dans plusieurs endroits secrets."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Conservez-la dans un coffre-fort"
-  },
   "seedPhraseIntroTitle": {
     "message": "Sécuriser votre portefeuille"
   },
   "seedPhraseReq": {
     "message": "Les phrases secrètes de récupération sont composées de 12, 15, 18, 21 ou 24 mots"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Notez cette phrase secrète de récupération de 12 mots et stockez-la dans un endroit de confiance où vous seul avez accès."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Notez votre phrase secrète de récupération"
   },
   "select": {
     "message": "Sélectionner"
@@ -4918,9 +4838,6 @@
   },
   "settings": {
     "message": "Paramètres"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "Les paramètres sont optimisés pour sécuriser l’application et faciliter son utilisation. Vous pouvez modifier les paramètres à tout moment."
   },
   "settingsSearchMatchingNotFound": {
     "message": "Aucun résultat correspondant trouvé."
@@ -6211,9 +6128,6 @@
   "time": {
     "message": "Temps"
   },
-  "tips": {
-    "message": "Dons"
-  },
   "tipsForUsingAWallet": {
     "message": "Conseils pour l’utilisation d’un portefeuille"
   },
@@ -6670,10 +6584,6 @@
   },
   "walletConnectionGuide": {
     "message": "notre guide de connexion des portefeuilles matériels"
-  },
-  "walletProtectedAndReadyToUse": {
-    "message": "Votre portefeuille est protégé et prêt à être utilisé. Vous trouverez votre phrase secrète de récupération dans $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "Voulez-vous ajouter ce réseau ?"

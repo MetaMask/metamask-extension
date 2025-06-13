@@ -127,6 +127,7 @@ describe('Keyring Snap Remove Warning', () => {
   });
 
   it('opens block explorer for account', async () => {
+    // @ts-expect-error mocking platform
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
     const { getByText, getAllByTestId } = renderWithProvider(
       <KeyringSnapRemovalWarning {...defaultArgs} />,
