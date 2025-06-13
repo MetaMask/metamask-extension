@@ -96,7 +96,7 @@ describe('Account syncing - Multi SRP', function () {
           );
           await homePage.check_newSrpAddedToastIsDisplayed();
 
-          await driver.delay(veryLargeDelayMs);
+          await waitUntilSyncedAccountsNumberEquals(3);
 
           await header.openAccountMenu();
           await accountListPage.addAccount({
