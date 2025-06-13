@@ -264,6 +264,10 @@ describe('Security Tab', () => {
     ).toBe(true);
   });
 
+  it('toggles skipDeepLinkInterstitial', async () => {
+    expect(toggleCheckbox('skipDeepLinkInterstitial', false)).toBe(true);
+  });
+
   it('clicks "Add Custom Network"', async () => {
     const user = userEvent.setup();
     renderWithProviders(<SecurityTab />, mockStore);
