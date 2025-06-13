@@ -83,11 +83,13 @@ const FeeDetail = ({ label, value }: { label: string; value: string }) => (
  *
  * @param props - The props object.
  * @param props.notification - The notification object.
+ * @deprecated - we are planning to remove this component
  * @returns The NotificationDetailNetworkFee component.
  */
-export const NotificationDetailNetworkFee: FC<
-  NotificationDetailNetworkFeeProps
-> = ({ notification }) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _NotificationDetailNetworkFee: FC<NotificationDetailNetworkFeeProps> = ({
+  notification,
+}) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -280,3 +282,15 @@ export const NotificationDetailNetworkFee: FC<
     </Box>
   );
 };
+
+/**
+ * NotificationDetailNetworkFee component displays the network fee details.
+ *
+ * @param _props - The props object.
+ * @param _props.notification - The notification object.
+ * @deprecated - we are planning to remove this component
+ * @returns The NotificationDetailNetworkFee component.
+ */
+export const NotificationDetailNetworkFee = (
+  _props: NotificationDetailNetworkFeeProps,
+) => null;
