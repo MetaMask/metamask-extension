@@ -68,13 +68,6 @@
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Access your wallet with your Secret Recovery Phrase"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask cannot recover your password. We will use your Secret Recovery Phrase to validate your ownership, restore your wallet and set up a new password. First, enter the Secret Recovery Phrase that you were given when you created your wallet. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Accessing your camera..."
   },
@@ -1187,8 +1180,26 @@
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
+  "confirmRecoveryPhraseDetails": {
+    "message": "Select the missing words in the correct order."
+  },
+  "confirmRecoveryPhraseTitle": {
+    "message": "Confirm your Secret Recovery Phrase"
+  },
   "confirmSimulationApprove": {
     "message": "You approve"
+  },
+  "confirmSrpErrorDescription": {
+    "message": "Double-check your Secret Recovery Phrase and try again."
+  },
+  "confirmSrpErrorTitle": {
+    "message": "Not quite right"
+  },
+  "confirmSrpSuccessDescription": {
+    "message": "That’s right! And remember: never share this phrase with anyone, ever."
+  },
+  "confirmSrpSuccessTitle": {
+    "message": "Perfect"
   },
   "confirmTitleAccountTypeSwitch": {
     "message": "Account update"
@@ -1873,6 +1884,9 @@
   "editANickname": {
     "message": "Edit nickname"
   },
+  "editAccountName": {
+    "message": "Edit account name"
+  },
   "editAccounts": {
     "message": "Edit accounts"
   },
@@ -2414,9 +2428,6 @@
   "hideAdvancedDetails": {
     "message": "Hide advanced details"
   },
-  "hideSeedPhrase": {
-    "message": "Hide seed phrase"
-  },
   "hideSentitiveInfo": {
     "message": "Hide sensitive information"
   },
@@ -2525,6 +2536,9 @@
   "import": {
     "message": "Import",
     "description": "Button to import an account from a selected file"
+  },
+  "importAWallet": {
+    "message": "Import a wallet"
   },
   "importAccountError": {
     "message": "Error importing account."
@@ -2737,6 +2751,9 @@
   },
   "invalidSeedPhraseCaseSensitive": {
     "message": "Invalid input! Secret Recovery Phrase is case sensitive."
+  },
+  "invalidSeedPhraseNotFound": {
+    "message": "Secret Recovery Phrase not found."
   },
   "ipfsGateway": {
     "message": "IPFS gateway"
@@ -3863,6 +3880,21 @@
   "onboardingSrpImport": {
     "message": "Import using Secret Recovery Phrase"
   },
+  "onboardingSrpImportError": {
+    "message": "Use only lowercase letters, check your spelling, and put the words in the original order."
+  },
+  "onboardingSrpInputClearAll": {
+    "message": "Clear all"
+  },
+  "onboardingSrpInputHideAll": {
+    "message": "Hide all"
+  },
+  "onboardingSrpInputPlaceholder": {
+    "message": "Add a space between each word and make sure no one is watching."
+  },
+  "onboardingSrpInputShowAll": {
+    "message": "Show all"
+  },
   "onekey": {
     "message": "OneKey"
   },
@@ -3954,6 +3986,9 @@
   },
   "passwordsDontMatch": {
     "message": "Passwords don't match"
+  },
+  "paste": {
+    "message": "Paste"
   },
   "pastePrivateKey": {
     "message": "Enter your private key string here:",
@@ -4676,9 +4711,6 @@
   "revealSensitiveContent": {
     "message": "Reveal sensitive content"
   },
-  "revealTheSeedPhrase": {
-    "message": "Reveal seed phrase"
-  },
   "review": {
     "message": "Review"
   },
@@ -4799,29 +4831,21 @@
   "seeDetails": {
     "message": "See details"
   },
-  "seedPhraseConfirm": {
-    "message": "Confirm Secret Recovery Phrase"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Confirm Secret Recovery Phrase"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Write down and store in multiple secret places"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Store in a safe deposit box"
-  },
   "seedPhraseIntroTitle": {
     "message": "Secure your wallet"
   },
   "seedPhraseReq": {
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
   },
-  "seedPhraseWriteDownDetails": {
-    "message": "Write down this 12-word Secret Recovery Phrase and save it in a place that you trust and only you can access."
+  "seedPhraseReviewDetails": {
+    "message": "This is your $1. Write it down in the correct order and keep it safe. If someone has your Secret Recovery Phrase, they can access your wallet. $2",
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
   },
-  "seedPhraseWriteDownHeader": {
-    "message": "Write down your Secret Recovery Phrase"
+  "seedPhraseReviewDetails2": {
+    "message": "Don’t share it with anyone, ever."
+  },
+  "seedPhraseReviewTitle": {
+    "message": "Save your Secret Recovery Phrase"
   },
   "select": {
     "message": "Select"
@@ -6262,6 +6286,12 @@
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be 11 characters or fewer."
   },
+  "tapToReveal": {
+    "message": "Tap to reveal"
+  },
+  "tapToRevealNote": {
+    "message": "Make sure no one is watching your screen."
+  },
   "tenPercentIncreased": {
     "message": "10% increase"
   },
@@ -6301,9 +6331,6 @@
   },
   "time": {
     "message": "Time"
-  },
-  "tips": {
-    "message": "Tips"
   },
   "tipsForUsingAWallet": {
     "message": "Tips for using a wallet"
@@ -6563,6 +6590,9 @@
   },
   "twelveHrTitle": {
     "message": "12hr:"
+  },
+  "typeYourSRP": {
+    "message": "Enter your Secret Recovery Phrase"
   },
   "u2f": {
     "message": "U2F",

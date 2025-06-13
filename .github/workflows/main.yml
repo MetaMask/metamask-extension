@@ -12,6 +12,8 @@ on:
       - opened
       - reopened
       - synchronize
+    branches-ignore:
+      - master
   merge_group:
 
 concurrency:
@@ -328,7 +330,6 @@ jobs:
 
   publish-prerelease:
     name: Publish prerelease
-    if: ${{ github.event_name == 'pull_request' }}
     needs:
       - build-dist-browserify
       - build-dist-mv2-browserify
