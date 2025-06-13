@@ -80,10 +80,13 @@ lavamoat/**/policy-debug.json
 # Attributions
 licenseInfos.json
 
+# Branding
+/app/images/branding
+
 # API Spec tests
 html-report/
+html-report-multichain/
 
-/app/images/branding
 /changed-files
 
 # UI Integration tests

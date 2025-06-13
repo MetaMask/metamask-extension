@@ -29,17 +29,18 @@ export function usePetnamesMetrics({
   const trackPetnamesEvent = useCallback(
     (
       event: MetaMetricsEventName,
-      // TODO: Replace `any` with type
+
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       additionalProperties: Record<string, any> = {},
     ) => {
       const suggestedNameSources = [
-        // TODO: Replace `any` with type
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ...new Set(proposedNameOptions.map((option: any) => option.sourceId)),
       ];
 
-      // TODO: Replace `any` with type
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const properties: Record<string, any> = {
         petname_category: type,
@@ -63,7 +64,8 @@ export function usePetnamesMetrics({
     const isCreated = !savedName?.length && name?.length;
 
     let event: MetaMetricsEventName | null = null;
-    // TODO: Replace `any` with type
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let additionalProperties: Record<string, any> = {};
 

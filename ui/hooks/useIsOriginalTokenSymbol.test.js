@@ -13,9 +13,14 @@ jest.mock('../store/actions', () => ({
 const state = {
   metamask: {
     ...mockState.metamask,
-    tokenList: {
-      '0x1234': {
-        symbol: 'ABCD',
+    tokensChainsCache: {
+      '0x5': {
+        data: {
+          '0x1234': {
+            address: '0x1234',
+            symbol: 'ABCD',
+          },
+        },
       },
     },
   },

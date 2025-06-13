@@ -21,6 +21,7 @@ import {
   getHardwareWalletType,
   getFullTxData,
 } from '../../../selectors';
+import { getHDEntropyIndex } from '../../../selectors/selectors';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
@@ -81,6 +82,7 @@ export default function AwaitingSwap({
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
   const dispatch = useDispatch();
+  const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const animationEventEmitter = useRef(new EventEmitter());
   const { swapMetaData } =
     useSelector((state) => getFullTxData(state, txId)) || {};
@@ -210,6 +212,9 @@ export default function AwaitingSwap({
         event: 'Quotes Timed Out',
         category: MetaMetricsEventCategory.Swaps,
         sensitiveProperties,
+        properties: {
+          hd_entropy_index: hdEntropyIndex,
+        },
       });
     }
   } else if (errorKey === ERROR_FETCHING_QUOTES) {

@@ -1,15 +1,12 @@
 const { promises: fs } = require('fs');
 const path = require('path');
 const childProcess = require('child_process');
-const { mergeWith, cloneDeep } = require('lodash');
+const { merge, mergeWith, cloneDeep } = require('lodash');
 const { isManifestV3 } = require('../../shared/modules/mv3.utils');
 
 const baseManifest = isManifestV3
   ? require('../../app/manifest/v3/_base.json')
   : require('../../app/manifest/v2/_base.json');
-const baradDurManifest = isManifestV3
-  ? require('../../app/manifest/v3/_barad_dur.json')
-  : require('../../app/manifest/v2/_barad_dur.json');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 
 const { TASKS, ENVIRONMENT } = require('./constants');
@@ -45,12 +42,13 @@ async function loadManifestFlags() {
 }
 
 function createManifestTasks({
+  applyLavaMoat,
   browserPlatforms,
   browserVersionMap,
   buildType,
-  applyLavaMoat,
-  shouldIncludeSnow,
   entryTask,
+  shouldIncludeOcapKernel = false,
+  shouldIncludeSnow,
 }) {
   // merge base manifest with per-platform manifests
   const prepPlatforms = async () => {
@@ -71,7 +69,6 @@ function createManifestTasks({
         );
         const result = mergeWith(
           cloneDeep(baseManifest),
-          process.env.BARAD_DUR ? cloneDeep(baradDurManifest) : {},
           platformModifications,
           browserVersionMap[platform],
           await getBuildModifications(buildType, platform),
@@ -80,6 +77,10 @@ function createManifestTasks({
           manifestFlags,
         );
         modifyNameAndDescForNonProd(result);
+
+        if (shouldIncludeOcapKernel) {
+          applyOcapKernelChanges(result);
+        }
 
         const dir = path.join('.', 'dist', platform);
         await fs.mkdir(dir, { recursive: true });
@@ -186,6 +187,13 @@ function createManifestTasks({
     }
     return undefined;
   }
+
+  function applyOcapKernelChanges(manifest) {
+    if (!Array.isArray(manifest.sandbox?.pages)) {
+      merge(manifest, { sandbox: { pages: [] } });
+    }
+    manifest.sandbox.pages.push('ocap-kernel/vat/iframe.html');
+  }
 }
 
 // helper for reading and deserializing json from fs
@@ -204,7 +212,7 @@ async function writeJson(obj, file) {
  *
  * @param {string} buildType - The build type.
  * @param {string} platform - The platform (i.e. the browser).
- * @returns {object} The build modifications for the given build type and platform.
+ * @returns {Promise<object>} The build modifications for the given build type and platform.
  */
 async function getBuildModifications(buildType, platform) {
   const buildConfig = loadBuildTypesConfig();

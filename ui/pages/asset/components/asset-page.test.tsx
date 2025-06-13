@@ -13,7 +13,10 @@ import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import { mockNetworkState } from '../../../../test/stub/networks';
+import {
+  mockNetworkState,
+  mockMultichainNetworkState,
+} from '../../../../test/stub/networks';
 import useMultiPolling from '../../../hooks/useMultiPolling';
 import AssetPage from './asset-page';
 
@@ -59,6 +62,12 @@ describe('AssetPage', () => {
       confirmationExchangeRates: {},
     },
     metamask: {
+      ...mockMultichainNetworkState(),
+      remoteFeatureFlags: {
+        bridgeConfig: {
+          support: true,
+        },
+      },
       tokenList: {},
       tokenBalances: {
         [selectedAccountAddress]: {
@@ -90,6 +99,7 @@ describe('AssetPage', () => {
       },
       useCurrencyRateCheck: true,
       preferences: {},
+      enabledNetworkMap: {},
       internalAccounts: {
         accounts: {
           [selectedAccountAddress]: {
@@ -135,7 +145,6 @@ describe('AssetPage', () => {
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     setBackgroundConnection({
       getTokenSymbol: jest.fn(),
-      setBridgeFeatureFlags: jest.fn(),
     } as never);
   });
 
@@ -300,7 +309,7 @@ describe('AssetPage', () => {
     });
   });
 
-  it('should not show the Bridge button if chain id is not supported', async () => {
+  it('should disable Bridge button if chain id is not supported', async () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
@@ -312,7 +321,7 @@ describe('AssetPage', () => {
       }),
     );
     const bridgeButton = queryByTestId('token-overview-bridge');
-    expect(bridgeButton).not.toBeInTheDocument();
+    expect(bridgeButton).toBeDisabled();
   });
 
   it('should render the network name', async () => {
@@ -365,10 +374,10 @@ describe('AssetPage', () => {
       }),
     );
 
-    // Verify no chart is rendered
+    // Verify we show the loading state
     await waitFor(() => {
-      const chart = queryByTestId('asset-price-chart');
-      expect(chart).toBeNull();
+      const chart = queryByTestId('asset-chart-loading');
+      expect(chart).toBeInTheDocument();
     });
 
     const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
@@ -415,7 +424,7 @@ describe('AssetPage', () => {
     // Verify chart is rendered
     await waitFor(() => {
       const chart = queryByTestId('asset-price-chart');
-      expect(chart).toHaveClass('mm-box--background-color-transparent');
+      expect(chart).toBeInTheDocument();
     });
 
     // Verify market data is rendered

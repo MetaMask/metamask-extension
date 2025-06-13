@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
+import { MULTICHAIN_NETWORK_TICKER } from '@metamask/multichain-network-controller';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import {
   getMultichainCurrentCurrency,
@@ -9,10 +10,14 @@ import {
 } from '../selectors/multichain';
 
 import { getValueFromWeiHex } from '../../shared/modules/conversion.utils';
-import { TEST_NETWORK_TICKER_MAP } from '../../shared/constants/network';
+import {
+  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
+  TEST_NETWORK_TICKER_MAP,
+} from '../../shared/constants/network';
 import { Numeric } from '../../shared/modules/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
+import { getCurrencyRates } from '../ducks/metamask/metamask';
 import { useMultichainSelector } from './useMultichainSelector';
 
 // The smallest non-zero amount that can be displayed.
@@ -126,6 +131,7 @@ function formatNonEvmAssetCurrencyDisplay({
  *
  * @param {string} inputValue - The value to format for display
  * @param {UseCurrencyOptions} opts - An object for options to format the inputValue
+ * @param {string} chainId - chainId to use
  * @returns {[string, CurrencyDisplayParts]}
  */
 export function useCurrencyDisplay(
@@ -140,6 +146,7 @@ export function useCurrencyDisplay(
     isAggregatedFiatOverviewBalance,
     ...opts
   },
+  chainId = null,
 ) {
   const isEvm = useMultichainSelector(getMultichainIsEvm, account);
   const currentCurrency = useMultichainSelector(
@@ -155,8 +162,11 @@ export function useCurrencyDisplay(
     account,
   );
 
+  const currencyRates = useMultichainSelector(getCurrencyRates, account);
   const isUserPreferredCurrency = currency === currentCurrency;
-  const isNativeCurrency = currency === nativeCurrency;
+  const isNativeCurrency =
+    currency === nativeCurrency ||
+    currency === CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId];
 
   const value = useMemo(() => {
     if (displayValue) {
@@ -172,7 +182,10 @@ export function useCurrencyDisplay(
         currentCurrency,
         nativeCurrency,
         inputValue,
-        conversionRate,
+        conversionRate: chainId
+          ? currencyRates?.[CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId]]
+              ?.conversionRate
+          : conversionRate,
       });
     }
 
@@ -203,6 +216,8 @@ export function useCurrencyDisplay(
     numberOfDecimals,
     currentCurrency,
     isAggregatedFiatOverviewBalance,
+    chainId,
+    currencyRates,
   ]);
 
   let suffix;
@@ -210,9 +225,10 @@ export function useCurrencyDisplay(
   if (!opts.hideLabel) {
     // if the currency we are displaying is the native currency of one of our preloaded test-nets (goerli, sepolia etc.)
     // then we allow lowercase characters, otherwise we force to uppercase any suffix passed as a currency
-    const currencyTickerSymbol = Object.values(
-      TEST_NETWORK_TICKER_MAP,
-    ).includes(currency)
+    const currencyTickerSymbol = [
+      ...Object.values(TEST_NETWORK_TICKER_MAP),
+      ...Object.values(MULTICHAIN_NETWORK_TICKER),
+    ].includes(currency)
       ? currency
       : currency?.toUpperCase();
 

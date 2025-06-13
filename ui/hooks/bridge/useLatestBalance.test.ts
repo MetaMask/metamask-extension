@@ -1,39 +1,32 @@
-import { BigNumber } from 'bignumber.js';
 import { zeroAddress } from 'ethereumjs-util';
+import * as bridgeController from '@metamask/bridge-controller';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import { SolScope } from '@metamask/keyring-api';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { createBridgeMockStore } from '../../../test/jest/mock-store';
+import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { createTestProviderTools } from '../../../test/stub/provider';
-import * as tokenutil from '../../../shared/lib/token-util';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import useLatestBalance from './useLatestBalance';
 
-const mockGetBalance = jest.fn();
-jest.mock('@ethersproject/providers', () => {
+const mockCalcLatestSrcBalance = jest.fn();
+jest.mock('@metamask/bridge-controller', () => {
   return {
-    Web3Provider: jest.fn().mockImplementation(() => {
-      return {
-        getBalance: mockGetBalance,
-      };
-    }),
+    ...jest.requireActual('@metamask/bridge-controller'),
+    calcLatestSrcBalance: (...args: unknown[]) =>
+      mockCalcLatestSrcBalance(...args),
   };
 });
 
-const mockFetchTokenBalance = jest.spyOn(tokenutil, 'fetchTokenBalance');
-jest.mock('../../../shared/lib/token-util', () => ({
-  ...jest.requireActual('../../../shared/lib/token-util'),
-  fetchTokenBalance: jest.fn(),
-}));
-
 const renderUseLatestBalance = (
-  token: { address: string; decimals?: number | string },
-  chainId: string,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  token: { address: string; decimals?: number | string; chainId: any },
   mockStoreState: object,
 ) =>
-  renderHookWithProvider(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    () => useLatestBalance(token as any, chainId as any),
-    mockStoreState,
-  );
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  renderHookWithProvider(() => useLatestBalance(token as any), mockStoreState);
 
 describe('useLatestBalance', () => {
   beforeEach(() => {
@@ -43,47 +36,115 @@ describe('useLatestBalance', () => {
       chainId: CHAIN_IDS.MAINNET,
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    global.ethereumProvider = provider as any;
+    global.ethereumProvider = provider;
   });
 
   it('returns balanceAmount for native asset in current chain', async () => {
-    mockGetBalance.mockResolvedValue(new BigNumber('1000000000000000000'));
+    mockCalcLatestSrcBalance.mockResolvedValueOnce('1000000000000000000');
 
     const { result, waitForNextUpdate } = renderUseLatestBalance(
-      { address: zeroAddress(), decimals: 18 },
-      CHAIN_IDS.MAINNET,
+      { address: zeroAddress(), decimals: 18, chainId: CHAIN_IDS.MAINNET },
       createBridgeMockStore(),
     );
 
     await waitForNextUpdate();
-    expect(result.current).toStrictEqual(new BigNumber('1'));
+    expect(result.current?.toString()).toBe('1');
 
-    expect(mockGetBalance).toHaveBeenCalledTimes(1);
-    expect(mockGetBalance).toHaveBeenCalledWith(
-      '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc',
+    expect(mockCalcLatestSrcBalance).toHaveBeenCalledTimes(1);
+    expect(mockCalcLatestSrcBalance).toHaveBeenCalledWith(
+      global.ethereumProvider,
+      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      '0x0000000000000000000000000000000000000000',
+      CHAIN_IDS.MAINNET,
     );
-    expect(mockFetchTokenBalance).toHaveBeenCalledTimes(0);
   });
 
   it('returns balanceAmount for ERC20 asset in current chain', async () => {
-    mockFetchTokenBalance.mockResolvedValueOnce(new BigNumber('15390000'));
+    mockCalcLatestSrcBalance.mockResolvedValueOnce('15390000');
 
     const { result, waitForNextUpdate } = renderUseLatestBalance(
-      { address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', decimals: '6' },
-      CHAIN_IDS.MAINNET,
+      {
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        decimals: 6,
+        chainId: CHAIN_IDS.MAINNET,
+      },
       createBridgeMockStore(),
     );
 
     await waitForNextUpdate();
-    expect(result.current).toStrictEqual(new BigNumber('15.39'));
+    expect(result.current?.toString()).toStrictEqual('15.39');
 
-    expect(mockFetchTokenBalance).toHaveBeenCalledTimes(1);
-    expect(mockFetchTokenBalance).toHaveBeenCalledWith(
-      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+    expect(mockCalcLatestSrcBalance).toHaveBeenCalledTimes(1);
+    expect(mockCalcLatestSrcBalance).toHaveBeenCalledWith(
       global.ethereumProvider,
+      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      CHAIN_IDS.MAINNET,
     );
-    expect(mockGetBalance).toHaveBeenCalledTimes(0);
+  });
+
+  it('returns balanceAmount for ERC20 asset in current caip-formatted EVM chain', async () => {
+    mockCalcLatestSrcBalance.mockResolvedValueOnce('15390000');
+
+    const { result, waitForNextUpdate } = renderUseLatestBalance(
+      {
+        address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        decimals: 6,
+        chainId: toEvmCaipChainId(CHAIN_IDS.MAINNET),
+      },
+      createBridgeMockStore(),
+    );
+
+    await waitForNextUpdate();
+    expect(result.current?.toString()).toStrictEqual('15.39');
+
+    expect(mockCalcLatestSrcBalance).toHaveBeenCalledTimes(1);
+    expect(mockCalcLatestSrcBalance).toHaveBeenCalledWith(
+      global.ethereumProvider,
+      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      CHAIN_IDS.MAINNET,
+    );
+  });
+
+  it('returns balance amount for Solana token', async () => {
+    const mockStoreState = createBridgeMockStore({
+      metamaskStateOverrides: {
+        internalAccounts: {
+          selectedAccount: 'test-account-id',
+          accounts: {
+            'test-account-id': {
+              id: 'test-account-id',
+              type: 'solana',
+              address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
+              scopes: [SolScope.Mainnet],
+            },
+          },
+        },
+        balances: {
+          'test-account-id': {
+            [bridgeController.getNativeAssetForChainId(
+              bridgeController.ChainId.SOLANA,
+            ).assetId]: {
+              amount: '2',
+            },
+          },
+        },
+      },
+    });
+
+    const { result, waitForNextUpdate } = renderUseLatestBalance(
+      {
+        address: bridgeController.getNativeAssetForChainId(
+          MultichainNetworks.SOLANA,
+        ).assetId,
+        decimals: 9,
+        chainId: MultichainNetworks.SOLANA,
+      },
+      mockStoreState,
+    );
+
+    await waitForNextUpdate();
+    expect(result.current?.toString()).toBe('2');
   });
 });

@@ -4,12 +4,7 @@ import FixtureBuilder from '../../fixture-builder';
 import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
 import ContractAddressRegistry from '../../seeder/contract-address-registry';
-import {
-  multipleGanacheOptionsForType2Transactions,
-  PRIVATE_KEY_TWO,
-  withFixtures,
-  WINDOW_TITLES,
-} from '../../helpers';
+import { PRIVATE_KEY_TWO, withFixtures, WINDOW_TITLES } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -18,6 +13,7 @@ import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 describe('Snap Account Contract interaction', function (this: Suite) {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
@@ -28,8 +24,11 @@ describe('Snap Account Contract interaction', function (this: Suite) {
         fixtures: new FixtureBuilder()
           .withPermissionControllerSnapAccountConnectedToTestDapp()
           .build(),
-        localNodeOptions: multipleGanacheOptionsForType2Transactions,
+        localNodeOptions: {
+          hardfork: 'london',
+        },
         smartContract,
+        testSpecificMock: mockSimpleKeyringSnap,
         title: this.test?.fullTitle(),
       },
       async ({

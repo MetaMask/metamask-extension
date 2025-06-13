@@ -1,7 +1,6 @@
-import {
-  BridgeHistoryItem,
-  StatusTypes,
-} from '../../../../shared/types/bridge-status';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import { StatusTypes } from '@metamask/bridge-controller';
+import { MINUTE } from '../../../../shared/constants/time';
 import { getIsDelayed } from './transaction-details';
 
 describe('transaction-details', () => {
@@ -36,8 +35,8 @@ describe('transaction-details', () => {
       expect(result).toBe(false);
     });
 
-    it('returns true when current time exceeds estimated completion time', () => {
-      const startTime = Date.now() - 61 * 1000;
+    it('returns true when current time exceeds estimated completion time by 10 minutes', () => {
+      const startTime = Date.now() - 61 * 1000 - 10 * MINUTE;
 
       const result = getIsDelayed(StatusTypes.PENDING, {
         startTime,
@@ -45,6 +44,17 @@ describe('transaction-details', () => {
       } as BridgeHistoryItem);
 
       expect(result).toBe(true);
+    });
+
+    it('returns false when current time exceeds estimated completion time, but less than 10 minutes have passed', () => {
+      const startTime = Date.now() - 61 * 1000;
+
+      const result = getIsDelayed(StatusTypes.PENDING, {
+        startTime,
+        estimatedProcessingTimeInSeconds: 60,
+      } as BridgeHistoryItem);
+
+      expect(result).toBe(false);
     });
   });
 });

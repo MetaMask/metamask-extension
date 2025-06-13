@@ -5,6 +5,7 @@ import {
   openDapp,
   WINDOW_TITLES,
   unlockWallet,
+  logInWithBalanceValidation,
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
@@ -17,7 +18,7 @@ import TokenTransferTransactionConfirmation from '../../page-objects/pages/confi
 
 const recipientAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
-describe('Transfer custom tokens @no-mmi', function () {
+describe('Transfer custom tokens', function () {
   const smartContract = SMART_CONTRACTS.HST;
   const symbol = 'TST';
   const valueWithSymbol = (value: string) => `${value} ${symbol}`;
@@ -30,12 +31,13 @@ describe('Transfer custom tokens @no-mmi', function () {
         {
           dapp: true,
           fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
+          localNodeOptions: { hardfork: 'muirGlacier' },
           smartContract,
           title: this.test?.fullTitle(),
           testSpecificMock: mocks,
         },
         async ({ driver }) => {
-          await unlockWallet(driver);
+          await logInWithBalanceValidation(driver);
 
           const homePage = new HomePage(driver);
           const assetListPage = new AssetListPage(driver);
@@ -87,6 +89,7 @@ describe('Transfer custom tokens @no-mmi', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withTokensControllerERC20()
             .build(),
+          localNodeOptions: { hardfork: 'muirGlacier' },
           smartContract,
           title: this.test?.fullTitle(),
           testSpecificMock: mocks,

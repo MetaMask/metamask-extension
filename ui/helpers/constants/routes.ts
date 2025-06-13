@@ -12,6 +12,7 @@ export const LOCK_ROUTE = '/lock';
 PATH_NAME_MAP[LOCK_ROUTE] = 'Lock Page';
 
 export const ASSET_ROUTE = '/asset';
+export const DEFI_ROUTE = '/defi';
 PATH_NAME_MAP[`${ASSET_ROUTE}/:asset/:id`] = `Asset Page`;
 PATH_NAME_MAP[`${ASSET_ROUTE}/image/:asset/:id`] = `Nft Image Page`;
 
@@ -65,8 +66,22 @@ PATH_NAME_MAP[`${CONTACT_VIEW_ROUTE}/:address`] = 'View Contact Settings Page';
 export const SNAP_SETTINGS_ROUTE = '/settings/snap';
 PATH_NAME_MAP[`${SNAP_SETTINGS_ROUTE}/:snapId`] = 'Snap Settings Page';
 
+export const REVEAL_SRP_LIST_ROUTE =
+  '/settings/security-and-privacy/reveal-srp-list';
+PATH_NAME_MAP[REVEAL_SRP_LIST_ROUTE] =
+  'Reveal Secret Recovery Phrase List Page';
+
+export const BACKUPANDSYNC_ROUTE =
+  '/settings/security-and-privacy/backup-and-sync';
+PATH_NAME_MAP[BACKUPANDSYNC_ROUTE] = 'Backup And Sync Settings Page';
+
 export const REVEAL_SEED_ROUTE = '/seed';
-PATH_NAME_MAP[REVEAL_SEED_ROUTE] = 'Reveal Secret Recovery Phrase Page';
+// This `:keyringId` parameter is actually optional.
+PATH_NAME_MAP[`${REVEAL_SEED_ROUTE}/:keyringId`] =
+  'Reveal Secret Recovery Phrase Page';
+
+export const IMPORT_SRP_ROUTE = '/import-srp';
+PATH_NAME_MAP[IMPORT_SRP_ROUTE] = 'Import Secret Recovery Phrase Page';
 
 export const RESTORE_VAULT_ROUTE = '/restore-vault';
 PATH_NAME_MAP[RESTORE_VAULT_ROUTE] = 'Restore Vault Page';
@@ -87,6 +102,12 @@ PATH_NAME_MAP[CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE] =
 export const NEW_ACCOUNT_ROUTE = '/new-account';
 PATH_NAME_MAP[NEW_ACCOUNT_ROUTE] = 'New Account Page';
 
+export const ACCOUNT_DETAILS_ROUTE = '/account-details';
+PATH_NAME_MAP[ACCOUNT_DETAILS_ROUTE] = 'Account Details Page';
+
+export const ACCOUNT_DETAILS_QR_CODE_ROUTE = '/account-details/qr-code';
+PATH_NAME_MAP[ACCOUNT_DETAILS_QR_CODE_ROUTE] = 'Account Details QR Code Page';
+
 export const CONFIRM_ADD_SUGGESTED_NFT_ROUTE = '/confirm-add-suggested-nft';
 PATH_NAME_MAP[CONFIRM_ADD_SUGGESTED_NFT_ROUTE] =
   'Confirm Add Suggested NFT Page';
@@ -96,6 +117,17 @@ PATH_NAME_MAP[CONNECT_HARDWARE_ROUTE] = 'Connect Hardware Wallet Page';
 
 export const SEND_ROUTE = '/send';
 PATH_NAME_MAP[SEND_ROUTE] = 'Send Page';
+
+export const REMOTE_ROUTE = '/remote';
+PATH_NAME_MAP[REMOTE_ROUTE] = 'Remote Mode Page';
+
+export const REMOTE_ROUTE_SETUP_SWAPS = '/remote/setup-swaps';
+PATH_NAME_MAP[REMOTE_ROUTE_SETUP_SWAPS] = 'Remote Mode Setup Swaps Page';
+
+export const REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE =
+  '/remote/setup-daily-allowance';
+PATH_NAME_MAP[REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE] =
+  'Remote Mode Setup Daily Allowance Page';
 
 export const CONNECTIONS = '/connections';
 PATH_NAME_MAP[CONNECTIONS] = 'Connections';

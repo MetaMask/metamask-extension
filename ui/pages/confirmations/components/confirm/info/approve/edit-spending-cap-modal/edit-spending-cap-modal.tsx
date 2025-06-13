@@ -1,6 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import { calcTokenAmount } from '../../../../../../../../shared/lib/transactions-controller-utils';
 import { hexToDecimal } from '../../../../../../../../shared/modules/conversion.utils';
 import {
@@ -27,21 +28,29 @@ import {
   estimateGas,
   updateEditableParams,
 } from '../../../../../../../store/actions';
-import { getCustomTxParamsData } from '../../../../../confirm-approve/confirm-approve.util';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
+import { ConfirmLoader } from '../../shared/confirm-loader/confirm-loader';
+import { parseApprovalTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
+import { updateApprovalAmount } from '../../../../../../../../shared/lib/transactions/approvals';
 
 export function countDecimalDigits(numberString: string) {
   return numberString.split('.')[1]?.length || 0;
 }
 
 export const EditSpendingCapModal = ({
+  data,
   isOpenEditSpendingCapModal,
+  onSubmit,
   setIsOpenEditSpendingCapModal,
+  to,
 }: {
+  data?: Hex;
   isOpenEditSpendingCapModal: boolean;
+  onSubmit?: (data: Hex) => void;
   setIsOpenEditSpendingCapModal: (newValue: boolean) => void;
+  to?: Hex;
 }) => {
   const t = useI18nContext();
 
@@ -50,10 +59,20 @@ export const EditSpendingCapModal = ({
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
+  const currentTo = transactionMeta.txParams.to;
+  const currentFrom = transactionMeta.txParams.from;
+  const currentData = transactionMeta.txParams.data as Hex;
+
+  const transactionTo = to ?? currentTo;
+  const transactionData = data ?? currentData;
+
+  const { tokenAddress } =
+    parseApprovalTransactionData(transactionData ?? '0x') ?? {};
+
   const { userBalance, tokenSymbol, decimals } = useAssetDetails(
-    transactionMeta.txParams.to,
-    transactionMeta.txParams.from,
-    transactionMeta.txParams.data,
+    tokenAddress ?? transactionTo,
+    currentFrom,
+    transactionData,
     transactionMeta.chainId,
   );
 
@@ -62,10 +81,21 @@ export const EditSpendingCapModal = ({
     Number(decimals ?? '0'),
   ).toFixed();
 
-  const { formattedSpendingCap, spendingCap } = useApproveTokenSimulation(
-    transactionMeta,
-    decimals,
+  const finalTransactionMeta = useMemo(
+    () => ({
+      ...transactionMeta,
+      txParams: {
+        ...transactionMeta.txParams,
+        to: transactionTo,
+        from: currentFrom,
+        data: transactionData,
+      },
+    }),
+    [currentFrom, transactionData, transactionMeta, transactionTo],
   );
+
+  const { formattedSpendingCap, pending, spendingCap } =
+    useApproveTokenSimulation(finalTransactionMeta, decimals);
 
   const [customSpendingCapInputValue, setCustomSpendingCapInputValue] =
     useState(spendingCap);
@@ -90,32 +120,44 @@ export const EditSpendingCapModal = ({
   const handleSubmit = useCallback(async () => {
     setIsModalSaving(true);
 
-    const customTxParamsData = getCustomTxParamsData(
-      transactionMeta?.txParams?.data,
-      {
-        customPermissionAmount: customSpendingCapInputValue || '0',
-        decimals: decimals || '0',
-      },
+    const customTxParamsData = updateApprovalAmount(
+      transactionData,
+      (customSpendingCapInputValue || '0').replace('#', ''),
+      Number(decimals || 0),
     );
 
-    const estimatedGasLimit = await estimateGas({
-      from: transactionMeta.txParams.from,
-      to: transactionMeta.txParams.to,
-      value: transactionMeta.txParams.value,
-      data: customTxParamsData,
-    });
-
-    dispatch(
-      updateEditableParams(transactionMeta.id, {
+    if (onSubmit) {
+      onSubmit(customTxParamsData);
+    } else {
+      const estimatedGasLimit = await estimateGas({
+        from: finalTransactionMeta.txParams.from,
+        to: finalTransactionMeta.txParams.to,
+        value: finalTransactionMeta.txParams.value,
         data: customTxParamsData,
-        gas: hexToDecimal(estimatedGasLimit as string),
-      }),
-    );
+      });
+
+      dispatch(
+        updateEditableParams(transactionMeta.id, {
+          data: customTxParamsData,
+          gas: hexToDecimal(estimatedGasLimit as string),
+        }),
+      );
+    }
 
     setIsModalSaving(false);
     setIsOpenEditSpendingCapModal(false);
     setCustomSpendingCapInputValue(spendingCap);
-  }, [customSpendingCapInputValue, spendingCap]);
+  }, [
+    customSpendingCapInputValue,
+    decimals,
+    dispatch,
+    finalTransactionMeta,
+    onSubmit,
+    setIsOpenEditSpendingCapModal,
+    spendingCap,
+    transactionData,
+    transactionMeta.id,
+  ]);
 
   const showDecimalError =
     decimals &&
@@ -151,52 +193,64 @@ export const EditSpendingCapModal = ({
           >
             {t('editSpendingCapDesc')}
           </Text>
-          <TextField
-            type={TextFieldType.Number}
-            value={customSpendingCapInputValue}
-            onChange={(event) =>
-              setCustomSpendingCapInputValue(event.target.value)
-            }
-            placeholder={`${formattedSpendingCap} ${tokenSymbol}`}
-            style={{ width: '100%' }}
-            inputProps={{ 'data-testid': 'custom-spending-cap-input' }}
-          />
-          {showDecimalError && (
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.errorDefault}
-              paddingTop={1}
-            >
-              {t('editSpendingCapError', [decimals])}
-            </Text>
+          {pending ? (
+            <ConfirmLoader />
+          ) : (
+            <>
+              <TextField
+                type={TextFieldType.Number}
+                value={customSpendingCapInputValue}
+                onChange={(event) =>
+                  setCustomSpendingCapInputValue(event.target.value)
+                }
+                placeholder={`${formattedSpendingCap} ${tokenSymbol}`}
+                style={{ width: '100%' }}
+                inputProps={{ 'data-testid': 'custom-spending-cap-input' }}
+              />
+              {showDecimalError && (
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.errorDefault}
+                  paddingTop={1}
+                >
+                  {t('editSpendingCapError', [decimals])}
+                </Text>
+              )}
+              {showSpecialCharacterError && (
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.errorDefault}
+                  paddingTop={1}
+                >
+                  {t('editSpendingCapSpecialCharError')}
+                </Text>
+              )}
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                paddingTop={1}
+              >
+                {t('editSpendingCapAccountBalance', [
+                  accountBalance,
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                  tokenSymbol || '',
+                ])}
+              </Text>
+            </>
           )}
-          {showSpecialCharacterError && (
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.errorDefault}
-              paddingTop={1}
-            >
-              {t('editSpendingCapSpecialCharError')}
-            </Text>
-          )}
-          <Text
-            variant={TextVariant.bodySm}
-            color={TextColor.textAlternative}
-            paddingTop={1}
-          >
-            {t('editSpendingCapAccountBalance', [
-              accountBalance,
-              tokenSymbol || '',
-            ])}
-          </Text>
         </ModalBody>
         <ModalFooter
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onSubmit={handleSubmit}
           onCancel={handleCancel}
           submitButtonProps={{
             children: t('save'),
-            loading: isModalSaving,
+            loading: pending || isModalSaving,
             disabled:
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               showDecimalError ||
               showSpecialCharacterError ||
               customSpendingCapInputValue === '',

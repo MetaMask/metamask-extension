@@ -1,7 +1,7 @@
 import React from 'react';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
@@ -33,6 +33,7 @@ const render = (props: AccountOverviewEthProps) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+      remoteFeatureFlags: { assetsDefiPositionsEnabled: true }, // this to be removed when the feature flag is removed
       preferences: {
         ...mockState.metamask.preferences,
         tokenNetworkFilter: {
@@ -49,7 +50,6 @@ const render = (props: AccountOverviewEthProps) => {
 describe('AccountOverviewEth', () => {
   beforeEach(() => {
     setBackgroundConnection({
-      setBridgeFeatureFlags: jest.fn(),
       tokenBalancesStartPolling: jest.fn(),
     } as never);
   });
@@ -64,5 +64,6 @@ describe('AccountOverviewEth', () => {
     expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
     expect(queryByTestId('account-overview__nfts-tab')).toBeInTheDocument();
     expect(queryByTestId('account-overview__activity-tab')).toBeInTheDocument();
+    expect(queryByTestId('account-overview__defi-tab')).toBeInTheDocument();
   });
 });

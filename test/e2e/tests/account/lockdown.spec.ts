@@ -4,7 +4,7 @@ import {
   getGlobalProperties,
   testIntrinsic,
 } from '../../../helpers/protect-intrinsics-helpers';
-import { convertToHexValue, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { PAGES, Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
@@ -53,21 +53,10 @@ try {
 `;
 
 describe('lockdown', function (this: Mocha.Suite) {
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
-
   it('the UI environment is locked down', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        localNodeOptions: ganacheOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -85,7 +74,6 @@ describe('lockdown', function (this: Mocha.Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        localNodeOptions: ganacheOptions,
         ignoredConsoleErrors: ['Error: Could not establish connection.'],
         title: this.test?.fullTitle(),
       },

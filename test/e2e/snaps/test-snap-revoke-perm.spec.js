@@ -1,5 +1,8 @@
 const { withFixtures, WINDOW_TITLES, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const {
+  mockEthereumProviderSnap,
+} = require('../mock-response-data/snaps/snap-binary-mocks');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap revoke permission', function () {
@@ -7,6 +10,7 @@ describe('Test Snap revoke permission', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockEthereumProviderSnap,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -37,7 +41,6 @@ describe('Test Snap revoke permission', function () {
         // switch to metamask extension
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // wait for and click connect
         await driver.waitForSelector({
           text: 'Connect',
           tag: 'button',
@@ -47,7 +50,14 @@ describe('Test Snap revoke permission', function () {
           tag: 'button',
         });
 
-        // wait for and click connect
+        // wait and scroll if necessary
+        await driver.waitForSelector({
+          tag: 'h3',
+          text: 'Add to MetaMask',
+        });
+        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+
+        // wait for and click confirm
         await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElement({
           text: 'Confirm',

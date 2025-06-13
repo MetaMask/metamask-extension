@@ -20,7 +20,6 @@ import {
   ImportTokensModal,
 } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
-import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
 
 import {
   ASSET_ROUTE,
@@ -48,6 +47,11 @@ import {
   NOTIFICATIONS_SETTINGS_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE,
+  REMOTE_ROUTE,
+  REMOTE_ROUTE_SETUP_SWAPS,
+  REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
+  IMPORT_SRP_ROUTE,
+  DEFI_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -84,7 +88,7 @@ import {
   hideAppHeader,
   isConfirmTransactionRoute,
   setTheme,
-  showOnboardingHeader,
+  showAppHeader,
 } from './utils';
 
 // Begin Lazy Routes
@@ -94,6 +98,7 @@ const OnboardingFlow = mmLazy(() =>
 const Lock = mmLazy(() => import('../lock'));
 const UnlockPage = mmLazy(() => import('../unlock-page'));
 const RestoreVaultPage = mmLazy(() => import('../keychains/restore-vault'));
+const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp'));
 const RevealSeedConfirmation = mmLazy(() => import('../keychains/reveal-seed'));
 const Settings = mmLazy(() => import('../settings'));
 const NotificationsSettings = mmLazy(() => import('../notifications-settings'));
@@ -121,6 +126,7 @@ const NftFullImage = mmLazy(() =>
   import('../../components/app/assets/nfts/nft-details/nft-full-image'),
 );
 const Asset = mmLazy(() => import('../asset'));
+const DeFiPage = mmLazy(() => import('../defi'));
 const PermissionsPage = mmLazy(() =>
   import('../../components/multichain/pages/permissions-page/permissions-page'),
 );
@@ -133,6 +139,14 @@ const ReviewPermissions = mmLazy(() =>
   ),
 );
 const Home = mmLazy(() => import('../home'));
+
+const RemoteModeOverview = mmLazy(() => import('../remote-mode/overview'));
+const RemoteModeSetupSwaps = mmLazy(() =>
+  import('../remote-mode/setup/setup-swaps'),
+);
+const RemoteModeSetupDailyAllowance = mmLazy(() =>
+  import('../remote-mode/setup/setup-daily-allowance'),
+);
 // End Lazy Routes
 
 export default class Routes extends Component {
@@ -163,7 +177,7 @@ export default class Routes extends Component {
     isAccountMenuOpen: PropTypes.bool,
     toggleAccountMenu: PropTypes.func,
     isNetworkMenuOpen: PropTypes.bool,
-    toggleNetworkMenu: PropTypes.func,
+    networkMenuClose: PropTypes.func,
     accountDetailsAddress: PropTypes.string,
     isImportNftsModalOpen: PropTypes.bool.isRequired,
     hideImportNftsModal: PropTypes.func.isRequired,
@@ -175,11 +189,18 @@ export default class Routes extends Component {
     isDeprecatedNetworkModalOpen: PropTypes.bool.isRequired,
     hideDeprecatedNetworkModal: PropTypes.func.isRequired,
     clearSwitchedNetworkDetails: PropTypes.func.isRequired,
+    switchedNetworkDetails: PropTypes.oneOf([
+      null,
+      PropTypes.shape({
+        origin: PropTypes.string.isRequired,
+        networkClientId: PropTypes.string.isRequired,
+      }),
+    ]),
+    switchedNetworkNeverShowMessage: PropTypes.bool,
     networkToAutomaticallySwitchTo: PropTypes.object,
     automaticallySwitchNetwork: PropTypes.func.isRequired,
     totalUnapprovedConfirmationCount: PropTypes.number.isRequired,
     currentExtensionPopupId: PropTypes.number,
-    clearEditedNetwork: PropTypes.func.isRequired,
     oldestPendingApproval: PropTypes.object,
     pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
     transactionsMetadata: PropTypes.object.isRequired,
@@ -280,10 +301,12 @@ export default class Routes extends Component {
             exact
           />
           <Authenticated
-            path={REVEAL_SEED_ROUTE}
+            // `:keyringId` is optional here, if not provided, this will fallback
+            // to the main seed phrase.
+            path={`${REVEAL_SEED_ROUTE}/:keyringId?`}
             component={RevealSeedConfirmation}
-            exact
           />
+          <Authenticated path={IMPORT_SRP_ROUTE} component={ImportSrpPage} />
           <Authenticated path={SETTINGS_ROUTE} component={Settings} />
           <Authenticated
             path={NOTIFICATIONS_SETTINGS_ROUTE}
@@ -347,6 +370,10 @@ export default class Routes extends Component {
           />
           <Authenticated path={`${ASSET_ROUTE}/:chainId`} component={Asset} />
           <Authenticated
+            path={`${DEFI_ROUTE}/:chainId/:protocolId`}
+            component={DeFiPage}
+          />
+          <Authenticated
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
           />
@@ -356,6 +383,22 @@ export default class Routes extends Component {
             component={ReviewPermissions}
             exact
           />
+          <Authenticated
+            path={REMOTE_ROUTE}
+            component={RemoteModeOverview}
+            exact
+          />
+          <Authenticated
+            path={REMOTE_ROUTE_SETUP_SWAPS}
+            component={RemoteModeSetupSwaps}
+            exact
+          />
+          <Authenticated
+            path={REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE}
+            component={RemoteModeSetupDailyAllowance}
+            exact
+          />
+
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>
@@ -387,7 +430,6 @@ export default class Routes extends Component {
       isAccountMenuOpen,
       toggleAccountMenu,
       isNetworkMenuOpen,
-      toggleNetworkMenu,
       accountDetailsAddress,
       isImportTokensModalOpen,
       isDeprecatedNetworkModalOpen,
@@ -400,11 +442,13 @@ export default class Routes extends Component {
       hideImportTokensModal,
       hideDeprecatedNetworkModal,
       clearSwitchedNetworkDetails,
-      clearEditedNetwork,
+      networkMenuClose,
       privacyMode,
       oldestPendingApproval,
       pendingApprovals,
       transactionsMetadata,
+      switchedNetworkDetails,
+      switchedNetworkNeverShowMessage,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -469,8 +513,8 @@ export default class Routes extends Component {
         })}
         dir={textDirection}
         onMouseUp={
-          getShowAutoNetworkSwitchTest(this.props)
-            ? () => clearSwitchedNetworkDetails()
+          switchedNetworkDetails && !switchedNetworkNeverShowMessage
+            ? clearSwitchedNetworkDetails
             : undefined
         }
       >
@@ -478,49 +522,41 @@ export default class Routes extends Component {
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
-        {!hideAppHeader(this.props) && <AppHeader location={location} />}
+        {process.env.REMOVE_GNS
+          ? showAppHeader(this.props) && <AppHeader location={location} />
+          : !hideAppHeader(this.props) && <AppHeader location={location} />}
         {isConfirmTransactionRoute(this.pathname) && <MultichainMetaFoxLogo />}
-        {showOnboardingHeader(location) && <OnboardingAppHeader />}
         {isAccountMenuOpen ? (
           <AccountListMenu
-            onClose={() => toggleAccountMenu()}
+            onClose={toggleAccountMenu}
             privacyMode={privacyMode}
           />
         ) : null}
         {isNetworkMenuOpen ? (
-          <NetworkListMenu
-            onClose={() => {
-              toggleNetworkMenu();
-              clearEditedNetwork();
-            }}
-          />
+          <NetworkListMenu onClose={networkMenuClose} />
         ) : null}
         <NetworkConfirmationPopover />
         {accountDetailsAddress ? (
           <AccountDetails address={accountDetailsAddress} />
         ) : null}
         {isImportNftsModalOpen ? (
-          <ImportNftsModal onClose={() => hideImportNftsModal()} />
+          <ImportNftsModal onClose={hideImportNftsModal} />
         ) : null}
 
-        {isIpfsModalOpen ? (
-          <ToggleIpfsModal onClose={() => hideIpfsModal()} />
-        ) : null}
+        {isIpfsModalOpen ? <ToggleIpfsModal onClose={hideIpfsModal} /> : null}
         {isBasicConfigurationModalOpen ? <BasicConfigurationModal /> : null}
         {isImportTokensModalOpen ? (
-          <ImportTokensModal onClose={() => hideImportTokensModal()} />
+          <ImportTokensModal onClose={hideImportTokensModal} />
         ) : null}
         {isDeprecatedNetworkModalOpen ? (
-          <DeprecatedNetworkModal
-            onClose={() => hideDeprecatedNetworkModal()}
-          />
+          <DeprecatedNetworkModal onClose={hideDeprecatedNetworkModal} />
         ) : null}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           isShowKeyringSnapRemovalResultModal && (
             <KeyringSnapRemovalResult
               isOpen={isShowKeyringSnapRemovalResultModal}
-              onClose={() => hideShowKeyringSnapRemovalResultModal()}
+              onClose={hideShowKeyringSnapRemovalResultModal}
             />
           )
           ///: END:ONLY_INCLUDE_IF
@@ -537,9 +573,4 @@ export default class Routes extends Component {
       </div>
     );
   }
-}
-
-// Will eventually delete this function
-function getShowAutoNetworkSwitchTest(props) {
-  return props.switchedNetworkDetails && !props.switchedNetworkNeverShowMessage;
 }

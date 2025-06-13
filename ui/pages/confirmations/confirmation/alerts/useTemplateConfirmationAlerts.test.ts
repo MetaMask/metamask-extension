@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import * as AlertActions from '../../../../ducks/confirm-alerts/confirm-alerts';
-import * as AddEthereumChainAlerts from './useAddEthereumChainAlerts';
+import * as UpdateEthereumChainAlerts from './useUpdateEthereumChainAlerts';
 
 import { useTemplateConfirmationAlerts } from './useTemplateConfirmationAlerts';
 
@@ -16,7 +16,7 @@ jest.mock('react-redux', () => ({
 const PENDING_APPROVAL_MOCK = {
   id: 'testApprovalId',
   requestData: { testProperty: 'testValue' },
-  // TODO: Replace `any` with type
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as ApprovalRequest<any>;
 
@@ -34,7 +34,7 @@ describe('updateConfirmationAlerts', () => {
     const mockDispatch = jest.fn();
     (useDispatch as jest.Mock).mockReturnValue(mockDispatch);
     jest
-      .spyOn(AddEthereumChainAlerts, 'useAddEthereumChainAlerts')
+      .spyOn(UpdateEthereumChainAlerts, 'useUpdateEthereumChainAlerts')
       .mockReturnValue(MOCK_ADD_ETH_CHAIN_ALERT);
     const mockUpdateAlerts = jest.spyOn(AlertActions, 'updateAlerts');
 
