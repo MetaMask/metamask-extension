@@ -1145,7 +1145,9 @@ export function setupController(
 
       connectEip1193(portStream, remotePort.sender);
 
-      if (isFirefox) {
+      // for firefox and manifest v2 (non production webpack builds)
+      // we expose the multichain provider via window.postMessage
+      if (isFirefox || !isManifestV3) {
         const mux = setupMultiplex(portStream);
         mux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
 
