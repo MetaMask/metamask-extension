@@ -56,14 +56,6 @@ describe('Deep Link', function () {
               },
             };
           });
-        await server.forHead(TEST_PAGE).thenCallback(() => {
-          return {
-            statusCode: 200,
-            headers: {
-              'Content-Type': 'text/html; charset=utf-8',
-            },
-          };
-        });
         await server.forGet(TEST_PAGE).thenCallback(() => {
           return {
             statusCode: 200,

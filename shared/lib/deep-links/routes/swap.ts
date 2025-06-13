@@ -9,9 +9,7 @@ import { Route } from './route.type';
 export default new Route({
   pathname: '/swap',
   getTitle: (_: URLSearchParams) => 'deepLink_OpenTheSwapsPage',
-  // wow. this is the worst lint rule we have. i hate it so much.
-  // eslint-disable-next-line func-name-matching
-  handler: function handleSwap(params: URLSearchParams) {
+  handler: function handle(params: URLSearchParams) {
     const query = new URLSearchParams();
 
     const from = params.get('from');

@@ -8,9 +8,7 @@ import { Route } from './route.type';
 export default new Route({
   pathname: '/home',
   getTitle: (_: URLSearchParams) => 'deepLink_OpenTheHomePage',
-  // wow. this is the worst lint rule we have. i hate it so much.
-  // eslint-disable-next-line func-name-matching
-  handler: function handleHome(_: URLSearchParams) {
+  handler: function handle(_: URLSearchParams) {
     return { path: DEFAULT_ROUTE, query: new URLSearchParams() };
   },
 });

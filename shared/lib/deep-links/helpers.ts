@@ -84,7 +84,7 @@ export const base64ToUint8Array = hasProperty(Uint8Array, 'fromBase64')
   ? // modern browsers
     (Uint8Array.fromBase64 as (base64: string) => Uint8Array)
   : function base64ToUint8Array(base64: string) {
-      // old browser
+      // old browsers
       const binaryString = atob(base64);
       return Uint8Array.from(binaryString, (c) => c.charCodeAt(0));
     };
