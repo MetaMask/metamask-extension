@@ -3,7 +3,6 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { Hex } from '@metamask/utils';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
-import ExtensionPlatform from '../../../../app/scripts/platforms/extension';
 import {
   useEIP7702Networks,
   EIP7702NetworkConfiguration,
