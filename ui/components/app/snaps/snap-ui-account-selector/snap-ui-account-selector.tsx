@@ -113,10 +113,10 @@ export const SnapUIAccountSelector: FunctionComponent<
       onSelect={handleSelect}
       disabled={disabled || accounts.length === 0}
       style={{
-        maxHeight: '82px',
+        maxHeight: '89px',
       }}
       itemStyle={{
-        maxHeight: '82px',
+        maxHeight: '89px',
       }}
     />
   );
