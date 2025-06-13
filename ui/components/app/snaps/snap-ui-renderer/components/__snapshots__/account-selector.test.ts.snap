@@ -18,7 +18,7 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
         >
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--ellipsis snap-ui-renderer__selector snap-ui-renderer__account-selector mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-lg"
-            style="justify-content: inherit; text-align: inherit; height: inherit; min-height: 48px; max-height: 82px;"
+            style="justify-content: inherit; text-align: inherit; height: inherit; min-height: 48px; max-height: 89px;"
           >
             <span
               class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--display-flex mm-box--width-full mm-box--color-text-default"
@@ -325,7 +325,7 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
           </label>
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--ellipsis snap-ui-renderer__selector snap-ui-renderer__account-selector mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-lg"
-            style="justify-content: inherit; text-align: inherit; height: inherit; min-height: 48px; max-height: 82px;"
+            style="justify-content: inherit; text-align: inherit; height: inherit; min-height: 48px; max-height: 89px;"
           >
             <span
               class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--display-flex mm-box--width-full mm-box--color-text-default"
