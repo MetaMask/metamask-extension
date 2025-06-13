@@ -24020,7 +24020,7 @@ SOFTWARE.
 ******************************
 
 react-popper
-2.2.4 <https://github.com/popperjs/react-popper>
+2.3.0 <https://github.com/popperjs/react-popper>
 The MIT License (MIT)
 
 Copyright (c) 2018 React Popper authors
