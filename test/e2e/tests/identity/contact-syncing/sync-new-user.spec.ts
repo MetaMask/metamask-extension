@@ -1,7 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { expect } from '@playwright/test';
-
 import { withFixtures, getCleanAppState } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
@@ -14,20 +13,20 @@ import { completeNewWalletFlowContactSyncing } from '../flows';
 import { arrangeContactSyncingTestUtils, TestContext } from './helpers';
 import { MOCK_CONTACT_ADDRESSES } from './mock-data';
 
-interface Contact {
+type Contact = {
   name: string;
   address: string;
   chainId?: string;
   memo?: string;
-}
+};
 
-interface AppState {
+type AppState = {
   metamask: {
     isContactSyncingEnabled: boolean;
     hasAccountSyncingSyncedAtLeastOnce: boolean;
     addressBook?: Record<string, Record<string, Contact>>;
   };
-}
+};
 
 describe('Contact syncing - New User', function (this: TestContext) {
   this.timeout(120000); // Contact syncing tests can be long
@@ -97,11 +96,13 @@ describe('Contact syncing - New User', function (this: TestContext) {
 
         // Debug: Check the current state after adding contact
         const currentState = await driver.executeScript(() =>
-          (window as {
-            stateHooks?: {
-              getCleanAppState?: () => AppState;
-            };
-          }).stateHooks?.getCleanAppState?.(),
+          (
+            window as {
+              stateHooks?: {
+                getCleanAppState?: () => AppState;
+              };
+            }
+          ).stateHooks?.getCleanAppState?.(),
         );
         console.log('Current state after adding contact:', {
           isContactSyncingEnabled:
@@ -144,22 +145,26 @@ describe('Contact syncing - New User', function (this: TestContext) {
         // Wait for contact syncing to initialize
         await driver.wait(async () => {
           const uiState = await driver.executeScript(() =>
-            (window as {
-              stateHooks?: {
-                getCleanAppState?: () => AppState;
-              };
-            }).stateHooks?.getCleanAppState?.(),
+            (
+              window as {
+                stateHooks?: {
+                  getCleanAppState?: () => AppState;
+                };
+              }
+            ).stateHooks?.getCleanAppState?.(),
           );
           return uiState?.metamask?.isContactSyncingEnabled === true;
         }, 15000);
 
         // Verify contact syncing is enabled even with empty storage
         const finalState = await driver.executeScript(() =>
-          (window as {
-            stateHooks?: {
-              getCleanAppState?: () => AppState;
-            };
-          }).stateHooks?.getCleanAppState?.(),
+          (
+            window as {
+              stateHooks?: {
+                getCleanAppState?: () => AppState;
+              };
+            }
+          ).stateHooks?.getCleanAppState?.(),
         );
 
         expect(finalState.metamask.isContactSyncingEnabled).toBe(true);

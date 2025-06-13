@@ -63,7 +63,9 @@ export function arrangeContactSyncingTestUtils(
             const chainContacts = addressBookState[chainId];
             if (typeof chainContacts === 'object' && chainContacts !== null) {
               for (const address in chainContacts) {
-                if (Object.prototype.hasOwnProperty.call(chainContacts, address)) {
+                if (
+                  Object.prototype.hasOwnProperty.call(chainContacts, address)
+                ) {
                   const contact = chainContacts[address];
                   if (
                     contact?.chainId &&

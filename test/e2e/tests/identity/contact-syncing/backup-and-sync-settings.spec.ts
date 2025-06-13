@@ -1,8 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { expect } from '@playwright/test';
-import { withFixtures } from '../../../helpers';
-import { getCleanAppState } from '../../../helpers';
+import { withFixtures, getCleanAppState } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import {
@@ -58,16 +57,18 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
 
           // Verify backup and sync is initially enabled
           const initialState = await driver.executeScript(() =>
-            (window as {
-              stateHooks?: {
-                getCleanAppState?: () => {
-                  metamask: {
-                    isBackupAndSyncEnabled: boolean;
-                    isContactSyncingEnabled: boolean;
+            (
+              window as {
+                stateHooks?: {
+                  getCleanAppState?: () => {
+                    metamask: {
+                      isBackupAndSyncEnabled: boolean;
+                      isContactSyncingEnabled: boolean;
+                    };
                   };
                 };
-              };
-            }).stateHooks?.getCleanAppState?.(),
+              }
+            ).stateHooks?.getCleanAppState?.(),
           );
           console.log('Initial backup and sync state:', {
             isBackupAndSyncEnabled:
@@ -84,16 +85,18 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
 
           // Verify contact syncing is now disabled
           const disabledState = await driver.executeScript(() =>
-            (window as {
-              stateHooks?: {
-                getCleanAppState?: () => {
-                  metamask: {
-                    isBackupAndSyncEnabled: boolean;
-                    isContactSyncingEnabled: boolean;
+            (
+              window as {
+                stateHooks?: {
+                  getCleanAppState?: () => {
+                    metamask: {
+                      isBackupAndSyncEnabled: boolean;
+                      isContactSyncingEnabled: boolean;
+                    };
                   };
                 };
-              };
-            }).stateHooks?.getCleanAppState?.(),
+              }
+            ).stateHooks?.getCleanAppState?.(),
           );
           console.log('Disabled contact sync state:', {
             isBackupAndSyncEnabled:
@@ -106,13 +109,15 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
           expect(disabledState.metamask.isContactSyncingEnabled).toBe(false);
 
           // Set up event counter to verify NO PUT request is made
-          const { prepareEventsEmittedCounter } = arrangeContactSyncingTestUtils(
-            driver,
-            userStorageMockttpController,
-          );
-          const { waitUntilEventsEmittedNumberEquals } = prepareEventsEmittedCounter(
-            UserStorageMockttpControllerEvents.PUT_SINGLE,
-          );
+          const { prepareEventsEmittedCounter } =
+            arrangeContactSyncingTestUtils(
+              driver,
+              userStorageMockttpController,
+            );
+          const { waitUntilEventsEmittedNumberEquals } =
+            prepareEventsEmittedCounter(
+              UserStorageMockttpControllerEvents.PUT_SINGLE,
+            );
 
           // Add a new contact via UI (like the account syncing test does)
           await header.openSettingsPage();
@@ -165,7 +170,10 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
 
           // Verify the contact list doesn't have the contact we added when sync was disabled
           const finalContacts = await getCurrentContacts();
-          console.log('Final contacts after new instance:', finalContacts.length);
+          console.log(
+            'Final contacts after new instance:',
+            finalContacts.length,
+          );
 
           // Verify we don't have the contact we added when contact sync was disabled
           const hasNewContact = finalContacts.some(
@@ -218,16 +226,18 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
 
           // Verify backup and sync settings are available and contact syncing is enabled
           const initialState = await driver.executeScript(() =>
-            (window as {
-              stateHooks?: {
-                getCleanAppState?: () => {
-                  metamask: {
-                    isBackupAndSyncEnabled: boolean;
-                    isContactSyncingEnabled: boolean;
+            (
+              window as {
+                stateHooks?: {
+                  getCleanAppState?: () => {
+                    metamask: {
+                      isBackupAndSyncEnabled: boolean;
+                      isContactSyncingEnabled: boolean;
+                    };
                   };
                 };
-              };
-            }).stateHooks?.getCleanAppState?.(),
+              }
+            ).stateHooks?.getCleanAppState?.(),
           );
 
           console.log('Initial backup and sync state:', {
@@ -242,13 +252,15 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
           expect(initialState.metamask.isContactSyncingEnabled).toBe(true);
 
           // Set up event counter to verify PUT request IS made when sync is enabled
-          const { prepareEventsEmittedCounter } = arrangeContactSyncingTestUtils(
-            driver,
-            userStorageMockttpController,
-          );
-          const { waitUntilEventsEmittedNumberEquals } = prepareEventsEmittedCounter(
-            UserStorageMockttpControllerEvents.PUT_SINGLE,
-          );
+          const { prepareEventsEmittedCounter } =
+            arrangeContactSyncingTestUtils(
+              driver,
+              userStorageMockttpController,
+            );
+          const { waitUntilEventsEmittedNumberEquals } =
+            prepareEventsEmittedCounter(
+              UserStorageMockttpControllerEvents.PUT_SINGLE,
+            );
 
           // Add a new contact via UI to test that syncing works when enabled
           await header.openSettingsPage();

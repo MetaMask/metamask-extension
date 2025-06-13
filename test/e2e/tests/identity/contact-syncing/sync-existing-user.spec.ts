@@ -5,7 +5,10 @@ import { expect } from '@playwright/test';
 import { withFixtures, getCleanAppState } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
-import { IDENTITY_TEAM_SEED_PHRASE, IDENTITY_TEAM_STORAGE_KEY } from '../constants';
+import {
+  IDENTITY_TEAM_SEED_PHRASE,
+  IDENTITY_TEAM_STORAGE_KEY,
+} from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import { createEncryptedResponse } from '../../../helpers/identity/user-storage/generateEncryptedData';
 import { completeOnboardFlowContactSyncing, getSRP } from '../flows';
@@ -82,7 +85,9 @@ describe('Contact Syncing - Existing User', function (this: TestContext) {
         createEncryptedResponse({
           data: contact,
           storageKey: IDENTITY_TEAM_STORAGE_KEY,
-          path: `${USER_STORAGE_FEATURE_NAMES.addressBook}.${createContactKey(contact)}`,
+          path: `${USER_STORAGE_FEATURE_NAMES.addressBook}.${createContactKey(
+            contact,
+          )}`,
         }),
       ),
     );
@@ -135,13 +140,11 @@ describe('Contact Syncing - Existing User', function (this: TestContext) {
             IDENTITY_TEAM_SEED_PHRASE,
           );
 
-          const {
-            waitUntilSyncedContactsNumberEquals,
-            getCurrentContacts,
-          } = arrangeContactSyncingTestUtils(
-            driver,
-            userStorageMockttpController,
-          );
+          const { waitUntilSyncedContactsNumberEquals, getCurrentContacts } =
+            arrangeContactSyncingTestUtils(
+              driver,
+              userStorageMockttpController,
+            );
 
           // STEP 1: Verify initial remote contacts are synced to local
           console.log('STEP 1: Waiting for initial remote contacts to sync...');
@@ -169,7 +172,9 @@ describe('Contact Syncing - Existing User', function (this: TestContext) {
           // Wait for the UI to be ready before opening settings
           await driver.wait(async () => {
             const uiState = await getCleanAppState(driver);
-            return uiState?.metamask?.hasAccountSyncingSyncedAtLeastOnce === true;
+            return (
+              uiState?.metamask?.hasAccountSyncingSyncedAtLeastOnce === true
+            );
           }, 30000);
 
           const settingsPage = new SettingsPage(driver);
@@ -189,17 +194,19 @@ describe('Contact Syncing - Existing User', function (this: TestContext) {
 
           // Debug: Check if contact syncing is still enabled and not in progress
           const debugState = await driver.executeScript(() =>
-            (window as {
-              stateHooks?: {
-                getCleanAppState?: () => {
-                  metamask: {
-                    isContactSyncingEnabled: boolean;
-                    isContactSyncingInProgress: boolean;
-                    isBackupAndSyncEnabled: boolean;
+            (
+              window as {
+                stateHooks?: {
+                  getCleanAppState?: () => {
+                    metamask: {
+                      isContactSyncingEnabled: boolean;
+                      isContactSyncingInProgress: boolean;
+                      isBackupAndSyncEnabled: boolean;
+                    };
                   };
                 };
-              };
-            }).stateHooks?.getCleanAppState?.(),
+              }
+            ).stateHooks?.getCleanAppState?.(),
           );
           console.log('Debug state after adding David:', {
             isContactSyncingEnabled:
