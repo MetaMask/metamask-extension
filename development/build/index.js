@@ -162,7 +162,6 @@ async function defineAndRunBuildTasks() {
         // in the future, more of the globals above can be put in this list
         'Proxy',
         'ret_nodes',
-
         'browser', // for testing vault corruption
         'chrome', // for testing vault corruption
         `indexedDB`, // for testing vault corruption

@@ -2,7 +2,14 @@ name: 'Check PR Max Lines'
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types:
+      - opened
+      - reopened
+      - synchronize
+    branches-ignore:
+      # Do not count lines on PRs targeting master or releases
+      - master
+      - Version-v*
 
 jobs:
   check-pr-max-lines:
