@@ -100,13 +100,17 @@ describe('Unlock Page', () => {
 
   it('changes password, submits, and redirects to the specified route', async () => {
     const intendedPath = '/intended-route';
+    const intendedSearch = '?abc=123';
     const mockStateNonUnlocked = {
       metamask: { isUnlocked: false },
     };
     const store = configureMockStore([thunk])(mockStateNonUnlocked);
     const history = createMemoryHistory({
       initialEntries: [
-        { pathname: '/unlock', state: { from: { pathname: intendedPath } } },
+        {
+          pathname: '/unlock',
+          state: { from: { pathname: intendedPath, search: intendedSearch } },
+        },
       ],
     });
     jest.spyOn(history, 'push');
@@ -124,7 +128,8 @@ describe('Unlock Page', () => {
 
     expect(mockTryUnlockMetamask).toHaveBeenCalledTimes(1);
     expect(history.push).toHaveBeenCalledTimes(1);
-    expect(history.push).toHaveBeenCalledWith(intendedPath);
+    expect(history.push).toHaveBeenCalledWith(intendedPath + intendedSearch);
     expect(history.location.pathname).toBe(intendedPath);
+    expect(history.location.search).toBe(intendedSearch);
   });
 });
