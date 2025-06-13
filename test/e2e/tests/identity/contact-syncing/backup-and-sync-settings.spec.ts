@@ -2,6 +2,7 @@ import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { expect } from '@playwright/test';
 import { withFixtures } from '../../../helpers';
+import { getCleanAppState } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import {
@@ -38,16 +39,15 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
         async ({ driver }) => {
           await completeNewWalletFlowContactSyncing(driver);
 
-          const { prepareEventsEmittedCounter } =
-            arrangeContactSyncingTestUtils(
-              driver,
-              userStorageMockttpController,
-            );
-
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
 
-          // Go to settings and turn off backup and sync
+          // Wait for the UI to be ready before opening settings
+          await driver.wait(async () => {
+            const uiState = await getCleanAppState(driver);
+            return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
+          }, 30000);
+
           await header.openSettingsPage();
           const settingsPage = new SettingsPage(driver);
           await settingsPage.check_pageIsLoaded();
@@ -90,10 +90,13 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
           expect(disabledState.metamask.isContactSyncingEnabled).toBe(false);
 
           // Set up event counter to verify NO PUT request is made
-          const { waitUntilEventsEmittedNumberEquals } =
-            prepareEventsEmittedCounter(
-              UserStorageMockttpControllerEvents.PUT_SINGLE,
-            );
+          const { prepareEventsEmittedCounter } = arrangeContactSyncingTestUtils(
+            driver,
+            userStorageMockttpController,
+          );
+          const { waitUntilEventsEmittedNumberEquals } = prepareEventsEmittedCounter(
+            UserStorageMockttpControllerEvents.PUT_SINGLE,
+          );
 
           // Add a new contact via UI (like the account syncing test does)
           await header.openSettingsPage();
@@ -183,16 +186,15 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
         async ({ driver }) => {
           await completeNewWalletFlowContactSyncing(driver);
 
-          const { prepareEventsEmittedCounter } =
-            arrangeContactSyncingTestUtils(
-              driver,
-              userStorageMockttpController,
-            );
-
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
 
-          // Go to settings
+          // Wait for the UI to be ready before opening settings
+          await driver.wait(async () => {
+            const uiState = await getCleanAppState(driver);
+            return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
+          }, 30000);
+
           await header.openSettingsPage();
           const settingsPage = new SettingsPage(driver);
           await settingsPage.check_pageIsLoaded();
@@ -219,10 +221,13 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
           expect(initialState.metamask.isContactSyncingEnabled).toBe(true);
 
           // Set up event counter to verify PUT request IS made when sync is enabled
-          const { waitUntilEventsEmittedNumberEquals } =
-            prepareEventsEmittedCounter(
-              UserStorageMockttpControllerEvents.PUT_SINGLE,
-            );
+          const { prepareEventsEmittedCounter } = arrangeContactSyncingTestUtils(
+            driver,
+            userStorageMockttpController,
+          );
+          const { waitUntilEventsEmittedNumberEquals } = prepareEventsEmittedCounter(
+            UserStorageMockttpControllerEvents.PUT_SINGLE,
+          );
 
           // Add a new contact via UI to test that syncing works when enabled
           await header.openSettingsPage();

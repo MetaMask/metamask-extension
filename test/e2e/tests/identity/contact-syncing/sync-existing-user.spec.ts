@@ -13,6 +13,7 @@ import { expect } from '@playwright/test';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
+import { getCleanAppState } from '../../../helpers';
 
 describe('Contact Syncing - Existing User', function (this: TestContext) {
   this.timeout(300000); // Extended timeout for comprehensive test
@@ -157,6 +158,14 @@ describe('Contact Syncing - Existing User', function (this: TestContext) {
 
           // Set up UI navigation
           const header = new HeaderNavbar(driver);
+          await header.check_pageIsLoaded();
+
+          // Wait for the UI to be ready before opening settings
+          await driver.wait(async () => {
+            const uiState = await getCleanAppState(driver);
+            return uiState?.metamask?.hasAccountSyncingSyncedAtLeastOnce === true;
+          }, 30000);
+
           const settingsPage = new SettingsPage(driver);
           const contactsSettings = new ContactsSettings(driver);
 

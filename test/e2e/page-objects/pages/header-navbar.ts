@@ -12,9 +12,8 @@ class HeaderNavbar {
 
   private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
 
-  private readonly threeDotButton = '[data-testid="account-options-menu-button"]';
-
-  private readonly threeDotMenu = '[data-testid="global-menu"]';
+  private readonly threeDotMenuButton =
+    '[data-testid="account-options-menu-button"]';
 
   private readonly accountSnapButton = { text: 'Snaps', tag: 'div' };
 
@@ -48,7 +47,7 @@ class HeaderNavbar {
     try {
       await this.driver.waitForMultipleSelectors([
         this.accountMenuButton,
-        this.threeDotButton,
+        this.threeDotMenuButton,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for header navbar to be loaded', e);
@@ -85,23 +84,13 @@ class HeaderNavbar {
   }
 
   async openThreeDotMenu(): Promise<void> {
-    let attempts = 0;
-    while (attempts < 3) {
-      try {
-        await this.driver.waitForSelector(this.threeDotButton, {
-          state: 'enabled',
-          timeout: 15000,
-        });
-        await this.driver.clickElementUsingMouseMove(this.threeDotButton);
-        await this.driver.waitForSelector(this.threeDotMenu, {
-          state: 'visible',
-          timeout: 5000,
-        });
-        return;
-      } catch (e) {
-        attempts++;
-        if (attempts === 3) throw e;
-      }
+    await this.driver.waitForSelector(this.threeDotMenuButton, {
+      state: 'enabled',
+    });
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
+    } else {
+      this.driver.clickElement(this.threeDotMenuButton);
     }
   }
 
@@ -118,13 +107,9 @@ class HeaderNavbar {
   }
 
   async openSettingsPage(): Promise<void> {
+    console.log('Open settings page');
     await this.openThreeDotMenu();
-    await this.driver.waitForSelector(this.settingsButton, {
-      state: 'visible',
-      timeout: 15000,
-    });
-    await this.driver.clickElementUsingMouseMove(this.settingsButton);
-    await this.driver.waitForSelector({ text: 'Settings', css: 'h3' });
+    await this.driver.clickElement(this.settingsButton);
   }
 
   async clickSwitchNetworkDropDown(): Promise<void> {

@@ -15,6 +15,7 @@ import {
   MOCK_CONTACT_ADDRESSES,
 } from './mock-data';
 import { expect } from '@playwright/test';
+import { getCleanAppState } from '../../../helpers';
 
 describe('Contact syncing - New User', function (this: TestContext) {
   this.timeout(120000); // Contact syncing tests can be long
@@ -45,15 +46,11 @@ describe('Contact syncing - New User', function (this: TestContext) {
         // Create new wallet and complete onboarding
         await completeNewWalletFlowContactSyncing(driver);
 
-        // Wait for contact syncing to be enabled
+        // Wait for the UI to be ready before opening settings
         await driver.wait(async () => {
-          const uiState = await driver.executeScript(() =>
-            (window as any).stateHooks?.getCleanAppState?.()
-          );
-          return uiState?.metamask?.isContactSyncingEnabled === true;
+          const uiState = await getCleanAppState(driver);
+          return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
         }, 30000);
-
-        console.log('Contact syncing enabled');
 
         // Set up test utilities
         const { waitUntilSyncedContactsNumberEquals } =
@@ -61,6 +58,11 @@ describe('Contact syncing - New User', function (this: TestContext) {
 
         // Add a test contact to trigger syncing
         const header = new HeaderNavbar(driver);
+        await header.check_pageIsLoaded();
+
+        // Add a small delay to ensure the menu is ready
+        await driver.delay(1000);
+
         await header.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.check_pageIsLoaded();
