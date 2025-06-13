@@ -68,13 +68,6 @@
     "message": "J’ai lu et j’accepte les $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Accédez à votre portefeuille en utilisant votre phrase secrète de récupération"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask ne peut pas récupérer votre mot de passe. Nous utiliserons votre phrase secrète de récupération pour vérifier votre identité, restaurer votre portefeuille et définir un nouveau mot de passe. Veuillez tout d’abord saisir la phrase secrète de récupération qui vous a été fournie lorsque vous avez créé votre portefeuille. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Accès à votre appareil photo..."
   },
