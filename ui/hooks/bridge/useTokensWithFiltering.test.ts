@@ -1,12 +1,11 @@
-import {
-  BridgeToken,
-  getNativeAssetForChainId,
-} from '@metamask/bridge-controller';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { MINUTE } from '../../../shared/constants/time';
+import type { BridgeToken } from '../../ducks/bridge/types';
 import { useTokensWithFiltering } from './useTokensWithFiltering';
 
 const NATIVE_TOKEN = getNativeAssetForChainId(CHAIN_IDS.MAINNET);
@@ -40,7 +39,7 @@ describe('useTokensWithFiltering', () => {
     jest.clearAllMocks();
   });
 
-  it.only('should return all tokens when chainId !== activeChainId and chainId has been imported, sorted by balance', async () => {
+  it('should return all tokens when chainId !== activeChainId and chainId has been imported, sorted by balance', async () => {
     const mockStore = createBridgeMockStore({
       metamaskStateOverrides: {
         completedOnboarding: true,
@@ -83,7 +82,51 @@ describe('useTokensWithFiltering', () => {
     expect(first10Tokens).toMatchSnapshot();
   });
 
-  it('should fetch bridge tokens if cached tokens have old timestamp', async () => {
+  it('should fetch bridge tokens if cached tokens are not defined', async () => {
+    const mockStore = createBridgeMockStore({
+      metamaskStateOverrides: {
+        completedOnboarding: true,
+        allDetectedTokens: {
+          '0xa': {
+            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': [
+              {
+                address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+                decimals: 6,
+              }, // USDC
+            ],
+          },
+        },
+        tokensChainsCache: {
+          [CHAIN_IDS.OPTIMISM]: {
+            timestamp: Date.now() - 11 * MINUTE,
+            data: {
+              [NATIVE_TOKEN.address]: NATIVE_TOKEN,
+              ...STATIC_MAINNET_TOKEN_LIST,
+            },
+          },
+        },
+      },
+    });
+
+    const { result, waitForNextUpdate } = renderHookWithProvider(() => {
+      const { filteredTokenListGenerator } = useTokensWithFiltering(
+        CHAIN_IDS.MAINNET,
+      );
+      return filteredTokenListGenerator;
+    }, mockStore);
+
+    await waitForNextUpdate();
+
+    expect(mockFetchTopAssetsList).toHaveBeenCalledTimes(1);
+    expect(mockFetchTopAssetsList).toHaveBeenCalledWith('0x1');
+    expect(mockFetchBridgeTokens).toHaveBeenCalledTimes(1);
+    expect(mockFetchBridgeTokens).toHaveBeenCalledWith('0x1');
+    // The first 10 tokens returned
+    const first10Tokens = [...result.current(() => true)].slice(0, 10);
+    expect(first10Tokens).toMatchSnapshot();
+  });
+
+  it('should fetch bridge tokens if chain is solana', async () => {
     const mockStore = createBridgeMockStore({
       metamaskStateOverrides: {
         completedOnboarding: true,
@@ -111,7 +154,7 @@ describe('useTokensWithFiltering', () => {
 
     const { result, waitForNextUpdate } = renderHookWithProvider(() => {
       const { filteredTokenListGenerator } = useTokensWithFiltering(
-        CHAIN_IDS.MAINNET,
+        MultichainNetwork.Solana,
       );
       return filteredTokenListGenerator;
     }, mockStore);
@@ -119,9 +162,13 @@ describe('useTokensWithFiltering', () => {
     await waitForNextUpdate();
 
     expect(mockFetchTopAssetsList).toHaveBeenCalledTimes(1);
-    expect(mockFetchTopAssetsList).toHaveBeenCalledWith('0x1');
+    expect(mockFetchTopAssetsList).toHaveBeenCalledWith(
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    );
     expect(mockFetchBridgeTokens).toHaveBeenCalledTimes(1);
-    expect(mockFetchBridgeTokens).toHaveBeenCalledWith('0x1');
+    expect(mockFetchBridgeTokens).toHaveBeenCalledWith(
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    );
     // The first 10 tokens returned
     const first10Tokens = [...result.current(() => true)].slice(0, 10);
     expect(first10Tokens).toMatchSnapshot();

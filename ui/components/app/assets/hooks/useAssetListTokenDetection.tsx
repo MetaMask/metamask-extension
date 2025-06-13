@@ -86,6 +86,8 @@ const useAssetListTokenDetection = () => {
       networkClientId,
       currentChainId,
       detectedTokens,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       handleAddImportedTokens,
       trackTokenAddedEvent,
     );

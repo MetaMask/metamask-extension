@@ -144,6 +144,9 @@ async function defineAndRunBuildTasks() {
       'stateHooks',
       'sentryHooks',
       'sentry',
+      'logEncryptedVault',
+      // Globals used by `react-dom`
+      'getSelection',
     ];
 
     if (

@@ -18,7 +18,7 @@ type AssetProps = AssetWithDisplayData<NativeAsset | ERC20Asset> & {
   tooltipText?: string;
   assetItemProps?: Pick<
     React.ComponentProps<typeof TokenListItem>,
-    'isTitleNetworkName' | 'isTitleHidden'
+    'isTitleNetworkName' | 'isTitleHidden' | 'nativeCurrencySymbol'
   >;
 };
 

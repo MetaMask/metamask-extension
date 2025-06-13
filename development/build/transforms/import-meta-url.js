@@ -89,7 +89,7 @@ module.exports = function ({ types: t }) {
         const match = originalArg.value.match(pattern);
         if (match) {
           const filename = match[1];
-          const ext = originalArg.value.split('.').pop();
+          const ext = originalArg.value.split('.').slice(1).join('.');
           return t.stringLiteral(join(rootPath, `${filename}.${ext}`));
         }
       }

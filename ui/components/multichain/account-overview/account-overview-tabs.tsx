@@ -9,11 +9,13 @@ import {
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { endTrace, trace } from '../../../../shared/lib/trace';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { ASSET_ROUTE } from '../../../helpers/constants/routes';
+import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAllChainsToPoll } from '../../../selectors';
 import { detectNfts } from '../../../store/actions';
+import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import AssetList from '../../app/assets/asset-list';
+import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import { useAssetListTokenDetection } from '../../app/assets/hooks';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
 import TransactionList from '../../app/transaction-list';
@@ -26,6 +28,7 @@ export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showTokensLinks?: boolean;
   showNfts: boolean;
   showActivity: boolean;
+  showDefi?: boolean;
 };
 
 export const AccountOverviewTabs = ({
@@ -35,6 +38,7 @@ export const AccountOverviewTabs = ({
   showTokensLinks,
   showNfts,
   showActivity,
+  showDefi,
 }: AccountOverviewTabsProps) => {
   const history = useHistory();
   const t = useI18nContext();
@@ -69,7 +73,9 @@ export const AccountOverviewTabs = ({
           ],
         });
       }
-      trace({ name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName] });
+      trace({
+        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
+      });
     },
     [onTabClick],
   );
@@ -79,6 +85,15 @@ export const AccountOverviewTabs = ({
       history.push(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
     [history],
   );
+  const onClickDeFi = useCallback(
+    (chainId: string, protocolId: string) =>
+      history.push(
+        `${DEFI_ROUTE}/${chainId}/${encodeURIComponent(protocolId)}`,
+      ),
+    [history],
+  );
+
+  const { safeChains } = useSafeChains();
 
   return (
     <Box style={{ flexGrow: '1' }}>
@@ -98,6 +113,23 @@ export const AccountOverviewTabs = ({
               <AssetList
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
+                safeChains={safeChains}
+              />
+            </Box>
+          </Tab>
+        )}
+        {showDefi && (
+          <Tab
+            name={t('defi')}
+            tabKey="defi"
+            data-testid="account-overview__defi-tab"
+            {...tabProps}
+          >
+            <Box marginTop={2}>
+              <DeFiTab
+                showTokensLinks={showTokensLinks ?? true}
+                onClickAsset={onClickDeFi}
+                safeChains={safeChains}
               />
             </Box>
           </Tab>

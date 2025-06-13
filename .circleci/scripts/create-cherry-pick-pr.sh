@@ -11,8 +11,8 @@ set -o pipefail
 
 BASE_PR_BRANCH_NAME="${1}"
 COMMIT_HASH_TO_CHERRY_PICK="${2}"
-PR_BRANCH_NAME="chore/cherry-pick-${3}"
-PR_TITLE="chore: cherry-pick #${3}"
+PR_BRANCH_NAME="release/cherry-pick-${3}"
+PR_TITLE="release: cherry-pick #${3}"
 PR_BODY="This PR cherry-picks #${3}"
 
 git config user.name "MetaMask Bot"

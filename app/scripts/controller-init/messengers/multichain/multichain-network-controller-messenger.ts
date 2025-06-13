@@ -6,11 +6,17 @@ import {
 import {
   type NetworkControllerSetActiveNetworkAction,
   type NetworkControllerGetStateAction,
+  type NetworkControllerRemoveNetworkAction,
+  type NetworkControllerGetSelectedChainIdAction,
+  type NetworkControllerFindNetworkClientIdByChainIdAction,
 } from '@metamask/network-controller';
 
 type Actions =
-  | NetworkControllerSetActiveNetworkAction
   | NetworkControllerGetStateAction
+  | NetworkControllerSetActiveNetworkAction
+  | NetworkControllerRemoveNetworkAction
+  | NetworkControllerGetSelectedChainIdAction
+  | NetworkControllerFindNetworkClientIdByChainIdAction
   | AccountsControllerListMultichainAccountsAction;
 
 type Events = AccountsControllerSelectedAccountChangeEvent;
@@ -34,6 +40,9 @@ export function getMultichainNetworkControllerMessenger(
     allowedActions: [
       'NetworkController:setActiveNetwork',
       'NetworkController:getState',
+      'NetworkController:removeNetwork',
+      'NetworkController:findNetworkClientIdByChainId',
+      'NetworkController:getSelectedChainId',
       'AccountsController:listMultichainAccounts',
     ],
     allowedEvents: ['AccountsController:selectedAccountChange'],

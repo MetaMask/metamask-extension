@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 import {
   formatChainIdToCaip,
   isNativeAddress,
-  type BridgeToken,
 } from '@metamask/bridge-controller';
 import { getAccountLink } from '@metamask/etherscan-link';
+import { type BigNumber } from 'bignumber.js';
 import {
   Text,
   TextField,
@@ -28,7 +28,6 @@ import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import useLatestBalance from '../../../hooks/bridge/useLatestBalance';
 import {
   getBridgeQuotes,
   getValidationErrors,
@@ -43,6 +42,7 @@ import {
   MultichainNetworks,
 } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
+import type { BridgeToken } from '../../../ducks/bridge/types';
 import { getMultichainCurrentChainId } from '../../../selectors/multichain';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
 
@@ -71,7 +71,9 @@ export const BridgeInputGroup = ({
   isMultiselectEnabled,
   onBlockExplorerClick,
   buttonProps,
+  balanceAmount,
 }: {
+  balanceAmount?: BigNumber;
   amountInFiat?: string;
   onAmountChange?: (value: string) => void;
   token: BridgeToken | null;
@@ -101,7 +103,6 @@ export const BridgeInputGroup = ({
 
   const currentChainId = useSelector(getMultichainCurrentChainId);
   const selectedChainId = networkProps?.network?.chainId ?? currentChainId;
-  const balanceAmount = useLatestBalance(token);
 
   const [, handleCopy] = useCopyToClipboard(MINUTE) as [
     boolean,
@@ -121,6 +122,12 @@ export const BridgeInputGroup = ({
       inputRef.current.focus();
     }
   }, [amountFieldProps?.value, isAmountReadOnly, token]);
+
+  useEffect(() => {
+    return () => {
+      inputRef.current = null;
+    };
+  }, []);
 
   const isSwap = useIsMultichainSwap();
 

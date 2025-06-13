@@ -170,9 +170,6 @@
   "addBitcoinAccountLabel": {
     "message": "비트코인 계정 (베타)"
   },
-  "addBitcoinTestnetAccountLabel": {
-    "message": "비트코인 계정 (테스트넷)"
-  },
   "addBlockExplorer": {
     "message": "블록 탐색기 추가"
   },
@@ -661,22 +658,6 @@
   "billionAbbreviation": {
     "message": "B",
     "description": "Shortened form of 'billion'"
-  },
-  "bitcoinSupportSectionTitle": {
-    "message": "비트코인"
-  },
-  "bitcoinSupportToggleDescription": {
-    "message": "이 기능을 켜면 기존 비밀복구구문에서 파생된 MetaMask 확장에 비트코인 계정을 추가할 수 있는 옵션을 이용할 수 있습니다. 이 기능은 실험적 베타 기능이므로 사용자의 책임하에 사용해야 합니다. 이 새로운 비트코인 경험에 대한 피드백을 보내려면 이 $1을(를) 작성해 주세요.",
-    "description": "$1 is the link to a product feedback form"
-  },
-  "bitcoinSupportToggleTitle": {
-    "message": "'새 비트코인 계정 추가(베타)' 활성화"
-  },
-  "bitcoinTestnetSupportToggleDescription": {
-    "message": "이 기능을 켜면 테스트 네트워크에 비트코인 계정을 추가할 수 있는 옵션이 제공됩니다."
-  },
-  "bitcoinTestnetSupportToggleTitle": {
-    "message": "'새 비트코인 계정 추가(테스트넷)' 활성화"
   },
   "blockExplorerAccountAction": {
     "message": "계정",
@@ -1338,10 +1319,6 @@
   },
   "creatorAddress": {
     "message": "크리에이터 주소"
-  },
-  "crossChainAggregatedBalancePopover": {
-    "message": "이는 모든 네트워크에서 소유한 모든 토큰의 가치를 반영합니다. ETH나 다른 통화로 이 가치를 보고 싶으면 $1(으)로 이동하세요.",
-    "description": "$1 represents the settings page"
   },
   "crossChainSwapsLink": {
     "message": "MetaMask Portfolio로 네트워크 간 스왑"
@@ -2711,9 +2688,6 @@
   "ledgerLocked": {
     "message": "Ledger 장치에 연결할 수 없습니다. 장치의 잠금이 해제되어 있고 이더리움 앱이 열려 있는지 확인하세요."
   },
-  "ledgerMultipleDevicesUnsupportedErrorMessage": {
-    "message": "여러 Ledger 장치를 동시에 연결할 수 없습니다. 새 Ledger 장치를 연결하려면 이전 장치를 먼저 연결 해제해야 합니다."
-  },
   "ledgerTimeout": {
     "message": "Ledger Live의 응답 시간이 너무 길거나 연결 시간을 초과했습니다. Ledger Live 앱이 열려 있고 장치의 잠금이 해제되어 있는지 확인하세요."
   },
@@ -4068,7 +4042,7 @@
   },
   "popularNetworkAddToolTip": {
     "message": "이러한 네트워크 중 일부는 제삼자에 의존합니다. 이러한 연결은 안정성이 떨어지거나 제삼자가 활동을 추적할 수 있습니다. $1",
-    "description": "$1 is Learn more link"
+    "description": "Learn more link"
   },
   "popularNetworks": {
     "message": "인기 네트워크"
@@ -4134,18 +4108,6 @@
   },
   "productAnnouncements": {
     "message": "제품 공지"
-  },
-  "profileSync": {
-    "message": "프로필 동기화"
-  },
-  "profileSyncConfirmation": {
-    "message": "프로필 동기화를 끄면 알림을 받을 수 없게 됩니다."
-  },
-  "profileSyncDescription": {
-    "message": "MetaMask가 기기 간에 일부 설정을 동기화하는 데 사용할 프로필을 생성합니다. 알림을 받으려면 프로필이 필요합니다. $1."
-  },
-  "profileSyncPrivacyLink": {
-    "message": "개인 정보 보호 방법 알아보기"
   },
   "proposedApprovalLimit": {
     "message": "제안된 승인 한도"
@@ -6507,9 +6469,6 @@
   },
   "yourBalance": {
     "message": "내 잔액"
-  },
-  "yourBalanceIsAggregated": {
-    "message": "잔액이 집계되었습니다."
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT가 위험할 수 있습니다"

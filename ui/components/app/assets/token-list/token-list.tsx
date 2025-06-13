@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import { type Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import {
   getChainIdsToPoll,
@@ -12,7 +12,7 @@ import {
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
 import { useNetworkFilter } from '../hooks';
-import { TokenWithFiatAmount } from '../types';
+import { type TokenWithFiatAmount } from '../types';
 import { filterAssets } from '../util/filter';
 import { sortAssets } from '../util/sort';
 import useMultiChainAssets from '../hooks/useMultichainAssets';
@@ -21,12 +21,19 @@ import {
   getIsEvmMultichainNetworkSelected,
 } from '../../../../selectors/multichain/networks';
 import { getTokenBalancesEvm } from '../../../../selectors/assets';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
+  safeChains?: SafeChain[];
 };
 
-function TokenList({ onTokenClick }: TokenListProps) {
+function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
   const chainIdsToPoll = useSelector(getChainIdsToPoll);
   const newTokensImported = useSelector(getNewTokensImported);
@@ -37,6 +44,7 @@ function TokenList({ onTokenClick }: TokenListProps) {
   const evmBalances = useSelector((state) =>
     getTokenBalancesEvm(state, selectedAccount.address),
   );
+  const trackEvent = useContext(MetaMetricsContext);
   // EVM specific tokenBalance polling, updates state via polling loop per chainId
   pollAndUpdateEvmBalances({
     chainIds: chainIdsToPoll as Hex[],
@@ -78,6 +86,26 @@ function TokenList({ onTokenClick }: TokenListProps) {
     }
   }, [sortedFilteredTokens]);
 
+  const handleTokenClick = (token: TokenWithFiatAmount) => () => {
+    // Ensure token has a valid chainId before proceeding
+    if (!token.chainId) {
+      return;
+    }
+
+    onTokenClick(token.chainId, token.address);
+
+    // Track event: token details
+    trackEvent({
+      category: MetaMetricsEventCategory.Tokens,
+      event: MetaMetricsEventName.TokenDetailsOpened,
+      properties: {
+        location: 'Home',
+        token_symbol: token.symbol ?? 'unknown',
+        chain_id: token.chainId,
+      },
+    });
+  };
+
   return (
     <>
       {sortedFilteredTokens.map((token: TokenWithFiatAmount) => (
@@ -85,7 +113,8 @@ function TokenList({ onTokenClick }: TokenListProps) {
           key={`${token.chainId}-${token.symbol}-${token.address}`}
           token={token}
           privacyMode={privacyMode}
-          onClick={onTokenClick}
+          onClick={handleTokenClick(token)}
+          safeChains={safeChains}
         />
       ))}
     </>
