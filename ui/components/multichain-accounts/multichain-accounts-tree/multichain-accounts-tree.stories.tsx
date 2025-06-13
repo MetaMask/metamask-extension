@@ -10,8 +10,7 @@ export default {
   parameters: {
     docs: {
       description: {
-        component:
-          'A tree view for displaying accounts grouped by wallets',
+        component: 'A tree view for displaying accounts grouped by wallets',
       },
     },
   },
@@ -110,13 +109,31 @@ const Template: StoryFn<typeof MultichainAccountsTree> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  walletAccountCollection: mockWalletAccountCollection,
+  wallets: mockWalletAccountCollection,
   allowedAccountTypes: [EthAccountType.Eoa, EthAccountType.Erc4337],
   connectedSites: mockConnectedSites,
   currentTabOrigin: 'https://test.dapp',
   privacyMode: false,
   selectedAccount: {
     address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+    type: 'eip155:eoa',
+    id: '',
+    options: {
+      entropySource: 'entropy-source',
+      derivationPath: "m/44'/60'/0'/0/0",
+    },
+    metadata: {
+      name: '',
+      importTime: 0,
+      keyring: {
+        type: '',
+      },
+      nameLastUpdatedAt: undefined,
+      snap: undefined,
+      lastSelected: 1749132453300,
+    },
+    scopes: [],
+    methods: [],
   },
 };
 
