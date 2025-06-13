@@ -63,7 +63,12 @@ const NameDisplay = memo(
 
     // If trust signals are present, use the label if available, otherwise show address
     // If no trust signals, use normal display logic
+    // If pet name is saved, prioritize pet name over trust signal label
     const getDisplayContent = () => {
+      if (hasPetname && hasDisplayName) {
+        return <ShortenedName name={name} />;
+      }
+
       if (shouldShowTrustSignals) {
         if (trustSignals.label) {
           return <ShortenedName name={trustSignals.label} />;
@@ -88,35 +93,34 @@ const NameDisplay = memo(
           name__missing: !hasDisplayName,
           name__verified:
             shouldShowTrustSignals &&
-            trustSignals.state === TrustSignalState.Verified,
+            trustSignals.state === TrustSignalState.Verified &&
+            !hasPetname,
           name__warning:
             shouldShowTrustSignals &&
-            trustSignals.state === TrustSignalState.Warning,
+            trustSignals.state === TrustSignalState.Warning &&
+            !hasPetname,
           name__malicious:
             shouldShowTrustSignals &&
             trustSignals.state === TrustSignalState.Malicious,
           name__unknown:
             shouldShowTrustSignals &&
-            trustSignals.state === TrustSignalState.Unknown,
+            trustSignals.state === TrustSignalState.Unknown &&
+            !hasPetname,
         })}
         onClick={handleClick}
       >
         {(() => {
-          // Saved names (petnames) should always show Identicon regardless of trust signals
-          if (hasPetname) {
-            return <Identicon address={value} diameter={16} image={image} />;
-          }
-
-          // Trust signals for unsaved addresses
+          // Trust signals logic - applies to both saved and unsaved addresses
           if (shouldShowTrustSignals && trustSignals.iconName) {
-            // For warning and unknown states, use Identicon instead of trust signal icon
+            // For Warning and Unknown states with pet name saved, use Identicon
             if (
-              trustSignals.state === TrustSignalState.Warning ||
-              trustSignals.state === TrustSignalState.Unknown
+              hasPetname &&
+              (trustSignals.state === TrustSignalState.Warning ||
+                trustSignals.state === TrustSignalState.Unknown)
             ) {
               return <Identicon address={value} diameter={16} image={image} />;
             }
-            // For verified and malicious, show the trust signal icon
+            // For all other states, show trust signal icon
             return (
               <Icon
                 name={trustSignals.iconName}
@@ -125,6 +129,11 @@ const NameDisplay = memo(
                 color={getTrustSignalIconColor(trustSignals.state)}
               />
             );
+          }
+
+          // Saved names (petnames) without trust signals
+          if (hasPetname) {
+            return <Identicon address={value} diameter={16} image={image} />;
           }
 
           // Regular unsaved but recognized addresses
