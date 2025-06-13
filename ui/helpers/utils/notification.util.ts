@@ -312,7 +312,15 @@ export function getNetworkDetailsByChainId(chainId: number): {
   blockExplorerConfig?: BlockExplorerConfig;
 } {
   const chainIdStr = chainId.toString();
-  const hexChainId = decimalToHex(chainId);
+  const hexChainId = `0x${decimalToHex(chainId)}`;
+
+  console.log('getNetworkDetailsByChainId', {
+    chainIdStr,
+    hexChainId,
+    NOTIFICATION_CHAINS_ID,
+    x: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[hexChainId],
+  });
+
   type KnownChainIds =
     (typeof NOTIFICATION_CHAINS_ID)[keyof typeof NOTIFICATION_CHAINS_ID];
   if (
