@@ -1,6 +1,4 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
-import { WebRequest } from 'webextension-polyfill';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import type {
@@ -64,7 +62,6 @@ export default class OAuthService {
             url: authUrl,
           },
           (responseUrl) => {
-            console.log('responseUrl', responseUrl);
             try {
               if (responseUrl) {
                 const url = new URL(responseUrl);

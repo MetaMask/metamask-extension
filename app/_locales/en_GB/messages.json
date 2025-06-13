@@ -1916,6 +1916,9 @@
   "editANickname": {
     "message": "Edit nickname"
   },
+  "editAccountName": {
+    "message": "Edit account name"
+  },
   "editAccounts": {
     "message": "Edit accounts"
   },
