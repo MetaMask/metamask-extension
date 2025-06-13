@@ -1,4 +1,4 @@
-interface Caip2ChainId {
+type Caip2ChainId = {
   /**
    * CAIP-2 chain ID in the format "namespace:blockchainId"
    */
@@ -11,9 +11,9 @@ interface Caip2ChainId {
    * The blockchain ID of the CAIP-2 chain ID, like "1" for Ethereum mainnet.
    */
   blockchainId: string;
-}
+};
 
-interface ParsedCaip19 {
+type ParsedCaip19 = {
   /**
    * The CAIP-2 chain ID object parsed from the asset ID.
    */
@@ -46,12 +46,12 @@ interface ParsedCaip19 {
    * This is optional and may not be present if the token ID is not applicable.
    */
   assetId?: string;
-}
+};
 
 /**
  * Parses a CAIP-19 asset ID string into its components.
- * @see https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-19.md
  *
+ * @see https://github.com/ChainAgnostic/CAIPs/blob/main/CAIPs/caip-19.md
  * @param str - The CAIP-19 asset ID string to parse
  * @returns null if any part of the string is invalid, otherwise returns an object
  * containing the parsed components.
@@ -79,11 +79,11 @@ export function parseAssetID(str: string): ParsedCaip19 | null {
   };
 
   // Validate chain_id.namespace ([-a-z0-9]{3,8} as per CAIP-2)
-  if (!/^[-a-z0-9]{3,8}$/.test(chainId.namespace)) {
+  if (!/^[-a-z0-9]{3,8}$/u.test(chainId.namespace)) {
     return null;
   }
   // Validate chain_id.blockchainId ([-a-zA-Z0-9]{1,32} as per CAIP-2)
-  if (!/^[-a-zA-Z0-9]{1,32}$/.test(chainId.blockchainId)) {
+  if (!/^[-a-zA-Z0-9]{1,32}$/u.test(chainId.blockchainId)) {
     return null;
   }
 
@@ -96,12 +96,12 @@ export function parseAssetID(str: string): ParsedCaip19 | null {
   const assetReference = assetNamespaceRefParts[1];
 
   // Validate asset_namespace ([-a-z0-9]{3,8} as per CAIP-19)
-  if (!/^[-a-z0-9]{3,8}$/.test(assetNamespace)) {
+  if (!/^[-a-z0-9]{3,8}$/u.test(assetNamespace)) {
     return null;
   }
 
   // Validate asset_reference ([-.%a-zA-Z0-9]{1,128} as per CAIP-19)
-  if (!/^[-.%a-zA-Z0-9]{1,128}$/.test(assetReference)) {
+  if (!/^[-.%a-zA-Z0-9]{1,128}$/u.test(assetReference)) {
     return null;
   }
 
@@ -110,7 +110,7 @@ export function parseAssetID(str: string): ParsedCaip19 | null {
 
   if (tokenId) {
     // Validate token_id ([-.%a-zA-Z0-9]{1,78} as per CAIP-19)
-    if (!/^[-.%a-zA-Z0-9]{1,78}$/.test(tokenId)) {
+    if (!/^[-.%a-zA-Z0-9]{1,78}$/u.test(tokenId)) {
       return null;
     }
     assetId = `${assetType}/${tokenId}`;

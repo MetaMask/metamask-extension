@@ -16,7 +16,6 @@ export default new Route({
     const from = params.get('from');
     const to = params.get('to');
     const amount = params.get('amount');
-    debugger;
     // add the params to the query if they exist
     let parsedFrom;
     if (from) {
