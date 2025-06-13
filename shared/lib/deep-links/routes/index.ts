@@ -1,6 +1,10 @@
-import type { Route } from './route';
+import home from './home';
+import swap from './swap';
+import notifications from './notifications';
 
-export type { Route } from './route';
+import type { Route } from './route.type';
+
+export type { Route } from './route.type';
 
 export const routes = new Map<Route['pathname'], Route>();
 
@@ -9,7 +13,7 @@ export const routes = new Map<Route['pathname'], Route>();
  *
  * @param route - The route to add.
  */
-export function addRoute(route: Route) {
+function addRoute(route: Route) {
   if (process.env.DEBUG) {
     // just making sure all added route `pathname`'s are unique; but only in
     // DEBUG builds, since it's too late to change the routes in prod.
@@ -22,3 +26,7 @@ export function addRoute(route: Route) {
 
   routes.set(route.pathname, route);
 }
+
+addRoute(home);
+addRoute(swap);
+addRoute(notifications);

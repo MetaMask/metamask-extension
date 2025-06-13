@@ -349,3 +349,12 @@ env:
 
   # Address of enforcer used for gasless EIP-7702 transactions
   - GASLESS_7702_ENFORCER_ADDRESS: '0x00e0251aaA263dfE3B3541B758A82D1CBA1c3B6D'
+
+  ###
+  # Host to watch for deep links into MetaMask
+  ###
+  - DEEP_LINK_HOST: 'link.metamask.io'
+  ###
+  # RAW base64 encoded public key used to verify deep link signatures
+  ###
+  - DEEP_LINK_PUBLIC_KEY: BD8cWMMR2J33ax8hvSz8LNt99H3wGBPWuAgw+lsfWcBrw4ZtTHFnWyNkbgXglqJOoc+1OA5ZC4kW4GYU/QIeBNA=

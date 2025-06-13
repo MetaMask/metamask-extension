@@ -1649,6 +1649,39 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
+  "deepLink_ContinueWarning": {
+    "message": "You should only continue if you trust the source of this link."
+  },
+  "deepLink_DontRemindMeAgain": {
+    "message": "Don't Remind me Again"
+  },
+  "deepLink_Error404": {
+    "message": "The requested page was not found."
+  },
+  "deepLink_ErrorMissingUrl": {
+    "message": "No url to navigate to was provided."
+  },
+  "deepLink_ErrorOther": {
+    "message": "An error occurred while processing the deep link. "
+  },
+  "deepLink_ErrorParsingUrl": {
+    "message": "Provided URL is not a valid MetaMask deep link or is malformed."
+  },
+  "deepLink_OpenTheHomePage": {
+    "message": "Open the Home Page"
+  },
+  "deepLink_OpenTheNotifications": {
+    "message": "Open the Notifications Page"
+  },
+  "deepLink_OpenTheSwapsPage": {
+    "message": "Open the Swaps Page"
+  },
+  "deepLink_YouAreAboutToOpen": {
+    "message": "A previous action wants to navigate to a page within the MetaMask extension."
+  },
+  "deepLinks": {
+    "message": "Deep Links"
+  },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
   },
@@ -5136,6 +5169,12 @@
   },
   "skipAccountSecuritySkip": {
     "message": "Skip"
+  },
+  "skipDeepLinkInterstitial": {
+    "message": "Don't show interstitial screen when opening deep links"
+  },
+  "skipDeepLinkInterstitialDescription": {
+    "message": "Enabling this option will skip the interstitial screen that is shown when opening deep links in MetaMask. A \"deep link\" is a link like https://link.metamask.io/home that will cause MetaMask to open; these links can be obfuscated by others. The interstitial screen is designed to protect you from accidentally opening pages within MetaMask that might display your accounts, tokens, history, balances, settings, or other potentially sensitive information. This setting only applies to links signed by MetaMask."
   },
   "slideBridgeDescription": {
     "message": "Move across 9 chains, all within your wallet"
