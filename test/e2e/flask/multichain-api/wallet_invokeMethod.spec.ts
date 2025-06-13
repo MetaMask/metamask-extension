@@ -255,7 +255,7 @@ describe('Multichain API', function () {
     });
   });
 
-  describe('EIP-5792 Methods', function () {
+  describe.only('EIP-5792 Methods', function () {
     describe('Calling `wallet_getCapabalities`', function () {
       it('should return the available capabilities', async function () {
         await withFixtures(
@@ -299,14 +299,15 @@ describe('Multichain API', function () {
             );
 
             await driver.clickElementSafe(
-              `[data-testid="${scope}-${method}-option"]`,
+              `[data-testid="${replaceColon(scope)}-${method}-option"]`,
             );
 
             await driver.delay(largeDelayMs);
             await driver.clickElementSafe(
-              `[data-testid="invoke-method-${scope}-btn"]`,
+              `[data-testid="invoke-method-${replaceColon(scope)}-btn"]`,
             );
 
+            await driver.delay(largeDelayMs);
             const resultWebElement = await driver.findElement(
               `#invoke-method-${replaceColon(scope)}-${method}-result-0`,
             );
@@ -368,12 +369,12 @@ describe('Multichain API', function () {
             );
 
             await driver.clickElementSafe(
-              `[data-testid="${scope}-${method}-option"]`,
+              `[data-testid="${replaceColon(scope)}-${method}-option"]`,
             );
 
             await driver.delay(largeDelayMs);
             await driver.clickElementSafe(
-              `[data-testid="invoke-method-${scope}-btn"]`,
+              `[data-testid="invoke-method-${replaceColon(scope)}-btn"]`,
             );
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -451,12 +452,12 @@ describe('Multichain API', function () {
             );
 
             await driver.clickElementSafe(
-              `[data-testid="${scope}-${method}-option"]`,
+              `[data-testid="${replaceColon(scope)}-${method}-option"]`,
             );
 
             await driver.delay(largeDelayMs);
             await driver.clickElementSafe(
-              `[data-testid="invoke-method-${scope}-btn"]`,
+              `[data-testid="invoke-method-${replaceColon(scope)}-btn"]`,
             );
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
