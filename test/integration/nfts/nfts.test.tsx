@@ -52,7 +52,7 @@ describe('NFTs list', () => {
     nock.cleanAll();
   });
 
-  it.skip('displays the nfts list for popular networks and tracks the event', async () => {
+  it('displays the nfts list for popular networks and tracks the event', async () => {
     const account =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
@@ -64,6 +64,12 @@ describe('NFTs list', () => {
     const withMetamaskConnectedToMainnet = {
       ...mockMetaMaskState,
       selectedNetworkClientId: 'testNetworkConfigurationId',
+      enabledNetworkMap: {
+        '0x1': true,
+        '0x89': true,
+        '0x5': true,
+        '0xaa36a7': true,
+      },
     };
 
     await act(async () => {
@@ -77,7 +83,9 @@ describe('NFTs list', () => {
 
     await clickElementById('account-overview__nfts-tab');
 
-    await waitForElementById('sort-by-networks');
+    if (!isGlobalNetworkSelectorRemoved) {
+      await waitForElementById('sort-by-networks');
+    }
     await waitForElementByText('Test Dapp NFTs #1');
     await waitForElementByText('Punk #4');
     await waitForElementByText('Punk #3');

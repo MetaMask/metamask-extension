@@ -104,7 +104,6 @@ describe('View NFT details', function () {
           await nftListPage.filterNftsByNetworks('Current network');
         }
         await nftListPage.check_numberOfNftsDisplayed(2);
-        // await driver.delay(100000);
         await nftListPage.check_nftNameIsDisplayed(
           'Test Dapp NFTs #1 on mainnet',
         );
