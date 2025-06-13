@@ -41,6 +41,8 @@ import {
   FlexDirection,
   IconColor,
   JustifyContent,
+  TextAlign,
+  TextColor,
 } from '../../../../helpers/constants/design-system';
 import FormComboField, {
   FormComboFieldOption,
@@ -54,8 +56,10 @@ import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { useName } from '../../../../hooks/useName';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useTrustSignals } from '../../../../hooks/useTrustSignals';
 import NameDisplay from './name-display';
 import { usePetnamesMetrics } from './metrics';
+import { useModalTextConfig, getInitialNameValue } from './trust-signal-config';
 
 const UPDATE_DELAY = 1000 * 2; // 2 Seconds
 
@@ -65,6 +69,7 @@ export type NameDetailsProps = {
   type: NameType;
   value: string;
   variation: string;
+  showTrustSignals?: boolean;
 };
 
 type ProposedNameOption = Required<FormComboFieldOption> & {
@@ -212,6 +217,7 @@ export default function NameDetails({
   type,
   value,
   variation,
+  showTrustSignals = false,
 }: NameDetailsProps) {
   const { name: savedPetname, sourceId: savedSourceId } = useName(
     value,
@@ -225,11 +231,14 @@ export default function NameDetails({
     variation,
   });
 
+  const trustSignals = useTrustSignals(value);
+
   const nameSources = useSelector(getNameSources, isEqual);
   const [name, setName] = useState('');
   const [openMetricSent, setOpenMetricSent] = useState(false);
   const [selectedSourceId, setSelectedSourceId] = useState<string>();
   const [selectedSourceName, setSelectedSourceName] = useState<string>();
+  const [hasInitialized, setHasInitialized] = useState(false);
   const dispatch = useDispatch();
   const t = useI18nContext();
 
@@ -244,13 +253,43 @@ export default function NameDetails({
 
   const [copiedAddress, handleCopyAddress] = useCopyToClipboard();
 
+  // Get modal text configuration based on trust signals and saved state
+  const modalTextConfig = useModalTextConfig(
+    trustSignals.state,
+    hasSavedPetname,
+    isRecognizedUnsaved,
+    showTrustSignals,
+  );
+
   useEffect(() => {
-    setName(savedPetname ?? '');
+    // Only set initial values once when the modal opens
+    if (hasInitialized) {
+      return;
+    }
+
+    const initialName = getInitialNameValue(
+      savedPetname,
+      trustSignals.state,
+      trustSignals.label,
+      showTrustSignals,
+    );
+
+    setName(initialName);
     setSelectedSourceId(savedSourceId ?? undefined);
     setSelectedSourceName(
       savedSourceId ? savedPetname ?? undefined : undefined,
     );
-  }, [savedPetname, savedSourceId, setName, setSelectedSourceId]);
+    setHasInitialized(true);
+  }, [
+    hasInitialized,
+    savedPetname,
+    savedSourceId,
+    showTrustSignals,
+    trustSignals.state, // Only depend on specific properties, not the whole object
+    trustSignals.label,
+    setName,
+    setSelectedSourceId,
+  ]);
 
   const proposedNameOptions = useMemo(
     () => generateComboOptions(proposedNames, t, nameSources),
@@ -305,7 +344,7 @@ export default function NameDetails({
         setSelectedSourceName(undefined);
       }
     },
-    [setName, selectedSourceId, setSelectedSourceId, setSelectedSourceName],
+    [selectedSourceName], // Only depend on selectedSourceName for the comparison
   );
 
   const handleProposedNameClick = useCallback(
@@ -320,22 +359,14 @@ export default function NameDetails({
     handleCopyAddress(formattedValue);
   }, [handleCopyAddress, formattedValue]);
 
-  const [title, instructions] = (() => {
-    if (hasSavedPetname) {
-      return [t('nameModalTitleSaved'), t('nameInstructionsSaved')];
-    }
-    if (isRecognizedUnsaved) {
-      return [t('nameModalTitleRecognized'), t('nameInstructionsRecognized')];
-    }
-    return [t('nameModalTitleNew'), t('nameInstructionsNew')];
-  })();
-
   return (
     <Box>
       <Modal isOpen onClose={handleClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader onClose={handleClose}>{title}</ModalHeader>
+          <ModalHeader onClose={handleClose}>
+            {modalTextConfig.title}
+          </ModalHeader>
           <ModalBody className="name-details__modal-body">
             <div
               style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}
@@ -344,10 +375,11 @@ export default function NameDetails({
                 value={value}
                 type={NameType.ETHEREUM_ADDRESS}
                 variation={variation}
+                showTrustSignals={showTrustSignals}
               />
             </div>
             <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
-              {instructions}
+              {modalTextConfig.instructions}
             </Text>
             {/* @ts-ignore */}
             <FormTextField
@@ -376,12 +408,12 @@ export default function NameDetails({
               marginBottom={2}
               className="name-details__display-name"
             >
-              {t('nameLabel')}
+              {modalTextConfig.label}
               <FormComboField
                 hideDropdownIfNoOptions
                 value={name}
                 options={proposedNameOptions}
-                placeholder={t('nameSetPlaceholder')}
+                placeholder={modalTextConfig.placeholder}
                 onChange={handleNameChange}
                 onOptionClick={handleProposedNameClick}
               />
@@ -399,6 +431,16 @@ export default function NameDetails({
             >
               {t('save')}
             </Button>
+            {modalTextConfig.footerText && (
+              <Text
+                marginTop={2}
+                textAlign={TextAlign.Center}
+                color={TextColor.textMuted}
+                className="name-details__footer-text"
+              >
+                {modalTextConfig.footerText}
+              </Text>
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>

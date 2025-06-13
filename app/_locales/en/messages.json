@@ -3150,6 +3150,14 @@
   "nameAlreadyInUse": {
     "message": "Name is already in use"
   },
+  "nameFooterTrustWarning": {
+    "message": "Only save addresses you trust.",
+    "description": "Footer warning text shown in name modal for malicious and warning addresses."
+  },
+  "nameInstructionsMalicious": {
+    "message": "This has been identified as malicious. We recommend not interacting with this address.",
+    "description": "Instruction text in name component modal when address is malicious."
+  },
   "nameInstructionsNew": {
     "message": "If you know this address, give it a nickname to recognize it in the future.",
     "description": "Instruction text in name component modal when value is not recognised."
@@ -3162,6 +3170,18 @@
     "message": "You've added a nickname for this address before. You can edit or view other suggested nicknames.",
     "description": "Instruction text in name component modal when value is saved."
   },
+  "nameInstructionsUnknown": {
+    "message": "If you know this address, give it a nickname to recognize it in the future.",
+    "description": "Instruction text in name component modal when address is unknown."
+  },
+  "nameInstructionsVerified": {
+    "message": "This address has been verified. You can give it a nickname to recognize it in the future.",
+    "description": "Instruction text in name component modal when address is verified."
+  },
+  "nameInstructionsWarning": {
+    "message": "This has been identified as suspicious. If you trust this author, set a personal display name to identify it going forward.",
+    "description": "Instruction text in name component modal when address has warning signals."
+  },
   "nameLabel": {
     "message": "Nickname",
     "description": "Label above name input field in name component modal."
@@ -3169,6 +3189,10 @@
   "nameModalMaybeProposedName": {
     "message": "Maybe: $1",
     "description": "$1 is the proposed name"
+  },
+  "nameModalTitleMalicious": {
+    "message": "Malicious address",
+    "description": "Title of the modal created by the name component when address is identified as malicious."
   },
   "nameModalTitleNew": {
     "message": "Unknown address",
@@ -3181,6 +3205,14 @@
   "nameModalTitleSaved": {
     "message": "Saved address",
     "description": "Title of the modal created by the name component when value is saved."
+  },
+  "nameModalTitleVerified": {
+    "message": "Verified address",
+    "description": "Title of the modal created by the name component when address is verified."
+  },
+  "nameModalTitleWarning": {
+    "message": "Suspicious address",
+    "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
     "message": "Proposed by $1",
@@ -3201,6 +3233,10 @@
   "nameSetPlaceholder": {
     "message": "Choose a nickname...",
     "description": "Placeholder text for name input field in name component modal."
+  },
+  "nameSetPlaceholderMalicious": {
+    "message": "Suggested: Malicious",
+    "description": "Placeholder text for name input field in name component modal for malicious addresses."
   },
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 is asking for your approval to:",

@@ -13,11 +13,20 @@ import ShortenedName from './shortened-name';
 import FormattedName from './formatted-value';
 
 export type NameDisplayProps = {
+  /** Whether to prefer contract symbol over contract name */
   preferContractSymbol?: boolean;
+  /** The address or value to display */
   value: string;
+  /** The type of the value (e.g., Ethereum address) */
   type: NameType;
+  /** The variation context (e.g., chain ID) */
   variation: string;
+  /** Click handler for opening the name details modal */
   handleClick?: () => void;
+  /**
+   * Whether to show trust signal indicators (verified, warning, malicious).
+   * Should only be true for "Interacting with" scenarios like transaction 'to' addresses.
+   */
   showTrustSignals?: boolean;
 };
 
@@ -35,7 +44,7 @@ const getTrustSignalIconColor = (state: TrustSignalState | null) => {
       return IconColor.errorDefault;
     case TrustSignalState.Unknown:
     default:
-      return IconColor.iconAlternative;
+      return undefined;
   }
 };
 
@@ -61,9 +70,6 @@ const NameDisplay = memo(
     const shouldShowTrustSignals =
       showTrustSignals && trustSignals.state !== null;
 
-    // If trust signals are present, use the label if available, otherwise show address
-    // If no trust signals, use normal display logic
-    // If pet name is saved, prioritize pet name over trust signal label
     const getDisplayContent = () => {
       if (hasPetname && hasDisplayName) {
         return <ShortenedName name={name} />;

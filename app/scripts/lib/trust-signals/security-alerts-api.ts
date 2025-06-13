@@ -36,8 +36,7 @@ export async function scanAddress(
   });
   const data = await response.json();
   data.label = 'Uniswap';
-  // data.result_type = ResultType.Warning;
-  data.result_type = ResultType.Malicious;
+  data.result_type = ResultType.Trusted;
   console.log('data', data);
   return data;
 }

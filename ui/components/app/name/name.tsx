@@ -91,6 +91,7 @@ const Name = memo(
             type={type}
             variation={variation}
             onClose={handleModalClose}
+            showTrustSignals={showTrustSignals}
           />
         )}
 

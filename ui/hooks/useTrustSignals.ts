@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux';
-import { NameType } from '@metamask/name-controller';
 import { getAddressSecurityAlertResponse } from '../selectors/selectors';
 import { IconName } from '../components/component-library';
 // eslint-disable-next-line import/no-restricted-paths
@@ -50,13 +49,6 @@ export function useTrustSignals(value: string): TrustSignalData {
 
   const state = RESULT_TYPE_TO_STATE_MAP[securityAlertResponse.result_type];
   const iconName = STATE_TO_ICON_MAP[state];
-
-  console.log('useTrustSignals Debug:', {
-    address: value,
-    securityAlertResponse,
-    state,
-    iconName,
-  });
 
   return {
     state,

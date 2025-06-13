@@ -18,15 +18,36 @@ import { getNftContractsByAddressByChain } from '../../../../selectors/nft';
 import { setName, updateProposedNames } from '../../../../store/actions';
 import NameDetails from './name-details';
 
+jest.mock('../../../../hooks/useTrustSignals', () => ({
+  useTrustSignals: jest.fn(),
+  TrustSignalState: {
+    Malicious: 'malicious',
+    Warning: 'warning',
+    Verified: 'verified',
+    Unknown: 'unknown',
+  },
+}));
+
+jest.mock('../../../../hooks/useI18nContext', () => ({
+  useI18nContext: () => (key: string) => key,
+}));
+
+jest.mock('../../../../hooks/useName', () => ({
+  useName: jest.fn(),
+}));
+
+jest.mock('../../../../hooks/useDisplayName', () => ({
+  useDisplayName: jest.fn(),
+}));
+
+jest.mock('./trust-signal-config', () => ({
+  useModalTextConfig: jest.fn(),
+  getInitialNameValue: jest.fn(),
+}));
+
 jest.mock('../../../../store/actions', () => ({
   setName: jest.fn(),
   updateProposedNames: jest.fn(),
-}));
-
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useDispatch: jest.fn(),
-  useSelector: jest.fn(),
 }));
 
 jest.useFakeTimers();
@@ -755,6 +776,78 @@ describe('NameDetails', () => {
           petname_previous_source: SOURCE_ID_MOCK,
         },
       });
+    });
+  });
+
+  describe('trust signals', () => {
+    it('should allow users to change pre-populated malicious address name', async () => {
+      const { useTrustSignals } = jest.requireMock(
+        '../../../../hooks/useTrustSignals',
+      );
+      const { useName } = jest.requireMock('../../../../hooks/useName');
+      const { useDisplayName } = jest.requireMock(
+        '../../../../hooks/useDisplayName',
+      );
+      const { useModalTextConfig, getInitialNameValue } = jest.requireMock(
+        './trust-signal-config',
+      );
+
+      // Mock trust signals for malicious address
+      useTrustSignals.mockReturnValue({
+        state: 'malicious',
+        label: 'Uniswap',
+        iconName: 'Danger',
+      });
+
+      // Mock other hooks
+      useName.mockReturnValue({
+        name: null,
+        sourceId: null,
+        proposedNames: {},
+      });
+
+      useDisplayName.mockReturnValue({
+        name: null,
+        hasPetname: false,
+        image: null,
+      });
+
+      useModalTextConfig.mockReturnValue({
+        title: 'Malicious address',
+        instructions: 'This has been identified as malicious.',
+        label: 'Nickname',
+        placeholder: 'Suggested: Malicious',
+        footerText: 'Only save addresses you trust.',
+      });
+
+      getInitialNameValue.mockReturnValue('');
+
+      const component = renderWithProvider(
+        <NameDetails
+          onClose={jest.fn()}
+          type={NameType.ETHEREUM_ADDRESS}
+          value="0x0000000000000000000000000000000000000000"
+          variation="1"
+          showTrustSignals={true}
+        />,
+        store,
+      );
+
+      const { getByPlaceholderText } = component;
+
+      // Find the name input field
+      const nameInput = getByPlaceholderText('Suggested: Malicious');
+
+      // Verify initial value is empty
+      expect(nameInput).toHaveValue('');
+
+      // Change the value
+      await act(async () => {
+        fireEvent.change(nameInput, { target: { value: 'My Custom Name' } });
+      });
+
+      // Verify the value has changed
+      expect(nameInput).toHaveValue('My Custom Name');
     });
   });
 });
