@@ -5,11 +5,9 @@ import { getProviderConfig } from '../../../../shared/modules/selectors/networks
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SupportedEVMChain } from './types';
 
-// TODO: Remove when we want this enabled in production.
 export function isProdEnabled() {
-  // const isEnabled = process.env.TRUST_SIGNALS_PROD_ENABLED;
-  return true;
-  // return isEnabled?.toString() === 'true';
+  const isEnabled = process.env.TRUST_SIGNALS_PROD_ENABLED;
+  return isEnabled?.toString() === 'true';
 }
 
 export function isEthSendTransaction(req: JsonRpcRequest): boolean {
