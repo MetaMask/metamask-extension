@@ -78,7 +78,6 @@
   "permissions": [
     "activeTab",
     "alarms",
-    "clipboardRead",
     "clipboardWrite",
     "notifications",
     "scripting",
@@ -86,6 +85,9 @@
     "unlimitedStorage",
     "webRequest",
     "offscreen"
+  ],
+  "optional_permissions": [
+    "clipboardRead"
   ],
   "sandbox": {
     "pages": ["snaps/index.html"]

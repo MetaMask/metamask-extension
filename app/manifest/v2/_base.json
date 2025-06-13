@@ -64,7 +64,6 @@
   "permissions": [
     "storage",
     "unlimitedStorage",
-    "clipboardRead",
     "clipboardWrite",
     "http://*/*",
     "https://*/*",
@@ -75,6 +74,9 @@
     "webRequestBlocking",
     "*://*.eth/",
     "notifications"
+  ],
+  "optional_permissions": [
+    "clipboardRead"
   ],
   "short_name": "__MSG_appName__"
 }
