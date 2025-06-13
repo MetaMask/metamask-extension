@@ -4,6 +4,7 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../ui/helpers/constants/routes';
+import { parseAssetID } from './helpers';
 import { Route } from './route';
 
 export default new Route({
@@ -15,13 +16,27 @@ export default new Route({
     const from = params.get('from');
     const to = params.get('to');
     const amount = params.get('amount');
-
+    debugger;
     // add the params to the query if they exist
+    let parsedFrom;
     if (from) {
-      query.set('from', from);
+      parsedFrom = parseAssetID(from);
+      if (parsedFrom) {
+        query.set('from', from);
+      }
     }
     if (to) {
-      query.set('to', to);
+      const parsedTo = parseAssetID(to);
+      if (parsedTo) {
+        query.set('to', to);
+        if (parsedFrom) {
+          // if `from` and `to` reference the same chain, add the `swap` param
+          // to trigger the "Swap" screen by default
+          if (parsedFrom.chainId.id === parsedTo.chainId.id) {
+            query.set('swaps', 'true');
+          }
+        }
+      }
     }
     if (amount) {
       query.set('amount', amount);

@@ -1,5 +1,8 @@
 {
-  "ignorePaths": ["app/images", "package.json"],
+  "ignorePaths": [
+    "app/images",
+    "package.json"
+  ],
   "ignoreWords": [
     "acitores",
     "autofetch",
@@ -39,6 +42,7 @@
     "blockaid",
     "browserify",
     "browserlistrc",
+    "Caip",
     "cimg",
     "codecov",
     "codespace",
