@@ -78,7 +78,6 @@ export default function CreatePassword({
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {
       if (firstTimeFlowType === FirstTimeFlowType.import) {
-        // SOCIAL: change to metametrics when social login is available
         history.replace(ONBOARDING_COMPLETION_ROUTE);
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
@@ -109,10 +108,6 @@ export default function CreatePassword({
       firstTimeFlowType === FirstTimeFlowType.import
     ) {
       await importWithRecoveryPhrase(password, secretRecoveryPhrase);
-      // getPlatform() === PLATFORM_FIREFOX
-      //   ? history.push(ONBOARDING_COMPLETION_ROUTE)
-      //   : history.push(ONBOARDING_METAMETRICS);
-      // SOCIAL: change to metametrics when social login is available
       history.push(ONBOARDING_COMPLETION_ROUTE);
     } else {
       // Otherwise we are in create new wallet flow
@@ -122,8 +117,6 @@ export default function CreatePassword({
           await createNewAccount(password);
         }
         if (firstTimeFlowType === FirstTimeFlowType.social) {
-          // history.push(ONBOARDING_METAMETRICS);
-          // SOCIAL: change to metametrics when social login is available
           history.push(ONBOARDING_COMPLETION_ROUTE);
         } else {
           history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
@@ -173,7 +166,7 @@ export default function CreatePassword({
             data-testid="create-password-back-button"
             type="button"
             onClick={() => history.goBack()}
-            ariaLabel="back"
+            ariaLabel={t('back')}
           />
         </Box>
         <Box
@@ -208,11 +201,11 @@ export default function CreatePassword({
               setTermsChecked(!termsChecked);
             }}
             label={
-              <Text variant={TextVariant.bodySm} marginLeft={1}>
+              <>
                 {t('passwordTermsWarning')}
                 &nbsp;
                 {createPasswordLink}
-              </Text>
+              </>
             }
           />
         </Box>

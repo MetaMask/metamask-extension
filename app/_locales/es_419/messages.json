@@ -804,9 +804,6 @@
   "general": {
     "message": "General"
   },
-  "goBack": {
-    "message": "Volver"
-  },
   "goerli": {
     "message": "Red de prueba Goerli"
   },
@@ -1247,21 +1244,6 @@
   "onboardingImportWallet": {
     "message": "Importar una cartera existente"
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Acceso completo"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Estas extensiones pueden ver y cambiar la información"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "en este sitio."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Extensiones"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Haga clic en el icono de la extensión del navegador"
-  },
   "onboardingPinExtensionDescription": {
     "message": "Ancle MetaMask en su navegador para que sea accesible y las confirmaciones de las transacciones se vean fácilmente."
   },
@@ -1269,16 +1251,8 @@
     "message": "Para abrir MetaMask haga clic en la extensión y acceda a su cartera con 1 clic."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Haga clic en el icono de la extensión del navegador para tener acceso instantáneo"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "Ancle MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Haga clic en el icono de la extensión del navegador para tener acceso instantáneo",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "¡Su instalación de MetaMask ha finalizado!"
@@ -1491,53 +1465,11 @@
   "securityAndPrivacy": {
     "message": "Seguridad y privacidad"
   },
-  "seedPhraseConfirm": {
-    "message": "Confirmar la frase secreta de recuperación"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Confirmar la frase secreta de recuperación"
-  },
-  "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Recordarme más tarde (no recomendado)"
-  },
-  "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Asegurar mi cartera (recomendado)"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Escríbala y guárdela en varios lugares secretos."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Guárdela en una caja fuerte."
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "Su frase de recuperación secreta es una frase de 12 palabras que es la “clave maestra” de su cartera y sus fondos"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "Si alguien le pide su frase de recuperación, es posible que tenga intenciones de estafarle y robar los fondos de su cartera"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Nunca comparta su frase secreta de recuperación, ¡ni siquiera con MetaMask!"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "¿Qué es una frase de recuperación?"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "¿Debería compartir mi frase secreta de recuperación?"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "¿Cómo guardo mi frase secreta de recuperación?"
-  },
   "seedPhraseIntroTitle": {
     "message": "Proteger su cartera"
   },
   "seedPhraseReq": {
     "message": "Las frases secretas de recuperación contienen 12, 15, 18, 21 o 24 palabras"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Escriba esta frase secreta de recuperación de 12 palabras y guárdela en un lugar de confianza al que solo usted pueda acceder."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Anote su frase secreta de recuperación"
   },
   "selectAccounts": {
     "message": "Seleccione la(s) cuenta(s) a usar en este sitio"
@@ -1618,9 +1550,6 @@
   },
   "simulationErrorMessageV2": {
     "message": "No pudimos estimar el gas. Podría haber un error en el contrato y esta transacción podría fallar."
-  },
-  "skip": {
-    "message": "Omitir"
   },
   "skipAccountSecurity": {
     "message": "¿Omitir la seguridad de la cuenta?"
@@ -1993,9 +1922,6 @@
   },
   "time": {
     "message": "Tiempo"
-  },
-  "tips": {
-    "message": "Sugerencias"
   },
   "to": {
     "message": "Para"

@@ -81,7 +81,7 @@ export type ControllerStatePropertiesEnumerated = {
   web3ShimUsageOrigins?: AlertControllerState['web3ShimUsageOrigins'];
   announcements: AnnouncementControllerState['announcements'];
   isSignedIn: AuthenticationController.AuthenticationControllerState['isSignedIn'];
-  sessionData?: AuthenticationController.AuthenticationControllerState['sessionData'];
+  srpSessionData?: AuthenticationController.AuthenticationControllerState['srpSessionData'];
   pinnedAccountList: AccountOrderControllerState['pinnedAccountList'];
   hiddenAccountList: AccountOrderControllerState['hiddenAccountList'];
   currentAppVersion: AppMetadataControllerState['currentAppVersion'];
@@ -119,6 +119,7 @@ export type ControllerStatePropertiesEnumerated = {
   nftsDropdownState: AppStateControllerState['nftsDropdownState'];
   surveyLinkLastClickedOrClosed: AppStateControllerState['surveyLinkLastClickedOrClosed'];
   signatureSecurityAlertResponses: AppStateControllerState['signatureSecurityAlertResponses'];
+  addressSecurityAlertResponses: AppStateControllerState['addressSecurityAlertResponses'];
   switchedNetworkDetails: AppStateControllerState['switchedNetworkDetails'];
   switchedNetworkNeverShowMessage: AppStateControllerState['switchedNetworkNeverShowMessage'];
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
@@ -127,6 +128,9 @@ export type ControllerStatePropertiesEnumerated = {
   snapsInstallPrivacyWarningShown?: AppStateControllerState['snapsInstallPrivacyWarningShown'];
   slides: AppStateControllerState['slides'];
   upgradeSplashPageAcknowledgedForAccounts: AppStateControllerState['upgradeSplashPageAcknowledgedForAccounts'];
+  isUpdateAvailable: AppStateControllerState['isUpdateAvailable'];
+  updateModalLastDismissedAt: AppStateControllerState['updateModalLastDismissedAt'];
+  lastUpdatedAt: AppStateControllerState['lastUpdatedAt'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];
   quoteRequest: BridgeControllerState['quoteRequest'];
   quotes: BridgeControllerState['quotes'];
@@ -139,7 +143,6 @@ export type ControllerStatePropertiesEnumerated = {
   assetExchangeRates: BridgeControllerState['assetExchangeRates'];
   txHistory: BridgeStatusControllerState['txHistory'];
   events: CronjobControllerState['events'];
-  jobs: CronjobControllerState['jobs'];
   currentCurrency: CurrencyRateState['currentCurrency'];
   currencyRates: CurrencyRateState['currencyRates'];
   unapprovedDecryptMsgs: DecryptMessageControllerState['unapprovedDecryptMsgs'];
