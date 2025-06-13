@@ -3,6 +3,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { Hex } from '@metamask/utils';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
+import ExtensionPlatform from '../../../../app/scripts/platforms/extension';
 import {
   useEIP7702Networks,
   EIP7702NetworkConfiguration,
@@ -19,10 +20,11 @@ jest.mock('../../../pages/confirmations/hooks/useBatchAuthorizationRequests');
 
 // Mock global.platform.openTab
 const mockOpenTab = jest.fn();
+// @ts-expect-error mocking platform
 global.platform = {
   openTab: mockOpenTab,
   closeCurrentWindow: jest.fn(),
-} as { openTab: jest.Mock; closeCurrentWindow: jest.Mock };
+};
 
 const mockUseEIP7702Networks = useEIP7702Networks as jest.MockedFunction<
   typeof useEIP7702Networks
