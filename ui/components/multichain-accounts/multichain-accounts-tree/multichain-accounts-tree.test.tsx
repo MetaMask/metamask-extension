@@ -5,6 +5,7 @@ import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { MultichainAccountsTreeProps } from './multichain-accounts-tree';
 import { MultichainAccountsTree } from '.';
 
 const mockWalletAccountCollection = {
@@ -90,7 +91,7 @@ describe('MultichainAccountsTree', () => {
   const mockOnClose = jest.fn();
   const mockOnAccountListItemItemClicked = jest.fn();
 
-  const defaultProps = {
+  const defaultProps: MultichainAccountsTreeProps = {
     walletAccountCollection: mockWalletAccountCollection,
     allowedAccountTypes: [EthAccountType.Eoa, EthAccountType.Erc4337],
     connectedSites: mockConnectedSites,
@@ -98,6 +99,24 @@ describe('MultichainAccountsTree', () => {
     privacyMode: false,
     selectedAccount: {
       address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      type: 'eip155:eoa',
+      id: '',
+      options: {
+        entropySource: 'entropy-source',
+        derivationPath: "m/44'/60'/0'/0/0",
+      },
+      metadata: {
+        name: '',
+        importTime: 0,
+        keyring: {
+          type: '',
+        },
+        nameLastUpdatedAt: undefined,
+        snap: undefined,
+        lastSelected: 1749132453300,
+      },
+      scopes: [],
+      methods: [],
     },
     onClose: mockOnClose,
     onAccountListItemItemClicked: mockOnAccountListItemItemClicked,

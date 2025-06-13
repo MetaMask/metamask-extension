@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Box, ButtonLink, ButtonLinkSize, Text } from '../../component-library';
 import {
   AlignItems,
@@ -23,7 +23,7 @@ export type MultichainAccountsTreeProps = {
   currentTabOrigin?: string;
   privacyMode?: boolean;
   accountListItemProps?: Record<string, unknown>;
-  selectedAccount: { address: string };
+  selectedAccount: InternalAccount;
   onClose: () => void;
   onAccountListItemItemClicked: (account: MergedInternalAccount) => void;
 };
@@ -39,7 +39,7 @@ export const MultichainAccountsTree = ({
   onClose,
   onAccountListItemItemClicked,
 }: MultichainAccountsTreeProps) => {
-  const accountListItems = useMemo(() => {
+  const accountsTree = useMemo(() => {
     return Object.entries(walletAccountCollection).reduce(
       (allWallets, [walletId, walletData]) => {
         const walletName = walletData.metadata?.name;
@@ -91,13 +91,13 @@ export const MultichainAccountsTree = ({
               return (
                 <Box
                   className="multichain-account-menu-popover__list--menu-item"
-                  key={account.address}
+                  key={`box-${account.id}`}
                 >
                   <AccountListItem
                     onClick={onAccountListItemItemClicked}
                     account={account}
-                    key={account.address}
-                    selected={selectedAccount.address === account.address}
+                    key={`account-list-item-${account.id}`}
+                    selected={selectedAccount.id === account.id}
                     closeMenu={onClose}
                     connectedAvatar={connectedSite?.iconUrl}
                     menuType={AccountListItemMenuTypes.Account}
@@ -112,7 +112,7 @@ export const MultichainAccountsTree = ({
 
             return [
               <Box
-                key={`group-${groupId}`}
+                key={`account-group-${groupId}`}
                 style={{
                   borderBottom: '1px solid var(--color-border-muted)',
                 }}
@@ -139,5 +139,5 @@ export const MultichainAccountsTree = ({
     onAccountListItemItemClicked,
   ]);
 
-  return <>{accountListItems}</>;
+  return <>{accountsTree}</>;
 };
