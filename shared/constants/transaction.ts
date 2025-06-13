@@ -209,4 +209,3 @@ export enum EIP5792ErrorCode {
 }
 
 export const NATIVE_TOKEN_ADDRESS = '0x0'.padEnd(42, '0') as Hex;
-
