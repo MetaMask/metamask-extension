@@ -98,7 +98,11 @@ describe('PersonalSign Confirmation', () => {
 
     await act(async () => {
       await integrationTestRender({
-        preloadedState: mockedMetaMaskState,
+        preloadedState: {
+          ...mockedMetaMaskState,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
+        },
         backgroundConnection: backgroundConnectionMocked,
       });
     });

@@ -1,6 +1,7 @@
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import {
   DEFAULT_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
@@ -43,9 +44,9 @@ export function getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn(state) {
   const { firstTimeFlowType } = state.metamask;
 
   if (firstTimeFlowType === FirstTimeFlowType.create) {
-    return ONBOARDING_CREATE_PASSWORD_ROUTE;
+    return ONBOARDING_COMPLETION_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.import) {
-    return ONBOARDING_IMPORT_WITH_SRP_ROUTE;
+    return ONBOARDING_COMPLETION_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
     return ONBOARDING_SECURE_YOUR_WALLET_ROUTE;
   }

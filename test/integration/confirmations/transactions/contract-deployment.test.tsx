@@ -54,6 +54,8 @@ const getMetaMaskStateWithUnapprovedContractDeployment = ({
 }) => {
   return {
     ...mockMetaMaskState,
+    participateInMetaMetrics: true,
+    dataCollectionForMarketing: false,
     preferences: {
       ...mockMetaMaskState.preferences,
       showConfirmationAdvancedDetails,

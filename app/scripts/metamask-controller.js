@@ -4085,6 +4085,20 @@ export default class MetamaskController extends EventEmitter {
       ),
       trackInsightSnapView: this.trackInsightSnapView.bind(this),
 
+      // MetaMetrics buffering for onboarding
+      addEventBeforeMetricsOptIn:
+        metaMetricsController.addEventBeforeMetricsOptIn.bind(
+          metaMetricsController,
+        ),
+      trackEventsAfterMetricsOptIn:
+        metaMetricsController.trackEventsAfterMetricsOptIn.bind(
+          metaMetricsController,
+        ),
+      clearEventsAfterMetricsOptIn:
+        metaMetricsController.clearEventsAfterMetricsOptIn.bind(
+          metaMetricsController,
+        ),
+
       // ApprovalController
       rejectAllPendingApprovals: this.rejectAllPendingApprovals.bind(this),
       rejectPendingApproval: this.rejectPendingApproval,
