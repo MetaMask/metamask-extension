@@ -1056,6 +1056,12 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
   },
+  "changePasswordLoading": {
+    "message": "Changing password..."
+  },
+  "changePasswordLoadingNote": {
+    "message": "This shouldn't take long"
+  },
   "chooseYourNetwork": {
     "message": "Choose your network"
   },
@@ -1193,9 +1199,6 @@
   },
   "confirmPassword": {
     "message": "Confirm password"
-  },
-  "confirmPasswordPlaceholder": {
-    "message": "Re-enter your password"
   },
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
@@ -1479,7 +1482,16 @@
     "message": "Create a new account"
   },
   "createPassword": {
+    "message": "MetaMask password"
+  },
+  "createPasswordCreate": {
     "message": "Create password"
+  },
+  "createPasswordDetails": {
+    "message": "Unlocks MetaMask on this device only."
+  },
+  "createPasswordDetailsSocial": {
+    "message": "Use this for wallet recovery on all devices."
   },
   "createSnapAccountDescription": {
     "message": "$1 wants to add a new account to MetaMask."
@@ -2096,6 +2108,9 @@
   },
   "enterPasswordContinue": {
     "message": "Enter password to continue"
+  },
+  "enterPasswordCurrent": {
+    "message": "Enter your current password"
   },
   "enterRpcUrl": {
     "message": "Enter RPC URL"
@@ -3453,8 +3468,8 @@
   "newPassword": {
     "message": "New password"
   },
-  "newPasswordPlaceholder": {
-    "message": "Enter a strong password"
+  "newPasswordCreate": {
+    "message": "Create new password"
   },
   "newPrivacyPolicyActionButton": {
     "message": "Read more"
@@ -4011,7 +4026,7 @@
     "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
   },
   "passwordTermsWarning": {
-    "message": "MetaMask can’t recover this password."
+    "message": "If I forget this password, I’ll lose access to my wallet permanently. MetaMask can’t reset it for me."
   },
   "passwordToggleHide": {
     "message": "Hide Password"
@@ -4849,8 +4864,33 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
+  "securityChangePassword": {
+    "message": "Change password"
+  },
+  "securityChangePasswordDescription": {
+    "message": "Choose a strong password to unlock MetaMask app on your device. If you lose this password, you will need your Secret Recovery Phrase to re-import your wallet."
+  },
+  "securityChangePasswordTitle": {
+    "message": "Password"
+  },
+  "securityChangePasswordToastSuccess": {
+    "message": "New password saved"
+  },
+  "securityChangePasswordToastError": {
+    "message": "Password couldn’t be changed. Please try again."
+  },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
+  },
+  "securityLoginWithSocial": {
+    "message": "Login with $1",
+    "description": "The $1 is the text 'Google' or 'Apple'"
+  },
+  "securityLoginWithSrpBackedUp": {
+    "message": "Secret Recovery Phrase backed up"
+  },
+  "securityLoginWithSrpNotBackedUp": {
+    "message": "Back up Secret Recovery Phrase"
   },
   "securityMessageLinkForNetworks": {
     "message": "network scams and security risks"
@@ -4858,6 +4898,28 @@
   "securityProviderPoweredBy": {
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
+  },
+  "securitySocialLoginEnabled": {
+    "message": "Enabled"
+  },
+  "securitySocialLoginEnabledDescription": {
+    "message": "This email and your MetaMask password will help you recover your account and recovery phrases."
+  },
+  "securitySocialLoginLabel": {
+    "message": "$1 RECOVERY",
+    "description": "The $1 is the text 'Google' or 'Apple'"
+  },
+  "securitySrpDescription": {
+    "message": "Back up your Secret Recovery Phrase so you never lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget."
+  },
+  "securitySrpLabel": {
+    "message": "SECRET RECOVERY PHRASES"
+  },
+  "securitySrpTitle": {
+    "message": "Secret Recovery Phrase"
+  },
+  "securitySrpWalletRecovery": {
+    "message": "Manage recovery methods"
   },
   "seeAllPermissions": {
     "message": "See all permissions",
@@ -5619,6 +5681,12 @@
     "message": "$1 account",
     "description": "$1 is the number of accounts in the list, it is either 1 or 0"
   },
+  "srpListStateBackedUp": {
+    "message": "Reveal"
+  },
+  "srpListStateNotBackedUp": {
+    "message": "Backup"
+  },
   "srpPasteFailedTooManyWords": {
     "message": "Paste failed because it contained over 24 words. A secret recovery phrase can have a maximum of 24 words.",
     "description": "Description of SRP paste error when the pasted content has too many words"
@@ -5626,6 +5694,9 @@
   "srpPasteTip": {
     "message": "You can paste your entire secret recovery phrase into any field",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpRevealListTitle": {
+    "message": "Secret Recovery Phrase"
   },
   "srpSecurityQuizGetStarted": {
     "message": "Get started"
@@ -6977,6 +7048,9 @@
   },
   "yourWalletIsReady": {
     "message": "Your wallet is ready!"
+  },
+  "yourWalletIsReadyFromReminder": {
+    "message": "Keep your Secret Recovery Phrase safe!"
   },
   "yourWalletIsReadyRemind": {
     "message": "We’ll remind you later"
