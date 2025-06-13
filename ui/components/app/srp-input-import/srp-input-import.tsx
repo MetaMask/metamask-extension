@@ -24,8 +24,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../../app/scripts/lib/util';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
 const SRP_LENGTHS = [12, 15, 18, 21, 24];
@@ -187,7 +186,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
   );
 
   const onTriggerPaste = async () => {
-    if (getPlatform() === PLATFORM_FIREFOX) {
+    if (getBrowserName() === PLATFORM_FIREFOX) {
       const newSrp = await navigator.clipboard.readText();
       if (newSrp.trim().match(/\s/u)) {
         onSrpPaste(newSrp);
