@@ -92,6 +92,14 @@ jest.mock('../../hooks/useMultiPolling', () => ({
   default: jest.fn(),
 }));
 
+const mockIntersectionObserver = jest.fn();
+mockIntersectionObserver.mockReturnValue({
+  observe: () => null,
+  unobserve: () => null,
+  disconnect: () => null,
+});
+window.IntersectionObserver = mockIntersectionObserver;
+
 const render = (pathname, state) => {
   const store = configureMockStore(middlewares)({
     ...mockSendState,
