@@ -69,7 +69,7 @@ jobs:
 
       # not installed by checkout-and-setup when cache is restored
       - name: Install anvil
-        run: yarn foundryup
+        run: yarn mm-foundryup
 
       - name: Download build artifact
         if: ${{ inputs.build-artifact != '' }}
