@@ -105,9 +105,6 @@ export class DeepLinkRouter {
     } else {
       // unable to parse, show error page
       link = this.getExtensionURL(
-        // `routes.ts` seem to require routes have a leading slash, but then the
-        // UI always redirects it to the non-slashed version. So we just use the
-        // non-slashed version here to skip that redirect step.
         TRIMMED_DEEP_LINK_ROUTE.replace(slashRe, ''),
         new URLSearchParams({
           errorCode: '404',
