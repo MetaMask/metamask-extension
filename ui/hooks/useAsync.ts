@@ -1,10 +1,4 @@
-import {
-  useState,
-  useEffect,
-  DependencyList,
-  useCallback,
-  useRef,
-} from 'react';
+import { useState, useEffect, DependencyList, useRef, useMemo } from 'react';
 
 type Status = 'idle' | 'pending' | 'success' | 'error';
 
@@ -63,6 +57,25 @@ export function createErrorResult(error: Error): ResultError {
   return { ...RESULT_BASE, status: 'error', error };
 }
 
+function isDependencyListChanged(
+  deps: DependencyList,
+  prevDeps: DependencyList,
+) {
+  if (Object.is(prevDeps, deps)) {
+    return false;
+  }
+  if (prevDeps.length !== deps.length) {
+    return true;
+  }
+  for (let i = 0; i < deps.length; ++i) {
+    if (!Object.is(deps[i], prevDeps[i])) {
+      return true;
+    }
+  }
+  // TODO: If too expensive to perform on every render, replace with `return false;`
+  return JSON.stringify(deps) !== JSON.stringify(prevDeps);
+}
+
 /**
  * Hook that provides a callback for manual execution of an async function,
  * along with state management for the operation.
@@ -73,26 +86,25 @@ export function createErrorResult(error: Error): ResultError {
 export function useAsyncCallback<T>(
   asyncFn: () => Promise<T>,
   deps: DependencyList = [],
-): [() => Promise<void>, AsyncResult<T>] {
+): [() => Promise<void>, AsyncResult<T>, boolean] {
   const [result, setResult] = useState<AsyncResult<T>>(RESULT_IDLE);
 
   // Track component mount state
   const isMounted = useRef(true);
+  const [isInit, setIsInit] = useState(true);
+  const asyncFnRef = useRef<typeof asyncFn | null>(asyncFn);
+  const prevDepsRef = useRef<DependencyList>([]);
 
-  // Update ref when component unmounts
-  useEffect(() => {
-    return () => {
-      isMounted.current = false;
-    };
-  }, []);
+  const isDepsChanged =
+    isInit || isDependencyListChanged(deps, prevDepsRef.current);
 
-  const execute = useCallback(async () => {
-    if (!isMounted.current) {
+  const executeRef = useRef(async () => {
+    if (!isMounted.current || !asyncFnRef.current) {
       return;
     }
     setResult(RESULT_PENDING);
     try {
-      const value = await asyncFn();
+      const value = await asyncFnRef.current();
       if (isMounted.current) {
         setResult(createSuccessResult(value));
       }
@@ -101,9 +113,30 @@ export function useAsyncCallback<T>(
         setResult(createErrorResult(error as Error));
       }
     }
-  }, deps);
+  });
 
-  return [execute, result];
+  useEffect(() => {
+    setIsInit(false);
+    // When component unmounts, clear all refs and reset `result` to prevent memory leaks.
+    return () => {
+      setResult(RESULT_IDLE);
+      isMounted.current = false;
+      asyncFnRef.current = null;
+      prevDepsRef.current = [];
+      executeRef.current = () => Promise.resolve(undefined);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isDepsChanged) {
+      prevDepsRef.current = deps;
+      asyncFnRef.current = asyncFn;
+    }
+  }, [isDepsChanged]);
+  return useMemo(
+    () => [executeRef.current, result, isDepsChanged],
+    [result.status, result.value, result.error, isDepsChanged],
+  );
 }
 
 /**
@@ -118,11 +151,15 @@ export function useAsyncResult<T>(
   asyncFn: () => Promise<T>,
   deps: DependencyList = [],
 ): AsyncResultNoIdle<T> {
-  const [execute, result] = useAsyncCallback(asyncFn, deps);
+  const [execute, result, isDepsChanged] = useAsyncCallback(asyncFn, deps);
 
   useEffect(() => {
-    execute();
-  }, [execute]);
+    if (isDepsChanged) {
+      execute();
+    }
+    // The reference for `execute` stays stable until unmount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDepsChanged]);
 
   // When the result is in the idle state, return pending state instead
   // This is because we execute the asyncFn immediately on mount, so the component
