@@ -1,4 +1,5 @@
 import { useState, useEffect, DependencyList, useRef, useMemo } from 'react';
+import { isEqual } from 'lodash';
 
 type Status = 'idle' | 'pending' | 'success' | 'error';
 
@@ -57,25 +58,6 @@ export function createErrorResult(error: Error): ResultError {
   return { ...RESULT_BASE, status: 'error', error };
 }
 
-function isDependencyListChanged(
-  deps: DependencyList,
-  prevDeps: DependencyList,
-) {
-  if (Object.is(prevDeps, deps)) {
-    return false;
-  }
-  if (prevDeps.length !== deps.length) {
-    return true;
-  }
-  for (let i = 0; i < deps.length; ++i) {
-    if (!Object.is(deps[i], prevDeps[i])) {
-      return true;
-    }
-  }
-  // TODO: If too expensive to perform on every render, replace with `return false;`
-  return JSON.stringify(deps) !== JSON.stringify(prevDeps);
-}
-
 /**
  * Hook that provides a callback for manual execution of an async function,
  * along with state management for the operation.
@@ -100,8 +82,7 @@ export function useAsyncCallback<T>(
   const asyncFnRef = useRef<typeof asyncFn | null>(asyncFn);
   const prevDepsRef = useRef<DependencyList>([]);
 
-  const isDepsChanged =
-    isInit || isDependencyListChanged(deps, prevDepsRef.current);
+  const isDepsChanged = isInit || !isEqual(deps, prevDepsRef.current);
 
   // Use ref instead of `useCallback`, which means the function reference
   // does not needs to be re-created on every deps change.
