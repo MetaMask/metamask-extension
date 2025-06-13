@@ -54,12 +54,11 @@ import {
 } from '../../../../store/actions';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { useName } from '../../../../hooks/useName';
-import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useTrustSignals } from '../../../../hooks/useTrustSignals';
+import { useTrustSignalDisplay } from '../../../../hooks/useTrustSignalDisplay';
 import NameDisplay from './name-display';
 import { usePetnamesMetrics } from './metrics';
-import { useModalTextConfig, getInitialNameValue } from './trust-signal-config';
+import { getInitialNameValue } from './trust-signal-config';
 
 const UPDATE_DELAY = 1000 * 2; // 2 Seconds
 
@@ -225,13 +224,18 @@ export default function NameDetails({
     variation,
   );
 
-  const { name: displayName, hasPetname: hasSavedPetname } = useDisplayName({
+  const {
+    trustState,
+    trustLabel,
+    hasPetname,
+    hasRecognizedName,
+    modalTextConfig,
+  } = useTrustSignalDisplay({
     value,
     type,
     variation,
+    showTrustSignals,
   });
-
-  const trustSignals = useTrustSignals(value);
 
   const nameSources = useSelector(getNameSources, isEqual);
   const [name, setName] = useState('');
@@ -242,7 +246,7 @@ export default function NameDetails({
   const dispatch = useDispatch();
   const t = useI18nContext();
 
-  const isRecognizedUnsaved = !hasSavedPetname && Boolean(displayName);
+  const isRecognizedUnsaved = hasRecognizedName;
   const formattedValue = formatValue(value, type);
 
   const { proposedNames, initialSources } = useProposedNames(
@@ -253,14 +257,6 @@ export default function NameDetails({
 
   const [copiedAddress, handleCopyAddress] = useCopyToClipboard();
 
-  // Get modal text configuration based on trust signals and saved state
-  const modalTextConfig = useModalTextConfig(
-    trustSignals.state,
-    hasSavedPetname,
-    isRecognizedUnsaved,
-    showTrustSignals,
-  );
-
   useEffect(() => {
     // Only set initial values once when the modal opens
     if (hasInitialized) {
@@ -269,8 +265,8 @@ export default function NameDetails({
 
     const initialName = getInitialNameValue(
       savedPetname,
-      trustSignals.state,
-      trustSignals.label,
+      trustState,
+      trustLabel,
       showTrustSignals,
     );
 
@@ -285,8 +281,8 @@ export default function NameDetails({
     savedPetname,
     savedSourceId,
     showTrustSignals,
-    trustSignals.state, // Only depend on specific properties, not the whole object
-    trustSignals.label,
+    trustState,
+    trustLabel,
     setName,
     setSelectedSourceId,
   ]);

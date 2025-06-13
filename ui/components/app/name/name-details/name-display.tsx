@@ -1,14 +1,10 @@
 import React, { memo } from 'react';
-import classnames from 'classnames';
 import { NameType } from '@metamask/name-controller';
 import Identicon from '../../../ui/identicon';
 import { Icon, IconName, IconSize } from '../../../component-library';
-import { useDisplayName } from '../../../../hooks/useDisplayName';
-import {
-  useTrustSignals,
-  TrustSignalState,
-} from '../../../../hooks/useTrustSignals';
 import { IconColor } from '../../../../helpers/constants/design-system';
+import { useTrustSignalDisplay } from '../../../../hooks/useTrustSignalDisplay';
+import { TrustSignalState } from '../../../../hooks/useTrustSignals';
 import ShortenedName from './shortened-name';
 import FormattedName from './formatted-value';
 
@@ -30,24 +26,6 @@ export type NameDisplayProps = {
   showTrustSignals?: boolean;
 };
 
-function doesHaveDisplayName(name: string | null): name is string {
-  return Boolean(name);
-}
-
-const getTrustSignalIconColor = (state: TrustSignalState | null) => {
-  switch (state) {
-    case TrustSignalState.Verified:
-      return IconColor.infoDefault;
-    case TrustSignalState.Warning:
-      return IconColor.warningDefault;
-    case TrustSignalState.Malicious:
-      return IconColor.errorDefault;
-    case TrustSignalState.Unknown:
-    default:
-      return undefined;
-  }
-};
-
 const NameDisplay = memo(
   ({
     value,
@@ -57,105 +35,106 @@ const NameDisplay = memo(
     handleClick,
     showTrustSignals = false,
   }: NameDisplayProps) => {
-    const { name, hasPetname, image } = useDisplayName({
+    const {
+      trustState,
+      displayName,
+      hasPetname,
+      hasRecognizedName,
+      iconType,
+      iconName,
+      image,
+    } = useTrustSignalDisplay({
       value,
       type,
-      preferContractSymbol,
       variation,
+      preferContractSymbol,
+      showTrustSignals,
     });
 
-    const trustSignals = useTrustSignals(value);
+    // Component decides CSS based on state
+    const getClassNames = () => {
+      const classes = ['name'];
 
-    const hasDisplayName = doesHaveDisplayName(name);
-    const shouldShowTrustSignals =
-      showTrustSignals && trustSignals.state !== null;
-
-    const getDisplayContent = () => {
-      if (hasPetname && hasDisplayName) {
-        return <ShortenedName name={name} />;
+      if (handleClick) {
+        classes.push('name__clickable');
       }
 
-      if (shouldShowTrustSignals) {
-        if (trustSignals.label) {
-          return <ShortenedName name={trustSignals.label} />;
+      // Name status classes
+      if (hasPetname) {
+        classes.push('name__saved');
+      } else if (hasRecognizedName) {
+        classes.push('name__recognized_unsaved');
+      } else {
+        classes.push('name__missing');
+      }
+
+      // Trust signal classes (only when showing trust signals and no petname)
+      if (showTrustSignals && trustState && !hasPetname) {
+        // eslint-disable-next-line default-case
+        switch (trustState) {
+          case TrustSignalState.Verified:
+            classes.push('name__verified');
+            break;
+          case TrustSignalState.Warning:
+            classes.push('name__warning');
+            break;
+          case TrustSignalState.Unknown:
+            classes.push('name__unknown');
+            break;
         }
-        return <FormattedName value={value} type={type} />;
       }
 
-      if (hasDisplayName) {
-        return <ShortenedName name={name} />;
+      // Malicious always applies
+      if (showTrustSignals && trustState === TrustSignalState.Malicious) {
+        classes.push('name__malicious');
       }
 
-      return <FormattedName value={value} type={type} />;
+      return classes;
+    };
+
+    // Component decides icon color based on state
+    const getIconColor = () => {
+      if (iconType !== 'trust-signal' || !trustState) {
+        return undefined;
+      }
+
+      switch (trustState) {
+        case TrustSignalState.Verified:
+          return IconColor.infoDefault;
+        case TrustSignalState.Warning:
+          return IconColor.warningDefault;
+        case TrustSignalState.Malicious:
+          return IconColor.errorDefault;
+        default:
+          return undefined;
+      }
     };
 
     return (
-      <div
-        className={classnames({
-          name: true,
-          name__clickable: Boolean(handleClick),
-          name__saved: hasPetname,
-          name__recognized_unsaved: !hasPetname && hasDisplayName,
-          name__missing: !hasDisplayName,
-          name__verified:
-            shouldShowTrustSignals &&
-            trustSignals.state === TrustSignalState.Verified &&
-            !hasPetname,
-          name__warning:
-            shouldShowTrustSignals &&
-            trustSignals.state === TrustSignalState.Warning &&
-            !hasPetname,
-          name__malicious:
-            shouldShowTrustSignals &&
-            trustSignals.state === TrustSignalState.Malicious,
-          name__unknown:
-            shouldShowTrustSignals &&
-            trustSignals.state === TrustSignalState.Unknown &&
-            !hasPetname,
-        })}
-        onClick={handleClick}
-      >
-        {(() => {
-          // Trust signals logic - applies to both saved and unsaved addresses
-          if (shouldShowTrustSignals && trustSignals.iconName) {
-            // For Warning and Unknown states (with or without pet name), use Identicon
-            if (trustSignals.state === TrustSignalState.Warning) {
-              return <Identicon address={value} diameter={16} image={image} />;
-            }
-            if (trustSignals.state === TrustSignalState.Unknown && hasPetname) {
-              return <Identicon address={value} diameter={16} image={image} />;
-            }
-            // For all other states, show trust signal icon
-            return (
-              <Icon
-                name={trustSignals.iconName}
-                className="name__trust-signal-icon"
-                size={IconSize.Md}
-                color={getTrustSignalIconColor(trustSignals.state)}
-              />
-            );
-          }
-
-          // Saved names (petnames) without trust signals
-          if (hasPetname) {
-            return <Identicon address={value} diameter={16} image={image} />;
-          }
-
-          // Regular unsaved but recognized addresses
-          if (hasDisplayName) {
-            return <Identicon address={value} diameter={16} image={image} />;
-          }
-
-          // Unknown addresses
-          return (
-            <Icon
-              name={IconName.Question}
-              className="name__icon"
-              size={IconSize.Md}
-            />
-          );
-        })()}
-        {getDisplayContent()}
+      <div className={getClassNames().join(' ')} onClick={handleClick}>
+        {iconType === 'identicon' && (
+          <Identicon address={value} diameter={16} image={image} />
+        )}
+        {iconType === 'trust-signal' && iconName && (
+          <Icon
+            name={iconName}
+            size={IconSize.Md}
+            color={getIconColor()}
+            className="name__trust-signal-icon"
+          />
+        )}
+        {iconType === 'question' && (
+          <Icon
+            name={IconName.Question}
+            size={IconSize.Md}
+            className="name__icon"
+          />
+        )}
+        {displayName ? (
+          <ShortenedName name={displayName} />
+        ) : (
+          <FormattedName value={value} type={type} />
+        )}
       </div>
     );
   },
