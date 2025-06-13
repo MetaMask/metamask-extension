@@ -68,13 +68,6 @@
     "message": "$1 bölümünü okudum ve kabul ediyorum",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Gizli Kurtarma İfadenizle cüzdanınıza erişin"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask şifrenizi kurtaramaz. Sahipliğinizi doğrulamak, cüzdanınızı yenilemek ve yeni bir şifre belirlemek için Gizli Kurtarma İfadenizi kullanırız. İlk olarak, cüzdanınızı oluştururken size verilmiş olan Gizli Kurtarma İfadenizi girin. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Kameranıza erişim sağlanıyor..."
   },
@@ -2399,9 +2392,6 @@
   "hideAdvancedDetails": {
     "message": "Gelişmiş bilgileri gizle"
   },
-  "hideSeedPhrase": {
-    "message": "Anahtar cümleyi gizle"
-  },
   "hideSentitiveInfo": {
     "message": "Hassas bilgileri gizle"
   },
@@ -3805,21 +3795,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Bu verileri, pazarlama iletişimlerimizle nasıl etkileşimde bulunduğunuzu öğrenmek için kullanacağız. İlgili haberleri (ürün özellikleri gibi) paylaşabiliriz."
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Tam erişim"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Bu uzantılar, bu sitedeki bilgileri görebilir"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "ve değiştirebilir."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Uzantılar"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Tarayıcı uzantısı simgesine tıklayın"
-  },
   "onboardingPinExtensionDescription": {
     "message": "İşlem onaylarını erişilebilir ve kolay görüntülenebilir hale getirmek için MetaMask'i tarayıcınıza sabitleyin."
   },
@@ -3827,16 +3802,8 @@
     "message": "Uzantıya tıklayarak MetaMask'i açabilir ve 1 tık ile cüzdanınıza erişim sağlayabilirsiniz."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Hemen erişim sağlamak için tarayıcı uzantısı simgesine tıklayın"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "MetaMask'i sabitle"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Hemen erişim sağlamak için tarayıcı uzantısı simgesine tıklayın",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "MetaMask kurulumunuz tamamlandı!"
@@ -4645,9 +4612,6 @@
   "revealSensitiveContent": {
     "message": "Hassas içeriği açığa çıkar"
   },
-  "revealTheSeedPhrase": {
-    "message": "Anahtar cümleyi göster"
-  },
   "review": {
     "message": "İncele"
   },
@@ -4755,29 +4719,11 @@
   "seeDetails": {
     "message": "Ayrıntılara bakın"
   },
-  "seedPhraseConfirm": {
-    "message": "Gizli Kurtarma İfadesini Onayla"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Gizli Kurtarma İfadesini Onayla"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Birden fazla gizli yerde not ederek saklayın"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Bir kasada saklayın"
-  },
   "seedPhraseIntroTitle": {
     "message": "Cüzdanınızı koruyun"
   },
   "seedPhraseReq": {
     "message": "Gizli Kurtarma İfadeleri 12, 15, 18, 21 veya 24 kelimeden oluşur"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Bu 12 kelimelik Gizli Kurtarma İfadesini not ederek güvendiğiniz ve sadece sizin erişim sağlayabileceğiniz bir yerde saklayın."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Gizli Kurtarma İfadenizi not edin"
   },
   "select": {
     "message": "Seç"
@@ -6181,9 +6127,6 @@
   },
   "time": {
     "message": "Zaman"
-  },
-  "tips": {
-    "message": "İpuçları"
   },
   "tipsForUsingAWallet": {
     "message": "Cüzdan kullanma ipuçları"

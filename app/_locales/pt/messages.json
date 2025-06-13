@@ -68,13 +68,6 @@
     "message": "Eu li e concordo com os $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Acesse sua carteira com sua Frase de Recuperação Secreta"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "A MetaMask não consegue recuperar sua senha. Usaremos sua Frase de Recuperação Secreta para validar sua posse, restaurar sua carteira e definir uma nova senha. Primeiro, insira a Frase de Recuperação Secreta que você recebeu ao criar sua carteira. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Acessando sua câmera..."
   },
@@ -2399,9 +2392,6 @@
   "hideAdvancedDetails": {
     "message": "Ocultar detalhes avançados"
   },
-  "hideSeedPhrase": {
-    "message": "Ocultar frase-semente"
-  },
   "hideSentitiveInfo": {
     "message": "Ocultar informações confidenciais"
   },
@@ -3805,21 +3795,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Usaremos esses dados para saber como você interage com nossas comunicações de marketing. Podemos compartilhar novidades relevantes (como recursos de produtos)."
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Acesso total"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Essas extensões podem ver e alterar informações"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "neste site."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Extensões"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Clique no ícone da extensão do navegador"
-  },
   "onboardingPinExtensionDescription": {
     "message": "Fixe a MetaMask no seu navegador de modo que seja acessível e fácil de visualizar as confirmações das transações."
   },
@@ -3827,16 +3802,8 @@
     "message": "Você pode abrir a MetaMask clicando na extensão e acessando a sua carteira com apenas um clique."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Clique no ícone da extensão do navegador para acessá-la instantaneamente"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "Fixar a MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Clique no ícone da extensão do navegador para acessá-la instantaneamente",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Sua instalação da MetaMask está concluída!"
@@ -4645,9 +4612,6 @@
   "revealSensitiveContent": {
     "message": "Revelar conteúdo confidencial"
   },
-  "revealTheSeedPhrase": {
-    "message": "Revelar a frase-semente"
-  },
   "review": {
     "message": "Revisar"
   },
@@ -4755,29 +4719,11 @@
   "seeDetails": {
     "message": "Ver detalhes"
   },
-  "seedPhraseConfirm": {
-    "message": "Confirmar Frase de Recuperação Secreta"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Confirmar Frase de Recuperação Secreta"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Anote e guarde em vários locais secretos"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Guarde em um cofre de banco"
-  },
   "seedPhraseIntroTitle": {
     "message": "Proteja sua carteira"
   },
   "seedPhraseReq": {
     "message": "As Frases de Recuperação Secretas contêm 12, 15, 18, 21 ou 24 palavras"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Anote essa Frase de Recuperação Secreta de 12 palavras e guarde-a em algum lugar de sua confiança ao qual somente você tenha acesso."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Anote sua Frase de Recuperação Secreta"
   },
   "select": {
     "message": "Selecionar"
@@ -6181,9 +6127,6 @@
   },
   "time": {
     "message": "Hora"
-  },
-  "tips": {
-    "message": "Dicas"
   },
   "tipsForUsingAWallet": {
     "message": "Dicas para usar uma carteira"
