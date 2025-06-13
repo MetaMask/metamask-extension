@@ -1,7 +1,7 @@
 import { Hex, bytesToHex } from '@metamask/utils';
+import { encodePacked } from '@metamask/abi-utils';
 import { DeleGatorEnvironment } from '../environment';
 import { Caveat } from '../caveat';
-import { encodePacked } from '@metamask/abi-utils';
 import { isAddress } from '../utils';
 
 export const erc721BalanceChange = 'erc721BalanceChange';

@@ -1,7 +1,7 @@
 import { Hex, bytesToHex } from '@metamask/utils';
+import { encodePacked } from '@metamask/abi-utils';
 import { DeleGatorEnvironment } from '../environment';
 import { Caveat } from '../caveat';
-import { encodePacked } from '@metamask/abi-utils';
 import { isAddress } from '../utils';
 
 export const erc1155BalanceChange = 'erc1155BalanceChange';
@@ -36,7 +36,7 @@ export function erc1155BalanceChangeBuilder(
 
   const terms = bytesToHex(
     encodePacked(
-      ['bool', 'address', 'address', 'uint256','uint256'],
+      ['bool', 'address', 'address', 'uint256', 'uint256'],
       [enforceDecrease, token, recipient, tokenId, amount],
     ),
   );

@@ -3,11 +3,11 @@ import {
   TransactionControllerEstimateGasAction,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { applyTransactionContainers } from './util';
-import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
-import { enforceSimulations } from './enforced-simulations';
 import { cloneDeep } from 'lodash';
 import { Messenger } from '@metamask/base-controller';
+import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
+import { applyTransactionContainers } from './util';
+import { enforceSimulations } from './enforced-simulations';
 
 jest.mock('./enforced-simulations');
 

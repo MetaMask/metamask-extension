@@ -4,12 +4,12 @@ import {
   TransactionMeta,
   TransactionParams,
 } from '@metamask/transaction-controller';
-import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import { Messenger } from '@metamask/base-controller';
 import { cloneDeep } from 'lodash';
 import { DELEGATOR_CONTRACTS } from '@metamask/delegation-deployments';
 import { Hex, remove0x } from '@metamask/utils';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
+import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import { enforceSimulations } from './enforced-simulations';
 
 const TOKEN_MOCK = '0x4567890abcdef1234567890abcdef1234567890a' as Hex;

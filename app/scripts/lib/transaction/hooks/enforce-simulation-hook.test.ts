@@ -3,11 +3,11 @@ import {
   TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import { EnforceSimulationHook } from './enforce-simulation-hook';
-import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import { Hex } from '@metamask/utils';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
+import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import { applyTransactionContainers } from '../containers/util';
+import { EnforceSimulationHook } from './enforce-simulation-hook';
 
 jest.mock('../containers/util');
 
@@ -41,7 +41,7 @@ const TRANSACTION_META_MOCK: TransactionMeta = {
 };
 
 describe('EnforceSimulationHook', () => {
-  let messenger = {} as TransactionControllerInitMessenger;
+  const messenger = {} as TransactionControllerInitMessenger;
 
   const applyTransactionContainersMock = jest.mocked(
     applyTransactionContainers,

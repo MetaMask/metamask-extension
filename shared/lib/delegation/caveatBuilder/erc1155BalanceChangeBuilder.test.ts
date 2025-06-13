@@ -4,7 +4,7 @@ import { erc1155BalanceChangeBuilder } from './erc1155BalanceChangeBuilder';
 
 const TOKEN_MOCK = '0x1234567890123456789012345678901234567890' as Hex;
 const RECIPIENT_MOCK = '0x0987654321098765432109876543210987654321' as Hex;
-const TOKEN_ID_MOCK = BigInt(12345678901234567890);
+const TOKEN_ID_MOCK = BigInt(1234567890);
 const AMOUNT_MOCK = BigInt(123);
 const ENFORCER_MOCK = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd' as Hex;
 
