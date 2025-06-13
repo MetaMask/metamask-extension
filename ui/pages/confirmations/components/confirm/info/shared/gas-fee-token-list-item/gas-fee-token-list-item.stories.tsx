@@ -1,11 +1,11 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import { GasFeeTokenListItem } from './gas-fee-token-list-item';
 import configureStore from '../../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 import { ConfirmContextProvider } from '../../../../../context/confirm';
 import { Hex } from '@metamask/utils';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmations/gas';
