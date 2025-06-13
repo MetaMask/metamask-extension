@@ -13,13 +13,13 @@ import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
 import { completeNewWalletFlowContactSyncing } from '../flows';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
-import { arrangeContactSyncingTestUtils, TestContext } from './helpers';
+import { arrangeContactSyncingTestUtils } from './helpers';
 
-describe('Contact Syncing - Backup and Sync Settings', function (this: TestContext) {
+describe('Contact Syncing - Backup and Sync Settings', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
 
   describe('from inside MetaMask', function () {
-    it('does not sync contact changes when contact syncing is turned off', async function (this: TestContext) {
+    it('does not sync contact changes when contact syncing is turned off', async function () {
       const userStorageMockttpController = new UserStorageMockttpController();
 
       await withFixtures(
@@ -189,7 +189,7 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
       );
     });
 
-    it('enables contact syncing when backup and sync is turned on', async function (this: TestContext) {
+    it('enables contact syncing when backup and sync is turned on', async function () {
       const userStorageMockttpController = new UserStorageMockttpController();
 
       await withFixtures(

@@ -5,13 +5,6 @@ import {
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 
-export type TestContext = {
-  test?: {
-    fullTitle: () => string;
-  };
-  timeout: (ms: number) => void;
-};
-
 export type UserStorageContact = {
   v: string; // version
   a: string; // address
@@ -58,7 +51,9 @@ export function arrangeContactSyncingTestUtils(
         // AddressBook structure is { chainId: { address: contactObject } }
         for (const chainId in addressBookState) {
           if (Object.prototype.hasOwnProperty.call(addressBookState, chainId)) {
-            if (chainId === '*') continue; // Skip wildcard entries
+            if (chainId === '*') {
+              continue; // Skip wildcard entries
+            }
 
             const chainContacts = addressBookState[chainId];
             if (typeof chainContacts === 'object' && chainContacts !== null) {
@@ -116,7 +111,9 @@ export function arrangeContactSyncingTestUtils(
     // AddressBook structure is { chainId: { address: contactObject } }
     for (const chainId in addressBookState) {
       if (Object.prototype.hasOwnProperty.call(addressBookState, chainId)) {
-        if (chainId === '*') continue; // Skip wildcard entries
+        if (chainId === '*') {
+          continue; // Skip wildcard entries
+        }
 
         const chainContacts = addressBookState[chainId];
         if (typeof chainContacts === 'object' && chainContacts !== null) {

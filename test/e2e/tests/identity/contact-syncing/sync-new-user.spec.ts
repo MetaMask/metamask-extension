@@ -10,7 +10,7 @@ import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
 import { completeNewWalletFlowContactSyncing } from '../flows';
 
-import { arrangeContactSyncingTestUtils, TestContext } from './helpers';
+import { arrangeContactSyncingTestUtils } from './helpers';
 import { MOCK_CONTACT_ADDRESSES } from './mock-data';
 
 type Contact = {
@@ -28,10 +28,10 @@ type AppState = {
   };
 };
 
-describe('Contact syncing - New User', function (this: TestContext) {
+describe('Contact syncing - New User', function () {
   this.timeout(120000); // Contact syncing tests can be long
 
-  it('syncs contacts after new wallet creation', async function (this: TestContext) {
+  it('syncs contacts after new wallet creation', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const testContact = {
@@ -121,7 +121,7 @@ describe('Contact syncing - New User', function (this: TestContext) {
     );
   });
 
-  it('handles empty remote storage during initialization', async function (this: TestContext) {
+  it('handles empty remote storage during initialization', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     await withFixtures(

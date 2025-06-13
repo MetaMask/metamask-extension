@@ -16,17 +16,17 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
 
-import { arrangeContactSyncingTestUtils, TestContext } from './helpers';
+import { arrangeContactSyncingTestUtils } from './helpers';
 import { MOCK_CONTACTS, createContactKey } from './mock-data';
 
-interface Contact {
+type Contact = {
   name: string;
   address: string;
   chainId: string;
   memo?: string;
-}
+};
 
-describe('Contact Syncing - Existing User', function (this: TestContext) {
+describe('Contact Syncing - Existing User', function () {
   this.timeout(300000); // Extended timeout for comprehensive test
 
   // Test network chain ID - used throughout the test
@@ -105,7 +105,7 @@ describe('Contact Syncing - Existing User', function (this: TestContext) {
   };
 
   describe('from inside MetaMask', function () {
-    it('performs complete lifecycle: remote→local contact sync, add, modify, delete, verify sync on other device', async function (this: TestContext) {
+    it('performs complete lifecycle: remote→local contact sync, add, modify, delete, verify sync on other device', async function () {
       const {
         initialRemoteContacts,
         newContact,
