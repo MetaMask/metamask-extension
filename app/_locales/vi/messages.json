@@ -2399,9 +2399,6 @@
   "hideAdvancedDetails": {
     "message": "Ẩn chi tiết nâng cao"
   },
-  "hideSeedPhrase": {
-    "message": "Ẩn cụm từ khôi phục bí mật"
-  },
   "hideSentitiveInfo": {
     "message": "Ẩn thông tin nhạy cảm"
   },
@@ -4622,9 +4619,6 @@
   "revealSensitiveContent": {
     "message": "Tiết lộ nội dung nhạy cảm"
   },
-  "revealTheSeedPhrase": {
-    "message": "Hiển thị cụm từ khôi phục bí mật"
-  },
   "review": {
     "message": "Xem lại"
   },
@@ -4732,29 +4726,11 @@
   "seeDetails": {
     "message": "Xem chi tiết"
   },
-  "seedPhraseConfirm": {
-    "message": "Xác nhận Cụm từ khôi phục bí mật"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Xác nhận Cụm từ khôi phục bí mật"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Viết ra và cất ở nhiều nơi bí mật"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Cất trong hộp ký gửi an toàn"
-  },
   "seedPhraseIntroTitle": {
     "message": "Bảo mật cho ví của bạn"
   },
   "seedPhraseReq": {
     "message": "Cụm từ khôi phục bí mật gồm 12, 15, 18, 21 hoặc 24 từ"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Viết ra Cụm từ khôi phục bí mật gồm 12 từ này, sau đó lưu ở một nơi mà bạn tin tưởng và chỉ có bạn mới được phép truy cập."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Viết ra Cụm từ khôi phục bí mật của bạn"
   },
   "select": {
     "message": "Chọn"
@@ -6158,9 +6134,6 @@
   },
   "time": {
     "message": "Thời gian"
-  },
-  "tips": {
-    "message": "Mẹo"
   },
   "tipsForUsingAWallet": {
     "message": "Lời khuyên sử dụng ví"
