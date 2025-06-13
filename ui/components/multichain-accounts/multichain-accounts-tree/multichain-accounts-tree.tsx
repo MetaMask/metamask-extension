@@ -41,7 +41,7 @@ export const MultichainAccountsTree = ({
 }: MultichainAccountsTreeProps) => {
   const accountListItems = useMemo(() => {
     return Object.entries(walletAccountCollection).reduce(
-      (accumulatedItems, [walletId, walletData]) => {
+      (allWallets, [walletId, walletData]) => {
         const walletName = walletData.metadata?.name;
 
         const walletHeader = (
@@ -123,7 +123,7 @@ export const MultichainAccountsTree = ({
           },
         );
 
-        return [...accumulatedItems, walletHeader, ...groupsItems];
+        return [...allWallets, walletHeader, ...groupsItems];
       },
       [] as React.ReactNode[],
     );
