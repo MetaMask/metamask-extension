@@ -95,7 +95,10 @@ describe('Import flow', function () {
         ]);
 
         const tokenList = new AssetListPage(driver);
-        await tokenList.check_tokenItemNumber(5); // Linea & Mainnet Eth
+
+        // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, Polygon POL
+        // ERC20 Tokens: Chain Games, Chai
+        await tokenList.check_tokenItemNumber(6);
         await tokenList.check_tokenExistsInList('Ethereum');
         await tokenList.check_tokenExistsInList('Chain Games');
         // TODO: add back this check once we figure out why tokens name displayed when running the test locally is changex but on CI it is ChangeX
@@ -164,7 +167,10 @@ describe('Import flow', function () {
         await assetListPage.importMultipleTokensBySearch(['ERP', 'USDT']);
 
         const tokenList = new AssetListPage(driver);
-        await tokenList.check_tokenItemNumber(5); // Polygon, Eth, linea, USDT, ERP
+
+        // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, Polygon POL
+        // ERC20 Tokens: Polygon USDT, Polygon ERP
+        await tokenList.check_tokenItemNumber(6);
 
         await tokenList.check_tokenExistsInList('Ethereum');
         await tokenList.check_tokenExistsInList('ERP');
@@ -234,7 +240,10 @@ describe('Import flow', function () {
           '0x89',
         );
         const tokenList = new AssetListPage(driver);
-        await tokenList.check_tokenItemNumber(4); // Polygon, Eth, linea, USDT
+
+        // Native Tokens: Ethereum ETH, Linea ETH, Base ETH, Polygon POL
+        // ERC20 Tokens: Polygon USDT
+        await tokenList.check_tokenItemNumber(5);
 
         await tokenList.check_tokenExistsInList('Ethereum');
         await tokenList.check_tokenExistsInList('USDT');
