@@ -137,6 +137,35 @@ describe('App Header', () => {
 
       expect(mockUseHistory).toHaveBeenCalled();
     });
+
+    it('can open the visit support data consent modal', async () => {
+      const { container } = render();
+
+      const settingsButton = container.querySelector(
+        '[data-testid="account-options-menu-button"]',
+      );
+      expect(settingsButton).toBeInTheDocument();
+      fireEvent.click(settingsButton);
+
+      const settingsMenu = container.querySelector(
+        '[data-testid="global-menu"]',
+      );
+      expect(settingsMenu).toBeInTheDocument();
+      fireEvent.click(settingsMenu);
+
+      const globalMenuSupportButton = container.querySelector(
+        '[data-testid="global-menu-support"]',
+      );
+      expect(globalMenuSupportButton).toBeInTheDocument();
+      fireEvent.click(globalMenuSupportButton);
+
+      await waitFor(() => {
+        const supportDataConsentModal = container.querySelector(
+          '[data-testid="visit-support-data-consent-modal"]',
+        );
+        expect(supportDataConsentModal).toBeVisible();
+      });
+    });
   });
 
   describe('locked state', () => {
