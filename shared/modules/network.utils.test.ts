@@ -197,12 +197,6 @@ describe('network utils', () => {
         isEvm: false,
       },
     };
-    const sortedChainIds = [
-      { networkId: SolScope.Mainnet },
-      { networkId: BtcScope.Mainnet },
-      { networkId: EthScope.Mainnet },
-      { networkId: EthScope.Testnet },
-    ];
 
     it('sorts a list of networks based on the order of their chain IDs', () => {
       expect(
