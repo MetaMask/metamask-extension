@@ -8,7 +8,7 @@ import { Route } from './route.type';
 export default new Route({
   pathname: '/notifications',
   getTitle: (_: URLSearchParams) => 'deepLink_OpenTheNotifications',
-  handler: function handle(_: URLSearchParams) {
+  handler: function handler(_: URLSearchParams) {
     return { path: NOTIFICATIONS_ROUTE, query: new URLSearchParams() };
   },
 });

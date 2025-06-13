@@ -8,7 +8,7 @@ import { Route } from './route.type';
 export default new Route({
   pathname: '/home',
   getTitle: (_: URLSearchParams) => 'deepLink_OpenTheHomePage',
-  handler: function handle(_: URLSearchParams) {
+  handler: function handler(_: URLSearchParams) {
     return { path: DEFAULT_ROUTE, query: new URLSearchParams() };
   },
 });
