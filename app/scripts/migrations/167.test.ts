@@ -1,6 +1,9 @@
-import { migrate, version } from './167';
 import { cloneDeep } from 'lodash';
-import { Caip25CaveatType, Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '@metamask/chain-agnostic-permission';
+import { migrate, version } from './167';
 
 const storage = {
   meta: { version: -1 },
@@ -70,7 +73,11 @@ describe('migration #167', () => {
 
     const newStorage = await migrate(cloneDeep(oldStorage));
 
-    const updatedPermission = (newStorage.data.PermissionController as any).subjects['https://app.test.io'].permissions[Caip25EndowmentPermissionName];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updatedPermission = (newStorage.data.PermissionController as any)
+      .subjects['https://app.test.io'].permissions[
+      Caip25EndowmentPermissionName
+    ];
     const updatedCaveat = updatedPermission.caveats[0];
 
     expect(Object.keys(updatedCaveat.value.optionalScopes)).toHaveLength(2);
@@ -114,7 +121,6 @@ describe('migration #167', () => {
                       },
                     },
                   ],
-
                 },
               },
             },
@@ -126,7 +132,12 @@ describe('migration #167', () => {
     const newStorage = await migrate(cloneDeep(oldStorage));
 
     // The subject should be removed entirely since no scopes remain
-    expect((newStorage.data.PermissionController as any).subjects['https://app.test.io']).toBeUndefined();
+    expect(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (newStorage.data.PermissionController as any).subjects[
+        'https://app.test.io'
+      ],
+    ).toBeUndefined();
   });
 
   it('should preserve wallet scopes and non-chain-specific scopes', async () => {
@@ -165,7 +176,6 @@ describe('migration #167', () => {
                       },
                     },
                   ],
-
                 },
               },
             },
@@ -176,7 +186,11 @@ describe('migration #167', () => {
 
     const newStorage = await migrate(cloneDeep(oldStorage));
 
-    const updatedPermission = (newStorage.data.PermissionController as any).subjects['https://app.test.io'].permissions[Caip25EndowmentPermissionName];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updatedPermission = (newStorage.data.PermissionController as any)
+      .subjects['https://app.test.io'].permissions[
+      Caip25EndowmentPermissionName
+    ];
     const updatedCaveat = updatedPermission.caveats[0];
 
     expect(Object.keys(updatedCaveat.value.optionalScopes)).toHaveLength(2);
