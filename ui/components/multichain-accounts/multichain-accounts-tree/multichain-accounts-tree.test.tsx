@@ -92,7 +92,7 @@ describe('MultichainAccountsTree', () => {
   const mockOnAccountListItemItemClicked = jest.fn();
 
   const defaultProps: MultichainAccountsTreeProps = {
-    walletAccountCollection: mockWalletAccountCollection,
+    wallets: mockWalletAccountCollection,
     allowedAccountTypes: [EthAccountType.Eoa, EthAccountType.Erc4337],
     connectedSites: mockConnectedSites,
     currentTabOrigin: 'https://test.dapp',

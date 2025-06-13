@@ -17,7 +17,7 @@ import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/mult
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 
 export type MultichainAccountsTreeProps = {
-  walletAccountCollection: ConsolidatedWallets;
+  wallets: ConsolidatedWallets;
   allowedAccountTypes: string[];
   connectedSites: Record<string, { origin: string; iconUrl?: string }[]>;
   currentTabOrigin?: string;
@@ -29,7 +29,7 @@ export type MultichainAccountsTreeProps = {
 };
 
 export const MultichainAccountsTree = ({
-  walletAccountCollection,
+  wallets,
   allowedAccountTypes,
   connectedSites,
   currentTabOrigin,
@@ -40,7 +40,7 @@ export const MultichainAccountsTree = ({
   onAccountListItemItemClicked,
 }: MultichainAccountsTreeProps) => {
   const accountsTree = useMemo(() => {
-    return Object.entries(walletAccountCollection).reduce(
+    return Object.entries(wallets).reduce(
       (allWallets, [walletId, walletData]) => {
         const walletName = walletData.metadata?.name;
 
@@ -128,7 +128,7 @@ export const MultichainAccountsTree = ({
       [] as React.ReactNode[],
     );
   }, [
-    walletAccountCollection,
+    wallets,
     allowedAccountTypes,
     connectedSites,
     currentTabOrigin,
