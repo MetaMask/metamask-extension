@@ -102,6 +102,7 @@ export const MultichainAccountsTree = ({
                     connectedAvatar={connectedSite?.iconUrl}
                     menuType={AccountListItemMenuTypes.Account}
                     currentTabOrigin={currentTabOrigin}
+                    isActive={account.active}
                     privacyMode={privacyMode}
                     showSrpPill={false}
                     {...accountListItemProps}

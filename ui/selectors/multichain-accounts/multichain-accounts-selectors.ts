@@ -2,12 +2,14 @@ import type {
   AccountGroupId,
   AccountWalletId,
 } from '@metamask/account-tree-controller';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { AccountId } from '@metamask/accounts-controller';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
   getMetaMaskAccountsOrdered,
-  // getOrderedConnectedAccountsForActiveTab,
+  getOrderedConnectedAccountsForActiveTab,
 } from '../selectors';
-import { InternalAccountWithBalance } from '../selectors.types';
+import { MergedInternalAccount } from '../selectors.types';
 import {
   AccountTreeState,
   ConsolidatedWallets,
@@ -27,6 +29,18 @@ export const getAccountTree = (
 ): AccountTreeState => state.metamask.accountTree;
 
 /**
+ * Retrieve currently selected account ID from state.
+ *
+ * @param state - Redux state.
+ * @param state.metamask - MetaMask state object.
+ * @param state.metamask.internalAccounts - Internal accounts object.
+ * @param state.metamask.internalAccounts.selectedAccount - Selected Account ID.
+ * @returns Selected account ID.
+ */
+export const getSelectedAccount = (state: MultichainAccountsState): AccountId =>
+  state.metamask.internalAccounts.selectedAccount;
+
+/**
  * Retrieve all wallets and their accounts with metadata in consolidated data structure.
  *
  * @param internalAccounts - All available internal accounts.
@@ -36,14 +50,16 @@ export const getAccountTree = (
 export const getWalletsWithAccounts = createDeepEqualSelector(
   getMetaMaskAccountsOrdered,
   getAccountTree,
-  // getOrderedConnectedAccountsForActiveTab,
+  getOrderedConnectedAccountsForActiveTab,
+  getSelectedAccount,
   (
-    internalAccounts: InternalAccountWithBalance[],
+    internalAccounts: MergedInternalAccount[],
     accountTree: AccountTreeState,
-    // connectedAccounts: string[],
+    connectedAccounts: InternalAccount[],
+    selectedAccountId: AccountId,
   ): ConsolidatedWallets => {
     const accountsById = internalAccounts.reduce(
-      (accounts: Record<string, InternalAccountWithBalance>, account) => {
+      (accounts: Record<string, MergedInternalAccount>, account) => {
         accounts[account.id] = account;
         return accounts;
       },
@@ -64,25 +80,19 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
           const accountsFromGroup = group.accounts.reduce(
             (accountsWithMetadata, accountId) => {
               const accountWithMetadata = accountsById[accountId];
-              accountsWithMetadata.push(accountWithMetadata);
 
-              // Add connection data if applicable
-              // connectedAccounts.forEach((connection) => {
-              //   // Find if the connection exists in accounts
-              //   const matchingAccount = accounts.find(
-              //     (account) => account.id === connection.id,
-              //   );
-              //
-              //   // If a matching account is found and the connection has metadata, add the connections property to true and lastSelected timestamp from metadata
-              //   if (matchingAccount && connection.metadata) {
-              //     matchingAccount.connections = true;
-              //     matchingAccount.lastSelected = connection.metadata.lastSelected;
-              //   }
-              // });
+              accountWithMetadata.active = Boolean(
+                connectedAccounts.find(
+                  (connectedAccount) =>
+                    connectedAccount.id === accountWithMetadata.id,
+                ) && selectedAccountId === accountWithMetadata.id,
+              );
+
+              accountsWithMetadata.push(accountWithMetadata);
 
               return accountsWithMetadata;
             },
-            [] as InternalAccountWithBalance[],
+            [] as MergedInternalAccount[],
           );
 
           consolidatedWallets[walletId as AccountWalletId].groups[
@@ -94,8 +104,6 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
           };
         });
 
-        console.log('[][][][][][][][][][][][][][][][][]');
-        console.log(consolidatedWallets);
         return consolidatedWallets;
       },
       {} as ConsolidatedWallets,
