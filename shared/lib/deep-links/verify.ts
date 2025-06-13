@@ -17,7 +17,7 @@ let tools: {
  * until it's actually needed, which can help with performance
  * and reduce the initial load time of the application.
  */
-export async function lazyGetTools() {
+async function lazyGetTools() {
   const algorithm: EcdsaParams = { name: 'ECDSA', hash: 'SHA-256' };
 
   const publicKey = await crypto.subtle.importKey(
