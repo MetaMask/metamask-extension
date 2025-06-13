@@ -1,10 +1,14 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   Box,
   Button,
   ButtonSize,
   ButtonVariant,
+  Icon,
+  IconName,
+  IconSize,
   Modal,
   ModalContent,
   ModalHeader,
@@ -15,9 +19,13 @@ import {
   AlignItems,
   BlockSize,
   Display,
+  FlexDirection,
+  FontWeight,
+  IconColor,
   JustifyContent,
   TextVariant,
 } from '../../helpers/constants/design-system';
+import { isSocialLoginFlow } from '../../selectors';
 
 export default function ResetPasswordModal({
   onClose,
@@ -27,6 +35,97 @@ export default function ResetPasswordModal({
   onRestore: () => void;
 }) {
   const t = useI18nContext();
+
+  const isSocialLoginEnabled = useSelector(isSocialLoginFlow);
+
+  const socialLoginContent = () => {
+    return (
+      <Box paddingInline={4}>
+        <Text variant={TextVariant.bodyMd} marginBottom={4}>
+          {t('forgotPasswordSocialDescription')}
+        </Text>
+        <Box
+          as="ul"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={4}
+        >
+          <Box display={Display.Flex} gap={4} as="li">
+            <Icon
+              name={IconName.FaceId}
+              size={IconSize.Md}
+              color={IconColor.iconMuted}
+              style={{
+                marginTop: '2px',
+              }}
+            />
+            <Text variant={TextVariant.bodyMd}>
+              {t('forgotPasswordSocialStep1', [
+                <Text
+                  variant={TextVariant.inherit}
+                  fontWeight={FontWeight.Bold}
+                  key="reset-password-step-1-biometrics"
+                >
+                  {t('forgotPasswordSocialStep1Biometrics')}
+                </Text>,
+              ])}
+            </Text>
+          </Box>
+          <Box display={Display.Flex} gap={4} as="li">
+            <Icon
+              name={IconName.SecurityKey}
+              size={IconSize.Md}
+              color={IconColor.iconMuted}
+              style={{
+                marginTop: '2px',
+              }}
+            />
+            <Text variant={TextVariant.bodyMd}>
+              {t('forgotPasswordSocialStep2', [
+                <Text
+                  variant={TextVariant.inherit}
+                  fontWeight={FontWeight.Bold}
+                  key="reset-password-step-2-srp"
+                >
+                  {t('secretRecoveryPhrase')}
+                </Text>,
+              ])}
+            </Text>
+          </Box>
+        </Box>
+      </Box>
+    );
+  };
+
+  const srpLoginContent = () => {
+    return (
+      <Box paddingInline={4}>
+        <Box
+          width={BlockSize.Full}
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+          marginBottom={2}
+        >
+          <img
+            src="images/forgot-password-lock.png"
+            width={154}
+            height={154}
+            alt={t('forgotPasswordModalTitle')}
+            style={{
+              alignSelf: 'center',
+            }}
+          />
+        </Box>
+        <Text variant={TextVariant.bodyMd} marginBottom={4}>
+          {t('forgotPasswordModalDescription1')}
+        </Text>
+        <Text variant={TextVariant.bodyMd}>
+          {t('forgotPasswordModalDescription2')}
+        </Text>
+      </Box>
+    );
+  };
 
   return (
     <Modal
@@ -40,30 +139,8 @@ export default function ResetPasswordModal({
         <ModalHeader onClose={onClose}>
           {t('forgotPasswordModalTitle')}
         </ModalHeader>
-        <Box paddingInline={4}>
-          <Box
-            width={BlockSize.Full}
-            display={Display.Flex}
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.center}
-            marginBottom={2}
-          >
-            <img
-              src="images/forgot-password-lock.png"
-              width={154}
-              height={154}
-              alt={t('forgotPasswordModalTitle')}
-              style={{
-                alignSelf: 'center',
-              }}
-            />
-          </Box>
-          <Text variant={TextVariant.bodyMd} marginBottom={4}>
-            {t('forgotPasswordModalDescription1')}
-          </Text>
-          <Text variant={TextVariant.bodyMd} marginBottom={6}>
-            {t('forgotPasswordModalDescription2')}
-          </Text>
+        {isSocialLoginEnabled ? socialLoginContent() : srpLoginContent()}
+        <Box paddingInline={4} marginTop={6}>
           <Button
             data-testid="reset-password-modal-button"
             variant={ButtonVariant.Primary}

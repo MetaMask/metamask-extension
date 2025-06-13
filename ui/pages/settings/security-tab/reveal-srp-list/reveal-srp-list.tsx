@@ -25,16 +25,16 @@ import {
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useSyncSRPs } from '../../../../hooks/social-sync/useSyncSRPs';
 import {
-  isSocialLoginFlow,
   getSocialLoginEmail,
   getSocialLoginType,
   getFirstTimeFlowType,
+  isSocialLoginFlow,
 } from '../../../../selectors';
 import { getSeedPhraseBackedUp } from '../../../../ducks/metamask/metamask';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../../shared/constants/onboarding';
-import { useSyncSRPs } from '../../../../hooks/social-sync/useSyncSRPs';
 
 export const RevealSrpList = () => {
   // sync SRPs
