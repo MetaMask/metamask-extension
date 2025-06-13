@@ -87,6 +87,8 @@ export function useAsyncCallback<T>(
   asyncFn: () => Promise<T>,
   deps: DependencyList = [],
 ): [() => Promise<void>, AsyncResult<T>, boolean] {
+  'use no memo';
+
   const [result, setResult] = useState<AsyncResult<T>>(RESULT_IDLE);
 
   // Track component mount state
@@ -151,6 +153,8 @@ export function useAsyncResult<T>(
   asyncFn: () => Promise<T>,
   deps: DependencyList = [],
 ): AsyncResultNoIdle<T> {
+  'use no memo';
+
   const [execute, result, isDepsChanged] = useAsyncCallback(asyncFn, deps);
 
   useEffect(() => {
@@ -179,6 +183,8 @@ export function useAsyncResultOrThrow<T>(
   asyncFn: () => Promise<T>,
   deps: DependencyList = [],
 ): AsyncResultNoError<T> {
+  'use no memo';
+
   const result = useAsyncResult(asyncFn, deps);
 
   if (result.status === 'error') {
