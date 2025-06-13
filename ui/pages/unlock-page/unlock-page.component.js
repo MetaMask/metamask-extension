@@ -69,7 +69,10 @@ export default class UnlockPage extends Component {
 
     if (isUnlocked) {
       // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
-      const redirectTo = location.state?.from?.pathname || DEFAULT_ROUTE;
+      let redirectTo = DEFAULT_ROUTE;
+      if (location.state?.from?.pathname) {
+        redirectTo = location.state.from.pathname + location.state?.from.search;
+      }
       history.push(redirectTo);
     }
   }
