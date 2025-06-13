@@ -50,6 +50,7 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
               <button
                 aria-label="Close"
                 class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                data-testid="modal-header-close-button"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -160,7 +161,7 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
                                 <rect
                                   fill="#FA4300"
                                   height="32"
-                                  transform="translate(-1.712066926084717 -0.6920409130150889) rotate(264.3 16 16)"
+                                  transform="translate(-1.712066926084717 -0.6920409130150887) rotate(264.3 16 16)"
                                   width="32"
                                   x="0"
                                   y="0"
@@ -219,7 +220,7 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
                         <rect
                           fill="#FA4300"
                           height="32"
-                          transform="translate(-1.712066926084717 -0.6920409130150889) rotate(264.3 16 16)"
+                          transform="translate(-1.712066926084717 -0.6920409130150887) rotate(264.3 16 16)"
                           width="32"
                           x="0"
                           y="0"
