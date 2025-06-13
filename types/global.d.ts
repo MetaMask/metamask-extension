@@ -22,14 +22,7 @@ import {
   TrezorAction,
 } from '../shared/constants/offscreen-communication';
 import type { Preferences } from '../app/scripts/controllers/preferences-controller';
-
-declare class Platform {
-  openTab: (opts: { url: string }) => void;
-
-  closeCurrentWindow: () => void;
-
-  openExtensionInBrowser?: (_1?, _1?, condition?: boolean) => void;
-}
+import type ExtensionPlatform from '../app/scripts/platforms/extension';
 
 declare class MessageSender {
   documentId?: string;
@@ -276,7 +269,7 @@ type StateHooks = {
 };
 
 export declare global {
-  var platform: Platform;
+  var platform: ExtensionPlatform;
   // Sentry is undefined in dev, so use optional chaining
   var sentry: SentryObject | undefined;
 

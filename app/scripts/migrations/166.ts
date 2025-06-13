@@ -1,5 +1,9 @@
-import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
+import { hasProperty, isObject } from '@metamask/utils';
+import {
+  CHAIN_IDS,
+  getFailoverUrlsForInfuraNetwork,
+} from '../../../shared/constants/network';
 
 type VersionedData = {
   meta: { version: number };
@@ -8,111 +12,86 @@ type VersionedData = {
 
 export const version = 166;
 
-const SOLANA_MAINNET_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
-
-type TransactionStateEntry = {
-  transactions: unknown[];
-  next: string | null;
-  lastUpdated: number;
-};
-
-type LegacyTransactionsState = {
-  [accountId: string]: TransactionStateEntry;
-};
-
-type NewTransactionsState = {
-  [accountId: string]: {
-    [chainId: string]: TransactionStateEntry;
-  };
-};
-
 /**
- * This migration transforms the MultichainTransactionsController state structure
- * to support per-chain transaction storage. It moves transactions from directly
- * under the account to be nested under the chainId (Solana in this case).
+ * This migration adds Base network to the `NetworkController` as it is enabled by default.
+ * - It modifies the `NetworkController.state.networkConfigurationsByChainId` to include Base network.
  *
- * @param originalVersionedData - Versioned MetaMask extension state, exactly
- * what we persist to disk.
- * @returns Updated versioned MetaMask extension state.
+ * @param originalVersionedData - The versioned extension state.
+ * @returns The updated versioned extension state with base network added
  */
 export async function migrate(
   originalVersionedData: VersionedData,
 ): Promise<VersionedData> {
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
-  transformState(versionedData.data);
+
+  versionedData.data = transformState(versionedData.data);
+
   return versionedData;
 }
 
 function transformState(
   state: Record<string, unknown>,
 ): Record<string, unknown> {
-  if (
-    !hasProperty(state, 'MultichainTransactionsController') ||
-    !isObject(state.MultichainTransactionsController)
-  ) {
+  if (!hasProperty(state, 'NetworkController')) {
+    console.warn(`Migration ${version}: NetworkController not found.`);
+    return state;
+  }
+
+  const networkState = state.NetworkController;
+  if (!isObject(networkState)) {
     global.sentry?.captureException?.(
       new Error(
-        `Invalid MultichainTransactionsController state: ${typeof state.MultichainTransactionsController}`,
+        `Migration ${version}: NetworkController is not an object: ${typeof networkState}`,
       ),
     );
     return state;
   }
 
-  const transactionsController = state.MultichainTransactionsController;
-
-  if (
-    !hasProperty(transactionsController, 'nonEvmTransactions') ||
-    !isObject(transactionsController.nonEvmTransactions)
-  ) {
+  if (!hasProperty(networkState, 'networkConfigurationsByChainId')) {
     global.sentry?.captureException?.(
       new Error(
-        `Invalid nonEvmTransactions state: ${typeof transactionsController.nonEvmTransactions}`,
+        `Migration ${version}: NetworkController missing property networkConfigurationsByChainId.`,
       ),
     );
     return state;
   }
 
-  const { nonEvmTransactions } = transactionsController;
-  const newNonEvmTransactions: NewTransactionsState = {};
-
-  // Migrate each account's transactions to the new nested structure
-  for (const [accountId, accountTransactions] of Object.entries(
-    nonEvmTransactions as LegacyTransactionsState,
-  )) {
-    // If the account already has the new structure, meaning the accountTransactions
-    // doesn't have a direct transactions property, instead it has a chainId as a key,
-    // so we can skip it and continue to the next account
-    if (
-      isObject(accountTransactions) &&
-      !Array.isArray(accountTransactions.transactions)
-    ) {
-      // This state is only used for Solana's transactions (at that time), we assume it's already well-shaped
-      // and don't run any validation on the object itself (hence the `as unknown`).
-      newNonEvmTransactions[accountId] =
-        accountTransactions as unknown as NewTransactionsState[string];
-      continue;
-    }
-
-    // Creates the new structure for this account
-    // Since we know the transactions are from Solana, we use the Solana chainId
-    // 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' is Solana mainnet (the only supported so far)
-    newNonEvmTransactions[accountId] = {
-      [SOLANA_MAINNET_ADDRESS]: {
-        transactions: Array.isArray(accountTransactions.transactions)
-          ? accountTransactions.transactions
-          : [],
-        next: accountTransactions.next || null,
-        lastUpdated:
-          typeof accountTransactions.lastUpdated === 'number'
-            ? accountTransactions.lastUpdated
-            : Date.now(),
-      },
-    };
+  if (!isObject(networkState.networkConfigurationsByChainId)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `Migration ${version}: NetworkController.networkConfigurationsByChainId is not an object: ${typeof networkState.networkConfigurationsByChainId}.`,
+      ),
+    );
+    return state;
   }
 
-  // Update the state with the new structure
-  transactionsController.nonEvmTransactions = newNonEvmTransactions;
+  // User already has base network added
+  if (networkState.networkConfigurationsByChainId[CHAIN_IDS.BASE]) {
+    return state;
+  }
+
+  networkState.networkConfigurationsByChainId[CHAIN_IDS.BASE] =
+    getBaseNetworkConfiguration();
 
   return state;
+}
+
+// Exported for testing purposes
+export function getBaseNetworkConfiguration() {
+  return {
+    blockExplorerUrls: [],
+    chainId: '0x2105' as const, // toHex(8453) Base Network
+    defaultRpcEndpointIndex: 0,
+    name: 'Base Mainnet',
+    nativeCurrency: 'ETH',
+    rpcEndpoints: [
+      {
+        failoverUrls: getFailoverUrlsForInfuraNetwork('base-mainnet'),
+        networkClientId: 'base-mainnet',
+        type: 'infura',
+        url: 'https://base-mainnet.infura.io/v3/{infuraProjectId}',
+      },
+    ],
+  };
 }

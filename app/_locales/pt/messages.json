@@ -2399,9 +2399,6 @@
   "hideAdvancedDetails": {
     "message": "Ocultar detalhes avançados"
   },
-  "hideSeedPhrase": {
-    "message": "Ocultar frase-semente"
-  },
   "hideSentitiveInfo": {
     "message": "Ocultar informações confidenciais"
   },
@@ -4622,9 +4619,6 @@
   "revealSensitiveContent": {
     "message": "Revelar conteúdo confidencial"
   },
-  "revealTheSeedPhrase": {
-    "message": "Revelar a frase-semente"
-  },
   "review": {
     "message": "Revisar"
   },
@@ -4732,29 +4726,11 @@
   "seeDetails": {
     "message": "Ver detalhes"
   },
-  "seedPhraseConfirm": {
-    "message": "Confirmar Frase de Recuperação Secreta"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Confirmar Frase de Recuperação Secreta"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Anote e guarde em vários locais secretos"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Guarde em um cofre de banco"
-  },
   "seedPhraseIntroTitle": {
     "message": "Proteja sua carteira"
   },
   "seedPhraseReq": {
     "message": "As Frases de Recuperação Secretas contêm 12, 15, 18, 21 ou 24 palavras"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Anote essa Frase de Recuperação Secreta de 12 palavras e guarde-a em algum lugar de sua confiança ao qual somente você tenha acesso."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Anote sua Frase de Recuperação Secreta"
   },
   "select": {
     "message": "Selecionar"
@@ -6158,9 +6134,6 @@
   },
   "time": {
     "message": "Hora"
-  },
-  "tips": {
-    "message": "Dicas"
   },
   "tipsForUsingAWallet": {
     "message": "Dicas para usar uma carteira"

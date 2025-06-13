@@ -1,143 +1,170 @@
-import { migrate, version } from './166';
+import { NetworkState } from '@metamask/network-controller';
+import { getBaseNetworkConfiguration, migrate, version } from './166';
 
-const SOLANA_MAINNET_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+const oldVersion = 165;
 
 describe(`migration #${version}`, () => {
+  beforeEach(() => {
+    global.sentry = { captureException: jest.fn() };
+  });
+
+  afterEach(() => {
+    global.sentry = undefined;
+  });
+
   it('updates the version metadata', async () => {
     const oldStorage = {
-      meta: { version: version - 1 },
-      data: {},
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {},
+        },
+      },
     };
+
     const newStorage = await migrate(oldStorage);
+
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('does nothing if MultichainTransactionsController is missing', async () => {
+  it('logs an error and returns the original state if NetworkController is missing', async () => {
     const oldStorage = {
-      meta: { version: version - 1 },
+      meta: { version: oldVersion },
       data: {},
     };
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual({});
-  });
 
-  it('does nothing if MultichainTransactionsController is not an object', async () => {
-    const oldStorage = {
-      meta: { version: version - 1 },
-      data: {
-        MultichainTransactionsController: 'not an object',
-      },
-    };
+    const mockWarn = jest.spyOn(console, 'warn').mockImplementation(jest.fn());
+
     const newStorage = await migrate(oldStorage);
+
+    expect(mockWarn).toHaveBeenCalledWith(
+      `Migration ${version}: NetworkController not found.`,
+    );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
-  it('does nothing if nonEvmTransactions is not an object', async () => {
+  it('logs an error and returns the original state if NetworkController is not an object', async () => {
     const oldStorage = {
-      meta: { version: version - 1 },
+      meta: { version: oldVersion },
       data: {
-        MultichainTransactionsController: {
-          nonEvmTransactions: 'not an object',
-        },
+        NetworkController: 'not an object',
       },
     };
+
     const newStorage = await migrate(oldStorage);
+
+    expect(global.sentry.captureException).toHaveBeenCalledWith(
+      new Error(
+        `Migration ${version}: NetworkController is not an object: string`,
+      ),
+    );
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
-  it('migrates transactions to the new structure with chainId nesting', async () => {
-    const mockTransaction = { id: '123', type: 'send' };
+  it('logs an error and returns the original state if networkConfigurationsByChainId is missing', async () => {
     const oldStorage = {
-      meta: { version: version - 1 },
+      meta: { version: oldVersion },
       data: {
-        MultichainTransactionsController: {
-          nonEvmTransactions: {
-            'account 1': {
-              transactions: [mockTransaction],
-              next: null,
-              lastUpdated: 1234567890,
-            },
-            'account 2': {
-              transactions: [],
-              next: null,
-              lastUpdated: 9876543210,
-            },
-          },
-        },
-      },
-    };
-
-    const expectedData = {
-      MultichainTransactionsController: {
-        nonEvmTransactions: {
-          'account 1': {
-            [SOLANA_MAINNET_ADDRESS]: {
-              transactions: [mockTransaction],
-              next: null,
-              lastUpdated: 1234567890,
-            },
-          },
-          'account 2': {
-            [SOLANA_MAINNET_ADDRESS]: {
-              transactions: [],
-              next: null,
-              lastUpdated: 9876543210,
-            },
-          },
-        },
+        NetworkController: {},
       },
     };
 
     const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual(expectedData);
+
+    expect(global.sentry.captureException).toHaveBeenCalledWith(
+      new Error(
+        `Migration ${version}: NetworkController missing property networkConfigurationsByChainId.`,
+      ),
+    );
+    expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
-  it('skips accounts that already have the new structure', async () => {
-    const mockTransaction = { id: '123', type: 'send' };
+  it('logs an error and returns the original state if networkConfigurationsByChainId is not an object', async () => {
     const oldStorage = {
-      meta: { version: version - 1 },
+      meta: { version: oldVersion },
       data: {
-        MultichainTransactionsController: {
-          nonEvmTransactions: {
-            'account 1': {
-              transactions: [mockTransaction],
-              next: null,
-              lastUpdated: 1234567890,
-            },
-            'account 2': {
-              [SOLANA_MAINNET_ADDRESS]: {
-                transactions: [],
-                next: null,
-                lastUpdated: 9876543210,
-              },
-            },
-          },
+        NetworkController: {
+          networkConfigurationsByChainId: 'not an object',
         },
       },
     };
 
-    const expectedData = {
-      MultichainTransactionsController: {
-        nonEvmTransactions: {
-          'account 1': {
-            [SOLANA_MAINNET_ADDRESS]: {
-              transactions: [mockTransaction],
-              next: null,
-              lastUpdated: 1234567890,
-            },
-          },
-          'account 2': {
-            [SOLANA_MAINNET_ADDRESS]: {
-              transactions: [],
-              next: null,
-              lastUpdated: 9876543210,
-            },
+    const newStorage = await migrate(oldStorage);
+
+    expect(global.sentry.captureException).toHaveBeenCalledWith(
+      new Error(
+        `Migration ${version}: NetworkController.networkConfigurationsByChainId is not an object: string.`,
+      ),
+    );
+    expect(newStorage.data).toStrictEqual(oldStorage.data);
+  });
+
+  it('does not modify state if Base network is already present', async () => {
+    const customBaseConfig = {
+      chainId: '0x2105',
+      ticker: 'ETH',
+      nickname: 'My Custom Base',
+      rpcUrl: 'https://custom-base-rpc.example.com',
+    };
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            '0x2105': customBaseConfig,
           },
         },
       },
     };
 
     const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual(expectedData);
+
+    // Assert - Base network config is unchanged
+    expect(
+      (newStorage.data.NetworkController as NetworkState)
+        .networkConfigurationsByChainId['0x2105'],
+    ).toStrictEqual(customBaseConfig);
+
+    // Assert - the entire state structure is unchanged
+    expect(newStorage.data).toStrictEqual(oldStorage.data);
+  });
+
+  it('adds Base network to networkConfigurationsByChainId if not already present', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            // Some network configurations, but not Base
+            '0x1': { chainId: '0x1' },
+            '0x1337': { chainId: '0x1337' },
+          },
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    // Assert - Base network was added
+    expect(
+      (newStorage.data.NetworkController as NetworkState)
+        .networkConfigurationsByChainId['0x2105'],
+    ).toStrictEqual(getBaseNetworkConfiguration());
+
+    // Assert - Other networks are unchanged
+    expect(
+      (newStorage.data.NetworkController as NetworkState)
+        .networkConfigurationsByChainId['0x1'],
+    ).toStrictEqual(
+      oldStorage.data.NetworkController.networkConfigurationsByChainId['0x1'],
+    );
+    expect(
+      (newStorage.data.NetworkController as NetworkState)
+        .networkConfigurationsByChainId['0x1337'],
+    ).toStrictEqual(
+      oldStorage.data.NetworkController.networkConfigurationsByChainId[
+        '0x1337'
+      ],
+    );
   });
 });
