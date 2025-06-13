@@ -30439,7 +30439,7 @@ __metadata:
     react-focus-lock: "npm:^2.9.4"
     react-idle-timer: "npm:4.5.6"
     react-markdown: "npm:^6.0.3"
-    react-popper: "npm:^2.2.3"
+    react-popper: "npm:^2.3.0"
     react-redux: "npm:^7.2.9"
     react-responsive-carousel: "npm:^3.2.21"
     react-router-dom: "npm:^5.3.4"
@@ -35028,16 +35028,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-popper@npm:^2.2.3":
-  version: 2.2.4
-  resolution: "react-popper@npm:2.2.4"
+"react-popper@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "react-popper@npm:2.3.0"
   dependencies:
     react-fast-compare: "npm:^3.0.1"
     warning: "npm:^4.0.2"
   peerDependencies:
     "@popperjs/core": ^2.0.0
-    react: ^16.8.0 || ^17
-  checksum: 10/0c4290f51f123859321b1020b7a0d95affe65d71b823e75a29c5caf5e66a90c14eaa758306979fd65dde1dae693b475fbf25677028e7580509b8f759f3268a03
+    react: ^16.8.0 || ^17 || ^18
+    react-dom: ^16.8.0 || ^17 || ^18
+  checksum: 10/2afc495479ae4b9e67f9a1642debd7121947fe71a00c5b326301adb8288a18dca53ebd836fe9c3b7a4e2feb838df0abe8e044eb278e89b1c5d50978b0b93d0ac
   languageName: node
   linkType: hard
 
