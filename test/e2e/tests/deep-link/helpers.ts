@@ -42,16 +42,10 @@ export async function signDeepLink(key: CryptoKey, url: string) {
  * @param bytes - The ArrayBuffer to convert.
  * @returns A Base64 encoded string representation of the input bytes.
  */
-export const bytesToB64 = Object.hasOwn(Uint8Array.prototype, 'toBase64')
-  ? (bytes: ArrayBuffer) =>
-      // modern browsers support Uint8Array.toBase64
-      (
-        new Uint8Array(bytes) as Uint8Array & { toBase64: () => string }
-      ).toBase64()
-  : function bytesToB64(bytes: ArrayBuffer): string {
-      // old browsers
-      return btoa(String.fromCharCode(...new Uint8Array(bytes)));
-    };
+export function bytesToB64(bytes: ArrayBuffer): string {
+  return btoa(String.fromCharCode(...new Uint8Array(bytes)));
+}
+
 /**
  * Converts an ArrayBuffer to an un-padded URL-safe Base64 string.
  *
