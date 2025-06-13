@@ -39,7 +39,10 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
           await completeNewWalletFlowContactSyncing(driver);
 
           const { prepareEventsEmittedCounter } =
-            arrangeContactSyncingTestUtils(driver, userStorageMockttpController);
+            arrangeContactSyncingTestUtils(
+              driver,
+              userStorageMockttpController,
+            );
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -55,12 +58,15 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
 
           // Verify backup and sync is initially enabled
           const initialState = await driver.executeScript(() =>
-            (window as any).stateHooks?.getCleanAppState?.()
+            (window as { stateHooks?: { getCleanAppState?: () => { metamask: { isBackupAndSyncEnabled: boolean; isContactSyncingEnabled: boolean } } } }).stateHooks?.getCleanAppState?.(),
           );
-          console.log('Initial backup and sync state:', {
-            isBackupAndSyncEnabled: initialState.metamask.isBackupAndSyncEnabled,
-            isContactSyncingEnabled: initialState.metamask.isContactSyncingEnabled,
-          });
+          console.log(
+            'Initial backup and sync state:',
+            {
+              isBackupAndSyncEnabled: initialState.metamask.isBackupAndSyncEnabled,
+              isContactSyncingEnabled: initialState.metamask.isContactSyncingEnabled,
+            },
+          );
 
           // Turn off contact syncing specifically
           await backupAndSyncSettingsPage.toggleContactSync();
@@ -70,12 +76,15 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
 
           // Verify contact syncing is now disabled
           const disabledState = await driver.executeScript(() =>
-            (window as any).stateHooks?.getCleanAppState?.()
+            (window as { stateHooks?: { getCleanAppState?: () => { metamask: { isBackupAndSyncEnabled: boolean; isContactSyncingEnabled: boolean } } } }).stateHooks?.getCleanAppState?.(),
           );
-          console.log('Disabled contact sync state:', {
-            isBackupAndSyncEnabled: disabledState.metamask.isBackupAndSyncEnabled,
-            isContactSyncingEnabled: disabledState.metamask.isContactSyncingEnabled,
-          });
+          console.log(
+            'Disabled contact sync state:',
+            {
+              isBackupAndSyncEnabled: disabledState.metamask.isBackupAndSyncEnabled,
+              isContactSyncingEnabled: disabledState.metamask.isContactSyncingEnabled,
+            },
+          );
 
           // Contact syncing should be disabled
           expect(disabledState.metamask.isContactSyncingEnabled).toBe(false);
@@ -94,7 +103,10 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
 
           const contactsSettings = new ContactsSettings(driver);
           await contactsSettings.check_pageIsLoaded();
-          await contactsSettings.addContact('New Contact Not Synced', '0x9999999999999999999999999999999999999999');
+          await contactsSettings.addContact(
+            'New Contact Not Synced',
+            '0x9999999999999999999999999999999999999999',
+          );
 
           console.log('Added contact via UI when contact sync is disabled');
 
@@ -102,7 +114,9 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
           await driver.delay(5000); // Wait 5 seconds
           await waitUntilEventsEmittedNumberEquals(0);
 
-          console.log('Verified no sync requests were made when contact syncing is disabled');
+          console.log(
+            'Verified no sync requests were made when contact syncing is disabled',
+          );
         },
       );
 
@@ -122,23 +136,31 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
         async ({ driver }) => {
           await completeNewWalletFlowContactSyncing(driver);
 
-          const { getCurrentContacts } =
-            arrangeContactSyncingTestUtils(driver, userStorageMockttpController);
+          const { getCurrentContacts } = arrangeContactSyncingTestUtils(
+            driver,
+            userStorageMockttpController,
+          );
 
           // Wait a moment for any potential syncing to complete
           await driver.delay(5000);
 
           // Verify the contact list doesn't have the contact we added when sync was disabled
           const finalContacts = await getCurrentContacts();
-          console.log('Final contacts after new instance:', finalContacts.length);
+          console.log(
+            'Final contacts after new instance:',
+            finalContacts.length,
+          );
 
           // Verify we don't have the contact we added when contact sync was disabled
-          const hasNewContact = finalContacts.some((contact: { address: string }) =>
-            contact.address === '0x9999999999999999999999999999999999999999'
+          const hasNewContact = finalContacts.some(
+            (contact: { address: string }) =>
+              contact.address === '0x9999999999999999999999999999999999999999',
           );
           expect(hasNewContact).toBe(false);
 
-          console.log('Verified contact was not synced to new instance when contact syncing was disabled');
+          console.log(
+            'Verified contact was not synced to new instance when contact syncing was disabled',
+          );
         },
       );
     });
@@ -162,7 +184,10 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
           await completeNewWalletFlowContactSyncing(driver);
 
           const { prepareEventsEmittedCounter } =
-            arrangeContactSyncingTestUtils(driver, userStorageMockttpController);
+            arrangeContactSyncingTestUtils(
+              driver,
+              userStorageMockttpController,
+            );
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -178,13 +203,16 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
 
           // Verify backup and sync settings are available and contact syncing is enabled
           const initialState = await driver.executeScript(() =>
-            (window as any).stateHooks?.getCleanAppState?.()
+            (window as { stateHooks?: { getCleanAppState?: () => { metamask: { isBackupAndSyncEnabled: boolean; isContactSyncingEnabled: boolean } } } }).stateHooks?.getCleanAppState?.(),
           );
 
-          console.log('Initial backup and sync state:', {
-            isBackupAndSyncEnabled: initialState.metamask.isBackupAndSyncEnabled,
-            isContactSyncingEnabled: initialState.metamask.isContactSyncingEnabled,
-          });
+          console.log(
+            'Initial backup and sync state:',
+            {
+              isBackupAndSyncEnabled: initialState.metamask.isBackupAndSyncEnabled,
+              isContactSyncingEnabled: initialState.metamask.isContactSyncingEnabled,
+            },
+          );
 
           // Both backup and sync and contact syncing should be enabled by default
           expect(initialState.metamask.isBackupAndSyncEnabled).toBe(true);
