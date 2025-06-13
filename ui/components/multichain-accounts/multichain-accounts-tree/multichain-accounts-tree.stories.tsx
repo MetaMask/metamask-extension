@@ -139,27 +139,8 @@ Default.args = {
   connectedSites: mockConnectedSites,
   currentTabOrigin: 'https://test.dapp',
   privacyMode: false,
-  selectedAccount: {
-    address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-    type: 'eip155:eoa',
-    id: '',
-    options: {
-      entropySource: 'entropy-source',
-      derivationPath: "m/44'/60'/0'/0/0",
-    },
-    metadata: {
-      name: '',
-      importTime: 0,
-      keyring: {
-        type: '',
-      },
-      nameLastUpdatedAt: undefined,
-      snap: undefined,
-      lastSelected: 1749132453300,
-    },
-    scopes: [],
-    methods: [],
-  },
+  selectedAccount:
+    mockWallets[walletOneId].groups[walletOneGroupId].accounts[0],
 };
 
 export const EOAAccountsOnly = Template.bind({});
