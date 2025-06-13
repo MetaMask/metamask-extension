@@ -89,9 +89,8 @@ describe('NicknamePopover', () => {
   });
 
   it('opens non-EVM block explorer', () => {
-    Object.defineProperty(global, 'platform', {
-      value: { openTab: jest.fn(), closeCurrentWindow: jest.fn() },
-    });
+    // @ts-expect-error mocking platform
+    global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
     const expectedExplorerUrl = formatBlockExplorerAddressUrl(
       MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
         MultichainNetworks.BITCOIN
