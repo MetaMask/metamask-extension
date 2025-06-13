@@ -17,82 +17,89 @@ export const MOCK_CHAIN_IDS = {
 };
 
 /**
- * Creates a mock contact for testing
- * @param overrides - Properties to override in the mock contact
- * @returns Mock contact object
+ * Creates a mock contact with the given parameters.
+ *
+ * @param name - The name of the contact
+ * @param address - The address of the contact
+ * @param chainId - The chain ID for the contact
+ * @param overrides - Optional overrides for the contact properties
+ * @returns A mock contact object
  */
-export function createMockContact(overrides: Partial<UserStorageContact> = {}): UserStorageContact {
+export const createMockContact = (
+  name: string,
+  address: string,
+  chainId: string,
+  overrides: Partial<UserStorageContact> = {},
+): UserStorageContact => {
   const now = Math.floor(Date.now() / 1000); // Use seconds like account syncing
 
   return {
     v: '1',
-    a: MOCK_CONTACT_ADDRESSES.ALICE,
-    c: MOCK_CHAIN_IDS.MAINNET,
-    n: 'Alice Smith',
+    a: address,
+    c: chainId,
+    n: name,
     m: 'Trading partner',
     lu: now,
     ...overrides,
   };
-}
+};
 
 /**
  * Mock contact data for various test scenarios
  */
 export const MOCK_CONTACTS = {
   // Basic contacts for initial sync
-  ALICE_MAINNET: createMockContact({
-    a: MOCK_CONTACT_ADDRESSES.ALICE,
-    c: MOCK_CHAIN_IDS.MAINNET,
-    n: 'Alice Smith',
-    m: 'DeFi trading partner',
-  }),
+  ALICE_MAINNET: createMockContact(
+    'Alice Smith',
+    MOCK_CONTACT_ADDRESSES.ALICE,
+    MOCK_CHAIN_IDS.MAINNET,
+    { m: 'DeFi trading partner' },
+  ),
 
-  BOB_SEPOLIA: createMockContact({
-    a: MOCK_CONTACT_ADDRESSES.BOB,
-    c: MOCK_CHAIN_IDS.SEPOLIA,
-    n: 'Bob Johnson',
-    m: 'Test network contact',
-  }),
+  BOB_SEPOLIA: createMockContact(
+    'Bob Johnson',
+    MOCK_CONTACT_ADDRESSES.BOB,
+    MOCK_CHAIN_IDS.SEPOLIA,
+    { m: 'Test network contact' },
+  ),
 
-  CHARLIE_POLYGON: createMockContact({
-    a: MOCK_CONTACT_ADDRESSES.CHARLIE,
-    c: MOCK_CHAIN_IDS.POLYGON,
-    n: 'Charlie Brown',
-    m: 'Polygon validator',
-  }),
+  CHARLIE_POLYGON: createMockContact(
+    'Charlie Brown',
+    MOCK_CONTACT_ADDRESSES.CHARLIE,
+    MOCK_CHAIN_IDS.POLYGON,
+    { m: 'Polygon validator' },
+  ),
 
   // Same address on different chains (should be separate contacts)
-  ALICE_SEPOLIA: createMockContact({
-    a: MOCK_CONTACT_ADDRESSES.ALICE,
-    c: MOCK_CHAIN_IDS.SEPOLIA,
-    n: 'Alice Testnet',
-    m: 'Same person, different network',
-  }),
+  ALICE_SEPOLIA: createMockContact(
+    'Alice Testnet',
+    MOCK_CONTACT_ADDRESSES.ALICE,
+    MOCK_CHAIN_IDS.SEPOLIA,
+    { m: 'Same person, different network' },
+  ),
 
   // Contact for conflict resolution testing
-  DIANA_OLD: createMockContact({
-    a: MOCK_CONTACT_ADDRESSES.DIANA,
-    c: MOCK_CHAIN_IDS.MAINNET,
-    n: 'Diana Old Name',
-    m: 'Old memo',
-    lu: Math.floor(Date.now() / 1000) - 3600, // 1 hour ago
-  }),
+  DIANA_OLD: createMockContact(
+    'Diana Old Name',
+    MOCK_CONTACT_ADDRESSES.DIANA,
+    MOCK_CHAIN_IDS.MAINNET,
+    { m: 'Old memo', lu: Math.floor(Date.now() / 1000) - 3600 }, // 1 hour ago
+  ),
 
-  DIANA_NEW: createMockContact({
-    a: MOCK_CONTACT_ADDRESSES.DIANA,
-    c: MOCK_CHAIN_IDS.MAINNET,
-    n: 'Diana New Name',
-    m: 'Updated memo',
-    lu: Math.floor(Date.now() / 1000), // Now
-  }),
+  DIANA_NEW: createMockContact(
+    'Diana New Name',
+    MOCK_CONTACT_ADDRESSES.DIANA,
+    MOCK_CHAIN_IDS.MAINNET,
+    { m: 'Updated memo' },
+  ),
 
   // Contact without memo (minimal data)
-  MINIMAL_CONTACT: createMockContact({
-    a: MOCK_CONTACT_ADDRESSES.BOB,
-    c: MOCK_CHAIN_IDS.MAINNET,
-    n: 'Minimal Bob',
-    m: undefined,
-  }),
+  MINIMAL_CONTACT: createMockContact(
+    'Minimal Bob',
+    MOCK_CONTACT_ADDRESSES.BOB,
+    MOCK_CHAIN_IDS.MAINNET,
+    { m: undefined },
+  ),
 };
 
 /**
@@ -139,6 +146,7 @@ export const MOCK_STORAGE_DATA = {
 
 /**
  * Creates contact keys in the format expected by the syncing system
+ *
  * @param contact - The contact to create a key for
  * @returns Contact key string
  */
@@ -148,6 +156,7 @@ export function createContactKey(contact: UserStorageContact): string {
 
 /**
  * Converts a UserStorageContact to the format expected by AddressBookController
+ *
  * @param contact - The contact to convert
  * @returns AddressBook entry format
  */
@@ -160,3 +169,55 @@ export function mockContactToAddressBookEntry(contact: UserStorageContact) {
     lastUpdatedAt: contact.lu * 1000, // Convert back to milliseconds
   };
 }
+
+/**
+ * Creates a mock contact with the given parameters.
+ *
+ * @param name - The name of the contact
+ * @param address - The address of the contact
+ * @param chainId - The chain ID for the contact
+ * @param overrides - Optional overrides for the contact properties
+ * @returns A mock contact object
+ */
+export const createMockContactWithOverrides = (
+  name: string,
+  address: string,
+  chainId: string,
+  overrides: Partial<UserStorageContact> = {},
+): UserStorageContact => {
+  return {
+    v: '1',
+    a: address,
+    c: chainId,
+    n: name,
+    m: 'Trading partner',
+    lu: Math.floor(Date.now() / 1000),
+    ...overrides,
+  };
+};
+
+/**
+ * Creates a mock contact with the given parameters.
+ *
+ * @param name - The name of the contact
+ * @param address - The address of the contact
+ * @param chainId - The chain ID for the contact
+ * @param overrides - Optional overrides for the contact properties
+ * @returns A mock contact object
+ */
+export const createMockContactWithOverridesAndChainId = (
+  name: string,
+  address: string,
+  chainId: string,
+  overrides: Partial<UserStorageContact> = {},
+): UserStorageContact => {
+  return {
+    v: '1',
+    a: address,
+    c: chainId,
+    n: name,
+    m: 'Trading partner',
+    lu: Math.floor(Date.now() / 1000),
+    ...overrides,
+  };
+};

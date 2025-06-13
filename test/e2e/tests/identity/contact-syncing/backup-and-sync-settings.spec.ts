@@ -58,15 +58,23 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
 
           // Verify backup and sync is initially enabled
           const initialState = await driver.executeScript(() =>
-            (window as { stateHooks?: { getCleanAppState?: () => { metamask: { isBackupAndSyncEnabled: boolean; isContactSyncingEnabled: boolean } } } }).stateHooks?.getCleanAppState?.(),
+            (window as {
+              stateHooks?: {
+                getCleanAppState?: () => {
+                  metamask: {
+                    isBackupAndSyncEnabled: boolean;
+                    isContactSyncingEnabled: boolean;
+                  };
+                };
+              };
+            }).stateHooks?.getCleanAppState?.(),
           );
-          console.log(
-            'Initial backup and sync state:',
-            {
-              isBackupAndSyncEnabled: initialState.metamask.isBackupAndSyncEnabled,
-              isContactSyncingEnabled: initialState.metamask.isContactSyncingEnabled,
-            },
-          );
+          console.log('Initial backup and sync state:', {
+            isBackupAndSyncEnabled:
+              initialState.metamask.isBackupAndSyncEnabled,
+            isContactSyncingEnabled:
+              initialState.metamask.isContactSyncingEnabled,
+          });
 
           // Turn off contact syncing specifically
           await backupAndSyncSettingsPage.toggleContactSync();
@@ -76,15 +84,23 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
 
           // Verify contact syncing is now disabled
           const disabledState = await driver.executeScript(() =>
-            (window as { stateHooks?: { getCleanAppState?: () => { metamask: { isBackupAndSyncEnabled: boolean; isContactSyncingEnabled: boolean } } } }).stateHooks?.getCleanAppState?.(),
+            (window as {
+              stateHooks?: {
+                getCleanAppState?: () => {
+                  metamask: {
+                    isBackupAndSyncEnabled: boolean;
+                    isContactSyncingEnabled: boolean;
+                  };
+                };
+              };
+            }).stateHooks?.getCleanAppState?.(),
           );
-          console.log(
-            'Disabled contact sync state:',
-            {
-              isBackupAndSyncEnabled: disabledState.metamask.isBackupAndSyncEnabled,
-              isContactSyncingEnabled: disabledState.metamask.isContactSyncingEnabled,
-            },
-          );
+          console.log('Disabled contact sync state:', {
+            isBackupAndSyncEnabled:
+              disabledState.metamask.isBackupAndSyncEnabled,
+            isContactSyncingEnabled:
+              disabledState.metamask.isContactSyncingEnabled,
+          });
 
           // Contact syncing should be disabled
           expect(disabledState.metamask.isContactSyncingEnabled).toBe(false);
@@ -149,10 +165,7 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
 
           // Verify the contact list doesn't have the contact we added when sync was disabled
           const finalContacts = await getCurrentContacts();
-          console.log(
-            'Final contacts after new instance:',
-            finalContacts.length,
-          );
+          console.log('Final contacts after new instance:', finalContacts.length);
 
           // Verify we don't have the contact we added when contact sync was disabled
           const hasNewContact = finalContacts.some(
@@ -205,16 +218,24 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
 
           // Verify backup and sync settings are available and contact syncing is enabled
           const initialState = await driver.executeScript(() =>
-            (window as { stateHooks?: { getCleanAppState?: () => { metamask: { isBackupAndSyncEnabled: boolean; isContactSyncingEnabled: boolean } } } }).stateHooks?.getCleanAppState?.(),
+            (window as {
+              stateHooks?: {
+                getCleanAppState?: () => {
+                  metamask: {
+                    isBackupAndSyncEnabled: boolean;
+                    isContactSyncingEnabled: boolean;
+                  };
+                };
+              };
+            }).stateHooks?.getCleanAppState?.(),
           );
 
-          console.log(
-            'Initial backup and sync state:',
-            {
-              isBackupAndSyncEnabled: initialState.metamask.isBackupAndSyncEnabled,
-              isContactSyncingEnabled: initialState.metamask.isContactSyncingEnabled,
-            },
-          );
+          console.log('Initial backup and sync state:', {
+            isBackupAndSyncEnabled:
+              initialState.metamask.isBackupAndSyncEnabled,
+            isContactSyncingEnabled:
+              initialState.metamask.isContactSyncingEnabled,
+          });
 
           // Both backup and sync and contact syncing should be enabled by default
           expect(initialState.metamask.isBackupAndSyncEnabled).toBe(true);
@@ -237,14 +258,19 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: TestConte
 
           const contactsSettings = new ContactsSettings(driver);
           await contactsSettings.check_pageIsLoaded();
-          await contactsSettings.addContact('New Contact Synced', '0x8888888888888888888888888888888888888888');
+          await contactsSettings.addContact(
+            'New Contact Synced',
+            '0x8888888888888888888888888888888888888888',
+          );
 
           console.log('Added contact via UI when contact sync is enabled');
 
           // Verify that a PUT request WAS made (contact sync is enabled)
           await waitUntilEventsEmittedNumberEquals(1);
 
-          console.log('Verified sync request was made when contact syncing is enabled');
+          console.log(
+            'Verified sync request was made when contact syncing is enabled',
+          );
         },
       );
     });

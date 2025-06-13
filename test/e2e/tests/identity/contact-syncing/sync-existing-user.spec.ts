@@ -1,19 +1,27 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { withFixtures } from '../../../helpers';
+import { expect } from '@playwright/test';
+
+import { withFixtures, getCleanAppState } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import { IDENTITY_TEAM_SEED_PHRASE, IDENTITY_TEAM_STORAGE_KEY } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
-import { completeOnboardFlowContactSyncing, getSRP } from '../flows';
-import { arrangeContactSyncingTestUtils, TestContext } from './helpers';
-import { MOCK_CONTACTS, createContactKey } from './mock-data';
 import { createEncryptedResponse } from '../../../helpers/identity/user-storage/generateEncryptedData';
-import { expect } from '@playwright/test';
+import { completeOnboardFlowContactSyncing, getSRP } from '../flows';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
-import { getCleanAppState } from '../../../helpers';
+
+import { arrangeContactSyncingTestUtils, TestContext } from './helpers';
+import { MOCK_CONTACTS, createContactKey } from './mock-data';
+
+interface Contact {
+  name: string;
+  address: string;
+  chainId: string;
+  memo?: string;
+}
 
 describe('Contact Syncing - Existing User', function (this: TestContext) {
   this.timeout(300000); // Extended timeout for comprehensive test
@@ -48,9 +56,6 @@ describe('Contact Syncing - Existing User', function (this: TestContext) {
     // Modified version of existing contact
     const modifiedContactName = 'Alice Smith Updated';
 
-    // Contact to be deleted (Bob)
-    const contactToDelete = MOCK_CONTACTS.BOB_SEPOLIA;
-
     // Expected final state after all operations
     const expectedFinalContacts = [
       {
@@ -73,13 +78,13 @@ describe('Contact Syncing - Existing User', function (this: TestContext) {
 
     // Create encrypted responses for initial remote contacts
     const mockedContactSyncResponse = await Promise.all(
-      initialRemoteContacts.map(contact =>
+      initialRemoteContacts.map((contact) =>
         createEncryptedResponse({
           data: contact,
           storageKey: IDENTITY_TEAM_STORAGE_KEY,
           path: `${USER_STORAGE_FEATURE_NAMES.addressBook}.${createContactKey(contact)}`,
-        })
-      )
+        }),
+      ),
     );
 
     const userStorageMockttpController = new UserStorageMockttpController();
@@ -88,7 +93,6 @@ describe('Contact Syncing - Existing User', function (this: TestContext) {
       initialRemoteContacts,
       newContact,
       modifiedContactName,
-      contactToDelete,
       expectedFinalContacts,
       mockedContactSyncResponse,
       userStorageMockttpController,
@@ -101,7 +105,6 @@ describe('Contact Syncing - Existing User', function (this: TestContext) {
         initialRemoteContacts,
         newContact,
         modifiedContactName,
-        contactToDelete,
         expectedFinalContacts,
         mockedContactSyncResponse,
         userStorageMockttpController,
@@ -134,24 +137,27 @@ describe('Contact Syncing - Existing User', function (this: TestContext) {
 
           const {
             waitUntilSyncedContactsNumberEquals,
-            waitUntilContactSyncingCompleted,
-            getCurrentContacts
-          } = arrangeContactSyncingTestUtils(driver, userStorageMockttpController);
+            getCurrentContacts,
+          } = arrangeContactSyncingTestUtils(
+            driver,
+            userStorageMockttpController,
+          );
 
           // STEP 1: Verify initial remote contacts are synced to local
           console.log('STEP 1: Waiting for initial remote contacts to sync...');
-          await waitUntilSyncedContactsNumberEquals(initialRemoteContacts.length);
+          await waitUntilSyncedContactsNumberEquals(
+            initialRemoteContacts.length,
+          );
 
-          // Wait for contact syncing to complete (semaphore to be released)
-          await waitUntilContactSyncingCompleted();
-          console.log('✅ Contact syncing semaphore released');
-
-          let contacts = await getCurrentContacts();
+          const contacts = await getCurrentContacts();
           expect(contacts.length).toBe(initialRemoteContacts.length);
-          console.log('✅ Initial remote contacts synced successfully:', contacts.length);
+          console.log(
+            '✅ Initial remote contacts synced successfully:',
+            contacts.length,
+          );
 
           // Verify specific initial contacts
-          const contactNames = contacts.map((contact: any) => contact.name);
+          const contactNames = contacts.map((contact: Contact) => contact.name);
           expect(contactNames).toContain('Alice Smith');
           expect(contactNames).toContain('Bob Johnson');
           expect(contactNames).toContain('Charlie Brown');
@@ -175,29 +181,50 @@ describe('Contact Syncing - Existing User', function (this: TestContext) {
           await settingsPage.check_pageIsLoaded();
           await settingsPage.goToContactsSettings();
           await contactsSettings.check_pageIsLoaded();
-          await contactsSettings.addContact(newContact.name, newContact.address, 'button');
+          await contactsSettings.addContact(
+            newContact.name,
+            newContact.address,
+            'button',
+          );
 
           // Debug: Check if contact syncing is still enabled and not in progress
           const debugState = await driver.executeScript(() =>
-            (window as any).stateHooks?.getCleanAppState?.()
+            (window as {
+              stateHooks?: {
+                getCleanAppState?: () => {
+                  metamask: {
+                    isContactSyncingEnabled: boolean;
+                    isContactSyncingInProgress: boolean;
+                    isBackupAndSyncEnabled: boolean;
+                  };
+                };
+              };
+            }).stateHooks?.getCleanAppState?.(),
           );
           console.log('Debug state after adding David:', {
-            isContactSyncingEnabled: debugState.metamask.isContactSyncingEnabled,
-            isContactSyncingInProgress: debugState.metamask.isContactSyncingInProgress,
+            isContactSyncingEnabled:
+              debugState.metamask.isContactSyncingEnabled,
+            isContactSyncingInProgress:
+              debugState.metamask.isContactSyncingInProgress,
             isBackupAndSyncEnabled: debugState.metamask.isBackupAndSyncEnabled,
           });
 
           // Debug: Check if David was actually added to the address book
           const contactsAfterAdd = await getCurrentContacts();
-          console.log('Contacts after adding David:', contactsAfterAdd.map((c: any) => ({
-            name: c.name,
-            address: c.address,
-            chainId: c.chainId,
-          })));
+          console.log(
+            'Contacts after adding David:',
+            contactsAfterAdd.map((c: Contact) => ({
+              name: c.name,
+              address: c.address,
+              chainId: c.chainId,
+            })),
+          );
 
           // Wait for new contact to sync
           console.log('Waiting for David to sync to remote storage...');
-          await waitUntilSyncedContactsNumberEquals(initialRemoteContacts.length + 1);
+          await waitUntilSyncedContactsNumberEquals(
+            initialRemoteContacts.length + 1,
+          );
 
           console.log('✅ New contact added and synced');
 
@@ -219,7 +246,9 @@ describe('Contact Syncing - Existing User', function (this: TestContext) {
           // Wait for modification to sync
           await driver.wait(async () => {
             const updatedContacts = await getCurrentContacts();
-            return updatedContacts.some((contact: any) => contact.name === modifiedContactName);
+            return updatedContacts.some(
+              (contact: Contact) => contact.name === modifiedContactName,
+            );
           }, 15000);
           console.log('✅ Contact modification synced');
 
@@ -235,7 +264,9 @@ describe('Contact Syncing - Existing User', function (this: TestContext) {
           // Wait for deletion to sync
           await driver.wait(async () => {
             const updatedContacts = await getCurrentContacts();
-            return !updatedContacts.some((contact: any) => contact.name === 'Bob Johnson');
+            return !updatedContacts.some(
+              (contact: Contact) => contact.name === 'Bob Johnson',
+            );
           }, 15000);
           console.log('✅ Contact deletion synced');
 
@@ -260,57 +291,64 @@ describe('Contact Syncing - Existing User', function (this: TestContext) {
           },
         },
         async ({ driver }) => {
-          console.log('PHASE 2: Verifying final state on second device...');
-
-          // Import same wallet on second device
+          // Complete onboarding with existing SRP to get synced contacts
           await completeOnboardFlowContactSyncing(driver, walletSrp);
 
-          const { waitUntilSyncedContactsNumberEquals, waitUntilContactSyncingCompleted, getCurrentContacts } =
-            arrangeContactSyncingTestUtils(driver, userStorageMockttpController);
+          const { waitUntilSyncedContactsNumberEquals, getCurrentContacts } =
+            arrangeContactSyncingTestUtils(
+              driver,
+              userStorageMockttpController,
+            );
 
-          // Wait for all final contacts to sync
-          await waitUntilSyncedContactsNumberEquals(expectedFinalContacts.length);
+          // Wait for all contacts to sync
+          await waitUntilSyncedContactsNumberEquals(
+            expectedFinalContacts.length,
+          );
 
-          // Verify final state matches expectations
+          // Get final contacts and verify
           const finalContacts = await getCurrentContacts();
-          expect(finalContacts.length).toBe(expectedFinalContacts.length);
-
-          console.log('Final contacts on second device:', finalContacts.map((c: any) => ({
-            name: c.name,
-            address: c.address,
-            chainId: c.chainId,
-          })));
-
-          // Verify specific contacts:
-          // 1. Alice should be modified
-          const aliceContact = finalContacts.find((contact: any) =>
-            contact.address?.toLowerCase() === MOCK_CONTACTS.ALICE_MAINNET.a.toLowerCase()
+          console.log(
+            'Final contacts on second device:',
+            finalContacts.map((c: Contact) => ({
+              name: c.name,
+              address: c.address,
+              chainId: c.chainId,
+            })),
           );
-          expect((aliceContact as any)?.name).toBe(modifiedContactName);
-          console.log('✅ Alice modification verified on second device');
 
-          // 2. Charlie should be unchanged
-          const charlieContact = finalContacts.find((contact: any) =>
-            contact.address?.toLowerCase() === MOCK_CONTACTS.CHARLIE_POLYGON.a.toLowerCase()
+          // Verify Alice (modified)
+          const aliceContact = finalContacts.find(
+            (contact: Contact) =>
+              contact.address?.toLowerCase() ===
+              MOCK_CONTACTS.ALICE_MAINNET.a.toLowerCase(),
           );
-          expect((charlieContact as any)?.name).toBe('Charlie Brown');
-          console.log('✅ Charlie unchanged verified on second device');
+          expect(aliceContact?.name).toBe(modifiedContactName);
 
-          // 3. David should be newly added
-          const davidContact = finalContacts.find((contact: any) =>
-            contact.address?.toLowerCase() === newContact.address.toLowerCase()
+          // Verify Charlie (unchanged)
+          const charlieContact = finalContacts.find(
+            (contact: Contact) =>
+              contact.address?.toLowerCase() ===
+              MOCK_CONTACTS.CHARLIE_POLYGON.a.toLowerCase(),
           );
-          expect((davidContact as any)?.name).toBe(newContact.name);
-          console.log('✅ David addition verified on second device');
+          expect(charlieContact?.name).toBe('Charlie Brown');
 
-          // 4. Bob should be deleted (not present)
-          const bobContact = finalContacts.find((contact: any) =>
-            contact.address?.toLowerCase() === MOCK_CONTACTS.BOB_SEPOLIA.a.toLowerCase()
+          // Verify David (new)
+          const davidContact = finalContacts.find(
+            (contact: Contact) =>
+              contact.address?.toLowerCase() ===
+              newContact.address.toLowerCase(),
+          );
+          expect(davidContact?.name).toBe(newContact.name);
+
+          // Verify Bob (deleted)
+          const bobContact = finalContacts.find(
+            (contact: Contact) =>
+              contact.address?.toLowerCase() ===
+              MOCK_CONTACTS.BOB_SEPOLIA.a.toLowerCase(),
           );
           expect(bobContact).toBeUndefined();
-          console.log('✅ Bob deletion verified on second device');
 
-          console.log('🎉 COMPREHENSIVE CONTACT SYNCING TEST PASSED!');
+          console.log('✅ All contacts verified on second device');
         },
       );
     });

@@ -5,12 +5,12 @@ import {
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 
-export interface TestContext {
+export type TestContext = {
   test?: {
     fullTitle: () => string;
   };
   timeout: (ms: number) => void;
-}
+};
 
 export type UserStorageContact = {
   v: string; // version
@@ -57,32 +57,40 @@ export function arrangeContactSyncingTestUtils(
       if (typeof addressBookState === 'object' && addressBookState !== null) {
         // AddressBook structure is { chainId: { address: contactObject } }
         for (const chainId in addressBookState) {
-          if (chainId === '*') continue; // Skip wildcard entries
+          if (Object.prototype.hasOwnProperty.call(addressBookState, chainId)) {
+            if (chainId === '*') continue; // Skip wildcard entries
 
-          const chainContacts = addressBookState[chainId];
-          if (typeof chainContacts === 'object' && chainContacts !== null) {
-            for (const address in chainContacts) {
-              const contact = chainContacts[address];
-              if (contact &&
-                  contact.chainId &&
-                  contact.chainId !== '*' &&
-                  contact.name &&
-                  contact.name.trim() &&
-                  contact.address) {
-                validContactsCount++;
+            const chainContacts = addressBookState[chainId];
+            if (typeof chainContacts === 'object' && chainContacts !== null) {
+              for (const address in chainContacts) {
+                if (Object.prototype.hasOwnProperty.call(chainContacts, address)) {
+                  const contact = chainContacts[address];
+                  if (
+                    contact?.chainId &&
+                    contact.chainId !== '*' &&
+                    contact.name?.trim() &&
+                    contact.address
+                  ) {
+                    validContactsCount += 1;
+                  }
+                }
               }
             }
           }
         }
       }
 
-      console.log(`Current synced contacts count: ${validContactsCount}, expected: ${expectedContactsCount}`);
+      console.log(
+        `Current synced contacts count: ${validContactsCount}, expected: ${expectedContactsCount}`,
+      );
       return validContactsCount === expectedContactsCount;
     }, timeout);
   };
 
   /**
    * Waits until contact syncing has completed at least once
+   *
+   * @param timeout - Timeout in milliseconds (default: 30000)
    */
   const waitUntilContactSyncingCompleted = async (timeout = 30000) => {
     await driver.wait(async () => {
@@ -105,19 +113,23 @@ export function arrangeContactSyncingTestUtils(
     const contacts = [];
     // AddressBook structure is { chainId: { address: contactObject } }
     for (const chainId in addressBookState) {
-      if (chainId === '*') continue; // Skip wildcard entries
+      if (Object.prototype.hasOwnProperty.call(addressBookState, chainId)) {
+        if (chainId === '*') continue; // Skip wildcard entries
 
-      const chainContacts = addressBookState[chainId];
-      if (typeof chainContacts === 'object' && chainContacts !== null) {
-        for (const address in chainContacts) {
-          const contact = chainContacts[address];
-          if (contact &&
-              contact.chainId &&
-              contact.chainId !== '*' &&
-              contact.name &&
-              contact.name.trim() &&
-              contact.address) {
-            contacts.push(contact);
+        const chainContacts = addressBookState[chainId];
+        if (typeof chainContacts === 'object' && chainContacts !== null) {
+          for (const address in chainContacts) {
+            if (Object.prototype.hasOwnProperty.call(chainContacts, address)) {
+              const contact = chainContacts[address];
+              if (
+                contact?.chainId &&
+                contact.chainId !== '*' &&
+                contact.name?.trim() &&
+                contact.address
+              ) {
+                contacts.push(contact);
+              }
+            }
           }
         }
       }
