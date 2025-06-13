@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { hideModal } from '../../../store/actions';
-import { ModalHeader, ModalBody } from '../../component-library';
+import { ModalHeader, ModalBody, Box } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
 import { CustomNetworks } from './components/custom-networks';
 import { DefaultNetworks } from './components/default-networks';
@@ -13,12 +13,13 @@ export const NetworkTabs = ({ initialTab }: { initialTab: string }) => {
     dispatch(hideModal());
   }, [dispatch]);
   return (
-    <>
+    <Box>
       <ModalHeader onBack={handleClose} onClose={handleClose}>
         Networks
       </ModalHeader>
-      <ModalBody>
+      <ModalBody style={{ padding: 0 }}>
         <Tabs
+          style={{ padding: 0 }}
           defaultActiveTabKey={initialTab}
           onTabClick={() => {
             // Tab click handler - intentionally empty for now
@@ -36,6 +37,6 @@ export const NetworkTabs = ({ initialTab }: { initialTab: string }) => {
           </Tab>
         </Tabs>
       </ModalBody>
-    </>
+    </Box>
   );
 };
