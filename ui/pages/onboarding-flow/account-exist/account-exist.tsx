@@ -33,6 +33,13 @@ import {
   setFirstTimeFlowType,
   resetOAuthLoginState,
 } from '../../../store/actions';
+import {
+  bufferedTrace,
+  bufferedEndTrace,
+  TraceName,
+  TraceOperation,
+} from '../../../../shared/lib/trace';
+import { useSentryTrace } from '../../../contexts/sentry-trace';
 
 export default function AccountExist() {
   const history = useHistory();
@@ -40,6 +47,7 @@ export default function AccountExist() {
   const t = useI18nContext();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
+  const { onboardingParentContext } = useSentryTrace();
 
   const onBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -48,6 +56,12 @@ export default function AccountExist() {
   };
 
   const onLogin = () => {
+    bufferedTrace({
+      name: TraceName.OnboardingExistingSocialLogin,
+      op: TraceOperation.OnboardingUserJourney,
+      tags: { source: 'account_status_redirect' },
+      parentContext: onboardingParentContext.current,
+    });
     dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
     history.push(ONBOARDING_UNLOCK_ROUTE);
   };
@@ -62,7 +76,19 @@ export default function AccountExist() {
     if (firstTimeFlowType !== FirstTimeFlowType.socialCreate) {
       history.push(ONBOARDING_WELCOME_ROUTE);
     }
-  }, [firstTimeFlowType, history]);
+    if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+      bufferedTrace({
+        name: TraceName.OnboardingNewSocialAccountExists,
+        op: TraceOperation.OnboardingUserJourney,
+        parentContext: onboardingParentContext.current,
+      });
+    }
+    return () => {
+      if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        bufferedEndTrace({ name: TraceName.OnboardingNewSocialAccountExists });
+      }
+    };
+  }, [firstTimeFlowType, history, onboardingParentContext]);
 
   return (
     <Box
