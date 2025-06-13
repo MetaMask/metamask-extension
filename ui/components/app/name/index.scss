@@ -12,7 +12,6 @@
   }
 
   &__trust-signal-icon {
-    // Trust signal icon that replaces the main icon
     width: 16px;
     height: 16px;
   }
@@ -41,7 +40,6 @@
     }
   }
 
-  // Trust signal states
   &__verified {
     background-color: var(--color-info-muted);
 

@@ -35,12 +35,12 @@ const STATE_TO_ICON_MAP: Record<TrustSignalState, IconName> = {
 /**
  * Hook to get trust signal data for an address
  *
- * @param value - The address value
+ * @param address - The address to get trust signals for
  * @returns Trust signal data including state, label, and icon
  */
-export function useTrustSignals(value: string): TrustSignalData {
+export function useTrustSignals(address: string): TrustSignalData {
   const securityAlertResponse = useSelector((state) =>
-    getAddressSecurityAlertResponse(state, value),
+    getAddressSecurityAlertResponse(state, address),
   );
 
   if (!securityAlertResponse) {

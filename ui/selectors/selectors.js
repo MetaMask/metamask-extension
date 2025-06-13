@@ -3000,7 +3000,7 @@ export function getIsSecurityAlertsEnabled(state) {
  *
  * @param {*} state
  * @param {string} address - The address to get security alert for
- * @returns {import('../../app/scripts/lib/trust-signals/types').ScanAddressResponse | undefined}
+ * @returns the cached address security alert response for the given address
  */
 export function getAddressSecurityAlertResponse(state, address) {
   if (!address) {
