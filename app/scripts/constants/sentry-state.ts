@@ -121,7 +121,7 @@ export const SENTRY_BACKGROUND_STATE = {
     txHistory: false,
   },
   CronjobController: {
-    jobs: false,
+    events: false,
   },
   CurrencyController: {
     currentCurrency: true,

@@ -51,6 +51,11 @@ function onboardingFixture() {
         }),
         providerConfig: { id: 'networkConfigurationId' },
       },
+      NetworkOrderController: {
+        enabledNetworkMap: {
+          '0x539': true,
+        },
+      },
       NotificationServicesController: {},
       PreferencesController: {
         advancedGasFee: {},
@@ -186,6 +191,14 @@ class FixtureBuilder {
 
   withNetworkOrderController(data) {
     merge(this.fixture.data.NetworkOrderController, data);
+    return this;
+  }
+
+  withEnabledNetworks(data) {
+    merge(this.fixture.data.NetworkOrderController, {
+      networkOrder: this.fixture.data.NetworkOrderController?.networkOrder,
+      enabledNetworkMap: data,
+    });
     return this;
   }
 
@@ -1763,14 +1776,6 @@ class FixtureBuilder {
           rpcUrl: 'https://bsc-dataseed.binance.org',
           ticker: 'BNB',
           id: 'bnb-mainnet',
-        },
-        'base-mainnet': {
-          chainId: CHAIN_IDS.BASE,
-          nickname: 'Base',
-          rpcPrefs: {},
-          rpcUrl: 'https://mainnet.base.org',
-          ticker: 'ETH',
-          id: 'base-mainnet',
         },
         'zksync-mainnet': {
           chainId: CHAIN_IDS.ZKSYNC_ERA,
