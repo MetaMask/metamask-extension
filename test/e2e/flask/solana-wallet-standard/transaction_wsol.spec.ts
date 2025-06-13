@@ -27,9 +27,6 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
 
           // 1. Sign multiple transactions
           const sendWSolTest = await testDapp.getSendWSolTest();
-          await sendWSolTest.setNbAddresses('2');
-          await sendWSolTest.setAmount('0.0001');
-          await sendWSolTest.checkMultipleTransaction(true);
           await sendWSolTest.signTransaction();
           // Confirm the first signature
           await driver.delay(largeDelayMs);
