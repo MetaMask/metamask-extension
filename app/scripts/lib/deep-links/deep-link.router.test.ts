@@ -7,8 +7,6 @@ import { DeepLinkRouter } from './deep-link-router';
 
 const parseMock = parse as jest.MockedFunction<typeof parse>;
 
-// Mock dependencies
-
 type WebRequestListener = Parameters<
   typeof browser.webRequest.onBeforeRequest.addListener
 >[0];
@@ -72,7 +70,7 @@ describe('DeepLinkRouter', () => {
 
   describe('install', () => {
     // test the two manifest versions
-    // @ts-expect-error mocha types are wrong
+    // @ts-expect-error jest types aren't applied correctly
     it.each([2, 3])(
       `should add a listener for webRequest.onBeforeRequest`,
       (manifestVersion: number) => {
@@ -104,7 +102,7 @@ describe('DeepLinkRouter', () => {
       router.install();
     });
     // test return values for MV2 and MV3 behavior
-    // @ts-expect-error mocha types are wrong
+    // @ts-expect-error jest types aren't applied correctly
     it.each([{ manifestVersion: 2 }, { manifestVersion: 3 }])(
       'should return blocking or non-blocking response based on manifest version',
       async ({ manifestVersion }: { manifestVersion: number }) => {
@@ -129,7 +127,7 @@ describe('DeepLinkRouter', () => {
     );
 
     // by default, the router should not skip the interstitial page for either signed or unsigned links
-    // @ts-expect-error mocha types are wrong
+    // @ts-expect-error jest types aren't applied correctly
     it.each([{ signed: true }, { signed: false }])(
       'should redirect signed links to the correct route',
       async ({ signed }: { signed: boolean }) => {
@@ -236,7 +234,6 @@ describe('DeepLinkRouter', () => {
     });
 
     it('should capture browser.tabs.update exceptions and send to Sentry', async () => {
-      // Mock log.error
       const logErrorSpy = jest.spyOn(log, 'error');
 
       const tabId = 1;
