@@ -68,13 +68,6 @@
     "message": "Έχω διαβάσει και συμφωνώ με το $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Αποκτήστε πρόσβαση στο πορτοφόλι σας με τη Μυστική σας Φράση Ανάκτησης"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "Το MetaMask δεν μπορεί να ανακτήσει τον κωδικό σας. Θα χρησιμοποιήσουμε τη Μυστική σας Φράση Ανάκτησης για να επιβεβαιώσουμε την κυριότητά σας, να ανακτήσουμε το πορτοφόλι σας και να ορίσουμε ένα νέο κωδικό. Πρώτα, εισάγετε τη Μυστική Φράση σας Ανάκτησης που σας δόθηκε όταν δημιουργήσατε το πορτοφόλι σας. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Πρόσβαση στην κάμερά σας..."
   },
