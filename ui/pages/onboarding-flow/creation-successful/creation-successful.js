@@ -33,7 +33,11 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getFirstTimeFlowType, getHDEntropyIndex } from '../../../selectors';
+import {
+  getFirstTimeFlowType,
+  getHDEntropyIndex,
+  isSocialLoginFlow,
+} from '../../../selectors';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -41,8 +45,8 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
 export default function CreationSuccessful() {
   const history = useHistory();
@@ -51,6 +55,7 @@ export default function CreationSuccessful() {
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
+  const socialLoginFlow = useSelector(isSocialLoginFlow);
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
 
@@ -60,21 +65,12 @@ export default function CreationSuccessful() {
     firstTimeFlowType === FirstTimeFlowType.import || seedPhraseBackedUp;
 
   const renderTitle = useMemo(() => {
-    if (isWalletReady) {
+    if (socialLoginFlow || isWalletReady) {
       return t('yourWalletIsReady');
     }
 
     return t('yourWalletIsReadyRemind');
-  }, [isWalletReady, t]);
-
-  const renderFoxPath = useMemo(() => {
-    if (isWalletReady) {
-      return 'images/animations/fox/celebrating.lottie.json';
-    }
-
-    // TODO: Check figma teaching fox animation
-    return 'images/animations/fox/celebrating.lottie.json';
-  }, [isWalletReady]);
+  }, [socialLoginFlow, isWalletReady, t]);
 
   const renderDetails1 = useMemo(() => {
     if (isWalletReady) {
@@ -106,6 +102,26 @@ export default function CreationSuccessful() {
 
     return t('walletReadyLearnRemind');
   }, [isWalletReady, t]);
+
+  const renderFox = useMemo(() => {
+    if (socialLoginFlow || isWalletReady) {
+      return (
+        <LottieAnimation
+          path="images/animations/fox/celebrating.lottie.json"
+          loop={false}
+          autoplay
+        />
+      );
+    }
+
+    return (
+      <LottieAnimation
+        path="images/animations/fox/celebrating.lottie.json"
+        loop={false}
+        autoplay
+      />
+    );
+  }, [socialLoginFlow, isWalletReady]);
 
   return (
     <Box
@@ -146,7 +162,7 @@ export default function CreationSuccessful() {
               display={Display.Flex}
               style={{ width: '144px', height: '144px' }}
             >
-              <LottieAnimation path={renderFoxPath} loop autoplay />
+              {renderFox}
             </Box>
           </Box>
           <Text

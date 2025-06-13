@@ -7,11 +7,14 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+  ONBOARDING_ACCOUNT_EXIST,
+  ONBOARDING_ACCOUNT_NOT_FOUND,
+  ONBOARDING_UNLOCK_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getCurrentKeyring, getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { setFirstTimeFlowType } from '../../../store/actions';
+import { setFirstTimeFlowType, startOAuthLogin } from '../../../store/actions';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import {
   MetaMetricsEventCategory,
@@ -89,19 +92,90 @@ export default function OnboardingWelcome({
     history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
   }, [dispatch, history, trackEvent]);
 
-  const handleLogin = useCallback(
-    (loginType, loginOption) => {
-      if (loginType === LOGIN_TYPE.SRP) {
-        if (loginOption === LOGIN_OPTION.NEW) {
-          onCreateClick();
+  const handleSocialLogin = useCallback(
+    async (socialConnectionType) => {
+      const isNewUser = await dispatch(startOAuthLogin(socialConnectionType));
+      return isNewUser;
+    },
+    [dispatch],
+  );
+
+  const onSocialLoginCreateClick = useCallback(
+    async (socialConnectionType) => {
+      setIsLoggingIn(true);
+      setNewAccountCreationInProgress(true);
+      dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
+
+      try {
+        const isNewUser = await handleSocialLogin(socialConnectionType);
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.OnboardingWalletCreationStarted,
+          properties: {
+            account_type: 'metamask',
+          },
+        });
+        if (isNewUser) {
+          history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
         } else {
-          onImportClick();
+          history.push(ONBOARDING_ACCOUNT_EXIST);
         }
-      } else {
-        setIsLoggingIn(true);
+      } finally {
+        setIsLoggingIn(false);
       }
     },
-    [onCreateClick, onImportClick],
+    [dispatch, handleSocialLogin, trackEvent, history],
+  );
+
+  const onSocialLoginImportClick = useCallback(
+    async (socialConnectionType) => {
+      setIsLoggingIn(true);
+      dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
+
+      try {
+        const isNewUser = await handleSocialLogin(socialConnectionType);
+
+        trackEvent({
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.OnboardingWalletCreationStarted,
+          properties: {
+            account_type: 'metamask',
+          },
+        });
+
+        if (isNewUser) {
+          history.push(ONBOARDING_ACCOUNT_NOT_FOUND);
+        } else {
+          history.push(ONBOARDING_UNLOCK_ROUTE);
+        }
+      } finally {
+        setIsLoggingIn(false);
+      }
+    },
+    [dispatch, handleSocialLogin, trackEvent, history],
+  );
+
+  const handleLogin = useCallback(
+    async (loginType, loginOption) => {
+      if (loginOption === LOGIN_OPTION.NEW && loginType === LOGIN_TYPE.SRP) {
+        onCreateClick();
+      } else if (loginOption === LOGIN_OPTION.NEW) {
+        await onSocialLoginCreateClick(loginType);
+      } else if (
+        loginOption === LOGIN_OPTION.EXISTING &&
+        loginType === LOGIN_TYPE.SRP
+      ) {
+        onImportClick();
+      } else if (loginOption === LOGIN_OPTION.EXISTING) {
+        await onSocialLoginImportClick(loginType);
+      }
+    },
+    [
+      onCreateClick,
+      onImportClick,
+      onSocialLoginCreateClick,
+      onSocialLoginImportClick,
+    ],
   );
 
   return (
