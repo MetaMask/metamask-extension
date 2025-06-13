@@ -122,6 +122,9 @@ const NameDisplay = memo(
             if (trustSignals.state === TrustSignalState.Warning) {
               return <Identicon address={value} diameter={16} image={image} />;
             }
+            if (trustSignals.state === TrustSignalState.Unknown && hasPetname) {
+              return <Identicon address={value} diameter={16} image={image} />;
+            }
             // For all other states, show trust signal icon
             return (
               <Icon
