@@ -25,6 +25,9 @@ class NftListPage {
 
   private readonly nftIconOnActivityList = '[data-testid="nft-item"]';
 
+  private readonly LineaMainnet =
+    '[data-testid="network-list-item-eip155:59144"]';
+
   private readonly noNftInfo = {
     text: 'No NFTs yet',
     tag: 'p',
@@ -39,6 +42,9 @@ class NftListPage {
     text: 'NFT was successfully removed!',
     tag: 'h6',
   };
+
+  private readonly modalCloseButton =
+    '[data-testid="modal-header-close-button"]';
 
   private readonly nftFilterByNetworks = '[data-testid="sort-by-networks"]';
 
@@ -167,6 +173,12 @@ class NftListPage {
         `Invalid network name selected for filtering NFTs: ${networkName}`,
       );
     }
+  }
+
+  async toggleLineaEnablement(): Promise<void> {
+    await this.driver.clickElement(this.nftFilterByNetworks);
+    await this.driver.clickElementSafe(this.LineaMainnet);
+    await this.driver.clickElementSafe(this.modalCloseButton);
   }
 }
 

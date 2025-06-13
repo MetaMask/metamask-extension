@@ -32,6 +32,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules
 import {
   addNetwork,
   setEditedNetwork,
+  setEnabledNetworks,
   setTokenNetworkFilter,
   showDeprecatedNetworkModal,
   toggleNetworkMenu,
@@ -81,11 +82,17 @@ export const NetworksForm = ({
   existingNetwork,
   onRpcAdd,
   onBlockExplorerAdd,
+  toggleNetworkMenuAfterSubmit = true,
+  onComplete,
+  onEdit,
 }: {
   networkFormState: ReturnType<typeof useNetworkFormState>;
   existingNetwork?: UpdateNetworkFields;
   onRpcAdd: () => void;
   onBlockExplorerAdd: () => void;
+  toggleNetworkMenuAfterSubmit?: boolean;
+  onComplete?: () => void;
+  onEdit?: () => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -288,9 +295,11 @@ export const NetworksForm = ({
                 [existingNetwork.chainId]: true,
               }),
             );
+            await dispatch(setEnabledNetworks([existingNetwork.chainId]));
           }
         } else {
           await dispatch(addNetwork(networkPayload));
+          await dispatch(setEnabledNetworks([networkPayload.chainId]));
         }
 
         trackEvent({
@@ -327,7 +336,8 @@ export const NetworksForm = ({
     } catch (e) {
       console.error(e);
     } finally {
-      dispatch(toggleNetworkMenu());
+      toggleNetworkMenuAfterSubmit && dispatch(toggleNetworkMenu());
+      onComplete?.();
     }
   };
 
@@ -555,6 +565,7 @@ export const NetworksForm = ({
                         chainId: chainIdHex,
                       }),
                     );
+                    onEdit?.();
                   }
                 }}
               >

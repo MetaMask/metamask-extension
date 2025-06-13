@@ -1,7 +1,14 @@
-import React, { useEffect, useRef, useState, useContext, useMemo } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useContext,
+  useMemo,
+  useCallback,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import { Hex } from '@metamask/utils';
+import { Hex, isHexString } from '@metamask/utils';
 import {
   getAllChainsToPoll,
   getEnabledNetworks,
@@ -56,6 +63,7 @@ import {
   setTokenNetworkFilter,
   showImportNftsModal,
   showImportTokensModal,
+  showModal,
 } from '../../../../../store/actions';
 import Tooltip from '../../../../ui/tooltip';
 import { getMultichainNetwork } from '../../../../../selectors/multichain';
@@ -235,6 +243,10 @@ const AssetListControlBar = ({
     navigate(SECURITY_ROUTE);
   };
 
+  const handleNetworkManager = useCallback(() => {
+    dispatch(showModal({ name: 'NETWORK_MANAGER' }));
+  }, [dispatch]);
+
   const handleNftRefresh = () => {
     if (isMainnet || isLineaMainnet) {
       dispatch(detectNfts(allChainIds));
@@ -256,6 +268,42 @@ const AssetListControlBar = ({
     );
   }, [currentMultichainNetwork, isTestNetwork]);
 
+  const networkButtonText = useMemo(() => {
+    if (
+      isGlobalNetworkSelectorRemoved &&
+      Object.keys(enabledNetworks).length === 1
+    ) {
+      const isHexChainId = isHexString(Object.keys(enabledNetworks)[0]);
+      return isHexChainId
+        ? allNetworks[Object.keys(enabledNetworks)[0] as `0x${string}`]?.name ??
+            t('currentNetwork')
+        : currentMultichainNetwork.network.nickname ?? t('currentNetwork');
+    }
+
+    if (
+      isGlobalNetworkSelectorRemoved &&
+      Object.keys(enabledNetworks).length > 1
+    ) {
+      return t('enabledNetworks');
+    }
+    if (
+      isGlobalNetworkSelectorRemoved &&
+      Object.keys(enabledNetworks).length === 0
+    ) {
+      return t('noNetworksSelected');
+    }
+    if (
+      (!isGlobalNetworkSelectorRemoved &&
+        isTokenNetworkFilterEqualCurrentNetwork) ||
+      (!isGlobalNetworkSelectorRemoved &&
+        !currentMultichainNetwork.isEvmNetwork)
+    ) {
+      return currentMultichainNetwork?.nickname ?? t('currentNetwork');
+    }
+
+    return t('popularNetworks');
+  }, [isTokenNetworkFilterEqualCurrentNetwork, currentMultichainNetwork, t]);
+
   return (
     <Box
       className="asset-list-control-bar"
@@ -268,9 +316,13 @@ const AssetListControlBar = ({
           data-testid="sort-by-networks"
           variant={TextVariant.bodyMdMedium}
           className="asset-list-control-bar__button asset-list-control-bar__network_control"
-          onClick={toggleNetworkFilterPopover}
+          onClick={
+            isGlobalNetworkSelectorRemoved
+              ? handleNetworkManager
+              : toggleNetworkFilterPopover
+          }
+          disabled={isGlobalNetworkSelectorRemoved ? false : isDisabled}
           size={ButtonBaseSize.Sm}
-          disabled={isDisabled}
           endIconName={IconName.ArrowDown}
           backgroundColor={
             isNetworkFilterPopoverOpen
@@ -281,10 +333,7 @@ const AssetListControlBar = ({
           marginRight={isFullScreen ? 2 : null}
           ellipsis
         >
-          {isTokenNetworkFilterEqualCurrentNetwork ||
-          !currentMultichainNetwork.isEvmNetwork
-            ? currentMultichainNetwork?.nickname ?? t('currentNetwork')
-            : t('popularNetworks')}
+          {networkButtonText}
         </ButtonBase>
 
         <Box

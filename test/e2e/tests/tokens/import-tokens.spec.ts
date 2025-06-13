@@ -42,6 +42,7 @@ describe('Import flow', function () {
           .withEnabledNetworks({
             [CHAIN_IDS.MAINNET]: true,
             [CHAIN_IDS.LINEA_MAINNET]: true,
+            [CHAIN_IDS.BASE]: true,
           })
           .withTokensController({
             tokenList: [
@@ -118,6 +119,7 @@ describe('Import flow', function () {
             [CHAIN_IDS.MAINNET]: true,
             [CHAIN_IDS.POLYGON]: true,
             [CHAIN_IDS.LINEA_MAINNET]: true,
+            [CHAIN_IDS.BASE]: true,
           })
           .withTokensController({
             tokenList: [],
@@ -190,6 +192,7 @@ describe('Import flow', function () {
             [CHAIN_IDS.MAINNET]: true,
             [CHAIN_IDS.POLYGON]: true,
             [CHAIN_IDS.LINEA_MAINNET]: true,
+            [CHAIN_IDS.BASE]: true,
           })
           .withTokensController({
             tokenList: [],
