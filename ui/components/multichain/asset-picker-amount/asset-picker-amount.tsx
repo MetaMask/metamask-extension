@@ -131,7 +131,7 @@ export const AssetPickerAmount = ({
 
     // disable max mode and replace with "0"
     onAmountChange('0x0');
-  }, [isNativeSendPossible]);
+  }, [isDisabled, isMaxMode, isNativeSendPossible, onAmountChange]);
 
   const [isFocused, setIsFocused] = useState(false);
   const [isNFTInputChanged, setIsTokenInputChanged] = useState(false);
@@ -168,7 +168,7 @@ export const AssetPickerAmount = ({
     if (!asset) {
       throw new Error('No asset is drafted for sending');
     }
-  }, [selectedAccount]);
+  }, [asset, selectedAccount]);
 
   let borderColor = BorderColor.borderMuted;
 

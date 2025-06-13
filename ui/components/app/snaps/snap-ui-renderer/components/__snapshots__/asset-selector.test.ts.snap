@@ -37,7 +37,7 @@ exports[`SnapUIAssetSelector renders an asset selector 1`] = `
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
                     >
                       <img
-                        alt="undefined logo"
+                        alt="SOL logo"
                         class="mm-avatar-token__token-image"
                         src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png"
                       />
@@ -149,7 +149,7 @@ exports[`SnapUIAssetSelector renders inside a field 1`] = `
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
                     >
                       <img
-                        alt="undefined logo"
+                        alt="SOL logo"
                         class="mm-avatar-token__token-image"
                         src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png"
                       />

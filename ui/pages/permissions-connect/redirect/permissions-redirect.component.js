@@ -55,7 +55,7 @@ export default function PermissionsRedirect({ subjectMetadata }) {
         justifyContent={JustifyContent.center}
         width={BlockSize.Full}
         height={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundAlternative}
+        backgroundColor={BackgroundColor.backgroundDefault}
         borderRadius={BorderRadius.XS}
         border={`1px solid ${BorderColor.borderMuted}`}
         boxShadow="var(--shadow-size-lg) var(--color-shadow-default)"
@@ -94,7 +94,7 @@ export default function PermissionsRedirect({ subjectMetadata }) {
           />
         </Box>
       </Box>
-      <Box backgroundColor={BackgroundColor.backgroundAlternative} padding={4}>
+      <Box backgroundColor={BackgroundColor.backgroundDefault} padding={4}>
         <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
           <PermissionsConnectFooter />
           <Box

@@ -1,7 +1,6 @@
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { AlertActionKey } from '../../../components/app/confirm/info/row/constants';
-import { Platform } from '../../../../types/global';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import useConfirmationAlertActions from './useConfirmationAlertActions';
 
@@ -35,7 +34,8 @@ describe('useConfirmationAlertActions', () => {
       openModal: openModalMock,
     });
 
-    global.platform = { openTab: jest.fn() } as unknown as Platform;
+    // @ts-expect-error mocking platform
+    global.platform = { openTab: jest.fn() };
   });
 
   it('opens portfolio tab if action key is Buy', () => {

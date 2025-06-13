@@ -14,6 +14,11 @@ class ConfirmAlertModal {
   private alertModalCancelButton =
     '[data-testid="confirm-alert-modal-cancel-button"]';
 
+  private networkDisplayLocator = {
+    css: 'p',
+    text: '',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -30,6 +35,11 @@ class ConfirmAlertModal {
   async acknowledgeAlert() {
     this.driver.clickElement(this.alertModalAcknowledgeCheckBox);
     this.driver.clickElement(this.alertModalButton);
+  }
+
+  async verifyNetworkDisplay(networkName: string): Promise<void> {
+    this.networkDisplayLocator.text = networkName;
+    await this.driver.waitForSelector(this.networkDisplayLocator);
   }
 }
 

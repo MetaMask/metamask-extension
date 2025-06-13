@@ -2,6 +2,7 @@ import React, {
   useState,
   useEffect,
   MouseEvent as ReactMouseEvent,
+  CSSProperties,
 } from 'react';
 import classnames from 'classnames';
 import { State } from '@metamask/snaps-sdk';
@@ -43,22 +44,29 @@ export type SnapUISelectorProps = {
   label?: string;
   error?: string;
   disabled?: boolean;
+  onSelect?: (value: State) => void;
+  style?: CSSProperties;
+  itemStyle?: CSSProperties;
 };
 
 type SelectorItemProps = {
+  className?: string;
   value: State;
   children: React.ReactNode;
   disabled?: boolean;
   selected: boolean;
   onSelect: (value: State) => void;
+  style?: CSSProperties;
 };
 
 const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
+  className,
   value,
   children,
   selected,
   onSelect,
   disabled,
+  style,
 }) => {
   const handleClick = () => {
     onSelect(value);
@@ -66,7 +74,11 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
 
   return (
     <ButtonBase
-      className="snap-ui-renderer__selector-item"
+      className={
+        className
+          ? classnames('snap-ui-renderer__selector-item', className)
+          : 'snap-ui-renderer__selector-item'
+      }
       data-testid="snap-ui-renderer__selector-item"
       backgroundColor={
         selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
@@ -89,6 +101,7 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
         minHeight: '48px',
         maxHeight: '58px',
         position: 'relative',
+        ...style,
       }}
       disabled={disabled}
     >
@@ -121,6 +134,9 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
   label,
   error,
   disabled,
+  onSelect,
+  style,
+  itemStyle,
 }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
@@ -132,6 +148,7 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
   useEffect(() => {
     if (initialValue !== undefined && initialValue !== null) {
       setSelectedOption(initialValue);
+      onSelect?.(initialValue);
     }
   }, [initialValue]);
 
@@ -144,6 +161,7 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
 
   const handleSelect = (value: State) => {
     setSelectedOption(value);
+    onSelect?.(value);
     handleInputChange(name, value, form);
     handleModalClose();
   };
@@ -206,6 +224,7 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
             height: 'inherit',
             minHeight: '48px',
             maxHeight: '58px',
+            ...style,
           }}
         >
           {selectedOption}
@@ -236,11 +255,13 @@ export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
             >
               {optionComponents.map((component, index) => (
                 <SelectorItem
+                  className={className && `${className}-item`}
                   value={options[index].value}
                   disabled={options[index]?.disabled}
                   onSelect={handleSelect}
                   selected={index === selectedOptionIndex}
                   key={index}
+                  style={itemStyle}
                 >
                   {component}
                 </SelectorItem>

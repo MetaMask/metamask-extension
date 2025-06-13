@@ -45,6 +45,7 @@ export const AppHeaderLockedContent = ({
           data-testid="network-display"
         />
       </div>
+      <div></div>
       <MetafoxLogo
         unsetIconHeight
         onClick={async () => {

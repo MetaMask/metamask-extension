@@ -28,7 +28,9 @@ jest.mock('react-responsive-carousel', () => ({
 jest.mock(
   '../../../hooks/useCarouselManagement/fetchCarouselSlidesFromContentful',
 );
-jest.mocked(fetchCarouselSlidesFromContentful).mockResolvedValue([]);
+jest
+  .mocked(fetchCarouselSlidesFromContentful)
+  .mockResolvedValue({ prioritySlides: [], regularSlides: [] });
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
@@ -171,6 +173,7 @@ describe('Carousel', () => {
 
   it('should handle slide click with href', () => {
     const mockOpenTab = jest.fn();
+    // @ts-expect-error mocking platform
     global.platform = {
       openTab: mockOpenTab,
       closeCurrentWindow: jest.fn(),

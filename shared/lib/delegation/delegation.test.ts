@@ -7,10 +7,17 @@ import {
   createOpenDelegation,
   resolveAuthority,
   ANY_BENEFICIARY,
+  encodeDisableDelegation,
+  encodeRedeemDelegations,
 } from './delegation';
 import { type Caveat } from './caveat';
 import { type CaveatBuilder, resolveCaveats } from './caveatBuilder';
-import { type Hex } from './utils';
+import { type Hex, toFunctionSelector } from './utils';
+import {
+  ExecutionMode,
+  type ExecutionStruct,
+  SINGLE_DEFAULT_MODE,
+} from './execution';
 
 const mockDelegate = '0x1234567890123456789012345678901234567890' as Hex;
 const mockDelegator = '0x0987654321098765432109876543210987654321' as Hex;
@@ -297,5 +304,65 @@ describe('resolveCaveats', () => {
     expect(() =>
       resolveCaveats(mockBuilder as unknown as CaveatBuilder),
     ).toThrow('Build failed');
+  });
+});
+
+describe('encodeDisableDelegation', () => {
+  it('should encode a disableDelegation call', () => {
+    const delegation: Delegation = {
+      delegate: mockDelegate,
+      delegator: mockDelegator,
+      authority: ROOT_AUTHORITY,
+      caveats: [],
+      salt: '0x123',
+      signature: mockSignature,
+    };
+
+    const result = encodeDisableDelegation({ delegation });
+
+    const expectedSelector = toFunctionSelector(
+      'disableDelegation((address,address,bytes32,(address,bytes,bytes)[],uint256,bytes))',
+    );
+
+    expect(result).toMatch(/^0x[0-9a-fA-F]+$/u);
+    expect(result.startsWith(expectedSelector)).toBe(true);
+  });
+});
+
+describe('encodeRedeemDelegations', () => {
+  it('should encode a basic redeemDelegations call', () => {
+    const delegations: Delegation[][] = [
+      [
+        {
+          delegate: mockDelegate,
+          delegator: mockDelegator,
+          authority: ROOT_AUTHORITY,
+          caveats: [],
+          salt: '0x123',
+          signature: mockSignature,
+        },
+      ],
+    ];
+    const modes: ExecutionMode[] = [SINGLE_DEFAULT_MODE];
+    const executions: ExecutionStruct[][] = [
+      [
+        {
+          target: mockDelegate, // Example target
+          value: 0n, // Example value
+          callData: '0x' as Hex, // Changed 'data' to 'callData'
+        },
+      ],
+    ];
+
+    const result = encodeRedeemDelegations({ delegations, modes, executions });
+
+    const expectedSelector = toFunctionSelector(
+      'redeemDelegations(bytes[],bytes32[],bytes[])',
+    );
+
+    // This is a simple check to ensure the function returns a hex string.
+    expect(result).toMatch(/^0x[0-9a-fA-F]+$/u);
+    // Check if the result starts with the correct function selector
+    expect(result.startsWith(expectedSelector)).toBe(true);
   });
 });

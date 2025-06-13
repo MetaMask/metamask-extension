@@ -1,4 +1,3 @@
-import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { unlockWallet, WINDOW_TITLES } from '../../../helpers';
@@ -7,7 +6,7 @@ import {
   mockSignatureApproved,
   mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
-  withTransactionEnvelopeTypeFixtures,
+  withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
@@ -81,9 +80,8 @@ const signatureMessageWithoutVerifyingContract = [
 
 describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
   it('initiates and confirms', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         localNodes,
@@ -131,9 +129,8 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
   });
 
   it('initiates and rejects', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
@@ -168,9 +165,8 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
   });
 
   it('signs message with verifyingContract field missing', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({ driver }: TestSuiteArguments) => {
         await unlockWallet(driver);
         const testDappIndividualRequest = new TestDappIndividualRequest(driver);

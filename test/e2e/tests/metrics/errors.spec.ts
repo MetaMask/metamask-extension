@@ -895,17 +895,10 @@ describe('Sentry errors', function () {
       },
       // Part of the AuthenticationController store, but initialized as undefined
       // Only populated once the client is authenticated
-      sessionData: {
-        token: false,
-        profile: true,
-      },
+      srpSessionData: {},
       // This can get erased due to a bug in the app state controller's
       // preferences state change handler
       timeoutMinutes: true,
-      // MMI properties
-      opts: true,
-      store: true,
-      configurationClient: true,
       lastInteractedConfirmationInfo: undefined,
     };
     await withFixtures(

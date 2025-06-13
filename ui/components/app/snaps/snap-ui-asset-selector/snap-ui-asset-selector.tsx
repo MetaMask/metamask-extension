@@ -66,7 +66,7 @@ const SnapUIAssetSelectorOption: FunctionComponent<SnapUIAsset> = ({
           />
         }
       >
-        <AvatarToken src={icon} />
+        <AvatarToken src={icon} name={symbol} />
       </BadgeWrapper>
     </Box>
     <Box

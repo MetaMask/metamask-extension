@@ -17,8 +17,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
           title: this.test?.fullTitle(),
-          mockCalls: true,
-          simulateTransaction: false,
+          mockGetTransactionSuccess: true,
         },
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
@@ -64,8 +63,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
         {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
           title: this.test?.fullTitle(),
-          mockCalls: true,
-          simulateTransaction: false,
+          mockGetTransactionSuccess: true,
         },
         async (driver) => {
           const testDapp = new TestDappSolana(driver);
@@ -107,7 +105,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
           {
             ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
             title: this.test?.fullTitle(),
-            mockCalls: true,
+            mockGetTransactionSuccess: true,
           },
           async (driver) => {
             const testDapp = new TestDappSolana(driver);

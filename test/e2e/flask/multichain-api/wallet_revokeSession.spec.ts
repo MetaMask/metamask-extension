@@ -19,7 +19,7 @@ import {
 
 describe('Initializing a session w/ several scopes and accounts, then calling `wallet_revokeSession`', function () {
   const GANACHE_SCOPES = ['eip155:1337', 'eip155:1338', 'eip155:1000'];
-  const ACCOUNTS = [ACCOUNT_1, ACCOUNT_2];
+  const CAIP_ACCOUNT_IDS = [`eip155:0:${ACCOUNT_1}`, `eip155:0:${ACCOUNT_2}`];
   it('Should return empty object from `wallet_getSession` call', async function () {
     await withFixtures(
       {
@@ -35,7 +35,10 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();
         await testDapp.connectExternallyConnectable(extensionId);
-        await testDapp.initCreateSessionScopes(GANACHE_SCOPES, ACCOUNTS);
+        await testDapp.initCreateSessionScopes(
+          GANACHE_SCOPES,
+          CAIP_ACCOUNT_IDS,
+        );
         await addAccountInWalletAndAuthorize(driver);
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.delay(largeDelayMs);
@@ -85,7 +88,10 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         await testDapp.openTestDappPage();
         await testDapp.connectExternallyConnectable(extensionId);
 
-        await testDapp.initCreateSessionScopes(GANACHE_SCOPES, ACCOUNTS);
+        await testDapp.initCreateSessionScopes(
+          GANACHE_SCOPES,
+          CAIP_ACCOUNT_IDS,
+        );
         await addAccountInWalletAndAuthorize(driver);
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.delay(largeDelayMs);

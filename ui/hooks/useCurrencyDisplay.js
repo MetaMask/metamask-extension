@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
+import { MULTICHAIN_NETWORK_TICKER } from '@metamask/multichain-network-controller';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import {
   getMultichainCurrentCurrency,
@@ -224,9 +225,10 @@ export function useCurrencyDisplay(
   if (!opts.hideLabel) {
     // if the currency we are displaying is the native currency of one of our preloaded test-nets (goerli, sepolia etc.)
     // then we allow lowercase characters, otherwise we force to uppercase any suffix passed as a currency
-    const currencyTickerSymbol = Object.values(
-      TEST_NETWORK_TICKER_MAP,
-    ).includes(currency)
+    const currencyTickerSymbol = [
+      ...Object.values(TEST_NETWORK_TICKER_MAP),
+      ...Object.values(MULTICHAIN_NETWORK_TICKER),
+    ].includes(currency)
       ? currency
       : currency?.toUpperCase();
 

@@ -3,9 +3,7 @@ import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import {
   DEFAULT_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   ONBOARDING_COMPLETION_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
   ONBOARDING_UNLOCK_ROUTE,
   LOCK_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -25,9 +23,8 @@ import {
   getSeedPhraseBackedUp,
 } from '../../../ducks/metamask/metamask';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../../app/scripts/lib/util'; // eslint-disable-line no-unused-vars
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app'; // eslint-disable-line no-unused-vars
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 ///: END:ONLY_INCLUDE_IF
 
 export default function OnboardingFlowSwitch() {
@@ -41,11 +38,9 @@ export default function OnboardingFlowSwitch() {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   if (seedPhraseBackedUp !== null) {
     return <Redirect to={{ pathname: ONBOARDING_COMPLETION_ROUTE }} />;
   }
-  ///: END:ONLY_INCLUDE_IF
 
   if (isUnlocked) {
     return <Redirect to={{ pathname: LOCK_ROUTE }} />;
@@ -59,7 +54,7 @@ export default function OnboardingFlowSwitch() {
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta)
     redirect =
-      getPlatform() === PLATFORM_FIREFOX ? (
+      getBrowserName() === PLATFORM_FIREFOX ? (
         <Redirect to={{ pathname: ONBOARDING_METAMETRICS }} />
       ) : (
         <Redirect to={{ pathname: ONBOARDING_WELCOME_ROUTE }} />

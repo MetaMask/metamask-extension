@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BRIDGE_DEFAULT_SLIPPAGE } from '@metamask/bridge-controller';
 import {
@@ -32,7 +32,7 @@ import {
   TextVariant,
   SEVERITIES,
 } from '../../../helpers/constants/design-system';
-import { getSlippage } from '../../../ducks/bridge/selectors';
+import { getIsSolanaSwap, getSlippage } from '../../../ducks/bridge/selectors';
 import { setSlippage } from '../../../ducks/bridge/actions';
 import { useCrossChainSwapsEventTracker } from '../../../hooks/bridge/useCrossChainSwapsEventTracker';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
@@ -48,18 +48,45 @@ export const BridgeTransactionSettingsModal = ({
   const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
   const dispatch = useDispatch();
-
+  const isSolanaSwap = useSelector(getIsSolanaSwap);
   const slippage = useSelector(getSlippage);
 
+  // AUTO option should only show for Solana-to-Solana swaps
+  const shouldShowAutoOption = isSolanaSwap;
+
   const [localSlippage, setLocalSlippage] = useState<number | undefined>(
-    slippage,
+    undefined,
   );
   const [customSlippage, setCustomSlippage] = useState<string | undefined>(
-    slippage && !HARDCODED_SLIPPAGE_OPTIONS.includes(slippage)
-      ? slippage.toString()
-      : undefined,
+    undefined,
   );
   const [showCustomButton, setShowCustomButton] = useState(true);
+  const [isAutoSelected, setIsAutoSelected] = useState(false);
+
+  // Initialize state when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      // Simply display what's in the state
+      if (shouldShowAutoOption && slippage === undefined) {
+        setIsAutoSelected(true);
+        setLocalSlippage(undefined);
+        setCustomSlippage(undefined);
+      } else {
+        setIsAutoSelected(false);
+        if (slippage && HARDCODED_SLIPPAGE_OPTIONS.includes(slippage)) {
+          setLocalSlippage(slippage);
+          setCustomSlippage(undefined);
+        } else if (slippage) {
+          setLocalSlippage(undefined);
+          setCustomSlippage(slippage.toString());
+        } else {
+          // Default to first option if no slippage set and not showing AUTO
+          setLocalSlippage(BRIDGE_DEFAULT_SLIPPAGE);
+          setCustomSlippage(undefined);
+        }
+      }
+    }
+  }, [slippage, shouldShowAutoOption, isOpen]);
 
   const getNotificationConfig = () => {
     if (!customSlippage) {
@@ -97,7 +124,43 @@ export const BridgeTransactionSettingsModal = ({
             </Tooltip>
           </Row>
           <Row gap={2} justifyContent={JustifyContent.flexStart}>
+            {shouldShowAutoOption && (
+              <Button
+                size={ButtonSize.Sm}
+                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setLocalSlippage(undefined);
+                  setCustomSlippage(undefined);
+                  setIsAutoSelected(true);
+                }}
+                variant={ButtonVariant.Secondary}
+                borderColor={
+                  isAutoSelected
+                    ? BorderColor.primaryDefault
+                    : BorderColor.borderDefault
+                }
+                borderWidth={isAutoSelected ? 2 : 1}
+                backgroundColor={
+                  isAutoSelected
+                    ? BackgroundColor.primaryMuted
+                    : BackgroundColor.backgroundDefault
+                }
+              >
+                <Text
+                  color={
+                    isAutoSelected
+                      ? TextColor.primaryDefault
+                      : TextColor.textDefault
+                  }
+                >
+                  {t('swapSlippageAutoDescription')}
+                </Text>
+              </Button>
+            )}
             {HARDCODED_SLIPPAGE_OPTIONS.map((hardcodedSlippage) => {
+              const isSelected =
+                !isAutoSelected && localSlippage === hardcodedSlippage;
               return (
                 <Button
                   key={hardcodedSlippage}
@@ -107,27 +170,24 @@ export const BridgeTransactionSettingsModal = ({
                     e.stopPropagation();
                     setLocalSlippage(hardcodedSlippage);
                     setCustomSlippage(undefined);
+                    setIsAutoSelected(false);
                   }}
                   variant={ButtonVariant.Secondary}
                   borderColor={
-                    localSlippage === hardcodedSlippage && showCustomButton
+                    isSelected
                       ? BorderColor.primaryDefault
                       : BorderColor.borderDefault
                   }
-                  borderWidth={
-                    localSlippage === hardcodedSlippage && showCustomButton
-                      ? 2
-                      : 1
-                  }
+                  borderWidth={isSelected ? 2 : 1}
                   backgroundColor={
-                    localSlippage === hardcodedSlippage && showCustomButton
+                    isSelected
                       ? BackgroundColor.primaryMuted
                       : BackgroundColor.backgroundDefault
                   }
                 >
                   <Text
                     color={
-                      localSlippage === hardcodedSlippage && showCustomButton
+                      isSelected
                         ? TextColor.primaryDefault
                         : TextColor.textDefault
                     }
@@ -156,6 +216,7 @@ export const BridgeTransactionSettingsModal = ({
                   e.preventDefault();
                   e.stopPropagation();
                   setShowCustomButton(false);
+                  setIsAutoSelected(false);
                 }}
               >
                 <Text
@@ -183,6 +244,7 @@ export const BridgeTransactionSettingsModal = ({
                   if (value === '' || /^\d*[.,]?\d*$/u.test(value)) {
                     setLocalSlippage(undefined);
                     setCustomSlippage(value);
+                    setIsAutoSelected(false);
                   }
                 }}
                 autoFocus={true}
@@ -213,22 +275,32 @@ export const BridgeTransactionSettingsModal = ({
             width={BlockSize.Full}
             size={ButtonPrimarySize.Md}
             variant={TextVariant.bodyMd}
-            disabled={
-              (customSlippage !== undefined &&
-                Number(customSlippage.replace(',', '.')) === slippage) ||
-              (localSlippage !== undefined && localSlippage === slippage)
-            }
+            disabled={(() => {
+              // Calculate what the new slippage would be
+              const newSlippage = isAutoSelected
+                ? undefined
+                : localSlippage ??
+                  (customSlippage
+                    ? Number(customSlippage.replace(',', '.'))
+                    : undefined);
+
+              // Button is disabled if nothing has changed
+              return newSlippage === slippage;
+            })()}
             onClick={() => {
-              const newSlippage =
-                localSlippage ?? Number(customSlippage?.replace(',', '.'));
-              if (newSlippage) {
+              const newSlippage = isAutoSelected
+                ? undefined
+                : localSlippage ?? Number(customSlippage?.replace(',', '.'));
+
+              if (newSlippage !== slippage) {
                 trackCrossChainSwapsEvent({
                   event: MetaMetricsEventName.InputChanged,
                   properties: {
                     input: 'slippage',
-                    value: newSlippage.toString(),
+                    value: newSlippage?.toString() ?? 'auto',
                   },
                 });
+
                 dispatch(setSlippage(newSlippage));
                 onClose();
               }

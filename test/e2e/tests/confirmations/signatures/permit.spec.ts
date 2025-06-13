@@ -1,5 +1,4 @@
 import { strict as assert } from 'assert';
-import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { openDapp, unlockWallet, WINDOW_TITLES } from '../../../helpers';
@@ -9,7 +8,7 @@ import {
   mockSignatureApprovedWithDecoding,
   mockSignatureRejectedWithDecoding,
   scrollAndConfirmAndAssertConfirm,
-  withTransactionEnvelopeTypeFixtures,
+  withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import TestDapp from '../../../page-objects/pages/test-dapp';
@@ -32,9 +31,8 @@ import {
 
 describe('Confirmation Signature - Permit', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         localNodes,
@@ -82,9 +80,8 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
   });
 
   it('initiates and rejects and emits the correct events', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
@@ -120,9 +117,8 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
   });
 
   it('display decoding information if available', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({ driver }: TestSuiteArguments) => {
         await initializePages(driver);
         await openDappAndTriggerSignature(driver, SignatureType.Permit);

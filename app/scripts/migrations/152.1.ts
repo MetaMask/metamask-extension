@@ -20,7 +20,7 @@ export const TESTNETS = {
   },
   'bip122:00000008819873e925422c1ff0f99f7c': {
     chainId: 'bip122:00000008819873e925422c1ff0f99f7c',
-    name: 'Bitcoin Signet',
+    name: 'Bitcoin Mutinynet',
     nativeCurrency: 'bip122:00000008819873e925422c1ff0f99f7c/slip44:0',
     isEvm: false,
   },

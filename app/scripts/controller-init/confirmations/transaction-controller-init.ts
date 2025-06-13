@@ -42,6 +42,7 @@ import { TransactionControllerInitMessenger } from '../messengers/transaction-co
 import { ControllerFlatState } from '../controller-list';
 import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import { Delegation7702PublishHook } from '../../lib/transaction/hooks/delegation-7702-publish';
+import { updateRemoteModeTransaction } from '../../lib/remote-mode';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -124,6 +125,12 @@ export const TransactionControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
+      afterAdd: async ({ transactionMeta }) => {
+        return updateRemoteModeTransaction({
+          transactionMeta,
+          state: getFlatState(),
+        });
+      },
       beforePublish: (transactionMeta: TransactionMeta) => {
         const response = initMessenger.call(
           'InstitutionalSnapController:publishHook',
@@ -214,8 +221,6 @@ function getControllers(
     preferencesController: () => request.getController('PreferencesController'),
     smartTransactionsController: () =>
       request.getController('SmartTransactionsController'),
-    transactionUpdateController: () =>
-      request.getController('TransactionUpdateController'),
     institutionalSnapController: () =>
       request.getController('InstitutionalSnapController'),
   };

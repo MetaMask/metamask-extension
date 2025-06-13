@@ -197,7 +197,10 @@ export const useTokensWithFiltering = (
           (tokenToExclude && tokenChainId
             ? !(
                 tokenToExclude.symbol === symbol &&
-                tokenToExclude.address === address &&
+                (isSolanaChainId(tokenChainId)
+                  ? tokenToExclude.address === address
+                  : tokenToExclude.address?.toLowerCase() ===
+                    address?.toLowerCase()) &&
                 tokenToExclude.chainId === formatChainIdToCaip(tokenChainId)
               )
             : true);
@@ -274,7 +277,9 @@ export const useTokensWithFiltering = (
 
         // Yield topTokens from selected chain
         for (const token_ of topTokens) {
-          const matchedToken = tokenList?.[token_.address];
+          const matchedToken =
+            tokenList?.[token_.address] ??
+            tokenList?.[token_.address.toLowerCase()];
           const token = buildTokenData(chainId, matchedToken);
           if (
             token &&

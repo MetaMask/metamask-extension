@@ -57,4 +57,6 @@ export type BaseStore = {
   set: (state: Required<MetaMaskStorageStructure>) => Promise<void>;
 
   get: () => Promise<MetaMaskStorageStructure | null>;
+
+  reset: () => Promise<void>;
 };

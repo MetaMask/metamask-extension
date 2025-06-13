@@ -257,20 +257,8 @@
   "gasLimit": {
     "message": "Gáz határértéke"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "A gázkorlátozás az elkölthető gázegységek maximális mennyisége."
-  },
   "gasLimitTooLow": {
     "message": "A gáz határértéke legyen legalább 21000"
-  },
-  "gasPrice": {
-    "message": "Gázár (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Üzemanyag ár Különösen alacsony"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "A gáz ára meghatározza, hogy ön mennyi Ethert hajlandó fizetni minden egyes gázegységért."
   },
   "gasUsed": {
     "message": "Használt gáz"
@@ -641,9 +629,6 @@
   "terms": {
     "message": "Használati feltételek"
   },
-  "tips": {
-    "message": "Adományok"
-  },
   "to": {
     "message": "Erre:"
   },
@@ -745,8 +730,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Az ön privát seed mondata"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Nulla gázár a gyorsuláshoz"
   }
 }

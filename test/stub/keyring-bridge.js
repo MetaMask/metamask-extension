@@ -1,6 +1,11 @@
-import { TransactionFactory } from '@ethereumjs/tx';
+import {
+  FeeMarketEIP1559Transaction,
+  LegacyTransaction,
+  TransactionFactory,
+} from '@ethereumjs/tx';
 import { signTypedData, SignTypedDataVersion } from '@metamask/eth-sig-util';
-import { bigIntToHex, bytesToHex } from '@metamask/utils';
+import { bigIntToHex, bytesToBigInt, bytesToHex } from '@metamask/utils';
+import { rlp } from 'ethereumjs-util';
 import { Common } from './keyring-utils';
 
 // BIP32 Public Key: xpub6ELgkkwgfoky9h9fFu4Auvx6oHvJ6XfwiS1NE616fe9Uf4H3JHtLGjCePVkb6RFcyDCqVvjXhNXbDNDqs6Kjoxw7pTAeP1GSEiLHmA5wYa9
@@ -172,6 +177,101 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
 
   async destroy() {
     return Promise.resolve();
+  }
+
+  /**
+   * Signs a transaction using a private key.
+   * This function supports both legacy (type 0) and EIP-1559 (type 2) transactions.
+   * It decodes the RLP-encoded transaction, signs it, and then returns the
+   * signature components (v, r, s) as hexadecimal strings.
+   *
+   * @param {object} params - The parameters object.
+   * @param {string} params.tx - The RLP-encoded transaction as a hex string.
+   * @returns {Promise<object>} A promise that resolves to an object containing the
+   * signature components:
+   * - `v`: The recovery id as a hex string.
+   * - `r`: The R component of the signature as a hex string.
+   * - `s`: The S component of the signature as a hex string.
+   * @throws {Error} If the transaction type is unsupported.
+   */
+  async deviceSignTransaction({ tx }) {
+    const txBuffer = Buffer.from(tx, 'hex');
+    const firstByte = txBuffer[0];
+    let txType;
+    let rlpData;
+    let parsedChainId;
+
+    // Determine the transaction type from the first byte of the buffer
+    if (firstByte === 1) {
+      txType = 1; // EIP-2930
+      // TODO: Add support for type 1 tx if needed, for now, error out
+      throw new Error(
+        'Unsupported transaction type: EIP-2930 (type 1) not yet implemented in FakeLedgerBridge.',
+      );
+    } else if (firstByte === 2) {
+      txType = 2; // EIP-1559
+      rlpData = txBuffer.slice(1);
+      const decodedRlp = rlp.decode(rlpData);
+      parsedChainId = bytesToBigInt(decodedRlp[0]); // chainId is the first element
+    } else {
+      txType = 0; // Legacy
+      rlpData = txBuffer;
+      const decodedRlp = rlp.decode(rlpData);
+      // For legacy tx, getMessageToSign(false) includes chainId as the 7th element (index 6)
+      // [nonce, gasPrice, gasLimit, to, value, data, chainId, 0, 0]
+      parsedChainId = bytesToBigInt(decodedRlp[6]);
+    }
+
+    const common = Common.custom({
+      chain: {
+        name: 'localhost',
+        // Use the parsed chainId. networkId can be the same.
+        chainId: parsedChainId,
+        networkId: parsedChainId,
+      },
+      // Ensure hardfork is appropriate for the transaction type
+      hardfork: txType === 2 ? 'london' : 'muirGlacier',
+    });
+
+    // removing r, s, v values from the unsigned tx
+    // Ledger uses v to communicate the chain ID, but we're removing it because these values are not a valid signature at this point.
+
+    // Type 1 and type 2 transactions have an explicit type set in the first element of the array
+    // Type 0 transactions do not have a specific type byte and are identified by their RLP encoding
+
+    // TODO: add support to type 1 transactions (already handled by throwing error)
+    if (txType === 0) {
+      const rlpTx = rlp.decode(rlpData);
+
+      // For legacy tx, fromValuesArray expects [nonce, gasPrice, gasLimit, to, value, data]
+      // or [nonce, gasPrice, gasLimit, to, value, data, v, r, s]
+      // Since our rlpTx is [nonce, gasPrice, gasLimit, to, value, data, chainId, 0, 0],
+      // we should pass the first 6 elements, and `common` will handle EIP-155.
+      const signedTx = LegacyTransaction.fromValuesArray(rlpTx.slice(0, 6), {
+        common,
+      }).sign(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
+      return {
+        v: bigIntToHex(signedTx.v),
+        r: bigIntToHex(signedTx.r),
+        s: bigIntToHex(signedTx.s),
+      };
+    } else if (txType === 2) {
+      const rlpTx = rlp.decode(rlpData);
+
+      // For EIP-1559 tx, fromValuesArray expects:
+      // [chainId, nonce, maxPriorityFeePerGas, maxFeePerGas, gasLimit, to, value, data, accessList]
+      // or with v, r, s. Our rlpTx matches the unsigned form.
+      const signedTx = FeeMarketEIP1559Transaction.fromValuesArray(rlpTx, {
+        common,
+      }).sign(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
+      return {
+        v: bigIntToHex(signedTx.v),
+        r: bigIntToHex(signedTx.r),
+        s: bigIntToHex(signedTx.s),
+      };
+    }
+
+    throw new Error('Unsupported transaction type.');
   }
 
   updateTransportMethod() {

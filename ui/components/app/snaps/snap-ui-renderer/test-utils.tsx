@@ -12,6 +12,7 @@ export const MOCK_SNAP_ID = 'npm:@metamask/test-snap-bip44';
 export const MOCK_INTERFACE_ID = 'interfaceId';
 
 type RenderInterfaceOptions = {
+  snapId?: SnapId;
   useFooter?: boolean;
   onCancel?: () => void;
   contentBackgroundColor?: string;
@@ -47,12 +48,14 @@ type RenderInterfaceResult = RenderWithProviderResult & {
  * @param options.contentBackgroundColor - The background color of the content.
  * @param options.state - The state of the interface.
  * @param options.metamaskState - The initial state of the MetaMask store.
+ * @param options.snapId - The ID of the snap to render the interface for.
  * @returns Testing utilities with render result, plus updateInterface and getRenderCount functions.
  */
 export function renderInterface(
   content: JSXElement,
   {
     useFooter = false,
+    snapId = MOCK_SNAP_ID as SnapId,
     onCancel,
     contentBackgroundColor,
     state = {},
@@ -67,7 +70,7 @@ export function renderInterface(
       ...metamaskState?.metamask,
       interfaces: {
         [MOCK_INTERFACE_ID]: {
-          snapId: MOCK_SNAP_ID,
+          snapId,
           content,
           state,
           context: null,
@@ -87,7 +90,7 @@ export function renderInterface(
           ...storeState.metamask,
           interfaces: {
             [MOCK_INTERFACE_ID]: {
-              snapId: MOCK_SNAP_ID as SnapId,
+              snapId,
               content: action.content,
               state: action.state ?? reduxState,
               context: null,
@@ -115,7 +118,7 @@ export function renderInterface(
 
   const result = renderWithProvider(
     <SnapUIRenderer
-      snapId={MOCK_SNAP_ID}
+      snapId={snapId}
       interfaceId={MOCK_INTERFACE_ID}
       useFooter={useFooter}
       onCancel={onCancel}

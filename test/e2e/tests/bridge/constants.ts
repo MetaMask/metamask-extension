@@ -1,7 +1,10 @@
 import { type FeatureFlagResponse } from '@metamask/bridge-controller';
 
-export const DEFAULT_BRIDGE_FEATURE_FLAGS: FeatureFlagResponse = {
+export const DEFAULT_BRIDGE_FEATURE_FLAGS: FeatureFlagResponse & {
+  minimumVersion: string;
+} = {
   refreshRate: 30000,
+  minimumVersion: '0.0.0',
   maxRefreshCount: 5,
   support: true,
   chains: {

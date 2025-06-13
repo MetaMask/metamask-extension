@@ -1,6 +1,24 @@
 @use "design-system";
 
 .icon-button {
+  height: auto;
+
+  &:hover:not([disabled]) {
+    background-color: var(--color-background-muted-hover);
+    transition: background 200ms ease;
+  }
+
+  &:hover:not([disabled]) {
+    background-color: var(--color-background-muted-pressed);
+  }
+
+  &__label {
+    // Needed for the truncation
+    max-width: 60px;
+  }
+}
+
+.icon-button-round {
   display: flex;
   flex-direction: column;
   align-items: center;

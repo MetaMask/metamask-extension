@@ -3,6 +3,8 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+// Import to set up global `Promise.withResolvers` polyfill
+import '../../../shared/lib/promise-with-resolvers';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_FULLSCREEN,
@@ -18,7 +20,6 @@ import * as FourBiteUtils from '../../../shared/lib/four-byte';
 import {
   shouldEmitDappViewedEvent,
   addUrlProtocolPrefix,
-  deferredPromise,
   formatTxMetaForRpcResult,
   getEnvironmentType,
   getPlatform,
@@ -215,9 +216,9 @@ describe('app utils', () => {
     });
   });
 
-  describe('deferredPromise', () => {
+  describe('Promise.withResolvers', () => {
     it('should allow rejecting a deferred Promise', async () => {
-      const { promise, reject } = deferredPromise();
+      const { promise, reject } = Promise.withResolvers();
 
       reject(new Error('test'));
 
@@ -225,7 +226,7 @@ describe('app utils', () => {
     });
 
     it('should allow resolving a deferred Promise', async () => {
-      const { promise, resolve } = deferredPromise();
+      const { promise, resolve } = Promise.withResolvers();
 
       resolve('test');
 
@@ -233,7 +234,7 @@ describe('app utils', () => {
     });
 
     it('should still be rejected after reject is called twice', async () => {
-      const { promise, reject } = deferredPromise();
+      const { promise, reject } = Promise.withResolvers();
 
       reject(new Error('test'));
       reject(new Error('different message'));
@@ -242,7 +243,7 @@ describe('app utils', () => {
     });
 
     it('should still be rejected after resolve is called post-rejection', async () => {
-      const { promise, resolve, reject } = deferredPromise();
+      const { promise, resolve, reject } = Promise.withResolvers();
 
       reject(new Error('test'));
       resolve('different message');
@@ -251,7 +252,7 @@ describe('app utils', () => {
     });
 
     it('should still be resolved after resolve is called twice', async () => {
-      const { promise, resolve } = deferredPromise();
+      const { promise, resolve } = Promise.withResolvers();
 
       resolve('test');
       resolve('different message');
@@ -260,7 +261,7 @@ describe('app utils', () => {
     });
 
     it('should still be resolved after reject is called post-resolution', async () => {
-      const { promise, resolve, reject } = deferredPromise();
+      const { promise, resolve, reject } = Promise.withResolvers();
 
       resolve('test');
       reject(new Error('different message'));

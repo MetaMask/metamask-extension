@@ -82,6 +82,7 @@ export const createBridgeMockStore = ({
         remoteFeatureFlags: {
           ...featureFlagOverrides,
           bridgeConfig: {
+            minimumVersion: '0.0.0',
             support: false,
             refreshRate: 5000,
             maxRefreshCount: 5,

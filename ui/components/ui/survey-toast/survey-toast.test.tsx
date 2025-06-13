@@ -64,6 +64,7 @@ describe('SurveyToast', () => {
     jest.clearAllMocks();
     jest.restoreAllMocks();
 
+    // @ts-expect-error mocking platform
     global.platform = {
       openTab: jest.fn(),
       closeCurrentWindow: jest.fn(),

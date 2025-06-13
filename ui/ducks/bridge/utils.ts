@@ -14,11 +14,11 @@ import {
   BridgeClientId,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
+import { handleFetch } from '@metamask/controller-utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
 import { fetchTokenExchangeRates as fetchTokenExchangeRatesUtil } from '../../helpers/utils/util';
-import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 
@@ -97,14 +97,9 @@ const fetchTokenExchangeRates = async (
       vsCurrency: currency,
     });
     const url = `https://price.api.cx.metamask.io/v3/spot-prices?${queryParams}`;
-    const tokenV3PriceResponse = (await fetchWithCache({
-      url,
-      fetchOptions: {
-        method: 'GET',
-        headers: { 'X-Client-Id': BridgeClientId.EXTENSION },
-      },
-      cacheOptions: { cacheRefreshTime: 0 },
-      functionName: 'fetchSolanaTokenExchangeRates',
+    const tokenV3PriceResponse = (await handleFetch(url, {
+      method: 'GET',
+      headers: { 'X-Client-Id': BridgeClientId.EXTENSION },
     })) as Record<string, { price: number }>;
 
     exchangeRates = Object.entries(tokenV3PriceResponse).reduce(

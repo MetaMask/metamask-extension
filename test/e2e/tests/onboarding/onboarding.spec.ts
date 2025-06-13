@@ -68,7 +68,7 @@ describe('MetaMask onboarding', function () {
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.check_pageIsLoaded();
-        await onboardingCompletePage.check_congratulationsMessageIsDisplayed();
+        await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
         await onboardingCompletePage.completeOnboarding();
 
         const homePage = new HomePage(driver);
@@ -128,9 +128,10 @@ describe('MetaMask onboarding', function () {
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_pageIsLoaded();
-        await startOnboardingPage.checkTermsCheckbox();
-        await startOnboardingPage.clickImportWalletButton();
+        await startOnboardingPage.check_bannerPageIsLoaded();
+        await startOnboardingPage.agreeToTermsOfUse();
+        await startOnboardingPage.check_loginPageIsLoaded();
+        await startOnboardingPage.importWallet();
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
@@ -140,44 +141,13 @@ describe('MetaMask onboarding', function () {
 
         const onboardingSrpPage = new OnboardingSrpPage(driver);
         await onboardingSrpPage.check_pageIsLoaded();
+
         await onboardingSrpPage.fillSrp(wrongSeedPhrase);
+        await onboardingSrpPage.clickConfirmButtonWithSrpError();
 
         // check the wrong SRP warning message is displayed
-        await onboardingSrpPage.check_wrongSrpWarningMessage();
+        await onboardingSrpPage.check_srpError();
         await onboardingSrpPage.check_confirmSrpButtonIsDisabled();
-      },
-    );
-  });
-
-  it('Verifies the functionality of selecting different Secret Recovery Phrase word counts', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
-
-        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.check_pageIsLoaded();
-          await onboardingMetricsPage.clickNoThanksButton();
-        }
-
-        const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_pageIsLoaded();
-        await startOnboardingPage.checkTermsCheckbox();
-        await startOnboardingPage.clickImportWalletButton();
-
-        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.check_pageIsLoaded();
-          await onboardingMetricsPage.clickNoThanksButton();
-        }
-
-        const onboardingSrpPage = new OnboardingSrpPage(driver);
-        await onboardingSrpPage.check_pageIsLoaded();
-        await onboardingSrpPage.check_srpDropdownIterations();
       },
     );
   });
@@ -199,9 +169,10 @@ describe('MetaMask onboarding', function () {
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_pageIsLoaded();
-        await startOnboardingPage.checkTermsCheckbox();
-        await startOnboardingPage.clickCreateWalletButton();
+        await startOnboardingPage.check_bannerPageIsLoaded();
+        await startOnboardingPage.agreeToTermsOfUse();
+        await startOnboardingPage.check_loginPageIsLoaded();
+        await startOnboardingPage.createWalletWithSrp();
 
         if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);

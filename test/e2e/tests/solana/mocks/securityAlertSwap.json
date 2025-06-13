@@ -1,0 +1,281 @@
+{
+  "encoding": "base64",
+  "error": null,
+  "error_details": null,
+  "request_id": "3e978da6-980a-4bdf-81db-0057b937a3c1",
+  "result": {
+    "simulation": {
+      "assets_diff": {
+        "3xTPAZxmpwd8GrNEKApaTw6VH4jqJ31WFXUvQzgwhR7c": [
+          {
+            "asset": {
+              "type": "SOL",
+              "decimals": 9,
+              "logo": "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png"
+            },
+            "in": null,
+            "out": {
+              "usd_price": 178.19,
+              "summary": "Lost approximately 178.19$",
+              "value": 1.00007001,
+              "raw_value": 1000070010
+            },
+            "asset_type": "SOL"
+          },
+          {
+            "asset": {
+              "type": "TOKEN",
+              "name": "USD Coin",
+              "symbol": "USDC",
+              "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "decimals": 6,
+              "logo": "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png"
+            },
+            "in": {
+              "usd_price": 176.44,
+              "summary": "Gained approximately 176.44$",
+              "value": 176.43884,
+              "raw_value": 176438840
+            },
+            "out": null,
+            "asset_type": "TOKEN"
+          }
+        ],
+        "SoLFiHG9TfgtdUXUjWAxi3LtvYuFyDLVhBWxdMZxyCe": [
+          {
+            "asset": {
+              "type": "TOKEN",
+              "name": "Wrapped SOL",
+              "symbol": "WSOL",
+              "address": "So11111111111111111111111111111111111111112",
+              "decimals": 9,
+              "logo": "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png"
+            },
+            "in": {
+              "usd_price": 176.74,
+              "summary": "Gained approximately 176.74$",
+              "value": 0.99125,
+              "raw_value": 991250000
+            },
+            "out": null,
+            "asset_type": "TOKEN"
+          },
+          {
+            "asset": {
+              "type": "TOKEN",
+              "name": "USD Coin",
+              "symbol": "USDC",
+              "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "decimals": 6,
+              "logo": "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png"
+            },
+            "in": null,
+            "out": {
+              "usd_price": 176.44,
+              "summary": "Lost approximately 176.44$",
+              "value": 176.43884,
+              "raw_value": 176438840
+            },
+            "asset_type": "TOKEN"
+          }
+        ],
+        "4cLUBQKZgCv2AqGXbh8ncGhrDRcicUe3WSDzjgPY2oTA": [
+          {
+            "asset": {
+              "type": "SOL",
+              "decimals": 9,
+              "logo": "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png"
+            },
+            "in": {
+              "usd_price": 1.56,
+              "summary": "Gained approximately 1.56$",
+              "value": 0.00875,
+              "raw_value": 8750000
+            },
+            "out": null,
+            "asset_type": "SOL"
+          }
+        ]
+      },
+      "delegations": {},
+      "assets_ownership_diff": {},
+      "accounts_details": [
+        {
+          "account_address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "description": "Token Program",
+          "type": "PROGRAM",
+          "was_written_to": false
+        },
+        {
+          "account_address": "ComputeBudget111111111111111111111111111111",
+          "description": "Compute Budget",
+          "type": "NATIVE_PROGRAM",
+          "was_written_to": false
+        },
+        {
+          "account_address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+          "description": "Associated Token Account Program",
+          "type": "PROGRAM",
+          "was_written_to": false
+        },
+        {
+          "account_address": "11111111111111111111111111111111",
+          "description": "System Program",
+          "type": "NATIVE_PROGRAM",
+          "was_written_to": false
+        },
+        {
+          "account_address": "SoLFiHG9TfgtdUXUjWAxi3LtvYuFyDLVhBWxdMZxyCe",
+          "description": "N/A",
+          "type": "PROGRAM",
+          "was_written_to": false
+        },
+        {
+          "account_address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "description": "USD Coin Mint Account",
+          "type": "FUNGIBLE_MINT_ACCOUNT",
+          "was_written_to": false,
+          "name": "USD Coin",
+          "symbol": "USDC",
+          "logo": "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png"
+        },
+        {
+          "account_address": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+          "description": "Jupiter Aggregator v6",
+          "type": "PROGRAM",
+          "was_written_to": false
+        },
+        {
+          "account_address": "CAPhoEse9xEH95XmdnJjYrZdNCA8xfUWdy3aWymHa1Vj",
+          "description": "PDA owned by SoLFiHG9TfgtdUXUjWAxi3LtvYuFyDLVhBWxdMZxyCe",
+          "type": "PDA",
+          "was_written_to": true,
+          "owner": "SoLFiHG9TfgtdUXUjWAxi3LtvYuFyDLVhBWxdMZxyCe"
+        },
+        {
+          "account_address": "4cLUBQKZgCv2AqGXbh8ncGhrDRcicUe3WSDzjgPY2oTA",
+          "description": null,
+          "type": "SYSTEM_ACCOUNT",
+          "was_written_to": true
+        },
+        {
+          "account_address": "3xTPAZxmpwd8GrNEKApaTw6VH4jqJ31WFXUvQzgwhR7c",
+          "description": null,
+          "type": "SYSTEM_ACCOUNT",
+          "was_written_to": true
+        },
+        {
+          "account_address": "F77xG4vz2CJeMxxAmFW8pvPx2c5Uk75pksr6Wwx6HFhV",
+          "description": "USD Coin's ($USDC) Token Account",
+          "type": "TOKEN_ACCOUNT",
+          "was_written_to": true,
+          "mint_address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "owner_address": "3xTPAZxmpwd8GrNEKApaTw6VH4jqJ31WFXUvQzgwhR7c"
+        },
+        {
+          "account_address": "CTaDZW2LhvHPRnA9JWcZF8R5y2mpkV2RcHAXyEoKLbzp",
+          "description": "Wrapped SOL's ($WSOL) Token Account",
+          "type": "TOKEN_ACCOUNT",
+          "was_written_to": true,
+          "mint_address": "So11111111111111111111111111111111111111112",
+          "owner_address": "CAPhoEse9xEH95XmdnJjYrZdNCA8xfUWdy3aWymHa1Vj"
+        },
+        {
+          "account_address": "So11111111111111111111111111111111111111112",
+          "description": "Wrapped SOL Mint Account",
+          "type": "FUNGIBLE_MINT_ACCOUNT",
+          "was_written_to": false,
+          "name": "Wrapped SOL",
+          "symbol": "WSOL",
+          "logo": "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png"
+        },
+        {
+          "account_address": "D8cy77BBepLMngZx6ZukaTff5hCt1HrWyKk3Hnd9oitf",
+          "description": null,
+          "type": "SYSTEM_ACCOUNT",
+          "was_written_to": false
+        },
+        {
+          "account_address": "JHVJLsPsbzNW8JP8cPYmrwfzD2M9aHXdFHSjeeCDERu",
+          "description": "USD Coin's ($USDC) Token Account",
+          "type": "TOKEN_ACCOUNT",
+          "was_written_to": true,
+          "mint_address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "owner_address": "CAPhoEse9xEH95XmdnJjYrZdNCA8xfUWdy3aWymHa1Vj"
+        },
+        {
+          "account_address": "BPFLoaderUpgradeab1e11111111111111111111111",
+          "description": "BPF Upgradeable Loader",
+          "type": "NATIVE_PROGRAM",
+          "was_written_to": false
+        },
+        {
+          "account_address": "BPFLoader2111111111111111111111111111111111",
+          "description": "BPF Loader 2",
+          "type": "NATIVE_PROGRAM",
+          "was_written_to": false
+        },
+        {
+          "account_address": "Ffqao4nxSvgaR5kvFz1F718WaxSv6LnNfHuGqFEZ8fzL",
+          "description": "Wrapped SOL's ($WSOL) Token Account",
+          "type": "TOKEN_ACCOUNT",
+          "was_written_to": true,
+          "mint_address": "So11111111111111111111111111111111111111112",
+          "owner_address": "3xTPAZxmpwd8GrNEKApaTw6VH4jqJ31WFXUvQzgwhR7c"
+        }
+      ],
+      "account_summary": {
+        "account_assets_diff": [
+          {
+            "asset": {
+              "type": "SOL",
+              "decimals": 9,
+              "logo": "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png"
+            },
+            "in": null,
+            "out": {
+              "usd_price": 178.19,
+              "summary": "Lost approximately 178.19$",
+              "value": 1.00007001,
+              "raw_value": 1000070010
+            },
+            "asset_type": "SOL"
+          },
+          {
+            "asset": {
+              "type": "TOKEN",
+              "name": "USD Coin",
+              "symbol": "USDC",
+              "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+              "decimals": 6,
+              "logo": "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png"
+            },
+            "in": {
+              "usd_price": 176.44,
+              "summary": "Gained approximately 176.44$",
+              "value": 176.43884,
+              "raw_value": 176438840
+            },
+            "out": null,
+            "asset_type": "TOKEN"
+          }
+        ],
+        "account_delegations": [],
+        "account_ownerships_diff": [],
+        "total_usd_diff": {
+          "in": 176.44,
+          "out": 178.19,
+          "total": -1.76
+        },
+        "total_usd_exposure": {}
+      }
+    },
+    "validation": {
+      "result_type": "Benign",
+      "reason": "",
+      "features": [],
+      "extended_features": []
+    }
+  },
+  "status": "SUCCESS"
+}

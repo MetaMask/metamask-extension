@@ -22,8 +22,8 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
   const REMOVED_SCOPE = INITIAL_SCOPES[0];
   const UPDATED_SCOPE = INITIAL_SCOPES[1];
 
-  const ACCOUNTS = [ACCOUNT_1, ACCOUNT_2];
-  const UPDATED_ACCOUNT = ACCOUNTS[1];
+  const CAIP_ACCOUNT_IDS = [`eip155:0:${ACCOUNT_1}`, `eip155:0:${ACCOUNT_2}`];
+  const UPDATED_ACCOUNT = ACCOUNT_2;
   it('should receive a `wallet_sessionChanged` event with the full new session scopes', async function () {
     await withFixtures(
       {
@@ -45,7 +45,10 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();
         await testDapp.connectExternallyConnectable(extensionId);
-        await testDapp.initCreateSessionScopes(INITIAL_SCOPES, ACCOUNTS);
+        await testDapp.initCreateSessionScopes(
+          INITIAL_SCOPES,
+          CAIP_ACCOUNT_IDS,
+        );
         await addAccountInWalletAndAuthorize(driver);
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.delay(largeDelayMs);

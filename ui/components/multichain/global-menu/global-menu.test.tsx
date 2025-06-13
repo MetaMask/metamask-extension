@@ -40,6 +40,7 @@ describe('Global Menu', () => {
   });
 
   it('opens the support site when item is clicked', async () => {
+    // @ts-expect-error mocking platform
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 
     const { getByTestId } = render();
@@ -78,6 +79,7 @@ describe('Global Menu', () => {
   });
 
   it('expands metamask to tab when item is clicked', async () => {
+    // @ts-expect-error mocking platform
     global.platform = {
       openExtensionInBrowser: jest.fn(),
       openTab: jest.fn(),

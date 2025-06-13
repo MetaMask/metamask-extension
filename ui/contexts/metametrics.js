@@ -18,7 +18,7 @@ import { omit } from 'lodash';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../app/scripts/lib/util';
-import { PATH_NAME_MAP } from '../helpers/constants/routes';
+import { PATH_NAME_MAP, getPaths } from '../helpers/constants/routes';
 import { MetaMetricsContextProp } from '../../shared/constants/metametrics';
 import { useSegmentContext } from '../hooks/useSegmentContext';
 
@@ -53,8 +53,6 @@ export const MetaMetricsContext = createContext(() => {
     ),
   );
 });
-
-const PATHS_TO_CHECK = Object.keys(PATH_NAME_MAP);
 
 export function MetaMetricsProvider({ children }) {
   const location = useLocation();
@@ -108,7 +106,7 @@ export function MetaMetricsProvider({ children }) {
   useEffect(() => {
     const environmentType = getEnvironmentType();
     const match = matchPath(location.pathname, {
-      path: PATHS_TO_CHECK,
+      path: getPaths(),
       exact: true,
       strict: true,
     });
@@ -135,7 +133,7 @@ export function MetaMetricsProvider({ children }) {
       // in the event that we are dealing with the initial load of the
       // homepage
       const { path, params } = match;
-      const name = PATH_NAME_MAP[path];
+      const name = PATH_NAME_MAP.get(path);
       trackMetaMetricsPage(
         {
           name,

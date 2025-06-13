@@ -385,6 +385,19 @@ function setupAutoDetectMocking(
   const ENS_ID =
     '15045599024596508941101550399035548037687903197647023388282056880789326977958';
   server
+    .forGet(`https://nft.api.cx.metamask.io/collections`)
+    .withQuery({
+      chainId: '1',
+      contract: `${ENS_ADDRESS}`,
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: ensTokenResponse,
+      };
+    });
+
+  server
     .forGet('https://nft.api.cx.metamask.io/tokens')
     .withQuery({
       chainIds: '1',

@@ -20,11 +20,12 @@ export function isSolanaAccount(account: InternalAccount) {
 }
 
 export function isNonEvmAccount(account: InternalAccount) {
-  const { P2wpkh } = BtcAccountType;
   const { DataAccount } = SolAccountType;
 
   return Boolean(
-    account && (account.type === P2wpkh || account.type === DataAccount),
+    account &&
+      (Object.values(BtcAccountType).includes(account.type as BtcAccountType) ||
+        account.type === DataAccount),
   );
 }
 

@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { Browser } from 'selenium-webdriver';
 import { Driver } from '../../webdriver/driver';
 
 class HeaderNavbar {
@@ -84,7 +85,14 @@ class HeaderNavbar {
 
   async openThreeDotMenu(): Promise<void> {
     console.log('Open account options menu');
-    await this.driver.clickElement(this.threeDotMenuButton);
+    await this.driver.waitForSelector(this.threeDotMenuButton, {
+      state: 'enabled',
+    });
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
+    } else {
+      this.driver.clickElement(this.threeDotMenuButton);
+    }
   }
 
   async openPermissionsPage(): Promise<void> {

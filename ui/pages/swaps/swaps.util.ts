@@ -212,6 +212,13 @@ export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
 export async function fetchTopAssetsList(
   chainId: string,
 ): Promise<{ address: Hex }[]> {
+  if (
+    !Object.values(CHAIN_IDS).includes(
+      chainId as (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS],
+    )
+  ) {
+    return [];
+  }
   const topAssetsUrl = getBaseApi('topAssets', chainId);
   const response =
     (await fetchWithCache({

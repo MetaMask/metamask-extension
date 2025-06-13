@@ -32,7 +32,7 @@ import {
 import { getSelectedInternalAccount } from '../../../selectors';
 import { RevokeWithdrawlConfirmModalType } from '../components/revoke-withdrawl-confirm-modal';
 import { useRemoteMode } from '../hooks/useRemoteMode';
-import { REMOTE_MODES } from '../remote.types';
+import { REMOTE_MODES } from '../../../../shared/lib/remote-mode';
 import {
   REMOTE_ROUTE_SETUP_SWAPS,
   REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,

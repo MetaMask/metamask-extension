@@ -242,10 +242,7 @@ export default function NameDetails({
     variation,
   );
 
-  const [copiedAddress, handleCopyAddress] = useCopyToClipboard() as [
-    boolean,
-    (value: string) => void,
-  ];
+  const [copiedAddress, handleCopyAddress] = useCopyToClipboard();
 
   useEffect(() => {
     setName(savedPetname ?? '');

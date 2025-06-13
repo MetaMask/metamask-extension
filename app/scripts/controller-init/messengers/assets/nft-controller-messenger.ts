@@ -1,7 +1,7 @@
 import { Messenger } from '@metamask/base-controller';
 import {
+  NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
-  NetworkControllerNetworkDidChangeEvent,
 } from '@metamask/network-controller';
 import {
   AccountsControllerGetSelectedAccountAction,
@@ -29,11 +29,11 @@ type Actions =
   | AssetsContractControllerGetERC721TokenURIAction
   | AssetsContractControllerGetERC721OwnerOfAction
   | AssetsContractControllerGetERC1155BalanceOfAction
-  | AssetsContractControllerGetERC1155TokenURIAction;
+  | AssetsContractControllerGetERC1155TokenURIAction
+  | NetworkControllerFindNetworkClientIdByChainIdAction;
 
 type Events =
   | PreferencesControllerStateChangeEvent
-  | NetworkControllerNetworkDidChangeEvent
   | AccountsControllerSelectedEvmAccountChangeEvent;
 
 export type NftControllerMessenger = ReturnType<
@@ -54,7 +54,6 @@ export function getNftControllerMessenger(
     name: 'NftController',
     allowedEvents: [
       'PreferencesController:stateChange',
-      'NetworkController:networkDidChange',
       'AccountsController:selectedEvmAccountChange',
     ],
     allowedActions: [
@@ -68,6 +67,7 @@ export function getNftControllerMessenger(
       'AssetsContractController:getERC721OwnerOf',
       'AssetsContractController:getERC1155BalanceOf',
       'AssetsContractController:getERC1155TokenURI',
+      'NetworkController:findNetworkClientIdByChainId',
     ],
   });
 }
