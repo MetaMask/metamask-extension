@@ -103,7 +103,7 @@ async function getFileSize(filePath: string): Promise<number> {
 async function waitUntilFileIsWritten({
   driver,
   filePath,
-  maxRetries = 3,
+  maxRetries = 5,
   minFileSize = 1000000,
 }: {
   driver: Driver;
@@ -119,7 +119,7 @@ async function waitUntilFileIsWritten({
       console.log(`File size is too small (${fileSize} bytes)`);
       if (attempt < maxRetries - 1) {
         console.log(`Waiting for 2 seconds before retrying...`);
-        await driver.delay(2000);
+        await driver.delay(5000);
       }
     }
   }
