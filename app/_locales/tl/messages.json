@@ -68,13 +68,6 @@
     "message": "Nabasa ko at sumasang-ayon ako sa $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "I-access ang iyong wallet gamit ang iyong Lihim na Parirala sa Pagbawi"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "Hindi mababawi ng MetaMask ang iyong password. Gagamitin namin ang iyong Lihim na Parirala sa Pagbawi upang patunayan ang iyong pagmamay-ari, ibalik ang iyong wallet at mag-set up ng bagong password. Una, ilagay ang Lihim na Parirala sa Pagbawi na ibinigay sa iyo noong ginawa mo ang iyong wallet. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Ina-access ang iyong camera..."
   },
@@ -2399,9 +2392,6 @@
   "hideAdvancedDetails": {
     "message": "Itago ang mga advanced na detalye"
   },
-  "hideSeedPhrase": {
-    "message": "Itago ang pariralang binhi"
-  },
   "hideSentitiveInfo": {
     "message": "Itago ang sensitibong impormasyon"
   },
@@ -3805,21 +3795,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Gagamitin namin ang data na ito upang matutunan kung paano ka nakikipag-ugnayan sa aming mga komunikasyon sa marketing. Maaari kaming magbahagi ng kaugnay na balita (tulad ng mga tampok ng produkto)."
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Buong Access"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Makikita ang mga extension na ito at mababago ang impormasyon"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "sa site na ito."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Mga extension"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Mag-click sa con ng browser extension"
-  },
   "onboardingPinExtensionDescription": {
     "message": "I-pin ang MetaMask sa iyong browser para madali itong ma-access at madaling makita ang mga kumpirmasyon ng transaksyon."
   },
@@ -3827,16 +3802,8 @@
     "message": "Maaari mong buksan ang MetaMask sa pamamagitan ng pag-click sa extension at pag-accesss sa wallet mo sa 1 click lang."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Mag-click sa icon ng browser extension para agad itong ma-access"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "I-pin ang MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Mag-click sa icon ng browser extension para agad itong ma-access",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Ang pag-install ng iyong MetaMask ay kumpleto na!"
@@ -4645,9 +4612,6 @@
   "revealSensitiveContent": {
     "message": "Ipakita ang sensitibong content"
   },
-  "revealTheSeedPhrase": {
-    "message": "Ibunyag ang pariralang binhi"
-  },
   "review": {
     "message": "Suriin"
   },
@@ -4755,29 +4719,11 @@
   "seeDetails": {
     "message": "Tingnan ang mga detalye"
   },
-  "seedPhraseConfirm": {
-    "message": "Kumpirmahin ang Lihim na Parirala sa Pagbawi"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Kumpirmahin ang Lihim na Parirala sa Pagbawi"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Isulat at itago sa iba't ibang sikretong lugar"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Itago sa safe deposit box"
-  },
   "seedPhraseIntroTitle": {
     "message": "I-secure ang wallet mo"
   },
   "seedPhraseReq": {
     "message": "Ang mga Lihim na Parirala sa Pagbawi ay naglalaman ng 12, 15, 18, 21, o 24 na salita"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Isulat ang 12 salita ng Lihim na Parirala sa Pagbawi at i-save sa lugar na pinagkakatiwalaan mo at ikaw lang ang makaka-access."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Isulat ang iyong Lihim na Parirala sa Pagbawi"
   },
   "select": {
     "message": "Piliin ang"
@@ -6181,9 +6127,6 @@
   },
   "time": {
     "message": "Oras"
-  },
-  "tips": {
-    "message": "Mga Tip"
   },
   "tipsForUsingAWallet": {
     "message": "Mga tip sa paggamit ng wallet"

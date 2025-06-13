@@ -68,13 +68,6 @@
     "message": "Tôi đã đọc và đồng ý với $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Truy cập ví của bạn bằng Cụm từ khôi phục bí mật"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask không thể khôi phục mật khẩu của bạn. Chúng tôi sẽ sử dụng Cụm từ khôi phục bí mật của bạn để xác thực quyền sở hữu, khôi phục ví và thiết lập mật khẩu mới. Trước tiên, hãy nhập Cụm từ khôi phục bí mật mà bạn đã được cấp khi tạo ví. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Đang truy cập máy ảnh..."
   },
@@ -2399,9 +2392,6 @@
   "hideAdvancedDetails": {
     "message": "Ẩn chi tiết nâng cao"
   },
-  "hideSeedPhrase": {
-    "message": "Ẩn cụm từ khôi phục bí mật"
-  },
   "hideSentitiveInfo": {
     "message": "Ẩn thông tin nhạy cảm"
   },
@@ -3805,21 +3795,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Chúng tôi sẽ sử dụng dữ liệu này để tìm hiểu cách bạn tương tác với các thông tin tiếp thị. Chúng tôi có thể chia sẻ tin tức liên quan (chẳng hạn như tính năng sản phẩm)."
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Toàn quyền truy cập"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Các tiện ích này có thể xem và thay đổi thông tin"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "trên trang web này."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Tiện ích"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Nhấp vào biểu tượng tiện ích trên trình duyệt"
-  },
   "onboardingPinExtensionDescription": {
     "message": "Ghim MetaMask trên trình duyệt để bạn có thể truy cập và dễ dàng xem các xác nhận giao dịch."
   },
@@ -3827,16 +3802,8 @@
     "message": "Bạn có thể mở MetaMask bằng cách nhấp vào tiện ích và truy cập ví của mình chỉ với 1 cú nhấp chuột."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Nhấp vào biểu tượng tiện ích trên trình duyệt để truy cập tức thì"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "Ghim MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Nhấp vào biểu tượng tiện ích trên trình duyệt để truy cập tức thì",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Quá trình cài đặt MetaMask đã hoàn tất!"
@@ -4645,9 +4612,6 @@
   "revealSensitiveContent": {
     "message": "Tiết lộ nội dung nhạy cảm"
   },
-  "revealTheSeedPhrase": {
-    "message": "Hiển thị cụm từ khôi phục bí mật"
-  },
   "review": {
     "message": "Xem lại"
   },
@@ -4755,29 +4719,11 @@
   "seeDetails": {
     "message": "Xem chi tiết"
   },
-  "seedPhraseConfirm": {
-    "message": "Xác nhận Cụm từ khôi phục bí mật"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Xác nhận Cụm từ khôi phục bí mật"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Viết ra và cất ở nhiều nơi bí mật"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Cất trong hộp ký gửi an toàn"
-  },
   "seedPhraseIntroTitle": {
     "message": "Bảo mật cho ví của bạn"
   },
   "seedPhraseReq": {
     "message": "Cụm từ khôi phục bí mật gồm 12, 15, 18, 21 hoặc 24 từ"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Viết ra Cụm từ khôi phục bí mật gồm 12 từ này, sau đó lưu ở một nơi mà bạn tin tưởng và chỉ có bạn mới được phép truy cập."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Viết ra Cụm từ khôi phục bí mật của bạn"
   },
   "select": {
     "message": "Chọn"
@@ -6181,9 +6127,6 @@
   },
   "time": {
     "message": "Thời gian"
-  },
-  "tips": {
-    "message": "Mẹo"
   },
   "tipsForUsingAWallet": {
     "message": "Lời khuyên sử dụng ví"

@@ -1,3 +1,5 @@
+import { NetworkController } from '@metamask/network-controller';
+import type { AppStateController } from '../../controllers/app-state-controller';
 import { SECOND } from '../../../../shared/constants/time';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import {
@@ -5,6 +7,7 @@ import {
   ScanAddressResponse,
   SupportedEVMChain,
 } from './types';
+import { getChainId } from './trust-signals-util';
 
 const TIMEOUT = 5 * SECOND;
 const ENDPOINT_ADDRESS_SCAN = 'address/evm/scan';
@@ -32,4 +35,21 @@ export async function scanAddress(
   });
   const data = await response.json();
   return data;
+}
+
+export async function scanAddressAndAddToCache(
+  address: string,
+  appStateController: AppStateController,
+  networkController: NetworkController,
+): Promise<ScanAddressResponse> {
+  const cachedResponse =
+    appStateController.getAddressSecurityAlertResponse(address);
+  if (cachedResponse) {
+    return cachedResponse;
+  }
+
+  const chainId = getChainId(networkController);
+  const result = await scanAddress(chainId, address);
+  appStateController.addAddressSecurityAlertResponse(address, result);
+  return result;
 }

@@ -68,13 +68,6 @@
     "message": "Ich habe die $1 gelesen und stimme ihnen zu.",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Greifen Sie mit Ihrer geheimen Wiederherstellungsphrase auf Ihre Wallet zu."
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask kann Ihr Passwort nicht wiederherstellen. Wir verwenden Ihre geheime Wiederherstellungsphrase, um Ihr Eigentum zu bestätigen, Ihre Wallet wiederherzustellen und ein neues Passwort festzulegen. Geben Sie zunächst die geheime Wiederherstellungsphrase ein, die Sie erhalten haben, als Sie Ihre Wallet erstellt haben. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Zugriff auf Ihre Kamera …"
   },
@@ -2399,9 +2392,6 @@
   "hideAdvancedDetails": {
     "message": "Erweiterte Details verbergen"
   },
-  "hideSeedPhrase": {
-    "message": "Seed-Phrase verbergen"
-  },
   "hideSentitiveInfo": {
     "message": "Sensible Informationen verbergen"
   },
@@ -3805,21 +3795,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Wir verwenden diese Daten, um zu erfahren, wie Sie mit unserer Marketingkommunikation umgehen. Wir können relevante Neuigkeiten (wie Produktmerkmale) teilen."
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Voller Zugriff"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Diese Erweiterungen können Informationen sehen und ändern."
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "auf dieser Seite."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Erweiterungen"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Klicken Sie auf das Symbol der Browser-Erweiterung."
-  },
   "onboardingPinExtensionDescription": {
     "message": "Heften Sie MetaMask in Ihrem Browser ab, damit Sie auf die Transaktionsbestätigungen zugreifen und sie leicht einsehen können."
   },
@@ -3827,16 +3802,8 @@
     "message": "Sie können MetaMask öffnen, indem Sie auf die Erweiterung klicken, und mit nur einem Klick auf Ihre Wallet zugreifen."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Klicken Sie auf das Symbol der Browser-Erweiterung, um sofort darauf zuzugreifen."
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "MetaMask anheften"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Klicken Sie auf das Symbol der Browser-Erweiterung, um sofort darauf zuzugreifen.",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Ihre MetaMask Installation ist abgeschlossen!"
@@ -4645,9 +4612,6 @@
   "revealSensitiveContent": {
     "message": "Sensible Inhalte offenlegen"
   },
-  "revealTheSeedPhrase": {
-    "message": "Seed-Phrase anzeigen"
-  },
   "review": {
     "message": "Überprüfen"
   },
@@ -4755,29 +4719,11 @@
   "seeDetails": {
     "message": "Details anzeigen"
   },
-  "seedPhraseConfirm": {
-    "message": "Geheime Wiederherstellungsphrase bestätigen"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Geheime Wiederherstellungsphrase bestätigen"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Aufschreiben und an mehreren geheimen Orten aufbewahren"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "In einem Schließfach aufbewahren"
-  },
   "seedPhraseIntroTitle": {
     "message": "Sichern Sie Ihre Wallet"
   },
   "seedPhraseReq": {
     "message": "Geheime Wiederherstellungsphrasen bestehen aus 12, 15, 18, 21 oder 24 Wörtern."
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Schreiben Sie diese geheime Wiederherstellungsphrase mit 12 Wörtern auf und bewahren Sie sie an einem Ort auf, auf den nur Sie Zugriff haben."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Schreiben Sie sich Ihre geheime Wiederherstellungsphrase auf."
   },
   "select": {
     "message": "Auswählen"
@@ -6181,9 +6127,6 @@
   },
   "time": {
     "message": "Zeit"
-  },
-  "tips": {
-    "message": "Tipps"
   },
   "tipsForUsingAWallet": {
     "message": "Tipps zur Verwendung einer Wallet"

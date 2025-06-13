@@ -66,7 +66,10 @@
     "pendingApprovalCount": "number",
     "approvalFlows": "object"
   },
-  "AuthenticationController": { "isSignedIn": "boolean" },
+  "AuthenticationController": {
+    "isSignedIn": "boolean",
+    "srpSessionData": "object"
+  },
   "BridgeController": {
     "quoteRequest": {
       "srcTokenAddress": "0x0000000000000000000000000000000000000000"
@@ -81,7 +84,7 @@
     "minimumBalanceForRentExemptionInLamports": "string"
   },
   "BridgeStatusController": { "txHistory": "object" },
-  "CronjobController": { "jobs": "object", "events": "object" },
+  "CronjobController": { "events": "object" },
   "CurrencyController": {
     "currentCurrency": "usd",
     "currencyRates": {
@@ -172,7 +175,7 @@
     "networkConfigurationsByChainId": "object"
   },
   "NetworkOrderController": {
-    "orderedNetworkList": { "0": "object", "1": "object" },
+    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
     "enabledNetworkMap": {
       "0x539": "boolean"
     }

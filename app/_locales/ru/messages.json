@@ -68,13 +68,6 @@
     "message": "Я прочитал(-а) $1 и согласен(-на) с ними",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Получайте доступ к кошельку с помощью секретной фразы для восстановления"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask не может восстановить ваш пароль. Мы используем вашу cекретную фразу для восстановления, чтобы подтвердить ваше право собственности, восстановить ваш кошелек и установить новый пароль. Сначала введите секретную фразу для восстановления, которую вы получили при создании кошелька. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Доступ к камере..."
   },
@@ -2399,9 +2392,6 @@
   "hideAdvancedDetails": {
     "message": "Скрыть дополнительные сведения"
   },
-  "hideSeedPhrase": {
-    "message": "Скрыть сид-фразу"
-  },
   "hideSentitiveInfo": {
     "message": "Скрыть конфиденциальную информацию"
   },
@@ -3805,21 +3795,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Мы будем использовать эти данные, чтобы узнать, как вы взаимодействуете с нашими маркетинговыми сообщениями. Мы можем отправлять соответствующие новости (например, об особенностях продукта)."
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Полный доступ"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Эти расширения могут просматривать и изменять информацию"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "на этом сайте."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Расширения"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Нажмите на значок расширения браузера"
-  },
   "onboardingPinExtensionDescription": {
     "message": "Закрепите расширение MetaMask в браузере для его постоянной доступности и легкого просмотра подтверждений транзакций."
   },
@@ -3827,16 +3802,8 @@
     "message": "Вы можете открыть MetaMask, нажав на расширение, и получить доступ к своему кошельку одним щелчком мыши."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Нажмите на значок расширения браузера для мгновенного перехода к нему"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "Закрепить MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Нажмите на значок расширения браузера для мгновенного перехода к нему",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Установка MetaMask завершена!"
@@ -4645,9 +4612,6 @@
   "revealSensitiveContent": {
     "message": "Показать конфиденциальный контент"
   },
-  "revealTheSeedPhrase": {
-    "message": "Показать сид-фразу"
-  },
   "review": {
     "message": "Проверить"
   },
@@ -4755,29 +4719,11 @@
   "seeDetails": {
     "message": "См. подробности"
   },
-  "seedPhraseConfirm": {
-    "message": "Подтвердите секретную фразу для восстановления"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Подтвердите секретную фразу для восстановления"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Запишите и храните в нескольких секретных местах."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Храните в банковской ячейке."
-  },
   "seedPhraseIntroTitle": {
     "message": "Защитите свой кошелек"
   },
   "seedPhraseReq": {
     "message": "Секретные фразы для восстановления содержат 12, 15, 18, 21 или 24 слова"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Запишите эту секретную фразу для восстановления из 12 слов и сохраните ее в надежном месте, доступном только вам."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Запишите секретную фразу для восстановления"
   },
   "select": {
     "message": "Выбрать"
@@ -6181,9 +6127,6 @@
   },
   "time": {
     "message": "Время"
-  },
-  "tips": {
-    "message": "Советы"
   },
   "tipsForUsingAWallet": {
     "message": "Советы по использованию кошелька"

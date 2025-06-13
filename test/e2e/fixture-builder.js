@@ -119,6 +119,8 @@ function onboardingFixture() {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM_TESTNET]: true,
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MEGAETH_TESTNET]: true,
+          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MONAD_TESTNET]: true,
         },
       },
       SelectedNetworkController: {
@@ -402,6 +404,46 @@ class FixtureBuilder {
     delete thirdNode.selectedNetworkClientId;
     merge(this.fixture.data.NetworkController, thirdNode);
     return this;
+  }
+
+  withNetworkControllerOnMegaETH() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'megaeth-testnet',
+      networkConfigurations: {
+        'megaeth-testnet': {
+          chainId: CHAIN_IDS.MEGAETH_TESTNET,
+          nickname: 'Mega Testnet',
+          rpcUrl: 'https://carrot.megaeth.com/rpc',
+          ticker: 'MegaETH',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://testnet.megaeth.com',
+          },
+          id: 'megaeth-testnet',
+          type: 'rpc',
+          isCustom: true,
+        },
+      },
+    });
+  }
+
+  withNetworkControllerOnMonad() {
+    return this.withNetworkController({
+      selectedNetworkClientId: 'monad-testnet',
+      networkConfigurations: {
+        'monad-testnet': {
+          chainId: CHAIN_IDS.MONAD_TESTNET,
+          nickname: 'Monad Testnet',
+          rpcUrl: 'https://testnet-rpc.monad.xyz',
+          ticker: 'MON',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://testnet.monadexplorer.com',
+          },
+          id: 'monad-testnet',
+          type: 'rpc',
+          isCustom: true,
+        },
+      },
+    });
   }
 
   withNftController(data) {
@@ -1734,14 +1776,6 @@ class FixtureBuilder {
           rpcUrl: 'https://bsc-dataseed.binance.org',
           ticker: 'BNB',
           id: 'bnb-mainnet',
-        },
-        'base-mainnet': {
-          chainId: CHAIN_IDS.BASE,
-          nickname: 'Base',
-          rpcPrefs: {},
-          rpcUrl: 'https://mainnet.base.org',
-          ticker: 'ETH',
-          id: 'base-mainnet',
         },
         'zksync-mainnet': {
           chainId: CHAIN_IDS.ZKSYNC_ERA,

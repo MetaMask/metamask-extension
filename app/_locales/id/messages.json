@@ -68,13 +68,6 @@
     "message": "Saya telah membaca dan menyetujui $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Akses dompet Anda dengan Frasa Pemulihan Rahasia"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask tidak dapat memulihkan kata sandi Anda. Kami akan menggunakan Frasa Pemulihan Rahasia untuk memvalidasi kepemilikan Anda, memulihkan dompet Anda, dan mengatur kata sandi baru. Pertama, masukkan Frasa Pemulihan Rahasia yang diberikan saat membuat dompet. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Mengakses kamera Anda..."
   },
@@ -2399,9 +2392,6 @@
   "hideAdvancedDetails": {
     "message": "Sembunyikan detail lanjutan"
   },
-  "hideSeedPhrase": {
-    "message": "Sembunyikan frasa seed"
-  },
   "hideSentitiveInfo": {
     "message": "Sembunyikan informasi sensitif"
   },
@@ -3805,21 +3795,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Kami akan menggunakan data ini untuk mempelajari cara Anda berinteraksi dengan komunikasi pemasaran. Kami mungkin akan membagikan berita yang relevan (seperti fitur produk)."
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Akses penuh"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Ekstensi ini dapat melihat dan mengubah informasi"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "di situs ini."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Ekstensi"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Klik ikon ekstensi browser"
-  },
   "onboardingPinExtensionDescription": {
     "message": "Sematkan MetaMask pada browser Anda agar dapat diakses dan memudahkan dalam melihat konfirmasi transaksi."
   },
@@ -3827,16 +3802,8 @@
     "message": "Anda dapat membuka MetaMask dengan mengeklik ekstensi dan mengakses dompet Anda dalam 1 klik."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Klik ikon ekstensi browser untuk mengaksesnya secara langsung"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "Sematkan MetaMask"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Klik ikon ekstensi browser untuk mengaksesnya secara langsung",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Pemasangan MetaMask Anda selesai!"
@@ -4645,9 +4612,6 @@
   "revealSensitiveContent": {
     "message": "Tampilkan konten sensitif"
   },
-  "revealTheSeedPhrase": {
-    "message": "Ungkap frasa seed"
-  },
   "review": {
     "message": "Tinjau"
   },
@@ -4755,29 +4719,11 @@
   "seeDetails": {
     "message": "Lihat detailnya"
   },
-  "seedPhraseConfirm": {
-    "message": "Konfirmasikan Frasa Pemulihan Rahasia"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Konfirmasikan Frasa Pemulihan Rahasia"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Tulis dan simpan di beberapa tempat rahasia"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Simpan di kotak deposit yang aman"
-  },
   "seedPhraseIntroTitle": {
     "message": "Amankan dompet Anda"
   },
   "seedPhraseReq": {
     "message": "Frasa Pemulihan Rahasia berisi 12, 15, 18, 21, atau 24 kata"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Tuliskan Frasa Pemulihan Rahasia 12 kata ini, simpan di tempat yang aman dan hanya Anda yang dapat mengaksesnya."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Tuliskan Frasa Pemulihan Rahasia Anda"
   },
   "select": {
     "message": "Pilih"
@@ -6181,9 +6127,6 @@
   },
   "time": {
     "message": "Waktu"
-  },
-  "tips": {
-    "message": "Kiat"
   },
   "tipsForUsingAWallet": {
     "message": "Tip menggunakan dompet"
