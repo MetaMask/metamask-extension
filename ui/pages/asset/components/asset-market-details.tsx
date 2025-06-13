@@ -44,8 +44,6 @@ export const AssetMarketDetails = ({
   const currencyRates = useSelector(getCurrencyRates);
   const nonEvmConversionRates = useSelector(getAssetsRates);
 
-  console.log(nonEvmConversionRates);
-
   const isEvm = useSelector(getMultichainIsEvm);
   const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
 
