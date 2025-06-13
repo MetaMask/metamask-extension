@@ -1,7 +1,8 @@
-const { strict: assert } = require('assert');
-const { withFixtures, unlockWallet, openDapp } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
-const createStaticServer = require('../../../../development/create-static-server');
+import { strict as assert } from 'assert';
+import { withFixtures, openDapp } from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
+import createStaticServer from '../../../../development/create-static-server';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 const dappPort = 8080;
 
@@ -17,10 +18,10 @@ describe('The provider', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        title: this.test.title,
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await openDapp(driver);
 
         const isExpectedChainIdTextRendered =
@@ -28,7 +29,6 @@ describe('The provider', function () {
             tag: 'div',
             text: 'Chain Id: 0x539',
           });
-
         assert.equal(
           isExpectedChainIdTextRendered,
           true,
@@ -37,8 +37,8 @@ describe('The provider', function () {
       },
     );
 
-    await new Promise((resolve, reject) => {
-      dappServer.close((error) => {
+    await new Promise<void>((resolve, reject) => {
+      dappServer.close((error?: Error) => {
         if (error) {
           return reject(error);
         }

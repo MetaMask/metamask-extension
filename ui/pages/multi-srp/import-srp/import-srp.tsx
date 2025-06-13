@@ -415,6 +415,7 @@ export const ImportSrp = () => {
               trace({ name: TraceName.ImportSrp });
               try {
                 setLoading(true);
+                await dispatch(actions.lockAccountSyncing());
                 await importWallet();
                 history.push(DEFAULT_ROUTE);
                 dispatch(setShowNewSrpAddedToast(true));
@@ -434,6 +435,7 @@ export const ImportSrp = () => {
               } finally {
                 setLoading(false);
                 endTrace({ name: TraceName.ImportSrp });
+                await dispatch(actions.unlockAccountSyncing());
               }
             }}
           >
