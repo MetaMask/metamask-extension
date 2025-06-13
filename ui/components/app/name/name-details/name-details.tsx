@@ -55,7 +55,7 @@ import {
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { useName } from '../../../../hooks/useName';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useTrustSignalDisplay } from '../../../../hooks/useTrustSignalDisplay';
+import { useNameDisplayState } from '../../../../hooks/useNameDisplayState';
 import NameDisplay from './name-display';
 import { usePetnamesMetrics } from './metrics';
 import { getInitialNameValue } from './trust-signal-config';
@@ -224,13 +224,7 @@ export default function NameDetails({
     variation,
   );
 
-  const {
-    trustState,
-    trustLabel,
-    hasPetname,
-    hasRecognizedName,
-    modalTextConfig,
-  } = useTrustSignalDisplay({
+  const { displayState, hasPetname, hasRecognizedName } = useNameDisplayState({
     value,
     type,
     variation,
@@ -265,8 +259,8 @@ export default function NameDetails({
 
     const initialName = getInitialNameValue(
       savedPetname,
-      trustState,
-      trustLabel,
+      displayState.rawData.trustState,
+      displayState.rawData.trustLabel,
       showTrustSignals,
     );
 
@@ -281,8 +275,8 @@ export default function NameDetails({
     savedPetname,
     savedSourceId,
     showTrustSignals,
-    trustState,
-    trustLabel,
+    displayState.rawData.trustState,
+    displayState.rawData.trustLabel,
     setName,
     setSelectedSourceId,
   ]);
@@ -361,7 +355,7 @@ export default function NameDetails({
         <ModalOverlay />
         <ModalContent>
           <ModalHeader onClose={handleClose}>
-            {modalTextConfig.title}
+            {displayState.modalConfig.title}
           </ModalHeader>
           <ModalBody className="name-details__modal-body">
             <div
@@ -375,7 +369,7 @@ export default function NameDetails({
               />
             </div>
             <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
-              {modalTextConfig.instructions}
+              {displayState.modalConfig.instructions}
             </Text>
             {/* @ts-ignore */}
             <FormTextField
@@ -404,12 +398,12 @@ export default function NameDetails({
               marginBottom={2}
               className="name-details__display-name"
             >
-              {modalTextConfig.label}
+              {displayState.modalConfig.label}
               <FormComboField
                 hideDropdownIfNoOptions
                 value={name}
                 options={proposedNameOptions}
-                placeholder={modalTextConfig.placeholder}
+                placeholder={displayState.modalConfig.placeholder}
                 onChange={handleNameChange}
                 onOptionClick={handleProposedNameClick}
               />
@@ -427,14 +421,14 @@ export default function NameDetails({
             >
               {t('save')}
             </Button>
-            {modalTextConfig.footerText && (
+            {displayState.modalConfig.footerText && (
               <Text
                 marginTop={2}
                 textAlign={TextAlign.Center}
                 color={TextColor.textMuted}
                 className="name-details__footer-text"
               >
-                {modalTextConfig.footerText}
+                {displayState.modalConfig.footerText}
               </Text>
             )}
           </ModalFooter>

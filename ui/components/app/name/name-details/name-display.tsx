@@ -3,8 +3,7 @@ import { NameType } from '@metamask/name-controller';
 import Identicon from '../../../ui/identicon';
 import { Icon, IconName, IconSize } from '../../../component-library';
 import { IconColor } from '../../../../helpers/constants/design-system';
-import { useTrustSignalDisplay } from '../../../../hooks/useTrustSignalDisplay';
-import { TrustSignalState } from '../../../../hooks/useTrustSignals';
+import { useNameDisplayState } from '../../../../hooks/useNameDisplayState';
 import ShortenedName from './shortened-name';
 import FormattedName from './formatted-value';
 
@@ -35,15 +34,7 @@ const NameDisplay = memo(
     handleClick,
     showTrustSignals = false,
   }: NameDisplayProps) => {
-    const {
-      trustState,
-      displayName,
-      hasPetname,
-      hasRecognizedName,
-      iconType,
-      iconName,
-      image,
-    } = useTrustSignalDisplay({
+    const { displayState, image } = useNameDisplayState({
       value,
       type,
       variation,
@@ -51,7 +42,7 @@ const NameDisplay = memo(
       showTrustSignals,
     });
 
-    // Component decides CSS based on state
+    // Build CSS classes from state
     const getClassNames = () => {
       const classes = ['name'];
 
@@ -59,79 +50,49 @@ const NameDisplay = memo(
         classes.push('name__clickable');
       }
 
-      // Name status classes
-      if (hasPetname) {
-        classes.push('name__saved');
-      } else if (hasRecognizedName) {
-        classes.push('name__recognized_unsaved');
-      } else {
-        classes.push('name__missing');
-      }
-
-      // Trust signal classes (only when showing trust signals and no petname)
-      if (showTrustSignals && trustState && !hasPetname) {
-        // eslint-disable-next-line default-case
-        switch (trustState) {
-          case TrustSignalState.Verified:
-            classes.push('name__verified');
-            break;
-          case TrustSignalState.Warning:
-            classes.push('name__warning');
-            break;
-          case TrustSignalState.Unknown:
-            classes.push('name__unknown');
-            break;
-        }
-      }
-
-      // Malicious always applies
-      if (showTrustSignals && trustState === TrustSignalState.Malicious) {
-        classes.push('name__malicious');
-      }
+      // Add all state-specific classes
+      classes.push(...displayState.cssClasses);
 
       return classes;
     };
 
-    // Component decides icon color based on state
+    // Map icon color strings to IconColor enum
     const getIconColor = () => {
-      if (iconType !== 'trust-signal' || !trustState) {
+      if (!displayState.iconColor) {
         return undefined;
       }
 
-      switch (trustState) {
-        case TrustSignalState.Verified:
-          return IconColor.infoDefault;
-        case TrustSignalState.Warning:
-          return IconColor.warningDefault;
-        case TrustSignalState.Malicious:
-          return IconColor.errorDefault;
-        default:
-          return undefined;
-      }
+      const colorMap: Record<string, IconColor> = {
+        'info-default': IconColor.infoDefault,
+        'warning-default': IconColor.warningDefault,
+        'error-default': IconColor.errorDefault,
+      };
+
+      return colorMap[displayState.iconColor];
     };
 
     return (
       <div className={getClassNames().join(' ')} onClick={handleClick}>
-        {iconType === 'identicon' && (
+        {displayState.iconType === 'identicon' && (
           <Identicon address={value} diameter={16} image={image} />
         )}
-        {iconType === 'trust-signal' && iconName && (
+        {displayState.iconType === 'trust-signal' && displayState.iconName && (
           <Icon
-            name={iconName}
+            name={displayState.iconName}
             size={IconSize.Md}
             color={getIconColor()}
             className="name__trust-signal-icon"
           />
         )}
-        {iconType === 'question' && (
+        {displayState.iconType === 'question' && (
           <Icon
             name={IconName.Question}
             size={IconSize.Md}
             className="name__icon"
           />
         )}
-        {displayName ? (
-          <ShortenedName name={displayName} />
+        {displayState.displayName ? (
+          <ShortenedName name={displayState.displayName} />
         ) : (
           <FormattedName value={value} type={type} />
         )}

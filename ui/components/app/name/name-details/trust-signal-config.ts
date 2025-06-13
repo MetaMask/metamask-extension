@@ -56,6 +56,12 @@ export type ModalTextConfig = {
 
 /**
  * Hook to get modal text configuration based on trust signals and saved state
+ *
+ * @param trustSignalState - The current trust signal state
+ * @param hasSavedPetname - Whether the user has saved a petname
+ * @param isRecognizedUnsaved - Whether the name is recognized but not saved
+ * @param showTrustSignals - Whether to show trust signals
+ * @returns Modal text configuration
  */
 export function useModalTextConfig(
   trustSignalState: TrustSignalState | null,
@@ -106,12 +112,18 @@ export function useModalTextConfig(
 
 /**
  * Determines the initial name value based on saved petname and trust signals
+ *
+ * @param savedPetname - The saved petname if any
+ * @param _trustSignalState - The trust signal state (unused)
+ * @param _trustSignalLabel - The trust signal label (unused)
+ * @param _showTrustSignals - Whether to show trust signals (unused)
+ * @returns The initial name value
  */
 export function getInitialNameValue(
   savedPetname: string | null,
-  trustSignalState: TrustSignalState | null,
-  trustSignalLabel: string | undefined,
-  showTrustSignals: boolean,
+  _trustSignalState: TrustSignalState | null,
+  _trustSignalLabel: string | undefined,
+  _showTrustSignals: boolean,
 ): string {
   // Saved petname takes priority
   if (savedPetname) {
