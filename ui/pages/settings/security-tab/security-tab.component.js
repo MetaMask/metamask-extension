@@ -490,7 +490,7 @@ export default class SecurityTab extends PureComponent {
                 href={ZENDESK_URLS.SOLANA_ACCOUNTS}
                 target="_blank"
                 rel="noopener noreferrer"
-                key="solana-accounts-link"
+                key="cyn-consensys-privacy-link-solana"
               >
                 {t('chooseYourNetworkDescriptionCallToAction')}
               </a>,

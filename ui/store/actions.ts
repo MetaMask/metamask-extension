@@ -6507,6 +6507,62 @@ export function syncInternalAccountsWithUserStorage(): ThunkAction<
 }
 
 /**
+ * "Locks" account syncing by setting the necessary flags in UserStorageController.
+ * This is used to temporarily prevent account syncing from listening to accounts being changed, and the downward sync to happen.
+ *
+ * @returns
+ */
+export function lockAccountSyncing(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground(
+        'setIsAccountSyncingReadyToBeDispatched',
+        [false],
+      );
+      await submitRequestToBackground('setHasAccountSyncingSyncedAtLeastOnce', [
+        false,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * "Unlocks" account syncing by setting the necessary flags in UserStorageController.
+ * This is used to resume account syncing after it has been locked.
+ * This will trigger a downward sync if this is called after a lockAccountSyncing call.
+ *
+ * @returns
+ */
+export function unlockAccountSyncing(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground('setHasAccountSyncingSyncedAtLeastOnce', [
+        true,
+      ]);
+      return await submitRequestToBackground(
+        'setIsAccountSyncingReadyToBeDispatched',
+        [true],
+      );
+    } catch (error) {
+      return getErrorMessage(error);
+    }
+  };
+}
+
+/**
  * Delete all of current user's accounts data from user storage.
  *
  * This function sends a request to the background script to sync accounts data and update the state accordingly.

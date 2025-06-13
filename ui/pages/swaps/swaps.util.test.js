@@ -1,4 +1,5 @@
 import nock from 'nock';
+import { ChainId } from '@metamask/bridge-controller';
 import { MOCKS } from '../../../test/jest';
 import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
@@ -18,6 +19,7 @@ import {
   LINEA,
   BASE,
 } from '../../../shared/constants/swaps';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
   fetchTokens,
   fetchAggregatorMetadata,
@@ -121,6 +123,14 @@ describe('Swaps Util', () => {
     it('should fetch top assets on prod', async () => {
       const result = await fetchTopAssetsList(CHAIN_IDS.MAINNET);
       expect(result).toStrictEqual(TOP_ASSETS);
+    });
+
+    it('should not fetch top assets for solana', async () => {
+      expect(await fetchTopAssetsList(MultichainNetworks.SOLANA)).toStrictEqual(
+        [],
+      );
+      expect(await fetchTopAssetsList(ChainId.SOLANA)).toStrictEqual([]);
+      expect(await fetchTopAssetsList('0x416EDEF1601BE')).toStrictEqual([]);
     });
   });
 
