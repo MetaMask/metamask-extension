@@ -37,10 +37,7 @@ export type NameProps = {
   variation: string;
 
   /**
-   * Whether to show trust signals (verified, warning, malicious icons).
-   * Should only be true for "Interacting with" scenarios:
-   * - Transaction 'to' addresses
-   * - Signature 'verifyingContract' fields
+   * Whether to show trust signals (verified, warning, malicious, unknown icons).
    */
   showTrustSignals?: boolean;
 };
