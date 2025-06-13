@@ -118,7 +118,9 @@ export const CustomNetworks = React.memo(() => {
           <Text
             variant={TextVariant.bodyMdMedium}
             color={TextColor.textAlternative}
-            padding={4}
+            paddingLeft={4}
+            paddingRight={4}
+            paddingTop={4}
           >
             {t('customNetworks')}
           </Text>
@@ -152,7 +154,6 @@ export const CustomNetworks = React.memo(() => {
           color={TextColor.textAlternative}
           paddingLeft={4}
           paddingRight={4}
-          paddingTop={4}
         >
           {t('testnets')}
         </Text>
