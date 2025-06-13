@@ -3174,10 +3174,6 @@
     "message": "If you know this address, give it a nickname to recognize it in the future.",
     "description": "Instruction text in name component modal when address is unknown."
   },
-  "nameInstructionsVerified": {
-    "message": "This address has been verified. You can give it a nickname to recognize it in the future.",
-    "description": "Instruction text in name component modal when address is verified."
-  },
   "nameInstructionsWarning": {
     "message": "This has been identified as suspicious. If you trust this author, set a personal display name to identify it going forward.",
     "description": "Instruction text in name component modal when address has warning signals."

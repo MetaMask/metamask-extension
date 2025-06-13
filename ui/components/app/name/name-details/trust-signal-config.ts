@@ -3,7 +3,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export type TrustSignalConfig = {
   titleKey: string;
-  instructionsKey: string;
+  instructionsKey?: string;
   labelKey?: string;
   placeholderKey?: string;
   footerTextKey?: string;
@@ -24,7 +24,6 @@ export const TRUST_SIGNAL_CONFIG: Record<TrustSignalState, TrustSignalConfig> =
     },
     [TrustSignalState.Verified]: {
       titleKey: 'nameModalTitleVerified',
-      instructionsKey: 'nameInstructionsVerified',
     },
     [TrustSignalState.Unknown]: {
       titleKey: 'nameModalTitleNew',
