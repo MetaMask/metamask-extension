@@ -491,4 +491,61 @@ describe('MetaMask onboarding', function () {
       },
     );
   });
+
+  it('Change password functionality for wallet created by social login flow', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) => {
+          // using this to mock the OAuth Service (Web Authentication flow + Auth server)
+          const mockSeedlessOnboardingUtils = new MockSeedlessOnboardingUtils();
+          return mockSeedlessOnboardingUtils.setup(server);
+        },
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await createNewWalletWithSocialLoginOnboardingFlow({
+          driver,
+        });
+
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
+        await onboardingCompletePage.completeOnboarding();
+
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openSettingsPage();
+
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.check_pageIsLoaded();
+        await settingsPage.goToPrivacySettings();
+
+        const privacySettingsPage = new PrivacySettings(driver);
+        await privacySettingsPage.check_pageIsLoaded();
+        await privacySettingsPage.openChangePassword();
+
+        const changePasswordPage = new ChangePasswordPage(driver);
+        await changePasswordPage.check_pageIsLoaded();
+        await changePasswordPage.confirmCurrentPassword(WALLET_PASSWORD);
+
+        await changePasswordPage.changePassword(NEW_WALLET_PASSWORD);
+        // await changePasswordPage.check_passwordChangedWarning();
+        // await changePasswordPage.confirmChangePasswordWarning();
+
+        // await privacySettingsPage.check_passwordChangeSuccessToastIsDisplayed();
+
+        await headerNavbar.lockMetaMask();
+        await unlockWallet(driver, {
+          navigate: true,
+          waitLoginSuccess: true,
+          password: NEW_WALLET_PASSWORD,
+        });
+        await homePage.check_pageIsLoaded();
+        await homePage.check_expectedBalanceIsDisplayed('0');
+      },
+    );
+  });
 });
