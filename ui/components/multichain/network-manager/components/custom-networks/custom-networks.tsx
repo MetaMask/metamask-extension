@@ -160,7 +160,9 @@ export const CustomNetworks = React.memo(() => {
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
-        marginTop={10}
+        paddingTop={4}
+        paddingLeft={4}
+        paddingRight={4}
       >
         <Button
           variant={ButtonVariant.Secondary}
