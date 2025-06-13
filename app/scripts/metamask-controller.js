@@ -173,6 +173,7 @@ import {
   BridgeStatusAction,
 } from '@metamask/bridge-status-controller';
 
+import { ErrorReportingService } from '@metamask/error-reporting-service';
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -561,8 +562,24 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
+    const errorReportingServiceMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'ErrorReportingService',
+        allowedActions: [],
+        allowedEvents: [],
+      });
+    // Initializing the ErrorReportingService populates the
+    // ErrorReportingServiceMessenger.
+    // eslint-disable-next-line no-new
+    new ErrorReportingService({
+      messenger: errorReportingServiceMessenger,
+      captureException,
+    });
+
     const networkControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NetworkController',
+      allowedEvents: [],
+      allowedActions: ['ErrorReportingService:captureException'],
     });
 
     let initialNetworkControllerState = initState.NetworkController;
@@ -658,7 +675,10 @@ export default class MetamaskController extends EventEmitter {
 
     this.networkController = new NetworkController({
       messenger: networkControllerMessenger,
-      state: initialNetworkControllerState,
+      state: {
+        ...initialNetworkControllerState,
+        selectedNetworkClientId: 'adsflasdfasdf',
+      },
       infuraProjectId: opts.infuraProjectId,
       getBlockTrackerOptions: () => {
         return process.env.IN_TEST
@@ -704,6 +724,10 @@ export default class MetamaskController extends EventEmitter {
       },
       additionalDefaultNetworks,
     });
+    console.log(
+      'selectedNetworkClientId',
+      this.networkController.state.selectedNetworkClientId,
+    );
     networkControllerMessenger.subscribe(
       'NetworkController:rpcEndpointUnavailable',
       async ({ chainId, endpointUrl, error }) => {
