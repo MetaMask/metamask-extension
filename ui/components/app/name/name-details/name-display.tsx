@@ -118,12 +118,8 @@ const NameDisplay = memo(
         {(() => {
           // Trust signals logic - applies to both saved and unsaved addresses
           if (shouldShowTrustSignals && trustSignals.iconName) {
-            // For Warning and Unknown states with pet name saved, use Identicon
-            if (
-              hasPetname &&
-              (trustSignals.state === TrustSignalState.Warning ||
-                trustSignals.state === TrustSignalState.Unknown)
-            ) {
+            // For Warning and Unknown states (with or without pet name), use Identicon
+            if (trustSignals.state === TrustSignalState.Warning) {
               return <Identicon address={value} diameter={16} image={image} />;
             }
             // For all other states, show trust signal icon
