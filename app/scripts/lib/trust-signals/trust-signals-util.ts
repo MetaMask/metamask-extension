@@ -3,12 +3,21 @@ import { JsonRpcRequest } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { PreferencesController } from '../../controllers/preferences-controller';
 import { SupportedEVMChain } from './types';
 
 // TODO: Remove when we want this enabled in production.
 export function isProdEnabled() {
   const isEnabled = process.env.TRUST_SIGNALS_PROD_ENABLED;
   return isEnabled?.toString() === 'true';
+}
+
+// isSecurityAlertsEnabledByUser is a function that checks if the security alerts are enabled in the preferences controller.
+export function isSecurityAlertsEnabledByUser(
+  preferencesController: PreferencesController,
+) {
+  const { securityAlertsEnabled } = preferencesController.state;
+  return securityAlertsEnabled;
 }
 
 export function isEthSendTransaction(req: JsonRpcRequest): boolean {
