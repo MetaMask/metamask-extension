@@ -10,16 +10,16 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
 import { completeNewWalletFlowContactSyncing } from '../flows';
-import { arrangeContactSyncingTestUtils } from './helpers';
+import { arrangeContactSyncingTestUtils, TestContext } from './helpers';
 import {
   MOCK_CONTACT_ADDRESSES,
 } from './mock-data';
 import { expect } from '@playwright/test';
 
-describe('Contact syncing - New User', function (this: any) {
+describe('Contact syncing - New User', function (this: TestContext) {
   this.timeout(120000); // Contact syncing tests can be long
 
-  it('syncs contacts after new wallet creation', async function (this: any) {
+  it('syncs contacts after new wallet creation', async function (this: TestContext) {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const testContact = {
@@ -98,7 +98,7 @@ describe('Contact syncing - New User', function (this: any) {
     );
   });
 
-  it('handles empty remote storage during initialization', async function (this: any) {
+  it('handles empty remote storage during initialization', async function (this: TestContext) {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     await withFixtures(

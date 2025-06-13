@@ -6,7 +6,7 @@ import { mockIdentityServices } from '../mocks';
 import { IDENTITY_TEAM_SEED_PHRASE, IDENTITY_TEAM_STORAGE_KEY } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import { completeOnboardFlowContactSyncing, getSRP } from '../flows';
-import { arrangeContactSyncingTestUtils } from './helpers';
+import { arrangeContactSyncingTestUtils, TestContext } from './helpers';
 import { MOCK_CONTACTS, createContactKey } from './mock-data';
 import { createEncryptedResponse } from '../../../helpers/identity/user-storage/generateEncryptedData';
 import { expect } from '@playwright/test';
@@ -14,7 +14,7 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
 
-describe('Contact Syncing - Existing User', function (this: any) {
+describe('Contact Syncing - Existing User', function (this: TestContext) {
   this.timeout(300000); // Extended timeout for comprehensive test
 
   // Test network chain ID - used throughout the test
@@ -95,7 +95,7 @@ describe('Contact Syncing - Existing User', function (this: any) {
   };
 
   describe('from inside MetaMask', function () {
-    it('performs complete lifecycle: remote→local contact sync, add, modify, delete, verify sync on other device', async function (this: any) {
+    it('performs complete lifecycle: remote→local contact sync, add, modify, delete, verify sync on other device', async function (this: TestContext) {
       const {
         initialRemoteContacts,
         newContact,

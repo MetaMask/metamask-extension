@@ -13,13 +13,13 @@ import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
 import { completeNewWalletFlowContactSyncing } from '../flows';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
-import { arrangeContactSyncingTestUtils } from './helpers';
+import { arrangeContactSyncingTestUtils, TestContext } from './helpers';
 
-describe('Contact Syncing - Backup and Sync Settings', function (this: any) {
+describe('Contact Syncing - Backup and Sync Settings', function (this: TestContext) {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
 
   describe('from inside MetaMask', function () {
-    it('does not sync contact changes when contact syncing is turned off', async function (this: any) {
+    it('does not sync contact changes when contact syncing is turned off', async function (this: TestContext) {
       const userStorageMockttpController = new UserStorageMockttpController();
 
       await withFixtures(
@@ -133,7 +133,7 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: any) {
           console.log('Final contacts after new instance:', finalContacts.length);
 
           // Verify we don't have the contact we added when contact sync was disabled
-          const hasNewContact = finalContacts.some((contact: any) =>
+          const hasNewContact = finalContacts.some((contact: { address: string }) =>
             contact.address === '0x9999999999999999999999999999999999999999'
           );
           expect(hasNewContact).toBe(false);
@@ -143,7 +143,7 @@ describe('Contact Syncing - Backup and Sync Settings', function (this: any) {
       );
     });
 
-    it('enables contact syncing when backup and sync is turned on', async function (this: any) {
+    it('enables contact syncing when backup and sync is turned on', async function (this: TestContext) {
       const userStorageMockttpController = new UserStorageMockttpController();
 
       await withFixtures(

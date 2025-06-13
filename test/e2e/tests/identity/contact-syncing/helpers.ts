@@ -5,6 +5,13 @@ import {
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 
+export interface TestContext {
+  test?: {
+    fullTitle: () => string;
+  };
+  timeout: (ms: number) => void;
+}
+
 export type UserStorageContact = {
   v: string; // version
   a: string; // address

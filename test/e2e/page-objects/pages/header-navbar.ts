@@ -110,7 +110,11 @@ class HeaderNavbar {
   async openSettingsPage(): Promise<void> {
     console.log('Open settings page');
     await this.openThreeDotMenu();
-    await this.driver.clickElement(this.settingsButton);
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      await this.driver.clickElementUsingMouseMove(this.settingsButton);
+    } else {
+      await this.driver.clickElement(this.settingsButton);
+    }
   }
 
   async clickSwitchNetworkDropDown(): Promise<void> {
