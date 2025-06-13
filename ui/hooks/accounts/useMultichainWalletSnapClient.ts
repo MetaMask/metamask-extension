@@ -1,5 +1,5 @@
 import { SnapKeyringInternalOptions } from '@metamask/eth-snap-keyring';
-import { KeyringAccount } from '@metamask/keyring-api';
+import { BtcAccountType, KeyringAccount } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { Sender } from '@metamask/keyring-snap-client';
 import { SnapId } from '@metamask/snaps-sdk';
@@ -99,7 +99,7 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
   ): Promise<KeyringAccount> {
     const snapOptions =
       this.#snapId === BITCOIN_WALLET_SNAP_ID
-        ? { ...options, synchronize: true }
+        ? { ...options, synchronize: true, addressType: BtcAccountType.P2tr }
         : options;
 
     // This will trigger the Snap account creation flow (+ account renaming)
