@@ -1,18 +1,16 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
+import testData from '../../../../.storybook/test-data';
 
 import { NetworkManager } from '.';
 
-const store = configureStore({});
+const store = configureStore(testData);
 
 export default {
   title: 'Components/Multichain/NetworkManager',
   component: NetworkManager,
+  decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
-export const DefaultStory = (): JSX.Element => (
-  <Provider store={store}>
-    <NetworkManager />
-  </Provider>
-);
+export const DefaultStory = (): JSX.Element => <NetworkManager />;
