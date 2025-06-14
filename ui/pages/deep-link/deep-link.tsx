@@ -26,7 +26,6 @@ import {
 } from '../../helpers/constants/design-system';
 import { Text } from '../../components/component-library/text/text';
 import { Box } from '../../components/component-library/box/box';
-import { BaseUrl } from '../../../shared/constants/urls';
 import { Container } from '../../components/component-library/container/container';
 import { ContainerMaxWidth, Label } from '../../components/component-library';
 import { Checkbox } from '../../components/component-library/checkbox/checkbox';
@@ -37,7 +36,7 @@ import {
   MetaMetricsContext,
   type UITrackEventMethod,
 } from '../../contexts/metametrics';
-import { trackDismissed, trackView } from './metrics';
+import { trackView } from './metrics';
 
 type TranslateFunction = (key: string, substitutions?: string[]) => string;
 
