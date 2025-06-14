@@ -3552,7 +3552,7 @@ export default class MetamaskController extends EventEmitter {
       startOAuthLogin: this.startOAuthLogin.bind(this),
       resetOAuthLoginState: this.resetOAuthLoginState.bind(this),
       createSeedPhraseBackup: this.createSeedPhraseBackup.bind(this),
-      fetchAllSeedPhrases: this.fetchAllSeedPhrases.bind(this),
+      fetchAllSecretData: this.fetchAllSecretData.bind(this),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
@@ -4678,7 +4678,6 @@ export default class MetamaskController extends EventEmitter {
       const oAuthLoginResult = await this.oauthService.startOAuthLogin(
         provider,
       );
-      console.log('oAuthLoginResult', oAuthLoginResult);
 
       const { isNewUser } =
         await this.seedlessOnboardingController.authenticate(oAuthLoginResult);
@@ -4741,13 +4740,14 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} password - The user's password.
    * @returns {Promise<Buffer[]>} The seed phrase.
    */
-  async fetchAllSeedPhrases(password) {
+  async fetchAllSecretData(password) {
     try {
       // fetch all seed phrases
       // seedPhrases are sorted by creation date, the latest seed phrase is the first one in the array
-      const allSeedPhrases =
-        await this.seedlessOnboardingController.fetchAllSeedPhrases(password);
+      const secretData =
+        await this.seedlessOnboardingController.fetchAllSecretData(password);
 
+      const allSeedPhrases = secretData.seedPhrases;
       if (allSeedPhrases.length === 0) {
         return null;
       }
