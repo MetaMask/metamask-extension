@@ -1,9 +1,10 @@
 import React from 'react';
+
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import configureStore from '../../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
-import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmations/gas';
 import { GasFeeTokenIcon } from './gas-fee-token-icon';
 
