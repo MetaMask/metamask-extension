@@ -56,13 +56,6 @@ export function BatchSimulationDetails() {
     [id, nestedTransactionIndexToEdit],
   );
 
-  if (
-    transactionMeta?.type === TransactionType.revokeDelegation ||
-    isUpgradeOnly
-  ) {
-    return null;
-  }
-
   const approveRows: StaticRow[] = useMemo(() => {
     const finalBalanceChanges = approveBalanceChanges?.map((change) => ({
       ...change,
@@ -78,7 +71,14 @@ export function BatchSimulationDetails() {
         balanceChanges: finalBalanceChanges ?? [],
       },
     ];
-  }, [approveBalanceChanges, handleEdit]);
+  }, [approveBalanceChanges, handleEdit, t]);
+
+  if (
+    transactionMeta?.type === TransactionType.revokeDelegation ||
+    isUpgradeOnly
+  ) {
+    return null;
+  }
 
   const nestedTransactionToEdit =
     nestedTransactionIndexToEdit === undefined
