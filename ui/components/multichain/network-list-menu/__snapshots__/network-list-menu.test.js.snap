@@ -565,6 +565,44 @@ exports[`NetworkListMenu renders properly 1`] = `
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+                    data-testid="popular-network-0x531"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <div
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                      >
+                        <img
+                          alt="Sei Network logo"
+                          class="mm-avatar-network__network-image"
+                          src="./images/sei.svg"
+                        />
+                      </div>
+                      <div
+                        class="mm-box mm-box--margin-left-4"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                        >
+                          Sei Network
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <button
+                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                        data-testid="test-add-button"
+                        type="link"
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
                     data-testid="popular-network-0x144"
                   >
                     <div
@@ -1517,6 +1555,44 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                           class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
                         >
                           Polygon Mainnet
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <button
+                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                        data-testid="test-add-button"
+                        type="link"
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+                    data-testid="popular-network-0x531"
+                  >
+                    <div
+                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                    >
+                      <div
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                      >
+                        <img
+                          alt="Sei Network logo"
+                          class="mm-avatar-network__network-image"
+                          src="./images/sei.svg"
+                        />
+                      </div>
+                      <div
+                        class="mm-box mm-box--margin-left-4"
+                      >
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+                        >
+                          Sei Network
                         </p>
                       </div>
                     </div>

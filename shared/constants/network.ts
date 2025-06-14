@@ -331,6 +331,7 @@ export const LENS_DISPLAY_NAME = 'Lens';
 export const PLUME_DISPLAY_NAME = 'Plume';
 export const MATCHAIN_DISPLAY_NAME = 'Matchain';
 export const FLOW_DISPLAY_NAME = 'Flow EVM Mainnet';
+export const SEI_DISPLAY_NAME = 'Sei Network';
 export const KATANA_DISPLAY_NAME = 'Katana';
 export const MONAD_TESTNET_DISPLAY_NAME = 'Monad Testnet';
 export const SOPHON_DISPLAY_NAME = 'Sophon';
@@ -395,6 +396,7 @@ export const CURRENCY_SYMBOLS = {
   LENS: 'GHO',
   PLUME: 'PLUME',
   FLOW: 'FLOW',
+  SEI: 'SEI',
   KATANA: 'ETH',
   SOPHON: 'SOPH',
 } as const;
@@ -729,6 +731,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.SOPHON]: SOPHON_DISPLAY_NAME,
   [CHAIN_IDS.SOPHON_TESTNET]: SOPHON_TESTNET_DISPLAY_NAME,
+  [CHAIN_IDS.SEI]: SEI_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -870,6 +873,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MONAD_TESTNET],
   [CHAIN_IDS.SOPHON]: CURRENCY_SYMBOLS.SOPHON,
   [CHAIN_IDS.SOPHON_TESTNET]: CURRENCY_SYMBOLS.SOPHON,
+  [CHAIN_IDS.SEI]: CURRENCY_SYMBOLS.SEI,
 } as const;
 
 /**
@@ -1334,6 +1338,20 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     defaultBlockExplorerUrlIndex: 0,
   },
   {
+    chainId: CHAIN_IDS.SEI,
+    name: SEI_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.SEI,
+    rpcEndpoints: [
+      {
+        url: `https://sei-mainnet.infura.io/v3/${infuraProjectId}`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://seitrace.com/'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
     chainId: CHAIN_IDS.BASE,
     name: BASE_DISPLAY_NAME,
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
@@ -1405,6 +1423,8 @@ export const allowedInfuraHosts = [
   'opbnb-mainnet.infura.io',
   // Scroll
   'scroll-mainnet.infura.io',
+  // Sei
+  'sei-mainnet.infura.io',
 ];
 
 /**
