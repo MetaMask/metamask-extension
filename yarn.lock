@@ -6090,9 +6090,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^22.0.2":
-  version: 22.0.2
-  resolution: "@metamask/keyring-controller@npm:22.0.2"
+"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@22.0.2-preview-a272c5e1":
+  version: 22.0.2-preview-a272c5e1
+  resolution: "@metamask-previews/keyring-controller@npm:22.0.2-preview-a272c5e1"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.14.1"
@@ -6109,7 +6109,7 @@ __metadata:
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
     ulid: "npm:^2.3.0"
-  checksum: 10/917c61b3322b4ff4d2236f64b6f4e4e9aab26dd19644fc5f130abb55fbdac3f34e693ac81ed196049291953d5c66bbab996ebf24d4a04d9d666f128ed1085a08
+  checksum: 10/c510b93e88d08db67abfc81c9a47445e555a1e91a2d4e167a6ef8fc4c75b57f73ac33b590bd606d9ad45a25c583fab670a533ae60718e9b7f34b7bceb1fb9a42
   languageName: node
   linkType: hard
 
@@ -30358,7 +30358,7 @@ __metadata:
     "@metamask/kernel-shims": "npm:^0.2.0"
     "@metamask/kernel-utils": "npm:^0.1.0"
     "@metamask/keyring-api": "npm:^18.0.0"
-    "@metamask/keyring-controller": "npm:^22.0.2"
+    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@22.0.2-preview-a272c5e1"
     "@metamask/keyring-internal-api": "npm:^6.2.0"
     "@metamask/keyring-internal-snap-client": "npm:^4.1.0"
     "@metamask/keyring-snap-client": "npm:^5.0.0"
