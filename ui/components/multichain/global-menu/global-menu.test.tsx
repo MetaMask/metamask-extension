@@ -16,6 +16,7 @@ const render = (metamaskStateChanges = {}) => {
       anchorElement={document.body}
       isOpen
       closeMenu={() => undefined}
+      setIsSupportDataConsentModalOpen={() => undefined}
     />,
     store,
   );
@@ -36,17 +37,6 @@ describe('Global Menu', () => {
     );
     await waitFor(() => {
       expect(mockLockMetaMask).toHaveBeenCalled();
-    });
-  });
-
-  it('opens the support site when item is clicked', async () => {
-    // @ts-expect-error mocking platform
-    global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
-
-    const { getByTestId } = render();
-    fireEvent.click(getByTestId('global-menu-support'));
-    await waitFor(() => {
-      expect(global.platform.openTab).toHaveBeenCalled();
     });
   });
 

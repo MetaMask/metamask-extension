@@ -73,12 +73,16 @@ type GlobalMenuProps = {
   closeMenu: () => void;
   anchorElement: HTMLElement | null;
   isOpen: boolean;
+  setIsSupportDataConsentModalOpen: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
 };
 
 export const GlobalMenu = ({
   closeMenu,
   anchorElement,
   isOpen,
+  setIsSupportDataConsentModalOpen,
 }: GlobalMenuProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -303,7 +307,7 @@ export const GlobalMenu = ({
       <MenuItem
         iconName={IconName.MessageQuestion}
         onClick={() => {
-          global.platform.openTab({ url: supportLink });
+          setIsSupportDataConsentModalOpen(true);
           trackEvent(
             {
               category: MetaMetricsEventCategory.Home,
