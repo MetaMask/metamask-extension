@@ -711,9 +711,6 @@
   "unlock": {
     "message": "فتح القفل"
   },
-  "unlockMessage": {
-    "message": "شبكة الويب اللامركزية بانتظارك"
-  },
   "urlErrorMsg": {
     "message": "تتطلب الروابط بادئة HTTP/HTTPS مناسبة."
   },
