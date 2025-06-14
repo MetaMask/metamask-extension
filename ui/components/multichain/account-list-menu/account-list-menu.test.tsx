@@ -34,6 +34,7 @@ const mockNextAccountName = jest.fn().mockReturnValue('Test Account 2');
 const mockBitcoinClientCreateAccount = jest.fn();
 const mockGenerateNewHdKeyring = jest.fn();
 const mockDetectNfts = jest.fn();
+const mockGetNetworksWithTransactionActivityByAccounts = jest.fn();
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
@@ -46,6 +47,8 @@ jest.mock('../../../store/actions', () => {
     ...jest.requireActual('../../../store/actions'),
     generateNewHdKeyring: () => mockGenerateNewHdKeyring(),
     detectNfts: () => mockDetectNfts,
+    getNetworksWithTransactionActivityByAccounts: () =>
+      mockGetNetworksWithTransactionActivityByAccounts(),
   };
 });
 
@@ -789,5 +792,33 @@ describe('AccountListMenu', () => {
     actionButton.click();
 
     expect(getByText('Manage Institutional Wallets')).toBeInTheDocument();
+  });
+
+  describe('getNetworksWithTransactionActivityByAccounts', () => {
+    it('should not dispatch getNetworksWithTransactionActivityByAccounts when accounts exist and network activity data is empty object', () => {
+      render({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          networksWithTransactionActivity: undefined,
+        },
+      });
+      expect(
+        mockGetNetworksWithTransactionActivityByAccounts,
+      ).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  it('should not dispatch getNetworksWithTransactionActivityByAccounts when accounts exist and network activity data is empty object', () => {
+    render({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        networksWithTransactionActivity: undefined,
+      },
+    });
+    expect(
+      mockGetNetworksWithTransactionActivityByAccounts,
+    ).toHaveBeenCalledTimes(0);
   });
 });

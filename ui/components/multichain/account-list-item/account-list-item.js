@@ -367,7 +367,7 @@ const AccountListItem = ({
             </Text>
           </Box>
           <Box className="network-indicator">
-            <AccountNetworkIndicator scopes={account.scopes} />
+            <AccountNetworkIndicator account={account} />
           </Box>
         </Box>
         {accountLabels.length > 0 ? (

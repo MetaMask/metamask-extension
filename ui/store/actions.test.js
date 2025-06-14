@@ -512,6 +512,60 @@ describe('Actions', () => {
       ).rejects.toThrow('Keyring not found');
       expect(addNewAccount.callCount).toStrictEqual(0);
     });
+
+    it('dispatches getNetworksWithTransactionActivityByAccounts if useExternalServices is true', async () => {
+      const store = mockStore({
+        metamask: { ...defaultState.metamask, useExternalServices: true },
+      });
+
+      const addNewAccount = background.addNewAccount.callsFake(
+        (_, _secondUnusedVar, cb) =>
+          cb(null, {
+            addedAccountAddress: '0x123',
+          }),
+      );
+
+      const getNetworksWithTransactionActivityByAccounts = sinon
+        .stub()
+        .returns(() => Promise.resolve());
+      background.getNetworksWithTransactionActivityByAccounts =
+        getNetworksWithTransactionActivityByAccounts;
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.addNewAccount());
+      expect(addNewAccount.callCount).toStrictEqual(1);
+      expect(
+        getNetworksWithTransactionActivityByAccounts.callCount,
+      ).toStrictEqual(1);
+    });
+
+    it('does not dispatch getNetworksWithTransactionActivityByAccounts if useExternalServices is false', async () => {
+      const store = mockStore({
+        metamask: { ...defaultState.metamask, useExternalServices: false },
+      });
+
+      const addNewAccount = background.addNewAccount.callsFake(
+        (_, _secondUnusedVar, cb) =>
+          cb(null, {
+            addedAccountAddress: '0x123',
+          }),
+      );
+
+      const getNetworksWithTransactionActivityByAccounts = sinon
+        .stub()
+        .returns(() => Promise.resolve());
+      background.getNetworksWithTransactionActivityByAccounts =
+        getNetworksWithTransactionActivityByAccounts;
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.addNewAccount());
+      expect(addNewAccount.callCount).toStrictEqual(1);
+      expect(
+        getNetworksWithTransactionActivityByAccounts.callCount,
+      ).toStrictEqual(0);
+    });
   });
 
   describe('#checkHardwareStatus', () => {
