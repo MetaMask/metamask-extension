@@ -244,6 +244,7 @@ jobs:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
       DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      TEST_STX_PRIVATE_KEY: ${{ secrets.TEST_STX_PRIVATE_KEY }}
 
   e2e-firefox:
     needs:
