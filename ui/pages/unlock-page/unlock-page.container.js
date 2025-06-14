@@ -41,7 +41,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     tryUnlockMetamask,
     ...restDispatchProps
   } = dispatchProps;
-  const { history, onSubmit: ownPropsSubmit, ...restOwnProps } = ownProps;
+  const {
+    history,
+    onSubmit: ownPropsSubmit,
+    location,
+    ...restOwnProps
+  } = ownProps;
 
   const onImport = async () => {
     await markPasswordForgotten();
@@ -54,7 +59,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
   const onSubmit = async (password) => {
     await tryUnlockMetamask(password);
-    history.push(DEFAULT_ROUTE);
+    // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
+    const redirectTo = location.state?.from?.pathname || DEFAULT_ROUTE;
+    history.push(redirectTo);
   };
 
   return {
@@ -64,6 +71,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     onRestore: onImport,
     onSubmit: ownPropsSubmit || onSubmit,
     history,
+    location,
   };
 };
 

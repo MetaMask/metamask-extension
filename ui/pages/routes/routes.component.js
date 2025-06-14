@@ -52,6 +52,7 @@ import {
   REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
   IMPORT_SRP_ROUTE,
   DEFI_ROUTE,
+  DEEP_LINK_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -147,6 +148,7 @@ const RemoteModeSetupSwaps = mmLazy(() =>
 const RemoteModeSetupDailyAllowance = mmLazy(() =>
   import('../remote-mode/setup/setup-daily-allowance'),
 );
+const DeepLink = mmLazy(() => import('../deep-link/deep-link'));
 // End Lazy Routes
 
 export default class Routes extends Component {
@@ -295,6 +297,7 @@ export default class Routes extends Component {
           <Route path={ONBOARDING_ROUTE} component={OnboardingFlow} />
           <Route path={LOCK_ROUTE} component={Lock} exact />
           <Initialized path={UNLOCK_ROUTE} component={UnlockPage} exact />
+          <Route path={DEEP_LINK_ROUTE} component={DeepLink} />
           <RestoreVaultComponent
             path={RESTORE_VAULT_ROUTE}
             component={RestoreVaultPage}

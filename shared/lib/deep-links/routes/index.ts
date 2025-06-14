@@ -1,0 +1,32 @@
+import home from './home';
+import swap from './swap';
+import notifications from './notifications';
+
+import type { Route } from './route.type';
+
+export type { Route } from './route.type';
+
+export const routes = new Map<Route['pathname'], Route>();
+
+/**
+ * Adds a route to the routes map.
+ *
+ * @param route - The route to add.
+ */
+function addRoute(route: Route) {
+  if (process.env.DEBUG) {
+    // just making sure all added route `pathname`'s are unique; but only in
+    // DEBUG builds, since it's too late to change the routes in prod.
+    if (routes.has(route.pathname)) {
+      throw new Error(
+        `Route with pathname "${route.pathname}" already exists.`,
+      );
+    }
+  }
+
+  routes.set(route.pathname, route);
+}
+
+addRoute(home);
+addRoute(swap);
+addRoute(notifications);
