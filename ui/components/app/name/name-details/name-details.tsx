@@ -55,7 +55,7 @@ import {
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { useName } from '../../../../hooks/useName';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useNameDisplayState } from '../../../../hooks/useNameDisplayState';
+import { useAddressTrustSignalState } from '../../../../hooks/useTrustSignalState';
 import NameDisplay from './name-display';
 import { usePetnamesMetrics } from './metrics';
 import { getInitialNameValue } from './trust-signal-config';
@@ -224,7 +224,7 @@ export default function NameDetails({
     variation,
   );
 
-  const { displayState, hasPetname, hasRecognizedName } = useNameDisplayState({
+  const { displayState } = useAddressTrustSignalState({
     value,
     type,
     variation,
@@ -240,7 +240,7 @@ export default function NameDetails({
   const dispatch = useDispatch();
   const t = useI18nContext();
 
-  const isRecognizedUnsaved = hasRecognizedName;
+  // const isRecognizedUnsaved = hasRecognizedName;
   const formattedValue = formatValue(value, type);
 
   const { proposedNames, initialSources } = useProposedNames(

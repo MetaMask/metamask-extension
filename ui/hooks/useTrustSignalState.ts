@@ -3,13 +3,32 @@ import { NameType } from '@metamask/name-controller';
 import { IconName } from '../components/component-library';
 import { TrustSignalState, useTrustSignals } from './useTrustSignals';
 import { useDisplayName } from './useDisplayName';
+import { useName } from './useName';
 import {
   useModalTextConfig,
   ModalTextConfig,
 } from '../components/app/name/name-details/trust-signal-config';
 
+// Entity types that can have trust signals
+export type TrustSignalEntity =
+  | {
+      type: 'address';
+      value: string;
+      nameType: NameType;
+      variation: string;
+      preferContractSymbol?: boolean;
+    }
+  | {
+      type: 'url';
+      value: string;
+    }
+  | {
+      type: 'domain';
+      value: string;
+    };
+
 // Define all possible display states
-export enum NameDisplayStateType {
+export enum TrustSignalDisplayStateType {
   Petname = 'petname',
   VerifiedTrust = 'verified-trust',
   WarningTrust = 'warning-trust',
@@ -20,8 +39,8 @@ export enum NameDisplayStateType {
 }
 
 // Base state interface
-interface BaseNameDisplayState {
-  type: NameDisplayStateType;
+interface BaseTrustSignalDisplayState {
+  type: TrustSignalDisplayStateType;
   displayName: string | null;
   iconType: 'identicon' | 'trust-signal' | 'question';
   iconName?: IconName;
@@ -36,48 +55,49 @@ interface BaseNameDisplayState {
     trustLabel?: string;
     trustState: TrustSignalState | null;
     image?: string;
+    entity: TrustSignalEntity;
   };
 }
 
 // Specific state types
-export interface PetnameState extends BaseNameDisplayState {
-  type: NameDisplayStateType.Petname;
+export interface PetnameState extends BaseTrustSignalDisplayState {
+  type: TrustSignalDisplayStateType.Petname;
   iconType: 'identicon';
 }
 
-export interface VerifiedTrustState extends BaseNameDisplayState {
-  type: NameDisplayStateType.VerifiedTrust;
+export interface VerifiedTrustState extends BaseTrustSignalDisplayState {
+  type: TrustSignalDisplayStateType.VerifiedTrust;
   iconType: 'trust-signal';
   iconName: IconName.VerifiedFilled;
 }
 
-export interface WarningTrustState extends BaseNameDisplayState {
-  type: NameDisplayStateType.WarningTrust;
+export interface WarningTrustState extends BaseTrustSignalDisplayState {
+  type: TrustSignalDisplayStateType.WarningTrust;
   iconType: 'identicon';
 }
 
-export interface MaliciousTrustState extends BaseNameDisplayState {
-  type: NameDisplayStateType.MaliciousTrust;
+export interface MaliciousTrustState extends BaseTrustSignalDisplayState {
+  type: TrustSignalDisplayStateType.MaliciousTrust;
   iconType: 'trust-signal';
   iconName: IconName.Danger;
 }
 
-export interface UnknownTrustState extends BaseNameDisplayState {
-  type: NameDisplayStateType.UnknownTrust;
+export interface UnknownTrustState extends BaseTrustSignalDisplayState {
+  type: TrustSignalDisplayStateType.UnknownTrust;
   iconType: 'question';
 }
 
-export interface RecognizedState extends BaseNameDisplayState {
-  type: NameDisplayStateType.Recognized;
+export interface RecognizedState extends BaseTrustSignalDisplayState {
+  type: TrustSignalDisplayStateType.Recognized;
   iconType: 'identicon';
 }
 
-export interface UnknownState extends BaseNameDisplayState {
-  type: NameDisplayStateType.Unknown;
+export interface UnknownState extends BaseTrustSignalDisplayState {
+  type: TrustSignalDisplayStateType.Unknown;
   iconType: 'question';
 }
 
-export type NameDisplayState =
+export type TrustSignalDisplayState =
   | PetnameState
   | VerifiedTrustState
   | WarningTrustState
@@ -95,10 +115,11 @@ interface StateContext {
   showTrustSignals: boolean;
   image?: string;
   modalConfig: ModalTextConfig;
+  entity: TrustSignalEntity;
 }
 
 // State factory function
-function createState(context: StateContext): NameDisplayState {
+function createState(context: StateContext): TrustSignalDisplayState {
   const {
     savedPetname,
     recognizedName,
@@ -107,6 +128,7 @@ function createState(context: StateContext): NameDisplayState {
     showTrustSignals,
     image,
     modalConfig,
+    entity,
   } = context;
 
   const rawData = {
@@ -115,14 +137,15 @@ function createState(context: StateContext): NameDisplayState {
     trustLabel,
     trustState,
     image,
+    entity,
   };
 
   // State 1: Malicious takes precedence - even over petnames
-  // This ensures malicious addresses always show danger indication
+  // This ensures malicious entities always show danger indication
   if (showTrustSignals && trustState === TrustSignalState.Malicious) {
     return {
-      type: NameDisplayStateType.MaliciousTrust,
-      displayName: savedPetname || trustLabel || null, // Show petname if available, otherwise trust label
+      type: TrustSignalDisplayStateType.MaliciousTrust,
+      displayName: savedPetname || trustLabel || null,
       iconType: 'trust-signal',
       iconName: IconName.Danger,
       iconColor: 'error-default',
@@ -137,7 +160,7 @@ function createState(context: StateContext): NameDisplayState {
   // State 2: Petname (non-malicious)
   if (savedPetname) {
     return {
-      type: NameDisplayStateType.Petname,
+      type: TrustSignalDisplayStateType.Petname,
       displayName: savedPetname,
       iconType: 'identicon',
       cssClasses: ['name__saved'],
@@ -151,7 +174,7 @@ function createState(context: StateContext): NameDisplayState {
     switch (trustState) {
       case TrustSignalState.Verified:
         return {
-          type: NameDisplayStateType.VerifiedTrust,
+          type: TrustSignalDisplayStateType.VerifiedTrust,
           displayName: trustLabel || null,
           iconType: 'trust-signal',
           iconName: IconName.VerifiedFilled,
@@ -164,7 +187,7 @@ function createState(context: StateContext): NameDisplayState {
       case TrustSignalState.Warning:
         // Special case: warning shows identicon and recognized name if available
         return {
-          type: NameDisplayStateType.WarningTrust,
+          type: TrustSignalDisplayStateType.WarningTrust,
           displayName: recognizedName,
           iconType: 'identicon',
           cssClasses: recognizedName
@@ -176,7 +199,7 @@ function createState(context: StateContext): NameDisplayState {
 
       case TrustSignalState.Unknown:
         return {
-          type: NameDisplayStateType.UnknownTrust,
+          type: TrustSignalDisplayStateType.UnknownTrust,
           displayName: null,
           iconType: 'question',
           cssClasses: ['name__unknown', 'name__missing'],
@@ -189,7 +212,7 @@ function createState(context: StateContext): NameDisplayState {
   // State 6: Recognized name (no petname, no applicable trust signals)
   if (recognizedName) {
     return {
-      type: NameDisplayStateType.Recognized,
+      type: TrustSignalDisplayStateType.Recognized,
       displayName: recognizedName,
       iconType: 'identicon',
       cssClasses: ['name__recognized_unsaved'],
@@ -200,7 +223,7 @@ function createState(context: StateContext): NameDisplayState {
 
   // State 7: Unknown (default)
   return {
-    type: NameDisplayStateType.Unknown,
+    type: TrustSignalDisplayStateType.Unknown,
     displayName: null,
     iconType: 'question',
     cssClasses: ['name__missing'],
@@ -209,8 +232,144 @@ function createState(context: StateContext): NameDisplayState {
   };
 }
 
+// Entity-specific data fetching
+function useEntityData(
+  entity: TrustSignalEntity,
+  showTrustSignals: boolean,
+): {
+  savedPetname: string | null;
+  recognizedName: string | null;
+  trustState: TrustSignalState | null;
+  trustLabel?: string;
+  image?: string;
+  modalConfig: ModalTextConfig;
+} {
+  // Address-specific logic (current implementation)
+  const addressData =
+    entity.type === 'address'
+      ? useDisplayName({
+          value: entity.value,
+          type: entity.nameType,
+          variation: entity.variation,
+          preferContractSymbol: entity.preferContractSymbol,
+        })
+      : null;
+
+  const {
+    name: addressSavedName,
+    hasPetname,
+    image,
+  } = addressData || {
+    name: null,
+    hasPetname: false,
+    image: undefined,
+  };
+
+  // Trust signals (currently only for addresses, but will expand)
+  const { state: trustState, label: trustLabel } = useTrustSignals(
+    entity.type === 'address' ? entity.value : '',
+  );
+
+  // Determine names based on entity type
+  let savedPetname: string | null = null;
+  let recognizedName: string | null = null;
+
+  switch (entity.type) {
+    case 'address':
+      savedPetname = hasPetname ? addressSavedName : null;
+      recognizedName =
+        !hasPetname && addressSavedName ? addressSavedName : null;
+      break;
+
+    case 'url':
+      // TODO: Implement URL name resolution
+      // For now, URLs don't have saved names
+      break;
+
+    case 'domain':
+      // TODO: Implement domain name resolution
+      // For now, domains might have ENS names
+      break;
+  }
+
+  // Get modal configuration
+  const modalConfig = useModalTextConfig(
+    trustState,
+    Boolean(savedPetname),
+    Boolean(recognizedName),
+    showTrustSignals,
+    entity.type,
+  );
+
+  return {
+    savedPetname,
+    recognizedName,
+    trustState,
+    trustLabel,
+    image,
+    modalConfig,
+  };
+}
+
 // Main hook
-export function useNameDisplayState({
+export function useTrustSignalState(
+  entity: TrustSignalEntity,
+  options: {
+    showTrustSignals: boolean;
+  },
+): {
+  displayState: TrustSignalDisplayState;
+  hasPetname: boolean;
+  hasRecognizedName: boolean;
+  image?: string;
+} {
+  const { showTrustSignals } = options;
+
+  // Fetch entity-specific data
+  const {
+    savedPetname,
+    recognizedName,
+    trustState,
+    trustLabel,
+    image,
+    modalConfig,
+  } = useEntityData(entity, showTrustSignals);
+
+  // Create state
+  const displayState = useMemo(() => {
+    const context: StateContext = {
+      savedPetname,
+      recognizedName,
+      trustState,
+      trustLabel,
+      showTrustSignals,
+      image,
+      modalConfig,
+      entity,
+    };
+
+    return createState(context);
+  }, [
+    savedPetname,
+    recognizedName,
+    trustState,
+    trustLabel,
+    showTrustSignals,
+    image,
+    modalConfig,
+    entity,
+  ]);
+
+  return {
+    displayState,
+    hasPetname: Boolean(savedPetname),
+    hasRecognizedName: Boolean(recognizedName),
+    image,
+  };
+}
+
+// Convenience hook for addresses (backwards compatibility)
+export function useAddressTrustSignalState({
   value,
   type,
   variation,
@@ -223,58 +382,14 @@ export function useNameDisplayState({
   preferContractSymbol?: boolean;
   showTrustSignals: boolean;
 }) {
-  // Fetch data
-  const {
-    name: savedName,
-    hasPetname,
-    image,
-  } = useDisplayName({
-    value,
-    type,
-    variation,
-    preferContractSymbol,
-  });
-
-  const { state: trustState, label: trustLabel } = useTrustSignals(value);
-
-  const savedPetname = hasPetname ? savedName : null;
-  const recognizedName = !hasPetname && savedName ? savedName : null;
-
-  const modalConfig = useModalTextConfig(
-    trustState,
-    hasPetname,
-    Boolean(recognizedName),
-    showTrustSignals,
+  return useTrustSignalState(
+    {
+      type: 'address',
+      value,
+      nameType: type,
+      variation,
+      preferContractSymbol,
+    },
+    { showTrustSignals },
   );
-
-  // Create state
-  const displayState = useMemo(() => {
-    const context: StateContext = {
-      savedPetname,
-      recognizedName,
-      trustState,
-      trustLabel,
-      showTrustSignals,
-      image,
-      modalConfig,
-    };
-
-    return createState(context);
-  }, [
-    savedPetname,
-    recognizedName,
-    trustState,
-    trustLabel,
-    showTrustSignals,
-    image,
-    modalConfig,
-  ]);
-
-  return {
-    displayState,
-    // Expose commonly needed values directly
-    hasPetname: Boolean(savedPetname),
-    hasRecognizedName: Boolean(recognizedName),
-    image,
-  };
 }

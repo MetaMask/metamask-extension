@@ -3,7 +3,7 @@ import { NameType } from '@metamask/name-controller';
 import Identicon from '../../../ui/identicon';
 import { Icon, IconName, IconSize } from '../../../component-library';
 import { IconColor } from '../../../../helpers/constants/design-system';
-import { useNameDisplayState } from '../../../../hooks/useNameDisplayState';
+import { useAddressTrustSignalState } from '../../../../hooks/useTrustSignalState';
 import ShortenedName from './shortened-name';
 import FormattedName from './formatted-value';
 
@@ -34,7 +34,7 @@ const NameDisplay = memo(
     handleClick,
     showTrustSignals = false,
   }: NameDisplayProps) => {
-    const { displayState, image } = useNameDisplayState({
+    const { displayState, image } = useAddressTrustSignalState({
       value,
       type,
       variation,
