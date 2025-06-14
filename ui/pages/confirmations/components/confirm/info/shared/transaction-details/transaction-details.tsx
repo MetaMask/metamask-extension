@@ -85,7 +85,11 @@ export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
       {showContractLogo ? (
         <SmartContractWithLogo />
       ) : (
-        <ConfirmInfoRowAddress address={to} chainId={chainId} />
+        <ConfirmInfoRowAddress
+          address={to}
+          chainId={chainId}
+          showTrustSignals
+        />
       )}
     </ConfirmInfoAlertRow>
   );
