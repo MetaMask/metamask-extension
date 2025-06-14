@@ -47,8 +47,9 @@ export function useTrustSignals(address: string): TrustSignalData {
     return { state: null };
   }
 
-  const state = RESULT_TYPE_TO_STATE_MAP[securityAlertResponse.result_type];
-  const iconName = STATE_TO_ICON_MAP[state];
+  const state =
+    RESULT_TYPE_TO_STATE_MAP[securityAlertResponse.result_type as ResultType];
+  const iconName = STATE_TO_ICON_MAP[state as TrustSignalState];
 
   return {
     state,

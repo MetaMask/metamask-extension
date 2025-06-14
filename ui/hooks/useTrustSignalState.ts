@@ -298,7 +298,6 @@ function useEntityData(
     Boolean(savedPetname),
     Boolean(recognizedName),
     showTrustSignals,
-    entity.type,
   );
 
   return {

@@ -61,7 +61,6 @@ export type ModalTextConfig = {
  * @param hasSavedPetname - Whether the user has saved a petname
  * @param isRecognizedUnsaved - Whether the name is recognized but not saved
  * @param showTrustSignals - Whether to show trust signals
- * @param entityType - The type of entity (address, url, domain) for future expansion
  * @returns Modal text configuration
  */
 export function useModalTextConfig(
