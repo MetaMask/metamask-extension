@@ -38,9 +38,12 @@ const LedgerInfo: React.FC = () => {
 
   const inE2eTest =
     process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';
+  const ledgerWebHidConnectedStatus = useSelector(
+    getLedgerWebHidConnectedStatus,
+  );
   const webHidConnectedStatus = inE2eTest
     ? WebHIDConnectedStatuses.connected
-    : useSelector(getLedgerWebHidConnectedStatus);
+    : ledgerWebHidConnectedStatus;
   const ledgerTransportType = useSelector(getLedgerTransportType);
   const transportStatus = useSelector(getLedgerTransportStatus);
   const environmentType = getEnvironmentType();
