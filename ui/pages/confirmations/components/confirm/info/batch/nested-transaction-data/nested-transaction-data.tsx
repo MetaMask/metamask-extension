@@ -54,7 +54,14 @@ function NestedTransaction({
         content={
           <>
             {to && <RecipientRow recipient={to} />}
-            {data && to && <TransactionData data={data} to={to} noPadding />}
+            {data && to && (
+              <TransactionData
+                data={data}
+                to={to}
+                noPadding
+                nestedTransactionIndex={index}
+              />
+            )}
           </>
         }
       >

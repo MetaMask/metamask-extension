@@ -6746,6 +6746,9 @@
   "userOpContractDeployError": {
     "message": "Contract deployment from a smart contract account is not supported"
   },
+  "value": {
+    "message": "Value"
+  },
   "version": {
     "message": "Version"
   },
