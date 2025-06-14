@@ -4,6 +4,7 @@ import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-s
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   selectIsAccountSyncingEnabled,
+  selectIsContactSyncingEnabled,
   selectIsBackupAndSyncEnabled,
   selectIsBackupAndSyncUpdateLoading,
 } from '../../../../selectors/identity/backup-and-sync';
@@ -28,6 +29,8 @@ export const backupAndSyncFeaturesTogglesTestIds = {
   container: 'backup-and-sync-features-toggles-container',
   accountSyncingToggleContainer: 'account-syncing-toggle-container',
   accountSyncingToggleButton: 'account-syncing-toggle-button',
+  contactSyncingToggleContainer: 'contact-syncing-toggle-container',
+  contactSyncingToggleButton: 'contact-syncing-toggle-button',
 };
 
 export const backupAndSyncFeaturesTogglesSections = [
@@ -41,6 +44,17 @@ export const backupAndSyncFeaturesTogglesSections = [
       backupAndSyncFeaturesTogglesTestIds.accountSyncingToggleContainer,
     toggleButtonTestId:
       backupAndSyncFeaturesTogglesTestIds.accountSyncingToggleButton,
+  },
+  {
+    id: 'contactSyncing',
+    titleI18NKey: 'backupAndSyncFeatureContacts',
+    iconName: IconName.Book,
+    backupAndSyncfeatureKey: BACKUPANDSYNC_FEATURES.contactSyncing,
+    featureReduxSelector: selectIsContactSyncingEnabled,
+    toggleContainerTestId:
+      backupAndSyncFeaturesTogglesTestIds.contactSyncingToggleContainer,
+    toggleButtonTestId:
+      backupAndSyncFeaturesTogglesTestIds.contactSyncingToggleButton,
   },
 ];
 

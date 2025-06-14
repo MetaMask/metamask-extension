@@ -1,4 +1,4 @@
-import EventEmitter from 'events';
+import { EventEmitter } from 'events';
 import { CompletedRequest, Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { MOCK_SRP_E2E_IDENTIFIER_BASE_KEY } from '../../../tests/identity/mocks';
@@ -17,6 +17,10 @@ export const pathRegexps = {
   ),
   [USER_STORAGE_FEATURE_NAMES.notifications]: new RegExp(
     `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.notifications}`,
+    'u',
+  ),
+  [USER_STORAGE_FEATURE_NAMES.addressBook]: new RegExp(
+    `${baseUrl}/${USER_STORAGE_FEATURE_NAMES.addressBook}`,
     'u',
   ),
 };

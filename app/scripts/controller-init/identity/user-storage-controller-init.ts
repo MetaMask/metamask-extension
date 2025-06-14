@@ -67,6 +67,44 @@ export const UserStorageControllerInit: ControllerInitFunction<
           });
         },
       },
+      contactSyncing: {
+        onContactUpdated: (profileId) => {
+          trackEvent({
+            category: MetaMetricsEventCategory.BackupAndSync,
+            event: MetaMetricsEventName.ContactSyncUpdated,
+            properties: {
+              profile_id: profileId,
+            },
+          });
+        },
+        onContactDeleted: (profileId) => {
+          trackEvent({
+            category: MetaMetricsEventCategory.BackupAndSync,
+            event: MetaMetricsEventName.ContactSyncDeleted,
+            properties: {
+              profile_id: profileId,
+            },
+          });
+        },
+        onContactSyncErroneousSituation: (
+          profileId,
+          situationMessage,
+          sentryContext,
+        ) => {
+          captureException(
+            new Error(`Contact sync - ${situationMessage}`),
+            sentryContext,
+          );
+          trackEvent({
+            category: MetaMetricsEventCategory.BackupAndSync,
+            event: MetaMetricsEventName.ContactSyncErroneousSituation,
+            properties: {
+              profile_id: profileId,
+              situation_message: situationMessage,
+            },
+          });
+        },
+      },
     },
   });
 
