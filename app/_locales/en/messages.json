@@ -1679,9 +1679,6 @@
   "deepLink_YouAreAboutToOpen": {
     "message": "A previous action wants to navigate to a page within the MetaMask extension."
   },
-  "deepLinks": {
-    "message": "Deep Links"
-  },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
   },

@@ -15,11 +15,12 @@ import { routes } from '../../../shared/lib/deep-links/routes';
 import { DEEP_LINK_HOST } from '../../../shared/lib/deep-links/constants';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
-  AlignItems,
+  BackgroundColor,
+  BlockSize,
+  BorderRadius,
   Display,
   FlexDirection,
   FontWeight,
-  JustifyContent,
   TextAlign,
   TextVariant,
 } from '../../helpers/constants/design-system';
@@ -125,28 +126,6 @@ export const DeepLink = () => {
     updateStateFromUrl(urlStr, setRoute, setError, trackEvent, t);
   }, [location.search]);
 
-  async function onIntersticialDismissed(
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-  ) {
-    e.preventDefault();
-
-    if (route) {
-      await trackDismissed(trackEvent, {
-        url: route.parsed.normalizedUrl,
-        signed: route.signed,
-      });
-    }
-
-    if (window.history.length > 1) {
-      // If there is a history, go back to the previous page
-      // TODO: this has so many ways it won't work and leave the user frustrated. Revisit this idea.
-      window.history.back();
-    } else {
-      // If there is no history, redirect to https://metamask.io/
-      window.location.href = BaseUrl.MetaMask;
-    }
-  }
-
   function onRemindMeStateChanged() {
     const newHasChecked = !hasChecked;
     setHasChecked(newHasChecked);
@@ -154,7 +133,7 @@ export const DeepLink = () => {
   }
 
   return (
-    <Container maxWidth={ContainerMaxWidth.Lg} textAlign={TextAlign.Center}>
+    <Container maxWidth={ContainerMaxWidth.Md} textAlign={TextAlign.Center}>
       <>
         <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
           <img className="loading-logo" src="./images/logo/metamask-fox.svg" />
@@ -167,28 +146,46 @@ export const DeepLink = () => {
             />
           )}
         </Box>
+        {!isLoading && (
+          <Text
+            as="h1"
+            variant={TextVariant.headingLg}
+            fontWeight={FontWeight.Medium}
+            marginTop={12}
+            marginBottom={8}
+          >
+            Redirecting you to MetaMask
+          </Text>
+        )}
         {error && (
-          <Box padding={4} className="error" data-testid="deep-link-error">
+          <Box className="error" data-testid="deep-link-error">
             <Text>{error}</Text>
           </Box>
         )}
         {route && (
-          <Box padding={4} data-testid="deep-link-route">
+          <Box data-testid="deep-link-route">
             <Box margin={4}>
-              <Text margin={4}>{t('deepLink_YouAreAboutToOpen')}</Text>
+              <Text as="span">{t('deepLink_YouAreAboutToOpen')}</Text>
               {route.signed ? (
                 ''
               ) : (
-                <Text margin={4}>{t('deepLink_ContinueWarning')}</Text>
+                <Text as="span"> {t('deepLink_ContinueWarning')}</Text>
               )}
             </Box>
-            {route.signed ? (
+          </Box>
+        )}
+
+        {!isLoading && (
+          <Box marginTop={12}>
+            {route?.signed ? (
               <Box
                 display={Display.Flex}
-                justifyContent={JustifyContent.center}
-                alignItems={AlignItems.center}
+                textAlign={TextAlign.Left}
                 gap={2}
-                margin={4}
+                padding={3}
+                marginBottom={5}
+                borderRadius={BorderRadius.LG}
+                backgroundColor={BackgroundColor.backgroundMuted}
               >
                 <Checkbox
                   id="dont-remind-me-checkbox"
@@ -207,27 +204,8 @@ export const DeepLink = () => {
             ) : (
               ''
             )}
-          </Box>
-        )}
-
-        {!isLoading && (
-          <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
-            gap={4}
-            padding={4}
-          >
             <Button
-              size={ButtonSize.Lg}
-              variant={ButtonVariant.Secondary}
-              onClick={onIntersticialDismissed}
-              data-testid="deep-link-cancel-button"
-            >
-              {t('cancel')}
-            </Button>
-
-            <Button
+              width={BlockSize.Full}
               variant={ButtonVariant.Primary}
               href={route?.href ?? getExtensionURL('/')}
               size={ButtonSize.Lg}
