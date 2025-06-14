@@ -7,7 +7,7 @@ import type {
 } from '@metamask/account-tree-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountId } from '@metamask/accounts-controller';
-import { InternalAccountWithBalance } from '../selectors.types';
+import { MergedInternalAccount } from '../selectors.types';
 
 export type AccountTreeState = {
   wallets: {
@@ -30,7 +30,7 @@ export type MultichainAccountsState = {
 export type ConsolidatedAccountGroup = {
   id: AccountGroupId;
   metadata: AccountGroupMetadata;
-  accounts: InternalAccountWithBalance[];
+  accounts: MergedInternalAccount[];
 };
 
 export type ConsolidatedAccountWallet = {
