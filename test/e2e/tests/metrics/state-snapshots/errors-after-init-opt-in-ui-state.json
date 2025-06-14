@@ -274,7 +274,7 @@
     "nameSources": "object",
     "userOperations": "object",
     "isSignedIn": "boolean",
-    "isBackupAndSyncEnabled": false,
+    "isBackupAndSyncEnabled": true,
     "isBackupAndSyncUpdateLoading": "boolean",
     "isAccountSyncingEnabled": true,
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",
