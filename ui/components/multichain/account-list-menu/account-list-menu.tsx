@@ -124,6 +124,7 @@ import { CreateAccountSnapOptions } from '../../../../shared/lib/accounts';
 import { ImportAccount } from '../import-account';
 import { SrpList } from '../multi-srp/srp-list';
 import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts/institutional-wallet-snap';
+import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
 import { HiddenAccountList } from './hidden-account-list';
 
 // TODO: Should we use an enum for this instead?
@@ -237,6 +238,7 @@ export const AccountListMenu = ({
 }: AccountListMenuProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const { loading: syncSRPsLoading } = useSyncSRPs();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   useEffect(() => {
     endTrace({ name: TraceName.AccountList });
@@ -499,6 +501,7 @@ export const AccountListMenu = ({
 
   return (
     <Modal isOpen onClose={onClose}>
+      {syncSRPsLoading && <p>Syncing seed phrases...</p>}
       <ModalOverlay />
       <ModalContent
         className="multichain-account-menu-popover"
