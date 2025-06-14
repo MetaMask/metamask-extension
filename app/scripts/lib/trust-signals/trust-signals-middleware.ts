@@ -1,5 +1,6 @@
 import { JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
 import { NetworkController } from '@metamask/network-controller';
+import { PhishingController } from '@metamask/phishing-controller';
 import type { AppStateController } from '../../controllers/app-state-controller';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
@@ -10,14 +11,16 @@ import {
   isEthSendTransaction,
   hasValidTransactionParams,
   isProdEnabled,
+  isEthAccounts,
 } from './trust-signals-util';
 
 export function createTrustSignalsMiddleware(
   networkController: NetworkController,
   appStateController: AppStateController,
+  phishingController: PhishingController,
 ) {
   return async (
-    req: JsonRpcRequest,
+    req: JsonRpcRequest & { mainFrameOrigin?: string },
     _res: JsonRpcResponse,
     next: () => void,
   ) => {
@@ -38,6 +41,8 @@ export function createTrustSignalsMiddleware(
           appStateController,
           networkController,
         );
+      } else if (isEthAccounts(req)) {
+        handleEthAccounts(req, phishingController);
       }
     } catch (error) {
       console.error('[createTrustSignalsMiddleware] error: ', error);
@@ -84,4 +89,15 @@ async function handleEthSignTypedData(
     appStateController,
     networkController,
   );
+}
+
+function handleEthAccounts(
+  req: JsonRpcRequest & { mainFrameOrigin?: string },
+  phishingController: PhishingController,
+) {
+  if (req.mainFrameOrigin) {
+    phishingController.scanUrl(req.mainFrameOrigin).catch((error) => {
+      console.error('[createTrustSignalsMiddleware] error:', error);
+    });
+  }
 }

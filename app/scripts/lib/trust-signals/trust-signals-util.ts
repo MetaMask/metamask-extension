@@ -51,6 +51,10 @@ export function isEthSignTypedData(req: JsonRpcRequest): boolean {
   );
 }
 
+export function isEthAccounts(req: JsonRpcRequest): boolean {
+  return req.method === MESSAGE_TYPE.ETH_ACCOUNTS;
+}
+
 export function hasValidTypedDataParams(
   req: JsonRpcRequest,
 ): req is JsonRpcRequest & {
