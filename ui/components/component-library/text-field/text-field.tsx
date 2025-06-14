@@ -40,7 +40,7 @@ export const TextField: TextFieldComponent = React.forwardRef(
       placeholder,
       readOnly,
       required,
-      size = TextFieldSize.Md,
+      size = TextFieldSize.Lg,
       testId,
       type = TextFieldType.Text,
       truncate = true,
