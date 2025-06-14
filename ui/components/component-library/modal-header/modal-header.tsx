@@ -54,6 +54,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
         endAccessory ||
         (onClose && (
           <ButtonIcon
+            data-testid="modal-header-close-button"
             iconName={IconName.Close}
             ariaLabel={t('close')}
             size={ButtonIconSize.Sm}
