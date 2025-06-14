@@ -20,7 +20,6 @@ import { createDeepEqualSelector } from '../../../shared/modules/selectors/util'
 import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
-  getIsSolanaTestnetSupportEnabled,
 } from '../selectors';
 import { getInternalAccounts } from '../accounts';
 
@@ -102,11 +101,9 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
     (state: MultichainNetworkConfigurationsByChainIdState) =>
       state.metamask.multichainNetworkConfigurationsByChainId,
     getIsNonEvmNetworksEnabled,
-    (state) => getIsSolanaTestnetSupportEnabled(state),
     (
       multichainNetworkConfigurationsByChainId,
       isNonEvmNetworksEnabled,
-      isSolanaTestnetSupportEnabled,
     ): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
       const filteredNonEvmNetworkConfigurationsByChainId: Record<
         CaipChainId,
@@ -128,14 +125,13 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
       if (solanaEnabled) {
         filteredNonEvmNetworkConfigurationsByChainId[SolScope.Mainnet] =
           multichainNetworkConfigurationsByChainId[SolScope.Mainnet];
-      }
-
-      if (solanaEnabled && isSolanaTestnetSupportEnabled) {
+        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
         // TODO: Uncomment this when we want to support testnet
         // filteredNonEvmNetworkConfigurationsByChainId[SolScope.Testnet] =
         //   multichainNetworkConfigurationsByChainId[SolScope.Testnet];
         filteredNonEvmNetworkConfigurationsByChainId[SolScope.Devnet] =
           multichainNetworkConfigurationsByChainId[SolScope.Devnet];
+        ///: END:ONLY_INCLUDE_IF
       }
 
       return filteredNonEvmNetworkConfigurationsByChainId;
