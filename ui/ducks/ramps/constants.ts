@@ -134,4 +134,11 @@ export const defaultBuyableChains: AggregatorNetwork[] = [
     shortName: 'Palm',
     nativeTokenSupported: false,
   },
+  {
+    active: true,
+    chainId: 30,
+    chainName: 'Rootstock Mainnet',
+    shortName: 'Rootstock',
+    nativeTokenSupported: true,
+  },
 ];

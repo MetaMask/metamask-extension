@@ -1966,6 +1966,16 @@ export const networkList = [
     rpcUrl: 'https://polygon-rpc.com',
     ticker: 'MATIC',
   },
+  {
+    blockExplorerUrl: 'https://explorer.rsk.co',
+    chainId: '0x1e',
+    iconColor: 'var(--color-network-localhost-default)',
+    isATestNetwork: false,
+    label: 'Rootstock Mainnet',
+    providerType: 'rpc',
+    rpcUrl: 'https://public-node.rsk.co',
+    ticker: 'RBTC',
+  },
 ];
 
 export default state;
