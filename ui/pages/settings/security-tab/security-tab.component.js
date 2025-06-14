@@ -102,6 +102,8 @@ export default class SecurityTab extends PureComponent {
     securityAlertsEnabled: PropTypes.bool,
     useExternalServices: PropTypes.bool,
     toggleExternalServices: PropTypes.func,
+    setSkipDeepLinkInterstitial: PropTypes.func.isRequired,
+    skipDeepLinkInterstitial: PropTypes.bool,
     setSecurityAlertsEnabled: PropTypes.func,
     metaMetricsDataDeletionId: PropTypes.string,
     hdEntropyIndex: PropTypes.number,
@@ -235,7 +237,7 @@ export default class SecurityTab extends PureComponent {
         </div>
         <div className="settings-page__content-padded">
           <Box
-            ref={this.settingsRefs[3]}
+            ref={this.settingsRefs[2]}
             className="settings-page__content-row"
             display={Display.Flex}
             flexDirection={FlexDirection.Row}
@@ -279,7 +281,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[3]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -1101,6 +1103,53 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
+  renderSkipDeepLinkInterstitial() {
+    const { t } = this.context;
+    const { skipDeepLinkInterstitial, setSkipDeepLinkInterstitial } =
+      this.props;
+
+    return (
+      <>
+        <Box
+          ref={this.settingsRefs[3]}
+          className="settings-page__content-row"
+          data-testid="setting-skip-deep-link-interstitial"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={4}
+          id="skip-deep-link-interstitial"
+        >
+          <Box
+            className="settings-page__content-row"
+            gap={4}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+          >
+            <div className="settings-page__content-item">
+              <span>{t('skipDeepLinkInterstitial')}</span>
+              <div className="settings-page__content-description">
+                {t('skipDeepLinkInterstitialDescription')}
+              </div>
+            </div>
+
+            <div
+              className="settings-page__content-item-col"
+              data-testid="skipDeepLinkInterstitial"
+            >
+              <ToggleButton
+                value={skipDeepLinkInterstitial}
+                onToggle={(value) => setSkipDeepLinkInterstitial(!value)}
+                offLabel={t('off')}
+                onLabel={t('on')}
+              />
+            </div>
+          </Box>
+        </Box>
+      </>
+    );
+  }
+
   renderDataCollectionWarning = () => {
     const { t } = this.context;
 
@@ -1170,6 +1219,9 @@ export default class SecurityTab extends PureComponent {
         </div>
         <div className="settings-page__content-padded">
           {this.renderPhishingDetectionToggle()}
+        </div>
+        <div className="settings-page__content-padded">
+          {this.renderSkipDeepLinkInterstitial()}
         </div>
 
         <div>

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Rebrand "Profile syncing" to "Backup and sync", adding a dedicated settings menu and more ([#32129](https://github.com/MetaMask/metamask-extension/pull/32129))
 - Show UI error to user if vault should exist, but is missing ([#31404](https://github.com/MetaMask/metamask-extension/pull/31404))
+- Add new security preference: `skipDeepLinkInterstitial` ([#33634](https://github.com/MetaMask/metamask-extension/pull/33634))
 - Add RPC (sub)domain tracking to transaction event metrics for RPC endpoints usage ([#32076](https://github.com/MetaMask/metamask-extension/pull/32076))
 - Integrate dynamic content banners ([#32101](https://github.com/MetaMask/metamask-extension/pull/32101))
 
