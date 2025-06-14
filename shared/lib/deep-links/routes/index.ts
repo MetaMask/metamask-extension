@@ -1,3 +1,7 @@
+import home from './home';
+import swap from './swap';
+import notifications from './notifications';
+
 import type { Route } from './route';
 
 export type { Route } from './route';
@@ -22,3 +26,7 @@ export function addRoute(route: Route) {
 
   routes.set(route.pathname, route);
 }
+
+addRoute(home);
+addRoute(swap);
+addRoute(notifications);
