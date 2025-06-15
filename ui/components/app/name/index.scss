@@ -43,7 +43,8 @@
   &__verified {
     background-color: var(--color-info-muted);
 
-    .name__name {
+    .name__name,
+    .name__value {
       color: var(--color-info-default);
     }
   }
@@ -53,7 +54,7 @@
 
     .name__name,
     .name__value {
-      color: var(--color-warning-default);
+      color: var(--color-text-default);
     }
   }
 

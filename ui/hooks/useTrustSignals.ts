@@ -25,8 +25,6 @@ export function useTrustSignals(
     getAddressSecurityAlertResponse(state, value),
   );
 
-  console.log('securityAlertResponse', securityAlertResponse);
-
   // Get existing name data
   const { name: displayName, hasPetname } = useDisplayName({
     value,
@@ -46,8 +44,9 @@ export function useTrustSignals(
       case ResultType.Warning:
         return TrustSignalDisplayState.Warning;
       case ResultType.Trusted:
-      case ResultType.Benign:
         return TrustSignalDisplayState.Verified;
+      case ResultType.Benign:
+        return TrustSignalDisplayState.Unknown;
       case ResultType.ErrorResult:
         return TrustSignalDisplayState.Unknown;
       default:
