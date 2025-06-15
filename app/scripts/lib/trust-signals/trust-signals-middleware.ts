@@ -1,7 +1,11 @@
 import { JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
 import { NetworkController } from '@metamask/network-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import type { AppStateController } from '../../controllers/app-state-controller';
-import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
+import {
+  parseTypedDataMessage,
+  parseStandardTokenTransactionData,
+} from '../../../../shared/modules/transaction.utils';
 import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 import {
@@ -11,6 +15,17 @@ import {
   hasValidTransactionParams,
   isProdEnabled,
 } from './trust-signals-util';
+
+// Type definitions for parsed typed data
+type ParsedTypedDataMessage = {
+  primaryType: string;
+  message: Record<string, unknown>;
+  domain?: {
+    verifyingContract?: string;
+    [key: string]: unknown;
+  };
+  types?: Record<string, unknown>;
+};
 
 export function createTrustSignalsMiddleware(
   networkController: NetworkController,
@@ -56,8 +71,22 @@ async function handleEthSendTransaction(
     return;
   }
 
-  const { to } = req.params[0];
+  const { to, data } = req.params[0];
+
+  // Always scan the 'to' address
   await scanAddressAndAddToCache(to, appStateController, networkController);
+
+  // For approval transactions, also scan the spender address
+  if (data && typeof data === 'string') {
+    const spenderAddress = extractSpenderFromApprovalTransaction(data);
+    if (spenderAddress) {
+      await scanAddressAndAddToCache(
+        spenderAddress,
+        appStateController,
+        networkController,
+      );
+    }
+  }
 }
 
 async function handleEthSignTypedData(
@@ -73,15 +102,92 @@ async function handleEthSignTypedData(
     typeof req.params[1] === 'string'
       ? req.params[1]
       : JSON.stringify(req.params[1]),
-  );
+  ) as ParsedTypedDataMessage;
+
+  // Scan the verifying contract
   const verifyingContract = typedDataMessage.domain?.verifyingContract;
-  if (!verifyingContract) {
-    return;
+  if (verifyingContract) {
+    await scanAddressAndAddToCache(
+      verifyingContract,
+      appStateController,
+      networkController,
+    );
   }
 
-  await scanAddressAndAddToCache(
-    verifyingContract,
-    appStateController,
-    networkController,
-  );
+  // For permit signatures, also scan the spender address
+  const spenderAddress = extractSpenderFromPermitSignature(typedDataMessage);
+  if (spenderAddress) {
+    await scanAddressAndAddToCache(
+      spenderAddress,
+      appStateController,
+      networkController,
+    );
+  }
+}
+
+/**
+ * Extracts the spender address from an approval transaction.
+ *
+ * @param data - The transaction data to parse
+ * @returns The spender address if found, null otherwise
+ */
+function extractSpenderFromApprovalTransaction(data: string): string | null {
+  try {
+    const parsedData = parseStandardTokenTransactionData(data);
+    if (!parsedData) {
+      return null;
+    }
+
+    const { name, args } = parsedData;
+
+    // Check if this is an approval-related transaction
+    const approvalMethods = [
+      TransactionType.tokenMethodApprove,
+      TransactionType.tokenMethodSetApprovalForAll,
+      TransactionType.tokenMethodIncreaseAllowance,
+    ];
+
+    if (!approvalMethods.includes(name as TransactionType)) {
+      return null;
+    }
+
+    // Extract spender address based on the method
+    const spender =
+      args?._spender ?? // ERC-20 approve
+      args?._operator ?? // ERC-721/1155 setApprovalForAll
+      args?.spender ?? // Fiat Token V2 increaseAllowance
+      null;
+
+    return spender;
+  } catch (error) {
+    console.error('[extractSpenderFromApprovalTransaction] error: ', error);
+    return null;
+  }
+}
+
+/**
+ * Extracts the spender address from a permit signature (EIP-2612).
+ *
+ * @param typedDataMessage - The parsed typed data message
+ * @returns The spender address if found, null otherwise
+ */
+function extractSpenderFromPermitSignature(
+  typedDataMessage: ParsedTypedDataMessage,
+): string | null {
+  try {
+    const { primaryType, message } = typedDataMessage;
+
+    // Check if this is a permit signature
+    const permitTypes = ['Permit', 'PermitSingle', 'PermitBatch'];
+    if (!permitTypes.includes(primaryType)) {
+      return null;
+    }
+
+    // Extract spender address from the message
+    const spender = message?.spender as string | undefined;
+    return spender ?? null;
+  } catch (error) {
+    console.error('[extractSpenderFromPermitSignature] error: ', error);
+    return null;
+  }
 }
