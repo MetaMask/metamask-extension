@@ -61,7 +61,6 @@ const Name = memo(
       variation,
     });
 
-    // Get the trust signal state and label
     const { state: trustSignalDisplayState, trustLabel } = useTrustSignals(
       value,
       type,

@@ -358,7 +358,6 @@ export default function NameDetails({
           return t('nameModalTitleNew');
       }
     }
-    // Fallback to original logic
     if (hasSavedPetname) {
       return t('nameModalTitleSaved');
     }
@@ -387,7 +386,6 @@ export default function NameDetails({
           return t('nameInstructionsNew');
       }
     }
-    // Fallback to original logic
     if (hasSavedPetname) {
       return t('nameInstructionsSaved');
     }
@@ -397,7 +395,6 @@ export default function NameDetails({
     return t('nameInstructionsNew');
   };
 
-  // Check if we should show footer warning
   const showFooterWarning =
     trustSignalDisplayState === TrustSignalDisplayState.Malicious ||
     trustSignalDisplayState === TrustSignalDisplayState.Warning;

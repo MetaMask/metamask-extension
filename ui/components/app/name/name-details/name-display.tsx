@@ -49,7 +49,7 @@ const NameDisplay = memo(
       ? getTrustSignalIcon(trustSignalDisplayState)
       : null;
 
-    // Get CSS classes from utility function - always use utility for consistency
+    // Get CSS classes from utility function
     const cssClasses = getTrustSignalCssClasses(
       trustSignalDisplayState || TrustSignalDisplayState.Unknown,
       {
@@ -92,7 +92,7 @@ const NameDisplay = memo(
         return <ShortenedName name={name} />;
       }
 
-      // Priority 4: Formatted address (fallback)
+      // Priority 4: Formatted address
       return <FormattedName value={value} type={type} />;
     };
 

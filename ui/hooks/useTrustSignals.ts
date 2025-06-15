@@ -37,10 +37,9 @@ export function useTrustSignals(
     variation,
   });
 
-  // Extract the trust label from security alert response
   const trustLabel = securityAlertResponse?.label || null;
 
-  // Map security alert result type to trust state
+  // Map security alert result type to trust signal display state
   const getTrustState = () => {
     if (!securityAlertResponse?.result_type) {
       return null;
@@ -63,8 +62,6 @@ export function useTrustSignals(
   };
 
   const trustState = getTrustState();
-
-  // Apply priority logic to determine final display state
 
   // Priority 1: Malicious takes precedence over everything when trust signals are enabled
   if (showTrustSignals && trustState === TrustSignalDisplayState.Malicious) {
