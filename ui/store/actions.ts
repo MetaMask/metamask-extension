@@ -6619,6 +6619,16 @@ export async function isRelaySupported(chainId: Hex): Promise<boolean> {
 }
 
 /**
+ * Sets the preference for skipping the interstitial page when opening a deep link.
+ *
+ * @param value - Whether to skip the interstitial page when opening a deep link.
+ * @returns A promise that resolves when the preference is set.
+ */
+export function setSkipDeepLinkInterstitial(value: boolean) {
+  return setPreference('skipDeepLinkInterstitial', value, false);
+}
+
+/**
  * Asks the UI to reload the browser extension safely.
  *
  * Much better than `browser.runtime.reload()`, as safeReload will wait for all
