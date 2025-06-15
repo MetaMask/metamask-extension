@@ -449,7 +449,7 @@ describe('useTrustSignals', () => {
         VALUE_MOCK,
         NameType.ETHEREUM_ADDRESS,
         VARIATION_MOCK,
-        false, // trust signals disabled, should fall back to recognized
+        false,
       );
 
       expect(result).toStrictEqual({
