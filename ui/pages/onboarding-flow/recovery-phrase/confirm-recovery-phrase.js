@@ -33,9 +33,8 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../../app/scripts/lib/util';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import ConfirmSrpModal from './confirm-srp-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
@@ -119,7 +118,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       },
     });
 
-    getPlatform() === PLATFORM_FIREFOX
+    getBrowserName() === PLATFORM_FIREFOX
       ? history.push(ONBOARDING_COMPLETION_ROUTE)
       : history.push(ONBOARDING_METAMETRICS);
   }, [dispatch, hdEntropyIndex, history, trackEvent]);
