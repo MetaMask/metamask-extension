@@ -8815,6 +8815,11 @@ export default class MetamaskController extends EventEmitter {
       trackEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
+      refreshOAuthToken: this.oauthService.getNewRefreshToken.bind(
+        this.oauthService,
+      ),
+      revokeAndGetNewRefreshToken:
+        this.oauthService.revokeAndGetNewRefreshToken.bind(this.oauthService),
     };
 
     return initControllers({
