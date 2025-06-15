@@ -1,5 +1,6 @@
 import { NameType } from '@metamask/name-controller';
 import { getAddressSecurityAlertResponse } from '../selectors';
+// eslint-disable-next-line import/no-restricted-paths
 import { ResultType } from '../../app/scripts/lib/trust-signals/types';
 import { useDisplayName } from './useDisplayName';
 import { useTrustSignals, TrustSignalDisplayState } from './useTrustSignals';

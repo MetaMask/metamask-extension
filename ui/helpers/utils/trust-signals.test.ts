@@ -57,6 +57,7 @@ describe('trust-signals utilities', () => {
 
     it('returns question icon for default/unknown case', () => {
       // TypeScript won't allow invalid enum values, so we test with 'as any'
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = getTrustSignalIcon('invalid-state' as any);
 
       expect(result).toStrictEqual<TrustSignalIconProps>({
@@ -350,6 +351,7 @@ describe('trust-signals utilities', () => {
       });
 
       it('handles invalid state with default case logic', () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const result = getTrustSignalCssClasses('invalid-state' as any, {
           hasPetname: true,
           hasDisplayName: false,
