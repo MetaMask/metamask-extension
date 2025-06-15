@@ -72,6 +72,7 @@ describe('NicknamePopover', () => {
   });
 
   it('opens EVM block explorer', () => {
+    // @ts-expect-error mocking platform
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 
     // Accounts controlelr addresses are lower cased but it gets converted to checksummed in this util
@@ -88,6 +89,7 @@ describe('NicknamePopover', () => {
   });
 
   it('opens non-EVM block explorer', () => {
+    // @ts-expect-error mocking platform
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
     const expectedExplorerUrl = formatBlockExplorerAddressUrl(
       MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[

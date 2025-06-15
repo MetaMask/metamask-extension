@@ -1,4 +1,7 @@
 import { IconName } from '@metamask/snaps-sdk/jsx';
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+///: END:ONLY_INCLUDE_IF
 import { InvisibleCharacter } from '../../components/component-library';
 import {
   GOERLI_DISPLAY_NAME,
@@ -9,10 +12,11 @@ import {
 import { BackgroundColor } from '../constants/design-system';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { t } from '../../../app/scripts/translate';
+import { t } from '../../../shared/lib/translate';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+import { MULTICHAIN_ACCOUNT_TYPE_TO_NAME } from '../../../shared/constants/multichain/accounts';
+///: END:ONLY_INCLUDE_IF
 
 export function getAccountNameErrorMessage(
   accounts,
@@ -183,5 +187,16 @@ export function getAccountLabels(
       break;
     }
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  const { namespace } = parseCaipChainId(account.type);
+  if (namespace === KnownCaipNamespace.Bip122) {
+    labels.push({
+      label: `${MULTICHAIN_ACCOUNT_TYPE_TO_NAME[account.type]}`,
+      icon: null,
+    });
+  }
+  ///: END:ONLY_INCLUDE_IF
+
   return labels;
 }
