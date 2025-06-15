@@ -7,9 +7,8 @@ import { SupportedEVMChain } from './types';
 
 // TODO: Remove when we want this enabled in production.
 export function isProdEnabled() {
-  // const isEnabled = process.env.TRUST_SIGNALS_PROD_ENABLED;
-  // return isEnabled?.toString() === 'true';
-  return true;
+  const isEnabled = process.env.TRUST_SIGNALS_PROD_ENABLED;
+  return isEnabled?.toString() === 'true';
 }
 
 export function isEthSendTransaction(req: JsonRpcRequest): boolean {
