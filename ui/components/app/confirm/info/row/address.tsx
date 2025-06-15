@@ -17,10 +17,16 @@ export type ConfirmInfoRowAddressProps = {
   address: string;
   chainId: string;
   isSnapUsingThis?: boolean;
+  showTrustSignals?: boolean;
 };
 
 export const ConfirmInfoRowAddress = memo(
-  ({ address, chainId, isSnapUsingThis }: ConfirmInfoRowAddressProps) => {
+  ({
+    address,
+    chainId,
+    isSnapUsingThis,
+    showTrustSignals = false,
+  }: ConfirmInfoRowAddressProps) => {
     const { displayName, hexAddress } = useFallbackDisplayName(address);
     const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
     const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
@@ -66,6 +72,7 @@ export const ConfirmInfoRowAddress = memo(
               type={NameType.ETHEREUM_ADDRESS}
               preferContractSymbol
               variation={chainId}
+              showTrustSignals={showTrustSignals}
             />
           )
         }
