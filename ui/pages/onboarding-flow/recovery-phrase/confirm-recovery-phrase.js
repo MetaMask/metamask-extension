@@ -29,7 +29,12 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
-import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_METAMETRICS,
+} from '../../../helpers/constants/routes';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import ConfirmSrpModal from './confirm-srp-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
@@ -113,7 +118,9 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       },
     });
 
-    history.push(ONBOARDING_COMPLETION_ROUTE);
+    getBrowserName() === PLATFORM_FIREFOX
+      ? history.push(ONBOARDING_COMPLETION_ROUTE)
+      : history.push(ONBOARDING_METAMETRICS);
   }, [dispatch, hdEntropyIndex, history, trackEvent]);
 
   return (

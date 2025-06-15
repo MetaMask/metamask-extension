@@ -31,7 +31,14 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
-import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_METAMETRICS,
+} from '../../../helpers/constants/routes';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { getFirstTimeFlowType } from '../../../selectors';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 
 type SkipSRPBackupProps = {
   onClose: () => void;
@@ -46,6 +53,7 @@ export default function SkipSRPBackup({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
+  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
 
@@ -59,8 +67,15 @@ export default function SkipSRPBackup({
       },
     });
 
-    history.push(ONBOARDING_COMPLETION_ROUTE);
-  }, [dispatch, hdEntropyIndex, history, trackEvent]);
+    if (
+      getBrowserName() === PLATFORM_FIREFOX ||
+      firstTimeFlowType === FirstTimeFlowType.restore
+    ) {
+      history.push(ONBOARDING_COMPLETION_ROUTE);
+    } else {
+      history.push(ONBOARDING_METAMETRICS);
+    }
+  }, [dispatch, firstTimeFlowType, hdEntropyIndex, history, trackEvent]);
 
   return (
     <Modal

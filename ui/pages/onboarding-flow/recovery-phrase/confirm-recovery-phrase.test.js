@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
-import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
+import { ONBOARDING_METAMETRICS } from '../../../helpers/constants/routes';
 import ConfirmRecoveryPhrase from './confirm-recovery-phrase';
 
 jest.mock('../../../store/actions.ts', () => ({
@@ -180,6 +180,6 @@ describe('Confirm Recovery Phrase Component', () => {
     fireEvent.click(gotItButton);
 
     expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
-    expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
+    expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
   });
 });

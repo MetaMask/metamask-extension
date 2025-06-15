@@ -24,6 +24,7 @@ import {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
   incompleteCreateNewWalletOnboardingFlow,
+  onboardingMetricsFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
 
@@ -65,6 +66,10 @@ describe('MetaMask onboarding', function () {
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.check_pageIsLoaded();
         await secureWalletPage.revealAndConfirmSRP();
+
+        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+          await onboardingMetricsFlow(driver);
+        }
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.check_pageIsLoaded();
@@ -133,12 +138,6 @@ describe('MetaMask onboarding', function () {
         await startOnboardingPage.check_loginPageIsLoaded();
         await startOnboardingPage.importWallet();
 
-        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.check_pageIsLoaded();
-          await onboardingMetricsPage.clickNoThanksButton();
-        }
-
         const onboardingSrpPage = new OnboardingSrpPage(driver);
         await onboardingSrpPage.check_pageIsLoaded();
 
@@ -173,12 +172,6 @@ describe('MetaMask onboarding', function () {
         await startOnboardingPage.agreeToTermsOfUse();
         await startOnboardingPage.check_loginPageIsLoaded();
         await startOnboardingPage.createWalletWithSrp();
-
-        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.check_pageIsLoaded();
-          await onboardingMetricsPage.clickNoThanksButton();
-        }
 
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.check_pageIsLoaded();
