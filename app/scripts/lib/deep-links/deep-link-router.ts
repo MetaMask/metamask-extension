@@ -111,7 +111,7 @@ export class DeepLinkRouter {
         }).toString(),
       );
     }
-
+    console.log('navigating to link:', link.toString());
     if (isManifestV3) {
       // We need to use the redirect API in MV3, because the webRequest API does
       // not support blocking redirects.

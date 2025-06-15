@@ -88,14 +88,21 @@ describe('Deep Link', function () {
 
           // ensure the background is ready to process deep links (by waiting
           // for the UI to load)
+          console.log('Navigating to initial page');
           await driver.navigate();
           const loginPage = new LoginPage(driver);
+          console.log('Checking if login page is loaded');
           await loginPage.check_pageIsLoaded();
 
           // if `locked` is set to "unlocked", we need to log in _now_, so the
           // deep link's `continue` button is able to can skip the lock screen.
           if (locked === 'unlocked') {
+            console.log('Logging in to homepage (unlocked scenario)');
             await loginPage.loginToHomepage();
+
+            console.log('Checking if home page is loaded (unlocked scenario)');
+            const homePage = new HomePage(driver);
+            await homePage.check_pageIsLoaded();
           }
 
           // navigate to https://link.metamask.io/home and make sure it
@@ -107,13 +114,16 @@ describe('Deep Link', function () {
           const preparedUrl = isSigned
             ? await signDeepLink(keyPair.privateKey, rawUrl)
             : rawUrl;
+          console.log('Opening deep link URL');
           await driver.openNewURL(preparedUrl);
           const deepLink = new DeepLink(driver);
+          console.log('Checking if deep link page is loaded');
           await deepLink.check_pageIsLoaded();
 
           // we should render the checkbox when the link is "signed", unless
           // it's an "INVALID" route
           const shouldRenderCheckbox = isSigned && !isInvalidRoute;
+          console.log('Checking if deep link interstitial checkbox exists');
           const hasCheckbox =
             await deepLink.hasSkipDeepLinkInterstitialCheckBox();
           assert.equal(
@@ -123,13 +133,17 @@ describe('Deep Link', function () {
           );
 
           if (isInvalidRoute) {
+            console.log('Getting error text for invalid route');
             const text = await deepLink.getErrorText();
             assert.equal(text, 'The requested page was not found.');
           }
 
+          console.log('Clicking continue button');
           await deepLink.clickContinueButton();
           if (locked === 'locked') {
+            console.log('Checking if login page is loaded (locked scenario)');
             await loginPage.check_pageIsLoaded();
+            console.log('Logging in to homepage (locked scenario)');
             await loginPage.loginToHomepage();
           }
 
@@ -148,6 +162,7 @@ describe('Deep Link', function () {
           }
           // check that the page we want has been loaded!
           const page = new Page(driver);
+          console.log('Checking if target page is loaded');
           page.check_pageIsLoaded();
         },
       );
