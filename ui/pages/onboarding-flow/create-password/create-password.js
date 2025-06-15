@@ -44,9 +44,8 @@ import {
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import PasswordForm from '../../../components/app/password-form/password-form';
 import LoadingScreen from '../../../components/ui/loading-screen';
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../../app/scripts/lib/util';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 
 export default function CreatePassword({
   createNewAccount,
@@ -112,7 +111,7 @@ export default function CreatePassword({
       firstTimeFlowType === FirstTimeFlowType.import
     ) {
       await importWithRecoveryPhrase(password, secretRecoveryPhrase);
-      getPlatform() === PLATFORM_FIREFOX
+      getBrowserName() === PLATFORM_FIREFOX
         ? history.push(ONBOARDING_COMPLETION_ROUTE)
         : history.push(ONBOARDING_METAMETRICS);
     } else {
