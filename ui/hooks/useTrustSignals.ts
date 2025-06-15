@@ -14,12 +14,17 @@ export enum TrustSignalDisplayState {
   Unknown = 'unknown',
 }
 
+export type TrustSignalResult = {
+  state: TrustSignalDisplayState;
+  trustLabel: string | null;
+};
+
 export function useTrustSignals(
   value: string,
   type: NameType,
   variation: string,
   showTrustSignals: boolean,
-): TrustSignalDisplayState {
+): TrustSignalResult {
   // Fetch security alert response from Redux state
   const securityAlertResponse = useSelector((state) =>
     getAddressSecurityAlertResponse(state, value),
@@ -31,6 +36,9 @@ export function useTrustSignals(
     type,
     variation,
   });
+
+  // Extract the trust label from security alert response
+  const trustLabel = securityAlertResponse?.label || null;
 
   // Map security alert result type to trust state
   const getTrustState = () => {
@@ -60,23 +68,38 @@ export function useTrustSignals(
 
   // Priority 1: Malicious takes precedence over everything when trust signals are enabled
   if (showTrustSignals && trustState === TrustSignalDisplayState.Malicious) {
-    return TrustSignalDisplayState.Malicious;
+    return {
+      state: TrustSignalDisplayState.Malicious,
+      trustLabel,
+    };
   }
 
   // Priority 2: Saved petname (for non-malicious entities)
   if (hasPetname) {
-    return TrustSignalDisplayState.Petname;
+    return {
+      state: TrustSignalDisplayState.Petname,
+      trustLabel,
+    };
   }
 
   // Priority 3-5: Other trust signal states (when enabled and present)
   if (showTrustSignals && trustState) {
     switch (trustState) {
       case TrustSignalDisplayState.Verified:
-        return TrustSignalDisplayState.Verified;
+        return {
+          state: TrustSignalDisplayState.Verified,
+          trustLabel,
+        };
       case TrustSignalDisplayState.Warning:
-        return TrustSignalDisplayState.Warning;
+        return {
+          state: TrustSignalDisplayState.Warning,
+          trustLabel,
+        };
       case TrustSignalDisplayState.Unknown:
-        return TrustSignalDisplayState.Unknown;
+        return {
+          state: TrustSignalDisplayState.Unknown,
+          trustLabel,
+        };
       default:
         break;
     }
@@ -84,9 +107,15 @@ export function useTrustSignals(
 
   // Priority 6: Recognized name (no petname, no applicable trust signals)
   if (displayName) {
-    return TrustSignalDisplayState.Recognized;
+    return {
+      state: TrustSignalDisplayState.Recognized,
+      trustLabel,
+    };
   }
 
   // Priority 7: Unknown (default)
-  return TrustSignalDisplayState.Unknown;
+  return {
+    state: TrustSignalDisplayState.Unknown,
+    trustLabel,
+  };
 }

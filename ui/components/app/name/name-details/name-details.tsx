@@ -41,6 +41,9 @@ import {
   FlexDirection,
   IconColor,
   JustifyContent,
+  TextAlign,
+  TextColor,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import FormComboField, {
   FormComboFieldOption,
@@ -54,6 +57,7 @@ import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { useName } from '../../../../hooks/useName';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import NameDisplay from './name-display';
 import { usePetnamesMetrics } from './metrics';
 
@@ -65,6 +69,8 @@ export type NameDetailsProps = {
   type: NameType;
   value: string;
   variation: string;
+  trustSignalDisplayState?: TrustSignalDisplayState;
+  trustLabel?: string | null;
 };
 
 type ProposedNameOption = Required<FormComboFieldOption> & {
@@ -111,6 +117,7 @@ function generateComboOptions(
   proposedNameEntries: NameEntry['proposedNames'],
   t: ReturnType<typeof useI18nContext>,
   nameSources: NameControllerState['nameSources'],
+  trustLabel?: string | null,
 ): ProposedNameOption[] {
   const sourceIds = Object.keys(proposedNameEntries);
 
@@ -133,6 +140,16 @@ function generateComboOptions(
       }));
     })
     .flat();
+
+  // Add trust label as a suggestion if it exists
+  if (trustLabel) {
+    options.unshift({
+      value: trustLabel,
+      primaryLabel: t('nameModalMaybeProposedName', [trustLabel]),
+      secondaryLabel: t('nameProviderProposedBy', ['Trust Signal']),
+      sourceId: 'trust-signal',
+    });
+  }
 
   return options.sort((a, b) =>
     a.secondaryLabel
@@ -212,6 +229,8 @@ export default function NameDetails({
   type,
   value,
   variation,
+  trustSignalDisplayState,
+  trustLabel,
 }: NameDetailsProps) {
   const { name: savedPetname, sourceId: savedSourceId } = useName(
     value,
@@ -253,8 +272,8 @@ export default function NameDetails({
   }, [savedPetname, savedSourceId, setName, setSelectedSourceId]);
 
   const proposedNameOptions = useMemo(
-    () => generateComboOptions(proposedNames, t, nameSources),
-    [proposedNames, nameSources],
+    () => generateComboOptions(proposedNames, t, nameSources, trustLabel),
+    [proposedNames, nameSources, trustLabel],
   );
 
   const { trackPetnamesOpenEvent, trackPetnamesSaveEvent } = usePetnamesMetrics(
@@ -320,34 +339,89 @@ export default function NameDetails({
     handleCopyAddress(formattedValue);
   }, [handleCopyAddress, formattedValue]);
 
-  const [title, instructions] = (() => {
+  // Get title based on trust signal state
+  const getTitle = () => {
+    if (trustSignalDisplayState) {
+      switch (trustSignalDisplayState) {
+        case TrustSignalDisplayState.Malicious:
+          return t('nameModalTitleMalicious');
+        case TrustSignalDisplayState.Warning:
+          return t('nameModalTitleWarning');
+        case TrustSignalDisplayState.Verified:
+          return t('nameModalTitleVerified');
+        case TrustSignalDisplayState.Petname:
+          return t('nameModalTitleSaved');
+        case TrustSignalDisplayState.Recognized:
+          return t('nameModalTitleRecognized');
+        case TrustSignalDisplayState.Unknown:
+        default:
+          return t('nameModalTitleNew');
+      }
+    }
+    // Fallback to original logic
     if (hasSavedPetname) {
-      return [t('nameModalTitleSaved'), t('nameInstructionsSaved')];
+      return t('nameModalTitleSaved');
     }
     if (isRecognizedUnsaved) {
-      return [t('nameModalTitleRecognized'), t('nameInstructionsRecognized')];
+      return t('nameModalTitleRecognized');
     }
-    return [t('nameModalTitleNew'), t('nameInstructionsNew')];
-  })();
+    return t('nameModalTitleNew');
+  };
+
+  // Get instructions based on trust signal state
+  const getInstructions = () => {
+    if (trustSignalDisplayState) {
+      switch (trustSignalDisplayState) {
+        case TrustSignalDisplayState.Malicious:
+          return t('nameInstructionsMalicious');
+        case TrustSignalDisplayState.Warning:
+          return t('nameInstructionsWarning');
+        case TrustSignalDisplayState.Verified:
+          return '';
+        case TrustSignalDisplayState.Recognized:
+          return t('nameInstructionsRecognized');
+        case TrustSignalDisplayState.Petname:
+          return t('nameInstructionsSaved');
+        case TrustSignalDisplayState.Unknown:
+        default:
+          return t('nameInstructionsNew');
+      }
+    }
+    // Fallback to original logic
+    if (hasSavedPetname) {
+      return t('nameInstructionsSaved');
+    }
+    if (isRecognizedUnsaved) {
+      return t('nameInstructionsRecognized');
+    }
+    return t('nameInstructionsNew');
+  };
+
+  // Check if we should show footer warning
+  const showFooterWarning =
+    trustSignalDisplayState === TrustSignalDisplayState.Malicious ||
+    trustSignalDisplayState === TrustSignalDisplayState.Warning;
 
   return (
     <Box>
       <Modal isOpen onClose={handleClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader onClose={handleClose}>{title}</ModalHeader>
+          <ModalHeader onClose={handleClose}>{getTitle()}</ModalHeader>
           <ModalBody className="name-details__modal-body">
             <div
               style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}
             >
               <NameDisplay
                 value={value}
-                type={NameType.ETHEREUM_ADDRESS}
+                type={type}
                 variation={variation}
+                trustSignalDisplayState={trustSignalDisplayState}
+                trustLabel={trustLabel}
               />
             </div>
             <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
-              {instructions}
+              {getInstructions()}
             </Text>
             {/* @ts-ignore */}
             <FormTextField
@@ -381,7 +455,11 @@ export default function NameDetails({
                 hideDropdownIfNoOptions
                 value={name}
                 options={proposedNameOptions}
-                placeholder={t('nameSetPlaceholder')}
+                placeholder={
+                  trustLabel
+                    ? `Suggested: ${trustLabel}`
+                    : t('nameSetPlaceholder')
+                }
                 onChange={handleNameChange}
                 onOptionClick={handleProposedNameClick}
               />
@@ -399,6 +477,16 @@ export default function NameDetails({
             >
               {t('save')}
             </Button>
+            {showFooterWarning && (
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                marginTop={3}
+                textAlign={TextAlign.Center}
+              >
+                {t('nameFooterTrustWarning')}
+              </Text>
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>

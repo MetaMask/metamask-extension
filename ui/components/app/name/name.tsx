@@ -61,14 +61,13 @@ const Name = memo(
       variation,
     });
 
-    const trustSignalDisplayState = useTrustSignals(
+    // Get the trust signal state and label
+    const { state: trustSignalDisplayState, trustLabel } = useTrustSignals(
       value,
       type,
       variation,
       showTrustSignals,
     );
-
-    console.log('trustSignalDisplayState', trustSignalDisplayState);
 
     useEffect(() => {
       trackEvent({
@@ -98,6 +97,8 @@ const Name = memo(
             type={type}
             variation={variation}
             onClose={handleModalClose}
+            trustSignalDisplayState={trustSignalDisplayState}
+            trustLabel={trustLabel}
           />
         )}
 
@@ -108,6 +109,7 @@ const Name = memo(
           variation={variation}
           handleClick={handleClick}
           trustSignalDisplayState={trustSignalDisplayState}
+          trustLabel={trustLabel}
         />
       </Box>
     );
