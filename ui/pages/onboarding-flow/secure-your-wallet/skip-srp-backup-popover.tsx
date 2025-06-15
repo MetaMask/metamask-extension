@@ -35,11 +35,10 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../../app/scripts/lib/util';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 
 type SkipSRPBackupProps = {
   onClose: () => void;
@@ -69,7 +68,7 @@ export default function SkipSRPBackup({
     });
 
     if (
-      getPlatform() === PLATFORM_FIREFOX ||
+      getBrowserName() === PLATFORM_FIREFOX ||
       firstTimeFlowType === FirstTimeFlowType.restore
     ) {
       history.push(ONBOARDING_COMPLETION_ROUTE);
