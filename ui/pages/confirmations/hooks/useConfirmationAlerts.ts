@@ -19,6 +19,7 @@ import useBlockaidAlerts from './alerts/useBlockaidAlerts';
 import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
 import { useNetworkAndOriginSwitchingAlerts } from './alerts/useNetworkAndOriginSwitchingAlerts';
 import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
+import { useTrustSignalAlerts } from './alerts/useTrustSignalAlerts';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -86,6 +87,7 @@ export default function useConfirmationAlerts(): Alert[] {
   const transactionAlerts = useTransactionAlerts();
   const selectedAccountAlerts = useSelectedAccountAlerts();
   const networkAndOriginSwitchingAlerts = useNetworkAndOriginSwitchingAlerts();
+  const trustSignalAlerts = useTrustSignalAlerts();
 
   return useMemo(
     () => [
@@ -95,6 +97,7 @@ export default function useConfirmationAlerts(): Alert[] {
       ...transactionAlerts,
       ...selectedAccountAlerts,
       ...networkAndOriginSwitchingAlerts,
+      ...trustSignalAlerts,
     ],
     [
       blockaidAlerts,
@@ -103,6 +106,7 @@ export default function useConfirmationAlerts(): Alert[] {
       transactionAlerts,
       selectedAccountAlerts,
       networkAndOriginSwitchingAlerts,
+      trustSignalAlerts,
     ],
   );
 }
