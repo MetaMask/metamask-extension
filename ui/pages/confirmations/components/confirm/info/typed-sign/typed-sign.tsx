@@ -74,13 +74,18 @@ const TypedSignInfo: React.FC = () => {
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoAlertRow>
         {isValidAddress(verifyingContract) && (
-          <ConfirmInfoRow label={t('interactingWith')}>
+          <ConfirmInfoAlertRow
+            alertKey={RowAlertKey.InteractingWith}
+            ownerId={currentConfirmation.id}
+            label={t('interactingWith')}
+            tooltip={t('interactingWithTransactionDescription')}
+          >
             <ConfirmInfoRowAddress
               address={verifyingContract}
               chainId={chainId}
               showTrustSignals
             />
-          </ConfirmInfoRow>
+          </ConfirmInfoAlertRow>
         )}
         <SigningInWithRow />
       </ConfirmInfoSection>
