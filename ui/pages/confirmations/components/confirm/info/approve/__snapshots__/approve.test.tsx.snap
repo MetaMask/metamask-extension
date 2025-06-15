@@ -100,7 +100,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
               class="name name__clickable name__missing"
             >
               <span
-                class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
                 style="mask-image: url('./images/icons/question.svg');"
               />
               <p
@@ -162,7 +162,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
             class="name name__clickable name__missing"
           >
             <span
-              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
@@ -269,7 +269,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
             class="name name__clickable name__missing"
           >
             <span
-              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
@@ -647,7 +647,7 @@ exports[`<ApproveInfo /> renders component for approve request 1`] = `
               class="name name__clickable name__missing"
             >
               <span
-                class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
                 style="mask-image: url('./images/icons/question.svg');"
               />
               <p
