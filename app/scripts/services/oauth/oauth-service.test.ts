@@ -51,7 +51,7 @@ const mockWebAuthenticator: WebAuthenticator = {
   getPlatform: getPlatformSpy,
 };
 
-describe('OAuthService', () => {
+describe('OAuthService - startOAuthLogin', () => {
   beforeEach(() => {
     // mock the fetch call to auth-server
     jest.spyOn(global, 'fetch').mockImplementation(
@@ -115,6 +115,107 @@ describe('OAuthService', () => {
         url: await appleLoginHandler.getAuthUrl(),
       },
       expect.any(Function),
+    );
+  });
+});
+
+describe('OAuthService - getNewRefreshToken', () => {
+  beforeEach(() => {
+    // mock the fetch call to auth-server
+    jest.spyOn(global, 'fetch').mockImplementation(
+      jest.fn(() => {
+        return Promise.resolve({
+          json: jest.fn().mockResolvedValue({
+            success: true,
+            message: 'Token refreshed successfully',
+            jwt_tokens: {
+              [OAUTH_AUD]: 'MOCK_NEW_JWT_TOKEN',
+            },
+            refresh_token: 'MOCK_NEW_REFRESH_TOKEN',
+          }),
+        });
+      }) as jest.Mock,
+    );
+  });
+
+  it('should be able to get new refresh token', async () => {
+    const oauthService = new OAuthService({
+      env: getOAuthLoginEnvs(),
+      webAuthenticator: mockWebAuthenticator,
+    });
+
+    const result = await oauthService.getNewRefreshToken({
+      connection: AuthConnection.Google,
+      refreshToken: 'MOCK_REFRESH_TOKEN',
+    });
+
+    expect(result).toEqual({
+      idTokens: ['MOCK_NEW_JWT_TOKEN'],
+    });
+
+    expect(fetch).toHaveBeenCalledWith(
+      `${getOAuthLoginEnvs().authServerUrl}/api/v1/oauth/token`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          client_id: DEFAULT_GOOGLE_CLIENT_ID,
+          login_provider: AuthConnection.Google,
+          network: getOAuthLoginEnvs().web3AuthNetwork,
+          refresh_token: 'MOCK_REFRESH_TOKEN',
+          grant_type: 'refresh_token',
+        }),
+      },
+    );
+  });
+});
+
+describe('OAuthService - revokeAndGetNewRefreshToken', () => {
+  beforeEach(() => {
+    // mock the fetch call to auth-server
+    jest.spyOn(global, 'fetch').mockImplementation(
+      jest.fn(() => {
+        return Promise.resolve({
+          json: jest.fn().mockResolvedValue({
+            success: true,
+            message: 'Token revoked successfully',
+            refresh_token: 'MOCK_NEW_REFRESH_TOKEN',
+            revoke_token: 'MOCK_NEW_REVOKE_TOKEN',
+          }),
+        });
+      }) as jest.Mock,
+    );
+  });
+
+  it('should be able to get new refresh token', async () => {
+    const oauthService = new OAuthService({
+      env: getOAuthLoginEnvs(),
+      webAuthenticator: mockWebAuthenticator,
+    });
+
+    const result = await oauthService.revokeAndGetNewRefreshToken({
+      connection: AuthConnection.Google,
+      revokeToken: 'MOCK_REVOKE_TOKEN',
+    });
+
+    expect(result).toEqual({
+      newRefreshToken: 'MOCK_NEW_REFRESH_TOKEN',
+      newRevokeToken: 'MOCK_NEW_REVOKE_TOKEN',
+    });
+
+    expect(fetch).toHaveBeenCalledWith(
+      `${getOAuthLoginEnvs().authServerUrl}/api/v1/oauth/revoke`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          revoke_token: 'MOCK_REVOKE_TOKEN',
+        }),
+      },
     );
   });
 });
