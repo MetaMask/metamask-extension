@@ -710,9 +710,6 @@
   "unlock": {
     "message": "باز کردن قفل"
   },
-  "unlockMessage": {
-    "message": "وب غیر متمرکز شده انتظار میکشد"
-  },
   "urlErrorMsg": {
     "message": "URl ها نیازمند پیشوند مناسب HTTP/HTTPS اند."
   },
