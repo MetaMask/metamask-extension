@@ -17,8 +17,13 @@ export enum FirstTimeFlowType {
    */
   restore = 'restore',
   /**
-   * When a user logins with Social Login and goes through the Seedless Onboarding flow,
-   * they will have the 'seedless' firstTimeFlowType.
+   * When a user logins with Social Login and creates a new wallet,
+   * they will have the 'socialCreate' firstTimeFlowType.
    */
-  seedless = 'seedless',
+  socialCreate = 'socialCreate',
+  /**
+   * When a user logins with Social Login and imports their wallet,
+   * they will have the 'socialImport' firstTimeFlowType.
+   */
+  socialImport = 'socialImport',
 }
