@@ -183,6 +183,8 @@ export default class OAuthService {
       idTokens: [idToken],
       authConnection: loginHandler.authConnection,
       socialLoginEmail: userInfo.email,
+      refreshToken: authTokenData.refresh_token,
+      revokeToken: authTokenData.revoke_token,
     };
   }
 
