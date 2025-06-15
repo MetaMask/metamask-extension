@@ -3207,10 +3207,6 @@
     "message": "You've added a nickname for this address before. You can edit or view other suggested nicknames.",
     "description": "Instruction text in name component modal when value is saved."
   },
-  "nameInstructionsUnknown": {
-    "message": "If you know this address, give it a nickname to recognize it in the future.",
-    "description": "Instruction text in name component modal when address is unknown."
-  },
   "nameInstructionsWarning": {
     "message": "This has been identified as suspicious. If you trust this author, set a personal display name to identify it going forward.",
     "description": "Instruction text in name component modal when address has warning signals."

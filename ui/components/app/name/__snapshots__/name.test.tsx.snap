@@ -95,7 +95,7 @@ exports[`Name renders address with no saved name 1`] = `
       class="name name__clickable name__missing"
     >
       <span
-        class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+        class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
         style="mask-image: url('./images/icons/question.svg');"
       />
       <p
@@ -179,7 +179,7 @@ exports[`Name renders when no address value is passed 1`] = `
       class="name name__clickable name__missing"
     >
       <span
-        class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+        class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
         style="mask-image: url('./images/icons/question.svg');"
       />
       <p
