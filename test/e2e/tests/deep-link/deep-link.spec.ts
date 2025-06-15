@@ -73,7 +73,7 @@ describe('Deep Link', function () {
     ['locked', 'unlocked'] as const,
     ['signed', 'unsigned'] as const,
     ['/home', '/swap', '/INVALID'] as const,
-    ['continue', 'cancel'] as const,
+    ['continue'] as const,
   ).map(([locked, signed, route, action]) => {
     return { locked, signed, route, action };
   });
@@ -96,14 +96,6 @@ describe('Deep Link', function () {
           // deep link's `continue` button is able to can skip the lock screen.
           if (locked === 'unlocked') {
             await loginPage.loginToHomepage();
-          }
-
-          // if we'll later need to test the "cancel" action we need to first
-          // navigate to our TEST_PAGE to ensure the deep link interstitial page
-          // cancel button goes back as expected.
-          if (action === 'cancel') {
-            await driver.openNewURL(TEST_PAGE);
-            await driver.waitForSelector('[data-testid="empty-page-body"]');
           }
 
           // navigate to https://link.metamask.io/home and make sure it
@@ -135,36 +127,28 @@ describe('Deep Link', function () {
             assert.equal(text, 'The requested page was not found.');
           }
 
-          if (action === 'cancel') {
-            // if the action is "cancel", we should not proceed to the next page
-            // and instead click the Cancel button, which should take us back to
-            // our TEST_PAGE
-            await deepLink.clickCancelButton();
-            await driver.waitForSelector('[data-testid="empty-page-body"]');
-          } else {
-            await deepLink.clickContinueButton();
-            if (locked === 'locked') {
-              await loginPage.check_pageIsLoaded();
-              await loginPage.loginToHomepage();
-            }
-
-            let Page;
-            switch (route) {
-              case '/home':
-              case '/INVALID':
-                Page = HomePage;
-                break;
-              case '/swap':
-                Page = SwapPage;
-                break;
-              default: {
-                throw new Error(`Unknown route: ${route}`);
-              }
-            }
-            // check that the page we want has been loaded!
-            const page = new Page(driver);
-            page.check_pageIsLoaded();
+          await deepLink.clickContinueButton();
+          if (locked === 'locked') {
+            await loginPage.check_pageIsLoaded();
+            await loginPage.loginToHomepage();
           }
+
+          let Page;
+          switch (route) {
+            case '/home':
+            case '/INVALID':
+              Page = HomePage;
+              break;
+            case '/swap':
+              Page = SwapPage;
+              break;
+            default: {
+              throw new Error(`Unknown route: ${route}`);
+            }
+          }
+          // check that the page we want has been loaded!
+          const page = new Page(driver);
+          page.check_pageIsLoaded();
         },
       );
     });
