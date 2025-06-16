@@ -255,6 +255,7 @@ class UnlockPage extends Component {
       >
         {error && (
           <Text
+            data-testid="unlock-page-help-text"
             variant={TextVariant.bodySm}
             textAlign={TextAlign.Left}
             color={TextColor.errorDefault}

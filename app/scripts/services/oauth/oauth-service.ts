@@ -15,6 +15,8 @@ import type {
 } from './types';
 
 export default class OAuthService {
+  readonly #audience = 'metamask';
+
   #env: OAuthLoginEnv;
 
   #webAuthenticator: WebAuthenticator;
@@ -42,6 +44,47 @@ export default class OAuthService {
     );
 
     return this.#handleOAuthLogin(loginHandler);
+  }
+
+  async getNewRefreshToken({
+    connection,
+    refreshToken,
+  }: {
+    connection: AuthConnection;
+    refreshToken: string;
+  }): Promise<{ idTokens: string[] }> {
+    const loginHandler = createLoginHandler(
+      connection,
+      this.#env,
+      this.#webAuthenticator,
+    );
+
+    const refreshTokenData = await loginHandler.refreshAuthToken(refreshToken);
+    const idToken = refreshTokenData.jwt_tokens[this.#audience];
+
+    return {
+      idTokens: [idToken],
+    };
+  }
+
+  async revokeAndGetNewRefreshToken({
+    connection,
+    revokeToken,
+  }: {
+    connection: AuthConnection;
+    revokeToken: string;
+  }): Promise<{ newRevokeToken: string; newRefreshToken: string }> {
+    const loginHandler = createLoginHandler(
+      connection,
+      this.#env,
+      this.#webAuthenticator,
+    );
+
+    const res = await loginHandler.revokeRefreshToken(revokeToken);
+    return {
+      newRefreshToken: res.refresh_token,
+      newRevokeToken: res.revoke_token,
+    };
   }
 
   /**
@@ -188,10 +231,9 @@ export default class OAuthService {
     authCode: string,
   ): Promise<OAuthLoginResult> {
     const { authConnectionId, groupedAuthConnectionId } = this.#env;
-    const audience = 'metamask';
 
     const authTokenData = await loginHandler.getAuthIdToken(authCode);
-    const idToken = authTokenData.jwt_tokens[audience];
+    const idToken = authTokenData.jwt_tokens[this.#audience];
     const userInfo = await loginHandler.getUserInfo(idToken);
 
     return {
@@ -201,6 +243,8 @@ export default class OAuthService {
       idTokens: [idToken],
       authConnection: loginHandler.authConnection,
       socialLoginEmail: userInfo.email,
+      refreshToken: authTokenData.refresh_token,
+      revokeToken: authTokenData.revoke_token,
     };
   }
 

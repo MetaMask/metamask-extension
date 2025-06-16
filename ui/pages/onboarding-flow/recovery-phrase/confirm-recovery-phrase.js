@@ -33,10 +33,9 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../../app/scripts/lib/util';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { TraceName, bufferedEndTrace } from '../../../../shared/lib/trace';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import ConfirmSrpModal from './confirm-srp-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
@@ -128,7 +127,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     bufferedEndTrace({ name: TraceName.OnboardingJourneyOverall });
 
     const nextRoute =
-      getPlatform() === PLATFORM_FIREFOX || isFromReminderParam
+      getBrowserName() === PLATFORM_FIREFOX || isFromReminderParam
         ? ONBOARDING_COMPLETION_ROUTE
         : ONBOARDING_METAMETRICS;
 
