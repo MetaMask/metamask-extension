@@ -36,7 +36,7 @@ export const NotificationServicesPushControllerInit: ControllerInitFunction<
       vapidKey: process.env.VAPID_KEY ?? '',
     },
     config: {
-      isPushFeatureEnabled: isManifestV3 || true, // hardcoding for a dev build to share
+      isPushFeatureEnabled: isManifestV3 || !process.env.IN_TEST,
       platform: 'extension',
       pushService: {
         createRegToken,
