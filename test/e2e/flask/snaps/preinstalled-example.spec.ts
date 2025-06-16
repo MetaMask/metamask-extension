@@ -9,7 +9,7 @@ import PreinstalledExampleSettings from '../../page-objects/pages/settings/prein
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
 
 describe('Preinstalled example Snap', function () {
-  it('can display the Snap settings page', async function () {
+  it.only('can display the Snap settings page', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -29,6 +29,9 @@ describe('Preinstalled example Snap', function () {
           true,
         );
         await preInstalledExample.check_selectedDropdownOption('Option 2');
+        await driver.clickElement(
+          '.settings-page__header__title-container__close-button',
+        );
 
         // Navigate to `test-snaps` page, we don't need to connect because the Snap uses
         // initialConnections to pre-approve the dapp.
