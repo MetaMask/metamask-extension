@@ -14,6 +14,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { setFirstTimeFlowType } from '../../../store/actions';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import {
+  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -66,9 +67,9 @@ export default function OnboardingWelcome({
     dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletCreationStarted,
+      event: MetaMetricsEventName.WalletSetupStarted,
       properties: {
-        account_type: 'metamask',
+        account_type: MetaMetricsEventAccountType.Default,
       },
     });
 
@@ -80,9 +81,9 @@ export default function OnboardingWelcome({
     await dispatch(setFirstTimeFlowType(FirstTimeFlowType.import));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletImportStarted,
+      event: MetaMetricsEventName.WalletImportStarted,
       properties: {
-        account_type: 'imported',
+        account_type: MetaMetricsEventAccountType.Imported,
       },
     });
 

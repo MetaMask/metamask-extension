@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -46,6 +46,17 @@ export default function SecureYourWallet() {
     : '';
 
   const trackEvent = useContext(MetaMetricsContext);
+
+  const handleOnShowSrpDetailsModal = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.SrpDefinitionClicked,
+      properties: {
+        location: 'secure_your_wallet',
+      },
+    });
+    setShowSrpDetailsModal(true);
+  }, [trackEvent]);
 
   const handleClickRecommended = () => {
     trackEvent({
@@ -121,9 +132,7 @@ export default function SecureYourWallet() {
                 <ButtonLink
                   key="secureWalletWalletSaveSrp"
                   size={ButtonLinkSize.Inherit}
-                  onClick={() => {
-                    setShowSrpDetailsModal(true);
-                  }}
+                  onClick={handleOnShowSrpDetailsModal}
                 >
                   {t('secretRecoveryPhrase')}
                 </ButtonLink>,
