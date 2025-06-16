@@ -3,14 +3,14 @@ import { Driver } from '../../../webdriver/driver';
 class BitcoinSendPage {
   private driver: Driver;
 
-  private readonly amountInputField = `input[placeholder="0"]`;
+  private readonly sendAmountInput = '#amount';
 
   private readonly maxAmountButton = {
     text: 'Max',
     tag: 'button',
   };
 
-  private readonly recipientInputField = `input[placeholder="Enter receiving address"]`;
+  private readonly recipientInput = `#recipient`;
 
   private readonly continueButton = {
     tag: 'button',
@@ -23,7 +23,7 @@ class BitcoinSendPage {
 
   async check_pageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.recipientInputField);
+      await this.driver.waitForSelector(this.recipientInput);
     } catch (e) {
       console.log(
         'Timeout while waiting for bitcoin send page to be loaded',
@@ -34,19 +34,6 @@ class BitcoinSendPage {
     console.log('Bitcoin send page is loaded');
   }
 
-  async check_amountIsLoaded(): Promise<void> {
-    try {
-      await this.driver.waitForSelector(this.amountInputField);
-    } catch (e) {
-      console.log(
-        'Timeout while waiting for bitcoin send page amount field to be loaded',
-        e,
-      );
-      throw e;
-    }
-    console.log('Bitcoin send page amount field is loaded');
-  }
-
   async clickContinueButton() {
     console.log('Click continue button on send bitcoin screen');
     await this.driver.clickElement(this.continueButton);
@@ -54,18 +41,20 @@ class BitcoinSendPage {
 
   async fillAmount(amount: string): Promise<void> {
     console.log(`Fill amount input with ${amount} on send bitcoin screen`);
-    await this.driver.pasteIntoField(this.amountInputField, amount);
+    await this.driver.waitForSelector(this.sendAmountInput, { timeout: 10000 });
+    await this.driver.fill(this.sendAmountInput, amount);
   }
 
   async fillRecipientAddress(recipient: string) {
     console.log(
       `Fill recipient address with ${recipient} on send bitcoin screen`,
     );
-    await this.driver.pasteIntoField(this.recipientInputField, recipient);
+    await this.driver.fill(this.recipientInput, recipient);
   }
 
   async selectMaxAmount() {
     console.log('Select max amount on send bitcoin screen');
+    await this.driver.waitForSelector(this.sendAmountInput, { timeout: 10000 });
     await this.driver.clickElement(this.maxAmountButton);
   }
 
