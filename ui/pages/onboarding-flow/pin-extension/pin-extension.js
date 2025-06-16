@@ -61,7 +61,7 @@ export default function OnboardingPinExtension() {
 
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletSetupComplete,
+      event: MetaMetricsEventName.WalletSetupCompleted,
       properties: {
         wallet_setup_type:
           firstTimeFlowType === FirstTimeFlowType.import ? 'import' : 'new',

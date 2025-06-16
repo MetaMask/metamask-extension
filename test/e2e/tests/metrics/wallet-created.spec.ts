@@ -21,7 +21,7 @@ async function mockSegment(mockServer: Mockttp) {
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Wallet Setup Selected' }],
+        batch: [{ type: 'track', event: 'Wallet Setup Started' }],
       })
       .thenCallback(() => {
         return {
@@ -41,7 +41,7 @@ async function mockSegment(mockServer: Mockttp) {
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Wallet Password Created' }],
+        batch: [{ type: 'track', event: 'Wallet Creation Attempted' }],
       })
       .thenCallback(() => {
         return {
@@ -92,7 +92,7 @@ async function mockSegment(mockServer: Mockttp) {
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Wallet Created' }],
+        batch: [{ type: 'track', event: 'Onboarding Wallet Created' }],
       })
       .thenCallback(() => {
         return {
@@ -102,7 +102,7 @@ async function mockSegment(mockServer: Mockttp) {
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Wallet Setup Complete' }],
+        batch: [{ type: 'track', event: 'Wallet Setup Completed' }],
       })
       .thenCallback(() => {
         return {
@@ -151,6 +151,7 @@ describe('Wallet Created Events', function () {
           location: 'onboarding_metametrics',
         });
         assert.deepStrictEqual(events[2].properties, {
+          account_type: 'metamask',
           category: 'Onboarding',
           locale: 'en',
           chain_id: '0x539',
@@ -185,7 +186,6 @@ describe('Wallet Created Events', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'fullscreen',
-          hd_entropy_index: 0,
         });
         assert.deepStrictEqual(events[7].properties, {
           method: 'create',
@@ -197,6 +197,7 @@ describe('Wallet Created Events', function () {
           hd_entropy_index: 0,
         });
         assert.deepStrictEqual(events[8].properties, {
+          account_type: 'metamask',
           category: 'Onboarding',
           chain_id: '0x539',
           environment_type: 'fullscreen',

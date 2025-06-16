@@ -18,9 +18,9 @@ describe('Wallet Created Events - Imported Account', function () {
         title: this.test?.fullTitle(),
         testSpecificMock: async (server: Mockttp) => {
           return await mockSegment(server, [
-            'Wallet Setup Selected',
-            'Wallet Setup Complete',
-            'Wallet Created',
+            'Wallet Import Started',
+            'Wallet Setup Completed',
+            'Onboarding Wallet Created',
           ]);
         },
       },
@@ -68,6 +68,7 @@ describe('Wallet Created Events - Imported Account', function () {
           assert.deepStrictEqual(events[1].properties, {
             wallet_setup_type: 'import',
             new_wallet: false,
+            account_type: 'imported',
             category: 'Onboarding',
             locale: 'en',
             chain_id: '0x539',

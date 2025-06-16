@@ -88,7 +88,7 @@ describe('Import Wallet Events', () => {
       expect.arrayContaining([
         expect.objectContaining({
           category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.OnboardingWalletCreationComplete,
+          event: MetaMetricsEventName.WalletCreated,
           properties: {
             method: FirstTimeFlowType.import,
             is_profile_syncing_enabled: true,
