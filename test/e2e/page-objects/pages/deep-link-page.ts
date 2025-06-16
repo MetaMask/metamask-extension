@@ -93,16 +93,7 @@ export default class DeepLink {
     }
   }
 
-  async getErrorText(): Promise<string> {
-    const errorBox = await this.driver.driver.findElement(
-      By.css(this.errorBox),
-    );
-    assert.strictEqual(await errorBox.isDisplayed(), true);
-    const errorText = await errorBox.getText();
-    return errorText;
-  }
-
-  async getRouteText(): Promise<string> {
+  async getDescriptionText(): Promise<string> {
     const routeBox = await this.driver.driver.findElement(
       By.css(this.descriptionBox),
     );
