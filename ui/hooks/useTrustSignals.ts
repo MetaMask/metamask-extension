@@ -83,7 +83,7 @@ export function useTrustSignals(
   if (displayName) {
     return {
       state: TrustSignalDisplayState.Recognized,
-      trustLabel,
+      trustLabel: displayName,
     };
   }
 
