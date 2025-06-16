@@ -83,7 +83,8 @@ export class DeepLinkRouter {
       return {};
     }
 
-    const parsed = await parse(urlStr);
+    const url = new URL(urlStr);
+    const parsed = await parse(url);
     let link: string;
     if (parsed) {
       const skipDeepLinkInterstitial = Boolean(
@@ -98,7 +99,7 @@ export class DeepLinkRouter {
         );
       } else {
         const search = new URLSearchParams({
-          u: parsed.normalizedUrl.pathname + parsed.normalizedUrl.search,
+          u: url.pathname + url.search,
         });
         link = this.getExtensionURL(TRIMMED_DEEP_LINK_ROUTE, search.toString());
       }

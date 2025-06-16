@@ -1659,14 +1659,23 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
-  "deepLink_ContinueWarning": {
-    "message": "You should only continue if you trust the source of this link."
+  "deepLink_Caution": {
+    "message": "Proceed with caution"
+  },
+  "deepLink_Continue": {
+    "message": "Continue"
+  },
+  "deepLink_ContinueDescription": {
+    "message": "Clicking on \"Continue\" will direct you to this page: $1."
   },
   "deepLink_DontRemindMeAgain": {
     "message": "Don't Remind me Again"
   },
-  "deepLink_Error404": {
-    "message": "The requested page was not found."
+  "deepLink_Error404Description": {
+    "message": "The page you're searching for is no longer available."
+  },
+  "deepLink_Error404Title": {
+    "message": "This page doesn't exist"
   },
   "deepLink_ErrorMissingUrl": {
     "message": "No url to navigate to was provided."
@@ -1674,20 +1683,23 @@
   "deepLink_ErrorOther": {
     "message": "An error occurred while processing the deep link. "
   },
-  "deepLink_ErrorParsingUrl": {
-    "message": "Provided URL is not a valid MetaMask deep link or is malformed."
+  "deepLink_OpenAnyway": {
+    "message": "Open MetaMask anyway"
   },
   "deepLink_OpenTheHomePage": {
-    "message": "Open the Home Page"
+    "message": "Home Page"
   },
   "deepLink_OpenTheNotifications": {
-    "message": "Open the Notifications Page"
+    "message": "Notifications Page"
   },
   "deepLink_OpenTheSwapsPage": {
-    "message": "Open the Swaps Page"
+    "message": "Swaps Page"
   },
-  "deepLink_YouAreAboutToOpen": {
-    "message": "A previous action wants to navigate to a page within the MetaMask extension."
+  "deepLink_RedirectingYou": {
+    "message": "Redirecting you to MetaMask"
+  },
+  "deepLink_ThirdParty": {
+    "message": "A third party outside of MetaMask directed you to this page: $1. Only continue if you trust the source."
   },
   "defaultRpcUrl": {
     "message": "Default RPC URL"

@@ -41,7 +41,7 @@ describe('parse', () => {
     } as unknown as Route);
     mockVerify.mockResolvedValue(VALID);
     const urlStr = 'https://example.com/test?foo=bar';
-    const result = await parse(urlStr);
+    const result = await parse(new URL(urlStr));
     expect(result).toBe(false);
     expect(log.debug).toHaveBeenCalledWith(
       'Error handling deep link:',
@@ -55,10 +55,9 @@ describe('parse', () => {
     mockVerify.mockResolvedValue(VALID);
 
     const urlStr = 'https://example.com/test?foo=bar';
-    const result = await parse(urlStr);
+    const result = await parse(new URL(urlStr));
 
     expect(result).toStrictEqual({
-      normalizedUrl: new URL(urlStr),
       destination: 'destination-value',
       signed: true,
     });
@@ -71,10 +70,9 @@ describe('parse', () => {
     mockVerify.mockResolvedValue('INVALID');
 
     const urlStr = 'https://example.com/test?foo=bar';
-    const result = await parse(urlStr);
+    const result = await parse(new URL(urlStr));
 
     expect(result).toStrictEqual({
-      normalizedUrl: new URL(urlStr),
       destination: 'destination-value',
       signed: false,
     });
@@ -86,7 +84,7 @@ describe('parse', () => {
     mockVerify.mockResolvedValue(VALID);
 
     const urlStr = 'https://example.com/test?foo=bar';
-    await parse(urlStr);
+    await parse(new URL(urlStr));
 
     expect(mockVerify).toHaveBeenCalledWith(new URL(urlStr));
   });

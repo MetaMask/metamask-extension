@@ -96,9 +96,7 @@ describe('DeepLinkRouter', () => {
         mockIsManifestV3.mockReturnValue(manifestVersion === 3);
         const tabId = 1;
         const url = `https://example.com/external-route`;
-        parseMock.mockResolvedValue({
-          normalizedUrl: new URL(url),
-        } as ParsedDeepLink);
+        parseMock.mockResolvedValue({} as ParsedDeepLink);
         const response = await onBeforeRequest?.({
           tabId,
           url,
@@ -116,7 +114,6 @@ describe('DeepLinkRouter', () => {
         const tabId = 1;
         const url = `https://example.com/external-route?query=param`;
         parseMock.mockResolvedValue({
-          normalizedUrl: new URL(url),
           signed,
         } as ParsedDeepLink);
         await onBeforeRequest?.({
@@ -135,9 +132,7 @@ describe('DeepLinkRouter', () => {
         getState.mockReturnValue({
           preferences: { skipDeepLinkInterstitial: true },
         } as unknown as ReturnType<MetaMaskController['getState']>);
-        const normalizedUrl = new URL(url);
         parseMock.mockResolvedValue({
-          normalizedUrl,
           destination: {
             path: 'internal-route',
             query: new URLSearchParams([['one', 'two']]),
@@ -160,7 +155,6 @@ describe('DeepLinkRouter', () => {
           preferences: { skipDeepLinkInterstitial: true },
         } as unknown as ReturnType<MetaMaskController['getState']>);
         parseMock.mockResolvedValue({
-          normalizedUrl: new URL(url),
           signed: false,
         } as ParsedDeepLink);
         await onBeforeRequest?.({
@@ -208,7 +202,6 @@ describe('DeepLinkRouter', () => {
       const tabId = 1;
       const url = `https://example.com/test-route`;
       parseMock.mockResolvedValue({
-        normalizedUrl: new URL(url),
         signed: false,
       } as ParsedDeepLink);
       const error = new Error('Test error');

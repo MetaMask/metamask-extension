@@ -8,13 +8,13 @@ import SwapPage from '../../page-objects/pages/swap/swap-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { emptyHtmlPage } from '../../mock-e2e';
 import FixtureBuilder from '../../fixture-builder';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   bytesToB64,
   cartesianProduct,
   signDeepLink,
   generateECDSAKeyPair,
 } from './helpers';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
 const TEST_PAGE = 'https://doesntexist.test/';
 

@@ -7,11 +7,7 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '../../components/component-library/button';
-import {
-  parse,
-  type ParsedDeepLink,
-} from '../../../shared/lib/deep-links/parse';
-import { routes } from '../../../shared/lib/deep-links/routes';
+import { parse } from '../../../shared/lib/deep-links/parse';
 import { DEEP_LINK_HOST } from '../../../shared/lib/deep-links/constants';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -41,53 +37,71 @@ import { trackView } from './metrics';
 type TranslateFunction = (key: string, substitutions?: string[]) => string;
 
 type Route = {
-  parsed: ParsedDeepLink;
   href: string;
-  title: string;
   signed: boolean;
 };
 
 const { getExtensionURL } = globalThis.platform;
+
+function set404(
+  setDescription: React.Dispatch<React.SetStateAction<string | null>>,
+  setTitle: React.Dispatch<React.SetStateAction<string | null>>,
+  t: TranslateFunction,
+) {
+  setDescription(t('deepLink_Error404Description'));
+  setTitle(t('deepLink_Error404Title'));
+}
 
 /**
  * Updates the state based on the URL path and query. This function parses the
  * URL, retrieves the route, and sets the route and error state accordingly.
  *
  * @param urlPathAndQuery - The URL path and query string to parse. (relative to its origin, i.e., /home?utm_source=foo)
+ * @param setDescription - The function to call to set the description state.
+ * @param setIsLoading - The function to call to set the loading state.
  * @param setRoute - The function to call to set the route state.
- * @param setError - The function to call to set the error state.
+ * @param setTitle - The function to call to set the title state.
  * @param trackEvent - The function to call to track events.
  * @param t - The translation function.
  */
 async function updateStateFromUrl(
   urlPathAndQuery: string,
+  setDescription: React.Dispatch<React.SetStateAction<string | null>>,
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setRoute: React.Dispatch<React.SetStateAction<Route | null>>,
-  setError: React.Dispatch<React.SetStateAction<string | null>>,
+  setTitle: React.Dispatch<React.SetStateAction<string | null>>,
   trackEvent: UITrackEventMethod,
   t: TranslateFunction,
 ) {
-  const fullUrlStr = `https://${DEEP_LINK_HOST}${urlPathAndQuery}`;
   try {
-    const parsed = await parse(fullUrlStr);
+    const fullUrlStr = `https://${DEEP_LINK_HOST}${urlPathAndQuery}`;
+    const url = new URL(fullUrlStr);
+    setIsLoading(true);
+    const parsed = await parse(url);
     if (parsed) {
-      const { normalizedUrl, destination, signed } = parsed;
+      const { destination, signed } = parsed;
       const { path, query } = destination;
       const href = getExtensionURL(path, query.toString() ?? null);
-      const route = routes.get(normalizedUrl.pathname);
-      if (route) {
-        const title = route.getTitle(normalizedUrl.searchParams);
+      const title = parsed.route.getTitle(url.searchParams);
 
-        setRoute({ parsed, href, title, signed });
-        trackView(trackEvent, { url: normalizedUrl, signed });
-      }
+      const descriptionKey = signed
+        ? 'deepLink_ContinueDescription'
+        : 'deepLink_ThirdParty';
+      setDescription(t(descriptionKey, [t(title)]));
+      setRoute({ href, signed });
+      setTitle(signed ? t('deepLink_RedirectingYou') : t('deepLink_Caution'));
+      trackView(trackEvent, { url, signed });
     } else {
-      setError(t('deepLink_ErrorParsingUrl'));
       setRoute(null);
+      set404(setDescription, setTitle, t);
     }
   } catch (e) {
     log.error('Error parsing deep link:', e);
-    setError(t('deepLink_ErrorOther'));
+    setDescription(t('deepLink_ErrorOther'));
     setRoute(null);
+    setTitle(t('deepLink_ErrorOtherTitle'));
+  } finally {
+    setIsLoading(false);
   }
 }
 
@@ -104,25 +118,37 @@ export const DeepLink = () => {
       getPreferences(state).skipDeepLinkInterstitial,
   );
 
+  const [description, setDescription] = useState<string | null>(null);
   const [route, setRoute] = useState<null | Route>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [title, setTitle] = useState<null | string>(null);
   const [hasChecked, setHasChecked] = useState(skipDeepLinkInterstitial);
-  const isLoading = !route && !error;
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const urlStr = params.get('u');
     if (!urlStr) {
       const errorCode = params.get('errorCode');
+      setRoute(null);
+      setIsLoading(false);
       if (errorCode === '404') {
-        setError(t('deepLink_Error404'));
+        set404(setDescription, setTitle, t);
       } else {
-        setError(t('deepLink_ErrorMissingUrl'));
+        setDescription(null);
+        setTitle(t('deepLink_ErrorMissingUrl'));
       }
       return;
     }
 
-    updateStateFromUrl(urlStr, setRoute, setError, trackEvent, t);
+    updateStateFromUrl(
+      urlStr,
+      setDescription,
+      setIsLoading,
+      setRoute,
+      setTitle,
+      trackEvent,
+      t,
+    );
   }, [location.search]);
 
   function onRemindMeStateChanged() {
@@ -132,7 +158,13 @@ export const DeepLink = () => {
   }
 
   return (
-    <Container maxWidth={ContainerMaxWidth.Md} textAlign={TextAlign.Center}>
+    <Container
+      maxWidth={ContainerMaxWidth.Sm}
+      textAlign={TextAlign.Center}
+      marginLeft={6}
+      marginRight={6}
+      marginBottom={8}
+    >
       <>
         <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
           <img className="loading-logo" src="./images/logo/metamask-fox.svg" />
@@ -146,73 +178,63 @@ export const DeepLink = () => {
           )}
         </Box>
         {!isLoading && (
-          <Text
-            as="h1"
-            variant={TextVariant.headingLg}
-            fontWeight={FontWeight.Medium}
-            marginTop={12}
-            marginBottom={8}
-          >
-            Redirecting you to MetaMask
-          </Text>
-        )}
-        {error && (
-          <Box className="error" data-testid="deep-link-error">
-            <Text>{error}</Text>
-          </Box>
-        )}
-        {route && (
-          <Box data-testid="deep-link-route">
-            <Box margin={4}>
-              <Text as="span">{t('deepLink_YouAreAboutToOpen')}</Text>
-              {route.signed ? (
-                ''
-              ) : (
-                <Text as="span"> {t('deepLink_ContinueWarning')}</Text>
-              )}
-            </Box>
-          </Box>
-        )}
-
-        {!isLoading && (
-          <Box marginTop={12}>
-            {route?.signed ? (
-              <Box
-                display={Display.Flex}
-                textAlign={TextAlign.Left}
-                gap={2}
-                padding={3}
-                marginBottom={5}
-                borderRadius={BorderRadius.LG}
-                backgroundColor={BackgroundColor.backgroundMuted}
+          <>
+            {title && (
+              <Text
+                as="h1"
+                variant={TextVariant.headingLg}
+                fontWeight={FontWeight.Medium}
+                marginTop={12}
+                marginBottom={8}
               >
-                <Checkbox
-                  id="dont-remind-me-checkbox"
-                  data-testid="deep-link-checkbox"
-                  isChecked={hasChecked}
-                  onChange={onRemindMeStateChanged}
-                ></Checkbox>
-                <Label
-                  htmlFor="dont-remind-me-checkbox"
-                  fontWeight={FontWeight.Normal}
-                  variant={TextVariant.bodySm}
-                >
-                  {t('deepLink_DontRemindMeAgain')}
-                </Label>
-              </Box>
-            ) : (
-              ''
+                {title}
+              </Text>
             )}
-            <Button
-              width={BlockSize.Full}
-              variant={ButtonVariant.Primary}
-              href={route?.href ?? getExtensionURL('/')}
-              size={ButtonSize.Lg}
-              data-testid="deep-link-continue-button"
-            >
-              {t(route?.title || 'deepLink_OpenTheHomePage')}
-            </Button>
-          </Box>
+            {description && (
+              <Box as="p" data-testid="deep-link-route" paddingBottom={12}>
+                {description}
+              </Box>
+            )}
+
+            <Box marginTop={12}>
+              {route?.signed ? (
+                <Box
+                  display={Display.Flex}
+                  textAlign={TextAlign.Left}
+                  gap={2}
+                  padding={3}
+                  marginBottom={6}
+                  borderRadius={BorderRadius.LG}
+                  backgroundColor={BackgroundColor.backgroundMuted}
+                >
+                  <Checkbox
+                    id="dont-remind-me-checkbox"
+                    data-testid="deep-link-checkbox"
+                    isChecked={hasChecked}
+                    onChange={onRemindMeStateChanged}
+                  ></Checkbox>
+                  <Label
+                    htmlFor="dont-remind-me-checkbox"
+                    fontWeight={FontWeight.Normal}
+                    variant={TextVariant.bodySm}
+                  >
+                    {t('deepLink_DontRemindMeAgain')}
+                  </Label>
+                </Box>
+              ) : (
+                ''
+              )}
+              <Button
+                width={BlockSize.Full}
+                variant={ButtonVariant.Primary}
+                href={route?.href ?? getExtensionURL('/')}
+                size={ButtonSize.Lg}
+                data-testid="deep-link-continue-button"
+              >
+                {route ? t('deepLink_Continue') : t('deepLink_OpenAnyway')}
+              </Button>
+            </Box>
+          </>
         )}
       </>
     </Container>

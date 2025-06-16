@@ -1,16 +1,15 @@
 import log from 'loglevel';
 import { routes } from './routes';
-import type { Destination } from './routes/route';
+import type { Destination, Route } from './routes/route';
 import { VALID, verify } from './verify';
 
 export type ParsedDeepLink = {
-  normalizedUrl: URL;
   destination: Destination;
   signed: boolean;
+  route: Route;
 };
 
-export async function parse(urlStr: string): Promise<ParsedDeepLink | false> {
-  const url = new URL(urlStr);
+export async function parse(url: URL): Promise<ParsedDeepLink | false> {
   const route = routes.get(url.pathname.toLowerCase());
   if (!route) {
     log.debug('No handler found for the pathname:', url.pathname);
@@ -30,5 +29,5 @@ export async function parse(urlStr: string): Promise<ParsedDeepLink | false> {
   }
   const signed = isValidSignature === VALID;
 
-  return { normalizedUrl: url, destination, signed };
+  return { destination, signed, route };
 }
