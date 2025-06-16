@@ -69,6 +69,55 @@ export abstract class BaseLoginHandler {
   }
 
   /**
+   * Refresh the JWT Token using the refresh token.
+   *
+   * @param refreshToken - The refresh token from the Web3Auth Authentication Server.
+   * @returns The JWT Token from the Web3Auth Authentication Server and new refresh token.
+   */
+  async refreshAuthToken(
+    refreshToken: string,
+  ): Promise<Pick<AuthTokenResponse, 'jwt_tokens'>> {
+    const { web3AuthNetwork } = this.options;
+    const requestData = {
+      client_id: this.options.oAuthClientId,
+      login_provider: this.authConnection,
+      network: web3AuthNetwork,
+      refresh_token: refreshToken,
+      grant_type: 'refresh_token', // specify refresh token flow
+    };
+    const res = await this.requestAuthToken(JSON.stringify(requestData));
+    return res;
+  }
+
+  /**
+   * Revoke the refresh token.
+   *
+   * @param revokeToken - The revoke token from the Web3Auth Authentication Server.
+   */
+  async revokeRefreshToken(revokeToken: string): Promise<{
+    refresh_token: string;
+    revoke_token: string;
+  }> {
+    const requestData = {
+      revoke_token: revokeToken,
+    };
+
+    const res = await fetch(
+      `${this.options.authServerUrl}/api/v1/oauth/revoke`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      },
+    );
+
+    const data = await res.json();
+    return data;
+  }
+
+  /**
    * Make a request to the Web3Auth Authentication Server to get the JWT Token.
    *
    * @param requestData - The request data for the Web3Auth Authentication Server.
