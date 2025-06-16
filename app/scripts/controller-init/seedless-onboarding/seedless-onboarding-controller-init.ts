@@ -11,12 +11,7 @@ export const SeedlessOnboardingControllerInit: ControllerInitFunction<
   SeedlessOnboardingController<EncryptionKey>,
   SeedlessOnboardingControllerMessenger
 > = (request) => {
-  const {
-    controllerMessenger,
-    persistedState,
-    refreshOAuthToken,
-    revokeAndGetNewRefreshToken,
-  } = request;
+  const { controllerMessenger, persistedState } = request;
 
   const encryptor = encryptorFactory(600_000);
   const network = process.env.WEB3AUTH_NETWORK as Web3AuthNetwork;
@@ -25,8 +20,6 @@ export const SeedlessOnboardingControllerInit: ControllerInitFunction<
     messenger: controllerMessenger,
     state: persistedState.SeedlessOnboardingController,
     network,
-    refreshJWTToken: refreshOAuthToken,
-    revokeRefreshToken: revokeAndGetNewRefreshToken,
     encryptor: {
       decrypt: (key, encryptedData) => encryptor.decrypt(key, encryptedData),
       decryptWithDetail: (key, encryptedData) =>
