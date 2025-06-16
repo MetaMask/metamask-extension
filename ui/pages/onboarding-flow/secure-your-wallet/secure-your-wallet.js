@@ -115,7 +115,7 @@ export default function SecureYourWallet() {
           />
         </Box>
         <Box>
-          <Text variant={TextVariant.bodyMd} marginBottom={6} as="div">
+          <Text color={TextColor.textAlternative} marginBottom={6} as="div">
             {t('secureWalletWalletSaveSrp', [
               [
                 <ButtonLink
@@ -130,7 +130,7 @@ export default function SecureYourWallet() {
               ],
             ])}
           </Text>
-          <Text variant={TextVariant.bodyMd}>
+          <Text color={TextColor.textAlternative}>
             {t('secureWalletWalletRecover')}
           </Text>
         </Box>
