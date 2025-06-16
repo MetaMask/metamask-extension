@@ -2286,7 +2286,7 @@
     "message": "Token amount must be an integer"
   },
   "followUsOnTwitter": {
-    "message": "Follow us on Twitter"
+    "message": "Follow us on"
   },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Please specify a CID gateway"
