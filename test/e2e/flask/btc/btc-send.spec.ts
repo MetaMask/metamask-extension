@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { DEFAULT_BTC_BALANCE, DEFAULT_BTC_FEE_RATE } from '../../constants';
 import BitcoinSendPage from '../../page-objects/pages/send/bitcoin-send-page';
@@ -24,8 +25,9 @@ describe('BTC Account - Send', function (this: Suite) {
       const bitcoinSendPage = new BitcoinSendPage(driver);
       await bitcoinSendPage.check_pageIsLoaded();
       await bitcoinSendPage.fillRecipientAddress(recipientAddress);
+      await bitcoinSendPage.check_amountIsLoaded();
       await bitcoinSendPage.fillAmount(sendAmount);
-      await bitcoinSendPage.clickReviewButton();
+      await bitcoinSendPage.clickContinueButton();
 
       // ------------------------------------------------------------------------------
       // From here, we have moved to the confirmation screen (second part of the flow).
@@ -59,8 +61,9 @@ describe('BTC Account - Send', function (this: Suite) {
       const bitcoinSendPage = new BitcoinSendPage(driver);
       await bitcoinSendPage.check_pageIsLoaded();
       await bitcoinSendPage.fillRecipientAddress(recipientAddress);
+      await bitcoinSendPage.check_amountIsLoaded();
       await bitcoinSendPage.selectMaxAmount();
-      await bitcoinSendPage.clickReviewButton();
+      await bitcoinSendPage.clickContinueButton();
 
       // ------------------------------------------------------------------------------
       // From here, we have moved to the confirmation screen (second part of the flow).

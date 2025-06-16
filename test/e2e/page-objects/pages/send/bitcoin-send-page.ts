@@ -3,7 +3,7 @@ import { Driver } from '../../../webdriver/driver';
 class BitcoinSendPage {
   private driver: Driver;
 
-  private readonly amountInputField = `input[placeholder="Enter amount to send"]`;
+  private readonly amountInputField = `input[placeholder="0"]`;
 
   private readonly maxAmountButton = {
     text: 'Max',
@@ -12,14 +12,9 @@ class BitcoinSendPage {
 
   private readonly recipientInputField = `input[placeholder="Enter receiving address"]`;
 
-  private readonly reviewButton = {
-    text: 'Review',
-    tag: 'span',
-  };
-
-  private readonly totalFee = {
-    text: 'Total',
-    tag: 'p',
+  private readonly continueButton = {
+    tag: 'button',
+    testId: 'confirm-snap-footer-button',
   };
 
   constructor(driver: Driver) {
@@ -28,10 +23,7 @@ class BitcoinSendPage {
 
   async check_pageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        this.recipientInputField,
-        this.amountInputField,
-      ]);
+      await this.driver.waitForSelector(this.recipientInputField);
     } catch (e) {
       console.log(
         'Timeout while waiting for bitcoin send page to be loaded',
@@ -42,10 +34,22 @@ class BitcoinSendPage {
     console.log('Bitcoin send page is loaded');
   }
 
-  async clickReviewButton() {
-    console.log('Click review button on send bitcoin screen');
-    await this.driver.waitForSelector(this.totalFee);
-    await this.driver.clickElement(this.reviewButton);
+  async check_amountIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.amountInputField);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for bitcoin send page amount field to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Bitcoin send page amount field is loaded');
+  }
+
+  async clickContinueButton() {
+    console.log('Click continue button on send bitcoin screen');
+    await this.driver.clickElement(this.continueButton);
   }
 
   async fillAmount(amount: string): Promise<void> {
