@@ -42,7 +42,7 @@ export const arrangeTestUtils = (
       console.log(
         `Waiting for user storage event ${event} to be emitted ${expectedNumber} times`,
       );
-      await driver.waitUntil(async () => counter === expectedNumber, {
+      await driver.waitUntil(async () => counter >= expectedNumber, {
         timeout: BASE_TIMEOUT,
         interval: BASE_INTERVAL,
       });

@@ -2,7 +2,6 @@ import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/user-storage';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { mockIdentityServices } from '../identity/mocks';
 import { completeOnboardFlowIdentity } from '../identity/flows';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 import {
@@ -17,6 +16,7 @@ import NotificationsSettingsPage from '../../page-objects/pages/settings/notific
 import { Driver } from '../../webdriver/driver';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 import { mockNotificationServices } from './mocks';
+import { mockIdentityServices } from '../identity/mocks';
 
 describe('Enable Notifications - With Accounts Syncing On', function () {
   this.timeout(120000); // Multiple Syncing features can cause this test to take some time
