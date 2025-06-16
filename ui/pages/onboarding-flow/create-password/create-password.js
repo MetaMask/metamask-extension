@@ -45,9 +45,8 @@ import {
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import PasswordForm from '../../../components/app/password-form/password-form';
 import LoadingScreen from '../../../components/ui/loading-screen';
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../../app/scripts/lib/util';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 
 export default function CreatePassword({
   createNewAccount,
@@ -81,7 +80,7 @@ export default function CreatePassword({
     analyticsIframeQuery,
   )}`;
 
-  const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+  const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {

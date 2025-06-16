@@ -19,8 +19,9 @@ export class AppleLoginHandler extends BaseLoginHandler {
       this.serverRedirectUri = `${options.authServerUrl}/api/v1/oauth/callback`;
     }
 
-    // if the platform is Firefox, use BFF to redirect to apple oauth server
+    // if the platform is Firefox, use BFF (backend for frontend) to redirect to apple oauth server
     // since firefox mv 2 doesn't allow redirect url different from current extension url
+    // learn more here {@link https://github.com/MetaMask/metamask-extension/pull/23110#issuecomment-2301101000}
     const platform = options.webAuthenticator.getPlatform();
     if (platform === PLATFORM_FIREFOX) {
       this.OAUTH_SERVER_URL = `${options.authServerUrl}/api/v1/oauth/initiate`;

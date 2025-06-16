@@ -274,7 +274,7 @@ export function restoreSocialBackupAndGetSeedPhrase(
     try {
       // get the first seed phrase from the array, this is the oldest seed phrase
       // and we will use it to create the initial vault
-      const [firstSeedPhrase] = await fetchAllSeedPhrases(password);
+      const [firstSeedPhrase] = await fetchAllSecretData(password);
       if (!firstSeedPhrase) {
         throw new Error('No seed phrase found');
       }
@@ -565,18 +565,18 @@ export async function createSeedPhraseBackup(
 }
 
 /**
- * Fetches all seed phrases from the metadata store.
+ * Fetches all secret data (Seed phrases - Mnemonics, Private Keys, etc.) from the metadata store.
  *
- * Seedphrases are sorted by creation date, the latest seed phrase is the first one in the array.
+ * Secret data are sorted by creation date, the latest secret data is the first one in the array.
  *
  * @param password - The password.
  * @returns The seed phrases.
  */
-export async function fetchAllSeedPhrases(
+export async function fetchAllSecretData(
   password: string,
 ): Promise<Buffer[] | null> {
   const encodedSeedPhrases = await submitRequestToBackground<Buffer[]>(
-    'fetchAllSeedPhrases',
+    'fetchAllSecretData',
     [password],
   );
   return encodedSeedPhrases;

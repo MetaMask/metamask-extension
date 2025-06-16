@@ -30,7 +30,7 @@ class LoginPage {
       '[data-testid="reset-password-modal-button"]';
 
     this.incorrectPasswordMessage = {
-      css: '.MuiFormHelperText-root.Mui-error.MuiFormHelperText-filled',
+      css: '[data-testid="unlock-page-help-text"]',
       text: 'Incorrect password',
     };
   }
