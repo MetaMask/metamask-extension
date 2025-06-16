@@ -656,6 +656,8 @@
         "Notification.maxActions": true,
         "Notification.permission": true,
         "Notification.requestPermission": true,
+        "PushManager.getSubscription": true,
+        "PushManager.subscribe": true,
         "PushSubscription.prototype.hasOwnProperty": true,
         "ServiceWorkerRegistration": true,
         "URL": true,
@@ -1204,25 +1206,6 @@
       }
     },
     "@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "cockatiel": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true
-      }
-    },
-    "@metamask/notification-services-controller>@metamask/controller-utils": {
       "globals": {
         "URL": true,
         "console.error": true,
@@ -1853,7 +1836,7 @@
       "packages": {
         "@metamask/notification-services-controller>@contentful/rich-text-html-renderer": true,
         "@metamask/base-controller": true,
-        "@metamask/notification-services-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
         "@metamask/utils": true,
         "@metamask/notification-services-controller>bignumber.js": true,
