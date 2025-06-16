@@ -135,8 +135,11 @@ describe('Deep Link', function () {
 
           if (isInvalidRoute) {
             console.log('Getting error text for invalid route');
-            const text = await deepLink.getErrorText();
-            assert.equal(text, 'The requested page was not found.');
+            const text = await deepLink.getDescriptionText();
+            assert.equal(
+              text,
+              "The page you're searching for is no longer available.",
+            );
           }
 
           console.log('Clicking continue button');

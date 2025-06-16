@@ -25,7 +25,7 @@ describe('parse', () => {
 
   it('returns false if no route handler is found', async () => {
     const urlStr = 'https://example.com/unknown';
-    const result = await parse(urlStr);
+    const result = await parse(new URL(urlStr));
     expect(result).toBe(false);
     expect(log.debug).toHaveBeenCalledWith(
       'No handler found for the pathname:',
