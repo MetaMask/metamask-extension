@@ -229,7 +229,7 @@ export default function OnboardingMetametrics() {
           dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))
         }
         label={
-          <Text variant={TextVariant.bodySm} fontWeight={FontWeight.Medium}>
+          <Text fontWeight={FontWeight.Medium}>
             {t('onboardingMetametricsUseDataCheckbox')}
           </Text>
         }
@@ -265,7 +265,6 @@ export default function OnboardingMetametrics() {
         width={BlockSize.Full}
         className="onboarding-metametrics__buttons"
         marginTop={6}
-        marginBottom={4}
         gap={4}
       >
         <Button
