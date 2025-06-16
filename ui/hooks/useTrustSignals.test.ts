@@ -175,7 +175,110 @@ describe('useTrustSignals', () => {
     });
   });
 
-  describe('Priority 3-5: Trust signal states when enabled and no petname', () => {
+  describe('Priority 3: Recognized name takes precedence over other trust signals', () => {
+    it('returns recognized state when displayName exists, even with verified trust signal', () => {
+      getAddressSecurityAlertResponseMock.mockReturnValue({
+        result_type: ResultType.Trusted,
+        label: VERIFIED_LABEL_MOCK,
+      });
+
+      useDisplayNameMock.mockReturnValue({
+        name: DISPLAY_NAME_MOCK,
+        hasPetname: false,
+        image: undefined,
+        contractDisplayName: undefined,
+      });
+
+      const result = useTrustSignals(
+        VALUE_MOCK,
+        NameType.ETHEREUM_ADDRESS,
+        VARIATION_MOCK,
+        true,
+      );
+
+      expect(result).toStrictEqual({
+        state: TrustSignalDisplayState.Recognized,
+        trustLabel: VERIFIED_LABEL_MOCK,
+      });
+    });
+
+    it('returns recognized state when displayName exists, even with warning trust signal', () => {
+      getAddressSecurityAlertResponseMock.mockReturnValue({
+        result_type: ResultType.Warning,
+        label: WARNING_LABEL_MOCK,
+      });
+
+      useDisplayNameMock.mockReturnValue({
+        name: DISPLAY_NAME_MOCK,
+        hasPetname: false,
+        image: undefined,
+        contractDisplayName: undefined,
+      });
+
+      const result = useTrustSignals(
+        VALUE_MOCK,
+        NameType.ETHEREUM_ADDRESS,
+        VARIATION_MOCK,
+        true,
+      );
+
+      expect(result).toStrictEqual({
+        state: TrustSignalDisplayState.Recognized,
+        trustLabel: WARNING_LABEL_MOCK,
+      });
+    });
+
+    it('returns recognized state when displayName exists and no trust signals', () => {
+      getAddressSecurityAlertResponseMock.mockReturnValue(null);
+
+      useDisplayNameMock.mockReturnValue({
+        name: DISPLAY_NAME_MOCK,
+        hasPetname: false,
+        image: undefined,
+        contractDisplayName: undefined,
+      });
+
+      const result = useTrustSignals(
+        VALUE_MOCK,
+        NameType.ETHEREUM_ADDRESS,
+        VARIATION_MOCK,
+        true,
+      );
+
+      expect(result).toStrictEqual({
+        state: TrustSignalDisplayState.Recognized,
+        trustLabel: null,
+      });
+    });
+
+    it('returns recognized state when displayName exists and trust signals disabled', () => {
+      getAddressSecurityAlertResponseMock.mockReturnValue({
+        result_type: ResultType.Trusted,
+        label: VERIFIED_LABEL_MOCK,
+      });
+
+      useDisplayNameMock.mockReturnValue({
+        name: DISPLAY_NAME_MOCK,
+        hasPetname: false,
+        image: undefined,
+        contractDisplayName: undefined,
+      });
+
+      const result = useTrustSignals(
+        VALUE_MOCK,
+        NameType.ETHEREUM_ADDRESS,
+        VARIATION_MOCK,
+        false,
+      );
+
+      expect(result).toStrictEqual({
+        state: TrustSignalDisplayState.Recognized,
+        trustLabel: VERIFIED_LABEL_MOCK,
+      });
+    });
+  });
+
+  describe('Priority 4-6: Trust signal states when enabled, no petname, and no recognized name', () => {
     beforeEach(() => {
       useDisplayNameMock.mockReturnValue({
         name: null,
@@ -276,57 +379,6 @@ describe('useTrustSignals', () => {
 
       expect(result).toStrictEqual({
         state: TrustSignalDisplayState.Unknown,
-        trustLabel: VERIFIED_LABEL_MOCK,
-      });
-    });
-  });
-
-  describe('Priority 6: Recognized name fallback', () => {
-    it('returns recognized state when displayName exists but no petname or trust signals', () => {
-      getAddressSecurityAlertResponseMock.mockReturnValue(null);
-
-      useDisplayNameMock.mockReturnValue({
-        name: DISPLAY_NAME_MOCK,
-        hasPetname: false,
-        image: undefined,
-        contractDisplayName: undefined,
-      });
-
-      const result = useTrustSignals(
-        VALUE_MOCK,
-        NameType.ETHEREUM_ADDRESS,
-        VARIATION_MOCK,
-        true,
-      );
-
-      expect(result).toStrictEqual({
-        state: TrustSignalDisplayState.Recognized,
-        trustLabel: null,
-      });
-    });
-
-    it('returns recognized state when displayName exists and trust signals disabled', () => {
-      getAddressSecurityAlertResponseMock.mockReturnValue({
-        result_type: ResultType.Trusted,
-        label: VERIFIED_LABEL_MOCK,
-      });
-
-      useDisplayNameMock.mockReturnValue({
-        name: DISPLAY_NAME_MOCK,
-        hasPetname: false,
-        image: undefined,
-        contractDisplayName: undefined,
-      });
-
-      const result = useTrustSignals(
-        VALUE_MOCK,
-        NameType.ETHEREUM_ADDRESS,
-        VARIATION_MOCK,
-        false,
-      );
-
-      expect(result).toStrictEqual({
-        state: TrustSignalDisplayState.Recognized,
         trustLabel: VERIFIED_LABEL_MOCK,
       });
     });

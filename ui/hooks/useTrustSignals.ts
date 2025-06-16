@@ -79,7 +79,15 @@ export function useTrustSignals(
     };
   }
 
-  // Priority 3-5: Other trust signal states (when enabled and present)
+  // Priority 3: Recognized name (no petname, no applicable trust signals)
+  if (displayName) {
+    return {
+      state: TrustSignalDisplayState.Recognized,
+      trustLabel,
+    };
+  }
+
+  // Priority 4-5: Other trust signal states (when enabled and present)
   if (showTrustSignals && trustState) {
     switch (trustState) {
       case TrustSignalDisplayState.Verified:
@@ -100,14 +108,6 @@ export function useTrustSignals(
       default:
         break;
     }
-  }
-
-  // Priority 6: Recognized name (no petname, no applicable trust signals)
-  if (displayName) {
-    return {
-      state: TrustSignalDisplayState.Recognized,
-      trustLabel,
-    };
   }
 
   // Priority 7: Unknown (default)
