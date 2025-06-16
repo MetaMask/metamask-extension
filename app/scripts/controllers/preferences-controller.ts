@@ -6,7 +6,7 @@ import {
   AccountsControllerSetSelectedAccountAction,
   AccountsControllerState,
 } from '@metamask/accounts-controller';
-import { Json } from '@metamask/utils';
+import { Hex, Json } from '@metamask/utils';
 import {
   BaseController,
   ControllerGetStateAction,
@@ -106,6 +106,7 @@ export type Preferences = {
   };
   tokenNetworkFilter: Record<string, boolean>;
   dismissSmartAccountSuggestionEnabled: boolean;
+  smartAccountOptInForAccounts: Hex[];
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
@@ -194,6 +195,7 @@ export const getDefaultPreferencesControllerState =
       showMultiRpcModal: false,
       privacyMode: false,
       dismissSmartAccountSuggestionEnabled: false,
+      smartAccountOptInForAccounts: [],
       tokenSortConfig: {
         key: 'tokenFiatAmount',
         order: 'dsc',
@@ -916,6 +918,21 @@ export class PreferencesController extends BaseController<
   setServiceWorkerKeepAlivePreference(value: boolean): void {
     this.update((state) => {
       state.enableMV3TimestampSave = value;
+    });
+  }
+
+  /**
+   * Add account to list of accounts for which user has optedin
+   * smart account upgrade.
+   *
+   * @param accounts
+   */
+  setSmartAccountOptInForAccounts(accounts: Hex[] = []): void {
+    this.update((state) => {
+      state.preferences.smartAccountOptInForAccounts = [
+        ...state.preferences.smartAccountOptInForAccounts,
+        ...accounts.map((acc) => acc.toLowerCase() as Hex),
+      ];
     });
   }
 

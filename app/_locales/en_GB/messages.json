@@ -5234,6 +5234,12 @@
   "smartAccountSplashTitle": {
     "message": "Use smart account?"
   },
+  "smartAccountSplashInfo": {
+    "message": "Why use a smart account?"
+  },
+  "smartAccountEditAccounts": {
+    "message": "Edit accounts"
+  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Same address. Smarter features."
   },

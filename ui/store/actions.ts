@@ -1032,9 +1032,9 @@ export function removeSlide(
   };
 }
 
-export function setSplashPageAcknowledgedForAccount(account: string): void {
+export function setSmartAccountOptInForAccounts(accounts: Hex[]): void {
   try {
-    submitRequestToBackground('setSplashPageAcknowledgedForAccount', [account]);
+    submitRequestToBackground('setSmartAccountOptInForAccounts', [accounts]);
   } catch (error) {
     logErrorWithMessage(error);
     throw error;

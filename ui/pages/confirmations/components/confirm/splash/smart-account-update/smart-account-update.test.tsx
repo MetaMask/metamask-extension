@@ -10,14 +10,14 @@ import { upgradeAccountConfirmation } from '../../../../../../../test/data/confi
 import { Confirmation } from '../../../../types/confirm';
 import {
   rejectPendingApproval,
-  setSplashPageAcknowledgedForAccount,
+  setSmartAccountOptInForAccounts,
 } from '../../../../../../store/actions';
 import { SmartAccountUpdate } from './smart-account-update';
 
 jest.mock('../../../../../../store/actions', () => ({
   setAccountDetailsAddress: jest.fn(),
   rejectPendingApproval: jest.fn().mockReturnValue({}),
-  setSplashPageAcknowledgedForAccount: jest.fn(),
+  setSmartAccountOptInForAccounts: jest.fn(),
 }));
 
 const mockDispatch = jest.fn();
@@ -64,7 +64,7 @@ describe('Splash', () => {
     );
 
     expect(container.firstChild).toBeNull();
-    expect(setSplashPageAcknowledgedForAccount).toHaveBeenCalledTimes(1);
+    expect(setSmartAccountOptInForAccounts).toHaveBeenCalledTimes(1);
   });
 
   it('reject confirmation if user does not accept', async () => {

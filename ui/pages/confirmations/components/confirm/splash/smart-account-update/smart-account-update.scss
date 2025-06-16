@@ -18,4 +18,10 @@
     width: calc(100% - 32px);
     overflow: auto;
   }
+
+  &__edit {
+    position: absolute;
+    right: 10px;
+    top: 20px;
+  }
 }
