@@ -21,6 +21,7 @@ import {
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import TransactionList, {
   filterTransactionsByToken,
 } from './transaction-list.component';
@@ -33,6 +34,9 @@ const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
 const defaultState = {
   metamask: {
     ...mockState.metamask,
+    enabledNetworkMap: {
+      [CHAIN_IDS.GOERLI]: true,
+    },
     transactions: [MOCK_TRANSACTION_BY_TYPE[TransactionType.incoming]],
     internalAccounts: {
       accounts: { [MOCK_INTERNAL_ACCOUNT.id]: MOCK_INTERNAL_ACCOUNT },
@@ -347,6 +351,13 @@ describe('TransactionList', () => {
 
   describe('keepOnlyNonEvmTransactionsForToken', () => {
     const transactionWithSolAndToken = {
+      from: [
+        {
+          asset: {
+            type: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          },
+        },
+      ],
       to: [
         {
           asset: {
@@ -361,6 +372,13 @@ describe('TransactionList', () => {
       ],
     };
     const transactionWithOnlySol = {
+      from: [
+        {
+          asset: {
+            type: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          },
+        },
+      ],
       to: [
         {
           asset: {
@@ -370,6 +388,13 @@ describe('TransactionList', () => {
       ],
     };
     const transactionWithOnlyToken = {
+      from: [
+        {
+          asset: {
+            type: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+          },
+        },
+      ],
       to: [
         {
           asset: {

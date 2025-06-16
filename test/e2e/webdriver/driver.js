@@ -1228,7 +1228,7 @@ class Driver {
    *
    * @param {object} options - Parameters for the function.
    * @param {string} options.url - URL to wait for.
-   * @param {int} options.timeout - optional timeout period, defaults to this.timeout.
+   * @param {number} [options.timeout] - optional timeout period, defaults to this.timeout.
    * @returns {Promise<void>} Promise that resolves once the URL matches.
    * @throws {Error} Throws an error if the URL does not match within the timeout period.
    */
@@ -1366,7 +1366,7 @@ class Driver {
   async verboseReportOnFailure(testTitle, error) {
     console.error(
       `Failure on testcase: '${testTitle}', for more information see the ${
-        process.env.CIRCLECI ? 'artifacts tab in CI' : 'test-artifacts folder'
+        process.env.CI ? 'artifacts tab in CI' : 'test-artifacts folder'
       }\n`,
     );
     console.error(`${error}\n`);

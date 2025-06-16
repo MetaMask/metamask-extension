@@ -43,6 +43,12 @@ export enum TraceName {
   SwapViewLoaded = 'Swap View Loaded',
   Transaction = 'Transaction',
   UIStartup = 'UI Startup',
+  RevealSeed = 'Reveal Seed',
+  ImportSrp = 'Import Srp',
+  AddAccount = 'Add Account',
+  LoadCollectibles = 'Load Collectibles',
+  GetAssetHistoricalPrices = 'Get Asset Historical Prices',
+  OnFinishedTransaction = 'On Finished Transaction',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');
