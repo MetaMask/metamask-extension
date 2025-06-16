@@ -1845,6 +1845,15 @@
   "downloadGoogleChrome": {
     "message": "Download Google Chrome"
   },
+  "downloadMetaMaskMobileDescription": {
+    "message": "Face ID on our app lets you in even if you forget your password. Take MetaMask everywhere you go!"
+  },
+  "downloadMetaMaskMobileQrNote": {
+    "message": "Scan this QR code to get started."
+  },
+  "downloadMetaMaskMobileTitle": {
+    "message": "Get our mobile app"
+  },
   "downloadNow": {
     "message": "Download Now"
   },
@@ -5164,6 +5173,12 @@
   },
   "slideDebitCardTitle": {
     "message": "MetaMask debit card"
+  },
+  "slideDownloadMobileAppDescription": {
+    "message": "Take your wallet everywhere you go"
+  },
+  "slideDownloadMobileAppTitle": {
+    "message": "Download MetaMask mobile"
   },
   "slideFundWalletDescription": {
     "message": "Add or transfer tokens to get started"
