@@ -53,6 +53,8 @@ describe('SeedlessOnboardingControllerInit', () => {
       messenger: requestMock.controllerMessenger,
       state: requestMock.persistedState.SeedlessOnboardingController,
       network,
+      refreshJWTToken: expect.any(Function),
+      revokeRefreshToken: expect.any(Function),
       encryptor: {
         decrypt: expect.any(Function),
         decryptWithDetail: expect.any(Function),

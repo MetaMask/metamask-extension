@@ -41,7 +41,7 @@ jobs:
             const prs = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              head: `${context.repo.owner}:${process.env.BRANCH}`
+              head: `${context.repo.owner}:${process.env.BRANCH}`,
               base: 'master',
             });
             if (prs.data.length > 0) {
