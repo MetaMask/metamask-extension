@@ -68,13 +68,6 @@
     "message": "Ich habe die $1 gelesen und stimme ihnen zu.",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Greifen Sie mit Ihrer geheimen Wiederherstellungsphrase auf Ihre Wallet zu."
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask kann Ihr Passwort nicht wiederherstellen. Wir verwenden Ihre geheime Wiederherstellungsphrase, um Ihr Eigentum zu bestätigen, Ihre Wallet wiederherzustellen und ein neues Passwort festzulegen. Geben Sie zunächst die geheime Wiederherstellungsphrase ein, die Sie erhalten haben, als Sie Ihre Wallet erstellt haben. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Zugriff auf Ihre Kamera …"
   },
@@ -2399,9 +2392,6 @@
   "hideAdvancedDetails": {
     "message": "Erweiterte Details verbergen"
   },
-  "hideSeedPhrase": {
-    "message": "Seed-Phrase verbergen"
-  },
   "hideSentitiveInfo": {
     "message": "Sensible Informationen verbergen"
   },
@@ -4622,9 +4612,6 @@
   "revealSensitiveContent": {
     "message": "Sensible Inhalte offenlegen"
   },
-  "revealTheSeedPhrase": {
-    "message": "Seed-Phrase anzeigen"
-  },
   "review": {
     "message": "Überprüfen"
   },
@@ -4732,29 +4719,11 @@
   "seeDetails": {
     "message": "Details anzeigen"
   },
-  "seedPhraseConfirm": {
-    "message": "Geheime Wiederherstellungsphrase bestätigen"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Geheime Wiederherstellungsphrase bestätigen"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Aufschreiben und an mehreren geheimen Orten aufbewahren"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "In einem Schließfach aufbewahren"
-  },
   "seedPhraseIntroTitle": {
     "message": "Sichern Sie Ihre Wallet"
   },
   "seedPhraseReq": {
     "message": "Geheime Wiederherstellungsphrasen bestehen aus 12, 15, 18, 21 oder 24 Wörtern."
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Schreiben Sie diese geheime Wiederherstellungsphrase mit 12 Wörtern auf und bewahren Sie sie an einem Ort auf, auf den nur Sie Zugriff haben."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Schreiben Sie sich Ihre geheime Wiederherstellungsphrase auf."
   },
   "select": {
     "message": "Auswählen"
@@ -6158,9 +6127,6 @@
   },
   "time": {
     "message": "Zeit"
-  },
-  "tips": {
-    "message": "Tipps"
   },
   "tipsForUsingAWallet": {
     "message": "Tipps zur Verwendung einer Wallet"

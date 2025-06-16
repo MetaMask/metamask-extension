@@ -6387,9 +6387,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@metamask/notification-services-controller@npm:9.0.0"
+"@metamask/notification-services-controller@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@metamask/notification-services-controller@npm:10.0.0"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
     "@metamask/base-controller": "npm:^8.0.1"
@@ -6401,8 +6401,8 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/keyring-controller": ^22.0.0
-    "@metamask/profile-sync-controller": ^16.0.0
-  checksum: 10/a784eacb2757c2f204c814deb47767d0de1a1e6493947f77308db88ee4bbd7a216decbbecb6fe13f3d603635498d42bacdd905df171e9bf11920c385413eefd7
+    "@metamask/profile-sync-controller": ^17.0.0
+  checksum: 10/ebdd0b871ffb19b37ff0a41bd49f3a9f56524c82357b44adad5fe05ab938ae50122a5a41bcdf1c858abb1ea9b21d8e6acc43472212bedfdebd0a08af53703bd1
   languageName: node
   linkType: hard
 
@@ -6973,10 +6973,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^1.32.0":
-  version: 1.32.0
-  resolution: "@metamask/solana-wallet-snap@npm:1.32.0"
-  checksum: 10/54e3382649cd64a0e9951079431b42bd130ca3f5a1f739e0c978b6ba5066d862dfde84548feaab3a5cd966a25ab92cba290eba7a1a7efcd73b6b7a4deddeda30
+"@metamask/solana-wallet-snap@npm:^1.33.1":
+  version: 1.33.1
+  resolution: "@metamask/solana-wallet-snap@npm:1.33.1"
+  checksum: 10/cd500b39b3901007a7333724f66078f5dafbead3a7e502dc02775570db12d98da98cbe13f9129043d3fe48105771e2d82ab252ef2ebf497a7c4ef476a7e20945
   languageName: node
   linkType: hard
 
@@ -30374,7 +30374,7 @@ __metadata:
     "@metamask/multichain-transactions-controller": "npm:^0.9.0"
     "@metamask/name-controller": "npm:^8.0.3"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A23.6.0#~/.yarn/patches/@metamask-network-controller-npm-23.6.0-9e4332461a.patch"
-    "@metamask/notification-services-controller": "npm:^9.0.0"
+    "@metamask/notification-services-controller": "npm:^10.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^11.0.6"
@@ -30400,7 +30400,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^13.0.0"
     "@metamask/snaps-sdk": "npm:^8.0.0"
     "@metamask/snaps-utils": "npm:^10.0.0"
-    "@metamask/solana-wallet-snap": "npm:^1.32.0"
+    "@metamask/solana-wallet-snap": "npm:^1.33.1"
     "@metamask/solana-wallet-standard": "npm:^0.5.0"
     "@metamask/streams": "npm:^0.2.0"
     "@metamask/superstruct": "npm:^3.2.1"
