@@ -14,6 +14,7 @@ import {
   signDeepLink,
   generateECDSAKeyPair,
 } from './helpers';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
 const TEST_PAGE = 'https://doesntexist.test/';
 
@@ -79,7 +80,7 @@ describe('Deep Link', function () {
   });
 
   scenarios.forEach(({ locked, signed, route, action }) => {
-    it(`handles ${locked} and ${signed} ${route} deeplink with ${action} action`, async function () {
+    it(`handles ${locked} and ${signed} ${route} deep link with ${action} action`, async function () {
       await withFixtures(
         await getConfig(this.test?.fullTitle()),
         async ({ driver }: { driver: Driver }) => {
@@ -179,10 +180,7 @@ describe('Deep Link', function () {
         // 3. works as expected,
         // 4. and that it does not apply to unsigned links.
 
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.check_pageIsLoaded();
-        await loginPage.loginToHomepage();
+        await loginWithoutBalanceValidation(driver);
 
         const rawUrl = `https://link.metamask.io/home`;
         const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
@@ -204,7 +202,7 @@ describe('Deep Link', function () {
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
 
-        // a nice inbetween page to make testing more obvious
+        // a nice in-between page to make testing more obvious
         await driver.openNewURL(TEST_PAGE);
 
         // open the deep link again, it should go straight to the home page

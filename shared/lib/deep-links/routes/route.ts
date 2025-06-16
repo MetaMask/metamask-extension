@@ -9,7 +9,7 @@ export type Destination = {
 export type RouteOptions = {
   /**
    * The pathname of the route.
-   * This is the deeplink URL path that identifies the route.
+   * This is the deep link URL path that identifies the route.
    */
   pathname: string;
   /**
