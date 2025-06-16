@@ -7,9 +7,7 @@ export default class DeepLink {
 
   private readonly checkbox: string = '[data-testid="deep-link-checkbox"]';
 
-  private readonly routeBox = '[data-testid="deep-link-route"]';
-
-  private readonly errorBox = '[data-testid="deep-link-error"]';
+  private readonly descriptionBox = '[data-testid="deep-link-description"]';
 
   private readonly continueButton = '[data-testid="deep-link-continue-button"]';
 
@@ -23,10 +21,7 @@ export default class DeepLink {
 
   async check_pageIsLoaded(): Promise<void> {
     try {
-      await Promise.race([
-        this.driver.waitForSelector(this.routeBox),
-        this.driver.waitForSelector(this.errorBox),
-      ]);
+      await this.driver.waitForSelector(this.descriptionBox);
       // loading indicator should not be present when the page is loaded
       const element = await this.driver.driver.findElements(
         By.css(this.loadingIndicator),
@@ -109,7 +104,7 @@ export default class DeepLink {
 
   async getRouteText(): Promise<string> {
     const routeBox = await this.driver.driver.findElement(
-      By.css(this.routeBox),
+      By.css(this.descriptionBox),
     );
     assert.strictEqual(await routeBox.isDisplayed(), true);
     const routeText = await routeBox.getText();

@@ -138,7 +138,7 @@ describe('DeepLinkRouter', () => {
             query: new URLSearchParams([['one', 'two']]),
           },
           signed: true,
-        });
+        } as ParsedDeepLink);
         await onBeforeRequest?.({
           tabId,
           url,

@@ -59,6 +59,9 @@ describe('parse', () => {
 
     expect(result).toStrictEqual({
       destination: 'destination-value',
+      route: {
+        handler: expect.any(Function),
+      },
       signed: true,
     });
     expect(mockHandler).toHaveBeenCalledWith(new URL(urlStr).searchParams);
@@ -74,6 +77,9 @@ describe('parse', () => {
 
     expect(result).toStrictEqual({
       destination: 'destination-value',
+      route: {
+        handler: expect.any(Function),
+      },
       signed: false,
     });
   });

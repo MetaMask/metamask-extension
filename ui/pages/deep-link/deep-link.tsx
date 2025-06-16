@@ -191,7 +191,11 @@ export const DeepLink = () => {
               </Text>
             )}
             {description && (
-              <Box as="p" data-testid="deep-link-route" paddingBottom={12}>
+              <Box
+                as="p"
+                data-testid="deep-link-description"
+                paddingBottom={12}
+              >
                 {description}
               </Box>
             )}
