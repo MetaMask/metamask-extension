@@ -16,7 +16,6 @@ import {
   isProdEnabled,
 } from './trust-signals-util';
 
-// Type definitions for parsed typed data
 type ParsedTypedDataMessage = {
   primaryType: string;
   message: Record<string, unknown>;
@@ -73,10 +72,8 @@ async function handleEthSendTransaction(
 
   const { to, data } = req.params[0];
 
-  // Always scan the 'to' address
   await scanAddressAndAddToCache(to, appStateController, networkController);
 
-  // For approval transactions, also scan the spender address
   if (data && typeof data === 'string') {
     const spenderAddress = extractSpenderFromApprovalTransaction(data);
     if (spenderAddress) {
@@ -104,7 +101,6 @@ async function handleEthSignTypedData(
       : JSON.stringify(req.params[1]),
   ) as ParsedTypedDataMessage;
 
-  // Scan the verifying contract
   const verifyingContract = typedDataMessage.domain?.verifyingContract;
   if (verifyingContract) {
     await scanAddressAndAddToCache(
@@ -114,7 +110,6 @@ async function handleEthSignTypedData(
     );
   }
 
-  // For permit signatures, also scan the spender address
   const spenderAddress = extractSpenderFromPermitSignature(typedDataMessage);
   if (spenderAddress) {
     await scanAddressAndAddToCache(
@@ -177,7 +172,6 @@ function extractSpenderFromPermitSignature(
   try {
     const { primaryType, message } = typedDataMessage;
 
-    // Check if this is a permit signature
     const permitTypes = ['Permit', 'PermitSingle', 'PermitBatch'];
     if (!permitTypes.includes(primaryType)) {
       return null;
