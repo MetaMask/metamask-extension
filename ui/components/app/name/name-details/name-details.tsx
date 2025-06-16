@@ -339,61 +339,57 @@ export default function NameDetails({
     handleCopyAddress(formattedValue);
   }, [handleCopyAddress, formattedValue]);
 
-  // Get title based on trust signal state
-  const getTitle = () => {
+  // Get title and instructions based on trust signal state
+  const getTitleAndInstructions = () => {
+    let titleKey: string;
+    let instructionsKey: string;
+
     if (trustSignalDisplayState) {
       switch (trustSignalDisplayState) {
         case TrustSignalDisplayState.Malicious:
-          return t('nameModalTitleMalicious');
+          titleKey = 'nameModalTitleMalicious';
+          instructionsKey = 'nameInstructionsMalicious';
+          break;
         case TrustSignalDisplayState.Warning:
-          return t('nameModalTitleWarning');
+          titleKey = 'nameModalTitleWarning';
+          instructionsKey = 'nameInstructionsWarning';
+          break;
         case TrustSignalDisplayState.Verified:
-          return t('nameModalTitleVerified');
+          titleKey = 'nameModalTitleVerified';
+          instructionsKey = '';
+          break;
         case TrustSignalDisplayState.Petname:
-          return t('nameModalTitleSaved');
+          titleKey = 'nameModalTitleSaved';
+          instructionsKey = 'nameInstructionsSaved';
+          break;
         case TrustSignalDisplayState.Recognized:
-          return t('nameModalTitleRecognized');
+          titleKey = 'nameModalTitleRecognized';
+          instructionsKey = 'nameInstructionsRecognized';
+          break;
         case TrustSignalDisplayState.Unknown:
         default:
-          return t('nameModalTitleNew');
+          titleKey = 'nameModalTitleNew';
+          instructionsKey = 'nameInstructionsNew';
+          break;
       }
+    } else if (hasSavedPetname) {
+      titleKey = 'nameModalTitleSaved';
+      instructionsKey = 'nameInstructionsSaved';
+    } else if (isRecognizedUnsaved) {
+      titleKey = 'nameModalTitleRecognized';
+      instructionsKey = 'nameInstructionsRecognized';
+    } else {
+      titleKey = 'nameModalTitleNew';
+      instructionsKey = 'nameInstructionsNew';
     }
-    if (hasSavedPetname) {
-      return t('nameModalTitleSaved');
-    }
-    if (isRecognizedUnsaved) {
-      return t('nameModalTitleRecognized');
-    }
-    return t('nameModalTitleNew');
+
+    return {
+      title: t(titleKey),
+      instructions: instructionsKey ? t(instructionsKey) : '',
+    };
   };
 
-  // Get instructions based on trust signal state
-  const getInstructions = () => {
-    if (trustSignalDisplayState) {
-      switch (trustSignalDisplayState) {
-        case TrustSignalDisplayState.Malicious:
-          return t('nameInstructionsMalicious');
-        case TrustSignalDisplayState.Warning:
-          return t('nameInstructionsWarning');
-        case TrustSignalDisplayState.Verified:
-          return '';
-        case TrustSignalDisplayState.Recognized:
-          return t('nameInstructionsRecognized');
-        case TrustSignalDisplayState.Petname:
-          return t('nameInstructionsSaved');
-        case TrustSignalDisplayState.Unknown:
-        default:
-          return t('nameInstructionsNew');
-      }
-    }
-    if (hasSavedPetname) {
-      return t('nameInstructionsSaved');
-    }
-    if (isRecognizedUnsaved) {
-      return t('nameInstructionsRecognized');
-    }
-    return t('nameInstructionsNew');
-  };
+  const { title, instructions } = getTitleAndInstructions();
 
   const showFooterWarning =
     trustSignalDisplayState === TrustSignalDisplayState.Malicious ||
@@ -404,7 +400,7 @@ export default function NameDetails({
       <Modal isOpen onClose={handleClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader onClose={handleClose}>{getTitle()}</ModalHeader>
+          <ModalHeader onClose={handleClose}>{title}</ModalHeader>
           <ModalBody className="name-details__modal-body">
             <div
               style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}
@@ -418,7 +414,7 @@ export default function NameDetails({
               />
             </div>
             <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
-              {getInstructions()}
+              {instructions}
             </Text>
             {/* @ts-ignore */}
             <FormTextField
