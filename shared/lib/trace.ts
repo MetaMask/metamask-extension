@@ -46,6 +46,9 @@ export enum TraceName {
   RevealSeed = 'Reveal Seed',
   ImportSrp = 'Import Srp',
   AddAccount = 'Add Account',
+  LoadCollectibles = 'Load Collectibles',
+  GetAssetHistoricalPrices = 'Get Asset Historical Prices',
+  OnFinishedTransaction = 'On Finished Transaction',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');
