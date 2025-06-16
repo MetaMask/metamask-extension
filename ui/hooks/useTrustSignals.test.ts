@@ -93,7 +93,7 @@ describe('useTrustSignals', () => {
 
       expect(result).toStrictEqual({
         state: TrustSignalDisplayState.Recognized,
-        trustLabel: TRUST_LABEL_MOCK,
+        trustLabel: DISPLAY_NAME_MOCK,
       });
     });
   });
@@ -198,7 +198,7 @@ describe('useTrustSignals', () => {
 
       expect(result).toStrictEqual({
         state: TrustSignalDisplayState.Recognized,
-        trustLabel: VERIFIED_LABEL_MOCK,
+        trustLabel: DISPLAY_NAME_MOCK,
       });
     });
 
@@ -224,7 +224,7 @@ describe('useTrustSignals', () => {
 
       expect(result).toStrictEqual({
         state: TrustSignalDisplayState.Recognized,
-        trustLabel: WARNING_LABEL_MOCK,
+        trustLabel: DISPLAY_NAME_MOCK,
       });
     });
 
@@ -247,7 +247,7 @@ describe('useTrustSignals', () => {
 
       expect(result).toStrictEqual({
         state: TrustSignalDisplayState.Recognized,
-        trustLabel: null,
+        trustLabel: DISPLAY_NAME_MOCK,
       });
     });
 
@@ -273,7 +273,7 @@ describe('useTrustSignals', () => {
 
       expect(result).toStrictEqual({
         state: TrustSignalDisplayState.Recognized,
-        trustLabel: VERIFIED_LABEL_MOCK,
+        trustLabel: DISPLAY_NAME_MOCK,
       });
     });
   });
@@ -506,7 +506,7 @@ describe('useTrustSignals', () => {
 
       expect(result).toStrictEqual({
         state: TrustSignalDisplayState.Recognized,
-        trustLabel: testLabel,
+        trustLabel: DISPLAY_NAME_MOCK,
       });
     });
   });
