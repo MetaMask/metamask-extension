@@ -127,7 +127,7 @@ const spanLocator = {
   preferencesResultSpan: '#preferencesResult',
   providerVersionResultSpan: '#ethproviderResult',
   sendManageStateResultSpan: '#sendManageStateResult',
-  snapUIRenderer:'.snap-ui-renderer__content',
+  snapUIRenderer: '.snap-ui-renderer__content',
   sendUnencryptedManageStateResultSpan: '#sendUnencryptedManageStateResult',
   signTypedDataResultSpan: '#signTypedDataResult',
   retrieveManageStateResultSpan: '#retrieveManageStateResult',

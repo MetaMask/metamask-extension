@@ -1,8 +1,6 @@
 import { withFixtures, WINDOW_TITLES } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
-import {
-  mockCronjobSnap,
-} from '../mock-response-data/snaps/snap-binary-mocks';
+import { mockCronjobSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { Driver } from '../webdriver/driver';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
@@ -21,9 +19,13 @@ describe('Test Snap Cronjob', function () {
         await loginWithoutBalanceValidation(driver);
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);
-        await openTestSnapClickButtonAndInstall(driver, 'connectCronJobsButton', {
-          withExtraScreen: true
-        });
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'connectCronJobsButton',
+          {
+            withExtraScreen: true,
+          },
+        );
         await testSnaps.check_installationComplete(
           'connectCronJobsButton',
           'Reconnect to Cronjobs Snap',
