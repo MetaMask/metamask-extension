@@ -31,6 +31,7 @@ const TASKS = {
   LINT_SCSS: 'lint-scss',
   MANIFEST_DEV: 'manifest:dev',
   MANIFEST_PROD: 'manifest:prod',
+  MANIFEST_SCRIPT_DIST: 'manifest:scriptDist',
   MANIFEST_TEST: 'manifest:test',
   MANIFEST_TEST_DEV: 'manifest:testDev',
   RELOAD: 'reload',

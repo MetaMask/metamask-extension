@@ -35,10 +35,10 @@ export function webAuthenticatorFactory(): WebAuthenticator {
     : chrome.identity; // use chrome.identity for Chromium based browsers
 
   return {
-    launchWebAuthFlow: identityAPI.launchWebAuthFlow,
+    launchWebAuthFlow: identityAPI?.launchWebAuthFlow,
     generateCodeVerifierAndChallenge,
     generateNonce,
-    getRedirectURL: identityAPI.getRedirectURL,
+    getRedirectURL: identityAPI?.getRedirectURL,
     getPlatform,
   };
 }
