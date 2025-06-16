@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { useConfirmContext } from '../../context/confirm';
@@ -11,10 +10,11 @@ import {
   TrustSignalDisplayState,
 } from '../../../../hooks/useTrustSignals';
 import { SignatureRequestType } from '../../types/confirm';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export function useTrustSignalAlerts(): Alert[] {
-  const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
+  const t = useI18nContext();
 
   // Get the address to check based on confirmation type
   const addressToCheck = useMemo(() => {
@@ -46,11 +46,11 @@ export function useTrustSignalAlerts(): Alert[] {
 
   const chainId = currentConfirmation?.chainId as string;
 
-  const { state: trustSignalDisplayState, trustLabel } = useTrustSignals(
+  const { state: trustSignalDisplayState } = useTrustSignals(
     addressToCheck || '',
     NameType.ETHEREUM_ADDRESS,
     chainId,
-    true, // Always check trust signals for alerts
+    true,
   );
 
   return useMemo(() => {
@@ -66,10 +66,8 @@ export function useTrustSignalAlerts(): Alert[] {
         field: RowAlertKey.InteractingWith,
         isBlocking: false,
         key: 'trustSignalMalicious',
-        message:
-          trustLabel ||
-          'If you confirm this request, you will probably lose your assets to a scammer. ',
-        reason: 'Malicious address',
+        message: t('alertMessageAddressTrustSignal'),
+        reason: t('nameModalTitleMalicious'),
         severity: Severity.Danger,
       });
     } else if (trustSignalDisplayState === TrustSignalDisplayState.Warning) {
@@ -78,20 +76,12 @@ export function useTrustSignalAlerts(): Alert[] {
         field: RowAlertKey.InteractingWith,
         isBlocking: false,
         key: 'trustSignalWarning',
-        message:
-          trustLabel ||
-          'If you interact with this address, your assets might be at risk.',
-        reason: 'Suspicious address',
+        message: t('alertMessageAddressTrustSignal'),
+        reason: t('nameModalTitleWarning'),
         severity: Severity.Warning,
       });
     }
 
     return alerts;
-  }, [
-    addressToCheck,
-    currentConfirmation,
-    trustSignalDisplayState,
-    trustLabel,
-    t,
-  ]);
+  }, [addressToCheck, currentConfirmation, trustSignalDisplayState, t]);
 }
