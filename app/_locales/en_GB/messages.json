@@ -3837,7 +3837,7 @@
     "message": "Create a new wallet"
   },
   "onboardingImportWallet": {
-    "message": "I have an existing wallet"
+    "message": "Import an existing wallet"
   },
   "onboardingMetametricsAgree": {
     "message": "I agree"
