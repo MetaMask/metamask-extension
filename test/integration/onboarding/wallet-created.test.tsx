@@ -96,7 +96,7 @@ describe('Wallet Created Events', () => {
       expect.arrayContaining([
         expect.objectContaining({
           category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.WalletCreated,
+          event: MetaMetricsEventName.OnboardingWalletCreationComplete,
           properties: {
             method: mockMetaMaskState.firstTimeFlowType,
             hd_entropy_index: 0,
