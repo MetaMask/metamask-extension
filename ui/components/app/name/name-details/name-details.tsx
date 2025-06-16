@@ -449,8 +449,8 @@ export default function NameDetails({
                 value={name}
                 options={proposedNameOptions}
                 placeholder={
-                  trustLabel
-                    ? `Suggested: ${trustLabel}`
+                  displayName || trustLabel
+                    ? `Suggested: ${displayName || trustLabel}`
                     : t('nameSetPlaceholder')
                 }
                 onChange={handleNameChange}
