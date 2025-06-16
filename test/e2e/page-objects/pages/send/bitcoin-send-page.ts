@@ -3,7 +3,7 @@ import { Driver } from '../../../webdriver/driver';
 class BitcoinSendPage {
   private driver: Driver;
 
-  private readonly sendAmountInput = '#amount';
+  private readonly amountInput = '#amount';
 
   private readonly maxAmountButton = {
     text: 'Max',
@@ -41,8 +41,8 @@ class BitcoinSendPage {
 
   async fillAmount(amount: string): Promise<void> {
     console.log(`Fill amount input with ${amount} on send bitcoin screen`);
-    await this.driver.waitForSelector(this.sendAmountInput, { timeout: 10000 });
-    await this.driver.fill(this.sendAmountInput, amount);
+    await this.driver.waitForSelector(this.amountInput, { timeout: 10000 });
+    await this.driver.fill(this.amountInput, amount);
   }
 
   async fillRecipientAddress(recipient: string) {
@@ -54,21 +54,8 @@ class BitcoinSendPage {
 
   async selectMaxAmount() {
     console.log('Select max amount on send bitcoin screen');
-    await this.driver.waitForSelector(this.sendAmountInput, { timeout: 10000 });
+    await this.driver.waitForSelector(this.amountInput, { timeout: 10000 });
     await this.driver.clickElement(this.maxAmountButton);
-  }
-
-  /**
-   * Verifies that a specific amount is displayed on the send bitcoin screen.
-   *
-   * @param amount - The expected amount to validate.
-   */
-  async check_amountIsDisplayed(amount: string) {
-    console.log(`Check amount ${amount} is displayed on send bitcoin screen`);
-    await this.driver.waitForSelector({
-      text: amount,
-      tag: 'p',
-    });
   }
 }
 
