@@ -65,6 +65,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         await gasFeeTokenModal.check_AmountToken('USDC', '1.23 USDC');
         await gasFeeTokenModal.check_Balance('USDC', '$5.00');
         await gasFeeTokenModal.clickToken('USDC');
+        await transactionConfirmation.closeGasFeeToastMessage();
 
         await transactionConfirmation.check_gasFeeSymbol('USDC');
         await transactionConfirmation.check_gasFeeFiat('$1.23');
@@ -85,7 +86,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
     );
   });
 
-  it.only('fails transaction if error', async function () {
+  it('fails transaction if error', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -118,10 +119,9 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
 
         const gasFeeTokenModal = new GasFeeTokenModal(driver);
         await gasFeeTokenModal.clickToken('USDC');
+        await transactionConfirmation.closeGasFeeToastMessage();
 
         await transactionConfirmation.check_gasFeeSymbol('USDC');
-
-        await transactionConfirmation.closeGasFeeToastMessage();
 
         await transactionConfirmation.clickFooterConfirmButton();
 
