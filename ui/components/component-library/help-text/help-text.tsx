@@ -45,7 +45,7 @@ export const HelpText: HelpTextComponent = forwardRef(
         className={classnames('mm-help-text', className ?? '')}
         ref={ref}
         as={children && typeof children === 'object' ? 'div' : 'p'}
-        variant={TextVariant.bodyXs}
+        variant={TextVariant.bodySm}
         color={severity ? severityColor() : color}
         {...(props as TextProps<C>)}
       >
