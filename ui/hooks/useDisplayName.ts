@@ -83,7 +83,7 @@ export function useDisplayNames(
     const trustSignalIcon = getTrustSignalIcon(displayState);
     const trustSignalLabel = trustSignal?.label;
 
-    if (name === null) {
+    if (name === null && trustSignalLabel) {
       name = trustSignalLabel;
     }
 

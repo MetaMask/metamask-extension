@@ -12,9 +12,11 @@ import { getDomainResolutions } from '../ducks/domains';
 import { useDisplayName } from './useDisplayName';
 import { useNames } from './useName';
 import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
+import { useTrustSignals, TrustSignalDisplayState } from './useTrustSignals';
 
 jest.mock('./useName');
 jest.mock('./useNftCollectionsMetadata');
+jest.mock('./useTrustSignals');
 jest.mock('../ducks/domains', () => ({
   getDomainResolutions: jest.fn(),
 }));
@@ -35,6 +37,7 @@ const OTHER_NAME_TYPE = 'test' as NameType;
 describe('useDisplayName', () => {
   const useNamesMock = jest.mocked(useNames);
   const useNftCollectionsMetadataMock = jest.mocked(useNftCollectionsMetadata);
+  const useTrustSignalsMock = jest.mocked(useTrustSignals);
   const domainResolutionsMock = jest.mocked(getDomainResolutions);
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -130,6 +133,8 @@ describe('useDisplayName', () => {
       },
     ]);
 
+    useTrustSignalsMock.mockReturnValue([undefined]);
+
     state = cloneDeep(mockState);
 
     delete FIRST_PARTY_CONTRACT_NAMES[
@@ -153,6 +158,11 @@ describe('useDisplayName', () => {
       hasPetname: false,
       image: undefined,
       name: null,
+      displayState: TrustSignalDisplayState.Unknown,
+      icon: {
+        name: 'question',
+        color: undefined,
+      },
     });
   });
 
@@ -175,6 +185,8 @@ describe('useDisplayName', () => {
         hasPetname: true,
         image: undefined,
         name: PETNAME_MOCK,
+        displayState: TrustSignalDisplayState.Petname,
+        icon: null,
       });
     });
   });
@@ -204,6 +216,8 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: ERC20_IMAGE_MOCK,
         name: ERC20_TOKEN_NAME_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
       });
     });
 
@@ -232,6 +246,8 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: ERC20_IMAGE_MOCK,
         name: SYMBOL_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
       });
     });
 
@@ -260,6 +276,11 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: undefined,
         name: null,
+        displayState: TrustSignalDisplayState.Unknown,
+        icon: {
+          name: 'question',
+          color: undefined,
+        },
       });
     });
   });
@@ -287,6 +308,8 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: undefined,
         name: FIRST_PARTY_CONTRACT_NAME_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
       });
     });
 
@@ -309,6 +332,11 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: undefined,
         name: null,
+        displayState: TrustSignalDisplayState.Unknown,
+        icon: {
+          name: 'question',
+          color: undefined,
+        },
       });
     });
   });
@@ -332,6 +360,8 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: undefined,
         name: WATCHED_NFT_NAME_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
       });
     });
 
@@ -353,6 +383,11 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: undefined,
         name: null,
+        displayState: TrustSignalDisplayState.Unknown,
+        icon: {
+          name: 'question',
+          color: undefined,
+        },
       });
     });
   });
@@ -376,6 +411,8 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: NFT_IMAGE_MOCK,
         name: NFT_NAME_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
       });
     });
 
@@ -397,6 +434,11 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: undefined,
         name: null,
+        displayState: TrustSignalDisplayState.Unknown,
+        icon: {
+          name: 'question',
+          color: undefined,
+        },
       });
     });
 
@@ -418,6 +460,11 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: undefined,
         name: null,
+        displayState: TrustSignalDisplayState.Unknown,
+        icon: {
+          name: 'question',
+          color: undefined,
+        },
       });
     });
   });
@@ -441,6 +488,8 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: undefined,
         name: ENS_NAME_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
       });
     });
 
@@ -462,6 +511,11 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: undefined,
         name: null,
+        displayState: TrustSignalDisplayState.Unknown,
+        icon: {
+          name: 'question',
+          color: undefined,
+        },
       });
     });
   });
@@ -499,6 +553,8 @@ describe('useDisplayName', () => {
         hasPetname: true,
         image: NFT_IMAGE_MOCK,
         name: PETNAME_MOCK,
+        displayState: TrustSignalDisplayState.Petname,
+        icon: null,
       });
     });
 
@@ -533,6 +589,8 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: NFT_IMAGE_MOCK,
         name: FIRST_PARTY_CONTRACT_NAME_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
       });
     });
 
@@ -562,6 +620,8 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: NFT_IMAGE_MOCK,
         name: NFT_NAME_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
       });
     });
 
@@ -590,6 +650,8 @@ describe('useDisplayName', () => {
         hasPetname: false,
         image: ERC20_IMAGE_MOCK,
         name: ERC20_TOKEN_NAME_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
       });
     });
   });
