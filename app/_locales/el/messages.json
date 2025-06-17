@@ -68,13 +68,6 @@
     "message": "Έχω διαβάσει και συμφωνώ με το $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Αποκτήστε πρόσβαση στο πορτοφόλι σας με τη Μυστική σας Φράση Ανάκτησης"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "Το MetaMask δεν μπορεί να ανακτήσει τον κωδικό σας. Θα χρησιμοποιήσουμε τη Μυστική σας Φράση Ανάκτησης για να επιβεβαιώσουμε την κυριότητά σας, να ανακτήσουμε το πορτοφόλι σας και να ορίσουμε ένα νέο κωδικό. Πρώτα, εισάγετε τη Μυστική Φράση σας Ανάκτησης που σας δόθηκε όταν δημιουργήσατε το πορτοφόλι σας. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Πρόσβαση στην κάμερά σας..."
   },
@@ -2393,9 +2386,6 @@
   "hideAdvancedDetails": {
     "message": "Απόκρυψη λεπτομερειών για προχωρημένους"
   },
-  "hideSeedPhrase": {
-    "message": "Απόκρυψη φράσης ανάκτησης"
-  },
   "hideSentitiveInfo": {
     "message": "Απόκρυψη ευαίσθητων πληροφοριών"
   },
@@ -4613,9 +4603,6 @@
   "revealSensitiveContent": {
     "message": "Αποκάλυψη ευαίσθητου περιεχομένου"
   },
-  "revealTheSeedPhrase": {
-    "message": "Αποκάλυψη φράσης ανάκτησης"
-  },
   "review": {
     "message": "Επανέλεγχος"
   },
@@ -4723,29 +4710,11 @@
   "seeDetails": {
     "message": "Δείτε λεπτομέρειες"
   },
-  "seedPhraseConfirm": {
-    "message": "Επιβεβαίωση της Μυστικής Φράσης Ανάκτησης"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Επιβεβαίωση της Μυστικής Φράσης Ανάκτησης"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Γράψτε και αποθηκεύστε σε πολλά μυστικά μέρη"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Αποθήκευση σε θυρίδα ασφαλείας"
-  },
   "seedPhraseIntroTitle": {
     "message": "Προστατεύστε το πορτοφόλι σας"
   },
   "seedPhraseReq": {
     "message": "Οι Μυστικές Φράσεις Ανάκτησης περέχουν 12, 15, 18, 21 ή 24 λέξεις"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Γράψτε αυτή τη Μυστική Φράση Ανάκτησης 12 λέξεων και αποθηκεύστε την σε ένα μέρος που εμπιστεύεστε και στο οποίο μόνο εσείς έχετε πρόσβαση."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Γράψτε τη Μυστική Φράση Ανάκτησης σας"
   },
   "select": {
     "message": "Επιλέξτε"
@@ -6147,9 +6116,6 @@
   "time": {
     "message": "Ώρα"
   },
-  "tips": {
-    "message": "Συμβουλές"
-  },
   "tipsForUsingAWallet": {
     "message": "Συμβουλές για τη χρήση πορτοφολιού"
   },
@@ -6440,9 +6406,6 @@
   },
   "unlock": {
     "message": "Ξεκλείδωμα"
-  },
-  "unlockMessage": {
-    "message": "Το αποκεντρωμένο διαδίκτυο αναμένει"
   },
   "unpin": {
     "message": "Ξεκαρφίτσωμα"

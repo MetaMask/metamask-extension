@@ -175,7 +175,7 @@
     "networkConfigurationsByChainId": "object"
   },
   "NetworkOrderController": {
-    "orderedNetworkList": { "0": "object", "1": "object" },
+    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
     "enabledNetworkMap": {
       "0x539": "boolean"
     }
@@ -354,7 +354,7 @@
   },
   "UserOperationController": { "userOperations": "object" },
   "UserStorageController": {
-    "isBackupAndSyncEnabled": false,
+    "isBackupAndSyncEnabled": true,
     "isBackupAndSyncUpdateLoading": "boolean",
     "isAccountSyncingEnabled": true,
     "hasAccountSyncingSyncedAtLeastOnce": "boolean",

@@ -31,6 +31,7 @@ exports[`App Header locked state matches snapshot: locked 1`] = `
           />
         </button>
       </div>
+      <div />
       <button
         class="mm-box app-header__logo-container app-header__logo-container--clickable mm-box--background-color-transparent"
         data-testid="app-header-logo"

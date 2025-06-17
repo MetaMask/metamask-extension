@@ -68,13 +68,6 @@
     "message": "我已阅读并同意 $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "使用账户私钥助记词访问钱包"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask无法恢复您的密码。我们将使用您的私钥助记词来验证您的所有权、恢复您的钱包并设置新密码。首先，请输入创建钱包时获得的私钥助记词。$1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "正在访问您的相机……"
   },
@@ -2393,9 +2386,6 @@
   "hideAdvancedDetails": {
     "message": "隐藏高级信息"
   },
-  "hideSeedPhrase": {
-    "message": "隐藏助记词"
-  },
   "hideSentitiveInfo": {
     "message": "隐藏敏感信息"
   },
@@ -4613,9 +4603,6 @@
   "revealSensitiveContent": {
     "message": "显示敏感内容"
   },
-  "revealTheSeedPhrase": {
-    "message": "显示助记词"
-  },
   "review": {
     "message": "查看"
   },
@@ -4723,29 +4710,11 @@
   "seeDetails": {
     "message": "查看详情"
   },
-  "seedPhraseConfirm": {
-    "message": "确认私钥助记词"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "确认私钥助记词"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "写下并存储在多个秘密位置"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "安全存放在保险箱内"
-  },
   "seedPhraseIntroTitle": {
     "message": "保护您的钱包安全"
   },
   "seedPhraseReq": {
     "message": "私钥助记词包含 12、15、18、21 或 24 个字词"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "请写下这个由12个单词组成的账户私钥助记词，然后将其保存到您信任并且只有您可以访问的地方。"
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "写下您的私钥助记词"
   },
   "select": {
     "message": "选择"
@@ -6147,9 +6116,6 @@
   "time": {
     "message": "时间"
   },
-  "tips": {
-    "message": "提示"
-  },
   "tipsForUsingAWallet": {
     "message": "钱包使用提示"
   },
@@ -6440,9 +6406,6 @@
   },
   "unlock": {
     "message": "登录"
-  },
-  "unlockMessage": {
-    "message": "即将进入去中心化网络"
   },
   "unpin": {
     "message": "取消置顶"

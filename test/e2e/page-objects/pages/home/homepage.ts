@@ -321,6 +321,11 @@ class HomePage {
     });
   }
 
+  async check_portfolioLinkIsDisplayed(): Promise<void> {
+    console.log('Check if portfolio link is displayed on homepage');
+    await this.driver.waitForSelector(this.portfolioLink);
+  }
+
   /**
    * Check if the expected warning message is displayed on homepage.
    *

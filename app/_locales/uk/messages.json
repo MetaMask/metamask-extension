@@ -632,9 +632,6 @@
   "terms": {
     "message": "Умови використання"
   },
-  "tips": {
-    "message": "Чайові"
-  },
   "to": {
     "message": "Кому"
   },
@@ -712,9 +709,6 @@
   },
   "unlock": {
     "message": "Розблокувати"
-  },
-  "unlockMessage": {
-    "message": "Децентралізована мережа очікує"
   },
   "urlErrorMsg": {
     "message": "URIs вимагають відповідного префікса HTTP/HTTPS."

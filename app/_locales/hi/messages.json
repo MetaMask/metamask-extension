@@ -68,13 +68,6 @@
     "message": "मैंने $1 पढ़ लिया है और मैं सहमत हूं",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "अपने सीक्रेट रिकवरी फ्रेज़ का इस्तेमाल कर अपने वॉलेट का एक्सेस पाएं"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask आपका पासवर्ड रिकवर नहीं कर सकता। हम आपकी ओनरशिप को वेलिडेट करने, आपके वॉलेट को रिस्टोर करने और एक नया पासवर्ड सेट करने के लिए आपके सीक्रेट रिकवरी फ्रेज़ का इस्तेमाल करेंगे। सबसे पहले, अपना वह सीक्रेट रिकवरी फ्रेज़ डालें जिसे आपको अपना वॉलेट बनाते समय दिया गया था। $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "आपके कैमरे को एक्सेस कर रहे हैं..."
   },
@@ -2393,9 +2386,6 @@
   "hideAdvancedDetails": {
     "message": "एडवांस्ड विवरण छिपाएं"
   },
-  "hideSeedPhrase": {
-    "message": "सीड फ्रेज़ छुपा दें"
-  },
   "hideSentitiveInfo": {
     "message": "संवेदनशील जानकारी छिपाएं"
   },
@@ -4613,9 +4603,6 @@
   "revealSensitiveContent": {
     "message": "संवेदनशील कंटेंट दिखाएं"
   },
-  "revealTheSeedPhrase": {
-    "message": "सीड फ़्रेज़ दिखाएं"
-  },
   "review": {
     "message": "समीक्षा करें"
   },
@@ -4723,29 +4710,11 @@
   "seeDetails": {
     "message": "ब्यौरा देखें"
   },
-  "seedPhraseConfirm": {
-    "message": "सीक्रेट रिकवरी फ्रेज की कन्फर्म करें"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "सीक्रेट रिकवरी फ्रेज की कन्फर्म करें"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "लिखें और कई गुप्त स्थानों में स्टोर करें"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "सेफ डिपॉजिट बॉक्स में स्टोर करें"
-  },
   "seedPhraseIntroTitle": {
     "message": "अपने वॉलेट को सुरक्षित करें"
   },
   "seedPhraseReq": {
     "message": "सीक्रेट रिकवरी फ्रेज में 12, 15, 18, 21 या 24 शब्द होते हैं"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "12-शब्दों के इस सीक्रेट रिकवरी फ्रेज को लिखें और ऐसे स्थान पर सेव करें, जहां आप भरोसा करते हैं और केवल आप ही पहुंच सकते हैं।"
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "अपना सीक्रेट रिकवरी फ्रेज लिखें"
   },
   "select": {
     "message": "चयन करें"
@@ -6147,9 +6116,6 @@
   "time": {
     "message": "समय"
   },
-  "tips": {
-    "message": "युक्तियां"
-  },
   "tipsForUsingAWallet": {
     "message": "वॉलेट का उपयोग करने के लिए टिप्स"
   },
@@ -6440,9 +6406,6 @@
   },
   "unlock": {
     "message": "अनलॉक करें"
-  },
-  "unlockMessage": {
-    "message": "विकेंद्रीकृत वेब प्रतीक्षारत है"
   },
   "unpin": {
     "message": "अनपिन करें"
