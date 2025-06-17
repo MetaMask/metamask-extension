@@ -140,6 +140,12 @@ export const CustomNetworks = React.memo(() => {
     [orderedTestNetworks, generateMultichainNetworkListItem],
   );
 
+  // Memoize the padding value to prevent unnecessary re-renders
+  const buttonContainerPaddingTop = useMemo(
+    () => (renderedTestNetworks.length > 0 ? 4 : 0),
+    [renderedTestNetworks.length],
+  );
+
   // Memoize the add button click handler
   const handleAddNetworkClick = useCallback(() => {
     history.push('/add');
@@ -154,6 +160,7 @@ export const CustomNetworks = React.memo(() => {
           color={TextColor.textAlternative}
           paddingLeft={4}
           paddingRight={4}
+          paddingTop={4}
         >
           {t('testnets')}
         </Text>
@@ -164,7 +171,7 @@ export const CustomNetworks = React.memo(() => {
         flexDirection={FlexDirection.Column}
         paddingLeft={4}
         paddingRight={4}
-        paddingTop={4}
+        paddingTop={buttonContainerPaddingTop}
       >
         <Button
           variant={ButtonVariant.Secondary}
