@@ -27,6 +27,7 @@ import {
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -93,48 +94,108 @@ export default function CreatePassword({
     newAccountCreationInProgress,
   ]);
 
-  const handleCreate = async (event) => {
+  const handleLearnMoreClick = (event) => {
+    event.stopPropagation();
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.ExternalLinkClicked,
+      properties: {
+        text: 'Learn More',
+        location: 'create_password',
+        url: ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE,
+      },
+    });
+  };
+
+  const handleWalletImport = async () => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletImportAttempted,
+    });
+
+    await importWithRecoveryPhrase(password, secretRecoveryPhrase);
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletImported,
+      properties: {
+        biometrics_enabled: false,
+      },
+    });
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletSetupCompleted,
+      properties: {
+        wallet_setup_type: 'import',
+        new_wallet: false,
+        account_type: MetaMetricsEventAccountType.Imported,
+      },
+    });
+
+    if (getBrowserName() === PLATFORM_FIREFOX) {
+      history.push(ONBOARDING_COMPLETION_ROUTE);
+    } else {
+      history.push(ONBOARDING_METAMETRICS);
+    }
+  };
+
+  const handleCreateNewWallet = async () => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletCreationAttempted,
+      properties: {
+        account_type: MetaMetricsEventAccountType.Default,
+      },
+    });
+
+    if (createNewAccount) {
+      setNewAccountCreationInProgress(true);
+      await createNewAccount(password);
+    }
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletSetupCompleted,
+      properties: {
+        wallet_setup_type: 'new',
+        new_wallet: true,
+        account_type: MetaMetricsEventAccountType.Default,
+      },
+    });
+
+    history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+  };
+
+  const handleCreatePassword = async (event) => {
     event?.preventDefault();
 
     if (!password) {
       return;
     }
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletCreationAttempted,
-    });
-
-    // If secretRecoveryPhrase is defined we are in import wallet flow
-    if (
-      secretRecoveryPhrase &&
-      firstTimeFlowType === FirstTimeFlowType.import
-    ) {
-      await importWithRecoveryPhrase(password, secretRecoveryPhrase);
-      getBrowserName() === PLATFORM_FIREFOX
-        ? history.push(ONBOARDING_COMPLETION_ROUTE)
-        : history.push(ONBOARDING_METAMETRICS);
-    } else {
-      // Otherwise we are in create new wallet flow
-      try {
-        if (createNewAccount) {
-          setNewAccountCreationInProgress(true);
-          await createNewAccount(password);
-        }
-        if (firstTimeFlowType === FirstTimeFlowType.social) {
-          history.push(ONBOARDING_METAMETRICS);
-        } else {
-          history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
-        }
-      } catch (error) {
-        console.error(error);
+    try {
+      // If secretRecoveryPhrase is defined we are in import wallet flow
+      if (
+        secretRecoveryPhrase &&
+        firstTimeFlowType === FirstTimeFlowType.import
+      ) {
+        await handleWalletImport();
+      } else {
+        // Otherwise we are in create new wallet flow
+        await handleCreateNewWallet();
       }
+    } catch (error) {
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.WalletSetupFailure,
+      });
     }
   };
 
   const createPasswordLink = (
     <a
-      onClick={(e) => e.stopPropagation()}
+      onClick={handleLearnMoreClick}
       key="create-password__link-text"
       href={ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}
       target="_blank"
@@ -156,7 +217,7 @@ export default function CreatePassword({
       as="form"
       className="create-password"
       data-testid="create-password"
-      onSubmit={handleCreate}
+      onSubmit={handleCreatePassword}
     >
       <Box>
         <Box

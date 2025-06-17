@@ -57,6 +57,17 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
   }, [currentKeyring, history]);
   const trackEvent = useContext(MetaMetricsContext);
 
+  const onShowSrpDetailsModal = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.SrpDefinitionClicked,
+      properties: {
+        location: 'import_srp',
+      },
+    });
+    setShowSrpDetailsModal(true);
+  }, [trackEvent]);
+
   const onContinue = useCallback(() => {
     let newSrpError = '';
     if (
@@ -138,7 +149,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
             iconName={IconName.Info}
             size={ButtonIconSize.Sm}
             color={IconColor.iconAlternative}
-            onClick={() => setShowSrpDetailsModal(true)}
+            onClick={onShowSrpDetailsModal}
             ariaLabel="info"
           />
         </Box>

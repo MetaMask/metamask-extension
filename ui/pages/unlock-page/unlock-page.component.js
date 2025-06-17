@@ -199,6 +199,14 @@ export default class UnlockPage extends Component {
     this.setState({ showResetPasswordModal: true });
   };
 
+  onRestoreWallet = () => {
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Accounts,
+      event: MetaMetricsEventName.ResetWallet,
+    });
+    this.props.onRestore();
+  };
+
   render() {
     const { password, error, isLocked, showResetPasswordModal } = this.state;
     const { t } = this.context;
@@ -221,7 +229,7 @@ export default class UnlockPage extends Component {
         {showResetPasswordModal && (
           <ResetPasswordModal
             onClose={() => this.setState({ showResetPasswordModal: false })}
-            onRestore={() => this.props.onRestore()}
+            onRestore={this.onRestoreWallet}
           />
         )}
         <Box
