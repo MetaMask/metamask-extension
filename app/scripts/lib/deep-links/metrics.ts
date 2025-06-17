@@ -4,28 +4,21 @@ import {
 } from '../../../../shared/constants/metametrics';
 
 /**
- * Tracks the usage of a deep link interstitial.
+ * Creates a trackable Event Payload representing deep link usage.
  *
  * @param route - The parameters for the tracking event.
  * @param route.url - The original full URL of the deep link.
  * @param route.signed - Whether the deep link has a valid signature.
- * @returns A promise that resolves when the tracking event is complete.
  */
-export async function createEvent({
-  url,
-  signed,
-}: {
-  url: URL;
-  signed: boolean;
-}) {
-  const utm: Record<string, string> = {};
+export function createEvent({ url, signed }: { url: URL; signed: boolean }) {
   let attributionId: string | undefined;
+  const utm: Record<string, string> = {};
   const sensitiveProperties: Record<string, string> = {};
   for (const [key, value] of url.searchParams.entries()) {
-    if (key.startsWith('utm_')) {
-      utm[key] = value;
-    } else if (key === 'attribution_id') {
+    if (key === 'attribution_id') {
       attributionId = value;
+    } else if (key.startsWith('utm_')) {
+      utm[key] = value;
     } else {
       sensitiveProperties[key] = value;
     }
@@ -36,8 +29,8 @@ export async function createEvent({
     event: MetaMetricsEventName.DeepLinkUsed,
     properties: {
       route: url.pathname,
-      is_signature_valid: signed,
       attribution_id: attributionId,
+      is_signature_valid: signed,
       utm,
     },
     sensitiveProperties,
