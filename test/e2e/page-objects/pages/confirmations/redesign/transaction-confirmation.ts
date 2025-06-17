@@ -110,10 +110,7 @@ class TransactionConfirmation extends Confirmation {
 
   async closeGasFeeToastMessage() {
     // the toast message automatically disappears after some seconds, so we need to use clickElementSafe to prevent race conditions
-    await this.driver.clickElementSafe(
-      this.gasFeeCloseToastMessage,
-      5000,
-    );
+    await this.driver.clickElementSafe(this.gasFeeCloseToastMessage, 5000);
   }
 
   async verifyAdvancedDetailsIsDisplayed(type: string) {
