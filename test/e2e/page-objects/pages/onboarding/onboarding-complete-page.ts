@@ -24,6 +24,11 @@ class OnboardingCompletePage {
     tag: 'h2',
   };
 
+  private readonly keepSRPSafeMessage = {
+    text: 'Keep your Secret Recovery Phrase safe!',
+    tag: 'h2',
+  };
+
   private readonly remindMeLaterButton = {
     text: 'We’ll remind you later',
     tag: 'h2',
@@ -39,6 +44,7 @@ class OnboardingCompletePage {
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
+        this.manageDefaultSettingsButton,
         this.onboardingCompleteDoneButton,
       ]);
     } catch (e) {
@@ -49,6 +55,22 @@ class OnboardingCompletePage {
       throw e;
     }
     console.log('Onboarding wallet creation complete page is loaded');
+  }
+
+  async check_pageIsLoaded_backup(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.keepSRPSafeMessage,
+        this.onboardingCompleteDoneButton,
+      ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for srp backup complete page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('SRP backup complete page is loaded');
   }
 
   async clickCreateWalletDoneButton(): Promise<void> {
@@ -80,6 +102,10 @@ class OnboardingCompletePage {
 
   async check_walletReadyMessageIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.walletReadyMessage);
+  }
+
+  async check_keepSRPSafeMessageIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.keepSRPSafeMessage);
   }
 
   async check_remindMeLaterButtonIsDisplayed(): Promise<void> {
