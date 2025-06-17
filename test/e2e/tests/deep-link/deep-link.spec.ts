@@ -15,6 +15,10 @@ import {
   signDeepLink,
   generateECDSAKeyPair,
 } from './helpers';
+import type { Anvil } from '../../seeder/anvil';
+import type { Ganache } from '../../seeder/ganache';
+
+type LocalNode = Ganache | Anvil;
 
 const TEST_PAGE = 'https://doesntexist.test/';
 
@@ -324,6 +328,45 @@ describe('Deep Link', function () {
         // open the signed link again, it should show the interstitial
         await driver.openNewURL(signedUrl);
         await deepLink.check_pageIsLoaded();
+      },
+    );
+  });
+
+  it("does not allow the loading screen over the deep link's component", async function () {
+    await withFixtures(
+      await getConfig(this.test?.fullTitle()),
+      async ({
+        driver,
+        localNodes,
+      }: {
+        driver: Driver;
+        localNodes: LocalNode[];
+      }) => {
+        await driver.navigate();
+        // shut down all local nodes to ensure the network loading screen is needed
+        await Promise.all(localNodes.map((node) => node.quit()));
+
+        const loginPage = new LoginPage(driver);
+        await loginPage.check_pageIsLoaded();
+        await loginPage.loginToHomepage();
+
+        const rawUrl = `https://link.metamask.io/home`;
+        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+
+        // test signed flow
+        await driver.openNewURL(signedUrl);
+        const deepLink = new DeepLink(driver);
+        await deepLink.check_pageIsLoaded();
+
+        // make sure the loading overlays is not present
+        await driver.assertElementNotPresent('.loading-overlay');
+
+        // make sure we can click the continue button
+        await deepLink.clickContinueButton();
+
+        // make sure the home page has loaded!
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
       },
     );
   });

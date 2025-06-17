@@ -485,13 +485,18 @@ export default class Routes extends Component {
       transactionsMetadata[confirmationId]?.type,
     );
 
+    const isShowingDeepLinkRoute = location.pathname === DEEP_LINK_ROUTE;
+
     let isLoadingShown =
       isLoading &&
       completedOnboarding &&
       // In the redesigned screens, we hide the general loading spinner and the
       // loading states are on a component by component basis.
       !isCorrectApprovalType &&
-      !isCorrectTransactionType;
+      !isCorrectTransactionType &&
+      // We don't want to show the loading screen on the deep link route, as it
+      // is already a fullscreen interface.
+      !isShowingDeepLinkRoute;
 
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isLoadingShown =
@@ -505,7 +510,10 @@ export default class Routes extends Component {
       // In the redesigned screens, we hide the general loading spinner and the
       // loading states are on a component by component basis.
       !isCorrectApprovalType &&
-      !isCorrectTransactionType;
+      !isCorrectTransactionType &&
+      // We don't want to show the loading spinner on the deep link route, as it
+      // is already a fullscreen interface.
+      !isShowingDeepLinkRoute;
     ///: END:ONLY_INCLUDE_IF
 
     return (
@@ -566,7 +574,10 @@ export default class Routes extends Component {
         }
         <Box className="main-container-wrapper">
           {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
-          {!isLoading && isNetworkLoading && completedOnboarding ? (
+          {!isLoading &&
+          isNetworkLoading &&
+          completedOnboarding &&
+          !isShowingDeepLinkRoute ? (
             <LoadingNetwork />
           ) : null}
           {this.renderRoutes()}
