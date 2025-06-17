@@ -90,7 +90,6 @@ const NameDisplay = memo(
       );
     };
 
-    // Determine what name to display based on priority
     const getDisplayName = () => {
       // Priority 1: Petname or recognized name from name providers
       if (name) {
