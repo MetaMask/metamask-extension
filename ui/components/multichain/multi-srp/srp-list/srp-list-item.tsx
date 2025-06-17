@@ -17,8 +17,7 @@ import {
   AvatarAccountSize,
   Box,
 } from '../../../component-library';
-// eslint-disable-next-line import/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
+import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 
 type SrpListItemProps = {
   account: InternalAccountWithBalance;
@@ -55,7 +54,7 @@ export const SrpListItem = ({ account }: SrpListItemProps) => {
           marginLeft={1}
           paddingInlineStart={1}
         >
-          {shortenAddress(normalizeSafeAddress(account.address))}
+          {shortenAddress(toChecksumHexAddress(account.address))}
         </Text>
       </Box>
       <Text variant={TextVariant.bodySm}>

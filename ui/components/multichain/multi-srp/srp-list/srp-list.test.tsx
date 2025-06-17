@@ -7,8 +7,7 @@ import { renderWithProvider } from '../../../../../test/jest/rendering';
 import mockState from '../../../../../test/data/mock-state.json';
 import { InternalAccountWithBalance } from '../../../../selectors';
 import { shortenAddress } from '../../../../helpers/utils/util';
-// eslint-disable-next-line import/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
+import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import { SrpList } from './srp-list';
 
 const mockTotalFiatBalance = '100';
@@ -82,10 +81,10 @@ describe('SrpList', () => {
     fireEvent.click(showAccountsButton);
 
     const shortenedAccount1 = shortenAddress(
-      normalizeSafeAddress(account1Address),
+      toChecksumHexAddress(account1Address),
     );
     const shortenedAccount2 = shortenAddress(
-      normalizeSafeAddress(account2Address),
+      toChecksumHexAddress(account2Address),
     );
 
     expect(getByText(shortenedAccount1)).toBeInTheDocument();
