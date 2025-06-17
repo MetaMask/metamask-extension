@@ -53,7 +53,11 @@ export type NetworkOrderControllerMessenger = RestrictedMessenger<
 // Default state for the controller
 const defaultState: NetworkOrderControllerState = {
   orderedNetworkList: [],
-  enabledNetworkMap: {},
+  enabledNetworkMap: {
+    '0x1': true,
+    '0xe708': true,
+    '0x2105': true,
+  },
 };
 
 // Metadata for the controller state
