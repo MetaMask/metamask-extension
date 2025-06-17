@@ -11,9 +11,8 @@ import { MultichainNetworks } from '../../constants/multichain/networks';
 const DOMAIN = 'https://metamask.io';
 
 export function isSecurityAlertsAPIEnabled() {
-  // const isEnabled = process.env.SECURITY_ALERTS_API_ENABLED;
-  // return isEnabled?.toString() === 'true';
-  return true;
+  const isEnabled = process.env.SECURITY_ALERTS_API_ENABLED;
+  return isEnabled?.toString() === 'true';
 }
 
 function getUrl(endpoint: string) {
