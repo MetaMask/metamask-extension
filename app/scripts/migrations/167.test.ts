@@ -5,20 +5,27 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { migrate, version } from './167';
 
+const oldVersion = 166;
+
 const storage = {
   meta: { version: -1 },
   data: {},
 };
 
-describe('storage is migrated successfully', () => {
-  it('should work', async () => {
-    const migratedData = await migrate(storage);
-    expect(migratedData.meta.version).toStrictEqual(version);
+describe(`migration #${version}`, () => {
+  beforeEach(() => {
+    global.sentry = { captureException: jest.fn() };
   });
-});
 
-describe('migration #167', () => {
-  const oldVersion = 166;
+  afterEach(() => {
+    global.sentry = undefined;
+  });
+
+  it('updates the version metadata', async () => {
+    const newStorage = await migrate(storage);
+
+    expect(newStorage.meta).toStrictEqual({ version });
+  });
 
   it('should remove permissions for chains that are not configured', async () => {
     const oldStorage = {
