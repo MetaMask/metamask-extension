@@ -875,6 +875,8 @@ export enum MetaMetricsEventName {
   CrossChainSwapsQuotesReceived = 'Cross-chain Quotes Received',
   CrossChainSwapsQuotesRequested = 'Cross-chain Quotes Requested',
   Wallet5792Called = 'EIP-5792 API Called',
+  // Delete Wallet Modal
+  WalletRestored = 'Wallet Restored',
 }
 
 export enum MetaMetricsEventAccountType {
