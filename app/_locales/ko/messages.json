@@ -6419,9 +6419,6 @@
   "unlock": {
     "message": "잠금 해제"
   },
-  "unlockMessage": {
-    "message": "분산된 웹이 다음을 대기 중"
-  },
   "unpin": {
     "message": "고정 해제"
   },

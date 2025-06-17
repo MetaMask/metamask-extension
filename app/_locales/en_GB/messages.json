@@ -2136,6 +2136,9 @@
   "enterOptionalPassword": {
     "message": "Enter optional password"
   },
+  "enterPassword": {
+    "message": "Enter password"
+  },
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
@@ -2338,6 +2341,18 @@
   },
   "forgotPassword": {
     "message": "Forgot password?"
+  },
+  "forgotPasswordModalButton": {
+    "message": "Reset wallet"
+  },
+  "forgotPasswordModalDescription1": {
+    "message": "MetaMask can’t recover your password for you."
+  },
+  "forgotPasswordModalDescription2": {
+    "message": "You can reset your wallet by entering the Secret Recovery Phrase you used when you set up your wallet."
+  },
+  "forgotPasswordModalTitle": {
+    "message": "Forgot your password?"
   },
   "form": {
     "message": "form"
@@ -6696,9 +6711,6 @@
   },
   "unlock": {
     "message": "Unlock"
-  },
-  "unlockMessage": {
-    "message": "The decentralized web awaits"
   },
   "unpin": {
     "message": "Unpin"
