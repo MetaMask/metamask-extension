@@ -23,11 +23,6 @@ import {
   getMockCreateFCMRegistrationTokenResponse,
   getMockDeleteFCMRegistrationTokenResponse,
 } from '@metamask/notification-services-controller/push-services/mocks';
-import {
-  getMockAuthNonceResponse,
-  getMockAuthLoginResponse,
-  getMockAuthAccessTokenResponse,
-} from '@metamask/profile-sync-controller/auth/mocks';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 
@@ -97,11 +92,6 @@ export async function mockNotificationServices(
   server: Mockttp,
   triggerServer: MockttpNotificationTriggerServer = new MockttpNotificationTriggerServer(),
 ) {
-  // Auth
-  mockAPICall(server, getMockAuthNonceResponse());
-  mockAPICall(server, getMockAuthLoginResponse());
-  mockAPICall(server, getMockAuthAccessTokenResponse());
-
   // Trigger Server
   triggerServer.setupServer(server);
 

@@ -301,25 +301,16 @@ export const getNetworkNameByChainId = (
  * - nativeCurrencyName: The name of the native currency.
  * - nativeCurrencySymbol: The symbol of the native currency.
  * - nativeCurrencyLogo: The logo URL of the native currency.
- * - nativeCurrencyAddress: A default address, typically the zero address.
  * - nativeBlockExplorerUrl: The URL of the block explorer associated with the network, if available.
  */
 export function getNetworkDetailsByChainId(chainId: number): {
   nativeCurrencyName: string;
   nativeCurrencySymbol: string;
   nativeCurrencyLogo: string;
-  nativeCurrencyAddress: string;
   blockExplorerConfig?: BlockExplorerConfig;
 } {
   const chainIdStr = chainId.toString();
   const hexChainId = `0x${decimalToHex(chainId)}`;
-
-  console.log('getNetworkDetailsByChainId', {
-    chainIdStr,
-    hexChainId,
-    NOTIFICATION_CHAINS_ID,
-    x: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[hexChainId],
-  });
 
   type KnownChainIds =
     (typeof NOTIFICATION_CHAINS_ID)[keyof typeof NOTIFICATION_CHAINS_ID];
@@ -333,7 +324,6 @@ export function getNetworkDetailsByChainId(chainId: number): {
       nativeCurrencySymbol:
         NOTIFICATION_NETWORK_CURRENCY_SYMBOL[knownChainId] ?? '',
       nativeCurrencyLogo: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[hexChainId],
-      nativeCurrencyAddress: '0x0000000000000000000000000000000000000000',
       blockExplorerConfig: SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS[knownChainId],
     };
   }
@@ -346,7 +336,6 @@ export function getNetworkDetailsByChainId(chainId: number): {
         hexChainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
       ] ?? '',
     nativeCurrencyLogo: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[hexChainId],
-    nativeCurrencyAddress: '0x0000000000000000000000000000000000000000',
     blockExplorerConfig:
       SUPPORTED_NOTIFICATION_BLOCK_EXPLORERS[chainIdStr as KnownChainIds],
   };
