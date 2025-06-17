@@ -1437,9 +1437,6 @@
   "unlock": {
     "message": "Sblocca"
   },
-  "unlockMessage": {
-    "message": "Il web decentralizzato ti attende"
-  },
   "urlErrorMsg": {
     "message": "Gli URI richiedono un prefisso HTTP/HTTPS."
   },
