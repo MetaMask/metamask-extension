@@ -134,7 +134,6 @@ export const NetworkListItem = ({
 
   return (
     <Box
-      data-testid={`network-list-item-${chainId}`}
       paddingLeft={4}
       paddingRight={4}
       paddingTop={rpcEndpoint ? 2 : 4}
