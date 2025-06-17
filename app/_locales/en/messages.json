@@ -2286,7 +2286,7 @@
     "message": "Token amount must be an integer"
   },
   "followUsOnTwitter": {
-    "message": "Follow us on Twitter"
+    "message": "Follow us on"
   },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Please specify a CID gateway"
@@ -3837,7 +3837,7 @@
     "message": "Create a new wallet"
   },
   "onboardingImportWallet": {
-    "message": "I have an existing wallet"
+    "message": "Import an existing wallet"
   },
   "onboardingMetametricsAgree": {
     "message": "I agree"

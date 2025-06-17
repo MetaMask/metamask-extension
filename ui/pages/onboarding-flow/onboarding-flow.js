@@ -37,7 +37,6 @@ import {
   getShowTermsOfUse,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import Button from '../../components/ui/button';
 import RevealSRPModal from '../../components/app/reveal-SRP-modal';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -49,7 +48,12 @@ import ExperimentalArea from '../../components/app/flask/experimental-area';
 ///: END:ONLY_INCLUDE_IF
 import { submitRequestToBackgroundAndCatch } from '../../components/app/toast-master/utils';
 import { getHDEntropyIndex } from '../../selectors/selectors';
-import { Box } from '../../components/component-library';
+import {
+  Box,
+  ButtonLink,
+  IconName,
+  IconSize,
+} from '../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -60,6 +64,7 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
+  TextVariant,
 } from '../../helpers/constants/design-system';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
@@ -306,9 +311,15 @@ export default function OnboardingFlow() {
         </Switch>
       </Box>
       {pathname === ONBOARDING_COMPLETION_ROUTE && (
-        <Button
+        <ButtonLink
           className="onboarding-flow__twitter-button"
-          type="link"
+          variant={TextVariant.bodyLgMedium}
+          marginTop={6}
+          endIconName={IconName.X}
+          endIconProps={{
+            size: IconSize.Lg,
+          }}
+          externalLink
           href={TWITTER_URL}
           onClick={() => {
             trackEvent({
@@ -325,8 +336,7 @@ export default function OnboardingFlow() {
           target="_blank"
         >
           <span>{t('followUsOnTwitter')}</span>
-          <i className="fab fa-twitter onboarding-flow__twitter-button__icon" />
-        </Button>
+        </ButtonLink>
       )}
     </Box>
   );

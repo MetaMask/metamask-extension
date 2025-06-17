@@ -1246,11 +1246,7 @@ export default function TermsOfUsePopup({ onClose, onAccept }) {
             onChange={() => {
               setIsTermsOfUseChecked(!isTermsOfUseChecked);
             }}
-            label={
-              <Text variant={TextVariant.bodySmMedium}>
-                {t('termsOfUseAgreeText')}
-              </Text>
-            }
+            label={t('termsOfUseAgreeText')}
           />
           <Button
             data-testid="terms-of-use-agree-button"

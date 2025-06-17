@@ -9,7 +9,6 @@ import {
 } from '../../../components/component-library';
 import {
   BlockSize,
-  FontWeight,
   TextTransform,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -42,7 +41,6 @@ export default function WelcomeBanner({ onAccept }: { onAccept: () => void }) {
         </Text>
         <Text
           variant={TextVariant.bodyLgMedium}
-          fontWeight={FontWeight.Normal}
           className="welcome-banner__description"
           marginBottom={6}
         >
@@ -54,7 +52,7 @@ export default function WelcomeBanner({ onAccept }: { onAccept: () => void }) {
           size={ButtonBaseSize.Lg}
           onClick={() => setShowTermsOfUse(true)}
           endIconName={IconName.Arrow2Right}
-          fontWeight={FontWeight.Medium}
+          textTransform={TextTransform.Uppercase}
         >
           {t('welcomeGetStarted')}
         </ButtonBase>
