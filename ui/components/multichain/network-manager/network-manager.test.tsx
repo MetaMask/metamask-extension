@@ -147,7 +147,7 @@ describe('NetworkManager Component', () => {
     expect(screen.getByText('Add custom network')).toBeInTheDocument();
 
     // Click on Test tab
-    fireEvent.click(screen.getByText('Test networks'));
+    fireEvent.click(screen.getByText('Testnets'));
 
     // Verify Test tab content is rendered
     expect(screen.getByText('Add custom network')).toBeInTheDocument();
