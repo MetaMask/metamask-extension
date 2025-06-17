@@ -55,7 +55,7 @@ class TransactionConfirmation extends Confirmation {
       '[data-testid="advanced-details-data-param-0"]';
     this.advancedDetailsHexData =
       '[data-testid="advanced-details-transaction-hex"]';
-    this.gasFeeCloseToastMessage = '[aria-label="Close"]';
+    this.gasFeeCloseToastMessage = '.toasts-container__banner-base button[aria-label="Close"]';
     this.gasFeeFiatText = '[data-testid="native-currency"]';
     this.gasFeeText = '[data-testid="first-gas-field"]';
     this.gasFeeTokenArrow = '[data-testid="selected-gas-fee-token-arrow"]';
