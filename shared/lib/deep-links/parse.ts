@@ -16,7 +16,7 @@ export async function parse(url: URL): Promise<ParsedDeepLink | false> {
     return false;
   }
 
-  const isValidSignature = await verify(url);
+  const signatureState = await verify(url);
 
   let destination: Destination;
   try {
@@ -27,7 +27,7 @@ export async function parse(url: URL): Promise<ParsedDeepLink | false> {
     log.debug('Error handling deep link:', error);
     return false;
   }
-  const signed = isValidSignature === VALID;
+  const signed = signatureState === VALID;
 
   return { destination, signed, route };
 }

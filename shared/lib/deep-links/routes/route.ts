@@ -1,10 +1,14 @@
 /**
  * Represents the internal destination.
  */
-export type Destination = {
-  path: string;
-  query: URLSearchParams;
-};
+export type Destination =
+  | {
+      path: string;
+      query: URLSearchParams;
+    }
+  | {
+      redirectTo: URL;
+    };
 
 export type RouteOptions = {
   /**

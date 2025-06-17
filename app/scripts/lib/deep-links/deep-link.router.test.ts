@@ -116,6 +116,7 @@ describe('DeepLinkRouter', () => {
         const url = `https://example.com/external-route?query=param`;
         parseMock.mockResolvedValue({
           signed,
+          destination: {},
         } as ParsedDeepLink);
         await onBeforeRequest?.({
           tabId,
@@ -157,6 +158,7 @@ describe('DeepLinkRouter', () => {
         } as unknown as ReturnType<MetaMaskController['getState']>);
         parseMock.mockResolvedValue({
           signed: false,
+          destination: {},
         } as ParsedDeepLink);
         await onBeforeRequest?.({
           tabId,

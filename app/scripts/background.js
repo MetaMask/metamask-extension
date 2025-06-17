@@ -90,6 +90,7 @@ import {
 } from './constants/stream';
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
 import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
+import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
 
 /**
@@ -631,6 +632,18 @@ async function initialize(backup) {
     getState: controller.getState.bind(controller),
   });
   deepLinkRouter.install();
+  deepLinkRouter.on('navigate', async ({ url, parsed }) => {
+    // don't track deep links that are immediately redirected (like /buy)
+    if ('redirectTo' in parsed) {
+      return;
+    }
+
+    const event = createEvent({
+      signed: parsed.signed,
+      url,
+    });
+    await controller.metaMetricsController.trackEvent(event);
+  });
 }
 
 /**

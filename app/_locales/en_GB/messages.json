@@ -1686,6 +1686,9 @@
   "deepLink_OpenAnyway": {
     "message": "Open MetaMask anyway"
   },
+  "deepLink_OpenTheBuyPage": {
+    "message": "Buy Page"
+  },
   "deepLink_OpenTheHomePage": {
     "message": "Home Page"
   },

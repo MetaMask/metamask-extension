@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,11 +28,6 @@ import { Checkbox } from '../../components/component-library/checkbox/checkbox';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../selectors/selectors';
 import { MetaMaskReduxState } from '../../store/store';
-import {
-  MetaMetricsContext,
-  type UITrackEventMethod,
-} from '../../contexts/metametrics';
-import { trackView } from './metrics';
 
 type TranslateFunction = (key: string, substitutions?: string[]) => string;
 
@@ -61,7 +56,6 @@ function set404(
  * @param setIsLoading - The function to call to set the loading state.
  * @param setRoute - The function to call to set the route state.
  * @param setTitle - The function to call to set the title state.
- * @param trackEvent - The function to call to track events.
  * @param t - The translation function.
  */
 async function updateStateFromUrl(
@@ -70,7 +64,6 @@ async function updateStateFromUrl(
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setRoute: React.Dispatch<React.SetStateAction<Route | null>>,
   setTitle: React.Dispatch<React.SetStateAction<string | null>>,
-  trackEvent: UITrackEventMethod,
   t: TranslateFunction,
 ) {
   try {
@@ -80,6 +73,12 @@ async function updateStateFromUrl(
     const parsed = await parse(url);
     if (parsed) {
       const { destination, signed } = parsed;
+
+      if ('redirectTo' in destination) {
+        window.location.href = destination.redirectTo.toString();
+        return;
+      }
+
       const { path, query } = destination;
       const href = getExtensionURL(path, query.toString() ?? null);
       const title = parsed.route.getTitle(url.searchParams);
@@ -90,7 +89,6 @@ async function updateStateFromUrl(
       setDescription(t(descriptionKey, [t(title)]));
       setRoute({ href, signed });
       setTitle(signed ? t('deepLink_RedirectingYou') : t('deepLink_Caution'));
-      trackView(trackEvent, { url, signed });
     } else {
       setRoute(null);
       set404(setDescription, setTitle, t);
@@ -106,7 +104,6 @@ async function updateStateFromUrl(
 }
 
 export const DeepLink = () => {
-  const trackEvent = useContext(MetaMetricsContext);
   const location = useLocation();
   const t = useI18nContext() as TranslateFunction;
   const dispatch = useDispatch();
@@ -146,7 +143,6 @@ export const DeepLink = () => {
       setIsLoading,
       setRoute,
       setTitle,
-      trackEvent,
       t,
     );
   }, [location.search]);

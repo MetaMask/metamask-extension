@@ -1,10 +1,14 @@
+import EventEmitter from 'events';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { DEEP_LINK_ROUTE } from '../../../../ui/helpers/constants/routes';
-import { parse } from '../../../../shared/lib/deep-links/parse';
+import {
+  type ParsedDeepLink,
+  parse,
+} from '../../../../shared/lib/deep-links/parse';
 import {
   DEEP_LINK_HOST,
   DEEP_LINK_MAX_LENGTH,
@@ -24,12 +28,15 @@ export type Options = {
   getState: MetamaskController['getState'];
 };
 
-export class DeepLinkRouter {
+export class DeepLinkRouter extends EventEmitter<{
+  navigate: [{ url: URL; parsed: ParsedDeepLink }];
+}> {
   private getExtensionURL: Options['getExtensionURL'];
 
   private getState: Options['getState'];
 
   constructor({ getExtensionURL, getState }: Options) {
+    super();
     this.getExtensionURL = getExtensionURL;
     this.getState = getState;
   }
@@ -98,17 +105,21 @@ export class DeepLinkRouter {
 
       const parsed = await parse(url);
       if (parsed) {
+        this.emit('navigate', { url, parsed });
+
         const skipDeepLinkInterstitial = Boolean(
           this.getState().preferences?.skipDeepLinkInterstitial,
         );
-
-        // only signed links get to skip the interstitial page
-        if (parsed.signed && skipDeepLinkInterstitial) {
+        if ('redirectTo' in parsed.destination) {
+          link = parsed.destination.redirectTo.toString();
+        } else if (parsed.signed && skipDeepLinkInterstitial) {
+          // signed links than can and should skip the interstitial page
           link = this.getExtensionURL(
             parsed.destination.path,
             parsed.destination.query.toString(),
           );
         } else {
+          // unsigned links or signed links that don't skip the interstitial
           const search = new URLSearchParams({
             u: url.pathname + url.search,
           });
