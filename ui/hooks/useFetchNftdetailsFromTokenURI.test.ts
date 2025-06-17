@@ -26,7 +26,7 @@ describe('useFetchNftDetailsFromTokenURI', () => {
     jest.spyOn(global, 'fetch').mockResolvedValue({
       ok: false,
       text: () => Promise.reject(new Error('Fetch failed')),
-    });
+    } as Response);
 
     let result;
 
@@ -55,7 +55,7 @@ describe('useFetchNftDetailsFromTokenURI', () => {
     jest.spyOn(global, 'fetch').mockResolvedValue({
       ok: true,
       text: () => Promise.resolve(JSON.stringify(mockData)),
-    });
+    } as Response);
 
     let result;
 
