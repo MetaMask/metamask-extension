@@ -53,7 +53,7 @@ export function useDisplayNames(
     const nft = nfts[index];
     const ensName = ens[index];
 
-    const name =
+    let name =
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       nameEntry?.name ||
@@ -74,18 +74,18 @@ export function useDisplayNames(
 
     const hasPetname = Boolean(nameEntry?.name);
 
-    const displayState = getDisplayState(
-      trustSignal?.state,
-      hasPetname,
-      name,
-      trustSignal?.trustLabel,
-    );
+    const displayState = getDisplayState(trustSignal?.state, hasPetname, name);
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const image = nft?.image || erc20Token?.image;
 
     const trustSignalIcon = getTrustSignalIcon(displayState);
+    const trustSignalLabel = trustSignal?.label;
+
+    if (name === null) {
+      name = trustSignalLabel;
+    }
 
     return {
       name,
@@ -239,35 +239,34 @@ function getDisplayState(
   trustState: TrustSignalDisplayState | undefined,
   hasPetname: boolean,
   displayName: string | null,
-  _trustLabel: string | null | undefined,
 ): TrustSignalDisplayState {
-  // Priority 1: Malicious takes precedence over everything when trust signals are enabled
+  // Priority 1: Malicious takes precedence over everything
   if (trustState === TrustSignalDisplayState.Malicious) {
     return TrustSignalDisplayState.Malicious;
   }
 
-  // Priority 2: Saved petname (for non-malicious entities)
+  // Priority 2: Saved petname
   if (hasPetname) {
     return TrustSignalDisplayState.Petname;
   }
 
-  // Priority 3: Recognized name (no petname, no applicable trust signals)
+  // Priority 4: Recognized name ex. "USDC"
   if (displayName) {
     return TrustSignalDisplayState.Recognized;
   }
 
-  // Priority 4-5: Other trust signal states (when enabled and present)
-  if (trustState) {
-    switch (trustState) {
-      case TrustSignalDisplayState.Verified:
-        return TrustSignalDisplayState.Verified;
-      case TrustSignalDisplayState.Warning:
-        return TrustSignalDisplayState.Warning;
-      case TrustSignalDisplayState.Unknown:
-        return TrustSignalDisplayState.Unknown;
-      default:
-        break;
-    }
+  // Priority 3: Verified and Warning trust signals take precedence over display names
+  if (trustState === TrustSignalDisplayState.Verified) {
+    return TrustSignalDisplayState.Verified;
+  }
+
+  if (trustState === TrustSignalDisplayState.Warning) {
+    return TrustSignalDisplayState.Warning;
+  }
+
+  // Priority 5: Other trust signal states (when enabled and present)
+  if (trustState === TrustSignalDisplayState.Unknown) {
+    return TrustSignalDisplayState.Unknown;
   }
 
   // Default: Unknown state with no name

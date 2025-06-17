@@ -432,7 +432,7 @@ export default function NameDetails({
                 value={name}
                 options={proposedNameOptions}
                 placeholder={
-                  displayName
+                  displayName && !hasSavedPetname
                     ? `Suggested: ${displayName}`
                     : t('nameSetPlaceholder')
                 }

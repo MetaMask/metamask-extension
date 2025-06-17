@@ -5,6 +5,12 @@ import { getAddressSecurityAlertResponse } from '../selectors';
 import { ResultType } from '../../app/scripts/lib/trust-signals/types';
 import { SecurityAlertResponse } from '../pages/confirmations/types/confirm';
 
+export type UseTrustSignalRequest = {
+  value: string;
+  type: NameType;
+  variation: string;
+};
+
 export enum TrustSignalDisplayState {
   Malicious = 'malicious',
   Petname = 'petname',
@@ -16,13 +22,7 @@ export enum TrustSignalDisplayState {
 
 export type TrustSignalResult = {
   state: TrustSignalDisplayState;
-  trustLabel: string | null;
-};
-
-export type UseTrustSignalRequest = {
-  value: string;
-  type: NameType;
-  variation: string;
+  label: string | null;
 };
 
 export function useTrustSignal(
@@ -52,13 +52,13 @@ export function useTrustSignals(
       return null;
     }
 
-    const trustLabel = securityAlertResponse.label || null;
-    const trustState = getTrustState(securityAlertResponse);
+    const label = securityAlertResponse.label || null;
+    const state = getTrustState(securityAlertResponse);
 
-    if (trustState) {
+    if (state) {
       return {
-        state: trustState,
-        trustLabel,
+        state,
+        label,
       };
     }
 
