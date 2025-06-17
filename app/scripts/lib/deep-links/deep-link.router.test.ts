@@ -50,13 +50,18 @@ describe('DeepLinkRouter', () => {
   let router: DeepLinkRouter;
 
   beforeEach(() => {
-    onBeforeRequest = null;
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
     router = new DeepLinkRouter({
       getExtensionURL: new ExtensionPlatform().getExtensionURL,
       getState,
     });
+  });
+  afterEach(() => {
+    router.uninstall();
+    onBeforeRequest = null;
+    jest.clearAllMocks();
+    (
+      browser.tabs.update as jest.MockedFunction<typeof browser.tabs.update>
+    ).mockReset();
   });
 
   describe('installs', () => {
@@ -97,7 +102,9 @@ describe('DeepLinkRouter', () => {
         mockIsManifestV3.mockReturnValue(manifestVersion === 'mv3');
         const tabId = 1;
         const url = `https://example.com/external-route`;
-        parseMock.mockResolvedValue({} as ParsedDeepLink);
+        parseMock.mockResolvedValue({
+          destination: {},
+        } as ParsedDeepLink);
         const response = await onBeforeRequest?.({
           tabId,
           url,
@@ -199,6 +206,8 @@ describe('DeepLinkRouter', () => {
       const url = `something unparseable`;
       const tabId = 1;
       parseMock.mockResolvedValue(false);
+      const mockError = jest.fn();
+      router.on('error', mockError);
       const response = await onBeforeRequest?.({
         tabId,
         url,
@@ -208,13 +217,16 @@ describe('DeepLinkRouter', () => {
       expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
         url: 'chrome-extension://extension-id/home.html#link?errorCode=404',
       });
+      expect(mockError).toHaveBeenCalledTimes(1);
+      expect(mockError.mock.calls[0][0].message).toBe('Invalid URL');
     });
 
-    it('should capture browser.tabs.update exceptions and emit an error event', async () => {
+    it('should capture browser.tabs.update exceptions and emit an error event', async function () {
       const logErrorSpy = jest.spyOn(log, 'error');
       const tabId = 1;
       const url = `https://example.com/test-route`;
       parseMock.mockResolvedValue({
+        destination: {},
         signed: false,
       } as ParsedDeepLink);
 
@@ -230,6 +242,36 @@ describe('DeepLinkRouter', () => {
       expect(logErrorSpy).toHaveBeenCalledWith('Error redirecting tab:', error);
       expect(mockErrorCallback).toHaveBeenCalledTimes(1);
       expect(mockErrorCallback).toHaveBeenCalledWith(error);
+    });
+
+    it('should handle redirecting routes', async function () {
+      const tabId = 1;
+      const url = `https://example.com/redirect-route`;
+      parseMock.mockResolvedValue({
+        destination: {
+          redirectTo: new URL('https://example.com/internal-route'),
+        },
+      } as ParsedDeepLink);
+      await onBeforeRequest?.({
+        tabId,
+        url,
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+      expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
+        url: 'https://example.com/internal-route',
+      });
+    });
+
+    it("should handle routes that don't exist by redirecting to 404", async function () {
+      const tabId = 1;
+      const url = `https://example.com/nonexistent-route`;
+      parseMock.mockResolvedValue(false);
+      await onBeforeRequest?.({
+        tabId,
+        url,
+      } as browser.WebRequest.OnBeforeRequestDetailsType);
+      expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
+        url: 'chrome-extension://extension-id/home.html#link?errorCode=404',
+      });
     });
   });
 });
