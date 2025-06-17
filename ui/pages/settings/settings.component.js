@@ -352,7 +352,7 @@ class SettingsPage extends PureComponent {
       },
       {
         content: t('securityAndPrivacy'),
-        icon: <i className="fa fa-lock" />,
+        icon: <Icon name={IconName.Lock} />,
         key: SECURITY_ROUTE,
       },
       {
