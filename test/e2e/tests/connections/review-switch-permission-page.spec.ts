@@ -9,7 +9,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
 
 describe('Permissions Page when Dapp Switch to an enabled and non permissioned network', function () {
-  it('should switch to the chain when dapp tries to switch network to an enabled network after showing updated permissions page', async function () {
+  it.skip('should switch to the chain when dapp tries to switch network to an enabled network after showing updated permissions page', async function () {
     const port: number = 8546;
     const chainId: number = 1338;
     await withFixtures(

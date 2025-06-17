@@ -9,7 +9,7 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import { Driver } from '../../../webdriver/driver';
 import { mockDeFiPositionFeatureFlag } from '../../confirmations/helpers';
 
-import { switchToNetworkFlow } from '../../../page-objects/flows/network.flow';
+import { switchToNetworkFromSendFlow } from '../../../page-objects/flows/network.flow';
 
 describe('View DeFi details', function () {
   it('user should be able to view Aave Positions details', async function () {
@@ -33,7 +33,7 @@ describe('View DeFi details', function () {
         const defiTab = new DeFiTab(driver);
 
         // check ethereum positions present
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+        await switchToNetworkFromSendFlow(driver, 'Ethereum Mainnet');
         await defiTab.check_groupIconIsDisplayed();
         await defiTab.defiTabCells.check_tokenName('Aave V3');
         await defiTab.defiTabCells.check_tokenMarketValue('$14.74');
