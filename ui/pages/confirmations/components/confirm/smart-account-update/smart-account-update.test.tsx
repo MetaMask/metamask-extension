@@ -146,7 +146,7 @@ describe('Splash', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('does not render is splash page is acknowledged for account', () => {
+  it('does not render splash page if it is acknowledged for account', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
         {

@@ -5195,6 +5195,12 @@
   "slideSweepStakeTitle": {
     "message": "Enter the $5000 USDC Giveaway!"
   },
+  "smartAccountUpdateSuccessTitle": {
+    "message": "Successful!"
+  },
+  "smartAccountUpdateSuccessMessage": {
+    "message": "Your account will be updated to smart account with your next transaction."
+  },
   "smartAccountAccept": {
     "message": "Use smart account"
   },

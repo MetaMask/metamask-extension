@@ -1,6 +1,8 @@
 import React, { useContext, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
+import { useHistory } from 'react-router-dom';
+
 import {
   showModal,
   removeSlide,
@@ -44,6 +46,7 @@ import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
 } from './account-overview-tabs';
+import { SMART_ACCOUNT_UPDATE } from '../../../helpers/constants/routes';
 
 export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;
@@ -58,6 +61,7 @@ export const AccountOverviewLayout = ({
   const trackEvent = useContext(MetaMetricsContext);
   const [hasRendered, setHasRendered] = useState(false);
   const selectedAccount = useSelector(getSelectedAccount);
+  const history = useHistory();
 
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
@@ -100,7 +104,7 @@ export const AccountOverviewLayout = ({
     ///: END:ONLY_INCLUDE_IF
 
     if (id === SMART_ACCOUNT_UPGRADE_SLIDE.id) {
-      dispatch(setAccountDetailsAddress(selectedAccount.address));
+      history.replace(SMART_ACCOUNT_UPDATE);
     }
 
     trackEvent({
