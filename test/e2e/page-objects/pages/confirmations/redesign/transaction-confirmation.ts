@@ -23,6 +23,8 @@ class TransactionConfirmation extends Confirmation {
 
   private gasFeeText: RawLocator;
 
+  private gasFeeToastMessage: RawLocator;
+
   private gasFeeTokenArrow: RawLocator;
 
   private gasFeeTokenFeeText: RawLocator;
@@ -55,6 +57,10 @@ class TransactionConfirmation extends Confirmation {
       '[data-testid="advanced-details-transaction-hex"]';
     this.gasFeeFiatText = '[data-testid="native-currency"]';
     this.gasFeeText = '[data-testid="first-gas-field"]';
+    this.gasFeeToastMessage = {
+      css: '[aria-label="Close"]',
+      tag: 'button',
+    }
     this.gasFeeTokenArrow = '[data-testid="selected-gas-fee-token-arrow"]';
     this.gasFeeTokenFeeText = '[data-testid="gas-fee-token-fee"]';
     this.gasFeeTokenPill = '[data-testid="selected-gas-fee-token"]';
@@ -102,6 +108,10 @@ class TransactionConfirmation extends Confirmation {
 
   async clickGasFeeTokenPill() {
     await this.driver.clickElement(this.gasFeeTokenArrow);
+  }
+
+  async closeGasFeeToastMessage() {
+    await this.driver.clickElementSafe(this.gasFeeToastMessage);
   }
 
   async verifyAdvancedDetailsIsDisplayed(type: string) {

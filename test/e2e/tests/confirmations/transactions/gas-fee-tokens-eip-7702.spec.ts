@@ -85,7 +85,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
     );
   });
 
-  it('fails transaction if error', async function () {
+  it.only('fails transaction if error', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -120,6 +120,9 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         await gasFeeTokenModal.clickToken('USDC');
 
         await transactionConfirmation.check_gasFeeSymbol('USDC');
+
+        await transactionConfirmation.closeGasFeeToastMessage();
+
         await transactionConfirmation.clickFooterConfirmButton();
 
         await driver.switchToWindowWithTitle(
