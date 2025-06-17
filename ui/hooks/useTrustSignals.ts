@@ -29,48 +29,50 @@ export function useTrustSignal(
   value: string,
   type: NameType,
   variation: string,
-): TrustSignalResult | null {
+): TrustSignalResult {
   return useTrustSignals([{ value, type, variation }])[0];
 }
 
 export function useTrustSignals(
   requests: UseTrustSignalRequest[],
-): (TrustSignalResult | null)[] {
-  const securityAlertResponses = useSelector((state) =>
+): TrustSignalResult[] {
+  return useSelector((state) =>
     requests.map(({ value, type }) => {
       if (type !== NameType.ETHEREUM_ADDRESS) {
-        return null;
+        return {
+          state: TrustSignalDisplayState.Unknown,
+          label: null,
+        };
       }
-      return getAddressSecurityAlertResponse(state, value);
-    }),
-  );
 
-  return requests.map((request, index) => {
-    const securityAlertResponse = securityAlertResponses[index];
-
-    if (!securityAlertResponse || request.type !== NameType.ETHEREUM_ADDRESS) {
-      return null;
-    }
-
-    const label = securityAlertResponse.label || null;
-    const state = getTrustState(securityAlertResponse);
-
-    if (state) {
-      return {
+      const securityAlertResponse = getAddressSecurityAlertResponse(
         state,
+        value,
+      );
+
+      if (!securityAlertResponse) {
+        return {
+          state: TrustSignalDisplayState.Unknown,
+          label: null,
+        };
+      }
+
+      const label = securityAlertResponse.label || null;
+      const trustState = getTrustState(securityAlertResponse);
+
+      return {
+        state: trustState,
         label,
       };
-    }
-
-    return null;
-  });
+    }),
+  );
 }
 
 function getTrustState(
   securityAlertResponse: SecurityAlertResponse,
-): TrustSignalDisplayState | null {
+): TrustSignalDisplayState {
   if (!securityAlertResponse.result_type) {
-    return null;
+    return TrustSignalDisplayState.Unknown;
   }
 
   switch (securityAlertResponse.result_type) {
@@ -82,8 +84,7 @@ function getTrustState(
       return TrustSignalDisplayState.Verified;
     case ResultType.Benign:
     case ResultType.ErrorResult:
-      return TrustSignalDisplayState.Unknown;
     default:
-      return null;
+      return TrustSignalDisplayState.Unknown;
   }
 }

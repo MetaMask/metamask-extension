@@ -241,7 +241,6 @@ export default function NameDetails({
   const dispatch = useDispatch();
   const t = useI18nContext();
 
-  const isRecognizedUnsaved = !hasSavedPetname && Boolean(displayName);
   const formattedValue = formatValue(value, type);
 
   const { proposedNames, initialSources } = useProposedNames(
@@ -328,48 +327,36 @@ export default function NameDetails({
     handleCopyAddress(formattedValue);
   }, [handleCopyAddress, formattedValue]);
 
-  // Get title and instructions based on trust signal state
   const getTitleAndInstructions = () => {
     let titleKey: string;
     let instructionsKey: string;
 
-    if (displayState) {
-      switch (displayState) {
-        case TrustSignalDisplayState.Malicious:
-          titleKey = 'nameModalTitleMalicious';
-          instructionsKey = 'nameInstructionsMalicious';
-          break;
-        case TrustSignalDisplayState.Warning:
-          titleKey = 'nameModalTitleWarning';
-          instructionsKey = 'nameInstructionsWarning';
-          break;
-        case TrustSignalDisplayState.Verified:
-          titleKey = 'nameModalTitleVerified';
-          instructionsKey = '';
-          break;
-        case TrustSignalDisplayState.Petname:
-          titleKey = 'nameModalTitleSaved';
-          instructionsKey = 'nameInstructionsSaved';
-          break;
-        case TrustSignalDisplayState.Recognized:
-          titleKey = 'nameModalTitleRecognized';
-          instructionsKey = 'nameInstructionsRecognized';
-          break;
-        case TrustSignalDisplayState.Unknown:
-        default:
-          titleKey = 'nameModalTitleNew';
-          instructionsKey = 'nameInstructionsNew';
-          break;
-      }
-    } else if (hasSavedPetname) {
-      titleKey = 'nameModalTitleSaved';
-      instructionsKey = 'nameInstructionsSaved';
-    } else if (isRecognizedUnsaved) {
-      titleKey = 'nameModalTitleRecognized';
-      instructionsKey = 'nameInstructionsRecognized';
-    } else {
-      titleKey = 'nameModalTitleNew';
-      instructionsKey = 'nameInstructionsNew';
+    switch (displayState) {
+      case TrustSignalDisplayState.Malicious:
+        titleKey = 'nameModalTitleMalicious';
+        instructionsKey = 'nameInstructionsMalicious';
+        break;
+      case TrustSignalDisplayState.Warning:
+        titleKey = 'nameModalTitleWarning';
+        instructionsKey = 'nameInstructionsWarning';
+        break;
+      case TrustSignalDisplayState.Verified:
+        titleKey = 'nameModalTitleVerified';
+        instructionsKey = '';
+        break;
+      case TrustSignalDisplayState.Petname:
+        titleKey = 'nameModalTitleSaved';
+        instructionsKey = 'nameInstructionsSaved';
+        break;
+      case TrustSignalDisplayState.Recognized:
+        titleKey = 'nameModalTitleRecognized';
+        instructionsKey = 'nameInstructionsRecognized';
+        break;
+      case TrustSignalDisplayState.Unknown:
+      default:
+        titleKey = 'nameModalTitleNew';
+        instructionsKey = 'nameInstructionsNew';
+        break;
     }
 
     return {
