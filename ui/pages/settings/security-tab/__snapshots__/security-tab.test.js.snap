@@ -101,8 +101,33 @@ exports[`Security Tab should match snapshot 1`] = `
     <div
       class="settings-page__content-padded"
     >
+      <div
+        class="settings-page__content-description"
+      >
+        Back up your Secret Recovery Phrase so you never lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget.
+      </div>
+      <div
+        class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-success mm-box--margin-top-4 mm-box--margin-bottom-4 mm-box--padding-3 mm-box--padding-top-2 mm-box--padding-bottom-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-success-muted mm-box--rounded-sm"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-success-default"
+          style="mask-image: url('./images/icons/confirmation.svg');"
+        />
+        <div
+          class="mm-box mm-box--min-width-0"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            Secret Recovery Phrase backed up
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          />
+        </div>
+      </div>
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
         data-testid="reveal-seed-words"
         data-theme="light"
         type="danger"

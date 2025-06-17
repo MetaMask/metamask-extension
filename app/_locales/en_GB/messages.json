@@ -4865,6 +4865,9 @@
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
   },
+  "securitySrpDescription": {
+    "message": "Back up your Secret Recovery Phrase so you never lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget."
+  },
   "securitySrpLabel": {
     "message": "SECRET RECOVERY PHRASES"
   },
