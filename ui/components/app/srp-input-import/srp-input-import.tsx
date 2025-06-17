@@ -185,12 +185,29 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
     [draftSrp],
   );
 
+  // in firefox, we do need to request permission explicitly, to read the clipboard
+  const requestPermissionAndTriggerPasteFireFox = async () => {
+    const newSrp = await new Promise<string>((resolve) => {
+      browser.permissions
+        .request({
+          permissions: ['clipboardRead'],
+        })
+        .then(async (granted: boolean) => {
+          if (granted) {
+            const srp = await navigator.clipboard.readText();
+            resolve(srp);
+          }
+          // TODO: handle permission denied?
+        });
+    });
+    if (newSrp.trim().match(/\s/u)) {
+      onSrpPaste(newSrp);
+    }
+  };
+
   const onTriggerPaste = async () => {
     if (getBrowserName() === PLATFORM_FIREFOX) {
-      const newSrp = await navigator.clipboard.readText();
-      if (newSrp.trim().match(/\s/u)) {
-        onSrpPaste(newSrp);
-      }
+      await requestPermissionAndTriggerPasteFireFox();
       return;
     }
 
@@ -350,7 +367,11 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
               {t('onboardingSrpInputClearAll')}
             </Button>
           ) : (
-            <Button variant={ButtonVariant.Link} onClick={onTriggerPaste}>
+            <Button
+              data-testid="srp-input-import__paste-button"
+              variant={ButtonVariant.Link}
+              onClick={onTriggerPaste}
+            >
               {t('paste')}
             </Button>
           )}
