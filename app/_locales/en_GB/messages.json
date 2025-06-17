@@ -80,6 +80,16 @@
   "accountActivityText": {
     "message": "Select the accounts you want to be notified about:"
   },
+  "accountAlreadyExistsLogin": {
+    "message": "Log in"
+  },
+  "accountAlreadyExistsLoginDescription": {
+    "message": "A wallet using “$1” already exists. Do you want to try logging in instead?",
+    "description": "$1 is the account email"
+  },
+  "accountAlreadyExistsTitle": {
+    "message": "Wallet already exists"
+  },
   "accountDetails": {
     "message": "Account details"
   },
@@ -99,6 +109,16 @@
   "accountNameReserved": {
     "message": "This account name is reserved",
     "description": "This is an error message shown when the user enters a new account name that is reserved for future use"
+  },
+  "accountNotFoundCreateOne": {
+    "message": "Yes, create a new wallet"
+  },
+  "accountNotFoundDescription": {
+    "message": "We couldn’t find a wallet for “$1”. Do you want to create a new one with this login?",
+    "description": "$1 is the account email"
+  },
+  "accountNotFoundTitle": {
+    "message": "Wallet not found"
   },
   "accountOptions": {
     "message": "Account options"
@@ -2071,6 +2091,9 @@
   "enterOptionalPassword": {
     "message": "Enter optional password"
   },
+  "enterPassword": {
+    "message": "Enter password"
+  },
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
@@ -2273,6 +2296,18 @@
   },
   "forgotPassword": {
     "message": "Forgot password?"
+  },
+  "forgotPasswordModalButton": {
+    "message": "Reset wallet"
+  },
+  "forgotPasswordModalDescription1": {
+    "message": "MetaMask can’t recover your password for you."
+  },
+  "forgotPasswordModalDescription2": {
+    "message": "You can reset your wallet by entering the Secret Recovery Phrase you used when you set up your wallet."
+  },
+  "forgotPasswordModalTitle": {
+    "message": "Forgot your password?"
   },
   "form": {
     "message": "form"
@@ -6625,9 +6660,6 @@
   },
   "unlock": {
     "message": "Unlock"
-  },
-  "unlockMessage": {
-    "message": "The decentralized web awaits"
   },
   "unpin": {
     "message": "Unpin"
