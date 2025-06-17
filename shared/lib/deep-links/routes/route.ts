@@ -1,3 +1,7 @@
+// TODO: Remove restricted import
+/* eslint-disable import/no-restricted-paths */
+export { DEEP_LINK_ROUTE } from '../../../../ui/helpers/constants/routes';
+
 /**
  * Represents the final destination.
  */
