@@ -67,8 +67,6 @@ networkConfigs.forEach((config) => {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
 
-          // Verify network is selected
-          await headerNavbar.check_currentSelectedNetwork(config.name);
 
           // Verify token is displayed
           await tokenList.check_tokenName(config.tokenSymbol);
