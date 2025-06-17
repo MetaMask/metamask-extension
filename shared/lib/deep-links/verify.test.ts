@@ -1,5 +1,4 @@
-// @ts-expect-error reset is conditionally exported for testing only
-import { verify, MISSING, VALID, INVALID, reset } from './verify';
+import type * as Verify from './verify';
 
 jest.mock('./canonicalize', () => ({
   canonicalize: jest.fn((_: URL) => 'canonicalized-url'),
@@ -20,9 +19,27 @@ Object.defineProperty(globalThis.crypto, 'subtle', {
 });
 
 describe('verify', () => {
+  let verify: typeof Verify.verify,
+    MISSING: typeof Verify.MISSING,
+    VALID: typeof Verify.VALID,
+    INVALID: typeof Verify.INVALID;
+
   beforeEach(async () => {
-    jest.clearAllMocks();
-    reset();
+    // verify uses a singleton, and we have tests that need to test that the
+    // singleton is singletoning; this means we need to import and reset the
+    // module before each test to ensure that the singleton is reset.
+    // eslint-disable-next-line import/extensions
+    return import('./verify.ts').then((value) => {
+      verify = value.verify;
+      MISSING = value.MISSING;
+      VALID = value.VALID;
+      INVALID = value.INVALID;
+    });
+  });
+  afterEach(() => {
+    jest.resetAllMocks();
+    // resets the ./verify.ts import
+    jest.resetModules();
   });
 
   it('returns MISSING if sig param is not present', async () => {
@@ -31,7 +48,6 @@ describe('verify', () => {
   });
 
   it('returns VALID if signature is valid', async () => {
-    mockImportKey.mockResolvedValueOnce('mockKey');
     mockVerify.mockResolvedValueOnce(true);
 
     const url = new URL('https://example.com/path?sig=abc');
@@ -42,10 +58,6 @@ describe('verify', () => {
   });
 
   it('returns INVALID if signature is invalid', async () => {
-    reset();
-    mockImportKey.mockResolvedValueOnce('mockKey');
-    mockVerify.mockResolvedValueOnce(false);
-
     const url = new URL('https://example.com/path?sig=abc');
     const result = await verify(url);
     expect(result).toBe(INVALID);
@@ -54,10 +66,6 @@ describe('verify', () => {
   });
 
   it('caches tools after first call', async () => {
-    reset();
-    mockImportKey.mockResolvedValue('mockKey');
-    mockVerify.mockResolvedValue(true);
-
     const url = new URL('https://example.com/path?sig=abc');
     await verify(url);
     await verify(url);

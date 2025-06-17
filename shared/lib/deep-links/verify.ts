@@ -50,10 +50,3 @@ export const verify = async (url: URL) => {
   const ok = await crypto.subtle.verify(algorithm, publicKey, signature, data);
   return ok ? VALID : INVALID;
 };
-
-if (process.env.IN_TEST) {
-  module.exports.reset = () => {
-    // @ts-expect-error reset is conditionally exported for testing only
-    tools = undefined;
-  };
-}

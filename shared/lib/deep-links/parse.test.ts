@@ -25,7 +25,7 @@ describe('parse', () => {
 
   it('returns false if no route handler is found', async () => {
     const urlStr = 'https://example.com/unknown';
-    const result = await parse(urlStr);
+    const result = await parse(new URL(urlStr));
     expect(result).toBe(false);
     expect(log.debug).toHaveBeenCalledWith(
       'No handler found for the pathname:',
@@ -41,7 +41,7 @@ describe('parse', () => {
     } as unknown as Route);
     mockVerify.mockResolvedValue(VALID);
     const urlStr = 'https://example.com/test?foo=bar';
-    const result = await parse(urlStr);
+    const result = await parse(new URL(urlStr));
     expect(result).toBe(false);
     expect(log.debug).toHaveBeenCalledWith(
       'Error handling deep link:',
@@ -55,11 +55,13 @@ describe('parse', () => {
     mockVerify.mockResolvedValue(VALID);
 
     const urlStr = 'https://example.com/test?foo=bar';
-    const result = await parse(urlStr);
+    const result = await parse(new URL(urlStr));
 
     expect(result).toStrictEqual({
-      normalizedUrl: new URL(urlStr),
       destination: 'destination-value',
+      route: {
+        handler: expect.any(Function),
+      },
       signed: true,
     });
     expect(mockHandler).toHaveBeenCalledWith(new URL(urlStr).searchParams);
@@ -71,11 +73,13 @@ describe('parse', () => {
     mockVerify.mockResolvedValue('INVALID');
 
     const urlStr = 'https://example.com/test?foo=bar';
-    const result = await parse(urlStr);
+    const result = await parse(new URL(urlStr));
 
     expect(result).toStrictEqual({
-      normalizedUrl: new URL(urlStr),
       destination: 'destination-value',
+      route: {
+        handler: expect.any(Function),
+      },
       signed: false,
     });
   });
@@ -86,7 +90,7 @@ describe('parse', () => {
     mockVerify.mockResolvedValue(VALID);
 
     const urlStr = 'https://example.com/test?foo=bar';
-    await parse(urlStr);
+    await parse(new URL(urlStr));
 
     expect(mockVerify).toHaveBeenCalledWith(new URL(urlStr));
   });

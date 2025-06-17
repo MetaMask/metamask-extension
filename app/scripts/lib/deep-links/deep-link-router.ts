@@ -1,15 +1,17 @@
+import EventEmitter from 'events';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { DEEP_LINK_ROUTE } from '../../../../ui/helpers/constants/routes';
-import { parse } from '../../../../shared/lib/deep-links/parse';
+import {
+  type ParsedDeepLink,
+  parse,
+} from '../../../../shared/lib/deep-links/parse';
 import {
   DEEP_LINK_HOST,
   DEEP_LINK_MAX_LENGTH,
 } from '../../../../shared/lib/deep-links/constants';
 import MetamaskController from '../../metamask-controller';
+import { DEEP_LINK_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
 // UI always redirects it to the non-slashed version. So we just use the
@@ -17,31 +19,42 @@ import MetamaskController from '../../metamask-controller';
 const slashRe = /^\//u;
 const TRIMMED_DEEP_LINK_ROUTE = DEEP_LINK_ROUTE.replace(slashRe, '');
 
-const { sentry } = global;
-
 export type Options = {
   getExtensionURL(route?: string | null, queryString?: string | null): string;
   getState: MetamaskController['getState'];
 };
 
-export class DeepLinkRouter {
+export class DeepLinkRouter extends EventEmitter<{
+  navigate: [{ url: URL; parsed: ParsedDeepLink }];
+  error: [unknown];
+}> {
   private getExtensionURL: Options['getExtensionURL'];
 
   private getState: Options['getState'];
 
   constructor({ getExtensionURL, getState }: Options) {
+    super();
     this.getExtensionURL = getExtensionURL;
     this.getState = getState;
   }
 
+  private get404ErrorURL() {
+    return this.getExtensionURL(
+      TRIMMED_DEEP_LINK_ROUTE.replace(slashRe, ''),
+      new URLSearchParams({
+        errorCode: '404',
+      }).toString(),
+    );
+  }
+
   private async redirectTab(tabId: number, url: string) {
     try {
-      return await browser.tabs.update(tabId, {
+      await browser.tabs.update(tabId, {
         url,
       });
     } catch (error) {
       log.error('Error redirecting tab:', error);
-      return sentry?.captureException(error);
+      this.emit('error', error);
     }
   }
 
@@ -83,39 +96,52 @@ export class DeepLinkRouter {
       return {};
     }
 
-    const parsed = await parse(urlStr);
     let link: string;
-    if (parsed) {
-      const skipDeepLinkInterstitial = Boolean(
-        this.getState().preferences?.skipDeepLinkInterstitial,
-      );
+    try {
+      const url = new URL(urlStr);
 
-      // only signed links get to skip the interstitial page
-      if (parsed.signed && skipDeepLinkInterstitial) {
-        link = this.getExtensionURL(
-          parsed.destination.path,
-          parsed.destination.query.toString(),
+      const parsed = await parse(url);
+      if (parsed) {
+        this.emit('navigate', { url, parsed });
+
+        const skipDeepLinkInterstitial = Boolean(
+          this.getState().preferences?.skipDeepLinkInterstitial,
         );
+        if ('redirectTo' in parsed.destination) {
+          link = parsed.destination.redirectTo.toString();
+        } else if (parsed.signed && skipDeepLinkInterstitial) {
+          // signed links than can and should skip the interstitial page
+          link = this.getExtensionURL(
+            parsed.destination.path,
+            parsed.destination.query.toString(),
+          );
+        } else {
+          // unsigned links or signed links that don't skip the interstitial
+          const search = new URLSearchParams({
+            u: url.pathname + url.search,
+          });
+          link = this.getExtensionURL(
+            TRIMMED_DEEP_LINK_ROUTE,
+            search.toString(),
+          );
+        }
       } else {
-        const search = new URLSearchParams({
-          u: parsed.normalizedUrl.pathname + parsed.normalizedUrl.search,
-        });
-        link = this.getExtensionURL(TRIMMED_DEEP_LINK_ROUTE, search.toString());
+        // unable to parse, show error page
+        link = this.get404ErrorURL();
       }
-    } else {
-      // unable to parse, show error page
-      link = this.getExtensionURL(
-        TRIMMED_DEEP_LINK_ROUTE.replace(slashRe, ''),
-        new URLSearchParams({
-          errorCode: '404',
-        }).toString(),
-      );
+    } catch (error) {
+      log.error('Invalid URL:', urlStr, error);
+      this.emit('error', error);
+      // we got a route we can't handle for some reason, and we can't just
+      // swallow it, so we just show the 404 error page.
+      link = this.get404ErrorURL();
     }
+
+    this.redirectTab(tabId, link);
 
     if (isManifestV3) {
       // We need to use the redirect API in MV3, because the webRequest API does
       // not support blocking redirects.
-      this.redirectTab(tabId, link);
       return {};
     }
 
@@ -124,7 +150,6 @@ export class DeepLinkRouter {
     // request, and then use our `redirectTab` method to complete the redirect.
     // This is better than the MV3 way because it avoids any network requests
     // to the deep link host, which aren't necessary so and best to avoid.
-    this.redirectTab(tabId, link);
     return { cancel: true };
   }
 }

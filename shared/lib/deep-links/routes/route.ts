@@ -1,15 +1,29 @@
+// TODO: Remove restricted import
+/* eslint-disable import/no-restricted-paths */
+import { PREPARE_SWAP_ROUTE } from '../../../../ui/helpers/constants/routes';
+
+export {
+  DEFAULT_ROUTE,
+  DEEP_LINK_ROUTE,
+  NOTIFICATIONS_ROUTE,
+} from '../../../../ui/helpers/constants/routes';
+
 /**
- * Represents the internal destination.
+ * Represents the final destination.
  */
-export type Destination = {
-  path: string;
-  query: URLSearchParams;
-};
+export type Destination =
+  | {
+      path: string;
+      query: URLSearchParams;
+    }
+  | {
+      redirectTo: URL;
+    };
 
 export type RouteOptions = {
   /**
    * The pathname of the route.
-   * This is the deeplink URL path that identifies the route.
+   * This is the deep link URL path that identifies the route, e.g. '/swap'.
    */
   pathname: string;
   /**
@@ -24,6 +38,8 @@ export type RouteOptions = {
    */
   handler: (params: URLSearchParams) => Destination;
 };
+
+export const SWAP_ROUTE = `${PREPARE_SWAP_ROUTE}`;
 
 /**
  * Represents a route in the application.
