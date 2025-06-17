@@ -9,14 +9,14 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { emptyHtmlPage } from '../../mock-e2e';
 import FixtureBuilder from '../../fixture-builder';
 import { BaseUrl } from '../../../../shared/constants/urls';
+import type { Anvil } from '../../seeder/anvil';
+import type { Ganache } from '../../seeder/ganache';
 import {
   bytesToB64,
   cartesianProduct,
   signDeepLink,
   generateECDSAKeyPair,
 } from './helpers';
-import type { Anvil } from '../../seeder/anvil';
-import type { Ganache } from '../../seeder/ganache';
 
 type LocalNode = Ganache | Anvil;
 
