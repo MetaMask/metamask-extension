@@ -72,7 +72,7 @@ describe('BackupAndSyncToggle', () => {
         settings_type: 'main',
         old_value: true,
         new_value: false,
-        was_notifications_on: undefined,
+        was_notifications_on: false,
       },
     });
   });
