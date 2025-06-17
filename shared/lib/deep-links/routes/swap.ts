@@ -1,11 +1,5 @@
-import {
-  CROSS_CHAIN_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../ui/helpers/constants/routes';
 import { parseAssetID } from './helpers';
-import { Route } from './route';
+import { Route, SWAP_ROUTE } from './route';
 
 export default new Route({
   pathname: '/swap',
@@ -42,7 +36,7 @@ export default new Route({
     }
 
     return {
-      path: `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
+      path: SWAP_ROUTE,
       query,
     };
   },

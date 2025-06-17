@@ -2,9 +2,6 @@ import EventEmitter from 'events';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { DEEP_LINK_ROUTE } from '../../../../ui/helpers/constants/routes';
 import {
   type ParsedDeepLink,
   parse,
@@ -14,14 +11,13 @@ import {
   DEEP_LINK_MAX_LENGTH,
 } from '../../../../shared/lib/deep-links/constants';
 import MetamaskController from '../../metamask-controller';
+import { DEEP_LINK_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
 // UI always redirects it to the non-slashed version. So we just use the
 // non-slashed version here to skip that redirect step.
 const slashRe = /^\//u;
 const TRIMMED_DEEP_LINK_ROUTE = DEEP_LINK_ROUTE.replace(slashRe, '');
-
-const { sentry } = global;
 
 export type Options = {
   getExtensionURL(route?: string | null, queryString?: string | null): string;
@@ -57,7 +53,7 @@ export class DeepLinkRouter extends EventEmitter<{
       });
     } catch (error) {
       log.error('Error redirecting tab:', error);
-      return sentry?.captureException(error);
+      return globalThis.sentry?.captureException(error);
     }
   }
 

@@ -1,9 +1,4 @@
-import {
-  DEFAULT_ROUTE,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import/no-restricted-paths
-} from '../../../../ui/helpers/constants/routes';
-import { Route } from './route';
+import { DEFAULT_ROUTE, Route } from './route';
 
 export default new Route({
   pathname: '/home',
