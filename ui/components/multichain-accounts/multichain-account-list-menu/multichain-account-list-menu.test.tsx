@@ -35,15 +35,15 @@ const mockBitcoinClientCreateAccount = jest.fn();
 const mockGenerateNewHdKeyring = jest.fn();
 const mockDetectNfts = jest.fn();
 
-jest.mock('../../../../app/scripts/lib/util.ts', () => ({
-  ...jest.requireActual('../../../../../app/scripts/lib/util'),
+jest.mock('../../../../app/scripts/lib/util', () => ({
+  ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: () => () => mockGetEnvironmentType(),
 }));
 ///: END:ONLY_INCLUDE_IF
 
-jest.mock('../../../store/actions.ts', () => {
+jest.mock('../../../store/actions', () => {
   return {
-    ...jest.requireActual('../../../../store/actions'),
+    ...jest.requireActual('../../../store/actions'),
     generateNewHdKeyring: () => mockGenerateNewHdKeyring(),
     detectNfts: () => mockDetectNfts,
   };
@@ -54,9 +54,9 @@ jest.mock('react-router-dom', () => ({
   useHistory: jest.fn(() => []),
 }));
 
-jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient.ts', () => ({
+jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
   ...jest.requireActual(
-    '../../../../hooks/accounts/useMultichainWalletSnapClient',
+    '../../../hooks/accounts/useMultichainWalletSnapClient',
   ),
   useMultichainWalletSnapClient: () => ({
     createAccount: mockBitcoinClientCreateAccount,
