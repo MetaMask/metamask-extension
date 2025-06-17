@@ -117,6 +117,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
 
         const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.clickGasFeeTokenPill();
+        await transactionConfirmation.closeGasFeeToastMessage();
 
         const gasFeeTokenModal = new GasFeeTokenModal(driver);
         await gasFeeTokenModal.clickToken('USDC');
