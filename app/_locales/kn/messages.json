@@ -710,9 +710,6 @@
   "unlock": {
     "message": "ಅನ್‌ಲಾಕ್"
   },
-  "unlockMessage": {
-    "message": "ವಿಕೇಂದ್ರೀಕೃತ ವೆಬ್ ನಿರೀಕ್ಷಿಸುತ್ತಿದೆ"
-  },
   "urlErrorMsg": {
     "message": "URI ಗಳಿಗೆ ಸೂಕ್ತವಾದ HTTP/HTTPS ಪೂರ್ವಪ್ರತ್ಯಯದ ಅಗತ್ಯವಿದೆ."
   },
