@@ -8,7 +8,6 @@ import SwapPage from '../../page-objects/pages/swap/swap-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { emptyHtmlPage } from '../../mock-e2e';
 import FixtureBuilder from '../../fixture-builder';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   bytesToB64,
   cartesianProduct,
@@ -183,7 +182,12 @@ describe('Deep Link', function () {
         // 3. works as expected,
         // 4. and that it does not apply to unsigned links.
 
-        await loginWithoutBalanceValidation(driver);
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.check_pageIsLoaded();
+        await loginPage.loginToHomepage();
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
 
         const rawUrl = `https://link.metamask.io/home`;
         const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
@@ -202,7 +206,6 @@ describe('Deep Link', function () {
         await deepLink.clickContinueButton();
 
         // make sure we're on the home page
-        const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
 
         // a nice in-between page to make testing more obvious

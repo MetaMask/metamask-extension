@@ -34,6 +34,15 @@ export class DeepLinkRouter {
     this.getState = getState;
   }
 
+  private get404ErrorURL() {
+    return this.getExtensionURL(
+      TRIMMED_DEEP_LINK_ROUTE.replace(slashRe, ''),
+      new URLSearchParams({
+        errorCode: '404',
+      }).toString(),
+    );
+  }
+
   private async redirectTab(tabId: number, url: string) {
     try {
       return await browser.tabs.update(tabId, {
@@ -83,34 +92,39 @@ export class DeepLinkRouter {
       return {};
     }
 
-    const url = new URL(urlStr);
-    const parsed = await parse(url);
     let link: string;
-    if (parsed) {
-      const skipDeepLinkInterstitial = Boolean(
-        this.getState().preferences?.skipDeepLinkInterstitial,
-      );
+    try {
+      const url = new URL(urlStr);
 
-      // only signed links get to skip the interstitial page
-      if (parsed.signed && skipDeepLinkInterstitial) {
-        link = this.getExtensionURL(
-          parsed.destination.path,
-          parsed.destination.query.toString(),
+      const parsed = await parse(url);
+      if (parsed) {
+        const skipDeepLinkInterstitial = Boolean(
+          this.getState().preferences?.skipDeepLinkInterstitial,
         );
+
+        // only signed links get to skip the interstitial page
+        if (parsed.signed && skipDeepLinkInterstitial) {
+          link = this.getExtensionURL(
+            parsed.destination.path,
+            parsed.destination.query.toString(),
+          );
+        } else {
+          const search = new URLSearchParams({
+            u: url.pathname + url.search,
+          });
+          link = this.getExtensionURL(
+            TRIMMED_DEEP_LINK_ROUTE,
+            search.toString(),
+          );
+        }
       } else {
-        const search = new URLSearchParams({
-          u: url.pathname + url.search,
-        });
-        link = this.getExtensionURL(TRIMMED_DEEP_LINK_ROUTE, search.toString());
+        // unable to parse, show error page
+        link = this.get404ErrorURL();
       }
-    } else {
-      // unable to parse, show error page
-      link = this.getExtensionURL(
-        TRIMMED_DEEP_LINK_ROUTE.replace(slashRe, ''),
-        new URLSearchParams({
-          errorCode: '404',
-        }).toString(),
-      );
+    } catch (error) {
+      log.error('Invalid URL:', urlStr, error);
+      // we got a route we can't handle, so just force the "404" page
+      link = this.get404ErrorURL();
     }
 
     if (isManifestV3) {
