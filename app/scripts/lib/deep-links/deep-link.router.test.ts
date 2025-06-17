@@ -4,12 +4,14 @@ import MetaMaskController from '../../metamask-controller';
 import { DEEP_LINK_HOST } from '../../../../shared/lib/deep-links/constants';
 import { ParsedDeepLink, parse } from '../../../../shared/lib/deep-links/parse';
 import { DeepLinkRouter } from './deep-link-router';
+import ExtensionPlatform from '../../platforms/extension';
 
-const parseMock = parse as jest.MockedFunction<typeof parse>;
-type WebRequestListener = Parameters<
-  typeof browser.webRequest.onBeforeRequest.addListener
->[0];
-let onBeforeRequest: WebRequestListener | null = null;
+// the Jest type for it is wrong
+const it = globalThis.it as unknown as jest.It;
+
+let onBeforeRequest:
+  | Parameters<typeof browser.webRequest.onBeforeRequest.addListener>[0]
+  | null = null;
 jest.mock('webextension-polyfill', () => ({
   tabs: {
     update: jest.fn(),
@@ -23,7 +25,12 @@ jest.mock('webextension-polyfill', () => ({
       removeListener: jest.fn(),
     },
   },
+  runtime: {
+    getURL: jest.fn((path) => `chrome-extension://extension-id/${path}`),
+  },
 }));
+
+const parseMock = parse as jest.MockedFunction<typeof parse>;
 jest.mock('../../../../shared/lib/deep-links/parse', () => ({
   parse: jest.fn(),
 }));
@@ -34,50 +41,42 @@ jest.mock('../../../../shared/modules/mv3.utils', () => ({
     return mockIsManifestV3();
   },
 }));
+
 const getState = jest.fn(() => ({
   preferences: { skipDeepLinkInterstitial: false },
 })) as unknown as jest.MockedFunction<MetaMaskController['getState']>;
-const mockGetExtensionURL = jest.fn((route, queryString) => {
-  let url = 'chrome-extension://extension-id/home.html';
-  if (route) {
-    url += `#${route}`;
-  }
-  if (queryString) {
-    url += `?${queryString}`;
-  }
-  return url;
-});
 
 describe('DeepLinkRouter', () => {
   let router: DeepLinkRouter;
+
   beforeEach(() => {
     onBeforeRequest = null;
     jest.clearAllMocks();
     jest.restoreAllMocks();
     router = new DeepLinkRouter({
-      getExtensionURL: mockGetExtensionURL,
+      getExtensionURL: new ExtensionPlatform().getExtensionURL,
       getState,
     });
   });
-  describe('install', () => {
-    // test the two manifest versions
-    // @ts-expect-error jest types aren't applied correctly
-    it.each([2, 3])(
+
+  describe('installs', () => {
+    it.each(['mv2', 'mv3'])(
       `should add a listener for webRequest.onBeforeRequest`,
-      (manifestVersion: number) => {
-        mockIsManifestV3.mockReturnValue(manifestVersion === 3);
+      (manifestVersion) => {
+        mockIsManifestV3.mockReturnValue(manifestVersion === 'mv3');
         router.install();
         expect(
           browser.webRequest.onBeforeRequest.addListener,
         ).toHaveBeenCalledWith(
           expect.any(Function),
           { urls: [`*://*.${DEEP_LINK_HOST}/*`], types: ['main_frame'] },
-          manifestVersion === 2 ? ['blocking'] : [],
+          mockIsManifestV3() ? [] : ['blocking'],
         );
       },
     );
   });
-  describe('uninstall', () => {
+
+  describe('uninstalls', () => {
     it('should remove the listener for webRequest.onBeforeRequest', () => {
       router.uninstall();
       expect(
@@ -85,16 +84,17 @@ describe('DeepLinkRouter', () => {
       ).toHaveBeenCalledWith(expect.any(Function));
     });
   });
-  describe('handle requests', () => {
+
+  describe('handles requests', () => {
     beforeEach(() => {
       router.install();
     });
+
     // test return values for MV2 and MV3 behavior
-    // @ts-expect-error jest types aren't applied correctly
-    it.each([{ manifestVersion: 2 }, { manifestVersion: 3 }])(
+    it.each(['mv2', 'mv3'])(
       'should return blocking or non-blocking response based on manifest version',
-      async ({ manifestVersion }: { manifestVersion: number }) => {
-        mockIsManifestV3.mockReturnValue(manifestVersion === 3);
+      async (manifestVersion) => {
+        mockIsManifestV3.mockReturnValue(manifestVersion === 'mv3');
         const tabId = 1;
         const url = `https://example.com/external-route`;
         parseMock.mockResolvedValue({} as ParsedDeepLink);
@@ -104,13 +104,13 @@ describe('DeepLinkRouter', () => {
         } as browser.WebRequest.OnBeforeRequestDetailsType);
         expect(browser.tabs.update).toHaveBeenCalledTimes(1);
         // Manifest v2 should return a blocking response (cancel the request),
-        expect(response).toEqual(manifestVersion === 3 ? {} : { cancel: true });
+        expect(response).toEqual(mockIsManifestV3() ? {} : { cancel: true });
       },
     );
+
     // by default, the router should not skip the interstitial page for either signed or unsigned links
-    // @ts-expect-error jest types aren't applied correctly
     it.each([{ signed: true }, { signed: false }])(
-      'should redirect signed links to the correct route',
+      'should redirect signed/unsigned links to the correct route',
       async ({ signed }: { signed: boolean }) => {
         const tabId = 1;
         const url = `https://example.com/external-route?query=param`;
@@ -127,6 +127,7 @@ describe('DeepLinkRouter', () => {
         });
       },
     );
+
     describe('skipDeepLinkInterstitial: true', () => {
       it('should redirect signed links to the correct route when skipDeepLinkInterstitial is true', async () => {
         const tabId = 1;
@@ -150,6 +151,7 @@ describe('DeepLinkRouter', () => {
           url: 'chrome-extension://extension-id/home.html#internal-route?one=two',
         });
       });
+
       it('should redirect unsigned links to the correct route when skipDeepLinkInterstitial is true', async () => {
         const tabId = 1;
         const url = `https://example.com/external-route?query=param`;
@@ -170,6 +172,7 @@ describe('DeepLinkRouter', () => {
         });
       });
     });
+
     it('should handle TAB_ID_NONE and not attempt to parse or navigate', async () => {
       const url = `about:blank`;
       const tabId = browser.tabs.TAB_ID_NONE;
@@ -180,6 +183,7 @@ describe('DeepLinkRouter', () => {
       expect(parseMock).not.toHaveBeenCalled();
       expect(response).toEqual({});
     });
+
     it('should reject parsing very long URLs', async () => {
       const url = `https://example.com/${'a'.repeat(5000)}`;
       const response = await onBeforeRequest?.({
@@ -188,8 +192,10 @@ describe('DeepLinkRouter', () => {
       } as browser.WebRequest.OnBeforeRequestDetailsType);
       expect(parseMock).not.toHaveBeenCalled();
       expect(response).toEqual({});
+      expect(browser.tabs.update).not.toHaveBeenCalled();
     });
-    it('should handle unparsable URLs and show an error message', async () => {
+
+    it('should handle unparsable URLs and redirect to error page', async () => {
       const url = `something unparseable`;
       const tabId = 1;
       parseMock.mockResolvedValue(false);
@@ -203,13 +209,18 @@ describe('DeepLinkRouter', () => {
         url: 'chrome-extension://extension-id/home.html#link?errorCode=404',
       });
     });
-    it('should capture browser.tabs.update exceptions and send to Sentry', async () => {
+
+    it('should capture browser.tabs.update exceptions and emit an error event', async () => {
       const logErrorSpy = jest.spyOn(log, 'error');
       const tabId = 1;
       const url = `https://example.com/test-route`;
       parseMock.mockResolvedValue({
         signed: false,
       } as ParsedDeepLink);
+
+      const mockErrorCallback = jest.fn();
+      router.on('error', mockErrorCallback);
+
       const error = new Error('Test error');
       (browser.tabs.update as jest.Mock).mockRejectedValue(error);
       await onBeforeRequest?.({
@@ -217,6 +228,8 @@ describe('DeepLinkRouter', () => {
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
       expect(logErrorSpy).toHaveBeenCalledWith('Error redirecting tab:', error);
+      expect(mockErrorCallback).toHaveBeenCalledTimes(1);
+      expect(mockErrorCallback).toHaveBeenCalledWith(error);
     });
   });
 });

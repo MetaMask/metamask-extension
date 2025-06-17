@@ -26,6 +26,7 @@ export type Options = {
 
 export class DeepLinkRouter extends EventEmitter<{
   navigate: [{ url: URL; parsed: ParsedDeepLink }];
+  error: [unknown];
 }> {
   private getExtensionURL: Options['getExtensionURL'];
 
@@ -53,7 +54,7 @@ export class DeepLinkRouter extends EventEmitter<{
       });
     } catch (error) {
       log.error('Error redirecting tab:', error);
-      return globalThis.sentry?.captureException(error);
+      this.emit('error', error);
     }
   }
 
@@ -130,14 +131,17 @@ export class DeepLinkRouter extends EventEmitter<{
       }
     } catch (error) {
       log.error('Invalid URL:', urlStr, error);
-      // we got a route we can't handle, so just force the "404" page
+      this.emit('error', error);
+      // we got a route we can't handle for some reason, and we can't just
+      // swallow it, so we just show the 404 error page.
       link = this.get404ErrorURL();
     }
+
+    this.redirectTab(tabId, link);
 
     if (isManifestV3) {
       // We need to use the redirect API in MV3, because the webRequest API does
       // not support blocking redirects.
-      this.redirectTab(tabId, link);
       return {};
     }
 
@@ -146,7 +150,6 @@ export class DeepLinkRouter extends EventEmitter<{
     // request, and then use our `redirectTab` method to complete the redirect.
     // This is better than the MV3 way because it avoids any network requests
     // to the deep link host, which aren't necessary so and best to avoid.
-    this.redirectTab(tabId, link);
     return { cancel: true };
   }
 }

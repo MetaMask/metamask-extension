@@ -627,23 +627,20 @@ async function initialize(backup) {
   }
   await sendReadyMessageToTabs();
 
-  const deepLinkRouter = new DeepLinkRouter({
+  new DeepLinkRouter({
     getExtensionURL: platform.getExtensionURL,
     getState: controller.getState.bind(controller),
-  });
-  deepLinkRouter.install();
-  deepLinkRouter.on('navigate', async ({ url, parsed }) => {
-    // don't track deep links that are immediately redirected (like /buy)
-    if ('redirectTo' in parsed) {
-      return;
-    }
-
-    const event = createEvent({
-      signed: parsed.signed,
-      url,
-    });
-    await controller.metaMetricsController.trackEvent(event);
-  });
+  })
+    .on('navigate', async ({ url, parsed }) => {
+      // don't track deep links that are immediately redirected (like /buy)
+      if (!('redirectTo' in parsed)) {
+        await controller.metaMetricsController.trackEvent(
+          createEvent({ signed: parsed.signed, url }),
+        );
+      }
+    })
+    .on('error', (error) => sentry?.captureException(error))
+    .install();
 }
 
 /**
