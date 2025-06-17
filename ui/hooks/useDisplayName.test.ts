@@ -100,7 +100,7 @@ describe('useDisplayName', () => {
   function mockDomainResolutions(address: string, ensName: string) {
     domainResolutionsMock.mockReturnValue([
       {
-        addressBookEntryName: undefined,
+        addressBookEntryName: null,
         domainName: ensName,
         protocol: 'Ethereum Name Service',
         resolvedAddress: address,

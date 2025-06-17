@@ -10,6 +10,7 @@ import {
 import { useDisplayName } from '../../../hooks/useDisplayName';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
 import Name from './name';
 
 jest.mock('../../../hooks/useDisplayName');
@@ -42,6 +43,8 @@ describe('Name', () => {
     useDisplayNameMock.mockReturnValue({
       name: null,
       hasPetname: false,
+      displayState: TrustSignalDisplayState.Unknown,
+      icon: null,
     });
 
     const { container } = renderWithProvider(
@@ -60,6 +63,8 @@ describe('Name', () => {
     useDisplayNameMock.mockReturnValue({
       name: null,
       hasPetname: false,
+      displayState: TrustSignalDisplayState.Unknown,
+      icon: null,
     });
 
     const { container } = renderWithProvider(
@@ -78,6 +83,8 @@ describe('Name', () => {
     useDisplayNameMock.mockReturnValue({
       name: SAVED_NAME_MOCK,
       hasPetname: true,
+      displayState: TrustSignalDisplayState.Petname,
+      icon: null,
     });
 
     const { container } = renderWithProvider(
@@ -96,6 +103,8 @@ describe('Name', () => {
     useDisplayNameMock.mockReturnValue({
       name: "Very long and length saved name that doesn't seem to end, really.",
       hasPetname: true,
+      displayState: TrustSignalDisplayState.Petname,
+      icon: null,
     });
 
     const { container } = renderWithProvider(
@@ -115,6 +124,8 @@ describe('Name', () => {
       name: SAVED_NAME_MOCK,
       hasPetname: true,
       image: 'test-image',
+      displayState: TrustSignalDisplayState.Petname,
+      icon: null,
     });
 
     const { container } = renderWithProvider(
@@ -142,6 +153,10 @@ describe('Name', () => {
         useDisplayNameMock.mockReturnValue({
           name: hasPetname ? SAVED_NAME_MOCK : null,
           hasPetname,
+          displayState: hasPetname
+            ? TrustSignalDisplayState.Petname
+            : TrustSignalDisplayState.Unknown,
+          icon: null,
         });
 
         renderWithProvider(
