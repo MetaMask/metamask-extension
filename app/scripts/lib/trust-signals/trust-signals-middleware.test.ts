@@ -81,15 +81,23 @@ const createMiddleware = (
     scanUrl: jest.fn(),
   };
 
+  const preferencesController = {
+    state: {
+      securityAlertsEnabled: true,
+    },
+  };
+
   return {
     middleware: createTrustSignalsMiddleware(
       networkController,
       appStateController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
       phishingController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+      preferencesController as any, // eslint-disable-line @typescript-eslint/no-explicit-any
     ),
     appStateController,
     networkController,
     phishingController,
+    preferencesController,
   };
 };
 
@@ -104,6 +112,33 @@ describe('TrustSignalsMiddleware', () => {
 
   afterEach(() => {
     consoleErrorSpy.mockRestore();
+  });
+
+  it('should not run if security alerts are disabled in preferences', async () => {
+    const {
+      middleware,
+      preferencesController,
+      appStateController,
+      phishingController,
+    } = createMiddleware();
+    preferencesController.state.securityAlertsEnabled = false;
+    const req = createMockRequest('eth_sendTransaction', [
+      createTransactionParams(),
+    ]);
+    const res = createMockResponse();
+    const next = jest.fn();
+
+    await middleware(req, res, next);
+
+    expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
+    expect(
+      appStateController.getAddressSecurityAlertResponse,
+    ).not.toHaveBeenCalled();
+    expect(
+      appStateController.addAddressSecurityAlertResponse,
+    ).not.toHaveBeenCalled();
+    expect(phishingController.scanUrl).not.toHaveBeenCalled();
+    expect(next).toHaveBeenCalled();
   });
 
   describe('eth_sendTransaction', () => {
