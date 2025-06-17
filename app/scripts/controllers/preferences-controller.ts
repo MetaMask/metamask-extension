@@ -195,7 +195,7 @@ export const getDefaultPreferencesControllerState =
       showMultiRpcModal: false,
       privacyMode: false,
       dismissSmartAccountSuggestionEnabled: false,
-      smartAccountOptIn: false,
+      smartAccountOptIn: true,
       tokenSortConfig: {
         key: 'tokenFiatAmount',
         order: 'dsc',
