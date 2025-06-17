@@ -53,8 +53,8 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const transactionConfirmation = new TransactionConfirmation(driver);
-        await transactionConfirmation.closeGasFeeToastMessage();
         await transactionConfirmation.clickAdvancedDetailsButton();
+        await transactionConfirmation.closeGasFeeToastMessage();
         await transactionConfirmation.clickGasFeeTokenPill();
 
         const gasFeeTokenModal = new GasFeeTokenModal(driver);
