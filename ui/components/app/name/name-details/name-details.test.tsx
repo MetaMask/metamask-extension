@@ -341,7 +341,11 @@ describe('NameDetails', () => {
       store,
     );
 
-    await saveNameUsingTextField(component, SAVED_NAME_MOCK);
+    await saveNameUsingTextField(
+      component,
+      SAVED_NAME_MOCK,
+      'Suggested: TestName',
+    );
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
@@ -364,7 +368,11 @@ describe('NameDetails', () => {
       store,
     );
 
-    await saveNameUsingDropdown(component, PROPOSED_NAME_MOCK);
+    await saveNameUsingDropdown(
+      component,
+      PROPOSED_NAME_MOCK,
+      'Suggested: TestName',
+    );
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
