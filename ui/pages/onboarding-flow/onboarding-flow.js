@@ -21,6 +21,7 @@ import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_ACCOUNT_EXIST,
   ONBOARDING_ACCOUNT_NOT_FOUND,
+  SECURITY_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -187,7 +188,7 @@ export default function OnboardingFlow() {
       <OnboardingAppHeader pageState={welcomePageState} />
       <RevealSRPModal
         setSecretRecoveryPhrase={setSecretRecoveryPhrase}
-        onClose={() => history.push(DEFAULT_ROUTE)}
+        onClose={() => history.push(SECURITY_ROUTE)}
         isOpen={showPasswordModalToAllowSRPReveal}
       />
       <Box
