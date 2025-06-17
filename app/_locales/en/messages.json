@@ -1484,9 +1484,6 @@
   "createPasswordDetails": {
     "message": "Unlocks MetaMask on this device only."
   },
-  "createPasswordDetailsSocial": {
-    "message": "Use this for wallet recovery on all devices."
-  },
   "createSnapAccountDescription": {
     "message": "$1 wants to add a new account to MetaMask."
   },
@@ -2102,9 +2099,6 @@
   },
   "enterPasswordContinue": {
     "message": "Enter password to continue"
-  },
-  "enterPasswordCurrent": {
-    "message": "Enter your current password"
   },
   "enterRpcUrl": {
     "message": "Enter RPC URL"
