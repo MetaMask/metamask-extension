@@ -24,13 +24,11 @@ export function useTrustSignals(
   type: NameType,
   variation: string,
   showTrustSignals: boolean,
-): TrustSignalResult {
-  // Fetch security alert response from Redux state
+): TrustSignalResult | null {
   const securityAlertResponse = useSelector((state) =>
     getAddressSecurityAlertResponse(state, value),
   );
 
-  // Get existing name data
   const { name: displayName, hasPetname } = useDisplayName({
     value,
     type,
@@ -39,7 +37,6 @@ export function useTrustSignals(
 
   const trustLabel = securityAlertResponse?.label || null;
 
-  // Map security alert result type to trust signal display state
   const getTrustState = () => {
     if (!securityAlertResponse?.result_type) {
       return null;
@@ -75,7 +72,7 @@ export function useTrustSignals(
   if (hasPetname) {
     return {
       state: TrustSignalDisplayState.Petname,
-      trustLabel,
+      trustLabel: displayName || trustLabel,
     };
   }
 
@@ -83,7 +80,7 @@ export function useTrustSignals(
   if (displayName) {
     return {
       state: TrustSignalDisplayState.Recognized,
-      trustLabel: displayName,
+      trustLabel: displayName || trustLabel,
     };
   }
 
@@ -110,9 +107,5 @@ export function useTrustSignals(
     }
   }
 
-  // Priority 7: Unknown (default)
-  return {
-    state: TrustSignalDisplayState.Unknown,
-    trustLabel,
-  };
+  return null;
 }

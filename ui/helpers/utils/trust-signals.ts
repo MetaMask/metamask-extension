@@ -56,12 +56,12 @@ export function getTrustSignalIcon(
 /**
  * Get CSS classes based on trust signal state and context
  *
- * @param state - The trust signal display state
+ * @param state - The trust signal display state (undefined means no trust signal)
  * @param context - Additional context like hasPetname, hasDisplayName, isClickable
  * @returns Array of CSS class names to apply
  */
 export function getTrustSignalCssClasses(
-  state: TrustSignalDisplayState,
+  state: TrustSignalDisplayState | undefined,
   context: TrustSignalCssContext = {},
 ): string[] {
   const {
@@ -74,6 +74,18 @@ export function getTrustSignalCssClasses(
 
   if (isClickable) {
     baseClasses.push('name__clickable');
+  }
+
+  // If no trust signal state, apply basic styling based on name availability
+  if (!state) {
+    if (hasPetname) {
+      baseClasses.push('name__saved');
+    } else if (hasDisplayName) {
+      baseClasses.push('name__recognized_unsaved');
+    } else {
+      baseClasses.push('name__missing');
+    }
+    return baseClasses;
   }
 
   switch (state) {

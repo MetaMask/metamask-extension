@@ -121,7 +121,7 @@ describe('useTrustSignals', () => {
 
       expect(result).toStrictEqual({
         state: TrustSignalDisplayState.Petname,
-        trustLabel: VERIFIED_LABEL_MOCK,
+        trustLabel: PETNAME_MOCK,
       });
     });
 
@@ -144,7 +144,7 @@ describe('useTrustSignals', () => {
 
       expect(result).toStrictEqual({
         state: TrustSignalDisplayState.Petname,
-        trustLabel: null,
+        trustLabel: PETNAME_MOCK,
       });
     });
 
@@ -377,15 +377,12 @@ describe('useTrustSignals', () => {
         false,
       );
 
-      expect(result).toStrictEqual({
-        state: TrustSignalDisplayState.Unknown,
-        trustLabel: VERIFIED_LABEL_MOCK,
-      });
+      expect(result).toBeNull();
     });
   });
 
-  describe('Priority 7: Default unknown state', () => {
-    it('returns unknown state when no security alert, no petname, and no display name', () => {
+  describe('Priority 7: Default null return', () => {
+    it('returns null when no security alert, no petname, and no display name', () => {
       getAddressSecurityAlertResponseMock.mockReturnValue(null);
 
       useDisplayNameMock.mockReturnValue({
@@ -402,13 +399,10 @@ describe('useTrustSignals', () => {
         true,
       );
 
-      expect(result).toStrictEqual({
-        state: TrustSignalDisplayState.Unknown,
-        trustLabel: null,
-      });
+      expect(result).toBeNull();
     });
 
-    it('returns unknown state with trust label when security response exists but no result_type', () => {
+    it('returns null when security response exists but no result_type', () => {
       getAddressSecurityAlertResponseMock.mockReturnValue({
         label: 'Some label',
       });
@@ -427,10 +421,7 @@ describe('useTrustSignals', () => {
         true,
       );
 
-      expect(result).toStrictEqual({
-        state: TrustSignalDisplayState.Unknown,
-        trustLabel: 'Some label',
-      });
+      expect(result).toBeNull();
     });
   });
 
@@ -452,10 +443,7 @@ describe('useTrustSignals', () => {
         true,
       );
 
-      expect(result).toStrictEqual({
-        state: TrustSignalDisplayState.Unknown,
-        trustLabel: null,
-      });
+      expect(result).toBeNull();
     });
 
     it('handles security alert response without label', () => {
@@ -552,8 +540,10 @@ describe('useTrustSignals', () => {
         variation: VARIATION_MOCK,
       });
 
-      expect(result).toHaveProperty('state');
-      expect(result).toHaveProperty('trustLabel');
+      if (result !== null) {
+        expect(result).toHaveProperty('state');
+        expect(result).toHaveProperty('trustLabel');
+      }
     });
   });
 });

@@ -57,7 +57,10 @@ import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { useName } from '../../../../hooks/useName';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
+import {
+  TrustSignalDisplayState,
+  TrustSignalResult,
+} from '../../../../hooks/useTrustSignals';
 import NameDisplay from './name-display';
 import { usePetnamesMetrics } from './metrics';
 
@@ -69,8 +72,7 @@ export type NameDetailsProps = {
   type: NameType;
   value: string;
   variation: string;
-  trustSignalDisplayState?: TrustSignalDisplayState;
-  trustLabel?: string | null;
+  trustSignal?: TrustSignalResult | null;
 };
 
 type ProposedNameOption = Required<FormComboFieldOption> & {
@@ -229,8 +231,7 @@ export default function NameDetails({
   type,
   value,
   variation,
-  trustSignalDisplayState,
-  trustLabel,
+  trustSignal,
 }: NameDetailsProps) {
   const { name: savedPetname, sourceId: savedSourceId } = useName(
     value,
@@ -272,8 +273,14 @@ export default function NameDetails({
   }, [savedPetname, savedSourceId, setName, setSelectedSourceId]);
 
   const proposedNameOptions = useMemo(
-    () => generateComboOptions(proposedNames, t, nameSources, trustLabel),
-    [proposedNames, nameSources, trustLabel],
+    () =>
+      generateComboOptions(
+        proposedNames,
+        t,
+        nameSources,
+        trustSignal?.trustLabel,
+      ),
+    [proposedNames, t, nameSources, trustSignal?.trustLabel],
   );
 
   const { trackPetnamesOpenEvent, trackPetnamesSaveEvent } = usePetnamesMetrics(
@@ -344,8 +351,8 @@ export default function NameDetails({
     let titleKey: string;
     let instructionsKey: string;
 
-    if (trustSignalDisplayState) {
-      switch (trustSignalDisplayState) {
+    if (trustSignal?.state) {
+      switch (trustSignal.state) {
         case TrustSignalDisplayState.Malicious:
           titleKey = 'nameModalTitleMalicious';
           instructionsKey = 'nameInstructionsMalicious';
@@ -392,8 +399,8 @@ export default function NameDetails({
   const { title, instructions } = getTitleAndInstructions();
 
   const showFooterWarning =
-    trustSignalDisplayState === TrustSignalDisplayState.Malicious ||
-    trustSignalDisplayState === TrustSignalDisplayState.Warning;
+    trustSignal?.state === TrustSignalDisplayState.Malicious ||
+    trustSignal?.state === TrustSignalDisplayState.Warning;
 
   return (
     <Box>
@@ -409,8 +416,7 @@ export default function NameDetails({
                 value={value}
                 type={type}
                 variation={variation}
-                trustSignalDisplayState={trustSignalDisplayState}
-                trustLabel={trustLabel}
+                trustSignal={trustSignal}
               />
             </div>
             <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
@@ -449,8 +455,8 @@ export default function NameDetails({
                 value={name}
                 options={proposedNameOptions}
                 placeholder={
-                  displayName || trustLabel
-                    ? `Suggested: ${displayName || trustLabel}`
+                  displayName || trustSignal?.trustLabel
+                    ? `Suggested: ${displayName || trustSignal?.trustLabel}`
                     : t('nameSetPlaceholder')
                 }
                 onChange={handleNameChange}

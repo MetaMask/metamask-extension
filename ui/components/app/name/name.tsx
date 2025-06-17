@@ -61,7 +61,7 @@ const Name = memo(
       variation,
     });
 
-    const { state: trustSignalDisplayState, trustLabel } = useTrustSignals(
+    const trustSignal = useTrustSignals(
       value,
       type,
       variation,
@@ -96,8 +96,7 @@ const Name = memo(
             type={type}
             variation={variation}
             onClose={handleModalClose}
-            trustSignalDisplayState={trustSignalDisplayState}
-            trustLabel={trustLabel}
+            trustSignal={trustSignal}
           />
         )}
 
@@ -107,8 +106,7 @@ const Name = memo(
           preferContractSymbol={preferContractSymbol}
           variation={variation}
           handleClick={handleClick}
-          trustSignalDisplayState={trustSignalDisplayState}
-          trustLabel={trustLabel}
+          trustSignal={trustSignal}
         />
       </Box>
     );

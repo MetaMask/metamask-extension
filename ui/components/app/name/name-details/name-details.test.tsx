@@ -108,9 +108,10 @@ const STATE_MOCK = {
 async function saveNameUsingDropdown(
   component: ReturnType<typeof renderWithProvider>,
   name: string,
+  placeholder: string = 'Choose a nickname...',
 ) {
   const { getByPlaceholderText, getByText } = component;
-  const nameInput = getByPlaceholderText('Choose a nickname...');
+  const nameInput = getByPlaceholderText(placeholder);
   const saveButton = getByText('Save');
 
   await act(async () => {
@@ -131,9 +132,10 @@ async function saveNameUsingDropdown(
 async function saveNameUsingTextField(
   component: ReturnType<typeof renderWithProvider>,
   name: string,
+  placeholder: string = 'Choose a nickname...',
 ) {
   const { getByPlaceholderText, getByText } = component;
-  const nameInput = getByPlaceholderText('Choose a nickname...');
+  const nameInput = getByPlaceholderText(placeholder);
   const saveButton = getByText('Save');
 
   await act(async () => {
@@ -319,7 +321,7 @@ describe('NameDetails', () => {
     );
 
     const { getByPlaceholderText, baseElement } = component;
-    const nameInput = getByPlaceholderText('Choose a nickname...');
+    const nameInput = getByPlaceholderText('Suggested: TestName');
 
     await act(async () => {
       fireEvent.click(nameInput);
@@ -385,7 +387,7 @@ describe('NameDetails', () => {
       store,
     );
 
-    await saveNameUsingTextField(component, '');
+    await saveNameUsingTextField(component, '', 'Suggested: TestName');
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
@@ -408,7 +410,11 @@ describe('NameDetails', () => {
       store,
     );
 
-    await saveNameUsingTextField(component, SAVED_NAME_2_MOCK);
+    await saveNameUsingTextField(
+      component,
+      SAVED_NAME_2_MOCK,
+      'Suggested: TestName',
+    );
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
@@ -652,7 +658,11 @@ describe('NameDetails', () => {
         store,
       );
 
-      await saveNameUsingDropdown(component, PROPOSED_NAME_2_MOCK);
+      await saveNameUsingDropdown(
+        component,
+        PROPOSED_NAME_2_MOCK,
+        'Suggested: TestName',
+      );
 
       expect(trackEventMock).toHaveBeenNthCalledWith(2, {
         event: MetaMetricsEventName.PetnameUpdated,
@@ -744,7 +754,7 @@ describe('NameDetails', () => {
         store,
       );
 
-      await saveNameUsingTextField(component, '');
+      await saveNameUsingTextField(component, '', 'Suggested: TestName');
 
       expect(trackEventMock).toHaveBeenNthCalledWith(2, {
         event: MetaMetricsEventName.PetnameDeleted,
