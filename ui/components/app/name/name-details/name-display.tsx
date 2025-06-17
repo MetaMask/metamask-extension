@@ -97,14 +97,14 @@ const NameDisplay = memo(
         return <ShortenedName name={name} />;
       }
 
-      // Priority 2: Trust label (from security alert)
-      if (trustSignal?.trustLabel) {
-        return <ShortenedName name={trustSignal.trustLabel} />;
-      }
-
-      // Priority 3: Recognized name from name providers
+      // Priority 2: Recognized name from name providers
       if (hasDisplayName && name) {
         return <ShortenedName name={name} />;
+      }
+
+      // Priority 3: Trust label (from security alert)
+      if (trustSignal?.trustLabel) {
+        return <ShortenedName name={trustSignal.trustLabel} />;
       }
 
       // Priority 4: Formatted address
