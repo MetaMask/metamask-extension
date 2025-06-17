@@ -391,10 +391,6 @@ describe('MetaMaskController', () => {
       jest.spyOn(MetaMaskController.prototype, 'resetStates');
 
       jest
-        .spyOn(TransactionController.prototype, 'updateIncomingTransactions')
-        .mockReturnValue();
-
-      jest
         .spyOn(
           TransactionController.prototype,
           'startIncomingTransactionPolling',
@@ -3614,35 +3610,6 @@ describe('MetaMaskController', () => {
 
         expect(
           TransactionController.prototype.stopIncomingTransactionPolling,
-        ).toHaveBeenCalledTimes(1);
-      });
-
-      it('updates incoming transactions when changing account', async () => {
-        expect(
-          TransactionController.prototype.updateIncomingTransactions,
-        ).not.toHaveBeenCalled();
-
-        metamaskController.controllerMessenger.publish(
-          'AccountsController:selectedAccountChange',
-          TEST_INTERNAL_ACCOUNT,
-        );
-
-        expect(
-          TransactionController.prototype.updateIncomingTransactions,
-        ).toHaveBeenCalledTimes(1);
-      });
-
-      it('updates incoming transactions when changing network', async () => {
-        expect(
-          TransactionController.prototype.updateIncomingTransactions,
-        ).not.toHaveBeenCalled();
-
-        await Messenger.prototype.subscribe.mock.calls
-          .filter((args) => args[0] === 'NetworkController:networkDidChange')
-          .slice(-1)[0][1]();
-
-        expect(
-          TransactionController.prototype.updateIncomingTransactions,
         ).toHaveBeenCalledTimes(1);
       });
     });
