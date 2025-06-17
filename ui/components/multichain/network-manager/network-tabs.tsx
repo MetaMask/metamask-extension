@@ -14,7 +14,15 @@ export const NetworkTabs = ({ initialTab }: { initialTab: string }) => {
   }, [dispatch]);
   return (
     <Box>
+<<<<<<< HEAD
       <ModalHeader onBack={handleClose} onClose={handleClose}>
+=======
+      <ModalHeader
+        onBack={handleClose}
+        onClose={handleClose}
+        closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
+      >
+>>>>>>> chore/modal-header-close-testid
         Networks
       </ModalHeader>
       <ModalBody style={{ padding: 0 }}>

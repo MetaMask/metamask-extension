@@ -128,13 +128,21 @@ const NetworkManagerRouter = () => {
   return (
     <Switch>
       <Route path="/add-rpc">
-        <ModalHeader onClose={handleClose} onBack={handleNewNetwork}>
+        <ModalHeader
+          onClose={handleClose}
+          onBack={handleNewNetwork}
+          closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
+        >
           {t('addRpcUrl')}
         </ModalHeader>
         <AddRpcUrlModal onAdded={handleAddRPC} />
       </Route>
       <Route path="/add-explorer-url">
-        <ModalHeader onClose={handleClose} onBack={handleNewNetwork}>
+        <ModalHeader
+          onClose={handleClose}
+          onBack={handleNewNetwork}
+          closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
+        >
           {t('addBlockExplorerUrl')}
         </ModalHeader>
         <AddBlockExplorerModal
@@ -142,7 +150,11 @@ const NetworkManagerRouter = () => {
         />
       </Route>
       <Route path="/edit-explorer-url">
-        <ModalHeader onClose={handleClose} onBack={handleNewNetwork}>
+        <ModalHeader
+          onClose={handleClose}
+          onBack={handleNewNetwork}
+          closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
+        >
           {t('addBlockExplorerUrl')}
         </ModalHeader>
         <AddBlockExplorerModal
@@ -150,7 +162,11 @@ const NetworkManagerRouter = () => {
         />
       </Route>
       <Route path="/add">
-        <ModalHeader onClose={handleClose} onBack={handleGoHome}>
+        <ModalHeader
+          onClose={handleClose}
+          onBack={handleGoHome}
+          closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
+        >
           {t('addNetwork')}
         </ModalHeader>
         <AddNetwork
@@ -159,7 +175,11 @@ const NetworkManagerRouter = () => {
         />
       </Route>
       <Route path="/edit">
-        <ModalHeader onClose={handleClose} onBack={handleGoHome}>
+        <ModalHeader
+          onClose={handleClose}
+          onBack={handleGoHome}
+          closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
+        >
           {t('editNetwork')}
         </ModalHeader>
         <AddNetwork
