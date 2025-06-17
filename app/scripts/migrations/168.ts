@@ -40,7 +40,7 @@ function transformState(
     return state;
   }
 
-  const networkOrderControllerState = state.NetworkOrderController;
+  const { NetworkOrderController: networkOrderControllerState } = state;
 
   // If NetworkOrderController is not an object, log error and return state
   if (!isObject(networkOrderControllerState)) {
@@ -58,7 +58,7 @@ function transformState(
     return state;
   }
 
-  const preferencesControllerState = state.PreferencesController;
+  const { PreferencesController: preferencesControllerState } = state;
 
   // If PreferencesController is not an object, log error and return state
   if (!isObject(preferencesControllerState)) {
@@ -78,7 +78,7 @@ function transformState(
     return state;
   }
 
-  const preferences = preferencesControllerState.preferences;
+  const { preferences } = preferencesControllerState;
 
   // If preferences is not an object, log error and return state
   if (!isObject(preferences)) {
@@ -98,7 +98,7 @@ function transformState(
     return state;
   }
 
-  const tokenNetworkFilter = preferences.tokenNetworkFilter;
+  const { tokenNetworkFilter } = preferences;
 
   // If tokenNetworkFilter is not an object, log error and return state
   if (!isObject(tokenNetworkFilter)) {

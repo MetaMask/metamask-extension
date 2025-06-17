@@ -60,7 +60,8 @@ describe('migration #168', () => {
       const newState = await migrate(oldState);
 
       expect(
-        (newState.data.NetworkOrderController as any).enabledNetworkMap,
+        (newState.data.NetworkOrderController as Record<string, unknown>)
+          .enabledNetworkMap,
       ).toStrictEqual({
         '0x1': true,
         '0x89': false,
@@ -313,7 +314,8 @@ describe('migration #168', () => {
 
       // Check that enabledNetworkMap was set correctly
       expect(
-        (newState.data.NetworkOrderController as any).enabledNetworkMap,
+        (newState.data.NetworkOrderController as Record<string, unknown>)
+          .enabledNetworkMap,
       ).toStrictEqual({
         '0x1': true,
         '0x89': false,
@@ -321,20 +323,26 @@ describe('migration #168', () => {
 
       // Check that other properties are preserved
       expect(
-        (newState.data.NetworkOrderController as any).orderedNetworkList,
+        (newState.data.NetworkOrderController as Record<string, unknown>)
+          .orderedNetworkList,
       ).toStrictEqual(['0x1', '0x89']);
       expect(
-        (newState.data.NetworkOrderController as any).someOtherProperty,
+        (newState.data.NetworkOrderController as Record<string, unknown>)
+          .someOtherProperty,
       ).toStrictEqual('value');
       expect(
-        (newState.data.PreferencesController as any).preferences
-          .someOtherPreference,
+        (
+          (newState.data.PreferencesController as Record<string, unknown>)
+            .preferences as Record<string, unknown>
+        ).someOtherPreference,
       ).toStrictEqual('value');
       expect(
-        (newState.data.PreferencesController as any).someOtherProperty,
+        (newState.data.PreferencesController as Record<string, unknown>)
+          .someOtherProperty,
       ).toStrictEqual('value');
       expect(
-        (newState.data.SomeOtherController as any).someProperty,
+        (newState.data.SomeOtherController as Record<string, unknown>)
+          .someProperty,
       ).toStrictEqual('value');
     });
   });
