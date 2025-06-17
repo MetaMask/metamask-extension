@@ -10,7 +10,7 @@ import {
 import { merge } from 'lodash';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { fireEvent, waitFor } from '../../../../test/jest';
-import configureStore from '../../../store/store.ts';
+import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 // TODO: Remove restricted import
@@ -20,12 +20,12 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
   IMPORT_SRP_ROUTE,
-} from '../../../helpers/constants/routes.ts';
+} from '../../../helpers/constants/routes';
 ///: END:ONLY_INCLUDE_IF
-import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods.ts';
-import { createMockInternalAccount } from '../../../../test/jest/mocks.ts';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { MultichainAccountListMenu } from './index.ts';
+import { MultichainAccountListMenu } from '.';
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 const mockOnClose = jest.fn();

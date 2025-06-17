@@ -1,7 +1,7 @@
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { CaipChainId } from '@metamask/utils';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks.ts';
-import { WalletClientType } from '../../../hooks/accounts/useMultichainWalletSnapClient.ts';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { WalletClientType } from '../../../hooks/accounts/useMultichainWalletSnapClient';
 ///: END:ONLY_INCLUDE_IF
 
 export type ActionMode = (typeof ACTION_MODES)[keyof typeof ACTION_MODES];
