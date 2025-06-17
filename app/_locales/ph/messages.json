@@ -985,12 +985,6 @@
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Isulat ito at itabi sa maraming tagong lugar."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Ilagay sa safe-deposit box."
-  },
   "seedPhraseIntroTitle": {
     "message": "I-secure ang iyong wallet"
   },
@@ -1355,9 +1349,6 @@
   "termsOfService": {
     "message": "Mga Tuntunin ng Serbisyo"
   },
-  "tips": {
-    "message": "Mga Tip"
-  },
   "to": {
     "message": "Para kay/sa"
   },
@@ -1452,9 +1443,6 @@
   },
   "unlock": {
     "message": "I-unlock"
-  },
-  "unlockMessage": {
-    "message": "Naghihintay ang decentralized web"
   },
   "unrecognizedChain": {
     "message": "Hindi kinikilala ang custom na network na ito. Inirerekomenda naming $1 ka bago magpatuloy",
