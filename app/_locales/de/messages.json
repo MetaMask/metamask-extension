@@ -68,13 +68,6 @@
     "message": "Ich habe die $1 gelesen und stimme ihnen zu.",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Greifen Sie mit Ihrer geheimen Wiederherstellungsphrase auf Ihre Wallet zu."
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask kann Ihr Passwort nicht wiederherstellen. Wir verwenden Ihre geheime Wiederherstellungsphrase, um Ihr Eigentum zu bestätigen, Ihre Wallet wiederherzustellen und ein neues Passwort festzulegen. Geben Sie zunächst die geheime Wiederherstellungsphrase ein, die Sie erhalten haben, als Sie Ihre Wallet erstellt haben. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Zugriff auf Ihre Kamera …"
   },
@@ -1250,9 +1243,6 @@
   "confusingEnsDomain": {
     "message": "Wir haben ein missverständliches Zeichen im ENS-Namen entdeckt. Prüfen Sie den ENS-Namen, um möglichen Betrug zu vermeiden."
   },
-  "congratulations": {
-    "message": "Glückwunsch!"
-  },
   "connect": {
     "message": "Verbinden"
   },
@@ -2402,9 +2392,6 @@
   "hideAdvancedDetails": {
     "message": "Erweiterte Details verbergen"
   },
-  "hideSeedPhrase": {
-    "message": "Seed-Phrase verbergen"
-  },
   "hideSentitiveInfo": {
     "message": "Sensible Informationen verbergen"
   },
@@ -2500,10 +2487,6 @@
   },
   "id": {
     "message": "ID"
-  },
-  "ifYouGetLockedOut": {
-    "message": "Wenn Sie aus der App ausgesperrt werden oder ein neues Gerät erhalten, verlieren Sie Ihre Gelder. Sichern Sie unbedingt Ihre geheime Wiederherstellungsphrase in $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "ignoreAll": {
     "message": "Alle ignorieren"
@@ -2758,10 +2741,6 @@
   "jsonFile": {
     "message": "JSON Datei",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Bewahren Sie eine Erinnerung an Ihre geheime Wiederherstellungsphrase an einem sicheren Ort auf. Wenn Sie sie verlieren, kann Ihnen niemand helfen, sie wiederzubekommen. Schlimmer noch, Sie werden nie wieder Zugang zu Ihrer Wallet haben. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Kontoname"
@@ -3782,9 +3761,6 @@
   "onboardingMetametricsDescription": {
     "message": "Wir würden gerne grundlegende Nutzungs- und Diagnosedaten sammeln, um MetaMask zu verbessern. Sie sollten wissen, dass wir die Daten, die Sie uns hier zur Verfügung stellen, niemals verkaufen."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Wenn wir Metriken sammeln, wird es immer wie folgt sein ..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Wir werden Sie informieren, wenn wir beschließen, diese Daten für andere Zwecke zu verwenden. Für weitere Informationen können Sie unsere $1 einsehen. Vergessen Sie nicht, dass Sie jederzeit zu Einstellungen gehen und sich abmelden können.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3813,29 +3789,11 @@
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Optional:"
   },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Erfahren Sie, wie wir Ihre Privatsphäre schützen, während wir Nutzungsdaten für Ihr Profil sammeln."
-  },
   "onboardingMetametricsTitle": {
     "message": "Helfen Sie uns, MetaMask zu verbessern."
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Wir verwenden diese Daten, um zu erfahren, wie Sie mit unserer Marketingkommunikation umgehen. Wir können relevante Neuigkeiten (wie Produktmerkmale) teilen."
-  },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Voller Zugriff"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Diese Erweiterungen können Informationen sehen und ändern."
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "auf dieser Seite."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Erweiterungen"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Klicken Sie auf das Symbol der Browser-Erweiterung."
   },
   "onboardingPinExtensionDescription": {
     "message": "Heften Sie MetaMask in Ihrem Browser ab, damit Sie auf die Transaktionsbestätigungen zugreifen und sie leicht einsehen können."
@@ -3844,16 +3802,8 @@
     "message": "Sie können MetaMask öffnen, indem Sie auf die Erweiterung klicken, und mit nur einem Klick auf Ihre Wallet zugreifen."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Klicken Sie auf das Symbol der Browser-Erweiterung, um sofort darauf zuzugreifen."
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "MetaMask anheften"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Klicken Sie auf das Symbol der Browser-Erweiterung, um sofort darauf zuzugreifen.",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "Ihre MetaMask Installation ist abgeschlossen!"
@@ -4508,12 +4458,6 @@
   "rejected": {
     "message": "Abgelehnt"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Denken Sie daran: Sollten Sie Ihre geheime Wiederherstellungsphrase verlieren, verlieren Sie auch den Zugriff auf Ihr Wallet. $1, um diese Wörter sicher zu verwahren, damit Sie jederzeit auf Ihr Geld zugreifen können."
-  },
-  "reminderSet": {
-    "message": "Erinnerung eingestellt!"
-  },
   "remove": {
     "message": "Entfernen"
   },
@@ -4668,9 +4612,6 @@
   "revealSensitiveContent": {
     "message": "Sensible Inhalte offenlegen"
   },
-  "revealTheSeedPhrase": {
-    "message": "Seed-Phrase anzeigen"
-  },
   "review": {
     "message": "Überprüfen"
   },
@@ -4767,9 +4708,6 @@
   "securityMessageLinkForNetworks": {
     "message": "Netzwerk-Betrügereien und Sicherheitsrisiken"
   },
-  "securityPrivacyPath": {
-    "message": "Einstellungen > Sicherheit und Datenschutz."
-  },
   "securityProviderPoweredBy": {
     "message": "Unterstützt durch $1",
     "description": "The security provider that is providing data"
@@ -4781,29 +4719,11 @@
   "seeDetails": {
     "message": "Details anzeigen"
   },
-  "seedPhraseConfirm": {
-    "message": "Geheime Wiederherstellungsphrase bestätigen"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Geheime Wiederherstellungsphrase bestätigen"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Aufschreiben und an mehreren geheimen Orten aufbewahren"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "In einem Schließfach aufbewahren"
-  },
   "seedPhraseIntroTitle": {
     "message": "Sichern Sie Ihre Wallet"
   },
   "seedPhraseReq": {
     "message": "Geheime Wiederherstellungsphrasen bestehen aus 12, 15, 18, 21 oder 24 Wörtern."
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Schreiben Sie diese geheime Wiederherstellungsphrase mit 12 Wörtern auf und bewahren Sie sie an einem Ort auf, auf den nur Sie Zugriff haben."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Schreiben Sie sich Ihre geheime Wiederherstellungsphrase auf."
   },
   "select": {
     "message": "Auswählen"
@@ -4918,9 +4838,6 @@
   },
   "settings": {
     "message": "Einstellungen"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "Die Einstellungen sind für Benutzerfreundlichkeit und Sicherheit optimiert. Sie können diese jederzeit ändern."
   },
   "settingsSearchMatchingNotFound": {
     "message": "Keine passenden Ergebnisse gefunden."
@@ -6211,9 +6128,6 @@
   "time": {
     "message": "Zeit"
   },
-  "tips": {
-    "message": "Tipps"
-  },
   "tipsForUsingAWallet": {
     "message": "Tipps zur Verwendung einer Wallet"
   },
@@ -6505,9 +6419,6 @@
   "unlock": {
     "message": "Entsperren"
   },
-  "unlockMessage": {
-    "message": "Das dezentrale Web erwartet Sie"
-  },
   "unpin": {
     "message": "Lösen"
   },
@@ -6670,10 +6581,6 @@
   },
   "walletConnectionGuide": {
     "message": "unsere Hardware-Wallet-Verbindungsanleitung"
-  },
-  "walletProtectedAndReadyToUse": {
-    "message": "Ihr Wallet ist geschützt und einsatzbereit. Sie finden Ihre geheime Wiederherstellungsphrase unter $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "Möchten Sie dieses Netzwerk hinzufügen?"

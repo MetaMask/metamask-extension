@@ -792,9 +792,6 @@
   "on": {
     "message": "開啟"
   },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Full Access"
-  },
   "onlyConnectTrust": {
     "message": "記住，只連線到您信任的網站。",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
@@ -940,12 +937,6 @@
   },
   "securityAndPrivacy": {
     "message": "安全＆隱私"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "寫下來並且存放在不同的秘密地點。"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "存在安全保管箱裡。"
   },
   "seedPhraseIntroTitle": {
     "message": "保護您的錢包"
@@ -1116,9 +1107,6 @@
   "termsOfService": {
     "message": "服務條款"
   },
-  "tips": {
-    "message": "提示"
-  },
   "to": {
     "message": "目的帳戶"
   },
@@ -1213,9 +1201,6 @@
   },
   "unlock": {
     "message": "解鎖"
-  },
-  "unlockMessage": {
-    "message": "去中心化網路世界等待著您"
   },
   "unrecognizedChain": {
     "message": "無法辨識這個自訂網路。我們建議您先$1再繼續。",

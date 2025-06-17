@@ -25,29 +25,19 @@ describe('BTC Account - Send', function (this: Suite) {
       await bitcoinSendPage.check_pageIsLoaded();
       await bitcoinSendPage.fillRecipientAddress(recipientAddress);
       await bitcoinSendPage.fillAmount(sendAmount);
-      await bitcoinSendPage.clickReviewButton();
+      await bitcoinSendPage.clickContinueButton();
 
       // ------------------------------------------------------------------------------
       // From here, we have moved to the confirmation screen (second part of the flow).
 
       const bitcoinReviewTxPage = new BitcoinReviewTxPage(driver);
       await bitcoinReviewTxPage.check_pageIsLoaded();
-      await driver.waitForSelector({
-        text: `Sending ${sendAmount} BTC`,
-        tag: 'h2',
-      });
-      await driver.waitForSelector({
-        text: `${expectedFee} sats`,
-        tag: 'p',
-      });
-      await driver.waitForSelector({
-        text: `${Math.floor(DEFAULT_BTC_FEE_RATE)} sat/vB`,
-        tag: 'p',
-      });
-      await driver.waitForSelector({
-        text: `${expectedTotal} BTC`,
-        tag: 'p',
-      });
+      await bitcoinReviewTxPage.check_sendAmountIsDisplayed(sendAmount);
+      await bitcoinReviewTxPage.check_networkFeeIsDisplayed(expectedFee);
+      await bitcoinReviewTxPage.check_feeRateIsDisplayed(
+        Math.floor(DEFAULT_BTC_FEE_RATE).toString(),
+      );
+      await bitcoinReviewTxPage.check_totalAmountIsDisplayed(expectedTotal);
       await bitcoinReviewTxPage.clickSendButton();
 
       // TODO: Test that the transaction appears in the activity tab once activity tab is implemented for Bitcoin
@@ -70,21 +60,19 @@ describe('BTC Account - Send', function (this: Suite) {
       await bitcoinSendPage.check_pageIsLoaded();
       await bitcoinSendPage.fillRecipientAddress(recipientAddress);
       await bitcoinSendPage.selectMaxAmount();
-      await bitcoinSendPage.clickReviewButton();
+      await bitcoinSendPage.clickContinueButton();
 
       // ------------------------------------------------------------------------------
       // From here, we have moved to the confirmation screen (second part of the flow).
 
       const bitcoinReviewTxPage = new BitcoinReviewTxPage(driver);
       await bitcoinReviewTxPage.check_pageIsLoaded();
-      await driver.waitForSelector({
-        text: `Sending ${DEFAULT_BTC_BALANCE - expectedFee} BTC`,
-        tag: 'h2',
-      });
-      await driver.waitForSelector({
-        text: `${DEFAULT_BTC_BALANCE} BTC`,
-        tag: 'p',
-      });
+      await bitcoinReviewTxPage.check_sendAmountIsDisplayed(
+        (DEFAULT_BTC_BALANCE - expectedFee).toString(),
+      );
+      await bitcoinReviewTxPage.check_totalAmountIsDisplayed(
+        DEFAULT_BTC_BALANCE.toString(),
+      );
       await bitcoinReviewTxPage.clickSendButton();
 
       // TODO: Test that the transaction appears in the activity tab once activity tab is implemented for Bitcoin

@@ -616,9 +616,6 @@
   "terms": {
     "message": "Syarat-syarat Penggunaan"
   },
-  "tips": {
-    "message": "Tip"
-  },
   "to": {
     "message": "Kepada"
   },
@@ -693,9 +690,6 @@
   },
   "unlock": {
     "message": "Buka kunci"
-  },
-  "unlockMessage": {
-    "message": "Web ternyahpusat menanti"
   },
   "urlErrorMsg": {
     "message": "URI memerlukan awalan HTTP/HTTPS yang sesuai."

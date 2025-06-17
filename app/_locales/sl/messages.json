@@ -620,9 +620,6 @@
   "terms": {
     "message": "Pogoji uporabe"
   },
-  "tips": {
-    "message": "Nasveti"
-  },
   "to": {
     "message": "Za"
   },
@@ -700,9 +697,6 @@
   },
   "unlock": {
     "message": "Odkleni"
-  },
-  "unlockMessage": {
-    "message": "Decentralizirana spletna denarnica"
   },
   "urlErrorMsg": {
     "message": "URI zahtevajo ustrezno HTTP/HTTPS predpono."

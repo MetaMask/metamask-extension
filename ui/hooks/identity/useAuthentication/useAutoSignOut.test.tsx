@@ -16,6 +16,7 @@ const arrangeMockState = (
   return {
     metamask: {
       ...stateOverrides,
+      keyrings: [],
     },
   };
 };
@@ -65,7 +66,7 @@ prerequisiteCombinations.forEach((combinedState) => {
   }
 });
 
-describe('useAutoSignIn', () => {
+describe('useAutoSignOut', () => {
   it('should initialize correctly', () => {
     const state = arrangeMockState({
       isUnlocked: false,
