@@ -10,7 +10,9 @@ class LoginPage {
 
   private welcomeBackMessage: object;
 
-  private forgotPasswordButton: object;
+  private forgotPasswordButton: string;
+
+  private resetPasswordModalButton: string;
 
   private incorrectPasswordMessage: { css: string; text: string };
 
@@ -22,12 +24,13 @@ class LoginPage {
       css: '[data-testid="unlock-page-title"]',
       text: 'Welcome back',
     };
-    this.forgotPasswordButton = {
-      text: 'Forgot password?',
-      tag: 'a',
-    };
+    this.forgotPasswordButton = '[data-testid="unlock-forgot-password-button"]';
+
+    this.resetPasswordModalButton =
+      '[data-testid="reset-password-modal-button"]';
+
     this.incorrectPasswordMessage = {
-      css: '.MuiFormHelperText-root.Mui-error.MuiFormHelperText-filled',
+      css: '[data-testid="unlock-page-help-text"]',
       text: 'Incorrect password',
     };
   }
@@ -70,6 +73,9 @@ class LoginPage {
   async gotoResetPasswordPage(): Promise<void> {
     console.log('Navigating to reset password page');
     await this.driver.clickElement(this.forgotPasswordButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.resetPasswordModalButton,
+    );
   }
 }
 

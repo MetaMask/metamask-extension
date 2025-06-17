@@ -617,9 +617,6 @@
   "terms": {
     "message": "Condicions d'ús"
   },
-  "tips": {
-    "message": "Propines"
-  },
   "to": {
     "message": "A"
   },
@@ -691,9 +688,6 @@
   },
   "unlock": {
     "message": "Desbloqueja"
-  },
-  "unlockMessage": {
-    "message": "La web descentralitzada està esperant"
   },
   "urlErrorMsg": {
     "message": "Els URIs requereixen el prefix HTTP/HTTPS  apropiat."

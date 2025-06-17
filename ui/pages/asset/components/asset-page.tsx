@@ -1,6 +1,10 @@
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { EthMethod, SolMethod } from '@metamask/keyring-api';
-import { CaipAssetType, Hex, parseCaipAssetType } from '@metamask/utils';
+import { BtcMethod, EthMethod, SolMethod } from '@metamask/keyring-api';
+import {
+  type CaipAssetType,
+  type Hex,
+  parseCaipAssetType,
+} from '@metamask/utils';
 import { isEqual } from 'lodash';
 import React, { ReactNode, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -60,8 +64,9 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getMultichainShouldShowFiat,
 } from '../../../selectors/multichain';
-import { TokenWithFiatAmount } from '../../../components/app/assets/types';
+import { type TokenWithFiatAmount } from '../../../components/app/assets/types';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
+import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
 import { Asset } from '../types/asset';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { getMultichainNativeAssetType } from '../../../selectors/assets';
@@ -107,7 +112,8 @@ const AssetPage = ({
   const isSigningEnabled =
     account.methods.includes(EthMethod.SignTransaction) ||
     account.methods.includes(EthMethod.SignUserOperation) ||
-    account.methods.includes(SolMethod.SignTransaction);
+    account.methods.includes(SolMethod.SignTransaction) ||
+    account.methods.includes(BtcMethod.SendBitcoin);
 
   const isTestnet = useMultichainSelector(getMultichainIsTestnet);
   const shouldShowFiat = useMultichainSelector(getMultichainShouldShowFiat);
@@ -247,6 +253,8 @@ const AssetPage = ({
       }
     : (mutichainTokenWithFiatAmount as TokenWithFiatAmount);
 
+  const { safeChains } = useSafeChains();
+
   return (
     <Box
       marginLeft="auto"
@@ -328,6 +336,7 @@ const AssetPage = ({
             key={`${symbol}-${address}`}
             token={tokenWithFiatAmount}
             disableHover={true}
+            safeChains={safeChains}
           />
         )}
         <Box

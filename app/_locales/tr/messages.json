@@ -68,13 +68,6 @@
     "message": "$1 bölümünü okudum ve kabul ediyorum",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Gizli Kurtarma İfadenizle cüzdanınıza erişin"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask şifrenizi kurtaramaz. Sahipliğinizi doğrulamak, cüzdanınızı yenilemek ve yeni bir şifre belirlemek için Gizli Kurtarma İfadenizi kullanırız. İlk olarak, cüzdanınızı oluştururken size verilmiş olan Gizli Kurtarma İfadenizi girin. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Kameranıza erişim sağlanıyor..."
   },
@@ -1250,9 +1243,6 @@
   "confusingEnsDomain": {
     "message": "ENS adında karıştırılabilir bir karakter tespit ettik. Olası bir dolandırıcılığı önlemek için ENS adını kontrol edin."
   },
-  "congratulations": {
-    "message": "Tebrikler!"
-  },
   "connect": {
     "message": "Bağla"
   },
@@ -2402,9 +2392,6 @@
   "hideAdvancedDetails": {
     "message": "Gelişmiş bilgileri gizle"
   },
-  "hideSeedPhrase": {
-    "message": "Anahtar cümleyi gizle"
-  },
   "hideSentitiveInfo": {
     "message": "Hassas bilgileri gizle"
   },
@@ -2500,10 +2487,6 @@
   },
   "id": {
     "message": "Kimlik"
-  },
-  "ifYouGetLockedOut": {
-    "message": "Uygulamaya giriş yapamazsanız veya yeni bir cihaz edinirseniz paranızı kaybedersiniz. Gizli Kurtarma İfadenizi şurada yedeklediğinizden emin olun: $1 ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "ignoreAll": {
     "message": "Tümünü yoksay"
@@ -2758,10 +2741,6 @@
   "jsonFile": {
     "message": "JSON Dosyası",
     "description": "format for importing an account"
-  },
-  "keepReminderOfSRP": {
-    "message": "Gizli Kurtarma İfadenizin hatırlatıcısını güvenli bir yerde tutun. Güvenli kurtarma ifadenizi kaybederseniz hiç kimse geri almanıza yardımcı olamaz. Daha da kötüsü, cüzdanınıza bir daha asla erişemezsiniz. $1",
-    "description": "$1 is a learn more link"
   },
   "keyringAccountName": {
     "message": "Hesap adı"
@@ -3782,9 +3761,6 @@
   "onboardingMetametricsDescription": {
     "message": "MetaMask'i iyileştirmek için temel kullanım ve tanılama verilerini toplamak istiyoruz. Burada sunduğunuz verileri asla satmadığımızı bilmenizi isteriz."
   },
-  "onboardingMetametricsDescription2": {
-    "message": "Ölçümleri toplarken bu her zaman aşağıdaki gibi olacaktır..."
-  },
   "onboardingMetametricsInfuraTerms": {
     "message": "Bu verileri başka amaçlar için kullanmaya karar vermemiz durumunda sizi bilgilendireceğiz. Daha fazla bilgi için $1 bölümümüzü inceleyebilirsiniz. Unutmayın, dilediğiniz zaman ayarlar kısmına giderek vazgeçebilirsiniz.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
@@ -3813,29 +3789,11 @@
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "İsteğe bağlı:"
   },
-  "onboardingMetametricsPrivacyDescription": {
-    "message": "Profiliniz için kullanım verilerini toplarken gizliliğinizi nasıl koruduğumuzu öğrenin."
-  },
   "onboardingMetametricsTitle": {
     "message": "MetaMask'i iyileştirmemize yardımcı olun"
   },
   "onboardingMetametricsUseDataCheckbox": {
     "message": "Bu verileri, pazarlama iletişimlerimizle nasıl etkileşimde bulunduğunuzu öğrenmek için kullanacağız. İlgili haberleri (ürün özellikleri gibi) paylaşabiliriz."
-  },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Tam erişim"
-  },
-  "onboardingPinExtensionBillboardDescription": {
-    "message": "Bu uzantılar, bu sitedeki bilgileri görebilir"
-  },
-  "onboardingPinExtensionBillboardDescription2": {
-    "message": "ve değiştirebilir."
-  },
-  "onboardingPinExtensionBillboardTitle": {
-    "message": "Uzantılar"
-  },
-  "onboardingPinExtensionChrome": {
-    "message": "Tarayıcı uzantısı simgesine tıklayın"
   },
   "onboardingPinExtensionDescription": {
     "message": "İşlem onaylarını erişilebilir ve kolay görüntülenebilir hale getirmek için MetaMask'i tarayıcınıza sabitleyin."
@@ -3844,16 +3802,8 @@
     "message": "Uzantıya tıklayarak MetaMask'i açabilir ve 1 tık ile cüzdanınıza erişim sağlayabilirsiniz."
   },
   "onboardingPinExtensionDescription3": {
-    "message": "Hemen erişim sağlamak için tarayıcı uzantısı simgesine tıklayın"
-  },
-  "onboardingPinExtensionLabel": {
-    "message": "MetaMask'i sabitle"
-  },
-  "onboardingPinExtensionStep1": {
-    "message": "1"
-  },
-  "onboardingPinExtensionStep2": {
-    "message": "2"
+    "message": "Hemen erişim sağlamak için tarayıcı uzantısı simgesine tıklayın",
+    "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
     "message": "MetaMask kurulumunuz tamamlandı!"
@@ -4508,12 +4458,6 @@
   "rejected": {
     "message": "Reddedildi"
   },
-  "rememberSRPIfYouLooseAccess": {
-    "message": "Unutmayın, Gizli Kurtarma İfadenizi kaybederseniz cüzdanınıza erişiminizi kaybedersiniz. Paranıza her zaman erişebilmeniz için bu sözcük dizisini saklamak amacıyla şunu yapın: $1."
-  },
-  "reminderSet": {
-    "message": "Hatırlatıcı ayarlandı!"
-  },
   "remove": {
     "message": "Kaldır"
   },
@@ -4668,9 +4612,6 @@
   "revealSensitiveContent": {
     "message": "Hassas içeriği açığa çıkar"
   },
-  "revealTheSeedPhrase": {
-    "message": "Anahtar cümleyi göster"
-  },
   "review": {
     "message": "İncele"
   },
@@ -4767,9 +4708,6 @@
   "securityMessageLinkForNetworks": {
     "message": "ağ dolandırıcılıkları ve güvenlik riskleri"
   },
-  "securityPrivacyPath": {
-    "message": "Ayarlar > Güvenlik ve Gizlilik."
-  },
   "securityProviderPoweredBy": {
     "message": "$1 hizmetidir",
     "description": "The security provider that is providing data"
@@ -4781,29 +4719,11 @@
   "seeDetails": {
     "message": "Ayrıntılara bakın"
   },
-  "seedPhraseConfirm": {
-    "message": "Gizli Kurtarma İfadesini Onayla"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Gizli Kurtarma İfadesini Onayla"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Birden fazla gizli yerde not ederek saklayın"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Bir kasada saklayın"
-  },
   "seedPhraseIntroTitle": {
     "message": "Cüzdanınızı koruyun"
   },
   "seedPhraseReq": {
     "message": "Gizli Kurtarma İfadeleri 12, 15, 18, 21 veya 24 kelimeden oluşur"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Bu 12 kelimelik Gizli Kurtarma İfadesini not ederek güvendiğiniz ve sadece sizin erişim sağlayabileceğiniz bir yerde saklayın."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Gizli Kurtarma İfadenizi not edin"
   },
   "select": {
     "message": "Seç"
@@ -4918,9 +4838,6 @@
   },
   "settings": {
     "message": "Ayarlar"
-  },
-  "settingsOptimisedForEaseOfUseAndSecurity": {
-    "message": "Ayarlar, kullanım kolaylığı ve güvenlik için optimize edildi. Bunları dilediğiniz zaman değiştirin."
   },
   "settingsSearchMatchingNotFound": {
     "message": "Eşleşen sonuç bulunamadı."
@@ -6211,9 +6128,6 @@
   "time": {
     "message": "Zaman"
   },
-  "tips": {
-    "message": "İpuçları"
-  },
   "tipsForUsingAWallet": {
     "message": "Cüzdan kullanma ipuçları"
   },
@@ -6505,9 +6419,6 @@
   "unlock": {
     "message": "Kilidini Aç"
   },
-  "unlockMessage": {
-    "message": "Merkeziyetsiz web sizi bekliyor"
-  },
   "unpin": {
     "message": "Sabitlemeyi kaldır"
   },
@@ -6670,10 +6581,6 @@
   },
   "walletConnectionGuide": {
     "message": "donanım cüzdanı bağlantı kılavuzumuz"
-  },
-  "walletProtectedAndReadyToUse": {
-    "message": "Cüzdanınız korunuyor ve kullanıma hazır. Gizli Kurtarma İfadenizi $1 bölümünde bulabilirsiniz ",
-    "description": "$1 is the menu path to be shown with font weight bold"
   },
   "wantToAddThisNetwork": {
     "message": "Bu ağı eklemek istiyor musunuz?"
