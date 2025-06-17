@@ -7,6 +7,7 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+  ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
 import { getCurrentKeyring, getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
@@ -14,10 +15,11 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { setFirstTimeFlowType } from '../../../store/actions';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import {
-  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import WelcomeLogin from './welcome-login';
 import WelcomeBanner from './welcome-banner';
 
@@ -66,13 +68,19 @@ export default function OnboardingWelcome({
     dispatch(setFirstTimeFlowType(FirstTimeFlowType.create));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.WalletSetupStarted,
+      event: MetaMetricsEventName.OnboardingWalletCreationStarted,
       properties: {
-        account_type: MetaMetricsEventAccountType.Default,
+        account_type: 'metamask',
       },
     });
 
-    history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
+    history.push(
+      getBrowserName() === PLATFORM_FIREFOX
+        ? ONBOARDING_CREATE_PASSWORD_ROUTE
+        : ONBOARDING_METAMETRICS,
+    );
+    // SOCIAL: metametrics has new flow
+    // history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
   }, [dispatch, history, trackEvent]);
 
   const onImportClick = useCallback(async () => {
@@ -80,13 +88,17 @@ export default function OnboardingWelcome({
     await dispatch(setFirstTimeFlowType(FirstTimeFlowType.import));
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.WalletImportStarted,
+      event: MetaMetricsEventName.OnboardingWalletImportStarted,
       properties: {
-        account_type: MetaMetricsEventAccountType.Imported,
+        account_type: 'imported',
       },
     });
 
-    history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
+    history.push(
+      getBrowserName() === PLATFORM_FIREFOX
+        ? ONBOARDING_IMPORT_WITH_SRP_ROUTE
+        : ONBOARDING_METAMETRICS,
+    );
   }, [dispatch, history, trackEvent]);
 
   return (
