@@ -12,7 +12,7 @@ type PreferenceControllerState = {
   };
 };
 
-export const version = 167;
+export const version = 169;
 
 /**
  * This migration assigns the value of AppStateController `upgradeSplashPageAcknowledgedForAccounts`

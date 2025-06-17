@@ -239,6 +239,7 @@ const AccountListItem = ({
           className="multichain-account-list-item__selected-indicator"
           borderRadius={BorderRadius.pill}
           backgroundColor={Color.primaryDefault}
+          data-testid="account-list-item-selected-indicator"
         />
       )}
 
@@ -539,7 +540,7 @@ AccountListItem.propTypes = {
   /**
    * Determines if left dark blue selection indicator is displayed or not
    */
-  hideSelectionIndicator: PropTypes.bool,
+  showSelectionIndicator: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';

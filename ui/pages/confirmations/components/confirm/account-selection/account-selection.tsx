@@ -84,6 +84,7 @@ export function AccountSelection({
           onClick={closeAccountSelection}
           className="account-selection__close"
           label=""
+          data-testid="account-selection-close"
         />
         <Text variant={TextVariant.headingMd}>
           {t('smartAccountEditAccounts')}

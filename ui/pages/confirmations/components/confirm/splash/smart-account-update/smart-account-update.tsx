@@ -8,6 +8,9 @@ import { useSelector } from 'react-redux';
 import { ORIGIN_METAMASK } from '../../../../../../../shared/constants/app';
 import ZENDESK_URLS from '../../../../../../helpers/constants/zendesk-url';
 import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarAccountVariant,
   Box,
   Button,
   ButtonLink,
@@ -22,11 +25,13 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
+  BorderColor,
   BorderRadius,
   Display,
   FlexDirection,
   FontWeight,
   JustifyContent,
+  Size,
   TextColor,
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
@@ -34,7 +39,10 @@ import { setSmartAccountOptInForAccounts } from '../../../../../../store/actions
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import IconButton from '../../../../../../components/ui/icon-button/icon-button-round';
 import Name from '../../../../../../components/app/name';
-import { getInternalAccounts } from '../../../../../../selectors';
+import {
+  getInternalAccounts,
+  getUseBlockie,
+} from '../../../../../../selectors';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useSmartAccountActions } from '../../../../hooks/useSmartAccountActions';
 import { getSmartAccountOptInForAccounts } from '../../../../selectors/preferences';
@@ -78,6 +86,7 @@ export function SmartAccountUpdate() {
   const [acknowledged, setAcknowledged] = useState(false);
   const [accountSelectionVisible, setAccountSelectionVisible] = useState(false);
   const t = useI18nContext();
+  const useBlockie = useSelector(getUseBlockie);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { handleRejectUpgrade } = useSmartAccountActions();
   const smartAccountOptInForAccounts: Hex[] = useSelector(
@@ -160,6 +169,7 @@ export function SmartAccountUpdate() {
                 onClick={showAccountSelectionVisible}
                 label=""
                 className="smart-account-update__edit"
+                data-testid="smart-account-update-edit"
               />
             </Box>
             <img
@@ -172,21 +182,39 @@ export function SmartAccountUpdate() {
             >
               {t('smartAccountSplashTitle')}
             </Text>
-            <Box display={Display.Flex} alignItems={AlignItems.center}>
-              <Text
-                color={TextColor.textAlternative}
-                variant={TextVariant.bodyMd}
-                marginInlineEnd={2}
+            {selectedAccounts.length > 0 && (
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.center}
+                width={BlockSize.Full}
               >
-                {t('smartAccountRequestFor')}
-              </Text>
-              <Name
-                value={from}
-                type={NameType.ETHEREUM_ADDRESS}
-                preferContractSymbol
-                variation={chainId}
-              />
-            </Box>
+                <Text
+                  className="smart-account-update__request-for"
+                  color={TextColor.textAlternative}
+                  marginInlineEnd={2}
+                  variant={TextVariant.bodyMd}
+                >
+                  {t('smartAccountRequestFor')}
+                </Text>
+                <Box display={Display.Flex}>
+                  {selectedAccounts.map((address) => (
+                    <AvatarAccount
+                      borderColor={BorderColor.transparent}
+                      className="smart-account-update__acc-avatar"
+                      size={AvatarAccountSize.Sm}
+                      address={address}
+                      variant={
+                        useBlockie
+                          ? AvatarAccountVariant.Blockies
+                          : AvatarAccountVariant.Jazzicon
+                      }
+                      marginInlineEnd={2}
+                    />
+                  ))}
+                </Box>
+              </Box>
+            )}
             <ListItem
               imgSrc="./images/speedometer.svg"
               title={t('smartAccountBetterTransaction')}

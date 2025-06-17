@@ -674,6 +674,7 @@ describe('preferences controller', () => {
         showConfirmationAdvancedDetails: false,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,
+        smartAccountOptInForAccounts: [],
         tokenSortConfig: {
           key: 'tokenFiatAmount',
           order: 'dsc',
@@ -702,6 +703,7 @@ describe('preferences controller', () => {
         showConfirmationAdvancedDetails: true,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,
+        smartAccountOptInForAccounts: [],
         tokenSortConfig: {
           key: 'tokenFiatAmount',
           order: 'dsc',
@@ -810,6 +812,16 @@ describe('preferences controller', () => {
       const { controller } = setupController({});
       controller.setManageInstitutionalWallets(true);
       expect(controller.state.manageInstitutionalWallets).toStrictEqual(true);
+    });
+  });
+
+  describe('setSmartAccountOptInForAccounts', () => {
+    it('adds the account to preferences.smartAccountOptInForAccounts', async () => {
+      const { controller } = setupController({});
+      controller.setSmartAccountOptInForAccounts(['0x123', '0xabc']);
+      expect(
+        controller.state.preferences.smartAccountOptInForAccounts,
+      ).toStrictEqual(['0x123', '0xabc']);
     });
   });
 });

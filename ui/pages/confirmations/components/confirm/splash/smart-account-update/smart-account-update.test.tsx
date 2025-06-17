@@ -14,6 +14,11 @@ import {
 } from '../../../../../../store/actions';
 import { SmartAccountUpdate } from './smart-account-update';
 
+jest.mock('../../../../../../hooks/useMultiPolling', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
+
 jest.mock('../../../../../../store/actions', () => ({
   setAccountDetailsAddress: jest.fn(),
   rejectPendingApproval: jest.fn().mockReturnValue({}),
@@ -102,7 +107,7 @@ describe('Splash', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('does not render is splash page is acknowledged for account', () => {
+  it('does not render splash page if it is acknowledged for account', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
         {
@@ -124,5 +129,20 @@ describe('Splash', () => {
     );
 
     expect(container.firstChild).toBeNull();
+  });
+
+  it('open account selection when pencil icon is clicked', () => {
+    const mockStore = configureMockStore([])(
+      getMockConfirmStateForTransaction(
+        upgradeAccountConfirmation as Confirmation,
+      ),
+    );
+    const { getByText, getByTestId } = renderWithConfirmContextProvider(
+      <SmartAccountUpdate />,
+      mockStore,
+    );
+
+    fireEvent.click(getByTestId('smart-account-update-edit'));
+    expect(getByText('Edit accounts')).toBeInTheDocument();
   });
 });
