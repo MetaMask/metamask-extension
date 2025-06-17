@@ -136,7 +136,7 @@ describe('Onboarding Flow', () => {
         ONBOARDING_CREATE_PASSWORD_ROUTE,
       );
 
-      const createPasswordText = queryByText('Create password');
+      const createPasswordText = queryByText('MetaMask password');
       expect(createPasswordText).toBeInTheDocument();
 
       const password = 'a-new-password';
