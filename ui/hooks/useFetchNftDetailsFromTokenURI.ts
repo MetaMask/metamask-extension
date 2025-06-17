@@ -12,11 +12,11 @@ const useFetchNftDetailsFromTokenURI = (
         return;
       }
 
-      const response = await fetch(tokenURI);
-      if (!response.ok) {
-        return;
-      }
       try {
+        const response = await fetch(tokenURI);
+        if (!response.ok) {
+          return;
+        }
         let rawData = await response.text();
         // Remove trailing commas before parsing
         // eslint-disable-next-line require-unicode-regexp
