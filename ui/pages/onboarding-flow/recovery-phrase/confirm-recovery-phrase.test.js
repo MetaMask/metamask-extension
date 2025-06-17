@@ -1,10 +1,15 @@
-import { fireEvent, act } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
-import { ONBOARDING_METAMETRICS } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_METAMETRICS,
+} from '../../../helpers/constants/routes';
+import * as BrowserRuntimeUtils from '../../../../shared/modules/browser-runtime.utils';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import ConfirmRecoveryPhrase from './confirm-recovery-phrase';
 
 jest.mock('../../../store/actions.ts', () => ({
@@ -137,7 +142,51 @@ describe('Confirm Recovery Phrase Component', () => {
   });
 
   it('should enable confirm recovery phrase with correct word inputs', async () => {
-    const clock = jest.useFakeTimers();
+    const { queryByTestId, queryAllByTestId, getByText } = renderWithProvider(
+      <ConfirmRecoveryPhrase {...props} />,
+      mockStore,
+    );
+
+    const recoveryPhraseChips = queryAllByTestId(
+      /recovery-phrase-quiz-unanswered-/u,
+    );
+    const quizWord1 = recoveryPhraseChips[0].textContent;
+    const quizWord2 = recoveryPhraseChips[1].textContent;
+    const quizWord3 = recoveryPhraseChips[2].textContent;
+
+    // sort the quiz words by index, and then click the chip in correct order
+    const seedArray = TEST_SEED.split(' ');
+    const quizWords = [
+      { index: seedArray.indexOf(quizWord1), elm: recoveryPhraseChips[0] },
+      { index: seedArray.indexOf(quizWord2), elm: recoveryPhraseChips[1] },
+      { index: seedArray.indexOf(quizWord3), elm: recoveryPhraseChips[2] },
+    ];
+    const sortedQuizWords = quizWords.sort((a, b) => a.index - b.index);
+
+    sortedQuizWords.forEach((word) => {
+      fireEvent.click(word.elm);
+    });
+
+    await waitFor(() => {
+      const confirmRecoveryPhraseButton = queryByTestId(
+        'recovery-phrase-confirm',
+      );
+      expect(confirmRecoveryPhraseButton).not.toBeDisabled();
+      fireEvent.click(confirmRecoveryPhraseButton);
+
+      const gotItButton = getByText('Got it');
+      expect(gotItButton).toBeInTheDocument();
+      fireEvent.click(gotItButton);
+
+      expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
+      expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
+    });
+  });
+
+  it('should go to Onboarding Completion page as a next step in firefox', async () => {
+    jest
+      .spyOn(BrowserRuntimeUtils, 'getBrowserName')
+      .mockReturnValue(PLATFORM_FIREFOX);
 
     const { queryByTestId, queryAllByTestId, getByText } = renderWithProvider(
       <ConfirmRecoveryPhrase {...props} />,
@@ -168,18 +217,12 @@ describe('Confirm Recovery Phrase Component', () => {
       'recovery-phrase-confirm',
     );
 
-    act(() => {
-      clock.advanceTimersByTime(500); // Wait for debounce
+    await waitFor(() => {
+      fireEvent.click(confirmRecoveryPhraseButton);
+      fireEvent.click(getByText('Got it'));
+
+      expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
+      expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
     });
-
-    expect(confirmRecoveryPhraseButton).not.toBeDisabled();
-    fireEvent.click(confirmRecoveryPhraseButton);
-
-    const gotItButton = getByText('Got it');
-    expect(gotItButton).toBeInTheDocument();
-    fireEvent.click(gotItButton);
-
-    expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
-    expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_METAMETRICS);
   });
 });
