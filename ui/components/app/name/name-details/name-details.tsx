@@ -57,10 +57,7 @@ import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { useName } from '../../../../hooks/useName';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  TrustSignalDisplayState,
-  TrustSignalResult,
-} from '../../../../hooks/useTrustSignals';
+import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import NameDisplay from './name-display';
 import { usePetnamesMetrics } from './metrics';
 
@@ -72,7 +69,6 @@ export type NameDetailsProps = {
   type: NameType;
   value: string;
   variation: string;
-  trustSignal?: TrustSignalResult | null;
 };
 
 type ProposedNameOption = Required<FormComboFieldOption> & {
@@ -119,7 +115,6 @@ function generateComboOptions(
   proposedNameEntries: NameEntry['proposedNames'],
   t: ReturnType<typeof useI18nContext>,
   nameSources: NameControllerState['nameSources'],
-  trustLabel?: string | null,
 ): ProposedNameOption[] {
   const sourceIds = Object.keys(proposedNameEntries);
 
@@ -142,16 +137,6 @@ function generateComboOptions(
       }));
     })
     .flat();
-
-  // Add trust label as a suggestion if it exists
-  if (trustLabel) {
-    options.unshift({
-      value: trustLabel,
-      primaryLabel: t('nameModalMaybeProposedName', [trustLabel]),
-      secondaryLabel: t('nameProviderProposedBy', ['Trust Signal']),
-      sourceId: 'trust-signal',
-    });
-  }
 
   return options.sort((a, b) =>
     a.secondaryLabel
@@ -231,7 +216,6 @@ export default function NameDetails({
   type,
   value,
   variation,
-  trustSignal,
 }: NameDetailsProps) {
   const { name: savedPetname, sourceId: savedSourceId } = useName(
     value,
@@ -239,7 +223,11 @@ export default function NameDetails({
     variation,
   );
 
-  const { name: displayName, hasPetname: hasSavedPetname } = useDisplayName({
+  const {
+    name: displayName,
+    hasPetname: hasSavedPetname,
+    displayState,
+  } = useDisplayName({
     value,
     type,
     variation,
@@ -273,14 +261,8 @@ export default function NameDetails({
   }, [savedPetname, savedSourceId, setName, setSelectedSourceId]);
 
   const proposedNameOptions = useMemo(
-    () =>
-      generateComboOptions(
-        proposedNames,
-        t,
-        nameSources,
-        trustSignal?.trustLabel,
-      ),
-    [proposedNames, t, nameSources, trustSignal?.trustLabel],
+    () => generateComboOptions(proposedNames, t, nameSources),
+    [proposedNames, t, nameSources],
   );
 
   const { trackPetnamesOpenEvent, trackPetnamesSaveEvent } = usePetnamesMetrics(
@@ -351,8 +333,8 @@ export default function NameDetails({
     let titleKey: string;
     let instructionsKey: string;
 
-    if (trustSignal?.state) {
-      switch (trustSignal.state) {
+    if (displayState) {
+      switch (displayState) {
         case TrustSignalDisplayState.Malicious:
           titleKey = 'nameModalTitleMalicious';
           instructionsKey = 'nameInstructionsMalicious';
@@ -399,8 +381,8 @@ export default function NameDetails({
   const { title, instructions } = getTitleAndInstructions();
 
   const showFooterWarning =
-    trustSignal?.state === TrustSignalDisplayState.Malicious ||
-    trustSignal?.state === TrustSignalDisplayState.Warning;
+    displayState === TrustSignalDisplayState.Malicious ||
+    displayState === TrustSignalDisplayState.Warning;
 
   return (
     <Box>
@@ -412,12 +394,7 @@ export default function NameDetails({
             <div
               style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}
             >
-              <NameDisplay
-                value={value}
-                type={type}
-                variation={variation}
-                trustSignal={trustSignal}
-              />
+              <NameDisplay value={value} type={type} variation={variation} />
             </div>
             <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
               {instructions}
@@ -455,8 +432,8 @@ export default function NameDetails({
                 value={name}
                 options={proposedNameOptions}
                 placeholder={
-                  displayName || trustSignal?.trustLabel
-                    ? `Suggested: ${displayName || trustSignal?.trustLabel}`
+                  displayName
+                    ? `Suggested: ${displayName}`
                     : t('nameSetPlaceholder')
                 }
                 onChange={handleNameChange}

@@ -78,7 +78,6 @@ const TypedSignInfo: React.FC = () => {
             <ConfirmInfoRowAddress
               address={verifyingContract}
               chainId={chainId}
-              showTrustSignals
             />
           </ConfirmInfoRow>
         )}

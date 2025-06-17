@@ -9,8 +9,13 @@ import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { getDomainResolutions } from '../ducks/domains';
 import { selectERC20TokensByChain } from '../selectors';
 import { getNftContractsByAddressByChain } from '../selectors/nft';
+import {
+  getTrustSignalIcon,
+  TrustSignalIconProps,
+} from '../helpers/utils/trust-signals';
 import { useNames } from './useName';
 import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
+import { TrustSignalDisplayState, useTrustSignals } from './useTrustSignals';
 
 export type UseDisplayNameRequest = {
   preferContractSymbol?: boolean;
@@ -24,6 +29,8 @@ export type UseDisplayNameResponse = {
   hasPetname: boolean;
   contractDisplayName?: string;
   image?: string;
+  icon?: TrustSignalIconProps | null;
+  displayState: TrustSignalDisplayState;
 };
 
 export function useDisplayNames(
@@ -31,7 +38,7 @@ export function useDisplayNames(
 ): UseDisplayNameResponse[] {
   const nameEntries = useNames(requests);
   const firstPartyContractNames = useFirstPartyContractNames(requests);
-
+  const trustSignals = useTrustSignals(requests);
   const erc20Tokens = useERC20Tokens(requests);
   const watchedNFTNames = useWatchedNFTNames(requests);
   const nfts = useNFTs(requests);
@@ -40,6 +47,7 @@ export function useDisplayNames(
   return requests.map((_request, index) => {
     const nameEntry = nameEntries[index];
     const firstPartyContractName = firstPartyContractNames[index];
+    const trustSignal = trustSignals[index];
     const erc20Token = erc20Tokens[index];
     const watchedNftName = watchedNFTNames[index];
     const nft = nfts[index];
@@ -64,17 +72,28 @@ export function useDisplayNames(
       ensName ||
       null;
 
+    const hasPetname = Boolean(nameEntry?.name);
+
+    const displayState = getDisplayState(
+      trustSignal?.state,
+      hasPetname,
+      name,
+      trustSignal?.trustLabel,
+    );
+
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const image = nft?.image || erc20Token?.image;
 
-    const hasPetname = Boolean(nameEntry?.name);
+    const trustSignalIcon = getTrustSignalIcon(displayState);
 
     return {
       name,
       hasPetname,
       contractDisplayName: erc20Token?.name,
       image,
+      icon: trustSignalIcon,
+      displayState,
     };
   });
 }
@@ -213,4 +232,44 @@ function useFirstPartyContractNames(nameRequests: UseDisplayNameRequest[]) {
       );
     });
   });
+}
+
+// Priority logic for display state
+function getDisplayState(
+  trustState: TrustSignalDisplayState | undefined,
+  hasPetname: boolean,
+  displayName: string | null,
+  _trustLabel: string | null | undefined,
+): TrustSignalDisplayState {
+  // Priority 1: Malicious takes precedence over everything when trust signals are enabled
+  if (trustState === TrustSignalDisplayState.Malicious) {
+    return TrustSignalDisplayState.Malicious;
+  }
+
+  // Priority 2: Saved petname (for non-malicious entities)
+  if (hasPetname) {
+    return TrustSignalDisplayState.Petname;
+  }
+
+  // Priority 3: Recognized name (no petname, no applicable trust signals)
+  if (displayName) {
+    return TrustSignalDisplayState.Recognized;
+  }
+
+  // Priority 4-5: Other trust signal states (when enabled and present)
+  if (trustState) {
+    switch (trustState) {
+      case TrustSignalDisplayState.Verified:
+        return TrustSignalDisplayState.Verified;
+      case TrustSignalDisplayState.Warning:
+        return TrustSignalDisplayState.Warning;
+      case TrustSignalDisplayState.Unknown:
+        return TrustSignalDisplayState.Unknown;
+      default:
+        break;
+    }
+  }
+
+  // Default: Unknown state with no name
+  return TrustSignalDisplayState.Unknown;
 }

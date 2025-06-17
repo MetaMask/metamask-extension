@@ -3,7 +3,6 @@ import { NameType } from '@metamask/name-controller';
 import { getAddressSecurityAlertResponse } from '../selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { ResultType } from '../../app/scripts/lib/trust-signals/types';
-import { useDisplayName } from './useDisplayName';
 
 export enum TrustSignalDisplayState {
   Malicious = 'malicious',
@@ -19,93 +18,94 @@ export type TrustSignalResult = {
   trustLabel: string | null;
 };
 
-export function useTrustSignals(
+export type UseTrustSignalRequest = {
+  value: string;
+  type: NameType;
+  variation: string;
+};
+
+export function useTrustSignal(
   value: string,
   type: NameType,
   variation: string,
-  showTrustSignals: boolean,
 ): TrustSignalResult | null {
-  const securityAlertResponse = useSelector((state) =>
-    getAddressSecurityAlertResponse(state, value),
+  return useTrustSignals([{ value, type, variation }])[0];
+}
+
+export function useTrustSignals(
+  requests: UseTrustSignalRequest[],
+): (TrustSignalResult | null)[] {
+  const securityAlertResponses = useSelector((state) =>
+    requests.map(({ value, type }) => {
+      if (type !== NameType.ETHEREUM_ADDRESS) {
+        return null;
+      }
+      return getAddressSecurityAlertResponse(state, value);
+    }),
   );
 
-  const { name: displayName, hasPetname } = useDisplayName({
-    value,
-    type,
-    variation,
-  });
+  return requests.map((request, index) => {
+    const securityAlertResponse = securityAlertResponses[index];
 
-  const trustLabel = securityAlertResponse?.label || null;
-
-  const getTrustState = () => {
-    if (!securityAlertResponse?.result_type) {
+    if (!securityAlertResponse || request.type !== NameType.ETHEREUM_ADDRESS) {
       return null;
     }
 
-    switch (securityAlertResponse.result_type) {
-      case ResultType.Malicious:
-        return TrustSignalDisplayState.Malicious;
-      case ResultType.Warning:
-        return TrustSignalDisplayState.Warning;
-      case ResultType.Trusted:
-        return TrustSignalDisplayState.Verified;
-      case ResultType.Benign:
-        return TrustSignalDisplayState.Unknown;
-      case ResultType.ErrorResult:
-        return TrustSignalDisplayState.Unknown;
-      default:
+    const trustLabel = securityAlertResponse.label || null;
+
+    const getTrustState = () => {
+      if (!securityAlertResponse.result_type) {
         return null;
+      }
+
+      switch (securityAlertResponse.result_type) {
+        case ResultType.Malicious:
+          return TrustSignalDisplayState.Malicious;
+        case ResultType.Warning:
+          return TrustSignalDisplayState.Warning;
+        case ResultType.Trusted:
+          return TrustSignalDisplayState.Verified;
+        case ResultType.Benign:
+        case ResultType.ErrorResult:
+          return TrustSignalDisplayState.Unknown;
+        default:
+          return null;
+      }
+    };
+
+    const trustState = getTrustState();
+
+    // Priority 1: Malicious takes precedence over everything when trust signals are enabled
+    if (trustState === TrustSignalDisplayState.Malicious) {
+      return {
+        state: TrustSignalDisplayState.Malicious,
+        trustLabel,
+      };
     }
-  };
 
-  const trustState = getTrustState();
-
-  // Priority 1: Malicious takes precedence over everything when trust signals are enabled
-  if (showTrustSignals && trustState === TrustSignalDisplayState.Malicious) {
-    return {
-      state: TrustSignalDisplayState.Malicious,
-      trustLabel,
-    };
-  }
-
-  // Priority 2: Saved petname (for non-malicious entities)
-  if (hasPetname) {
-    return {
-      state: TrustSignalDisplayState.Petname,
-      trustLabel: displayName || trustLabel,
-    };
-  }
-
-  // Priority 3: Recognized name (no petname, no applicable trust signals)
-  if (displayName) {
-    return {
-      state: TrustSignalDisplayState.Recognized,
-      trustLabel: displayName || trustLabel,
-    };
-  }
-
-  // Priority 4-5: Other trust signal states (when enabled and present)
-  if (showTrustSignals && trustState) {
-    switch (trustState) {
-      case TrustSignalDisplayState.Verified:
-        return {
-          state: TrustSignalDisplayState.Verified,
-          trustLabel,
-        };
-      case TrustSignalDisplayState.Warning:
-        return {
-          state: TrustSignalDisplayState.Warning,
-          trustLabel,
-        };
-      case TrustSignalDisplayState.Unknown:
-        return {
-          state: TrustSignalDisplayState.Unknown,
-          trustLabel,
-        };
-      default:
-        break;
+    // Priority 2-4: Other trust signal states (when enabled and present)
+    if (trustState) {
+      switch (trustState) {
+        case TrustSignalDisplayState.Verified:
+          return {
+            state: TrustSignalDisplayState.Verified,
+            trustLabel,
+          };
+        case TrustSignalDisplayState.Warning:
+          return {
+            state: TrustSignalDisplayState.Warning,
+            trustLabel,
+          };
+        case TrustSignalDisplayState.Unknown:
+          return {
+            state: TrustSignalDisplayState.Unknown,
+            trustLabel,
+          };
+        default:
+          break;
+      }
     }
-  }
 
-  return null;
+    return null;
+  });
 }

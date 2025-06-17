@@ -7,12 +7,6 @@ export type TrustSignalIconProps = {
   color: IconColor;
 };
 
-export type TrustSignalCssContext = {
-  hasPetname?: boolean;
-  hasDisplayName?: boolean;
-  isClickable?: boolean;
-};
-
 /**
  * Get icon properties based on trust signal state
  *
@@ -20,8 +14,12 @@ export type TrustSignalCssContext = {
  * @returns Object containing icon name and color
  */
 export function getTrustSignalIcon(
-  state: TrustSignalDisplayState,
+  state: TrustSignalDisplayState | undefined,
 ): TrustSignalIconProps | null {
+  if (!state) {
+    return null;
+  }
+
   switch (state) {
     case TrustSignalDisplayState.Malicious:
       return {
@@ -54,8 +52,65 @@ export function getTrustSignalIcon(
 }
 
 /**
- * Get CSS classes based on trust signal state and context
+ * Get CSS classes based on display state
  *
+ * @param displayState - The display state from useDisplayName
+ * @param options - Additional options like isClickable
+ * @param options.isClickable - Whether the element is clickable
+ * @returns Array of CSS class names to apply
+ */
+export function getDisplayStateCssClasses(
+  displayState: TrustSignalDisplayState,
+  options: { isClickable?: boolean } = {},
+): string[] {
+  const { isClickable = false } = options;
+
+  const baseClasses = ['name'];
+
+  if (isClickable) {
+    baseClasses.push('name__clickable');
+  }
+
+  switch (displayState) {
+    case TrustSignalDisplayState.Malicious:
+      baseClasses.push('name__malicious');
+      break;
+
+    case TrustSignalDisplayState.Verified:
+      baseClasses.push('name__verified');
+      break;
+
+    case TrustSignalDisplayState.Warning:
+      baseClasses.push('name__warning');
+      break;
+
+    case TrustSignalDisplayState.Petname:
+      baseClasses.push('name__saved');
+      break;
+
+    case TrustSignalDisplayState.Recognized:
+      baseClasses.push('name__recognized_unsaved');
+      break;
+
+    case TrustSignalDisplayState.Unknown:
+    default:
+      baseClasses.push('name__missing');
+      break;
+  }
+
+  return baseClasses;
+}
+
+// Keep the old function for backward compatibility during transition
+export type TrustSignalCssContext = {
+  hasPetname?: boolean;
+  hasDisplayName?: boolean;
+  isClickable?: boolean;
+};
+
+/**
+ * @deprecated Use getDisplayStateCssClasses instead
+ * Get CSS classes based on trust signal state and context
  * @param state - The trust signal display state (undefined means no trust signal)
  * @param context - Additional context like hasPetname, hasDisplayName, isClickable
  * @returns Array of CSS class names to apply

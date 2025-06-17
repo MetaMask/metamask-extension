@@ -14,7 +14,6 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { Display } from '../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../hooks/useDisplayName';
-import { useTrustSignals } from '../../../hooks/useTrustSignals';
 import NameDisplay from './name-details/name-display';
 import NameDetails from './name-details/name-details';
 
@@ -36,21 +35,10 @@ export type NameProps = {
    * Such as the chain ID if the `type` is an Ethereum address.
    */
   variation: string;
-
-  /**
-   * Whether to show trust signals (verified, warning, malicious, unknown icons).
-   */
-  showTrustSignals?: boolean;
 };
 
 const Name = memo(
-  ({
-    value,
-    type,
-    preferContractSymbol = false,
-    variation,
-    showTrustSignals = false,
-  }: NameProps) => {
+  ({ value, type, preferContractSymbol = false, variation }: NameProps) => {
     const [modalOpen, setModalOpen] = useState(false);
     const trackEvent = useContext(MetaMetricsContext);
 
@@ -60,13 +48,6 @@ const Name = memo(
       preferContractSymbol,
       variation,
     });
-
-    const trustSignal = useTrustSignals(
-      value,
-      type,
-      variation,
-      showTrustSignals,
-    );
 
     useEffect(() => {
       trackEvent({
@@ -96,7 +77,6 @@ const Name = memo(
             type={type}
             variation={variation}
             onClose={handleModalClose}
-            trustSignal={trustSignal}
           />
         )}
 
@@ -106,7 +86,6 @@ const Name = memo(
           preferContractSymbol={preferContractSymbol}
           variation={variation}
           handleClick={handleClick}
-          trustSignal={trustSignal}
         />
       </Box>
     );
