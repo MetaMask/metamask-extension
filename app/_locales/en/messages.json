@@ -6837,6 +6837,9 @@
   "walletReadyLoseSrp": {
     "message": "If you lose your Secret Recovery Phrase, you won’t be able to use your wallet."
   },
+  "walletReadyLoseSrpFromReminder": {
+    "message": "This Secret Recovery Phrase can help you regain access if you ever forget your password or lose access to your login."
+  },
   "walletReadyLoseSrpRemind": {
     "message": "If you don’t back up your Secret Recovery Phrase, you’ll lose access to your funds if you get locked out of the app or get a new device."
   },
@@ -6958,6 +6961,9 @@
   },
   "yourWalletIsReady": {
     "message": "Your wallet is ready!"
+  },
+  "yourWalletIsReadyFromReminder": {
+    "message": "Keep your Secret Recovery Phrase safe!"
   },
   "yourWalletIsReadyRemind": {
     "message": "We’ll remind you later"
