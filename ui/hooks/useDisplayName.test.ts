@@ -133,7 +133,12 @@ describe('useDisplayName', () => {
       },
     ]);
 
-    useTrustSignalsMock.mockReturnValue([undefined]);
+    useTrustSignalsMock.mockReturnValue([
+      {
+        state: TrustSignalDisplayState.Unknown,
+        label: null,
+      },
+    ]);
 
     state = cloneDeep(mockState);
 

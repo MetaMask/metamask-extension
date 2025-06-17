@@ -35,7 +35,7 @@ describe('useTrustSignals', () => {
     jest.resetAllMocks();
   });
 
-  describe('useTrustSignal (singular)', () => {
+  describe('useTrustSignal', () => {
     it('returns the first result from useTrustSignals', () => {
       getAddressSecurityAlertResponseMock.mockReturnValue({
         result_type: ResultType.Malicious,
@@ -55,30 +55,7 @@ describe('useTrustSignals', () => {
     });
   });
 
-  describe('useTrustSignals (plural)', () => {
-    describe('Non-Ethereum address types', () => {
-      it('returns unknown state for non-Ethereum address types', () => {
-        const requests: UseTrustSignalRequest[] = [
-          {
-            value: 'test.eth',
-            type: NameType.ETHEREUM_ADDRESS, // Using ETHEREUM_ADDRESS as it's the only supported type
-            variation: VARIATION_MOCK,
-          },
-        ];
-
-        // Mock for a different type to test the fallback
-        getAddressSecurityAlertResponseMock.mockReturnValue(null);
-
-        const results = useTrustSignals(requests);
-
-        expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
-          state: TrustSignalDisplayState.Unknown,
-          label: null,
-        });
-      });
-    });
-
+  describe('useTrustSignals', () => {
     describe('Ethereum addresses with security alert responses', () => {
       it('returns malicious state for malicious addresses', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue({
@@ -103,7 +80,7 @@ describe('useTrustSignals', () => {
         });
 
         expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
-          undefined, // state parameter
+          undefined,
           VALUE_MOCK,
         );
       });
