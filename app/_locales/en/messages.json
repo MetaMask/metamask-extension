@@ -3829,15 +3829,11 @@
   "onboardingAdvancedPrivacyNetworkTitle": {
     "message": "Choose your network"
   },
-  "onboardingContinueWith": {
-    "message": "Continue with $1",
-    "description": "$1 is the type of login used Google, Apple, etc."
-  },
   "onboardingCreateWallet": {
     "message": "Create a new wallet"
   },
   "onboardingImportWallet": {
-    "message": "Import an existing wallet"
+    "message": "Import using Secret Recovery Phrase"
   },
   "onboardingMetametricsAgree": {
     "message": "I agree"
@@ -3879,13 +3875,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
   },
-  "onboardingOptionIcon": {
-    "message": "$1 icon",
-    "description": "$1 is the icon name"
-  },
-  "onboardingOptionTitle": {
-    "message": "Choose an option to continue"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Launch extension"
   },
@@ -3904,16 +3893,6 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "Installation is complete!"
-  },
-  "onboardingSignInWith": {
-    "message": "Sign in with $1",
-    "description": "$1 is the type of login used Google, Apple, etc"
-  },
-  "onboardingSrpCreate": {
-    "message": "Continue with Secret Recovery Phrase"
-  },
-  "onboardingSrpImport": {
-    "message": "Import using Secret Recovery Phrase"
   },
   "onboardingSrpImportError": {
     "message": "Use only lowercase letters, check your spelling, and put the words in the original order."
@@ -3952,9 +3931,6 @@
   },
   "options": {
     "message": "Options"
-  },
-  "or": {
-    "message": "Or"
   },
   "origin": {
     "message": "Origin"
