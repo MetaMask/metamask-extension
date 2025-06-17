@@ -91,12 +91,12 @@ const NameDisplay = memo(
     };
 
     const getDisplayName = () => {
-      // Priority 1: Petname or recognized name from name providers
+      // Priority 1: Petname or recognized name
       if (name) {
         return <ShortenedName name={name} />;
       }
 
-      // Priority 2: Trust label (from security alert)
+      // Priority 2: Trust label
       if (trustSignal?.trustLabel) {
         return <ShortenedName name={trustSignal.trustLabel} />;
       }
