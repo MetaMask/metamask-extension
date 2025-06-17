@@ -1,5 +1,4 @@
 import React, { ReactElement, useCallback, useState } from 'react';
-import { KeyringTypes } from '@metamask/keyring-controller';
 import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
@@ -37,6 +36,7 @@ import {
   AccountsState,
   getMemoizedInternalAccountByAddress,
 } from '../../../../../../selectors';
+import { isHardwareKeyring } from '../../../../../../helpers/utils/hardware';
 import { getUpgradeSplashPageAcknowledgedForAccounts } from '../../../../selectors';
 import { getUseSmartAccount } from '../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../context/confirm';
@@ -104,7 +104,7 @@ export function SmartAccountUpdate() {
     acknowledged ||
     origin === ORIGIN_METAMASK ||
     splashPageAcknowledgedForAccountList.includes(from.toLowerCase()) ||
-    (smartAccountOptIn && keyringType === KeyringTypes.hd)
+    (smartAccountOptIn && !isHardwareKeyring(keyringType))
   ) {
     return null;
   }
