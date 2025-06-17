@@ -276,7 +276,6 @@ export default class UnlockPage extends Component {
                   width={BlockSize.Full}
                   justifyContent={JustifyContent.spaceBetween}
                   alignItems={AlignItems.center}
-                  marginBottom={1}
                 >
                   <Text variant={TextVariant.bodyMdMedium}>
                     {t('password')}

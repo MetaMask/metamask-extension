@@ -77,6 +77,7 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
         {label && (
           <Label
             htmlFor={id}
+            marginBottom={1}
             {...labelProps}
             className={classnames(
               'mm-form-text-field__label',
