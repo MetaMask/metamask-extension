@@ -9,7 +9,7 @@ export default new Route({
 
     const from = params.get('from');
     const to = params.get('to');
-    const amount = params.get('amount');
+    const value = params.get('value');
     // add the params to the query if they exist
     let parsedFrom;
     if (from) {
@@ -26,13 +26,14 @@ export default new Route({
           // if `from` and `to` reference the same chain, add the `swap` param
           // to trigger the "Swap" screen by default
           if (parsedFrom.chainId.id === parsedTo.chainId.id) {
-            query.set('swaps', 'true');
+            // TODO: something recently changed?!
+            // query.set('swaps', 'true');
           }
         }
       }
     }
-    if (amount) {
-      query.set('amount', amount);
+    if (value) {
+      query.set('value', value);
     }
 
     return {

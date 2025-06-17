@@ -8,6 +8,7 @@ import SwapPage from '../../page-objects/pages/swap/swap-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { emptyHtmlPage } from '../../mock-e2e';
 import FixtureBuilder from '../../fixture-builder';
+import { BaseUrl } from '../../../../shared/constants/urls';
 import {
   bytesToB64,
   cartesianProduct,
@@ -116,6 +117,7 @@ describe('Deep Link', function () {
             : rawUrl;
           console.log('Opening deep link URL');
           await driver.openNewURL(preparedUrl);
+
           const deepLink = new DeepLink(driver);
           console.log('Checking if deep link page is loaded');
           await deepLink.check_pageIsLoaded();
@@ -170,6 +172,93 @@ describe('Deep Link', function () {
         },
       );
     });
+  });
+
+  it('handles /buy route redirect', async function () {
+    await withFixtures(
+      await getConfig(this.test?.fullTitle()),
+      async ({ driver }: { driver: Driver }) => {
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.check_pageIsLoaded();
+        await loginPage.loginToHomepage();
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+
+        const rawUrl = `https://link.metamask.io/home`;
+        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+
+        // test signed flow
+        await driver.openNewURL(signedUrl);
+
+        await driver.waitForUrl({
+          url: `${BaseUrl.Portfolio}/buy`,
+        });
+
+        await driver.navigate();
+        homePage.check_pageIsLoaded();
+
+        // test unsigned flow
+        await driver.openNewURL(rawUrl);
+
+        await driver.waitForUrl({
+          url: `${BaseUrl.Portfolio}/buy`,
+        });
+      },
+    );
+  });
+
+  it("passes params to the deep link's component", async function () {
+    await withFixtures(
+      await getConfig(this.test?.fullTitle()),
+      async ({ driver }: { driver: Driver }) => {
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.check_pageIsLoaded();
+        await loginPage.loginToHomepage();
+        const homePage = new HomePage(driver);
+        await homePage.check_pageIsLoaded();
+
+        // params that are not related to the swap, and get filtered out
+        // (may or not be processed by the deep link router, but we aren't
+        // concerned with that in this test)
+        const extraParams = {
+          utm_medium: '123',
+          attribution_id: '456',
+          random_param: '789',
+        };
+        // these should all be forwarded to the swap page
+        const swapsParams = {
+          from: 'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+          to: 'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+          value: '0x38d7ea4c68000',
+        };
+        const params = new URLSearchParams({ ...extraParams, ...swapsParams });
+        const rawUrl = `https://link.metamask.io/swap?${params.toString()}`;
+
+        // test signed flow
+        await driver.openNewURL(rawUrl);
+        const deepLink = new DeepLink(driver);
+        await deepLink.check_pageIsLoaded();
+
+        await deepLink.clickContinueButton();
+        await new SwapPage(driver).check_pageIsLoaded();
+
+        const currentUrl = await driver.getCurrentUrl();
+        console.log(currentUrl);
+        // the URL params is actually in the `hash`, e.g. #some/path?query=param
+        const hash = new URL(currentUrl).hash.slice(1);
+        const urlParams = new URLSearchParams(hash.split('?')[1]);
+
+        // ensure all of the params are all present in the URL
+        console.log(JSON.stringify(Object.fromEntries(urlParams.entries())));
+        console.log(JSON.stringify(swapsParams));
+        assert.deepStrictEqual(
+          Object.fromEntries(urlParams.entries()),
+          swapsParams,
+        );
+      },
+    );
   });
 
   it('handles the skipDeepLinkInterstitial flag correctly', async function () {

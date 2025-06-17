@@ -3,8 +3,8 @@ import log from 'loglevel';
 import MetaMaskController from '../../metamask-controller';
 import { DEEP_LINK_HOST } from '../../../../shared/lib/deep-links/constants';
 import { ParsedDeepLink, parse } from '../../../../shared/lib/deep-links/parse';
-import { DeepLinkRouter } from './deep-link-router';
 import ExtensionPlatform from '../../platforms/extension';
+import { DeepLinkRouter } from './deep-link-router';
 
 // the Jest type for it is wrong
 const it = globalThis.it as unknown as jest.It;

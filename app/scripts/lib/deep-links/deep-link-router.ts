@@ -49,7 +49,7 @@ export class DeepLinkRouter extends EventEmitter<{
 
   private async redirectTab(tabId: number, url: string) {
     try {
-      return await browser.tabs.update(tabId, {
+      await browser.tabs.update(tabId, {
         url,
       });
     } catch (error) {

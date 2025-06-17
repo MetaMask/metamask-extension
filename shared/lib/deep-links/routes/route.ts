@@ -1,9 +1,7 @@
 // TODO: Remove restricted import
 /* eslint-disable import/no-restricted-paths */
-import {
-  CROSS_CHAIN_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../../../ui/helpers/constants/routes';
+import { PREPARE_SWAP_ROUTE } from '../../../../ui/helpers/constants/routes';
+
 export {
   DEFAULT_ROUTE,
   DEEP_LINK_ROUTE,
@@ -41,7 +39,7 @@ export type RouteOptions = {
   handler: (params: URLSearchParams) => Destination;
 };
 
-export const SWAP_ROUTE = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
+export const SWAP_ROUTE = `${PREPARE_SWAP_ROUTE}`;
 
 /**
  * Represents a route in the application.
