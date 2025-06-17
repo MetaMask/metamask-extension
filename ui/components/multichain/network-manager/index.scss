@@ -16,6 +16,10 @@
   }
 }
 
+.network-manager__tab-content {
+  overflow-y: auto;
+  max-height: 70vh;
+}
 
 .network-manager__networks-button-icon {
   justify-content: center;
@@ -27,3 +31,4 @@
     --button-icon-size: 20px;
   }
 }
+

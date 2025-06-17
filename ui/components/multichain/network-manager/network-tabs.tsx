@@ -14,15 +14,11 @@ export const NetworkTabs = ({ initialTab }: { initialTab: string }) => {
   }, [dispatch]);
   return (
     <Box>
-<<<<<<< HEAD
-      <ModalHeader onBack={handleClose} onClose={handleClose}>
-=======
       <ModalHeader
         onBack={handleClose}
         onClose={handleClose}
         closeButtonProps={{ 'data-testid': 'modal-header-close-button' }}
       >
->>>>>>> chore/modal-header-close-testid
         Networks
       </ModalHeader>
       <ModalBody style={{ padding: 0 }}>
@@ -35,7 +31,9 @@ export const NetworkTabs = ({ initialTab }: { initialTab: string }) => {
           tabListProps={{
             className: 'network-manager__tab-list',
           }}
-          padding={4}
+          tabContentProps={{
+            className: 'network-manager__tab-content',
+          }}
         >
           <Tab tabKey="networks" name="Default">
             <DefaultNetworks />
