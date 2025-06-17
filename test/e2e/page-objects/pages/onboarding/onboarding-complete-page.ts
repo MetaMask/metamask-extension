@@ -39,7 +39,6 @@ class OnboardingCompletePage {
   async check_pageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.manageDefaultSettingsButton,
         this.onboardingCompleteDoneButton,
       ]);
     } catch (e) {
@@ -66,6 +65,11 @@ class OnboardingCompletePage {
     await this.driver.clickElementAndWaitToDisappear(
       this.pinExtensionDoneButton,
     );
+  }
+
+  async completeBackup(): Promise<void> {
+    console.log('Complete backup');
+    await this.clickCreateWalletDoneButton();
   }
 
   async navigateToDefaultPrivacySettings(): Promise<void> {

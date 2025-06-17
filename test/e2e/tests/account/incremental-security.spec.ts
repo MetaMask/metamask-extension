@@ -95,6 +95,10 @@ describe('Incremental Security', function (this: Suite) {
         // reveal and confirm the Secret Recovery Phrase on backup SRP page
         await secureWalletPage.revealAndConfirmSRP(WALLET_PASSWORD);
 
+        // complete onboarding
+        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.completeBackup();
+
         // check the balance is correct after revealing and confirming the SRP
         await homePage.check_pageIsLoaded();
         await homePage.check_expectedBalanceIsDisplayed('1');

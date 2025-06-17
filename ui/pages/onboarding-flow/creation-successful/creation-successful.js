@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -32,6 +32,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
+  DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getFirstTimeFlowType, getHDEntropyIndex } from '../../../selectors';
 import {
@@ -125,6 +126,31 @@ export default function CreationSuccessful() {
       />
     );
   }, [isWalletReady]);
+
+  const onDone = useCallback(() => {
+    if (isFromReminderParam) {
+      history.push(DEFAULT_ROUTE);
+      return;
+    }
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.OnboardingWalletCreationComplete,
+      properties: {
+        method: firstTimeFlowType,
+        is_profile_syncing_enabled: isBackupAndSyncEnabled,
+        hd_entropy_index: hdEntropyIndex,
+      },
+    });
+    history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+  }, [
+    firstTimeFlowType,
+    isBackupAndSyncEnabled,
+    hdEntropyIndex,
+    trackEvent,
+    history,
+    isFromReminderParam,
+  ]);
 
   return (
     <Box
@@ -231,18 +257,7 @@ export default function CreationSuccessful() {
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           width={BlockSize.Full}
-          onClick={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Onboarding,
-              event: MetaMetricsEventName.OnboardingWalletCreationComplete,
-              properties: {
-                method: firstTimeFlowType,
-                is_profile_syncing_enabled: isBackupAndSyncEnabled,
-                hd_entropy_index: hdEntropyIndex,
-              },
-            });
-            history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
-          }}
+          onClick={onDone}
         >
           {t('done')}
         </Button>
