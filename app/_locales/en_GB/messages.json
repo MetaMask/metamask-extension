@@ -2091,9 +2091,6 @@
   "enterOptionalPassword": {
     "message": "Enter optional password"
   },
-  "enterPassword": {
-    "message": "Enter password"
-  },
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
