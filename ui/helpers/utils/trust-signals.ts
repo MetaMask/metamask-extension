@@ -4,7 +4,7 @@ import { TrustSignalDisplayState } from '../../hooks/useTrustSignals';
 
 export type TrustSignalIconProps = {
   name: IconName;
-  color: IconColor;
+  color?: IconColor | undefined;
 };
 
 /**
@@ -37,7 +37,7 @@ export function getTrustSignalIcon(
     case TrustSignalDisplayState.Unknown:
       return {
         name: IconName.Question,
-        color: IconColor.iconDefault,
+        color: undefined,
       };
     case TrustSignalDisplayState.Petname:
     case TrustSignalDisplayState.Recognized:
@@ -46,7 +46,7 @@ export function getTrustSignalIcon(
     default:
       return {
         name: IconName.Question,
-        color: IconColor.iconDefault,
+        color: undefined,
       };
   }
 }
