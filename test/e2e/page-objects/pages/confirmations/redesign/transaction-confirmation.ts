@@ -60,7 +60,7 @@ class TransactionConfirmation extends Confirmation {
     this.gasFeeToastMessage = {
       css: '[aria-label="Close"]',
       tag: 'button',
-    }
+    };
     this.gasFeeTokenArrow = '[data-testid="selected-gas-fee-token-arrow"]';
     this.gasFeeTokenFeeText = '[data-testid="gas-fee-token-fee"]';
     this.gasFeeTokenPill = '[data-testid="selected-gas-fee-token"]';
