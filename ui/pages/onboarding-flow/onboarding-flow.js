@@ -21,7 +21,6 @@ import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_ACCOUNT_EXIST,
   ONBOARDING_ACCOUNT_NOT_FOUND,
-  SECURITY_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
