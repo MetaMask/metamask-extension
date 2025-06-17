@@ -68,13 +68,6 @@
     "message": "Nabasa ko at sumasang-ayon ako sa $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "I-access ang iyong wallet gamit ang iyong Lihim na Parirala sa Pagbawi"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "Hindi mababawi ng MetaMask ang iyong password. Gagamitin namin ang iyong Lihim na Parirala sa Pagbawi upang patunayan ang iyong pagmamay-ari, ibalik ang iyong wallet at mag-set up ng bagong password. Una, ilagay ang Lihim na Parirala sa Pagbawi na ibinigay sa iyo noong ginawa mo ang iyong wallet. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Ina-access ang iyong camera..."
   },
@@ -6425,9 +6418,6 @@
   },
   "unlock": {
     "message": "I-unlock"
-  },
-  "unlockMessage": {
-    "message": "Naghihintay ang desentralisadong web"
   },
   "unpin": {
     "message": "I-unpin"

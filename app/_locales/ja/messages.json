@@ -68,13 +68,6 @@
     "message": "$1を読んで同意しました",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "シークレットリカバリーフレーズでウォレットにアクセス"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMaskはユーザーのパスワードを復元できません。代わりにシークレットリカバリーフレーズを使用して所有者を確認し、ウォレットを復元して新しいパスワードを設定します。まずはじめに、ウォレットの作成時に提供されたシークレットリカバリーフレーズを入力してください。$1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "カメラにアクセス中..."
   },
@@ -6425,9 +6418,6 @@
   },
   "unlock": {
     "message": "ロック解除"
-  },
-  "unlockMessage": {
-    "message": "分散型インターネットが待っています"
   },
   "unpin": {
     "message": "ピン留めを解除"

@@ -68,13 +68,6 @@
     "message": "Ich habe die $1 gelesen und stimme ihnen zu.",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Greifen Sie mit Ihrer geheimen Wiederherstellungsphrase auf Ihre Wallet zu."
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask kann Ihr Passwort nicht wiederherstellen. Wir verwenden Ihre geheime Wiederherstellungsphrase, um Ihr Eigentum zu bestätigen, Ihre Wallet wiederherzustellen und ein neues Passwort festzulegen. Geben Sie zunächst die geheime Wiederherstellungsphrase ein, die Sie erhalten haben, als Sie Ihre Wallet erstellt haben. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Zugriff auf Ihre Kamera …"
   },
@@ -6425,9 +6418,6 @@
   },
   "unlock": {
     "message": "Entsperren"
-  },
-  "unlockMessage": {
-    "message": "Das dezentrale Web erwartet Sie"
   },
   "unpin": {
     "message": "Lösen"

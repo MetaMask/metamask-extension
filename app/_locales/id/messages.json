@@ -68,13 +68,6 @@
     "message": "Saya telah membaca dan menyetujui $1",
     "description": "$1 is the `terms` message"
   },
-  "accessYourWalletWithSRP": {
-    "message": "Akses dompet Anda dengan Frasa Pemulihan Rahasia"
-  },
-  "accessYourWalletWithSRPDescription": {
-    "message": "MetaMask tidak dapat memulihkan kata sandi Anda. Kami akan menggunakan Frasa Pemulihan Rahasia untuk memvalidasi kepemilikan Anda, memulihkan dompet Anda, dan mengatur kata sandi baru. Pertama, masukkan Frasa Pemulihan Rahasia yang diberikan saat membuat dompet. $1",
-    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
-  },
   "accessingYourCamera": {
     "message": "Mengakses kamera Anda..."
   },
@@ -6425,9 +6418,6 @@
   },
   "unlock": {
     "message": "Buka"
-  },
-  "unlockMessage": {
-    "message": "Web terdesentralisasi menunggu"
   },
   "unpin": {
     "message": "Batal semat"
