@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js';
 import { zeroAddress } from 'ethereumjs-util';
+import { SolMethod, SolScope } from '@metamask/keyring-api';
 import {
   ChainId,
   type QuoteMetadata,
@@ -8,7 +9,6 @@ import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { SolScope } from '@metamask/keyring-api';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
@@ -1600,6 +1600,7 @@ describe('Bridge selectors', () => {
           marketData: {},
           currencyRates: {},
           ...mockMultichainNetworkState(),
+          selectedMultichainNetworkChainId: MultichainNetworks.SOLANA,
           conversionRates: {
             [getNativeAssetForChainId(MultichainNetworks.SOLANA)?.assetId]: {
               rate: 1.5,
@@ -1651,7 +1652,8 @@ describe('Bridge selectors', () => {
               'account-1': {
                 address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
                 type: 'solana:data-account',
-                scopes: [SolScope.Mainnet],
+                scopes: [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet],
+                methods: [SolMethod.SendAndConfirmTransaction],
               },
             },
           },
@@ -1836,6 +1838,8 @@ describe('Bridge selectors', () => {
               'account-1': {
                 address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
                 type: 'solana:data-account',
+                scopes: [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet],
+                methods: [SolMethod.SendAndConfirmTransaction],
               },
             },
           },
