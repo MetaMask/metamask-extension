@@ -292,10 +292,12 @@ export async function getCapabilities(
       ? AtomicCapabilityStatus.Supported
       : AtomicCapabilityStatus.Ready;
 
-    acc[chainId as Hex] = {
-      atomic: {
-        status,
-      },
+    if (acc[chainId as Hex] === undefined) {
+      acc[chainId as Hex] = {};
+    }
+
+    acc[chainId as Hex].atomic = {
+      status,
     };
 
     return acc;
