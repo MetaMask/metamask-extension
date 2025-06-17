@@ -1651,6 +1651,7 @@ export default class MetamaskController extends EventEmitter {
           'AccountsController:getAccountByAddress',
           'SnapController:handleRequest',
           'TransactionController:getState',
+          'RemoteFeatureFlagController:getState',
         ],
         allowedEvents: [
           'MultichainTransactionsController:transactionConfirmed',
