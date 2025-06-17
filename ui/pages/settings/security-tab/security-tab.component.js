@@ -32,6 +32,8 @@ import {
   IconName,
   Box,
   Text,
+  BannerAlert,
+  BannerAlertSeverity,
 } from '../../../components/component-library';
 import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
@@ -105,7 +107,7 @@ export default class SecurityTab extends PureComponent {
     setSecurityAlertsEnabled: PropTypes.func,
     metaMetricsDataDeletionId: PropTypes.string,
     hdEntropyIndex: PropTypes.number,
-    hasMultipleHdKeyrings: PropTypes.bool,
+    isSeedPhraseBackedUp: PropTypes.bool,
   };
 
   state = {
@@ -166,7 +168,19 @@ export default class SecurityTab extends PureComponent {
 
   renderSeedWords() {
     const { t } = this.context;
-    const { history, hasMultipleHdKeyrings } = this.props;
+    const { history, isSeedPhraseBackedUp } = this.props;
+
+    const getBannerDescription = () => {
+      return isSeedPhraseBackedUp
+        ? t('securityLoginWithSrpBackedUp')
+        : t('securityLoginWithSrpNotBackedUp');
+    };
+
+    const getBannerSeverity = () => {
+      return isSeedPhraseBackedUp
+        ? BannerAlertSeverity.Success
+        : BannerAlertSeverity.Danger;
+    };
 
     return (
       <>
@@ -177,10 +191,23 @@ export default class SecurityTab extends PureComponent {
           {t('secretRecoveryPhrase')}
         </div>
         <div className="settings-page__content-padded">
+          <div className="settings-page__content-description">
+            {t('securitySrpDescription')}
+          </div>
+          <BannerAlert
+            data-testid="backup-state-banner-alert"
+            description={getBannerDescription()}
+            paddingTop={2}
+            paddingBottom={2}
+            marginTop={4}
+            marginBottom={4}
+            severity={getBannerSeverity()}
+          />
           <Button
             data-testid="reveal-seed-words"
             type="danger"
             size={ButtonSize.Lg}
+            block
             onClick={(event) => {
               event.preventDefault();
               this.context.trackEvent({
@@ -200,13 +227,9 @@ export default class SecurityTab extends PureComponent {
                   location: 'Settings',
                 },
               });
-              if (hasMultipleHdKeyrings) {
-                history.push({
-                  pathname: REVEAL_SRP_LIST_ROUTE,
-                });
-                return;
-              }
-              this.setState({ srpQuizModalVisible: true });
+              history.push({
+                pathname: REVEAL_SRP_LIST_ROUTE,
+              });
             }}
           >
             {t('revealSeedWords')}

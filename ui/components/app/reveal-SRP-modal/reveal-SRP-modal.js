@@ -16,6 +16,8 @@ import {
   ButtonPrimary,
   ButtonSecondary,
   FormTextField,
+  FormTextFieldSize,
+  ButtonSize,
 } from '../../component-library';
 
 export default function RevealSRPModal({
@@ -26,11 +28,17 @@ export default function RevealSRPModal({
   const t = useI18nContext();
 
   const [password, setPassword] = useState('');
+  const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
+    useState(false);
 
   const onSubmit = useCallback(
     async (_password) => {
-      const seedPhrase = await getSeedPhrase(_password);
-      setSecretRecoveryPhrase(seedPhrase);
+      try {
+        const seedPhrase = await getSeedPhrase(_password);
+        setSecretRecoveryPhrase(seedPhrase);
+      } catch (error) {
+        setIsIncorrectPasswordError(true);
+      }
     },
     [setSecretRecoveryPhrase],
   );
@@ -49,11 +57,21 @@ export default function RevealSRPModal({
           >
             <FormTextField
               marginTop={6}
+              size={FormTextFieldSize.Lg}
               id="account-details-authenticate"
               label={t('enterYourPassword')}
               placeholder={t('password')}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setIsIncorrectPasswordError(false);
+              }}
               value={password}
+              error={isIncorrectPasswordError}
+              helpText={
+                isIncorrectPasswordError
+                  ? t('unlockPageIncorrectPassword')
+                  : null
+              }
               variant={TextVariant.bodySm}
               type="password"
               labelProps={{ fontWeight: FontWeight.Medium }}
@@ -61,13 +79,14 @@ export default function RevealSRPModal({
             />
           </form>
           <Box display={Display.Flex} marginTop={6} gap={2}>
-            <ButtonSecondary onClick={onClose} block>
+            <ButtonSecondary onClick={onClose} block size={ButtonSize.Lg}>
               {t('cancel')}
             </ButtonSecondary>
             <ButtonPrimary
               onClick={() => onSubmit(password)}
               disabled={password === ''}
               block
+              size={ButtonSize.Lg}
             >
               {t('confirm')}
             </ButtonPrimary>

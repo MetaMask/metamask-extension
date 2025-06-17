@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -63,11 +63,16 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const { search } = useLocation();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const splitSecretRecoveryPhrase = useMemo(
     () => (secretRecoveryPhrase ? secretRecoveryPhrase.split(' ') : []),
     [secretRecoveryPhrase],
   );
+  const searchParams = new URLSearchParams(search);
+  const isFromReminderParam = searchParams.get('isFromReminder')
+    ? '/?isFromReminder=true'
+    : '';
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [matching, setMatching] = useState(false);
@@ -113,8 +118,8 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       },
     });
 
-    history.push(ONBOARDING_COMPLETION_ROUTE);
-  }, [dispatch, hdEntropyIndex, history, trackEvent]);
+    history.push(`${ONBOARDING_COMPLETION_ROUTE}${isFromReminderParam}`);
+  }, [dispatch, hdEntropyIndex, history, trackEvent, isFromReminderParam]);
 
   return (
     <Box

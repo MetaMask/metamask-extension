@@ -7,6 +7,8 @@ import { renderWithProvider } from '../../../../../test/jest/rendering';
 import mockState from '../../../../../test/data/mock-state.json';
 import { InternalAccountWithBalance } from '../../../../selectors';
 import { shortenAddress } from '../../../../helpers/utils/util';
+// eslint-disable-next-line import/no-restricted-paths
+import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import { SrpList } from './srp-list';
 
 const mockTotalFiatBalance = '100';
@@ -67,7 +69,7 @@ describe('SrpList', () => {
     const keyring = getByTestId(`hd-keyring-${firstKeyringId}`);
     fireEvent.click(keyring);
 
-    expect(mocks.onActionComplete).toHaveBeenCalledWith(firstKeyringId);
+    expect(mocks.onActionComplete).toHaveBeenCalledWith(firstKeyringId, true);
   });
 
   it('displays the correct accounts for a keyring and ensures no duplicates', () => {
@@ -79,8 +81,12 @@ describe('SrpList', () => {
     const showAccountsButton = getByText('Show 2 accounts');
     fireEvent.click(showAccountsButton);
 
-    const shortenedAccount1 = shortenAddress(account1Address);
-    const shortenedAccount2 = shortenAddress(account2Address);
+    const shortenedAccount1 = shortenAddress(
+      normalizeSafeAddress(account1Address),
+    );
+    const shortenedAccount2 = shortenAddress(
+      normalizeSafeAddress(account2Address),
+    );
 
     expect(getByText(shortenedAccount1)).toBeInTheDocument();
     expect(getByText(shortenedAccount2)).toBeInTheDocument();
