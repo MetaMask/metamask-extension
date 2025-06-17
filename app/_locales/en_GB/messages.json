@@ -4869,6 +4869,9 @@
     "message": "See all permissions",
     "description": "Used for revealing more content (e.g. permission list, etc.)"
   },
+  "securitySrpLabel": {
+    "message": "SECRET RECOVERY PHRASES"
+  },
   "seeDetails": {
     "message": "See details"
   },
