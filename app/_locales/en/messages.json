@@ -6679,6 +6679,9 @@
   "unlock": {
     "message": "Unlock"
   },
+  "unlockPageIncorrectPassword": {
+    "message": "Password is incorrect. Please try again."
+  },
   "unpin": {
     "message": "Unpin"
   },
