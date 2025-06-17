@@ -195,6 +195,7 @@ export default class SecurityTab extends PureComponent {
             {t('securitySrpDescription')}
           </div>
           <BannerAlert
+            data-testid="backup-state-banner-alert"
             description={getBannerDescription()}
             paddingTop={2}
             paddingBottom={2}

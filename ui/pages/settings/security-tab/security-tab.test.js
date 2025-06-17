@@ -13,6 +13,7 @@ import { tEn } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { getIsSecurityAlertsEnabled } from '../../../selectors';
 import { REVEAL_SRP_LIST_ROUTE } from '../../../helpers/constants/routes';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import SecurityTab from './security-tab.container';
 
 const mockOpenDeleteMetaMetricsDataModal = jest.fn();
@@ -100,6 +101,30 @@ describe('Security Tab', () => {
     const { container } = renderWithProviders(<SecurityTab />, mockStore);
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('should render success banner when SRP is backed up', () => {
+    const { getByTestId } = renderWithProviders(<SecurityTab />, mockStore);
+    const bannerAlert = getByTestId('backup-state-banner-alert');
+    expect(bannerAlert).toBeInTheDocument();
+    expect(bannerAlert).toHaveClass('mm-banner-alert--severity-success');
+  });
+
+  it('should render danger banner when SRP is not backed up', () => {
+    const { getByTestId } = renderWithProviders(
+      <SecurityTab />,
+      configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          seedPhraseBackedUp: false,
+          firstTimeFlowType: FirstTimeFlowType.create,
+        },
+      }),
+    );
+    const bannerAlert = getByTestId('backup-state-banner-alert');
+    expect(bannerAlert).toBeInTheDocument();
+    expect(bannerAlert).toHaveClass('mm-banner-alert--severity-danger');
   });
 
   it('toggles Display NFT media enabled', async () => {
