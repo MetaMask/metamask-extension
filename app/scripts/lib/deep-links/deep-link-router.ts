@@ -12,6 +12,7 @@ import {
 } from '../../../../shared/lib/deep-links/constants';
 import MetamaskController from '../../metamask-controller';
 import { DEEP_LINK_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
+import type ExtensionPlatform from '../../platforms/extension';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
 // UI always redirects it to the non-slashed version. So we just use the
@@ -20,16 +21,29 @@ const slashRe = /^\//u;
 const TRIMMED_DEEP_LINK_ROUTE = DEEP_LINK_ROUTE.replace(slashRe, '');
 
 export type Options = {
-  getExtensionURL(route?: string | null, queryString?: string | null): string;
+  getExtensionURL: ExtensionPlatform['getExtensionURL'];
   getState: MetamaskController['getState'];
 };
 
+/**
+ * Handles deep links by intercepting requests to the deep link host,
+ * parsing the URL, and redirecting to the appropriate internal route.
+ *
+ * This class extends `EventEmitter` to allow other parts of the application
+ * to listen for navigation events and errors.
+ */
 export class DeepLinkRouter extends EventEmitter<{
   navigate: [{ url: URL; parsed: ParsedDeepLink }];
   error: [unknown];
 }> {
+  /**
+   * The function to get the extension URL @see {@link ExtensionPlatform.getExtensionURL}
+   */
   private getExtensionURL: Options['getExtensionURL'];
 
+  /**
+   * The function to get the current state of the application.
+   */
   private getState: Options['getState'];
 
   constructor({ getExtensionURL, getState }: Options) {
@@ -38,6 +52,9 @@ export class DeepLinkRouter extends EventEmitter<{
     this.getState = getState;
   }
 
+  /**
+   * Returns the URL to the 404 error page for deep links.
+   */
   private get404ErrorURL() {
     return this.getExtensionURL(
       TRIMMED_DEEP_LINK_ROUTE.replace(slashRe, ''),
@@ -47,6 +64,12 @@ export class DeepLinkRouter extends EventEmitter<{
     );
   }
 
+  /**
+   * Redirects the tab to the specified URL.
+   *
+   * @param tabId - The ID of the tab to redirect.
+   * @param url - The URL to redirect the tab to.
+   */
   private async redirectTab(tabId: number, url: string) {
     try {
       await browser.tabs.update(tabId, {
@@ -58,6 +81,13 @@ export class DeepLinkRouter extends EventEmitter<{
     }
   }
 
+  /**
+   * Handles the `onBeforeRequest` event for web requests.
+   *
+   * @param details
+   * @param details.tabId - The ID of the tab making the request.
+   * @param details.url - The URL being requested.
+   */
   private handleBeforeRequest = ({
     tabId,
     url,
@@ -69,6 +99,10 @@ export class DeepLinkRouter extends EventEmitter<{
     return this.tryNavigateTo(tabId, url);
   };
 
+  /**
+   * Installs the deep link router by adding a listener for
+   * `onBeforeRequest` events for the deep link host.
+   */
   public install() {
     browser.webRequest.onBeforeRequest.addListener(
       this.handleBeforeRequest,
@@ -83,10 +117,22 @@ export class DeepLinkRouter extends EventEmitter<{
     );
   }
 
+  /**
+   * Uninstalls the deep link router by removing the listener
+   * for `onBeforeRequest` events.
+   */
   public uninstall() {
     browser.webRequest.onBeforeRequest.removeListener(this.handleBeforeRequest);
   }
 
+  /**
+   * Attempts to navigate to the specified URL by parsing it and
+   * redirecting to the appropriate internal route.
+   * If the URL is invalid or too long, it redirects to the 404 error page.
+   *
+   * @param tabId - The ID of the tab to redirect.
+   * @param urlStr - The URL string to navigate to.
+   */
   private async tryNavigateTo(
     tabId: number,
     urlStr: string,
