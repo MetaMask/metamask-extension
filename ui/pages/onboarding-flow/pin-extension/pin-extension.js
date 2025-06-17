@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
+import classnames from 'classnames';
 import {
   setCompletedOnboarding,
   toggleExternalServices,
@@ -61,7 +62,7 @@ export default function OnboardingPinExtension() {
 
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletSetupComplete,
+      event: MetaMetricsEventName.WalletSetupCompleted,
       properties: {
         wallet_setup_type:
           firstTimeFlowType === FirstTimeFlowType.import ? 'import' : 'new',
@@ -91,11 +92,12 @@ export default function OnboardingPinExtension() {
             <ButtonIcon
               iconName={IconName.Arrow2Left}
               size={ButtonIconSize.Lg}
-              iconProps={{
-                color: hasPrev ? IconColor.iconDefault : IconColor.iconMuted,
-              }}
               borderRadius={BorderRadius.full}
-              className="onboarding-pin-extension__arrow"
+              borderWidth={2}
+              borderColor={IconColor.iconDefault}
+              className={classnames('onboarding-pin-extension__arrow', {
+                'onboarding-pin-extension__arrow--disabled': !hasPrev,
+              })}
               disabled={!hasPrev}
               title={label}
               onClick={onClickHandler}
@@ -106,11 +108,16 @@ export default function OnboardingPinExtension() {
             <ButtonIcon
               iconName={IconName.Arrow2Right}
               size={ButtonIconSize.Lg}
-              iconProps={{
-                color: hasNext ? IconColor.iconDefault : IconColor.iconMuted,
-              }}
               borderRadius={BorderRadius.full}
-              className="onboarding-pin-extension__arrow onboarding-pin-extension__arrow--next"
+              borderWidth={2}
+              borderColor={IconColor.iconDefault}
+              className={classnames(
+                'onboarding-pin-extension__arrow',
+                'onboarding-pin-extension__arrow--next',
+                {
+                  'onboarding-pin-extension__arrow--disabled': !hasNext,
+                },
+              )}
               disabled={!hasNext}
               title={label}
               onClick={onClickHandler}
