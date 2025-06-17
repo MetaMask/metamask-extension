@@ -167,11 +167,10 @@ describe('Confirm Recovery Phrase Component', () => {
       fireEvent.click(word.elm);
     });
 
-    const confirmRecoveryPhraseButton = queryByTestId(
-      'recovery-phrase-confirm',
-    );
-
     await waitFor(() => {
+      const confirmRecoveryPhraseButton = queryByTestId(
+        'recovery-phrase-confirm',
+      );
       expect(confirmRecoveryPhraseButton).not.toBeDisabled();
       fireEvent.click(confirmRecoveryPhraseButton);
 
