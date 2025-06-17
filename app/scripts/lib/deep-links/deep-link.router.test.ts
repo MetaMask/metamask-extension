@@ -27,7 +27,7 @@ jest.mock('webextension-polyfill', () => ({
 jest.mock('../../../../shared/lib/deep-links/parse', () => ({
   parse: jest.fn(),
 }));
-global.sentry = { captureException: jest.fn() };
+
 const mockIsManifestV3 = jest.fn().mockReturnValue(true);
 jest.mock('../../../../shared/modules/mv3.utils', () => ({
   get isManifestV3() {
@@ -47,6 +47,7 @@ const mockGetExtensionURL = jest.fn((route, queryString) => {
   }
   return url;
 });
+
 describe('DeepLinkRouter', () => {
   let router: DeepLinkRouter;
   beforeEach(() => {
@@ -186,7 +187,7 @@ describe('DeepLinkRouter', () => {
       expect(parseMock).not.toHaveBeenCalled();
       expect(response).toEqual({});
     });
-    it('should handle unparsable URLs and not attempt to navigate', async () => {
+    it('should handle unparsable URLs and show an error message', async () => {
       const url = `something unparseable`;
       const tabId = 1;
       parseMock.mockResolvedValue(false);
@@ -194,8 +195,11 @@ describe('DeepLinkRouter', () => {
         tabId,
         url,
       } as browser.WebRequest.OnBeforeRequestDetailsType);
-      expect(parseMock).toHaveBeenCalledWith(url);
+      expect(parseMock).not.toHaveBeenCalled();
       expect(response).toEqual({});
+      expect(browser.tabs.update).toHaveBeenCalledWith(tabId, {
+        url: 'chrome-extension://extension-id/home.html#link?errorCode=404',
+      });
     });
     it('should capture browser.tabs.update exceptions and send to Sentry', async () => {
       const logErrorSpy = jest.spyOn(log, 'error');
