@@ -3,6 +3,7 @@ import { NameType } from '@metamask/name-controller';
 import { getAddressSecurityAlertResponse } from '../selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { ResultType } from '../../app/scripts/lib/trust-signals/types';
+import { SecurityAlertResponse } from '../pages/confirmations/types/confirm';
 
 export enum TrustSignalDisplayState {
   Malicious = 'malicious',
@@ -52,60 +53,37 @@ export function useTrustSignals(
     }
 
     const trustLabel = securityAlertResponse.label || null;
+    const trustState = getTrustState(securityAlertResponse);
 
-    const getTrustState = () => {
-      if (!securityAlertResponse.result_type) {
-        return null;
-      }
-
-      switch (securityAlertResponse.result_type) {
-        case ResultType.Malicious:
-          return TrustSignalDisplayState.Malicious;
-        case ResultType.Warning:
-          return TrustSignalDisplayState.Warning;
-        case ResultType.Trusted:
-          return TrustSignalDisplayState.Verified;
-        case ResultType.Benign:
-        case ResultType.ErrorResult:
-          return TrustSignalDisplayState.Unknown;
-        default:
-          return null;
-      }
-    };
-
-    const trustState = getTrustState();
-
-    // Priority 1: Malicious takes precedence over everything when trust signals are enabled
-    if (trustState === TrustSignalDisplayState.Malicious) {
+    if (trustState) {
       return {
-        state: TrustSignalDisplayState.Malicious,
+        state: trustState,
         trustLabel,
       };
     }
 
-    // Priority 2-4: Other trust signal states (when enabled and present)
-    if (trustState) {
-      switch (trustState) {
-        case TrustSignalDisplayState.Verified:
-          return {
-            state: TrustSignalDisplayState.Verified,
-            trustLabel,
-          };
-        case TrustSignalDisplayState.Warning:
-          return {
-            state: TrustSignalDisplayState.Warning,
-            trustLabel,
-          };
-        case TrustSignalDisplayState.Unknown:
-          return {
-            state: TrustSignalDisplayState.Unknown,
-            trustLabel,
-          };
-        default:
-          break;
-      }
-    }
-
     return null;
   });
+}
+
+function getTrustState(
+  securityAlertResponse: SecurityAlertResponse,
+): TrustSignalDisplayState | null {
+  if (!securityAlertResponse.result_type) {
+    return null;
+  }
+
+  switch (securityAlertResponse.result_type) {
+    case ResultType.Malicious:
+      return TrustSignalDisplayState.Malicious;
+    case ResultType.Warning:
+      return TrustSignalDisplayState.Warning;
+    case ResultType.Trusted:
+      return TrustSignalDisplayState.Verified;
+    case ResultType.Benign:
+    case ResultType.ErrorResult:
+      return TrustSignalDisplayState.Unknown;
+    default:
+      return null;
+  }
 }
