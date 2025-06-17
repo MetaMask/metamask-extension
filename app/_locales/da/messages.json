@@ -683,9 +683,6 @@
   "unlock": {
     "message": "Lås op"
   },
-  "unlockMessage": {
-    "message": "Det decentraliserede internet venter"
-  },
   "urlErrorMsg": {
     "message": "Links kræver det rette HTTP/HTTPS-præfix."
   },
