@@ -90,9 +90,6 @@ app/scripts/lib/snap-keyring                        @MetaMask/accounts-engineers
 # Slack handle: @multichain-accounts-devs | Slack channel: #metamask-bip44-team
 **/multichain-accounts/**                           @MetaMask/accounts-engineers
 
-# Co-owned by accounts and wallet-ux
-ui/components/multichain/              @MetaMask/accounts-engineers @MetaMask/wallet-ux
-
 # Swaps-Bridge team to own code for the swaps folder
 ui/pages/swaps                                        @MetaMask/swaps-engineers
 app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
@@ -117,6 +114,16 @@ ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/s
 ui/components/app/whats-new-popup     @MetaMask/wallet-ux
 ui/css                                @MetaMask/wallet-ux
 ui/pages/home                         @MetaMask/wallet-ux
+ui/components/multichain/             @MetaMask/wallet-ux
+
+# Co-owned by accounts and wallet-ux
+ui/components/multichain/multi-srp/              @MetaMask/accounts-engineers @MetaMask/wallet-ux
+ui/components/multichain/account-picker/         @MetaMask/accounts-engineers @MetaMask/wallet-ux
+ui/components/multichain/account-details/        @MetaMask/accounts-engineers @MetaMask/wallet-ux
+ui/components/multichain/account-overview/       @MetaMask/accounts-engineers @MetaMask/wallet-ux
+ui/components/multichain/account-list-item/      @MetaMask/accounts-engineers @MetaMask/wallet-ux
+ui/components/multichain/account-list-menu/      @MetaMask/accounts-engineers @MetaMask/wallet-ux
+ui/components/multichain/account-list-item-menu/ @MetaMask/accounts-engineers @MetaMask/wallet-ux
 
 # Web3Auth / Onboarding
 ui/pages/onboarding-flow              @MetaMask/web3auth

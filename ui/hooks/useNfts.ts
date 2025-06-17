@@ -11,6 +11,7 @@ import {
 } from '../selectors';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { NFT } from '../components/multichain/asset-picker-amount/asset-picker-modal/types';
+import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import { usePrevious } from './usePrevious';
 import { useI18nContext } from './useI18nContext';
 
@@ -47,10 +48,14 @@ export function useNfts({
 
       return nftsFromEnabledNetworks;
     }
-    return isTokenNetworkFilterEqualCurrentNetwork ||
-      overridePopularNetworkFilter
-      ? allUserNfts?.[chainId] ?? []
-      : allUserNfts;
+    trace({ name: TraceName.LoadCollectibles });
+    const nftList =
+      isTokenNetworkFilterEqualCurrentNetwork || overridePopularNetworkFilter
+        ? allUserNfts?.[chainId] ?? []
+        : allUserNfts;
+
+    endTrace({ name: TraceName.LoadCollectibles });
+    return nftList;
   }, [
     isTokenNetworkFilterEqualCurrentNetwork,
     overridePopularNetworkFilter,
