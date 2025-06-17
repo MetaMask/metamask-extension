@@ -16,6 +16,8 @@ import { getDomainResolutions } from '../../../../ducks/domains';
 import { getNames, getNameSources } from '../../../../selectors';
 import { getNftContractsByAddressByChain } from '../../../../selectors/nft';
 import { setName, updateProposedNames } from '../../../../store/actions';
+import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
+import { useDisplayName } from '../../../../hooks/useDisplayName';
 import NameDetails from './name-details';
 
 jest.mock('../../../../store/actions', () => ({
@@ -27,6 +29,11 @@ jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: jest.fn(),
   useSelector: jest.fn(),
+}));
+
+// Mock the useDisplayName hook
+jest.mock('../../../../hooks/useDisplayName', () => ({
+  useDisplayName: jest.fn(),
 }));
 
 jest.useFakeTimers();
@@ -157,10 +164,18 @@ describe('NameDetails', () => {
   const updateProposedNamesMock = jest.mocked(updateProposedNames);
   const useDispatchMock = jest.mocked(useDispatch);
   const useSelectorMock = jest.mocked(useSelector);
+  const useDisplayNameMock = jest.mocked(useDisplayName);
 
   beforeEach(() => {
     jest.resetAllMocks();
     useDispatchMock.mockReturnValue(jest.fn());
+
+    // Default mock for useDisplayName
+    useDisplayNameMock.mockReturnValue({
+      name: null,
+      hasPetname: false,
+      displayState: TrustSignalDisplayState.Unknown,
+    });
 
     useSelectorMock.mockImplementation((selector) => {
       if (selector === getNames) {
@@ -268,6 +283,13 @@ describe('NameDetails', () => {
       return undefined;
     });
 
+    // Mock useDisplayName for no saved name
+    useDisplayNameMock.mockReturnValue({
+      name: null,
+      hasPetname: false,
+      displayState: TrustSignalDisplayState.Unknown,
+    });
+
     const { baseElement } = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
@@ -282,6 +304,13 @@ describe('NameDetails', () => {
   });
 
   it('renders with saved name', () => {
+    // Mock useDisplayName for saved name
+    useDisplayNameMock.mockReturnValue({
+      name: SAVED_NAME_MOCK,
+      hasPetname: true,
+      displayState: TrustSignalDisplayState.Petname,
+    });
+
     const { baseElement } = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
@@ -296,6 +325,13 @@ describe('NameDetails', () => {
   });
 
   it('renders with recognized name', () => {
+    // Mock useDisplayName for recognized name
+    useDisplayNameMock.mockReturnValue({
+      name: 'iZUMi Bond USD',
+      hasPetname: false,
+      displayState: TrustSignalDisplayState.Recognized,
+    });
+
     const { baseElement } = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
@@ -310,6 +346,13 @@ describe('NameDetails', () => {
   });
 
   it('renders proposed names', async () => {
+    // Mock useDisplayName for saved name
+    useDisplayNameMock.mockReturnValue({
+      name: SAVED_NAME_MOCK,
+      hasPetname: true,
+      displayState: TrustSignalDisplayState.Petname,
+    });
+
     const component = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
@@ -321,7 +364,7 @@ describe('NameDetails', () => {
     );
 
     const { getByPlaceholderText, baseElement } = component;
-    const nameInput = getByPlaceholderText('Suggested: TestName');
+    const nameInput = getByPlaceholderText('Choose a nickname...');
 
     await act(async () => {
       fireEvent.click(nameInput);
@@ -331,6 +374,13 @@ describe('NameDetails', () => {
   });
 
   it('saves current name on save button click', async () => {
+    // Mock useDisplayName for no saved name but with display name
+    useDisplayNameMock.mockReturnValue({
+      name: 'TestName',
+      hasPetname: false,
+      displayState: TrustSignalDisplayState.Unknown,
+    });
+
     const component = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
@@ -358,6 +408,13 @@ describe('NameDetails', () => {
   });
 
   it('saves selected source on save button click', async () => {
+    // Mock useDisplayName for no saved name but with display name
+    useDisplayNameMock.mockReturnValue({
+      name: 'TestName',
+      hasPetname: false,
+      displayState: TrustSignalDisplayState.Unknown,
+    });
+
     const component = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
@@ -385,6 +442,13 @@ describe('NameDetails', () => {
   });
 
   it('clears current name on save button click if name is empty', async () => {
+    // Mock useDisplayName for saved name
+    useDisplayNameMock.mockReturnValue({
+      name: SAVED_NAME_MOCK,
+      hasPetname: true,
+      displayState: TrustSignalDisplayState.Petname,
+    });
+
     const component = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
@@ -395,7 +459,7 @@ describe('NameDetails', () => {
       store,
     );
 
-    await saveNameUsingTextField(component, '', 'Suggested: TestName');
+    await saveNameUsingTextField(component, '', 'Choose a nickname...');
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
     expect(setNameMock).toHaveBeenCalledWith({
@@ -408,6 +472,13 @@ describe('NameDetails', () => {
   });
 
   it('clears selected source when name changed', async () => {
+    // Mock useDisplayName for saved name
+    useDisplayNameMock.mockReturnValue({
+      name: SAVED_NAME_MOCK,
+      hasPetname: true,
+      displayState: TrustSignalDisplayState.Petname,
+    });
+
     const component = renderWithProvider(
       <NameDetails
         type={NameType.ETHEREUM_ADDRESS}
@@ -421,7 +492,7 @@ describe('NameDetails', () => {
     await saveNameUsingTextField(
       component,
       SAVED_NAME_2_MOCK,
-      'Suggested: TestName',
+      'Choose a nickname...',
     );
 
     expect(setNameMock).toHaveBeenCalledTimes(1);
@@ -491,6 +562,13 @@ describe('NameDetails', () => {
         }),
       );
 
+      // Mock useDisplayName for saved name
+      useDisplayNameMock.mockReturnValue({
+        name: SAVED_NAME_MOCK,
+        hasPetname: true,
+        displayState: TrustSignalDisplayState.Petname,
+      });
+
       await act(async () => {
         renderWithProvider(
           <MetaMetricsContext.Provider value={trackEventMock}>
@@ -559,6 +637,13 @@ describe('NameDetails', () => {
           };
         }
         return undefined;
+      });
+
+      // Mock useDisplayName for no saved name
+      useDisplayNameMock.mockReturnValue({
+        name: null,
+        hasPetname: false,
+        displayState: TrustSignalDisplayState.Unknown,
       });
 
       const trackEventMock = jest.fn();
@@ -652,6 +737,13 @@ describe('NameDetails', () => {
         return undefined;
       });
 
+      // Mock useDisplayName for saved name
+      useDisplayNameMock.mockReturnValue({
+        name: SAVED_NAME_MOCK,
+        hasPetname: true,
+        displayState: TrustSignalDisplayState.Petname,
+      });
+
       const trackEventMock = jest.fn();
 
       const component = renderWithProvider(
@@ -669,7 +761,7 @@ describe('NameDetails', () => {
       await saveNameUsingDropdown(
         component,
         PROPOSED_NAME_2_MOCK,
-        'Suggested: TestName',
+        'Choose a nickname...',
       );
 
       expect(trackEventMock).toHaveBeenNthCalledWith(2, {
@@ -748,6 +840,13 @@ describe('NameDetails', () => {
         return undefined;
       });
 
+      // Mock useDisplayName for saved name
+      useDisplayNameMock.mockReturnValue({
+        name: SAVED_NAME_MOCK,
+        hasPetname: true,
+        displayState: TrustSignalDisplayState.Petname,
+      });
+
       const trackEventMock = jest.fn();
 
       const component = renderWithProvider(
@@ -762,7 +861,7 @@ describe('NameDetails', () => {
         store,
       );
 
-      await saveNameUsingTextField(component, '', 'Suggested: TestName');
+      await saveNameUsingTextField(component, '', 'Choose a nickname...');
 
       expect(trackEventMock).toHaveBeenNthCalledWith(2, {
         event: MetaMetricsEventName.PetnameDeleted,
@@ -773,6 +872,118 @@ describe('NameDetails', () => {
           petname_previous_source: SOURCE_ID_MOCK,
         },
       });
+    });
+  });
+
+  describe('trust signal display states', () => {
+    it('renders malicious state correctly', () => {
+      // Mock useDisplayName for malicious address
+      useDisplayNameMock.mockReturnValue({
+        name: null,
+        hasPetname: false,
+        displayState: TrustSignalDisplayState.Malicious,
+      });
+
+      const { getByText } = renderWithProvider(
+        <NameDetails
+          type={NameType.ETHEREUM_ADDRESS}
+          value={ADDRESS_NO_NAME_MOCK}
+          variation={VARIATION_MOCK}
+          onClose={() => undefined}
+        />,
+        store,
+      );
+
+      // Check for malicious state title
+      expect(getByText('Malicious address')).toBeInTheDocument();
+    });
+
+    it('renders warning state correctly', () => {
+      // Mock useDisplayName for warning address
+      useDisplayNameMock.mockReturnValue({
+        name: null,
+        hasPetname: false,
+        displayState: TrustSignalDisplayState.Warning,
+      });
+
+      const { getByText } = renderWithProvider(
+        <NameDetails
+          type={NameType.ETHEREUM_ADDRESS}
+          value={ADDRESS_NO_NAME_MOCK}
+          variation={VARIATION_MOCK}
+          onClose={() => undefined}
+        />,
+        store,
+      );
+
+      // Check for warning state title
+      expect(getByText('Suspicious address')).toBeInTheDocument();
+    });
+
+    it('renders verified state correctly', () => {
+      // Mock useDisplayName for verified address
+      useDisplayNameMock.mockReturnValue({
+        name: 'Verified Contract',
+        hasPetname: false,
+        displayState: TrustSignalDisplayState.Verified,
+      });
+
+      const { getByText } = renderWithProvider(
+        <NameDetails
+          type={NameType.ETHEREUM_ADDRESS}
+          value={ADDRESS_NO_NAME_MOCK}
+          variation={VARIATION_MOCK}
+          onClose={() => undefined}
+        />,
+        store,
+      );
+
+      // Check for verified state title
+      expect(getByText('Verified address')).toBeInTheDocument();
+    });
+
+    it('shows footer warning for malicious state', () => {
+      // Mock useDisplayName for malicious address
+      useDisplayNameMock.mockReturnValue({
+        name: null,
+        hasPetname: false,
+        displayState: TrustSignalDisplayState.Malicious,
+      });
+
+      const { getByText } = renderWithProvider(
+        <NameDetails
+          type={NameType.ETHEREUM_ADDRESS}
+          value={ADDRESS_NO_NAME_MOCK}
+          variation={VARIATION_MOCK}
+          onClose={() => undefined}
+        />,
+        store,
+      );
+
+      // Check for footer warning
+      expect(getByText('Only save addresses you trust.')).toBeInTheDocument();
+    });
+
+    it('shows footer warning for warning state', () => {
+      // Mock useDisplayName for warning address
+      useDisplayNameMock.mockReturnValue({
+        name: null,
+        hasPetname: false,
+        displayState: TrustSignalDisplayState.Warning,
+      });
+
+      const { getByText } = renderWithProvider(
+        <NameDetails
+          type={NameType.ETHEREUM_ADDRESS}
+          value={ADDRESS_NO_NAME_MOCK}
+          variation={VARIATION_MOCK}
+          onClose={() => undefined}
+        />,
+        store,
+      );
+
+      // Check for footer warning
+      expect(getByText('Only save addresses you trust.')).toBeInTheDocument();
     });
   });
 });
