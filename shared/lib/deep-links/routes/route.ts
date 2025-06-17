@@ -11,7 +11,7 @@ export {
 } from '../../../../ui/helpers/constants/routes';
 
 /**
- * Represents the internal destination.
+ * Represents the final destination.
  */
 export type Destination =
   | {
@@ -25,7 +25,7 @@ export type Destination =
 export type RouteOptions = {
   /**
    * The pathname of the route.
-   * This is the deep link URL path that identifies the route.
+   * This is the deep link URL path that identifies the route, e.g. '/swap'.
    */
   pathname: string;
   /**
