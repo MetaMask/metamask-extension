@@ -9,7 +9,6 @@ import {
   isEthSignTypedData,
   isEthSendTransaction,
   hasValidTransactionParams,
-  isProdEnabled,
 } from './trust-signals-util';
 
 export function createTrustSignalsMiddleware(
@@ -22,7 +21,7 @@ export function createTrustSignalsMiddleware(
     next: () => void,
   ) => {
     try {
-      if (!isSecurityAlertsAPIEnabled() || !isProdEnabled()) {
+      if (!isSecurityAlertsAPIEnabled()) {
         return;
       }
 
