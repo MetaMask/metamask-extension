@@ -1690,6 +1690,13 @@
   "deepLink_ErrorOther": {
     "message": "An error occurred while processing the deep link. "
   },
+  "deepLink_RedirectingToMetaMask": {
+    "message": "Redirecting to MetaMask"
+  },
+  "deepLink_ThirdPartyDescription": {
+    "message": "You were sent here by a third party; not MetaMask. $1",
+    "description": "$1 is the message 'deepLink_ContinueDescription'"
+  },
   "deepLink_theBuyPage": {
     "message": "the buy page"
   },
@@ -1701,13 +1708,6 @@
   },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
-  },
-  "deepLink_RedirectingToMetaMask": {
-    "message": "Redirecting to MetaMask"
-  },
-  "deepLink_ThirdPartyDescription": {
-    "message": "You were sent here by a third party; not MetaMask. $1",
-    "description": "$1 is the message 'deepLink_ContinueDescription'"
   },
   "defaultRpcUrl": {
     "message": "Default RPC URL"

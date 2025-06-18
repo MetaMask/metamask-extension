@@ -60,6 +60,7 @@ function set404(
  * @param setIsLoading - The function to call to set the loading state.
  * @param setRoute - The function to call to set the route state.
  * @param setTitle - The function to call to set the title state.
+ * @param setCta - The function to call to set the call-to-action state.
  * @param t - The translation function.
  */
 async function updateStateFromUrl(
