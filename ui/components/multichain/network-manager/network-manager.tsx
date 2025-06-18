@@ -125,10 +125,6 @@ const NetworkManagerRouter = () => {
     history.push('/add');
   }, [history]);
 
-  console.log('nonEvmNetworks', nonEvmNetworks);
-  console.log('evmNetworks', evmNetworks);
-  console.log('FOO');
-
   return (
     <Switch>
       <Route path="/add-rpc">

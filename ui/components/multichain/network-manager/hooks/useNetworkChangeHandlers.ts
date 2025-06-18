@@ -68,7 +68,6 @@ export const useNetworkChangeHandlers = () => {
 
   const handleEvmNetworkChange = useCallback(
     (chainId: CaipChainId) => {
-      console.log('handleEvmNetworkChange', chainId);
       const { namespace } = parseCaipChainId(chainId);
       const hexChainId = convertCaipToHexChainId(chainId);
       const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
@@ -77,14 +76,10 @@ export const useNetworkChangeHandlers = () => {
       dispatch(setActiveNetwork(finalNetworkClientId));
 
       const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
-      console.log('enabledNetworks', enabledNetworks);
-      console.log('namespace', namespace);
 
       const enabledNetworkKeys = Object.keys(
         enabledNetworks?.[namespace] ?? {},
       );
-
-      console.log('enabledNetworkKeys', enabledNetworkKeys);
 
       if (!isPopularNetwork) {
         // if custom network is enabled, select the new network and disable the custom network
@@ -214,7 +209,6 @@ export const useNetworkChangeHandlers = () => {
 
   const handleNetworkChange = useCallback(
     async (chainId: CaipChainId) => {
-      console.log('handleNetworkChange', chainId);
       const { namespace } = parseCaipChainId(chainId);
       const currentChain =
         getMultichainNetworkConfigurationOrThrow(currentChainId);

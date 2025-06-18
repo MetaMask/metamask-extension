@@ -102,9 +102,6 @@ const NetworkFilter = ({
       formattedTokensForAllNetworks,
     );
 
-  console.log('FOO');
-  console.log('multichainNetworks', multichainNetworks);
-
   const handleFilter = (chainFilters: Record<string, boolean>) => {
     if (handleFilterNetwork) {
       handleFilterNetwork(chainFilters);

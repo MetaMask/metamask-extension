@@ -116,7 +116,6 @@ export const CustomNetworks = React.memo(() => {
 
   // Memoize the rendered network lists with filtering
   const renderedCustomNetworks = useMemo(() => {
-    console.log('orderedNetworks', orderedNetworks);
     const filteredNetworks = orderedNetworks.filter((network) => {
       // If EVM network is selected, only show EVM networks
       if (isEvmNetworkSelected) {

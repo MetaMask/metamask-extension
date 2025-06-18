@@ -1435,8 +1435,6 @@ export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
     ? enabledNetworks[namespace]
     : tokenNetworkFilter;
 
-  console.log('networks', networks);
-
   if (
     Object.keys(networks).length === 1 &&
     Object.keys(networks)[0] === chainId

@@ -123,11 +123,6 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
     const selectedAccountTokenBalancesAcrossChains =
       tokenBalances[selectedAccountAddress];
 
-    console.log(
-      'selectedAccountTokenBalancesAcrossChains',
-      selectedAccountTokenBalancesAcrossChains,
-    );
-
     // we need to filter Testnets
     const isTestNetwork = TEST_CHAINS.includes(currentNetwork.chainId);
     const filteredAccountTokensChains = Object.fromEntries(
