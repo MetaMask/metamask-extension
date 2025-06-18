@@ -6100,16 +6100,14 @@ export function createOnChainTriggers(): ThunkAction<
  * @param accounts - An array of account identifiers for which on-chain triggers should be deleted.
  * @returns A thunk action that, when dispatched, attempts to delete on-chain triggers for the specified accounts.
  */
-export function deleteOnChainTriggersByAccount(
+export function disableAccounts(
   accounts: string[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async () => {
     try {
-      await submitRequestToBackground('deleteOnChainTriggersByAccount', [
-        accounts,
-      ]);
+      await submitRequestToBackground('disableAccounts', [accounts]);
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -6127,16 +6125,14 @@ export function deleteOnChainTriggersByAccount(
  * @param accounts - An array of account identifiers for which on-chain triggers should be updated.
  * @returns A thunk action that, when dispatched, attempts to update on-chain triggers for the specified accounts.
  */
-export function updateOnChainTriggersByAccount(
+export function enableAccounts(
   accounts: string[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async () => {
     try {
-      await submitRequestToBackground('updateOnChainTriggersByAccount', [
-        accounts,
-      ]);
+      await submitRequestToBackground('enableAccounts', [accounts]);
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -6306,6 +6302,33 @@ export function deleteAccountSyncingDataFromUserStorage(): ThunkAction<
       const response = await submitRequestToBackground(
         'deleteAccountSyncingDataFromUserStorage',
         [USER_STORAGE_FEATURE_NAMES.accounts],
+      );
+      return response;
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Synchronizes address book data with user storage between devices.
+ *
+ * This function sends a request to the background script to sync address book data and update the state accordingly.
+ * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
+ *
+ * @returns A thunk action that, when dispatched, attempts to synchronize address book data with user storage between devices.
+ */
+export function syncContactsWithUserStorage(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      const response = await submitRequestToBackground(
+        'syncContactsWithUserStorage',
       );
       return response;
     } catch (error) {
