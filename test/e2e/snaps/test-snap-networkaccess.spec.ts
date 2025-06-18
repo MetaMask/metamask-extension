@@ -38,6 +38,7 @@ describe('Test Snap networkAccess', function () {
         );
 
         await testSnaps.clickButton('startWebSocket');
+        await driver.delay(500);
 
         await testSnaps.waitForWebSocketUpdate({
           open: true,
