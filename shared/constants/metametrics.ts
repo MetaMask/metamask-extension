@@ -705,7 +705,7 @@ export enum MetaMetricsEventName {
   OnboardingWalletSecurityPhraseRevealed = 'SRP Revealed',
   OnboardingWalletSecurityPhraseWrittenDown = 'SRP Backup Confirm Display',
   OnboardingWalletSecurityPhraseConfirmed = 'SRP Backup Confirmed',
-  OnboardingWalletCreationComplete = 'Onboarding Wallet Created',
+  OnboardingWalletCreationComplete = 'Wallet Created',
   OnboardingWalletAdvancedSettings = 'Settings Updated',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingTwitterClick = 'External Link Clicked',
@@ -776,7 +776,7 @@ export enum MetaMetricsEventName {
   WalletImportAttempted = 'Wallet Import Attempted',
   WalletImported = 'Wallet Imported',
   WalletCreationAttempted = 'Wallet Creation Attempted',
-  WalletCreated = 'Wallet Created',
+  WalletCreated = 'Wallet Created (Onboarding)',
   WalletSetupFailure = 'Wallet Setup Failure',
   WalletSetupCompleted = 'Wallet Setup Completed',
   // BEGIN:ONLY_INCLUDE_IF(build-flask)
