@@ -89,7 +89,9 @@ describe('AssetPickerModalNftTab', () => {
         ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
         allNfts: mockNfts,
         enabledNetworkMap: {
-          [CHAIN_IDS.MAINNET]: true,
+          eip155: {
+            [CHAIN_IDS.MAINNET]: true,
+          },
         },
       },
     });
@@ -114,7 +116,9 @@ describe('AssetPickerModalNftTab', () => {
         ...mockNetworkState({ chainId: CHAIN_IDS.LINEA_MAINNET }),
         allNfts: mockNfts,
         enabledNetworkMap: {
-          [CHAIN_IDS.LINEA_MAINNET]: true,
+          eip155: {
+            [CHAIN_IDS.LINEA_MAINNET]: true,
+          },
         },
       },
     });
