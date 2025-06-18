@@ -260,7 +260,7 @@ export const completeCreateNewWalletOnboardingFlow = async ({
   const onboardingCompletePage = new OnboardingCompletePage(driver);
   await onboardingCompletePage.check_pageIsLoaded();
   if (!skipSRPBackup) {
-    await onboardingCompletePage.check_congratulationsMessageIsDisplayed();
+    await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
   }
   await onboardingCompletePage.completeOnboarding();
 };

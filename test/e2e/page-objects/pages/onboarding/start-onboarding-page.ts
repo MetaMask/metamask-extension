@@ -61,6 +61,7 @@ class StartOnboardingPage {
     await this.driver.waitForSelector(this.termsOfUseScrollButton);
     await this.driver.clickElementAndWaitToDisappear(
       this.termsOfUseScrollButton,
+      5000,
     );
     await this.driver.waitForSelector(this.termsOfUseCheckbox);
     await this.driver.clickElement(this.termsOfUseCheckbox);
@@ -85,14 +86,10 @@ class StartOnboardingPage {
 
   async createWalletWithSrp(): Promise<void> {
     await this.driver.clickElement(this.createWalletButton);
-    await this.driver.waitForSelector(this.onboardingCreateWithSrpButton);
-    await this.driver.clickElement(this.onboardingCreateWithSrpButton);
   }
 
   async importWallet(): Promise<void> {
     await this.driver.clickElement(this.importWalletButton);
-    await this.driver.waitForSelector(this.onboardingImportWithSrpButton);
-    await this.driver.clickElement(this.onboardingImportWithSrpButton);
   }
 }
 

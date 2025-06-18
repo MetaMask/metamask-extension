@@ -2,7 +2,6 @@ import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/user-storage';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { mockIdentityServices } from '../identity/mocks';
 import { completeOnboardFlowIdentity } from '../identity/flows';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 import {
@@ -65,7 +64,6 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
                 server,
                 userStorageMockttpController,
               ),
-              await mockIdentityServices(server, userStorageMockttpController),
             ];
           },
         },
@@ -107,7 +105,6 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
                 server,
                 userStorageMockttpController,
               ),
-              await mockIdentityServices(server, userStorageMockttpController),
             ];
           },
         },

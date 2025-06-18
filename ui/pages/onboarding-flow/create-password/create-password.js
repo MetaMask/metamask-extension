@@ -78,7 +78,6 @@ export default function CreatePassword({
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {
       if (firstTimeFlowType === FirstTimeFlowType.import) {
-        // SOCIAL: change to metametrics when social login is available
         history.replace(ONBOARDING_COMPLETION_ROUTE);
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
@@ -109,10 +108,6 @@ export default function CreatePassword({
       firstTimeFlowType === FirstTimeFlowType.import
     ) {
       await importWithRecoveryPhrase(password, secretRecoveryPhrase);
-      // getPlatform() === PLATFORM_FIREFOX
-      //   ? history.push(ONBOARDING_COMPLETION_ROUTE)
-      //   : history.push(ONBOARDING_METAMETRICS);
-      // SOCIAL: change to metametrics when social login is available
       history.push(ONBOARDING_COMPLETION_ROUTE);
     } else {
       // Otherwise we are in create new wallet flow
@@ -122,8 +117,6 @@ export default function CreatePassword({
           await createNewAccount(password);
         }
         if (firstTimeFlowType === FirstTimeFlowType.social) {
-          // history.push(ONBOARDING_METAMETRICS);
-          // SOCIAL: change to metametrics when social login is available
           history.push(ONBOARDING_COMPLETION_ROUTE);
         } else {
           history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
@@ -190,15 +183,20 @@ export default function CreatePassword({
           <Text variant={TextVariant.headingLg} as="h2">
             {t('createPassword')}
           </Text>
+          <Text
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternative}
+            as="h2"
+          >
+            {t('createPasswordDetails')}
+          </Text>
         </Box>
         <PasswordForm onChange={(newPassword) => setPassword(newPassword)} />
-      </Box>
-      <Box>
         <Box
           className="create-password__terms-container"
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.spaceBetween}
-          marginBottom={4}
+          marginTop={6}
         >
           <Checkbox
             inputProps={{ 'data-testid': 'create-password-terms' }}
@@ -216,6 +214,8 @@ export default function CreatePassword({
             }
           />
         </Box>
+      </Box>
+      <Box>
         <Button
           data-testid="create-password-submit"
           variant={ButtonVariant.Primary}
@@ -224,7 +224,7 @@ export default function CreatePassword({
           className="create-password__form--submit-button"
           disabled={!password || !termsChecked}
         >
-          {t('confirm')}
+          {t('createPasswordCreate')}
         </Button>
       </Box>
       {shouldInjectMetametricsIframe ? (

@@ -111,10 +111,11 @@ export default function SecureYourWallet() {
           <img
             className="secure-your-wallet__srp-design-image"
             src="./images/srp-lock-design.png"
+            alt={t('srpDesignImageAlt')}
           />
         </Box>
         <Box>
-          <Text variant={TextVariant.bodyMd} marginBottom={6} as="div">
+          <Text color={TextColor.textAlternative} marginBottom={6} as="div">
             {t('secureWalletWalletSaveSrp', [
               [
                 <ButtonLink
@@ -129,7 +130,7 @@ export default function SecureYourWallet() {
               ],
             ])}
           </Text>
-          <Text variant={TextVariant.bodyMd}>
+          <Text color={TextColor.textAlternative}>
             {t('secureWalletWalletRecover')}
           </Text>
         </Box>

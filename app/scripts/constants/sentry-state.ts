@@ -32,10 +32,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   AuthenticationController: {
     isSignedIn: false,
-    sessionData: {
-      token: false,
-      profile: true,
-    },
+    srpSessionData: false,
   },
   NetworkOrderController: {
     orderedNetworkList: [],
@@ -124,7 +121,7 @@ export const SENTRY_BACKGROUND_STATE = {
     txHistory: false,
   },
   CronjobController: {
-    jobs: false,
+    events: false,
   },
   CurrencyController: {
     currentCurrency: true,

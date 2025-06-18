@@ -7,7 +7,6 @@
 @import 'create-password/index';
 @import 'creation-successful/index';
 @import 'welcome/index';
-@import 'import-srp/index';
 @import 'pin-extension/index';
 @import 'metametrics/index';
 
@@ -20,14 +19,5 @@
   &--welcome-login {
     background: url('/images/welcome-page.png') no-repeat center top;
     background-color: var(--color-accent02-dark);
-  }
-
-  &__twitter-button {
-    margin-bottom: 40px;
-    vertical-align: middle;
-
-    &__icon {
-      margin-left: 4px;
-    }
   }
 }
