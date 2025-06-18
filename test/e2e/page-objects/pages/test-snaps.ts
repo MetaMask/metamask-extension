@@ -367,7 +367,7 @@ export class TestSnaps {
           return false;
         }
       },
-      { timeout: veryLargeDelayMs, interval: 500 },
+      { timeout: veryLargeDelayMs, interval: 200 },
     );
   }
 }
