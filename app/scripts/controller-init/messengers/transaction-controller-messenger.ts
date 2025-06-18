@@ -11,6 +11,7 @@ import {
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
 import {
+  TransactionControllerEstimateGasAction,
   TransactionControllerMessenger,
   TransactionControllerPostTransactionBalanceUpdatedEvent,
   TransactionControllerTransactionApprovedEvent,
@@ -29,6 +30,7 @@ import {
   KeyringControllerSignEip7702AuthorizationAction,
   KeyringControllerSignTypedMessageAction,
 } from '@metamask/keyring-controller';
+import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
@@ -42,6 +44,7 @@ type MessengerActions =
   | ApprovalControllerActions
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerGetStateAction
+  | DelegationControllerSignDelegationAction
   | InstitutionalSnapControllerPublishHookAction
   | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
   | KeyringControllerSignEip7702AuthorizationAction
@@ -51,7 +54,8 @@ type MessengerActions =
   | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction
   | SwapsControllerSetApproveTxIdAction
-  | SwapsControllerSetTradeTxIdAction;
+  | SwapsControllerSetTradeTxIdAction
+  | TransactionControllerEstimateGasAction;
 
 type MessengerEvents =
   | TransactionControllerTransactionApprovedEvent
@@ -113,6 +117,7 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:endFlow',
       'ApprovalController:startFlow',
       'ApprovalController:updateRequestState',
+      'DelegationController:signDelegation',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
       'InstitutionalSnapController:publishHook',
       'KeyringController:signEip7702Authorization',
@@ -121,6 +126,7 @@ export function getTransactionControllerInitMessenger(
       'RemoteFeatureFlagController:getState',
       'SwapsController:setApproveTxId',
       'SwapsController:setTradeTxId',
+      'TransactionController:estimateGas',
     ],
   });
 }
