@@ -9,7 +9,7 @@ import PreinstalledExampleSettings from '../../page-objects/pages/settings/prein
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
 
 describe('Preinstalled example Snap', function () {
-  it.only('can display the Snap settings page', async function () {
+  it('can display the Snap settings page', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -80,7 +80,6 @@ async function navigateToPreInstalledExample(driver: Driver) {
   const preInstalledExample = new PreinstalledExampleSettings(driver);
 
   await headerNavbar.openSettingsPage();
-  await headerNavbar.check_pageIsLoaded();
 
   await settingsPage.goToPreInstalledExample();
   await preInstalledExample.check_pageIsLoaded();
