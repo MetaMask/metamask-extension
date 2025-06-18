@@ -4744,8 +4744,8 @@ export default class MetamaskController extends EventEmitter {
     try {
       // fetch all seed phrases
       // seedPhrases are sorted by creation date, the latest seed phrase is the first one in the array
-      const allSeedPhrases =
-        await this.seedlessOnboardingController.fetchAllSeedPhrases(password);
+      const { mnemonic: allSeedPhrases } =
+        await this.seedlessOnboardingController.fetchAllSecretData(password);
 
       if (allSeedPhrases.length === 0) {
         return null;
