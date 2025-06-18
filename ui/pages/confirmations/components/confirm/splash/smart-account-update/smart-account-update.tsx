@@ -1,6 +1,5 @@
-import React, { ReactElement, useCallback, useMemo, useState } from 'react';
+import React, { ReactElement, useCallback, useState } from 'react';
 import { Hex } from '@metamask/utils';
-import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { useSelector } from 'react-redux';
@@ -31,14 +30,12 @@ import {
   FlexDirection,
   FontWeight,
   JustifyContent,
-  Size,
   TextColor,
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
 import { setSmartAccountOptInForAccounts } from '../../../../../../store/actions';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import IconButton from '../../../../../../components/ui/icon-button/icon-button-round';
-import Name from '../../../../../../components/app/name';
 import {
   getInternalAccounts,
   getUseBlockie,
@@ -101,7 +98,7 @@ export function SmartAccountUpdate() {
     return (evmAccounts ?? []).map((acc) => acc.address as Hex);
   });
 
-  const { chainId, txParams, origin } = currentConfirmation ?? {};
+  const { txParams, origin } = currentConfirmation ?? {};
   const { from } = txParams;
 
   const acknowledgeSmartAccountUpgrade = useCallback(() => {
