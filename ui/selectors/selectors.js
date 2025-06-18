@@ -144,7 +144,7 @@ import {
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
 
-export const isGlobalNetworkSelectorRemoved = true;
+export const isGlobalNetworkSelectorRemoved = false;
 
 /** `appState` slice selectors */
 
