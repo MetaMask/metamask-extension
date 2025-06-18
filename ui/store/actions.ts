@@ -134,7 +134,10 @@ import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/con
 import { EndTraceRequest, trace, TraceName } from '../../shared/lib/trace';
 import { SortCriteria } from '../components/app/assets/util/sort';
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
-import { getDismissSmartAccountSuggestionEnabled } from '../pages/confirmations/selectors/preferences';
+import {
+  getDismissSmartAccountSuggestionEnabled,
+  getUseSmartAccount,
+} from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
 import * as actionConstants from './actionConstants';
 
@@ -3500,6 +3503,26 @@ export function setDismissSmartAccountSuggestionEnabled(
     await dispatch(
       setPreference('dismissSmartAccountSuggestionEnabled', value),
     );
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setSmartAccountOptIn(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  return async (dispatch, getState) => {
+    const prevUseSmartAccount = getUseSmartAccount(getState());
+    trackMetaMetricsEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        use_smart_account: value,
+        prev_use_smart_account: prevUseSmartAccount,
+      },
+    });
+    await dispatch(setPreference('smartAccountOptIn', value));
     await forceUpdateMetamaskState(dispatch);
   };
 }
