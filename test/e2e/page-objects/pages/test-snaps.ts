@@ -352,18 +352,24 @@ export class TestSnaps {
     const resultElement = await this.driver.findElement('#networkAccessResult');
     await this.driver.waitUntil(
       async () => {
-        await this.clickButton('getWebSocketState');
-        await this.driver.delay(300);
-        const { open, origin, blockNumber } = JSON.parse(
-          await resultElement.getText(),
-        );
-        const blockNumberMatch =
-          typeof state.blockNumber === 'string'
-            ? typeof blockNumber === state.blockNumber
-            : blockNumber === state.blockNumber;
-        return (
-          open === state.open && origin === state.origin && blockNumberMatch
-        );
+        try {
+          await this.clickButton('getWebSocketState');
+
+          const { open, origin, blockNumber } = JSON.parse(
+            await resultElement.getText(),
+          );
+
+          const blockNumberMatch =
+            typeof state.blockNumber === 'string'
+              ? typeof blockNumber === state.blockNumber
+              : blockNumber === state.blockNumber;
+
+          return (
+            open === state.open && origin === state.origin && blockNumberMatch
+          );
+        } catch {
+          return false;
+        }
       },
       { timeout: veryLargeDelayMs, interval: 500 },
     );
