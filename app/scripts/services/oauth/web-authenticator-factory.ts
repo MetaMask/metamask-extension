@@ -28,17 +28,48 @@ function generateNonce(): string {
   return crypto.randomUUID();
 }
 
-export function webAuthenticatorFactory(): WebAuthenticator {
+function getIdentityAPI(): typeof chrome.identity | typeof browser.identity {
   const isFirefox = getPlatform() === PLATFORM_FIREFOX;
-  const identityAPI = isFirefox
+  return isFirefox
     ? globalThis.browser.identity // use browser.identity for Firefox
     : chrome.identity; // use chrome.identity for Chromium based browsers
+}
 
+async function launchWebAuthFlow(
+  options: {
+    url: string;
+    interactive?: boolean;
+  },
+  callback: (responseUrl?: string) => void,
+) {
+  const identityAPI = getIdentityAPI();
+  return identityAPI.launchWebAuthFlow(options, callback);
+}
+
+function getRedirectURL(): string {
+  const identityAPI = getIdentityAPI();
+  return identityAPI.getRedirectURL();
+}
+
+async function requestIdentityPermission(): Promise<boolean> {
+  const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+  if (isFirefox) {
+    return true;
+  }
+
+  const permissionGranted = await chrome.permissions.request({
+    permissions: ['identity'],
+  });
+  return permissionGranted;
+}
+
+export function webAuthenticatorFactory(): WebAuthenticator {
   return {
-    launchWebAuthFlow: identityAPI?.launchWebAuthFlow,
+    launchWebAuthFlow,
     generateCodeVerifierAndChallenge,
     generateNonce,
-    getRedirectURL: identityAPI?.getRedirectURL,
+    getRedirectURL,
     getPlatform,
+    requestIdentityPermission,
   };
 }
