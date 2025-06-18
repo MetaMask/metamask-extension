@@ -56,7 +56,9 @@ const render = (
       ...mockState.metamask,
       allDeFiPositions,
       enabledNetworkMap: {
-        '0x5': true,
+        eip155: {
+          '0x5': true,
+        },
       },
     },
   };
