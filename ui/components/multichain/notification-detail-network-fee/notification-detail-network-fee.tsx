@@ -8,8 +8,6 @@ import {
   getNetworkFees,
   getNetworkDetailsByChainId,
 } from '../../../helpers/utils/notification.util';
-import { decimalToHex } from '../../../../shared/modules/conversion.utils';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -85,11 +83,13 @@ const FeeDetail = ({ label, value }: { label: string; value: string }) => (
  *
  * @param props - The props object.
  * @param props.notification - The notification object.
+ * @deprecated - we are planning to remove this component
  * @returns The NotificationDetailNetworkFee component.
  */
-export const NotificationDetailNetworkFee: FC<
-  NotificationDetailNetworkFeeProps
-> = ({ notification }) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _NotificationDetailNetworkFee: FC<NotificationDetailNetworkFeeProps> = ({
+  notification,
+}) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -97,8 +97,7 @@ export const NotificationDetailNetworkFee: FC<
   const [networkFeesError, setNetworkFeesError] = useState<boolean>(false);
 
   const getNativeCurrency = (n: OnChainRawNotificationsWithNetworkFields) => {
-    const chainId = decimalToHex(n.chain_id);
-    return getNetworkDetailsByChainId(`0x${chainId}` as keyof typeof CHAIN_IDS);
+    return getNetworkDetailsByChainId(n.chain_id);
   };
 
   const nativeCurrency = getNativeCurrency(notification);
@@ -283,3 +282,15 @@ export const NotificationDetailNetworkFee: FC<
     </Box>
   );
 };
+
+/**
+ * NotificationDetailNetworkFee component displays the network fee details.
+ *
+ * @param _props - The props object.
+ * @param _props.notification - The notification object.
+ * @deprecated - we are planning to remove this component
+ * @returns The NotificationDetailNetworkFee component.
+ */
+export const NotificationDetailNetworkFee = (
+  _props: NotificationDetailNetworkFeeProps,
+) => null;
