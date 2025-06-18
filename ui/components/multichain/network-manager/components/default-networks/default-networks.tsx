@@ -134,9 +134,9 @@ const DefaultNetworks = memo(() => {
         const { onDelete, onEdit, onDiscoverClick, onRpcConfigEdit } =
           getItemCallbacks(network);
         const iconSrc = getNetworkIcon(network);
-        const isEnabled = Object.keys(enabledNetworks[namespace]).includes(
-          hexChainId,
-        );
+        const isEnabled = Object.keys(
+          enabledNetworks[namespace] ?? {},
+        ).includes(hexChainId);
 
         return (
           <NetworkListItem

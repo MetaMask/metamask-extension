@@ -1432,7 +1432,7 @@ export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const { namespace } = parseCaipChainId(currentMultichainChainId);
 
   const networks = isGlobalNetworkSelectorRemoved
-    ? enabledNetworks[namespace]
+    ? enabledNetworks?.[namespace] ?? {}
     : tokenNetworkFilter;
 
   if (
