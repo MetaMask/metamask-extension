@@ -141,10 +141,7 @@ describe('Deep Link', function () {
           if (isInvalidRoute) {
             console.log('Getting error text for invalid route');
             const text = await deepLink.getDescriptionText();
-            assert.equal(
-              text,
-              "The page you're searching for is no longer available.",
-            );
+            assert.equal(text, "We can't find the page you are looking for.");
           }
 
           console.log('Clicking continue button');
@@ -189,14 +186,15 @@ describe('Deep Link', function () {
         const homePage = new HomePage(driver);
         await homePage.check_pageIsLoaded();
 
-        const rawUrl = `https://link.metamask.io/home`;
+        const rawUrl = `https://link.metamask.io/buy`;
         const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
 
         // test signed flow
         await driver.openNewURL(signedUrl);
 
+        const url = new URL(signedUrl);
         await driver.waitForUrl({
-          url: `${BaseUrl.Portfolio}/buy`,
+          url: `${BaseUrl.Portfolio}/buy${url.search}`,
         });
 
         await driver.navigate();
