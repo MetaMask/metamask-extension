@@ -71,7 +71,7 @@ import {
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { PermissionLogController } from '@metamask/permission-log-controller';
 
-import { MultichainRouter } from '@metamask/snaps-controllers';
+import { MultichainRouter, WebSocketService } from '@metamask/snaps-controllers';
 import {
   createSnapsMethodMiddleware,
   buildSnapEndowmentSpecifications,
@@ -559,6 +559,14 @@ export default class MetamaskController extends EventEmitter {
         // Exclude Smart TX Status Page from rate limiting to allow sequential transactions
         SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
       ],
+    });
+
+    this.webSocketService = new WebSocketService({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'WebSocketService',
+        allowedActions: ['SnapController:handleRequest'],
+        allowedEvents: ['SnapController:snapUpdated', 'SnapController:snapUninstalled', 'SnapController:snapInstalled'],
+      }),
     });
 
     const networkControllerMessenger = this.controllerMessenger.getRestricted({
@@ -6964,6 +6972,26 @@ export default class MetamaskController extends EventEmitter {
         getAllSnaps: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:getAll',
+        ),
+        openWebSocket: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'WebSocketService:open',
+          origin,
+        ),
+        closeWebSocket: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'WebSocketService:close',
+          origin,
+        ),
+        getWebSockets: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'WebSocketService:getAll',
+          origin,
+        ),
+        sendWebSocketMessage: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'WebSocketService:sendMessage',
+          origin,
         ),
         getCurrencyRate: (currency) => {
           const rate = this.multichainRatesController.state.rates[currency];
