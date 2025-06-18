@@ -8,7 +8,7 @@ import { UserStorageMockttpController } from '../../../helpers/identity/user-sto
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
-import { completeNewWalletFlowContactSyncing } from '../flows';
+import { completeNewWalletFlowIdentity } from '../flows';
 
 import { arrangeContactSyncingTestUtils } from './helpers';
 import { MOCK_CONTACT_ADDRESSES } from './mock-data';
@@ -55,7 +55,7 @@ describe('Contact syncing - New User', function () {
       },
       async ({ driver }) => {
         // Create new wallet and complete onboarding
-        await completeNewWalletFlowContactSyncing(driver);
+        await completeNewWalletFlowIdentity(driver);
 
         // Wait for the UI to be ready before opening settings
         await driver.wait(async () => {
@@ -140,7 +140,7 @@ describe('Contact syncing - New User', function () {
         },
       },
       async ({ driver }) => {
-        await completeNewWalletFlowContactSyncing(driver);
+        await completeNewWalletFlowIdentity(driver);
 
         // Wait for contact syncing to initialize
         await driver.wait(async () => {

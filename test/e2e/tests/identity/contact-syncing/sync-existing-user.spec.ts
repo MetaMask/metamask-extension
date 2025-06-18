@@ -11,7 +11,7 @@ import {
 } from '../constants';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import { createEncryptedResponse } from '../../../helpers/identity/user-storage/generateEncryptedData';
-import { completeOnboardFlowContactSyncing, getSRP } from '../flows';
+import { completeOnboardFlowIdentity, getSRP } from '../flows';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
@@ -135,10 +135,7 @@ describe('Contact Syncing - Existing User', function () {
         },
         async ({ driver }) => {
           // Complete onboarding with existing SRP to get remote contacts
-          await completeOnboardFlowContactSyncing(
-            driver,
-            IDENTITY_TEAM_SEED_PHRASE,
-          );
+          await completeOnboardFlowIdentity(driver, IDENTITY_TEAM_SEED_PHRASE);
 
           const { waitUntilSyncedContactsNumberEquals, getCurrentContacts } =
             arrangeContactSyncingTestUtils(
@@ -299,7 +296,7 @@ describe('Contact Syncing - Existing User', function () {
         },
         async ({ driver }) => {
           // Complete onboarding with existing SRP to get synced contacts
-          await completeOnboardFlowContactSyncing(driver, walletSrp);
+          await completeOnboardFlowIdentity(driver, walletSrp);
 
           const { waitUntilSyncedContactsNumberEquals, getCurrentContacts } =
             arrangeContactSyncingTestUtils(

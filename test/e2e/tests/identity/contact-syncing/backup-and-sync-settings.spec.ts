@@ -11,7 +11,7 @@ import {
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
-import { completeNewWalletFlowContactSyncing } from '../flows';
+import { completeNewWalletFlowIdentity } from '../flows';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
 import { arrangeContactSyncingTestUtils } from './helpers';
 
@@ -36,7 +36,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           },
         },
         async ({ driver }) => {
-          await completeNewWalletFlowContactSyncing(driver);
+          await completeNewWalletFlowIdentity(driver);
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
@@ -158,7 +158,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           },
         },
         async ({ driver }) => {
-          await completeNewWalletFlowContactSyncing(driver);
+          await completeNewWalletFlowIdentity(driver);
 
           const { getCurrentContacts } = arrangeContactSyncingTestUtils(
             driver,
@@ -205,7 +205,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           },
         },
         async ({ driver }) => {
-          await completeNewWalletFlowContactSyncing(driver);
+          await completeNewWalletFlowIdentity(driver);
 
           const header = new HeaderNavbar(driver);
           await header.check_pageIsLoaded();
