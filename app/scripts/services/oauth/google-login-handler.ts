@@ -82,6 +82,7 @@ export class GoogleLoginHandler extends BaseLoginHandler {
       login_provider: this.authConnection,
       network: web3AuthNetwork,
       code_verifier: this.#codeVerifier,
+      access_type: 'offline',
     };
 
     return JSON.stringify(requestData);

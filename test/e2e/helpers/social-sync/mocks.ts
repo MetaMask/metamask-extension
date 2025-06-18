@@ -170,5 +170,6 @@ export function mockWebAuthenticator() {
       }),
     getRedirectURL: () => 'https://mock-redirect-url.com',
     getPlatform,
+    requestIdentityPermission: () => Promise.resolve(true),
   };
 }

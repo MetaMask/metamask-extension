@@ -172,7 +172,10 @@ import {
   BRIDGE_STATUS_CONTROLLER_NAME,
   BridgeStatusAction,
 } from '@metamask/bridge-status-controller';
-import { RecoveryError } from '@metamask/seedless-onboarding-controller';
+import {
+  RecoveryError,
+  SecretType,
+} from '@metamask/seedless-onboarding-controller';
 
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
@@ -4745,8 +4748,8 @@ export default class MetamaskController extends EventEmitter {
     try {
       // fetch all seed phrases
       // seedPhrases are sorted by creation date, the latest seed phrase is the first one in the array
-      const allSeedPhrases =
-        await this.seedlessOnboardingController.fetchAllSeedPhrases(password);
+      const { mnemonic: allSeedPhrases } =
+        await this.seedlessOnboardingController.fetchAllSecretData(password);
 
       if (allSeedPhrases.length === 0) {
         return null;
@@ -4981,7 +4984,8 @@ export default class MetamaskController extends EventEmitter {
         // if the social login flow is completed, update the SocialBackupMetadataState with the restored seed phrase
         this.seedlessOnboardingController.updateBackupMetadataState({
           keyringId: this.keyringController.state.keyrings[0].metadata.id,
-          seedPhrase: seedPhraseAsUint8Array,
+          data: seedPhraseAsUint8Array,
+          type: SecretType.Mnemonic,
         });
       }
 
