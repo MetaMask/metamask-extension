@@ -674,6 +674,7 @@ describe('preferences controller', () => {
         showConfirmationAdvancedDetails: false,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,
+        smartAccountOptIn: true,
         smartAccountOptInForAccounts: [],
         tokenSortConfig: {
           key: 'tokenFiatAmount',
@@ -703,6 +704,7 @@ describe('preferences controller', () => {
         showConfirmationAdvancedDetails: true,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,
+        smartAccountOptIn: true,
         smartAccountOptInForAccounts: [],
         tokenSortConfig: {
           key: 'tokenFiatAmount',

@@ -2,7 +2,7 @@ import React, { ReactElement, useCallback, useState } from 'react';
 import { Hex } from '@metamask/utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { ORIGIN_METAMASK } from '../../../../../../../shared/constants/app';
 import ZENDESK_URLS from '../../../../../../helpers/constants/zendesk-url';
@@ -33,13 +33,22 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
-import { setSmartAccountOptInForAccounts } from '../../../../../../store/actions';
+import {
+  setSmartAccountOptIn,
+  setSmartAccountOptInForAccounts,
+} from '../../../../../../store/actions';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import {
+  AccountsState,
+  getMemoizedInternalAccountByAddress,
+} from '../../../../../../selectors';
+import { isHardwareKeyring } from '../../../../../../helpers/utils/hardware';
 import IconButton from '../../../../../../components/ui/icon-button/icon-button-round';
 import {
   getInternalAccounts,
   getUseBlockie,
 } from '../../../../../../selectors';
+import { getUseSmartAccount } from '../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useSmartAccountActions } from '../../../../hooks/useSmartAccountActions';
 import { getSmartAccountOptInForAccounts } from '../../../../selectors/preferences';
@@ -83,12 +92,14 @@ export function SmartAccountUpdate() {
   const [acknowledged, setAcknowledged] = useState(false);
   const [accountSelectionVisible, setAccountSelectionVisible] = useState(false);
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const useBlockie = useSelector(getUseBlockie);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { handleRejectUpgrade } = useSmartAccountActions();
   const smartAccountOptInForAccounts: Hex[] = useSelector(
     getSmartAccountOptInForAccounts,
   );
+  const smartAccountOptIn = useSelector(getUseSmartAccount);
   const accounts = useSelector(getInternalAccounts);
   const evmAccounts = accounts.filter((acc) => isEvmAccountType(acc.type));
   const [selectedAccounts, setSelectedAccounts] = useState(() => {
@@ -97,14 +108,18 @@ export function SmartAccountUpdate() {
     }
     return (evmAccounts ?? []).map((acc) => acc.address as Hex);
   });
-
-  const { txParams, origin } = currentConfirmation ?? {};
+  const { chainId, txParams, origin } = currentConfirmation ?? {};
   const { from } = txParams;
+  const account = useSelector((state: AccountsState) =>
+    getMemoizedInternalAccountByAddress(state as AccountsState, from),
+  );
+  const keyringType = account?.metadata?.keyring?.type;
 
   const acknowledgeSmartAccountUpgrade = useCallback(() => {
     setSmartAccountOptInForAccounts(selectedAccounts);
     setAcknowledged(true);
-  }, [setAcknowledged, selectedAccounts, setSmartAccountOptInForAccounts]);
+    dispatch(setSmartAccountOptIn(true));
+  }, [from, setAcknowledged]);
 
   const showAccountSelectionVisible = useCallback(() => {
     setAccountSelectionVisible(true);
@@ -118,7 +133,8 @@ export function SmartAccountUpdate() {
     !currentConfirmation ||
     acknowledged ||
     origin === ORIGIN_METAMASK ||
-    smartAccountOptInForAccounts?.includes(from.toLowerCase() as Hex)
+    smartAccountOptInForAccounts?.includes(from.toLowerCase() as Hex) ||
+    (smartAccountOptIn && !isHardwareKeyring(keyringType))
   ) {
     return null;
   }

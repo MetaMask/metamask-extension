@@ -106,6 +106,7 @@ export type Preferences = {
   };
   tokenNetworkFilter: Record<string, boolean>;
   dismissSmartAccountSuggestionEnabled: boolean;
+  smartAccountOptIn: boolean;
   smartAccountOptInForAccounts: Hex[];
 };
 
@@ -195,6 +196,7 @@ export const getDefaultPreferencesControllerState =
       showMultiRpcModal: false,
       privacyMode: false,
       dismissSmartAccountSuggestionEnabled: false,
+      smartAccountOptIn: true,
       smartAccountOptInForAccounts: [],
       tokenSortConfig: {
         key: 'tokenFiatAmount',

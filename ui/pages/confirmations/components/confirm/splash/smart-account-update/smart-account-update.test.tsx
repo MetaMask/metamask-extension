@@ -11,6 +11,7 @@ import { Confirmation } from '../../../../types/confirm';
 import {
   rejectPendingApproval,
   setSmartAccountOptInForAccounts,
+  setSmartAccountOptIn,
 } from '../../../../../../store/actions';
 import { SmartAccountUpdate } from './smart-account-update';
 
@@ -23,6 +24,7 @@ jest.mock('../../../../../../store/actions', () => ({
   setAccountDetailsAddress: jest.fn(),
   rejectPendingApproval: jest.fn().mockReturnValue({}),
   setSmartAccountOptInForAccounts: jest.fn(),
+  setSmartAccountOptIn: jest.fn(),
 }));
 
 const mockDispatch = jest.fn();
@@ -70,6 +72,7 @@ describe('Splash', () => {
 
     expect(container.firstChild).toBeNull();
     expect(setSmartAccountOptInForAccounts).toHaveBeenCalledTimes(1);
+    expect(setSmartAccountOptIn).toHaveBeenCalledTimes(1);
   });
 
   it('reject confirmation if user does not accept', async () => {
@@ -107,7 +110,43 @@ describe('Splash', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('does not render splash page if it is acknowledged for account', () => {
+  it('does not render if smartAccountOptIn is true for user and its not hardware wallet account', () => {
+    const mockStore = configureMockStore([])(
+      getMockConfirmStateForTransaction(
+        {
+          ...upgradeAccountConfirmation,
+          origin: 'metamask',
+        } as Confirmation,
+        {
+          metamask: {
+            preferences: {
+              smartAccountOptIn: true,
+            },
+            internalAccounts: {
+              accounts: {
+                '0x8a0bbcd42cf79e7cee834e7808eb2fef1cebdb87': {
+                  address: '0x8a0bbcd42cf79e7cee834e7808eb2fef1cebdb87',
+                  metadata: {
+                    keyring: {
+                      type: 'ledger',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      ),
+    );
+    const { container } = renderWithConfirmContextProvider(
+      <SmartAccountUpdate />,
+      mockStore,
+    );
+
+    expect(container.firstChild).toBeNull();
+  });
+
+  it('does not render is splash page is acknowledged for account', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
         {
