@@ -1,4 +1,5 @@
 import { canonicalize } from './canonicalize';
+import { SIG_PARAM } from './constants';
 import { getKeyData, sigToBytes } from './helpers';
 
 export const MISSING = 'missing' as const;
@@ -46,7 +47,7 @@ async function lazyGetTools() {
  * @param url - The URL to verify.
  */
 export const verify = async (url: URL) => {
-  const signatureStr = url.searchParams.get('sig');
+  const signatureStr = url.searchParams.get(SIG_PARAM);
   if (!signatureStr) {
     return MISSING;
   }

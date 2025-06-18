@@ -1,7 +1,10 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import MetaMaskController from '../../metamask-controller';
-import { DEEP_LINK_HOST } from '../../../../shared/lib/deep-links/constants';
+import {
+  DEEP_LINK_HOST,
+  SIG_PARAM,
+} from '../../../../shared/lib/deep-links/constants';
 import { ParsedDeepLink, parse } from '../../../../shared/lib/deep-links/parse';
 import ExtensionPlatform from '../../platforms/extension';
 import { DeepLinkRouter } from './deep-link-router';
@@ -138,7 +141,7 @@ describe('DeepLinkRouter', () => {
     describe('skipDeepLinkInterstitial: true', () => {
       it('should redirect signed links to the correct route when skipDeepLinkInterstitial is true', async () => {
         const tabId = 1;
-        const url = `https://example.com/test-route?sig=12345`;
+        const url = `https://example.com/test-route?${SIG_PARAM}=12345`;
         getState.mockReturnValue({
           preferences: { skipDeepLinkInterstitial: true },
         } as unknown as ReturnType<MetaMaskController['getState']>);

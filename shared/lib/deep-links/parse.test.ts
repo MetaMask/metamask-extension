@@ -2,6 +2,7 @@ import log from 'loglevel';
 import { parse } from './parse';
 import { VALID, INVALID, MISSING, verify } from './verify';
 import { type Route, routes } from './routes';
+import { SIG_PARAM } from './constants';
 
 const mockVerify = verify as jest.MockedFunction<typeof verify>;
 const mockRoutes = routes as jest.Mocked<Map<string, Route>>;
@@ -52,7 +53,7 @@ describe('parse', () => {
     mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
     mockHandler.mockReturnValue({
       path: 'destination-value',
-      query: new URLSearchParams([['sig', '123']]),
+      query: new URLSearchParams([[SIG_PARAM, '123']]),
     });
     mockVerify.mockResolvedValue(VALID);
 
@@ -62,7 +63,7 @@ describe('parse', () => {
     expect(result).toStrictEqual({
       destination: {
         path: 'destination-value',
-        query: new URLSearchParams([['sig', '123']]),
+        query: new URLSearchParams([[SIG_PARAM, '123']]),
       },
       route: {
         handler: mockHandler,

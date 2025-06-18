@@ -1,3 +1,5 @@
+import { SIG_PARAM } from './constants';
+
 /**
  * Canonicalizes a URL by removing the `sig` query parameter and sorting the
  * remaining parameters.
@@ -12,7 +14,7 @@ export function canonicalize(url: URL): string {
   // clone the searchParams so we don't edit the original URL when deleting
   // `sig`
   const params = new URLSearchParams(url.searchParams);
-  params.delete('sig');
+  params.delete(SIG_PARAM);
   params.sort();
   const queryString = params.toString();
   const fullUrl =
