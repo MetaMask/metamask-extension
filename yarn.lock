@@ -6724,9 +6724,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/seedless-onboarding-controller@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/seedless-onboarding-controller@npm:1.0.0"
+"@metamask/seedless-onboarding-controller@file:./seedless-onboarding-controller.tgz::locator=metamask-crx%40workspace%3A.":
+  version: 2.0.0
+  resolution: "@metamask/seedless-onboarding-controller@file:./seedless-onboarding-controller.tgz#./seedless-onboarding-controller.tgz::hash=7e7635&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/auth-network-utils": "npm:^0.3.0"
     "@metamask/base-controller": "npm:^8.0.1"
@@ -6735,7 +6735,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
   peerDependencies:
     "@metamask/keyring-controller": ^22.0.0
-  checksum: 10/adec82564da18a422f094ee41e636d4656fc962a82e4c9d9ce8d4119ca3bee3e088768b03c30ecc90706038a7e632dd01ae1531732f53049c921e9a3c142c18f
+  checksum: 10/ff3184112d86b9d2d4433313b71ae9459684eabcbae63bfe3f497b48d58fcf0ba3b4b79eb3604853a2f4f5591b106c1f2ec7fb74ddc3e0e940102cc87e7a398d
   languageName: node
   linkType: hard
 
@@ -30524,7 +30524,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/seedless-onboarding-controller": "npm:^1.0.0"
+    "@metamask/seedless-onboarding-controller": ./seedless-onboarding-controller.tgz
     "@metamask/selected-network-controller": "npm:^22.1.0"
     "@metamask/signature-controller": "npm:^30.0.0"
     "@metamask/smart-transactions-controller": "npm:^16.3.1"
