@@ -250,21 +250,20 @@ function getDisplayState(
     return TrustSignalDisplayState.Petname;
   }
 
+  if (trustState === TrustSignalDisplayState.Warning) {
+    return TrustSignalDisplayState.Warning;
+  }
+
   // Priority 4: Recognized name ex. "USDC"
   if (displayName) {
     return TrustSignalDisplayState.Recognized;
   }
 
-  // Priority 3: Verified and Warning trust signals take precedence over display names
   if (trustState === TrustSignalDisplayState.Verified) {
     return TrustSignalDisplayState.Verified;
   }
 
-  if (trustState === TrustSignalDisplayState.Warning) {
-    return TrustSignalDisplayState.Warning;
-  }
-
-  // Priority 5: Other trust signal states (when enabled and present)
+  // Priority 6: Other trust signal states (when enabled and present)
   if (trustState === TrustSignalDisplayState.Unknown) {
     return TrustSignalDisplayState.Unknown;
   }
