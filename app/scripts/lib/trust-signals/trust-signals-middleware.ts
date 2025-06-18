@@ -2,6 +2,7 @@ import { JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
 import { NetworkController } from '@metamask/network-controller';
 import { PhishingController } from '@metamask/phishing-controller';
 import type { AppStateController } from '../../controllers/app-state-controller';
+import { PreferencesController } from '../../controllers/preferences-controller';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
 import { scanAddressAndAddToCache } from './security-alerts-api';
@@ -12,12 +13,14 @@ import {
   hasValidTransactionParams,
   isProdEnabled,
   isEthAccounts,
+  isSecurityAlertsEnabledByUser,
 } from './trust-signals-util';
 
 export function createTrustSignalsMiddleware(
   networkController: NetworkController,
   appStateController: AppStateController,
   phishingController: PhishingController,
+  preferencesController: PreferencesController,
 ) {
   return async (
     req: JsonRpcRequest & { mainFrameOrigin?: string },
@@ -25,7 +28,11 @@ export function createTrustSignalsMiddleware(
     next: () => void,
   ) => {
     try {
-      if (!isSecurityAlertsAPIEnabled() || !isProdEnabled()) {
+      if (
+        !isSecurityAlertsEnabledByUser(preferencesController) ||
+        !isSecurityAlertsAPIEnabled() ||
+        !isProdEnabled()
+      ) {
         return;
       }
 
