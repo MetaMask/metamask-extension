@@ -27,7 +27,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useHdKeyringsWithSnapAccounts } from '../../../../hooks/multi-srp/useHdKeyringsWithSnapAccounts';
-import { getIsRootSeedPhraseBackedUp } from '../../../../ducks/metamask/metamask';
+import { getIsPrimarySeedPhraseBackedUp } from '../../../../ducks/metamask/metamask';
 import { SrpListItem } from './srp-list-item';
 
 export const SrpList = ({
@@ -43,7 +43,7 @@ export const SrpList = ({
   const trackEvent = useContext(MetaMetricsContext);
   const hdKeyringsWithSnapAccounts = useHdKeyringsWithSnapAccounts();
 
-  const isRootSeedPhraseBackedUp = useSelector(getIsRootSeedPhraseBackedUp);
+  const isRootSeedPhraseBackedUp = useSelector(getIsPrimarySeedPhraseBackedUp);
 
   // This selector will return accounts with nonEVM balances as well.
   const accountsWithBalances: Record<string, InternalAccountWithBalance> =

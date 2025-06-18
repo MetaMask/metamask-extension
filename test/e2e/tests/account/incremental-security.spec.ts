@@ -97,7 +97,7 @@ describe('Incremental Security', function (this: Suite) {
 
         // complete backup
         await onboardingCompletePage.check_pageIsLoaded_backup();
-        await onboardingCompletePage.check_keepSRPSafeMessageIsDisplayed();
+        await onboardingCompletePage.check_keepSrpSafeMessageIsDisplayed();
         await onboardingCompletePage.completeBackup();
 
         // check the balance is correct after revealing and confirming the SRP

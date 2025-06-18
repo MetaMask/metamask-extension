@@ -507,14 +507,14 @@ export function getSeedPhraseBackedUp(state) {
 }
 
 /**
- * Check whether the root seed phrase which was created during onboarding, is backed up.
+ * Check whether the first (primary) seed phrase which was created during onboarding, is backed up.
  *
- * Returns true if the root seed phrase is backed up when the user creates a new wallet.
+ * Returns true if the first (primary) seed phrase is backed up when the user creates a new wallet.
  *
  * @param {object} state - the redux state object
- * @returns {boolean} true if the root seed phrase is backed up when the user creates a new wallet, or the user has imported/restored a wallet.
+ * @returns {boolean} true if the first (primary) seed phrase is backed up when the user creates a new wallet, or the user has imported/restored a wallet.
  */
-export function getIsRootSeedPhraseBackedUp(state) {
+export function getIsPrimarySeedPhraseBackedUp(state) {
   // when user imports/restores a seed phrase, we can assume that user has already backed up the seed phrase.
   if (state.metamask.firstTimeFlowType !== FirstTimeFlowType.create) {
     return true;

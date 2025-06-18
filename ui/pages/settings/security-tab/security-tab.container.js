@@ -28,7 +28,7 @@ import {
 } from '../../../selectors/selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
-import { getIsRootSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
@@ -73,7 +73,7 @@ const mapStateToProps = (state) => {
     useTransactionSimulations: metamask.useTransactionSimulations,
     metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
     hdEntropyIndex: getHDEntropyIndex(state),
-    isSeedPhraseBackedUp: getIsRootSeedPhraseBackedUp(state),
+    isSeedPhraseBackedUp: getIsPrimarySeedPhraseBackedUp(state),
   };
 };
 

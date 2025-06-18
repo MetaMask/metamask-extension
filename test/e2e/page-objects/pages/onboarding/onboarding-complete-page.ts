@@ -24,7 +24,7 @@ class OnboardingCompletePage {
     tag: 'h2',
   };
 
-  private readonly keepSRPSafeMessage = {
+  private readonly keepSrpSafeMessage = {
     text: 'Keep your Secret Recovery Phrase safe!',
     tag: 'h2',
   };
@@ -60,11 +60,11 @@ class OnboardingCompletePage {
   async check_pageIsLoaded_backup(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.keepSRPSafeMessage,
+        this.keepSrpSafeMessage,
         this.onboardingCompleteDoneButton,
       ]);
     } catch (e) {
-      console.log(
+      console.error(
         'Timeout while waiting for srp backup complete page to be loaded',
         e,
       );
@@ -104,8 +104,8 @@ class OnboardingCompletePage {
     await this.driver.waitForSelector(this.walletReadyMessage);
   }
 
-  async check_keepSRPSafeMessageIsDisplayed(): Promise<void> {
-    await this.driver.waitForSelector(this.keepSRPSafeMessage);
+  async check_keepSrpSafeMessageIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.keepSrpSafeMessage);
   }
 
   async check_remindMeLaterButtonIsDisplayed(): Promise<void> {
