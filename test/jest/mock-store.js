@@ -418,6 +418,15 @@ export const createSwapsMockStore = () => {
             mobileActive: false,
             smartTransactions: {},
           },
+          linea: {
+            extensionActive: true,
+            mobileActive: false,
+            smartTransactions: {
+              expectedDeadline: 45,
+              maxDeadline: 150,
+              extensionReturnTxHashAsap: false,
+            },
+          },
           smartTransactions: {
             mobileActive: true,
             extensionActive: true,

@@ -35,6 +35,7 @@ export const getNetworkNameByChainId = (chainId: string): string => {
     case CHAIN_IDS.ZKSYNC_ERA:
       return NetworkName.ZkSyncEra;
     case CHAIN_IDS.LINEA_MAINNET:
+    case CHAIN_IDS.LINEA_SEPOLIA:
       return NetworkName.Linea;
     case CHAIN_IDS.BASE:
       return NetworkName.Base;
