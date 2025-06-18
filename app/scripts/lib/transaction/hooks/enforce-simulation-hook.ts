@@ -42,12 +42,19 @@ export class EnforceSimulationHook {
     const {
       containerTypes,
       delegationAddress,
+      id: transactionId,
       origin,
       simulationData,
       txParamsOriginal,
     } = transactionMeta;
 
-    if (!process.env.ENABLE_ENFORCED_SIMULATIONS) {
+    const appState = this.#messenger.call('AppStateController:getState');
+
+    const isUserEnabled =
+      appState?.enableEnforcedSimulationsForTransactions[transactionId] ??
+      appState?.enableEnforcedSimulations;
+
+    if (!process.env.ENABLE_ENFORCED_SIMULATIONS || !isUserEnabled) {
       log('Skipping as enforced simulations are disabled');
       return {};
     }
