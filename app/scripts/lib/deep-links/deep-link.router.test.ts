@@ -122,7 +122,7 @@ describe('DeepLinkRouter', () => {
         const tabId = 1;
         const url = `https://example.com/external-route?query=param`;
         parseMock.mockResolvedValue({
-          signed,
+          signature: signed ? 'valid' : 'invalid',
           destination: {},
         } as ParsedDeepLink);
         await onBeforeRequest?.({
@@ -147,7 +147,7 @@ describe('DeepLinkRouter', () => {
             path: 'internal-route',
             query: new URLSearchParams([['one', 'two']]),
           },
-          signed: true,
+          signature: 'valid',
         } as ParsedDeepLink);
         await onBeforeRequest?.({
           tabId,
@@ -166,7 +166,7 @@ describe('DeepLinkRouter', () => {
           preferences: { skipDeepLinkInterstitial: true },
         } as unknown as ReturnType<MetaMaskController['getState']>);
         parseMock.mockResolvedValue({
-          signed: false,
+          signature: 'invalid',
           destination: {},
         } as ParsedDeepLink);
         await onBeforeRequest?.({
@@ -227,7 +227,7 @@ describe('DeepLinkRouter', () => {
       const url = `https://example.com/test-route`;
       parseMock.mockResolvedValue({
         destination: {},
-        signed: false,
+        signature: 'invalid',
       } as ParsedDeepLink);
 
       const mockErrorCallback = jest.fn();
