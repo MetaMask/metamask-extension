@@ -28,6 +28,7 @@ import {
 } from '../../component-library';
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header';
+import { TextFieldSearch } from '../../component-library/text-field-search/text-field-search';
 
 import {
   AlignItems,
@@ -35,6 +36,7 @@ import {
   FlexDirection,
   TextColor,
   TextVariant,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -155,6 +157,7 @@ export const MultichainAccountListMenu = ({
   const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
     getDefaultHomeActiveTabName,
   );
+  const [searchPattern, setSearchPattern] = useState<string>('');
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
@@ -614,6 +617,23 @@ export const MultichainAccountListMenu = ({
         ) : null}
         {actionMode === ACTION_MODES.LIST ? (
           <>
+            {/* Search box */}
+            <Box
+              paddingLeft={4}
+              paddingRight={4}
+              paddingBottom={4}
+              paddingTop={0}
+            >
+              <TextFieldSearch
+                width={BlockSize.Full}
+                placeholder={t('searchAccounts')}
+                value={searchPattern}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setSearchPattern(e.target.value)
+                }
+                clearButtonOnClick={() => setSearchPattern('')}
+              />
+            </Box>
             {/* Account list block */}
             <Box className="multichain-account-menu-popover__list">
               <MultichainAccountsTree
@@ -623,6 +643,7 @@ export const MultichainAccountListMenu = ({
                 currentTabOrigin={currentTabOrigin}
                 privacyMode={privacyMode}
                 accountListItemProps={accountListItemProps}
+                searchPattern={searchPattern}
                 selectedAccount={selectedAccount}
                 onClose={onClose}
                 onAccountListItemItemClicked={onAccountListItemItemClicked}

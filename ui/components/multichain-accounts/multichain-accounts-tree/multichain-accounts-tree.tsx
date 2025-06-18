@@ -15,6 +15,7 @@ import {
 } from '../../multichain/account-list-item';
 import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/multichain-accounts-selectors.types';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
+import { matchesSearchPattern } from './multichain-accounts-tree.utils';
 
 export type MultichainAccountsTreeProps = {
   wallets: ConsolidatedWallets;
@@ -23,6 +24,7 @@ export type MultichainAccountsTreeProps = {
   currentTabOrigin?: string;
   privacyMode?: boolean;
   accountListItemProps?: Record<string, unknown>;
+  searchPattern?: string;
   selectedAccount: InternalAccount;
   onClose: () => void;
   onAccountListItemItemClicked: (account: MergedInternalAccount) => void;
@@ -35,6 +37,7 @@ export const MultichainAccountsTree = ({
   currentTabOrigin,
   privacyMode,
   accountListItemProps,
+  searchPattern,
   selectedAccount,
   onClose,
   onAccountListItemItemClicked,
@@ -74,9 +77,13 @@ export const MultichainAccountsTree = ({
         const groupsItems = Object.entries(walletData.groups || {}).flatMap(
           ([groupId, groupData]) => {
             // Filter accounts by allowed types
-            const filteredAccounts = groupData.accounts.filter((account) =>
-              allowedAccountTypes.includes(account.type),
-            );
+            const filteredAccounts = groupData.accounts.filter((account) => {
+              const matchesSearch = searchPattern
+                ? matchesSearchPattern(searchPattern, account)
+                : true;
+              const isAllowedType = allowedAccountTypes.includes(account.type);
+              return matchesSearch && isAllowedType;
+            });
 
             if (filteredAccounts.length === 0) {
               return [];
@@ -124,20 +131,26 @@ export const MultichainAccountsTree = ({
           },
         );
 
+        // Skip adding wallet if no groupsItems exist
+        if (groupsItems.length === 0) {
+          return allWallets;
+        }
+
         return [...allWallets, walletHeader, ...groupsItems];
       },
       [] as React.ReactNode[],
     );
   }, [
     wallets,
+    searchPattern,
     allowedAccountTypes,
     connectedSites,
+    onAccountListItemItemClicked,
+    selectedAccount.id,
+    onClose,
     currentTabOrigin,
     privacyMode,
     accountListItemProps,
-    selectedAccount,
-    onClose,
-    onAccountListItemItemClicked,
   ]);
 
   return <>{accountsTree}</>;
