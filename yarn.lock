@@ -6387,9 +6387,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:@metamask-previews/notification-services-controller@10.0.0-preview-5ff65365":
-  version: 10.0.0-preview-5ff65365
-  resolution: "@metamask-previews/notification-services-controller@npm:10.0.0-preview-5ff65365"
+"@metamask/notification-services-controller@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "@metamask/notification-services-controller@npm:11.0.0"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
     "@metamask/base-controller": "npm:^8.0.1"
@@ -6401,8 +6401,8 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/keyring-controller": ^22.0.0
-    "@metamask/profile-sync-controller": ^17.0.0
-  checksum: 10/c3549f6bddd8cc085ddbde0b534eabfff5d09dbf40d447fd5d9cc3d316e55243f21cb9ded0e2e84fa461c69fc2e3969c7bb3da00640871df5016e2691329be93
+    "@metamask/profile-sync-controller": ^18.0.0
+  checksum: 10/92ed97a1b3c2d21f37c720d1152d5017dcd49f713e5df07bbcaa9b2aad28093bf06336f9cdffef5b97f80456351a37e070dcf103128c44d504cb2461174d1dbb
   languageName: node
   linkType: hard
 
@@ -30374,7 +30374,7 @@ __metadata:
     "@metamask/multichain-transactions-controller": "npm:^0.9.0"
     "@metamask/name-controller": "npm:^8.0.3"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A23.6.0#~/.yarn/patches/@metamask-network-controller-npm-23.6.0-9e4332461a.patch"
-    "@metamask/notification-services-controller": "npm:@metamask-previews/notification-services-controller@10.0.0-preview-5ff65365"
+    "@metamask/notification-services-controller": "npm:^11.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^11.0.6"
