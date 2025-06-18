@@ -246,7 +246,7 @@ export async function switchChain(
 
     await setActiveNetwork(networkClientId);
     setTokenNetworkFilter(chainId);
-    setEnabledNetworks(chainId);
+    setEnabledNetworks(chainId, networkClientId);
     response.result = null;
     return end();
   } catch (error) {

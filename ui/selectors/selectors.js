@@ -141,6 +141,7 @@ import {
   getMultichainNetworkProviders,
   getMultichainNetwork,
 } from './multichain';
+import { getSelectedMultichainNetworkChainId } from './multichain/networks';
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
 
@@ -1427,9 +1428,14 @@ export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const enabledNetworks = getEnabledNetworks(state);
   const tokenNetworkFilter = getTokenNetworkFilter(state);
 
+  const currentMultichainChainId = getSelectedMultichainNetworkChainId(state);
+  const { namespace } = parseCaipChainId(currentMultichainChainId);
+
   const networks = isGlobalNetworkSelectorRemoved
-    ? enabledNetworks
+    ? enabledNetworks[namespace]
     : tokenNetworkFilter;
+
+  console.log('networks', networks);
 
   if (
     Object.keys(networks).length === 1 &&
@@ -2723,9 +2729,15 @@ export const getChainIdsToPoll = createDeepEqualSelector(
 export const getEnabledChainIds = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getEnabledNetworks,
-  (networkConfigurations, enabledNetworks) => {
+  getSelectedMultichainNetworkChainId,
+  (networkConfigurations, enabledNetworks, currentMultichainChainId) => {
+    const { namespace } = parseCaipChainId(currentMultichainChainId);
+
+    // Get enabled networks for the current namespace
+    const networksForNamespace = enabledNetworks[namespace] || {};
+
     return Object.keys(networkConfigurations).filter(
-      (chainId) => enabledNetworks[chainId],
+      (chainId) => networksForNamespace[chainId],
     );
   },
 );

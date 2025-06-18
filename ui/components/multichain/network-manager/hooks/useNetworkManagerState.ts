@@ -53,6 +53,7 @@ export const useNetworkManagerState = ({
 
   // Redux selectors
   const { tokenNetworkFilter } = useSelector(getPreferences);
+
   const showTestnets = useSelector(getShowTestNetworks);
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const isUnlocked = useSelector(getIsUnlocked);

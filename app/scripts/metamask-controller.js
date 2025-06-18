@@ -6840,8 +6840,8 @@ export default class MetamaskController extends EventEmitter {
             });
           }
         },
-        setEnabledNetworks: (chainIds) => {
-          this.networkOrderController.setEnabledNetworks(chainIds);
+        setEnabledNetworks: (chainIds, networkId) => {
+          this.networkOrderController.setEnabledNetworks(chainIds, networkId);
         },
         getCurrentChainIdForDomain: (domain) => {
           const networkClientId =
@@ -8008,9 +8008,9 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  setEnabledNetworks = (chainIds) => {
+  setEnabledNetworks = (chainIds, networkId) => {
     try {
-      this.networkOrderController.setEnabledNetworks(chainIds);
+      this.networkOrderController.setEnabledNetworks(chainIds, networkId);
     } catch (err) {
       log.error(err.message);
       throw err;

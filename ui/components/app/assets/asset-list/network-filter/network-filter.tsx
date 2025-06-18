@@ -43,6 +43,7 @@ import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormat
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import InfoTooltip from '../../../../ui/info-tooltip';
 import { isGlobalNetworkSelectorRemoved } from '../../../../../selectors/selectors';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../../../selectors/multichain';
 
 type SortControlProps = {
   handleClose: () => void;
@@ -63,6 +64,9 @@ const NetworkFilter = ({
   const currentNetwork = useSelector(getCurrentNetwork);
   const selectedAccount = useSelector(getSelectedAccount);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const multichainNetworks = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const enabledNetworks = useSelector(getEnabledNetworks);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
@@ -98,12 +102,16 @@ const NetworkFilter = ({
       formattedTokensForAllNetworks,
     );
 
+  console.log('FOO');
+  console.log('multichainNetworks', multichainNetworks);
+
   const handleFilter = (chainFilters: Record<string, boolean>) => {
     if (handleFilterNetwork) {
       handleFilterNetwork(chainFilters);
     } else {
+      const isEvmChain = isCaip25ChainId(chainId);
       isGlobalNetworkSelectorRemoved
-        ? dispatch(setEnabledNetworks(Object.keys(chainFilters)))
+        ? dispatch(setEnabledNetworks(Object.keys(chainFilters), chainId))
         : dispatch(setTokenNetworkFilter(chainFilters));
     }
 

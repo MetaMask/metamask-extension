@@ -1,10 +1,11 @@
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import { Hex, parseCaipChainId } from '@metamask/utils';
 import { useMemo } from 'react';
 import { getMultichainSelectedAccountCachedBalance } from '../../../../selectors/multichain';
 import {
   getEnabledNetworks,
   getSelectedInternalAccount,
+  getSelectedMultichainNetworkChainId,
   isGlobalNetworkSelectorRemoved,
 } from '../../../../selectors';
 import {
@@ -30,7 +31,10 @@ const useMultiChainAssets = () => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const currentCurrency = useSelector(getCurrentCurrency);
   const enabledNetworks = useSelector(getEnabledNetworks);
-
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
+  );
+  const { namespace } = parseCaipChainId(currentMultichainChainId);
   const { networkFilter } = useNetworkFilter();
 
   const multichainAssets = useSelector((state) =>
@@ -41,11 +45,13 @@ const useMultiChainAssets = () => {
     return filterAssets(multichainAssets, [
       {
         key: 'chainId',
-        opts: isGlobalNetworkSelectorRemoved ? enabledNetworks : networkFilter,
+        opts: isGlobalNetworkSelectorRemoved
+          ? enabledNetworks[namespace]
+          : networkFilter,
         filterCallback: 'inclusive',
       },
     ]);
-  }, [multichainAssets, enabledNetworks, networkFilter]);
+  }, [multichainAssets, enabledNetworks, networkFilter, namespace]);
 
   // the following condition is needed to satisfy e2e check-balance.spec.ts
   // this is because the new multichain data is not being mocked within the withSolanaAccountSnap test fixture

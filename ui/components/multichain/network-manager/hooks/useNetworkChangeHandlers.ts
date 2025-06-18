@@ -1,5 +1,9 @@
 import { useCallback, useState } from 'react';
-import { isHexString, type CaipChainId } from '@metamask/utils';
+import {
+  isHexString,
+  parseCaipChainId,
+  type CaipChainId,
+} from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -64,6 +68,8 @@ export const useNetworkChangeHandlers = () => {
 
   const handleEvmNetworkChange = useCallback(
     (chainId: CaipChainId) => {
+      console.log('handleEvmNetworkChange', chainId);
+      const { namespace } = parseCaipChainId(chainId);
       const hexChainId = convertCaipToHexChainId(chainId);
       const { defaultRpcEndpoint } = getRpcDataByChainId(chainId, evmNetworks);
       const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
@@ -71,27 +77,36 @@ export const useNetworkChangeHandlers = () => {
       dispatch(setActiveNetwork(finalNetworkClientId));
 
       const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
+      console.log('enabledNetworks', enabledNetworks);
+      console.log('namespace', namespace);
 
-      const enabledNetworkKeys = Object.keys(enabledNetworks)
-        // filter out non evm chains
-        .filter((key) => isHexString(key));
+      const enabledNetworkKeys = Object.keys(
+        enabledNetworks?.[namespace] ?? {},
+      );
+
+      console.log('enabledNetworkKeys', enabledNetworkKeys);
 
       if (!isPopularNetwork) {
         // if custom network is enabled, select the new network and disable the custom network
-        dispatch(setEnabledNetworks([hexChainId]));
+        dispatch(setEnabledNetworks([hexChainId], namespace));
       } else if (enabledNetworkKeys.includes(hexChainId)) {
         // deselect if selected
         const filteredEnabledNetworks = enabledNetworkKeys.filter(
           (key) => key !== hexChainId,
         );
-        dispatch(setEnabledNetworks(filteredEnabledNetworks as CaipChainId[]));
+        dispatch(
+          setEnabledNetworks(
+            filteredEnabledNetworks as CaipChainId[],
+            namespace,
+          ),
+        );
       } else {
         // multiselect default networks
         dispatch(
-          setEnabledNetworks([
-            ...enabledNetworkKeys,
-            hexChainId,
-          ] as CaipChainId[]),
+          setEnabledNetworks(
+            [...enabledNetworkKeys, hexChainId] as CaipChainId[],
+            namespace,
+          ),
         );
       }
 
@@ -146,14 +161,17 @@ export const useNetworkChangeHandlers = () => {
 
   const handleNonEvmNetworkChange = useCallback(
     async (chainId: CaipChainId) => {
-      const enabledNetworkKeys = Object.keys(enabledNetworks);
+      const { namespace } = parseCaipChainId(chainId);
+      const enabledNetworkKeys = Object.keys(
+        enabledNetworks?.[namespace] ?? {},
+      );
 
       if (enabledNetworkKeys.includes(chainId)) {
-        dispatch(setEnabledNetworks([]));
+        dispatch(setEnabledNetworks([], namespace));
       } else {
         if (hasAnyAccountsInNetwork(chainId)) {
           dispatch(setActiveNetwork(chainId));
-          dispatch(setEnabledNetworks([chainId]));
+          dispatch(setEnabledNetworks([chainId], namespace));
           return;
         }
 
@@ -162,14 +180,17 @@ export const useNetworkChangeHandlers = () => {
             (key: string) => key !== chainId,
           );
           dispatch(
-            setEnabledNetworks(filteredEnabledNetworks as CaipChainId[]),
+            setEnabledNetworks(
+              filteredEnabledNetworks as CaipChainId[],
+              namespace,
+            ),
           );
         } else {
           dispatch(
-            setEnabledNetworks([
-              ...enabledNetworkKeys,
-              chainId,
-            ] as CaipChainId[]),
+            setEnabledNetworks(
+              [...enabledNetworkKeys, chainId] as CaipChainId[],
+              namespace,
+            ),
           );
         }
         setActionMode(ACTION_MODE.ADD_NON_EVM_ACCOUNT);
@@ -193,14 +214,16 @@ export const useNetworkChangeHandlers = () => {
 
   const handleNetworkChange = useCallback(
     async (chainId: CaipChainId) => {
+      console.log('handleNetworkChange', chainId);
+      const { namespace } = parseCaipChainId(chainId);
       const currentChain =
         getMultichainNetworkConfigurationOrThrow(currentChainId);
       const chain = getMultichainNetworkConfigurationOrThrow(chainId);
 
       if (chain.isEvm) {
-        handleEvmNetworkChange(chainId);
+        handleEvmNetworkChange(chainId, namespace);
       } else {
-        await handleNonEvmNetworkChange(chainId);
+        await handleNonEvmNetworkChange(chainId, namespace);
       }
 
       const chainIdToTrack = chain.isEvm

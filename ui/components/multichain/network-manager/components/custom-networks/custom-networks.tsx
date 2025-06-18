@@ -1,6 +1,7 @@
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type Hex } from '@metamask/utils';
 import React, { useCallback, useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { TEST_CHAINS } from '../../../../../../shared/constants/network';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import {
@@ -30,6 +31,7 @@ import { NetworkListItem } from '../../../network-list-item';
 import { useNetworkChangeHandlers } from '../../hooks/useNetworkChangeHandlers';
 import { useNetworkItemCallbacks } from '../../hooks/useNetworkItemCallbacks';
 import { useNetworkManagerState } from '../../hooks/useNetworkManagerState';
+import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 
 export const CustomNetworks = React.memo(() => {
   const t = useI18nContext();
@@ -46,6 +48,8 @@ export const CustomNetworks = React.memo(() => {
   const { getItemCallbacks, hasMultiRpcOptions, isNetworkEnabled } =
     useNetworkItemCallbacks();
   const { handleNetworkChange } = useNetworkChangeHandlers();
+
+  const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
 
   useEffect(() => {
     endTrace({ name: TraceName.NetworkList });
@@ -110,35 +114,59 @@ export const CustomNetworks = React.memo(() => {
     ],
   );
 
-  // Memoize the rendered network lists
-  const renderedCustomNetworks = useMemo(
-    () =>
-      orderedNetworks?.length > 0 ? (
-        <>
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textAlternative}
-            paddingLeft={4}
-            paddingRight={4}
-            paddingTop={4}
-          >
-            {t('customNetworks')}
-          </Text>
-          {orderedNetworks.map((network) =>
-            generateMultichainNetworkListItem(network),
-          )}
-        </>
-      ) : null,
-    [orderedNetworks, generateMultichainNetworkListItem, t],
-  );
+  // Memoize the rendered network lists with filtering
+  const renderedCustomNetworks = useMemo(() => {
+    console.log('orderedNetworks', orderedNetworks);
+    const filteredNetworks = orderedNetworks.filter((network) => {
+      // If EVM network is selected, only show EVM networks
+      if (isEvmNetworkSelected) {
+        return network.isEvm;
+      }
+      // If non-EVM network is selected, only show non-EVM networks
+      return !network.isEvm;
+    });
 
-  const renderedTestNetworks = useMemo(
-    () =>
-      orderedTestNetworks.map((network) =>
-        generateMultichainNetworkListItem(network),
-      ),
-    [orderedTestNetworks, generateMultichainNetworkListItem],
-  );
+    return filteredNetworks.length > 0 ? (
+      <>
+        <Text
+          variant={TextVariant.bodyMdMedium}
+          color={TextColor.textAlternative}
+          paddingLeft={4}
+          paddingRight={4}
+          paddingTop={4}
+        >
+          {t('customNetworks')}
+        </Text>
+        {filteredNetworks.map((network) =>
+          generateMultichainNetworkListItem(network),
+        )}
+      </>
+    ) : null;
+  }, [
+    orderedNetworks,
+    isEvmNetworkSelected,
+    generateMultichainNetworkListItem,
+    t,
+  ]);
+
+  const renderedTestNetworks = useMemo(() => {
+    const filteredTestNetworks = orderedTestNetworks.filter((network) => {
+      // If EVM network is selected, only show EVM networks
+      if (isEvmNetworkSelected) {
+        return network.isEvm;
+      }
+      // If non-EVM network is selected, only show non-EVM networks
+      return !network.isEvm;
+    });
+
+    return filteredTestNetworks.map((network) =>
+      generateMultichainNetworkListItem(network),
+    );
+  }, [
+    orderedTestNetworks,
+    isEvmNetworkSelected,
+    generateMultichainNetworkListItem,
+  ]);
 
   // Memoize the padding value to prevent unnecessary re-renders
   const buttonContainerPaddingTop = useMemo(
@@ -155,16 +183,20 @@ export const CustomNetworks = React.memo(() => {
     <>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
         {renderedCustomNetworks}
-        <Text
-          variant={TextVariant.bodyMdMedium}
-          color={TextColor.textAlternative}
-          paddingLeft={4}
-          paddingRight={4}
-          paddingTop={4}
-        >
-          {t('testnets')}
-        </Text>
-        {renderedTestNetworks}
+        {renderedTestNetworks.length > 0 && (
+          <>
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textAlternative}
+              paddingLeft={4}
+              paddingRight={4}
+              paddingTop={4}
+            >
+              {t('testnets')}
+            </Text>
+            {renderedTestNetworks}
+          </>
+        )}
       </Box>
       <Box
         display={Display.Flex}

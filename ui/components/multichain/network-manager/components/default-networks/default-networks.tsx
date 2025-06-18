@@ -1,5 +1,6 @@
-import { CaipChainId } from '@metamask/utils';
+import { CaipChainId, parseCaipChainId } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_RPCS,
@@ -39,6 +40,8 @@ import { useNetworkChangeHandlers } from '../../hooks/useNetworkChangeHandlers';
 import { useNetworkItemCallbacks } from '../../hooks/useNetworkItemCallbacks';
 import { useNetworkManagerState } from '../../hooks/useNetworkManagerState';
 import { AdditionalNetworksInfo } from '../additional-networks-info';
+import { getMultichainIsEvm } from '../../../../../selectors/multichain';
+import { getSelectedMultichainNetworkChainId } from '../../../../../selectors/multichain/networks';
 
 const DefaultNetworks = memo(() => {
   // Use the shared state hook
@@ -53,12 +56,16 @@ const DefaultNetworks = memo(() => {
   } = useNetworkManagerState({ skipNetworkFiltering: true });
   // Use the shared callbacks hook
   const { getItemCallbacks, hasMultiRpcOptions } = useNetworkItemCallbacks();
+  const currentCaipChainId = useSelector(getSelectedMultichainNetworkChainId);
+  const { namespace } = parseCaipChainId(currentCaipChainId);
 
   // Use the shared network change handlers hook
   const { handleNetworkChange } = useNetworkChangeHandlers();
 
   // Use the additional network handlers hook
   const { handleAdditionalNetworkClick } = useAdditionalNetworkHandlers();
+
+  const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
 
   // Memoize sorted networks to avoid expensive sorting on every render
   const orderedNetworks = useMemo(
@@ -87,12 +94,12 @@ const DefaultNetworks = memo(() => {
       .map(
         (network) => convertCaipToHexChainId(network.chainId) as CaipChainId,
       );
-    dispatch(setEnabledNetworks(evmChainIds));
-  }, [dispatch, orderedNetworks]);
+    dispatch(setEnabledNetworks(evmChainIds, namespace));
+  }, [dispatch, namespace, orderedNetworks]);
 
   const deselectAllDefaultNetworks = useCallback(() => {
-    dispatch(setEnabledNetworks([] as CaipChainId[]));
-  }, [dispatch]);
+    dispatch(setEnabledNetworks([], namespace));
+  }, [dispatch, namespace]);
 
   // Memoize the network change handler to avoid recreation
   const handleNetworkChangeCallback = useCallback(
@@ -104,49 +111,62 @@ const DefaultNetworks = memo(() => {
 
   // Memoize the network list items to avoid recreation on every render
   const networkListItems = useMemo(() => {
-    return orderedNetworks.map((network) => {
-      const networkChainId = network.chainId; // eip155:59144
-      // Convert CAIP format to hex format for comparison
-      const hexChainId = network.isEvm
-        ? convertCaipToHexChainId(networkChainId)
-        : networkChainId;
+    return orderedNetworks
+      .filter((network) => {
+        // If EVM network is selected, only show EVM networks
+        if (isEvmNetworkSelected) {
+          return network.isEvm;
+        }
+        // If non-EVM network is selected, only show non-EVM networks
+        return !network.isEvm;
+      })
+      .map((network) => {
+        const networkChainId = network.chainId; // eip155:59144
+        // Convert CAIP format to hex format for comparison
+        const hexChainId = network.isEvm
+          ? convertCaipToHexChainId(networkChainId)
+          : networkChainId;
 
-      if (!isNetworkInDefaultNetworkTab(network)) {
-        return null;
-      }
+        if (!isNetworkInDefaultNetworkTab(network)) {
+          return null;
+        }
 
-      const { onDelete, onEdit, onDiscoverClick, onRpcConfigEdit } =
-        getItemCallbacks(network);
-      const iconSrc = getNetworkIcon(network);
-      const isEnabled = Object.keys(enabledNetworks).includes(hexChainId);
+        const { onDelete, onEdit, onDiscoverClick, onRpcConfigEdit } =
+          getItemCallbacks(network);
+        const iconSrc = getNetworkIcon(network);
+        const isEnabled = Object.keys(enabledNetworks[namespace]).includes(
+          hexChainId,
+        );
 
-      return (
-        <NetworkListItem
-          startAccessory={<Checkbox label="" isChecked={isEnabled} />}
-          key={network.chainId}
-          chainId={network.chainId}
-          name={network.name}
-          iconSrc={iconSrc}
-          iconSize={AvatarNetworkSize.Md}
-          rpcEndpoint={
-            hasMultiRpcOptions(network)
-              ? getRpcDataByChainId(network.chainId, evmNetworks)
-                  .defaultRpcEndpoint
-              : undefined
-          }
-          onClick={() => handleNetworkChangeCallback(network.chainId)}
-          onDeleteClick={onDelete}
-          onEditClick={onEdit}
-          onDiscoverClick={onDiscoverClick}
-          onRpcEndpointClick={onRpcConfigEdit}
-        />
-      );
-    });
+        return (
+          <NetworkListItem
+            startAccessory={<Checkbox label="" isChecked={isEnabled} />}
+            key={network.chainId}
+            chainId={network.chainId}
+            name={network.name}
+            iconSrc={iconSrc}
+            iconSize={AvatarNetworkSize.Md}
+            rpcEndpoint={
+              hasMultiRpcOptions(network)
+                ? getRpcDataByChainId(network.chainId, evmNetworks)
+                    .defaultRpcEndpoint
+                : undefined
+            }
+            onClick={() => handleNetworkChangeCallback(network.chainId)}
+            onDeleteClick={onDelete}
+            onEditClick={onEdit}
+            onDiscoverClick={onDiscoverClick}
+            onRpcEndpointClick={onRpcConfigEdit}
+          />
+        );
+      });
   }, [
     orderedNetworks,
+    isEvmNetworkSelected,
     isNetworkInDefaultNetworkTab,
     getItemCallbacks,
     enabledNetworks,
+    namespace,
     hasMultiRpcOptions,
     evmNetworks,
     handleNetworkChangeCallback,
@@ -226,8 +246,12 @@ const DefaultNetworks = memo(() => {
           )}
         </Box>
         {networkListItems}
-        <AdditionalNetworksInfo />
-        {additionalNetworkListItems}
+        {isEvmNetworkSelected && (
+          <>
+            <AdditionalNetworksInfo />
+            {additionalNetworkListItems}
+          </>
+        )}
       </Box>
     </>
   );

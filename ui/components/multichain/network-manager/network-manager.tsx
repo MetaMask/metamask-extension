@@ -46,7 +46,7 @@ const NetworkManagerRouter = () => {
     history.push('/add');
   };
 
-  const [, evmNetworks] = useSelector(
+  const [nonEvmNetworks, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
   const { chainId: editingChainId, editCompleted } =
@@ -124,6 +124,10 @@ const NetworkManagerRouter = () => {
   const handleAddOnComplete = useCallback(() => {
     history.push('/add');
   }, [history]);
+
+  console.log('nonEvmNetworks', nonEvmNetworks);
+  console.log('evmNetworks', evmNetworks);
+  console.log('FOO');
 
   return (
     <Switch>
