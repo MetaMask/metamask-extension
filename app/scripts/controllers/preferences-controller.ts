@@ -106,6 +106,7 @@ export type Preferences = {
   };
   tokenNetworkFilter: Record<string, boolean>;
   dismissSmartAccountSuggestionEnabled: boolean;
+  smartAccountOptIn: boolean;
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
@@ -194,6 +195,7 @@ export const getDefaultPreferencesControllerState =
       showMultiRpcModal: false,
       privacyMode: false,
       dismissSmartAccountSuggestionEnabled: false,
+      smartAccountOptIn: true,
       tokenSortConfig: {
         key: 'tokenFiatAmount',
         order: 'dsc',
