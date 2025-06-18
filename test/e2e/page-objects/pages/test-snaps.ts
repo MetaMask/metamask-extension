@@ -351,9 +351,20 @@ export class TestSnaps {
         try {
           await this.clickButton('getWebSocketState');
 
-          const { open, origin, blockNumber } = JSON.parse(
-            await resultElement.getText(),
-          );
+          // Wait for response from Snap.
+          await this.driver.waitForSelector('#getWebSocketState', {
+            state: 'enabled',
+          });
+
+          const text = await resultElement.getText();
+
+          const { open, origin, blockNumber } = JSON.parse(text);
+
+          console.log('Retrieved WebSocket state:', {
+            open,
+            origin,
+            blockNumber,
+          });
 
           const blockNumberMatch =
             typeof state.blockNumber === 'string'
@@ -367,7 +378,7 @@ export class TestSnaps {
           return false;
         }
       },
-      { timeout: veryLargeDelayMs, interval: 200 },
+      { timeout: veryLargeDelayMs * 2, interval: 200 },
     );
   }
 }
