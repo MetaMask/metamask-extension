@@ -8,7 +8,7 @@ import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install
 import { mockLifecycleHooksSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 
 describe('Test Snap Lifecycle Hooks', function () {
-  it('can run lifecycle hook on connect', async function () {
+  it('runs the `onInstall` lifecycle hook when the Snap is installed', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
