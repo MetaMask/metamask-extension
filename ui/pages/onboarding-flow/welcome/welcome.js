@@ -20,7 +20,6 @@ import {
 } from '../../../../shared/constants/metametrics';
 import WelcomeLogin from './welcome-login';
 import WelcomeBanner from './welcome-banner';
-import { LOGIN_OPTION, LOGIN_TYPE } from './types';
 
 const WelcomePageState = {
   Banner: 'Banner',
@@ -90,28 +89,13 @@ export default function OnboardingWelcome({
     history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
   }, [dispatch, history, trackEvent]);
 
-  const handleLogin = useCallback(
-    (loginType, loginOption) => {
-      if (loginType === LOGIN_TYPE.SRP) {
-        if (loginOption === LOGIN_OPTION.NEW) {
-          onCreateClick();
-        } else {
-          onImportClick();
-        }
-      } else {
-        setIsLoggingIn(true);
-      }
-    },
-    [onCreateClick, onImportClick],
-  );
-
   return (
     <>
       {pageState === WelcomePageState.Banner && (
         <WelcomeBanner onAccept={() => setPageState(WelcomePageState.Login)} />
       )}
       {pageState === WelcomePageState.Login && (
-        <WelcomeLogin onLogin={handleLogin} />
+        <WelcomeLogin onCreate={onCreateClick} onImport={onImportClick} />
       )}
       {isLoggingIn && <LoadingScreen />}
     </>
