@@ -106,7 +106,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
               profile_id: profileId,
               feature_name: 'Backup And Sync',
               action: 'Contacts Sync Erroneous Situation',
-              situation_message: situationMessage,
+              additional_description: situationMessage,
             },
           });
         },
