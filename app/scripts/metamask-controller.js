@@ -3350,7 +3350,20 @@ export default class MetamaskController extends EventEmitter {
   getState() {
     const { vault } = this.keyringController.state;
     const isInitialized = Boolean(vault);
-    const flatState = this.memStore.getFlatState();
+    // Seed with some gator permissions for testing
+    const flatState = {
+      ...this.memStore.getFlatState(),
+      gator7715Permissions: [
+        {
+          origin: 'https://gator.com',
+          id: '123',
+        },
+        {
+          origin: 'https://gator.com',
+          id: '456',
+        },
+      ],
+    };
 
     return {
       isInitialized,

@@ -26,9 +26,14 @@ import {
   DEFAULT_ROUTE,
   REVIEW_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
-import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
+import {
+  getConnectedSitesListWithNetworkInfo,
+  getGatorPermissions,
+} from '../../../../selectors';
 import { ConnectionListItem } from './connection-list-item';
+import { GatorPermissionItem } from './gator-permission-item';
 
+// TODO: Gator - Shows a list of all connected sites/dapps
 export const PermissionsPage = () => {
   const t = useI18nContext();
   const history = useHistory();
@@ -37,15 +42,23 @@ export const PermissionsPage = () => {
   const sitesConnectionsList = useSelector(
     getConnectedSitesListWithNetworkInfo,
   );
+  const gatorPermissionsList = useSelector(getGatorPermissions);
 
   useEffect(() => {
-    setTotalConnections(Object.keys(sitesConnectionsList).length);
-  }, [sitesConnectionsList]);
+    const totalSites = Object.keys(sitesConnectionsList).length;
+    const totalGatorPermissions = Object.keys(gatorPermissionsList).length;
+    setTotalConnections(totalSites + totalGatorPermissions);
+  }, [sitesConnectionsList, gatorPermissionsList]);
 
   const handleConnectionClick = (connection) => {
     const hostName = connection.origin;
     const safeEncodedHost = encodeURIComponent(hostName);
 
+    history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
+  };
+
+  const handleGatorPermissionClick = (origin) => {
+    const safeEncodedHost = encodeURIComponent(origin);
     history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
   };
 
@@ -61,6 +74,17 @@ export const PermissionsPage = () => {
         />
       );
     });
+
+  const renderGatorPermissions = (gatorPermissions) =>
+    Object.entries(gatorPermissions).map(([origin, permission]) => (
+      <GatorPermissionItem
+        data-testid="gator-7715-permission-item"
+        key={`gator-7715-${origin}-${permission.id}`}
+        permission={permission}
+        origin={origin}
+        onClick={() => handleGatorPermissionClick(origin)}
+      />
+    ));
 
   return (
     <Page className="main-container" data-testid="permissions-page">
@@ -88,7 +112,10 @@ export const PermissionsPage = () => {
       <Content padding={0}>
         <Box ref={headerRef}></Box>
         {totalConnections > 0 ? (
-          renderConnectionsList(sitesConnectionsList)
+          <Box>
+            {renderConnectionsList(sitesConnectionsList)}
+            {renderGatorPermissions(gatorPermissionsList)}
+          </Box>
         ) : (
           <Box
             data-testid="no-connections"

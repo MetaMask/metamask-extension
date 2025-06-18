@@ -3921,3 +3921,26 @@ export function getShowUpdateModal(state) {
 
   return showUpdateModal;
 }
+
+/**
+ * Get gator permissions data from UserStorageController.
+ *
+ * @param {object} state - The current state
+ * @returns {object} Gator permissions data
+ */
+export function getGatorPermissions(state) {
+  console.log('getGatorPermissions(UI)', state.metamask.gator7715Permissions);
+  return state.metamask.gator7715Permissions || {};
+}
+
+/**
+ * Get gator permissions for a specific origin.
+ *
+ * @param {object} state - The current state
+ * @param {string} origin - The origin to get permissions for
+ * @returns {object} Profile sync permissions for the origin
+ */
+export function getGatorPermissionsForOrigin(state, origin) {
+  const gatorPermissions = getGatorPermissions(state);
+  return gatorPermissions[origin] || {};
+}
