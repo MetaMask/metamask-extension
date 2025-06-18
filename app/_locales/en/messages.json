@@ -1666,13 +1666,13 @@
     "message": "Continue"
   },
   "deepLink_ContinueDescription": {
-    "message": "Clicking on \"Continue\" will direct you to this page: $1."
+    "message": "You'll open MetaMask if you continue."
   },
   "deepLink_DontRemindMeAgain": {
     "message": "Don't Remind me Again"
   },
   "deepLink_Error404Description": {
-    "message": "The page you're searching for is no longer available."
+    "message": "We can't find the page you are looking for."
   },
   "deepLink_Error404Title": {
     "message": "This page doesn't exist"
@@ -1699,10 +1699,10 @@
     "message": "Swaps Page"
   },
   "deepLink_RedirectingYou": {
-    "message": "Redirecting you to MetaMask"
+    "message": "Redirecting to MetaMask"
   },
   "deepLink_ThirdParty": {
-    "message": "A third party outside of MetaMask directed you to this page: $1. Only continue if you trust the source."
+    "message": "You were sent here by a third party; not MetaMask. Only continue if you trust the source."
   },
   "defaultRpcUrl": {
     "message": "Default RPC URL"
