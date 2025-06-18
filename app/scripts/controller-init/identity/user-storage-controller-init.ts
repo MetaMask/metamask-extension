@@ -71,18 +71,22 @@ export const UserStorageControllerInit: ControllerInitFunction<
         onContactUpdated: (profileId) => {
           trackEvent({
             category: MetaMetricsEventCategory.BackupAndSync,
-            event: MetaMetricsEventName.ContactSyncUpdated,
+            event: MetaMetricsEventName.IdentityEvent,
             properties: {
               profile_id: profileId,
+              feature_name: 'Backup And Sync',
+              action: 'Contacts Sync Contact Updated',
             },
           });
         },
         onContactDeleted: (profileId) => {
           trackEvent({
             category: MetaMetricsEventCategory.BackupAndSync,
-            event: MetaMetricsEventName.ContactSyncDeleted,
+            event: MetaMetricsEventName.IdentityEvent,
             properties: {
               profile_id: profileId,
+              feature_name: 'Backup And Sync',
+              action: 'Contacts Sync Contact Deleted',
             },
           });
         },
@@ -97,9 +101,11 @@ export const UserStorageControllerInit: ControllerInitFunction<
           );
           trackEvent({
             category: MetaMetricsEventCategory.BackupAndSync,
-            event: MetaMetricsEventName.ContactSyncErroneousSituation,
+            event: MetaMetricsEventName.IdentityEvent,
             properties: {
               profile_id: profileId,
+              feature_name: 'Backup And Sync',
+              action: 'Contacts Sync Erroneous Situation',
               situation_message: situationMessage,
             },
           });
