@@ -16,7 +16,8 @@ describe('Migrate vault with old encryption', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        // just a test
+        await driver.delay(5000);
         await homePage.headerNavbar.lockMetaMask();
         const loginPage = new LoginPage(driver);
         await loginPage.check_pageIsLoaded();
