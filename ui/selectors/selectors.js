@@ -1051,17 +1051,21 @@ export function getAddressBook(state) {
   if (!state.metamask.addressBook[chainId]) {
     return [];
   }
-  console.log(Object.values(state.metamask.addressBook[chainId]));
   return Object.values(state.metamask.addressBook[chainId]);
 }
 
 export function getCompleteAddressBook(state) {
   const addresses = state.metamask.addressBook;
-  const addressWithChainId = Object.fromEntries(
-    Object.entries(addresses).filter(([key]) => key !== '*'),
-  );
-  console.log(Object.values(addressWithChainId));
-  return Object.values(addressWithChainId);
+  const addressWithChainId = Object.entries(addresses)
+    .filter(([chainId, _]) => chainId !== '*')
+    .map(([chainId, addresse]) =>
+      Object.values(addresse).map((address) => ({
+        ...address,
+        chainId,
+      })),
+    )
+    .flat();
+  return addressWithChainId;
 }
 
 export function getEnsResolutionByAddress(state, address) {
@@ -1081,19 +1085,10 @@ export function getEnsResolutionByAddress(state, address) {
 
 export function getAddressBookEntry(state, address) {
   const addressBook = getCompleteAddressBook(state);
-
-  for (const item of addressBook) {
-    for (const key in item) {
-      if (Object.prototype.hasOwnProperty.call(item, key)) {
-        const contact = item[key];
-        if (isEqualCaseInsensitive(contact.address, address)) {
-          return contact;
-        }
-      }
-    }
-  }
-
-  return null;
+  const entry = addressBook.find((contact) =>
+    isEqualCaseInsensitive(contact.address, address),
+  );
+  return entry;
 }
 
 export function getAddressBookEntryOrAccountName(state, address) {
