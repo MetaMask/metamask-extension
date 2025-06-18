@@ -629,7 +629,7 @@ export enum MetaMetricsEventName {
   AccountsSyncAdded = 'Accounts Sync Added',
   AccountsSyncNameUpdated = 'Accounts Sync Name Updated',
   AccountsSyncErroneousSituation = 'Accounts Sync Erroneous Situation',
-  IdentityEvent = 'Identity Event',
+  ProfileActivityUpdated = 'Profile Activity Updated',
   ActivityDetailsOpened = 'Activity Details Opened',
   ActivityDetailsClosed = 'Activity Details Closed',
   AnalyticsPreferenceSelected = 'Analytics Preference Selected',
