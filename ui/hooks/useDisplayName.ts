@@ -83,6 +83,7 @@ export function useDisplayNames(
     const trustSignalIcon = getTrustSignalIcon(displayState);
     const trustSignalLabel = trustSignal?.label;
 
+    // We need to add the trust signal after we get the display state otherwise the state will be recognized and not verified
     if (name === null && trustSignalLabel) {
       name = trustSignalLabel;
     }
