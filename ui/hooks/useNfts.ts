@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
+import { parseCaipChainId } from '@metamask/utils';
 import { getNftContracts, getAllNfts } from '../ducks/metamask/metamask';
 import {
   getAllChainsToPoll,
@@ -15,7 +16,6 @@ import { NFT } from '../components/multichain/asset-picker-amount/asset-picker-m
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import { usePrevious } from './usePrevious';
 import { useI18nContext } from './useI18nContext';
-import { parseCaipChainId } from '@metamask/utils';
 
 export function useNfts({
   overridePopularNetworkFilter = false,
