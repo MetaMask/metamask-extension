@@ -32,6 +32,8 @@ import {
   IconName,
   Box,
   Text,
+  BannerAlert,
+  BannerAlertSeverity,
 } from '../../../components/component-library';
 import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
@@ -107,7 +109,7 @@ export default class SecurityTab extends PureComponent {
     setSecurityAlertsEnabled: PropTypes.func,
     metaMetricsDataDeletionId: PropTypes.string,
     hdEntropyIndex: PropTypes.number,
-    hasMultipleHdKeyrings: PropTypes.bool,
+    isSeedPhraseBackedUp: PropTypes.bool,
   };
 
   state = {
@@ -168,7 +170,19 @@ export default class SecurityTab extends PureComponent {
 
   renderSeedWords() {
     const { t } = this.context;
-    const { history, hasMultipleHdKeyrings } = this.props;
+    const { history, isSeedPhraseBackedUp } = this.props;
+
+    const getBannerDescription = () => {
+      return isSeedPhraseBackedUp
+        ? t('securityLoginWithSrpBackedUp')
+        : t('securityLoginWithSrpNotBackedUp');
+    };
+
+    const getBannerSeverity = () => {
+      return isSeedPhraseBackedUp
+        ? BannerAlertSeverity.Success
+        : BannerAlertSeverity.Danger;
+    };
 
     return (
       <>
@@ -179,40 +193,58 @@ export default class SecurityTab extends PureComponent {
           {t('secretRecoveryPhrase')}
         </div>
         <div className="settings-page__content-padded">
-          <Button
-            data-testid="reveal-seed-words"
-            type="danger"
-            size={ButtonSize.Lg}
-            onClick={(event) => {
-              event.preventDefault();
-              this.context.trackEvent({
-                category: MetaMetricsEventCategory.Settings,
-                event: MetaMetricsEventName.KeyExportSelected,
-                properties: {
-                  key_type: MetaMetricsEventKeyType.Srp,
-                  location: 'Settings',
-                  hd_entropy_index: this.props.hdEntropyIndex,
-                },
-              });
-              this.context.trackEvent({
-                category: MetaMetricsEventCategory.Settings,
-                event: MetaMetricsEventName.SrpRevealClicked,
-                properties: {
-                  key_type: MetaMetricsEventKeyType.Srp,
-                  location: 'Settings',
-                },
-              });
-              if (hasMultipleHdKeyrings) {
-                history.push({
-                  pathname: REVEAL_SRP_LIST_ROUTE,
-                });
-                return;
-              }
-              this.setState({ srpQuizModalVisible: true });
-            }}
+          <Box
+            className="settings-page__content-row"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={4}
           >
-            {t('revealSeedWords')}
-          </Button>
+            <div className="settings-page__content-item">
+              <div className="settings-page__content-description">
+                {t('securitySrpDescription')}
+              </div>
+              <BannerAlert
+                data-testid="backup-state-banner-alert"
+                description={getBannerDescription()}
+                paddingTop={2}
+                paddingBottom={2}
+                marginTop={4}
+                severity={getBannerSeverity()}
+              />
+            </div>
+            <div className="settings-page__content-item-col">
+              <Button
+                data-testid="reveal-seed-words"
+                type="danger"
+                size={ButtonSize.Lg}
+                onClick={(event) => {
+                  event.preventDefault();
+                  this.context.trackEvent({
+                    category: MetaMetricsEventCategory.Settings,
+                    event: MetaMetricsEventName.KeyExportSelected,
+                    properties: {
+                      key_type: MetaMetricsEventKeyType.Srp,
+                      location: 'Settings',
+                      hd_entropy_index: this.props.hdEntropyIndex,
+                    },
+                  });
+                  this.context.trackEvent({
+                    category: MetaMetricsEventCategory.Settings,
+                    event: MetaMetricsEventName.SrpRevealClicked,
+                    properties: {
+                      key_type: MetaMetricsEventKeyType.Srp,
+                      location: 'Settings',
+                    },
+                  });
+                  history.push({
+                    pathname: REVEAL_SRP_LIST_ROUTE,
+                  });
+                }}
+              >
+                {t('revealSeedWords')}
+              </Button>
+            </div>
+          </Box>
           {this.state.srpQuizModalVisible && (
             <SRPQuiz
               isOpen={this.state.srpQuizModalVisible}
