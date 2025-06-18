@@ -107,7 +107,7 @@ async function updateStateFromUrl(
     }
   } catch (e) {
     log.error('Error parsing deep link:', e);
-    setDescription(t('deepLink_ErrorOther'));
+    setDescription(t('deepLink_ErrorOtherDescription'));
     setRoute(null);
     setTitle(t('deepLink_ErrorOtherTitle'));
     setCta(t('deepLink_GoToTheHomePageButton'));

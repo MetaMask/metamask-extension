@@ -1687,14 +1687,20 @@
   "deepLink_ErrorMissingUrl": {
     "message": "No url to navigate to was provided."
   },
-  "deepLink_ErrorOther": {
-    "message": "An error occurred while processing the deep link. "
+  "deepLink_ErrorOtherDescription": {
+    "message": "This is a bug and should be reported to MetaMask."
+  },
+  "deepLink_ErrorOtherTitle": {
+    "message": "An error occurred while processing the deep link"
+  },
+  "deepLink_GoToTheHomePageButton": {
+    "message": "Go to the home page"
   },
   "deepLink_RedirectingToMetaMask": {
     "message": "Redirecting to MetaMask"
   },
   "deepLink_ThirdPartyDescription": {
-    "message": "You were sent here by a third party; not MetaMask. $1",
+    "message": "You were sent here by a third party, not MetaMask. $1",
     "description": "$1 is the message 'deepLink_ContinueDescription'"
   },
   "deepLink_theBuyPage": {
