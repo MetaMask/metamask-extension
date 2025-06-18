@@ -1,9 +1,5 @@
 import { useCallback, useState } from 'react';
-import {
-  isHexString,
-  parseCaipChainId,
-  type CaipChainId,
-} from '@metamask/utils';
+import { parseCaipChainId, type CaipChainId } from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

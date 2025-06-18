@@ -75,12 +75,14 @@ type AssetListControlBarProps = {
   showTokensLinks?: boolean;
   showTokenFiatBalance?: boolean;
   showImportTokenButton?: boolean;
+  showSortControl?: boolean;
 };
 
 const AssetListControlBar = ({
   showTokensLinks,
   showTokenFiatBalance,
   showImportTokenButton = true,
+  showSortControl = true,
 }: AssetListControlBarProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -341,23 +343,25 @@ const AssetListControlBar = ({
           display={Display.Flex}
           justifyContent={JustifyContent.flexEnd}
         >
-          <Tooltip title={t('sortBy')} position="bottom" distance={20}>
-            <ButtonBase
-              data-testid="sort-by-popover-toggle"
-              className="asset-list-control-bar__button"
-              onClick={toggleTokenSortPopover}
-              size={ButtonBaseSize.Sm}
-              startIconName={IconName.Filter}
-              startIconProps={{ marginInlineEnd: 0 }}
-              backgroundColor={
-                isTokenSortPopoverOpen
-                  ? BackgroundColor.backgroundPressed
-                  : BackgroundColor.backgroundDefault
-              }
-              color={TextColor.textDefault}
-              marginRight={isFullScreen ? 2 : null}
-            />
-          </Tooltip>
+          {showSortControl && (
+            <Tooltip title={t('sortBy')} position="bottom" distance={20}>
+              <ButtonBase
+                data-testid="sort-by-popover-toggle"
+                className="asset-list-control-bar__button"
+                onClick={toggleTokenSortPopover}
+                size={ButtonBaseSize.Sm}
+                startIconName={IconName.Filter}
+                startIconProps={{ marginInlineEnd: 0 }}
+                backgroundColor={
+                  isTokenSortPopoverOpen
+                    ? BackgroundColor.backgroundPressed
+                    : BackgroundColor.backgroundDefault
+                }
+                color={TextColor.textDefault}
+                marginRight={isFullScreen ? 2 : null}
+              />
+            </Tooltip>
+          )}
 
           {showImportTokenButton && (
             <ImportControl

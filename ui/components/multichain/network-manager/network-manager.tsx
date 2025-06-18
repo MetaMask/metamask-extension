@@ -46,7 +46,7 @@ const NetworkManagerRouter = () => {
     history.push('/add');
   };
 
-  const [nonEvmNetworks, evmNetworks] = useSelector(
+  const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
   const { chainId: editingChainId, editCompleted } =

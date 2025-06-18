@@ -64,9 +64,6 @@ const NetworkFilter = ({
   const currentNetwork = useSelector(getCurrentNetwork);
   const selectedAccount = useSelector(getSelectedAccount);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const multichainNetworks = useSelector(
-    getMultichainNetworkConfigurationsByChainId,
-  );
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const enabledNetworks = useSelector(getEnabledNetworks);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
@@ -106,7 +103,6 @@ const NetworkFilter = ({
     if (handleFilterNetwork) {
       handleFilterNetwork(chainFilters);
     } else {
-      const isEvmChain = isCaip25ChainId(chainId);
       isGlobalNetworkSelectorRemoved
         ? dispatch(setEnabledNetworks(Object.keys(chainFilters), chainId))
         : dispatch(setTokenNetworkFilter(chainFilters));

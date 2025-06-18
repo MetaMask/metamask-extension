@@ -19,7 +19,6 @@ import {
 ///: END:ONLY_INCLUDE_IF
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import {
-  nonceSortedCompletedTransactionsSelector,
   nonceSortedCompletedTransactionsSelectorAllChains,
   nonceSortedPendingTransactionsSelector,
   nonceSortedPendingTransactionsSelectorAllChains,
@@ -37,6 +36,9 @@ import {
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
+  isGlobalNetworkSelectorRemoved,
+  getEnabledNetworks,
+  getSelectedMultichainNetworkChainId,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import useSolanaBridgeTransactionMapping from '../../../hooks/bridge/useSolanaBridgeTransactionMapping';
@@ -122,6 +124,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../shared/constants/app';
 import { NetworkFilterComponent } from '../../multichain/network-filter-menu';
+import AssetListControlBar from '../assets/asset-list/asset-list-control-bar';
 import NoTransactions from './no-transactions';
 
 const PAGE_INCREMENT = 10;
@@ -361,25 +364,61 @@ export default function TransactionList({
     return TEST_CHAINS.includes(currentNetworkConfig.chainId);
   }, [currentNetworkConfig.chainId]);
 
-  const unfilteredCompletedTransactionsCurrentChain = useSelector(
-    nonceSortedCompletedTransactionsSelector,
-  );
-
   const unfilteredCompletedTransactionsAllChains = useSelector(
     nonceSortedCompletedTransactionsSelectorAllChains,
   );
 
-  const unfilteredCompletedTransactions = useMemo(() => {
-    return isTokenNetworkFilterEqualCurrentNetwork ||
-      overrideFilterForCurrentChain
-      ? unfilteredCompletedTransactionsCurrentChain
-      : unfilteredCompletedTransactionsAllChains;
+  const chainId = useSelector(getCurrentChainId);
+  const isEvmNetwork = useSelector(getIsEvmMultichainNetworkSelected);
+
+  const enabledNetworks = useSelector(getEnabledNetworks);
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
+  );
+
+  const enabledNetworksFilteredCompletedTransactions = useMemo(() => {
+    if (!enabledNetworks || !currentMultichainChainId) {
+      return unfilteredCompletedTransactionsAllChains;
+    }
+
+    // Parse the current namespace from the selected network
+    const { namespace } = parseCaipChainId(currentMultichainChainId);
+
+    // Get enabled networks for the current namespace
+    const networksForNamespace = enabledNetworks[namespace] || {};
+
+    console.log('networksForNamespace', networksForNamespace);
+
+    // If no networks are enabled for this namespace, return empty array
+    if (Object.keys(networksForNamespace).length === 0) {
+      return [];
+    }
+
+    // Get the list of enabled chain IDs for this namespace
+    const enabledChainIds = Object.keys(networksForNamespace).filter(
+      (enabledChainId) => networksForNamespace[enabledChainId],
+    );
+
+    console.log('enabledChainIds', enabledChainIds);
+
+    // Filter transactions to only include those from enabled networks
+    const filteredTransactions =
+      unfilteredCompletedTransactionsAllChains.filter((transactionGroup) => {
+        const transactionChainId = transactionGroup.initialTransaction?.chainId;
+        return enabledChainIds.includes(transactionChainId);
+      });
+
+    return filteredTransactions;
   }, [
-    isTokenNetworkFilterEqualCurrentNetwork,
+    enabledNetworks,
+    currentMultichainChainId,
     unfilteredCompletedTransactionsAllChains,
-    unfilteredCompletedTransactionsCurrentChain,
-    overrideFilterForCurrentChain,
   ]);
+
+  console.log(
+    'enabledNetworksFilteredCompletedTransactions',
+    enabledNetworksFilteredCompletedTransactions,
+  );
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
 
@@ -426,9 +465,6 @@ export default function TransactionList({
     unfilteredRemoteModeCompletedTransactionsCurrentChain,
     isRemoteModeEnabled,
   ]);
-
-  const chainId = useSelector(getCurrentChainId);
-  const isEvmNetwork = useSelector(getIsEvmMultichainNetworkSelected);
 
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -490,7 +526,7 @@ export default function TransactionList({
       groupEvmTransactionsByDate(
         getFilteredTransactionGroupsAllChains(
           [
-            ...unfilteredCompletedTransactions,
+            ...enabledNetworksFilteredCompletedTransactions,
             ...unfilteredRemoteModeCompletedTransactions,
           ],
           hideTokenTransactions,
@@ -500,10 +536,12 @@ export default function TransactionList({
     [
       hideTokenTransactions,
       tokenAddress,
-      unfilteredCompletedTransactions,
+      enabledNetworksFilteredCompletedTransactions,
       unfilteredRemoteModeCompletedTransactions,
     ],
   );
+
+  console.log('completedTransactions', completedTransactions);
 
   const viewMore = useCallback(
     () => setLimit((prev) => prev + PAGE_INCREMENT),
@@ -542,6 +580,14 @@ export default function TransactionList({
   const renderFilterButton = useCallback(() => {
     if (hideNetworkFilter) {
       return null;
+    }
+    if (isGlobalNetworkSelectorRemoved) {
+      return (
+        <AssetListControlBar
+          showSortControl={false}
+          showTokenFiatBalance={false}
+        />
+      );
     }
     return isEvmNetwork ? (
       <NetworkFilterComponent
