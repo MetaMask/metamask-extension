@@ -43,7 +43,9 @@ export const SrpList = ({
   const trackEvent = useContext(MetaMetricsContext);
   const hdKeyringsWithSnapAccounts = useHdKeyringsWithSnapAccounts();
 
-  const isRootSeedPhraseBackedUp = useSelector(getIsPrimarySeedPhraseBackedUp);
+  const isPrimarySeedPhraseBackedUp = useSelector(
+    getIsPrimarySeedPhraseBackedUp,
+  );
 
   // This selector will return accounts with nonEVM balances as well.
   const accountsWithBalances: Record<string, InternalAccountWithBalance> =
@@ -76,8 +78,8 @@ export const SrpList = ({
       data-testid="srp-list"
     >
       {hdKeyringsWithSnapAccounts.map((keyring, index) => {
-        // We only consider the first(root) keyring for the backup reminder.
-        const shouldTriggerBackup = !isRootSeedPhraseBackedUp && index === 0;
+        // We only consider the first(primary) keyring for the backup reminder.
+        const shouldTriggerBackup = !isPrimarySeedPhraseBackedUp && index === 0;
 
         return (
           <Card
