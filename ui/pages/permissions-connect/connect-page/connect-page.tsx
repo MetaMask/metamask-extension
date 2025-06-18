@@ -85,6 +85,9 @@ export type ConnectPageRequest = {
     isEip1193Request?: boolean;
     promptToCreateSolanaAccount?: boolean;
   };
+
+  existingScopes?: CaipChainId[];
+  existingAccounts?: CaipAccountId[];
 };
 
 export type ConnectPageProps = {
@@ -349,14 +352,19 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   }, [permissionsRequestId, rejectPermissionsRequest]);
 
   const onConfirm = useCallback(() => {
+    const { existingScopes = [], existingAccounts = [] } = request;
+
+    delete request.existingScopes;
+    delete request.existingAccounts;
+
     const _request = {
       ...request,
       permissions: {
         ...request.permissions,
         ...generateCaip25Caveat(
           requestedCaip25CaveatValue,
-          selectedCaipAccountAddresses,
-          selectedChainIds,
+          [...existingAccounts, ...selectedCaipAccountAddresses],
+          [...existingScopes, ...selectedChainIds],
         ),
       },
     };

@@ -3,7 +3,11 @@ import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
+import {
+  Caip25EndowmentPermissionName,
+  getAllScopesFromPermission,
+  getPermittedAccountsForScopes,
+} from '@metamask/chain-agnostic-permission';
 import {
   getAccountsWithLabels,
   getLastConnectedInfo,
@@ -14,6 +18,7 @@ import {
   getSnapsInstallPrivacyWarningShown,
   getRequestType,
   getTargetSubjectMetadata,
+  getPermissions,
 } from '../../selectors';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
 
@@ -36,6 +41,7 @@ import {
   CONNECT_SNAP_RESULT_ROUTE,
 } from '../../helpers/constants/routes';
 import PermissionApproval from './permissions-connect.component';
+import { getRequestedCaip25CaveatValue } from './connect-page/utils';
 
 const mapStateToProps = (state, ownProps) => {
   const {
@@ -58,6 +64,26 @@ const mapStateToProps = (state, ownProps) => {
   const { metadata = {}, diff = {} } = permissionsRequest || {};
   const { origin } = metadata;
   const nativeCurrency = getNativeCurrency(state);
+
+  if (permissionsRequest) {
+    const permissions = getPermissions(state, origin);
+
+    if (permissions) {
+      const existingCaveat = getRequestedCaip25CaveatValue(permissions);
+      const existingPermittedScopes = getAllScopesFromPermission(
+        permissions?.[Caip25EndowmentPermissionName],
+      );
+
+      const existingPermittedAccounts = getPermittedAccountsForScopes(
+        existingCaveat,
+        existingPermittedScopes,
+      );
+
+      // Save existing permissions to be added along with the new ones
+      permissionsRequest.existingScopes = existingPermittedScopes;
+      permissionsRequest.existingAccounts = existingPermittedAccounts;
+    }
+  }
 
   const isRequestApprovalPermittedChains = Boolean(diff?.permissionDiffMap);
   const isRequestingAccounts = Boolean(
