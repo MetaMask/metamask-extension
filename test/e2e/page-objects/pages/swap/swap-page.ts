@@ -1,18 +1,21 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
-export type SwapSolanaOptions = {
+export type SwapOptions = {
   amount: number;
   swapFrom: string;
   swapTo: string;
   swapToContractAddress?: string;
 };
 
-export type SwapSolanaReviewOptions = {
-  swapFrom: string;
-  swapTo: string;
+export type UnifiedSwapAndBridgeReviewOptions = {
+  fromChain: string,
+  toChain: string,
+  tokenFrom: string,
+  tokenTo: string,
   swapToAmount: string;
   swapFromAmount: string;
+  swapToConversionRate?: string;
   skipCounter?: boolean;
 };
 
@@ -23,7 +26,6 @@ export type SwapQuoteOptions = {
 };
 
 export type SwapQuote = {
-  amount: string;
   totalCost: string;
   receivedAmount: string;
   estimatedTime?: string;
@@ -79,6 +81,8 @@ class SwapPage {
     tag: 'button',
     text: 'Swap',
   };
+
+  private readonly bridgeTo = (chain: string) => `[data-testid=${chain}]`;
 
   private readonly transactionHeader = '[data-testid="awaiting-swap-header"]';
 
@@ -177,25 +181,37 @@ class SwapPage {
     await this.driver.waitForSelector(this.noQuotesAvailableMessage);
   }
 
-  async createSolanaSwap(options: SwapSolanaOptions) {
-    await this.driver.clickElement(this.bridgeSourceButton);
-    await this.driver.clickElement({
-      text: options.swapFrom,
-      css: this.fromToText,
-    });
-
-    await this.driver.clickElement(this.bridgeDestinationButton);
-
-    await this.driver.clickElement({
-      text: options.swapTo,
-      css: this.fromToText,
-    });
-
-    await this.driver.waitForSelector(this.reviewFromAmount);
-    await this.driver.fill(this.reviewFromAmount, options.amount.toString());
+  async createSwap(options: UnifiedSwapAndBridgeReviewOptions) {
+      await this.driver.clickElement(this.bridgeSourceButton);
+      await this.driver.clickElement({
+        text: options.tokenFrom,
+        css: this.fromToText,
+      });
+      await this.driver.clickElement(this.bridgeDestinationButton);
+      if (options.fromChain !== options.toChain) {
+        await this.driver.waitForSelector(this.bridgeTo(options.toChain));
+        await this.driver.clickElement(this.bridgeTo(options.toChain));
+      }
+      await this.driver.clickElement({
+        text: options.tokenTo,
+        css: this.fromToText,
+      });
+      await this.driver.waitForSelector(this.reviewFromAmount);
+    //}
+      await this.driver.fill(this.reviewFromAmount, options.swapFromAmount.toString());
   }
 
-  async reviewSolanaQuote(options: SwapSolanaReviewOptions) {
+  async reviewSolanaQuote(options: UnifiedSwapAndBridgeReviewOptions) {
+    if ( options.fromChain !== options.toChain) { // Cross chain swap
+      await this.driver.waitForSelector({
+        text: options.fromChain,
+        tag: 'p',
+      });
+      await this.driver.waitForSelector({
+        text: options.toChain,
+        tag: 'p',
+      });
+    }
     await this.driver.waitForSelector(this.submitSwapButton);
     const fromAmount = await this.driver.findElement(this.reviewFromAmount);
     const fromAmountText = await fromAmount.getAttribute('value');
@@ -204,12 +220,11 @@ class SwapPage {
     const toAmountText = await toAmount.getAttribute('value');
     assert.equal(toAmountText, options.swapToAmount);
     await this.driver.waitForSelector({
-      text: `1 ${options.swapFrom} = ${options.swapToAmount} ${options.swapTo}`,
+      text: `1 ${options.tokenFrom} = ${options.swapToConversionRate} ${options.tokenTo}`,
       tag: 'p',
     });
     await this.driver.waitForSelector(this.rateMessage);
     await this.driver.waitForSelector(this.moreQuotesButton);
-
     await this.driver.clickElementAndWaitToDisappear(this.submitSwapButton);
   }
 }

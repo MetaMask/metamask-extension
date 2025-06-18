@@ -190,7 +190,7 @@ async function mockTopAssetsArbitrum(mockServer: Mockttp) {
   });
 }
 
-async function mockTokensEthereum(mockServer: Mockttp) {
+export async function mockTokensEthereum(mockServer: Mockttp) {
   return await mockServer
     .forGet(`https://token.api.cx.metamask.io/tokens/1`)
     .thenCallback(() => {

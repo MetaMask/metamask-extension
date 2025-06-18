@@ -1,0 +1,14 @@
+{
+  "e7062cfa-6c24-4a2a-9692-2070dc706d04": {
+      "cancellationFeeWei": 0,
+      "cancellationReason": "not_cancelled",
+      "deadlineRatio": 0,
+      "isSettled": true,
+      "minedTx": "success",
+      "wouldRevertMessage": "",
+      "minedHash": "0xc0937be9c13eabd55cf89e4bc615a62e3cce9d381b09ebee041eef1621a60b23",
+      "duplicated": false,
+      "timedOut": false,
+      "proxied": false
+  }
+}

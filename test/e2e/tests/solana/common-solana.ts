@@ -9,36 +9,47 @@ import FixtureBuilder from '../../fixture-builder';
 import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { mockTokensEthereum } from '../bridge/bridge-test-utils';
+import { toggleStxSetting } from '../../page-objects/flows/toggle-stx-setting.flow';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3*/u;
 const SOLANA_URL_REGEX_DEVNET = /^https:\/\/solana-devnet\.infura\.io\/v3\/.*/u;
 const SPOT_PRICE_API =
   /^https:\/\/price\.api\.cx\.metamask\.io\/v[1-9]\/spot-prices/u;
+const ETHEREUM_SPOT_PRICE_API = ( chain: string ) => new RegExp(`https://price\\.api\\.cx\\.metamask\\.io\\/v[1-9]/chains/${chain}/spot-prices`);
 const SOLANA_EXCHANGE_RATES_PRICE_API =
   /^https:\/\/price\.api\.cx\.metamask\.io\/v[1-9]\/exchange-rates\/fiat/u;
 const SOLANA_STATIC_TOKEN_IMAGE_REGEX_MAINNET =
   /^https:\/\/static\.cx\.metamask\.io\/api\/v2\/tokenIcons\/assets\/solana\/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/u;
 const SOLANA_BITCOIN_MIN_API =
   /^https:\/\/min-api\.cryptocompare\.com\/data\/pricemulti/u;
-export const SOLANA_TOKEN_API =
+export const TOKEN_API_ASSETS =
   /^https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u;
+export const TOKEN_API_TOKENS =
+  /^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/1/u;
 export const METAMASK_PHISHING_DETECTION_API =
   /^https:\/\/phishing-detection\.api\.cx\.metamask\.io\/$/u;
 export const METAMASK_CLIENT_SIDE_DETECTION_REGEX =
   /^https:\/\/client-side-detection\.api\.cx\.metamask\.io\/$/u;
 export const ACCOUNTS_API =
-  /^https:\/\/accounts\.api\.cx\.metamask\.io\/v1\/accounts\/0x5cfe73b6021e818b776b421b1c4db2474086a7e1\/$/u;
+  /^https:\/\/accounts\.api\.cx\.metamask\.io\/v[1-9]\/accounts\/0x5cfe73b6021e818b776b421b1c4db2474086a7e1\/balances/u;
 export const BRIDGE_TX_STATUS =
   /^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getTxStatus/u;
 export const BRIDGED_TOKEN_LIST_API =
   /^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getTokens/u;
-
+export const SWAP_API_ETHEREUM_TOP_ASSETS =
+  /^https:\/\/swap\.api\.cx\.metamask\.io\/networks\/1\/top-assets/u;
 export const BRIDGE_GET_QUOTE_API =
   /^https:\/\/bridge\.(api|dev-api)\.cx\.metamask\.io\/getQuote/u;
 
+export const ETHEREUM_MAINNET_REGEX =   /^https:\/\/mainnet\.infura\.io\/v3*/u;
+
 export const SECURITY_ALERT_BRIDGE_URL_REGEX =
   /^https:\/\/security-alerts\.api\.cx\.metamask\.io\/solana\/message\/scan/u;
+
+export const TRANSACTION_API = (network: string, method: string) => new RegExp(`https://transaction\\.api\\.cx\\.metamask\\.io/networks/${network}/${method}`);
+
 export const SOLANA_TOKEN_PROGRAM =
   'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
 export enum SendFlowPlaceHolders {
@@ -50,6 +61,7 @@ export enum SendFlowPlaceHolders {
 export const SIMPLEHASH_URL = 'https://api.simplehash.com';
 
 export const SOLANA_DEVNET_URL = 'https://solana-devnet.infura.io/v3/';
+
 
 export const SOL_BALANCE = 50000000000;
 
@@ -99,6 +111,83 @@ async function readResponseJsonFile(fileName: string): Promise<object> {
     }
     throw new Error('Failed to read or parse JSON file');
   }
+}
+
+export async function mockEthCall(mockServer: Mockttp) {
+  const response = await readResponseJsonFile('bridge/ethCall.json');
+
+  return await mockServer.forPost(ETHEREUM_MAINNET_REGEX).withBodyIncluding('eth_call').thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: response,
+    };
+  });
+}
+
+export async function mockEthGetCode(mockServer: Mockttp) {
+  const response = await readResponseJsonFile('bridge/ethGetCode.json');
+
+  return await mockServer.forPost(ETHEREUM_MAINNET_REGEX).withBodyIncluding('eth_getCode').thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: response,
+    };
+  });
+}
+
+export async function mockEthSendRawTransaction(mockServer: Mockttp) {
+  const response = await readResponseJsonFile('bridge/ethSendRawTransaction.json');
+
+  return await mockServer.forPost(ETHEREUM_MAINNET_REGEX).withBodyIncluding('eth_sendRawTransaction').thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: response,
+    };
+  });
+}
+
+export async function mockEthGetTransactionReceipt(mockServer: Mockttp) {
+  const response = await readResponseJsonFile('bridge/ethGetTransactionReceipt.json');
+
+  return await mockServer.forPost(ETHEREUM_MAINNET_REGEX).withBodyIncluding('eth_getTransactionReceipt').thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: response,
+    };
+  });
+}
+
+export async function mockEthGetTransactionCount(mockServer: Mockttp) {
+  return await mockServer.forPost(ETHEREUM_MAINNET_REGEX).withBodyIncluding('eth_getTransactionCount').thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: {
+        jsonrpc:"2.0",
+        id:"ea9d7cc8-c6a2-4268-8bb7-df8abc5d199e",
+        result:"0x01"
+      }
+    };
+  });
+}
+
+/*export async function mockAccountsApiBridgeSolToEth(mockServer: Mockttp) {
+  const response = await readResponseJsonFile('bridge/bridgeSolToEthAccountsApi.json');
+  return await mockServer.forGet(ACCOUNTS_API).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: response,
+    };
+  });
+}*/
+
+export async function mockAccountsApiBalanceEth(mockServer: Mockttp) {
+  const response = await readResponseJsonFile('bridge/ethAccountPositiveBalance.json');
+  return await mockServer.forGet(ACCOUNTS_API).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: response,
+    };
+  });
 }
 
 export async function mockAccountsApi(mockServer: Mockttp) {
@@ -154,6 +243,41 @@ export async function mockPhishingDetectionApi(mockServer: Mockttp) {
     });
 }
 
+export async function mockPriceApiSpotPriceSolanaEthBridge(mockServer: Mockttp) {
+  const response = await readResponseJsonFile('bridge/spotPriceSolanaBridge.json');
+  return await mockServer
+    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+    .withQuery({
+      assetIds:
+        'solana%3A5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp%2Fslip44%3A501',
+      vsCurrency: 'usd',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: response,
+      };
+    });
+}
+
+export async function mockPriceApiSpotPriceSolanaEthMarketDataBridge(mockServer: Mockttp) {
+  const response = await readResponseJsonFile('bridge/spotPriceSolanaBridgeMarketData.json');
+  return await mockServer
+    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+    .withQuery({
+      tokenAddresses:
+        '0x0000000000000000000000000000000000000000,0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,0xc5f0f7b66764F6ec8C8Dff7BA683102295E16409,0xdAC17F958D2ee523a2206206994597C13D831ec7',
+      vsCurrency: 'ETH',
+      includeMarketData: 'true',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: response,
+      };
+    });
+}
+
 export async function mockPriceApiSpotPriceSolanaUsdc(mockServer: Mockttp) {
   const response = await readResponseJsonFile('priceApiSpotSolanaUsdc.json');
   return await mockServer
@@ -170,6 +294,26 @@ export async function mockPriceApiSpotPriceSolanaUsdc(mockServer: Mockttp) {
         json: response,
       };
     });
+}
+
+export async function mockEthereumTopAssets(mockServer: Mockttp) {
+  const response = await readResponseJsonFile('bridge/bridgeEthTopAssets.json');
+  return await mockServer.forGet(SWAP_API_ETHEREUM_TOP_ASSETS).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: response,
+    };
+  });
+}
+
+export async function mockGetTokensByChainId(mockServer: Mockttp, chainId: number) {
+  const response = chainId === 1 ? await readResponseJsonFile('bridge/bridgeEthGetTokens.json') : await readResponseJsonFile('bridge/bridgeSolanaGetTokens.json');
+  return await mockServer.forGet(BRIDGED_TOKEN_LIST_API).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: response,
+    };
+  });
 }
 
 export async function mockPriceApiSpotPrice(mockServer: Mockttp) {
@@ -295,7 +439,7 @@ export async function mockTokenApiMainnetTest(mockServer: Mockttp) {
       },
     ],
   };
-  return await mockServer.forGet(SOLANA_TOKEN_API).thenCallback(() => {
+  return await mockServer.forGet(TOKEN_API_ASSETS).thenCallback(() => {
     return response;
   });
 }
@@ -320,7 +464,7 @@ export async function mockTokenApiMainnet(mockServer: Mockttp) {
       },
     ],
   };
-  return await mockServer.forGet(SOLANA_TOKEN_API).thenCallback(() => {
+  return await mockServer.forGet(TOKEN_API_ASSETS).thenCallback(() => {
     return response;
   });
 }
@@ -604,6 +748,40 @@ export async function mockGetSuccessTransaction(mockServer: Mockttp) {
     });
 }
 
+export async function mockGetSolToEthTransaction(mockServer: Mockttp) {
+  const bridgeTransaction = await readResponseJsonFile(
+    'bridge/solToEthTransaction.json',
+  );
+  const response = {
+    statusCode: 200,
+    json: bridgeTransaction,
+  };
+
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX_MAINNET)
+    .withBodyIncluding('getTransaction')
+    .thenCallback(() => {
+      return response;
+    });
+}
+
+export async function mockGetEthToSolTransaction(mockServer: Mockttp) {
+  const bridgeTransaction = await readResponseJsonFile(
+    'bridge/ethToSolTransaction.json',
+  );
+  const response = {
+    statusCode: 200,
+    json: bridgeTransaction,
+  };
+
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX_MAINNET)
+    .withBodyIncluding('getTransaction')
+    .thenCallback(() => {
+      return response;
+    });
+}
+
 export async function mockGetLatestBlockhash(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
@@ -661,7 +839,7 @@ export async function mockGetFailedSignaturesForAddress(mockServer: Mockttp) {
     });
 }
 
-export async function mockGetSuccessSignaturesForAddress(mockServer: Mockttp) {
+export async function mockGetSuccessSignaturesForAddress(mockServer: Mockttp, signature = '3AcYfpsSaFYogY4Y4YN77MkhDgVBEgUe1vuEeqKnCMm5udTrFCyw9w17mNM8DUnHnQD2VHRFeipMUb27Q3iqMQJr') {
   console.log('mockGetSuccessSignaturesForAddress');
   return await mockServer
     .forPost(SOLANA_URL_REGEX_MAINNET)
@@ -678,8 +856,7 @@ export async function mockGetSuccessSignaturesForAddress(mockServer: Mockttp) {
               confirmationStatus: 'finalized',
               err: null,
               memo: null,
-              signature:
-                '3AcYfpsSaFYogY4Y4YN77MkhDgVBEgUe1vuEeqKnCMm5udTrFCyw9w17mNM8DUnHnQD2VHRFeipMUb27Q3iqMQJr',
+              signature: signature,
               slot: 321700491,
             },
           ],
@@ -755,7 +932,7 @@ export async function mockSendSolanaFailedTransaction(mockServer: Mockttp) {
     });
 }
 
-export async function mockGetSignaturesSuccessSwap(mockServer: Mockttp) {
+export async function mockGetSignaturesSuccessSwap(mockServer: Mockttp, signature: string = '2m8z8uPZyoZwQpissDbhSfW5XDTFmpc7cSFithc5e1w8iCwFcvVkxHeaVhgFSdgUPb5cebbKGjuu48JMLPjfEATr') {
   const response = {
     statusCode: 200,
     json: {
@@ -765,8 +942,7 @@ export async function mockGetSignaturesSuccessSwap(mockServer: Mockttp) {
           confirmationStatus: 'finalized',
           err: null,
           memo: null,
-          signature:
-            '2m8z8uPZyoZwQpissDbhSfW5XDTFmpc7cSFithc5e1w8iCwFcvVkxHeaVhgFSdgUPb5cebbKGjuu48JMLPjfEATr',
+          signature: signature,
           slot: 342840492,
         },
       ],
@@ -807,6 +983,25 @@ export async function mockSwapSolToUsdcTransaction(mockServer: Mockttp) {
     json: {
       result:
         '2m8z8uPZyoZwQpissDbhSfW5XDTFmpc7cSFithc5e1w8iCwFcvVkxHeaVhgFSdgUPb5cebbKGjuu48JMLPjfEATr',
+      id: '1337',
+      jsonrpc: '2.0',
+    },
+  };
+  return await mockServer
+    .forPost(SOLANA_URL_REGEX_MAINNET)
+    .withJsonBodyIncluding({
+      method: 'sendTransaction',
+    })
+    .thenCallback(() => {
+      return response;
+    });
+}
+
+export async function mockSendTransaction(mockServer: Mockttp, txId = '4uduPRX7YdBDk5xQzJnMaXtUKt2VmjV9Z4X4TM82hmJyDzZ1cz8RxWuB8mGPutn7Z9QUWx7U13jK4PSzhFL4Q7Ji') {
+  const response = {
+    statusCode: 200,
+    json: {
+      result: txId,
       id: '1337',
       jsonrpc: '2.0',
     },
@@ -1381,6 +1576,35 @@ export async function mockQuoteFromSoltoUSDC(mockServer: Mockttp) {
     });
 }
 
+export async function mockQuoteFromSoltoEth(mockServer: Mockttp) {
+  const quoteSolToEth = await readResponseJsonFile('bridge/quoteSolToEthBridge.json');
+  const quotesResponse = {
+    statusCode: 200,
+    json: quoteSolToEth,
+  };
+  return await mockServer
+    .forGet(BRIDGE_GET_QUOTE_API)
+    .thenCallback(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // just to see fetching quotes
+      return quotesResponse;
+    });
+}
+
+export async function mockQuoteFromEthtoSol(mockServer: Mockttp) {
+  const quoteSolToEth = await readResponseJsonFile('bridge/quoteEthToSolBridge.json');
+  const quotesResponse = {
+    statusCode: 200,
+    json: quoteSolToEth,
+  };
+  return await mockServer
+    .forGet(BRIDGE_GET_QUOTE_API)
+    .thenCallback(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // just to see fetching quotes
+      return quotesResponse;
+    });
+}
+
+
 export async function mockGetMultipleAccounts(mockServer: Mockttp) {
   console.log('mockgetMultipleAccounts');
   const response = {
@@ -1466,6 +1690,37 @@ export async function mockPriceApiSpotPriceSwap(mockServer: Mockttp) {
   });
 }
 
+export async function mockPriceApiSpotPriceEtheToSol(mockServer: Mockttp) {
+  return await mockServer.forGet(ETHEREUM_SPOT_PRICE_API('1')).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: {
+        "0x0000000000000000000000000000000000000000": {
+            "id": "ethereum",
+            "price": 2571.71,
+            "marketCap": 310611056434,
+            "allTimeHigh": 4878.26,
+            "allTimeLow": 0.432979,
+            "totalVolume": 24463400903,
+            "high1d": 2672.77,
+            "low1d": 2537.08,
+            "circulatingSupply": 120720837.7282896,
+            "dilutedMarketCap": 310611056434,
+            "marketCapPercentChange1d": -2.10378,
+            "priceChange1d": -56.59942941223153,
+            "pricePercentChange1h": -0.45446671387142507,
+            "pricePercentChange1d": -2.153454228746019,
+            "pricePercentChange7d": -3.8789913874365616,
+            "pricePercentChange14d": -1.561782519981286,
+            "pricePercentChange30d": 2.531018097702068,
+            "pricePercentChange200d": -27.64435990953756,
+            "pricePercentChange1y": -27.556969487030546
+        }
+    },
+    };
+  });
+}
+
 export async function mockBridgeGetTokens(mockServer: Mockttp) {
   return await mockServer.forGet(BRIDGED_TOKEN_LIST_API).thenCallback(() => {
     return {
@@ -1517,6 +1772,148 @@ export async function mockBridgeGetTokens(mockServer: Mockttp) {
   });
 }
 
+export async function mockGetBridgeEthToSolStatusComplete(mockServer: Mockttp) {
+  console.log('mockGetBridgeStatus');
+  const statusResponse = await readResponseJsonFile(
+    '/bridge/bridgeEthToSolTransactionStatusComplete.json',
+  );
+  const response = {
+    statusCode: 200,
+    json: statusResponse,
+  };
+
+  return await mockServer
+    .forGet(BRIDGE_TX_STATUS)
+    .thenCallback(() => {
+      return response;
+    });
+}
+
+export async function mockGetBridgeStatusComplete(mockServer: Mockttp) {
+  console.log('mockGetBridgeStatus');
+  const statusResponse = await readResponseJsonFile(
+    '/bridge/bridgeTransactionStatusComplete.json',
+  );
+  const response = {
+    statusCode: 200,
+    json: statusResponse,
+  };
+
+  return await mockServer
+    .forGet(BRIDGE_TX_STATUS)
+    .thenCallback(() => {
+      return response;
+    });
+}
+
+export async function mockGetBridgeStatusPending(mockServer: Mockttp) {
+  console.log('mockGetBridgeStatus');
+  const pendingStatus = await readResponseJsonFile(
+    '/bridge/bridgeTransactionStatusPending.json',
+  );
+  const response = {
+    statusCode: 200,
+    json: pendingStatus,
+  };
+
+  return await mockServer
+    .forGet(BRIDGE_TX_STATUS)
+    .thenCallback(() => {
+      return response;
+    });
+}
+
+export async function mockSubmitEthToSolTx(mockServer: Mockttp) {
+  console.log('mockGetBridgeStatus');
+  const pendingStatus = await readResponseJsonFile(
+    '/bridge/submitEthToSolTx.json',
+  );
+  const response = {
+    statusCode: 200,
+    json: pendingStatus,
+  };
+
+  return await mockServer
+    .forGet(TRANSACTION_API('1', 'submitTransactions'))
+    .thenCallback(() => {
+      return response;
+    });
+}
+
+export async function mockBatchStatusEthToSolTx(mockServer: Mockttp) {
+  console.log('mockBatchStatusSuccess');
+  const success = await readResponseJsonFile(
+    '/bridge/batchStatusSuccess.json',
+  );
+  const response = {
+    statusCode: 200,
+    json: success,
+  };
+
+  return await mockServer
+    .forGet(TRANSACTION_API('1', 'batchStatus'))
+    .thenCallback(() => {
+      return response;
+    });
+}
+
+export async function mockTokenApiEth(mockServer: Mockttp) {
+  console.log('mockTokenApiEth');
+  const tokenApiEthResponse = await readResponseJsonFile(
+    '/bridge/tokenApiEth.json',
+  );
+  const response = {
+    statusCode: 200,
+    json: tokenApiEthResponse,
+  };
+
+  return await mockServer
+    .forGet(TOKEN_API_TOKENS)
+    .thenCallback(() => {
+      return response;
+    });
+}
+
+export async function mockGetBridgeEthToSolSuccessTransaction(mockServer: Mockttp) {
+  const response = await readResponseJsonFile('bridge/getSuccessTransactionEthToSol.json');
+  return await mockServer.forPost(ETHEREUM_MAINNET_REGEX).withBodyIncluding('getTransaction').thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: {
+        jsonrpc:"2.0",
+        id:"629369fa-9639-4a41-8da2-ca1e58e9e124",
+        result:"0x0"
+      }
+    };
+  });
+}
+
+export async function mockGetTransactionsAccountApi(mockServer: Mockttp) {
+  console.log('mockGetTransactionsAccountApi');
+  const response = await readResponseJsonFile('bridge/transactionsAccountApi.json');
+    return await mockServer
+      .forGet('https://accounts.api.cx.metamask.io/v1/accounts/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/transactions')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: response,
+        };
+      });
+}
+
+export async function mockGetTransactionsAccountBalance(mockServer: Mockttp) {
+  console.log('mockGetTransactionsAccountBalance');
+  const response = await readResponseJsonFile('bridge/ethAccountPositiveBalance.json');
+    return await mockServer
+      .forGet('https://accounts.api.cx.metamask.io/v2/accounts/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/balances')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: response,
+        };
+      });
+}
+
 const featureFlags = {
   refreshRate: 30000,
   maxRefreshCount: 5,
@@ -1553,6 +1950,8 @@ export async function withSolanaAccountSnap(
     mockSwapUSDtoSOL,
     mockSwapSOLtoUSDC,
     mockSwapWithNoQuotes,
+    mockBridgeSOLtoEth,
+    mockBridgeEthtoSol,
     walletConnect = false,
     dappPaths,
     withProtocolSnap,
@@ -1568,6 +1967,8 @@ export async function withSolanaAccountSnap(
     mockSwapUSDtoSOL?: boolean;
     mockSwapSOLtoUSDC?: boolean;
     mockSwapWithNoQuotes?: boolean;
+    mockBridgeSOLtoEth?: boolean;
+    mockBridgeEthtoSol?: boolean;
     walletConnect?: boolean;
     dappPaths?: string[];
     withProtocolSnap?: boolean;
@@ -1687,6 +2088,40 @@ export async function withSolanaAccountSnap(
           );
         }
 
+        if (mockBridgeSOLtoEth) {
+          mockList.push(await mockPriceApiSpotPriceSolanaEthBridge(mockServer));
+          mockList.push(await mockPriceApiSpotPriceSolanaEthMarketDataBridge(mockServer));
+          mockList.push(await mockQuoteFromSoltoEth(mockServer));
+          mockList.push(await mockEthereumTopAssets(mockServer));
+          mockList.push(await mockTokensEthereum(mockServer));
+          mockList.push(await mockGetTokensByChainId(mockServer, 1));
+          mockList.push(await mockGetSolToEthTransaction(mockServer));
+          mockList.push(await mockSendTransaction(mockServer));
+          mockList.push(await mockGetSuccessSignaturesForAddress(mockServer, '4uduPRX7YdBDk5xQzJnMaXtUKt2VmjV9Z4X4TM82hmJyDzZ1cz8RxWuB8mGPutn7Z9QUWx7U13jK4PSzhFL4Q7Ji'));
+          mockList.push(await mockGetBridgeStatusComplete(mockServer));
+        }
+
+        if (mockBridgeEthtoSol) {
+          mockList.push(await mockPriceApiSpotPriceSolanaEthBridge(mockServer));
+          mockList.push(await mockPriceApiSpotPriceSolanaEthMarketDataBridge(mockServer));
+          mockList.push(await mockQuoteFromEthtoSol(mockServer));
+          mockList.push(await mockEthereumTopAssets(mockServer));
+          mockList.push(await mockGetTokensByChainId(mockServer, 1151111081099710));
+          mockList.push(await mockSubmitEthToSolTx(mockServer));
+          mockList.push(await mockGetBridgeEthToSolStatusComplete(mockServer));
+          mockList.push(await mockPriceApiSpotPriceEtheToSol(mockServer));
+         //mockList.push(await mockAccountsApiBalanceEth(mockServer));
+          mockList.push(await mockEthCall(mockServer));
+          mockList.push(await mockTokenApiEth(mockServer));
+          mockList.push(await mockEthGetTransactionReceipt(mockServer));
+          mockList.push(await mockEthGetCode(mockServer));
+          mockList.push(await mockGetSuccessSignaturesForAddress(mockServer, '4RXtfgnp8xreqTjgJFrFkwNv3ahmmzmGS9nZkFrmi7nwHFP7eUrvezbJ9r4JdnchDuCtYHTDcxFmJh8rJJSxztEn' ));
+          mockList.push(await mockEthGetTransactionCount(mockServer));
+          mockList.push(await mockEthSendRawTransaction(mockServer))
+          mockList.push(await mockGetTransactionsAccountApi(mockServer))
+          mockList.push(await mockGetTransactionsAccountBalance(mockServer))
+        }
+
         if (withProtocolSnap) {
           mockList.push(await mockProtocolSnap(mockServer));
         }
@@ -1719,6 +2154,7 @@ export async function withSolanaAccountSnap(
       extensionId: string;
     }) => {
       await loginWithoutBalanceValidation(driver);
+      await toggleStxSetting(driver);
       const headerComponent = new HeaderNavbar(driver);
       const accountListPage = new AccountListPage(driver);
 

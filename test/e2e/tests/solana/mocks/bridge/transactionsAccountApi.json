@@ -1,0 +1,44 @@
+{
+  "data": [
+      {
+          "hash": "0xc0937be9c13eabd55cf89e4bc615a62e3cce9d381b09ebee041eef1621a60b23",
+          "timestamp": "2025-06-18T07:52:59.000Z",
+          "chainId": 1,
+          "accountId": "eip155:1:0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+          "blockNumber": 22729997,
+          "blockHash": "0xaf409a55221b3e51e4aa1fdb66ef55405d7928e52afb671f04bbd4e9939a75c3",
+          "gas": 212414,
+          "gasUsed": 164642,
+          "gasPrice": "839735572",
+          "effectiveGasPrice": "839735572",
+          "nonce": 75,
+          "cumulativeGasUsed": 14739149,
+          "methodId": "0x3ce33bff",
+          "value": "100000000000000",
+          "to": "0x0439e60f02a8900a951603950d8d4527f400c3f1",
+          "from": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+          "isError": false,
+          "valueTransfers": [
+              {
+                  "from": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+                  "to": "0x0439e60f02a8900a951603950d8d4527f400c3f1",
+                  "amount": "100000000000000",
+                  "decimal": 18,
+                  "transferType": "normal"
+              }
+          ],
+          "logs": [],
+          "toAddressName": "METAMASK_BRIDGE_V2",
+          "transactionProtocol": "METAMASK",
+          "transactionCategory": "BRIDGE_OUT",
+          "transactionType": "METAMASK_BRIDGE_V2_BRIDGE_OUT",
+          "readable": "MetaMask Bridge V2: Bridge Withdraw"
+      }
+  ],
+  "unprocessedNetworks": [],
+  "pageInfo": {
+      "hasNextPage": false,
+      "cursor": null,
+      "count": 26
+  }
+}
