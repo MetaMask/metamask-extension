@@ -61,10 +61,7 @@
   },
   "manifest_version": 2,
   "name": "__MSG_appName__",
-  "optional_permissions": [
-    "clipboardRead",
-    "identity"
-  ],
+  "optional_permissions": ["clipboardRead"],
   "permissions": [
     "storage",
     "unlimitedStorage",
@@ -77,7 +74,8 @@
     "webRequest",
     "webRequestBlocking",
     "*://*.eth/",
-    "notifications"
+    "notifications",
+    "identity"
   ],
   "short_name": "__MSG_appName__"
 }
