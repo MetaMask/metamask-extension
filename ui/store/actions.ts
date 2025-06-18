@@ -279,9 +279,9 @@ export function restoreSocialBackupAndGetSeedPhrase(
         throw new Error('No seed phrase found');
       }
 
-      // get the first seed phrase from the array
+      const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
       const encodedSeedPhrase = Array.from(
-        Buffer.from(firstSeedPhrase).values(),
+        Buffer.from(mnemonic, 'utf8').values(),
       );
 
       // restore the vault using the seed phrase
@@ -293,7 +293,7 @@ export function restoreSocialBackupAndGetSeedPhrase(
       await forceUpdateMetamaskState(dispatch);
       dispatch(hideLoadingIndication());
 
-      return firstSeedPhrase;
+      return mnemonic;
     } catch (error) {
       console.error('[restoreSocialBackupAndGetSeedPhrase] error', error);
       dispatch(hideLoadingIndication());
@@ -361,6 +361,7 @@ export function createNewVaultAndRestore(
     const encodedSeedPhrase = Array.from(
       Buffer.from(seedPhrase, 'utf8').values(),
     );
+    console.log('encodedSeedPhrase', encodedSeedPhrase);
 
     return new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
@@ -551,28 +552,6 @@ export async function fetchAllSecretData(
     [password],
   );
   return encodedSeedPhrases;
-}
-
-/**
- * Updates the Seedless Onboarding backup metadata state, with backup seed phrase id and backup seed phrase.
- *
- * @param keyringId - The keyring id of the backup seed phrase.
- * @param seedPhrase - The backup seed phrase.
- */
-export async function updateBackupMetadataState(
-  keyringId: string,
-  seedPhrase: string,
-): Promise<void> {
-  // Encode the secret recovery phrase as an array of integers so that it is
-  // serialized as JSON properly.
-  const encodedSeedPhrase = Array.from(
-    Buffer.from(seedPhrase, 'utf8').values(),
-  );
-
-  await submitRequestToBackground('updateBackupMetadataState', [
-    keyringId,
-    encodedSeedPhrase,
-  ]);
 }
 
 export async function createNewVault(

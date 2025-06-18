@@ -172,7 +172,10 @@ import {
   BRIDGE_STATUS_CONTROLLER_NAME,
   BridgeStatusAction,
 } from '@metamask/bridge-status-controller';
-import { RecoveryError } from '@metamask/seedless-onboarding-controller';
+import {
+  RecoveryError,
+  SecretType,
+} from '@metamask/seedless-onboarding-controller';
 
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
@@ -4953,7 +4956,8 @@ export default class MetamaskController extends EventEmitter {
         // if the social login flow is completed, update the SocialBackupMetadataState with the restored seed phrase
         this.seedlessOnboardingController.updateBackupMetadataState({
           keyringId: this.keyringController.state.keyrings[0].metadata.id,
-          seedPhrase: seedPhraseAsUint8Array,
+          data: seedPhraseAsUint8Array,
+          type: SecretType.Mnemonic,
         });
       }
 
