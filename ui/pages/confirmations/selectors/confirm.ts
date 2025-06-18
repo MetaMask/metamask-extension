@@ -42,3 +42,13 @@ export function getUpgradeSplashPageAcknowledgedForAccounts(
 ): string[] {
   return state.metamask.upgradeSplashPageAcknowledgedForAccounts ?? [];
 }
+
+export function selectEnableEnforcedSimulations(
+  state: ConfirmMetamaskState,
+  transactionId: string,
+): boolean {
+  return (
+    state.metamask.enableEnforcedSimulationsForTransactions[transactionId] ??
+    state.metamask.enableEnforcedSimulations
+  );
+}

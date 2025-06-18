@@ -17,6 +17,8 @@ import { RowAlertKey } from '../../../../components/app/confirm/info/row/constan
 import { ConfirmInfoSection } from '../../../../components/app/confirm/info/row/section';
 import {
   Box,
+  ButtonIcon,
+  ButtonIconSize,
   Icon,
   IconName,
   IconSize,
@@ -26,6 +28,7 @@ import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.c
 import Tooltip from '../../../../components/ui/tooltip';
 import {
   AlignItems,
+  BlockSize,
   BorderColor,
   BorderRadius,
   Display,
@@ -38,6 +41,9 @@ import {
 import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { selectTransactionMetadata } from '../../../../selectors';
+import { SimulationSettingsModal } from '../modals/simulation-settings-modal/simulation-settings-modal';
+import { selectConfirmationAdvancedDetailsOpen } from '../../selectors/preferences';
+import { useIsEnforcedSimulationsSupported } from '../../hooks/useIsEnforcedSimulationsSupported';
 import { BalanceChangeList } from './balance-change-list';
 import { BalanceChange } from './types';
 import { useBalanceChanges } from './useBalanceChanges';
@@ -117,6 +123,11 @@ const EmptyContent: React.FC = () => {
 
 const HeaderWithAlert = ({ transactionId }: { transactionId: string }) => {
   const t = useI18nContext();
+  const isEnforcedSimulationsSupported = useIsEnforcedSimulationsSupported();
+
+  const showAdvancedDetails = useSelector(
+    selectConfirmationAdvancedDetailsOpen,
+  );
 
   const transactionMetadata = useSelector((state) =>
     selectTransactionMetadata(state, transactionId),
@@ -134,19 +145,47 @@ const HeaderWithAlert = ({ transactionId }: { transactionId: string }) => {
     ? t('simulationDetailsTitleTooltipEnforced')
     : t('simulationDetailsTitleTooltip');
 
+  const [settingsModalVisible, setSettingsModalVisible] =
+    useState<boolean>(false);
+
+  const showSettingsIcon =
+    showAdvancedDetails && isEnforcedSimulationsSupported;
+
   return (
-    <ConfirmInfoAlertRow
-      alertKey={RowAlertKey.Resimulation}
-      label={label}
-      ownerId={transactionId}
-      tooltip={tooltip}
-      tooltipIcon={isEnforced && IconName.SecurityTick}
-      tooltipIconColor={isEnforced && IconColor.infoDefault}
-      style={{
-        paddingLeft: 0,
-        paddingRight: 0,
-      }}
-    />
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      justifyContent={JustifyContent.spaceBetween}
+      width={BlockSize.Full}
+      alignItems={AlignItems.center}
+    >
+      <ConfirmInfoAlertRow
+        alertKey={RowAlertKey.Resimulation}
+        label={label}
+        ownerId={transactionId}
+        tooltip={tooltip}
+        tooltipIcon={isEnforced && IconName.SecurityTick}
+        tooltipIconColor={isEnforced && IconColor.infoDefault}
+        style={{
+          paddingLeft: 0,
+          paddingRight: 0,
+        }}
+      />
+      {showSettingsIcon && (
+        <ButtonIcon
+          iconName={IconName.Setting}
+          size={ButtonIconSize.Sm}
+          color={IconColor.iconMuted}
+          ariaLabel="simulation-settings"
+          onClick={() => setSettingsModalVisible(true)}
+        />
+      )}
+      {settingsModalVisible && (
+        <SimulationSettingsModal
+          onClose={() => setSettingsModalVisible(false)}
+        />
+      )}
+    </Box>
   );
 };
 

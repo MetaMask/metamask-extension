@@ -35,6 +35,7 @@ import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
 } from '../../controllers/swaps/swaps.types';
+import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import {
   InstitutionalSnapControllerPublishHookAction,
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
@@ -44,6 +45,7 @@ type MessengerActions =
   | ApprovalControllerActions
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerGetStateAction
+  | AppStateControllerGetStateAction
   | DelegationControllerSignDelegationAction
   | InstitutionalSnapControllerPublishHookAction
   | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction
@@ -117,6 +119,7 @@ export function getTransactionControllerInitMessenger(
       'ApprovalController:endFlow',
       'ApprovalController:startFlow',
       'ApprovalController:updateRequestState',
+      'AppStateController:getState',
       'DelegationController:signDelegation',
       'InstitutionalSnapController:beforeCheckPendingTransactionHook',
       'InstitutionalSnapController:publishHook',
