@@ -242,7 +242,7 @@ import {
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
-import { endTrace, trace } from '../../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
@@ -2096,9 +2096,12 @@ export default class MetamaskController extends EventEmitter {
           getDismissSmartAccountSuggestionEnabled: () =>
             this.preferencesController.state.preferences
               .dismissSmartAccountSuggestionEnabled,
+          getIsSmartTransaction: (chainId) =>
+            getIsSmartTransaction(this._getMetaMaskState(), chainId),
           isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
             this.txController,
           ),
+          isRelaySupported,
         },
         this.controllerMessenger,
       ),
@@ -4794,6 +4797,12 @@ export default class MetamaskController extends EventEmitter {
 
   async _addAccountsWithBalance(keyringId) {
     try {
+      await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
+        false,
+      );
+      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
+        false,
+      );
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
 
@@ -4901,6 +4910,9 @@ export default class MetamaskController extends EventEmitter {
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
     } finally {
+      await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
+        true,
+      );
       await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
         true,
       );
@@ -8181,12 +8193,31 @@ export default class MetamaskController extends EventEmitter {
     ) {
       return;
     }
+    const startTime = performance.now();
+
+    const traceContext = trace({
+      name: TraceName.OnFinishedTransaction,
+      startTime: performance.timeOrigin,
+    });
+
+    trace({
+      name: TraceName.OnFinishedTransaction,
+      startTime: performance.timeOrigin,
+      parentContext: traceContext,
+      data: {
+        transactionMeta,
+      },
+    });
 
     await this._createTransactionNotifcation(transactionMeta);
     await this._updateNFTOwnership(transactionMeta);
     this._trackTransactionFailure(transactionMeta);
     await this.tokenBalancesController.updateBalancesByChainId({
       chainId: transactionMeta.chainId,
+    });
+    endTrace({
+      name: TraceName.OnFinishedTransaction,
+      timestamp: performance.timeOrigin + startTime,
     });
   }
 
