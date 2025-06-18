@@ -336,6 +336,7 @@ export const KATANA_DISPLAY_NAME = 'Katana';
 export const MONAD_TESTNET_DISPLAY_NAME = 'Monad Testnet';
 export const SOPHON_DISPLAY_NAME = 'Sophon';
 export const SOPHON_TESTNET_DISPLAY_NAME = 'Sophon Testnet';
+export const SEI_DISPLAY_NAME = 'Sei Network';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -399,6 +400,7 @@ export const CURRENCY_SYMBOLS = {
   SEI: 'SEI',
   KATANA: 'ETH',
   SOPHON: 'SOPH',
+  SEI: 'SEI',
 } as const;
 
 // Non-EVM currency symbols
