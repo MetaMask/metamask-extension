@@ -8,7 +8,7 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import { Driver } from '../../../webdriver/driver';
 import { mockNoDeFiPositionFeatureFlag } from '../../confirmations/helpers';
 
-import { switchToNetworkFlow } from '../../../page-objects/flows/network.flow';
+import { switchToNetworkFromSendFlow } from '../../../page-objects/flows/network.flow';
 
 describe('Check DeFi empty state when no defi positions', function () {
   it('user should be able to view empty', async function () {
@@ -31,7 +31,7 @@ describe('Check DeFi empty state when no defi positions', function () {
         await defiTab.waitForStakeLink();
 
         // switch network
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
 
         // check emtry state still present
         await defiTab.openNetworksFilterAndClickPopularNetworks();
