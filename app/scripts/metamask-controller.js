@@ -4222,6 +4222,10 @@ export default class MetamaskController extends EventEmitter {
         userStorageController.performDeleteStorageAllFeatureEntries.bind(
           userStorageController,
         ),
+      syncContactsWithUserStorage:
+        userStorageController.syncContactsWithUserStorage.bind(
+          userStorageController,
+        ),
 
       // NotificationServicesController
       checkAccountsPresence:

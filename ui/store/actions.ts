@@ -6316,6 +6316,33 @@ export function deleteAccountSyncingDataFromUserStorage(): ThunkAction<
 }
 
 /**
+ * Synchronizes address book data with user storage between devices.
+ *
+ * This function sends a request to the background script to sync address book data and update the state accordingly.
+ * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
+ *
+ * @returns A thunk action that, when dispatched, attempts to synchronize address book data with user storage between devices.
+ */
+export function syncContactsWithUserStorage(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      const response = await submitRequestToBackground(
+        'syncContactsWithUserStorage',
+      );
+      return response;
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
  * Marks MetaMask notifications as read.
  *
  * This function sends a request to the background script to mark the specified notifications as read.

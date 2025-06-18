@@ -2857,6 +2857,28 @@ describe('Actions', () => {
     });
   });
 
+  describe('syncContactsWithUserStorage', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls syncContactsWithUserStorage in the background', async () => {
+      const store = mockStore();
+
+      const syncContactsWithUserStorageStub = sinon
+        .stub()
+        .callsFake((cb) => cb());
+
+      background.getApi.returns({
+        syncContactsWithUserStorage: syncContactsWithUserStorageStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.syncContactsWithUserStorage());
+      expect(syncContactsWithUserStorageStub.calledOnceWith()).toBe(true);
+    });
+  });
+
   describe('deleteAccountSyncingDataFromUserStorage', () => {
     afterEach(() => {
       sinon.restore();
