@@ -9,6 +9,8 @@ import {
 import mockState from '../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import { getDomainResolutions } from '../ducks/domains';
+import { IconName } from '../components/component-library';
+import { IconColor } from '../helpers/constants/design-system';
 import { useDisplayName } from './useDisplayName';
 import { useNames } from './useName';
 import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
@@ -100,7 +102,7 @@ describe('useDisplayName', () => {
   function mockDomainResolutions(address: string, ensName: string) {
     domainResolutionsMock.mockReturnValue([
       {
-        addressBookEntryName: null,
+        addressBookEntryName: undefined,
         domainName: ensName,
         protocol: 'Ethereum Name Service',
         resolvedAddress: address,
@@ -165,7 +167,7 @@ describe('useDisplayName', () => {
       name: null,
       displayState: TrustSignalDisplayState.Unknown,
       icon: {
-        name: 'question',
+        name: IconName.Question,
         color: undefined,
       },
     });
@@ -283,7 +285,7 @@ describe('useDisplayName', () => {
         name: null,
         displayState: TrustSignalDisplayState.Unknown,
         icon: {
-          name: 'question',
+          name: IconName.Question,
           color: undefined,
         },
       });
@@ -339,7 +341,7 @@ describe('useDisplayName', () => {
         name: null,
         displayState: TrustSignalDisplayState.Unknown,
         icon: {
-          name: 'question',
+          name: IconName.Question,
           color: undefined,
         },
       });
@@ -390,7 +392,7 @@ describe('useDisplayName', () => {
         name: null,
         displayState: TrustSignalDisplayState.Unknown,
         icon: {
-          name: 'question',
+          name: IconName.Question,
           color: undefined,
         },
       });
@@ -441,7 +443,7 @@ describe('useDisplayName', () => {
         name: null,
         displayState: TrustSignalDisplayState.Unknown,
         icon: {
-          name: 'question',
+          name: IconName.Question,
           color: undefined,
         },
       });
@@ -467,7 +469,7 @@ describe('useDisplayName', () => {
         name: null,
         displayState: TrustSignalDisplayState.Unknown,
         icon: {
-          name: 'question',
+          name: IconName.Question,
           color: undefined,
         },
       });
@@ -518,7 +520,7 @@ describe('useDisplayName', () => {
         name: null,
         displayState: TrustSignalDisplayState.Unknown,
         icon: {
-          name: 'question',
+          name: IconName.Question,
           color: undefined,
         },
       });
@@ -639,6 +641,143 @@ describe('useDisplayName', () => {
         ERC20_IMAGE_MOCK,
       );
       mockWatchedNFTName(VALUE_MOCK, VARIATION_MOCK, WATCHED_NFT_NAME_MOCK);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: ERC20_TOKEN_NAME_MOCK,
+        hasPetname: false,
+        image: ERC20_IMAGE_MOCK,
+        name: ERC20_TOKEN_NAME_MOCK,
+        displayState: TrustSignalDisplayState.Recognized,
+        icon: null,
+      });
+    });
+  });
+
+  describe('Trust Signal Priority', () => {
+    it('malicious state takes precedence over petname', () => {
+      mockPetname(PETNAME_MOCK);
+      mockERC20Token(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+        ERC20_IMAGE_MOCK,
+      );
+
+      useTrustSignalsMock.mockReturnValue([
+        {
+          state: TrustSignalDisplayState.Malicious,
+          label: 'Malicious',
+        },
+      ]);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: ERC20_TOKEN_NAME_MOCK,
+        hasPetname: true,
+        image: ERC20_IMAGE_MOCK,
+        name: PETNAME_MOCK,
+        displayState: TrustSignalDisplayState.Malicious,
+        icon: {
+          name: IconName.Danger,
+          color: IconColor.errorDefault,
+        },
+      });
+    });
+
+    it('verified state shows when no display name exists', () => {
+      useTrustSignalsMock.mockReturnValue([
+        {
+          state: TrustSignalDisplayState.Verified,
+          label: 'Verified',
+        },
+      ]);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: false,
+        image: undefined,
+        name: 'Verified',
+        displayState: TrustSignalDisplayState.Verified,
+        icon: {
+          name: IconName.VerifiedFilled,
+          color: IconColor.infoDefault,
+        },
+      });
+    });
+
+    it('warning state shows when no display name exists', () => {
+      useTrustSignalsMock.mockReturnValue([
+        {
+          state: TrustSignalDisplayState.Warning,
+          label: 'Warning',
+        },
+      ]);
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: false,
+        image: undefined,
+        name: 'Warning',
+        displayState: TrustSignalDisplayState.Warning,
+        icon: null,
+      });
+    });
+
+    it('recognized name takes precedence over verified trust signal', () => {
+      mockERC20Token(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+        ERC20_IMAGE_MOCK,
+      );
+
+      useTrustSignalsMock.mockReturnValue([
+        {
+          state: TrustSignalDisplayState.Verified,
+          label: 'Verified',
+        },
+      ]);
 
       const { result } = renderHookWithProvider(
         () =>

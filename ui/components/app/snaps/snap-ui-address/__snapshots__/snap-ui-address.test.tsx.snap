@@ -177,7 +177,7 @@ exports[`SnapUIAddress renders Ethereum address 1`] = `
           <rect
             fill="#F29602"
             height="32"
-            transform="translate(-2.8175089622830405 4.951916544006229) rotate(230.4 16 16)"
+            transform="translate(-2.81750896228304 4.951916544006229) rotate(230.4 16 16)"
             width="32"
             x="0"
             y="0"
@@ -489,7 +489,7 @@ exports[`SnapUIAddress renders legacy Ethereum address 1`] = `
           <rect
             fill="#F29602"
             height="32"
-            transform="translate(-2.8175089622830405 4.951916544006229) rotate(230.4 16 16)"
+            transform="translate(-2.81750896228304 4.951916544006229) rotate(230.4 16 16)"
             width="32"
             x="0"
             y="0"

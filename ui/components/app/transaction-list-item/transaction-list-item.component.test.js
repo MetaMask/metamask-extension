@@ -4,7 +4,10 @@ import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
-import { useTrustSignals } from '../../../hooks/useTrustSignals';
+import {
+  TrustSignalDisplayState,
+  useTrustSignals,
+} from '../../../hooks/useTrustSignals';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import {
   MetaMetricsEventCategory,
@@ -165,10 +168,9 @@ describe('TransactionListItem', () => {
       () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
     );
 
-    // Mock useTrustSignals to return appropriate array structure
     useTrustSignalsMock.mockImplementation((requests) =>
       requests.map(() => ({
-        state: 'unknown',
+        state: TrustSignalDisplayState.Unknown,
         label: null,
       })),
     );

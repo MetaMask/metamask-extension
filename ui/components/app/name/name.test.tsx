@@ -11,6 +11,8 @@ import { useDisplayName } from '../../../hooks/useDisplayName';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
+import { IconName } from '../../component-library';
+import { IconColor } from '../../../helpers/constants/design-system';
 import Name from './name';
 
 jest.mock('../../../hooks/useDisplayName');
@@ -44,7 +46,10 @@ describe('Name', () => {
       name: null,
       hasPetname: false,
       displayState: TrustSignalDisplayState.Unknown,
-      icon: null,
+      icon: {
+        name: IconName.Question,
+        color: undefined,
+      },
     });
 
     const { container } = renderWithProvider(
@@ -64,7 +69,10 @@ describe('Name', () => {
       name: null,
       hasPetname: false,
       displayState: TrustSignalDisplayState.Unknown,
-      icon: null,
+      icon: {
+        name: IconName.Question,
+        color: undefined,
+      },
     });
 
     const { container } = renderWithProvider(
@@ -84,7 +92,10 @@ describe('Name', () => {
       name: SAVED_NAME_MOCK,
       hasPetname: true,
       displayState: TrustSignalDisplayState.Petname,
-      icon: null,
+      icon: {
+        name: IconName.VerifiedFilled,
+        color: IconColor.infoDefault,
+      },
     });
 
     const { container } = renderWithProvider(
@@ -104,7 +115,10 @@ describe('Name', () => {
       name: "Very long and length saved name that doesn't seem to end, really.",
       hasPetname: true,
       displayState: TrustSignalDisplayState.Petname,
-      icon: null,
+      icon: {
+        name: IconName.VerifiedFilled,
+        color: IconColor.infoDefault,
+      },
     });
 
     const { container } = renderWithProvider(
@@ -125,7 +139,10 @@ describe('Name', () => {
       hasPetname: true,
       image: 'test-image',
       displayState: TrustSignalDisplayState.Petname,
-      icon: null,
+      icon: {
+        name: IconName.VerifiedFilled,
+        color: IconColor.infoDefault,
+      },
     });
 
     const { container } = renderWithProvider(
@@ -156,7 +173,10 @@ describe('Name', () => {
           displayState: hasPetname
             ? TrustSignalDisplayState.Petname
             : TrustSignalDisplayState.Unknown,
-          icon: null,
+          icon: {
+            name: IconName.VerifiedFilled,
+            color: IconColor.infoDefault,
+          },
         });
 
         renderWithProvider(

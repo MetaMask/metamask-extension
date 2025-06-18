@@ -32,7 +32,7 @@ const NameDisplay = memo(
     });
 
     const renderIcon = () => {
-      // If icon exists, use it (trust signal icon)
+      // If icon exists, use it (trust signal /unknown)
       if (icon) {
         return (
           <Icon

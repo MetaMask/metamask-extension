@@ -31,7 +31,6 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-// Mock the useDisplayName hook
 jest.mock('../../../../hooks/useDisplayName', () => ({
   useDisplayName: jest.fn(),
 }));
@@ -170,7 +169,6 @@ describe('NameDetails', () => {
     jest.resetAllMocks();
     useDispatchMock.mockReturnValue(jest.fn());
 
-    // Default mock for useDisplayName
     useDisplayNameMock.mockReturnValue({
       name: null,
       hasPetname: false,
@@ -283,7 +281,6 @@ describe('NameDetails', () => {
       return undefined;
     });
 
-    // Mock useDisplayName for no saved name
     useDisplayNameMock.mockReturnValue({
       name: null,
       hasPetname: false,
@@ -304,7 +301,6 @@ describe('NameDetails', () => {
   });
 
   it('renders with saved name', () => {
-    // Mock useDisplayName for saved name
     useDisplayNameMock.mockReturnValue({
       name: SAVED_NAME_MOCK,
       hasPetname: true,
@@ -325,7 +321,6 @@ describe('NameDetails', () => {
   });
 
   it('renders with recognized name', () => {
-    // Mock useDisplayName for recognized name
     useDisplayNameMock.mockReturnValue({
       name: 'iZUMi Bond USD',
       hasPetname: false,
@@ -346,7 +341,6 @@ describe('NameDetails', () => {
   });
 
   it('renders proposed names', async () => {
-    // Mock useDisplayName for saved name
     useDisplayNameMock.mockReturnValue({
       name: SAVED_NAME_MOCK,
       hasPetname: true,
@@ -374,7 +368,6 @@ describe('NameDetails', () => {
   });
 
   it('saves current name on save button click', async () => {
-    // Mock useDisplayName for no saved name but with display name
     useDisplayNameMock.mockReturnValue({
       name: 'TestName',
       hasPetname: false,
@@ -408,7 +401,6 @@ describe('NameDetails', () => {
   });
 
   it('saves selected source on save button click', async () => {
-    // Mock useDisplayName for no saved name but with display name
     useDisplayNameMock.mockReturnValue({
       name: 'TestName',
       hasPetname: false,
@@ -442,7 +434,6 @@ describe('NameDetails', () => {
   });
 
   it('clears current name on save button click if name is empty', async () => {
-    // Mock useDisplayName for saved name
     useDisplayNameMock.mockReturnValue({
       name: SAVED_NAME_MOCK,
       hasPetname: true,
@@ -472,7 +463,6 @@ describe('NameDetails', () => {
   });
 
   it('clears selected source when name changed', async () => {
-    // Mock useDisplayName for saved name
     useDisplayNameMock.mockReturnValue({
       name: SAVED_NAME_MOCK,
       hasPetname: true,
@@ -562,7 +552,6 @@ describe('NameDetails', () => {
         }),
       );
 
-      // Mock useDisplayName for saved name
       useDisplayNameMock.mockReturnValue({
         name: SAVED_NAME_MOCK,
         hasPetname: true,
@@ -639,7 +628,6 @@ describe('NameDetails', () => {
         return undefined;
       });
 
-      // Mock useDisplayName for no saved name
       useDisplayNameMock.mockReturnValue({
         name: null,
         hasPetname: false,
@@ -737,7 +725,6 @@ describe('NameDetails', () => {
         return undefined;
       });
 
-      // Mock useDisplayName for saved name
       useDisplayNameMock.mockReturnValue({
         name: SAVED_NAME_MOCK,
         hasPetname: true,
@@ -840,7 +827,6 @@ describe('NameDetails', () => {
         return undefined;
       });
 
-      // Mock useDisplayName for saved name
       useDisplayNameMock.mockReturnValue({
         name: SAVED_NAME_MOCK,
         hasPetname: true,
@@ -877,7 +863,6 @@ describe('NameDetails', () => {
 
   describe('trust signal display states', () => {
     it('renders malicious state correctly', () => {
-      // Mock useDisplayName for malicious address
       useDisplayNameMock.mockReturnValue({
         name: null,
         hasPetname: false,
@@ -894,12 +879,10 @@ describe('NameDetails', () => {
         store,
       );
 
-      // Check for malicious state title
       expect(getByText('Malicious address')).toBeInTheDocument();
     });
 
     it('renders warning state correctly', () => {
-      // Mock useDisplayName for warning address
       useDisplayNameMock.mockReturnValue({
         name: null,
         hasPetname: false,
@@ -916,12 +899,10 @@ describe('NameDetails', () => {
         store,
       );
 
-      // Check for warning state title
       expect(getByText('Suspicious address')).toBeInTheDocument();
     });
 
     it('renders verified state correctly', () => {
-      // Mock useDisplayName for verified address
       useDisplayNameMock.mockReturnValue({
         name: 'Verified Contract',
         hasPetname: false,
@@ -938,12 +919,10 @@ describe('NameDetails', () => {
         store,
       );
 
-      // Check for verified state title
       expect(getByText('Verified address')).toBeInTheDocument();
     });
 
     it('shows footer warning for malicious state', () => {
-      // Mock useDisplayName for malicious address
       useDisplayNameMock.mockReturnValue({
         name: null,
         hasPetname: false,
@@ -960,12 +939,10 @@ describe('NameDetails', () => {
         store,
       );
 
-      // Check for footer warning
       expect(getByText('Only save addresses you trust.')).toBeInTheDocument();
     });
 
     it('shows footer warning for warning state', () => {
-      // Mock useDisplayName for warning address
       useDisplayNameMock.mockReturnValue({
         name: null,
         hasPetname: false,
@@ -982,7 +959,6 @@ describe('NameDetails', () => {
         store,
       );
 
-      // Check for footer warning
       expect(getByText('Only save addresses you trust.')).toBeInTheDocument();
     });
   });
