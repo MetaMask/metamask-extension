@@ -1197,9 +1197,6 @@
   "confirmPassword": {
     "message": "Confirm password"
   },
-  "confirmPasswordPlaceholder": {
-    "message": "Re-enter your password"
-  },
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
@@ -1482,7 +1479,13 @@
     "message": "Create a new account"
   },
   "createPassword": {
+    "message": "MetaMask password"
+  },
+  "createPasswordCreate": {
     "message": "Create password"
+  },
+  "createPasswordDetails": {
+    "message": "Unlocks MetaMask on this device only."
   },
   "createSnapAccountDescription": {
     "message": "$1 wants to add a new account to MetaMask."
@@ -3456,8 +3459,8 @@
   "newPassword": {
     "message": "New password"
   },
-  "newPasswordPlaceholder": {
-    "message": "Enter a strong password"
+  "newPasswordCreate": {
+    "message": "Create new password"
   },
   "newPrivacyPolicyActionButton": {
     "message": "Read more"
@@ -3832,15 +3835,11 @@
   "onboardingAdvancedPrivacyNetworkTitle": {
     "message": "Choose your network"
   },
-  "onboardingContinueWith": {
-    "message": "Continue with $1",
-    "description": "$1 is the type of login used Google, Apple, etc."
-  },
   "onboardingCreateWallet": {
     "message": "Create a new wallet"
   },
   "onboardingImportWallet": {
-    "message": "I have an existing wallet"
+    "message": "Import using Secret Recovery Phrase"
   },
   "onboardingMetametricsAgree": {
     "message": "I agree"
@@ -3882,13 +3881,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
   },
-  "onboardingOptionIcon": {
-    "message": "$1 icon",
-    "description": "$1 is the icon name"
-  },
-  "onboardingOptionTitle": {
-    "message": "Choose an option to continue"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Launch extension"
   },
@@ -3907,16 +3899,6 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "Installation is complete!"
-  },
-  "onboardingSignInWith": {
-    "message": "Sign in with $1",
-    "description": "$1 is the type of login used Google, Apple, etc"
-  },
-  "onboardingSrpCreate": {
-    "message": "Continue with Secret Recovery Phrase"
-  },
-  "onboardingSrpImport": {
-    "message": "Import using Secret Recovery Phrase"
   },
   "onboardingSrpImportError": {
     "message": "Use only lowercase letters, check your spelling, and put the words in the original order."
@@ -3955,9 +3937,6 @@
   },
   "options": {
     "message": "Options"
-  },
-  "or": {
-    "message": "Or"
   },
   "origin": {
     "message": "Origin"
@@ -4014,7 +3993,7 @@
     "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
   },
   "passwordTermsWarning": {
-    "message": "MetaMask can’t recover this password."
+    "message": "If I forget this password, I’ll lose access to my wallet permanently. MetaMask can’t reset it for me."
   },
   "passwordToggleHide": {
     "message": "Hide Password"
@@ -6748,6 +6727,12 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
+  },
+  "useSmartAccountDescription": {
+    "message": "Keep this on to automatically switch accounts created within MetaMask to smart accounts whenever relevant features are available, such as faster transactions, lower network fees and payment flexibility on payment for those."
+  },
+  "useSmartAccountTitle": {
+    "message": "Use smart account"
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Automatically displaying tokens sent to your account involves communication with third party servers to fetch token’s images. Those serves will have access to your IP address."
