@@ -30,6 +30,7 @@ export const buttonLocator = {
   connectBip32Button: '#connectbip32',
   connectBip44Button: '#connectbip44',
   connectClientStatusButton: '#connectclient-status',
+  connectCronjobDurationButton: '#connectcronjob-duration',
   connectDialogsButton: '#connectdialogs',
   connectErrorsButton: '#connecterrors',
   connectGetEntropyButton: '#connectGetEntropySnap',
