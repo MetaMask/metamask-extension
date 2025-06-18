@@ -1,3 +1,7 @@
+const {
+  switchToNetworkFromSendFlow,
+} = require('../../page-objects/flows/network.flow');
+
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -56,13 +60,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         );
 
         // Network Selector
-        await driver.clickElement('[data-testid="network-display"]');
-
-        // Switch to second network
-        await driver.clickElement({
-          text: 'Localhost 8546',
-          css: 'p',
-        });
+        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
 
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two

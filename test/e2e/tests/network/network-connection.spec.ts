@@ -67,7 +67,6 @@ networkConfigs.forEach((config) => {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
 
-
           // Verify token is displayed
           await tokenList.check_tokenName(config.tokenSymbol);
 

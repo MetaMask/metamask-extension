@@ -1,3 +1,7 @@
+const {
+  switchToNetworkFromSendFlow,
+} = require('../../page-objects/flows/network.flow');
+
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -45,13 +49,7 @@ describe('Request Queuing - Extension and Dapp on different networks.', function
         );
 
         // Network Selector
-        await driver.clickElement('[data-testid="network-display"]');
-
-        // Switch to second network
-        await driver.clickElement({
-          text: 'Localhost 8546',
-          css: 'p',
-        });
+        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
@@ -77,7 +75,7 @@ describe('Request Queuing - Extension and Dapp on different networks.', function
 
         // Check correct network switched and on the correct network
         await driver.findElement({
-          css: '[data-testid="network-display"]',
+          css: '[data-testid="sort-by-popover-toggle"]',
           text: 'Localhost 8546',
         });
       },
