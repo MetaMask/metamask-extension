@@ -33,6 +33,7 @@ function useSignatureAlerts(): Alert[] {
 
 function useTransactionAlerts(): Alert[] {
   const accountTypeUpgradeAlerts = useAccountTypeUpgrade();
+  const trustSignalAlerts = useTrustSignalAlerts();
   const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
   const gasEstimateFailedAlerts = useGasEstimateFailedAlerts();
   const gasFeeLowAlerts = useGasFeeLowAlerts();
@@ -49,6 +50,7 @@ function useTransactionAlerts(): Alert[] {
   return useMemo(
     () => [
       ...accountTypeUpgradeAlerts,
+      ...trustSignalAlerts,
       ...firstTimeInteractionAlert,
       ...gasEstimateFailedAlerts,
       ...gasFeeLowAlerts,
@@ -64,6 +66,7 @@ function useTransactionAlerts(): Alert[] {
     ],
     [
       accountTypeUpgradeAlerts,
+      trustSignalAlerts,
       firstTimeInteractionAlert,
       gasEstimateFailedAlerts,
       gasFeeLowAlerts,
@@ -87,7 +90,6 @@ export default function useConfirmationAlerts(): Alert[] {
   const transactionAlerts = useTransactionAlerts();
   const selectedAccountAlerts = useSelectedAccountAlerts();
   const networkAndOriginSwitchingAlerts = useNetworkAndOriginSwitchingAlerts();
-  const trustSignalAlerts = useTrustSignalAlerts();
 
   return useMemo(
     () => [
@@ -97,7 +99,6 @@ export default function useConfirmationAlerts(): Alert[] {
       ...transactionAlerts,
       ...selectedAccountAlerts,
       ...networkAndOriginSwitchingAlerts,
-      ...trustSignalAlerts,
     ],
     [
       blockaidAlerts,
@@ -106,7 +107,6 @@ export default function useConfirmationAlerts(): Alert[] {
       transactionAlerts,
       selectedAccountAlerts,
       networkAndOriginSwitchingAlerts,
-      trustSignalAlerts,
     ],
   );
 }
