@@ -92,7 +92,7 @@ export class AppleLoginHandler extends BaseLoginHandler {
       redirect_uri: this.serverRedirectUri, // redirect uri should be server redirect uri since we use server callback for oauth code init
       login_provider: this.authConnection,
       network: web3AuthNetwork,
-      grant_type: 'offline',
+      access_type: 'offline',
     };
 
     return JSON.stringify(requestData);
