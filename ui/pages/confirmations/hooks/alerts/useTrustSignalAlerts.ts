@@ -16,7 +16,6 @@ export function useTrustSignalAlerts(): Alert[] {
   const { currentConfirmation } = useConfirmContext();
   const t = useI18nContext();
 
-  // Get the address to check based on confirmation type
   const addressToCheck = useMemo(() => {
     if (!currentConfirmation) {
       return null;
