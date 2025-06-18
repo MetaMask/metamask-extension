@@ -4773,20 +4773,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Updates the Seedless Onboarding backup metadata state, with backup seed phrase id and backup seed phrase.
-   *
-   * @param {string} keyringId - The keyring id of the backup seed phrase.
-   * @param {string} encodedSeedPhrase - The backup seed phrase.
-   */
-  async updateBackupMetadataState(keyringId, encodedSeedPhrase) {
-    const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
-    this.seedlessOnboardingController.updateBackupMetadataState(
-      keyringId,
-      this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
-    );
-  }
-
-  /**
    * Changes the password of the current wallet.
    *
    * If the wallet is created with social login, the password is changed for the seedless onboarding flow and sync across the devices too.
