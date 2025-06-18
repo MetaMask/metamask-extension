@@ -34,6 +34,9 @@ export type EventDetails = {
 /**
  * Creates a trackable Event Payload representing deep link usage.
  *
+ * If the route has query params, and the query params have duplicate keys,
+ * only the last value will be used in the properties.
+ *
  * @param route - The parameters for the tracking event.
  * @param route.url - The original full URL of the deep link.
  * @param route.signature - Whether the deep link has a signature, and if it is
