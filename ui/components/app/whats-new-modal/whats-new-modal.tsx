@@ -90,7 +90,7 @@ const renderNotification = ({
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
     useState(false);
 

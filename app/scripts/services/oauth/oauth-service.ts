@@ -10,12 +10,7 @@ import {
 import { isProduction } from '../../../../shared/modules/environment';
 import { ENVIRONMENT } from '../../../../development/build/constants';
 import { checkForLastError } from '../../../../shared/modules/browser-runtime.utils';
-import {
-  bufferedTrace,
-  TraceName,
-  TraceOperation,
-  bufferedEndTrace,
-} from '../../../../shared/lib/trace';
+import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import type {
@@ -32,12 +27,23 @@ export default class OAuthService {
 
   #webAuthenticator: WebAuthenticator;
 
-  constructor({ env, webAuthenticator }: OAuthServiceOptions) {
+  #bufferedTrace: OAuthServiceOptions['bufferedTrace'];
+
+  #bufferedEndTrace: OAuthServiceOptions['bufferedEndTrace'];
+
+  constructor({
+    env,
+    webAuthenticator,
+    bufferedTrace,
+    bufferedEndTrace,
+  }: OAuthServiceOptions) {
     this.#env = {
       ...env,
       ...this.#loadConfig(),
     };
     this.#webAuthenticator = webAuthenticator;
+    this.#bufferedTrace = bufferedTrace;
+    this.#bufferedEndTrace = bufferedEndTrace;
   }
 
   /**
@@ -149,7 +155,7 @@ export default class OAuthService {
     let providerLoginSuccess = false;
     let redirectUrlFromOAuth = null;
     try {
-      bufferedTrace({
+      this.#bufferedTrace({
         name: TraceName.OnboardingOAuthProviderLogin,
         op: TraceOperation.OnboardingSecurityOp,
       });
@@ -192,16 +198,18 @@ export default class OAuthService {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
 
-      bufferedTrace({
+      this.#bufferedTrace({
         name: TraceName.OnboardingOAuthProviderLoginError,
         op: TraceOperation.OnboardingError,
         tags: { errorMessage },
       });
-      bufferedEndTrace({ name: TraceName.OnboardingOAuthProviderLoginError });
+      this.#bufferedEndTrace({
+        name: TraceName.OnboardingOAuthProviderLoginError,
+      });
 
       throw error;
     } finally {
-      bufferedEndTrace({
+      this.#bufferedEndTrace({
         name: TraceName.OnboardingOAuthProviderLogin,
         data: { success: providerLoginSuccess },
       });
@@ -209,7 +217,7 @@ export default class OAuthService {
 
     let getAuthTokensSuccess = false;
     try {
-      bufferedTrace({
+      this.#bufferedTrace({
         name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
         op: TraceOperation.OnboardingSecurityOp,
       });
@@ -224,18 +232,18 @@ export default class OAuthService {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
 
-      bufferedTrace({
+      this.#bufferedTrace({
         name: TraceName.OnboardingOAuthBYOAServerGetAuthTokensError,
         op: TraceOperation.OnboardingError,
         tags: { errorMessage },
       });
-      bufferedEndTrace({
+      this.#bufferedEndTrace({
         name: TraceName.OnboardingOAuthBYOAServerGetAuthTokensError,
       });
 
       throw error;
     } finally {
-      bufferedEndTrace({
+      this.#bufferedEndTrace({
         name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
         data: { success: getAuthTokensSuccess },
       });

@@ -41,8 +41,8 @@ import {
   ONBOARDING_REVEAL_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { TraceName } from '../../../../shared/lib/trace';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
-import { TraceName, bufferedEndTrace } from '../../../../shared/lib/trace';
 import ConfirmSrpModal from './confirm-srp-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
@@ -75,7 +75,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, bufferedEndTrace } = useContext(MetaMetricsContext);
   const { search } = useLocation();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const splitSecretRecoveryPhrase = useMemo(
@@ -166,6 +166,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     trackEvent,
     isFromReminder,
     nextRouteQueryString,
+    bufferedEndTrace,
   ]);
 
   return (

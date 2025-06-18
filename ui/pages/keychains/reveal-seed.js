@@ -49,7 +49,7 @@ export default function RevealSeedPage() {
   const { keyringId } = useParams();
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
   const [screen, setScreen] = useState(PASSWORD_PROMPT_SCREEN);

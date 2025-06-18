@@ -21,7 +21,7 @@ export default function MaxClearButton({ asset }: { asset: Asset }) {
   const t = useI18nContext();
   const maxModeOn = useSelector(getSendMaxModeState);
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   const onClick = () => {

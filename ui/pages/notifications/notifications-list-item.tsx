@@ -30,7 +30,7 @@ export function NotificationsListItem({
   notification: Notification;
 }) {
   const history = useHistory();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { setNotificationTimeout } = useSnapNotificationTimeouts();
 
   const { markNotificationAsRead } = useMarkNotificationAsRead();

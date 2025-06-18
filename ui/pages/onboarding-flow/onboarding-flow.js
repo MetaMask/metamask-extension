@@ -43,8 +43,6 @@ import {
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { useSentryTrace } from '../../contexts/sentry-trace';
-import Button from '../../components/ui/button';
-import RevealSRPModal from '../../components/app/reveal-SRP-modal';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   MetaMetricsEventCategory,
@@ -80,11 +78,7 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
-import {
-  TraceName,
-  TraceOperation,
-  bufferedTrace,
-} from '../../../shared/lib/trace';
+import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -117,7 +111,7 @@ export default function OnboardingFlow() {
   const isFromSettingsSecurity = new URLSearchParams(search).get(
     'isFromSettingsSecurity',
   );
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, bufferedTrace } = useContext(MetaMetricsContext);
   const isUnlocked = useSelector(getIsUnlocked);
   const showTermsOfUse = useSelector(getShowTermsOfUse);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
@@ -192,7 +186,7 @@ export default function OnboardingFlow() {
       op: TraceOperation.OnboardingUserJourney,
     });
     updateOnboardingParentContext(trace);
-  }, [updateOnboardingParentContext]);
+  }, [updateOnboardingParentContext, bufferedTrace]);
 
   const handleCreateNewAccount = async (password) => {
     let newSecretRecoveryPhrase;

@@ -55,7 +55,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
       history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
     }
   }, [currentKeyring, history]);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const onShowSrpDetailsModal = useCallback(() => {
     trackEvent({

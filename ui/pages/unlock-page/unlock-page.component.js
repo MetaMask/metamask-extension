@@ -35,12 +35,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { isFlask, isBeta } from '../../helpers/utils/build-types';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
-import {
-  TraceName,
-  TraceOperation,
-  bufferedTrace,
-  bufferedEndTrace,
-} from '../../../shared/lib/trace';
+import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { withSentryTrace } from '../../contexts/sentry-trace';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
@@ -49,6 +44,8 @@ import FormattedCounter from './formatted-counter';
 class UnlockPage extends Component {
   static contextTypes = {
     trackEvent: PropTypes.func,
+    bufferedTrace: PropTypes.func,
+    bufferedEndTrace: PropTypes.func,
     t: PropTypes.func,
   };
 
@@ -117,7 +114,7 @@ class UnlockPage extends Component {
   }
 
   componentDidMount() {
-    this.passwordLoginAttemptTraceCtx = bufferedTrace({
+    this.passwordLoginAttemptTraceCtx = this.context.bufferedTrace({
       name: TraceName.OnboardingPasswordLoginAttempt,
       op: TraceOperation.OnboardingUserJourney,
       parentContext: this.props.onboardingParentContext.current,
@@ -152,11 +149,17 @@ class UnlockPage extends Component {
         },
       );
       if (this.passwordLoginAttemptTraceCtx) {
-        bufferedEndTrace({ name: TraceName.OnboardingPasswordLoginAttempt });
+        this.context.bufferedEndTrace({
+          name: TraceName.OnboardingPasswordLoginAttempt,
+        });
         this.passwordLoginAttemptTraceCtx = null;
       }
-      bufferedEndTrace({ name: TraceName.OnboardingExistingSocialLogin });
-      bufferedEndTrace({ name: TraceName.OnboardingJourneyOverall });
+      this.context.bufferedEndTrace({
+        name: TraceName.OnboardingExistingSocialLogin,
+      });
+      this.context.bufferedEndTrace({
+        name: TraceName.OnboardingJourneyOverall,
+      });
     } catch (error) {
       await this.handleLoginError(error);
     } finally {
@@ -174,13 +177,15 @@ class UnlockPage extends Component {
 
     // Check if we are in the onboarding flow
     if (this.props.onboardingParentContext.current) {
-      bufferedTrace({
+      this.context.bufferedTrace({
         name: TraceName.OnboardingPasswordLoginError,
         op: TraceOperation.OnboardingError,
         tags: { errorMessage: message },
         parentContext: this.props.onboardingParentContext.current,
       });
-      bufferedEndTrace({ name: TraceName.OnboardingPasswordLoginError });
+      this.context.bufferedEndTrace({
+        name: TraceName.OnboardingPasswordLoginError,
+      });
     }
 
     switch (message) {

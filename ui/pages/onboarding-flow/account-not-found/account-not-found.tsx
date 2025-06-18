@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -27,13 +27,9 @@ import {
   resetOAuthLoginState,
   setFirstTimeFlowType,
 } from '../../../store/actions';
-import {
-  bufferedEndTrace,
-  bufferedTrace,
-  TraceName,
-  TraceOperation,
-} from '../../../../shared/lib/trace';
+import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { useSentryTrace } from '../../../contexts/sentry-trace';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -44,6 +40,7 @@ export default function AccountNotFound() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
   const { onboardingParentContext } = useSentryTrace();
+  const { bufferedTrace, bufferedEndTrace } = useContext(MetaMetricsContext);
 
   const onLoginWithDifferentMethod = async () => {
     // clear the social login state
@@ -82,7 +79,13 @@ export default function AccountNotFound() {
         });
       }
     };
-  }, [firstTimeFlowType, history, onboardingParentContext]);
+  }, [
+    firstTimeFlowType,
+    history,
+    onboardingParentContext,
+    bufferedTrace,
+    bufferedEndTrace,
+  ]);
 
   return (
     <Box

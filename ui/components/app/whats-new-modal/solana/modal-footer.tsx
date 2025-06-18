@@ -37,7 +37,7 @@ export const SolanaModalFooter = ({ onAction, onCancel }: ModalFooterProps) => {
   const isLoading = !useSelector(selectIsAccountSyncingReadyToBeDispatched);
   const hasSolanaAccount = useSelector(hasCreatedSolanaAccount);
   const selectedSolanaAccount = useSelector(getLastSelectedSolanaAccount);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const handleCreateSolanaAccount = async () => {
     trackEvent({

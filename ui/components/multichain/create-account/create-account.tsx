@@ -105,7 +105,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       const t = useI18nContext();
 
       const history = useHistory();
-      const trackEvent = useContext(MetaMetricsContext);
+      const { trackEvent } = useContext(MetaMetricsContext);
       const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
       const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);

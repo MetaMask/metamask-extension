@@ -39,7 +39,7 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getFirstTimeFlowType } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
-import { TraceName, bufferedEndTrace } from '../../../../shared/lib/trace';
+import { TraceName } from '../../../../shared/lib/trace';
 
 type SkipSRPBackupProps = {
   onClose: () => void;
@@ -57,7 +57,7 @@ export default function SkipSRPBackup({
   const dispatch = useDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, bufferedEndTrace } = useContext(MetaMetricsContext);
   const history = useHistory();
 
   const onSkipSrpBackup = useCallback(async () => {
@@ -82,7 +82,14 @@ export default function SkipSRPBackup({
     } else {
       history.push(ONBOARDING_METAMETRICS);
     }
-  }, [dispatch, firstTimeFlowType, hdEntropyIndex, history, trackEvent]);
+  }, [
+    dispatch,
+    firstTimeFlowType,
+    hdEntropyIndex,
+    history,
+    trackEvent,
+    bufferedEndTrace,
+  ]);
 
   return (
     <Modal

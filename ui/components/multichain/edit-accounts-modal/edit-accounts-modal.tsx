@@ -65,7 +65,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   onSubmit,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [modalStage, setModalStage] = useState<EditAccountModalStage>(
     EditAccountModalStage.AccountList,
   );

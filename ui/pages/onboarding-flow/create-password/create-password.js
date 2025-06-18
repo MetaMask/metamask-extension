@@ -52,12 +52,7 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { resetOAuthLoginState } from '../../../store/actions';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
-import {
-  bufferedTrace,
-  TraceName,
-  TraceOperation,
-  bufferedEndTrace,
-} from '../../../../shared/lib/trace';
+import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { useSentryTrace } from '../../../contexts/sentry-trace';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
@@ -75,7 +70,8 @@ export default function CreatePassword({
   const history = useHistory();
   const dispatch = useDispatch();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, bufferedTrace, bufferedEndTrace } =
+    useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
@@ -227,7 +223,7 @@ export default function CreatePassword({
     return () => {
       bufferedEndTrace({ name: TraceName.OnboardingPasswordSetupAttempt });
     };
-  }, [onboardingParentContext]);
+  }, [onboardingParentContext, bufferedTrace, bufferedEndTrace]);
 
   const handleBackClick = (event) => {
     event.preventDefault();

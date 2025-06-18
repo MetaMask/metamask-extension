@@ -28,12 +28,7 @@ import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/module
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
-import {
-  bufferedTrace,
-  bufferedEndTrace,
-  TraceName,
-  TraceOperation,
-} from '../../../../shared/lib/trace';
+import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import WelcomeLogin from './welcome-login';
 import WelcomeBanner from './welcome-banner';
 import {
@@ -88,7 +83,8 @@ export default function OnboardingWelcome({
     firstTimeFlowType,
     newAccountCreationInProgress,
   ]);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, bufferedTrace, bufferedEndTrace } =
+    useContext(MetaMetricsContext);
 
   const onCreateClick = useCallback(async () => {
     setIsLoggingIn(true);
@@ -108,7 +104,7 @@ export default function OnboardingWelcome({
     });
 
     history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
-  }, [dispatch, history, trackEvent, onboardingParentContext]);
+  }, [dispatch, history, trackEvent, onboardingParentContext, bufferedTrace]);
 
   const onImportClick = useCallback(async () => {
     setIsLoggingIn(true);
@@ -127,7 +123,7 @@ export default function OnboardingWelcome({
     });
 
     history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
-  }, [dispatch, history, trackEvent, onboardingParentContext]);
+  }, [dispatch, history, trackEvent, onboardingParentContext, bufferedTrace]);
 
   const handleSocialLogin = useCallback(
     async (socialConnectionType) => {
@@ -144,7 +140,13 @@ export default function OnboardingWelcome({
       }
       return true;
     },
-    [dispatch, isSeedlessOnboardingFeatureEnabled, onboardingParentContext],
+    [
+      dispatch,
+      isSeedlessOnboardingFeatureEnabled,
+      onboardingParentContext,
+      bufferedTrace,
+      bufferedEndTrace,
+    ],
   );
 
   const handleSocialLoginError = useCallback(
@@ -164,7 +166,7 @@ export default function OnboardingWelcome({
         data: { success: false },
       });
     },
-    [onboardingParentContext],
+    [onboardingParentContext, bufferedTrace, bufferedEndTrace],
   );
 
   const onSocialLoginCreateClick = useCallback(
@@ -205,6 +207,7 @@ export default function OnboardingWelcome({
       history,
       onboardingParentContext,
       handleSocialLoginError,
+      bufferedTrace,
     ],
   );
 
@@ -247,6 +250,7 @@ export default function OnboardingWelcome({
       history,
       onboardingParentContext,
       handleSocialLoginError,
+      bufferedTrace,
     ],
   );
 

@@ -36,6 +36,9 @@ import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
  * @typedef {import('../../shared/constants/metametrics').MetaMetricsEventOptions} MetaMetricsEventOptions
  * @typedef {import('../../shared/constants/metametrics').MetaMetricsPageObject} MetaMetricsPageObject
  * @typedef {import('../../shared/constants/metametrics').MetaMetricsReferrerObject} MetaMetricsReferrerObject
+ * @typedef {import('../../shared/lib/trace').TraceRequest} TraceRequest
+ * @typedef {import('../../shared/lib/trace').EndTraceRequest} EndTraceRequest
+ * @typedef {import('../../shared/lib/trace').TraceCallback} TraceCallback
  */
 
 // types
@@ -50,7 +53,25 @@ import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
  */
 
 /**
- * @type {React.Context<UITrackEventMethod>}
+ * @typedef {<T>(request: TraceRequest, fn?: TraceCallback<T>) => Promise<T | undefined>} UITraceMethod
+ */
+
+/**
+ * @typedef {(request: EndTraceRequest) => void} UIEndTraceMethod
+ */
+
+/**
+ * @typedef {{
+ *   trackEvent: UITrackEventMethod,
+ *   bufferedTrace: UITraceMethod,
+ *   bufferedEndTrace: UIEndTraceMethod,
+ *   flushBufferedTraces: () => Promise<void>,
+ *   discardBufferedTraces: () => Promise<void>
+ * }} MetaMetricsContextValue
+ */
+
+/**
+ * @type {React.Context<MetaMetricsContextValue>}
  */
 export const MetaMetricsContext = createContext(() => {
   captureException(
@@ -108,6 +129,20 @@ export function MetaMetricsProvider({ children }) {
     },
     [addContextPropsIntoEventProperties, context, isMetricsEnabled],
   );
+
+  /**
+   * @type {UITraceMethod}
+   */
+  const bufferedTrace = useCallback((request, fn) => {
+    return submitRequestToBackground('bufferedTrace', [request, fn]);
+  }, []);
+
+  /**
+   * @type {UIEndTraceMethod}
+   */
+  const bufferedEndTrace = useCallback((request) => {
+    submitRequestToBackground('bufferedEndTrace', [request]);
+  }, []);
 
   // Used to prevent double tracking page calls
   const previousMatch = useRef();
@@ -167,8 +202,14 @@ export function MetaMetricsProvider({ children }) {
     previousMatch.current = match?.path;
   }, [location, context]);
 
+  const contextValue = {
+    trackEvent,
+    bufferedTrace,
+    bufferedEndTrace,
+  };
+
   return (
-    <MetaMetricsContext.Provider value={trackEvent}>
+    <MetaMetricsContext.Provider value={contextValue}>
       {children}
     </MetaMetricsContext.Provider>
   );
@@ -192,11 +233,15 @@ export class LegacyMetaMetricsProvider extends Component {
     // using the same name would result in whichever was lower in the tree to be
     // used.
     trackEvent: PropTypes.func,
+    bufferedTrace: PropTypes.func,
+    bufferedEndTrace: PropTypes.func,
   };
 
   getChildContext() {
     return {
-      trackEvent: this.context,
+      trackEvent: this.context.trackEvent,
+      bufferedTrace: this.context.bufferedTrace,
+      bufferedEndTrace: this.context.bufferedEndTrace,
     };
   }
 
