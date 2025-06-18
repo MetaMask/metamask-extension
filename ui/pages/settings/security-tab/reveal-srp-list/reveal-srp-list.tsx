@@ -10,10 +10,8 @@ import {
   TextTransform,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getFirstTimeFlowType } from '../../../../selectors';
-import { getSeedPhraseBackedUp } from '../../../../ducks/metamask/metamask';
+import { getIsRootSeedPhraseBackedUp } from '../../../../ducks/metamask/metamask';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../../helpers/constants/routes';
-import { FirstTimeFlowType } from '../../../../../shared/constants/onboarding';
 
 export const RevealSrpList = () => {
   const t = useI18nContext();
@@ -21,10 +19,7 @@ export const RevealSrpList = () => {
   const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
   const [selectedKeyringId, setSelectedKeyringId] = useState('');
 
-  const firstTimeFlow = useSelector(getFirstTimeFlowType);
-  const isSeedPhraseBackedUp =
-    useSelector(getSeedPhraseBackedUp) ||
-    firstTimeFlow !== FirstTimeFlowType.create;
+  const isSeedPhraseBackedUp = useSelector(getIsRootSeedPhraseBackedUp);
 
   const onSrpActionComplete = (keyringId: string, triggerBackup?: boolean) => {
     if (triggerBackup) {

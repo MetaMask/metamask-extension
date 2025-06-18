@@ -28,9 +28,7 @@ import {
 } from '../../../selectors/selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
-import { getFirstTimeFlowType } from '../../../selectors';
-import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { getIsRootSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
@@ -55,10 +53,6 @@ const mapStateToProps = (state) => {
 
   const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
-  const isSeedPhraseBackedUp =
-    getSeedPhraseBackedUp(state) ||
-    getFirstTimeFlowType(state) !== FirstTimeFlowType.create;
-
   return {
     networkConfigurations,
     participateInMetaMetrics,
@@ -79,7 +73,7 @@ const mapStateToProps = (state) => {
     useTransactionSimulations: metamask.useTransactionSimulations,
     metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
     hdEntropyIndex: getHDEntropyIndex(state),
-    isSeedPhraseBackedUp,
+    isSeedPhraseBackedUp: getIsRootSeedPhraseBackedUp(state),
   };
 };
 
