@@ -40,18 +40,18 @@ import {
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import {
   AccountsState,
+  getInternalAccounts,
   getMemoizedInternalAccountByAddress,
+  getUseBlockie,
 } from '../../../../../../selectors';
 import { isHardwareKeyring } from '../../../../../../helpers/utils/hardware';
 import IconButton from '../../../../../../components/ui/icon-button/icon-button-round';
 import {
-  getInternalAccounts,
-  getUseBlockie,
-} from '../../../../../../selectors';
-import { getUseSmartAccount } from '../../../../selectors/preferences';
+  getUseSmartAccount,
+  getSmartAccountOptInForAccounts,
+} from '../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useSmartAccountActions } from '../../../../hooks/useSmartAccountActions';
-import { getSmartAccountOptInForAccounts } from '../../../../selectors/preferences';
 import { AccountSelection } from '../../account-selection';
 
 const ListItem = ({
@@ -108,7 +108,7 @@ export function SmartAccountUpdate() {
     }
     return (evmAccounts ?? []).map((acc) => acc.address as Hex);
   });
-  const { chainId, txParams, origin } = currentConfirmation ?? {};
+  const { txParams, origin } = currentConfirmation ?? {};
   const { from } = txParams;
   const account = useSelector((state: AccountsState) =>
     getMemoizedInternalAccountByAddress(state as AccountsState, from),
