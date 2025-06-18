@@ -1,13 +1,12 @@
 import log from 'loglevel';
 import { parse } from './parse';
-import { VALID, verify } from './verify';
-import { Route, routes } from './routes';
+import { VALID, INVALID, verify } from './verify';
+import { type Route, routes } from './routes';
 
 const mockVerify = verify as jest.MockedFunction<typeof verify>;
 const mockRoutes = routes as jest.Mocked<Map<string, Route>>;
 
 jest.mock('./verify', () => ({
-  VALID: 'VALID',
   verify: jest.fn(),
 }));
 jest.mock('./routes', () => ({
@@ -70,7 +69,7 @@ describe('parse', () => {
   it('returns a parsed deep link object with signed=false if signature is invalid', async () => {
     mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
     mockHandler.mockReturnValue('destination-value');
-    mockVerify.mockResolvedValue('INVALID');
+    mockVerify.mockResolvedValue(INVALID);
 
     const urlStr = 'https://example.com/test?foo=bar';
     const result = await parse(new URL(urlStr));
