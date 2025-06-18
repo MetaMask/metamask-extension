@@ -36,7 +36,7 @@ describe('Test Snap Lifecycle Hooks', function () {
         // Validate the message result in the dialog
         await snapInstall.check_messageResultSpan(
           snapInstall.lifeCycleHookMessageElement,
-          'The snap was installed successfully, and the "onInstall" handler was called.',
+          'The Snap was installed successfully, and the "onInstall" handler was called.',
         );
       },
     );
