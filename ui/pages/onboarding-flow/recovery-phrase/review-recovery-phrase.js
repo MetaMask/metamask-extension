@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -48,6 +48,17 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
     ? '/?isFromReminder=true'
     : '';
   const trackEvent = useContext(MetaMetricsContext);
+
+  const handleOnShowSrpDetailsModal = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.SrpDefinitionClicked,
+      properties: {
+        location: 'review_recovery_phrase',
+      },
+    });
+    setShowSrpDetailsModal(true);
+  }, [trackEvent]);
 
   return (
     <Box
@@ -100,9 +111,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
               <ButtonLink
                 key="seedPhraseReviewDetails"
                 size={ButtonLinkSize.Inherit}
-                onClick={() => {
-                  setShowSrpDetailsModal(true);
-                }}
+                onClick={handleOnShowSrpDetailsModal}
               >
                 {t('secretRecoveryPhrase')}
               </ButtonLink>,

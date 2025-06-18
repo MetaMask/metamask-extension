@@ -8,11 +8,13 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import ImportSrp from './import-srp';
 
 const mockHistoryReplace = jest.fn();
+const mockHistoryPush = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
     replace: mockHistoryReplace,
+    push: mockHistoryPush,
   }),
 }));
 
@@ -83,7 +85,7 @@ describe('Import SRP', () => {
     fireEvent.click(confirmSrpButton);
 
     expect(mockSubmitSecretRecoveryPhrase).toHaveBeenCalledWith(TEST_SEED);
-    expect(mockHistoryReplace).toHaveBeenCalledWith(
+    expect(mockHistoryPush).toHaveBeenCalledWith(
       ONBOARDING_CREATE_PASSWORD_ROUTE,
     );
   });
@@ -112,7 +114,7 @@ describe('Import SRP', () => {
     fireEvent.click(confirmSrpButton);
 
     expect(mockSubmitSecretRecoveryPhrase).toHaveBeenCalledWith(TEST_SEED);
-    expect(mockHistoryReplace).toHaveBeenCalledWith(
+    expect(mockHistoryPush).toHaveBeenCalledWith(
       ONBOARDING_CREATE_PASSWORD_ROUTE,
     );
   });
