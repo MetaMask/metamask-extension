@@ -107,10 +107,10 @@ export function parseAssetID(str: string): ParsedCaip19 | null {
 
   const assetType = `${rawChainId}/${assetNamespace}:${assetReference}`;
   let assetId: string | undefined;
-
-  if (tokenId) {
+  if (tokenId !== undefined) {
     // Validate token_id ([-.%a-zA-Z0-9]{1,78} as per CAIP-19)
-    if (!/^[-.%a-zA-Z0-9]{1,78}$/u.test(tokenId)) {
+    // Empty string should be invalid
+    if (tokenId === '' || !/^[-.%a-zA-Z0-9]{1,78}$/u.test(tokenId)) {
       return null;
     }
     assetId = `${assetType}/${tokenId}`;

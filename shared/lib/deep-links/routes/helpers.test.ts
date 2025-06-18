@@ -141,6 +141,19 @@ describe('parseAssetID', () => {
         assetId: undefined,
       });
     });
+
+    it('parses ERC-20 token with tokenId', () => {
+      const input = 'eip155:1/erc20:0x123/extra';
+      const result = parseAssetID(input);
+      expect(result).toStrictEqual({
+        chainId: { id: 'eip155:1', namespace: 'eip155', blockchainId: '1' },
+        assetNamespace: 'erc20',
+        assetReference: '0x123',
+        assetType: 'eip155:1/erc20:0x123',
+        tokenId: 'extra',
+        assetId: 'eip155:1/erc20:0x123/extra',
+      });
+    });
   });
 
   describe('invalid cases', () => {
@@ -153,7 +166,6 @@ describe('parseAssetID', () => {
       'eip155:1/erc20:0x123/', // Trailing '/'
       '/eip155:1/erc20:0x123', // Leading '/'
       'eip155:1', // Missing assetDef
-      'eip155:1/erc20:0x123/extra', // Extra part
       'EIP155:1/erc20:0x123', // Uppercase in namespace
       'eip155:1/ERC20:0x123', // Uppercase in assetNamespace
       'eip155:1/erc20:0x123!', // Invalid character in assetReference
