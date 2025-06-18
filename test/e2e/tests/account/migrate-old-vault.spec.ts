@@ -17,6 +17,8 @@ describe('Migrate vault with old encryption', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.check_pageIsLoaded();
+        // We need a bigger delay before locking the wallet to avoid the error '#snapGetPublicKey - unable to proceed, wallet is locked'
+        await driver.delay(5000);
         await headerNavbar.lockMetaMask();
         const loginPage = new LoginPage(driver);
         await loginPage.check_pageIsLoaded();
