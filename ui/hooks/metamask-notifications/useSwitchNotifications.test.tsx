@@ -51,18 +51,12 @@ describe('useSwitchFeatureAnnouncementsChange() tests', () => {
 
 describe('useSwitchAccountNotificationsChange() tests', () => {
   const arrangeMocks = () => {
-    const mockUpdateOnChainTriggersByAccount = jest.spyOn(
-      ActionsModule,
-      'updateOnChainTriggersByAccount',
-    );
-    const mockDeleteOnChainTriggersByAccount = jest.spyOn(
-      ActionsModule,
-      'deleteOnChainTriggersByAccount',
-    );
+    const mockEnableAccounts = jest.spyOn(ActionsModule, 'enableAccounts');
+    const mockDisableAccounts = jest.spyOn(ActionsModule, 'disableAccounts');
 
     return {
-      mockUpdateOnChainTriggersByAccount,
-      mockDeleteOnChainTriggersByAccount,
+      mockEnableAccounts,
+      mockDisableAccounts,
     };
   };
 
@@ -74,10 +68,8 @@ describe('useSwitchAccountNotificationsChange() tests', () => {
     );
 
     await hook.result.current.onChange(['0x1'], true);
-    expect(mocks.mockUpdateOnChainTriggersByAccount).toHaveBeenCalledWith([
-      '0x1',
-    ]);
-    expect(mocks.mockDeleteOnChainTriggersByAccount).not.toHaveBeenCalled();
+    expect(mocks.mockEnableAccounts).toHaveBeenCalledWith(['0x1']);
+    expect(mocks.mockDisableAccounts).not.toHaveBeenCalled();
   });
 
   it('should invoke delete notification triggers when an address is disabled', async () => {
@@ -88,18 +80,16 @@ describe('useSwitchAccountNotificationsChange() tests', () => {
     );
 
     await hook.result.current.onChange(['0x1'], false);
-    expect(mocks.mockUpdateOnChainTriggersByAccount).not.toHaveBeenCalled();
-    expect(mocks.mockDeleteOnChainTriggersByAccount).toHaveBeenCalledWith([
-      '0x1',
-    ]);
+    expect(mocks.mockEnableAccounts).not.toHaveBeenCalled();
+    expect(mocks.mockDisableAccounts).toHaveBeenCalledWith(['0x1']);
   });
 
   it('should return an error value if it fails to update or delete triggers', async () => {
     const mocks = arrangeMocks();
-    mocks.mockUpdateOnChainTriggersByAccount.mockImplementation(() => {
+    mocks.mockEnableAccounts.mockImplementation(() => {
       throw new Error('Mock Error');
     });
-    mocks.mockDeleteOnChainTriggersByAccount.mockImplementation(() => {
+    mocks.mockDisableAccounts.mockImplementation(() => {
       throw new Error('Mock Error');
     });
 
