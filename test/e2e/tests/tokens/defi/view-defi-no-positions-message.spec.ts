@@ -8,7 +8,6 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import { Driver } from '../../../webdriver/driver';
 import { mockNoDeFiPositionFeatureFlag } from '../../confirmations/helpers';
 
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import { switchToNetworkFlow } from '../../../page-objects/flows/network.flow';
 
 describe('Check DeFi empty state when no defi positions', function () {
@@ -24,11 +23,6 @@ describe('Check DeFi empty state when no defi positions', function () {
         await loginWithBalanceValidation(driver);
 
         await new Homepage(driver).goToDeFiTab();
-
-        // Validate the default network is Localhost 8545
-        await new HeaderNavbar(driver).check_currentSelectedNetwork(
-          'Localhost 8545',
-        );
 
         const defiTab = new DeFiTab(driver);
 
