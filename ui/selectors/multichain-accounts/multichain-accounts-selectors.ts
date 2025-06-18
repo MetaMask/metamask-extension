@@ -8,6 +8,8 @@ import { createDeepEqualSelector } from '../../../shared/modules/selectors/util'
 import {
   getMetaMaskAccountsOrdered,
   getOrderedConnectedAccountsForActiveTab,
+  getPinnedAccountsList,
+  getHiddenAccountsList,
 } from '../selectors';
 import { MergedInternalAccount } from '../selectors.types';
 import {
@@ -52,12 +54,26 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
   getAccountTree,
   getOrderedConnectedAccountsForActiveTab,
   getSelectedAccount,
+  getPinnedAccountsList,
+  getHiddenAccountsList,
   (
     internalAccounts: MergedInternalAccount[],
     accountTree: AccountTreeState,
     connectedAccounts: InternalAccount[],
     selectedAccountId: AccountId,
+    pinnedAccounts: string[],
+    hiddenAccounts: string[],
   ): ConsolidatedWallets => {
+    // Precompute lookups for pinned and hidden accounts
+    const pinnedAccountsSet = new Set(pinnedAccounts);
+    const hiddenAccountsSet = new Set(hiddenAccounts);
+
+    // Precompute connected account IDs for faster lookup
+    const connectedAccountIds = new Set(
+      connectedAccounts.map((account) => account.id),
+    );
+
+    // Create a mapping of accounts by ID for quick access
     const accountsById = internalAccounts.reduce(
       (accounts: Record<string, MergedInternalAccount>, account) => {
         accounts[account.id] = account;
@@ -77,23 +93,22 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
         };
 
         Object.entries(wallet.groups).forEach(([groupId, group]) => {
-          const accountsFromGroup = group.accounts.reduce(
-            (accountsWithMetadata, accountId) => {
-              const accountWithMetadata = accountsById[accountId];
+          const accountsFromGroup = group.accounts.map((accountId) => {
+            const accountWithMetadata = { ...accountsById[accountId] };
 
-              accountWithMetadata.active = Boolean(
-                connectedAccounts.find(
-                  (connectedAccount) =>
-                    connectedAccount.id === accountWithMetadata.id,
-                ) && selectedAccountId === accountWithMetadata.id,
-              );
+            // Set flags for pinned, hidden, and active accounts
+            accountWithMetadata.pinned = pinnedAccountsSet.has(
+              accountWithMetadata.address,
+            );
+            accountWithMetadata.hidden = hiddenAccountsSet.has(
+              accountWithMetadata.address,
+            );
+            accountWithMetadata.active =
+              connectedAccountIds.has(accountWithMetadata.id) &&
+              selectedAccountId === accountWithMetadata.id;
 
-              accountsWithMetadata.push(accountWithMetadata);
-
-              return accountsWithMetadata;
-            },
-            [] as MergedInternalAccount[],
-          );
+            return accountWithMetadata;
+          });
 
           consolidatedWallets[walletId as AccountWalletId].groups[
             groupId as AccountGroupId

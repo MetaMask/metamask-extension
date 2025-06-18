@@ -83,33 +83,39 @@ export const MultichainAccountsTree = ({
             }
 
             // Create account items for group
-            const accountItems = filteredAccounts.map((account) => {
-              const connectedSite = connectedSites[account.address]?.find(
-                ({ origin }) => origin === currentTabOrigin,
-              );
+            const accountItems = filteredAccounts
+              .sort((accountA, accountB) => {
+                // Convert boolean values to numbers for sorting
+                return Number(accountB.pinned) - Number(accountA.pinned);
+              })
+              .map((account) => {
+                const connectedSite = connectedSites[account.address]?.find(
+                  ({ origin }) => origin === currentTabOrigin,
+                );
 
-              return (
-                <Box
-                  className="multichain-account-menu-popover__list--menu-item"
-                  key={`box-${account.id}`}
-                >
-                  <AccountListItem
-                    onClick={onAccountListItemItemClicked}
-                    account={account}
-                    key={`account-list-item-${account.id}`}
-                    selected={selectedAccount.id === account.id}
-                    closeMenu={onClose}
-                    connectedAvatar={connectedSite?.iconUrl}
-                    menuType={AccountListItemMenuTypes.Account}
-                    currentTabOrigin={currentTabOrigin}
-                    isActive={account.active}
-                    privacyMode={privacyMode}
-                    showSrpPill={false}
-                    {...accountListItemProps}
-                  />
-                </Box>
-              );
-            });
+                return (
+                  <Box
+                    className="multichain-account-menu-popover__list--menu-item"
+                    key={`box-${account.id}`}
+                  >
+                    <AccountListItem
+                      onClick={onAccountListItemItemClicked}
+                      account={account}
+                      key={`account-list-item-${account.id}`}
+                      selected={selectedAccount.id === account.id}
+                      closeMenu={onClose}
+                      connectedAvatar={connectedSite?.iconUrl}
+                      menuType={AccountListItemMenuTypes.Account}
+                      currentTabOrigin={currentTabOrigin}
+                      isActive={account.active}
+                      privacyMode={privacyMode}
+                      isPinned={Boolean(account.pinned)}
+                      showSrpPill={false}
+                      {...accountListItemProps}
+                    />
+                  </Box>
+                );
+              });
 
             return [
               <Box
