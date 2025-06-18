@@ -70,12 +70,14 @@ describe('Bridge tests', function (this: Suite) {
         const bridgeLinkClicked = findEventsByName(
           EventTypes.BridgeLinkClicked,
         );
-        assert.ok(bridgeLinkClicked.length > 0);
+        // The flow above navigates twice to the bridge page, so we expect 2 events
+        assert.ok(bridgeLinkClicked.length === 2);
 
         const swapBridgeButtonClicked = findEventsByName(
           EventTypes.SwapBridgeButtonClicked,
         );
-        assert.ok(swapBridgeButtonClicked.length > 0);
+        // The flow above navigates twice to the bridge page, so we expect 2 events
+        assert.ok(swapBridgeButtonClicked.length === 2);
         assert.ok(
           swapBridgeButtonClicked[0].properties.token_symbol_source === 'ETH' &&
             swapBridgeButtonClicked[0].properties.token_symbol_destination ===
@@ -91,7 +93,8 @@ describe('Bridge tests', function (this: Suite) {
         const swapBridgePageViewed = findEventsByName(
           EventTypes.SwapBridgePageViewed,
         );
-        assert.ok(swapBridgePageViewed.length > 0);
+        // The flow above navigates twice to the bridge page, so we expect 2 events
+        assert.ok(swapBridgePageViewed.length === 2);
         assert.ok(
           swapBridgePageViewed[0].properties.token_address_source ===
             'eip155:1/slip44:60' &&
@@ -133,7 +136,7 @@ describe('Bridge tests', function (this: Suite) {
         const swapBridgeQuotesRequested = findEventsByName(
           EventTypes.SwapBridgeQuotesRequested,
         );
-        assert.ok(swapBridgeQuotesRequested.length > 0);
+        assert.ok(swapBridgeQuotesRequested.length === 3);
         assert.ok(
           swapBridgeQuotesRequested[0].properties.chain_id_source ===
             'eip155:1' &&
@@ -154,7 +157,8 @@ describe('Bridge tests', function (this: Suite) {
         const crossChainQuotesReceived = findEventsByName(
           EventTypes.CrossChainQuotesReceived,
         );
-        assert.ok(crossChainQuotesReceived.length > 0);
+        // The flow receives 2 quotes, so we expect 2 events
+        assert.ok(crossChainQuotesReceived.length === 2);
         assert.ok(
           crossChainQuotesReceived[0].properties.chain_id_source ===
             'eip155:1' &&
