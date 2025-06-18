@@ -37,7 +37,7 @@ export function AccountSelection({
 
   const onSelectAllChange = useCallback(
     (event) => {
-      const checked = event.target.checked;
+      const { checked } = event.target;
       if (checked) {
         setSelectedAccounts(evmAccounts.map((acc) => acc.address as Hex));
       } else {
@@ -113,6 +113,7 @@ export function AccountSelection({
           const isSelected = selectedAccounts.includes(acc.address as Hex);
           return (
             <AccountListItem
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               account={acc as any}
               isActive={true}
               onClick={handleAccountClick}

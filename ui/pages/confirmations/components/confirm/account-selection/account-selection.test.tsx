@@ -95,7 +95,7 @@ describe('AccountSelection', () => {
       ),
     );
     const mockCloseAccountSelection = jest.fn();
-    const { getByTestId, queryByText } = renderWithConfirmContextProvider(
+    const { getByTestId } = renderWithConfirmContextProvider(
       <AccountSelection
         selectedAccounts={[]}
         setSelectedAccounts={noop}
