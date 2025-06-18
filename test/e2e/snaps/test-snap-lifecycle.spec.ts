@@ -41,4 +41,27 @@ describe('Test Snap Lifecycle Hooks', function () {
       },
     );
   });
+
+  it('runs the `onStart` lifecycle hook when the client is started', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withSnapControllerOnStartLifecycleSnap()
+          .build(),
+        testSpecificMock: mockLifecycleHooksSnap,
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithoutBalanceValidation(driver);
+
+        const snapInstall = new SnapInstall(driver);
+
+        // Validate the "onStart" lifecycle hook message.
+        await snapInstall.check_messageResultSpan(
+          snapInstall.lifeCycleHookMessageElement,
+          'The client was started successfully, and the "onStart" handler was called.',
+        );
+      },
+    );
+  });
 });
