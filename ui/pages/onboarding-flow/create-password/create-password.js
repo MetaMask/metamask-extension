@@ -15,6 +15,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_METAMETRICS,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
 } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -26,6 +27,7 @@ import {
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -43,6 +45,8 @@ import {
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import PasswordForm from '../../../components/app/password-form/password-form';
 import LoadingScreen from '../../../components/ui/loading-screen';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 
 export default function CreatePassword({
   createNewAccount,
@@ -78,8 +82,7 @@ export default function CreatePassword({
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {
       if (firstTimeFlowType === FirstTimeFlowType.import) {
-        // SOCIAL: change to metametrics when social login is available
-        history.replace(ONBOARDING_COMPLETION_ROUTE);
+        history.replace(ONBOARDING_METAMETRICS);
       } else {
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
       }
@@ -91,52 +94,108 @@ export default function CreatePassword({
     newAccountCreationInProgress,
   ]);
 
-  const handleCreate = async (event) => {
+  const handleLearnMoreClick = (event) => {
+    event.stopPropagation();
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.ExternalLinkClicked,
+      properties: {
+        text: 'Learn More',
+        location: 'create_password',
+        url: ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE,
+      },
+    });
+  };
+
+  const handleWalletImport = async () => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletImportAttempted,
+    });
+
+    await importWithRecoveryPhrase(password, secretRecoveryPhrase);
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletImported,
+      properties: {
+        biometrics_enabled: false,
+      },
+    });
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletSetupCompleted,
+      properties: {
+        wallet_setup_type: 'import',
+        new_wallet: false,
+        account_type: MetaMetricsEventAccountType.Imported,
+      },
+    });
+
+    if (getBrowserName() === PLATFORM_FIREFOX) {
+      history.push(ONBOARDING_COMPLETION_ROUTE);
+    } else {
+      history.push(ONBOARDING_METAMETRICS);
+    }
+  };
+
+  const handleCreateNewWallet = async () => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletCreationAttempted,
+      properties: {
+        account_type: MetaMetricsEventAccountType.Default,
+      },
+    });
+
+    if (createNewAccount) {
+      setNewAccountCreationInProgress(true);
+      await createNewAccount(password);
+    }
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.WalletSetupCompleted,
+      properties: {
+        wallet_setup_type: 'new',
+        new_wallet: true,
+        account_type: MetaMetricsEventAccountType.Default,
+      },
+    });
+
+    history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+  };
+
+  const handleCreatePassword = async (event) => {
     event?.preventDefault();
 
     if (!password) {
       return;
     }
 
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletCreationAttempted,
-    });
-
-    // If secretRecoveryPhrase is defined we are in import wallet flow
-    if (
-      secretRecoveryPhrase &&
-      firstTimeFlowType === FirstTimeFlowType.import
-    ) {
-      await importWithRecoveryPhrase(password, secretRecoveryPhrase);
-      // getBrowserName() === PLATFORM_FIREFOX
-      //   ? history.push(ONBOARDING_COMPLETION_ROUTE)
-      //   : history.push(ONBOARDING_METAMETRICS);
-      // SOCIAL: change to metametrics when social login is available
-      history.push(ONBOARDING_COMPLETION_ROUTE);
-    } else {
-      // Otherwise we are in create new wallet flow
-      try {
-        if (createNewAccount) {
-          setNewAccountCreationInProgress(true);
-          await createNewAccount(password);
-        }
-        if (firstTimeFlowType === FirstTimeFlowType.social) {
-          // history.push(ONBOARDING_METAMETRICS);
-          // SOCIAL: change to metametrics when social login is available
-          history.push(ONBOARDING_COMPLETION_ROUTE);
-        } else {
-          history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
-        }
-      } catch (error) {
-        console.error(error);
+    try {
+      // If secretRecoveryPhrase is defined we are in import wallet flow
+      if (
+        secretRecoveryPhrase &&
+        firstTimeFlowType === FirstTimeFlowType.import
+      ) {
+        await handleWalletImport();
+      } else {
+        // Otherwise we are in create new wallet flow
+        await handleCreateNewWallet();
       }
+    } catch (error) {
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.WalletSetupFailure,
+      });
     }
   };
 
   const createPasswordLink = (
     <a
-      onClick={(e) => e.stopPropagation()}
+      onClick={handleLearnMoreClick}
       key="create-password__link-text"
       href={ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}
       target="_blank"
@@ -158,7 +217,7 @@ export default function CreatePassword({
       as="form"
       className="create-password"
       data-testid="create-password"
-      onSubmit={handleCreate}
+      onSubmit={handleCreatePassword}
     >
       <Box>
         <Box
@@ -190,15 +249,20 @@ export default function CreatePassword({
           <Text variant={TextVariant.headingLg} as="h2">
             {t('createPassword')}
           </Text>
+          <Text
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternative}
+            as="h2"
+          >
+            {t('createPasswordDetails')}
+          </Text>
         </Box>
         <PasswordForm onChange={(newPassword) => setPassword(newPassword)} />
-      </Box>
-      <Box>
         <Box
           className="create-password__terms-container"
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.spaceBetween}
-          marginBottom={4}
+          marginTop={6}
         >
           <Checkbox
             inputProps={{ 'data-testid': 'create-password-terms' }}
@@ -216,6 +280,8 @@ export default function CreatePassword({
             }
           />
         </Box>
+      </Box>
+      <Box>
         <Button
           data-testid="create-password-submit"
           variant={ButtonVariant.Primary}
@@ -224,7 +290,7 @@ export default function CreatePassword({
           className="create-password__form--submit-button"
           disabled={!password || !termsChecked}
         >
-          {t('confirm')}
+          {t('createPasswordCreate')}
         </Button>
       </Box>
       {shouldInjectMetametricsIframe ? (
