@@ -1981,6 +1981,7 @@ export default class MetamaskController extends EventEmitter {
     this.accountWalletController = controllersByName.AccountTreeController;
 
     this.notificationServicesController.init();
+    this.snapController.init();
 
     this.controllerMessenger.subscribe(
       'TransactionController:transactionStatusUpdated',
