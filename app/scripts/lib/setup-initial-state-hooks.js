@@ -20,7 +20,7 @@ const sentryLocalStore = new PersistenceManager({
  * @returns The persisted wallet state.
  */
 globalThis.stateHooks.getPersistedState = async function () {
-  return await sentryLocalStore.get();
+  return await sentryLocalStore.get({ validateVault: false });
 };
 
 const persistedStateMask = {

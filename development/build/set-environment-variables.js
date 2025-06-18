@@ -66,7 +66,6 @@ const BUILD_TYPES_TO_SVG_LOGO_PATH = {
   main: './app/images/logo/metamask-fox.svg',
   beta: './app/build-types/beta/images/logo/metamask-fox.svg',
   flask: './app/build-types/flask/images/logo/metamask-fox.svg',
-  mmi: './app/build-types/mmi/images/logo/mmi-logo.svg',
 };
 
 /**

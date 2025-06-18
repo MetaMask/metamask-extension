@@ -54,21 +54,24 @@ export const MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME: Record<
   string
 > = {
   [BtcScope.Mainnet]: 'Bitcoin',
-  [BtcScope.Testnet]: 'Bitcoin testnet',
+  [BtcScope.Testnet]: 'Bitcoin Testnet',
   [SolScope.Mainnet]: 'Solana',
   [SolScope.Testnet]: 'Solana',
   [SolScope.Devnet]: 'Solana',
 } as const;
 
 export const MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET = {
+  [BtcAccountType.P2pkh]: MultichainNetworks.BITCOIN,
   [BtcAccountType.P2wpkh]: MultichainNetworks.BITCOIN,
+  [BtcAccountType.P2sh]: MultichainNetworks.BITCOIN,
+  [BtcAccountType.P2tr]: MultichainNetworks.BITCOIN,
   [SolAccountType.DataAccount]: MultichainNetworks.SOLANA,
 } as const;
 
 export const MULTICHAIN_NETWORK_TO_NICKNAME: Record<CaipChainId, string> = {
   [MultichainNetworks.BITCOIN]: 'Bitcoin',
   [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
-  [MultichainNetworks.BITCOIN_SIGNET]: 'Bitcoin Signet',
+  [MultichainNetworks.BITCOIN_SIGNET]: 'Bitcoin Mutinynet',
   [MultichainNetworks.SOLANA]: 'Solana',
   [MultichainNetworks.SOLANA_DEVNET]: 'Solana Devnet',
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
@@ -78,11 +81,15 @@ export const MULTICHAIN_NETWORK_TO_NICKNAME: Record<CaipChainId, string> = {
 export const BITCOIN_TOKEN_IMAGE_URL = './images/bitcoin-logo.svg';
 export const BITCOIN_TESTNET_TOKEN_IMAGE_URL =
   './images/bitcoin-testnet-logo.svg';
+export const BITCOIN_SIGNET_TOKEN_IMAGE_URL =
+  './images/bitcoin-signet-logo.png';
+
 export const SOLANA_TOKEN_IMAGE_URL = './images/solana-logo.svg';
 export const SOLANA_TESTNET_IMAGE_URL = './images/solana-testnet-logo.svg';
 export const SOLANA_DEVNET_IMAGE_URL = './images/solana-devnet-logo.svg';
 
 export const BITCOIN_BLOCK_EXPLORER_URL = 'https://mempool.space';
+export const BITCOIN_SIGNET_BLOCK_EXPLORER_URL = 'https://mutinynet.com';
 export const SOLANA_BLOCK_EXPLORER_URL = 'https://solscan.io';
 
 export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
@@ -98,6 +105,11 @@ export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
     url: BITCOIN_BLOCK_EXPLORER_URL,
     address: `${BITCOIN_BLOCK_EXPLORER_URL}/testnet/address/{address}`,
     transaction: `${BITCOIN_BLOCK_EXPLORER_URL}/testnet/tx/{txId}`,
+  },
+  [MultichainNetworks.BITCOIN_SIGNET]: {
+    url: BITCOIN_SIGNET_BLOCK_EXPLORER_URL,
+    address: `${BITCOIN_SIGNET_BLOCK_EXPLORER_URL}/address/{address}`,
+    transaction: `${BITCOIN_SIGNET_BLOCK_EXPLORER_URL}/tx/{txId}`,
   },
 
   [MultichainNetworks.SOLANA]: {
@@ -120,6 +132,7 @@ export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
 export const MULTICHAIN_TOKEN_IMAGE_MAP: Record<CaipChainId, string> = {
   [MultichainNetworks.BITCOIN]: BITCOIN_TOKEN_IMAGE_URL,
   [MultichainNetworks.BITCOIN_TESTNET]: BITCOIN_TESTNET_TOKEN_IMAGE_URL,
+  [MultichainNetworks.BITCOIN_SIGNET]: BITCOIN_SIGNET_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
@@ -161,8 +174,8 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
   [MultichainNetworks.BITCOIN_TESTNET]: {
     chainId: MultichainNetworks.BITCOIN_TESTNET,
     rpcUrl: '', // not used
-    ticker: 'BTC',
-    nickname: 'Bitcoin (testnet)',
+    ticker: 'tBTC',
+    nickname: 'Bitcoin Testnet',
     id: 'btc-testnet',
     type: 'rpc',
     decimals: 8,
@@ -176,6 +189,27 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     blockExplorerFormatUrls:
       MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
         MultichainNetworks.BITCOIN_TESTNET
+      ],
+    isAddressCompatible: isBtcTestnetAddress,
+  },
+  [MultichainNetworks.BITCOIN_SIGNET]: {
+    chainId: MultichainNetworks.BITCOIN_SIGNET,
+    rpcUrl: '', // not used
+    ticker: 'sBTC',
+    nickname: 'Bitcoin Mutinynet',
+    id: 'btc-signet',
+    type: 'rpc',
+    decimals: 8,
+    rpcPrefs: {
+      imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.BITCOIN_SIGNET],
+      blockExplorerUrl:
+        MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+          MultichainNetworks.BITCOIN_SIGNET
+        ].url,
+    },
+    blockExplorerFormatUrls:
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[
+        MultichainNetworks.BITCOIN_SIGNET
       ],
     isAddressCompatible: isBtcTestnetAddress,
   },
@@ -246,3 +280,8 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     isAddressCompatible: isSolanaAddress,
   },
 };
+
+export const SOLANA_TEST_CHAINS: CaipChainId[] = [
+  SolScope.Testnet,
+  SolScope.Devnet,
+];

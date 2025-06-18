@@ -58,6 +58,34 @@ export function withTransactionEnvelopeTypeFixtures(
   );
 }
 
+export function withSignatureFixtures(
+  // Default params first is discouraged because it makes it hard to call the function without the
+  // optional parameters. But it doesn't apply here because we're always passing in a variable for
+  // title. It's optional because it's sometimes unset.
+  // eslint-disable-next-line @typescript-eslint/default-param-last
+  title: string = '',
+  testFunction: Parameters<typeof withFixtures>[1],
+  mocks?: (mockServer: Mockttp) => Promise<MockedEndpoint[]>, // Add mocks as an optional parameter
+) {
+  return withFixtures(
+    {
+      dapp: true,
+      driverOptions: { timeOut: 20000 },
+      fixtures: new FixtureBuilder()
+        .withPermissionControllerConnectedToTestDapp()
+        .withMetaMetricsController({
+          metaMetricsId: MOCK_META_METRICS_ID,
+          participateInMetaMetrics: true,
+        })
+        .build(),
+      localNodeOptions: {},
+      testSpecificMock: mocks,
+      title,
+    },
+    testFunction,
+  );
+}
+
 async function createMockSegmentEvent(mockServer: Mockttp, eventName: string) {
   return await mockServer
     .forPost('https://api.segment.io/v1/batch')

@@ -175,43 +175,6 @@ export const isValidDate = (d: Date | number) => {
 };
 
 /**
- * A deferred Promise.
- *
- * A deferred Promise is one that can be resolved or rejected independently of
- * the Promise construction.
- *
- * @typedef {object} DeferredPromise
- * @property {Promise} promise - The Promise that has been deferred.
- * @property {() => void} resolve - A function that resolves the Promise.
- * @property {() => void} reject - A function that rejects the Promise.
- */
-
-type DeferredPromise = {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  promise: Promise<any>;
-  resolve?: () => void;
-  reject?: () => void;
-};
-
-/**
- * Create a defered Promise.
- *
- * @returns A deferred Promise.
- */
-export function deferredPromise(): DeferredPromise {
-  let resolve: DeferredPromise['resolve'];
-  let reject: DeferredPromise['reject'];
-  const promise = new Promise<void>(
-    (innerResolve: () => void, innerReject: () => void) => {
-      resolve = innerResolve;
-      reject = innerReject;
-    },
-  );
-  return { promise, resolve, reject };
-}
-
-/**
  * Returns a function with arity 1 that caches the argument that the function
  * is called with and invokes the comparator with both the cached, previous,
  * value and the current value. If specified, the initialValue will be passed

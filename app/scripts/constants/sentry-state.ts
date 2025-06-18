@@ -1,22 +1,12 @@
 import { AllProperties } from '../../../shared/modules/object.utils';
 
-export const MMI_SENTRY_BACKGROUND_STATE = {
-  MMIController: {
-    opts: true,
-  },
-  CustodyController: {
-    store: true,
-  },
-  MmiConfigurationController: {
-    store: true,
-    configurationClient: true,
-  },
-};
-
 // This describes the subset of background controller state attached to errors
 // sent to Sentry These properties have some potential to be useful for
 // debugging, and they do not contain any identifiable information.
 export const SENTRY_BACKGROUND_STATE = {
+  AccountTreeController: {
+    accountTree: false,
+  },
   AccountsController: {
     internalAccounts: {
       accounts: false,
@@ -49,6 +39,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   NetworkOrderController: {
     orderedNetworkList: [],
+    enabledNetworkMap: {},
   },
   AccountOrderController: {
     pinnedAccountList: [],
@@ -96,6 +87,9 @@ export const SENTRY_BACKGROUND_STATE = {
     throttledOrigins: false,
     timeoutMinutes: true,
     trezorModel: true,
+    isUpdateAvailable: true,
+    updateModalLastDismissedAt: true,
+    lastUpdatedAt: true,
   },
   MultichainBalancesController: {
     balances: false,
@@ -109,6 +103,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   BridgeController: {
     assetExchangeRates: false,
+    minimumBalanceForRentExemptionInLamports: false,
     quoteRequest: {
       walletAddress: false,
       srcTokenAddress: true,
@@ -253,6 +248,7 @@ export const SENTRY_BACKGROUND_STATE = {
     snapRegistryList: false,
     theme: true,
     signatureSecurityAlertResponses: false,
+    addressSecurityAlertResponses: false,
     use4ByteResolution: true,
     useAddressBarEnsResolution: true,
     useBlockie: true,
@@ -386,9 +382,6 @@ export const SENTRY_BACKGROUND_STATE = {
     hasAccountSyncingSyncedAtLeastOnce: false,
     isAccountSyncingReadyToBeDispatched: false,
   },
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  ...MMI_SENTRY_BACKGROUND_STATE,
-  ///: END:ONLY_INCLUDE_IF
 };
 
 const flattenedBackgroundStateMask = Object.values(

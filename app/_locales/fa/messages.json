@@ -257,20 +257,8 @@
   "gasLimit": {
     "message": "محدوده گاز"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "محدوده گاز حد اکثر تعداد واحدات گاز است که میخواهید مصرف نمایید."
-  },
   "gasLimitTooLow": {
     "message": "حدود گاز باید حد اقل 21000 باشد"
-  },
-  "gasPrice": {
-    "message": "قیمت گاز (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "قیمت گاز خیلی کم است"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "قیمت گاز مبلغ ایتر را که تصمیم پرداخت برای هر واحد گاز را داشته باشید، مشخص میکند."
   },
   "gasUsed": {
     "message": "گاز استفاده شد"
@@ -751,8 +739,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "عبارت بازیاب شخصی شما"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "قیمت صفر گاز بسوی سرعت"
   }
 }

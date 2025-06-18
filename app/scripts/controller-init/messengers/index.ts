@@ -46,6 +46,10 @@ import {
   getDelegationControllerInitMessenger,
   getDelegationControllerMessenger,
 } from './delegation/delegation-controller-messenger';
+import {
+  getAccountTreeControllerMessenger,
+  getAccountTreeControllerInitMessenger,
+} from './accounts';
 
 export const CONTROLLER_MESSENGERS = {
   AuthenticationController: {
@@ -147,5 +151,9 @@ export const CONTROLLER_MESSENGERS = {
   AssetsContractController: {
     getMessenger: getAssetsContractControllerMessenger,
     getInitMessenger: noop,
+  },
+  AccountTreeController: {
+    getMessenger: getAccountTreeControllerMessenger,
+    getInitMessenger: getAccountTreeControllerInitMessenger,
   },
 } as const;

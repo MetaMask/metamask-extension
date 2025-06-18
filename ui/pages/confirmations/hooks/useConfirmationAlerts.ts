@@ -14,9 +14,7 @@ import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
 import { useNonContractAddressAlerts } from './alerts/transactions/useNonContractAddressAlerts';
 import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTransactionAlerts';
 import { useResimulationAlert } from './alerts/transactions/useResimulationAlert';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useSigningOrSubmittingAlerts } from './alerts/transactions/useSigningOrSubmittingAlerts';
-///: END:ONLY_INCLUDE_IF
 import useBlockaidAlerts from './alerts/useBlockaidAlerts';
 import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
 import { useNetworkAndOriginSwitchingAlerts } from './alerts/useNetworkAndOriginSwitchingAlerts';
@@ -45,9 +43,7 @@ function useTransactionAlerts(): Alert[] {
   const nonContractAddressAlerts = useNonContractAddressAlerts();
   const pendingTransactionAlerts = usePendingTransactionAlerts();
   const resimulationAlert = useResimulationAlert();
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
-  ///: END:ONLY_INCLUDE_IF
 
   return useMemo(
     () => [
@@ -63,9 +59,7 @@ function useTransactionAlerts(): Alert[] {
       ...nonContractAddressAlerts,
       ...pendingTransactionAlerts,
       ...resimulationAlert,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       ...signingOrSubmittingAlerts,
-      ///: END:ONLY_INCLUDE_IF
     ],
     [
       accountTypeUpgradeAlerts,
@@ -80,9 +74,7 @@ function useTransactionAlerts(): Alert[] {
       nonContractAddressAlerts,
       pendingTransactionAlerts,
       resimulationAlert,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       signingOrSubmittingAlerts,
-      ///: END:ONLY_INCLUDE_IF
     ],
   );
 }

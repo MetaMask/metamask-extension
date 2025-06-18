@@ -7,17 +7,17 @@ class TokenOverviewPage {
 
   private readonly receiveButton = {
     text: 'Receive',
-    css: '.icon-button',
+    css: '.icon-button-round',
   };
 
   private readonly sendButton = {
     text: 'Send',
-    css: '.icon-button',
+    css: '.icon-button-round',
   };
 
   private readonly swapButton = {
     text: 'Swap',
-    css: '.icon-button',
+    css: '.icon-button-round',
   };
 
   private readonly viewAssetInExplorerButton = {

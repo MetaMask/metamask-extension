@@ -47,7 +47,7 @@ describe('BTC Account - Overview', function (this: Suite) {
 
       await driver.waitForSelector({
         testId: 'multichain-token-list-item-value',
-        text: `${DEFAULT_BTC_BALANCE} ₿`,
+        text: `${DEFAULT_BTC_BALANCE} BTC`,
       });
       const homePage = new BitcoinHomepage(driver);
       await homePage.check_pageIsLoaded();

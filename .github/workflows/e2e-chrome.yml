@@ -23,7 +23,7 @@ jobs:
           [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
     with:
       test-suite-name: test-e2e-chrome-browserify
-      build-artifact: prep-build-test-browserify-chrome
+      build-artifact: build-test-browserify
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome
       matrix-index: ${{ matrix.index }}
@@ -42,7 +42,7 @@ jobs:
           [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
     with:
       test-suite-name: test-e2e-chrome-webpack
-      build-artifact: prep-build-test-webpack-chrome
+      build-artifact: build-test-webpack
       build-command: yarn build:test:webpack
       test-command: yarn test:e2e:chrome:webpack
       matrix-index: ${{ matrix.index }}
@@ -55,7 +55,7 @@ jobs:
     uses: ./.github/workflows/run-e2e.yml
     with:
       test-suite-name: test-e2e-chrome-multiple-providers
-      build-artifact: prep-build-test-browserify-chrome
+      build-artifact: build-test-browserify
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome:multi-provider
     secrets:
@@ -66,7 +66,7 @@ jobs:
     uses: ./.github/workflows/run-e2e.yml
     with:
       test-suite-name: test-e2e-chrome-rpc
-      build-artifact: prep-build-test-browserify-chrome
+      build-artifact: build-test-browserify
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome:rpc
     secrets:
@@ -81,7 +81,7 @@ jobs:
         index: [0, 1, 2, 3, 4]
     with:
       test-suite-name: test-e2e-chrome-flask
-      build-artifact: prep-build-test-flask-browserify-chrome
+      build-artifact: build-test-flask-browserify
       build-command: yarn build:test:flask
       test-command: yarn test:e2e:chrome:flask
       matrix-index: ${{ matrix.index }}
@@ -94,7 +94,7 @@ jobs:
     uses: ./.github/workflows/run-e2e.yml
     with:
       test-suite-name: test-e2e-chrome-vault-decryption
-      build-artifact: prep-build-dist-browserify-chrome
+      build-artifact: build-dist-browserify
       test-command: yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
     secrets:
       DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
@@ -104,7 +104,7 @@ jobs:
     uses: ./.github/workflows/run-e2e.yml
     with:
       test-suite-name: test-e2e-chrome-api-specs
-      build-artifact: prep-build-test-browserify-chrome
+      build-artifact: build-test-browserify
       build-command: yarn build:test
       test-command: yarn test:api-specs
       test-artifacts-path: html-report
@@ -148,7 +148,7 @@ jobs:
     uses: ./.github/workflows/run-e2e.yml
     with:
       test-suite-name: test-e2e-chrome-api-specs-multichain
-      build-artifact: prep-build-test-flask-browserify-chrome
+      build-artifact: build-test-flask-browserify
       build-command: yarn build:test:flask
       test-command: yarn test:api-specs-multichain
       test-artifacts-path: html-report-multichain

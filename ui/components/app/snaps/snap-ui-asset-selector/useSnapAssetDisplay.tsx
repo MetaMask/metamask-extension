@@ -7,6 +7,7 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 import { useSelector } from 'react-redux';
+import { useMemo } from 'react';
 import { getMemoizedInternalAccountByAddress } from '../../../../selectors';
 import { getMultiChainAssets } from '../../../../selectors/assets';
 import { TokenWithFiatAmount } from '../../assets/types';
@@ -133,21 +134,27 @@ export const useSnapAssetSelectorData = ({
     .map((chainId) => chainId)
     .filter(({ chainId }) => (chainIds ? chainIds?.includes(chainId) : true));
 
-  // Format the assets
-  const formattedAssets: SnapUIAsset[] = assets.map(formatAsset);
+  const formattedAssets = useMemo(() => {
+    // Filter the assets by the requested chain IDs
+    const filteredAssets = assets.filter((asset) =>
+      requestedChainIds.some(({ chainId, chain: { namespace, reference } }) => {
+        // Handles the "eip155:0" case
+        if (namespace === KnownCaipNamespace.Eip155 && reference === '0') {
+          const { namespace: assetNamepace } = parseCaipChainId(
+            asset.chainId as CaipChainId,
+          );
+          return assetNamepace === namespace;
+        }
 
-  // Filter the assets by the requested chain IDs
-  const filteredAssets = formattedAssets.filter((asset) =>
-    requestedChainIds.some(({ chainId, chain: { namespace, reference } }) => {
-      // Handles the "eip155:0" case
-      if (namespace === KnownCaipNamespace.Eip155 && reference === '0') {
-        const { namespace: assetNamepace } = parseCaipChainId(asset.chainId);
-        return assetNamepace === namespace;
-      }
+        return chainId === asset.chainId;
+      }),
+    );
 
-      return chainId === asset.chainId;
-    }),
-  );
+    // Format the assets
+    const formatted: SnapUIAsset[] = filteredAssets.map(formatAsset);
 
-  return filteredAssets;
+    return formatted;
+  }, [assets]);
+
+  return formattedAssets;
 };

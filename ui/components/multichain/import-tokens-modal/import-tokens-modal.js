@@ -376,7 +376,7 @@ export const ImportTokensModal = ({ onClose }) => {
       const {
         symbol = '',
         decimals,
-        name,
+        name = '',
       } = await infoGetter.current(
         address,
         tokenListByChain?.[selectedNetworkForCustomImport]?.data,
@@ -387,9 +387,28 @@ export const ImportTokensModal = ({ onClose }) => {
       handleCustomDecimalsChange(decimals);
       // Set custom token name
       setCustomName(name);
+      setShowSymbolAndDecimals(true);
     },
     [selectedNetworkForCustomImport, tokenListByChain],
   );
+
+  useEffect(() => {
+    const canAttemptAutofill =
+      customAddress && // Address is present
+      !customAddressError && // No general address error
+      !nftAddressError && // Not an NFT address
+      !mainnetTokenWarning; // Not a mainnet token on the wrong chain
+
+    if (canAttemptAutofill) {
+      attemptToAutoFillTokenParams(customAddress);
+    }
+  }, [
+    customAddress,
+    customAddressError,
+    nftAddressError,
+    mainnetTokenWarning,
+    attemptToAutoFillTokenParams,
+  ]);
 
   const handleToggleToken = (token) => {
     const { address } = token;
@@ -566,12 +585,8 @@ export const ImportTokensModal = ({ onClose }) => {
         break;
 
       default:
-        if (!addressIsEmpty) {
-          attemptToAutoFillTokenParams(address);
-          setShowSymbolAndDecimals(true);
-          if (standard) {
-            setTokenStandard(standard);
-          }
+        if (standard) {
+          setTokenStandard(standard);
         }
     }
   };

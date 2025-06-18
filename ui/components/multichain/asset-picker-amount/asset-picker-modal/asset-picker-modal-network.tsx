@@ -28,9 +28,7 @@ import {
   AvatarNetworkSize,
   IconName,
 } from '../../../component-library';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-///: END:ONLY_INCLUDE_IF
 import { NetworkListItem } from '../../network-list-item';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
@@ -88,9 +86,7 @@ export const AssetPickerModalNetwork = ({
   selectedChainIds?: string[];
   onMultiselectSubmit?: (selectedChainIds: string[]) => void;
 }) => {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const t = useI18nContext();
-  ///: END:ONLY_INCLUDE_IF
 
   const { balanceByChainId } = useMultichainBalances();
 
