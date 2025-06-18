@@ -2367,7 +2367,7 @@ export function getShowRecoveryPhraseReminder(state) {
   } = state.metamask;
 
   const currentTime = new Date().getTime();
-  const frequency = recoveryPhraseReminderHasBeenShown ? DAY * 90 : DAY * 2;
+  const frequency = recoveryPhraseReminderHasBeenShown ? DAY * 90 : DAY * 0;
 
   return currentTime - recoveryPhraseReminderLastShown >= frequency;
 }
