@@ -704,9 +704,6 @@
   "unlock": {
     "message": "Ava lukk"
   },
-  "unlockMessage": {
-    "message": "Detsentraliseeritud veeb ootab"
-  },
   "urlErrorMsg": {
     "message": "URI-d nõuavad sobivat HTTP/HTTPS-i prefiksit."
   },

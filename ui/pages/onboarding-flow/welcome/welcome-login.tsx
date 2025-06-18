@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import classnames from 'classnames';
 import Mascot from '../../../components/ui/mascot';
 import {
@@ -19,17 +19,18 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isFlask, isBeta } from '../../../helpers/utils/build-types';
-import LoginOptions from './login-options';
-import { LOGIN_OPTION, LoginOptionType, LoginType } from './types';
+
+type WelcomeLoginProps = {
+  onCreate: () => void;
+  onImport: () => void;
+};
 
 export default function WelcomeLogin({
-  onLogin,
-}: {
-  onLogin: (loginType: LoginType, loginOption: string) => void;
-}) {
+  onCreate,
+  onImport,
+}: WelcomeLoginProps) {
   const t = useI18nContext();
   const [eventEmitter] = useState(new EventEmitter());
-  const [loginOption, setLoginOption] = useState<LoginOptionType | null>(null);
 
   const renderMascot = () => {
     if (isFlask()) {
@@ -46,18 +47,6 @@ export default function WelcomeLogin({
       <Mascot animationEventEmitter={eventEmitter} width="268" height="268" />
     );
   };
-
-  const handleLogin = useCallback(
-    (loginType: LoginType) => {
-      if (!loginOption) {
-        return;
-      }
-      setLoginOption(null);
-      onLogin(loginType, loginOption);
-    },
-    [loginOption, onLogin],
-  );
-
   return (
     <Box
       display={Display.Flex}
@@ -102,9 +91,7 @@ export default function WelcomeLogin({
           width={BlockSize.Full}
           size={ButtonBaseSize.Lg}
           className="welcome-login__create-button"
-          onClick={() => {
-            setLoginOption(LOGIN_OPTION.NEW);
-          }}
+          onClick={onCreate}
         >
           {t('onboardingCreateWallet')}
         </ButtonBase>
@@ -114,22 +101,11 @@ export default function WelcomeLogin({
           size={ButtonBaseSize.Lg}
           backgroundColor={BackgroundColor.transparent}
           className="welcome-login__import-button"
-          onClick={() => {
-            setLoginOption(LOGIN_OPTION.EXISTING);
-          }}
+          onClick={onImport}
         >
           {t('onboardingImportWallet')}
         </ButtonBase>
       </Box>
-      {loginOption && (
-        <LoginOptions
-          loginOption={loginOption}
-          onClose={() => {
-            setLoginOption(null);
-          }}
-          handleLogin={handleLogin}
-        />
-      )}
     </Box>
   );
 }

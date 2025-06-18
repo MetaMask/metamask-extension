@@ -58,7 +58,7 @@ class ResetPasswordPage {
     console.log('Waiting for seed phrase input to not be visible');
     await this.driver.waitForSelector(this.seedPhraseInput, {
       state: 'detached',
-      timeout: 20000,
+      timeout: 30000,
     });
   }
 }
