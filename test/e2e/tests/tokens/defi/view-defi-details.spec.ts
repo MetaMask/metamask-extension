@@ -33,7 +33,7 @@ describe('View DeFi details', function () {
         const defiTab = new DeFiTab(driver);
 
         // check ethereum positions present
-        await switchToNetworkFromSendFlow(driver, 'Ethereum Mainnet');
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
         await defiTab.check_groupIconIsDisplayed();
         await defiTab.defiTabCells.check_tokenName('Aave V3');
         await defiTab.defiTabCells.check_tokenMarketValue('$14.74');

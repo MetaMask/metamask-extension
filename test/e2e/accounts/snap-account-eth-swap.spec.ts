@@ -35,6 +35,7 @@ async function mockSwapsAndSimpleKeyringSnap(mockServer: Mockttp) {
 }
 
 describe('Snap Account - Swap', function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('swaps ETH for DAI using a snap account', async function () {
     await withFixtures(
       {

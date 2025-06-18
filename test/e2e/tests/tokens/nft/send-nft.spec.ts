@@ -9,8 +9,7 @@ import Homepage from '../../../page-objects/pages/home/homepage';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { Driver } from '../../../webdriver/driver';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import { switchToNetworkFlow } from '../../../page-objects/flows/network.flow';
+import { switchToNetworkFromSendFlow } from '../../../page-objects/flows/network.flow';
 import { Anvil } from '../../../seeder/anvil';
 
 describe('Send NFTs', function () {
@@ -34,16 +33,9 @@ describe('Send NFTs', function () {
         await loginWithBalanceValidation(driver, localNodes[0]);
         const nftListPage = new NftListPage(driver);
 
-        await new HeaderNavbar(driver).check_currentSelectedNetwork(
-          'Localhost 8545',
-        );
-
         await new Homepage(driver).goToNftTab();
 
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
-        await new HeaderNavbar(driver).check_currentSelectedNetwork(
-          'Ethereum Mainnet',
-        );
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
 
         await openActionMenuAndStartSendFlow(driver);
         await clickNestedButton(driver, 'Account 1');
@@ -72,10 +64,6 @@ describe('Send NFTs', function () {
       }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
         const nftListPage = new NftListPage(driver);
-
-        await new HeaderNavbar(driver).check_currentSelectedNetwork(
-          'Localhost 8545',
-        );
 
         await new Homepage(driver).goToNftTab();
 
