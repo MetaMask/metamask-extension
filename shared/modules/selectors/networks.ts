@@ -17,6 +17,7 @@ import {
   NetworkStatus,
 } from '../../constants/network';
 import { hexToDecimal } from '../conversion.utils';
+import { SOLANA_TEST_CHAINS } from '../../constants/multichain/networks';
 import { createDeepEqualSelector } from './util';
 
 export type NetworkState = {
@@ -309,7 +310,7 @@ export const getNonTestNetworks = createSelector(
         const caipChainId = chainId as CaipChainId;
         return (
           !CAIP_FORMATTED_EVM_TEST_CHAINS.includes(caipChainId) &&
-          !NON_EVM_TESTNET_IDS.includes(caipChainId)
+          !SOLANA_TEST_CHAINS.includes(caipChainId)
         );
       })
       .map(([chainId, network]) => ({

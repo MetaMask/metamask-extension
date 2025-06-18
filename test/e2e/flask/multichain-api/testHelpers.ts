@@ -144,13 +144,13 @@ export const passwordLockMetamaskExtension = async (
 };
 
 /**
- * Sometimes we need to escape colon character when using {@link Driver.findElement}, otherwise selenium will treat this as an invalid selector.
+ * We need to replace colon character by dash when using {@link Driver.findElement}, otherwise selenium will treat this as an invalid selector.
  *
  * @param selector - string to manipulate.
- * @returns string with escaped colon char.
+ * @returns string with replaced colon char.
  */
-export const escapeColon = (selector: string): string =>
-  selector.replace(':', '\\:');
+export const replaceColon = (selector: string): string =>
+  selector.replace(':', '-');
 
 export const sendMultichainApiRequest = ({
   driver,

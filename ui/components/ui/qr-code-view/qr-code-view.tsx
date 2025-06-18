@@ -38,10 +38,12 @@ function QrCodeView({
   Qr,
   warning,
   accountName,
+  location = 'Account Details Modal',
 }: {
   Qr: { message?: string; data: string };
   warning: string | null | undefined;
   accountName?: string;
+  location?: string;
 }) {
   const trackEvent = useContext(MetaMetricsContext);
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);
@@ -131,7 +133,7 @@ function QrCodeView({
             category: MetaMetricsEventCategory.Accounts,
             event: MetaMetricsEventName.PublicAddressCopied,
             properties: {
-              location: 'Account Details Modal',
+              location,
             },
           });
         }}
@@ -156,6 +158,7 @@ QrCodeView.propTypes = {
     ]),
     data: PropTypes.string.isRequired,
   }).isRequired,
+  location: PropTypes.string,
 };
 
 export default connect(mapStateToProps)(QrCodeView);

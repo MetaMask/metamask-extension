@@ -251,20 +251,8 @@
   "gasLimit": {
     "message": "Gasgräns"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Gasgräns innebär det maximala antalet gasenheter som du är villig att spendera."
-  },
   "gasLimitTooLow": {
     "message": "Gasgräns måste vara minst 21 000"
-  },
-  "gasPrice": {
-    "message": "Gas-pris (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Gaspris extremt lågt"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Gaspriset anger den summa Ether som du är villig att betala för varje gasenhet."
   },
   "gasUsed": {
     "message": "Gas använd"
@@ -629,9 +617,6 @@
   "terms": {
     "message": "Användarvillkor"
   },
-  "tips": {
-    "message": "Donationer"
-  },
   "to": {
     "message": "Till"
   },
@@ -704,9 +689,6 @@
   "unlock": {
     "message": "Lås upp"
   },
-  "unlockMessage": {
-    "message": "Den decentraliserade webben väntar"
-  },
   "urlErrorMsg": {
     "message": "URI:er kräver lämpligt HTTP/HTTPS-prefix."
   },
@@ -730,8 +712,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Din privata seedphrase"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Inget gaspris vid uppsnabbning"
   }
 }

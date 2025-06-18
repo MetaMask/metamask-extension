@@ -54,7 +54,7 @@ export const MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME: Record<
   string
 > = {
   [BtcScope.Mainnet]: 'Bitcoin',
-  [BtcScope.Testnet]: 'Bitcoin testnet',
+  [BtcScope.Testnet]: 'Bitcoin Testnet',
   [SolScope.Mainnet]: 'Solana',
   [SolScope.Testnet]: 'Solana',
   [SolScope.Devnet]: 'Solana',
@@ -107,9 +107,9 @@ export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
     transaction: `${BITCOIN_BLOCK_EXPLORER_URL}/testnet/tx/{txId}`,
   },
   [MultichainNetworks.BITCOIN_SIGNET]: {
-    url: BITCOIN_BLOCK_EXPLORER_URL,
-    address: `${BITCOIN_BLOCK_EXPLORER_URL}/address/{address}`,
-    transaction: `${BITCOIN_BLOCK_EXPLORER_URL}/tx/{txId}`,
+    url: BITCOIN_SIGNET_BLOCK_EXPLORER_URL,
+    address: `${BITCOIN_SIGNET_BLOCK_EXPLORER_URL}/address/{address}`,
+    transaction: `${BITCOIN_SIGNET_BLOCK_EXPLORER_URL}/tx/{txId}`,
   },
 
   [MultichainNetworks.SOLANA]: {
@@ -280,3 +280,8 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     isAddressCompatible: isSolanaAddress,
   },
 };
+
+export const SOLANA_TEST_CHAINS: CaipChainId[] = [
+  SolScope.Testnet,
+  SolScope.Devnet,
+];

@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { Key } = require('selenium-webdriver');
 const {
   withFixtures,
   openDapp,
@@ -92,7 +93,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
-          .withPreferencesControllerSmartTransactionsOptedOut()
           .build(),
         dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
@@ -115,6 +115,21 @@ describe('Switch Ethereum Chain for two dapps', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        // disable smart transactions step by step
+        // we cannot use fixtures because migration 135 overrides the opt in value to true
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
+        await driver.clickElement({
+          text: 'Advanced',
+          tag: 'div',
+        });
+        const stxToggle = await driver.findElement(
+          '[data-testid="settings-page-stx-opt-in-toggle"]',
+        );
+        stxToggle.sendKeys(Key.ENTER);
 
         // open two dapps
         await openDapp(driver, undefined, DAPP_URL);

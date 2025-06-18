@@ -42,6 +42,7 @@ import ShowHideToggle from '../../../components/ui/show-hide-toggle';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { getMetaMaskHdKeyrings } from '../../../selectors';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 
 const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
@@ -411,8 +412,10 @@ export const ImportSrp = () => {
             disabled={!isValidSrp || hasEmptyWordsOrIncorrectLength}
             loading={loading}
             onClick={async () => {
+              trace({ name: TraceName.ImportSrp });
               try {
                 setLoading(true);
+                await dispatch(actions.lockAccountSyncing());
                 await importWallet();
                 history.push(DEFAULT_ROUTE);
                 dispatch(setShowNewSrpAddedToast(true));
@@ -431,6 +434,8 @@ export const ImportSrp = () => {
                 );
               } finally {
                 setLoading(false);
+                endTrace({ name: TraceName.ImportSrp });
+                await dispatch(actions.unlockAccountSyncing());
               }
             }}
           >
