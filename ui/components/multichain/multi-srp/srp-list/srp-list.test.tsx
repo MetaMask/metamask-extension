@@ -9,6 +9,7 @@ import { InternalAccountWithBalance } from '../../../../selectors';
 import { shortenAddress } from '../../../../helpers/utils/util';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
+import { FirstTimeFlowType } from '../../../../../shared/constants/onboarding';
 import { SrpList } from './srp-list';
 
 const mockTotalFiatBalance = '100';
@@ -39,6 +40,8 @@ const render = () => {
     metamask: {
       ...mockState.metamask,
       keyrings: [...mockState.metamask.keyrings, mockSecondHdKeyring],
+      firstTimeFlowType: FirstTimeFlowType.create,
+      seedPhraseBackedUp: false,
     },
   });
 
