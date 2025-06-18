@@ -11,7 +11,10 @@ import {
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import {
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 
 type PasswordFormProps = {
   onChange: (password: string) => void;
@@ -76,6 +79,7 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
           as="span"
           key={score}
           data-testid={passwordStrengthLabel.dataTestId}
+          color={TextColor.textAlternative}
         >
           {passwordStrengthLabel.text}
         </Text>
@@ -133,11 +137,10 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
   return (
     <Box>
       <FormTextField
-        label={t('newPassword')}
+        label={t('newPasswordCreate')}
         id="create-password-new"
         autoFocus
         autoComplete
-        placeholder={t('newPasswordPlaceholder')}
         labelProps={{ marginBottom: 1 }}
         size={FormTextFieldSize.Lg}
         value={password}
@@ -147,6 +150,9 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
         }}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           handlePasswordChange(e.target.value);
+        }}
+        helpTextProps={{
+          color: TextColor.textAlternative,
         }}
         helpText={passwordStrengthElement && passwordStrengthElement}
         endAccessory={
@@ -170,7 +176,6 @@ export default function PasswordForm({ onChange }: PasswordFormProps) {
         id="create-password-confirm"
         autoComplete
         marginTop={4}
-        placeholder={t('confirmPasswordPlaceholder')}
         labelProps={{ marginBottom: 1 }}
         size={FormTextFieldSize.Lg}
         error={Boolean(confirmPasswordError)}
