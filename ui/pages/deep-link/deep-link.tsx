@@ -120,9 +120,10 @@ export const DeepLink = () => {
   const location = useLocation();
   const t = useI18nContext() as TranslateFunction;
   const dispatch = useDispatch();
-  // it'd technically not possible for a natural flow to reach this page
+  // it's technically not possible for a natural flow to reach this page
   // when `skipDeepLinkInterstitial` is true, but if a user manually navigates
-  // to this "interstitial" page we should show their preferences anyway.
+  // to this "interstitial" page, or uses their back button, we should show
+  // their previously selected preference.
   const skipDeepLinkInterstitial = useSelector(
     (state: MetaMaskReduxState) =>
       getPreferences(state).skipDeepLinkInterstitial,
@@ -132,7 +133,8 @@ export const DeepLink = () => {
   const [route, setRoute] = useState<null | Route>(null);
   const [title, setTitle] = useState<null | string>(null);
   const [cta, setCta] = useState<null | string>(null);
-  const [hasChecked, setHasChecked] = useState(skipDeepLinkInterstitial);
+  const [skipDeepLinkInterstitialChecked, setSkipDeepLinkInterstitialChecked] =
+    useState(skipDeepLinkInterstitial);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -164,9 +166,9 @@ export const DeepLink = () => {
   }, [location.search]);
 
   function onRemindMeStateChanged() {
-    const newHasChecked = !hasChecked;
-    setHasChecked(newHasChecked);
-    dispatch(setSkipDeepLinkInterstitial(newHasChecked));
+    const newValue = !skipDeepLinkInterstitialChecked;
+    setSkipDeepLinkInterstitialChecked(newValue);
+    dispatch(setSkipDeepLinkInterstitial(newValue));
   }
 
   return (
@@ -226,7 +228,7 @@ export const DeepLink = () => {
                   <Checkbox
                     id="dont-remind-me-checkbox"
                     data-testid="deep-link-checkbox"
-                    isChecked={hasChecked}
+                    isChecked={skipDeepLinkInterstitialChecked}
                     onChange={onRemindMeStateChanged}
                   ></Checkbox>
                   <Label
