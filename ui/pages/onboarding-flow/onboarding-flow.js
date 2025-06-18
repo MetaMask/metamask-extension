@@ -30,8 +30,11 @@ import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
   createNewVaultAndRestore,
+  createNewVaultAndSyncWithSocial,
+  restoreSocialBackupAndGetSeedPhrase,
 } from '../../store/actions';
 import {
+  getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterUnlock,
   getShowTermsOfUse,
 } from '../../selectors';
@@ -60,6 +63,7 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../helpers/constants/design-system';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -86,6 +90,7 @@ export default function OnboardingFlow() {
   const t = useI18nContext();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const completedOnboarding = useSelector(getCompletedOnboarding);
+  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   const trackEvent = useContext(MetaMetricsContext);
@@ -136,16 +141,31 @@ export default function OnboardingFlow() {
   ]);
 
   const handleCreateNewAccount = async (password) => {
-    const newSecretRecoveryPhrase = await dispatch(
-      createNewVaultAndGetSeedPhrase(password),
-    );
+    let newSecretRecoveryPhrase;
+    if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+      newSecretRecoveryPhrase = await dispatch(
+        createNewVaultAndSyncWithSocial(password),
+      );
+    } else {
+      newSecretRecoveryPhrase = await dispatch(
+        createNewVaultAndGetSeedPhrase(password),
+      );
+    }
     setSecretRecoveryPhrase(newSecretRecoveryPhrase);
   };
 
   const handleUnlock = async (password) => {
-    const retrievedSecretRecoveryPhrase = await dispatch(
-      unlockAndGetSeedPhrase(password),
-    );
+    let retrievedSecretRecoveryPhrase;
+    if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+      retrievedSecretRecoveryPhrase = await dispatch(
+        restoreSocialBackupAndGetSeedPhrase(password),
+      );
+    } else {
+      retrievedSecretRecoveryPhrase = await dispatch(
+        unlockAndGetSeedPhrase(password),
+      );
+    }
+
     setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
     history.push(nextRoute);
   };

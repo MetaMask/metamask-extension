@@ -195,6 +195,114 @@ export function startOAuthLogin(
   };
 }
 
+/**
+ * Resets the social login state.
+ *
+ * This function is used to reset the social login state when the user
+ * wants to login with a different method after the successful social login.
+ */
+export function resetOAuthLoginState() {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      await submitRequestToBackground('resetOAuthLoginState');
+    } catch (error) {
+      dispatch(displayWarning(error));
+      if (isErrorWithMessage(error)) {
+        throw new Error(getErrorMessage(error));
+      } else {
+        throw error;
+      }
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * Creates a new vault and backups/syncs the seed phrase with social login.
+ *
+ * @param password - The password.
+ * @returns The seed phrase.
+ */
+export function createNewVaultAndSyncWithSocial(
+  password: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      const [firstKeyring] = await createNewVault(password);
+      const seedPhrase = await getSeedPhrase(password);
+
+      if (!firstKeyring) {
+        throw new Error('No keyring found');
+      }
+
+      await createSeedPhraseBackup(
+        password,
+        seedPhrase,
+        firstKeyring.metadata.id,
+      );
+      return seedPhrase;
+    } catch (error) {
+      dispatch(displayWarning(error));
+      if (isErrorWithMessage(error)) {
+        throw new Error(getErrorMessage(error));
+      } else {
+        throw error;
+      }
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
+ * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
+ *
+ * @param password - The password.
+ * @returns The seed phrase.
+ */
+export function restoreSocialBackupAndGetSeedPhrase(
+  password: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      // get the first seed phrase from the array, this is the oldest seed phrase
+      // and we will use it to create the initial vault
+      const [firstSeedPhrase] = await fetchAllSecretData(password);
+      if (!firstSeedPhrase) {
+        throw new Error('No seed phrase found');
+      }
+
+      const mnemonic = Buffer.from(firstSeedPhrase).toString('utf8');
+      const encodedSeedPhrase = Array.from(
+        Buffer.from(mnemonic, 'utf8').values(),
+      );
+
+      // restore the vault using the seed phrase
+      await submitRequestToBackground('createNewVaultAndRestore', [
+        password,
+        encodedSeedPhrase,
+      ]);
+
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+
+      return mnemonic;
+    } catch (error) {
+      console.error('[restoreSocialBackupAndGetSeedPhrase] error', error);
+      dispatch(hideLoadingIndication());
+      dispatch(displayWarning(error.message));
+      throw error;
+    }
+  };
+}
+
 export function tryUnlockMetamask(
   password: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -253,6 +361,7 @@ export function createNewVaultAndRestore(
     const encodedSeedPhrase = Array.from(
       Buffer.from(seedPhrase, 'utf8').values(),
     );
+    console.log('encodedSeedPhrase', encodedSeedPhrase);
 
     return new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
@@ -405,17 +514,55 @@ export function submitPassword(password: string): Promise<void> {
   });
 }
 
-export function createNewVault(password: string): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    callBackgroundMethod('createNewVaultAndKeychain', [password], (error) => {
-      if (error) {
-        reject(error);
-        return;
-      }
+/**
+ * Creates a seed phrase backup in the metadata store for seedless onboarding flow.
+ *
+ * @param password - The password.
+ * @param seedPhrase - The seed phrase.
+ * @param keyringId - The keyring id of the backup seed phrase.
+ */
+export async function createSeedPhraseBackup(
+  password: string,
+  seedPhrase: string,
+  keyringId: string,
+): Promise<void> {
+  const encodedSeedPhrase = Array.from(
+    Buffer.from(seedPhrase, 'utf8').values(),
+  );
+  await submitRequestToBackground('createSeedPhraseBackup', [
+    password,
+    encodedSeedPhrase,
+    keyringId,
+  ]);
+}
 
-      resolve(true);
-    });
-  });
+/**
+ * Fetches all secret data (Seed phrases - Mnemonics, Private Keys, etc.) from the metadata store.
+ *
+ * Secret data are sorted by creation date, the latest secret data is the first one in the array.
+ *
+ * @param password - The password.
+ * @returns The seed phrases.
+ */
+export async function fetchAllSecretData(
+  password: string,
+): Promise<Buffer[] | null> {
+  const encodedSeedPhrases = await submitRequestToBackground<Buffer[]>(
+    'fetchAllSecretData',
+    [password],
+  );
+  return encodedSeedPhrases;
+}
+
+export async function createNewVault(
+  password: string,
+): Promise<KeyringMetadata[]> {
+  const keyringsMetadata = await submitRequestToBackground<KeyringMetadata[]>(
+    'createNewVaultAndKeychain',
+    [password],
+  );
+
+  return keyringsMetadata;
 }
 
 export function verifyPassword(password: string): Promise<boolean> {

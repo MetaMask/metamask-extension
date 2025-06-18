@@ -117,3 +117,9 @@ export const MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS = {
 
 /* The password for the wallet used in e2e tests*/
 export const WALLET_PASSWORD = 'correct horse battery staple';
+
+/* Mock Google account used in Social login flow e2e tests*/
+export const MOCK_GOOGLE_ACCOUNT = 'e2e-user@gmail.com';
+
+/* Mock Apple account used in Social login flow e2e tests*/
+export const MOCK_APPLE_ACCOUNT = 'e2e-user@appleid.com';

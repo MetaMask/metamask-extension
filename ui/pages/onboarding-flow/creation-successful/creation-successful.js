@@ -1,6 +1,7 @@
 import React, { useContext, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { capitalize } from 'lodash';
 import {
   Button,
   ButtonSize,
@@ -36,6 +37,7 @@ import {
 import {
   getFirstTimeFlowType,
   getHDEntropyIndex,
+  getSocialLoginType,
   isSocialLoginFlow,
 } from '../../../selectors';
 import {
@@ -55,12 +57,12 @@ export default function CreationSuccessful() {
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
+  const userSocialLoginType = useSelector(getSocialLoginType);
   const socialLoginFlow = useSelector(isSocialLoginFlow);
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
 
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
-
   const isWalletReady =
     firstTimeFlowType === FirstTimeFlowType.import || seedPhraseBackedUp;
 
@@ -73,14 +75,22 @@ export default function CreationSuccessful() {
   }, [socialLoginFlow, isWalletReady, t]);
 
   const renderDetails1 = useMemo(() => {
+    if (userSocialLoginType) {
+      return t('walletReadySocialDetails1', [capitalize(userSocialLoginType)]);
+    }
+
     if (isWalletReady) {
       return t('walletReadyLoseSrp');
     }
 
     return t('walletReadyLoseSrpRemind');
-  }, [isWalletReady, t]);
+  }, [isWalletReady, userSocialLoginType, t]);
 
   const renderDetails2 = useMemo(() => {
+    if (userSocialLoginType) {
+      return t('walletReadySocialDetails2');
+    }
+
     if (isWalletReady) {
       return t('walletReadyLearn', [
         <ButtonLink
@@ -101,7 +111,7 @@ export default function CreationSuccessful() {
     }
 
     return t('walletReadyLearnRemind');
-  }, [isWalletReady, t]);
+  }, [isWalletReady, userSocialLoginType, t]);
 
   const renderFox = useMemo(() => {
     if (socialLoginFlow || isWalletReady) {

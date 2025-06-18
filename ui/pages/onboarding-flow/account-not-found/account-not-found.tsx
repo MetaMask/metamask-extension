@@ -30,7 +30,10 @@ import {
 
 import { getFirstTimeFlowType, getSocialLoginEmail } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { setFirstTimeFlowType } from '../../../store/actions';
+import {
+  setFirstTimeFlowType,
+  resetOAuthLoginState,
+} from '../../../store/actions';
 
 export default function AccountNotFound() {
   const history = useHistory();
@@ -39,9 +42,21 @@ export default function AccountNotFound() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
 
-  const onCreateOne = () => {
+  const onBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    await dispatch(resetOAuthLoginState());
+    history.goBack();
+  };
+
+  const onCreateWallet = () => {
     dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
     history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
+  };
+
+  const onLoginWithDifferentMethod = async () => {
+    // clear the social login state
+    await dispatch(resetOAuthLoginState());
+    history.push(ONBOARDING_WELCOME_ROUTE);
   };
 
   useEffect(() => {
@@ -73,7 +88,7 @@ export default function AccountNotFound() {
             color={IconColor.iconDefault}
             size={ButtonIconSize.Md}
             data-testid="create-password-back-button"
-            onClick={() => history.goBack()}
+            onClick={onBack}
             ariaLabel="back"
           />
         </Box>
@@ -130,9 +145,18 @@ export default function AccountNotFound() {
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           width={BlockSize.Full}
-          onClick={onCreateOne}
+          onClick={onCreateWallet}
         >
           {t('accountNotFoundCreateOne')}
+        </Button>
+        <Button
+          data-testid="account-not-found-login-with-different-method"
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
+          width={BlockSize.Full}
+          onClick={onLoginWithDifferentMethod}
+        >
+          {t('useDifferentLoginMethod')}
         </Button>
       </Box>
     </Box>

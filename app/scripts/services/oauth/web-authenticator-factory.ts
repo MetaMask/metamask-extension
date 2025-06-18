@@ -1,4 +1,5 @@
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { mockWebAuthenticator } from '../../../../test/e2e/helpers/social-sync/mocks';
 import { getPlatform } from '../../lib/util';
 import { WebAuthenticator } from './types';
 import { base64urlencode } from './utils';
@@ -28,7 +29,9 @@ function generateNonce(): string {
   return crypto.randomUUID();
 }
 
-function getIdentityAPI(): typeof chrome.identity | typeof browser.identity {
+export function getIdentityAPI():
+  | typeof chrome.identity
+  | typeof browser.identity {
   const isFirefox = getPlatform() === PLATFORM_FIREFOX;
   return isFirefox
     ? globalThis.browser.identity // use browser.identity for Firefox
@@ -64,6 +67,10 @@ async function requestIdentityPermission(): Promise<boolean> {
 }
 
 export function webAuthenticatorFactory(): WebAuthenticator {
+  if (process.env.IN_TEST) {
+    return mockWebAuthenticator();
+  }
+
   return {
     launchWebAuthFlow,
     generateCodeVerifierAndChallenge,
