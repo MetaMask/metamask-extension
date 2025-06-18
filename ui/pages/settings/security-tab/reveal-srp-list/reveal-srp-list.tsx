@@ -34,8 +34,12 @@ import {
 import { getSeedPhraseBackedUp } from '../../../../ducks/metamask/metamask';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../../shared/constants/onboarding';
+import { useSyncSRPs } from '../../../../hooks/social-sync/useSyncSRPs';
 
 export const RevealSrpList = () => {
+  // sync SRPs
+  useSyncSRPs();
+
   const t = useI18nContext();
   const history = useHistory();
   const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);

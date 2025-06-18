@@ -207,4 +207,11 @@ export default class OnboardingController extends BaseController<
       });
     }
   };
+
+  isSocialLoginFlowType(): boolean {
+    return (
+      this.state.firstTimeFlowType === FirstTimeFlowType.socialCreate ||
+      this.state.firstTimeFlowType === FirstTimeFlowType.socialImport
+    );
+  }
 }

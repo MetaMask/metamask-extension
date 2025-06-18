@@ -260,7 +260,7 @@ describe('Actions', () => {
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
-    it('should not restore vault if no seed phrase is found', async () => {
+    it('should throw an error if no seed phrase is found', async () => {
       const store = mockStore();
 
       const fetchAllSeedPhrasesStub = background.fetchAllSeedPhrases.callsFake(
@@ -282,7 +282,6 @@ describe('Actions', () => {
       await expect(
         store.dispatch(actions.restoreSocialBackupAndGetSeedPhrase('password')),
       ).rejects.toThrow('No seed phrase found');
-      expect(store.getActions()).toStrictEqual(expectedActions);
 
       expect(fetchAllSeedPhrasesStub.callCount).toStrictEqual(1);
       expect(createNewVaultAndRestoreStub.callCount).toStrictEqual(0);

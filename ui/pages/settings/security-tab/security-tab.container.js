@@ -25,7 +25,6 @@ import {
   getIsSecurityAlertsEnabled,
   getMetaMetricsDataDeletionId,
   getHDEntropyIndex,
-  getMetaMaskHdKeyrings,
   getSocialLoginType,
   isSocialLoginFlow,
   getFirstTimeFlowType,
@@ -54,11 +53,11 @@ const mapStateToProps = (state) => {
     use4ByteResolution,
     useExternalServices,
     useExternalNameSources,
+    socialLoginEmail,
   } = metamask;
 
   const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
-  const hasMultipleHdKeyrings = getMetaMaskHdKeyrings(state).length > 1;
   const seedPhraseBackedUp =
     getSeedPhraseBackedUp(state) ||
     getFirstTimeFlowType(state) !== FirstTimeFlowType.create;
@@ -83,10 +82,10 @@ const mapStateToProps = (state) => {
     useTransactionSimulations: metamask.useTransactionSimulations,
     metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
     hdEntropyIndex: getHDEntropyIndex(state),
-    hasMultipleHdKeyrings,
     socialLoginEnabled: isSocialLoginFlow(state),
     socialLoginType: getSocialLoginType(state),
     seedPhraseBackedUp,
+    socialLoginEmail,
   };
 };
 

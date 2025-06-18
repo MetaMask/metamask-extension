@@ -42,6 +42,7 @@ const generateCodeVerifierAndChallengeSpy = jest.fn().mockResolvedValue({
 });
 const generateNonceSpy = jest.fn().mockReturnValue(MOCK_NONCE);
 const getPlatformSpy = jest.fn().mockReturnValue(PLATFORM_CHROME);
+const mockRequestIdentityPermission = jest.fn().mockResolvedValue(true);
 
 const mockWebAuthenticator: WebAuthenticator = {
   getRedirectURL: getRedirectUrlSpy,
@@ -49,6 +50,7 @@ const mockWebAuthenticator: WebAuthenticator = {
   generateCodeVerifierAndChallenge: generateCodeVerifierAndChallengeSpy,
   generateNonce: generateNonceSpy,
   getPlatform: getPlatformSpy,
+  requestIdentityPermission: mockRequestIdentityPermission,
 };
 
 describe('OAuthService - startOAuthLogin', () => {
@@ -181,8 +183,8 @@ describe('OAuthService - revokeAndGetNewRefreshToken', () => {
           json: jest.fn().mockResolvedValue({
             success: true,
             message: 'Token revoked successfully',
-            refresh_token: 'MOCK_NEW_REFRESH_TOKEN',
-            revoke_token: 'MOCK_NEW_REVOKE_TOKEN',
+            new_refresh_token: 'MOCK_NEW_REFRESH_TOKEN',
+            new_revoke_token: 'MOCK_NEW_REVOKE_TOKEN',
           }),
         });
       }) as jest.Mock,
