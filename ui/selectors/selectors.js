@@ -2356,6 +2356,15 @@ export function getEnabledNetworks(state) {
   return state.metamask.enabledNetworkMap;
 }
 
+export const getEnabledNetworksByNamespace = createDeepEqualSelector(
+  getEnabledNetworks,
+  getSelectedMultichainNetworkChainId,
+  (enabledNetworkMap, currentMultichainChainId) => {
+    const { namespace } = parseCaipChainId(currentMultichainChainId);
+    return enabledNetworkMap[namespace] ?? {};
+  },
+);
+
 export function getPinnedAccountsList(state) {
   return state.metamask.pinnedAccountList;
 }

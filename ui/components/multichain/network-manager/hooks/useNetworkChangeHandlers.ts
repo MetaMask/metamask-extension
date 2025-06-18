@@ -50,7 +50,7 @@ export const useNetworkChangeHandlers = () => {
     currentChainId,
     permittedChainIds,
     permittedAccountAddresses,
-    enabledNetworks,
+    enabledNetworksByNamespace,
     allChainIds,
   } = useNetworkManagerState();
 
@@ -73,9 +73,7 @@ export const useNetworkChangeHandlers = () => {
 
       const isPopularNetwork = FEATURED_NETWORK_CHAIN_IDS.includes(hexChainId);
 
-      const enabledNetworkKeys = Object.keys(
-        enabledNetworks?.[namespace] ?? {},
-      );
+      const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
 
       if (!isPopularNetwork) {
         // if custom network is enabled, select the new network and disable the custom network
@@ -140,7 +138,7 @@ export const useNetworkChangeHandlers = () => {
     [
       evmNetworks,
       dispatch,
-      enabledNetworks,
+      enabledNetworksByNamespace,
       allChainIds,
       tokenNetworkFilter,
       selectedTabOrigin,
@@ -153,9 +151,7 @@ export const useNetworkChangeHandlers = () => {
   const handleNonEvmNetworkChange = useCallback(
     async (chainId: CaipChainId) => {
       const { namespace } = parseCaipChainId(chainId);
-      const enabledNetworkKeys = Object.keys(
-        enabledNetworks?.[namespace] ?? {},
-      );
+      const enabledNetworkKeys = Object.keys(enabledNetworksByNamespace ?? {});
 
       if (enabledNetworkKeys.includes(chainId)) {
         dispatch(setEnabledNetworks([], namespace));
@@ -187,7 +183,7 @@ export const useNetworkChangeHandlers = () => {
         setActionMode(ACTION_MODE.ADD_NON_EVM_ACCOUNT);
       }
     },
-    [enabledNetworks, dispatch, hasAnyAccountsInNetwork],
+    [enabledNetworksByNamespace, dispatch, hasAnyAccountsInNetwork],
   );
 
   const getMultichainNetworkConfigurationOrThrow = useCallback(

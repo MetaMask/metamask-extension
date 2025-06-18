@@ -25,7 +25,7 @@ import {
   getAllDomains,
   getAllEnabledNetworks,
   getEditedNetwork,
-  getEnabledNetworks,
+  getEnabledNetworksByNamespace,
   getIsAccessedFromDappConnectedSitePopover,
   getIsAddingNewNetwork,
   getIsMultiRpcOnboarding,
@@ -66,7 +66,7 @@ export const useNetworkManagerState = ({
     getIsAccessedFromDappConnectedSitePopover,
   );
   const completedOnboarding = useSelector(getCompletedOnboarding);
-  const enabledNetworks = useSelector(getEnabledNetworks);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const isNetworkDiscoverButtonEnabled = useSelector(
     getNetworkDiscoverButtonEnabled,
   );
@@ -207,7 +207,7 @@ export const useNetworkManagerState = ({
     multichainNetworks,
     evmNetworks,
     currentChainId,
-    enabledNetworks,
+    enabledNetworksByNamespace,
     editingChainId,
     editCompleted,
     permittedChainIds,

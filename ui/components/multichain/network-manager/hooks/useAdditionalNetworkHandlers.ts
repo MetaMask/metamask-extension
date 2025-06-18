@@ -10,10 +10,10 @@ import {
   requestUserApproval,
   setEnabledNetworks,
 } from '../../../../store/actions';
-import { getEnabledNetworks } from '../../../../selectors';
+import { getEnabledNetworksByNamespace } from '../../../../selectors';
 
 export const useAdditionalNetworkHandlers = () => {
-  const enabledNetworks = useSelector(getEnabledNetworks);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const dispatch = useDispatch();
 
   // Memoize the additional network click handler
@@ -49,12 +49,12 @@ export const useAdditionalNetworkHandlers = () => {
           },
         }),
       );
-      const enabledNetworksArray = Object.keys(enabledNetworks);
+      const enabledNetworksArray = Object.keys(enabledNetworksByNamespace);
       await dispatch(
         setEnabledNetworks([...enabledNetworksArray, network.chainId]),
       );
     },
-    [dispatch, enabledNetworks],
+    [dispatch, enabledNetworksByNamespace],
   );
 
   return {

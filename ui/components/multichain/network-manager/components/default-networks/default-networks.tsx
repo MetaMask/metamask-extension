@@ -51,7 +51,7 @@ const DefaultNetworks = memo(() => {
     orderedNetworksList,
     evmNetworks,
     nonTestNetworks,
-    enabledNetworks,
+    enabledNetworksByNamespace,
     isNetworkInDefaultNetworkTab,
   } = useNetworkManagerState({ skipNetworkFiltering: true });
   // Use the shared callbacks hook
@@ -75,8 +75,10 @@ const DefaultNetworks = memo(() => {
 
   // Memoize the all networks selected calculation
   const allNetworksSelected = useMemo(() => {
-    return Object.keys(enabledNetworks).length === orderedNetworks.length;
-  }, [enabledNetworks, orderedNetworks.length]);
+    return (
+      Object.keys(enabledNetworksByNamespace).length === orderedNetworks.length
+    );
+  }, [enabledNetworksByNamespace, orderedNetworks.length]);
 
   // Memoize the featured networks calculation
   const featuredNetworksNotYetEnabled = useMemo(
@@ -134,9 +136,9 @@ const DefaultNetworks = memo(() => {
         const { onDelete, onEdit, onDiscoverClick, onRpcConfigEdit } =
           getItemCallbacks(network);
         const iconSrc = getNetworkIcon(network);
-        const isEnabled = Object.keys(
-          enabledNetworks[namespace] ?? {},
-        ).includes(hexChainId);
+        const isEnabled = Object.keys(enabledNetworksByNamespace).includes(
+          hexChainId,
+        );
 
         return (
           <NetworkListItem
@@ -165,7 +167,7 @@ const DefaultNetworks = memo(() => {
     isEvmNetworkSelected,
     isNetworkInDefaultNetworkTab,
     getItemCallbacks,
-    enabledNetworks,
+    enabledNetworksByNamespace,
     namespace,
     hasMultiRpcOptions,
     evmNetworks,
@@ -221,7 +223,7 @@ const DefaultNetworks = memo(() => {
     });
   }, [
     featuredNetworksNotYetEnabled,
-    enabledNetworks,
+    enabledNetworksByNamespace,
     handleAdditionalNetworkClick,
     t,
   ]);

@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom-v5-compat';
 import { Hex, isHexString } from '@metamask/utils';
 import {
   getAllChainsToPoll,
-  getEnabledNetworks,
+  getEnabledNetworksByNamespace,
   getIsLineaMainnet,
   getIsMainnet,
   getIsTokenNetworkFilterEqualCurrentNetwork,
@@ -101,7 +101,7 @@ const AssetListControlBar = ({
 
   const { collections } = useNftsCollections();
 
-  const enabledNetworks = useSelector(getEnabledNetworks);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const [isTokenSortPopoverOpen, setIsTokenSortPopoverOpen] = useState(false);
   const [isImportTokensPopoverOpen, setIsImportTokensPopoverOpen] =
@@ -124,9 +124,9 @@ const AssetListControlBar = ({
 
   const networksToDisplay = useMemo(() => {
     return isGlobalNetworkSelectorRemoved
-      ? enabledNetworks
+      ? enabledNetworksByNamespace
       : tokenNetworkFilter;
-  }, [tokenNetworkFilter, enabledNetworks]);
+  }, [tokenNetworkFilter, enabledNetworksByNamespace]);
 
   const shouldShowRefreshButtons = useMemo(
     () =>
@@ -273,24 +273,27 @@ const AssetListControlBar = ({
   const networkButtonText = useMemo(() => {
     if (
       isGlobalNetworkSelectorRemoved &&
-      Object.keys(enabledNetworks).length === 1
+      Object.keys(enabledNetworksByNamespace).length === 1
     ) {
-      const isHexChainId = isHexString(Object.keys(enabledNetworks)[0]);
+      const isHexChainId = isHexString(
+        Object.keys(enabledNetworksByNamespace)[0],
+      );
       return isHexChainId
-        ? allNetworks[Object.keys(enabledNetworks)[0] as `0x${string}`]?.name ??
-            t('currentNetwork')
+        ? allNetworks[
+            Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`
+          ]?.name ?? t('currentNetwork')
         : currentMultichainNetwork.network.nickname ?? t('currentNetwork');
     }
 
     if (
       isGlobalNetworkSelectorRemoved &&
-      Object.keys(enabledNetworks).length > 1
+      Object.keys(enabledNetworksByNamespace).length > 1
     ) {
       return t('enabledNetworks');
     }
     if (
       isGlobalNetworkSelectorRemoved &&
-      Object.keys(enabledNetworks).length === 0
+      Object.keys(enabledNetworksByNamespace).length === 0
     ) {
       return t('noNetworksSelected');
     }

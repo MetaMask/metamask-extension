@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { parseCaipChainId, type Hex } from '@metamask/utils';
+import { type Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import {
   getChainIdsToPoll,
-  getEnabledNetworks,
+  getEnabledNetworksByNamespace,
   getNewTokensImported,
   getPreferences,
   getSelectedAccount,
@@ -21,7 +21,6 @@ import useMultiChainAssets from '../hooks/useMultichainAssets';
 import {
   getSelectedMultichainNetworkConfiguration,
   getIsEvmMultichainNetworkSelected,
-  getSelectedMultichainNetworkChainId,
 } from '../../../../selectors/multichain/networks';
 import { getTokenBalancesEvm } from '../../../../selectors/assets';
 import {
@@ -58,17 +57,13 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   // network filter to determine which tokens to show in list
   // on EVM we want to filter based on network filter controls, on non-evm we only want tokens from that chain identifier
   const { networkFilter } = useNetworkFilter();
-  const enabledNetworks = useSelector(getEnabledNetworks);
-  const currentMultichainChainId = useSelector(
-    getSelectedMultichainNetworkChainId,
-  );
-  const { namespace } = parseCaipChainId(currentMultichainChainId);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
   const networksToShow = useMemo(() => {
     return isGlobalNetworkSelectorRemoved
-      ? enabledNetworks[namespace]
+      ? enabledNetworksByNamespace
       : networkFilter;
-  }, [enabledNetworks, namespace, networkFilter]);
+  }, [enabledNetworksByNamespace, networkFilter]);
   console.log('networksToShow', networksToShow);
 
   const sortedFilteredTokens = useMemo(() => {

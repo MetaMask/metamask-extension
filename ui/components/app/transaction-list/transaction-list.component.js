@@ -37,7 +37,7 @@ import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   isGlobalNetworkSelectorRemoved,
-  getEnabledNetworks,
+  getEnabledNetworksByNamespace,
   getSelectedMultichainNetworkChainId,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -371,35 +371,25 @@ export default function TransactionList({
   const chainId = useSelector(getCurrentChainId);
   const isEvmNetwork = useSelector(getIsEvmMultichainNetworkSelected);
 
-  const enabledNetworks = useSelector(getEnabledNetworks);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const currentMultichainChainId = useSelector(
     getSelectedMultichainNetworkChainId,
   );
 
   const enabledNetworksFilteredCompletedTransactions = useMemo(() => {
-    if (!enabledNetworks || !currentMultichainChainId) {
+    if (!enabledNetworksByNamespace || !currentMultichainChainId) {
       return unfilteredCompletedTransactionsAllChains;
     }
 
-    // Parse the current namespace from the selected network
-    const { namespace } = parseCaipChainId(currentMultichainChainId);
-
-    // Get enabled networks for the current namespace
-    const networksForNamespace = enabledNetworks[namespace] || {};
-
-    console.log('networksForNamespace', networksForNamespace);
-
     // If no networks are enabled for this namespace, return empty array
-    if (Object.keys(networksForNamespace).length === 0) {
+    if (Object.keys(enabledNetworksByNamespace).length === 0) {
       return [];
     }
 
     // Get the list of enabled chain IDs for this namespace
-    const enabledChainIds = Object.keys(networksForNamespace).filter(
-      (enabledChainId) => networksForNamespace[enabledChainId],
+    const enabledChainIds = Object.keys(enabledNetworksByNamespace).filter(
+      (enabledChainId) => enabledNetworksByNamespace[enabledChainId],
     );
-
-    console.log('enabledChainIds', enabledChainIds);
 
     // Filter transactions to only include those from enabled networks
     const filteredTransactions =
@@ -410,15 +400,10 @@ export default function TransactionList({
 
     return filteredTransactions;
   }, [
-    enabledNetworks,
+    enabledNetworksByNamespace,
     currentMultichainChainId,
     unfilteredCompletedTransactionsAllChains,
   ]);
-
-  console.log(
-    'enabledNetworksFilteredCompletedTransactions',
-    enabledNetworksFilteredCompletedTransactions,
-  );
 
   const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
 
@@ -540,8 +525,6 @@ export default function TransactionList({
       unfilteredRemoteModeCompletedTransactions,
     ],
   );
-
-  console.log('completedTransactions', completedTransactions);
 
   const viewMore = useCallback(
     () => setLimit((prev) => prev + PAGE_INCREMENT),

@@ -5,10 +5,9 @@ import { parseCaipChainId } from '@metamask/utils';
 import { getNftContracts, getAllNfts } from '../ducks/metamask/metamask';
 import {
   getAllChainsToPoll,
-  getEnabledNetworks,
+  getEnabledNetworksByNamespace,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedInternalAccount,
-  getSelectedMultichainNetworkChainId,
   isGlobalNetworkSelectorRemoved,
 } from '../selectors';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
@@ -33,12 +32,7 @@ export function useNfts({
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
-  const enabledNetworks = useSelector(getEnabledNetworks);
-
-  const currentMultichainChainId = useSelector(
-    getSelectedMultichainNetworkChainId,
-  );
-  const { namespace } = parseCaipChainId(currentMultichainChainId);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
   const nfts = useMemo(() => {
     if (isGlobalNetworkSelectorRemoved) {
@@ -48,7 +42,7 @@ export function useNfts({
       Object.entries(allUserNfts ?? {}).forEach(
         ([networkChainId, networkNfts]) => {
           if (
-            enabledNetworks?.[namespace]?.[networkChainId] &&
+            enabledNetworksByNamespace?.[networkChainId] &&
             Array.isArray(networkNfts)
           ) {
             nftsFromEnabledNetworks[networkChainId] = networkNfts as NFT[];
@@ -71,7 +65,7 @@ export function useNfts({
     overridePopularNetworkFilter,
     allUserNfts,
     chainId,
-    enabledNetworks,
+    enabledNetworksByNamespace,
   ]);
 
   const nftContracts = useSelector(getNftContracts);
