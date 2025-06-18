@@ -7,6 +7,7 @@ import {
   getEnabledNetworks,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedInternalAccount,
+  getSelectedMultichainNetworkChainId,
   isGlobalNetworkSelectorRemoved,
 } from '../selectors';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
@@ -14,6 +15,7 @@ import { NFT } from '../components/multichain/asset-picker-amount/asset-picker-m
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import { usePrevious } from './usePrevious';
 import { useI18nContext } from './useI18nContext';
+import { parseCaipChainId } from '@metamask/utils';
 
 export function useNfts({
   overridePopularNetworkFilter = false,
@@ -33,6 +35,11 @@ export function useNfts({
   );
   const enabledNetworks = useSelector(getEnabledNetworks);
 
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
+  );
+  const { namespace } = parseCaipChainId(currentMultichainChainId);
+
   const nfts = useMemo(() => {
     if (isGlobalNetworkSelectorRemoved) {
       // Filter NFTs to only include those from enabled networks
@@ -40,7 +47,10 @@ export function useNfts({
 
       Object.entries(allUserNfts ?? {}).forEach(
         ([networkChainId, networkNfts]) => {
-          if (enabledNetworks[networkChainId] && Array.isArray(networkNfts)) {
+          if (
+            enabledNetworks?.[namespace]?.[networkChainId] &&
+            Array.isArray(networkNfts)
+          ) {
             nftsFromEnabledNetworks[networkChainId] = networkNfts as NFT[];
           }
         },
