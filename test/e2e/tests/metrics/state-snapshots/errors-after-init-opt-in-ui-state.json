@@ -96,7 +96,8 @@
       "tokenSortConfig": "object",
       "shouldShowAggregatedBalancePopover": "boolean",
       "tokenNetworkFilter": { "0x539": "boolean" },
-      "smartTransactionsMigrationApplied": "boolean"
+      "smartTransactionsMigrationApplied": "boolean",
+      "smartAccountOptIn": "boolean"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
@@ -229,9 +230,7 @@
     "subjectMetadata": "object",
     "announcements": "object",
     "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
-    "enabledNetworkMap": {
-      "0x539": "boolean"
-    },
+    "enabledNetworkMap": { "0x539": "boolean" },
     "pinnedAccountList": {},
     "hiddenAccountList": {},
     "gasFeeEstimatesByChainId": {},

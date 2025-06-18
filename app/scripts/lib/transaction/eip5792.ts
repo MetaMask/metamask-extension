@@ -30,6 +30,7 @@ import {
 import { KeyringTypes } from '@metamask/keyring-controller';
 
 import { EIP5792ErrorCode } from '../../../../shared/constants/transaction';
+import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../../shared/constants/keyring';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import { generateSecurityAlertId } from '../ppom/ppom-util';
 
@@ -50,7 +51,6 @@ export enum AtomicCapabilityStatus {
 }
 
 const VERSION = '2.0.0';
-const SUPPORTED_KEYRING_TYPES = [KeyringTypes.hd, KeyringTypes.simple];
 
 export async function processSendCalls(
   hooks: {
@@ -273,7 +273,7 @@ export async function getCapabilities(
 
     try {
       const keyringType = getAccountKeyringType(address, messenger);
-      isSupportedAccount = SUPPORTED_KEYRING_TYPES.includes(keyringType);
+      isSupportedAccount = KEYRING_TYPES_SUPPORTING_7702.includes(keyringType);
     } catch (error) {
       // Intentionally empty
     }
@@ -399,7 +399,7 @@ function validateUpgrade(
     );
   }
 
-  if (!SUPPORTED_KEYRING_TYPES.includes(keyringType)) {
+  if (!KEYRING_TYPES_SUPPORTING_7702.includes(keyringType)) {
     throw new JsonRpcError(
       EIP5792ErrorCode.RejectedUpgrade,
       'EIP-7702 upgrade not supported on account',
