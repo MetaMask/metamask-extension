@@ -1,6 +1,6 @@
 import log from 'loglevel';
 import { parse } from './parse';
-import { VALID, INVALID, verify } from './verify';
+import { VALID, INVALID, MISSING, verify } from './verify';
 import { type Route, routes } from './routes';
 
 const mockVerify = verify as jest.MockedFunction<typeof verify>;
@@ -15,7 +15,7 @@ jest.mock('./routes', () => ({
 jest.mock('loglevel');
 
 describe('parse', () => {
-  const mockHandler = jest.fn();
+  const mockHandler = jest.fn() as jest.MockedFunction<Route['handler']>;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -48,47 +48,85 @@ describe('parse', () => {
     );
   });
 
-  it('returns a parsed deep link object with signed=true if signature is valid', async () => {
+  it('returns a parsed deep link object with signature=valid if signature is valid', async () => {
     mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
-    mockHandler.mockReturnValue('destination-value');
+    mockHandler.mockReturnValue({
+      path: 'destination-value',
+      query: new URLSearchParams([['sig', '123']]),
+    });
     mockVerify.mockResolvedValue(VALID);
 
-    const urlStr = 'https://example.com/test?foo=bar';
+    const urlStr = 'https://example.com/test?sig=123';
     const result = await parse(new URL(urlStr));
 
     expect(result).toStrictEqual({
-      destination: 'destination-value',
-      route: {
-        handler: expect.any(Function),
+      destination: {
+        path: 'destination-value',
+        query: new URLSearchParams([['sig', '123']]),
       },
-      signed: true,
+      route: {
+        handler: mockHandler,
+      },
+      signature: VALID,
     });
     expect(mockHandler).toHaveBeenCalledWith(new URL(urlStr).searchParams);
   });
 
-  it('returns a parsed deep link object with signed=false if signature is invalid', async () => {
+  it('returns a parsed deep link object with signature=invalid if signature is invalid', async () => {
     mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
-    mockHandler.mockReturnValue('destination-value');
+    mockHandler.mockReturnValue({
+      path: 'destination-value',
+      query: new URLSearchParams(),
+    });
     mockVerify.mockResolvedValue(INVALID);
+
+    const urlStr = 'https://example.com/test?sig=bad';
+    const result = await parse(new URL(urlStr));
+
+    expect(result).toStrictEqual({
+      destination: {
+        path: 'destination-value',
+        query: new URLSearchParams(),
+      },
+      route: {
+        handler: mockHandler,
+      },
+      signature: INVALID,
+    });
+  });
+
+  it('returns a parsed deep link object with signature=missing if signature is missing', async () => {
+    mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
+    mockHandler.mockReturnValue({
+      path: 'destination-value',
+      query: new URLSearchParams(),
+    });
+    mockVerify.mockResolvedValue(MISSING);
 
     const urlStr = 'https://example.com/test?foo=bar';
     const result = await parse(new URL(urlStr));
 
     expect(result).toStrictEqual({
-      destination: 'destination-value',
-      route: {
-        handler: expect.any(Function),
+      destination: {
+        path: 'destination-value',
+        query: new URLSearchParams(),
       },
-      signed: false,
+      route: {
+        handler: mockHandler,
+      },
+      signature: MISSING,
     });
   });
 
   it('calls verify with the correct URL', async () => {
     mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
-    mockHandler.mockReturnValue('destination-value');
+    mockHandler.mockReturnValue({
+      path: 'destination-value',
+      query: new URLSearchParams(),
+    });
     mockVerify.mockResolvedValue(VALID);
 
-    const urlStr = 'https://example.com/test?foo=bar';
+    const urlStr = 'https://example.com/test?sig=bar';
     await parse(new URL(urlStr));
 
     expect(mockVerify).toHaveBeenCalledWith(new URL(urlStr));
