@@ -61,7 +61,7 @@ export class DeepLinkRouter extends EventEmitter<{
    */
   private get404ErrorURL() {
     return this.getExtensionURL(
-      TRIMMED_DEEP_LINK_ROUTE.replace(slashRe, ''),
+      TRIMMED_DEEP_LINK_ROUTE,
       new URLSearchParams({
         errorCode: '404',
       }).toString(),
