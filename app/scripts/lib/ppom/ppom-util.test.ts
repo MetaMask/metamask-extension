@@ -130,7 +130,6 @@ function createMessengerMock() {
 
 describe('PPOM Utils', () => {
   const updateSecurityAlertResponseMock = jest.fn();
-  let isSecurityAlertsEnabledMock: jest.SpyInstance;
   let ppomController: jest.Mocked<PPOMController>;
   let ppom: jest.Mocked<PPOM>;
 
@@ -148,10 +147,6 @@ describe('PPOM Utils', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
-
-    isSecurityAlertsEnabledMock = jest
-      .spyOn(securityAlertAPI, 'isSecurityAlertsAPIEnabled')
-      .mockReturnValue(false);
 
     ppomController = createPPOMControllerMock();
     ppom = createPPOMMock();
@@ -607,9 +602,8 @@ describe('PPOM Utils', () => {
       params: [TRANSACTION_PARAMS_MOCK_1],
     };
 
-    it('uses security alerts API if enabled', async () => {
-      isSecurityAlertsEnabledMock.mockReturnValue(true);
-
+    it('uses security alerts API', async () => {
+      normalizeTransactionParamsMock.mockReturnValue(TRANSACTION_PARAMS_MOCK_1);
       const validateWithSecurityAlertsAPIMock = jest
         .spyOn(securityAlertAPI, 'validateWithSecurityAlertsAPI')
         .mockResolvedValue(SECURITY_ALERT_RESPONSE_MOCK);
@@ -635,7 +629,7 @@ describe('PPOM Utils', () => {
     });
 
     it('uses controller if security alerts API throws', async () => {
-      isSecurityAlertsEnabledMock.mockReturnValue(true);
+      normalizeTransactionParamsMock.mockReturnValue(TRANSACTION_PARAMS_MOCK_1);
 
       updateSecurityAlertResponseMock.mockResolvedValue({
         txParams: TRANSACTION_PARAMS_MOCK_1,

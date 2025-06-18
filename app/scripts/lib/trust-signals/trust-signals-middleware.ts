@@ -2,7 +2,6 @@ import { JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
 import { NetworkController } from '@metamask/network-controller';
 import type { AppStateController } from '../../controllers/app-state-controller';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
-import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 import {
   hasValidTypedDataParams,
@@ -22,7 +21,7 @@ export function createTrustSignalsMiddleware(
     next: () => void,
   ) => {
     try {
-      if (!isSecurityAlertsAPIEnabled() || !isProdEnabled()) {
+      if (!isProdEnabled()) {
         return;
       }
 
