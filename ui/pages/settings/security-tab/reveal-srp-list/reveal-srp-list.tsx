@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Box, Text } from '../../../../components/component-library';
 import SRPQuizModal from '../../../../components/app/srp-quiz-modal/SRPQuiz';
@@ -10,7 +9,6 @@ import {
   TextTransform,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getIsRootSeedPhraseBackedUp } from '../../../../ducks/metamask/metamask';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../../helpers/constants/routes';
 
 export const RevealSrpList = () => {
@@ -18,8 +16,6 @@ export const RevealSrpList = () => {
   const history = useHistory();
   const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
   const [selectedKeyringId, setSelectedKeyringId] = useState('');
-
-  const isSeedPhraseBackedUp = useSelector(getIsRootSeedPhraseBackedUp);
 
   const onSrpActionComplete = (keyringId: string, triggerBackup?: boolean) => {
     if (triggerBackup) {
@@ -51,7 +47,6 @@ export const RevealSrpList = () => {
         <SrpList
           onActionComplete={onSrpActionComplete}
           hideShowAccounts={false}
-          seedPhraseBackedUp={isSeedPhraseBackedUp}
           isSettingsPage={true}
         />
       </Box>

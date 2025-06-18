@@ -27,22 +27,23 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useHdKeyringsWithSnapAccounts } from '../../../../hooks/multi-srp/useHdKeyringsWithSnapAccounts';
+import { getIsRootSeedPhraseBackedUp } from '../../../../ducks/metamask/metamask';
 import { SrpListItem } from './srp-list-item';
 
 export const SrpList = ({
   onActionComplete,
   hideShowAccounts,
   isSettingsPage = false,
-  seedPhraseBackedUp,
 }: {
   onActionComplete: (id: string, triggerBackup?: boolean) => void;
   isSettingsPage?: boolean;
   hideShowAccounts?: boolean;
-  seedPhraseBackedUp?: boolean;
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const hdKeyringsWithSnapAccounts = useHdKeyringsWithSnapAccounts();
+
+  const isRootSeedPhraseBackedUp = useSelector(getIsRootSeedPhraseBackedUp);
 
   // This selector will return accounts with nonEVM balances as well.
   const accountsWithBalances: Record<string, InternalAccountWithBalance> =
@@ -74,108 +75,116 @@ export const SrpList = ({
       padding={isSettingsPage ? 0 : 4}
       data-testid="srp-list"
     >
-      {hdKeyringsWithSnapAccounts.map((keyring, index) => (
-        <Card
-          key={`srp-${keyring.metadata.id}`}
-          data-testid={`hd-keyring-${keyring.metadata.id}`}
-          onClick={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Accounts,
-              event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
-              properties: {
-                button_type: 'srp_select',
-              },
-            });
-            const triggerBackup = !seedPhraseBackedUp && index === 0;
-            onActionComplete(keyring.metadata.id, triggerBackup);
-          }}
-          className="select-srp__container"
-          marginBottom={3}
-        >
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.spaceBetween}
+      {hdKeyringsWithSnapAccounts.map((keyring, index) => {
+        // We only consider the first(root) keyring for the backup reminder.
+        const shouldTriggerBackup = !isRootSeedPhraseBackedUp && index === 0;
+
+        return (
+          <Card
+            key={`srp-${keyring.metadata.id}`}
+            data-testid={`hd-keyring-${keyring.metadata.id}`}
+            onClick={() => {
+              trackEvent({
+                category: MetaMetricsEventCategory.Accounts,
+                event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
+                properties: {
+                  button_type: 'srp_select',
+                },
+              });
+              onActionComplete(keyring.metadata.id, shouldTriggerBackup);
+            }}
+            className="select-srp__container"
+            marginBottom={3}
           >
-            <Box>
-              <Text variant={TextVariant.bodyMdMedium}>
-                {t('srpListName', [index + 1])}
-              </Text>
-              {!hideShowAccounts && (
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={TextColor.primaryDefault}
-                  className="srp-list__show-accounts"
-                  data-testid={`srp-list-show-accounts-${index}`}
-                  onClick={(event: React.MouseEvent) => {
-                    event.stopPropagation();
-                    trackEvent({
-                      category: MetaMetricsEventCategory.Accounts,
-                      event:
-                        MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
-                      properties: {
-                        button_type: 'details',
-                      },
-                    });
-                    setShowAccounts((prevState) =>
-                      prevState.map((value, i) =>
-                        i === index ? !value : value,
-                      ),
-                    );
-                  }}
-                >
-                  {showHideText(index, keyring.accounts.length)}
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.spaceBetween}
+            >
+              <Box>
+                <Text variant={TextVariant.bodyMdMedium}>
+                  {t('srpListName', [index + 1])}
                 </Text>
-              )}
-            </Box>
-            <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
-              {isSettingsPage && (
-                <Text
-                  variant={TextVariant.bodyMdMedium}
-                  color={
-                    !seedPhraseBackedUp && index === 0
-                      ? TextColor.errorDefault
-                      : TextColor.textAlternative
-                  }
-                >
-                  {!seedPhraseBackedUp && index === 0
-                    ? t('srpListStateNotBackedUp')
-                    : t('srpListStateBackedUp')}
-                </Text>
-              )}
-              <Icon
-                name={IconName.ArrowRight}
-                size={IconSize.Sm}
-                color={
-                  !seedPhraseBackedUp && index === 0 && isSettingsPage
-                    ? IconColor.errorDefault
-                    : IconColor.iconAlternative
-                }
-              />
-            </Box>
-          </Box>
-          {showAccounts[index] && (
-            <Box>
+                {!hideShowAccounts && (
+                  <Text
+                    variant={TextVariant.bodySm}
+                    color={TextColor.primaryDefault}
+                    className="srp-list__show-accounts"
+                    data-testid={`srp-list-show-accounts-${index}`}
+                    onClick={(event: React.MouseEvent) => {
+                      event.stopPropagation();
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Accounts,
+                        event:
+                          MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
+                        properties: {
+                          button_type: 'details',
+                        },
+                      });
+                      setShowAccounts((prevState) =>
+                        prevState.map((value, i) =>
+                          i === index ? !value : value,
+                        ),
+                      );
+                    }}
+                  >
+                    {showHideText(index, keyring.accounts.length)}
+                  </Text>
+                )}
+              </Box>
               <Box
-                width={BlockSize.Full}
-                className="srp-list__divider"
-                marginTop={2}
-                marginBottom={2}
-              />
-              {keyring.accounts.map((address: string) => {
-                const account = accountsWithBalances[address];
-                return (
-                  <SrpListItem
-                    key={`account-${account.id}`}
-                    account={account}
-                  />
-                );
-              })}
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                gap={1}
+              >
+                {isSettingsPage && (
+                  <Text
+                    variant={TextVariant.bodyMdMedium}
+                    color={
+                      shouldTriggerBackup
+                        ? TextColor.errorDefault
+                        : TextColor.textAlternative
+                    }
+                  >
+                    {shouldTriggerBackup
+                      ? t('srpListStateNotBackedUp')
+                      : t('srpListStateBackedUp')}
+                  </Text>
+                )}
+                <Icon
+                  name={IconName.ArrowRight}
+                  size={IconSize.Sm}
+                  color={
+                    shouldTriggerBackup && isSettingsPage
+                      ? IconColor.errorDefault
+                      : IconColor.iconAlternative
+                  }
+                />
+              </Box>
             </Box>
-          )}
-        </Card>
-      ))}
+            {showAccounts[index] && (
+              <Box>
+                <Box
+                  width={BlockSize.Full}
+                  className="srp-list__divider"
+                  marginTop={2}
+                  marginBottom={2}
+                />
+                {keyring.accounts.map((address: string) => {
+                  const account = accountsWithBalances[address];
+                  return (
+                    <SrpListItem
+                      key={`account-${account.id}`}
+                      account={account}
+                    />
+                  );
+                })}
+              </Box>
+            )}
+          </Card>
+        );
+      })}
     </Box>
   );
 };
