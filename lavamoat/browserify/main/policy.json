@@ -2112,6 +2112,7 @@
       "globals": {
         "DecompressionStream": true,
         "URL": true,
+        "WebSocket": true,
         "clearTimeout": true,
         "document.getElementById": true,
         "fetch.bind": true,
