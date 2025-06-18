@@ -1,14 +1,14 @@
 import { IconName } from '../../components/component-library';
 import { IconColor } from '../constants/design-system';
 import { TrustSignalDisplayState } from '../../hooks/useTrustSignals';
-import { getTrustSignalIcon, TrustSignalIconProps } from './trust-signals';
+import { getTrustSignalIcon, IconProps } from './trust-signals';
 
 describe('trust-signals utilities', () => {
   describe('getTrustSignalIcon', () => {
     it('returns danger icon for malicious state', () => {
       const result = getTrustSignalIcon(TrustSignalDisplayState.Malicious);
 
-      expect(result).toStrictEqual<TrustSignalIconProps>({
+      expect(result).toStrictEqual<IconProps>({
         name: IconName.Danger,
         color: IconColor.errorDefault,
       });
@@ -17,7 +17,7 @@ describe('trust-signals utilities', () => {
     it('returns verified icon for verified state', () => {
       const result = getTrustSignalIcon(TrustSignalDisplayState.Verified);
 
-      expect(result).toStrictEqual<TrustSignalIconProps>({
+      expect(result).toStrictEqual<IconProps>({
         name: IconName.VerifiedFilled,
         color: IconColor.infoDefault,
       });
@@ -26,7 +26,7 @@ describe('trust-signals utilities', () => {
     it('returns question icon for unknown state', () => {
       const result = getTrustSignalIcon(TrustSignalDisplayState.Unknown);
 
-      expect(result).toStrictEqual<TrustSignalIconProps>({
+      expect(result).toStrictEqual<IconProps>({
         name: IconName.Question,
         color: undefined,
       });
@@ -55,7 +55,7 @@ describe('trust-signals utilities', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = getTrustSignalIcon('invalid-state' as any);
 
-      expect(result).toStrictEqual<TrustSignalIconProps>({
+      expect(result).toStrictEqual<IconProps>({
         name: IconName.Question,
         color: undefined,
       });

@@ -2,7 +2,7 @@ import { IconName } from '../../components/component-library';
 import { IconColor } from '../constants/design-system';
 import { TrustSignalDisplayState } from '../../hooks/useTrustSignals';
 
-export type TrustSignalIconProps = {
+export type IconProps = {
   name: IconName;
   color?: IconColor | undefined;
 };
@@ -15,7 +15,7 @@ export type TrustSignalIconProps = {
  */
 export function getTrustSignalIcon(
   state: TrustSignalDisplayState | undefined,
-): TrustSignalIconProps | null {
+): IconProps | null {
   if (!state) {
     return null;
   }

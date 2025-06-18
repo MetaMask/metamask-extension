@@ -9,10 +9,7 @@ import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { getDomainResolutions } from '../ducks/domains';
 import { selectERC20TokensByChain } from '../selectors';
 import { getNftContractsByAddressByChain } from '../selectors/nft';
-import {
-  getTrustSignalIcon,
-  TrustSignalIconProps,
-} from '../helpers/utils/trust-signals';
+import { getTrustSignalIcon, IconProps } from '../helpers/utils/trust-signals';
 import { useNames } from './useName';
 import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
 import { TrustSignalDisplayState, useTrustSignals } from './useTrustSignals';
@@ -29,7 +26,7 @@ export type UseDisplayNameResponse = {
   hasPetname: boolean;
   contractDisplayName?: string;
   image?: string;
-  icon?: TrustSignalIconProps | null;
+  icon?: IconProps | null;
   displayState: TrustSignalDisplayState;
 };
 
@@ -83,7 +80,7 @@ export function useDisplayNames(
     const trustSignalIcon = getTrustSignalIcon(displayState);
     const trustSignalLabel = trustSignal?.label;
 
-    // We need to add the trust signal after we get the display state otherwise the state will be recognized and not verified
+    // Add trust signal label after display state calculation to avoid state recognition conflicts
     if (name === null && trustSignalLabel) {
       name = trustSignalLabel;
     }
