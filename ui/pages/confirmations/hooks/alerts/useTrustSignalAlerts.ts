@@ -6,7 +6,7 @@ import { Severity } from '../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { useConfirmContext } from '../../context/confirm';
 import {
-  useTrustSignals,
+  useTrustSignal,
   TrustSignalDisplayState,
 } from '../../../../hooks/useTrustSignals';
 import { SignatureRequestType } from '../../types/confirm';
@@ -46,11 +46,10 @@ export function useTrustSignalAlerts(): Alert[] {
 
   const chainId = currentConfirmation?.chainId as string;
 
-  const { state: trustSignalDisplayState } = useTrustSignals(
+  const { state: trustSignalDisplayState } = useTrustSignal(
     addressToCheck || '',
     NameType.ETHEREUM_ADDRESS,
     chainId,
-    true,
   );
 
   return useMemo(() => {
