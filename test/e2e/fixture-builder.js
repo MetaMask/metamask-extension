@@ -1777,14 +1777,6 @@ class FixtureBuilder {
           ticker: 'BNB',
           id: 'bnb-mainnet',
         },
-        'base-mainnet': {
-          chainId: CHAIN_IDS.BASE,
-          nickname: 'Base',
-          rpcPrefs: {},
-          rpcUrl: 'https://mainnet.base.org',
-          ticker: 'ETH',
-          id: 'base-mainnet',
-        },
         'zksync-mainnet': {
           chainId: CHAIN_IDS.ZKSYNC_ERA,
           nickname: 'zkSync Era',

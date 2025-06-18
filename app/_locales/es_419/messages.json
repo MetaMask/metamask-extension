@@ -1465,29 +1465,11 @@
   "securityAndPrivacy": {
     "message": "Seguridad y privacidad"
   },
-  "seedPhraseConfirm": {
-    "message": "Confirmar la frase secreta de recuperación"
-  },
-  "seedPhraseEnterMissingWords": {
-    "message": "Confirmar la frase secreta de recuperación"
-  },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "Escríbala y guárdela en varios lugares secretos."
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Guárdela en una caja fuerte."
-  },
   "seedPhraseIntroTitle": {
     "message": "Proteger su cartera"
   },
   "seedPhraseReq": {
     "message": "Las frases secretas de recuperación contienen 12, 15, 18, 21 o 24 palabras"
-  },
-  "seedPhraseWriteDownDetails": {
-    "message": "Escriba esta frase secreta de recuperación de 12 palabras y guárdela en un lugar de confianza al que solo usted pueda acceder."
-  },
-  "seedPhraseWriteDownHeader": {
-    "message": "Anote su frase secreta de recuperación"
   },
   "selectAccounts": {
     "message": "Seleccione la(s) cuenta(s) a usar en este sitio"
@@ -1941,9 +1923,6 @@
   "time": {
     "message": "Tiempo"
   },
-  "tips": {
-    "message": "Sugerencias"
-  },
   "to": {
     "message": "Para"
   },
@@ -2078,9 +2057,6 @@
   },
   "unlock": {
     "message": "Desbloquear"
-  },
-  "unlockMessage": {
-    "message": "La Web descentralizada espera"
   },
   "unrecognizedChain": {
     "message": "No se reconoce esta red personalizada. Antes de continuar, le recomendamos que $1",

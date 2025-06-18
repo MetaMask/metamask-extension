@@ -656,6 +656,8 @@
         "Notification.maxActions": true,
         "Notification.permission": true,
         "Notification.requestPermission": true,
+        "PushManager.getSubscription": true,
+        "PushManager.subscribe": true,
         "PushSubscription.prototype.hasOwnProperty": true,
         "ServiceWorkerRegistration": true,
         "URL": true,

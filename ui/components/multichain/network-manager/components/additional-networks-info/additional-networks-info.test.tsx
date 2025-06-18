@@ -7,6 +7,7 @@ import { AdditionalNetworksInfo } from './additional-networks-info';
 
 // Mock the global platform.openTab
 const mockOpenTab = jest.fn();
+// @ts-expect-error mocking platform
 global.platform = {
   openTab: mockOpenTab,
   closeCurrentWindow: jest.fn(),
