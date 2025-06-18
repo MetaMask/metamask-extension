@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
+import { Hex, parseCaipChainId } from '@metamask/utils';
 import {
   getEnabledNetworks,
   getSelectedAccount,
+  getSelectedMultichainNetworkChainId,
   getTokenSortConfig,
   isGlobalNetworkSelectorRemoved,
 } from '../../../../selectors';
@@ -42,6 +43,11 @@ export default function DefiList({ onClick }: DefiListProps) {
 
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const selectedAccount = useSelector(getSelectedAccount);
+
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
+  );
+  const { namespace } = parseCaipChainId(currentMultichainChainId);
 
   const allDefiPositions = useSelector(getDefiPositions);
 
@@ -95,7 +101,9 @@ export default function DefiList({ onClick }: DefiListProps) {
     const filteredAssets = filterAssets(defiProtocolCells, [
       {
         key: 'chainId',
-        opts: isGlobalNetworkSelectorRemoved ? enabledNetworks : networkFilter,
+        opts: isGlobalNetworkSelectorRemoved
+          ? enabledNetworks[namespace]
+          : networkFilter,
         filterCallback: 'inclusive',
       },
     ]);
