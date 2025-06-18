@@ -210,6 +210,10 @@ describe('Deep Link', function () {
     );
   });
 
+  // this test is skipped because the swap route does not work correctly in
+  // the e2e environment. Once swaps/bridge flows are all fully migrated to the
+  // route page this test can be re-enabled.
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip("passes params to the deep link's component", async function () {
     await withFixtures(
       await getConfig(this.test?.fullTitle()),
@@ -235,7 +239,7 @@ describe('Deep Link', function () {
           to: 'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
           value: '0x38d7ea4c68000',
         };
-        const params = new URLSearchParams({ ...swapsParams });
+        const params = new URLSearchParams({ ...extraParams, ...swapsParams });
         const rawUrl = `https://link.metamask.io/swap?${params.toString()}`;
 
         // test signed flow

@@ -26,8 +26,7 @@ export default new Route({
           // if `from` and `to` reference the same chain, add the `swap` param
           // to trigger the "Swap" screen by default
           if (parsedFrom.chainId.id === parsedTo.chainId.id) {
-            // TODO: something recently changed?!
-            // query.set('swaps', 'true');
+            query.set('swaps', 'true');
           }
         }
       }
