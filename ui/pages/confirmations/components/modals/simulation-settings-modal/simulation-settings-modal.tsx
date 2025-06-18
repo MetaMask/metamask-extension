@@ -25,6 +25,7 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import {
+  enforceSimulationsForTransaction,
   setEnableEnforcedSimulationsForTransaction,
   updateEditableParams,
 } from '../../../../../store/actions';
@@ -38,8 +39,8 @@ export function SimulationSettingsModal({ onClose }: { onClose?: () => void }) {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
 
   const {
-    id: transactionId,
     containerTypes,
+    id: transactionId,
     txParamsOriginal,
   } = currentConfirmation || {};
 
@@ -55,9 +56,16 @@ export function SimulationSettingsModal({ onClose }: { onClose?: () => void }) {
   const [enabled, setEnabled] = useState(isEnforcedSimulationsEnabled);
 
   const handleUpdateClick = useCallback(async () => {
+    await setEnableEnforcedSimulationsForTransaction(transactionId, enabled);
+
     if (!enabled && isEnforcedSimulationApplied) {
+      const newContainerTypes = containerTypes?.filter(
+        (type) => type !== TransactionContainerType.EnforcedSimulations,
+      );
+
       await dispatch(
         updateEditableParams(transactionId, {
+          containerTypes: newContainerTypes,
           data: txParamsOriginal?.data,
           gas: txParamsOriginal?.gas,
           to: txParamsOriginal?.to,
@@ -66,7 +74,9 @@ export function SimulationSettingsModal({ onClose }: { onClose?: () => void }) {
       );
     }
 
-    await setEnableEnforcedSimulationsForTransaction(transactionId, enabled);
+    if (enabled && !isEnforcedSimulationApplied) {
+      await enforceSimulationsForTransaction(transactionId);
+    }
 
     onClose?.();
   }, [
