@@ -6419,9 +6419,6 @@
   "unlock": {
     "message": "Kilidini Aç"
   },
-  "unlockMessage": {
-    "message": "Merkeziyetsiz web sizi bekliyor"
-  },
   "unpin": {
     "message": "Sabitlemeyi kaldır"
   },
