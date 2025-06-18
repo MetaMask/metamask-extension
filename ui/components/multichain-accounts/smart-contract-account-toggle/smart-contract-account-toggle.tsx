@@ -33,6 +33,7 @@ export const SmartContractAccountToggle = ({
     chainIdHex,
   );
 
+  // This useEffect is necessary to update the addressSupportSmartAccount state when the hasPendingRequests state changes
   useEffect(() => {
     if (prevHasPendingRequests.current) {
       if (prevHasPendingRequests.current !== hasPendingRequests) {
