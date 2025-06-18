@@ -77,7 +77,6 @@ const mapStateToProps = (state) => {
     useTransactionSimulations: metamask.useTransactionSimulations,
     metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
     hdEntropyIndex: getHDEntropyIndex(state),
-    hasMultipleHdKeyrings,
     skipDeepLinkInterstitial: Boolean(skipDeepLinkInterstitial),
     isSeedPhraseBackedUp: getIsPrimarySeedPhraseBackedUp(state),
   };
