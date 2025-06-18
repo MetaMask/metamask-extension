@@ -70,9 +70,17 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     [secretRecoveryPhrase],
   );
   const searchParams = new URLSearchParams(search);
-  const isFromReminderParam = searchParams.get('isFromReminder')
-    ? '/?isFromReminder=true'
-    : '';
+  const isFromReminder = searchParams.get('isFromReminder');
+  const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
+
+  const queryParams = new URLSearchParams();
+  if (isFromReminder) {
+    queryParams.set('isFromReminder', isFromReminder);
+  }
+  if (isFromSettingsSecurity) {
+    queryParams.set('isFromSettingsSecurity', isFromSettingsSecurity);
+  }
+  const nextRouteQueryString = queryParams.toString();
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [matching, setMatching] = useState(false);
@@ -118,8 +126,12 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       },
     });
 
-    history.push(`${ONBOARDING_COMPLETION_ROUTE}${isFromReminderParam}`);
-  }, [dispatch, hdEntropyIndex, history, trackEvent, isFromReminderParam]);
+    history.push(
+      `${ONBOARDING_COMPLETION_ROUTE}${
+        nextRouteQueryString ? `?${nextRouteQueryString}` : ''
+      }`,
+    );
+  }, [dispatch, hdEntropyIndex, history, trackEvent, nextRouteQueryString]);
 
   return (
     <Box
