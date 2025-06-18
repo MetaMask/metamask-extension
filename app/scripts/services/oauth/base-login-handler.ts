@@ -114,7 +114,10 @@ export abstract class BaseLoginHandler {
     );
 
     const data = await res.json();
-    return data;
+    return {
+      refresh_token: data.new_refresh_token,
+      revoke_token: data.new_revoke_token,
+    };
   }
 
   /**
