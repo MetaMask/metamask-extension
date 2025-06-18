@@ -1,8 +1,7 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-// eslint-disable-next-line import/no-restricted-paths
-import { getPlatform } from '../../../../app/scripts/lib/util';
+
 import {
   Display,
   FlexDirection,
@@ -47,8 +46,9 @@ import {
 } from '../../../components/component-library';
 
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 
-const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
@@ -224,7 +224,7 @@ export default function OnboardingMetametrics() {
           dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))
         }
         label={
-          <Text variant={TextVariant.bodySm} fontWeight={FontWeight.Medium}>
+          <Text fontWeight={FontWeight.Medium}>
             {t('onboardingMetametricsUseDataCheckbox')}
           </Text>
         }
@@ -260,7 +260,6 @@ export default function OnboardingMetametrics() {
         width={BlockSize.Full}
         className="onboarding-metametrics__buttons"
         marginTop={6}
-        marginBottom={4}
         gap={4}
       >
         <Button

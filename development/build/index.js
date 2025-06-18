@@ -12,6 +12,8 @@ const { sync: globby } = require('globby');
 const lavapack = require('@lavamoat/lavapack');
 const difference = require('lodash/difference');
 const intersection = require('lodash/intersection');
+
+const { isManifestV3 } = require('../../shared/modules/mv3.utils');
 const { getVersion } = require('../lib/get-version');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 const { BUILD_TARGETS, TASKS } = require('./constants');
@@ -82,6 +84,7 @@ async function defineAndRunBuildTasks() {
     platform,
     policyOnly,
     shouldIncludeLockdown,
+    shouldIncludeOcapKernel,
     shouldIncludeSnow,
     shouldLintFenceFiles,
     skipStats,
@@ -89,7 +92,6 @@ async function defineAndRunBuildTasks() {
   } = await parseArgv();
 
   const isRootTask = Object.values(BUILD_TARGETS).includes(entryTask);
-
   if (isRootTask) {
     // scuttle on production/tests environment only
     const shouldScuttle = entryTask !== BUILD_TARGETS.DEV;
@@ -146,6 +148,8 @@ async function defineAndRunBuildTasks() {
       'sentryHooks',
       'sentry',
       'logEncryptedVault',
+      // Globals used by `react-dom`
+      'getSelection',
     ];
 
     if (
@@ -158,7 +162,6 @@ async function defineAndRunBuildTasks() {
         // in the future, more of the globals above can be put in this list
         'Proxy',
         'ret_nodes',
-        'getSelection',
 
         'browser', // for testing vault corruption
         'chrome', // for testing vault corruption
@@ -188,26 +191,27 @@ async function defineAndRunBuildTasks() {
   const ignoredFiles = getIgnoredFiles();
 
   const staticTasks = createStaticAssetTasks({
-    livereload,
     browserPlatforms,
-    shouldIncludeLockdown,
-    shouldIncludeSnow,
     buildType,
+    livereload,
+    shouldIncludeLockdown,
+    shouldIncludeOcapKernel,
+    shouldIncludeSnow,
   });
 
   const manifestTasks = createManifestTasks({
+    applyLavaMoat,
     browserPlatforms,
     browserVersionMap,
     buildType,
-    applyLavaMoat,
-    shouldIncludeSnow,
     entryTask,
+    shouldIncludeOcapKernel,
+    shouldIncludeSnow,
   });
 
   const styleTasks = createStyleTasks({ livereload });
 
   const scriptTasks = createScriptTasks({
-    shouldIncludeSnow,
     applyLavaMoat,
     browserPlatforms,
     buildType,
@@ -215,6 +219,8 @@ async function defineAndRunBuildTasks() {
     isLavaMoat,
     livereload,
     policyOnly,
+    shouldIncludeSnow,
+    shouldIncludeOcapKernel,
     shouldLintFenceFiles,
     version,
   });
@@ -420,6 +426,16 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
     await getConfig(buildType, environment);
   }
 
+  const shouldIncludeOcapKernel = getActiveFeatures().includes('ocap-kernel');
+  if (shouldIncludeOcapKernel) {
+    if (!isManifestV3) {
+      throw new Error('Ocap Kernel is only supported in manifest v3');
+    }
+    if (!lockdown) {
+      throw new Error('Ocap Kernel is not supported without lockdown');
+    }
+  }
+
   return {
     applyLavaMoat,
     buildType,
@@ -428,6 +444,7 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
     platform,
     policyOnly,
     shouldIncludeLockdown: lockdown,
+    shouldIncludeOcapKernel,
     shouldIncludeSnow: snow,
     shouldLintFenceFiles,
     skipStats,

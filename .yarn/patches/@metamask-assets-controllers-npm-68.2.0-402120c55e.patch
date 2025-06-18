@@ -1,5 +1,5 @@
 diff --git a/dist/assetsUtil.cjs b/dist/assetsUtil.cjs
-index 0f6d7425a720e2af194e351a017dfb0fc4d8a82c..6c2d3b606b6ac95b3a1962acc90966ff80ec3f30 100644
+index da8ec3d363bd775b23a70c12c3c4638ab00cd860..6b985729b22a35ea6409a3567bffc93b3bdd6dd0 100644
 --- a/dist/assetsUtil.cjs
 +++ b/dist/assetsUtil.cjs
 @@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {

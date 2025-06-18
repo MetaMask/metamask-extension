@@ -84,6 +84,7 @@ import {
   ERC721,
   BlockExplorerUrl,
   ChainId,
+  handleFetch,
 } from '@metamask/controller-utils';
 
 import { AccountsController } from '@metamask/accounts-controller';
@@ -241,7 +242,7 @@ import {
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
-import { endTrace, trace } from '../../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../../shared/lib/trace';
 import { ENVIRONMENT } from '../../development/build/constants';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
@@ -427,6 +428,10 @@ export const METAMASK_CONTROLLER_EVENTS = {
     'NotificationServicesController:markNotificationsAsRead',
 };
 
+/**
+ * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
+ */
+
 // Types of APIs
 const API_TYPE = {
   EIP1193: 'eip-1193',
@@ -571,6 +576,7 @@ export default class MetamaskController extends EventEmitter {
         additionalDefaultNetworks,
       );
 
+      /** @type {import('@metamask/network-controller').NetworkState['networkConfigurationsByChainId']} */
       const networks =
         initialNetworkControllerState.networkConfigurationsByChainId;
 
@@ -591,6 +597,8 @@ export default class MetamaskController extends EventEmitter {
         getFailoverUrlsForInfuraNetwork('ethereum-mainnet');
       networks[CHAIN_IDS.LINEA_MAINNET].rpcEndpoints[0].failoverUrls =
         getFailoverUrlsForInfuraNetwork('linea-mainnet');
+      networks[CHAIN_IDS.BASE].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('base-mainnet');
 
       let network;
       if (process.env.IN_TEST) {
@@ -605,6 +613,7 @@ export default class MetamaskController extends EventEmitter {
               networkClientId: 'networkConfigurationId',
               url: 'http://localhost:8545',
               type: 'custom',
+              failoverUrls: [],
             },
           ],
         };
@@ -1590,12 +1599,23 @@ export default class MetamaskController extends EventEmitter {
       clientId: BridgeClientId.EXTENSION,
       // TODO: Remove once TransactionController exports this action type
       getLayer1GasFee: (...args) => this.txController.getLayer1GasFee(...args),
-      fetchFn: async (url, { headers, signal, ...requestOptions }) =>
-        await fetchWithCache({
-          url,
-          fetchOptions: { method: 'GET', headers, signal },
+      fetchFn: async (
+        url,
+        { cacheOptions, functionName, ...requestOptions },
+      ) => {
+        if (functionName === 'fetchBridgeTokens') {
+          return await fetchWithCache({
+            url,
+            fetchOptions: { method: 'GET', ...requestOptions },
+            cacheOptions,
+            functionName,
+          });
+        }
+        return await handleFetch(url, {
+          method: 'GET',
           ...requestOptions,
-        }),
+        });
+      },
       trackMetaMetricsFn: (event, properties) => {
         const actionId = (Date.now() + Math.random()).toString();
         const trackEvent = this.metaMetricsController.trackEvent.bind(
@@ -1641,13 +1661,12 @@ export default class MetamaskController extends EventEmitter {
     this.bridgeStatusController = new BridgeStatusController({
       messenger: bridgeStatusControllerMessenger,
       state: initState.BridgeStatusController,
-      fetchFn: async (url, { headers, signal, ...requestOptions }) =>
-        await fetchWithCache({
-          url,
-          fetchOptions: { method: 'GET', headers, signal },
+      fetchFn: async (url, requestOptions) => {
+        return await handleFetch(url, {
+          method: 'GET',
           ...requestOptions,
-          cacheOptions: { cacheRefreshTime: 0 },
-        }),
+        });
+      },
       addTransactionFn: (...args) => this.txController.addTransaction(...args),
       estimateGasFeeFn: (...args) => this.txController.estimateGasFee(...args),
       addUserOperationFromTransactionFn: (...args) =>
@@ -2077,9 +2096,12 @@ export default class MetamaskController extends EventEmitter {
           getDismissSmartAccountSuggestionEnabled: () =>
             this.preferencesController.state.preferences
               .dismissSmartAccountSuggestionEnabled,
+          getIsSmartTransaction: (chainId) =>
+            getIsSmartTransaction(this._getMetaMaskState(), chainId),
           isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
             this.txController,
           ),
+          isRelaySupported,
         },
         this.controllerMessenger,
       ),
@@ -3323,7 +3345,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * The metamask-state of the various controllers, made available to the UI
    *
-   * @returns {object} status
+   * @returns {MetaMaskReduxState["metamask"]} status
    */
   getState() {
     const { vault } = this.keyringController.state;
@@ -4188,6 +4210,14 @@ export default class MetamaskController extends EventEmitter {
         userStorageController.syncInternalAccountsWithUserStorage.bind(
           userStorageController,
         ),
+      setHasAccountSyncingSyncedAtLeastOnce:
+        userStorageController.setHasAccountSyncingSyncedAtLeastOnce.bind(
+          userStorageController,
+        ),
+      setIsAccountSyncingReadyToBeDispatched:
+        userStorageController.setIsAccountSyncingReadyToBeDispatched.bind(
+          userStorageController,
+        ),
       deleteAccountSyncingDataFromUserStorage:
         userStorageController.performDeleteStorageAllFeatureEntries.bind(
           userStorageController,
@@ -4663,7 +4693,6 @@ export default class MetamaskController extends EventEmitter {
       return newAccountAddress;
     } finally {
       releaseLock();
-      await this.userStorageController.syncInternalAccountsWithUserStorage();
     }
   }
 
@@ -4768,6 +4797,12 @@ export default class MetamaskController extends EventEmitter {
 
   async _addAccountsWithBalance(keyringId) {
     try {
+      await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
+        false,
+      );
+      await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
+        false,
+      );
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
 
@@ -4875,6 +4910,9 @@ export default class MetamaskController extends EventEmitter {
     } catch (e) {
       log.warn(`Failed to add accounts with balance. Error: ${e}`);
     } finally {
+      await this.userStorageController.setHasAccountSyncingSyncedAtLeastOnce(
+        true,
+      );
       await this.userStorageController.setIsAccountSyncingReadyToBeDispatched(
         true,
       );
@@ -6802,6 +6840,9 @@ export default class MetamaskController extends EventEmitter {
             });
           }
         },
+        setEnabledNetworks: (chainIds) => {
+          this.networkOrderController.setEnabledNetworks(chainIds);
+        },
         getCurrentChainIdForDomain: (domain) => {
           const networkClientId =
             this.selectedNetworkController.getNetworkClientIdForDomain(domain);
@@ -6965,18 +7006,18 @@ export default class MetamaskController extends EventEmitter {
           origin,
         ),
         scheduleBackgroundEvent: (event) =>
-          this.controllerMessenger.call(
-            'CronjobController:scheduleBackgroundEvent',
-            { ...event, snapId: origin },
-          ),
+          this.controllerMessenger.call('CronjobController:schedule', {
+            ...event,
+            snapId: origin,
+          }),
         cancelBackgroundEvent: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'CronjobController:cancelBackgroundEvent',
+          'CronjobController:cancel',
           origin,
         ),
         getBackgroundEvents: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'CronjobController:getBackgroundEvents',
+          'CronjobController:get',
           origin,
         ),
         getNetworkConfigurationByChainId: this.controllerMessenger.call.bind(
@@ -8152,12 +8193,31 @@ export default class MetamaskController extends EventEmitter {
     ) {
       return;
     }
+    const startTime = performance.now();
+
+    const traceContext = trace({
+      name: TraceName.OnFinishedTransaction,
+      startTime: performance.timeOrigin,
+    });
+
+    trace({
+      name: TraceName.OnFinishedTransaction,
+      startTime: performance.timeOrigin,
+      parentContext: traceContext,
+      data: {
+        transactionMeta,
+      },
+    });
 
     await this._createTransactionNotifcation(transactionMeta);
     await this._updateNFTOwnership(transactionMeta);
     this._trackTransactionFailure(transactionMeta);
     await this.tokenBalancesController.updateBalancesByChainId({
       chainId: transactionMeta.chainId,
+    });
+    endTrace({
+      name: TraceName.OnFinishedTransaction,
+      timestamp: performance.timeOrigin + startTime,
     });
   }
 
