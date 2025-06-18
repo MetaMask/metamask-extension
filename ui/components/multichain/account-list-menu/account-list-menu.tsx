@@ -237,7 +237,7 @@ export const AccountListMenu = ({
   ],
 }: AccountListMenuProps) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { loading: syncSRPsLoading } = useSyncSRPs();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   useEffect(() => {

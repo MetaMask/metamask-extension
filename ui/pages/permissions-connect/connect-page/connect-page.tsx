@@ -110,7 +110,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   targetSubjectMetadata,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const requestedCaip25CaveatValue = getRequestedCaip25CaveatValue(
     request.permissions,

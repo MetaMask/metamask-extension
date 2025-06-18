@@ -55,7 +55,7 @@ export const AccountOverviewLayout = ({
 }: AccountOverviewLayoutProps) => {
   const dispatch = useDispatch();
   const isLoading = useSelector(getAppIsLoading);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const [hasRendered, setHasRendered] = useState(false);
   const selectedAccount = useSelector(getSelectedAccount);
 

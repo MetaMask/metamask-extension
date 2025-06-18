@@ -83,7 +83,7 @@ export const RampsCard = ({ variant, handleOnClick }) => {
   const { gradient, illustrationSrc, title, body } =
     RAMPS_CARD_VARIANTS[variant];
   const { openBuyCryptoInPdapp } = useRamps(metamaskEntryMap[variant]);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const currentLocale = useSelector(getCurrentLocale);
   const { chainId, nickname } = useSelector(getMultichainCurrentNetwork);
   const { symbol } = useSelector(getMultichainDefaultToken);

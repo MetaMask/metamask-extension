@@ -41,7 +41,7 @@ export const SrpList = ({
   seedPhraseBackedUp?: boolean;
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const hdKeyringsWithSnapAccounts = useHdKeyringsWithSnapAccounts();
 
   // This selector will return accounts with nonEVM balances as well.

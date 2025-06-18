@@ -40,7 +40,7 @@ export default function TurnOnMetamaskNotifications() {
   const { hideModal } = useModalProps();
   const history = useHistory();
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { listNotifications } = useMetamaskNotificationsContext();
 
   const isNotificationEnabled = useSelector(

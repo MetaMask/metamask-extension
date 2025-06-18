@@ -87,7 +87,7 @@ export type CrossChainSwapsEventProperties = {
  * @returns The trackCrossChainSwapsEvent method which wraps the MetaMetricsContext trackEvent method.
  */
 export const useCrossChainSwapsEventTracker = () => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const trackCrossChainSwapsEvent = useCallback(
     <EventName extends keyof CrossChainSwapsEventProperties>({

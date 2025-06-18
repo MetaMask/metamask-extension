@@ -82,7 +82,7 @@ export const GlobalMenu = ({
 }: GlobalMenuProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const basicFunctionality = useSelector(getUseExternalServices);
 
   const history = useHistory();

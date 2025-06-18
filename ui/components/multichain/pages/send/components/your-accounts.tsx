@@ -30,7 +30,7 @@ export const SendPageYourAccounts = ({
   allowedAccountTypes = defaultAllowedAccountTypes,
 }: SendPageYourAccountsProps) => {
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   // Your Accounts
   const accounts = useSelector(getUpdatedAndSortedAccounts);

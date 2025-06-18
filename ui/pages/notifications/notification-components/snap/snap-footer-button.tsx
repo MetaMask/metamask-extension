@@ -11,7 +11,7 @@ import {
 import { DetailedViewData, SnapNotification } from './types';
 
 export const SnapFooterButton = (props: { notification: SnapNotification }) => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { navigate } = useSnapNavigation();
   const [isOpen, setIsOpen] = useState(false);
   const data = props.notification.data as DetailedViewData;

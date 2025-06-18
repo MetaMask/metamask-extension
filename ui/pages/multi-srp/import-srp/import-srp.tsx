@@ -55,7 +55,7 @@ const defaultNumberOfWords = 12;
 export const ImportSrp = () => {
   const t = useI18nContext();
   const history = useHistory();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const [srpError, setSrpError] = useState('');
   const [pasteFailed, setPasteFailed] = useState(false);

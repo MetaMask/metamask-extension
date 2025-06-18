@@ -249,8 +249,6 @@ import { getProviderConfig } from '../../shared/modules/selectors/networks';
 import {
   trace,
   endTrace,
-  bufferedEndTrace,
-  bufferedTrace,
   TraceName,
   TraceOperation,
 } from '../../shared/lib/trace';
@@ -1106,6 +1104,12 @@ export default class MetamaskController extends EventEmitter {
     this.oauthService = new OAuthService({
       env: oauthSvcEnvs,
       webAuthenticator: webAuthenticatorFactory(),
+      bufferedTrace: this.metaMetricsController.bufferedTrace.bind(
+        this.metaMetricsController,
+      ),
+      bufferedEndTrace: this.metaMetricsController.bufferedEndTrace.bind(
+        this.metaMetricsController,
+      ),
     });
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
@@ -4159,6 +4163,14 @@ export default class MetamaskController extends EventEmitter {
           metaMetricsController,
         ),
 
+      // Buffered Trace API that checks consent and handles buffering/immediate execution
+      bufferedTrace: metaMetricsController.bufferedTrace.bind(
+        metaMetricsController,
+      ),
+      bufferedEndTrace: metaMetricsController.bufferedEndTrace.bind(
+        metaMetricsController,
+      ),
+
       // ApprovalController
       rejectAllPendingApprovals: this.rejectAllPendingApprovals.bind(this),
       rejectPendingApproval: this.rejectPendingApproval,
@@ -4710,7 +4722,7 @@ export default class MetamaskController extends EventEmitter {
       let isNewUser = false;
 
       try {
-        bufferedTrace({
+        this.metaMetricsController.bufferedTrace({
           name: TraceName.OnboardingOAuthSeedlessAuthenticate,
           op: TraceOperation.OnboardingSecurityOp,
         });
@@ -4722,18 +4734,18 @@ export default class MetamaskController extends EventEmitter {
         const errorMessage =
           error instanceof Error ? error.message : 'Unknown error';
 
-        bufferedTrace({
+        this.metaMetricsController.bufferedTrace({
           name: TraceName.OnboardingOAuthSeedlessAuthenticateError,
           op: TraceOperation.OnboardingError,
           tags: { errorMessage },
         });
-        bufferedEndTrace({
+        this.metaMetricsController.bufferedEndTrace({
           name: TraceName.OnboardingOAuthSeedlessAuthenticateError,
         });
 
         throw error;
       } finally {
-        bufferedEndTrace({
+        this.metaMetricsController.bufferedEndTrace({
           name: TraceName.OnboardingOAuthSeedlessAuthenticate,
           data: { success: seedlessAuthSuccess },
         });
@@ -4772,7 +4784,7 @@ export default class MetamaskController extends EventEmitter {
   async createSeedPhraseBackup(password, encodedSeedPhrase, keyringId) {
     let createSeedPhraseBackupSuccess = false;
     try {
-      bufferedTrace({
+      this.metaMetricsController.bufferedTrace({
         name: TraceName.OnboardingCreateKeyAndBackupSrp,
         op: TraceOperation.OnboardingSecurityOp,
       });
@@ -4791,19 +4803,19 @@ export default class MetamaskController extends EventEmitter {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
 
-      bufferedTrace({
+      this.metaMetricsController.bufferedTrace({
         name: TraceName.OnboardingCreateKeyAndBackupSrpError,
         op: TraceOperation.OnboardingError,
         tags: { errorMessage },
       });
-      bufferedEndTrace({
+      this.metaMetricsController.bufferedEndTrace({
         name: TraceName.OnboardingCreateKeyAndBackupSrpError,
       });
 
       log.error('[createSeedPhraseBackup] error', error);
       throw error;
     } finally {
-      bufferedEndTrace({
+      this.metaMetricsController.bufferedEndTrace({
         name: TraceName.OnboardingCreateKeyAndBackupSrp,
         data: { success: createSeedPhraseBackupSuccess },
       });
@@ -4823,7 +4835,7 @@ export default class MetamaskController extends EventEmitter {
   async fetchAllSecretData(password) {
     let fetchAllSeedPhrasesSuccess = false;
     try {
-      bufferedTrace({
+      this.metaMetricsController.bufferedTrace({
         name: TraceName.OnboardingFetchSrps,
         op: TraceOperation.OnboardingSecurityOp,
       });
@@ -4844,12 +4856,12 @@ export default class MetamaskController extends EventEmitter {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
 
-      bufferedTrace({
+      this.metaMetricsController.bufferedTrace({
         name: TraceName.OnboardingFetchSrpsError,
         op: TraceOperation.OnboardingError,
         tags: { errorMessage },
       });
-      bufferedEndTrace({
+      this.metaMetricsController.bufferedEndTrace({
         name: TraceName.OnboardingFetchSrpsError,
       });
 
@@ -4864,7 +4876,7 @@ export default class MetamaskController extends EventEmitter {
 
       throw error;
     } finally {
-      bufferedEndTrace({
+      this.metaMetricsController.bufferedEndTrace({
         name: TraceName.OnboardingFetchSrps,
         data: { success: fetchAllSeedPhrasesSuccess },
       });
@@ -4969,7 +4981,7 @@ export default class MetamaskController extends EventEmitter {
           globalPassword: password,
         });
 
-        bufferedTrace({
+        this.metaMetricsController.bufferedTrace({
           name: TraceName.OnboardingResetPassword,
           op: TraceOperation.OnboardingSecurityOp,
         });
@@ -4985,18 +4997,20 @@ export default class MetamaskController extends EventEmitter {
         const errorMessage =
           err instanceof Error ? err.message : 'Unknown error';
 
-        bufferedTrace({
+        this.metaMetricsController.bufferedTrace({
           name: TraceName.OnboardingResetPasswordError,
           op: TraceOperation.OnboardingError,
           tags: { errorMessage },
         });
-        bufferedEndTrace({ name: TraceName.OnboardingResetPasswordError });
+        this.metaMetricsController.bufferedEndTrace({
+          name: TraceName.OnboardingResetPasswordError,
+        });
 
         // lock app again on error after submitPassword succeeded
         await this.setLocked();
         throw err;
       } finally {
-        bufferedEndTrace({
+        this.metaMetricsController.bufferedEndTrace({
           name: TraceName.OnboardingResetPassword,
           data: { success: changePasswordSuccess },
         });
@@ -5084,7 +5098,7 @@ export default class MetamaskController extends EventEmitter {
     if (syncWithSocial) {
       let addNewSeedPhraseBackupSuccess = false;
       try {
-        bufferedTrace({
+        this.metaMetricsController.bufferedTrace({
           name: TraceName.OnboardingAddSrp,
           op: TraceOperation.OnboardingSecurityOp,
         });
@@ -5097,18 +5111,18 @@ export default class MetamaskController extends EventEmitter {
         const errorMessage =
           err instanceof Error ? err.message : 'Unknown error';
 
-        bufferedTrace({
+        this.metaMetricsController.bufferedTrace({
           name: TraceName.OnboardingAddSrpError,
           op: TraceOperation.OnboardingError,
           tags: { errorMessage },
         });
-        bufferedEndTrace({
+        this.metaMetricsController.bufferedEndTrace({
           name: TraceName.OnboardingAddSrpError,
         });
 
         throw err;
       } finally {
-        bufferedEndTrace({
+        this.metaMetricsController.bufferedEndTrace({
           name: TraceName.OnboardingAddSrp,
           data: { success: addNewSeedPhraseBackupSuccess },
         });

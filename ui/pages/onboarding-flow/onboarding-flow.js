@@ -65,11 +65,7 @@ import {
   JustifyContent,
 } from '../../helpers/constants/design-system';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import {
-  TraceName,
-  TraceOperation,
-  bufferedTrace,
-} from '../../../shared/lib/trace';
+import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -99,7 +95,7 @@ export default function OnboardingFlow() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, bufferedTrace } = useContext(MetaMetricsContext);
   const isUnlocked = useSelector(getIsUnlocked);
   const showTermsOfUse = useSelector(getShowTermsOfUse);
   const { updateOnboardingParentContext } = useSentryTrace();
@@ -153,7 +149,7 @@ export default function OnboardingFlow() {
       op: TraceOperation.OnboardingUserJourney,
     });
     updateOnboardingParentContext(trace);
-  }, [updateOnboardingParentContext]);
+  }, [updateOnboardingParentContext, bufferedTrace]);
 
   const handleCreateNewAccount = async (password) => {
     let newSecretRecoveryPhrase;

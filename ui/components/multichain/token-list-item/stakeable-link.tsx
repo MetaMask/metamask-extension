@@ -27,7 +27,7 @@ type StakeableLinkProps = {
 
 export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);

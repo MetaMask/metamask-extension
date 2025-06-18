@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -34,13 +34,9 @@ import {
   setFirstTimeFlowType,
   resetOAuthLoginState,
 } from '../../../store/actions';
-import {
-  bufferedEndTrace,
-  bufferedTrace,
-  TraceName,
-  TraceOperation,
-} from '../../../../shared/lib/trace';
+import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { useSentryTrace } from '../../../contexts/sentry-trace';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function AccountNotFound() {
   const history = useHistory();
@@ -49,6 +45,7 @@ export default function AccountNotFound() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
   const { onboardingParentContext } = useSentryTrace();
+  const { bufferedTrace, bufferedEndTrace } = useContext(MetaMetricsContext);
 
   const onBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -92,7 +89,13 @@ export default function AccountNotFound() {
         });
       }
     };
-  }, [firstTimeFlowType, history, onboardingParentContext]);
+  }, [
+    firstTimeFlowType,
+    history,
+    onboardingParentContext,
+    bufferedTrace,
+    bufferedEndTrace,
+  ]);
 
   return (
     <Box

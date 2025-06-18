@@ -44,8 +44,6 @@ import {
   ButtonVariant,
   ButtonSize,
 } from '../../../components/component-library';
-import { discardBufferedTraces } from '../../../../shared/lib/trace';
-import { submitRequestToBackground } from '../../../store/background-connection';
 
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
@@ -59,7 +57,7 @@ export default function OnboardingMetametrics() {
 
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   let nextRouteByBrowser = useSelector(
     getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
@@ -112,9 +110,6 @@ export default function OnboardingMetametrics() {
           location: 'onboarding_metametrics',
         },
       });
-      // Flush buffered events when user opts in
-      await submitRequestToBackground('trackEventsAfterMetricsOptIn');
-      await submitRequestToBackground('clearEventsAfterMetricsOptIn');
     } finally {
       history.push(nextRouteByBrowser);
     }
@@ -123,8 +118,6 @@ export default function OnboardingMetametrics() {
   const onCancel = async () => {
     await dispatch(setParticipateInMetaMetrics(false));
     await dispatch(setDataCollectionForMarketing(false));
-    discardBufferedTraces();
-    await submitRequestToBackground('clearEventsAfterMetricsOptIn');
     history.push(nextRouteByBrowser);
   };
 

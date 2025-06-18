@@ -48,12 +48,7 @@ import LoadingScreen from '../../../components/ui/loading-screen';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { resetOAuthLoginState } from '../../../store/actions';
-import {
-  bufferedTrace,
-  TraceName,
-  TraceOperation,
-  bufferedEndTrace,
-} from '../../../../shared/lib/trace';
+import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { useSentryTrace } from '../../../contexts/sentry-trace';
 
 export default function CreatePassword({
@@ -70,7 +65,8 @@ export default function CreatePassword({
   const dispatch = useDispatch();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const socialLoginFlow = useSelector(isSocialLoginFlow);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent, bufferedTrace, bufferedEndTrace } =
+    useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
@@ -120,7 +116,7 @@ export default function CreatePassword({
     return () => {
       bufferedEndTrace({ name: TraceName.OnboardingPasswordSetupAttempt });
     };
-  }, [onboardingParentContext]);
+  }, [onboardingParentContext, bufferedTrace, bufferedEndTrace]);
 
   const handleBackClick = (event) => {
     event.preventDefault();

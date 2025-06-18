@@ -37,7 +37,7 @@ export const backupAndSyncToggleTestIds = {
 };
 
 export const BackupAndSyncToggle = () => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const t = useI18nContext();
   const dispatch = useDispatch();

@@ -56,7 +56,7 @@ type AccountDetailsProps = { address: string };
 export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const useBlockie = useSelector(getUseBlockie);
   const accounts = useSelector(getMetaMaskAccountsOrdered);

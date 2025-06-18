@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -33,13 +33,9 @@ import {
   setFirstTimeFlowType,
   resetOAuthLoginState,
 } from '../../../store/actions';
-import {
-  bufferedTrace,
-  bufferedEndTrace,
-  TraceName,
-  TraceOperation,
-} from '../../../../shared/lib/trace';
+import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { useSentryTrace } from '../../../contexts/sentry-trace';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function AccountExist() {
   const history = useHistory();
@@ -48,6 +44,7 @@ export default function AccountExist() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
   const { onboardingParentContext } = useSentryTrace();
+  const { bufferedTrace, bufferedEndTrace } = useContext(MetaMetricsContext);
 
   const onBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -88,7 +85,13 @@ export default function AccountExist() {
         bufferedEndTrace({ name: TraceName.OnboardingNewSocialAccountExists });
       }
     };
-  }, [firstTimeFlowType, history, onboardingParentContext]);
+  }, [
+    firstTimeFlowType,
+    history,
+    onboardingParentContext,
+    bufferedTrace,
+    bufferedEndTrace,
+  ]);
 
   return (
     <Box
