@@ -16,6 +16,11 @@ class TestDappMultichain {
     tag: 'button',
   };
 
+  private readonly dappTitle = {
+    text: 'MetaMask MultiChain API Test Dapp',
+    tag: 'h1',
+  };
+
   private readonly extensionIdInput = '[placeholder="Enter extension ID"]';
 
   private readonly firstSessionMethodResult = '#session-method-result-0';
@@ -46,6 +51,19 @@ class TestDappMultichain {
 
   customScopeInput(i: number) {
     return `#custom-Scope-input-${i}`;
+  }
+
+  async check_pageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.dappTitle);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for Multichain Test Dapp page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Multichain Test Dapp page is loaded');
   }
 
   async clickConnectExternallyConnectableButton() {
