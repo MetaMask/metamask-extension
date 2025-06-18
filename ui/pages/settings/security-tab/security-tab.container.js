@@ -30,7 +30,7 @@ import {
 } from '../../../selectors/selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
-import { getMetaMaskHdKeyrings } from '../../../selectors';
+import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
@@ -57,8 +57,6 @@ const mapStateToProps = (state) => {
 
   const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
-  const hasMultipleHdKeyrings = getMetaMaskHdKeyrings(state).length > 1;
-
   return {
     networkConfigurations,
     participateInMetaMetrics,
@@ -81,6 +79,7 @@ const mapStateToProps = (state) => {
     hdEntropyIndex: getHDEntropyIndex(state),
     hasMultipleHdKeyrings,
     skipDeepLinkInterstitial: Boolean(skipDeepLinkInterstitial),
+    isSeedPhraseBackedUp: getIsPrimarySeedPhraseBackedUp(state),
   };
 };
 
