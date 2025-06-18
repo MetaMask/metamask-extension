@@ -71,7 +71,10 @@ import {
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { PermissionLogController } from '@metamask/permission-log-controller';
 
-import { MultichainRouter, WebSocketService } from '@metamask/snaps-controllers';
+import {
+  MultichainRouter,
+  WebSocketService,
+} from '@metamask/snaps-controllers';
 import {
   createSnapsMethodMiddleware,
   buildSnapEndowmentSpecifications,
@@ -565,7 +568,11 @@ export default class MetamaskController extends EventEmitter {
       messenger: this.controllerMessenger.getRestricted({
         name: 'WebSocketService',
         allowedActions: ['SnapController:handleRequest'],
-        allowedEvents: ['SnapController:snapUpdated', 'SnapController:snapUninstalled', 'SnapController:snapInstalled'],
+        allowedEvents: [
+          'SnapController:snapUpdated',
+          'SnapController:snapUninstalled',
+          'SnapController:snapInstalled',
+        ],
       }),
     });
 
