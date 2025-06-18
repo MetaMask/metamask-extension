@@ -19,7 +19,7 @@ describe('Wallet Created Events - Imported Account', function () {
           return await mockSegment(server, [
             'Wallet Import Started',
             'Wallet Setup Completed',
-            'Onboarding Wallet Created',
+            'Wallet Created',
           ]);
         },
       },
