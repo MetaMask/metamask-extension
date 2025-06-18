@@ -22,7 +22,6 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import WelcomeLogin from './welcome-login';
 import WelcomeBanner from './welcome-banner';
-import { LOGIN_OPTION, LOGIN_TYPE } from './types';
 
 const WelcomePageState = {
   Banner: 'Banner',
@@ -100,24 +99,7 @@ export default function OnboardingWelcome({
         ? ONBOARDING_IMPORT_WITH_SRP_ROUTE
         : ONBOARDING_METAMETRICS,
     );
-    // SOCIAL: metametrics has new flow
-    // history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
   }, [dispatch, history, trackEvent]);
-
-  const handleLogin = useCallback(
-    (loginType, loginOption) => {
-      if (loginType === LOGIN_TYPE.SRP) {
-        if (loginOption === LOGIN_OPTION.NEW) {
-          onCreateClick();
-        } else {
-          onImportClick();
-        }
-      } else {
-        setIsLoggingIn(true);
-      }
-    },
-    [onCreateClick, onImportClick],
-  );
 
   return (
     <>
@@ -125,7 +107,7 @@ export default function OnboardingWelcome({
         <WelcomeBanner onAccept={() => setPageState(WelcomePageState.Login)} />
       )}
       {pageState === WelcomePageState.Login && (
-        <WelcomeLogin onLogin={handleLogin} />
+        <WelcomeLogin onCreate={onCreateClick} onImport={onImportClick} />
       )}
       {isLoggingIn && <LoadingScreen />}
     </>
