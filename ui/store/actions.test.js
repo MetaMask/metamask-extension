@@ -2453,90 +2453,78 @@ describe('Actions', () => {
     });
   });
 
-  describe('#deleteOnChainTriggersByAccount', () => {
+  describe('#disableAccounts', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls deleteOnChainTriggersByAccount in the background', async () => {
+    it('calls disableAccounts in the background', async () => {
       const store = mockStore();
       const accounts = ['0x123', '0x456'];
 
-      const deleteOnChainTriggersByAccountStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
+      const disableAccountsStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
-        deleteOnChainTriggersByAccount: deleteOnChainTriggersByAccountStub,
+        disableAccounts: disableAccountsStub,
       });
       setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.deleteOnChainTriggersByAccount(accounts));
-      expect(deleteOnChainTriggersByAccountStub.calledOnceWith(accounts)).toBe(
-        true,
-      );
+      await store.dispatch(actions.disableAccounts(accounts));
+      expect(disableAccountsStub.calledOnceWith(accounts)).toBe(true);
     });
 
-    it('handles errors when deleteOnChainTriggersByAccount fails', async () => {
+    it('handles errors when disableAccounts fails', async () => {
       const store = mockStore();
       const accounts = ['0x123', '0x456'];
       const error = new Error('Failed to delete on-chain triggers');
 
-      const deleteOnChainTriggersByAccountStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb(error));
+      const disableAccountsStub = sinon.stub().callsFake((_, cb) => cb(error));
 
       background.getApi.returns({
-        deleteOnChainTriggersByAccount: deleteOnChainTriggersByAccountStub,
+        disableAccounts: disableAccountsStub,
       });
       setBackgroundConnection(background.getApi());
 
       await expect(
-        store.dispatch(actions.deleteOnChainTriggersByAccount(accounts)),
+        store.dispatch(actions.disableAccounts(accounts)),
       ).rejects.toThrow(error);
     });
   });
 
-  describe('#updateOnChainTriggersByAccount', () => {
+  describe('#enableAccounts', () => {
     afterEach(() => {
       sinon.restore();
     });
 
-    it('calls updateOnChainTriggersByAccount in the background with correct parameters', async () => {
+    it('calls enableAccounts in the background with correct parameters', async () => {
       const store = mockStore();
       const accountIds = ['0x789', '0xabc'];
 
-      const updateOnChainTriggersByAccountStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
+      const enableAccountsStub = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
-        updateOnChainTriggersByAccount: updateOnChainTriggersByAccountStub,
+        enableAccounts: enableAccountsStub,
       });
       setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.updateOnChainTriggersByAccount(accountIds));
-      expect(
-        updateOnChainTriggersByAccountStub.calledOnceWith(accountIds),
-      ).toBe(true);
+      await store.dispatch(actions.enableAccounts(accountIds));
+      expect(enableAccountsStub.calledOnceWith(accountIds)).toBe(true);
     });
 
-    it('handles errors when updateOnChainTriggersByAccount fails', async () => {
+    it('handles errors when enableAccounts fails', async () => {
       const store = mockStore();
       const accountIds = ['0x789', '0xabc'];
       const error = new Error('Failed to update on-chain triggers');
 
-      const updateOnChainTriggersByAccountStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb(error));
+      const enableAccountsStub = sinon.stub().callsFake((_, cb) => cb(error));
 
       background.getApi.returns({
-        updateOnChainTriggersByAccount: updateOnChainTriggersByAccountStub,
+        enableAccounts: enableAccountsStub,
       });
       setBackgroundConnection(background.getApi());
 
       await expect(
-        store.dispatch(actions.updateOnChainTriggersByAccount(accountIds)),
+        store.dispatch(actions.enableAccounts(accountIds)),
       ).rejects.toThrow(error);
     });
   });

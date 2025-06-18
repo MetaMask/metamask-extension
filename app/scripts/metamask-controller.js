@@ -4236,14 +4236,12 @@ export default class MetamaskController extends EventEmitter {
         notificationServicesController.createOnChainTriggers.bind(
           notificationServicesController,
         ),
-      deleteOnChainTriggersByAccount:
-        notificationServicesController.deleteOnChainTriggersByAccount.bind(
-          notificationServicesController,
-        ),
-      updateOnChainTriggersByAccount:
-        notificationServicesController.updateOnChainTriggersByAccount.bind(
-          notificationServicesController,
-        ),
+      disableAccounts: notificationServicesController.disableAccounts.bind(
+        notificationServicesController,
+      ),
+      enableAccounts: notificationServicesController.enableAccounts.bind(
+        notificationServicesController,
+      ),
       fetchAndUpdateMetamaskNotifications:
         notificationServicesController.fetchAndUpdateMetamaskNotifications.bind(
           notificationServicesController,
@@ -4270,10 +4268,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       disablePushNotifications:
         notificationServicesPushController.disablePushNotifications.bind(
-          notificationServicesPushController,
-        ),
-      updateTriggerPushNotifications:
-        notificationServicesPushController.updateTriggerPushNotifications.bind(
           notificationServicesPushController,
         ),
       enableMetamaskNotifications:
