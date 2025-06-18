@@ -6664,6 +6664,7 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
         this.appStateController,
         this.phishingController,
+        this.preferencesController,
       ),
     );
 
