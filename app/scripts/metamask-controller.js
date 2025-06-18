@@ -174,6 +174,7 @@ import {
 } from '@metamask/bridge-status-controller';
 import {
   RecoveryError,
+  SecretType,
   SeedlessOnboardingControllerErrorMessage,
 } from '@metamask/seedless-onboarding-controller';
 
@@ -4841,8 +4842,8 @@ export default class MetamaskController extends EventEmitter {
       });
       // fetch all seed phrases
       // seedPhrases are sorted by creation date, the latest seed phrase is the first one in the array
-      const allSeedPhrases =
-        await this.seedlessOnboardingController.fetchAllSeedPhrases(password);
+      const { mnemonic: allSeedPhrases } =
+        await this.seedlessOnboardingController.fetchAllSecretData(password);
       fetchAllSeedPhrasesSuccess = true;
 
       if (allSeedPhrases.length === 0) {
@@ -4898,18 +4899,19 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // 1. fetch all seed phrases
-    const [rootSRP, ...otherSRPs] =
-      await this.seedlessOnboardingController.fetchAllSeedPhrases();
+    const secretData =
+      await this.seedlessOnboardingController.fetchAllSecretData();
 
-    if (!rootSRP) {
-      throw new Error('No root SRP found');
+    const [primarySrp, ...otherSrps] = secretData.mnemonic;
+    if (!primarySrp) {
+      throw new Error('No primary Srp found');
     }
 
-    for (const srp of otherSRPs) {
+    for (const srp of otherSrps) {
       // Get the SRP hash, and find the hash in the local state
-      const srpHash =
-        this.seedlessOnboardingController.getSeedPhraseBackupHash(srp);
-      if (!srpHash) {
+      const srpBackupData =
+        this.seedlessOnboardingController.getSecretDataBackupState(srp);
+      if (!srpBackupData) {
         // If SRP is not in the local state, import it to the vault
         // convert the seed phrase to a mnemonic (string)
         const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(srp);
@@ -5042,20 +5044,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Updates the Seedless Onboarding backup metadata state, with backup seed phrase id and backup seed phrase.
-   *
-   * @param {string} keyringId - The keyring id of the backup seed phrase.
-   * @param {string} encodedSeedPhrase - The backup seed phrase.
-   */
-  async updateBackupMetadataState(keyringId, encodedSeedPhrase) {
-    const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
-    this.seedlessOnboardingController.updateBackupMetadataState(
-      keyringId,
-      this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
-    );
-  }
-
-  /**
    * Changes the password of the current wallet.
    *
    * If the wallet is created with social login, the password is changed for the seedless onboarding flow and sync across the devices too.
@@ -5102,9 +5090,10 @@ export default class MetamaskController extends EventEmitter {
           name: TraceName.OnboardingAddSrp,
           op: TraceOperation.OnboardingSecurityOp,
         });
-        await this.seedlessOnboardingController.addNewSeedPhraseBackup(
+        await this.seedlessOnboardingController.addNewSecretData(
           seedPhraseAsUint8Array,
-          keyringId,
+          SecretType.Mnemonic,
+          { keyringId },
         );
         addNewSeedPhraseBackupSuccess = true;
       } catch (err) {
@@ -5131,7 +5120,8 @@ export default class MetamaskController extends EventEmitter {
       // Do not sync the seed phrase to the server, only update the local state
       this.seedlessOnboardingController.updateBackupMetadataState({
         keyringId,
-        seedPhrase: seedPhraseAsUint8Array,
+        data: seedPhraseAsUint8Array,
+        type: SecretType.Mnemonic,
       });
     }
   }
@@ -5377,7 +5367,8 @@ export default class MetamaskController extends EventEmitter {
         // if the social login flow is completed, update the SocialBackupMetadataState with the restored seed phrase
         this.seedlessOnboardingController.updateBackupMetadataState({
           keyringId: this.keyringController.state.keyrings[0].metadata.id,
-          seedPhrase: seedPhraseAsUint8Array,
+          data: seedPhraseAsUint8Array,
+          type: SecretType.Mnemonic,
         });
       }
 

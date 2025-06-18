@@ -75,7 +75,7 @@
   },
   "manifest_version": 3,
   "name": "__MSG_appName__",
-  "optional_permissions": ["clipboardRead"],
+  "optional_permissions": ["clipboardRead", "identity"],
   "permissions": [
     "activeTab",
     "alarms",
@@ -85,8 +85,7 @@
     "storage",
     "unlimitedStorage",
     "webRequest",
-    "offscreen",
-    "identity"
+    "offscreen"
   ],
   "sandbox": {
     "pages": ["snaps/index.html"]

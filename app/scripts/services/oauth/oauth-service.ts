@@ -41,6 +41,14 @@ export default class OAuthService {
   async startOAuthLogin(
     authConnection: AuthConnection,
   ): Promise<OAuthLoginResult> {
+    // request the identity permission from the user
+    // 'identity' permission is required for the OAuth login
+    const permissionGranted =
+      await this.#webAuthenticator.requestIdentityPermission();
+    if (!permissionGranted) {
+      throw new Error('Identity permission not granted');
+    }
+
     // create the login handler for the given social login type
     // this is to get the Jwt Token in the exchange for the Authorization Code
     const loginHandler = createLoginHandler(

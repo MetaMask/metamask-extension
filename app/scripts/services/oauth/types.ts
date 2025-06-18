@@ -34,18 +34,13 @@ export type WebAuthenticator = {
        * If the interactive flag is true, the window will be displayed when a page load completes. If the flag is false or omitted, launchWebAuthFlow will return with an error if the initial navigation does not complete the flow.
        */
       interactive?: boolean;
-      /**
-       * Optional.
-       * The URL to redirect to after the auth flow is complete.
-       */
-      redirect_uri?: string;
     },
     /**
      * The callback function to handle the response from the social login provider.
      *
      * @param responseUrl - The redirect URL from the social login provider.
      */
-    callback?: (responseUrl?: string) => void,
+    callback: (responseUrl?: string) => void,
   ) => Promise<string | null | void>;
 
   /**
@@ -71,6 +66,15 @@ export type WebAuthenticator = {
    * @returns The platform of the browser.
    */
   getPlatform: () => string;
+
+  /**
+   * Request the identity permission from the user.
+   *
+   * OAuth2 authentication requires the identity permission to be granted.
+   *
+   * @returns Whether the identity permission is granted.
+   */
+  requestIdentityPermission: () => Promise<boolean>;
 };
 
 export type LoginHandlerOptions = {
