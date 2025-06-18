@@ -30,7 +30,10 @@ import { getPreferences } from '../../selectors/selectors';
 import { MetaMaskReduxState } from '../../store/store';
 import { VALID } from '../../../shared/lib/deep-links/verify';
 
-type TranslateFunction = (key: string, substitutions?: string[]) => string;
+type TranslateFunction = (
+  key: string,
+  substitutions?: (string | React.JSX.Element)[],
+) => string;
 
 type Route = {
   href: string;
@@ -65,6 +68,7 @@ async function updateStateFromUrl(
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   setRoute: React.Dispatch<React.SetStateAction<Route | null>>,
   setTitle: React.Dispatch<React.SetStateAction<string | null>>,
+  setCta: React.Dispatch<React.SetStateAction<string | null>>,
   t: TranslateFunction,
 ) {
   try {
@@ -85,21 +89,27 @@ async function updateStateFromUrl(
       const title = parsed.route.getTitle(url.searchParams);
 
       const signed = parsed.signature === VALID;
-      const descriptionKey = signed
-        ? 'deepLink_ContinueDescription'
-        : 'deepLink_ThirdParty';
-      setDescription(t(descriptionKey, [t(title)]));
+      const continueMessage = t('deepLink_ContinueDescription', [t(title)]);
+      const description = signed
+        ? continueMessage
+        : t('deepLink_ThirdPartyDescription', [continueMessage]);
+      setDescription(description);
       setRoute({ href, signed });
-      setTitle(signed ? t('deepLink_RedirectingYou') : t('deepLink_Caution'));
+      setTitle(
+        signed ? t('deepLink_RedirectingToMetaMask') : t('deepLink_Caution'),
+      );
+      setCta(t('deepLink_Continue', [t(title)]));
     } else {
       setRoute(null);
       set404(setDescription, setTitle, t);
+      setCta(t('deepLink_GoToTheHomePageButton'));
     }
   } catch (e) {
     log.error('Error parsing deep link:', e);
     setDescription(t('deepLink_ErrorOther'));
     setRoute(null);
     setTitle(t('deepLink_ErrorOtherTitle'));
+    setCta(t('deepLink_GoToTheHomePageButton'));
   } finally {
     setIsLoading(false);
   }
@@ -120,6 +130,7 @@ export const DeepLink = () => {
   const [description, setDescription] = useState<string | null>(null);
   const [route, setRoute] = useState<null | Route>(null);
   const [title, setTitle] = useState<null | string>(null);
+  const [cta, setCta] = useState<null | string>(null);
   const [hasChecked, setHasChecked] = useState(skipDeepLinkInterstitial);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -136,6 +147,7 @@ export const DeepLink = () => {
         setDescription(null);
         setTitle(t('deepLink_ErrorMissingUrl'));
       }
+      setCta(t('deepLink_GoToTheHomePageButton'));
       return;
     }
 
@@ -145,6 +157,7 @@ export const DeepLink = () => {
       setIsLoading,
       setRoute,
       setTitle,
+      setCta,
       t,
     );
   }, [location.search]);
@@ -206,7 +219,7 @@ export const DeepLink = () => {
                   gap={2}
                   padding={3}
                   marginBottom={6}
-                  borderRadius={BorderRadius.LG}
+                  borderRadius={BorderRadius.XL}
                   backgroundColor={BackgroundColor.backgroundMuted}
                 >
                   <Checkbox
@@ -233,7 +246,7 @@ export const DeepLink = () => {
                 size={ButtonSize.Lg}
                 data-testid="deep-link-continue-button"
               >
-                {route ? t('deepLink_Continue') : t('deepLink_OpenAnyway')}
+                {cta}
               </Button>
             </Box>
           </>

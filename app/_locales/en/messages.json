@@ -1666,10 +1666,11 @@
     "message": "Continue"
   },
   "deepLink_ContinueDescription": {
-    "message": "You'll open MetaMask if you continue."
+    "message": "You'll open $1 if you continue.",
+    "description": "$1 is the name of the page they'll be redirected to if they click the Continue button. Examples of $1: 'the home page'; 'the buy page'; 'the swaps page'; 'the notifications page'"
   },
   "deepLink_DontRemindMeAgain": {
-    "message": "Don't Remind me Again"
+    "message": "Don't Remind me again"
   },
   "deepLink_Error404Description": {
     "message": "We can't find the page you are looking for."
@@ -1683,26 +1684,24 @@
   "deepLink_ErrorOther": {
     "message": "An error occurred while processing the deep link. "
   },
-  "deepLink_OpenAnyway": {
-    "message": "Open MetaMask anyway"
+  "deepLink_theBuyPage": {
+    "message": "the buy page"
   },
-  "deepLink_OpenTheBuyPage": {
-    "message": "Buy Page"
+  "deepLink_theHomePage": {
+    "message": "the home page"
   },
-  "deepLink_OpenTheHomePage": {
-    "message": "Home Page"
+  "deepLink_theNotificationsPage": {
+    "message": "the notifications page"
   },
-  "deepLink_OpenTheNotifications": {
-    "message": "Notifications Page"
+  "deepLink_theSwapsPage": {
+    "message": "the swaps page"
   },
-  "deepLink_OpenTheSwapsPage": {
-    "message": "Swaps Page"
-  },
-  "deepLink_RedirectingYou": {
+  "deepLink_RedirectingToMetaMask": {
     "message": "Redirecting to MetaMask"
   },
-  "deepLink_ThirdParty": {
-    "message": "You were sent here by a third party; not MetaMask. Only continue if you trust the source."
+  "deepLink_ThirdPartyDescription": {
+    "message": "You were sent here by a third party; not MetaMask. $1",
+    "description": "$1 is the message 'deepLink_ContinueDescription'"
   },
   "defaultRpcUrl": {
     "message": "Default RPC URL"

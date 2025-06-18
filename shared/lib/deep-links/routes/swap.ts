@@ -3,7 +3,7 @@ import { Route, SWAP_ROUTE } from './route';
 
 export default new Route({
   pathname: '/swap',
-  getTitle: (_: URLSearchParams) => 'deepLink_OpenTheSwapsPage',
+  getTitle: (_: URLSearchParams) => 'deepLink_theSwapsPage',
   handler: function handler(params: URLSearchParams) {
     const query = new URLSearchParams();
 
