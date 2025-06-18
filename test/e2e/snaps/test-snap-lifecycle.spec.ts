@@ -48,7 +48,6 @@ describe('Test Snap Lifecycle Hooks', function () {
         fixtures: new FixtureBuilder()
           .withSnapControllerOnStartLifecycleSnap()
           .build(),
-        testSpecificMock: mockLifecycleHooksSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
