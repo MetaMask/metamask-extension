@@ -176,7 +176,9 @@
   },
   "NetworkOrderController": {
     "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
-    "enabledNetworkMap": { "0x539": "boolean" }
+    "enabledNetworkMap": {
+      "0x539": "boolean"
+    }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -265,7 +267,11 @@
     "manageInstitutionalWallets": "boolean"
   },
   "RemoteFeatureFlagController": {
-    "remoteFeatureFlags": {},
+    "remoteFeatureFlags": {
+      "feature1": true,
+      "feature2": false,
+      "feature3": { "name": "groupC", "value": "valueC" }
+    },
     "cacheTimestamp": "number"
   },
   "SelectedNetworkController": { "domains": "object" },

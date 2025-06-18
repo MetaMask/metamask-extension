@@ -261,11 +261,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           },
         },
       },
-      SnapController: {
-        snaps: {},
-        snapStates: {},
-        unencryptedSnapStates: {},
-      },
       SubjectMetadataController: {
         subjectMetadata: {
           'https://metamask.github.io': {

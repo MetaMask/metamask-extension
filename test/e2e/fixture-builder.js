@@ -1790,6 +1790,8 @@ class FixtureBuilder {
   }
 
   withSnapController(data) {
+    this.fixture.data.SnapController ??= {};
+
     merge(this.fixture.data.SnapController, data);
     return this;
   }
