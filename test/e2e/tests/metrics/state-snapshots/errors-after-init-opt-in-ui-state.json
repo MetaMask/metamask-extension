@@ -229,9 +229,7 @@
     "subjectMetadata": "object",
     "announcements": "object",
     "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
-    "enabledNetworkMap": {
-      "0x539": "boolean"
-    },
+    "enabledNetworkMap": { "0x539": "boolean" },
     "pinnedAccountList": {},
     "hiddenAccountList": {},
     "gasFeeEstimatesByChainId": {},
@@ -293,11 +291,7 @@
     "isPushEnabled": "boolean",
     "fcmToken": "string",
     "isUpdatingFCMToken": "boolean",
-    "remoteFeatureFlags": {
-      "feature1": true,
-      "feature2": false,
-      "feature3": { "name": "groupC", "value": "valueC" }
-    },
+    "remoteFeatureFlags": {},
     "cacheTimestamp": "number",
     "allDeFiPositions": "object",
     "allDeFiPositionsCount": "object",

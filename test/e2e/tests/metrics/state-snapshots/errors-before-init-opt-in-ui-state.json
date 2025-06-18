@@ -20,9 +20,7 @@
     "AnnouncementController": { "announcements": "object" },
     "NetworkOrderController": {
       "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
-      "enabledNetworkMap": {
-        "0x539": "boolean"
-      }
+      "enabledNetworkMap": { "0x539": "boolean" }
     },
     "AccountOrderController": {
       "pinnedAccountList": {},
@@ -144,6 +142,11 @@
         "livenessByChainId": "object",
         "smartTransactions": "object"
       }
+    },
+    "SnapController": {
+      "snaps": "object",
+      "snapStates": "object",
+      "unencryptedSnapStates": "object"
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },
     "TokensController": {
