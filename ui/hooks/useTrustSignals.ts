@@ -3,7 +3,13 @@ import { NameType } from '@metamask/name-controller';
 import { getAddressSecurityAlertResponse } from '../selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { ResultType } from '../../app/scripts/lib/trust-signals/types';
-import { useDisplayName } from './useDisplayName';
+import { SecurityAlertResponse } from '../pages/confirmations/types/confirm';
+
+export type UseTrustSignalRequest = {
+  value: string;
+  type: NameType;
+  variation: string;
+};
 
 export enum TrustSignalDisplayState {
   Malicious = 'malicious',
@@ -16,103 +22,69 @@ export enum TrustSignalDisplayState {
 
 export type TrustSignalResult = {
   state: TrustSignalDisplayState;
-  trustLabel: string | null;
+  label: string | null;
 };
 
-export function useTrustSignals(
+export function useTrustSignal(
   value: string,
   type: NameType,
   variation: string,
-  showTrustSignals: boolean,
 ): TrustSignalResult {
-  // Fetch security alert response from Redux state
-  const securityAlertResponse = useSelector((state) =>
-    getAddressSecurityAlertResponse(state, value),
-  );
+  return useTrustSignals([{ value, type, variation }])[0];
+}
 
-  // Get existing name data
-  const { name: displayName, hasPetname } = useDisplayName({
-    value,
-    type,
-    variation,
-  });
-
-  const trustLabel = securityAlertResponse?.label || null;
-
-  // Map security alert result type to trust signal display state
-  const getTrustState = () => {
-    if (!securityAlertResponse?.result_type) {
-      return null;
-    }
-
-    switch (securityAlertResponse.result_type) {
-      case ResultType.Malicious:
-        return TrustSignalDisplayState.Malicious;
-      case ResultType.Warning:
-        return TrustSignalDisplayState.Warning;
-      case ResultType.Trusted:
-        return TrustSignalDisplayState.Verified;
-      case ResultType.Benign:
-        return TrustSignalDisplayState.Unknown;
-      case ResultType.ErrorResult:
-        return TrustSignalDisplayState.Unknown;
-      default:
-        return null;
-    }
-  };
-
-  const trustState = getTrustState();
-
-  // Priority 1: Malicious takes precedence over everything when trust signals are enabled
-  if (showTrustSignals && trustState === TrustSignalDisplayState.Malicious) {
-    return {
-      state: TrustSignalDisplayState.Malicious,
-      trustLabel,
-    };
-  }
-
-  // Priority 2: Saved petname (for non-malicious entities)
-  if (hasPetname) {
-    return {
-      state: TrustSignalDisplayState.Petname,
-      trustLabel,
-    };
-  }
-
-  // Priority 3-5: Other trust signal states (when enabled and present)
-  if (showTrustSignals && trustState) {
-    switch (trustState) {
-      case TrustSignalDisplayState.Verified:
-        return {
-          state: TrustSignalDisplayState.Verified,
-          trustLabel,
-        };
-      case TrustSignalDisplayState.Warning:
-        return {
-          state: TrustSignalDisplayState.Warning,
-          trustLabel,
-        };
-      case TrustSignalDisplayState.Unknown:
+export function useTrustSignals(
+  requests: UseTrustSignalRequest[],
+): TrustSignalResult[] {
+  return useSelector((state) =>
+    requests.map(({ value, type }) => {
+      if (type !== NameType.ETHEREUM_ADDRESS) {
         return {
           state: TrustSignalDisplayState.Unknown,
-          trustLabel,
+          label: null,
         };
-      default:
-        break;
-    }
+      }
+
+      const securityAlertResponse = getAddressSecurityAlertResponse(
+        state,
+        value,
+      );
+
+      if (!securityAlertResponse) {
+        return {
+          state: TrustSignalDisplayState.Unknown,
+          label: null,
+        };
+      }
+
+      const label = securityAlertResponse.label || null;
+      const trustState = getTrustState(securityAlertResponse);
+
+      return {
+        state: trustState,
+        label,
+      };
+    }),
+  );
+}
+
+function getTrustState(
+  securityAlertResponse: SecurityAlertResponse,
+): TrustSignalDisplayState {
+  if (!securityAlertResponse.result_type) {
+    return TrustSignalDisplayState.Unknown;
   }
 
-  // Priority 6: Recognized name (no petname, no applicable trust signals)
-  if (displayName) {
-    return {
-      state: TrustSignalDisplayState.Recognized,
-      trustLabel,
-    };
+  switch (securityAlertResponse.result_type) {
+    case ResultType.Malicious:
+      return TrustSignalDisplayState.Malicious;
+    case ResultType.Warning:
+      return TrustSignalDisplayState.Warning;
+    case ResultType.Trusted:
+      return TrustSignalDisplayState.Verified;
+    case ResultType.Benign:
+    case ResultType.ErrorResult:
+    default:
+      return TrustSignalDisplayState.Unknown;
   }
-
-  // Priority 7: Unknown (default)
-  return {
-    state: TrustSignalDisplayState.Unknown,
-    trustLabel,
-  };
 }

@@ -69,8 +69,6 @@ export type NameDetailsProps = {
   type: NameType;
   value: string;
   variation: string;
-  trustSignalDisplayState?: TrustSignalDisplayState;
-  trustLabel?: string | null;
 };
 
 type ProposedNameOption = Required<FormComboFieldOption> & {
@@ -117,7 +115,6 @@ function generateComboOptions(
   proposedNameEntries: NameEntry['proposedNames'],
   t: ReturnType<typeof useI18nContext>,
   nameSources: NameControllerState['nameSources'],
-  trustLabel?: string | null,
 ): ProposedNameOption[] {
   const sourceIds = Object.keys(proposedNameEntries);
 
@@ -140,16 +137,6 @@ function generateComboOptions(
       }));
     })
     .flat();
-
-  // Add trust label as a suggestion if it exists
-  if (trustLabel) {
-    options.unshift({
-      value: trustLabel,
-      primaryLabel: t('nameModalMaybeProposedName', [trustLabel]),
-      secondaryLabel: t('nameProviderProposedBy', ['Trust Signal']),
-      sourceId: 'trust-signal',
-    });
-  }
 
   return options.sort((a, b) =>
     a.secondaryLabel
@@ -229,8 +216,6 @@ export default function NameDetails({
   type,
   value,
   variation,
-  trustSignalDisplayState,
-  trustLabel,
 }: NameDetailsProps) {
   const { name: savedPetname, sourceId: savedSourceId } = useName(
     value,
@@ -238,7 +223,11 @@ export default function NameDetails({
     variation,
   );
 
-  const { name: displayName, hasPetname: hasSavedPetname } = useDisplayName({
+  const {
+    name: displayName,
+    hasPetname: hasSavedPetname,
+    displayState,
+  } = useDisplayName({
     value,
     type,
     variation,
@@ -252,7 +241,6 @@ export default function NameDetails({
   const dispatch = useDispatch();
   const t = useI18nContext();
 
-  const isRecognizedUnsaved = !hasSavedPetname && Boolean(displayName);
   const formattedValue = formatValue(value, type);
 
   const { proposedNames, initialSources } = useProposedNames(
@@ -272,8 +260,8 @@ export default function NameDetails({
   }, [savedPetname, savedSourceId, setName, setSelectedSourceId]);
 
   const proposedNameOptions = useMemo(
-    () => generateComboOptions(proposedNames, t, nameSources, trustLabel),
-    [proposedNames, nameSources, trustLabel],
+    () => generateComboOptions(proposedNames, t, nameSources),
+    [proposedNames, t, nameSources],
   );
 
   const { trackPetnamesOpenEvent, trackPetnamesSaveEvent } = usePetnamesMetrics(
@@ -339,86 +327,64 @@ export default function NameDetails({
     handleCopyAddress(formattedValue);
   }, [handleCopyAddress, formattedValue]);
 
-  // Get title based on trust signal state
-  const getTitle = () => {
-    if (trustSignalDisplayState) {
-      switch (trustSignalDisplayState) {
-        case TrustSignalDisplayState.Malicious:
-          return t('nameModalTitleMalicious');
-        case TrustSignalDisplayState.Warning:
-          return t('nameModalTitleWarning');
-        case TrustSignalDisplayState.Verified:
-          return t('nameModalTitleVerified');
-        case TrustSignalDisplayState.Petname:
-          return t('nameModalTitleSaved');
-        case TrustSignalDisplayState.Recognized:
-          return t('nameModalTitleRecognized');
-        case TrustSignalDisplayState.Unknown:
-        default:
-          return t('nameModalTitleNew');
-      }
+  const getTitleAndInstructions = () => {
+    let titleKey: string;
+    let instructionsKey: string;
+
+    switch (displayState) {
+      case TrustSignalDisplayState.Malicious:
+        titleKey = 'nameModalTitleMalicious';
+        instructionsKey = 'nameInstructionsMalicious';
+        break;
+      case TrustSignalDisplayState.Warning:
+        titleKey = 'nameModalTitleWarning';
+        instructionsKey = 'nameInstructionsWarning';
+        break;
+      case TrustSignalDisplayState.Verified:
+        titleKey = 'nameModalTitleVerified';
+        instructionsKey = '';
+        break;
+      case TrustSignalDisplayState.Petname:
+        titleKey = 'nameModalTitleSaved';
+        instructionsKey = 'nameInstructionsSaved';
+        break;
+      case TrustSignalDisplayState.Recognized:
+        titleKey = 'nameModalTitleRecognized';
+        instructionsKey = 'nameInstructionsRecognized';
+        break;
+      case TrustSignalDisplayState.Unknown:
+      default:
+        titleKey = 'nameModalTitleNew';
+        instructionsKey = 'nameInstructionsNew';
+        break;
     }
-    if (hasSavedPetname) {
-      return t('nameModalTitleSaved');
-    }
-    if (isRecognizedUnsaved) {
-      return t('nameModalTitleRecognized');
-    }
-    return t('nameModalTitleNew');
+
+    return {
+      title: t(titleKey),
+      instructions: instructionsKey ? t(instructionsKey) : '',
+    };
   };
 
-  // Get instructions based on trust signal state
-  const getInstructions = () => {
-    if (trustSignalDisplayState) {
-      switch (trustSignalDisplayState) {
-        case TrustSignalDisplayState.Malicious:
-          return t('nameInstructionsMalicious');
-        case TrustSignalDisplayState.Warning:
-          return t('nameInstructionsWarning');
-        case TrustSignalDisplayState.Verified:
-          return '';
-        case TrustSignalDisplayState.Recognized:
-          return t('nameInstructionsRecognized');
-        case TrustSignalDisplayState.Petname:
-          return t('nameInstructionsSaved');
-        case TrustSignalDisplayState.Unknown:
-        default:
-          return t('nameInstructionsNew');
-      }
-    }
-    if (hasSavedPetname) {
-      return t('nameInstructionsSaved');
-    }
-    if (isRecognizedUnsaved) {
-      return t('nameInstructionsRecognized');
-    }
-    return t('nameInstructionsNew');
-  };
+  const { title, instructions } = getTitleAndInstructions();
 
   const showFooterWarning =
-    trustSignalDisplayState === TrustSignalDisplayState.Malicious ||
-    trustSignalDisplayState === TrustSignalDisplayState.Warning;
+    displayState === TrustSignalDisplayState.Malicious ||
+    displayState === TrustSignalDisplayState.Warning;
 
   return (
     <Box>
       <Modal isOpen onClose={handleClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader onClose={handleClose}>{getTitle()}</ModalHeader>
+          <ModalHeader onClose={handleClose}>{title}</ModalHeader>
           <ModalBody className="name-details__modal-body">
             <div
               style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}
             >
-              <NameDisplay
-                value={value}
-                type={type}
-                variation={variation}
-                trustSignalDisplayState={trustSignalDisplayState}
-                trustLabel={trustLabel}
-              />
+              <NameDisplay value={value} type={type} variation={variation} />
             </div>
             <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
-              {getInstructions()}
+              {instructions}
             </Text>
             {/* @ts-ignore */}
             <FormTextField
@@ -453,8 +419,8 @@ export default function NameDetails({
                 value={name}
                 options={proposedNameOptions}
                 placeholder={
-                  trustLabel
-                    ? `Suggested: ${trustLabel}`
+                  displayName && !hasSavedPetname
+                    ? `Suggested: ${displayName}`
                     : t('nameSetPlaceholder')
                 }
                 onChange={handleNameChange}

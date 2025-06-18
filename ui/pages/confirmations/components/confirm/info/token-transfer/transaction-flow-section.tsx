@@ -72,7 +72,6 @@ export const TransactionFlowSection = () => {
               <ConfirmInfoRowAddress
                 address={recipientAddress}
                 chainId={chainId}
-                showTrustSignals
               />
             </Box>
           </ConfirmInfoAlertRow>

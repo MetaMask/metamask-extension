@@ -802,7 +802,7 @@ exports[`NameDetails renders with recognized name 1`] = `
                         autocomplete="off"
                         class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
                         focused="true"
-                        placeholder="Choose a nickname..."
+                        placeholder="Suggested: iZUMi Bond USD"
                         type="text"
                         value=""
                       />
