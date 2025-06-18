@@ -174,7 +174,7 @@ import {
 } from '@metamask/bridge-status-controller';
 import {
   RecoveryError,
-  SeedlessOnboardingControllerErrorMessage,
+  SecretType,
 } from '@metamask/seedless-onboarding-controller';
 
 import { TokenStandard } from '../../shared/constants/transaction';
@@ -524,9 +524,6 @@ export default class MetamaskController extends EventEmitter {
 
     // lock to ensure only one vault created at once
     this.createVaultMutex = new Mutex();
-
-    // lock to ensure only one seedless password sync is running at once
-    this.syncSeedlessGlobalPasswordMutex = new Mutex();
 
     this.extension.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'update') {
@@ -3570,9 +3567,6 @@ export default class MetamaskController extends EventEmitter {
       changePassword: this.changePassword.bind(this),
       restoreSeedPhrasesToVault: this.restoreSeedPhrasesToVault.bind(this),
       syncSeedPhrases: this.syncSeedPhrases.bind(this),
-      checkIsSeedlessPasswordOutdated:
-        this.checkIsSeedlessPasswordOutdated.bind(this),
-      syncPasswordAndUnlockWallet: this.syncPasswordAndUnlockWallet.bind(this),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
@@ -4764,8 +4758,8 @@ export default class MetamaskController extends EventEmitter {
     try {
       // fetch all seed phrases
       // seedPhrases are sorted by creation date, the latest seed phrase is the first one in the array
-      const allSeedPhrases =
-        await this.seedlessOnboardingController.fetchAllSeedPhrases(password);
+      const { mnemonic: allSeedPhrases } =
+        await this.seedlessOnboardingController.fetchAllSecretData(password);
 
       if (allSeedPhrases.length === 0) {
         return null;
@@ -4803,9 +4797,10 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // 1. fetch all seed phrases
-    const [rootSRP, ...otherSRPs] =
-      await this.seedlessOnboardingController.fetchAllSeedPhrases();
+    const secretData =
+      await this.seedlessOnboardingController.fetchAllSecretData();
 
+    const [rootSRP, ...otherSRPs] = secretData.mnemonic;
     if (!rootSRP) {
       throw new Error('No root SRP found');
     }
@@ -4828,113 +4823,6 @@ export default class MetamaskController extends EventEmitter {
         });
       }
     }
-  }
-
-  /**
-   * Sync latest global seedless password and override the current device password with latest global password.
-   * Unlock the vault with the latest global password.
-   *
-   * @param {string} password - latest global seedless password
-   */
-  async syncPasswordAndUnlockWallet(password) {
-    const isSocialLoginFlow = this.onboardingController.isSocialLoginFlowType();
-    // check if the password is outdated
-    const isPasswordOutdated = isSocialLoginFlow
-      ? await this.seedlessOnboardingController.checkIsPasswordOutdated({
-          skipCache: true,
-        })
-      : false;
-
-    // if the flow is not social login or the password is not outdated,
-    // we will proceed with the normal flow and use the password to unlock the vault
-    if (!isSocialLoginFlow || !isPasswordOutdated) {
-      await this.submitPassword(password);
-      return;
-    }
-
-    const releaseLock = await this.syncSeedlessGlobalPasswordMutex.acquire();
-    try {
-      // verify the password validity first, to check if user is using the correct password
-      await this.keyringController.verifyPassword(password);
-      // if user is able to unlock the vault with the old password,
-      // throw an OutdatedPassword error to let the user to enter the updated password.
-      throw new Error(
-        SeedlessOnboardingControllerErrorMessage.OutdatedPassword,
-      );
-    } catch (e) {
-      if (
-        e.message === SeedlessOnboardingControllerErrorMessage.OutdatedPassword
-      ) {
-        // if the password is outdated, we should throw an error and let the user to enter the updated password.
-        throw e;
-      }
-
-      // recover the current device password
-      const { password: currentDevicePassword } =
-        await this.seedlessOnboardingController.recoverCurrentDevicePassword({
-          globalPassword: password,
-        });
-
-      // use current device password to unlock the keyringController vault
-      await this.submitPassword(currentDevicePassword);
-
-      try {
-        // update seedlessOnboardingController to use latest global password
-        await this.seedlessOnboardingController.syncLatestGlobalPassword({
-          oldPassword: currentDevicePassword,
-          globalPassword: password,
-        });
-
-        // update vault password to global password
-        await this.keyringController.changePassword(password);
-
-        // check password outdated again skip cache to reset the cache after successful syncing
-        await this.seedlessOnboardingController.checkIsPasswordOutdated({
-          skipCache: true,
-        });
-      } catch (err) {
-        // lock app again on error after submitPassword succeeded
-        await this.setLocked();
-        throw err;
-      }
-    } finally {
-      releaseLock();
-    }
-  }
-
-  /**
-   * Checks if the seedless password is outdated.
-   *
-   * @param {boolean} skipCache - whether to skip the cache
-   * @returns {Promise<boolean | undefined>} true if the password is outdated, false otherwise, undefined if the flow is not seedless
-   */
-  async checkIsSeedlessPasswordOutdated(skipCache = false) {
-    const isSocialLoginFlow = this.onboardingController.isSocialLoginFlowType();
-
-    if (!isSocialLoginFlow) {
-      // this is only available for seedless onboarding flow
-      return undefined;
-    }
-
-    const isPasswordOutdated =
-      await this.seedlessOnboardingController.checkIsPasswordOutdated({
-        skipCache,
-      });
-    return isPasswordOutdated;
-  }
-
-  /**
-   * Updates the Seedless Onboarding backup metadata state, with backup seed phrase id and backup seed phrase.
-   *
-   * @param {string} keyringId - The keyring id of the backup seed phrase.
-   * @param {string} encodedSeedPhrase - The backup seed phrase.
-   */
-  async updateBackupMetadataState(keyringId, encodedSeedPhrase) {
-    const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
-    this.seedlessOnboardingController.updateBackupMetadataState(
-      keyringId,
-      this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
-    );
   }
 
   /**
@@ -4978,15 +4866,17 @@ export default class MetamaskController extends EventEmitter {
       this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
 
     if (syncWithSocial) {
-      await this.seedlessOnboardingController.addNewSeedPhraseBackup(
+      await this.seedlessOnboardingController.addNewSecretData(
         seedPhraseAsUint8Array,
-        keyringId,
+        SecretType.Mnemonic,
+        { keyringId },
       );
     } else {
       // Do not sync the seed phrase to the server, only update the local state
       this.seedlessOnboardingController.updateBackupMetadataState({
         keyringId,
-        seedPhrase: seedPhraseAsUint8Array,
+        data: seedPhraseAsUint8Array,
+        type: SecretType.Mnemonic,
       });
     }
   }
@@ -5232,7 +5122,8 @@ export default class MetamaskController extends EventEmitter {
         // if the social login flow is completed, update the SocialBackupMetadataState with the restored seed phrase
         this.seedlessOnboardingController.updateBackupMetadataState({
           keyringId: this.keyringController.state.keyrings[0].metadata.id,
-          seedPhrase: seedPhraseAsUint8Array,
+          data: seedPhraseAsUint8Array,
+          type: SecretType.Mnemonic,
         });
       }
 
