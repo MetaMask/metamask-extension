@@ -172,7 +172,10 @@ import {
   BRIDGE_STATUS_CONTROLLER_NAME,
   BridgeStatusAction,
 } from '@metamask/bridge-status-controller';
-import { RecoveryError } from '@metamask/seedless-onboarding-controller';
+import {
+  RecoveryError,
+  SecretType,
+} from '@metamask/seedless-onboarding-controller';
 
 import { TokenStandard } from '../../shared/constants/transaction';
 import {
@@ -4755,8 +4758,8 @@ export default class MetamaskController extends EventEmitter {
     try {
       // fetch all seed phrases
       // seedPhrases are sorted by creation date, the latest seed phrase is the first one in the array
-      const allSeedPhrases =
-        await this.seedlessOnboardingController.fetchAllSeedPhrases(password);
+      const { mnemonic: allSeedPhrases } =
+        await this.seedlessOnboardingController.fetchAllSecretData(password);
 
       if (allSeedPhrases.length === 0) {
         return null;
@@ -4794,9 +4797,10 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // 1. fetch all seed phrases
-    const [rootSRP, ...otherSRPs] =
-      await this.seedlessOnboardingController.fetchAllSeedPhrases();
+    const secretData =
+      await this.seedlessOnboardingController.fetchAllSecretData();
 
+    const [rootSRP, ...otherSRPs] = secretData.mnemonic;
     if (!rootSRP) {
       throw new Error('No root SRP found');
     }
@@ -4819,20 +4823,6 @@ export default class MetamaskController extends EventEmitter {
         });
       }
     }
-  }
-
-  /**
-   * Updates the Seedless Onboarding backup metadata state, with backup seed phrase id and backup seed phrase.
-   *
-   * @param {string} keyringId - The keyring id of the backup seed phrase.
-   * @param {string} encodedSeedPhrase - The backup seed phrase.
-   */
-  async updateBackupMetadataState(keyringId, encodedSeedPhrase) {
-    const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
-    this.seedlessOnboardingController.updateBackupMetadataState(
-      keyringId,
-      this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
-    );
   }
 
   /**
@@ -4876,9 +4866,10 @@ export default class MetamaskController extends EventEmitter {
       this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
 
     if (syncWithSocial) {
-      await this.seedlessOnboardingController.addNewSeedPhraseBackup(
+      await this.seedlessOnboardingController.addNewSecretData(
         seedPhraseAsUint8Array,
-        keyringId,
+        SecretType.Mnemonic,
+        { keyringId },
       );
     } else {
       // Do not sync the seed phrase to the server, only update the local state
@@ -5130,7 +5121,8 @@ export default class MetamaskController extends EventEmitter {
         // if the social login flow is completed, update the SocialBackupMetadataState with the restored seed phrase
         this.seedlessOnboardingController.updateBackupMetadataState({
           keyringId: this.keyringController.state.keyrings[0].metadata.id,
-          seedPhrase: seedPhraseAsUint8Array,
+          data: seedPhraseAsUint8Array,
+          type: SecretType.Mnemonic,
         });
       }
 
