@@ -1,11 +1,11 @@
 import log from 'loglevel';
 import { routes } from './routes';
 import type { Destination, Route } from './routes/route';
-import { VALID, verify } from './verify';
+import { verify, type SignatureStatus } from './verify';
 
 export type ParsedDeepLink = {
   destination: Destination;
-  signed: boolean;
+  signature: SignatureStatus;
   route: Route;
 };
 
@@ -16,8 +16,6 @@ export async function parse(url: URL): Promise<ParsedDeepLink | false> {
     return false;
   }
 
-  const signatureState = await verify(url);
-
   let destination: Destination;
   try {
     destination = route.handler(url.searchParams);
@@ -27,7 +25,7 @@ export async function parse(url: URL): Promise<ParsedDeepLink | false> {
     log.debug('Error handling deep link:', error);
     return false;
   }
-  const signed = signatureState === VALID;
 
-  return { destination, signed, route };
+  const signature = await verify(url);
+  return { destination, signature, route };
 }

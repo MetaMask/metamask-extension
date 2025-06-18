@@ -1,9 +1,11 @@
 import { canonicalize } from './canonicalize';
 import { getKeyData, sigToBytes } from './helpers';
 
-export const MISSING = 'MISSING' as const;
-export const VALID = 'VALID' as const;
-export const INVALID = 'INVALID' as const;
+export const MISSING = 'missing' as const;
+export const VALID = 'valid' as const;
+export const INVALID = 'invalid' as const;
+
+export type SignatureStatus = typeof MISSING | typeof VALID | typeof INVALID;
 
 let tools: {
   algorithm: EcdsaParams;
@@ -36,6 +38,13 @@ async function lazyGetTools() {
   return tools;
 }
 
+/**
+ * Verifies the signature of a deep link URL.
+ * This function checks if the URL contains a valid signature
+ * and returns the status of the verification.
+ *
+ * @param url - The URL to verify.
+ */
 export const verify = async (url: URL) => {
   const signatureStr = url.searchParams.get('sig');
   if (!signatureStr) {

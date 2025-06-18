@@ -13,6 +13,10 @@ import {
 import MetamaskController from '../../metamask-controller';
 import { DEEP_LINK_ROUTE } from '../../../../shared/lib/deep-links/routes/route';
 import type ExtensionPlatform from '../../platforms/extension';
+import {
+  SignatureStatus,
+  VALID,
+} from '../../../../shared/lib/deep-links/verify';
 
 // `routes.ts` seem to require routes have a leading slash, but then the
 // UI always redirects it to the non-slashed version. So we just use the
@@ -150,12 +154,9 @@ export class DeepLinkRouter extends EventEmitter<{
       if (parsed) {
         this.emit('navigate', { url, parsed });
 
-        const skipDeepLinkInterstitial = Boolean(
-          this.getState().preferences?.skipDeepLinkInterstitial,
-        );
         if ('redirectTo' in parsed.destination) {
           link = parsed.destination.redirectTo.toString();
-        } else if (parsed.signed && skipDeepLinkInterstitial) {
+        } else if (this.canSkipInterstitial(parsed.signature)) {
           // signed links than can and should skip the interstitial page
           link = this.getExtensionURL(
             parsed.destination.path,
@@ -197,5 +198,21 @@ export class DeepLinkRouter extends EventEmitter<{
     // This is better than the MV3 way because it avoids any network requests
     // to the deep link host, which aren't necessary so and best to avoid.
     return { cancel: true };
+  }
+
+  /**
+   * Checks if the interstitial page can be skipped based on the signature status.
+   * If the signature is valid and the user has opted to skip the interstitial,
+   * it returns true.
+   *
+   * @param signatureStatus - The signature status of the deep link.
+   */
+  canSkipInterstitial(
+    signatureStatus: SignatureStatus,
+  ): signatureStatus is typeof VALID {
+    if (signatureStatus !== VALID) {
+      return false;
+    }
+    return Boolean(this.getState().preferences?.skipDeepLinkInterstitial);
   }
 }

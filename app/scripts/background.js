@@ -635,7 +635,7 @@ async function initialize(backup) {
       // don't track deep links that are immediately redirected (like /buy)
       if (!('redirectTo' in parsed)) {
         await controller.metaMetricsController.trackEvent(
-          createEvent({ signed: parsed.signed, url }),
+          createEvent({ signature: parsed.signature, url }),
         );
       }
     })

@@ -28,6 +28,7 @@ import { Checkbox } from '../../components/component-library/checkbox/checkbox';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../selectors/selectors';
 import { MetaMaskReduxState } from '../../store/store';
+import { VALID } from '../../../shared/lib/deep-links/verify';
 
 type TranslateFunction = (key: string, substitutions?: string[]) => string;
 
@@ -72,7 +73,7 @@ async function updateStateFromUrl(
     setIsLoading(true);
     const parsed = await parse(url);
     if (parsed) {
-      const { destination, signed } = parsed;
+      const { destination } = parsed;
 
       if ('redirectTo' in destination) {
         window.location.href = destination.redirectTo.toString();
@@ -83,6 +84,7 @@ async function updateStateFromUrl(
       const href = getExtensionURL(path, query.toString() ?? null);
       const title = parsed.route.getTitle(url.searchParams);
 
+      const signed = parsed.signature === VALID;
       const descriptionKey = signed
         ? 'deepLink_ContinueDescription'
         : 'deepLink_ThirdParty';
