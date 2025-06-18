@@ -114,10 +114,10 @@ class SnapInstall {
     await this.driver.waitUntil(
       async () => {
         await this.driver.clickElementSafe(this.snapUpdateScrollArea);
-        const isEnabled = await this.driver.findClickableElement(
+        const element = await this.driver.findClickableElement(
           this.nextPageButton,
         );
-        return isEnabled;
+        return Boolean(element);
       },
       { timeout: veryLargeDelayMs, interval: 100 },
     );

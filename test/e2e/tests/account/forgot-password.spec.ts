@@ -29,6 +29,7 @@ describe('Forgot password', function () {
 
         // Lock Wallet
         const homePage = new HomePage(driver);
+        await homePage.headerNavbar.check_pageIsLoaded();
         await homePage.headerNavbar.lockMetaMask();
 
         // Click forgot password button and reset password
@@ -36,7 +37,10 @@ describe('Forgot password', function () {
 
         const resetPasswordPage = new ResetPasswordPage(driver);
         await resetPasswordPage.check_pageIsLoaded();
+
         await resetPasswordPage.resetPassword(E2E_SRP, newPassword);
+        await resetPasswordPage.waitForSeedPhraseInputToNotBeVisible();
+        await homePage.headerNavbar.check_pageIsLoaded();
 
         // Lock wallet again
         await homePage.headerNavbar.lockMetaMask();

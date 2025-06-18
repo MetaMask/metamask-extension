@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { createProjectLogger } from '@metamask/utils';
 import { isSolanaChainId } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import { captureException } from '@sentry/browser';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
@@ -85,6 +86,7 @@ export default function useSubmitBridgeTransaction() {
       await dispatch(submitBridgeTx(quoteResponse, smartTransactionsEnabled));
     } catch (e) {
       debugLog('Bridge transaction failed', e);
+      captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
         history.push(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);

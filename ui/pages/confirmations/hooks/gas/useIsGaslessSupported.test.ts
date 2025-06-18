@@ -52,7 +52,10 @@ describe('useIsGaslessSupported', () => {
 
     const result = await runHook();
 
-    expect(result).toBe(true);
+    expect(result).toStrictEqual({
+      isSupported: true,
+      isSmartTransaction: true,
+    });
   });
 
   describe('if smart transaction disabled', () => {
@@ -69,7 +72,10 @@ describe('useIsGaslessSupported', () => {
 
       const result = await runHook();
 
-      expect(result).toBe(true);
+      expect(result).toStrictEqual({
+        isSupported: true,
+        isSmartTransaction: false,
+      });
     });
 
     it('returns false if account not upgraded', async () => {
@@ -85,7 +91,10 @@ describe('useIsGaslessSupported', () => {
 
       const result = await runHook();
 
-      expect(result).toBe(false);
+      expect(result).toStrictEqual({
+        isSupported: false,
+        isSmartTransaction: false,
+      });
     });
 
     it('returns false if chain does not support EIP-7702', async () => {
@@ -95,7 +104,10 @@ describe('useIsGaslessSupported', () => {
 
       const result = await runHook();
 
-      expect(result).toBe(false);
+      expect(result).toStrictEqual({
+        isSupported: false,
+        isSmartTransaction: false,
+      });
     });
 
     it('returns false if upgraded account not supported', async () => {
@@ -111,7 +123,10 @@ describe('useIsGaslessSupported', () => {
 
       const result = await runHook();
 
-      expect(result).toBe(false);
+      expect(result).toStrictEqual({
+        isSupported: false,
+        isSmartTransaction: false,
+      });
     });
 
     it('returns false if relay not supported', async () => {
@@ -127,7 +142,10 @@ describe('useIsGaslessSupported', () => {
 
       const result = await runHook();
 
-      expect(result).toBe(false);
+      expect(result).toStrictEqual({
+        isSupported: false,
+        isSmartTransaction: false,
+      });
     });
   });
 });

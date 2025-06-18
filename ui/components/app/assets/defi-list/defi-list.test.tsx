@@ -55,6 +55,9 @@ const render = (
     metamask: {
       ...mockState.metamask,
       allDeFiPositions,
+      enabledNetworkMap: {
+        '0x5': true,
+      },
     },
   };
   const store = configureMockStore([thunk])(mockStore);
@@ -69,7 +72,7 @@ describe('DeFiDetailsPage', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText('Oops! Something went wrong.'),
+        screen.getByText('We could not load this page.'),
       ).toBeInTheDocument();
     });
   });

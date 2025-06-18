@@ -1285,7 +1285,7 @@ describe('Transaction metrics', () => {
           {
             to: ADDRESS_2_MOCK,
             data: '0x2',
-            type: TransactionType.contractInteraction,
+            type: TransactionType.tokenMethodApprove,
           },
         ],
         txParams: {

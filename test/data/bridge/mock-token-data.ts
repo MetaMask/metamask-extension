@@ -36,6 +36,16 @@ export const mockTokenData = {
       ],
     },
   },
+  internalAccounts: {
+    selectedAccount: 'account-1',
+    accounts: {
+      'account-1': {
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        balance: '0xa',
+        type: 'eip155:eoa',
+      },
+    },
+  },
   accountsByChainId: {
     [CHAIN_IDS.MAINNET]: {
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {

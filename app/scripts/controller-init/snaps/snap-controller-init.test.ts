@@ -49,6 +49,7 @@ describe('SnapControllerInit', () => {
         allowLocalSnaps: false,
         rejectInvalidPlatformVersion: false,
         requireAllowlist: false,
+        useCaip25Permission: true,
       },
       getFeatureFlags: expect.any(Function),
       getMnemonicSeed: expect.any(Function),

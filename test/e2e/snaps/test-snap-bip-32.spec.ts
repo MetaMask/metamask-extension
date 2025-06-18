@@ -5,6 +5,7 @@ import FixtureBuilder from '../fixture-builder';
 import { withFixtures } from '../helpers';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import { mockBip32Snap } from '../mock-response-data/snaps/snap-binary-mocks';
 
 const bip32PublicKey =
   '"0x043e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366606ece56791c361a2320e7fad8bcbb130f66d51c591fc39767ab2856e93f8dfb"';
@@ -26,6 +27,7 @@ describe('Test Snap bip-32', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withKeyringControllerMultiSRP().build(),
+        testSpecificMock: mockBip32Snap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

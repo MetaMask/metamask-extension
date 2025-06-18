@@ -67,6 +67,15 @@ export type ManifestFlags = {
   remoteFeatureFlags?: {
     [key: string]: Json;
   };
+  /**
+   * Testing flags to control testing behavior
+   */
+  testing?: {
+    /**
+     * Whether to force the ExtensionStore class to be used during testing
+     */
+    forceExtensionStore?: boolean;
+  };
 };
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions -- you can't extend a type, we want this to be an interface

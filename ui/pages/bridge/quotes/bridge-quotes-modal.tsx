@@ -111,12 +111,7 @@ export const BridgeQuotesModal = ({
                       {
                         sort_order: sortOrder,
                         price_impact: Number(
-                          // TODO remove this once we bump to the latest version of the bridge controller
-                          (
-                            recommendedQuote.quote as unknown as {
-                              priceData: { priceImpact: string };
-                            }
-                          )?.priceData?.priceImpact ?? '0',
+                          recommendedQuote.quote?.priceData?.priceImpact ?? '0',
                         ),
                         gas_included: false,
                         token_symbol_source:

@@ -6,6 +6,7 @@ import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 import { MOCK_META_METRICS_ID } from '../../constants';
+import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 export const DECODING_E2E_API_URL =
   'https://signature-insights.api.cx.metamask.io/v1';
@@ -27,6 +28,13 @@ export function withTransactionEnvelopeTypeFixtures(
   mocks?: (mockServer: Mockttp) => Promise<MockedEndpoint[]>, // Add mocks as an optional parameter
   smartContract?: typeof SMART_CONTRACTS,
 ) {
+  const combinedMocks = async (
+    mockServer: Mockttp,
+  ): Promise<MockedEndpoint[]> => {
+    const baseMocks = mocks ? await mocks(mockServer) : [];
+    const dialogSnapMocks = await mockDialogSnap(mockServer);
+    return [...baseMocks, ...[dialogSnapMocks]];
+  };
   return withFixtures(
     {
       dapp: true,
@@ -43,7 +51,35 @@ export function withTransactionEnvelopeTypeFixtures(
           ? { hardfork: 'muirGlacier' }
           : {},
       ...(smartContract && { smartContract }),
-      ...(mocks && { testSpecificMock: mocks }),
+      testSpecificMock: combinedMocks,
+      title,
+    },
+    testFunction,
+  );
+}
+
+export function withSignatureFixtures(
+  // Default params first is discouraged because it makes it hard to call the function without the
+  // optional parameters. But it doesn't apply here because we're always passing in a variable for
+  // title. It's optional because it's sometimes unset.
+  // eslint-disable-next-line @typescript-eslint/default-param-last
+  title: string = '',
+  testFunction: Parameters<typeof withFixtures>[1],
+  mocks?: (mockServer: Mockttp) => Promise<MockedEndpoint[]>, // Add mocks as an optional parameter
+) {
+  return withFixtures(
+    {
+      dapp: true,
+      driverOptions: { timeOut: 20000 },
+      fixtures: new FixtureBuilder()
+        .withPermissionControllerConnectedToTestDapp()
+        .withMetaMetricsController({
+          metaMetricsId: MOCK_META_METRICS_ID,
+          participateInMetaMetrics: true,
+        })
+        .build(),
+      localNodeOptions: {},
+      testSpecificMock: mocks,
       title,
     },
     testFunction,
@@ -199,8 +235,15 @@ export async function mockEip7702FeatureFlag(mockServer: Mockttp) {
                         '0x4c15775d0c6d5bd37a7aa7aafc62e85597ea705024581b8b5cb0edccc4e6a69e26c495b3ae725815a377c9789bff43bf19e4dd1eaa679e65133e49ceee3ea87f1b',
                     },
                   ],
+                  '0x1': [
+                    {
+                      address: '0xabcabcabcabcabcabcabcabcabcabcabcabcabca',
+                      signature:
+                        '0x5b394cc656b760fc15e855f9b8b9d0eec6337328361771c696d7f5754f0348e06298d34243e815ff8b5ce869e5f310c37dd100c1827e91b56bb208d1fafcf3a71c',
+                    },
+                  ],
                 },
-                supportedChains: ['0xaa36a7', '0x539'],
+                supportedChains: ['0xaa36a7', '0x539', '0x1'],
               },
             },
           ],

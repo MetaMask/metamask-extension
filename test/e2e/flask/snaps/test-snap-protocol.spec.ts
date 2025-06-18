@@ -10,6 +10,7 @@ describe('Test Protocol Snaps', function () {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
+        withProtocolSnap: true,
         ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
       },
       async (driver, mockServer, extensionId) => {

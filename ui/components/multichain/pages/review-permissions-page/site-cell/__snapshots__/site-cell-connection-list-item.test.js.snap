@@ -7,7 +7,7 @@ exports[`SiteCellConnectionListItem renders correctly with required props 1`] = 
     data-testid="site-cell-connection-list-item"
   >
     <div
-      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-top-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-background-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
     >
       <span
         class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"

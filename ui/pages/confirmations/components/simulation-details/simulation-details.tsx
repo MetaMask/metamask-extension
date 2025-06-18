@@ -3,8 +3,14 @@ import {
   SimulationErrorCode,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import React from 'react';
-import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
+import React, { useState } from 'react';
+import { useAlertMetrics } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
+import InlineAlert from '../../../../components/app/alert-system/inline-alert';
+import { MultipleAlertModal } from '../../../../components/app/alert-system/multiple-alert-modal';
+import {
+  ConfirmInfoAlertRow,
+  getAlertTextColors,
+} from '../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { ConfirmInfoSection } from '../../../../components/app/confirm/info/row/section';
 import {
@@ -27,11 +33,12 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { BalanceChangeList } from './balance-change-list';
+import { BalanceChange } from './types';
 import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
-import { BalanceChange } from './types';
 
 export type StaticRow = {
   label: string;
@@ -250,6 +257,49 @@ const SimulationDetailsLayout: React.FC<{
     </Box>
   );
 
+const BalanceChangesAlert = ({ transactionId }: { transactionId: string }) => {
+  const { getFieldAlerts } = useAlerts(transactionId);
+  const fieldAlerts = getFieldAlerts(RowAlertKey.EstimatedChangesStatic);
+  const selectedAlertSeverity = fieldAlerts[0]?.severity;
+  const selectedAlertKey = fieldAlerts[0]?.key;
+
+  const { trackInlineAlertClicked } = useAlertMetrics();
+
+  const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
+
+  const handleModalClose = () => {
+    setAlertModalVisible(false);
+  };
+
+  const handleInlineAlertClick = () => {
+    setAlertModalVisible(true);
+    trackInlineAlertClicked(selectedAlertKey);
+  };
+
+  return (
+    <>
+      {fieldAlerts.length > 0 && (
+        <Box marginLeft={1}>
+          <InlineAlert
+            onClick={handleInlineAlertClick}
+            severity={selectedAlertSeverity}
+          />
+        </Box>
+      )}
+      {alertModalVisible && (
+        <MultipleAlertModal
+          alertKey={selectedAlertKey}
+          ownerId={transactionId}
+          onFinalAcknowledgeClick={handleModalClose}
+          onClose={handleModalClose}
+          showCloseIcon={false}
+          skipAlertNavigation={true}
+        />
+      )}
+    </>
+  );
+};
+
 /**
  * Preview of a transaction's effects using simulation data.
  *
@@ -284,6 +334,10 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     simulationData,
     transactionId,
   });
+
+  const { getFieldAlerts } = useAlerts(transactionId);
+  const fieldAlerts = getFieldAlerts(RowAlertKey.EstimatedChangesStatic);
+  const selectedAlertSeverity = fieldAlerts[0]?.severity;
 
   if (metricsOnly) {
     return null;
@@ -351,11 +405,15 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
         {staticRows.map((staticRow, index) => (
-          <BalanceChangeList
-            key={index}
-            heading={staticRow.label}
-            balanceChanges={staticRow.balanceChanges}
-          />
+          <>
+            <BalanceChangeList
+              key={index}
+              heading={staticRow.label}
+              balanceChanges={staticRow.balanceChanges}
+              labelColor={getAlertTextColors(selectedAlertSeverity)}
+            />
+            <BalanceChangesAlert transactionId={transactionId} />
+          </>
         ))}
         <BalanceChangeList
           heading={t('simulationDetailsOutgoingHeading')}

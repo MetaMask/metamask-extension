@@ -24,6 +24,7 @@ import {
   getSelectedAccount,
   getShouldShowFiat,
   getTokenExchangeRates,
+  getSelectedInternalAccount,
 } from '../../../selectors';
 import { getNftContractsByAddressByChain } from '../../../selectors/nft';
 import { abortTransactionSigning } from '../../../store/actions';
@@ -119,6 +120,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     return opts.tokens ?? [];
   } else if (selector === selectBridgeHistoryForAccount) {
     return opts.bridgeHistory ?? {};
+  } else if (selector === getSelectedInternalAccount) {
+    return opts.selectedInternalAccount ?? { address: '0xDefaultAddress' };
   } else if (selector === getNames) {
     return {
       [NameType.ETHEREUM_ADDRESS]: {

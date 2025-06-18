@@ -1,5 +1,6 @@
 import { withFixtures, WINDOW_TITLES } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
+import { mockJsxSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
@@ -10,6 +11,7 @@ describe('Test Snap JSX', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockJsxSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

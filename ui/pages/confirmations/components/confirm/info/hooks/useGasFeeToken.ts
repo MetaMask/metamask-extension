@@ -22,7 +22,7 @@ export const NATIVE_TOKEN_ADDRESS = '0x0'.padEnd(42, '0') as Hex;
 export const RATE_WEI_NATIVE = '0xDE0B6B3A7640000'; // 1x10^18
 export const METAMASK_FEE_PERCENTAGE = 0.35;
 
-export function useGasFeeToken({ tokenAddress }: { tokenAddress: Hex }) {
+export function useGasFeeToken({ tokenAddress }: { tokenAddress?: Hex }) {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
@@ -31,10 +31,10 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress: Hex }) {
   const { gasFeeTokens } = transactionMeta ?? {};
 
   let gasFeeToken = gasFeeTokens?.find(
-    (token) => token.tokenAddress.toLowerCase() === tokenAddress.toLowerCase(),
+    (token) => token.tokenAddress.toLowerCase() === tokenAddress?.toLowerCase(),
   );
 
-  if (tokenAddress === NATIVE_TOKEN_ADDRESS) {
+  if (!gasFeeToken) {
     gasFeeToken = nativeFeeToken;
   }
 
@@ -53,11 +53,10 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress: Hex }) {
   const balanceFiat = useFiatTokenValue(gasFeeToken, gasFeeToken?.balance);
   const metamaskFeeFiat = useFiatTokenValue(gasFeeToken, metaMaskFee);
 
-  if (!gasFeeToken) {
-    return undefined;
-  }
-
-  const transferTransaction = getTransferTransaction(gasFeeToken);
+  const transferTransaction =
+    tokenAddress === NATIVE_TOKEN_ADDRESS
+      ? getNativeTransferTransaction(gasFeeToken)
+      : getTokenTransferTransaction(gasFeeToken);
 
   return {
     ...gasFeeToken,
@@ -74,9 +73,10 @@ export function useSelectedGasFeeToken() {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { selectedGasFeeToken } = transactionMeta ?? {};
+  const { selectedGasFeeToken: tokenAddress } = transactionMeta ?? {};
+  const selectedToken = useGasFeeToken({ tokenAddress });
 
-  return useGasFeeToken({ tokenAddress: selectedGasFeeToken ?? '0x' });
+  return tokenAddress ? selectedToken : undefined;
 }
 
 function useNativeGasFeeToken(): GasFeeToken {
@@ -134,7 +134,7 @@ function useFiatTokenValue(
   return gasFeeToken ? fiatValue : '';
 }
 
-function getTransferTransaction(
+function getTokenTransferTransaction(
   gasFeeToken: GasFeeToken,
 ): BatchTransactionParams {
   const data = new Interface(abiERC20).encodeFunctionData('transfer', [
@@ -148,5 +148,17 @@ function getTransferTransaction(
     maxFeePerGas: gasFeeToken.maxFeePerGas,
     maxPriorityFeePerGas: gasFeeToken.maxPriorityFeePerGas,
     to: gasFeeToken.tokenAddress,
+  };
+}
+
+function getNativeTransferTransaction(
+  gasFeeToken: GasFeeToken,
+): BatchTransactionParams {
+  return {
+    gas: gasFeeToken.gasTransfer,
+    maxFeePerGas: gasFeeToken.maxFeePerGas,
+    maxPriorityFeePerGas: gasFeeToken.maxPriorityFeePerGas,
+    to: gasFeeToken.recipient,
+    value: gasFeeToken.amount,
   };
 }

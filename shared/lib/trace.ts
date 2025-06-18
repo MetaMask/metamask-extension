@@ -16,6 +16,8 @@ export enum TraceName {
   AccountOverviewDeFiTab = 'Account Overview DeFi Tab',
   AssetDetails = 'Asset Details',
   BackgroundConnect = 'Background Connect',
+  BridgeBalancesUpdated = 'Bridge Balances Updated',
+  BridgeViewLoaded = 'Bridge View Loaded',
   ConnectPage = 'Connect Page',
   CreateAccount = 'Create Account',
   DeveloperTest = 'Developer Test',
@@ -34,10 +36,19 @@ export enum TraceName {
   NotificationDisplay = 'Notification Display',
   PPOMValidation = 'PPOM Validation',
   ReceiveModal = 'Receive Modal',
+  SendCompleted = 'Send Completed',
   SetupStore = 'Setup Store',
   Signature = 'Signature',
+  SwapQuotesFetched = 'Swap Quotes Fetched',
+  SwapViewLoaded = 'Swap View Loaded',
   Transaction = 'Transaction',
   UIStartup = 'UI Startup',
+  RevealSeed = 'Reveal Seed',
+  ImportSrp = 'Import Srp',
+  AddAccount = 'Add Account',
+  LoadCollectibles = 'Load Collectibles',
+  GetAssetHistoricalPrices = 'Get Asset Historical Prices',
+  OnFinishedTransaction = 'On Finished Transaction',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');

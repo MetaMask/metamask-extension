@@ -4,6 +4,7 @@ import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import { mockPreferencesSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 
 describe('Test Snap get preferences', function () {
   it('validate the results', async function () {
@@ -13,9 +14,11 @@ describe('Test Snap get preferences', function () {
           .withPreferencesController({
             preferences: {
               privacyMode: true,
+              showTestNetworks: true,
             },
           })
           .build(),
+        testSpecificMock: mockPreferencesSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -46,6 +49,7 @@ describe('Test Snap get preferences', function () {
           batchCheckBalances: true,
           displayNftMedia: false,
           useNftDetection: false,
+          showTestnets: true,
         });
       },
     );

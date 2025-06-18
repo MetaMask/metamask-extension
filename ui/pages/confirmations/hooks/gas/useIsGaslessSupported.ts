@@ -40,18 +40,19 @@ export function useIsGaslessSupported() {
     return isRelaySupported(chainId);
   }, [chainId, isSmartTransaction]);
 
-  if (isSmartTransaction) {
-    return true;
-  }
-
   const atomicBatchChainSupport = atomicBatchSupportResult?.find(
     (result) => result.chainId.toLowerCase() === chainId.toLowerCase(),
   );
 
-  if (!atomicBatchChainSupport || !relaySupportsChain) {
-    return false;
-  }
-
   // Currently requires upgraded account, can also support no `delegationAddress` in future.
-  return atomicBatchChainSupport.isSupported;
+  const is7702Supported = Boolean(
+    atomicBatchChainSupport?.isSupported && relaySupportsChain,
+  );
+
+  const isSupported = isSmartTransaction || is7702Supported;
+
+  return {
+    isSupported,
+    isSmartTransaction,
+  };
 }

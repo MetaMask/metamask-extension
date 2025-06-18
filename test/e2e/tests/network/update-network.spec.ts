@@ -4,7 +4,7 @@ import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { Mockttp } from '../../mock-e2e';
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
-import EditNetworkModal from '../../page-objects/pages/dialog/edit-network';
+import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
@@ -32,7 +32,7 @@ describe('Update Network:', function (this: Suite) {
         await selectNetworkDialog.openEditNetworkModal();
 
         // Verify chain id is not editable when updating a network
-        const editNetworkModal = new EditNetworkModal(driver);
+        const editNetworkModal = new AddEditNetworkModal(driver);
         await editNetworkModal.check_pageIsLoaded();
         await editNetworkModal.check_chainIdInputFieldIsEnabled(false);
 
@@ -144,7 +144,7 @@ describe('Update Network:', function (this: Suite) {
         // Go to Edit Menu
         await selectNetworkDialog.openNetworkListOptions('eip155:42161');
         await selectNetworkDialog.openEditNetworkModal();
-        const editNetworkModal = new EditNetworkModal(driver);
+        const editNetworkModal = new AddEditNetworkModal(driver);
         await editNetworkModal.check_pageIsLoaded();
 
         // Remove the RPC
@@ -232,7 +232,7 @@ describe('Update Network:', function (this: Suite) {
         // Go to Edit Menu
         await selectNetworkDialog.openNetworkListOptions('eip155:42161');
         await selectNetworkDialog.openEditNetworkModal();
-        const editNetworkModal = new EditNetworkModal(driver);
+        const editNetworkModal = new AddEditNetworkModal(driver);
         await editNetworkModal.check_pageIsLoaded();
 
         // Add a new rpc url and verify it appears in the dropdown

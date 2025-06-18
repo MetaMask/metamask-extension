@@ -416,6 +416,7 @@ describe('getMultichainNativeAssetType', () => {
       isEvmSelected: false,
       remoteFeatureFlags: {
         addSolanaAccount: true,
+        addBitcoinAccout: true,
       },
     },
 

@@ -266,7 +266,7 @@ describe('Send ETH', function () {
 
             await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
             await driver.waitForSelector({
-              text: '0.00021 ETH',
+              text: '0.000042 ETH',
             });
             await driver.clickElement({
               text: 'Edit suggested gas fee',

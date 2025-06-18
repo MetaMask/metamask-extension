@@ -21,6 +21,7 @@ const initialStore = () => ({
     isAccountSyncingEnabled: false,
     participateInMetaMetrics: false,
     isBackupAndSyncUpdateLoading: false,
+    keyrings: [],
   },
 });
 

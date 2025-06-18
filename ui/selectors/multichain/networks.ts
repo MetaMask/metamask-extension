@@ -20,6 +20,7 @@ import { createDeepEqualSelector } from '../../../shared/modules/selectors/util'
 import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
+  getIsSolanaTestnetSupportEnabled,
 } from '../selectors';
 import { getInternalAccounts } from '../accounts';
 
@@ -77,7 +78,11 @@ export const getIsNonEvmNetworksEnabled = createDeepEqualSelector(
     // they're used we can't guarantee that the scopes will be set
     // during the keyring migration execution.
     for (const { scopes } of internalAccounts) {
-      if (scopes?.includes(BtcScope.Mainnet)) {
+      if (
+        scopes?.includes(
+          BtcScope.Mainnet || BtcScope.Testnet || BtcScope.Signet,
+        )
+      ) {
         bitcoinEnabled = true;
       }
       if (scopes?.includes(SolScope.Mainnet)) {
@@ -97,9 +102,11 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
     (state: MultichainNetworkConfigurationsByChainIdState) =>
       state.metamask.multichainNetworkConfigurationsByChainId,
     getIsNonEvmNetworksEnabled,
+    (state) => getIsSolanaTestnetSupportEnabled(state),
     (
       multichainNetworkConfigurationsByChainId,
       isNonEvmNetworksEnabled,
+      isSolanaTestnetSupportEnabled,
     ): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
       const filteredNonEvmNetworkConfigurationsByChainId: Record<
         CaipChainId,
@@ -123,15 +130,13 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
           multichainNetworkConfigurationsByChainId[SolScope.Mainnet];
       }
 
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-      if (solanaEnabled) {
+      if (solanaEnabled && isSolanaTestnetSupportEnabled) {
         // TODO: Uncomment this when we want to support testnet
         // filteredNonEvmNetworkConfigurationsByChainId[SolScope.Testnet] =
-        //   nonEvmNetworkConfigurationsByChainId[SolScope.Testnet];
+        //   multichainNetworkConfigurationsByChainId[SolScope.Testnet];
         filteredNonEvmNetworkConfigurationsByChainId[SolScope.Devnet] =
           multichainNetworkConfigurationsByChainId[SolScope.Devnet];
       }
-      ///: END:ONLY_INCLUDE_IF
 
       return filteredNonEvmNetworkConfigurationsByChainId;
     },

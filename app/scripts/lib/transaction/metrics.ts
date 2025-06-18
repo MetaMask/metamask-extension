@@ -64,6 +64,19 @@ import { extractRpcDomain } from '../util';
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
 
+const CONTRACT_INTERACTION_TYPES = [
+  TransactionType.contractInteraction,
+  TransactionType.tokenMethodApprove,
+  TransactionType.tokenMethodIncreaseAllowance,
+  TransactionType.tokenMethodSafeTransferFrom,
+  TransactionType.tokenMethodSetApprovalForAll,
+  TransactionType.tokenMethodTransfer,
+  TransactionType.tokenMethodTransferFrom,
+  TransactionType.swap,
+  TransactionType.swapAndSend,
+  TransactionType.swapApproval,
+];
+
 /**
  * This function is called when a transaction is added to the controller.
  *
@@ -420,32 +433,6 @@ export const handlePostTransactionBalanceUpdate = async (
     }
   }
 };
-
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-/**
- * This function is called when a transaction metadata updated in the MMI controller.
- *
- * @param transactionMetricsRequest - Contains controller actions needed to create/update/finalize event fragments
- * @param transactionEventPayload - The event payload
- * @param transactionEventPayload.transactionMeta - The transaction meta object
- * @param eventName - The event name
- */
-export const handleMMITransactionUpdate = async (
-  transactionMetricsRequest: TransactionMetricsRequest,
-  transactionEventPayload: TransactionEventPayload,
-  eventName: TransactionMetaMetricsEvent,
-) => {
-  if (!transactionEventPayload.transactionMeta) {
-    return;
-  }
-
-  await createUpdateFinalizeTransactionEventFragment({
-    eventName,
-    transactionEventPayload,
-    transactionMetricsRequest,
-  });
-};
-///: END:ONLY_INCLUDE_IF
 
 function calculateTransactionsCost(
   transactionMeta: TransactionMeta,
@@ -863,19 +850,7 @@ async function buildEventFragmentProperties({
   }
 
   const contractInteractionTypes =
-    type &&
-    [
-      TransactionType.contractInteraction,
-      TransactionType.tokenMethodApprove,
-      TransactionType.tokenMethodIncreaseAllowance,
-      TransactionType.tokenMethodSafeTransferFrom,
-      TransactionType.tokenMethodSetApprovalForAll,
-      TransactionType.tokenMethodTransfer,
-      TransactionType.tokenMethodTransferFrom,
-      TransactionType.swap,
-      TransactionType.swapAndSend,
-      TransactionType.swapApproval,
-    ].includes(type);
+    type && CONTRACT_INTERACTION_TYPES.includes(type);
 
   const contractMethodNames = {
     APPROVE: 'Approve',
@@ -1242,7 +1217,8 @@ async function addBatchProperties(
     sensitiveProperties.transaction_contract_address = nestedTransactions
       ?.filter(
         (tx) =>
-          tx.type === TransactionType.contractInteraction && tx.to?.length,
+          CONTRACT_INTERACTION_TYPES.includes(tx.type as TransactionType) &&
+          tx.to?.length,
       )
       .map((tx) => tx.to as string);
   }
@@ -1298,7 +1274,11 @@ async function getNestedMethodNames(
   getMethodData: (data: string) => Promise<{ name?: string } | undefined>,
 ): Promise<string[]> {
   const allData = transactions
-    .filter((tx) => tx.type === TransactionType.contractInteraction && tx.data)
+    .filter(
+      (tx) =>
+        CONTRACT_INTERACTION_TYPES.includes(tx.type as TransactionType) &&
+        tx.data,
+    )
     .map((tx) => tx.data as Hex);
 
   const results = await Promise.all(allData.map((data) => getMethodData(data)));

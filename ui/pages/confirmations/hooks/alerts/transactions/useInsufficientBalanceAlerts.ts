@@ -20,7 +20,11 @@ import {
 import { isBalanceSufficient } from '../../../send/send.utils';
 import { useConfirmContext } from '../../../context/confirm';
 
-export function useInsufficientBalanceAlerts(): Alert[] {
+export function useInsufficientBalanceAlerts({
+  ignoreGasFeeToken,
+}: {
+  ignoreGasFeeToken?: boolean;
+} = {}): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const {
@@ -51,6 +55,7 @@ export function useInsufficientBalanceAlerts(): Alert[] {
   const [multichainNetworks, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
+
   const nativeCurrency = (
     multichainNetworks[chainId as CaipChainId] ?? evmNetworks[chainId]
   )?.nativeCurrency;
@@ -61,7 +66,8 @@ export function useInsufficientBalanceAlerts(): Alert[] {
     balance,
   });
 
-  const showAlert = insufficientBalance && !selectedGasFeeToken;
+  const showAlert =
+    insufficientBalance && (ignoreGasFeeToken || !selectedGasFeeToken);
 
   return useMemo(() => {
     if (!showAlert) {
