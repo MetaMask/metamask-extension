@@ -46,14 +46,13 @@ function transformState(state: Record<string, unknown>) {
     | undefined;
 
   if (
-    preferencesControllerState &&
-    preferencesControllerState.preferences &&
+    preferencesControllerState?.preferences &&
     appStateControllerState?.upgradeSplashPageAcknowledgedForAccounts
   ) {
     (
-      preferencesControllerState.preferences as any
-    ).smartAccountOptInForAccounts =
-      appStateControllerState?.upgradeSplashPageAcknowledgedForAccounts;
+      preferencesControllerState as PreferenceControllerState
+    ).preferences.smartAccountOptInForAccounts =
+      appStateControllerState?.upgradeSplashPageAcknowledgedForAccounts as Hex[];
   }
 
   if (appStateControllerState?.upgradeSplashPageAcknowledgedForAccounts) {
