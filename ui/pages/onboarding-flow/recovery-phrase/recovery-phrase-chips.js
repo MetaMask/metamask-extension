@@ -43,9 +43,9 @@ export default function RecoveryPhraseChips({
   );
   const [quizAnswers, setQuizAnswers] = useState(
     indicesToCheck.map((index) => ({
-      index,
-      word: '',
-      answerIndex: -1, // the index of the answer in the secret recovery phrase chips UI
+      index, // the index in the SRP chips UI where the answer is inserted
+      word: '', // the answer value
+      actualIndexInSrp: -1, // the correct index of the answer value in the secret recovery phrase
     })),
   );
 
@@ -65,12 +65,16 @@ export default function RecoveryPhraseChips({
   );
 
   const addQuizWord = useCallback(
-    (word, answerIndex) => {
+    (word, actualIndexInSrp) => {
       const newQuizAnswers = [...quizAnswers];
       const targetIndex = newQuizAnswers.findIndex(
         (answer) => answer.index === indexToFocus,
       );
-      newQuizAnswers[targetIndex] = { index: indexToFocus, word, answerIndex };
+      newQuizAnswers[targetIndex] = {
+        index: indexToFocus,
+        word,
+        actualIndexInSrp,
+      };
       setQuizAnswers(newQuizAnswers);
       setIndexToFocus(setNextTargetIndex(newQuizAnswers));
     },
@@ -86,7 +90,7 @@ export default function RecoveryPhraseChips({
       newQuizAnswers[targetIndex] = {
         ...newQuizAnswers[targetIndex],
         word: '',
-        answerIndex: -1,
+        actualIndexInSrp: -1,
       };
 
       setQuizAnswers(newQuizAnswers);
@@ -104,7 +108,7 @@ export default function RecoveryPhraseChips({
       const newQuizAnswers = quizWords.map((word) => ({
         index: word.index,
         word: '',
-        answerIndex: -1,
+        actualIndexInSrp: -1,
       }));
       setQuizAnswers(newQuizAnswers);
       setIndexToFocus(setNextTargetIndex(newQuizAnswers));
@@ -232,14 +236,17 @@ export default function RecoveryPhraseChips({
       {quizWords.length === 3 && (
         <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
           {quizWords.map((quizWord) => {
-            // check if the word is answered by checking if the word and index match
+            const actualIdxInSrp = quizWord.index;
+            // check if the quiz word has been added to the quizAnswers array
+            // here we are checking the answer's actual index in the secret recovery phrase
+            // to handle the case where the quiz words has the same value but different indexes
+            // e.g. the quiz words are ["one", "two", "one"]
             const isAnswered = quizAnswers.some(
-              (x) =>
-                x.word === quizWord.word && x.answerIndex === quizWord.index,
+              (answer) => answer.actualIndexInSrp === actualIdxInSrp,
             );
             return isAnswered ? (
               <ButtonBase
-                data-testid={`recovery-phrase-quiz-answered-${quizWord.index}`}
+                data-testid={`recovery-phrase-quiz-answered-${actualIdxInSrp}`}
                 key={quizWord.index}
                 color={TextColor.textAlternative}
                 borderRadius={BorderRadius.LG}
@@ -248,20 +255,20 @@ export default function RecoveryPhraseChips({
                   removeQuizWord(quizWord.word);
                 }}
               >
-                {quizWord.word}
+                {secretRecoveryPhrase[actualIdxInSrp]}
               </ButtonBase>
             ) : (
               <Button
-                data-testid={`recovery-phrase-quiz-unanswered-${quizWord.index}`}
+                data-testid={`recovery-phrase-quiz-unanswered-${actualIdxInSrp}`}
                 key={quizWord.index}
                 variant={ButtonVariant.Secondary}
                 borderRadius={BorderRadius.LG}
                 block
                 onClick={() => {
-                  addQuizWord(quizWord.word, quizWord.index);
+                  addQuizWord(quizWord.word, actualIdxInSrp);
                 }}
               >
-                {quizWord.word}
+                {secretRecoveryPhrase[actualIdxInSrp]}
               </Button>
             );
           })}
