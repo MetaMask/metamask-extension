@@ -125,7 +125,6 @@ describe('Create BTC Account', function (this: Suite) {
       await settingsPage.goToPrivacySettings();
 
       const privacySettings = new PrivacySettings(driver);
-      await privacySettings.check_pageIsLoaded();
       await privacySettings.openRevealSrpQuiz();
       await privacySettings.completeRevealSrpQuiz();
       await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
