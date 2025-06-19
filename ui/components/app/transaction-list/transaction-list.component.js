@@ -564,7 +564,7 @@ export default function TransactionList({
     if (hideNetworkFilter) {
       return null;
     }
-    if (isGlobalNetworkSelectorRemoved) {
+    if (isGlobalNetworkSelectorRemoved && isEvmNetwork) {
       return (
         <AssetListControlBar
           showSortControl={false}
