@@ -11,6 +11,7 @@ import {
 } from '../../../../hooks/useTrustSignals';
 import { SignatureRequestType } from '../../types/confirm';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/security-alerts-api';
 
 export function useTrustSignalAlerts(): Alert[] {
   const { currentConfirmation } = useConfirmContext();
@@ -52,7 +53,7 @@ export function useTrustSignalAlerts(): Alert[] {
   );
 
   return useMemo(() => {
-    if (!addressToCheck || !currentConfirmation) {
+    if (!addressToCheck || !isSecurityAlertsAPIEnabled()) {
       return [];
     }
 
@@ -81,5 +82,5 @@ export function useTrustSignalAlerts(): Alert[] {
     }
 
     return alerts;
-  }, [addressToCheck, currentConfirmation, trustSignalDisplayState, t]);
+  }, [addressToCheck, trustSignalDisplayState, t]);
 }

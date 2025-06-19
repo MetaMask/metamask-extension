@@ -33,7 +33,6 @@ function useSignatureAlerts(): Alert[] {
 
 function useTransactionAlerts(): Alert[] {
   const accountTypeUpgradeAlerts = useAccountTypeUpgrade();
-  const trustSignalAlerts = useTrustSignalAlerts();
   const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
   const gasEstimateFailedAlerts = useGasEstimateFailedAlerts();
   const gasFeeLowAlerts = useGasFeeLowAlerts();
@@ -46,11 +45,11 @@ function useTransactionAlerts(): Alert[] {
   const pendingTransactionAlerts = usePendingTransactionAlerts();
   const resimulationAlert = useResimulationAlert();
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
+  const trustSignalAlerts = useTrustSignalAlerts();
 
   return useMemo(
     () => [
       ...accountTypeUpgradeAlerts,
-      ...trustSignalAlerts,
       ...firstTimeInteractionAlert,
       ...gasEstimateFailedAlerts,
       ...gasFeeLowAlerts,
@@ -63,10 +62,10 @@ function useTransactionAlerts(): Alert[] {
       ...pendingTransactionAlerts,
       ...resimulationAlert,
       ...signingOrSubmittingAlerts,
+      ...trustSignalAlerts,
     ],
     [
       accountTypeUpgradeAlerts,
-      trustSignalAlerts,
       firstTimeInteractionAlert,
       gasEstimateFailedAlerts,
       gasFeeLowAlerts,
@@ -79,6 +78,7 @@ function useTransactionAlerts(): Alert[] {
       pendingTransactionAlerts,
       resimulationAlert,
       signingOrSubmittingAlerts,
+      trustSignalAlerts,
     ],
   );
 }
