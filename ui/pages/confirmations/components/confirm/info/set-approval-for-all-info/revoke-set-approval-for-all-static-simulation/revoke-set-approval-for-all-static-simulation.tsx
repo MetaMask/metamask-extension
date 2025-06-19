@@ -48,6 +48,7 @@ export const RevokeSetApprovalForAllStaticSimulation = ({
             type={NameType.ETHEREUM_ADDRESS}
             preferContractSymbol
             variation={chainId}
+            showTrustSignals
           />
         </Box>
       </Box>

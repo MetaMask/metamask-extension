@@ -58,7 +58,11 @@ const Spender = ({
         )}
         data-testid="confirmation__approve-spender"
       >
-        <ConfirmInfoRowAddress address={spender} chainId={chainId} />
+        <ConfirmInfoRowAddress
+          address={spender}
+          chainId={chainId}
+          showTrustSignals
+        />
       </ConfirmInfoRow>
 
       <ConfirmInfoRowDivider />

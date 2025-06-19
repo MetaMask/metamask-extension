@@ -59,7 +59,11 @@ const TypedSignInfo: React.FC = () => {
         {isPermit && (
           <>
             <ConfirmInfoRow label={t('spender')}>
-              <ConfirmInfoRowAddress address={spender} chainId={chainId} />
+              <ConfirmInfoRowAddress
+                address={spender}
+                chainId={chainId}
+                showTrustSignals
+              />
             </ConfirmInfoRow>
             <ConfirmInfoRowDivider />
           </>
