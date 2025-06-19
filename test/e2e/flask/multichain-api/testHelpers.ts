@@ -69,29 +69,6 @@ export const getExpectedSessionScope = (scope: string, accounts: string[]) => ({
   accounts: accounts.map((acc) => `${scope}:${acc.toLowerCase()}`),
 });
 
-export const addAccountInWalletAndAuthorize = async (
-  driver: Driver,
-): Promise<void> => {
-  const editButtons = await driver.findElements('[data-testid="edit"]');
-  await editButtons[0].click();
-  await driver.clickElement({ text: 'New account', tag: 'button' });
-  await driver.clickElement({ text: 'Ethereum account', tag: 'button' });
-  await driver.clickElement({ text: 'Add account', tag: 'button' });
-  await driver.delay(regularDelayMs);
-
-  /**
-   * this needs to be called again, as previous element is stale and will not be found in current frame
-   */
-  const freshEditButtons = await driver.findElements('[data-testid="edit"]');
-  await freshEditButtons[0].click();
-  await driver.delay(regularDelayMs);
-
-  await driver.clickElementAndWaitToDisappear({
-    text: 'Update',
-    tag: 'button',
-  });
-};
-
 /**
  * Update Multichain network edit form so that only matching networks are selected.
  *

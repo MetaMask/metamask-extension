@@ -31,6 +31,8 @@ class TransactionConfirmation extends Confirmation {
 
   private gasFeeTokenPill: RawLocator;
 
+  private senderAccount: RawLocator;
+
   constructor(driver: Driver) {
     super(driver);
 
@@ -62,6 +64,7 @@ class TransactionConfirmation extends Confirmation {
     this.gasFeeTokenArrow = '[data-testid="selected-gas-fee-token-arrow"]';
     this.gasFeeTokenFeeText = '[data-testid="gas-fee-token-fee"]';
     this.gasFeeTokenPill = '[data-testid="selected-gas-fee-token"]';
+    this.senderAccount = '[data-testid="sender-address"]';
   }
 
   async check_walletInitiatedHeadingTitle() {
@@ -97,6 +100,21 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.findElement({
       css: this.gasFeeTokenFeeText,
       text: amountFiat,
+    });
+  }
+
+  /**
+   * Checks if the sender account is displayed in the transaction confirmation page.
+   *
+   * @param address - The sender account to check.
+   */
+  async check_senderAccount(address: string) {
+    console.log(
+      `Checking sender account ${address} on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector({
+      css: this.senderAccount,
+      text: address,
     });
   }
 

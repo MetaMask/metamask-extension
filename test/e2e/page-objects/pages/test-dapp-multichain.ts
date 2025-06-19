@@ -1,6 +1,5 @@
 import { Browser } from 'selenium-webdriver';
 import { NormalizedScopeObject } from '@metamask/chain-agnostic-permission';
-import { Json } from '@metamask/utils';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { replaceColon } from '../../flask/multichain-api/testHelpers';
@@ -25,9 +24,15 @@ class TestDappMultichain {
 
   private readonly firstSessionMethodResult = '#session-method-result-0';
 
+  private readonly invokeAllMethodsButton = {
+    testId: 'invoke-all-methods-button',
+  };
+
   private readonly walletCreateSessionButton = '#create-session-btn';
 
   private readonly walletGetSessionButton = '#get-session-btn';
+
+  private readonly walletNotifyResult = '#wallet-notify-container';
 
   private readonly walletRevokeSessionButton = '#revoke-session-btn';
 
@@ -74,6 +79,10 @@ class TestDappMultichain {
     const resultSummaries = await this.driver.findElements(this.resultSummary);
     const firstResultSummary = resultSummaries[0];
     await firstResultSummary.click();
+  }
+
+  async clickInvokeAllMethodsButton() {
+    await this.driver.clickElement(this.invokeAllMethodsButton);
   }
 
   async clickWalletCreateSessionButton() {
@@ -178,6 +187,25 @@ class TestDappMultichain {
   }
 
   /**
+   * Retrieves the wallet session changed result.
+   *
+   * @param index - The index of the wallet session changed result. 0-based index.
+   * @returns The wallet session changed result.
+   */
+  async get_walletSessionChangedResult(index: number): Promise<string> {
+    console.log(
+      `Getting wallet session changed result for index ${index} on multichain test dapp.`,
+    );
+    const resultSummaries = await this.driver.findElements(this.resultSummary);
+    await resultSummaries[index + 1].click();
+    const walletSessionChangedResult = await this.driver.findElement(
+      `#wallet-session-changed-result-${index}`,
+    );
+    await this.driver.waitForNonEmptyElement(walletSessionChangedResult);
+    return await walletSessionChangedResult.getText();
+  }
+
+  /**
    * Revokes permitted session.
    */
   async revokeSession(): Promise<void> {
@@ -185,59 +213,122 @@ class TestDappMultichain {
   }
 
   /**
-   * Invokes a JSON-RPC method for a given scope and retrieves the result.
+   * Invokes a JSON-RPC method for a given scope and returns the result.
    *
-   * @param scope - The CAIP-2 scope.
-   * @param method - The JSON-RPC method to invoke.
-   * @param params - The parameters for the JSON-RPC method.
-   * @returns The result as JSON.
+   * @param params - The parameters for invoking the method.
+   * @param params.scope - The CAIP-2 scope.
+   * @param params.method - The JSON-RPC method to invoke.
+   * @returns The result as string.
    */
-  async invokeMethod(
-    scope: string,
-    method: string,
-    params: Json,
-  ): Promise<Json> {
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
-
-    await this.driver.clickElement(
-      `[data-testid="${replaceColon(scope)}-select"]`,
+  async invokeMethod({
+    scope,
+    method,
+  }: {
+    scope: string;
+    method: string;
+  }): Promise<string> {
+    console.log(
+      `Invoke method ${method} for scope ${scope} and return result on multichain test dapp.`,
     );
-
-    await this.driver.clickElement(
-      `[data-testid="${replaceColon(scope)}-${method}-option"]`,
-    );
-
-    const card = await this.driver.findElement(
-      `[data-testid="scope-card-${replaceColon(scope)}`,
-    );
-    const collapsible = await card.findElement({ css: '.collapsible-section' });
-
-    await collapsible.click();
-
-    const request = {
-      method: 'wallet_invokeMethod',
-      params: {
-        scope,
-        request: {
-          method,
-          params,
-        },
-      },
-    };
-
-    await this.driver.pasteIntoField(
-      `[data-testid="${replaceColon(scope)}-collapsible-content-textarea"]`,
-      JSON.stringify(request),
-    );
-
+    await this.selectMethod({ scope, method });
     await this.driver.clickElement(
       `[data-testid="invoke-method-${replaceColon(scope)}-btn"]`,
     );
-
-    const invokeResult = await this.driver.findElement(
+    const result = await this.driver.findElement(
       `[id="invoke-method-${replaceColon(scope)}-${method}-result-0"]`,
     );
-    return JSON.parse(await invokeResult.getText());
+    await this.driver.waitForNonEmptyElement(result);
+    return await result.getText();
+  }
+
+  /**
+   * Invokes a JSON-RPC method for a given scope and checks the result.
+   *
+   * @param params - The parameters for invoking the method.
+   * @param params.scope - The CAIP-2 scope.
+   * @param params.method - The JSON-RPC method to invoke.
+   * @param params.expectedResult - The expected result for the method.
+   * @returns The result as JSON.
+   */
+  async invokeMethodAndCheckResult({
+    scope,
+    method,
+    expectedResult,
+  }: {
+    scope: string;
+    method: string;
+    expectedResult: string;
+  }): Promise<void> {
+    console.log(
+      `Invoke method ${method} for scope ${scope} and check result on multichain test dapp.`,
+    );
+    await this.invokeMethod({ scope, method });
+    await this.driver.waitForSelector({
+      css: `[id="invoke-method-${replaceColon(scope)}-${method}-result-0"]`,
+      text: expectedResult,
+    });
+  }
+
+  /**
+   * Selects an account for a given scope on multichain test dapp.
+   *
+   * @param params - The parameters for selecting the account.
+   * @param params.scope - The CAIP-2 scope.
+   * @param params.account - The account to select.
+   */
+  async selectAccount({
+    scope,
+    account,
+  }: {
+    scope: string;
+    account: string;
+  }): Promise<void> {
+    console.log(
+      `Selecting account ${account} for scope ${scope} on multichain test dapp.`,
+    );
+    await this.driver.clickElementSafe(
+      `[data-testid="${replaceColon(scope)}-${account}-option"]`,
+    );
+  }
+
+  /**
+   * Selects a method for a given scope on multichain test dapp.
+   *
+   * @param params - The parameters for selecting the method.
+   * @param params.scope - The CAIP-2 scope.
+   * @param params.method - The transaction method to select (e.g., 'eth_sendTransaction').
+   */
+  async selectMethod({
+    scope,
+    method,
+  }: {
+    scope: string;
+    method: string;
+  }): Promise<void> {
+    console.log(
+      `Selecting ${method} for scope ${scope} on multichain test dapp.`,
+    );
+    await this.driver.clickElement(
+      `[data-testid="${replaceColon(scope)}-select"]`,
+    );
+    await this.driver.clickElement(
+      `[data-testid="${replaceColon(scope)}-${method}-option"]`,
+    );
+  }
+
+  /**
+   * Checks if the wallet notify result is displayed on multichain test dapp.
+   *
+   * @param scope - The CAIP-2 scope.
+   */
+  async check_walletNotifyResult(scope: string): Promise<void> {
+    console.log(
+      `Checking wallet notify result for scope ${scope} on multichain test dapp.`,
+    );
+    await this.driver.waitForSelector({
+      css: this.walletNotifyResult,
+      text: scope,
+    });
   }
 }
 
