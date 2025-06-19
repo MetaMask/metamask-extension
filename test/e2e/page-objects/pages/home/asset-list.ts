@@ -84,6 +84,14 @@ class AssetListPage {
   private readonly tokenAddressInDetails =
     '[data-testid="address-copy-button-text"]';
 
+  private readonly tokenConfirmListItem =
+    '.import-tokens-modal__confirm-token-list-item-wrapper';
+
+  private readonly tokenDecimals = {
+    tag: 'label',
+    text: 'Token decimal',
+  };
+
   private readonly tokenNameInDetails = '[data-testid="asset-name"]';
 
   private readonly tokenImportedMessageCloseButton =
@@ -245,7 +253,9 @@ class AssetListPage {
       await this.driver.fill(this.tokenSymbolInput, symbol);
     }
 
+    await this.driver.waitForSelector(this.tokenDecimals);
     await this.driver.clickElement(this.importTokensNextButton);
+    await this.driver.waitForSelector(this.tokenConfirmListItem);
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmImportTokenButton,
     );
