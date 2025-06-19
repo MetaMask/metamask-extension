@@ -399,7 +399,6 @@ export const CURRENCY_SYMBOLS = {
   SEI: 'SEI',
   KATANA: 'ETH',
   SOPHON: 'SOPH',
-  SEI: 'SEI',
 } as const;
 
 // Non-EVM currency symbols
