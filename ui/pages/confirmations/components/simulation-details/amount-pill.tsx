@@ -122,7 +122,7 @@ function getBackgroundColour({
   isApproval?: boolean;
 }) {
   if (isApproval) {
-    return BackgroundColor.backgroundMuted;
+    return BackgroundColor.backgroundSection;
   }
 
   return amount.isNegative()

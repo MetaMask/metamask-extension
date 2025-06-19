@@ -122,7 +122,7 @@ export default function RecoveryPhraseChips({
         borderRadius={BorderRadius.LG}
         display={Display.Grid}
         width={BlockSize.Full}
-        backgroundColor={BackgroundColor.backgroundMuted}
+        backgroundColor={BackgroundColor.backgroundSection}
         className="recovery-phrase__secret"
       >
         <Box

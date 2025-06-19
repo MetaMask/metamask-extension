@@ -39,7 +39,7 @@ export function NestedTransactionTag() {
           paddingLeft={2}
           paddingRight={2}
           display={Display.InlineFlex}
-          backgroundColor={BackgroundColor.backgroundMuted}
+          backgroundColor={BackgroundColor.backgroundSection}
           color={TextColor.textAlternativeSoft}
           labelProps={{ color: TextColor.textAlternativeSoft }}
         />
