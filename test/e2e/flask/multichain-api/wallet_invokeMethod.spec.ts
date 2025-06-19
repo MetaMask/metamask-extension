@@ -119,6 +119,14 @@ describe('Multichain API', function () {
               driver,
             );
             await connectAccountConfirmation.check_pageIsLoaded();
+            await connectAccountConfirmation.openEditAccountsModal();
+
+            const editConnectedAccountsModal = new EditConnectedAccountsModal(
+              driver,
+            );
+            await editConnectedAccountsModal.check_pageIsLoaded();
+            await editConnectedAccountsModal.addNewEthereumAccount();
+            await connectAccountConfirmation.check_pageIsLoaded();
             await connectAccountConfirmation.confirmConnect();
 
             await driver.switchToWindowWithTitle(
