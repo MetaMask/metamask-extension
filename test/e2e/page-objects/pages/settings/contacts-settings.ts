@@ -3,7 +3,12 @@ import { Driver } from '../../../webdriver/driver';
 class ContactsSettings {
   private readonly driver: Driver;
 
-  private readonly addContactButton = '.address-book__link';
+  private readonly addContactLink = '.address-book__link';
+
+  private readonly addContactButton = {
+    text: 'Add contact',
+    tag: 'button',
+  };
 
   private readonly confirmAddContactButton = {
     testId: 'page-container-footer-next',
@@ -54,10 +59,21 @@ class ContactsSettings {
    *
    * @param userName - The name of the contact.
    * @param address - The address of the contact.
+   * @param selector - Use 'link' or 'button' to add a contact.
    */
-  async addContact(userName: string, address: string): Promise<void> {
-    console.log('Adding new contact on contacts settings page');
-    await this.driver.clickElement(this.addContactButton);
+  async addContact(
+    userName: string,
+    address: string,
+    selector: 'link' | 'button' = 'link',
+  ): Promise<void> {
+    const addContactSelector =
+      selector === 'button' ? this.addContactButton : this.addContactLink;
+
+    console.log(
+      `Adding new contact on contacts settings page using ${selector}`,
+    );
+
+    await this.driver.clickElement(addContactSelector);
     await this.driver.fill(this.userNameInput, userName);
     await this.driver.fill(this.createContactAddressInput, address);
     await this.driver.clickElementAndWaitToDisappear(
