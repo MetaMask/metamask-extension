@@ -129,3 +129,24 @@ export const switchToEditRPCViaGlobalMenuNetworks = async (driver: Driver) => {
   await driver.clickElement('[data-testid="account-options-menu-button"]');
   await driver.clickElement('[data-testid="global-menu-networks"]');
 };
+
+export const searchAndSwitchToNetworkFromSendFlow = async (
+  driver: Driver,
+  networkName: string,
+) => {
+  console.log(
+    `Search in select network dialog and switch to network ${networkName}`,
+  );
+  switchToEditRPCViaGlobalMenuNetworks(driver);
+  const selectNetworkDialog = new SelectNetwork(driver);
+  await selectNetworkDialog.check_pageIsLoaded();
+  await selectNetworkDialog.fillNetworkSearchInput(networkName);
+  await selectNetworkDialog.clickAddButton();
+
+  const networkSwitchModalConfirmation = new NetworkSwitchModalConfirmation(
+    driver,
+  );
+  await networkSwitchModalConfirmation.check_pageIsLoaded();
+  await networkSwitchModalConfirmation.clickApproveButton();
+  await switchToNetworkFromSendFlow(driver, networkName);
+};
