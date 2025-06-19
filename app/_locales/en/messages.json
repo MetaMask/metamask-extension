@@ -3993,7 +3993,7 @@
     "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
   },
   "passwordTermsWarning": {
-    "message": "If I forget this password, I’ll lose access to my wallet permanently. MetaMask can’t reset it for me."
+    "message": "If I forget this password, MetaMask can't recover it for me."
   },
   "passwordToggleHide": {
     "message": "Hide Password"
