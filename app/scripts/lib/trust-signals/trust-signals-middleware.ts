@@ -11,9 +11,9 @@ import {
   isEthSignTypedData,
   isEthSendTransaction,
   hasValidTransactionParams,
-  isProdEnabled,
   isEthAccounts,
   isSecurityAlertsEnabledByUser,
+  isProdEnabled,
 } from './trust-signals-util';
 
 export function createTrustSignalsMiddleware(
@@ -30,8 +30,7 @@ export function createTrustSignalsMiddleware(
     try {
       if (
         !isSecurityAlertsEnabledByUser(preferencesController) ||
-        !isSecurityAlertsAPIEnabled() ||
-        !isProdEnabled()
+        !isSecurityAlertsAPIEnabled()
       ) {
         return;
       }
@@ -48,7 +47,7 @@ export function createTrustSignalsMiddleware(
           appStateController,
           networkController,
         );
-      } else if (isEthAccounts(req)) {
+      } else if (isEthAccounts(req) && isProdEnabled()) {
         handleEthAccounts(req, phishingController);
       }
     } catch (error) {
