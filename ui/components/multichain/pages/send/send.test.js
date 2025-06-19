@@ -169,6 +169,7 @@ const baseStore = {
       showFiatInTestnets: true,
       tokenNetworkFilter: {},
     },
+    enabledNetworkMap: {},
     currentCurrency: 'USD',
     nativeCurrency: 'ETH',
     featureFlags: {

@@ -1,13 +1,13 @@
 import 'navigator.locks';
 import {
-  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
-  METHOD_REPAIR_DATABASE,
-} from '../state-corruption-errors';
-import {
   Backup,
   PersistenceError,
   PersistenceManager,
 } from '../stores/persistence-manager';
+import {
+  METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
+  METHOD_REPAIR_DATABASE,
+} from '../../../../shared/constants/state-corruption';
 import {
   waitForMicrotask,
   PortPolyfill,

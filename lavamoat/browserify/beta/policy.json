@@ -656,6 +656,8 @@
         "Notification.maxActions": true,
         "Notification.permission": true,
         "Notification.requestPermission": true,
+        "PushManager.getSubscription": true,
+        "PushManager.subscribe": true,
         "PushSubscription.prototype.hasOwnProperty": true,
         "ServiceWorkerRegistration": true,
         "URL": true,
@@ -1011,6 +1013,16 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/account-tree-controller": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/keyring-controller": true,
+        "@metamask/account-tree-controller>@metamask/snaps-utils": true
+      }
+    },
     "@metamask/accounts-controller": {
       "packages": {
         "@metamask/base-controller": true,
@@ -1075,7 +1087,7 @@
         "@metamask/phishing-controller": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
-        "@metamask/snaps-utils": true,
+        "@metamask/assets-controllers>@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "@metamask/name-controller>async-mutex": true,
         "bn.js": true,
@@ -1531,7 +1543,7 @@
         "eth-method-registry>@metamask/ethjs-contract>@metamask/ethjs-util": true,
         "eth-method-registry>@metamask/ethjs-contract>ethjs-abi": true,
         "eth-ens-namehash>js-sha3": true,
-        "promise-to-callback": true
+        "eth-method-registry>@metamask/ethjs-query>promise-to-callback": true
       }
     },
     "eth-method-registry>@metamask/ethjs-contract>@metamask/ethjs-filter": {
@@ -1555,12 +1567,12 @@
       "packages": {
         "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format": true,
         "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-rpc": true,
-        "promise-to-callback": true
+        "eth-method-registry>@metamask/ethjs-query>promise-to-callback": true
       }
     },
     "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-rpc": {
       "packages": {
-        "promise-to-callback": true
+        "eth-method-registry>@metamask/ethjs-query>promise-to-callback": true
       }
     },
     "@metamask/controller-utils>@metamask/ethjs-unit": {
@@ -1836,7 +1848,6 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-controller": true,
-        "@metamask/profile-sync-controller": true,
         "@metamask/utils": true,
         "@metamask/notification-services-controller>bignumber.js": true,
         "@metamask/notification-services-controller>firebase": true,
@@ -1974,6 +1985,7 @@
         "URLSearchParams": true,
         "addEventListener": true,
         "console.error": true,
+        "console.warn": true,
         "dispatchEvent": true,
         "fetch": true,
         "removeEventListener": true,
@@ -1981,7 +1993,6 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/network-controller": true,
         "@metamask/profile-sync-controller>@noble/ciphers": true,
@@ -2111,6 +2122,7 @@
       "globals": {
         "DecompressionStream": true,
         "URL": true,
+        "WebSocket": true,
         "clearTimeout": true,
         "document.getElementById": true,
         "fetch.bind": true,
@@ -2131,8 +2143,8 @@
         "@metamask/utils": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "@metamask/name-controller>async-mutex": true,
-        "browserify>browserify-zlib": true,
         "@metamask/snaps-controllers>concat-stream": true,
+        "cron-parser": true,
         "eslint>fast-deep-equal": true,
         "@metamask/snaps-controllers>get-npm-tarball-url": true,
         "immer": true,
@@ -2171,8 +2183,7 @@
         "@metamask/snaps-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@noble/hashes": true,
-        "luxon": true
+        "@noble/hashes": true
       }
     },
     "@metamask/snaps-sdk": {
@@ -2211,7 +2222,77 @@
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "chalk": true,
-        "@metamask/snaps-utils>cron-parser": true,
+        "cron-parser": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>fast-xml-parser": true,
+        "luxon": true,
+        "@metamask/snaps-utils>marked": true,
+        "@metamask/snaps-utils>rfdc": true,
+        "semver": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true
+      }
+    },
+    "@metamask/account-tree-controller>@metamask/snaps-utils": {
+      "globals": {
+        "File": true,
+        "FileReader": true,
+        "TextDecoder": true,
+        "URL": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "crypto": true,
+        "document.body.appendChild": true,
+        "document.createElement": true,
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/snaps-sdk>@metamask/key-tree": true,
+        "@metamask/permission-controller": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/snaps-utils>@metamask/slip44": true,
+        "@metamask/snaps-sdk": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "chalk": true,
+        "cron-parser": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>fast-xml-parser": true,
+        "luxon": true,
+        "@metamask/snaps-utils>marked": true,
+        "@metamask/snaps-utils>rfdc": true,
+        "semver": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/snaps-utils": {
+      "globals": {
+        "File": true,
+        "FileReader": true,
+        "TextDecoder": true,
+        "URL": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "crypto": true,
+        "document.body.appendChild": true,
+        "document.createElement": true,
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/snaps-sdk>@metamask/key-tree": true,
+        "@metamask/permission-controller": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/snaps-utils>@metamask/slip44": true,
+        "@metamask/snaps-sdk": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "chalk": true,
+        "cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "@metamask/snaps-utils>fast-xml-parser": true,
         "luxon": true,
@@ -2247,7 +2328,7 @@
         "@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "chalk": true,
-        "@metamask/snaps-utils>cron-parser": true,
+        "cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "@metamask/snaps-utils>fast-xml-parser": true,
         "@metamask/snaps-utils>marked": true,
@@ -3584,7 +3665,7 @@
         "addons-linter>sha.js": true
       }
     },
-    "@metamask/snaps-utils>cron-parser": {
+    "cron-parser": {
       "packages": {
         "browserify>browser-resolve": true,
         "luxon": true
@@ -3640,19 +3721,6 @@
         "currency-formatter>accounting": true,
         "currency-formatter>locale-currency": true,
         "react>object-assign": true
-      }
-    },
-    "debounce-stream": {
-      "packages": {
-        "debounce-stream>debounce": true,
-        "debounce-stream>duplexer": true,
-        "debounce-stream>through": true
-      }
-    },
-    "debounce-stream>debounce": {
-      "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
       }
     },
     "nock>debug": {
@@ -3742,11 +3810,6 @@
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>es-abstract>gopd": true
-      }
-    },
-    "debounce-stream>duplexer": {
-      "packages": {
-        "stream-browserify": true
       }
     },
     "@metamask/ppom-validator>elliptic": {
@@ -4755,10 +4818,10 @@
         "process": true
       }
     },
-    "promise-to-callback": {
+    "eth-method-registry>@metamask/ethjs-query>promise-to-callback": {
       "packages": {
-        "promise-to-callback>is-fn": true,
-        "promise-to-callback>set-immediate-shim": true
+        "eth-method-registry>@metamask/ethjs-query>promise-to-callback>is-fn": true,
+        "eth-method-registry>@metamask/ethjs-query>promise-to-callback>set-immediate-shim": true
       }
     },
     "prop-types": {
@@ -5425,7 +5488,7 @@
         "string.prototype.matchall>es-abstract>has-property-descriptors": true
       }
     },
-    "promise-to-callback>set-immediate-shim": {
+    "eth-method-registry>@metamask/ethjs-query>promise-to-callback>set-immediate-shim": {
       "globals": {
         "setTimeout.apply": true
       },
@@ -5555,12 +5618,6 @@
         "browserify>browser-resolve": true,
         "@metamask/snaps-controllers>tar-stream>fast-fifo": true,
         "@metamask/snaps-controllers>tar-stream>streamx": true
-      }
-    },
-    "debounce-stream>through": {
-      "packages": {
-        "process": true,
-        "stream-browserify": true
       }
     },
     "browserify>timers-browserify": {

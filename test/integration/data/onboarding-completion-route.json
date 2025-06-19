@@ -13,6 +13,7 @@
       }
     }
   },
+  "addressSecurityAlertResponses": {},
   "advancedGasFee": {},
   "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
   "allDetectedTokens": {},

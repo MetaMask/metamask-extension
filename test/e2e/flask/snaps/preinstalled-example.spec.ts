@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import FixtureBuilder from '../../fixture-builder';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';
@@ -16,7 +16,7 @@ describe('Preinstalled example Snap', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
         const preInstalledExample = new PreinstalledExampleSettings(driver);
         await navigateToPreInstalledExample(driver);
 
@@ -52,7 +52,7 @@ describe('Preinstalled example Snap', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
         await testSnaps.openPage();

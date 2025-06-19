@@ -35,6 +35,7 @@ describe('Vault Corruption', function () {
    * database corruption scripts.
    */
   const reloadAndCallbackScript = `
+    // TODO: should this be a safe reload via the WriteManager?
     browser.runtime.reload();
     callback();
   `;
@@ -128,6 +129,7 @@ describe('Vault Corruption', function () {
       // reload and check title as quickly a possible, forever
       { interval: 0, timeout: Infinity },
     );
+    await driver.assertElementNotPresent('.loading-logo', { timeout: 10000 });
   }
 
   /**

@@ -30,6 +30,9 @@ describe('useTokenListPolling', () => {
         useExternalServices: true,
         useTokenDetection: true,
         selectedNetworkClientId: 'selectedNetworkClientId',
+        enabledNetworkMap: {
+          '0x1': true,
+        },
         networkConfigurationsByChainId: {
           '0x1': {
             chainId: '0x1',
