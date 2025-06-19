@@ -2,7 +2,7 @@ import type {
   AccountGroupId,
   AccountWalletId,
 } from '@metamask/account-tree-controller';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import { InternalAccount, InternalEthEoaAccount } from '@metamask/keyring-internal-api';
 import { AccountId } from '@metamask/accounts-controller';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
@@ -15,6 +15,7 @@ import {
   ConsolidatedWallets,
   MultichainAccountsState,
 } from './account-tree.types';
+import { getSelectedInternalAccount } from '../accounts';
 
 /**
  * Retrieve account tree state.
@@ -29,18 +30,6 @@ export const getAccountTree = (
 ): AccountTreeState => state.metamask.accountTree;
 
 /**
- * Retrieve currently selected account ID from state.
- *
- * @param state - Redux state.
- * @param state.metamask - MetaMask state object.
- * @param state.metamask.internalAccounts - Internal accounts object.
- * @param state.metamask.internalAccounts.selectedAccount - Selected Account ID.
- * @returns Selected account ID.
- */
-export const getSelectedAccount = (state: MultichainAccountsState): AccountId =>
-  state.metamask.internalAccounts.selectedAccount;
-
-/**
  * Retrieve all wallets and their accounts with metadata in consolidated data structure.
  *
  * @param internalAccounts - All available internal accounts.
@@ -51,12 +40,12 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
   getMetaMaskAccountsOrdered,
   getAccountTree,
   getOrderedConnectedAccountsForActiveTab,
-  getSelectedAccount,
+  getSelectedInternalAccount,
   (
     internalAccounts: MergedInternalAccount[],
     accountTree: AccountTreeState,
     connectedAccounts: InternalAccount[],
-    selectedAccountId: AccountId,
+    selectedAccount: InternalAccount,
   ): ConsolidatedWallets => {
     const accountsById = internalAccounts.reduce(
       (accounts: Record<string, MergedInternalAccount>, account) => {
@@ -82,10 +71,11 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
               const accountWithMetadata = accountsById[accountId];
 
               accountWithMetadata.active = Boolean(
+                selectedAccount.id === accountWithMetadata.id &&
                 connectedAccounts.find(
                   (connectedAccount) =>
                     connectedAccount.id === accountWithMetadata.id,
-                ) && selectedAccountId === accountWithMetadata.id,
+                )
               );
 
               accountsWithMetadata.push(accountWithMetadata);
