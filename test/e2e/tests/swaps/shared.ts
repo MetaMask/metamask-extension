@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { MockttpServer } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import { regularDelayMs, veryLargeDelayMs } from '../../helpers';
-import { SWAP_TEST_ETH_DAI_TRADES_MOCK } from '../../../data/mock-data';
+import { SWAP_TEST_ETH_DAI_TRADES_MOCK, SWAP_TEST_GAS_INCLUDED_TRADES_MOCK } from '../../../data/mock-data';
 
 export async function mockEthDaiTrade(mockServer: MockttpServer) {
   return [
@@ -12,6 +12,20 @@ export async function mockEthDaiTrade(mockServer: MockttpServer) {
         return {
           statusCode: 200,
           json: SWAP_TEST_ETH_DAI_TRADES_MOCK,
+        };
+      }),
+  ];
+}
+
+export async function mockEthUsdcGasIncludedTrade(mockServer: MockttpServer) {
+  return [
+    await mockServer
+      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .withQuery({enableGasIncludedQuotes : 'true'})
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: SWAP_TEST_GAS_INCLUDED_TRADES_MOCK,
         };
       }),
   ];
