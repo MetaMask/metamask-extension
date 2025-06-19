@@ -71,7 +71,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
         onContactUpdated: (profileId) => {
           trackEvent({
             category: MetaMetricsEventCategory.BackupAndSync,
-            event: MetaMetricsEventName.IdentityEvent,
+            event: MetaMetricsEventName.ProfileActivityUpdated,
             properties: {
               profile_id: profileId,
               feature_name: 'Backup And Sync',
@@ -82,7 +82,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
         onContactDeleted: (profileId) => {
           trackEvent({
             category: MetaMetricsEventCategory.BackupAndSync,
-            event: MetaMetricsEventName.IdentityEvent,
+            event: MetaMetricsEventName.ProfileActivityUpdated,
             properties: {
               profile_id: profileId,
               feature_name: 'Backup And Sync',
@@ -101,7 +101,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
           );
           trackEvent({
             category: MetaMetricsEventCategory.BackupAndSync,
-            event: MetaMetricsEventName.IdentityEvent,
+            event: MetaMetricsEventName.ProfileActivityUpdated,
             properties: {
               profile_id: profileId,
               feature_name: 'Backup And Sync',

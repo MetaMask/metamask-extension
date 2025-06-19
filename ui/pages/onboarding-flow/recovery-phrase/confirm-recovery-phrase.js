@@ -29,7 +29,12 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
-import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_METAMETRICS,
+} from '../../../helpers/constants/routes';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import ConfirmSrpModal from './confirm-srp-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
@@ -126,12 +131,22 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       },
     });
 
+    const nextRoute =
+      getBrowserName() === PLATFORM_FIREFOX || isFromReminder
+        ? ONBOARDING_COMPLETION_ROUTE
+        : ONBOARDING_METAMETRICS;
+
     history.push(
-      `${ONBOARDING_COMPLETION_ROUTE}${
-        nextRouteQueryString ? `?${nextRouteQueryString}` : ''
-      }`,
+      `${nextRoute}${nextRouteQueryString ? `?${nextRouteQueryString}` : ''}`,
     );
-  }, [dispatch, hdEntropyIndex, history, trackEvent, nextRouteQueryString]);
+  }, [
+    dispatch,
+    hdEntropyIndex,
+    history,
+    trackEvent,
+    isFromReminder,
+    nextRouteQueryString,
+  ]);
 
   return (
     <Box

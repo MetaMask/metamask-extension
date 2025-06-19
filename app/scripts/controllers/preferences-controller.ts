@@ -106,6 +106,7 @@ export type Preferences = {
   };
   tokenNetworkFilter: Record<string, boolean>;
   dismissSmartAccountSuggestionEnabled: boolean;
+  skipDeepLinkInterstitial: boolean;
   smartAccountOptIn: boolean;
 };
 
@@ -202,6 +203,7 @@ export const getDefaultPreferencesControllerState =
         sortCallback: 'stringNumeric',
       },
       tokenNetworkFilter: {},
+      skipDeepLinkInterstitial: false,
     },
     // ENS decentralized website resolution
     ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,

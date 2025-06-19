@@ -74,6 +74,17 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
     );
   }, [hdEntropyIndex, history, trackEvent, nextRouteQueryString]);
 
+  const handleOnShowSrpDetailsModal = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.SrpDefinitionClicked,
+      properties: {
+        location: 'review_recovery_phrase',
+      },
+    });
+    setShowSrpDetailsModal(true);
+  }, [trackEvent]);
+
   return (
     <Box
       display={Display.Flex}
@@ -125,9 +136,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
               <ButtonLink
                 key="seedPhraseReviewDetails"
                 size={ButtonLinkSize.Inherit}
-                onClick={() => {
-                  setShowSrpDetailsModal(true);
-                }}
+                onClick={handleOnShowSrpDetailsModal}
               >
                 {t('secretRecoveryPhrase')}
               </ButtonLink>,
