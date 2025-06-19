@@ -3,12 +3,12 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import * as networksModule from '../../../../shared/modules/selectors/networks';
 import {
-  isProdEnabled,
   isEthSendTransaction,
   hasValidTransactionParams,
   isEthSignTypedData,
   hasValidTypedDataParams,
   getChainId,
+  isProdEnabled,
 } from './trust-signals-util';
 import { SupportedEVMChain } from './types';
 
@@ -50,7 +50,6 @@ describe('trust-signals-util', () => {
       expect(isProdEnabled()).toBe(false);
     });
   });
-
   describe('isEthSendTransaction', () => {
     it('should return true for eth_sendTransaction method', () => {
       const req: JsonRpcRequest = {
