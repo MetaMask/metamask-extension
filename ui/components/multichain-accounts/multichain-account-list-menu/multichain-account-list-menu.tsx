@@ -23,7 +23,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-///: END:ONLY_INCLUDE_IF
 import {
   AccountConnections,
   MergedInternalAccount,
