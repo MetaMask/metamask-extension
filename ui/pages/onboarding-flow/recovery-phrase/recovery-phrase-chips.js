@@ -156,6 +156,7 @@ export default function RecoveryPhraseChips({
                     {index + 1}.
                   </Text>
                 }
+                type={confirmPhase && !isQuizWord ? 'password' : 'text'}
                 readOnly
                 disabled={confirmPhase && !isQuizWord}
                 onClick={() => {

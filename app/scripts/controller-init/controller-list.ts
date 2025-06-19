@@ -29,6 +29,7 @@ import {
   SnapController,
   SnapInsightsController,
   SnapInterfaceController,
+  WebSocketService,
 } from '@metamask/snaps-controllers';
 import {
   RateLimitController,
@@ -86,7 +87,8 @@ export type Controller =
   | NftController
   | NftDetectionController
   | AssetsContractController
-  | AccountTreeController;
+  | AccountTreeController
+  | WebSocketService;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
