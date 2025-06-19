@@ -250,7 +250,7 @@ export const getEnabledNetworkClientIds = createDeepEqualSelector(
     const { namespace } = parseCaipChainId(currentMultichainChainId);
 
     // Get enabled networks for the current namespace
-    const networksForNamespace = enabledNetworks[namespace] || {};
+    const networksForNamespace = enabledNetworks[namespace as string] || {};
 
     return Object.entries(networkConfigurations).reduce(
       (acc, [chainId, network]) => {

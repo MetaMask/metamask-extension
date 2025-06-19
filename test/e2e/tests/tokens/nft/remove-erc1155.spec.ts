@@ -33,8 +33,10 @@ describe('Remove ERC1155 NFT', function () {
         fixtures: new FixtureBuilder()
           .withNftControllerERC1155()
           .withEnabledNetworks({
-            '0x1': true,
-            '0xe708': true,
+            eip155: {
+              '0x1': true,
+              '0xe708': true,
+            },
           })
           .build(),
         smartContract,
@@ -67,8 +69,10 @@ describe('Remove ERC1155 NFT', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnLinea()
           .withEnabledNetworks({
-            '0x1': true,
-            '0xe708': true,
+            eip155: {
+              '0x1': true,
+              '0xe708': true,
+            },
           })
           .build(),
         driverOptions,

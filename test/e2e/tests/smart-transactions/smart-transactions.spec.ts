@@ -29,7 +29,9 @@ async function withFixturesForSmartTransactions(
         .withPermissionControllerConnectedToTestDapp()
         .withNetworkControllerOnMainnet()
         .withEnabledNetworks({
-          '0x1': true,
+          eip155: {
+            '0x1': true,
+          },
         })
         .build(),
       title,

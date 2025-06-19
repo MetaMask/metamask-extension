@@ -20,8 +20,10 @@ describe('NFT full', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnLinea()
           .withEnabledNetworks({
-            [CHAIN_IDS.LINEA_MAINNET]: true,
-            [CHAIN_IDS.MAINNET]: true,
+            eip155: {
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+              [CHAIN_IDS.MAINNET]: true,
+            },
           })
           .build(),
         driverOptions,

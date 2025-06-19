@@ -542,9 +542,11 @@ export const getBridgeFixtures = (
       },
     })
     .withEnabledNetworks({
-      '0x1': true,
-      '0xe708': true,
-      '0xa4b1': true,
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+        '0xa4b1': true,
+      },
     });
 
   if (withErc20) {
@@ -603,9 +605,11 @@ export const getQuoteNegativeCasesFixtures = (
     .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
-      '0x1': true,
-      '0xe708': true,
-      '0xa4b1': true,
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+        '0xa4b1': true,
+      },
     });
 
   return {
@@ -645,8 +649,10 @@ export const getBridgeNegativeCasesFixtures = (
     .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
-      '0x1': true,
-      '0xe708': true,
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+      },
     });
 
   return {
@@ -686,8 +692,10 @@ export const getInsufficientFundsFixtures = (
     .withBridgeControllerDefaultState()
     .withTokensControllerERC20({ chainId: 1 })
     .withEnabledNetworks({
-      '0x1': true,
-      '0xe708': true,
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+      },
     });
 
   return {
@@ -726,15 +734,17 @@ export const getBridgeL2Fixtures = (
     .withBridgeControllerDefaultState()
     .withNetworkControllerOnLineaLocahost()
     .withEnabledNetworks({
-      '0x1': true, // Ethereum Mainnet
-      '0xa4b1': true, // Arbitrum One
-      '0xe708': true, // Linea Mainnet
-      '0xa': true, // Optimism
-      '0x89': true, // Polygon
-      '0x38': true, // BSC
-      '0xa86a': true, // Avalanche
-      '0x2105': true, // Base
-      '0x144': true, // zkSync Era
+      eip155: {
+        '0x1': true, // Ethereum Mainnet
+        '0xa4b1': true, // Arbitrum One
+        '0xe708': true, // Linea Mainnet
+        '0xa': true, // Optimism
+        '0x89': true, // Polygon
+        '0x38': true, // BSC
+        '0xa86a': true, // Avalanche
+        '0x2105': true, // Base
+        '0x144': true, // zkSync Era
+      },
     });
 
   return {

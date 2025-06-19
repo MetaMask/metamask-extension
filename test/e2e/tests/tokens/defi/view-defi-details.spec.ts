@@ -20,8 +20,10 @@ describe('View DeFi details', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withEnabledNetworks({
-            [CHAIN_IDS.MAINNET]: true,
-            [CHAIN_IDS.LINEA_MAINNET]: true,
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+              [CHAIN_IDS.LINEA_MAINNET]: true,
+            },
           })
           .build(),
         title: this.test?.fullTitle(),
