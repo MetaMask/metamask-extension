@@ -236,10 +236,9 @@ class AssetListPage {
     );
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
     // do not fill the form if the button is not disabled, otherwise there's a re-render which can clear the input field causing flakiness
-    await this.driver.waitForSelector(
-      this.importTokensNextButton,
-      { state: 'disabled'},
-    );
+    await this.driver.waitForSelector(this.importTokensNextButton, {
+      state: 'disabled',
+    });
     await this.driver.fill(this.tokenSymbolInput, symbol);
     await this.driver.clickElement(this.importTokensNextButton);
     await this.driver.clickElementAndWaitToDisappear(
