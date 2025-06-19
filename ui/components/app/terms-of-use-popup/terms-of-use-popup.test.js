@@ -5,6 +5,14 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import TermsOfUsePopup from './terms-of-use-popup';
 
+const mockIntersectionObserver = jest.fn();
+mockIntersectionObserver.mockReturnValue({
+  observe: () => null,
+  unobserve: () => null,
+  disconnect: () => null,
+});
+window.IntersectionObserver = mockIntersectionObserver;
+
 const render = () => {
   const store = configureStore({
     metamask: {
@@ -20,16 +28,6 @@ const render = () => {
 };
 
 describe('TermsOfUsePopup', () => {
-  beforeEach(() => {
-    const mockIntersectionObserver = jest.fn();
-    mockIntersectionObserver.mockReturnValue({
-      observe: () => null,
-      unobserve: () => null,
-      disconnect: () => null,
-    });
-    window.IntersectionObserver = mockIntersectionObserver;
-  });
-
   it('renders TermsOfUse component and shows Terms of Use text', () => {
     render();
     expect(screen.getByText('Review our Terms of Use')).toBeInTheDocument();

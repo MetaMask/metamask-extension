@@ -122,6 +122,7 @@ function onboardingFixture() {
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MEGAETH_TESTNET]: true,
           [ETHERSCAN_SUPPORTED_CHAIN_IDS.MONAD_TESTNET]: true,
         },
+        skipDeepLinkInterstitial: false,
       },
       SelectedNetworkController: {
         domains: {},
@@ -1776,14 +1777,6 @@ class FixtureBuilder {
           rpcUrl: 'https://bsc-dataseed.binance.org',
           ticker: 'BNB',
           id: 'bnb-mainnet',
-        },
-        'base-mainnet': {
-          chainId: CHAIN_IDS.BASE,
-          nickname: 'Base',
-          rpcPrefs: {},
-          rpcUrl: 'https://mainnet.base.org',
-          ticker: 'ETH',
-          id: 'base-mainnet',
         },
         'zksync-mainnet': {
           chainId: CHAIN_IDS.ZKSYNC_ERA,

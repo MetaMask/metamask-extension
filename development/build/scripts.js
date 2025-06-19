@@ -947,6 +947,12 @@ function setupBundlerDefaults(
             // Ocap Kernel
             './**/node_modules/@endo',
             './**/node_modules/@agoric',
+            // Snaps
+            './**/node_modules/@metamask/snaps-controllers',
+            './**/node_modules/@metamask/snaps-execution-environments',
+            './**/node_modules/@metamask/snaps-rpc-methods',
+            './**/node_modules/@metamask/snaps-sdk',
+            './**/node_modules/@metamask/snaps-utils',
           ],
           global: true,
         },
