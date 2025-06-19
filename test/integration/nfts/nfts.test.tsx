@@ -65,10 +65,12 @@ describe('NFTs list', () => {
       ...mockMetaMaskState,
       selectedNetworkClientId: 'testNetworkConfigurationId',
       enabledNetworkMap: {
-        '0x1': true,
-        '0x89': true,
-        '0x5': true,
-        '0xaa36a7': true,
+        eip155: {
+          '0x1': true,
+          '0x89': true,
+          '0x5': true,
+          '0xaa36a7': true,
+        },
       },
     };
 
@@ -134,7 +136,9 @@ describe('NFTs list', () => {
         },
       },
       enabledNetworkMap: {
-        '0x1': true,
+        eip155: {
+          '0x1': true,
+        },
       },
     };
 
