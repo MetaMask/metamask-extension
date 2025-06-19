@@ -100,7 +100,7 @@ export default function RemoteModePermissions({
         Remote Mode lets you use your hardware wallet without plugging it in.{' '}
       </Text>
       <Box paddingTop={2} paddingBottom={2}>
-        <Card backgroundColor={BackgroundColor.backgroundMuted}>
+        <Card backgroundColor={BackgroundColor.backgroundSection}>
           <Box
             display={Display.Flex}
             gap={2}
@@ -233,7 +233,7 @@ export default function RemoteModePermissions({
         </Card>
       </Box>
       <Box paddingTop={2} paddingBottom={2}>
-        <Card backgroundColor={BackgroundColor.backgroundMuted}>
+        <Card backgroundColor={BackgroundColor.backgroundSection}>
           <Box
             display={Display.Flex}
             gap={2}

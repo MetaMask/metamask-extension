@@ -22,7 +22,7 @@ export default function SendAllowanceBanner({
   const history = useHistory();
 
   return (
-    <Card backgroundColor={BackgroundColor.backgroundMuted} marginBottom={3}>
+    <Card backgroundColor={BackgroundColor.backgroundSection} marginBottom={3}>
       <Text color={TextColor.textDefault} variant={TextVariant.bodyMd}>
         Send {`${allowance.amount} ${allowance.symbol}`} without connecting
         hardware wallet.

@@ -392,14 +392,14 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
                 }}
               >
                 <AvatarFavicon
-                  backgroundColor={BackgroundColor.backgroundMuted}
+                  backgroundColor={BackgroundColor.backgroundSection}
                   size={AvatarFaviconSize.Xl}
                   src={targetSubjectMetadata.iconUrl}
                   name={title}
                 />
               </Box>
               <AvatarFavicon
-                backgroundColor={BackgroundColor.backgroundMuted}
+                backgroundColor={BackgroundColor.backgroundSection}
                 size={AvatarFaviconSize.Lg}
                 src={targetSubjectMetadata.iconUrl}
                 name={title}
@@ -414,7 +414,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               justifyContent={JustifyContent.center}
               color={TextColor.textAlternative}
               style={{ borderWidth: '0px' }}
-              backgroundColor={BackgroundColor.backgroundMuted}
+              backgroundColor={BackgroundColor.backgroundSection}
             >
               {isIpAddress(title) ? '?' : getAvatarFallbackLetter(title)}
             </AvatarBase>
