@@ -221,8 +221,9 @@ class AssetListPage {
 
   async importCustomTokenByChain(
     tokenAddress: string,
-    symbol: string,
+    symbol: string | undefined,
     chainId: string,
+    prefilledSymbol: boolean = false,
   ): Promise<void> {
     console.log(`Creating custom token ${symbol} on homepage`);
     await this.driver.clickElement(this.tokenOptionsButton);
@@ -235,11 +236,15 @@ class AssetListPage {
       this.tokenImportSelectNetwork(chainId),
     );
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
-    // do not fill the form if the button is not disabled, otherwise there's a re-render which can clear the input field causing flakiness
-    await this.driver.waitForSelector(this.importTokensNextButton, {
-      state: 'disabled',
-    });
-    await this.driver.fill(this.tokenSymbolInput, symbol);
+
+    if (!prefilledSymbol && symbol) {
+      // do not fill the form until the button is disabled, because there's a form re-render which can clear the input field causing flakiness
+      await this.driver.waitForSelector(this.importTokensNextButton, {
+        state: 'disabled',
+      });
+      await this.driver.fill(this.tokenSymbolInput, symbol);
+    }
+
     await this.driver.clickElement(this.importTokensNextButton);
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmImportTokenButton,

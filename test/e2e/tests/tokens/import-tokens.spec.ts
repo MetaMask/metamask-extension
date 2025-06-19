@@ -234,10 +234,13 @@ describe('Import flow', function () {
         await homePage.check_pageIsLoaded();
 
         const assetListPage = new AssetListPage(driver);
+
+        // the token symbol is prefilled because of the mock
         await assetListPage.importCustomTokenByChain(
           '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
           'USDT',
           '0x89',
+          true,
         );
         const tokenList = new AssetListPage(driver);
 
