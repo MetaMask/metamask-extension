@@ -49,12 +49,6 @@ describe('Incremental Security', function (this: Suite) {
         await startOnboardingPage.check_loginPageIsLoaded();
         await startOnboardingPage.createWalletWithSrp();
 
-        // skip collect metametrics
-        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.clickNoThanksButton();
-        }
-
         // create password
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.check_pageIsLoaded();
@@ -64,6 +58,12 @@ describe('Incremental Security', function (this: Suite) {
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.check_pageIsLoaded();
         await secureWalletPage.skipSRPBackup();
+
+        // skip collect metametrics
+        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.clickNoThanksButton();
+        }
 
         // complete onboarding and pin extension
         const onboardingCompletePage = new OnboardingCompletePage(driver);
@@ -94,6 +94,11 @@ describe('Incremental Security', function (this: Suite) {
 
         // reveal and confirm the Secret Recovery Phrase on backup SRP page
         await secureWalletPage.revealAndConfirmSRP(WALLET_PASSWORD);
+
+        // complete backup
+        await onboardingCompletePage.check_pageIsLoaded_backup();
+        await onboardingCompletePage.check_keepSrpSafeMessageIsDisplayed();
+        await onboardingCompletePage.completeBackup();
 
         // check the balance is correct after revealing and confirming the SRP
         await homePage.check_pageIsLoaded();
