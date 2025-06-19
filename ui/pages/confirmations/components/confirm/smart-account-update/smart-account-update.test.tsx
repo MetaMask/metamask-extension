@@ -9,7 +9,6 @@ import { renderWithConfirmContextProvider } from '../../../../../../test/lib/con
 import { upgradeAccountConfirmation } from '../../../../../../test/data/confirmations/batch-transaction';
 import { Confirmation } from '../../../types/confirm';
 import {
-  rejectPendingApproval,
   setSmartAccountOptInForAccounts,
   setSmartAccountOptIn,
 } from '../../../../../store/actions';
@@ -36,7 +35,11 @@ jest.mock('react-redux', () => {
   };
 });
 
-describe('Splash', () => {
+describe('SmartAccountUpdate', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('renders correctly', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
@@ -51,7 +54,7 @@ describe('Splash', () => {
     expect(getByText('Use smart account?')).toBeInTheDocument();
   });
 
-  it('closes after acknowledgement', () => {
+  it('closes after acknowledgement if not wrapped', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
         upgradeAccountConfirmation as Confirmation,
@@ -73,6 +76,28 @@ describe('Splash', () => {
     expect(container.firstChild).toBeNull();
     expect(setSmartAccountOptInForAccounts).toHaveBeenCalledTimes(1);
     expect(setSmartAccountOptIn).toHaveBeenCalledTimes(1);
+  });
+
+  it('show success after acknowledgement if wrapped', () => {
+    const mockStore = configureMockStore([])(
+      getMockConfirmStateForTransaction(
+        upgradeAccountConfirmation as Confirmation,
+      ),
+    );
+    const { getByRole, getByText, container } =
+      renderWithConfirmContextProvider(<SmartAccountUpdate />, mockStore);
+
+    expect(container.firstChild).not.toBeNull();
+
+    fireEvent.click(
+      getByRole('button', {
+        name: /Use smart account/iu,
+      }),
+    );
+
+    expect(setSmartAccountOptInForAccounts).toHaveBeenCalledTimes(1);
+    expect(setSmartAccountOptIn).toHaveBeenCalledTimes(1);
+    expect(getByText('Successful!')).toBeDefined();
   });
 
   it('call handleRejectUpgrade on rejection', async () => {

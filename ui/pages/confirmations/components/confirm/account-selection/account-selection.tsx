@@ -26,16 +26,16 @@ import { getInternalAccounts } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 export function AccountSelection({
-  onUpdate,
   closeAccountSelection,
+  onUpdate,
   selectedAccounts = [],
   setSelectedAccounts,
   wrapped,
 }: {
   closeAccountSelection: () => void;
+  onUpdate?: () => void;
   selectedAccounts?: Hex[];
   setSelectedAccounts: (accounts: Hex[]) => void;
-  onUpdate: () => void;
   wrapped: boolean;
 }) {
   const t = useI18nContext();
