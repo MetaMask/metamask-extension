@@ -15,7 +15,7 @@ import {
 } from '../../multichain/account-list-item';
 import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
-import { matchesSearchPattern } from './multichain-accounts-tree.utils';
+import { matchesSearchPattern } from './utils';
 
 export type MultichainAccountsTreeProps = {
   wallets: ConsolidatedWallets;
@@ -78,7 +78,6 @@ export const MultichainAccountsTree = ({
           ([groupId, groupData]) => {
             // Filter accounts by allowed types
             const filteredAccounts = groupData.accounts.filter((account) => {
-              console.log({ searchPattern });
               const matchesSearch = searchPattern
                 ? matchesSearchPattern(searchPattern, account)
                 : true;

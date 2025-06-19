@@ -130,6 +130,7 @@ export const MultichainAccountListMenu = ({
             setSearchPattern(e.target.value)
           }
           clearButtonOnClick={() => setSearchPattern('')}
+          data-testid="multichain-account-menu-search-box"
         />
       </Box>
       {/* Account tree block */}
