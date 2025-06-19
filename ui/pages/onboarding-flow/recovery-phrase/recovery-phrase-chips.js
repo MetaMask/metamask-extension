@@ -45,11 +45,8 @@ export default function RecoveryPhraseChips({
     indicesToCheck.map((index) => ({
       index,
       word: '',
+      answerIndex: -1, // the index of the answer in the secret recovery phrase chips UI
     })),
-  );
-  const [indexToFocus, setIndexToFocus] = useState(
-    // sort the quiz words by index, and then get the index of the first quiz word
-    quizWords.sort((a, b) => a.index - b.index)[0].index,
   );
 
   const setNextTargetIndex = (newQuizAnswers) => {
@@ -60,16 +57,20 @@ export default function RecoveryPhraseChips({
       return acc;
     }, []);
     const firstEmpty = emptyAnswers.length ? Math.min(...emptyAnswers) : -1;
+
     return firstEmpty;
   };
+  const [indexToFocus, setIndexToFocus] = useState(
+    setNextTargetIndex(quizAnswers),
+  );
 
   const addQuizWord = useCallback(
-    (word) => {
+    (word, answerIndex) => {
       const newQuizAnswers = [...quizAnswers];
       const targetIndex = newQuizAnswers.findIndex(
         (answer) => answer.index === indexToFocus,
       );
-      newQuizAnswers[targetIndex] = { index: indexToFocus, word };
+      newQuizAnswers[targetIndex] = { index: indexToFocus, word, answerIndex };
       setQuizAnswers(newQuizAnswers);
       setIndexToFocus(setNextTargetIndex(newQuizAnswers));
     },
@@ -85,6 +86,7 @@ export default function RecoveryPhraseChips({
       newQuizAnswers[targetIndex] = {
         ...newQuizAnswers[targetIndex],
         word: '',
+        answerIndex: -1,
       };
 
       setQuizAnswers(newQuizAnswers);
@@ -96,6 +98,18 @@ export default function RecoveryPhraseChips({
   useEffect(() => {
     setInputValue?.(quizAnswers);
   }, [quizAnswers, setInputValue]);
+
+  useEffect(() => {
+    if (quizWords.length) {
+      const newQuizAnswers = quizWords.map((word) => ({
+        index: word.index,
+        word: '',
+        answerIndex: -1,
+      }));
+      setQuizAnswers(newQuizAnswers);
+      setIndexToFocus(setNextTargetIndex(newQuizAnswers));
+    }
+  }, [quizWords]);
 
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
@@ -215,38 +229,39 @@ export default function RecoveryPhraseChips({
           </Box>
         )}
       </Box>
-      {quizWords.length > 0 && (
+      {quizWords.length === 3 && (
         <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
-          {quizWords.map((value) => {
+          {quizWords.map((quizWord) => {
             // check if the word is answered by checking if the word and index match
             const isAnswered = quizAnswers.some(
-              (x) => x.word === value.word && x.index === value.index,
+              (x) =>
+                x.word === quizWord.word && x.answerIndex === quizWord.index,
             );
             return isAnswered ? (
               <ButtonBase
-                data-testid={`recovery-phrase-quiz-answered-${value.index}`}
-                key={value.index}
+                data-testid={`recovery-phrase-quiz-answered-${quizWord.index}`}
+                key={quizWord.index}
                 color={TextColor.textAlternative}
                 borderRadius={BorderRadius.LG}
                 block
                 onClick={() => {
-                  removeQuizWord(value.word);
+                  removeQuizWord(quizWord.word);
                 }}
               >
-                {value.word}
+                {quizWord.word}
               </ButtonBase>
             ) : (
               <Button
-                data-testid={`recovery-phrase-quiz-unanswered-${value.index}`}
-                key={value.index}
+                data-testid={`recovery-phrase-quiz-unanswered-${quizWord.index}`}
+                key={quizWord.index}
                 variant={ButtonVariant.Secondary}
                 borderRadius={BorderRadius.LG}
                 block
                 onClick={() => {
-                  addQuizWord(value.word);
+                  addQuizWord(quizWord.word, quizWord.index);
                 }}
               >
-                {value.word}
+                {quizWord.word}
               </Button>
             );
           })}
