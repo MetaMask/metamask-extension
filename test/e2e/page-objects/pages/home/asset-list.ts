@@ -235,6 +235,7 @@ class AssetListPage {
       this.tokenImportSelectNetwork(chainId),
     );
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
+    // do not fill the form if the button is not disabled, otherwise there's a re-render which can clear the input field causing flakiness
     await this.driver.waitForSelector(
       this.importTokensNextButton,
       { state: 'disabled'},
