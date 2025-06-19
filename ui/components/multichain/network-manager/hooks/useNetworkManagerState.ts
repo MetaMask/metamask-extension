@@ -25,7 +25,6 @@ import {
   getAllDomains,
   getAllEnabledNetworks,
   getEditedNetwork,
-  getEnabledNetworksByNamespace,
   getIsAccessedFromDappConnectedSitePopover,
   getIsAddingNewNetwork,
   getIsMultiRpcOnboarding,
@@ -36,9 +35,12 @@ import {
   getPermittedEVMAccountsForSelectedTab,
   getPermittedEVMChainsForSelectedTab,
   getPreferences,
-  getSelectedMultichainNetworkChainId,
   getShowTestNetworks,
 } from '../../../../selectors';
+import {
+  getEnabledNetworksByNamespace,
+  getSelectedMultichainNetworkChainId,
+} from '../../../../selectors/multichain/networks';
 
 export const useNetworkManagerState = ({
   skipNetworkFiltering = false,

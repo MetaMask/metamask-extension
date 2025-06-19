@@ -2356,15 +2356,6 @@ export function getEnabledNetworks(state) {
   return state.metamask.enabledNetworkMap;
 }
 
-export const getEnabledNetworksByNamespace = createDeepEqualSelector(
-  getEnabledNetworks,
-  getSelectedMultichainNetworkChainId,
-  (enabledNetworkMap, currentMultichainChainId) => {
-    const { namespace } = parseCaipChainId(currentMultichainChainId);
-    return enabledNetworkMap[namespace] ?? {};
-  },
-);
-
 export function getPinnedAccountsList(state) {
   return state.metamask.pinnedAccountList;
 }
@@ -2729,22 +2720,6 @@ export const getChainIdsToPoll = createDeepEqualSelector(
       (chainId) =>
         chainId === currentChainId ||
         FEATURED_NETWORK_CHAIN_IDS.includes(chainId),
-    );
-  },
-);
-
-export const getEnabledChainIds = createDeepEqualSelector(
-  getNetworkConfigurationsByChainId,
-  getEnabledNetworks,
-  getSelectedMultichainNetworkChainId,
-  (networkConfigurations, enabledNetworks, currentMultichainChainId) => {
-    const { namespace } = parseCaipChainId(currentMultichainChainId);
-
-    // Get enabled networks for the current namespace
-    const networksForNamespace = enabledNetworks[namespace] || {};
-
-    return Object.keys(networkConfigurations).filter(
-      (chainId) => networksForNamespace[chainId],
     );
   },
 );

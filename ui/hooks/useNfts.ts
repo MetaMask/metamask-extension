@@ -1,15 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
-import { parseCaipChainId } from '@metamask/utils';
 import { getNftContracts, getAllNfts } from '../ducks/metamask/metamask';
 import {
   getAllChainsToPoll,
-  getEnabledNetworksByNamespace,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedInternalAccount,
   isGlobalNetworkSelectorRemoved,
 } from '../selectors';
+import { getEnabledNetworksByNamespace } from '../selectors/multichain/networks';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { NFT } from '../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';

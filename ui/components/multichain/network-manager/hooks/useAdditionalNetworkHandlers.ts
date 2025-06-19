@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ApprovalType } from '@metamask/controller-utils';
 import { UpdateNetworkFields } from '@metamask/network-controller';
+import { ApprovalType } from '@metamask/controller-utils';
+import { parseCaipChainId } from '@metamask/utils';
 import { ORIGIN_METAMASK } from '../../../../../shared/constants/app';
 import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
@@ -10,11 +11,18 @@ import {
   requestUserApproval,
   setEnabledNetworks,
 } from '../../../../store/actions';
-import { getEnabledNetworksByNamespace } from '../../../../selectors';
+import {
+  getEnabledNetworksByNamespace,
+  getSelectedMultichainNetworkChainId,
+} from '../../../../selectors/multichain/networks';
 
 export const useAdditionalNetworkHandlers = () => {
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const dispatch = useDispatch();
+  const currentMultichainChainId = useSelector(
+    getSelectedMultichainNetworkChainId,
+  );
+  const { namespace } = parseCaipChainId(currentMultichainChainId);
 
   // Memoize the additional network click handler
   const handleAdditionalNetworkClick = useCallback(
@@ -51,10 +59,13 @@ export const useAdditionalNetworkHandlers = () => {
       );
       const enabledNetworksArray = Object.keys(enabledNetworksByNamespace);
       await dispatch(
-        setEnabledNetworks([...enabledNetworksArray, network.chainId]),
+        setEnabledNetworks(
+          [...enabledNetworksArray, network.chainId],
+          namespace,
+        ),
       );
     },
-    [dispatch, enabledNetworksByNamespace],
+    [dispatch, enabledNetworksByNamespace, namespace],
   );
 
   return {

@@ -11,13 +11,13 @@ import { useNavigate } from 'react-router-dom-v5-compat';
 import { Hex, isHexString } from '@metamask/utils';
 import {
   getAllChainsToPoll,
-  getEnabledNetworksByNamespace,
   getIsLineaMainnet,
   getIsMainnet,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getTokenNetworkFilter,
   getUseNftDetection,
 } from '../../../../../selectors';
+import { getEnabledNetworksByNamespace } from '../../../../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   Box,

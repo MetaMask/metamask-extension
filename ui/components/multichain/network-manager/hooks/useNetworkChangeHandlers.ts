@@ -201,15 +201,14 @@ export const useNetworkChangeHandlers = () => {
 
   const handleNetworkChange = useCallback(
     async (chainId: CaipChainId) => {
-      const { namespace } = parseCaipChainId(chainId);
       const currentChain =
         getMultichainNetworkConfigurationOrThrow(currentChainId);
       const chain = getMultichainNetworkConfigurationOrThrow(chainId);
 
       if (chain.isEvm) {
-        handleEvmNetworkChange(chainId, namespace);
+        handleEvmNetworkChange(chainId);
       } else {
-        await handleNonEvmNetworkChange(chainId, namespace);
+        await handleNonEvmNetworkChange(chainId);
       }
 
       const chainIdToTrack = chain.isEvm
