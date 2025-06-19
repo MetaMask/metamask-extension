@@ -2412,7 +2412,7 @@ describe('Actions', () => {
       const accountIds = ['0x789', '0xabc'];
       const error = new Error('Failed to update on-chain triggers');
 
-      const enableAccountsStub = sinon.stub().resolves();
+      const enableAccountsStub = sinon.stub().rejects(error);
 
       background.getApi.returns({
         enableAccounts: enableAccountsStub,
