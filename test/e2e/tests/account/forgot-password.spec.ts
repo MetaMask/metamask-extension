@@ -30,8 +30,6 @@ describe('Forgot password', function () {
         // Lock Wallet
         const homePage = new HomePage(driver);
         await homePage.headerNavbar.check_pageIsLoaded();
-        // We need a bigger delay before locking the wallet to avoid the error '#snapGetPublicKey - unable to proceed, wallet is locked' (#33725)
-        await driver.delay(5000);
         await homePage.headerNavbar.lockMetaMask();
 
         // Click forgot password button and reset password

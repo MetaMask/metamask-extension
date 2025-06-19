@@ -61,6 +61,9 @@ class HeaderNavbar {
   }
 
   async lockMetaMask(): Promise<void> {
+    // We need a delay before locking the wallet to avoid the error '#snapGetPublicKey - unable to proceed, wallet is locked'
+    // This delay will be changed for a deterministic condition with this ticket (#33725)
+    await this.driver.delay(5000);
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
   }
