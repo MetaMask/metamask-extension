@@ -235,6 +235,10 @@ class AssetListPage {
       this.tokenImportSelectNetwork(chainId),
     );
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
+    await this.driver.waitForSelector(
+      this.importTokensNextButton,
+      { state: 'disabled'},
+    );
     await this.driver.fill(this.tokenSymbolInput, symbol);
     await this.driver.clickElement(this.importTokensNextButton);
     await this.driver.clickElementAndWaitToDisappear(
