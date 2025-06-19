@@ -7648,18 +7648,14 @@ export default class MetamaskController extends EventEmitter {
    * This preseeds the cache at startup with a static list provided at build.
    */
   async initializeChainlist() {
-    const cacheKey = `cachedFetch:${CHAIN_SPEC_URL}`;
-    const { cachedResponse } = (await getStorageItem(cacheKey)) || {};
-    if (cachedResponse) {
+    const cacheKey = `${CHAIN_SPEC_URL}`;
+    const { data } = (await getStorageItem(cacheKey)) || {};
+    if (data) {
       // Also initialize the known domains when we have chain data cached
       await initializeRpcProviderDomains();
       return;
     }
-    await setStorageItem(cacheKey, {
-      cachedResponse: rawChainData(),
-      // Cached value is immediately invalidated
-      cachedTime: 0,
-    });
+    await setStorageItem(CHAIN_SPEC_URL, rawChainData(), 0);
     // Initialize domains after setting the chainlist cache
     await initializeRpcProviderDomains();
   }
