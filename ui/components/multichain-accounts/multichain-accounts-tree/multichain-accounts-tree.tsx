@@ -78,6 +78,7 @@ export const MultichainAccountsTree = ({
           ([groupId, groupData]) => {
             // Filter accounts by allowed types
             const filteredAccounts = groupData.accounts.filter((account) => {
+              console.log({ searchPattern });
               const matchesSearch = searchPattern
                 ? matchesSearchPattern(searchPattern, account)
                 : true;
