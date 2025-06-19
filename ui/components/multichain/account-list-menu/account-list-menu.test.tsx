@@ -20,6 +20,7 @@ import { AccountListMenu } from '.';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 const mockGetEnvironmentType = jest.fn();
 const mockDetectNfts = jest.fn();
+const mockGetNetworksWithTransactionActivityByAccounts = jest.fn();
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
@@ -31,6 +32,8 @@ jest.mock('../../../store/actions', () => {
   return {
     ...jest.requireActual('../../../store/actions'),
     detectNfts: () => mockDetectNfts,
+    getNetworksWithTransactionActivityByAccounts: () =>
+      mockGetNetworksWithTransactionActivityByAccounts(),
   };
 });
 
@@ -435,5 +438,33 @@ describe('AccountListMenu', () => {
       expect(queryByText(mockAccount.metadata.name)).not.toBeInTheDocument();
       expect(queryByText(mockBtcAccount.metadata.name)).toBeInTheDocument();
     });
+  });
+
+  describe('getNetworksWithTransactionActivityByAccounts', () => {
+    it('should not dispatch getNetworksWithTransactionActivityByAccounts when accounts exist and network activity data is empty object', () => {
+      render({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          networksWithTransactionActivity: undefined,
+        },
+      });
+      expect(
+        mockGetNetworksWithTransactionActivityByAccounts,
+      ).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  it('should not dispatch getNetworksWithTransactionActivityByAccounts when accounts exist and network activity data is empty object', () => {
+    render({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        networksWithTransactionActivity: undefined,
+      },
+    });
+    expect(
+      mockGetNetworksWithTransactionActivityByAccounts,
+    ).toHaveBeenCalledTimes(0);
   });
 });

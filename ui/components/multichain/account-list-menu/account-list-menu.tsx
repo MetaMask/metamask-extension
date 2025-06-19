@@ -40,7 +40,11 @@ import {
   getUpdatedAndSortedAccounts,
   getHiddenAccountsList,
 } from '../../../selectors';
-import { detectNfts, setSelectedAccount } from '../../../store/actions';
+import {
+  detectNfts,
+  getNetworksWithTransactionActivityByAccounts,
+  setSelectedAccount,
+} from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -51,6 +55,7 @@ import {
   AccountConnections,
   MergedInternalAccount,
 } from '../../../selectors/selectors.types';
+import { getNetworksWithActivity } from '../../../selectors/multichain/networks';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
@@ -114,6 +119,7 @@ export const AccountListMenu = ({
     getConnectedSubjectsForAllAddresses,
   ) as AccountConnections;
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
+  const networksWithTransactionActivity = useSelector(getNetworksWithActivity);
   const dispatch = useDispatch();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -223,6 +229,16 @@ export const AccountListMenu = ({
     onAccountListItemItemClicked,
     searchQuery,
   ]);
+
+  useEffect(() => {
+    if (
+      filteredAccounts.length > 0 &&
+      (!networksWithTransactionActivity ||
+        Object.keys(networksWithTransactionActivity).length === 0)
+    ) {
+      dispatch(getNetworksWithTransactionActivityByAccounts());
+    }
+  }, [dispatch, filteredAccounts.length, networksWithTransactionActivity]);
 
   return (
     <AccountMenu onClose={onClose} showAccountCreation={showAccountCreation}>

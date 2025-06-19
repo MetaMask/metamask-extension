@@ -78,6 +78,7 @@ import {
   getSelectedInternalAccount,
   getMetaMaskHdKeyrings,
   getAllPermittedAccountsForCurrentTab,
+  getUseExternalServices,
 } from '../selectors';
 import {
   getSelectedNetworkClientId,
@@ -272,6 +273,7 @@ export function importMnemonicToVault(
       .then(async () => {
         dispatch(hideLoadingIndication());
         dispatch(setShowNewSrpAddedToast(true));
+        dispatch(getNetworksWithTransactionActivityByAccounts());
       })
       .catch((err) => {
         dispatch(displayWarning(err));
@@ -528,6 +530,7 @@ export function importNewAccount(
         strategy,
         args,
       ]);
+      dispatch(getNetworksWithTransactionActivityByAccounts());
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -567,6 +570,7 @@ export function addNewAccount(
         [oldAccounts.length, keyringId],
       );
       await forceUpdateMetamaskState(dispatch);
+      dispatch(getNetworksWithTransactionActivityByAccounts());
       const newState = getState();
       newAccount = getInternalAccountByAddress(newState, addedAccountAddress);
     } catch (error) {
@@ -1283,6 +1287,7 @@ export function updateAndApproveTx(
         dispatch(hideLoadingIndication());
         dispatch(updateCustomNonce(''));
         dispatch(closeCurrentNotificationWindow());
+        dispatch(getNetworksWithTransactionActivityByAccounts());
         return txMeta;
       })
       .catch((err) => {
@@ -2854,18 +2859,22 @@ export function getNetworksWithTransactionActivityByAccounts(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async () => {
-    log.debug('background.getNetworksWithTransactionActivityByAccounts');
-    try {
-      return await submitRequestToBackground(
-        'getNetworksWithTransactionActivityByAccounts',
-      );
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw new Error(
-        'Had a problem getting networks with activity by accounts!',
-      );
+  return async (_, getState) => {
+    const useExternalServices = getUseExternalServices(getState());
+    if (useExternalServices) {
+      log.debug('background.getNetworksWithTransactionActivityByAccounts');
+      try {
+        return await submitRequestToBackground(
+          'getNetworksWithTransactionActivityByAccounts',
+        );
+      } catch (error) {
+        logErrorWithMessage(error);
+        throw new Error(
+          `Failed to retrieve networks with transaction activity for accounts: ${error.message}`,
+        );
+      }
     }
+    return [];
   };
 }
 
