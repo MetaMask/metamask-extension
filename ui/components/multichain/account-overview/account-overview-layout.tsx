@@ -13,7 +13,6 @@ import {
 import { Carousel } from '..';
 import {
   getAppIsLoading,
-  getSelectedAccount,
   getSwapsDefaultToken,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   hasCreatedSolanaAccount,

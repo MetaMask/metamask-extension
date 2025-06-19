@@ -58,7 +58,7 @@ describe('Splash', () => {
       ),
     );
     const { getAllByRole, container } = renderWithConfirmContextProvider(
-      <SmartAccountUpdate />,
+      <SmartAccountUpdate wrapped />,
       mockStore,
     );
 
@@ -75,14 +75,18 @@ describe('Splash', () => {
     expect(setSmartAccountOptIn).toHaveBeenCalledTimes(1);
   });
 
-  it('reject confirmation if user does not accept', async () => {
+  it('call handleRejectUpgrade on rejection', async () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
         upgradeAccountConfirmation as Confirmation,
       ),
     );
+    const mockHandleRejectUpgrade = jest.fn();
     const { getByRole } = renderWithConfirmContextProvider(
-      <SmartAccountUpdate />,
+      <SmartAccountUpdate
+        wrapped
+        handleRejectUpgrade={mockHandleRejectUpgrade}
+      />,
       mockStore,
     );
 
@@ -92,82 +96,7 @@ describe('Splash', () => {
       }),
     );
     await flushPromises();
-    expect(rejectPendingApproval).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not render for confirmation not coming from DAPP', () => {
-    const mockStore = configureMockStore([])(
-      getMockConfirmStateForTransaction({
-        ...upgradeAccountConfirmation,
-        origin: 'metamask',
-      } as Confirmation),
-    );
-    const { container } = renderWithConfirmContextProvider(
-      <SmartAccountUpdate />,
-      mockStore,
-    );
-
-    expect(container.firstChild).toBeNull();
-  });
-
-  it('does not render if smartAccountOptIn is true for user and its not hardware wallet account', () => {
-    const mockStore = configureMockStore([])(
-      getMockConfirmStateForTransaction(
-        {
-          ...upgradeAccountConfirmation,
-          origin: 'metamask',
-        } as Confirmation,
-        {
-          metamask: {
-            preferences: {
-              smartAccountOptIn: true,
-            },
-            internalAccounts: {
-              accounts: {
-                '0x8a0bbcd42cf79e7cee834e7808eb2fef1cebdb87': {
-                  address: '0x8a0bbcd42cf79e7cee834e7808eb2fef1cebdb87',
-                  metadata: {
-                    keyring: {
-                      type: 'ledger',
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      ),
-    );
-    const { container } = renderWithConfirmContextProvider(
-      <SmartAccountUpdate />,
-      mockStore,
-    );
-
-    expect(container.firstChild).toBeNull();
-  });
-
-  it('does not render splash page if it is acknowledged for account', () => {
-    const mockStore = configureMockStore([])(
-      getMockConfirmStateForTransaction(
-        {
-          ...upgradeAccountConfirmation,
-          origin: 'metamask',
-        } as Confirmation,
-        {
-          metamask: {
-            upgradeSplashPageAcknowledgedForAccounts: [
-              (upgradeAccountConfirmation as TransactionMeta).txParams.from,
-            ],
-          },
-        },
-      ),
-    );
-    const { container } = renderWithConfirmContextProvider(
-      <SmartAccountUpdate />,
-      mockStore,
-    );
-
-    expect(container.firstChild).toBeNull();
+    expect(mockHandleRejectUpgrade).toHaveBeenCalledTimes(1);
   });
 
   it('open account selection when pencil icon is clicked', () => {
