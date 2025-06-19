@@ -1332,7 +1332,7 @@
     },
     "@metamask/chain-agnostic-permission": {
       "packages": {
-        "@metamask/chain-agnostic-permission>@metamask/api-specs": true,
+        "@metamask/api-specs": true,
         "@metamask/controller-utils": true,
         "@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
