@@ -109,7 +109,7 @@ export const MultichainAccountsTree = ({
                       currentTabOrigin={currentTabOrigin}
                       isActive={account.active}
                       privacyMode={privacyMode}
-                      isPinned={Boolean(account.pinned)}
+                      isPinned={account.pinned}
                       showSrpPill={false}
                       {...accountTreeItemProps}
                     />
@@ -138,12 +138,12 @@ export const MultichainAccountsTree = ({
     wallets,
     allowedAccountTypes,
     connectedSites,
-    onAccountTreeItemClick,
-    selectedAccount.id,
-    onClose,
     currentTabOrigin,
     privacyMode,
     accountTreeItemProps,
+    selectedAccount,
+    onClose,
+    onAccountTreeItemClick,
   ]);
 
   return <>{accountsTree}</>;
