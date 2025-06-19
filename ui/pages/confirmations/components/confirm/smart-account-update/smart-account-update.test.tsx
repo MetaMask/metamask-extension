@@ -3,24 +3,24 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/dom';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
-import { flushPromises } from '../../../../../../../test/lib/timer-helpers';
-import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
-import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
-import { upgradeAccountConfirmation } from '../../../../../../../test/data/confirmations/batch-transaction';
-import { Confirmation } from '../../../../types/confirm';
+import { flushPromises } from '../../../../../../test/lib/timer-helpers';
+import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
+import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { upgradeAccountConfirmation } from '../../../../../../test/data/confirmations/batch-transaction';
+import { Confirmation } from '../../../types/confirm';
 import {
   rejectPendingApproval,
   setSmartAccountOptInForAccounts,
   setSmartAccountOptIn,
-} from '../../../../../../store/actions';
+} from '../../../../../store/actions';
 import { SmartAccountUpdate } from './smart-account-update';
 
-jest.mock('../../../../../../hooks/useMultiPolling', () => ({
+jest.mock('../../../../../hooks/useMultiPolling', () => ({
   __esModule: true,
   default: jest.fn(),
 }));
 
-jest.mock('../../../../../../store/actions', () => ({
+jest.mock('../../../../../store/actions', () => ({
   setAccountDetailsAddress: jest.fn(),
   rejectPendingApproval: jest.fn().mockReturnValue({}),
   setSmartAccountOptInForAccounts: jest.fn(),

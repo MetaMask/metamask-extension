@@ -2,14 +2,10 @@ import React, {
   ReactElement,
   createContext,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
-import { TransactionType } from '@metamask/transaction-controller';
-import { useDispatch } from 'react-redux';
 
-import { setAccountDetailsAddress } from '../../../../store/actions';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import syncConfirmPath from '../../hooks/syncConfirmPath';
 import { Confirmation } from '../../types/confirm';
@@ -31,7 +27,6 @@ export const ConfirmContextProvider: React.FC<{
     useState(true);
   const { currentConfirmation } = useCurrentConfirmation();
   syncConfirmPath(currentConfirmation);
-  const dispatch = useDispatch();
 
   const value = useMemo(
     () => ({

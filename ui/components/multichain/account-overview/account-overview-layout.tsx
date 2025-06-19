@@ -6,7 +6,6 @@ import { useHistory } from 'react-router-dom';
 import {
   showModal,
   removeSlide,
-  setAccountDetailsAddress,
   ///: BEGIN:ONLY_INCLUDE_IF(solana)
   setSelectedAccount,
   ///: END:ONLY_INCLUDE_IF
@@ -27,6 +26,7 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import type { CarouselSlide } from '../../../../shared/constants/app-state';
+import { SMART_ACCOUNT_UPDATE } from '../../../helpers/constants/routes';
 import { TURN_ON_BACKUP_AND_SYNC_MODAL_NAME } from '../../app/modals/identity';
 import {
   useCarouselManagement,
@@ -46,7 +46,6 @@ import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
 } from './account-overview-tabs';
-import { SMART_ACCOUNT_UPDATE } from '../../../helpers/constants/routes';
 
 export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;
@@ -60,7 +59,6 @@ export const AccountOverviewLayout = ({
   const isLoading = useSelector(getAppIsLoading);
   const trackEvent = useContext(MetaMetricsContext);
   const [hasRendered, setHasRendered] = useState(false);
-  const selectedAccount = useSelector(getSelectedAccount);
   const history = useHistory();
 
   ///: BEGIN:ONLY_INCLUDE_IF(solana)

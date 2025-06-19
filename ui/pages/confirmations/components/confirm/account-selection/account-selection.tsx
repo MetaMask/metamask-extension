@@ -24,7 +24,6 @@ import {
 } from '../../../../../components/component-library';
 import { getInternalAccounts } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { SmartAccountUpdateSuccess } from '../smart-account-update/smart-account-update-success';
 
 export function AccountSelection({
   onUpdate,

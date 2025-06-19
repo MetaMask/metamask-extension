@@ -14,7 +14,6 @@ import {
 } from '../../../../../components/component-library';
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
   Display,
   FlexDirection,

@@ -44,7 +44,7 @@ describe('Splash', () => {
       ),
     );
     const { getByText } = renderWithConfirmContextProvider(
-      <SmartAccountUpdateSplash  />,
+      <SmartAccountUpdateSplash />,
       mockStore,
     );
 
@@ -58,7 +58,7 @@ describe('Splash', () => {
       ),
     );
     const { getAllByRole, container } = renderWithConfirmContextProvider(
-      <SmartAccountUpdateSplash  />,
+      <SmartAccountUpdateSplash />,
       mockStore,
     );
 
@@ -82,7 +82,7 @@ describe('Splash', () => {
       ),
     );
     const { getByRole } = renderWithConfirmContextProvider(
-      <SmartAccountUpdateSplash  />,
+      <SmartAccountUpdateSplash />,
       mockStore,
     );
 
@@ -103,7 +103,7 @@ describe('Splash', () => {
       } as Confirmation),
     );
     const { container } = renderWithConfirmContextProvider(
-      <SmartAccountUpdateSplash  />,
+      <SmartAccountUpdateSplash />,
       mockStore,
     );
 
@@ -139,7 +139,7 @@ describe('Splash', () => {
       ),
     );
     const { container } = renderWithConfirmContextProvider(
-      <SmartAccountUpdateSplash  />,
+      <SmartAccountUpdateSplash />,
       mockStore,
     );
 
@@ -163,7 +163,7 @@ describe('Splash', () => {
       ),
     );
     const { container } = renderWithConfirmContextProvider(
-      <SmartAccountUpdateSplash  />,
+      <SmartAccountUpdateSplash />,
       mockStore,
     );
 
@@ -177,7 +177,7 @@ describe('Splash', () => {
       ),
     );
     const { getByText, getByTestId } = renderWithConfirmContextProvider(
-      <SmartAccountUpdateSplash  />,
+      <SmartAccountUpdateSplash />,
       mockStore,
     );
 

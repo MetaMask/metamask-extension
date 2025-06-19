@@ -9,8 +9,10 @@ import {
   getMemoizedInternalAccountByAddress,
 } from '../../../../../../selectors';
 import { isHardwareKeyring } from '../../../../../../helpers/utils/hardware';
-import { getSmartAccountOptInForAccounts } from '../../../../selectors/preferences';
-import { getUseSmartAccount } from '../../../../selectors/preferences';
+import {
+  getSmartAccountOptInForAccounts,
+  getUseSmartAccount,
+} from '../../../../selectors/preferences';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useSmartAccountActions } from '../../../../hooks/useSmartAccountActions';
 import { SmartAccountUpdate } from '../../smart-account-update';
