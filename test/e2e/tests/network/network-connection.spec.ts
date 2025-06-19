@@ -3,7 +3,6 @@ import FixtureBuilder from '../../fixture-builder';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import TokenList from '../../page-objects/pages/token-list';
 import ConfirmAlertModal from '../../page-objects/pages/dialog/confirm-alert';
 import { WALLET_ADDRESS } from '../confirmations/signatures/signature-helpers';
@@ -61,7 +60,6 @@ networkConfigs.forEach((config) => {
         async ({ driver }: { driver: Driver }) => {
           await loginWithBalanceValidation(driver);
 
-          const headerNavbar = new HeaderNavbar(driver);
           const tokenList = new TokenList(driver);
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
