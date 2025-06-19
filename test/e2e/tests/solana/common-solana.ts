@@ -1517,7 +1517,7 @@ export async function mockBridgeGetTokens(mockServer: Mockttp) {
   });
 }
 
-export const SHOW_SWAP_SNAP_CONFIRMATION = true;
+export const SHOW_SWAP_SNAP_CONFIRMATION = false;
 
 const featureFlags = {
   refreshRate: 30000,
