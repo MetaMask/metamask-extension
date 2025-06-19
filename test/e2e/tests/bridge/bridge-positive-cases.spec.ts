@@ -4,7 +4,6 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import {
   switchToNetworkFromSendFlow,
   searchAndSwitchToNetworkFromGlobalMenuFlow,
-  switchToEditRPCViaGlobalMenuNetworks,
 } from '../../page-objects/flows/network.flow';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
 import { bridgeTransaction, getBridgeFixtures } from './bridge-test-utils';

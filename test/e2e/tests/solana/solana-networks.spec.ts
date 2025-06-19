@@ -5,6 +5,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import { withSolanaAccountSnap } from './common-solana';
 
 describe('Solana network', function (this: Suite) {
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('keeps the network selector enabled when the Solana network is selected', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },
@@ -23,6 +24,7 @@ describe('Solana network', function (this: Suite) {
     );
   });
 
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('can delete the previously selected EVM network when Solana network is selected', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },
