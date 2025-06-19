@@ -127,9 +127,9 @@ export const AppHeader = ({ location }) => {
               isUnlocked
                 ? 'multichain-app-header__contents'
                 : 'multichain-app-header__lock-contents',
-              {
-                'multichain-app-header-shadow': isUnlocked && !popupStatus,
-              },
+              isUnlocked && process.env.REMOVE_GNS
+                ? 'multichain-app-header__contents-layout-grid'
+                : 'multichain-app-header__contents-layout-old-grid',
             )}
             {...(isUnlocked ? unlockedStyling : lockStyling)}
           >

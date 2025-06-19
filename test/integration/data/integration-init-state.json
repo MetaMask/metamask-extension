@@ -45,6 +45,7 @@
       }
     }
   },
+  "addressSecurityAlertResponses": {},
   "advancedGasFee": {
     "0xaa36a7": {
       "maxBaseFee": "75",

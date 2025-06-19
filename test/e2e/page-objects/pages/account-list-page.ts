@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import { largeDelayMs, regularDelayMs } from '../../helpers';
+import { largeDelayMs } from '../../helpers';
 import messages from '../../../../app/_locales/en/messages.json';
 import { ACCOUNT_TYPE } from '../../constants';
 import PrivacySettings from './settings/privacy-settings';
@@ -275,10 +275,6 @@ class AccountListPage {
       }
       await this.driver.clickElementAndWaitToDisappear(
         this.addAccountConfirmButton,
-        // Longer timeout than usual, this reduces the flakiness
-        // around Bitcoin account creation (mainly required for
-        // Firefox)
-        5000,
       );
     } else {
       const createButton = await this.driver.findElement(
@@ -506,9 +502,9 @@ class AccountListPage {
     console.log(`Open connect hardware wallet modal`);
     await this.driver.clickElement(this.createAccountButton);
     await this.driver.clickElement(this.addHardwareWalletButton);
-    // This delay is needed to mitigate an existing bug in FF
+    // This delay is needed to mitigate an existing bug
     // See https://github.com/metamask/metamask-extension/issues/25851
-    await this.driver.delay(regularDelayMs);
+    await this.driver.delay(largeDelayMs);
   }
 
   async openHiddenAccountOptions(): Promise<void> {
