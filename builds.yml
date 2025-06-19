@@ -45,6 +45,7 @@ buildTypes:
       - build-beta
       - keyring-snaps
       - multichain
+      - bitcoin
       - solana
       - solana-swaps
       - multi-srp
