@@ -9,7 +9,7 @@ import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/multichain-accounts-selectors.types';
+import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 import { MultichainAccountsTreeProps } from './multichain-accounts-tree';
 import { MultichainAccountsTree } from '.';
 
@@ -149,7 +149,7 @@ describe('MultichainAccountsTree', () => {
     selectedAccount:
       mockWallets[walletOneId].groups[walletOneGroupId].accounts[0],
     onClose: mockOnClose,
-    onAccountListItemItemClicked: mockOnAccountListItemItemClicked,
+    onAccountTreeItemClick: mockOnAccountListItemItemClicked,
   };
 
   const renderComponent = (props = {}) => {

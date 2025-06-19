@@ -7,7 +7,7 @@ import type {
   AccountGroupId,
   AccountWalletId,
 } from '@metamask/account-tree-controller';
-import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/multichain-accounts-selectors.types';
+import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 
 export default {
   title: 'Components/MultichainAccounts/MultichainAccountsTree',

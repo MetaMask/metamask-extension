@@ -19,6 +19,8 @@ import {
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
+  ONBOARDING_ACCOUNT_EXIST,
+  ONBOARDING_ACCOUNT_NOT_FOUND,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -71,6 +73,8 @@ import OnboardingPinExtension from './pin-extension/pin-extension';
 import MetaMetricsComponent from './metametrics/metametrics';
 import OnboardingAppHeader from './onboarding-app-header/onboarding-app-header';
 import { WelcomePageState } from './welcome/types';
+import AccountExist from './account-exist/account-exist';
+import AccountNotFound from './account-not-found/account-not-found';
 
 const TWITTER_URL = 'https://twitter.com/MetaMask';
 
@@ -107,6 +111,7 @@ export default function OnboardingFlow() {
   useEffect(() => {
     if (isUnlocked && !completedOnboarding && !secretRecoveryPhrase) {
       const needsSRP = [
+        ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
         ONBOARDING_REVIEW_SRP_ROUTE,
         ONBOARDING_CONFIRM_SRP_ROUTE,
       ].some((route) => pathname.startsWith(route));
@@ -183,7 +188,7 @@ export default function OnboardingFlow() {
       <OnboardingAppHeader pageState={welcomePageState} />
       <RevealSRPModal
         setSecretRecoveryPhrase={setSecretRecoveryPhrase}
-        onClose={() => history.push(DEFAULT_ROUTE)}
+        onClose={() => history.goBack()}
         isOpen={showPasswordModalToAllowSRPReveal}
       />
       <Box
@@ -205,6 +210,11 @@ export default function OnboardingFlow() {
         }}
       >
         <Switch>
+          <Route path={ONBOARDING_ACCOUNT_EXIST} component={AccountExist} />
+          <Route
+            path={ONBOARDING_ACCOUNT_NOT_FOUND}
+            component={AccountNotFound}
+          />
           <Route
             path={ONBOARDING_CREATE_PASSWORD_ROUTE}
             render={(routeProps) => (
