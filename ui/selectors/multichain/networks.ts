@@ -241,3 +241,28 @@ export const getEnabledChainIds = createDeepEqualSelector(
     );
   },
 );
+
+export const getEnabledNetworkClientIds = createDeepEqualSelector(
+  getNetworkConfigurationsByChainId,
+  getEnabledNetworks,
+  getSelectedMultichainNetworkChainId,
+  (networkConfigurations, enabledNetworks, currentMultichainChainId) => {
+    const { namespace } = parseCaipChainId(currentMultichainChainId);
+
+    // Get enabled networks for the current namespace
+    const networksForNamespace = enabledNetworks[namespace] || {};
+
+    return Object.entries(networkConfigurations).reduce(
+      (acc, [chainId, network]) => {
+        if (networksForNamespace[chainId]) {
+          acc.push(
+            network.rpcEndpoints[network.defaultRpcEndpointIndex]
+              .networkClientId,
+          );
+        }
+        return acc;
+      },
+      [],
+    );
+  },
+);

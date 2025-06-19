@@ -2752,25 +2752,10 @@ export const getNetworkClientIdsToPoll = createDeepEqualSelector(
           chainId === currentChainId ||
           FEATURED_NETWORK_CHAIN_IDS.includes(chainId)
         ) {
-          acc.push(
+          console.log(
             network.rpcEndpoints[network.defaultRpcEndpointIndex]
               .networkClientId,
           );
-        }
-        return acc;
-      },
-      [],
-    );
-  },
-);
-
-export const getEnabledNetworkClientIds = createDeepEqualSelector(
-  getNetworkConfigurationsByChainId,
-  getEnabledNetworks,
-  (networkConfigurations, enabledNetworks) => {
-    return Object.entries(networkConfigurations).reduce(
-      (acc, [chainId, network]) => {
-        if (enabledNetworks[chainId]) {
           acc.push(
             network.rpcEndpoints[network.defaultRpcEndpointIndex]
               .networkClientId,
