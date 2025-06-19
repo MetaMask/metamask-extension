@@ -99,7 +99,9 @@ describe('AssetPage', () => {
       },
       useCurrencyRateCheck: true,
       preferences: {},
-      enabledNetworkMap: {},
+      enabledNetworkMap: {
+        eip155: {},
+      },
       internalAccounts: {
         accounts: {
           [selectedAccountAddress]: {
