@@ -13,7 +13,7 @@ import {
   AccountListItem,
   AccountListItemMenuTypes,
 } from '../../multichain/account-list-item';
-import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/multichain-accounts-selectors.types';
+import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 
 export type MultichainAccountsTreeProps = {

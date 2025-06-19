@@ -2,8 +2,8 @@ import mockState from '../../../test/data/mock-state.json';
 import {
   getAccountTree,
   getWalletsWithAccounts,
-} from './multichain-accounts-selectors';
-import { MultichainAccountsState } from './multichain-accounts-selectors.types';
+} from './account-tree';
+import { MultichainAccountsState } from './account-tree.types';
 
 describe('Multichain Accounts Selectors', () => {
   describe('getAccountTree', () => {

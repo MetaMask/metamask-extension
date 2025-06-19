@@ -14,7 +14,7 @@ import {
   AccountTreeState,
   ConsolidatedWallets,
   MultichainAccountsState,
-} from './multichain-accounts-selectors.types';
+} from './account-tree.types';
 
 /**
  * Retrieve account tree state.
