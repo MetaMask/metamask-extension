@@ -149,7 +149,7 @@ describe('MultichainAccountsTree', () => {
     selectedAccount:
       mockWallets[walletOneId].groups[walletOneGroupId].accounts[0],
     onClose: mockOnClose,
-    onAccountListItemItemClicked: mockOnAccountListItemItemClicked,
+    onAccountTreeItemClick: mockOnAccountListItemItemClicked,
   };
 
   const renderComponent = (props = {}) => {

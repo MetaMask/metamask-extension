@@ -79,7 +79,7 @@ export const MultichainAccountListMenu = ({
 
   // Here we are getting the keyring of the last selected account
   // if it is not an hd keyring, we will use the primary keyring
-  const onAccountListItemItemClicked = useCallback(
+  const onAccountTreeItemClick = useCallback(
     (account: MergedInternalAccount) => {
       onClose();
       trackEvent({
@@ -123,10 +123,10 @@ export const MultichainAccountListMenu = ({
           connectedSites={connectedSites}
           currentTabOrigin={currentTabOrigin}
           privacyMode={privacyMode}
-          accountListItemProps={accountListItemProps}
+          accountTreeItemProps={accountListItemProps}
           selectedAccount={selectedAccount}
           onClose={onClose}
-          onAccountListItemItemClicked={onAccountListItemItemClicked}
+          onAccountTreeItemClick={onAccountTreeItemClick}
         />
       </Box>
     </AccountMenu>

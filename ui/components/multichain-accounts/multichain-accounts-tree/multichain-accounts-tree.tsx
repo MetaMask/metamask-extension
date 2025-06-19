@@ -22,10 +22,10 @@ export type MultichainAccountsTreeProps = {
   connectedSites: Record<string, { origin: string; iconUrl?: string }[]>;
   currentTabOrigin?: string;
   privacyMode?: boolean;
-  accountListItemProps?: Record<string, unknown>;
+  accountTreeItemProps?: Record<string, unknown>;
   selectedAccount: InternalAccount;
   onClose: () => void;
-  onAccountListItemItemClicked: (account: MergedInternalAccount) => void;
+  onAccountTreeItemClick: (account: MergedInternalAccount) => void;
 };
 
 export const MultichainAccountsTree = ({
@@ -34,10 +34,10 @@ export const MultichainAccountsTree = ({
   connectedSites,
   currentTabOrigin,
   privacyMode,
-  accountListItemProps,
+  accountTreeItemProps,
   selectedAccount,
   onClose,
-  onAccountListItemItemClicked,
+  onAccountTreeItemClick,
 }: MultichainAccountsTreeProps) => {
   const accountsTree = useMemo(() => {
     return Object.entries(wallets).reduce(
@@ -94,7 +94,7 @@ export const MultichainAccountsTree = ({
                   key={`box-${account.id}`}
                 >
                   <AccountListItem
-                    onClick={onAccountListItemItemClicked}
+                    onClick={onAccountTreeItemClick}
                     account={account}
                     key={`account-list-item-${account.id}`}
                     selected={selectedAccount.id === account.id}
@@ -105,7 +105,7 @@ export const MultichainAccountsTree = ({
                     isActive={account.active}
                     privacyMode={privacyMode}
                     showSrpPill={false}
-                    {...accountListItemProps}
+                    {...accountTreeItemProps}
                   />
                 </Box>
               );
@@ -134,10 +134,10 @@ export const MultichainAccountsTree = ({
     connectedSites,
     currentTabOrigin,
     privacyMode,
-    accountListItemProps,
+    accountTreeItemProps,
     selectedAccount,
     onClose,
-    onAccountListItemItemClicked,
+    onAccountTreeItemClick,
   ]);
 
   return <>{accountsTree}</>;
