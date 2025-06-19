@@ -64,7 +64,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       ? enabledNetworksByNamespace
       : networkFilter;
   }, [enabledNetworksByNamespace, networkFilter]);
-  console.log('networksToShow', networksToShow);
 
   const sortedFilteredTokens = useMemo(() => {
     const balances = isEvm ? evmBalances : multichainAssets;

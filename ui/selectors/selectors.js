@@ -2752,10 +2752,6 @@ export const getNetworkClientIdsToPoll = createDeepEqualSelector(
           chainId === currentChainId ||
           FEATURED_NETWORK_CHAIN_IDS.includes(chainId)
         ) {
-          console.log(
-            network.rpcEndpoints[network.defaultRpcEndpointIndex]
-              .networkClientId,
-          );
           acc.push(
             network.rpcEndpoints[network.defaultRpcEndpointIndex]
               .networkClientId,
