@@ -41,6 +41,11 @@ export const DelegationControllerInit: ControllerInitFunction<
     getDelegationEnvironment,
   });
 
+  controllerMessenger.registerActionHandler(
+    'DelegationController:signDelegation',
+    controller.signDelegation.bind(controller),
+  );
+
   return {
     controller,
     api: {
