@@ -94,7 +94,7 @@ describe('useSimulationMetrics', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let trackEventMock: jest.MockedFunction<any>;
 
-  function expectUpdateTransactionEventFragmentCalled(
+  function useExpectUpdateTransactionEventFragmentCalled(
     {
       balanceChanges,
       simulationData,
@@ -196,7 +196,7 @@ describe('useSimulationMetrics', () => {
         useDisplayNamesMock.mockReset();
         useDisplayNamesMock.mockReturnValue([]);
 
-        expectUpdateTransactionEventFragmentCalled(
+        useExpectUpdateTransactionEventFragmentCalled(
           {
             simulationData: simulationData as SimulationData,
           },
@@ -221,7 +221,7 @@ describe('useSimulationMetrics', () => {
           amount: new BigNumber(isNegative ? -1 : 1),
         };
 
-        expectUpdateTransactionEventFragmentCalled(
+        useExpectUpdateTransactionEventFragmentCalled(
           {
             balanceChanges: [balanceChange, balanceChange, balanceChange],
           },
@@ -301,7 +301,7 @@ describe('useSimulationMetrics', () => {
         property: string,
         value: AssetType[],
       ) => {
-        expectUpdateTransactionEventFragmentCalled(
+        useExpectUpdateTransactionEventFragmentCalled(
           {
             balanceChanges: [
               {
@@ -365,7 +365,7 @@ describe('useSimulationMetrics', () => {
           fiatAmount,
         };
 
-        expectUpdateTransactionEventFragmentCalled(
+        useExpectUpdateTransactionEventFragmentCalled(
           {
             balanceChanges: [balanceChange],
           },
@@ -464,7 +464,7 @@ describe('useSimulationMetrics', () => {
           asset: { ...BALANCE_CHANGE_MOCK.asset, standard },
         };
 
-        expectUpdateTransactionEventFragmentCalled(
+        useExpectUpdateTransactionEventFragmentCalled(
           {
             balanceChanges: [balanceChange as BalanceChange],
           },
@@ -495,7 +495,7 @@ describe('useSimulationMetrics', () => {
           fiatAmount: 1.23,
         };
 
-        expectUpdateTransactionEventFragmentCalled(
+        useExpectUpdateTransactionEventFragmentCalled(
           {
             balanceChanges: [balanceChange1, balanceChange2],
           },

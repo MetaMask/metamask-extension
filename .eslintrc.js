@@ -253,8 +253,9 @@ module.exports = {
           jsx: true,
         },
       },
-      plugins: ['react'],
+      plugins: ['react', 'react-compiler'],
       rules: {
+        'react-compiler/react-compiler': 'error',
         'react/no-unused-prop-types': 'error',
         'react/no-unused-state': 'error',
         'react/jsx-boolean-value': 'error',
@@ -295,8 +296,9 @@ module.exports = {
           jsx: true,
         },
       },
-      plugins: ['react'],
+      plugins: ['react', 'react-compiler'],
       rules: {
+        'react-compiler/react-compiler': 'error',
         'react/no-unused-prop-types': 'warn',
         'react/no-unused-state': 'warn',
         'react/jsx-boolean-value': 'off',
@@ -309,7 +311,7 @@ module.exports = {
         'react/prop-types': 'off',
         'react/no-children-prop': 'off',
         'react/jsx-key': 'warn', // TODO - increase this into 'error' level
-        'react-hooks/rules-of-hooks': 'warn', // TODO - increase this into 'error' level
+        'react-hooks/rules-of-hooks': 'error',
       },
       settings: {
         react: {

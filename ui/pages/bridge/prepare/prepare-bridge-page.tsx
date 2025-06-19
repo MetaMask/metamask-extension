@@ -453,7 +453,6 @@ const PrepareBridgePage = () => {
       token_symbol_destination: toToken?.symbol ?? '',
       security_warnings: [],
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quoteParams]);
 
   const trackInputEvent = useCallback(

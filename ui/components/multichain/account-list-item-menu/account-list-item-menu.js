@@ -78,7 +78,6 @@ export const AccountListItemMenu = ({
     } else {
       lastItemRef.current = accountDetailsItemRef.current;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     removeJWTItemRef.current,
     removeAccountItemRef.current,
