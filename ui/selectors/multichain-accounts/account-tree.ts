@@ -2,20 +2,19 @@ import type {
   AccountGroupId,
   AccountWalletId,
 } from '@metamask/account-tree-controller';
-import { InternalAccount, InternalEthEoaAccount } from '@metamask/keyring-internal-api';
-import { AccountId } from '@metamask/accounts-controller';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import {
   getMetaMaskAccountsOrdered,
   getOrderedConnectedAccountsForActiveTab,
 } from '../selectors';
 import { MergedInternalAccount } from '../selectors.types';
+import { getSelectedInternalAccount } from '../accounts';
 import {
   AccountTreeState,
   ConsolidatedWallets,
   MultichainAccountsState,
 } from './account-tree.types';
-import { getSelectedInternalAccount } from '../accounts';
 
 /**
  * Retrieve account tree state.
@@ -72,10 +71,10 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
 
               accountWithMetadata.active = Boolean(
                 selectedAccount.id === accountWithMetadata.id &&
-                connectedAccounts.find(
-                  (connectedAccount) =>
-                    connectedAccount.id === accountWithMetadata.id,
-                )
+                  connectedAccounts.find(
+                    (connectedAccount) =>
+                      connectedAccount.id === accountWithMetadata.id,
+                  ),
               );
 
               accountsWithMetadata.push(accountWithMetadata);
