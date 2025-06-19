@@ -420,7 +420,7 @@ export default function NameDetails({
                 options={proposedNameOptions}
                 placeholder={
                   displayName && !hasSavedPetname
-                    ? `Suggested: ${displayName}`
+                    ? t('nameSetPlaceholderSuggested', [displayName])
                     : t('nameSetPlaceholder')
                 }
                 onChange={handleNameChange}

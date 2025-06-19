@@ -642,6 +642,9 @@
   "backupAndSyncFeatureAccounts": {
     "message": "Accounts"
   },
+  "backupAndSyncFeatureContacts": {
+    "message": "Contacts"
+  },
   "backupAndSyncManageWhatYouSync": {
     "message": "Manage what you sync"
   },
@@ -1197,9 +1200,6 @@
   "confirmPassword": {
     "message": "Confirm password"
   },
-  "confirmPasswordPlaceholder": {
-    "message": "Re-enter your password"
-  },
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
@@ -1482,7 +1482,13 @@
     "message": "Create a new account"
   },
   "createPassword": {
+    "message": "MetaMask password"
+  },
+  "createPasswordCreate": {
     "message": "Create password"
+  },
+  "createPasswordDetails": {
+    "message": "Unlocks MetaMask on this device only."
   },
   "createSnapAccountDescription": {
     "message": "$1 wants to add a new account to MetaMask."
@@ -3281,6 +3287,10 @@
     "message": "Choose a nickname...",
     "description": "Placeholder text for name input field in name component modal."
   },
+  "nameSetPlaceholderSuggested": {
+    "message": "Suggested: $1",
+    "description": "$1 is the proposed name"
+  },
   "nativeNetworkPermissionRequestDescription": {
     "message": "$1 is asking for your approval to:",
     "description": "$1 represents dapp name"
@@ -3480,8 +3490,8 @@
   "newPassword": {
     "message": "New password"
   },
-  "newPasswordPlaceholder": {
-    "message": "Enter a strong password"
+  "newPasswordCreate": {
+    "message": "Create new password"
   },
   "newPrivacyPolicyActionButton": {
     "message": "Read more"
@@ -3856,15 +3866,11 @@
   "onboardingAdvancedPrivacyNetworkTitle": {
     "message": "Choose your network"
   },
-  "onboardingContinueWith": {
-    "message": "Continue with $1",
-    "description": "$1 is the type of login used Google, Apple, etc."
-  },
   "onboardingCreateWallet": {
     "message": "Create a new wallet"
   },
   "onboardingImportWallet": {
-    "message": "I have an existing wallet"
+    "message": "Import using Secret Recovery Phrase"
   },
   "onboardingMetametricsAgree": {
     "message": "I agree"
@@ -3906,13 +3912,6 @@
   "onboardingMetametricsUseDataCheckbox": {
     "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
   },
-  "onboardingOptionIcon": {
-    "message": "$1 icon",
-    "description": "$1 is the icon name"
-  },
-  "onboardingOptionTitle": {
-    "message": "Choose an option to continue"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Launch extension"
   },
@@ -3931,16 +3930,6 @@
   },
   "onboardingPinExtensionTitle": {
     "message": "Installation is complete!"
-  },
-  "onboardingSignInWith": {
-    "message": "Sign in with $1",
-    "description": "$1 is the type of login used Google, Apple, etc"
-  },
-  "onboardingSrpCreate": {
-    "message": "Continue with Secret Recovery Phrase"
-  },
-  "onboardingSrpImport": {
-    "message": "Import using Secret Recovery Phrase"
   },
   "onboardingSrpImportError": {
     "message": "Use only lowercase letters, check your spelling, and put the words in the original order."
@@ -3979,9 +3968,6 @@
   },
   "options": {
     "message": "Options"
-  },
-  "or": {
-    "message": "Or"
   },
   "origin": {
     "message": "Origin"
@@ -4038,7 +4024,7 @@
     "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
   },
   "passwordTermsWarning": {
-    "message": "MetaMask can’t recover this password."
+    "message": "If I forget this password, MetaMask can't recover it for me."
   },
   "passwordToggleHide": {
     "message": "Hide Password"
@@ -4879,12 +4865,24 @@
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
   },
+  "securityLoginWithSrpBackedUp": {
+    "message": "Secret Recovery Phrase backed up"
+  },
+  "securityLoginWithSrpNotBackedUp": {
+    "message": "Back up Secret Recovery Phrase"
+  },
   "securityMessageLinkForNetworks": {
     "message": "network scams and security risks"
   },
   "securityProviderPoweredBy": {
     "message": "Powered by $1",
     "description": "The security provider that is providing data"
+  },
+  "securitySrpDescription": {
+    "message": "Back up your Secret Recovery Phrase so you never lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget."
+  },
+  "securitySrpLabel": {
+    "message": "SECRET RECOVERY PHRASES"
   },
   "seeAllPermissions": {
     "message": "See all permissions",
@@ -5188,6 +5186,12 @@
   },
   "skipAccountSecuritySkip": {
     "message": "Skip"
+  },
+  "skipDeepLinkInterstitial": {
+    "message": "Don't show interstitial screen when opening deep links"
+  },
+  "skipDeepLinkInterstitialDescription": {
+    "message": "Enabling this option will skip the interstitial screen that is shown when opening deep links in MetaMask. A \"deep link\" is a link like https://link.metamask.io/home that will cause MetaMask to open; these links can be obfuscated by others. The interstitial screen is designed to protect you from accidentally opening pages within MetaMask that might display your accounts, tokens, history, balances, settings, or other potentially sensitive information. This setting only applies to links signed by MetaMask."
   },
   "slideBridgeDescription": {
     "message": "Move across 9 chains, all within your wallet"
@@ -5645,6 +5649,12 @@
   "srpListSingleOrZero": {
     "message": "$1 account",
     "description": "$1 is the number of accounts in the list, it is either 1 or 0"
+  },
+  "srpListStateBackedUp": {
+    "message": "Reveal"
+  },
+  "srpListStateNotBackedUp": {
+    "message": "Backup"
   },
   "srpPasteFailedTooManyWords": {
     "message": "Paste failed because it contained over 24 words. A secret recovery phrase can have a maximum of 24 words.",
@@ -6306,6 +6316,9 @@
   "switch": {
     "message": "Switch"
   },
+  "switchBack": {
+    "message": "Switch back"
+  },
   "switchEthereumChainConfirmationDescription": {
     "message": "This will switch the selected network within MetaMask to a previously added network:"
   },
@@ -6688,6 +6701,9 @@
   "unlock": {
     "message": "Unlock"
   },
+  "unlockPageIncorrectPassword": {
+    "message": "Password is incorrect. Please try again."
+  },
   "unpin": {
     "message": "Unpin"
   },
@@ -6772,6 +6788,12 @@
   "useSafeChainsListValidationWebsite": {
     "message": "chainid.network",
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
+  },
+  "useSmartAccountDescription": {
+    "message": "Keep this on to automatically switch accounts created within MetaMask to smart accounts whenever relevant features are available, such as faster transactions, lower network fees and payment flexibility on payment for those."
+  },
+  "useSmartAccountTitle": {
+    "message": "Use smart account"
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Automatically displaying tokens sent to your account involves communication with third party servers to fetch token’s images. Those serves will have access to your IP address."
@@ -6866,6 +6888,9 @@
   },
   "walletReadyLoseSrp": {
     "message": "If you lose your Secret Recovery Phrase, you won’t be able to use your wallet."
+  },
+  "walletReadyLoseSrpFromReminder": {
+    "message": "This Secret Recovery Phrase can help you regain access if you ever forget your password or lose access to your login."
   },
   "walletReadyLoseSrpRemind": {
     "message": "If you don’t back up your Secret Recovery Phrase, you’ll lose access to your funds if you get locked out of the app or get a new device."
@@ -6988,6 +7013,9 @@
   },
   "yourWalletIsReady": {
     "message": "Your wallet is ready!"
+  },
+  "yourWalletIsReadyFromReminder": {
+    "message": "Keep your Secret Recovery Phrase safe!"
   },
   "yourWalletIsReadyRemind": {
     "message": "We’ll remind you later"

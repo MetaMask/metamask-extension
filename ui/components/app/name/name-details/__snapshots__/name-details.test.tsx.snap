@@ -129,7 +129,7 @@ exports[`NameDetails renders proposed names 1`] = `
               class="mm-box mm-form-text-field mm-form-text-field--disabled name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
             >
               <label
-                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
                 for="address"
               >
                 Address
@@ -345,7 +345,7 @@ exports[`NameDetails renders when no address value is passed 1`] = `
               class="mm-box mm-form-text-field mm-form-text-field--disabled name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
             >
               <label
-                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
                 for="address"
               >
                 Address
@@ -568,7 +568,7 @@ exports[`NameDetails renders with no saved name 1`] = `
               class="mm-box mm-form-text-field mm-form-text-field--disabled name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
             >
               <label
-                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
                 for="address"
               >
                 Address
@@ -756,7 +756,7 @@ exports[`NameDetails renders with recognized name 1`] = `
               class="mm-box mm-form-text-field mm-form-text-field--disabled name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
             >
               <label
-                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
                 for="address"
               >
                 Address
@@ -979,7 +979,7 @@ exports[`NameDetails renders with saved name 1`] = `
               class="mm-box mm-form-text-field mm-form-text-field--disabled name-details__address mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
             >
               <label
-                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+                class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
                 for="address"
               >
                 Address
