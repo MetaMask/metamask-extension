@@ -1,3 +1,8 @@
+import buy from './buy';
+import home from './home';
+import notifications from './notifications';
+import swap from './swap';
+
 import type { Route } from './route';
 
 export type { Route } from './route';
@@ -22,3 +27,8 @@ export function addRoute(route: Route) {
 
   routes.set(route.pathname, route);
 }
+
+addRoute(buy);
+addRoute(home);
+addRoute(notifications);
+addRoute(swap);
