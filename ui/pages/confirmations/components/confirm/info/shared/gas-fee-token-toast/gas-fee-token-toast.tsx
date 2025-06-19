@@ -1,11 +1,12 @@
 import React, { useCallback, useState } from 'react';
 
 import { Hex } from '@metamask/utils';
+
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import { Box } from '../../../../../../../components/component-library';
 import { Toast } from '../../../../../../../components/multichain';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import {
-  NATIVE_TOKEN_ADDRESS,
   useGasFeeToken,
   useSelectedGasFeeToken,
 } from '../../hooks/useGasFeeToken';
