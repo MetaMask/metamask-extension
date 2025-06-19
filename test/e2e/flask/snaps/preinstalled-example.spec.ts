@@ -2,21 +2,21 @@ import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import FixtureBuilder from '../../fixture-builder';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
 
 describe('Preinstalled example Snap', function () {
-  it.only('can display the Snap settings page', async function () {
+  it('can display the Snap settings page', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
         const preInstalledExample = new PreinstalledExampleSettings(driver);
         await navigateToPreInstalledExample(driver);
 
@@ -55,7 +55,7 @@ describe('Preinstalled example Snap', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
         await testSnaps.openPage();
@@ -80,7 +80,6 @@ async function navigateToPreInstalledExample(driver: Driver) {
   const preInstalledExample = new PreinstalledExampleSettings(driver);
 
   await headerNavbar.openSettingsPage();
-  await headerNavbar.check_pageIsLoaded();
 
   await settingsPage.goToPreInstalledExample();
   await preInstalledExample.check_pageIsLoaded();

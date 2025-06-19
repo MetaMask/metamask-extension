@@ -24,6 +24,7 @@ import { getSelectedInternalAccount } from '../../selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 
 const initialState = {
   isInitialized: false,
@@ -502,6 +503,23 @@ export function getIsUnlocked(state) {
 }
 
 export function getSeedPhraseBackedUp(state) {
+  return state.metamask.seedPhraseBackedUp;
+}
+
+/**
+ * Check whether the first (primary) seed phrase which was created during onboarding, is backed up.
+ *
+ * Returns true if the first (primary) seed phrase is backed up when the user creates a new wallet.
+ *
+ * @param {object} state - the redux state object
+ * @returns {boolean} true if the first (primary) seed phrase is backed up when the user creates a new wallet, or the user has imported/restored a wallet.
+ */
+export function getIsPrimarySeedPhraseBackedUp(state) {
+  // when user imports/restores a seed phrase, we can assume that user has already backed up the seed phrase.
+  if (state.metamask.firstTimeFlowType !== FirstTimeFlowType.create) {
+    return true;
+  }
+
   return state.metamask.seedPhraseBackedUp;
 }
 
