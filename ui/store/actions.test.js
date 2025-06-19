@@ -2374,7 +2374,7 @@ describe('Actions', () => {
       const accounts = ['0x123', '0x456'];
       const error = new Error('Failed to delete on-chain triggers');
 
-      const disableAccountsStub = sinon.stub().resolves();
+      const disableAccountsStub = sinon.stub().rejects(error);
 
       background.getApi.returns({
         disableAccounts: disableAccountsStub,
