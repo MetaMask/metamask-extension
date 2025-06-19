@@ -90,7 +90,7 @@ export const BridgeCTAButton = ({
       return 'youDeclinedTheTransaction';
     }
 
-    if (isQuoteExpired) {
+    if (isQuoteExpired && !isLoading) {
       return 'bridgeQuoteExpired';
     }
 
