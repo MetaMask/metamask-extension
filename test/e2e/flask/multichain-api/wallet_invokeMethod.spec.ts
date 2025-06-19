@@ -147,6 +147,7 @@ describe('Multichain API', function () {
                 }));
             }
 
+            await driver.delay(largeDelayMs);
             await testDapp.clickInvokeAllMethodsButton();
 
             for (const i of GANACHE_SCOPES.keys()) {
