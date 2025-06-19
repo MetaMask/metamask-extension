@@ -163,7 +163,7 @@ describe('Confirm Recovery Phrase Component', () => {
   });
 
   it('should enable confirm recovery phrase with correct word inputs', () => {
-    const { queryByTestId, queryAllByTestId, getByTestId } = renderWithProvider(
+    const { queryByTestId, queryAllByTestId, getByText } = renderWithProvider(
       <ConfirmRecoveryPhrase {...props} />,
       mockStore,
     );
@@ -187,7 +187,7 @@ describe('Confirm Recovery Phrase Component', () => {
     expect(confirmRecoveryPhraseButton).not.toBeDisabled();
     fireEvent.click(confirmRecoveryPhraseButton);
 
-    const gotItButton = getByTestId('confirm-srp-modal-button-success');
+    const gotItButton = getByText('Got it');
     expect(gotItButton).toBeInTheDocument();
     fireEvent.click(gotItButton);
 
@@ -200,7 +200,7 @@ describe('Confirm Recovery Phrase Component', () => {
       .spyOn(BrowserRuntimeUtils, 'getBrowserName')
       .mockReturnValue(PLATFORM_FIREFOX);
 
-    const { queryByTestId, queryAllByTestId, getByTestId } = renderWithProvider(
+    const { queryByTestId, queryAllByTestId, getByText } = renderWithProvider(
       <ConfirmRecoveryPhrase {...props} />,
       mockStore,
     );
@@ -222,7 +222,7 @@ describe('Confirm Recovery Phrase Component', () => {
     );
 
     fireEvent.click(confirmRecoveryPhraseButton);
-    fireEvent.click(getByTestId('confirm-srp-modal-button-success'));
+    fireEvent.click(getByText('Got it'));
 
     expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);
     expect(mockHistoryPush).toHaveBeenCalledWith(ONBOARDING_COMPLETION_ROUTE);
