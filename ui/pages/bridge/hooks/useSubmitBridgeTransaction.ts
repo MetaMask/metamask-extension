@@ -87,6 +87,15 @@ export default function useSubmitBridgeTransaction() {
 
     // Execute transaction(s)
     try {
+      if (isSolanaChainId(quoteResponse.quote.srcChainId)) {
+        await dispatch(setDefaultHomeActiveTabName('activity'));
+        history.push({
+          pathname: DEFAULT_ROUTE,
+          state: { stayOnHomePage: true },
+        });
+        await dispatch(submitBridgeTx(quoteResponse, false));
+        return;
+      }
       await dispatch(
         await submitBridgeTx(
           quoteResponse,
