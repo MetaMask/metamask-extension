@@ -1,10 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { fireEvent } from '@testing-library/react';
 
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { SmartAccountUpdateSuccess } from './smart-account-update-success';
-import { fireEvent } from '@testing-library/react';
 
 const mockReplace = jest.fn();
 jest.mock('react-router-dom', () => ({

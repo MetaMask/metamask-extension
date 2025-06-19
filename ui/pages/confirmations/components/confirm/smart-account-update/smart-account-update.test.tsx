@@ -1,7 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/dom';
-import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { flushPromises } from '../../../../../../test/lib/timer-helpers';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
