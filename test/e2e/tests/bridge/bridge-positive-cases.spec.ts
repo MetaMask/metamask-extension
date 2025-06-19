@@ -3,8 +3,7 @@ import { unlockWallet, withFixtures } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import {
   switchToNetworkFromSendFlow,
-  searchAndSwitchToNetworkFromGlobalMenuFlow,
-  switchToEditRPCViaGlobalMenuNetworks,
+  searchAndSwitchToNetworkFromSendFlow,
 } from '../../page-objects/flows/network.flow';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
 import { bridgeTransaction, getBridgeFixtures } from './bridge-test-utils';
@@ -71,10 +70,7 @@ describe('Bridge tests', function (this: Suite) {
         // in the network-controller
         await homePage.check_pageIsLoaded();
         await homePage.goToTokensTab();
-        await searchAndSwitchToNetworkFromGlobalMenuFlow(
-          driver,
-          'Arbitrum One',
-        );
+        await searchAndSwitchToNetworkFromSendFlow(driver, 'Arbitrum One');
         await homePage.goToActivityList();
 
         await bridgeTransaction(
