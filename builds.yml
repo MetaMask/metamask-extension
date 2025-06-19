@@ -361,3 +361,11 @@ env:
 
   # Enforce simulation balance changes by converting external transactions to delegations.
   - ENABLE_ENFORCED_SIMULATIONS: false
+
+  # OAuth (Soial login)
+  - AUTH_CONNECTION_ID: ''
+  - GROUPED_AUTH_CONNECTION_ID: ''
+  - GOOGLE_CLIENT_ID: ''
+  - APPLE_CLIENT_ID: ''
+  - WEB3AUTH_NETWORK: ''
+  - AUTH_SERVER_URL: ''
