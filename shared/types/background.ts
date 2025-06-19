@@ -298,6 +298,8 @@ export type ControllerStatePropertiesEnumerated = {
   isAccountSyncingReadyToBeDispatched: UserStorageController.UserStorageControllerState['isAccountSyncingReadyToBeDispatched'];
   isAccountSyncingInProgress: UserStorageController.UserStorageControllerState['isAccountSyncingInProgress'];
   hasNetworkSyncingSyncedAtLeastOnce?: UserStorageController.UserStorageControllerState['hasNetworkSyncingSyncedAtLeastOnce'];
+  isContactSyncingEnabled: UserStorageController.UserStorageControllerState['isContactSyncingEnabled'];
+  isContactSyncingInProgress: UserStorageController.UserStorageControllerState['isContactSyncingInProgress'];
 };
 
 type ControllerStateTypesMerged = AccountsControllerState &

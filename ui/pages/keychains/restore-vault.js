@@ -12,7 +12,10 @@ import Box from '../../components/ui/box';
 import { Text } from '../../components/component-library';
 import { TextVariant, TextColor } from '../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 
 class RestoreVaultPage extends Component {
   static contextTypes = {
@@ -39,11 +42,7 @@ class RestoreVaultPage extends Component {
     await createNewVaultAndRestore(password, seedPhrase);
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Retention,
-      event: 'onboardingRestoredVault',
-      properties: {
-        action: 'userEntersSeedPhrase',
-        legacy_event: true,
-      },
+      event: MetaMetricsEventName.WalletRestored,
     });
     history.push(DEFAULT_ROUTE);
   };
