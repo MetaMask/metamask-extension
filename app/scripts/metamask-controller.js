@@ -1648,6 +1648,7 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:getState',
           'BridgeController:getBridgeERC20Allowance',
           'BridgeController:trackUnifiedSwapBridgeEvent',
+          'BridgeController:stopPollingForQuotes',
           'GasFeeController:getState',
           'AccountsController:getAccountByAddress',
           'SnapController:handleRequest',
