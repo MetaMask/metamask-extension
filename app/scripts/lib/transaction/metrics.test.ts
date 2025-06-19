@@ -16,6 +16,7 @@ import {
 import {
   AssetType,
   EIP5792ErrorCode,
+  NATIVE_TOKEN_ADDRESS,
   TokenStandard,
   TransactionMetaMetricsEvent,
 } from '../../../../shared/constants/transaction';
@@ -1351,6 +1352,30 @@ describe('Transaction metrics', () => {
       expect(properties).toStrictEqual(
         expect.objectContaining({
           gas_paid_with: GAS_FEE_TOKEN_MOCK.symbol,
+        }),
+      );
+    });
+
+    it('set gas_paid_with to "pre-funded_ETH" if gas is paid using Future ETH', async () => {
+      const transactionMeta = {
+        ...mockTransactionMeta,
+        gasFeeTokens: [
+          { ...GAS_FEE_TOKEN_MOCK, tokenAddress: NATIVE_TOKEN_ADDRESS },
+        ],
+        selectedGasFeeToken: NATIVE_TOKEN_ADDRESS,
+      } as TransactionMeta;
+
+      await fn(mockTransactionMetricsRequest, {
+        transactionMeta,
+      });
+
+      const { properties } = jest.mocked(
+        mockTransactionMetricsRequest.createEventFragment,
+      ).mock.calls[0][0];
+
+      expect(properties).toStrictEqual(
+        expect.objectContaining({
+          gas_paid_with: 'pre-funded_ETH',
         }),
       );
     });
