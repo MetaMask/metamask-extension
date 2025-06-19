@@ -81,7 +81,9 @@ export default function ConfirmSrpModal({
           </Text>
           <Box marginTop={6}>
             <Button
-              data-testid="confirm-srp-modal-button"
+              data-testid={`confirm-srp-modal-button-${
+                isError ? 'error' : 'success'
+              }`}
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               onClick={handleContinue}

@@ -47,6 +47,10 @@ export default function RecoveryPhraseChips({
       word: '',
     })),
   );
+  const [indexToFocus, setIndexToFocus] = useState(
+    // sort the quiz words by index, and then get the index of the first quiz word
+    quizWords.sort((a, b) => a.index - b.index)[0].index,
+  );
 
   const setNextTargetIndex = (newQuizAnswers) => {
     const emptyAnswers = newQuizAnswers.reduce((acc, answer) => {
@@ -56,12 +60,8 @@ export default function RecoveryPhraseChips({
       return acc;
     }, []);
     const firstEmpty = emptyAnswers.length ? Math.min(...emptyAnswers) : -1;
-
     return firstEmpty;
   };
-  const [indexToFocus, setIndexToFocus] = useState(
-    setNextTargetIndex(quizAnswers),
-  );
 
   const addQuizWord = useCallback(
     (word) => {
@@ -96,17 +96,6 @@ export default function RecoveryPhraseChips({
   useEffect(() => {
     setInputValue?.(quizAnswers);
   }, [quizAnswers, setInputValue]);
-
-  useEffect(() => {
-    if (quizWords.length) {
-      const newQuizAnswers = quizWords.map((word) => ({
-        index: word.index,
-        word: '',
-      }));
-      setQuizAnswers(newQuizAnswers);
-      setIndexToFocus(setNextTargetIndex(newQuizAnswers));
-    }
-  }, [quizWords]);
 
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
@@ -229,7 +218,10 @@ export default function RecoveryPhraseChips({
       {quizWords.length > 0 && (
         <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
           {quizWords.map((value) => {
-            const isAnswered = quizAnswers.some((x) => x.word === value.word);
+            // check if the word is answered by checking if the word and index match
+            const isAnswered = quizAnswers.some(
+              (x) => x.word === value.word && x.index === value.index,
+            );
             return isAnswered ? (
               <ButtonBase
                 data-testid={`recovery-phrase-quiz-answered-${value.index}`}
