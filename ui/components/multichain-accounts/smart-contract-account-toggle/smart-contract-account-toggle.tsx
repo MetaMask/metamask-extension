@@ -21,9 +21,10 @@ export const SmartContractAccountToggle = ({
 }) => {
   const { name, isSupported, upgradeContractAddress, chainIdHex } =
     networkConfig;
-  const { downgradeAccount, upgradeAccount } = useEIP7702Account({
+  const { downgradeAccount, upgradeAccount, isUpgraded } = useEIP7702Account({
     chainId: chainIdHex,
   });
+
   const [addressSupportSmartAccount, setAddressSupportSmartAccount] =
     useState(isSupported);
 
@@ -33,17 +34,35 @@ export const SmartContractAccountToggle = ({
     chainIdHex,
   );
 
-  // This useEffect is necessary to update the addressSupportSmartAccount state when the hasPendingRequests state changes
+  // Check initial account state and verify transaction results
   useEffect(() => {
-    if (prevHasPendingRequests.current) {
-      if (prevHasPendingRequests.current !== hasPendingRequests) {
-        setAddressSupportSmartAccount(!addressSupportSmartAccount);
+    const checkUpgradeStatus = async () => {
+      try {
+        const upgraded = await isUpgraded(address);
+        setAddressSupportSmartAccount(upgraded);
+      } catch (error) {
+        // Fall back to isSupported if we can't determine upgrade status
+        setAddressSupportSmartAccount(isSupported);
       }
+    };
+
+    // Check initial state (when component mounts)
+    if (prevHasPendingRequests.current === undefined) {
+      checkUpgradeStatus();
     }
+    // Verify transaction result when pending requests complete
+    else if (prevHasPendingRequests.current && !hasPendingRequests) {
+      checkUpgradeStatus();
+    }
+
     prevHasPendingRequests.current = hasPendingRequests;
-  }, [addressSupportSmartAccount, hasPendingRequests, prevHasPendingRequests]);
+  }, [isUpgraded, address, isSupported, hasPendingRequests]);
 
   const onSwitch = useCallback(async () => {
+    // Immediately update the toggle state to show user's intent
+    setAddressSupportSmartAccount(!addressSupportSmartAccount);
+
+    // Dispatch the transaction
     if (addressSupportSmartAccount) {
       await downgradeAccount(address);
     } else if (upgradeContractAddress) {
