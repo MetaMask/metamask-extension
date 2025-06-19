@@ -43,9 +43,9 @@ describe('Token Details', function () {
         const assetListPage = new AssetListPage(driver);
         await homePage.check_pageIsLoaded();
         await assetListPage.importCustomTokenByChain(
+          chainId,
           tokenAddress,
           symbol,
-          chainId,
         );
         await assetListPage.dismissTokenImportedMessage();
         await assetListPage.openTokenDetails(symbol);
@@ -93,9 +93,9 @@ describe('Token Details', function () {
         const assetListPage = new AssetListPage(driver);
         await homePage.check_pageIsLoaded();
         await assetListPage.importCustomTokenByChain(
+          chainId,
           tokenAddress,
           symbol,
-          chainId,
         );
         await assetListPage.dismissTokenImportedMessage();
         await assetListPage.openTokenDetails(symbol);

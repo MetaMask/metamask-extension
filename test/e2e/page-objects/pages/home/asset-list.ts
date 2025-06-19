@@ -228,10 +228,9 @@ class AssetListPage {
   }
 
   async importCustomTokenByChain(
-    tokenAddress: string,
-    symbol: string | undefined,
     chainId: string,
-    prefilledSymbol: boolean = false,
+    tokenAddress: string,
+    symbol?: string,
   ): Promise<void> {
     console.log(`Creating custom token ${symbol} on homepage`);
     await this.driver.clickElement(this.tokenOptionsButton);
@@ -245,7 +244,7 @@ class AssetListPage {
     );
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
 
-    if (!prefilledSymbol && symbol) {
+    if (symbol) {
       // do not fill the form until the button is disabled, because there's a form re-render which can clear the input field causing flakiness
       await this.driver.waitForSelector(this.importTokensNextButton, {
         state: 'disabled',

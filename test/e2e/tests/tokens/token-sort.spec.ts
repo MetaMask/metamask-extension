@@ -32,9 +32,9 @@ describe('Token List Sorting', function () {
 
         await homePage.check_pageIsLoaded();
         await assetListPage.importCustomTokenByChain(
+          CHAIN_IDS.MAINNET,
           customTokenAddress,
           customTokenSymbol,
-          CHAIN_IDS.MAINNET,
         );
 
         await assetListPage.check_tokenExistsInList('Ethereum');

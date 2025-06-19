@@ -49,9 +49,9 @@ describe('Token List', function () {
 
         await homePage.check_pageIsLoaded();
         await assetListPage.importCustomTokenByChain(
+          chainId,
           tokenAddress,
           symbol,
-          chainId,
         );
 
         await assetListPage.check_tokenGeneralChangePercentageNotPresent(
@@ -106,9 +106,9 @@ describe('Token List', function () {
 
         await homePage.check_pageIsLoaded();
         await assetListPage.importCustomTokenByChain(
+          chainId,
           tokenAddress,
           symbol,
-          chainId,
         );
 
         await assetListPage.check_tokenGeneralChangePercentage(
