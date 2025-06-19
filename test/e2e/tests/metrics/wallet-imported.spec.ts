@@ -8,12 +8,6 @@ import { mockSegment } from './mocks/segment';
 
 describe('Wallet Created Events - Imported Account', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
-    const eventsToMock = [
-      'Wallet Setup Selected',
-      'Wallet Setup Complete',
-      'Wallet Created',
-    ];
-
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
@@ -23,7 +17,11 @@ describe('Wallet Created Events - Imported Account', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (server: Mockttp) => {
-          return await mockSegment(server, eventsToMock);
+          return await mockSegment(server, [
+            'Wallet Setup Selected',
+            'Wallet Setup Complete',
+            'Wallet Created',
+          ]);
         },
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
@@ -33,16 +31,13 @@ describe('Wallet Created Events - Imported Account', function () {
         });
 
         const events = await getEventPayloads(driver, mockedEndpoints);
-        const filteredEvents = events.filter((event) =>
-          eventsToMock.includes(event.event),
-        );
         const expectedEvents =
           process.env.SELENIUM_BROWSER === Browser.FIREFOX ? 2 : 3;
-        assert.equal(filteredEvents.length, expectedEvents);
+        assert.equal(events.length, expectedEvents);
 
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           // In Firefox, we expect 2 events in a specific order
-          assert.deepStrictEqual(filteredEvents[0].properties, {
+          assert.deepStrictEqual(events[0].properties, {
             wallet_setup_type: 'import',
             new_wallet: false,
             category: 'Onboarding',
@@ -51,7 +46,7 @@ describe('Wallet Created Events - Imported Account', function () {
             environment_type: 'fullscreen',
           });
 
-          assert.deepStrictEqual(filteredEvents[1].properties, {
+          assert.deepStrictEqual(events[1].properties, {
             method: 'import',
             is_profile_syncing_enabled: true,
             hd_entropy_index: 0,
@@ -62,7 +57,7 @@ describe('Wallet Created Events - Imported Account', function () {
           });
         } else {
           // In other browsers, we expect 3 events
-          assert.deepStrictEqual(filteredEvents[0].properties, {
+          assert.deepStrictEqual(events[0].properties, {
             account_type: 'imported',
             category: 'Onboarding',
             locale: 'en',
@@ -70,7 +65,7 @@ describe('Wallet Created Events - Imported Account', function () {
             environment_type: 'fullscreen',
           });
 
-          assert.deepStrictEqual(filteredEvents[1].properties, {
+          assert.deepStrictEqual(events[1].properties, {
             wallet_setup_type: 'import',
             new_wallet: false,
             category: 'Onboarding',
@@ -79,7 +74,7 @@ describe('Wallet Created Events - Imported Account', function () {
             environment_type: 'fullscreen',
           });
 
-          assert.deepStrictEqual(filteredEvents[2].properties, {
+          assert.deepStrictEqual(events[2].properties, {
             method: 'import',
             is_profile_syncing_enabled: true,
             category: 'Onboarding',
