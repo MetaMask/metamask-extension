@@ -67,7 +67,7 @@ describe('SrpList', () => {
     const keyring = getByTestId(`hd-keyring-${firstKeyringId}`);
     fireEvent.click(keyring);
 
-    expect(mocks.onActionComplete).toHaveBeenCalledWith(firstKeyringId);
+    expect(mocks.onActionComplete).toHaveBeenCalledWith(firstKeyringId, true);
   });
 
   it('displays the correct accounts for a keyring and ensures no duplicates', () => {

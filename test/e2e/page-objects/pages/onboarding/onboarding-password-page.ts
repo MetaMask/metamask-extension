@@ -14,7 +14,7 @@ class OnboardingPasswordPage {
   private readonly passwordTerms = '[data-testid="create-password-terms"]';
 
   private readonly createPasswordMessage = {
-    text: 'Create password',
+    text: 'MetaMask password',
     tag: 'h2',
   };
 

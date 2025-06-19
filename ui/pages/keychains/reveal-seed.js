@@ -26,7 +26,6 @@ import Box from '../../components/ui/box';
 import ExportTextContainer from '../../components/ui/export-text-container';
 import { Tab, Tabs } from '../../components/ui/tabs';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
   AlignItems,
   BlockSize,
@@ -41,6 +40,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { requestRevealSeedWords } from '../../store/actions';
 import { getHDEntropyIndex } from '../../selectors/selectors';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
+import { REVEAL_SRP_LIST_ROUTE } from '../../helpers/constants/routes';
 
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN';
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';
@@ -58,7 +58,6 @@ export default function RevealSeedPage() {
   const [seedWords, setSeedWords] = useState(null);
   const [completedLongPress, setCompletedLongPress] = useState(false);
   const [error, setError] = useState(null);
-  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const [isShowingHoldModal, setIsShowingHoldModal] = useState(false);
   const [srpViewEventTracked, setSrpViewEventTracked] = useState(false);
 
@@ -275,7 +274,8 @@ export default function RevealSeedPage() {
                 hd_entropy_index: hdEntropyIndex,
               },
             });
-            history.push(mostRecentOverviewPage);
+            // On cancel, we will go back to the `srp-reveal-list` page
+            history.push(REVEAL_SRP_LIST_ROUTE);
           }}
         >
           {t('cancel')}
@@ -324,7 +324,8 @@ export default function RevealSeedPage() {
                 key_type: MetaMetricsEventKeyType.Srp,
               },
             });
-            history.push(mostRecentOverviewPage);
+            // On close, we will go back to the `srp-reveal-list` page
+            history.push(REVEAL_SRP_LIST_ROUTE);
           }}
         >
           {t('close')}

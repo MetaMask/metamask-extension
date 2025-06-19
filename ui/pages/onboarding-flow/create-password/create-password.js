@@ -206,15 +206,22 @@ export default function CreatePassword({
           <Text variant={TextVariant.headingLg} as="h2">
             {t('createPassword')}
           </Text>
+          <Text
+            variant={TextVariant.bodyMd}
+            color={TextColor.textAlternative}
+            as="h2"
+          >
+            {socialLoginFlow
+              ? t('createPasswordDetailsSocial')
+              : t('createPasswordDetails')}
+          </Text>
         </Box>
         <PasswordForm onChange={(newPassword) => setPassword(newPassword)} />
-      </Box>
-      <Box>
         <Box
           className="create-password__terms-container"
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.spaceBetween}
-          marginBottom={4}
+          marginTop={6}
         >
           <Checkbox
             inputProps={{ 'data-testid': 'create-password-terms' }}
@@ -232,6 +239,8 @@ export default function CreatePassword({
             }
           />
         </Box>
+      </Box>
+      <Box>
         <Button
           data-testid="create-password-submit"
           variant={ButtonVariant.Primary}
@@ -240,7 +249,7 @@ export default function CreatePassword({
           className="create-password__form--submit-button"
           disabled={!password || !termsChecked}
         >
-          {t('confirm')}
+          {t('createPasswordCreate')}
         </Button>
       </Box>
       {shouldInjectMetametricsIframe ? (
