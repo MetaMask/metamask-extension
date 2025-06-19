@@ -121,7 +121,6 @@ describe('Create BTC Account', function (this: Suite) {
       // go to privacy settings page and get the SRP
       await headerNavbar.openSettingsPage();
       const settingsPage = new SettingsPage(driver);
-      await settingsPage.check_pageIsLoaded();
       await settingsPage.goToPrivacySettings();
 
       const privacySettings = new PrivacySettings(driver);
@@ -130,6 +129,9 @@ describe('Create BTC Account', function (this: Suite) {
       await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
       const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
       await driver.clickElement({ tag: 'button', text: 'Close' });
+      await driver.clickElement(
+        '.settings-page__header__title-container__close-button',
+      );
 
       // lock metamask and reset wallet by clicking forgot password button
       await headerNavbar.lockMetaMask();
