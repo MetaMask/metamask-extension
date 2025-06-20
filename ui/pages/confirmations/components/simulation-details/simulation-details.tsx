@@ -43,7 +43,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { selectTransactionMetadata } from '../../../../selectors';
 import { SimulationSettingsModal } from '../modals/simulation-settings-modal/simulation-settings-modal';
 import { selectConfirmationAdvancedDetailsOpen } from '../../selectors/preferences';
-import { useIsEnforcedSimulationsSupported } from '../../hooks/useIsEnforcedSimulationsSupported';
+import { useIsEnforcedSimulationsSupported } from '../../hooks/transactions/useIsEnforcedSimulationsSupported';
 import { BalanceChangeList } from './balance-change-list';
 import { BalanceChange } from './types';
 import { useBalanceChanges } from './useBalanceChanges';
