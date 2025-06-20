@@ -37,8 +37,8 @@ describe('Fetch with cache', () => {
       .reply(200, '{"average": 2}');
 
     getStorageItem.mockReturnValueOnce({
-      cachedResponse: { average: 1 },
-      cachedTime: Date.now(),
+      data: { average: 1 },
+      expiration: Date.now() + 1000,
     });
 
     const response = await fetchWithCache({
@@ -56,8 +56,8 @@ describe('Fetch with cache', () => {
       .reply(200, '{"average": 3}');
 
     getStorageItem.mockReturnValueOnce({
-      cachedResponse: { average: 1 },
-      cachedTime: Date.now() - 1000,
+      data: { average: 1 },
+      expiration: Date.now() - 1000,
     });
 
     const response = await fetchWithCache({
@@ -174,12 +174,10 @@ describe('Fetch with cache', () => {
     ]);
 
     expect(
-      testCache['cachedFetch:https://fetchwithcache.metamask.io/foo']
-        .cachedResponse,
+      testCache['https://fetchwithcache.metamask.io/foo'].data,
     ).toStrictEqual({ average: 9 });
     expect(
-      testCache['cachedFetch:https://fetchwithcache.metamask.io/bar']
-        .cachedResponse,
+      testCache['https://fetchwithcache.metamask.io/bar'].data,
     ).toStrictEqual({ average: 9 });
   });
 });
