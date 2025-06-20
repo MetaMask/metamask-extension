@@ -1,5 +1,6 @@
 import {
   TransactionContainerType,
+  TransactionController,
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import { cloneDeep } from 'lodash';
@@ -78,4 +79,52 @@ export async function applyTransactionContainers({
       }
     },
   };
+}
+
+export async function applyTransactionContainersExisting({
+  transactionId,
+  messenger,
+  updateEditableParams,
+}: {
+  transactionId: string;
+  messenger: TransactionControllerInitMessenger;
+  updateEditableParams: TransactionController['updateEditableParams'];
+}) {
+  const transactionControllerState = await messenger.call(
+    'TransactionController:getState',
+  );
+
+  const transactionMeta = transactionControllerState.transactions.find(
+    (tx) => tx.id === transactionId,
+  );
+
+  if (!transactionMeta) {
+    throw new Error(`Transaction with ID ${transactionId} not found.`);
+  }
+
+  const { containerTypes = [] } = transactionMeta;
+
+  const newContainerTypes = [
+    ...containerTypes,
+    TransactionContainerType.EnforcedSimulations,
+  ];
+
+  const { updateTransaction } = await applyTransactionContainers({
+    isApproved: false,
+    messenger,
+    transactionMeta,
+    types: newContainerTypes,
+  });
+
+  const newTransactionMeta = cloneDeep(transactionMeta);
+
+  updateTransaction(newTransactionMeta);
+
+  updateEditableParams(transactionId, {
+    containerTypes: newContainerTypes,
+    data: newTransactionMeta.txParams.data,
+    gas: newTransactionMeta.txParams.gas,
+    to: newTransactionMeta.txParams.to,
+    value: newTransactionMeta.txParams.value,
+  });
 }

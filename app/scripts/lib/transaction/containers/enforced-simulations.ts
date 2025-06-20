@@ -1,13 +1,10 @@
 import {
   SimulationData,
   SimulationTokenStandard,
-  TransactionContainerType,
-  TransactionController,
   TransactionMeta,
   TransactionParams,
 } from '@metamask/transaction-controller';
 import { Hex, createProjectLogger, hexToNumber } from '@metamask/utils';
-import { cloneDeep } from 'lodash';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import {
   DeleGatorEnvironment,
@@ -23,60 +20,11 @@ import {
   UnsignedDelegation,
   encodeRedeemDelegations,
 } from '../../../../../shared/lib/delegation/delegation';
-import { applyTransactionContainers } from './util';
 
 const log = createProjectLogger('enforced-simulations');
 
 const MOCK_DELEGATION_SIGNATURE =
   '0x2261a7810ed3e9cde160895909e138e2f68adb2da86fcf98ea0840701df107721fb369ab9b52550ea98832c09f8185284aca4c94bd345e867a4f4461868dd7751b';
-
-export async function enforceSimulationsForTransaction({
-  transactionId,
-  messenger,
-  updateEditableParams,
-}: {
-  transactionId: Hex;
-  messenger: TransactionControllerInitMessenger;
-  updateEditableParams: TransactionController['updateEditableParams'];
-}) {
-  const transactionControllerState = await messenger.call(
-    'TransactionController:getState',
-  );
-
-  const transactionMeta = transactionControllerState.transactions.find(
-    (tx) => tx.id === transactionId,
-  );
-
-  if (!transactionMeta) {
-    throw new Error(`Transaction with ID ${transactionId} not found.`);
-  }
-
-  const { containerTypes = [] } = transactionMeta;
-
-  const newContainerTypes = [
-    ...containerTypes,
-    TransactionContainerType.EnforcedSimulations,
-  ];
-
-  const { updateTransaction } = await applyTransactionContainers({
-    isApproved: false,
-    messenger,
-    transactionMeta,
-    types: newContainerTypes,
-  });
-
-  const newTransactionMeta = cloneDeep(transactionMeta);
-
-  updateTransaction(newTransactionMeta);
-
-  updateEditableParams(transactionId, {
-    containerTypes: newContainerTypes,
-    data: newTransactionMeta.txParams.data,
-    gas: newTransactionMeta.txParams.gas,
-    to: newTransactionMeta.txParams.to,
-    value: newTransactionMeta.txParams.value,
-  });
-}
 
 export async function enforceSimulations({
   chainId,
