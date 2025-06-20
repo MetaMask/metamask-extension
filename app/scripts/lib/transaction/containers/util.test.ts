@@ -16,7 +16,6 @@ import { enforceSimulations } from './enforced-simulations';
 jest.mock('./enforced-simulations');
 
 const TRANSACTION_ID_MOCK = '123-456';
-const CHAIN_ID_MOCK = '0x123' as const;
 const ESTIMATE_GAS_MOCK = '0x456' as const;
 const NEW_DATA_MOCK = '0x789' as const;
 
