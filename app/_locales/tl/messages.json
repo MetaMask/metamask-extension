@@ -4413,18 +4413,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "Nakuha ko"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "Palaging panatilihin ang iyong Lihim na Parirala sa Pagbawi sa isang ligtas at sikretong lugar"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Kailangang i-backup muli ang iyong Lihim na Parirala sa Pagbawi?"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "Huwag kailanman ibahagi ang iyong Lihim na Parirala sa Pagbawi sa sinuman"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "Hindi kailanman hihingin ng MetaMask team ang iyong Lihim na Parirala sa Pagbawi"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "Kinokontrol ng iyong Lihim na Parirala sa Pagbawi ang lahat ng iyong account."
   },

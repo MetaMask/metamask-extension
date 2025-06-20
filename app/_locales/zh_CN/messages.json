@@ -4413,18 +4413,6 @@
   "recoveryPhraseReminderConfirm": {
     "message": "明白了"
   },
-  "recoveryPhraseReminderHasBackedUp": {
-    "message": "始终将您的账户私钥助记词保存在安全和秘密的地方"
-  },
-  "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "需要再次备份您的账户私钥助记词？"
-  },
-  "recoveryPhraseReminderItemOne": {
-    "message": "切勿与任何人分享您的账户私钥助记词"
-  },
-  "recoveryPhraseReminderItemTwo": {
-    "message": "MetaMask 团队绝对不会索要您的账户私钥助记词"
-  },
   "recoveryPhraseReminderSubText": {
     "message": "您的账户私钥助记词控制您的所有账户。"
   },
