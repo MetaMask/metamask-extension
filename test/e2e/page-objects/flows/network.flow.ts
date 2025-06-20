@@ -91,6 +91,7 @@ export const searchAndSwitchToNetworkFromGlobalMenuFlow = async (
   await networkSwitchModalConfirmation.clickApproveButton();
 
   const assetList = new AssetListPage(driver);
+  await headerNavbar.check_pageIsLoaded();
   await assetList.openNetworksFilter();
   await assetList.clickCurrentNetworkOption();
   await assetList.check_networkFilterText(networkName);
