@@ -103,6 +103,11 @@ class AssetListPage {
   private readonly tokenOptionsButton =
     '[data-testid="asset-list-control-bar-action-button"]';
 
+  private readonly tokenSymbolTitle = {
+    tag: 'label',
+    text: 'Token symbol',
+  };
+
   private tokenImportSelectNetwork(chainId: string): string {
     return `[data-testid="select-network-item-${chainId}"]`;
   }
@@ -243,6 +248,7 @@ class AssetListPage {
       this.tokenImportSelectNetwork(chainId),
     );
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
+    await this.driver.waitForSelector(this.tokenSymbolTitle);
 
     if (symbol) {
       // do not fill the form until the button is disabled, because there's a form re-render which can clear the input field causing flakiness
