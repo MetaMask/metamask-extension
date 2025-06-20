@@ -70,6 +70,8 @@ async function main() {
           'eth_getBlockReceipts',
           'eth_maxPriorityFeePerGas',
           'wallet_swapAsset',
+          'wallet_getCapabilities', // quarantined until we improve jsonrpc examples for testing
+          'wallet_getCallsStatus', // quarantined until we improve jsonrpc examples for testing
         ],
         rules: [
           new JsonSchemaFakerRule({

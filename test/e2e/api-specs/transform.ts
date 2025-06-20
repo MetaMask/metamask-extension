@@ -303,6 +303,7 @@ const transformOpenRPCDocument = (
     'wallet_addEthereumChain',
     'eth_signTypedData_v4', // requires permissions for eth_accounts
     'wallet_switchEthereumChain',
+    'wallet_sendCalls',
 
     // commented out because its not returning 4001 error.
     // see here https://github.com/MetaMask/metamask-extension/issues/24227

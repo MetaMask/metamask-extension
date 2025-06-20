@@ -221,6 +221,8 @@ async function main() {
           // don't get passed through. See here: https://github.com/MetaMask/metamask-extension/issues/24225
           'eth_getBlockReceipts',
           'eth_maxPriorityFeePerGas',
+          'wallet_getCapabilities', // quarantined until we improve jsonrpc examples for testing
+          'wallet_getCallsStatus', // quarantined until we improve jsonrpc examples for testing
         ],
         rules: [
           new JsonSchemaFakerRule({
