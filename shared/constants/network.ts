@@ -340,7 +340,6 @@ export const SOPHON_TESTNET_DISPLAY_NAME = 'Sophon Testnet';
 export const EDUCHAIN_DISPLAY_NAME = 'EDU Chain';
 export const APECHAIN_DISPLAY_NAME = 'ApeChain';
 export const APECHAIN_TESTNET_DISPLAY_NAME = 'ApeChain Testnet';
-export const SEI_DISPLAY_NAME = 'Sei Network';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -407,7 +406,6 @@ export const CURRENCY_SYMBOLS = {
   BERACHAIN: 'BERA',
   EDUCHAIN: 'EDU',
   APECHAIN: 'APE',
-  SEI: 'SEI',
 } as const;
 
 // Non-EVM currency symbols
