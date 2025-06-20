@@ -22,22 +22,27 @@ describe('Swap on Solana', function () {
         await homePage.check_pageIsLoaded('50');
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSolanaSwap({
-          amount: 1,
-          swapTo: 'USDC',
-          swapFrom: 'SOL',
-        });
+        const quote = {
+          swapFromAmount: "1",
+          swapToAmount: "167.7",
+          swapToConversionRate: '167.7',
+          tokenTo: 'USDC',
+          tokenFrom: 'SOL',
+          fromChain: 'Solana',
+          toChain: 'Solana',
+          skipCounter: true,
+        }
+
+        await swapPage.createSwap(quote);
 
         await swapPage.clickOnMoreQuotes();
         await swapPage.checkQuote({
-          amount: '$2.65',
           totalCost: '$168.88',
           receivedAmount: '$166.23',
           estimatedTime: '< 1 min',
           provider: 'Jupiter Via Li Fi',
         });
         await swapPage.checkQuote({
-          amount: '$1.19',
           totalCost: '$168.88',
           receivedAmount: '$167.70',
           estimatedTime: '< 1 min',
@@ -45,12 +50,7 @@ describe('Swap on Solana', function () {
         });
 
         await swapPage.closeQuotes();
-        await swapPage.reviewSolanaQuote({
-          swapToAmount: '167.7',
-          swapFrom: 'SOL',
-          swapTo: 'USDC',
-          swapFromAmount: '1',
-        });
+        await swapPage.reviewSolanaQuote(quote);
 
         if (SHOW_SWAP_SNAP_CONFIRMATION) {
           const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
@@ -80,17 +80,18 @@ describe('Swap on Solana', function () {
         await homePage.check_pageIsLoaded('50');
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSolanaSwap({
-          amount: 1,
-          swapTo: 'SOL',
-          swapFrom: 'USDC',
-        });
-        await swapPage.reviewSolanaQuote({
-          swapToAmount: '0.00589',
-          swapFrom: 'USDC',
-          swapTo: 'SOL',
-          swapFromAmount: '1',
-        });
+        const quote = {
+          swapFromAmount: "1",
+          swapToAmount: "0.00589",
+          swapToConversionRate: '0.00589',
+          tokenTo: 'SOL',
+          tokenFrom: 'USDC',
+          fromChain: 'Solana',
+          toChain: 'Solana',
+          skipCounter: true,
+        }
+        await swapPage.createSwap(quote);
+        await swapPage.reviewSolanaQuote(quote);
 
         if (SHOW_SWAP_SNAP_CONFIRMATION) {
           const confirmSolanaPage = new ConfirmSolanaTxPage(driver);
@@ -119,11 +120,16 @@ describe('Swap on Solana', function () {
         await homePage.check_pageIsLoaded('50');
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
-        await swapPage.createSolanaSwap({
-          amount: 0.001,
-          swapTo: 'USDC',
-          swapFrom: 'SOL',
-        });
+        const quote = {
+          swapFromAmount: "1",
+          swapToAmount: "167.7",
+          tokenTo: 'USDC',
+          tokenFrom: 'SOL',
+          fromChain: 'Solana',
+          toChain: 'Solana',
+          skipCounter: true,
+        }
+        await swapPage.createSwap(quote);
         await swapPage.checkNoQuotesAvailable();
       },
     );
