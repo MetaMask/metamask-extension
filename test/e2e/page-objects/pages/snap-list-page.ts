@@ -43,6 +43,8 @@ class SnapListPage {
     tag: 'p',
   };
 
+  private readonly backButton = 'button[aria-label="Back"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -95,6 +97,11 @@ class SnapListPage {
   async check_homePageTitle(): Promise<void> {
     console.log('Checking title of snap list page');
     await this.driver.waitForSelector(this.homePageTitle);
+  }
+
+  async clickBackButton(): Promise<void> {
+    console.log('Clicking back button');
+    await this.driver.clickElement(this.backButton);
   }
 }
 
