@@ -143,7 +143,7 @@ describe('MultichainAccountListMenu', () => {
 
     expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
     expect(
-      getByTestId('multichain-account-menu-search-box'),
+      getByTestId('multichain-account-menu-search-bar'),
     ).toBeInTheDocument();
     expect(document.querySelector('[aria-label="Back"]')).toStrictEqual(null);
   });

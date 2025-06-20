@@ -134,7 +134,7 @@ export const MultichainAccountListMenu = ({
           value={searchPattern}
           onChange={onSearchBarChange}
           clearButtonOnClick={() => setSearchPattern('')}
-          data-testid="multichain-account-menu-search-box"
+          data-testid="multichain-account-menu-search-bar"
         />
       </Box>
       {/* Account tree block */}
