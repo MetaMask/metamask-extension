@@ -1192,7 +1192,6 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.keyringController = new KeyringController({
-      cacheEncryptionKey: true,
       keyringBuilders: additionalKeyrings,
       state: initState.KeyringController,
       encryptor: opts.encryptor || encryptorFactory(600_000),
@@ -5092,7 +5091,7 @@ export default class MetamaskController extends EventEmitter {
           return;
         }
 
-        await this.keyringController.submitEncryptionKey(loginToken, loginSalt);
+        await this.keyringController.submitEncryptionKey(loginToken);
       }
     } catch (e) {
       // If somehow this login token doesn't work properly,
