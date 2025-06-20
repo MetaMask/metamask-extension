@@ -11,7 +11,6 @@ import { Confirmation } from '../../../../types/confirm';
 import {
   rejectPendingApproval,
   setSmartAccountOptInForAccounts,
-  setSmartAccountOptIn,
 } from '../../../../../../store/actions';
 import { SmartAccountUpdateSplash } from './smart-account-update-splash';
 
@@ -24,7 +23,6 @@ jest.mock('../../../../../../store/actions', () => ({
   setAccountDetailsAddress: jest.fn(),
   rejectPendingApproval: jest.fn().mockReturnValue({}),
   setSmartAccountOptInForAccounts: jest.fn(),
-  setSmartAccountOptIn: jest.fn(),
 }));
 
 const mockDispatch = jest.fn();
@@ -72,7 +70,6 @@ describe('Splash', () => {
 
     expect(container.firstChild).toBeNull();
     expect(setSmartAccountOptInForAccounts).toHaveBeenCalledTimes(1);
-    expect(setSmartAccountOptIn).toHaveBeenCalledTimes(1);
   });
 
   it('reject confirmation if user does not accept', async () => {
