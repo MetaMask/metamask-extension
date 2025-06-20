@@ -165,7 +165,7 @@ describe('Security alerts utils', () => {
         accountAddress: mockAccountAddress,
       });
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         titleId: 'txAlertTitle',
         description: 'The Insufficient balance.',
         descriptionId: 'bridgeSelectDifferentQuote',
@@ -187,7 +187,7 @@ describe('Security alerts utils', () => {
         accountAddress: mockAccountAddress,
       });
 
-      expect(result).toEqual({
+      expect(result).toStrictEqual({
         titleId: 'txAlertTitle',
         description: '',
         descriptionId: 'bridgeSelectDifferentQuote',

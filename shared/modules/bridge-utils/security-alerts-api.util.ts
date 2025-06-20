@@ -219,11 +219,14 @@ export async function fetchTxAlerts({
   }
 
   if (respBody.status === 'ERROR') {
+    // eslint-disable-next-line camelcase
     const { error_details } = respBody;
     return {
       titleId: 'txAlertTitle',
+      // eslint-disable-next-line camelcase
       description: error_details?.message
-        ? 'The ' + error_details.message + '.'
+        ? // eslint-disable-next-line camelcase
+          `The ${error_details.message}.`
         : '',
       descriptionId: 'bridgeSelectDifferentQuote',
     };
