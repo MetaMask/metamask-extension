@@ -254,20 +254,8 @@
   "gasLimit": {
     "message": "Limit gasa"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Granica gasa je maksimalni iznos jedinica gasa koje ste voljni da potrošite."
-  },
   "gasLimitTooLow": {
     "message": "Limit za gas mora da bude najmanje 21 000"
-  },
-  "gasPrice": {
-    "message": "Cena gasa (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Cena gasa izuzetno niska"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Cena gasa određuje količinu Ethera koju ste spremni da platite za svaku jedinicu gasa."
   },
   "gasUsed": {
     "message": "Korišćen gas"
@@ -635,9 +623,6 @@
   "terms": {
     "message": "Uslovi korišćenja"
   },
-  "tips": {
-    "message": "Donacije"
-  },
   "to": {
     "message": "Za"
   },
@@ -713,9 +698,6 @@
   "unlock": {
     "message": "Откључај"
   },
-  "unlockMessage": {
-    "message": "Decentralizovani veb čeka"
-  },
   "urlErrorMsg": {
     "message": "URI-ovi zahtevaju odgovarajući prefiks HTTP / HTTPS."
   },
@@ -739,8 +721,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Vaša privatna šifra za oporavak naloga (seed phrase)"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Nulta cena gasa ubrzava"
   }
 }

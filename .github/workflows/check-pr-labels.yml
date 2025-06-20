@@ -26,6 +26,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Check PR has required labels
         env:

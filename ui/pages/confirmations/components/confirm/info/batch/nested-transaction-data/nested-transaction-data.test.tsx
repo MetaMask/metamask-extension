@@ -31,7 +31,7 @@ const FUNCTION_NAME_MOCK = 'TestFunction';
 const BATCH_TRANSACTION_PARAMS_MOCK: BatchTransactionParams = {
   data: '0x12345',
   to: '0x1234567890123456789012345678901234567890',
-  value: '0xabc',
+  value: '0x5',
 };
 
 function render({
@@ -85,6 +85,9 @@ describe('NestedTransaction', () => {
     });
 
     expect(getByText('0x12345...67890')).toBeInTheDocument();
+    expect(getByText('Amount')).toBeInTheDocument();
+    expect(getByText('<0.000001')).toBeInTheDocument();
+    expect(getByText('ETH')).toBeInTheDocument();
   });
 
   it('renders transaction data', () => {

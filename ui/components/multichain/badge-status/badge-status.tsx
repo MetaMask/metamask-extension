@@ -62,7 +62,6 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
         }
       >
         {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           <AvatarAccount
             borderColor={BorderColor.transparent}
             size={AvatarAccountSize.Md}
@@ -74,7 +73,6 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
             }
             marginInlineEnd={2}
           />
-          ///: END:ONLY_INCLUDE_IF
         }
       </BadgeWrapper>
     );

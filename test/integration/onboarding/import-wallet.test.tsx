@@ -113,7 +113,7 @@ describe('Import Wallet Events', () => {
     });
 
     await waitForElementByText(
-      `Pin MetaMask on your browser so it's accessible and easy to view transaction confirmations.`,
+      `Access your MetaMask wallet with 1 click by clicking on the extension.`,
     );
 
     await clickElementById(pinExtensionDoneBtnId);

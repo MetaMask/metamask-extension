@@ -83,6 +83,7 @@ const snapConfigurations: Record<string, string> = {
   mockBip44Snap: 'bip44-example-snap',
   mockClientStatusSnap: 'client-status-example-snap',
   mockCronjobSnap: 'cronjob-example-snap',
+  mockCronjobDurationSnap: 'cronjob-duration-example-snap',
   mockDialogSnap: 'dialog-example-snap',
   mockErrorSnap: 'error-example-snap',
   mockEthereumProviderSnap: 'ethereum-provider-example-snap',
@@ -141,6 +142,13 @@ export async function mockCronjobSnap(mockServer: Mockttp) {
   return createSnapMock({
     mockServer,
     snapNamePrefix: snapConfigurations.mockCronjobSnap,
+  });
+}
+
+export async function mockCronjobDurationSnap(mockServer: Mockttp) {
+  return createSnapMock({
+    mockServer,
+    snapNamePrefix: snapConfigurations.mockCronjobDurationSnap,
   });
 }
 

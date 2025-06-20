@@ -57,7 +57,7 @@ const mockNonEvmNetworks: Record<CaipChainId, MultichainNetworkConfiguration> =
     },
     [BtcScope.Signet]: {
       chainId: BtcScope.Signet,
-      name: 'Bitcoin Signet',
+      name: 'Bitcoin Mutinynet',
       nativeCurrency: `${BtcScope.Signet}/slip44:0`,
       isEvm: false,
     },

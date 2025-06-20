@@ -44,15 +44,10 @@ describe('Incremental Security', function (this: Suite) {
 
         // agree to terms of use and start onboarding
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.check_pageIsLoaded();
-        await startOnboardingPage.checkTermsCheckbox();
-        await startOnboardingPage.clickCreateWalletButton();
-
-        // skip collect metametrics
-        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-          await onboardingMetricsPage.clickNoThanksButton();
-        }
+        await startOnboardingPage.check_bannerPageIsLoaded();
+        await startOnboardingPage.agreeToTermsOfUse();
+        await startOnboardingPage.check_loginPageIsLoaded();
+        await startOnboardingPage.createWalletWithSrp();
 
         // create password
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
@@ -63,6 +58,12 @@ describe('Incremental Security', function (this: Suite) {
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.check_pageIsLoaded();
         await secureWalletPage.skipSRPBackup();
+
+        // skip collect metametrics
+        if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.clickNoThanksButton();
+        }
 
         // complete onboarding and pin extension
         const onboardingCompletePage = new OnboardingCompletePage(driver);
@@ -93,6 +94,11 @@ describe('Incremental Security', function (this: Suite) {
 
         // reveal and confirm the Secret Recovery Phrase on backup SRP page
         await secureWalletPage.revealAndConfirmSRP(WALLET_PASSWORD);
+
+        // complete backup
+        await onboardingCompletePage.check_pageIsLoaded_backup();
+        await onboardingCompletePage.check_keepSrpSafeMessageIsDisplayed();
+        await onboardingCompletePage.completeBackup();
 
         // check the balance is correct after revealing and confirming the SRP
         await homePage.check_pageIsLoaded();

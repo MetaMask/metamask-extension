@@ -2,9 +2,10 @@ import React from 'react';
 import { Hex } from '@metamask/utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
+
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { selectNetworkConfigurationByChainId } from '../../../../../../../selectors';
-import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 import Identicon from '../../../../../../../components/ui/identicon';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../../../../shared/constants/network';
 import {

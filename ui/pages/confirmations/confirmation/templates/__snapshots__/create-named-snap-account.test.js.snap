@@ -102,7 +102,7 @@ exports[`create-named-snap-account confirmation matches snapshot 1`] = `
             data-testid="account-name-input"
           >
             <label
-              class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+              class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
               for="account-name"
             >
               Account name
@@ -121,7 +121,7 @@ exports[`create-named-snap-account confirmation matches snapshot 1`] = `
               />
             </div>
             <p
-              class="mm-box mm-text mm-help-text mm-form-text-field__help-text mm-text--body-xs mm-box--margin-top-1 mm-box--color-text-default"
+              class="mm-box mm-text mm-help-text mm-form-text-field__help-text mm-text--body-sm mm-box--margin-top-1 mm-box--color-text-default"
             >
               ​
             </p>

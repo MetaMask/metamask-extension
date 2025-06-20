@@ -783,7 +783,7 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
                 data-testid="network-form-name-input"
               >
                 <label
-                  class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md-medium mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+                  class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md-medium mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
                   for="networkName"
                 >
                   Network name
@@ -840,7 +840,7 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
                 data-testid="network-form-chain-id-input"
               >
                 <label
-                  class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md-medium mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+                  class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md-medium mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
                   for="chainId"
                 >
                   Chain ID
@@ -865,7 +865,7 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
                 data-testid="network-form-ticker"
               >
                 <label
-                  class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md-medium mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+                  class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md-medium mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
                   for="nativeCurrency"
                 >
                   Currency symbol

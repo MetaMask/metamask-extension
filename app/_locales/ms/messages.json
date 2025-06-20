@@ -254,20 +254,8 @@
   "gasLimit": {
     "message": "Had Gas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Had gas ialah jumlah maksimum unit gas yang anda sedia belanjakan."
-  },
   "gasLimitTooLow": {
     "message": "Had gas mestilah sekurang-kurangnya 21000"
-  },
-  "gasPrice": {
-    "message": "Harga Gas (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Harga Gas Teramat Rendah"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Harga gas menentukan jumlah Ether yang anda sedia bayar untuk setiap unit gas."
   },
   "gasUsed": {
     "message": "Gas Digunakan"
@@ -628,9 +616,6 @@
   "terms": {
     "message": "Syarat-syarat Penggunaan"
   },
-  "tips": {
-    "message": "Tip"
-  },
   "to": {
     "message": "Kepada"
   },
@@ -706,9 +691,6 @@
   "unlock": {
     "message": "Buka kunci"
   },
-  "unlockMessage": {
-    "message": "Web ternyahpusat menanti"
-  },
   "urlErrorMsg": {
     "message": "URI memerlukan awalan HTTP/HTTPS yang sesuai."
   },
@@ -732,8 +714,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Ungkapan benih peribadi anda"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Sifar harga gas untuk pencepatan"
   }
 }

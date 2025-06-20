@@ -257,20 +257,8 @@
   "gasLimit": {
     "message": "Gas robežvērtība"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Gas robežvērtība ir maksimālais Gas vienību skaits, ko vēlaties tērēt."
-  },
   "gasLimitTooLow": {
     "message": "Minimālajai Gas robežvērtībai jābūt vismaz 21000"
-  },
-  "gasPrice": {
-    "message": "Gas cena (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Ārkārtīgi zema Gas cena"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Gas cena norāda Ether summu, ko vēlaties maksāt par katru Gas vienību."
   },
   "gasUsed": {
     "message": "Izlietotie Gas"
@@ -644,9 +632,6 @@
   "terms": {
     "message": "Lietošanas noteikumi"
   },
-  "tips": {
-    "message": "Dzeramnauda"
-  },
   "to": {
     "message": "Adresāts"
   },
@@ -725,9 +710,6 @@
   "unlock": {
     "message": "Atbloķēt"
   },
-  "unlockMessage": {
-    "message": "Decentralizētais tīkls jau gaida"
-  },
   "urlErrorMsg": {
     "message": "URI jāsākas ar atbilstošo HTTP/HTTPS priedēkli."
   },
@@ -751,8 +733,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Jūsu privātā atkopšanas frāze"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Gas nulles cena pie paātrinājuma"
   }
 }

@@ -23,9 +23,7 @@ import {
   getNetworkDetailsByChainId,
   getUsdAmount,
 } from '../../../../helpers/utils/notification.util';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { t } from '../../../../../app/scripts/translate';
+import { t } from '../../../../../shared/lib/translate';
 import {
   TextVariant,
   BackgroundColor,
@@ -36,8 +34,6 @@ import {
   BadgeWrapperPosition,
   IconName,
 } from '../../../../components/component-library';
-import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -152,9 +148,8 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
           />
         ),
         Asset: ({ notification }) => {
-          const chainId = decimalToHex(notification.chain_id);
           const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-            `0x${chainId}` as keyof typeof CHAIN_IDS,
+            notification.chain_id,
           );
           return (
             <NotificationDetailAsset
@@ -183,9 +178,8 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
           );
         },
         AssetReceived: ({ notification }) => {
-          const chainId = decimalToHex(notification.chain_id);
           const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
-            `0x${chainId}` as keyof typeof CHAIN_IDS,
+            notification.chain_id,
           );
           return (
             <NotificationDetailAsset

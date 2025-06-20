@@ -6,3 +6,5 @@ export const SUPPORTED_HARDWARE_WALLET_TYPES = [
   'Ledger Hardware',
   'Lattice Hardware',
 ];
+
+export const DAY_IN_SECONDS = 60 * 60 * 24;

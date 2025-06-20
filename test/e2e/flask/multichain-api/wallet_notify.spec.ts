@@ -4,6 +4,7 @@ import FixtureBuilder from '../../fixture-builder';
 import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+  replaceColon,
   type FixtureCallbackArgs,
 } from './testHelpers';
 
@@ -26,10 +27,10 @@ describe('Calling `eth_subscribe` on a particular network event', function () {
         const SCOPE = 'eip155:1337';
 
         await driver.clickElementSafe(
-          `[data-testid="${SCOPE}-eth_subscribe-option"]`,
+          `[data-testid="${replaceColon(SCOPE)}-eth_subscribe-option"]`,
         );
         await driver.clickElementSafe(
-          `[data-testid="invoke-method-${SCOPE}-btn"]`,
+          `[data-testid="invoke-method-${replaceColon(SCOPE)}-btn"]`,
         );
 
         const walletNotifyNotificationWebElement = await driver.findElement(

@@ -4,11 +4,11 @@ class TermsOfUseUpdateModal {
   private driver: Driver;
 
   private readonly acceptButton = {
-    testId: 'terms-of-use-accept-button',
+    testId: 'terms-of-use-agree-button',
   };
 
   private readonly popoverScrollButton = {
-    testId: 'popover-scroll-button',
+    testId: 'terms-of-use-scroll-button',
   };
 
   private readonly termsOfUseCheckbox = {
@@ -16,8 +16,8 @@ class TermsOfUseUpdateModal {
   };
 
   private readonly termsOfUseModalTitle = {
-    text: 'Our Terms of Use have updated',
-    tag: 'h2',
+    text: 'Review our Terms of Use',
+    tag: 'h3',
   };
 
   constructor(driver: Driver) {
@@ -39,9 +39,12 @@ class TermsOfUseUpdateModal {
 
   async confirmAcceptTermsOfUseUpdate() {
     console.log('Click to confirm acceptance of terms of use update');
-    await this.driver.clickElement(this.popoverScrollButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.popoverScrollButton,
+      5000,
+    );
     await this.driver.clickElement(this.termsOfUseCheckbox);
-    await this.driver.clickElementAndWaitToDisappear(this.acceptButton);
+    await this.driver.clickElementAndWaitToDisappear(this.acceptButton, 5000);
   }
 }
 

@@ -36,6 +36,23 @@ describe('Test Snap networkAccess', function () {
           'networkAccessResultSpan',
           '"hello": "world"',
         );
+
+        await testSnaps.clickButton('startWebSocket');
+        await driver.delay(500);
+
+        await testSnaps.waitForWebSocketUpdate({
+          open: true,
+          origin: 'ws://localhost:8545',
+          blockNumber: 'number',
+        });
+
+        await testSnaps.clickButton('stopWebSocket');
+
+        await testSnaps.waitForWebSocketUpdate({
+          open: false,
+          origin: null,
+          blockNumber: null,
+        });
       },
     );
   });

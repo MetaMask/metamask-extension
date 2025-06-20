@@ -25,6 +25,7 @@ import {
   oldestPendingConfirmationSelector,
   getUnapprovedTransactions,
   getPendingApprovals,
+  getIsMultichainAccountsState1Enabled,
 } from '../../selectors';
 import {
   lockMetamask,
@@ -123,6 +124,8 @@ function mapStateToProps(state) {
     oldestPendingApproval,
     pendingApprovals,
     transactionsMetadata,
+    isMultichainAccountsState1Enabled:
+      getIsMultichainAccountsState1Enabled(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
       state.appState.showKeyringRemovalSnapModal,

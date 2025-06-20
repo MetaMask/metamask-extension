@@ -9,11 +9,13 @@ import {
 } from '@metamask/keyring-api';
 import { renderHook } from '@testing-library/react-hooks';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
-import { BITCOIN_WALLET_SNAP_ID } from '../../../shared/lib/accounts/bitcoin-wallet-snap';
-import { SOLANA_WALLET_SNAP_ID } from '../../../shared/lib/accounts/solana-wallet-snap';
+import {
+  BITCOIN_WALLET_SNAP_ID,
+  SOLANA_WALLET_SNAP_ID,
+  type CreateAccountSnapOptions,
+} from '../../../shared/lib/accounts';
 import { createSnapAccount } from '../../store/actions';
 import {
-  MultichainWalletSnapOptions,
   useMultichainWalletSnapClient,
   WalletClientType,
 } from './useMultichainWalletSnapClient';
@@ -59,7 +61,7 @@ describe('useMultichainWalletSnapClient', () => {
   ];
 
   testCases.forEach(({ clientType, network, snapId, mockAccount }) => {
-    const options: MultichainWalletSnapOptions = {
+    const options: CreateAccountSnapOptions = {
       scope: network,
       entropySource: 'test-entropy-source',
     };

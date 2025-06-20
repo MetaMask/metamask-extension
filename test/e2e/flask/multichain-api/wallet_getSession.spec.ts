@@ -1,8 +1,9 @@
 import { strict as assert } from 'assert';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
   getExpectedSessionScope,
@@ -19,10 +20,11 @@ describe('Multichain API', function () {
           ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver);
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
+          await testDapp.check_pageIsLoaded();
           await testDapp.connectExternallyConnectable(extensionId);
           const parsedResult = await testDapp.getSession();
 
@@ -53,10 +55,11 @@ describe('Multichain API', function () {
            */
           const DEFAULT_SCOPE = 'eip155:1337';
 
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver);
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
+          await testDapp.check_pageIsLoaded();
           await testDapp.connectExternallyConnectable(extensionId);
           const parsedResult = await testDapp.getSession();
 

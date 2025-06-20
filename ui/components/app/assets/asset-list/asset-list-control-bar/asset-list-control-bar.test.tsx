@@ -1,7 +1,8 @@
 import React from 'react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
+import { fireEvent } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -12,15 +13,13 @@ import * as actions from '../../../../../store/actions';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
 import AssetListControlBar from './asset-list-control-bar';
 
-const mockHistoryPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useLocation: jest.fn(() => ({ search: '' })),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-  useParams: jest.fn(),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 describe('AssetListControlBar', () => {
   afterEach(() => {
@@ -31,6 +30,9 @@ describe('AssetListControlBar', () => {
     const store = configureMockStore([thunk])({
       metamask: {
         selectedNetworkClientId: 'selectedNetworkClientId',
+        enabledNetworkMap: {
+          '0x1': true,
+        },
         networkConfigurationsByChainId: {
           '0x1': {
             chainId: '0x1',
@@ -234,6 +236,6 @@ describe('NFTs options', () => {
     expect(autodetectButton).toBeInTheDocument();
 
     fireEvent.click(autodetectButton);
-    expect(mockHistoryPush).toHaveBeenCalledWith(SECURITY_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
   });
 });

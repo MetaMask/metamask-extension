@@ -77,10 +77,10 @@ describe('Creation Successful Onboarding View', () => {
       const store = arrangeMocks();
 
       const { getByText } = renderWithProvider(<PinExtension />, store);
-      const nextButton = getByText('Next');
-      fireEvent.click(nextButton);
-      const gotItButton = getByText('Done');
-      fireEvent.click(gotItButton);
+      const doneButton = getByText('Done');
+
+      fireEvent.click(doneButton);
+
       await Promise.all(mockPromises);
       expect(toggleExternalServices).toHaveBeenCalledTimes(1);
       expect(setCompletedOnboarding).toHaveBeenCalledTimes(1);

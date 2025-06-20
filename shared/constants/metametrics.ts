@@ -472,20 +472,6 @@ export type MetaMetricsUserTraits = {
    * Whether the security provider feature has been enabled.
    */
   security_providers?: string[];
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  /**
-   * The address of the MMI account in question
-   */
-  mmi_account_address?: string | null;
-  /**
-   * What is the MMI extension ID
-   */
-  mmi_extension_id?: string;
-  /**
-   * Is the user using a custodian account
-   */
-  mmi_is_custodian?: boolean;
-  ///: END:ONLY_INCLUDE_IF
   /**
    * Does the user change the token sort order on the asset list
    */
@@ -579,20 +565,6 @@ export enum MetaMetricsUserTrait {
    * Identified when the security provider feature is enabled.
    */
   SecurityProviders = 'security_providers',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  /**
-   * Identified when we get the current account in question
-   */
-  MmiAccountAddress = 'mmi_account_address',
-  /**
-   * Identified when we the user has the extension
-   */
-  MmiExtensionId = 'mmi_extension_id',
-  /**
-   * Identified when the user connects a custodian
-   */
-  MmiIsCustodian = 'mmi_is_custodian',
-  ///: END:ONLY_INCLUDE_IF
   PetnameAddressCount = 'petname_addresses_count',
   /**
    * Identified when the user selects a currency from settings
@@ -657,6 +629,7 @@ export enum MetaMetricsEventName {
   AccountsSyncAdded = 'Accounts Sync Added',
   AccountsSyncNameUpdated = 'Accounts Sync Name Updated',
   AccountsSyncErroneousSituation = 'Accounts Sync Erroneous Situation',
+  ProfileActivityUpdated = 'Profile Activity Updated',
   ActivityDetailsOpened = 'Activity Details Opened',
   ActivityDetailsClosed = 'Activity Details Closed',
   AnalyticsPreferenceSelected = 'Analytics Preference Selected',
@@ -672,13 +645,12 @@ export enum MetaMetricsEventName {
   BannerNavigated = 'Banner Navigated',
   BridgeLinkClicked = 'Bridge Link Clicked',
   SwapLinkClicked = 'Swap Link Clicked',
-  BitcoinSupportToggled = 'Bitcoin Support Toggled',
-  BitcoinTestnetSupportToggled = 'Bitcoin Testnet Support Toggled',
   CurrentCurrency = 'Current Currency',
   DappViewed = 'Dapp Viewed',
   DecryptionApproved = 'Decryption Approved',
   DecryptionRejected = 'Decryption Rejected',
   DecryptionRequested = 'Decryption Requested',
+  DeepLinkUsed = 'Deep Link Used',
   DisablingNotifications = 'Notifications Disabled',
   EmptyBuyBannerDisplayed = 'Empty Buy Banner Displayed',
   EmptyBuyBannerClosed = 'Empty Buy Banner Closed',
@@ -728,9 +700,6 @@ export enum MetaMetricsEventName {
   NavSwapButtonClicked = 'Swap Button Clicked',
   NavReceiveButtonClicked = 'Receive Button Clicked',
   NftAdded = 'NFT Added',
-  OnboardingWalletCreationStarted = 'Wallet Setup Selected',
-  OnboardingWalletImportStarted = 'Wallet Import Started',
-  OnboardingWalletCreationAttempted = 'Wallet Password Created',
   OnboardingWalletSecurityStarted = 'SRP Backup Selected',
   OnboardingWalletSecuritySkipInitiated = 'SRP Skip Backup Selected',
   OnboardingWalletSecuritySkipConfirmed = 'SRP Backup Skipped',
@@ -740,11 +709,10 @@ export enum MetaMetricsEventName {
   OnboardingWalletSecurityPhraseConfirmed = 'SRP Backup Confirmed',
   OnboardingWalletCreationComplete = 'Wallet Created',
   OnboardingWalletAdvancedSettings = 'Settings Updated',
-  OnboardingWalletImportAttempted = 'Wallet Import Attempted',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingTwitterClick = 'External Link Clicked',
-  OnboardingWalletSetupComplete = 'Wallet Setup Complete',
   OnrampProviderSelected = 'On-ramp Provider Selected',
+  ResetWallet = 'Reset Wallet',
   PermissionsApproved = 'Permissions Approved',
   PermissionsRejected = 'Permissions Rejected',
   PermissionsRequested = 'Permissions Requested',
@@ -787,6 +755,7 @@ export enum MetaMetricsEventName {
   SrpViewSrpText = 'Views SRP',
   SrpCopiedToClipboard = 'Copies SRP to clipboard',
   SrpToConfirmBackup = 'SRP Backup Confirm Displayed',
+  SrpDefinitionClicked = 'SRP Definition Clicked',
   StakingEntryPointClicked = 'Stake Button Clicked',
   SurveyToast = 'Survey Toast',
   SupportLinkClicked = 'Support Link Clicked',
@@ -804,30 +773,17 @@ export enum MetaMetricsEventName {
   TokenImportCanceled = 'Token Import Canceled',
   TokenImportClicked = 'Token Import Clicked',
   ShowNativeTokenAsMainBalance = 'Show native token as main balance',
-  WalletSetupStarted = 'Wallet Setup Selected',
-  WalletSetupCanceled = 'Wallet Setup Canceled',
-  WalletSetupFailed = 'Wallet Setup Failed',
-  WalletCreated = 'Wallet Created',
+  WalletSetupStarted = 'Wallet Setup Started',
+  WalletImportStarted = 'Wallet Import Started',
+  WalletImportAttempted = 'Wallet Import Attempted',
+  WalletImported = 'Wallet Imported',
+  WalletCreationAttempted = 'Wallet Creation Attempted',
+  WalletCreated = 'Wallet Created (Onboarding)',
+  WalletSetupFailure = 'Wallet Setup Failure',
+  WalletSetupCompleted = 'Wallet Setup Completed',
   // BEGIN:ONLY_INCLUDE_IF(build-flask)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   // END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  DeeplinkClicked = 'Deeplink Clicked',
-  ConnectCustodialAccountClicked = 'Connect Custodial Account Clicked',
-  MMIPortfolioButtonClicked = 'MMI Portfolio Button Clicked',
-  PortfolioDashboardModalButtonClicked = 'Portfolio Dashboard Modal Button Clicked',
-  PortfolioDashboardModalOpened = 'Portfolio Dashboard Modal Opened',
-  StakeButtonClicked = 'Stake Button Clicked',
-  InteractiveReplacementTokenButtonClicked = 'Interactive Replacement Token Button Clicked',
-  RefreshTokenListClicked = 'Refresh Token List Clicked',
-  SignatureDeeplinkDisplayed = 'Signature Deeplink Displayed',
-  InstitutionalFeatureConnected = 'Institutional Feature Connected',
-  CustodianSelected = 'Custodian Selected',
-  CustodianConnected = 'Custodian Connected',
-  CustodianConnectionCanceled = 'Custodian Connection Canceled',
-  CustodianConnectionFailed = 'Custodian Connection Failed',
-  CustodialAccountsConnected = 'Custodial Accounts Connected',
-  ///: END:ONLY_INCLUDE_IF
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
   AccountRemoved = 'Account Removed',
@@ -921,6 +877,8 @@ export enum MetaMetricsEventName {
   CrossChainSwapsQuotesReceived = 'Cross-chain Quotes Received',
   CrossChainSwapsQuotesRequested = 'Cross-chain Quotes Requested',
   Wallet5792Called = 'EIP-5792 API Called',
+  // Delete Wallet Modal
+  WalletRestored = 'Wallet Restored',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -953,6 +911,7 @@ export enum MetaMetricsEventCategory {
   /* eslint-disable-next-line @typescript-eslint/no-shadow */
   Error = 'Error',
   DeFi = 'DeFi',
+  DeepLink = 'Deep Link',
   Footer = 'Footer',
   Home = 'Home',
   InpageProvider = 'inpage_provider',
@@ -981,9 +940,6 @@ export enum MetaMetricsEventCategory {
   Transactions = 'Transactions',
   Wallet = 'Wallet',
   Confirmations = 'Confirmations',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  MMI = 'Institutional',
-  ///: END:ONLY_INCLUDE_IF
   CrossChainSwaps = 'Cross Chain Swaps',
 }
 
