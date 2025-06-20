@@ -208,4 +208,10 @@ export enum EIP5792ErrorCode {
   RejectedUpgrade = 5750,
 }
 
+export const APPROVAL_METHOD_NAMES = [
+  'approve',
+  'increaseAllowance',
+  'setApprovalForAll',
+];
+
 export const NATIVE_TOKEN_ADDRESS = '0x0'.padEnd(42, '0') as Hex;
