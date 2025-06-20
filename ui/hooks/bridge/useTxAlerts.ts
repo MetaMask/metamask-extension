@@ -35,5 +35,3 @@ export const useTxAlerts = () => {
     }
   }, [trade, fromChain?.chainId, address]);
 };
-
-export default useTxAlerts;
