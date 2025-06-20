@@ -62,6 +62,7 @@ import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { REVIEW_PERMISSIONS } from '../../../helpers/constants/routes';
 import { getNetworkIcon } from '../../../../shared/modules/network.utils';
 import { TraceName, trace } from '../../../../shared/lib/trace';
+import VisitSupportDataConsentModal from '../../app/modals/visit-support-data-consent-modal';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;
@@ -104,6 +105,9 @@ export const AppHeaderUnlockedContent = ({
   const [copied, handleCopy, resetCopyState] = useCopyToClipboard(MINUTE, {
     expireClipboard: false,
   });
+
+  const [isSupportDataConsentModalOpen, setIsSupportDataConsentModalOpen] =
+    useState(false);
 
   // Reset copy state when a switching accounts
   useEffect(() => {
@@ -353,7 +357,14 @@ export const AppHeaderUnlockedContent = ({
           anchorElement={menuRef.current}
           isOpen={accountOptionsMenuOpen}
           closeMenu={() => setAccountOptionsMenuOpen(false)}
+          setIsSupportDataConsentModalOpen={setIsSupportDataConsentModalOpen}
         />
+        {isSupportDataConsentModalOpen && (
+          <VisitSupportDataConsentModal
+            isOpen={isSupportDataConsentModalOpen}
+            onClose={() => setIsSupportDataConsentModalOpen(false)}
+          />
+        )}
       </Box>
     </>
   );
