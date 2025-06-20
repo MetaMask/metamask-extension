@@ -342,19 +342,25 @@ class Driver {
    * @param {string} [options.state] - specifies the state of the element to wait for.
    * It defaults to 'visible', indicating that the method will wait until the element is visible on the page.
    * The other supported state is 'detached', which means waiting until the element is removed from the DOM.
+   * @param {number} [options.waitAtLeastGuard] - minimum milliseconds to wait before passing
    * @returns {Promise<WebElement>} promise resolving when the element meets the state or timeout occurs.
    * @throws {Error} Will throw an error if the element does not reach the specified state within the timeout period.
    */
   async waitForSelector(
     rawLocator,
-    { timeout = this.timeout, state = 'visible' } = {},
+    { timeout = this.timeout, state = 'visible', waitAtLeastGuard = 0 } = {},
   ) {
     // Playwright has a waitForSelector method that will become a shallow
     // replacement for the implementation below. It takes an option options
     // bucket that can include the state attribute to wait for elements that
     // match the selector to be removed from the DOM.
+    assert(timeout > waitAtLeastGuard);
+    if (waitAtLeastGuard > 0) {
+      await this.delay(waitAtLeastGuard);
+    }
+
     let element;
-    if (!['visible', 'detached', 'enabled'].includes(state)) {
+    if (!['visible', 'detached', 'enabled', 'disabled'].includes(state)) {
       throw new Error(`Provided state selector ${state} is not supported`);
     }
     if (state === 'visible') {
@@ -370,6 +376,11 @@ class Driver {
     } else if (state === 'enabled') {
       element = await this.driver.wait(
         until.elementIsEnabled(await this.findElement(rawLocator)),
+        timeout,
+      );
+    } else if (state === 'disabled') {
+      element = await this.driver.wait(
+        until.elementIsDisabled(await this.findElement(rawLocator)),
         timeout,
       );
     }

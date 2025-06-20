@@ -16,6 +16,7 @@ import {
 import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { HiddenAccountList } from '../../multichain/account-list-menu/hidden-account-list';
+import { matchesSearchPattern } from './utils';
 
 export type MultichainAccountsTreeProps = {
   wallets: ConsolidatedWallets;
@@ -24,6 +25,7 @@ export type MultichainAccountsTreeProps = {
   currentTabOrigin?: string;
   privacyMode?: boolean;
   accountTreeItemProps?: Record<string, unknown>;
+  searchPattern?: string;
   selectedAccount: InternalAccount;
   onClose: () => void;
   onAccountTreeItemClick: (account: MergedInternalAccount) => void;
@@ -36,11 +38,15 @@ export const MultichainAccountsTree = ({
   currentTabOrigin,
   privacyMode,
   accountTreeItemProps,
+  searchPattern,
   selectedAccount,
   onClose,
   onAccountTreeItemClick,
 }: MultichainAccountsTreeProps) => {
   const accountsTree = useMemo(() => {
+    // We keep a flag to check if there are any hidden accounts
+    let hasHiddenAccounts: boolean = false;
+
     const allWallets = Object.entries(wallets).reduce(
       (walletsAccumulator, [walletId, walletData]) => {
         const walletName = walletData.metadata?.name;
@@ -74,11 +80,16 @@ export const MultichainAccountsTree = ({
         // Process all groups in the wallet and collect its account items
         const groupsItems = Object.entries(walletData.groups || {}).flatMap(
           ([groupId, groupData]) => {
-            // Filter accounts by allowed types
-            const filteredAccounts = groupData.accounts.filter(
-              (account) =>
-                allowedAccountTypes.includes(account.type) && !account.hidden,
-            );
+            // Filter accounts based on allowed types and the search pattern
+            const filteredAccounts = groupData.accounts.filter((account) => {
+              const matchesSearch = searchPattern
+                ? matchesSearchPattern(searchPattern, account)
+                : true;
+              const isAllowedType = allowedAccountTypes.includes(account.type);
+              hasHiddenAccounts ||= account.hidden;
+
+              return matchesSearch && isAllowedType && !account.hidden;
+            });
 
             if (filteredAccounts.length === 0) {
               return [];
@@ -143,17 +154,21 @@ export const MultichainAccountsTree = ({
     );
 
     // Add a final section for hidden accounts
-    allWallets.push(<HiddenAccountList />);
+    if (hasHiddenAccounts) {
+      allWallets.push(<HiddenAccountList onClose={console.log} />);
+    }
+
     return allWallets;
   }, [
     wallets,
+    searchPattern,
     allowedAccountTypes,
     connectedSites,
+    onClose,
     currentTabOrigin,
     privacyMode,
     accountTreeItemProps,
     selectedAccount,
-    onClose,
     onAccountTreeItemClick,
   ]);
 
