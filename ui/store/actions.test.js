@@ -2359,7 +2359,6 @@ describe('Actions', () => {
 
       const disableAccountsStub = sinon.stub().resolves();
 
-
       background.getApi.returns({
         disableAccounts: disableAccountsStub,
       });
