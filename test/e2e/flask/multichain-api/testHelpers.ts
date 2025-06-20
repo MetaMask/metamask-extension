@@ -12,6 +12,8 @@ import {
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
   METAMASK_INPAGE,
 } from '../../../../app/scripts/constants/stream';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
@@ -68,6 +70,22 @@ export const getExpectedSessionScope = (scope: string, accounts: string[]) => ({
   notifications: KnownNotifications.eip155,
   accounts: accounts.map((acc) => `${scope}:${acc.toLowerCase()}`),
 });
+
+export const addAccountInWalletAndAuthorize = async (
+  driver: Driver,
+): Promise<void> => {
+  console.log('Adding account in wallet and authorizing');
+  const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
+  await connectAccountConfirmation.check_pageIsLoaded();
+  await connectAccountConfirmation.openEditAccountsModal();
+
+  const editConnectedAccountsModal = new EditConnectedAccountsModal(driver);
+  await editConnectedAccountsModal.check_pageIsLoaded();
+  await editConnectedAccountsModal.addNewEthereumAccount();
+
+  await connectAccountConfirmation.check_pageIsLoaded();
+  await connectAccountConfirmation.confirmConnect();
+};
 
 /**
  * Update Multichain network edit form so that only matching networks are selected.

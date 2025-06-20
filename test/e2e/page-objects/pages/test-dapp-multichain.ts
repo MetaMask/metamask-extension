@@ -1,5 +1,6 @@
 import { Browser } from 'selenium-webdriver';
 import { NormalizedScopeObject } from '@metamask/chain-agnostic-permission';
+import { Json } from '@metamask/utils';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { replaceColon } from '../../flask/multichain-api/testHelpers';
@@ -169,6 +170,31 @@ class TestDappMultichain {
   }
 
   /**
+   * Retrieves the result of an invoked method for a specific scope.
+   *
+   * @param params - The parameters for retrieving the method result.
+   * @param params.scope - The scope identifier for the method invocation.
+   * @param params.method - The method name that was invoked.
+   * @returns The result as string.
+   */
+  async getInvokeMethodResult({
+    scope,
+    method,
+  }: {
+    scope: string;
+    method: string;
+  }): Promise<string> {
+    console.log(
+      `Getting invoke method result for scope ${scope} and method ${method} on multichain test dapp.`,
+    );
+    const result = await this.driver.findElement(
+      `[id="invoke-method-${replaceColon(scope)}-${method}-result-0"]`,
+    );
+    await this.driver.waitForNonEmptyElement(result);
+    return await result.getText();
+  }
+
+  /**
    * Retrieves permitted session object.
    *
    * @returns the session object.
@@ -213,32 +239,72 @@ class TestDappMultichain {
   }
 
   /**
-   * Invokes a JSON-RPC method for a given scope and returns the result.
+   * Invokes a JSON-RPC method for a given scope.
    *
    * @param params - The parameters for invoking the method.
    * @param params.scope - The CAIP-2 scope.
    * @param params.method - The JSON-RPC method to invoke.
-   * @returns The result as string.
+   * @param params.params - The parameters for the JSON-RPC method.
    */
   async invokeMethod({
     scope,
     method,
+    params = {},
   }: {
     scope: string;
     method: string;
-  }): Promise<string> {
+    params?: Json;
+  }): Promise<void> {
     console.log(
-      `Invoke method ${method} for scope ${scope} and return result on multichain test dapp.`,
+      `Invoke method ${method} for scope ${scope} on multichain test dapp.`,
     );
     await this.selectMethod({ scope, method });
+
+    if (params && Object.keys(params).length > 0) {
+      await this.driver.clickElement(
+        `[data-testid="invoke-method-details-${replaceColon(scope)}"]`,
+      );
+      const request = {
+        method: 'wallet_invokeMethod',
+        params: {
+          scope,
+          request: {
+            method,
+            params,
+          },
+        },
+      };
+      await this.driver.pasteIntoField(
+        `[data-testid="${replaceColon(scope)}-collapsible-content-textarea"]`,
+        JSON.stringify(request),
+      );
+    }
+
     await this.driver.clickElement(
       `[data-testid="invoke-method-${replaceColon(scope)}-btn"]`,
     );
-    const result = await this.driver.findElement(
-      `[id="invoke-method-${replaceColon(scope)}-${method}-result-0"]`,
-    );
-    await this.driver.waitForNonEmptyElement(result);
-    return await result.getText();
+  }
+
+  /**
+   * Invokes a JSON-RPC method for a given scope and retrieves the result.
+   *
+   * @param params - The parameters for invoking the method.
+   * @param params.scope - The CAIP-2 scope.
+   * @param params.method - The JSON-RPC method to invoke.
+   * @param params.params - The parameters for the JSON-RPC method.
+   * @returns The result as string.
+   */
+  async invokeMethodAndReturnResult({
+    scope,
+    method,
+    params = {},
+  }: {
+    scope: string;
+    method: string;
+    params?: Json;
+  }): Promise<string> {
+    await this.invokeMethod({ scope, method, params });
+    return this.getInvokeMethodResult({ scope, method });
   }
 
   /**
