@@ -287,9 +287,6 @@ class TestDappMultichain {
       `Selecting account ${account} for scope ${scope} on multichain test dapp.`,
     );
     await this.driver.clickElement(
-      `[data-testid="accounts-select-${replaceColon(scope)}"]`,
-    );
-    await this.driver.clickElement(
       `[data-testid="${replaceColon(scope)}-${account}-option"]`,
     );
   }

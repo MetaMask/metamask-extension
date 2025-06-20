@@ -146,8 +146,6 @@ describe('Multichain API', function () {
                   account: ACCOUNT_2,
                 }));
             }
-
-            await driver.delay(largeDelayMs);
             await testDapp.clickInvokeAllMethodsButton();
 
             for (const i of GANACHE_SCOPES.keys()) {
