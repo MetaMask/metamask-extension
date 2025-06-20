@@ -15,6 +15,7 @@ import {
 } from '../../multichain/account-list-item';
 import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
+import { HiddenAccountList } from '../../multichain/account-list-menu/hidden-account-list';
 
 export type MultichainAccountsTreeProps = {
   wallets: ConsolidatedWallets;
@@ -40,8 +41,6 @@ export const MultichainAccountsTree = ({
   onAccountTreeItemClick,
 }: MultichainAccountsTreeProps) => {
   const accountsTree = useMemo(() => {
-    const hiddenAccounts: MergedInternalAccount[] = []; // Collect all hidden accounts
-
     const allWallets = Object.entries(wallets).reduce(
       (walletsAccumulator, [walletId, walletData]) => {
         const walletName = walletData.metadata?.name;
@@ -76,25 +75,17 @@ export const MultichainAccountsTree = ({
         const groupsItems = Object.entries(walletData.groups || {}).flatMap(
           ([groupId, groupData]) => {
             // Filter accounts by allowed types
-            const filteredAccounts = groupData.accounts.filter((account) =>
-              allowedAccountTypes.includes(account.type),
+            const filteredAccounts = groupData.accounts.filter(
+              (account) =>
+                allowedAccountTypes.includes(account.type) && !account.hidden,
             );
 
             if (filteredAccounts.length === 0) {
               return [];
             }
 
-            // Separate hidden accounts and add them to `hiddenAccounts`
-            const visibleAccounts = filteredAccounts.filter((account) => {
-              if (account.hidden) {
-                hiddenAccounts.push(account);
-                return false; // Exclude hidden accounts from visible accounts
-              }
-              return true;
-            });
-
             // Create account items for group
-            const accountItems = visibleAccounts
+            const accountItems = filteredAccounts
               .sort((accountA, accountB) => {
                 // Convert boolean values to numbers for sorting
                 return Number(accountB.pinned) - Number(accountA.pinned);
@@ -141,65 +132,18 @@ export const MultichainAccountsTree = ({
           },
         );
 
+        // Skip adding wallet if no groupsItems exist
+        if (groupsItems.length === 0) {
+          return walletsAccumulator;
+        }
+
         return [...walletsAccumulator, walletHeader, ...groupsItems];
       },
       [] as React.ReactNode[],
     );
 
     // Add a final section for hidden accounts
-    if (hiddenAccounts.length > 0) {
-      const hiddenAccountsHeader = (
-        <Box
-          key="hidden-accounts-header"
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          alignItems={AlignItems.center}
-          paddingLeft={4}
-          paddingRight={4}
-        >
-          <Text
-            variant={TextVariant.bodySm}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.textAlternative}
-          >
-            Hidden accounts
-          </Text>
-        </Box>
-      );
-
-      const hiddenAccountItems = hiddenAccounts.map((account) => {
-        const connectedSite = connectedSites[account.address]?.find(
-          ({ origin }) => origin === currentTabOrigin,
-        );
-
-        return (
-          <Box
-            className="multichain-account-menu-popover__list--menu-item"
-            key={`hidden-box-${account.id}`}
-          >
-            <AccountListItem
-              onClick={onAccountTreeItemClick}
-              account={account}
-              key={`hidden-account-list-item-${account.id}`}
-              selected={selectedAccount.id === account.id}
-              closeMenu={onClose}
-              connectedAvatar={connectedSite?.iconUrl}
-              menuType={AccountListItemMenuTypes.Account}
-              currentTabOrigin={currentTabOrigin}
-              isActive={account.active}
-              privacyMode={privacyMode}
-              isPinned={account.pinned}
-              isHidden={account.hidden}
-              showSrpPill={false}
-              {...accountTreeItemProps}
-            />
-          </Box>
-        );
-      });
-
-      allWallets.push(hiddenAccountsHeader, ...hiddenAccountItems);
-    }
-
+    allWallets.push(<HiddenAccountList />);
     return allWallets;
   }, [
     wallets,

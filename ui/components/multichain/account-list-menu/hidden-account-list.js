@@ -49,10 +49,15 @@ export const HiddenAccountList = ({ onClose }) => {
   const selectedAccount = useSelector(getSelectedAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
+  const [showListItem, setShowListItem] = useState(false);
+
+  if (!hiddenAddresses.length) {
+    return null;
+  }
+
   const filteredHiddenAccounts = accounts.filter((account) =>
     hiddenAddresses.includes(account.address),
   );
-  const [showListItem, setShowListItem] = useState(false);
   return (
     <>
       <Box
@@ -132,8 +137,7 @@ export const HiddenAccountList = ({ onClose }) => {
                   closeMenu={onClose}
                   connectedAvatar={connectedSite?.iconUrl}
                   menuType={AccountListItemMenuTypes.Account}
-                  isPinned={Boolean(account.pinned)}
-                  isHidden={Boolean(account.hidden)}
+                  isHidden
                 />
               </Box>
             );
