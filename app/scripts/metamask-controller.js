@@ -2288,10 +2288,10 @@ export default class MetamaskController extends EventEmitter {
 
   onFeatureFlagResponseReceived(response) {
     const { multiChainAssets = {} } = response;
-    const { pollInterval } = multiChainAssets;
+    const { pollingSeconds } = multiChainAssets;
     // Polling interval is provided in seconds
-    if (pollInterval > 0) {
-      this.tokenBalancesController.setIntervalLength(pollInterval * SECOND);
+    if (pollingSeconds > 0) {
+      this.tokenBalancesController.setIntervalLength(pollingSeconds * SECOND);
     }
   }
 
