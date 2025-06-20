@@ -4,12 +4,11 @@ import sharp from 'sharp';
 import imagemin from 'imagemin';
 import imageminGifsicle from 'imagemin-gifsicle';
 import globby from 'globby';
+import yargs from 'yargs/yargs';
 
 /**
  * Images the optimizer shouldn't modify for whatever reason. Paths must
  * be relative to the project root.
- *
- * @type {string[]}
  */
 const blocklist = [
   // test files are typically generated; optimizing them will cause developer
@@ -21,8 +20,6 @@ const blocklist = [
 
 /**
  * Supported file formats by the optimizer (sharp)
- *
- * @type {string[]}
  */
 const supportedFileFormats = [
   'heic',
@@ -46,24 +43,39 @@ const supportedFileFormats = [
   'jxl',
 ];
 
+type SupportedSharpFileOptions =
+  | sharp.OutputOptions
+  | sharp.JpegOptions
+  | sharp.PngOptions
+  | sharp.WebpOptions
+  | sharp.AvifOptions
+  | sharp.HeifOptions
+  | sharp.JxlOptions
+  | sharp.Jp2Options
+  | sharp.TiffOptions;
+
 /**
  * Optimizes an image file if its format is supported and if optimization reduces file size.
  *
- * @param {string} filePath - Absolute path to the media file.
- * @returns {Promise<boolean>} Whether the media was optimized or not.
+ * @param filePath - Absolute path to the media file.
+ * @param fix - If true, the function will write the optimized image back to disk.
+ * @returns Whether the media was optimized or not.
  */
-async function optimizeImage(filePath) {
+async function optimizeImage(filePath: string, fix = true) {
   try {
     const fileInfo = await sharp(filePath).metadata();
+    if (!fileInfo || !fileInfo.format) {
+      console.warn(
+        `Could not retrieve metadata for ${filePath}. Skipping file.`,
+      );
+      return false;
+    }
 
     if (supportedFileFormats.includes(fileInfo.format)) {
       const { size: originalSize } = await stat(filePath);
-      /**
-       * @type {Buffer | null}
-       */
-      let optimizedBuffer = null;
+      let optimizedBuffer: Buffer | null = null;
       if (fileInfo.format === 'gif') {
-        // Gifsicle is better at optimizing gifs than sharp
+        // Gifsicle is usually better at optimizing GIFs than sharp
         [{ data: optimizedBuffer }] = await imagemin([filePath], {
           plugins: [
             imageminGifsicle({
@@ -73,26 +85,25 @@ async function optimizeImage(filePath) {
         });
       } else {
         optimizedBuffer = await sharp(filePath, {
-          // default is `false`, which makes sharp only read the first frame of an animated image :facepalm:
+          // default is `false`, which makes sharp only read the first frame of
+          // an animated image :facepalm:
           animated: true,
         })
           .toFormat(fileInfo.format, {
-            jpegQuality: 100,
-            animated: true,
             compressionLevel: 9,
             // 6 is max for webp,
             effort: fileInfo.format === 'webp' ? 6 : 10,
-            reuse: false,
             quality: 100,
             lossless: true,
-            webpLossless: true,
-          })
-          .toBuffer(`${filePath}`);
+          } satisfies SupportedSharpFileOptions)
+          .toBuffer();
       }
 
       if (optimizedBuffer.byteLength < originalSize) {
         // if we saved some bytes, write the optimized image back to disk
-        await writeFile(filePath, optimizedBuffer);
+        if (fix) {
+          await writeFile(filePath, optimizedBuffer);
+        }
         console.log(
           `Optimized ${filePath}: Reduced size by ${(
             (1 - optimizedBuffer.byteLength / originalSize) *
@@ -107,7 +118,7 @@ async function optimizeImage(filePath) {
       );
     }
   } catch (error) {
-    console.error(`Failed to process ${filePath}: ${error.message}`);
+    console.error(`Failed to process ${filePath}: ${(error as Error).message}`);
   }
   return false;
 }
@@ -115,35 +126,74 @@ async function optimizeImage(filePath) {
 /**
  * Optimize all media files in the project root, except those in the blocklist.
  *
- * @param {string[]} blocklist - List of files to be excluded from optimization. Paths must be relative to the project root.
- * @returns {Promise<{ optimizedCount: number, filesCount: number }>}
+ * @param options - List of files to be excluded from optimization. Paths must be relative to the project root.
+ * @param options.blocklist - Array of file paths to exclude from optimization.
+ * @param options.fix - If true, the function will automatically fix issues by optimizing images.
  */
-async function optimizeImages(blocklist) {
+export async function optimizeImages({
+  blocklist,
+  fix,
+}: {
+  blocklist?: string[];
+  fix?: boolean;
+}) {
+  // set defaults
+  blocklist = blocklist || [];
+  fix = fix || false;
+
   const projectRoot = resolve(import.meta.dirname, '../');
   const glob = `**/*.{${supportedFileFormats.join(',')}}`;
-  /**
-   * @type {globby.GlobbyOptions}
-   */
   const options = {
     cwd: projectRoot,
     gitignore: true,
     ignore: blocklist,
   };
   const filePaths = await globby(glob, options);
-  const tasks = filePaths.map((file) => optimizeImage(join(projectRoot, file)));
+  const tasks = filePaths.map((file) =>
+    optimizeImage(join(projectRoot, file), fix),
+  );
   const results = await Promise.all(tasks);
   const optimizedCount = results.filter((isOptimized) => isOptimized).length;
 
   return { optimizedCount, filesCount: filePaths.length };
 }
 
-const results = await optimizeImages(blocklist);
-console.log(
-  `Optimization completed: ${results.optimizedCount} out of ${results.filesCount} files optimized.`,
-);
+export async function main() {
+  // get the --fix option from the args
+  const { fix } = yargs()
+    .strict()
+    .option('fix', {
+      alias: 'f',
+      type: 'boolean',
+      description: 'Automatically optimize images',
+      default: false,
+    })
+    .parseSync();
 
-if (results.optimizedCount > 0) {
+  const results = await optimizeImages({ blocklist, fix });
+
   console.log(
-    'Check accuracy of the optimized images and commit the changes if they look good.',
+    `Optimization completed: ${results.optimizedCount} out of ${
+      results.filesCount
+    } file${results.filesCount === 1 ? '' : 's'} were able to be optimized.`,
   );
+
+  if (results.optimizedCount > 0) {
+    if (fix) {
+      console.log(
+        'Verify accuracy and quality of optimized images before commit changes.',
+      );
+    } else {
+      console.error(
+        'Run `yarn lint:images:fix` to automatically optimize the images.',
+      );
+      // error out if --fix is not set and some files were able to be optimized
+      process.exit(1);
+    }
+  }
 }
+
+main().catch((error) => {
+  console.error(`Error during optimization: ${(error as Error).message}`);
+  process.exit(1);
+});

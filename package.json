@@ -63,8 +63,8 @@
     "test:e2e:single": "node test/e2e/run-e2e-test.js",
     "ganache:start": "./development/run-ganache.sh",
     "sentry:publish": "node ./development/sentry-publish.js",
-    "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:tsc && yarn lint:styles",
-    "lint:fix": "yarn lint:prettier:fix && yarn lint:eslint:fix && yarn lint:styles:fix && yarn circular-deps:update",
+    "lint": "yarn lint:prettier && yarn lint:eslint && yarn lint:tsc && yarn lint:styles && yarn lint:images",
+    "lint:fix": "yarn lint:prettier:fix && yarn lint:eslint:fix && yarn lint:styles:fix && yarn circular-deps:update && yarn lint:images:fix",
     "lint:prettier": "prettier --check --cache -- '**/*.{json,md,mdx,yml}'",
     "lint:prettier:fix": "prettier --write --cache -- '**/*.{json,md,mdx,yml}'",
     "lint:changed": "./development/get-changed-file-names.sh | grep -E --regexp='[.](js|ts|tsx)$' | tr '\\n' '\\0' | xargs -0 eslint --cache --cache-location node_modules/.cache/eslint/.eslint-cache",
@@ -81,6 +81,8 @@
     "lint:styles": "stylelint '*/**/*.scss'",
     "lint:styles:fix": "yarn lint:styles --fix",
     "lint:tsc": "tsc",
+    "lint:images": "tsx development/optimize-media.mts",
+    "lint:images:fix": "tsx development/optimize-media.mts --fix",
     "validate-source-maps": "node ./development/sourcemap-validator.js",
     "verify-locales": "node ./development/verify-locale-strings.js",
     "verify-locales:fix": "node ./development/verify-locale-strings.js --fix",
@@ -120,7 +122,6 @@
     "download-builds": "tsx .devcontainer/download-builds.ts prep-build",
     "download-builds:test": "tsx .devcontainer/download-builds.ts prep-build-test",
     "master-sync": "node development/master-sync.js",
-    "optimize-media": "node development/optimize-media.mjs",
     "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js",
     "update-snap-binary": "tsx test/e2e/mock-response-data/snaps/update-snap-binary.ts",
     "attributions:check": "./development/attributions-check.sh",
@@ -778,7 +779,8 @@
       "@metamask/kernel-browser-runtime>@metamask/streams": false,
       "@metamask/kernel-browser-runtime>@metamask/kernel-store>better-sqlite3": false,
       "@metamask/logger>@metamask/streams": false,
-      "@metamask/streams": false
+      "@metamask/streams": false,
+      "@types/sharp>sharp": false
     }
   },
   "packageManager": "yarn@4.9.1",
