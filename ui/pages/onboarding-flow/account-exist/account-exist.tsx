@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
@@ -20,7 +20,11 @@ import {
   ONBOARDING_WELCOME_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getFirstTimeFlowType, getSocialLoginEmail } from '../../../selectors';
+import {
+  getFirstTimeFlowType,
+  getSocialLoginEmail,
+  getSocialLoginType,
+} from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   resetOAuthLoginState,
@@ -38,7 +42,6 @@ import {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AccountExist() {
   const history = useHistory();
-  const location = useLocation();
   const dispatch = useDispatch();
   const t = useI18nContext();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
