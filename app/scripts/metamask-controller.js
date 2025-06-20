@@ -676,10 +676,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.networkController = new NetworkController({
       messenger: networkControllerMessenger,
-      state: {
-        ...initialNetworkControllerState,
-        selectedNetworkClientId: 'adsflasdfasdf',
-      },
+      state: initialNetworkControllerState,
       infuraProjectId: opts.infuraProjectId,
       getBlockTrackerOptions: () => {
         return process.env.IN_TEST
