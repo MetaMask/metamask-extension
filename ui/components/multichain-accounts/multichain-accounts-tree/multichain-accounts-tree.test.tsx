@@ -189,4 +189,97 @@ describe('MultichainAccountsTree', () => {
     // Account 3 is ERC4337 and should not be visible
     expect(screen.queryByText('Account 3')).not.toBeInTheDocument();
   });
+
+  it('renders pinned accounts at the top of the list', () => {
+    // Update mockWallets to include pinned accounts
+    const updatedMockWallets: ConsolidatedWallets = {
+      ...mockWallets,
+      [walletOneId]: {
+        ...mockWallets[walletOneId],
+        groups: {
+          [walletOneGroupId]: {
+            ...mockWallets[walletOneId].groups[walletOneGroupId],
+            accounts: [
+              {
+                ...mockWallets[walletOneId].groups[walletOneGroupId]
+                  .accounts[0],
+                pinned: false, // Account 1 is pinned
+              },
+              {
+                ...mockWallets[walletOneId].groups[walletOneGroupId]
+                  .accounts[1],
+                pinned: true, // Account 2 is not pinned
+              },
+            ],
+          },
+        },
+      },
+    };
+
+    renderComponent({
+      wallets: updatedMockWallets,
+    });
+
+    // Ensure pinned accounts are rendered first
+    const accountItems = screen.getAllByText(/Account \d/u);
+    console.log(accountItems);
+    expect(accountItems[0]).toHaveTextContent('Account 2'); // Pinned account
+    expect(accountItems[1]).toHaveTextContent('Account 1'); // Pinned account
+  });
+
+  it('renders pinned accounts correctly across multiple wallets', () => {
+    // Update mockWallets to include pinned accounts in multiple wallets
+    const updatedMockWallets: ConsolidatedWallets = {
+      ...mockWallets,
+      [walletOneId]: {
+        ...mockWallets[walletOneId],
+        groups: {
+          [walletOneGroupId]: {
+            ...mockWallets[walletOneId].groups[walletOneGroupId],
+            accounts: [
+              {
+                ...mockWallets[walletOneId].groups[walletOneGroupId]
+                  .accounts[0],
+                pinned: false, // Account 1 is unpinned
+              },
+              {
+                ...mockWallets[walletOneId].groups[walletOneGroupId]
+                  .accounts[1],
+                pinned: true, // Account 2 is pinned
+              },
+            ],
+          },
+        },
+      },
+      [walletTwoId]: {
+        ...mockWallets[walletTwoId],
+        groups: {
+          [walletTwoGroupId]: {
+            ...mockWallets[walletTwoId].groups[walletTwoGroupId],
+            accounts: [
+              {
+                ...mockWallets[walletTwoId].groups[walletTwoGroupId]
+                  .accounts[0],
+                pinned: true, // Account 3 is pinned
+              },
+            ],
+          },
+        },
+      },
+    };
+
+    renderComponent({
+      wallets: updatedMockWallets,
+    });
+
+    // Ensure pinned accounts are rendered first in each wallet
+    const walletOneAccountItems = screen
+      .getAllByText(/Account \d/u)
+      .slice(0, 2);
+    expect(walletOneAccountItems[0]).toHaveTextContent('Account 2'); // Pinned account
+    expect(walletOneAccountItems[1]).toHaveTextContent('Account 1'); // Non-pinned account
+
+    const walletTwoAccountItems = screen.getAllByText(/Account \d/u).slice(2);
+    expect(walletTwoAccountItems[0]).toHaveTextContent('Account 3'); // Pinned account
+  });
 });
