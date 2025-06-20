@@ -604,7 +604,7 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                   padding={4}
                   marginTop={2}
                   gap={4}
-                  backgroundColor={BackgroundColor.backgroundSection}
+                  backgroundColor={BackgroundColor.backgroundMuted}
                   startAccessory={
                     <Box
                       display={Display.Flex}
