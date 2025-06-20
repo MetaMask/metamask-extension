@@ -36,6 +36,7 @@ import {
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
 import {
+  TransactionContainerType,
   TransactionController,
   TransactionMeta,
   TransactionParams,
@@ -6703,9 +6704,12 @@ export async function requestSafeReload() {
   return await submitRequestToBackground('requestSafeReload');
 }
 
-export async function enforceSimulationsForTransaction(transactionId: string) {
+export async function applyTransactionContainersExisting(
+  transactionId: string,
+  containerTypes: TransactionContainerType[],
+) {
   return await submitRequestToBackground<void>(
-    'enforceSimulationsForTransaction',
-    [transactionId],
+    'applyTransactionContainersExisting',
+    [transactionId, containerTypes],
   );
 }
