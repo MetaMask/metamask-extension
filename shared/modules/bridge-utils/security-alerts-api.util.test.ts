@@ -236,7 +236,7 @@ describe('Security alerts utils', () => {
       jest.spyOn(global, 'fetch').mockResolvedValueOnce({
         ok: true,
         json: async () => mockResponse,
-      });
+      } as unknown as Response);
 
       await fetchTxAlerts({
         chainId: mockChainId,
