@@ -49,7 +49,6 @@ export const HiddenAccountList = ({ onClose }) => {
   const selectedAccount = useSelector(getSelectedAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
-
   const filteredHiddenAccounts = accounts.filter((account) =>
     hiddenAddresses.includes(account.address),
   );
