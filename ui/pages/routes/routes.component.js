@@ -87,7 +87,6 @@ import {
 import { MultichainAccountListMenu } from '../../components/multichain-accounts/multichain-account-list-menu';
 import {
   getConnectingLabel,
-  hideAppHeader,
   isConfirmTransactionRoute,
   setTheme,
   showAppHeader,
@@ -544,9 +543,7 @@ export default class Routes extends Component {
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
-        {process.env.REMOVE_GNS
-          ? showAppHeader(this.props) && <AppHeader location={location} />
-          : !hideAppHeader(this.props) && <AppHeader location={location} />}
+        {showAppHeader(this.props) && <AppHeader location={location} />}
         {isConfirmTransactionRoute(this.pathname) && <MultichainMetaFoxLogo />}
         {isAccountMenuOpen ? accountListMenu : null}
         {isNetworkMenuOpen ? (

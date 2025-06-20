@@ -7,6 +7,9 @@ class SendTokenPage {
 
   private readonly assetPickerButton = '[data-testid="asset-picker-button"]';
 
+  private readonly multichainAssetPickerNetwork =
+    '[data-testid="multichain-asset-picker__network"]';
+
   private readonly contactsButton = { css: 'button', text: 'Contacts' };
 
   private readonly contactListItem = '[data-testid="address-list-item-label"]';
@@ -53,6 +56,8 @@ class SendTokenPage {
 
   private readonly fiatFeeField = '[data-testid="native-currency"]';
 
+  private readonly sendFlowBackButton = '[aria-label="Back"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -80,6 +85,19 @@ class SendTokenPage {
 
   async clickAssetPickerButton() {
     await this.driver.clickElement(this.assetPickerButton);
+  }
+
+  async clickMultichainAssetPickerNetwork() {
+    await this.driver.clickElement(this.multichainAssetPickerNetwork);
+  }
+
+  async clickSendFlowBackButton() {
+    await this.driver.clickElement(this.sendFlowBackButton);
+  }
+
+  async clickFirstTokenListButton() {
+    const elements = await this.driver.findElements(this.tokenListButton);
+    await elements[0].click();
   }
 
   async clickSecondTokenListButton() {

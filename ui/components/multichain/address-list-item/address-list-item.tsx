@@ -76,31 +76,18 @@ export const AddressListItem = ({
       className="address-list-item"
       alignItems={AlignItems.center}
     >
-      {process.env.REMOVE_GNS ? (
-        <BadgeWrapper
-          badge={
-            <AvatarNetwork
-              size={AvatarNetworkSize.Xs}
-              name={allNetworks?.[chainId as Hex]?.name}
-              src={getImageForChainId(chainId)}
-              backgroundColor={BackgroundColor.backgroundDefault}
-              borderWidth={2}
-            />
-          }
-          marginRight={4}
-        >
-          <AvatarAccount
-            borderColor={BorderColor.transparent}
-            size={AvatarAccountSize.Md}
-            address={address}
-            variant={
-              useBlockie
-                ? AvatarAccountVariant.Blockies
-                : AvatarAccountVariant.Jazzicon
-            }
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            size={AvatarNetworkSize.Xs}
+            name={allNetworks?.[chainId as Hex]?.name}
+            src={getImageForChainId(chainId)}
+            backgroundColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
           />
-        </BadgeWrapper>
-      ) : (
+        }
+        marginRight={4}
+      >
         <AvatarAccount
           borderColor={BorderColor.transparent}
           size={AvatarAccountSize.Md}
@@ -110,9 +97,9 @@ export const AddressListItem = ({
               ? AvatarAccountVariant.Blockies
               : AvatarAccountVariant.Jazzicon
           }
-          marginInlineEnd={2}
         />
-      )}
+      </BadgeWrapper>
+
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}

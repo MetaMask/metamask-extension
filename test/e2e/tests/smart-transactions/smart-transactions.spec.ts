@@ -74,7 +74,9 @@ const waitForTransactionToComplete = async (
 };
 
 describe('Smart Transactions', function () {
-  it('Swap', async function () {
+  // Skipped as this will be supported in the new swap flow in the future
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('Swap', async function () {
     await withFixturesForSmartTransactions(
       {
         title: this.test?.fullTitle(),
