@@ -129,8 +129,8 @@
     "attributions:generate": "./development/generate-attributions.sh"
   },
   "resolutions": {
-    "http-cache-semantics@^3.8.1": "4.1.1",
-    "semver-regex@^2.0.0": "3.1.4",
+    "http-cache-semantics": "^4.1.1",
+    "semver-regex": "^3.1.4",
     "base-x@^3.0.x": "^3.0.11",
     "base-x@3.0.9": "^3.0.11",
     "base-x@^5.0.x": "^5.0.1",
