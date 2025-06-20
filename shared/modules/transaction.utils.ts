@@ -357,7 +357,6 @@ export function parseApprovalTransactionData(data: Hex):
   const transactionDescription = parseStandardTokenTransactionData(data);
   const result = transactionDescription ?? {};
   const { args, name } = result as any;
-  console.log('===== const { args, name } =====', result);
 
 
   if (!APPROVAL_METHOD_NAMES.includes(name ?? '') || !name) {
@@ -368,11 +367,11 @@ export function parseApprovalTransactionData(data: Hex):
     args?._value ?? // ERC-20 - approve
     args?.increment ?? // Fiat Token V2 - increaseAllowance
     args?.amount; // Permit2 - approve
-console.log('-1-', rawAmountOrTokenId)
+
   const amountOrTokenId = rawAmountOrTokenId
     ? new BigNumber(rawAmountOrTokenId?.toString())
     : undefined;
-console.log('-2-', amountOrTokenId)
+
   const spender = args?.spender ?? args?._spender ?? args?.[0];
 
   const isApproveAll = name === 'setApprovalForAll' && args?._approved === true;

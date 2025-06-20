@@ -38,7 +38,6 @@ const getBatchedApprovalDisplayValue = async (
     tokenAddress: token,
     spender,
   } = parseResult;
-  console.log('==================', amountOrTokenId);
 
   const tokenAddress = token ?? to ?? '';
 
