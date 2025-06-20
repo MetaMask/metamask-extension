@@ -31,6 +31,10 @@ class TransactionConfirmation extends Confirmation {
 
   private gasFeeTokenPill: RawLocator;
 
+  private senderAccount: RawLocator;
+
+  private transactionDetails: RawLocator;
+
   constructor(driver: Driver) {
     super(driver);
 
@@ -62,6 +66,9 @@ class TransactionConfirmation extends Confirmation {
     this.gasFeeTokenArrow = '[data-testid="selected-gas-fee-token-arrow"]';
     this.gasFeeTokenFeeText = '[data-testid="gas-fee-token-fee"]';
     this.gasFeeTokenPill = '[data-testid="selected-gas-fee-token"]';
+    this.senderAccount = '[data-testid="sender-address"]';
+    this.transactionDetails =
+      '[data-testid="confirmation__token-details-section"]';
   }
 
   async check_walletInitiatedHeadingTitle() {
@@ -97,6 +104,34 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.findElement({
       css: this.gasFeeTokenFeeText,
       text: amountFiat,
+    });
+  }
+
+  /**
+   * Checks if the sender account is displayed in the transaction confirmation page.
+   *
+   * @param account - The sender account to check.
+   */
+  async check_isSenderAccountDisplayed(account: string): Promise<boolean> {
+    console.log(
+      `Checking sender account ${account} on transaction confirmation page.`,
+    );
+    return await this.driver.isElementPresentAndVisible(
+      {
+        css: this.senderAccount,
+        text: account,
+      },
+      2000,
+    );
+  }
+
+  async check_networkIsDisplayed(network: string): Promise<void> {
+    console.log(
+      `Checking network ${network} is displayed on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector({
+      css: this.transactionDetails,
+      text: network,
     });
   }
 

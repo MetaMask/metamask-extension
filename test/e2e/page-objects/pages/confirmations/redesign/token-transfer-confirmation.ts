@@ -86,9 +86,9 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
    * @param expectedNetworkFee - The expected gas/network fee value to be displayed on the page.
    * @returns A promise that resolves when all specified elements are verified to be present and contain the expected values, indicating the page has fully loaded.
    * @example
-   * await tokenTransferTransactionConfirmation.check_pageIsLoaded('10', 'ETH', '0.01');
+   * await tokenTransferTransactionConfirmation.check_tokenTransferPageIsLoaded('10', 'ETH', '0.01');
    */
-  async check_pageIsLoaded(
+  async check_tokenTransferPageIsLoaded(
     transferAmount: string,
     symbol: string,
     expectedNetworkFee: string,

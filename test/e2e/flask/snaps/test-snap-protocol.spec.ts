@@ -1,9 +1,9 @@
-import { strict as assert } from 'assert';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
-import { largeDelayMs } from '../../helpers';
-import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../multichain-api/testHelpers';
+import { WINDOW_TITLES } from '../../helpers';
 import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';
 
 describe('Test Protocol Snaps', function () {
   it('can call getBlockHeight exposed by Snap', async function () {
@@ -31,22 +31,23 @@ describe('Test Protocol Snaps', function () {
 
         const testDapp = new TestDappMultichain(driver);
         await testDapp.openTestDappPage();
+        await testDapp.check_pageIsLoaded();
         await testDapp.connectExternallyConnectable(extensionId);
         await testDapp.initCreateSessionScopes([devnetScope]);
 
-        await driver.clickElementAndWaitForWindowToClose({
-          text: 'Connect',
-          tag: 'button',
-        });
-
-        await driver.delay(largeDelayMs);
-
-        const blockHeight = await testDapp.invokeMethod(
-          devnetScope,
-          'getBlockHeight',
-          [],
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
         );
-        assert.strictEqual(blockHeight, mockBlockHeight);
+        await connectAccountConfirmation.check_pageIsLoaded();
+        await connectAccountConfirmation.confirmConnect();
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
+        await testDapp.check_pageIsLoaded();
+        await testDapp.invokeMethodAndCheckResult({
+          scope: devnetScope,
+          method: 'getBlockHeight',
+          expectedResult: mockBlockHeight.toString(),
+        });
       },
     );
   });

@@ -46,6 +46,22 @@ class Confirmation {
     this.confirmationHeadingTitle = { text: 'Confirmation Dialog' };
   }
 
+  async check_pageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.footerCancelButton,
+        this.footerConfirmButton,
+      ]);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for confirmation page to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Confirmation page is loaded');
+  }
+
   async clickScrollToBottomButton() {
     await this.driver.clickElementSafe(this.scrollToBottomButton);
   }
