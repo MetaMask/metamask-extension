@@ -52,6 +52,7 @@ import {
   REMOTE_ROUTE_SETUP_DAILY_ALLOWANCE,
   IMPORT_SRP_ROUTE,
   DEFI_ROUTE,
+  SMART_ACCOUNT_UPDATE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -83,6 +84,7 @@ import {
   isCorrectDeveloperTransactionType,
   isCorrectSignatureApprovalType,
 } from '../../../shared/lib/confirmation.utils';
+import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -299,6 +301,10 @@ export default class Routes extends Component {
             path={RESTORE_VAULT_ROUTE}
             component={RestoreVaultPage}
             exact
+          />
+          <Authenticated
+            path={SMART_ACCOUNT_UPDATE}
+            component={SmartAccountUpdate}
           />
           <Authenticated
             // `:keyringId` is optional here, if not provided, this will fallback

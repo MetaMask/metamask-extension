@@ -3,6 +3,12 @@
 .account-selection {
   &__close {
     position: absolute;
+    left: 4px;
+    top: 4px;
+  }
+
+  &__close-wrapped {
+    position: absolute;
     left: 10px;
     top: 20px;
   }

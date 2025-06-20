@@ -37,6 +37,7 @@ describe('AccountSelection', () => {
         selectedAccounts={[]}
         setSelectedAccounts={noop}
         closeAccountSelection={noop}
+        wrapped={false}
       />,
       mockStore,
     );
@@ -78,6 +79,7 @@ describe('AccountSelection', () => {
         selectedAccounts={[]}
         setSelectedAccounts={noop}
         closeAccountSelection={noop}
+        wrapped={false}
       />,
       mockStore,
     );
@@ -100,6 +102,7 @@ describe('AccountSelection', () => {
         selectedAccounts={[]}
         setSelectedAccounts={noop}
         closeAccountSelection={mockCloseAccountSelection}
+        wrapped={false}
       />,
       mockStore,
     );
@@ -119,6 +122,7 @@ describe('AccountSelection', () => {
         selectedAccounts={[]}
         setSelectedAccounts={mocksetSelectedAccounts}
         closeAccountSelection={noop}
+        wrapped={false}
       />,
       mockStore,
     );
@@ -139,11 +143,37 @@ describe('AccountSelection', () => {
         selectedAccounts={ALL_ACCOUNTS}
         setSelectedAccounts={mocksetSelectedAccounts}
         closeAccountSelection={noop}
+        wrapped={false}
       />,
       mockStore,
     );
     fireEvent.click(getAllByRole('checkbox')[0]);
     expect(mocksetSelectedAccounts).toHaveBeenCalledTimes(1);
     expect(mocksetSelectedAccounts).toHaveBeenCalledWith([]);
+  });
+
+  it('call onUpdate when update button is clicked', async () => {
+    const mockStore = configureMockStore([])(
+      getMockConfirmStateForTransaction(
+        upgradeAccountConfirmation as Confirmation,
+      ),
+    );
+    const mockOnUpdate = jest.fn();
+    const { getByRole } = renderWithConfirmContextProvider(
+      <AccountSelection
+        selectedAccounts={ALL_ACCOUNTS}
+        setSelectedAccounts={noop}
+        closeAccountSelection={noop}
+        onUpdate={mockOnUpdate}
+        wrapped={false}
+      />,
+      mockStore,
+    );
+    fireEvent.click(
+      getByRole('button', {
+        name: /Update/iu,
+      }),
+    );
+    expect(mockOnUpdate).toHaveBeenCalledTimes(1);
   });
 });

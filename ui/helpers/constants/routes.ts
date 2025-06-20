@@ -99,6 +99,9 @@ PATH_NAME_MAP.set(
   'Reveal Secret Recovery Phrase Page',
 );
 
+export const SMART_ACCOUNT_UPDATE = '/smart-account-update';
+PATH_NAME_MAP.set(SMART_ACCOUNT_UPDATE, 'Smart Account Update Page');
+
 export const IMPORT_SRP_ROUTE = '/import-srp';
 PATH_NAME_MAP.set(IMPORT_SRP_ROUTE, 'Import Secret Recovery Phrase Page');
 
