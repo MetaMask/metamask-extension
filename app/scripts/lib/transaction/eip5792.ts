@@ -127,19 +127,19 @@ export async function processSendCalls(
 
   let batchId: Hex;
   if (Object.keys(transactions).length === 1) {
-    const params = {
+    const trxnParams = {
       from,
       ...transactions[0].params,
       type: TransactionEnvelopeType.feeMarket,
     };
     const securityRequest: ValidateSecurityRequest = {
       method: 'eth_sendTransaction',
-      params: [params],
+      params: [trxnParams],
       origin,
     };
     validateSecurity(securityRequest, dappChainId);
     batchId = generateBatchId();
-    await addTransaction(params, {
+    await addTransaction(trxnParams, {
       networkClientId,
       origin,
       securityAlertResponse: { securityAlertId } as SecurityAlertResponse,
