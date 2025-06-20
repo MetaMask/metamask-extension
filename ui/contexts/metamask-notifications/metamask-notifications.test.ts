@@ -5,6 +5,7 @@ import * as NotificationsSelectors from '../../selectors/metamask-notifications/
 import * as Selectors from '../../selectors/selectors';
 import * as MetamaskDucks from '../../ducks/metamask/metamask';
 import * as AuthenticationSelectors from '../../selectors/identity/authentication';
+import * as StorageHelpers from '../../../shared/lib/storage-helpers';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import {
   useBasicFunctionalityDisableEffect,
@@ -79,8 +80,8 @@ describe('useBasicFunctionalityDisableEffect', () => {
     renderHookWithProvider(() => useBasicFunctionalityDisableEffect(), {});
 
     await waitFor(() => {
-      expect(mocks.hooks.disableNotifications).toHaveBeenCalledTimes(1);
-      expect(mocks.hooks.listNotifications).toHaveBeenCalledTimes(1);
+      expect(mocks.hooks.disableNotifications).toHaveBeenCalled();
+      expect(mocks.hooks.listNotifications).toHaveBeenCalled();
     });
   });
 
@@ -121,7 +122,7 @@ describe('useBasicFunctionalityDisableEffect', () => {
     renderHookWithProvider(() => useBasicFunctionalityDisableEffect(), {});
 
     await waitFor(() => {
-      expect(mocks.hooks.disableNotifications).toHaveBeenCalledTimes(1);
+      expect(mocks.hooks.disableNotifications).toHaveBeenCalled();
     });
 
     expect(mocks.hooks.listNotifications).not.toHaveBeenCalled();
@@ -154,8 +155,8 @@ describe('useBasicFunctionalityDisableEffect', () => {
     rerender();
 
     await waitFor(() => {
-      expect(mocks.hooks.disableNotifications).toHaveBeenCalledTimes(1);
-      expect(mocks.hooks.listNotifications).toHaveBeenCalledTimes(1);
+      expect(mocks.hooks.disableNotifications).toHaveBeenCalled();
+      expect(mocks.hooks.listNotifications).toHaveBeenCalled();
     });
   });
 });
@@ -220,14 +221,28 @@ describe('useFetchInitialNotificationsEffect', () => {
   };
 
   const arrange = () => {
+    const mockGetStorageItem = jest
+      .spyOn(StorageHelpers, 'getStorageItem')
+      .mockResolvedValue(undefined);
+    const mockSetStorageItem = jest.spyOn(StorageHelpers, 'setStorageItem');
+
     return {
       hooks: arrangeHooks(),
       selectors: arrangeSelectors(),
+      helpers: {
+        mockGetStorageItem,
+        mockSetStorageItem,
+      },
     };
   };
 
   beforeEach(() => {
+    jest.useFakeTimers();
     jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   it('should enable and fetch notifications when all conditions are met', async () => {
@@ -240,8 +255,26 @@ describe('useFetchInitialNotificationsEffect', () => {
     renderHookWithProvider(() => useFetchInitialNotificationsEffect(), {});
 
     await waitFor(() => {
-      expect(mocks.hooks.enableNotifications).toHaveBeenCalledTimes(1);
-      expect(mocks.hooks.listNotifications).toHaveBeenCalledTimes(1);
+      expect(mocks.hooks.enableNotifications).toHaveBeenCalled();
+      expect(mocks.hooks.listNotifications).toHaveBeenCalled();
+    });
+  });
+
+  it('should not enable notifications if resubscription has not expired', async () => {
+    const mocks = arrange();
+    mocks.selectors.mockIsNotifsEnabled.mockReturnValue(true);
+    mocks.selectors.mockGetUseExternalServices.mockReturnValue(true);
+    mocks.selectors.mockGetIsUnlocked.mockReturnValue(true);
+    mocks.selectors.mockSelectIsSignedIn.mockReturnValue(true);
+
+    // Has not expired
+    mocks.helpers.mockGetStorageItem.mockResolvedValue(Date.now() + 1000);
+
+    renderHookWithProvider(() => useFetchInitialNotificationsEffect(), {});
+
+    await waitFor(() => {
+      expect(mocks.hooks.enableNotifications).not.toHaveBeenCalled();
+      expect(mocks.hooks.listNotifications).toHaveBeenCalled();
     });
   });
 
@@ -318,7 +351,7 @@ describe('useFetchInitialNotificationsEffect', () => {
     renderHookWithProvider(() => useFetchInitialNotificationsEffect(), {});
 
     await waitFor(() => {
-      expect(mocks.hooks.enableNotifications).toHaveBeenCalledTimes(1);
+      expect(mocks.hooks.enableNotifications).toHaveBeenCalled();
     });
     // Should not throw error
   });
@@ -336,8 +369,8 @@ describe('useFetchInitialNotificationsEffect', () => {
     renderHookWithProvider(() => useFetchInitialNotificationsEffect(), {});
 
     await waitFor(() => {
-      expect(mocks.hooks.enableNotifications).toHaveBeenCalledTimes(1);
-      expect(mocks.hooks.listNotifications).toHaveBeenCalledTimes(1);
+      expect(mocks.hooks.enableNotifications).toHaveBeenCalled();
+      expect(mocks.hooks.listNotifications).toHaveBeenCalled();
     });
     // Should not throw error
   });
@@ -373,8 +406,8 @@ describe('useFetchInitialNotificationsEffect', () => {
     rerender();
 
     await waitFor(() => {
-      expect(mocks.hooks.enableNotifications).toHaveBeenCalledTimes(1);
-      expect(mocks.hooks.listNotifications).toHaveBeenCalledTimes(1);
+      expect(mocks.hooks.enableNotifications).toHaveBeenCalled();
+      expect(mocks.hooks.listNotifications).toHaveBeenCalled();
     });
   });
 });

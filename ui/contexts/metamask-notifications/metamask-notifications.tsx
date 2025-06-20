@@ -10,12 +10,34 @@ import { getUseExternalServices } from '../../selectors';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import { type Notification } from '../../pages/notifications/notification-components/types/notifications/notifications';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
+import {
+  getStorageItem,
+  setStorageItem,
+} from '../../../shared/lib/storage-helpers';
 
 type MetamaskNotificationsContextType = {
   listNotifications: () => void;
   notificationsData?: Notification[];
   isLoading: boolean;
   error?: unknown;
+};
+
+const EXPIRY_KEY = 'RESUBSCRIBE_NOTIFICATIONS_EXPIRY';
+const EXPIRY_DURATION_MS = 24 * 60 * 60 * 1000; // 1 day
+
+const hasExpired = async () => {
+  const expiryTimestamp: string | undefined = await getStorageItem(EXPIRY_KEY);
+  if (!expiryTimestamp) {
+    return true;
+  }
+  const now = Date.now();
+  return now > parseInt(expiryTimestamp, 10);
+};
+
+const setExpiry = async () => {
+  const now = Date.now();
+  const expiryTimestamp = now + EXPIRY_DURATION_MS;
+  await setStorageItem(EXPIRY_KEY, expiryTimestamp.toString());
 };
 
 const MetamaskNotificationsContext = createContext<
@@ -82,9 +104,11 @@ export function useFetchInitialNotificationsEffect() {
           shouldFetchNotifications &&
           isUnlocked
         ) {
-          // Re-enabling notifications as we need to ensure that the notification subscriptions are correctly setup
-          // NOTE - we should move this inside the controller on startup
-          await enableNotifications();
+          if (await hasExpired()) {
+            // Re-enabling notifications as we need to ensure that the notification subscriptions are correctly setup
+            await enableNotifications();
+            await setExpiry();
+          }
           // update list of notifications and notification counter
           await listNotifications();
         }
