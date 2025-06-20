@@ -1,11 +1,10 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { BaseLoginHandler } from './base-login-handler';
 import { AuthTokenResponse, LoginHandlerOptions, OAuthUserInfo } from './types';
 import { decodeIdToken } from './utils';
 
 export class AppleLoginHandler extends BaseLoginHandler {
-  public OAUTH_SERVER_URL = 'https://appleid.apple.com/auth/authorize';
+  readonly OAUTH_SERVER_URL: string;
 
   readonly #scope = ['name', 'email'];
 
@@ -20,13 +19,9 @@ export class AppleLoginHandler extends BaseLoginHandler {
       this.serverRedirectUri = `${options.authServerUrl}/api/v1/oauth/callback`;
     }
 
-    // if the platform is Firefox, use BFF (backend for frontend) to redirect to apple oauth server
-    // since firefox mv 2 doesn't allow redirect url different from current extension url
-    // learn more here {@link https://github.com/MetaMask/metamask-extension/pull/23110#issuecomment-2301101000}
-    const platform = options.webAuthenticator.getPlatform();
-    if (platform === PLATFORM_FIREFOX) {
-      this.OAUTH_SERVER_URL = `${options.authServerUrl}/api/v1/oauth/initiate`;
-    }
+    // since Apple doesn't support PKCE,
+    // we will use BFF (backend for frontend) to redirect to apple oauth server
+    this.OAUTH_SERVER_URL = `${options.authServerUrl}/api/v1/oauth/initiate`;
   }
 
   get authConnection() {
@@ -46,7 +41,7 @@ export class AppleLoginHandler extends BaseLoginHandler {
     const authUrl = new URL(this.OAUTH_SERVER_URL);
 
     const nonce = this.generateNonce();
-    const redirectUri = this.#getRedirectUri();
+    const redirectUri = this.options.webAuthenticator.getRedirectURL();
 
     authUrl.searchParams.set('client_id', this.options.oAuthClientId);
     authUrl.searchParams.set('response_type', 'code');
@@ -112,17 +107,5 @@ export class AppleLoginHandler extends BaseLoginHandler {
       email: payload.email,
       sub: payload.sub,
     };
-  }
-
-  /**
-   * Get the redirect URI for the OAuth login.
-   *
-   * @returns The redirect URI for the OAuth login.
-   */
-  #getRedirectUri() {
-    const platform = this.options.webAuthenticator.getPlatform();
-    return platform === PLATFORM_FIREFOX
-      ? this.options.webAuthenticator.getRedirectURL()
-      : this.serverRedirectUri;
   }
 }

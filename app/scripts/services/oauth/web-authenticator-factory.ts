@@ -71,7 +71,6 @@ export function webAuthenticatorFactory(): WebAuthenticator {
     generateCodeVerifierAndChallenge,
     generateNonce,
     getRedirectURL,
-    getPlatform,
     requestIdentityPermission,
   };
 }

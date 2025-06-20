@@ -61,13 +61,6 @@ export type WebAuthenticator = {
   generateNonce: () => string;
 
   /**
-   * Get the platform of the browser.
-   *
-   * @returns The platform of the browser.
-   */
-  getPlatform: () => string;
-
-  /**
    * Request the identity permission from the user.
    *
    * OAuth2 authentication requires the identity permission to be granted.
