@@ -2,6 +2,7 @@ import { isEqual } from 'lodash';
 import { GetPreferencesResult } from '@metamask/snaps-sdk';
 import { Driver } from '../../webdriver/driver';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
+import { veryLargeDelayMs } from '../../helpers';
 
 const inputLocator = {
   dataManageStateInput: '#dataManageState',
@@ -30,6 +31,7 @@ export const buttonLocator = {
   connectBip44Button: '#connectbip44',
   connectClientStatusButton: '#connectclient-status',
   connectCronJobsButton: '#connectcronjobs',
+  connectCronjobDurationButton: '#connectcronjob-duration',
   connectDialogsButton: '#connectdialogs',
   connectErrorsButton: '#connecterrors',
   connectGetEntropyButton: '#connectGetEntropySnap',
@@ -101,6 +103,9 @@ export const buttonLocator = {
   cancelBackgroundEventButton: '#cancelBackgroundEvent',
   getBackgroundEventResultButton: '#getBackgroundEvents',
   showPreinstalledDialogButton: '#showPreinstalledDialog',
+  startWebSocket: '#startWebSocket',
+  stopWebSocket: '#stopWebSocket',
+  getWebSocketState: '#getWebSocketState',
 } satisfies Record<string, string>;
 
 const spanLocator = {
@@ -338,5 +343,47 @@ export class TestSnaps {
       text: name,
       css: `${locator} option`,
     });
+  }
+
+  async waitForWebSocketUpdate(state: {
+    open: boolean;
+    origin: string | null;
+    blockNumber: string | null;
+  }) {
+    const resultElement = await this.driver.findElement('#networkAccessResult');
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          await this.clickButton('getWebSocketState');
+
+          // Wait for response from Snap.
+          await this.driver.waitForSelector('#getWebSocketState', {
+            state: 'enabled',
+          });
+
+          const text = await resultElement.getText();
+
+          const { open, origin, blockNumber } = JSON.parse(text);
+
+          console.log('Retrieved WebSocket state:', {
+            open,
+            origin,
+            blockNumber,
+          });
+
+          const blockNumberMatch =
+            typeof state.blockNumber === 'string'
+              ? typeof blockNumber === state.blockNumber
+              : blockNumber === state.blockNumber;
+
+          return (
+            open === state.open && origin === state.origin && blockNumberMatch
+          );
+        } catch {
+          return false;
+        }
+      },
+      { timeout: veryLargeDelayMs * 2, interval: 200 },
+    );
   }
 }

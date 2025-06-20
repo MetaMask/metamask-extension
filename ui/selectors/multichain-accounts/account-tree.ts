@@ -2,14 +2,19 @@ import type {
   AccountGroupId,
   AccountWalletId,
 } from '@metamask/account-tree-controller';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
-import { getMetaMaskAccountsOrdered } from '../selectors';
-import { InternalAccountWithBalance } from '../selectors.types';
+import {
+  getMetaMaskAccountsOrdered,
+  getOrderedConnectedAccountsForActiveTab,
+} from '../selectors';
+import { MergedInternalAccount } from '../selectors.types';
+import { getSelectedInternalAccount } from '../accounts';
 import {
   AccountTreeState,
   ConsolidatedWallets,
   MultichainAccountsState,
-} from './multichain-accounts-selectors.types';
+} from './account-tree.types';
 
 /**
  * Retrieve account tree state.
@@ -33,12 +38,16 @@ export const getAccountTree = (
 export const getWalletsWithAccounts = createDeepEqualSelector(
   getMetaMaskAccountsOrdered,
   getAccountTree,
+  getOrderedConnectedAccountsForActiveTab,
+  getSelectedInternalAccount,
   (
-    internalAccounts: InternalAccountWithBalance[],
+    internalAccounts: MergedInternalAccount[],
     accountTree: AccountTreeState,
+    connectedAccounts: InternalAccount[],
+    selectedAccount: InternalAccount,
   ): ConsolidatedWallets => {
     const accountsById = internalAccounts.reduce(
-      (accounts: Record<string, InternalAccountWithBalance>, account) => {
+      (accounts: Record<string, MergedInternalAccount>, account) => {
         accounts[account.id] = account;
         return accounts;
       },
@@ -59,10 +68,20 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
           const accountsFromGroup = group.accounts.reduce(
             (accountsWithMetadata, accountId) => {
               const accountWithMetadata = accountsById[accountId];
+
+              accountWithMetadata.active = Boolean(
+                selectedAccount.id === accountWithMetadata.id &&
+                  connectedAccounts.find(
+                    (connectedAccount) =>
+                      connectedAccount.id === accountWithMetadata.id,
+                  ),
+              );
+
               accountsWithMetadata.push(accountWithMetadata);
+
               return accountsWithMetadata;
             },
-            [] as InternalAccountWithBalance[],
+            [] as MergedInternalAccount[],
           );
 
           consolidatedWallets[walletId as AccountWalletId].groups[

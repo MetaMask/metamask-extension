@@ -3,6 +3,8 @@ import { GasFeeToken } from '@metamask/transaction-controller';
 import classnames from 'classnames';
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
+
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import {
   Box,
   Icon,
@@ -24,10 +26,7 @@ import {
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import {
-  NATIVE_TOKEN_ADDRESS,
-  useGasFeeToken,
-} from '../../hooks/useGasFeeToken';
+import { useGasFeeToken } from '../../hooks/useGasFeeToken';
 import { getCurrentCurrency } from '../../../../../../../ducks/metamask/metamask';
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
 
