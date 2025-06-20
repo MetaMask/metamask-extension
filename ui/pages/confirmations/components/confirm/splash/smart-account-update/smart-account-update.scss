@@ -18,4 +18,19 @@
     width: calc(100% - 32px);
     overflow: auto;
   }
+
+  &__edit {
+    position: absolute;
+    right: 10px;
+    top: 20px;
+  }
+
+  &__acc-avatar {
+    margin-right: -36px;
+  }
+
+  &__request-for {
+    margin-left: -36px;
+    width: 140px;
+  }
 }

@@ -1,6 +1,6 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { merge } from 'lodash';
 import { BtcScope } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/jest';
@@ -168,6 +168,21 @@ describe('AccountListItem', () => {
     expect(
       document.querySelector('.multichain-account-list-item--selected'),
     ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('account-list-item-selected-indicator'),
+    ).toBeInTheDocument();
+  });
+
+  it('does not render selection indicator if showSelectionIndicator is false', async () => {
+    render({ selected: true, showSelectionIndicator: false });
+    expect(
+      document.querySelector('.multichain-account-list-item--selected'),
+    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId('account-list-item-selected-indicator'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   it('renders the account name tooltip for long names', () => {

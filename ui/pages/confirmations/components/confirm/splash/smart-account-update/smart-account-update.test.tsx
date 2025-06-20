@@ -10,15 +10,20 @@ import { upgradeAccountConfirmation } from '../../../../../../../test/data/confi
 import { Confirmation } from '../../../../types/confirm';
 import {
   rejectPendingApproval,
-  setSplashPageAcknowledgedForAccount,
+  setSmartAccountOptInForAccounts,
   setSmartAccountOptIn,
 } from '../../../../../../store/actions';
 import { SmartAccountUpdate } from './smart-account-update';
 
+jest.mock('../../../../../../hooks/useMultiPolling', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
+
 jest.mock('../../../../../../store/actions', () => ({
   setAccountDetailsAddress: jest.fn(),
   rejectPendingApproval: jest.fn().mockReturnValue({}),
-  setSplashPageAcknowledgedForAccount: jest.fn(),
+  setSmartAccountOptInForAccounts: jest.fn(),
   setSmartAccountOptIn: jest.fn(),
 }));
 
@@ -66,7 +71,7 @@ describe('Splash', () => {
     );
 
     expect(container.firstChild).toBeNull();
-    expect(setSplashPageAcknowledgedForAccount).toHaveBeenCalledTimes(1);
+    expect(setSmartAccountOptInForAccounts).toHaveBeenCalledTimes(1);
     expect(setSmartAccountOptIn).toHaveBeenCalledTimes(1);
   });
 
@@ -163,5 +168,20 @@ describe('Splash', () => {
     );
 
     expect(container.firstChild).toBeNull();
+  });
+
+  it('open account selection when pencil icon is clicked', () => {
+    const mockStore = configureMockStore([])(
+      getMockConfirmStateForTransaction(
+        upgradeAccountConfirmation as Confirmation,
+      ),
+    );
+    const { getByText, getByTestId } = renderWithConfirmContextProvider(
+      <SmartAccountUpdate />,
+      mockStore,
+    );
+
+    fireEvent.click(getByTestId('smart-account-update-edit'));
+    expect(getByText('Edit accounts')).toBeInTheDocument();
   });
 });

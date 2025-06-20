@@ -531,20 +531,6 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('setSplashPageAcknowledgedForAccount', () => {
-    it('adds the account to upgradeSplashPageAcknowledgedForAccounts', async () => {
-      await withController(({ controller }) => {
-        const mockAccount = '0x123';
-
-        controller.setSplashPageAcknowledgedForAccount(mockAccount);
-
-        expect(
-          controller.state.upgradeSplashPageAcknowledgedForAccounts,
-        ).toStrictEqual([mockAccount]);
-      });
-    });
-  });
-
   describe('setTermsOfUseLastAgreed', () => {
     it('set the termsOfUseLastAgreed timestamp', async () => {
       await withController(({ controller }) => {
