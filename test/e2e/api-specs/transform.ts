@@ -99,41 +99,41 @@ const transformOpenRPCDocument = (
       },
     },
   ];
-
-  const walletSendCalls = openrpcDocument.methods.find(
-    (m) => (m as MethodObject).name === 'wallet_sendCalls',
-  );
-  (walletSendCalls as MethodObject).examples = [
-    {
-      name: 'wallet_sendCalls',
-      description: 'Example of a wallet_sendCalls request',
-      params: [
-        {
-          name: 'sendCalls',
-          value: {
-            version: '2.0.0',
-            from: account,
-            chainId: `0x${chainId.toString(16)}`,
-            atomicRequired: true,
-            calls: [
-              {
-                to: '0x54f1C1965B355e1AB9ec3465616136be35bb5Ff7',
-                value: '0x0',
-              },
-              {
-                to: '0x2D48e6f5Ae053e4E918d2be53570961D880905F2',
-                value: '0x0',
-              },
-            ],
-          },
-        },
-      ],
-      result: {
-        name: 'wallet_sendCalls',
-        value: null,
-      },
-    },
-  ];
+  // TODO: EIP-5792 methods are quarantined until we improve openrpc document examples for testing, task to unskip tracked here: https://github.com/MetaMask/MetaMask-planning/issues/5224
+  // const walletSendCalls = openrpcDocument.methods.find(
+  //   (m) => (m as MethodObject).name === 'wallet_sendCalls',
+  // );
+  // (walletSendCalls as MethodObject).examples = [
+  //   {
+  //     name: 'wallet_sendCalls',
+  //     description: 'Example of a wallet_sendCalls request',
+  //     params: [
+  //       {
+  //         name: 'sendCalls',
+  //         value: {
+  //           version: '2.0.0',
+  //           from: account,
+  //           chainId: `0x${chainId.toString(16)}`,
+  //           atomicRequired: true,
+  //           calls: [
+  //             {
+  //               to: '0x54f1C1965B355e1AB9ec3465616136be35bb5Ff7',
+  //               value: '0x0',
+  //             },
+  //             {
+  //               to: '0x2D48e6f5Ae053e4E918d2be53570961D880905F2',
+  //               value: '0x0',
+  //             },
+  //           ],
+  //         },
+  //       },
+  //     ],
+  //     result: {
+  //       name: 'wallet_sendCalls',
+  //       value: null,
+  //     },
+  //   },
+  // ];
 
   const switchEthereumChain = openrpcDocument.methods.find(
     (m) => (m as MethodObject).name === 'wallet_switchEthereumChain',
