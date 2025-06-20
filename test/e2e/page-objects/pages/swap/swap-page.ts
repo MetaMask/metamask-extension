@@ -193,6 +193,7 @@ class SwapPage {
     await this.swapProcessingMessageCheck('Transaction complete');
     await this.driver.clickElement(this.closeButton);
   }
+
   async waitForSmartTransactionToComplete(tokenName: string): Promise<void> {
     console.log('Wait for Smart Transaction to complete');
 
