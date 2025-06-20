@@ -198,6 +198,10 @@ function getApi(
     getLayer1GasFee: controller.getLayer1GasFee.bind(controller),
     getTransactions: controller.getTransactions.bind(controller),
     isAtomicBatchSupported: controller.isAtomicBatchSupported.bind(controller),
+    startIncomingTransactionPolling:
+      controller.startIncomingTransactionPolling.bind(controller),
+    stopIncomingTransactionPolling:
+      controller.stopIncomingTransactionPolling.bind(controller),
     updateAtomicBatchData: controller.updateAtomicBatchData.bind(controller),
     updateBatchTransactions:
       controller.updateBatchTransactions.bind(controller),

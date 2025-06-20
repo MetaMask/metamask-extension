@@ -26,6 +26,8 @@ jest.mock('../../../store/actions', () => ({
   tokenBalancesStopPollingByPollingToken: jest.fn(),
 }));
 
+jest.mock('../../../store/controller-actions/transaction-controller');
+
 // Mock the price chart
 jest.mock('react-chartjs-2', () => ({ Line: () => null }));
 
